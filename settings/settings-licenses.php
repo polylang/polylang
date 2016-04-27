@@ -30,6 +30,17 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	}
 
 	/**
+	 * tells if the module is active
+	 *
+	 * @since 1.9
+	 *
+	 * @return bool
+	 */
+	public function is_active() {
+		return ! empty( $this->items );
+	}
+
+	/**
 	 * displays the settings form
 	 *
 	 * @since 1.9
@@ -93,7 +104,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 						$message = sprintf(
 							/* translators: %s are html tags */
 							__( 'Invalid license. Please %svisit your account page%s and verify it.', 'polylang' ),
-							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/your-account' ),
+							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'
 						);
 					break;
@@ -104,7 +115,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 							/* translators: %1$s is a product name, %2$s and %3$s are html tags */
 							__( 'Your %1$s license key is not active for this URL. Please %2$svisit your account page%3$s to manage your license key URLs.', 'polylang' ),
 							$item->name,
-							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/your-account' ),
+							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'
 						);
 					break;
@@ -118,7 +129,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 						/* translators: %s are html tags */
 						$message = sprintf(
 							__( 'Your license key has reached its activation limit. %sView possible upgrades%s now.', 'polylang' ),
-							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/your-account' ),
+							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'
 						);
 					break;

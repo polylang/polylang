@@ -73,7 +73,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 1.9 ( 2016-04-26 ) =
+= 1.9 ( 2016-04-27 ) =
 
 * Pro: add the possibility to translate custom post types slugs, taxonomies slugs and more
 * Pro: add the possibility to share the same post or term slug accross languages
