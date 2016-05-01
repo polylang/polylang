@@ -223,17 +223,19 @@ class PLL_Language {
 	public function get_locale( $filter = 'raw' ) {
 		if ( 'display' == $filter ) {
 			static $valid_locales = array(
-				'bel'          => 'be',
-				'bre'          => 'br',
-				'de_DE_formal' => 'de_DE',
-				'dzo'          => 'dz',
-				'ido'          => 'io',
-				'kin'          => 'rw',
-				'oci'          => 'oc',
-				'mri'          => 'mi',
-				'roh'          => 'rm',
-				'srd'          => 'sc',
-				'tuk'          => 'tk',
+				'bel'            => 'be',
+				'bre'            => 'br',
+				'de_CH_informal' => 'de_CH',
+				'de_DE_formal'   => 'de_DE',
+				'dzo'            => 'dz',
+				'ido'            => 'io',
+				'kin'            => 'rw',
+				'oci'            => 'oc',
+				'mri'            => 'mi',
+				'nl_NL_formal'   => 'nl_NL',
+				'roh'            => 'rm',
+				'srd'            => 'sc',
+				'tuk'            => 'tk',
 			 );
 			$locale = isset( $valid_locales[ $this->locale ] ) ? $valid_locales[ $this->locale ] : $this->locale;
 			return str_replace( '_', '-', $locale );

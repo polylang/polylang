@@ -73,6 +73,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 1.9.1 =
+
+* Pro: fix media wrongly created when adding a new media translation
+* Add azb, ceb, de_CH_informal, es_GT, mr, nl_NL_formal to the predefined list of languages
+
 = 1.9 ( 2016-04-27 ) =
 
 * Pro: add the possibility to translate custom post types slugs, taxonomies slugs and more
