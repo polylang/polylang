@@ -77,6 +77,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 * Pro: fix media wrongly created when adding a new media translation
 * Add azb, ceb, de_CH_informal, es_GT, mr, nl_NL_formal to the predefined list of languages
+* Fix the language switcher not linking to media translations for anonymous visitors
 
 = 1.9 ( 2016-04-27 ) =
 
