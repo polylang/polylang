@@ -1,14 +1,14 @@
 <?php
 
 /**
- * manages filters and actions related to media on admin side
- * capability to edit / create media is checked before loading this class
+ * Manages filters and actions related to media on admin side
+ * Capability to edit / create media is checked before loading this class
  *
  * @since 1.2
  */
 class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	/**
-	 * constructor: setups filters and actions
+	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.2
 	 *
@@ -17,23 +17,23 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
-		// adds the language field and translations tables in the 'Edit Media' panel
+		// Adds the language field and translations tables in the 'Edit Media' panel
 		add_filter( 'attachment_fields_to_edit', array( &$this, 'attachment_fields_to_edit' ), 10, 2 );
 
-		// adds actions related to languages when creating, saving or deleting media
+		// Adds actions related to languages when creating, saving or deleting media
 		add_action( 'add_attachment', array( &$this, 'set_default_language' ) );
 		add_filter( 'attachment_fields_to_save', array( &$this, 'save_media' ), 10, 2 );
 		add_filter( 'wp_delete_file', array( &$this, 'wp_delete_file' ) );
 
-		// creates a media translation
+		// Creates a media translation
 		if ( isset( $_GET['action'], $_GET['new_lang'], $_GET['from_media'] ) && 'translate_media' === $_GET['action'] ) {
 			add_action( 'admin_init', array( &$this, 'translate_media' ) );
 		}
 	}
 
 	/**
-	 * adds the language field and translations tables in the 'Edit Media' panel
-	 * needs WP 3.5+
+	 * Adds the language field and translations tables in the 'Edit Media' panel
+	 * Needs WP 3.5+
 	 *
 	 * @since 0.9
 	 *
@@ -43,7 +43,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 */
 	public function attachment_fields_to_edit( $fields, $post ) {
 		if ( 'post.php' == $GLOBALS['pagenow'] ) {
-			return $fields; // don't add anything on edit media panel for WP 3.5+ since we have the metabox
+			return $fields; // Don't add anything on edit media panel for WP 3.5+ since we have the metabox
 		}
 
 		$post_id = $post->ID;
@@ -64,7 +64,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * creates a media translation
+	 * Creates a media translation
 	 *
 	 * @since 1.8
 	 *
@@ -74,15 +74,15 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 */
 	public function create_media_translation( $post_id, $lang ) {
 		$post = get_post( $post_id );
-		$lang = $this->model->get_language( $lang ); // make sure we get a valid language slug
+		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug
 
-		// create a new attachment ( translate attachment parent if exists )
-		$post->ID = null; // will force the creation
+		// Create a new attachment ( translate attachment parent if exists )
+		$post->ID = null; // Will force the creation
 		$post->post_parent = ( $post->post_parent && $tr_parent = $this->model->post->get_translation( $post->post_parent, $lang->slug ) ) ? $tr_parent : 0;
-		$post->tax_input = array( 'language' => array( $lang->slug ) ); // assigns the language
+		$post->tax_input = array( 'language' => array( $lang->slug ) ); // Assigns the language
 		$tr_id = wp_insert_attachment( $post );
 
-		// copy metadata, attached file and alternative text
+		// Copy metadata, attached file and alternative text
 		foreach ( array( '_wp_attachment_metadata', '_wp_attached_file', '_wp_attachment_image_alt' ) as $key ) {
 			if ( $meta = get_post_meta( $post_id, $key , true ) ) {
 				add_post_meta( $tr_id, $key, $meta );
@@ -113,18 +113,19 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * creates a media translation
+	 * Creates a media translation
 	 *
 	 * @since 0.9
 	 */
 	public function translate_media() {
-		//security check
+		// Security check
 		check_admin_referer( 'translate_media' );
 		$post_id = (int) $_GET['from_media'];
 
-		// bails if the translations already exists
-		// see https://wordpress.org/support/topic/edit-translation-in-media-attachments?#post-7322303
-		if ( $this->model->post->get_translation( $post_id, $_GET['new_lang'] ) ) {
+		// Bails if the translations already exists
+		// See https://wordpress.org/support/topic/edit-translation-in-media-attachments?#post-7322303
+		// Or if the source media does not exist
+		if ( $this->model->post->get_translation( $post_id, $_GET['new_lang'] ) || ! get_post( $post_id ) ) {
 			wp_safe_redirect( wp_get_referer() );
 			exit;
 		}
@@ -135,8 +136,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * called when a media is saved
-	 * saves language and translations
+	 * Called when a media is saved
+	 * Saves language and translations
 	 *
 	 * @since 0.9
 	 *
@@ -145,8 +146,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 * @return array unmodified $post
 	 */
 	public function save_media( $post, $attachment ) {
-		// language is filled in attachment by the function applying the filter 'attachment_fields_to_save'
-		// all security checks have been done by functions applying this filter
+		// Language is filled in attachment by the function applying the filter 'attachment_fields_to_save'
+		// All security checks have been done by functions applying this filter
 		if ( ! empty( $attachment['language'] ) ) {
 			$this->model->post->set_language( $post['ID'], $attachment['language'] );
 		}
@@ -159,8 +160,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * prevents WP deleting files when there are still media using them
-	 * thanks to Bruno "Aesqe" Babic and its plugin file gallery in which I took all the ideas for this function
+	 * Prevents WP deleting files when there are still media using them
+	 * Thanks to Bruno "Aesqe" Babic and its plugin file gallery in which I took all the ideas for this function
 	 *
 	 * @since 0.9
 	 *
@@ -179,9 +180,9 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		) );
 
 		if ( ! empty( $ids ) ) {
-			// regenerate intermediate sizes if it's an image ( since we could not prevent WP deleting them before )
+			// Regenerate intermediate sizes if it's an image ( since we could not prevent WP deleting them before )
 			wp_update_attachment_metadata( $ids[0], wp_generate_attachment_metadata( $ids[0], $file ) );
-			return ''; // prevent deleting the main file
+			return ''; // Prevent deleting the main file
 		}
 
 		return $file;
