@@ -56,12 +56,16 @@ class PLL_Admin_Sync {
 		if ( 'post-new.php' == $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $post->post_type ) ) {
 			// capability check already done in post-new.php
 			$from_post_id = (int) $_GET['from_post'];
+			$from_post = get_post( $from_post_id );
 			$lang = $this->model->get_language( $_GET['new_lang'] );
+
+			if ( ! $from_post || ! $lang ) {
+				return;
+			}
 
 			$this->copy_taxonomies( $from_post_id, $post->ID, $lang->slug );
 			$this->copy_post_metas( $from_post_id, $post->ID, $lang->slug );
 
-			$from_post = get_post( $from_post_id );
 			foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
 				$post->$property = $from_post->$property;
 			}
