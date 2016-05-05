@@ -8,6 +8,7 @@
  * @since 1.2
  */
 class PLL_Links_Directory extends PLL_Links_Permalinks {
+	protected $post_type_archives; // The post types for which archive rewrite rules are modified
 
 	/**
 	 * Constructor
@@ -21,11 +22,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 		if ( did_action( 'pll_init' ) ) {
 			$this->init();
-		}
-		else {
+		} else {
 			add_action( 'pll_init', array( &$this, 'init' ) );
 		}
-
 	}
 
 	/**
@@ -36,8 +35,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	public function init() {
 		if ( did_action( 'setup_theme' ) ) {
 			$this->add_permastruct();
-		}
-		else {
+		} else {
 			add_action( 'setup_theme', array( &$this, 'add_permastruct' ), 2 );
 		}
 
@@ -148,6 +146,18 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			}
 
 			add_filter( 'rewrite_rules_array', array( &$this, 'rewrite_rules' ) ); // needed for post type archives
+
+			$cpts = array_intersect( $this->model->get_translated_post_types(), get_post_types( array( '_builtin' => false ) ) );
+			$cpts = array_combine( $cpts, $cpts );
+
+			/**
+			 * Filters the list of custom post types for which archive rewrite rules are modified
+			 *
+			 * @since 2.0
+			 *
+			 * @param array $cpts List of custom post type names
+			 */
+			$this->post_type_archives = apply_filters( 'pll_post_type_archive_rewrite_rules', $cpts );
 		}
 		return $pre;
 	}
@@ -178,8 +188,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		// For custom post type archives
-		$cpts = array_intersect( $this->model->get_translated_post_types(), get_post_types( array( '_builtin' => false ) ) );
-		$cpts = $cpts ? '#post_type=(' . implode( '|', $cpts ) . ')#' : '';
+		$cpts = $this->post_type_archives ? '#post_type=(' . implode( '|', $this->post_type_archives ) . ')#' : '';
 
 		foreach ( $rules as $key => $rule ) {
 			// Special case for translated post types and taxonomies to allow canonical redirection
