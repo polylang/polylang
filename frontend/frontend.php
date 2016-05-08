@@ -34,6 +34,8 @@ class PLL_Frontend extends PLL_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
+		add_filter( 'pll_after_languages_cache', array( &$this, 'pll_after_languages_cache' ) );
+
 		add_action( 'pll_language_defined', array( &$this, 'pll_language_defined' ), 1 );
 
 		// avoids the language being the queried object when querying multiple taxonomies
@@ -68,7 +70,22 @@ class PLL_Frontend extends PLL_Base {
 	}
 
 	/**
-	 * setups filters and nav menus once the language has been defined
+	 * Set custom flags
+	 *
+	 * @since 2.0
+	 *
+	 * @param array $languages array of PLL_Language objects
+	 * @return array
+	 */
+	public function pll_after_languages_cache( $languages ) {
+		foreach ( $languages as $language ) {
+			$language->set_custom_flag();
+		}
+		return $languages;
+	}
+
+	/**
+	 * Setups filters and nav menus once the language has been defined
 	 *
 	 * @since 1.2
 	 */
