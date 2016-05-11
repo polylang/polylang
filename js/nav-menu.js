@@ -30,13 +30,13 @@ jQuery( document ).ready(function( $ ) {
 				});
 				$( this ).append( h );
 
-				ids = Array( 'hide_if_no_translation', 'hide_current','force_home','show_flags','show_names' ); // reverse order
+				ids = Array( 'hide_if_no_translation', 'hide_current', 'force_home', 'show_flags', 'show_names', 'dropdown' ); // reverse order
 
 				// add the fields
 				for ( var i = 0; i < ids.length; i++ ) {
 					p = $( '<p>' ).attr( 'class', 'description' );
 					$( this ).prepend( p );
-					label = $( '<label>' ).attr( 'for', 'edit-menu-item-' + ids[ i ] + '-' + item ).text( ' ' + pll_data.strings[ i ] );
+					label = $( '<label>' ).attr( 'for', 'edit-menu-item-' + ids[ i ] + '-' + item ).text( ' ' + pll_data.strings[ ids[ i ] ] );
 					p.append( label );
 					cb = $( '<input>' ).attr({
 						type:  'checkbox',

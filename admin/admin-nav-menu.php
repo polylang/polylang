@@ -105,11 +105,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_enqueue_script( 'pll_nav_menu', POLYLANG_URL .'/js/nav-menu' . $suffix . '.js', array( 'jquery' ), POLYLANG_VERSION );
 
-		// the strings for the options
-		foreach ( array_reverse( PLL_Switcher::get_switcher_options( 'menu', 'string' ) ) as $str ) {
-			$data['strings'][] = $str;
-		}
-
+		$data['strings'] = PLL_Switcher::get_switcher_options( 'menu', 'string' ); // the strings for the options
 		$data['title'] = __( 'Language switcher', 'polylang' ); // the title
 
 		// get all language switcher menu items
@@ -149,7 +145,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		if ( current_user_can( 'edit_theme_options' ) ) {
 			check_admin_referer( 'update-nav_menu', 'update-nav-menu-nonce' );
 
-			$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0,'force_home' => 0 ,'show_flags' => 0 ,'show_names' => 1 ); // default values
+			$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0,'force_home' => 0 ,'show_flags' => 0 ,'show_names' => 1, 'dropdown' => 0 ); // default values
 			// our jQuery form has not been displayed
 			if ( empty( $_POST['menu-item-pll-detect'][ $menu_item_db_id ] ) ) {
 				if ( ! get_post_meta( $menu_item_db_id, '_pll_menu_item', true ) ) { // our options were never saved

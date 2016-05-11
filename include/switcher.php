@@ -19,16 +19,13 @@ class PLL_Switcher {
 	 */
 	static public function get_switcher_options( $type = 'widget', $key = 'string' ) {
 		$options = array(
+			'dropdown'               => array( 'string' => __( 'Displays as dropdown', 'polylang' ), 'default' => 0 ),
 			'show_names'             => array( 'string' => __( 'Displays language names', 'polylang' ), 'default' => 1 ),
 			'show_flags'             => array( 'string' => __( 'Displays flags', 'polylang' ), 'default' => 0 ),
 			'force_home'             => array( 'string' => __( 'Forces link to front page', 'polylang' ), 'default' => 0 ),
 			'hide_current'           => array( 'string' => __( 'Hides the current language', 'polylang' ), 'default' => 0 ),
 			'hide_if_no_translation' => array( 'string' => __( 'Hides languages with no translation', 'polylang' ), 'default' => 0 ),
 		);
-
-		if ( 'menu' != $type ) {
-			$options = array( 'dropdown' => array( 'string' => __( 'Displays as dropdown', 'polylang' ), 'default' => 0 ) ) + $options;
-		}
 
 		return wp_list_pluck( $options, $key );
 	}
@@ -54,7 +51,7 @@ class PLL_Switcher {
 			$url = null; // avoids potential notice
 
 			if ( $current_lang = $links->curlang->slug == $slug ) {
-				if ( $args['hide_current'] && ! $args['dropdown'] ) {
+				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
 					continue; // hide current language except for dropdown
 				}
 				else {
