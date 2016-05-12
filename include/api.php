@@ -109,7 +109,7 @@ function pll_home_url( $lang = '' ) {
  * @param bool   $multiline optional wether the string table should display a multiline textarea or a single line input, defaults to single line
  */
 function pll_register_string( $name, $string, $context = 'polylang', $multiline = false ) {
-	if ( PLL_ADMIN ) {
+	if ( PLL() instanceof PLL_Admin_Base ) {
 		PLL_Admin_Strings::register_string( $name, $string, $context, $multiline );
 	}
 }

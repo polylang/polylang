@@ -73,6 +73,10 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.0 =
+
+* Revamp the wpml-config.xml reader to use simplexml instead of our custom xml parser
+
 = 1.9.1 =
 
 * Pro: fix media wrongly created when adding a new media translation
