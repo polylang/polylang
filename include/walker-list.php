@@ -17,7 +17,7 @@ class PLL_Walker_List extends Walker {
 	 */
 	function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) {
 		$output .= sprintf(
-			"\t".'<li class="%s"><a hreflang="%s" href="%s">%s%s</a></li>'."\n",
+			"\t".'<li class="%1$s"><a lang="%2$s" hreflang="%2$s" href="%3$s">%4$s%5$s</a></li>'."\n",
 			esc_attr( implode( ' ', $element->classes ) ),
 			esc_attr( $element->locale ),
 			esc_url( $element->url ),
