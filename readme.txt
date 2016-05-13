@@ -96,4 +96,4 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix get_adjacent_post() and wp_get_archives() for untranslated post types ( needs WP 4.4+ )
 * Fix language homepage urls not present in Yoast SEO sitemap (when the homepages display posts)
 
-See changelog.txt for older changelog
+See [changelog.txt](https://plugins.svn.wordpress.org/polylang/trunk/changelog.txt) for older changelog
