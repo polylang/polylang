@@ -153,7 +153,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			/**
 			 * Filters the list of custom post types for which archive rewrite rules are modified
 			 *
-			 * @since 2.0
+			 * @since 1.9.1
 			 *
 			 * @param array $cpts List of custom post type names
 			 */
