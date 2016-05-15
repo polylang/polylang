@@ -77,6 +77,15 @@ class PLL_MO extends MO {
 	 */
 	public static function get_id( $lang ) {
 		global $wpdb;
-		return $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type= %s", 'polylang_mo_' . $lang->term_id, 'polylang_mo' ) );
+
+		$ids = wp_cache_get( 'polylang_mo_ids' );
+
+		if ( empty( $ids ) ) {
+			$ids = $wpdb->get_results( "SELECT post_title, ID FROM $wpdb->posts WHERE post_type='polylang_mo'", OBJECT_K );
+			wp_cache_add( 'polylang_mo_ids', $ids );
+		}
+
+		// The mo id for a language can be transiently empty
+		return isset( $ids[ 'polylang_mo_' . $lang->term_id ] ) ? $ids[ 'polylang_mo_' . $lang->term_id ]->ID : null;
 	}
 }
