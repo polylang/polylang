@@ -49,6 +49,24 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 1.8
 	 */
 	public function register_settings_modules() {
+		$modules = array(
+			'PLL_Settings_Tools',
+			'PLL_Settings_Licenses',
+		);
+
+		if ( $this->model->get_languages_list() ) {
+			$modules = array_merge( array(
+				'PLL_Settings_Url',
+				'PLL_Settings_Browser',
+				'PLL_Settings_Media',
+				'PLL_Settings_CPT',
+				'PLL_Settings_Sync',
+				'PLL_Settings_WPML',
+				'PLL_Settings_Share_Slug',
+				'PLL_Settings_Translate_Slugs',
+			), $modules );
+		}
+
 		/**
 		 * Filter the list of setting modules
 		 *
@@ -56,18 +74,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		 *
 		 * @param array $modules the list of module classes
 		 */
-		$modules = apply_filters( 'pll_settings_modules', array(
-			'PLL_Settings_Url',
-			'PLL_Settings_Browser',
-			'PLL_Settings_Media',
-			'PLL_Settings_CPT',
-			'PLL_Settings_Sync',
-			'PLL_Settings_WPML',
-			'PLL_Settings_Share_Slug',
-			'PLL_Settings_Translate_Slugs',
-			'PLL_Settings_Tools',
-			'PLL_Settings_Licenses',
-		) );
+		$modules = apply_filters( 'pll_settings_modules', $modules );
 
 		foreach ( $modules as $key => $class ) {
 			$key = is_numeric( $key ) ? strtolower( str_replace( 'PLL_Settings_', '', $class ) ) : $key;
@@ -249,8 +256,9 @@ class PLL_Settings extends PLL_Admin_Base {
 		// only if at least one language has been created
 		if ( $listlanguages = $this->model->get_languages_list() ) {
 			$tabs['strings'] = __( 'Strings translations', 'polylang' );
-			$tabs['settings'] = __( 'Settings', 'polylang' );
 		}
+
+		$tabs['settings'] = __( 'Settings', 'polylang' );
 
 		/**
 		 * Filter the list of tabs in Polylang settings
