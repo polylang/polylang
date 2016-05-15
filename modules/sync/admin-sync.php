@@ -115,6 +115,9 @@ class PLL_Admin_Sync {
 		// get taxonomies to sync for this post type
 		$taxonomies = array_intersect( get_post_taxonomies( $from ), $this->get_taxonomies_to_copy( $sync ) );
 
+		// update the term cache to reduce the number of queries in the loop
+		update_object_term_cache( $sync ? array( $from, $to ) : $from, get_post_type( $from ) );
+
 		// copy or synchronize terms
 		// FIXME quite a lot of query in foreach
 		foreach ( $taxonomies as $tax ) {
