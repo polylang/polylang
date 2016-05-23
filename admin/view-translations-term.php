@@ -60,6 +60,7 @@ else {
 					<input type="hidden" class="htr_lang" name="term_tr_lang[%1$s]" id="htr_lang_%1$s" value="%3$s" />
 					<input type="text" class="tr_lang" id="tr_lang_%1$s" value="%4$s"%5$s />',
 					esc_attr( $language->slug ),
+					/* translators: accessibility text */
 					__( 'Translation', 'polylang' ),
 					empty( $translation ) ? 0 : esc_attr( $translation->term_id ),
 					empty( $translation ) ? '' : esc_attr( $translation->name ),

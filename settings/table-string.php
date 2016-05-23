@@ -59,7 +59,7 @@ class PLL_Table_String extends WP_List_Table {
 		return sprintf(
 			'<label class="screen-reader-text" for="cb-select-%1$s">%2$s</label><input id="cb-select-%1$s" type="checkbox" name="strings[]" value="%1$s" %3$s />',
 			esc_attr( $item['row'] ),
-			/* translators: %s is a string potentially in any language */
+			/* translators:  accessibility text, %s is a string potentially in any language */
 			sprintf( __( 'Select %s' ), format_to_edit( $item['string'] ) ),
 			empty( $item['icl'] ) ? 'disabled' : '' // only strings registered with WPML API can be removed
 		);
@@ -233,7 +233,11 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		echo '<div class="alignleft actions">';
-		printf( '<label class="screen-reader-text" for="select-group" >%s</label>', __( 'Filter by group', 'polylang' ) );
+		printf(
+			'<label class="screen-reader-text" for="select-group" >%s</label>',
+			/* translators: accessibility text */
+			__( 'Filter by group', 'polylang' )
+		);
 		echo '<select id="select-group" name="group">' . "\n";
 		printf(
 			'<option value="-1"%s>%s</option>' . "\n",

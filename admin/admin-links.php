@@ -68,7 +68,7 @@ class PLL_Admin_Links extends PLL_Links {
 		return $link ? sprintf(
 			'<a href="%1$s" class="pll_icon_add"><span class="screen-reader-text">%2$s</span></a>',
 			esc_url( $link ),
-			/* translators: %s is a native language name */
+			/* translators: accessibility text, %s is a native language name */
 			esc_html( sprintf( __( 'Add a translation in %s', 'polylang' ), $language->name ) )
 		) : '';
 	}
@@ -87,7 +87,7 @@ class PLL_Admin_Links extends PLL_Links {
 		return $link ? sprintf(
 			'<a href="%1$s" class="pll_icon_edit"><span class="screen-reader-text">%2$s</span></a>',
 			esc_url( $link ),
-			/* translators: %s is a native language name */
+			/* translators: accessibility text, %s is a native language name */
 			esc_html( sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name ) )
 		) : '';
 	}
@@ -148,7 +148,7 @@ class PLL_Admin_Links extends PLL_Links {
 		return $link ? sprintf(
 			'<a href="%1$s" class="pll_icon_add"><span class="screen-reader-text">%2$s</span></a>',
 			esc_url( $link ),
-			/* translators: %s is a native language name */
+			/* translators: accessibility text, %s is a native language name */
 			esc_html( sprintf( __( 'Add a translation in %s', 'polylang' ), $language->name ) )
 		) : '';
 	}
@@ -169,7 +169,7 @@ class PLL_Admin_Links extends PLL_Links {
 		return $link ? sprintf(
 			'<a href="%1$s" class="pll_icon_edit"><span class="screen-reader-text">%2$s</span></a>',
 			esc_url( $link ),
-			/* translators: %s is a native language name */
+			/* translators: accessibility text, %s is a native language name */
 			esc_html( sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name ) )
 		) : '';
 	}

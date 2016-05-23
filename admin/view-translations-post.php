@@ -41,6 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="hidden" name="post_tr_lang[%1$s]" id="htr_lang_%1$s" value="%3$s" />
 					<input type="text" class="tr_lang" id="tr_lang_%1$s" value="%4$s"%5$s />',
 					esc_attr( $language->slug ),
+					/* translators: accessibility text */
 					__( 'Translation', 'polylang' ),
 					empty( $value ) ? 0 : esc_attr( $selected->ID ),
 					empty( $value ) ? '' : esc_attr( $selected->post_title ),

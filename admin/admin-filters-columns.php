@@ -131,11 +131,11 @@ class PLL_Admin_Filters_Columns {
 			if ( $link = get_edit_post_link( $id ) ) {
 				if ( $id === $post_id ) {
 					$class = 'pll_icon_tick';
-					/* translators: %s is a native language name */
+					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
 					$class = esc_attr( 'pll_icon_edit translation_' . $id );
-					/* translators: %s is a native language name */
+					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 				}
 				printf(
@@ -145,7 +145,7 @@ class PLL_Admin_Filters_Columns {
 			} elseif ( $id === $post_id ) {
 				printf(
 					'<span class="pll_icon_tick"><span class="screen-reader-text">%s</span></span>',
-					/* translators: %s is a native language name */
+					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) )
 	 			);
 			}
@@ -242,11 +242,11 @@ class PLL_Admin_Filters_Columns {
 			if ( $link = get_edit_term_link( $id, $taxonomy, $post_type ) ) {
 				if ( $id === $term_id ) {
 					$class = 'pll_icon_tick';
-					/* translators: %s is a native language name */
+					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
 					$class = esc_attr( 'pll_icon_edit translation_' . $id );
-					/* translators: %s is a native language name */
+					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 				}
 				$out .= sprintf(
@@ -256,7 +256,7 @@ class PLL_Admin_Filters_Columns {
 			} elseif ( $id === $term_id ) {
 				$out .= printf(
 					'<span class="pll_icon_tick"><span class="screen-reader-text">%s</span></span>',
-					/* translators: %s is a native language name */
+					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) )
 	 			);
 			}

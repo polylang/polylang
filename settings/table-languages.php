@@ -107,7 +107,7 @@ class PLL_Table_Languages extends WP_List_Table {
 				</span></div>',
 				__( 'Select as default language', 'polylang' ),
 				wp_nonce_url( '?page=mlang&amp;pll_action=default-lang&amp;noheader=true&amp;lang=' . $item->term_id, 'default-lang' ),
-				/* translators: %s is a native language name */
+				/* translators: accessibility text, %s is a native language name */
 				esc_html( sprintf( __( 'Choose %s as default language', 'polylang' ), $item->name ) )
 			);
 
@@ -123,6 +123,7 @@ class PLL_Table_Languages extends WP_List_Table {
 		} else {
 			$s = sprintf(
 				'<span class="icon-default-lang"><span class="screen-reader-text">%1$s</span></span>',
+				/* translators: accessibility text */
 				__( 'Default language', 'polylang' )
 			);
 			$actions = array();
