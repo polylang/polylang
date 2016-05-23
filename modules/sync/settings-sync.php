@@ -43,7 +43,7 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 				printf(
 					'<li><label><input name="sync[%s]" type="checkbox" value="1" %s /> %s</label></li>',
 					esc_attr( $key ),
-					in_array( $key, $this->options['sync'] ) ? 'checked="checked"' :'',
+					in_array( $key, $this->options['sync'] ) ? 'checked="checked"' : '',
 					esc_html( $str )
 				);
 			} ?>

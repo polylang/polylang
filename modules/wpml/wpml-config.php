@@ -65,7 +65,7 @@ class PLL_WPML_Config {
 
 		// Custom
 		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) ) {
-			$this->xmls[ 'Polylang' ] = simplexml_load_file( $file );
+			$this->xmls['Polylang'] = simplexml_load_file( $file );
 		}
 
 		if ( ! empty( $this->xmls ) ) {
@@ -74,7 +74,7 @@ class PLL_WPML_Config {
 			add_filter( 'pll_get_taxonomies', array( &$this, 'translate_taxonomies' ), 10, 2 );
 
 			foreach ( $this->xmls as $context => $xml ) {
-				foreach( $xml->xpath( 'admin-texts/key' ) as $key ) {
+				foreach ( $xml->xpath( 'admin-texts/key' ) as $key ) {
 					$name = (string) $key->attributes()['name'];
 					if ( PLL() instanceof PLL_Frontend ) {
 						$this->options[ $name ] = $key;
@@ -98,11 +98,10 @@ class PLL_WPML_Config {
 	 */
 	public function copy_post_metas( $metas, $sync ) {
 		foreach ( $this->xmls as $xml ) {
-			foreach( $xml->xpath( 'custom-fields/custom-field' ) as $cf ) {
+			foreach ( $xml->xpath( 'custom-fields/custom-field' ) as $cf ) {
 				if ( 'copy' == $cf->attributes()['action'] || ( ! $sync && 'translate' == $cf->attributes()['action'] ) ) {
 					$metas[] = (string) $cf;
-				}
-				else {
+				} else {
 					$metas = array_diff( $metas,  array( (string) $cf ) );
 				}
 			}
@@ -121,11 +120,10 @@ class PLL_WPML_Config {
 	 */
 	public function translate_types( $types, $hide ) {
 		foreach ( $this->xmls as $xml ) {
-			foreach( $xml->xpath( 'custom-types/custom-type' ) as $pt ) {
+			foreach ( $xml->xpath( 'custom-types/custom-type' ) as $pt ) {
 				if ( 1 == $pt->attributes()['translate'] && ! $hide ) {
 					$types[ (string) $pt ] = (string) $pt;
-				}
-				else {
+				} else {
 					unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
 				}
 			}
@@ -143,12 +141,11 @@ class PLL_WPML_Config {
 	 * @return array list of taxonomy names for which Polylang manages language and translations
 	 */
 	public function translate_taxonomies( $taxonomies, $hide ) {
-		foreach( $this->xmls as $xml ) {
-			foreach( $xml->xpath( 'taxonomies/taxonomy' ) as $tax ) {
+		foreach ( $this->xmls as $xml ) {
+			foreach ( $xml->xpath( 'taxonomies/taxonomy' ) as $tax ) {
 				if ( 1 == $tax->attributes()['translate'] && ! $hide ) {
 					$taxonomies[ (string) $tax ] = (string) $tax;
-				}
-				else {
+				} else {
 					unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
 				}
 			}
@@ -181,7 +178,7 @@ class PLL_WPML_Config {
 	protected function register_string_recursive( $context, $options, $key ) {
 		$children = $key->children();
 		if ( count( $children ) ) {
-			foreach( $children as $child ) {
+			foreach ( $children as $child ) {
 				$name = (string) $child->attributes()['name'];
 				if ( isset( $options[ $name ] ) ) {
 					$this->register_string_recursive( $context, $options[ $name ], $child );
@@ -204,7 +201,7 @@ class PLL_WPML_Config {
 	protected function translate_strings_recursive( $values, $key ) {
 		$children = $key->children();
 		if ( count( $children ) ) {
-			foreach( $children as $child ) {
+			foreach ( $children as $child ) {
 				$name = (string) $child->attributes()['name'];
 				if ( isset( $values[ $name ] ) ) {
 					$values[ $name ] = $this->translate_strings_recursive( $values[ $name ], $child );
