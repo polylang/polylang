@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.5
-Stable tag: 1.9
+Stable tag: 1.9.1
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -77,13 +77,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 * Revamp the wpml-config.xml reader to use simplexml instead of our custom xml parser
 
-= 1.9.1 =
+= 1.9.1 (2016-05-23) =
 
+* Pro: add compatibility with Beaver Builder
 * Pro: fix media wrongly created when adding a new media translation
 * Add azb, ceb, de_CH_informal, es_GT, mr, nl_NL_formal to the predefined list of languages
 * Fix the language switcher not linking to media translations for anonymous visitors
 
-= 1.9 ( 2016-04-27 ) =
+= 1.9 (2016-04-27) =
 
 * Pro: add the possibility to translate custom post types slugs, taxonomies slugs and more
 * Pro: add the possibility to share the same post or term slug accross languages
