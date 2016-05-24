@@ -169,6 +169,7 @@ class PLL_Admin_Sync {
 	public function copy_post_metas( $from, $to, $lang, $sync = false ) {
 		// copy or synchronize post metas and allow plugins to do the same
 		$metas = get_post_custom( $from );
+		$keys = array();
 
 		// get public meta keys ( including from translated post in case we just deleted a custom field )
 		if ( ! $sync || in_array( 'post_meta', $this->options['sync'] ) ) {
@@ -190,11 +191,15 @@ class PLL_Admin_Sync {
 		 * Filter the custom fields to copy or synchronize
 		 *
 		 * @since 0.6
+		 * @since 1.9.2 The `$from`, `$to`, `$lang` parameters were added.
 		 *
-		 * @param array $keys list of custom fields names
-		 * @param bool  $sync true if it is synchronization, false if it is a copy
+		 * @param array  $keys list of custom fields names
+		 * @param bool   $sync true if it is synchronization, false if it is a copy
+		 * @param int    $from id of the post from which we copy informations
+		 * @param int    $to   id of the post to which we paste informations
+		 * @param string $lang language slug
 		 */
-		$keys = array_unique( apply_filters( 'pll_copy_post_metas', empty( $keys ) ? array() : $keys, $sync ) );
+		$keys = array_unique( apply_filters( 'pll_copy_post_metas', $keys, $sync, $from, $to, $lang ) );
 
 		// and now copy / synchronize
 		foreach ( $keys as $key ) {
