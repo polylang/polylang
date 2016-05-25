@@ -26,7 +26,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		add_action( 'parse_query', array( &$this, 'parse_query' ) );
 
 		// adds the Languages box in the 'Edit Post' and 'Edit Page' panels
-		add_action( 'add_meta_boxes', array( &$this, 'add_meta_boxes' ) );
+		add_action( 'add_meta_boxes', array( &$this, 'add_meta_boxes' ), 10, 2 );
 
 		// ajax response for changing the language in the post metabox
 		add_action( 'wp_ajax_post_lang_choice', array( &$this, 'post_lang_choice' ) );
@@ -128,15 +128,21 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * adds the Language box in the 'Edit Post' and 'Edit Page' panels ( as well as in custom post types panels )
+	 * Adds the Language box in the 'Edit Post' and 'Edit Page' panels ( as well as in custom post types panels )
+	 * Removes the editor for translations of the pages for posts
 	 *
 	 * @since 0.1
 	 *
 	 * @param string $post_type
 	 */
-	public function add_meta_boxes( $post_type ) {
+	public function add_meta_boxes( $post_type, $post ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
 			add_meta_box( 'ml_box', __( 'Languages','polylang' ), array( &$this, 'post_language' ), $post_type, 'side', 'high' );
+		}
+
+		if ( ( $page_for_posts = get_option( 'page_for_posts' ) ) && ( $translations = $this->model->post->get_translations( $page_for_posts ) ) && in_array( $post->ID, $translations ) &&  empty( $post->post_content ) ) {
+			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
+			remove_post_type_support( $post_type, 'editor' );
 		}
 	}
 
