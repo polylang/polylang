@@ -16,17 +16,31 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.9.5
  */
 function pll_define_wpml_constants() {
-	if ( ! empty( PLL()->curlang ) ) {
-		if ( ! defined( 'ICL_LANGUAGE_CODE' ) ) {
-			define( 'ICL_LANGUAGE_CODE', PLL()->curlang->slug );
-		}
-
-		if ( ! defined( 'ICL_LANGUAGE_NAME' ) ) {
-			define( 'ICL_LANGUAGE_NAME', PLL()->curlang->name );
+	// Content edited on backend
+	if ( ! PLL() instanceof PLL_Frontend  ) {
+		if ( ! empty( $_GET['new_lang'] ) ) {
+			$lang = PLL()->model->get_language( $_GET['new_lang'] );
+		} elseif ( ! empty( $_GET['post'] ) ) {
+			$lang = PLL()->model->post->get_language( (int) $_GET['post'] );
+		}	elseif ( ! empty( $_GET['tag_ID'] ) ) {
+			$lang = PLL()->model->term->get_language( (int) $_GET['tag_ID'] );
 		}
 	}
 
-	elseif ( PLL_ADMIN ) {
+	// Frontend or language filter on backend
+	if ( empty( $lang ) && ! empty( PLL()->curlang ) ) {
+		$lang = PLL()->curlang;
+	}
+
+	if ( ! empty ( $lang ) ) {
+		if ( ! defined( 'ICL_LANGUAGE_CODE' ) ) {
+			define( 'ICL_LANGUAGE_CODE', $lang->slug );
+		}
+
+		if ( ! defined( 'ICL_LANGUAGE_NAME' ) ) {
+			define( 'ICL_LANGUAGE_NAME', $lang->name );
+		}
+	} elseif ( ! PLL() instanceof PLL_Frontend ) {
 		if ( ! defined( 'ICL_LANGUAGE_CODE' ) ) {
 			define( 'ICL_LANGUAGE_CODE', 'all' );
 		}
