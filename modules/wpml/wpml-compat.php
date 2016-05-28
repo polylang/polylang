@@ -216,13 +216,16 @@ if ( ! function_exists( 'icl_unregister_string' ) ) {
  *
  * @since 0.9.3
  *
- * @param string $context not used by Polylang
- * @param string $name    not used by Polylang
- * @param string $string  the string to translated
+ * @param string $context the group in which the string is registered
+ * @param string $name    a unique name for the string
+ * @param string $string  the string to translate, optional for strings registered with icl_register_string
  * @return string the translated string in the current language
  */
 if ( ! function_exists( 'icl_t' ) ) {
-	function icl_t( $context, $name, $string ) {
+	function icl_t( $context, $name, $string = false ) {
+		if ( empty( $string ) ) {
+			$string = PLL_WPML_Compat::instance()->get_string_by_context_and_name( $context, $name );
+		}
 		return pll__( $string );
 	}
 }
@@ -416,5 +419,23 @@ class PLL_WPML_Compat {
 	 */
 	public function get_strings( $strings ) {
 		return empty( self::$strings ) ? $strings : array_merge( $strings, self::$strings );
+	}
+
+	/**
+	 * Get a registered string by its context and name
+	 *
+	 * @since 2.0
+	 *
+	 * @param string $context the group in which the string is registered
+	 * @param string $name    a unique name for the string
+	 * @return bool|string the registered string, false if none was found
+	 */
+	public function get_string_by_context_and_name( $context, $name ) {
+		foreach ( self::$strings as $string ) {
+			if ( $string['context'] == $context && $string['name'] == $name ) {
+				return $string['string'];
+			}
+		}
+		return false;
 	}
 }
