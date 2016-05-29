@@ -197,12 +197,14 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
  *
  * @since 0.9.3
  *
- * @param string $context the group in which the string is registered, defaults to 'polylang'
- * @param string $name    a unique name for the string
- * @param string $string  the string to register
+ * @param string $context           the group in which the string is registered, defaults to 'polylang'
+ * @param string $name              a unique name for the string
+ * @param string $string            the string to register
+ * @param bool   $allow_empty_value not used
+ * @param string $source_lang       not used by Polylang
  */
 if ( ! function_exists( 'icl_register_string' ) ) {
-	function icl_register_string( $context, $name, $string ) {
+	function icl_register_string( $context, $name, $string, $allow_empty_value = false, $source_lang = '' ) {
 		PLL_WPML_Compat::instance()->register_string( $context, $name, $string );
 	}
 }
