@@ -88,16 +88,19 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
  * Used for creating language dependent links in themes
  *
  * @since 1.0
+ * @since 2.0 add support for arguments 6 and 7
  *
- * @param int    $id     object id
- * @param string $type   optional, post type or taxonomy name of the object, defaults to 'post'
- * @param string $text   optional, the link text. If not specified will produce the name of the element in the current language
- * @param array  $args   optional, an array of arguments to add to the link, defaults to empty
- * @param string $anchor optional, the anchor to add to the link, defaults to empty
+ * @param int    $id                         object id
+ * @param string $type                       optional, post type or taxonomy name of the object, defaults to 'post'
+ * @param string $text                       optional, the link text. If not specified will produce the name of the element in the current language
+ * @param array  $args                       optional, an array of arguments to add to the link, defaults to empty
+ * @param string $anchor                     optional, the anchor to add to the link, defaults to empty
+ * @param bool   $echo                       optional, whether to echo the link, defaults to true
+ * @param bool   $return_original_if_missing optional, whether to return a value if the translation is missing
  * @return string a language dependent link
  */
 if ( ! function_exists( 'icl_link_to_element' ) ) {
-	function icl_link_to_element( $id, $type = 'post', $text = '', $args = array(), $anchor = '' ) {
+	function icl_link_to_element( $id, $type = 'post', $text = '', $args = array(), $anchor = '', $echo = true, $return_original_if_missing = true ) {
 		if ( 'tag' == $type ) {
 			$type = 'post_tag';
 		}
@@ -105,6 +108,8 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 		$pll_type = ( 'post' == $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' == $type || pll_is_translated_taxonomy( $type ) ? 'term' : false );
 		if ( $pll_type && ( $lang = pll_current_language() ) && ( $tr_id = PLL()->model->$pll_type->get_translation( $id, $lang ) ) && PLL()->links->current_user_can_read( $tr_id ) ) {
 			$id = $tr_id;
+		} elseif ( ! $return_original_if_missing ) {
+			return '';
 		}
 
 		if ( post_type_exists( $type ) ) {
@@ -112,8 +117,7 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 			if ( empty( $text ) ) {
 				$text = get_the_title( $id );
 			}
-		}
-		elseif ( taxonomy_exists( $type ) ) {
+		} elseif ( taxonomy_exists( $type ) ) {
 			$link = get_term_link( $id, $type );
 			if ( empty( $text ) && ( $term = get_term( $id, $type ) ) && ! empty( $term ) && ! is_wp_error( $term ) ) {
 				$text = $term->name;
@@ -132,7 +136,13 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 			$link .= '#' . $anchor;
 		}
 
-		return sprintf( '<a href="%s">%s</a>', esc_url( $link ), esc_html( $text ) );
+		$link = sprintf( '<a href="%s">%s</a>', esc_url( $link ), esc_html( $text ) );
+
+		if ( $echo ) {
+			echo $link;
+		}
+
+		return $link;
 	}
 }
 
