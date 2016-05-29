@@ -172,11 +172,12 @@ if ( ! function_exists( 'icl_object_id' ) ) {
  *
  * @since 1.8
  *
- * @param int $post_id
+ * @param null $empty   optional, not used
+ * @param int  $post_id optional, post id, defaults to current post
  * @return array
  */
 if ( ! function_exists( 'wpml_get_language_information' ) ) {
-	function wpml_get_language_information( $post_id = null ) {
+	function wpml_get_language_information( $empty = null, $post_id = null ) {
 		if ( empty( $post_id ) ) {
 			$post_id = get_the_ID();
 		}
