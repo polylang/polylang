@@ -23,11 +23,11 @@ class PLL_Admin_Base extends PLL_Base {
 		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ).'/languages' );
 
 		// adds the link to the languages panel in the WordPress admin menu
-		add_action( 'admin_menu', array( &$this, 'add_menus' ) );
+		add_action( 'admin_menu', array( $this, 'add_menus' ) );
 
 		// setup js scripts and css styles
-		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
-		add_action( 'admin_print_footer_scripts', array( &$this, 'admin_print_footer_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ) );
 
 		// Lingotek
 		if ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
@@ -54,11 +54,11 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// filter admin language for users
 		// we must not call user info before WordPress defines user roles in wp-settings.php
-		add_filter( 'setup_theme', array( &$this, 'init_user' ) );
-		add_filter( 'request', array( &$this, 'request' ) );
+		add_filter( 'setup_theme', array( $this, 'init_user' ) );
+		add_filter( 'request', array( $this, 'request' ) );
 
 		// adds the languages in admin bar
-		add_action( 'admin_bar_menu', array( &$this, 'admin_bar_menu' ), 100 ); // 100 determines the position
+		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ), 100 ); // 100 determines the position
 	}
 
 	/**
@@ -176,7 +176,7 @@ class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function init_user() {
 		// backend locale
-		add_filter( 'locale', array( &$this, 'get_locale' ) );
+		add_filter( 'locale', array( $this, 'get_locale' ) );
 
 		// language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter

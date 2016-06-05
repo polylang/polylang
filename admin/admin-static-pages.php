@@ -18,13 +18,13 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		parent::__construct( $polylang );
 
 		// add post state for translations of the front page and posts page
-		add_filter( 'display_post_states', array( &$this, 'display_post_states' ), 10, 2 );
+		add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
 
 		// refresh language cache when a static front page has been translated
-		add_action( 'pll_save_post', array( &$this, 'pll_save_post' ), 10, 3 );
+		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
 
 		// checks if chosen page on front is translated
-		add_filter( 'pre_update_option_page_on_front', array( &$this, 'update_page_on_front' ), 10, 2 );
+		add_filter( 'pre_update_option_page_on_front', array( $this, 'update_page_on_front' ), 10, 2 );
 	}
 
 	/**

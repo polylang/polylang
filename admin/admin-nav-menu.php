@@ -24,12 +24,12 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		add_filter( 'theme_mod_nav_menu_locations', array( $this, 'theme_mod_nav_menu_locations' ), 20 );
 
 		// integration in the WP menu interface
-		add_action( 'admin_init', array( &$this, 'admin_init' ) ); // after Polylang upgrade
+		add_action( 'admin_init', array( $this, 'admin_init' ) ); // after Polylang upgrade
 
 		// protection against #24802
 		// backward compatibility with WP < 4.1
 		if ( version_compare( $GLOBALS['wp_version'], '4.1', '<' ) ) {
-			add_filter( 'pre_insert_term', array( &$this, 'pre_insert_term' ), 10, 2 );
+			add_filter( 'pre_insert_term', array( $this, 'pre_insert_term' ), 10, 2 );
 		}
 	}
 
@@ -40,20 +40,20 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @since 1.1
 	 */
 	public function admin_init() {
-		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
-		add_action( 'wp_update_nav_menu_item', array( &$this, 'wp_update_nav_menu_item' ), 10, 2 );
-		add_filter( 'wp_get_nav_menu_items', array( &$this, 'translate_switcher_title' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action( 'wp_update_nav_menu_item', array( $this, 'wp_update_nav_menu_item' ), 10, 2 );
+		add_filter( 'wp_get_nav_menu_items', array( $this, 'translate_switcher_title' ) );
 
 		// translation of menus based on chosen locations
 		add_filter( 'pre_update_option_theme_mods_' . $this->theme, array( $this, 'pre_update_option_theme_mods' ) );
-		add_action( 'delete_nav_menu', array( &$this, 'delete_nav_menu' ) );
+		add_action( 'delete_nav_menu', array( $this, 'delete_nav_menu' ) );
 
 		// filter _wp_auto_add_pages_to_menu by language
-		add_action( 'transition_post_status', array( &$this, 'auto_add_pages_to_menu' ), 5, 3 ); // before _wp_auto_add_pages_to_menu
+		add_action( 'transition_post_status', array( $this, 'auto_add_pages_to_menu' ), 5, 3 ); // before _wp_auto_add_pages_to_menu
 
 		// FIXME is it possible to choose the order ( after theme locations in WP3.5 and older ) ?
 		// FIXME not displayed if Polylang is activated before the first time the user goes to nav menus http://core.trac.wordpress.org/ticket/16828
-		add_meta_box( 'pll_lang_switch_box', __( 'Language switcher', 'polylang' ), array( &$this, 'lang_switch' ), 'nav-menus', 'side', 'high' );
+		add_meta_box( 'pll_lang_switch_box', __( 'Language switcher', 'polylang' ), array( $this, 'lang_switch' ), 'nav-menus', 'side', 'high' );
 
 		$this->create_nav_menu_locations();
 	}
@@ -324,7 +324,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 
 			if ( ! empty( $menus ) ) {
 				$this->auto_add_menus = implode( ',', $menus );
-				add_filter( 'option_nav_menu_options', array( &$this, 'nav_menu_options' ) );
+				add_filter( 'option_nav_menu_options', array( $this, 'nav_menu_options' ) );
 			}
 		}
 	}

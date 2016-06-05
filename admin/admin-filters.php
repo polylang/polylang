@@ -18,21 +18,21 @@ class PLL_Admin_Filters extends PLL_Filters {
 		parent::__construct( $polylang );
 
 		// widgets languages filter
-		add_action( 'in_widget_form', array( &$this, 'in_widget_form' ), 10, 3 );
-		add_filter( 'widget_update_callback', array( &$this, 'widget_update_callback' ), 10, 4 );
+		add_action( 'in_widget_form', array( $this, 'in_widget_form' ), 10, 3 );
+		add_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ), 10, 4 );
 
 		// language management for users
-		add_action( 'personal_options_update', array( &$this, 'personal_options_update' ) );
-		add_action( 'edit_user_profile_update', array( &$this, 'personal_options_update' ) );
-		add_action( 'personal_options', array( &$this, 'personal_options' ) );
+		add_action( 'personal_options_update', array( $this, 'personal_options_update' ) );
+		add_action( 'edit_user_profile_update', array( $this, 'personal_options_update' ) );
+		add_action( 'personal_options', array( $this, 'personal_options' ) );
 
 		// ugrades languages files after a core upgrade ( timing is important )
 		// backward compatibility WP < 4.0 *AND* Polylang < 1.6
-		add_action( '_core_updated_successfully', array( &$this, 'upgrade_languages' ), 1 ); // since WP 3.3
+		add_action( '_core_updated_successfully', array( $this, 'upgrade_languages' ), 1 ); // since WP 3.3
 
 		// upgrades plugins and themes translations files
-		add_filter( 'themes_update_check_locales', array( &$this, 'update_check_locales' ) );
-		add_filter( 'plugins_update_check_locales', array( &$this, 'update_check_locales' ) );
+		add_filter( 'themes_update_check_locales', array( $this, 'update_check_locales' ) );
+		add_filter( 'plugins_update_check_locales', array( $this, 'update_check_locales' ) );
 	}
 
 	/**

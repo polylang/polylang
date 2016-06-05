@@ -24,39 +24,39 @@ class PLL_Admin_Filters_Term {
 
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
 			// Adds the language field in the 'Categories' and 'Post Tags' panels
-			add_action( $tax.'_add_form_fields', array( &$this, 'add_term_form' ) );
+			add_action( $tax.'_add_form_fields', array( $this, 'add_term_form' ) );
 
 			// Adds the language field and translations tables in the 'Edit Category' and 'Edit Tag' panels
-			add_action( $tax.'_edit_form_fields', array( &$this, 'edit_term_form' ) );
+			add_action( $tax.'_edit_form_fields', array( $this, 'edit_term_form' ) );
 
 			// Adds action related to languages when deleting categories and post tags
-			add_action( 'delete_'.$tax, array( &$this, 'delete_term' ) );
+			add_action( 'delete_'.$tax, array( $this, 'delete_term' ) );
 		}
 
 		// Adds actions related to languages when creating or saving categories and post tags
-		add_filter( 'wp_dropdown_cats', array( &$this, 'wp_dropdown_cats' ) );
-		add_action( 'create_term', array( &$this, 'save_term' ), 999, 3 );
-		add_action( 'edit_term', array( &$this, 'save_term' ), 999, 3 ); // late as it may conflict with other plugins, see http://wordpress.org/support/topic/polylang-and-wordpress-seo-by-yoast
-		add_action( 'pre_post_update', array( &$this, 'pre_post_update' ) );
-		add_filter( 'pre_term_name', array( &$this, 'pre_term_name' ) );
-		add_filter( 'pre_term_slug', array( &$this, 'pre_term_slug' ), 10, 2 );
+		add_filter( 'wp_dropdown_cats', array( $this, 'wp_dropdown_cats' ) );
+		add_action( 'create_term', array( $this, 'save_term' ), 999, 3 );
+		add_action( 'edit_term', array( $this, 'save_term' ), 999, 3 ); // late as it may conflict with other plugins, see http://wordpress.org/support/topic/polylang-and-wordpress-seo-by-yoast
+		add_action( 'pre_post_update', array( $this, 'pre_post_update' ) );
+		add_filter( 'pre_term_name', array( $this, 'pre_term_name' ) );
+		add_filter( 'pre_term_slug', array( $this, 'pre_term_slug' ), 10, 2 );
 
 		// Ajax response for edit term form
-		add_action( 'wp_ajax_term_lang_choice', array( &$this, 'term_lang_choice' ) );
-		add_action( 'wp_ajax_pll_terms_not_translated', array( &$this, 'ajax_terms_not_translated' ) );
+		add_action( 'wp_ajax_term_lang_choice', array( $this, 'term_lang_choice' ) );
+		add_action( 'wp_ajax_pll_terms_not_translated', array( $this, 'ajax_terms_not_translated' ) );
 
 		// Adds cache domain when querying terms
-		add_filter( 'get_terms_args', array( &$this, 'get_terms_args' ), 10, 2 );
+		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
 
 		// Filters categories and post tags by language
-		add_filter( 'terms_clauses', array( &$this, 'terms_clauses' ), 10, 3 );
+		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 
 		// Allows to get the default categories in all languages
-		add_filter( 'option_default_category', array( &$this, 'option_default_category' ) );
-		add_action( 'update_option_default_category', array( &$this, 'update_option_default_category' ), 10, 2 );
+		add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
+		add_action( 'update_option_default_category', array( $this, 'update_option_default_category' ), 10, 2 );
 
 		// Updates the translations term ids when splitting a shared term
-		add_action( 'split_shared_term', array( &$this, 'split_shared_term' ), 10, 4 ); // WP 4.2
+		add_action( 'split_shared_term', array( $this, 'split_shared_term' ), 10, 4 ); // WP 4.2
 	}
 
 	/**

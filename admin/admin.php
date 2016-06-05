@@ -37,8 +37,8 @@ class PLL_Admin extends PLL_Admin_Base {
 		parent::__construct( $links_model );
 
 		// adds a 'settings' link in the plugins table
-		add_filter( 'plugin_action_links_' . POLYLANG_BASENAME, array( &$this, 'plugin_action_links' ) );
-		add_action( 'in_plugin_update_message-' . POLYLANG_BASENAME, array( &$this, 'plugin_update_message' ), 10, 2 );
+		add_filter( 'plugin_action_links_' . POLYLANG_BASENAME, array( $this, 'plugin_action_links' ) );
+		add_action( 'in_plugin_update_message-' . POLYLANG_BASENAME, array( $this, 'plugin_update_message' ), 10, 2 );
 	}
 
 	/**
@@ -55,7 +55,7 @@ class PLL_Admin extends PLL_Admin_Base {
 		// setup filters for admin pages
 		// priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
-			add_action( 'wp_loaded', array( &$this, 'add_filters' ), 5 );
+			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
 		}
 	}
 

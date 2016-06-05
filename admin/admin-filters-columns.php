@@ -25,23 +25,23 @@ class PLL_Admin_Filters_Columns {
 		foreach ( $this->model->get_translated_post_types() as $type ) {
 			// use the latest filter late as some plugins purely overwrite what's done by others :(
 			// specific case for media
-			add_filter( 'manage_'. ( 'attachment' == $type ? 'upload' : 'edit-'. $type ) .'_columns', array( &$this, 'add_post_column' ), 100 );
-			add_action( 'manage_'. ( 'attachment' == $type ? 'media' : $type .'_posts' ) .'_custom_column', array( &$this, 'post_column' ), 10, 2 );
+			add_filter( 'manage_'. ( 'attachment' == $type ? 'upload' : 'edit-'. $type ) .'_columns', array( $this, 'add_post_column' ), 100 );
+			add_action( 'manage_'. ( 'attachment' == $type ? 'media' : $type .'_posts' ) .'_custom_column', array( $this, 'post_column' ), 10, 2 );
 		}
 
 		// quick edit and bulk edit
-		add_filter( 'quick_edit_custom_box', array( &$this, 'quick_edit_custom_box' ), 10, 2 );
-		add_filter( 'bulk_edit_custom_box', array( &$this, 'quick_edit_custom_box' ), 10, 2 );
+		add_filter( 'quick_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
+		add_filter( 'bulk_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
 
 		// adds the language column in the 'Categories' and 'Post Tags' tables
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
-			add_filter( 'manage_edit-'.$tax.'_columns', array( &$this, 'add_term_column' ) );
-			add_filter( 'manage_'.$tax.'_custom_column', array( &$this, 'term_column' ), 10, 3 );
+			add_filter( 'manage_edit-'.$tax.'_columns', array( $this, 'add_term_column' ) );
+			add_filter( 'manage_'.$tax.'_custom_column', array( $this, 'term_column' ), 10, 3 );
 		}
 
 		// ajax responses to update list table rows
-		add_action( 'wp_ajax_pll_update_post_rows', array( &$this, 'ajax_update_post_rows' ) );
-		add_action( 'wp_ajax_pll_update_term_rows', array( &$this, 'ajax_update_term_rows' ) );
+		add_action( 'wp_ajax_pll_update_post_rows', array( $this, 'ajax_update_post_rows' ) );
+		add_action( 'wp_ajax_pll_update_term_rows', array( $this, 'ajax_update_term_rows' ) );
 	}
 
 	/**

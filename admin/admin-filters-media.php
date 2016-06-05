@@ -18,16 +18,16 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		parent::__construct( $polylang );
 
 		// Adds the language field and translations tables in the 'Edit Media' panel
-		add_filter( 'attachment_fields_to_edit', array( &$this, 'attachment_fields_to_edit' ), 10, 2 );
+		add_filter( 'attachment_fields_to_edit', array( $this, 'attachment_fields_to_edit' ), 10, 2 );
 
 		// Adds actions related to languages when creating, saving or deleting media
-		add_action( 'add_attachment', array( &$this, 'set_default_language' ) );
-		add_filter( 'attachment_fields_to_save', array( &$this, 'save_media' ), 10, 2 );
-		add_filter( 'wp_delete_file', array( &$this, 'wp_delete_file' ) );
+		add_action( 'add_attachment', array( $this, 'set_default_language' ) );
+		add_filter( 'attachment_fields_to_save', array( $this, 'save_media' ), 10, 2 );
+		add_filter( 'wp_delete_file', array( $this, 'wp_delete_file' ) );
 
 		// Creates a media translation
 		if ( isset( $_GET['action'], $_GET['new_lang'], $_GET['from_media'] ) && 'translate_media' === $_GET['action'] ) {
-			add_action( 'admin_init', array( &$this, 'translate_media' ) );
+			add_action( 'admin_init', array( $this, 'translate_media' ) );
 		}
 	}
 
