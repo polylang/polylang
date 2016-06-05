@@ -117,7 +117,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 
 				<div class="form-field">
-					<label for="lang_order"><?php _e( 'Order', 'polylang' );?></label><?php
+					<label for="lang_order"><?php esc_html_e( 'Order', 'polylang' );?></label><?php
 					printf(
 						'<input name="term_group" id="lang_order" type="text" value="%d" />',
 						! empty( $edit_lang ) ? esc_attr( $edit_lang->term_group ) : ''

@@ -138,7 +138,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			$lang = $lang ? $lang : $this->model->get_language( $this->options['default_lang'] );
 			printf(
 				/* translators: %s are urls */
-				__( 'Example: %s instead of %s', 'polylang' ),
+				esc_html__( 'Example: %s instead of %s', 'polylang' ),
 				'<code>' . esc_html( $this->links_model->home_url( $lang ) ) . '</code>',
 				'<code>' . esc_html( _get_page_link( $this->page_on_front ) ) . '</code>'
 			); ?>

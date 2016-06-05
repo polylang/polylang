@@ -71,10 +71,10 @@ class PLL_Upgrade {
 		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' );
 		printf(
 			'<div class="error"><p>%s</p><p>%s</p></div>',
-			__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
+			esc_html__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
 			sprintf(
 				/* translators: %s are Polylang version numbers */
-				__( 'Please upgrade first to %s before ugrading to %s.', 'polylang' ),
+				esc_html__( 'Please upgrade first to %s before ugrading to %s.', 'polylang' ),
 				'<strong>0.9.8</strong>',
 				POLYLANG_VERSION
 			)
