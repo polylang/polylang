@@ -23,19 +23,19 @@ class PLL_Filters_Links {
 
 		// low priority on links filters to come after any other modifications
 		if ( $this->options['force_lang'] ) {
-			add_filter( 'post_link', array( &$this, 'post_link' ), 20, 2 );
-			add_filter( '_get_page_link', array( &$this, '_get_page_link' ), 20, 2 );
+			add_filter( 'post_link', array( $this, 'post_link' ), 20, 2 );
+			add_filter( '_get_page_link', array( $this, '_get_page_link' ), 20, 2 );
 		}
 
-		add_filter( 'post_type_link', array( &$this, 'post_type_link' ), 20, 2 );
-		add_filter( 'term_link', array( &$this, 'term_link' ), 20, 3 );
+		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 20, 2 );
+		add_filter( 'term_link', array( $this, 'term_link' ), 20, 3 );
 
 		if ( $this->options['force_lang'] > 0 ) {
-			add_filter( 'attachment_link', array( &$this, 'attachment_link' ), 20, 2 );
+			add_filter( 'attachment_link', array( $this, 'attachment_link' ), 20, 2 );
 		}
 
 		if ( 3 === $this->options['force_lang'] ) {
-			add_filter( 'preview_post_link', array( &$this, 'preview_post_link' ), 20 );
+			add_filter( 'preview_post_link', array( $this, 'preview_post_link' ), 20 );
 		}
 	}
 

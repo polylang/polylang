@@ -16,7 +16,7 @@ class PLL_Cache {
 	 */
 	public function __construct() {
 		$this->blog_id = get_current_blog_id();
-		add_action( 'switch_blog', array( &$this, 'switch_blog' ) );
+		add_action( 'switch_blog', array( $this, 'switch_blog' ) );
 	}
 
 	/**

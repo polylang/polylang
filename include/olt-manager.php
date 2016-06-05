@@ -25,17 +25,17 @@ class PLL_OLT_Manager {
 		$this->default_locale = get_locale();
 
 		// filters for text domain management
-		add_filter( 'override_load_textdomain', array( &$this, 'mofile' ), 10, 3 );
-		add_filter( 'gettext', array( &$this, 'gettext' ), 10, 3 );
-		add_filter( 'gettext_with_context', array( &$this, 'gettext_with_context' ), 10, 4 );
+		add_filter( 'override_load_textdomain', array( $this, 'mofile' ), 10, 3 );
+		add_filter( 'gettext', array( $this, 'gettext' ), 10, 3 );
+		add_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
 
 		// loads text domains
-		add_action( 'pll_language_defined', array( &$this, 'load_textdomains' ), 2 ); // after PLL_Frontend::pll_language_defined
-		add_action( 'pll_no_language_defined', array( &$this, 'load_textdomains' ) );
+		add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // after PLL_Frontend::pll_language_defined
+		add_action( 'pll_no_language_defined', array( $this, 'load_textdomains' ) );
 
 		// allows Polylang to be the first plugin loaded ;- )
-		add_filter( 'pre_update_option_active_plugins', array( &$this, 'make_polylang_first' ) );
-		add_filter( 'pre_update_option_active_sitewide_plugins', array( &$this, 'make_polylang_first' ) );
+		add_filter( 'pre_update_option_active_plugins', array( $this, 'make_polylang_first' ) );
+		add_filter( 'pre_update_option_active_sitewide_plugins', array( $this, 'make_polylang_first' ) );
 	}
 
 	/**
@@ -60,9 +60,9 @@ class PLL_OLT_Manager {
 	 */
 	public function load_textdomains() {
 		// our override_load_textdomain filter has done its job. let's remove it before calling load_textdomain
-		remove_filter( 'override_load_textdomain', array( &$this, 'mofile' ), 10, 3 );
-		remove_filter( 'gettext', array( &$this, 'gettext' ), 10, 3 );
-		remove_filter( 'gettext_with_context', array( &$this, 'gettext_with_context' ), 10, 4 );
+		remove_filter( 'override_load_textdomain', array( $this, 'mofile' ), 10, 3 );
+		remove_filter( 'gettext', array( $this, 'gettext' ), 10, 3 );
+		remove_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
 		$new_locale = get_locale();
 
 		// don't try to save time for en_US as some users have theme written in another language

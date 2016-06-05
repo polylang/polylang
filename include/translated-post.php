@@ -24,13 +24,13 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		parent::__construct( $model );
 
 		// registers completely the language taxonomy
-		add_action( 'setup_theme', array( &$this, 'register_taxonomy' ), 1 );
+		add_action( 'setup_theme', array( $this, 'register_taxonomy' ), 1 );
 
 		// setups post types to translate
-		add_action( 'registered_post_type', array( &$this, 'registered_post_type' ) );
+		add_action( 'registered_post_type', array( $this, 'registered_post_type' ) );
 
 		// forces updating posts cache
-		add_action( 'pre_get_posts', array( &$this, 'pre_get_posts' ) );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 	}
 
 	/**

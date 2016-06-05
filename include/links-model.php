@@ -23,11 +23,11 @@ abstract class PLL_Links_Model {
 
 		$this->home = home_url();
 
-		add_filter( 'pll_languages_list', array( &$this, 'pll_languages_list' ), 4 ); // after PLL_Static_Pages
-		add_filter( 'pll_after_languages_cache', array( &$this, 'pll_after_languages_cache' ) );
+		add_filter( 'pll_languages_list', array( $this, 'pll_languages_list' ), 4 ); // after PLL_Static_Pages
+		add_filter( 'pll_after_languages_cache', array( $this, 'pll_after_languages_cache' ) );
 
 		// adds our domains or subdomains to allowed hosts for safe redirection
-		add_filter( 'allowed_redirect_hosts', array( &$this, 'allowed_redirect_hosts' ) );
+		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
 	}
 
 	/**

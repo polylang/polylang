@@ -21,7 +21,7 @@ class PLL_Nav_Menu {
 		$this->options = &$polylang->options;
 
 		// integration with WP customizer
-		add_action( 'customize_register', array( &$this, 'create_nav_menu_locations' ), 5 );
+		add_action( 'customize_register', array( $this, 'create_nav_menu_locations' ), 5 );
 	}
 
 	/**

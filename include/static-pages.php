@@ -23,8 +23,8 @@ abstract class PLL_Static_Pages {
 		$this->init();
 
 		// clean the languages cache when editing page of front, page for posts
-		add_action( 'update_option_page_on_front', array( &$this->model, 'clean_languages_cache' ) );
-		add_action( 'update_option_page_for_posts', array( &$this->model, 'clean_languages_cache' ) );
+		add_action( 'update_option_page_on_front', array( $this->model, 'clean_languages_cache' ) );
+		add_action( 'update_option_page_for_posts', array( $this->model, 'clean_languages_cache' ) );
 
 		// refresh rewrite rules when the page on front is modified
 		add_action( 'update_option_page_on_front', 'flush_rewrite_rules' );

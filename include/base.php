@@ -20,13 +20,13 @@ abstract class PLL_Base {
 		$this->model = &$links_model->model;
 		$this->options = &$this->model->options;
 
-		add_action( 'widgets_init', array( &$this, 'widgets_init' ) );
+		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 
 		// user defined strings translations
-		add_action( 'pll_language_defined', array( &$this, 'load_strings_translations' ), 5 );
+		add_action( 'pll_language_defined', array( $this, 'load_strings_translations' ), 5 );
 
 		// switch_to_blog
-		add_action( 'switch_blog', array( &$this, 'switch_blog' ), 10, 2 );
+		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 2 );
 	}
 
 	/**

@@ -22,13 +22,13 @@ class PLL_Filters {
 		$this->curlang = &$polylang->curlang;
 
 		// filters the comments according to the current language
-		add_filter( 'comments_clauses', array( &$this, 'comments_clauses' ), 10, 2 );
+		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 10, 2 );
 
 		// filters the get_pages function according to the current language
-		add_filter( 'get_pages', array( &$this, 'get_pages' ), 10, 2 );
+		add_filter( 'get_pages', array( $this, 'get_pages' ), 10, 2 );
 
 		// converts the locale to a valid W3C locale
-		add_filter( 'language_attributes', array( &$this, 'language_attributes' ) );
+		add_filter( 'language_attributes', array( $this, 'language_attributes' ) );
 	}
 
 	/**

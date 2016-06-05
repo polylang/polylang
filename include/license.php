@@ -46,7 +46,7 @@ class PLL_License {
 			wp_schedule_event( time(), 'weekly', 'polylang_check_licenses' );
 		}
 
-		add_action( 'polylang_check_licenses', array( &$this, 'check_license' ) );
+		add_action( 'polylang_check_licenses', array( $this, 'check_license' ) );
 	}
 
 	/**

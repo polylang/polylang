@@ -22,7 +22,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( did_action( 'pll_init' ) ) {
 			$this->init();
 		} else {
-			add_action( 'pll_init', array( &$this, 'init' ) );
+			add_action( 'pll_init', array( $this, 'init' ) );
 		}
 	}
 
@@ -35,11 +35,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( did_action( 'setup_theme' ) ) {
 			$this->add_permastruct();
 		} else {
-			add_action( 'setup_theme', array( &$this, 'add_permastruct' ), 2 );
+			add_action( 'setup_theme', array( $this, 'add_permastruct' ), 2 );
 		}
 
 		// Make sure to prepare rewrite rules when flushing
-		add_action( 'pre_option_rewrite_rules', array( &$this, 'prepare_rewrite_rules' ) );
+		add_action( 'pre_option_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) );
 	}
 
 	/**
@@ -141,10 +141,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			add_filter( 'language_rewrite_rules', '__return_empty_array' );
 
 			foreach ( $this->get_rewrite_rules_filters() as $type ) {
-				add_filter( $type . '_rewrite_rules', array( &$this, 'rewrite_rules' ) );
+				add_filter( $type . '_rewrite_rules', array( $this, 'rewrite_rules' ) );
 			}
 
-			add_filter( 'rewrite_rules_array', array( &$this, 'rewrite_rules' ) ); // needed for post type archives
+			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // needed for post type archives
 		}
 		return $pre;
 	}

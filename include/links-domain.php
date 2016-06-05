@@ -19,7 +19,7 @@ class PLL_Links_Domain extends PLL_Links_Permalinks {
 	public function __construct( &$model ) {
 		parent::__construct( $model );
 
-		add_filter( 'site_url', array( &$this, 'site_url' ) );
+		add_filter( 'site_url', array( $this, 'site_url' ) );
 	}
 
 

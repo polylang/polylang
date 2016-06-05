@@ -27,10 +27,10 @@ class PLL_Model {
 		$this->term = new PLL_Translated_Term( $this ); // translated term sub model
 
 		// we need to clean languages cache when editing a language and when modifying the permalink structure
-		add_action( 'edited_term_taxonomy', array( &$this, 'clean_languages_cache' ), 10, 2 );
-		add_action( 'update_option_permalink_structure', array( &$this, 'clean_languages_cache' ) );
-		add_action( 'update_option_siteurl', array( &$this, 'clean_languages_cache' ) );
-		add_action( 'update_option_home', array( &$this, 'clean_languages_cache' ) );
+		add_action( 'edited_term_taxonomy', array( $this, 'clean_languages_cache' ), 10, 2 );
+		add_action( 'update_option_permalink_structure', array( $this, 'clean_languages_cache' ) );
+		add_action( 'update_option_siteurl', array( $this, 'clean_languages_cache' ) );
+		add_action( 'update_option_home', array( $this, 'clean_languages_cache' ) );
 
 		// just in case someone would like to display the language description ;- )
 		add_filter( 'language_description', '__return_empty_string' );

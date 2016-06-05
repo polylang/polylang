@@ -23,8 +23,8 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		parent::__construct( $model );
 
 		// filters to prime terms cache
-		add_filter( 'get_terms', array( &$this, '_prime_terms_cache' ), 10, 2 );
-		add_filter( 'wp_get_object_terms', array( &$this, 'wp_get_object_terms' ), 10, 3 );
+		add_filter( 'get_terms', array( $this, '_prime_terms_cache' ), 10, 2 );
+		add_filter( 'wp_get_object_terms', array( $this, 'wp_get_object_terms' ), 10, 3 );
 	}
 
 	/**

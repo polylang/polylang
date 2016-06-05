@@ -33,7 +33,7 @@ class PLL_Pointer {
 	 */
 	public function __construct( $args ) {
 		$this->args = $args;
-		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
 	/**
@@ -48,7 +48,7 @@ class PLL_Pointer {
 		}
 
 		// Add pointer javascript
-		add_action( 'admin_print_footer_scripts', array( &$this, 'print_js' ) );
+		add_action( 'admin_print_footer_scripts', array( $this, 'print_js' ) );
 
 		wp_enqueue_style( 'wp-pointer' );
 		wp_enqueue_script( 'wp-pointer' );

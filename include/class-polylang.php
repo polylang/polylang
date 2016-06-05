@@ -28,7 +28,7 @@ class Polylang {
 	 */
 	public function __construct() {
 		// FIXME maybe not available on every installations but widely used by WP plugins
-		spl_autoload_register( array( &$this, 'autoload' ) ); // autoload classes
+		spl_autoload_register( array( $this, 'autoload' ) ); // autoload classes
 
 		$install = new PLL_Install( POLYLANG_BASENAME );
 
@@ -39,7 +39,7 @@ class Polylang {
 
 		// plugin initialization
 		// take no action before all plugins are loaded
-		add_action( 'plugins_loaded', array( &$this, 'init' ), 1 );
+		add_action( 'plugins_loaded', array( $this, 'init' ), 1 );
 
 		// override load text domain waiting for the language to be defined
 		// here for plugins which load text domain as soon as loaded :(
