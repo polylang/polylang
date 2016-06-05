@@ -34,13 +34,13 @@ class PLL_Settings extends PLL_Admin_Base {
 		PLL_Admin_Strings::init();
 
 		// FIXME put this as late as possible
-		add_action( 'admin_init', array( &$this, 'register_settings_modules' ) );
+		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
 		// adds screen options and the about box in the languages admin panel
-		add_action( 'load-settings_page_mlang',  array( &$this, 'load_page' ) );
+		add_action( 'load-settings_page_mlang',  array( $this, 'load_page' ) );
 
 		// saves per-page value in screen option
-		add_filter( 'set-screen-option', array( &$this, 'set_screen_option' ), 10, 3 );
+		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
 	}
 
 	/**
@@ -113,7 +113,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					add_meta_box(
 						'pll-about-box',
 						__( 'About Polylang', 'polylang' ),
-						array( &$this, 'metabox_about' ),
+						array( $this, 'metabox_about' ),
 						'settings_page_mlang',
 						'normal'
 					);
@@ -125,7 +125,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					'option'  => 'pll_lang_per_page',
 				) );
 
-				add_action( 'admin_notices', array( &$this, 'notice_objects_with_no_lang' ) );
+				add_action( 'admin_notices', array( $this, 'notice_objects_with_no_lang' ) );
 			break;
 
 			case 'strings':
@@ -317,9 +317,9 @@ class PLL_Settings extends PLL_Admin_Base {
 		if ( ! empty( $this->options['default_lang'] ) && $this->model->get_objects_with_no_lang() ) {
 			printf(
 				'<div class="error"><p>%s <a href="%s">%s</a></p></div>',
-				__( 'There are posts, pages, categories or tags without language.', 'polylang' ),
+				esc_html__( 'There are posts, pages, categories or tags without language.', 'polylang' ),
 				wp_nonce_url( '?page=mlang&amp;pll_action=content-default-lang&amp;noheader=true', 'content-default-lang' ),
-				__( 'You can set them all to the default language.', 'polylang' )
+				esc_html__( 'You can set them all to the default language.', 'polylang' )
 			);
 		}
 	}

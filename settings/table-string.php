@@ -31,7 +31,7 @@ class PLL_Table_String extends WP_List_Table {
 		$this->groups = array_unique( wp_list_pluck( $this->strings, 'context' ) );
 		$this->selected_group = empty( $_GET['group'] ) || ! in_array( $_GET['group'], $this->groups ) ? -1 : $_GET['group'];
 
-		add_action( 'mlang_action_string-translation', array( &$this, 'save_translations' ) );
+		add_action( 'mlang_action_string-translation', array( $this, 'save_translations' ) );
 	}
 
 	/**
@@ -113,10 +113,10 @@ class PLL_Table_String extends WP_List_Table {
 	function get_columns() {
 		return array(
 			'cb'           => '<input type="checkbox" />', // checkbox
-			'string'       => __( 'String', 'polylang' ),
-			'name'         => __( 'Name', 'polylang' ),
-			'context'      => __( 'Group', 'polylang' ),
-			'translations' => __( 'Translations', 'polylang' ),
+			'string'       => esc_html__( 'String', 'polylang' ),
+			'name'         => esc_html__( 'Name', 'polylang' ),
+			'context'      => esc_html__( 'Group', 'polylang' ),
+			'translations' => esc_html__( 'Translations', 'polylang' ),
 		);
 	}
 
@@ -184,7 +184,7 @@ class PLL_Table_String extends WP_List_Table {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
 		if ( ! empty( $_GET['orderby'] ) ) { // no sort by default
-			usort( $data, array( &$this, 'usort_reorder' ) );
+			usort( $data, array( $this, 'usort_reorder' ) );
 		}
 
 		$total_items = count( $data );
@@ -236,13 +236,13 @@ class PLL_Table_String extends WP_List_Table {
 		printf(
 			'<label class="screen-reader-text" for="select-group" >%s</label>',
 			/* translators: accessibility text */
-			__( 'Filter by group', 'polylang' )
+			esc_html__( 'Filter by group', 'polylang' )
 		);
 		echo '<select id="select-group" name="group">' . "\n";
 		printf(
 			'<option value="-1"%s>%s</option>' . "\n",
 			-1 === $this->group_selected ? ' selected="selected"' : '',
-			__( 'View all groups', 'polylang' )
+			esc_html__( 'View all groups', 'polylang' )
 		);
 
 		foreach ( $this->groups as $group ) {

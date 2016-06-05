@@ -82,7 +82,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	function column_name( $item ) {
 		return sprintf(
 			'<a title="%s" href="%s">%s</a>',
-			__( 'Edit this language', 'polylang' ),
+			esc_attr__( 'Edit this language', 'polylang' ),
 			esc_url( admin_url( 'options-general.php?page=mlang&amp;pll_action=edit&amp;lang=' . $item->term_id ) ),
 			esc_html( $item->name )
 		);
@@ -105,7 +105,7 @@ class PLL_Table_Languages extends WP_List_Table {
 				<div class="row-actions"><span class="default-lang">
 				<a class="icon-default-lang" title="%1$s" href="%2$s"><span class="screen-reader-text">%3$s</span></a>
 				</span></div>',
-				__( 'Select as default language', 'polylang' ),
+				esc_attr__( 'Select as default language', 'polylang' ),
 				wp_nonce_url( '?page=mlang&amp;pll_action=default-lang&amp;noheader=true&amp;lang=' . $item->term_id, 'default-lang' ),
 				/* translators: accessibility text, %s is a native language name */
 				esc_html( sprintf( __( 'Choose %s as default language', 'polylang' ), $item->name ) )
@@ -124,7 +124,7 @@ class PLL_Table_Languages extends WP_List_Table {
 			$s = sprintf(
 				'<span class="icon-default-lang"><span class="screen-reader-text">%1$s</span></span>',
 				/* translators: accessibility text */
-				__( 'Default language', 'polylang' )
+				esc_html__( 'Default language', 'polylang' )
 			);
 			$actions = array();
 		}
@@ -141,13 +141,13 @@ class PLL_Table_Languages extends WP_List_Table {
 	 */
 	function get_columns() {
 		return array(
-			'name'         => __( 'Full name', 'polylang' ),
-			'locale'       => __( 'Locale', 'polylang' ),
-			'slug'         => __( 'Code', 'polylang' ),
-			'default_lang' => sprintf( '<span title="%1$s" class="icon-default-lang"><span class="screen-reader-text">%1$s</span></span>', __( 'Default language', 'polylang' ) ),
-			'term_group'   => __( 'Order', 'polylang' ),
-			'flag'         => __( 'Flag', 'polylang' ),
-			'count'        => __( 'Posts', 'polylang' ),
+			'name'         => esc_html__( 'Full name', 'polylang' ),
+			'locale'       => esc_html__( 'Locale', 'polylang' ),
+			'slug'         => esc_html__( 'Code', 'polylang' ),
+			'default_lang' => sprintf( '<span title="%1$s" class="icon-default-lang"><span class="screen-reader-text">%2$s</span></span>', esc_attr__( 'Default language', 'polylang' ), esc_html__( 'Default language', 'polylang' ) ),
+			'term_group'   => esc_html__( 'Order', 'polylang' ),
+			'flag'         => esc_html__( 'Flag', 'polylang' ),
+			'count'        => esc_html__( 'Posts', 'polylang' ),
 		);
 	}
 
@@ -186,16 +186,16 @@ class PLL_Table_Languages extends WP_List_Table {
 		$actions = array(
 			'edit'   => sprintf(
 				'<a title="%s" href="%s">%s</a>',
-				__( 'Edit this language', 'polylang' ),
+				esc_attr__( 'Edit this language', 'polylang' ),
 				esc_url( admin_url( 'options-general.php?page=mlang&amp;pll_action=edit&amp;lang=' . $item->term_id ) ),
-				__( 'Edit','polylang' )
+				esc_html__( 'Edit','polylang' )
 			),
 			'delete' => sprintf(
 				'<a title="%s" href="%s" onclick = "return confirm( \'%s\' );">%s</a>',
-				__( 'Delete this language and all its associated data', 'polylang' ),
+				esc_attr__( 'Delete this language and all its associated data', 'polylang' ),
 				wp_nonce_url( '?page=mlang&amp;pll_action=delete&amp;noheader=true&amp;lang=' . $item->term_id, 'delete-lang' ),
-				__( 'You are about to permanently delete this language. Are you sure?', 'polylang' ),
-				__( 'Delete','polylang' )
+				esc_js( __( 'You are about to permanently delete this language. Are you sure?', 'polylang' ) ),
+				esc_html__( 'Delete','polylang' )
 			),
 		);
 
@@ -244,7 +244,7 @@ class PLL_Table_Languages extends WP_List_Table {
 		$per_page = $this->get_items_per_page( 'pll_lang_per_page' );
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
-		usort( $data, array( &$this, 'usort_reorder' ) );
+		usort( $data, array( $this, 'usort_reorder' ) );
 
 		$total_items = count( $data );
 		$this->items = array_slice( $data, ( $this->get_pagenum() - 1 ) * $per_page, $per_page );

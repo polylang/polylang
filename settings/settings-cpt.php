@@ -51,7 +51,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	 */
 	protected function form() {
 		if ( ! empty( $this->post_types ) ) {?>
-			<h4><?php _e( 'Custom post types', 'polylang' ) ?></h4>
+			<h4><?php esc_html_e( 'Custom post types', 'polylang' ) ?></h4>
 			<ul class="pll-inline-block-list"><?php
 				foreach ( $this->post_types as $post_type ) {
 					$pt = get_post_type_object( $post_type );
@@ -63,11 +63,11 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 					);
 				}?>
 			</ul>
-			<p class="description"><?php _e( 'Activate languages and translations for custom post types.', 'polylang' );?></p><?php
+			<p class="description"><?php esc_html_e( 'Activate languages and translations for custom post types.', 'polylang' );?></p><?php
 		}
 
 		if ( ! empty( $this->taxonomies ) ) {?>
-			<h4><?php _e( 'Custom taxonomies', 'polylang' ) ?></h4>
+			<h4><?php esc_html_e( 'Custom taxonomies', 'polylang' ) ?></h4>
 			<ul class="pll-inline-block-list"><?php
 				foreach ( $this->taxonomies as $taxonomy ) {
 					$tax = get_taxonomy( $taxonomy );
@@ -79,7 +79,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 					);
 				}?>
 			</ul>
-			<p class="description"><?php _e( 'Activate languages and translations for custom taxonomies.', 'polylang' );?></p><?php
+			<p class="description"><?php esc_html_e( 'Activate languages and translations for custom taxonomies.', 'polylang' );?></p><?php
 		}
 	}
 

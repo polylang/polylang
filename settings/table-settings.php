@@ -149,8 +149,8 @@ class PLL_Table_Settings extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			'cb'           => '', // for the 4px border inherited from plugins when the module is activated
-			'plugin-title' => __( 'Module', 'polylang' ), // plugin-title for styling
-			'description'  => __( 'Description', 'polylang' ),
+			'plugin-title' => esc_html__( 'Module', 'polylang' ), // plugin-title for styling
+			'description'  => esc_html__( 'Description', 'polylang' ),
 		);
 	}
 

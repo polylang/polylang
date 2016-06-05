@@ -68,7 +68,7 @@ class PLL_Settings_Module {
 		);
 
 		// ajax action to save options
-		add_action( 'wp_ajax_pll_save_options', array( &$this, 'save_options' ) );
+		add_action( 'wp_ajax_pll_save_options', array( $this, 'save_options' ) );
 	}
 
 	/**

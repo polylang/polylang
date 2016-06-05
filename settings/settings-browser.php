@@ -22,7 +22,7 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 			'active_option' => 3 > $polylang->options['force_lang'] ? 'browser' : false,
 		) );
 
-		add_action( 'admin_print_footer_scripts', array( &$this, 'print_js' ) );
+		add_action( 'admin_print_footer_scripts', array( $this, 'print_js' ) );
 	}
 
 	/**
@@ -47,14 +47,14 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 
 		if ( parent::is_active() && 3 > $this->options['force_lang'] ) {
 			$func = 'removeClass( "inactive" ).addClass( "active" )';
-			$link = sprintf( '<span class="deactivate">%s</span>', $this->action_links['deactivate'] );
+			$link = sprintf( '<span class="deactivate">%s</span>', esc_js( $this->action_links['deactivate'] ) );
 		}
 		else {
 			$func = 'removeClass( "active" ).addClass( "inactive" )';
-			$link = sprintf( '<span class="activate">%s</span>', $this->action_links['activate'] );
+			$link = sprintf( '<span class="activate">%s</span>', esc_js( $this->action_links['activate'] ) );
 		}
 
-		$deactivated = sprintf( '<span class="deactivated">%s</span>', $this->action_links['deactivated'] );
+		$deactivated = sprintf( '<span class="deactivated">%s</span>', esc_js( $this->action_links['deactivated'] ) );
 
 		?>
 		<script type='text/javascript'>

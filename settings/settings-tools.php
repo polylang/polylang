@@ -31,7 +31,7 @@ class PLL_Settings_Tools extends PLL_Settings_Module {
 		printf(
 			'<label for="uninstall"><input id="uninstall" name="uninstall" type="checkbox" value="1" %s /> %s</label>',
 			empty( $this->options['uninstall'] ) ? '' : 'checked="checked"',
-			__( 'Remove all Polylang data when using the "Delete" link on the plugins screen.', 'polylang' )
+			esc_html__( 'Remove all Polylang data when using the "Delete" link on the plugins screen.', 'polylang' )
 		);
 	}
 

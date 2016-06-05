@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 };
 ?>
 <div class="wrap">
-	<h1><?php _e( 'Languages', 'polylang' ); ?></h1>
+	<h1><?php esc_html_e( 'Languages', 'polylang' ); ?></h1>
 	<h2 class="nav-tab-wrapper"><?php
 	// display tabs
 	foreach ( $tabs as $key => $name ) {
