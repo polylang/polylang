@@ -34,19 +34,19 @@ class PLL_Frontend extends PLL_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
-		add_filter( 'pll_after_languages_cache', array( &$this, 'pll_after_languages_cache' ) );
+		add_filter( 'pll_after_languages_cache', array( $this, 'pll_after_languages_cache' ) );
 
-		add_action( 'pll_language_defined', array( &$this, 'pll_language_defined' ), 1 );
+		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ), 1 );
 
 		// avoids the language being the queried object when querying multiple taxonomies
-		add_action( 'parse_tax_query', array( &$this, 'parse_tax_query' ), 1 );
+		add_action( 'parse_tax_query', array( $this, 'parse_tax_query' ), 1 );
 
 		// filters posts by language
-		add_action( 'parse_query', array( &$this, 'parse_query' ), 6 );
+		add_action( 'parse_query', array( $this, 'parse_query' ), 6 );
 
 		// not before 'check_canonical_url'
 		if ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) {
-			add_action( 'template_redirect', array( &$this, 'auto_translate' ), 7 );
+			add_action( 'template_redirect', array( $this, 'auto_translate' ), 7 );
 		}
 	}
 

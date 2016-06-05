@@ -18,10 +18,10 @@ class PLL_Choose_Lang_Content extends PLL_Choose_lang {
 
 		if ( ! did_action( 'pll_language_defined' ) ) {
 			// set the languages from content
-			add_action( 'wp', array( &$this, 'wp' ), 5 ); // priority 5 for post types and taxonomies registered in wp hook with default priority
+			add_action( 'wp', array( $this, 'wp' ), 5 ); // priority 5 for post types and taxonomies registered in wp hook with default priority
 
 			// if no language found, choose the preferred one
-			add_filter( 'pll_get_current_language', array( &$this, 'pll_get_current_language' ) );
+			add_filter( 'pll_get_current_language', array( $this, 'pll_get_current_language' ) );
 		}
 	}
 
@@ -34,7 +34,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_lang {
 	 */
 	protected function set_language( $curlang ) {
 		parent::set_language( $curlang );
-		remove_action( 'wp', array( &$this, 'wp' ), 5 ); // won't attempt to set the language a 2nd time
+		remove_action( 'wp', array( $this, 'wp' ), 5 ); // won't attempt to set the language a 2nd time
 	}
 
 	/**

@@ -19,18 +19,18 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		$this->curlang = &$polylang->curlang;
 
 		// Split the language switcher menu item in several language menu items
-		add_filter( 'wp_get_nav_menu_items', array( &$this, 'wp_get_nav_menu_items' ), 20 ); // after the customizer menus
-		add_filter( 'wp_nav_menu_objects', array( &$this, 'wp_nav_menu_objects' ) );
-		add_filter( 'nav_menu_link_attributes', array( &$this, 'nav_menu_link_attributes' ), 10, 3 );
+		add_filter( 'wp_get_nav_menu_items', array( $this, 'wp_get_nav_menu_items' ), 20 ); // after the customizer menus
+		add_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
+		add_filter( 'nav_menu_link_attributes', array( $this, 'nav_menu_link_attributes' ), 10, 3 );
 
 		// Filters menus by language
 		add_filter( 'theme_mod_nav_menu_locations', array( $this, 'nav_menu_locations' ), 20 );
-		add_filter( 'wp_nav_menu_args', array( &$this, 'wp_nav_menu_args' ) );
+		add_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ) );
 
 		// The customizer
 		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) {
-			add_filter( 'wp_nav_menu_args', array( &$this, 'filter_args_before_customizer' ) );
-			add_filter( 'wp_nav_menu_args', array( &$this, 'filter_args_after_customizer' ), 2000 );
+			add_filter( 'wp_nav_menu_args', array( $this, 'filter_args_before_customizer' ) );
+			add_filter( 'wp_nav_menu_args', array( $this, 'filter_args_after_customizer' ), 2000 );
 		}
 	}
 

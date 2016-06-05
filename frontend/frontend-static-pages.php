@@ -21,20 +21,20 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		$this->links = &$polylang->links;
 		$this->curlang = &$polylang->curlang;
 
-		add_action( 'pll_language_defined', array( &$this, 'pll_language_defined' ) );
-		add_action( 'pll_home_requested', array( &$this, 'pll_home_requested' ) );
+		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
+		add_action( 'pll_home_requested', array( $this, 'pll_home_requested' ) );
 
 		// Modifies the page link in case the front page is not in the default language
-		add_filter( 'page_link', array( &$this, 'page_link' ), 20, 2 );
+		add_filter( 'page_link', array( $this, 'page_link' ), 20, 2 );
 
 		// Manages the redirection of the homepage
-		add_filter( 'redirect_canonical', array( &$this, 'redirect_canonical' ), 10, 2 );
+		add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ), 10, 2 );
 
-		add_filter( 'pll_pre_translation_url', array( &$this, 'pll_pre_translation_url' ), 10, 3 );
-		add_filter( 'pll_check_canonical_url', array( &$this, 'pll_check_canonical_url' ) );
+		add_filter( 'pll_pre_translation_url', array( $this, 'pll_pre_translation_url' ), 10, 3 );
+		add_filter( 'pll_check_canonical_url', array( $this, 'pll_check_canonical_url' ) );
 
-		add_filter( 'pll_set_language_from_query', array( &$this, 'page_on_front_query' ), 10, 2 );
-		add_filter( 'pll_set_language_from_query', array( &$this, 'page_for_posts_query' ), 10, 2 );
+		add_filter( 'pll_set_language_from_query', array( $this, 'page_on_front_query' ), 10, 2 );
+		add_filter( 'pll_set_language_from_query', array( $this, 'page_for_posts_query' ), 10, 2 );
 	}
 
 	/**
@@ -47,8 +47,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		$this->init();
 
 		// Translates page for posts and page on front
-		add_filter( 'option_page_on_front', array( &$this, 'translate_page_on_front' ) );
-		add_filter( 'option_page_for_posts', array( &$this, 'translate_page_for_posts' ) );
+		add_filter( 'option_page_on_front', array( $this, 'translate_page_on_front' ) );
+		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
 
 		// Support theme customizer
 		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) {

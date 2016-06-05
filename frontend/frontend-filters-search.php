@@ -21,15 +21,15 @@ class PLL_Frontend_Filters_Search {
 
 		// adds the language information in the search form
 		// low priority in case the search form is created using the same filter as described in http://codex.wordpress.org/Function_Reference/get_search_form
-		add_filter( 'get_search_form', array( &$this, 'get_search_form' ), 99 );
+		add_filter( 'get_search_form', array( $this, 'get_search_form' ), 99 );
 
 		// adds the language information in admin bar search form
-		add_action( 'add_admin_bar_menus', array( &$this, 'add_admin_bar_menus' ) );
+		add_action( 'add_admin_bar_menus', array( $this, 'add_admin_bar_menus' ) );
 
 		// adds javascript at the end of the document
 		// was used for WP < 3.6. kept just in case
 		if ( defined( 'PLL_SEARCH_FORM_JS' ) && PLL_SEARCH_FORM_JS ) {
-			add_action( 'wp_footer', array( &$this, 'wp_print_footer_scripts' ) );
+			add_action( 'wp_footer', array( $this, 'wp_print_footer_scripts' ) );
 		}
 	}
 
@@ -66,7 +66,7 @@ class PLL_Frontend_Filters_Search {
 	 */
 	function add_admin_bar_menus() {
 		remove_action( 'admin_bar_menu', 'wp_admin_bar_search_menu', 4 );
-		add_action( 'admin_bar_menu', array( &$this, 'admin_bar_search_menu' ), 4 );
+		add_action( 'admin_bar_menu', array( $this, 'admin_bar_search_menu' ), 4 );
 	}
 
 	/**

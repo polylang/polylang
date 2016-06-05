@@ -26,31 +26,31 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		// rewrites author and date links to filter them by language
 		foreach ( array( 'feed_link', 'author_link', 'search_link', 'year_link', 'month_link', 'day_link' ) as $filter ) {
-			add_filter( $filter, array( &$this, 'archive_link' ), 20 );
+			add_filter( $filter, array( $this, 'archive_link' ), 20 );
 		}
 
 		// rewrites post types archives links to filter them by language
-		add_filter( 'post_type_archive_link', array( &$this, 'post_type_archive_link' ), 20, 2 );
+		add_filter( 'post_type_archive_link', array( $this, 'post_type_archive_link' ), 20, 2 );
 
 		// meta in the html head section
-		add_action( 'wp_head', array( &$this, 'wp_head' ) );
+		add_action( 'wp_head', array( $this, 'wp_head' ) );
 
 		// modifies the home url
 		if ( ! defined( 'PLL_FILTER_HOME_URL' ) || PLL_FILTER_HOME_URL ) {
-			add_filter( 'home_url', array( &$this, 'home_url' ), 10, 2 );
+			add_filter( 'home_url', array( $this, 'home_url' ), 10, 2 );
 		}
 
 		if ( $this->options['force_lang'] > 1 ) {
 			// rewrites next and previous post links when not automatically done by WordPress
-			add_filter( 'get_pagenum_link', array( &$this, 'archive_link' ), 20 );
+			add_filter( 'get_pagenum_link', array( $this, 'archive_link' ), 20 );
 
 			// rewrites ajax url
-			add_filter( 'admin_url', array( &$this, 'admin_url' ), 10, 2 );
+			add_filter( 'admin_url', array( $this, 'admin_url' ), 10, 2 );
 		}
 
 		// redirects to canonical url before WordPress redirect_canonical
 		// but after Nextgen Gallery which hacks $_SERVER['REQUEST_URI'] !!! and restores it in 'template_redirect' with priority 1
-		add_action( 'template_redirect', array( &$this, 'check_canonical_url' ), 4 );
+		add_action( 'template_redirect', array( $this, 'check_canonical_url' ), 4 );
 	}
 
 	/**

@@ -20,8 +20,8 @@ class PLL_Frontend_Auto_Translate {
 		$this->model = &$polylang->model;
 		$this->curlang = &$polylang->curlang;
 
-		add_action( 'pre_get_posts', array( &$this, 'pre_get_posts' ) ); // after main Polylang filter
-		add_filter( 'get_terms_args', array( &$this, 'get_terms_args' ), 10, 2 );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) ); // after main Polylang filter
+		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
 	}
 
 	/**

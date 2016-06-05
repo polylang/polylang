@@ -18,27 +18,27 @@ class PLL_Frontend_Filters extends PLL_Filters{
 		parent::__construct( $polylang );
 
 		// Filters the WordPress locale
-		add_filter( 'locale', array( &$this, 'get_locale' ) );
+		add_filter( 'locale', array( $this, 'get_locale' ) );
 
 		// Filter sticky posts by current language
-		add_filter( 'option_sticky_posts', array( &$this, 'option_sticky_posts' ) );
+		add_filter( 'option_sticky_posts', array( $this, 'option_sticky_posts' ) );
 
 		// Adds cache domain when querying terms
-		add_filter( 'get_terms_args', array( &$this, 'get_terms_args' ) );
+		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ) );
 
 		// Filters categories and post tags by language
-		add_filter( 'terms_clauses', array( &$this, 'terms_clauses' ), 10, 3 );
+		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 
 		// Rewrites archives, next and previous post links to filter them by language
-		add_filter( 'getarchives_join', array( &$this, 'getarchives_join' ), 10, 2 );
-		add_filter( 'getarchives_where', array( &$this, 'getarchives_where' ), 10, 2 );
-		add_filter( 'get_previous_post_join', array( &$this, 'posts_join' ), 10, 5 );
-		add_filter( 'get_next_post_join', array( &$this, 'posts_join' ), 10, 5 );
-		add_filter( 'get_previous_post_where', array( &$this, 'posts_where' ), 10, 5 );
-		add_filter( 'get_next_post_where', array( &$this, 'posts_where' ), 10, 5 );
+		add_filter( 'getarchives_join', array( $this, 'getarchives_join' ), 10, 2 );
+		add_filter( 'getarchives_where', array( $this, 'getarchives_where' ), 10, 2 );
+		add_filter( 'get_previous_post_join', array( $this, 'posts_join' ), 10, 5 );
+		add_filter( 'get_next_post_join', array( $this, 'posts_join' ), 10, 5 );
+		add_filter( 'get_previous_post_where', array( $this, 'posts_where' ), 10, 5 );
+		add_filter( 'get_next_post_where', array( $this, 'posts_where' ), 10, 5 );
 
 		// Filters the widgets according to the current language
-		add_filter( 'widget_display_callback', array( &$this, 'widget_display_callback' ), 10, 2 );
+		add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 2 );
 
 		// Strings translation ( must be applied before WordPress applies its default formatting filters )
 		foreach ( array( 'widget_text', 'widget_title', 'option_blogname', 'option_blogdescription', 'option_date_format', 'option_time_format' ) as $filter ) {
@@ -46,15 +46,15 @@ class PLL_Frontend_Filters extends PLL_Filters{
 		}
 
 		// Translates biography
-		add_filter( 'get_user_metadata', array( &$this, 'get_user_metadata' ), 10, 4 );
+		add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 4 );
 
 		// Set posts and terms language when created from frontend ( ex with P2 theme )
-		add_action( 'save_post', array( &$this, 'save_post' ), 200, 2 );
-		add_action( 'create_term', array( &$this, 'save_term' ), 10, 3 );
-		add_action( 'edit_term', array( &$this, 'save_term' ), 10, 3 );
+		add_action( 'save_post', array( $this, 'save_post' ), 200, 2 );
+		add_action( 'create_term', array( $this, 'save_term' ), 10, 3 );
+		add_action( 'edit_term', array( $this, 'save_term' ), 10, 3 );
 
 		if ( $this->options['media_support'] ) {
-			add_action( 'add_attachment', array( &$this, 'set_default_language' ) );
+			add_action( 'add_attachment', array( $this, 'set_default_language' ) );
 		}
 
 		// Support theme customizer

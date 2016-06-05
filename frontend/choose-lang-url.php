@@ -22,7 +22,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 			$this->set_language_from_url();
 		}
 
-		add_action( 'request', array( &$this, 'request' ) );
+		add_action( 'request', array( $this, 'request' ) );
 	}
 
 	/**
@@ -40,7 +40,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 		// home is resquested
 		if ( $requested_host == $host && $requested_uri == $home_path && empty( $_SERVER['QUERY_STRING'] ) ) {
 			$this->home_language();
-			add_action( 'setup_theme', array( &$this, 'home_requested' ) );
+			add_action( 'setup_theme', array( $this, 'home_requested' ) );
 		}
 
 		// take care to post & page preview http://wordpress.org/support/topic/static-frontpage-url-parameter-url-language-information

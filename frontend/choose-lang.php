@@ -36,8 +36,8 @@ abstract class PLL_Choose_Lang {
 			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( $_REQUEST['lang'] ) );
 		}
 
-		add_action( 'pre_comment_on_post', array( &$this, 'pre_comment_on_post' ) ); // sets the language of comment
-		add_action( 'parse_query', array( &$this, 'parse_main_query' ), 2 ); // sets the language in special cases
+		add_action( 'pre_comment_on_post', array( $this, 'pre_comment_on_post' ) ); // sets the language of comment
+		add_action( 'parse_query', array( $this, 'parse_main_query' ), 2 ); // sets the language in special cases
 	}
 
 	/**
