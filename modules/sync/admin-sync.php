@@ -18,16 +18,16 @@ class PLL_Admin_Sync {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
 
-		add_filter( 'wp_insert_post_parent', array( &$this, 'wp_insert_post_parent' ) );
-		add_action( 'add_meta_boxes', array( &$this, 'add_meta_boxes' ), 5, 2 ); // before Types which populates custom fields in same hook with priority 10
+		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ) );
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 5, 2 ); // before Types which populates custom fields in same hook with priority 10
 
-		add_action( 'pll_save_post', array( &$this, 'pll_save_post' ), 10, 3 );
-		add_action( 'pll_save_term', array( &$this, 'pll_save_term' ), 10, 3 );
+		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
+		add_action( 'pll_save_term', array( $this, 'pll_save_term' ), 10, 3 );
 
 		if ( $this->options['media_support'] ) {
-			add_action( 'pll_translate_media', array( &$this, 'copy_taxonomies' ), 10, 3 );
-			add_action( 'pll_translate_media', array( &$this, 'copy_post_metas' ), 10, 3 );
-			add_action( 'edit_attachment', array( &$this, 'edit_attachment' ) );
+			add_action( 'pll_translate_media', array( $this, 'copy_taxonomies' ), 10, 3 );
+			add_action( 'pll_translate_media', array( $this, 'copy_post_metas' ), 10, 3 );
+			add_action( 'edit_attachment', array( $this, 'edit_attachment' ) );
 		}
 	}
 

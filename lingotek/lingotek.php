@@ -21,11 +21,11 @@ class PLL_Lingotek {
 		$options = get_option( 'polylang' );
 
 		// the Lingotek tab
-		add_filter( 'pll_settings_tabs', array( &$this, 'add_tab' ) );
-		add_action( 'pll_settings_active_tab_lingotek', array( &$this, 'display_tab' ) );
+		add_filter( 'pll_settings_tabs', array( $this, 'add_tab' ) );
+		add_action( 'pll_settings_active_tab_lingotek', array( $this, 'display_tab' ) );
 
 		if ( PLL_SETTINGS && isset( $_GET['tab'] ) && 'lingotek' == $_GET['tab'] ) {
-			add_action( 'admin_print_styles', array( &$this, 'print_css' ) );
+			add_action( 'admin_print_styles', array( $this, 'print_css' ) );
 		}
 
 		// the pointer

@@ -17,11 +17,11 @@ class PLL_Install_Base {
 		$this->plugin_basename = $plugin_basename;
 
 		// manages plugin activation and deactivation
-		register_activation_hook( $plugin_basename, array( &$this, 'activate' ) );
-		register_deactivation_hook( $plugin_basename, array( &$this, 'deactivate' ) );
+		register_activation_hook( $plugin_basename, array( $this, 'activate' ) );
+		register_deactivation_hook( $plugin_basename, array( $this, 'deactivate' ) );
 
 		// blog creation on multisite
-		add_action( 'wpmu_new_blog', array( &$this, 'wpmu_new_blog' ), 5 ); // before WP attempts to send mails which can break on some PHP versions
+		add_action( 'wpmu_new_blog', array( $this, 'wpmu_new_blog' ), 5 ); // before WP attempts to send mails which can break on some PHP versions
 	}
 
 	/**

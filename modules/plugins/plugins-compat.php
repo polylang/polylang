@@ -16,35 +16,35 @@ class PLL_Plugins_Compat {
 	 */
 	protected function __construct() {
 		// WordPress Importer
-		add_action( 'init', array( &$this, 'maybe_wordpress_importer' ) );
-		add_filter( 'wp_import_terms', array( &$this, 'wp_import_terms' ) );
+		add_action( 'init', array( $this, 'maybe_wordpress_importer' ) );
+		add_filter( 'wp_import_terms', array( $this, 'wp_import_terms' ) );
 
 		// YARPP
-		add_action( 'init', array( &$this, 'yarpp_init' ) ); // after Polylang has registered its taxonomy in setup_theme
+		add_action( 'init', array( $this, 'yarpp_init' ) ); // after Polylang has registered its taxonomy in setup_theme
 
 		// Yoast SEO
-		add_action( 'pll_language_defined', array( &$this, 'wpseo_init' ) );
+		add_action( 'pll_language_defined', array( $this, 'wpseo_init' ) );
 
 		// Custom field template
-		add_action( 'add_meta_boxes', array( &$this, 'cft_copy' ), 10, 2 );
+		add_action( 'add_meta_boxes', array( $this, 'cft_copy' ), 10, 2 );
 
 		// Aqua Resizer
-		add_filter( 'pll_home_url_black_list', array( &$this, 'aq_home_url_black_list' ) );
+		add_filter( 'pll_home_url_black_list', array( $this, 'aq_home_url_black_list' ) );
 
 		// Twenty Fourteen
 		if ( 'twentyfourteen' == get_template() ) {
-			add_filter( 'transient_featured_content_ids', array( &$this, 'twenty_fourteen_featured_content_ids' ) );
-			add_filter( 'option_featured-content', array( &$this, 'twenty_fourteen_option_featured_content' ) );
+			add_filter( 'transient_featured_content_ids', array( $this, 'twenty_fourteen_featured_content_ids' ) );
+			add_filter( 'option_featured-content', array( $this, 'twenty_fourteen_option_featured_content' ) );
 		}
 
 		// Duplicate post
-		add_filter( 'option_duplicate_post_taxonomies_blacklist' , array( &$this, 'duplicate_post_taxonomies_blacklist' ) );
+		add_filter( 'option_duplicate_post_taxonomies_blacklist' , array( $this, 'duplicate_post_taxonomies_blacklist' ) );
 
 		// Jetpack 3
-		add_action( 'jetpack_widget_get_top_posts', array( &$this, 'jetpack_widget_get_top_posts' ), 10, 3 );
-		add_filter( 'grunion_contact_form_field_html', array( &$this, 'grunion_contact_form_field_html_filter' ), 10, 3 );
-		add_filter( 'jetpack_open_graph_tags', array( &$this, 'jetpack_ogp' ) );
-		add_filter( 'jetpack_relatedposts_filter_filters', array( &$this, 'jetpack_relatedposts_filter_filters' ), 10, 2 );
+		add_action( 'jetpack_widget_get_top_posts', array( $this, 'jetpack_widget_get_top_posts' ), 10, 3 );
+		add_filter( 'grunion_contact_form_field_html', array( $this, 'grunion_contact_form_field_html_filter' ), 10, 3 );
+		add_filter( 'jetpack_open_graph_tags', array( $this, 'jetpack_ogp' ) );
+		add_filter( 'jetpack_relatedposts_filter_filters', array( $this, 'jetpack_relatedposts_filter_filters' ), 10, 2 );
 
 		// Jetpack infinite scroll
 		if ( ! defined( 'PLL_AJAX_ON_FRONT' ) && isset( $_GET['infinity'], $_POST['action'] ) && 'infinite_scroll' == $_POST['action'] ) {
@@ -76,7 +76,7 @@ class PLL_Plugins_Compat {
 	function maybe_wordpress_importer() {
 		if ( defined( 'WP_LOAD_IMPORTERS' ) && class_exists( 'WP_Import' ) ) {
 			remove_action( 'admin_init', 'wordpress_importer_init' );
-			add_action( 'admin_init', array( &$this, 'wordpress_importer_init' ) );
+			add_action( 'admin_init', array( $this, 'wordpress_importer_init' ) );
 		}
 	}
 
@@ -159,26 +159,26 @@ class PLL_Plugins_Compat {
 		// because WPSEO does not accept several domains or subdomains in one sitemap
 		if ( PLL()->options['force_lang'] > 1 ) {
 			add_filter( 'wpseo_enable_xml_sitemap_transient_caching', '__return_false' ); // disable cache! otherwise WPSEO keeps only one domain (thanks to Junaid Bhura)
-			add_filter( 'home_url', array( &$this, 'wpseo_home_url' ) , 10, 2 ); // fix home_url
-			add_filter( 'wpseo_posts_join', array( &$this, 'wpseo_posts_join' ), 10, 2 );
-			add_filter( 'wpseo_posts_where', array( &$this, 'wpseo_posts_where' ), 10, 2 );
-			add_filter( 'wpseo_typecount_join', array( &$this, 'wpseo_posts_join' ), 10, 2 );
-			add_filter( 'wpseo_typecount_where', array( &$this, 'wpseo_posts_where' ), 10, 2 );
+			add_filter( 'home_url', array( $this, 'wpseo_home_url' ) , 10, 2 ); // fix home_url
+			add_filter( 'wpseo_posts_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
+			add_filter( 'wpseo_posts_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
+			add_filter( 'wpseo_typecount_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
+			add_filter( 'wpseo_typecount_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
 		}
 
 		// One sitemap for all languages when the language is set from the content or directory name
 		else {
-			add_filter( 'get_terms_args', array( &$this, 'wpseo_remove_terms_filter' ) );
+			add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
 
 			// Add the homepages for all languages to the sitemap when the front page displays posts
 			if ( ! get_option( 'page_on_front' ) ) {
-				add_filter( 'wpseo_sitemap_post_content', array( &$this, 'add_language_home_urls' ) );
+				add_filter( 'wpseo_sitemap_post_content', array( $this, 'add_language_home_urls' ) );
 			}
 		}
 
-		add_filter( 'pll_home_url_white_list', array( &$this, 'wpseo_home_url_white_list' ) );
-		add_action( 'wpseo_opengraph', array( &$this, 'wpseo_ogp' ), 2 );
-		add_filter( 'wpseo_canonical', array( &$this, 'wpseo_canonical' ) );
+		add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
+		add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
+		add_filter( 'wpseo_canonical', array( $this, 'wpseo_canonical' ) );
 	}
 
 	/**

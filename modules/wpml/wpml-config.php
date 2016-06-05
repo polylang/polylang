@@ -69,16 +69,16 @@ class PLL_WPML_Config {
 		}
 
 		if ( ! empty( $this->xmls ) ) {
-			add_filter( 'pll_copy_post_metas', array( &$this, 'copy_post_metas' ), 10, 2 );
-			add_filter( 'pll_get_post_types', array( &$this, 'translate_types' ), 10, 2 );
-			add_filter( 'pll_get_taxonomies', array( &$this, 'translate_taxonomies' ), 10, 2 );
+			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 10, 2 );
+			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
+			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
 
 			foreach ( $this->xmls as $context => $xml ) {
 				foreach ( $xml->xpath( 'admin-texts/key' ) as $key ) {
 					$name = (string) $key->attributes()['name'];
 					if ( PLL() instanceof PLL_Frontend ) {
 						$this->options[ $name ] = $key;
-						add_filter( 'option_' . $name, array( &$this, 'translate_strings' ) );
+						add_filter( 'option_' . $name, array( $this, 'translate_strings' ) );
 					} else {
 						$this->register_string_recursive( $context, get_option( $name ), $key );
 					}

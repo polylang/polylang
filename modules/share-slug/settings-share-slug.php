@@ -22,7 +22,7 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 		) );
 
 		if ( class_exists( 'PLL_Share_Post_Slug', true ) && get_option( 'permalink_structure' ) ) {
-			add_action( 'admin_print_footer_scripts', array( &$this, 'print_js' ) );
+			add_action( 'admin_print_footer_scripts', array( $this, 'print_js' ) );
 		}
 	}
 
