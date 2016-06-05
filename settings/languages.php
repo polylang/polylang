@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 
 /**
@@ -119,7 +119,7 @@ $languages = array(
 	'zh_TW' => array( 'zh', 'zh_TW', '中文 (台灣)', 'ltr', 'tw' ),
 );
 
-/*
+/**
  * Filter the list of predefined languages
  *
  * @since 1.7.10

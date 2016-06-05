@@ -1,14 +1,14 @@
 <?php
 
 /**
- * a class to display a language switcher on frontend
+ * A class to display a language switcher on frontend
  *
  * @since 1.2
  */
 class PLL_Switcher {
 
 	/**
-	 * returns options available for the language switcher - menu or widget
+	 * Returns options available for the language switcher - menu or widget
 	 * either strings to display the options or default values
 	 *
 	 * @since 0.7
@@ -31,9 +31,9 @@ class PLL_Switcher {
 	}
 
 	/**
-	 * get the language elements for use in a walker
+	 * Get the language elements for use in a walker
 	 *
-	 * list of parameters accepted in $args:
+	 * List of parameters accepted in $args:
 	 * @see PLL_Switcher::the_languages
 	 *
 	 * @since 1.2
@@ -48,11 +48,11 @@ class PLL_Switcher {
 			$slug = $language->slug;
 			$locale = $language->get_locale( 'display' );
 			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
-			$url = null; // avoids potential notice
+			$url = null; // Avoids potential notice
 
 			if ( $current_lang = $links->curlang->slug == $slug ) {
 				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
-					continue; // hide current language except for dropdown
+					continue; // Hide current language except for dropdown
 				}
 				else {
 					$classes[] = 'current-lang';
@@ -69,7 +69,7 @@ class PLL_Switcher {
 				$classes[] = 'no-translation';
 			}
 
-			/*
+			/**
 			 * Filter the link in the language switcher
 			 *
 			 * @since 0.7
@@ -80,12 +80,12 @@ class PLL_Switcher {
 			 */
 			$url = apply_filters( 'pll_the_language_link', $url, $slug, $language->locale );
 
-			// hide if no translation exists
+			// Hide if no translation exists
 			if ( empty( $url ) && $args['hide_if_no_translation'] ) {
 				continue;
 			}
 
-			$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url ; // if the page is not translated, link to the home page
+			$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url ; // If the page is not translated, link to the home page
 
 			$name = $args['show_names'] || ! $args['show_flags'] || $args['raw'] ? ( 'slug' == $args['display_names_as'] ? $slug : $language->name ) : '';
 			$flag = $args['raw'] && ! $args['show_flags'] ? $language->flag_url : ( $args['show_flags'] ? $language->flag : '' );
@@ -97,10 +97,10 @@ class PLL_Switcher {
 	}
 
 	/**
-	 * displays a language switcher
+	 * Displays a language switcher
 	 * or returns the raw elements to build a custom language switcher
 	 *
-	 * list of parameters accepted in $args:
+	 * List of parameters accepted in $args:
 	 *
 	 * dropdown               => the list is displayed as dropdown if set, defaults to 0
 	 * echo                   => echoes the list if set to 1, defaults to 1
@@ -137,7 +137,7 @@ class PLL_Switcher {
 		);
 		$args = wp_parse_args( $args, $defaults );
 
-		/*
+		/**
 		 * Filter the arguments of the 'pll_the_languages' template tag
 		 *
 		 * @since 1.5
@@ -146,7 +146,7 @@ class PLL_Switcher {
 		 */
 		$args = apply_filters( 'pll_the_languages_args', $args );
 
-		// prevents showing empty options in dropdown
+		// Prevents showing empty options in dropdown
 		if ( $args['dropdown'] ) {
 			$args['show_names'] = 1;
 		}
@@ -166,7 +166,7 @@ class PLL_Switcher {
 			$walker = new PLL_Walker_List();
 		}
 
-		/*
+		/**
 		 * Filter the whole html markup returned by the 'pll_the_languages' template tag
 		 *
 		 * @since 0.8
@@ -176,13 +176,13 @@ class PLL_Switcher {
 		 */
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, $args ), $args );
 
-		// javascript to switch the language when using a dropdown list
+		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] ) {
 			foreach ( $links->model->get_languages_list() as $language ) {
 				$urls[ $language->slug ] = $args['force_home'] || ( $url = $links->get_translation_url( $language ) ) === null ? $links->get_home_url( $language ) : $url;
 			}
 
-			// accept only few valid characters for the urls_x variable name ( as the widget id includes '-' which is invalid )
+			// Accept only few valid characters for the urls_x variable name ( as the widget id includes '-' which is invalid )
 			$out .= sprintf( '
 				<script type="text/javascript">
 					//<![CDATA[

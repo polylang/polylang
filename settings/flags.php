@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 
 /**
@@ -262,7 +262,7 @@ $flags = array(
 	'zw' => __( 'Zimbabwe', 'polylang' ),
 );
 
-/*
+/**
  * Filter the list of predefined flags
  *
  * @since 1.8

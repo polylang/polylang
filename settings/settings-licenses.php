@@ -9,7 +9,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	protected $items;
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.9
 	 *
@@ -30,7 +30,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	}
 
 	/**
-	 * tells if the module is active
+	 * Tells if the module is active
 	 *
 	 * @since 1.9
 	 *
@@ -41,7 +41,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays the settings form
+	 * Displays the settings form
 	 *
 	 * @since 1.9
 	 */
@@ -56,7 +56,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	}
 
 	/**
-	 * get the html for a row (one per license key) for display
+	 * Get the html for a row (one per license key) for display
 	 *
 	 * @since 1.9
 	 *
@@ -80,7 +80,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			$now = current_time( 'timestamp' );
 			$expiration = strtotime( $license->expires, $now );
 
-			// special case: the license expired after the last check
+			// Special case: the license expired after the last check
 			if ( $license->success && $expiration < $now ) {
 				$license->success = false;
 				$license->error = 'expired';
@@ -167,9 +167,9 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 		return sprintf( '<tr id="pll-license-%s" class="%s">%s</tr>', $item->id, $class, $out );
 	}
 
-	/*
-	 * ajax method to save the license keys and activate the licenses at the same time
-	 * overrides parent's method
+	/**
+	 * Ajax method to save the license keys and activate the licenses at the same time
+	 * Overrides parent's method
 	 *
 	 * @since 1.9
 	 */
@@ -186,7 +186,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 				$x->Add( array( 'what' => 'license-update', 'data' => $item->id, 'supplemental' => array( 'html' => $this->get_row( $updated_item ) ) ) );
 			}
 
-			// updated message
+			// Updated message
 			add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'updated' );
 			ob_start();
 			settings_errors();
@@ -196,7 +196,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	}
 
 	/**
-	 * ajax method to deactivate a license
+	 * Ajax method to deactivate a license
 	 *
 	 * @since 1.9
 	 */

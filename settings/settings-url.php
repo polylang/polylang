@@ -8,7 +8,7 @@
 class PLL_Settings_Url extends PLL_Settings_Module {
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.8
 	 *
@@ -27,7 +27,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays the fieldset to choose how the language is set
+	 * Displays the fieldset to choose how the language is set
 	 *
 	 * @since 1.8
 	 */
@@ -78,8 +78,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 		</table><?php
 	}
 
-	/*
-	 * displays the fieldset to choose to hide the default language information in url
+	/**
+	 * Displays the fieldset to choose to hide the default language information in url
 	 *
 	 * @since 1.8
 	 */
@@ -94,7 +94,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays the fieldset to choose to hide /language/ in url
+	 * Displays the fieldset to choose to hide /language/ in url
 	 *
 	 * @since 1.8
 	 */
@@ -120,7 +120,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays the fieldset to choose to redirect the home page to language page
+	 * Displays the fieldset to choose to redirect the home page to language page
 	 *
 	 * @since 1.8
 	 */
@@ -133,7 +133,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			);?>
 		</label>
 		<p class="description"><?php
-			// that's nice to display the right home urls but don't forget that the page on front may have no language yet
+			// That's nice to display the right home urls but don't forget that the page on front may have no language yet
 			$lang = $this->model->post->get_language( $this->page_on_front );
 			$lang = $lang ? $lang : $this->model->get_language( $this->options['default_lang'] );
 			printf(
@@ -146,7 +146,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays the settings
+	 * Displays the settings
 	 *
 	 * @since 1.8
 	 */
@@ -177,7 +177,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	}
 
 	/**
-	 * sanitizes the settings before saving
+	 * Sanitizes the settings before saving
 	 *
 	 * @since 1.8
 	 *
@@ -211,7 +211,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			$newoptions['browser'] = $newoptions['hide_default'] = 0;
 		}
 
-		// check if domains exist
+		// Check if domains exist
 		if ( $newoptions['force_lang'] > 1 ) {
 			$this->check_domains( $newoptions );
 		}
@@ -220,7 +220,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	}
 
 	/**
-	 * check if subdomains or domains are accessible
+	 * Check if subdomains or domains are accessible
 	 *
 	 * @since 1.8
 	 *

@@ -91,7 +91,7 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 		$types = array_values( array_merge( $this->model->get_translated_post_types(), $this->model->get_translated_taxonomies(), $this->model->get_filtered_taxonomies() ) );
 		$types = array_merge( $this->always_rewrite, $types );
 
-		/*
+		/**
 		 * Filter the list of rewrite rules filters to be used by Polylang
 		 *
 		 * @since 0.8.1

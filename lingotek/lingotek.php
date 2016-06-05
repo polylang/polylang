@@ -1,18 +1,18 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 
-/*
- * class to manage Lingotek ads
+/**
+ * Class to manage Lingotek ads
  *
  * @since 1.7.7
  */
 class PLL_Lingotek {
 	const LINGOTEK = 'lingotek-translation/lingotek.php';
 
-	/*
+	/**
 	 * Init
 	 *
 	 * @since 1.7.7
@@ -20,7 +20,7 @@ class PLL_Lingotek {
 	public function init() {
 		$options = get_option( 'polylang' );
 
-		// the Lingotek tab
+		// The Lingotek tab
 		add_filter( 'pll_settings_tabs', array( $this, 'add_tab' ) );
 		add_action( 'pll_settings_active_tab_lingotek', array( $this, 'display_tab' ) );
 
@@ -28,7 +28,7 @@ class PLL_Lingotek {
 			add_action( 'admin_print_styles', array( $this, 'print_css' ) );
 		}
 
-		// the pointer
+		// The pointer
 		$content = __( 'You’ve just upgraded to the latest version of Polylang! Would you like to automatically translate your website for free?', 'polylang' );
 
 		$buttons = array(
@@ -66,8 +66,8 @@ class PLL_Lingotek {
 		new PLL_Pointer( $args );
 	}
 
-	/*
-	 * adds the Lingotek tab in Polylang settings
+	/**
+	 * Adds the Lingotek tab in Polylang settings
 	 *
 	 * @since 1.7.7
 	 *
@@ -79,8 +79,8 @@ class PLL_Lingotek {
 		return $tabs;
 	}
 
-	/*
-	 * displays the content in the Lingotek tab
+	/**
+	 * Displays the content in the Lingotek tab
 	 *
 	 * @since 1.7.7
 	 */
@@ -161,8 +161,8 @@ class PLL_Lingotek {
 
 	}
 
-	/*
-	 * styles the content of the Lingotek tab
+	/**
+	 * Styles the content of the Lingotek tab
 	 *
 	 * @since 1.7.7
 	 */
@@ -224,16 +224,16 @@ class PLL_Lingotek {
 		</style><?php
 	}
 
-	/*
-	 * outputs the content of each box
+	/**
+	 * Outputs the content of each box
 	 *
 	 * @since 1.7.7
 	 *
 	 * @param string $title
 	 * @param string $desc
-	 * @param array $list
-	 * @param array $links
-	 * @param $img string
+	 * @param array  $list
+	 * @param array  $links
+	 * @param string $img
 	 */
 	protected function box( $title, $desc, $list, $links, $img ) {?>
 		<div class="ltk-feature">
@@ -265,8 +265,8 @@ class PLL_Lingotek {
 		</div><?php
 	}
 
-	/*
-	 * get a link to install / activate Lingotek
+	/**
+	 * Get a link to install / activate Lingotek
 	 * depending on user rights and if plugin is already installed
 	 *
 	 * @since 1.7.7

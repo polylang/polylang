@@ -22,7 +22,7 @@ class PLL_Table_String extends WP_List_Table {
 	 */
 	function __construct( $languages ) {
 		parent::__construct( array(
-			'plural'   => 'Strings translations', // do not translate ( used for css class )
+			'plural'   => 'Strings translations', // Do not translate ( used for css class )
 			'ajax'	 => false,
 		) );
 
@@ -61,7 +61,7 @@ class PLL_Table_String extends WP_List_Table {
 			esc_attr( $item['row'] ),
 			/* translators:  accessibility text, %s is a string potentially in any language */
 			sprintf( __( 'Select %s' ), format_to_edit( $item['string'] ) ),
-			empty( $item['icl'] ) ? 'disabled' : '' // only strings registered with WPML API can be removed
+			empty( $item['icl'] ) ? 'disabled' : '' // Only strings registered with WPML API can be removed
 		);
 	}
 
@@ -74,7 +74,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return string
 	 */
 	function column_string( $item ) {
-		return format_to_edit( $item['string'] ); // don't interpret special chars for the string column
+		return format_to_edit( $item['string'] ); // Don't interpret special chars for the string column
 	}
 
 	/**
@@ -97,7 +97,7 @@ class PLL_Table_String extends WP_List_Table {
 				esc_attr( $key ),
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
-			format_to_edit( $translation ) ); // don't interpret special chars
+			format_to_edit( $translation ) ); // Don't interpret special chars
 		}
 
 		return $out;
@@ -112,7 +112,7 @@ class PLL_Table_String extends WP_List_Table {
 	 */
 	function get_columns() {
 		return array(
-			'cb'           => '<input type="checkbox" />', // checkbox
+			'cb'           => '<input type="checkbox" />', // Checkbox
 			'string'       => esc_html__( 'String', 'polylang' ),
 			'name'         => esc_html__( 'Name', 'polylang' ),
 			'context'      => esc_html__( 'Group', 'polylang' ),
@@ -157,7 +157,7 @@ class PLL_Table_String extends WP_List_Table {
 	function prepare_items() {
 		$data = $this->strings;
 
-		// filter for search string
+		// Filter for search string
 		$s = empty( $_GET['s'] ) ? '' : wp_unslash( $_GET['s'] );
 		foreach ( $data as $key => $row ) {
 			if ( ( -1 !== $this->selected_group && $row['context'] !== $this->selected_group ) || ( ! empty( $s ) && stripos( $row['name'], $s ) === false && stripos( $row['string'], $s ) === false ) ) {
@@ -165,9 +165,9 @@ class PLL_Table_String extends WP_List_Table {
 			}
 		}
 
-		// load translations
+		// Load translations
 		foreach ( $this->languages as $language ) {
-			// filters by language if requested
+			// Filters by language if requested
 			if ( ( $lg = get_user_meta( get_current_user_id(), 'pll_filter_content', true ) ) && $language->slug !== $lg ) {
 				continue;
 			}
@@ -176,14 +176,14 @@ class PLL_Table_String extends WP_List_Table {
 			$mo->import_from_db( $language );
 			foreach ( $data as $key => $row ) {
 				$data[ $key ]['translations'][ $language->slug ] = $mo->translate( $row['string'] );
-				$data[ $key ]['row'] = $key; // store the row number for convenience
+				$data[ $key ]['row'] = $key; // Store the row number for convenience
 			}
 		}
 
 		$per_page = $this->get_items_per_page( 'pll_strings_per_page' );
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
-		if ( ! empty( $_GET['orderby'] ) ) { // no sort by default
+		if ( ! empty( $_GET['orderby'] ) ) { // No sort by default
 			usort( $data, array( $this, 'usort_reorder' ) );
 		}
 
@@ -270,7 +270,7 @@ class PLL_Table_String extends WP_List_Table {
 
 		if ( ! empty( $_POST['submit'] ) ) {
 			foreach ( $this->languages as $language ) {
-				if ( empty( $_POST['translation'][ $language->slug ] ) ) { // in case the language filter is active ( thanks to John P. Bloch )
+				if ( empty( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
 				}
 
@@ -278,7 +278,7 @@ class PLL_Table_String extends WP_List_Table {
 				$mo->import_from_db( $language );
 
 				foreach ( $_POST['translation'][ $language->slug ] as $key => $translation ) {
-					/*
+					/**
 					 * Filter the string translation before it is saved in DB
 					 * Allows to sanitize strings registered with pll_register_string
 					 *
@@ -292,7 +292,7 @@ class PLL_Table_String extends WP_List_Table {
 					$mo->add_entry( $mo->make_entry( $this->strings[ $key ]['string'], $translation ) );
 				}
 
-				// clean database ( removes all strings which were registered some day but are no more )
+				// Clean database ( removes all strings which were registered some day but are no more )
 				if ( ! empty( $_POST['clean'] ) ) {
 					$new_mo = new PLL_MO();
 
@@ -314,17 +314,17 @@ class PLL_Table_String extends WP_List_Table {
 			do_action( 'pll_save_strings_translations' );
 		}
 
-		// unregisters strings registered through WPML API
+		// Unregisters strings registered through WPML API
 		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) ) {
 			foreach ( $_POST['strings'] as $key ) {
 				icl_unregister_string( $this->strings[ $key ]['context'], $this->strings[ $key ]['name'] );
 			}
 		}
 
-		// to refresh the page ( possible thanks to the $_GET['noheader']=true )
+		// To refresh the page ( possible thanks to the $_GET['noheader']=true )
 		$args = array_intersect_key( $_REQUEST, array_flip( array( 's', 'paged', 'group' ) ) );
 		if ( ! empty( $args['s'] ) ) {
-			$args['s'] = urlencode( $args['s'] ); // searched string needs to be encoded as it comes from $_POST
+			$args['s'] = urlencode( $args['s'] ); // Searched string needs to be encoded as it comes from $_POST
 		}
 		PLL_Settings::redirect( $args );
 	}

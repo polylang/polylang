@@ -5,7 +5,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 /**
- * a class to create the languages table in Polylang settings
+ * A class to create the languages table in Polylang settings
  * Thanks to Matt Van Andel ( http://www.mattvanandel.com ) for its plugin "Custom List Table Example" !
  *
  * @since 0.1
@@ -13,13 +13,13 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class PLL_Table_Languages extends WP_List_Table {
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 0.1
 	 */
 	function __construct() {
 		parent::__construct( array(
-			'plural'   => 'Languages', // do not translate ( used for css class )
+			'plural'   => 'Languages', // Do not translate ( used for css class )
 			'ajax'	   => false,
 		) );
 	}
@@ -32,7 +32,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @param object $item The current item
 	 */
 	public function single_row( $item ) {
-		/*
+		/**
 		 * Filter the list of classes assigned a row in the languages list table
 		 *
 		 * @since 1.8
@@ -47,7 +47,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	}
 
 	/**
-	 * displays the item information in a column ( default case )
+	 * Displays the item information in a column ( default case )
 	 *
 	 * @since 0.1
 	 *
@@ -71,8 +71,8 @@ class PLL_Table_Languages extends WP_List_Table {
 	}
 
 	/**
-	 * displays the item information in the column 'name'
-	 * displays the edit and delete action links
+	 * Displays the item information in the column 'name'
+	 * Displays the edit and delete action links
 	 *
 	 * @since 0.1
 	 *
@@ -89,8 +89,8 @@ class PLL_Table_Languages extends WP_List_Table {
 	}
 
 	/**
-	 * displays the item information in the default language
-	 * displays the 'make default' action link
+	 * Displays the item information in the default language
+	 * Displays the 'make default' action link
 	 *
 	 * @since 1.8
 	 *
@@ -111,7 +111,7 @@ class PLL_Table_Languages extends WP_List_Table {
 				esc_html( sprintf( __( 'Choose %s as default language', 'polylang' ), $item->name ) )
 			);
 
-			/*
+			/**
 			 * Filter the default language row action in the languages list table
 			 *
 			 * @since 1.8
@@ -133,7 +133,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	}
 
 	/**
-	 * gets the list of columns
+	 * Gets the list of columns
 	 *
 	 * @since 0.1
 	 *
@@ -152,7 +152,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	}
 
 	/**
-	 * gets the list of sortable columns
+	 * Gets the list of sortable columns
 	 *
 	 * @since 0.1
 	 *
@@ -199,7 +199,7 @@ class PLL_Table_Languages extends WP_List_Table {
 			),
 		);
 
-		/*
+		/**
 		 * Filter the list of row actions in the languages list table
 		 *
 		 * @since 1.8
@@ -223,18 +223,18 @@ class PLL_Table_Languages extends WP_List_Table {
 	 */
 	protected function usort_reorder( $a, $b ) {
 		$orderby = ! empty( $_GET['orderby'] ) ? $_GET['orderby'] : 'name';
-		// determine sort order
+		// Determine sort order
 		if ( is_numeric( $a->$orderby ) ) {
 			$result = $a->$orderby > $b->$orderby ? 1 : -1;
 		} else {
 			$result = strcmp( $a->$orderby, $b->$orderby );
 		}
-		// send final sort direction to usort
+		// Send final sort direction to usort
 		return ( empty( $_GET['order'] ) || 'asc' == $_GET['order'] ) ? $result : -$result;
 	}
 
 	/**
-	 * prepares the list of items for displaying
+	 * Prepares the list of items for displaying
 	 *
 	 * @since 0.1
 	 *
