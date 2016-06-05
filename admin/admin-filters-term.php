@@ -83,18 +83,18 @@ class PLL_Admin_Filters_Term {
 				<div id="select-add-term-language">%s</div>
 				<p>%s</p>
 			</div>',
-			__( 'Language', 'polylang' ),
+			esc_html__( 'Language', 'polylang' ),
 			$dropdown->walk( $this->model->get_languages_list(), array(
 				'name'     => 'term_lang_choice',
 				'value'    => 'term_id',
 				'selected' => $lang ? $lang->term_id : '',
 				'flag'     => true,
 			) ),
-			__( 'Sets the language', 'polylang' )
+			esc_html__( 'Sets the language', 'polylang' )
 		);
 
 		if ( ! empty( $_GET['from_tag'] ) ) {
-			printf( '<input type="hidden" name="from_tag" value="%d" />', $_GET['from_tag'] );
+			printf( '<input type="hidden" name="from_tag" value="%d" />', (int) $_GET['from_tag'] );
 		}
 
 		// Adds translation fields
@@ -137,7 +137,7 @@ class PLL_Admin_Filters_Term {
 					<p class="description">%s</p>
 				</td>
 			</tr>',
-			__( 'Language', 'polylang' ),
+			esc_html__( 'Language', 'polylang' ),
 			$dropdown->walk( $this->model->get_languages_list(), array(
 				'name'     => 'term_lang_choice',
 				'value'    => 'term_id',
@@ -145,7 +145,7 @@ class PLL_Admin_Filters_Term {
 				'disabled' => $disabled,
 				'flag'     => true,
 			) ),
-			__( 'Sets the language', 'polylang' )
+			esc_html__( 'Sets the language', 'polylang' )
 		);
 
 		echo '<tr id="term-translations" class="form-field">';

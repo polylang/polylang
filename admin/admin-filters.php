@@ -46,7 +46,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 		$dropdown = new PLL_Walker_Dropdown();
 		printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
 			esc_attr( $widget->id.'_lang_choice' ),
-			__( 'The widget is displayed for:', 'polylang' ),
+			esc_html__( 'The widget is displayed for:', 'polylang' ),
 			$dropdown->walk(
 				array_merge(
 					array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
@@ -121,7 +121,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 				<th><label for="user_lang">%s</label></th>
 				<td>%s</td>
 			</tr>',
-			__( 'Admin language', 'polylang' ),
+			esc_html__( 'Admin language', 'polylang' ),
 			$dropdown->walk(
 				array_merge(
 					array( (object) array( 'locale' => 0, 'name' => __( 'WordPress default', 'polylang' ) ) ),

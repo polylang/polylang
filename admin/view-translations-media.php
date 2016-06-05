@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // don't access directly
 };
 ?>
-<p><strong><?php _e( 'Translations', 'polylang' );?></strong></p>
+<p><strong><?php esc_html_e( 'Translations', 'polylang' );?></strong></p>
 <table><?php
 	foreach ( $this->model->get_languages_list() as $language ) {
 		if ( $language->term_id == $lang->term_id ) {

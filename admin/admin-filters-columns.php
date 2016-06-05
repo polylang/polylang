@@ -184,7 +184,7 @@ class PLL_Admin_Filters_Columns {
 						</label>
 					</div>
 				</fieldset>',
-				__( 'Language', 'polylang' ),
+				esc_html__( 'Language', 'polylang' ),
 				$dropdown->walk( $elements, array( 'name' => 'inline_lang_choice', 'id' => '' ) )
 			);
 		}

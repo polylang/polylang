@@ -10,12 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( isset( $term_id ) ) {
 	// edit term form ?>
-	<th scope="row"><?php _e( 'Translations', 'polylang' ); ?></th>
+	<th scope="row"><?php esc_html_e( 'Translations', 'polylang' ); ?></th>
 	<td><?php
 }
 else {
 	// add term form ?>
-	<p><?php _e( 'Translations', 'polylang' ); ?></p><?php
+	<p><?php esc_html_e( 'Translations', 'polylang' ); ?></p><?php
 }?>
 <table class="widefat term-translations"  id="<?php echo isset( $term_id ) ? 'edit' : 'add'; ?>-term-translations"><?php
 	foreach ( $this->model->get_languages_list() as $language ) {
@@ -61,7 +61,7 @@ else {
 					<input type="text" class="tr_lang" id="tr_lang_%1$s" value="%4$s"%5$s />',
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
-					__( 'Translation', 'polylang' ),
+					esc_html__( 'Translation', 'polylang' ),
 					empty( $translation ) ? 0 : esc_attr( $translation->term_id ),
 					empty( $translation ) ? '' : esc_attr( $translation->name ),
 					empty( $disabled ) ? '' : ' disabled="disabled"'

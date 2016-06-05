@@ -169,7 +169,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			<p><strong>%1$s</strong></p>
 			<label class="screen-reader-text" for="%2$s">%1$s</label>
 			<div id="select-%3$s-language">%4$s</div>',
-			__( 'Language', 'polylang' ),
+			esc_html__( 'Language', 'polylang' ),
 			$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', $post_ID ) : 'post_lang_choice',
 			'attachment' === $post_type ? 'media' : 'post',
 			$dropdown->walk( $this->model->get_languages_list(), array(
