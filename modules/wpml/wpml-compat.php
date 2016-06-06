@@ -425,7 +425,7 @@ class PLL_WPML_Compat {
 	/**
 	 * Get a registered string by its context and name
 	 *
-	 * @since 2.0
+	 * @since 1.9.2
 	 *
 	 * @param string $context the group in which the string is registered
 	 * @param string $name    a unique name for the string

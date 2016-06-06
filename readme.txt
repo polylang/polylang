@@ -60,6 +60,10 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * If you still have a problem, open a new thread in the [community support forum](http://wordpress.org/support/plugin/polylang).
 * [Polylang Pro](https://polylang.pro) users have access to our helpdesk.
 
+= Is Polylang compatible with WooCommerce? =
+
+* You need a separate addon to make Polylang and WooCommerce work together. Our Premium addon is currently in beta stage and is available for tests to Polyang Pro users who request it.
+
 = Do you need translation services? =
 
 * If you want to use professional or automatic translation services, install and activate the [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/) plugin.
@@ -72,6 +76,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 1.9.2 (2016-06-06) =
+
+* Pro: fix unreachable hierarchical custom post type posts when they are sharing slugs across languages
+* Fix missing argument 3 in icl_t
+* Fix conflict with WooCommerce product variations
 
 = 1.9.1 (2016-05-23) =
 
