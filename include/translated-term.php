@@ -136,7 +136,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return array unmodified $terms
 	 */
 	public function _prime_terms_cache( $terms, $taxonomies ) {
-		if ( $this->model->is_translated_taxonomy( $taxonomies ) ) {
+		if ( is_array( $terms ) && $this->model->is_translated_taxonomy( $taxonomies ) ) {
 			foreach ( $terms as $term ) {
 				$term_ids[] = is_object( $term ) ? $term->term_id : (int) $term;
 			}
