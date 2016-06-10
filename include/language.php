@@ -92,15 +92,44 @@ class PLL_Language {
 	public function set_flag() {
 		$flags['flag']['url'] = '';
 
-		// Polylang builtin flags
-		if ( ! empty( $this->flag_code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $this->flag_code . '.png' ) ) ) {
-			$flags['flag']['url'] = esc_url_raw( POLYLANG_URL . $file );
+		if ( ! empty( $this->flag_code ) ) {
+			/**
+			 * Set custom flag url
+			 *
+			 * @since 1.9.x
+			 *
+			 * @param string $flag_code flag code
+			 */
+			$url = apply_filters( 'pll_flag_url', null, $this->flag_code );
 
-			// if base64 encoded flags are preferred
-			if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
-				$flags['flag']['src'] = 'data:image/png;base64,' . base64_encode( file_get_contents( POLYLANG_DIR . $file ) );
-			} else {
-				$flags['flag']['src'] = esc_url( POLYLANG_URL . $file );
+			/**
+			 * Set custom flag src, should be escaped for output
+			 *
+			 * @since 1.9.x
+			 *
+			 * @param string $flag_code flag code
+			 */
+			$src = apply_filters( 'pll_flag_src', null, $this->flag_code );
+
+			if ( $url === null && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $this->flag_code . '.png' ) ) ) {
+				$url = POLYLANG_URL . $file;
+
+				if ( $src === null ) {
+					// if base64 encoded flags are preferred
+					if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
+						$src = 'data:image/png;base64,' . base64_encode( file_get_contents( POLYLANG_DIR . $file ) );
+					} else {
+						$src = esc_url( POLYLANG_URL . $file );
+					}
+				}
+			}
+
+			if ( $url !== null ) {
+				$flags['flag']['url'] = esc_url_raw( $url );
+			}
+
+			if ( $src !== null ) {
+				$flags['flag']['src'] = $src;
 			}
 		}
 
@@ -129,9 +158,11 @@ class PLL_Language {
 			 * Filter the html markup of a flag
 			 *
 			 * @since 1.0.2
+			 * @since 1.9.x Added $this parameter
 			 *
-			 * @param string $flag html markup of the flag or empty string
-			 * @param string $slug language code
+			 * @param string       $flag html markup of the flag or empty string
+			 * @param string       $slug language code
+			 * @param PLL_Language $this language instance
 			 */
 			$this->{$key} = apply_filters( 'pll_get_flag', empty( $flag['src'] ) ? '' :
 				sprintf(
@@ -140,7 +171,8 @@ class PLL_Language {
 					esc_attr( $title ),
 					esc_attr( $this->name )
 				),
-				$this->slug
+				$this->slug,
+				$this
 			);
 		}
 	}

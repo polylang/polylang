@@ -105,8 +105,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<option value=""></option><?php
 						include( PLL_SETTINGS_INC.'/flags.php' );
 						foreach ( $flags as $code => $label ) {
+
+							/**
+							 * Filter the flag url
+							 *
+							 * @since 1.9.x
+							 *
+							 * @param string $code flag code
+							 */
+							$url = apply_filters( 'pll_flag_url', null, $code );
+
+							if ( $url === null )
+								$url = POLYLANG_URL . "/flags/$code.png";
+
 							printf(
-								'<option value="%1$s"%2$s>%3$s</option>'."\n",
+								'<option data-flag="%s" value="%s"%s>%s</option>'."\n",
+								esc_url( $url ),
 								esc_attr( $code ),
 								isset( $edit_lang->flag_code ) && $edit_lang->flag_code == $code ? ' selected="selected"' : '',
 								esc_html( $label )
