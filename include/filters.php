@@ -80,6 +80,10 @@ class PLL_Filters {
 	 * @return array modified list of pages
 	 */
 	public function get_pages( $pages, $args ) {
+		if ( isset( $args['lang'] ) && empty( $args['lang'] ) ) {
+			return $pages;
+		}
+
 		$language = empty( $args['lang'] ) ? $this->curlang : $this->model->get_language( $args['lang'] );
 
 		if ( empty( $language ) || empty( $pages ) || ! $this->model->is_translated_post_type( $args['post_type'] ) ) {
