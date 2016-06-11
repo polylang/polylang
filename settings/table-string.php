@@ -317,8 +317,11 @@ class PLL_Table_String extends WP_List_Table {
 			}
 		}
 
-		// to refresh the page ( possible thanks to the $_GET['noheader']=true )
-		$args = array_intersect_key( $_REQUEST, array_flip( array( 's', 'paged', 'group' ) ) );
+		// To refresh the page ( possible thanks to the $_GET['noheader']=true )
+		$args = array_intersect_key( $_REQUEST, array_flip( array( 's', 'group' ) ) );
+		if ( ! empty( $_GET['paged'] ) ) {
+			$args['paged'] = (int) $_GET['paged']; // Don't rely on $_REQUEST['paged'] or $_POST['paged']. See #14
+		}
 		if ( ! empty( $args['s'] ) ) {
 			$args['s'] = urlencode( $args['s'] ); // searched string needs to be encoded as it comes from $_POST
 		}
