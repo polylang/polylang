@@ -527,8 +527,7 @@ class PLL_Admin_Filters_Term {
 		$return = array();
 
 		// It is more efficient to use one common query for all languages as soon as there are more than 2
-		// pll_get_terms_not_translated arg to identify this query in terms_clauses filter
-		foreach ( get_terms( $taxonomy, 'hide_empty=0&pll_get_terms_not_translated=1&name__like=' . $s ) as $term ) {
+		foreach ( get_terms( $taxonomy, 'hide_empty=0&lang=0&name__like=' . $s ) as $term ) {
 			$lang = $this->model->term->get_language( $term->term_id );
 
 			if ( $lang && $lang->slug == $translation_language->slug && ! $this->model->term->get_translation( $term->term_id, $term_language ) ) {
@@ -573,11 +572,6 @@ class PLL_Admin_Filters_Term {
 		// If get_terms is queried with a 'lang' parameter
 		if ( ! empty( $args['lang'] ) ) {
 			return $args['lang'];
-		}
-
-		// Do not filter 'get_terms_not_translated'
-		if ( ! empty( $args['pll_get_terms_not_translated'] ) ) {
-			return false;
 		}
 
 		if ( function_exists( 'get_current_screen' ) ) {
