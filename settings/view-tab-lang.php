@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						include( PLL_SETTINGS_INC.'/languages.php' );
 						foreach ( $languages as $lg ) {
 							printf(
-								'<option value="%1$s-%2$s-%3$s-%4$s">%5$s - %2$s</option>'."\n",
+								'<option value="%1$s:%2$s:%3$s:%4$s">%5$s - %2$s</option>'."\n",
 								esc_attr( $lg[0] ),
 								esc_attr( $lg[1] ),
 								'rtl' == $lg[3] ? '1' : '0',
