@@ -203,7 +203,7 @@ class PLL_Model {
 			$post_types = array( 'post' => 'post', 'page' => 'page' );
 
 			if ( ! empty( $this->options['media_support'] ) ) {
-				$post_types['attachement'] = 'attachment';
+				$post_types['attachment'] = 'attachment';
 			}
 
 			if ( ! empty( $this->options['post_types'] ) && is_array( $this->options['post_types'] ) ) {
