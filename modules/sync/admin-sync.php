@@ -301,9 +301,10 @@ class PLL_Admin_Sync {
 			'post_status' => 'any',
 			'fields'      => 'ids',
 			'tax_query'   => array( array(
-				'taxonomy' => $taxonomy,
-				'field'    => 'id',
-				'terms'    => array_merge( array( $term_id ), array_values( $translations ) ),
+				'taxonomy'         => $taxonomy,
+				'field'            => 'id',
+				'terms'            => array_merge( array( $term_id ), array_values( $translations ) ),
+				'include_children' => false,
 			) ),
 		) );
 
