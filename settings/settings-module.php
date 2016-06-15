@@ -38,33 +38,33 @@ class PLL_Settings_Module {
 		$this->action_links = array(
 			'configure' => sprintf(
 				'<a title="%s" href="%s">%s</a>',
-				__( 'Configure this module', 'polylang' ),
+				esc_attr__( 'Configure this module', 'polylang' ),
 				'#',
-				__( 'Settings', 'polylang' )
+				esc_html__( 'Settings', 'polylang' )
 			),
 
 			'deactivate' => sprintf(
 				'<a title="%s" href="%s">%s</a>',
-				__( 'Deactivate this module', 'polylang' ),
+				esc_attr__( 'Deactivate this module', 'polylang' ),
 				wp_nonce_url( '?page=mlang&amp;tab=modules&amp;pll_action=deactivate&amp;noheader=true&amp;module=' . $this->module, 'pll_deactivate' ),
-				__( 'Deactivate', 'polylang' )
+				esc_html__( 'Deactivate', 'polylang' )
 			),
 
 			'activate' => sprintf(
 				'<a title="%s" href="%s">%s</a>',
-				__( 'Activate this module', 'polylang' ),
+				esc_attr__( 'Activate this module', 'polylang' ),
 				wp_nonce_url( '?page=mlang&amp;tab=modules&amp;pll_action=activate&amp;noheader=true&amp;module=' . $this->module, 'pll_activate' ),
-				__( 'Activate', 'polylang' )
+				esc_html__( 'Activate', 'polylang' )
 			),
 
-			'activated' => __( 'Activated', 'polylang' ),
+			'activated' => esc_html__( 'Activated', 'polylang' ),
 
-			'deactivated' => __( 'Deactivated', 'polylang' ),
+			'deactivated' => esc_html__( 'Deactivated', 'polylang' ),
 		);
 
 		$this->buttons = array(
-			'cancel' => sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', __( 'Cancel' ) ),
-			'save'   => sprintf( '<button type="button" class="button button-primary save">%s</button>', __( 'Save Changes' ) ),
+			'cancel' => sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', esc_html__( 'Cancel' ) ),
+			'save'   => sprintf( '<button type="button" class="button button-primary save">%s</button>', esc_html__( 'Save Changes' ) ),
 		);
 
 		// ajax action to save options
