@@ -96,7 +96,7 @@ jQuery( document ).ready(function( $ ) {
 	// save settings
 	$( '#the-list' ).on( 'click', '.save', function(){
 		var tr = $( this ).closest( 'tr' );
-		var parts = tr.attr( 'id' ).split( ':' );
+		var parts = tr.attr( 'id' ).split( '-' );
 
 		var data = {
 			action:            'pll_save_options',
