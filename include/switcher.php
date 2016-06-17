@@ -43,6 +43,9 @@ class PLL_Switcher {
 	 * @return array
 	 */
 	protected function get_elements( $links, $args ) {
+		
+		$first = true;
+		
 		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
 			$id = (int) $language->term_id;
 			$order = (int) $language->term_group;
@@ -50,6 +53,11 @@ class PLL_Switcher {
 			$locale = $language->get_locale( 'display' );
 			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
 			$url = null; // Avoids potential notice
+
+			if ( $first === true ) {
+				$classes[] = 'lang-item-first';
+				$first = false;
+			}
 
 			if ( $current_lang = $links->curlang->slug == $slug ) {
 				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
