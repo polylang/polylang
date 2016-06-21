@@ -67,12 +67,15 @@ class PLL_Links_Subdomain extends PLL_Links_Permalinks {
 	 * links_model interface
 	 *
 	 * @since 1.2
+	 * @since 2.0 add $url argument
 	 *
+	 * @param string $url optional, defaults to current url
 	 * @return string language slug
 	 */
-	public function get_language_from_url() {
+	public function get_language_from_url( $url = '' ) {
+		$host = empty( $url ) ? $_SERVER['HTTP_HOST'] : parse_url( $url, PHP_URL_HOST );
 		$pattern = '#('.implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ).')\.#';
-		return preg_match( $pattern, trailingslashit( $_SERVER['HTTP_HOST'] ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
+		return preg_match( $pattern, trailingslashit( $host ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
 	}
 
 	/**

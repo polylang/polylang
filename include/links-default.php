@@ -68,12 +68,18 @@ class PLL_Links_Default extends PLL_Links_Model {
 	 * links_model interface
 	 *
 	 * @since 1.2
+	 * @since 2.0 add $url argument
 	 *
+	 * @param string $url optional, defaults to current url
 	 * @return string language slug
 	 */
-	public function get_language_from_url() {
+	public function get_language_from_url( $url = '' ) {
+		if ( empty( $url ) ) {
+			$url = $_SERVER['REQUEST_URI'];
+		}
+
 		$pattern = '#lang=('.implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ).')#';
-		return preg_match( $pattern, trailingslashit( $_SERVER['REQUEST_URI'] ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
+		return preg_match( $pattern, trailingslashit( $url ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
 	}
 
 	/**
