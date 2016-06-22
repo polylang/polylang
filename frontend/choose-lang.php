@@ -151,19 +151,28 @@ abstract class PLL_Choose_Lang {
 			}
 		}
 
-		// looks through sorted list and use first one that matches our language list
-		$listlanguages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // hides languages with no post
+		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // hides languages with no post
 
+		/**
+		 * Filter the list of languages to use to match the browser preferences
+		 *
+		 * @since 1.9.3
+		 *
+		 * @param array $languages array of PLL_Language objects
+		 */
+		$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
+
+		// looks through sorted list and use first one that matches our language list
 		foreach ( array_keys( $accept_langs ) as $accept_lang ) {
 			// first loop to match the exact locale
-			foreach ( $listlanguages as $language ) {
+			foreach ( $languages as $language ) {
 				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
 					return $language->slug;
 				}
 			}
 
 			// second loop to match the language set
-			foreach ( $listlanguages as $language ) {
+			foreach ( $languages as $language ) {
 				if ( 0 === stripos( $accept_lang, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $accept_lang ) ) {
 					return $language->slug;
 				}
