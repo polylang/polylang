@@ -367,7 +367,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$language = $this->model->post->get_language( (int) $obj->ID );
 		}
 
-		elseif ( is_404() && $id = get_query_var('p') ) {
+		elseif ( is_404() && ! empty( $wp_query->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
 			// special case for page shortlinks when using subdomains or multiple domains
 			// needed because redirect_canonical doesn't accept to change the domain name
 			$language = $this->model->post->get_language( (int) $id );
