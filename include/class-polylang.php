@@ -187,6 +187,15 @@ class Polylang {
 		}
 
 		if ( ! empty( $polylang ) ) {
+			/**
+			 * Fires after the $polylang object is created and before the API is loaded
+			 *
+			 * @since 2.0
+			 *
+			 * @param object $polylang
+			 */
+			do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
+
 			require_once( PLL_INC.'/api.php' ); // loads the API
 
 			if ( ! defined( 'PLL_WPML_COMPAT' ) || PLL_WPML_COMPAT ) {
