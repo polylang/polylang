@@ -191,6 +191,12 @@ jQuery( document ).ready(function( $ ) {
 					case 'flag': // flag in front of the select dropdown
 						$( '.pll-select-flag' ).html( this.data );
 					break;
+					case 'permalink': // Sample permalink
+						var div = $( '#edit-slug-box' );
+						if ( '-1' != this.data && div.children().length ) {
+							div.html( this.data );
+						}
+					break;
 				}
 			});
 

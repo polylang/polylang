@@ -276,6 +276,9 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		// flag
 		$x->Add( array( 'what' => 'flag', 'data' => empty( $lang->flag ) ? esc_html( $lang->slug ) : $lang->flag ) );
 
+		// Sample permalink
+		$x->Add( array( 'what' => 'permalink', 'data' => get_sample_permalink_html( $post_ID ) ) );
+
 		$x->send();
 	}
 
