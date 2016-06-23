@@ -23,12 +23,11 @@
  * @return null|string|array null if displaying, array if raw is requested, string otherwise
  */
 function pll_the_languages( $args = '' ) {
-	if ( PLL_ADMIN ) {
-		return '';
+	if ( PLL() instanceof PLL_Frontend ) {
+		$switcher = new PLL_Switcher;
+		return $switcher->the_languages( PLL()->links, $args );
 	}
-
-	$switcher = new PLL_Switcher;
-	return $switcher->the_languages( PLL()->links, $args );
+	return '';
 }
 
 /**

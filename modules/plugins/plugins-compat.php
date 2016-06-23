@@ -136,7 +136,7 @@ class PLL_Plugins_Compat {
 	 * @since 1.6.4
 	 */
 	public function wpseo_init() {
-		if ( ! defined( 'WPSEO_VERSION' ) || PLL_ADMIN ) {
+		if ( ! defined( 'WPSEO_VERSION' ) || ! PLL() instanceof PLL_Frontend ) {
 			return;
 		}
 
@@ -402,7 +402,7 @@ class PLL_Plugins_Compat {
 	 * @return array modified $settings
 	 */
 	public function twenty_fourteen_option_featured_content( $settings ) {
-		if ( ! PLL_ADMIN && $settings['tag-id'] && $tr = pll_get_term( $settings['tag-id'] ) ) {
+		if ( PLL() instanceof PLL_Frontend && $settings['tag-id'] && $tr = pll_get_term( $settings['tag-id'] ) ) {
 			$settings['tag-id'] = $tr;
 		}
 
