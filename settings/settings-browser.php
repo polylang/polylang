@@ -8,7 +8,7 @@
 class PLL_Settings_Browser extends PLL_Settings_Module {
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.8
 	 *
@@ -19,25 +19,38 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 			'module'        => 'browser',
 			'title'         => __( 'Detect browser language', 'polylang' ),
 			'description'   => __( 'When the front page is visited, set the language according to the browser preference', 'polylang' ),
-			'active_option' => 3 > $polylang->options['force_lang'] ? 'browser' : false,
+			'active_option' => $this->is_available() ? 'browser' : false,
 		) );
 
-		add_action( 'admin_print_footer_scripts', array( $this, 'print_js' ) );
+		if ( ! class_exists( 'PLL_Xdata_Domain', true ) ) {
+			add_action( 'admin_print_footer_scripts', array( $this, 'print_js' ) );
+		}
 	}
 
 	/**
-	 * tells if the module is active
+	 * Tells if the option is available
+	 *
+	 * @since 2.0
+	 *
+	 * @return bool
+	 */
+	protected function is_available() {
+		return ( 3 > $this->options['force_lang'] ) || class_exists( 'PLL_Xdata_Domain', true );
+	}
+
+	/**
+	 * Tells if the module is active
 	 *
 	 * @since 1.8
 	 *
 	 * @return bool
 	 */
 	public function is_active() {
-		return 3 > $this->options['force_lang'] ? parent::is_active() : false;
+		return $this->is_available() ? parent::is_active() : false;
 	}
 
 	/**
-	 * displays the javascript to handle dynamically the change in url modifications
+	 * Displays the javascript to handle dynamically the change in url modifications
 	 * as the preferred browser language is not used when the language is set from different domains
 	 *
 	 * @since 1.8
