@@ -494,7 +494,8 @@ class PLL_Admin_Filters_Term {
 				}
 
 				if ( $tag_cloud = wp_tag_cloud( $args ) ) {
-					$x->Add( array( 'what' => 'tag_cloud', 'data' => '<h3>'.$tax->labels->popular_items.'</h3>'.$tag_cloud ) );
+					$html = sprintf( '<div class="tagcloud"><h2>%1$s</h2>%2$s</div>', esc_html( $tax->labels->popular_items ), $tag_cloud );
+					$x->Add( array( 'what' => 'tag_cloud', 'data' => $html ) );
 				}
 			}
 		}
