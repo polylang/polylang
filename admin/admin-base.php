@@ -6,7 +6,7 @@
  * @since 1.8
  */
 class PLL_Admin_Base extends PLL_Base {
-	public $curlang, $pref_lang;
+	public $filter_lang, $curlang, $pref_lang;
 
 	/**
 	 * loads the polylang text domain
@@ -170,6 +170,41 @@ class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
+	 * Sets the admin current language, used to filter the content
+	 *
+	 * @since 2.0
+	 */
+	public function set_current_language() {
+		$this->curlang = $this->filter_lang;
+
+		// Edit Post
+		if ( isset( $_REQUEST['pll_post_id'] ) ) {
+			$this->curlang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] );
+		} elseif ( 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) ) {
+			$this->curlang = $this->model->post->get_language( (int) $_GET['post'] );
+		} elseif ( 'post-new.php' === $GLOBALS['pagenow'] ) {
+			$this->curlang = empty( $_GET['new_lang'] ) ? $this->pref_lang : $this->model->get_language( $_GET['new_lang'] );
+		}
+
+		// Edit Term
+		// FIXME 'edit-tags.php' for backward compatibility with WP < 4.5
+		elseif ( in_array( $GLOBALS['pagenow'], array( 'edit-tags.php', 'term.php' ) ) && isset( $_GET['tag_ID'] ) ) {
+			$this->curlang = $this->model->term->get_language( (int) $_GET['tag_ID'] );
+		} elseif ( 'edit-tags.php' === $GLOBALS['pagenow'] ) {
+			if ( ! empty( $_GET['new_lang'] ) ) {
+				$this->curlang = $this->model->get_language( $_GET['new_lang'] );
+			} elseif ( empty( $this->curlang ) ) {
+				$this->curlang = $this->pref_lang;
+			}
+		}
+
+		// Ajax
+		elseif ( ! empty( $_REQUEST['lang'] ) ) {
+			$this->curlang = $this->model->get_language( $_REQUEST['lang'] );
+		}
+	}
+
+	/**
 	 * defines the backend language and the admin language filter based on user preferences
 	 *
 	 * @since 1.2.3
@@ -184,10 +219,10 @@ class PLL_Admin_Base extends PLL_Base {
 			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( $_GET['lang'] ) ) ? $lang->slug : '' );
 		}
 
-		$this->curlang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
+		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
 
 		// set preferred language for use when saving posts and terms: must not be empty
-		$this->pref_lang = empty( $this->curlang ) ? $this->model->get_language( $this->options['default_lang'] ) : $this->curlang;
+		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_language( $this->options['default_lang'] ) : $this->filter_lang;
 
 		/**
 		 * Filter the preferred language on amin side
@@ -198,6 +233,8 @@ class PLL_Admin_Base extends PLL_Base {
 		 * @param object $pref_lang preferred language
 		 */
 		$this->pref_lang = apply_filters( 'pll_admin_preferred_language', $this->pref_lang );
+
+		$this->set_current_language();
 
 		// inform that the admin language has been set
 		// only if the admin language is one of the Polylang defined language
@@ -258,7 +295,7 @@ class PLL_Admin_Base extends PLL_Base {
 			'flag' => '<span class="ab-icon"></span>',
 		);
 
-		$selected = empty( $this->curlang ) ? $all_item : $this->curlang;
+		$selected = empty( $this->filter_lang ) ? $all_item : $this->filter_lang;
 
 		$wp_admin_bar->add_menu( array(
 			'id'     => 'languages',

@@ -113,14 +113,40 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			return;
 		}
 
-		if ( isset( $qvars['post_type'] ) && ! isset( $qvars['lang'] ) ) {
-			// filters the list of media ( or wp-links ) by language when uploading from post
-			if ( isset( $_REQUEST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] ) ) {
-				$query->set( 'lang', $lang->slug );
-			} elseif ( ! empty( $this->curlang ) ) {
+		// Do not filter the query if the language is already specified in another way
+		if ( ! isset( $qvars['lang'] ) ) {
+			$excludes = array(
+				'p', 'post_parent', 'attachment', 'attachment_id', 'name', 'pagename', 'page_id',
+				'category_name', 'tag', 'cat', 'tag_id', 'category__in', 'category__not_in', 'category__and',
+				'post__in', 'post__not_in', 'post_name__in', 'tag__in', 'tag__not_in', 'tag__and',
+				'tag_slug__in', 'tag_slug__and', 'post_parent__in', 'post_parent__not_in',
+			);
+
+			foreach ( $excludes as $k ) {
+				if ( ! empty( $qvars[ $k ] ) ) {
+					return;
+				}
+			}
+
+			$taxonomies = array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) );
+
+			foreach( $taxonomies as $tax ) {
+				$tax = get_taxonomy( $tax );
+				if ( ! empty( $qv[ $tax->query_var ] ) ) {
+					return;
+				}
+			}
+
+			if ( ! empty( $qvars['tax_query'] ) && is_array( $qvars['tax_query'] ) && $this->model->have_translated_taxonomy( $qvars['tax_query'] ) ) {
+				return;
+			}
+
+			// Filter queries according to the current language
+			if ( isset( $qvars['post_type'] ) && ! empty( $this->curlang ) ) {
 				$qvars['lang'] = $this->curlang->slug;
 			}
 		}
+
 
 		if ( isset( $qvars['lang'] ) && 'all' === $qvars['lang'] ) {
 			unset( $qvars['lang'] );

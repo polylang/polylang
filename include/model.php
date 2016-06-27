@@ -181,7 +181,7 @@ class PLL_Model {
 	 * @return array modifed list of clauses
 	 */
 	public function terms_clauses( $clauses, $lang ) {
-		if ( ! empty( $lang ) ) {
+		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
 			$clauses['join'] .= $this->term->join_clause();
 			$clauses['where'] .= $this->term->where_clause( $lang );
 		}
@@ -291,6 +291,31 @@ class PLL_Model {
 	public function is_translated_taxonomy( $tax ) {
 		$taxonomies = $this->get_translated_taxonomies( false );
 		return ( is_array( $tax ) && array_intersect( $tax, $taxonomies ) || in_array( $tax, $taxonomies ) );
+	}
+
+	/**
+	 * Check if translated taxonomy is queried
+	 * Compatible with nested queries introduced in WP 4.1
+	 * @see https://wordpress.org/support/topic/tax_query-bug
+	 *
+	 * @since 1.7
+	 *
+	 * @param array $tax_queries
+	 * @return bool
+	 */
+	public function have_translated_taxonomy( $tax_queries ) {
+		foreach ( $tax_queries as $tax_query ) {
+			if ( isset( $tax_query['taxonomy'] ) && $this->is_translated_taxonomy( $tax_query['taxonomy'] ) && ! ( isset( $tax_query['operator'] ) && 'NOT IN' === $tax_query['operator'] ) ) {
+				return true;
+			}
+
+			// Nested queries
+			elseif ( is_array( $tax_query ) && $this->have_translated_taxonomy( $tax_query ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

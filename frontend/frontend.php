@@ -123,7 +123,7 @@ class PLL_Frontend extends PLL_Base {
 		$qv = $query->query_vars;
 
 		// to avoid returning an empty result if the query includes a translated taxonomy in a different language
-		$has_tax = isset( $query->tax_query->queries ) && $this->have_translated_taxonomy( $query->tax_query->queries );
+		$has_tax = isset( $query->tax_query->queries ) && $this->model->have_translated_taxonomy( $query->tax_query->queries );
 
 		// allow filtering recent posts and secondary queries by the current language
 		// take care not to break queries for non visible post types such as nav_menu_items
@@ -198,31 +198,6 @@ class PLL_Frontend extends PLL_Base {
 			$this->static_pages->init();
 			$this->load_strings_translations();
 		}
-	}
-
-	/**
-	 * check if translated taxonomy is queried
-	 * compatible with nested queries introduced in WP 4.1
-	 * @see https://wordpress.org/support/topic/tax_query-bug
-	 *
-	 * @since 1.7
-	 *
-	 * @param array $tax_queries
-	 * @return bool
-	 */
-	protected function have_translated_taxonomy( $tax_queries ) {
-		foreach ( $tax_queries as $tax_query ) {
-			if ( isset( $tax_query['taxonomy'] ) && $this->model->is_translated_taxonomy( $tax_query['taxonomy'] ) && ! ( isset( $tax_query['operator'] ) && 'NOT IN' === $tax_query['operator'] ) ) {
-				return true;
-			}
-
-			// nested queries
-			elseif ( is_array( $tax_query ) && $this->have_translated_taxonomy( $tax_query ) ) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**

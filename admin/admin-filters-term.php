@@ -6,7 +6,7 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Term {
-	public $links, $model, $options, $curlang, $pref_lang;
+	public $links, $model, $options, $curlang, $filter_lang, $pref_lang;
 	protected $pre_term_name; // Used to store the term name before creating a slug if needed
 	protected $post_id; // Used to store the current post_id when bulk editing posts
 
@@ -20,6 +20,7 @@ class PLL_Admin_Filters_Term {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
 		$this->curlang = &$polylang->curlang;
+		$this->filter_lang = &$polylang->filter_lang;
 		$this->pref_lang = &$polylang->pref_lang;
 
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
@@ -575,88 +576,12 @@ class PLL_Admin_Filters_Term {
 			return $args['lang'];
 		}
 
-		if ( function_exists( 'get_current_screen' ) ) {
-			$screen = get_current_screen(); // since WP 3.1, may not be available the first time(s) get_terms is called
+		// On tags page, the tags list and the tag cloud must be filtered according to the admin language filter
+		if ( 'edit-tags.php' === $GLOBALS['pagenow'] && ( ! empty( $args['page'] ) || ! empty( $args['smallest'] ) ) ) {
+			return $this->filter_lang;
 		}
 
-		// Don't filter nav menus on nav menus screen
-		if ( isset( $screen ) && 'nav-menus' == $screen->base && in_array( 'nav_menu', $taxonomies ) ) {
-			return false;
-		}
-
-		// Does nothing in Languages and dasboard admin panels
-		if ( isset( $screen ) && in_array( $screen->base, array( 'toplevel_page_mlang', 'dashboard' ) ) ) {
-			return false;
-		}
-
-		// Ajax actions
-		if ( isset( $_POST['action'] ) ) {
-			// Admin language filter for:
-			// Ajax paginate_links in taxonomies metabox in nav menus panel
-			// And taxonomies menus items in customizer menus ( since WP 4.3 )
-			if ( ! empty( $this->curlang ) && in_array( $_POST['action'], array( 'menu-get-metabox', 'load-available-menu-items-customizer' ) ) ) {
-				return $this->curlang;
-			}
-
-			// The only ajax response I want to deal with is when changing the language in post metabox
-			if ( ! in_array( $_POST['action'], array( 'post_lang_choice', 'term_lang_choice', 'get-tagcloud' ) ) ) {
-				return false;
-			}
-
-			// I only want to filter the parent dropdown list when editing a term in a hierarchical taxonomy
-			if ( 'term_lang_choice' == $_POST['action'] && ! ( isset( $args['class'] ) || isset( $args['unit'] ) ) ) {
-				return false;
-			}
-		}
-
-		// Ajax response for changing the language in the post metabox ( or in the edit-tags panels )
-		if ( isset( $_POST['lang'] ) ) {
-			$lang = $this->model->get_language( $_POST['lang'] );
-		}
-
-		// The post ( or term ) is created with the 'add new' ( translation ) link
-		// Test of $args['page'] to avoid filtering the terms list table in edit-tags panel
-		elseif ( ! empty( $_GET['new_lang'] ) && empty( $args['page'] ) ) {
-			$lang = $this->model->get_language( $_GET['new_lang'] );
-		}
-
-		// FIXME can we simplify how we deal with the admin language filter?
-		// The language filter selection has just changed
-		// Test $screen->base to avoid interference between the language filter and the post language selection and the category parent dropdown list
-		elseif ( ! empty( $_GET['lang'] ) && ! ( isset( $screen ) && in_array( $screen->base, array( 'post', 'edit-tags', 'term' ) ) ) ) {
-			if ( 'all' != $_GET['lang'] ) {
-				$lang = $this->model->get_language( $_GET['lang'] );
-			}
-			elseif ( in_array( $screen->base, array( 'edit-tags', 'term' ) ) && isset( $args['class'] ) ) {
-				$lang = $this->pref_lang; // Parent dropdown
-			}
-		}
-
-		// Again the language filter
-		elseif ( ! empty( $this->curlang ) && ( isset( $screen ) && 'post' != $screen->base && ! ( in_array( $screen->base, array( 'edit-tags', 'term' ) ) && isset( $args['class'] ) ) ) ) { // don't apply to post edit and the category parent dropdown list
-		 	$lang = $this->curlang;
-		}
-
-		elseif ( isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) ) { // is numeric avoids array of posts in *post* bulk edit
-			$lang = $this->model->post->get_language( $_GET['post'] );
-		}
-
-		// For the parent dropdown list in edit term
-		elseif ( isset( $_GET['tag_ID'] ) ) {
-			$lang = $this->model->term->get_language( (int) $_GET['tag_ID'] );
-		}
-
-		// When a new category is created in the edit post panel
-		elseif ( isset( $_POST['term_lang_choice'] ) ) {
-			$lang = $this->model->get_language( $_POST['term_lang_choice'] );
-		}
-
-		// For a new post ( or the parent dropdown list of a new term )
-		elseif ( isset( $screen ) && ( 'post' == $screen->base || ( in_array( $screen->base, array( 'edit-tags', 'term' ) ) && isset( $args['class'] ) ) ) ) {
-			$lang = $this->pref_lang;
-		}
-
-		return empty( $lang ) ? false : $lang;
+		return $this->curlang;
 	}
 
 	/**

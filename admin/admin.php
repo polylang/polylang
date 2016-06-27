@@ -11,7 +11,8 @@
  * links            => inherited, reference to PLL_Admin_Links object
  * static_pages     => inherited, reference to PLL_Admin_Static_Pages object
  * filters_links    => inherited, reference to PLL_Filters_Links object
- * curlang          => inherited, optional, current language used to filter admin content
+ * curlang          => inherited, optional, current language used to filter the content (language of the post or term being edited, equal to filter_lang otherwise)
+ * filter_lang      => inherited, optional, current status of the admin languages filter (in the admin bar)
  * pref_lang        => inherited, preferred language used as default when saving posts or terms
  * filters          => reference to PLL_Filters object
  * filters_columns  => reference to PLL_Admin_Filters_Columns object

@@ -7,7 +7,7 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Columns {
-	public $links, $model, $curlang;
+	public $links, $model, $filter_lang;
 
 	/**
 	 * constructor: setups filters and actions
@@ -19,7 +19,7 @@ class PLL_Admin_Filters_Columns {
 	public function __construct( &$polylang ) {
 		$this->links = &$polylang->links;
 		$this->model = &$polylang->model;
-		$this->curlang = &$polylang->curlang;
+		$this->filter_lang = &$polylang->filter_lang;
 
 		// add the language and translations columns in 'All Posts', 'All Pages' and 'Media library' panels
 		foreach ( $this->model->get_translated_post_types() as $type ) {
@@ -61,7 +61,7 @@ class PLL_Admin_Filters_Columns {
 
 		foreach ( $this->model->get_languages_list() as $language ) {
 			// don't add the column for the filtered language
-			if ( empty( $this->curlang ) || $language->slug != $this->curlang->slug ) {
+			if ( empty( $this->filter_lang ) || $language->slug != $this->filter_lang->slug ) {
 				$columns[ 'language_'.$language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
 			}
 		}
@@ -78,7 +78,7 @@ class PLL_Admin_Filters_Columns {
 	 */
 	protected function get_first_language_column() {
 		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( empty( $this->curlang ) || $language->slug != $this->curlang->slug ) {
+			if ( empty( $this->filter_lang ) || $language->slug != $this->filter_lang->slug ) {
 				$columns[] = 'language_' . $language->slug;
 			}
 		}
