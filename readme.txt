@@ -77,6 +77,15 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 1.9.3 (2016-06-28) =
+
+* Pro: Allow to add slashes in url slugs translations
+* Pro: Fix archive links not using translated slugs
+* Pro: Fix visitor being redirected to 404 if his browser preference is set to an inactive language
+* Fix strings translations table always back to page 1 when submitting the form (#14)
+* Fix get_pages( array( 'lang' => '' ) ) not querying all the languages
+* Fix switching the admin language filter can override the static front page settings (#16)
+
 = 1.9.2 (2016-06-06) =
 
 * Pro: fix unreachable hierarchical custom post type posts when they are sharing slugs across languages
