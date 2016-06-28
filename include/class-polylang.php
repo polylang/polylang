@@ -68,8 +68,8 @@ class Polylang {
 		}
 
 		$class = str_replace( '_', '-', strtolower( substr( $class, 4 ) ) );
-		$to_remove = array( 'post-', 'term-', 'settings-', 'admin-', 'frontend-', '-config', '-compat', '-model', 'advanced-' );
-		$dir = str_replace( $to_remove, array(), $class );
+		$to_find = array( 'media', 'share', 'slug', 'slugs', 'sync', 'translate', 'wpml', 'xdata' );
+		$dir = implode( '-', array_intersect( explode( '-', $class ), $to_find ) );
 
 		$dirs = array(
 			PLL_FRONT_INC,
