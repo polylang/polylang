@@ -1,7 +1,7 @@
 <?php
 
 /**
- * base class for both admin
+ * Base class for both admin
  *
  * @since 1.8
  */
@@ -9,8 +9,8 @@ class PLL_Admin_Base extends PLL_Base {
 	public $filter_lang, $curlang, $pref_lang;
 
 	/**
-	 * loads the polylang text domain
-	 * setups actions needed on all admin pages
+	 * Loads the polylang text domain
+	 * Setups actions needed on all admin pages
 	 *
 	 * @since 1.8
 	 *
@@ -19,13 +19,13 @@ class PLL_Admin_Base extends PLL_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
-		// plugin i18n, only needed for backend
+		// Plugin i18n, only needed for backend
 		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ).'/languages' );
 
-		// adds the link to the languages panel in the WordPress admin menu
+		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
 
-		// setup js scripts and css styles
+		// Setup js scripts and css styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ) );
 
@@ -36,8 +36,8 @@ class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * setups filters and action needed on all admin pages and on plugins page
-	 * loads the settings pages or the filters base on the request
+	 * Setups filters and action needed on all admin pages and on plugins page
+	 * Loads the settings pages or the filters base on the request
 	 *
 	 * @since 1.2
 	 *
@@ -52,17 +52,17 @@ class PLL_Admin_Base extends PLL_Base {
 		$this->static_pages = new PLL_Admin_Static_Pages( $this ); // FIXME needed here ?
 		$this->filters_links = new PLL_Filters_Links( $this ); // FIXME needed here ?
 
-		// filter admin language for users
-		// we must not call user info before WordPress defines user roles in wp-settings.php
+		// Filter admin language for users
+		// We must not call user info before WordPress defines user roles in wp-settings.php
 		add_filter( 'setup_theme', array( $this, 'init_user' ) );
 		add_filter( 'request', array( $this, 'request' ) );
 
-		// adds the languages in admin bar
+		// Adds the languages in admin bar
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ), 100 ); // 100 determines the position
 	}
 
 	/**
-	 * adds the link to the languages panel in the WordPress admin menu
+	 * Adds the link to the languages panel in the WordPress admin menu
 	 *
 	 * @since 0.1
 	 */
@@ -71,7 +71,7 @@ class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * setup js scripts & css styles ( only on the relevant pages )
+	 * Setup js scripts & css styles ( only on the relevant pages )
 	 *
 	 * @since 0.6
 	 */
@@ -83,7 +83,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		// for each script:
+		// For each script:
 		// 0 => the pages on which to load the script
 		// 1 => the scripts it needs to work
 		// 2 => 1 if loaded even if languages have not been defined yet, 0 otherwise
@@ -98,18 +98,18 @@ class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
-				wp_enqueue_script( 'pll_'.$script, POLYLANG_URL .'/js/'.$script.$suffix.'.js', $v[1], POLYLANG_VERSION, $v[3] );
+				wp_enqueue_script( 'pll_' . $script, POLYLANG_URL . '/js/' . $script . $suffix . '.js', $v[1], POLYLANG_VERSION, $v[3] );
 			}
 		}
 
-		wp_enqueue_style( 'polylang_admin', POLYLANG_URL .'/css/admin'.$suffix.'.css', array(), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_admin', POLYLANG_URL . '/css/admin' . $suffix . '.css', array(), POLYLANG_VERSION );
 	}
 
 	/**
-	 * sets pll_ajax_backend on all backend ajax request
-	 * the final goal is to detect if an ajax request is made on admin or frontend
+	 * Sets pll_ajax_backend on all backend ajax request
+	 * The final goal is to detect if an ajax request is made on admin or frontend
 	 *
-	 * takes care to various situations:
+	 * Takes care to various situations:
 	 * when the ajax request has no options.data thanks to ScreenfeedFr
 	 * see: https://wordpress.org/support/topic/ajaxprefilter-may-not-work-as-expected
 	 * when options.data is a json string
@@ -127,38 +127,32 @@ class PLL_Admin_Base extends PLL_Base {
 			$params = array_merge( $params, array( 'pll_post_id' => (int) $post_ID ) );
 		}
 
-		$str = $arr = '';
-		foreach ( $params as $k => $v ) {
-			$str .= ( empty( $str ) ? '' : '&' ) . $k . '=' . $v;
-			$arr .= ( empty( $arr ) ? '' : ', ') . $k . ': ' . $v;
-		}
+		$str = http_build_query( $params );
+		$arr = json_encode( $params );
 ?>
 <script type="text/javascript">
 	if (typeof jQuery != 'undefined') {
 		(function($){
 			$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-				if (options.url.indexOf(ajaxurl) != -1) {
-					if ( typeof options.data === 'undefined' ) {
-						options.data = options.type.toLowerCase() === "get" ? '<?php echo $str;?>' : {<?php echo $arr;?>};
-					}
-					else {
-						if (typeof options.data === "string") {
-							if ( '' === options.data && "get" === options.type.toLowerCase() ) {
-								options.url = options.url+'<?php echo '&' . $str;?>';
-							}
-							else {
+				if ( -1 != options.url.indexOf( ajaxurl ) ) {
+					if ( 'undefined' === typeof options.data ) {
+						options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str;?>' : <?php echo $arr;?>;
+					} else {
+						if ( 'string' === typeof options.data ) {
+							if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
+								options.url = options.url+'&<?php echo $str;?>';
+							} else {
 								try {
 									o = $.parseJSON(options.data);
-									o = $.extend(o, {<?php echo $arr;?>});
+									o = $.extend(o, <?php echo $arr;?>);
 									options.data = JSON.stringify(o);
 								}
 								catch(e) {
-									options.data = '<?php echo $str . '&';?>'+options.data;
+									options.data = '<?php echo $str;?>&'+options.data;
 								}
 							}
-						}
-						else {
-							options.data = $.extend(options.data, {<?php echo $arr;?>});
+						} else {
+							options.data = $.extend(options.data, <?php echo $arr;?>);
 						}
 					}
 				}
@@ -166,7 +160,6 @@ class PLL_Admin_Base extends PLL_Base {
 		})(jQuery)
 	}
 </script><?php
-
 	}
 
 	/**
@@ -205,15 +198,15 @@ class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * defines the backend language and the admin language filter based on user preferences
+	 * Defines the backend language and the admin language filter based on user preferences
 	 *
 	 * @since 1.2.3
 	 */
 	public function init_user() {
-		// backend locale
+		// Backend locale
 		add_filter( 'locale', array( $this, 'get_locale' ) );
 
-		// language for admin language filter: may be empty
+		// Language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
 		if ( ! defined( 'DOING_AJAX' ) && ! empty( $_GET['lang'] ) && ! is_numeric( $_GET['lang'] ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) {
 			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( $_GET['lang'] ) ) ? $lang->slug : '' );
@@ -221,7 +214,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
 
-		// set preferred language for use when saving posts and terms: must not be empty
+		// Set preferred language for use when saving posts and terms: must not be empty
 		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_language( $this->options['default_lang'] ) : $this->filter_lang;
 
 		/**
@@ -236,8 +229,8 @@ class PLL_Admin_Base extends PLL_Base {
 
 		$this->set_current_language();
 
-		// inform that the admin language has been set
-		// only if the admin language is one of the Polylang defined language
+		// Inform that the admin language has been set
+		// Only if the admin language is one of the Polylang defined language
 		if ( $curlang = $this->model->get_language( get_locale() ) ) {
 			$GLOBALS['text_direction'] = $curlang->is_rtl ? 'rtl' : 'ltr'; // force text direction according to language setting
 			/** This action is documented in frontend/choose-lang.php */
@@ -250,8 +243,8 @@ class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * avoids parsing a tax query when all languages are requested
-	 * fixes https://wordpress.org/support/topic/notice-undefined-offset-0-in-wp-includesqueryphp-on-line-3877 introduced in WP 4.1
+	 * Avoids parsing a tax query when all languages are requested
+	 * Fixes https://wordpress.org/support/topic/notice-undefined-offset-0-in-wp-includesqueryphp-on-line-3877 introduced in WP 4.1
 	 * @see the suggestion of @boonebgorges, https://core.trac.wordpress.org/ticket/31246
 	 *
 	 * @since 1.6.5
@@ -268,7 +261,7 @@ class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * get the locale based on user preference
+	 * Get the locale based on user preference
 	 *
 	 * @since 0.4
 	 *
@@ -280,7 +273,7 @@ class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * adds the languages list in admin bar for the admin languages filter
+	 * Adds the languages list in admin bar for the admin languages filter
 	 *
 	 * @since 0.9
 	 *
