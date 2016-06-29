@@ -136,9 +136,16 @@ class PLL_Plugins_Compat {
 	 * @since 1.6.4
 	 */
 	public function wpseo_init() {
-		if ( ! defined( 'WPSEO_VERSION' ) || ! PLL() instanceof PLL_Frontend ) {
+		if ( ! defined( 'WPSEO_VERSION' ) ) {
 			return;
 		}
+
+		if ( ! PLL() instanceof PLL_Frontend ) {
+			add_action( 'admin_init', array( $this, 'wpseo_register_strings' ) );
+			return;
+		}
+
+		add_filter( 'option_wpseo_titles', array( $this, 'wpseo_translate_titles' ) );
 
 		// Reloads options once the language has been defined to enable translations
 		// Useful only when the language is set from content
@@ -179,6 +186,67 @@ class PLL_Plugins_Compat {
 		add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
 		add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
 		add_filter( 'wpseo_canonical', array( $this, 'wpseo_canonical' ) );
+	}
+
+	/**
+	 * Yoast SEO
+	 * Registers strings for custom post types and custom taxonomies titles and meta descriptions
+	 *
+	 * @since 2.0
+	 */
+	function wpseo_register_strings() {
+		$options = get_option( 'wpseo_titles' );
+		foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
+			if ( pll_is_translated_post_type( $t ) ) {
+				pll_register_string( 'title-' . $t, $options[ 'title-' . $t ], 'wordpress-seo' );
+				pll_register_string( 'metadesc-' . $t, $options[ 'metadesc-' . $t ], 'wordpress-seo' );
+			}
+		}
+		foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
+			if ( pll_is_translated_post_type( $t ) ) {
+				pll_register_string( 'title-ptarchive-' . $t, $options[ 'title-ptarchive-' . $t ], 'wordpress-seo' );
+				pll_register_string( 'metadesc-ptarchive-' . $t, $options[ 'metadesc-ptarchive-' . $t ], 'wordpress-seo' );
+			}
+		}
+		foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
+			if ( pll_is_translated_taxonomy( $t ) ) {
+				pll_register_string( 'title-tax-' . $t, $options[ 'title-tax-' . $t ], 'wordpress-seo' );
+				pll_register_string( 'metadesc-tax-' . $t, $options[ 'metadesc-tax-' . $t ], 'wordpress-seo' );
+			}
+		}
+	}
+
+	/**
+	 * Yoast SEO
+	 * Translates strings for custom post types and custom taxonomies titles and meta descriptions
+	 *
+	 * @since 2.0
+	 *
+	 * @param array $options
+	 * @return array
+	 */
+	function wpseo_translate_titles( $options ) {
+		if ( PLL() instanceof PLL_Frontend ) {
+			foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
+				if ( pll_is_translated_post_type( $t ) ) {
+					$options[ 'title-' . $t ] = pll__( $options[ 'title-' . $t ] );
+					$options[ 'metadesc-' . $t ] = pll__( $options[ 'metadesc-' . $t ] );
+				}
+			}
+			foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
+				if ( pll_is_translated_post_type( $t ) ) {
+					$options[ 'title-ptarchive-' . $t ] = pll__( $options[ 'title-ptarchive-' . $t ] );
+					$options[ 'metadesc-ptarchive-' . $t ] = pll__( $options[ 'metadesc-ptarchive-' . $t ] );
+				}
+			}
+			foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
+				if ( pll_is_translated_taxonomy( $t ) ) {
+					$options[ 'title-tax-' . $t ] = pll__( $options[ 'title-tax-' . $t ] );
+					$options[ 'metadesc-tax-' . $t ] = pll__( $options[ 'metadesc-tax-' . $t ] );
+				}
+			}
+		}
+		return $options;
 	}
 
 	/**
