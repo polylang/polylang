@@ -40,6 +40,7 @@
 				term_id:      term_id,
 				translations: translations.join( ',' ),
 				taxonomy:     $( "input[name='taxonomy']" ).val(),
+				post_type:    $( "input[name='post_type']" ).val(),
 				screen:       $( "input[name='screen']" ).val(),
 				_pll_nonce:   $( '#_pll_nonce' ).val()
 			}
