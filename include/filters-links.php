@@ -23,7 +23,7 @@ class PLL_Filters_Links {
 
 		// low priority on links filters to come after any other modifications
 		if ( $this->options['force_lang'] ) {
-			add_filter( 'post_link', array( $this, 'post_link' ), 20, 2 );
+			add_filter( 'post_link', array( $this, 'post_type_link' ), 20, 2 );
 			add_filter( '_get_page_link', array( $this, '_get_page_link' ), 20, 2 );
 		}
 
@@ -38,21 +38,6 @@ class PLL_Filters_Links {
 			add_filter( 'preview_post_link', array( $this, 'preview_post_link' ), 20 );
 		}
 	}
-
-	/**
-	 * modifies post & page links
-	 *
-	 * @since 0.7
-	 *
-	 * @param string $link post link
-	 * @param object $post post object
-	 * @return string modified post link
-	 */
-	public function post_link( $link, $post ) {
-		// /!\ WP does not use pretty permalinks for preview
-		return false !== strpos( $link, 'preview=true' ) && false !== strpos( $link, 'p=' ) ? $link : $this->links_model->add_language_to_link( $link, $this->model->post->get_language( $post->ID ) );
-	}
-
 
 	/**
 	 * modifies page links
@@ -97,11 +82,11 @@ class PLL_Filters_Links {
 			$link = $this->options['force_lang'] ? $this->links_model->add_language_to_link( $link, $lang ) : $link;
 
 			/**
-			 * Filter a custom post type link
+			 * Filter a post or custom post type link
 			 *
 			 * @since 1.6
 			 *
-			 * @param string $link the term link
+			 * @param string $link the post link
 			 * @param object $lang the current language
 			 * @param object $post the post object
 			 */
