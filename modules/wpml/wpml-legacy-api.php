@@ -116,7 +116,7 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 				$text = get_the_title( $id );
 			}
 		} elseif ( taxonomy_exists( $type ) ) {
-			$link = get_term_link( $id, $type );
+			$link = wpcom_vip_get_term_link( $id, $type );
 			if ( empty( $text ) && ( $term = get_term( $id, $type ) ) && ! empty( $term ) && ! is_wp_error( $term ) ) {
 				$text = $term->name;
 			}

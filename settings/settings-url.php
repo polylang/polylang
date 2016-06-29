@@ -216,7 +216,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			$this->check_domains( $newoptions );
 		}
 
-		return $newoptions; // take care to return only validated options
+		return $newoptions; // Take care to return only validated options
 	}
 
 	/**
@@ -231,8 +231,9 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 		$model = new PLL_Model( $options );
 		$links_model = $model->get_links_model();
 		foreach ( $this->model->get_languages_list() as $lang ) {
-			$url = $links_model->home_url( $lang );
-			$response = wp_remote_get( add_query_arg( 'deactivate-polylang', 1, $url ) );
+			$url = add_query_arg( 'deactivate-polylang', 1, $links_model->home_url( $lang ) );
+			// Don't redefine vip_safe_wp_remote_get() as it has not the same signature as wp_remote_get()
+			$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $url ) ) : wp_remote_get( esc_url_raw( $url ) );
 			$response_code = wp_remote_retrieve_response_code( $response );
 
 			if ( 200 != $response_code ) {

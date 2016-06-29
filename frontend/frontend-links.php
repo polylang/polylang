@@ -96,14 +96,14 @@ class PLL_Frontend_Links extends PLL_Links {
 				$lang = $this->model->term->get_language( $term->term_id );
 
 				if ( ! $lang || $language->slug == $lang->slug ) {
-					$url = get_term_link( $term, $term->taxonomy ); // self link
+					$url = wpcom_vip_get_term_link( $term, $term->taxonomy ); // self link
 				}
 
 				elseif ( $tr_id = $this->model->term->get_translation( $term->term_id, $language ) ) {
 					$tr_term = get_term( $tr_id, $term->taxonomy );
 					// check if translated term ( or children ) have posts
 					if ( $tr_term && ( $tr_term->count || ( is_taxonomy_hierarchical( $term->taxonomy ) && array_sum( wp_list_pluck( get_terms( $term->taxonomy, array( 'child_of' => $tr_term->term_id, 'lang' => $language->slug ) ), 'count' ) ) ) ) ) {
-						$url = get_term_link( $tr_term, $term->taxonomy );
+						$url = wpcom_vip_get_term_link( $tr_term, $term->taxonomy );
 					}
 				}
 			}

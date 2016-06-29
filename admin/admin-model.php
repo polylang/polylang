@@ -137,7 +137,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Delete the string translations
-		$post = get_page_by_title( 'polylang_mo_' . $lang->term_id, OBJECT, 'polylang_mo' );
+		$post = wpcom_vip_get_page_by_title( 'polylang_mo_' . $lang->term_id, OBJECT, 'polylang_mo' );
 		if ( ! empty( $post ) ) {
 			wp_delete_post( $post->ID );
 		}

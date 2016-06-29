@@ -27,7 +27,7 @@ class Polylang {
 	 * @since 0.1
 	 */
 	public function __construct() {
-		// FIXME maybe not available on every installations but widely used by WP plugins
+		require_once( PLL_INC . '/functions-wpcom-vip.php' ); // VIP functions
 		spl_autoload_register( array( $this, 'autoload' ) ); // autoload classes
 
 		$install = new PLL_Install( POLYLANG_BASENAME );
