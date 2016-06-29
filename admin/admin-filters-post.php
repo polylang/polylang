@@ -130,7 +130,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 			$taxonomies = array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) );
 
-			foreach( $taxonomies as $tax ) {
+			foreach ( $taxonomies as $tax ) {
 				$tax = get_taxonomy( $tax );
 				if ( ! empty( $qv[ $tax->query_var ] ) ) {
 					return;

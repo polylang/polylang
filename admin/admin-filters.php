@@ -34,7 +34,6 @@ class PLL_Admin_Filters extends PLL_Filters {
 		add_filter( 'themes_update_check_locales', array( $this, 'update_check_locales' ) );
 		add_filter( 'plugins_update_check_locales', array( $this, 'update_check_locales' ) );
 
-
 		// We need specific filters for German and Danish
 		$specific_locales = array( 'da_DK', 'de_DE', 'de_DE_formal', 'de_CH', 'de_CH_informal' );
 		if ( array_intersect( $this->model->get_languages_list( array( 'fields' => 'locale' ) ), $specific_locales ) ) {

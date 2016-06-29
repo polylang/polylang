@@ -32,7 +32,7 @@ class PLL_WPML_API {
 
 		// Retrieving Language Information for Content
 
-		add_filter( 'wpml_post_language_details', 'wpml_get_language_information', 10, 2);
+		add_filter( 'wpml_post_language_details', 'wpml_get_language_information', 10, 2 );
 		// wpml_switch_language               => not implemented
 		add_filter( 'wpml_element_language_code', array( $this, 'wpml_element_language_code' ), 10, 3 );
 		// wpml_element_language_details      => not applicable
@@ -45,15 +45,14 @@ class PLL_WPML_API {
 		add_filter( 'wpml_translate_single_string', array( $this, 'wpml_translate_single_string' ), 10, 4 );
 		// wpml_translate_string              => not applicable
 		// wpml_unfiltered_admin_string       => not implemented
-		add_filter( 'wpml_permalink', array( PLL()->links_model, 'switch_language_in_link' ), 10, 2);
+		add_filter( 'wpml_permalink', array( PLL()->links_model, 'switch_language_in_link' ), 10, 2 );
 		// wpml_elements_without_translations => not implemented
 		// wpml_get_translated_slug           => not implemented
-
 
 		// Finding the Translation State of Content
 
 		// wpml_element_translation_type
-		add_filter( 'wpml_element_has_translations', array( $this, 'wpml_element_has_translations' ), 10, 2  );
+		add_filter( 'wpml_element_has_translations', array( $this, 'wpml_element_has_translations' ), 10, 2 );
 		// wpml_master_post_from_duplicate    => not applicable
 		// wpml_post_duplicates               => not applicable
 
@@ -105,7 +104,7 @@ class PLL_WPML_API {
 	 * @since 2.0
 	 */
 	public function wpml_add_language_form_field() {
-		printf ( '<input type="hidden" name="lang" value="%s" />', esc_attr( pll_current_language() ) );
+		printf( '<input type="hidden" name="lang" value="%s" />', esc_attr( pll_current_language() ) );
 	}
 
 	/**
@@ -145,25 +144,25 @@ class PLL_WPML_API {
 	 */
 	public function wpml_element_language_code( $language_code, $args ) {
 		$type = $args['element_type'];
-		$id =  $args['element_id'];
-		$pll_type = ( $type == 'post' || pll_is_translated_post_type( $type ) ) ? 'post' : ( $type == 'term' || pll_is_translated_taxonomy( $type ) ? 'term' : false );
+		$id = $args['element_id'];
+		$pll_type = ( 'post' == $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' == $type || pll_is_translated_taxonomy( $type ) ? 'term' : false );
 		if ( 'term' === $pll_type && $term = get_term_by( 'term_taxonomy_id', $id ) ) {
 			$id = $term->term_id;
 		}
 		return $pll_type ? call_user_func( "pll_get_$pll_type_language", $id ) : $language_code;
 	}
 
-/**
- * Translates a string
- *
- * @since 2.0
- *
- * @param string      $string  the string's original value
- * @param string      $context the string's registered context
- * @param string      $name    the string's registered name
- * @param null|string $lang    optional, return the translation in this language, defaults to current language
- * @return string the translated string
- */
+	/**
+	 * Translates a string
+	 *
+	 * @since 2.0
+	 *
+	 * @param string      $string  the string's original value
+	 * @param string      $context the string's registered context
+	 * @param string      $name    the string's registered name
+	 * @param null|string $lang    optional, return the translation in this language, defaults to current language
+	 * @return string the translated string
+	 */
 	public function wpml_translate_single_string( $string, $context, $name, $lang = null ) {
 		$has_translation = null; // passed by reference
 		return icl_translate( $context, $name, $original_value, false, $has_translation, $lang );
@@ -180,7 +179,7 @@ class PLL_WPML_API {
 	 * @return bool
 	 */
 	public function wpml_element_has_translations( $null, $id, $type ) {
-		$pll_type = ( $type == 'post' || pll_is_translated_post_type( $type ) ) ? 'post' : ( $type == 'term' || pll_is_translated_taxonomy( $type ) ? 'term' : false );
+		$pll_type = ( 'post' == $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' == $type || pll_is_translated_taxonomy( $type ) ? 'term' : false );
 		return ( $pll_type && $translations = call_user_func( "pll_get_$pll_type_translations", $id ) ) ? count( $translations ) > 1 : false;
 	}
 }
