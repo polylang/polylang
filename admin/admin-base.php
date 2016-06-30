@@ -192,7 +192,7 @@ class PLL_Admin_Base extends PLL_Base {
 		}
 
 		// Ajax
-		elseif ( ! empty( $_REQUEST['lang'] ) ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! empty( $_REQUEST['lang'] ) ) {
 			$this->curlang = $this->model->get_language( $_REQUEST['lang'] );
 		}
 	}
