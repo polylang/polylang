@@ -555,7 +555,6 @@ class PLL_Admin_Filters_Term {
 		wp_die( json_encode( $return ) );
 	}
 
-
 	/**
 	 * Get the language(s) to filter get_terms
 	 *
@@ -576,8 +575,8 @@ class PLL_Admin_Filters_Term {
 			return $args['lang'];
 		}
 
-		// On tags page, the tags list and the tag cloud must be filtered according to the admin language filter
-		if ( 'edit-tags.php' === $GLOBALS['pagenow'] && ( ! empty( $args['page'] ) || ! empty( $args['smallest'] ) ) ) {
+		// On tags page, everything should be filtered according to the admin language filter except the parent dropdown
+		if ( 'edit-tags.php' === $GLOBALS['pagenow'] && empty( $args['class'] ) ) {
 			return $this->filter_lang;
 		}
 
