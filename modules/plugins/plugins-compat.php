@@ -50,6 +50,9 @@ class PLL_Plugins_Compat {
 		if ( ! defined( 'PLL_AJAX_ON_FRONT' ) && isset( $_GET['infinity'], $_POST['action'] ) && 'infinite_scroll' == $_POST['action'] ) {
 			define( 'PLL_AJAX_ON_FRONT', true );
 		}
+
+		// WP Sweep
+		add_filter( 'wp_sweep_excluded_taxonomies', array( $this, 'wp_sweep_excluded_taxonomies' ) );
 	}
 
 	/**
@@ -562,6 +565,19 @@ class PLL_Plugins_Compat {
 		$slug = sanitize_title( pll_get_post_language( $post_id, 'name' ) );
 		$filters[] = array( 'term' => array( 'taxonomy.language.slug' => $slug ) );
 		return $filters;
+	}
+
+	/**
+	 * WP Sweep
+	 * Add 'term_language' and 'term_translations' to excluded taxonomies otherwise terms loose their language and translation group
+	 *
+	 * @since 2.0
+	 *
+	 * @param array $excluded_taxonomies list of taxonomies excluded from sweeping
+	 * @return array
+	 */
+	public function wp_sweep_excluded_taxonomies( $excluded_taxonomies ) {
+		return array_merge( $excluded_taxonomies, array( 'term_language', 'term_translations' ) );
 	}
 
 	/**
