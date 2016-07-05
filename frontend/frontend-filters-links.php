@@ -76,7 +76,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string modified link
 	 */
 	public function post_type_archive_link( $link, $post_type ) {
-		return $this->model->is_translated_post_type( $post_type ) ? $this->links_model->add_language_to_link( $link, $this->curlang ) : $link;
+		return $this->model->is_translated_post_type( $post_type ) && 'post' !== $post_type ? $this->links_model->add_language_to_link( $link, $this->curlang ) : $link;
 	}
 
 	/**
