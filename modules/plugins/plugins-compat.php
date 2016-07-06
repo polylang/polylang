@@ -165,19 +165,19 @@ class PLL_Plugins_Compat {
 			}
 		}
 
-		// One sitemap per language when using multiple domains or subdomains
+		// Filters sitemap queries to remove inactive language or to get
+		// one sitemap per language when using multiple domains or subdomains
 		// because WPSEO does not accept several domains or subdomains in one sitemap
-		if ( PLL()->options['force_lang'] > 1 ) {
-			add_filter( 'wpseo_enable_xml_sitemap_transient_caching', '__return_false' ); // disable cache! otherwise WPSEO keeps only one domain (thanks to Junaid Bhura)
-			add_filter( 'home_url', array( $this, 'wpseo_home_url' ) , 10, 2 ); // fix home_url
-			add_filter( 'wpseo_posts_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
-			add_filter( 'wpseo_posts_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
-			add_filter( 'wpseo_typecount_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
-			add_filter( 'wpseo_typecount_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
-		}
+		add_filter( 'wpseo_posts_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
+		add_filter( 'wpseo_posts_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
+		add_filter( 'wpseo_typecount_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
+		add_filter( 'wpseo_typecount_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
 
-		// One sitemap for all languages when the language is set from the content or directory name
-		else {
+		if ( PLL()->options['force_lang'] > 1 ) {
+			add_filter( 'wpseo_enable_xml_sitemap_transient_caching', '__return_false' ); // Disable cache! otherwise WPSEO keeps only one domain (thanks to Junaid Bhura)
+			add_filter( 'home_url', array( $this, 'wpseo_home_url' ) , 10, 2 ); // Fix home_url
+		} else {
+			// Get all terms in all languages when the language is set from the content or directory name
 			add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
 
 			// Add the homepages for all languages to the sitemap when the front page displays posts
@@ -274,8 +274,24 @@ class PLL_Plugins_Compat {
 
 	/**
 	 * Yoast SEO
+	 * Get active languages for the sitemaps
+	 *
+	 * @since 2.0
+	 *
+	 * @return array list of active language slugs, empty if all languages are active
+	 */
+	protected function wpseo_get_active_languages() {
+		$languages = PLL()->model->get_languages_list();
+		if ( wp_list_filter( $languages, array( 'active' => false ) ) ) {
+			return wp_list_pluck( wp_list_filter( $languages, array( 'active' => false ), 'NOT' ), 'slug' );
+		}
+		return array();
+	}
+
+	/**
+	 * Yoast SEO
 	 * Modifies the sql request for posts sitemaps
-	 * Only when using multiple domains or subdomains
+	 * Only when using multiple domains or subdomains or if some languages are not active
 	 *
 	 * @since 1.6.4
 	 *
@@ -284,13 +300,13 @@ class PLL_Plugins_Compat {
 	 * @return string
 	 */
 	public function wpseo_posts_join( $sql, $post_type ) {
-		return pll_is_translated_post_type( $post_type ) ? $sql. PLL()->model->post->join_clause() : $sql;
+		return pll_is_translated_post_type( $post_type ) && ( PLL()->options['force_lang'] > 1 || $this->wpseo_get_active_languages() ) ? $sql. PLL()->model->post->join_clause() : $sql;
 	}
 
 	/**
 	 * Yoast SEO
 	 * Modifies the sql request for posts sitemaps
-	 * Only when using multiple domains or subdomains
+	 * Only when using multiple domains or subdomains or if some languages are not active
 	 *
 	 * @since 1.6.4
 	 *
@@ -299,12 +315,21 @@ class PLL_Plugins_Compat {
 	 * @return string
 	 */
 	public function wpseo_posts_where( $sql, $post_type ) {
-		return pll_is_translated_post_type( $post_type ) ? $sql . PLL()->model->post->where_clause( PLL()->curlang ) : $sql;
+		if ( pll_is_translated_post_type( $post_type ) ) {
+			if ( PLL()->options['force_lang'] > 1 ) {
+				return $sql . PLL()->model->post->where_clause( PLL()->curlang );
+			}
+
+			if ( $languages = $this->wpseo_get_active_languages() ) {
+				return $sql . PLL()->model->post->where_clause( $languages );
+			}
+		}
+		return $sql;
 	}
 
 	/**
 	 * Yoast SEO
-	 * Removes the language filter for the taxonomy sitemaps
+	 * Removes the language filter (and remove inactive languages) for the taxonomy sitemaps
 	 * Only when the language is set from the content or directory name
 	 *
 	 * @since 1.0.3
@@ -314,14 +339,14 @@ class PLL_Plugins_Compat {
 	 */
 	public function wpseo_remove_terms_filter( $args ) {
 		if ( isset( $GLOBALS['wp_query']->query['sitemap'] ) ) {
-			$args['lang'] = 0;
+			$args['lang'] = implode( ',', $this->wpseo_get_active_languages() );
 		}
 		return $args;
 	}
 
 	/**
 	 * Yoast SEO
-	 * Adds the home urls for all languages to the sitemap
+	 * Adds the home urls for all (active) languages to the sitemap
 	 *
 	 * @since 1.9
 	 *
@@ -331,7 +356,9 @@ class PLL_Plugins_Compat {
 	public function add_language_home_urls( $str ) {
 		global $wpseo_sitemaps;
 
-		foreach ( pll_languages_list() as $lang ) {
+		$languages = wp_list_pluck( wp_list_filter( PLL()->model->get_languages_list() , array( 'active' => false ), 'NOT' ), 'slug' );
+
+		foreach ( $languages as $lang ) {
 			if ( empty( PLL()->options['hide_default'] ) || pll_default_language() !== $lang ) {
 				$str .= $wpseo_sitemaps->sitemap_url( array(
 					'loc' => pll_home_url( $lang ),
