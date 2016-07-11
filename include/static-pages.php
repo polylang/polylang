@@ -22,6 +22,9 @@ abstract class PLL_Static_Pages {
 
 		$this->init();
 
+		// Modifies the page link in case the front page is not in the default language
+		add_filter( 'page_link', array( $this, 'page_link' ), 20, 2 );
+
 		// clean the languages cache when editing page of front, page for posts
 		add_action( 'update_option_page_on_front', array( $this->model, 'clean_languages_cache' ) );
 		add_action( 'update_option_page_for_posts', array( $this->model, 'clean_languages_cache' ) );
@@ -45,6 +48,22 @@ abstract class PLL_Static_Pages {
 			$this->page_on_front = 0;
 			$this->page_for_posts = 0;
 		}
+	}
+
+	/**
+	 * Modifies the page link in case the front page is not in the default language
+	 *
+	 * @since 0.7.2
+	 *
+	 * @param string $link link to the page
+	 * @param int    $id   post id of the page
+	 * @return string modified link
+	 */
+	public function page_link( $link, $id ) {
+		if ( ( $lang = $this->model->post->get_language( $id ) ) && $id == $lang->page_on_front ) {
+			return $lang->home_url;
+		}
+		return $link;
 	}
 
 	/**

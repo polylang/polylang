@@ -24,9 +24,6 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
 		add_action( 'pll_home_requested', array( $this, 'pll_home_requested' ) );
 
-		// Modifies the page link in case the front page is not in the default language
-		add_filter( 'page_link', array( $this, 'page_link' ), 20, 2 );
-
 		// Manages the redirection of the homepage
 		add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ), 10, 2 );
 
@@ -90,22 +87,6 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	public function translate_page_for_posts( $v ) {
 		// Returns the current page if there is no translation to avoid ugly notices
 		return isset( $this->curlang->page_for_posts ) ? $this->curlang->page_for_posts : $v;
-	}
-
-	/**
-	 * Modifies the page link in case the front page is not in the default language
-	 *
-	 * @since 0.7.2
-	 *
-	 * @param string $link link to the page
-	 * @param int    $id   post id of the page
-	 * @return string modified link
-	 */
-	public function page_link( $link, $id ) {
-		if ( ( $lang = $this->model->post->get_language( $id ) ) && $id == $lang->page_on_front ) {
-			return $lang->home_url;
-		}
-		return $link;
 	}
 
 	/**
