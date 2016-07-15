@@ -571,7 +571,7 @@ class PLL_Admin_Filters_Term {
 		}
 
 		// If get_terms is queried with a 'lang' parameter
-		if ( ! empty( $args['lang'] ) ) {
+		if ( isset( $args['lang'] ) ) {
 			return $args['lang'];
 		}
 
@@ -594,6 +594,11 @@ class PLL_Admin_Filters_Term {
 	 * @return array modified arguments
 	 */
 	public function get_terms_args( $args, $taxonomies ) {
+		// don't break _get_term_hierarchy()
+		if ( 'all' === $args['get'] && 'id' === $args['orderby'] && 'id=>parent' === $args['fields'] ) {
+			$args['lang'] = '';
+		}
+
 		if ( $lang = $this->get_queried_language( $taxonomies, $args ) ) {
 			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
 			$args['cache_domain'] = empty( $args['cache_domain'] ) ? 'pll' . $key : $args['cache_domain'] . $key;
