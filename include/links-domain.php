@@ -7,7 +7,7 @@
  *
  * @since 1.2
  */
-class PLL_Links_Domain extends PLL_Links_Permalinks {
+class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 	/**
 	 * Constructor
@@ -19,9 +19,8 @@ class PLL_Links_Domain extends PLL_Links_Permalinks {
 	public function __construct( &$model ) {
 		parent::__construct( $model );
 
-		add_filter( 'site_url', array( $this, 'site_url' ) );
-		add_filter( 'content_url', array( $this, 'site_url' ) );
-		add_filter( 'plugins_url', array( $this, 'site_url' ) );
+		 // Filrer the site url ( mainly to get the correct login form )
+		 add_filter( 'site_url', array( $this, 'site_url' ) );
 	}
 
 
@@ -99,19 +98,5 @@ class PLL_Links_Domain extends PLL_Links_Permalinks {
 			$hosts[] = parse_url( $domain, PHP_URL_HOST );
 		}
 		return $hosts;
-	}
-
-	/**
-	 * Returns the correct site url ( mainly to get the correct login form )
-	 *
-	 * @since 1.8
-	 *
-	 * @param string $url
-	 * @return string
-	 */
-	public function site_url( $url ) {
-		$lang = $this->get_language_from_url();
-		$lang = $this->model->get_language( $lang );
-		return $this->add_language_to_link( $url, $lang );
 	}
 }

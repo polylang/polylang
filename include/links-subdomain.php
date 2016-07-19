@@ -7,7 +7,7 @@
  *
  * @since 1.2
  */
-class PLL_Links_Subdomain extends PLL_Links_Permalinks {
+class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	protected $www;
 
 	/**
