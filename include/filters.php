@@ -1,7 +1,7 @@
 <?php
 
 /**
- * setup filters common to admin and frontend
+ * Setup filters common to admin and frontend
  *
  * @since 1.4
  */
@@ -9,7 +9,7 @@ class PLL_Filters {
 	public $links_model, $model, $options, $curlang;
 
 	/**
-	 * constructor: setups filters
+	 * Constructor: setups filters
 	 *
 	 * @since 1.4
 	 *
@@ -21,45 +21,74 @@ class PLL_Filters {
 		$this->options = &$polylang->options;
 		$this->curlang = &$polylang->curlang;
 
-		// filters the comments according to the current language
+		// Filters the comments according to the current language
+		add_action( 'parse_comment_query', array( $this, 'parse_comment_query' ) );
 		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 10, 2 );
 
-		// filters the get_pages function according to the current language
+		// Filters the get_pages function according to the current language
 		add_filter( 'get_pages', array( $this, 'get_pages' ), 10, 2 );
 
-		// converts the locale to a valid W3C locale
+		// Converts the locale to a valid W3C locale
 		add_filter( 'language_attributes', array( $this, 'language_attributes' ) );
 	}
 
 	/**
-	 * filters the comments according to the current language
-	 * used by the recent comments widget and admin language filter
+	 * Get the language to filter a comments query
+	 *
+	 * @since 2.0
+	 *
+	 * @param object $query
+	 * @return object|bool the language(s) to use in the filter, false otherwise
+	 */
+	protected function get_comments_queried_language( $query ) {
+		// Don't filter comments if comment ids or post ids are specified
+		$plucked = wp_array_slice_assoc( $query->query_vars, array( 'comment__in', 'parent', 'post_id', 'post__in', 'post_parent' ) );
+		$fields = array_filter( $plucked );
+		if ( ! empty( $fields ) ) {
+			return false;
+		}
+
+		// Don't filter comments if a non translated post type is specified
+		if ( ! empty( $query->query_vars['post_type'] ) && ! $this->model->is_translated_post_type( $query->query_vars['post_type'] ) ) {
+			return false;
+		}
+
+		return empty( $query->query_vars['lang'] ) ? $this->curlang : $this->model->get_language( $query->query_vars['lang'] );
+	}
+
+	/**
+	 * Adds language dependent cache domain when querying comments
+	 * Useful as the 'lang' parameter is not included in cache key by WordPress
+	 * Needed since WP 4.6 as comments have been added to persistent cache. See #36906, #37419
+	 *
+	 * @since 2.0
+	 *
+	 * @param object $query
+	 */
+	public function parse_comment_query( $query ) {
+		if ( $lang = $this->get_comments_queried_language( $query ) ) {
+			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
+			$query->query_vars['cache_domain'] = empty( $query->query_vars['cache_domain'] ) ? 'pll' . $key : $query->query_vars['cache_domain'] . $key;
+		}
+	}
+
+	/**
+	 * Filters the comments according to the current language
+	 * Used by the recent comments widget and admin language filter
 	 *
 	 * @since 0.2
 	 *
-	 * @param array $clauses sql clauses
-	 * @param object $query WP_Comment_Query object
+	 * @param array  $clauses sql clauses
+	 * @param object $query   WP_Comment_Query object
 	 * @return array modified $clauses
 	 */
 	public function comments_clauses( $clauses, $query ) {
 		global $wpdb;
 
-		// don't filter comments if comment ids or post ids are specified
-		$plucked = wp_array_slice_assoc( $query->query_vars, array( 'comment__in', 'parent', 'post_id', 'post__in', 'post_parent' ) );
-		$fields = array_filter( $plucked );
-		if ( ! empty( $fields ) ) {
-			return $clauses;
-		}
-
-		// don't filter comments if a non translated post type is specified
-		if ( ! empty( $query->query_vars['post_type'] ) && ! $this->model->is_translated_post_type( $query->query_vars['post_type'] ) ) {
-			return $clauses;
-		}
-
-		$lang = empty( $query->query_vars['lang'] ) ? $this->curlang : $this->model->get_language( $query->query_vars['lang'] );
+		$lang = $this->get_comments_queried_language( $query );
 
 		if ( ! empty( $lang ) ) {
-			// if this clause is not already added by WP
+			// If this clause is not already added by WP
 			if ( ! strpos( $clauses['join'], '.ID' ) ) {
 				$clauses['join'] .= " JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->comments.comment_post_ID";
 			}
@@ -71,12 +100,12 @@ class PLL_Filters {
 	}
 
 	/**
-	 * filters get_pages per language
+	 * Filters get_pages per language
 	 *
 	 * @since 1.4
 	 *
 	 * @param array $pages an array of pages already queried
-	 * @param array $args get_pages arguments
+	 * @param array $args  get_pages arguments
 	 * @return array modified list of pages
 	 */
 	public function get_pages( $pages, $args ) {
@@ -92,19 +121,19 @@ class PLL_Filters {
 
 		static $once = false;
 
-		// obliged to redo the get_pages query if we want to get the right number
+		// Obliged to redo the get_pages query if we want to get the right number
 		if ( ! empty( $args['number'] ) && ! $once ) {
 			$once = true; // avoid infinite loop
 
 			$r = array(
-				'lang' => 0, // so this query is not filtered
+				'lang' => 0, // So this query is not filtered
 				'numberposts' => -1,
 				'nopaging'    => true,
 				'post_type'   => $args['post_type'],
 				'fields'      => 'ids',
 				'tax_query'   => array( array(
 					'taxonomy' => 'language',
-					'field'    => 'term_taxonomy_id', // since WP 3.5
+					'field'    => 'term_taxonomy_id', // Since WP 3.5
 					'terms'    => $language->term_taxonomy_id,
 					'operator' => 'NOT IN',
 				) ),
@@ -116,7 +145,7 @@ class PLL_Filters {
 
 		$ids = wp_list_pluck( $pages, 'ID' );
 
-		// filters the queried list of pages by language
+		// Filters the queried list of pages by language
 		if ( ! $once ) {
 			$ids = array_intersect( $ids, $this->model->post->get_objects_in_language( $language ) );
 
@@ -127,15 +156,15 @@ class PLL_Filters {
 			}
 		}
 
-		// not done by WP but extremely useful for performance when manipulating taxonomies
+		// Not done by WP but extremely useful for performance when manipulating taxonomies
 		update_object_term_cache( $ids, $args['post_type'] );
 
-		$once = false; // in case get_pages is called another time
+		$once = false; // In case get_pages is called another time
 		return $pages;
 	}
 
 	/**
-	 * converts WordPress locale to valid W3 locale in html language attributes
+	 * Converts WordPress locale to valid W3 locale in html language attributes
 	 *
 	 * @since 1.8
 	 *
