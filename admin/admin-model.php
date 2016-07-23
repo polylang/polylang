@@ -483,6 +483,10 @@ class PLL_Admin_Model extends PLL_Model {
 				WHERE term_id IN ( " . implode( ',', $ut['in'] ) . " )
 			" );
 		}
+
+		foreach ( $terms as $term ) {
+			clean_term_cache( $term->term_id, $term->taxonomy );
+		}
 	}
 
 	/**
