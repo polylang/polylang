@@ -25,6 +25,8 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		// filters to prime terms cache
 		add_filter( 'get_terms', array( $this, '_prime_terms_cache' ), 10, 2 );
 		add_filter( 'wp_get_object_terms', array( $this, 'wp_get_object_terms' ), 10, 3 );
+
+		add_action( 'clean_term_cache', array( $this, 'clean_term_cache' ) );
 	}
 
 	/**
@@ -164,5 +166,17 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 			$this->_prime_terms_cache( $terms, $taxonomies );
 		}
 		return $terms;
+	}
+
+	/**
+	 * When the term cache is cleaned, clean the object term cache too
+	 *
+	 * @since 2.0
+	 *
+	 * @param array  $ids      An array of term IDs.
+	 * @param string $taxonomy Taxonomy slug.
+	 */
+	function clean_term_cache( $ids ) {
+		clean_object_term_cache( $ids, 'term' );
 	}
 }
