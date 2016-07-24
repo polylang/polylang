@@ -480,34 +480,34 @@ class PLL_Model {
 		$counts = wp_cache_get( $cache_key, 'pll_count_posts' );
 
 		if ( false === $counts ) {
-			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts} AS p";
+			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
 			$join = $this->post->join_clause();
 			$where = " WHERE post_status = 'publish'";
-			$where .= $wpdb->prepare( " AND p.post_type IN ( '%s' )", join( "', '", $q['post_type'] ) );
+			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_type IN ( '%s' )", join( "', '", $q['post_type'] ) );
 			$where .= $this->post->where_clause( $this->get_languages_list() );
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
 
 			if ( ! empty( $q['m'] ) ) {
 				$q['m'] = '' . preg_replace( '|[^0-9]|', '', $q['m'] );
-				$where .= $wpdb->prepare( ' AND YEAR( p.post_date ) = %d', substr( $q['m'], 0, 4 ) );
+				$where .= $wpdb->prepare( " AND YEAR( {$wpdb->posts}.post_date ) = %d", substr( $q['m'], 0, 4 ) );
 				if ( strlen( $q['m'] ) > 5 ) {
-					$where .= $wpdb->prepare( ' AND MONTH( p.post_date ) = %d', substr( $q['m'], 4, 2 ) );
+					$where .= $wpdb->prepare( " AND MONTH( {$wpdb->posts}.post_date ) = %d", substr( $q['m'], 4, 2 ) );
 				}
 				if ( strlen( $q['m'] ) > 7 ) {
-					$where .= $wpdb->prepare( ' AND DAYOFMONTH( p.post_date ) = %d', substr( $q['m'], 6, 2 ) );
+					$where .= $wpdb->prepare( " AND DAYOFMONTH( {$wpdb->posts}.post_date ) = %d", substr( $q['m'], 6, 2 ) );
 				}
 			}
 
 			if ( ! empty( $q['year'] ) ) {
-				$where .= $wpdb->prepare( ' AND YEAR( p.post_date ) = %d', $q['year'] );
+				$where .= $wpdb->prepare( " AND YEAR( {$wpdb->posts}.post_date ) = %d", $q['year'] );
 			}
 
 			if ( ! empty( $q['monthnum'] ) ) {
-				$where .= $wpdb->prepare( ' AND MONTH( p.post_date ) = %d', $q['monthnum'] );
+				$where .= $wpdb->prepare( " AND MONTH( {$wpdb->posts}.post_date ) = %d", $q['monthnum'] );
 			}
 
 			if ( ! empty( $q['day'] ) ) {
-				$where .= $wpdb->prepare( ' AND DAYOFMONTH( p.post_date ) = %d', $q['day'] );
+				$where .= $wpdb->prepare( " AND DAYOFMONTH( {$wpdb->posts}.post_date ) = %d", $q['day'] );
 			}
 
 			if ( ! empty( $q['author_name'] ) ) {
@@ -518,14 +518,14 @@ class PLL_Model {
 			}
 
 			if ( ! empty( $q['author'] ) ) {
-				$where .= $wpdb->prepare( ' AND p.post_author = %d', $q['author'] );
+				$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_author = %d", $q['author'] );
 			}
 
 			// filtered taxonomies ( post_format )
 			foreach ( $this->get_filtered_taxonomies_query_vars() as $tax_qv ) {
 
 				if ( ! empty( $q[ $tax_qv ] ) ) {
-					$join .= " INNER JOIN {$wpdb->term_relationships} AS tr ON tr.object_id = p.ID";
+					$join .= " INNER JOIN {$wpdb->term_relationships} AS tr ON tr.object_id = {$wpdb->posts}.ID";
 					$join .= " INNER JOIN {$wpdb->term_taxonomy} AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id";
 					$join .= " INNER JOIN {$wpdb->terms} AS t ON t.term_id = tt.term_id";
 					$where .= $wpdb->prepare( ' AND t.slug = %s', $q[ $tax_qv ] );

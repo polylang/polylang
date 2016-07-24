@@ -77,9 +77,12 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @return string join clause
 	 */
-	public function join_clause() {
+	public function join_clause( $alias = '' ) {
 		global $wpdb;
-		return " INNER JOIN $wpdb->term_relationships AS pll_tr ON pll_tr.object_id = ID";
+		if ( empty ( $alias ) ) {
+			$alias = $wpdb->posts;
+		}
+		return " INNER JOIN $wpdb->term_relationships AS pll_tr ON pll_tr.object_id = $alias.ID";
 	}
 
 	/**

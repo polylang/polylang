@@ -174,7 +174,7 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	 */
 	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
 		// FIXME empty( $post ) for backward compatibility with WP < 4.4
-		return empty( $post ) || $this->model->is_translated_post_type( $post->post_type ) ? $sql . $this->model->post->join_clause() : $sql;
+		return empty( $post ) || $this->model->is_translated_post_type( $post->post_type ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
 	}
 
 	/**
