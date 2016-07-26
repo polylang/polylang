@@ -94,13 +94,15 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Improve support for the WPML API (including Hook API introduced in WPML 3.2)
 * Add support for translation of meta titles and descriptions of custom post types and custom taxonomies in Yoast SEO
 * Replace uncached functions by WPCOM VIP functions when available
+* Improve compatibility with WP 4.6
 * Fix parent category wrongly assigned to post when synchronizing children categories (#21)
-* Fix custom fonts not loaded when using multiple domains
+* Fix custom fonts not loaded when using multiple domains or subdomains
 * Fix remove_accents() not working for German and Danish (#24)
 * Fix incorrect static front pages urls on backend
 * Fix impossible to directly enter the page number in strings translation table (introduced in 1.9.3)
 * Fix conflict with WP Sweep (needs WP Sweep 1.0.8+)
 * Fix potential performance issue by querying only taxonomies to show in quick edit to filter the category checklist
+* Fix conflict (database error) with ReOrder-posts-within-categories plugin
 
 = 1.9.3 (2016-06-28) =
 
