@@ -150,7 +150,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return string New value if this is our option, otherwise nothing
 	 */
 	public function set_screen_option( $status, $option, $value ) {
-		return 'pll_strings_per_page' === $option ? $value : $status;
+		return 'pll_lang_per_page' === $option || 'pll_strings_per_page' === $option ? $value : $status;
 	}
 
 	/**
