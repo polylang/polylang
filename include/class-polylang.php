@@ -67,7 +67,7 @@ class Polylang {
 			return;
 		}
 
-		$class = str_replace( '_', '-', strtolower( substr( $class, 4 ) ) );
+		$class = str_replace( '_', '-', mb_strtolower( substr( $class, 4 ), "UTF-8" ) );
 		$to_find = array( 'media', 'share', 'slug', 'slugs', 'sync', 'translate', 'wpml', 'xdata' );
 		$dir = implode( '-', array_intersect( explode( '-', $class ), $to_find ) );
 
