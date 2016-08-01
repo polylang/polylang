@@ -169,6 +169,10 @@ td[class*='column-language_'] {
 	width: 20px;
 }
 
+#post-translations .tr_lang {
+	width: 100%;
+}
+
 #post-translations td {
 	padding: 2px;
 }
