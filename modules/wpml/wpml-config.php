@@ -75,7 +75,8 @@ class PLL_WPML_Config {
 
 			foreach ( $this->xmls as $context => $xml ) {
 				foreach ( $xml->xpath( 'admin-texts/key' ) as $key ) {
-					$name = (string) $key->attributes()['name'];
+					$attributes = $key->attributes();
+					$name = (string) $attributes['name'];
 					if ( PLL() instanceof PLL_Frontend ) {
 						$this->options[ $name ] = $key;
 						add_filter( 'option_' . $name, array( $this, 'translate_strings' ) );
@@ -99,7 +100,8 @@ class PLL_WPML_Config {
 	public function copy_post_metas( $metas, $sync ) {
 		foreach ( $this->xmls as $xml ) {
 			foreach ( $xml->xpath( 'custom-fields/custom-field' ) as $cf ) {
-				if ( 'copy' == $cf->attributes()['action'] || ( ! $sync && 'translate' == $cf->attributes()['action'] ) ) {
+				$attributes = $cf->attributes();
+				if ( 'copy' == $attributes['action'] || ( ! $sync && 'translate' == $attributes['action'] ) ) {
 					$metas[] = (string) $cf;
 				} else {
 					$metas = array_diff( $metas,  array( (string) $cf ) );
@@ -121,7 +123,8 @@ class PLL_WPML_Config {
 	public function translate_types( $types, $hide ) {
 		foreach ( $this->xmls as $xml ) {
 			foreach ( $xml->xpath( 'custom-types/custom-type' ) as $pt ) {
-				if ( 1 == $pt->attributes()['translate'] && ! $hide ) {
+				$attributes = $pt->attributes();
+				if ( 1 == $attributes['translate'] && ! $hide ) {
 					$types[ (string) $pt ] = (string) $pt;
 				} else {
 					unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
@@ -143,7 +146,8 @@ class PLL_WPML_Config {
 	public function translate_taxonomies( $taxonomies, $hide ) {
 		foreach ( $this->xmls as $xml ) {
 			foreach ( $xml->xpath( 'taxonomies/taxonomy' ) as $tax ) {
-				if ( 1 == $tax->attributes()['translate'] && ! $hide ) {
+				$attributes = $tax->attributes();
+				if ( 1 == $attributes['translate'] && ! $hide ) {
 					$taxonomies[ (string) $tax ] = (string) $tax;
 				} else {
 					unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
@@ -179,13 +183,15 @@ class PLL_WPML_Config {
 		$children = $key->children();
 		if ( count( $children ) ) {
 			foreach ( $children as $child ) {
-				$name = (string) $child->attributes()['name'];
+				$attributes = $child->attributes();
+				$name = (string) $attributes['name'];
 				if ( isset( $options[ $name ] ) ) {
 					$this->register_string_recursive( $context, $options[ $name ], $child );
 				}
 			}
 		} else {
-			pll_register_string( (string) $key->attributes()['name'], $options, $context );
+			$attributes = $key->attributes();
+			pll_register_string( (string) $attributes['name'], $options, $context );
 		}
 	}
 
@@ -202,7 +208,8 @@ class PLL_WPML_Config {
 		$children = $key->children();
 		if ( count( $children ) ) {
 			foreach ( $children as $child ) {
-				$name = (string) $child->attributes()['name'];
+				$attributes = $child->attributes();
+				$name = (string) $attributes['name'];
 				if ( isset( $values[ $name ] ) ) {
 					$values[ $name ] = $this->translate_strings_recursive( $values[ $name ], $child );
 				}
