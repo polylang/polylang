@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 1.9.3
+Stable tag: 2.0
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -62,7 +62,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 = Is Polylang compatible with WooCommerce? =
 
-* You need a separate addon to make Polylang and WooCommerce work together. Our Premium addon is currently in beta stage and is available for tests to Polyang Pro users who request it.
+* You need a separate addon to make Polylang and WooCommerce work together. [A Premium addon](https://polylang.pro/downloads/polylang-for-woocommerce/), currently in beta stage, is available.
 
 = Do you need translation services? =
 
@@ -77,7 +77,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.0 =
+= 2.0 (2016-08-02) =
 
 * Pro: Improve integration with ACF Pro
 * Pro: Add support for single sign on across multiple domains or subdomains
@@ -103,6 +103,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix conflict with WP Sweep (needs WP Sweep 1.0.8+)
 * Fix potential performance issue by querying only taxonomies to show in quick edit to filter the category checklist
 * Fix conflict (database error) with ReOrder-posts-within-categories plugin
+* Fix languages per page option not saved
 
 = 1.9.3 (2016-06-28) =
 
