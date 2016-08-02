@@ -45,13 +45,13 @@ class PLL_WPML_Config {
 		$this->xmls = array();
 
 		// Theme
-		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) ) {
-			$this->xmls[ get_template() ] = simplexml_load_file( $file );
+		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+			$this->xmls[ get_template() ] = $xml;
 		}
 
 		// Child theme
-		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) ) {
-			$this->xmls[ get_stylesheet() ] = simplexml_load_file( $file );
+		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+			$this->xmls[ get_stylesheet() ] = $xml;
 		}
 
 		// Plugins
@@ -60,14 +60,14 @@ class PLL_WPML_Config {
 		$plugins = array_merge( $plugins, get_option( 'active_plugins' ) );
 
 		foreach ( $plugins as $plugin ) {
-			if ( file_exists( $file = WP_PLUGIN_DIR . '/' . dirname( $plugin ) . '/wpml-config.xml' ) ) {
-				$this->xmls[ dirname( $plugin ) ] = simplexml_load_file( $file );
+			if ( file_exists( $file = WP_PLUGIN_DIR . '/' . dirname( $plugin ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+				$this->xmls[ dirname( $plugin ) ] = $xml;
 			}
 		}
 
 		// Custom
-		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) ) {
-			$this->xmls['Polylang'] = simplexml_load_file( $file );
+		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+			$this->xmls['Polylang'] = $xml;
 		}
 
 		if ( ! empty( $this->xmls ) ) {
