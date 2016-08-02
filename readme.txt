@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,6 +76,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.0.1 (2016-08-02) =
+
+* Fix fatal error on PHP < 5.4 (introduced in 2.0)
+* Fix custom flags not being loaded (introduced in 2.0)
 
 = 2.0 (2016-08-02) =
 
