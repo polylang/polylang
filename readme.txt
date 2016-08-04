@@ -77,6 +77,10 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.0.3 =
+
+* Fix PHP notice: Undefined variable: original_value in /modules/wpml/wpml-api.php on line 168
+
 = 2.0.2 (2016-08-03) =
 
 * Avoid fatal error when a 3rd party theme or plugin has a malformed wpml-config.xml file: the malformed wpml-config.xml file is simply ignored

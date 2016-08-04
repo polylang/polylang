@@ -149,7 +149,7 @@ class PLL_WPML_API {
 		if ( 'term' === $pll_type && $term = wpcom_vip_get_term_by( 'term_taxonomy_id', $id ) ) {
 			$id = $term->term_id;
 		}
-		return $pll_type ? call_user_func( "pll_get_$pll_type_language", $id ) : $language_code;
+		return $pll_type ? call_user_func( "pll_get_{$pll_type}_language", $id ) : $language_code;
 	}
 
 	/**
@@ -164,8 +164,8 @@ class PLL_WPML_API {
 	 * @return string the translated string
 	 */
 	public function wpml_translate_single_string( $string, $context, $name, $lang = null ) {
-		$has_translation = null; // passed by reference
-		return icl_translate( $context, $name, $original_value, false, $has_translation, $lang );
+		$has_translation = null; // Passed by reference
+		return icl_translate( $context, $name, $string, false, $has_translation, $lang );
 	}
 
 	/**
@@ -180,6 +180,6 @@ class PLL_WPML_API {
 	 */
 	public function wpml_element_has_translations( $null, $id, $type ) {
 		$pll_type = ( 'post' == $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' == $type || pll_is_translated_taxonomy( $type ) ? 'term' : false );
-		return ( $pll_type && $translations = call_user_func( "pll_get_$pll_type_translations", $id ) ) ? count( $translations ) > 1 : false;
+		return ( $pll_type && $translations = call_user_func( "pll_get_{$pll_type}_translations", $id ) ) ? count( $translations ) > 1 : false;
 	}
 }
