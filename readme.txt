@@ -80,6 +80,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 = 2.0.3 =
 
 * Fix PHP notice: Undefined variable: original_value in /modules/wpml/wpml-api.php on line 168
+* Fix translations loaded too soon by plugins not correctly reloaded since WP 4.6 (#39)
 
 = 2.0.2 (2016-08-03) =
 
