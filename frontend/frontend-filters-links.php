@@ -282,7 +282,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		$traces = version_compare( PHP_VERSION, '5.2.5', '>=' ) ? debug_backtrace( false ) : debug_backtrace();
-		unset( $traces[0], $traces[1], $traces[2] ); // we don't need the last 3 calls (this function + apply_filters)
+		unset( $traces[0], $traces[1] ); // We don't need the last 2 calls: this function + call_user_func_array (or apply_filters on PHP7+)
 
 		foreach ( $traces as $trace ) {
 			// black list first
