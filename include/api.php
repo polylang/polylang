@@ -124,7 +124,7 @@ function pll_register_string( $name, $string, $context = 'polylang', $multiline 
 function pll__( $string ) {
 	static $cache; // Cache object to avoid translating the same string several times
 
-	if ( ! did_action( 'pll_language_defined' ) ) { // No need for translation
+	if ( ! did_action( 'pll_language_defined' ) || ! is_scalar( $string ) ) { // No need for translation
 		return $string;
 	}
 
@@ -163,6 +163,10 @@ function pll_e( $string ) {
 function pll_translate_string( $string, $lang ) {
 	if ( pll_current_language() == $lang ) {
 		return pll__( $string );
+	}
+
+	if ( ! is_scalar( $string ) ) {
+		return $string;
 	}
 
 	static $cache; // Cache object to avoid loading the same translations object several times
