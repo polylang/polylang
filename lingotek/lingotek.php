@@ -57,7 +57,7 @@ class PLL_Lingotek {
 				'edge' => 'top',
 				'align' => 'left',
 			),
-			'width' => 380,
+			'width' => 400,
 			'title' => __( 'Congratulations!', 'polylang' ),
 			'content' => $content,
 			'buttons' => $buttons,
@@ -107,7 +107,7 @@ class PLL_Lingotek {
 			)
 		);
 
-		printf( '<p>%s</p>', __( 'Polylang is now fully integrated with Lingotek, a professional translation management system!', 'polylang' ) );
+		printf( '<p>%s</p>', esc_html__( 'Polylang is now fully integrated with Lingotek, a professional translation management system!', 'polylang' ) );
 
 		$this->box(
 			__( 'Automatically Translate My Site', 'polylang' ),
@@ -259,7 +259,7 @@ class PLL_Lingotek {
 						printf( '<li>%s</li>', esc_html( $item ) );
 					} ?>
 				</ul>
-				<a href="http://www.lingotek.com/wordpress" target = "_blank"><?php _e( 'Learn more...', 'polylang' ) ?></a>
+				<a href="http://www.lingotek.com/wordpress" target = "_blank"><?php esc_html_e( 'Learn more...', 'polylang' ) ?></a>
 			</div>
 
 		</div><?php
