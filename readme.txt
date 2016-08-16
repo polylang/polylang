@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -77,10 +77,17 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.0.3 =
+= 2.0.3 (2016-08-16) =
 
+* Pro: Fix PHP notice when hiding the language code in url and the language is set from subdomains
+* Pro: Fix one more media being created when the duplicate media in all languages is activated (introduced in 2.0)
+* Pro: Fix shared term slugs not working on PHP 7
+* Pro: Fix Polylang storing integers in some ACF Pro fields where ACF Pro stores strings
+* Pro: Fix ACF Pro custom fields synchronized even when the custom fields synchronization option is deactivated (#40)
 * Fix PHP notice: Undefined variable: original_value in /modules/wpml/wpml-api.php on line 168
 * Fix translations loaded too soon by plugins not correctly reloaded since WP 4.6 (#39)
+* Fix: Remove the delete link for translations of the default category on PHP 7
+* Fix unescaped i18n strings in Lingotek presentation
 
 = 2.0.2 (2016-08-03) =
 
