@@ -61,6 +61,7 @@ $languages = array(
 	'fy' => array( 'fy', 'fy', 'Frysk', 'ltr', 'nl' ),
 	'gd' => array( 'gd', 'gd', 'Gàidhlig', 'ltr', 'scotland' ),
 	'gl_ES' => array( 'gl', 'gl_ES', 'Galego', 'ltr', 'galicia' ),
+	'gu' => array( 'gu', 'gu', 'ગુજરાતી', 'ltr', 'in' ),
 	'haz' => array( 'haz', 'haz', 'هزاره گی', 'rtl', 'af' ),
 	'he_IL' => array( 'he', 'he_IL', 'עברית', 'rtl', 'il' ),
 	'hi_IN' => array( 'hi', 'hi_IN', 'हिन्दी', 'ltr', 'in' ),
