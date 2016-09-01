@@ -141,7 +141,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 */
 	public function prepare_rewrite_rules( $pre ) {
 		// Don't modify the rules if there is no languages created yet
-		if ( $this->model->get_languages_list() && ! has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
+		// Make sure to add filter only once and if all custom post types and taxonomies have been registered
+		if ( $this->model->get_languages_list() && did_action( 'wp_loaded' ) && ! has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
 			// Suppress the rules created by WordPress for our taxonomy
 			add_filter( 'language_rewrite_rules', '__return_empty_array' );
 
