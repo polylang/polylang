@@ -1,18 +1,18 @@
 <?php
 
 /**
- * manages links filters on frontend
+ * Manages links filters on frontend
  *
  * @since 1.8
  */
 class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	public $curlang;
-	public $cache; // our internal non persistent cache object
+	public $cache; // Our internal non persistent cache object
 
 	/**
-	 * constructor
-	 * adds filters once the language is defined
-	 * low priority on links filters to come after any other modification
+	 * Constructor
+	 * Adds filters once the language is defined
+	 * Low priority on links filters to come after any other modification
 	 *
 	 * @since 1.8
 	 *
@@ -24,37 +24,37 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		$this->curlang = &$polylang->curlang;
 		$this->cache = new PLL_Cache();
 
-		// rewrites author and date links to filter them by language
+		// Rewrites author and date links to filter them by language
 		foreach ( array( 'feed_link', 'author_link', 'search_link', 'year_link', 'month_link', 'day_link' ) as $filter ) {
 			add_filter( $filter, array( $this, 'archive_link' ), 20 );
 		}
 
-		// rewrites post types archives links to filter them by language
+		// Rewrites post types archives links to filter them by language
 		add_filter( 'post_type_archive_link', array( $this, 'post_type_archive_link' ), 20, 2 );
 
-		// meta in the html head section
+		// Meta in the html head section
 		add_action( 'wp_head', array( $this, 'wp_head' ) );
 
-		// modifies the home url
+		// Modifies the home url
 		if ( ! defined( 'PLL_FILTER_HOME_URL' ) || PLL_FILTER_HOME_URL ) {
 			add_filter( 'home_url', array( $this, 'home_url' ), 10, 2 );
 		}
 
 		if ( $this->options['force_lang'] > 1 ) {
-			// rewrites next and previous post links when not automatically done by WordPress
+			// Rewrites next and previous post links when not automatically done by WordPress
 			add_filter( 'get_pagenum_link', array( $this, 'archive_link' ), 20 );
 
-			// rewrites ajax url
+			// Rewrites ajax url
 			add_filter( 'admin_url', array( $this, 'admin_url' ), 10, 2 );
 		}
 
-		// redirects to canonical url before WordPress redirect_canonical
+		// Redirects to canonical url before WordPress redirect_canonical
 		// but after Nextgen Gallery which hacks $_SERVER['REQUEST_URI'] !!! and restores it in 'template_redirect' with priority 1
 		add_action( 'template_redirect', array( $this, 'check_canonical_url' ), 4 );
 	}
 
 	/**
-	 * modifies the author and date links to add the language parameter ( as well as feed link )
+	 * Modifies the author and date links to add the language parameter ( as well as feed link )
 	 *
 	 * @since 0.4
 	 *
@@ -66,7 +66,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * modifies the post type archive links to add the language parameter
+	 * Modifies the post type archive links to add the language parameter
 	 * only if the post type is translated
 	 *
 	 * @since 1.7.6
@@ -80,8 +80,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * modifies post & page links
-	 * caches the result
+	 * Modifies post & page links
+	 * and caches the result
 	 *
 	 * @since 0.7
 	 *
@@ -99,8 +99,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * modifies page links
-	 * caches the result
+	 * Modifies page links
+	 * and caches the result
 	 *
 	 * @since 1.7
 	 *
@@ -118,8 +118,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * modifies attachment links
-	 * caches the result
+	 * Modifies attachment links
+	 * and caches the result
 	 *
 	 * @since 1.6.2
 	 *
@@ -137,8 +137,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * modifies custom posts links
-	 * caches the result
+	 * Modifies custom posts links
+	 * and caches the result
 	 *
 	 * @since 1.6
 	 *
@@ -156,8 +156,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * modifies filtered taxonomies ( post format like ) and translated taxonomies links
-	 * caches the result
+	 * Modifies filtered taxonomies ( post format like ) and translated taxonomies links
+	 * and caches the result
 	 *
 	 * @since 0.7
 	 *
@@ -185,7 +185,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * outputs references to translated pages ( if exists ) in the html head section
+	 * Outputs references to translated pages ( if exists ) in the html head section
 	 *
 	 * @since 0.1
 	 */
@@ -197,10 +197,10 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		// ouptputs the section only if there are translations ( $urls always contains self link )
-		// don't output anything on paged archives: see https://wordpress.org/support/topic/hreflang-on-page2
+		// Ouptputs the section only if there are translations ( $urls always contains self link )
+		// Don't output anything on paged archives: see https://wordpress.org/support/topic/hreflang-on-page2
 		if ( ! empty( $urls ) && count( $urls ) > 1 && ! is_paged() ) {
-			// prepare the list of languages to remove the country code
+			// Prepare the list of languages to remove the country code
 			foreach ( array_keys( $urls ) as $locale ) {
 				$split = explode( '-', $locale );
 				$languages[ $locale ] = reset( $split );
@@ -209,12 +209,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$count = array_count_values( $languages );
 
 			foreach ( $urls as $locale => $url ) {
-				$lang = $count[ $languages[ $locale ] ] > 1 ? $locale : $languages[ $locale ]; // output the country code only when necessary
+				$lang = $count[ $languages[ $locale ] ] > 1 ? $locale : $languages[ $locale ]; // Output the country code only when necessary
 				printf( '<link rel="alternate" href="%s" hreflang="%s" />'."\n", esc_url( $url ), esc_attr( $lang ) );
 			}
 
-			// adds the site root url when the default language code is not hidden
-			// see https://wordpress.org/support/topic/implementation-of-hreflangx-default
+			// Adds the site root url when the default language code is not hidden
+			// See https://wordpress.org/support/topic/implementation-of-hreflangx-default
 			if ( is_front_page() && ! $this->options['hide_default'] && $this->options['force_lang'] < 3 ) {
 				printf( '<link rel="alternate" href="%s" hreflang="x-default" />'."\n", esc_url( home_url( '/' ) ) );
 			}
@@ -222,7 +222,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * filters the home url to get the right language
+	 * Filters the home url to get the right language
 	 *
 	 * @since 0.4
 	 *
@@ -235,12 +235,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			return $url;
 		}
 
-		static $white_list, $black_list; // avoid evaluating this at each function call
+		static $white_list, $black_list; // Avoid evaluating this at each function call
 
-		// we *want* to filter the home url in these cases
+		// We *want* to filter the home url in these cases
 		if ( empty( $white_list ) ) {
-			// on Windows get_theme_root() mixes / and \
-			// we want only \ for the comparison with debug_backtrace
+			// On Windows get_theme_root() mixes / and \
+			// We want only \ for the comparison with debug_backtrace
 			$theme_root = get_theme_root();
 			$theme_root = ( false === strpos( $theme_root, '\\' ) ) ? $theme_root : str_replace( '/', '\\', $theme_root );
 
@@ -262,7 +262,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			) );
 		}
 
-		// we don't want to filter the home url in these cases
+		// We don't want to filter the home url in these cases
 		if ( empty( $black_list ) ) {
 
 			/**
@@ -276,7 +276,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			 * @param array $args
 			 */
 			$black_list = apply_filters( 'pll_home_url_black_list',  array(
-				array( 'file' => 'searchform.php' ), // since WP 3.6 searchform.php is passed through get_search_form
+				array( 'file' => 'searchform.php' ), // Since WP 3.6 searchform.php is passed through get_search_form
 				array( 'function' => 'get_search_form' ),
 			) );
 		}
@@ -285,7 +285,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		unset( $traces[0], $traces[1] ); // We don't need the last 2 calls: this function + call_user_func_array (or apply_filters on PHP7+)
 
 		foreach ( $traces as $trace ) {
-			// black list first
+			// Black list first
 			foreach ( $black_list as $v ) {
 				if ( ( isset( $trace['file'], $v['file'] ) && false !== strpos( $trace['file'], $v['file'] ) ) || ( isset( $trace['function'], $v['function'] ) && $trace['function'] == $v['function'] ) ) {
 					return $url;
@@ -304,7 +304,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * rewrites ajax url when using domains or subdomains
+	 * Rewrites ajax url when using domains or subdomains
 	 *
 	 * @since 1.5
 	 *
@@ -317,7 +317,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * if the language code is not in agreement with the language of the content
+	 * If the language code is not in agreement with the language of the content
 	 * redirects incoming links to the proper URL to avoid duplicate content
 	 *
 	 * @since 0.9.6
@@ -329,17 +329,17 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	public function check_canonical_url( $requested_url = '', $do_redirect = true ) {
 		global $wp_query, $post, $is_IIS;
 
-		// don't redirect in same cases as WP
+		// Don't redirect in same cases as WP
 		if ( is_trackback() || is_search() || is_admin() || is_preview() || is_robots() || ( $is_IIS && ! iis7_supports_permalinks() ) ) {
 			return;
 		}
 
-		// don't redirect mysite.com/?attachment_id= to mysite.com/en/?attachment_id=
+		// Don't redirect mysite.com/?attachment_id= to mysite.com/en/?attachment_id=
 		if ( 1 == $this->options['force_lang'] && is_attachment() && isset( $_GET['attachment_id'] ) ) {
 			return;
 		}
 
-		// if the default language code is not hidden and the static front page url contains the page name
+		// If the default language code is not hidden and the static front page url contains the page name
 		// the customizer lands here and the code below would redirect to the list of posts
 		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) {
 			return;
@@ -368,8 +368,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		elseif ( is_404() && ! empty( $wp_query->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
-			// special case for page shortlinks when using subdomains or multiple domains
-			// needed because redirect_canonical doesn't accept to change the domain name
+			// Special case for page shortlinks when using subdomains or multiple domains
+			// Needed because redirect_canonical doesn't accept to change the domain name
 			$language = $this->model->post->get_language( (int) $id );
 		}
 
@@ -377,13 +377,15 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$language = $this->curlang;
 			$redirect_url = $requested_url;
 		} else {
-			// first get the canonical url evaluated by WP
-			$redirect_url = ( ! $redirect_url = redirect_canonical( $requested_url, false ) ) ? $requested_url : $redirect_url;
+			// First get the canonical url evaluated by WP
+			// Workaround a WP bug wich removes the port for some urls and get it back at second call to redirect_canonical
+			$_redirect_url = ( ! $_redirect_url = redirect_canonical( $requested_url, false ) ) ? $requested_url : $_redirect_url;
+			$redirect_url = ( ! $redirect_url = redirect_canonical( $_redirect_url, false ) ) ? $_redirect_url : $redirect_url;
 
-			// then get the right language code in url
+			// Then get the right language code in url
 			$redirect_url = $this->options['force_lang'] ?
 				$this->links_model->switch_language_in_link( $redirect_url, $language ) :
-				$this->links_model->remove_language_from_link( $redirect_url ); // works only for default permalinks
+				$this->links_model->remove_language_from_link( $redirect_url ); // Works only for default permalinks
 		}
 
 		/**
@@ -396,7 +398,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		 */
 		$redirect_url = apply_filters( 'pll_check_canonical_url', $redirect_url, $language );
 
-		// the language is not correctly set so let's redirect to the correct url for this object
+		// The language is not correctly set so let's redirect to the correct url for this object
 		if ( $do_redirect && $redirect_url && $requested_url != $redirect_url ) {
 			wp_redirect( $redirect_url, 301 );
 			exit;
