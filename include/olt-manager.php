@@ -25,7 +25,7 @@ class PLL_OLT_Manager {
 		$this->default_locale = get_locale();
 
 		// Filters for text domain management
-		add_filter( 'load_textdomain_mofile', array( $this, 'mofile' ), 10, 2 );
+		add_filter( 'load_textdomain_mofile', array( $this, 'load_textdomain_mofile' ), 10, 2 );
 		add_filter( 'gettext', array( $this, 'gettext' ), 10, 3 );
 		add_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
 
@@ -60,7 +60,7 @@ class PLL_OLT_Manager {
 	 */
 	public function load_textdomains() {
 		// Our load_textdomain_mofile filter has done its job. let's remove it before calling load_textdomain
-		remove_filter( 'load_textdomain_mofile', array( $this, 'mofile' ), 10, 2 );
+		remove_filter( 'load_textdomain_mofile', array( $this, 'load_textdomain_mofile' ), 10, 2 );
 		remove_filter( 'gettext', array( $this, 'gettext' ), 10, 3 );
 		remove_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
 		$new_locale = get_locale();
@@ -121,16 +121,31 @@ class PLL_OLT_Manager {
 	}
 
 	/**
-	 * Saves all text domains in a table for later usage
+	 * FIXME: Backward compatibility with Polylang for WooCommerce < 0.3.4
+	 * To remove in Polylang 2.1
 	 *
 	 * @since 0.1
-	 * @since 2.0.4 Uses the filter 'load_textdomain_mofile' instead of 'override_load_textdomain'
+	 *
+	 * @param bool   $bool   not used
+	 * @param string $domain text domain name
+	 * @param string $mofile translation file name
+	 * @return bool
+	 */
+	public function mofile( $bool, $domain, $mofile ) {
+		return $bool;
+	}
+
+	/**
+	 * Saves all text domains in a table for later usage
+	 * It replaces the 'override_load_textdomain' filter used since 0.1
+	 *
+	 * @since 2.0.4
 	 *
 	 * @param string $mofile translation file name
 	 * @param string $domain text domain name
 	 * @return bool
 	 */
-	public function mofile( $mofile, $domain ) {
+	public function load_textdomain_mofile( $mofile, $domain ) {
 		$this->list_textdomains[ $domain ] = array( 'mo' => $mofile, 'domain' => $domain );
 		return ''; // Hack to prevent WP loading text domains as we will load them all later
 	}
