@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,6 +76,13 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.0.4 (2016-09-06) =
+
+* Add Gujarati to the predefined languages list
+* Fix conflict with Page Builder. Other parts of the conflict are fixed in Page Builder 2.4.14
+* Fix plugins translations incorrectly loaded in WP 4.6
+* Fix error 404 on paged urls when using a non standard port
 
 = 2.0.3 (2016-08-16) =
 
