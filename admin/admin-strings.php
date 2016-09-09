@@ -38,7 +38,7 @@ class PLL_Admin_Strings {
 
 		$to_register = compact( 'name', 'string', 'context', 'multiline' );
 		if ( ! in_array( $to_register, self::$strings ) && $to_register['string'] ) {
-			self::$strings[] = $to_register;
+			self::$strings[ md5( $string ) ] = $to_register;
 		}
 	}
 
