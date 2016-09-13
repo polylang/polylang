@@ -16,6 +16,8 @@ class PLL_MO extends MO {
 		if ( ! post_type_exists( 'polylang_mo' ) ) {
 			$labels = array( 'name' => __( 'Strings translations', 'polylang' ) );
 			register_post_type( 'polylang_mo', array( 'labels' => $labels, 'rewrite' => false, 'query_var' => false, '_pll' => true ) );
+
+			add_action( 'pll_add_language', array( $this, 'clean_cache' ) );
 		}
 	}
 
@@ -87,5 +89,14 @@ class PLL_MO extends MO {
 
 		// The mo id for a language can be transiently empty
 		return isset( $ids[ 'polylang_mo_' . $lang->term_id ] ) ? $ids[ 'polylang_mo_' . $lang->term_id ]->ID : null;
+	}
+
+	/**
+	 * Invalidate the cache when adding a new language
+	 *
+	 * @since 2.0.5
+	 */
+	public function clean_cache() {
+		wp_cache_delete( 'polylang_mo_ids' );
 	}
 }
