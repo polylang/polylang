@@ -169,7 +169,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			}
 
 			if ( $this->page_on_front ) { ?>
-				<fieldset class="pll-col-right pll-url" id="pll-redirect-lang"><?php
+				<fieldset class="pll-col-right pll-url" id="pll-redirect-lang" <?php echo 2 > $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>><?php
 					$this->redirect_lang(); ?>
 				</fieldset><?php
 			} ?>
