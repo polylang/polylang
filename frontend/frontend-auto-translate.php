@@ -59,7 +59,7 @@ class PLL_Frontend_Auto_Translate {
 		global $wpdb;
 		$qv = &$query->query_vars;
 
-		if ( $query->is_main_query() || ! empty( $qv['lang'] ) || ( ! empty( $qv['post_type'] ) && ! $this->model->is_translated_post_type( $qv['post_type'] ) ) ) {
+		if ( $query->is_main_query() || isset( $qv['lang'] ) || ( ! empty( $qv['post_type'] ) && ! $this->model->is_translated_post_type( $qv['post_type'] ) ) ) {
 			return;
 		}
 
