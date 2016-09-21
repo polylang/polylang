@@ -127,6 +127,6 @@ abstract class PLL_Links_Model {
 	 * @return array
 	 */
 	public function allowed_redirect_hosts( $hosts ) {
-		return array_unique( array_merge( $hosts, $this->get_hosts() ) );
+		return array_unique( array_merge( $hosts, array_values( $this->get_hosts() ) ) );
 	}
 }
