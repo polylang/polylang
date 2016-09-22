@@ -27,7 +27,7 @@ class PLL_WPML_API {
 		add_action( 'wpml_add_language_form_field', array( $this, 'wpml_add_language_form_field' ) );
 		add_filter( 'wpml_language_is_active', array( $this, 'wpml_language_is_active' ), 10, 2 );
 		add_filter( 'wpml_is_rtl' , array( $this, 'wpml_is_rtl' ) );
-		// wpml_language_form_input_field     => not implemented
+		// wpml_language_form_input_field     => See wpml_add_language_form_field
 		// wpml_language_has_switched         => not implemented
 
 		// Retrieving Language Information for Content
@@ -104,7 +104,10 @@ class PLL_WPML_API {
 	 * @since 2.0
 	 */
 	public function wpml_add_language_form_field() {
-		printf( '<input type="hidden" name="lang" value="%s" />', esc_attr( pll_current_language() ) );
+		$lang = pll_current_language();
+		$field = sprintf( '<input type="hidden" name="lang" value="%s" />', esc_attr( $lang ) );
+		$field = apply_filters( 'wpml_language_form_input_field', $field, $lang );
+		echo $field;
 	}
 
 	/**
