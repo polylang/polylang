@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,6 +76,18 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.0.5 (2016-09-22) Five years after! =
+
+* Pro: Fix conflict with WPBakery Visual Composer
+* Pro: Fix conflict between multiple domains SSO and FORCE_SSL_ADMIN
+* Pro: Fix duplicated fields not displayed in new translation in ACF Pro 5.4+
+* Add Tibetan and Silesian to the predefined languages list
+* Remove duplicated strings from the strings translations (even when they have a different name or group)
+* The languages and translations of custom post types and taxonomies are no more activated by default at activation
+* Allow to deactivate auto translation in secondary by setting 'lang' to an empty value
+* Fix: invalidate the cache of PLL_MO ids when adding a new language
+* Fix: don't filter secondary queries when editing a post in an untranslated post type
 
 = 2.0.4 (2016-09-06) =
 
