@@ -171,18 +171,18 @@ class PLL_Admin_Base extends PLL_Base {
 		$this->curlang = $this->filter_lang;
 
 		// Edit Post
-		if ( isset( $_REQUEST['pll_post_id'] ) ) {
-			$this->curlang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] );
-		} elseif ( 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) ) {
-			$this->curlang = $this->model->post->get_language( (int) $_GET['post'] );
+		if ( isset( $_REQUEST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] ) ) {
+			$this->curlang = $lang;
+		} elseif ( 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) && $lang = $this->model->post->get_language( (int) $_GET['post'] ) ) {
+			$this->curlang = $lang;
 		} elseif ( 'post-new.php' === $GLOBALS['pagenow'] && ( empty( $_GET['post_type'] ) || $this->model->is_translated_post_type( $_GET['post_type'] ) ) ) {
 			$this->curlang = empty( $_GET['new_lang'] ) ? $this->pref_lang : $this->model->get_language( $_GET['new_lang'] );
 		}
 
 		// Edit Term
 		// FIXME 'edit-tags.php' for backward compatibility with WP < 4.5
-		elseif ( in_array( $GLOBALS['pagenow'], array( 'edit-tags.php', 'term.php' ) ) && isset( $_GET['tag_ID'] ) ) {
-			$this->curlang = $this->model->term->get_language( (int) $_GET['tag_ID'] );
+		elseif ( in_array( $GLOBALS['pagenow'], array( 'edit-tags.php', 'term.php' ) ) && isset( $_GET['tag_ID'] ) && $lang = $this->model->term->get_language( (int) $_GET['tag_ID'] ) ) {
+			$this->curlang = $lang;
 		} elseif ( 'edit-tags.php' === $GLOBALS['pagenow'] && isset( $_GET['taxonomy'] ) && $this->model->is_translated_taxonomy( $_GET['taxonomy'] ) ) {
 			if ( ! empty( $_GET['new_lang'] ) ) {
 				$this->curlang = $this->model->get_language( $_GET['new_lang'] );
