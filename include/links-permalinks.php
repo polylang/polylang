@@ -7,7 +7,7 @@
  */
 abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	public $using_permalinks = true;
-	protected $index = 'index.php'; // need this before $wp_rewrite is created, also harcoded in wp-includes/rewrite.php
+	protected $index = 'index.php'; // Need this before $wp_rewrite is created, also harcoded in wp-includes/rewrite.php
 	protected $root, $use_trailing_slashes;
 	protected $always_rewrite = array( 'date', 'root', 'comments', 'search', 'author' );
 
@@ -36,7 +36,15 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 * @return string modified url
 	 */
 	public function remove_paged_from_link( $url ) {
-		return preg_replace( '#\/page\/[0-9]+\/?#', $this->use_trailing_slashes ? '/' : '', $url );
+		/**
+		 * Filter an url after the paged part has been removed
+		 *
+		 * @since 2.0.6
+		 *
+		 * @param string $modified_url The link to the first page
+		 * @param string $orginal_url  The link to the original paged page
+		 */
+		return apply_filters( 'pll_remove_paged_from_link', preg_replace( '#\/page\/[0-9]+\/?#', $this->use_trailing_slashes ? '/' : '', $url ), $url );
 	}
 
 	/**
@@ -49,7 +57,16 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 * @return string modified url
 	 */
 	public function add_paged_to_link( $url, $page ) {
-		return user_trailingslashit( trailingslashit( $url ) . 'page/' . $page, 'paged' );
+		/**
+		 * Filter an url after the paged part has been added
+		 *
+		 * @since 2.0.6
+		 *
+		 * @param string $modified_url The link to the paged page
+		 * @param string $orginal_url  The link to the original first page
+		 * @param int    $page         The page number
+		 */
+		return apply_filters( 'pll_add_paged_to_link', user_trailingslashit( trailingslashit( $url ) . 'page/' . $page, 'paged' ), $url, $page );
 	}
 
 	/**
