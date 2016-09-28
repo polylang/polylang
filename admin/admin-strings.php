@@ -36,9 +36,8 @@ class PLL_Admin_Strings {
 			$context = 'Polylang';
 		}
 
-		$to_register = compact( 'name', 'string', 'context', 'multiline' );
-		if ( ! in_array( $to_register, self::$strings ) && $to_register['string'] ) {
-			self::$strings[ md5( $string ) ] = $to_register;
+		if ( $string && is_scalar( $string ) ) {
+			self::$strings[ md5( $string ) ] = compact( 'name', 'string', 'context', 'multiline' );
 		}
 	}
 
