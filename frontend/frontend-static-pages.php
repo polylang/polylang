@@ -207,6 +207,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		if ( ( $this->options['force_lang'] < 2 || ! $this->options['redirect_lang'] ) && $this->links_model->using_permalinks && ! empty( $lang ) ) {
 			$query->set( 'page', $query->query_vars['paged'] );
 			unset( $query->query_vars['paged'] );
+		} elseif ( ! $this->links_model->using_permalinks && ! empty( $query->query['page'] ) ) {
+			$query->is_paged = true;
 		}
 
 		return $lang;
