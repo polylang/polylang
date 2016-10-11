@@ -20,6 +20,7 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 		// Avoid cross domain requests ( mainly for custom fonts )
 		add_filter( 'content_url', array( $this, 'site_url' ) );
 		add_filter( 'plugins_url', array( $this, 'site_url' ) );
+		add_filter( 'upload_dir', array( $this, 'upload_dir' ) );
 	}
 
 	/**
@@ -34,5 +35,21 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 		$lang = $this->get_language_from_url();
 		$lang = $this->model->get_language( $lang );
 		return $this->add_language_to_link( $url, $lang );
+	}
+
+	/**
+	 * Fix the domain for upload directory
+	 *
+	 * @since 2.0.6
+	 *
+	 * @param array $uploads
+	 * @return array
+	 */
+	public function upload_dir( $uploads ) {
+		$lang = $this->get_language_from_url();
+		$lang = $this->model->get_language( $lang );
+		$uploads[ 'url' ] = $this->add_language_to_link( $uploads[ 'url' ], $lang );
+		$uploads[ 'baseurl' ] = $this->add_language_to_link( $uploads[ 'baseurl' ], $lang );
+		return $uploads;
 	}
 }
