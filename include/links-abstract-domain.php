@@ -48,8 +48,8 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 	public function upload_dir( $uploads ) {
 		$lang = $this->get_language_from_url();
 		$lang = $this->model->get_language( $lang );
-		$uploads[ 'url' ] = $this->add_language_to_link( $uploads[ 'url' ], $lang );
-		$uploads[ 'baseurl' ] = $this->add_language_to_link( $uploads[ 'baseurl' ], $lang );
+		$uploads['url'] = $this->add_language_to_link( $uploads['url'], $lang );
+		$uploads['baseurl'] = $this->add_language_to_link( $uploads['baseurl'], $lang );
 		return $uploads;
 	}
 }
