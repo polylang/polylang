@@ -98,11 +98,11 @@ class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
-				wp_enqueue_script( 'pll_' . $script, POLYLANG_URL . '/js/' . $script . $suffix . '.js', $v[1], POLYLANG_VERSION, $v[3] );
+				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/' . $script . $suffix . '.js', POLYLANG_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
 			}
 		}
 
-		wp_enqueue_style( 'polylang_admin', POLYLANG_URL . '/css/admin' . $suffix . '.css', array(), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
 	}
 
 	/**

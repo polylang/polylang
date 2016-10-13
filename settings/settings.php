@@ -291,7 +291,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		// displays the page
-		include( PLL_SETTINGS_INC.'/view-languages.php' );
+		include( PLL_SETTINGS_INC . '/view-languages.php' );
 	}
 
 	/**
@@ -302,10 +302,10 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_enqueue_script( 'pll_admin', POLYLANG_URL .'/js/admin'.$suffix.'.js', array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION );
-		wp_localize_script( 'pll_admin', 'pll_flag_base_url', POLYLANG_URL . '/flags/' );
+		wp_enqueue_script( 'pll_admin',  plugins_url( '/js/admin' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION );
+		wp_localize_script( 'pll_admin', 'pll_flag_base_url', plugins_url( '/flags/', POLYLANG_FILE ) );
 
-		wp_enqueue_style( 'pll_selectmenu', POLYLANG_URL .'/css/selectmenu'.$suffix.'.css', array(), POLYLANG_VERSION );
+		wp_enqueue_style( 'pll_selectmenu', plugins_url( '/css/selectmenu' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
 	}
 
 	/**
