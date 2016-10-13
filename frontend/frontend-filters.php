@@ -174,8 +174,7 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	 * @return string modified JOIN clause
 	 */
 	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
-		// FIXME empty( $post ) for backward compatibility with WP < 4.4
-		return empty( $post ) || $this->model->is_translated_post_type( $post->post_type ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
+		return $this->model->is_translated_post_type( $post->post_type ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
 	}
 
 	/**
@@ -191,15 +190,7 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	 * @return string modified WHERE clause
 	 */
 	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
-		// backward compatibility with WP < 4.4
-		if ( version_compare( $GLOBALS['wp_version'], '4.4', '<' ) ) {
-			preg_match( "#post_type = '([^']+)'#", $sql, $matches );	// find the queried post type
-			$post_type = $matches[1];
-		} else {
-			$post_type = $post->post_type;
-		}
-
-		return ! empty( $post_type ) && $this->model->is_translated_post_type( $post_type ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
+		return $this->model->is_translated_post_type( $post->post_type) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
 	}
 
 	/**

@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 };
 
 define( 'POLYLANG_VERSION', '2.0.9' );
-define( 'PLL_MIN_WP_VERSION', '4.0' );
+define( 'PLL_MIN_WP_VERSION', '4.4' );
 
 define( 'POLYLANG_FILE', __FILE__ ); // this file
 define( 'POLYLANG_BASENAME', plugin_basename( POLYLANG_FILE ) ); // plugin name as known by WP

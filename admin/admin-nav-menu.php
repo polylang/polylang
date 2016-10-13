@@ -25,12 +25,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 
 		// integration in the WP menu interface
 		add_action( 'admin_init', array( $this, 'admin_init' ) ); // after Polylang upgrade
-
-		// protection against #24802
-		// backward compatibility with WP < 4.1
-		if ( version_compare( $GLOBALS['wp_version'], '4.1', '<' ) ) {
-			add_filter( 'pre_insert_term', array( $this, 'pre_insert_term' ), 10, 2 );
-		}
 	}
 
 	/**
@@ -327,21 +321,5 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 				add_filter( 'option_nav_menu_options', array( $this, 'nav_menu_options' ) );
 			}
 		}
-	}
-
-	/**
-	 * prevents sharing a menu term with a language term by renaming the nav menu before its creation
-	 * to avoid http://core.trac.wordpress.org/ticket/24802
-	 * and http://wordpress.org/support/topic/all-connection-between-elements-lost
-	 * backward compatibility with WP < 4.1
-	 *
-	 * @since 1.1.3
-	 *
-	 * @param string $name term name
-	 * @param string $taxonomy
-	 * @return string modified ( nav menu ) term name if necessary
-	 */
-	function pre_insert_term( $name, $taxonomy ) {
-		return ( 'nav_menu' == $taxonomy && in_array( $name, $this->model->get_languages_list( array( 'fields' => 'name' ) ) ) ) ? $name .= '-menu' : $name;
 	}
 }

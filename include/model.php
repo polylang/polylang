@@ -140,12 +140,6 @@ class PLL_Model {
 	 * @param string $taxonomy taxonomy name
 	 */
 	public function clean_languages_cache( $term = 0, $taxonomy = null ) {
-		// depending on WP version, the action is passed an object or a string
-		// backward compatibility with WP < 4.2
-		if ( ! empty( $taxonomy ) && is_object( $taxonomy ) ) {
-			$taxonomy = $taxonomy->name;
-		}
-
 		if ( empty( $taxonomy ) || 'language' == $taxonomy ) {
 			delete_transient( 'pll_languages_list' );
 			$this->cache->clean();

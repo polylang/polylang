@@ -2,7 +2,7 @@
 Contributors: Chouby
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
-Requires at least: 4.0
+Requires at least: 4.4
 Tested up to: 4.7
 Stable tag: 2.0.9
 License: GPLv2 or later
