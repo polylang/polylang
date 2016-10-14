@@ -136,6 +136,17 @@ class PLL_Table_String extends WP_List_Table {
 	}
 
 	/**
+	 * Gets the name of the default primary column.
+	 *
+	 * @since 2.1
+	 *
+	 * @return string Name of the default primary column, in this case, 'string'.
+	 */
+	protected function get_default_primary_column_name() {
+		return 'string';
+	}
+
+	/**
 	 * Sort items
 	 *
 	 * @since 0.6

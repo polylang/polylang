@@ -169,6 +169,17 @@ class PLL_Table_Languages extends WP_List_Table {
 	}
 
 	/**
+	 * Gets the name of the default primary column.
+	 *
+	 * @since 2.1
+	 *
+	 * @return string Name of the default primary column, in this case, 'name'.
+	 */
+	protected function get_default_primary_column_name() {
+		return 'name';
+	}
+
+	/**
 	 * Generates and display row actions links for the list table.
 	 *
 	 * @since 1.8
