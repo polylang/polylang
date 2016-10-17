@@ -73,6 +73,12 @@ class PLL_Admin_Sync {
 				$post->$property = $from_post->$property;
 			}
 
+			// Copy the date only if the synchronization is activated
+			if ( in_array( 'post_date', $this->options['sync'] ) ) {
+				$post->post_date = $from_post->post_date;
+				$post->post_date_gmt = $from_post->post_date_gmt;
+			}
+
 			if ( is_sticky( $from_post_id ) ) {
 				stick_post( $post->ID );
 			}
@@ -235,14 +241,27 @@ class PLL_Admin_Sync {
 		global $wpdb, $post_type;
 
 		// Prepare properties to synchronize
-		foreach ( array( 'comment_status', 'ping_status', 'menu_order', 'post_date' ) as $property ) {
+		foreach ( array( 'comment_status', 'ping_status', 'menu_order' ) as $property ) {
 			if ( in_array( $property, $this->options['sync'] ) ) {
 				$postarr[ $property ] = $post->$property;
 			}
 		}
 
 		if ( in_array( 'post_date', $this->options['sync'] ) ) {
-			$postarr['post_date_gmt'] = $post->post_date_gmt;
+			// For new drafts, save the date now otherwise it is overriden by WP. Thanks to JoryHogeveen. See #32.
+			if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) ) {
+				$original = get_post( (int) $_GET['from_post'] );
+				$wpdb->update(
+					$wpdb->posts, array(
+						'post_date' => $original->post_date,
+						'post_date_gmt' => $original->post_date_gmt,
+					),
+					array( 'ID' => $post_id )
+				);
+			} else {
+				$postarr['post_date'] = $post->post_date;
+				$postarr['post_date_gmt'] = $post->post_date_gmt;
+			}
 		}
 
 		// Synchronize terms and metas in translations
