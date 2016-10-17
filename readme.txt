@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,6 +76,18 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.0.6 (2016-10-17) =
+
+* Pro: Fix translated paged slug not working on paged static front page
+* Add support for WPML filter 'wpml_language_form_input_field'
+* Fix PHP notice when using the WPML filter 'wpml_current_language'
+* Fix cases where the admin language filter is not correctly taken into account
+* Fix paged static front pages in plain permalinks
+* Fix paged static front pages for multiple domains (#43)
+* Fix warning occuring when a 3rd party plugin attempts to register anything but a string in the strings translations panel
+* Fix cross domain http request for media when using multiple domains or subdomains
+* Fix error 404 on pages when no language has been created yet
 
 = 2.0.5 (2016-09-22) Five years after! =
 
