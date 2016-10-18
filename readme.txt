@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,6 +76,10 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.0.7 (2016-10-18) =
+
+* Fix issues with static front pages introduced in version 2.0.6
 
 = 2.0.6 (2016-10-17) =
 
@@ -156,44 +160,5 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix potential performance issue by querying only taxonomies to show in quick edit to filter the category checklist
 * Fix conflict (database error) with ReOrder-posts-within-categories plugin
 * Fix languages per page option not saved
-
-= 1.9.3 (2016-06-28) =
-
-* Pro: Allow to add slashes in url slugs translations
-* Pro: Fix archive links not using translated slugs
-* Pro: Fix visitor being redirected to 404 if his browser preference is set to an inactive language
-* Fix strings translations table always back to page 1 when submitting the form (#14)
-* Fix get_pages( array( 'lang' => '' ) ) not querying all the languages
-* Fix switching the admin language filter can override the static front page settings (#16)
-
-= 1.9.2 (2016-06-06) =
-
-* Pro: fix unreachable hierarchical custom post type posts when they are sharing slugs across languages
-* Fix missing argument 3 in icl_t
-* Fix conflict with WooCommerce product variations
-
-= 1.9.1 (2016-05-23) =
-
-* Pro: add compatibility with Beaver Builder
-* Pro: fix media wrongly created when adding a new media translation
-* Add azb, ceb, de_CH_informal, es_GT, mr, nl_NL_formal to the predefined list of languages
-* Fix the language switcher not linking to media translations for anonymous visitors
-
-= 1.9 (2016-04-27) =
-
-* Pro: add the possibility to translate custom post types slugs, taxonomies slugs and more
-* Pro: add the possibility to share the same post or term slug accross languages
-* Pro: add the possibility to duplicate the content when creating a new translation
-* Pro: add the possibility to create all translations at once when uploading a media
-* Pro: add the possibility to disable a language
-* Add license and update management
-* Add inline docs for all filters and actions
-* When possible, the rel alternate hreflang now display only the language code (without the country code)
-* When combined with flags in the language switcher, wrap the language name inside <span> tags
-* Add customizer selective refresh support for the language switcher widget ( needs WP 4.5+ )
-* Fix dynamic options of the language switcher widget not working in the customizer
-* Fix possible error 404 on page shortlink when using subdomains or multiple domains
-* Fix get_adjacent_post() and wp_get_archives() for untranslated post types ( needs WP 4.4+ )
-* Fix language homepage urls not present in Yoast SEO sitemap (when the homepages display posts)
 
 See [changelog.txt](https://plugins.svn.wordpress.org/polylang/trunk/changelog.txt) for older changelog
