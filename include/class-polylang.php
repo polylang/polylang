@@ -151,6 +151,9 @@ class Polylang {
 			}
 		}
 
+		// Make sure that this filter is *always* added before PLL_Model::get_languages_list() is called for the first time
+		add_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 ); // before PLL_Links_Model
+
 		/**
 		 * Filter the model class to use
 		 * /!\ this filter is fired *before* the $polylang object is available
@@ -162,8 +165,6 @@ class Polylang {
 		$class = apply_filters( 'pll_model', PLL_SETTINGS ? 'PLL_Admin_Model' : 'PLL_Model' );
 		$model = new $class( $options );
 		$links_model = $model->get_links_model();
-
-		add_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 ); // before PLL_Links_Model
 
 		if ( PLL_SETTINGS ) {
 			$polylang = new PLL_Settings( $links_model );
