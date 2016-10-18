@@ -128,7 +128,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	function add_permastruct() {
 		// Language information always in front of the uri ( 'with_front' => false )
 		// The 3rd parameter structure has been modified in WP 3.4
-		add_permastruct( 'language', $this->options['rewrite'] ? '%language%' : 'language/%language%', array( 'with_front' => false ) );
+		// Leads to error 404 for pages when there is no language created yet
+		if ( $this->model->get_languages_list() ) {
+			add_permastruct( 'language', $this->options['rewrite'] ? '%language%' : 'language/%language%', array( 'with_front' => false ) );
+		}
 	}
 
 	/**
