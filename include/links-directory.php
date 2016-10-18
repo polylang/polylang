@@ -19,14 +19,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	public function __construct( &$model ) {
 		parent::__construct( $model );
 
-		// Don't modify rewrite rules if no language is created yet
-		// Especially don't call add_permastruct which removes the /language/ rewrite base and lead to 404 for pages
-		if ( $model->get_languages_list() ) {
-			if ( did_action( 'pll_init' ) ) {
-				$this->init();
-			} else {
-				add_action( 'pll_init', array( $this, 'init' ) );
-			}
+		if ( did_action( 'pll_init' ) ) {
+			$this->init();
+		} else {
+			add_action( 'pll_init', array( $this, 'init' ) );
 		}
 	}
 
