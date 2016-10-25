@@ -29,7 +29,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
-		$this->active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'lang';
+		$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( $_GET['page'], 6 );
 
 		PLL_Admin_Strings::init();
 
@@ -37,7 +37,8 @@ class PLL_Settings extends PLL_Admin_Base {
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
 		// adds screen options and the about box in the languages admin panel
-		add_action( 'load-settings_page_mlang',  array( $this, 'load_page' ) );
+		add_action( 'load-toplevel_page_mlang',  array( $this, 'load_page' ) );
+		add_action( 'load-languages_page_mlang_strings',  array( $this, 'load_page_strings' ) );
 
 		// saves per-page value in screen option
 		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
@@ -83,15 +84,6 @@ class PLL_Settings extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Adds the link to the languages panel in the WordPress admin menu
-	 *
-	 * @since 0.1
-	 */
-	public function add_menus() {
-		add_submenu_page( 'options-general.php', $title = __( 'Languages', 'polylang' ), $title, 'manage_options', 'mlang', array( $this, 'languages_page' ) );
-	}
-
-	/**
 	 * Loads the about metabox
 	 *
 	 * @since 0.8
@@ -106,36 +98,36 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 0.9.5
 	 */
 	public function load_page() {
-		// test of $this->active_tab avoids displaying the automatically generated screen options on other tabs
-		switch ( $this->active_tab ) {
-			case 'lang':
-				if ( ! defined( 'PLL_DISPLAY_ABOUT' ) || PLL_DISPLAY_ABOUT ) {
-					add_meta_box(
-						'pll-about-box',
-						__( 'About Polylang', 'polylang' ),
-						array( $this, 'metabox_about' ),
-						'settings_page_mlang',
-						'normal'
-					);
-				}
-
-				add_screen_option( 'per_page', array(
-					'label'   => __( 'Languages', 'polylang' ),
-					'default' => 10,
-					'option'  => 'pll_lang_per_page',
-				) );
-
-				add_action( 'admin_notices', array( $this, 'notice_objects_with_no_lang' ) );
-			break;
-
-			case 'strings':
-				add_screen_option( 'per_page', array(
-					'label'   => __( 'Strings translations', 'polylang' ),
-					'default' => 10,
-					'option'  => 'pll_strings_per_page',
-				) );
-			break;
+		if ( ! defined( 'PLL_DISPLAY_ABOUT' ) || PLL_DISPLAY_ABOUT ) {
+			add_meta_box(
+				'pll-about-box',
+				__( 'About Polylang', 'polylang' ),
+				array( $this, 'metabox_about' ),
+				'settings_page_mlang', // FIXME not shown in screen options
+				'normal'
+			);
 		}
+
+		add_screen_option( 'per_page', array(
+			'label'   => __( 'Languages', 'polylang' ),
+			'default' => 10,
+			'option'  => 'pll_lang_per_page',
+		) );
+
+		add_action( 'admin_notices', array( $this, 'notice_objects_with_no_lang' ) );
+	}
+
+	/**
+	 * Adds screen options in the strings translations admin panel
+	 *
+	 * @since 2.1
+	 */
+	public function load_page_strings() {
+		add_screen_option( 'per_page', array(
+			'label'   => __( 'Strings translations', 'polylang' ),
+			'default' => 10,
+			'option'  => 'pll_strings_per_page',
+		) );
 	}
 
 	/**
@@ -250,34 +242,15 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 0.1
 	 */
 	public function languages_page() {
-		// prepare the list of tabs
-		$tabs = array( 'lang' => __( 'Languages','polylang' ) );
-
-		// only if at least one language has been created
-		if ( $listlanguages = $this->model->get_languages_list() ) {
-			$tabs['strings'] = __( 'Strings translations', 'polylang' );
-		}
-
-		$tabs['settings'] = __( 'Settings', 'polylang' );
-
-		/**
-		 * Filter the list of tabs in Polylang settings
-		 *
-		 * @since 1.5.1
-		 *
-		 * @param array $tabs list of tab names
-		 */
-		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
-
 		switch ( $this->active_tab ) {
 			case 'lang':
 				// prepare the list table of languages
 				$list_table = new PLL_Table_Languages();
-				$list_table->prepare_items( $listlanguages );
+				$list_table->prepare_items( $this->model->get_languages_list() );
 			break;
 
 			case 'strings':
-				$string_table = new PLL_Table_String( $listlanguages );
+				$string_table = new PLL_Table_String( $this->model->get_languages_list() );
 				$string_table->prepare_items();
 			break;
 		}

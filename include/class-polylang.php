@@ -117,7 +117,7 @@ class Polylang {
 
 		// settings page whatever the tab
 		if ( ! defined( 'PLL_SETTINGS' ) ) {
-			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 'mlang' == $_GET['page'] ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) );
+			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( $_GET['page'], 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) );
 		}
 	}
 

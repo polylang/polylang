@@ -170,4 +170,13 @@ class PLL_Table_Settings extends WP_List_Table {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns(), $this->get_primary_column_name() );
 		$this->items = $items;
 	}
+
+	/**
+	 * Avoids displaying an empty tablenav
+	 *
+	 * @since 2.1
+	 *
+	 * @param string $which 'top' or 'bottom'
+	 */
+	protected function display_tablenav( $which ) {}
 }

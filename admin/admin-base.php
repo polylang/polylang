@@ -67,7 +67,34 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 0.1
 	 */
 	public function add_menus() {
-		add_submenu_page( 'options-general.php', $title = __( 'Languages', 'polylang' ), $title, 'manage_options', 'mlang', '__return_null' );
+		// Prepare the list of tabs
+		$tabs = array( 'lang' => __( 'Languages','polylang' ) );
+
+		// Only if at least one language has been created
+		if ( $this->model->get_languages_list() ) {
+			$tabs['strings'] = __( 'Strings translations', 'polylang' );
+		}
+
+		$tabs['settings'] = __( 'Settings', 'polylang' );
+
+		/**
+		 * Filter the list of tabs in Polylang settings
+		 *
+		 * @since 1.5.1
+		 *
+		 * @param array $tabs list of tab names
+		 */
+		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
+
+		foreach ( $tabs as $tab => $title ) {
+			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
+			if ( empty( $parent ) ) {
+				$parent = $page;
+				add_menu_page( $title, __( 'Languages','polylang' ), 'manage_options', $page, null , 'dashicons-translation' );
+			}
+
+			add_submenu_page( $parent, $title, $title, 'manage_options', $page , array( $this, 'languages_page' ) );
+		}
 	}
 
 	/**

@@ -24,7 +24,7 @@ class PLL_Lingotek {
 		add_filter( 'pll_settings_tabs', array( $this, 'add_tab' ) );
 		add_action( 'pll_settings_active_tab_lingotek', array( $this, 'display_tab' ) );
 
-		if ( PLL_SETTINGS && isset( $_GET['tab'] ) && 'lingotek' == $_GET['tab'] ) {
+		if ( PLL_SETTINGS && isset( $_GET['page'] ) && 'mlang_lingotek' == $_GET['page'] ) {
 			add_action( 'admin_print_styles', array( $this, 'print_css' ) );
 		}
 
@@ -274,6 +274,8 @@ class PLL_Lingotek {
 	 * @return string
 	 */
 	protected function get_activate_link() {
+		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+
 		if ( ! array_key_exists( self::LINGOTEK, get_plugins() ) ) {
 			if ( current_user_can( 'install_plugins' ) ) {
 				$plugin = dirname( self::LINGOTEK );
@@ -291,4 +293,4 @@ class PLL_Lingotek {
 	}
 }
 
-add_action( 'admin_init', array( new PLL_Lingotek(), 'init' ) );
+add_action( 'wp_loaded', array( new PLL_Lingotek(), 'init' ) );
