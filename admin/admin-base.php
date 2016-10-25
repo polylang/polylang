@@ -161,7 +161,7 @@ class PLL_Admin_Base extends PLL_Base {
 	if (typeof jQuery != 'undefined') {
 		(function($){
 			$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-				if ( -1 != options.url.indexOf( ajaxurl ) ) {
+				if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 					if ( 'undefined' === typeof options.data ) {
 						options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str;?>' : <?php echo $arr;?>;
 					} else {
