@@ -566,7 +566,8 @@ class PLL_Admin_Filters_Term {
 	 */
 	protected function get_queried_language( $taxonomies, $args ) {
 		// Does nothing except on taxonomies which are filterable
-		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) ) {
+		// Since WP 4.7, make sure not to filter wp_get_object_terms()
+		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) || ! empty( $args['object_ids'] ) ) {
 			return false;
 		}
 
