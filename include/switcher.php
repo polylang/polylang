@@ -188,7 +188,8 @@ class PLL_Switcher {
 		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] ) {
 			foreach ( $links->model->get_languages_list() as $language ) {
-				$urls[ $language->slug ] = $args['force_home'] || ( $url = $links->get_translation_url( $language ) ) === null ? $links->get_home_url( $language ) : $url;
+				$url = $links->get_translation_url( $language );
+				$urls[ $language->slug ] = $args['force_home'] || empty( $url ) ? $links->get_home_url( $language ) : $url;
 			}
 
 			// Accept only few valid characters for the urls_x variable name ( as the widget id includes '-' which is invalid )
