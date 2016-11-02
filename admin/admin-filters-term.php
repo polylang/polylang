@@ -632,23 +632,26 @@ class PLL_Admin_Filters_Term {
 	 * @return int
 	 */
 	public function option_default_category( $value ) {
-		$traces = debug_backtrace();
-		$n = version_compare( PHP_VERSION, '7', '>=' ) ? 3 : 4; // PHP 7 does not include call_user_func_array
-
-		if ( isset( $traces[ $n ] ) ) {
-			// FIXME 'column_name' for backward compatibility with WP < 4.3
-			if ( in_array( $traces[ $n ]['function'], array( 'column_cb', 'column_name', 'handle_row_actions' ) ) && in_array( $traces[ $n ]['args'][0]->term_id, $this->model->term->get_translations( $value ) ) ) {
-				return $traces[ $n ]['args'][0]->term_id;
-			}
-
-			if ( 'wp_delete_term' == $traces[ $n ]['function'] ) {
-				return $this->model->term->get( $value, $this->model->term->get_language( $traces[ $n ]['args'][0] ) );
-			}
+		// Filters the default category in note below the category list table and in settings->writing dropdown
+		if ( isset( $this->pref_lang) && $tr = $this->model->term->get( $value, $this->pref_lang ) ) {
+			$value = $tr;
 		}
 
-		// Filters the default category in note below the category list table and in settings->writing dropdown
-		elseif ( isset( $traces[ $n - 1 ]['file'] ) && ( false !== stripos( $traces[ $n - 1 ]['file'], 'edit-tags.php' ) || false !== stripos( $traces[ $n - 1 ]['file'], 'options-writing.php' ) ) ) {
-			return $this->model->term->get( $value, $this->pref_lang );
+		// FIXME backward compatibility with WP < 4.7
+		if ( version_compare( $GLOBALS['wp_version'], '4.7alpha', '<' ) ) {
+			$traces = debug_backtrace();
+			$n = version_compare( PHP_VERSION, '7', '>=' ) ? 3 : 4; // PHP 7 does not include call_user_func_array
+
+			if ( isset( $traces[ $n ] ) ) {
+				// FIXME 'column_name' for backward compatibility with WP < 4.3
+				if ( in_array( $traces[ $n ]['function'], array( 'column_cb', 'column_name', 'handle_row_actions' ) ) && in_array( $traces[ $n ]['args'][0]->term_id, $this->model->term->get_translations( $value ) ) ) {
+					return $traces[ $n ]['args'][0]->term_id;
+				}
+
+				if ( 'wp_delete_term' == $traces[ $n ]['function'] ) {
+					return $this->model->term->get( $value, $this->model->term->get_language( $traces[ $n ]['args'][0] ) );
+				}
+			}
 		}
 
 		return $value;
