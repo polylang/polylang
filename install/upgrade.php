@@ -1,7 +1,7 @@
 <?php
 
 /**
- * manages Polylang upgrades
+ * Manages Polylang upgrades
  *
  * @since 1.2
  */
@@ -9,7 +9,7 @@ class PLL_Upgrade {
 	public $options;
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.2
 	 */
@@ -18,7 +18,7 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * check if upgrade is possible otherwise die to avoid activation
+	 * Check if upgrade is possible otherwise die to avoid activation
 	 *
 	 * @since 1.2
 	 */
@@ -31,7 +31,7 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if possible otherwise returns false to stop Polylang loading
+	 * Upgrades if possible otherwise returns false to stop Polylang loading
 	 *
 	 * @since 1.2
 	 *
@@ -49,8 +49,8 @@ class PLL_Upgrade {
 
 
 	/**
-	 * check if we the previous version is not too old
-	 * upgrades if OK
+	 * Check if we the previous version is not too old
+	 * Upgrades if OK
 	 * /!\ never start any upgrade before admin_init as it is likely to conflict with some other plugins
 	 *
 	 * @since 1.2
@@ -58,12 +58,12 @@ class PLL_Upgrade {
 	 * @return bool true if upgrade is possible, false otherwise
 	 */
 	public function can_upgrade() {
-		// don't manage upgrade from version < 0.8
+		// Don't manage upgrade from version < 0.8
 		return version_compare( $this->options['version'], '0.8', '>=' );
 	}
 
 	/**
-	 * displays a notice when ugrading from a too old version
+	 * Displays a notice when ugrading from a too old version
 	 *
 	 * @since 1.0
 	 */
@@ -82,12 +82,12 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades the plugin depending on the previous version
+	 * Upgrades the plugin depending on the previous version
 	 *
 	 * @since 1.2
 	 */
 	public function _upgrade() {
-		foreach ( array( '0.9', '1.0', '1.1', '1.2', '1.2.1', '1.2.3', '1.3', '1.4', '1.4.1', '1.4.4', '1.5', '1.6', '1.7.4', '1.8' ) as $version ) {
+		foreach ( array( '0.9', '1.0', '1.1', '1.2', '1.2.1', '1.2.3', '1.3', '1.4', '1.4.1', '1.4.4', '1.5', '1.6', '1.7.4', '1.8', '2.0.8' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				call_user_func( array( $this, 'upgrade_' . str_replace( '.', '_', $version ) ) );
 			}
@@ -98,47 +98,47 @@ class PLL_Upgrade {
 			$this->delete_pre_1_2_data();
 		}
 
-		$this->options['previous_version'] = $this->options['version']; // remember the previous version of Polylang since v1.7.7
+		$this->options['previous_version'] = $this->options['version']; // Remember the previous version of Polylang since v1.7.7
 		$this->options['version'] = POLYLANG_VERSION;
 		update_option( 'polylang', $this->options );
 	}
 
 	/**
-	 * upgrades if the previous version is < 0.9
+	 * Upgrades if the previous version is < 0.9
 	 *
 	 * @since 1.2
 	 */
 	protected function upgrade_0_9() {
-		$this->options['sync'] = defined( 'PLL_SYNC' ) && ! PLL_SYNC ? 0 : 1; // the option replaces PLL_SYNC in 0.9
+		$this->options['sync'] = defined( 'PLL_SYNC' ) && ! PLL_SYNC ? 0 : 1; // The option replaces PLL_SYNC in 0.9
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.0
+	 * Upgrades if the previous version is < 1.0
 	 *
 	 * @since 1.2
 	 */
 	protected function upgrade_1_0() {
-		// the option replaces PLL_MEDIA_SUPPORT in 1.0
+		// The option replaces PLL_MEDIA_SUPPORT in 1.0
 		$this->options['media_support'] = defined( 'PLL_MEDIA_SUPPORT' ) && ! PLL_MEDIA_SUPPORT ? 0 : 1;
 
-		// split the synchronization options in 1.0
+		// Split the synchronization options in 1.0
 		$this->options['sync'] = empty( $this->options['sync'] ) ? array() : array_keys( PLL_Settings_Sync::list_metas_to_sync() );
 
-		// set default values for post types and taxonomies to translate
+		// Set default values for post types and taxonomies to translate
 		$this->options['post_types'] = array_values( get_post_types( array( '_builtin' => false, 'show_ui' => true ) ) );
 		$this->options['taxonomies'] = array_values( get_taxonomies( array( '_builtin' => false, 'show_ui' => true ) ) );
 		update_option( 'polylang', $this->options );
 
-		flush_rewrite_rules(); // rewrite rules have been modified in 1.0
+		flush_rewrite_rules(); // Rewrite rules have been modified in 1.0
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.1
+	 * Upgrades if the previous version is < 1.1
 	 *
 	 * @since 1.2
 	 */
 	protected function upgrade_1_1() {
-		// update strings register with icl_register_string
+		// Update strings register with icl_register_string
 		$strings = get_option( 'polylang_wpml_strings' );
 		if ( $strings ) {
 			foreach ( $strings as $key => $string ) {
@@ -147,7 +147,7 @@ class PLL_Upgrade {
 			update_option( 'polylang_wpml_strings', $strings );
 		}
 
-		// move polylang_widgets options
+		// Move polylang_widgets options
 		if ( $widgets = get_option( 'polylang_widgets' ) ) {
 			$this->options['widgets'] = $widgets;
 			delete_option( 'polylang_widgets' );
@@ -155,42 +155,42 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.2
+	 * Upgrades if the previous version is < 1.2
 	 *
 	 * @since 1.2
 	 */
 	protected function upgrade_1_2() {
-		$this->options['domains'] = array(); // option added in 1.2
+		$this->options['domains'] = array(); // Option added in 1.2
 
-		// need to register the taxonomies
+		// Need to register the taxonomies
 		foreach ( array( 'language', 'term_language', 'post_translations', 'term_translations' ) as $taxonomy ) {
 			register_taxonomy( $taxonomy, null , array( 'label' => false, 'public' => false, 'query_var' => false, 'rewrite' => false ) );
 		}
 
-		// abort if the db upgrade has already been done previously
+		// Abort if the db upgrade has already been done previously
 		if ( get_terms( 'term_language', array( 'hide_empty' => 0 ) ) ) {
 			return;
 		}
 
-		set_time_limit( 0 ); // in case we upgrade a huge site
+		set_time_limit( 0 ); // In case we upgrade a huge site
 
-		// upgrade old model based on metas to new model based on taxonomies
+		// Upgrade old model based on metas to new model based on taxonomies
 		global $wpdb;
-		$wpdb->termmeta = $wpdb->prefix . 'termmeta'; // registers the termmeta table in wpdb
-		$languages = get_terms( 'language', array( 'hide_empty' => 0 ) ); // don't use get_languages_list which can't work with the old model
+		$wpdb->termmeta = $wpdb->prefix . 'termmeta'; // Registers the termmeta table in wpdb
+		$languages = get_terms( 'language', array( 'hide_empty' => 0 ) ); // Don't use get_languages_list which can't work with the old model
 
 		foreach ( $languages as $lang ) {
-			// first update language with new storage for locale and text direction
+			// First update language with new storage for locale and text direction
 			$text_direction = get_metadata( 'term', $lang->term_id, '_rtl', true );
 			$desc = serialize( array( 'locale' => $lang->description, 'rtl' => $text_direction ) );
 			wp_update_term( (int) $lang->term_id, 'language', array( 'description' => $desc ) );
 
-			// add language to new 'term_language' taxonomy
+			// Add language to new 'term_language' taxonomy
 			$term_lang = wp_insert_term( $lang->name, 'term_language', array( 'slug' => 'pll_' . $lang->slug ) );
-			$lang_tt_ids[ $lang->term_id ] = $term_lang['term_taxonomy_id']; // keep the term taxonomy id for future
+			$lang_tt_ids[ $lang->term_id ] = $term_lang['term_taxonomy_id']; // Keep the term taxonomy id for future
 		}
 
-		// get all terms with a language defined
+		// Get all terms with a language defined
 		$terms = $wpdb->get_results( "SELECT term_id, meta_value FROM $wpdb->termmeta WHERE meta_key = '_language'" );
 		foreach ( $terms as $key => $term ) {
 			$terms[ $key ] = $wpdb->prepare( '( %d, %d )', $term->term_id, $lang_tt_ids[ $term->meta_value ] );
@@ -198,17 +198,17 @@ class PLL_Upgrade {
 
 		$terms = array_unique( $terms );
 
-		// assign language to each term
+		// Assign language to each term
 		if ( ! empty( $terms ) ) {
 			$wpdb->query( "INSERT INTO $wpdb->term_relationships ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $terms ) );
 		}
 
-		// translations
+		// Translations
 		foreach ( array( 'post', 'term' ) as $type ) {
 			$table = $type . 'meta';
 			$terms = $slugs = $tts = $trs = array();
 
-			// get all translated objects
+			// Get all translated objects
 			$objects = $wpdb->get_col( "SELECT DISTINCT meta_value FROM {$wpdb->$table} WHERE meta_key = '_translations'" );
 
 			if ( empty( $objects ) ) {
@@ -216,7 +216,7 @@ class PLL_Upgrade {
 			}
 
 			foreach ( $objects as $obj ) {
-				$term = uniqid( 'pll_' ); // the term name
+				$term = uniqid( 'pll_' ); // The term name
 				$terms[] = $wpdb->prepare( '( "%1$s", "%1$s" )', $term );
 				$slugs[] = $wpdb->prepare( '"%s"', $term );
 				$translations = maybe_unserialize( maybe_unserialize( $obj ) ); // 2 unserialize due to an old storage bug
@@ -225,30 +225,30 @@ class PLL_Upgrade {
 
 			$terms = array_unique( $terms );
 
-			// insert terms
+			// Insert terms
 			if ( ! empty( $terms ) ) {
 				$wpdb->query( "INSERT INTO $wpdb->terms ( slug, name ) VALUES " . implode( ',', $terms ) );
 			}
 
-			// get all terms with their term_id
+			// Get all terms with their term_id
 			$terms = $wpdb->get_results( "SELECT term_id, slug FROM $wpdb->terms WHERE slug IN ( " . implode( ',', $slugs ) . " )" );
 
-			// prepare terms taxonomy relationship
+			// Prepare terms taxonomy relationship
 			foreach ( $terms as $term ) {
 				$tts[] = $wpdb->prepare( '( %d, "%s", "%s" )', $term->term_id, $type . '_translations', $description[ $term->slug ] );
 			}
 
 			$tts = array_unique( $tts );
 
-			// insert term_taxonomy
+			// Insert term_taxonomy
 			if ( ! empty( $tts ) ) {
 				$wpdb->query( "INSERT INTO $wpdb->term_taxonomy ( term_id, taxonomy, description ) VALUES " . implode( ',', $tts ) );
 			}
 
-			// get all terms with term_taxonomy_id
+			// Get all terms with term_taxonomy_id
 			$terms = get_terms( $type . '_translations', array( 'hide_empty' => false ) );
 
-			// prepare objects relationships
+			// Prepare objects relationships
 			foreach ( $terms as $term ) {
 				$translations = unserialize( $term->description );
 				foreach ( $translations as $object_id ) {
@@ -260,23 +260,23 @@ class PLL_Upgrade {
 
 			$trs = array_unique( $trs );
 
-			// insert term_relationships
+			// Insert term_relationships
 			if ( ! empty( $trs ) ) {
 				$wpdb->query( "INSERT INTO $wpdb->term_relationships ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
 			}
 		}
 
-		// upgrade of string translations is now in upgrade_1_2_1
-		// upgrade of nav menus is now in upgrade_1_2_3
+		// Upgrade of string translations is now in upgrade_1_2_1
+		// Upgrade of nav menus is now in upgrade_1_2_3
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.2.1
+	 * Upgrades if the previous version is < 1.2.1
 	 *
 	 * @since 1.2.1
 	 */
 	protected function upgrade_1_2_1() {
-		// strings translations
+		// Strings translations
 		foreach ( get_terms( 'language', array( 'hide_empty' => 0 ) ) as $lang ) {
 			if ( $strings = get_option( 'polylang_mo' . $lang->term_id ) ) {
 				$mo = new PLL_MO();
@@ -289,14 +289,14 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.2.3
-	 * uprades multilingual menus depending on the old version due to multiple changes in menus management
+	 * Upgrades if the previous version is < 1.2.3
+	 * Uprades multilingual menus depending on the old version due to multiple changes in menus management
 	 *
 	 * @since 1.2.3
 	 */
 	public function upgrade_1_2_3() {
-		// old version < 1.1
-		// multilingal locations and switcher item were stored in a dedicated option
+		// Old version < 1.1
+		// Multilingal locations and switcher item were stored in a dedicated option
 		if ( version_compare( $this->options['version'], '1.1', '<' ) ) {
 			if ( $menu_lang = get_option( 'polylang_nav_menus' ) ) {
 				foreach ( $menu_lang as $location => $arr ) {
@@ -309,12 +309,12 @@ class PLL_Upgrade {
 					$has_switcher = array_shift( $switch_options );
 
 					foreach ( get_terms( 'language', array( 'hide_empty' => 0 ) ) as $lang ) {
-						// move nav menus locations
+						// Move nav menus locations
 						if ( ! empty( $translations[ $lang->slug ] ) ) {
 							$locations[ $location ][ $lang->slug ] = $translations[ $lang->slug ];
 						}
 
-						// create the menu items for the language switcher
+						// Create the menu items for the language switcher
 						if ( ! empty( $has_switcher ) ) {
 							$menu_item_db_id = wp_update_nav_menu_item( $translations[ $lang->slug ], 0, array(
 								'menu-item-title' => __( 'Language switcher', 'polylang' ),
@@ -339,8 +339,8 @@ class PLL_Upgrade {
 			$menus = get_theme_mod( 'nav_menu_locations' );
 
 			if ( is_array( $menus ) ) {
-				// if old version < 1.2
-				// clean the WP option as it was a bad idea to pollute it
+				// If old version < 1.2
+				// Clean the WP option as it was a bad idea to pollute it
 				if ( version_compare( $this->options['version'], '1.2', '<' ) ) {
 					foreach ( $menus as $loc => $menu ) {
 						if ( $pos = strpos( $loc, '#' ) ) {
@@ -351,7 +351,7 @@ class PLL_Upgrade {
 					set_theme_mod( 'nav_menu_locations', $menus );
 				}
 
-				// get the multilingual locations
+				// Get the multilingual locations
 				foreach ( $menus as $loc => $menu ) {
 					foreach ( get_terms( 'language', array( 'hide_empty' => 0 ) ) as $lang ) {
 						$arr[ $loc ][ $lang->slug ] = pll_get_term( $menu, $lang );
@@ -366,8 +366,8 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.3
-	 * moves the user biographies in default language to the 'description' user meta
+	 * Upgrades if the previous version is < 1.3
+	 * Moves the user biographies in default language to the 'description' user meta
 	 *
 	 * @since 1.3
 	 */
@@ -385,9 +385,9 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.4
-	 * sets a transient to delete old model data
-	 * deletes language cache (due to bug correction in home urls in 1.3.1 and added mo_id in 1.4)
+	 * Upgrades if the previous version is < 1.4
+	 * Sets a transient to delete old model data
+	 * Deletes language cache (due to bug correction in home urls in 1.3.1 and added mo_id in 1.4)
 	 *
 	 * @since 1.4
 	 */
@@ -397,17 +397,17 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * old data were not deleted in 1.2, just in case...
-	 * delete them at first upgrade at least 60 days after upgrade to 1.4
+	 * Old data were not deleted in 1.2, just in case...
+	 * Delete them at first upgrade at least 60 days after upgrade to 1.4
 	 *
 	 * @since 1.4
 	 */
 	protected function delete_pre_1_2_data() {
-		// suppress data of the old model < 1.2
+		// Suppress data of the old model < 1.2
 		global $wpdb;
 		$wpdb->termmeta = $wpdb->prefix . 'termmeta'; // registers the termmeta table in wpdb in case WP < 4.4
 
-		// do nothing if the termmeta table does not exists
+		// Do nothing if the termmeta table does not exists
 		if ( count( $wpdb->get_results( "SHOW TABLES LIKE '$wpdb->termmeta'" ) ) ) {
 			$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key = '_translations'" );
 			$wpdb->query( "DELETE FROM $wpdb->termmeta WHERE meta_key = '_language'" );
@@ -415,7 +415,7 @@ class PLL_Upgrade {
 			$wpdb->query( "DELETE FROM $wpdb->termmeta WHERE meta_key = '_translations'" );
 		}
 
-		// delete the strings translations
+		// Delete the strings translations
 		$languages = get_terms( 'language', array( 'hide_empty' => false ) );
 		foreach ( $languages as $lang ) {
 			delete_option( 'polylang_mo' . $lang->term_id );
@@ -425,8 +425,8 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.4.1
-	 * disables the browser detection when using multiple domains
+	 * Upgrades if the previous version is < 1.4.1
+	 * Disables the browser detection when using multiple domains
 	 *
 	 * @since 1.4.1
 	 */
@@ -437,8 +437,8 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.4.4
-	 * uprades widgets options for language filter
+	 * Upgrades if the previous version is < 1.4.4
+	 * Uprades widgets options for language filter
 	 *
 	 * @since 1.4.4
 	 */
@@ -457,8 +457,8 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.5
-	 * deletes language cache (due to host property added and bug on search url)
+	 * Upgrades if the previous version is < 1.5
+	 * Deletes language cache (due to host property added and bug on search url)
 	 *
 	 * @since 1.5
 	 */
@@ -467,8 +467,8 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.6
-	 * upgrades core language files to get the .po file (only for WP 4.0+)
+	 * Upgrades if the previous version is < 1.6
+	 * Upgrades core language files to get the .po file (only for WP 4.0+)
 	 *
 	 * @since 1.6
 	 */
@@ -479,17 +479,17 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * downloads language packs
-	 * intended to be used only one time (at upgrade to Polylang 1.6 or first upgrade of WP 4.0 or later)
-	 * adapted from wp_download_language_pack
-	 * rewritten because wp_download_language_pack checks the existence of .mo and I need to download .po
+	 * Downloads language packs
+	 * Intended to be used only one time (at upgrade to Polylang 1.6 or first upgrade of WP 4.0 or later)
+	 * Adapted from wp_download_language_pack
+	 * Rewritten because wp_download_language_pack checks the existence of .mo and I need to download .po
 	 *
 	 * @since 1.6
 	 */
 	static function download_language_packs() {
 		$languages = pll_languages_list( array( 'fields' => 'locale' ) );
 
-		// prevents upgrade if the .po file is already here. Let WP manage the upgrades :)
+		// Prevents upgrade if the .po file is already here. Let WP manage the upgrades :)
 		foreach ( $languages as $key => $locale ) {
 			if ( file_exists( WP_LANG_DIR . "/$locale.po" ) ) {
 				unset( $languages[ $key ] );
@@ -521,22 +521,22 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.7.4
+	 * Upgrades if the previous version is < 1.7.4
 	 *
 	 * @since 1.7.4
 	 */
 	protected function upgrade_1_7_4() {
-		delete_transient( 'pll_languages_list' ); // deletes language cache (due to flag properties added in 1.7, page on front removed in 1.7.2, home url fixes in 1.7.4)
-		flush_rewrite_rules(); // flush rewrite rules due to custom taxonomy rewrite rule bug fix
+		delete_transient( 'pll_languages_list' ); // Deletes language cache (due to flag properties added in 1.7, page on front removed in 1.7.2, home url fixes in 1.7.4)
+		flush_rewrite_rules(); // Flush rewrite rules due to custom taxonomy rewrite rule bug fix
 	}
 
 	/**
-	 * upgrades if the previous version is < 1.8
+	 * Upgrades if the previous version is < 1.8
 	 *
 	 * @since 1.8
 	 */
 	protected function upgrade_1_8() {
-		// adds the flag code in languages stored in DB
+		// Adds the flag code in languages stored in DB
 		include( PLL_SETTINGS_INC . '/languages.php' );
 
 		$terms = get_terms( 'language', array( 'hide_empty' => 0 ) );
@@ -551,5 +551,16 @@ class PLL_Upgrade {
 		}
 
 		delete_transient( 'pll_languages_list' );
+	}
+
+	/**
+	 * Upgrades if the previous version is < 2.0.8
+	 * Changes the user meta 'user_lang' to 'locale' to match WP 4.7 choice
+	 *
+	 * @since 2.0.8
+	 */
+	protected function upgrade_2_0_8() {
+		global $wpdb;
+		$wpdb->update( $wpdb->usermeta, array( 'meta_key' => 'locale' ), array( 'meta_key' => 'user_lang' ) );
 	}
 }

@@ -204,7 +204,10 @@ class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function init_user() {
 		// Backend locale
-		add_filter( 'locale', array( $this, 'get_locale' ) );
+		// FIXME: Backward compatibility with WP < 4.7
+		if ( version_compare( $GLOBALS['wp_version'], '4.7alpha', '<' ) ) {
+			add_filter( 'locale', array( $this, 'get_locale' ) );
+		}
 
 		// Language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
@@ -232,11 +235,14 @@ class PLL_Admin_Base extends PLL_Base {
 		// Inform that the admin language has been set
 		// Only if the admin language is one of the Polylang defined language
 		if ( $curlang = $this->model->get_language( get_locale() ) ) {
-			$GLOBALS['text_direction'] = $curlang->is_rtl ? 'rtl' : 'ltr'; // force text direction according to language setting
+			// FIXME: Backward compatibility with WP < 4.7
+			if ( version_compare( $GLOBALS['wp_version'], '4.7alpha', '<' ) ) {
+				$GLOBALS['text_direction'] = $curlang->is_rtl ? 'rtl' : 'ltr'; // force text direction according to language setting
+			}
+
 			/** This action is documented in frontend/choose-lang.php */
 			do_action( 'pll_language_defined', $curlang->slug, $curlang );
-		}
-		else {
+		} else {
 			/** This action is documented in include/class-polylang.php */
 			do_action( 'pll_no_language_defined' ); // to load overriden textdomains
 		}
@@ -262,6 +268,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 	/**
 	 * Get the locale based on user preference
+	 * FIXME: Backward compatibility with WP < 4.7
 	 *
 	 * @since 0.4
 	 *
@@ -269,7 +276,7 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @return string modified locale
 	 */
 	public function get_locale( $locale ) {
-		return ( $loc = get_user_meta( get_current_user_id(), 'user_lang', 'true' ) ) ? $loc : $locale;
+		return ( $loc = get_user_meta( get_current_user_id(), 'locale', 'true' ) ) ? $loc : $locale;
 	}
 
 	/**
