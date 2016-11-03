@@ -126,7 +126,8 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	 */
 	public function terms_clauses( $clauses, $taxonomies, $args ) {
 		// Does nothing except on taxonomies which are filterable
-		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) ) {
+		// Since WP 4.7, make sure not to filter wp_get_object_terms()
+		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) || ! empty( $args['object_ids'] ) ) {
 			return $clauses;
 		}
 
