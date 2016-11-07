@@ -31,23 +31,31 @@ class PLL_Widget_Languages extends WP_Widget {
 	 * @param array $args     Display arguments including before_title, after_title, before_widget, and after_widget.
 	 * @param array $instance The settings for the particular instance of the widget
 	 */
-	function widget( $args, $instance ) {
-		// Sets a unique id for dropdown
-		$instance['dropdown'] = empty( $instance['dropdown'] ) ? 0 : $args['widget_id'];
+	 function widget( $args, $instance ) {
+ 		// Sets a unique id for dropdown
+ 		$instance['dropdown'] = empty( $instance['dropdown'] ) ? 0 : $args['widget_id'];
 
-		if ( $list = pll_the_languages( array_merge( $instance, array( 'echo' => 0 ) ) ) ) {
-			$title = empty( $instance['title'] ) ? '' : $instance['title'];
-			/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
-			$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
+ 		if ( $list = pll_the_languages( array_merge( $instance, array( 'echo' => 0 ) ) ) ) {
+ 			$title = empty( $instance['title'] ) ? '' : $instance['title'];
+ 			/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
+ 			$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
-			echo $args['before_widget'];
-			if ( $title ) {
-				echo $args['before_title'] . $title . $args['after_title'];
-			}
-			echo $instance['dropdown'] ? $list : "<ul>\n" . $list . "</ul>\n";
-			echo $args['after_widget'];
-		}
-	}
+ 			echo $args['before_widget'];
+ 			if ( $instance['dropdown'] ) {
+ 					if ( $title ) {
+ 							echo $args['before_title'] .
+										'<label class="screen-reader-text" for="' . esc_attr( 'lang_choice_' . $instance['dropdown'] ) . '">' .
+ 												$title .
+ 										'</label>' .
+ 								$args['after_title'];
+ 					}
+ 					echo $list;
+ 			} else {
+ 					echo "<ul>\n" . $list . "</ul>\n";
+ 			}
+ 			echo $args['after_widget'];
+ 		}
+ 	}
 
 	/**
 	 * Updates the widget options
