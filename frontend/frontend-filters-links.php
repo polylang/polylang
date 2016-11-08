@@ -190,6 +190,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @since 0.1
 	 */
 	public function wp_head() {
+		// Don't output anything on paged archives: see https://wordpress.org/support/topic/hreflang-on-page2
+		// Don't output anything on paged pages and paged posts
+		if ( is_paged() || ( is_singular() && ( $page = get_query_var( 'page' ) ) && $page > 1 ) ) {
+			return;
+		}
+
 		// Google recommends to include self link https://support.google.com/webmasters/answer/189077?hl=en
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( $url = $this->links->get_translation_url( $language ) ) {
@@ -198,8 +204,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		// Ouptputs the section only if there are translations ( $urls always contains self link )
-		// Don't output anything on paged archives: see https://wordpress.org/support/topic/hreflang-on-page2
-		if ( ! empty( $urls ) && count( $urls ) > 1 && ! is_paged() ) {
+		if ( ! empty( $urls ) && count( $urls ) > 1 ) {
 			// Prepare the list of languages to remove the country code
 			foreach ( array_keys( $urls ) as $locale ) {
 				$split = explode( '-', $locale );
