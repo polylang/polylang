@@ -205,6 +205,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		// Ouptputs the section only if there are translations ( $urls always contains self link )
 		if ( ! empty( $urls ) && count( $urls ) > 1 ) {
+
 			// Prepare the list of languages to remove the country code
 			foreach ( array_keys( $urls ) as $locale ) {
 				$split = explode( '-', $locale );
@@ -215,13 +216,26 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 			foreach ( $urls as $locale => $url ) {
 				$lang = $count[ $languages[ $locale ] ] > 1 ? $locale : $languages[ $locale ]; // Output the country code only when necessary
-				printf( '<link rel="alternate" href="%s" hreflang="%s" />'."\n", esc_url( $url ), esc_attr( $lang ) );
+				$hreflangs[ $lang ] = $url;
 			}
 
 			// Adds the site root url when the default language code is not hidden
 			// See https://wordpress.org/support/topic/implementation-of-hreflangx-default
 			if ( is_front_page() && ! $this->options['hide_default'] && $this->options['force_lang'] < 3 ) {
-				printf( '<link rel="alternate" href="%s" hreflang="x-default" />'."\n", esc_url( home_url( '/' ) ) );
+				$hreflangs[ 'x-default' ] = home_url( '/' );
+			}
+
+			/**
+			 * Filters the list of rel hreflang attributes
+			 *
+			 * @since 2.1
+			 *
+			 * @param array $hreflangs Array of urls with language codes as keys
+			 */
+			$hreflangs = apply_filters( 'pll_rel_hreflang_attributes', $hreflangs );
+
+			foreach ( $hreflangs as $lang => $url ) {
+				printf( '<link rel="alternate" href="%s" hreflang="%s" />'."\n", esc_url( $url ), esc_attr( $lang ) );
 			}
 		}
 	}
