@@ -290,7 +290,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return array Modified options
 	 */
 	public function nav_menu_options( $options ) {
-		$options['auto_add'] = array_intersect( $options['auto_add'], array( $this->auto_add_menus ) );
+		$options['auto_add'] = array_intersect( $options['auto_add'], $this->auto_add_menus );
 		return $options;
 	}
 
@@ -317,7 +317,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			}
 
 			if ( ! empty( $menus ) ) {
-				$this->auto_add_menus = implode( ',', $menus );
+				$this->auto_add_menus = $menus;
 				add_filter( 'option_nav_menu_options', array( $this, 'nav_menu_options' ) );
 			}
 		}
