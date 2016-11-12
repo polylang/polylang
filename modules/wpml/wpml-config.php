@@ -187,13 +187,36 @@ class PLL_WPML_Config {
 			foreach ( $children as $child ) {
 				$attributes = $child->attributes();
 				$name = (string) $attributes['name'];
-				if ( isset( $options[ $name ] ) ) {
+				if ( '*' === $name && is_array( $options ) ) {
+					foreach ( $options as $n => $option ) {
+						$this->register_wildcard_options_recursive( $context, $option, $n );
+					}
+				} elseif ( isset( $options[ $name ] ) ) {
 					$this->register_string_recursive( $context, $options[ $name ], $child );
 				}
 			}
 		} else {
 			$attributes = $key->attributes();
 			pll_register_string( (string) $attributes['name'], $options, $context, true ); // Multiline as in WPML
+		}
+	}
+
+	/**
+	 * Recursively registers strings with a wildcard
+	 *
+	 * @since 2.1
+	 *
+	 * @param string $context the group in which the strings will be registered
+	 * @param array  $options
+	 * @param string $name    Option name
+	 */
+	protected function register_wildcard_options_recursive( $context, $options, $name ) {
+		if ( is_array( $options ) ) {
+			foreach ( $options as $n => $option ) {
+				$this->register_wildcard_options_recursive( $context, $option, $n );
+			}
+		} else {
+			pll_register_string( $name, $options, $context );
 		}
 	}
 
@@ -212,7 +235,11 @@ class PLL_WPML_Config {
 			foreach ( $children as $child ) {
 				$attributes = $child->attributes();
 				$name = (string) $attributes['name'];
-				if ( isset( $values[ $name ] ) ) {
+				if ( '*' === $name && is_array( $values ) ) {
+					foreach ( $values as $n => $v ) {
+						$values[ $n ] = $this->translate_wildcard_options_recursive( $v, $n );
+					}
+				} elseif ( isset( $values[ $name ] ) ) {
 					$values[ $name ] = $this->translate_strings_recursive( $values[ $name ], $child );
 				}
 			}
@@ -220,5 +247,25 @@ class PLL_WPML_Config {
 			$values = pll__( $values );
 		}
 		return $values;
+	}
+
+	/**
+	 * Recursively translates strings registered by a wildcard
+	 *
+	 * @since 2.1
+	 *
+	 * @param array|string $options Either a string to translate or a list of strings to translate
+	 * @param string       $name    Option name
+	 * @return array|string Translated string(s)
+	 */
+	protected function translate_wildcard_options_recursive( $options, $name ) {
+		if ( is_array( $options ) ) {
+			foreach ( $options as $n => $option ) {
+				$options[ $n ] = $this->translate_wildcard_options_recursive( $option, $n );
+			}
+		} else {
+			$options = pll__( $options );
+		}
+		return $options;
 	}
 }
