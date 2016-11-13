@@ -3,8 +3,8 @@ Contributors: Chouby
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
-Tested up to: 4.6
-Stable tag: 2.0.7
+Tested up to: 4.7
+Stable tag: 2.0.8
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,6 +76,16 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.0.8 (2016-11-14) =
+
+* Disable admin language feature in WP 4.7+
+* Pro: fix case where a media could lose its parent post when translated on the fly by the content duplication
+* Pro: fix on the fly media created at content duplication attached to parent page instead of child page
+* Fix translations input fields not populated in languages metabox when creating a new translation in WP 4.7
+* Fix possibility to delete the translations of the default category in WP 4.7
+* Fix tag search not filtered per language in Quick edit in WP 4.7
+* Fix dropdown language switcher not working for untranslated pages
 
 = 2.0.7 (2016-10-18) =
 
