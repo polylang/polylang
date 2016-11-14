@@ -2,7 +2,7 @@
 // valid for both tag metabox and quick edit
 (function( $ ){
 	$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
-		if ( ( -1 !== options.url.indexOf( 'action=ajax-tag-search' ) || -1 !== options.data.indexOf( 'action=ajax-tag-search' ) ) && ( ( lang = $( '.post_lang_choice' ).val() ) || ( lang = $( ':input[name="inline_lang_choice"]' ).val() ) ) ) {
+		if ( 'undefined' !== typeof options.data && ( -1 !== options.url.indexOf( 'action=ajax-tag-search' ) || -1 !== options.data.indexOf( 'action=ajax-tag-search' ) ) && ( ( lang = $( '.post_lang_choice' ).val() ) || ( lang = $( ':input[name="inline_lang_choice"]' ).val() ) ) ) {
 			options.data = 'lang=' + lang + '&' + options.data;
 		}
 	});
