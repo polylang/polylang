@@ -31,7 +31,7 @@ class PLL_Widget_Languages extends WP_Widget {
 	 * @param array $args     Display arguments including before_title, after_title, before_widget, and after_widget.
 	 * @param array $instance The settings for the particular instance of the widget
 	 */
-	 function widget( $args, $instance ) {
+	function widget( $args, $instance ) {
 		// Sets a unique id for dropdown
 		$instance['dropdown'] = empty( $instance['dropdown'] ) ? 0 : $args['widget_id'];
 
