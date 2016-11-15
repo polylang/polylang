@@ -41,6 +41,7 @@ class PLL_Plugins_Compat {
 		add_filter( 'option_duplicate_post_taxonomies_blacklist' , array( $this, 'duplicate_post_taxonomies_blacklist' ) );
 
 		// Jetpack 3
+		add_action( 'init', array( $this, 'jetpack_init' ) );
 		add_action( 'jetpack_widget_get_top_posts', array( $this, 'jetpack_widget_get_top_posts' ), 10, 3 );
 		add_filter( 'grunion_contact_form_field_html', array( $this, 'grunion_contact_form_field_html_filter' ), 10, 3 );
 		add_filter( 'jetpack_open_graph_tags', array( $this, 'jetpack_ogp' ) );
@@ -524,6 +525,23 @@ class PLL_Plugins_Compat {
 	function duplicate_post_taxonomies_blacklist( $taxonomies ) {
 		$taxonomies[] = 'post_translations';
 		return $taxonomies;
+	}
+
+	/**
+	 * Jetpack
+	 * Add filters
+	 *
+	 * @since 2.1
+	 */
+	public function jetpack_init() {
+		if ( ! defined( 'JETPACK__VERSION' ) ) {
+			return;
+		}
+
+		// Infinite scroll ajax url must be on the right domain
+		if ( PLL()->options['force_lang'] > 1 ) {
+			add_filter( 'infinite_scroll_ajax_url', array( PLL()->links_model, 'site_url' ) );
+		}
 	}
 
 	/**
