@@ -110,6 +110,12 @@ class PLL_Language {
 			$flags['custom_flag']['src'] = esc_url( PLL_LOCAL_URL . $file );
 		}
 
+		// use custom flags from theme if they exist
+		if ( file_exists( get_stylesheet_directory() . ( $file = '/polylang/flags/' . $this->locale . '.png' ) ) || file_exists( get_stylesheet_directory() . ( $file = '/polylang/flags/' . $this->locale . '.jpg' ) ) ) {
+			$flags['custom_flag']['url'] = esc_url_raw( get_stylesheet_directory() . $file );
+			$flags['custom_flag']['src'] = esc_url( get_stylesheet_directory() . $file );
+		}
+
 		/**
 		 * Filter the flag title attribute
 		 * Defaults to the language name
