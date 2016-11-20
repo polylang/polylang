@@ -53,6 +53,11 @@ class PLL_Plugins_Compat {
 
 		// WP Sweep
 		add_filter( 'wp_sweep_excluded_taxonomies', array( $this, 'wp_sweep_excluded_taxonomies' ) );
+
+		// Twenty Seventeen
+		if ( 'twentyseventeen' == get_template() ) {
+			add_action( 'init', array( $this, 'twenty_seventeen_init' ) );
+		}
 	}
 
 	/**
@@ -605,6 +610,19 @@ class PLL_Plugins_Compat {
 	 */
 	public function wp_sweep_excluded_taxonomies( $excluded_taxonomies ) {
 		return array_merge( $excluded_taxonomies, array( 'term_language', 'term_translations' ) );
+	}
+
+	/**
+	 * Twenty Seventeen
+	 * Translates the front page panels
+	 *
+	 * @since 2.0.10
+	 */
+	public function twenty_seventeen_init() {
+		$num_sections = twentyseventeen_panel_count();
+		for ( $i = 1; $i < ( 1 + $num_sections ); $i++ ) {
+			add_filter( 'theme_mod_panel_' . $i, 'pll_get_post' );
+		}
 	}
 
 	/**
