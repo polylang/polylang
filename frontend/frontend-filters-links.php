@@ -222,7 +222,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			// Adds the site root url when the default language code is not hidden
 			// See https://wordpress.org/support/topic/implementation-of-hreflangx-default
 			if ( is_front_page() && ! $this->options['hide_default'] && $this->options['force_lang'] < 3 ) {
-				$hreflangs[ 'x-default' ] = home_url( '/' );
+				$hreflangs['x-default'] = home_url( '/' );
 			}
 
 			/**

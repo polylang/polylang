@@ -414,8 +414,7 @@ class PLL_Admin_Filters_Term {
 				// Bulk edit does not modify the language
 				if ( -1 == $_GET['inline_lang_choice'] ) {
 					$slug = $name . '-' .  $this->model->post->get_language( $this->post_id )->slug;
-				}
-				else {
+				} else {
 					$slug = $name . '-' . $this->model->get_language( $_GET['inline_lang_choice'] )->slug;
 				}
 			}
@@ -626,7 +625,7 @@ class PLL_Admin_Filters_Term {
 	 */
 	public function option_default_category( $value ) {
 		// Filters the default category in note below the category list table and in settings->writing dropdown
-		if ( isset( $this->pref_lang) && $tr = $this->model->term->get( $value, $this->pref_lang ) ) {
+		if ( isset( $this->pref_lang ) && $tr = $this->model->term->get( $value, $this->pref_lang ) ) {
 			$value = $tr;
 		}
 

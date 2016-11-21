@@ -163,7 +163,6 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			}
 		}
 
-
 		if ( isset( $qvars['lang'] ) && 'all' === $qvars['lang'] ) {
 			unset( $qvars['lang'] );
 		}

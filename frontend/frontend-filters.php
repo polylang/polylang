@@ -191,7 +191,7 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	 * @return string modified WHERE clause
 	 */
 	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
-		return $this->model->is_translated_post_type( $post->post_type) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
+		return $this->model->is_translated_post_type( $post->post_type ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
 	}
 
 	/**
