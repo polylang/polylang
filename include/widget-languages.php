@@ -42,15 +42,18 @@ class PLL_Widget_Languages extends WP_Widget {
 
 			echo $args['before_widget'];
 			if ( $title ) {
-				echo $args['before_title'];
-				echo $instance['dropdown'] ?
-					'<label class="screen-reader-text" for="' . esc_attr( 'lang_choice_' . $instance['dropdown'] ) . '">' .
-						$title .
-					'</label>' :
-					$title;
-				echo $args['after_title'];
+				echo $args['before_title'] . $title . $args['after_title'];
 			}
-			echo $instance['dropdown'] ? $list : "<ul>\n" . $list . "</ul>\n";
+			if ( $instance['dropdown'] ) {
+					if ( $title ) {
+						echo '<label class="screen-reader-text" for="' . esc_attr( 'lang_choice_' . $instance['dropdown'] ) . '">' . $title . '</label>';
+					} else {
+						echo '<label class="screen-reader-text" for="' . esc_attr( 'lang_choice_' . $instance['dropdown'] ) . '">' . __( 'Language Switcher', 'polylang' ) . '</label>';
+					}
+					echo $list;
+				} else {
+				echo "<ul>\n" . $list . "</ul>\n";
+			}
 			echo $args['after_widget'];
 		}
 	}
