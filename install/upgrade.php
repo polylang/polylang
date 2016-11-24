@@ -568,7 +568,7 @@ class PLL_Upgrade {
 	 * Upgrades if the previous version is < 2.1
 	 * Moves strings translations from polylang_mo post_content to post meta _pll_strings_translations
 	 *
-	 * @since 2.0.8
+	 * @since 2.1
 	 */
 	protected function upgrade_2_1() {
 		foreach ( get_terms( 'language', array( 'hide_empty' => 0 ) ) as $lang ) {
