@@ -165,7 +165,7 @@ td[class*='column-language_'] {
 }
 
 #post-translations .pll-language-column,
-#post-translations .pll-edit-column {
+#post-translations .pll-column-icon {
 	width: 20px;
 }
 
@@ -185,7 +185,7 @@ td[class*='column-language_'] {
 	width: auto;
 }
 
-.pll-edit-column {
+.pll-column-icon {
 	text-align: center;
 }
 
