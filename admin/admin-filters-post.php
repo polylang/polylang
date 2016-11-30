@@ -404,7 +404,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		// Security checks are necessary to accept language modifications as 'wp_insert_post' can be called from outside WP admin
 
 		// Edit post
-		if ( isset( $_POST['post_lang_choice'] ) ) {
+		if ( isset( $_POST['post_lang_choice'], $_POST['post_ID'] ) && $_POST['post_ID'] == $post_id ) {
 			check_admin_referer( 'pll_language', '_pll_nonce' );
 			$this->model->post->set_language( $post_id, $lang = $this->model->get_language( $_POST['post_lang_choice'] ) );
 		}
@@ -509,8 +509,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		if ( ( $update && current_user_can( $post_type_object->cap->edit_post, $post_id ) ) || ( ! $update && current_user_can( $post_type_object->cap->create_posts ) ) ) {
 			$this->save_language( $post_id, $post );
 
-			// Make sure we are saving translations only for the main post currently being edited and not for other possible post types
-			if ( ! empty( $GLOBALS['post_type'] ) && $post->post_type === $GLOBALS['post_type'] && isset( $_POST['post_tr_lang'] ) ) {
+			// Make sure we are saving translations only for the main post currently being edited
+			if ( isset( $_POST['post_tr_lang'], $_POST['post_ID'] ) && $_POST['post_ID'] == $post_id ) {
 				$translations = $this->save_translations( $post_id, $_POST['post_tr_lang'] );
 			}
 
