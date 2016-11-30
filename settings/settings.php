@@ -29,7 +29,9 @@ class PLL_Settings extends PLL_Admin_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
-		$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( $_GET['page'], 6 );
+		if ( isset( $_GET['page'] ) ) {
+			$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( $_GET['page'], 6 );
+		}
 
 		PLL_Admin_Strings::init();
 
