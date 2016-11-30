@@ -539,8 +539,9 @@ class PLL_Plugins_Compat {
 		}
 
 		// Infinite scroll ajax url must be on the right domain
-		if ( PLL()->options['force_lang'] > 1 ) {
+		if ( did_action( 'pll_init' ) && PLL()->options['force_lang'] > 1 ) {
 			add_filter( 'infinite_scroll_ajax_url', array( PLL()->links_model, 'site_url' ) );
+			add_filter( 'infinite_scroll_js_settings', array( $this, 'jetpack_infinite_scroll_js_settings' ) );
 		}
 	}
 
@@ -615,6 +616,20 @@ class PLL_Plugins_Compat {
 		$slug = sanitize_title( pll_get_post_language( $post_id, 'name' ) );
 		$filters[] = array( 'term' => array( 'taxonomy.language.slug' => $slug ) );
 		return $filters;
+	}
+
+	/**
+	 * Jetpack
+	 * Fixes the settings history host for infinite scroll when using subdomains or multiple domains
+	 *
+	 * @since 2.1
+	 *
+	 * @param array $settings
+	 * @return array
+	 */
+	public function jetpack_infinite_scroll_js_settings( $settings ) {
+		$settings['history']['host'] = parse_url( pll_home_url(), PHP_URL_HOST ); // Jetpack uses get_option( 'home' )
+		return $settings;
 	}
 
 	/**
