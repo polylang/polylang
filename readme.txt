@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 2.0.9
+Stable tag: 2.0.10
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -77,9 +77,16 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.0.10 (2016-12-05) =
+
+* Add support for front page panels of Twenty Seventeen
+* Remove draft posts from the language switcher even when the user is logged in
+* Fix: Make argument 2 of icl_object_id optional
+* Fix a conflict with the Divi theme (#67)
+
 = 2.0.9 (2016-11-15) =
 
-* fix javascript error in some ajax requests
+* Fix javascript error in some ajax requests
 
 = 2.0.8 (2016-11-14) =
 
