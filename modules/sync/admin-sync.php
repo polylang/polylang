@@ -89,11 +89,15 @@ class PLL_Admin_Sync {
 	 * Get the list of taxonomies to copy or to synchronize
 	 *
 	 * @since 1.7
+	 * @since 2.1 The `$from`, `$to`, `$lang` parameters were added.
 	 *
-	 * @param bool $sync true if it is synchronization, false if it is a copy
+	 * @param bool   $sync true if it is synchronization, false if it is a copy
+	 * @param int    $from id of the post from which we copy informations, optional, defaults to null
+	 * @param int    $to   id of the post to which we paste informations, optional, defaults to null
+	 * @param string $lang language slug, optional, defaults to null
 	 * @return array list of taxonomy names
 	 */
-	public function get_taxonomies_to_copy( $sync ) {
+	public function get_taxonomies_to_copy( $sync, $from = null, $to = null, $lang = null ) {
 		$taxonomies = ! $sync || in_array( 'taxonomies', $this->options['sync'] ) ? $this->model->get_translated_taxonomies() : array();
 		if ( ! $sync || in_array( 'post_format', $this->options['sync'] ) ) {
 			$taxonomies[] = 'post_format';
@@ -103,11 +107,15 @@ class PLL_Admin_Sync {
 		 * Filter the taxonomies to copy or synchronize
 		 *
 		 * @since 1.7
+		 * @since 2.1 The `$from`, `$to`, `$lang` parameters were added.
 		 *
-		 * @param array $taxonomies list of taxonomy names
-		 * @param bool  $sync       true if it is synchronization, false if it is a copy
+		 * @param array  $taxonomies list of taxonomy names
+		 * @param bool   $sync       true if it is synchronization, false if it is a copy
+		 * @param int    $from       id of the post from which we copy informations
+		 * @param int    $to         id of the post to which we paste informations
+		 * @param string $lang       language slug
 		 */
-		return array_unique( apply_filters( 'pll_copy_taxonomies', $taxonomies, $sync ) );
+		return array_unique( apply_filters( 'pll_copy_taxonomies', $taxonomies, $sync, $from, $to, $lang ) );
 	}
 
 	/**
@@ -122,7 +130,7 @@ class PLL_Admin_Sync {
 	 */
 	public function copy_taxonomies( $from, $to, $lang, $sync = false ) {
 		// Get taxonomies to sync for this post type
-		$taxonomies = array_intersect( get_post_taxonomies( $from ), $this->get_taxonomies_to_copy( $sync ) );
+		$taxonomies = array_intersect( get_post_taxonomies( $from ), $this->get_taxonomies_to_copy( $sync, $from, $to, $lang ) );
 
 		// Update the term cache to reduce the number of queries in the loop
 		update_object_term_cache( $sync ? array( $from, $to ) : $from, get_post_type( $from ) );
