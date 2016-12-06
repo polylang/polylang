@@ -122,22 +122,11 @@ function pll_register_string( $name, $string, $context = 'polylang', $multiline 
  * @return string the string translation in the current language
  */
 function pll__( $string ) {
-	static $cache; // Cache object to avoid translating the same string several times
-
 	if ( ! did_action( 'pll_language_defined' ) || ! is_scalar( $string ) ) { // No need for translation
 		return $string;
 	}
 
-	if ( empty( $cache ) ) {
-		$cache = new PLL_Cache();
-	}
-
-	if ( false === $str = $cache->get( $string ) ) {
-		$str = __( $string, 'pll_string' );
-		$cache->set( $string, $str );
-	}
-
-	return $str;
+	return __( $string, 'pll_string' );
 }
 
 /**
