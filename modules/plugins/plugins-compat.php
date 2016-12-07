@@ -32,10 +32,8 @@ class PLL_Plugins_Compat {
 		add_filter( 'pll_home_url_black_list', array( $this, 'aq_home_url_black_list' ) );
 
 		// Twenty Fourteen
-		if ( 'twentyfourteen' == get_template() ) {
-			add_filter( 'transient_featured_content_ids', array( $this, 'twenty_fourteen_featured_content_ids' ) );
-			add_filter( 'option_featured-content', array( $this, 'twenty_fourteen_option_featured_content' ) );
-		}
+		add_filter( 'transient_featured_content_ids', array( $this, 'twenty_fourteen_featured_content_ids' ) );
+		add_filter( 'option_featured-content', array( $this, 'twenty_fourteen_option_featured_content' ) );
 
 		// Duplicate post
 		add_filter( 'option_duplicate_post_taxonomies_blacklist' , array( $this, 'duplicate_post_taxonomies_blacklist' ) );
@@ -456,7 +454,7 @@ class PLL_Plugins_Compat {
 	 * @return array modified featured posts ids ( include all languages )
 	 */
 	public function twenty_fourteen_featured_content_ids( $featured_ids ) {
-		if ( ! did_action( 'pll_init' ) || false !== $featured_ids ) {
+		if ( 'twentyfourteen' != get_template() || ! did_action( 'pll_init' ) || false !== $featured_ids ) {
 			return $featured_ids;
 		}
 
@@ -504,7 +502,7 @@ class PLL_Plugins_Compat {
 	 * @return array modified $settings
 	 */
 	public function twenty_fourteen_option_featured_content( $settings ) {
-		if ( PLL() instanceof PLL_Frontend && $settings['tag-id'] && $tr = pll_get_term( $settings['tag-id'] ) ) {
+		if ( 'twentyfourteen' == get_template() && PLL() instanceof PLL_Frontend && $settings['tag-id'] && $tr = pll_get_term( $settings['tag-id'] ) ) {
 			$settings['tag-id'] = $tr;
 		}
 
