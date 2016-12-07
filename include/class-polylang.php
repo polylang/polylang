@@ -41,9 +41,10 @@ class Polylang {
 		// take no action before all plugins are loaded
 		add_action( 'plugins_loaded', array( $this, 'init' ), 1 );
 
-		// override load text domain waiting for the language to be defined
+		// override load text domain waiting for the language to be defined (only on front since WP 4.7)
 		// here for plugins which load text domain as soon as loaded :(
-		if ( ! defined( 'PLL_OLT' ) || PLL_OLT ) {
+		// FIXME test get_user_locale for backward compatibility with WP < 4.7
+		if ( ( ! defined( 'PLL_OLT' ) || PLL_OLT ) && ! ( is_admin() && function_exists( 'get_user_locale' ) ) ) {
 			PLL_OLT_Manager::instance();
 		}
 
