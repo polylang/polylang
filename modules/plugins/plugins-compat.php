@@ -56,9 +56,7 @@ class PLL_Plugins_Compat {
 		add_filter( 'wp_sweep_excluded_taxonomies', array( $this, 'wp_sweep_excluded_taxonomies' ) );
 
 		// Twenty Seventeen
-		if ( 'twentyseventeen' == get_template() ) {
-			add_action( 'init', array( $this, 'twenty_seventeen_init' ) );
-		}
+		add_action( 'init', array( $this, 'twenty_seventeen_init' ) );
 	}
 
 	/**
@@ -652,7 +650,7 @@ class PLL_Plugins_Compat {
 	 * @since 2.0.10
 	 */
 	public function twenty_seventeen_init() {
-		if ( did_action( 'pll_init' ) && PLL() instanceof PLL_Frontend ) {
+		if ( 'twentyseventeen' === get_template() && did_action( 'pll_init' ) && PLL() instanceof PLL_Frontend ) {
 			$num_sections = twentyseventeen_panel_count();
 			for ( $i = 1; $i < ( 1 + $num_sections ); $i++ ) {
 				add_filter( 'theme_mod_panel_' . $i, 'pll_get_post' );
