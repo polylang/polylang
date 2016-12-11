@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 2.0.10
+Stable tag: 2.0.11
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,6 +76,13 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.0.11 (2016-12-12) =
+
+* Pro: Fix shared term slugs broken by a late change in WP 4.7 #73
+* Pro: Fix media taxonomies lost when creating a media translation when taxonomies sync is activated #72
+* Fix fatal error in customizer when Twenty Seventen is activated and another theme is previewed #71
+* Fix wrong plugin language on admin if user locale is different from site locale in WP 4.7
 
 = 2.0.10 (2016-12-05) =
 
