@@ -104,6 +104,7 @@ class PLL_Frontend extends PLL_Base {
 	 */
 	public function parse_query( $query ) {
 		$qv = $query->query_vars;
+		$taxonomies = $this->get_queried_taxonomies( $query );
 
 		// to avoid returning an empty result if the query includes a translated taxonomy in a different language
 		$has_tax = isset( $query->tax_query->queries ) && $this->model->have_translated_taxonomy( $query->tax_query->queries );
@@ -113,8 +114,6 @@ class PLL_Frontend extends PLL_Base {
 		// do not filter if lang is set to an empty value
 		// do not filter single page and translated taxonomies to avoid conflicts
 		if ( ! empty( $this->curlang ) && ! isset( $qv['lang'] ) && ! $has_tax && empty( $qv['page_id'] ) && empty( $qv['pagename'] ) ) {
-			$taxonomies = $this->get_queried_taxonomies( $query );
-
 			if ( $taxonomies && ( empty( $qv['post_type'] ) || 'any' === $qv['post_type'] ) ) {
 				foreach ( $taxonomies as $taxonomy ) {
 					$tax_object = get_taxonomy( $taxonomy );
@@ -129,9 +128,9 @@ class PLL_Frontend extends PLL_Base {
 		}
 
 		// modifies query vars when the language is queried
-		if ( ! empty( $qv['lang'] ) ) {
+		if ( ! empty( $qv['lang'] ) || ( ! empty( $taxonomies ) && array( 'language') == array_values( $taxonomies ) ) ) {
 			// do we query a custom taxonomy?
-			$taxonomies = array_diff( $this->get_queried_taxonomies( $query ) , array( 'language', 'category', 'post_tag' ) );
+			$taxonomies = array_diff( $taxonomies , array( 'language', 'category', 'post_tag' ) );
 
 			// remove pages query when the language is set unless we do a search
 			// take care not to break the single page, attachment and taxonomies queries!
