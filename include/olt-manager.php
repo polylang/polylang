@@ -21,6 +21,16 @@ class PLL_OLT_Manager {
 	 * @since 1.2
 	 */
 	public function __construct() {
+		// Allows Polylang to be the first plugin loaded ;-)
+		add_filter( 'pre_update_option_active_plugins', array( $this, 'make_polylang_first' ) );
+		add_filter( 'pre_update_option_active_sitewide_plugins', array( $this, 'make_polylang_first' ) );
+
+		// Overriding load text domain only on front since WP 4.7
+		// FIXME test get_user_locale for backward compatibility with WP < 4.7
+		if ( is_admin() && function_exists( 'get_user_locale' ) ) {
+			return;
+		}
+
 		// Saves the default locale before we start any language manipulation
 		$this->default_locale = get_locale();
 
@@ -33,9 +43,6 @@ class PLL_OLT_Manager {
 		add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined
 		add_action( 'pll_no_language_defined', array( $this, 'load_textdomains' ) );
 
-		// Allows Polylang to be the first plugin loaded ;-)
-		add_filter( 'pre_update_option_active_plugins', array( $this, 'make_polylang_first' ) );
-		add_filter( 'pre_update_option_active_sitewide_plugins', array( $this, 'make_polylang_first' ) );
 	}
 
 	/**
