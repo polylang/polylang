@@ -72,9 +72,18 @@ class PLL_OLT_Manager {
 		remove_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
 		$new_locale = get_locale();
 
+
 		// Don't try to save time for en_US as some users have theme written in another language
 		// Now we can load all overriden text domains with the right language
 		if ( ! empty( $this->list_textdomains ) ) {
+
+			// Since WP 4.7 we need to reset the internal cache of _get_path_to_translation when switching from any locale to en_US
+			// See WP_Locale_Switcher::changle_locale()
+			// FIXME test _get_path_to_translation for backward compatibility with WP < 4.7
+			if ( function_exists( '_get_path_to_translation' ) ) {
+				_get_path_to_translation( null, true );
+			}
+
 			foreach ( $this->list_textdomains as $textdomain ) {
 				// Since WP 4.6, plugins translations are first loaded from wp-content/languages
 				if ( ! load_textdomain( $textdomain['domain'], str_replace( "{$this->default_locale}.mo", "$new_locale.mo", $textdomain['mo'] ) ) ) {
