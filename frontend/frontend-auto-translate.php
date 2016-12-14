@@ -215,7 +215,7 @@ class PLL_Frontend_Auto_Translate {
 	 */
 	protected function translate_tax_query_recursive( $tax_queries ) {
 		foreach ( $tax_queries as $key => $q ) {
-			if ( isset( $q['taxonomy'] ) && $this->model->is_translated_taxonomy( $q['taxonomy'] ) ) {
+			if ( isset( $q['taxonomy'], $q['terms'] ) && $this->model->is_translated_taxonomy( $q['taxonomy'] ) ) {
 				$arr = array();
 				$field = isset( $q['field'] ) && in_array( $q['field'], array( 'slug', 'name' ) ) ? $q['field'] : 'term_id';
 				foreach ( (array) $q['terms'] as $t ) {
