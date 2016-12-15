@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 2.0.11
+Stable tag: 2.0.12
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,6 +76,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.0.12 (2016-12-19) =
+
+* Fix plugin not loaded first (introduced in 2.0.11)
+* Fix wrong translations files loaded when the language is set from the content in WP 4.7 #76
+* Fix notice when a tax query has no terms (using EXISTS or NOT EXISTS)
 
 = 2.0.11 (2016-12-12) =
 
