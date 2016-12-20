@@ -211,6 +211,7 @@ class PLL_Plugins_Compat {
 			if ( pll_is_translated_post_type( $t ) && ! empty( $options[ 'title-ptarchive-' . $t ] ) ) {
 				pll_register_string( 'title-ptarchive-' . $t, $options[ 'title-ptarchive-' . $t ], 'wordpress-seo' );
 				pll_register_string( 'metadesc-ptarchive-' . $t, $options[ 'metadesc-ptarchive-' . $t ], 'wordpress-seo' );
+				pll_register_string( 'bctitle-ptarchive-' . $t, $options[ 'bctitle-ptarchive-' . $t ], 'wordpress-seo' );
 			}
 		}
 		foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
@@ -242,6 +243,7 @@ class PLL_Plugins_Compat {
 				if ( pll_is_translated_post_type( $t ) && ! empty( $options[ 'title-ptarchive-' . $t ] ) ) {
 					$options[ 'title-ptarchive-' . $t ] = pll__( $options[ 'title-ptarchive-' . $t ] );
 					$options[ 'metadesc-ptarchive-' . $t ] = pll__( $options[ 'metadesc-ptarchive-' . $t ] );
+					$options[ 'bctitle-ptarchive-' . $t ] = pll__( $options[ 'bctitle-ptarchive-' . $t ] );
 				}
 			}
 			foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
