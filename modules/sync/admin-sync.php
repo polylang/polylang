@@ -73,6 +73,12 @@ class PLL_Admin_Sync {
 				$post->$property = $from_post->$property;
 			}
 
+			// Copy the date only if the synchronization is activated
+			if ( in_array( 'post_date', $this->options['sync'] ) ) {
+				$post->post_date = $from_post->post_date;
+				$post->post_date_gmt = $from_post->post_date_gmt;
+			}
+
 			if ( is_sticky( $from_post_id ) ) {
 				stick_post( $post->ID );
 			}
@@ -83,11 +89,15 @@ class PLL_Admin_Sync {
 	 * Get the list of taxonomies to copy or to synchronize
 	 *
 	 * @since 1.7
+	 * @since 2.1 The `$from`, `$to`, `$lang` parameters were added.
 	 *
-	 * @param bool $sync true if it is synchronization, false if it is a copy
+	 * @param bool   $sync true if it is synchronization, false if it is a copy
+	 * @param int    $from id of the post from which we copy informations, optional, defaults to null
+	 * @param int    $to   id of the post to which we paste informations, optional, defaults to null
+	 * @param string $lang language slug, optional, defaults to null
 	 * @return array list of taxonomy names
 	 */
-	public function get_taxonomies_to_copy( $sync ) {
+	public function get_taxonomies_to_copy( $sync, $from = null, $to = null, $lang = null ) {
 		$taxonomies = ! $sync || in_array( 'taxonomies', $this->options['sync'] ) ? $this->model->get_translated_taxonomies() : array();
 		if ( ! $sync || in_array( 'post_format', $this->options['sync'] ) ) {
 			$taxonomies[] = 'post_format';
@@ -97,11 +107,15 @@ class PLL_Admin_Sync {
 		 * Filter the taxonomies to copy or synchronize
 		 *
 		 * @since 1.7
+		 * @since 2.1 The `$from`, `$to`, `$lang` parameters were added.
 		 *
-		 * @param array $taxonomies list of taxonomy names
-		 * @param bool  $sync       true if it is synchronization, false if it is a copy
+		 * @param array  $taxonomies list of taxonomy names
+		 * @param bool   $sync       true if it is synchronization, false if it is a copy
+		 * @param int    $from       id of the post from which we copy informations
+		 * @param int    $to         id of the post to which we paste informations
+		 * @param string $lang       language slug
 		 */
-		return array_unique( apply_filters( 'pll_copy_taxonomies', $taxonomies, $sync ) );
+		return array_unique( apply_filters( 'pll_copy_taxonomies', $taxonomies, $sync, $from, $to, $lang ) );
 	}
 
 	/**
@@ -116,7 +130,7 @@ class PLL_Admin_Sync {
 	 */
 	public function copy_taxonomies( $from, $to, $lang, $sync = false ) {
 		// Get taxonomies to sync for this post type
-		$taxonomies = array_intersect( get_post_taxonomies( $from ), $this->get_taxonomies_to_copy( $sync ) );
+		$taxonomies = array_intersect( get_post_taxonomies( $from ), $this->get_taxonomies_to_copy( $sync, $from, $to, $lang ) );
 
 		// Update the term cache to reduce the number of queries in the loop
 		update_object_term_cache( $sync ? array( $from, $to ) : $from, get_post_type( $from ) );
@@ -235,14 +249,27 @@ class PLL_Admin_Sync {
 		global $wpdb, $post_type;
 
 		// Prepare properties to synchronize
-		foreach ( array( 'comment_status', 'ping_status', 'menu_order', 'post_date' ) as $property ) {
+		foreach ( array( 'comment_status', 'ping_status', 'menu_order' ) as $property ) {
 			if ( in_array( $property, $this->options['sync'] ) ) {
 				$postarr[ $property ] = $post->$property;
 			}
 		}
 
 		if ( in_array( 'post_date', $this->options['sync'] ) ) {
-			$postarr['post_date_gmt'] = $post->post_date_gmt;
+			// For new drafts, save the date now otherwise it is overriden by WP. Thanks to JoryHogeveen. See #32.
+			if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) ) {
+				$original = get_post( (int) $_GET['from_post'] );
+				$wpdb->update(
+					$wpdb->posts, array(
+						'post_date' => $original->post_date,
+						'post_date_gmt' => $original->post_date_gmt,
+					),
+					array( 'ID' => $post_id )
+				);
+			} else {
+				$postarr['post_date'] = $post->post_date;
+				$postarr['post_date_gmt'] = $post->post_date_gmt;
+			}
 		}
 
 		// Synchronize terms and metas in translations

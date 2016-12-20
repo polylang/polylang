@@ -38,6 +38,7 @@ abstract class PLL_Choose_Lang {
 
 		add_action( 'pre_comment_on_post', array( $this, 'pre_comment_on_post' ) ); // sets the language of comment
 		add_action( 'parse_query', array( $this, 'parse_main_query' ), 2 ); // sets the language in special cases
+		add_action( 'wp', array( $this, 'maybe_setcookie' ), 7 );
 	}
 
 	/**
@@ -59,8 +60,6 @@ abstract class PLL_Choose_Lang {
 		// see https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
 		$this->curlang = ( $curlang instanceof PLL_Language ) ? $curlang : $this->model->get_language( $this->options['default_lang'] );
 
-		$this->maybe_setcookie();
-
 		$GLOBALS['text_direction'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
 
 		/**
@@ -80,10 +79,10 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 1.5
 	 */
-	protected function maybe_setcookie() {
+	public function maybe_setcookie() {
 		// check headers have not been sent to avoid ugly error
 		// cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
-		if ( ! headers_sent() && PLL_COOKIE !== false && ( ! isset( $_COOKIE[ PLL_COOKIE ] ) || $_COOKIE[ PLL_COOKIE ] != $this->curlang->slug ) ) {
+		if ( ! headers_sent() && PLL_COOKIE !== false && ! empty( $this->curlang ) && ( ! isset( $_COOKIE[ PLL_COOKIE ] ) || $_COOKIE[ PLL_COOKIE ] != $this->curlang->slug ) && ! is_404() ) {
 
 			/**
 			 * Filter the Polylang cookie duration

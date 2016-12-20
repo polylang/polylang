@@ -20,6 +20,7 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 		// Avoid cross domain requests ( mainly for custom fonts )
 		add_filter( 'content_url', array( $this, 'site_url' ) );
 		add_filter( 'plugins_url', array( $this, 'site_url' ) );
+		add_filter( 'rest_url', array( $this, 'site_url' ) );
 		add_filter( 'upload_dir', array( $this, 'upload_dir' ) );
 	}
 

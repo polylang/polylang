@@ -50,7 +50,7 @@ abstract class PLL_Translated_Object {
 			$taxonomies = array( $this->tax_language, $this->tax_translations );
 
 			// query terms
-			foreach ( wp_get_object_terms( $object_id, $taxonomies ) as $t ) {
+			foreach ( wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) ) as $t ) {
 				$terms[ $t->taxonomy ] = $t;
 				if ( $t->taxonomy == $taxonomy ) {
 					$term = $t;

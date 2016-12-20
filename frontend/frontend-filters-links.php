@@ -190,6 +190,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @since 0.1
 	 */
 	public function wp_head() {
+		// Don't output anything on paged archives: see https://wordpress.org/support/topic/hreflang-on-page2
+		// Don't output anything on paged pages and paged posts
+		if ( is_paged() || ( is_singular() && ( $page = get_query_var( 'page' ) ) && $page > 1 ) ) {
+			return;
+		}
+
 		// Google recommends to include self link https://support.google.com/webmasters/answer/189077?hl=en
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( $url = $this->links->get_translation_url( $language ) ) {
@@ -198,8 +204,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		// Ouptputs the section only if there are translations ( $urls always contains self link )
-		// Don't output anything on paged archives: see https://wordpress.org/support/topic/hreflang-on-page2
-		if ( ! empty( $urls ) && count( $urls ) > 1 && ! is_paged() ) {
+		if ( ! empty( $urls ) && count( $urls ) > 1 ) {
+
 			// Prepare the list of languages to remove the country code
 			foreach ( array_keys( $urls ) as $locale ) {
 				$split = explode( '-', $locale );
@@ -210,13 +216,26 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 			foreach ( $urls as $locale => $url ) {
 				$lang = $count[ $languages[ $locale ] ] > 1 ? $locale : $languages[ $locale ]; // Output the country code only when necessary
-				printf( '<link rel="alternate" href="%s" hreflang="%s" />'."\n", esc_url( $url ), esc_attr( $lang ) );
+				$hreflangs[ $lang ] = $url;
 			}
 
 			// Adds the site root url when the default language code is not hidden
 			// See https://wordpress.org/support/topic/implementation-of-hreflangx-default
 			if ( is_front_page() && ! $this->options['hide_default'] && $this->options['force_lang'] < 3 ) {
-				printf( '<link rel="alternate" href="%s" hreflang="x-default" />'."\n", esc_url( home_url( '/' ) ) );
+				$hreflangs['x-default'] = home_url( '/' );
+			}
+
+			/**
+			 * Filters the list of rel hreflang attributes
+			 *
+			 * @since 2.1
+			 *
+			 * @param array $hreflangs Array of urls with language codes as keys
+			 */
+			$hreflangs = apply_filters( 'pll_rel_hreflang_attributes', $hreflangs );
+
+			foreach ( $hreflangs as $lang => $url ) {
+				printf( '<link rel="alternate" href="%s" hreflang="%s" />'."\n", esc_url( $url ), esc_attr( $lang ) );
 			}
 		}
 	}

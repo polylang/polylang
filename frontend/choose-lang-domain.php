@@ -12,7 +12,7 @@ class PLL_Choose_Lang_Domain extends PLL_Choose_Lang_Url {
 	 *
 	 * @since 1.5
 	 */
-	protected function maybe_setcookie() {}
+	public function maybe_setcookie() {}
 
 	/**
 	 * don't redirect according to browser preferences

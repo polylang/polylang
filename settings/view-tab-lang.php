@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				// displays the add ( or edit ) language form
 				// adds noheader=true in the action url to allow using wp_redirect when processing the form ?>
-				<form id="add-lang" method="post" action="options-general.php?page=mlang&amp;noheader=true" class="validate"><?php
+				<form id="add-lang" method="post" action="admin.php?page=mlang&amp;noheader=true" class="validate"><?php
 					wp_nonce_field( 'add-lang', '_wpnonce_add-lang' );
 
 				if ( ! empty( $edit_lang ) ) {?>

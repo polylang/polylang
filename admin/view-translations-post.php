@@ -34,7 +34,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tr>
 			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); ?></th>
 			<td class = "hidden"><?php echo $add_link;?></td>
-			<td class = "pll-edit-column"><?php echo $link;?></td>
+			<td class = "pll-edit-column pll-column-icon"><?php echo $link;?></td><?php
+
+			/**
+			 * Fires before the translation colummn is outputed in the language metabox
+			 * The dynamic portion of the hook name, `$lang`, refers to the language code
+			 *
+			 * @since 2.1
+			 */
+			do_action( 'pll_before_post_translation_' . $language->slug ); ?>
 			<td class = "pll-translation-column"><?php
 				printf( '
 					<label class="screen-reader-text" for="tr_lang_%1$s">%2$s</label>

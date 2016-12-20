@@ -32,15 +32,14 @@ class PLL_Plugins_Compat {
 		add_filter( 'pll_home_url_black_list', array( $this, 'aq_home_url_black_list' ) );
 
 		// Twenty Fourteen
-		if ( 'twentyfourteen' == get_template() ) {
-			add_filter( 'transient_featured_content_ids', array( $this, 'twenty_fourteen_featured_content_ids' ) );
-			add_filter( 'option_featured-content', array( $this, 'twenty_fourteen_option_featured_content' ) );
-		}
+		add_filter( 'transient_featured_content_ids', array( $this, 'twenty_fourteen_featured_content_ids' ) );
+		add_filter( 'option_featured-content', array( $this, 'twenty_fourteen_option_featured_content' ) );
 
 		// Duplicate post
 		add_filter( 'option_duplicate_post_taxonomies_blacklist' , array( $this, 'duplicate_post_taxonomies_blacklist' ) );
 
 		// Jetpack 3
+		add_action( 'init', array( $this, 'jetpack_init' ) );
 		add_action( 'jetpack_widget_get_top_posts', array( $this, 'jetpack_widget_get_top_posts' ), 10, 3 );
 		add_filter( 'grunion_contact_form_field_html', array( $this, 'grunion_contact_form_field_html_filter' ), 10, 3 );
 		add_filter( 'jetpack_open_graph_tags', array( $this, 'jetpack_ogp' ) );
@@ -53,6 +52,9 @@ class PLL_Plugins_Compat {
 
 		// WP Sweep
 		add_filter( 'wp_sweep_excluded_taxonomies', array( $this, 'wp_sweep_excluded_taxonomies' ) );
+
+		// Twenty Seventeen
+		add_action( 'init', array( $this, 'twenty_seventeen_init' ) );
 	}
 
 	/**
@@ -452,7 +454,7 @@ class PLL_Plugins_Compat {
 	 * @return array modified featured posts ids ( include all languages )
 	 */
 	public function twenty_fourteen_featured_content_ids( $featured_ids ) {
-		if ( ! did_action( 'pll_init' ) || false !== $featured_ids ) {
+		if ( 'twentyfourteen' != get_template() || ! did_action( 'pll_init' ) || false !== $featured_ids ) {
 			return $featured_ids;
 		}
 
@@ -500,7 +502,7 @@ class PLL_Plugins_Compat {
 	 * @return array modified $settings
 	 */
 	public function twenty_fourteen_option_featured_content( $settings ) {
-		if ( PLL() instanceof PLL_Frontend && $settings['tag-id'] && $tr = pll_get_term( $settings['tag-id'] ) ) {
+		if ( 'twentyfourteen' == get_template() && PLL() instanceof PLL_Frontend && $settings['tag-id'] && $tr = pll_get_term( $settings['tag-id'] ) ) {
 			$settings['tag-id'] = $tr;
 		}
 
@@ -519,6 +521,24 @@ class PLL_Plugins_Compat {
 	function duplicate_post_taxonomies_blacklist( $taxonomies ) {
 		$taxonomies[] = 'post_translations';
 		return $taxonomies;
+	}
+
+	/**
+	 * Jetpack
+	 * Add filters
+	 *
+	 * @since 2.1
+	 */
+	public function jetpack_init() {
+		if ( ! defined( 'JETPACK__VERSION' ) ) {
+			return;
+		}
+
+		// Infinite scroll ajax url must be on the right domain
+		if ( did_action( 'pll_init' ) && PLL()->options['force_lang'] > 1 ) {
+			add_filter( 'infinite_scroll_ajax_url', array( PLL()->links_model, 'site_url' ) );
+			add_filter( 'infinite_scroll_js_settings', array( $this, 'jetpack_infinite_scroll_js_settings' ) );
+		}
 	}
 
 	/**
@@ -595,6 +615,20 @@ class PLL_Plugins_Compat {
 	}
 
 	/**
+	 * Jetpack
+	 * Fixes the settings history host for infinite scroll when using subdomains or multiple domains
+	 *
+	 * @since 2.1
+	 *
+	 * @param array $settings
+	 * @return array
+	 */
+	public function jetpack_infinite_scroll_js_settings( $settings ) {
+		$settings['history']['host'] = parse_url( pll_home_url(), PHP_URL_HOST ); // Jetpack uses get_option( 'home' )
+		return $settings;
+	}
+
+	/**
 	 * WP Sweep
 	 * Add 'term_language' and 'term_translations' to excluded taxonomies otherwise terms loose their language and translation group
 	 *
@@ -605,6 +639,21 @@ class PLL_Plugins_Compat {
 	 */
 	public function wp_sweep_excluded_taxonomies( $excluded_taxonomies ) {
 		return array_merge( $excluded_taxonomies, array( 'term_language', 'term_translations' ) );
+	}
+
+	/**
+	 * Twenty Seventeen
+	 * Translates the front page panels
+	 *
+	 * @since 2.0.10
+	 */
+	public function twenty_seventeen_init() {
+		if ( 'twentyseventeen' === get_template() && did_action( 'pll_init' ) && PLL() instanceof PLL_Frontend ) {
+			$num_sections = twentyseventeen_panel_count();
+			for ( $i = 1; $i < ( 1 + $num_sections ); $i++ ) {
+				add_filter( 'theme_mod_panel_' . $i, 'pll_get_post' );
+			}
+		}
 	}
 
 	/**

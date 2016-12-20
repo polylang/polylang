@@ -25,12 +25,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 
 		// integration in the WP menu interface
 		add_action( 'admin_init', array( $this, 'admin_init' ) ); // after Polylang upgrade
-
-		// protection against #24802
-		// backward compatibility with WP < 4.1
-		if ( version_compare( $GLOBALS['wp_version'], '4.1', '<' ) ) {
-			add_filter( 'pre_insert_term', array( $this, 'pre_insert_term' ), 10, 2 );
-		}
 	}
 
 	/**
@@ -103,7 +97,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_enqueue_script( 'pll_nav_menu', POLYLANG_URL .'/js/nav-menu' . $suffix . '.js', array( 'jquery' ), POLYLANG_VERSION );
+		wp_enqueue_script( 'pll_nav_menu', plugins_url( '/js/nav-menu' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION );
 
 		$data['strings'] = PLL_Switcher::get_switcher_options( 'menu', 'string' ); // the strings for the options
 		$data['title'] = __( 'Language switcher', 'polylang' ); // the title
@@ -296,7 +290,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return array Modified options
 	 */
 	public function nav_menu_options( $options ) {
-		$options['auto_add'] = array_intersect( $options['auto_add'], array( $this->auto_add_menus ) );
+		$options['auto_add'] = array_intersect( $options['auto_add'], $this->auto_add_menus );
 		return $options;
 	}
 
@@ -323,25 +317,9 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			}
 
 			if ( ! empty( $menus ) ) {
-				$this->auto_add_menus = implode( ',', $menus );
+				$this->auto_add_menus = $menus;
 				add_filter( 'option_nav_menu_options', array( $this, 'nav_menu_options' ) );
 			}
 		}
-	}
-
-	/**
-	 * prevents sharing a menu term with a language term by renaming the nav menu before its creation
-	 * to avoid http://core.trac.wordpress.org/ticket/24802
-	 * and http://wordpress.org/support/topic/all-connection-between-elements-lost
-	 * backward compatibility with WP < 4.1
-	 *
-	 * @since 1.1.3
-	 *
-	 * @param string $name term name
-	 * @param string $taxonomy
-	 * @return string modified ( nav menu ) term name if necessary
-	 */
-	function pre_insert_term( $name, $taxonomy ) {
-		return ( 'nav_menu' == $taxonomy && in_array( $name, $this->model->get_languages_list( array( 'fields' => 'name' ) ) ) ) ? $name .= '-menu' : $name;
 	}
 }

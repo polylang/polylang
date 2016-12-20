@@ -399,13 +399,6 @@ class PLL_Admin_Filters_Term {
 	public function pre_term_slug( $slug, $taxonomy ) {
 		$name = sanitize_title( $this->pre_term_name );
 
-		// If the new term has the same name as a language, we *need* to differentiate the term
-		// See http://core.trac.wordpress.org/ticket/23199
-		// Backward compatibility with WP < 4.1
-		if ( version_compare( $GLOBALS['wp_version'], '4.1', '<' ) && term_exists( $name, 'language' ) && ! term_exists( $name, $taxonomy ) && ( ! $slug || $slug == $name ) ) {
-			$slug = $name . '-' . $taxonomy; // A convenient slug which may be modified later by the user
-		}
-
 		// If the term already exists in another language
 		if ( ! $slug && $this->model->is_translated_taxonomy( $taxonomy ) && term_exists( $name, $taxonomy ) ) {
 			if ( isset( $_POST['term_lang_choice'] ) ) {
@@ -421,8 +414,7 @@ class PLL_Admin_Filters_Term {
 				// Bulk edit does not modify the language
 				if ( -1 == $_GET['inline_lang_choice'] ) {
 					$slug = $name . '-' .  $this->model->post->get_language( $this->post_id )->slug;
-				}
-				else {
+				} else {
 					$slug = $name . '-' . $this->model->get_language( $_GET['inline_lang_choice'] )->slug;
 				}
 			}
@@ -633,7 +625,7 @@ class PLL_Admin_Filters_Term {
 	 */
 	public function option_default_category( $value ) {
 		// Filters the default category in note below the category list table and in settings->writing dropdown
-		if ( isset( $this->pref_lang) && $tr = $this->model->term->get( $value, $this->pref_lang ) ) {
+		if ( isset( $this->pref_lang ) && $tr = $this->model->term->get( $value, $this->pref_lang ) ) {
 			$value = $tr;
 		}
 

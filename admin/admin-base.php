@@ -67,7 +67,34 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 0.1
 	 */
 	public function add_menus() {
-		add_submenu_page( 'options-general.php', $title = __( 'Languages', 'polylang' ), $title, 'manage_options', 'mlang', '__return_null' );
+		// Prepare the list of tabs
+		$tabs = array( 'lang' => __( 'Languages','polylang' ) );
+
+		// Only if at least one language has been created
+		if ( $this->model->get_languages_list() ) {
+			$tabs['strings'] = __( 'Strings translations', 'polylang' );
+		}
+
+		$tabs['settings'] = __( 'Settings', 'polylang' );
+
+		/**
+		 * Filter the list of tabs in Polylang settings
+		 *
+		 * @since 1.5.1
+		 *
+		 * @param array $tabs list of tab names
+		 */
+		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
+
+		foreach ( $tabs as $tab => $title ) {
+			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
+			if ( empty( $parent ) ) {
+				$parent = $page;
+				add_menu_page( $title, __( 'Languages','polylang' ), 'manage_options', $page, null , 'dashicons-translation' );
+			}
+
+			add_submenu_page( $parent, $title, $title, 'manage_options', $page , array( $this, 'languages_page' ) );
+		}
 	}
 
 	/**
@@ -98,11 +125,11 @@ class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
-				wp_enqueue_script( 'pll_' . $script, POLYLANG_URL . '/js/' . $script . $suffix . '.js', $v[1], POLYLANG_VERSION, $v[3] );
+				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/' . $script . $suffix . '.js', POLYLANG_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
 			}
 		}
 
-		wp_enqueue_style( 'polylang_admin', POLYLANG_URL . '/css/admin' . $suffix . '.css', array(), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
 	}
 
 	/**
@@ -134,7 +161,7 @@ class PLL_Admin_Base extends PLL_Base {
 	if (typeof jQuery != 'undefined') {
 		(function($){
 			$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-				if ( -1 != options.url.indexOf( ajaxurl ) ) {
+				if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 					if ( 'undefined' === typeof options.data ) {
 						options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str;?>' : <?php echo $arr;?>;
 					} else {

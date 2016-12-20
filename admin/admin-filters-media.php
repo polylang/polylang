@@ -74,6 +74,11 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 */
 	public function create_media_translation( $post_id, $lang ) {
 		$post = get_post( $post_id );
+
+		if ( empty( $post ) ) {
+			return $post;
+		}
+
 		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug
 
 		// Create a new attachment ( translate attachment parent if exists )

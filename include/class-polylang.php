@@ -97,16 +97,6 @@ class Polylang {
 	 * @since 1.6
 	 */
 	static public function define_constants() {
-		// our url. Don't use WP_PLUGIN_URL http://wordpress.org/support/topic/ssl-doesnt-work-properly
-		if ( ! defined( 'POLYLANG_URL' ) ) {
-			define( 'POLYLANG_URL', plugins_url( '', POLYLANG_FILE ) );
-		}
-
-		// default url to access user data such as custom flags
-		if ( ! defined( 'PLL_LOCAL_URL' ) ) {
-			define( 'PLL_LOCAL_URL', content_url( '/polylang' ) );
-		}
-
 		// cookie name. no cookie will be used if set to false
 		if ( ! defined( 'PLL_COOKIE' ) ) {
 			define( 'PLL_COOKIE', 'pll_language' );
@@ -127,7 +117,7 @@ class Polylang {
 
 		// settings page whatever the tab
 		if ( ! defined( 'PLL_SETTINGS' ) ) {
-			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 'mlang' == $_GET['page'] ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) );
+			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( $_GET['page'], 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) );
 		}
 	}
 
