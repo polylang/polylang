@@ -55,6 +55,9 @@ class PLL_Plugins_Compat {
 
 		// Twenty Seventeen
 		add_action( 'init', array( $this, 'twenty_seventeen_init' ) );
+
+		// No category base (works for Yoast SEO too)
+		add_filter( 'get_terms_args', array( $this, 'no_category_base_get_terms_args' ), 5 ); // Before adding cache domain
 	}
 
 	/**
@@ -656,6 +659,21 @@ class PLL_Plugins_Compat {
 				add_filter( 'theme_mod_panel_' . $i, 'pll_get_post' );
 			}
 		}
+	}
+
+	/**
+	 * Make sure No category base plugins (including Yoast SEO) get all categories when flushing rules
+	 *
+	 * @since 2.1
+	 *
+	 * @param array $args
+	 * @return array
+	 */
+	public function no_category_base_get_terms_args( $args ) {
+		if ( doing_filter( 'category_rewrite_rules' ) ) {
+			$args['lang'] = '';
+		}
+		return $args;
 	}
 
 	/**
