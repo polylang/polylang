@@ -33,7 +33,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 * @return string modified url
 	 */
 	public function add_language_to_link( $url, $lang ) {
-		if ( ! empty( $lang ) ) {
+		if ( ! empty( $lang ) && false === strpos( $url, '://' . $lang->slug . '.' ) ) {
 			$url = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? $url : str_replace( $this->www, '://' . $lang->slug . '.', $url );
 		}
 		return $url;
