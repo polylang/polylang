@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.7
-Stable tag: 2.0.9
+Stable tag: 2.0.12
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -77,9 +77,54 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.1 =
+
+* Minimum WordPress version is now 4.4
+* Pro: Add support for synchronized posts (same post in multiple languages)
+* Pro: Add support for custom post type UI
+* Improve support of Yoast SEO (no category base and post type archive breadcrumb title)
+* Move Languages menu at top level instead of submenu of the WordPress settings
+* Copy the original post date when creating a translation and when the date is synchronized (props Jory Hogeveen) #32
+* Remove hreflang attributes on paged pages and paged posts
+* Add label to widget language dropdown for better accessibility (Props Lawrence Francell) #53 #56
+* Remove constants POLYLANG_URL and PLL_LOCAL_URL
+* wp_get_sidebars_widgets() and is_active_sidebar() are now filtered according to widgets languages #54
+* Pro: Fix conflict between WooCommerce shop on front and translated shop base slug
+* Pro: Fix $wp_rewrite search base and author_base not translated #68
+* Pro: Fix page preview does not log in the user when using sudomains
+* Fix: avoid setting the language cookie on 404 pages
+* Fix: rewrite rules order modified for custom post types archives
+* Fix: conflict with WP All Import causing our filters to fail in "Add Media" modal when editing a post
+* Fix: auto add pages not working for nav menus assigned to several locations
+* Fix: Jetpack infinite scroll for multiple domains #58 #74
+* Fix: serialize error in Strings translations when balanceTags option is active #63
+* Fix: static front page preview when redirected from the languages page #49
+* Fix: Auto add pages not working for nav menus assigned to several locations
+* Fix: Conflict with Woocommerce Show Single Variation
+
+= 2.0.12 (2016-12-19) =
+
+* Fix plugin not loaded first (introduced in 2.0.11)
+* Fix wrong translations files loaded when the language is set from the content in WP 4.7 #76
+* Fix notice when a tax query has no terms (using EXISTS or NOT EXISTS)
+
+= 2.0.11 (2016-12-12) =
+
+* Pro: Fix shared term slugs broken by a late change in WP 4.7 #73
+* Pro: Fix media taxonomies lost when creating a media translation when taxonomies sync is activated #72
+* Fix fatal error in customizer when Twenty Seventen is activated and another theme is previewed #71
+* Fix wrong plugin language on admin if user locale is different from site locale in WP 4.7
+
+= 2.0.10 (2016-12-05) =
+
+* Add support for front page panels of Twenty Seventeen
+* Remove draft posts from the language switcher even when the user is logged in
+* Fix: Make argument 2 of icl_object_id optional
+* Fix a conflict with the Divi theme (#67)
+
 = 2.0.9 (2016-11-15) =
 
-* fix javascript error in some ajax requests
+* Fix javascript error in some ajax requests
 
 = 2.0.8 (2016-11-14) =
 
