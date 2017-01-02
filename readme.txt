@@ -102,6 +102,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix: Auto add pages not working for nav menus assigned to several locations
 * Fix: Conflict with Woocommerce Show Single Variation
 * Fix: Parent page not synchronized in Quick edit (introduced in 2.0.8)
+* Fix: several issues in WPML API
 
 = 2.0.12 (2016-12-19) =
 

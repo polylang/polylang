@@ -181,11 +181,12 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
 		}
 
 		// FIXME WPML may return a WP_Error object
-		return false === $lang = PLL()->model->post->get_language( $post_id ) ? array() : array(
-			'locale' => $lang->locale,
-			'text_direction' => $lang->is_rtl,
-			'display_name' => $lang->name, // Seems to be the post language name displayed in the current language, not a feature in Polylang
-			'native_name' => $lang->name,
+		return false === ( $lang = PLL()->model->post->get_language( $post_id ) ) ? array() : array(
+			'language_code'      => $lang->slug,
+			'locale'             => $lang->locale,
+			'text_direction'     => (bool) $lang->is_rtl,
+			'display_name'       => $lang->name, // Seems to be the post language name displayed in the current language, not a feature in Polylang
+			'native_name'        => $lang->name,
 			'different_language' => $lang->slug != pll_current_language(),
 		);
 	}
