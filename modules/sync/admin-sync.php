@@ -246,7 +246,7 @@ class PLL_Admin_Sync {
 	 * @param array  $translations post translations
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
-		global $wpdb, $post_type;
+		global $wpdb;
 
 		// Prepare properties to synchronize
 		foreach ( array( 'comment_status', 'ping_status', 'menu_order' ) as $property ) {
@@ -289,6 +289,8 @@ class PLL_Admin_Sync {
 
 			// Add comment status, ping status, menu order... to synchronization
 			$tr_arr = empty( $postarr ) ? array() : $postarr;
+
+			$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type']; // 2nd case for quick edit
 
 			// Add post parent to synchronization
 			// Make sure not to impact media translations when creating them at the same time as post
