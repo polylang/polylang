@@ -52,7 +52,7 @@ class PLL_WPML_API {
 		// Finding the Translation State of Content
 
 		// wpml_element_translation_type
-		add_filter( 'wpml_element_has_translations', array( $this, 'wpml_element_has_translations' ), 10, 2 );
+		add_filter( 'wpml_element_has_translations', array( $this, 'wpml_element_has_translations' ), 10, 3 );
 		// wpml_master_post_from_duplicate    => not applicable
 		// wpml_post_duplicates               => not applicable
 
