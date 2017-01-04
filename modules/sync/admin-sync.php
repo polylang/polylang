@@ -284,7 +284,7 @@ class PLL_Admin_Sync {
 
 			// Sticky posts
 			if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {
-				isset( $_REQUEST['sticky'] ) ? stick_post( $tr_id ) : unstick_post( $tr_id );
+				isset( $_REQUEST['sticky'] ) && 'sticky' === $_REQUEST['sticky'] ? stick_post( $tr_id ) : unstick_post( $tr_id );
 			}
 
 			// Add comment status, ping status, menu order... to synchronization
