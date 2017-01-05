@@ -290,12 +290,16 @@ class PLL_Admin_Sync {
 			// Add comment status, ping status, menu order... to synchronization
 			$tr_arr = empty( $postarr ) ? array() : $postarr;
 
-			$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type']; // 2nd case for quick edit
+			if ( isset( $GLOBALS['post_type'] ) ) {
+				$post_type =  $GLOBALS['post_type'];
+			} elseif ( isset( $_REQUEST['post_type'] ) ){
+				$post_type = $_REQUEST['post_type']; // 2nd case for quick edit
+			}
 
 			// Add post parent to synchronization
 			// Make sure not to impact media translations when creating them at the same time as post
 			// Do not udpate the translation parent if the user set a parent with no translation
-			if ( in_array( 'post_parent', $this->options['sync'] ) && $post_type === $post->post_type ) {
+			if ( in_array( 'post_parent', $this->options['sync'] ) && isset( $post_type ) && $post_type === $post->post_type ) {
 				$post_parent = ( $parent_id = wp_get_post_parent_id( $post_id ) ) ? $this->model->post->get_translation( $parent_id, $lang ) : 0;
 				if ( ! ( $parent_id && ! $post_parent ) ) {
 					$tr_arr['post_parent'] = $post_parent;
