@@ -118,7 +118,7 @@ jQuery( document ).ready(function( $ ) {
 						tr.hide().prev().show(); // close only if there is no error
 					case 'error':
 						$( '.settings-error' ).remove(); // remove previous messages if any
-						$( '.nav-tab-wrapper' ).after( this.data );
+						$( 'h1' ).after( this.data );
 
 						// Make notices dismissible
 						// copy paste of common.js from WP 4.2.2
