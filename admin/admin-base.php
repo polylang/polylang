@@ -195,6 +195,15 @@ class PLL_Admin_Base extends PLL_Base {
 	public function set_current_language() {
 		$this->curlang = $this->filter_lang;
 
+		// POST
+		if ( isset( $_POST['post_lang_choice'] ) && $lang = $this->model->get_language( $_POST['post_lang_choice'] ) ) {
+			$this->curlang = $lang;
+		} elseif ( isset( $_POST['term_lang_choice'] ) && $lang = $this->model->get_language( $_POST['term_lang_choice'] ) ) {
+			$this->curlang = $lang;
+		} elseif ( isset( $_POST['inline_lang_choice'] ) && $lang = $this->model->get_language( $_POST['inline_lang_choice'] ) ) {
+			$this->curlang = $lang;
+		}
+
 		// Edit Post
 		if ( isset( $_REQUEST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] ) ) {
 			$this->curlang = $lang;
