@@ -309,17 +309,16 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		if ( ! empty( $this->options['nav_menus'][ $this->theme ] ) ) {
+			$this->auto_add_menus = array();
+			
 			// get all the menus in the page language
 			foreach ( $this->options['nav_menus'][ $this->theme ] as $loc ) {
 				if ( ! empty( $loc[ $lang->slug ] ) ) {
-					$menus[] = $loc[ $lang->slug ];
+					$this->auto_add_menus[] = $loc[ $lang->slug ];
 				}
 			}
 
-			if ( ! empty( $menus ) ) {
-				$this->auto_add_menus = $menus;
-				add_filter( 'option_nav_menu_options', array( $this, 'nav_menu_options' ) );
-			}
+			add_filter( 'option_nav_menu_options', array( $this, 'nav_menu_options' ) );
 		}
 	}
 }
