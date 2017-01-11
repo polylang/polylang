@@ -138,7 +138,7 @@ function pll__( $string ) {
  * @return string translation in the current language
  */
 function plll_esc_htlm__ ( $string ) {
-	return esc_html__( pll__( $string ) );
+	return esc_html( pll__( $string ) );
 }
 
 /**
