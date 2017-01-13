@@ -87,7 +87,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				foreach ( $the_languages as $lang ) {
 					$lang_item = clone $item;
 					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
-					$lang_item->title = $options['show_flags'] && $options['show_names'] ? $lang['flag'] . '<span style="margin-left:0.3em;">' . esc_html( $lang['name'] ) . '</span>' : ( $options['show_flags'] ? $lang['flag'] : esc_html( $lang['name'] ) );
+					$lang_item->title = $options['show_flags'] && $options['show_names'] ? $lang['flag'] . '<span style="margin-left:0.3em;">' . esc_html( $lang['name'] ) . '</span>' : ( $options['show_flags'] ? $lang['name'] : esc_html( $lang['name'] ) );
 					$lang_item->url = $lang['url'];
 					$lang_item->lang = $lang['locale']; // Save this for use in nav_menu_link_attributes
 					$lang_item->classes = $lang['classes'];
