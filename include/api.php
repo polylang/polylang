@@ -137,8 +137,20 @@ function pll__( $string ) {
  * @param string $string the string to translate
  * @return string translation in the current language
  */
-function plll_esc_htlm__ ( $string ) {
+function pll_esc_htlm__ ( $string ) {
 	return esc_html( pll__( $string ) );
+}
+
+/**
+ * Translates a string ( previously registered with pll_register_string ) and escapes it for safe use in HTML attributes.
+ *
+ * @since 2.1
+ *
+ * @param $string
+ * @return string
+ */
+function pll_esc_attr( $string ) {
+	return esc_attr( pll__( $string ) );
 }
 
 /**
@@ -160,7 +172,7 @@ function pll_e( $string ) {
  * @param string $string the string to translate
  */
 function pll_esc_html_e( $string ) {
-	echo plll_esc_htlm__( $string );
+	echo pll_esc_htlm__( $string );
 }
 
 
