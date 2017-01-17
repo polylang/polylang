@@ -137,7 +137,7 @@ function pll__( $string ) {
  * @param string $string the string to translate
  * @return string translation in the current language
  */
-function pll_esc_htlm__ ( $string ) {
+function pll_esc_html__( $string ) {
 	return esc_html( pll__( $string ) );
 }
 
@@ -172,9 +172,8 @@ function pll_e( $string ) {
  * @param string $string the string to translate
  */
 function pll_esc_html_e( $string ) {
-	echo pll_esc_htlm__( $string );
+	echo pll_esc_html__( $string );
 }
-
 
 /**
  * Translates a string ( previously registered with pll_register_string )
