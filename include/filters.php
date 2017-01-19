@@ -157,6 +157,8 @@ class PLL_Filters {
 					unset( $pages[ $key ] );
 				}
 			}
+
+			$pages = array_values( $pages ); // In case 3rd parties suppose the existence of $pages[0]
 		}
 
 		// Not done by WP but extremely useful for performance when manipulating taxonomies
