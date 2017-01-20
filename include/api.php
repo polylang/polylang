@@ -130,6 +130,30 @@ function pll__( $string ) {
 }
 
 /**
+ * Translates a string ( previously registered with pll_register_string ) and escapes it for safe use in HTML output.
+ * 
+ * @since 2.1
+ * 
+ * @param string $string the string to translate
+ * @return string translation in the current language
+ */
+function pll_esc_html__( $string ) {
+	return esc_html( pll__( $string ) );
+}
+
+/**
+ * Translates a string ( previously registered with pll_register_string ) and escapes it for safe use in HTML attributes.
+ *
+ * @since 2.1
+ *
+ * @param $string
+ * @return string
+ */
+function pll_esc_attr( $string ) {
+	return esc_attr( pll__( $string ) );
+}
+
+/**
  * Echoes a translated string ( previously registered with pll_register_string )
  *
  * @since 0.6
@@ -138,6 +162,17 @@ function pll__( $string ) {
  */
 function pll_e( $string ) {
 	echo pll__( $string );
+}
+
+/**
+ * Echoes a translated string ( previously registered with pll_register_string ) and escapes it for safe use in HTML output.
+ *
+ * @since 2.1
+ *
+ * @param string $string the string to translate
+ */
+function pll_esc_html_e( $string ) {
+	echo pll_esc_html__( $string );
 }
 
 /**
