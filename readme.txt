@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.7
-Stable tag: 2.0.12
+Stable tag: 2.1
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -21,7 +21,6 @@ Polylang allows you to create a bilingual or multilingual WordPress site. You wr
 * The language is either set by the content or by the language code in url, or you can use one different subdomain or domain per language
 * Categories, post tags as well as some other metas are automatically copied when adding a new post or page translation
 * A customizable language switcher is provided as a widget or in the nav menu
-* The admin interface is of course multilingual too and each user can set the WordPress admin language in its profile
 
 > The author does not provide support on the wordpress.org forum. Support and extra features are available to [Polylang Pro](https://polylang.pro) users.
 
@@ -32,7 +31,7 @@ If you wish to use a professional or automatic translation service, you can inst
 = Credits =
 
 Thanks a lot to all translators who [help translating Polylang](https://translate.wordpress.org/projects/wp-plugins/polylang).
-Thanks a lot to [Alex Lopez](http://www.alexlopez.rocks/) for the design of the banner and the logo.
+Thanks a lot to [Alex Lopez](http://www.alexlopez.rocks/) for the design of the logo.
 Most of the flags included with Polylang are coming from [famfamfam](http://famfamfam.com/) and are public domain.
 Wherever third party code has been used, credit has been given in the code’s comments.
 
@@ -62,7 +61,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 = Is Polylang compatible with WooCommerce? =
 
-* You need a separate addon to make Polylang and WooCommerce work together. [A Premium addon](https://polylang.pro/downloads/polylang-for-woocommerce/), currently in beta stage, is available.
+* You need a separate addon to make Polylang and WooCommerce work together. [A Premium addon](https://polylang.pro/downloads/polylang-for-woocommerce/) is available.
 
 = Do you need translation services? =
 
@@ -77,18 +76,19 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.1 =
+= 2.1 (2017-01-25) =
 
 * Minimum WordPress version is now 4.4
 * Pro: Add support for synchronized posts (same post in multiple languages)
-* Pro: Add support for custom post type UI
+* Pro: Add support for custom post type UI and the Divi Builder
 * Improve support of Yoast SEO (no category base and post type archive breadcrumb title)
 * Move Languages menu at top level instead of submenu of the WordPress settings
-* Copy the original post date when creating a translation and when the date is synchronized (props Jory Hogeveen) #32
+* Copy the original post date when creating a translation and when the date is synchronized (Props Jory Hogeveen) #32
 * Remove hreflang attributes on paged pages and paged posts
 * Add label to widget language dropdown for better accessibility (Props Lawrence Francell) #53 #56
 * Remove constants POLYLANG_URL and PLL_LOCAL_URL
 * wp_get_sidebars_widgets() and is_active_sidebar() are now filtered according to widgets languages #54
+* Add functions pll_esc_html__(), pll_esc_html_e(), pll_esc_attr__() and pll_esc_attr_e() to the API (Props jegbagus) #83
 * Pro: Fix conflict between WooCommerce shop on front and translated shop base slug
 * Pro: Fix $wp_rewrite search base and author_base not translated #68
 * Pro: Fix page preview does not log in the user when using sudomains
@@ -104,6 +104,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix: Parent page not synchronized in Quick edit (introduced in 2.0.8)
 * Fix: WPML API wpml_element_has_translations and wpml_post_language_details
 * Fix: unattached media translations not in language switcher
+* Fix: Conflict with WP Residence advanced search
 
 = 2.0.12 (2016-12-19) =
 
