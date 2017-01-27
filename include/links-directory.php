@@ -204,7 +204,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 				 * @param string|bool $archive custom post post type archive name or false if it is not a cpt archive
 				 */
 				if (  isset( $slug ) && apply_filters( 'pll_modify_rewrite_rule', true, array( $key => $rule ), $filter, false ) ) {
-					$newrules[ $slug . str_replace( $wp_rewrite->root, '', $key ) ] = str_replace(
+					$newrules[ $slug . str_replace( $wp_rewrite->root, '', ltrim( $key, '^' ) ) ] = str_replace(
 						array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
 						array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
 						$rule
@@ -220,7 +220,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 				/** This filter is documented in include/links-directory.php */
 				if ( apply_filters( 'pll_modify_rewrite_rule', true, array( $key => $rule ), $filter, empty( $matches[1] ) ? false : $matches[1] ) ) {
 					if ( isset( $slug ) ) {
-						$newrules[ $slug . str_replace( $wp_rewrite->root, '', $key ) ] = str_replace(
+						$newrules[ $slug . str_replace( $wp_rewrite->root, '', ltrim( $key, '^' ) ) ] = str_replace(
 							array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
 							array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
 							$rule
