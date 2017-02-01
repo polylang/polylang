@@ -554,6 +554,17 @@ class PLL_Model {
 	public function get_links_model() {
 		$c = array( 'Directory', 'Directory', 'Subdomain', 'Domain' );
 		$class = get_option( 'permalink_structure' ) ? 'PLL_Links_' . $c[ $this->options['force_lang'] ] : 'PLL_Links_Default';
+
+		/**
+		 * Filter the links model class to use
+		 * /!\ this filter is fired *before* the $polylang object is available
+		 *
+		 * @since 2.1.1
+		 *
+		 * @param string $class A class name: PLL_Links_Default, PLL_Links_Directory, PLL_Links_Subdomain, PLL_Links_Domain
+		 */
+		$class = apply_filters( 'pll_links_model', $class );
+
 		return new $class( $this );
 	}
 
