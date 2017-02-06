@@ -99,7 +99,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 */
 	public function get_language_from_url( $url = '' ) {
 		if ( empty( $url ) ) {
-			$url  = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$url  = ( is_ssl() ? 'https://' : 'http://' ) . PLL_UTILS::get_http_host() . $_SERVER['REQUEST_URI'];
 		}
 
 		$pattern = str_replace( '/', '\/', $this->home . '/' . $this->root . ( $this->options['rewrite'] ? '' : 'language/' ) );

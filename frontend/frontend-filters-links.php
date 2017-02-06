@@ -365,7 +365,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		if ( empty( $requested_url ) ) {
-			$requested_url  = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$requested_url  = ( is_ssl() ? 'https://' : 'http://' ) . PLL_UTILS::get_http_host() . $_SERVER['REQUEST_URI'];
 		}
 
 		if ( is_single() || is_page() ) {

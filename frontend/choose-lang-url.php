@@ -34,7 +34,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 		$host = str_replace( 'www.', '', parse_url( $this->links_model->home, PHP_URL_HOST ) );
 		$home_path = parse_url( $this->links_model->home, PHP_URL_PATH );
 
-		$requested_host = str_replace( 'www.', '', $_SERVER['HTTP_HOST'] );
+		$requested_host = str_replace( 'www.', '', PLL_UTILS::get_http_host() );
 		$requested_uri = rtrim( str_replace( $this->index, '', $_SERVER['REQUEST_URI'] ), '/' ); // some PHP setups turn requests for / into /index.php in REQUEST_URI
 
 		// home is resquested

@@ -154,7 +154,7 @@ class PLL_Frontend_Links extends PLL_Links {
 	 * @return string
 	 */
 	public function get_archive_url( $language ) {
-		$url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$url = ( is_ssl() ? 'https://' : 'http://' ) . PLL_UTILS::get_http_host() . $_SERVER['REQUEST_URI'];
 		$url = $this->links_model->switch_language_in_link( $url, $language );
 		$url = $this->links_model->remove_paged_from_link( $url );
 

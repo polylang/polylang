@@ -70,7 +70,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	 * @return string language slug
 	 */
 	public function get_language_from_url( $url = '' ) {
-		$host = empty( $url ) ? $_SERVER['HTTP_HOST'] : parse_url( $url, PHP_URL_HOST );
+		$host = empty( $url ) ? PLL_UTILS::get_http_host() : parse_url( $url, PHP_URL_HOST );
 		return ( $lang = array_search( $host , $this->hosts ) ) ? $lang : '';
 	}
 
