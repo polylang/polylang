@@ -19,6 +19,6 @@ class PLL_UTILS {
             error_log("[polylang] HTTP_HOST is not set", 0);
             return '';
         }
-        return $_SERVER['HTTP_HOST']);
+        return $_SERVER['HTTP_HOST'];
 	}
 }
