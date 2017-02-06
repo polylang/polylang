@@ -314,7 +314,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @param object $wp_admin_bar
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
-		$url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		//$url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$url = ( is_ssl() ? 'https://' : 'http://' ) . PLL_UTILS::get_http_host() . $_SERVER['REQUEST_URI'];
 
 		$all_item = (object) array(
 			'slug' => 'all',
