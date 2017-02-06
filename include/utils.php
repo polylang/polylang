@@ -21,3 +21,4 @@ class PLL_UTILS {
         }
         return $_SERVER['HTTP_HOST'])
 	}
+}
