@@ -17,8 +17,8 @@ class PLL_UTILS {
         if (empty( $_SERVER['HTTP_HOST'])) {
             // error is sent to PHP's system logger
             error_log("[polylang] HTTP_HOST is not set", 0);
-            return ''
+            return '';
         }
-        return $_SERVER['HTTP_HOST'])
+        return $_SERVER['HTTP_HOST']);
 	}
 }
