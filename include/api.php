@@ -16,6 +16,7 @@
  * hide_current           => hides the current language if set to 1, defaults to 0
  * post_id                => if not null, link to translations of post defined by post_id, defaults to null
  * raw                    => set this to true to build your own custom language switcher, defaults to 0
+ * item_spacing           => whether to preserve or discard whitespace within the menu's HTML, valid options are 'preserve' and 'discard', defaults to preserve
  *
  * @since 0.5
  *
