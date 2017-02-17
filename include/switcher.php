@@ -116,7 +116,7 @@ class PLL_Switcher {
 	 * hide_if_empty          => hides languages with no posts ( or pages ) if set to 1, defaults to 1
 	 * show_flags             => displays flags if set to 1, defaults to 0
 	 * show_names             => show language names if set to 1, defaults to 1
-	 * display_names_as       => wether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name
+	 * display_names_as       => whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name
 	 * force_home             => will always link to home in translated language if set to 1, defaults to 0
 	 * hide_if_no_translation => hide the link if there is no translation if set to 1, defaults to 0
 	 * hide_current           => hide the current language if set to 1, defaults to 0
