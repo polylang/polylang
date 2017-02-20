@@ -65,7 +65,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 
 		<div id="posttype-lang-switch" class="posttypediv">
 			<div id="tabs-panel-lang-switch" class="tabs-panel tabs-panel-active">
-				<ul id ="lang-switch-checklist" class="categorychecklist form-no-clear">
+				<ul id="lang-switch-checklist" class="categorychecklist form-no-clear">
 					<li>
 						<label class="menu-item-title">
 							<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-object-id]" value="-1"> <?php esc_html_e( 'Language switcher', 'polylang' ); ?>
