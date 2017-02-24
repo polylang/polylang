@@ -123,11 +123,7 @@ function pll_register_string( $name, $string, $context = 'polylang', $multiline 
  * @return string the string translation in the current language
  */
 function pll__( $string ) {
-	if ( ! did_action( 'pll_language_defined' ) || ! is_scalar( $string ) ) { // No need for translation
-		return $string;
-	}
-
-	return __( $string, 'pll_string' );
+	return is_scalar( $string ) ? __( $string, 'pll_string' ) : $string;
 }
 
 /**
