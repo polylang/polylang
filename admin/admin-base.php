@@ -261,7 +261,8 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Inform that the admin language has been set
 		// Only if the admin language is one of the Polylang defined language
-		if ( $curlang = $this->model->get_language( get_locale() ) ) {
+		// FIXME test get_user_locale for backward compatibility with WP 4.7
+		if ( $curlang = $this->model->get_language( function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale() ) ) {
 			// FIXME: Backward compatibility with WP < 4.7
 			if ( version_compare( $GLOBALS['wp_version'], '4.7alpha', '<' ) ) {
 				$GLOBALS['text_direction'] = $curlang->is_rtl ? 'rtl' : 'ltr'; // force text direction according to language setting
