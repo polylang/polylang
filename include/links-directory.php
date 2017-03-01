@@ -99,12 +99,15 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 */
 	public function get_language_from_url( $url = '' ) {
 		if ( empty( $url ) ) {
-			$url  = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$path = $_SERVER['REQUEST_URI'];
+		} else {
+			$path = parse_url( $url, PHP_URL_PATH );
 		}
 
-		$pattern = str_replace( '/', '\/', $this->home . '/' . $this->root . ( $this->options['rewrite'] ? '' : 'language/' ) );
+		$pattern = parse_url( $this->home . '/' . $this->root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
+		$pattern = str_replace( '/', '\/', $pattern );
 		$pattern = '#' . $pattern . '('. implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')(\/|$)#';
-		return preg_match( $pattern, trailingslashit( $url ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
+		return preg_match( $pattern, trailingslashit( $path ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
 	}
 
 	/**
