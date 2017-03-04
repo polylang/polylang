@@ -360,7 +360,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		// If the default language code is not hidden and the static front page url contains the page name
 		// the customizer lands here and the code below would redirect to the list of posts
-		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) {
+		if ( is_customize_preview() ) {
 			return;
 		}
 
