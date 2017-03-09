@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.7
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,21 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.1.2 (2017-03-09) =
+
+* Pro: Add filter 'pll_xdata_nonce_life'
+* Pro: Fix translation of WooCommerce product attribute slug
+* Pro: Fix product synchronization in WooCommerce 2.7
+* Pro: Fix error message when bulk trashing synchronized posts
+* Add option to discard item spacing in the output of pll_the_languages() ( Props Ceslav Przywara ) #93 #95
+* Add as, dzo, kab, km, ml_IN, nl_BE, pa_IN, rhg, sah, ta_IN, tah, te, tt_RU to the predefined list of languages
+* Update plugin updater class to 1.6.10
+* Fix: Remove the dependency to is_ssl() to detect the language in the url ( language set from the directory name )
+* Fix issue with secondary level domains
+* Fix strings not translated in emails
+* Fix incorrect usage of add_action() ( Props Peter J. Herrel ) #103
+* Fix wrong redirect in customizer in WP 4.7
 
 = 2.1.1 (2017-02-15) =
 
