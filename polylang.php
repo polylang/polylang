@@ -49,4 +49,4 @@ define( 'PLL_INSTALL_INC',  POLYLANG_DIR . '/install' );
 define( 'PLL_MODULES_INC',  POLYLANG_DIR . '/modules' );
 define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 
-require_once( PLL_INC . '/class-polylang.php' );
+require_once PLL_INC . '/class-polylang.php';

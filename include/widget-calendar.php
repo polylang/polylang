@@ -1,7 +1,7 @@
 <?php
 
 if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
-	require_once( ABSPATH . '/wp-includes/default-widgets.php' );
+	require_once ABSPATH . '/wp-includes/default-widgets.php';
 }
 
 /**

@@ -500,7 +500,7 @@ class PLL_Upgrade {
 			return;
 		}
 
-		require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 		$translations = wp_get_available_translations();
 		if ( ! $translations ) {
 			return;
@@ -514,7 +514,7 @@ class PLL_Upgrade {
 		}
 
 		if ( ! empty( $translations_to_load ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+			require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 			$upgrader = new Language_Pack_Upgrader( new Automatic_Upgrader_Skin );
 			$upgrader->bulk_upgrade( $translations_to_load, array( 'clear_update_cache' => false ) );
 		}
@@ -537,7 +537,7 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_1_8() {
 		// Adds the flag code in languages stored in DB
-		include( PLL_SETTINGS_INC . '/languages.php' );
+		include PLL_SETTINGS_INC . '/languages.php';
 
 		$terms = get_terms( 'language', array( 'hide_empty' => 0 ) );
 
