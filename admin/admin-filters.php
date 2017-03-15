@@ -35,7 +35,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 		add_filter( 'plugins_update_check_locales', array( $this, 'update_check_locales' ) );
 
 		// We need specific filters for German and Danish
-		$specific_locales = array( 'da_DK', 'de_DE', 'de_DE_formal', 'de_CH', 'de_CH_informal' );
+		$specific_locales = array( 'da_DK', 'de_DE', 'de_DE_formal', 'de_CH', 'de_CH_informal', 'ca', 'sr_RS', 'bs_BA' );
 		if ( array_intersect( $this->model->get_languages_list( array( 'fields' => 'locale' ) ), $specific_locales ) ) {
 			add_filter( 'sanitize_title', array( $this, 'sanitize_title' ), 10, 3 );
 			add_filter( 'sanitize_user', array( $this, 'sanitize_user' ), 10, 3 );
@@ -247,7 +247,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 		if ( ! $once && ! empty( $this->curlang ) ) {
 			$once = true;
 			add_filter( 'locale', array( $this, 'get_locale' ), 20 ); // After the filter for the admin interface
-			$title = sanitize_title( $raw_username, '', $strict );
+			$username = sanitize_user( $raw_username, '', $strict );
 			remove_filter( 'locale', array( $this, 'get_locale' ), 20 );
 			$once = false;
 		}
