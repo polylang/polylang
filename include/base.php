@@ -26,6 +26,7 @@ abstract class PLL_Base {
 
 		// User defined strings translations
 		add_action( 'pll_language_defined', array( $this, 'load_strings_translations' ), 5 );
+		add_action( 'change_locale', array( $this, 'load_strings_translations' ) ); // Since WP 4.7
 
 		// Switch_to_blog
 		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 2 );
@@ -50,11 +51,24 @@ abstract class PLL_Base {
 	 * Loads user defined strings translations
 	 *
 	 * @since 1.2
+	 * @since 2.1.3 $locale parameter added.
+	 *
+	 * @param string $locale Locale. Defaults to current locale.
 	 */
-	public function load_strings_translations() {
-		$mo = new PLL_MO();
-		$mo->import_from_db( $this->model->get_language( get_locale() ) );
-		$GLOBALS['l10n']['pll_string'] = &$mo;
+	public function load_strings_translations( $locale = '' ) {
+		if ( empty( $locale ) ) {
+			$locale = get_locale();
+		}
+
+		$language = $this->model->get_language( $locale );
+
+		if ( ! empty( $language ) ) {
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+			$GLOBALS['l10n']['pll_string'] = &$mo;
+		} else {
+			unset( $GLOBALS['l10n']['pll_string'] );
+		}
 	}
 
 	/**
