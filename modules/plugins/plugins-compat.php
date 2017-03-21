@@ -113,7 +113,7 @@ class PLL_Plugins_Compat {
 	 * @return array
 	 */
 	function wp_import_terms( $terms ) {
-		include( PLL_SETTINGS_INC . '/languages.php' );
+		include PLL_SETTINGS_INC . '/languages.php';
 
 		foreach ( $terms as $key => $term ) {
 			if ( 'language' === $term['term_taxonomy'] ) {

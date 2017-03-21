@@ -274,7 +274,7 @@ class PLL_Lingotek {
 	 * @return string
 	 */
 	protected function get_activate_link() {
-		require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+		require_once ABSPATH . '/wp-admin/includes/plugin.php';
 
 		if ( ! array_key_exists( self::LINGOTEK, get_plugins() ) ) {
 			if ( current_user_can( 'install_plugins' ) ) {

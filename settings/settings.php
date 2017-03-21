@@ -91,7 +91,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 0.8
 	 */
 	public function metabox_about() {
-		include( PLL_SETTINGS_INC.'/view-about.php' );
+		include PLL_SETTINGS_INC . '/view-about.php';
 	}
 
 	/**
@@ -161,7 +161,7 @@ class PLL_Settings extends PLL_Admin_Base {
 
 				if ( $this->model->add_language( $_POST ) && 'en_US' !== $_POST['locale'] ) {
 					// attempts to install the language pack
-					require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+					require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 					if ( ! wp_download_language_pack( $_POST['locale'] ) ) {
 						add_settings_error( 'general', 'pll_download_mo', __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' ) );
 					}
@@ -266,7 +266,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		// displays the page
-		include( PLL_SETTINGS_INC . '/view-languages.php' );
+		include PLL_SETTINGS_INC . '/view-languages.php';
 	}
 
 	/**

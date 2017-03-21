@@ -19,7 +19,7 @@ class PLL_WPML_Compat {
 	 */
 	protected function __construct() {
 		// Load the WPML API
-		require_once( PLL_MODULES_INC . '/wpml/wpml-legacy-api.php' );
+		require_once PLL_MODULES_INC . '/wpml/wpml-legacy-api.php';
 		$this->api = new PLL_WPML_API();
 
 		self::$strings = get_option( 'polylang_wpml_strings', array() );

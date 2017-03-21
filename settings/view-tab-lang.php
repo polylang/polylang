@@ -42,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<label for="lang_list"><?php esc_html_e( 'Choose a language', 'polylang' );?></label>
 					<select name="lang_list" id="lang_list">
 						<option value=""></option><?php
-						include( PLL_SETTINGS_INC.'/languages.php' );
+						include PLL_SETTINGS_INC . '/languages.php';
 						foreach ( $languages as $lg ) {
 							printf(
 								'<option value="%1$s:%2$s:%3$s:%4$s">%5$s - %2$s</option>'."\n",
@@ -103,7 +103,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<label for="flag_list"><?php esc_html_e( 'Flag', 'polylang' );?></label>
 					<select name="flag" id="flag_list">
 						<option value=""></option><?php
-						include( PLL_SETTINGS_INC.'/flags.php' );
+						include PLL_SETTINGS_INC . '/flags.php';
 						foreach ( $flags as $code => $label ) {
 							printf(
 								'<option value="%1$s"%2$s>%3$s</option>'."\n",

@@ -31,7 +31,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Lingotek
 		if ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
-			require_once( POLYLANG_DIR . '/lingotek/lingotek.php' );
+			require_once POLYLANG_DIR . '/lingotek/lingotek.php';
 		}
 	}
 
