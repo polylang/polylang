@@ -33,6 +33,10 @@ class PLL_Filters {
 
 		// Prevents deleting all the translations of the default category
 		add_filter( 'map_meta_cap', array( $this, 'fix_delete_default_category' ), 10, 4 );
+
+		// Translate the site title in emails sent to users
+		add_filter( 'password_change_email', array( $this, 'translate_user_email' ) );
+		add_filter( 'email_change_email', array( $this, 'translate_user_email' ) );
 	}
 
 	/**
@@ -201,5 +205,21 @@ class PLL_Filters {
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Translates the site title in emails sent to the user (change email, reset password)
+	 * It is necessary to filter the email because WP evaluates the site title before calling switch_to_locale()
+	 *
+	 * @since 2.1.3
+	 *
+	 * @param array $email
+	 * @return array
+	 */
+	function translate_user_email( $email ) {
+		$blog_name = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+		$email['subject'] = sprintf( $email['subject'], $blog_name );
+		$email['message'] = str_replace( '###SITENAME###', $blog_name, $email['message'] );
+		return $email;
 	}
 }
