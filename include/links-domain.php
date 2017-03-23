@@ -21,7 +21,8 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 		$this->hosts = $this->get_hosts();
 
-		$this->check_if_host_has_language();
+		if ( ! PLL_ADMIN and ! empty( $this->hosts ) )
+			$this->check_if_host_has_language();
 
 		 // Filrer the site url ( mainly to get the correct login form )
 		 add_filter( 'site_url', array( $this, 'site_url' ) );
