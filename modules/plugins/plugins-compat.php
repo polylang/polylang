@@ -362,12 +362,13 @@ class PLL_Plugins_Compat {
 	 */
 	public function add_language_home_urls( $str ) {
 		global $wpseo_sitemaps;
+		$renderer = version_compare( WPSEO_VERSION, '3.2', '<' ) ? $wpseo_sitemaps : $wpseo_sitemaps->renderer;
 
 		$languages = wp_list_pluck( wp_list_filter( PLL()->model->get_languages_list() , array( 'active' => false ), 'NOT' ), 'slug' );
 
 		foreach ( $languages as $lang ) {
 			if ( empty( PLL()->options['hide_default'] ) || pll_default_language() !== $lang ) {
-				$str .= $wpseo_sitemaps->sitemap_url( array(
+				$str .= $renderer->sitemap_url( array(
 					'loc' => pll_home_url( $lang ),
 					'pri' => 1,
 					'chf' => apply_filters( 'wpseo_sitemap_homepage_change_freq', 'daily', pll_home_url( $lang ) ),
