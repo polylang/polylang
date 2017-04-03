@@ -9,6 +9,16 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
+	function setUp() {
+		parent::setUp();
+
+		$registered_nav_menus = get_registered_nav_menus();
+
+		if ( empty( $registered_nav_menus ) ) {
+			register_nav_menu( 'primary', 'Primary menu' );
+		}
+	}
+
 	function test_nav_menu_locations() {
 		// get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
