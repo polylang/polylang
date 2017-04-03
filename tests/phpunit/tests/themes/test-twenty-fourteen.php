@@ -1,5 +1,9 @@
 <?php
 
+$_tests_dir = getenv( 'WP_TESTS_DIR' );
+
+if ( file_exists( $_tests_dir . '../wordpress/wp-content/themes/twentyfourteen/style.css' ) ) {
+
 class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 	static $stylesheet, $tag_en, $tag_fr;
 
@@ -111,3 +115,5 @@ class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $fr ) ), twentyfourteen_get_featured_posts() );
 	}
 }
+
+} // file_exists
