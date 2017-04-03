@@ -25,9 +25,9 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 	function test_sanitize_user() {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
-		$this->assertEquals( 'Angstrom', sanitize_user( 'Ångström' ) );
+		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'de' );
-		$this->assertEquals( 'Angstroem', sanitize_user( 'Ångström' ) );
+		$this->assertEquals( 'angstroem', sanitize_user( 'ångström' ) );
 	}
 }
