@@ -103,8 +103,12 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
 		$xml = simplexml_load_string( "<root>$switcher</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( get_permalink( $en ), $xml->xpath( 'li/a[.="English"]' )[0]->attributes()['href'] );
-		$this->assertEquals( get_permalink( $fr ), $xml->xpath( 'li/a[.="Français"]' )[0]->attributes()['href'] );
+		$a = $xml->xpath( 'li/a[.="English"]' );
+		$attributes = $a[0]->attributes();
+		$this->assertEquals( get_permalink( $en ), $attributes['href'] );
+		$a = $xml->xpath( 'li/a[.="Français"]' );
+		$attributes = $a[0]->attributes();
+		$this->assertEquals( get_permalink( $fr ), $attributes['href'] );
 	}
 
 	// very basic tests for the switcher as dropdown
@@ -129,7 +133,9 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
 		$xml = simplexml_load_string( "<root>$switcher</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 'selected', $xml->xpath( 'select/option[.="English"]' )[0]->attributes()['selected'] );
+		$option = $xml->xpath( 'select/option[.="English"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
 		$this->assertNotEmpty( $xml->xpath( 'select/option[.="Français"]' ) );
 		$this->assertNotEmpty( $xml->xpath( 'script' ) );
 	}

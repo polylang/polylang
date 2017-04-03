@@ -47,11 +47,21 @@ class Settings_Test extends PLL_UnitTestCase {
 		$out = $this->convert_html_to_xml( $out );
 		$xml = simplexml_load_string( "<root>$out</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( $lang->term_id, (int) $xml->xpath( '//input[@name="lang_id"]' )[0]->attributes()['value'] ); // hidden field
-		$this->assertEquals( 'Français', $xml->xpath( '//input[@name="name"]' )[0]->attributes()['value'] );
-		$this->assertEquals( 'fr_FR', $xml->xpath( '//input[@name="locale"]' )[0]->attributes()['value'] );
-		$this->assertEquals( 'fr', $xml->xpath( '//input[@name="slug"]' )[0]->attributes()['value'] );
-		$this->assertEquals( 'selected', $xml->xpath( '//select[@name="flag"]/option[.="France"]' )[0]->attributes()['selected'] );
+		$input = $xml->xpath( '//input[@name="lang_id"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( $lang->term_id, (int) $attributes['value'] ); // hidden field
+		$input = $xml->xpath( '//input[@name="name"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 'Français', $attributes['value'] );
+		$input = $xml->xpath( '//input[@name="locale"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 'fr_FR', $attributes['value'] );
+		$input = $xml->xpath( '//input[@name="slug"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 'fr', $attributes['value'] );
+		$option = $xml->xpath( '//select[@name="flag"]/option[.="France"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
 	}
 
 	function test_notice_for_objects_with_no_lang() {

@@ -73,7 +73,9 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$form = $xml->response[0]->translations->response_data;
 		$form = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 0, (int) $form->xpath( '//input[@name="post_tr_lang[en]"]' )[0]->attributes()['value'] );
+		$input = $form->xpath( '//input[@name="post_tr_lang[en]"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 0, (int) $attributes['value'] );
 		$this->assertEmpty( $form->xpath( '//input[@id="tr_lang_fr"]' ) );
 
 		// categories dropdown
@@ -122,7 +124,9 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$form = $xml->response[0]->translations->response_data;
 		$form = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 0, (int) $form->xpath( '//input[@name="post_tr_lang[en]"]' )[0]->attributes()['value'] );
+		$input = $form->xpath( '//input[@name="post_tr_lang[en]"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 0, (int) $attributes['value'] );
 		$this->assertEmpty( $form->xpath( '//input[@id="tr_lang_fr"]' ) );
 
 		// parents

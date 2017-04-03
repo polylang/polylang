@@ -259,9 +259,15 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$form = $this->get_edit_term_form( $fr, 'category' );
 		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 'selected', $xml->xpath( '//select[@name="term_lang_choice"]/option[.="' . $lang->name . '"]' )[0]->attributes()['selected'] );
-		$this->assertEquals( 'test', $xml->xpath( '//input[@id="tr_lang_en"]' )[0]->attributes()['value'] );
-		$this->assertEquals( '', $xml->xpath( '//input[@id="tr_lang_de"]' )[0]->attributes()['value'] ); // no translation in German
+		$option = $xml->xpath( '//select[@name="term_lang_choice"]/option[.="' . $lang->name . '"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
+		$input = $xml->xpath( '//input[@id="tr_lang_en"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 'test', $attributes['value'] );
+		$input = $xml->xpath( '//input[@id="tr_lang_de"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( '', $attributes['value'] ); // no translation in German
 	}
 
 	function test_default_category_in_edit_tags() {
@@ -272,9 +278,15 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$form = $this->get_edit_term_form( $default, 'category' );
 		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 'disabled', $xml->xpath( '//select[@name="term_lang_choice"]' )[0]->attributes()['disabled'] );
-		$this->assertEquals( 'selected', $xml->xpath( '//select[@name="term_lang_choice"]/option[.="' . $de->name . '"]' )[0]->attributes()['selected'] );
-		$this->assertEquals( 'disabled', $xml->xpath( '//input[@id="tr_lang_fr"]' )[0]->attributes()['disabled'] ); // disabled
+		$option = $xml->xpath( '//select[@name="term_lang_choice"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'disabled', $attributes['disabled'] );
+		$option = $xml->xpath( '//select[@name="term_lang_choice"]/option[.="' . $de->name . '"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
+		$input = $xml->xpath( '//input[@id="tr_lang_fr"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 'disabled', $attributes['disabled'] ); // disabled
 	}
 
 	function get_parent_dropdown_in_new_term_form( $taxonomy ) {
@@ -358,9 +370,13 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$form = ob_get_clean();
 		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 'selected', $xml->xpath( '//select[@name="term_lang_choice"]/option[.="' . $lang->name . '"]' )[0]->attributes()['selected'] );
+		$option = $xml->xpath( '//select[@name="term_lang_choice"]/option[.="' . $lang->name . '"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
 		$this->assertEmpty( '', $xml->xpath( '//input[@id="tr_lang_en"]' ) );
-		$this->assertEquals( '', $xml->xpath( '//input[@id="tr_lang_fr"]' )[0]->attributes()['value'] ); // no translation in French
+		$input = $xml->xpath( '//input[@id="tr_lang_fr"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( '', $attributes['value'] ); // no translation in French
 
 		$_GET['from_tag'] = $en;
 		$_GET['new_lang'] = 'fr';
@@ -372,10 +388,16 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$form = ob_get_clean();
 		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 'selected', $xml->xpath( '//select[@name="term_lang_choice"]/option[.="' . $lang->name . '"]' )[0]->attributes()['selected'] );
+		$option = $xml->xpath( '//select[@name="term_lang_choice"]/option[.="' . $lang->name . '"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
 		$this->assertEmpty( '', $xml->xpath( '//input[@id="tr_lang_fr"]' ) );
-		$this->assertEquals( 'test', $xml->xpath( '//input[@id="tr_lang_en"]' )[0]->attributes()['value'] ); // no translation in French
-		$this->assertEquals( '', $xml->xpath( '//input[@id="tr_lang_de"]' )[0]->attributes()['value'] ); // no translation in German
+		$input = $xml->xpath( '//input[@id="tr_lang_en"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 'test', $attributes['value'] ); // no translation in French
+		$input = $xml->xpath( '//input[@id="tr_lang_de"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( '', $attributes['value'] ); // no translation in German
 
 		unset( $_GET, $GLOBALS['post_type'] );
 	}

@@ -220,11 +220,15 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 		$xml = simplexml_load_string( '<root>' . get_custom_logo() . '</root>' ); // add a root xml tag to get a valid xml doc
-		$this->assertEquals( 'http://example.org/', $xml->xpath( '//a' )[0]->attributes()['href'] );
+		$a = $xml->xpath( '//a' );
+		$attributes = $a[0]->attributes();
+		$this->assertEquals( 'http://example.org/', $attributes['href'] );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 		$xml = simplexml_load_string( '<root>' . get_custom_logo() . '</root>' ); // add a root xml tag to get a valid xml doc
-		$this->assertEquals( 'http://example.org/fr/', $xml->xpath( '//a' )[0]->attributes()['href'] );
+		$a = $xml->xpath( '//a' );
+		$attributes = $a[0]->attributes();
+		$this->assertEquals( 'http://example.org/fr/', $attributes['href'] );
 
 		remove_theme_mod( 'custom_logo' );
 		unset( $GLOBALS['wp_actions']['template_redirect'] );

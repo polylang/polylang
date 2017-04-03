@@ -236,7 +236,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$form = ob_get_clean();
 		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 'selected', $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' )[0]->attributes()['selected'] );
+		$option = $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
 
 		unset( $_GET );
 	}
@@ -259,9 +261,15 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$form = ob_get_clean();
 		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
-		$this->assertEquals( 'selected', $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' )[0]->attributes()['selected'] );
-		$this->assertEquals( $en, (int) $xml->xpath( '//input[@name="post_tr_lang[en]"]' )[0]->attributes()['value'] );
-		$this->assertEquals( 'test', $xml->xpath( '//input[@id="tr_lang_en"]' )[0]->attributes()['value'] );
+		$option = $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
+		$input = $xml->xpath( '//input[@name="post_tr_lang[en]"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( $en, (int) $attributes['value'] );
+		$input = $xml->xpath( '//input[@id="tr_lang_en"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 'test', $attributes['value'] );
 
 		unset( $_GET );
 	}
@@ -287,16 +295,26 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
 		// language is French
-		$this->assertEquals( 'selected', $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' )[0]->attributes()['selected'] );
+		$option = $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
 		// Link to English post
-		$this->assertEquals( $en, (int) $xml->xpath( '//input[@name="post_tr_lang[en]"]' )[0]->attributes()['value'] );
-		$this->assertEquals( 'test', $xml->xpath( '//input[@id="tr_lang_en"]' )[0]->attributes()['value'] );
+		$input = $xml->xpath( '//input[@name="post_tr_lang[en]"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( $en, (int) $attributes['value'] );
+		$input = $xml->xpath( '//input[@id="tr_lang_en"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 'test', $attributes['value'] );
 		// No self link
 		$this->assertEmpty( $xml->xpath( '//input[@name="post_tr_lang[fr]"]' ) );
 		$this->assertEmpty( $xml->xpath( '//input[@id="tr_lang_fr"]' ) );
 		// Link to empty German post
-		$this->assertEquals( 0, (int) $xml->xpath( '//input[@name="post_tr_lang[de]"]' )[0]->attributes()['value'] );
-		$this->assertEquals( '', $xml->xpath( '//input[@id="tr_lang_de"]' )[0]->attributes()['value'] );
+		$input = $xml->xpath( '//input[@name="post_tr_lang[de]"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( 0, (int) $attributes['value'] );
+		$input = $xml->xpath( '//input[@id="tr_lang_de"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( '', $attributes['value'] );
 	}
 
 	function test_languages_meta_box_for_media() {
@@ -318,9 +336,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
 
 		// language is French
-		$this->assertEquals( 'selected', $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' )[0]->attributes()['selected'] );
+		$option = $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' );
+		$attributes = $option[0]->attributes();
+		$this->assertEquals( 'selected', $attributes['selected'] );
 		// Link to English post
-		$this->assertEquals( $en, (int) $xml->xpath( '//input[@name="media_tr_lang[en]"]' )[0]->attributes()['value'] );
+		$input = $xml->xpath( '//input[@name="media_tr_lang[en]"]' );
+		$attributes = $input[0]->attributes();
+		$this->assertEquals( $en, (int) $attributes['value'] );
 		$this->assertNotFalse( strpos( $form, 'Edit the translation in English' ) );
 		// No self link
 		$this->assertEmpty( $xml->xpath( '//input[@name="media_tr_lang[fr]"]' ) );
