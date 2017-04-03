@@ -91,28 +91,42 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
-		$attachment_id = $this->factory->attachment->create_object( array(
+		$args = array(
 			'post_mime_type' => 'image/jpeg',
 			'post_type' => 'attachment',
 			'post_title' => 'image-en',
 			'post_status' => 'inherit',
 			'post_parent' => $post_id,
 			'file' => 'image.jpg',
-		) );
+		);
+
+		if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
+			$attachment_id = $this->factory->attachment->create_object( 'image.jpg', 0, $args );
+		} else {
+			$attachment_id = $this->factory->attachment->create_object( $args );
+		}
+
 		self::$polylang->model->post->set_language( $attachment_id, 'en' );
 		$this->assertEquals( home_url( '/test/image-en/' ), get_permalink( $attachment_id ) );
 
 		$post_id = $this->factory->post->create( array( 'post_title' => 'essai' ) );
 		self::$polylang->model->post->set_language( $post_id, 'fr' );
 
-		$attachment_id = $this->factory->attachment->create_object( array(
+		$args = array(
 			'post_mime_type' => 'image/jpeg',
 			'post_type' => 'attachment',
 			'post_title' => 'image-fr',
 			'post_status' => 'inherit',
 			'post_parent' => $post_id,
 			'file' => 'image.jpg',
-		) );
+		);
+
+		if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
+			$attachment_id = $this->factory->attachment->create_object( 'image.jpg', 0, $args );
+		} else {
+			$attachment_id = $this->factory->attachment->create_object( $args );
+		}
+
 		self::$polylang->model->post->set_language( $attachment_id, 'fr' );
 		$this->assertEquals( home_url( '/fr/essai/image-fr/' ), get_permalink( $attachment_id ) );
 	}
