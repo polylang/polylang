@@ -452,6 +452,7 @@ class PLL_Admin_Model extends PLL_Model {
 		$terms = get_terms( array( 'post_translations', 'term_translations' ) );
 
 		foreach ( $terms as $term ) {
+			$term_ids[ $term->taxonomy ][] = $term->term_id;
 			$tr = unserialize( $term->description );
 			if ( ! empty( $tr[ $old_slug ] ) ) {
 				if ( $new_slug ) {
@@ -496,8 +497,10 @@ class PLL_Admin_Model extends PLL_Model {
 			" );
 		}
 
-		foreach ( $terms as $term ) {
-			clean_term_cache( $term->term_id, $term->taxonomy );
+		if ( ! empty( $term_ids ) ) {
+			foreach ( $term_ids as $taxonomy => $ids ) {
+				clean_term_cache( $ids, $taxonomy );
+			}
 		}
 	}
 
