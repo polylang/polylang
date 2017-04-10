@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Modified version with 'polylang' text domain and comments for translators
  *
  * @author Easy Digital Downloads
- * @version 1.6.10
+ * @version 1.6.11
  */
 class PLL_Plugin_Updater {
 
@@ -372,7 +372,7 @@ class PLL_Plugin_Updater {
 			$request->banners = maybe_unserialize( $request->banners );
 		}
 
-		if( ! empty( $request ) ) {
+		if( ! empty( $request->sections ) ) {
 			foreach( $request->sections as $key => $section ) {
 				$request->$key = (array) $section;
 			}
