@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.7
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,16 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.1.3 (2017-04-11) =
+
+* Pro: Fix translated slug of 'page' if it is translated to an empty string
+* Update plugin udpater class to 1.6.11
+* Strings registered with a wpml-config.xml file or WPML functions are now multiline by default
+* Translate the site title in emails sent to the user
+* Fix sanitize_user for specific locales
+* Fix deprecation notice in Yoast SEO integration
+* Fix: Clean term cache after the language has been set in mass #119
 
 = 2.1.2 (2017-03-09) =
 
