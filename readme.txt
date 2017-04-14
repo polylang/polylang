@@ -79,7 +79,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 = 2.1.3 (2017-04-11) =
 
 * Pro: Fix translated slug of 'page' if it is translated to an empty string
-* Update plugin udpater class to 1.6.11
+* Update plugin updater class to 1.6.11
 * Strings registered with a wpml-config.xml file or WPML functions are now multiline by default
 * Translate the site title in emails sent to the user
 * Fix sanitize_user for specific locales
