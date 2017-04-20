@@ -95,14 +95,14 @@ class PLL_OLT_Manager {
 		}
 
 		// First remove taxonomies and post_types labels that we don't need to translate
-		$taxonomies = array( 'language', 'term_language', 'term_translations', 'post_translations' );
-		$post_types = array( 'polylang_mo' );
+		$taxonomies = get_taxonomies( array( '_pll' => true ) );
+		$post_types = get_post_types( array( '_pll' => true ) );
 
 		// We don't need to translate core taxonomies and post types labels when setting the language from the url
 		// As they will be translated when registered the second time
 		if ( ! did_action( 'setup_theme' ) ) {
-			$taxonomies = array_merge( array( 'category', 'post_tag', 'nav_menu', 'link_category', 'post_format' ), $taxonomies );
-			$post_types = array_merge( array( 'post', 'page', 'attachment', 'revision', 'nav_menu_item' ), $post_types );
+			$taxonomies = array_merge( get_taxonomies( array( '_builtin' => true ) ), $taxonomies );
+			$post_types = array_merge( get_post_types( array( '_builtin' => true ) ), $post_types );
 		}
 
 		// Translate labels of post types and taxonomies
