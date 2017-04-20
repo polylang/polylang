@@ -55,7 +55,11 @@ class PLL_Frontend extends PLL_Base {
 	 */
 	public function init() {
 		$this->links = new PLL_Frontend_Links( $this );
-		$this->static_pages = new PLL_Frontend_Static_Pages( $this );
+
+		// Static front page and page for posts
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->static_pages = new PLL_Frontend_Static_Pages( $this );
+		}
 
 		// setup the language chooser
 		$c = array( 'Content', 'Url', 'Url', 'Domain' );
