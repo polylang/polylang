@@ -29,11 +29,11 @@ class PLL_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
 		include PLL_SETTINGS_INC . '/languages.php';
 		$values = $languages[ $locale ];
 
-		$values[3] = (int) 'rtl' === $values[3];
-		$values[] = 0; // Default term_group
-		$keys = array( 'slug', 'locale', 'name', 'rtl', 'flag', 'term_group' );
+		$values['slug'] = $values['code'];
+		$values['rtl'] = (int) ( 'rtl' === $values['dir'] );
+		$values['term_group'] = 0; // default term_group
 
-		$args = array_merge( array_combine( $keys, $values ), $args );
+		$args = array_merge( $values, $args );
 		self::$polylang->model->add_language( $args );
 		unset( $GLOBALS['wp_settings_errors'] ); // Clean "errors"
 	}

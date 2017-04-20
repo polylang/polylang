@@ -121,7 +121,7 @@ class PLL_Plugins_Compat {
 			if ( 'language' === $term['term_taxonomy'] ) {
 				$description = maybe_unserialize( $term['term_description'] );
 				if ( empty( $description['flag_code'] ) && isset( $languages[ $description['locale'] ] ) ) {
-					$description['flag_code'] = $languages[ $description['locale'] ][4];
+					$description['flag_code'] = $languages[ $description['locale'] ]['flag'];
 					$terms[ $key ]['term_description'] = serialize( $description );
 				}
 			}

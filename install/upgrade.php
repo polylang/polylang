@@ -546,7 +546,7 @@ class PLL_Upgrade {
 		foreach ( $terms as $lang ) {
 			$description = maybe_unserialize( $lang->description );
 			if ( isset( $languages[ $description['locale'] ] ) ) {
-				$description['flag_code'] = $languages[ $description['locale'] ][4];
+				$description['flag_code'] = $languages[ $description['locale'] ]['flag'];
 				$description = serialize( $description );
 				wp_update_term( (int) $lang->term_id, 'language', array( 'description' => $description ) );
 			}
