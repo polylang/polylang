@@ -17,7 +17,7 @@ class PLL_Install extends PLL_Install_Base {
 
 		Polylang::define_constants();
 
-		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ).'/languages' ); // plugin i18n
+		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' ); // plugin i18n
 
 		if ( version_compare( $wp_version, PLL_MIN_WP_VERSION , '<' ) ) {
 			die( sprintf( '<p style = "font-family: sans-serif; font-size: 12px; color: #333; margin: -5px">%s</p>',

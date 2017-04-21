@@ -291,7 +291,7 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	 * @return null|string
 	 */
 	public function get_user_metadata( $null, $id, $meta_key, $single ) {
-		return 'description' === $meta_key && $this->curlang->slug !== $this->options['default_lang'] ? get_user_meta( $id, 'description_'.$this->curlang->slug, $single ) : $null;
+		return 'description' === $meta_key && $this->curlang->slug !== $this->options['default_lang'] ? get_user_meta( $id, 'description_' . $this->curlang->slug, $single ) : $null;
 	}
 
 	/**

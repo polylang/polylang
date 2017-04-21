@@ -20,7 +20,7 @@ class PLL_Admin_Base extends PLL_Base {
 		parent::__construct( $links_model );
 
 		// Plugin i18n, only needed for backend
-		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ).'/languages' );
+		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' );
 
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );

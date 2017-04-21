@@ -52,7 +52,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	public function in_widget_form( $widget, $return, $instance ) {
 		$dropdown = new PLL_Walker_Dropdown();
 		printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
-			esc_attr( $widget->id.'_lang_choice' ),
+			esc_attr( $widget->id . '_lang_choice' ),
 			esc_html__( 'The widget is displayed for:', 'polylang' ),
 			$dropdown->walk(
 				array_merge(
@@ -60,7 +60,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 					$this->model->get_languages_list()
 				),
 				array(
-					'name'        => $widget->id.'_lang_choice',
+					'name'        => $widget->id . '_lang_choice',
 					'class'       => 'tags-input',
 					'selected'    => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
 				)
@@ -81,7 +81,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @return array Widget options
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
-		if ( ! empty( $_POST[ $key = $widget->id.'_lang_choice' ] ) && in_array( $_POST[ $key ], $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) ) {
+		if ( ! empty( $_POST[ $key = $widget->id . '_lang_choice' ] ) && in_array( $_POST[ $key ], $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) ) {
 			$instance['pll_lang'] = $_POST[ $key ];
 		} else {
 			unset( $instance['pll_lang'] );

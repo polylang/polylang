@@ -187,7 +187,7 @@ class Polylang {
 			 */
 			do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
 
-			require_once PLL_INC.'/api.php'; // loads the API
+			require_once PLL_INC . '/api.php'; // loads the API
 
 			if ( ! defined( 'PLL_WPML_COMPAT' ) || PLL_WPML_COMPAT ) {
 				PLL_WPML_Compat::instance(); // WPML API

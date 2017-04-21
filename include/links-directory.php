@@ -81,7 +81,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 		if ( ! empty( $languages ) ) {
 			$pattern = str_replace( '/', '\/', $this->home . '/' . $this->root );
-			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language\/' ) . '('.implode( '|', $languages ).')(\/|$)#';
+			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language\/' ) . '(' . implode( '|', $languages ) . ')(\/|$)#';
 			$url = preg_replace( $pattern,  $this->home . '/' . $this->root, $url );
 		}
 		return $url;
@@ -106,7 +106,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 		$pattern = parse_url( $this->home . '/' . $this->root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
 		$pattern = str_replace( '/', '\/', $pattern );
-		$pattern = '#' . $pattern . '('. implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')(\/|$)#';
+		$pattern = '#' . $pattern . '(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')(\/|$)#';
 		return preg_match( $pattern, trailingslashit( $path ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
 	}
 
@@ -246,7 +246,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 		// The home rewrite rule
 		if ( 'root' == $filter && isset( $slug ) ) {
-			$newrules[ $slug . '?$' ] = $wp_rewrite->index.'?lang=$matches[1]';
+			$newrules[ $slug . '?$' ] = $wp_rewrite->index . '?lang=$matches[1]';
 		}
 
 		return $newrules;

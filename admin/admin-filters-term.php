@@ -25,13 +25,13 @@ class PLL_Admin_Filters_Term {
 
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
 			// Adds the language field in the 'Categories' and 'Post Tags' panels
-			add_action( $tax.'_add_form_fields', array( $this, 'add_term_form' ) );
+			add_action( $tax . '_add_form_fields', array( $this, 'add_term_form' ) );
 
 			// Adds the language field and translations tables in the 'Edit Category' and 'Edit Tag' panels
-			add_action( $tax.'_edit_form_fields', array( $this, 'edit_term_form' ) );
+			add_action( $tax . '_edit_form_fields', array( $this, 'edit_term_form' ) );
 
 			// Adds action related to languages when deleting categories and post tags
-			add_action( 'delete_'.$tax, array( $this, 'delete_term' ) );
+			add_action( 'delete_' . $tax, array( $this, 'delete_term' ) );
 		}
 
 		// Adds actions related to languages when creating or saving categories and post tags
@@ -103,7 +103,7 @@ class PLL_Admin_Filters_Term {
 		if ( $lang ) {
 			include PLL_ADMIN_INC . '/view-translations-term.php';
 		}
-		echo '</div>'."\n";
+		echo '</div>' . "\n";
 	}
 
 	/**
@@ -156,7 +156,7 @@ class PLL_Admin_Filters_Term {
 		if ( $lang ) {
 			include PLL_ADMIN_INC . '/view-translations-term.php';
 		}
-		echo '</tr>'."\n";
+		echo '</tr>' . "\n";
 	}
 
 	/**
@@ -419,7 +419,7 @@ class PLL_Admin_Filters_Term {
 			elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) {
 				// Bulk edit does not modify the language
 				if ( -1 == $_GET['inline_lang_choice'] ) {
-					$slug = $name . '-' .  $this->model->post->get_language( $this->post_id )->slug;
+					$slug = $name . '-' . $this->model->post->get_language( $this->post_id )->slug;
 				} else {
 					$slug = $name . '-' . $this->model->get_language( $_GET['inline_lang_choice'] )->slug;
 				}

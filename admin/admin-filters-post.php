@@ -282,10 +282,10 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 				$supplemental['dropdown'] = wp_dropdown_categories( array(
 					'taxonomy'         => $taxonomy->name,
 					'hide_empty'       => 0,
-					'name'             => 'new'.$taxonomy->name.'_parent',
+					'name'             => 'new' . $taxonomy->name . '_parent',
 					'orderby'          => 'name',
 					'hierarchical'     => 1,
-					'show_option_none' => '&mdash; '.$taxonomy->labels->parent_item.' &mdash;',
+					'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;',
 					'echo'             => 0,
 				) );
 

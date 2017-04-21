@@ -337,7 +337,7 @@ class PLL_Plugins_Compat {
 	 * @return string
 	 */
 	public function wpseo_posts_join( $sql, $post_type ) {
-		return pll_is_translated_post_type( $post_type ) && ( PLL()->options['force_lang'] > 1 || $this->wpseo_get_active_languages() ) ? $sql. PLL()->model->post->join_clause() : $sql;
+		return pll_is_translated_post_type( $post_type ) && ( PLL()->options['force_lang'] > 1 || $this->wpseo_get_active_languages() ) ? $sql . PLL()->model->post->join_clause() : $sql;
 	}
 
 	/**

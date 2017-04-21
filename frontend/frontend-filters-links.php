@@ -217,7 +217,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$hreflangs = apply_filters( 'pll_rel_hreflang_attributes', $hreflangs );
 
 			foreach ( $hreflangs as $lang => $url ) {
-				printf( '<link rel="alternate" href="%s" hreflang="%s" />'."\n", esc_url( $url ), esc_attr( $lang ) );
+				printf( '<link rel="alternate" href="%s" hreflang="%s" />' . "\n", esc_url( $url ), esc_attr( $lang ) );
 			}
 		}
 	}
