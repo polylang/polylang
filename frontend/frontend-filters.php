@@ -93,15 +93,30 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @return array modified list of sticky posts ids
 	 */
 	public function option_sticky_posts( $posts ) {
+		global $wpdb;
+
 		if ( $this->curlang && ! empty( $posts ) ) {
-			update_object_term_cache( $posts, 'post' ); // to avoid queries in foreach
-			foreach ( $posts as $key => $post_id ) {
-				$lang = $this->model->post->get_language( $post_id );
-				if ( empty( $lang ) || $lang->term_id != $this->curlang->term_id ) {
-					unset( $posts[ $key ] );
+			$_posts = wp_cache_get( 'sticky_posts', 'options' ); // This option is usually cached in 'all_options' by WP
+
+			if ( empty( $_posts ) || ! is_array( $_posts[ $this->curlang->term_taxonomy_id ] ) ) {
+				$posts = array_map( 'intval', $posts );
+				$posts = implode( ',', $posts );
+
+				$languages = $this->model->get_languages_list( array( 'fields' => 'term_taxonomy_id' ) );
+				$_posts = array_fill_keys( $languages, array() ); // Init with empty arrays
+				$languages = implode( ',', $languages );
+
+				$relations = $wpdb->get_results( "SELECT object_id, term_taxonomy_id FROM {$wpdb->term_relationships} WHERE object_id IN ({$posts}) AND term_taxonomy_id IN ({$languages})" );
+
+				foreach ( $relations as $relation ) {
+					$_posts[ $relation->term_taxonomy_id ][] = $relation->object_id;
 				}
+				wp_cache_add( 'sticky_posts', $_posts, 'options' );
 			}
+
+			$posts = $_posts[ $this->curlang->term_taxonomy_id ];
 		}
+
 		return $posts;
 	}
 
