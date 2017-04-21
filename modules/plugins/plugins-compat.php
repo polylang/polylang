@@ -432,7 +432,7 @@ class PLL_Plugins_Compat {
 		// WPSEO already deals with the locale
 		if ( did_action( 'pll_init' ) && method_exists( $wpseo_og, 'og_tag' ) ) {
 			foreach ( PLL()->model->get_languages_list() as $language ) {
-				if ( $language->slug != PLL()->curlang->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = self::get_fb_locale( $language ) ) {
+				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = self::get_fb_locale( $language ) ) {
 					$wpseo_og->og_tag( 'og:locale:alternate', $fb_locale );
 				}
 			}
@@ -623,10 +623,10 @@ class PLL_Plugins_Compat {
 	public function jetpack_ogp( $tags ) {
 		if ( did_action( 'pll_init' ) ) {
 			foreach ( PLL()->model->get_languages_list() as $language ) {
-				if ( $language->slug != PLL()->curlang->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = self::get_fb_locale( $language ) ) {
+				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = self::get_fb_locale( $language ) ) {
 					$tags['og:locale:alternate'][] = $fb_locale;
 				}
-				if ( $language->slug == PLL()->curlang->slug && $fb_locale = self::get_fb_locale( $language ) ) {
+				if ( PLL()->curlang->slug === $language->slug && $fb_locale = self::get_fb_locale( $language ) ) {
 					$tags['og:locale'] = $fb_locale;
 				}
 			}

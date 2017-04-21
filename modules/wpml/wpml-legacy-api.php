@@ -187,7 +187,7 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
 			'text_direction'     => (bool) $lang->is_rtl,
 			'display_name'       => $lang->name, // Seems to be the post language name displayed in the current language, not a feature in Polylang
 			'native_name'        => $lang->name,
-			'different_language' => $lang->slug != pll_current_language(),
+			'different_language' => pll_current_language() !== $lang->slug,
 		);
 	}
 }

@@ -23,8 +23,8 @@ class PLL_Walker_List extends Walker {
 			esc_url( $element->url ),
 			$element->flag,
 			$args['show_flags'] && $args['show_names'] ? '<span style="margin-left:0.3em;">' . esc_html( $element->name ) . '</span>' : esc_html( $element->name ),
-			$args['item_spacing'] === 'discard' ? '' : "\t",
-			$args['item_spacing'] === 'discard' ? '' : "\n"
+			'discard' === $args['item_spacing'] ? '' : "\t",
+			'discard' === $args['item_spacing'] ? '' : "\n"
 		);
 	}
 

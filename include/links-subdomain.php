@@ -19,7 +19,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 */
 	public function __construct( &$model ) {
 		parent::__construct( $model );
-		$this->www = false === strpos( $this->home, '://www.' ) ? '://' : '://www.';
+		$this->www = ( false === strpos( $this->home, '://www.' ) ) ? '://' : '://www.';
 	}
 
 	/**

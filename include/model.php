@@ -583,7 +583,7 @@ class PLL_Model {
 
 		switch ( $func ) {
 			case 'get_object_term':
-				$o = false === strpos( $args[1], 'term' ) ? 'post' : 'term';
+				$o = ( false === strpos( $args[1], 'term' ) ) ? 'post' : 'term';
 			break;
 
 			case 'save_translations':
