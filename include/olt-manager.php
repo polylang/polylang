@@ -42,7 +42,6 @@ class PLL_OLT_Manager {
 		// Loads text domains
 		add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined
 		add_action( 'pll_no_language_defined', array( $this, 'load_textdomains' ) );
-
 	}
 
 	/**
@@ -71,7 +70,6 @@ class PLL_OLT_Manager {
 		remove_filter( 'gettext', array( $this, 'gettext' ), 10, 3 );
 		remove_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
 		$new_locale = get_locale();
-
 
 		// Don't try to save time for en_US as some users have theme written in another language
 		// Now we can load all overriden text domains with the right language

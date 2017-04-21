@@ -291,8 +291,8 @@ class PLL_Admin_Sync {
 			$tr_arr = empty( $postarr ) ? array() : $postarr;
 
 			if ( isset( $GLOBALS['post_type'] ) ) {
-				$post_type =  $GLOBALS['post_type'];
-			} elseif ( isset( $_REQUEST['post_type'] ) ){
+				$post_type = $GLOBALS['post_type'];
+			} elseif ( isset( $_REQUEST['post_type'] ) ) {
 				$post_type = $_REQUEST['post_type']; // 2nd case for quick edit
 			}
 

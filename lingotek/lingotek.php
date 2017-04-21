@@ -158,7 +158,6 @@ class PLL_Lingotek {
 			array_intersect_key( $links, array_flip( array( 'activate', 'services' ) ) ),
 			'image04.png'
 		);
-
 	}
 
 	/**
@@ -197,7 +196,7 @@ class PLL_Lingotek {
 		.ltk-feature ul li {
 			list-style: inside disc;
 			list-style-position: outside;
-    		padding-left: 0;
+				padding-left: 0;
 		}
 		.ltk-feature .ltk-desc {
 			height: 3em;

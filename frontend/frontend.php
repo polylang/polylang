@@ -79,7 +79,6 @@ class PLL_Frontend extends PLL_Base {
 		$this->filters_search = new PLL_Frontend_Filters_Search( $this );
 	}
 
-
 	/**
 	 * when querying multiple taxonomies, makes sure that the language is not the queried object
 	 *
@@ -128,7 +127,7 @@ class PLL_Frontend extends PLL_Base {
 		}
 
 		// modifies query vars when the language is queried
-		if ( ! empty( $qv['lang'] ) || ( ! empty( $taxonomies ) && array( 'language') == array_values( $taxonomies ) ) ) {
+		if ( ! empty( $qv['lang'] ) || ( ! empty( $taxonomies ) && array( 'language' ) == array_values( $taxonomies ) ) ) {
 			// do we query a custom taxonomy?
 			$taxonomies = array_diff( $taxonomies , array( 'language', 'category', 'post_tag' ) );
 

@@ -5,7 +5,7 @@
  *
  * @since 1.2
  */
-class PLL_Frontend_Filters extends PLL_Filters{
+class PLL_Frontend_Filters extends PLL_Filters {
 
 	/**
 	 * Constructor: setups filters and actions
