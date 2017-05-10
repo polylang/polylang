@@ -326,15 +326,17 @@ class PLL_Admin_Base extends PLL_Base {
 		$selected = empty( $this->filter_lang ) ? $all_item : $this->filter_lang;
 
 		$title = sprintf(
-			'<span class="ab-label"%s>%s</span>',
+			'<span class="ab-label"%1$s><span class="screen-reader-text">%2$s</span>%3$s</span>',
 			'all' === $selected->slug ? '' : sprintf( ' lang="%s"', esc_attr( $selected->get_locale( 'display' ) ) ),
+			__( 'Filters content by language', 'polylang' ),
 			esc_html( $selected->name )
 		);
 
 		$wp_admin_bar->add_menu( array(
 			'id'     => 'languages',
 			'title'  => $selected->flag . $title,
-			'meta'   => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
+			'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged', $url ) ) ),
+			'meta'   => array( 'title'    => __( 'Filters content by language', 'polylang' ) ),
 		) );
 
 		foreach ( array_merge( array( $all_item ), $this->model->get_languages_list() ) as $lang ) {
