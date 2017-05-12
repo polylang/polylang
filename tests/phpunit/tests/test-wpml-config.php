@@ -75,6 +75,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'quantity', 1 ); // copy
 		add_post_meta( $from, 'custom-title', 'title' ); // translate
+		add_post_meta( $from, 'bg-color', '#23282d' ); // copy-once
 		add_post_meta( $from, 'date-added', 2007 ); // ignore
 
 		$to = $this->factory->post->create();
@@ -86,26 +87,31 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( 1 , get_post_meta( $to, 'quantity', true ) );
 		$this->assertEquals( 'title' , get_post_meta( $to, 'custom-title', true ) );
+		$this->assertEquals( '#23282d' , get_post_meta( $to, 'bg-color', true ) );
 		$this->assertEmpty( get_post_meta( $to, 'date-added', true ) );
 
 		// sync
 		update_post_meta( $to, 'quantity', 2 );
 		update_post_meta( $to, 'custom-title', 'titre' );
+		update_post_meta( $to, 'bg-color', '#ffeedd' );
 		update_post_meta( $to, 'date-added', 2008 );
 		$sync->copy_post_metas( $to, $from, 'en', true );
 
 		$this->assertEquals( 2 , get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title' , get_post_meta( $from, 'custom-title', true ) );
+		$this->assertEquals( '#23282d' , get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 
 		// remove custom field and sync
 		delete_post_meta( $to, 'quantity' );
 		delete_post_meta( $to, 'custom-title' );
+		delete_post_meta( $to, 'bg-color' );
 		delete_post_meta( $to, 'date-added' );
 		$sync->copy_post_metas( $to, $from, 'en', true );
 
 		$this->assertEmpty( get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title' , get_post_meta( $from, 'custom-title', true ) );
+		$this->assertEquals( '#23282d' , get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 	}
 
