@@ -131,11 +131,10 @@ class PLL_Admin_Filters_Term {
 		// Disable the language dropdown and the translations input fields for default categories to prevent removal
 		$disabled = in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
 
-		wp_nonce_field( 'pll_language', '_pll_nonce' );
-
 		printf( '
 			<tr class="form-field">
 				<th scope="row">
+					%s
 					<label for="term_lang_choice">%s</label>
 				</th>
 				<td id="select-edit-term-language">
@@ -143,6 +142,7 @@ class PLL_Admin_Filters_Term {
 					<p class="description">%s</p>
 				</td>
 			</tr>',
+			wp_nonce_field( 'pll_language', '_pll_nonce', true , false ),
 			esc_html__( 'Language', 'polylang' ),
 			$dropdown->walk( $this->model->get_languages_list(), array(
 				'name'     => 'term_lang_choice',
