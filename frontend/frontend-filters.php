@@ -41,6 +41,12 @@ class PLL_Frontend_Filters extends PLL_Filters{
 		add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 2 );
 		add_filter( 'sidebars_widgets', array( $this, 'sidebars_widgets' ) );
 
+		if ( $this->options['media_support'] ) {
+			foreach ( array( 'audio', 'image', 'video' ) as $media ) {
+				add_filter( "widget_media_{$media}_instance", array( $this, 'widget_media_instance' ), 1 ); // Since WP 4.8
+			}
+		}
+
 		// Strings translation ( must be applied before WordPress applies its default formatting filters )
 		foreach ( array( 'widget_text', 'widget_title', 'option_blogname', 'option_blogdescription', 'option_date_format', 'option_time_format' ) as $filter ) {
 			add_filter( $filter, 'pll__', 1 );
@@ -243,6 +249,34 @@ class PLL_Frontend_Filters extends PLL_Filters{
 		}
 
 		return $sidebars_widgets;
+	}
+
+	/**
+	 * Translates media in media widgets
+	 *
+	 * @since 2.1.5
+	 *
+	 * @param array $instance Widget instance data
+	 * @return array
+	 */
+	public function widget_media_instance( $instance ) {
+		if ( empty( $instance['pll_lang'] ) && $instance['attachment_id'] && $tr_id = pll_get_post( $instance['attachment_id'] ) ) {
+			$instance['attachment_id'] = $tr_id;
+			$attachment = get_post( $tr_id );
+
+			if ( $instance['caption'] ) {
+				$instance['caption'] = $attachment->post_excerpt;
+			}
+
+			if ( $instance['alt'] ) {
+				$instance['alt'] = get_post_meta( $tr_id, '_wp_attachment_image_alt', true );
+			}
+
+			if ( $instance['image_title'] ) {
+				$instance['image_title'] = $attachment->post_title;
+			}
+		}
+		return $instance;
 	}
 
 	/**
