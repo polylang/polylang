@@ -52,6 +52,8 @@ class WPSEO_Test extends PLL_UnitTestCase {
 		require_once PLL_INC . '/api.php';
 		$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang
 
+		self::$polylang->options['hide_default'] = 0;
+
 		_wpseo_activate();
 		$GLOBALS['wpseo_sitemaps'] = new WPSEO_Sitemaps;
 

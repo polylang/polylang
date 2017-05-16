@@ -15,6 +15,8 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 		require_once PLL_INC . '/api.php'; // usually loaded only if an instance of Polylang exists
 		$GLOBALS['polylang'] = self::$polylang; // We use PLL()
 
+		self::$polylang->options['hide_default'] = 0;
+
 		global $wp_rewrite;
 		$wp_rewrite->set_permalink_structure( '' );
 

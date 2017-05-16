@@ -15,6 +15,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 
 		require_once PLL_INC . '/api.php';
 		$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang
+		self::$polylang->options['hide_default'] = 0;
 		update_option( 'polylang', self::$polylang->options ); // make sure we have options in DB ( needed by PLL_WP_Import )
 
 		if ( ! defined( 'WP_IMPORTING' ) ) {

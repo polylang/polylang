@@ -11,6 +11,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		require_once PLL_INC . '/api.php';
 		$GLOBALS['polylang'] = &self::$polylang;
+		self::$polylang->options['hide_default'] = 0;
 	}
 
 	function setUp() {
