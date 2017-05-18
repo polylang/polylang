@@ -233,14 +233,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$form = $this->get_edit_term_form( $tag_ID, 'category' );
 		$this->assertFalse( strpos( $form, 'test' ) );
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
-		unset( $_GET['lang'] );
-/*
- * FIXME it does not make sense to make ajax tests here
-		$_REQUEST['lang'] = $_POST['lang'] = 'en'; // prevails on the term language (ajax response to language change)
-		$form = $this->get_edit_term_form( $tag_ID , 'category' );
-		$this->assertNotFalse( strpos( $form, 'test' ) );
-		$this->assertFalse( strpos( $form, 'essai' ) );
-*/
+
 		unset( $_REQUEST, $_GET, $_POST, $GLOBALS['post_type'] );
 	}
 
@@ -417,8 +410,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		update_option( 'default_category', $term_id );
 
 		$this->assertEquals( $term_id, get_option( 'default_category' ) );
-// FIXME test removed as the code doesn't force the default category to be in the default language
-//		$this->assertEquals( self::$polylang->options['default_lang'], self::$polylang->model->term->get_language( $term_id )->slug );
 		$translations = self::$polylang->model->term->get_translations( $term_id );
 		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
 	}
@@ -444,17 +435,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertFalse( strpos( $out, 'test' ) );
 		$this->assertNotFalse( strpos( $out, 'essai' ) );
-/*
- * FIXME it does not make sense to mak ajax tests here
-		$_REQUEST['lang'] = $_POST['lang'] = 'en'; // prevails on the post language (ajax response to language change)
-		self::$polylang->set_current_language();
-		ob_start();
-		post_categories_meta_box( $post, array() );
-		$out = ob_get_clean();
 
-		$this->assertNotFalse( strpos( $out, 'test' ) );
-		$this->assertFalse( strpos( $out, 'essai' ) );
-*/
 		unset( $_POST );
 	}
 
@@ -501,14 +482,15 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en' ) );
 		$this->assertEqualSets( array( $en ), $terms );
 
-// FIXME currently breaks in PLL_Admin_Filters_Term::get_terms_args()
-//		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
-//		$this->assertEqualSets( array( $en, $fr ), $terms );
-
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => array( 'en', 'fr' ) ) );
 		$this->assertEqualSets( array( $fr, $en ), $terms );
 
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 0 ) );
 		$this->assertEqualSets( array( $en, $fr, $es ), $terms );
+
+		// FIXME currently breaks in PLL_Admin_Filters_Term::get_terms_args()
+		$this->markTestIncomplete();
+		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
+		$this->assertEqualSets( array( $en, $fr ), $terms );
 	}
 }

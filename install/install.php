@@ -8,9 +8,11 @@
 class PLL_Install extends PLL_Install_Base {
 
 	/**
-	 * plugin activation for multisite
+	 * Plugin activation for multisite
 	 *
 	 * @since 0.1
+	 *
+	 * @param bool $networkwide
 	 */
 	public function activate( $networkwide ) {
 		global $wp_version;
@@ -32,7 +34,7 @@ class PLL_Install extends PLL_Install_Base {
 	}
 
 	/**
-	 * get default Polylang options
+	 * Get default Polylang options
 	 *
 	 * @since 1.8
 	 *
@@ -56,40 +58,40 @@ class PLL_Install extends PLL_Install_Base {
 	}
 
 	/**
-	 * plugin activation
+	 * Plugin activation
 	 *
 	 * @since 0.5
 	 */
 	protected function _activate() {
 		if ( $options = get_option( 'polylang' ) ) {
-			// check if we will be able to upgrade
+			// Check if we will be able to upgrade
 			if ( version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
 				$upgrade = new PLL_Upgrade( $options );
 				$upgrade->can_activate();
 			}
 		}
-		// defines default values for options in case this is the first installation
+		// Defines default values for options in case this is the first installation
 		else {
 			update_option( 'polylang', self::get_default_options() );
 		}
 
-		// avoid 1 query on every pages if no wpml strings is registered
+		// Avoid 1 query on every pages if no wpml strings is registered
 		if ( ! get_option( 'polylang_wpml_strings' ) ) {
 			update_option( 'polylang_wpml_strings', array() );
 		}
 
-		// don't use flush_rewrite_rules at network activation. See #32471
-		// thanks to RavanH for the trick. See https://polylang.wordpress.com/2015/06/10/polylang-1-7-6-and-multisite/
-		// rewrite rules are created at next page load :)
+		// Don't use flush_rewrite_rules at network activation. See #32471
+		// Thanks to RavanH for the trick. See https://polylang.wordpress.com/2015/06/10/polylang-1-7-6-and-multisite/
+		// Rewrite rules are created at next page load :)
 		delete_option( 'rewrite_rules' );
 	}
 
 	/**
-	 * plugin deactivation
+	 * Plugin deactivation
 	 *
 	 * @since 0.5
 	 */
 	protected function _deactivate() {
-		delete_option( 'rewrite_rules' ); // don't use flush_rewrite_rules at network activation. See #32471
+		delete_option( 'rewrite_rules' ); // Don't use flush_rewrite_rules at network activation. See #32471
 	}
 }

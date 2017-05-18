@@ -10,7 +10,7 @@ if ( file_exists( $_tests_dir . '/../wordpress-seo/wp-seo.php' ) ) {
 
 require_once $_tests_dir . '/../wordpress-seo/inc/sitemaps/class-sitemaps.php';
 
-/*
+/**
  * copied from WPSEO unit tests
  */
 class WPSEO_Sitemaps_Double extends WPSEO_Sitemaps {

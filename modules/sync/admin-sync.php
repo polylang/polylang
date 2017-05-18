@@ -126,7 +126,7 @@ class PLL_Admin_Sync {
 	 * @param int    $from id of the post from which we copy informations
 	 * @param int    $to   id of the post to which we paste informations
 	 * @param string $lang language slug
-	 * @param bool $sync true if it is synchronization, false if it is a copy, defaults to false
+	 * @param bool   $sync true if it is synchronization, false if it is a copy, defaults to false
 	 */
 	public function copy_taxonomies( $from, $to, $lang, $sync = false ) {
 		// Get taxonomies to sync for this post type

@@ -1,12 +1,12 @@
 <?php
 
 /**
- * displays the translations fields for media
- * needs WP 3.5+
+ * Displays the translations fields for media
+ * Needs WP 3.5+
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 ?>
 <p><strong><?php esc_html_e( 'Translations', 'polylang' );?></strong></p>
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tr>
 			<td class = "pll-media-language-column"><span class = "pll-translation-flag"><?php echo $language->flag; ?></span><?php echo esc_html( $language->name ); ?></td>
 			<td class = "pll-media-edit-column"><?php
-				// the translation exists
+				// The translation exists
 				if ( ( $translation_id = $this->model->post->get_translation( $post_id, $language ) ) && $translation_id !== $post_id ) {
 					printf(
 						'<input type="hidden" name="media_tr_lang[%s]" value="%d" />%s',
@@ -29,11 +29,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 					);
 				}
 
-				// no translation
+				// No translation
 				else {
 					echo $this->links->new_post_translation_link( $post_id, $language );
 				}?>
 			</td>
 		</tr><?php
-	} // foreach ?>
+	} // End foreach ?>
 </table>

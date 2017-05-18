@@ -129,7 +129,7 @@ class PLL_WPML_API {
 	 *
 	 * @since 2.0
 	 *
-	 * @param mixed  $null not used
+	 * @param mixed $null Not used
 	 * @return bool
 	 */
 	public function wpml_is_rtl( $null ) {

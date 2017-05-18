@@ -143,7 +143,7 @@ function pll_esc_html__( $string ) {
  *
  * @since 2.1
  *
- * @param $string
+ * @param string $string The string to translate
  * @return string
  */
 function pll_esc_attr__( $string ) {
@@ -155,7 +155,7 @@ function pll_esc_attr__( $string ) {
  *
  * @since 0.6
  *
- * @param string $string the string to translate
+ * @param string $string The string to translate
  */
 function pll_e( $string ) {
 	echo pll__( $string );
@@ -166,7 +166,7 @@ function pll_e( $string ) {
  *
  * @since 2.1
  *
- * @param string $string the string to translate
+ * @param string $string The string to translate
  */
 function pll_esc_html_e( $string ) {
 	echo pll_esc_html__( $string );
@@ -177,7 +177,7 @@ function pll_esc_html_e( $string ) {
  *
  * @since 2.1
  *
- * @param $string
+ * @param string $string The string to translate
  */
 function pll_esc_attr_e( $string ) {
 	echo pll_esc_attr__( $string );
@@ -221,7 +221,7 @@ function pll_translate_string( $string, $lang ) {
  *
  * @since 1.0.1
  *
- * @param string post type name
+ * @param string $post_type Post type name
  * @return bool
  */
 function pll_is_translated_post_type( $post_type ) {
@@ -233,7 +233,7 @@ function pll_is_translated_post_type( $post_type ) {
  *
  * @since 1.0.1
  *
- * @param string taxonomy name
+ * @param string $tax Taxonomy name
  * @return bool
  */
 function pll_is_translated_taxonomy( $tax ) {

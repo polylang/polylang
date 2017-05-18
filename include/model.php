@@ -151,7 +151,7 @@ class PLL_Model {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int|string term_id, tl_term_id, slug or locale of the queried language
+	 * @param int|string $value term_id, tl_term_id, slug or locale of the queried language
 	 * @return object|bool PLL_Language object, false if no language found
 	 */
 	public function get_language( $value ) {
@@ -575,8 +575,8 @@ class PLL_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $func function name
-	 * @param array $args function arguments
+	 * @param string $func Function name
+	 * @param array  $args Function arguments
 	 */
 	public function __call( $func, $args ) {
 		$f = $func;

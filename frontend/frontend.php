@@ -165,6 +165,9 @@ class PLL_Frontend extends PLL_Base {
 	 * overrides parent method
 	 *
 	 * @since 1.5.1
+	 *
+	 * @param int $new_blog
+	 * @param int $old_blog
 	 */
 	public function switch_blog( $new_blog, $old_blog ) {
 		// need to check that some languages are defined when user is logged in, has several blogs, some without any languages

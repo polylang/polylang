@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
 Plugin Name: Polylang
 Plugin URI: https://polylang.pro
 Version: 2.2-dev
@@ -9,7 +9,7 @@ Author uri: https://polylang.pro
 Description: Adds multilingual capability to WordPress
 Text Domain: polylang
 Domain Path: /languages
-*/
+ */
 
 /*
  * Copyright 2011-2017 Frédéric Demarle

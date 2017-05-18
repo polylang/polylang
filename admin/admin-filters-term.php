@@ -110,6 +110,8 @@ class PLL_Admin_Filters_Term {
 	 * Adds the language field and translations tables in the 'Edit Category' and 'Edit Tag' panels
 	 *
 	 * @since 0.1
+	 *
+	 * @param object $tag
 	 */
 	public function edit_term_form( $tag ) {
 		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type'];
@@ -164,7 +166,7 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @since 0.7
 	 *
-	 * @param string html markup for dropdown list of categories
+	 * @param string $output html markup for dropdown list of categories
 	 * @return string modified html
 	 */
 	public function wp_dropdown_cats( $output ) {
@@ -686,9 +688,9 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @since 1.7
 	 *
-	 * @param int $term_id shared term_id
-	 * @param int $new_term_id
-	 * @param int $term_taxonomy_id
+	 * @param int    $term_id          Shared term_id
+	 * @param int    $new_term_id
+	 * @param int    $term_taxonomy_id
 	 * @param string $taxonomy
 	 */
 	public function split_shared_term( $term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {

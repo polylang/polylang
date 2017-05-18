@@ -1,7 +1,6 @@
 <?php
 
-// If uninstall not called from WordPress exit
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) { // If uninstall not called from WordPress exit
 	exit();
 }
 
@@ -130,7 +129,7 @@ class PLL_Uninstall {
 		delete_option( 'polylang_wpml_strings' ); // Strings registered with icl_register_string
 		delete_option( 'polylang_licenses' );
 
-		//Delete transients
+		// Delete transients
 		delete_transient( 'pll_languages_list' );
 		delete_transient( 'pll_upgrade_1_4' );
 		delete_transient( 'pll_translated_slugs' );

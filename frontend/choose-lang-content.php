@@ -132,8 +132,8 @@ class PLL_Choose_Lang_Content extends PLL_Choose_lang {
 	 *
 	 * @since 0.9
 	 *
-	 * @param object|bool language found in get_language_from_content
-	 * @return object language
+	 * @param object|bool $lang Language found in get_language_from_content
+	 * @return object Language
 	 */
 	public function pll_get_current_language( $lang ) {
 		return ! $lang ? $this->get_preferred_language() : $lang;

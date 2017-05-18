@@ -137,7 +137,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 1.8
 	 *
-	 * @param int $term_id
+	 * @param int    $term_id
 	 * @param string $taxonomy
 	 * @param string $post_type
 	 * @param object $language

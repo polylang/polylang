@@ -174,7 +174,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $post_type
+	 * @param string $post_type Current post type
+	 * @param object $post      Current post
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {

@@ -24,10 +24,10 @@ class PLL_Admin_Strings {
 	 *
 	 * @since 0.6
 	 *
-	 * @param string $name    a unique name for the string
-	 * @param string $string  the string to register
-	 * @param string $context optional the group in which the string is registered, defaults to 'polylang'
-	 * @param bool $multiline optional wether the string table should display a multiline textarea or a single line input, defaults to single line
+	 * @param string $name      A unique name for the string
+	 * @param string $string    The string to register
+	 * @param string $context   Optional, the group in which the string is registered, defaults to 'polylang'
+	 * @param bool   $multiline Optional, whether the string table should display a multiline textarea or a single line input, defaults to single line
 	 */
 	static public function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
 		// backward compatibility with Polylang older than 1.1

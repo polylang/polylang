@@ -13,7 +13,11 @@ class PLL_Walker_List extends Walker {
 	 *
 	 * @since 1.2
 	 *
-	 * @see Walker::start_el
+	 * @param string $output            Passed by reference. Used to append additional content.
+	 * @param object $element           The data object.
+	 * @param int    $depth             Depth of the item.
+	 * @param array  $args              An array of additional arguments.
+	 * @param int    $current_object_id ID of the current item.
 	 */
 	function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) {
 		$output .= sprintf(
@@ -33,7 +37,12 @@ class PLL_Walker_List extends Walker {
 	 *
 	 * @since 1.2
 	 *
-	 * @see Walker::display_element
+	 * @param object $element           Data object.
+	 * @param array  $children_elements List of elements to continue traversing.
+	 * @param int    $max_depth         Max depth to traverse.
+	 * @param int    $depth             Depth of current element.
+	 * @param array  $args              An array of arguments.
+	 * @param string $output            Passed by reference. Used to append additional content.
 	 */
 	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
 		$element = (object) $element; // Make sure we have an object

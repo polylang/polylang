@@ -138,7 +138,7 @@ abstract class PLL_Choose_Lang {
 								$temp = $v[ $j ];
 								$v[ $j ] = $v[ $j + 1 ];
 								$v[ $j + 1 ] = $temp;
-								//swap keys
+								// Swap keys
 								$temp = $k[ $j ];
 								$k[ $j ] = $k[ $j + 1 ];
 								$k[ $j + 1 ] = $temp;
@@ -318,6 +318,9 @@ abstract class PLL_Choose_Lang {
 	 * optimized for ( needs ) WP 3.5+
 	 *
 	 * @since 1.3
+	 *
+	 * @param object $query
+	 * @param object $lang
 	 */
 	public function set_lang_query_var( &$query, $lang ) {
 		// defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )

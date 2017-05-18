@@ -297,6 +297,7 @@ class PLL_Plugins_Compat {
 	 * @since 1.6.4
 	 *
 	 * @param string $url
+	 * @param string $path
 	 * @return $url
 	 */
 	public function wpseo_home_url( $url, $path ) {
@@ -486,7 +487,7 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 1.4
 	 *
-	 * @param array $ids featured posts ids
+	 * @param array $featured_ids featured posts ids
 	 * @return array modified featured posts ids ( include all languages )
 	 */
 	public function twenty_fourteen_featured_content_ids( $featured_ids ) {
@@ -579,9 +580,15 @@ class PLL_Plugins_Compat {
 
 	/**
 	 * Jetpack
+	 * Filter the Top Posts and Pages by language.
 	 * Adapted from the same function in jetpack-3.0.2/3rd-party/wpml.php
 	 *
 	 * @since 1.5.4
+	 *
+	 * @param array  $posts    Array of the most popular posts.
+	 * @param array  $post_ids Array of Post IDs.
+	 * @param string $count    Number of Top Posts we want to display.
+	 * @return array
 	 */
 	public function jetpack_widget_get_top_posts( $posts, $post_ids, $count ) {
 		foreach ( $posts as $k => $post ) {
@@ -595,10 +602,16 @@ class PLL_Plugins_Compat {
 
 	/**
 	 * Jetpack
+	 * Filter the HTML of the Contact Form and output the one requested by language.
 	 * Adapted from the same function in jetpack-3.0.2/3rd-party/wpml.php
 	 * Keeps using 'icl_translate' as the function registers the string
 	 *
 	 * @since 1.5.4
+	 *
+	 * @param string   $r           Contact Form HTML output.
+	 * @param string   $field_label Field label.
+	 * @param int|null $id          Post ID.
+	 * @return string
 	 */
 	public function grunion_contact_form_field_html_filter( $r, $field_label, $id ) {
 		if ( function_exists( 'icl_translate' ) ) {

@@ -47,7 +47,9 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @since 0.3
 	 *
-	 * @param object $widget
+	 * @param object $widget   Widget instance
+	 * @param null   $return   Not used
+	 * @param array  $instance Widget settings
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
 		$dropdown = new PLL_Walker_Dropdown();
@@ -185,7 +187,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @since 1.6
 	 *
-	 * @param array $locale not used
+	 * @param array $locales Not used
 	 * @return array list of locales to update
 	 */
 	function update_check_locales( $locales ) {
@@ -238,7 +240,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @param string $username		 Sanitized username.
 	 * @param string $raw_username The username prior to sanitization.
-	 * @param bool	 $strict			 Whether to limit the sanitization to specific characters. Default false.
+	 * @param bool   $strict			 Whether to limit the sanitization to specific characters. Default false.
 	 * @return string
 	 */
 	public function sanitize_user( $username, $raw_username, $strict ) {

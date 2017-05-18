@@ -49,8 +49,8 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @since 0.8.2
 	 *
-	 * @param array $columns list of table columns
-	 * @param string $before the column before which we want to add our languages
+	 * @param array  $columns List of table columns
+	 * @param string $before  The column before which we want to add our languages
 	 * @return array modified list of columns
 	 */
 	protected function add_column( $columns, $before ) {
@@ -104,8 +104,8 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $column column name
-	 * @param int $post_id
+	 * @param string $column  Column name
+	 * @param int    $post_id
 	 */
 	public function post_column( $column, $post_id ) {
 		$inline = defined( 'DOING_AJAX' ) && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action'];
@@ -209,8 +209,8 @@ class PLL_Admin_Filters_Columns {
 	 * @since 0.1
 	 *
 	 * @param string $out
-	 * @param string $column column name
-	 * @param int term_id
+	 * @param string $column  Column name
+	 * @param int    $term_id
 	 */
 	public function term_column( $out, $column, $term_id ) {
 		$inline = defined( 'DOING_AJAX' ) && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action'];

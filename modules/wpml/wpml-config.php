@@ -164,7 +164,7 @@ class PLL_WPML_Config {
 	 *
 	 * @since 1.0
 	 *
-	 * @param array|string either a string to translate or a list of strings to translate
+	 * @param array|string $value Either a string to translate or a list of strings to translate
 	 * @return array|string translated string(s)
 	 */
 	public function translate_strings( $value ) {

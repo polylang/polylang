@@ -40,8 +40,6 @@ class PLL_Admin_Base extends PLL_Base {
 	 * Loads the settings pages or the filters base on the request
 	 *
 	 * @since 1.2
-	 *
-	 * @param object $links_model
 	 */
 	public function init() {
 		if ( ! $this->model->get_languages_list() ) {

@@ -47,8 +47,8 @@ class PLL_Language {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object|array $language 'language' term or language object properties stored as an array
-	 * @param object $term_language corresponding 'term_language' term
+	 * @param object|array $language      'language' term or language object properties stored as an array
+	 * @param object       $term_language Corresponding 'term_language' term
 	 */
 	public function __construct( $language, $term_language = null ) {
 		// build the object from all properties stored as an array

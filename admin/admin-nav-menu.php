@@ -263,7 +263,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 *
 	 * @since 1.7.3
 	 *
-	 * @param int nav menu id
+	 * @param int $term_id nav menu id
 	 */
 	function delete_nav_menu( $term_id ) {
 		if ( isset( $this->options['nav_menus'] ) ) {

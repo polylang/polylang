@@ -322,7 +322,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 *
 	 * @param int    $post_id
 	 * @param object $post
-	 * @param bool   $update  Whether it is an update or not
 	 */
 	public function save_post( $post_id, $post ) {
 		if ( $this->model->is_translated_post_type( $post->post_type ) ) {

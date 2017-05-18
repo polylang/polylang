@@ -89,7 +89,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $translations: an associative array of translations with language code as key and translation id as value
+	 * @param array $translations An associative array of translations with language code as key and translation id as value
 	 */
 	protected function keep_translation_group( $translations ) {
 		return true;
@@ -173,8 +173,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @since 2.0
 	 *
-	 * @param array  $ids      An array of term IDs.
-	 * @param string $taxonomy Taxonomy slug.
+	 * @param array $ids An array of term IDs.
 	 */
 	function clean_term_cache( $ids ) {
 		clean_object_term_cache( $ids, 'term' );

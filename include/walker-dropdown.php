@@ -1,7 +1,7 @@
 <?php
 
 /**
- * displays languages in a dropdown list
+ * Displays languages in a dropdown list
  *
  * @since 1.2
  */
@@ -9,11 +9,15 @@ class PLL_Walker_Dropdown extends Walker {
 	var $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
 
 	/**
-	 * outputs one element
+	 * Outputs one element
 	 *
 	 * @since 1.2
 	 *
-	 * @see Walker::start_el
+	 * @param string $output            Passed by reference. Used to append additional content.
+	 * @param object $element           The data object.
+	 * @param int    $depth             Depth of the item.
+	 * @param array  $args              An array of additional arguments.
+	 * @param int    $current_object_id ID of the current item.
 	 */
 	function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) {
 		$value = $args['value'];
@@ -27,24 +31,29 @@ class PLL_Walker_Dropdown extends Walker {
 	}
 
 	/**
-	 * overrides Walker::display_element as expects an object with a parent property
+	 * Overrides Walker::display_element as expects an object with a parent property
 	 *
 	 * @since 1.2
 	 *
-	 * @see Walker::display_element
+	 * @param object $element           Data object.
+	 * @param array  $children_elements List of elements to continue traversing.
+	 * @param int    $max_depth         Max depth to traverse.
+	 * @param int    $depth             Depth of current element.
+	 * @param array  $args              An array of arguments.
+	 * @param string $output            Passed by reference. Used to append additional content.
 	 */
 	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
-		$element = (object) $element; // make sure we have an object
-		$element->parent = $element->id = 0; // don't care about this
+		$element = (object) $element; // Make sure we have an object
+		$element->parent = $element->id = 0; // Don't care about this
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
 
 	/**
-	 * starts the output of the dropdown list
+	 * Starts the output of the dropdown list
 	 *
 	 * @since 1.2
 	 *
-	 * list of parameters accepted in $args:
+	 * List of parameters accepted in $args:
 	 *
 	 * flag     => display the selected language flag in front of the dropdown if set to 1, defaults to 0
 	 * value    => the language field to use as value attribute, defaults to 'slug'

@@ -35,7 +35,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $post_states
+	 * @param array  $post_states
 	 * @param object $post
 	 * @return array
 	 */
@@ -56,9 +56,9 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param int $post_id not used
-	 * @param object $post not used
-	 * @param array $translations
+	 * @param int    $post_id      Not used
+	 * @param object $post         Not used
+	 * @param array  $translations
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
 		if ( in_array( $this->page_on_front, $translations ) ) {

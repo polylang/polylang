@@ -1,20 +1,20 @@
 <?php
 
 /**
- * displays the translations fields for terms
+ * Displays the translations fields for terms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 
 if ( isset( $term_id ) ) {
-	// edit term form ?>
+	// Edit term form ?>
 	<th scope="row"><?php esc_html_e( 'Translations', 'polylang' ); ?></th>
 	<td><?php
 }
 else {
-	// add term form ?>
+	// Add term form ?>
 	<p><?php esc_html_e( 'Translations', 'polylang' ); ?></p><?php
 }?>
 <table class="widefat term-translations"  id="<?php echo isset( $term_id ) ? 'edit' : 'add'; ?>-term-translations"><?php
@@ -23,8 +23,8 @@ else {
 			continue;
 		}
 
-		// look for any existing translation in this language
-		// take care not ot propose a self link
+		// Look for any existing translation in this language
+		// Take care not to propose a self link
 		$translation = 0;
 		if ( isset( $term_id ) && ( $translation_id = $this->model->term->get_translation( $term_id, $language ) ) && $translation_id != $term_id ) {
 			$translation = get_term( $translation_id, $taxonomy );
@@ -33,7 +33,7 @@ else {
 			$translation = get_term( $translation_id, $taxonomy );
 		}
 
-		if ( isset( $term_id ) ) { // do not display the add new link in add term form ( $term_id not set !!! )
+		if ( isset( $term_id ) ) { // Do not display the add new link in add term form ( $term_id not set !!! )
 			$link = $add_link = $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
 		}
 
@@ -68,10 +68,10 @@ else {
 				); ?>
 			</td>
 		</tr><?php
-	} // foreach ?>
+	} // End foreach ?>
 </table><?php
 
 if ( isset( $term_id ) ) {
-	// edit term form?>
+	// Edit term form?>
 	</td><?php
 }
