@@ -10,6 +10,7 @@ class PLL_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
 		self::$polylang = new StdClass();
 
 		self::$polylang->options = PLL_Install::get_default_options();
+		self::$polylang->options['hide_default'] = 0; // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis
 		self::$polylang->model = new PLL_Admin_Model( self::$polylang->options );
 		self::$polylang->links_model = self::$polylang->model->get_links_model(); // we always need a links model due to PLL_Language::set_home_url()
 	}
