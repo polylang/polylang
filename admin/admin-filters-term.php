@@ -112,14 +112,17 @@ class PLL_Admin_Filters_Term {
 	 * @since 0.1
 	 */
 	public function edit_term_form( $tag ) {
-		$term_id = $tag->term_id;
-		$lang = $this->model->term->get_language( $term_id );
-		$taxonomy = $tag->taxonomy;
 		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type'];
 
 		if ( ! post_type_exists( $post_type ) ) {
 			return;
 		}
+
+		$term_id = $tag->term_id;
+		$taxonomy = $tag->taxonomy;
+
+		$lang = $this->model->term->get_language( $term_id );
+		$lang = empty( $lang ) ? $this->pref_lang : $lang;
 
 		$dropdown = new PLL_Walker_Dropdown();
 
