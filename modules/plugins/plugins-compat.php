@@ -615,7 +615,7 @@ class PLL_Plugins_Compat {
 	 * @return array
 	 */
 	function jetpack_relatedposts_filter_filters( $filters, $post_id ) {
-		$slug = sanitize_title( pll_get_post_language( $post_id, 'name' ) );
+		$slug = sanitize_title( pll_get_post_language( $post_id, 'slug' ) );
 		$filters[] = array( 'term' => array( 'taxonomy.language.slug' => $slug ) );
 		return $filters;
 	}
