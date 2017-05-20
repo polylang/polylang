@@ -100,6 +100,35 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_post_meta( $from, 'key', true ) );
 	}
 
+	function test_sync_multiple_custom_fields() {
+		self::$polylang->options['sync'] = array( 'post_meta' );
+		$sync = new PLL_Admin_Sync( self::$polylang );
+
+		$from = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $from, 'en' );
+
+		$to = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		// Add
+		add_post_meta( $from, 'key', 'value1' );
+		add_post_meta( $from, 'key', 'value2' );
+		add_post_meta( $from, 'key', 'value3' );
+
+		$sync->copy_post_metas( $from, $to, 'fr', true );
+		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_post_meta( $to, 'key' ) );
+
+		// Delete
+		delete_post_meta( $from, 'key', 'value3' );
+		$sync->copy_post_metas( $from, $to, 'fr', true );
+		$this->assertEqualSets( array( 'value1', 'value2' ), get_post_meta( $to, 'key' ) );
+
+		// Update
+		update_post_meta( $from, 'key', 'value4', 'value2' );
+		$sync->copy_post_metas( $from, $to, 'fr', true );
+		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key' ) );
+	}
+
 	function test_create_post_translation() {
 		// categories
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
