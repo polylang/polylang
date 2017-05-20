@@ -198,7 +198,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	}
 
 	// special case for default permalinks
-	function test_front_page_with_hide_default_default_parmalinks() {
+	function test_front_page_with_hide_default_plain_permalinks() {
 		global $wp_rewrite;
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( '' );
@@ -228,10 +228,36 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '?page_id=' . self::$home_fr . '&lang=fr' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
 		$this->assertEquals( array( get_post( self::$home_en ) ),  $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( redirect_canonical( home_url( '/' ), false ) );
+	}
 
-// This test was added for Polylang 1.8.2 but let's forget it as WP itself does not manage this canonical redirection
-//		self::$polylang->filters_links = new PLL_Frontend_Filters_Links( self::$polylang );
-//		$this->assertEquals( home_url( '/' ), self::$polylang->filters_links->check_canonical_url( home_url( '?page_id=' . self::$home_en ), false ) );
+	function test_paged_front_page_plain_permalinks() {
+		global $wp_rewrite;
+		$wp_rewrite->init();
+		$wp_rewrite->set_permalink_structure( '' );
+		$wp_rewrite->flush_rules();
+
+		self::$polylang->options['hide_default'] = 1;
+		self::$polylang->links_model = self::$polylang->model->get_links_model();
+		self::$polylang->model->clean_languages_cache();
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' ); // brute force
+		$this->go_to( home_url( '?page_id=' . self::$home_fr . '&lang=fr&page=2' ) );
+		the_post();
+
+		$this->assertTrue( is_front_page() );
+		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_paged', 'is_front_page' );
+		$this->assertEquals( home_url( '/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
+		$this->assertEquals( 'fr2', get_the_content() );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' ); // brute force
+		$this->go_to( home_url( '?page=2' ) );
+		the_post();
+
+		$this->assertTrue( is_front_page() );
+		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_paged', 'is_front_page' );
+		$this->assertEquals( home_url( '?page_id=' . self::$home_fr . '&lang=fr' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
+		$this->assertEquals( 'en2',  get_the_content() );
+		$this->assertEmpty( redirect_canonical( home_url( '?page=2' ), false ) );
 	}
 
 	function test_front_page_with_redirect_lang() {
