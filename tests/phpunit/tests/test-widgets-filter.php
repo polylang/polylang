@@ -99,4 +99,61 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$wp_widget_search->display_callback( $args, 2 );
 		$this->assertNotEmpty( ob_get_clean() );
 	}
+
+
+	function test_widget_media_image() {
+		//~ if ( version_compare( $GLOBALS['wp_version'], '4.8', '<' ) {
+			//~ $this->markTestSkipped();
+		//~ }
+
+		self::$polylang->options['media_support'] = 1;
+		self::$polylang->filters_media = new PLL_Admin_Filters_Media( self::$polylang );
+
+		self::$polylang->pref_lang = self::$polylang->model->get_language( 'en' );
+		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+
+		$en = $this->factory->attachment->create_upload_object( $filename );
+		wp_update_post( array(
+			'ID' 						=> $en,
+			'post_title'   => 'Test image EN',
+			'post_excerpt' => 'Caption EN',
+		) );
+		update_post_meta( $en, '_wp_attachment_image_alt', 'Alt text EN' );
+
+		$fr = self::$polylang->filters_media->create_media_translation( $en, 'fr' );
+		wp_update_post( array(
+			'ID' 						=> $fr,
+			'post_title'   => 'Test image FR',
+			'post_excerpt' => 'Caption FR',
+		) );
+		update_post_meta( $fr, '_wp_attachment_image_alt', 'Alt text FR' );
+
+		// Switch to frontend
+		self::$polylang->filters = new PLL_Frontend_Filters( self::$polylang );
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+
+		$widget = new WP_Widget_Media_Image();
+		$args = array( 'before_title' => '', 'after_title' => '', 'before_widget' => '', 'after_widget' => '' );
+
+		// Empty fields in Edit Image
+		$instance = array( 'attachment_id' => $en );
+		ob_start();
+		$widget->widget( $args, $instance );
+		$output = ob_get_clean();
+
+		$this->assertContains( "wp-image-{$fr}", $output ); // CSS class
+		$this->assertContains( 'Alt text FR' , $output );
+		$this->assertContains( 'Caption FR' , $output );
+		$this->assertNotContains( 'Test image FR', $output );
+
+		// Edit Image fields are filled
+		$instance = array( 'attachment_id' => $en, 'alt' => 'Custom alt', 'caption' => 'Custom caption', 'image_title' => 'Custom title' );
+		ob_start();
+		$widget->widget( $args, $instance );
+		$output = ob_get_clean();
+
+		$this->assertContains( 'Alt text FR' , $output );
+		$this->assertContains( 'Caption FR' , $output );
+		$this->assertContains( 'Test image FR', $output );
+	}
 }

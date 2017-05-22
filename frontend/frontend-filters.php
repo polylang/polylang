@@ -264,15 +264,15 @@ class PLL_Frontend_Filters extends PLL_Filters{
 			$instance['attachment_id'] = $tr_id;
 			$attachment = get_post( $tr_id );
 
-			if ( $instance['caption'] ) {
+			if ( $instance['caption'] && ! empty( $attachment->post_excerpt ) ) {
 				$instance['caption'] = $attachment->post_excerpt;
 			}
 
-			if ( $instance['alt'] ) {
-				$instance['alt'] = get_post_meta( $tr_id, '_wp_attachment_image_alt', true );
+			if ( $instance['alt'] && $alt_text = get_post_meta( $tr_id, '_wp_attachment_image_alt', true ) ) {
+				$instance['alt'] = $alt_text;
 			}
 
-			if ( $instance['image_title'] ) {
+			if ( $instance['image_title'] && ! empty( $attachment->post_title ) ) {
 				$instance['image_title'] = $attachment->post_title;
 			}
 		}
