@@ -13,7 +13,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		require_once PLL_INC . '/api.php';
 		$GLOBALS['polylang'] = &self::$polylang;
 
-		self::$polylang->model->post->register_taxonomy(); // needs for post counting
+		self::$polylang->model->post->register_taxonomy(); // Needed for post counting
 	}
 
 	function setUp() {
@@ -22,7 +22,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 		self::$polylang->init();
 
-		// de-activate cache for links
+		// De-activate cache for links
 		self::$polylang->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		self::$polylang->links->cache->method( 'get' )->willReturn( false );
 
@@ -44,21 +44,21 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::$polylang->links->curlang = self::$polylang->model->get_language( 'en' );
 		$this->go_to( get_permalink( $en ) );
 
-		// raw with default arguments
+		// Raw with default arguments
 		$args = array(
 			'raw' => 1,
 		);
 		$arr = $this->switcher->the_languages( self::$polylang->links, $args );
 
-		$this->assertCount( 3, $arr ); // es not in the array
+		$this->assertCount( 3, $arr );
 		$this->assertTrue( $arr['de']['no_translation'] );
 		$this->assertTrue( $arr['en']['current_lang'] );
 		$this->assertEquals( get_permalink( $en ), $arr['en']['url'] );
 		$this->assertEquals( get_permalink( $fr ), $arr['fr']['url'] );
-		$this->assertEquals( home_url( '?lang=de' ), $arr['de']['url'] ); // no translation
+		$this->assertEquals( home_url( '?lang=de' ), $arr['de']['url'] ); // No translation
 		$this->assertEquals( 'English', $arr['en']['name'] );
 
-		// other arguments
+		// Other arguments
 		$args = array_merge( $args, array(
 			'force_home' => 1,
 			'hide_current' => 1,
@@ -67,13 +67,13 @@ class Switcher_Test extends PLL_UnitTestCase {
 		) );
 		$arr = $this->switcher->the_languages( self::$polylang->links, $args );
 
-		$this->assertCount( 1, $arr ); // only fr in the array
+		$this->assertCount( 1, $arr ); // Only fr in the array
 		$this->assertEquals( home_url( '?lang=fr' ), $arr['fr']['url'] ); // force_home
 		$this->assertEquals( 'fr', $arr['fr']['name'] ); // display_name_as
 
 		$this->go_to( home_url( '/' ) );
 
-		// post_id
+		// Post_id
 		$args = array(
 			'raw' => 1,
 			'post_id' => $en,
@@ -82,7 +82,9 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->assertEquals( get_permalink( $fr ), $arr['fr']['url'] );
 	}
 
-	// very basic tests for the switcher as list
+	/**
+	 *  Very basic tests for the switcher as list
+	 */
 	function test_list() {
 		$en = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $en, 'en' );
@@ -97,11 +99,9 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::$polylang->links->curlang = self::$polylang->model->get_language( 'en' );
 		$this->go_to( get_permalink( $en ) );
 
-		$args = array(
-			'echo'     => 0,
-		);
+		$args = array( 'echo' => 0 );
 		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
-		$xml = simplexml_load_string( "<root>$switcher</root>" ); // add a root xml tag to get a valid xml doc
+		$xml = simplexml_load_string( "<root>$switcher</root>" ); // Add a root xml tag to get a valid xml doc
 
 		$a = $xml->xpath( 'li/a[.="English"]' );
 		$attributes = $a[0]->attributes();
@@ -109,9 +109,17 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$a = $xml->xpath( 'li/a[.="Français"]' );
 		$attributes = $a[0]->attributes();
 		$this->assertEquals( get_permalink( $fr ), $attributes['href'] );
+
+		// Test echo option
+		$args = array( 'echo' => 1 );
+		ob_start();
+		$this->switcher->the_languages( self::$polylang->links, $args );
+		$this->assertNotEmpty( ob_get_clean() );
 	}
 
-	// very basic tests for the switcher as dropdown
+	/**
+	 * Very basic tests for the switcher as dropdown
+	 */
 	function test_dropdown() {
 		$en = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $en, 'en' );
@@ -131,7 +139,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 			'echo'     => 0,
 		);
 		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
-		$xml = simplexml_load_string( "<root>$switcher</root>" ); // add a root xml tag to get a valid xml doc
+		$xml = simplexml_load_string( "<root>$switcher</root>" ); // Add a root xml tag to get a valid xml doc
 
 		$option = $xml->xpath( 'select/option[.="English"]' );
 		$attributes = $option[0]->attributes();
