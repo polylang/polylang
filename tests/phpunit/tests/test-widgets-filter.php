@@ -12,7 +12,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		require_once PLL_INC . '/api.php'; // usually loaded only if an instance of Polylang exists
+		require_once PLL_INC . '/api.php'; // Usually loaded only if an instance of Polylang exists
 		$GLOBALS['polylang'] = self::$polylang; // We use PLL()
 	}
 
@@ -22,7 +22,9 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	// copied from WP widgets tests
+	/**
+	 * Copied from WP widgets tests
+	 */
 	function clean_up_global_scope() {
 		global $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
 
@@ -50,13 +52,13 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
 
 		$_POST = array(
-			'widget-id'     => 'search-2',
-			'id_base'       => 'search',
-			'widget_number' => 2,
+			'widget-id'     => $widget->id,
+			'id_base'       => $widget->id_base,
+			'widget_number' => $widget->number,
 			'multi_number'  => '',
 		);
 
-		$_POST['search-2_lang_choice'] = $lang;
+		$_POST[ $widget->id . '_lang_choice' ] = $lang;
 		$widget->update_callback();
 	}
 
@@ -155,5 +157,22 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$this->assertContains( 'Alt text FR' , $output );
 		$this->assertContains( 'Caption FR' , $output );
 		$this->assertContains( 'Test image FR', $output );
+	}
+
+	function test_wp_get_sidebars_widgets() {
+		global $wp_registered_widgets;
+
+		wp_widgets_init();
+		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
+		$this->update_lang_choice( $wp_widget_search, 'en' );
+
+		self::$polylang->filters = new PLL_Frontend_Filters( self::$polylang );
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$sidebars = wp_get_sidebars_widgets();
+		$this->assertTrue( in_array( 'search-2', $sidebars['sidebar-1'] ) );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$sidebars = wp_get_sidebars_widgets();
+		$this->assertFalse( in_array( 'search-2', $sidebars['sidebar-1'] ) );
 	}
 }
