@@ -28,6 +28,18 @@ class Columns_Test extends PLL_UnitTestCase {
 		$_REQUEST = $_GET = $_POST = array();
 	}
 
+	/**
+	 * Allows to convert some html entities to xml entities to avoid breaking simplexml_load_string
+	 */
+	function convert_html_to_xml( $str ) {
+		$chars = array(
+			'&mdash;'  => '&#8212;',
+			'&ndash;'  => '&#8211;',
+		);
+
+		return str_replace( array_keys( $chars ), $chars, $str );
+	}
+
 	function test_post_with_no_language() {
 		$post_id = $this->factory->post->create();
 
@@ -225,5 +237,38 @@ class Columns_Test extends PLL_UnitTestCase {
 		$columns = array_keys( $columns );
 		$this->assertFalse( array_search( 'language_fr', $columns ) );
 		$this->assertNotFalse( array_search( 'language_en', $columns ) );
+	}
+
+	function test_post_inline_edit() {
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		$list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => 'edit.php' ) );
+		$list_table->prepare_items();
+		$GLOBALS['post'] = $GLOBALS['wp_the_query']->post; // Needed by touch_time
+
+		ob_start();
+		$list_table->inline_edit();
+		$form = ob_get_clean();
+
+		$xml = simplexml_load_string( $this->convert_html_to_xml( $form ) );
+
+		// Quick Edit
+		$options = $xml->xpath( '//tr[@id="inline-edit"]/td/fieldset/div/label/select[@name="inline_lang_choice"]/option' );
+		$this->assertCount( 2, $options );
+		$attributes = $options[0]->attributes();
+		$this->assertEquals( 'en', $attributes['value'] );
+		$attributes = $options[1]->attributes();
+		$this->assertEquals( 'fr', $attributes['value'] );
+
+		// Bulk Edit
+		$options = $xml->xpath( '//tr[@id="bulk-edit"]/td/fieldset/div/label/select[@name="inline_lang_choice"]/option' );
+		$this->assertCount( 3, $options );
+		$attributes = $options[0]->attributes();
+		$this->assertEquals( '-1', $attributes['value'] );
+		$attributes = $options[1]->attributes();
+		$this->assertEquals( 'en', $attributes['value'] );
+		$attributes = $options[2]->attributes();
+		$this->assertEquals( 'fr', $attributes['value'] );
 	}
 }
