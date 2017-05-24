@@ -168,10 +168,13 @@ class PLL_Admin_Filters_Term {
 	 * @return string modified html
 	 */
 	public function wp_dropdown_cats( $output ) {
-		if ( isset( $_GET['taxonomy'], $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $_GET['taxonomy'] ) && $id = get_term( (int) $_GET['from_tag'], $_GET['taxonomy'] )->parent ) {
-			$lang = $this->model->get_language( $_GET['new_lang'] );
-			if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
-				return str_replace( '"'.$parent.'"', '"'.$parent.'" selected="selected"', $output );
+		if ( isset( $_GET['taxonomy'], $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $_GET['taxonomy'] ) ) {
+			$term = get_term( (int) $_GET['from_tag'], $_GET['taxonomy'] );
+			if ( $term && $id = $term->parent ) {
+				$lang = $this->model->get_language( $_GET['new_lang'] );
+				if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
+					return str_replace( '"' . $parent . '"', '"' . $parent . '" selected="selected"', $output );
+				}
 			}
 		}
 		return $output;
