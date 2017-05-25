@@ -21,6 +21,9 @@
 			<directory suffix=".php">./settings</directory>
 			<file>polylang.php</file>
 			<file>uninstall.php</file>
+			<exclude>
+				<file>install/plugin-updater.php</file><!-- 3rd party code with no significant modification -->
+			</exclude>
 		</whitelist>
 	</filter>
 	<listeners>
