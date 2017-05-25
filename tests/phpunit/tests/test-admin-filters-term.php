@@ -402,51 +402,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		unset( $_GET, $GLOBALS['post_type'] );
 	}
 
-	function test_term_list_with_admin_language_filter() {
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
-
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'enfant', 'parent' => $fr ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
-
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'child', 'parent' => $en ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-
-		$GLOBALS['taxnow'] = $_REQUEST['taxonomy'] = $_GET['taxonomy'] = 'category'; // WP_Screen tests $_REQUEST, Polylang tests $_GET
-		$GLOBALS['hook_suffix'] = 'edit-tags.php';
-		set_current_screen();
-		$wp_list_table = _get_list_table( 'WP_Terms_List_Table' );
-		self::$polylang->set_current_language();
-
-		// without filter
-		ob_start();
-		$wp_list_table->prepare_items();
-		$wp_list_table->display();
-		$list = ob_get_clean();
-
-		$this->assertNotFalse( strpos( $list, 'test' ) );
-		$this->assertNotFalse( strpos( $list, 'essai' ) );
-		$this->assertNotFalse( strpos( $list, 'child' ) );
-		$this->assertNotFalse( strpos( $list, 'enfant' ) );
-
-		// the filter is active
-		self::$polylang->pref_lang = self::$polylang->filter_lang = self::$polylang->model->get_language( 'en' );
-		self::$polylang->set_current_language();
-
-		ob_start();
-		$wp_list_table->prepare_items();
-		$wp_list_table->display();
-		$list = ob_get_clean();
-
-		$this->assertNotFalse( strpos( $list, 'test' ) );
-		$this->assertFalse( strpos( $list, 'essai' ) );
-		$this->assertNotFalse( strpos( $list, 'child' ) );
-		$this->assertFalse( strpos( $list, 'enfant' ) );
-	}
-
 	function test_new_default_category() {
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'new-default' ) );
 		update_option( 'default_category', $term_id );
@@ -456,34 +411,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 //		$this->assertEquals( self::$polylang->options['default_lang'], self::$polylang->model->term->get_language( $term_id )->slug );
 		$translations = self::$polylang->model->term->get_translations( $term_id );
 		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
-	}
-
-	// bug introduced by WP 4.3 and fixed in v1.8.2
-	function test_default_category_in_list_table() {
-		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) ); // a non default category
-		$default = get_option( 'default_category' );
-		$en = self::$polylang->model->term->get( $default, 'en' );
-		$fr = self::$polylang->model->term->get( $default, 'fr' );
-
-		$GLOBALS['taxnow'] = $_REQUEST['taxonomy'] = $_GET['taxonomy'] = 'category'; // WP_Screen tests $_REQUEST, Polylang tests $_GET
-		$GLOBALS['hook_suffix'] = 'edit-tags.php';
-		set_current_screen();
-		$wp_list_table = _get_list_table( 'WP_Terms_List_Table' );
-
-		ob_start();
-		$wp_list_table->prepare_items();
-		$wp_list_table->display();
-		$list = ob_get_clean();
-
-		// checkbox only for non default category
-		$this->assertFalse( strpos( $list, '"cb-select-' . $en . '"' ) );
-		$this->assertFalse( strpos( $list, '"cb-select-' . $fr . '"' ) );
-		$this->assertNotFalse( strpos( $list, '"cb-select-' . $id . '"' ) );
-
-		// delete link only for non default category
-		$this->assertFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $en . '&amp;' ) );
-		$this->assertFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $fr . '&amp;' ) );
-		$this->assertNotFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $id . '&amp;' ) );
 	}
 
 	function test_post_categories_meta_box() {
