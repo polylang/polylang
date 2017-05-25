@@ -15,7 +15,7 @@ if ( ! function_exists( 'wpcom_vip_get_page_by_title' ) ) {
 	 * @param string|array $post_type  Optional. Post type or array of post types. Default 'page'.
 	 * @return WP_Post|array|null WP_Post (or array) on success, or null on failure.
 	 */
- 	function wpcom_vip_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'page' ) {
+	function wpcom_vip_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'page' ) {
 		return get_page_by_title( $page_title, $output, $post_type );
 	}
 }
@@ -29,7 +29,7 @@ if ( ! function_exists( 'wpcom_vip_get_category_by_slug' ) ) {
 	 * @param string $slug The category slug.
 	 * @return object Category data object
 	 */
- 	function wpcom_vip_get_category_by_slug( $slug ) {
+	function wpcom_vip_get_category_by_slug( $slug ) {
 		return get_category_by_slug( $slug );
 	}
 }
@@ -47,7 +47,7 @@ if ( ! function_exists( 'wpcom_vip_get_term_by' ) ) {
 	 * @param string     $filter   Optional, default is raw or no WordPress defined filter will applied.
 	 * @return WP_Term|array|false WP_Term instance (or array) on success. Will return false if `$taxonomy` does not exist or `$term` was not found.
 	 */
- 	function wpcom_vip_get_term_by( $field, $value, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
+	function wpcom_vip_get_term_by( $field, $value, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
 		return get_term_by( $field, $value, $taxonomy, $output, $filter );
 	}
 }

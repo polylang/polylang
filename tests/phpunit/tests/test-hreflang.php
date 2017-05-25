@@ -102,7 +102,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$posts_us = $this->factory->post->create_many( 3 );
 		$posts_uk = $this->factory->post->create_many( 3 );
 
-		for( $i = 0; $i < 3; $i++ ) {
+		for ( $i = 0; $i < 3; $i++ ) {
 			self::$polylang->model->post->set_language( $us = $posts_us[ $i ], 'us' );
 			self::$polylang->model->post->set_language( $uk = $posts_uk[ $i ], 'uk' );
 			self::$polylang->model->post->save_translations( $uk, compact( 'uk', 'us' ) );
