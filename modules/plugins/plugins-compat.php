@@ -512,10 +512,12 @@ class PLL_Plugins_Compat {
 				'lang'        => 0, // avoid language filters
 				'fields'      => 'ids',
 				'numberposts' => Featured_Content::$max_posts,
-				'tax_query'   => array( array(
-					'taxonomy' => 'post_tag',
-					'terms'    => (int) $tag,
-				) ),
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'post_tag',
+						'terms'    => (int) $tag,
+					),
+				),
 			) );
 
 			$ids = array_merge( $ids, $_ids );

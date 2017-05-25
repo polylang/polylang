@@ -113,11 +113,13 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		// tax query
 		$args = array(
 			'post_type' => 'trcpt',
-			'tax_query' => array( array(
-				'taxonomy' => 'trtax',
-				'terms'    => 'test',
-				'field'    => 'slug',
-			) ),
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'trtax',
+					'terms'    => 'test',
+					'field'    => 'slug',
+				),
+			),
 		);
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( $args ) );
 	}

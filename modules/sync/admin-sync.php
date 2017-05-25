@@ -337,12 +337,14 @@ class PLL_Admin_Sync {
 			'post_type'   => 'any',
 			'post_status' => 'any',
 			'fields'      => 'ids',
-			'tax_query'   => array( array(
-				'taxonomy'         => $taxonomy,
-				'field'            => 'id',
-				'terms'            => array_merge( array( $term_id ), array_values( $translations ) ),
-				'include_children' => false,
-			) ),
+			'tax_query'   => array(
+				array(
+					'taxonomy'         => $taxonomy,
+					'field'            => 'id',
+					'terms'            => array_merge( array( $term_id ), array_values( $translations ) ),
+					'include_children' => false,
+				),
+			),
 		) );
 
 		// Associate translated term to translated post

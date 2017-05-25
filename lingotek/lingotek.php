@@ -104,7 +104,7 @@ class PLL_Lingotek {
 				'link'    => 'http://www.lingotek.com/wordpress/extra_services',
 				'new_tab' => true,
 				'classes' => 'button button-primary',
-			)
+			),
 		);
 
 		printf( '<p>%s</p>', esc_html__( 'Polylang is now fully integrated with Lingotek, a professional translation management system!', 'polylang' ) );

@@ -334,7 +334,7 @@ class PLL_Admin_Base extends PLL_Base {
 			'id'     => 'languages',
 			'title'  => $selected->flag . $title,
 			'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged', $url ) ) ),
-			'meta'   => array( 'title'    => __( 'Filters content by language', 'polylang' ) ),
+			'meta'   => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
 		) );
 
 		foreach ( array_merge( array( $all_item ), $this->model->get_languages_list() ) as $lang ) {

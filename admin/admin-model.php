@@ -415,11 +415,13 @@ class PLL_Admin_Model extends PLL_Model {
 			'post_type'   => $this->get_translated_post_types(),
 			'post_status' => 'any',
 			'fields'      => 'ids',
-			'tax_query'   => array( array(
-				'taxonomy' => 'language',
-				'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
-				'operator' => 'NOT IN',
-			) )
+			'tax_query'   => array(
+				array(
+					'taxonomy' => 'language',
+					'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
+					'operator' => 'NOT IN',
+				),
+			),
 		) );
 
 		$terms = get_terms( $this->get_translated_taxonomies(), array( 'get' => 'all', 'fields' => 'ids' ) );

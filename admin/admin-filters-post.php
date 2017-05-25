@@ -347,11 +347,13 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			'numberposts'      => 20, // Limit to 20 posts
 			'post_status'      => 'any',
 			'post_type'        => $_GET['post_type'],
-			'tax_query'        => array( array(
-				'taxonomy' => 'language',
-				'field'    => 'term_taxonomy_id', // WP 3.5+
-				'terms'    => $translation_language->term_taxonomy_id,
-			) ),
+			'tax_query'        => array(
+				array(
+					'taxonomy' => 'language',
+					'field'    => 'term_taxonomy_id', // WP 3.5+
+					'terms'    => $translation_language->term_taxonomy_id,
+				),
+			),
 		);
 
 		/**
