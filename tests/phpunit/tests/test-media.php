@@ -50,4 +50,47 @@ class Media_Test extends PLL_UnitTestCase {
 		wp_delete_attachment( $fr );
 		$this->assertFileNotExists( $filename );
 	}
+
+	function test_attachment_fields_to_edit() {
+		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$fr = $this->factory->attachment->create_upload_object( $filename );
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+
+		$fields = get_attachment_fields_to_edit( $fr );
+		$this->assertEquals( 'Language', $fields['language']['label'] );
+		$select = simplexml_load_string( $fields['language']['html'] );
+		$selected = $select->xpath( 'option[@selected="selected"]' );
+		$attributes = $selected[0]->attributes();
+		$this->assertEquals( 'fr', $attributes['value'] );;
+
+		// Don't use on the Edit Media panel
+		$GLOBALS['pagenow'] = 'post.php';
+		$fields = get_attachment_fields_to_edit( $fr );
+		$this->assertFalse( isset( $fields['language'] ) );
+	}
+
+	function test_attachment_fields_to_save() {
+		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$en = $this->factory->attachment->create_upload_object( $filename );
+		self::$polylang->model->post->set_language( $en, 'en' );
+		$fr = $this->factory->attachment->create_upload_object( $filename );
+
+		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $editor ); // Set a user to pass current_user_can tests
+
+		$_REQUEST = $_POST = array(
+			'post_ID'       => $fr,
+			'post_title'    => 'Test image',
+			'attachments'   => array( $fr => array( 'language' => 'fr' ) ),
+			'media_tr_lang' => array( 'en' => $en ),
+			'_pll_nonce'    => wp_create_nonce( 'pll_language' ),
+		);
+		edit_post();
+
+		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $en )->slug );
+		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $fr )->slug );
+		$this->assertEqualSets( array( 'en' => $en, 'fr' => $fr ), self::$polylang->model->post->get_translations( $en ) );
+
+		unset( $_REQUEST, $_POST );
+	}
 }
