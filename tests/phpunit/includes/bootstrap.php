@@ -20,7 +20,7 @@ require dirname( __FILE__ ) . '/testcase-canonical.php';
 require dirname( __FILE__ ) . '/testcase-domain.php';
 
 if ( defined( 'POLYLANG_PRO' ) && POLYLANG_PRO ) {
-	echo 'Testing Polylang Pro...' . PHP_EOL;
+	printf( 'Testing Polylang Pro %s with WordPress %s...' . PHP_EOL, POLYLANG_VERSION, $GLOBALS['wp_version'] );
 } else {
-	echo 'Testing Polylang Free...' . PHP_EOL;
+	printf( 'Testing Polylang %s with WordPress %s...' . PHP_EOL, POLYLANG_VERSION, $GLOBALS['wp_version'] );
 }
