@@ -256,13 +256,16 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = self::$polylang; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
-		$xml = '<root>' . wp_nav_menu( $args ) . '</root>'; // add a root xml tag to get a valid xml doc
-		$xml = preg_replace( '#<svg(.+)</svg>#', '', $xml ); // Remove SVG Added by Twenty Seventeen to avoid an error in simplexml_load_string()
-		$xml = simplexml_load_string( $xml ); // add a root xml tag to get a valid xml doc
+		$doc = new DomDocument();
+		$menu = wp_nav_menu( $args );
+		$menu = preg_replace( '#<svg(.+)</svg>#', '', $menu ); // Remove SVG Added by Twenty Seventeen to avoid an error in loadHTML()
+		$menu = mb_convert_encoding( $menu, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$doc->loadHTML( $menu );
+		$xpath = new DOMXpath( $doc );
 
-		$this->assertNotEmpty( $xml->xpath( '//div/ul/li/a[.="English"]' ) );
-		$this->assertEmpty( $xml->xpath( '//div/ul/li/ul/li/a[.="English"]' ) ); // current language is hidden
-		$this->assertNotEmpty( $xml->xpath( '//div/ul/li/ul/li/a[.="Français"]' ) );
+		$this->assertNotEmpty( $xpath->query( '//div/ul/li/a[.="English"]' )->length );
+		$this->assertEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); // current language is hidden
+		$this->assertNotEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
 
 		unset( $GLOBALS['polylang'] );
 	}

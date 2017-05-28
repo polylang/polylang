@@ -16,18 +16,6 @@ class Settings_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'] );
 	}
 
-	// allows to convert some html entities to xml entities to avoid breaking simplexml_load_string
-	function convert_html_to_xml( $str ) {
-		$chars = array(
-			'&laquo;'  => '&#171;',
-			'&raquo;'  => '&#187;',
-			'&lsaquo;' => '&#8249;',
-			'&rsaquo;' => '&#8250;',
-		);
-
-		return str_replace( array_keys( $chars ), $chars, $str );
-	}
-
 	// bug introduced and fixed in 1.9alpha
 	function test_edit_language() {
 		$lang = self::$polylang->model->get_language( 'fr' );
@@ -44,24 +32,25 @@ class Settings_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Settings( self::$polylang->links_model );
 		self::$polylang->languages_page();
 		$out = ob_get_clean();
-		$out = $this->convert_html_to_xml( $out );
-		$xml = simplexml_load_string( "<root>$out</root>" ); // add a root xml tag to get a valid xml doc
+		$out = mb_convert_encoding( $out, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$doc = new DomDocument();
+		$doc->loadHTML( $out );
+		$xpath = new DOMXpath( $doc );
 
-		$input = $xml->xpath( '//input[@name="lang_id"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( $lang->term_id, (int) $attributes['value'] ); // hidden field
-		$input = $xml->xpath( '//input[@name="name"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( 'Français', $attributes['value'] );
-		$input = $xml->xpath( '//input[@name="locale"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( 'fr_FR', $attributes['value'] );
-		$input = $xml->xpath( '//input[@name="slug"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( 'fr', $attributes['value'] );
-		$option = $xml->xpath( '//select[@name="flag"]/option[.="France"]' );
-		$attributes = $option[0]->attributes();
-		$this->assertEquals( 'selected', $attributes['selected'] );
+		$input = $xpath->query( '//input[@name="lang_id"]' );
+		$this->assertEquals( $lang->term_id, $input->item( 0 )->getAttribute( 'value' ) ); // hidden field
+
+		$input = $xpath->query( '//input[@name="name"]' );
+		$this->assertEquals( 'Français', $input->item( 0 )->getAttribute( 'value' ) );
+
+		$input = $xpath->query( '//input[@name="locale"]' );
+		$this->assertEquals( 'fr_FR', $input->item( 0 )->getAttribute( 'value' ) );
+
+		$input = $xpath->query( '//input[@name="slug"]' );
+		$this->assertEquals( 'fr', $input->item( 0 )->getAttribute( 'value' ) );
+
+		$option = $xpath->query( '//select[@name="flag"]/option[.="France"]' );
+		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
 	}
 
 	function test_notice_for_objects_with_no_lang() {

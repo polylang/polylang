@@ -234,11 +234,12 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		self::$polylang->filters_post->post_language();
 		$form = ob_get_clean();
-		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
+		$doc = new DOMDocument();
+		$doc->loadHTML( $form );
+		$xpath = new DOMXpath( $doc );
 
-		$option = $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' );
-		$attributes = $option[0]->attributes();
-		$this->assertEquals( 'selected', $attributes['selected'] );
+		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
+		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
 
 		unset( $_GET );
 	}
@@ -259,17 +260,19 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		self::$polylang->filters_post->post_language();
 		$form = ob_get_clean();
-		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
+		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$doc = new DomDocument();
+		$doc->loadHTML( $form );
+		$xpath = new DOMXpath( $doc );
 
-		$option = $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' );
-		$attributes = $option[0]->attributes();
-		$this->assertEquals( 'selected', $attributes['selected'] );
-		$input = $xml->xpath( '//input[@name="post_tr_lang[en]"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( $en, (int) $attributes['value'] );
-		$input = $xml->xpath( '//input[@id="tr_lang_en"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( 'test', $attributes['value'] );
+		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
+		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
+
+		$input = $xpath->query( '//input[@name="post_tr_lang[en]"]' );
+		$this->assertEquals( $en, $input->item( 0 )->getAttribute( 'value' ) );
+
+		$input = $xpath->query( '//input[@id="tr_lang_en"]' );
+		$this->assertEquals( 'test', $input->item( 0 )->getAttribute( 'value' ) );
 
 		unset( $_GET );
 	}
@@ -292,29 +295,32 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		self::$polylang->filters_post->post_language();
 		$form = ob_get_clean();
-		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
+		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$doc = new DomDocument();
+		$doc->loadHTML( $form );
+		$xpath = new DOMXpath( $doc );
 
 		// language is French
-		$option = $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' );
-		$attributes = $option[0]->attributes();
-		$this->assertEquals( 'selected', $attributes['selected'] );
+		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
+		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
+
 		// Link to English post
-		$input = $xml->xpath( '//input[@name="post_tr_lang[en]"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( $en, (int) $attributes['value'] );
-		$input = $xml->xpath( '//input[@id="tr_lang_en"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( 'test', $attributes['value'] );
+		$input = $xpath->query( '//input[@name="post_tr_lang[en]"]' );
+		$this->assertEquals( $en, $input->item( 0 )->getAttribute( 'value' ) );
+
+		$input = $xpath->query( '//input[@id="tr_lang_en"]' );
+		$this->assertEquals( 'test', $input->item( 0 )->getAttribute( 'value' ) );
+
 		// No self link
-		$this->assertEmpty( $xml->xpath( '//input[@name="post_tr_lang[fr]"]' ) );
-		$this->assertEmpty( $xml->xpath( '//input[@id="tr_lang_fr"]' ) );
+		$this->assertEmpty( $xpath->query( '//input[@name="post_tr_lang[fr]"]' )->length );
+		$this->assertEmpty( $xpath->query( '//input[@id="tr_lang_fr"]' )->length );
+
 		// Link to empty German post
-		$input = $xml->xpath( '//input[@name="post_tr_lang[de]"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( 0, (int) $attributes['value'] );
-		$input = $xml->xpath( '//input[@id="tr_lang_de"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( '', $attributes['value'] );
+		$input = $xpath->query( '//input[@name="post_tr_lang[de]"]' );
+		$this->assertEquals( 0, (int) $input->item( 0 )->getAttribute( 'value' ) );
+
+		$input = $xpath->query( '//input[@id="tr_lang_de"]' );
+		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) );
 	}
 
 	function test_languages_meta_box_for_media() {
@@ -333,19 +339,23 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		self::$polylang->filters_post->post_language();
 		$form = ob_get_clean();
-		$xml = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
+		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$doc = new DomDocument();
+		$doc->loadHTML( $form );
+		$xpath = new DOMXpath( $doc );
 
 		// language is French
-		$option = $xml->xpath( 'div/select/option[.="' . $lang->name . '"]' );
-		$attributes = $option[0]->attributes();
-		$this->assertEquals( 'selected', $attributes['selected'] );
+		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
+		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
+
 		// Link to English post
-		$input = $xml->xpath( '//input[@name="media_tr_lang[en]"]' );
-		$attributes = $input[0]->attributes();
-		$this->assertEquals( $en, (int) $attributes['value'] );
+		$input = $xpath->query( '//input[@name="media_tr_lang[en]"]' );
+		$this->assertEquals( $en, $input->item( 0 )->getAttribute( 'value' ) );
 		$this->assertNotFalse( strpos( $form, 'Edit the translation in English' ) );
+
 		// No self link
-		$this->assertEmpty( $xml->xpath( '//input[@name="media_tr_lang[fr]"]' ) );
+		$this->assertEmpty( $xpath->query( '//input[@name="media_tr_lang[fr]"]' )->length );
+
 		// Link to empty German post
 		$this->assertNotFalse( strpos( $form, 'Add a translation in Deutsch' ) );
 	}

@@ -27,17 +27,6 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		unset( $_REQUEST, $_GET, $_POST );
 	}
 
-	/**
-	 * Allows to convert some html entities to xml entities to avoid breaking simplexml_load_string
-	 */
-	function convert_html_to_xml( $str ) {
-		$chars = array(
-			'&nbsp;'  => '&#160;',
-		);
-
-		return str_replace( array_keys( $chars ), $chars, $str );
-	}
-
 	function test_post_translations() {
 		$en = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $en, 'en' );
@@ -65,33 +54,35 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 
 		// First row French post
 		$row = $xml->response[0]->row->response_data;
-		$row = simplexml_load_string( $this->convert_html_to_xml( $row ) );
-		$attributes = $row->attributes();
-		$this->assertEquals( "post-$fr", $attributes['id'] );
+		$doc = new DomDocument();
+		$doc->loadHTML( $row );
+		$xpath = new DOMXpath( $doc );
 
-		$a = $row->xpath( '//a[@class="pll_icon_tick"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertContains( "post=$fr", (string) $attributes['href'] );
+		$tr = $xpath->query( '//tr' );
+		$this->assertEquals( "post-$fr", $tr->item( 0 )->getAttribute( 'id' ) );
 
-		$a = $row->xpath( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertContains( "post=$en", (string) $attributes['href'] );
+		$a = $xpath->query( '//a[@class="pll_icon_tick"]' );
+		$this->assertContains( "post=$fr", $a->item( 0 )->getAttribute( 'href' ) );
+
+		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
+		$this->assertContains( "post=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->assertEquals( $fr, ( string ) $xml->response[0]->row->supplemental->post_id );
 
 		// Second row English post
 		$row = $xml->response[1]->row->response_data;
-		$row = simplexml_load_string( $this->convert_html_to_xml( $row ) );
-		$attributes = $row->attributes();
-		$this->assertEquals( "post-$en", $attributes['id'] );
+		$doc = new DomDocument();
+		$doc->loadHTML( $row );
+		$xpath = new DOMXpath( $doc );
 
-		$a = $row->xpath( '//a[@class="pll_icon_tick"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertContains( "post=$en", (string) $attributes['href'] );
+		$tr = $xpath->query( '//tr' );
+		$this->assertEquals( "post-$en", $tr->item( 0 )->getAttribute( 'id' ) );
 
-		$a = $row->xpath( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertContains( "post=$fr", (string) $attributes['href'] );
+		$a = $xpath->query( '//a[@class="pll_icon_tick"]' );
+		$this->assertContains( "post=$en", $a->item( 0 )->getAttribute( 'href' ) );
+
+		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
+		$this->assertContains( "post=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->assertEquals( $en, ( string ) $xml->response[1]->row->supplemental->post_id );
 	}
@@ -124,33 +115,35 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 
 		// First row French term
 		$row = $xml->response[0]->row->response_data;
-		$row = simplexml_load_string( $this->convert_html_to_xml( $row ) );
-		$attributes = $row->attributes();
-		$this->assertEquals( "tag-$fr", $attributes['id'] );
+		$doc = new DomDocument();
+		$doc->loadHTML( $row );
+		$xpath = new DOMXpath( $doc );
 
-		$a = $row->xpath( '//a[@class="pll_icon_tick"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertContains( "tag_ID=$fr", (string) $attributes['href'] );
+		$tr = $xpath->query( '//tr' );
+		$this->assertEquals( "tag-$fr", $tr->item( 0 )->getAttribute( 'id' ) );
 
-		$a = $row->xpath( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertContains( "tag_ID=$en", (string) $attributes['href'] );
+		$a = $xpath->query( '//a[@class="pll_icon_tick"]' );
+		$this->assertContains( "tag_ID=$fr", $a->item( 0 )->getAttribute( 'href' ) );
+
+		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
+		$this->assertContains( "tag_ID=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->assertEquals( $fr, ( string ) $xml->response[0]->row->supplemental->term_id );
 
 		// Second row English term
 		$row = $xml->response[1]->row->response_data;
-		$row = simplexml_load_string( $this->convert_html_to_xml( $row ) );
-		$attributes = $row->attributes();
-		$this->assertEquals( "tag-$en", $attributes['id'] );
+		$doc = new DomDocument();
+		$doc->loadHTML( $row );
+		$xpath = new DOMXpath( $doc );
 
-		$a = $row->xpath( '//a[@class="pll_icon_tick"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertContains( "tag_ID=$en", (string) $attributes['href'] );
+		$tr = $xpath->query( '//tr' );
+		$this->assertEquals( "tag-$en", $tr->item( 0 )->getAttribute( 'id' ) );
 
-		$a = $row->xpath( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertContains( "tag_ID=$fr", (string) $attributes['href'] );
+		$a = $xpath->query( '//a[@class="pll_icon_tick"]' );
+		$this->assertContains( "tag_ID=$en", $a->item( 0 )->getAttribute( 'href' ) );
+
+		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
+		$this->assertContains( "tag_ID=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->assertEquals( $en, ( string ) $xml->response[1]->row->supplemental->term_id );
 	}

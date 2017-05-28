@@ -219,16 +219,20 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$GLOBALS['wp_actions']['template_redirect'] = 1;
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
-		$xml = simplexml_load_string( '<root>' . get_custom_logo() . '</root>' ); // add a root xml tag to get a valid xml doc
-		$a = $xml->xpath( '//a' );
-		$attributes = $a[0]->attributes();
-		$this->assertEquals( 'http://example.org/', $attributes['href'] );
+		$doc = new DomDocument();
+		$doc->loadHTML( get_custom_logo() );
+		$xpath = new DOMXpath( $doc );
+
+		$a = $xpath->query( '//a' );
+		$this->assertEquals( 'http://example.org/', $a->item( 0 )->getAttribute( 'href' ) );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		$xml = simplexml_load_string( '<root>' . get_custom_logo() . '</root>' ); // add a root xml tag to get a valid xml doc
-		$a = $xml->xpath( '//a' );
-		$attributes = $a[0]->attributes();
-		$this->assertEquals( 'http://example.org/fr/', $attributes['href'] );
+		$doc = new DomDocument();
+		$doc->loadHTML( get_custom_logo() );
+		$xpath = new DOMXpath( $doc );
+
+		$a = $xpath->query( '//a' );
+		$this->assertEquals( 'http://example.org/fr/', $a->item( 0 )->getAttribute( 'href' ) );
 
 		remove_theme_mod( 'custom_logo' );
 		unset( $GLOBALS['wp_actions']['template_redirect'] );

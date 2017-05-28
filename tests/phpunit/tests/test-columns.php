@@ -28,18 +28,6 @@ class Columns_Test extends PLL_UnitTestCase {
 		$_REQUEST = $_GET = $_POST = array();
 	}
 
-	/**
-	 * Allows to convert some html entities to xml entities to avoid breaking simplexml_load_string
-	 */
-	function convert_html_to_xml( $str ) {
-		$chars = array(
-			'&mdash;'  => '&#8212;',
-			'&ndash;'  => '&#8211;',
-		);
-
-		return str_replace( array_keys( $chars ), $chars, $str );
-	}
-
 	function test_post_with_no_language() {
 		$post_id = $this->factory->post->create();
 
@@ -250,25 +238,21 @@ class Columns_Test extends PLL_UnitTestCase {
 		ob_start();
 		$list_table->inline_edit();
 		$form = ob_get_clean();
-
-		$xml = simplexml_load_string( $this->convert_html_to_xml( $form ) );
+		$doc = new DomDocument();
+		$doc->loadHTML( $form );
+		$xpath = new DOMXpath( $doc );
 
 		// Quick Edit
-		$options = $xml->xpath( '//tr[@id="inline-edit"]/td/fieldset/div/label/select[@name="inline_lang_choice"]/option' );
-		$this->assertCount( 2, $options );
-		$attributes = $options[0]->attributes();
-		$this->assertEquals( 'en', $attributes['value'] );
-		$attributes = $options[1]->attributes();
-		$this->assertEquals( 'fr', $attributes['value'] );
+		$options = $xpath->query( '//tr[@id="inline-edit"]/td/fieldset/div/label/select[@name="inline_lang_choice"]/option' );
+		$this->assertEquals( 2, $options->length );
+		$this->assertEquals( 'en', $options->item( 0 )->getAttribute( 'value' ) );
+		$this->assertEquals( 'fr', $options->item( 1 )->getAttribute( 'value' ) );
 
 		// Bulk Edit
-		$options = $xml->xpath( '//tr[@id="bulk-edit"]/td/fieldset/div/label/select[@name="inline_lang_choice"]/option' );
-		$this->assertCount( 3, $options );
-		$attributes = $options[0]->attributes();
-		$this->assertEquals( '-1', $attributes['value'] );
-		$attributes = $options[1]->attributes();
-		$this->assertEquals( 'en', $attributes['value'] );
-		$attributes = $options[2]->attributes();
-		$this->assertEquals( 'fr', $attributes['value'] );
+		$options = $xpath->query( '//tr[@id="bulk-edit"]/td/fieldset/div/label/select[@name="inline_lang_choice"]/option' );
+		$this->assertEquals( 3, $options->length );
+		$this->assertEquals( '-1', $options->item( 0 )->getAttribute( 'value' ) );
+		$this->assertEquals( 'en', $options->item( 1 )->getAttribute( 'value' ) );
+		$this->assertEquals( 'fr', $options->item( 2 )->getAttribute( 'value' ) );
 	}
 }

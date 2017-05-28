@@ -60,10 +60,12 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 
 		// translations
 		$form = $xml->response[0]->translations->response_data;
-		$form = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
+		$doc = new DomDocument();
+		$doc->loadHTML( $form );
+		$xpath = new DOMXpath( $doc );
 
-		$this->assertNotEmpty( $form->xpath( '//input[@id="tr_lang_en"]' ) );
-		$this->assertEmpty( $form->xpath( '//input[@id="tr_lang_fr"]' ) );
+		$this->assertNotEmpty( $xpath->query( '//input[@id="tr_lang_en"]' )->length );
+		$this->assertEmpty( $xpath->query( '//input[@id="tr_lang_fr"]' )->length );
 
 		// parent dropdown
 		$dropdown = $xml->response[1]->parent->response_data;
@@ -109,10 +111,12 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 
 		// translations
 		$form = $xml->response[0]->translations->response_data;
-		$form = simplexml_load_string( "<root>$form</root>" ); // add a root xml tag to get a valid xml doc
+		$doc = new DomDocument();
+		$doc->loadHTML( $form );
+		$xpath = new DOMXpath( $doc );
 
-		$this->assertNotEmpty( $form->xpath( '//input[@id="tr_lang_en"]' ) );
-		$this->assertEmpty( $form->xpath( '//input[@id="tr_lang_fr"]' ) );
+		$this->assertNotEmpty( $xpath->query( '//input[@id="tr_lang_en"]' )->length );
+		$this->assertEmpty( $xpath->query( '//input[@id="tr_lang_fr"]' )->length );
 
 		// tag cloud
 		$cloud = $xml->response[1]->tag_cloud->response_data;

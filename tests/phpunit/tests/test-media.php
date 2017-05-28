@@ -58,10 +58,13 @@ class Media_Test extends PLL_UnitTestCase {
 
 		$fields = get_attachment_fields_to_edit( $fr );
 		$this->assertEquals( 'Language', $fields['language']['label'] );
-		$select = simplexml_load_string( $fields['language']['html'] );
-		$selected = $select->xpath( 'option[@selected="selected"]' );
-		$attributes = $selected[0]->attributes();
-		$this->assertEquals( 'fr', $attributes['value'] );;
+
+		$doc = new DomDocument();
+		$doc->loadHTML( $fields['language']['html'] );
+		$xpath = new DOMXpath( $doc );
+
+		$selected = $xpath->query( '//option[@selected="selected"]' );
+		$this->assertEquals( 'fr', $selected->item( 0 )->getAttribute( 'value' ) );;
 
 		// Don't use on the Edit Media panel
 		$GLOBALS['pagenow'] = 'post.php';

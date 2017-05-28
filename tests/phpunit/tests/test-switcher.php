@@ -101,14 +101,16 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 		$args = array( 'echo' => 0 );
 		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
-		$xml = simplexml_load_string( "<root>$switcher</root>" ); // Add a root xml tag to get a valid xml doc
+		$switcher = mb_convert_encoding( $switcher, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$doc = new DomDocument();
+		$doc->loadHTML( $switcher );
+		$xpath = new DOMXpath( $doc );
 
-		$a = $xml->xpath( 'li/a[.="English"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertEquals( get_permalink( $en ), $attributes['href'] );
-		$a = $xml->xpath( 'li/a[.="Français"]' );
-		$attributes = $a[0]->attributes();
-		$this->assertEquals( get_permalink( $fr ), $attributes['href'] );
+		$a = $xpath->query( '//li/a[.="English"]' );
+		$this->assertEquals( get_permalink( $en ), $a->item( 0 )->getAttribute( 'href' ) );
+
+		$a = $xpath->query( '//li/a[.="Français"]' );
+		$this->assertEquals( get_permalink( $fr ), $a->item( 0 )->getAttribute( 'href' ) );
 
 		// Test echo option
 		$args = array( 'echo' => 1 );
@@ -139,12 +141,14 @@ class Switcher_Test extends PLL_UnitTestCase {
 			'echo'     => 0,
 		);
 		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
-		$xml = simplexml_load_string( "<root>$switcher</root>" ); // Add a root xml tag to get a valid xml doc
+		$switcher = mb_convert_encoding( $switcher, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$doc = new DomDocument();
+		$doc->loadHTML( $switcher );
+		$xpath = new DOMXpath( $doc );
 
-		$option = $xml->xpath( 'select/option[.="English"]' );
-		$attributes = $option[0]->attributes();
-		$this->assertEquals( 'selected', $attributes['selected'] );
-		$this->assertNotEmpty( $xml->xpath( 'select/option[.="Français"]' ) );
-		$this->assertNotEmpty( $xml->xpath( 'script' ) );
+		$option = $xpath->query( '//select/option[.="English"]' );
+		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
+		$this->assertNotEmpty( $xpath->query( '//select/option[.="Français"]' )->length );
+		$this->assertNotEmpty( $xpath->query( '//script' )->length );
 	}
 }
