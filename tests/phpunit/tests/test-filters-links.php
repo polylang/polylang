@@ -204,6 +204,10 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 	}
 
 	function test_get_custom_logo() {
+		if ( ! function_exists( 'get_custom_logo' ) ) {
+			$this->markTestSkipped();
+		}
+
 		// Setup logo
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$contents = file_get_contents( $filename );
