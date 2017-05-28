@@ -244,13 +244,13 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_sticky( $to ) );
 	}
 
+	function filter_theme_page_templates() {
+		return array( 'templates/test.php' => 'Test Template Page' );
+	}
+
 	function test_save_page_with_sync() {
 		$GLOBALS['post_type'] = 'page';
-		$stylesheet = get_option( 'stylesheet' ); // save default theme
-		switch_theme( 'twentyfourteen' ); // Twenty Fifteen and Twenty Sixteen have no template
-		if ( $templates = get_page_templates() ) {
-			$template = reset( $templates );
-		}
+		add_filter( 'theme_page_templates', array( $this, 'filter_theme_page_templates' ) ); // Allow to test templates with themes without templates
 
 		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
@@ -272,9 +272,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
 
-		if ( isset( $template ) ) {
-			add_post_meta( $from, '_wp_page_template', $template );
-		}
+		add_post_meta( $from, '_wp_page_template', 'templates/test.php' );
 
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
@@ -287,15 +285,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$polylang->model->post->get_translations( $from ) );
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
 		$this->assertEquals( 12, $page->menu_order );
-
-		if ( isset( $template ) ) {
-			$this->assertEquals( $template, get_page_template_slug( $to ) );
-		} else {
-			$this->markTestIncomplete();
-		}
+		$this->assertEquals( 'templates/test.php', get_page_template_slug( $to ) );
 
 		unset( $GLOBALS['post_type'] );
-		switch_theme( $stylesheet );
 	}
 
 	function test_save_term_with_sync_in_post() {
