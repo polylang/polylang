@@ -20,6 +20,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 
 		self::$polylang->options['hide_default'] = 1;
 		self::$polylang->options['force_lang'] = 0;
+		self::$polylang->options['browser'] = 0;
 
 		// switch to pretty permalinks
 		$wp_rewrite->init();
@@ -83,19 +84,18 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	function test_home_latest_posts() {
-
-		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
-
 		$fr = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/fr/' ) );
 		$this->assertEquals( 'fr' , self::$polylang->curlang->slug );
+	}
 
-		$this->markTestIncomplete(); // FIXME
+	function test_home_latest_posts_with_hide_default() {
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
 
-		$this->go_to( home_url( '/' ) ); // FIXME causes an error
+		$this->go_to( home_url( '/' ) );
 		$this->assertEquals( 'en' , self::$polylang->curlang->slug );
 	}
 
