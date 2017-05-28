@@ -367,8 +367,6 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	function test_create_post_translation_with_sync_post_date() {
-		$this->markTestSkipped(); // FIXME database error when updating date in PLL_Admin_Sync::save_post
-
 		// source post
 		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$polylang->model->post->set_language( $from, 'en' );
@@ -384,6 +382,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		);
 
 		$to = $this->factory->post->create();
+		clean_post_cache( $to ); // Necessary before calling get_post() below otherwise we don't get the synchronized date
 
 		$this->assertEquals( get_post( $from )->post_date, get_post( $to )->post_date );
 		$this->assertEquals( get_post( $from )->post_date_gmt, get_post( $to )->post_date_gmt );
