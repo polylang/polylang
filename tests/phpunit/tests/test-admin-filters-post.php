@@ -151,6 +151,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_post_with_tags() {
+		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang );
+
 		$en = $this->factory->tag->create( array( 'name' => 'test' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
 
@@ -168,10 +170,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertFalse( is_object_in_term( $post_id, 'post_tag' , $en ) );
 		$this->assertTrue( is_object_in_term( $post_id, 'post_tag' , $fr ) );
 
-		$this->markTestIncomplete(); // FIXME does not work
 		$new = get_term_by( 'name', 'new', 'post_tag' );
 		$this->assertTrue( is_object_in_term( $post_id, 'post_tag' , $new ) );
-		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $new )->slug );
+		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $new->term_id )->slug );
 	}
 
 	function test_delete_post() {
