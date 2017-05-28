@@ -204,8 +204,6 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 	}
 
 	function test_get_custom_logo() {
-		$this->markTestSkipped(); // FIXME the test breaks a WPSEO test using template_redirect_action too
-
 		// Setup logo
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$contents = file_get_contents( $filename );
