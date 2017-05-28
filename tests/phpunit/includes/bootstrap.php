@@ -19,8 +19,9 @@ require dirname( __FILE__ ) . '/testcase-ajax.php';
 require dirname( __FILE__ ) . '/testcase-canonical.php';
 require dirname( __FILE__ ) . '/testcase-domain.php';
 
-if ( defined( 'POLYLANG_PRO' ) && POLYLANG_PRO ) {
-	printf( 'Testing Polylang Pro %s with WordPress %s...' . PHP_EOL, POLYLANG_VERSION, $GLOBALS['wp_version'] );
-} else {
-	printf( 'Testing Polylang %s with WordPress %s...' . PHP_EOL, POLYLANG_VERSION, $GLOBALS['wp_version'] );
-}
+printf(
+	'Testing Polylang%1$s %2$s with WordPress %3$s...' . PHP_EOL,
+	defined( 'POLYLANG_PRO' ) && POLYLANG_PRO ? ' Pro' : '',
+	POLYLANG_VERSION,
+	$GLOBALS['wp_version']
+);
