@@ -54,16 +54,12 @@ class Settings_Test extends PLL_UnitTestCase {
 	}
 
 	function test_notice_for_objects_with_no_lang() {
-		// FIXME this test works in standalone but not in the serie
-		// Admin_Filters_Post_Test and Admin_Filters_Term_Test are braking it
-		$this->markTestSkipped();
-
 		$_GET['page'] = 'mlang';
 		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
 		set_current_screen();
 
 		self::$polylang = new PLL_Settings( self::$polylang->links_model );
-		do_action( 'load-settings_page_mlang' );
+		do_action( 'load-toplevel_page_mlang' );
 
 		ob_start();
 		$id = $this->factory->post->create();
