@@ -19,6 +19,12 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		}
 	}
 
+	function tearDown() {
+		parent::tearDown();
+
+		$_POST = $_REQUEST = array();
+	}
+
 	function test_nav_menu_locations() {
 		// get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
@@ -268,5 +274,34 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
 
 		unset( $GLOBALS['polylang'] );
+	}
+
+	function test_update_nav_menu_item() {
+		wp_set_current_user( 1 );
+		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$nav_menu->admin_init(); // Setup filters
+
+		$args = array(
+			'menu-item-type'   => 'custom',
+			'menu-item-title'  => 'Language switcher',
+			'menu-item-url'    => '#pll_switcher',
+			'menu-item-status' => 'publish',
+		);
+
+		$menu_en = wp_create_nav_menu( 'menu_en' );
+		$item_id = wp_update_nav_menu_item( $menu_en, 0, $args );
+
+		$_REQUEST = $_POST = array(
+			'menu-item-url'         => array( $item_id => '#pll_switcher' ),
+			'menu-item-show_names'  => array( $item_id => 1 ),
+			'menu-item-show_flags'  => array( $item_id => 1 ),
+			'menu-item-pll-detect'  => array( $item_id => 1 ),
+			'update-nav-menu-nonce' => wp_create_nonce( 'update-nav_menu' ),
+		);
+
+		wp_update_nav_menu_item( $menu_en, $item_id, $args );
+
+		$expected = array( 'hide_if_no_translation' => 0, 'hide_current' => 0,'force_home' => 0 ,'show_flags' => 1 ,'show_names' => 1, 'dropdown' => 0 );
+		$this->assertEqualSets( $expected, get_post_meta( $item_id, '_pll_menu_item', true ) );
 	}
 }
