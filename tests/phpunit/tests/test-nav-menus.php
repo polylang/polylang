@@ -304,4 +304,19 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$expected = array( 'hide_if_no_translation' => 0, 'hide_current' => 0,'force_home' => 0 ,'show_flags' => 1 ,'show_names' => 1, 'dropdown' => 0 );
 		$this->assertEqualSets( $expected, get_post_meta( $item_id, '_pll_menu_item', true ) );
 	}
+
+	function test_language_switcher_metabox() {
+		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$nav_menu->admin_init(); // Setup filters
+
+		ob_start();
+		do_accordion_sections( 'nav-menus', 'side', null );
+		$out = ob_get_clean();
+
+		$doc = new DomDocument();
+		$doc->loadHTML( $out );
+		$xpath = new DOMXpath( $doc );
+
+		$this->assertNotEmpty( $xpath->query( '//input[@value="#pll_switcher"]' )->length );
+	}
 }
