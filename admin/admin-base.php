@@ -27,7 +27,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Setup js scripts and css styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ) );
+		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); //  High priority in case an ajax request is sent by an immediately invoked function
 
 		// Lingotek
 		if ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
