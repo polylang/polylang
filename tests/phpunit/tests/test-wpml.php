@@ -36,7 +36,45 @@ class WPML_Test extends PLL_UnitTestCase {
 		_unregister_post_type( 'acf' );
 	}
 
-	// FIXME: wpml_active_languages
+	function test_wpml_active_languages() {
+		self::$polylang->model->post->register_taxonomy(); // Needed otherwise posts are not counted
+
+		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+
+		self::$polylang->model->clean_languages_cache(); // For some reason (global state?) we need to reset the posts count
+
+		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		self::$polylang->init();
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$this->go_to( home_url( '?page_id=' . $fr ) );
+
+		$languages = apply_filters( 'wpml_active_languages', null );
+
+		$expected = array (
+			'id' => self::$polylang->model->get_language( 'fr' )->term_id,
+			'active' => 1,
+			'native_name' => 'Français',
+			'missing' => 0,
+			'translated_name' => '',
+			'language_code' => 'fr',
+			'country_flag_url' => plugins_url( '/flags/fr.png', POLYLANG_FILE ),
+			'url' => home_url( "?page_id={$fr}&lang=fr" ),
+		);
+
+		$this->assertCount( 2, $languages );
+		$this->assertEqualSets( $expected, $languages['fr'] );
+		$this->assertEquals( 1, $languages['en']['missing'] );
+
+		$languages = apply_filters( 'wpml_active_languages', null, array( 'skip_missing' => 1 ) );
+
+		$this->assertCount( 1, $languages );
+		$this->assertNotEmpty( $languages['fr'] );
+	}
 
 	function test_wpml_current_language() {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );

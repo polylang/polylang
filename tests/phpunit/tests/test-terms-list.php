@@ -25,6 +25,7 @@ class Terms_List_Test extends PLL_UnitTestCase {
 		parent::tearDown();
 
 		$_REQUEST = $_GET = $_POST = array();
+		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'] );
 	}
 
 	function test_term_list_with_admin_language_filter() {
