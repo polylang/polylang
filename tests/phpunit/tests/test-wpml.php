@@ -87,6 +87,8 @@ class WPML_Test extends PLL_UnitTestCase {
 	function test_wpml_default_language() {
 		self::$polylang->options['default_lang'] = 'fr';
 		$this->assertEquals( 'fr', apply_filters( 'wpml_default_language', null ) );
+		$this->assertEquals( 'fr', icl_get_default_language() ); // Legacy
+		$this->assertEquals( 'fr', wpml_get_default_language() ); // Legacy
 	}
 
 	function test_wpml_add_language_form_field() {
@@ -135,6 +137,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 
 		$this->assertEquals( 'http://example.org/?lang=fr', apply_filters( 'wpml_home_url', null ) );
+		$this->assertEquals( 'http://example.org/?lang=fr', icl_get_home_url() ); // Legacy
 	}
 
 	function test_wpml_element_link() {
@@ -160,37 +163,53 @@ class WPML_Test extends PLL_UnitTestCase {
 		self::$polylang->filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		self::$polylang->filters_links->cache->method( 'get' )->willReturn( false );
 
-		$id = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test' ) );
-		self::$polylang->model->post->set_language( $id, 'en' );
+		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test' ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
 
-		$cat = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $cat, 'en' );
-
-		ob_start();
-		apply_filters( 'wpml_element_link', $id );
-		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', ob_get_clean() );
+		$tag = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
+		self::$polylang->model->term->set_language( $tag, 'en' );
 
 		ob_start();
-		apply_filters( 'wpml_element_link', $id, 'page', 'Custom link' );
+		$link = apply_filters( 'wpml_element_link', $en );
+		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', ob_get_clean() ); // default echo true
+		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', $link );
+
+		ob_start();
+		apply_filters( 'wpml_element_link', $en, 'page', 'Custom link' );
 		$this->assertEquals( '<a href="http://example.org/en/test/">Custom link</a>', ob_get_clean() );
 
 		ob_start();
-		apply_filters( 'wpml_element_link', $id, 'page', '', array( 'category' => 'foo', 'bar' => 'baz' ) );
+		apply_filters( 'wpml_element_link', $en, 'page', '', array( 'category' => 'foo', 'bar' => 'baz' ) );
 		$this->assertEquals( '<a href="http://example.org/en/test/?category=foo&#038;bar=baz">test</a>', ob_get_clean() );
 
 		ob_start();
-		apply_filters( 'wpml_element_link', $id, 'page', '', '', 'contact' );
+		apply_filters( 'wpml_element_link', $en, 'page', '', '', 'contact' );
 		$this->assertEquals( '<a href="http://example.org/en/test/#contact">test</a>', ob_get_clean() );
 
 		ob_start();
-		apply_filters( 'wpml_element_link', $cat, 'category' );
-		$this->assertEquals( '<a href="http://example.org/en/category/test/">test</a>', ob_get_clean() );
+		$link = apply_filters( 'wpml_element_link', $en, '', '', '', false );
+		$this->assertEquals( '', ob_get_clean() ); // echo false
+
+		ob_start();
+		apply_filters( 'wpml_element_link', $tag, 'tag' );
+		$this->assertEquals( '<a href="http://example.org/en/tag/test/">test</a>', ob_get_clean() );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 
 		ob_start();
-		apply_filters( 'wpml_element_link', $id, 'page', '', '', '', false );
-		$this->assertEquals( '', ob_get_clean() );
+		$link = apply_filters( 'wpml_element_link', $en );
+		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', ob_get_clean() ); // return_original_if_missing true
+
+		$link = apply_filters( 'wpml_element_link', $en, 'page', '', '', '', false, false );
+		$this->assertEquals( '', $link ); // return_original_if_missing false
+
+		$fr = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test fr' ) );
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+
+		ob_start();
+		apply_filters( 'wpml_element_link', $en, 'page', '', '', '' ); // Translation
+		$this->assertEquals( '<a href="http://example.org/fr/test-fr/">test fr</a>', ob_get_clean() );
 	}
 
 	function test_wpml_object_id() {
