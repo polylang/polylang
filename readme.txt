@@ -3,8 +3,8 @@ Contributors: Chouby
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
-Tested up to: 4.7
-Stable tag: 2.1.4
+Tested up to: 4.8
+Stable tag: 2.1.5
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,18 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.1.5 (2017-05-31) =
+
+* Add compatibility with new media widgets introduced in WP 4.8
+* Removing the language information in URL for the default language is now default
+* Update plugin updater class to 1.6.12
+* Pro: fix PHP notices when duplicating the content
+* Fix: test existence of `twentyseventeen_panel_count` instead of relying only on the active template
+* Fix: set current property to false when removing the current-menu-item class #134 props @mowar
+* Fix PHP notice when editing a term without language
+* Fix possible PHP notice when deleting a category
+* Fix fatal error with Gantry 5
 
 = 2.1.4 (2017-05-16) =
 
