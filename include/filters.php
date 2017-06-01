@@ -31,6 +31,9 @@ class PLL_Filters {
 		// Converts the locale to a valid W3C locale
 		add_filter( 'language_attributes', array( $this, 'language_attributes' ) );
 
+		// Adds prefixed and sanitized locale to body classes
+		add_filter( 'body_class', array( $this, 'body_class' ) );
+
 		// Prevents deleting all the translations of the default category
 		add_filter( 'map_meta_cap', array( $this, 'fix_delete_default_category' ), 10, 4 );
 
@@ -187,6 +190,20 @@ class PLL_Filters {
 		return $output;
 	}
 
+	/**
+	 * Adds prefixed and sanitized locale to body classes
+	 *
+	 * @since 2.1.2
+	 *
+	 * @param array $classes An array of body classes.
+	 * @return array
+	 */
+	public function body_class( $classes ) {
+		if ( $language = $this->model->get_language( get_locale() ) ) {
+			$classes[] = 'pll-' . str_replace( '_', '-', sanitize_title_with_dashes( $language->get_locale( 'raw' ) ) );
+		}
+		return $classes;
+	}
 
 	/**
 	 * Prevents deleting all the translations of the default category
