@@ -126,8 +126,8 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 						break;
 
 					case 'no_activations_left':
-						/* translators: %s are html tags */
 						$message = sprintf(
+							/* translators: %s are html tags */
 							__( 'Your license key has reached its activation limit. %sView possible upgrades%s now.', 'polylang' ),
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'

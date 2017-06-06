@@ -372,7 +372,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		);
 
 		$_GET['action'] = 'locations';
-		$_REQUEST[ '_wpnonce' ] = wp_create_nonce( 'save-menu-locations' );
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'save-menu-locations' );
 
 		$mods = set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$options = get_option( 'polylang' );

@@ -67,7 +67,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
 		$this->assertContains( "post=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
-		$this->assertEquals( $fr, ( string ) $xml->response[0]->row->supplemental->post_id );
+		$this->assertEquals( $fr, (string) $xml->response[0]->row->supplemental->post_id );
 
 		// Second row English post
 		$row = $xml->response[1]->row->response_data;
@@ -84,7 +84,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
 		$this->assertContains( "post=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
-		$this->assertEquals( $en, ( string ) $xml->response[1]->row->supplemental->post_id );
+		$this->assertEquals( $en, (string) $xml->response[1]->row->supplemental->post_id );
 	}
 
 	function test_term_translations() {
@@ -128,7 +128,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
 		$this->assertContains( "tag_ID=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
-		$this->assertEquals( $fr, ( string ) $xml->response[0]->row->supplemental->term_id );
+		$this->assertEquals( $fr, (string) $xml->response[0]->row->supplemental->term_id );
 
 		// Second row English term
 		$row = $xml->response[1]->row->response_data;
@@ -145,6 +145,6 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
 		$this->assertContains( "tag_ID=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
-		$this->assertEquals( $en, ( string ) $xml->response[1]->row->supplemental->term_id );
+		$this->assertEquals( $en, (string) $xml->response[1]->row->supplemental->term_id );
 	}
 }

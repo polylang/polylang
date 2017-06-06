@@ -55,7 +55,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		$languages = apply_filters( 'wpml_active_languages', null );
 
-		$expected = array (
+		$expected = array(
 			'id' => self::$polylang->model->get_language( 'fr' )->term_id,
 			'active' => 1,
 			'native_name' => 'Français',
