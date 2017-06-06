@@ -108,7 +108,7 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $post_id
 	 */
 	public function post_column( $column, $post_id ) {
-		$inline = defined( 'DOING_AJAX' ) && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action'];
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action'];
 		$lang = $inline ? $this->model->get_language( $_POST['inline_lang_choice'] ) : $this->model->post->get_language( $post_id );
 
 		if ( false === strpos( $column, 'language_' ) || ! $lang ) {
@@ -213,7 +213,7 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $term_id
 	 */
 	public function term_column( $out, $column, $term_id ) {
-		$inline = defined( 'DOING_AJAX' ) && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action'];
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action'];
 		if ( false === strpos( $column, 'language_' ) || ! ( $lang = $inline ? $this->model->get_language( $_POST['inline_lang_choice'] ) : $this->model->term->get_language( $term_id ) ) ) {
 			return $out;
 		}

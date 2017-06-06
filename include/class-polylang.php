@@ -107,7 +107,7 @@ class Polylang {
 		// special test for customize_save done in frontend but for which we want to load the admin
 		if ( ! defined( 'PLL_AJAX_ON_FRONT' ) ) {
 			$in = isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'upload-attachment', 'customize_save' ) );
-			define( 'PLL_AJAX_ON_FRONT', defined( 'DOING_AJAX' ) && DOING_AJAX && empty( $_REQUEST['pll_ajax_backend'] ) && ! $in );
+			define( 'PLL_AJAX_ON_FRONT', wp_doing_ajax() && empty( $_REQUEST['pll_ajax_backend'] ) && ! $in );
 		}
 
 		// admin

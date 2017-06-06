@@ -226,7 +226,7 @@ class PLL_Admin_Base extends PLL_Base {
 		}
 
 		// Ajax
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! empty( $_REQUEST['lang'] ) ) {
+		if ( wp_doing_ajax() && ! empty( $_REQUEST['lang'] ) ) {
 			$this->curlang = $this->model->get_language( $_REQUEST['lang'] );
 		}
 	}
@@ -245,7 +245,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
-		if ( ! defined( 'DOING_AJAX' ) && ! empty( $_GET['lang'] ) && ! is_numeric( $_GET['lang'] ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) {
+		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( $_GET['lang'] ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) {
 			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( $_GET['lang'] ) ) ? $lang->slug : '' );
 		}
 
