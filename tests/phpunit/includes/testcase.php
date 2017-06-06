@@ -19,6 +19,12 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 		self::delete_all_languages();
 	}
 
+	function setUp() {
+		parent::setUp();
+
+		add_filter( 'wp_doing_ajax', '__return_false' );
+	}
+
 	function tearDown() {
 		unset( $GLOBALS['wp_settings_errors'] );
 		self::$polylang->model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient
