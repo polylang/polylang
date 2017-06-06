@@ -2,6 +2,7 @@
 
 /**
  * Define wordpress.com VIP equivalent of uncached functions
+ * and WordPress backward compatibility functions
  */
 
 if ( ! function_exists( 'wpcom_vip_get_page_by_title' ) ) {
@@ -64,5 +65,20 @@ if ( ! function_exists( 'wpcom_vip_get_term_link' ) ) {
 	 */
 	function wpcom_vip_get_term_link( $term, $taxonomy = '' ) {
 		return get_term_link( $term, $taxonomy );
+	}
+}
+
+if ( ! function_exists( 'wp_doing_ajax' ) ) {
+	/**
+	 * Determines whether the current request is a WordPress Ajax request.
+	 * Backward compatibility function for WP < 4.7
+	 *
+	 * @since 2.2
+	 *
+	 * @return bool True if it's a WordPress Ajax request, false otherwise.
+	 */
+	function wp_doing_ajax() {
+		/** This filter is documented in wp-includes/load.php */
+		return apply_filters( 'wp_doing_ajax', defined( 'DOING_AJAX' ) && DOING_AJAX );
 	}
 }

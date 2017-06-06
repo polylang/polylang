@@ -27,7 +27,7 @@ class Polylang {
 	 * @since 0.1
 	 */
 	public function __construct() {
-		require_once PLL_INC . '/functions-wpcom-vip.php'; // VIP functions
+		require_once PLL_INC . '/functions.php'; // VIP functions
 		spl_autoload_register( array( $this, 'autoload' ) ); // autoload classes
 
 		$install = new PLL_Install( POLYLANG_BASENAME );
