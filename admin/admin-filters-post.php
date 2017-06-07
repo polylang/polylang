@@ -148,7 +148,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 			foreach ( $taxonomies as $tax ) {
 				$tax = get_taxonomy( $tax );
-				if ( ! empty( $qv[ $tax->query_var ] ) ) {
+				if ( ! empty( $qvars[ $tax->query_var ] ) ) {
 					return;
 				}
 			}

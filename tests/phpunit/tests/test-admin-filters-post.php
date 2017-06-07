@@ -382,5 +382,56 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$posts = get_posts( array( 'fields' => 'ids', 'lang' => '' ) );
 		$this->assertEqualSets( array( $en, $fr, $de ), $posts );
+
+		$posts = get_posts( array( 'fields' => 'ids', 'lang' => 'all' ) );
+		$this->assertEqualSets( array( $en, $fr, $de ), $posts );
+	}
+
+	function test_get_posts_with_query_var() {
+		self::$polylang->options['taxonomies'] = array(
+			'trtax' => 'trtax',
+		);
+
+		register_taxonomy( 'trtax', 'post' ); // translated custom tax
+
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		$fr = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+
+		$tag = $this->factory->tag->create();
+		self::$polylang->model->term->set_language( $tag, 'fr' );
+		wp_set_post_terms( $fr, array( $tag ), 'post_tag' );
+
+		$tax = $this->factory->term->create( array( 'taxonomy' => 'trtax' ) );
+		self::$polylang->model->term->set_language( $tax, 'fr' );
+		wp_set_post_terms( $fr, array( $tax ), 'trtax' );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+
+		$posts = get_posts( array( 'fields' => 'ids' ) );
+		$this->assertEquals( $en, reset( $posts ) );
+
+		$posts = get_posts( array( 'fields' => 'ids', 'post__in' => array( $fr ) ) );
+		$this->assertEquals( $fr, reset( $posts ) );
+
+		$posts = get_posts( array( 'fields' => 'ids', 'tag__in' => array( $tag ) ) );
+		$this->assertEquals( $fr, reset( $posts ) );
+
+		$tax_query[] = array(
+			'taxonomy' => 'post_tag',
+			'field'    => 'term_id',
+			'terms'    => $tag,
+			'operator' => 'IN',
+		);
+
+		$posts = get_posts( array( 'fields' => 'ids', 'tax_query' => $tax_query ) );
+		$this->assertEquals( $fr, reset( $posts ) );
+
+		// Custom tax
+		$tax = get_term( $tax );
+		$posts = get_posts( array( 'fields' => 'ids', 'trtax' => $tax->slug ) );
+		$this->assertEquals( $fr, reset( $posts ) );
 	}
 }
