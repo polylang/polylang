@@ -44,16 +44,6 @@ class PLL_WPML_Config {
 	public function init() {
 		$this->xmls = array();
 
-		// Theme
-		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-			$this->xmls[ get_template() ] = $xml;
-		}
-
-		// Child theme
-		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-			$this->xmls[ get_stylesheet() ] = $xml;
-		}
-
 		// Plugins
 		// Don't forget sitewide active plugins thanks to Reactorshop http://wordpress.org/support/topic/polylang-and-yoast-seo-plugin/page/2?replies=38#post-4801829
 		$plugins = ( is_multisite() && $sitewide_plugins = get_site_option( 'active_sitewide_plugins' ) ) && is_array( $sitewide_plugins ) ? array_keys( $sitewide_plugins ) : array();
@@ -63,6 +53,16 @@ class PLL_WPML_Config {
 			if ( file_exists( $file = WP_PLUGIN_DIR . '/' . dirname( $plugin ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
 				$this->xmls[ dirname( $plugin ) ] = $xml;
 			}
+		}
+
+		// Theme
+		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+			$this->xmls[ get_template() ] = $xml;
+		}
+
+		// Child theme
+		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+			$this->xmls[ get_stylesheet() ] = $xml;
 		}
 
 		// Custom
