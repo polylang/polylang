@@ -38,7 +38,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	 */
 	public function add_language_to_link( $url, $lang ) {
 		if ( ! empty( $lang ) && ! empty( $this->hosts[ $lang->slug ] ) ) {
-			$url = str_replace( '://' . parse_url( $this->home, PHP_URL_HOST ), '://' . $this->hosts[ $lang->slug ], $url );
+			$url = preg_replace( '#:\/\/(' . parse_url( $this->home, PHP_URL_HOST ) . ')($|\/.*)#', '://' . $this->hosts[ $lang->slug ] . "$2", $url );
 		}
 		return $url;
 	}
@@ -54,7 +54,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	 */
 	public function remove_language_from_link( $url ) {
 		if ( ! empty( $this->hosts ) ) {
-			$url = preg_replace( '#:\/\/(' . implode( '|', $this->hosts ) . ')#', '://' . parse_url( $this->home, PHP_URL_HOST ), $url );
+			$url = preg_replace( '#:\/\/(' . implode( '|', $this->hosts ) . ')($|\/.*)#', '://' . parse_url( $this->home, PHP_URL_HOST ) . "$2", $url );
 		}
 		return $url;
 	}

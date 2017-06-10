@@ -26,6 +26,7 @@ abstract class PLL_Static_Pages {
 		add_filter( 'page_link', array( $this, 'page_link' ), 20, 2 );
 
 		// clean the languages cache when editing page of front, page for posts
+		add_action( 'update_option_show_on_front', array( $this->model, 'clean_languages_cache' ) );
 		add_action( 'update_option_page_on_front', array( $this->model, 'clean_languages_cache' ) );
 		add_action( 'update_option_page_for_posts', array( $this->model, 'clean_languages_cache' ) );
 
@@ -75,9 +76,11 @@ abstract class PLL_Static_Pages {
 	 * @param object $model
 	 */
 	public static function pll_languages_list( $languages, $model ) {
-		foreach ( $languages as $k => $language ) {
-			$languages[ $k ]->page_on_front = $model->post->get( get_option( 'page_on_front' ), $language );
-			$languages[ $k ]->page_for_posts = $model->post->get( get_option( 'page_for_posts' ), $language );
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			foreach ( $languages as $k => $language ) {
+				$languages[ $k ]->page_on_front = $model->post->get( get_option( 'page_on_front' ), $language );
+				$languages[ $k ]->page_for_posts = $model->post->get( get_option( 'page_for_posts' ), $language );
+			}
 		}
 
 		return $languages;

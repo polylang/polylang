@@ -113,7 +113,7 @@ class PLL_Plugins_Compat {
 	 * @return array
 	 */
 	function wp_import_terms( $terms ) {
-		include( PLL_SETTINGS_INC . '/languages.php' );
+		include PLL_SETTINGS_INC . '/languages.php';
 
 		foreach ( $terms as $key => $term ) {
 			if ( 'language' === $term['term_taxonomy'] ) {
@@ -198,6 +198,25 @@ class PLL_Plugins_Compat {
 
 	/**
 	 * Yoast SEO
+	 * Helper function to register strings for custom post types and custom taxonomies titles and meta descriptions
+	 *
+	 * @since 2.1.6
+	 *
+	 * @param array  $options
+	 * @param array  $titles
+	 * @return array
+	 */
+	protected function _wpseo_register_strings( $options, $titles ) {
+		foreach ( $titles as $title ) {
+			if ( ! empty ( $options[ $title ] ) ) {
+				pll_register_string( $title, $options[ $title ], 'wordpress-seo' );
+			}
+		}
+		return $options;
+	}
+
+	/**
+	 * Yoast SEO
 	 * Registers strings for custom post types and custom taxonomies titles and meta descriptions
 	 *
 	 * @since 2.0
@@ -205,24 +224,39 @@ class PLL_Plugins_Compat {
 	function wpseo_register_strings() {
 		$options = get_option( 'wpseo_titles' );
 		foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_post_type( $t ) && ! empty( $options[ 'title-' . $t ] ) ) {
-				pll_register_string( 'title-' . $t, $options[ 'title-' . $t ], 'wordpress-seo' );
-				pll_register_string( 'metadesc-' . $t, $options[ 'metadesc-' . $t ], 'wordpress-seo' );
+			if ( pll_is_translated_post_type( $t ) ) {
+				_wpseo_register_strings( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
 			}
 		}
 		foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_post_type( $t ) && ! empty( $options[ 'title-ptarchive-' . $t ] ) ) {
-				pll_register_string( 'title-ptarchive-' . $t, $options[ 'title-ptarchive-' . $t ], 'wordpress-seo' );
-				pll_register_string( 'metadesc-ptarchive-' . $t, $options[ 'metadesc-ptarchive-' . $t ], 'wordpress-seo' );
-				pll_register_string( 'bctitle-ptarchive-' . $t, $options[ 'bctitle-ptarchive-' . $t ], 'wordpress-seo' );
+			if ( pll_is_translated_post_type( $t ) ) {
+				_wpseo_register_strings( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
 			}
 		}
 		foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_taxonomy( $t ) && ! empty( $options[ 'title-tax-' . $t ] ) ) {
-				pll_register_string( 'title-tax-' . $t, $options[ 'title-tax-' . $t ], 'wordpress-seo' );
-				pll_register_string( 'metadesc-tax-' . $t, $options[ 'metadesc-tax-' . $t ], 'wordpress-seo' );
+			if ( pll_is_translated_taxonomy( $t ) ) {
+				_wpseo_register_strings( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
 			}
 		}
+	}
+
+	/**
+	 * Yoast SEO
+	 * Helper function to translate custom post types and custom taxonomies titles and meta descriptions
+	 *
+	 * @since 2.1.6
+	 *
+	 * @param array  $options
+	 * @param array  $titles
+	 * @return array
+	 */
+	protected function _wpseo_translate_titles( $options, $titles ) {
+		foreach ( $titles as $title ) {
+			if ( ! empty ( $options[ $title ] ) ) {
+				$options[ $title ] = pll__( $options[ $title ] );
+			}
+		}
+		return $options;
 	}
 
 	/**
@@ -237,22 +271,18 @@ class PLL_Plugins_Compat {
 	function wpseo_translate_titles( $options ) {
 		if ( PLL() instanceof PLL_Frontend ) {
 			foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
-				if ( pll_is_translated_post_type( $t ) && ! empty( $options[ 'title-' . $t ] ) ) {
-					$options[ 'title-' . $t ] = pll__( $options[ 'title-' . $t ] );
-					$options[ 'metadesc-' . $t ] = pll__( $options[ 'metadesc-' . $t ] );
+				if ( pll_is_translated_post_type( $t ) ) {
+					$options = _wpseo_translate_titles( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
 				}
 			}
 			foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
-				if ( pll_is_translated_post_type( $t ) && ! empty( $options[ 'title-ptarchive-' . $t ] ) ) {
-					$options[ 'title-ptarchive-' . $t ] = pll__( $options[ 'title-ptarchive-' . $t ] );
-					$options[ 'metadesc-ptarchive-' . $t ] = pll__( $options[ 'metadesc-ptarchive-' . $t ] );
-					$options[ 'bctitle-ptarchive-' . $t ] = pll__( $options[ 'bctitle-ptarchive-' . $t ] );
+				if ( pll_is_translated_post_type( $t ) ) {
+					$options = _wpseo_translate_titles( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
 				}
 			}
 			foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
-				if ( pll_is_translated_taxonomy( $t ) && ! empty( $options[ 'title-tax-' . $t ] ) ) {
-					$options[ 'title-tax-' . $t ] = pll__( $options[ 'title-tax-' . $t ] );
-					$options[ 'metadesc-tax-' . $t ] = pll__( $options[ 'metadesc-tax-' . $t ] );
+				if ( pll_is_translated_taxonomy( $t ) ) {
+					$options = _wpseo_translate_titles( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
 				}
 			}
 		}
@@ -362,12 +392,13 @@ class PLL_Plugins_Compat {
 	 */
 	public function add_language_home_urls( $str ) {
 		global $wpseo_sitemaps;
+		$renderer = version_compare( WPSEO_VERSION, '3.2', '<' ) ? $wpseo_sitemaps : $wpseo_sitemaps->renderer;
 
 		$languages = wp_list_pluck( wp_list_filter( PLL()->model->get_languages_list() , array( 'active' => false ), 'NOT' ), 'slug' );
 
 		foreach ( $languages as $lang ) {
 			if ( empty( PLL()->options['hide_default'] ) || pll_default_language() !== $lang ) {
-				$str .= $wpseo_sitemaps->sitemap_url( array(
+				$str .= $renderer->sitemap_url( array(
 					'loc' => pll_home_url( $lang ),
 					'pri' => 1,
 					'chf' => apply_filters( 'wpseo_sitemap_homepage_change_freq', 'daily', pll_home_url( $lang ) ),
@@ -653,7 +684,7 @@ class PLL_Plugins_Compat {
 	 * @since 2.0.10
 	 */
 	public function twenty_seventeen_init() {
-		if ( 'twentyseventeen' === get_template() && did_action( 'pll_init' ) && PLL() instanceof PLL_Frontend ) {
+		if ( 'twentyseventeen' === get_template() && function_exists( 'twentyseventeen_panel_count' ) && did_action( 'pll_init' ) && PLL() instanceof PLL_Frontend ) {
 			$num_sections = twentyseventeen_panel_count();
 			for ( $i = 1; $i < ( 1 + $num_sections ); $i++ ) {
 				add_filter( 'theme_mod_panel_' . $i, 'pll_get_post' );

@@ -101,7 +101,7 @@ class PLL_Admin_Filters_Term {
 		// Adds translation fields
 		echo '<div id="term-translations" class="form-field">';
 		if ( $lang ) {
-			include( PLL_ADMIN_INC.'/view-translations-term.php' );
+			include PLL_ADMIN_INC . '/view-translations-term.php';
 		}
 		echo '</div>'."\n";
 	}
@@ -112,14 +112,17 @@ class PLL_Admin_Filters_Term {
 	 * @since 0.1
 	 */
 	public function edit_term_form( $tag ) {
-		$term_id = $tag->term_id;
-		$lang = $this->model->term->get_language( $term_id );
-		$taxonomy = $tag->taxonomy;
 		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type'];
 
 		if ( ! post_type_exists( $post_type ) ) {
 			return;
 		}
+
+		$term_id = $tag->term_id;
+		$taxonomy = $tag->taxonomy;
+
+		$lang = $this->model->term->get_language( $term_id );
+		$lang = empty( $lang ) ? $this->pref_lang : $lang;
 
 		$dropdown = new PLL_Walker_Dropdown();
 
@@ -151,7 +154,7 @@ class PLL_Admin_Filters_Term {
 
 		echo '<tr id="term-translations" class="form-field">';
 		if ( $lang ) {
-			include( PLL_ADMIN_INC.'/view-translations-term.php' );
+			include PLL_ADMIN_INC . '/view-translations-term.php';
 		}
 		echo '</tr>'."\n";
 	}
@@ -165,10 +168,13 @@ class PLL_Admin_Filters_Term {
 	 * @return string modified html
 	 */
 	public function wp_dropdown_cats( $output ) {
-		if ( isset( $_GET['taxonomy'], $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $_GET['taxonomy'] ) && $id = get_term( (int) $_GET['from_tag'], $_GET['taxonomy'] )->parent ) {
-			$lang = $this->model->get_language( $_GET['new_lang'] );
-			if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
-				return str_replace( '"'.$parent.'"', '"'.$parent.'" selected="selected"', $output );
+		if ( isset( $_GET['taxonomy'], $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $_GET['taxonomy'] ) ) {
+			$term = get_term( (int) $_GET['from_tag'], $_GET['taxonomy'] );
+			if ( $term && $id = $term->parent ) {
+				$lang = $this->model->get_language( $_GET['new_lang'] );
+				if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
+					return str_replace( '"' . $parent . '"', '"' . $parent . '" selected="selected"', $output );
+				}
 			}
 		}
 		return $output;
@@ -455,7 +461,7 @@ class PLL_Admin_Filters_Term {
 
 		ob_start();
 		if ( $lang ) {
-			include( PLL_ADMIN_INC.'/view-translations-term.php' );
+			include PLL_ADMIN_INC . '/view-translations-term.php';
 		}
 		$x = new WP_Ajax_Response( array( 'what' => 'translations', 'data' => ob_get_contents() ) );
 		ob_end_clean();

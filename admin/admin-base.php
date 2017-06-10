@@ -31,7 +31,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Lingotek
 		if ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
-			require_once( POLYLANG_DIR . '/lingotek/lingotek.php' );
+			require_once POLYLANG_DIR . '/lingotek/lingotek.php';
 		}
 	}
 
@@ -261,7 +261,8 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Inform that the admin language has been set
 		// Only if the admin language is one of the Polylang defined language
-		if ( $curlang = $this->model->get_language( get_locale() ) ) {
+		// FIXME test get_user_locale for backward compatibility with WP 4.7
+		if ( $curlang = $this->model->get_language( function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale() ) ) {
 			// FIXME: Backward compatibility with WP < 4.7
 			if ( version_compare( $GLOBALS['wp_version'], '4.7alpha', '<' ) ) {
 				$GLOBALS['text_direction'] = $curlang->is_rtl ? 'rtl' : 'ltr'; // force text direction according to language setting
@@ -325,15 +326,17 @@ class PLL_Admin_Base extends PLL_Base {
 		$selected = empty( $this->filter_lang ) ? $all_item : $this->filter_lang;
 
 		$title = sprintf(
-			'<span class="ab-label"%s>%s</span>',
+			'<span class="ab-label"%1$s><span class="screen-reader-text">%2$s</span>%3$s</span>',
 			'all' === $selected->slug ? '' : sprintf( ' lang="%s"', esc_attr( $selected->get_locale( 'display' ) ) ),
+			__( 'Filters content by language', 'polylang' ),
 			esc_html( $selected->name )
 		);
 
 		$wp_admin_bar->add_menu( array(
 			'id'     => 'languages',
 			'title'  => $selected->flag . $title,
-			'meta'   => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
+			'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged', $url ) ) ),
+			'meta'   => array( 'title'    => __( 'Filters content by language', 'polylang' ) ),
 		) );
 
 		foreach ( array_merge( array( $all_item ), $this->model->get_languages_list() ) as $lang ) {

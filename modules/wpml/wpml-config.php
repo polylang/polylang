@@ -193,7 +193,7 @@ class PLL_WPML_Config {
 			}
 		} else {
 			$attributes = $key->attributes();
-			pll_register_string( (string) $attributes['name'], $options, $context );
+			pll_register_string( (string) $attributes['name'], $options, $context, true ); // Multiline as in WPML
 		}
 	}
 

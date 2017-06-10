@@ -308,7 +308,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		$ids = array_map( 'intval', $ids );
 		$lang = $this->get_language( $lang );
-		$tt_id = 'term' == $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
+		$tt_id = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
 
 		foreach ( $ids as $id ) {
 			$values[] = $wpdb->prepare( '( %d, %d )', $id, $tt_id );
@@ -320,7 +320,9 @@ class PLL_Admin_Model extends PLL_Model {
 			$lang->update_count(); // Updating term count is mandatory ( thanks to AndyDeGroo )
 		}
 
-		if ( 'term' == $type ) {
+		if ( 'term' === $type ) {
+			clean_term_cache( $ids, 'term_language' );
+
 			foreach ( $ids as $id ) {
 				$translations[] = array( $lang->slug => $id );
 			}
@@ -328,6 +330,8 @@ class PLL_Admin_Model extends PLL_Model {
 			if ( ! empty( $translations ) ) {
 				$this->set_translation_in_mass( 'term', $translations );
 			}
+		} else {
+			clean_term_cache( $ids, 'language' );
 		}
 	}
 
@@ -341,6 +345,8 @@ class PLL_Admin_Model extends PLL_Model {
 	 */
 	public function set_translation_in_mass( $type, $translations ) {
 		global $wpdb;
+
+		$taxonomy = $type . '_translations';
 
 		foreach ( $translations as $t ) {
 			$term = uniqid( 'pll_' ); // the term name
@@ -361,7 +367,8 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Prepare terms taxonomy relationship
 		foreach ( $terms as $term ) {
-			$tts[] = $wpdb->prepare( '( %d, "%s", "%s", %d )', $term->term_id, $type . '_translations', $description[ $term->slug ], $count[ $term->slug ] );
+			$term_ids[] = $term->term_id;
+			$tts[] = $wpdb->prepare( '( %d, "%s", "%s", %d )', $term->term_id, $taxonomy, $description[ $term->slug ], $count[ $term->slug ] );
 		}
 
 		// Insert term_taxonomy
@@ -371,7 +378,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Get all terms with term_taxonomy_id
-		$terms = get_terms( $type . '_translations', array( 'hide_empty' => false ) );
+		$terms = get_terms( $taxonomy, array( 'hide_empty' => false ) );
 
 		// Prepare objects relationships
 		foreach ( $terms as $term ) {
@@ -390,6 +397,8 @@ class PLL_Admin_Model extends PLL_Model {
 			$wpdb->query( "INSERT INTO $wpdb->term_relationships ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
 			$trs = array_unique( $trs );
 		}
+
+		clean_term_cache( $term_ids, $taxonomy );
 	}
 
 	/**
@@ -443,6 +452,7 @@ class PLL_Admin_Model extends PLL_Model {
 		$terms = get_terms( array( 'post_translations', 'term_translations' ) );
 
 		foreach ( $terms as $term ) {
+			$term_ids[ $term->taxonomy ][] = $term->term_id;
 			$tr = unserialize( $term->description );
 			if ( ! empty( $tr[ $old_slug ] ) ) {
 				if ( $new_slug ) {
@@ -487,8 +497,10 @@ class PLL_Admin_Model extends PLL_Model {
 			" );
 		}
 
-		foreach ( $terms as $term ) {
-			clean_term_cache( $term->term_id, $term->taxonomy );
+		if ( ! empty( $term_ids ) ) {
+			foreach ( $term_ids as $taxonomy => $ids ) {
+				clean_term_cache( $ids, $taxonomy );
+			}
 		}
 	}
 
