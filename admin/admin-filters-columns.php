@@ -119,7 +119,7 @@ class PLL_Admin_Filters_Columns {
 
 		// hidden field containing the post language for quick edit
 		if ( $column == $this->get_first_language_column() ) {
-			printf( '<div class="hidden" id="lang_%d">%s</div>', esc_attr( $post_id ), esc_html( $lang->slug ) );
+			printf( '<div class="hidden" id="lang_%s">%s</div>', esc_attr( $post_id ), esc_html( $lang->slug ) );
 		}
 
 		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
@@ -229,7 +229,7 @@ class PLL_Admin_Filters_Columns {
 		$language = $this->model->get_language( substr( $column, 9 ) );
 
 		if ( $column == $this->get_first_language_column() ) {
-			$out = sprintf( '<div class="hidden" id="lang_%d">%s</div>', $term_id, esc_html( $lang->slug ) );
+			$out = sprintf( '<div class="hidden" id="lang_%s">%s</div>', esc_attr( $term_id ), esc_html( $lang->slug ) );
 
 			// identify the default categories to disable the language dropdown in js
 			if ( in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) ) ) {
