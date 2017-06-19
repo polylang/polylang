@@ -54,7 +54,7 @@ class PLL_Filters_Links {
 	 */
 	public function _get_page_link( $link, $post_id ) {
 		// /!\ WP does not use pretty permalinks for preview
-		return false !== strpos( $link, 'preview=true' ) && false !== strpos( $link, 'page_id=' ) ? $link : $this->links_model->add_language_to_link( $link, $this->model->post->get_language( $post_id ) );
+		return false !== strpos( $link, 'preview=true' ) && false !== strpos( $link, 'page_id=' ) ? $link : $this->links_model->switch_language_in_link( $link, $this->model->post->get_language( $post_id ) );
 	}
 
 	/**
@@ -67,7 +67,7 @@ class PLL_Filters_Links {
 	 * @return string modified attachment link
 	 */
 	public function attachment_link( $link, $post_id ) {
-		return wp_get_post_parent_id( $post_id ) ? $link : $this->links_model->add_language_to_link( $link, $this->model->post->get_language( $post_id ) );
+		return wp_get_post_parent_id( $post_id ) ? $link : $this->links_model->switch_language_in_link( $link, $this->model->post->get_language( $post_id ) );
 	}
 
 	/**
@@ -83,7 +83,7 @@ class PLL_Filters_Links {
 		// /!\ WP does not use pretty permalinks for preview
 		if ( ( false === strpos( $link, 'preview=true' ) || false === strpos( $link, 'p=' ) ) && $this->model->is_translated_post_type( $post->post_type ) ) {
 			$lang = $this->model->post->get_language( $post->ID );
-			$link = $this->options['force_lang'] ? $this->links_model->add_language_to_link( $link, $lang ) : $link;
+			$link = $this->options['force_lang'] ? $this->links_model->switch_language_in_link( $link, $lang ) : $link;
 
 			/**
 			 * Filter a post or custom post type link
@@ -113,7 +113,7 @@ class PLL_Filters_Links {
 	public function term_link( $link, $term, $tax ) {
 		if ( $this->model->is_translated_taxonomy( $tax ) ) {
 			$lang = $this->model->term->get_language( $term->term_id );
-			$link = $this->options['force_lang'] ? $this->links_model->add_language_to_link( $link, $lang ) : $link;
+			$link = $this->options['force_lang'] ? $this->links_model->switch_language_in_link( $link, $lang ) : $link;
 
 			/**
 			 * Filter a term link
@@ -161,7 +161,7 @@ class PLL_Filters_Links {
 	 * @return string modified link
 	 */
 	public function post_type_archive_link( $link, $post_type ) {
-		return $this->model->is_translated_post_type( $post_type ) && 'post' !== $post_type ? $this->links_model->add_language_to_link( $link, $this->curlang ) : $link;
+		return $this->model->is_translated_post_type( $post_type ) && 'post' !== $post_type ? $this->links_model->switch_language_in_link( $link, $this->curlang ) : $link;
 	}
 }
 

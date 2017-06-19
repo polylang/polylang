@@ -58,7 +58,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string modified link
 	 */
 	public function archive_link( $link ) {
-		return $this->links_model->add_language_to_link( $link, $this->curlang );
+		return $this->links_model->switch_language_in_link( $link, $this->curlang );
 	}
 
 	/**
@@ -152,7 +152,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		$cache_key = 'term:' . $term->term_id;
 		if ( false === $_link = $this->cache->get( $cache_key ) ) {
 			if ( in_array( $tax, $this->model->get_filtered_taxonomies() ) ) {
-				$_link = $this->links_model->add_language_to_link( $link, $this->curlang );
+				$_link = $this->links_model->switch_language_in_link( $link, $this->curlang );
 
 				/** This filter is documented in include/filters-links.php */
 				$_link = apply_filters( 'pll_term_link', $_link, $this->curlang, $term );
