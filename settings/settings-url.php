@@ -208,7 +208,10 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 		}
 
 		if ( 3 == $options['force_lang'] ) {
-			$newoptions['browser'] = $newoptions['hide_default'] = 0;
+			if ( ! class_exists( 'PLL_Xdata_Domain', true ) ) {
+				$newoptions['browser'] = 0;
+			}
+			$newoptions['hide_default'] = 0;
 		}
 
 		// Check if domains exist
