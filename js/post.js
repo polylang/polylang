@@ -161,9 +161,13 @@ jQuery( document ).ready(function( $ ) {
 
 	// ajax for changing the post's language in the languages metabox
 	$( '.post_lang_choice' ).change(function() {
+		var value = $( this ).val();
+		var lang  = $( this ).children( 'option[value="' + value + '"]' ).attr( 'lang' );
+		var dir   = $( '.pll-translation-column > span[lang="'+ lang + '"]' ).attr( 'dir' );
+
 		var data = {
 			action:     'post_lang_choice',
-			lang:       $( this ).val(),
+			lang:       value,
 			post_type:  $( '#post_type' ).val(),
 			taxonomies: taxonomies,
 			post_id:    $( '#post_ID' ).val(),
@@ -205,6 +209,11 @@ jQuery( document ).ready(function( $ ) {
 				var id = $( this ).attr( 'id' );
 				tagBox.get( id );
 			});
+
+			// Modifies the text direction
+			$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
+			$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', lang ).attr( 'dir', dir );
+			$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
 		});
 	});
 

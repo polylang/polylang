@@ -126,9 +126,13 @@ jQuery( document ).ready(function( $ ) {
 
 	// ajax for changing the term's language
 	$( '#term_lang_choice' ).change(function() {
+		var value = $( this ).val();
+		var lang  = $( this ).children( 'option[value="' + value + '"]' ).attr( 'lang' );
+		var dir   = $( '.pll-translation-column > span[lang="'+ lang + '"]' ).attr( 'dir' );
+
 		var data = {
 			action:     'term_lang_choice',
-			lang:       $( this ).val(),
+			lang:       value,
 			from_tag:   $( "input[name='from_tag']" ).val(),
 			term_id:    $( "input[name='tag_ID']" ).val(),
 			taxonomy:   $( "input[name='taxonomy']" ).val(),
@@ -155,6 +159,9 @@ jQuery( document ).ready(function( $ ) {
 					break;
 				}
 			});
+
+			// Modifies the text direction
+			$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
 		});
 	});
 });

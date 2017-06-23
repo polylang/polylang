@@ -42,6 +42,9 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		// Filters the pages by language in the parent dropdown list in the page attributes metabox
 		add_filter( 'page_attributes_dropdown_pages_args', array( $this, 'page_attributes_dropdown_pages_args' ), 10, 2 );
+
+		// Sets the language in Tiny MCE
+		add_filter( 'tiny_mce_before_init', array( $this, 'tiny_mce_before_init' ) );
 	}
 
 	/**
@@ -588,5 +591,21 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		}
 
 		return $dropdown_args;
+	}
+
+	/**
+	 * Sets the language attribute and text direction for Tiny MCE
+	 *
+	 * @since 2.2
+	 *
+	 * @param array $mce_init TinyMCE config
+	 * @return array
+	 */
+	public function tiny_mce_before_init( $mce_init ) {
+		if ( ! empty( $this->curlang ) ) {
+			$mce_init['wp_lang_attr'] = $this->curlang->get_locale( 'display' );
+			$mce_init['directionality'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
+		}
+		return $mce_init;
 	}
 }

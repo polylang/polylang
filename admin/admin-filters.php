@@ -40,6 +40,8 @@ class PLL_Admin_Filters extends PLL_Filters {
 			add_filter( 'sanitize_title', array( $this, 'sanitize_title' ), 10, 3 );
 			add_filter( 'sanitize_user', array( $this, 'sanitize_user' ), 10, 3 );
 		}
+
+		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 	}
 
 	/**
@@ -254,5 +256,20 @@ class PLL_Admin_Filters extends PLL_Filters {
 			$once = false;
 		}
 		return $username;
+	}
+
+	/**
+	 * Adds a text direction dependent class to the body
+	 *
+	 * @since 2.2
+	 *
+	 * @param string $classes Space-separated list of CSS classes.
+	 * @return string
+	 */
+	public function admin_body_class( $classes ) {
+		if ( ! empty( $this->curlang ) ) {
+			$classes .= ' pll-dir-' . ( $this->curlang->is_rtl ? 'rtl' : 'ltr' );
+		}
+		return $classes;
 	}
 }
