@@ -24,7 +24,7 @@ class PLL_Walker_Dropdown extends Walker {
 		$output .= sprintf(
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
 			esc_attr( $element->$value ),
-			empty( $element->locale ) ? '' : sprintf( ' lang="%s"', esc_attr( $element->locale ) ),
+			method_exists( $element, 'get_locale' ) ? sprintf( ' lang="%s"', esc_attr( $element->get_locale( 'display' ) ) ) : '',
 			isset( $args['selected'] ) && $args['selected'] === $element->$value ? ' selected="selected"' : '',
 			esc_html( $element->name )
 		);
