@@ -295,31 +295,6 @@ class PLL_Model {
 	}
 
 	/**
-	 * Check if translated taxonomy is queried
-	 * Compatible with nested queries introduced in WP 4.1
-	 * @see https://wordpress.org/support/topic/tax_query-bug
-	 *
-	 * @since 1.7
-	 *
-	 * @param array $tax_queries
-	 * @return bool
-	 */
-	public function have_translated_taxonomy( $tax_queries ) {
-		foreach ( $tax_queries as $tax_query ) {
-			if ( isset( $tax_query['taxonomy'] ) && $this->is_translated_taxonomy( $tax_query['taxonomy'] ) && ! ( isset( $tax_query['operator'] ) && 'NOT IN' === $tax_query['operator'] ) ) {
-				return true;
-			}
-
-			// Nested queries
-			elseif ( is_array( $tax_query ) && $this->have_translated_taxonomy( $tax_query ) ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Return taxonomies that need to be filtered ( post_format like )
 	 *
 	 * @since 1.7

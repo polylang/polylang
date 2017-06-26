@@ -234,7 +234,7 @@ abstract class PLL_Choose_Lang {
 	public function home_requested() {
 		// we are already on the right page
 		if ( $this->options['default_lang'] == $this->curlang->slug && $this->options['hide_default'] ) {
-			$this->set_lang_query_var( $GLOBALS['wp_query'], $this->curlang );
+			$this->set_curlang_in_query( $GLOBALS['wp_query'] );
 
 			/**
 			 * Fires when the site root page is requested
@@ -300,7 +300,7 @@ abstract class PLL_Choose_Lang {
 		 */
 		if ( $lang = apply_filters( 'pll_set_language_from_query', false, $query ) ) {
 			$this->set_language( $lang );
-			$this->set_lang_query_var( $query, $this->curlang );
+			$this->set_curlang_in_query( $query );
 		}
 
 		// sets is_home on translated home page when it displays posts
@@ -315,21 +315,14 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * sets the language in query
-	 * optimized for ( needs ) WP 3.5+
+	 * Sets the current language in the query
 	 *
-	 * @since 1.3
+	 * @since 2.2
 	 *
 	 * @param object $query
-	 * @param object $lang
 	 */
-	public function set_lang_query_var( &$query, $lang ) {
-		// defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
-		$query->query_vars['tax_query'][] = array(
-			'taxonomy' => 'language',
-			'field'    => 'term_taxonomy_id', // since WP 3.5
-			'terms'    => $lang->term_taxonomy_id,
-			'operator' => 'IN',
-		);
+	protected function set_curlang_in_query( &$query ) {
+		$pll_query = new PLL_Query( $query, $this->model );
+		$pll_query->set_language( $this->curlang );
 	}
 }
