@@ -18,7 +18,7 @@ class PLL_WPML_API {
 		// Site Wide Language informations
 
 		add_filter( 'wpml_active_languages', array( $this, 'wpml_active_languages' ), 10, 2 );
-		// wpml_display_language_names        => not implemented
+		add_filter( 'wpml_display_language_names', array( $this, 'wpml_display_language_names' ), 10, 5 );
 		// wpml_translated_language_name      => not applicable
 		add_filter( 'wpml_current_language', 'pll_current_language', 10, 0 );
 		add_filter( 'wpml_default_language', 'pll_default_language', 10, 0 );
@@ -90,12 +90,29 @@ class PLL_WPML_API {
 	 *
 	 * @since 2.0
 	 *
-	 * @param mixed         $null not used
-	 * @param array| string $args see arguments of icl_get_languages()
-	 * @return array array of arrays per language
+	 * @param mixed         $null Not used
+	 * @param array| string $args See arguments of icl_get_languages()
+	 * @return array Array of arrays per language
 	 */
 	public function wpml_active_languages( $null, $args = '' ) {
 		return icl_get_languages( $args );
+	}
+
+	/**
+	 * In WPML, get a language's native and translated name for display in a custom language switcher
+	 * Since Polylang does not implement the translated name, always returns only the native name
+	 *
+	 * @since 2.2
+	 *
+	 * @param mixed       $null              Not used.
+	 * @param string      $native_name       The language native name.
+	 * @param string|bool $translated_name   The language translated name. Not used.
+	 * @param bool        $native_hidden     Whether to hide the language native name or not. Not used.
+	 * @param bool        $translated_hidden Whether to hide the language translated name or not. Not used.
+	 * @return string
+	 */
+	public function wpml_display_language_names( $null, $native_name, $translated_name = false, $native_hidden = false, $translated_hidden = false ) {
+		return $native_name;
 	}
 
 	/**
@@ -115,8 +132,8 @@ class PLL_WPML_API {
 	 *
 	 * @since 2.0
 	 *
-	 * @param mixed  $null not used
-	 * @param string $slug language code
+	 * @param mixed  $null Not used
+	 * @param string $slug Language code
 	 * @return bool
 	 */
 	public function wpml_language_is_active( $null, $slug ) {
@@ -142,7 +159,7 @@ class PLL_WPML_API {
 	 * @since 2.0
 	 *
 	 * @param mixed $language_code
-	 * @param array $args          an array with two keys element_id => post_id or term_taxonomy_id, element_type => post type or taxonomy
+	 * @param array $args          An array with two keys element_id => post_id or term_taxonomy_id, element_type => post type or taxonomy
 	 * @return string
 	 */
 	public function wpml_element_language_code( $language_code, $args ) {
@@ -160,11 +177,11 @@ class PLL_WPML_API {
 	 *
 	 * @since 2.0
 	 *
-	 * @param string      $string  the string's original value
-	 * @param string      $context the string's registered context
-	 * @param string      $name    the string's registered name
-	 * @param null|string $lang    optional, return the translation in this language, defaults to current language
-	 * @return string the translated string
+	 * @param string      $string  The string's original value
+	 * @param string      $context The string's registered context
+	 * @param string      $name    The string's registered name
+	 * @param null|string $lang    Optional, return the translation in this language, defaults to current language
+	 * @return string The translated string
 	 */
 	public function wpml_translate_single_string( $string, $context, $name, $lang = null ) {
 		$has_translation = null; // Passed by reference
@@ -177,8 +194,8 @@ class PLL_WPML_API {
 	 * @since 2.0
 	 *
 	 * @param mixed  $null
-	 * @param int    $id   post_id or term_id
-	 * @param string $type post type or taxonomy
+	 * @param int    $id   The post_id or term_id
+	 * @param string $type The post type or taxonomy
 	 * @return bool
 	 */
 	public function wpml_element_has_translations( $null, $id, $type ) {
