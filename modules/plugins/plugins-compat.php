@@ -225,17 +225,17 @@ class PLL_Plugins_Compat {
 		$options = get_option( 'wpseo_titles' );
 		foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
 			if ( pll_is_translated_post_type( $t ) ) {
-				_wpseo_register_strings( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
+				$this->_wpseo_register_strings( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
 			}
 		}
 		foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
 			if ( pll_is_translated_post_type( $t ) ) {
-				_wpseo_register_strings( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
+				$this->_wpseo_register_strings( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
 			}
 		}
 		foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
 			if ( pll_is_translated_taxonomy( $t ) ) {
-				_wpseo_register_strings( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
+				$this->_wpseo_register_strings( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
 			}
 		}
 	}
@@ -272,17 +272,17 @@ class PLL_Plugins_Compat {
 		if ( PLL() instanceof PLL_Frontend ) {
 			foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
 				if ( pll_is_translated_post_type( $t ) ) {
-					$options = _wpseo_translate_titles( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
+					$options = $this->_wpseo_translate_titles( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
 				}
 			}
 			foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
 				if ( pll_is_translated_post_type( $t ) ) {
-					$options = _wpseo_translate_titles( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
+					$options = $this->_wpseo_translate_titles( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
 				}
 			}
 			foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
 				if ( pll_is_translated_taxonomy( $t ) ) {
-					$options = _wpseo_translate_titles( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
+					$options = $this->_wpseo_translate_titles( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
 				}
 			}
 		}
