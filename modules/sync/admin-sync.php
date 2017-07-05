@@ -325,8 +325,15 @@ class PLL_Admin_Sync {
 	 * @param array  $translations translations of the term
 	 */
 	public function pll_save_term( $term_id, $taxonomy, $translations ) {
+		// Sync term metas
+		foreach ( $translations as $lang => $tr_id ) {
+			if ( $tr_id && $tr_id !== $term_id ) {
+				$this->copy_term_metas( $term_id, $tr_id, $lang, true );
+			}
+		}
+
 		// Check if the taxonomy is synchronized
-		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) || ! in_array( $taxonomy, $this->get_taxonomies_to_copy( true ) ) ) {
+		if ( ! in_array( $taxonomy, $this->get_taxonomies_to_copy( true ) ) ) {
 			return;
 		}
 
@@ -393,5 +400,43 @@ class PLL_Admin_Sync {
 	 */
 	public function edit_attachment( $post_id ) {
 		$this->pll_save_post( $post_id, get_post( $post_id ), $this->model->post->get_translations( $post_id ) );
+	}
+
+	/**
+	 * Copy or synchronize term metas (custom fields)
+	 *
+	 * @since 2.2
+	 *
+	 * @param int    $from id of the term from which we copy informations
+	 * @param int    $to   id of the term to which we paste informations
+	 * @param string $lang language slug
+	 * @param bool   $sync true if it is synchronization, false if it is a copy, defaults to false
+	 */
+	public function copy_term_metas( $from, $to, $lang, $sync = false ) {
+		$metas = get_term_meta( $from );
+
+		/**
+		 * Filter the term metas to copy or synchronize
+		 *
+		 * @since 2.2
+		 *
+		 * @param array  $keys list of term meta names
+		 * @param bool   $sync true if it is synchronization, false if it is a copy
+		 * @param int    $from id of the term from which we copy informations
+		 * @param int    $to   id of the term to which we paste informations
+		 * @param string $lang language slug
+		 */
+		$keys = array_unique( apply_filters( 'pll_copy_term_metas', array(), $sync, $from, $to, $lang ) );
+
+		// And now copy / synchronize
+		foreach ( $keys as $key ) {
+			delete_term_meta( $to, $key ); // The synchronization process of multiple values term metas is easier if we delete all metas first
+			if ( isset( $metas[ $key ] ) ) {
+				foreach ( $metas[ $key ] as $value ) {
+					$value = maybe_unserialize( $value );
+					add_term_meta( $to, $key, $value );
+				}
+			}
+		}
 	}
 }
