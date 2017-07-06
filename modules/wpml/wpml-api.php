@@ -45,7 +45,7 @@ class PLL_WPML_API {
 		add_filter( 'wpml_translate_single_string', array( $this, 'wpml_translate_single_string' ), 10, 4 );
 		// wpml_translate_string              => not applicable
 		// wpml_unfiltered_admin_string       => not implemented
-		add_filter( 'wpml_permalink', array( PLL()->links_model, 'switch_language_in_link' ), 10, 2 );
+		add_filter( 'wpml_permalink', array( $this, 'wpml_permalink' ), 10, 2 );
 		// wpml_elements_without_translations => not implemented
 		// wpml_get_translated_slug           => not implemented
 
@@ -186,6 +186,25 @@ class PLL_WPML_API {
 	public function wpml_translate_single_string( $string, $context, $name, $lang = null ) {
 		$has_translation = null; // Passed by reference
 		return icl_translate( $context, $name, $string, false, $has_translation, $lang );
+	}
+
+	/**
+	 * Converts a permalink to a language specific permalink
+	 *
+	 * @since 2.2
+	 *
+	 * @param string      $url  The url to filter
+	 * @param null|string $lang Langage code, optional, defaults to the current language
+	 * @return string
+	 */
+	public function wpml_permalink( $url, $lang = '' ) {
+		$lang = PLL()->model->get_language( $lang );
+
+		if ( empty( $lang ) && ! empty( PLL()->curlang ) ) {
+			$lang = PLL()->curlang;
+		}
+
+		return empty( $lang ) ? $url : PLL()->links_model->switch_language_in_link( $url, $lang );
 	}
 
 	/**
