@@ -145,11 +145,15 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 1.4
 	 */
 	public function admin_print_footer_scripts() {
-		global $post_ID;
+		global $post_ID, $tag_ID;
 
 		$params = array( 'pll_ajax_backend' => 1 );
 		if ( ! empty( $post_ID ) ) {
 			$params = array_merge( $params, array( 'pll_post_id' => (int) $post_ID ) );
+		}
+
+		if ( ! empty( $tag_ID ) ) {
+			$params = array_merge( $params, array( 'pll_term_id' => (int) $tag_ID ) );
 		}
 
 		$str = http_build_query( $params );
@@ -216,6 +220,8 @@ class PLL_Admin_Base extends PLL_Base {
 		// Edit Term
 		// FIXME 'edit-tags.php' for backward compatibility with WP < 4.5
 		elseif ( in_array( $GLOBALS['pagenow'], array( 'edit-tags.php', 'term.php' ) ) && isset( $_GET['tag_ID'] ) && $lang = $this->model->term->get_language( (int) $_GET['tag_ID'] ) ) {
+			$this->curlang = $lang;
+		} elseif ( isset( $_REQUEST['pll_term_id'] ) && $lang = $this->model->term->get_language( (int) $_REQUEST['pll_term_id'] ) ) {
 			$this->curlang = $lang;
 		} elseif ( 'edit-tags.php' === $GLOBALS['pagenow'] && isset( $_GET['taxonomy'] ) && $this->model->is_translated_taxonomy( $_GET['taxonomy'] ) ) {
 			if ( ! empty( $_GET['new_lang'] ) ) {
