@@ -160,7 +160,7 @@ class PLL_OLT_Manager {
 	 * @return bool
 	 */
 	public function load_textdomain_mofile( $mofile, $domain ) {
-		$this->list_textdomains[ $domain ] = array( 'mo' => $mofile, 'domain' => $domain );
+		$this->list_textdomains[] = array( 'mo' => $mofile, 'domain' => $domain );
 		return ''; // Hack to prevent WP loading text domains as we will load them all later
 	}
 
