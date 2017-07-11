@@ -21,8 +21,33 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 		$this->hosts = $this->get_hosts();
 
+		if ( ! PLL_ADMIN and ! empty( $this->hosts ) )
+			$this->check_if_host_has_language();
+
 		 // Filrer the site url ( mainly to get the correct login form )
 		 add_filter( 'site_url', array( $this, 'site_url' ) );
+	}
+
+	private function check_if_host_has_language() {
+		$language_found = false;
+		$current_host = $_SERVER['HTTP_HOST'];
+
+		// check if the host is in our list of hosts
+		foreach ( $this->hosts as $lang_host ) {
+			if ( $lang_host == $current_host ) {
+				$language_found = true;
+			}
+		}
+
+		if ( ! $language_found ) {
+			// get default host
+			$default_lang_slug = $this->options['default_lang'];
+			$default_host = $this->hosts[ $default_lang_slug ];
+
+			// redirect to homepage of default language
+			wp_redirect( '//' . $default_host, 301 );
+			exit();
+		}
 	}
 
 
