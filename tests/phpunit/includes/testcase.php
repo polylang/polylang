@@ -67,6 +67,9 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 
 	/**
 	 * Backport assertNotFalse to PHPUnit 3.6.12 which only runs in PHP 5.2.
+	 *
+	 * @param bool   $condition
+	 * @param string $message
 	 */
 	public static function assertNotFalse( $condition, $message = '' ) {
 		if ( version_compare( phpversion(), '5.3', '<' ) ) {

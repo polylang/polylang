@@ -208,13 +208,13 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 2.1.6
 	 *
-	 * @param array  $options
-	 * @param array  $titles
+	 * @param array $options
+	 * @param array $titles
 	 * @return array
 	 */
 	protected function _wpseo_register_strings( $options, $titles ) {
 		foreach ( $titles as $title ) {
-			if ( ! empty ( $options[ $title ] ) ) {
+			if ( ! empty( $options[ $title ] ) ) {
 				pll_register_string( $title, $options[ $title ], 'wordpress-seo' );
 			}
 		}
@@ -252,13 +252,13 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 2.1.6
 	 *
-	 * @param array  $options
-	 * @param array  $titles
+	 * @param array $options
+	 * @param array $titles
 	 * @return array
 	 */
 	protected function _wpseo_translate_titles( $options, $titles ) {
 		foreach ( $titles as $title ) {
-			if ( ! empty ( $options[ $title ] ) ) {
+			if ( ! empty( $options[ $title ] ) ) {
 				$options[ $title ] = pll__( $options[ $title ] );
 			}
 		}
@@ -759,7 +759,7 @@ class PLL_Plugins_Compat {
 
 			if ( empty( $lang ) ) {
 				$status = get_site_option( 'dm_301_redirect' ) ? '301' : '302'; // Honor status redirect option
-				$redirect =  ( is_ssl() ? 'https://' : 'http://' ) . $hosts[ $options[ 'default_lang' ] ] . $_SERVER['REQUEST_URI'];
+				$redirect = ( is_ssl() ? 'https://' : 'http://' ) . $hosts[ $options['default_lang'] ] . $_SERVER['REQUEST_URI'];
 				wp_redirect( $redirect, $status );
 				exit;
 			}

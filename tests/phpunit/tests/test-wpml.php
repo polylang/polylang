@@ -174,7 +174,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		$link = apply_filters( 'wpml_element_link', $en );
-		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', ob_get_clean() ); // default echo true
+		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', ob_get_clean() ); // echo parameter defaults to true
 		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', $link );
 
 		ob_start();
@@ -191,7 +191,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		$link = apply_filters( 'wpml_element_link', $en, '', '', '', false );
-		$this->assertEquals( '', ob_get_clean() ); // echo false
+		$this->assertEquals( '', ob_get_clean() ); // echo prameter is false
 
 		ob_start();
 		apply_filters( 'wpml_element_link', $tag, 'tag' );

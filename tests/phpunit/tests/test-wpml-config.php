@@ -43,7 +43,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'sub_key_22' => array(
 					'sub_sub_221' => 'val221',
 					'sub_sub_222' => array(
-						'sub_sub_sub_2221' =>'val2221',
+						'sub_sub_sub_2221' => 'val2221',
 					),
 				),
 			),

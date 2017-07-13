@@ -163,7 +163,7 @@ jQuery( document ).ready(function( $ ) {
 	$( '.post_lang_choice' ).change(function() {
 		var value = $( this ).val();
 		var lang  = $( this ).children( 'option[value="' + value + '"]' ).attr( 'lang' );
-		var dir   = $( '.pll-translation-column > span[lang="'+ lang + '"]' ).attr( 'dir' );
+		var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' );
 
 		var data = {
 			action:     'post_lang_choice',
