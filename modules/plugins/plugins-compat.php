@@ -58,6 +58,12 @@ class PLL_Plugins_Compat {
 
 		// No category base (works for Yoast SEO too)
 		add_filter( 'get_terms_args', array( $this, 'no_category_base_get_terms_args' ), 5 ); // Before adding cache domain
+
+		// WordPress MU Domain Mapping
+		if ( function_exists( 'redirect_to_mapped_domain' ) && ! get_site_option( 'dm_no_primary_domain' ) ) {
+			remove_action( 'template_redirect', 'redirect_to_mapped_domain' );
+			add_action( 'template_redirect', array( $this, 'dm_redirect_to_mapped_domain' ) );
+		}
 	}
 
 	/**
@@ -720,6 +726,44 @@ class PLL_Plugins_Compat {
 			$args['lang'] = '';
 		}
 		return $args;
+	}
+
+	/**
+	 * WordPress MU Domain Mapping
+	 * Fix primary domain check which forces only one domain per blog
+	 * Accept only known domains/subdomains for the current blog
+	 *
+	 * @since 2.2
+	 */
+	public function dm_redirect_to_mapped_domain() {
+		// Don't redirect the main site
+		if ( is_main_site() ) {
+			return;
+		}
+
+		// Don't redirect post previews
+		if ( isset( $_GET['preview'] ) && 'true' === $_GET['preview'] ) {
+			return;
+		}
+
+		// Don't redirect theme customizer
+		if ( isset( $_POST['customize'] ) && isset( $_POST['theme'] ) && 'on' === $_POST['customize'] ) {
+			return;
+		}
+
+		// If we can't associate the requested domain to a language, redirect to the default domain
+		$options = get_option( 'polylang' );
+		if ( $options['force_lang'] > 1 ) {
+			$hosts = PLL()->links_model->get_hosts();
+			$lang = array_search( $_SERVER['HTTP_HOST'], $hosts );
+
+			if ( empty( $lang ) ) {
+				$status = get_site_option( 'dm_301_redirect' ) ? '301' : '302'; // Honor status redirect option
+				$redirect =  ( is_ssl() ? 'https://' : 'http://' ) . $hosts[ $options[ 'default_lang' ] ] . $_SERVER['REQUEST_URI'];
+				wp_redirect( $redirect, $status );
+				exit;
+			}
+		}
 	}
 
 	/**
