@@ -178,8 +178,8 @@ class PLL_WP_Import extends WP_Import {
 
 		if ( ! empty( $u ) ) {
 			$wpdb->query( "UPDATE $wpdb->term_taxonomy
-				SET description = ( CASE term_id " . implode( ' ', $u['case'] ) . " END )
-				WHERE term_id IN ( " . implode( ',', $u['in'] ) . " )" );
+				SET description = ( CASE term_id " . implode( ' ', $u['case'] ) . ' END )
+				WHERE term_id IN ( ' . implode( ',', $u['in'] ) . ' )' );
 		}
 	}
 }

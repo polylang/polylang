@@ -114,13 +114,13 @@ class PLL_Uninstall {
 
 		if ( ! empty( $term_ids ) ) {
 			$term_ids = array_unique( $term_ids );
-			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $term_ids ) . " )" );
-			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_id IN ( " . implode( ',', $term_ids ) . " )" );
+			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $term_ids ) . ' )' );
+			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_id IN ( " . implode( ',', $term_ids ) . ' )' );
 		}
 
 		if ( ! empty( $tt_ids ) ) {
 			$tt_ids = array_unique( $tt_ids );
-			$wpdb->query( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ( " . implode( ',', $tt_ids ) . " )" );
+			$wpdb->query( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ( " . implode( ',', $tt_ids ) . ' )' );
 		}
 
 		// Delete options
