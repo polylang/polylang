@@ -488,7 +488,7 @@ class PLL_Admin_Filters_Term {
 		// Tests copied from edit_tags.php
 		else {
 			$tax = get_taxonomy( $taxonomy );
-		 	if ( ! is_null( $tax->labels->popular_items ) ) {
+			if ( ! is_null( $tax->labels->popular_items ) ) {
 				$args = array( 'taxonomy' => $taxonomy, 'echo' => false );
 				if ( current_user_can( $tax->cap->edit_terms ) ) {
 					$args = array_merge( $args, array( 'link' => 'edit' ) );
