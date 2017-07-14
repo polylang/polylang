@@ -47,7 +47,7 @@ class PLL_WPML_API {
 		// wpml_unfiltered_admin_string       => not implemented
 		add_filter( 'wpml_permalink', array( $this, 'wpml_permalink' ), 10, 2 );
 		// wpml_elements_without_translations => not implemented
-		// wpml_get_translated_slug           => not implemented
+		add_filter( 'wpml_get_translated_slug', array( $this, 'wpml_get_translated_slug' ), 10, 3 );
 
 		// Finding the Translation State of Content
 
@@ -83,6 +83,7 @@ class PLL_WPML_API {
 		// wpml_loaded                         => not applicable
 		// wpml_st_loaded                      => not applicable
 		// wpml_tm_loaded                      => not applicable
+		// wpml_hide_management_column (3.4.1) => not applicable
 	}
 
 	/**
@@ -205,6 +206,27 @@ class PLL_WPML_API {
 		}
 
 		return empty( $lang ) ? $url : PLL()->links_model->switch_language_in_link( $url, $lang );
+	}
+
+	/**
+	 * Translates a post type slug
+	 *
+	 * @since 2.2
+	 *
+	 * @param string $slug      Post type slug
+	 * @param string $post_type Post type name
+	 * @param string $lang      Optional language code (defaults to current language)
+	 * @return string
+	 */
+	public function wpml_get_translated_slug( $slug, $post_type, $lang = null ) {
+		if ( isset( PLL()->translate_slugs ) ) {
+			if ( empty( $lang ) ) {
+				$lang = pll_current_language();
+			}
+
+			$slug = PLL()->translate_slugs->slugs_model->get_translated_slug( $post_type, $lang );
+		}
+		return $slug;
 	}
 
 	/**
