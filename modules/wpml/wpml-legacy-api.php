@@ -78,6 +78,10 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 					str_replace( '{$lang}', $lang->slug, $args['link_empty_to'] ) ),
 			);
 		}
+
+		// Apply undocumented WPML filter
+		$arr = apply_filters( 'icl_ls_languages', $arr );
+
 		return $arr;
 	}
 }
