@@ -76,6 +76,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.1.6 (2017-07-17) =
+
+* Pro: fix duplicate post button not working in PHP 7.1
+* Pro: fix CPTUI untranslated labels on admin
+* Adapt related posts filter to use slug instead of name to follow changes made on Jetpack server ( Props Steve Kaeser )
+* Fix PHP notices when translating CPT and custom tax titles in Yoast SEO
+* Fix PHP warning when all plugins are networked activated
+
 = 2.1.5 (2017-05-31) =
 
 * Add compatibility with new media widgets introduced in WP 4.8
