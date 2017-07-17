@@ -150,12 +150,12 @@ td[class*='column-language_'] {
 
 /* Text direcction in post.php and edit-tags.php */
 .pll-dir-rtl textarea,
-.pll-dir-rtl input {
+.pll-dir-rtl input[type="text"] {
 	direction: rtl;
 }
 
 .pll-dir-ltr textarea,
-.pll-dir-ltr input {
+.pll-dir-ltr input[type="text"] {
 	direction: ltr;
 }
 
