@@ -62,25 +62,6 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * Modifies post & page links
-	 * and caches the result
-	 *
-	 * @since 0.7
-	 *
-	 * @param string $link post link
-	 * @param object $post post object
-	 * @return string modified post link
-	 */
-	public function post_link( $link, $post ) {
-		$cache_key = 'post:' . $post->ID;
-		if ( false === $_link = $this->cache->get( $cache_key ) ) {
-			$_link = parent::post_link( $link, $post );
-			$this->cache->set( $cache_key, $_link );
-		}
-		return $_link;
-	}
-
-	/**
 	 * Modifies page links
 	 * and caches the result
 	 *
