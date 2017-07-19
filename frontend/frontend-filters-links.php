@@ -91,7 +91,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string modified post link
 	 */
 	public function _get_page_link( $link, $post_id ) {
-		$cache_key = 'post:' . $post_id;
+		$sample = false !== strpos( $link, '%pagename%' ); // To avoid a conflict with plugin Custom Permalinks
+		$cache_key = "post:{$post_id}:{$sample}";
 		if ( false === $_link = $this->cache->get( $cache_key ) ) {
 			$_link = parent::_get_page_link( $link, $post_id );
 			$this->cache->set( $cache_key, $_link );
@@ -129,7 +130,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string modified post link
 	 */
 	public function post_type_link( $link, $post ) {
-		$cache_key = 'post:' . $post->ID;
+		$sample = false !== strpos( $link, '%postname%' ); // To avoid a conflict with plugin Custom Permalinks
+		$cache_key = "post:{$post->ID}:{$sample}";
 		if ( false === $_link = $this->cache->get( $cache_key ) ) {
 			$_link = parent::post_type_link( $link, $post );
 			$this->cache->set( $cache_key, $_link );
