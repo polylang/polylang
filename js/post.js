@@ -221,7 +221,7 @@ jQuery( document ).ready(function( $ ) {
 	function init_translations() {
 		$( '.tr_lang' ).each(function(){
 			var tr_lang = $( this ).attr( 'id' ).substring( 8 );
-			var td = $( this ).parent().siblings( '.pll-edit-column' );
+			var td = $( this ).parent().parent().siblings( '.pll-edit-column' );
 
 			$( this ).autocomplete({
 				minLength: 0,
