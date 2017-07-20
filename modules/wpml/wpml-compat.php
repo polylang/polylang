@@ -25,6 +25,7 @@ class PLL_WPML_Compat {
 		self::$strings = get_option( 'polylang_wpml_strings', array() );
 
 		add_action( 'pll_language_defined', array( $this, 'define_constants' ) );
+		add_action( 'pll_no_language_defined', array( $this, 'define_constants' ) );
 		add_filter( 'pll_get_strings', array( $this, 'get_strings' ) );
 	}
 
