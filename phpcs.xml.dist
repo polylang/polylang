@@ -14,6 +14,8 @@
 		<exclude name="Squiz.Commenting.LongConditionClosingComment.Invalid"/>
 		<exclude name="Squiz.Commenting.LongConditionClosingComment.Missing"/>
 		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
+		<exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeOpen"/><!-- Since WPCS 0.12 -->
+		<exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeEnd"/><!-- Since WPCS 0.12 -->
 		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
 		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
 	</rule>

@@ -138,7 +138,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		if ( current_user_can( 'edit_theme_options' ) ) {
 			check_admin_referer( 'update-nav_menu', 'update-nav-menu-nonce' );
 
-			$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0,'force_home' => 0 ,'show_flags' => 0 ,'show_names' => 1, 'dropdown' => 0 ); // default values
+			$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 0 ); // Default values
 			// Our jQuery form has not been displayed
 			if ( empty( $_POST['menu-item-pll-detect'][ $menu_item_db_id ] ) ) {
 				if ( ! get_post_meta( $menu_item_db_id, '_pll_menu_item', true ) ) { // Our options were never saved

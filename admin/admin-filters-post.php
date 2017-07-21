@@ -126,7 +126,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			add_meta_box( 'ml_box', __( 'Languages','polylang' ), array( $this, 'post_language' ), $post_type, 'side', 'high' );
 		}
 
-		if ( ( $page_for_posts = get_option( 'page_for_posts' ) ) && ( $translations = $this->model->post->get_translations( $page_for_posts ) ) && in_array( $post->ID, $translations ) &&  empty( $post->post_content ) ) {
+		if ( ( $page_for_posts = get_option( 'page_for_posts' ) ) && ( $translations = $this->model->post->get_translations( $page_for_posts ) ) && in_array( $post->ID, $translations ) && empty( $post->post_content ) ) {
 			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
 			remove_post_type_support( $post_type, 'editor' );
 		}

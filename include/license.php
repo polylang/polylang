@@ -30,7 +30,7 @@ class PLL_License {
 		$this->api_url = empty( $api_url ) ? $this->api_url : $api_url;
 
 		$licenses = get_option( 'polylang_licenses' );
-		$this->license_key = empty( $licenses[ $this->id ]['key'] ) ? '' :  $licenses[ $this->id ]['key'];
+		$this->license_key = empty( $licenses[ $this->id ]['key'] ) ? '' : $licenses[ $this->id ]['key'];
 		if ( ! empty( $licenses[ $this->id ]['data'] ) ) {
 			$this->license_data = $licenses[ $this->id ]['data'];
 		}

@@ -115,10 +115,10 @@ class PLL_Admin_Base extends PLL_Base {
 		// 3 => 1 if loaded in footer
 		// FIXME: check if I can load more scripts in footer
 		$scripts = array(
-			'post'  => array( array( 'post', 'media', 'async-upload', 'edit' ),  array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-autocomplete' ), 0 , 1 ),
-			'media' => array( array( 'upload' ), array( 'jquery' ), 0 , 1 ),
+			'post'  => array( array( 'post', 'media', 'async-upload', 'edit' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-autocomplete' ), 0, 1 ),
+			'media' => array( array( 'upload' ), array( 'jquery' ), 0, 1 ),
 			'term'  => array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 ),
-			'user'  => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0 , 0 ),
+			'user'  => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
 		);
 
 		foreach ( $scripts as $script => $v ) {
@@ -165,23 +165,23 @@ class PLL_Admin_Base extends PLL_Base {
 			$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
 				if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 					if ( 'undefined' === typeof options.data ) {
-						options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str;?>' : <?php echo $arr;?>;
+						options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; ?>' : <?php echo $arr; ?>;
 					} else {
 						if ( 'string' === typeof options.data ) {
 							if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
-								options.url = options.url+'&<?php echo $str;?>';
+								options.url = options.url+'&<?php echo $str; ?>';
 							} else {
 								try {
 									o = $.parseJSON(options.data);
-									o = $.extend(o, <?php echo $arr;?>);
+									o = $.extend(o, <?php echo $arr; ?>);
 									options.data = JSON.stringify(o);
 								}
 								catch(e) {
-									options.data = '<?php echo $str;?>&'+options.data;
+									options.data = '<?php echo $str; ?>&'+options.data;
 								}
 							}
 						} else {
-							options.data = $.extend(options.data, <?php echo $arr;?>);
+							options.data = $.extend(options.data, <?php echo $arr; ?>);
 						}
 					}
 				}

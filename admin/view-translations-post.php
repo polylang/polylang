@@ -33,8 +33,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<tr>
 			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); ?></th>
-			<td class = "hidden"><?php echo $add_link;?></td>
-			<td class = "pll-edit-column pll-column-icon"><?php echo $link;?></td><?php
+			<td class = "hidden"><?php echo $add_link; ?></td>
+			<td class = "pll-edit-column pll-column-icon"><?php echo $link; ?></td><?php
 
 			/**
 			 * Fires before the translation colummn is outputed in the language metabox
@@ -59,5 +59,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 				); ?>
 			</td>
 		</tr><?php
-	}?>
+	} ?>
 </table>

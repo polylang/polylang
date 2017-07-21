@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly
 };
 ?>
-<p><strong><?php esc_html_e( 'Translations', 'polylang' );?></strong></p>
+<p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>
 <table><?php
 	foreach ( $this->model->get_languages_list() as $language ) {
 		if ( $language->term_id == $lang->term_id ) {
 			continue;
-		}?>
+		} ?>
 
 		<tr>
 			<td class = "pll-media-language-column"><span class = "pll-translation-flag"><?php echo $language->flag; ?></span><?php echo esc_html( $language->name ); ?></td>
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				// No translation
 				else {
 					echo $this->links->new_post_translation_link( $post_id, $language );
-				}?>
+				} ?>
 			</td>
 		</tr><?php
 	} // End foreach ?>

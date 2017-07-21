@@ -233,7 +233,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 					if ( $this->options['hide_default'] ) {
 						$newrules[ $key ] = str_replace( '?', '?lang=' . $this->options['default_lang'] . '&', $rule );
 					}
-				}	else {
+				} else {
 					$newrules[ $key ] = $rule;
 				}
 			}

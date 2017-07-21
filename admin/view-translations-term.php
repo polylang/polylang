@@ -51,8 +51,8 @@ else {
 				); ?>
 			</th> <?php
 			if ( isset( $term_id ) ) { ?>
-				<td class = "hidden"><?php echo $add_link;?></td>
-				<td class = "pll-edit-column"><?php echo $link;?></td><?php
+				<td class = "hidden"><?php echo $add_link; ?></td>
+				<td class = "pll-edit-column"><?php echo $link; ?></td><?php
 			} ?>
 			<td class = "pll-translation-column"><?php
 				printf( '
@@ -74,6 +74,6 @@ else {
 </table><?php
 
 if ( isset( $term_id ) ) {
-	// Edit term form?>
+	// Edit term form ?>
 	</td><?php
 }

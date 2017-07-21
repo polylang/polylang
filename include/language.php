@@ -236,7 +236,7 @@ class PLL_Language {
 				'roh'            => 'rm',
 				'srd'            => 'sc',
 				'tuk'            => 'tk',
-			 );
+			);
 			$locale = isset( $valid_locales[ $this->locale ] ) ? $valid_locales[ $this->locale ] : $this->locale;
 			return str_replace( '_', '-', $locale );
 		}

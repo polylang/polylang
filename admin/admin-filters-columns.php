@@ -312,7 +312,7 @@ class PLL_Admin_Filters_Columns {
 	public function ajax_update_term_rows() {
 		global $wp_list_table;
 
-		if ( ! taxonomy_exists( $taxonomy = $_POST['taxonomy'] )  || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+		if ( ! taxonomy_exists( $taxonomy = $_POST['taxonomy'] ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			die( 0 );
 		}
 

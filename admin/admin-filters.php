@@ -240,9 +240,9 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @since 2.0
 	 *
-	 * @param string $username		 Sanitized username.
+	 * @param string $username     Sanitized username.
 	 * @param string $raw_username The username prior to sanitization.
-	 * @param bool   $strict			 Whether to limit the sanitization to specific characters. Default false.
+	 * @param bool   $strict       Whether to limit the sanitization to specific characters. Default false.
 	 * @return string
 	 */
 	public function sanitize_user( $username, $raw_username, $strict ) {

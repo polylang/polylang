@@ -1,11 +1,11 @@
 <?php
 
 /**
- * displays the strings translations tab in Polylang settings
+ * Displays the strings translations tab in Polylang settings
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 ?>
 <div class="form-wrap">
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		wp_nonce_field( 'string-translation', '_wpnonce_string-translation' );
 		$string_table->display();
 		printf( '<br /><label><input name="clean" type="checkbox" value="1" /> %s</label>', esc_html__( 'Clean strings translation database', 'polylang' ) ); ?>
-		<p><?php esc_html_e( 'Use this to remove unused strings from database, for example after a plugin has been uninstalled.', 'polylang' );?></p><?php
-		submit_button(); // since WP 3.1 ?>
+		<p><?php esc_html_e( 'Use this to remove unused strings from database, for example after a plugin has been uninstalled.', 'polylang' ); ?></p><?php
+		submit_button(); // Since WP 3.1 ?>
 	</form>
 </div>

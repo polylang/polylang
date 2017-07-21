@@ -116,7 +116,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		$en = $this->factory->attachment->create_upload_object( $filename );
 		wp_update_post( array(
-			'ID' 						=> $en,
+			'ID'           => $en,
 			'post_title'   => 'Test image EN',
 			'post_excerpt' => 'Caption EN',
 		) );
@@ -124,7 +124,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		$fr = self::$polylang->filters_media->create_media_translation( $en, 'fr' );
 		wp_update_post( array(
-			'ID' 						=> $fr,
+			'ID'           => $fr,
 			'post_title'   => 'Test image FR',
 			'post_excerpt' => 'Caption FR',
 		) );

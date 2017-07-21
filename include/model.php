@@ -559,7 +559,7 @@ class PLL_Model {
 		switch ( $func ) {
 			case 'get_object_term':
 				$o = ( false === strpos( $args[1], 'term' ) ) ? 'post' : 'term';
-			break;
+				break;
 
 			case 'save_translations':
 			case 'delete_translation':
@@ -568,7 +568,7 @@ class PLL_Model {
 			case 'join_clause':
 				$o = ( 'post' == $args[0] || $this->is_translated_post_type( $args[0] ) ) ? 'post' : ( 'term' == $args[0] || $this->is_translated_taxonomy( $args[0] ) ? 'term' : false );
 				unset( $args[0] );
-			break;
+				break;
 
 			case 'set_post_language':
 			case 'get_post_language':
@@ -580,13 +580,13 @@ class PLL_Model {
 				$str = explode( '_', $func );
 				$f = empty( $str[2] ) ? $str[0] : $str[0] . '_' . $str[2];
 				$o = $str[1];
-			break;
+				break;
 
 			case 'where_clause':
 			case 'get_objects_in_language':
 				$o = $args[1];
 				unset( $args[1] );
-			break;
+				break;
 		}
 
 		if ( ! empty( $o ) && is_object( $this->$o ) && method_exists( $this->$o, $f ) ) {

@@ -238,7 +238,7 @@ class PLL_Lingotek {
 		<div class="ltk-feature">
 			<div class="ltk-upper">
 				<div class="ltk-image">
-					<img src="<?php echo esc_url( plugins_url( $img, __FILE__ ) );?> " width="220" height="220"/>
+					<img src="<?php echo esc_url( plugins_url( $img, __FILE__ ) ); ?> " width="220" height="220"/>
 				</div>
 				<h3><?php echo esc_html( $title ); ?></h3>
 				<p class="ltk-desc"><?php echo esc_html( $desc ); ?></p><?php
@@ -247,7 +247,7 @@ class PLL_Lingotek {
 						'<a class = "%s" href = "%s"%s>%s</a> ',
 						esc_attr( $link_details['classes'] ),
 						esc_url( $link_details['link'] ),
-						empty( $link_details['new_tab'] ) ? '' :  ' target = "_blank"',
+						empty( $link_details['new_tab'] ) ? '' : ' target = "_blank"',
 						esc_html( $link_details['label'] )
 					);
 				} ?>
@@ -258,7 +258,7 @@ class PLL_Lingotek {
 						printf( '<li>%s</li>', esc_html( $item ) );
 					} ?>
 				</ul>
-				<a href="http://www.lingotek.com/wordpress" target = "_blank"><?php esc_html_e( 'Learn more...', 'polylang' ) ?></a>
+				<a href="http://www.lingotek.com/wordpress" target = "_blank"><?php esc_html_e( 'Learn more...', 'polylang' ); ?></a>
 			</div>
 
 		</div><?php

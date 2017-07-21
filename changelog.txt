@@ -676,7 +676,7 @@ This version does include important changes in database. More than ever, make a 
 * Change the language and translations model from meta to taxonomy (no extra termmeta table created anymore)
 * Move the strings translations from option to a custom post type
 * Add support for language code in subdomain and for one different domain per language (experimental)
-* Add support of wordpress importer plugin. Export must have been done with Polylang 1.2+ (experimental)
+* Add support of WordPress Importer plugin. Export must have been done with Polylang 1.2+ (experimental)
 * Add support for theme navigation customizer (was de-activated by Polylang since WP 3.4)
 * Request confirmation for deleting a language
 * Better management of default category for each language

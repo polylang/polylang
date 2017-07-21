@@ -137,9 +137,9 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @since 0.9.5
 	 *
-	 * @param	mixed  $status false or value returned by previous filter
-	 * @param	string $option Name of the option being changed
-	 * @param	string $value  Value of the option
+	 * @param mixed  $status false or value returned by previous filter
+	 * @param string $option Name of the option being changed
+	 * @param string $value  Value of the option
 	 *
 	 * @return string New value if this is our option, otherwise nothing
 	 */
@@ -171,7 +171,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					wp_clean_plugins_cache();
 				}
 				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
-			break;
+				break;
 
 			case 'delete':
 				check_admin_referer( 'delete-lang' );
@@ -181,13 +181,13 @@ class PLL_Settings extends PLL_Admin_Base {
 				}
 
 				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
-			break;
+				break;
 
 			case 'update':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
 				$error = $this->model->update_language( $_POST );
 				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
-			break;
+				break;
 
 			case 'default-lang':
 				check_admin_referer( 'default-lang' );
@@ -197,7 +197,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				}
 
 				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
-			break;
+				break;
 
 			case 'content-default-lang':
 				check_admin_referer( 'content-default-lang' );
@@ -212,19 +212,19 @@ class PLL_Settings extends PLL_Admin_Base {
 				}
 
 				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
-			break;
+				break;
 
 			case 'activate':
 				check_admin_referer( 'pll_activate' );
 				$this->modules[ $_GET['module'] ]->activate();
 				self::redirect();
-			break;
+				break;
 
 			case 'deactivate':
 				check_admin_referer( 'pll_deactivate' );
 				$this->modules[ $_GET['module'] ]->deactivate();
 				self::redirect();
-			break;
+				break;
 
 			default:
 				/**
@@ -233,7 +233,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				 * @since 1.8
 				 */
 				do_action( "mlang_action_$action" );
-			break;
+				break;
 		}
 	}
 
@@ -249,12 +249,12 @@ class PLL_Settings extends PLL_Admin_Base {
 				// prepare the list table of languages
 				$list_table = new PLL_Table_Languages();
 				$list_table->prepare_items( $this->model->get_languages_list() );
-			break;
+				break;
 
 			case 'strings':
 				$string_table = new PLL_Table_String( $this->model->get_languages_list() );
 				$string_table->prepare_items();
-			break;
+				break;
 		}
 
 		// handle user input
