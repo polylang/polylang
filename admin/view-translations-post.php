@@ -9,7 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 };
 ?>
 <p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>
-<table><?php
+<table>
+	<?php
 	foreach ( $this->model->get_languages_list() as $language ) {
 		if ( $language->term_id == $lang->term_id ) {
 			continue;
@@ -29,12 +30,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 		if ( $value ) {
 			$selected = get_post( $value );
 			$link = $this->links->edit_post_translation_link( $value );
-		} ?>
-
+		}
+		?>
 		<tr>
 			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); ?></th>
 			<td class = "hidden"><?php echo $add_link; ?></td>
-			<td class = "pll-edit-column pll-column-icon"><?php echo $link; ?></td><?php
+			<td class = "pll-edit-column pll-column-icon"><?php echo $link; ?></td>
+			<?php
 
 			/**
 			 * Fires before the translation colummn is outputed in the language metabox
@@ -42,8 +44,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 			 *
 			 * @since 2.1
 			 */
-			do_action( 'pll_before_post_translation_' . $language->slug ); ?>
-			<td class = "pll-translation-column"><?php
+			do_action( 'pll_before_post_translation_' . $language->slug );
+			?>
+			<td class = "pll-translation-column">
+				<?php
 				printf( '
 					<label class="screen-reader-text" for="tr_lang_%1$s">%2$s</label>
 					<input type="hidden" name="post_tr_lang[%1$s]" id="htr_lang_%1$s" value="%3$s" />
@@ -56,8 +60,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 					empty( $link ) ? ' disabled="disabled"' : '',
 					esc_attr( $language->get_locale( 'display' ) ),
 					$language->is_rtl ? 'rtl' : 'ltr'
-				); ?>
+				);
+				?>
 			</td>
-		</tr><?php
-	} ?>
+		</tr>
+		<?php
+	}
+	?>
 </table>

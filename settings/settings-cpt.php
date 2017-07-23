@@ -8,7 +8,7 @@
 class PLL_Settings_CPT extends PLL_Settings_Module {
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.8
 	 *
@@ -34,7 +34,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	}
 
 	/**
-	 * tells if the module is active
+	 * Tells if the module is active
 	 *
 	 * @since 1.8
 	 *
@@ -45,14 +45,15 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays the settings form
+	 * Displays the settings form
 	 *
 	 * @since 1.8
 	 */
 	protected function form() {
 		if ( ! empty( $this->post_types ) ) {?>
 			<h4><?php esc_html_e( 'Custom post types', 'polylang' ); ?></h4>
-			<ul class="pll-inline-block-list"><?php
+			<ul class="pll-inline-block-list">
+				<?php
 				foreach ( $this->post_types as $post_type ) {
 					$pt = get_post_type_object( $post_type );
 					if ( ! empty( $pt ) ) {
@@ -63,14 +64,18 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 							esc_html( $pt->labels->name )
 						);
 					}
-				}?>
+				}
+				?>
 			</ul>
-			<p class="description"><?php esc_html_e( 'Activate languages and translations for custom post types.', 'polylang' ); ?></p><?php
+			<p class="description"><?php esc_html_e( 'Activate languages and translations for custom post types.', 'polylang' ); ?></p>
+			<?php
 		}
 
-		if ( ! empty( $this->taxonomies ) ) {?>
+		if ( ! empty( $this->taxonomies ) ) {
+			?>
 			<h4><?php esc_html_e( 'Custom taxonomies', 'polylang' ); ?></h4>
-			<ul class="pll-inline-block-list"><?php
+			<ul class="pll-inline-block-list">
+				<?php
 				foreach ( $this->taxonomies as $taxonomy ) {
 					$tax = get_taxonomy( $taxonomy );
 					if ( ! empty( $tax ) ) {
@@ -81,14 +86,16 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 							esc_html( $tax->labels->name )
 						);
 					}
-				}?>
+				}
+				?>
 			</ul>
-			<p class="description"><?php esc_html_e( 'Activate languages and translations for custom taxonomies.', 'polylang' ); ?></p><?php
+			<p class="description"><?php esc_html_e( 'Activate languages and translations for custom taxonomies.', 'polylang' ); ?></p>
+			<?php
 		}
 	}
 
 	/**
-	 * sanitizes the settings before saving
+	 * Sanitizes the settings before saving
 	 *
 	 * @since 1.8
 	 *
@@ -98,6 +105,6 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 		foreach ( array( 'post_types', 'taxonomies' ) as $key ) {
 			$newoptions[ $key ] = empty( $options[ $key ] ) ? array() : array_keys( $options[ $key ], 1 );
 		}
-		return $newoptions; // take care to return only validated options
+		return $newoptions; // Take care to return only validated options
 	}
 }

@@ -126,7 +126,8 @@ class PLL_Widget_Languages extends WP_Widget {
 			return;
 		}
 
-		$done = true; ?>
+		$done = true;
+		?>
 		<script type='text/javascript'>
 			//<![CDATA[
 			jQuery( document ).ready( function( $ ) {
@@ -152,6 +153,7 @@ class PLL_Widget_Languages extends WP_Widget {
 				} );
 			} );
 			//]]>
-		</script><?php
+		</script>
+		<?php
 	}
 }

@@ -188,7 +188,8 @@ class PLL_Admin_Base extends PLL_Base {
 			});
 		})(jQuery)
 	}
-</script><?php
+</script>
+<?php
 	}
 
 	/**

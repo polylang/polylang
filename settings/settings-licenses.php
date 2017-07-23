@@ -47,11 +47,14 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	 */
 	protected function form() {
 		if ( ! empty( $this->items ) ) { ?>
-			<table id="pll-licenses-table" class="form-table"><?php
+			<table id="pll-licenses-table" class="form-table">
+				<?php
 			foreach ( $this->items as $item ) {
 				echo $this->get_row( $item );
-			} ?>
-			</table><?php
+			}
+			?>
+			</table>
+			<?php
 		}
 	}
 

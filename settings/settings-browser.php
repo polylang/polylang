@@ -84,6 +84,7 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 				} );
 			} )( jQuery );
 			// ]]>
-		</script><?php
+		</script>
+		<?php
 	}
 }

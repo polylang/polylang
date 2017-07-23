@@ -61,8 +61,8 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 */
 	public function lang_switch() {
 		global $_nav_menu_placeholder, $nav_menu_selected_id;
-		$_nav_menu_placeholder = 0 > $_nav_menu_placeholder ? $_nav_menu_placeholder - 1 : -1; ?>
-
+		$_nav_menu_placeholder = 0 > $_nav_menu_placeholder ? $_nav_menu_placeholder - 1 : -1;
+		?>
 		<div id="posttype-lang-switch" class="posttypediv">
 			<div id="tabs-panel-lang-switch" class="tabs-panel tabs-panel-active">
 				<ul id="lang-switch-checklist" class="categorychecklist form-no-clear">
@@ -82,7 +82,8 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 					<span class="spinner"></span>
 				</span>
 			</p>
-		</div><?php
+		</div>
+		<?php
 	}
 
 	/**
