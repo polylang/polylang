@@ -12,8 +12,11 @@
 		<exclude name="WordPress.WP.I18n.UnorderedPlaceholdersText"/><!-- Would be great to follow but I don't want to mess translations for that -->
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
 		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
-		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
-		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
+	</rule>
+
+	<rule ref="Generic.WhiteSpace.ScopeIndent.Incorrect">
+		<exclude-pattern>*/tests/plugins/*</exclude-pattern>
+		<exclude-pattern>*/tests/themes/*</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress.WP.I18n.LowLevelTranslationFunction">
