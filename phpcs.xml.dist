@@ -11,8 +11,6 @@
 		<exclude name="WordPress.Arrays.ArrayDeclarationSpacing.AssociativeKeyFound"/>
 		<exclude name="WordPress.WP.I18n.UnorderedPlaceholdersText"/><!-- Would be great to follow but I don't want to mess translations for that -->
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
-		<exclude name="Squiz.Commenting.LongConditionClosingComment.Invalid"/>
-		<exclude name="Squiz.Commenting.LongConditionClosingComment.Missing"/>
 		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
 		<exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeOpen"/><!-- Since WPCS 0.12 -->
 		<exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeEnd"/><!-- Since WPCS 0.12 -->
