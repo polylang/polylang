@@ -27,7 +27,7 @@ class PLL_OLT_Manager {
 
 		// Overriding load text domain only on front since WP 4.7
 		// FIXME test get_user_locale for backward compatibility with WP < 4.7
-		if ( is_admin() && function_exists( 'get_user_locale' ) ) {
+		if ( is_admin() && ! Polylang::is_ajax_on_front() && function_exists( 'get_user_locale' ) ) {
 			return;
 		}
 
