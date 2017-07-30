@@ -151,7 +151,7 @@ class PLL_Query {
 			}
 
 			// Unset 'all' query var (mainly for admin language filter).
-			if ( 'all' === $qvars['lang'] ) {
+			if ( isset( $qvars['lang'] ) && 'all' === $qvars['lang'] ) {
 				unset( $qvars['lang'] );
 			}
 		}
