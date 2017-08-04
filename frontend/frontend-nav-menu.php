@@ -80,7 +80,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				// parent item for dropdown
 				if ( ! empty( $options['dropdown'] ) ) {
 					$item->title = $options['show_flags'] && $options['show_names'] ? $this->curlang->flag . '&nbsp;' . esc_html( $this->curlang->name ) : ( $options['show_flags'] ? $this->curlang->flag : esc_html( $this->curlang->name ) );
-					$item->url = '';
+					$item->attr_title = esc_html( $this->curlang->name );
 					$item->classes = array( 'pll-parent-menu-item' );
 					$new_items[] = $item;
 					$offset++;
@@ -90,6 +90,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 					$lang_item = clone $item;
 					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
 					$lang_item->title = $options['show_flags'] && $options['show_names'] ? $lang['flag'] . '<span style="margin-left:0.3em;">' . esc_html( $lang['name'] ) . '</span>' : ( $options['show_flags'] ? $lang['flag'] : esc_html( $lang['name'] ) );
+					$lang_item->attr_title = esc_html( $lang['name'] );
 					$lang_item->url = $lang['url'];
 					$lang_item->lang = $lang['locale']; // Save this for use in nav_menu_link_attributes
 					$lang_item->classes = $lang['classes'];
