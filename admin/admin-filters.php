@@ -54,22 +54,27 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @param array  $instance Widget settings
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
-		$dropdown = new PLL_Walker_Dropdown();
-		printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
-			esc_attr( $widget->id . '_lang_choice' ),
-			esc_html__( 'The widget is displayed for:', 'polylang' ),
-			$dropdown->walk(
-				array_merge(
-					array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
-					$this->model->get_languages_list()
-				),
-				array(
-					'name'        => $widget->id . '_lang_choice',
-					'class'       => 'tags-input',
-					'selected'    => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
+		$screen = get_current_screen();
+
+		// Test the Widgets screen and the Customizer to avoid displaying the option in page builders
+		if ( 'widgets' === $screen->base || isset( $GLOBALS['wp_customize'] ) ) {
+			$dropdown = new PLL_Walker_Dropdown();
+			printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
+				esc_attr( $widget->id . '_lang_choice' ),
+				esc_html__( 'The widget is displayed for:', 'polylang' ),
+				$dropdown->walk(
+					array_merge(
+						array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
+						$this->model->get_languages_list()
+					),
+					array(
+						'name'        => $widget->id . '_lang_choice',
+						'class'       => 'tags-input',
+						'selected'    => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
+					)
 				)
-			)
-		);
+			);
+		}
 	}
 
 	/**
