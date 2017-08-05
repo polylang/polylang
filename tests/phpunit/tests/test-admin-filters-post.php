@@ -19,7 +19,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
+		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
 	}
 
@@ -30,18 +30,18 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	function test_default_language() {
-		// user preferred language
+		// User preferred language
 		self::$polylang->pref_lang = self::$polylang->model->get_language( 'fr' );
 		$post_id = $this->factory->post->create();
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $post_id )->slug );
 
-		// language set from parent
+		// Language set from parent
 		$parent = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $parent, 'de' );
 		$post_id = $this->factory->post->create( array( 'post_parent' => $parent ) );
 		$this->assertEquals( 'de', self::$polylang->model->post->get_language( $post_id )->slug );
 
-		// language set when adding a new translation
+		// Language set when adding a new translation
 		$_GET['new_lang'] = 'es';
 		$post_id = $this->factory->post->create();
 		$this->assertEquals( 'es', self::$polylang->model->post->get_language( $post_id )->slug );
@@ -59,7 +59,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $en )->slug );
 
-		// set the language and translations
+		// Set the language and translations
 		$_REQUEST = $_POST = array(
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
@@ -90,7 +90,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $posts[0], 'en' );
 		self::$polylang->model->post->set_language( $posts[1], 'fr' );
 
-		// first do not modify any language
+		// First do not modify any language
 		$_REQUEST = $_GET = array(
 			'inline_lang_choice' => -1,
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
@@ -103,7 +103,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $posts[0] )->slug );
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $posts[1] )->slug );
 
-		// second modify all languages
+		// Second modify all languages
 		$_REQUEST['inline_lang_choice'] = 'fr';
 		$done = bulk_edit_posts( $_REQUEST );
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $posts[0] )->slug );
@@ -187,8 +187,12 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 
-		wp_delete_post( $en, true ); // forces delete
+		wp_delete_post( $en, true ); // Forces delete
 		$this->assertEqualSetsWithIndex( compact( 'fr', 'de' ), self::$polylang->model->post->get_translations( $fr ) );
+
+		$this->assertEmpty( self::$polylang->model->post->get_object_term( $en, 'post_translations' ) ); // Relationship deleted
+		$group = self::$polylang->model->post->get_object_term( $fr, 'post_translations' );
+		$this->assertEquals( 2, $group->count ); // Count updated
 	}
 
 	function test_page_attributes_meta_box() {
@@ -201,7 +205,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$page = $this->factory->post->create_and_get( array( 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( $page->ID, 'fr' );
 
-		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang ); // we need the get_pages filter
+		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang ); // We need the get_pages filter
 		$GLOBALS['hook_suffix'] = 'post.php';
 		set_current_screen( 'page' );
 		require_once ABSPATH . 'wp-admin/includes/meta-boxes.php';
@@ -213,7 +217,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $out, 'test' ) );
 		$this->assertNotFalse( strpos( $out, 'essai' ) );
 
-		$_POST['lang'] = 'en'; // prevails on the post language (ajax response to language change)
+		$_POST['lang'] = 'en'; // Prevails on the post language (ajax response to language change)
 		ob_start();
 		page_attributes_meta_box( $page );
 		$out = ob_get_clean();
@@ -230,7 +234,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$lang = self::$polylang->pref_lang = self::$polylang->model->get_language( 'en' );
 		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 		$post_ID = $this->factory->post->create();
-		wp_set_object_terms( $post_ID, null, 'language' ); // intentionally remove the language
+		wp_set_object_terms( $post_ID, null, 'language' ); // Intentionally remove the language
 
 		ob_start();
 		self::$polylang->filters_post->post_language();
@@ -250,7 +254,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 		$post_ID = $this->factory->post->create();
-		wp_set_object_terms( $post_ID, null, 'language' ); // intentionally remove the language
+		wp_set_object_terms( $post_ID, null, 'language' ); // Intentionally remove the language
 
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
@@ -345,7 +349,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );
 
-		// language is French
+		// Language is French
 		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
 
@@ -392,7 +396,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			'trtax' => 'trtax',
 		);
 
-		register_taxonomy( 'trtax', 'post' ); // translated custom tax
+		register_taxonomy( 'trtax', 'post' ); // Translated custom tax
 
 		$en = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $en, 'en' );
