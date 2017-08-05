@@ -57,7 +57,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 		$screen = get_current_screen();
 
 		// Test the Widgets screen and the Customizer to avoid displaying the option in page builders
-		if ( 'widgets' === $screen->base || isset( $GLOBALS['wp_customize'] ) ) {
+		if ( ( isset( $screen ) && 'widgets' === $screen->base ) || isset( $GLOBALS['wp_customize'] ) ) {
 			$dropdown = new PLL_Walker_Dropdown();
 			printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
 				esc_attr( $widget->id . '_lang_choice' ),
