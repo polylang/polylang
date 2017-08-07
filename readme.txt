@@ -80,11 +80,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 * Pro: Add support for the REST API
 * Pro: Add integration with The Events Calendar
-* Pro: Improve integration with ACF Pro by integrating term metas
+* Pro: Refactor ACF Pro integration for post metas and integrate term metas
 * Pro: Ask confirmation if synchronizing a post overwrites an existing translation
 * Pro: Separate sync post logic from interface
 * Pro: Fix 'Detect browser language' option automatically deactivated
 * Pro: Fix redirect to 404 when the 'page' slug translation includes non alphanumeric characters.
+* Pro: Fix untranslated post type archive slug
+* Pro: Fix ACF taxonomy fields not copied when the taxonomy is not translated #156
+* Pro: Fix fatal error with ACF4
 * Support a different content text direction in admin #45
 * Add support for wildcards and 'copy-once' attribute in wpml-config.xml
 * Add minimal support for the filters 'wpml_display_language_names' and 'icl_ls_languages'
@@ -106,6 +109,9 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix post name and tag slug incorrectly sanitized for German and Danish
 * Fix lang attribute in dropdowns
 * Fix wpml_permalink filter #139
+* Fix WPML constants undefined on backend #151
+* Fix a conflict with the plugin Custom Permalinks #143
+* Fix menu location unexpectedly unset
 
 = 2.1.6 (2017-07-17) =
 
