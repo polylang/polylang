@@ -194,7 +194,7 @@ class PLL_Language {
 
 	/**
 	 * set home_url scheme
-	 * this can't be cached accross pages
+	 * this can't be cached across pages
 	 *
 	 * @since 1.6.4
 	 */
