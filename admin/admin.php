@@ -47,8 +47,6 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * loads the settings pages or the filters base on the request
 	 *
 	 * @since 1.2
-	 *
-	 * @param object $links_model
 	 */
 	public function init() {
 		parent::init();
@@ -78,8 +76,8 @@ class PLL_Admin extends PLL_Admin_Base {
 	 *
 	 * @since 1.1.6
 	 *
-	 * @param array $plugin_data not used
-	 * @param object $r plugin update data
+	 * @param array  $plugin_data Not used
+	 * @param object $r           Plugin update data
 	 */
 	function plugin_update_message( $plugin_data, $r ) {
 		if ( isset( $r->upgrade_notice ) ) {

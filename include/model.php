@@ -151,7 +151,7 @@ class PLL_Model {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int|string term_id, tl_term_id, slug or locale of the queried language
+	 * @param int|string $value term_id, tl_term_id, slug or locale of the queried language
 	 * @return object|bool PLL_Language object, false if no language found
 	 */
 	public function get_language( $value ) {
@@ -292,31 +292,6 @@ class PLL_Model {
 	public function is_translated_taxonomy( $tax ) {
 		$taxonomies = $this->get_translated_taxonomies( false );
 		return ( is_array( $tax ) && array_intersect( $tax, $taxonomies ) || in_array( $tax, $taxonomies ) );
-	}
-
-	/**
-	 * Check if translated taxonomy is queried
-	 * Compatible with nested queries introduced in WP 4.1
-	 * @see https://wordpress.org/support/topic/tax_query-bug
-	 *
-	 * @since 1.7
-	 *
-	 * @param array $tax_queries
-	 * @return bool
-	 */
-	public function have_translated_taxonomy( $tax_queries ) {
-		foreach ( $tax_queries as $tax_query ) {
-			if ( isset( $tax_query['taxonomy'] ) && $this->is_translated_taxonomy( $tax_query['taxonomy'] ) && ! ( isset( $tax_query['operator'] ) && 'NOT IN' === $tax_query['operator'] ) ) {
-				return true;
-			}
-
-			// Nested queries
-			elseif ( is_array( $tax_query ) && $this->have_translated_taxonomy( $tax_query ) ) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -575,16 +550,16 @@ class PLL_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $func function name
-	 * @param array $args function arguments
+	 * @param string $func Function name
+	 * @param array  $args Function arguments
 	 */
 	public function __call( $func, $args ) {
 		$f = $func;
 
 		switch ( $func ) {
 			case 'get_object_term':
-				$o = false === strpos( $args[1], 'term' ) ? 'post' : 'term';
-			break;
+				$o = ( false === strpos( $args[1], 'term' ) ) ? 'post' : 'term';
+				break;
 
 			case 'save_translations':
 			case 'delete_translation':
@@ -593,7 +568,7 @@ class PLL_Model {
 			case 'join_clause':
 				$o = ( 'post' == $args[0] || $this->is_translated_post_type( $args[0] ) ) ? 'post' : ( 'term' == $args[0] || $this->is_translated_taxonomy( $args[0] ) ? 'term' : false );
 				unset( $args[0] );
-			break;
+				break;
 
 			case 'set_post_language':
 			case 'get_post_language':
@@ -605,13 +580,13 @@ class PLL_Model {
 				$str = explode( '_', $func );
 				$f = empty( $str[2] ) ? $str[0] : $str[0] . '_' . $str[2];
 				$o = $str[1];
-			break;
+				break;
 
 			case 'where_clause':
 			case 'get_objects_in_language':
 				$o = $args[1];
 				unset( $args[1] );
-			break;
+				break;
 		}
 
 		if ( ! empty( $o ) && is_object( $this->$o ) && method_exists( $this->$o, $f ) ) {

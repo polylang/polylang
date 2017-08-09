@@ -75,6 +75,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @since 1.2
 	 *
+	 * @param string $alias Alias for $wpdb->posts table
 	 * @return string join clause
 	 */
 	public function join_clause( $alias = '' ) {

@@ -17,7 +17,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
+		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang ); // To activate the fix_delete_default_category() filter
 		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang );
@@ -30,12 +30,12 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	function test_default_language() {
-		// user preferred language
+		// User preferred language
 		self::$polylang->pref_lang = self::$polylang->model->get_language( 'fr' );
 		$term_id = $this->factory->category->create();
 		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $term_id )->slug );
 
-		// language set from parent
+		// Language set from parent
 		$parent = $this->factory->category->create();
 		self::$polylang->model->term->set_language( $parent, 'de' );
 		$term_id = $this->factory->category->create( array( 'parent' => $parent ) );
@@ -51,7 +51,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$en = $this->factory->category->create();
 		$this->assertEquals( 'en', self::$polylang->model->term->get_language( $en )->slug );
 
-		// set the language and translations
+		// Set the language and translations
 		$_REQUEST = $_POST = array(
 			'action'           => 'add-tag',
 			'post_lang_choice' => 'fr',
@@ -87,7 +87,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		self::$polylang->model->term->save_translations( $en, compact( 'en', 'de', 'es' ) );
 
-		// post quick edit
+		// Post quick edit
 		// + the language is free in the translation group
 		$_REQUEST = $_POST = array(
 			'action'             => 'inline-save',
@@ -114,7 +114,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	function test_create_term_from_post_bulk_edit() {
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang ); // we need this too
+		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang ); // We need this too
 
 		$posts = $this->factory->post->create_many( 2 );
 		self::$polylang->model->post->set_language( $posts[0], 'en' );
@@ -123,7 +123,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$test_tag = $this->factory->tag->create( array( 'name' => 'test_tag' ) );
 		self::$polylang->model->term->set_language( $test_tag, 'fr' );
 
-		// first do not modify any language
+		// First do not modify any language
 		$_REQUEST = $_GET = array(
 			'inline_lang_choice' => -1,
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
@@ -154,7 +154,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEqualSetsWithIndex( array( 'en' => $new_en, 'fr' => $new_fr ), self::$polylang->model->term->get_translations( $new_en ) );
 		$this->assertEqualSetsWithIndex( array( 'en' => $test_en, 'fr' => $test_fr ), self::$polylang->model->term->get_translations( $test_en ) );
 
-		// second modify all languages
+		// Second modify all languages
 		$_GET['inline_lang_choice'] = $_REQUEST['inline_lang_choice'] = 'fr';
 		$_GET['tax_input']  = $_REQUEST['tax_input'] = array( 'post_tag' => 'third_tag' );
 		$done = bulk_edit_posts( $_REQUEST );
@@ -184,12 +184,17 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 
-		wp_delete_term( $en, 'category' ); // forces delete
+		wp_delete_term( $en, 'category' ); // Forces delete
 		$this->assertEqualSetsWithIndex( compact( 'fr', 'de' ), self::$polylang->model->term->get_translations( $fr ) );
+
+		// Bug fixed in 2.2
+		$this->assertEmpty( self::$polylang->model->term->get_object_term( $en, 'term_translations' ) ); // Relationship deleted
+		$group = self::$polylang->model->term->get_object_term( $fr, 'term_translations' );
+		$this->assertEquals( 2, $group->count ); // Count updated
 	}
 
 	function get_edit_term_form( $tag_ID, $taxonomy ) {
-		// prepare all needed info before loading the entire form
+		// Prepare all needed info before loading the entire form
 		$GLOBALS['post_type'] = 'post';
 		$tax = get_taxonomy( $taxonomy );
 		$_REQUEST['tag_ID'] = $_GET['tag_ID'] = $tag_ID;
@@ -221,26 +226,19 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $form, 'test' ) );
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
 
-		// the admin language filter must have no impact
+		// The admin language filter must have no impact
 		self::$polylang->pref_lang = self::$polylang->filter_lang = self::$polylang->model->get_language( 'en' );
 		$form = $this->get_edit_term_form( $tag_ID, 'category' );
 		$this->assertFalse( strpos( $form, 'test' ) );
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
 		self::$polylang->filter_lang = false;
 
-		// even when we just activated the admin language filter
+		// Even when we just activated the admin language filter
 		$_REQUEST['lang'] = $_GET['lang'] = 'en';
 		$form = $this->get_edit_term_form( $tag_ID, 'category' );
 		$this->assertFalse( strpos( $form, 'test' ) );
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
-		unset( $_GET['lang'] );
-/*
- * FIXME it does not make sense to make ajax tests here
-		$_REQUEST['lang'] = $_POST['lang'] = 'en'; // prevails on the term language (ajax response to language change)
-		$form = $this->get_edit_term_form( $tag_ID , 'category' );
-		$this->assertNotFalse( strpos( $form, 'test' ) );
-		$this->assertFalse( strpos( $form, 'essai' ) );
-*/
+
 		unset( $_REQUEST, $_GET, $_POST, $GLOBALS['post_type'] );
 	}
 
@@ -269,7 +267,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'test', $input->item( 0 )->getAttribute( 'value' ) );
 
 		$input = $xpath->query( '//input[@id="tr_lang_de"]' );
-		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) ); // no translation in German
+		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) ); // No translation in German
 	}
 
 	function test_default_category_in_edit_tags() {
@@ -299,7 +297,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		set_current_screen( 'edit-tags.php' );
 
-		// so let's copy paste WP 4.4 code:
+		// So let's copy paste WP 4.4 code:
 		ob_start();
 		$dropdown_args = array(
 			'hide_empty'       => 0,
@@ -417,8 +415,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		update_option( 'default_category', $term_id );
 
 		$this->assertEquals( $term_id, get_option( 'default_category' ) );
-// FIXME test removed as the code doesn't force the default category to be in the default language
-//		$this->assertEquals( self::$polylang->options['default_lang'], self::$polylang->model->term->get_language( $term_id )->slug );
 		$translations = self::$polylang->model->term->get_translations( $term_id );
 		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
 	}
@@ -444,17 +440,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertFalse( strpos( $out, 'test' ) );
 		$this->assertNotFalse( strpos( $out, 'essai' ) );
-/*
- * FIXME it does not make sense to mak ajax tests here
-		$_REQUEST['lang'] = $_POST['lang'] = 'en'; // prevails on the post language (ajax response to language change)
-		self::$polylang->set_current_language();
-		ob_start();
-		post_categories_meta_box( $post, array() );
-		$out = ob_get_clean();
 
-		$this->assertNotFalse( strpos( $out, 'test' ) );
-		$this->assertFalse( strpos( $out, 'essai' ) );
-*/
 		unset( $_POST );
 	}
 
@@ -476,7 +462,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $out, 'test' ) );
 		$this->assertNotFalse( strpos( $out, 'essai' ) );
 
-		// the admin language filter is active
+		// The admin language filter is active
 		self::$polylang->pref_lang = self::$polylang->filter_lang = self::$polylang->model->get_language( 'en' );
 		self::$polylang->set_current_language();
 
@@ -501,14 +487,15 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en' ) );
 		$this->assertEqualSets( array( $en ), $terms );
 
-// FIXME currently breaks in PLL_Admin_Filters_Term::get_terms_args()
-//		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
-//		$this->assertEqualSets( array( $en, $fr ), $terms );
-
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => array( 'en', 'fr' ) ) );
 		$this->assertEqualSets( array( $fr, $en ), $terms );
 
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 0 ) );
 		$this->assertEqualSets( array( $en, $fr, $es ), $terms );
+
+		// FIXME currently breaks in PLL_Admin_Filters_Term::get_terms_args()
+		$this->markTestIncomplete();
+		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
+		$this->assertEqualSets( array( $en, $fr ), $terms );
 	}
 }

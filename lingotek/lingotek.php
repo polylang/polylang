@@ -104,7 +104,7 @@ class PLL_Lingotek {
 				'link'    => 'http://www.lingotek.com/wordpress/extra_services',
 				'new_tab' => true,
 				'classes' => 'button button-primary',
-			)
+			),
 		);
 
 		printf( '<p>%s</p>', esc_html__( 'Polylang is now fully integrated with Lingotek, a professional translation management system!', 'polylang' ) );
@@ -158,7 +158,6 @@ class PLL_Lingotek {
 			array_intersect_key( $links, array_flip( array( 'activate', 'services' ) ) ),
 			'image04.png'
 		);
-
 	}
 
 	/**
@@ -166,7 +165,8 @@ class PLL_Lingotek {
 	 *
 	 * @since 1.7.7
 	 */
-	public function print_css() { ?>
+	public function print_css() {
+		?>
 		<style type="text/css">
 		.ltk-feature {
 			text-align: left;
@@ -197,7 +197,7 @@ class PLL_Lingotek {
 		.ltk-feature ul li {
 			list-style: inside disc;
 			list-style-position: outside;
-    		padding-left: 0;
+				padding-left: 0;
 		}
 		.ltk-feature .ltk-desc {
 			height: 3em;
@@ -221,7 +221,8 @@ class PLL_Lingotek {
 				padding-bottom: 20px;
 			}
 		}
-		</style><?php
+		</style>
+		<?php
 	}
 
 	/**
@@ -235,34 +236,40 @@ class PLL_Lingotek {
 	 * @param array  $links
 	 * @param string $img
 	 */
-	protected function box( $title, $desc, $list, $links, $img ) {?>
+	protected function box( $title, $desc, $list, $links, $img ) {
+		?>
 		<div class="ltk-feature">
 			<div class="ltk-upper">
 				<div class="ltk-image">
-					<img src="<?php echo esc_url( plugins_url( $img, __FILE__ ) );?> " width="220" height="220"/>
+					<img src="<?php echo esc_url( plugins_url( $img, __FILE__ ) ); ?> " width="220" height="220"/>
 				</div>
 				<h3><?php echo esc_html( $title ); ?></h3>
-				<p class="ltk-desc"><?php echo esc_html( $desc ); ?></p><?php
+				<p class="ltk-desc"><?php echo esc_html( $desc ); ?></p>
+				<?php
 				foreach ( $links as $link_details ) {
 					printf(
 						'<a class = "%s" href = "%s"%s>%s</a> ',
 						esc_attr( $link_details['classes'] ),
 						esc_url( $link_details['link'] ),
-						empty( $link_details['new_tab'] ) ? '' :  ' target = "_blank"',
+						empty( $link_details['new_tab'] ) ? '' : ' target = "_blank"',
 						esc_html( $link_details['label'] )
 					);
-				} ?>
+				}
+				?>
 			</div>
 			<div class="ltk-lower">
-				<ul><?php
+				<ul>
+					<?php
 					foreach ( $list as $item ) {
 						printf( '<li>%s</li>', esc_html( $item ) );
-					} ?>
+					}
+					?>
 				</ul>
-				<a href="http://www.lingotek.com/wordpress" target = "_blank"><?php esc_html_e( 'Learn more...', 'polylang' ) ?></a>
+				<a href="http://www.lingotek.com/wordpress" target = "_blank"><?php esc_html_e( 'Learn more...', 'polylang' ); ?></a>
 			</div>
 
-		</div><?php
+		</div>
+		<?php
 	}
 
 	/**

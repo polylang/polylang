@@ -22,7 +22,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 		parent::__construct( $model );
 
-		// filters to prime terms cache
+		// Filters to prime terms cache
 		add_filter( 'get_terms', array( $this, '_prime_terms_cache' ), 10, 2 );
 		add_filter( 'wp_get_object_terms', array( $this, 'wp_get_object_terms' ), 10, 3 );
 
@@ -41,7 +41,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		$term_id = (int) $term_id;
 		wp_set_object_terms( $term_id, $lang ? $this->model->get_language( $lang )->tl_term_id : '', 'term_language' );
 
-		// add translation group for correct WXR export
+		// Add translation group for correct WXR export
 		$translations = $this->get_translations( $term_id );
 		if ( $slug = array_search( $term_id, $translations ) ) {
 			unset( $translations[ $slug ] );
@@ -80,7 +80,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 			$term_id = wpcom_vip_get_term_by( 'slug', $value , $taxonomy )->term_id;
 		}
 
-		// get the language and make sure it is a PLL_Language object
+		// Get the language and make sure it is a PLL_Language object
 		return isset( $term_id ) && ( $lang = $this->get_object_term( $term_id, 'term_language' ) ) ? $this->model->get_language( $lang->term_id ) : false;
 	}
 
@@ -89,7 +89,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $translations: an associative array of translations with language code as key and translation id as value
+	 * @param array $translations An associative array of translations with language code as key and translation id as value
 	 */
 	protected function keep_translation_group( $translations ) {
 		return true;
@@ -107,9 +107,10 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		$slug = array_search( $id, $this->get_translations( $id ) ); // in case some plugin stores the same value with different key
 
 		parent::delete_translation( $id );
+		wp_delete_object_term_relationships( $id, 'term_translations' );
 
 		if ( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( * ) FROM $wpdb->terms WHERE term_id = %d;", $id ) ) ) {
-			// always keep a group for terms to allow relationships remap when importing from a WXR file
+			// Always keep a group for terms to allow relationships remap when importing from a WXR file
 			$translations[ $slug ] = $id;
 			wp_insert_term( $group = uniqid( 'pll_' ), 'term_translations', array( 'description' => serialize( $translations ) ) );
 			wp_set_object_terms( $id, $group, 'term_translations' );
@@ -145,7 +146,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		}
 
 		if ( ! empty( $term_ids ) ) {
-			update_object_term_cache( array_unique( $term_ids ), 'term' ); // adds language and translation of terms to cache
+			update_object_term_cache( array_unique( $term_ids ), 'term' ); // Adds language and translation of terms to cache
 		}
 		return $terms;
 	}
@@ -173,8 +174,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @since 2.0
 	 *
-	 * @param array  $ids      An array of term IDs.
-	 * @param string $taxonomy Taxonomy slug.
+	 * @param array $ids An array of term IDs.
 	 */
 	function clean_term_cache( $ids ) {
 		clean_object_term_cache( $ids, 'term' );

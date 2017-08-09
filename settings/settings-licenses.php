@@ -47,11 +47,14 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	 */
 	protected function form() {
 		if ( ! empty( $this->items ) ) { ?>
-			<table id="pll-licenses-table" class="form-table"><?php
-			foreach ( $this->items as $item ) {
-				echo $this->get_row( $item );
-			} ?>
-			</table><?php
+			<table id="pll-licenses-table" class="form-table">
+				<?php
+				foreach ( $this->items as $item ) {
+					echo $this->get_row( $item );
+				}
+				?>
+			</table>
+			<?php
 		}
 	}
 
@@ -90,7 +93,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 				$class = 'notice-error notice-alt';
 
 				switch ( $license->error ) {
-					case 'expired' :
+					case 'expired':
 						$message = sprintf(
 							/* translators: %1$s is a date, %2$s and %3$s are html tags */
 							__( 'Your license key expired on %1$s. Please %2$srenew your license key%3$s.', 'polylang' ),
@@ -98,19 +101,19 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/checkout/?edd_license_key=' . $item->license_key ),
 							'</a>'
 						);
-					break;
+						break;
 
-					case 'missing' :
+					case 'missing':
 						$message = sprintf(
 							/* translators: %s are html tags */
 							__( 'Invalid license. Please %svisit your account page%s and verify it.', 'polylang' ),
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'
 						);
-					break;
+						break;
 
-					case 'invalid' :
-					case 'site_inactive' :
+					case 'invalid':
+					case 'site_inactive':
 						$message = sprintf(
 							/* translators: %1$s is a product name, %2$s and %3$s are html tags */
 							__( 'Your %1$s license key is not active for this URL. Please %2$svisit your account page%3$s to manage your license key URLs.', 'polylang' ),
@@ -118,21 +121,21 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'
 						);
-					break;
+						break;
 
-					case 'item_name_mismatch' :
+					case 'item_name_mismatch':
 						/* translators: %s is a product name */
 						$message = sprintf( __( 'This is not a %s license key.', 'polylang' ), $item->name );
 						break;
 
 					case 'no_activations_left':
-						/* translators: %s are html tags */
 						$message = sprintf(
+							/* translators: %s are html tags */
 							__( 'Your license key has reached its activation limit. %sView possible upgrades%s now.', 'polylang' ),
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'
 						);
-					break;
+						break;
 				}
 			} else {
 				$class = 'license-valid';

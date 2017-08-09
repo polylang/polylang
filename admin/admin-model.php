@@ -136,7 +136,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// Delete users options
 		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
 			delete_user_meta( $user_id, 'pll_filter_content', $lang->slug );
-			delete_user_meta( $user_id, 'description_'.$lang->slug );
+			delete_user_meta( $user_id, 'description_' . $lang->slug );
 		}
 
 		// Delete the string translations
@@ -363,7 +363,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Get all terms with their term_id
-		$terms = $wpdb->get_results( "SELECT term_id, slug FROM $wpdb->terms WHERE slug IN ( " . implode( ',', $slugs ) . " )" );
+		$terms = $wpdb->get_results( "SELECT term_id, slug FROM $wpdb->terms WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
 
 		// Prepare terms taxonomy relationship
 		foreach ( $terms as $term ) {
@@ -415,11 +415,13 @@ class PLL_Admin_Model extends PLL_Model {
 			'post_type'   => $this->get_translated_post_types(),
 			'post_status' => 'any',
 			'fields'      => 'ids',
-			'tax_query'   => array( array(
-				'taxonomy' => 'language',
-				'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
-				'operator' => 'NOT IN',
-			) )
+			'tax_query'   => array(
+				array(
+					'taxonomy' => 'language',
+					'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
+					'operator' => 'NOT IN',
+				),
+			),
 		) );
 
 		$terms = get_terms( $this->get_translated_taxonomies(), array( 'get' => 'all', 'fields' => 'ids' ) );
@@ -477,24 +479,24 @@ class PLL_Admin_Model extends PLL_Model {
 		if ( ! empty( $dr ) ) {
 			$wpdb->query( "
 				DELETE FROM $wpdb->term_relationships
-				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . " )
-				AND term_taxonomy_id IN ( " . implode( ',', $dr['tt'] ) . " )
-			" );
+				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' )
+				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )
+			' );
 		}
 
 		// Delete terms
 		if ( ! empty( $dt ) ) {
-			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $dt['t'] ) . " ) " );
-			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $dt['tt'] ) . " ) " );
+			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $dt['t'] ) . ' )' );
+			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $dt['tt'] ) . ' )' );
 		}
 
 		// Update terms
 		if ( ! empty( $ut ) ) {
 			$wpdb->query( "
 				UPDATE $wpdb->term_taxonomy
-				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . " END )
-				WHERE term_id IN ( " . implode( ',', $ut['in'] ) . " )
-			" );
+				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END )
+				WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )
+			' );
 		}
 
 		if ( ! empty( $term_ids ) ) {

@@ -22,8 +22,8 @@ class PLL_Table_String extends WP_List_Table {
 	 */
 	function __construct( $languages ) {
 		parent::__construct( array(
-			'plural'   => 'Strings translations', // Do not translate ( used for css class )
-			'ajax'	 => false,
+			'plural' => 'Strings translations', // Do not translate ( used for css class )
+			'ajax'   => false,
 		) );
 
 		$this->languages = $languages;
@@ -93,7 +93,7 @@ class PLL_Table_String extends WP_List_Table {
 			$input_type = $item['multiline'] ?
 				'<textarea name="translation[%1$s][%2$s]" id="%1$s-%2$s">%4$s</textarea>' :
 				'<input type="text" name="translation[%1$s][%2$s]" id="%1$s-%2$s" value="%4$s" />';
-			$out .= sprintf( '<div class="translation"><label for="%1$s-%2$s">%3$s</label>'.$input_type.'</div>'."\n",
+			$out .= sprintf( '<div class="translation"><label for="%1$s-%2$s">%3$s</label>' . $input_type . '</div>' . "\n",
 				esc_attr( $key ),
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
@@ -203,7 +203,7 @@ class PLL_Table_String extends WP_List_Table {
 
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
-			'per_page'	=> $per_page,
+			'per_page'    => $per_page,
 			'total_pages' => ceil( $total_items / $per_page ),
 		) );
 	}
@@ -264,7 +264,7 @@ class PLL_Table_String extends WP_List_Table {
 				esc_html( $group )
 			);
 		}
-		echo '</select>'."\n";
+		echo '</select>' . "\n";
 
 		submit_button( __( 'Filter' ), 'button', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
 		echo '</div>';

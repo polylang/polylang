@@ -1,7 +1,6 @@
 <?php
 
-// If uninstall not called from WordPress exit
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) { // If uninstall not called from WordPress exit
 	exit();
 }
 
@@ -115,13 +114,13 @@ class PLL_Uninstall {
 
 		if ( ! empty( $term_ids ) ) {
 			$term_ids = array_unique( $term_ids );
-			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $term_ids ) . " )" );
-			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_id IN ( " . implode( ',', $term_ids ) . " )" );
+			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $term_ids ) . ' )' );
+			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_id IN ( " . implode( ',', $term_ids ) . ' )' );
 		}
 
 		if ( ! empty( $tt_ids ) ) {
 			$tt_ids = array_unique( $tt_ids );
-			$wpdb->query( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ( " . implode( ',', $tt_ids ) . " )" );
+			$wpdb->query( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ( " . implode( ',', $tt_ids ) . ' )' );
 		}
 
 		// Delete options
@@ -130,7 +129,7 @@ class PLL_Uninstall {
 		delete_option( 'polylang_wpml_strings' ); // Strings registered with icl_register_string
 		delete_option( 'polylang_licenses' );
 
-		//Delete transients
+		// Delete transients
 		delete_transient( 'pll_languages_list' );
 		delete_transient( 'pll_upgrade_1_4' );
 		delete_transient( 'pll_translated_slugs' );

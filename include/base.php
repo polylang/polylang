@@ -77,6 +77,8 @@ abstract class PLL_Base {
 	 *
 	 * @since 1.5.1
 	 *
+	 * @param int $new_blog
+	 * @param int $old_blog
 	 * @return bool not used by WP but by child class
 	 */
 	public function switch_blog( $new_blog, $old_blog ) {

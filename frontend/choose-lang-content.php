@@ -111,7 +111,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_lang {
 		// http://wordpress.org/support/topic/search-for-empty-string-in-default-language
 		if ( $this->options['hide_default'] && ! isset( $qv['lang'] ) && ( $is_archive || isset( $query->query['s'] ) || ( count( $query->query ) == 1 && ! empty( $qv['feed'] ) ) ) ) {
 			$this->set_language( $this->model->get_language( $this->options['default_lang'] ) );
-			$this->set_lang_query_var( $query, $this->curlang );
+			$this->set_curlang_in_query( $query );
 		}
 	}
 
@@ -132,8 +132,8 @@ class PLL_Choose_Lang_Content extends PLL_Choose_lang {
 	 *
 	 * @since 0.9
 	 *
-	 * @param object|bool language found in get_language_from_content
-	 * @return object language
+	 * @param object|bool $lang Language found in get_language_from_content
+	 * @return object Language
 	 */
 	public function pll_get_current_language( $lang ) {
 		return ! $lang ? $this->get_preferred_language() : $lang;

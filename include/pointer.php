@@ -15,17 +15,17 @@ class PLL_Pointer {
 	 *
 	 * list of parameters accepted in $args:
 	 *
-	 * pointer   => required, unique identifier of the pointer
-	 * id        => required, the pointer will be attached to this html id
-	 * position  => optional array, if used both sub parameters are required
-	 * 	 edge    => 'top' or 'bottom'
-	 * 	 align   => 'right' or 'left'
-	 * width     => optional, the width in px
-	 * title     => required, title
-	 * content   => required, content
-	 * buttons   => optional array of arrays, by default the pointer uses the standard dismiss button offered by WP
-	 * 	   label => the label of the button
-	 * 	   link  => optional link for the button. By default, the button just dismisses the pointer
+	 * pointer  => required, unique identifier of the pointer
+	 * id       => required, the pointer will be attached to this html id
+	 * position => optional array, if used both sub parameters are required
+	 *   edge   => 'top' or 'bottom'
+	 *   align  => 'right' or 'left'
+	 * width    => optional, the width in px
+	 * title    => required, title
+	 * content  => required, content
+	 * buttons  => optional array of arrays, by default the pointer uses the standard dismiss button offered by WP
+	 *   label  => the label of the button
+	 *   link   => optional link for the button. By default, the button just dismisses the pointer
 	 *
 	 * @since 1.7.7
 	 *
@@ -105,6 +105,6 @@ class PLL_Pointer {
 			empty( $this->args['width'] ) ? '' : sprintf( 'pointerWidth: %d,', $this->args['width'] ),
 			empty( $b ) ? '' : $b
 		);
-		echo "<script type='text/javascript'>" .$js. "</script>";
+		echo '<script type="text/javascript">' . $js . '</script>';
 	}
 }

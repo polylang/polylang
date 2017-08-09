@@ -174,8 +174,8 @@ class PLL_Frontend_Links extends PLL_Links {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $language optional defaults to current language
-	 * @param bool $is_search optional wether we need the home url for a search form, defaults to false
+	 * @param object $language  Optional, defaults to current language
+	 * @param bool   $is_search Optional, whether we need the home url for a search form, defaults to false
 	 */
 	public function get_home_url( $language = '', $is_search = false ) {
 		if ( empty( $language ) ) {

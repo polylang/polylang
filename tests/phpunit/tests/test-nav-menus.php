@@ -231,7 +231,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	}
 
 	function test_nav_menu_language_switcher() {
-		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0,'force_home' => 0 ,'show_flags' => 0 ,'show_names' => 1 ); // default values
+		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1 ); // default values
 		$primary_location = $this->setup_nav_menus( $options );
 
 		// test nav menus on frontend when using theme locations
@@ -250,7 +250,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	}
 
 	function test_nav_menu_language_switcher_as_dropdown() {
-		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 1,'force_home' => 0 ,'show_flags' => 0 ,'show_names' => 1, 'dropdown' => 1 );
+		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 1, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 1 );
 		$primary_location = $this->setup_nav_menus( $options );
 
 		// test nav menus on frontend when using theme locations
@@ -301,7 +301,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		wp_update_nav_menu_item( $menu_en, $item_id, $args );
 
-		$expected = array( 'hide_if_no_translation' => 0, 'hide_current' => 0,'force_home' => 0 ,'show_flags' => 1 ,'show_names' => 1, 'dropdown' => 0 );
+		$expected = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 1, 'show_names' => 1, 'dropdown' => 0 );
 		$this->assertEqualSets( $expected, get_post_meta( $item_id, '_pll_menu_item', true ) );
 	}
 
@@ -372,7 +372,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		);
 
 		$_GET['action'] = 'locations';
-		$_REQUEST[ '_wpnonce' ] = wp_create_nonce( 'save-menu-locations' );
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'save-menu-locations' );
 
 		$mods = set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$options = get_option( 'polylang' );

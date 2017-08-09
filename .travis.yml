@@ -36,6 +36,10 @@ before_script:
     else
       composer global require "phpunit/phpunit=4.8.*"
     fi
+  - |
+    composer global require wp-coding-standards/wpcs
+    phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
 
 script:
+  - phpcs -s --extensions=php,js .
   - phpunit

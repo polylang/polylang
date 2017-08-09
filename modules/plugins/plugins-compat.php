@@ -58,6 +58,12 @@ class PLL_Plugins_Compat {
 
 		// No category base (works for Yoast SEO too)
 		add_filter( 'get_terms_args', array( $this, 'no_category_base_get_terms_args' ), 5 ); // Before adding cache domain
+
+		// WordPress MU Domain Mapping
+		if ( function_exists( 'redirect_to_mapped_domain' ) && ! get_site_option( 'dm_no_primary_domain' ) ) {
+			remove_action( 'template_redirect', 'redirect_to_mapped_domain' );
+			add_action( 'template_redirect', array( $this, 'dm_redirect_to_mapped_domain' ) );
+		}
 	}
 
 	/**
@@ -99,7 +105,7 @@ class PLL_Plugins_Compat {
 		load_plugin_textdomain( 'wordpress-importer', false, basename( dirname( $class->getFileName() ) ) . '/languages' );
 
 		$GLOBALS['wp_import'] = new PLL_WP_Import();
-		register_importer( 'wordpress', 'WordPress', __( 'Import <strong>posts, pages, comments, custom fields, categories, and tags</strong> from a WordPress export file.', 'wordpress-importer' ), array( $GLOBALS['wp_import'], 'dispatch' ) );
+		register_importer( 'wordpress', 'WordPress', __( 'Import <strong>posts, pages, comments, custom fields, categories, and tags</strong> from a WordPress export file.', 'wordpress-importer' ), array( $GLOBALS['wp_import'], 'dispatch' ) ); // WPCS: spelling ok.
 	}
 
 	/**
@@ -202,13 +208,13 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 2.1.6
 	 *
-	 * @param array  $options
-	 * @param array  $titles
+	 * @param array $options
+	 * @param array $titles
 	 * @return array
 	 */
 	protected function _wpseo_register_strings( $options, $titles ) {
 		foreach ( $titles as $title ) {
-			if ( ! empty ( $options[ $title ] ) ) {
+			if ( ! empty( $options[ $title ] ) ) {
 				pll_register_string( $title, $options[ $title ], 'wordpress-seo' );
 			}
 		}
@@ -225,17 +231,17 @@ class PLL_Plugins_Compat {
 		$options = get_option( 'wpseo_titles' );
 		foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
 			if ( pll_is_translated_post_type( $t ) ) {
-				_wpseo_register_strings( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
+				$this->_wpseo_register_strings( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
 			}
 		}
 		foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
 			if ( pll_is_translated_post_type( $t ) ) {
-				_wpseo_register_strings( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
+				$this->_wpseo_register_strings( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
 			}
 		}
 		foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
 			if ( pll_is_translated_taxonomy( $t ) ) {
-				_wpseo_register_strings( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
+				$this->_wpseo_register_strings( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
 			}
 		}
 	}
@@ -246,13 +252,13 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 2.1.6
 	 *
-	 * @param array  $options
-	 * @param array  $titles
+	 * @param array $options
+	 * @param array $titles
 	 * @return array
 	 */
 	protected function _wpseo_translate_titles( $options, $titles ) {
 		foreach ( $titles as $title ) {
-			if ( ! empty ( $options[ $title ] ) ) {
+			if ( ! empty( $options[ $title ] ) ) {
 				$options[ $title ] = pll__( $options[ $title ] );
 			}
 		}
@@ -272,17 +278,17 @@ class PLL_Plugins_Compat {
 		if ( PLL() instanceof PLL_Frontend ) {
 			foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
 				if ( pll_is_translated_post_type( $t ) ) {
-					$options = _wpseo_translate_titles( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
+					$options = $this->_wpseo_translate_titles( $options, array( 'title-' . $t, 'metadesc-' . $t ) );
 				}
 			}
 			foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
 				if ( pll_is_translated_post_type( $t ) ) {
-					$options = _wpseo_translate_titles( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
+					$options = $this->_wpseo_translate_titles( $options, array( 'title-ptarchive-' . $t, 'metadesc-ptarchive-' . $t, 'bctitle-ptarchive-' . $t ) );
 				}
 			}
 			foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
 				if ( pll_is_translated_taxonomy( $t ) ) {
-					$options = _wpseo_translate_titles( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
+					$options = $this->_wpseo_translate_titles( $options, array( 'title-tax-' . $t, 'metadesc-tax-' . $t ) );
 				}
 			}
 		}
@@ -297,6 +303,7 @@ class PLL_Plugins_Compat {
 	 * @since 1.6.4
 	 *
 	 * @param string $url
+	 * @param string $path
 	 * @return $url
 	 */
 	public function wpseo_home_url( $url, $path ) {
@@ -337,7 +344,7 @@ class PLL_Plugins_Compat {
 	 * @return string
 	 */
 	public function wpseo_posts_join( $sql, $post_type ) {
-		return pll_is_translated_post_type( $post_type ) && ( PLL()->options['force_lang'] > 1 || $this->wpseo_get_active_languages() ) ? $sql. PLL()->model->post->join_clause() : $sql;
+		return pll_is_translated_post_type( $post_type ) && ( PLL()->options['force_lang'] > 1 || $this->wpseo_get_active_languages() ) ? $sql . PLL()->model->post->join_clause() : $sql;
 	}
 
 	/**
@@ -432,7 +439,7 @@ class PLL_Plugins_Compat {
 		// WPSEO already deals with the locale
 		if ( did_action( 'pll_init' ) && method_exists( $wpseo_og, 'og_tag' ) ) {
 			foreach ( PLL()->model->get_languages_list() as $language ) {
-				if ( $language->slug != PLL()->curlang->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = self::get_fb_locale( $language ) ) {
+				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = self::get_fb_locale( $language ) ) {
 					$wpseo_og->og_tag( 'og:locale:alternate', $fb_locale );
 				}
 			}
@@ -486,7 +493,7 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 1.4
 	 *
-	 * @param array $ids featured posts ids
+	 * @param array $featured_ids featured posts ids
 	 * @return array modified featured posts ids ( include all languages )
 	 */
 	public function twenty_fourteen_featured_content_ids( $featured_ids ) {
@@ -511,10 +518,12 @@ class PLL_Plugins_Compat {
 				'lang'        => 0, // avoid language filters
 				'fields'      => 'ids',
 				'numberposts' => Featured_Content::$max_posts,
-				'tax_query'   => array( array(
-					'taxonomy' => 'post_tag',
-					'terms'    => (int) $tag,
-				) ),
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'post_tag',
+						'terms'    => (int) $tag,
+					),
+				),
 			) );
 
 			$ids = array_merge( $ids, $_ids );
@@ -579,9 +588,15 @@ class PLL_Plugins_Compat {
 
 	/**
 	 * Jetpack
+	 * Filter the Top Posts and Pages by language.
 	 * Adapted from the same function in jetpack-3.0.2/3rd-party/wpml.php
 	 *
 	 * @since 1.5.4
+	 *
+	 * @param array  $posts    Array of the most popular posts.
+	 * @param array  $post_ids Array of Post IDs.
+	 * @param string $count    Number of Top Posts we want to display.
+	 * @return array
 	 */
 	public function jetpack_widget_get_top_posts( $posts, $post_ids, $count ) {
 		foreach ( $posts as $k => $post ) {
@@ -595,10 +610,16 @@ class PLL_Plugins_Compat {
 
 	/**
 	 * Jetpack
+	 * Filter the HTML of the Contact Form and output the one requested by language.
 	 * Adapted from the same function in jetpack-3.0.2/3rd-party/wpml.php
 	 * Keeps using 'icl_translate' as the function registers the string
 	 *
 	 * @since 1.5.4
+	 *
+	 * @param string   $r           Contact Form HTML output.
+	 * @param string   $field_label Field label.
+	 * @param int|null $id          Post ID.
+	 * @return string
 	 */
 	public function grunion_contact_form_field_html_filter( $r, $field_label, $id ) {
 		if ( function_exists( 'icl_translate' ) ) {
@@ -623,10 +644,10 @@ class PLL_Plugins_Compat {
 	public function jetpack_ogp( $tags ) {
 		if ( did_action( 'pll_init' ) ) {
 			foreach ( PLL()->model->get_languages_list() as $language ) {
-				if ( $language->slug != PLL()->curlang->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = self::get_fb_locale( $language ) ) {
+				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = self::get_fb_locale( $language ) ) {
 					$tags['og:locale:alternate'][] = $fb_locale;
 				}
-				if ( $language->slug == PLL()->curlang->slug && $fb_locale = self::get_fb_locale( $language ) ) {
+				if ( PLL()->curlang->slug === $language->slug && $fb_locale = self::get_fb_locale( $language ) ) {
 					$tags['og:locale'] = $fb_locale;
 				}
 			}
@@ -645,7 +666,7 @@ class PLL_Plugins_Compat {
 	 * @return array
 	 */
 	function jetpack_relatedposts_filter_filters( $filters, $post_id ) {
-		$slug = sanitize_title( pll_get_post_language( $post_id, 'name' ) );
+		$slug = sanitize_title( pll_get_post_language( $post_id, 'slug' ) );
 		$filters[] = array( 'term' => array( 'taxonomy.language.slug' => $slug ) );
 		return $filters;
 	}
@@ -705,6 +726,44 @@ class PLL_Plugins_Compat {
 			$args['lang'] = '';
 		}
 		return $args;
+	}
+
+	/**
+	 * WordPress MU Domain Mapping
+	 * Fix primary domain check which forces only one domain per blog
+	 * Accept only known domains/subdomains for the current blog
+	 *
+	 * @since 2.2
+	 */
+	public function dm_redirect_to_mapped_domain() {
+		// Don't redirect the main site
+		if ( is_main_site() ) {
+			return;
+		}
+
+		// Don't redirect post previews
+		if ( isset( $_GET['preview'] ) && 'true' === $_GET['preview'] ) {
+			return;
+		}
+
+		// Don't redirect theme customizer
+		if ( isset( $_POST['customize'] ) && isset( $_POST['theme'] ) && 'on' === $_POST['customize'] ) {
+			return;
+		}
+
+		// If we can't associate the requested domain to a language, redirect to the default domain
+		$options = get_option( 'polylang' );
+		if ( $options['force_lang'] > 1 ) {
+			$hosts = PLL()->links_model->get_hosts();
+			$lang = array_search( $_SERVER['HTTP_HOST'], $hosts );
+
+			if ( empty( $lang ) ) {
+				$status = get_site_option( 'dm_301_redirect' ) ? '301' : '302'; // Honor status redirect option
+				$redirect = ( is_ssl() ? 'https://' : 'http://' ) . $hosts[ $options['default_lang'] ] . $_SERVER['REQUEST_URI'];
+				wp_redirect( $redirect, $status );
+				exit;
+			}
+		}
 	}
 
 	/**

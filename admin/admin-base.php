@@ -20,14 +20,14 @@ class PLL_Admin_Base extends PLL_Base {
 		parent::__construct( $links_model );
 
 		// Plugin i18n, only needed for backend
-		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ).'/languages' );
+		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' );
 
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
 
 		// Setup js scripts and css styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ) );
+		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
 
 		// Lingotek
 		if ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
@@ -40,8 +40,6 @@ class PLL_Admin_Base extends PLL_Base {
 	 * Loads the settings pages or the filters base on the request
 	 *
 	 * @since 1.2
-	 *
-	 * @param object $links_model
 	 */
 	public function init() {
 		if ( ! $this->model->get_languages_list() ) {
@@ -117,10 +115,10 @@ class PLL_Admin_Base extends PLL_Base {
 		// 3 => 1 if loaded in footer
 		// FIXME: check if I can load more scripts in footer
 		$scripts = array(
-			'post'  => array( array( 'post', 'media', 'async-upload', 'edit' ),  array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-autocomplete' ), 0 , 1 ),
-			'media' => array( array( 'upload' ), array( 'jquery' ), 0 , 1 ),
+			'post'  => array( array( 'post', 'media', 'async-upload', 'edit' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-autocomplete' ), 0, 1 ),
+			'media' => array( array( 'upload' ), array( 'jquery' ), 0, 1 ),
 			'term'  => array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 ),
-			'user'  => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0 , 0 ),
+			'user'  => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
 		);
 
 		foreach ( $scripts as $script => $v ) {
@@ -147,11 +145,15 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 1.4
 	 */
 	public function admin_print_footer_scripts() {
-		global $post_ID;
+		global $post_ID, $tag_ID;
 
 		$params = array( 'pll_ajax_backend' => 1 );
 		if ( ! empty( $post_ID ) ) {
 			$params = array_merge( $params, array( 'pll_post_id' => (int) $post_ID ) );
+		}
+
+		if ( ! empty( $tag_ID ) ) {
+			$params = array_merge( $params, array( 'pll_term_id' => (int) $tag_ID ) );
 		}
 
 		$str = http_build_query( $params );
@@ -163,30 +165,31 @@ class PLL_Admin_Base extends PLL_Base {
 			$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
 				if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 					if ( 'undefined' === typeof options.data ) {
-						options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str;?>' : <?php echo $arr;?>;
+						options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; ?>' : <?php echo $arr; ?>;
 					} else {
 						if ( 'string' === typeof options.data ) {
 							if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
-								options.url = options.url+'&<?php echo $str;?>';
+								options.url = options.url+'&<?php echo $str; ?>';
 							} else {
 								try {
 									o = $.parseJSON(options.data);
-									o = $.extend(o, <?php echo $arr;?>);
+									o = $.extend(o, <?php echo $arr; ?>);
 									options.data = JSON.stringify(o);
 								}
 								catch(e) {
-									options.data = '<?php echo $str;?>&'+options.data;
+									options.data = '<?php echo $str; ?>&'+options.data;
 								}
 							}
 						} else {
-							options.data = $.extend(options.data, <?php echo $arr;?>);
+							options.data = $.extend(options.data, <?php echo $arr; ?>);
 						}
 					}
 				}
 			});
 		})(jQuery)
 	}
-</script><?php
+</script>
+<?php
 	}
 
 	/**
@@ -196,6 +199,15 @@ class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function set_current_language() {
 		$this->curlang = $this->filter_lang;
+
+		// POST
+		if ( isset( $_POST['post_lang_choice'] ) && $lang = $this->model->get_language( $_POST['post_lang_choice'] ) ) {
+			$this->curlang = $lang;
+		} elseif ( isset( $_POST['term_lang_choice'] ) && $lang = $this->model->get_language( $_POST['term_lang_choice'] ) ) {
+			$this->curlang = $lang;
+		} elseif ( isset( $_POST['inline_lang_choice'] ) && $lang = $this->model->get_language( $_POST['inline_lang_choice'] ) ) {
+			$this->curlang = $lang;
+		}
 
 		// Edit Post
 		if ( isset( $_REQUEST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] ) ) {
@@ -210,6 +222,8 @@ class PLL_Admin_Base extends PLL_Base {
 		// FIXME 'edit-tags.php' for backward compatibility with WP < 4.5
 		elseif ( in_array( $GLOBALS['pagenow'], array( 'edit-tags.php', 'term.php' ) ) && isset( $_GET['tag_ID'] ) && $lang = $this->model->term->get_language( (int) $_GET['tag_ID'] ) ) {
 			$this->curlang = $lang;
+		} elseif ( isset( $_REQUEST['pll_term_id'] ) && $lang = $this->model->term->get_language( (int) $_REQUEST['pll_term_id'] ) ) {
+			$this->curlang = $lang;
 		} elseif ( 'edit-tags.php' === $GLOBALS['pagenow'] && isset( $_GET['taxonomy'] ) && $this->model->is_translated_taxonomy( $_GET['taxonomy'] ) ) {
 			if ( ! empty( $_GET['new_lang'] ) ) {
 				$this->curlang = $this->model->get_language( $_GET['new_lang'] );
@@ -219,7 +233,7 @@ class PLL_Admin_Base extends PLL_Base {
 		}
 
 		// Ajax
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! empty( $_REQUEST['lang'] ) ) {
+		if ( wp_doing_ajax() && ! empty( $_REQUEST['lang'] ) ) {
 			$this->curlang = $this->model->get_language( $_REQUEST['lang'] );
 		}
 	}
@@ -238,7 +252,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
-		if ( ! defined( 'DOING_AJAX' ) && ! empty( $_GET['lang'] ) && ! is_numeric( $_GET['lang'] ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) {
+		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( $_GET['lang'] ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) {
 			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( $_GET['lang'] ) ) ? $lang->slug : '' );
 		}
 
@@ -336,7 +350,7 @@ class PLL_Admin_Base extends PLL_Base {
 			'id'     => 'languages',
 			'title'  => $selected->flag . $title,
 			'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged', $url ) ) ),
-			'meta'   => array( 'title'    => __( 'Filters content by language', 'polylang' ) ),
+			'meta'   => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
 		) );
 
 		foreach ( array_merge( array( $all_item ), $this->model->get_languages_list() ) as $lang ) {

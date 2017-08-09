@@ -1,6 +1,6 @@
 <?php
 
-class Create_Delete_languages_Test extends PLL_UnitTestCase {
+class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
 	function test_add_and_delete_language() {
 		// first language

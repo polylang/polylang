@@ -37,8 +37,8 @@ function pll_the_languages( $args = '' ) {
  *
  * @since 0.8.1
  *
- * @param string $field optional the language field to return 'name', 'locale', defaults to 'slug'
- * @return string|bool the requested field for the current language
+ * @param string $field Optional, the language field to return ( see PLL_Language ), defaults to 'slug'
+ * @return string|bool The requested field for the current language
  */
 function pll_current_language( $field = 'slug' ) {
 	return isset( PLL()->curlang->$field ) ? PLL()->curlang->$field : false;
@@ -49,8 +49,8 @@ function pll_current_language( $field = 'slug' ) {
  *
  * @since 1.0
  *
- * @param string $field optional the language field to return 'name', 'locale', defaults to 'slug'
- * @return string the requested field for the default language
+ * @param string $field Optional, the language field to return ( see PLL_Language ), defaults to 'slug'
+ * @return string The requested field for the default language
  */
 function pll_default_language( $field = 'slug' ) {
 	return isset( PLL()->options['default_lang'] ) && ( $lang = PLL()->model->get_language( PLL()->options['default_lang'] ) ) && isset( $lang->$field ) ? $lang->$field : false;
@@ -143,7 +143,7 @@ function pll_esc_html__( $string ) {
  *
  * @since 2.1
  *
- * @param $string
+ * @param string $string The string to translate
  * @return string
  */
 function pll_esc_attr__( $string ) {
@@ -155,7 +155,7 @@ function pll_esc_attr__( $string ) {
  *
  * @since 0.6
  *
- * @param string $string the string to translate
+ * @param string $string The string to translate
  */
 function pll_e( $string ) {
 	echo pll__( $string );
@@ -166,7 +166,7 @@ function pll_e( $string ) {
  *
  * @since 2.1
  *
- * @param string $string the string to translate
+ * @param string $string The string to translate
  */
 function pll_esc_html_e( $string ) {
 	echo pll_esc_html__( $string );
@@ -177,7 +177,7 @@ function pll_esc_html_e( $string ) {
  *
  * @since 2.1
  *
- * @param $string
+ * @param string $string The string to translate
  */
 function pll_esc_attr_e( $string ) {
 	echo pll_esc_attr__( $string );
@@ -221,7 +221,7 @@ function pll_translate_string( $string, $lang ) {
  *
  * @since 1.0.1
  *
- * @param string post type name
+ * @param string $post_type Post type name
  * @return bool
  */
 function pll_is_translated_post_type( $post_type ) {
@@ -233,7 +233,7 @@ function pll_is_translated_post_type( $post_type ) {
  *
  * @since 1.0.1
  *
- * @param string taxonomy name
+ * @param string $tax Taxonomy name
  * @return bool
  */
 function pll_is_translated_taxonomy( $tax ) {
@@ -310,8 +310,8 @@ function pll_save_term_translations( $arr ) {
  * @since 1.5.4
  *
  * @param int    $post_id
- * @param string $field   optional the language field to return 'name', 'locale', defaults to 'slug'
- * @return bool|string the requested field for the post language, false if no language is associated to that post
+ * @param string $field   Optional, the language field to return ( see PLL_Language ), defaults to 'slug'
+ * @return bool|string The requested field for the post language, false if no language is associated to that post
  */
 function pll_get_post_language( $post_id, $field = 'slug' ) {
 	return ( $lang = PLL()->model->post->get_language( $post_id ) ) ? $lang->$field : false;
@@ -323,8 +323,8 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  * @since 1.5.4
  *
  * @param int    $term_id
- * @param string $field   optional the language field to return 'name', 'locale', defaults to 'slug'
- * @return bool|string the requested field for the term language, false if no language is associated to that term
+ * @param string $field   Optional, the language field to return ( see PLL_Language ), defaults to 'slug'
+ * @return bool|string The requested field for the term language, false if no language is associated to that term
  */
 function pll_get_term_language( $term_id, $field = 'slug' ) {
 	return ( $lang = PLL()->model->term->get_language( $term_id ) ) ? $lang->$field : false;

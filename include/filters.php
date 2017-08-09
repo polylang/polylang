@@ -138,12 +138,14 @@ class PLL_Filters {
 				'nopaging'    => true,
 				'post_type'   => $args['post_type'],
 				'fields'      => 'ids',
-				'tax_query'   => array( array(
-					'taxonomy' => 'language',
-					'field'    => 'term_taxonomy_id', // Since WP 3.5
-					'terms'    => $language->term_taxonomy_id,
-					'operator' => 'NOT IN',
-				) ),
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'language',
+						'field'    => 'term_taxonomy_id', // Since WP 3.5
+						'terms'    => $language->term_taxonomy_id,
+						'operator' => 'NOT IN',
+					),
+				),
 			);
 
 			$args['exclude'] = array_merge( $args['exclude'], get_posts( $r ) );

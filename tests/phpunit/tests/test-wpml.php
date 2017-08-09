@@ -25,8 +25,11 @@ class WPML_Test extends PLL_UnitTestCase {
 		PLL_WPML_Compat::instance()->api = new PLL_WPML_API(); // Loads the WPML API
 	}
 
-	// Notice sent when ACF calls icl_object_id  with a non translated post type
-	// @see https://wordpress.org/support/topic/after-update-apeared-warnings
+	/**
+	 * Notice sent when ACF calls icl_object_id  with a non translated post type
+	 *
+	 * @see https://wordpress.org/support/topic/after-update-apeared-warnings
+	 */
 	function test_acf() {
 		register_post_type( 'acf' );
 
@@ -55,7 +58,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		$languages = apply_filters( 'wpml_active_languages', null );
 
-		$expected = array (
+		$expected = array(
 			'id' => self::$polylang->model->get_language( 'fr' )->term_id,
 			'active' => 1,
 			'native_name' => 'Français',
@@ -143,9 +146,9 @@ class WPML_Test extends PLL_UnitTestCase {
 	function test_wpml_element_link() {
 		global $wp_rewrite;
 
-		// switch to pretty permalinks
+		// Switch to pretty permalinks
 		$wp_rewrite->init();
-		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+		$wp_rewrite->extra_rules_top = array(); // Brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 		create_initial_taxonomies(); // Needed for catery links
 
@@ -156,7 +159,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 		self::$polylang->init();
 
-		// de-activate cache for links
+		// De-activate cache for links
 		self::$polylang->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		self::$polylang->links->cache->method( 'get' )->willReturn( false );
 
@@ -171,7 +174,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		$link = apply_filters( 'wpml_element_link', $en );
-		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', ob_get_clean() ); // default echo true
+		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', ob_get_clean() ); // echo parameter defaults to true
 		$this->assertEquals( '<a href="http://example.org/en/test/">test</a>', $link );
 
 		ob_start();
@@ -188,7 +191,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		$link = apply_filters( 'wpml_element_link', $en, '', '', '', false );
-		$this->assertEquals( '', ob_get_clean() ); // echo false
+		$this->assertEquals( '', ob_get_clean() ); // echo prameter is false
 
 		ob_start();
 		apply_filters( 'wpml_element_link', $tag, 'tag' );
@@ -297,5 +300,26 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		// Legacy
 		$this->assertEquals( 'wpml_string_test_fr', icl_t( 'wpml_string_context', 'wpml_string_name' ) );
+	}
+
+	/**
+	 * Bug fixed in version 2.2
+	 */
+	function test_wpml_permalink() {
+		global $wp_rewrite;
+
+		// Switch to pretty permalinks
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // Brute force since WP does not do it :(
+		$wp_rewrite->set_permalink_structure( $this->structure );
+
+		self::$polylang->options['force_lang'] = 1;
+		self::$polylang->links_model = self::$polylang->model->get_links_model();
+		self::$polylang->links_model->init();
+
+		$this->assertEquals( home_url( '/fr/test/' ), apply_filters( 'wpml_permalink', home_url( '/test/' ), 'fr' ) );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$this->assertEquals( home_url( '/fr/test/' ), apply_filters( 'wpml_permalink', home_url( '/test/' ) ) );
 	}
 }

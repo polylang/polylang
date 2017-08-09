@@ -38,13 +38,6 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
 		self::$polylang->model->term->set_language( $fr, 'fr' );
 
-		// tags
-//		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test tag' ) );
-//		self::$polylang->model->term->set_language( $en, 'en' );
-
-//		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai tag' ) );
-//		self::$polylang->model->term->set_language( $fr, 'fr' );
-
 		// the post
 		$post_id = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $post_id, 'en' );

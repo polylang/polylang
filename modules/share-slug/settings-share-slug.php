@@ -75,6 +75,7 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 				} );
 			} )( jQuery );
 			// ]]>
-		</script><?php
+		</script>
+		<?php
 	}
 }

@@ -37,8 +37,10 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 */
-	protected function form() {?>
-		<ul class="pll-inline-block-list"><?php
+	protected function form() {
+		?>
+		<ul class="pll-inline-block-list">
+			<?php
 			foreach ( self::list_metas_to_sync() as $key => $str ) {
 				printf(
 					'<li><label><input name="sync[%s]" type="checkbox" value="1" %s /> %s</label></li>',
@@ -46,8 +48,10 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 					in_array( $key, $this->options['sync'] ) ? 'checked="checked"' : '',
 					esc_html( $str )
 				);
-			} ?>
-		</ul><?php
+			}
+			?>
+		</ul>
+		<?php
 	}
 
 	/**

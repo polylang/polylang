@@ -72,7 +72,7 @@ abstract class PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $languages
+	 * @param array  $languages
 	 * @param object $model
 	 */
 	public static function pll_languages_list( $languages, $model ) {

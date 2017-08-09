@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.8
-Stable tag: 2.1.5
+Stable tag: 2.1.6
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,51 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.2 =
+
+* Pro: Add support for the REST API
+* Pro: Add integration with The Events Calendar
+* Pro: Refactor ACF Pro integration for post metas and integrate term metas
+* Pro: Ask confirmation if synchronizing a post overwrites an existing translation
+* Pro: Separate sync post logic from interface
+* Pro: Fix 'Detect browser language' option automatically deactivated
+* Pro: Fix redirect to 404 when the 'page' slug translation includes non alphanumeric characters.
+* Pro: Fix untranslated post type archive slug
+* Pro: Fix ACF taxonomy fields not copied when the taxonomy is not translated #156
+* Pro: Fix fatal error with ACF4
+* Support a different content text direction in admin #45
+* Add support for wildcards and 'copy-once' attribute in wpml-config.xml
+* Add minimal support for the filters 'wpml_display_language_names' and 'icl_ls_languages'
+* Improve compatibility with the plugin WordPress MU Domain Mapping #116
+* Improve speed of the sticky posts filter #41
+* Remove redirect_lang option for multiple domains and subdomains
+* Use secure cookie when using SSL
+* Allow to copy/sync term metas with the filter 'pll_copy_term_metas'
+* Filter ajax requests in term.php according to the term language
+* Add error message in customizer when setting an untranslated static front page #47
+* Load static page class only if we are using a static front page
+* Refactor parse_query filters to use the same code on frontend and admin
+* Don't use add_language_to_link in filters
+* Move ajaxPrefilter footer script on top
+* Use wp_doing_ajax() instead of DOING_AJAX constant
+* Fix queries custom tax not excluded from language filter on admin
+* Fix WP translation not loaded when the language is set from the content on multisite.
+* Fix the list of core post types in PLL_OLT_Manager for WP 4.7+
+* Fix post name and tag slug incorrectly sanitized for German and Danish
+* Fix lang attribute in dropdowns
+* Fix wpml_permalink filter #139
+* Fix WPML constants undefined on backend #151
+* Fix a conflict with the plugin Custom Permalinks #143
+* Fix menu location unexpectedly unset
+
+= 2.1.6 (2017-07-17) =
+
+* Pro: fix duplicate post button not working in PHP 7.1
+* Pro: fix CPTUI untranslated labels on admin
+* Adapt related posts filter to use slug instead of name to follow changes made on Jetpack server ( Props Steve Kaeser )
+* Fix PHP notices when translating CPT and custom tax titles in Yoast SEO
+* Fix PHP warning when all plugins are networked activated
 
 = 2.1.5 (2017-05-31) =
 

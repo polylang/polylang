@@ -44,7 +44,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 
 	// mostly copied from WP_Import_UnitTestCase
 	protected function _import_wp( $filename, $users = array(), $fetch_files = true ) {
-		$importer = new PLL_WP_Import(); # change to our importer
+		$importer = new PLL_WP_Import(); // Change to our importer
 		$file = realpath( $filename );
 		assert( '!empty( $file )' );
 		assert( 'is_file( $file )' );

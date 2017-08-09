@@ -40,6 +40,8 @@ class PLL_Admin_Filters extends PLL_Filters {
 			add_filter( 'sanitize_title', array( $this, 'sanitize_title' ), 10, 3 );
 			add_filter( 'sanitize_user', array( $this, 'sanitize_user' ), 10, 3 );
 		}
+
+		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 	}
 
 	/**
@@ -47,25 +49,32 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @since 0.3
 	 *
-	 * @param object $widget
+	 * @param object $widget   Widget instance
+	 * @param null   $return   Not used
+	 * @param array  $instance Widget settings
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
-		$dropdown = new PLL_Walker_Dropdown();
-		printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
-			esc_attr( $widget->id.'_lang_choice' ),
-			esc_html__( 'The widget is displayed for:', 'polylang' ),
-			$dropdown->walk(
-				array_merge(
-					array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
-					$this->model->get_languages_list()
-				),
-				array(
-					'name'        => $widget->id.'_lang_choice',
-					'class'       => 'tags-input',
-					'selected'    => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
+		$screen = get_current_screen();
+
+		// Test the Widgets screen and the Customizer to avoid displaying the option in page builders
+		if ( ( isset( $screen ) && 'widgets' === $screen->base ) || isset( $GLOBALS['wp_customize'] ) ) {
+			$dropdown = new PLL_Walker_Dropdown();
+			printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
+				esc_attr( $widget->id . '_lang_choice' ),
+				esc_html__( 'The widget is displayed for:', 'polylang' ),
+				$dropdown->walk(
+					array_merge(
+						array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
+						$this->model->get_languages_list()
+					),
+					array(
+						'name'        => $widget->id . '_lang_choice',
+						'class'       => 'tags-input',
+						'selected'    => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
+					)
 				)
-			)
-		);
+			);
+		}
 	}
 
 	/**
@@ -81,7 +90,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @return array Widget options
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
-		if ( ! empty( $_POST[ $key = $widget->id.'_lang_choice' ] ) && in_array( $_POST[ $key ], $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) ) {
+		if ( ! empty( $_POST[ $key = $widget->id . '_lang_choice' ] ) && in_array( $_POST[ $key ], $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) ) {
 			$instance['pll_lang'] = $_POST[ $key ];
 		} else {
 			unset( $instance['pll_lang'] );
@@ -185,7 +194,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @since 1.6
 	 *
-	 * @param array $locale not used
+	 * @param array $locales Not used
 	 * @return array list of locales to update
 	 */
 	function update_check_locales( $locales ) {
@@ -236,9 +245,9 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @since 2.0
 	 *
-	 * @param string $username		 Sanitized username.
+	 * @param string $username     Sanitized username.
 	 * @param string $raw_username The username prior to sanitization.
-	 * @param bool	 $strict			 Whether to limit the sanitization to specific characters. Default false.
+	 * @param bool   $strict       Whether to limit the sanitization to specific characters. Default false.
 	 * @return string
 	 */
 	public function sanitize_user( $username, $raw_username, $strict ) {
@@ -252,5 +261,20 @@ class PLL_Admin_Filters extends PLL_Filters {
 			$once = false;
 		}
 		return $username;
+	}
+
+	/**
+	 * Adds a text direction dependent class to the body
+	 *
+	 * @since 2.2
+	 *
+	 * @param string $classes Space-separated list of CSS classes.
+	 * @return string
+	 */
+	public function admin_body_class( $classes ) {
+		if ( ! empty( $this->curlang ) ) {
+			$classes .= ' pll-dir-' . ( $this->curlang->is_rtl ? 'rtl' : 'ltr' );
+		}
+		return $classes;
 	}
 }

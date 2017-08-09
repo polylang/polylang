@@ -159,7 +159,7 @@ class Query_Test extends PLL_UnitTestCase {
 
 		$this->assertQueryTrue( 'is_archive', 'is_category' );
 		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
-		$this->assertEquals( home_url( '/fr/category/essai/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) ); // self
+		$this->assertEquals( home_url( '/fr/category/essai/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) ); // Link to self
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) ); // no content in translation
 
 		$post_id = $this->factory->post->create();

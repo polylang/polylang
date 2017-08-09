@@ -326,7 +326,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	function test_save_term_with_parent_sync() {
 		self::$polylang->options['sync'] = array( 'taxonomies' );
 
-		//parents
+		// Parents
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
 

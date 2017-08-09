@@ -58,26 +58,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string modified link
 	 */
 	public function archive_link( $link ) {
-		return $this->links_model->add_language_to_link( $link, $this->curlang );
-	}
-
-	/**
-	 * Modifies post & page links
-	 * and caches the result
-	 *
-	 * @since 0.7
-	 *
-	 * @param string $link post link
-	 * @param object $post post object
-	 * @return string modified post link
-	 */
-	public function post_link( $link, $post ) {
-		$cache_key = 'post:' . $post->ID;
-		if ( false === $_link = $this->cache->get( $cache_key ) ) {
-			$_link = parent::post_link( $link, $post );
-			$this->cache->set( $cache_key, $_link );
-		}
-		return $_link;
+		return $this->links_model->switch_language_in_link( $link, $this->curlang );
 	}
 
 	/**
@@ -91,7 +72,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string modified post link
 	 */
 	public function _get_page_link( $link, $post_id ) {
-		$cache_key = 'post:' . $post_id;
+		$sample = false !== strpos( $link, '%pagename%' ); // To avoid a conflict with plugin Custom Permalinks
+		$cache_key = "post:{$post_id}:{$sample}";
 		if ( false === $_link = $this->cache->get( $cache_key ) ) {
 			$_link = parent::_get_page_link( $link, $post_id );
 			$this->cache->set( $cache_key, $_link );
@@ -129,7 +111,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string modified post link
 	 */
 	public function post_type_link( $link, $post ) {
-		$cache_key = 'post:' . $post->ID;
+		$sample = false !== strpos( $link, '%postname%' ); // To avoid a conflict with plugin Custom Permalinks
+		$cache_key = "post:{$post->ID}:{$sample}";
 		if ( false === $_link = $this->cache->get( $cache_key ) ) {
 			$_link = parent::post_type_link( $link, $post );
 			$this->cache->set( $cache_key, $_link );
@@ -152,7 +135,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		$cache_key = 'term:' . $term->term_id;
 		if ( false === $_link = $this->cache->get( $cache_key ) ) {
 			if ( in_array( $tax, $this->model->get_filtered_taxonomies() ) ) {
-				$_link = $this->links_model->add_language_to_link( $link, $this->curlang );
+				$_link = $this->links_model->switch_language_in_link( $link, $this->curlang );
 
 				/** This filter is documented in include/filters-links.php */
 				$_link = apply_filters( 'pll_term_link', $_link, $this->curlang, $term );
@@ -217,7 +200,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$hreflangs = apply_filters( 'pll_rel_hreflang_attributes', $hreflangs );
 
 			foreach ( $hreflangs as $lang => $url ) {
-				printf( '<link rel="alternate" href="%s" hreflang="%s" />'."\n", esc_url( $url ), esc_attr( $lang ) );
+				printf( '<link rel="alternate" href="%s" hreflang="%s" />' . "\n", esc_url( $url ), esc_attr( $lang ) );
 			}
 		}
 	}

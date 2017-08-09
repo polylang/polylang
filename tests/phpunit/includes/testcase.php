@@ -19,6 +19,12 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 		self::delete_all_languages();
 	}
 
+	function setUp() {
+		parent::setUp();
+
+		add_filter( 'wp_doing_ajax', '__return_false' );
+	}
+
 	function tearDown() {
 		unset( $GLOBALS['wp_settings_errors'] );
 		self::$polylang->model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient
@@ -61,6 +67,9 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 
 	/**
 	 * Backport assertNotFalse to PHPUnit 3.6.12 which only runs in PHP 5.2.
+	 *
+	 * @param bool   $condition
+	 * @param string $message
 	 */
 	public static function assertNotFalse( $condition, $message = '' ) {
 		if ( version_compare( phpversion(), '5.3', '<' ) ) {

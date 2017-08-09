@@ -171,6 +171,7 @@ jQuery( document ).ready(function( $ ) {
 		pll_toggle( $( '#pll-domains-table' ), 3 == value );
 		pll_toggle( $( "#pll-hide-default" ), 3 > value );
 		pll_toggle( $( "#pll-rewrite" ), 2 > value );
+		pll_toggle( $( "#pll-redirect-lang" ), 2 > value );
 	});
 
 	// settings license

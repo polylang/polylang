@@ -64,7 +64,7 @@ class Media_Test extends PLL_UnitTestCase {
 		$xpath = new DOMXpath( $doc );
 
 		$selected = $xpath->query( '//option[@selected="selected"]' );
-		$this->assertEquals( 'fr', $selected->item( 0 )->getAttribute( 'value' ) );;
+		$this->assertEquals( 'fr', $selected->item( 0 )->getAttribute( 'value' ) );
 
 		// Don't use on the Edit Media panel
 		$GLOBALS['pagenow'] = 'post.php';

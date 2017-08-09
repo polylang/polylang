@@ -19,8 +19,8 @@ class PLL_Table_Languages extends WP_List_Table {
 	 */
 	function __construct() {
 		parent::__construct( array(
-			'plural'   => 'Languages', // Do not translate ( used for css class )
-			'ajax'	   => false,
+			'plural' => 'Languages', // Do not translate ( used for css class )
+			'ajax'   => false,
 		) );
 	}
 
@@ -160,11 +160,11 @@ class PLL_Table_Languages extends WP_List_Table {
 	 */
 	function get_sortable_columns() {
 		return array(
-			'name'		    => array( 'name', true ), // sorted by name by default
-			'locale'      => array( 'locale', false ),
-			'slug'		    => array( 'slug', false ),
-			'term_group'  => array( 'term_group', false ),
-			'count'	      => array( 'count', false ),
+			'name'       => array( 'name', true ), // sorted by name by default
+			'locale'     => array( 'locale', false ),
+			'slug'       => array( 'slug', false ),
+			'term_group' => array( 'term_group', false ),
+			'count'      => array( 'count', false ),
 		);
 	}
 
@@ -262,7 +262,7 @@ class PLL_Table_Languages extends WP_List_Table {
 
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
-			'per_page'	=> $per_page,
+			'per_page'    => $per_page,
 			'total_pages' => ceil( $total_items / $per_page ),
 		) );
 	}

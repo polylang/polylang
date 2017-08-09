@@ -39,8 +39,13 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'sub_option_name_12' => 'val12',
 			),
 			'options_group_2' => array(
-				'sub_option_name_21' => 'val21',
-				'sub_option_name_22' => 'val22',
+				'sub_key_21' => 'val21',
+				'sub_key_22' => array(
+					'sub_sub_221' => 'val221',
+					'sub_sub_222' => array(
+						'sub_sub_sub_2221' => 'val2221',
+					),
+				),
 			),
 		);
 		update_option( 'my_plugins_options', $my_plugins_options );
@@ -57,7 +62,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$mo->add_entry( $mo->make_entry( 'val11', "val11_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val12', "val12_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val21', "val21_$slug" ) );
-		$mo->add_entry( $mo->make_entry( 'val22', "val22_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val221', "val221_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val2221', "val2221_$slug" ) );
 		$mo->export_to_db( $language );
 	}
 
@@ -69,6 +75,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'quantity', 1 ); // copy
 		add_post_meta( $from, 'custom-title', 'title' ); // translate
+		add_post_meta( $from, 'bg-color', '#23282d' ); // copy-once
 		add_post_meta( $from, 'date-added', 2007 ); // ignore
 
 		$to = $this->factory->post->create();
@@ -80,26 +87,31 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( 1 , get_post_meta( $to, 'quantity', true ) );
 		$this->assertEquals( 'title' , get_post_meta( $to, 'custom-title', true ) );
+		$this->assertEquals( '#23282d' , get_post_meta( $to, 'bg-color', true ) );
 		$this->assertEmpty( get_post_meta( $to, 'date-added', true ) );
 
 		// sync
 		update_post_meta( $to, 'quantity', 2 );
 		update_post_meta( $to, 'custom-title', 'titre' );
+		update_post_meta( $to, 'bg-color', '#ffeedd' );
 		update_post_meta( $to, 'date-added', 2008 );
 		$sync->copy_post_metas( $to, $from, 'en', true );
 
 		$this->assertEquals( 2 , get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title' , get_post_meta( $from, 'custom-title', true ) );
+		$this->assertEquals( '#23282d' , get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 
 		// remove custom field and sync
 		delete_post_meta( $to, 'quantity' );
 		delete_post_meta( $to, 'custom-title' );
+		delete_post_meta( $to, 'bg-color' );
 		delete_post_meta( $to, 'date-added' );
 		$sync->copy_post_metas( $to, $from, 'en', true );
 
 		$this->assertEmpty( get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title' , get_post_meta( $from, 'custom-title', true ) );
+		$this->assertEquals( '#23282d' , get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 	}
 
@@ -158,7 +170,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 		$options = get_option( 'my_plugins_options' );
 		$this->assertEquals( 'val2_fr', $options['option_name_2'] );
-		$this->assertEquals( 'val22_fr', $options['options_group_2']['sub_option_name_22'] );
+		$this->assertEquals( 'val12_fr', $options['options_group_1']['sub_option_name_12'] );
+		$this->assertEquals( 'val21_fr', $options['options_group_2']['sub_key_21'] );
+		$this->assertEquals( 'val221_fr', $options['options_group_2']['sub_key_22']['sub_sub_221'] );
+		$this->assertEquals( 'val2221_fr', $options['options_group_2']['sub_key_22']['sub_sub_222']['sub_sub_sub_2221'] );
 		$this->assertEquals( 'val_fr', get_option( 'simple_string_option' ) );
 	}
 
@@ -168,7 +183,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 		$strings = wp_list_pluck( PLL_Admin_Strings::get_strings(), 'string' );
 		$this->assertContains( 'val2', $strings );
-		$this->assertContains( 'val22', $strings );
+		$this->assertContains( 'val12', $strings );
+		$this->assertContains( 'val21', $strings );
+		$this->assertContains( 'val221', $strings );
+		$this->assertContains( 'val2221', $strings );
 		$this->assertContains( 'val', $strings );
 	}
 }
