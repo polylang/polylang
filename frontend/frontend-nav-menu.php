@@ -80,7 +80,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				// parent item for dropdown
 				if ( ! empty( $options['dropdown'] ) ) {
 					$item->title = $options['show_flags'] && $options['show_names'] ? $this->curlang->flag . '&nbsp;' . esc_html( $this->curlang->name ) : ( $options['show_flags'] ? $this->curlang->flag : esc_html( $this->curlang->name ) );
-					$item->attr_title = esc_html( $this->curlang->name );
+					$item->attr_title = '';
 					$item->classes = array( 'pll-parent-menu-item' );
 					$new_items[] = $item;
 					$offset++;
