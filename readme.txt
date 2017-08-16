@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.8
-Stable tag: 2.1.6
+Stable tag: 2.2
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,7 +76,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.2 =
+= 2.2 (2017-08-16) =
 
 * Pro: Add support for the REST API
 * Pro: Add integration with The Events Calendar
