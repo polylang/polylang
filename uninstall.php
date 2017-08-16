@@ -98,6 +98,7 @@ class PLL_Uninstall {
 		register_post_type( 'polylang_mo', array( 'rewrite' => false, 'query_var' => false ) );
 		$ids = get_posts( array(
 			'post_type'   => 'polylang_mo',
+			'post_status' => 'any',
 			'numberposts' => -1,
 			'nopaging'    => true,
 			'fields'      => 'ids',
