@@ -439,4 +439,67 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
 		$this->assertEquals( '2007-09-04 00:00:00', get_post( $to )->post_date );
 	}
+
+	function _add_term_meta_to_copy() {
+		return array( 'key' );
+	}
+
+	function test_copy_term_metas() {
+		$from = $this->factory->term->create();
+		self::$polylang->model->term->set_language( $from, 'en' );
+		add_term_meta( $from, 'key', 'value' );
+
+		$to = $this->factory->term->create();
+		self::$polylang->model->term->set_language( $to, 'fr' );
+
+		add_filter( 'pll_copy_term_metas', array( $this, '_add_term_meta_to_copy' ) );
+
+		// copy
+		$sync = new PLL_Admin_Sync( self::$polylang );
+		$sync->copy_term_metas( $from, $to, 'fr' ); // copy
+
+		$this->assertEquals( 'value', get_term_meta( $to, 'key', true ) );
+
+		// sync
+		update_term_meta( $to, 'key', 'new_value' );
+		$sync->copy_term_metas( $to, $from, 'en', true );
+
+		$this->assertEquals( 'new_value', get_term_meta( $from, 'key', true ) );
+
+		// remove custom field and sync
+		delete_term_meta( $to, 'key' );
+		$sync->copy_term_metas( $to, $from, 'en', true );
+
+		$this->assertEmpty( get_term_meta( $from, 'key', true ) );
+	}
+
+	function test_sync_multiple_term_metas() {
+		$sync = new PLL_Admin_Sync( self::$polylang );
+
+		$from = $this->factory->term->create();
+		self::$polylang->model->term->set_language( $from, 'en' );
+
+		$to = $this->factory->term->create();
+		self::$polylang->model->term->set_language( $to, 'fr' );
+
+		add_filter( 'pll_copy_term_metas', array( $this, '_add_term_meta_to_copy' ) );
+
+		// Add
+		add_term_meta( $from, 'key', 'value1' );
+		add_term_meta( $from, 'key', 'value2' );
+		add_term_meta( $from, 'key', 'value3' );
+
+		$sync->copy_term_metas( $from, $to, 'fr', true );
+		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_term_meta( $to, 'key' ) );
+
+		// Delete
+		delete_term_meta( $from, 'key', 'value3' );
+		$sync->copy_term_metas( $from, $to, 'fr', true );
+		$this->assertEqualSets( array( 'value1', 'value2' ), get_term_meta( $to, 'key' ) );
+
+		// Update
+		update_term_meta( $from, 'key', 'value4', 'value2' );
+		$sync->copy_term_metas( $from, $to, 'fr', true );
+		$this->assertEqualSets( array( 'value1', 'value4' ), get_term_meta( $to, 'key' ) );
+	}
 }
