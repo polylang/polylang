@@ -17,7 +17,6 @@ class PLL_Query {
 		'page_id',
 		'category_name',
 		'tag',
-		'cat',
 		'tag_id',
 		'category__in',
 		'category__and',
@@ -107,11 +106,20 @@ class PLL_Query {
 	public function filter_query( $lang ) {
 		$qvars = &$this->query->query_vars;
 
-		// Do not filter the query if the language is already specified in another way
 		if ( ! isset( $qvars['lang'] ) ) {
+			// Do not filter the query if the language is already specified in another way
 			foreach ( self::$excludes as $k ) {
 				if ( ! empty( $qvars[ $k ] ) ) {
 					return;
+				}
+			}
+
+			// Specific case for 'cat' as it can contain negative values
+			if ( ! empty( $qvars['cat'] ) ) {
+				foreach ( explode( ',', $qvars['cat'] ) as $cat ) {
+					if ( $cat > 0 ) {
+						return;
+					}
 				}
 			}
 
