@@ -145,7 +145,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 = 1.9 (2016-04-27) =
 
 * Pro: add the possibility to translate custom post types slugs, taxonomies slugs and more
-* Pro: add the possibility to share the same post or term slug accross languages
+* Pro: add the possibility to share the same post or term slug across languages
 * Pro: add the possibility to duplicate the content when creating a new translation
 * Pro: add the possibility to create all translations at once when uploading a media
 * Pro: add the possibility to disable a language

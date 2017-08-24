@@ -296,17 +296,31 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 	/**
 	 * Translates biography
+	 * Makes sure that the correct locale is used for ajax calls when the user is logged in
 	 *
 	 * @since 0.9
 	 *
-	 * @param null   $null
+	 * @param null   $return
 	 * @param int    $id       User id
 	 * @param string $meta_key
 	 * @param bool   $single   Whether to return only the first value of the specified $meta_key
 	 * @return null|string
 	 */
-	public function get_user_metadata( $null, $id, $meta_key, $single ) {
-		return 'description' === $meta_key && $this->curlang->slug !== $this->options['default_lang'] ? get_user_meta( $id, 'description_' . $this->curlang->slug, $single ) : $null;
+	public function get_user_metadata( $return, $id, $meta_key, $single ) {
+		switch ( $meta_key ) {
+			case 'description':
+				if ( $this->curlang->slug !== $this->options['default_lang'] ) {
+					$return = get_user_meta( $id, 'description_' . $this->curlang->slug, $single );
+				}
+				break;
+			case 'locale':
+				if ( Polylang::is_ajax_on_front() ) {
+					$return = get_locale();
+				}
+				break;
+		}
+
+		return $return;
 	}
 
 	/**
