@@ -478,4 +478,37 @@ class Query_Test extends PLL_UnitTestCase {
 
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 	}
+
+	function test_cat() {
+		// Categories
+		$cat_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		self::$polylang->model->term->set_language( $cat_en, 'en' );
+
+		$cat_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		self::$polylang->model->term->set_language( $cat_fr, 'fr' );
+
+		// Posts
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
+		wp_set_post_terms( $en, array( $cat_en ), 'category' );
+
+		$fr = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+		wp_set_post_terms( $fr, array( $cat_fr ), 'category' );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+
+		$query = new WP_Query( array( 'cat' => $cat_en ) );
+		$this->assertEquals( array( get_post( $en ) ), $query->posts );
+
+		$query = new WP_Query( array( 'cat' => $cat_fr ) );
+		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
+
+		$query = new WP_Query( array( 'cat' => -$cat_fr ) );
+		$this->assertEquals( array( get_post( $en ) ), $query->posts );
+
+		// Bug fixed in 2.2.1
+		$query = new WP_Query( array( 'cat' => -$cat_en ) );
+		$this->assertEmpty( $query->posts );
+	}
 }
