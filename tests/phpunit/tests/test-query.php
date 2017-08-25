@@ -281,6 +281,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertQueryTrue( 'is_archive', 'is_post_type_archive' );
 		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
+
+		// Secondary query which would erroneously forces the language
+		$query = new WP_Query( array( 'post_type' => 'cpt', 'lang' => 'fr' ) );
+		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
 	}
 
 	function test_archives() {
