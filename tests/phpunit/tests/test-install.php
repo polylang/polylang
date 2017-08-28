@@ -55,5 +55,8 @@ class Install_Test extends PLL_UnitTestCase {
 		// No languages for posts and terms
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $en->term_taxonomy_id ) ) );
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $en->tl_term_taxonomy_id ) ) );
+
+		// No strings translations, bug fixed in 2.2.1
+		$this->assertEmpty( get_post( $en->mo_id ) );
 	}
 }
