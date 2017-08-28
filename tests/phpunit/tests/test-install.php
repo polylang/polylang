@@ -22,16 +22,27 @@ class Install_Test extends PLL_UnitTestCase {
 		do_action( 'activate_' . POLYLANG_BASENAME );
 
 		self::create_language( 'en_US' );
-		$en = self::$polylang->model->get_language( 'en' );
+		$english = self::$polylang->model->get_language( 'en' );
 
 		self::create_language( 'fr_FR' );
 
 		// Posts and terms
-		$post_id = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_id, 'en' );
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
 
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $term_id, 'en' );
+		$fr = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+
+		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+
+		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$post_translations_groups = get_terms( 'post_translations' );
+		$post_group = reset( $post_translations_groups );
+
+		$term_translations_groups = get_terms( 'term_translations' );
+		$term_group = reset( $term_translations_groups );
 
 		// User metas
 		update_user_meta( 1, 'pll_filter_content', 'en' );
@@ -68,15 +79,22 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_option( 'polylang' ) );
 
 		// No languages
-		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->term_taxonomy} WHERE taxonomy='language'" ) );
-		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->term_taxonomy} WHERE taxonomy='term_language'" ) );
+		$this->assertEmpty( get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false ) ) );
+		$this->assertEmpty( get_terms( 'term_language' ) );
 
 		// No languages for posts and terms
-		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $en->term_taxonomy_id ) ) );
-		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $en->tl_term_taxonomy_id ) ) );
+		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $english->term_taxonomy_id ) ) );
+		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $english->tl_term_taxonomy_id ) ) );
+
+		// No translations for posts and terms
+		$this->assertEmpty( get_terms( 'post_translations' ) );
+		$this->assertEmpty( get_terms( 'term_translations' ) );
+
+		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $post_group->term_taxonomy_id ) ) );
+		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $term_group->term_taxonomy_id ) ) );
 
 		// No strings translations, bug fixed in 2.2.1
-		$this->assertEmpty( get_post( $en->mo_id ) );
+		$this->assertEmpty( get_post( $english->mo_id ) );
 
 		// Users metas
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='pll_filter_content'" ) );
