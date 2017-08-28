@@ -70,6 +70,7 @@ class PLL_Uninstall {
 		// Delete users options
 		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
 			delete_user_meta( $user_id, 'pll_filter_content' );
+			delete_user_meta( $user_id, 'pll_duplicate_content' );
 			foreach ( $languages as $lang ) {
 				delete_user_meta( $user_id, 'description_' . $lang->slug );
 			}
