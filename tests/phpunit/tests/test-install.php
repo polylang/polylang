@@ -79,7 +79,7 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_option( 'polylang' ) );
 
 		// No languages
-		$this->assertEmpty( get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false ) ) );
+		$this->assertEmpty( get_terms( 'language', array( 'hide_empty' => false ) ) );
 		$this->assertEmpty( get_terms( 'term_language' ) );
 
 		// No languages for posts and terms
