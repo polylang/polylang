@@ -38,6 +38,17 @@ class Install_Test extends PLL_UnitTestCase {
 		update_user_meta( 1, 'pll_duplicate_content', array( 'post' => true ) );
 		update_user_meta( 1, 'description_fr', 'Biographie' );
 
+		// A menu with a language switcher
+		$menu_en = wp_create_nav_menu( 'menu_en' );
+		$item_id = wp_update_nav_menu_item( $menu_en, 0, array(
+			'menu-item-type'   => 'custom',
+			'menu-item-title'  => 'Language switcher',
+			'menu-item-url'    => '#pll_switcher',
+			'menu-item-status' => 'publish',
+		) );
+
+		update_post_meta( $item_id, '_pll_menu_item', array() );
+
 		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
@@ -71,5 +82,8 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='pll_filter_content'" ) );
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='pll_duplicate_content'" ) );
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='description_fr'" ) );
+
+		// Language switcher menu items
+		$this->assertEmpty( get_post( $item_id ) );
 	}
 }
