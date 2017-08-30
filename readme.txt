@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.8
-Stable tag: 2.2
+Stable tag: 2.2.1
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,16 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.2.1 (2017-08-30) =
+
+* Pro: partially refactor REST API classes
+* Pro: Fix duplicate content user meta not removed from DB when uninstalling the plugin
+* Fix strings translations not removed from DB when uninstalling the plugin
+* Fix incorrect translation files loaded in ajax on front when the user is logged in (WP 4.7+)
+* Fix widget language dropdown removed when saving a widget (introduced in 2.2)
+* Fix queries with negative values for the 'cat' parameter (introduced in 2.2 for queries made on frontend)
+* Fix performance issue in combination with some plugins when the language is set from the content (introduced in 2.2)
 
 = 2.2 (2017-08-16) =
 
