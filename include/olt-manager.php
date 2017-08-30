@@ -160,7 +160,12 @@ class PLL_OLT_Manager {
 	 * @return bool
 	 */
 	public function load_textdomain_mofile( $mofile, $domain ) {
-		$this->list_textdomains[ $domain ] = array( 'mo' => $mofile, 'domain' => $domain );
+		// On multisite, 2 files are sharing the same domain so we need to distinguish them
+		if ( 'default' === $domain && false !== strpos( $mofile, '/ms-' ) ) {
+			$this->list_textdomains['ms-default'] = array( 'mo' => $mofile, 'domain' => $domain );
+		} else {
+			$this->list_textdomains[ $domain ] = array( 'mo' => $mofile, 'domain' => $domain );
+		}
 		return ''; // Hack to prevent WP loading text domains as we will load them all later
 	}
 
