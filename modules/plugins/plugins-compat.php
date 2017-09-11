@@ -64,6 +64,11 @@ class PLL_Plugins_Compat {
 			remove_action( 'template_redirect', 'redirect_to_mapped_domain' );
 			add_action( 'template_redirect', array( $this, 'dm_redirect_to_mapped_domain' ) );
 		}
+
+		// Cache plugins
+		if ( defined( 'WP_CACHE' ) && WP_CACHE ) {
+			add_action( 'pll_init', array( $this->cache_compat = new PLL_Cache_Compat(), 'init' ) );
+		}
 	}
 
 	/**
