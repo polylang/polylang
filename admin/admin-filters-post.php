@@ -114,7 +114,6 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 	/**
 	 * Adds the Language box in the 'Edit Post' and 'Edit Page' panels ( as well as in custom post types panels )
-	 * Removes the editor for translations of the pages for posts
 	 *
 	 * @since 0.1
 	 *
@@ -124,11 +123,6 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	public function add_meta_boxes( $post_type, $post ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
 			add_meta_box( 'ml_box', __( 'Languages','polylang' ), array( $this, 'post_language' ), $post_type, 'side', 'high' );
-		}
-
-		if ( $post instanceof WP_Post && ( $page_for_posts = get_option( 'page_for_posts' ) ) && ( $translations = $this->model->post->get_translations( $page_for_posts ) ) && in_array( $post->ID, $translations ) && empty( $post->post_content ) ) {
-			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
-			remove_post_type_support( $post_type, 'editor' );
 		}
 	}
 

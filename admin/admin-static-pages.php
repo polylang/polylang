@@ -17,6 +17,9 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
+		// Removes the editor and the template select dropdown for pages for posts
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
+
 		// Add post state for translations of the front page and posts page
 		add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
 
@@ -29,6 +32,26 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 
 		// Prevents WP resetting the option
 		add_filter( 'pre_update_option_show_on_front', array( $this, 'update_show_on_front' ), 10, 2 );
+	}
+
+	/**
+	 * Removes the editor for translations of the pages for posts
+	 * Removes the page template select dropdown in page attributes metabox too
+	 *
+	 * @since 2.2.2
+	 *
+	 * @param string $post_type Current post type
+	 * @param object $post      Current post
+	 */
+	function add_meta_boxes( $post_type, $post ) {
+		if ( 'page' === $post_type ) {
+			add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
+
+			if ( ( $page_for_posts = get_option( 'page_for_posts' ) ) && empty( $post->post_content ) ) {
+				add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
+				remove_post_type_support( $post_type, 'editor' );
+			}
+		}
 	}
 
 	/**

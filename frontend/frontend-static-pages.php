@@ -19,7 +19,6 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 
 		$this->links_model = &$polylang->links_model;
 		$this->links = &$polylang->links;
-		$this->curlang = &$polylang->curlang;
 
 		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
 		add_action( 'pll_home_requested', array( $this, 'pll_home_requested' ) );
@@ -74,19 +73,6 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	public function translate_page_on_front( $v ) {
 		// returns the current page if there is no translation to avoid ugly notices
 		return isset( $this->curlang->page_on_front ) ? $this->curlang->page_on_front : $v;
-	}
-
-	/**
-	 * Translates page for posts
-	 *
-	 * @since 1.8
-	 *
-	 * @param int $v page for posts page id
-	 * @return int
-	 */
-	public function translate_page_for_posts( $v ) {
-		// Returns the current page if there is no translation to avoid ugly notices
-		return isset( $this->curlang->page_for_posts ) ? $this->curlang->page_for_posts : $v;
 	}
 
 	/**

@@ -438,22 +438,4 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$posts = get_posts( array( 'fields' => 'ids', 'trtax' => $tax->slug ) );
 		$this->assertEquals( $fr, reset( $posts ) );
 	}
-
-	function test_deactivate_editor_for_page_for_posts() {
-		$en = $this->factory->post->create( array( 'post_content' => '' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
-
-		update_option( 'page_for_posts', $en );
-
-		$fr = $this->factory->post->create( array( 'post_content' => '' ) ); // Content must be empty to deactivate editor.
-		self::$polylang->model->post->set_language( $fr, 'fr' );
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
-
-		do_action( 'add_meta_boxes', 'page', get_post( $fr ) );
-		$this->assertFalse( post_type_supports( 'page', 'editor' ) );
-
-		ob_start();
-		do_action( 'edit_form_after_title', get_post( $fr ) );
-		$this->assertContains( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
-	}
 }
