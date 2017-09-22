@@ -350,7 +350,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		foreach ( $translations as $t ) {
 			$term = uniqid( 'pll_' ); // the term name
-			$terms[] = $wpdb->prepare( '( "%1$s", "%1$s" )', $term );
+			$terms[] = $wpdb->prepare( '( "%s", "%s" )', $term, $term );
 			$slugs[] = $wpdb->prepare( '"%s"', $term );
 			$description[ $term ] = serialize( $t );
 			$count[ $term ] = count( $t );

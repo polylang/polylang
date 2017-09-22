@@ -219,7 +219,7 @@ class PLL_Upgrade {
 
 			foreach ( $objects as $obj ) {
 				$term = uniqid( 'pll_' ); // The term name
-				$terms[] = $wpdb->prepare( '( "%1$s", "%1$s" )', $term );
+				$terms[] = $wpdb->prepare( '( "%s", "%s" )', $term, $term );
 				$slugs[] = $wpdb->prepare( '"%s"', $term );
 				$translations = maybe_unserialize( maybe_unserialize( $obj ) ); // 2 unserialize due to an old storage bug
 				$description[ $term ] = serialize( $translations );
