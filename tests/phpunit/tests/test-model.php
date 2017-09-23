@@ -152,7 +152,7 @@ class Model_Test extends PLL_UnitTestCase {
 			'trcpt' => 'trcpt',
 		);
 
-		register_post_type( 'trcpt'); // translated custom post type
+		register_post_type( 'trcpt' ); // translated custom post type
 		register_post_type( 'cpt' ); // *untranslated* custom post type
 
 		$this->assertTrue( pll_is_translated_post_type( 'trcpt' ) );
