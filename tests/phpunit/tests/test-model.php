@@ -146,5 +146,52 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertFalse( self::$polylang->model->is_filtered_taxonomy( 'nav_menu' ) );
 		$this->assertFalse( self::$polylang->model->is_filtered_taxonomy( 'language' ) );
 	}
+
+		function test_is_translated_post_type() {
+		self::$polylang->options['post_types'] = array(
+			'trcpt' => 'trcpt',
+		);
+
+		register_post_type( 'trcpt'); // translated custom post type
+		register_post_type( 'cpt' ); // *untranslated* custom post type
+
+		$this->assertTrue( pll_is_translated_post_type( 'trcpt' ) );
+		$this->assertFalse( pll_is_translated_post_type( 'cpt' ) );
+
+		$this->assertTrue( pll_is_translated_post_type( array( 'trcpt' ) ) );
+		$this->assertFalse( pll_is_translated_post_type( array( 'cpt' ) ) );
+
+		$this->assertTrue( pll_is_translated_post_type( array( 'trcpt', 'cpt' ) ) );
+
+		_unregister_post_type( 'cpt' );
+		_unregister_post_type( 'trcpt' );
+	}
+
+	function test_is_translated_taxonomy() {
+		self::$polylang->options['taxonomies'] = array(
+			'trtax' => 'trtax',
+		);
+
+		register_taxonomy( 'trtax', 'post' ); // translated custom tax
+		register_taxonomy( 'tax', 'post' ); // *untranslated* custom tax
+
+		$this->assertTrue( pll_is_translated_taxonomy( 'trtax' ) );
+		$this->assertFalse( pll_is_translated_taxonomy( 'tax' ) );
+
+		$this->assertTrue( pll_is_translated_taxonomy( array( 'trtax' ) ) );
+		$this->assertFalse( pll_is_translated_taxonomy( array( 'tax' ) ) );
+
+		$this->assertTrue( pll_is_translated_taxonomy( array( 'trtax', 'tax' ) ) );
+
+		_unregister_taxonomy( 'tax' );
+		_unregister_taxonomy( 'trtax' );
+	}
+
+	function test_is_filtered_taxonomy() {
+		$this->assertTrue( self::$polylang->model->is_filtered_taxonomy( array( 'post_format' ) ) );
+		$this->assertFalse( self::$polylang->model->is_filtered_taxonomy( array( 'category' ) ) );
+
+		$this->assertTrue( self::$polylang->model->is_filtered_taxonomy( array( 'post_format', 'category' ) ) );
+	}
 }
 
