@@ -26,15 +26,15 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 	 *
 	 * list of paramaters accepted in $args
 	 *
-	 * skip_missing  => wether to skip missing translation or not, 0 or 1, defaults to 0
+	 * skip_missing  => whether to skip missing translation or not, 0 or 1, defaults to 0
 	 * orderby       => 'id', 'code', 'name', defaults to 'id'
 	 * order         => 'ASC' or 'DESC', defaults to 'ASC'
 	 * link_empty_to => link to use when the translation is missing {$lang} is replaced by the language code
 	 *
-	 * list of parameters returned per language:
+	 * List of parameters returned per language:
 	 *
 	 * id               => the language id
-	 * active           => wether this is the active language or no, 0 or 1
+	 * active           => whether this is the active language or no, 0 or 1
 	 * native_name      => the language name
 	 * missing          => wether the translation is missing or not, 0 or 1
 	 * translated_name  => empty, does not exist in Polylang
@@ -54,7 +54,8 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 
 		$arr = array();
 
-		foreach ( PLL()->model->get_languages_list( array( 'hide_empty' => true, 'orderby' => $orderby, 'order' => $order ) ) as $lang ) {
+		// NB: When 'skip_missing' is false, WPML returns all languages even if there is no content
+		foreach ( PLL()->model->get_languages_list( array( 'hide_empty' => $args['skip_missing'], 'orderby' => $orderby, 'order' => $order ) ) as $lang ) {
 			// We can find a translation only on frontend
 			if ( method_exists( PLL()->links, 'get_translation_url' ) ) {
 				$url = PLL()->links->get_translation_url( $lang );

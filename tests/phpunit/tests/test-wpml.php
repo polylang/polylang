@@ -8,6 +8,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+		self::create_language( 'de_DE_formal' );
 
 		require_once PLL_INC . '/api.php';
 		$GLOBALS['polylang'] = &self::$polylang; // The WPML API uses the global $polylang
@@ -69,7 +70,7 @@ class WPML_Test extends PLL_UnitTestCase {
 			'url' => home_url( "?page_id={$fr}&lang=fr" ),
 		);
 
-		$this->assertCount( 2, $languages );
+		$this->assertCount( 3, $languages ); // All languages are returned, even German which has no content
 		$this->assertEqualSets( $expected, $languages['fr'] );
 		$this->assertEquals( 1, $languages['en']['missing'] );
 
