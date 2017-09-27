@@ -193,7 +193,7 @@ function pll_esc_attr_e( $string ) {
  * @return string the string translation in the requested language
  */
 function pll_translate_string( $string, $lang ) {
-	if ( pll_current_language() == $lang ) {
+	if ( PLL() instanceof PLL_Frontend && pll_current_language() == $lang ) {
 		return pll__( $string );
 	}
 
