@@ -168,6 +168,23 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wpml_object_id_filter' ) ) {
+	/**
+	 * Undocumented alias of `icl_object_id` introduced in WPML 3.2, used by Yith WooCommerce compare
+	 *
+	 * @since 2.2.4
+	 *
+	 * @param int    $id                         object id
+	 * @param string $type                       optional, post type or taxonomy name of the object, defaults to 'post'
+	 * @param bool   $return_original_if_missing optional, true if Polylang should return the original id if the translation is missing, defaults to false
+	 * @param string $lang                       optional, language code, defaults to current language
+	 * @return int|null the object id of the translation, null if the translation is missing and $return_original_if_missing set to false
+	 */
+	function wpml_object_id_filter( $id, $type = 'post', $return_original_if_missing = false, $lang = null ) {
+		return icl_object_id( $id, $type, $return_original_if_missing, $lang );
+	}
+}
+
 if ( ! function_exists( 'wpml_get_language_information' ) ) {
 	/**
 	 * Undocumented function used by the theme Maya
