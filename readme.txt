@@ -3,8 +3,8 @@ Contributors: Chouby
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
-Tested up to: 4.7
-Stable tag: 2.0.9
+Tested up to: 4.8
+Stable tag: 2.2.3
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -21,7 +21,6 @@ Polylang allows you to create a bilingual or multilingual WordPress site. You wr
 * The language is either set by the content or by the language code in url, or you can use one different subdomain or domain per language
 * Categories, post tags as well as some other metas are automatically copied when adding a new post or page translation
 * A customizable language switcher is provided as a widget or in the nav menu
-* The admin interface is of course multilingual too and each user can set the WordPress admin language in its profile
 
 > The author does not provide support on the wordpress.org forum. Support and extra features are available to [Polylang Pro](https://polylang.pro) users.
 
@@ -32,7 +31,7 @@ If you wish to use a professional or automatic translation service, you can inst
 = Credits =
 
 Thanks a lot to all translators who [help translating Polylang](https://translate.wordpress.org/projects/wp-plugins/polylang).
-Thanks a lot to [Alex Lopez](http://www.alexlopez.rocks/) for the design of the banner and the logo.
+Thanks a lot to [Alex Lopez](http://www.alexlopez.rocks/) for the design of the logo.
 Most of the flags included with Polylang are coming from [famfamfam](http://famfamfam.com/) and are public domain.
 Wherever third party code has been used, credit has been given in the code’s comments.
 
@@ -62,7 +61,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 = Is Polylang compatible with WooCommerce? =
 
-* You need a separate addon to make Polylang and WooCommerce work together. [A Premium addon](https://polylang.pro/downloads/polylang-for-woocommerce/), currently in beta stage, is available.
+* You need a separate addon to make Polylang and WooCommerce work together. [A Premium addon](https://polylang.pro/downloads/polylang-for-woocommerce/) is available.
 
 = Do you need translation services? =
 
@@ -77,102 +76,62 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.0.9 (2016-11-15) =
+= 2.2.3 (2017-09-24) =
 
-* fix javascript error in some ajax requests
+* Fix editor removed on pages (introduced in 2.2.2)
 
-= 2.0.8 (2016-11-14) =
+= 2.2.2 (2017-09-22) =
 
-* Disable admin language feature in WP 4.7+
-* Pro: fix case where a media could lose its parent post when translated on the fly by the content duplication
-* Pro: fix on the fly media created at content duplication attached to parent page instead of child page
-* Fix translations input fields not populated in languages metabox when creating a new translation in WP 4.7
-* Fix possibility to delete the translations of the default category in WP 4.7
-* Fix tag search not filtered per language in Quick edit in WP 4.7
-* Fix dropdown language switcher not working for untranslated pages
+* Pro: Fix Duplicate post button not working when the user meta has been corrupted
+* Fix PHP notice with the plugin Members #175
+* Fix page template select displayed when editing a translated page for posts
+* Fix incompatibility with WP 4.8.2 (placeholder %1$s in prepare)
 
-= 2.0.7 (2016-10-18) =
+= 2.2.1 (2017-08-30) =
 
-* Fix issues with static front pages introduced in version 2.0.6
+* Pro: partially refactor REST API classes
+* Pro: Fix duplicate content user meta not removed from DB when uninstalling the plugin
+* Fix strings translations not removed from DB when uninstalling the plugin
+* Fix incorrect translation files loaded in ajax on front when the user is logged in (WP 4.7+)
+* Fix widget language dropdown removed when saving a widget (introduced in 2.2)
+* Fix queries with negative values for the 'cat' parameter (introduced in 2.2 for queries made on frontend)
+* Fix performance issue in combination with some plugins when the language is set from the content (introduced in 2.2)
 
-= 2.0.6 (2016-10-17) =
+= 2.2 (2017-08-16) =
 
-* Pro: Fix translated paged slug not working on paged static front page
-* Add support for WPML filter 'wpml_language_form_input_field'
-* Fix PHP notice when using the WPML filter 'wpml_current_language'
-* Fix cases where the admin language filter is not correctly taken into account
-* Fix paged static front pages in plain permalinks
-* Fix paged static front pages for multiple domains (#43)
-* Fix warning occuring when a 3rd party plugin attempts to register anything but a string in the strings translations panel
-* Fix cross domain http request for media when using multiple domains or subdomains
-* Fix error 404 on pages when no language has been created yet
-
-= 2.0.5 (2016-09-22) Five years after! =
-
-* Pro: Fix conflict with WPBakery Visual Composer
-* Pro: Fix conflict between multiple domains SSO and FORCE_SSL_ADMIN
-* Pro: Fix duplicated fields not displayed in new translation in ACF Pro 5.4+
-* Add Tibetan and Silesian to the predefined languages list
-* Remove duplicated strings from the strings translations (even when they have a different name or group)
-* The languages and translations of custom post types and taxonomies are no more activated by default at activation
-* Allow to deactivate auto translation in secondary by setting 'lang' to an empty value
-* Fix: invalidate the cache of PLL_MO ids when adding a new language
-* Fix: don't filter secondary queries when editing a post in an untranslated post type
-
-= 2.0.4 (2016-09-06) =
-
-* Add Gujarati to the predefined languages list
-* Fix conflict with Page Builder. Other parts of the conflict are fixed in Page Builder 2.4.14
-* Fix plugins translations incorrectly loaded in WP 4.6
-* Fix error 404 on paged urls when using a non standard port
-
-= 2.0.3 (2016-08-16) =
-
-* Pro: Fix PHP notice when hiding the language code in url and the language is set from subdomains
-* Pro: Fix one more media being created when the duplicate media in all languages is activated (introduced in 2.0)
-* Pro: Fix shared term slugs not working on PHP 7
-* Pro: Fix Polylang storing integers in some ACF Pro fields where ACF Pro stores strings
-* Pro: Fix ACF Pro custom fields synchronized even when the custom fields synchronization option is deactivated (#40)
-* Fix PHP notice: Undefined variable: original_value in /modules/wpml/wpml-api.php on line 168
-* Fix translations loaded too soon by plugins not correctly reloaded since WP 4.6 (#39)
-* Fix: Remove the delete link for translations of the default category on PHP 7
-* Fix unescaped i18n strings in Lingotek presentation
-
-= 2.0.2 (2016-08-03) =
-
-* Avoid fatal error when a 3rd party theme or plugin has a malformed wpml-config.xml file: the malformed wpml-config.xml file is simply ignored
-
-= 2.0.1 (2016-08-02) =
-
-* Fix fatal error on PHP < 5.4 (introduced in 2.0)
-* Fix custom flags not being loaded (introduced in 2.0)
-
-= 2.0 (2016-08-02) =
-
-* Pro: Improve integration with ACF Pro
-* Pro: Add support for single sign on across multiple domains or subdomains
-* Pro: Add support for browser language detection when using multiple domains
-* Pro: Add support for translation of the static portion of the post permalink structure
-* Pro: Fix deactivated languages appearing in Yoast SEO sitemaps
-* Pro: Fix impossibility to visit a deactivated language when using subdomains or multiple domains (#10)
-* Pro: Fix when sharing slug on the page for posts, only one of them is accessible (#33)
-* Add the possibility to use the language switcher as dropdown in menu
-* Add support for custom logo introduced in WP 4.5 (#6)
-* The backend current language ( PLL()->curlang ) is now equal to the language of current post or term being edited (#19)
-* The sample permalink is now updated when changing the language in the Languages metabox
-* Revamp the wpml-config.xml reader to use simplexml instead of our custom xml parser
-* Improve support for the WPML API (including Hook API introduced in WPML 3.2)
-* Add support for translation of meta titles and descriptions of custom post types and custom taxonomies in Yoast SEO
-* Replace uncached functions by WPCOM VIP functions when available
-* Improve compatibility with WP 4.6
-* Fix parent category wrongly assigned to post when synchronizing children categories (#21)
-* Fix custom fonts not loaded when using multiple domains or subdomains
-* Fix remove_accents() not working for German and Danish (#24)
-* Fix incorrect static front pages urls on backend
-* Fix impossible to directly enter the page number in strings translation table (introduced in 1.9.3)
-* Fix conflict with WP Sweep (needs WP Sweep 1.0.8+)
-* Fix potential performance issue by querying only taxonomies to show in quick edit to filter the category checklist
-* Fix conflict (database error) with ReOrder-posts-within-categories plugin
-* Fix languages per page option not saved
+* Pro: Add support for the REST API
+* Pro: Add integration with The Events Calendar
+* Pro: Refactor ACF Pro integration for post metas and integrate term metas
+* Pro: Ask confirmation if synchronizing a post overwrites an existing translation
+* Pro: Separate sync post logic from interface
+* Pro: Fix 'Detect browser language' option automatically deactivated
+* Pro: Fix redirect to 404 when the 'page' slug translation includes non alphanumeric characters.
+* Pro: Fix untranslated post type archive slug
+* Pro: Fix ACF taxonomy fields not copied when the taxonomy is not translated #156
+* Pro: Fix fatal error with ACF4
+* Support a different content text direction in admin #45
+* Add support for wildcards and 'copy-once' attribute in wpml-config.xml
+* Add minimal support for the filters 'wpml_display_language_names' and 'icl_ls_languages'
+* Improve compatibility with the plugin WordPress MU Domain Mapping #116
+* Improve speed of the sticky posts filter #41
+* Remove redirect_lang option for multiple domains and subdomains
+* Use secure cookie when using SSL
+* Allow to copy/sync term metas with the filter 'pll_copy_term_metas'
+* Filter ajax requests in term.php according to the term language
+* Add error message in customizer when setting an untranslated static front page #47
+* Load static page class only if we are using a static front page
+* Refactor parse_query filters to use the same code on frontend and admin
+* Don't use add_language_to_link in filters
+* Move ajaxPrefilter footer script on top
+* Use wp_doing_ajax() instead of DOING_AJAX constant
+* Fix queries custom tax not excluded from language filter on admin
+* Fix WP translation not loaded when the language is set from the content on multisite.
+* Fix the list of core post types in PLL_OLT_Manager for WP 4.7+
+* Fix post name and tag slug incorrectly sanitized for German and Danish
+* Fix lang attribute in dropdowns
+* Fix wpml_permalink filter #139
+* Fix WPML constants undefined on backend #151
+* Fix a conflict with the plugin Custom Permalinks #143
+* Fix menu location unexpectedly unset
 
 See [changelog.txt](https://plugins.svn.wordpress.org/polylang/trunk/changelog.txt) for older changelog

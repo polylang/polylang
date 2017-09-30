@@ -42,6 +42,9 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		// Filters the pages by language in the parent dropdown list in the page attributes metabox
 		add_filter( 'page_attributes_dropdown_pages_args', array( $this, 'page_attributes_dropdown_pages_args' ), 10, 2 );
+
+		// Sets the language in Tiny MCE
+		add_filter( 'tiny_mce_before_init', array( $this, 'tiny_mce_before_init' ) );
 	}
 
 	/**
@@ -105,85 +108,21 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @param object $query a WP_Query object
 	 */
 	public function parse_query( $query ) {
-		$qvars = &$query->query_vars;
-
-		// Do not filter post types such as nav_menu_item
-		if ( isset( $qvars['post_type'] ) && ! $this->model->is_translated_post_type( $qvars['post_type'] ) ) {
-			unset( $qvars['lang'] );
-			return;
-		}
-
-		// Do not filter the query if the language is already specified in another way
-		if ( ! isset( $qvars['lang'] ) ) {
-			$excludes = array(
-				'p',
-				'post_parent',
-				'attachment',
-				'attachment_id',
-				'name',
-				'pagename',
-				'page_id',
-				'category_name',
-				'tag',
-				'cat',
-				'tag_id',
-				'category__in',
-				'category__and',
-				'post__in',
-				'post_name__in',
-				'tag__in',
-				'tag__and',
-				'tag_slug__in',
-				'tag_slug__and',
-				'post_parent__in',
-			);
-
-			foreach ( $excludes as $k ) {
-				if ( ! empty( $qvars[ $k ] ) ) {
-					return;
-				}
-			}
-
-			$taxonomies = array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) );
-
-			foreach ( $taxonomies as $tax ) {
-				$tax = get_taxonomy( $tax );
-				if ( ! empty( $qv[ $tax->query_var ] ) ) {
-					return;
-				}
-			}
-
-			if ( ! empty( $qvars['tax_query'] ) && is_array( $qvars['tax_query'] ) && $this->model->have_translated_taxonomy( $qvars['tax_query'] ) ) {
-				return;
-			}
-
-			// Filter queries according to the current language
-			if ( isset( $qvars['post_type'] ) && ! empty( $this->curlang ) ) {
-				$qvars['lang'] = $this->curlang->slug;
-			}
-		}
-
-		if ( isset( $qvars['lang'] ) && 'all' === $qvars['lang'] ) {
-			unset( $qvars['lang'] );
-		}
+		$pll_query = new PLL_Query( $query, $this->model );
+		$pll_query->filter_query( $this->curlang );
 	}
 
 	/**
 	 * Adds the Language box in the 'Edit Post' and 'Edit Page' panels ( as well as in custom post types panels )
-	 * Removes the editor for translations of the pages for posts
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $post_type
+	 * @param string $post_type Current post type
+	 * @param object $post      Current post
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
 			add_meta_box( 'ml_box', __( 'Languages','polylang' ), array( $this, 'post_language' ), $post_type, 'side', 'high' );
-		}
-
-		if ( ( $page_for_posts = get_option( 'page_for_posts' ) ) && ( $translations = $this->model->post->get_translations( $page_for_posts ) ) && in_array( $post->ID, $translations ) &&  empty( $post->post_content ) ) {
-			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
-			remove_post_type_support( $post_type, 'editor' );
 		}
 	}
 
@@ -230,7 +169,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		echo '<div id="post-translations" class="translations">';
 		if ( $lang ) {
-			include( PLL_ADMIN_INC . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php' );
+			include PLL_ADMIN_INC . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
 		}
 		echo '</div>' . "\n";
 	}
@@ -257,7 +196,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		ob_start();
 		if ( $lang ) {
-			include( PLL_ADMIN_INC . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php' );
+			include PLL_ADMIN_INC . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
 		}
 		$x = new WP_Ajax_Response( array( 'what' => 'translations', 'data' => ob_get_contents() ) );
 		ob_end_clean();
@@ -282,10 +221,10 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 				$supplemental['dropdown'] = wp_dropdown_categories( array(
 					'taxonomy'         => $taxonomy->name,
 					'hide_empty'       => 0,
-					'name'             => 'new'.$taxonomy->name.'_parent',
+					'name'             => 'new' . $taxonomy->name . '_parent',
 					'orderby'          => 'name',
 					'hierarchical'     => 1,
-					'show_option_none' => '&mdash; '.$taxonomy->labels->parent_item.' &mdash;',
+					'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;',
 					'echo'             => 0,
 				) );
 
@@ -346,11 +285,13 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			'numberposts'      => 20, // Limit to 20 posts
 			'post_status'      => 'any',
 			'post_type'        => $_GET['post_type'],
-			'tax_query'        => array( array(
-				'taxonomy' => 'language',
-				'field'    => 'term_taxonomy_id', // WP 3.5+
-				'terms'    => $translation_language->term_taxonomy_id,
-			) ),
+			'tax_query'        => array(
+				array(
+					'taxonomy' => 'language',
+					'field'    => 'term_taxonomy_id', // WP 3.5+
+					'terms'    => $translation_language->term_taxonomy_id,
+				),
+			),
 		);
 
 		/**
@@ -585,5 +526,21 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		}
 
 		return $dropdown_args;
+	}
+
+	/**
+	 * Sets the language attribute and text direction for Tiny MCE
+	 *
+	 * @since 2.2
+	 *
+	 * @param array $mce_init TinyMCE config
+	 * @return array
+	 */
+	public function tiny_mce_before_init( $mce_init ) {
+		if ( ! empty( $this->curlang ) ) {
+			$mce_init['wp_lang_attr'] = $this->curlang->get_locale( 'display' );
+			$mce_init['directionality'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
+		}
+		return $mce_init;
 	}
 }

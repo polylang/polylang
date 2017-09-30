@@ -38,7 +38,7 @@ abstract class PLL_Translated_Object {
 	 * @return bool|object the term associated to the object in the requested taxonomy if exists, false otherwise
 	 */
 	public function get_object_term( $object_id, $taxonomy ) {
-		if ( empty( $object_id ) ) {
+		if ( empty( $object_id ) || is_wp_error( $object_id ) ) {
 			return false;
 		}
 

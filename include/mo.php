@@ -39,6 +39,8 @@ class PLL_MO extends MO {
 			$strings[] = array( $entry->singular, $this->translate( $entry->singular ) );
 		}
 
+		$strings = wp_slash( $strings ); // Avoid breaking slashed strings in update_post_meta. See https://codex.wordpress.org/Function_Reference/update_post_meta#Character_Escaping
+
 		if ( empty( $lang->mo_id ) ) {
 			$post = array(
 				'post_title'  => 'polylang_mo_' . $lang->term_id,

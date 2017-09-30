@@ -148,6 +148,21 @@ td[class*='column-language_'] {
 	width: 1.5em;
 }
 
+/* Text direcction in post.php and edit-tags.php */
+.pll-dir-rtl textarea,
+.pll-dir-rtl input[type="text"] {
+	direction: rtl;
+}
+
+.pll-dir-ltr textarea,
+.pll-dir-ltr input[type="text"] {
+	direction: ltr;
+}
+
+.pll-dir-ltr .tr_lang,
+.pll-dir-rtl .tr_lang {
+	direction: inherit;
+}
 
 /* languages metabox in post.php */
 #post-translations p {

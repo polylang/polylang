@@ -136,7 +136,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// Delete users options
 		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
 			delete_user_meta( $user_id, 'pll_filter_content', $lang->slug );
-			delete_user_meta( $user_id, 'description_'.$lang->slug );
+			delete_user_meta( $user_id, 'description_' . $lang->slug );
 		}
 
 		// Delete the string translations
@@ -308,7 +308,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		$ids = array_map( 'intval', $ids );
 		$lang = $this->get_language( $lang );
-		$tt_id = 'term' == $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
+		$tt_id = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
 
 		foreach ( $ids as $id ) {
 			$values[] = $wpdb->prepare( '( %d, %d )', $id, $tt_id );
@@ -320,7 +320,9 @@ class PLL_Admin_Model extends PLL_Model {
 			$lang->update_count(); // Updating term count is mandatory ( thanks to AndyDeGroo )
 		}
 
-		if ( 'term' == $type ) {
+		if ( 'term' === $type ) {
+			clean_term_cache( $ids, 'term_language' );
+
 			foreach ( $ids as $id ) {
 				$translations[] = array( $lang->slug => $id );
 			}
@@ -328,6 +330,8 @@ class PLL_Admin_Model extends PLL_Model {
 			if ( ! empty( $translations ) ) {
 				$this->set_translation_in_mass( 'term', $translations );
 			}
+		} else {
+			clean_term_cache( $ids, 'language' );
 		}
 	}
 
@@ -342,9 +346,11 @@ class PLL_Admin_Model extends PLL_Model {
 	public function set_translation_in_mass( $type, $translations ) {
 		global $wpdb;
 
+		$taxonomy = $type . '_translations';
+
 		foreach ( $translations as $t ) {
 			$term = uniqid( 'pll_' ); // the term name
-			$terms[] = $wpdb->prepare( '( "%1$s", "%1$s" )', $term );
+			$terms[] = $wpdb->prepare( '( "%s", "%s" )', $term, $term );
 			$slugs[] = $wpdb->prepare( '"%s"', $term );
 			$description[ $term ] = serialize( $t );
 			$count[ $term ] = count( $t );
@@ -357,11 +363,12 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Get all terms with their term_id
-		$terms = $wpdb->get_results( "SELECT term_id, slug FROM $wpdb->terms WHERE slug IN ( " . implode( ',', $slugs ) . " )" );
+		$terms = $wpdb->get_results( "SELECT term_id, slug FROM $wpdb->terms WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
 
 		// Prepare terms taxonomy relationship
 		foreach ( $terms as $term ) {
-			$tts[] = $wpdb->prepare( '( %d, "%s", "%s", %d )', $term->term_id, $type . '_translations', $description[ $term->slug ], $count[ $term->slug ] );
+			$term_ids[] = $term->term_id;
+			$tts[] = $wpdb->prepare( '( %d, "%s", "%s", %d )', $term->term_id, $taxonomy, $description[ $term->slug ], $count[ $term->slug ] );
 		}
 
 		// Insert term_taxonomy
@@ -371,7 +378,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Get all terms with term_taxonomy_id
-		$terms = get_terms( $type . '_translations', array( 'hide_empty' => false ) );
+		$terms = get_terms( $taxonomy, array( 'hide_empty' => false ) );
 
 		// Prepare objects relationships
 		foreach ( $terms as $term ) {
@@ -390,6 +397,8 @@ class PLL_Admin_Model extends PLL_Model {
 			$wpdb->query( "INSERT INTO $wpdb->term_relationships ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
 			$trs = array_unique( $trs );
 		}
+
+		clean_term_cache( $term_ids, $taxonomy );
 	}
 
 	/**
@@ -406,11 +415,13 @@ class PLL_Admin_Model extends PLL_Model {
 			'post_type'   => $this->get_translated_post_types(),
 			'post_status' => 'any',
 			'fields'      => 'ids',
-			'tax_query'   => array( array(
-				'taxonomy' => 'language',
-				'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
-				'operator' => 'NOT IN',
-			) )
+			'tax_query'   => array(
+				array(
+					'taxonomy' => 'language',
+					'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
+					'operator' => 'NOT IN',
+				),
+			),
 		) );
 
 		$terms = get_terms( $this->get_translated_taxonomies(), array( 'get' => 'all', 'fields' => 'ids' ) );
@@ -443,6 +454,7 @@ class PLL_Admin_Model extends PLL_Model {
 		$terms = get_terms( array( 'post_translations', 'term_translations' ) );
 
 		foreach ( $terms as $term ) {
+			$term_ids[ $term->taxonomy ][] = $term->term_id;
 			$tr = unserialize( $term->description );
 			if ( ! empty( $tr[ $old_slug ] ) ) {
 				if ( $new_slug ) {
@@ -467,28 +479,30 @@ class PLL_Admin_Model extends PLL_Model {
 		if ( ! empty( $dr ) ) {
 			$wpdb->query( "
 				DELETE FROM $wpdb->term_relationships
-				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . " )
-				AND term_taxonomy_id IN ( " . implode( ',', $dr['tt'] ) . " )
-			" );
+				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' )
+				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )
+			' );
 		}
 
 		// Delete terms
 		if ( ! empty( $dt ) ) {
-			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $dt['t'] ) . " ) " );
-			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $dt['tt'] ) . " ) " );
+			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $dt['t'] ) . ' )' );
+			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $dt['tt'] ) . ' )' );
 		}
 
 		// Update terms
 		if ( ! empty( $ut ) ) {
 			$wpdb->query( "
 				UPDATE $wpdb->term_taxonomy
-				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . " END )
-				WHERE term_id IN ( " . implode( ',', $ut['in'] ) . " )
-			" );
+				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END )
+				WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )
+			' );
 		}
 
-		foreach ( $terms as $term ) {
-			clean_term_cache( $term->term_id, $term->taxonomy );
+		if ( ! empty( $term_ids ) ) {
+			foreach ( $term_ids as $taxonomy => $ids ) {
+				clean_term_cache( $ids, $taxonomy );
+			}
 		}
 	}
 

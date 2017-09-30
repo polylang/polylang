@@ -116,12 +116,13 @@ class PLL_Switcher {
 	 * hide_if_empty          => hides languages with no posts ( or pages ) if set to 1, defaults to 1
 	 * show_flags             => displays flags if set to 1, defaults to 0
 	 * show_names             => show language names if set to 1, defaults to 1
-	 * display_names_as       => wether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name
+	 * display_names_as       => whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name
 	 * force_home             => will always link to home in translated language if set to 1, defaults to 0
 	 * hide_if_no_translation => hide the link if there is no translation if set to 1, defaults to 0
 	 * hide_current           => hide the current language if set to 1, defaults to 0
 	 * post_id                => returns links to translations of post defined by post_id if set, defaults not set
 	 * raw                    => return a raw array instead of html markup if set to 1, defaults to 0
+	 * item_spacing           => whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to preserve
 	 *
 	 * @since 0.1
 	 *
@@ -143,6 +144,7 @@ class PLL_Switcher {
 			'hide_current'           => 0, // don't hide current language
 			'post_id'                => null, // if not null, link to translations of post defined by post_id
 			'raw'                    => 0, // set this to true to build your own custom language switcher
+			'item_spacing'           => 'preserve', // 'preserve' or 'discard' whitespace between list items
 		);
 		$args = wp_parse_args( $args, $defaults );
 

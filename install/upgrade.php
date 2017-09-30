@@ -12,6 +12,8 @@ class PLL_Upgrade {
 	 * Constructor
 	 *
 	 * @since 1.2
+	 *
+	 * @param array $options Polylang options
 	 */
 	public function __construct( &$options ) {
 		$this->options = &$options;
@@ -87,7 +89,7 @@ class PLL_Upgrade {
 	 * @since 1.2
 	 */
 	public function _upgrade() {
-		foreach ( array( '0.9', '1.0', '1.1', '1.2', '1.2.1', '1.2.3', '1.3', '1.4', '1.4.1', '1.4.4', '1.5', '1.6', '1.7.4', '1.8', '2.0.8', '2.1' ) as $version ) {
+		foreach ( array( '0.9', '1.0', '1.1', '1.2', '1.2.1', '1.2.3', '1.3', '1.4', '1.4.1', '1.4.4', '1.5', '1.6', '1.7.4', '1.8', '2.0.8', '2.1', '2.2' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				call_user_func( array( $this, 'upgrade_' . str_replace( '.', '_', $version ) ) );
 			}
@@ -217,7 +219,7 @@ class PLL_Upgrade {
 
 			foreach ( $objects as $obj ) {
 				$term = uniqid( 'pll_' ); // The term name
-				$terms[] = $wpdb->prepare( '( "%1$s", "%1$s" )', $term );
+				$terms[] = $wpdb->prepare( '( "%s", "%s" )', $term, $term );
 				$slugs[] = $wpdb->prepare( '"%s"', $term );
 				$translations = maybe_unserialize( maybe_unserialize( $obj ) ); // 2 unserialize due to an old storage bug
 				$description[ $term ] = serialize( $translations );
@@ -231,7 +233,7 @@ class PLL_Upgrade {
 			}
 
 			// Get all terms with their term_id
-			$terms = $wpdb->get_results( "SELECT term_id, slug FROM $wpdb->terms WHERE slug IN ( " . implode( ',', $slugs ) . " )" );
+			$terms = $wpdb->get_results( "SELECT term_id, slug FROM $wpdb->terms WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
 
 			// Prepare terms taxonomy relationship
 			foreach ( $terms as $term ) {
@@ -500,7 +502,7 @@ class PLL_Upgrade {
 			return;
 		}
 
-		require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 		$translations = wp_get_available_translations();
 		if ( ! $translations ) {
 			return;
@@ -514,7 +516,7 @@ class PLL_Upgrade {
 		}
 
 		if ( ! empty( $translations_to_load ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+			require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 			$upgrader = new Language_Pack_Upgrader( new Automatic_Upgrader_Skin );
 			$upgrader->bulk_upgrade( $translations_to_load, array( 'clear_update_cache' => false ) );
 		}
@@ -537,7 +539,7 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_1_8() {
 		// Adds the flag code in languages stored in DB
-		include( PLL_SETTINGS_INC . '/languages.php' );
+		include PLL_SETTINGS_INC . '/languages.php';
 
 		$terms = get_terms( 'language', array( 'hide_empty' => 0 ) );
 
@@ -585,4 +587,12 @@ class PLL_Upgrade {
 		}
 	}
 
+	/**
+	 * Upgrades if the previous version is < 2.2
+	 *
+	 * @since 2.2
+	 */
+	protected function upgrade_2_2() {
+		delete_transient( 'pll_languages_list' ); // Deletes language cache (due to 'redirect_lang' option removed for subdomains and multiple domains)
+	}
 }

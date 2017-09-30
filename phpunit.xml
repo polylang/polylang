@@ -1,0 +1,40 @@
+<phpunit
+	bootstrap="tests/phpunit/includes/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	>
+	<testsuites>
+		<testsuite>
+			<directory prefix="test-" suffix=".php">./tests/phpunit/tests</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<whitelist addUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">./admin</directory>
+			<directory suffix=".php">./frontend</directory>
+			<directory suffix=".php">./include</directory>
+			<directory suffix=".php">./install</directory>
+			<directory suffix=".php">./modules</directory>
+			<directory suffix=".php">./settings</directory>
+			<file>polylang.php</file>
+			<file>uninstall.php</file>
+			<exclude>
+				<file>install/plugin-updater.php</file><!-- 3rd party code with no significant modification -->
+			</exclude>
+		</whitelist>
+	</filter>
+	<listeners>
+		<listener class="SpeedTrapListener" file="tests/phpunit/includes/speed-trap-listener.php">
+			<arguments>
+				<array>
+					<element key="slowThreshold">
+						<integer>400</integer>
+					</element>
+				</array>
+			</arguments>
+		</listener>
+	</listeners>
+</phpunit>

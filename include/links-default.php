@@ -78,7 +78,7 @@ class PLL_Links_Default extends PLL_Links_Model {
 			$url = $_SERVER['REQUEST_URI'];
 		}
 
-		$pattern = '#lang=('.implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ).')#';
+		$pattern = '#lang=(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')#';
 		return preg_match( $pattern, trailingslashit( $url ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
 	}
 

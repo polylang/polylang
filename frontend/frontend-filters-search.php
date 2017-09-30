@@ -52,7 +52,7 @@ class PLL_Frontend_Filters_Search {
 				$form = str_replace( $old, $new, $form );
 			}
 			else {
-				$form = str_replace( '</form>', '<input type="hidden" name="lang" value="'.esc_attr( $this->curlang->slug ).'" /></form>', $form );
+				$form = str_replace( '</form>', '<input type="hidden" name="lang" value="' . esc_attr( $this->curlang->slug ) . '" /></form>', $form );
 			}
 		}
 

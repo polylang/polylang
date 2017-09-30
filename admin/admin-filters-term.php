@@ -25,13 +25,13 @@ class PLL_Admin_Filters_Term {
 
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
 			// Adds the language field in the 'Categories' and 'Post Tags' panels
-			add_action( $tax.'_add_form_fields', array( $this, 'add_term_form' ) );
+			add_action( $tax . '_add_form_fields', array( $this, 'add_term_form' ) );
 
 			// Adds the language field and translations tables in the 'Edit Category' and 'Edit Tag' panels
-			add_action( $tax.'_edit_form_fields', array( $this, 'edit_term_form' ) );
+			add_action( $tax . '_edit_form_fields', array( $this, 'edit_term_form' ) );
 
 			// Adds action related to languages when deleting categories and post tags
-			add_action( 'delete_'.$tax, array( $this, 'delete_term' ) );
+			add_action( 'delete_' . $tax, array( $this, 'delete_term' ) );
 		}
 
 		// Adds actions related to languages when creating or saving categories and post tags
@@ -101,36 +101,40 @@ class PLL_Admin_Filters_Term {
 		// Adds translation fields
 		echo '<div id="term-translations" class="form-field">';
 		if ( $lang ) {
-			include( PLL_ADMIN_INC.'/view-translations-term.php' );
+			include PLL_ADMIN_INC . '/view-translations-term.php';
 		}
-		echo '</div>'."\n";
+		echo '</div>' . "\n";
 	}
 
 	/**
 	 * Adds the language field and translations tables in the 'Edit Category' and 'Edit Tag' panels
 	 *
 	 * @since 0.1
+	 *
+	 * @param object $tag
 	 */
 	public function edit_term_form( $tag ) {
-		$term_id = $tag->term_id;
-		$lang = $this->model->term->get_language( $term_id );
-		$taxonomy = $tag->taxonomy;
 		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type'];
 
 		if ( ! post_type_exists( $post_type ) ) {
 			return;
 		}
 
+		$term_id = $tag->term_id;
+		$taxonomy = $tag->taxonomy;
+
+		$lang = $this->model->term->get_language( $term_id );
+		$lang = empty( $lang ) ? $this->pref_lang : $lang;
+
 		$dropdown = new PLL_Walker_Dropdown();
 
 		// Disable the language dropdown and the translations input fields for default categories to prevent removal
 		$disabled = in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
 
-		wp_nonce_field( 'pll_language', '_pll_nonce' );
-
 		printf( '
 			<tr class="form-field">
 				<th scope="row">
+					%s
 					<label for="term_lang_choice">%s</label>
 				</th>
 				<td id="select-edit-term-language">
@@ -138,6 +142,7 @@ class PLL_Admin_Filters_Term {
 					<p class="description">%s</p>
 				</td>
 			</tr>',
+			wp_nonce_field( 'pll_language', '_pll_nonce', true , false ),
 			esc_html__( 'Language', 'polylang' ),
 			$dropdown->walk( $this->model->get_languages_list(), array(
 				'name'     => 'term_lang_choice',
@@ -151,9 +156,9 @@ class PLL_Admin_Filters_Term {
 
 		echo '<tr id="term-translations" class="form-field">';
 		if ( $lang ) {
-			include( PLL_ADMIN_INC.'/view-translations-term.php' );
+			include PLL_ADMIN_INC . '/view-translations-term.php';
 		}
-		echo '</tr>'."\n";
+		echo '</tr>' . "\n";
 	}
 
 	/**
@@ -161,14 +166,17 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @since 0.7
 	 *
-	 * @param string html markup for dropdown list of categories
+	 * @param string $output html markup for dropdown list of categories
 	 * @return string modified html
 	 */
 	public function wp_dropdown_cats( $output ) {
-		if ( isset( $_GET['taxonomy'], $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $_GET['taxonomy'] ) && $id = get_term( (int) $_GET['from_tag'], $_GET['taxonomy'] )->parent ) {
-			$lang = $this->model->get_language( $_GET['new_lang'] );
-			if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
-				return str_replace( '"'.$parent.'"', '"'.$parent.'" selected="selected"', $output );
+		if ( isset( $_GET['taxonomy'], $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $_GET['taxonomy'] ) ) {
+			$term = get_term( (int) $_GET['from_tag'], $_GET['taxonomy'] );
+			if ( $term && $id = $term->parent ) {
+				$lang = $this->model->get_language( $_GET['new_lang'] );
+				if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
+					return str_replace( '"' . $parent . '"', '"' . $parent . '" selected="selected"', $output );
+				}
 			}
 		}
 		return $output;
@@ -413,7 +421,7 @@ class PLL_Admin_Filters_Term {
 			elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) {
 				// Bulk edit does not modify the language
 				if ( -1 == $_GET['inline_lang_choice'] ) {
-					$slug = $name . '-' .  $this->model->post->get_language( $this->post_id )->slug;
+					$slug = $name . '-' . $this->model->post->get_language( $this->post_id )->slug;
 				} else {
 					$slug = $name . '-' . $this->model->get_language( $_GET['inline_lang_choice'] )->slug;
 				}
@@ -455,7 +463,7 @@ class PLL_Admin_Filters_Term {
 
 		ob_start();
 		if ( $lang ) {
-			include( PLL_ADMIN_INC.'/view-translations-term.php' );
+			include PLL_ADMIN_INC . '/view-translations-term.php';
 		}
 		$x = new WP_Ajax_Response( array( 'what' => 'translations', 'data' => ob_get_contents() ) );
 		ob_end_clean();
@@ -480,7 +488,7 @@ class PLL_Admin_Filters_Term {
 		// Tests copied from edit_tags.php
 		else {
 			$tax = get_taxonomy( $taxonomy );
-		 	if ( ! is_null( $tax->labels->popular_items ) ) {
+			if ( ! is_null( $tax->labels->popular_items ) ) {
 				$args = array( 'taxonomy' => $taxonomy, 'echo' => false );
 				if ( current_user_can( $tax->cap->edit_terms ) ) {
 					$args = array_merge( $args, array( 'link' => 'edit' ) );
@@ -680,9 +688,9 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @since 1.7
 	 *
-	 * @param int $term_id shared term_id
-	 * @param int $new_term_id
-	 * @param int $term_taxonomy_id
+	 * @param int    $term_id          Shared term_id
+	 * @param int    $new_term_id
+	 * @param int    $term_taxonomy_id
 	 * @param string $taxonomy
 	 */
 	public function split_shared_term( $term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {

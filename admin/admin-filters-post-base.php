@@ -49,7 +49,7 @@ abstract class PLL_Admin_Filters_Post_Base {
 	 *
 	 * @since 1.5
 	 *
-	 * @param int $post_id
+	 * @param int   $post_id
 	 * @param array $arr
 	 * @return array
 	 */

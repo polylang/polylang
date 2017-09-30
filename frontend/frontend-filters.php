@@ -5,7 +5,7 @@
  *
  * @since 1.2
  */
-class PLL_Frontend_Filters extends PLL_Filters{
+class PLL_Frontend_Filters extends PLL_Filters {
 
 	/**
 	 * Constructor: setups filters and actions
@@ -40,6 +40,12 @@ class PLL_Frontend_Filters extends PLL_Filters{
 		// Filters the widgets according to the current language
 		add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 2 );
 		add_filter( 'sidebars_widgets', array( $this, 'sidebars_widgets' ) );
+
+		if ( $this->options['media_support'] ) {
+			foreach ( array( 'audio', 'image', 'video' ) as $media ) {
+				add_filter( "widget_media_{$media}_instance", array( $this, 'widget_media_instance' ), 1 ); // Since WP 4.8
+			}
+		}
 
 		// Strings translation ( must be applied before WordPress applies its default formatting filters )
 		foreach ( array( 'widget_text', 'widget_title', 'option_blogname', 'option_blogdescription', 'option_date_format', 'option_time_format' ) as $filter ) {
@@ -87,15 +93,30 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	 * @return array modified list of sticky posts ids
 	 */
 	public function option_sticky_posts( $posts ) {
+		global $wpdb;
+
 		if ( $this->curlang && ! empty( $posts ) ) {
-			update_object_term_cache( $posts, 'post' ); // to avoid queries in foreach
-			foreach ( $posts as $key => $post_id ) {
-				$lang = $this->model->post->get_language( $post_id );
-				if ( empty( $lang ) || $lang->term_id != $this->curlang->term_id ) {
-					unset( $posts[ $key ] );
+			$_posts = wp_cache_get( 'sticky_posts', 'options' ); // This option is usually cached in 'all_options' by WP
+
+			if ( empty( $_posts ) || ! is_array( $_posts[ $this->curlang->term_taxonomy_id ] ) ) {
+				$posts = array_map( 'intval', $posts );
+				$posts = implode( ',', $posts );
+
+				$languages = $this->model->get_languages_list( array( 'fields' => 'term_taxonomy_id' ) );
+				$_posts = array_fill_keys( $languages, array() ); // Init with empty arrays
+				$languages = implode( ',', $languages );
+
+				$relations = $wpdb->get_results( "SELECT object_id, term_taxonomy_id FROM {$wpdb->term_relationships} WHERE object_id IN ({$posts}) AND term_taxonomy_id IN ({$languages})" );
+
+				foreach ( $relations as $relation ) {
+					$_posts[ $relation->term_taxonomy_id ][] = $relation->object_id;
 				}
+				wp_cache_add( 'sticky_posts', $_posts, 'options' );
 			}
+
+			$posts = $_posts[ $this->curlang->term_taxonomy_id ];
 		}
+
 		return $posts;
 	}
 
@@ -228,7 +249,7 @@ class PLL_Frontend_Filters extends PLL_Filters{
 			foreach ( $widgets as $key => $widget ) {
 				// Nothing can be done if the widget is created using pre WP2.8 API :(
 				// There is no object, so we can't access it to get the widget options
-				if ( ! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
+				if ( ! isset( $wp_registered_widgets[ $widget ]['callback'] ) || ! is_array( $wp_registered_widgets[ $widget ]['callback'] ) || ! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
 					continue;
 				}
 
@@ -246,18 +267,60 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	}
 
 	/**
+	 * Translates media in media widgets
+	 *
+	 * @since 2.1.5
+	 *
+	 * @param array $instance Widget instance data
+	 * @return array
+	 */
+	public function widget_media_instance( $instance ) {
+		if ( empty( $instance['pll_lang'] ) && $instance['attachment_id'] && $tr_id = pll_get_post( $instance['attachment_id'] ) ) {
+			$instance['attachment_id'] = $tr_id;
+			$attachment = get_post( $tr_id );
+
+			if ( $instance['caption'] && ! empty( $attachment->post_excerpt ) ) {
+				$instance['caption'] = $attachment->post_excerpt;
+			}
+
+			if ( $instance['alt'] && $alt_text = get_post_meta( $tr_id, '_wp_attachment_image_alt', true ) ) {
+				$instance['alt'] = $alt_text;
+			}
+
+			if ( $instance['image_title'] && ! empty( $attachment->post_title ) ) {
+				$instance['image_title'] = $attachment->post_title;
+			}
+		}
+		return $instance;
+	}
+
+	/**
 	 * Translates biography
+	 * Makes sure that the correct locale is used for ajax calls when the user is logged in
 	 *
 	 * @since 0.9
 	 *
-	 * @param null   $null
+	 * @param null   $return
 	 * @param int    $id       User id
 	 * @param string $meta_key
 	 * @param bool   $single   Whether to return only the first value of the specified $meta_key
 	 * @return null|string
 	 */
-	public function get_user_metadata( $null, $id, $meta_key, $single ) {
-		return 'description' === $meta_key && $this->curlang->slug !== $this->options['default_lang'] ? get_user_meta( $id, 'description_'.$this->curlang->slug, $single ) : $null;
+	public function get_user_metadata( $return, $id, $meta_key, $single ) {
+		switch ( $meta_key ) {
+			case 'description':
+				if ( $this->curlang->slug !== $this->options['default_lang'] ) {
+					$return = get_user_meta( $id, 'description_' . $this->curlang->slug, $single );
+				}
+				break;
+			case 'locale':
+				if ( Polylang::is_ajax_on_front() ) {
+					$return = get_locale();
+				}
+				break;
+		}
+
+		return $return;
 	}
 
 	/**
@@ -288,7 +351,6 @@ class PLL_Frontend_Filters extends PLL_Filters{
 	 *
 	 * @param int    $post_id
 	 * @param object $post
-	 * @param bool   $update  Whether it is an update or not
 	 */
 	public function save_post( $post_id, $post ) {
 		if ( $this->model->is_translated_post_type( $post->post_type ) ) {

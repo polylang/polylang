@@ -19,7 +19,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 */
 	public function __construct( &$model ) {
 		parent::__construct( $model );
-		$this->www = false === strpos( $this->home, '://www.' ) ? '://' : '://www.';
+		$this->www = ( false === strpos( $this->home, '://www.' ) ) ? '://' : '://www.';
 	}
 
 	/**
@@ -33,7 +33,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 * @return string modified url
 	 */
 	public function add_language_to_link( $url, $lang ) {
-		if ( ! empty( $lang ) ) {
+		if ( ! empty( $lang ) && false === strpos( $url, '://' . $lang->slug . '.' ) ) {
 			$url = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? $url : str_replace( $this->www, '://' . $lang->slug . '.', $url );
 		}
 		return $url;
@@ -74,7 +74,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 */
 	public function get_language_from_url( $url = '' ) {
 		$host = empty( $url ) ? $_SERVER['HTTP_HOST'] : parse_url( $url, PHP_URL_HOST );
-		$pattern = '#('.implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ).')\.#';
+		$pattern = '#(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')\.#';
 		return preg_match( $pattern, trailingslashit( $host ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
 	}
 

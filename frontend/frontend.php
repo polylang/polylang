@@ -55,7 +55,11 @@ class PLL_Frontend extends PLL_Base {
 	 */
 	public function init() {
 		$this->links = new PLL_Frontend_Links( $this );
-		$this->static_pages = new PLL_Frontend_Static_Pages( $this );
+
+		// Static front page and page for posts
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->static_pages = new PLL_Frontend_Static_Pages( $this );
+		}
 
 		// setup the language chooser
 		$c = array( 'Content', 'Url', 'Url', 'Domain' );
@@ -79,7 +83,6 @@ class PLL_Frontend extends PLL_Base {
 		$this->filters_search = new PLL_Frontend_Filters_Search( $this );
 	}
 
-
 	/**
 	 * when querying multiple taxonomies, makes sure that the language is not the queried object
 	 *
@@ -88,7 +91,8 @@ class PLL_Frontend extends PLL_Base {
 	 * @param object $query WP_Query object
 	 */
 	public function parse_tax_query( $query ) {
-		$queried_taxonomies = $this->get_queried_taxonomies( $query );
+		$pll_query = new PLL_Query( $query, $this->model );
+		$queried_taxonomies = $pll_query->get_queried_taxonomies();
 
 		if ( ! empty( $queried_taxonomies ) && 'language' == reset( $queried_taxonomies ) ) {
 			$query->tax_query->queried_terms['language'] = array_shift( $query->tax_query->queried_terms );
@@ -104,31 +108,16 @@ class PLL_Frontend extends PLL_Base {
 	 */
 	public function parse_query( $query ) {
 		$qv = $query->query_vars;
-		$taxonomies = $this->get_queried_taxonomies( $query );
+		$pll_query = new PLL_Query( $query, $this->model );
+		$taxonomies = $pll_query->get_queried_taxonomies();
 
-		// to avoid returning an empty result if the query includes a translated taxonomy in a different language
-		$has_tax = isset( $query->tax_query->queries ) && $this->model->have_translated_taxonomy( $query->tax_query->queries );
-
-		// allow filtering recent posts and secondary queries by the current language
-		// take care not to break queries for non visible post types such as nav_menu_items
-		// do not filter if lang is set to an empty value
-		// do not filter single page and translated taxonomies to avoid conflicts
-		if ( ! empty( $this->curlang ) && ! isset( $qv['lang'] ) && ! $has_tax && empty( $qv['page_id'] ) && empty( $qv['pagename'] ) ) {
-			if ( $taxonomies && ( empty( $qv['post_type'] ) || 'any' === $qv['post_type'] ) ) {
-				foreach ( $taxonomies as $taxonomy ) {
-					$tax_object = get_taxonomy( $taxonomy );
-					if ( $this->model->is_translated_post_type( $tax_object->object_type ) ) {
-						$this->choose_lang->set_lang_query_var( $query, $this->curlang );
-						break;
-					}
-				}
-			} elseif ( empty( $qv['post_type'] ) || $this->model->is_translated_post_type( $qv['post_type'] ) ) {
-				$this->choose_lang->set_lang_query_var( $query, $this->curlang );
-			}
+		// Allow filtering recent posts and secondary queries by the current language
+		if ( ! empty( $this->curlang ) ) {
+			$pll_query->filter_query( $this->curlang );
 		}
 
 		// modifies query vars when the language is queried
-		if ( ! empty( $qv['lang'] ) || ( ! empty( $taxonomies ) && array( 'language') == array_values( $taxonomies ) ) ) {
+		if ( ! empty( $qv['lang'] ) || ( ! empty( $taxonomies ) && array( 'language' ) == array_values( $taxonomies ) ) ) {
 			// do we query a custom taxonomy?
 			$taxonomies = array_diff( $taxonomies , array( 'language', 'category', 'post_tag' ) );
 
@@ -166,6 +155,9 @@ class PLL_Frontend extends PLL_Base {
 	 * overrides parent method
 	 *
 	 * @since 1.5.1
+	 *
+	 * @param int $new_blog
+	 * @param int $old_blog
 	 */
 	public function switch_blog( $new_blog, $old_blog ) {
 		// need to check that some languages are defined when user is logged in, has several blogs, some without any languages
@@ -177,20 +169,12 @@ class PLL_Frontend extends PLL_Base {
 
 			$lang = $this->model->get_language( $restore_curlang );
 			$this->curlang = $lang ? $lang : $this->model->get_language( $this->options['default_lang'] );
-			$this->static_pages->init();
+
+			if ( isset( $this->static_pages ) ) {
+				$this->static_pages->init();
+			}
+
 			$this->load_strings_translations();
 		}
-	}
-
-	/**
-	 * get queried taxonomies
-	 *
-	 * @since 1.8
-	 *
-	 * @param object $query WP_Query object
-	 * @return array queried taxonomies
-	 */
-	protected function get_queried_taxonomies( $query ) {
-		return isset( $query->tax_query->queried_terms ) ? array_keys( wp_list_filter( $query->tax_query->queried_terms, array( 'operator' => 'NOT IN' ), 'NOT' ) ) : array();
 	}
 }
