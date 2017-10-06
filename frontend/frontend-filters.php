@@ -42,9 +42,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		add_filter( 'sidebars_widgets', array( $this, 'sidebars_widgets' ) );
 
 		if ( $this->options['media_support'] ) {
-			foreach ( array( 'audio', 'image', 'video' ) as $media ) {
-				add_filter( "widget_media_{$media}_instance", array( $this, 'widget_media_instance' ), 1 ); // Since WP 4.8
-			}
+			add_filter( 'widget_media_image_instance', array( $this, 'widget_media_instance' ), 1 ); // Since WP 4.8
 		}
 
 		// Strings translation ( must be applied before WordPress applies its default formatting filters )
