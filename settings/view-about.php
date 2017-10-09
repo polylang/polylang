@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		echo ' ';
 		printf(
 			/* translators: %s are html tags */
-			esc_html__( 'Support and extra features are available to %sPolylang Pro%s users.' ),
+			esc_html__( 'Support and extra features are available to %sPolylang Pro%s users.', 'polylang' ),
 			'<a href="https://polylang.pro">',
 			'</a>'
 		);
