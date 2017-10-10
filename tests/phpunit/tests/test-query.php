@@ -515,4 +515,25 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( array( 'cat' => -$cat_en ) );
 		$this->assertEmpty( $query->posts );
 	}
+
+	// Bug introduced in 2.2 and fixed in 2.2.4
+	function test_any() {
+		// Posts
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		$fr = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+
+		$query = new WP_Query( array( 'post_type' => 'any', 'lang' => 'en' ) );
+		$this->assertEquals( array( get_post( $en ) ), $query->posts );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+
+		$query = new WP_Query( array( 'post_type' => 'any' ) );
+		$this->assertEquals( array( get_post( $en ) ), $query->posts );
+
+		$query = new WP_Query( array( 'post_type' => 'any', 'lang' => 'fr' ) );
+		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
+	}
 }

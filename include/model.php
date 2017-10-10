@@ -242,7 +242,7 @@ class PLL_Model {
 	 */
 	public function is_translated_post_type( $post_type ) {
 		$post_types = $this->get_translated_post_types( false );
-		return ( is_array( $post_type ) && array_intersect( $post_type, $post_types ) || in_array( $post_type, $post_types ) );
+		return ( is_array( $post_type ) && array_intersect( $post_type, $post_types ) || in_array( $post_type, $post_types ) || 'any' === $post_type && ! empty( $post_types ) );
 	}
 
 	/**
