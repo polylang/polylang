@@ -560,10 +560,14 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $taxonomies
+	 * @param array|string $taxonomies
 	 * @return array
 	 */
 	function duplicate_post_taxonomies_blacklist( $taxonomies ) {
+		if ( empty( $taxonomies ) ) {
+			$taxonomies = array(); // As we get an empty string when there is no taxonomy
+		}
+
 		$taxonomies[] = 'post_translations';
 		return $taxonomies;
 	}
