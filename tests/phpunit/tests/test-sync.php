@@ -44,6 +44,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		$to = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $to, 'fr' );
 
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
 		// copy
 		$sync = new PLL_Admin_Sync( self::$polylang );
 		$sync->copy_taxonomies( $from, $to, 'fr' ); // copy
@@ -53,7 +55,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		// sync
 		self::$polylang->options['sync'] = array( 'taxonomies' );
-		$sync->copy_taxonomies( $to, $from, 'en', true );
+		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' );
 
 		$this->assertEquals( array( $untranslated, $en ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
@@ -61,14 +63,13 @@ class Sync_Test extends PLL_UnitTestCase {
 		// remove taxonomies and post format and sync taxonomies
 		wp_set_post_terms( $to, array(), 'category' );
 		set_post_format( $to, '' );
-		$sync->copy_taxonomies( $to, $from, 'en', true );
 
 		$this->assertEquals( array( $untranslated ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
 
 		// sync post format
 		self::$polylang->options['sync'] = array( 'post_format' );
-		$sync->copy_taxonomies( $to, $from, 'en', true );
+		set_post_format( $to, '' );
 		$this->assertFalse( get_post_format( $from ) );
 	}
 
@@ -224,7 +225,6 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		add_post_meta( $from, 'key', 'value' );
 		add_post_meta( $from, '_thumbnail_id', 1234 );
-		set_post_format( $from, 'aside' );
 		stick_post( $from );
 
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
@@ -232,7 +232,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 		$_REQUEST['sticky'] = 'sticky'; // sticky posts not managed by wp_insert_post
 
-		wp_update_post( array( 'ID' => $from ) ); // fires the sync
+		edit_post( array(
+			'post_ID'     => $from,
+			'post_format' => 'aside',
+		) ); // fires the sync
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$polylang->model->post->get_translations( $from ) );

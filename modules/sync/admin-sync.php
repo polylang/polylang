@@ -6,6 +6,7 @@
  * @since 1.2
  */
 class PLL_Admin_Sync {
+	public $tax;
 
 	/**
 	 * Constructor
@@ -17,6 +18,8 @@ class PLL_Admin_Sync {
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
+
+		$this->tax = new PLL_Sync_Tax( $polylang );
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 5, 2 ); // Before Types which populates custom fields in same hook with priority 10
@@ -86,39 +89,6 @@ class PLL_Admin_Sync {
 	}
 
 	/**
-	 * Get the list of taxonomies to copy or to synchronize
-	 *
-	 * @since 1.7
-	 * @since 2.1 The `$from`, `$to`, `$lang` parameters were added.
-	 *
-	 * @param bool   $sync true if it is synchronization, false if it is a copy
-	 * @param int    $from id of the post from which we copy informations, optional, defaults to null
-	 * @param int    $to   id of the post to which we paste informations, optional, defaults to null
-	 * @param string $lang language slug, optional, defaults to null
-	 * @return array list of taxonomy names
-	 */
-	public function get_taxonomies_to_copy( $sync, $from = null, $to = null, $lang = null ) {
-		$taxonomies = ! $sync || in_array( 'taxonomies', $this->options['sync'] ) ? $this->model->get_translated_taxonomies() : array();
-		if ( ! $sync || in_array( 'post_format', $this->options['sync'] ) ) {
-			$taxonomies[] = 'post_format';
-		}
-
-		/**
-		 * Filter the taxonomies to copy or synchronize
-		 *
-		 * @since 1.7
-		 * @since 2.1 The `$from`, `$to`, `$lang` parameters were added.
-		 *
-		 * @param array  $taxonomies list of taxonomy names
-		 * @param bool   $sync       true if it is synchronization, false if it is a copy
-		 * @param int    $from       id of the post from which we copy informations
-		 * @param int    $to         id of the post to which we paste informations
-		 * @param string $lang       language slug
-		 */
-		return array_unique( apply_filters( 'pll_copy_taxonomies', $taxonomies, $sync, $from, $to, $lang ) );
-	}
-
-	/**
 	 * Copy or synchronize terms
 	 *
 	 * @since 1.8
@@ -129,51 +99,7 @@ class PLL_Admin_Sync {
 	 * @param bool   $sync true if it is synchronization, false if it is a copy, defaults to false
 	 */
 	public function copy_taxonomies( $from, $to, $lang, $sync = false ) {
-		// Get taxonomies to sync for this post type
-		$taxonomies = array_intersect( get_post_taxonomies( $from ), $this->get_taxonomies_to_copy( $sync, $from, $to, $lang ) );
-
-		// Update the term cache to reduce the number of queries in the loop
-		update_object_term_cache( $sync ? array( $from, $to ) : $from, get_post_type( $from ) );
-
-		// Copy or synchronize terms
-		// FIXME quite a lot of query in foreach
-		foreach ( $taxonomies as $tax ) {
-			$terms = get_the_terms( $from, $tax );
-
-			// Translated taxonomy
-			if ( $this->model->is_translated_taxonomy( $tax ) ) {
-				$newterms = array();
-				if ( is_array( $terms ) ) {
-					foreach ( $terms as $term ) {
-						if ( $term_id = $this->model->term->get_translation( $term->term_id, $lang ) ) {
-							$newterms[] = (int) $term_id; // Cast is important otherwise we get 'numeric' tags
-						}
-					}
-				}
-
-				// For some reasons, the user may have untranslated terms in the translation. don't forget them.
-				if ( $sync ) {
-					$tr_terms = get_the_terms( $to, $tax );
-					if ( is_array( $tr_terms ) ) {
-						foreach ( $tr_terms as $term ) {
-							if ( ! $this->model->term->get_translation( $term->term_id, $this->model->post->get_language( $from ) ) ) {
-								$newterms[] = (int) $term->term_id;
-							}
-						}
-					}
-				}
-
-				if ( ! empty( $newterms ) || $sync ) {
-					wp_set_object_terms( $to, $newterms, $tax ); // replace terms in translation
-				}
-			}
-
-			// Untranslated taxonomy ( post format )
-			// Don't use simple get_post_format / set_post_format to generalize the case to other taxonomies
-			else {
-				wp_set_object_terms( $to, is_array( $terms ) ? array_map( 'intval', wp_list_pluck( $terms, 'term_id' ) ) : null, $tax );
-			}
-		}
+		$this->tax->copy( $from, $to, $lang );
 	}
 
 	/**
@@ -278,8 +204,6 @@ class PLL_Admin_Sync {
 				continue;
 			}
 
-			// Synchronize terms and metas
-			$this->copy_taxonomies( $post_id, $tr_id, $lang, true );
 			$this->copy_post_metas( $post_id, $tr_id, $lang, true );
 
 			// Sticky posts
@@ -333,37 +257,8 @@ class PLL_Admin_Sync {
 		}
 
 		// Check if the taxonomy is synchronized
-		if ( ! in_array( $taxonomy, $this->get_taxonomies_to_copy( true ) ) ) {
+		if ( ! in_array( $taxonomy, $this->tax->get_taxonomies_to_copy( true ) ) ) {
 			return;
-		}
-
-		// Get all posts associated to this term
-		$posts = get_posts( array(
-			'numberposts' => -1,
-			'nopaging'    => true,
-			'post_type'   => 'any',
-			'post_status' => 'any',
-			'fields'      => 'ids',
-			'tax_query'   => array(
-				array(
-					'taxonomy'         => $taxonomy,
-					'field'            => 'id',
-					'terms'            => array_merge( array( $term_id ), array_values( $translations ) ),
-					'include_children' => false,
-				),
-			),
-		) );
-
-		// Associate translated term to translated post
-		// FIXME quite a lot of query in foreach
-		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( $translated_term = $this->model->term->get( $term_id, $language ) ) {
-				foreach ( $posts as $post_id ) {
-					if ( $translated_post = $this->model->post->get( $post_id, $language ) ) {
-						wp_set_object_terms( $translated_post, $translated_term, $taxonomy, true );
-					}
-				}
-			}
 		}
 
 		// Synchronize parent in translations
