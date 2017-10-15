@@ -26,6 +26,7 @@ class PLL_Admin_Sync {
 
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
 		add_action( 'pll_save_term', array( $this, 'pll_save_term' ), 10, 3 );
+		add_action( 'pll_save_term', array( $this, 'sync_term_parent' ), 10, 3 );
 
 		if ( $this->options['media_support'] ) {
 			add_action( 'pll_translate_media', array( $this, 'copy_taxonomies' ), 10, 3 );
@@ -255,28 +256,33 @@ class PLL_Admin_Sync {
 				$this->copy_term_metas( $term_id, $tr_id, $lang, true );
 			}
 		}
+	}
 
-		// Check if the taxonomy is synchronized
-		if ( ! in_array( $taxonomy, $this->tax->get_taxonomies_to_copy( true ) ) ) {
-			return;
-		}
+	/**
+	 * Synchronize term parent in translations
+	 * Calling clean_term_cache *after* this is mandatory otherwise the $taxonomy_children option is not correctly updated
+	 * Before WP 3.9 clean_term_cache could be called ( efficiently ) only one time due to static array which prevented to update the option more than once
+	 * This is the reason to use the edit_term filter and not edited_term
+	 *
+	 * @since 2.3
+	 *
+	 * @param int    $term_id      Term id
+	 * @param string $taxonomy     Taxonomy name
+	 * @param array  $translations The list of translations term ids
+	 */
+	public function sync_term_parent( $term_id, $taxonomy, $translations ) {
+		global $wpdb;
 
-		// Synchronize parent in translations
-		// Calling clean_term_cache *after* this is mandatory otherwise the $taxonomy_children option is not correctly updated
-		// Before WP 3.9 clean_term_cache could be called ( efficiently ) only one time due to static array which prevented to update the option more than once
-		// This is the reason to use the edit_term filter and not edited_term
-		// Take care that $_POST contains the only valid values for the current term
-		// FIXME can I synchronize parent without using $_POST instead?
-		if ( isset( $_POST['term_tr_lang'] ) ) {
-			foreach ( $_POST['term_tr_lang'] as $lang => $tr_id ) {
-				if ( $tr_id ) {
-					if ( isset( $_POST['parent'] ) && -1 != $_POST['parent'] ) { // Since WP 3.1
-						$term_parent = $this->model->term->get_translation( (int) $_POST['parent'], $lang );
-					}
+		if ( is_taxonomy_hierarchical( $taxonomy ) && $this->model->is_translated_taxonomy( $taxonomy ) ) {
+			$term = get_term( $term_id );
 
-					global $wpdb;
-					$wpdb->update( $wpdb->term_taxonomy,
-						array( 'parent' => isset( $term_parent ) ? $term_parent : 0 ),
+			foreach ( $translations as $lang => $tr_id ) {
+				if ( ! empty( $tr_id ) && $tr_id !== $term_id ) {
+					$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
+
+					$wpdb->update(
+						$wpdb->term_taxonomy,
+						array( 'parent' => isset( $tr_parent ) ? $tr_parent : 0 ),
 						array( 'term_taxonomy_id' => get_term( (int) $tr_id, $taxonomy )->term_taxonomy_id )
 					);
 
