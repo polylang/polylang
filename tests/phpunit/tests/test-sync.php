@@ -48,7 +48,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		// copy
 		$sync = new PLL_Admin_Sync( self::$polylang );
-		$sync->copy_taxonomies( $from, $to, 'fr' ); // copy
+		$sync->taxonomies->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( array( $fr ), wp_get_post_terms( $to, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $to ) );
@@ -81,22 +81,22 @@ class Sync_Test extends PLL_UnitTestCase {
 		$to = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $to, 'fr' );
 
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
 		// copy
 		$sync = new PLL_Admin_Sync( self::$polylang );
-		$sync->copy_post_metas( $from, $to, 'fr' ); // copy
+		$sync->post_metas->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
 
 		// sync
-		update_post_meta( $to, 'key', 'new_value' );
 		self::$polylang->options['sync'] = array( 'post_meta' );
-		$sync->copy_post_metas( $to, $from, 'en', true );
+		update_post_meta( $to, 'key', 'new_value' );
 
 		$this->assertEquals( 'new_value', get_post_meta( $from, 'key', true ) );
 
 		// remove custom field and sync
 		delete_post_meta( $to, 'key' );
-		$sync->copy_post_metas( $to, $from, 'en', true );
 
 		$this->assertEmpty( get_post_meta( $from, 'key', true ) );
 	}
@@ -116,17 +116,29 @@ class Sync_Test extends PLL_UnitTestCase {
 		add_post_meta( $from, 'key', 'value2' );
 		add_post_meta( $from, 'key', 'value3' );
 
-		$sync->copy_post_metas( $from, $to, 'fr', true );
+		$sync->post_metas->copy( $from, $to, 'fr', true );
 		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_post_meta( $to, 'key' ) );
+
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
 
 		// Delete
 		delete_post_meta( $from, 'key', 'value3' );
-		$sync->copy_post_metas( $from, $to, 'fr', true );
 		$this->assertEqualSets( array( 'value1', 'value2' ), get_post_meta( $to, 'key' ) );
 
 		// Update
 		update_post_meta( $from, 'key', 'value4', 'value2' );
-		$sync->copy_post_metas( $from, $to, 'fr', true );
+		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key' ) );
+
+		// Add
+		$mid = add_post_meta( $from, 'key', 'value5' );
+		$this->assertEqualSets( array( 'value1', 'value4', 'value5' ), get_post_meta( $to, 'key' ) );
+
+		// update_metadata_by_mid
+		update_meta( $mid, 'key', 'value6' );
+		$this->assertEqualSets( array( 'value1', 'value4', 'value6' ), get_post_meta( $to, 'key' ) );
+
+		// delete_metadata_by_mid
+		delete_meta( $mid );
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key' ) );
 	}
 
@@ -205,6 +217,10 @@ class Sync_Test extends PLL_UnitTestCase {
 	function test_save_post_with_sync() {
 		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
+		// Attachment for thumbnail
+		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$thumbnail_id = $this->factory->attachment->create_upload_object( $filename );
+
 		// categories
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
@@ -223,8 +239,9 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
 
-		add_post_meta( $from, 'key', 'value' );
-		add_post_meta( $from, '_thumbnail_id', 1234 );
+		$key = add_post_meta( $from, 'key', 'value' );
+		$metas[ $key ] = array( 'key' => 'key', 'value' => 'value' );
+		$key = add_post_meta( $from, '_thumbnail_id', 1234 );
 		stick_post( $from );
 
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
@@ -235,6 +252,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		edit_post( array(
 			'post_ID'     => $from,
 			'post_format' => 'aside',
+			'meta'        => $metas,
+			'_thumbnail_id' => $thumbnail_id,
 		) ); // fires the sync
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
@@ -242,7 +261,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
 		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
 		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
-		$this->assertEquals( 1234, get_post_thumbnail_id( $to ) );
+		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $to ) );
 		$this->assertEquals( 'aside', get_post_format( $to ) );
 		$this->assertTrue( is_sticky( $to ) );
 	}
@@ -275,13 +294,15 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
 
-		add_post_meta( $from, '_wp_page_template', 'templates/test.php' );
-
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
-		wp_update_post( array( 'ID' => $from ) ); // fires the sync
+		edit_post( array(
+			'post_ID'       => $from,
+			'page_template' => 'templates/test.php',
+		) ); // fires the sync
+
 		$page = get_post( $to );
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
@@ -454,24 +475,23 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$to = $this->factory->term->create();
 		self::$polylang->model->term->set_language( $to, 'fr' );
+		self::$polylang->model->term->save_translations( $from, array( 'fr' => $to ) );
 
 		add_filter( 'pll_copy_term_metas', array( $this, '_add_term_meta_to_copy' ) );
 
 		// copy
 		$sync = new PLL_Admin_Sync( self::$polylang );
-		$sync->copy_term_metas( $from, $to, 'fr' ); // copy
+		$sync->term_metas->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( 'value', get_term_meta( $to, 'key', true ) );
 
 		// sync
 		update_term_meta( $to, 'key', 'new_value' );
-		$sync->copy_term_metas( $to, $from, 'en', true );
 
 		$this->assertEquals( 'new_value', get_term_meta( $from, 'key', true ) );
 
 		// remove custom field and sync
 		delete_term_meta( $to, 'key' );
-		$sync->copy_term_metas( $to, $from, 'en', true );
 
 		$this->assertEmpty( get_term_meta( $from, 'key', true ) );
 	}
@@ -485,24 +505,22 @@ class Sync_Test extends PLL_UnitTestCase {
 		$to = $this->factory->term->create();
 		self::$polylang->model->term->set_language( $to, 'fr' );
 
+		self::$polylang->model->term->save_translations( $from, array( 'fr' => $to ) );
+
 		add_filter( 'pll_copy_term_metas', array( $this, '_add_term_meta_to_copy' ) );
 
 		// Add
 		add_term_meta( $from, 'key', 'value1' );
 		add_term_meta( $from, 'key', 'value2' );
 		add_term_meta( $from, 'key', 'value3' );
-
-		$sync->copy_term_metas( $from, $to, 'fr', true );
 		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_term_meta( $to, 'key' ) );
 
 		// Delete
 		delete_term_meta( $from, 'key', 'value3' );
-		$sync->copy_term_metas( $from, $to, 'fr', true );
 		$this->assertEqualSets( array( 'value1', 'value2' ), get_term_meta( $to, 'key' ) );
 
 		// Update
 		update_term_meta( $from, 'key', 'value4', 'value2' );
-		$sync->copy_term_metas( $from, $to, 'fr', true );
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_term_meta( $to, 'key' ) );
 	}
 }

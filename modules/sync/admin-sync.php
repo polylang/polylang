@@ -6,7 +6,7 @@
  * @since 1.2
  */
 class PLL_Admin_Sync {
-	public $tax;
+	public $taxonomies, $post_metas, $term_meta;
 
 	/**
 	 * Constructor
@@ -19,18 +19,19 @@ class PLL_Admin_Sync {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
 
-		$this->tax = new PLL_Sync_Tax( $polylang );
+		$this->taxonomies = new PLL_Sync_Tax( $polylang );
+		$this->post_metas = new PLL_Sync_Post_Metas( $polylang );
+		$this->term_metas = new PLL_Sync_Term_Metas( $polylang );
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 5, 2 ); // Before Types which populates custom fields in same hook with priority 10
 
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
-		add_action( 'pll_save_term', array( $this, 'pll_save_term' ), 10, 3 );
 		add_action( 'pll_save_term', array( $this, 'sync_term_parent' ), 10, 3 );
 
 		if ( $this->options['media_support'] ) {
-			add_action( 'pll_translate_media', array( $this, 'copy_taxonomies' ), 10, 3 );
-			add_action( 'pll_translate_media', array( $this, 'copy_post_metas' ), 10, 3 );
+			add_action( 'pll_translate_media', array( $this->taxonomies, 'copy' ), 10, 3 );
+			add_action( 'pll_translate_media', array( $this->post_metas, 'copy' ), 10, 3 );
 			add_action( 'edit_attachment', array( $this, 'edit_attachment' ) );
 		}
 	}
@@ -70,8 +71,8 @@ class PLL_Admin_Sync {
 				return;
 			}
 
-			$this->copy_taxonomies( $from_post_id, $post->ID, $lang->slug );
-			$this->copy_post_metas( $from_post_id, $post->ID, $lang->slug );
+			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
+			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
 
 			foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
 				$post->$property = $from_post->$property;
@@ -90,81 +91,7 @@ class PLL_Admin_Sync {
 	}
 
 	/**
-	 * Copy or synchronize terms
-	 *
-	 * @since 1.8
-	 *
-	 * @param int    $from id of the post from which we copy informations
-	 * @param int    $to   id of the post to which we paste informations
-	 * @param string $lang language slug
-	 * @param bool   $sync true if it is synchronization, false if it is a copy, defaults to false
-	 */
-	public function copy_taxonomies( $from, $to, $lang, $sync = false ) {
-		$this->tax->copy( $from, $to, $lang );
-	}
-
-	/**
-	 * Copy or synchronize metas (custom fields)
-	 *
-	 * @since 0.9
-	 *
-	 * @param int    $from id of the post from which we copy informations
-	 * @param int    $to   id of the post to which we paste informations
-	 * @param string $lang language slug
-	 * @param bool   $sync true if it is synchronization, false if it is a copy, defaults to false
-	 */
-	public function copy_post_metas( $from, $to, $lang, $sync = false ) {
-		// Copy or synchronize post metas and allow plugins to do the same
-		$metas = get_post_custom( $from );
-		$keys = array();
-
-		// Get public meta keys ( including from translated post in case we just deleted a custom field )
-		if ( ! $sync || in_array( 'post_meta', $this->options['sync'] ) ) {
-			foreach ( $keys = array_unique( array_merge( array_keys( $metas ), array_keys( get_post_custom( $to ) ) ) ) as $k => $meta_key ) {
-				if ( is_protected_meta( $meta_key ) ) {
-					unset( $keys[ $k ] );
-				}
-			}
-		}
-
-		// Add page template and featured image
-		foreach ( array( '_wp_page_template', '_thumbnail_id' ) as $meta ) {
-			if ( ! $sync || in_array( $meta, $this->options['sync'] ) ) {
-				$keys[] = $meta;
-			}
-		}
-
-		/**
-		 * Filter the custom fields to copy or synchronize
-		 *
-		 * @since 0.6
-		 * @since 1.9.2 The `$from`, `$to`, `$lang` parameters were added.
-		 *
-		 * @param array  $keys list of custom fields names
-		 * @param bool   $sync true if it is synchronization, false if it is a copy
-		 * @param int    $from id of the post from which we copy informations
-		 * @param int    $to   id of the post to which we paste informations
-		 * @param string $lang language slug
-		 */
-		$keys = array_unique( apply_filters( 'pll_copy_post_metas', $keys, $sync, $from, $to, $lang ) );
-
-		// And now copy / synchronize
-		foreach ( $keys as $key ) {
-			delete_post_meta( $to, $key ); // The synchronization process of multiple values custom fields is easier if we delete all metas first
-			if ( isset( $metas[ $key ] ) ) {
-				foreach ( $metas[ $key ] as $value ) {
-					// Important: always maybe_unserialize value coming from get_post_custom. See codex.
-					// Thanks to goncalveshugo http://wordpress.org/support/topic/plugin-polylang-pll_copy_post_meta
-					$value = maybe_unserialize( $value );
-					// Special case for featured images which can be translated
-					add_post_meta( $to, $key, ( '_thumbnail_id' == $key && $tr_value = $this->model->post->get_translation( $value, $lang ) ) ? $tr_value : $value );
-				}
-			}
-		}
-	}
-
-	/**
-	 * Synchronizes terms and metas in translations
+	 * Synchronizes post fields in translations
 	 *
 	 * @since 1.2
 	 *
@@ -199,13 +126,10 @@ class PLL_Admin_Sync {
 			}
 		}
 
-		// Synchronize terms and metas in translations
 		foreach ( $translations as $lang => $tr_id ) {
 			if ( ! $tr_id || $tr_id === $post_id ) {
 				continue;
 			}
-
-			$this->copy_post_metas( $post_id, $tr_id, $lang, true );
 
 			// Sticky posts
 			if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {
@@ -236,24 +160,6 @@ class PLL_Admin_Sync {
 			if ( ! empty( $tr_arr ) ) {
 				$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
 				clean_post_cache( $tr_id );
-			}
-		}
-	}
-
-	/**
-	 * Synchronize translations of a term in all posts
-	 *
-	 * @since 1.2
-	 *
-	 * @param int    $term_id      term id
-	 * @param string $taxonomy     taxonomy name of the term
-	 * @param array  $translations translations of the term
-	 */
-	public function pll_save_term( $term_id, $taxonomy, $translations ) {
-		// Sync term metas
-		foreach ( $translations as $lang => $tr_id ) {
-			if ( $tr_id && $tr_id !== $term_id ) {
-				$this->copy_term_metas( $term_id, $tr_id, $lang, true );
 			}
 		}
 	}
@@ -301,43 +207,5 @@ class PLL_Admin_Sync {
 	 */
 	public function edit_attachment( $post_id ) {
 		$this->pll_save_post( $post_id, get_post( $post_id ), $this->model->post->get_translations( $post_id ) );
-	}
-
-	/**
-	 * Copy or synchronize term metas (custom fields)
-	 *
-	 * @since 2.2
-	 *
-	 * @param int    $from id of the term from which we copy informations
-	 * @param int    $to   id of the term to which we paste informations
-	 * @param string $lang language slug
-	 * @param bool   $sync true if it is synchronization, false if it is a copy, defaults to false
-	 */
-	public function copy_term_metas( $from, $to, $lang, $sync = false ) {
-		$metas = get_term_meta( $from );
-
-		/**
-		 * Filter the term metas to copy or synchronize
-		 *
-		 * @since 2.2
-		 *
-		 * @param array  $keys list of term meta names
-		 * @param bool   $sync true if it is synchronization, false if it is a copy
-		 * @param int    $from id of the term from which we copy informations
-		 * @param int    $to   id of the term to which we paste informations
-		 * @param string $lang language slug
-		 */
-		$keys = array_unique( apply_filters( 'pll_copy_term_metas', array(), $sync, $from, $to, $lang ) );
-
-		// And now copy / synchronize
-		foreach ( $keys as $key ) {
-			delete_term_meta( $to, $key ); // The synchronization process of multiple values term metas is easier if we delete all metas first
-			if ( isset( $metas[ $key ] ) ) {
-				foreach ( $metas[ $key ] as $value ) {
-					$value = maybe_unserialize( $value );
-					add_term_meta( $to, $key, $value );
-				}
-			}
-		}
 	}
 }
