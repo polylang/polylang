@@ -139,33 +139,31 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 	}
 
 	function test_page() {
-		$parent = $en = $this->factory->post->create( array( 'post_title' => 'test_parent', 'post_type' => 'page' ) );
+		$parent_en = $en = $this->factory->post->create( array( 'post_title' => 'test_parent', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai_parent', 'post_type' => 'page' ) );
+		$parent_fr = $fr = $this->factory->post->create( array( 'post_title' => 'essai_parent', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
 		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page', 'parent' => $en ) );
+		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page', 'post_parent' => $parent_en ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai', 'post_type' => 'page', 'parent' => $fr ) );
+		$fr = $this->factory->post->create( array( 'post_title' => 'essai', 'post_type' => 'page', 'post_parent' => $parent_fr ) );
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
 		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$query = new WP_Query( array( 'page_id' => $en ) );
 		$this->assertEquals( array( get_post( $fr ) ),  $query->posts );
-
-		$this->markTestIncomplete();
-		// FIXME the tests below do not work
-
-		$query = new WP_Query( array( 'pagename' => 'test' ) );
+		$query = new WP_Query( array( 'pagename' => 'test_parent' ) ); // Top page
+		$this->assertEquals( array( get_post( $parent_fr ) ),  $query->posts );
+		$query = new WP_Query( array( 'pagename' => 'test_parent/test' ) ); // Child page
 		$this->assertEquals( array( get_post( $fr ) ),  $query->posts );
-		$query = new WP_Query( array( 'post_parent' => $parent ) );
+		$query = new WP_Query( array( 'post_parent' => $parent_en, 'post_type' => 'page' ) );
 		$this->assertEquals( array( get_post( $fr ) ),  $query->posts );
-		$query = new WP_Query( array( 'post_parent__in' => array( $parent ) ) );
+		$query = new WP_Query( array( 'post_parent__in' => array( $parent_en ), 'post_type' => 'page' ) );
 		$this->assertEquals( array( get_post( $fr ) ),  $query->posts );
 	}
 
