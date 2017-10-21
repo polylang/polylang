@@ -181,5 +181,11 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$expected = get_term( $fr, 'category' );
 		$terms = get_terms( 'category', array( 'hide_empty' => 0, 'include' => array( $en ) ) );
 		$this->assertEquals( array( $expected->term_id ), wp_list_pluck( $terms, 'term_id' ) );
+
+		if ( version_compare( $GLOBALS['wp_version'], '4.5', '>=' ) ) {
+			// The taxonomy parameter is now optional
+			$terms = get_terms( array( 'hide_empty' => 0, 'include' => array( $en ) ) );
+			$this->assertEquals( array( $expected->term_id ), wp_list_pluck( $terms, 'term_id' ) );
+		}
 	}
 }

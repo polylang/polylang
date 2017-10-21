@@ -208,7 +208,7 @@ class PLL_Frontend_Auto_Translate {
 	 * @return array modified $args
 	 */
 	public function get_terms_args( $args, $taxonomies ) {
-		if ( ! empty( $args['include'] ) && $this->model->is_translated_taxonomy( $taxonomies ) ) {
+		if ( ! empty( $args['include'] ) && ( empty( $taxonomies ) || $this->model->is_translated_taxonomy( $taxonomies ) ) ) {
 			foreach ( wp_parse_id_list( $args['include'] ) as $id ) {
 				$arr[] = ( $tr = $this->get_term( $id ) ) ? $tr : $id;
 			}
