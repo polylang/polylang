@@ -154,10 +154,20 @@ class PLL_Frontend_Auto_Translate {
 
 		// name, can only take one slug
 		if ( ! empty( $qv['name'] ) ) {
-			// no function to get post by name except get_posts itself
-			$post_type = empty( $qv['post_type'] ) ? 'post' : $qv['post_type'];
-			$id = $wpdb->get_var( $wpdb->prepare( "SELECT ID from $wpdb->posts WHERE post_type=%s AND post_name=%s", $post_type, $qv['name'] ) );
-			$qv['name'] = ( $id && ( $tr_id = $this->get_post( $id ) ) && $tr = get_post( $tr_id ) ) ? $tr->post_name : $qv['name'];
+			if ( empty( $qv['post_type'] ) ) {
+				$post_types = array( 'post' );
+			} elseif ( 'any' === $qv['post_type'] ) {
+				$post_types = get_post_types( array('exclude_from_search' => false) ); // May return a empty array
+			} else {
+				$post_types = (array) $qv['post_type'];
+			}
+
+			if ( ! empty( $post_types ) ) {
+				// no function to get post by name except get_posts itself
+				$where = "{$wpdb->posts}.post_type IN ('" . implode( "', '", esc_sql( $post_types ) ) . "')";
+				$id = $wpdb->get_var( $wpdb->prepare( "SELECT ID from {$wpdb->posts} WHERE {$where} AND post_name=%s", $qv['name'] ) );
+				$qv['name'] = ( $id && ( $tr_id = $this->get_post( $id ) ) && $tr = get_post( $tr_id ) ) ? $tr->post_name : $qv['name'];
+			}
 		}
 
 		// pagename, the page id is already available in queried_object_id

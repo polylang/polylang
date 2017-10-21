@@ -135,6 +135,9 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'p' => $en ) ) );
 		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test' ) ) );
+		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test', 'post_type' => 'post' ) ) );
+		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test', 'post_type' => 'any' ) ) );
+		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test', 'post_type' => array( 'post', 'page' ) ) ) );
 		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'post__in' => array( $en ) ) ) );
 	}
 
