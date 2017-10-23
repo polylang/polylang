@@ -355,3 +355,16 @@ if ( ! function_exists( 'wpml_get_default_language' ) ) {
 		return pll_default_language();
 	}
 }
+
+if ( ! function_exists( 'icl_get_current_language' ) ) {
+	/**
+	 * Undocumented function used by Ultimate Member
+	 *
+	 * @since 2.2.4
+	 *
+	 * @return string Current language code
+	 */
+	function icl_get_current_language() {
+		return pll_current_language();
+	}
+}
