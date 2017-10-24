@@ -123,7 +123,7 @@ class Polylang {
 
 		// Admin
 		if ( ! defined( 'PLL_ADMIN' ) ) {
-			define( 'PLL_ADMIN', defined( 'DOING_CRON' ) || ( is_admin() && ! PLL_AJAX_ON_FRONT ) );
+			define( 'PLL_ADMIN', defined( 'DOING_CRON' ) || ( defined( 'WP_CLI' ) && WP_CLI ) || ( is_admin() && ! PLL_AJAX_ON_FRONT ) );
 		}
 
 		// Settings page whatever the tab
