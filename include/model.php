@@ -32,6 +32,8 @@ class PLL_Model {
 		add_action( 'update_option_siteurl', array( $this, 'clean_languages_cache' ) );
 		add_action( 'update_option_home', array( $this, 'clean_languages_cache' ) );
 
+		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ) );
+
 		// just in case someone would like to display the language description ;- )
 		add_filter( 'language_description', '__return_empty_string' );
 	}
@@ -144,6 +146,21 @@ class PLL_Model {
 			delete_transient( 'pll_languages_list' );
 			$this->cache->clean();
 		}
+	}
+
+	/**
+	 * Don't query term metas when only our taxonomies are queried
+	 *
+	 * @since 2.3
+	 *
+	 * @param array $args WP_Term_Query arguments
+	 * @return array
+	 */
+	public function get_terms_args( $args ) {
+		if ( isset( $args['taxonomy'] ) && ! array_diff( $args['taxonomy'], array( 'language', 'term_language', 'post_translations', 'term_translations' ) ) ) {
+			$args['update_term_meta_cache'] = false;
+		}
+		return $args;
 	}
 
 	/**
