@@ -3,8 +3,8 @@ Contributors: Chouby
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
-Tested up to: 4.8
-Stable tag: 2.2.3
+Tested up to: 4.9
+Stable tag: 2.2.4
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,24 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.2.4 (2017-10-26) =
+
+* Pro: Fix unknown language not redirected to default when using multiple domains
+* Pro: Fix empty 'lang' query var not deactivating the language query filter
+* Pro: Fix conflict with The Events Calendar and Visual Composer when used together
+* Add new filter `pll_hide_archive_translation_url` #174
+* Add support for undocumented and deprecated WPML functions `wpml_object_id_filter` and `icl_get_current_language`
+* Fix 'orderby' and 'order' in `wpml_active_languages`. Needs WP 4.7+
+* Fix `icl_get_languages` not returning all languages when skip_missing = 0. Props Loïc Blascos
+* Fix `pll_translate_string` not working on admin #178
+* Fix PHP Warning in widget video in WP 4.9
+* Fix query using 'any' post type not filtered per language (introduced in 2.2)
+* Fix untranslatable string in About metabox. Props Farhad Sakhaei
+* Fix error with PHP 7.1 and Duplicate Post. Props Enea Scerba
+* Fix query auto translation not active in ajax requests on frontend
+* Fix query auto translation for 'postname' and 'pagename'
+* Fix terms query auto translation not working for 'include' when no taxonomy is provided (WP 4.5+)
 
 = 2.2.3 (2017-09-24) =
 
