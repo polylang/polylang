@@ -395,8 +395,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		// Make sure we get save terms in the right language (especially tags with same name in different languages)
 		if ( ! empty( $lang ) ) {
-			// FIXME quite a lot of queries in foreach
-			foreach ( $this->model->get_translated_taxonomies() as $tax ) {
+			foreach ( array_intersect( $this->model->get_translated_taxonomies(), get_object_taxonomies( $post->post_type ) ) as $tax ) {
 				$terms = get_the_terms( $post_id, $tax );
 
 				if ( is_array( $terms ) ) {
