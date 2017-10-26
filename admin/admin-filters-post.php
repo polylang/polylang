@@ -418,7 +418,10 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 						}
 					}
 
-					wp_set_object_terms( $post_id, $newterms, $tax );
+					$have_newterms = array_diff( $newterms, wp_list_pluck( $terms, 'term_id' ) );
+					if ( ! empty( $have_newterms ) ) {
+						wp_set_object_terms( $post_id, $newterms, $tax );
+					}
 				}
 			}
 		}
