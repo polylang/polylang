@@ -39,15 +39,22 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 */
 	public function set_language( $term_id, $lang ) {
 		$term_id = (int) $term_id;
-		wp_set_object_terms( $term_id, $lang ? $this->model->get_language( $lang )->tl_term_id : '', 'term_language' );
 
-		// Add translation group for correct WXR export
-		$translations = $this->get_translations( $term_id );
-		if ( $slug = array_search( $term_id, $translations ) ) {
-			unset( $translations[ $slug ] );
+		$old_lang = $this->get_language( $term_id );
+		$old_lang = $old_lang ? $old_lang->tl_term_id : '';
+		$lang = $lang ? $this->model->get_language( $lang )->tl_term_id : '';
+
+		if ( $old_lang !== $lang ) {
+			wp_set_object_terms( $term_id, $lang, 'term_language' );
+
+			// Add translation group for correct WXR export
+			$translations = $this->get_translations( $term_id );
+			if ( $slug = array_search( $term_id, $translations ) ) {
+				unset( $translations[ $slug ] );
+			}
+
+			$this->save_translations( $term_id, $translations );
 		}
-
-		$this->save_translations( $term_id, $translations );
 	}
 
 	/**
