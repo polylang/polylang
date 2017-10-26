@@ -65,9 +65,16 @@ class PLL_Sync_Tax {
 	 * @param string $lang     Language slug
 	 * @return array List of terms ids to assign to the target post
 	 */
-	protected function maybe_translate_terms( $terms, $taxonomy, $lang ) {
+	protected function maybe_translate_terms( $object_id, $terms, $taxonomy, $lang ) {
 		if ( is_array( $terms ) && $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			$newterms = array();
+
+			// Convert to term ids if we got tag names
+			$strings = array_map( 'is_string', $terms );
+			if ( ! empty( $strings ) ) {
+				$terms = get_the_terms( $object_id, $taxonomy );
+				$terms = wp_list_pluck( $terms, 'term_id' );
+			}
 
 			foreach ( $terms as $term ) {
 				if ( $term_id = $this->model->term->get_translation( $term, $lang ) ) {
@@ -107,7 +114,7 @@ class PLL_Sync_Tax {
 					$to_copy = $this->get_taxonomies_to_copy( true, $object_id, $tr_id, $lang );
 
 					if ( in_array( $taxonomy, $to_copy ) ) {
-						$newterms = $this->maybe_translate_terms( $terms, $taxonomy, $lang );
+						$newterms = $this->maybe_translate_terms( $object_id, $terms, $taxonomy, $lang );
 
 						// For some reasons, the user may have untranslated terms in the translation. Don't forget them.
 						if ( $this->model->is_translated_taxonomy( $taxonomy ) ) {
@@ -152,7 +159,7 @@ class PLL_Sync_Tax {
 		foreach ( $taxonomies as $tax ) {
 			if ( $terms = get_the_terms( $from, $tax ) ) {
 				$terms = array_map( 'intval', wp_list_pluck( $terms, 'term_id' ) );
-				$newterms = $this->maybe_translate_terms( $terms, $tax, $lang );
+				$newterms = $this->maybe_translate_terms( $from, $terms, $tax, $lang );
 
 				if ( ! empty( $newterms ) ) {
 					wp_set_object_terms( $to, $newterms, $tax );
