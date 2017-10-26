@@ -71,14 +71,17 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Tells whether to store a translation term
+	 * Tells whether a translation term must be updated
 	 *
-	 * @since 1.8
+	 * @since 2.3
 	 *
-	 * @param array $translations an associative array of translations with language code as key and translation id as value
+	 * @param array $id           Post id or term id
+	 * @param array $translations An associative array of translations with language code as key and translation id as value
 	 */
-	protected function keep_translation_group( $translations ) {
-		return count( $translations ) > 1;
+	protected function should_update_translation_group( $id, $translations ) {
+		// Don't do anything if no translations have been added to the group
+		$old_translations = $this->get_translations( $id ); // Includes at least $id itself
+		return count( array_diff_assoc( $translations, $old_translations ) ) > 0;
 	}
 
 	/**
@@ -86,8 +89,8 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 0.5
 	 *
-	 * @param int   $id           post id or term id
-	 * @param array $translations an associative array of translations with language code as key and translation id as value
+	 * @param int   $id           Post id or term id
+	 * @param array $translations An associative array of translations with language code as key and translation id as value
 	 */
 	public function save_translations( $id, $translations ) {
 		$id = (int) $id;
@@ -105,9 +108,8 @@ abstract class PLL_Translated_Object {
 				$this->delete_translation( $object_id );
 			}
 
-			// don't create a translation group for untranslated posts as it is useless
-			// but we need one for terms to allow relationships remap when importing from a WXR file
-			if ( $this->keep_translation_group( $translations ) ) {
+			// Check id we need to create or update the translation group
+			if ( $this->should_update_translation_group( $id, $translations ) ) {
 				$terms = wp_get_object_terms( $translations, $this->tax_translations );
 				$term = reset( $terms );
 
