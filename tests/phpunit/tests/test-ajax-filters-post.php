@@ -189,4 +189,24 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertCount( 2, $response );
 		$this->assertEqualSets( array( $searched, $en ), wp_list_pluck( $response, 'id' ) );
 	}
+
+	function test_save_post_from_quick_edit() {
+		$post_id = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $post_id, 'en' );
+
+		$_REQUEST = $_POST = array(
+			'action'             => 'inline-save',
+			'post_ID'            => $post_id,
+			'inline_lang_choice' => 'fr',
+			'_inline_edit'       => wp_create_nonce( 'inlineeditnonce' ),
+		);
+
+		try {
+			$this->_handleAjax( 'inline-save' );
+		} catch ( WPAjaxDieStopException $e ) {
+			unset( $e );
+		}
+
+		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $post_id )->slug );
+	}
 }

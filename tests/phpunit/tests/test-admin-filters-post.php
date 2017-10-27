@@ -55,6 +55,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_ID'          => $en = $this->factory->post->create(),
 		);
+		do_action( 'load-post.php' );
 		edit_post();
 
 		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $en )->slug );
@@ -66,23 +67,11 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			'post_tr_lang'     => array( 'en' => $en ),
 			'post_ID'          => $fr = $this->factory->post->create(),
 		);
+		do_action( 'load-post.php' );
 		edit_post();
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $fr )->slug );
 		$this->assertEqualSets( compact( 'en', 'fr' ), self::$polylang->model->post->get_translations( $en ) );
-	}
-
-	function test_save_post_from_quick_edit() {
-		$post_id = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_id, 'en' );
-
-		$_REQUEST = $_POST = array(
-			'inline_lang_choice' => 'fr',
-			'_inline_edit'       => wp_create_nonce( 'inlineeditnonce' ),
-		);
-
-		wp_update_post( array( 'ID' => $post_id ) );
-		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $post_id )->slug );
 	}
 
 	function test_save_post_from_bulk_edit() {
@@ -99,12 +88,14 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			'_status'            => 'publish',
 		);
 
+		do_action( 'load-edit.php' );
 		$done = bulk_edit_posts( $_REQUEST );
 		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $posts[0] )->slug );
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $posts[1] )->slug );
 
 		// Second modify all languages
-		$_REQUEST['inline_lang_choice'] = 'fr';
+		$_REQUEST['inline_lang_choice'] = $_GET['inline_lang_choice'] = 'fr';
+		do_action( 'load-edit.php' );
 		$done = bulk_edit_posts( $_REQUEST );
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $posts[0] )->slug );
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $posts[1] )->slug );
@@ -142,6 +133,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			'post_category'    => array( $en, $en2, $fr2 ),
 			'post_ID'          => $post_id = $this->factory->post->create(),
 		);
+		do_action( 'load-post.php' );
 		edit_post();
 
 		$this->assertFalse( is_object_in_term( $post_id, 'category', $en ) );
@@ -165,6 +157,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			'tax_input'        => array( 'post_tag' => array( 'test', 'new' ) ),
 			'post_ID'          => $post_id = $this->factory->post->create(),
 		);
+		do_action( 'load-post.php' );
 		edit_post();
 
 		$this->assertFalse( is_object_in_term( $post_id, 'post_tag', $en ) );

@@ -33,7 +33,11 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		add_action( 'wp_ajax_pll_posts_not_translated', array( $this, 'ajax_posts_not_translated' ) );
 
 		// Adds actions and filters related to languages when creating, saving or deleting posts and pages
+		add_action( 'load-post.php', array( $this, 'edit_post' ) );
+		add_action( 'load-edit.php', array( $this, 'bulk_edit_posts' ) );
+		add_action( 'wp_ajax_inline-save', array( $this, 'inline_edit_post' ), 0 ); // Before WordPress
 		add_action( 'save_post', array( $this, 'save_post' ), 21, 3 ); // Priority 21 to come after advanced custom fields ( 20 ) and before the event calendar which breaks everything after 25
+		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 4 );
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 4 );
 		add_action( 'before_delete_post', array( $this, 'delete_post' ) );
 		if ( $this->options['media_support'] ) {
@@ -333,104 +337,101 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * Saves language
-	 * Checks the terms saved are in the right language
+	 * Save language and translation when editing a post (post.php)
 	 *
-	 * @since 1.5
-	 *
-	 * @param int   $post_id
-	 * @param array $post
+	 * @since 2.3
 	 */
-	protected function save_language( $post_id, $post ) {
-		// Security checks are necessary to accept language modifications as 'wp_insert_post' can be called from outside WP admin
-
-		// Edit post
-		if ( isset( $_POST['post_lang_choice'], $_POST['post_ID'] ) && $_POST['post_ID'] == $post_id ) {
+	public function edit_post() {
+		if ( isset( $_POST['post_lang_choice'], $_POST['post_ID'] ) && $post_id = (int) $_POST['post_ID'] ) {
 			check_admin_referer( 'pll_language', '_pll_nonce' );
-			$this->model->post->set_language( $post_id, $lang = $this->model->get_language( $_POST['post_lang_choice'] ) );
-		}
 
-		// Quick edit and bulk edit
-		// POST for quick edit, GET for bulk edit
-		elseif ( isset( $_REQUEST['inline_lang_choice'] ) ) {
-			// Bulk edit does not modify the language
-			if ( isset( $_GET['bulk_edit'] ) && -1 == $_REQUEST['inline_lang_choice'] ) {
-				check_admin_referer( 'bulk-posts' );
-				$lang = $this->model->post->get_language( $post_id ); // Get the post language for later use when saving terms
-			}
-			// A language is set in the language dropdown
-			else {
-				isset( $_GET['bulk_edit'] ) ? check_admin_referer( 'bulk-posts' ) : check_admin_referer( 'inlineeditnonce', '_inline_edit' );
+			$post = get_post( $post_id );
+			$post_type_object = get_post_type_object( $post->post_type );
 
-				$old_lang = $this->model->post->get_language( $post_id ); // Stores the old  language
-				$this->model->post->set_language( $post_id, $lang = $this->model->get_language( $_REQUEST['inline_lang_choice'] ) ); // set new language
+			if ( current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
+				$this->model->post->set_language( $post_id, $this->model->get_language( $_POST['post_lang_choice'] ) );
 
-				// Checks if the new language already exists in the translation group
-				if ( $old_lang && $old_lang->slug != $lang->slug ) {
-					$translations = $this->model->post->get_translations( $post_id );
-
-					// If yes, separate this post from the translation group
-					if ( array_key_exists( $lang->slug, $translations ) ) {
-						$this->model->post->delete_translation( $post_id );
-					}
-
-					elseif ( array_key_exists( $old_lang->slug, $translations ) ) {
-						unset( $translations[ $old_lang->slug ] );
-						$this->model->post->save_translations( $post_id, $translations );
-					}
-				}
-			}
-		}
-
-		// Quick press
-		// 'post-quickpress-save', 'post-quickpress-publish' = backward compatibility WP < 3.8
-		elseif ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'post-quickpress-save', 'post-quickpress-publish', 'post-quickdraft-save' ) ) ) {
-			check_admin_referer( 'add-' . $post->post_type );
-			$this->model->post->set_language( $post_id, $lang = $this->pref_lang ); // Default language for Quick draft
-		}
-
-		else {
-			$this->set_default_language( $post_id );
-		}
-
-		// Make sure we get save terms in the right language (especially tags with same name in different languages)
-		if ( ! empty( $lang ) ) {
-			foreach ( array_intersect( $this->model->get_translated_taxonomies(), get_object_taxonomies( $post->post_type ) ) as $tax ) {
-				$terms = get_the_terms( $post_id, $tax );
-
-				if ( is_array( $terms ) ) {
-					$newterms = array();
-					foreach ( $terms as $term ) {
-						// Check if the term is in the correct language or if a translation exist ( mainly for default category )
-						if ( $newterm = $this->model->term->get( $term->term_id, $lang ) ) {
-							$newterms[] = (int) $newterm;
-						}
-
-						// Or choose the correct language for tags ( initially defined by name )
-						elseif ( $newterm = $this->model->term_exists( $term->name, $tax, $term->parent, $lang ) ) {
-							$newterms[] = (int) $newterm; // Cast is important otherwise we get 'numeric' tags
-						}
-
-						// Or create the term in the correct language
-						elseif ( ! is_wp_error( $term_info = wp_insert_term( $term->name, $tax ) ) ) {
-							$newterms[] = (int) $term_info['term_id'];
-						}
-					}
-
-					$have_newterms = array_diff( $newterms, wp_list_pluck( $terms, 'term_id' ) );
-					if ( ! empty( $have_newterms ) ) {
-						wp_set_object_terms( $post_id, $newterms, $tax );
-					}
+				if ( isset( $_POST['post_tr_lang'] ) ) {
+					$this->save_translations( $post_id, $_POST['post_tr_lang'] );
 				}
 			}
 		}
 	}
 
 	/**
+	 * Save language when inline editing or bulk editing a post
+	 * Fix translations if necessary
+	 *
+	 * @since 2.3
+	 *
+	 * @param int    $post_id Post ID
+	 * @param object $lang    Language
+	 */
+	protected function inline_save_language( $post_id, $lang ) {
+		$post = get_post( $post_id );
+		$post_type_object = get_post_type_object( $post->post_type );
+
+		if ( current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
+			$old_lang = $this->model->post->get_language( $post_id ); // Stores the old  language
+			$this->model->post->set_language( $post_id, $lang ); // set new language
+
+			// Checks if the new language already exists in the translation group
+			if ( $old_lang && $old_lang->slug != $lang->slug ) {
+				$translations = $this->model->post->get_translations( $post_id );
+
+				// If yes, separate this post from the translation group
+				if ( array_key_exists( $lang->slug, $translations ) ) {
+					$this->model->post->delete_translation( $post_id );
+				}
+
+				elseif ( array_key_exists( $old_lang->slug, $translations ) ) {
+					unset( $translations[ $old_lang->slug ] );
+					$this->model->post->save_translations( $post_id, $translations );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Save language when bulk editing a post
+	 *
+	 * @since 2.3
+	 */
+	public function bulk_edit_posts() {
+		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) && -1 !== $_GET['inline_lang_choice'] ) {
+			check_admin_referer( 'bulk-posts' );
+
+			if ( $lang = $this->model->get_language( $_GET['inline_lang_choice'] ) ) {
+				$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
+				foreach ( $post_ids as $post_id ) {
+					$this->inline_save_language( $post_id, $lang );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Save language when inline editing a post
+	 *
+	 * @since 2.3
+	 */
+	public function inline_edit_post() {
+		check_admin_referer( 'inlineeditnonce', '_inline_edit' );
+
+		if ( isset( $_POST['post_ID'], $_POST['inline_lang_choice'] ) ) {
+			$post_id = (int) $_POST['post_ID'];
+			$lang = $this->model->get_language( $_POST['inline_lang_choice'] );
+			if ( $post_id && $lang ) {
+				$this->inline_save_language( $post_id, $lang );
+			}
+		}
+	}
+
+	/**
 	 * Called when a post ( or page ) is saved, published or updated
-	 * saves languages and translations
 	 *
 	 * @since 0.1
+	 * @since 2.3 Does not save the language and translations anymore, unless the post has no language yet
 	 *
 	 * @param int    $post_id
 	 * @param object $post
@@ -438,23 +439,15 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 */
 	public function save_post( $post_id, $post, $update ) {
 		// Does nothing except on post types which are filterable
-		if ( ! $this->model->is_translated_post_type( $post->post_type ) ) {
-			return;
-		}
+		if ( $this->model->is_translated_post_type( $post->post_type ) ) {
+			if ( $id = wp_is_post_revision( $post_id ) ) {
+				$post_id = $id;
+			}
 
-		if ( $id = wp_is_post_revision( $post_id ) ) {
-			$post_id = $id;
-		}
+			$lang = $this->model->post->get_language( $post_id );
 
-		// Capability check
-		// As 'wp_insert_post' can be called from outside WP admin
-		$post_type_object = get_post_type_object( $post->post_type );
-		if ( ( $update && current_user_can( $post_type_object->cap->edit_post, $post_id ) ) || ( ! $update && current_user_can( $post_type_object->cap->create_posts ) ) ) {
-			$this->save_language( $post_id, $post );
-
-			// Make sure we are saving translations only for the main post currently being edited
-			if ( isset( $_POST['post_tr_lang'], $_POST['post_ID'] ) && $_POST['post_ID'] == $post_id ) {
-				$translations = $this->save_translations( $post_id, $_POST['post_tr_lang'] );
+			if ( empty( $lang ) ) {
+				$this->set_default_language( $post_id );
 			}
 
 			/**
@@ -466,12 +459,67 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			 * @param object $post         Post object
 			 * @param array  $translations The list of translations post ids
 			 */
-			do_action( 'pll_save_post', $post_id, $post, empty( $translations ) ? $this->model->post->get_translations( $post_id ) : $translations );
+			do_action( 'pll_save_post', $post_id, $post, $this->model->post->get_translations( $post_id ) );
 		}
+	}
 
-		// Attempts to set a default language even if no capability
-		else {
-			$this->set_default_language( $post_id );
+	/**
+	 * Make sure saved terms are in the right language (especially tags with same name in different languages)
+	 *
+	 * @since 2.3
+	 *
+	 * @param int    $object_id  Object ID.
+	 * @param array  $terms      An array of object terms.
+	 * @param array  $tt_ids     An array of term taxonomy IDs.
+	 * @param string $taxonomy   Taxonomy slug.
+	 */
+	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy ) {
+		if ( $this->model->is_translated_taxonomy( $taxonomy ) && ! empty( $terms ) ) {
+			$lang = $this->model->post->get_language( $object_id );
+
+			if ( ! empty( $lang ) && is_array( $terms ) ) {
+				// Convert to term ids if we got tag names
+				$strings = array_filter( $terms, 'is_string' );
+				if ( ! empty( $strings ) ) {
+					$_terms = get_terms( array( 'name' => $strings, 'object_ids' => $object_id, 'taxonomy' => $taxonomy, 'fields' => 'ids' ) );
+					$terms = array_merge( array_diff( $terms, $strings ), $_terms );
+				}
+
+				$term_ids = array_combine( $terms, $terms );
+				$languages = array_map( array( $this->model->term, 'get_language' ), $term_ids );
+				$languages = wp_list_pluck( $languages, 'slug' );
+				$wrong_terms = array_diff( $languages, array( $lang->slug ) );
+
+				if ( ! empty( $wrong_terms ) ) {
+					// We got terms in a wrong language
+					$wrong_term_ids = array_keys( $wrong_terms );
+					$terms = get_the_terms( $object_id, $taxonomy );
+					wp_remove_object_terms( $object_id, $wrong_term_ids, $taxonomy );
+
+					$newterms = array();
+
+					foreach ( $terms as $term ) {
+						if ( in_array( $term->term_id, $wrong_term_ids ) ) {
+							// Check if the term is in the correct language or if a translation exist ( mainly for default category )
+							if ( $newterm = $this->model->term->get( $term->term_id, $lang ) ) {
+								$newterms[] = (int) $newterm;
+							}
+
+							// Or choose the correct language for tags ( initially defined by name )
+							elseif ( $newterm = $this->model->term_exists( $term->name, $taxonomy, $term->parent, $lang ) ) {
+								$newterms[] = (int) $newterm; // Cast is important otherwise we get 'numeric' tags
+							}
+
+							// Or create the term in the correct language
+							elseif ( ! is_wp_error( $term_info = wp_insert_term( $term->name, $taxonomy ) ) ) {
+								$newterms[] = (int) $term_info['term_id'];
+							}
+						}
+					}
+
+					wp_set_object_terms( $object_id, array_unique( $newterms ), $taxonomy, true ); // Append
+				}
+			}
 		}
 	}
 
