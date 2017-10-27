@@ -15,6 +15,7 @@ class Translated_Term_Test extends PLL_UnitTestCase {
 		self::$polylang->model->term->set_language( $term_id, 'fr' );
 
 		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $term_id )->slug );
+		$this->assertCount( 2, get_terms( 'term_translations' ) ); // 1 translation group per term + 1 for default categories
 	}
 
 	function test_term_translation() {
