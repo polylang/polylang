@@ -512,7 +512,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( array( 'cat' => -$cat_en ) );
 		$this->assertEmpty( $query->posts );
 
-		if ( version_compare( $GLOBALS['wp_version'], '4.9-beta1', '>' ) ) {
+		if ( version_compare( $GLOBALS['wp_version'], '4.9-beta1', '<' ) ) {
 			// The test does not pass since WP 4.9. See https://core.trac.wordpress.org/ticket/42104
 			// This shouldn't do much harm as 'cat' value is auto translated and probably most users keep auto translation activated
 			$query = new WP_Query( array( 'cat' => $cat_fr ) );
