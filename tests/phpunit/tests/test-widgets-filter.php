@@ -140,7 +140,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$args = array( 'before_title' => '', 'after_title' => '', 'before_widget' => '', 'after_widget' => '' );
 
 		// Empty fields in Edit Image
-		$instance = array( 'attachment_id' => $en );
+		$instance = array( 'attachment_id' => $en, 'caption' => null ); // Need to explicitely set 'caption' to null since WP 4.9. See #42350
 		ob_start();
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
