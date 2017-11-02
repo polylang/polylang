@@ -350,8 +350,8 @@ class PLL_Admin_Model extends PLL_Model {
 
 		foreach ( $translations as $t ) {
 			$term = uniqid( 'pll_' ); // the term name
-			$terms[] = $wpdb->prepare( '( "%s", "%s" )', $term, $term );
-			$slugs[] = $wpdb->prepare( '"%s"', $term );
+			$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
+			$slugs[] = $wpdb->prepare( '%s', $term );
 			$description[ $term ] = serialize( $t );
 			$count[ $term ] = count( $t );
 		}
@@ -368,7 +368,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// Prepare terms taxonomy relationship
 		foreach ( $terms as $term ) {
 			$term_ids[] = $term->term_id;
-			$tts[] = $wpdb->prepare( '( %d, "%s", "%s", %d )', $term->term_id, $taxonomy, $description[ $term->slug ], $count[ $term->slug ] );
+			$tts[] = $wpdb->prepare( '( %d, %s, %s, %d )', $term->term_id, $taxonomy, $description[ $term->slug ], $count[ $term->slug ] );
 		}
 
 		// Insert term_taxonomy

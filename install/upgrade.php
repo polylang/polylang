@@ -219,8 +219,8 @@ class PLL_Upgrade {
 
 			foreach ( $objects as $obj ) {
 				$term = uniqid( 'pll_' ); // The term name
-				$terms[] = $wpdb->prepare( '( "%s", "%s" )', $term, $term );
-				$slugs[] = $wpdb->prepare( '"%s"', $term );
+				$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
+				$slugs[] = $wpdb->prepare( '%s', $term );
 				$translations = maybe_unserialize( maybe_unserialize( $obj ) ); // 2 unserialize due to an old storage bug
 				$description[ $term ] = serialize( $translations );
 			}
@@ -237,7 +237,7 @@ class PLL_Upgrade {
 
 			// Prepare terms taxonomy relationship
 			foreach ( $terms as $term ) {
-				$tts[] = $wpdb->prepare( '( %d, "%s", "%s" )', $term->term_id, $type . '_translations', $description[ $term->slug ] );
+				$tts[] = $wpdb->prepare( '( %d, %s, %s )', $term->term_id, $type . '_translations', $description[ $term->slug ] );
 			}
 
 			$tts = array_unique( $tts );

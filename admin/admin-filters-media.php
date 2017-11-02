@@ -180,7 +180,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 
 		$ids = $wpdb->get_col( $wpdb->prepare( "
 			SELECT post_id FROM $wpdb->postmeta
-			WHERE meta_key = '_wp_attached_file' AND meta_value = '%s'",
+			WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
 			substr_replace( $file, '', 0, strlen( trailingslashit( $uploadpath['basedir'] ) ) )
 		) );
 
