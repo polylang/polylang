@@ -215,7 +215,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string
 	 */
 	public function home_url( $url, $path ) {
-		if ( ! ( did_action( 'template_redirect' ) || did_action( 'login_init' ) ) || rtrim( $url,'/' ) != $this->links_model->home ) {
+		if ( ! ( did_action( 'template_redirect' ) || did_action( 'login_init' ) ) || rtrim( $url, '/' ) != $this->links_model->home ) {
 			return $url;
 		}
 
@@ -238,7 +238,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			 *
 			 * @param array $args
 			 */
-			$white_list = apply_filters( 'pll_home_url_white_list',  array(
+			$white_list = apply_filters( 'pll_home_url_white_list', array(
 				array( 'file' => $theme_root ),
 				array( 'function' => 'wp_nav_menu' ),
 				array( 'function' => 'login_footer' ),
@@ -259,7 +259,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			 *
 			 * @param array $args
 			 */
-			$black_list = apply_filters( 'pll_home_url_black_list',  array(
+			$black_list = apply_filters( 'pll_home_url_black_list', array(
 				array( 'file' => 'searchform.php' ), // Since WP 3.6 searchform.php is passed through get_search_form
 				array( 'function' => 'get_search_form' ),
 			) );
@@ -330,7 +330,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		if ( empty( $requested_url ) ) {
-			$requested_url  = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$requested_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		}
 
 		if ( is_single() || is_page() ) {

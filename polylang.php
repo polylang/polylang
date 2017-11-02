@@ -42,11 +42,11 @@ define( 'POLYLANG_FILE', __FILE__ ); // this file
 define( 'POLYLANG_BASENAME', plugin_basename( POLYLANG_FILE ) ); // plugin name as known by WP
 define( 'POLYLANG_DIR', dirname( POLYLANG_FILE ) ); // our directory
 
-define( 'PLL_ADMIN_INC',    POLYLANG_DIR . '/admin' );
-define( 'PLL_FRONT_INC',    POLYLANG_DIR . '/frontend' );
-define( 'PLL_INC',          POLYLANG_DIR . '/include' );
-define( 'PLL_INSTALL_INC',  POLYLANG_DIR . '/install' );
-define( 'PLL_MODULES_INC',  POLYLANG_DIR . '/modules' );
+define( 'PLL_ADMIN_INC', POLYLANG_DIR . '/admin' );
+define( 'PLL_FRONT_INC', POLYLANG_DIR . '/frontend' );
+define( 'PLL_INC', POLYLANG_DIR . '/include' );
+define( 'PLL_INSTALL_INC', POLYLANG_DIR . '/install' );
+define( 'PLL_MODULES_INC', POLYLANG_DIR . '/modules' );
 define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 
 require_once PLL_INC . '/class-polylang.php';

@@ -30,7 +30,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 		$taxonomies = get_taxonomies( array( 'public' => true, '_builtin' => false ) );
 		$taxonomies = array_diff( $taxonomies, get_taxonomies( array( '_pll' => true ) ) );
 		/** This filter is documented in include/model.php */
-		$this->taxonomies = array_unique( apply_filters( 'pll_get_taxonomies', $taxonomies , true ) );
+		$this->taxonomies = array_unique( apply_filters( 'pll_get_taxonomies', $taxonomies, true ) );
 	}
 
 	/**

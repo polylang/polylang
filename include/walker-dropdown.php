@@ -69,7 +69,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 */
 	function walk( $elements, $args = array() ) {
 		$output = '';
-		$args = wp_parse_args( $args,  array( 'value' => 'slug', 'name' => 'lang_choice' ) );
+		$args = wp_parse_args( $args, array( 'value' => 'slug', 'name' => 'lang_choice' ) );
 
 		if ( ! empty( $args['flag'] ) ) {
 			$current = wp_list_filter( $elements, array( $args['value'] => $args['selected'] ) );

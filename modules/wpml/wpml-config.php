@@ -106,7 +106,7 @@ class PLL_WPML_Config {
 				if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
 					$metas[] = (string) $cf;
 				} else {
-					$metas = array_diff( $metas,  array( (string) $cf ) );
+					$metas = array_diff( $metas, array( (string) $cf ) );
 				}
 			}
 		}

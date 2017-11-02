@@ -36,7 +36,7 @@ class PLL_Plugins_Compat {
 		add_filter( 'option_featured-content', array( $this, 'twenty_fourteen_option_featured_content' ) );
 
 		// Duplicate post
-		add_filter( 'option_duplicate_post_taxonomies_blacklist' , array( $this, 'duplicate_post_taxonomies_blacklist' ) );
+		add_filter( 'option_duplicate_post_taxonomies_blacklist', array( $this, 'duplicate_post_taxonomies_blacklist' ) );
 
 		// Jetpack 3
 		add_action( 'init', array( $this, 'jetpack_init' ) );
@@ -186,7 +186,7 @@ class PLL_Plugins_Compat {
 
 		if ( PLL()->options['force_lang'] > 1 ) {
 			add_filter( 'wpseo_enable_xml_sitemap_transient_caching', '__return_false' ); // Disable cache! otherwise WPSEO keeps only one domain (thanks to Junaid Bhura)
-			add_filter( 'home_url', array( $this, 'wpseo_home_url' ) , 10, 2 ); // Fix home_url
+			add_filter( 'home_url', array( $this, 'wpseo_home_url' ), 10, 2 ); // Fix home_url
 		} else {
 			// Get all terms in all languages when the language is set from the content or directory name
 			add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
@@ -401,7 +401,7 @@ class PLL_Plugins_Compat {
 		global $wpseo_sitemaps;
 		$renderer = version_compare( WPSEO_VERSION, '3.2', '<' ) ? $wpseo_sitemaps : $wpseo_sitemaps->renderer;
 
-		$languages = wp_list_pluck( wp_list_filter( PLL()->model->get_languages_list() , array( 'active' => false ), 'NOT' ), 'slug' );
+		$languages = wp_list_pluck( wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' ), 'slug' );
 
 		foreach ( $languages as $lang ) {
 			if ( empty( PLL()->options['hide_default'] ) || pll_default_language() !== $lang ) {

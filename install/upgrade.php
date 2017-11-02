@@ -166,7 +166,7 @@ class PLL_Upgrade {
 
 		// Need to register the taxonomies
 		foreach ( array( 'language', 'term_language', 'post_translations', 'term_translations' ) as $taxonomy ) {
-			register_taxonomy( $taxonomy, null , array( 'label' => false, 'public' => false, 'query_var' => false, 'rewrite' => false ) );
+			register_taxonomy( $taxonomy, null, array( 'label' => false, 'public' => false, 'query_var' => false, 'rewrite' => false ) );
 		}
 
 		// Abort if the db upgrade has already been done previously

@@ -147,7 +147,7 @@ abstract class PLL_Choose_Lang {
 						}
 					}
 				}
-				$accept_langs = array_combine( $k,$v );
+				$accept_langs = array_combine( $k, $v );
 			}
 		}
 

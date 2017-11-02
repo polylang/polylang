@@ -66,7 +66,7 @@ class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function add_menus() {
 		// Prepare the list of tabs
-		$tabs = array( 'lang' => __( 'Languages','polylang' ) );
+		$tabs = array( 'lang' => __( 'Languages', 'polylang' ) );
 
 		// Only if at least one language has been created
 		if ( $this->model->get_languages_list() ) {
@@ -88,10 +88,10 @@ class PLL_Admin_Base extends PLL_Base {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
 			if ( empty( $parent ) ) {
 				$parent = $page;
-				add_menu_page( $title, __( 'Languages','polylang' ), 'manage_options', $page, null , 'dashicons-translation' );
+				add_menu_page( $title, __( 'Languages', 'polylang' ), 'manage_options', $page, null, 'dashicons-translation' );
 			}
 
-			add_submenu_page( $parent, $title, $title, 'manage_options', $page , array( $this, 'languages_page' ) );
+			add_submenu_page( $parent, $title, $title, 'manage_options', $page, array( $this, 'languages_page' ) );
 		}
 	}
 

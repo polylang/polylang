@@ -19,7 +19,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$polylang->model->term->set_language( $term_id, 'fr' );
 
-		$term = get_term( $term_id , 'category' );
+		$term = get_term( $term_id, 'category' );
 		$this->assertEquals( 'test-fr', $term->slug );
 	}
 }

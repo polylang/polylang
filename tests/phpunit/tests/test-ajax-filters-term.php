@@ -73,7 +73,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertFalse( strpos( $dropdown, 'test cat' ) );
 
 		// flag
-		$this->assertNotFalse( strpos( $flag = $xml->response[2]->flag->response_data , 'Français' ) );
+		$this->assertNotFalse( strpos( $flag = $xml->response[2]->flag->response_data, 'Français' ) );
 	}
 
 	function test_term_lang_choice_in_new_tag() {
@@ -125,7 +125,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertFalse( strpos( $cloud, 'test' ) );
 
 		// flag
-		$this->assertNotFalse( strpos( $flag = $xml->response[2]->flag->response_data , 'Français' ) );
+		$this->assertNotFalse( strpos( $flag = $xml->response[2]->flag->response_data, 'Français' ) );
 	}
 
 

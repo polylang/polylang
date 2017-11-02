@@ -85,9 +85,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$sync = new PLL_Admin_Sync( self::$polylang );
 		$sync->copy_post_metas( $from, $to, 'fr' ); // copy
 
-		$this->assertEquals( 1 , get_post_meta( $to, 'quantity', true ) );
-		$this->assertEquals( 'title' , get_post_meta( $to, 'custom-title', true ) );
-		$this->assertEquals( '#23282d' , get_post_meta( $to, 'bg-color', true ) );
+		$this->assertEquals( 1, get_post_meta( $to, 'quantity', true ) );
+		$this->assertEquals( 'title', get_post_meta( $to, 'custom-title', true ) );
+		$this->assertEquals( '#23282d', get_post_meta( $to, 'bg-color', true ) );
 		$this->assertEmpty( get_post_meta( $to, 'date-added', true ) );
 
 		// sync
@@ -97,9 +97,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		update_post_meta( $to, 'date-added', 2008 );
 		$sync->copy_post_metas( $to, $from, 'en', true );
 
-		$this->assertEquals( 2 , get_post_meta( $from, 'quantity', true ) );
-		$this->assertEquals( 'title' , get_post_meta( $from, 'custom-title', true ) );
-		$this->assertEquals( '#23282d' , get_post_meta( $from, 'bg-color', true ) );
+		$this->assertEquals( 2, get_post_meta( $from, 'quantity', true ) );
+		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
+		$this->assertEquals( '#23282d', get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 
 		// remove custom field and sync
@@ -110,8 +110,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$sync->copy_post_metas( $to, $from, 'en', true );
 
 		$this->assertEmpty( get_post_meta( $from, 'quantity', true ) );
-		$this->assertEquals( 'title' , get_post_meta( $from, 'custom-title', true ) );
-		$this->assertEquals( '#23282d' , get_post_meta( $from, 'bg-color', true ) );
+		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
+		$this->assertEquals( '#23282d', get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 	}
 

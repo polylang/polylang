@@ -74,12 +74,12 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/' ) );
 
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
-		$this->assertEquals( array( get_post( $en ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 
 		$this->go_to( home_url( '/fr/' ) );
 
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEquals( home_url( '/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 	}
 
@@ -158,7 +158,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/fr/category/essai/' ) );
 
 		$this->assertQueryTrue( 'is_archive', 'is_category' );
-		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEquals( home_url( '/fr/category/essai/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) ); // Link to self
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) ); // no content in translation
 
@@ -183,7 +183,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/fr/tag/essai/' ) );
 
 		$this->assertQueryTrue( 'is_archive', 'is_tag' );
-		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEquals( home_url( '/fr/tag/essai/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) ); // no content in translation
 
@@ -201,7 +201,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/fr/type/aside/' ) );
 
 		$this->assertQueryTrue( 'is_archive', 'is_tax' );
-		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEquals( home_url( '/fr/type/aside/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) ); // no content in translation
 
@@ -230,7 +230,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertQueryTrue( 'is_archive', 'is_tax' );
 		$this->assertTrue( is_tax( 'trtax' ) );
 		$this->assertFalse( is_tax( 'language' ) );
-		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEquals( home_url( '/fr/trtax/essai/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) ); // no content in translation
 
@@ -250,7 +250,7 @@ class Query_Test extends PLL_UnitTestCase {
 
 		$this->assertQueryTrue( 'is_archive', 'is_tax' );
 		$this->assertTrue( is_tax( 'tax' ) );
-		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
 	}
 
@@ -269,7 +269,7 @@ class Query_Test extends PLL_UnitTestCase {
 
 		$this->go_to( home_url( '/fr/trcpt/' ) );
 
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/trcpt/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 	}
 
@@ -279,12 +279,12 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/cpt/' ) );
 
 		$this->assertQueryTrue( 'is_archive', 'is_post_type_archive' );
-		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
 
 		// Secondary query which would erroneously forces the language
 		$query = new WP_Query( array( 'post_type' => 'cpt', 'lang' => 'fr' ) );
-		$this->assertEquals( array( get_post( $post_id ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 	}
 
 	function test_archives() {
@@ -325,25 +325,25 @@ class Query_Test extends PLL_UnitTestCase {
 		// author
 		$this->go_to( home_url( '/fr/author/admin/' ) );
 
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/author/admin/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 
 		// year
 		$this->go_to( home_url( '/fr/2007/' ) );
 
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/2007/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 
 		// month
 		$this->go_to( home_url( '/fr/2007/09/' ) );
 
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/2007/09/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 
 		// day
 		$this->go_to( home_url( '/fr/2007/09/04/' ) );
 
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/2007/09/04/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 	}
 
@@ -357,7 +357,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/fr/?s=test' ) );
 
 		$this->assertQueryTrue( 'is_search' ); // we don't want is_tax
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/fr/?s=test' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
 		$this->assertEquals( home_url( '/?s=test' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 	}
@@ -382,7 +382,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/fr/category/essai/?s=test' ) );
 
 		$this->assertQueryTrue( 'is_search', 'is_category', 'is_archive' ); // we don't want is_tax
-		$this->assertEquals( array( get_post( $searched ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $searched ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/category/test/?s=test' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 	}
 
@@ -406,7 +406,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/fr/essai/img_fr/' ) );
 
 		$this->assertQueryTrue( 'is_attachment', 'is_singular', 'is_single' ); // bug fixed in v1.7.11
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/test/img_en/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) ); // bug fixed in v1.9.1
 	}
 
@@ -423,7 +423,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/fr/img_fr/' ) );
 
 		$this->assertQueryTrue( 'is_attachment', 'is_singular', 'is_single' );
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 		$this->assertEquals( home_url( '/img_en/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) ); // bug fixed in v1.9.1
 	}
 
@@ -437,7 +437,7 @@ class Query_Test extends PLL_UnitTestCase {
 
 		$this->go_to( home_url( '/fr/feed/' ) );
 		$this->assertQueryTrue( 'is_feed' ); // we don't want is_tax
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts ); // only posts in fr
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // only posts in fr
 
 		$this->go_to( home_url( '/feed/' ) );
 		$this->assertQueryTrue( 'is_feed' );

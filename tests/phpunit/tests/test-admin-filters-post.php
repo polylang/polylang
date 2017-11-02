@@ -144,10 +144,10 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		);
 		edit_post();
 
-		$this->assertFalse( is_object_in_term( $post_id, 'category' , $en ) );
-		$this->assertTrue( is_object_in_term( $post_id, 'category' , $fr ) );
-		$this->assertFalse( is_object_in_term( $post_id, 'category' , $en2 ) );
-		$this->assertTrue( is_object_in_term( $post_id, 'category' , $fr2 ) );
+		$this->assertFalse( is_object_in_term( $post_id, 'category', $en ) );
+		$this->assertTrue( is_object_in_term( $post_id, 'category', $fr ) );
+		$this->assertFalse( is_object_in_term( $post_id, 'category', $en2 ) );
+		$this->assertTrue( is_object_in_term( $post_id, 'category', $fr2 ) );
 	}
 
 	function test_save_post_with_tags() {
@@ -167,11 +167,11 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		);
 		edit_post();
 
-		$this->assertFalse( is_object_in_term( $post_id, 'post_tag' , $en ) );
-		$this->assertTrue( is_object_in_term( $post_id, 'post_tag' , $fr ) );
+		$this->assertFalse( is_object_in_term( $post_id, 'post_tag', $en ) );
+		$this->assertTrue( is_object_in_term( $post_id, 'post_tag', $fr ) );
 
 		$new = get_term_by( 'name', 'new', 'post_tag' );
-		$this->assertTrue( is_object_in_term( $post_id, 'post_tag' , $new ) );
+		$this->assertTrue( is_object_in_term( $post_id, 'post_tag', $new ) );
 		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $new->term_id )->slug );
 	}
 

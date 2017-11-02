@@ -283,7 +283,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// Validate name
 		// No need to sanitize it as wp_insert_term will do it for us
 		if ( empty( $args['name'] ) ) {
-			add_settings_error( 'general', 'pll_invalid_name',  __( 'The language must have a name', 'polylang' ) );
+			add_settings_error( 'general', 'pll_invalid_name', __( 'The language must have a name', 'polylang' ) );
 		}
 
 		// Validate flag

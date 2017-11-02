@@ -157,7 +157,7 @@ class PLL_Frontend_Auto_Translate {
 			if ( empty( $qv['post_type'] ) ) {
 				$post_types = array( 'post' );
 			} elseif ( 'any' === $qv['post_type'] ) {
-				$post_types = get_post_types( array('exclude_from_search' => false) ); // May return a empty array
+				$post_types = get_post_types( array( 'exclude_from_search' => false ) ); // May return a empty array
 			} else {
 				$post_types = (array) $qv['post_type'];
 			}

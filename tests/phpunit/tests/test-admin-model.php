@@ -36,8 +36,8 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'eng', self::$polylang->model->post->get_language( $en )->slug );
 
 		$this->update_language( self::$polylang->model->get_language( 'fr' ), array( 'slug' => 'fra' ) );
-		$this->assertEquals( $fr , self::$polylang->model->post->get( $en, 'fra' ) );
-		$this->assertEquals( $en , self::$polylang->model->post->get( $fr, 'eng' ) );
+		$this->assertEquals( $fr, self::$polylang->model->post->get( $en, 'fra' ) );
+		$this->assertEquals( $en, self::$polylang->model->post->get( $fr, 'eng' ) );
 
 		// FIXME test widgets, menu locations and domains
 	}

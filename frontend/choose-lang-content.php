@@ -51,7 +51,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_lang {
 		}
 
 		if ( $var = get_query_var( 'lang' ) ) {
-			$lang = explode( ',',$var );
+			$lang = explode( ',', $var );
 			$lang = $this->model->get_language( reset( $lang ) ); // choose the first queried language
 		}
 

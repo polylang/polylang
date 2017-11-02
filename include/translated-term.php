@@ -77,7 +77,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 		// get_term_by still not cached in WP 3.5.1 but internally, the function is always called by term_id
 		elseif ( is_string( $value ) && $taxonomy ) {
-			$term_id = wpcom_vip_get_term_by( 'slug', $value , $taxonomy )->term_id;
+			$term_id = wpcom_vip_get_term_by( 'slug', $value, $taxonomy )->term_id;
 		}
 
 		// Get the language and make sure it is a PLL_Language object

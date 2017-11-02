@@ -82,7 +82,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( ! empty( $languages ) ) {
 			$pattern = str_replace( '/', '\/', $this->home . '/' . $this->root );
 			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language\/' ) . '(' . implode( '|', $languages ) . ')(\/|$)#';
-			$url = preg_replace( $pattern,  $this->home . '/' . $this->root, $url );
+			$url = preg_replace( $pattern, $this->home . '/' . $this->root, $url );
 		}
 		return $url;
 	}

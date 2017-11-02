@@ -199,14 +199,14 @@ class PLL_Table_Languages extends WP_List_Table {
 				'<a title="%s" href="%s">%s</a>',
 				esc_attr__( 'Edit this language', 'polylang' ),
 				esc_url( admin_url( 'admin.php?page=mlang&amp;pll_action=edit&amp;lang=' . $item->term_id ) ),
-				esc_html__( 'Edit','polylang' )
+				esc_html__( 'Edit', 'polylang' )
 			),
 			'delete' => sprintf(
 				'<a title="%s" href="%s" onclick = "return confirm( \'%s\' );">%s</a>',
 				esc_attr__( 'Delete this language and all its associated data', 'polylang' ),
 				wp_nonce_url( '?page=mlang&amp;pll_action=delete&amp;noheader=true&amp;lang=' . $item->term_id, 'delete-lang' ),
 				esc_js( __( 'You are about to permanently delete this language. Are you sure?', 'polylang' ) ),
-				esc_html__( 'Delete','polylang' )
+				esc_html__( 'Delete', 'polylang' )
 			),
 		);
 

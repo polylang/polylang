@@ -146,8 +146,8 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$output = ob_get_clean();
 
 		$this->assertContains( "wp-image-{$fr}", $output ); // CSS class
-		$this->assertContains( 'Alt text FR' , $output );
-		$this->assertContains( 'Caption FR' , $output );
+		$this->assertContains( 'Alt text FR', $output );
+		$this->assertContains( 'Caption FR', $output );
 		$this->assertNotContains( 'Test image FR', $output );
 
 		// Edit Image fields are filled
@@ -156,8 +156,8 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertContains( 'Alt text FR' , $output );
-		$this->assertContains( 'Caption FR' , $output );
+		$this->assertContains( 'Alt text FR', $output );
+		$this->assertContains( 'Caption FR', $output );
 		$this->assertContains( 'Test image FR', $output );
 	}
 

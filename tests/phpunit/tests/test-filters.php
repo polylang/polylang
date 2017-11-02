@@ -180,7 +180,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		wp_get_archives();
 		$archives = ob_get_clean();
 
-		$this->assertFalse( strpos( $archives , 'January 2012' ) );
+		$this->assertFalse( strpos( $archives, 'January 2012' ) );
 		$this->assertNotFalse( strpos( $archives, 'February 2012' ) );
 	}
 
@@ -287,20 +287,20 @@ class Filters_Test extends PLL_UnitTestCase {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 		$pages = get_pages();
 		$this->assertCount( 1, $pages );
-		$this->assertEquals( $en , reset( $pages )->ID );
+		$this->assertEquals( $en, reset( $pages )->ID );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 		$pages = get_pages();
 		$this->assertCount( 1, $pages );
-		$this->assertEquals( $fr , reset( $pages )->ID );
+		$this->assertEquals( $fr, reset( $pages )->ID );
 
 		$pages = get_pages( array( 'lang' => 'en' ) );
 		$this->assertCount( 1, $pages );
-		$this->assertEquals( $en , reset( $pages )->ID );
+		$this->assertEquals( $en, reset( $pages )->ID );
 
 		$pages = get_pages( array( 'lang' => 'fr' ) );
 		$this->assertCount( 1, $pages );
-		$this->assertEquals( $fr , reset( $pages )->ID );
+		$this->assertEquals( $fr, reset( $pages )->ID );
 
 		// Bug fixed in 1.9.3
 		$this->assertCount( 2, get_pages( array( 'lang' => '' ) ) );

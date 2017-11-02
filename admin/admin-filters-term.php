@@ -142,7 +142,7 @@ class PLL_Admin_Filters_Term {
 					<p class="description">%s</p>
 				</td>
 			</tr>',
-			wp_nonce_field( 'pll_language', '_pll_nonce', true , false ),
+			wp_nonce_field( 'pll_language', '_pll_nonce', true, false ),
 			esc_html__( 'Language', 'polylang' ),
 			$dropdown->walk( $this->model->get_languages_list(), array(
 				'name'     => 'term_lang_choice',

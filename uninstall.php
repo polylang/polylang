@@ -62,7 +62,7 @@ class PLL_Uninstall {
 		// Need to register the taxonomies
 		$pll_taxonomies = array( 'language', 'term_language', 'post_translations', 'term_translations' );
 		foreach ( $pll_taxonomies as $taxonomy ) {
-			register_taxonomy( $taxonomy, null , array( 'label' => false, 'public' => false, 'query_var' => false, 'rewrite' => false ) );
+			register_taxonomy( $taxonomy, null, array( 'label' => false, 'public' => false, 'query_var' => false, 'rewrite' => false ) );
 		}
 
 		$languages = get_terms( 'language', array( 'hide_empty' => false ) );

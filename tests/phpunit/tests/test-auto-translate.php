@@ -159,15 +159,15 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$query = new WP_Query( array( 'page_id' => $en ) );
-		$this->assertEquals( array( get_post( $fr ) ),  $query->posts );
+		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 		$query = new WP_Query( array( 'pagename' => 'test_parent' ) ); // Top page
-		$this->assertEquals( array( get_post( $parent_fr ) ),  $query->posts );
+		$this->assertEquals( array( get_post( $parent_fr ) ), $query->posts );
 		$query = new WP_Query( array( 'pagename' => 'test_parent/test' ) ); // Child page
-		$this->assertEquals( array( get_post( $fr ) ),  $query->posts );
+		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 		$query = new WP_Query( array( 'post_parent' => $parent_en, 'post_type' => 'page' ) );
-		$this->assertEquals( array( get_post( $fr ) ),  $query->posts );
+		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 		$query = new WP_Query( array( 'post_parent__in' => array( $parent_en ), 'post_type' => 'page' ) );
-		$this->assertEquals( array( get_post( $fr ) ),  $query->posts );
+		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 	}
 
 	function test_get_terms() {

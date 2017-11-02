@@ -162,13 +162,13 @@ class Strings_Test extends PLL_UnitTestCase {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 		do_action( 'pll_language_defined' );
 
-		$this->assertEquals( 'test en',  pll__( 'test' ) );
+		$this->assertEquals( 'test en', pll__( 'test' ) );
 
 		switch_to_locale( 'fr_FR' );
-		$this->assertEquals( 'test fr',  pll__( 'test' ) );
+		$this->assertEquals( 'test fr', pll__( 'test' ) );
 
 		restore_current_locale();
-		$this->assertEquals( 'test en',  pll__( 'test' ) );
+		$this->assertEquals( 'test en', pll__( 'test' ) );
 
 		$GLOBALS['wp_locale_switcher'] = $old_locale_switcher; // Reset the original global var
 	}

@@ -55,9 +55,9 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 	}
 
 	function test_switch_language_in_link() {
-		$this->assertEquals( $this->host . '/test/', self::$polylang->links_model->switch_language_in_link( $this->host . '/fr/test/' , self::$polylang->model->get_language( 'en' ) ) );
-		$this->assertEquals( $this->host . '/de/test/', self::$polylang->links_model->switch_language_in_link( $this->host . '/fr/test/' , self::$polylang->model->get_language( 'de' ) ) );
-		$this->assertEquals( $this->host . '/fr/test/', self::$polylang->links_model->switch_language_in_link( $this->host . '/test/' , self::$polylang->model->get_language( 'fr' ) ) );
+		$this->assertEquals( $this->host . '/test/', self::$polylang->links_model->switch_language_in_link( $this->host . '/fr/test/', self::$polylang->model->get_language( 'en' ) ) );
+		$this->assertEquals( $this->host . '/de/test/', self::$polylang->links_model->switch_language_in_link( $this->host . '/fr/test/', self::$polylang->model->get_language( 'de' ) ) );
+		$this->assertEquals( $this->host . '/fr/test/', self::$polylang->links_model->switch_language_in_link( $this->host . '/test/', self::$polylang->model->get_language( 'fr' ) ) );
 	}
 
 	function test_add_paged_to_link() {

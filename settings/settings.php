@@ -39,8 +39,8 @@ class PLL_Settings extends PLL_Admin_Base {
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
 		// adds screen options and the about box in the languages admin panel
-		add_action( 'load-toplevel_page_mlang',  array( $this, 'load_page' ) );
-		add_action( 'load-languages_page_mlang_strings',  array( $this, 'load_page_strings' ) );
+		add_action( 'load-toplevel_page_mlang', array( $this, 'load_page' ) );
+		add_action( 'load-languages_page_mlang_strings', array( $this, 'load_page_strings' ) );
 
 		// saves per-page value in screen option
 		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
@@ -277,7 +277,7 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_enqueue_script( 'pll_admin',  plugins_url( '/js/admin' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION );
+		wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION );
 		wp_localize_script( 'pll_admin', 'pll_flag_base_url', plugins_url( '/flags/', POLYLANG_FILE ) );
 
 		wp_enqueue_style( 'pll_selectmenu', plugins_url( '/css/selectmenu' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
@@ -313,7 +313,7 @@ class PLL_Settings extends PLL_Admin_Base {
 			$args['settings-updated'] = 1;
 		}
 		// remove possible 'pll_action' and 'lang' query args from the referer before redirecting
-		wp_safe_redirect( add_query_arg( $args,  remove_query_arg( array( 'pll_action', 'lang' ), wp_get_referer() ) ) );
+		wp_safe_redirect( add_query_arg( $args, remove_query_arg( array( 'pll_action', 'lang' ), wp_get_referer() ) ) );
 		exit;
 	}
 }

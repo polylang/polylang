@@ -160,7 +160,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$done = bulk_edit_posts( $_REQUEST );
 
 		$tags = wp_get_post_tags( $posts[0] );
-		$third = wp_filter_object_list( $tags , array( 'name' => 'third_tag' ), 'AND', 'term_id' );
+		$third = wp_filter_object_list( $tags, array( 'name' => 'third_tag' ), 'AND', 'term_id' );
 		$third = reset( $third );
 		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $third )->slug );
 

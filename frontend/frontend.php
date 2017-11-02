@@ -124,7 +124,7 @@ class PLL_Frontend extends PLL_Base {
 		// modifies query vars when the language is queried
 		if ( ! empty( $qv['lang'] ) || ( ! empty( $taxonomies ) && array( 'language' ) == array_values( $taxonomies ) ) ) {
 			// do we query a custom taxonomy?
-			$taxonomies = array_diff( $taxonomies , array( 'language', 'category', 'post_tag' ) );
+			$taxonomies = array_diff( $taxonomies, array( 'language', 'category', 'post_tag' ) );
 
 			// remove pages query when the language is set unless we do a search
 			// take care not to break the single page, attachment and taxonomies queries!
@@ -139,7 +139,7 @@ class PLL_Frontend extends PLL_Base {
 			}
 
 			// unset the is_tax flag except if another custom tax is queried
-			if ( empty( $taxonomies ) && ($query->is_category || $query->is_tag || $query->is_author || $query->is_post_type_archive || $query->is_date || $query->is_search || $query->is_feed ) ) {
+			if ( empty( $taxonomies ) && ( $query->is_category || $query->is_tag || $query->is_author || $query->is_post_type_archive || $query->is_date || $query->is_search || $query->is_feed ) ) {
 				$query->is_tax = false;
 				unset( $query->queried_object ); // FIXME useless?
 			}

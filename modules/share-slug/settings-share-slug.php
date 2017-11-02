@@ -58,7 +58,7 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 		wp_enqueue_script( 'jquery' );
 
 		$activated = sprintf( '<span class="activated">%s</span>', $this->action_links['activated'] );
-		$deactivated = sprintf( '<span class="deactivated">%s</span>',  $this->action_links['deactivated'] );
+		$deactivated = sprintf( '<span class="deactivated">%s</span>', $this->action_links['deactivated'] );
 
 		?>
 		<script type='text/javascript'>

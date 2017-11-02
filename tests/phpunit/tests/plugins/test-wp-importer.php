@@ -98,7 +98,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', self::$polylang->model->term->get_language( $en->term_id )->slug );
 
 		$fr = get_term_by( 'name', 'Essai', 'category' );
-		$this->assertEquals( 'fr',  self::$polylang->model->term->get_language( $fr->term_id )->slug );
+		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $fr->term_id )->slug );
 
 		$this->assertEquals( 'en', self::$polylang->model->term->get_language( $en->term_id )->slug );
 		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $fr->term_id )->slug );

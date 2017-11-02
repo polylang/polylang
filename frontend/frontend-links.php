@@ -114,7 +114,7 @@ class PLL_Frontend_Links extends PLL_Links {
 						 * @param string $lang The language code of the translation
 						 * @param array  $args Arguments used to evaluated the number of posts in the archive
 						 */
-						if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count , $language->slug, array( 'taxonomy' => $term->taxonomy ) ) ) {
+						if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count, $language->slug, array( 'taxonomy' => $term->taxonomy ) ) ) {
 							$url = wpcom_vip_get_term_link( $tr_term, $term->taxonomy );
 						}
 					}
@@ -128,7 +128,7 @@ class PLL_Frontend_Links extends PLL_Links {
 					$count = $this->model->count_posts( $language, $args );
 
 					/** This filter is documented in frontend/frontend-links.php */
-					if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count , $language->slug, $args ) ) {
+					if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count, $language->slug, $args ) ) {
 						$url = $this->get_archive_url( $language );
 					}
 				}
@@ -142,7 +142,7 @@ class PLL_Frontend_Links extends PLL_Links {
 				$count = $this->model->count_posts( $language, $args );
 
 				/** This filter is documented in frontend/frontend-links.php */
-				if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count , $language->slug, $args ) ) {
+				if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count, $language->slug, $args ) ) {
 					$url = $this->get_archive_url( $language );
 				}
 			}

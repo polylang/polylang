@@ -249,7 +249,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		$locations = get_registered_nav_menus();
 		if ( is_array( $locations ) ) {
 			$locations = array_fill_keys( array_keys( $locations ), 0 );
-			$menus = is_array( $menus ) ? array_merge( $locations , $menus ) : $locations;
+			$menus = is_array( $menus ) ? array_merge( $locations, $menus ) : $locations;
 		}
 
 		if ( is_array( $menus ) ) {

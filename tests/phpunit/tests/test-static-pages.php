@@ -112,7 +112,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
 		$this->assertEquals( home_url( '/en/home/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
-		$this->assertEquals( array( get_post( self::$home_fr ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( self::$home_fr ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/accueil/' ), false ) );
 	}
 
@@ -131,7 +131,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
 		$this->assertEquals( home_url( '/en/home/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
-		$this->assertEquals( array( get_post( self::$home_fr ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( self::$home_fr ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/accueil/?query=1' ), false ) );
 	}
 
@@ -160,7 +160,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_paged', 'is_front_page' );
 		$this->assertEquals( home_url( '/fr/accueil/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
-		$this->assertEquals( 'en2',  get_the_content() );
+		$this->assertEquals( 'en2', get_the_content() );
 		$this->assertEmpty( redirect_canonical( home_url( '/en/home/page/2/' ), false ) );
 	}
 
@@ -183,7 +183,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
 		$this->assertEquals( home_url( '/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
-		$this->assertEquals( array( get_post( self::$home_fr ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( self::$home_fr ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/accueil/' ), false ) );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' ); // brute force
@@ -192,7 +192,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
 		$this->assertEquals( home_url( '/fr/accueil/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
-		$this->assertEquals( array( get_post( self::$home_en ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( self::$home_en ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( redirect_canonical( home_url( '/' ), false ) );
 		$this->assertEquals( home_url( '/' ), redirect_canonical( home_url( '/en/home/' ), false ) );
 	}
@@ -217,7 +217,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
 		$this->assertEquals( home_url( '/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
-		$this->assertEquals( array( get_post( self::$home_fr ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( self::$home_fr ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/accueil/' ), false ) );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' ); // brute force
@@ -226,7 +226,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
 		$this->assertEquals( home_url( '?page_id=' . self::$home_fr . '&lang=fr' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
-		$this->assertEquals( array( get_post( self::$home_en ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( self::$home_en ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( redirect_canonical( home_url( '/' ), false ) );
 	}
 
@@ -256,7 +256,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_paged', 'is_front_page' );
 		$this->assertEquals( home_url( '?page_id=' . self::$home_fr . '&lang=fr' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
-		$this->assertEquals( 'en2',  get_the_content() );
+		$this->assertEquals( 'en2', get_the_content() );
 		$this->assertEmpty( redirect_canonical( home_url( '?page=2' ), false ) );
 	}
 
@@ -279,7 +279,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
 		$this->assertEquals( home_url( '/en/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
-		$this->assertEquals( array( get_post( self::$home_fr ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( self::$home_fr ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/' ), false ) );
 	}
 
@@ -295,14 +295,14 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		$this->assertQueryTrue( 'is_home', 'is_posts_page' );
 		$this->assertEquals( home_url( '/en/posts/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
-		$this->assertEquals( array( get_post( $fr ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' ); // brute force
 		$this->go_to( home_url( '/en/posts/' ) );
 
 		$this->assertQueryTrue( 'is_home', 'is_posts_page' );
 		$this->assertEquals( home_url( '/fr/articles/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
-		$this->assertEquals( array( get_post( $en ) ),  $GLOBALS['wp_query']->posts );
+		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 	}
 
 	function test_paged_page_for_posts() {
@@ -365,7 +365,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_paged', 'is_front_page' );
 		$this->assertEquals( home_url( '/fr/accueil/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
-		$this->assertEquals( 'en2',  get_the_content() );
+		$this->assertEquals( 'en2', get_the_content() );
 		$this->assertEmpty( redirect_canonical( home_url( '/page/2/' ), false ) );
 	}
 
@@ -387,7 +387,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_paged', 'is_front_page' );
 		$this->assertEquals( home_url( '/en/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
-		$this->assertEquals( 'fr2',  get_the_content() );
+		$this->assertEquals( 'fr2', get_the_content() );
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/page/2/' ), false ) );
 	}
 

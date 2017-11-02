@@ -74,7 +74,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$en = $this->factory->post->create();
 		@self::$polylang->model->set_post_language( $en, 'en' );
 		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $en )->slug );
-		$this->assertEquals( 'en' , @self::$polylang->model->get_post_language( $en )->slug );
+		$this->assertEquals( 'en', @self::$polylang->model->get_post_language( $en )->slug );
 
 		$fr = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $fr, 'fr' );
@@ -82,7 +82,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $en, @self::$polylang->model->get_post( $fr, 'en' ) );
 		$this->assertEquals( $fr, @self::$polylang->model->get_post( $fr, 'fr' ) );
 		$this->assertEquals( $en, @self::$polylang->model->get_translation( 'post', $fr, 'en' ) );
-		$this->assertEquals( self::$polylang->model->post->get_translations( $fr ),  @self::$polylang->model->get_translations( 'post', $fr ) );
+		$this->assertEquals( self::$polylang->model->post->get_translations( $fr ), @self::$polylang->model->get_translations( 'post', $fr ) );
 		$this->assertEquals( self::$polylang->model->post->get_objects_in_language( $lang_object ), @self::$polylang->model->get_objects_in_language( $lang_object, 'post' ) );
 
 		$this->assertEquals( self::$polylang->model->post->get_object_term( $en, 'language' ), @self::$polylang->model->get_object_term( $en, 'language' ) );
@@ -103,7 +103,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $en, @self::$polylang->model->get_term( $fr, 'en' ) );
 		$this->assertEquals( $fr, @self::$polylang->model->get_term( $fr, 'fr' ) );
 		$this->assertEquals( $en, @self::$polylang->model->get_translation( 'term', $fr, 'en' ) );
-		$this->assertEquals( self::$polylang->model->term->get_translations( $fr ),  @self::$polylang->model->get_translations( 'term', $fr ) );
+		$this->assertEquals( self::$polylang->model->term->get_translations( $fr ), @self::$polylang->model->get_translations( 'term', $fr ) );
 		$this->assertEquals( self::$polylang->model->term->get_objects_in_language( $lang_object ), @self::$polylang->model->get_objects_in_language( $lang_object, 'term' ) );
 
 		$this->assertEquals( self::$polylang->model->term->get_object_term( $en, 'term_language' ), @self::$polylang->model->get_object_term( $en, 'term_language' ) );

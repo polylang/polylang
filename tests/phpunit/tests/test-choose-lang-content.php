@@ -88,7 +88,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/fr/' ) );
-		$this->assertEquals( 'fr' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
 	}
 
 	function test_home_latest_posts_with_hide_default() {
@@ -96,7 +96,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $en, 'en' );
 
 		$this->go_to( home_url( '/' ) );
-		$this->assertEquals( 'en' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
 	function test_single_post() {
@@ -107,10 +107,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/essai/' ) );
-		$this->assertEquals( 'fr' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
 
 		$this->go_to( home_url( '/test/' ) );
-		$this->assertEquals( 'en' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
 	function test_page() {
@@ -121,10 +121,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/essai/' ) );
-		$this->assertEquals( 'fr' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
 
 		$this->go_to( home_url( '/test/' ) );
-		$this->assertEquals( 'en' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
 	function test_category() {
@@ -135,10 +135,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::$polylang->model->term->set_language( $en, 'en' );
 
 		$this->go_to( home_url( '/category/essai/' ) );
-		$this->assertEquals( 'fr' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
 
 		$this->go_to( home_url( '/category/test/' ) );
-		$this->assertEquals( 'en' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
 	function test_post_tag() {
@@ -149,10 +149,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::$polylang->model->term->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/tag/essai/' ) );
-		$this->assertEquals( 'fr' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
 
 		$this->go_to( home_url( '/tag/test/' ) );
-		$this->assertEquals( 'en' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
 	function test_archive() {
@@ -163,10 +163,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/fr/2007/' ) );
-		$this->assertEquals( 'fr' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
 
 		$this->go_to( home_url( '/2007/' ) );
-		$this->assertEquals( 'en' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
 	function test_archive_with_default_permalinks() {
@@ -179,9 +179,9 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '?year=2007&lang=fr' ) );
-		$this->assertEquals( 'fr' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
 
 		$this->go_to( home_url( '?year=2007' ) );
-		$this->assertEquals( 'en' , self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 }

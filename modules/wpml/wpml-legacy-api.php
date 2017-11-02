@@ -139,7 +139,7 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 		}
 
 		if ( ! empty( $args ) ) {
-			$link .= ( false === strpos( $link, '?' ) ? '?' : '&'  ) . http_build_query( $args );
+			$link .= ( false === strpos( $link, '?' ) ? '?' : '&' ) . http_build_query( $args );
 		}
 
 		if ( ! empty( $anchor ) ) {
