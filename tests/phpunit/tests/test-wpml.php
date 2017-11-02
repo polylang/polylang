@@ -247,6 +247,41 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $cat, apply_filters( 'wpml_object_id', $cat, 'category', true ) );
 	}
 
+	function test_wpml_object_id_nav_menu() {
+		self::$polylang->options['default_lang'] = 'en';
+
+		$registered_nav_menus = get_registered_nav_menus();
+
+		if ( empty( $registered_nav_menus ) ) {
+			register_nav_menu( 'primary', 'Primary menu' );
+		}
+
+		// create 2 menus
+		$menu_en = wp_create_nav_menu( 'menu_en' );
+		$menu_fr = wp_create_nav_menu( 'menu_fr' );
+
+		// assign our menus to locations
+		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$nav_menu->create_nav_menu_locations();
+
+		$locations = array_keys( get_registered_nav_menus() );
+		$nav_menu_locations = array(
+			$locations[0] => $menu_en,
+			$locations[1] => $menu_fr,
+		);
+
+		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
+		$nav_menu->update_nav_menu_locations( $nav_menu_locations ); // our filter update_nav_menu_locations does not run due to security checks
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$this->assertEquals( $menu_en, apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) );
+		$this->assertEquals( $menu_en, apply_filters( 'wpml_object_id', $menu_fr, 'nav_menu' ) );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$this->assertEquals( $menu_fr, apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) );
+		$this->assertEquals( $menu_fr, apply_filters( 'wpml_object_id', $menu_fr, 'nav_menu' ) );
+	}
+
 	function test_wpml_element_has_translations() {
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
