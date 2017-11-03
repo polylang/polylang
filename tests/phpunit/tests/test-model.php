@@ -7,6 +7,9 @@ class Model_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+
+		require_once PLL_INC . '/api.php';
+		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
 	function test_languages_list() {
@@ -147,7 +150,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertFalse( self::$polylang->model->is_filtered_taxonomy( 'language' ) );
 	}
 
-		function test_is_translated_post_type() {
+	function test_is_translated_post_type() {
 		self::$polylang->options['post_types'] = array(
 			'trcpt' => 'trcpt',
 		);
