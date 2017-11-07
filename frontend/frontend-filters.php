@@ -68,6 +68,10 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			add_filter( 'pre_option_blogname', 'pll__', 20 );
 			add_filter( 'pre_option_blogdescription', 'pll__', 20 );
 		}
+
+		if ( Polylang::is_ajax_on_front() ) {
+			add_filter( 'load_textdomain_mofile', array( $this, 'load_textdomain_mofile' ) );
+		}
 	}
 
 	/**
@@ -363,5 +367,19 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				$this->model->term->set_language( $term_id, $this->curlang );
 			}
 		}
+	}
+
+	/**
+	 * Filters the translation files to load when doing ajax on front
+	 * This is needed because WP the language files associated to the user locale when a user is logged in
+	 *
+	 * @since 2.2.6
+	 *
+	 * @param string $mofile Translation file name
+	 * @return string
+	 */
+	public function load_textdomain_mofile( $mofile ) {
+		$user_locale = get_user_locale();
+		return str_replace( "{$user_locale}.mo", "{$this->curlang->locale}.mo", $mofile );
 	}
 }

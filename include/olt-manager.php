@@ -27,7 +27,7 @@ class PLL_OLT_Manager {
 
 		// Overriding load text domain only on front since WP 4.7
 		// FIXME test get_user_locale for backward compatibility with WP < 4.7
-		if ( is_admin() && ! Polylang::is_ajax_on_front() && function_exists( 'get_user_locale' ) ) {
+		if ( is_admin() && function_exists( 'get_user_locale' ) ) {
 			return;
 		}
 
@@ -39,9 +39,11 @@ class PLL_OLT_Manager {
 		add_filter( 'gettext', array( $this, 'gettext' ), 10, 3 );
 		add_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
 
-		// Loads text domains
-		add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined
-		add_action( 'pll_no_language_defined', array( $this, 'load_textdomains' ) );
+		if ( ! Polylang::is_ajax_on_front() ) {
+			// Loads text domains
+			add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined
+			add_action( 'pll_no_language_defined', array( $this, 'load_textdomains' ) );
+		}
 	}
 
 	/**
