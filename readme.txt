@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,13 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.2.5 (2017-11-09) =
+
+* Update plugin updater class to 1.6.15
+* Add $link in cache key of links filters
+* Add support for 'nav_menu' post type in wpml_object_id
+* Fix conflict with Timber (introduced in 2.2.4)
 
 = 2.2.4 (2017-10-26) =
 
