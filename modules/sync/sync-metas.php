@@ -46,12 +46,12 @@ abstract class PLL_Sync_Metas {
 		 * @since 2.3
 		 *
 		 * @param mixed  $value Meta value
-		 * @param string $lang  Language of target
 		 * @param string $key   Meta key
+		 * @param string $lang  Language of target
 		 * @param int    $from  Id of the source
 		 * @param int    $to    Id of the target
 		 */
-		return apply_filters( "pll_translate_{$this->meta_type}_meta_{$key}", maybe_unserialize( $value ), $lang, $key, $from, $to );
+		return apply_filters( "pll_translate_{$this->meta_type}_meta", maybe_unserialize( $value ), $key, $lang, $from, $to );
 	}
 
 	/**
