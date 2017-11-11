@@ -60,9 +60,10 @@ class PLL_Sync_Tax {
 	 *
 	 * @since 2.3
 	 *
-	 * @param array  $terms    List of terms ids assigned to the source post
-	 * @param string $taxonomy Taxonomy name
-	 * @param string $lang     Language slug
+	 * @param array  $object_id Object ID
+	 * @param array  $terms     List of terms ids assigned to the source post
+	 * @param string $taxonomy  Taxonomy name
+	 * @param string $lang      Language slug
 	 * @return array List of terms ids to assign to the target post
 	 */
 	protected function maybe_translate_terms( $object_id, $terms, $taxonomy, $lang ) {
