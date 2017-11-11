@@ -34,6 +34,8 @@ class PLL_Admin_Sync {
 			add_action( 'pll_translate_media', array( $this->post_metas, 'copy' ), 10, 3 );
 			add_action( 'edit_attachment', array( $this, 'edit_attachment' ) );
 		}
+
+		add_filter( 'pre_update_option_sticky_posts', array( $this, 'sync_sticky_posts' ), 10, 2 );
 	}
 
 	/**
@@ -131,11 +133,6 @@ class PLL_Admin_Sync {
 				continue;
 			}
 
-			// Sticky posts
-			if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {
-				isset( $_REQUEST['sticky'] ) && 'sticky' === $_REQUEST['sticky'] ? stick_post( $tr_id ) : unstick_post( $tr_id );
-			}
-
 			// Add comment status, ping status, menu order... to synchronization
 			$tr_arr = empty( $postarr ) ? array() : $postarr;
 
@@ -207,5 +204,28 @@ class PLL_Admin_Sync {
 	 */
 	public function edit_attachment( $post_id ) {
 		$this->pll_save_post( $post_id, get_post( $post_id ), $this->model->post->get_translations( $post_id ) );
+	}
+
+	/**
+	 * Synchronize sticky posts
+	 *
+	 * @since 2.3
+	 *
+	 * @param array $value     New option value
+	 * @param array $old_value Old option value
+	 * @return array
+	 */
+	public function sync_sticky_posts( $value, $old_value ) {
+		// Stick post
+		if ( $sticked = array_diff( $value, $old_value ) ) {
+			$value = array_unique( array_merge( $value, $this->model->post->get_translations( reset( $sticked ) ) ) );
+		}
+
+		// Unstick post
+		if ( $unsticked = array_diff( $old_value, $value ) ) {
+			$value = array_unique( array_diff( $value, $this->model->post->get_translations( reset( $unsticked ) ) ) );
+		}
+
+		return $value;
 	}
 }

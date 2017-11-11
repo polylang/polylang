@@ -242,7 +242,6 @@ class Sync_Test extends PLL_UnitTestCase {
 		$key = add_post_meta( $from, 'key', 'value' );
 		$metas[ $key ] = array( 'key' => 'key', 'value' => 'value' );
 		$key = add_post_meta( $from, '_thumbnail_id', 1234 );
-		stick_post( $from );
 
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
@@ -255,6 +254,7 @@ class Sync_Test extends PLL_UnitTestCase {
 			'meta'        => $metas,
 			'_thumbnail_id' => $thumbnail_id,
 		) ); // fires the sync
+		stick_post( $from );
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$polylang->model->post->get_translations( $from ) );
