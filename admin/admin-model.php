@@ -406,9 +406,11 @@ class PLL_Admin_Model extends PLL_Model {
 	 *
 	 * @since 0.9
 	 *
-	 * @return array array made of an array of post ids and an array of term ids
+	 * @return array Array made of an array of post ids and an array of term ids
 	 */
 	public function get_objects_with_no_lang() {
+		global $wpdb;
+
 		$posts = get_posts( array(
 			'numberposts' => -1,
 			'nopaging'    => true,
@@ -424,11 +426,15 @@ class PLL_Admin_Model extends PLL_Model {
 			),
 		) );
 
-		$terms = get_terms( $this->get_translated_taxonomies(), array( 'get' => 'all', 'fields' => 'ids' ) );
-		$groups = $this->get_languages_list( array( 'fields' => 'tl_term_id' ) );
-		$tr_terms = get_objects_in_term( $groups, 'term_language' );
-		$terms = array_unique( array_diff( $terms, $tr_terms ) ); // array_unique to avoid duplicates if a term is in more than one taxonomy
-		$terms = array_map( 'intval', $terms );
+		$terms = $wpdb->get_col( sprintf( "
+			SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}
+			WHERE taxonomy IN ('%s')
+			AND {$wpdb->term_taxonomy}.term_id NOT IN (
+				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+			)",
+			implode( "','", array_map( 'esc_sql', $this->get_translated_taxonomies() ) ),
+			implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) )
+		) );
 
 		/**
 		 * Filter the list of untranslated posts ids and terms ids
