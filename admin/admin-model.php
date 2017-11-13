@@ -405,15 +405,28 @@ class PLL_Admin_Model extends PLL_Model {
 	 * Returns unstranslated posts and terms ids ( used in settings )
 	 *
 	 * @since 0.9
+	 * @since 2.2.6 Add the $limit argument
 	 *
+	 * @param in $limit Max number of posts or terms to return. Defaults to -1 (no limit).
 	 * @return array Array made of an array of post ids and an array of term ids
 	 */
-	public function get_objects_with_no_lang() {
+	public function get_objects_with_no_lang( $limit = -1 ) {
 		global $wpdb;
 
+		/**
+		 * Filters the max number of posts or terms to return when searching objects with no language
+		 * This filter can be used to decrease the memory usage in case the number of objects
+		 * without language is too big. Using a negative value is equivalent to have no limit.
+		 *
+		 * @since 2.2.6
+		 *
+		 * @param int $limit Max number of posts or terms to retrieve from the database
+		 */
+		$limit = (int) apply_filters( 'get_objects_with_no_lang_limit', $limit );
+
 		$posts = get_posts( array(
-			'numberposts' => -1,
-			'nopaging'    => true,
+			'numberposts' => $limit,
+			'nopaging'    => $limit <= 0,
 			'post_type'   => $this->get_translated_post_types(),
 			'post_status' => 'any',
 			'fields'      => 'ids',
@@ -431,9 +444,11 @@ class PLL_Admin_Model extends PLL_Model {
 			WHERE taxonomy IN ('%s')
 			AND {$wpdb->term_taxonomy}.term_id NOT IN (
 				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
-			)",
+			)
+			%s",
 			implode( "','", array_map( 'esc_sql', $this->get_translated_taxonomies() ) ),
-			implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) )
+			implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
+			$limit > 0 ? "LIMIT {$limit}" : ''
 		) );
 
 		/**

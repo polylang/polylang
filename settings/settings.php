@@ -289,7 +289,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 1.8
 	 */
 	public function notice_objects_with_no_lang() {
-		if ( ! empty( $this->options['default_lang'] ) && $this->model->get_objects_with_no_lang() ) {
+		if ( ! empty( $this->options['default_lang'] ) && $this->model->get_objects_with_no_lang( 1 ) ) {
 			printf(
 				'<div class="error"><p>%s <a href="%s">%s</a></p></div>',
 				esc_html__( 'There are posts, pages, categories or tags without language.', 'polylang' ),
