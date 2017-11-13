@@ -18,7 +18,6 @@ abstract class PLL_Sync_Metas {
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
-		$this->options = &$polylang->options;
 
 		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 ); // Very late in case a filter prevents the meta to be updated
 

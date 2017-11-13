@@ -6,6 +6,7 @@
  * @since 2.3
  */
 class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
+	public $options;
 
 	/**
 	 * Constructor
@@ -19,9 +20,9 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 
 		parent::__construct( $polylang );
 
-		if ( $this->options['media_support'] ) {
-			add_filter( 'pll_translate_post_meta', array( $this, 'translate_thumbnail_id' ), 10, 3 );
-		}
+		$this->options = &$polylang->options;
+
+		add_filter( 'pll_translate_post_meta', array( $this, 'translate_thumbnail_id' ), 10, 3 );
 	}
 
 	/**
@@ -71,6 +72,6 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 	 * @return int
 	 */
 	public function translate_thumbnail_id( $value, $key, $lang ) {
-		return ( '_thumbnail_id' === $key && $to_value = $this->model->post->get_translation( $value, $lang ) ) ? $to_value : $value;
+		return ( $this->options['media_support'] && '_thumbnail_id' === $key && $to_value = $this->model->post->get_translation( $value, $lang ) ) ? $to_value : $value;
 	}
 }
