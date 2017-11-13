@@ -95,7 +95,8 @@ abstract class PLL_Sync_Metas {
 	 */
 	public function update_metadata( $r, $id, $meta_key, $meta_value, $prev_value ) {
 		if ( null === $r ) {
-			$this->prev_value[ "$id|$meta_key|$meta_value" ] = $prev_value;
+			$hash = md5( "$id|$meta_key|" . maybe_serialize( $meta_value ) );
+			$this->prev_value[ $hash ] = $prev_value;
 		}
 		return $r;
 	}
@@ -145,6 +146,7 @@ abstract class PLL_Sync_Metas {
 
 		if ( ! $avoid_recursion ) {
 			$avoid_recursion = true;
+			$hash = md5( "$id|$meta_key|" . maybe_serialize( $meta_value ) );
 
 			$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
 
@@ -154,7 +156,7 @@ abstract class PLL_Sync_Metas {
 					if ( in_array( $meta_key, $to_copy ) ) {
 						$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
 						$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
-						if ( empty( $this->prev_value[ "$id|$meta_key|$meta_value" ] ) || $this->prev_value[ "$id|$meta_key|$meta_value" ] === $prev_meta->meta_value ) {
+						if ( empty( $this->prev_value[ $hash ] ) || $this->prev_value[ $hash ] === $prev_meta->meta_value ) {
 							$prev_value = $this->maybe_translate_value( $prev_meta->meta_value, $meta_key, $id, $tr_id, $lang );
 							update_metadata( $this->meta_type, $tr_id, $meta_key, $meta_value, $prev_value );
 						}
@@ -162,7 +164,7 @@ abstract class PLL_Sync_Metas {
 				}
 			}
 
-			unset( $this->prev_value[ "$id|$meta_key|$meta_value" ] );
+			unset( $this->prev_value[ $hash ] );
 			$avoid_recursion = false;
 		}
 	}
