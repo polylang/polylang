@@ -459,7 +459,7 @@ class PLL_Model {
 			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
 			$join = $this->post->join_clause();
 			$where = " WHERE post_status = 'publish'";
-			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_type IN ( %s )", join( "', '", $q['post_type'] ) );
+			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_type IN ( '%s' )", join( "', '", $q['post_type'] ) );
 			$where .= $this->post->where_clause( $this->get_languages_list() );
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
 
