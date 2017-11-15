@@ -493,8 +493,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 0 ) );
 		$this->assertEqualSets( array( $en, $fr, $es ), $terms );
 
-		// FIXME currently breaks in PLL_Admin_Filters_Term::get_terms_args()
-		$this->markTestIncomplete();
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
 		$this->assertEqualSets( array( $en, $fr ), $terms );
 	}
