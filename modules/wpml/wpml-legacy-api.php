@@ -36,7 +36,7 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 	 * id               => the language id
 	 * active           => whether this is the active language or no, 0 or 1
 	 * native_name      => the language name
-	 * missing          => wether the translation is missing or not, 0 or 1
+	 * missing          => whether the translation is missing or not, 0 or 1
 	 * translated_name  => empty, does not exist in Polylang
 	 * language_code    => the language code ( slug )
 	 * country_flag_url => the url of the flag
