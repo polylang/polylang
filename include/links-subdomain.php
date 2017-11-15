@@ -73,7 +73,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 * @return string language slug
 	 */
 	public function get_language_from_url( $url = '' ) {
-		$host = parse_url( ( empty( $url ) ? $_SERVER['HTTP_HOST'] : $url ), PHP_URL_HOST );
+		$host = ( empty( $url ) ? $_SERVER['HTTP_HOST'] : parse_url( $url ) );
 		$hosts = $this->get_hosts();
 		if ( in_array( $host, $hosts ) ) {
 			$pattern = '#(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')\.#';
