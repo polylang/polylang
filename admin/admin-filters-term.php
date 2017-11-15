@@ -601,7 +601,7 @@ class PLL_Admin_Filters_Term {
 		}
 
 		if ( $lang = $this->get_queried_language( $taxonomies, $args ) ) {
-			$lang = is_string($lang) && strpos( $lang, ',' ) ? explode( ',', $lang ) : $lang;
+			$lang = is_string( $lang ) && strpos( $lang, ',' ) ? explode( ',', $lang ) : $lang;
 			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
 			$args['cache_domain'] = empty( $args['cache_domain'] ) ? 'pll' . $key : $args['cache_domain'] . $key;
 		}
