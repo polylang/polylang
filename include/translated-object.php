@@ -242,14 +242,14 @@ abstract class PLL_Translated_Object {
 		// $lang is an object
 		// generally the case if the query is coming from Polylang
 		if ( is_object( $lang ) ) {
-			return $wpdb->prepare( ' AND pll_tr.term_taxonomy_id = %d', $lang->$tt_id );
+			return ' AND pll_tr.term_taxonomy_id = ' . absint( $lang->$tt_id );
 		}
 
 		// $lang is a comma separated list of slugs ( or an array of slugs )
 		// generally the case is the query is coming from outside with 'lang' parameter
 		$slugs = is_array( $lang ) ? $lang : explode( ',', $lang );
 		foreach ( $slugs as $slug ) {
-			$languages[] = (int) $this->model->get_language( $slug )->$tt_id;
+			$languages[] = absint( $this->model->get_language( $slug )->$tt_id );
 		}
 
 		return ' AND pll_tr.term_taxonomy_id IN ( ' . implode( ',', $languages ) . ' )';
