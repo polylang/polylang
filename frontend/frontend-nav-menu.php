@@ -50,6 +50,29 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
+	 * Format a language switcher menu item title based on options
+	 *
+	 * @since 2.2.6
+	 *
+	 * @param string $flag    Formatted flag
+	 * @param string $name    Language name
+	 * @param array  $options Language switcher options
+	 * @return string Formatted menu item title
+	 */
+	protected function get_item_title( $flag, $name, $options ) {
+		if ( $options['show_flags'] ) {
+			if ( $options['show_names'] ) {
+				$title = sprintf( '%1$s<span style="margin-%2$s:0.3em;">%3$s</span>', $flag, is_rtl() ? 'right' : 'left', esc_html( $name ) );
+			} else {
+				$title = $flag;
+			}
+		} else {
+			$title = esc_html( $name );
+		}
+		return $title;
+	}
+
+	/**
 	 * Splits the one item of backend in several items on frontend
 	 * take care to menu_order as it is used later in wp_nav_menu
 	 *
@@ -79,7 +102,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 
 				// parent item for dropdown
 				if ( ! empty( $options['dropdown'] ) ) {
-					$item->title = $options['show_flags'] && $options['show_names'] ? $this->curlang->flag . '<span style="margin-left:0.3em;">' . esc_html( $this->curlang->name ) . '</span>' : ( $options['show_flags'] ? $this->curlang->flag : esc_html( $this->curlang->name ) );
+					$item->title = $this->get_item_title( $this->curlang->flag, $this->curlang->name, $options );
 					$item->attr_title = '';
 					$item->classes = array( 'pll-parent-menu-item' );
 					$new_items[] = $item;
@@ -89,7 +112,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				foreach ( $the_languages as $lang ) {
 					$lang_item = clone $item;
 					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
-					$lang_item->title = $options['show_flags'] && $options['show_names'] ? $lang['flag'] . '<span style="margin-left:0.3em;">' . esc_html( $lang['name'] ) . '</span>' : ( $options['show_flags'] ? $lang['flag'] : esc_html( $lang['name'] ) );
+					$lang_item->title = $this->get_item_title( $lang['flag'], $lang['name'], $options );
 					$lang_item->attr_title = '';
 					$lang_item->url = $lang['url'];
 					$lang_item->lang = $lang['locale']; // Save this for use in nav_menu_link_attributes
