@@ -29,8 +29,6 @@ class Links_Subdomain_Test extends PLL_Domain_UnitTestCase {
 	}
 
 	function test_wrong_get_language_from_url() {
-		$this->markTestSkipped(); // FIXME
-
 		$_SERVER['HTTP_HOST'] = 'http://es.example.org';
 		$this->assertEmpty( self::$polylang->links_model->get_language_from_url() ); // ok
 
