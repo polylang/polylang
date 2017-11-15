@@ -71,7 +71,7 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Tells wether to store a translation term
+	 * Tells whether to store a translation term
 	 *
 	 * @since 1.8
 	 *

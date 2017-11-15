@@ -106,7 +106,7 @@ function pll_home_url( $lang = '' ) {
  * @param string $name      a unique name for the string
  * @param string $string    the string to register
  * @param string $context   optional the group in which the string is registered, defaults to 'polylang'
- * @param bool   $multiline optional wether the string table should display a multiline textarea or a single line input, defaults to single line
+ * @param bool   $multiline optional whether the string table should display a multiline textarea or a single line input, defaults to single line
  */
 function pll_register_string( $name, $string, $context = 'polylang', $multiline = false ) {
 	if ( PLL() instanceof PLL_Admin_Base ) {
