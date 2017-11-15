@@ -68,6 +68,9 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 1, self::$polylang->model->count_posts( $language, array( 'm' => 20070904 ) ) );
 		$this->assertEquals( 1, self::$polylang->model->count_posts( $language, array( 'author' => 1 ) ) );
 		$this->assertEquals( 1, self::$polylang->model->count_posts( $language, array( 'author_name' => 'admin' ) ) );
+
+		// Bug fixed in version 2.2.6
+		$this->assertEquals( 2, self::$polylang->model->count_posts( $language, array( 'post_type' => array( 'post', 'page' ) ) ) );
 	}
 
 	function test_backward_compat_1_8() {
