@@ -345,7 +345,7 @@ class PLL_Admin_Filters_Term {
 	 * @since 0.1
 	 *
 	 * @param int    $term_id
-	 * @param int    $tt_id    term taxononomy id
+	 * @param int    $tt_id    term taxonomy id
 	 * @param string $taxonomy
 	 */
 	public function save_term( $term_id, $tt_id, $taxonomy ) {

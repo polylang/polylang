@@ -148,7 +148,7 @@ td[class*='column-language_'] {
 	width: 1.5em;
 }
 
-/* Text direcction in post.php and edit-tags.php */
+/* Text direction in post.php and edit-tags.php */
 .pll-dir-rtl textarea,
 .pll-dir-rtl input[type="text"] {
 	direction: rtl;

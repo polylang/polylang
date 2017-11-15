@@ -211,7 +211,7 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * sets the language when home page is resquested
+	 * sets the language when home page is requested
 	 *
 	 * @since 1.2
 	 */
@@ -271,7 +271,7 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 0.8.4
 	 *
-	 * @param int $post_id the post beeing commented
+	 * @param int $post_id the post being commented
 	 */
 	public function pre_comment_on_post( $post_id ) {
 		$this->set_language( $this->model->post->get_language( $post_id ) );

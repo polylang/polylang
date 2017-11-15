@@ -213,7 +213,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 				ob_end_clean();
 
 				ob_start();
-				// Use $post_ID to remember ckecked terms in case we come back to the original language
+				// Use $post_ID to remember checked terms in case we come back to the original language
 				wp_terms_checklist( $post_ID, array( 'taxonomy' => $taxonomy->name, 'popular_cats' => $popular_ids ) );
 				$supplemental['all'] = ob_get_contents();
 				ob_end_clean();

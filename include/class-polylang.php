@@ -181,7 +181,7 @@ class Polylang {
 		if ( ! $model->get_languages_list() ) {
 			/**
 			 * Fires when no language has been defined yet
-			 * Used to load overriden textdomains
+			 * Used to load overridden textdomains
 			 *
 			 * @since 1.2
 			 */

@@ -103,7 +103,7 @@ class PLL_Admin extends PLL_Admin_Base {
 			$obj = strtolower( $class );
 
 			/**
-			 * Filter the class to instantiate when loding admin filters
+			 * Filter the class to instantiate when loading admin filters
 			 *
 			 * @since 1.5
 			 *
