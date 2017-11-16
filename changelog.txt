@@ -980,8 +980,8 @@ This version does include important changes in database. More than ever, make a 
 = 0.9.4 (2012-10-23) =
 
 * Add Afrikaans translation contributed by [Kobus Joubert](http://translate3d.com/)
-* Add Belorussian translation contributed by [Alexander Markevitch](http://fourfeathers.by/)
-* Add Afrikaans (af) and Belorussian (be_BY) to predefined languages list (automatic download and update of language files won't work)
+* Add Belorusian translation contributed by [Alexander Markevitch](http://fourfeathers.by/)
+* Add Afrikaans (af) and Belorusian (be_BY) to predefined languages list (automatic download and update of language files won't work)
 * Add the possibility to translate the date format and time format
 * Add compatibility with the 'icl_get_home_url' function from the WPML API
 * Bug correction: still some issues with string translations
