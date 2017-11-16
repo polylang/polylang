@@ -63,29 +63,6 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	}
 
 	/**
-	 * Returns the language based on language code in url
-	 * links_model interface
-	 *
-	 * @since 1.2
-	 * @since 2.0 add $url argument
-	 *
-	 * @param string $url optional, defaults to current url
-	 * @return string language slug
-	 */
-	public function get_language_from_url( $url = '' ) {
-		$host = ( empty( $url ) ? $_SERVER['HTTP_HOST'] : parse_url( $url ) );
-		$hosts = $this->get_hosts();
-		if ( in_array( $host, $hosts ) ) {
-			$pattern = '#(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')\.#';
-			$lang = preg_match( $pattern, trailingslashit( $host ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
-		} else {
-			$lang = '';
-		}
-
-		return $lang;
-	}
-
-	/**
 	 * Get hosts managed on the website
 	 *
 	 * @since 1.5
@@ -95,7 +72,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	public function get_hosts() {
 		$hosts = array();
 		foreach ( $this->model->get_languages_list() as $lang ) {
-			$hosts[] = parse_url( $this->home_url( $lang ), PHP_URL_HOST );
+			$hosts[ $lang->slug ] = parse_url( $this->home_url( $lang ), PHP_URL_HOST );
 		}
 		return $hosts;
 	}
