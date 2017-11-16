@@ -176,7 +176,7 @@ abstract class PLL_Translated_Object {
 		$term = $this->get_object_term( $id, $this->tax_translations );
 		$translations = empty( $term ) ? array() : unserialize( $term->description );
 
-		// make sure we return only translations ( thus we allow plugins to store other informations in the array )
+		// make sure we return only translations ( thus we allow plugins to store other information in the array )
 		if ( is_array( $translations ) ) {
 			$translations = array_intersect_key( $translations, array_flip( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) );
 		}
@@ -232,7 +232,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object|array|string $lang a PLL_Language object or a comma separated list of languag slug or an array of language slugs
+	 * @param object|array|string $lang a PLL_Language object or a comma separated list of language slug or an array of language slugs
 	 * @return string where clause
 	 */
 	public function where_clause( $lang ) {
