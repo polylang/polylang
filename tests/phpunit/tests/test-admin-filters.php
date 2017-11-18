@@ -30,4 +30,12 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'de' );
 		$this->assertEquals( 'angstroem', sanitize_user( 'ångström' ) );
 	}
+
+	function test_personal_options_update() {
+		$_POST['description_de'] = 'Biography in German';
+		remove_action( 'personal_options_update', 'send_confirmation_on_profile_email' );
+		do_action( 'personal_options_update', 1 );
+		$this->assertEquals( $_POST['description_de'], get_user_meta( 1, 'description_de', true ) );
+		unset( $_POST );
+	}
 }
