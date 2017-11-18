@@ -7,6 +7,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'de_DE_formal' );
+		self::create_language( 'ar' );
 	}
 
 	function setUp() {
@@ -37,5 +38,13 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		do_action( 'personal_options_update', 1 );
 		$this->assertEquals( $_POST['description_de'], get_user_meta( 1, 'description_de', true ) );
 		unset( $_POST );
+	}
+
+	function test_admin_body_class() {
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$this->assertEquals( ' pll-dir-ltr', apply_filters( 'admin_body_class', '' ) );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'ar' );
+		$this->assertEquals( ' pll-dir-rtl', apply_filters( 'admin_body_class', '' ) );
 	}
 }

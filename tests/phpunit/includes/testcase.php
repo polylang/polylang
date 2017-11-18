@@ -36,7 +36,7 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 		include PLL_SETTINGS_INC . '/languages.php';
 		$values = $languages[ $locale ];
 
-		$values[3] = (int) 'rtl' === $values[3];
+		$values[3] = (int) ( 'rtl' === $values[3] );
 		$values[] = 0; // Default term_group
 		$keys = array( 'slug', 'locale', 'name', 'rtl', 'flag', 'term_group' );
 
