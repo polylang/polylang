@@ -83,10 +83,10 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 	}
 
 	function test_custom_tax() {
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai' ) );
+		$term_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai' ) );
 		self::$polylang->model->term->set_language( $fr, 'fr' );
 
-		$en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
+		$term_en = $en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
 		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
@@ -94,6 +94,13 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		self::$polylang->model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test2' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+
+		$fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai3' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		$en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test3' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
 		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
@@ -121,7 +128,39 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 				),
 			),
 		);
+
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( $args ) );
+
+		// Nested tax query
+		$args = array(
+			'post_type' => 'trcpt',
+			'tax_query' => array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => 'trtax',
+					'field'    => 'term_id',
+					'terms'    => array( $en ),
+				),
+				array(
+					'relation' => 'AND',
+					array(
+						'taxonomy' => 'trtax',
+						'field'    => 'term_id',
+						'terms'    => array( $term_en ),
+					),
+					array(
+						'taxonomy' => 'trtax',
+						'field'    => 'slug',
+						'terms'    => array( 'test2' ),
+					),
+				),
+			),
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( $fr, $query->tax_query->queries[0]['terms'][0] );
+		$this->assertEquals( $term_fr, $query->tax_query->queries[1][0]['terms'][0] );
+		$this->assertEquals( 'essai2', $query->tax_query->queries[1][1]['terms'][0] );
 	}
 
 	function test_post() {
