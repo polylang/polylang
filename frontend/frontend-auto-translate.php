@@ -163,9 +163,14 @@ class PLL_Frontend_Auto_Translate {
 			}
 
 			if ( ! empty( $post_types ) ) {
-				// no function to get post by name except get_posts itself
-				$where = "{$wpdb->posts}.post_type IN ('" . implode( "', '", esc_sql( $post_types ) ) . "')";
-				$id = $wpdb->get_var( $wpdb->prepare( "SELECT ID from {$wpdb->posts} WHERE {$where} AND post_name=%s", $qv['name'] ) );
+				// No function to get post by name except get_posts itself
+				$id = $wpdb->get_var( sprintf( "
+					SELECT ID from {$wpdb->posts}
+					WHERE {$wpdb->posts}.post_type IN ( '%s' )
+					AND post_name='%s'",
+					implode( "', '", esc_sql( $post_types ) ),
+					esc_sql( $qv['name'] )
+				) );
 				$qv['name'] = ( $id && ( $tr_id = $this->get_post( $id ) ) && $tr = get_post( $tr_id ) ) ? $tr->post_name : $qv['name'];
 			}
 		}
