@@ -323,7 +323,7 @@ class PLL_Admin_Filters_Columns {
 
 		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // collect old translations
 		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // add current translations
-		$translations = array_unique( $translations ); // remove doublons
+		$translations = array_unique( $translations ); // remove duplicates
 		$translations = array_map( 'intval', $translations );
 
 		foreach ( $translations as $term_id ) {

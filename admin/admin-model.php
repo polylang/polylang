@@ -46,7 +46,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// Don't want shared terms so use a different slug
 		wp_insert_term( $args['name'], 'term_language', array( 'slug' => 'pll_' . $args['slug'] ) );
 
-		$this->clean_languages_cache(); // Udpate the languages list now !
+		$this->clean_languages_cache(); // Update the languages list now !
 
 		if ( ! isset( $this->options['default_lang'] ) ) {
 			// If this is the first language created, set it as default language
@@ -402,7 +402,7 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Returns unstranslated posts and terms ids ( used in settings )
+	 * Returns untranslated posts and terms ids ( used in settings )
 	 *
 	 * @since 0.9
 	 * @since 2.2.6 Add the $limit argument
@@ -467,7 +467,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @since 0.5
 	 *
 	 * @param string $old_slug the old language slug
-	 * @param string $new_slug optional, the new language slug, if not set it means the correspondant has been deleted
+	 * @param string $new_slug optional, the new language slug, if not set it means the correspondent has been deleted
 	 */
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;

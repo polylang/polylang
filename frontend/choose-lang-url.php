@@ -3,12 +3,12 @@
 /**
  * Choose the language when the language code is added to all urls
  * The language is set in plugins_loaded with priority 1 as done by WPML
- * Some actions have to be delayed to wait for $wp_rewrite availibility
+ * Some actions have to be delayed to wait for $wp_rewrite availability
  *
  * @since 1.2
  */
 class PLL_Choose_Lang_Url extends PLL_Choose_lang {
-	protected $index = 'index.php'; // need this before $wp_rewrite is created, also harcoded in wp-includes/rewrite.php
+	protected $index = 'index.php'; // need this before $wp_rewrite is created, also hardcoded in wp-includes/rewrite.php
 
 	/**
 	 * sets the language
@@ -37,7 +37,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 		$requested_host = str_replace( 'www.', '', $_SERVER['HTTP_HOST'] );
 		$requested_uri = rtrim( str_replace( $this->index, '', $_SERVER['REQUEST_URI'] ), '/' ); // some PHP setups turn requests for / into /index.php in REQUEST_URI
 
-		// home is resquested
+		// home is requested
 		if ( $requested_host == $host && $requested_uri == $home_path && empty( $_SERVER['QUERY_STRING'] ) ) {
 			$this->home_language();
 			add_action( 'setup_theme', array( $this, 'home_requested' ) );

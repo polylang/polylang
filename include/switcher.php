@@ -15,7 +15,7 @@ class PLL_Switcher {
 	 *
 	 * @param string $type optional either 'menu' or 'widget', defaults to 'widget'
 	 * @param string $key  optional either 'string' or 'default', defaults to 'string'
-	 * @return array list of switcher options srings or default values
+	 * @return array list of switcher options strings or default values
 	 */
 	static public function get_switcher_options( $type = 'widget', $key = 'string' ) {
 		$options = array(
@@ -182,7 +182,7 @@ class PLL_Switcher {
 		 *
 		 * @since 0.8
 		 *
-		 * @param string $html html returned/outputed by the template tag
+		 * @param string $html html returned/outputted by the template tag
 		 * @param array  $args arguments passed to the template tag
 		 */
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, $args ), $args );

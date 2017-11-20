@@ -5,7 +5,7 @@ if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
 }
 
 /**
- * obliged to rewrite the whole functionnality as there is no filter on sql queries and only a filter on final output
+ * obliged to rewrite the whole functionality as there is no filter on sql queries and only a filter on final output
  * code base last checked with WP 4.4.2
  * a request for making a filter on sql queries exists: http://core.trac.wordpress.org/ticket/15202
  * method used in 0.4.x: use of the get_calendar filter and overwrite the output of get_calendar function -> not very efficient (add 4 to 5 sql queries)

@@ -262,7 +262,7 @@ class PLL_Admin_Base extends PLL_Base {
 		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_language( $this->options['default_lang'] ) : $this->filter_lang;
 
 		/**
-		 * Filter the preferred language on amin side
+		 * Filter the preferred language on admin side
 		 * The preferred language is used for example to determine the language of a new post
 		 *
 		 * @since 1.2.3
@@ -286,7 +286,7 @@ class PLL_Admin_Base extends PLL_Base {
 			do_action( 'pll_language_defined', $curlang->slug, $curlang );
 		} else {
 			/** This action is documented in include/class-polylang.php */
-			do_action( 'pll_no_language_defined' ); // to load overriden textdomains
+			do_action( 'pll_no_language_defined' ); // to load overridden textdomains
 		}
 	}
 

@@ -91,7 +91,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Checks if a page is translted in all languages
+	 * Checks if a page is translated in all languages
 	 *
 	 * @since 2.2
 	 *

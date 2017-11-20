@@ -106,7 +106,7 @@ class Polylang {
 
 	/**
 	 * Defines constants
-	 * May be overriden by a plugin if set before plugins_loaded, 1
+	 * May be overridden by a plugin if set before plugins_loaded, 1
 	 *
 	 * @since 1.6
 	 */
@@ -181,7 +181,7 @@ class Polylang {
 		if ( ! $model->get_languages_list() ) {
 			/**
 			 * Fires when no language has been defined yet
-			 * Used to load overriden textdomains
+			 * Used to load overridden textdomains
 			 *
 			 * @since 1.2
 			 */

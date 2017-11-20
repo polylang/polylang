@@ -166,7 +166,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		// Ouptputs the section only if there are translations ( $urls always contains self link )
+		// Outputs the section only if there are translations ( $urls always contains self link )
 		if ( ! empty( $urls ) && count( $urls ) > 1 ) {
 
 			// Prepare the list of languages to remove the country code
@@ -360,7 +360,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$redirect_url = $requested_url;
 		} else {
 			// First get the canonical url evaluated by WP
-			// Workaround a WP bug wich removes the port for some urls and get it back at second call to redirect_canonical
+			// Workaround a WP bug which removes the port for some urls and get it back at second call to redirect_canonical
 			$_redirect_url = ( ! $_redirect_url = redirect_canonical( $requested_url, false ) ) ? $requested_url : $_redirect_url;
 			$redirect_url = ( ! $redirect_url = redirect_canonical( $_redirect_url, false ) ) ? $_redirect_url : $redirect_url;
 

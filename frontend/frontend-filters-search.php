@@ -100,7 +100,7 @@ class PLL_Frontend_Filters_Search {
 	public function wp_print_footer_scripts() {
 		// don't use directly e[0] just in case there is somewhere else an element named 's'
 		// check before if the hidden input has not already been introduced by get_search_form ( FIXME: is there a way to improve this ) ?
-		// thanks to AndyDeGroo for improving the code for compatility with old browsers
+		// thanks to AndyDeGroo for improving the code for compatibility with old browsers
 		// http://wordpress.org/support/topic/development-of-polylang-version-08?replies=6#post-2645559
 		$lang = esc_js( $this->curlang->slug );
 		$js = "//<![CDATA[
