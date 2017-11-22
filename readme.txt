@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.2.5
+Stable tag: 2.2.6
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,21 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.2.6 (2017-11-22) =
+
+* Pro: Fix query by post name and alternative language always returning the post in current language (when sharing slugs)
+* Pro: Fix query by taxonomy and alternative language returning empty results
+* Rework how translation files are loaded in ajax on front when the user is logged (in WP 4.7+)
+* Add filter 'get_objects_with_no_lang_limit'
+* Force loading the admin side when using WP CLI (Props chrisschrijver)
+* Fix check for terms with no language not scaling
+* Fix pll_count_posts not working with multiple post types
+* Fix inconsistent spacing between flag and language name in language switcher parent menu item (Props Amit Tal)
+* Fix spacing between flag and language name when displaying an RTL language
+* Fix get_terms not accepting comma separated values for 'lang' parameter (Props Pavlo Zhukov)
+* Fix possible wrong language detected in url when using subdomains (Props Pavlo Zhukov)
+* Fix double escaped query
 
 = 2.2.5 (2017-11-09) =
 
