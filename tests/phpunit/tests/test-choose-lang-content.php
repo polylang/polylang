@@ -72,6 +72,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		// insert Polylang specificity
 		unset( $GLOBALS['wp_actions']['pll_language_defined'] );
 		unset( self::$polylang->curlang );
+		if ( isset( self::$polylang->filters ) ) {
+			// This action, added after first request, creates conflicts for next requests
+			remove_action( 'posts_selection', array( self::$polylang->filters, 'add_terms_clauses' ) );
+		}
 		self::$polylang->init();
 
 		// restart copy paste of WP_UnitTestCase::go_to

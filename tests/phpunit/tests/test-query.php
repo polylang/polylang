@@ -512,14 +512,14 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( array( 'cat' => -$cat_en ) );
 		$this->assertEmpty( $query->posts );
 
-		if ( version_compare( $GLOBALS['wp_version'], '4.9-beta1', '<' ) ) {
-			// The test does not pass since WP 4.9. See https://core.trac.wordpress.org/ticket/42104
-			// This shouldn't do much harm as 'cat' value is auto translated and probably most users keep auto translation activated
-			$query = new WP_Query( array( 'cat' => $cat_fr ) );
-			$this->assertEquals( array( get_post( $fr ) ), $query->posts );
-		} else {
-			$this->markTestIncomplete();
-		}
+		// The test was broken by WP 4.9 and fixed in 2.2.7
+		// See also https://core.trac.wordpress.org/ticket/42104
+		$query = new WP_Query( array( 'cat' => $cat_fr ) );
+		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
+
+		// Due to the way the test above has been fixed in 2.2.7, it's good to test get_terms() just after
+		$this->assertEquals( array( get_term( $cat_en ) ), get_terms( array( 'taxonomy' => 'category', 'lang' => 'en' ) ) );
+		$this->assertEquals( array( get_term( $cat_fr ) ), get_terms( array( 'taxonomy' => 'category', 'lang' => 'fr' ) ) );
 	}
 
 	// Bug introduced in 2.2 and fixed in 2.2.4
