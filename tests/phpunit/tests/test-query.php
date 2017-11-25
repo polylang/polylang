@@ -518,8 +518,8 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 
 		// Due to the way the test above has been fixed in 2.2.7, it's good to test get_terms() just after
-		$this->assertEquals( array( get_term( $cat_en ) ), get_terms( array( 'taxonomy' => 'category', 'lang' => 'en' ) ) );
-		$this->assertEquals( array( get_term( $cat_fr ) ), get_terms( array( 'taxonomy' => 'category', 'lang' => 'fr' ) ) );
+		$this->assertEquals( array( get_term( $cat_en ) ), get_terms( 'category', array( 'lang' => 'en' ) ) );
+		$this->assertEquals( array( get_term( $cat_fr ) ), get_terms( 'category', array( 'lang' => 'fr' ) ) );
 	}
 
 	// Bug introduced in 2.2 and fixed in 2.2.4
