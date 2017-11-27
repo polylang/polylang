@@ -21,7 +21,7 @@ abstract class PLL_Sync_Metas {
 
 		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 ); // Very late in case a filter prevents the meta to be updated
 
-		add_filter( "add_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 3 );
+		add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 		add_filter( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ), 10, 4 );
 		add_action( "delete_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
 	}
@@ -105,11 +105,12 @@ abstract class PLL_Sync_Metas {
 	 *
 	 * @since 2.3
 	 *
+	 * @param int    $mid        Meta id.
 	 * @param int    $id         Object ID.
 	 * @param string $meta_key   Meta key.
 	 * @param mixed  $meta_value Meta value. Must be serializable if non-scalar.
 	 */
-	public function add_meta( $id, $meta_key, $meta_value ) {
+	public function add_meta( $mid, $id, $meta_key, $meta_value ) {
 		static $avoid_recursion = false;
 
 		if ( ! $avoid_recursion ) {
@@ -214,7 +215,7 @@ abstract class PLL_Sync_Metas {
 	 */
 	public function copy( $from, $to, $lang ) {
 		// We don't need to sync back the new metas
-		remove_filter( "add_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+		remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 
 		$to_copy = $this->get_metas_to_copy( $from, $to, $lang );
 		$metas = get_metadata( $this->meta_type, $from );
@@ -228,6 +229,6 @@ abstract class PLL_Sync_Metas {
 			}
 		}
 
-		add_filter( "add_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+		add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 	}
 }
