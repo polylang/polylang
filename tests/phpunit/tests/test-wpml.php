@@ -201,7 +201,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		$link = apply_filters( 'wpml_element_link', $en, '', '', '', false );
-		$this->assertEquals( '', ob_get_clean() ); // echo prameter is false
+		$this->assertEquals( '', ob_get_clean() ); // echo parameter is false
 
 		ob_start();
 		apply_filters( 'wpml_element_link', $tag, 'tag' );
@@ -256,11 +256,13 @@ class WPML_Test extends PLL_UnitTestCase {
 			register_nav_menu( 'primary', 'Primary menu' );
 		}
 
-		// create 2 menus
+		// Create 2 menus
 		$menu_en = wp_create_nav_menu( 'menu_en' );
 		$menu_fr = wp_create_nav_menu( 'menu_fr' );
 
-		// assign our menus to locations
+		$this->assertEmpty( apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) ); // Just to test the PHP notice fixed in 2.2.7
+
+		// Assign our menus to locations
 		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
 		$nav_menu->create_nav_menu_locations();
 
@@ -271,7 +273,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		);
 
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
-		$nav_menu->update_nav_menu_locations( $nav_menu_locations ); // our filter update_nav_menu_locations does not run due to security checks
+		$nav_menu->update_nav_menu_locations( $nav_menu_locations ); // Our filter update_nav_menu_locations does not run due to security checks
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 		$this->assertEquals( $menu_en, apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) );

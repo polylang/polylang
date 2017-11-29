@@ -162,21 +162,23 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 	 *
 	 * @since 0.9.5
 	 *
-	 * @param int    $id                         object id
-	 * @param string $type                       optional, post type or taxonomy name of the object, defaults to 'post'
-	 * @param bool   $return_original_if_missing optional, true if Polylang should return the original id if the translation is missing, defaults to false
-	 * @param string $lang                       optional, language code, defaults to current language
-	 * @return int|null the object id of the translation, null if the translation is missing and $return_original_if_missing set to false
+	 * @param int    $id                         Object id
+	 * @param string $type                       Optional, post type or taxonomy name of the object, defaults to 'post'
+	 * @param bool   $return_original_if_missing Optional, true if Polylang should return the original id if the translation is missing, defaults to false
+	 * @param string $lang                       Optional, language code, defaults to current language
+	 * @return int|null The object id of the translation, null if the translation is missing and $return_original_if_missing set to false
 	 */
 	function icl_object_id( $id, $type = 'post', $return_original_if_missing = false, $lang = false ) {
 		$lang = $lang ? $lang : pll_current_language();
 
 		if ( 'nav_menu' === $type ) {
 			$theme = get_option( 'stylesheet' );
-			foreach ( PLL()->options['nav_menus'][ $theme ] as $loc => $menu ) {
-				if ( array_search( $id, $menu ) && ! empty( $menu[ $lang ] ) ) {
-					$tr_id = $menu[ $lang ];
-					break;
+			if ( isset( PLL()->options['nav_menus'][ $theme ] ) ) {
+				foreach ( PLL()->options['nav_menus'][ $theme ] as $loc => $menu ) {
+					if ( array_search( $id, $menu ) && ! empty( $menu[ $lang ] ) ) {
+						$tr_id = $menu[ $lang ];
+						break;
+					}
 				}
 			}
 		} elseif ( $pll_type = ( 'post' === $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' === $type || pll_is_translated_taxonomy( $type ) ? 'term' : false ) ) {
