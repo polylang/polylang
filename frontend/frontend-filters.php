@@ -156,6 +156,17 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			return $clauses;
 		}
 
+		// Ugly hack to fix the issue introduced by WP 4.9. See also https://core.trac.wordpress.org/ticket/42104
+		if ( version_compare( $GLOBALS['wp_version'], '4.9', '>=' ) ) {
+			$traces = version_compare( PHP_VERSION, '5.2.5', '>=' ) ? debug_backtrace( false ) : debug_backtrace();
+
+			// PHP 7 does not include call_user_func
+			$n = version_compare( PHP_VERSION, '7', '>=' ) ? 5 : 6;
+			if ( isset( $traces[ $n ]['function'] ) && 'transform_query' === $traces[ $n ]['function'] ) {
+				return $clauses;
+			}
+		}
+
 		// Adds our clauses to filter by language
 		return $this->model->terms_clauses( $clauses, isset( $args['lang'] ) ? $args['lang'] : $this->curlang );
 	}
