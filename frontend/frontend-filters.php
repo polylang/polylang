@@ -28,8 +28,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		// Filters categories and post tags by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
-		add_action( 'parse_tax_query', array( $this, 'remove_terms_clauses' ) );
-		add_action( 'posts_selection', array( $this, 'add_terms_clauses' ) );
 
 		// Rewrites archives, next and previous post links to filter them by language
 		add_filter( 'getarchives_join', array( $this, 'getarchives_join' ), 10, 2 );
@@ -160,27 +158,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		// Adds our clauses to filter by language
 		return $this->model->terms_clauses( $clauses, isset( $args['lang'] ) ? $args['lang'] : $this->curlang );
-	}
-
-	/**
-	 * Removes 'term_clauses' filter inside WP_Query
-	 * as it conflicts with WP_Tax_Query::transform_query() since WP 4.9
-	 * See also https://core.trac.wordpress.org/ticket/42104
-	 *
-	 * @since 2.2.7
-	 */
-	public function remove_terms_clauses() {
-		remove_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
-	}
-
-	/**
-	 * Add the 'term_clauses' filter back after the tax query has been parsed
-	 * needed since WP 4.9
-	 *
-	 * @since 2.2.7
-	 */
-	public function add_terms_clauses() {
-		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 	}
 
 	/**
