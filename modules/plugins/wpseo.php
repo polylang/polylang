@@ -7,7 +7,6 @@
  */
 class PLL_WPSEO {
 	/**
-	 * Yoast SEO
 	 * Translate options and add specific filters and actions
 	 *
 	 * @since 1.6.4
@@ -27,13 +26,8 @@ class PLL_WPSEO {
 		// Reloads options once the language has been defined to enable translations
 		// Useful only when the language is set from content
 		if ( did_action( 'wp_loaded' ) ) {
-			if ( version_compare( WPSEO_VERSION, '1.7.2', '<' ) ) {
-				global $wpseo_front;
-			} else {
-				$wpseo_front = WPSEO_Frontend::get_instance();
-			}
-
-			$options = version_compare( WPSEO_VERSION, '1.5', '<' ) ? get_wpseo_options_arr() : WPSEO_Options::get_option_names();
+			$wpseo_front = WPSEO_Frontend::get_instance();
+			$options = WPSEO_Options::get_option_names();
 			foreach ( $options as $opt ) {
 				$wpseo_front->options = array_merge( $wpseo_front->options, (array) get_option( $opt ) );
 			}
@@ -66,7 +60,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Helper function to register strings for custom post types and custom taxonomies titles and meta descriptions
 	 *
 	 * @since 2.1.6
@@ -85,7 +78,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Registers strings for custom post types and custom taxonomies titles and meta descriptions
 	 *
 	 * @since 2.0
@@ -110,7 +102,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Helper function to translate custom post types and custom taxonomies titles and meta descriptions
 	 *
 	 * @since 2.1.6
@@ -129,7 +120,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Translates strings for custom post types and custom taxonomies titles and meta descriptions
 	 *
 	 * @since 2.0
@@ -159,7 +149,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Fixes the home url as well as the stylesheet url
 	 * Only when using multiple domains or subdomains
 	 *
@@ -180,7 +169,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Get active languages for the sitemaps
 	 *
 	 * @since 2.0
@@ -196,7 +184,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Modifies the sql request for posts sitemaps
 	 * Only when using multiple domains or subdomains or if some languages are not active
 	 *
@@ -211,7 +198,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Modifies the sql request for posts sitemaps
 	 * Only when using multiple domains or subdomains or if some languages are not active
 	 *
@@ -235,7 +221,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Removes the language filter (and remove inactive languages) for the taxonomy sitemaps
 	 * Only when the language is set from the content or directory name
 	 *
@@ -252,7 +237,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Adds the home urls for all (active) languages to the sitemap
 	 *
 	 * @since 1.9
@@ -279,7 +263,7 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
+	 * Filters home url
 	 *
 	 * @since 1.1.2
 	 *
@@ -291,7 +275,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Adds opengraph support for translations
 	 *
 	 * @since 1.6
@@ -310,7 +293,6 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Yoast SEO
 	 * Fixes the canonical front page url as unlike WP, WPSEO does not add a trailing slash to the canonical front page url
 	 *
 	 * @since 1.7.10
