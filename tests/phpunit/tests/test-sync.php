@@ -241,18 +241,18 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$key = add_post_meta( $from, 'key', 'value' );
 		$metas[ $key ] = array( 'key' => 'key', 'value' => 'value' );
-		$key = add_post_meta( $from, '_thumbnail_id', 1234 );
 
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 		$_REQUEST['sticky'] = 'sticky'; // sticky posts not managed by wp_insert_post
+		add_post_meta( $from, '_thumbnail_id', $thumbnail_id );
 
 		edit_post( array(
 			'post_ID'     => $from,
 			'post_format' => 'aside',
 			'meta'        => $metas,
-			'_thumbnail_id' => $thumbnail_id,
+			'_thumbnail_id' => $thumbnail_id, // Since WP 4.6
 		) ); // fires the sync
 		stick_post( $from );
 
