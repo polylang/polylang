@@ -157,7 +157,7 @@ class PLL_Model {
 	 * @return array
 	 */
 	public function get_terms_args( $args ) {
-		if ( isset( $args['taxonomy'] ) && ! array_diff( $args['taxonomy'], array( 'language', 'term_language', 'post_translations', 'term_translations' ) ) ) {
+		if ( isset( $args['taxonomy'] ) && ! array_diff( (array) $args['taxonomy'], array( 'language', 'term_language', 'post_translations', 'term_translations' ) ) ) {
 			$args['update_term_meta_cache'] = false;
 		}
 		return $args;
