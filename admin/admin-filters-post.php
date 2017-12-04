@@ -481,7 +481,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 				// Convert to term ids if we got tag names
 				$strings = array_filter( $terms, 'is_string' );
 				if ( ! empty( $strings ) ) {
-					$_terms = get_terms( array( 'name' => $strings, 'object_ids' => $object_id, 'taxonomy' => $taxonomy, 'fields' => 'ids' ) );
+					$_terms = get_terms( $taxonomy, array( 'name' => $strings, 'object_ids' => $object_id, 'fields' => 'ids' ) );
 					$terms = array_merge( array_diff( $terms, $strings ), $_terms );
 				}
 
