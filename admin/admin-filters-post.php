@@ -496,28 +496,30 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 					$terms = get_the_terms( $object_id, $taxonomy );
 					wp_remove_object_terms( $object_id, $wrong_term_ids, $taxonomy );
 
-					$newterms = array();
+					if ( is_array( $terms ) ) {
+						$newterms = array();
 
-					foreach ( $terms as $term ) {
-						if ( in_array( $term->term_id, $wrong_term_ids ) ) {
-							// Check if the term is in the correct language or if a translation exist ( mainly for default category )
-							if ( $newterm = $this->model->term->get( $term->term_id, $lang ) ) {
-								$newterms[] = (int) $newterm;
-							}
+						foreach ( $terms as $term ) {
+							if ( in_array( $term->term_id, $wrong_term_ids ) ) {
+								// Check if the term is in the correct language or if a translation exist ( mainly for default category )
+								if ( $newterm = $this->model->term->get( $term->term_id, $lang ) ) {
+									$newterms[] = (int) $newterm;
+								}
 
-							// Or choose the correct language for tags ( initially defined by name )
-							elseif ( $newterm = $this->model->term_exists( $term->name, $taxonomy, $term->parent, $lang ) ) {
-								$newterms[] = (int) $newterm; // Cast is important otherwise we get 'numeric' tags
-							}
+								// Or choose the correct language for tags ( initially defined by name )
+								elseif ( $newterm = $this->model->term_exists( $term->name, $taxonomy, $term->parent, $lang ) ) {
+									$newterms[] = (int) $newterm; // Cast is important otherwise we get 'numeric' tags
+								}
 
-							// Or create the term in the correct language
-							elseif ( ! is_wp_error( $term_info = wp_insert_term( $term->name, $taxonomy ) ) ) {
-								$newterms[] = (int) $term_info['term_id'];
+								// Or create the term in the correct language
+								elseif ( ! is_wp_error( $term_info = wp_insert_term( $term->name, $taxonomy ) ) ) {
+									$newterms[] = (int) $term_info['term_id'];
+								}
 							}
 						}
-					}
 
-					wp_set_object_terms( $object_id, array_unique( $newterms ), $taxonomy, true ); // Append
+						wp_set_object_terms( $object_id, array_unique( $newterms ), $taxonomy, true ); // Append
+					}
 				}
 			}
 		}
