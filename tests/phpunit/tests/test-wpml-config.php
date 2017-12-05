@@ -71,19 +71,20 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		$from = $this->factory->post->create();
+		$en = $from = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'quantity', 1 ); // copy
 		add_post_meta( $from, 'custom-title', 'title' ); // translate
 		add_post_meta( $from, 'bg-color', '#23282d' ); // copy-once
 		add_post_meta( $from, 'date-added', 2007 ); // ignore
 
-		$to = $this->factory->post->create();
+		$fr = $to = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $to, 'fr' );
+		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// copy
 		$sync = new PLL_Admin_Sync( self::$polylang );
-		$sync->copy_post_metas( $from, $to, 'fr' ); // copy
+		$sync->post_metas->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( 1, get_post_meta( $to, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $to, 'custom-title', true ) );
@@ -95,7 +96,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		update_post_meta( $to, 'custom-title', 'titre' );
 		update_post_meta( $to, 'bg-color', '#ffeedd' );
 		update_post_meta( $to, 'date-added', 2008 );
-		$sync->copy_post_metas( $to, $from, 'en', true );
 
 		$this->assertEquals( 2, get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
@@ -107,7 +107,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		delete_post_meta( $to, 'custom-title' );
 		delete_post_meta( $to, 'bg-color' );
 		delete_post_meta( $to, 'date-added' );
-		$sync->copy_post_metas( $to, $from, 'en', true );
 
 		$this->assertEmpty( get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
