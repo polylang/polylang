@@ -16,65 +16,50 @@ class PLL_WPSEO {
 			return;
 		}
 
-		if ( ! PLL() instanceof PLL_Frontend ) {
-			add_action( 'admin_init', array( $this, 'wpseo_register_strings' ) );
-			return;
-		}
+		if ( PLL() instanceof PLL_Frontend ) {
+			add_filter( 'option_wpseo_titles', array( $this, 'wpseo_translate_titles' ) );
 
-		add_filter( 'option_wpseo_titles', array( $this, 'wpseo_translate_titles' ) );
-
-		// Reloads options once the language has been defined to enable translations
-		// Useful only when the language is set from content
-		if ( version_compare( WPSEO_VERSION, '7.0', '<' ) && did_action( 'wp_loaded' ) ) {
-			$wpseo_front = WPSEO_Frontend::get_instance();
-			$options = WPSEO_Options::get_option_names();
-			foreach ( $options as $opt ) {
-				$wpseo_front->options = array_merge( $wpseo_front->options, (array) get_option( $opt ) );
+			// Reloads options once the language has been defined to enable translations
+			// Useful only when the language is set from content
+			if ( version_compare( WPSEO_VERSION, '7.0', '<' ) && did_action( 'wp_loaded' ) ) {
+				$wpseo_front = WPSEO_Frontend::get_instance();
+				$options = WPSEO_Options::get_option_names();
+				foreach ( $options as $opt ) {
+					$wpseo_front->options = array_merge( $wpseo_front->options, (array) get_option( $opt ) );
+				}
 			}
-		}
 
-		// Filters sitemap queries to remove inactive language or to get
-		// one sitemap per language when using multiple domains or subdomains
-		// because WPSEO does not accept several domains or subdomains in one sitemap
-		add_filter( 'wpseo_posts_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
-		add_filter( 'wpseo_posts_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
-		add_filter( 'wpseo_typecount_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
-		add_filter( 'wpseo_typecount_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
+			// Filters sitemap queries to remove inactive language or to get
+			// one sitemap per language when using multiple domains or subdomains
+			// because WPSEO does not accept several domains or subdomains in one sitemap
+			add_filter( 'wpseo_posts_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
+			add_filter( 'wpseo_posts_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
+			add_filter( 'wpseo_typecount_join', array( $this, 'wpseo_posts_join' ), 10, 2 );
+			add_filter( 'wpseo_typecount_where', array( $this, 'wpseo_posts_where' ), 10, 2 );
 
-		if ( PLL()->options['force_lang'] > 1 ) {
-			add_filter( 'wpseo_enable_xml_sitemap_transient_caching', '__return_false' ); // Disable cache! otherwise WPSEO keeps only one domain (thanks to Junaid Bhura)
-			add_filter( 'home_url', array( $this, 'wpseo_home_url' ), 10, 2 ); // Fix home_url
+			if ( PLL()->options['force_lang'] > 1 ) {
+				add_filter( 'wpseo_enable_xml_sitemap_transient_caching', '__return_false' ); // Disable cache! otherwise WPSEO keeps only one domain (thanks to Junaid Bhura)
+				add_filter( 'home_url', array( $this, 'wpseo_home_url' ), 10, 2 ); // Fix home_url
+			} else {
+				// Get all terms in all languages when the language is set from the content or directory name
+				add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
+
+				// Add the homepages for all languages to the sitemap when the front page displays posts
+				if ( ! get_option( 'page_on_front' ) ) {
+					add_filter( 'wpseo_sitemap_post_content', array( $this, 'add_language_home_urls' ) );
+				}
+			}
+
+			add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
+			add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
+			add_filter( 'wpseo_canonical', array( $this, 'wpseo_canonical' ) );
 		} else {
-			// Get all terms in all languages when the language is set from the content or directory name
-			add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
+			add_action( 'admin_init', array( $this, 'wpseo_register_strings' ) );
 
-			// Add the homepages for all languages to the sitemap when the front page displays posts
-			if ( ! get_option( 'page_on_front' ) ) {
-				add_filter( 'wpseo_sitemap_post_content', array( $this, 'add_language_home_urls' ) );
-			}
+			// Primary category
+			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ) );
+			add_filter( 'pll_translate_post_meta', array( $this, 'translate_post_meta' ), 10, 3 );
 		}
-
-		add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
-		add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
-		add_filter( 'wpseo_canonical', array( $this, 'wpseo_canonical' ) );
-	}
-
-	/**
-	 * Helper function to register strings for custom post types and custom taxonomies titles and meta descriptions
-	 *
-	 * @since 2.1.6
-	 *
-	 * @param array $options
-	 * @param array $titles
-	 * @return array
-	 */
-	protected function _wpseo_register_strings( $options, $titles ) {
-		foreach ( $titles as $title ) {
-			if ( ! empty( $options[ $title ] ) ) {
-				pll_register_string( $title, $options[ $title ], 'wordpress-seo' );
-			}
-		}
-		return $options;
 	}
 
 	/**
@@ -302,5 +287,53 @@ class PLL_WPSEO {
 	 */
 	public function wpseo_canonical( $url ) {
 		return is_front_page( $url ) && get_option( 'permalink_structure' ) ? trailingslashit( $url ) : $url;
+	}
+
+	/**
+	 * Helper function to register strings for custom post types and custom taxonomies titles and meta descriptions
+	 *
+	 * @since 2.1.6
+	 *
+	 * @param array $options
+	 * @param array $titles
+	 * @return array
+	 */
+	protected function _wpseo_register_strings( $options, $titles ) {
+		foreach ( $titles as $title ) {
+			if ( ! empty( $options[ $title ] ) ) {
+				pll_register_string( $title, $options[ $title ], 'wordpress-seo' );
+			}
+		}
+		return $options;
+	}
+
+	/**
+	 * Synchronize the primary category
+	 *
+	 * @since 2.3.3
+	 *
+	 * @param array $keys List of custom fields names
+	 * @return array
+	 */
+	public function copy_post_metas( $keys ) {
+		$keys[] = '_yoast_wpseo_primary_category';
+		return $keys;
+	}
+
+	/**
+	 * Translate the primary category during the synchronization process
+	 *
+	 * @since 2.3.3
+	 *
+	 * @param int    $value Meta value
+	 * @param string $key   Meta key
+	 * @param string $lang  Language of target
+	 * @return int
+	 */
+	public function translate_post_meta( $value, $key, $lang ) {
+		if ( '_yoast_wpseo_primary_category' === $key ) {
+			$value = pll_get_term( $value, $lang );
+		}
+		return $value;
 	}
 }
