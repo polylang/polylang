@@ -311,17 +311,20 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @param object $post Post data.
 	 */
 	public function auto_add_pages_to_menu( $new_status, $old_status, $post ) {
-		if ( 'publish' != $new_status || 'publish' == $old_status || 'page' != $post->post_type || ! empty( $post->post_parent ) || ! ( $lang = $this->model->post->get_language( $post->ID ) ) ) {
+		if ( 'publish' != $new_status || 'publish' == $old_status || 'page' != $post->post_type || ! empty( $post->post_parent ) ) {
 			return;
 		}
 
 		if ( ! empty( $this->options['nav_menus'][ $this->theme ] ) ) {
 			$this->auto_add_menus = array();
 
+			$lang = $this->model->post->get_language( $post->ID );
+			$lang = empty( $lang ) ? $this->options['default_lang'] : $lang->slug; // If the page has no language yet, the default language will be assigned
+
 			// Get all the menus in the page language
 			foreach ( $this->options['nav_menus'][ $this->theme ] as $loc ) {
-				if ( ! empty( $loc[ $lang->slug ] ) ) {
-					$this->auto_add_menus[] = $loc[ $lang->slug ];
+				if ( ! empty( $loc[ $lang ] ) ) {
+					$this->auto_add_menus[] = $loc[ $lang ];
 				}
 			}
 
