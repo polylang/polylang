@@ -57,6 +57,11 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 			}
 		}
 
+		// Random header image
+		if ( $this->options['media_support'] ) {
+			$keys[] = '_wp_attachment_is_custom_header';
+		}
+
 		/** This filter is documented in modules/sync/sync-metas.php */
 		return array_unique( apply_filters( 'pll_copy_post_metas', $keys, $sync, $from, $to, $lang ) );
 	}
