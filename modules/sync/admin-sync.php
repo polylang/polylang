@@ -228,4 +228,35 @@ class PLL_Admin_Sync {
 
 		return $value;
 	}
+
+	/**
+	 * Some backward compatibility with Polylang < 2.3
+	 * allows to call PLL()->sync->copy_post_metas() and PLL()->sync->copy_taxonomies()
+	 * used for example in Polylang for WooCommerce
+	 * the compatibility is however only partial as the 4th argument $sync is lost
+	 *
+	 * @since 2.3
+	 *
+	 * @param string $func Function name
+	 * @param array  $args Function arguments
+	 */
+	public function __call( $func, $args ) {
+		$obj = substr( $func, 5 );
+
+		if ( is_object( $this->$obj ) && method_exists( $this->$obj, 'copy' ) ) {
+			if ( WP_DEBUG ) {
+				$debug = debug_backtrace();
+				$i = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func
+
+				trigger_error( sprintf(
+					'%1$s was called incorrectly in %3$s on line %4$s: the call to PLL()->sync->%1$s() has been deprecated in Polylang 2.3, use PLL()->sync->%2$s->copy() instead.' . "\nError handler",
+					$func, $obj, $debug[ $i ]['file'], $debug[ $i ]['line']
+				) );
+			}
+			return call_user_func_array( array( $this->$obj, 'copy' ), $args );
+		}
+
+		$debug = debug_backtrace();
+		trigger_error( sprintf( 'Call to undefined function PLL()->sync->%1$s() in %2$s on line %3$s' . "\nError handler", $func, $debug[0]['file'], $debug[0]['line'] ), E_USER_ERROR );
+	}
 }
