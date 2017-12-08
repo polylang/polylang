@@ -146,6 +146,9 @@ abstract class PLL_Sync_Metas {
 	public function update_meta( $mid, $id, $meta_key, $meta_value ) {
 		static $avoid_recursion = false;
 
+		// We don't want to sync back the new metas
+		remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+
 		if ( ! $avoid_recursion ) {
 			$avoid_recursion = true;
 			$hash = md5( "$id|$meta_key|" . maybe_serialize( $meta_value ) );
@@ -169,6 +172,8 @@ abstract class PLL_Sync_Metas {
 			unset( $this->prev_value[ $hash ] );
 			$avoid_recursion = false;
 		}
+
+		add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 	}
 
 	/**
@@ -231,7 +236,7 @@ abstract class PLL_Sync_Metas {
 	 * @param string $lang Language code
 	 */
 	public function copy( $from, $to, $lang ) {
-		// We don't need to sync back the new metas
+		// We don't want to sync back the new metas
 		remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 
 		$to_copy = $this->get_metas_to_copy( $from, $to, $lang );

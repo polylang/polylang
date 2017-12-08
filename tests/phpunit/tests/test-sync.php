@@ -257,7 +257,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$polylang->model->post->get_translations( $from ) );
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
 		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
-		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
+		$this->assertEquals( array( 'value' ), get_post_meta( $to, 'key' ) );
+		$this->assertEquals( array( 'value' ), get_post_meta( $from, 'key' ) ); // Test reverse sync
 		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $to ) );
 		$this->assertEquals( 'aside', get_post_format( $to ) );
 		$this->assertTrue( is_sticky( $to ) );
