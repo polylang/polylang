@@ -7,7 +7,7 @@
  */
 abstract class PLL_Sync_Metas {
 	public $model;
-	protected $meta_type;
+	protected $meta_type, $prev_value, $to_copy;
 
 	/**
 	 * Constructor
@@ -19,11 +19,13 @@ abstract class PLL_Sync_Metas {
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
 
-		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 ); // Very late in case a filter prevents the meta to be updated
-
 		add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+
+		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 ); // Very late in case a filter prevents the meta to be updated
 		add_filter( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ), 10, 4 );
-		add_action( "delete_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
+
+		add_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ), 10, 2 );
+		add_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
 	}
 
 	/**
@@ -81,26 +83,6 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
-	 * Stores the previous value when
-	 *
-	 * @since 2.3
-	 *
-	 * @param null|bool $r          Not used
-	 * @param int       $id         Object ID.
-	 * @param string    $meta_key   Meta key.
-	 * @param mixed     $meta_value Meta value. Must be serializable if non-scalar.
-	 * @param mixed     $prev_value If specified, only update existing metadata entries with the specified value.
-	 * @return null|bool Unchanged
-	 */
-	public function update_metadata( $r, $id, $meta_key, $meta_value, $prev_value ) {
-		if ( null === $r ) {
-			$hash = md5( "$id|$meta_key|" . maybe_serialize( $meta_value ) );
-			$this->prev_value[ $hash ] = $prev_value;
-		}
-		return $r;
-	}
-
-	/**
 	 * Synchronize added metas across translations
 	 *
 	 * @since 2.3
@@ -129,6 +111,26 @@ abstract class PLL_Sync_Metas {
 
 			$avoid_recursion = false;
 		}
+	}
+
+	/**
+	 * Stores the previous value when updating metas
+	 *
+	 * @since 2.3
+	 *
+	 * @param null|bool $r          Not used
+	 * @param int       $id         Object ID.
+	 * @param string    $meta_key   Meta key.
+	 * @param mixed     $meta_value Meta value. Must be serializable if non-scalar.
+	 * @param mixed     $prev_value If specified, only update existing metadata entries with the specified value.
+	 * @return null|bool Unchanged
+	 */
+	public function update_metadata( $r, $id, $meta_key, $meta_value, $prev_value ) {
+		if ( null === $r ) {
+			$hash = md5( "$id|$meta_key|" . maybe_serialize( $meta_value ) );
+			$this->prev_value[ $hash ] = $prev_value;
+		}
+		return $r;
 	}
 
 	/**
@@ -170,6 +172,22 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
+	 * Store metas to synchronize before deleting them
+	 *
+	 * @since 2.3
+	 *
+	 * @param array $mids  Not used
+	 * @param int   $id    Object ID.
+	 */
+	public function store_metas_to_sync( $mids, $id ) {
+		$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
+
+		foreach ( $tr_ids as $lang => $tr_id ) {
+			$this->to_copy[ $id ][ $tr_id ] = $this->get_metas_to_copy( $id, $tr_id, $lang, true );
+		}
+	}
+
+	/**
 	 * Synchronize deleted meta across translations
 	 *
 	 * @since 2.3
@@ -189,8 +207,7 @@ abstract class PLL_Sync_Metas {
 
 			foreach ( $tr_ids as $lang => $tr_id ) {
 				if ( $tr_id !== $id ) {
-					$to_copy = $this->get_metas_to_copy( $id, $tr_id, $lang, true );
-					if ( in_array( $key, $to_copy ) ) {
+					if ( in_array( $key, $this->to_copy[ $id ][ $tr_id ] ) ) {
 						if ( '' !== $value && null !== $value && false !== $value ) { // Same test as WP
 							$value = $this->maybe_translate_value( $value, $key, $id, $tr_id, $lang );
 						}
@@ -204,7 +221,7 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
-	 * Copy metas when creating a new translations
+	 * Copy metas when creating a new translation
 	 * Don't use to synchronize
 	 *
 	 * @since 2.3

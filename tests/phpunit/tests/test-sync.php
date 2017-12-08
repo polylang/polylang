@@ -86,18 +86,15 @@ class Sync_Test extends PLL_UnitTestCase {
 		// copy
 		$sync = new PLL_Admin_Sync( self::$polylang );
 		$sync->post_metas->copy( $from, $to, 'fr' ); // copy
-
 		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
 
 		// sync
 		self::$polylang->options['sync'] = array( 'post_meta' );
-		update_post_meta( $to, 'key', 'new_value' );
-
+		$this->assertTrue( update_post_meta( $to, 'key', 'new_value' ) );
 		$this->assertEquals( 'new_value', get_post_meta( $from, 'key', true ) );
 
 		// remove custom field and sync
-		delete_post_meta( $to, 'key' );
-
+		$this->assertTrue( delete_post_meta( $to, 'key' ) );
 		$this->assertEmpty( get_post_meta( $from, 'key', true ) );
 	}
 
@@ -122,11 +119,11 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
 
 		// Delete
-		delete_post_meta( $from, 'key', 'value3' );
+		$this->assertTrue( delete_post_meta( $from, 'key', 'value3' ) );
 		$this->assertEqualSets( array( 'value1', 'value2' ), get_post_meta( $to, 'key' ) );
 
 		// Update
-		update_post_meta( $from, 'key', 'value4', 'value2' );
+		$this->assertTrue( update_post_meta( $from, 'key', 'value4', 'value2' ) );
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key' ) );
 
 		// Add
@@ -134,11 +131,11 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'value1', 'value4', 'value5' ), get_post_meta( $to, 'key' ) );
 
 		// update_metadata_by_mid
-		update_meta( $mid, 'key', 'value6' );
+		$this->assertTrue( update_meta( $mid, 'key', 'value6' ) );
 		$this->assertEqualSets( array( 'value1', 'value4', 'value6' ), get_post_meta( $to, 'key' ) );
 
 		// delete_metadata_by_mid
-		delete_meta( $mid );
+		$this->assertTrue( delete_meta( $mid ) );
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key' ) );
 	}
 
@@ -482,17 +479,14 @@ class Sync_Test extends PLL_UnitTestCase {
 		// copy
 		$sync = new PLL_Admin_Sync( self::$polylang );
 		$sync->term_metas->copy( $from, $to, 'fr' ); // copy
-
 		$this->assertEquals( 'value', get_term_meta( $to, 'key', true ) );
 
 		// sync
-		update_term_meta( $to, 'key', 'new_value' );
-
+		$this->assertTrue( update_term_meta( $to, 'key', 'new_value' ) );
 		$this->assertEquals( 'new_value', get_term_meta( $from, 'key', true ) );
 
 		// remove custom field and sync
-		delete_term_meta( $to, 'key' );
-
+		$this->assertTrue( delete_term_meta( $to, 'key' ) );
 		$this->assertEmpty( get_term_meta( $from, 'key', true ) );
 	}
 
@@ -516,11 +510,11 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_term_meta( $to, 'key' ) );
 
 		// Delete
-		delete_term_meta( $from, 'key', 'value3' );
+		$this->assertTrue( delete_term_meta( $from, 'key', 'value3' ) );
 		$this->assertEqualSets( array( 'value1', 'value2' ), get_term_meta( $to, 'key' ) );
 
 		// Update
-		update_term_meta( $from, 'key', 'value4', 'value2' );
+		$this->assertTrue( update_term_meta( $from, 'key', 'value4', 'value2' ) );
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_term_meta( $to, 'key' ) );
 	}
 }
