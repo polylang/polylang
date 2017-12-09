@@ -26,6 +26,8 @@ abstract class PLL_Sync_Metas {
 
 		add_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ), 10, 2 );
 		add_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
+
+		add_action( "pll_save_{$this->meta_type}", array( $this, 'save_object' ), 10, 3 );
 	}
 
 	/**
@@ -249,5 +251,43 @@ abstract class PLL_Sync_Metas {
 		}
 
 		add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+	}
+
+	/**
+	 * If synchronized custom fields were previously not synchronized, it is expected
+	 * that saving a post (or term) will synchronize them. This works out of the box
+	 * to add metas, not to delete them. The goal of this function is to remove extra
+	 * custom fields.
+	 *
+	 * @since 2.3
+	 *
+	 * @param int    $object_id    Id of the object being asaved
+	 * @param object $obj          Not used
+	 * @param array  $translations The list of translations object ids
+	 */
+	public function save_object( $object_id, $obj, $translations ) {
+		$metas = get_metadata( $this->meta_type, $object_id );
+		$language = array_search( $object_id, $translations );
+
+		foreach ( $translations as $tr_lang => $tr_id ) {
+			if ( $tr_id !== $object_id ) {
+				$to_copy = array_flip( $this->get_metas_to_copy( $object_id, $tr_id, $tr_lang, true ) );
+				$tr_metas = array_intersect_key( get_metadata( $this->meta_type, $tr_id ), $to_copy );
+				foreach ( $tr_metas as $key => $tr_values ) {
+					if ( empty( $metas[ $key ] ) ) {
+						// If the meta key is not present in the original object, delete all values
+						delete_metadata( $this->meta_type, $tr_id, $key );
+					} else {
+						// Otherwise check all values
+						foreach ( $tr_values as $k => $tr_value ) {
+							$v = $this->maybe_translate_value( $tr_value, $key, $tr_id, $object_id, $language );
+							if ( false === array_search( $v, $metas[ $key ] ) ) {
+								delete_metadata( $this->meta_type, $tr_id, $key, $tr_value );
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }

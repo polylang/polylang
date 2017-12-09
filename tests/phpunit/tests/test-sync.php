@@ -518,4 +518,37 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertTrue( update_term_meta( $from, 'key', 'value4', 'value2' ) );
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_term_meta( $to, 'key' ) );
 	}
+
+	function test_sync_post_with_metas_to_remove() {
+		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
+
+		// Posts
+		$to = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		$from = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $from, 'en' );
+
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
+		add_post_meta( $to, 'key1', 'value' );
+		add_post_meta( $to, 'key2', 'value1' );
+		add_post_meta( $to, 'key2', 'value2' );
+		$key = add_post_meta( $from, 'key2', 'value1' );
+		$metas[ $key ] = array( 'key' => 'key2', 'value' => 'value1' );
+
+		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
+
+		edit_post( array(
+			'post_ID' => $from,
+			'meta'    => $metas,
+		) ); // Fires the sync
+
+		$this->assertEmpty( get_post_meta( $to, 'key1' ) );
+		$this->assertEmpty( get_post_meta( $from, 'key1' ) );
+		$this->assertEqualSets( array( 'value1' ), get_post_meta( $to, 'key2' ) );
+		$this->assertEqualSets( array( 'value1' ), get_post_meta( $from, 'key2' ) );
+	}
 }
