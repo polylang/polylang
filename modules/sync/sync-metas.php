@@ -146,9 +146,6 @@ abstract class PLL_Sync_Metas {
 	public function update_meta( $mid, $id, $meta_key, $meta_value ) {
 		static $avoid_recursion = false;
 
-		// We don't want to sync back the new metas
-		remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
-
 		if ( ! $avoid_recursion ) {
 			$avoid_recursion = true;
 			$hash = md5( "$id|$meta_key|" . maybe_serialize( $meta_value ) );
@@ -163,7 +160,9 @@ abstract class PLL_Sync_Metas {
 						$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
 						if ( empty( $this->prev_value[ $hash ] ) || $this->prev_value[ $hash ] === $prev_meta->meta_value ) {
 							$prev_value = $this->maybe_translate_value( $prev_meta->meta_value, $meta_key, $id, $tr_id, $lang );
+							remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 ); // We don't want to sync back the new metas
 							update_metadata( $this->meta_type, $tr_id, $meta_key, $meta_value, $prev_value );
+							add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 						}
 					}
 				}
@@ -172,8 +171,6 @@ abstract class PLL_Sync_Metas {
 			unset( $this->prev_value[ $hash ] );
 			$avoid_recursion = false;
 		}
-
-		add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 	}
 
 	/**
