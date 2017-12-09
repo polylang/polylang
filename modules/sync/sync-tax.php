@@ -72,7 +72,7 @@ class PLL_Sync_Tax {
 
 			// Convert to term ids if we got tag names
 			$strings = array_map( 'is_string', $terms );
-			if ( ! empty( $strings ) ) {
+			if ( in_array( true, $strings, true ) ) {
 				$terms = get_the_terms( $object_id, $taxonomy );
 				$terms = wp_list_pluck( $terms, 'term_id' );
 			}
