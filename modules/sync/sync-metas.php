@@ -8,6 +8,7 @@
 abstract class PLL_Sync_Metas {
 	public $model;
 	protected $meta_type, $prev_value, $to_copy;
+	private $filters_stack;
 
 	/**
 	 * Constructor
@@ -28,6 +29,29 @@ abstract class PLL_Sync_Metas {
 		add_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
 
 		add_action( "pll_save_{$this->meta_type}", array( $this, 'save_object' ), 10, 3 );
+	}
+
+	/**
+	 * Removes "added_{$this->meta_type}_meta" filter
+	 * Maintains a counter of the number of times the removal has been requested.
+	 *
+	 * @since 2.3
+	 */
+	protected function remove_add_meta_filter() {
+		$this->filters_stack++;
+		remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+	}
+
+	/**
+	 * Adds "added_{$this->meta_type}_meta" filter
+	 *
+	 * @since 2.3
+	 */
+	protected function maybe_restore_add_meta_filter() {
+		$this->filters_stack--;
+		if ( empty( $this->filters_stack ) ) {
+			add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+		}
 	}
 
 	/**
@@ -162,9 +186,9 @@ abstract class PLL_Sync_Metas {
 						$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
 						if ( empty( $this->prev_value[ $hash ] ) || $this->prev_value[ $hash ] === $prev_meta->meta_value ) {
 							$prev_value = $this->maybe_translate_value( $prev_meta->meta_value, $meta_key, $id, $tr_id, $lang );
-							remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 ); // We don't want to sync back the new metas
+							$this->remove_add_meta_filter(); // We don't want to sync back the new metas
 							update_metadata( $this->meta_type, $tr_id, $meta_key, $meta_value, $prev_value );
-							add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+							$this->maybe_restore_add_meta_filter();
 						}
 					}
 				}
@@ -236,7 +260,7 @@ abstract class PLL_Sync_Metas {
 	 */
 	public function copy( $from, $to, $lang ) {
 		// We don't want to sync back the new metas
-		remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+		$this->remove_add_meta_filter();
 
 		$to_copy = $this->get_metas_to_copy( $from, $to, $lang );
 		$metas = get_metadata( $this->meta_type, $from );
@@ -250,7 +274,7 @@ abstract class PLL_Sync_Metas {
 			}
 		}
 
-		add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+		$this->maybe_restore_add_meta_filter();
 	}
 
 	/**
