@@ -216,14 +216,18 @@ class PLL_Admin_Sync {
 	 * @return array
 	 */
 	public function sync_sticky_posts( $value, $old_value ) {
-		// Stick post
-		if ( $sticked = array_diff( $value, $old_value ) ) {
-			$value = array_unique( array_merge( $value, $this->model->post->get_translations( reset( $sticked ) ) ) );
-		}
+		if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {
+			// Stick post
+			if ( $sticked = array_diff( $value, $old_value ) ) {
+				$translations = $this->model->post->get_translations( reset( $sticked ) );
+				$value = array_unique( array_merge( $value, array_values( $translations ) ) );
+			}
 
-		// Unstick post
-		if ( $unsticked = array_diff( $old_value, $value ) ) {
-			$value = array_unique( array_diff( $value, $this->model->post->get_translations( reset( $unsticked ) ) ) );
+			// Unstick post
+			if ( $unsticked = array_diff( $old_value, $value ) ) {
+				$translations = $this->model->post->get_translations( reset( $unsticked ) );
+				$value = array_unique( array_diff( $value, array_values( $translations ) ) );
+			}
 		}
 
 		return $value;
