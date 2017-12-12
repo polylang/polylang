@@ -159,6 +159,17 @@ class PLL_Admin_Sync {
 				clean_post_cache( $tr_id );
 			}
 		}
+
+		// Sticky posts
+		if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {
+			$stickies = get_option( 'sticky_posts' );
+			if ( isset( $_REQUEST['sticky'] ) && 'sticky' === $_REQUEST['sticky'] ) {
+				$stickies = array_merge( $stickies, array_values( $translations ) );
+			} else {
+				$stickies = array_diff( $stickies, array_values( $translations ) );
+			}
+			update_option( 'sticky_posts', array_unique( $stickies ) );
+		}
 	}
 
 	/**

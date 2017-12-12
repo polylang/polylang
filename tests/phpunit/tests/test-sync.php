@@ -551,4 +551,56 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'value1' ), get_post_meta( $to, 'key2' ) );
 		$this->assertEqualSets( array( 'value1' ), get_post_meta( $from, 'key2' ) );
 	}
+
+	function test_source_post_was_sticky_before_sync_was_active() {
+		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
+
+		// Posts
+		$to = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		$from = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $from, 'en' );
+
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
+		stick_post( $from );
+
+		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
+
+		$_REQUEST['sticky'] = 'sticky'; // sticky posts not managed by wp_insert_post
+		edit_post( array(
+			'post_ID' => $from,
+			'sticky'  => 'sticky',
+		) ); // Fires the sync
+
+		$this->assertTrue( is_sticky( $to ) );
+	}
+
+	function test_target_post_was_sticky_before_sync_was_active() {
+		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
+
+		// Posts
+		$to = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		$from = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $from, 'en' );
+
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
+		stick_post( $to );
+
+		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
+
+		edit_post( array(
+			'post_ID' => $from,
+		) ); // Fires the sync
+
+		$this->assertfalse( is_sticky( $to ) );
+	}
 }
