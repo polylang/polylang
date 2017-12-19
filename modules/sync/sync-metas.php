@@ -8,7 +8,6 @@
 abstract class PLL_Sync_Metas {
 	public $model;
 	protected $meta_type, $prev_value, $to_copy;
-	private $filters_stack;
 
 	/**
 	 * Constructor
@@ -20,38 +19,57 @@ abstract class PLL_Sync_Metas {
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
 
-		add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
-
-		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 ); // Very late in case a filter prevents the meta to be updated
-		add_filter( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ), 10, 4 );
-
-		add_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ), 10, 2 );
-		add_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
+		$this->add_all_meta_actions();
 
 		add_action( "pll_save_{$this->meta_type}", array( $this, 'save_object' ), 10, 3 );
 	}
 
 	/**
-	 * Removes "added_{$this->meta_type}_meta" filter
-	 * Maintains a counter of the number of times the removal has been requested.
+	 * Removes "added_{$this->meta_type}_meta" action
 	 *
 	 * @since 2.3
 	 */
-	protected function remove_add_meta_filter() {
-		$this->filters_stack++;
-		remove_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+	protected function remove_add_meta_action() {
+		remove_action( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
 	}
 
 	/**
-	 * Adds "added_{$this->meta_type}_meta" filter
+	 * Removes all meta synchronization actions and filters
 	 *
 	 * @since 2.3
 	 */
-	protected function maybe_restore_add_meta_filter() {
-		$this->filters_stack--;
-		if ( empty( $this->filters_stack ) ) {
-			add_filter( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
-		}
+	protected function remove_all_meta_actions() {
+		$this->remove_add_meta_action();
+
+		remove_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 );
+		remove_action( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ), 10, 4 );
+
+		remove_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ), 10, 2 );
+		remove_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
+	}
+
+	/**
+	 * Adds "added_{$this->meta_type}_meta" action
+	 *
+	 * @since 2.3
+	 */
+	protected function restore_add_meta_action() {
+		add_action( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+	}
+
+	/**
+	 * Adds meta synchronization actions and filters
+	 *
+	 * @since 2.3
+	 */
+	protected function add_all_meta_actions() {
+		$this->restore_add_meta_action();
+
+		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 ); // Very late in case a filter prevents the meta to be updated
+		add_action( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ), 10, 4 );
+
+		add_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ), 10, 2 );
+		add_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
 	}
 
 	/**
@@ -186,9 +204,9 @@ abstract class PLL_Sync_Metas {
 						$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
 						if ( empty( $this->prev_value[ $hash ] ) || $this->prev_value[ $hash ] === $prev_meta->meta_value ) {
 							$prev_value = $this->maybe_translate_value( $prev_meta->meta_value, $meta_key, $id, $tr_id, $lang );
-							$this->remove_add_meta_filter(); // We don't want to sync back the new metas
+							$this->remove_add_meta_action(); // We don't want to sync back the new metas
 							update_metadata( $this->meta_type, $tr_id, $meta_key, $meta_value, $prev_value );
-							$this->maybe_restore_add_meta_filter();
+							$this->restore_add_meta_action();
 						}
 					}
 				}
@@ -249,39 +267,60 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
-	 * Copy metas when creating a new translation
-	 * Don't use to synchronize
+	 * Copy or synchronize metas
 	 *
 	 * @since 2.3
 	 *
 	 * @param int    $from Id of the source object
 	 * @param int    $to   Id of the target object
-	 * @param string $lang Language code
+	 * @param string $lang Language code of the target object
+	 * @param bool   $sync Optional, defaults to true. True if it is synchronization, false if it is a copy
 	 */
-	public function copy( $from, $to, $lang ) {
-		// We don't want to sync back the new metas
-		$this->remove_add_meta_filter();
+	public function copy( $from, $to, $lang, $sync = false ) {
+		$this->remove_all_meta_actions();
 
-		$to_copy = $this->get_metas_to_copy( $from, $to, $lang );
+		remove_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ), 10, 2 );
+		remove_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
+
+		$to_copy = $this->get_metas_to_copy( $from, $to, $lang, $sync );
 		$metas = get_metadata( $this->meta_type, $from );
+		$tr_metas = get_metadata( $this->meta_type, $to );
 
-		foreach ( $metas as $key => $values ) {
-			if ( in_array( $key, $to_copy ) ) {
-				foreach ( $values as $value ) {
+		foreach ( $to_copy as $key ) {
+			if ( empty( $metas[ $key ] ) ) {
+				if ( ! empty( $tr_metas[ $key ] ) ) {
+					// If the meta key is not present in the source object, delete all values
+					delete_metadata( $this->meta_type, $to, $key );
+				}
+			} else {
+				if ( ! empty( $tr_metas[ $key ] ) && 1 === count( $metas[ $key ] ) && 1 === count( $tr_metas[ $key ] ) ) {
+					// One custom field to update
+					$value = reset( $metas[ $key ] );
+					$value = maybe_unserialize( $value );
 					$to_value = $this->maybe_translate_value( $value, $key, $from, $to, $lang );
-					add_metadata( $this->meta_type, $to, $key, $to_value );
+					update_metadata( $this->meta_type, $to, $key, $to_value );
+				} else {
+					// Multiple custom fields, either in the source or the target
+					if ( ! empty( $tr_metas[ $key ] ) ) {
+						// The synchronization of multiple values custom fields is easier if we delete all metas first
+						delete_metadata( $this->meta_type, $to, $key );
+					}
+
+					foreach ( $metas[ $key ] as $value ) {
+						$value = maybe_unserialize( $value );
+						$to_value = $this->maybe_translate_value( $value, $key, $from, $to, $lang );
+						add_metadata( $this->meta_type, $to, $key, $to_value );
+					}
 				}
 			}
 		}
 
-		$this->maybe_restore_add_meta_filter();
+		$this->add_all_meta_actions();
 	}
 
 	/**
 	 * If synchronized custom fields were previously not synchronized, it is expected
-	 * that saving a post (or term) will synchronize them. This works out of the box
-	 * to add metas, not to delete them. The goal of this function is to remove extra
-	 * custom fields.
+	 * that saving a post (or term) will synchronize them.
 	 *
 	 * @since 2.3
 	 *
@@ -290,27 +329,11 @@ abstract class PLL_Sync_Metas {
 	 * @param array  $translations The list of translations object ids
 	 */
 	public function save_object( $object_id, $obj, $translations ) {
-		$metas = get_metadata( $this->meta_type, $object_id );
-		$language = array_search( $object_id, $translations );
+		$src_lang = array_search( $object_id, $translations );
 
 		foreach ( $translations as $tr_lang => $tr_id ) {
 			if ( $tr_id !== $object_id ) {
-				$to_copy = array_flip( $this->get_metas_to_copy( $object_id, $tr_id, $tr_lang, true ) );
-				$tr_metas = array_intersect_key( get_metadata( $this->meta_type, $tr_id ), $to_copy );
-				foreach ( $tr_metas as $key => $tr_values ) {
-					if ( empty( $metas[ $key ] ) ) {
-						// If the meta key is not present in the original object, delete all values
-						delete_metadata( $this->meta_type, $tr_id, $key );
-					} else {
-						// Otherwise check all values
-						foreach ( $tr_values as $k => $tr_value ) {
-							$v = $this->maybe_translate_value( $tr_value, $key, $tr_id, $object_id, $language );
-							if ( false === array_search( $v, $metas[ $key ] ) ) {
-								delete_metadata( $this->meta_type, $tr_id, $key, $tr_value );
-							}
-						}
-					}
-				}
+				$this->copy( $object_id, $tr_id, $tr_lang, true );
 			}
 		}
 	}
