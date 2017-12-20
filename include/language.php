@@ -38,7 +38,7 @@ class PLL_Language {
 	public $term_id, $name, $slug, $term_group, $term_taxonomy_id, $taxonomy, $description, $parent, $count;
 	public $tl_term_id, $tl_term_taxonomy_id, $tl_count;
 	public $locale, $is_rtl;
-	public $w3c;
+	public $w3c, $facebook;
 	public $flag_url, $flag;
 	public $home_url, $search_url;
 	public $host, $mo_id;
@@ -83,6 +83,9 @@ class PLL_Language {
 
 			include PLL_SETTINGS_INC . '/languages.php';
 			$this->w3c = isset( $languages[ $this->locale ]['w3c'] ) ? $languages[ $this->locale ]['w3c'] : str_replace( '_', '-', $this->locale );
+			if ( isset( $languages[ $this->locale ]['facebook'] ) ) {
+				$this->facebook = $languages[ $this->locale ]['facebook'];
+			}
 		}
 	}
 
@@ -216,7 +219,6 @@ class PLL_Language {
 	/**
 	 * Returns the language locale
 	 * Converts WP locales to W3C valid locales for display
-	 * @see #33511
 	 *
 	 * @since 1.8
 	 *

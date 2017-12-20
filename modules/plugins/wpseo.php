@@ -285,8 +285,8 @@ class PLL_WPSEO {
 		// WPSEO already deals with the locale
 		if ( did_action( 'pll_init' ) && method_exists( $wpseo_og, 'og_tag' ) ) {
 			foreach ( PLL()->model->get_languages_list() as $language ) {
-				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = PLL_Plugins_Compat::get_fb_locale( $language ) ) {
-					$wpseo_og->og_tag( 'og:locale:alternate', $fb_locale );
+				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && isset( $language->facebook ) ) {
+					$wpseo_og->og_tag( 'og:locale:alternate', $language->facebook );
 				}
 			}
 		}
