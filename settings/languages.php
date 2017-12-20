@@ -70,6 +70,7 @@ $languages = array(
 		'name'   => 'Беларуская мова',
 		'dir'    => 'ltr',
 		'flag'   => 'by',
+		'w3c'    => 'be',
 		'show'   => true,
 	),
 	'bg_BG' => array(
@@ -95,6 +96,9 @@ $languages = array(
 		'dir'    => 'ltr',
 		'flag'   => 'tibet',
 		'show'   => true,
+	),
+	'bre' => array(
+		'w3c'    => 'br',
 	),
 	'bs_BA' => array(
 		'code'   => 'bs',
@@ -158,6 +162,7 @@ $languages = array(
 		'name'   => 'Deutsch',
 		'dir'    => 'ltr',
 		'flag'   => 'ch',
+		'w3c'    => 'de-CH',
 		'show'   => true,
 	),
 	'de_DE' => array(
@@ -174,6 +179,7 @@ $languages = array(
 		'name'   => 'Deutsch',
 		'dir'    => 'ltr',
 		'flag'   => 'de',
+		'w3c'    => 'de-DE',
 		'show'   => true,
 	),
 	'dzo' => array(
@@ -182,6 +188,7 @@ $languages = array(
 		'name'   => 'རྫོང་ཁ',
 		'dir'    => 'ltr',
 		'flag'   => 'bt',
+		'w3c'    => 'dz',
 		'show'   => true,
 	),
 	'el' => array(
@@ -472,6 +479,9 @@ $languages = array(
 		'flag'   => 'id',
 		'show'   => true,
 	),
+	'ido' => array(
+		'w3c'    => 'io',
+	),
 	'is_IS' => array(
 		'code'   => 'is',
 		'locale' => 'is_IS',
@@ -519,6 +529,9 @@ $languages = array(
 		'dir'    => 'ltr',
 		'flag'   => 'dz',
 		'show'   => true,
+	),
+	'kin' => array(
+		'w3c'    => 'rw',
 	),
 	'kk' => array(
 		'code'   => 'kk',
@@ -608,6 +621,9 @@ $languages = array(
 		'flag'   => 'in',
 		'show'   => true,
 	),
+	'mri' => array(
+		'w3c'    => 'mi',
+	),
 	'ms_MY' => array(
 		'code'   => 'ms',
 		'locale' => 'ms_MY',
@@ -662,6 +678,7 @@ $languages = array(
 		'name'   => 'Nederlands',
 		'dir'    => 'ltr',
 		'flag'   => 'nl',
+		'w3c'    => 'nl-NL',
 		'show'   => true,
 	),
 	'nn_NO' => array(
@@ -678,6 +695,7 @@ $languages = array(
 		'name'   => 'Occitan',
 		'dir'    => 'ltr',
 		'flag'   => 'occitania',
+		'w3c'    => 'oc',
 		'show'   => true,
 	),
 	'pa_IN' => array(
@@ -735,6 +753,9 @@ $languages = array(
 		'dir'    => 'ltr',
 		'flag'   => 'ro',
 		'show'   => true,
+	),
+	'roh' => array(
+		'w3c'    => 'rm',
 	),
 	'ru_RU' => array(
 		'code'   => 'ru',
@@ -799,6 +820,9 @@ $languages = array(
 		'dir'    => 'ltr',
 		'flag'   => 'rs',
 		'show'   => true,
+	),
+	'srd' => array(
+		'w3c'    => 'sc',
 	),
 	'su_ID' => array(
 		'code'   => 'su',
@@ -887,6 +911,9 @@ $languages = array(
 		'dir'    => 'ltr',
 		'flag'   => 'ru',
 		'show'   => true,
+	),
+	'tuk' => array(
+		'w3c'    => 'tk',
 	),
 	'ug_CN' => array(
 		'code'   => 'ug',
