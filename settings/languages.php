@@ -327,6 +327,14 @@ $languages = array(
 		'facebook' => 'es_CO',
 		'show'     => true,
 	),
+	'es_CR' => array(
+		'code'     => 'es',
+		'locale'   => 'es_CR',
+		'name'     => 'Español',
+		'dir'      => 'ltr',
+		'flag'     => 'cr',
+		'show'     => true,
+	),
 	'es_ES' => array(
 		'code'     => 'es',
 		'locale'   => 'es_ES',
@@ -396,7 +404,6 @@ $languages = array(
 		'name'     => 'فارسی',
 		'dir'      => 'rtl',
 		'flag'     => 'af',
-		'show'     => true,
 	),
 	'fa_IR' => array(
 		'code'     => 'fa',
@@ -423,7 +430,6 @@ $languages = array(
 		'dir'      => 'ltr',
 		'flag'     => 'fo',
 		'facebook' => 'fo_FO',
-		'show'     => true,
 	),
 	'fr_BE' => array(
 		'code'     => 'fr',
@@ -461,7 +467,6 @@ $languages = array(
 		'dir'      => 'ltr',
 		'flag'     => 'nl',
 		'facebook' => 'fy_NL',
-		'show'     => true,
 	),
 	'ga' => array(
 		'facebook' => 'ga_IE',
@@ -873,6 +878,15 @@ $languages = array(
 		'facebook' => 'pt_PT',
 		'show'     => true,
 	),
+	'pt_PT_ao90' => array(
+		'code'     => 'pt',
+		'locale'   => 'pt_PT_ao90',
+		'name'     => 'Português',
+		'dir'      => 'ltr',
+		'flag'     => 'pt',
+		'facebook' => 'pt_PT',
+		'show'     => true,
+	),
 	'rhg' => array(
 		'code'     => 'rhg',
 		'locale'   => 'rhg',
@@ -948,7 +962,6 @@ $languages = array(
 		'dir'      => 'ltr',
 		'flag'     => 'so',
 		'facebook' => 'so_SO',
-		'show'     => true,
 	),
 	'sq' => array(
 		'code'     => 'sq',
@@ -978,7 +991,6 @@ $languages = array(
 		'name'     => 'Basa Sunda',
 		'dir'      => 'ltr',
 		'flag'     => 'id',
-		'show'     => true,
 	),
 	'sv_SE' => array(
 		'code'     => 'sv',
@@ -1123,7 +1135,6 @@ $languages = array(
 		'name'     => 'Vèneto',
 		'dir'      => 'ltr',
 		'flag'     => 'veneto',
-		'show'     => true,
 	),
 	'vi' => array(
 		'code'     => 'vi',
