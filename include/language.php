@@ -1,10 +1,10 @@
 <?php
 
 /**
- * a language object is made of two terms in 'language' and 'term_language' taxonomies
+ * A language object is made of two terms in 'language' and 'term_language' taxonomies
  * manipulating only one object per language instead of two terms should make things easier
  *
- * properties:
+ * Properties:
  * term_id             => id of term in 'language' taxonomy
  * name                => language name. Ex: English
  * slug                => language code used in url. Ex: en
@@ -19,6 +19,7 @@
  * tl_count            => number of terms in that language ( not used by Polylang )
  * locale              => WordPress language locale. Ex: en_US
  * is_rtl              => 1 if the language is rtl
+ * w3c                 => W3C locale
  * flag_code           => code of the flag
  * flag_url            => url of the flag
  * flag                => html img of the flag
@@ -37,13 +38,14 @@ class PLL_Language {
 	public $term_id, $name, $slug, $term_group, $term_taxonomy_id, $taxonomy, $description, $parent, $count;
 	public $tl_term_id, $tl_term_taxonomy_id, $tl_count;
 	public $locale, $is_rtl;
+	public $w3c, $facebook;
 	public $flag_url, $flag;
 	public $home_url, $search_url;
 	public $host, $mo_id;
 	public $page_on_front, $page_for_posts;
 
 	/**
-	 * constructor: builds a language object given its two corresponding terms in language and term_language taxonomies
+	 * Constructor: builds a language object given its two corresponding terms in language and term_language taxonomies
 	 *
 	 * @since 1.2
 	 *
@@ -51,35 +53,39 @@ class PLL_Language {
 	 * @param object       $term_language Corresponding 'term_language' term
 	 */
 	public function __construct( $language, $term_language = null ) {
-		// build the object from all properties stored as an array
+		// Build the object from all properties stored as an array
 		if ( empty( $term_language ) ) {
 			foreach ( $language as $prop => $value ) {
 				$this->$prop = $value;
 			}
 		}
 
-		// build the object from taxonomies
+		// Build the object from taxonomies
 		else {
 			foreach ( $language as $prop => $value ) {
 				$this->$prop = in_array( $prop, array( 'term_id', 'term_taxonomy_id', 'count' ) ) ? (int) $language->$prop : $language->$prop;
 			}
 
-			// although it would be convenient here, don't assume the term is shared between taxonomies as it may not be the case in future
-			// http://make.wordpress.org/core/2013/07/28/potential-roadmap-for-taxonomy-meta-and-post-relationships/
 			$this->tl_term_id = (int) $term_language->term_id;
 			$this->tl_term_taxonomy_id = (int) $term_language->term_taxonomy_id;
 			$this->tl_count = (int) $term_language->count;
 
-			// the description field can contain any property
-			// backward compatibility for is_rtl
+			// The description field can contain any property
+			// Backward compatibility for is_rtl
 			$description = maybe_unserialize( $language->description );
 			foreach ( $description as $prop => $value ) {
 				'rtl' == $prop ? $this->is_rtl = $value : $this->$prop = $value;
 			}
 
-			$this->description = &$this->locale; // backward compatibility with Polylang < 1.2
+			$this->description = &$this->locale; // Backward compatibility with Polylang < 1.2
 
 			$this->mo_id = PLL_MO::get_id( $this );
+
+			include PLL_SETTINGS_INC . '/languages.php';
+			$this->w3c = isset( $languages[ $this->locale ]['w3c'] ) ? $languages[ $this->locale ]['w3c'] : str_replace( '_', '-', $this->locale );
+			if ( isset( $languages[ $this->locale ]['facebook'] ) ) {
+				$this->facebook = $languages[ $this->locale ]['facebook'];
+			}
 		}
 	}
 
@@ -95,7 +101,7 @@ class PLL_Language {
 		if ( ! empty( $this->flag_code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $this->flag_code . '.png' ) ) ) {
 			$flags['flag']['url'] = esc_url_raw( plugins_url( $file, POLYLANG_FILE ) );
 
-			// if base64 encoded flags are preferred
+			// If base64 encoded flags are preferred
 			if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
 				$flags['flag']['src'] = 'data:image/png;base64,' . base64_encode( file_get_contents( POLYLANG_DIR . $file ) );
 			} else {
@@ -103,7 +109,7 @@ class PLL_Language {
 			}
 		}
 
-		// custom flags ?
+		// Custom flags ?
 		if ( file_exists( PLL_LOCAL_DIR . ( $file = '/' . $this->locale . '.png' ) ) || file_exists( PLL_LOCAL_DIR . ( $file = '/' . $this->locale . '.jpg' ) ) ) {
 			$url = content_url( '/polylang' . $file );
 			$flags['custom_flag']['url'] = esc_url_raw( $url );
@@ -146,20 +152,20 @@ class PLL_Language {
 	}
 
 	/**
-	 * replace flag by custom flag
-	 * takes care of url scheme
+	 * Replace flag by custom flag
+	 * Takes care of url scheme
 	 *
 	 * @since 1.7
 	 */
 	public function set_custom_flag() {
-		// overwrite with custom flags on frontend only
+		// Overwrite with custom flags on frontend only
 		if ( ! empty( $this->custom_flag ) ) {
 			$this->flag = $this->custom_flag;
 			$this->flag_url = $this->custom_flag_url;
 			unset( $this->custom_flag, $this->custom_flag_url ); // hide this
 		}
 
-		// set url scheme, also for default flags
+		// Set url scheme, also for default flags
 		if ( is_ssl() ) {
 			$this->flag = str_replace( 'http://', 'https://', $this->flag );
 			$this->flag_url = str_replace( 'http://', 'https://', $this->flag_url );
@@ -170,7 +176,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * updates post and term count
+	 * Updates post and term count
 	 *
 	 * @since 1.2
 	 */
@@ -180,7 +186,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * set home_url and search_url properties
+	 * Set home_url and search_url properties
 	 *
 	 * @since 1.3
 	 *
@@ -193,7 +199,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * set home_url scheme
+	 * Set home_url scheme
 	 * this can't be cached across pages
 	 *
 	 * @since 1.6.4
@@ -211,9 +217,8 @@ class PLL_Language {
 	}
 
 	/**
-	 * returns the language locale
-	 * converts WP locales to W3C valid locales for display
-	 * @see #33511
+	 * Returns the language locale
+	 * Converts WP locales to W3C valid locales for display
 	 *
 	 * @since 1.8
 	 *
@@ -221,25 +226,6 @@ class PLL_Language {
 	 * @return string
 	 */
 	public function get_locale( $filter = 'raw' ) {
-		if ( 'display' == $filter ) {
-			static $valid_locales = array(
-				'bel'            => 'be',
-				'bre'            => 'br',
-				'de_CH_informal' => 'de_CH',
-				'de_DE_formal'   => 'de_DE',
-				'dzo'            => 'dz',
-				'ido'            => 'io',
-				'kin'            => 'rw',
-				'oci'            => 'oc',
-				'mri'            => 'mi',
-				'nl_NL_formal'   => 'nl_NL',
-				'roh'            => 'rm',
-				'srd'            => 'sc',
-				'tuk'            => 'tk',
-			);
-			$locale = isset( $valid_locales[ $this->locale ] ) ? $valid_locales[ $this->locale ] : $this->locale;
-			return str_replace( '_', '-', $locale );
-		}
-		return $this->locale;
+		return 'display' === $filter ? $this->w3c : $this->locale;
 	}
 }

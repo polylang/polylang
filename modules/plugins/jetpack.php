@@ -96,11 +96,11 @@ class PLL_Jetpack {
 	public function jetpack_ogp( $tags ) {
 		if ( did_action( 'pll_init' ) ) {
 			foreach ( PLL()->model->get_languages_list() as $language ) {
-				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && $fb_locale = PLL_Plugins_Compat::get_fb_locale( $language ) ) {
-					$tags['og:locale:alternate'][] = $fb_locale;
+				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && isset( $language->facebook ) ) {
+					$tags['og:locale:alternate'][] = $language->facebook;
 				}
-				if ( PLL()->curlang->slug === $language->slug && $fb_locale = PLL_Plugins_Compat::get_fb_locale( $language ) ) {
-					$tags['og:locale'] = $fb_locale;
+				if ( PLL()->curlang->slug === $language->slug && isset( $language->facebook ) ) {
+					$tags['og:locale'] = $language->facebook;
 				}
 			}
 		}

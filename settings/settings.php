@@ -316,4 +316,24 @@ class PLL_Settings extends PLL_Admin_Base {
 		wp_safe_redirect( add_query_arg( $args, remove_query_arg( array( 'pll_action', 'lang' ), wp_get_referer() ) ) );
 		exit;
 	}
+
+	/**
+	 * Get the list of predefined languages
+	 *
+	 * @since 2.3
+	 */
+	public function get_predefined_languages() {
+		include PLL_SETTINGS_INC . '/languages.php';
+		$languages = wp_list_filter( $languages, array( 'show' => true ) );
+
+		/**
+		 * Filter the list of predefined languages
+		 *
+		 * @since 1.7.10
+		 * @since 2.3 The languages arrays use associative keys instead of numerical keys: see settings/languages.php
+		 *
+		 * @param array $languages
+		 */
+		return apply_filters( 'pll_predefined_languages', $languages );
+	}
 }

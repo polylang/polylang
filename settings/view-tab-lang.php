@@ -53,15 +53,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<select name="lang_list" id="lang_list">
 						<option value=""></option>
 						<?php
-						include PLL_SETTINGS_INC . '/languages.php';
-						foreach ( $languages as $lg ) {
+						foreach ( $this->get_predefined_languages() as $lg ) {
 							printf(
 								'<option value="%1$s:%2$s:%3$s:%4$s">%5$s - %2$s</option>' . "\n",
-								esc_attr( $lg[0] ),
-								esc_attr( $lg[1] ),
-								'rtl' == $lg[3] ? '1' : '0',
-								esc_attr( $lg[4] ),
-								esc_html( $lg[2] )
+								esc_attr( $lg['code'] ),
+								esc_attr( $lg['locale'] ),
+								'rtl' == $lg['dir'] ? '1' : '0',
+								esc_attr( $lg['flag'] ),
+								esc_html( $lg['name'] )
 							);
 						}
 						?>
