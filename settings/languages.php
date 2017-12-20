@@ -20,6 +20,24 @@ if ( ! defined( 'ABSPATH' ) ) {
  * [w3c]      => W3C locale
  * [facebook] => Facebook locale
  * [show]     => whether to show in the predefined list
+ *
+ * Facebook locales without equivalent WordPress locale:
+ * 'ay_BO' (Aymara)
+ * 'ck_US' (Cherokee)
+ * 'en_IN' (English India)
+ * 'gx_GR' (Classical Greek)
+ * 'ig_NG' (Igbo)
+ * 'ja_KS' (Japanese Kansai)
+ * 'lg_UG' (Ganda)
+ * 'nd_ZW' (Ndebele)
+ * 'ny_MW' (Chewa)
+ * 'qu_PE' (Quechua)
+ * 'se_NO' (Northern Sami)
+ * 'tl_ST' (Klingon)
+ * 'wo_SN' (Wolof)
+ * 'yi_DE' (Yiddish)
+ * 'zu_ZA' (Zulu)
+ * 'zz_TR' (Zazaki)
  */
 $languages = array(
 	'af' => array(
@@ -333,6 +351,7 @@ $languages = array(
 		'name'     => 'Español',
 		'dir'      => 'ltr',
 		'flag'     => 'cr',
+		'facebook' => 'es_LA',
 		'show'     => true,
 	),
 	'es_ES' => array(
@@ -404,6 +423,7 @@ $languages = array(
 		'name'     => 'فارسی',
 		'dir'      => 'rtl',
 		'flag'     => 'af',
+		'facebook' => 'fa_IR',
 	),
 	'fa_IR' => array(
 		'code'     => 'fa',
@@ -437,6 +457,7 @@ $languages = array(
 		'name'     => 'Français',
 		'dir'      => 'ltr',
 		'flag'     => 'be',
+		'facebook' => 'fr_FR',
 		'show'     => true,
 	),
 	'fr_CA' => array(
@@ -499,6 +520,9 @@ $languages = array(
 		'flag'     => 'in',
 		'facebook' => 'gu_IN',
 		'show'     => true,
+	),
+	'hau' => array(
+		'facebook' => 'ha_NG',
 	),
 	'haz' => array(
 		'code'     => 'haz',
@@ -757,6 +781,9 @@ $languages = array(
 		'facebook' => 'ms_MY',
 		'show'     => true,
 	),
+	'mlt' => array(
+		'facebook' => 'mt_MT',
+	),
 	'my_MM' => array(
 		'code'     => 'my',
 		'locale'   => 'my_MM',
@@ -955,6 +982,9 @@ $languages = array(
 		'facebook' => 'sl_SI',
 		'show'     => true,
 	),
+	'sna' => array(
+		'facebook' => 'sn_ZW',
+	),
 	'so_SO' => array(
 		'code'     => 'so',
 		'locale'   => 'so_SO',
@@ -1003,6 +1033,9 @@ $languages = array(
 	),
 	'sw' => array(
 		'facebook' => 'sw_KE',
+	),
+	'syr' => array(
+		'facebook' => 'sy_SY',
 	),
 	'szl' => array(
 		'code'     => 'szl',
@@ -1144,6 +1177,9 @@ $languages = array(
 		'flag'     => 'vn',
 		'facebook' => 'vi_VN',
 		'show'     => true,
+	),
+	'xho' => array(
+		'facebook' => 'xh_ZA',
 	),
 	'yor' => array(
 		'facebook' => 'yo_NG',
