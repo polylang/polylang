@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * [name]   => name
  * [dir]    => text direction
  * [flag]   => flag code
+ * [show]   => whether to show in the predefined list
  */
 $languages = array(
 	'af' => array(
@@ -21,6 +22,7 @@ $languages = array(
 		'name'   => 'Afrikaans',
 		'dir'    => 'ltr',
 		'flag'   => 'za',
+		'show'   => true,
 	),
 	'ar' => array(
 		'code'   => 'ar',
@@ -28,6 +30,7 @@ $languages = array(
 		'name'   => 'العربية',
 		'dir'    => 'rtl',
 		'flag'   => 'arab',
+		'show'   => true,
 	),
 	'ary' => array(
 		'code'   => 'ar',
@@ -35,6 +38,7 @@ $languages = array(
 		'name'   => 'العربية المغربية',
 		'dir'    => 'rtl',
 		'flag'   => 'ma',
+		'show'   => true,
 	),
 	'as' => array(
 		'code'   => 'as',
@@ -42,6 +46,7 @@ $languages = array(
 		'name'   => 'অসমীয়া',
 		'dir'    => 'ltr',
 		'flag'   => 'in',
+		'show'   => true,
 	),
 	'az' => array(
 		'code'   => 'az',
@@ -49,6 +54,7 @@ $languages = array(
 		'name'   => 'Azərbaycan',
 		'dir'    => 'ltr',
 		'flag'   => 'az',
+		'show'   => true,
 	),
 	'azb' => array(
 		'code'   => 'az',
@@ -56,6 +62,7 @@ $languages = array(
 		'name'   => 'گؤنئی آذربایجان',
 		'dir'    => 'rtl',
 		'flag'   => 'az',
+		'show'   => true,
 	),
 	'bel' => array(
 		'code'   => 'be',
@@ -63,6 +70,7 @@ $languages = array(
 		'name'   => 'Беларуская мова',
 		'dir'    => 'ltr',
 		'flag'   => 'by',
+		'show'   => true,
 	),
 	'bg_BG' => array(
 		'code'   => 'bg',
@@ -70,6 +78,7 @@ $languages = array(
 		'name'   => 'български',
 		'dir'    => 'ltr',
 		'flag'   => 'bg',
+		'show'   => true,
 	),
 	'bn_BD' => array(
 		'code'   => 'bn',
@@ -77,6 +86,7 @@ $languages = array(
 		'name'   => 'বাংলা',
 		'dir'    => 'ltr',
 		'flag'   => 'bd',
+		'show'   => true,
 	),
 	'bo' => array(
 		'code'   => 'bo',
@@ -84,6 +94,7 @@ $languages = array(
 		'name'   => 'བོད་ཡིག',
 		'dir'    => 'ltr',
 		'flag'   => 'tibet',
+		'show'   => true,
 	),
 	'bs_BA' => array(
 		'code'   => 'bs',
@@ -91,6 +102,7 @@ $languages = array(
 		'name'   => 'Bosanski',
 		'dir'    => 'ltr',
 		'flag'   => 'ba',
+		'show'   => true,
 	),
 	'ca' => array(
 		'code'   => 'ca',
@@ -98,6 +110,7 @@ $languages = array(
 		'name'   => 'Català',
 		'dir'    => 'ltr',
 		'flag'   => 'catalonia',
+		'show'   => true,
 	),
 	'ceb' => array(
 		'code'   => 'ceb',
@@ -105,6 +118,7 @@ $languages = array(
 		'name'   => 'Cebuano',
 		'dir'    => 'ltr',
 		'flag'   => 'ph',
+		'show'   => true,
 	),
 	'cs_CZ' => array(
 		'code'   => 'cs',
@@ -112,6 +126,7 @@ $languages = array(
 		'name'   => 'Čeština',
 		'dir'    => 'ltr',
 		'flag'   => 'cz',
+		'show'   => true,
 	),
 	'cy' => array(
 		'code'   => 'cy',
@@ -119,6 +134,7 @@ $languages = array(
 		'name'   => 'Cymraeg',
 		'dir'    => 'ltr',
 		'flag'   => 'wales',
+		'show'   => true,
 	),
 	'da_DK' => array(
 		'code'   => 'da',
@@ -126,6 +142,7 @@ $languages = array(
 		'name'   => 'Dansk',
 		'dir'    => 'ltr',
 		'flag'   => 'dk',
+		'show'   => true,
 	),
 	'de_CH' => array(
 		'code'   => 'de',
@@ -133,6 +150,7 @@ $languages = array(
 		'name'   => 'Deutsch',
 		'dir'    => 'ltr',
 		'flag'   => 'ch',
+		'show'   => true,
 	),
 	'de_CH_informal' => array(
 		'code'   => 'de',
@@ -140,6 +158,7 @@ $languages = array(
 		'name'   => 'Deutsch',
 		'dir'    => 'ltr',
 		'flag'   => 'ch',
+		'show'   => true,
 	),
 	'de_DE' => array(
 		'code'   => 'de',
@@ -147,6 +166,7 @@ $languages = array(
 		'name'   => 'Deutsch',
 		'dir'    => 'ltr',
 		'flag'   => 'de',
+		'show'   => true,
 	),
 	'de_DE_formal' => array(
 		'code'   => 'de',
@@ -154,6 +174,7 @@ $languages = array(
 		'name'   => 'Deutsch',
 		'dir'    => 'ltr',
 		'flag'   => 'de',
+		'show'   => true,
 	),
 	'dzo' => array(
 		'code'   => 'dz',
@@ -161,6 +182,7 @@ $languages = array(
 		'name'   => 'རྫོང་ཁ',
 		'dir'    => 'ltr',
 		'flag'   => 'bt',
+		'show'   => true,
 	),
 	'el' => array(
 		'code'   => 'el',
@@ -168,6 +190,7 @@ $languages = array(
 		'name'   => 'Ελληνικά',
 		'dir'    => 'ltr',
 		'flag'   => 'gr',
+		'show'   => true,
 	),
 	'en_AU' => array(
 		'code'   => 'en',
@@ -175,6 +198,7 @@ $languages = array(
 		'name'   => 'English',
 		'dir'    => 'ltr',
 		'flag'   => 'au',
+		'show'   => true,
 	),
 	'en_CA' => array(
 		'code'   => 'en',
@@ -182,6 +206,7 @@ $languages = array(
 		'name'   => 'English',
 		'dir'    => 'ltr',
 		'flag'   => 'ca',
+		'show'   => true,
 	),
 	'en_GB' => array(
 		'code'   => 'en',
@@ -189,6 +214,7 @@ $languages = array(
 		'name'   => 'English',
 		'dir'    => 'ltr',
 		'flag'   => 'gb',
+		'show'   => true,
 	),
 	'en_NZ' => array(
 		'code'   => 'en',
@@ -196,6 +222,7 @@ $languages = array(
 		'name'   => 'English',
 		'dir'    => 'ltr',
 		'flag'   => 'nz',
+		'show'   => true,
 	),
 	'en_US' => array(
 		'code'   => 'en',
@@ -203,6 +230,7 @@ $languages = array(
 		'name'   => 'English',
 		'dir'    => 'ltr',
 		'flag'   => 'us',
+		'show'   => true,
 	),
 	'en_ZA' => array(
 		'code'   => 'en',
@@ -210,6 +238,7 @@ $languages = array(
 		'name'   => 'English',
 		'dir'    => 'ltr',
 		'flag'   => 'za',
+		'show'   => true,
 	),
 	'eo' => array(
 		'code'   => 'eo',
@@ -217,6 +246,7 @@ $languages = array(
 		'name'   => 'Esperanto',
 		'dir'    => 'ltr',
 		'flag'   => 'esperanto',
+		'show'   => true,
 	),
 	'es_AR' => array(
 		'code'   => 'es',
@@ -224,6 +254,7 @@ $languages = array(
 		'name'   => 'Español',
 		'dir'    => 'ltr',
 		'flag'   => 'ar',
+		'show'   => true,
 	),
 	'es_CL' => array(
 		'code'   => 'es',
@@ -231,6 +262,7 @@ $languages = array(
 		'name'   => 'Español',
 		'dir'    => 'ltr',
 		'flag'   => 'cl',
+		'show'   => true,
 	),
 	'es_CO' => array(
 		'code'   => 'es',
@@ -238,6 +270,7 @@ $languages = array(
 		'name'   => 'Español',
 		'dir'    => 'ltr',
 		'flag'   => 'co',
+		'show'   => true,
 	),
 	'es_ES' => array(
 		'code'   => 'es',
@@ -245,6 +278,7 @@ $languages = array(
 		'name'   => 'Español',
 		'dir'    => 'ltr',
 		'flag'   => 'es',
+		'show'   => true,
 	),
 	'es_GT' => array(
 		'code'   => 'es',
@@ -252,6 +286,7 @@ $languages = array(
 		'name'   => 'Español',
 		'dir'    => 'ltr',
 		'flag'   => 'gt',
+		'show'   => true,
 	),
 	'es_MX' => array(
 		'code'   => 'es',
@@ -259,6 +294,7 @@ $languages = array(
 		'name'   => 'Español',
 		'dir'    => 'ltr',
 		'flag'   => 'mx',
+		'show'   => true,
 	),
 	'es_PE' => array(
 		'code'   => 'es',
@@ -266,6 +302,7 @@ $languages = array(
 		'name'   => 'Español',
 		'dir'    => 'ltr',
 		'flag'   => 'pe',
+		'show'   => true,
 	),
 	'es_VE' => array(
 		'code'   => 'es',
@@ -273,6 +310,7 @@ $languages = array(
 		'name'   => 'Español',
 		'dir'    => 'ltr',
 		'flag'   => 've',
+		'show'   => true,
 	),
 	'et' => array(
 		'code'   => 'et',
@@ -280,6 +318,7 @@ $languages = array(
 		'name'   => 'Eesti',
 		'dir'    => 'ltr',
 		'flag'   => 'ee',
+		'show'   => true,
 	),
 	'eu' => array(
 		'code'   => 'eu',
@@ -287,6 +326,7 @@ $languages = array(
 		'name'   => 'Euskara',
 		'dir'    => 'ltr',
 		'flag'   => 'basque',
+		'show'   => true,
 	),
 	'fa_AF' => array(
 		'code'   => 'fa',
@@ -294,6 +334,7 @@ $languages = array(
 		'name'   => 'فارسی',
 		'dir'    => 'rtl',
 		'flag'   => 'af',
+		'show'   => true,
 	),
 	'fa_IR' => array(
 		'code'   => 'fa',
@@ -301,6 +342,7 @@ $languages = array(
 		'name'   => 'فارسی',
 		'dir'    => 'rtl',
 		'flag'   => 'ir',
+		'show'   => true,
 	),
 	'fi' => array(
 		'code'   => 'fi',
@@ -308,6 +350,7 @@ $languages = array(
 		'name'   => 'Suomi',
 		'dir'    => 'ltr',
 		'flag'   => 'fi',
+		'show'   => true,
 	),
 	'fo' => array(
 		'code'   => 'fo',
@@ -315,6 +358,7 @@ $languages = array(
 		'name'   => 'Føroyskt',
 		'dir'    => 'ltr',
 		'flag'   => 'fo',
+		'show'   => true,
 	),
 	'fr_BE' => array(
 		'code'   => 'fr',
@@ -322,6 +366,7 @@ $languages = array(
 		'name'   => 'Français',
 		'dir'    => 'ltr',
 		'flag'   => 'be',
+		'show'   => true,
 	),
 	'fr_CA' => array(
 		'code'   => 'fr',
@@ -329,6 +374,7 @@ $languages = array(
 		'name'   => 'Français',
 		'dir'    => 'ltr',
 		'flag'   => 'quebec',
+		'show'   => true,
 	),
 	'fr_FR' => array(
 		'code'   => 'fr',
@@ -336,6 +382,7 @@ $languages = array(
 		'name'   => 'Français',
 		'dir'    => 'ltr',
 		'flag'   => 'fr',
+		'show'   => true,
 	),
 	'fy' => array(
 		'code'   => 'fy',
@@ -343,6 +390,7 @@ $languages = array(
 		'name'   => 'Frysk',
 		'dir'    => 'ltr',
 		'flag'   => 'nl',
+		'show'   => true,
 	),
 	'gd' => array(
 		'code'   => 'gd',
@@ -350,6 +398,7 @@ $languages = array(
 		'name'   => 'Gàidhlig',
 		'dir'    => 'ltr',
 		'flag'   => 'scotland',
+		'show'   => true,
 	),
 	'gl_ES' => array(
 		'code'   => 'gl',
@@ -357,6 +406,7 @@ $languages = array(
 		'name'   => 'Galego',
 		'dir'    => 'ltr',
 		'flag'   => 'galicia',
+		'show'   => true,
 	),
 	'gu' => array(
 		'code'   => 'gu',
@@ -364,6 +414,7 @@ $languages = array(
 		'name'   => 'ગુજરાતી',
 		'dir'    => 'ltr',
 		'flag'   => 'in',
+		'show'   => true,
 	),
 	'haz' => array(
 		'code'   => 'haz',
@@ -371,6 +422,7 @@ $languages = array(
 		'name'   => 'هزاره گی',
 		'dir'    => 'rtl',
 		'flag'   => 'af',
+		'show'   => true,
 	),
 	'he_IL' => array(
 		'code'   => 'he',
@@ -378,6 +430,7 @@ $languages = array(
 		'name'   => 'עברית',
 		'dir'    => 'rtl',
 		'flag'   => 'il',
+		'show'   => true,
 	),
 	'hi_IN' => array(
 		'code'   => 'hi',
@@ -385,6 +438,7 @@ $languages = array(
 		'name'   => 'हिन्दी',
 		'dir'    => 'ltr',
 		'flag'   => 'in',
+		'show'   => true,
 	),
 	'hr' => array(
 		'code'   => 'hr',
@@ -392,6 +446,7 @@ $languages = array(
 		'name'   => 'Hrvatski',
 		'dir'    => 'ltr',
 		'flag'   => 'hr',
+		'show'   => true,
 	),
 	'hu_HU' => array(
 		'code'   => 'hu',
@@ -399,6 +454,7 @@ $languages = array(
 		'name'   => 'Magyar',
 		'dir'    => 'ltr',
 		'flag'   => 'hu',
+		'show'   => true,
 	),
 	'hy' => array(
 		'code'   => 'hy',
@@ -406,6 +462,7 @@ $languages = array(
 		'name'   => 'Հայերեն',
 		'dir'    => 'ltr',
 		'flag'   => 'am',
+		'show'   => true,
 	),
 	'id_ID' => array(
 		'code'   => 'id',
@@ -413,6 +470,7 @@ $languages = array(
 		'name'   => 'Bahasa Indonesia',
 		'dir'    => 'ltr',
 		'flag'   => 'id',
+		'show'   => true,
 	),
 	'is_IS' => array(
 		'code'   => 'is',
@@ -420,6 +478,7 @@ $languages = array(
 		'name'   => 'Íslenska',
 		'dir'    => 'ltr',
 		'flag'   => 'is',
+		'show'   => true,
 	),
 	'it_IT' => array(
 		'code'   => 'it',
@@ -427,6 +486,7 @@ $languages = array(
 		'name'   => 'Italiano',
 		'dir'    => 'ltr',
 		'flag'   => 'it',
+		'show'   => true,
 	),
 	'ja' => array(
 		'code'   => 'ja',
@@ -434,6 +494,7 @@ $languages = array(
 		'name'   => '日本語',
 		'dir'    => 'ltr',
 		'flag'   => 'jp',
+		'show'   => true,
 	),
 	'jv_ID' => array(
 		'code'   => 'jv',
@@ -441,6 +502,7 @@ $languages = array(
 		'name'   => 'Basa Jawa',
 		'dir'    => 'ltr',
 		'flag'   => 'id',
+		'show'   => true,
 	),
 	'ka_GE' => array(
 		'code'   => 'ka',
@@ -448,6 +510,7 @@ $languages = array(
 		'name'   => 'ქართული',
 		'dir'    => 'ltr',
 		'flag'   => 'ge',
+		'show'   => true,
 	),
 	'kab' => array(
 		'code'   => 'kab',
@@ -455,6 +518,7 @@ $languages = array(
 		'name'   => 'Taqbaylit',
 		'dir'    => 'ltr',
 		'flag'   => 'dz',
+		'show'   => true,
 	),
 	'kk' => array(
 		'code'   => 'kk',
@@ -462,6 +526,7 @@ $languages = array(
 		'name'   => 'Қазақ тілі',
 		'dir'    => 'ltr',
 		'flag'   => 'kz',
+		'show'   => true,
 	),
 	'km' => array(
 		'code'   => 'km',
@@ -469,6 +534,7 @@ $languages = array(
 		'name'   => 'ភាសាខ្មែរ',
 		'dir'    => 'ltr',
 		'flag'   => 'kh',
+		'show'   => true,
 	),
 	'ko_KR' => array(
 		'code'   => 'ko',
@@ -476,6 +542,7 @@ $languages = array(
 		'name'   => '한국어',
 		'dir'    => 'ltr',
 		'flag'   => 'kr',
+		'show'   => true,
 	),
 	'ckb' => array(
 		'code'   => 'ku',
@@ -483,6 +550,7 @@ $languages = array(
 		'name'   => 'کوردی',
 		'dir'    => 'rtl',
 		'flag'   => 'kurdistan',
+		'show'   => true,
 	),
 	'lo' => array(
 		'code'   => 'lo',
@@ -490,6 +558,7 @@ $languages = array(
 		'name'   => 'ພາສາລາວ',
 		'dir'    => 'ltr',
 		'flag'   => 'la',
+		'show'   => true,
 	),
 	'lt_LT' => array(
 		'code'   => 'lt',
@@ -497,6 +566,7 @@ $languages = array(
 		'name'   => 'Lietuviškai',
 		'dir'    => 'ltr',
 		'flag'   => 'lt',
+		'show'   => true,
 	),
 	'lv' => array(
 		'code'   => 'lv',
@@ -504,6 +574,7 @@ $languages = array(
 		'name'   => 'Latviešu valoda',
 		'dir'    => 'ltr',
 		'flag'   => 'lv',
+		'show'   => true,
 	),
 	'mk_MK' => array(
 		'code'   => 'mk',
@@ -511,6 +582,7 @@ $languages = array(
 		'name'   => 'македонски јазик',
 		'dir'    => 'ltr',
 		'flag'   => 'mk',
+		'show'   => true,
 	),
 	'ml_IN' => array(
 		'code'   => 'ml',
@@ -518,6 +590,7 @@ $languages = array(
 		'name'   => 'മലയാളം',
 		'dir'    => 'ltr',
 		'flag'   => 'in',
+		'show'   => true,
 	),
 	'mn' => array(
 		'code'   => 'mn',
@@ -525,6 +598,7 @@ $languages = array(
 		'name'   => 'Монгол хэл',
 		'dir'    => 'ltr',
 		'flag'   => 'mn',
+		'show'   => true,
 	),
 	'mr' => array(
 		'code'   => 'mr',
@@ -532,6 +606,7 @@ $languages = array(
 		'name'   => 'मराठी',
 		'dir'    => 'ltr',
 		'flag'   => 'in',
+		'show'   => true,
 	),
 	'ms_MY' => array(
 		'code'   => 'ms',
@@ -539,6 +614,7 @@ $languages = array(
 		'name'   => 'Bahasa Melayu',
 		'dir'    => 'ltr',
 		'flag'   => 'my',
+		'show'   => true,
 	),
 	'my_MM' => array(
 		'code'   => 'my',
@@ -546,6 +622,7 @@ $languages = array(
 		'name'   => 'ဗမာစာ',
 		'dir'    => 'ltr',
 		'flag'   => 'mm',
+		'show'   => true,
 	),
 	'nb_NO' => array(
 		'code'   => 'nb',
@@ -553,6 +630,7 @@ $languages = array(
 		'name'   => 'Norsk Bokmål',
 		'dir'    => 'ltr',
 		'flag'   => 'no',
+		'show'   => true,
 	),
 	'ne_NP' => array(
 		'code'   => 'ne',
@@ -560,6 +638,7 @@ $languages = array(
 		'name'   => 'नेपाली',
 		'dir'    => 'ltr',
 		'flag'   => 'np',
+		'show'   => true,
 	),
 	'nl_BE' => array(
 		'code'   => 'nl',
@@ -567,6 +646,7 @@ $languages = array(
 		'name'   => 'Nederlands',
 		'dir'    => 'ltr',
 		'flag'   => 'be',
+		'show'   => true,
 	),
 	'nl_NL' => array(
 		'code'   => 'nl',
@@ -574,6 +654,7 @@ $languages = array(
 		'name'   => 'Nederlands',
 		'dir'    => 'ltr',
 		'flag'   => 'nl',
+		'show'   => true,
 	),
 	'nl_NL_formal' => array(
 		'code'   => 'nl',
@@ -581,6 +662,7 @@ $languages = array(
 		'name'   => 'Nederlands',
 		'dir'    => 'ltr',
 		'flag'   => 'nl',
+		'show'   => true,
 	),
 	'nn_NO' => array(
 		'code'   => 'nn',
@@ -588,6 +670,7 @@ $languages = array(
 		'name'   => 'Norsk Nynorsk',
 		'dir'    => 'ltr',
 		'flag'   => 'no',
+		'show'   => true,
 	),
 	'oci' => array(
 		'code'   => 'oc',
@@ -595,6 +678,7 @@ $languages = array(
 		'name'   => 'Occitan',
 		'dir'    => 'ltr',
 		'flag'   => 'occitania',
+		'show'   => true,
 	),
 	'pa_IN' => array(
 		'code'   => 'pa',
@@ -602,6 +686,7 @@ $languages = array(
 		'name'   => 'ਪੰਜਾਬੀ',
 		'dir'    => 'ltr',
 		'flag'   => 'in',
+		'show'   => true,
 	),
 	'pl_PL' => array(
 		'code'   => 'pl',
@@ -609,6 +694,7 @@ $languages = array(
 		'name'   => 'Polski',
 		'dir'    => 'ltr',
 		'flag'   => 'pl',
+		'show'   => true,
 	),
 	'ps' => array(
 		'code'   => 'ps',
@@ -616,6 +702,7 @@ $languages = array(
 		'name'   => 'پښتو',
 		'dir'    => 'rtl',
 		'flag'   => 'af',
+		'show'   => true,
 	),
 	'pt_BR' => array(
 		'code'   => 'pt',
@@ -623,6 +710,7 @@ $languages = array(
 		'name'   => 'Português',
 		'dir'    => 'ltr',
 		'flag'   => 'br',
+		'show'   => true,
 	),
 	'pt_PT' => array(
 		'code'   => 'pt',
@@ -630,6 +718,7 @@ $languages = array(
 		'name'   => 'Português',
 		'dir'    => 'ltr',
 		'flag'   => 'pt',
+		'show'   => true,
 	),
 	'rhg' => array(
 		'code'   => 'rhg',
@@ -637,6 +726,7 @@ $languages = array(
 		'name'   => 'Ruáinga',
 		'dir'    => 'ltr',
 		'flag'   => 'mm',
+		'show'   => true,
 	),
 	'ro_RO' => array(
 		'code'   => 'ro',
@@ -644,6 +734,7 @@ $languages = array(
 		'name'   => 'Română',
 		'dir'    => 'ltr',
 		'flag'   => 'ro',
+		'show'   => true,
 	),
 	'ru_RU' => array(
 		'code'   => 'ru',
@@ -651,6 +742,7 @@ $languages = array(
 		'name'   => 'Русский',
 		'dir'    => 'ltr',
 		'flag'   => 'ru',
+		'show'   => true,
 	),
 	'sah' => array(
 		'code'   => 'sah',
@@ -658,6 +750,7 @@ $languages = array(
 		'name'   => 'Сахалыы',
 		'dir'    => 'ltr',
 		'flag'   => 'ru',
+		'show'   => true,
 	),
 	'si_LK' => array(
 		'code'   => 'si',
@@ -665,6 +758,7 @@ $languages = array(
 		'name'   => 'සිංහල',
 		'dir'    => 'ltr',
 		'flag'   => 'lk',
+		'show'   => true,
 	),
 	'sk_SK' => array(
 		'code'   => 'sk',
@@ -672,6 +766,7 @@ $languages = array(
 		'name'   => 'Slovenčina',
 		'dir'    => 'ltr',
 		'flag'   => 'sk',
+		'show'   => true,
 	),
 	'sl_SI' => array(
 		'code'   => 'sl',
@@ -679,6 +774,7 @@ $languages = array(
 		'name'   => 'Slovenščina',
 		'dir'    => 'ltr',
 		'flag'   => 'si',
+		'show'   => true,
 	),
 	'so_SO' => array(
 		'code'   => 'so',
@@ -686,6 +782,7 @@ $languages = array(
 		'name'   => 'Af-Soomaali',
 		'dir'    => 'ltr',
 		'flag'   => 'so',
+		'show'   => true,
 	),
 	'sq' => array(
 		'code'   => 'sq',
@@ -693,6 +790,7 @@ $languages = array(
 		'name'   => 'Shqip',
 		'dir'    => 'ltr',
 		'flag'   => 'al',
+		'show'   => true,
 	),
 	'sr_RS' => array(
 		'code'   => 'sr',
@@ -700,6 +798,7 @@ $languages = array(
 		'name'   => 'Српски језик',
 		'dir'    => 'ltr',
 		'flag'   => 'rs',
+		'show'   => true,
 	),
 	'su_ID' => array(
 		'code'   => 'su',
@@ -707,6 +806,7 @@ $languages = array(
 		'name'   => 'Basa Sunda',
 		'dir'    => 'ltr',
 		'flag'   => 'id',
+		'show'   => true,
 	),
 	'sv_SE' => array(
 		'code'   => 'sv',
@@ -714,6 +814,7 @@ $languages = array(
 		'name'   => 'Svenska',
 		'dir'    => 'ltr',
 		'flag'   => 'se',
+		'show'   => true,
 	),
 	'szl' => array(
 		'code'   => 'szl',
@@ -721,6 +822,7 @@ $languages = array(
 		'name'   => 'Ślōnskŏ gŏdka',
 		'dir'    => 'ltr',
 		'flag'   => 'pl',
+		'show'   => true,
 	),
 	'ta_IN' => array(
 		'code'   => 'ta',
@@ -728,6 +830,7 @@ $languages = array(
 		'name'   => 'தமிழ்',
 		'dir'    => 'ltr',
 		'flag'   => 'in',
+		'show'   => true,
 	),
 	'ta_LK' => array(
 		'code'   => 'ta',
@@ -735,6 +838,7 @@ $languages = array(
 		'name'   => 'தமிழ்',
 		'dir'    => 'ltr',
 		'flag'   => 'lk',
+		'show'   => true,
 	),
 	'tah' => array(
 		'code'   => 'ty',
@@ -742,6 +846,7 @@ $languages = array(
 		'name'   => 'Reo Tahiti',
 		'dir'    => 'ltr',
 		'flag'   => 'pf',
+		'show'   => true,
 	),
 	'te' => array(
 		'code'   => 'te',
@@ -749,6 +854,7 @@ $languages = array(
 		'name'   => 'తెలుగు',
 		'dir'    => 'ltr',
 		'flag'   => 'in',
+		'show'   => true,
 	),
 	'th' => array(
 		'code'   => 'th',
@@ -756,6 +862,7 @@ $languages = array(
 		'name'   => 'ไทย',
 		'dir'    => 'ltr',
 		'flag'   => 'th',
+		'show'   => true,
 	),
 	'tl' => array(
 		'code'   => 'tl',
@@ -763,6 +870,7 @@ $languages = array(
 		'name'   => 'Tagalog',
 		'dir'    => 'ltr',
 		'flag'   => 'ph',
+		'show'   => true,
 	),
 	'tr_TR' => array(
 		'code'   => 'tr',
@@ -770,6 +878,7 @@ $languages = array(
 		'name'   => 'Türkçe',
 		'dir'    => 'ltr',
 		'flag'   => 'tr',
+		'show'   => true,
 	),
 	'tt_RU' => array(
 		'code'   => 'tt',
@@ -777,6 +886,7 @@ $languages = array(
 		'name'   => 'Татар теле',
 		'dir'    => 'ltr',
 		'flag'   => 'ru',
+		'show'   => true,
 	),
 	'ug_CN' => array(
 		'code'   => 'ug',
@@ -784,6 +894,7 @@ $languages = array(
 		'name'   => 'Uyƣurqə',
 		'dir'    => 'ltr',
 		'flag'   => 'cn',
+		'show'   => true,
 	),
 	'uk' => array(
 		'code'   => 'uk',
@@ -791,6 +902,7 @@ $languages = array(
 		'name'   => 'Українська',
 		'dir'    => 'ltr',
 		'flag'   => 'ua',
+		'show'   => true,
 	),
 	'ur' => array(
 		'code'   => 'ur',
@@ -798,6 +910,7 @@ $languages = array(
 		'name'   => 'اردو',
 		'dir'    => 'rtl',
 		'flag'   => 'pk',
+		'show'   => true,
 	),
 	'uz_UZ' => array(
 		'code'   => 'uz',
@@ -805,6 +918,7 @@ $languages = array(
 		'name'   => 'Oʻzbek',
 		'dir'    => 'ltr',
 		'flag'   => 'uz',
+		'show'   => true,
 	),
 	'vec' => array(
 		'code'   => 'vec',
@@ -812,6 +926,7 @@ $languages = array(
 		'name'   => 'Vèneto',
 		'dir'    => 'ltr',
 		'flag'   => 'veneto',
+		'show'   => true,
 	),
 	'vi' => array(
 		'code'   => 'vi',
@@ -819,6 +934,7 @@ $languages = array(
 		'name'   => 'Tiếng Việt',
 		'dir'    => 'ltr',
 		'flag'   => 'vn',
+		'show'   => true,
 	),
 	'zh_CN' => array(
 		'code'   => 'zh',
@@ -826,6 +942,7 @@ $languages = array(
 		'name'   => '中文 (中国)',
 		'dir'    => 'ltr',
 		'flag'   => 'cn',
+		'show'   => true,
 	),
 	'zh_HK' => array(
 		'code'   => 'zh',
@@ -833,6 +950,7 @@ $languages = array(
 		'name'   => '中文 (香港)',
 		'dir'    => 'ltr',
 		'flag'   => 'hk',
+		'show'   => true,
 	),
 	'zh_TW' => array(
 		'code'   => 'zh',
@@ -840,14 +958,6 @@ $languages = array(
 		'name'   => '中文 (台灣)',
 		'dir'    => 'ltr',
 		'flag'   => 'tw',
+		'show'   => true,
 	),
 );
-
-/**
- * Filter the list of predefined languages
- *
- * @since 1.7.10
- *
- * @param array $languages
- */
-$languages = apply_filters( 'pll_predefined_languages', $languages );
