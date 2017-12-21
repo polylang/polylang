@@ -29,13 +29,9 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		// Filters categories and post tags by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 
-		// Rewrites archives, next and previous post links to filter them by language
+		// Rewrites archives links to filter them by language
 		add_filter( 'getarchives_join', array( $this, 'getarchives_join' ), 10, 2 );
 		add_filter( 'getarchives_where', array( $this, 'getarchives_where' ), 10, 2 );
-		add_filter( 'get_previous_post_join', array( $this, 'posts_join' ), 10, 5 );
-		add_filter( 'get_next_post_join', array( $this, 'posts_join' ), 10, 5 );
-		add_filter( 'get_previous_post_where', array( $this, 'posts_where' ), 10, 5 );
-		add_filter( 'get_next_post_where', array( $this, 'posts_where' ), 10, 5 );
 
 		// Filters the widgets according to the current language
 		add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 2 );
@@ -195,38 +191,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 */
 	public function getarchives_where( $sql, $r ) {
 		return ! empty( $r['post_type'] ) && $this->model->is_translated_post_type( $r['post_type'] ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
-	}
-
-	/**
-	 * Modifies the sql request for get_adjacent_post to filter by the current language
-	 *
-	 * @since 0.1
-	 *
-	 * @param string  $sql            The JOIN clause in the SQL.
-	 * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
-	 * @param array   $excluded_terms Array of excluded term IDs.
-	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
-	 * @param WP_Post $post           WP_Post object.
-	 * @return string modified JOIN clause
-	 */
-	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
-		return $this->model->is_translated_post_type( $post->post_type ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
-	}
-
-	/**
-	 * Modifies the sql request for wp_get_archives and get_adjacent_post to filter by the current language
-	 *
-	 * @since 0.1
-	 *
-	 * @param string  $sql            The WHERE clause in the SQL.
-	 * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
-	 * @param array   $excluded_terms Array of excluded term IDs.
-	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
-	 * @param WP_Post $post           WP_Post object.
-	 * @return string modified WHERE clause
-	 */
-	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
-		return $this->model->is_translated_post_type( $post->post_type ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
 	}
 
 	/**

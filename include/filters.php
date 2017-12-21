@@ -28,6 +28,12 @@ class PLL_Filters {
 		// Filters the get_pages function according to the current language
 		add_filter( 'get_pages', array( $this, 'get_pages' ), 10, 2 );
 
+		// Rewrites next and previous post links to filter them by language
+		add_filter( 'get_previous_post_join', array( $this, 'posts_join' ), 10, 5 );
+		add_filter( 'get_next_post_join', array( $this, 'posts_join' ), 10, 5 );
+		add_filter( 'get_previous_post_where', array( $this, 'posts_where' ), 10, 5 );
+		add_filter( 'get_next_post_where', array( $this, 'posts_where' ), 10, 5 );
+
 		// Converts the locale to a valid W3C locale
 		add_filter( 'language_attributes', array( $this, 'language_attributes' ) );
 
@@ -172,6 +178,38 @@ class PLL_Filters {
 
 		$once = false; // In case get_pages is called another time
 		return $pages;
+	}
+
+	/**
+	 * Modifies the sql request for get_adjacent_post to filter by the current language
+	 *
+	 * @since 0.1
+	 *
+	 * @param string  $sql            The JOIN clause in the SQL.
+	 * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
+	 * @param array   $excluded_terms Array of excluded term IDs.
+	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
+	 * @param WP_Post $post           WP_Post object.
+	 * @return string modified JOIN clause
+	 */
+	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
+		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
+	}
+
+	/**
+	 * Modifies the sql request for wp_get_archives and get_adjacent_post to filter by the current language
+	 *
+	 * @since 0.1
+	 *
+	 * @param string  $sql            The WHERE clause in the SQL.
+	 * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
+	 * @param array   $excluded_terms Array of excluded term IDs.
+	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
+	 * @param WP_Post $post           WP_Post object.
+	 * @return string modified WHERE clause
+	 */
+	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
+		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
 	}
 
 	/**
