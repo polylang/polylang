@@ -30,7 +30,7 @@ class PLL_Admin_Base extends PLL_Base {
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
 
 		// Lingotek
-		if ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
+		if ( ! defined( 'POLYLANG_PRO' ) && ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) ) {
 			require_once POLYLANG_DIR . '/lingotek/lingotek.php';
 		}
 	}
