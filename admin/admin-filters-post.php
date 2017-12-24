@@ -474,7 +474,9 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @param string $taxonomy   Taxonomy slug.
 	 */
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy ) {
-		if ( $this->model->is_translated_taxonomy( $taxonomy ) && ! empty( $terms ) ) {
+		static $avoid_recursion;
+
+		if ( ! $avoid_recursion && $this->model->is_translated_taxonomy( $taxonomy ) && ! empty( $terms ) ) {
 			$lang = $this->model->post->get_language( $object_id );
 
 			if ( ! empty( $lang ) && is_array( $terms ) ) {
@@ -518,7 +520,9 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 							}
 						}
 
+						$avoid_recursion = true;
 						wp_set_object_terms( $object_id, array_unique( $newterms ), $taxonomy, true ); // Append
+						$avoid_recursion = false;
 					}
 				}
 			}
