@@ -202,8 +202,14 @@ class PLL_Filters {
 	 * @return array
 	 */
 	public function fix_delete_default_category( $caps, $cap, $user_id, $args ) {
-		if ( 'delete_term' === $cap && array_intersect( $args, $this->model->term->get_translations( get_option( 'default_category' ) ) ) ) {
-			$caps[] = 'do_not_allow';
+		if ( 'delete_term' === $cap ) {
+			$term = get_term( reset( $args ) ); // Since WP 4.4, we can get the term to get the taxonomy
+			if ( $term instanceof WP_Term ) {
+				$default_cat = get_option( 'default_' . $term->taxonomy );
+				if ( $default_cat && array_intersect( $args, $this->model->term->get_translations( $default_cat ) ) ) {
+					$caps[] = 'do_not_allow';
+				}
+			}
 		}
 
 		return $caps;
