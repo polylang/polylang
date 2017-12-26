@@ -19,8 +19,8 @@ class PLL_Jetpack {
 		add_filter( 'jetpack_relatedposts_filter_filters', array( $this, 'jetpack_relatedposts_filter_filters' ), 10, 2 );
 
 		// Jetpack infinite scroll
-		if ( ! defined( 'PLL_AJAX_ON_FRONT' ) && isset( $_GET['infinity'], $_POST['action'] ) && 'infinite_scroll' == $_POST['action'] ) {
-			define( 'PLL_AJAX_ON_FRONT', true );
+		if ( isset( $_GET['infinity'], $_POST['action'] ) && 'infinite_scroll' == $_POST['action'] ) {
+			add_filter( 'pll_is_ajax_on_front', '__return_true' );
 		}
 	}
 

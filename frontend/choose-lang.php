@@ -32,7 +32,7 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.8
 	 */
 	public function init() {
-		if ( PLL_AJAX_ON_FRONT || false === stripos( $_SERVER['SCRIPT_FILENAME'], 'index.php' ) ) {
+		if ( Polylang::is_ajax_on_front() || false === stripos( $_SERVER['SCRIPT_FILENAME'], 'index.php' ) ) {
 			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( $_REQUEST['lang'] ) );
 		}
 
