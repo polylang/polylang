@@ -155,6 +155,14 @@ $languages = array(
 		'flag'     => 'ph',
 		'facebook' => 'cx_PH',
 	),
+	'ckb' => array(
+		'code'     => 'ku',
+		'locale'   => 'ckb',
+		'name'     => 'کوردی',
+		'dir'      => 'rtl',
+		'flag'     => 'kurdistan',
+		'facebook' => 'cb_IQ',
+	),
 	'co' => array(
 		'facebook' => 'co_FR',
 	),
@@ -611,14 +619,6 @@ $languages = array(
 		'flag'     => 'kr',
 		'facebook' => 'ko_KR',
 	),
-	'ckb' => array(
-		'code'     => 'ku',
-		'locale'   => 'ckb',
-		'name'     => 'کوردی',
-		'dir'      => 'rtl',
-		'flag'     => 'kurdistan',
-		'facebook' => 'cb_IQ',
-	),
 	'ku' => array(
 		'facebook' => 'ku_TR',
 	),
@@ -658,17 +658,15 @@ $languages = array(
 		'flag'     => 'lv',
 		'facebook' => 'lv_LV',
 	),
+	'mg_MG' => array(
+		'facebook' => 'mg_MG',
+	),
 	'mk_MK' => array(
 		'code'     => 'mk',
 		'locale'   => 'mk_MK',
 		'name'     => 'македонски јазик',
 		'dir'      => 'ltr',
 		'flag'     => 'mk',
-	),
-	'mg_MG' => array(
-		'facebook' => 'mg_MG',
-	),
-	'mk_MK' => array(
 		'facebook' => 'mk_MK',
 	),
 	'ml_IN' => array(
@@ -678,6 +676,9 @@ $languages = array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'ml_IN',
+	),
+	'mlt' => array(
+		'facebook' => 'mt_MT',
 	),
 	'mn' => array(
 		'code'     => 'mn',
@@ -706,9 +707,6 @@ $languages = array(
 		'dir'      => 'ltr',
 		'flag'     => 'my',
 		'facebook' => 'ms_MY',
-	),
-	'mlt' => array(
-		'facebook' => 'mt_MT',
 	),
 	'my_MM' => array(
 		'code'     => 'my',
