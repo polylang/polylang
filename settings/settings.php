@@ -4,7 +4,7 @@
  * A class for the Polylang settings pages
  * accessible in $polylang global object
  *
- * properties:
+ * Properties:
  * options          => inherited, reference to Polylang options array
  * model            => inherited, reference to PLL_Model object
  * links_model      => inherited, reference to PLL_Links_Model object
@@ -38,11 +38,11 @@ class PLL_Settings extends PLL_Admin_Base {
 		// FIXME put this as late as possible
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
-		// adds screen options and the about box in the languages admin panel
+		// Adds screen options and the about box in the languages admin panel
 		add_action( 'load-toplevel_page_mlang', array( $this, 'load_page' ) );
 		add_action( 'load-languages_page_mlang_strings', array( $this, 'load_page_strings' ) );
 
-		// saves per-page value in screen option
+		// Saves per-page value in screen option
 		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
 	}
 
@@ -160,17 +160,17 @@ class PLL_Settings extends PLL_Admin_Base {
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
 
 				if ( $this->model->add_language( $_POST ) && 'en_US' !== $_POST['locale'] ) {
-					// attempts to install the language pack
+					// Attempts to install the language pack
 					require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 					if ( ! wp_download_language_pack( $_POST['locale'] ) ) {
 						add_settings_error( 'general', 'pll_download_mo', __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' ) );
 					}
 
-					// force checking for themes and plugins translations updates
+					// Force checking for themes and plugins translations updates
 					wp_clean_themes_cache();
 					wp_clean_plugins_cache();
 				}
-				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
+				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'delete':
@@ -180,13 +180,13 @@ class PLL_Settings extends PLL_Admin_Base {
 					$this->model->delete_language( (int) $_GET['lang'] );
 				}
 
-				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
+				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'update':
 				check_admin_referer( 'add-lang', '_wpnonce_add-lang' );
 				$error = $this->model->update_language( $_POST );
-				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
+				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'default-lang':
@@ -196,7 +196,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					$this->model->update_default_lang( $lang->slug );
 				}
 
-				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
+				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'content-default-lang':
@@ -211,7 +211,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					}
 				}
 
-				self::redirect(); // to refresh the page ( possible thanks to the $_GET['noheader']=true )
+				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
 
 			case 'activate':
@@ -239,14 +239,14 @@ class PLL_Settings extends PLL_Admin_Base {
 
 	/**
 	 * Displays the 3 tabs pages: languages, strings translations, settings
-	 * also manages user input for these pages
+	 * Also manages user input for these pages
 	 *
 	 * @since 0.1
 	 */
 	public function languages_page() {
 		switch ( $this->active_tab ) {
 			case 'lang':
-				// prepare the list table of languages
+				// Prepare the list table of languages
 				$list_table = new PLL_Table_Languages();
 				$list_table->prepare_items( $this->model->get_languages_list() );
 				break;
@@ -257,7 +257,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				break;
 		}
 
-		// handle user input
+		// Handle user input
 		$action = isset( $_REQUEST['pll_action'] ) ? $_REQUEST['pll_action'] : '';
 		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) {
 			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
@@ -265,7 +265,7 @@ class PLL_Settings extends PLL_Admin_Base {
 			$this->handle_actions( $action );
 		}
 
-		// displays the page
+		// Displays the page
 		include PLL_SETTINGS_INC . '/view-languages.php';
 	}
 
@@ -312,7 +312,7 @@ class PLL_Settings extends PLL_Admin_Base {
 			set_transient( 'settings_errors', $errors, 30 );
 			$args['settings-updated'] = 1;
 		}
-		// remove possible 'pll_action' and 'lang' query args from the referer before redirecting
+		// Remove possible 'pll_action' and 'lang' query args from the referer before redirecting
 		wp_safe_redirect( add_query_arg( $args, remove_query_arg( array( 'pll_action', 'lang' ), wp_get_referer() ) ) );
 		exit;
 	}
@@ -323,17 +323,32 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 2.3
 	 */
 	public function get_predefined_languages() {
+		require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 		include PLL_SETTINGS_INC . '/languages.php';
-		$languages = wp_list_filter( $languages, array( 'show' => true ) );
+
+		// Keep only languages with existing WP language pack
+		$translations = wp_get_available_translations();
+		$translations['en_US'] = ''; // Languages packs don't include en_US
+		$languages = array_intersect_key( $languages, $translations );
 
 		/**
 		 * Filter the list of predefined languages
 		 *
 		 * @since 1.7.10
-		 * @since 2.3 The languages arrays use associative keys instead of numerical keys: see settings/languages.php
+		 * @since 2.3 The languages arrays use associative keys instead of numerical keys
+		 * @see settings/languages.php
 		 *
 		 * @param array $languages
 		 */
-		return apply_filters( 'pll_predefined_languages', $languages );
+		$languages = apply_filters( 'pll_predefined_languages', $languages );
+
+		// Keep only languages with all necessary informations
+		foreach ( $languages as $k => $lang ) {
+			if ( ! isset( $lang['code'], $lang['locale'], $lang['name'], $lang['dir'], $lang['flag'] ) ) {
+				unset( $languages[ $k ] );
+			}
+		}
+
+		return $languages;
 	}
 }
