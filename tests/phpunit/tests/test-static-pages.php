@@ -454,4 +454,58 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 		$this->assertEquals( 'http://example.org/fr/articles/', get_post_type_archive_link( 'post' ) );
 	}
+
+	// Bug introduced and fixed in 2.3
+	function test_archives_with_front_page_with_redirect_lang() {
+		global $wp_rewrite;
+
+		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		self::$polylang->options['redirect_lang'] = 1;
+		self::$polylang->model->clean_languages_cache();
+
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+		$wp_rewrite->flush_rules();
+
+		$this->go_to( home_url( '/en/author/admin/' ) );
+		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
+
+		$this->go_to( home_url( '/en/2007/' ) );
+		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
+
+		$this->go_to( home_url( '/en/feed/' ) );
+		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
+
+		$this->go_to( home_url( '/en/?s=test' ) );
+		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
+	}
+
+		// Bug introduced and fixed in 2.3
+	function test_post_type_archives_with_front_page_with_redirect_lang() {
+		global $wp_rewrite;
+
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+
+		self::$polylang->options['post_types'] = array(
+			'trcpt' => 'trcpt',
+		);
+
+		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // translated custom post type with archives
+
+		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		self::$polylang->options['redirect_lang'] = 1;
+		self::$polylang->model->clean_languages_cache();
+
+		$wp_rewrite->flush_rules();
+
+		$this->go_to( home_url( '/en/trcpt/' ) );
+		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
+
+		_unregister_post_type( 'trcpt' );
+	}
 }
