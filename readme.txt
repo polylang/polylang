@@ -76,6 +76,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.2.8 =
+
+* Pro: Fix: Impossible to link past events by translation in The Events Calendar
+* Disallow to delete translations of the default term for all taxonomies
+* Fix: Auto add pages adds WooCommerce pages in default language to menus in all languages
+
 = 2.2.7 (2017-11-30) =
 
 * Fix queries by taxonomy broken since WP 4.9

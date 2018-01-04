@@ -12,7 +12,7 @@ Domain Path: /languages
  */
 
 /*
- * Copyright 2011-2017 Frédéric Demarle
+ * Copyright 2011-2018 Frédéric Demarle
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
