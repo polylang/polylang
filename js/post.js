@@ -26,7 +26,7 @@
 				r = wpAjax.broken;
 			}
 
-			r = $( '<p id="tagcloud-' + tax + '" class="the-tagcloud">' + r + '</p>' );
+			r = $( '<div id="tagcloud-' + tax + '" class="the-tagcloud">' + r + '</div>' );
 			$( 'a', r ).click(function(){
 				tagBox.flushTags( $( this ).closest( '.inside' ).children( '.tagsdiv' ), this );
 				return false;
