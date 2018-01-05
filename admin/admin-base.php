@@ -329,8 +329,6 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @param object $wp_admin_bar
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
-		$url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
 		$all_item = (object) array(
 			'slug' => 'all',
 			'name' => __( 'Show all languages', 'polylang' ),
@@ -349,7 +347,7 @@ class PLL_Admin_Base extends PLL_Base {
 		$wp_admin_bar->add_menu( array(
 			'id'     => 'languages',
 			'title'  => $selected->flag . $title,
-			'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged', $url ) ) ),
+			'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
 			'meta'   => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
 		) );
 
@@ -362,7 +360,7 @@ class PLL_Admin_Base extends PLL_Base {
 				'parent' => 'languages',
 				'id'     => $lang->slug,
 				'title'  => $lang->flag . esc_html( $lang->name ),
-				'href'   => esc_url( add_query_arg( 'lang', $lang->slug, remove_query_arg( 'paged', $url ) ) ),
+				'href'   => esc_url( add_query_arg( 'lang', $lang->slug, remove_query_arg( 'paged' ) ) ),
 				'meta'   => 'all' === $lang->slug ? array() : array( 'lang' => esc_attr( $lang->get_locale( 'display' ) ) ),
 			) );
 		}
