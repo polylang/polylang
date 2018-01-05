@@ -76,6 +76,27 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.3 =
+
+* Pro: Duplicating a post now duplicates untranslated terms and the featured image (if media are translatable)
+* Pro: Allow to share slugs when creating a post or term with the REST API
+* Pro: Load asynchronously the script added on front for multiple domains and subdomains
+* Pro: Fix SSO when using subdomains and a cache plugin
+* Pro: Fix 'lang' parameter not interpreted when the query includes 'name'
+* Refactor the synchronization of metas for better synchronization and performance improvement
+* Refactor the synchronization of taxonomy terms for performance improvement
+* Refactor language and translations saving for prformance improvement
+* Refactor the synchronization of sticky posts
+* Remove all languages files. All translations are now maintained on https://translate.wordpress.org/projects/wp-plugins/polylang #199
+* Refactor the list of languages to merge predefined languages, Facebook locales and fixes for W3C locales
+* Automatically deactivate Polylang when activating Polylang Pro
+* Disable programmatically translated post types and taxonomies in settings. Props Ulrich Pogson. #180
+* Set the cookie language in Javascript when a cache plugin is active
+* Automatically remove the home page from cache when requesting the detection of the browser preferred language
+* Fix WP Rocket clearing the cache of the wrong adjacent post
+* Fix random header image
+* Fix home page not correctly loaded when adding a query var
+
 = 2.2.8 =
 
 * Pro: Fix: Impossible to link past events by translation in The Events Calendar
