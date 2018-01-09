@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.2.7
+Stable tag: 2.2.8
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -97,11 +97,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix random header image
 * Fix home page not correctly loaded when adding a query var
 
-= 2.2.8 =
+= 2.2.8 (2018-01-09) =
 
 * Pro: Fix: Impossible to link past events by translation in The Events Calendar
 * Disallow to delete translations of the default term for all taxonomies
 * Fix: Auto add pages adds WooCommerce pages in default language to menus in all languages
+* Fix most used tag cloud in Tags metabox in WP4.9+. Props Pär Thernström. #208
 
 = 2.2.7 (2017-11-30) =
 
