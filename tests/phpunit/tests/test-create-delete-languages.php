@@ -73,6 +73,30 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array(), self::$polylang->model->get_languages_list() );
 	}
 
+	// Bug fixed in 2.3
+	function test_unique_language_code_if_same_as_locale() {
+		// First language
+		$args = array(
+			'name' => 'العربية',
+			'slug' => 'a', // Intentional mistake
+			'locale' => 'ar',
+			'rtl' => 1,
+			'flag' => 'arab',
+			'term_group' => 1,
+		);
+
+		$this->assertTrue( self::$polylang->model->add_language( $args ) );
+		unset( $GLOBALS['wp_settings_errors'] ); // clean "errors"
+
+		$lang = self::$polylang->model->get_language( 'ar' );
+		$args['lang_id'] = $lang->term_id;
+		$args['slug'] = 'ar';
+		$this->assertTrue( self::$polylang->model->update_language( $args ) );
+		unset( $GLOBALS['wp_settings_errors'] ); // clean "errors"
+
+		self::$polylang->model->delete_language( $lang->term_id );
+	}
+
 	function test_invalid_languages() {
 		global $wp_settings_errors;
 
