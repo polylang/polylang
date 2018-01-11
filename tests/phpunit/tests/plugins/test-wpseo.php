@@ -56,6 +56,7 @@ class WPSEO_Test extends PLL_UnitTestCase {
 
 		_wpseo_activate();
 		$GLOBALS['wpseo_sitemaps'] = new WPSEO_Sitemaps;
+		add_action( 'pll_language_defined', array( new PLL_WPSEO(), 'init' ) ); // Load the compatibility layer
 
 		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 		self::$polylang->init();

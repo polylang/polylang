@@ -15,15 +15,14 @@ class PLL_Plugins_Compat {
 	 * @since 1.0
 	 */
 	protected function __construct() {
+		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
+
 		// WordPress Importer
 		add_action( 'init', array( $this, 'maybe_wordpress_importer' ) );
 		add_filter( 'wp_import_terms', array( $this, 'wp_import_terms' ) );
 
 		// YARPP
 		add_action( 'init', array( $this, 'yarpp_init' ) ); // after Polylang has registered its taxonomy in setup_theme
-
-		// Yoast SEO
-		add_action( 'pll_language_defined', array( $this->wpseo = new PLL_WPSEO(), 'init' ) );
 
 		// Custom field template
 		add_action( 'add_meta_boxes', array( $this, 'cft_copy' ), 10, 2 );
@@ -39,7 +38,7 @@ class PLL_Plugins_Compat {
 		add_filter( 'option_duplicate_post_taxonomies_blacklist', array( $this, 'duplicate_post_taxonomies_blacklist' ) );
 
 		// Jetpack
-		$this->jetpack = new PLL_Jetpack();
+		$this->jetpack = new PLL_Jetpack(); // Must be loaded before the plugin is active
 
 		// WP Sweep
 		add_filter( 'wp_sweep_excluded_taxonomies', array( $this, 'wp_sweep_excluded_taxonomies' ) );
@@ -54,11 +53,6 @@ class PLL_Plugins_Compat {
 		if ( function_exists( 'redirect_to_mapped_domain' ) && ! get_site_option( 'dm_no_primary_domain' ) ) {
 			remove_action( 'template_redirect', 'redirect_to_mapped_domain' );
 			add_action( 'template_redirect', array( $this, 'dm_redirect_to_mapped_domain' ) );
-		}
-
-		// Cache plugins
-		if ( defined( 'WP_CACHE' ) && WP_CACHE ) {
-			add_action( 'pll_init', array( $this->cache_compat = new PLL_Cache_Compat(), 'init' ) );
 		}
 	}
 
@@ -75,6 +69,49 @@ class PLL_Plugins_Compat {
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * Look for active plugins and load compatibility layer if needed
+	 *
+	 * @since 2.3
+	 */
+	public function plugins_loaded() {
+		// Yoast SEO
+		if ( defined( 'WPSEO_VERSION' ) ) {
+			add_action( 'pll_language_defined', array( $this->wpseo = new PLL_WPSEO(), 'init' ) );
+		}
+
+		// Cache plugins, with specific test for WP Fastest Cache which doesn't use WP_CACHE
+		if ( ( defined( 'WP_CACHE' ) && WP_CACHE ) || defined( 'WPFC_MAIN_PATH' ) ) {
+			add_action( 'pll_init', array( $this->cache_compat = new PLL_Cache_Compat(), 'init' ) );
+		}
+
+		// Advanced Custom Fields Pro
+		// The function acf_get_value() is not defined in ACF 4
+		if ( class_exists( 'acf' ) && function_exists( 'acf_get_value' ) && class_exists( 'PLL_ACF' ) ) {
+			add_action( 'init', array( $this->acf = new PLL_ACF(), 'init' ) );
+		}
+
+		// Custom Post Type UI
+		if ( defined( 'CPTUI_VERSION' ) && class_exists( 'PLL_CPTUI' ) ) {
+			add_action( 'pll_init', array( $this->cptui = new PLL_CPTUI(), 'init' ) );
+		}
+
+		// The Event Calendar
+		if ( defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'PLL_TEC' ) ) {
+			add_action( 'pll_init', array( $this->tec = new PLL_TEC(), 'init' ) );
+		}
+
+		// Beaver Builder
+		if ( class_exists( 'FLBuilderLoader' ) && class_exists( 'PLL_FLBuilder' ) ) {
+			$this->flbuilder = new PLL_FLBuilder();
+		}
+
+		// Divi Builder
+		if ( ( 'Divi' === get_template() || defined( 'ET_BUILDER_PLUGIN_VERSION' ) ) && class_exists( 'PLL_Divi_Builder' ) ) {
+			$this->divi_builder = new PLL_Divi_Builder();
+		}
 	}
 
 	/**
