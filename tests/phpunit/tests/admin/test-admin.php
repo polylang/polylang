@@ -10,6 +10,7 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 	function test_admin_bar_menu() {
+		// This test breaks if DOING_AJAX is defined due to is_admin_bar_showing() testing directly the constant (WP 4.9.1)
 		global $wp_admin_bar;
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar
 
