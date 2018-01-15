@@ -95,7 +95,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 				switch ( $license->error ) {
 					case 'expired':
 						$message = sprintf(
-							/* translators: %1$s is a date, %2$s and %3$s are html tags */
+							/* translators: %1$s is a date, %2$s is link start tag, %3$s is link end tag. */
 							__( 'Your license key expired on %1$s. Please %2$srenew your license key%3$s.', 'polylang' ),
 							date_i18n( get_option( 'date_format' ), strtotime( $license->expires, current_time( 'timestamp' ) ) ),
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/checkout/?edd_license_key=' . $item->license_key ),
@@ -105,8 +105,8 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 
 					case 'missing':
 						$message = sprintf(
-							/* translators: %s are html tags */
-							__( 'Invalid license. Please %svisit your account page%s and verify it.', 'polylang' ),
+							/* translators: %1$s is link start tag, %2$s is link end tag. */
+							__( 'Invalid license. Please %1$svisit your account page%2$s and verify it.', 'polylang' ),
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'
 						);
@@ -115,7 +115,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 					case 'invalid':
 					case 'site_inactive':
 						$message = sprintf(
-							/* translators: %1$s is a product name, %2$s and %3$s are html tags */
+							/* translators: %1$s is a product name, %2$s is link start tag, %3$s is link end tag. */
 							__( 'Your %1$s license key is not active for this URL. Please %2$svisit your account page%3$s to manage your license key URLs.', 'polylang' ),
 							$item->name,
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
@@ -130,8 +130,8 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 
 					case 'no_activations_left':
 						$message = sprintf(
-							/* translators: %s are html tags */
-							__( 'Your license key has reached its activation limit. %sView possible upgrades%s now.', 'polylang' ),
+							/* translators: %1$s is link start tag, %2$s is link end tag */
+							__( 'Your license key has reached its activation limit. %1$sView possible upgrades%2$s now.', 'polylang' ),
 							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
 							'</a>'
 						);
@@ -147,7 +147,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 				} elseif ( $expiration > $now && $expiration - $now < ( DAY_IN_SECONDS * 30 ) ) {
 					$class = 'notice-warning notice-alt';
 					$message = sprintf(
-						/* translators: %1$s is a date, %2$s and %3$s are html tags */
+						/* translators: %1$s is a date, %2$s is link start tag, %3$s is link end tag. */
 						__( 'Your license key expires soon! It expires on %1$s. %2$sRenew your license key%3$s.', 'polylang' ),
 						date_i18n( get_option( 'date_format' ), strtotime( $license->expires, $now ) ),
 						sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/checkout/?edd_license_key=' . $item->license_key ),

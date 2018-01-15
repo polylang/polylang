@@ -75,8 +75,8 @@ class PLL_Upgrade {
 			'<div class="error"><p>%s</p><p>%s</p></div>',
 			esc_html__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
 			sprintf(
-				/* translators: %s are Polylang version numbers */
-				esc_html__( 'Please upgrade first to %s before ugrading to %s.', 'polylang' ),
+				/* translators: %1$s and %2$s are Polylang version numbers */
+				esc_html__( 'Please upgrade first to %1$s before ugrading to %2$s.', 'polylang' ),
 				'<strong>0.9.8</strong>',
 				POLYLANG_VERSION
 			)

@@ -201,7 +201,7 @@ class PLL_Plugin_Updater {
 
 			if ( empty( $version_info->download_link ) ) {
 				printf(
-					/* translators: %1$s plugin name, %3$s plugin version, %2$s and %4$s are html tags */
+					/* translators: %1$s plugin name, %3$s plugin version, %2$s is link start tag, %4$s is link end tag. */
 					esc_html__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s.', 'polylang' ),
 					esc_html( $version_info->name ),
 					'<a target="_blank" class="thickbox" href="' . esc_url( $changelog_link ) . '">',
@@ -210,7 +210,7 @@ class PLL_Plugin_Updater {
 				);
 			} else {
 				printf(
-					/* translators: %1$s plugin name, %3$s plugin version, %2$s, %4$s, %5$s and %6$s are html tags */
+					/* translators: %1$s plugin name, %3$s plugin version, %2$s and %5$s are link start tags, %4$s and %6$s are link end tags. */
 					esc_html__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s or %5$supdate now%6$s.', 'polylang' ),
 					esc_html( $version_info->name ),
 					'<a target="_blank" class="thickbox" href="' . esc_url( $changelog_link ) . '">',
