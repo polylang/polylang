@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.2.8
+Stable tag: 2.3
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,7 +76,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.3 =
+= 2.3 (2017-01-30) =
 
 * Pro: Duplicating a post now duplicates untranslated terms and the featured image (if media are translatable)
 * Pro: Add filter 'pll_sync_post_fields'
