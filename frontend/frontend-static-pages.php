@@ -167,7 +167,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return bool
 	 */
 	protected function is_front_page( $query ) {
-		return ! is_date() && ! is_author() && ! is_search() && ! is_feed() && ! is_post_type_archive() && is_tax() && 1 === count( $query->tax_query->queries );
+		$query = array_diff( array_keys( $query->query ), array( 'preview', 'page', 'paged', 'cpage', 'orderby' ) );
+		return 1 === count( $query ) && in_array( 'lang', $query );
 	}
 
 	/**

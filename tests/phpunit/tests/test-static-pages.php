@@ -482,7 +482,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 	}
 
-		// Bug introduced and fixed in 2.3
+	// Bug introduced and fixed in 2.3
 	function test_post_type_archives_with_front_page_with_redirect_lang() {
 		global $wp_rewrite;
 
@@ -507,5 +507,58 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 
 		_unregister_post_type( 'trcpt' );
+	}
+
+	// Add custom query var
+	function extra_query_vars( $query_vars ) {
+		$query_vars[] = 'action';
+		return $query_vars;
+	}
+
+	// Add custom root rewrite rule
+	function extra_root_rewrite_rules( $rules ) {
+		$rules['^testing/?$'] = 'index.php?action=testing';
+		return $rules;
+	}
+
+	// Bug introduced in 2.3 and fixed in 2.3.1
+	function test_extra_query_var_with_front_page_with_query_with_redirect_lang() {
+		global $wp_rewrite;
+
+		add_filter( 'query_vars', array( $this, 'extra_query_vars' ) );
+		add_filter( 'root_rewrite_rules', array( $this, 'extra_root_rewrite_rules' ), 1 );
+
+		self::$polylang->options['hide_default'] = 1;
+		self::$polylang->options['redirect_lang'] = 1;
+		self::$polylang->model->clean_languages_cache();
+
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+		$wp_rewrite->flush_rules();
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' ); // brute force
+		$this->go_to( home_url( '/testing/' ) );
+
+		$this->assertFalse( is_front_page() );
+	}
+
+	function test_front_page_with_orderby_with_redirect_lang() {
+		global $wp_rewrite;
+
+		self::$polylang->options['redirect_lang'] = 1;
+		self::$polylang->model->clean_languages_cache();
+
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+		$wp_rewrite->flush_rules();
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' ); // brute force
+		$this->go_to( home_url( '/fr/?orderby=price' ) );
+
+		$this->assertTrue( is_front_page() );
+		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
+		$this->assertEquals( home_url( '/en/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
+		$this->assertEquals( array( get_post( self::$home_fr ) ), $GLOBALS['wp_query']->posts );
+		$this->assertEmpty( redirect_canonical( home_url( '/fr/?orderby=price' ), false ) );
 	}
 }
