@@ -76,7 +76,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.3 (2017-01-30) =
+= 2.3 (2018-01-30) =
 
 * Pro: Duplicating a post now duplicates untranslated terms and the featured image (if media are translatable)
 * Pro: Add filter 'pll_sync_post_fields'
