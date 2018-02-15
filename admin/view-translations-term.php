@@ -48,7 +48,7 @@ else {
 		?>
 		<tr>
 			<th class = "pll-language-column">
-				<span class = "pll-translation-flag"><?php echo $language->flag; ?></span>
+				<span class = "pll-translation-flag"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); ?></span>
 				<?php
 				printf(
 					'<span class="pll-language-name%1$s">%2$s</span>',
