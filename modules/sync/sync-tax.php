@@ -20,6 +20,8 @@ class PLL_Sync_Tax {
 
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
 		add_action( 'pll_save_term', array( $this, 'create_term' ), 10, 3 );
+		add_action( 'pre_delete_term', array( $this, 'pre_delete_term' ) );
+		add_action( 'delete_term', array( $this, 'delete_term' ) );
 	}
 
 	/**
@@ -225,5 +227,24 @@ class PLL_Sync_Tax {
 				wp_set_object_terms( $post_id, $term_id, $taxonomy, true );
 			}
 		}
+	}
+
+	/**
+	 * Deactivate the synchronization of terms before deleting a term
+	 * to avoid translated terms to be removed from translated posts
+	 *
+	 * @since 2.3.2
+	 */
+	public function pre_delete_term() {
+		remove_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
+	}
+
+	/**
+	 * Re-activate the synchronization of terms after a term is deleted
+	 *
+	 * @since 2.3.2
+	 */
+	public function delete_term() {
+		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
 	}
 }

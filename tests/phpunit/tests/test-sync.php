@@ -603,4 +603,33 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$this->assertfalse( is_sticky( $to ) );
 	}
+
+	// Bug fixed in 2.3.2
+	function test_delete_term() {
+		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
+
+		// Categories
+		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		// Posts
+		$post_fr = $this->factory->post->create( array( 'post_category' => array( $fr ) ) );
+		self::$polylang->model->post->set_language( $post_fr, 'fr' );
+
+		$post_en = $this->factory->post->create( array( 'post_category' => array( $en ) ) );
+		self::$polylang->model->post->set_language( $post_en, 'en' );
+
+		self::$polylang->model->post->save_translations( $post_en, array( 'fr' => $post_fr ) );
+
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+
+		wp_delete_category( $fr );
+
+		$this->assertEquals( array( $en ), wp_get_post_categories( $post_en ) );
+	}
 }
