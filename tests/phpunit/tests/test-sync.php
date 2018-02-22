@@ -333,10 +333,12 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$_REQUEST = $_POST = array(
 			'action'           => 'add-tag',
-			'post_lang_choice' => 'fr',
+			'term_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'term_tr_lang'     => array( 'en' => $from ),
 		);
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 
 		$to = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 
