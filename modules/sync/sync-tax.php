@@ -193,11 +193,6 @@ class PLL_Sync_Tax {
 	 */
 	public function create_term( $term_id, $taxonomy, $translations ) {
 		if ( doing_action( 'create_term' ) && in_array( $taxonomy, $this->get_taxonomies_to_copy( true ) ) ) {
-
-			// Avoid tax_query tranformation. Needed since WP 4.9. See also https://core.trac.wordpress.org/ticket/42104
-			$term_ids = array_merge( array( $term_id ), array_values( $translations ) );
-			$tt_ids = get_terms( $taxonomy, array( 'include' => $term_ids, 'hide_empty' => false, 'fields' => 'tt_ids', 'lang' => '' ) );
-
 			// Get all posts associated to the translated terms
 			$tr_posts = get_posts( array(
 				'numberposts' => -1,
@@ -208,8 +203,8 @@ class PLL_Sync_Tax {
 				'tax_query'   => array(
 					array(
 						'taxonomy'         => $taxonomy,
-						'field'            => 'term_taxonomy_id',
-						'terms'            => $tt_ids,
+						'field'            => 'id',
+						'terms'            => array_merge( array( $term_id ), array_values( $translations ) ),
 						'include_children' => false,
 					),
 				),

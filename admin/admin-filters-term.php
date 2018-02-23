@@ -51,6 +51,8 @@ class PLL_Admin_Filters_Term {
 
 		// Filters categories and post tags by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
+		add_action( 'parse_query', array( $this, 'remove_terms_filter' ) );
+		add_action( 'posts_selection', array( $this, 'add_terms_filter' ) );
 
 		// Allows to get the default categories in all languages
 		add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
@@ -621,6 +623,28 @@ class PLL_Admin_Filters_Term {
 	public function terms_clauses( $clauses, $taxonomies, $args ) {
 		$lang = $this->get_queried_language( $taxonomies, $args );
 		return ! empty( $lang ) ? $this->model->terms_clauses( $clauses, $lang ) : $clauses; // adds our clauses to filter by current language
+	}
+
+	/**
+	 * Remove terms filter when doing a WP_Query
+	 * Needed since WP 4.9
+	 *
+	 * @since 2.3.2
+	 */
+	public function remove_terms_filter() {
+		remove_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 3 );
+		remove_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
+	}
+
+	/**
+	 * Add terms filter back after a WP_Query
+	 * Needed since WP 4.9
+	 *
+	 * @since 2.3.2
+	 */
+	public function add_terms_filter() {
+		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 3 );
+		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 	}
 
 	/**
