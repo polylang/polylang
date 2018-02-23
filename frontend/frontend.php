@@ -67,7 +67,7 @@ class PLL_Frontend extends PLL_Base {
 			}
 
 			// Setup the language chooser
-			$c = array( 'Content', 'Url', 'Url', 'Domain' );
+			$c = array( 'Content', 'Url', 'Domain' );
 			$class = 'PLL_Choose_Lang_' . $c[ $this->options['force_lang'] ];
 			$this->choose_lang = new $class( $this );
 			$this->choose_lang->init();
