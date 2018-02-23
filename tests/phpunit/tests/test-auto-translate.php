@@ -161,6 +161,23 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $fr, $query->tax_query->queries[0]['terms'][0] );
 		$this->assertEquals( $term_fr, $query->tax_query->queries[1][0]['terms'][0] );
 		$this->assertEquals( 'essai2', $query->tax_query->queries[1][1]['terms'][0] );
+
+		// #223
+		$args = array(
+			'post_type' => 'trcpt',
+			'lang'      => '',
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'trtax',
+					'terms'    => array( $term_en, $term_fr ),
+					'field'    => 'term_id',
+				),
+			),
+		);
+
+		$query = new WP_Query( $args );
+
+		$this->assertEqualSets( array( $post_en, $post_fr ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
 	function test_post() {

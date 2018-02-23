@@ -22,6 +22,8 @@ class PLL_Frontend_Auto_Translate {
 
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) ); // after main Polylang filter
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
+		add_action( 'parse_query', array( $this, 'remove_terms_filter' ) );
+		add_action( 'posts_selection', array( $this, 'add_terms_filter' ) );
 	}
 
 	/**
@@ -221,6 +223,26 @@ class PLL_Frontend_Auto_Translate {
 			$args['include'] = $arr;
 		}
 		return $args;
+	}
+
+	/**
+	 * Remove terms filter when doing a WP_Query
+	 * Needed since WP 4.9
+	 *
+	 * @since 2.3.2
+	 */
+	public function remove_terms_filter() {
+		remove_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
+	}
+
+	/**
+	 * Add terms filter back after a WP_Query
+	 * Needed since WP 4.9
+	 *
+	 * @since 2.3.2
+	 */
+	public function add_terms_filter() {
+		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
 	}
 
 	/**
