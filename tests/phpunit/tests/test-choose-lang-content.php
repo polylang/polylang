@@ -127,32 +127,36 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
-	function test_category() {
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
-
+	function test_category_default_lang() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
-
-		$this->go_to( home_url( '/category/essai/' ) );
-		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
 
 		$this->go_to( home_url( '/category/test/' ) );
 		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
-	function test_post_tag() {
+	function test_category_non_default_lang() {
+		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		$this->go_to( home_url( '/category/essai/' ) );
+		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
+	}
+
+	function test_post_tag_default_lang() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
 
+		$this->go_to( home_url( '/tag/test/' ) );
+		$this->assertEquals( 'en', self::$polylang->curlang->slug );
+	}
+
+	function test_post_tag_non_default_lang() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
 		self::$polylang->model->term->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/tag/essai/' ) );
 		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
-
-		$this->go_to( home_url( '/tag/test/' ) );
-		$this->assertEquals( 'en', self::$polylang->curlang->slug );
 	}
 
 	function test_archive() {

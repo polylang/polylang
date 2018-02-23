@@ -28,6 +28,8 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		// Filters categories and post tags by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
+		add_action( 'parse_query', array( $this, 'remove_terms_filter' ) );
+		add_action( 'posts_selection', array( $this, 'add_terms_filter' ) );
 
 		// Rewrites archives links to filter them by language
 		add_filter( 'getarchives_join', array( $this, 'getarchives_join' ), 10, 2 );
@@ -152,19 +154,30 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			return $clauses;
 		}
 
-		// Ugly hack to fix the issue introduced by WP 4.9. See also https://core.trac.wordpress.org/ticket/42104
-		if ( version_compare( $GLOBALS['wp_version'], '4.9', '>=' ) ) {
-			$traces = version_compare( PHP_VERSION, '5.2.5', '>=' ) ? debug_backtrace( false ) : debug_backtrace();
-
-			// PHP 7 does not include call_user_func
-			$n = version_compare( PHP_VERSION, '7', '>=' ) ? 5 : 6;
-			if ( isset( $traces[ $n ]['function'] ) && 'transform_query' === $traces[ $n ]['function'] ) {
-				return $clauses;
-			}
-		}
-
 		// Adds our clauses to filter by language
 		return $this->model->terms_clauses( $clauses, isset( $args['lang'] ) ? $args['lang'] : $this->curlang );
+	}
+
+	/**
+	 * Remove terms filter when doing a WP_Query
+	 * Needed since WP 4.9
+	 *
+	 * @since 2.3.2
+	 */
+	public function remove_terms_filter() {
+		remove_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 3 );
+		remove_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
+	}
+
+	/**
+	 * Add terms filter back after a WP_Query
+	 * Needed since WP 4.9
+	 *
+	 * @since 2.3.2
+	 */
+	public function add_terms_filter() {
+		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 3 );
+		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 	}
 
 	/**
