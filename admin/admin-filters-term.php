@@ -9,6 +9,7 @@ class PLL_Admin_Filters_Term {
 	public $links, $model, $options, $curlang, $filter_lang, $pref_lang;
 	protected $pre_term_name; // Used to store the term name before creating a slug if needed
 	protected $post_id; // Used to store the current post_id when bulk editing posts
+	private $tax_query_lang;
 
 	/**
 	 * Constructor: setups filters and actions
@@ -51,8 +52,8 @@ class PLL_Admin_Filters_Term {
 
 		// Filters categories and post tags by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
-		add_action( 'parse_query', array( $this, 'remove_terms_filter' ) );
-		add_action( 'posts_selection', array( $this, 'add_terms_filter' ) );
+		add_action( 'parse_query', array( $this, 'set_tax_query_lang' ) );
+		add_action( 'posts_selection', array( $this, 'unset_tax_query_lang' ) );
 
 		// Allows to get the default categories in all languages
 		add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
@@ -573,6 +574,10 @@ class PLL_Admin_Filters_Term {
 			return false;
 		}
 
+		if ( isset( $this->tax_query_lang ) ) {
+			$args['lang'] = $this->tax_query_lang;
+		}
+
 		// If get_terms is queried with a 'lang' parameter
 		if ( isset( $args['lang'] ) ) {
 			return $args['lang'];
@@ -626,25 +631,25 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
-	 * Remove terms filter when doing a WP_Query
+	 * Sets the WP_Term_Query language when doing a WP_Query
 	 * Needed since WP 4.9
 	 *
 	 * @since 2.3.2
+	 *
+	 * @param object $query WP_Query object
 	 */
-	public function remove_terms_filter() {
-		remove_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 3 );
-		remove_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
+	public function set_tax_query_lang( $query ) {
+		$this->tax_query_lang = isset( $query->query_vars['lang'] ) ? $query->query_vars['lang'] : '';
 	}
 
 	/**
-	 * Add terms filter back after a WP_Query
+	 * Removes the WP_Term_Query language filter for WP_Query
 	 * Needed since WP 4.9
 	 *
 	 * @since 2.3.2
 	 */
-	public function add_terms_filter() {
-		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 3 );
-		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
+	public function unset_tax_query_lang() {
+		unset( $this->tax_query_lang );
 	}
 
 	/**
