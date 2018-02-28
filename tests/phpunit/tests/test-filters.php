@@ -40,7 +40,7 @@ class Filters_Test extends PLL_UnitTestCase {
 
 		// request all pages
 		$pages = get_pages();
-		$pages = wp_list_pluck( $pages, 'ID' );
+		$fr_page_ids = $pages = wp_list_pluck( $pages, 'ID' );
 		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $pages ), 'slug' );
 		$this->assertCount( 3, $pages );
 		$this->assertEquals( array( 'fr' ), array_values( array_unique( $languages ) ) );
@@ -58,6 +58,14 @@ class Filters_Test extends PLL_UnitTestCase {
 		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $pages ), 'slug' );
 		$this->assertCount( 3, $pages );
 		$this->assertEquals( array( 'fr' ), array_values( array_unique( $languages ) ) );
+
+		$fr_page_id = reset( $fr_page_ids ); // Just one valid page id
+		$pages = get_pages( array( 'number' => 1, 'exclude' => array( $fr_page_id ) ) );
+		$this->assertCount( 1, $pages );
+
+		// Warning fixed in 2.3.2
+		$pages = get_pages( array( 'number' => 1, 'exclude' => $fr_page_id ) );
+		$this->assertCount( 1, $pages );
 	}
 
 	function test_get_posts() {

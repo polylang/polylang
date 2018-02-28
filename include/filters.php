@@ -154,7 +154,8 @@ class PLL_Filters {
 				),
 			);
 
-			$args['exclude'] = array_merge( $args['exclude'], get_posts( $r ) );
+			// Take care that 'exclude' argument accepts integer or strings too
+			$args['exclude'] = array_merge( wp_parse_id_list( $args['exclude'] ), get_posts( $r ) );
 			$pages = get_pages( $args );
 		}
 
