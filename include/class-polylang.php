@@ -155,7 +155,7 @@ class Polylang {
 		return $model->get_languages_list() &&
 			empty( $_GET['deactivate-polylang'] ) && (
 				class_exists( 'PLL_REST_Translated_Object' ) ||
-				0 === strpos( str_replace( 'index.php', '', $_SERVER['REQUEST_URI'] ), '/' . rest_get_url_prefix() . '/' )
+				false === strpos( str_replace( 'index.php', '', $_SERVER['REQUEST_URI'] ), '/' . rest_get_url_prefix() . '/' )
 			);
 	}
 
