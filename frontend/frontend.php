@@ -56,25 +56,19 @@ class PLL_Frontend extends PLL_Base {
 	public function init() {
 		$this->links = new PLL_Frontend_Links( $this );
 
-		// Don't set any language for REST requests
-		if ( 0 === strpos( str_replace( 'index.php', '', $_SERVER['REQUEST_URI'] ), '/' . rest_get_url_prefix() . '/' ) ) {
-			/** This action is documented in include/class-polylang.php */
-			do_action( 'pll_no_language_defined' );
-		} else {
-			// Static front page and page for posts
-			if ( 'page' === get_option( 'show_on_front' ) ) {
-				$this->static_pages = new PLL_Frontend_Static_Pages( $this );
-			}
-
-			// Setup the language chooser
-			$c = array( 'Content', 'Url', 'Url', 'Domain' );
-			$class = 'PLL_Choose_Lang_' . $c[ $this->options['force_lang'] ];
-			$this->choose_lang = new $class( $this );
-			$this->choose_lang->init();
-
-			// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
-			$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
+		// Static front page and page for posts
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->static_pages = new PLL_Frontend_Static_Pages( $this );
 		}
+
+		// Setup the language chooser
+		$c = array( 'Content', 'Url', 'Url', 'Domain' );
+		$class = 'PLL_Choose_Lang_' . $c[ $this->options['force_lang'] ];
+		$this->choose_lang = new $class( $this );
+		$this->choose_lang->init();
+
+		// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
+		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
 	}
 
 	/**
