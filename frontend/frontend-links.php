@@ -162,7 +162,12 @@ class PLL_Frontend_Links extends PLL_Links {
 		 * @param string      $language The language code of the translation
 		 */
 		$translation_url = apply_filters( 'pll_translation_url', ( isset( $url ) && ! is_wp_error( $url ) ? $url : null ), $language->slug );
-		$this->cache->set( 'translation_url:' . $language->slug, $translation_url );
+
+		// Don't cache before template_redirect to avoid a conflict with Barrel + WP Bakery Page Builder
+		if ( did_action( 'template_redirect' ) ) {
+			$this->cache->set( 'translation_url:' . $language->slug, $translation_url );
+		}
+
 		return $translation_url;
 	}
 
