@@ -25,7 +25,7 @@ class PLL_WPSEO {
 
 		// Reloads options once the language has been defined to enable translations
 		// Useful only when the language is set from content
-		if ( did_action( 'wp_loaded' ) ) {
+		if ( version_compare( WPSEO_VERSION, '7.0', '<' ) && did_action( 'wp_loaded' ) ) {
 			$wpseo_front = WPSEO_Frontend::get_instance();
 			$options = WPSEO_Options::get_option_names();
 			foreach ( $options as $opt ) {
