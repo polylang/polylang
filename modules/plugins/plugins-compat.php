@@ -340,24 +340,26 @@ class PLL_Plugins_Compat {
 	 * @since 2.2
 	 */
 	public function dm_redirect_to_mapped_domain() {
-		// Don't redirect the main site
-		if ( is_main_site() ) {
-			return;
-		}
-
-		// Don't redirect post previews
-		if ( isset( $_GET['preview'] ) && 'true' === $_GET['preview'] ) {
-			return;
-		}
-
-		// Don't redirect theme customizer
-		if ( isset( $_POST['customize'] ) && isset( $_POST['theme'] ) && 'on' === $_POST['customize'] ) {
-			return;
-		}
-
-		// If we can't associate the requested domain to a language, redirect to the default domain
 		$options = get_option( 'polylang' );
+
+		// The language is set from the subdomain or domain name
 		if ( $options['force_lang'] > 1 ) {
+			// Don't redirect the main site
+			if ( is_main_site() ) {
+				return;
+			}
+
+			// Don't redirect post previews
+			if ( isset( $_GET['preview'] ) && 'true' === $_GET['preview'] ) {
+				return;
+			}
+
+			// Don't redirect theme customizer
+			if ( isset( $_POST['customize'] ) && isset( $_POST['theme'] ) && 'on' === $_POST['customize'] ) {
+				return;
+			}
+
+			// If we can't associate the requested domain to a language, redirect to the default domain
 			$hosts = PLL()->links_model->get_hosts();
 			$lang = array_search( $_SERVER['HTTP_HOST'], $hosts );
 
@@ -368,5 +370,8 @@ class PLL_Plugins_Compat {
 				exit;
 			}
 		}
+
+		// Otherwise rely on MU Domain Mapping
+		redirect_to_mapped_domain();
 	}
 }
