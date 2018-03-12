@@ -56,8 +56,8 @@ class PLL_Frontend extends PLL_Base {
 	public function init() {
 		$this->links = new PLL_Frontend_Links( $this );
 
-		// Don't set any language for REST requests
-		if ( 0 === strpos( str_replace( 'index.php', '', $_SERVER['REQUEST_URI'] ), '/' . rest_get_url_prefix() . '/' ) ) {
+		// Don't set any language for REST requests when Polylang Pro is not active
+		if ( ! class_exists( 'PLL_REST_Translated_Object' ) && 0 === strpos( str_replace( 'index.php', '', $_SERVER['REQUEST_URI'] ), '/' . rest_get_url_prefix() . '/' ) ) {
 			/** This action is documented in include/class-polylang.php */
 			do_action( 'pll_no_language_defined' );
 		} else {
