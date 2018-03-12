@@ -549,9 +549,9 @@ class Query_Test extends PLL_UnitTestCase {
 		// Posts
 		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
-		wp_set_post_terms( $en, array( $tag), 'tax' );
+		wp_set_post_terms( $en, array( $tag ), 'tax' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );;
+		$fr = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 		wp_set_post_terms( $fr, array( $tag ), 'tax' );
 
@@ -566,7 +566,7 @@ class Query_Test extends PLL_UnitTestCase {
 					'terms'    => $tag,
 					'taxonomy' => 'tax',
 				),
-			)
+			),
 		);
 
 		$query = new WP_Query( $args );
