@@ -142,24 +142,6 @@ class Polylang {
 	}
 
 	/**
-	 * Should we activate Polylang on front
-	 *
-	 * @since 2.3.2
-	 *
-	 * @param object $model
-	 * @return bool
-	 */
-	protected function is_active_on_front( $model ) {
-		// Do nothing on frontend if no language is defined
-		// Or if it is a REST request and the compatibility class is not present
-		return $model->get_languages_list() &&
-			empty( $_GET['deactivate-polylang'] ) && (
-				class_exists( 'PLL_REST_Translated_Object' ) ||
-				false === strpos( str_replace( 'index.php', '', $_SERVER['REQUEST_URI'] ), '/' . rest_get_url_prefix() . '/' )
-			);
-	}
-
-	/**
 	 * Polylang initialization
 	 * setups models and separate admin and frontend
 	 *
@@ -196,9 +178,12 @@ class Polylang {
 
 		if ( PLL_SETTINGS ) {
 			$polylang = new PLL_Settings( $links_model );
-		} elseif ( PLL_ADMIN ) {
+		}
+		elseif ( PLL_ADMIN ) {
 			$polylang = new PLL_Admin( $links_model );
-		} elseif ( $this->is_active_on_front( $model ) ) {
+		}
+		// Do nothing on frontend if no language is defined
+		elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) {
 			$polylang = new PLL_Frontend( $links_model );
 		}
 
