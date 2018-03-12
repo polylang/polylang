@@ -90,12 +90,24 @@ class PLL_Query {
 	 */
 	public function set_language( $lang ) {
 		// Defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
-		$this->query->query_vars['tax_query'][] = array(
+		$lang_query = array(
 			'taxonomy' => 'language',
 			'field'    => 'term_taxonomy_id', // Since WP 3.5
 			'terms'    => $lang->term_taxonomy_id,
 			'operator' => 'IN',
 		);
+
+		$tax_query = &$this->query->query_vars['tax_query'];
+
+		if ( isset( $tax_query['relation'] ) && 'OR' === $tax_query['relation'] ) {
+			$tax_query = array(
+				$lang_query,
+				array( $tax_query ),
+				'relation' => 'AND',
+			);
+		} else {
+			$tax_query[] = $lang_query;
+		}
 	}
 
 	/**

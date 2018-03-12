@@ -538,4 +538,38 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( array( 'post_type' => 'any', 'lang' => 'fr' ) );
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 	}
+
+	// Bug fixed in 2.3.3
+	function test_tax_query_with_relation_or() {
+		register_taxonomy_for_object_type( 'tax', 'trcpt' ); // *untranslated* custom tax
+
+		// Taxonomy
+		$tag = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+
+		// Posts
+		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
+		wp_set_post_terms( $en, array( $tag), 'tax' );
+
+		$fr = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );;
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+		wp_set_post_terms( $fr, array( $tag ), 'tax' );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+
+		$args = array(
+			'post_type' => 'trcpt',
+			'tax_query' => array(
+				'relation' => 'OR',
+				array(
+					'field'    => 'id',
+					'terms'    => $tag,
+					'taxonomy' => 'tax',
+				),
+			)
+		);
+
+		$query = new WP_Query( $args );
+		$this->assertEquals( array( get_post( $en ) ), $query->posts );
+	}
 }
