@@ -132,10 +132,14 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @return array
 	 */
 	public function get_terms_args( $args ) {
-		if ( isset( $this->tax_query_lang ) ) {
-			$args['lang'] = $this->tax_query_lang;
+		if ( isset( $args['lang'] ) ) {
+			$lang = $args['lang'];
+		} elseif ( isset( $this->tax_query_lang ) ) {
+			$lang = $args['lang'] = empty( $this->tax_query_lang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
+		} else {
+			$lang = $this->curlang->slug;
 		}
-		$lang = isset( $args['lang'] ) ? $args['lang'] : $this->curlang->slug;
+
 		$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $lang );
 		$args['cache_domain'] = empty( $args['cache_domain'] ) ? 'pll' . $key : $args['cache_domain'] . $key;
 		return $args;

@@ -112,6 +112,8 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		wp_set_post_terms( $post_en, array( 'test', 'test2' ), 'trtax' ); // don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post
 		self::$polylang->model->post->set_language( $post_en, 'en' );
 
+		self::$polylang->filters = new PLL_Frontend_Filters( self::$polylang );
+
 		// old way
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test' ) ) );
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test,test2' ) ) );
