@@ -20,6 +20,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		parent::setUp();
 
 		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests
+		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
 	}
 
@@ -430,5 +432,25 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$tax = get_term( $tax );
 		$posts = get_posts( array( 'fields' => 'ids', 'trtax' => $tax->slug ) );
 		$this->assertEquals( $fr, reset( $posts ) );
+	}
+
+	function test_categories_script_data_in_footer() {
+		$hook_suffix = $GLOBALS['hook_suffix'] = 'edit.php';
+		set_current_screen( 'edit' );
+		do_action( 'init' ); // For default scripts
+		do_action( 'admin_enqueue_scripts' );
+
+		ob_start();
+		do_action( 'admin_print_footer_scripts' );
+		$footer = ob_get_clean();
+
+		// All categories we have i.e. default categories
+		foreach ( self::$polylang->model->get_languages_list() as $lang ) {
+			$terms[ $lang->slug ] = array( 'category' => array( self::$polylang->model->term->get( 1, $lang->slug ) ) );
+		}
+
+		$this->assertNotFalse( strpos( $footer, 'var pll_term_languages = ' . json_encode( $terms ) ) );
+
+		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'] );
 	}
 }
