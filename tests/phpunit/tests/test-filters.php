@@ -313,4 +313,29 @@ class Filters_Test extends PLL_UnitTestCase {
 		// Bug fixed in 1.9.3
 		$this->assertCount( 2, get_pages( array( 'lang' => '' ) ) );
 	}
+
+	function test_site_title_in_password_change_email() {
+		$language = self::$polylang->model->get_language( 'fr' );
+		$_mo = new PLL_MO();
+		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mon site' ) );
+		$_mo->export_to_db( $language );
+
+		reset_phpmailer_instance();
+		$user_id = self::factory()->user->create();
+		update_user_meta( $user_id, 'locale', 'fr_FR' );
+
+		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
+
+		$userdata = array(
+			'ID'        => $user_id,
+			'user_pass' => 'new password',
+		);
+		wp_update_user( $userdata );
+
+		$mailer = tests_retrieve_phpmailer_instance();
+		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'Mon site' ) );
+		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'Mon site' ) );
+		reset_phpmailer_instance();
+	}
 }

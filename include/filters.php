@@ -264,7 +264,7 @@ class PLL_Filters {
 	 * @return array
 	 */
 	function translate_user_email( $email ) {
-		$blog_name = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+		$blog_name = wp_specialchars_decode( pll__( get_option( 'blogname' ) ), ENT_QUOTES );
 		$email['subject'] = sprintf( $email['subject'], $blog_name );
 		$email['message'] = str_replace( '###SITENAME###', $blog_name, $email['message'] );
 		return $email;
