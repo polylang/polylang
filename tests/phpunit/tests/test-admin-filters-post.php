@@ -451,6 +451,30 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $footer, 'var pll_term_languages = ' . json_encode( $terms ) ) );
 
-		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'] );
+		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'] );
+	}
+
+	function test_parent_pages_script_data_in_footer() {
+		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+
+		$hook_suffix = $GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type'] = 'page';
+		set_current_screen();
+		do_action( 'init' ); // For default scripts
+		do_action( 'admin_enqueue_scripts' );
+
+		ob_start();
+		do_action( 'admin_print_footer_scripts' );
+		$footer = ob_get_clean();
+
+		$pages = array( 'en' => array( $en ), 'fr' => array( $fr ) );
+
+		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . json_encode( $pages ) ) );
+
+		unset( $_REQUEST, $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'] );
 	}
 }
