@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -41,7 +41,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Installation ==
 
-1. Make sure you are using WordPress 4.0 or later and that your server is running PHP 5.2.4 or later (same requirement as WordPress itself)
+1. Make sure you are using WordPress 4.4 or later and that your server is running PHP 5.2.4 or later (same requirement as WordPress itself)
 1. If you tried other multilingual plugins, deactivate them before activating Polylang, otherwise, you may get unexpected results!
 1. Install and activate the plugin as usual from the 'Plugins' menu in WordPress.
 1. Go to the languages settings page and create the languages you need
@@ -76,10 +76,23 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.3.3 (2018-03-15) =
+
+* Pro: Fix tax query using a term sharing slugs (fix a conflict with Fusion Builder)
+* Restore Polylang (free) on REST requests, while disabling the language filter as in v2.3
+* Rework auto translated query with taxonomy in different language #223
+* Synchronize Yoast SEO primary category (needs Yoast SEO 7.0+)
+* Fix PHP warning introduced by Yoast SEO 7.0 #229
+* Fix tax query when using the relation 'OR'
+* Fix a conflict with the combination of Barrel + WP Bakery Page Builder
+* Fix broken redirect with MU domain mapping #226
+* Fix site title not translated in password change email
+
 = 2.3.2 (2018-03-05) =
 
 * Pro: Fix REST requests not filtered by the requested language (introduced in 2.3).
 * Pro: Fix error 404 on single posts if posts are untranslatable
+* Deactivate Polylang (free) on REST requests by default.
 * Fix translated terms unassigned from posts when deleting a term
 * Fix auto translated query with taxonomy in different language returning empty results since WP 4.9 #223
 * Fix conflict with a homepage option of the theme Extra
