@@ -437,7 +437,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	function test_categories_script_data_in_footer() {
 		$hook_suffix = $GLOBALS['hook_suffix'] = 'edit.php';
 		set_current_screen( 'edit' );
-		do_action( 'init' ); // For default scripts
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
 		do_action( 'admin_enqueue_scripts' );
 
 		ob_start();
@@ -464,7 +465,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$hook_suffix = $GLOBALS['hook_suffix'] = 'edit.php';
 		$_REQUEST['post_type'] = 'page';
 		set_current_screen();
-		do_action( 'init' ); // For default scripts
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
 		do_action( 'admin_enqueue_scripts' );
 
 		ob_start();
