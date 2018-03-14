@@ -380,4 +380,28 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$options = get_option( 'theme_mods_' . get_stylesheet() );
 		$this->assertEquals( 4, $options['nav_menu_locations'][ $primary_location ] );
 	}
+
+	function test_admin_nav_menus_scripts() {
+		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
+		self::$polylang->nav_menus = new PLL_Admin_Nav_Menu( self::$polylang );
+		self::$polylang->nav_menus->admin_init();
+
+		$GLOBALS['hook_suffix'] = 'nav-menus.php';
+		set_current_screen( 'nav-menus' );
+
+		$GLOBALS['wp_scripts'] = new WP_Scripts();
+		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
+		do_action( 'admin_enqueue_scripts' );
+
+		ob_start();
+		do_action( 'admin_print_scripts' );
+		$head = ob_get_clean();
+
+		$this->assertNotFalse( strpos( $head, 'pll_data' ) );
+		$this->assertNotFalse( strpos( $head, plugins_url( '/js/nav-menu.min.js', POLYLANG_FILE ) ) );
+
+		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'] );
+	}
 }
