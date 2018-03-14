@@ -8,6 +8,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+		self::create_language( 'es_ES' );
 
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 	}
@@ -191,9 +192,15 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	function test_save_post_from_quick_edit() {
-		$post_id = $this->factory->post->create();
+		$post_id = $en = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
+		$es = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $es, 'es' );
+
+		self::$polylang->model->post->save_translations( $en, compact( 'en', 'es' ) );
+
+		// Switch to a free language in the translation group
 		$_REQUEST = $_POST = array(
 			'action'             => 'inline-save',
 			'post_ID'            => $post_id,
@@ -208,5 +215,22 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		}
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $post_id )->slug );
+		$this->assertEquals( 'es', self::$polylang->model->post->get_language( $es )->slug );
+		$this->assertEqualSets( array( 'fr' => $post_id, 'es' => $es ), self::$polylang->model->post->get_translations( $post_id ) );
+		$this->assertEqualSets( array( 'fr' => $post_id, 'es' => $es ), self::$polylang->model->post->get_translations( $es ) );
+
+		// Switch to a *non* free language in the translation group
+		$_REQUEST['inline_lang_choice'] = $_POST['inline_lang_choice'] = 'es';
+
+		try {
+			$this->_handleAjax( 'inline-save' );
+		} catch ( WPAjaxDieStopException $e ) {
+			unset( $e );
+		}
+
+		$this->assertEquals( 'es', self::$polylang->model->post->get_language( $post_id )->slug );
+		$this->assertEquals( 'es', self::$polylang->model->post->get_language( $es )->slug );
+		$this->assertEquals( array( 'es' => $post_id ), self::$polylang->model->post->get_translations( $post_id ) );
+		$this->assertEquals( array( 'es' => $es ), self::$polylang->model->post->get_translations( $es ) );
 	}
 }
