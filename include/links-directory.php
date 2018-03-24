@@ -8,6 +8,7 @@
  * @since 1.2
  */
 class PLL_Links_Directory extends PLL_Links_Permalinks {
+	protected $home_relative;
 
 	/**
 	 * Constructor
@@ -18,6 +19,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 */
 	public function __construct( &$model ) {
 		parent::__construct( $model );
+
+		$this->home_relative = home_url( '/', 'relative' );
 
 		if ( did_action( 'pll_init' ) ) {
 			$this->init();
@@ -56,8 +59,12 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( ! empty( $lang ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
 			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug . '/';
-			if ( false === strpos( $url, $this->home . '/' . $this->root . $slug ) ) {
-				return str_replace( $this->home . '/' . $this->root, $this->home . '/' . $this->root . $slug, $url );
+			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
+
+			if ( false === strpos( $url, $new = $root . $slug ) ) {
+				$pattern = str_replace( '/', '\/', $root );
+				$pattern = '#' . $pattern . '#';
+				return preg_replace( $pattern, $new, $url, 1 ); // Only once
 			}
 		}
 		return $url;
@@ -80,9 +87,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		if ( ! empty( $languages ) ) {
-			$pattern = str_replace( '/', '\/', $this->home . '/' . $this->root );
+			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
+
+			$pattern = str_replace( '/', '\/', $root );
 			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language\/' ) . '(' . implode( '|', $languages ) . ')(\/|$)#';
-			$url = preg_replace( $pattern, $this->home . '/' . $this->root, $url );
+			$url = preg_replace( $pattern, $root, $url );
 		}
 		return $url;
 	}
@@ -104,7 +113,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			$path = parse_url( $url, PHP_URL_PATH );
 		}
 
-		$pattern = parse_url( $this->home . '/' . $this->root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
+		$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
+
+		$pattern = parse_url( $root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
 		$pattern = str_replace( '/', '\/', $pattern );
 		$pattern = '#' . $pattern . '(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')(\/|$)#';
 		return preg_match( $pattern, trailingslashit( $path ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
