@@ -443,6 +443,13 @@ $languages = array(
 	'fuc' => array(
 		'facebook' => 'ff_NG',
 	),
+	'fur' => array(
+		'code'     => 'fur',
+		'locale'   => 'fur',
+		'name'     => 'Furlan',
+		'dir'      => 'ltr',
+		'flag'     => 'it',
+	),
 	'fy' => array(
 		'code'     => 'fy',
 		'locale'   => 'fy',
