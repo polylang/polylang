@@ -80,7 +80,7 @@ class PLL_Frontend_Auto_Translate {
 		$arr = array();
 		if ( ! empty( $qv['category_name'] ) ) {
 			foreach ( explode( ',', $qv['category_name'] ) as $slug ) {
-				$arr[] = ( ( $cat = wpcom_vip_get_category_by_slug( $slug ) ) && ( $tr_id = $this->get_term( $cat->term_id ) ) && ! is_wp_error( $tr = get_category( $tr_id ) ) ) ? $tr->slug : $slug;
+				$arr[] = $this->get_translated_term_by( 'slug', $slug, 'category' );
 			}
 
 			$qv['category_name'] = implode( ',', $arr );
