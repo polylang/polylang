@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.3.3
+Stable tag: 2.3.4
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.3.4 (2018-03-27) =
+
+* Pro: Fix conflict with Pods related to translated slugs for custom post types
+* Add Friulian to the predefined languages list
+* Fix conflict (javascript error) with Gütenberg #225
+* Fix conflict on ajax requests introduced by WooCoommerce 3.3.4
+* Fix queries by 'category_name' not auto translated #238
 
 = 2.3.3 (2018-03-15) =
 
