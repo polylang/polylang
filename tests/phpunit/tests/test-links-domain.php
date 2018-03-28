@@ -54,4 +54,20 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEquals( 'http://example.org.fr/test/', self::$polylang->links_model->add_language_to_link( $url, self::$polylang->model->get_language( 'fr' ) ) );
 		$this->assertEquals( 'http://example.org/test/', self::$polylang->links_model->remove_language_from_link( $url, self::$polylang->model->get_language( 'fr' ) ) );
 	}
+
+	// Bug fixed in 2.3.5
+	function test_redirect_www() {
+		$filters_links = new PLL_Frontend_Filters_Links( self::$polylang );
+
+		// www. to non www.
+		$_SERVER['HTTP_HOST'] = 'www.example.fr';
+		$this->assertEquals( 'http://example.fr', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'], false ) );
+		$this->assertEquals( 'http://example.fr/test/', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
+
+		// non www. to www.
+		self::$polylang->options['domains']['fr'] = 'http://www.example.fr';
+		$_SERVER['HTTP_HOST'] = 'example.fr';
+		$this->assertEquals( 'http://www.example.fr', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'], false ) );
+		$this->assertEquals( 'http://www.example.fr/test/', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
+	}
 }
