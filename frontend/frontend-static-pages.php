@@ -130,7 +130,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Handles canonical redirection if we are on a static front page
+	 * Prevents canonical redirection if we are on a static front page
 	 *
 	 * @since 1.8
 	 *
@@ -138,24 +138,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return bool|string
 	 */
 	public function pll_check_canonical_url( $redirect_url ) {
-		if ( ! empty( $this->curlang->page_on_front ) && is_page( $this->curlang->page_on_front ) ) {
-			// Redirect www.mysite.fr to mysite.fr
-			if ( 3 === $this->options['force_lang'] ) {
-				foreach ( $this->options['domains'] as $lang => $domain ) {
-					$host = parse_url( $domain, PHP_URL_HOST );
-					if ( 'www.' . $_SERVER['HTTP_HOST'] === $host || 'www.' . $host === $_SERVER['HTTP_HOST'] ) {
-						$language = $this->model->get_language( $lang );
-						return $language->home_url;
-					}
-				}
-			}
-
-			// Prevents canonical redirection made by WP from secondary language to main language
-			if ( $this->options['redirect_lang'] ) {
-				return false;
-			}
-		}
-		return $redirect_url;
+		return $this->options['redirect_lang'] && ! empty( $this->curlang->page_on_front ) && is_page( $this->curlang->page_on_front ) ? false : $redirect_url;
 	}
 
 	/**
