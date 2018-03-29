@@ -18,6 +18,7 @@ class PLL_Query {
 		'category_name',
 		'tag',
 		'tag_id',
+		'cat',
 		'category__in',
 		'category__and',
 		'post__in',
@@ -121,17 +122,28 @@ class PLL_Query {
 		$qvars = &$this->query->query_vars;
 
 		if ( ! isset( $qvars['lang'] ) ) {
-			// Do not filter the query if the language is already specified in another way
-			foreach ( self::$excludes as $k ) {
-				if ( ! empty( $qvars[ $k ] ) ) {
-					return;
-				}
-			}
+			/**
+			 * Filter the query vars which disable the language filter in a query
+			 *
+			 * @since 2.3.5
+			 *
+			 * @param array  $excludes Query vars excluded from the language filter
+			 * @param object $query    WP Query
+			 * @param object $lang     Language
+			 */
+			$excludes = apply_filters( 'pll_filter_query_excluded_query_vars', self::$excludes, $this->query, $lang );
 
-			// Specific case for 'cat' as it can contain negative values
-			if ( ! empty( $qvars['cat'] ) ) {
-				foreach ( explode( ',', $qvars['cat'] ) as $cat ) {
-					if ( $cat > 0 ) {
+			// Do not filter the query if the language is already specified in another way
+			foreach ( $excludes as $k ) {
+				if ( ! empty( $qvars[ $k ] ) ) {
+					// Specific case for 'cat' as it can contain negative values
+					if ( 'cat' === $k ) {
+						foreach ( explode( ',', $qvars['cat'] ) as $cat ) {
+							if ( $cat > 0 ) {
+								return;
+							}
+						}
+					} else {
 						return;
 					}
 				}
