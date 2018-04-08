@@ -341,4 +341,27 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'Mon site' ) );
 		reset_phpmailer_instance();
 	}
+
+	function _action_pre_get_posts() {
+		$terms = get_terms( 'post_tag', array( 'hide_empty' => false ) );
+		$language = self::$polylang->model->term->get_language( $terms[0]->term_id );
+
+		$this->assertCount( 1, $terms );
+		$this->assertEquals( 'fr', $language->slug );
+	}
+
+	// Bug fixed in 2.3.5
+	function test_get_terms_inside_query() {
+		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		self::$polylang->init();
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		add_action( 'pre_get_posts', array( $this, '_action_pre_get_posts' ) );
+		$posts = get_posts();
+	}
 }
