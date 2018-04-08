@@ -52,8 +52,8 @@ class PLL_Admin_Filters_Term {
 
 		// Filters categories and post tags by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
-		add_action( 'parse_query', array( $this, 'set_tax_query_lang' ) );
-		add_action( 'posts_selection', array( $this, 'unset_tax_query_lang' ) );
+		add_action( 'pre_get_posts', array( $this, 'set_tax_query_lang' ), 999 );
+		add_action( 'posts_selection', array( $this, 'unset_tax_query_lang' ), 0 );
 
 		// Allows to get the default categories in all languages
 		add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
