@@ -13,7 +13,9 @@ class PLL_Cache_Compat {
 	 * @since 2.3
 	 */
 	public function init() {
-		add_action( 'wp_print_footer_scripts', array( $this, 'add_cookie_script' ) );
+		if ( PLL_COOKIE ) {
+			add_action( 'wp_print_footer_scripts', array( $this, 'add_cookie_script' ) );
+		}
 		add_action( 'wp', array( $this, 'do_not_cache_site_home' ) );
 	}
 
