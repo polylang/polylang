@@ -106,9 +106,11 @@ class PLL_Query {
 				array( $tax_query ),
 				'relation' => 'AND',
 			);
-		} else {
-			$tax_query[] = $lang_query;
-		}
+		} else if ( is_array( $tax_query ) ) {
+            $tax_query[] = $lang_query;
+        } else {
+            $tax_query = array( $lang_query );
+        }
 	}
 
 	/**
