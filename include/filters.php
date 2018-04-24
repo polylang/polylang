@@ -28,11 +28,21 @@ class PLL_Filters {
 		// Filters the get_pages function according to the current language
 		add_filter( 'get_pages', array( $this, 'get_pages' ), 10, 2 );
 
+		// Rewrites next and previous post links to filter them by language
+		add_filter( 'get_previous_post_join', array( $this, 'posts_join' ), 10, 5 );
+		add_filter( 'get_next_post_join', array( $this, 'posts_join' ), 10, 5 );
+		add_filter( 'get_previous_post_where', array( $this, 'posts_where' ), 10, 5 );
+		add_filter( 'get_next_post_where', array( $this, 'posts_where' ), 10, 5 );
+
 		// Converts the locale to a valid W3C locale
 		add_filter( 'language_attributes', array( $this, 'language_attributes' ) );
 
 		// Prevents deleting all the translations of the default category
 		add_filter( 'map_meta_cap', array( $this, 'fix_delete_default_category' ), 10, 4 );
+
+		// Translate the site title in emails sent to users
+		add_filter( 'password_change_email', array( $this, 'translate_user_email' ) );
+		add_filter( 'email_change_email', array( $this, 'translate_user_email' ) );
 	}
 
 	/**
@@ -134,15 +144,18 @@ class PLL_Filters {
 				'nopaging'    => true,
 				'post_type'   => $args['post_type'],
 				'fields'      => 'ids',
-				'tax_query'   => array( array(
-					'taxonomy' => 'language',
-					'field'    => 'term_taxonomy_id', // Since WP 3.5
-					'terms'    => $language->term_taxonomy_id,
-					'operator' => 'NOT IN',
-				) ),
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'language',
+						'field'    => 'term_taxonomy_id', // Since WP 3.5
+						'terms'    => $language->term_taxonomy_id,
+						'operator' => 'NOT IN',
+					),
+				),
 			);
 
-			$args['exclude'] = array_merge( $args['exclude'], get_posts( $r ) );
+			// Take care that 'exclude' argument accepts integer or strings too
+			$args['exclude'] = array_merge( wp_parse_id_list( $args['exclude'] ), get_posts( $r ) );
 			$pages = get_pages( $args );
 		}
 
@@ -157,6 +170,8 @@ class PLL_Filters {
 					unset( $pages[ $key ] );
 				}
 			}
+
+			$pages = array_values( $pages ); // In case 3rd parties suppose the existence of $pages[0]
 		}
 
 		// Not done by WP but extremely useful for performance when manipulating taxonomies
@@ -164,6 +179,38 @@ class PLL_Filters {
 
 		$once = false; // In case get_pages is called another time
 		return $pages;
+	}
+
+	/**
+	 * Modifies the sql request for get_adjacent_post to filter by the current language
+	 *
+	 * @since 0.1
+	 *
+	 * @param string  $sql            The JOIN clause in the SQL.
+	 * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
+	 * @param array   $excluded_terms Array of excluded term IDs.
+	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
+	 * @param WP_Post $post           WP_Post object.
+	 * @return string modified JOIN clause
+	 */
+	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
+		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
+	}
+
+	/**
+	 * Modifies the sql request for wp_get_archives and get_adjacent_post to filter by the current language
+	 *
+	 * @since 0.1
+	 *
+	 * @param string  $sql            The WHERE clause in the SQL.
+	 * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
+	 * @param array   $excluded_terms Array of excluded term IDs.
+	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
+	 * @param WP_Post $post           WP_Post object.
+	 * @return string modified WHERE clause
+	 */
+	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
+		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
 	}
 
 	/**
@@ -194,10 +241,32 @@ class PLL_Filters {
 	 * @return array
 	 */
 	public function fix_delete_default_category( $caps, $cap, $user_id, $args ) {
-		if ( 'delete_term' === $cap && array_intersect( $args, $this->model->term->get_translations( get_option( 'default_category' ) ) ) ) {
-			$caps[] = 'do_not_allow';
+		if ( 'delete_term' === $cap ) {
+			$term = get_term( reset( $args ) ); // Since WP 4.4, we can get the term to get the taxonomy
+			if ( $term instanceof WP_Term ) {
+				$default_cat = get_option( 'default_' . $term->taxonomy );
+				if ( $default_cat && array_intersect( $args, $this->model->term->get_translations( $default_cat ) ) ) {
+					$caps[] = 'do_not_allow';
+				}
+			}
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Translates the site title in emails sent to the user (change email, reset password)
+	 * It is necessary to filter the email because WP evaluates the site title before calling switch_to_locale()
+	 *
+	 * @since 2.1.3
+	 *
+	 * @param array $email
+	 * @return array
+	 */
+	function translate_user_email( $email ) {
+		$blog_name = wp_specialchars_decode( pll__( get_option( 'blogname' ) ), ENT_QUOTES );
+		$email['subject'] = sprintf( $email['subject'], $blog_name );
+		$email['message'] = str_replace( '###SITENAME###', $blog_name, $email['message'] );
+		return $email;
 	}
 }

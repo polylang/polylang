@@ -1,18 +1,18 @@
 <?php
 
-/*
+/**
 Plugin Name: Polylang
 Plugin URI: https://polylang.pro
-Version: 2.0.9
+Version: 2.3.4
 Author: Frédéric Demarle
 Author uri: https://polylang.pro
 Description: Adds multilingual capability to WordPress
 Text Domain: polylang
 Domain Path: /languages
-*/
+ */
 
 /*
- * Copyright 2011-2016 Frédéric Demarle
+ * Copyright 2011-2018 Frédéric Demarle
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,18 +35,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // don't access directly
 };
 
-define( 'POLYLANG_VERSION', '2.0.9' );
-define( 'PLL_MIN_WP_VERSION', '4.4' );
+if ( defined( 'POLYLANG_BASENAME' ) ) {
+	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro
+	require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	if ( defined( 'POLYLANG_PRO' ) ) {
+		// Polylang Pro is already activated
+		if ( is_plugin_active( plugin_basename( __FILE__ ) ) ) {
+			require_once ABSPATH . 'wp-includes/pluggable.php';
+			deactivate_plugins( plugin_basename( __FILE__ ) ); // Deactivate this plugin
+			// WP does not allow us to send a custom meaningful message, so just tell the plugin has been deactivated
+			wp_redirect( add_query_arg( 'deactivate', 'true', remove_query_arg( 'activate' ) ) );
+			exit;
+		}
+	} else {
+		// Polylang was activated, deactivate it to keep only what we expect to be Polylang Pro
+		deactivate_plugins( POLYLANG_BASENAME );
+	}
+} else {
+	// Go on loading the plugin
+	define( 'POLYLANG_VERSION', '2.3.4' );
+	define( 'PLL_MIN_WP_VERSION', '4.4' );
 
-define( 'POLYLANG_FILE', __FILE__ ); // this file
-define( 'POLYLANG_BASENAME', plugin_basename( POLYLANG_FILE ) ); // plugin name as known by WP
-define( 'POLYLANG_DIR', dirname( POLYLANG_FILE ) ); // our directory
+	define( 'POLYLANG_FILE', __FILE__ ); // this file
+	define( 'POLYLANG_BASENAME', plugin_basename( POLYLANG_FILE ) ); // plugin name as known by WP
+	define( 'POLYLANG_DIR', dirname( POLYLANG_FILE ) ); // our directory
 
-define( 'PLL_ADMIN_INC',    POLYLANG_DIR . '/admin' );
-define( 'PLL_FRONT_INC',    POLYLANG_DIR . '/frontend' );
-define( 'PLL_INC',          POLYLANG_DIR . '/include' );
-define( 'PLL_INSTALL_INC',  POLYLANG_DIR . '/install' );
-define( 'PLL_MODULES_INC',  POLYLANG_DIR . '/modules' );
-define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
+	define( 'PLL_ADMIN_INC', POLYLANG_DIR . '/admin' );
+	define( 'PLL_FRONT_INC', POLYLANG_DIR . '/frontend' );
+	define( 'PLL_INC', POLYLANG_DIR . '/include' );
+	define( 'PLL_INSTALL_INC', POLYLANG_DIR . '/install' );
+	define( 'PLL_MODULES_INC', POLYLANG_DIR . '/modules' );
+	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 
-require_once( PLL_INC . '/class-polylang.php' );
+	require_once PLL_INC . '/class-polylang.php';
+
+	if ( file_exists( PLL_INC . '/class-polylang-pro.php' ) ) {
+		define( 'POLYLANG_PRO', true );
+		require_once PLL_INC . '/class-polylang-pro.php';
+	}
+}

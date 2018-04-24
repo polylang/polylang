@@ -25,8 +25,8 @@ class PLL_Admin_Filters_Columns {
 		foreach ( $this->model->get_translated_post_types() as $type ) {
 			// use the latest filter late as some plugins purely overwrite what's done by others :(
 			// specific case for media
-			add_filter( 'manage_'. ( 'attachment' == $type ? 'upload' : 'edit-'. $type ) .'_columns', array( $this, 'add_post_column' ), 100 );
-			add_action( 'manage_'. ( 'attachment' == $type ? 'media' : $type .'_posts' ) .'_custom_column', array( $this, 'post_column' ), 10, 2 );
+			add_filter( 'manage_' . ( 'attachment' == $type ? 'upload' : 'edit-' . $type ) . '_columns', array( $this, 'add_post_column' ), 100 );
+			add_action( 'manage_' . ( 'attachment' == $type ? 'media' : $type . '_posts' ) . '_custom_column', array( $this, 'post_column' ), 10, 2 );
 		}
 
 		// quick edit and bulk edit
@@ -35,8 +35,8 @@ class PLL_Admin_Filters_Columns {
 
 		// adds the language column in the 'Categories' and 'Post Tags' tables
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
-			add_filter( 'manage_edit-'.$tax.'_columns', array( $this, 'add_term_column' ) );
-			add_filter( 'manage_'.$tax.'_custom_column', array( $this, 'term_column' ), 10, 3 );
+			add_filter( 'manage_edit-' . $tax . '_columns', array( $this, 'add_term_column' ) );
+			add_filter( 'manage_' . $tax . '_custom_column', array( $this, 'term_column' ), 10, 3 );
 		}
 
 		// ajax responses to update list table rows
@@ -49,8 +49,8 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @since 0.8.2
 	 *
-	 * @param array $columns list of table columns
-	 * @param string $before the column before which we want to add our languages
+	 * @param array  $columns List of table columns
+	 * @param string $before  The column before which we want to add our languages
 	 * @return array modified list of columns
 	 */
 	protected function add_column( $columns, $before ) {
@@ -62,7 +62,7 @@ class PLL_Admin_Filters_Columns {
 		foreach ( $this->model->get_languages_list() as $language ) {
 			// don't add the column for the filtered language
 			if ( empty( $this->filter_lang ) || $language->slug != $this->filter_lang->slug ) {
-				$columns[ 'language_'.$language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
+				$columns[ 'language_' . $language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
 			}
 		}
 
@@ -104,11 +104,11 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $column column name
-	 * @param int $post_id
+	 * @param string $column  Column name
+	 * @param int    $post_id
 	 */
 	public function post_column( $column, $post_id ) {
-		$inline = defined( 'DOING_AJAX' ) && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action'];
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action'];
 		$lang = $inline ? $this->model->get_language( $_POST['inline_lang_choice'] ) : $this->model->post->get_language( $post_id );
 
 		if ( false === strpos( $column, 'language_' ) || ! $lang ) {
@@ -119,7 +119,7 @@ class PLL_Admin_Filters_Columns {
 
 		// hidden field containing the post language for quick edit
 		if ( $column == $this->get_first_language_column() ) {
-			printf( '<div class="hidden" id="lang_%d">%s</div>', esc_attr( $post_id ), esc_html( $lang->slug ) );
+			printf( '<div class="hidden" id="lang_%d">%s</div>', intval( $post_id ), esc_html( $lang->slug ) );
 		}
 
 		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
@@ -147,7 +147,7 @@ class PLL_Admin_Filters_Columns {
 					'<span class="pll_icon_tick"><span class="screen-reader-text">%s</span></span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) )
-	 			);
+				);
 			}
 		}
 		// link to add a new translation
@@ -209,11 +209,11 @@ class PLL_Admin_Filters_Columns {
 	 * @since 0.1
 	 *
 	 * @param string $out
-	 * @param string $column column name
-	 * @param int term_id
+	 * @param string $column  Column name
+	 * @param int    $term_id
 	 */
 	public function term_column( $out, $column, $term_id ) {
-		$inline = defined( 'DOING_AJAX' ) && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action'];
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action'];
 		if ( false === strpos( $column, 'language_' ) || ! ( $lang = $inline ? $this->model->get_language( $_POST['inline_lang_choice'] ) : $this->model->term->get_language( $term_id ) ) ) {
 			return $out;
 		}
@@ -229,11 +229,11 @@ class PLL_Admin_Filters_Columns {
 		$language = $this->model->get_language( substr( $column, 9 ) );
 
 		if ( $column == $this->get_first_language_column() ) {
-			$out = sprintf( '<div class="hidden" id="lang_%d">%s</div>', $term_id, esc_html( $lang->slug ) );
+			$out = sprintf( '<div class="hidden" id="lang_%d">%s</div>', intval( $term_id ), esc_html( $lang->slug ) );
 
 			// identify the default categories to disable the language dropdown in js
 			if ( in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) ) ) {
-				$out .= sprintf( '<div class="hidden" id="default_cat_%1$d">%1$d</div>', $term_id );
+				$out .= sprintf( '<div class="hidden" id="default_cat_%1$d">%1$d</div>', intval( $term_id ) );
 			}
 		}
 
@@ -258,7 +258,7 @@ class PLL_Admin_Filters_Columns {
 					'<span class="pll_icon_tick"><span class="screen-reader-text">%s</span></span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) )
-	 			);
+				);
 			}
 		}
 
@@ -312,7 +312,7 @@ class PLL_Admin_Filters_Columns {
 	public function ajax_update_term_rows() {
 		global $wp_list_table;
 
-		if ( ! taxonomy_exists( $taxonomy = $_POST['taxonomy'] )  || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+		if ( ! taxonomy_exists( $taxonomy = $_POST['taxonomy'] ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			die( 0 );
 		}
 
@@ -323,7 +323,7 @@ class PLL_Admin_Filters_Columns {
 
 		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // collect old translations
 		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // add current translations
-		$translations = array_unique( $translations ); // remove doublons
+		$translations = array_unique( $translations ); // remove duplicates
 		$translations = array_map( 'intval', $translations );
 
 		foreach ( $translations as $term_id ) {

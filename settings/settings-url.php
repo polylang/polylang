@@ -32,40 +32,49 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @since 1.8
 	 */
 	protected function force_lang() {?>
-		<label><?php
+		<label>
+			<?php
 			printf(
 				'<input name="force_lang" type="radio" value="0" %s /> %s',
 				$this->options['force_lang'] ? '' : 'checked="checked"',
 				esc_html__( 'The language is set from content', 'polylang' )
-			);?>
+			);
+			?>
 		</label>
-		<p class="description"><?php esc_html_e( 'Posts, pages, categories and tags urls are not modified.', 'polylang' );?></p>
-		<label><?php
+		<p class="description"><?php esc_html_e( 'Posts, pages, categories and tags urls are not modified.', 'polylang' ); ?></p>
+		<label>
+			<?php
 			printf(
 				'<input name="force_lang" type="radio" value="1" %s/> %s',
 				1 == $this->options['force_lang'] ? 'checked="checked"' : '',
 				$this->links_model->using_permalinks ? esc_html__( 'The language is set from the directory name in pretty permalinks', 'polylang' ) : esc_html__( 'The language is set from the code in the URL', 'polylang' )
-			);?>
+			);
+			?>
 		</label>
-		<p class="description"><?php echo esc_html__( 'Example:', 'polylang' ) . ' <code>' . esc_html( home_url( $this->links_model->using_permalinks ? 'en/my-post/' : '?lang=en&p=1' ) ) . '</code>';?></p>
-		<label><?php
+		<p class="description"><?php echo esc_html__( 'Example:', 'polylang' ) . ' <code>' . esc_html( home_url( $this->links_model->using_permalinks ? 'en/my-post/' : '?lang=en&p=1' ) ) . '</code>'; ?></p>
+		<label>
+			<?php
 			printf(
 				'<input name="force_lang" type="radio" value="2" %s %s/> %s',
 				$this->links_model->using_permalinks ? '' : 'disabled="disabled"',
 				2 == $this->options['force_lang'] ? 'checked="checked"' : '',
 				esc_html__( 'The language is set from the subdomain name in pretty permalinks', 'polylang' )
-			);?>
+			);
+			?>
 		</label>
-		<p class="description"><?php echo esc_html__( 'Example:', 'polylang' ) . ' <code>' . esc_html( str_replace( array( '://', 'www.' ), array( '://en.', '' ), home_url( 'my-post/' ) ) ) . '</code>';?></p>
-		<label><?php
+		<p class="description"><?php echo esc_html__( 'Example:', 'polylang' ) . ' <code>' . esc_html( str_replace( array( '://', 'www.' ), array( '://en.', '' ), home_url( 'my-post/' ) ) ) . '</code>'; ?></p>
+		<label>
+			<?php
 			printf(
 				'<input name="force_lang" type="radio" value="3" %s %s/> %s',
 				$this->links_model->using_permalinks ? '' : 'disabled="disabled"',
 				3 == $this->options['force_lang'] ? 'checked="checked"' : '',
 				esc_html__( 'The language is set from different domains', 'polylang' )
-			);?>
+			);
+			?>
 		</label>
-		<table id="pll-domains-table" class="form-table" <?php echo 3 == $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>><?php
+		<table id="pll-domains-table" class="form-table" <?php echo 3 == $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>>
+			<?php
 			foreach ( $this->model->get_languages_list() as  $lg ) {
 				printf(
 					'<tr><td><label for="pll-domain[%1$s]">%2$s</label></td>' .
@@ -74,8 +83,10 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 					esc_attr( $lg->name ),
 					esc_url( isset( $this->options['domains'][ $lg->slug ] ) ? $this->options['domains'][ $lg->slug ] : ( $lg->slug == $this->options['default_lang'] ? $this->links_model->home : '' ) )
 				);
-			}?>
-		</table><?php
+			}
+			?>
+		</table>
+		<?php
 	}
 
 	/**
@@ -83,14 +94,18 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 */
-	protected function hide_default() { ?>
-		<label><?php
+	protected function hide_default() {
+		?>
+		<label>
+			<?php
 			printf(
 				'<input name="hide_default" type="checkbox" value="1" %s /> %s',
-				$this->options['hide_default'] ? 'checked="checked"' :'',
+				$this->options['hide_default'] ? 'checked="checked"' : '',
 				esc_html__( 'Hide URL language information for default language', 'polylang' )
-			);?>
-		</label><?php
+			);
+			?>
+		</label>
+		<?php
 	}
 
 	/**
@@ -98,25 +113,31 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 */
-	protected function rewrite() {?>
-		<label><?php
+	protected function rewrite() {
+		?>
+		<label>
+			<?php
 			printf(
 				'<input name="rewrite" type="radio" value="1" %s %s/> %s',
 				$this->links_model->using_permalinks ? '' : 'disabled="disabled"',
 				$this->options['rewrite'] ? 'checked="checked"' : '',
 				esc_html__( 'Remove /language/ in pretty permalinks', 'polylang' )
-			);?>
+			);
+			?>
 		</label>
-		<p class="description"><?php echo esc_html__( 'Example:', 'polylang' ) . ' <code>' . esc_html( home_url( 'en/' ) ) . '</code>';?></p>
-		<label><?php
+		<p class="description"><?php echo esc_html__( 'Example:', 'polylang' ) . ' <code>' . esc_html( home_url( 'en/' ) ) . '</code>'; ?></p>
+		<label>
+			<?php
 			printf(
 				'<input name="rewrite" type="radio" value="0" %s %s/> %s',
 				$this->links_model->using_permalinks ? '' : 'disabled="disabled"',
 				$this->options['rewrite'] ? '' : 'checked="checked"',
 				esc_html__( 'Keep /language/ in pretty permalinks', 'polylang' )
-			);?>
+			);
+			?>
 		</label>
-		<p class="description"><?php echo esc_html__( 'Example:', 'polylang' ) . ' <code>' . esc_html( home_url( 'language/en/' ) ) . '</code>';?></p><?php
+		<p class="description"><?php echo esc_html__( 'Example:', 'polylang' ) . ' <code>' . esc_html( home_url( 'language/en/' ) ) . '</code>'; ?></p>
+		<?php
 	}
 
 	/**
@@ -124,25 +145,31 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 */
-	protected function redirect_lang() { ?>
-		<label><?php
+	protected function redirect_lang() {
+		?>
+		<label>
+			<?php
 			printf(
 				'<input name="redirect_lang" type="checkbox" value="1" %s/> %s',
-				$this->options['redirect_lang'] ? 'checked="checked"' :'',
+				$this->options['redirect_lang'] ? 'checked="checked"' : '',
 				esc_html__( 'The front page url contains the language code instead of the page name or page id', 'polylang' )
-			);?>
+			);
+			?>
 		</label>
-		<p class="description"><?php
+		<p class="description">
+			<?php
 			// That's nice to display the right home urls but don't forget that the page on front may have no language yet
 			$lang = $this->model->post->get_language( $this->page_on_front );
 			$lang = $lang ? $lang : $this->model->get_language( $this->options['default_lang'] );
 			printf(
-				/* translators: %s are urls */
-				esc_html__( 'Example: %s instead of %s', 'polylang' ),
+				/* translators: %1$s example url when the option is active. %2$s example url when the option is not active */
+				esc_html__( 'Example: %1$s instead of %2$s', 'polylang' ),
 				'<code>' . esc_html( $this->links_model->home_url( $lang ) ) . '</code>',
 				'<code>' . esc_html( _get_page_link( $this->page_on_front ) ) . '</code>'
-			); ?>
-		</p><?php
+			);
+			?>
+		</p>
+		<?php
 	}
 
 	/**
@@ -150,30 +177,37 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 */
-	public function form() { ?>
+	public function form() {
+		?>
 		<div class="pll-settings-url-col">
-			<fieldset class="pll-col-left pll-url" id="pll-force-lang"><?php
-				$this->force_lang(); ?>
+			<fieldset class="pll-col-left pll-url" id="pll-force-lang">
+				<?php $this->force_lang(); ?>
 			</fieldset>
 		</div>
 
 		<div class="pll-settings-url-col">
-			<fieldset class="pll-col-right pll-url" id="pll-hide-default" <?php echo 3 > $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>><?php
-				$this->hide_default(); ?>
-			</fieldset><?php
-
-			if ( $this->links_model->using_permalinks ) { ?>
-				<fieldset class="pll-col-right pll-url" id="pll-rewrite" <?php echo 2 > $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>><?php
-					$this->rewrite(); ?>
-				</fieldset><?php
+			<fieldset class="pll-col-right pll-url" id="pll-hide-default" <?php echo 3 > $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>>
+			<?php $this->hide_default(); ?>
+			</fieldset>
+			<?php
+			if ( $this->links_model->using_permalinks ) {
+				?>
+				<fieldset class="pll-col-right pll-url" id="pll-rewrite" <?php echo 2 > $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>>
+				<?php $this->rewrite(); ?>
+				</fieldset>
+				<?php
 			}
 
-			if ( $this->page_on_front ) { ?>
-				<fieldset class="pll-col-right pll-url" id="pll-redirect-lang"><?php
-					$this->redirect_lang(); ?>
-				</fieldset><?php
-			} ?>
-		</div><?php
+			if ( $this->page_on_front ) {
+				?>
+				<fieldset class="pll-col-right pll-url" id="pll-redirect-lang" <?php echo 2 > $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>>
+				<?php $this->redirect_lang(); ?>
+				</fieldset>
+				<?php
+			}
+			?>
+		</div>
+		<?php
 	}
 
 	/**
@@ -208,7 +242,10 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 		}
 
 		if ( 3 == $options['force_lang'] ) {
-			$newoptions['browser'] = $newoptions['hide_default'] = 0;
+			if ( ! class_exists( 'PLL_Xdata_Domain', true ) ) {
+				$newoptions['browser'] = 0;
+			}
+			$newoptions['hide_default'] = 0;
 		}
 
 		// Check if domains exist

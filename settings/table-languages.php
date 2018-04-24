@@ -1,7 +1,7 @@
 <?php
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' ); // since WP 3.1
+	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'; // since WP 3.1
 }
 
 /**
@@ -19,8 +19,8 @@ class PLL_Table_Languages extends WP_List_Table {
 	 */
 	function __construct() {
 		parent::__construct( array(
-			'plural'   => 'Languages', // Do not translate ( used for css class )
-			'ajax'	   => false,
+			'plural' => 'Languages', // Do not translate ( used for css class )
+			'ajax'   => false,
 		) );
 	}
 
@@ -160,11 +160,11 @@ class PLL_Table_Languages extends WP_List_Table {
 	 */
 	function get_sortable_columns() {
 		return array(
-			'name'		    => array( 'name', true ), // sorted by name by default
-			'locale'      => array( 'locale', false ),
-			'slug'		    => array( 'slug', false ),
-			'term_group'  => array( 'term_group', false ),
-			'count'	      => array( 'count', false ),
+			'name'       => array( 'name', true ), // sorted by name by default
+			'locale'     => array( 'locale', false ),
+			'slug'       => array( 'slug', false ),
+			'term_group' => array( 'term_group', false ),
+			'count'      => array( 'count', false ),
 		);
 	}
 
@@ -199,14 +199,14 @@ class PLL_Table_Languages extends WP_List_Table {
 				'<a title="%s" href="%s">%s</a>',
 				esc_attr__( 'Edit this language', 'polylang' ),
 				esc_url( admin_url( 'admin.php?page=mlang&amp;pll_action=edit&amp;lang=' . $item->term_id ) ),
-				esc_html__( 'Edit','polylang' )
+				esc_html__( 'Edit', 'polylang' )
 			),
 			'delete' => sprintf(
 				'<a title="%s" href="%s" onclick = "return confirm( \'%s\' );">%s</a>',
 				esc_attr__( 'Delete this language and all its associated data', 'polylang' ),
 				wp_nonce_url( '?page=mlang&amp;pll_action=delete&amp;noheader=true&amp;lang=' . $item->term_id, 'delete-lang' ),
 				esc_js( __( 'You are about to permanently delete this language. Are you sure?', 'polylang' ) ),
-				esc_html__( 'Delete','polylang' )
+				esc_html__( 'Delete', 'polylang' )
 			),
 		);
 
@@ -262,7 +262,7 @@ class PLL_Table_Languages extends WP_List_Table {
 
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
-			'per_page'	=> $per_page,
+			'per_page'    => $per_page,
 			'total_pages' => ceil( $total_items / $per_page ),
 		) );
 	}

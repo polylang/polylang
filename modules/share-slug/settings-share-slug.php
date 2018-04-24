@@ -18,7 +18,7 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 		parent::__construct( $polylang, array(
 			'module'      => 'share-slugs',
 			'title'       => __( 'Share slugs', 'polylang' ),
-			'description' => __( 'Allows to share the same url slug accross languages for posts and terms.', 'polylang' ),
+			'description' => __( 'Allows to share the same url slug across languages for posts and terms.', 'polylang' ),
 		) );
 
 		if ( class_exists( 'PLL_Share_Post_Slug', true ) && get_option( 'permalink_structure' ) ) {
@@ -58,7 +58,7 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 		wp_enqueue_script( 'jquery' );
 
 		$activated = sprintf( '<span class="activated">%s</span>', $this->action_links['activated'] );
-		$deactivated = sprintf( '<span class="deactivated">%s</span>',  $this->action_links['deactivated'] );
+		$deactivated = sprintf( '<span class="deactivated">%s</span>', $this->action_links['deactivated'] );
 
 		?>
 		<script type='text/javascript'>
@@ -75,6 +75,7 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 				} );
 			} )( jQuery );
 			// ]]>
-		</script><?php
+		</script>
+		<?php
 	}
 }

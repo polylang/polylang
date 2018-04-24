@@ -1,7 +1,7 @@
 <?php
 
 /**
- * an extremely simple non persistent cache system
+ * An extremely simple non persistent cache system
  * not as fast as using directly an array but more readable
  *
  * @since 1.7
@@ -10,7 +10,7 @@ class PLL_Cache {
 	protected $blog_id, $cache;
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.7
 	 */
@@ -20,7 +20,7 @@ class PLL_Cache {
 	}
 
 	/**
-	 * called when switching blog
+	 * Called when switching blog
 	 *
 	 * @since 1.7
 	 *
@@ -31,19 +31,19 @@ class PLL_Cache {
 	}
 
 	/**
-	 * add a value in cache
+	 * Add a value in cache
 	 *
 	 * @since 1.7
 	 *
 	 * @param string $key
-	 * @param mixed $data
+	 * @param mixed  $data
 	 */
 	public function set( $key, $data ) {
 		$this->cache[ $this->blog_id ][ $key ] = $data;
 	}
 
 	/**
-	 * get value from cache
+	 * Get value from cache
 	 *
 	 * @since 1.7
 	 *
@@ -55,9 +55,11 @@ class PLL_Cache {
 	}
 
 	/**
-	 * clean the cache (for this blog only)
+	 * Clean the cache (for this blog only)
 	 *
 	 * @since 1.7
+	 *
+	 * @param string $key
 	 */
 	public function clean( $key = '' ) {
 		if ( empty( $key ) ) {

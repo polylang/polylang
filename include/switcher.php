@@ -15,7 +15,7 @@ class PLL_Switcher {
 	 *
 	 * @param string $type optional either 'menu' or 'widget', defaults to 'widget'
 	 * @param string $key  optional either 'string' or 'default', defaults to 'string'
-	 * @return array list of switcher options srings or default values
+	 * @return array list of switcher options strings or default values
 	 */
 	static public function get_switcher_options( $type = 'widget', $key = 'string' ) {
 		$options = array(
@@ -94,7 +94,7 @@ class PLL_Switcher {
 				continue;
 			}
 
-			$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url ; // If the page is not translated, link to the home page
+			$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
 
 			$name = $args['show_names'] || ! $args['show_flags'] || $args['raw'] ? ( 'slug' == $args['display_names_as'] ? $slug : $language->name ) : '';
 			$flag = $args['raw'] && ! $args['show_flags'] ? $language->flag_url : ( $args['show_flags'] ? $language->flag : '' );
@@ -116,12 +116,13 @@ class PLL_Switcher {
 	 * hide_if_empty          => hides languages with no posts ( or pages ) if set to 1, defaults to 1
 	 * show_flags             => displays flags if set to 1, defaults to 0
 	 * show_names             => show language names if set to 1, defaults to 1
-	 * display_names_as       => wether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name
+	 * display_names_as       => whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name
 	 * force_home             => will always link to home in translated language if set to 1, defaults to 0
 	 * hide_if_no_translation => hide the link if there is no translation if set to 1, defaults to 0
 	 * hide_current           => hide the current language if set to 1, defaults to 0
 	 * post_id                => returns links to translations of post defined by post_id if set, defaults not set
 	 * raw                    => return a raw array instead of html markup if set to 1, defaults to 0
+	 * item_spacing           => whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to preserve
 	 *
 	 * @since 0.1
 	 *
@@ -143,6 +144,7 @@ class PLL_Switcher {
 			'hide_current'           => 0, // don't hide current language
 			'post_id'                => null, // if not null, link to translations of post defined by post_id
 			'raw'                    => 0, // set this to true to build your own custom language switcher
+			'item_spacing'           => 'preserve', // 'preserve' or 'discard' whitespace between list items
 		);
 		$args = wp_parse_args( $args, $defaults );
 
@@ -180,7 +182,7 @@ class PLL_Switcher {
 		 *
 		 * @since 0.8
 		 *
-		 * @param string $html html returned/outputed by the template tag
+		 * @param string $html html returned/outputted by the template tag
 		 * @param array  $args arguments passed to the template tag
 		 */
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, $args ), $args );

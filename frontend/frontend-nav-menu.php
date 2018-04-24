@@ -12,6 +12,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 * Constructor
 	 *
 	 * @since 1.2
+	 *
+	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
@@ -21,7 +23,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		// Split the language switcher menu item in several language menu items
 		add_filter( 'wp_get_nav_menu_items', array( $this, 'wp_get_nav_menu_items' ), 20 ); // after the customizer menus
 		add_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
-		add_filter( 'nav_menu_link_attributes', array( $this, 'nav_menu_link_attributes' ), 10, 3 );
+		add_filter( 'nav_menu_link_attributes', array( $this, 'nav_menu_link_attributes' ), 10, 2 );
 
 		// Filters menus by language
 		add_filter( 'theme_mod_nav_menu_locations', array( $this, 'nav_menu_locations' ), 20 );
@@ -45,6 +47,29 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 */
 	protected function usort_menu_items( $a, $b ) {
 		return ( $a->menu_order < $b->menu_order ) ? -1 : 1;
+	}
+
+	/**
+	 * Format a language switcher menu item title based on options
+	 *
+	 * @since 2.2.6
+	 *
+	 * @param string $flag    Formatted flag
+	 * @param string $name    Language name
+	 * @param array  $options Language switcher options
+	 * @return string Formatted menu item title
+	 */
+	protected function get_item_title( $flag, $name, $options ) {
+		if ( $options['show_flags'] ) {
+			if ( $options['show_names'] ) {
+				$title = sprintf( '%1$s<span style="margin-%2$s:0.3em;">%3$s</span>', $flag, is_rtl() ? 'right' : 'left', esc_html( $name ) );
+			} else {
+				$title = $flag;
+			}
+		} else {
+			$title = esc_html( $name );
+		}
+		return $title;
 	}
 
 	/**
@@ -77,8 +102,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 
 				// parent item for dropdown
 				if ( ! empty( $options['dropdown'] ) ) {
-					$item->title = $options['show_flags'] && $options['show_names'] ? $this->curlang->flag . '&nbsp;' . esc_html( $this->curlang->name ) : ( $options['show_flags'] ? $this->curlang->flag : esc_html( $this->curlang->name ) );
-					$item->url = '';
+					$item->title = $this->get_item_title( $this->curlang->flag, $this->curlang->name, $options );
+					$item->attr_title = '';
 					$item->classes = array( 'pll-parent-menu-item' );
 					$new_items[] = $item;
 					$offset++;
@@ -87,7 +112,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				foreach ( $the_languages as $lang ) {
 					$lang_item = clone $item;
 					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
-					$lang_item->title = $options['show_flags'] && $options['show_names'] ? $lang['flag'] . '<span style="margin-left:0.3em;">' . esc_html( $lang['name'] ) . '</span>' : ( $options['show_flags'] ? $lang['flag'] : esc_html( $lang['name'] ) );
+					$lang_item->title = $this->get_item_title( $lang['flag'], $lang['name'], $options );
+					$lang_item->attr_title = '';
 					$lang_item->url = $lang['url'];
 					$lang_item->lang = $lang['locale']; // Save this for use in nav_menu_link_attributes
 					$lang_item->classes = $lang['classes'];
@@ -138,6 +164,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		foreach ( $items as $item ) {
 			if ( ! empty( $item->classes ) && is_array( $item->classes ) ) {
 				if ( in_array( 'current-lang', $item->classes ) ) {
+					$item->current = false;
 					$item->classes = array_diff( $item->classes, array( 'current-menu-item' ) );
 					$r_ids = array_merge( $r_ids, $this->get_ancestors( $item ) ); // Remove the classes for these ancestors
 				} elseif ( in_array( 'current-menu-item', $item->classes ) ) {
@@ -159,14 +186,15 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 
 	/**
 	 * Adds hreflang attribute for the language switcher menu items
-	 * available since WP3.6
+	 * available since WP 3.6
 	 *
 	 * @since 1.1
 	 *
-	 * @param array $atts
+	 * @param array  $atts
+	 * @param object $item
 	 * @return array modified $atts
 	 */
-	public function nav_menu_link_attributes( $atts, $item, $args ) {
+	public function nav_menu_link_attributes( $atts, $item ) {
 		if ( isset( $item->lang ) ) {
 			$atts['lang'] = $atts['hreflang'] = esc_attr( $item->lang );
 		}
@@ -179,7 +207,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 *
 	 * @since 1.2
 	 *
-	 * @param array|bool list of nav menus locations, false if menu locations have not been filled yet
+	 * @param array|bool $menus list of nav menus locations, false if menu locations have not been filled yet
 	 * @return array|bool modified list of nav menus locations
 	 */
 	public function nav_menu_locations( $menus ) {

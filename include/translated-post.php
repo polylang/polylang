@@ -42,7 +42,13 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @param int|string|object $lang    language ( term_id or slug or object )
 	 */
 	public function set_language( $post_id, $lang ) {
-		wp_set_post_terms( (int) $post_id, $lang ? $this->model->get_language( $lang )->slug : '', 'language' );
+		$old_lang = $this->get_language( $post_id );
+		$old_lang = $old_lang ? $old_lang->slug : '';
+		$lang = $lang ? $this->model->get_language( $lang )->slug : '';
+
+		if ( $old_lang !== $lang ) {
+			wp_set_post_terms( (int) $post_id, $lang, 'language' );
+		}
 	}
 
 	/**
@@ -75,6 +81,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @since 1.2
 	 *
+	 * @param string $alias Alias for $wpdb->posts table
 	 * @return string join clause
 	 */
 	public function join_clause( $alias = '' ) {

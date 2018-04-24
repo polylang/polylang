@@ -27,7 +27,7 @@ class PLL_Links {
 	 * @since 1.3
 	 *
 	 * @param object|string $language
-	 * @param bool          $is_search optional wether we need the home url for a search form, defaults to false
+	 * @param bool          $is_search optional whether we need the home url for a search form, defaults to false
 	 */
 	public function get_home_url( $language, $is_search = false ) {
 		$language = is_object( $language ) ? $language : $this->model->get_language( $language );
@@ -45,11 +45,11 @@ class PLL_Links {
 	public function current_user_can_read( $post_id ) {
 		$post = get_post( $post_id );
 
-		if ( 'inherit' === $post->post_status ) {
+		if ( 'inherit' === $post->post_status && $post->post_parent ) {
 			$post = get_post( $post->post_parent );
 		}
 
-		if ( in_array( $post->post_status, get_post_stati( array( 'public' => true ) ) ) ) {
+		if ( 'inherit' === $post->post_status || in_array( $post->post_status, get_post_stati( array( 'public' => true ) ) ) ) {
 			return true;
 		}
 

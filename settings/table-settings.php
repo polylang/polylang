@@ -1,7 +1,7 @@
 <?php
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' ); // since WP 3.1
+	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'; // since WP 3.1
 }
 
 /**
@@ -18,8 +18,8 @@ class PLL_Table_Settings extends WP_List_Table {
 	 */
 	function __construct() {
 		parent::__construct( array(
-			'plural'   => 'Settings', // Do not translate ( used for css class )
-			'ajax'	   => false,
+			'plural' => 'Settings', // Do not translate ( used for css class )
+			'ajax'   => false,
 		) );
 	}
 

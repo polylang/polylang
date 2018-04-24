@@ -21,6 +21,16 @@ class PLL_OLT_Manager {
 	 * @since 1.2
 	 */
 	public function __construct() {
+		// Allows Polylang to be the first plugin loaded ;-)
+		add_filter( 'pre_update_option_active_plugins', array( $this, 'make_polylang_first' ) );
+		add_filter( 'pre_update_option_active_sitewide_plugins', array( $this, 'make_polylang_first' ) );
+
+		// Overriding load text domain only on front since WP 4.7
+		// FIXME test get_user_locale for backward compatibility with WP < 4.7
+		if ( is_admin() && function_exists( 'get_user_locale' ) ) {
+			return;
+		}
+
 		// Saves the default locale before we start any language manipulation
 		$this->default_locale = get_locale();
 
@@ -29,13 +39,11 @@ class PLL_OLT_Manager {
 		add_filter( 'gettext', array( $this, 'gettext' ), 10, 3 );
 		add_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
 
-		// Loads text domains
-		add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined
-		add_action( 'pll_no_language_defined', array( $this, 'load_textdomains' ) );
-
-		// Allows Polylang to be the first plugin loaded ;-)
-		add_filter( 'pre_update_option_active_plugins', array( $this, 'make_polylang_first' ) );
-		add_filter( 'pre_update_option_active_sitewide_plugins', array( $this, 'make_polylang_first' ) );
+		if ( ! Polylang::is_ajax_on_front() ) {
+			// Loads text domains
+			add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined
+			add_action( 'pll_no_language_defined', array( $this, 'load_textdomains' ) );
+		}
 	}
 
 	/**
@@ -66,8 +74,16 @@ class PLL_OLT_Manager {
 		$new_locale = get_locale();
 
 		// Don't try to save time for en_US as some users have theme written in another language
-		// Now we can load all overriden text domains with the right language
+		// Now we can load all overridden text domains with the right language
 		if ( ! empty( $this->list_textdomains ) ) {
+
+			// Since WP 4.7 we need to reset the internal cache of _get_path_to_translation when switching from any locale to en_US
+			// See WP_Locale_Switcher::change_locale()
+			// FIXME test _get_path_to_translation for backward compatibility with WP < 4.7
+			if ( function_exists( '_get_path_to_translation' ) ) {
+				_get_path_to_translation( null, true );
+			}
+
 			foreach ( $this->list_textdomains as $textdomain ) {
 				// Since WP 4.6, plugins translations are first loaded from wp-content/languages
 				if ( ! load_textdomain( $textdomain['domain'], str_replace( "{$this->default_locale}.mo", "$new_locale.mo", $textdomain['mo'] ) ) ) {
@@ -81,14 +97,14 @@ class PLL_OLT_Manager {
 		}
 
 		// First remove taxonomies and post_types labels that we don't need to translate
-		$taxonomies = array( 'language', 'term_language', 'term_translations', 'post_translations' );
-		$post_types = array( 'polylang_mo' );
+		$taxonomies = get_taxonomies( array( '_pll' => true ) );
+		$post_types = get_post_types( array( '_pll' => true ) );
 
 		// We don't need to translate core taxonomies and post types labels when setting the language from the url
 		// As they will be translated when registered the second time
 		if ( ! did_action( 'setup_theme' ) ) {
-			$taxonomies = array_merge( array( 'category', 'post_tag', 'nav_menu', 'link_category', 'post_format' ), $taxonomies );
-			$post_types = array_merge( array( 'post', 'page', 'attachment', 'revision', 'nav_menu_item' ), $post_types );
+			$taxonomies = array_merge( get_taxonomies( array( '_builtin' => true ) ), $taxonomies );
+			$post_types = array_merge( get_post_types( array( '_builtin' => true ) ), $post_types );
 		}
 
 		// Translate labels of post types and taxonomies
@@ -146,7 +162,12 @@ class PLL_OLT_Manager {
 	 * @return bool
 	 */
 	public function load_textdomain_mofile( $mofile, $domain ) {
-		$this->list_textdomains[ $domain ] = array( 'mo' => $mofile, 'domain' => $domain );
+		// On multisite, 2 files are sharing the same domain so we need to distinguish them
+		if ( 'default' === $domain && false !== strpos( $mofile, '/ms-' ) ) {
+			$this->list_textdomains['ms-default'] = array( 'mo' => $mofile, 'domain' => $domain );
+		} else {
+			$this->list_textdomains[ $domain ] = array( 'mo' => $mofile, 'domain' => $domain );
+		}
 		return ''; // Hack to prevent WP loading text domains as we will load them all later
 	}
 

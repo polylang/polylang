@@ -32,7 +32,7 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.8
 	 */
 	public function init() {
-		if ( PLL_AJAX_ON_FRONT || false === stripos( $_SERVER['SCRIPT_FILENAME'], 'index.php' ) ) {
+		if ( Polylang::is_ajax_on_front() || false === stripos( $_SERVER['SCRIPT_FILENAME'], 'index.php' ) ) {
 			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( $_REQUEST['lang'] ) );
 		}
 
@@ -98,7 +98,8 @@ abstract class PLL_Choose_Lang {
 				$this->curlang->slug,
 				time() + $expiration,
 				COOKIEPATH,
-				2 == $this->options['force_lang'] ? parse_url( $this->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN
+				2 == $this->options['force_lang'] ? parse_url( $this->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN,
+				is_ssl()
 			);
 		}
 	}
@@ -138,7 +139,7 @@ abstract class PLL_Choose_Lang {
 								$temp = $v[ $j ];
 								$v[ $j ] = $v[ $j + 1 ];
 								$v[ $j + 1 ] = $temp;
-								//swap keys
+								// Swap keys
 								$temp = $k[ $j ];
 								$k[ $j ] = $k[ $j + 1 ];
 								$k[ $j + 1 ] = $temp;
@@ -146,7 +147,7 @@ abstract class PLL_Choose_Lang {
 						}
 					}
 				}
-				$accept_langs = array_combine( $k,$v );
+				$accept_langs = array_combine( $k, $v );
 			}
 		}
 
@@ -210,7 +211,7 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * sets the language when home page is resquested
+	 * sets the language when home page is requested
 	 *
 	 * @since 1.2
 	 */
@@ -233,7 +234,7 @@ abstract class PLL_Choose_Lang {
 	public function home_requested() {
 		// we are already on the right page
 		if ( $this->options['default_lang'] == $this->curlang->slug && $this->options['hide_default'] ) {
-			$this->set_lang_query_var( $GLOBALS['wp_query'], $this->curlang );
+			$this->set_curlang_in_query( $GLOBALS['wp_query'] );
 
 			/**
 			 * Fires when the site root page is requested
@@ -270,7 +271,7 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 0.8.4
 	 *
-	 * @param int $post_id the post beeing commented
+	 * @param int $post_id the post being commented
 	 */
 	public function pre_comment_on_post( $post_id ) {
 		$this->set_language( $this->model->post->get_language( $post_id ) );
@@ -299,13 +300,13 @@ abstract class PLL_Choose_Lang {
 		 */
 		if ( $lang = apply_filters( 'pll_set_language_from_query', false, $query ) ) {
 			$this->set_language( $lang );
-			$this->set_lang_query_var( $query, $this->curlang );
+			$this->set_curlang_in_query( $query );
 		}
 
 		// sets is_home on translated home page when it displays posts
 		// is_home must be true on page 2, 3... too
 		// as well as when searching an empty string: http://wordpress.org/support/topic/plugin-polylang-polylang-breaks-search-in-spun-theme
-		if ( 'posts' == get_option( 'show_on_front' ) && ( count( $query->query ) == 1 || ( is_paged() && count( $query->query ) == 2 ) || ( isset( $query->query['s'] ) && ! $query->query['s'] ) ) && $lang = get_query_var( 'lang' ) ) {
+		elseif ( ( count( $query->query ) == 1 || ( is_paged() && count( $query->query ) == 2 ) || ( isset( $query->query['s'] ) && ! $query->query['s'] ) ) && $lang = get_query_var( 'lang' ) ) {
 			$lang = $this->model->get_language( $lang );
 			$this->set_language( $lang ); // sets the language now otherwise it will be too late to filter sticky posts !
 			$query->is_home = true;
@@ -314,18 +315,14 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * sets the language in query
-	 * optimized for ( needs ) WP 3.5+
+	 * Sets the current language in the query
 	 *
-	 * @since 1.3
+	 * @since 2.2
+	 *
+	 * @param object $query
 	 */
-	public function set_lang_query_var( &$query, $lang ) {
-		// defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
-		$query->query_vars['tax_query'][] = array(
-			'taxonomy' => 'language',
-			'field'    => 'term_taxonomy_id', // since WP 3.5
-			'terms'    => $lang->term_taxonomy_id,
-			'operator' => 'IN',
-		);
+	protected function set_curlang_in_query( &$query ) {
+		$pll_query = new PLL_Query( $query, $this->model );
+		$pll_query->set_language( $this->curlang );
 	}
 }

@@ -60,7 +60,7 @@ class PLL_Nav_Menu {
 	}
 
 	/**
-	 * get nav menu locations and language from a temporary locaction
+	 * get nav menu locations and language from a temporary location
 	 *
 	 * @since 1.8
 	 *

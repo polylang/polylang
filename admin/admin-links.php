@@ -30,7 +30,7 @@ class PLL_Admin_Links extends PLL_Links {
 				'new_lang'   => $language->slug,
 			);
 
-			// add nonce for media as we will directly publish a new attachment from a clic on this link
+			// add nonce for media as we will directly publish a new attachment from a click on this link
 			$link = wp_nonce_url( add_query_arg( $args, admin_url( 'admin.php' ) ), 'translate_media' );
 		} else {
 			$args = array(
@@ -137,7 +137,7 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 1.8
 	 *
-	 * @param int $term_id
+	 * @param int    $term_id
 	 * @param string $taxonomy
 	 * @param string $post_type
 	 * @param object $language

@@ -74,6 +74,11 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 */
 	public function create_media_translation( $post_id, $lang ) {
 		$post = get_post( $post_id );
+
+		if ( empty( $post ) ) {
+			return $post;
+		}
+
 		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug
 
 		// Create a new attachment ( translate attachment parent if exists )
@@ -84,7 +89,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 
 		// Copy metadata, attached file and alternative text
 		foreach ( array( '_wp_attachment_metadata', '_wp_attached_file', '_wp_attachment_image_alt' ) as $key ) {
-			if ( $meta = get_post_meta( $post_id, $key , true ) ) {
+			if ( $meta = get_post_meta( $post_id, $key, true ) ) {
 				add_post_meta( $tr_id, $key, $meta );
 			}
 		}
@@ -175,7 +180,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 
 		$ids = $wpdb->get_col( $wpdb->prepare( "
 			SELECT post_id FROM $wpdb->postmeta
-			WHERE meta_key = '_wp_attached_file' AND meta_value = '%s'",
+			WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
 			substr_replace( $file, '', 0, strlen( trailingslashit( $uploadpath['basedir'] ) ) )
 		) );
 

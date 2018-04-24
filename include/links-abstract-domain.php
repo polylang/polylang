@@ -25,6 +25,33 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 	}
 
 	/**
+	 * Returns the language based on language code in url
+	 * links_model interface
+	 *
+	 * @since 1.2
+	 * @since 2.0 add $url argument
+	 *
+	 * @param string $url optional, defaults to current url
+	 * @return string language slug
+	 */
+	public function get_language_from_url( $url = '' ) {
+		$host = empty( $url ) ? $_SERVER['HTTP_HOST'] : parse_url( $url, PHP_URL_HOST );
+		return ( $lang = array_search( $host, $this->get_hosts() ) ) ? $lang : '';
+	}
+
+	/**
+	 * Sets the home urls
+	 *
+	 * @since 2.2
+	 *
+	 * @param object $language
+	 */
+	protected function set_home_url( $language ) {
+		$home_url = $this->home_url( $language );
+		$language->set_home_url( $home_url, $home_url ); // Search url and home url are the same
+	}
+
+	/**
 	 * Returns the current site url
 	 *
 	 * @since 1.8
