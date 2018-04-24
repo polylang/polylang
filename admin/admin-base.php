@@ -85,8 +85,16 @@ class PLL_Admin_Base extends PLL_Base {
 		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
 
 		foreach ( $tabs as $tab => $title ) {
-			$cap = apply_filters( 'pll_settings_capability', 'manage_options' );
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
+			/**
+			 * Change the capability to access a settings page capability.
+			 *
+			 * @param  string  $default  `manage_options`.
+			 * @param  string  $tab      The tab id.
+			 * @param  string  $page     The parsed tab id (mlang_**).
+			 * @return string  A capability name.
+			 */
+			$cap = apply_filters( 'pll_settings_capability', 'manage_options', $tab, $page );
 			if ( empty( $parent ) ) {
 				$parent = $page;
 				add_menu_page( $title, __( 'Languages','polylang' ), $cap, $page, null , 'dashicons-translation' );
