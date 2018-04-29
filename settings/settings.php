@@ -326,10 +326,14 @@ class PLL_Settings extends PLL_Admin_Base {
 		require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 		include PLL_SETTINGS_INC . '/languages.php';
 
-		// Keep only languages with existing WP language pack
 		$translations = wp_get_available_translations();
-		$translations['en_US'] = ''; // Languages packs don't include en_US
-		$languages = array_intersect_key( $languages, $translations );
+
+		// Keep only languages with existing WP language pack
+		// Unless the transient has expired and we don't have an internet connection to refresh it
+		if ( ! empty( $translations ) ) {
+			$translations['en_US'] = ''; // Languages packs don't include en_US
+			$languages = array_intersect_key( $languages, $translations );
+		}
 
 		/**
 		 * Filter the list of predefined languages
