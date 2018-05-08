@@ -49,6 +49,9 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			add_filter( $filter, 'pll__', 1 );
 		}
 
+		// Translates the privacy policy page
+		add_filter( 'option_wp_page_for_privacy_policy', 'pll_get_post', 20 ); // Since WP 4.9.6
+
 		// Translates biography
 		add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 4 );
 
