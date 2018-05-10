@@ -1,5 +1,5 @@
 jQuery( document ).ready(function( $ ) {
-	var widgets_container = $('#widgets-right');
+	var widgets_container = $( '#widgets-right' );
 
 	/**
 	 * Prepend widget titles with a flag once a language is selected.
@@ -9,7 +9,7 @@ jQuery( document ).ready(function( $ ) {
 	function add_flag( widget ) {
 		widget = $( widget );
 		var title = $( '.widget-top .widget-title h3', widget ),
-			icon = $( '.pll-lang-choice option:selected', widget ).attr('flag');
+			icon = $( '.pll-lang-choice option:selected', widget ).attr( 'flag' );
 		$( '.pll-lang', title ).remove();
 
 		if ( icon && '0' !== icon ) {
@@ -24,6 +24,6 @@ jQuery( document ).ready(function( $ ) {
 	} );
 
 	widgets_container.on( 'change', '.pll-lang-choice', function() {
-		add_flag( $( this ).parents('.widget') );
+		add_flag( $( this ).parents( '.widget' ) );
 	} );
 } );
