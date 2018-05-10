@@ -11,7 +11,7 @@ jQuery( document ).ready(function( $ ) {
 		var title = $( '.widget-top .widget-title h3', widget ),
 			icon = $( '.pll-lang-choice option:selected', widget ).attr( 'flag' );
 
-		if ( icon && '0' !== icon ) {
+		if ( icon ) {
 			var current = $( '.pll-lang img', title );
 			if ( current.length ) {
 				current.attr( 'src', icon );
