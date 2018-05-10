@@ -10,12 +10,18 @@ jQuery( document ).ready(function( $ ) {
 		widget = $( widget );
 		var title = $( '.widget-top .widget-title h3', widget ),
 			icon = $( '.pll-lang-choice option:selected', widget ).attr( 'flag' );
-		$( '.pll-lang', title ).remove();
 
 		if ( icon && '0' !== icon ) {
-			var img  = '<img src="' + icon + '">',
-				flag = '<span class="pll-lang">' + img + ' &nbsp; </span>';
-			title.prepend( flag );
+			var current = $( '.pll-lang img', title );
+			if ( current.length ) {
+				current.attr( 'src', icon );
+			} else {
+				var img  = '<img src="' + icon + '">',
+					flag = '<span class="pll-lang">' + img + ' &nbsp; </span>';
+				title.prepend( flag );
+			}
+		} else {
+			$( '.pll-lang', title ).remove();
 		}
 	}
 
