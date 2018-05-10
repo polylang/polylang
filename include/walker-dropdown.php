@@ -22,9 +22,10 @@ class PLL_Walker_Dropdown extends Walker {
 	function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) {
 		$value = $args['value'];
 		$output .= sprintf(
-			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
+			"\t" . '<option value="%1$s"%2$s%3$s%4$s>%5$s</option>' . "\n",
 			esc_attr( $element->$value ),
 			method_exists( $element, 'get_locale' ) ? sprintf( ' lang="%s"', esc_attr( $element->get_locale( 'display' ) ) ) : '',
+			( ! empty( $element->flag_url ) ) ? sprintf( ' flag="%s"', esc_attr( $element->flag_url ) ) : '',
 			isset( $args['selected'] ) && $args['selected'] === $element->$value ? ' selected="selected"' : '',
 			esc_html( $element->name )
 		);
