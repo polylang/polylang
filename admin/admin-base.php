@@ -119,6 +119,7 @@ class PLL_Admin_Base extends PLL_Base {
 			'media' => array( array( 'upload' ), array( 'jquery' ), 0, 1 ),
 			'term'  => array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 ),
 			'user'  => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
+			'widgets'  => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
 		foreach ( $scripts as $script => $v ) {
