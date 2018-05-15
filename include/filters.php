@@ -46,6 +46,9 @@ class PLL_Filters {
 
 		// Translates the privacy policy page
 		add_filter( 'option_wp_page_for_privacy_policy', array( $this, 'translate_page_for_privacy_policy' ), 20 ); // Since WP 4.9.6
+
+		// Personal data exporter
+		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_personal_data_exporter' ), 0 ); // Since WP 4.9.6
 	}
 
 	/**
@@ -283,5 +286,59 @@ class PLL_Filters {
 	 */
 	public function translate_page_for_privacy_policy( $id ) {
 		return empty( $this->curlang ) ? $id : $this->model->post->get( $id, $this->curlang );
+	}
+
+	/**
+	 * Register our personal data exporter
+	 *
+	 * @since 2.3.6
+	 *
+	 * @param array $exporters Personal data exporters
+	 * @retun array
+	 */
+	public function register_personal_data_exporter( $exporters ) {
+		$exporters[] = array(
+			'exporter_friendly_name' => __( 'Translated user descriptions', 'polylang' ),
+			'callback'               => array( $this, 'user_data_exporter' ),
+		);
+		return $exporters;
+	}
+
+	/**
+	 * Export translated user description as WP exports only the description in the default language
+	 *
+	 * @since 2.3.6
+	 *
+	 * @param string $email_address User email address
+	 * @return array Personal data
+	 */
+	public function user_data_exporter( $email_address ) {
+		$email_address = trim( $email_address );
+
+		$data_to_export = array();
+
+		if ( $user = get_user_by( 'email', $email_address ) ) {
+			foreach ( $this->model->get_languages_list() as $lang ) {
+				if ( $lang->slug !== $this->options['default_lang'] && $value = get_user_meta( $user->ID, 'description_' . $lang->slug, true ) ) {
+					$user_data_to_export[] = array(
+						/* translators: %s is a language native name */
+						'name'  => sprintf( __( 'User description - %s', 'polylang' ), $lang->name ),
+						'value' => $value,
+					);
+				}
+			}
+
+			$data_to_export[] = array(
+				'group_id'    => 'user',
+				'group_label' => __( 'User' ),
+				'item_id'     => "user-{$user->ID}",
+				'data'        => $user_data_to_export,
+			);
+		}
+
+		return array(
+			'data' => $data_to_export,
+			'done' => true,
+		);
 	}
 }
