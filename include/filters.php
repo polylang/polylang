@@ -43,6 +43,9 @@ class PLL_Filters {
 		// Translate the site title in emails sent to users
 		add_filter( 'password_change_email', array( $this, 'translate_user_email' ) );
 		add_filter( 'email_change_email', array( $this, 'translate_user_email' ) );
+
+		// Translates the privacy policy page
+		add_filter( 'option_wp_page_for_privacy_policy', array( $this, 'translate_page_for_privacy_policy' ), 20 ); // Since WP 4.9.6
 	}
 
 	/**
@@ -263,10 +266,22 @@ class PLL_Filters {
 	 * @param array $email
 	 * @return array
 	 */
-	function translate_user_email( $email ) {
+	public function translate_user_email( $email ) {
 		$blog_name = wp_specialchars_decode( pll__( get_option( 'blogname' ) ), ENT_QUOTES );
 		$email['subject'] = sprintf( $email['subject'], $blog_name );
 		$email['message'] = str_replace( '###SITENAME###', $blog_name, $email['message'] );
 		return $email;
+	}
+
+	/**
+	 * Translates the privacy policy page, on both frontend and admin
+	 *
+	 * @since 2.3.6
+	 *
+	 * @param int $id Privacy policy page id
+	 * @return int
+	 */
+	public function translate_page_for_privacy_policy( $id ) {
+		return empty( $this->curlang ) ? $id : $this->model->post->get( $id, $this->curlang );
 	}
 }
