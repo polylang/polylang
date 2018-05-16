@@ -328,12 +328,14 @@ class PLL_Filters {
 				}
 			}
 
-			$data_to_export[] = array(
-				'group_id'    => 'user',
-				'group_label' => __( 'User' ),
-				'item_id'     => "user-{$user->ID}",
-				'data'        => $user_data_to_export,
-			);
+			if ( ! empty( $user_data_to_export ) ) {
+				$data_to_export[] = array(
+					'group_id'    => 'user',
+					'group_label' => __( 'User' ),
+					'item_id'     => "user-{$user->ID}",
+					'data'        => $user_data_to_export,
+				);
+			}
 		}
 
 		return array(
