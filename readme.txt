@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.3.5
+Stable tag: 2.3.6
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.3.6 (2018-05-17) =
+
+* Pro: Fix post type archive slug not translated in ACF page link fields
+* WP 4.9.6: Translate the privacy policy page
+* WP 4.9.6: Add the translated user descriptions to exported personal data
+* Update Plugin updater to version 1.6.16
+* Fix conflict with the plugin View Admin As. Props Jory Hogeveen. #253
 
 = 2.3.5 (2018-05-08) =
 
