@@ -46,6 +46,7 @@ class PLL_Filters {
 
 		// Translates the privacy policy page
 		add_filter( 'option_wp_page_for_privacy_policy', array( $this, 'translate_page_for_privacy_policy' ), 20 ); // Since WP 4.9.6
+		add_filter( 'map_meta_cap', array( $this, 'fix_privacy_policy_page_editing' ), 10, 4 );
 
 		// Personal data exporter
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_personal_data_exporter' ), 0 ); // Since WP 4.9.6
@@ -234,7 +235,6 @@ class PLL_Filters {
 		return $output;
 	}
 
-
 	/**
 	 * Prevents deleting all the translations of the default category
 	 *
@@ -286,6 +286,28 @@ class PLL_Filters {
 	 */
 	public function translate_page_for_privacy_policy( $id ) {
 		return empty( $this->curlang ) ? $id : $this->model->post->get( $id, $this->curlang );
+	}
+
+	/**
+	 * Prevents edit and delete links for the translations of the privacy policy page for non admin
+	 *
+	 * @since 2.3.7
+	 *
+	 * @param array  $caps    The user's actual capabilities.
+	 * @param string $cap     Capability name.
+	 * @param int    $user_id The user ID.
+	 * @param array  $args    Adds the context to the cap. The category id.
+	 * @return array
+	 */
+	public function fix_privacy_policy_page_editing( $caps, $cap, $user_id, $args ) {
+			if ( in_array( $cap, array( 'edit_page', 'edit_post', 'delete_page', 'delete_post' ) ) ) {
+			$privacy_page = get_option( 'wp_page_for_privacy_policy' );
+			if ( $privacy_page && array_intersect( $args, $this->model->post->get_translations( $privacy_page ) ) ) {
+				$caps = array_merge( $caps, map_meta_cap( 'manage_privacy_options', $user_id ) );
+			}
+		}
+
+		return $caps;
 	}
 
 	/**
