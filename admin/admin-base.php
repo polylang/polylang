@@ -136,12 +136,12 @@ class PLL_Admin_Base extends PLL_Base {
 	/**
 	 * Enqueue scripts to the WP Customizer.
 	 *
-	 * @since 1.3.x
+	 * @since 2.3.x
 	 */
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/widgets' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION, false );
+			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/widgets' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
 		}
 	}
 
