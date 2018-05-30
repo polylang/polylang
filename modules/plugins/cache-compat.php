@@ -18,7 +18,7 @@ class PLL_Cache_Compat {
 		}
 
 		// Since version 3.0.5, WP Rocket does not serve the cached page if our cookie is not set
-		if ( ! defined ( 'WP_ROCKET_VERSION' ) || version_compare( WP_ROCKET_VERSION, '3.0.5', '<' ) ) {
+		if ( ! defined( 'WP_ROCKET_VERSION' ) || version_compare( WP_ROCKET_VERSION, '3.0.5', '<' ) ) {
 			add_action( 'wp', array( $this, 'do_not_cache_site_home' ) );
 		}
 	}
