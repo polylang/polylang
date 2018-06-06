@@ -212,7 +212,17 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @return string
 	 */
 	public function get_locale( $locale ) {
-		return $this->curlang->locale;
+		if ( isset( $_POST['post_lang_choice'] ) && $lang = $this->model->get_language( $_POST['post_lang_choice'] ) ) {
+			$locale = $lang->locale;
+		} elseif ( isset( $_POST['term_lang_choice'] ) && $lang = $this->model->get_language( $_POST['term_lang_choice'] ) ) {
+			$locale = $lang->locale;
+		} elseif ( isset( $_POST['inline_lang_choice'] ) && $lang = $this->model->get_language( $_POST['inline_lang_choice'] ) ) {
+			$locale = $lang->locale;
+		} elseif ( ! empty( $this->curlang ) ) {
+			$locale = $this->curlang->locale;
+		}
+
+		return $locale;
 	}
 
 	/**
