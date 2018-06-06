@@ -172,7 +172,7 @@ class PLL_Admin_Base extends PLL_Base {
 								options.url = options.url+'&<?php echo $str; ?>';
 							} else {
 								try {
-									o = $.parseJSON(options.data);
+									var o = $.parseJSON(options.data);
 									o = $.extend(o, <?php echo $arr; ?>);
 									options.data = JSON.stringify(o);
 								}
