@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.3.6
+Stable tag: 2.3.7
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.3.7 (2018-06-07) =
+
+* Pro: The Events Calendar: Fix untranslated events shown in all languages
+* Avoid displaying edit links of translations of the privacy policy page to non-admin
+* Fix draft created when creating a new page on multisite
+* Do not prevent using the cache for home when using WP Rocket 3.0.5 or later #236
+* Fix language filter applied to wrong queries on admin side
 
 = 2.3.6 (2018-05-17) =
 
