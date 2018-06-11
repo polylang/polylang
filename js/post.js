@@ -131,7 +131,15 @@
 			});
 		}
 
-		var data = wpAjax.unserialize( settings.data ); // what were the data sent by the ajax request?
+		var data;
+		if (settings.data instanceof FormData) {
+			data = {};
+			settings.data.forEach(function(key, value){
+				data[key] = value;
+			});
+		} else {
+			data = wpAjax.unserialize( settings.data ); // what were the data sent by the ajax request?
+		}
 		if ( 'undefined' != typeof( data['action'] ) && 'inline-save' == data['action'] ) {
 			update_rows( data['post_ID'] );
 		}
