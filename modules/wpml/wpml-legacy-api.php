@@ -63,8 +63,8 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 		}
 
 		foreach ( $languages as $lang ) {
-			// We can find a translation only on frontend
-			if ( method_exists( PLL()->links, 'get_translation_url' ) ) {
+			// We can find a translation only on frontend once the global $wp_query object has been instantiated
+			if ( method_exists( PLL()->links, 'get_translation_url' ) && ! empty( $GLOBALS['wp_query'] ) ) {
 				$url = PLL()->links->get_translation_url( $lang );
 			}
 
