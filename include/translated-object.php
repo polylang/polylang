@@ -219,7 +219,7 @@ abstract class PLL_Translated_Object {
 	 * @param int|string|object $lang language ( term_id or slug or object )
 	 * @return bool|int the translation post id  or term id if exists, otherwise the post id or term id, false if the post has no language
 	 */
-	public function get( $id, $lang ) {
+	public function get( int $id, $lang ) {
 		$obj_lang = $this->get_language( $id ); // FIXME is this necessary?
 		if ( ! $lang || ! $obj_lang ) {
 			return false;
