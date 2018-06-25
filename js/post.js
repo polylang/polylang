@@ -131,9 +131,11 @@
 			});
 		}
 
-		var data = wpAjax.unserialize( settings.data ); // what were the data sent by the ajax request?
-		if ( 'undefined' != typeof( data['action'] ) && 'inline-save' == data['action'] ) {
-			update_rows( data['post_ID'] );
+		if ( 'string' == typeof( settings.data ) ) { // Need to check the type due to Gutenberg sometime sending FormData objects
+			var data = wpAjax.unserialize( settings.data ); // what were the data sent by the ajax request?
+			if ( 'undefined' != typeof( data['action'] ) && 'inline-save' == data['action'] ) {
+				update_rows( data['post_ID'] );
+			}
 		}
 	});
 })( jQuery );
