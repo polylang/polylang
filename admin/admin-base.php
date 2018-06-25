@@ -158,38 +158,38 @@ class PLL_Admin_Base extends PLL_Base {
 
 		$str = http_build_query( $params );
 		$arr = json_encode( $params );
-?>
-<script type="text/javascript">
-	if (typeof jQuery != 'undefined') {
-		(function($){
-			$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-				if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
-					if ( 'undefined' === typeof options.data ) {
-						options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; ?>' : <?php echo $arr; ?>;
-					} else {
-						if ( 'string' === typeof options.data ) {
-							if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
-								options.url = options.url+'&<?php echo $str; ?>';
+		?>
+		<script type="text/javascript">
+			if (typeof jQuery != 'undefined') {
+				(function($){
+					$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+						if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
+							if ( 'undefined' === typeof options.data ) {
+								options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; ?>' : <?php echo $arr; ?>;
 							} else {
-								try {
-									var o = $.parseJSON(options.data);
-									o = $.extend(o, <?php echo $arr; ?>);
-									options.data = JSON.stringify(o);
-								}
-								catch(e) {
-									options.data = '<?php echo $str; ?>&'+options.data;
+								if ( 'string' === typeof options.data ) {
+									if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
+										options.url = options.url+'&<?php echo $str; ?>';
+									} else {
+										try {
+											var o = $.parseJSON(options.data);
+											o = $.extend(o, <?php echo $arr; ?>);
+											options.data = JSON.stringify(o);
+										}
+										catch(e) {
+											options.data = '<?php echo $str; ?>&'+options.data;
+										}
+									}
+								} else {
+									options.data = $.extend(options.data, <?php echo $arr; ?>);
 								}
 							}
-						} else {
-							options.data = $.extend(options.data, <?php echo $arr; ?>);
 						}
-					}
-				}
-			});
-		})(jQuery)
-	}
-</script>
-<?php
+					});
+				})(jQuery)
+			}
+		</script>
+		<?php
 	}
 
 	/**
