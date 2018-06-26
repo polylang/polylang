@@ -26,29 +26,29 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 	}
 
 	/**
-	 * finds the language according to information found in the url
+	 * Finds the language according to information found in the url
 	 *
 	 * @since 1.2
 	 */
 	public function set_language_from_url() {
-		$host = str_replace( 'www.', '', parse_url( $this->links_model->home, PHP_URL_HOST ) );
+		$host = str_replace( 'www.', '', parse_url( $this->links_model->home, PHP_URL_HOST ) ); // Remove www. for the comparison
 		$home_path = parse_url( $this->links_model->home, PHP_URL_PATH );
 
-		$requested_host = str_replace( 'www.', '', $_SERVER['HTTP_HOST'] );
-		$requested_uri = rtrim( str_replace( $this->index, '', $_SERVER['REQUEST_URI'] ), '/' ); // some PHP setups turn requests for / into /index.php in REQUEST_URI
+		$requested_host = parse_url( 'http://' . str_replace( 'www.', '', $_SERVER['HTTP_HOST'] ), PHP_URL_HOST ); // Remove the port and www. for the comparison
+		$requested_uri = rtrim( str_replace( $this->index, '', $_SERVER['REQUEST_URI'] ), '/' ); // Some PHP setups turn requests for / into /index.php in REQUEST_URI
 
-		// home is requested
+		// Home is requested
 		if ( $requested_host == $host && $requested_uri == $home_path && empty( $_SERVER['QUERY_STRING'] ) ) {
 			$this->home_language();
 			add_action( 'setup_theme', array( $this, 'home_requested' ) );
 		}
 
-		// take care to post & page preview http://wordpress.org/support/topic/static-frontpage-url-parameter-url-language-information
+		// Take care to post & page preview http://wordpress.org/support/topic/static-frontpage-url-parameter-url-language-information
 		elseif ( isset( $_GET['preview'] ) && ( ( isset( $_GET['p'] ) && $id = (int) $_GET['p'] ) || ( isset( $_GET['page_id'] ) && $id = (int) $_GET['page_id'] ) ) ) {
 			$curlang = ( $lg = $this->model->post->get_language( $id ) ) ? $lg : $this->model->get_language( $this->options['default_lang'] );
 		}
 
-		// take care to ( unattached ) attachments
+		// Take care to ( unattached ) attachments
 		elseif ( isset( $_GET['attachment_id'] ) && $id = (int) $_GET['attachment_id'] ) {
 			$curlang = ( $lg = $this->model->post->get_language( $id ) ) ? $lg : $this->get_preferred_language();
 		}
@@ -61,8 +61,8 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 			$curlang = $this->model->get_language( $this->options['default_lang'] );
 		}
 
-		// if no language found, check_language_code_in_url will attempt to find one and redirect to the correct url
-		// otherwise 404 will be fired in the preferred language
+		// If no language found, check_language_code_in_url() will attempt to find one and redirect to the correct url
+		// Otherwise a 404 will be fired in the preferred language
 		$this->set_language( empty( $curlang ) ? $this->get_preferred_language() : $curlang );
 	}
 
