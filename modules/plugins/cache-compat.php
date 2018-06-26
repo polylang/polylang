@@ -37,13 +37,12 @@ class PLL_Cache_Compat {
 				var expirationDate = new Date();
 				expirationDate.setTime( expirationDate.getTime() + %d );
 				document.cookie = "%s=%s; expires=" + expirationDate.toUTCString() + "; path=%s%s";
-			}());
-				',
-				esc_js( apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS ) * 1000 ),
-				esc_js( PLL_COOKIE ),
-				esc_js( pll_current_language() ),
-				esc_js( COOKIEPATH ),
-				$domain ? '; domain=' . esc_js( $domain ) : ''
+			}());',
+			esc_js( apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS ) * 1000 ),
+			esc_js( PLL_COOKIE ),
+			esc_js( pll_current_language() ),
+			esc_js( COOKIEPATH ),
+			$domain ? '; domain=' . esc_js( $domain ) : ''
 		);
 		echo '<script type="text/javascript">' . $js . '</script>';
 	}
