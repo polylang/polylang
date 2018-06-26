@@ -86,7 +86,7 @@ abstract class PLL_Choose_Lang {
 	 */
 	public function maybe_setcookie() {
 		// Avoid setting cookie in response, see above function description
-		$setCookieInJs = ( defined( 'WP_CACHE' ) && WP_CACHE ) && ( defined( 'PLL_SET_COOKIE_IN_JS') && PLL_SET_COOKIE_IN_JS );
+		$setCookieInJs = ( defined( 'WP_CACHE' ) && WP_CACHE ) && ( defined( 'PLL_SET_COOKIE_IN_JS' ) && PLL_SET_COOKIE_IN_JS );
 
 		// check headers have not been sent to avoid ugly error
 		// cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
