@@ -1,4 +1,4 @@
-jQuery( document ).ready(function( $ ) {
+( function( $ ) {
 	var widgets_container, widgets_selector;
 
 	/**
@@ -72,4 +72,4 @@ jQuery( document ).ready(function( $ ) {
 		add_flag( $( this ).parents( '.widget' ) );
 	} );
 
-} );
+} ( jQuery ) );
