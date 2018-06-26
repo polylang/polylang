@@ -74,15 +74,23 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * set a cookie to remember the language.
-	 * possibility to set PLL_COOKIE to false will disable cookie although it will break some functionalities
+	 * Set a cookie to remember the language.
+	 * Possibility to set PLL_COOKIE to false will disable cookie although it will break some functionalities
+	 *
+	 * Defining PLL_SET_COOKIE_IN_JS will disable cookie setting via Set-Cookie response,
+	 * but instead language cookie can be set with JS in `add_cookie_script` of `modules/plugins/cache-compat.php`.
+	 * This helps `varnish` based caches (cannot cache if `Set-Cookie` present)
+	 * so that these can also cache the first-ever response where normally cookie would be set.
 	 *
 	 * @since 1.5
 	 */
 	public function maybe_setcookie() {
+		// Avoid setting cookie in response, see above function description
+		$setCookieInJs = ( defined( 'WP_CACHE' ) && WP_CACHE ) && ( defined( 'PLL_SET_COOKIE_IN_JS') && PLL_SET_COOKIE_IN_JS );
+
 		// check headers have not been sent to avoid ugly error
 		// cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
-		if ( ! headers_sent() && PLL_COOKIE !== false && ! empty( $this->curlang ) && ( ! isset( $_COOKIE[ PLL_COOKIE ] ) || $_COOKIE[ PLL_COOKIE ] != $this->curlang->slug ) && ! is_404() ) {
+		if ( ! $setCookieInJs && ! headers_sent() && PLL_COOKIE !== false && ! empty( $this->curlang ) && ( ! isset( $_COOKIE[ PLL_COOKIE ] ) || $_COOKIE[ PLL_COOKIE ] != $this->curlang->slug ) && ! is_404() ) {
 
 			/**
 			 * Filter the Polylang cookie duration

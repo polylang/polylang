@@ -25,6 +25,11 @@ class PLL_Cache_Compat {
 
 	/**
 	 * Currently all tested cache plugins don't send cookies with cached pages
+	 *
+	 * Also `varnish` based caches cannot cache responses with Set-Cookie.
+	 * So it is sometimes preferrable to define PLL_SET_COOKIE_IN_JS and use
+	 * this JS based cookie setting instead of `maybe_setcookie` function.
+	 *
 	 * This makes us impossible know the language of the last browsed page
 	 * This functions allows to create the cookie in javascript as a workaround
 	 *
