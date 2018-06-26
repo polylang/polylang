@@ -179,6 +179,10 @@ class PLL_Lingotek {
 			height: 630px;
 			background: #fafafa;
 		}
+		.rtl .ltk-feature {
+			text-align: right;
+			float: right;
+		}
 		.ltk-feature h3 {
 			height: 1em;
 		}
@@ -194,10 +198,16 @@ class PLL_Lingotek {
 		.ltk-feature ul {
 			margin-left: 10px;
 		}
+		.rtl .ltk-feature ul {
+			margin-right: 10px;
+		}
 		.ltk-feature ul li {
 			list-style: inside disc;
 			list-style-position: outside;
-				padding-left: 0;
+			padding-left: 0;
+		}
+		.rtl .ltk-feature ul li {
+			padding-right: 0;
 		}
 		.ltk-feature .ltk-desc {
 			height: 3em;
@@ -210,8 +220,6 @@ class PLL_Lingotek {
 		.ltk-feature .ltk-lower {
 			padding: 5px 20px 0px 20px;
 			border-top: 1px solid #eee;
-
-			text-align: left;
 			font-size: 95%;
 		}
 
