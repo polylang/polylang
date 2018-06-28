@@ -87,6 +87,9 @@ class PLL_Language {
 				$this->facebook = $languages[ $this->locale ]['facebook'];
 			}
 		}
+
+		// Ensure correct scheme.
+		$this->flag_url = set_url_scheme( $this->flag_url );
 	}
 
 	/**
