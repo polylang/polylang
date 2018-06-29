@@ -229,7 +229,7 @@ class PLL_Filters {
 	 * @return string
 	 */
 	public function language_attributes( $output ) {
-		if ( $language = $this->model->get_language( get_locale() ) ) {
+		if ( $language = $this->model->get_language( is_admin() ? get_user_locale() : get_locale() ) ) {
 			$output = str_replace( '"' . get_bloginfo( 'language' ) . '"', '"' . $language->get_locale( 'display' ) . '"', $output );
 		}
 		return $output;
