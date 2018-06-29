@@ -35,10 +35,10 @@ class PLL_Cache_Compat {
 		$js = sprintf( '
 			(function() {
 				var expirationDate = new Date();
-				expirationDate.setTime( expirationDate.getTime() + %d );
+				expirationDate.setTime( expirationDate.getTime() + %d * 1000 );
 				document.cookie = "%s=%s; expires=" + expirationDate.toUTCString() + "; path=%s%s";
 			}());',
-			esc_js( apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS ) * 1000 ),
+			esc_js( apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS ) ),
 			esc_js( PLL_COOKIE ),
 			esc_js( pll_current_language() ),
 			esc_js( COOKIEPATH ),
