@@ -74,15 +74,16 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * set a cookie to remember the language.
-	 * possibility to set PLL_COOKIE to false will disable cookie although it will break some functionalities
+	 * Set a cookie to remember the language.
+	 * Setting PLL_COOKIE to false will disable cookie although it will break some functionalities
 	 *
 	 * @since 1.5
 	 */
 	public function maybe_setcookie() {
-		// check headers have not been sent to avoid ugly error
-		// cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
-		if ( ! headers_sent() && PLL_COOKIE !== false && ! empty( $this->curlang ) && ( ! isset( $_COOKIE[ PLL_COOKIE ] ) || $_COOKIE[ PLL_COOKIE ] != $this->curlang->slug ) && ! is_404() ) {
+		// Don't set cookie in javascript when a cache plugin is active
+		// Check headers have not been sent to avoid ugly error
+		// Cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
+		if ( ! pll_is_cache_active() && ! headers_sent() && PLL_COOKIE !== false && ! empty( $this->curlang ) && ( ! isset( $_COOKIE[ PLL_COOKIE ] ) || $_COOKIE[ PLL_COOKIE ] != $this->curlang->slug ) && ! is_404() ) {
 
 			/**
 			 * Filter the Polylang cookie duration

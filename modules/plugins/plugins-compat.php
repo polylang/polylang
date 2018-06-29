@@ -82,8 +82,7 @@ class PLL_Plugins_Compat {
 			add_action( 'pll_language_defined', array( $this->wpseo = new PLL_WPSEO(), 'init' ) );
 		}
 
-		// Cache plugins, with specific test for WP Fastest Cache which doesn't use WP_CACHE
-		if ( ( defined( 'WP_CACHE' ) && WP_CACHE ) || defined( 'WPFC_MAIN_PATH' ) ) {
+		if ( pll_is_cache_active() ) {
 			add_action( 'pll_init', array( $this->cache_compat = new PLL_Cache_Compat(), 'init' ) );
 		}
 
