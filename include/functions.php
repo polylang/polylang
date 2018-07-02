@@ -87,7 +87,7 @@ if ( ! function_exists( 'wp_doing_ajax' ) ) {
 /**
  * Determines whether we should load the cache compatibility
  *
- * @since 2.3.9
+ * @since 2.3.8
  *
  * return bool True if the cache compatibility must be loaded
  */
@@ -95,7 +95,7 @@ function pll_is_cache_active() {
 	/**
 	 * Filters whether we should load the cache compatibility
 	 *
-	 * @since 2.3.9
+	 * @since 2.3.8
 	 *
 	 * @bool $is_cache True if a known cache plugin is active
 	 *                 incl. WP Fastest Cache which doesn't use WP_CACHE
