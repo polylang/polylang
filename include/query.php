@@ -106,8 +106,14 @@ class PLL_Query {
 				array( $tax_query ),
 				'relation' => 'AND',
 			);
-		} else {
+		} elseif ( is_array( $tax_query ) ) {
+			// The tax query is expected to be *always* an array, but it seems that 3rd parties fill it with a string
+			// Causing a fatal error if we don't check it.
+			// See https://wordpress.org/support/topic/fatal-error-2947/
 			$tax_query[] = $lang_query;
+		} elseif ( empty( $tax_query ) ) {
+			// Supposing the tax query has been wrongly filled with an empty string
+			$tax_query = array( $lang_query );
 		}
 	}
 
