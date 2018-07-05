@@ -29,6 +29,8 @@ class PLL_Admin_Sync {
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
 		add_action( 'pll_save_term', array( $this, 'sync_term_parent' ), 10, 3 );
 
+		add_action( 'pll_duplicate_term', array( $this->term_metas, 'copy' ), 10, 3 );
+
 		if ( $this->options['media_support'] ) {
 			add_action( 'pll_translate_media', array( $this->taxonomies, 'copy' ), 10, 3 );
 			add_action( 'pll_translate_media', array( $this->post_metas, 'copy' ), 10, 3 );
