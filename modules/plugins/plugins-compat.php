@@ -16,6 +16,7 @@ class PLL_Plugins_Compat {
 	 */
 	protected function __construct() {
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
+		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
 
 		// WordPress Importer
 		add_action( 'init', array( $this, 'maybe_wordpress_importer' ) );
@@ -86,12 +87,6 @@ class PLL_Plugins_Compat {
 			add_action( 'pll_init', array( $this->cache_compat = new PLL_Cache_Compat(), 'init' ) );
 		}
 
-		// Advanced Custom Fields Pro
-		// The function acf_get_value() is not defined in ACF 4
-		if ( class_exists( 'acf' ) && function_exists( 'acf_get_value' ) && class_exists( 'PLL_ACF' ) ) {
-			add_action( 'init', array( $this->acf = new PLL_ACF(), 'init' ) );
-		}
-
 		// Custom Post Type UI
 		if ( defined( 'CPTUI_VERSION' ) && class_exists( 'PLL_CPTUI' ) ) {
 			add_action( 'pll_init', array( $this->cptui = new PLL_CPTUI(), 'init' ) );
@@ -110,6 +105,19 @@ class PLL_Plugins_Compat {
 		// Divi Builder
 		if ( ( 'Divi' === get_template() || defined( 'ET_BUILDER_PLUGIN_VERSION' ) ) && class_exists( 'PLL_Divi_Builder' ) ) {
 			$this->divi_builder = new PLL_Divi_Builder();
+		}
+	}
+
+	/**
+	 * Look for active plugins and load compatibility layer after the theme has been setup
+	 *
+	 * @since 2.3.8
+	 */
+	public function after_setup_theme() {
+		// Advanced Custom Fields Pro
+		// The function acf_get_value() is not defined in ACF 4
+		if ( class_exists( 'acf' ) && function_exists( 'acf_get_value' ) && class_exists( 'PLL_ACF' ) ) {
+			add_action( 'init', array( $this->acf = new PLL_ACF(), 'init' ) );
 		}
 	}
 
