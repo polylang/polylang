@@ -32,7 +32,7 @@ class PLL_Admin_Filters_Term {
 			add_action( $tax . '_edit_form_fields', array( $this, 'edit_term_form' ) );
 
 			// Adds action related to languages when deleting categories and post tags
-			add_action( 'delete_' . $tax, array( $this, 'delete_term' ) );
+			add_action( 'pre_delete_term', array( $this, 'delete_term' ) );
 		}
 
 		// Adds actions related to languages when creating or saving categories and post tags
