@@ -71,8 +71,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return int
 	 */
 	public function translate_page_on_front( $v ) {
-		// returns the current page if there is no translation to avoid ugly notices
-		return isset( $this->curlang->page_on_front ) ? $this->curlang->page_on_front : $v;
+		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
+		return isset( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $v;
 	}
 
 	/**
