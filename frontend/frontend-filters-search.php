@@ -1,7 +1,7 @@
 <?php
 
 /**
- * filters search forms when using permalinks
+ * Filters search forms when using permalinks
  *
  * @since 1.2
  */
@@ -9,7 +9,7 @@ class PLL_Frontend_Filters_Search {
 	public $links_model, $curlang;
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.2
 	 *
@@ -19,33 +19,33 @@ class PLL_Frontend_Filters_Search {
 		$this->links_model = &$polylang->links_model;
 		$this->curlang = &$polylang->curlang;
 
-		// adds the language information in the search form
-		// low priority in case the search form is created using the same filter as described in http://codex.wordpress.org/Function_Reference/get_search_form
+		// Adds the language information in the search form
+		// Low priority in case the search form is created using the same filter as described in http://codex.wordpress.org/Function_Reference/get_search_form
 		add_filter( 'get_search_form', array( $this, 'get_search_form' ), 99 );
 
-		// adds the language information in admin bar search form
+		// Adds the language information in admin bar search form
 		add_action( 'add_admin_bar_menus', array( $this, 'add_admin_bar_menus' ) );
 
-		// adds javascript at the end of the document
-		// was used for WP < 3.6. kept just in case
+		// Adds javascript at the end of the document
+		// Was used for WP < 3.6. kept just in case
 		if ( defined( 'PLL_SEARCH_FORM_JS' ) && PLL_SEARCH_FORM_JS ) {
 			add_action( 'wp_footer', array( $this, 'wp_print_footer_scripts' ) );
 		}
 	}
 
 	/**
-	 * adds the language information in the search form
-	 * does not work if searchform.php ( prior to WP 3.6 ) is used or if the search form is hardcoded in another template file
+	 * Adds the language information in the search form
+	 * Does not work if searchform.php ( prior to WP 3.6 ) is used or if the search form is hardcoded in another template file
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $form search form
-	 * @return string modified search form
+	 * @param string $form Search form
+	 * @return string Modified search form
 	 */
 	public function get_search_form( $form ) {
 		if ( $form ) {
 			if ( $this->links_model->using_permalinks ) {
-				// take care to modify only the url in the <form> tag
+				// Take care to modify only the url in the <form> tag.
 				preg_match( '#<form.+>#', $form, $matches );
 				$old = reset( $matches );
 				$new = preg_replace( '#' . esc_url( $this->links_model->home ) . '\/?#', esc_url( $this->curlang->search_url ), $old );
@@ -60,7 +60,7 @@ class PLL_Frontend_Filters_Search {
 	}
 
 	/**
-	 * adds the language information in admin bar search form
+	 * Adds the language information in admin bar search form
 	 *
 	 * @since 1.2
 	 */
@@ -70,12 +70,12 @@ class PLL_Frontend_Filters_Search {
 	}
 
 	/**
-	 * rewrites the admin bar search form to pass our get_search form filter. See #21342
-	 * code base is WP 4.3.1
+	 * Rewrites the admin bar search form to pass our get_search form filter. See #21342
+	 * Code base last checked with WP 4.9.7
 	 *
 	 * @since 0.9
 	 *
-	 * @param object $wp_admin_bar
+	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	public function admin_bar_search_menu( $wp_admin_bar ) {
 		$form  = '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="adminbarsearch">';
@@ -87,20 +87,23 @@ class PLL_Frontend_Filters_Search {
 		$wp_admin_bar->add_menu( array(
 			'parent' => 'top-secondary',
 			'id'     => 'search',
-			'title'  => $this->get_search_form( $form ), // pass the get_search_form filter
-			'meta'   => array( 'class' => 'admin-bar-search', 'tabindex' => -1 ),
+			'title'  => $this->get_search_form( $form ), // Pass the get_search_form filter
+			'meta'   => array(
+				'class'    => 'admin-bar-search',
+				'tabindex' => -1,
+			),
 		) );
 	}
 
 	/**
-	 * allows modifying the search form if it does not pass get_search_form
+	 * Allows modifying the search form if it does not pass get_search_form
 	 *
 	 * @since 0.1
 	 */
 	public function wp_print_footer_scripts() {
-		// don't use directly e[0] just in case there is somewhere else an element named 's'
-		// check before if the hidden input has not already been introduced by get_search_form ( FIXME: is there a way to improve this ) ?
-		// thanks to AndyDeGroo for improving the code for compatibility with old browsers
+		// Don't use directly e[0] just in case there is somewhere else an element named 's'
+		// Check before if the hidden input has not already been introduced by get_search_form ( FIXME: is there a way to improve this ) ?
+		// Thanks to AndyDeGroo for improving the code for compatibility with old browsers
 		// http://wordpress.org/support/topic/development-of-polylang-version-08?replies=6#post-2645559
 		$lang = esc_js( $this->curlang->slug );
 		$js = "//<![CDATA[
