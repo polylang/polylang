@@ -166,8 +166,6 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 */
 	private function review_notice() {
-		$this->options = get_option( 'polylang' ); // Temporary
-
 		if ( ! defined( 'POLYLANG_PRO' ) && ! $this->is_dismissed( 'review' ) && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
 			?>
 			<div class="pll-notice notice notice-info">
