@@ -5,6 +5,7 @@
  * offers the possibility to have customized buttons
  *
  * @since 1.7.7
+ * @deprecated 2.3.9
  */
 class PLL_Pointer {
 	protected $args;
@@ -32,6 +33,8 @@ class PLL_Pointer {
 	 * @param array $args
 	 */
 	public function __construct( $args ) {
+		trigger_error( 'The class PLL_Pointer has been deprecated since Polylang 2.3.9 and will be removed in a future version.', E_USER_ERROR );
+
 		$this->args = $args;
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
