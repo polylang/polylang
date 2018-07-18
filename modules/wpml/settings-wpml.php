@@ -8,7 +8,7 @@
 class PLL_Settings_WPML extends PLL_Settings_Module {
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.8
 	 *
@@ -23,7 +23,7 @@ class PLL_Settings_WPML extends PLL_Settings_Module {
 	}
 
 	/**
-	 * tells if the module is active
+	 * Tells if the module is active
 	 *
 	 * @since 1.8
 	 *

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * displays the languages tab in Polylang settings
+ * Displays the languages tab in Polylang settings
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 ?>
 <div id="col-container">

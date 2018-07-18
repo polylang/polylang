@@ -186,7 +186,7 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
-	 * stores the current post_id when bulk editing posts for use in save_language and pre_term_slug
+	 * Stores the current post_id when bulk editing posts for use in save_language and pre_term_slug
 	 *
 	 * @since 1.7
 	 *

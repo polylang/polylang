@@ -1,7 +1,7 @@
 <?php
 
 /**
- * a fully static class to manage strings translations on admin side
+ * A fully static class to manage strings translations on admin side
  *
  * @since 1.6
  */
@@ -10,7 +10,7 @@ class PLL_Admin_Strings {
 	static protected $default_strings; // default strings to register
 
 	/**
-	 * init: add filters
+	 * Add filters
 	 *
 	 * @since 1.6
 	 */
@@ -20,7 +20,7 @@ class PLL_Admin_Strings {
 	}
 
 	/**
-	 * register strings for translation making sure it is not duplicate or empty
+	 * Register strings for translation making sure it is not duplicate or empty
 	 *
 	 * @since 0.6
 	 *
@@ -30,7 +30,7 @@ class PLL_Admin_Strings {
 	 * @param bool   $multiline Optional, whether the string table should display a multiline textarea or a single line input, defaults to single line
 	 */
 	static public function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
-		// backward compatibility with Polylang older than 1.1
+		// Backward compatibility with Polylang older than 1.1
 		if ( is_bool( $context ) ) {
 			$multiline = $context;
 			$context = 'Polylang';
@@ -42,7 +42,7 @@ class PLL_Admin_Strings {
 	}
 
 	/**
-	 * get registered strings
+	 * Get registered strings
 	 *
 	 * @since 0.6.1
 	 *
@@ -65,7 +65,7 @@ class PLL_Admin_Strings {
 			self::register_string( $string, get_option( $option ), 'WordPress' );
 		}
 
-		// widgets titles
+		// Widgets titles
 		global $wp_registered_widgets;
 		$sidebars = wp_get_sidebars_widgets();
 		foreach ( $sidebars as $sidebar => $widgets ) {
@@ -74,8 +74,8 @@ class PLL_Admin_Strings {
 			}
 
 			foreach ( $widgets as $widget ) {
-				// nothing can be done if the widget is created using pre WP2.8 API :(
-				// there is no object, so we can't access it to get the widget options
+				// Nothing can be done if the widget is created using pre WP2.8 API :(
+				// There is no object, so we can't access it to get the widget options
 				if ( ! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
 					continue;
 				}
@@ -83,7 +83,7 @@ class PLL_Admin_Strings {
 				$widget_settings = $wp_registered_widgets[ $widget ]['callback'][0]->get_settings();
 				$number = $wp_registered_widgets[ $widget ]['params'][0]['number'];
 
-				// don't enable widget translation if the widget is visible in only one language or if there is no title
+				// Don't enable widget translation if the widget is visible in only one language or if there is no title
 				if ( empty( $widget_settings[ $number ]['pll_lang'] ) ) {
 					if ( isset( $widget_settings[ $number ]['title'] ) && $title = $widget_settings[ $number ]['title'] ) {
 						self::register_string( self::$default_strings['widget_title'], $title, 'Widget' );
@@ -109,7 +109,7 @@ class PLL_Admin_Strings {
 	}
 
 	/**
-	 * performs the sanitization ( before saving in DB ) of default strings translations
+	 * Performs the sanitization ( before saving in DB ) of default strings translations
 	 *
 	 * @since 1.6
 	 *

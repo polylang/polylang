@@ -90,7 +90,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * sets flag_url and flag properties
+	 * Sets flag_url and flag properties
 	 *
 	 * @since 1.2
 	 */

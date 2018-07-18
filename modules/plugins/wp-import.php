@@ -1,7 +1,7 @@
 <?php
 
 /**
- * a class to import languages and translations information form a WXR file
+ * A class to import languages and translations information form a WXR file
  *
  * @since 1.2
  */
@@ -9,14 +9,14 @@ class PLL_WP_Import extends WP_Import {
 	public $post_translations = array();
 
 	/**
-	 * overrides WP_Import::process_terms to remap terms translations
+	 * Overrides WP_Import::process_terms to remap terms translations
 	 *
 	 * @since 1.2
 	 */
 	function process_terms() {
 		$term_translations = array();
 
-		// store this for future usage as parent function unsets $this->terms
+		// Store this for future usage as parent function unsets $this->terms
 		foreach ( $this->terms as $term ) {
 			if ( 'post_translations' == $term['term_taxonomy'] ) {
 				$this->post_translations[] = $term;
@@ -28,13 +28,13 @@ class PLL_WP_Import extends WP_Import {
 
 		parent::process_terms();
 
-		// update the languages list if needed
-		// first reset the core terms cache as WordPress Importer calls wp_suspend_cache_invalidation( true );
+		// Update the languages list if needed
+		// First reset the core terms cache as WordPress Importer calls wp_suspend_cache_invalidation( true );
 		wp_cache_set( 'last_changed', microtime(), 'terms' );
 		PLL()->model->clean_languages_cache();
 
 		if ( ( $options = get_option( 'polylang' ) ) && empty( $options['default_lang'] ) && ( $languages = PLL()->model->get_languages_list() ) ) {
-			// assign the default language if importer created the first language
+			// Assign the default language if importer created the first language
 			$default_lang = reset( $languages );
 			$options['default_lang'] = $default_lang->slug;
 			update_option( 'polylang', $options );
@@ -45,15 +45,15 @@ class PLL_WP_Import extends WP_Import {
 	}
 
 	/**
-	 * overrides WP_Import::process_post to remap posts translations
-	 * also merges strings translations from the WXR file to the existing ones
+	 * Overrides WP_Import::process_post to remap posts translations
+	 * Also merges strings translations from the WXR file to the existing ones
 	 *
 	 * @since 1.2
 	 */
 	function process_posts() {
 		$menu_items = $mo_posts = array();
 
-		// store this for future usage as parent function unset $this->posts
+		// Store this for future usage as parent function unset $this->posts
 		foreach ( $this->posts as $post ) {
 			if ( 'nav_menu_item' == $post['post_type'] ) {
 				$menu_items[] = $post;
@@ -65,17 +65,17 @@ class PLL_WP_Import extends WP_Import {
 		}
 
 		if ( ! empty( $mo_posts ) ) {
-			new PLL_MO(); // just to register the polylang_mo post type before processing posts
+			new PLL_MO(); // Just to register the polylang_mo post type before processing posts
 		}
 
 		parent::process_posts();
 
-		PLL()->model->clean_languages_cache(); // to update the posts count in ( cached ) languages list
+		PLL()->model->clean_languages_cache(); // To update the posts count in ( cached ) languages list
 
 		$this->remap_translations( $this->post_translations, $this->processed_posts );
 		unset( $this->post_translations );
 
-		// language switcher menu items
+		// Language switcher menu items
 		foreach ( $menu_items as $item ) {
 			foreach ( $item['postmeta'] as $meta ) {
 				if ( '_pll_menu_item' == $meta['key'] ) {
@@ -84,7 +84,7 @@ class PLL_WP_Import extends WP_Import {
 			}
 		}
 
-		// merge strings translations
+		// Merge strings translations
 		foreach ( $mo_posts as $post ) {
 			$lang_id = (int) substr( $post['post_title'], 12 );
 
@@ -98,13 +98,13 @@ class PLL_WP_Import extends WP_Import {
 					$mo->export_to_db( $this->processed_terms[ $lang_id ] );
 				}
 			}
-			// delete the now useless imported post
+			// Delete the now useless imported post
 			wp_delete_post( $this->processed_posts[ $post['post_id'] ], true );
 		}
 	}
 
 	/**
-	 * remaps terms languages
+	 * Remaps terms languages
 	 *
 	 * @since 1.2
 	 *
@@ -117,20 +117,20 @@ class PLL_WP_Import extends WP_Import {
 			$translations = unserialize( $term['term_description'] );
 			foreach ( $translations as $slug => $old_id ) {
 				if ( $old_id && ! empty( $this->processed_terms[ $old_id ] ) && $lang = PLL()->model->get_language( $slug ) ) {
-					// language relationship
+					// Language relationship
 					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], $lang->tl_term_taxonomy_id );
 
-					// translation relationship
+					// Translation relationship
 					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], get_term( $this->processed_terms[ $term['term_id'] ], 'term_translations' )->term_taxonomy_id );
 				}
 			}
 		}
 
-		// insert term_relationships
+		// Insert term_relationships
 		if ( ! empty( $trs ) ) {
 			$trs = array_unique( $trs );
 
-			// make sure we don't attempt to insert already existing term relationships
+			// Make sure we don't attempt to insert already existing term relationships
 			$existing_trs = $wpdb->get_results( "
 				SELECT tr.object_id, tr.term_taxonomy_id FROM $wpdb->term_relationships AS tr
 				INNER JOIN $wpdb->term_taxonomy AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
@@ -150,7 +150,7 @@ class PLL_WP_Import extends WP_Import {
 	}
 
 	/**
-	 * remaps translations for both posts and terms
+	 * Remaps translations for both posts and terms
 	 *
 	 * @since 1.2
 	 *

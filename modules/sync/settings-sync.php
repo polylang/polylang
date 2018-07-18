@@ -8,7 +8,7 @@
 class PLL_Settings_Sync extends PLL_Settings_Module {
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.8
 	 *
@@ -23,7 +23,7 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	}
 
 	/**
-	 * deactivates the module
+	 * Deactivates the module
 	 *
 	 * @since 1.8
 	 */
@@ -33,7 +33,7 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays the settings form
+	 * Displays the settings form
 	 *
 	 * @since 1.8
 	 */
@@ -55,7 +55,7 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	}
 
 	/**
-	 * sanitizes the settings before saving
+	 * Sanitizes the settings before saving
 	 *
 	 * @since 1.8
 	 *
@@ -67,7 +67,7 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	}
 
 	/**
-	 * get the row actions
+	 * Get the row actions
 	 *
 	 * @since 1.8
 	 *
@@ -78,7 +78,7 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	}
 
 	/**
-	 * list the post metas to synchronize
+	 * List the post metas to synchronize
 	 *
 	 * @since 1.0
 	 *

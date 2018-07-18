@@ -1,7 +1,7 @@
 <?php
 
 /**
- * some common code for PLL_Admin_Filters_Post and PLL_Admin_Filters_Media
+ * Some common code for PLL_Admin_Filters_Post and PLL_Admin_Filters_Media
  *
  * @since 1.5
  */
@@ -9,7 +9,7 @@ abstract class PLL_Admin_Filters_Post_Base {
 	public $links, $model, $pref_lang;
 
 	/**
-	 * constructor: setups filters and actions
+	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.2
 	 *
@@ -22,7 +22,7 @@ abstract class PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * allows to set a language by default for posts if it has no language yet
+	 * Allows to set a language by default for posts if it has no language yet
 	 *
 	 * @since 1.5
 	 *
@@ -45,7 +45,7 @@ abstract class PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * save translations from language metabox
+	 * Save translations from language metabox
 	 *
 	 * @since 1.5
 	 *
@@ -54,11 +54,10 @@ abstract class PLL_Admin_Filters_Post_Base {
 	 * @return array
 	 */
 	protected function save_translations( $post_id, $arr ) {
-		// security check
-		// as 'wp_insert_post' can be called from outside WP admin
+		// Security check as 'wp_insert_post' can be called from outside WP admin
 		check_admin_referer( 'pll_language', '_pll_nonce' );
 
-		// save translations after checking the translated post is in the right language
+		// Save translations after checking the translated post is in the right language
 		foreach ( $arr as $lang => $tr_id ) {
 			$translations[ $lang ] = ( $tr_id && $this->model->post->get_language( (int) $tr_id )->slug == $lang ) ? (int) $tr_id : 0;
 		}

@@ -46,6 +46,7 @@ class PLL_Query {
 	/**
 	 * Check if translated taxonomy is queried
 	 * Compatible with nested queries introduced in WP 4.1
+	 *
 	 * @see https://wordpress.org/support/topic/tax_query-bug
 	 *
 	 * @since 1.7

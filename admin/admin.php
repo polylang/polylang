@@ -1,10 +1,10 @@
 <?php
 
 /**
- * admin side controller
+ * Admin side controller
  * accessible in $polylang global object
  *
- * properties:
+ * Properties:
  * options          => inherited, reference to Polylang options array
  * model            => inherited, reference to PLL_Model object
  * links_model      => inherited, reference to PLL_Links_Model object
@@ -27,8 +27,8 @@ class PLL_Admin extends PLL_Admin_Base {
 	public $filters, $filters_columns, $filters_post, $filters_term, $nav_menu, $sync, $filters_media;
 
 	/**
-	 * loads the polylang text domain
-	 * setups filters and action needed on all admin pages and on plugins page
+	 * Loads the polylang text domain
+	 * Setups filters and action needed on all admin pages and on plugins page
 	 *
 	 * @since 1.2
 	 *
@@ -37,29 +37,29 @@ class PLL_Admin extends PLL_Admin_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
-		// adds a 'settings' link in the plugins table
+		// Adds a 'settings' link in the plugins table
 		add_filter( 'plugin_action_links_' . POLYLANG_BASENAME, array( $this, 'plugin_action_links' ) );
 		add_action( 'in_plugin_update_message-' . POLYLANG_BASENAME, array( $this, 'plugin_update_message' ), 10, 2 );
 	}
 
 	/**
-	 * setups filters and action needed on all admin pages and on plugins page
-	 * loads the settings pages or the filters base on the request
+	 * Aetups filters and action needed on all admin pages and on plugins page
+	 * Loads the settings pages or the filters base on the request
 	 *
 	 * @since 1.2
 	 */
 	public function init() {
 		parent::init();
 
-		// setup filters for admin pages
-		// priority 5 to make sure filters are there before customize_register is fired
+		// Setup filters for admin pages
+		// Priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
 		}
 	}
 
 	/**
-	 * adds a 'settings' link in the plugins table
+	 * Adds a 'settings' link in the plugins table
 	 *
 	 * @since 0.1
 	 *
@@ -72,7 +72,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	}
 
 	/**
-	 * adds the upgrade notice in plugins table
+	 * Adds the upgrade notice in plugins table
 	 *
 	 * @since 1.1.6
 	 *
@@ -86,15 +86,15 @@ class PLL_Admin extends PLL_Admin_Base {
 	}
 
 	/**
-	 * setup filters for admin pages
+	 * Setup filters for admin pages
 	 *
 	 * @since 1.2
 	 */
 	public function add_filters() {
-		// all these are separated just for convenience and maintainability
+		// All these are separated just for convenience and maintainability
 		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Sync' );
 
-		// don't load media filters if option is disabled or if user has no right
+		// Don't load media filters if option is disabled or if user has no right
 		if ( $this->options['media_support'] && ( $obj = get_post_type_object( 'attachment' ) ) && ( current_user_can( $obj->cap->edit_posts ) || current_user_can( $obj->cap->create_posts ) ) ) {
 			$classes[] = 'Filters_Media';
 		}

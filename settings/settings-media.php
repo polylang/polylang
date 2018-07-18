@@ -8,7 +8,7 @@
 class PLL_Settings_Media extends PLL_Settings_Module {
 
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.8
 	 *

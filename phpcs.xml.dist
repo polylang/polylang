@@ -62,11 +62,6 @@
 		<exclude name="Squiz.Commenting.InlineComment.SpacingAfter"/>
 		<exclude name="Squiz.Commenting.VariableComment.WrongStyle"/>
 		<exclude name="Generic.Commenting.Fixme.TaskFound"/>
-		<exclude name="Generic.Commenting.DocComment.ShortNotCapital"/>
-		<exclude name="Generic.Commenting.DocComment.LongNotCapital"/>
-		<exclude name="Generic.Commenting.DocComment.SpacingBeforeTags"/>
-		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
-		<exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.ContentAfterBrace"/>
 	</rule>
 
 	<rule ref="Squiz.Commenting.ClassComment.Missing" >

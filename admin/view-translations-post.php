@@ -1,11 +1,11 @@
 <?php
 
 /**
- * displays the translations fields for posts
+ * Displays the translations fields for posts
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 ?>
 <p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>

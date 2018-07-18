@@ -33,8 +33,7 @@ class PLL_Switcher {
 	/**
 	 * Get the language elements for use in a walker
 	 *
-	 * List of parameters accepted in $args:
-	 * @see PLL_Switcher::the_languages
+	 * @see list of parameters accepted in $args documented for PLL_Switcher::the_languages
 	 *
 	 * @since 1.2
 	 *

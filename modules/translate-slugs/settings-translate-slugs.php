@@ -7,7 +7,7 @@
  */
 class PLL_Settings_Translate_Slugs extends PLL_Settings_Module {
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.9
 	 *
@@ -22,7 +22,7 @@ class PLL_Settings_Translate_Slugs extends PLL_Settings_Module {
 	}
 
 	/**
-	 * tells if the module is active
+	 * Tells if the module is active
 	 *
 	 * @since 1.9
 	 *
@@ -33,7 +33,7 @@ class PLL_Settings_Translate_Slugs extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays upgrade message
+	 * Displays upgrade message
 	 *
 	 * @since 1.9
 	 *
