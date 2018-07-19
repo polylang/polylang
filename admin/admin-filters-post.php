@@ -545,8 +545,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			check_admin_referer( 'bulk-posts' );
 			if ( isset( $postarr['inline_lang_choice'] ) ) {
 				$lang = -1 == $postarr['inline_lang_choice'] ?
-				  $this->model->post->get_language( $post_id ) :
-				  $this->model->get_language( $postarr['inline_lang_choice'] );
+					$this->model->post->get_language( $post_id ) :
+					$this->model->get_language( $postarr['inline_lang_choice'] );
 				$post_parent = $this->model->post->get_translation( $post_parent, $lang );
 			}
 		}
