@@ -541,12 +541,15 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $new_postarr, $postarr ) {
-		if ( isset( $postarr['bulk_edit'] ) ) {
+		if ( isset( $postarr['bulk_edit'], $postarr['inline_lang_choice'] ) ) {
 			check_admin_referer( 'bulk-posts' );
 			$lang = -1 == $postarr['inline_lang_choice'] ?
 				$this->model->post->get_language( $post_id ) :
 				$this->model->get_language( $postarr['inline_lang_choice'] );
-			$post_parent = $this->model->post->get_translation( $post_parent, $lang );
+			// Dont break the hierarchy in case the post has no language
+			if ( ! empty( $lang ) ) {
+				$post_parent = $this->model->post->get_translation( $post_parent, $lang );
+			}
 		}
 		return $post_parent;
 	}
