@@ -376,9 +376,9 @@ class PLL_Plugins_Compat {
 				wp_redirect( $redirect, $status );
 				exit;
 			}
+		} else {
+			// Otherwise rely on MU Domain Mapping
+			redirect_to_mapped_domain();
 		}
-
-		// Otherwise rely on MU Domain Mapping
-		redirect_to_mapped_domain();
 	}
 }
