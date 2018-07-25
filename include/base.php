@@ -89,6 +89,7 @@ abstract class PLL_Base {
 		// 3rd test needed when Polylang is networked activated and a new site is created
 		if ( $new_blog != $old_blog && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' ) ) {
 			$this->options = get_option( 'polylang' ); // Needed for menus
+			remove_action( 'pre_option_rewrite_rules', array( $this->links_model, 'prepare_rewrite_rules' ) );
 			$this->links_model = $this->model->get_links_model();
 			return true;
 		}
