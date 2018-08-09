@@ -15,6 +15,8 @@ class PLL_Admin_Notices {
 	 * Setup actions
 	 *
 	 * @since 2.3.9
+	 *
+	 * @param object $polylang
 	 */
 	public function __construct( $polylang ) {
 		$this->options = &$polylang->options;
@@ -51,7 +53,7 @@ class PLL_Admin_Notices {
 	 *
 	 * @since 2.3.9
 	 *
-	 * @param string $name Notice name
+	 * @param string $notice Notice name
 	 * @return bool
 	 */
 	protected function is_dismissed( $notice ) {
@@ -148,13 +150,16 @@ class PLL_Admin_Notices {
 			?>
 			<div class="pll-notice notice notice-warning">
 			<?php $this->dismiss_button( 'pllwc' ); ?>
-				<p><?php printf(
-					/* translators: %1$s is link start tag, %2$s is link end tag. */
-					__( 'We have noticed that you are using Polylang with WooCommerce. We recommend you to use %1$sPolylang for WooCommerce%2$s to ensure the compatibility.', 'polylang' ),
-					'<a href="https://polylang.pro/downloads/polylang-for-woocommerce/">',
-					'</a>'
-				);
-				?></p>
+				<p>
+					<?php
+					printf(
+						/* translators: %1$s is link start tag, %2$s is link end tag. */
+						__( 'We have noticed that you are using Polylang with WooCommerce. We recommend you to use %1$sPolylang for WooCommerce%2$s to ensure the compatibility.', 'polylang' ),
+						'<a href="https://polylang.pro/downloads/polylang-for-woocommerce/">',
+						'</a>'
+					);
+					?>
+				</p>
 			</div>
 			<?php
 		}
@@ -170,13 +175,16 @@ class PLL_Admin_Notices {
 			?>
 			<div class="pll-notice notice notice-info">
 			<?php $this->dismiss_button( 'review' ); ?>
-				<p><?php printf(
-					/* translators: %1$s is link start tag, %2$s is link end tag. */
-					__( 'We have noticed that you are using Polylang for some time. We hope that you love it! We would be thrilled if you could %1$sgive us a 5 stars rating%2$s.', 'polylang' ),
-					'<a href="https://wordpress.org/support/plugin/polylang/reviews/?rate=5#new-post">',
-					'</a>'
-				);
-				?></p>
+				<p>
+					<?php
+					printf(
+						/* translators: %1$s is link start tag, %2$s is link end tag. */
+						__( 'We have noticed that you are using Polylang for some time. We hope that you love it! We would be thrilled if you could %1$sgive us a 5 stars rating%2$s.', 'polylang' ),
+						'<a href="https://wordpress.org/support/plugin/polylang/reviews/?rate=5#new-post">',
+						'</a>'
+					);
+					?>
+				</p>
 			</div>
 			<?php
 		}
