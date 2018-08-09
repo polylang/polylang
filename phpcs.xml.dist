@@ -88,4 +88,19 @@
 	<!-- Specific to Polylang -->
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
 	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
+
+	<!-- Specific to Polylang Pro -->
+	<rule ref="WordPress.WP.I18n.LowLevelTranslationFunction">
+		<exclude-pattern>*/modules/translate-slugs/translate-slugs-model.php</exclude-pattern>
+		<exclude-pattern>*/modules/plugins/tec.php</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n.NonSingularStringLiteralText">
+		<exclude-pattern>*/modules/translate-slugs/translate-slugs-model.php</exclude-pattern>
+		<exclude-pattern>*/modules/plugins/tec.php</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar">
+		<exclude-pattern>*/modules/plugins/tec.php</exclude-pattern>
+	</rule>
 </ruleset>
