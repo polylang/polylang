@@ -35,7 +35,7 @@ class PLL_Lingotek {
 
 			$buttons = sprintf(
 				'<a href="%s" class="button button-primary" style="margin-right: 10px">%s</a>',
-				admin_url( 'admin.php?page=mlang&tab=lingotek' ),
+				admin_url( 'admin.php?page=mlang_lingotek' ),
 				__( 'Learn more', 'polylang' )
 			);
 
