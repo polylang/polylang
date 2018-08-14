@@ -60,7 +60,11 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		do_action( 'admin_notices' );
 		$out = ob_get_clean();
 
-		$this->assertNotFalse( strpos( $out, 'review' ) );
+		if ( defined( 'POLYLANG_PRO' ) ) {
+			$this->assertFalse( strpos( $out, 'review' ) );
+		} else {
+			$this->assertNotFalse( strpos( $out, 'review' ) );
+		}
 	}
 
 	function test_hidden_review_notice() {
