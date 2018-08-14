@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.3.8
+Stable tag: 2.3.9
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.3.9 (2018-08-14) =
+
+* Add a notice to inform about Polylang for WooCommerce
+* Deprecate PLL_Pointer
+* Fix bulk editing pages with no language breaking hierarchy #281
+* Fix an edge case where rewrite rules could be messed on a multisite
+* MU Domain Mapping: fix secondary domain redirected to primary domain
 
 = 2.3.8 (2018-07-16) =
 
