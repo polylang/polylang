@@ -14,6 +14,7 @@ if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
  * @since 0.5
  */
 class PLL_Widget_Calendar extends WP_Widget_Calendar {
+	protected static $pll_instance = 0; // Can't use $instance of WP_Widget_Calendar as it's private :/
 
 	/**
 	 * Outputs the content for the current Calendar widget instance.
@@ -34,7 +35,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 		if ( $title ) {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
-		if ( 0 === self::$instance ) {
+		if ( 0 === self::$pll_instance ) { #modified#
 			echo '<div id="calendar_wrap" class="calendar_wrap">';
 		} else {
 			echo '<div class="calendar_wrap">';
@@ -43,7 +44,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 		echo '</div>';
 		echo $args['after_widget'];
 
-		self::$instance++;
+		self::$pll_instance++; #modified#
 	}
 
 	/**
