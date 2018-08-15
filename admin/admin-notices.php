@@ -56,7 +56,7 @@ class PLL_Admin_Notices {
 	 * @param string $notice Notice name
 	 * @return bool
 	 */
-	protected function is_dismissed( $notice ) {
+	static public function is_dismissed( $notice ) {
 		$dismissed = get_user_meta( get_current_user_id(), 'pll_dismissed_notices', true );
 		return is_array( $dismissed ) && in_array( $notice, $dismissed );
 	}
