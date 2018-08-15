@@ -82,7 +82,25 @@ class PLL_Admin_Notices {
 	}
 
 	/**
-	 * Stores dismissed notices in database
+	 * Stores a dismissed notice in database
+	 *
+	 * @since 2.3.9
+	 *
+	 * @param string $notice
+	 */
+	static public function dismiss( $notice ) {
+		if ( ! $dismissed = get_user_meta( get_current_user_id(), 'pll_dismissed_notices', true ) ) {
+			$dismissed = array();
+		}
+
+		if ( ! in_array( $notice, $dismissed ) ) {
+			$dismissed[] = $notice;
+			update_user_meta( get_current_user_id(), 'pll_dismissed_notices', array_unique( $dismissed ) );
+		}
+	}
+
+	/**
+	 * Handle a click on the dismiss button
 	 *
 	 * @since 2.3.9
 	 */
@@ -90,11 +108,7 @@ class PLL_Admin_Notices {
 		if ( isset( $_GET['pll-hide-notice'], $_GET['_pll_notice_nonce'] ) ) {
 			$notice = sanitize_key( $_GET['pll-hide-notice'] );
 			check_admin_referer( $notice, '_pll_notice_nonce' );
-			if ( ! $dismissed = get_user_meta( get_current_user_id(), 'pll_dismissed_notices', true ) ) {
-				$dismissed = array();
-			}
-			$dismissed[] = $notice;
-			update_user_meta( get_current_user_id(), 'pll_dismissed_notices', $dismissed );
+			self::dismiss( $notice );
 			wp_safe_redirect( remove_query_arg( array( 'pll-hide-notice', '_pll_notice_nonce' ), wp_get_referer() ) );
 			exit;
 		}

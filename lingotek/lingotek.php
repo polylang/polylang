@@ -72,6 +72,8 @@ class PLL_Lingotek {
 	 * @since 1.7.7
 	 */
 	public function display_tab() {
+		PLL_Admin_Notices::dismiss( 'lingotek' );
+
 		$activate_link = $this->get_activate_link();
 
 		$links = array(
