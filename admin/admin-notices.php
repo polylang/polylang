@@ -113,14 +113,16 @@ class PLL_Admin_Notices {
 
 			// Custom notices
 			foreach ( $this->get_notices() as $notice => $html ) {
-				?>
-				<div class="pll-notice notice notice-info">
-					<?php
-					$this->dismiss_button( $notice );
-					echo wp_kses_post( $html );
+				if ( ! $this->is_dismissed( $notice ) ) {
 					?>
-				</div>
-				<?php
+					<div class="pll-notice notice notice-info">
+						<?php
+						$this->dismiss_button( $notice );
+						echo wp_kses_post( $html );
+						?>
+					</div>
+					<?php
+				}
 			}
 		}
 	}
