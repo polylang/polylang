@@ -59,6 +59,7 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'POLYLANG_FILE', __FILE__ ); // this file
 	define( 'POLYLANG_BASENAME', plugin_basename( POLYLANG_FILE ) ); // plugin name as known by WP
 	define( 'POLYLANG_DIR', dirname( POLYLANG_FILE ) ); // our directory
+	define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
 
 	define( 'PLL_ADMIN_INC', POLYLANG_DIR . '/admin' );
 	define( 'PLL_FRONT_INC', POLYLANG_DIR . '/frontend' );
