@@ -149,7 +149,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		self::$polylang->model->term->set_language( $de, 'de' );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		new PLL_Frontend_Filters( self::$polylang );
+		new PLL_CRUD_Terms( self::$polylang );
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false ) );
 		$this->assertEqualSets( array( $fr ), $terms );
 

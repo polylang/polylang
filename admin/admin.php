@@ -5,21 +5,22 @@
  * accessible in $polylang global object
  *
  * Properties:
- * options          => inherited, reference to Polylang options array
- * model            => inherited, reference to PLL_Model object
- * links_model      => inherited, reference to PLL_Links_Model object
- * links            => inherited, reference to PLL_Admin_Links object
- * static_pages     => inherited, reference to PLL_Admin_Static_Pages object
- * filters_links    => inherited, reference to PLL_Filters_Links object
- * curlang          => inherited, optional, current language used to filter the content (language of the post or term being edited, equal to filter_lang otherwise)
- * filter_lang      => inherited, optional, current status of the admin languages filter (in the admin bar)
- * pref_lang        => inherited, preferred language used as default when saving posts or terms
- * filters          => reference to PLL_Filters object
- * filters_columns  => reference to PLL_Admin_Filters_Columns object
- * filters_post     => reference to PLL_Admin_Filters_Post object
- * filters_term     => reference to PLL_Admin_filters_Term object
- * nav_menu         => reference to PLL_Admin_Nav_Menu object
- * filters_media    => optional, reference to PLL_Admin_Filters_Media object
+ * options         => inherited, reference to Polylang options array
+ * model           => inherited, reference to PLL_Model object
+ * links_model     => inherited, reference to PLL_Links_Model object
+ * links           => inherited, reference to PLL_Admin_Links object
+ * static_pages    => inherited, reference to PLL_Admin_Static_Pages object
+ * filters_links   => inherited, reference to PLL_Filters_Links object
+ * curlang         => inherited, optional, current language used to filter the content (language of the post or term being edited, equal to filter_lang otherwise)
+ * filter_lang     => inherited, optional, current status of the admin languages filter (in the admin bar)
+ * pref_lang       => inherited, preferred language used as default when saving posts or terms
+ * filters         => reference to PLL_Admin_Filters object
+ * filters_columns => reference to PLL_Admin_Filters_Columns object
+ * filters_post    => reference to PLL_Admin_Filters_Post object
+ * filters_term    => reference to PLL_Admin_filters_Term object
+ * terms           => reference to PLL_CRUD_Terms object
+ * nav_menu        => reference to PLL_Admin_Nav_Menu object
+ * filters_media   => optional, reference to PLL_Admin_Filters_Media object
  *
  * @since 1.2
  */
@@ -112,5 +113,7 @@ class PLL_Admin extends PLL_Admin_Base {
 			$class = apply_filters( 'pll_' . $obj, 'PLL_Admin_' . $class );
 			$this->$obj = new $class( $this );
 		}
+
+		$this->terms = new PLL_CRUD_Terms( $this );
 	}
 }

@@ -6,10 +6,9 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Term {
-	public $links, $model, $options, $curlang, $filter_lang, $pref_lang;
+	public $links, $model, $options, $filter_lang, $pref_lang;
 	protected $pre_term_name; // Used to store the term name before creating a slug if needed
 	protected $post_id; // Used to store the current post_id when bulk editing posts
-	private $tax_query_lang;
 
 	/**
 	 * Constructor: setups filters and actions
@@ -20,7 +19,6 @@ class PLL_Admin_Filters_Term {
 		$this->links = &$polylang->links;
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
-		$this->curlang = &$polylang->curlang;
 		$this->filter_lang = &$polylang->filter_lang;
 		$this->pref_lang = &$polylang->pref_lang;
 
@@ -46,14 +44,6 @@ class PLL_Admin_Filters_Term {
 		// Ajax response for edit term form
 		add_action( 'wp_ajax_term_lang_choice', array( $this, 'term_lang_choice' ) );
 		add_action( 'wp_ajax_pll_terms_not_translated', array( $this, 'ajax_terms_not_translated' ) );
-
-		// Adds cache domain when querying terms
-		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
-
-		// Filters categories and post tags by language
-		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
-		add_action( 'pre_get_posts', array( $this, 'set_tax_query_lang' ), 999 );
-		add_action( 'posts_selection', array( $this, 'unset_tax_query_lang' ), 0 );
 
 		// Allows to get the default categories in all languages
 		add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
@@ -556,100 +546,6 @@ class PLL_Admin_Filters_Term {
 		}
 
 		wp_die( json_encode( $return ) );
-	}
-
-	/**
-	 * Get the language(s) to filter get_terms
-	 *
-	 * @since 1.7.6
-	 *
-	 * @param array $taxonomies queried taxonomies
-	 * @param array $args       get_terms arguments
-	 * @return object|string|bool the language(s) to use in the filter, false otherwise
-	 */
-	protected function get_queried_language( $taxonomies, $args ) {
-		// Does nothing except on taxonomies which are filterable
-		// Since WP 4.7, make sure not to filter wp_get_object_terms()
-		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) || ! empty( $args['object_ids'] ) ) {
-			return false;
-		}
-
-		if ( isset( $this->tax_query_lang ) ) {
-			$args['lang'] = $this->tax_query_lang;
-		}
-
-		// If get_terms is queried with a 'lang' parameter
-		if ( isset( $args['lang'] ) ) {
-			return $args['lang'];
-		}
-
-		// On tags page, everything should be filtered according to the admin language filter except the parent dropdown
-		if ( 'edit-tags.php' === $GLOBALS['pagenow'] && empty( $args['class'] ) ) {
-			return $this->filter_lang;
-		}
-
-		return $this->curlang;
-	}
-
-	/**
-	 * Adds language dependent cache domain when querying terms
-	 * Useful as the 'lang' parameter is not included in cache key by WordPress
-	 *
-	 * @since 1.3
-	 *
-	 * @param array $args
-	 * @param array $taxonomies
-	 * @return array modified arguments
-	 */
-	public function get_terms_args( $args, $taxonomies ) {
-		// don't break _get_term_hierarchy()
-		if ( 'all' === $args['get'] && 'id' === $args['orderby'] && 'id=>parent' === $args['fields'] ) {
-			$args['lang'] = '';
-		}
-
-		if ( $lang = $this->get_queried_language( $taxonomies, $args ) ) {
-			$lang = is_string( $lang ) && strpos( $lang, ',' ) ? explode( ',', $lang ) : $lang;
-			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
-			$args['cache_domain'] = empty( $args['cache_domain'] ) ? 'pll' . $key : $args['cache_domain'] . $key;
-		}
-		return $args;
-	}
-
-	/**
-	 * Filters categories and post tags by language(s) when needed on admin side
-	 *
-	 * @since 0.5
-	 *
-	 * @param array $clauses    list of sql clauses
-	 * @param array $taxonomies list of taxonomies
-	 * @param array $args       get_terms arguments
-	 * @return array modified sql clauses
-	 */
-	public function terms_clauses( $clauses, $taxonomies, $args ) {
-		$lang = $this->get_queried_language( $taxonomies, $args );
-		return ! empty( $lang ) ? $this->model->terms_clauses( $clauses, $lang ) : $clauses; // adds our clauses to filter by current language
-	}
-
-	/**
-	 * Sets the WP_Term_Query language when doing a WP_Query
-	 * Needed since WP 4.9
-	 *
-	 * @since 2.3.2
-	 *
-	 * @param object $query WP_Query object
-	 */
-	public function set_tax_query_lang( $query ) {
-		$this->tax_query_lang = isset( $query->query_vars['lang'] ) ? $query->query_vars['lang'] : '';
-	}
-
-	/**
-	 * Removes the WP_Term_Query language filter for WP_Query
-	 * Needed since WP 4.9
-	 *
-	 * @since 2.3.2
-	 */
-	public function unset_tax_query_lang() {
-		unset( $this->tax_query_lang );
 	}
 
 	/**

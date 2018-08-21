@@ -190,23 +190,6 @@ class PLL_Model {
 	}
 
 	/**
-	 * Adds terms clauses to get_terms to filter them by languages - used in both frontend and admin
-	 *
-	 * @since 1.2
-	 *
-	 * @param array  $clauses the list of sql clauses in terms query
-	 * @param object $lang    PLL_Language object
-	 * @return array modified list of clauses
-	 */
-	public function terms_clauses( $clauses, $lang ) {
-		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
-			$clauses['join'] .= $this->term->join_clause();
-			$clauses['where'] .= $this->term->where_clause( $lang );
-		}
-		return $clauses;
-	}
-
-	/**
 	 * Returns post types that need to be translated
 	 * the post types list is cached for better better performance
 	 * wait for 'after_setup_theme' to apply the cache to allow themes adding the filter in functions.php

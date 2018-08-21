@@ -21,6 +21,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang ); // To activate the fix_delete_default_category() filter
 		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang );
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
 	}
 
 	function tearDown() {

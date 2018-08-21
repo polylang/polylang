@@ -18,7 +18,7 @@ class Terms_List_Test extends PLL_UnitTestCase {
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang ); // To activate the fix_delete_default_category() filter
-		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang );
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
 	}
 
 	function tearDown() {

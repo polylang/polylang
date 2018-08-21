@@ -30,7 +30,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	function test_post_lang_choice() {
-		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang ); // we need this for categories and tags
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang ); // We need this for categories and tags
 
 		// categories
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
