@@ -43,7 +43,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 
-		$admin_bar = new WP_Admin_Bar;
+		$admin_bar = new WP_Admin_Bar();
 		$admin_bar->add_menus();
 		do_action_ref_array( 'admin_bar_menu', array( &$admin_bar ) ); // ndeed add menus to the admin bar
 		$node = $admin_bar->get_node( 'search' );

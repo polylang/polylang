@@ -40,7 +40,7 @@ class PLL_Install extends PLL_Install_Base {
 	 *
 	 * return array
 	 */
-	static public function get_default_options() {
+	public static function get_default_options() {
 		return array(
 			'browser'          => 1, // Default language for the front page is set by browser preference
 			'rewrite'          => 1, // Remove /language/ in permalinks ( was the opposite before 0.7.2 )

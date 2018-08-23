@@ -13,7 +13,7 @@ class PLL_WP_Import extends WP_Import {
 	 *
 	 * @since 1.2
 	 */
-	function process_terms() {
+	public function process_terms() {
 		$term_translations = array();
 
 		// Store this for future usage as parent function unsets $this->terms
@@ -50,7 +50,7 @@ class PLL_WP_Import extends WP_Import {
 	 *
 	 * @since 1.2
 	 */
-	function process_posts() {
+	public function process_posts() {
 		$menu_items = $mo_posts = array();
 
 		// Store this for future usage as parent function unset $this->posts
@@ -110,7 +110,7 @@ class PLL_WP_Import extends WP_Import {
 	 *
 	 * @param array $terms array of terms in 'term_translations' taxonomy
 	 */
-	function remap_terms_relations( &$terms ) {
+	protected function remap_terms_relations( &$terms ) {
 		global $wpdb;
 
 		foreach ( $terms as $term ) {
@@ -157,7 +157,7 @@ class PLL_WP_Import extends WP_Import {
 	 * @param array $terms array of terms in 'post_translations' or 'term_translations' taxonomies
 	 * @param array $processed_objects array of posts or terms processed by WordPress Importer
 	 */
-	function remap_translations( &$terms, &$processed_objects ) {
+	protected function remap_translations( &$terms, &$processed_objects ) {
 		global $wpdb;
 
 		foreach ( $terms as $term ) {

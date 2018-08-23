@@ -21,7 +21,7 @@ class PLL_License {
 	 * @param string $author
 	 * @param string $api_url optional
 	 */
-	function __construct( $file, $item_name, $version, $author, $api_url = null ) {
+	public function __construct( $file, $item_name, $version, $author, $api_url = null ) {
 		$this->id      = sanitize_title( $item_name );
 		$this->file    = $file;
 		$this->name    = $item_name;

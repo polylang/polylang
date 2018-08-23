@@ -17,7 +17,7 @@ class PLL_Uninstall {
 	 *
 	 * @since 0.5
 	 */
-	function __construct() {
+	public function __construct() {
 		global $wpdb;
 
 		// Check if it is a multisite uninstall - if so, run the uninstall function for each blog id
@@ -39,7 +39,7 @@ class PLL_Uninstall {
 	 *
 	 * @since 0.5
 	 */
-	function uninstall() {
+	public function uninstall() {
 		$options = get_option( 'polylang' );
 
 		if ( empty( $options['uninstall'] ) ) {

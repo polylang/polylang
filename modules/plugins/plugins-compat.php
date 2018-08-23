@@ -64,7 +64,7 @@ class PLL_Plugins_Compat {
 	 *
 	 * @return object
 	 */
-	static public function instance() {
+	public static function instance() {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self();
 		}
@@ -127,7 +127,7 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 1.2
 	 */
-	function maybe_wordpress_importer() {
+	public function maybe_wordpress_importer() {
 		if ( defined( 'WP_LOAD_IMPORTERS' ) && class_exists( 'WP_Import' ) ) {
 			remove_action( 'admin_init', 'wordpress_importer_init' );
 			add_action( 'admin_init', array( $this, 'wordpress_importer_init' ) );
@@ -140,7 +140,7 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 1.2
 	 */
-	function wordpress_importer_init() {
+	public function wordpress_importer_init() {
 		$class = new ReflectionClass( 'WP_Import' );
 		load_plugin_textdomain( 'wordpress-importer', false, basename( dirname( $class->getFileName() ) ) . '/languages' );
 
@@ -158,7 +158,7 @@ class PLL_Plugins_Compat {
 	 * @param array $terms an array of arrays containing terms information form the WXR file
 	 * @return array
 	 */
-	function wp_import_terms( $terms ) {
+	public function wp_import_terms( $terms ) {
 		include PLL_SETTINGS_INC . '/languages.php';
 
 		foreach ( $terms as $key => $term ) {
@@ -287,7 +287,7 @@ class PLL_Plugins_Compat {
 	 * @param array|string $taxonomies
 	 * @return array
 	 */
-	function duplicate_post_taxonomies_blacklist( $taxonomies ) {
+	public function duplicate_post_taxonomies_blacklist( $taxonomies ) {
 		if ( empty( $taxonomies ) ) {
 			$taxonomies = array(); // As we get an empty string when there is no taxonomy
 		}

@@ -14,7 +14,7 @@ class PLL_Admin_Strings {
 	 *
 	 * @since 1.6
 	 */
-	static public function init() {
+	public static function init() {
 		// default strings translations sanitization
 		add_filter( 'pll_sanitize_string_translation', array( __CLASS__, 'sanitize_string_translation' ), 10, 2 );
 	}
@@ -29,7 +29,7 @@ class PLL_Admin_Strings {
 	 * @param string $context   Optional, the group in which the string is registered, defaults to 'polylang'
 	 * @param bool   $multiline Optional, whether the string table should display a multiline textarea or a single line input, defaults to single line
 	 */
-	static public function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
+	public static function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
 		// Backward compatibility with Polylang older than 1.1
 		if ( is_bool( $context ) ) {
 			$multiline = $context;
@@ -48,7 +48,7 @@ class PLL_Admin_Strings {
 	 *
 	 * @return array list of all registered strings
 	 */
-	static public function &get_strings() {
+	public static function &get_strings() {
 		self::$default_strings = array(
 			'options' => array(
 				'blogname'        => __( 'Site Title' ),
@@ -117,7 +117,7 @@ class PLL_Admin_Strings {
 	 * @param string $name        unique name for the string
 	 * @return string
 	 */
-	static public function sanitize_string_translation( $translation, $name ) {
+	public static function sanitize_string_translation( $translation, $name ) {
 		$translation = wp_unslash( trim( $translation ) );
 
 		if ( false !== ( $option = array_search( $name, self::$default_strings['options'], true ) ) ) {

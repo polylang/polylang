@@ -81,6 +81,22 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
+	<!-- From WordPress-Extra -->
+	<rule ref="WordPress.Classes.ClassInstantiation"/>
+
+	<rule ref="Squiz.Scope.MethodScope" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="PSR2.Methods.MethodDeclaration">
+		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+	</rule>
+
+	<rule ref="PEAR.Files.IncludingFile">
+		<exclude name="PEAR.Files.IncludingFile.UseIncludeOnce"/>
+		<exclude name="PEAR.Files.IncludingFile.UseRequire"/>
+	</rule>
+
 	<exclude-pattern>coverage/*</exclude-pattern>
 	<exclude-pattern>tests/phpunit/includes/speed-trap-listener.php</exclude-pattern>
 	<exclude-pattern>js/*.min.js</exclude-pattern>

@@ -488,7 +488,7 @@ class PLL_Upgrade {
 	 *
 	 * @since 1.6
 	 */
-	static function download_language_packs() {
+	public static function download_language_packs() {
 		$languages = pll_languages_list( array( 'fields' => 'locale' ) );
 
 		// Prevents upgrade if the .po file is already here. Let WP manage the upgrades :)
@@ -517,7 +517,7 @@ class PLL_Upgrade {
 
 		if ( ! empty( $translations_to_load ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-			$upgrader = new Language_Pack_Upgrader( new Automatic_Upgrader_Skin );
+			$upgrader = new Language_Pack_Upgrader( new Automatic_Upgrader_Skin() );
 			$upgrader->bulk_upgrade( $translations_to_load, array( 'clear_update_cache' => false ) );
 		}
 	}

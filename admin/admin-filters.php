@@ -198,7 +198,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @param array $locales Not used
 	 * @return array list of locales to update
 	 */
-	function update_check_locales( $locales ) {
+	public function update_check_locales( $locales ) {
 		return $this->model->get_languages_list( array( 'fields' => 'locale' ) );
 	}
 

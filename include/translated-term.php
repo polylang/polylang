@@ -192,7 +192,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @param array $ids An array of term IDs.
 	 */
-	function clean_term_cache( $ids ) {
+	public function clean_term_cache( $ids ) {
 		clean_object_term_cache( $ids, 'term' );
 	}
 }

@@ -33,7 +33,7 @@ class PLL_Admin_Notices {
 	 * @param string $name Notice name
 	 * @param string $html Content of the notice
 	 */
-	static public function add_notice( $name, $html ) {
+	public static function add_notice( $name, $html ) {
 		self::$notices[ $name ] = $html;
 	}
 
@@ -44,7 +44,7 @@ class PLL_Admin_Notices {
 	 *
 	 * @return array
 	 */
-	static public function get_notices() {
+	public static function get_notices() {
 		return self::$notices;
 	}
 
@@ -56,7 +56,7 @@ class PLL_Admin_Notices {
 	 * @param string $notice Notice name
 	 * @return bool
 	 */
-	static public function is_dismissed( $notice ) {
+	public static function is_dismissed( $notice ) {
 		$dismissed = get_user_meta( get_current_user_id(), 'pll_dismissed_notices', true );
 		return is_array( $dismissed ) && in_array( $notice, $dismissed );
 	}
@@ -88,7 +88,7 @@ class PLL_Admin_Notices {
 	 *
 	 * @param string $notice
 	 */
-	static public function dismiss( $notice ) {
+	public static function dismiss( $notice ) {
 		if ( ! $dismissed = get_user_meta( get_current_user_id(), 'pll_dismissed_notices', true ) ) {
 			$dismissed = array();
 		}

@@ -17,7 +17,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @since 0.1
 	 */
-	function __construct() {
+	public function __construct() {
 		parent::__construct( array(
 			'plural' => 'Languages', // Do not translate ( used for css class )
 			'ajax'   => false,
@@ -55,7 +55,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @param string $column_name
 	 * @return string
 	 */
-	function column_default( $item, $column_name ) {
+	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
 			case 'locale':
 			case 'slug':
@@ -79,7 +79,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @param object $item
 	 * @return string
 	 */
-	function column_name( $item ) {
+	public function column_name( $item ) {
 		return sprintf(
 			'<a title="%s" href="%s">%s</a>',
 			esc_attr__( 'Edit this language', 'polylang' ),
@@ -97,7 +97,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @param object $item
 	 * @return string
 	 */
-	function column_default_lang( $item ) {
+	public function column_default_lang( $item ) {
 		$options = get_option( 'polylang' );
 
 		if ( $options['default_lang'] != $item->slug ) {
@@ -139,7 +139,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @return array the list of column titles
 	 */
-	function get_columns() {
+	public function get_columns() {
 		return array(
 			'name'         => esc_html__( 'Full name', 'polylang' ),
 			'locale'       => esc_html__( 'Locale', 'polylang' ),
@@ -158,7 +158,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	function get_sortable_columns() {
+	public function get_sortable_columns() {
 		return array(
 			'name'       => array( 'name', true ), // sorted by name by default
 			'locale'     => array( 'locale', false ),
@@ -251,7 +251,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @param array $data
 	 */
-	function prepare_items( $data = array() ) {
+	public function prepare_items( $data = array() ) {
 		$per_page = $this->get_items_per_page( 'pll_lang_per_page' );
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 

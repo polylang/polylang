@@ -55,7 +55,7 @@ if ( file_exists( $_tests_dir . '/../wordpress-seo/wp-seo.php' ) ) {
 			self::$polylang->options['hide_default'] = 0;
 
 			_wpseo_activate();
-			$GLOBALS['wpseo_sitemaps'] = new WPSEO_Sitemaps;
+			$GLOBALS['wpseo_sitemaps'] = new WPSEO_Sitemaps();
 			add_action( 'pll_language_defined', array( new PLL_WPSEO(), 'init' ) ); // Load the compatibility layer
 
 			self::$polylang = new PLL_Frontend( self::$polylang->links_model );

@@ -64,7 +64,7 @@ class PLL_Frontend_Filters_Search {
 	 *
 	 * @since 1.2
 	 */
-	function add_admin_bar_menus() {
+	public function add_admin_bar_menus() {
 		remove_action( 'admin_bar_menu', 'wp_admin_bar_search_menu', 4 );
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_search_menu' ), 4 );
 	}

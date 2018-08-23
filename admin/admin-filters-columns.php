@@ -94,7 +94,7 @@ class PLL_Admin_Filters_Columns {
 	 * @param array $columns list of posts table columns
 	 * @return array modified list of columns
 	 */
-	function add_post_column( $columns ) {
+	public function add_post_column( $columns ) {
 		return $this->add_column( $columns, 'comments' );
 	}
 

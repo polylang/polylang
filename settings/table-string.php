@@ -20,7 +20,7 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @param array $languages list of languages
 	 */
-	function __construct( $languages ) {
+	public function __construct( $languages ) {
 		parent::__construct( array(
 			'plural' => 'Strings translations', // Do not translate ( used for css class )
 			'ajax'   => false,
@@ -43,7 +43,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @param string $column_name
 	 * @return string
 	 */
-	function column_default( $item, $column_name ) {
+	public function column_default( $item, $column_name ) {
 		return $item[ $column_name ];
 	}
 
@@ -55,7 +55,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @param array $item
 	 * @return string
 	 */
-	function column_cb( $item ) {
+	public function column_cb( $item ) {
 		return sprintf(
 			'<label class="screen-reader-text" for="cb-select-%1$s">%2$s</label><input id="cb-select-%1$s" type="checkbox" name="strings[]" value="%1$s" %3$s />',
 			esc_attr( $item['row'] ),
@@ -73,7 +73,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @param array $item
 	 * @return string
 	 */
-	function column_string( $item ) {
+	public function column_string( $item ) {
 		return format_to_edit( $item['string'] ); // Don't interpret special chars for the string column
 	}
 
@@ -85,7 +85,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @param array $item
 	 * @return string
 	 */
-	function column_translations( $item ) {
+	public function column_translations( $item ) {
 		$languages = array_combine( wp_list_pluck( $this->languages, 'slug' ), wp_list_pluck( $this->languages, 'name' ) );
 		$out = '';
 
@@ -110,7 +110,7 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @return array the list of column titles
 	 */
-	function get_columns() {
+	public function get_columns() {
 		return array(
 			'cb'           => '<input type="checkbox" />', // Checkbox
 			'string'       => esc_html__( 'String', 'polylang' ),
@@ -127,7 +127,7 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	function get_sortable_columns() {
+	public function get_sortable_columns() {
 		return array(
 			'string'  => array( 'string', false ),
 			'name'    => array( 'name', false ),
@@ -165,7 +165,7 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @since 0.6
 	 */
-	function prepare_items() {
+	public function prepare_items() {
 		$data = $this->strings;
 
 		// Filter for search string
@@ -215,7 +215,7 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	function get_bulk_actions() {
+	public function get_bulk_actions() {
 		return array( 'delete' => __( 'Delete', 'polylang' ) );
 	}
 
@@ -238,7 +238,7 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @param string $which only 'top' is supported
 	 */
-	function extra_tablenav( $which ) {
+	public function extra_tablenav( $which ) {
 		if ( 'top' !== $which ) {
 			return;
 		}

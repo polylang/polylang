@@ -16,7 +16,7 @@ class PLL_Table_Settings extends WP_List_Table {
 	 *
 	 * @since 1.8
 	 */
-	function __construct() {
+	public function __construct() {
 		parent::__construct( array(
 			'plural' => 'Settings', // Do not translate ( used for css class )
 			'ajax'   => false,

@@ -272,7 +272,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 *
 	 * @param int $term_id nav menu id
 	 */
-	function delete_nav_menu( $term_id ) {
+	public function delete_nav_menu( $term_id ) {
 		if ( isset( $this->options['nav_menus'] ) ) {
 			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
 				foreach ( $locations as $loc => $languages ) {

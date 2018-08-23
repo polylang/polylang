@@ -17,7 +17,7 @@ class PLL_Switcher {
 	 * @param string $key  optional either 'string' or 'default', defaults to 'string'
 	 * @return array list of switcher options strings or default values
 	 */
-	static public function get_switcher_options( $type = 'widget', $key = 'string' ) {
+	public static function get_switcher_options( $type = 'widget', $key = 'string' ) {
 		$options = array(
 			'dropdown'               => array( 'string' => __( 'Displays as dropdown', 'polylang' ), 'default' => 0 ),
 			'show_names'             => array( 'string' => __( 'Displays language names', 'polylang' ), 'default' => 1 ),

@@ -64,7 +64,7 @@ class Install_Test extends PLL_UnitTestCase {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
 
-		include( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php' );
+		include dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php';
 
 		// Option Uninstall = false => nothing deleted
 		$options = get_option( 'polylang' );
