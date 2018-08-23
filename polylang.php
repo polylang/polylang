@@ -44,7 +44,7 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 			require_once ABSPATH . 'wp-includes/pluggable.php';
 			deactivate_plugins( plugin_basename( __FILE__ ) ); // Deactivate this plugin
 			// WP does not allow us to send a custom meaningful message, so just tell the plugin has been deactivated
-			wp_redirect( add_query_arg( 'deactivate', 'true', remove_query_arg( 'activate' ) ) );
+			wp_safe_redirect( add_query_arg( 'deactivate', 'true', remove_query_arg( 'activate' ) ) );
 			exit;
 		}
 	} else {
