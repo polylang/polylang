@@ -87,6 +87,7 @@ abstract class PLL_Choose_Lang {
 
 			/**
 			 * Filter the Polylang cookie duration
+			 * /!\ this filter may be fired *before* the theme is loaded
 			 *
 			 * @since 1.8
 			 *
@@ -255,6 +256,7 @@ abstract class PLL_Choose_Lang {
 			/**
 			 * When a visitor reaches the site home, Polylang redirects to the home page in the correct language.
 			 * This filter allows plugins to modify the redirected url or prevent this redirection
+			 * /!\ this filter may be fired *before* the theme is loaded
 			 *
 			 * @since 1.1.1
 			 *
