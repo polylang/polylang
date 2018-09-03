@@ -328,6 +328,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang );
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
@@ -364,6 +365,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->model->term->set_language( $from, 'en' );
 
 		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang );
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 

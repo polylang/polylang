@@ -1,13 +1,13 @@
 <?php
 
 /**
- * A class to filter WP_Term_Query
+ * Adds actions and filters related to languages when creating, reading, updating or deleting posts
  * Acts both on frontend and backend
  *
  * @since 2.4
  */
 class PLL_CRUD_Terms {
-	public $model, $curlang, $filter_lang;
+	public $model, $curlang, $filter_lang, $pref_lang;
 	private $tax_query_lang;
 
 	/**
@@ -17,18 +17,84 @@ class PLL_CRUD_Terms {
 	 *
 	 * @param object $polylang
 	 */
-	public function __construct( $polylang ) {
+	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
 		$this->curlang = &$polylang->curlang;
 		$this->filter_lang = &$polylang->filter_lang;
+		$this->pref_lang = &$polylang->pref_lang;
+
+		// Saving terms
+		add_action( 'create_term', array( $this, 'save_term' ), 999, 3 );
+		add_action( 'edit_term', array( $this, 'save_term' ), 999, 3 ); // After PLL_Admin_Filters_Term
 
 		// Adds cache domain when querying terms
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
 
-		// Filters categories and post tags by language
+		// Filters terms by language
 		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 		add_action( 'pre_get_posts', array( $this, 'set_tax_query_lang' ), 999 );
 		add_action( 'posts_selection', array( $this, 'unset_tax_query_lang' ), 0 );
+
+		// Deleting terms
+		add_action( 'pre_delete_term', array( $this, 'delete_term' ) );
+	}
+
+	/**
+	 * Allows to set a language by default for terms if it has no language yet
+	 *
+	 * @since 1.5.4
+	 *
+	 * @param int    $term_id
+	 * @param string $taxonomy
+	 */
+	protected function set_default_language( $term_id, $taxonomy ) {
+		if ( ! $this->model->term->get_language( $term_id ) ) {
+			if ( ! isset( $this->pref_lang ) && ! empty( $_REQUEST['lang'] ) && $lang = $this->model->get_language( $_REQUEST['lang'] ) ) {
+				// Testing $this->pref_lang makes this test pass only on frontend.
+				$this->model->term->set_language( $term_id, $lang );
+			} elseif ( ( $term = get_term( $term_id, $taxonomy ) ) && ! empty( $term->parent ) && $parent_lang = $this->model->term->get_language( $term->parent ) ) {
+				// Sets language from term parent if exists thanks to Scott Kingsley Clark
+				$this->model->term->set_language( $term_id, $parent_lang );
+			} elseif ( isset( $this->pref_lang ) ) {
+				// Always defined on admin, never defined on frontend
+				$this->model->term->set_language( $term_id, $this->pref_lang );
+			} else {
+				// Only on frontend due to the previous test always true on admin
+				$this->model->term->set_language( $term_id, $this->curlang );
+			}
+		}
+	}
+
+	/**
+	 * Called when a category or post tag is created or edited
+	 * Does nothing except on taxonomies which are filterable
+	 *
+	 * @since 0.1
+	 *
+	 * @param int    $term_id
+	 * @param int    $tt_id    Term taxonomy id
+	 * @param string $taxonomy
+	 */
+	public function save_term( $term_id, $tt_id, $taxonomy ) {
+		if ( $this->model->is_translated_taxonomy( $taxonomy ) ) {
+
+			$lang = $this->model->term->get_language( $term_id );
+
+			if ( empty( $lang ) ) {
+				$this->set_default_language( $term_id, $taxonomy );
+			}
+
+			/**
+			 * Fires after the term language and translations are saved
+			 *
+			 * @since 1.2
+			 *
+			 * @param int    $term_id      term id
+			 * @param string $taxonomy     taxonomy name
+			 * @param array  $translations the list of translations term ids
+			 */
+			do_action( 'pll_save_term', $term_id, $taxonomy, $this->model->term->get_translations( $term_id ) );
+		}
 	}
 
 	/**
@@ -130,5 +196,18 @@ class PLL_CRUD_Terms {
 	 */
 	public function unset_tax_query_lang() {
 		unset( $this->tax_query_lang );
+	}
+
+	/**
+	 * Called when a category or post tag is deleted
+	 * Deletes language and translations
+	 *
+	 * @since 0.1
+	 *
+	 * @param int $term_id
+	 */
+	public function delete_term( $term_id ) {
+		$this->model->term->delete_translation( $term_id );
+		$this->model->term->delete_language( $term_id );
 	}
 }

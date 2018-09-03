@@ -258,7 +258,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_term() {
-		new PLL_Frontend_Filters( self::$polylang );
+		new PLL_CRUD_Terms( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 
 		$term_id = $this->factory->category->create();
@@ -272,7 +272,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_category_with_parent() {
-		new PLL_Frontend_Filters( self::$polylang );
+		new PLL_CRUD_Terms( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 
 		$parent = $this->factory->category->create();

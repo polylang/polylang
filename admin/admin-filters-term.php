@@ -28,15 +28,12 @@ class PLL_Admin_Filters_Term {
 
 			// Adds the language field and translations tables in the 'Edit Category' and 'Edit Tag' panels
 			add_action( $tax . '_edit_form_fields', array( $this, 'edit_term_form' ) );
-
-			// Adds action related to languages when deleting categories and post tags
-			add_action( 'pre_delete_term', array( $this, 'delete_term' ) );
 		}
 
 		// Adds actions related to languages when creating or saving categories and post tags
 		add_filter( 'wp_dropdown_cats', array( $this, 'wp_dropdown_cats' ) );
-		add_action( 'create_term', array( $this, 'save_term' ), 999, 3 );
-		add_action( 'edit_term', array( $this, 'save_term' ), 999, 3 ); // late as it may conflict with other plugins, see http://wordpress.org/support/topic/polylang-and-wordpress-seo-by-yoast
+		add_action( 'create_term', array( $this, 'save_term' ), 900, 3 );
+		add_action( 'edit_term', array( $this, 'save_term' ), 900, 3 ); // Late as it may conflict with other plugins, see http://wordpress.org/support/topic/polylang-and-wordpress-seo-by-yoast
 		add_action( 'pre_post_update', array( $this, 'pre_post_update' ) );
 		add_filter( 'pre_term_name', array( $this, 'pre_term_name' ) );
 		add_filter( 'pre_term_slug', array( $this, 'pre_term_slug' ), 10, 2 );
@@ -189,26 +186,6 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
-	 * Allows to set a language by default for terms if it has no language yet
-	 *
-	 * @since 1.5.4
-	 *
-	 * @param int    $term_id
-	 * @param string $taxonomy
-	 */
-	protected function set_default_language( $term_id, $taxonomy ) {
-		if ( ! $this->model->term->get_language( $term_id ) ) {
-			// Sets language from term parent if exists thanks to Scott Kingsley Clark
-			if ( ( $term = get_term( $term_id, $taxonomy ) ) && ! empty( $term->parent ) && $parent_lang = $this->model->term->get_language( $term->parent ) ) {
-				$this->model->term->set_language( $term_id, $parent_lang );
-			}
-			else {
-				$this->model->term->set_language( $term_id, $this->pref_lang );
-			}
-		}
-	}
-
-	/**
 	 * Saves language
 	 *
 	 * @since 1.5
@@ -302,10 +279,6 @@ class PLL_Admin_Filters_Term {
 			check_admin_referer( 'pll_language', '_pll_nonce' );
 			$this->model->term->set_language( $term_id, $this->model->get_language( $_POST['post_lang_choice'] ) );
 		}
-
-		else {
-			$this->set_default_language( $term_id, $taxonomy );
-		}
 	}
 
 	/**
@@ -357,22 +330,6 @@ class PLL_Admin_Filters_Term {
 			if ( isset( $_POST['term_tr_lang'] ) ) {
 				$translations = $this->save_translations( $term_id );
 			}
-
-			/**
-			 * Fires after the term language and translations are saved
-			 *
-			 * @since 1.2
-			 *
-			 * @param int    $term_id      term id
-			 * @param string $taxonomy     taxonomy name
-			 * @param array  $translations the list of translations term ids
-			 */
-			do_action( 'pll_save_term', $term_id, $taxonomy, empty( $translations ) ? $this->model->term->get_translations( $term_id ) : $translations );
-		}
-
-		// Attempts to set a default language even if no capability
-		else {
-			$this->set_default_language( $term_id, $taxonomy );
 		}
 	}
 
@@ -422,19 +379,6 @@ class PLL_Admin_Filters_Term {
 		}
 
 		return $slug;
-	}
-
-	/**
-	 * Called when a category or post tag is deleted
-	 * Deletes language and translations
-	 *
-	 * @since 0.1
-	 *
-	 * @param int $term_id
-	 */
-	public function delete_term( $term_id ) {
-		$this->model->term->delete_translation( $term_id );
-		$this->model->term->delete_language( $term_id );
 	}
 
 	/**

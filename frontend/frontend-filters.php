@@ -45,8 +45,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		// Set posts and terms language when created from frontend ( ex with P2 theme )
 		add_action( 'save_post', array( $this, 'save_post' ), 200, 2 );
-		add_action( 'create_term', array( $this, 'save_term' ), 10, 3 );
-		add_action( 'edit_term', array( $this, 'save_term' ), 10, 3 );
 
 		if ( $this->options['media_support'] ) {
 			add_action( 'add_attachment', array( $this, 'set_default_language' ) );
@@ -265,29 +263,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	public function save_post( $post_id, $post ) {
 		if ( $this->model->is_translated_post_type( $post->post_type ) ) {
 			$this->set_default_language( $post_id );
-		}
-	}
-
-	/**
-	 * Called when a category or post tag is created or edited
-	 * Does nothing except on taxonomies which are filterable
-	 * Sets the language but does not allow to modify it
-	 *
-	 * @since 1.1
-	 *
-	 * @param int    $term_id
-	 * @param int    $tt_id    Term taxonomy id
-	 * @param string $taxonomy
-	 */
-	public function save_term( $term_id, $tt_id, $taxonomy ) {
-		if ( $this->model->is_translated_taxonomy( $taxonomy ) && ! $this->model->term->get_language( $term_id ) ) {
-			if ( isset( $_REQUEST['lang'] ) ) {
-				$this->model->term->set_language( $term_id, $_REQUEST['lang'] );
-			} elseif ( ( $term = get_term( $term_id, $taxonomy ) ) && ! empty( $term->parent ) && $parent_lang = $this->model->term->get_language( $term->parent ) ) {
-				$this->model->term->set_language( $term_id, $parent_lang );
-			} else {
-				$this->model->term->set_language( $term_id, $this->curlang );
-			}
 		}
 	}
 
