@@ -116,6 +116,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 	function test_create_term_from_post_bulk_edit() {
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang ); // We need this too
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 
 		$posts = $this->factory->post->create_many( 2 );
 		self::$polylang->model->post->set_language( $posts[0], 'en' );

@@ -112,6 +112,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		self::$polylang->options['media_support'] = 1;
 		self::$polylang->filters_media = new PLL_Admin_Filters_Media( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 
 		self::$polylang->pref_lang = self::$polylang->model->get_language( 'en' );
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';

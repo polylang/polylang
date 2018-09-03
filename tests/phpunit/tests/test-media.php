@@ -14,6 +14,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		self::$polylang->options['media_support'] = 1;
 		self::$polylang->filters_media = new PLL_Admin_Filters_Media( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		add_filter( 'intermediate_image_sizes', '__return_empty_array' );  // don't create intermediate sizes to save time
 	}
 

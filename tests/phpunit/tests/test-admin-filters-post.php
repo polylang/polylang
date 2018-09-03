@@ -23,6 +23,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 	}
 
 	function tearDown() {

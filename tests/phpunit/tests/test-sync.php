@@ -157,7 +157,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		set_post_format( $from, 'aside' );
 		stick_post( $from );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
 		$GLOBALS['pagenow'] = 'post-new.php';
@@ -192,7 +192,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->model->post->set_language( $from, 'en' );
 		add_post_meta( $from, '_wp_page_template', 'full-width.php' );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
 		$GLOBALS['pagenow'] = 'post-new.php';
@@ -239,7 +239,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$key = add_post_meta( $from, 'key', 'value' );
 		$metas[ $key ] = array( 'key' => 'key', 'value' => 'value' );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 		$_REQUEST['sticky'] = 'sticky'; // sticky posts not managed by wp_insert_post
@@ -292,7 +292,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
@@ -389,7 +389,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$polylang->model->post->set_language( $from, 'en' );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		self::$polylang->options['sync'] = array( 'post_date' ); // Sync publish date
 
@@ -430,7 +430,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
@@ -449,7 +449,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$polylang->model->post->set_language( $from, 'en' );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
 		$GLOBALS['pagenow'] = 'post-new.php';
@@ -541,7 +541,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$key = add_post_meta( $from, 'key2', 'value1' );
 		$metas[ $key ] = array( 'key' => 'key2', 'value' => 'value1' );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
@@ -570,7 +570,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		stick_post( $from );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
@@ -597,7 +597,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		stick_post( $to );
 
-		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 

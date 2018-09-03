@@ -232,7 +232,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_post() {
-		new PLL_Frontend_Filters( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 
 		$post_id = $this->factory->post->create();
@@ -246,7 +246,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_page_with_parent() {
-		new PLL_Frontend_Filters( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 
 		$parent = $this->factory->post->create( array( 'post_type' => 'page' ) );
