@@ -6,7 +6,7 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Term {
-	public $links, $model, $options, $filter_lang, $pref_lang;
+	public $links, $model, $options, $pref_lang;
 	protected $pre_term_name; // Used to store the term name before creating a slug if needed
 	protected $post_id; // Used to store the current post_id when bulk editing posts
 
@@ -19,7 +19,6 @@ class PLL_Admin_Filters_Term {
 		$this->links = &$polylang->links;
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
-		$this->filter_lang = &$polylang->filter_lang;
 		$this->pref_lang = &$polylang->pref_lang;
 
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
