@@ -15,6 +15,7 @@
  * filters        => reference to PLL_Frontend_Filters object
  * filters_links  => reference to PLL_Frontend_Filters_Links object
  * filters_search => reference to PLL_Frontend_Filters_Search object
+ * posts          => reference to PLL_CRUD_Posts object
  * terms          => reference to PLL_CRUD_Terms object
  * nav_menu       => reference to PLL_Frontend_Nav_Menu object
  * auto_translate => optional, reference to PLL_Auto_Translate object
@@ -88,6 +89,7 @@ class PLL_Frontend extends PLL_Base {
 		$this->filters_links = new PLL_Frontend_Filters_Links( $this );
 		$this->filters = new PLL_Frontend_Filters( $this );
 		$this->filters_search = new PLL_Frontend_Filters_Search( $this );
+		$this->posts = new PLL_CRUD_Posts( $this );
 		$this->terms = new PLL_CRUD_Terms( $this );
 
 		// Auto translate for Ajax

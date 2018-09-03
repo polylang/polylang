@@ -22,29 +22,6 @@ abstract class PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * Allows to set a language by default for posts if it has no language yet
-	 *
-	 * @since 1.5
-	 *
-	 * @param int $post_id
-	 */
-	public function set_default_language( $post_id ) {
-		if ( ! $this->model->post->get_language( $post_id ) ) {
-			if ( isset( $_GET['new_lang'] ) && $lang = $this->model->get_language( $_GET['new_lang'] ) ) {
-				$this->model->post->set_language( $post_id, $lang );
-			}
-
-			elseif ( ( $parent_id = wp_get_post_parent_id( $post_id ) ) && $parent_lang = $this->model->post->get_language( $parent_id ) ) {
-				$this->model->post->set_language( $post_id, $parent_lang );
-			}
-
-			else {
-				$this->model->post->set_language( $post_id, $this->pref_lang );
-			}
-		}
-	}
-
-	/**
 	 * Save translations from language metabox
 	 *
 	 * @since 1.5

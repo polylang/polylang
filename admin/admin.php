@@ -18,6 +18,7 @@
  * filters_columns => reference to PLL_Admin_Filters_Columns object
  * filters_post    => reference to PLL_Admin_Filters_Post object
  * filters_term    => reference to PLL_Admin_filters_Term object
+ * posts           => reference to PLL_CRUD_Posts object
  * terms           => reference to PLL_CRUD_Terms object
  * nav_menu        => reference to PLL_Admin_Nav_Menu object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
@@ -114,6 +115,7 @@ class PLL_Admin extends PLL_Admin_Base {
 			$this->$obj = new $class( $this );
 		}
 
+		$this->posts = new PLL_CRUD_Posts( $this );
 		$this->terms = new PLL_CRUD_Terms( $this );
 	}
 }

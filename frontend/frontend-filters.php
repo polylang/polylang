@@ -43,13 +43,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		// Translates biography
 		add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 4 );
 
-		// Set posts and terms language when created from frontend ( ex with P2 theme )
-		add_action( 'save_post', array( $this, 'save_post' ), 200, 2 );
-
-		if ( $this->options['media_support'] ) {
-			add_action( 'add_attachment', array( $this, 'set_default_language' ) );
-		}
-
 		// Support theme customizer
 		// FIXME of course does not work if 'transport' is set to 'postMessage'
 		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) {
@@ -229,41 +222,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 */
 	public function get_user_metadata( $null, $id, $meta_key, $single ) {
 		return 'description' === $meta_key && $this->curlang->slug !== $this->options['default_lang'] ? get_user_meta( $id, 'description_' . $this->curlang->slug, $single ) : $null;
-	}
-
-	/**
-	 * Allows to set a language by default for posts if it has no language yet
-	 *
-	 * @since 1.5.4
-	 *
-	 * @param int $post_id
-	 */
-	public function set_default_language( $post_id ) {
-		if ( ! $this->model->post->get_language( $post_id ) ) {
-			if ( isset( $_REQUEST['lang'] ) ) {
-				$this->model->post->set_language( $post_id, $_REQUEST['lang'] );
-			} elseif ( ( $parent_id = wp_get_post_parent_id( $post_id ) ) && $parent_lang = $this->model->post->get_language( $parent_id ) ) {
-				$this->model->post->set_language( $post_id, $parent_lang );
-			} else {
-				$this->model->post->set_language( $post_id, $this->curlang );
-			}
-		}
-	}
-
-	/**
-	 * Called when a post ( or page ) is saved, published or updated
-	 * Does nothing except on post types which are filterable
-	 * Sets the language but does not allow to modify it
-	 *
-	 * @since 1.1
-	 *
-	 * @param int    $post_id
-	 * @param object $post
-	 */
-	public function save_post( $post_id, $post ) {
-		if ( $this->model->is_translated_post_type( $post->post_type ) ) {
-			$this->set_default_language( $post_id );
-		}
 	}
 
 	/**
