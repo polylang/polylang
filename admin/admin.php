@@ -14,13 +14,14 @@
  * curlang         => inherited, optional, current language used to filter the content (language of the post or term being edited, equal to filter_lang otherwise)
  * filter_lang     => inherited, optional, current status of the admin languages filter (in the admin bar)
  * pref_lang       => inherited, preferred language used as default when saving posts or terms
+ * posts           => reference to PLL_CRUD_Posts object
+ * terms           => reference to PLL_CRUD_Terms object
  * filters         => reference to PLL_Admin_Filters object
  * filters_columns => reference to PLL_Admin_Filters_Columns object
  * filters_post    => reference to PLL_Admin_Filters_Post object
  * filters_term    => reference to PLL_Admin_filters_Term object
- * posts           => reference to PLL_CRUD_Posts object
- * terms           => reference to PLL_CRUD_Terms object
  * nav_menu        => reference to PLL_Admin_Nav_Menu object
+ * classic_editor  => reference to PLL_Admin_Classic_Editor object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
  *
  * @since 1.2
@@ -94,7 +95,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 */
 	public function add_filters() {
 		// All these are separated just for convenience and maintainability
-		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Sync' );
+		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Sync', 'Classic_Editor' );
 
 		// Don't load media filters if option is disabled or if user has no right
 		if ( $this->options['media_support'] && ( $obj = get_post_type_object( 'attachment' ) ) && ( current_user_can( $obj->cap->edit_posts ) || current_user_can( $obj->cap->create_posts ) ) ) {
