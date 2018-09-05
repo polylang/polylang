@@ -236,7 +236,7 @@ td[class*='column-language_'] {
 
 #term-translations p {
 	/* same style as label */
-	font-size: 12px;
+	font-weight: 400;
 	font-style: normal;
 	padding: 2px;
 	color: #23282d;
