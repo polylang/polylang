@@ -26,9 +26,11 @@ class PLL_CRUD_Posts {
 		add_action( 'before_delete_post', array( $this, 'delete_post' ) );
 
 		// Specific for media
-		add_action( 'add_attachment', array( $this, 'set_default_language' ) );
-		add_action( 'delete_attachment', array( $this, 'delete_post' ) );
-		add_filter( 'wp_delete_file', array( $this, 'wp_delete_file' ) );
+		if ( $polylang->options['media_support'] ) {
+			add_action( 'add_attachment', array( $this, 'set_default_language' ) );
+			add_action( 'delete_attachment', array( $this, 'delete_post' ) );
+			add_filter( 'wp_delete_file', array( $this, 'wp_delete_file' ) );
+		}
 	}
 
 	/**
