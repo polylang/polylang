@@ -81,7 +81,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'post.php';
 		set_current_screen( 'post' );
 
-		$scripts = array( 'pll_ajax_backend', 'post', 'css' );
+		$scripts = array( 'pll_ajax_backend', 'classic-editor', 'css' );
 		$this->_test_scripts( $scripts );
 	}
 

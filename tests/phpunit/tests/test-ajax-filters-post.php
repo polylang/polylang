@@ -20,6 +20,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->classic_editor = new PLL_Admin_Classic_Editor( self::$polylang );
 		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 	}
 
