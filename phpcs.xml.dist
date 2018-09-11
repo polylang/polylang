@@ -13,6 +13,7 @@
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned"/>
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
 		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature"/>
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
 	</rule>
 
@@ -48,6 +49,10 @@
 	</rule>
 
 	<rule ref="Generic.PHP.NoSilencedErrors.Discouraged" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged" ><!-- Same as above for WPCS 1.1+ -->
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
