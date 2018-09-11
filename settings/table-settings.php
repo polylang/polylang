@@ -57,12 +57,7 @@ class PLL_Table_Settings extends WP_List_Table {
 				<tr class="plugin-update-tr">
 					<td colspan="3" class="plugin-update colspanchange">%s</td>
 				</tr>',
-				sprintf(
-					version_compare( $GLOBALS['wp_version'], '4.6', '<' ) ?
-						'<div class="update-message">%s</div>' : // backward compatibility with WP < 4.6
-						'<div class="update-message notice inline notice-warning notice-alt"><p>%s</p></div>',
-					$message
-				)
+				sprintf( '<div class="update-message notice inline notice-warning notice-alt"><p>%s</p></div>', $message )
 			);
 		}
 

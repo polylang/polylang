@@ -104,8 +104,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 				'singular_name' => __( 'Language', 'polylang' ),
 				'all_items'     => __( 'All languages', 'polylang' ),
 			),
-			// FIXME backward compatibility with WP 4.4.x: we must keep public to true for WP to accept our query var
-			'public'             => version_compare( $GLOBALS['wp_version'], '4.4', '>=' ) && version_compare( $GLOBALS['wp_version'], '4.5', '<' ),
+			'public'             => false,
 			'show_ui'            => false, // hide the taxonomy on admin side, needed for WP 4.4.x
 			'show_in_nav_menus'  => false, // no metabox for nav menus, needed for WP 4.4.x
 			'publicly_queryable' => true, // since WP 4.5

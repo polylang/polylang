@@ -54,7 +54,7 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 } else {
 	// Go on loading the plugin
 	define( 'POLYLANG_VERSION', '2.4-dev' );
-	define( 'PLL_MIN_WP_VERSION', '4.4' );
+	define( 'PLL_MIN_WP_VERSION', '4.7' );
 
 	define( 'POLYLANG_FILE', __FILE__ ); // this file
 	define( 'POLYLANG_BASENAME', plugin_basename( POLYLANG_FILE ) ); // plugin name as known by WP
