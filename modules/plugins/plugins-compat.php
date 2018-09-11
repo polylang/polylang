@@ -106,6 +106,11 @@ class PLL_Plugins_Compat {
 		if ( ( 'Divi' === get_template() || defined( 'ET_BUILDER_PLUGIN_VERSION' ) ) && class_exists( 'PLL_Divi_Builder' ) ) {
 			$this->divi_builder = new PLL_Divi_Builder();
 		}
+
+		// Admin Columns & Admin Columns Pro
+		if ( ( defined( 'AC_FILE' ) || defined( 'ACP_FILE' ) ) && class_exists( 'PLL_CPAC' ) ) {
+			add_action( 'admin_init', array( $this->cpac = new PLL_CPAC(), 'init' ) );
+		}
 	}
 
 	/**
