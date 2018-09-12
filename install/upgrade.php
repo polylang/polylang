@@ -318,11 +318,15 @@ class PLL_Upgrade {
 
 						// Create the menu items for the language switcher
 						if ( ! empty( $has_switcher ) ) {
-							$menu_item_db_id = wp_update_nav_menu_item( $translations[ $lang->slug ], 0, array(
-								'menu-item-title' => __( 'Language switcher', 'polylang' ),
-								'menu-item-url' => '#pll_switcher',
-								'menu-item-status' => 'publish',
-							) );
+							$menu_item_db_id = wp_update_nav_menu_item(
+								$translations[ $lang->slug ],
+								0,
+								array(
+									'menu-item-title' => __( 'Language switcher', 'polylang' ),
+									'menu-item-url' => '#pll_switcher',
+									'menu-item-status' => 'publish',
+								)
+							);
 
 							update_post_meta( $menu_item_db_id, '_pll_menu_item', $switch_options );
 						}

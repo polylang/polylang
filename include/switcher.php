@@ -194,8 +194,8 @@ class PLL_Switcher {
 			}
 
 			// Accept only few valid characters for the urls_x variable name ( as the widget id includes '-' which is invalid )
-			$out .= sprintf( '
-				<script type="text/javascript">
+			$out .= sprintf(
+				'<script type="text/javascript">
 					//<![CDATA[
 					var %1$s = %2$s;
 					document.getElementById( "%3$s" ).onchange = function() {
@@ -203,7 +203,9 @@ class PLL_Switcher {
 					}
 					//]]>
 				</script>',
-				'urls_' . preg_replace( '#[^a-zA-Z0-9]#', '', $args['dropdown'] ), json_encode( $urls ), esc_js( $args['name'] )
+				'urls_' . preg_replace( '#[^a-zA-Z0-9]#', '', $args['dropdown'] ),
+				json_encode( $urls ),
+				esc_js( $args['name'] )
 			);
 		}
 

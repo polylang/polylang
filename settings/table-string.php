@@ -21,10 +21,12 @@ class PLL_Table_String extends WP_List_Table {
 	 * @param array $languages list of languages
 	 */
 	public function __construct( $languages ) {
-		parent::__construct( array(
-			'plural' => 'Strings translations', // Do not translate ( used for css class )
-			'ajax'   => false,
-		) );
+		parent::__construct(
+			array(
+				'plural' => 'Strings translations', // Do not translate ( used for css class )
+				'ajax'   => false,
+			)
+		);
 
 		$this->languages = $languages;
 		$this->strings = PLL_Admin_Strings::get_strings();
@@ -93,11 +95,13 @@ class PLL_Table_String extends WP_List_Table {
 			$input_type = $item['multiline'] ?
 				'<textarea name="translation[%1$s][%2$s]" id="%1$s-%2$s">%4$s</textarea>' :
 				'<input type="text" name="translation[%1$s][%2$s]" id="%1$s-%2$s" value="%4$s" />';
-			$out .= sprintf( '<div class="translation"><label for="%1$s-%2$s">%3$s</label>' . $input_type . '</div>' . "\n",
+			$out .= sprintf(
+				'<div class="translation"><label for="%1$s-%2$s">%3$s</label>' . $input_type . '</div>' . "\n",
 				esc_attr( $key ),
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
-			format_to_edit( $translation ) ); // Don't interpret special chars
+				format_to_edit( $translation ) // Don't interpret special chars
+			);
 		}
 
 		return $out;
@@ -201,11 +205,13 @@ class PLL_Table_String extends WP_List_Table {
 		$total_items = count( $data );
 		$this->items = array_slice( $data, ( $this->get_pagenum() - 1 ) * $per_page, $per_page );
 
-		$this->set_pagination_args( array(
-			'total_items' => $total_items,
-			'per_page'    => $per_page,
-			'total_pages' => ceil( $total_items / $per_page ),
-		) );
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page'    => $per_page,
+				'total_pages' => ceil( $total_items / $per_page ),
+			)
+		);
 	}
 
 	/**

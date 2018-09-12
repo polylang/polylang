@@ -58,16 +58,19 @@ class PLL_Settings extends PLL_Admin_Base {
 		);
 
 		if ( $this->model->get_languages_list() ) {
-			$modules = array_merge( array(
-				'PLL_Settings_Url',
-				'PLL_Settings_Browser',
-				'PLL_Settings_Media',
-				'PLL_Settings_CPT',
-				'PLL_Settings_Sync',
-				'PLL_Settings_WPML',
-				'PLL_Settings_Share_Slug',
-				'PLL_Settings_Translate_Slugs',
-			), $modules );
+			$modules = array_merge(
+				array(
+					'PLL_Settings_Url',
+					'PLL_Settings_Browser',
+					'PLL_Settings_Media',
+					'PLL_Settings_CPT',
+					'PLL_Settings_Sync',
+					'PLL_Settings_WPML',
+					'PLL_Settings_Share_Slug',
+					'PLL_Settings_Translate_Slugs',
+				),
+				$modules
+			);
 		}
 
 		/**
@@ -110,11 +113,14 @@ class PLL_Settings extends PLL_Admin_Base {
 			);
 		}
 
-		add_screen_option( 'per_page', array(
-			'label'   => __( 'Languages', 'polylang' ),
-			'default' => 10,
-			'option'  => 'pll_lang_per_page',
-		) );
+		add_screen_option(
+			'per_page',
+			array(
+				'label'   => __( 'Languages', 'polylang' ),
+				'default' => 10,
+				'option'  => 'pll_lang_per_page',
+			)
+		);
 
 		add_action( 'admin_notices', array( $this, 'notice_objects_with_no_lang' ) );
 	}
@@ -125,11 +131,14 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 2.1
 	 */
 	public function load_page_strings() {
-		add_screen_option( 'per_page', array(
-			'label'   => __( 'Strings translations', 'polylang' ),
-			'default' => 10,
-			'option'  => 'pll_strings_per_page',
-		) );
+		add_screen_option(
+			'per_page',
+			array(
+				'label'   => __( 'Strings translations', 'polylang' ),
+				'default' => 10,
+				'option'  => 'pll_strings_per_page',
+			)
+		);
 	}
 
 	/**

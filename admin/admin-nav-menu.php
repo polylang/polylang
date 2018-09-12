@@ -104,13 +104,15 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		$data['title'] = __( 'Language switcher', 'polylang' ); // The title
 
 		// Get all language switcher menu items
-		$items = get_posts( array(
-			'numberposts' => -1,
-			'nopaging'    => true,
-			'post_type'   => 'nav_menu_item',
-			'fields'      => 'ids',
-			'meta_key'    => '_pll_menu_item',
-		) );
+		$items = get_posts(
+			array(
+				'numberposts' => -1,
+				'nopaging'    => true,
+				'post_type'   => 'nav_menu_item',
+				'fields'      => 'ids',
+				'meta_key'    => '_pll_menu_item',
+			)
+		);
 
 		// The options values for the language switcher
 		$data['val'] = array();

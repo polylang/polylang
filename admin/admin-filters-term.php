@@ -67,19 +67,22 @@ class PLL_Admin_Filters_Term {
 
 		wp_nonce_field( 'pll_language', '_pll_nonce' );
 
-		printf( '
-			<div class="form-field">
+		printf(
+			'<div class="form-field">
 				<label for="term_lang_choice">%s</label>
 				<div id="select-add-term-language">%s</div>
 				<p>%s</p>
 			</div>',
 			esc_html__( 'Language', 'polylang' ),
-			$dropdown->walk( $this->model->get_languages_list(), array(
-				'name'     => 'term_lang_choice',
-				'value'    => 'term_id',
-				'selected' => $lang ? $lang->term_id : '',
-				'flag'     => true,
-			) ),
+			$dropdown->walk(
+				$this->model->get_languages_list(),
+				array(
+					'name'     => 'term_lang_choice',
+					'value'    => 'term_id',
+					'selected' => $lang ? $lang->term_id : '',
+					'flag'     => true,
+				)
+			),
 			esc_html__( 'Sets the language', 'polylang' )
 		);
 
@@ -120,8 +123,8 @@ class PLL_Admin_Filters_Term {
 		// Disable the language dropdown and the translations input fields for default categories to prevent removal
 		$disabled = in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
 
-		printf( '
-			<tr class="form-field">
+		printf(
+			'<tr class="form-field">
 				<th scope="row">
 					%s
 					<label for="term_lang_choice">%s</label>
@@ -133,13 +136,16 @@ class PLL_Admin_Filters_Term {
 			</tr>',
 			wp_nonce_field( 'pll_language', '_pll_nonce', true, false ),
 			esc_html__( 'Language', 'polylang' ),
-			$dropdown->walk( $this->model->get_languages_list(), array(
-				'name'     => 'term_lang_choice',
-				'value'    => 'term_id',
-				'selected' => $lang ? $lang->term_id : '',
-				'disabled' => $disabled,
-				'flag'     => true,
-			) ),
+			$dropdown->walk(
+				$this->model->get_languages_list(),
+				array(
+					'name'     => 'term_lang_choice',
+					'value'    => 'term_id',
+					'selected' => $lang ? $lang->term_id : '',
+					'disabled' => $disabled,
+					'flag'     => true,
+				)
+			),
 			esc_html__( 'Sets the language', 'polylang' )
 		);
 
@@ -225,12 +231,15 @@ class PLL_Admin_Filters_Term {
 				// No WP function to get all terms with the exact same name so let's use a custom query
 				// $terms = get_terms( $taxonomy, array( 'name' => $term->name, 'hide_empty' => false, 'fields' => 'ids' ) ); should be OK in 4.2
 				// I may need to rework the loop below
-				$terms = $wpdb->get_results( $wpdb->prepare( "
-					SELECT t.term_id FROM $wpdb->terms AS t
-					INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id
-					WHERE tt.taxonomy = %s AND t.name = %s",
-					$taxonomy, $term->name
-				) );
+				$terms = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT t.term_id FROM $wpdb->terms AS t
+						INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id
+						WHERE tt.taxonomy = %s AND t.name = %s",
+						$taxonomy,
+						$term->name
+					)
+				);
 
 				// If we have several terms with the same name, they are translations of each other
 				if ( count( $terms ) > 1 ) {
@@ -481,11 +490,14 @@ class PLL_Admin_Filters_Term {
 		// Not in add term for as term_id is not set
 		if ( 'undefined' !== $_GET['term_id'] && $term_id = $this->model->term->get_translation( (int) $_GET['term_id'], $translation_language ) ) {
 			$term = get_term( $term_id, $taxonomy );
-			array_unshift( $return, array(
-				'id' => $term_id,
-				'value' => $term->name,
-				'link' => $this->links->edit_term_translation_link( $term->term_id, $taxonomy, $post_type ),
-			) );
+			array_unshift(
+				$return,
+				array(
+					'id' => $term_id,
+					'value' => $term->name,
+					'link' => $this->links->edit_term_translation_link( $term->term_id, $taxonomy, $post_type ),
+				)
+			);
 		}
 
 		wp_die( json_encode( $return ) );

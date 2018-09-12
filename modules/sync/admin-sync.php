@@ -118,7 +118,8 @@ class PLL_Admin_Sync {
 			if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) ) {
 				$original = get_post( (int) $_GET['from_post'] );
 				$wpdb->update(
-					$wpdb->posts, array(
+					$wpdb->posts,
+					array(
 						'post_date' => $original->post_date,
 						'post_date_gmt' => $original->post_date_gmt,
 					),
@@ -265,10 +266,15 @@ class PLL_Admin_Sync {
 				$debug = debug_backtrace();
 				$i = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func
 
-				trigger_error( sprintf(
-					'%1$s was called incorrectly in %3$s on line %4$s: the call to PLL()->sync->%1$s() has been deprecated in Polylang 2.3, use PLL()->sync->%2$s->copy() instead.' . "\nError handler",
-					$func, $obj, $debug[ $i ]['file'], $debug[ $i ]['line']
-				) );
+				trigger_error(
+					sprintf(
+						'%1$s was called incorrectly in %3$s on line %4$s: the call to PLL()->sync->%1$s() has been deprecated in Polylang 2.3, use PLL()->sync->%2$s->copy() instead.' . "\nError handler",
+						$func,
+						$obj,
+						$debug[ $i ]['file'],
+						$debug[ $i ]['line']
+					)
+				);
 			}
 			return call_user_func_array( array( $this->$obj, 'copy' ), $args );
 		}

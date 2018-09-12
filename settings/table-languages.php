@@ -18,10 +18,12 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @since 0.1
 	 */
 	public function __construct() {
-		parent::__construct( array(
-			'plural' => 'Languages', // Do not translate ( used for css class )
-			'ajax'   => false,
-		) );
+		parent::__construct(
+			array(
+				'plural' => 'Languages', // Do not translate ( used for css class )
+				'ajax'   => false,
+			)
+		);
 	}
 
 	/**
@@ -101,8 +103,8 @@ class PLL_Table_Languages extends WP_List_Table {
 		$options = get_option( 'polylang' );
 
 		if ( $options['default_lang'] != $item->slug ) {
-			$s = sprintf('
-				<div class="row-actions"><span class="default-lang">
+			$s = sprintf(
+				'<div class="row-actions"><span class="default-lang">
 				<a class="icon-default-lang" title="%1$s" href="%2$s"><span class="screen-reader-text">%3$s</span></a>
 				</span></div>',
 				esc_attr__( 'Select as default language', 'polylang' ),
@@ -260,10 +262,12 @@ class PLL_Table_Languages extends WP_List_Table {
 		$total_items = count( $data );
 		$this->items = array_slice( $data, ( $this->get_pagenum() - 1 ) * $per_page, $per_page );
 
-		$this->set_pagination_args( array(
-			'total_items' => $total_items,
-			'per_page'    => $per_page,
-			'total_pages' => ceil( $total_items / $per_page ),
-		) );
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page'    => $per_page,
+				'total_pages' => ceil( $total_items / $per_page ),
+			)
+		);
 	}
 }

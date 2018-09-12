@@ -15,12 +15,15 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang, array(
-			'module'      => 'url',
-			'title'       => __( 'URL modifications', 'polylang' ),
-			'description' => __( 'Decide how your URLs will look like.', 'polylang' ),
-			'configure'   => true,
-		) );
+		parent::__construct(
+			$polylang,
+			array(
+				'module'      => 'url',
+				'title'       => __( 'URL modifications', 'polylang' ),
+				'description' => __( 'Decide how your URLs will look like.', 'polylang' ),
+				'configure'   => true,
+			)
+		);
 
 		$this->links_model = &$polylang->links_model;
 		$this->page_on_front = &$polylang->static_pages->page_on_front;
@@ -227,10 +230,17 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			foreach ( $options['domains'] as $key => $domain ) {
 				if ( empty( $domain ) ) {
 					$lang = $this->model->get_language( $key );
-					add_settings_error( 'general', 'pll_invalid_domain', esc_html( sprintf(
-						/* translators: %s is a native language name */
-						__( 'Please enter a valid URL for %s.', 'polylang' ), $lang->name
-					) ) );
+					add_settings_error(
+						'general',
+						'pll_invalid_domain',
+						esc_html(
+							sprintf(
+								/* translators: %s is a native language name */
+								__( 'Please enter a valid URL for %s.', 'polylang' ),
+								$lang->name
+							)
+						)
+					);
 				}
 				else {
 					$newoptions['domains'][ $key ] = esc_url_raw( trim( $domain ) );
@@ -275,10 +285,17 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			$response_code = wp_remote_retrieve_response_code( $response );
 
 			if ( 200 != $response_code ) {
-				add_settings_error( 'general', 'pll_invalid_domain', esc_html( sprintf(
-					/* translators: %s is an url */
-					__( 'Polylang was unable to access the URL %s. Please check that the URL is valid.', 'polylang' ), $url
-				) ) );
+				add_settings_error(
+					'general',
+					'pll_invalid_domain',
+					esc_html(
+						sprintf(
+							/* translators: %s is an url */
+							__( 'Polylang was unable to access the URL %s. Please check that the URL is valid.', 'polylang' ),
+							$url
+						)
+					)
+				);
 			}
 		}
 	}

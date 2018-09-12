@@ -15,11 +15,14 @@ class PLL_Settings_Media extends PLL_Settings_Module {
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang, array(
-			'module'        => 'media',
-			'title'         => __( 'Media' ),
-			'description'   => __( 'Activate languages and translations for media', 'polylang' ),
-			'active_option' => 'media_support',
-		) );
+		parent::__construct(
+			$polylang,
+			array(
+				'module'        => 'media',
+				'title'         => __( 'Media' ),
+				'description'   => __( 'Activate languages and translations for media', 'polylang' ),
+				'active_option' => 'media_support',
+			)
+		);
 	}
 }

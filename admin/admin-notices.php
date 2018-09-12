@@ -72,13 +72,16 @@ class PLL_Admin_Notices {
 		$screen = get_current_screen();
 		$screen_id = sanitize_title( __( 'Languages', 'polylang' ) );
 
-		return in_array( $screen->id, array(
-			'dashboard',
-			'plugins',
-			'toplevel_page_mlang',
-			$screen_id . '_page_mlang_strings',
-			$screen_id . '_page_mlang_settings',
-		) );
+		return in_array(
+			$screen->id,
+			array(
+				'dashboard',
+				'plugins',
+				'toplevel_page_mlang',
+				$screen_id . '_page_mlang_strings',
+				$screen_id . '_page_mlang_settings',
+			)
+		);
 	}
 
 	/**

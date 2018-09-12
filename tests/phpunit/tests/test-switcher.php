@@ -59,12 +59,15 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'English', $arr['en']['name'] );
 
 		// Other arguments
-		$args = array_merge( $args, array(
-			'force_home' => 1,
-			'hide_current' => 1,
-			'hide_if_no_translation' => 1,
-			'display_names_as' => 'slug',
-		) );
+		$args = array_merge(
+			$args,
+			array(
+				'force_home' => 1,
+				'hide_current' => 1,
+				'hide_if_no_translation' => 1,
+				'display_names_as' => 'slug',
+			)
+		);
 		$arr = $this->switcher->the_languages( self::$polylang->links, $args );
 
 		$this->assertCount( 1, $arr ); // Only fr in the array

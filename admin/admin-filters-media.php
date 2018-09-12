@@ -51,11 +51,14 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		$fields['language'] = array(
 			'label' => __( 'Language', 'polylang' ),
 			'input' => 'html',
-			'html'  => $dropdown->walk( $this->model->get_languages_list(), array(
-				'name'     => sprintf( 'attachments[%d][language]', $post_id ),
-				'class'    => 'media_lang_choice',
-				'selected' => $lang ? $lang->slug : '',
-			) ),
+			'html'  => $dropdown->walk(
+				$this->model->get_languages_list(),
+				array(
+					'name'     => sprintf( 'attachments[%d][language]', $post_id ),
+					'class'    => 'media_lang_choice',
+					'selected' => $lang ? $lang->slug : '',
+				)
+			),
 		);
 
 		return $fields;

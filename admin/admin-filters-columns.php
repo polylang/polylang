@@ -140,7 +140,10 @@ class PLL_Admin_Filters_Columns {
 				}
 				printf(
 					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span></a>',
-					esc_attr( $class ), esc_attr( get_post( $id )->post_title ), esc_url( $link ), esc_html( $s )
+					esc_attr( $class ),
+					esc_attr( get_post( $id )->post_title ),
+					esc_url( $link ),
+					esc_html( $s )
 				);
 			} elseif ( $id === $post_id ) {
 				printf(
@@ -251,7 +254,10 @@ class PLL_Admin_Filters_Columns {
 				}
 				$out .= sprintf(
 					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span></a>',
-					$class, esc_attr( $term->name ), esc_url( $link ), esc_html( $s )
+					$class,
+					esc_attr( $term->name ),
+					esc_url( $link ),
+					esc_html( $s )
 				);
 			} elseif ( $id === $term_id ) {
 				$out .= printf(

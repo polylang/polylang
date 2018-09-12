@@ -73,8 +73,8 @@ class PLL_Pointer {
 
 			// All the buttons use the standard WP ajax action to remember the pointer has been dismissed
 			foreach ( $this->args['buttons'] as $button ) {
-				$b .= sprintf( "
-					$( '<a>' ).addClass( '%s' ).html( '%s' ).css( 'margin-left', '10px' ).click( function() {
+				$b .= sprintf(
+					"$( '<a>' ).addClass( '%s' ).html( '%s' ).css( 'margin-left', '10px' ).click( function() {
 						$.post( ajaxurl, {
 							pointer: '%s',
 							action: 'dismiss-wp-pointer'
@@ -90,8 +90,8 @@ class PLL_Pointer {
 			}
 		}
 
-		$js = sprintf( "
-			//<![CDATA[
+		$js = sprintf(
+			"//<![CDATA[
 			jQuery( document ).ready( function( $ ) {
 				var pointer = $( '#%s' ).pointer( {
 					content: '%s',

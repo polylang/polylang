@@ -84,15 +84,17 @@ class PLL_Frontend_Filters_Search {
 		$form .= '<input type="submit" class="adminbar-button" value="' . esc_attr__( 'Search' ) . '"/>';
 		$form .= '</form>';
 
-		$wp_admin_bar->add_menu( array(
-			'parent' => 'top-secondary',
-			'id'     => 'search',
-			'title'  => $this->get_search_form( $form ), // Pass the get_search_form filter
-			'meta'   => array(
-				'class'    => 'admin-bar-search',
-				'tabindex' => -1,
-			),
-		) );
+		$wp_admin_bar->add_menu(
+			array(
+				'parent' => 'top-secondary',
+				'id'     => 'search',
+				'title'  => $this->get_search_form( $form ), // Pass the get_search_form filter
+				'meta'   => array(
+					'class'    => 'admin-bar-search',
+					'tabindex' => -1,
+				),
+			)
+		);
 	}
 
 	/**

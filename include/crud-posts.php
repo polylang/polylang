@@ -215,11 +215,13 @@ class PLL_CRUD_Posts {
 
 		$uploadpath = wp_upload_dir();
 
-		$ids = $wpdb->get_col( $wpdb->prepare( "
-			SELECT post_id FROM $wpdb->postmeta
-			WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
-			substr_replace( $file, '', 0, strlen( trailingslashit( $uploadpath['basedir'] ) ) )
-		) );
+		$ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT post_id FROM $wpdb->postmeta
+				WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
+				substr_replace( $file, '', 0, strlen( trailingslashit( $uploadpath['basedir'] ) ) )
+			)
+		);
 
 		if ( ! empty( $ids ) ) {
 			// Regenerate intermediate sizes if it's an image ( since we could not prevent WP deleting them before )

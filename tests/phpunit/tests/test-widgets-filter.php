@@ -118,19 +118,23 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 
 		$en = $this->factory->attachment->create_upload_object( $filename );
-		wp_update_post( array(
-			'ID'           => $en,
-			'post_title'   => 'Test image EN',
-			'post_excerpt' => 'Caption EN',
-		) );
+		wp_update_post(
+			array(
+				'ID'           => $en,
+				'post_title'   => 'Test image EN',
+				'post_excerpt' => 'Caption EN',
+			)
+		);
 		update_post_meta( $en, '_wp_attachment_image_alt', 'Alt text EN' );
 
 		$fr = self::$polylang->filters_media->create_media_translation( $en, 'fr' );
-		wp_update_post( array(
-			'ID'           => $fr,
-			'post_title'   => 'Test image FR',
-			'post_excerpt' => 'Caption FR',
-		) );
+		wp_update_post(
+			array(
+				'ID'           => $fr,
+				'post_title'   => 'Test image FR',
+				'post_excerpt' => 'Caption FR',
+			)
+		);
 		update_post_meta( $fr, '_wp_attachment_image_alt', 'Alt text FR' );
 
 		// Switch to frontend

@@ -15,11 +15,14 @@ class PLL_Settings_WPML extends PLL_Settings_Module {
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang, array(
-			'module'      => 'wpml',
-			'title'       => __( 'WPML Compatibility', 'polylang' ),
-			'description' => __( 'WPML compatibility mode of Polylang', 'polylang' ),
-		) );
+		parent::__construct(
+			$polylang,
+			array(
+				'module'      => 'wpml',
+				'title'       => __( 'WPML Compatibility', 'polylang' ),
+				'description' => __( 'WPML compatibility mode of Polylang', 'polylang' ),
+			)
+		);
 	}
 
 	/**

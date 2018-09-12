@@ -48,8 +48,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 			<td class = "pll-translation-column">
 				<?php
-				printf( '
-					<label class="screen-reader-text" for="tr_lang_%1$s">%2$s</label>
+				printf(
+					'<label class="screen-reader-text" for="tr_lang_%1$s">%2$s</label>
 					<input type="hidden" name="post_tr_lang[%1$s]" id="htr_lang_%1$s" value="%3$s" />
 					<span lang="%6$s" dir="%7$s"><input type="text" class="tr_lang" id="tr_lang_%1$s" value="%4$s"%5$s /></span>',
 					esc_attr( $language->slug ),

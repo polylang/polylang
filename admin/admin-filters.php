@@ -60,7 +60,8 @@ class PLL_Admin_Filters extends PLL_Filters {
 		// Saving the widget reloads the form. And curiously the action is in $_REQUEST but neither in $_POST, not in $_GET.
 		if ( ( isset( $screen ) && 'widgets' === $screen->base ) || ( isset( $_REQUEST['action'] ) && 'save-widget' === $_REQUEST['action'] ) || isset( $GLOBALS['wp_customize'] ) ) {
 			$dropdown = new PLL_Walker_Dropdown();
-			printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
+			printf(
+				'<p><label for="%1$s">%2$s %3$s</label></p>',
 				esc_attr( $widget->id . '_lang_choice' ),
 				esc_html__( 'The widget is displayed for:', 'polylang' ),
 				$dropdown->walk(
@@ -133,7 +134,8 @@ class PLL_Admin_Filters extends PLL_Filters {
 			/** This filter is documented in wp-includes/user.php */
 			$description = apply_filters( 'user_description', get_user_meta( $profileuser->ID, $meta, true ) ); // Applies WP default filter wp_kses_data
 
-			printf( '<input type="hidden" class="biography" name="%s___%s" value="%s" />',
+			printf(
+				'<input type="hidden" class="biography" name="%s___%s" value="%s" />',
 				esc_attr( $lang->slug ),
 				esc_attr( $lang->name ),
 				esc_attr( $description )

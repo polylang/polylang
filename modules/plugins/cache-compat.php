@@ -32,8 +32,8 @@ class PLL_Cache_Compat {
 	 */
 	public function add_cookie_script() {
 		$domain = ( 2 == PLL()->options['force_lang'] ) ? parse_url( PLL()->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN;
-		$js = sprintf( '
-			(function() {
+		$js = sprintf(
+			'(function() {
 				var expirationDate = new Date();
 				expirationDate.setTime( expirationDate.getTime() + %d * 1000 );
 				document.cookie = "%s=%s; expires=" + expirationDate.toUTCString() + "; path=%s%s";

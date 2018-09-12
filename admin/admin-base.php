@@ -313,25 +313,29 @@ class PLL_Admin_Base extends PLL_Base {
 			esc_html( $selected->name )
 		);
 
-		$wp_admin_bar->add_menu( array(
-			'id'     => 'languages',
-			'title'  => $selected->flag . $title,
-			'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
-			'meta'   => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
-		) );
+		$wp_admin_bar->add_menu(
+			array(
+				'id'     => 'languages',
+				'title'  => $selected->flag . $title,
+				'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
+				'meta'   => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
+			)
+		);
 
 		foreach ( array_merge( array( $all_item ), $this->model->get_languages_list() ) as $lang ) {
 			if ( $selected->slug === $lang->slug ) {
 				continue;
 			}
 
-			$wp_admin_bar->add_menu( array(
-				'parent' => 'languages',
-				'id'     => $lang->slug,
-				'title'  => $lang->flag . esc_html( $lang->name ),
-				'href'   => esc_url( add_query_arg( 'lang', $lang->slug, remove_query_arg( 'paged' ) ) ),
-				'meta'   => 'all' === $lang->slug ? array() : array( 'lang' => esc_attr( $lang->get_locale( 'display' ) ) ),
-			) );
+			$wp_admin_bar->add_menu(
+				array(
+					'parent' => 'languages',
+					'id'     => $lang->slug,
+					'title'  => $lang->flag . esc_html( $lang->name ),
+					'href'   => esc_url( add_query_arg( 'lang', $lang->slug, remove_query_arg( 'paged' ) ) ),
+					'meta'   => 'all' === $lang->slug ? array() : array( 'lang' => esc_attr( $lang->get_locale( 'display' ) ) ),
+				)
+			);
 		}
 	}
 }

@@ -237,11 +237,13 @@ class PLL_WPSEO {
 
 		foreach ( $languages as $lang ) {
 			if ( empty( PLL()->options['hide_default'] ) || pll_default_language() !== $lang ) {
-				$str .= $renderer->sitemap_url( array(
-					'loc' => pll_home_url( $lang ),
-					'pri' => 1,
-					'chf' => apply_filters( 'wpseo_sitemap_homepage_change_freq', 'daily', pll_home_url( $lang ) ),
-				) );
+				$str .= $renderer->sitemap_url(
+					array(
+						'loc' => pll_home_url( $lang ),
+						'pri' => 1,
+						'chf' => apply_filters( 'wpseo_sitemap_homepage_change_freq', 'daily', pll_home_url( $lang ) ),
+					)
+				);
 			}
 		}
 		return $str;

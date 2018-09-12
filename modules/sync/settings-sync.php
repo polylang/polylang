@@ -15,11 +15,14 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang, array(
-			'module'      => 'sync',
-			'title'       => __( 'Synchronization', 'polylang' ),
-			'description' => __( 'The synchronization options allow to maintain exact same values (or translations in the case of taxonomies and page parent) of meta content between the translations of a post or page.', 'polylang' ),
-		) );
+		parent::__construct(
+			$polylang,
+			array(
+				'module'      => 'sync',
+				'title'       => __( 'Synchronization', 'polylang' ),
+				'description' => __( 'The synchronization options allow to maintain exact same values (or translations in the case of taxonomies and page parent) of meta content between the translations of a post or page.', 'polylang' ),
+			)
+		);
 	}
 
 	/**

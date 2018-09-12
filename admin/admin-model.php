@@ -427,32 +427,36 @@ class PLL_Admin_Model extends PLL_Model {
 		 */
 		$limit = (int) apply_filters( 'get_objects_with_no_lang_limit', $limit );
 
-		$posts = get_posts( array(
-			'numberposts' => $limit,
-			'nopaging'    => $limit <= 0,
-			'post_type'   => $this->get_translated_post_types(),
-			'post_status' => 'any',
-			'fields'      => 'ids',
-			'tax_query'   => array(
-				array(
-					'taxonomy' => 'language',
-					'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
-					'operator' => 'NOT IN',
+		$posts = get_posts(
+			array(
+				'numberposts' => $limit,
+				'nopaging'    => $limit <= 0,
+				'post_type'   => $this->get_translated_post_types(),
+				'post_status' => 'any',
+				'fields'      => 'ids',
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'language',
+						'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
+						'operator' => 'NOT IN',
+					),
 				),
-			),
-		) );
-
-		$terms = $wpdb->get_col( sprintf( "
-			SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}
-			WHERE taxonomy IN ('%s')
-			AND {$wpdb->term_taxonomy}.term_id NOT IN (
-				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
 			)
-			%s",
-			implode( "','", array_map( 'esc_sql', $this->get_translated_taxonomies() ) ),
-			implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
-			$limit > 0 ? "LIMIT {$limit}" : ''
-		) );
+		);
+
+		$terms = $wpdb->get_col(
+			sprintf(
+				"SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}
+				WHERE taxonomy IN ('%s')
+				AND {$wpdb->term_taxonomy}.term_id NOT IN (
+					SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+				)
+				%s",
+				implode( "','", array_map( 'esc_sql', $this->get_translated_taxonomies() ) ),
+				implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
+				$limit > 0 ? "LIMIT {$limit}" : ''
+			)
+		);
 
 		/**
 		 * Filter the list of untranslated posts ids and terms ids
@@ -501,11 +505,11 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Delete relationships
 		if ( ! empty( $dr ) ) {
-			$wpdb->query( "
-				DELETE FROM $wpdb->term_relationships
+			$wpdb->query(
+				"DELETE FROM $wpdb->term_relationships
 				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' )
-				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )
-			' );
+				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )'
+			);
 		}
 
 		// Delete terms
@@ -516,11 +520,13 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Update terms
 		if ( ! empty( $ut ) ) {
-			$wpdb->query( "
+			$wpdb->query(
+				"
 				UPDATE $wpdb->term_taxonomy
 				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END )
 				WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )
-			' );
+			'
+			);
 		}
 
 		if ( ! empty( $term_ids ) ) {

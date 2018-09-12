@@ -13,13 +13,7 @@
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned"/>
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
 		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
-		<exclude name="PEAR.Functions.FunctionCallSignature"/>
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
-	</rule>
-
-	<rule ref="Generic.WhiteSpace.ScopeIndent.Incorrect">
-		<exclude-pattern>*/tests/plugins/*</exclude-pattern>
-		<exclude-pattern>*/tests/themes/*</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress.WP.I18n.LowLevelTranslationFunction">
@@ -48,11 +42,7 @@
 		<exclude-pattern>*/include/api.php</exclude-pattern><!-- For PLL() -->
 	</rule>
 
-	<rule ref="Generic.PHP.NoSilencedErrors.Discouraged" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
-	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged" ><!-- Same as above for WPCS 1.1+ -->
+	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 

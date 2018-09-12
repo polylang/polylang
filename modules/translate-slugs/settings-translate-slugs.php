@@ -14,11 +14,14 @@ class PLL_Settings_Translate_Slugs extends PLL_Settings_Module {
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang, array(
-			'module'      => 'translate-slugs',
-			'title'       => __( 'Translate slugs', 'polylang' ),
-			'description' => __( 'Allows to translate custom post types and taxonomies slugs in urls.', 'polylang' ),
-		) );
+		parent::__construct(
+			$polylang,
+			array(
+				'module'      => 'translate-slugs',
+				'title'       => __( 'Translate slugs', 'polylang' ),
+				'description' => __( 'Allows to translate custom post types and taxonomies slugs in urls.', 'polylang' ),
+			)
+		);
 	}
 
 	/**

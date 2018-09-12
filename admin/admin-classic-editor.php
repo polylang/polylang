@@ -65,19 +65,22 @@ class PLL_Admin_Classic_Editor {
 		wp_nonce_field( 'pll_language', '_pll_nonce' );
 
 		// NOTE: the class "tags-input" allows to include the field in the autosave $_POST ( see autosave.js )
-		printf( '
-			<p><strong>%1$s</strong></p>
+		printf(
+			'<p><strong>%1$s</strong></p>
 			<label class="screen-reader-text" for="%2$s">%1$s</label>
 			<div id="select-%3$s-language">%4$s</div>',
 			esc_html__( 'Language', 'polylang' ),
 			$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', $post_ID ) : 'post_lang_choice',
 			'attachment' === $post_type ? 'media' : 'post',
-			$dropdown->walk( $this->model->get_languages_list(), array(
-				'name'     => $id,
-				'class'    => 'post_lang_choice tags-input',
-				'selected' => $lang ? $lang->slug : '',
-				'flag'     => true,
-			) )
+			$dropdown->walk(
+				$this->model->get_languages_list(),
+				array(
+					'name'     => $id,
+					'class'    => 'post_lang_choice tags-input',
+					'selected' => $lang ? $lang->slug : '',
+					'flag'     => true,
+				)
+			)
 		);
 
 		/**
@@ -138,15 +141,17 @@ class PLL_Admin_Classic_Editor {
 				$supplemental['all'] = ob_get_contents();
 				ob_end_clean();
 
-				$supplemental['dropdown'] = wp_dropdown_categories( array(
-					'taxonomy'         => $taxonomy->name,
-					'hide_empty'       => 0,
-					'name'             => 'new' . $taxonomy->name . '_parent',
-					'orderby'          => 'name',
-					'hierarchical'     => 1,
-					'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;',
-					'echo'             => 0,
-				) );
+				$supplemental['dropdown'] = wp_dropdown_categories(
+					array(
+						'taxonomy'         => $taxonomy->name,
+						'hide_empty'       => 0,
+						'name'             => 'new' . $taxonomy->name . '_parent',
+						'orderby'          => 'name',
+						'hierarchical'     => 1,
+						'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;',
+						'echo'             => 0,
+					)
+				);
 
 				$x->Add( array( 'what' => 'taxonomy', 'data' => $taxonomy->name, 'supplemental' => $supplemental ) );
 			}
@@ -242,11 +247,14 @@ class PLL_Admin_Classic_Editor {
 		// Add current translation in list
 		if ( $post_id = $this->model->post->get_translation( (int) $_GET['pll_post_id'], $translation_language ) ) {
 			$post = get_post( $post_id );
-			array_unshift( $return, array(
-				'id' => $post_id,
-				'value' => $post->post_title,
-				'link' => $this->links->edit_post_translation_link( $post_id ),
-			) );
+			array_unshift(
+				$return,
+				array(
+					'id' => $post_id,
+					'value' => $post->post_title,
+					'link' => $this->links->edit_post_translation_link( $post_id ),
+				)
+			);
 		}
 
 		wp_die( json_encode( $return ) );

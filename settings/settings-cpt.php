@@ -16,11 +16,14 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang, array(
-			'module'      => 'cpt',
-			'title'       => __( 'Custom post types and Taxonomies', 'polylang' ),
-			'description' => __( 'Activate the languages and translations management for the custom post types and taxonomies.', 'polylang' ),
-		) );
+		parent::__construct(
+			$polylang,
+			array(
+				'module'      => 'cpt',
+				'title'       => __( 'Custom post types and Taxonomies', 'polylang' ),
+				'description' => __( 'Activate the languages and translations management for the custom post types and taxonomies.', 'polylang' ),
+			)
+		);
 
 		$public_post_types = get_post_types( array( 'public' => true, '_builtin' => false ) );
 		/** This filter is documented in include/model.php */
