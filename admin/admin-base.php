@@ -133,17 +133,32 @@ class PLL_Admin_Base extends PLL_Base {
 		}
 
 		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
+
+		$this->localize_scripts();
 	}
 
 	/**
 	 * Enqueue scripts to the WP Customizer.
 	 *
-	 * @since 2.3.x
+	 * @since 2.4.0
 	 */
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/widgets' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
+			$this->localize_scripts();
+		}
+	}
+
+	/**
+	 * Localize scripts.
+	 * @since 2.4.0
+	 */
+	public function localize_scripts() {
+		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
+			wp_localize_script( 'pll_widgets', 'pll_widgets', array(
+				'flags' => wp_list_pluck( $this->model->get_languages_list(), 'flag', 'locale' ),
+			) );
 		}
 	}
 
