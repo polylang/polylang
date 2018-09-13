@@ -152,13 +152,18 @@ class PLL_Admin_Base extends PLL_Base {
 
 	/**
 	 * Localize scripts.
+	 *
 	 * @since 2.4.0
 	 */
 	public function localize_scripts() {
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
-			wp_localize_script( 'pll_widgets', 'pll_widgets', array(
-				'flags' => wp_list_pluck( $this->model->get_languages_list(), 'flag', 'locale' ),
-			) );
+			wp_localize_script(
+				'pll_widgets',
+				'pll_widgets',
+				array(
+					'flags' => wp_list_pluck( $this->model->get_languages_list(), 'flag', 'locale' ),
+				)
+			);
 		}
 	}
 
