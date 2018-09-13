@@ -1,5 +1,9 @@
 jQuery( function( $ ) {
-	var widgets_container, widgets_selector;
+	var widgets_container, widgets_selector, flags;
+
+	if ( 'undefined' !== typeof pll_widgets && pll_widgets.hasOwnProperty( 'flags' ) ) {
+		flags = pll_widgets.flags;
+	}
 
 	/**
 	 * Prepend widget titles with a flag once a language is selected.
@@ -7,17 +11,27 @@ jQuery( function( $ ) {
 	 * @return {void} Nothing.
 	 */
 	function add_flag( widget ) {
+		if ( ! flags ) {
+			return;
+		}
 		widget = $( widget );
-		var title = $( '.widget-top .widget-title h3', widget ),
-			icon = $( '.pll-lang-choice option:selected', widget ).attr( 'flag' );
+		var icon   = null,
+			title  = $( '.widget-top .widget-title h3', widget ),
+			locale = $( '.pll-lang-choice option:selected', widget ).attr( 'lang' );
+
+		// esc_attr() replaces underscores with dashes.
+		locale = ( locale ) ? locale.replace( '-', '_' ) : false;
+		if ( locale && flags.hasOwnProperty( locale ) ) {
+			icon = flags[ locale ];
+		}
 
 		if ( icon ) {
-			var current = $( '.pll-lang img', title );
+			icon += ' &nbsp; ';
+			var current = $( '.pll-lang', title );
 			if ( current.length ) {
-				current.attr( 'src', icon );
+				current.html( icon );
 			} else {
-				var img  = '<img src="' + icon + '">',
-					flag = '<span class="pll-lang">' + img + ' &nbsp; </span>';
+				flag = '<span class="pll-lang">' + icon + '</span>';
 				title.prepend( flag );
 			}
 		} else {
