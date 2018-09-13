@@ -58,7 +58,7 @@ jQuery( function( $ ) {
 	} else {
 
 		widgets_container = $( '#widgets-right' );
-		widgets_selector  = '.widgets-holder-wrap .widget';
+		widgets_selector  = '.widget';
 
 	}
 
