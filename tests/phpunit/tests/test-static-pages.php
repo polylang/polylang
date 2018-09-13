@@ -17,25 +17,31 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang;
 
 		// page on front
-		self::$home_en = $en = self::factory()->post->create( array(
-			'post_title' => 'home',
-			'post_type' => 'page',
-			'post_content' => 'en1<!--nextpage-->en2',
-		) );
+		self::$home_en = $en = self::factory()->post->create(
+			array(
+				'post_title' => 'home',
+				'post_type' => 'page',
+				'post_content' => 'en1<!--nextpage-->en2',
+			)
+		);
 		self::$polylang->model->post->set_language( $en, 'en' );
 
-		self::$home_fr = $fr = self::factory()->post->create( array(
-			'post_title' => 'accueil',
-			'post_type' => 'page',
-			'post_content' => 'fr1<!--nextpage-->fr2',
-		) );
+		self::$home_fr = $fr = self::factory()->post->create(
+			array(
+				'post_title' => 'accueil',
+				'post_type' => 'page',
+				'post_content' => 'fr1<!--nextpage-->fr2',
+			)
+		);
 		self::$polylang->model->post->set_language( $fr, 'fr' );
 
-		self::$home_de = $de = self::factory()->post->create( array(
-			'post_title' => 'startseite',
-			'post_type' => 'page',
-			'post_content' => 'de1<!--nextpage-->de2',
-		) );
+		self::$home_de = $de = self::factory()->post->create(
+			array(
+				'post_title' => 'startseite',
+				'post_type' => 'page',
+				'post_content' => 'de1<!--nextpage-->de2',
+			)
+		);
 		self::$polylang->model->post->set_language( $de, 'de' );
 
 		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );

@@ -2,7 +2,8 @@
 
 /**
  * Define wordpress.com VIP equivalent of uncached functions
- * and WordPress backward compatibility functions
+ * WordPress backward compatibility functions
+ * and miscellaneous utility functions
  */
 
 if ( ! function_exists( 'wpcom_vip_get_page_by_title' ) ) {
@@ -81,4 +82,23 @@ if ( ! function_exists( 'wp_doing_ajax' ) ) {
 		/** This filter is documented in wp-includes/load.php */
 		return apply_filters( 'wp_doing_ajax', defined( 'DOING_AJAX' ) && DOING_AJAX );
 	}
+}
+
+/**
+ * Determines whether we should load the cache compatibility
+ *
+ * @since 2.3.8
+ *
+ * return bool True if the cache compatibility must be loaded
+ */
+function pll_is_cache_active() {
+	/**
+	 * Filters whether we should load the cache compatibility
+	 *
+	 * @since 2.3.8
+	 *
+	 * @bool $is_cache True if a known cache plugin is active
+	 *                 incl. WP Fastest Cache which doesn't use WP_CACHE
+	 */
+	return apply_filters( 'pll_is_cache_active', ( defined( 'WP_CACHE' ) && WP_CACHE ) || defined( 'WPFC_MAIN_PATH' ) );
 }

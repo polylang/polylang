@@ -8,14 +8,14 @@
 class PLL_Choose_Lang_Domain extends PLL_Choose_Lang_Url {
 
 	/**
-	 * don't set any language cookie
+	 * Don't set any language cookie
 	 *
 	 * @since 1.5
 	 */
 	public function maybe_setcookie() {}
 
 	/**
-	 * don't redirect according to browser preferences
+	 * Don't redirect according to browser preferences
 	 *
 	 * @since 1.5
 	 */

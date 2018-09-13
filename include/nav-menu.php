@@ -1,8 +1,8 @@
 <?php
 
 /**
- * manages custom menus translations
- * common to admin and frontend for the customizer
+ * Manages custom menus translations
+ * Common to admin and frontend for the customizer
  *
  * @since 1.7.7
  */
@@ -10,7 +10,7 @@ class PLL_Nav_Menu {
 	public $model, $options;
 
 	/**
-	 * constructor: setups filters and actions
+	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.7.7
 	 *
@@ -20,12 +20,12 @@ class PLL_Nav_Menu {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
 
-		// integration with WP customizer
+		// Integration with WP customizer
 		add_action( 'customize_register', array( $this, 'create_nav_menu_locations' ), 5 );
 	}
 
 	/**
-	 * create temporary nav menu locations ( one per location and per language ) for all non-default language
+	 * Create temporary nav menu locations ( one per location and per language ) for all non-default language
 	 * to do only one time
 	 *
 	 * @since 1.2
@@ -47,7 +47,7 @@ class PLL_Nav_Menu {
 	}
 
 	/**
-	 * creates a temporary nav menu location from a location and a language
+	 * Creates a temporary nav menu location from a location and a language
 	 *
 	 * @since 1.8
 	 *
@@ -60,7 +60,7 @@ class PLL_Nav_Menu {
 	}
 
 	/**
-	 * get nav menu locations and language from a temporary location
+	 * Get nav menu locations and language from a temporary location
 	 *
 	 * @since 1.8
 	 *

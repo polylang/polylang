@@ -24,11 +24,14 @@ class PLL_Settings_Module {
 		$this->model = &$polylang->model;
 		$this->links_model = &$polylang->links_model;
 
-		$args = wp_parse_args( $args, array(
-			'title' => '',
-			'description' => '',
-			'active_option' => false,
-		) );
+		$args = wp_parse_args(
+			$args,
+			array(
+				'title' => '',
+				'description' => '',
+				'active_option' => false,
+			)
+		);
 
 		foreach ( $args as $prop => $value ) {
 			$this->$prop = $value;

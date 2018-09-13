@@ -98,21 +98,24 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @since 1.2
 	 */
 	public function register_taxonomy() {
-		register_taxonomy( 'language', $this->model->get_translated_post_types(), array(
-			'labels' => array(
-				'name'          => __( 'Languages', 'polylang' ),
-				'singular_name' => __( 'Language', 'polylang' ),
-				'all_items'     => __( 'All languages', 'polylang' ),
-			),
-			// FIXME backward compatibility with WP 4.4.x: we must keep public to true for WP to accept our query var
-			'public'             => version_compare( $GLOBALS['wp_version'], '4.4', '>=' ) && version_compare( $GLOBALS['wp_version'], '4.5', '<' ),
-			'show_ui'            => false, // hide the taxonomy on admin side, needed for WP 4.4.x
-			'show_in_nav_menus'  => false, // no metabox for nav menus, needed for WP 4.4.x
-			'publicly_queryable' => true, // since WP 4.5
-			'query_var'          => 'lang',
-			'rewrite'            => $this->model->options['force_lang'] < 2, // no rewrite for domains and sub-domains
-			'_pll'               => true, // polylang taxonomy
-		) );
+		register_taxonomy(
+			'language',
+			$this->model->get_translated_post_types(),
+			array(
+				'labels' => array(
+					'name'          => __( 'Languages', 'polylang' ),
+					'singular_name' => __( 'Language', 'polylang' ),
+					'all_items'     => __( 'All languages', 'polylang' ),
+				),
+				'public'             => false,
+				'show_ui'            => false, // hide the taxonomy on admin side, needed for WP 4.4.x
+				'show_in_nav_menus'  => false, // no metabox for nav menus, needed for WP 4.4.x
+				'publicly_queryable' => true, // since WP 4.5
+				'query_var'          => 'lang',
+				'rewrite'            => $this->model->options['force_lang'] < 2, // no rewrite for domains and sub-domains
+				'_pll'               => true, // polylang taxonomy
+			)
+		);
 	}
 
 	/**

@@ -21,9 +21,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		add_filter( 'attachment_fields_to_edit', array( $this, 'attachment_fields_to_edit' ), 10, 2 );
 
 		// Adds actions related to languages when creating, saving or deleting media
-		add_action( 'add_attachment', array( $this, 'set_default_language' ) );
 		add_filter( 'attachment_fields_to_save', array( $this, 'save_media' ), 10, 2 );
-		add_filter( 'wp_delete_file', array( $this, 'wp_delete_file' ) );
 
 		// Creates a media translation
 		if ( isset( $_GET['action'], $_GET['new_lang'], $_GET['from_media'] ) && 'translate_media' === $_GET['action'] ) {
@@ -53,11 +51,14 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		$fields['language'] = array(
 			'label' => __( 'Language', 'polylang' ),
 			'input' => 'html',
-			'html'  => $dropdown->walk( $this->model->get_languages_list(), array(
-				'name'     => sprintf( 'attachments[%d][language]', $post_id ),
-				'class'    => 'media_lang_choice',
-				'selected' => $lang ? $lang->slug : '',
-			) ),
+			'html'  => $dropdown->walk(
+				$this->model->get_languages_list(),
+				array(
+					'name'     => sprintf( 'attachments[%d][language]', $post_id ),
+					'class'    => 'media_lang_choice',
+					'selected' => $lang ? $lang->slug : '',
+				)
+			),
 		);
 
 		return $fields;
@@ -162,34 +163,5 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		}
 
 		return $post;
-	}
-
-	/**
-	 * Prevents WP deleting files when there are still media using them
-	 * Thanks to Bruno "Aesqe" Babic and its plugin file gallery in which I took all the ideas for this function
-	 *
-	 * @since 0.9
-	 *
-	 * @param string $file
-	 * @return string unmodified $file
-	 */
-	public function wp_delete_file( $file ) {
-		global $wpdb;
-
-		$uploadpath = wp_upload_dir();
-
-		$ids = $wpdb->get_col( $wpdb->prepare( "
-			SELECT post_id FROM $wpdb->postmeta
-			WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
-			substr_replace( $file, '', 0, strlen( trailingslashit( $uploadpath['basedir'] ) ) )
-		) );
-
-		if ( ! empty( $ids ) ) {
-			// Regenerate intermediate sizes if it's an image ( since we could not prevent WP deleting them before )
-			wp_update_attachment_metadata( $ids[0], wp_generate_attachment_metadata( $ids[0], $file ) );
-			return ''; // Prevent deleting the main file
-		}
-
-		return $file;
 	}
 }

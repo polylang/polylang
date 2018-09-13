@@ -28,42 +28,33 @@ class PLL_Lingotek {
 			add_action( 'admin_print_styles', array( $this, 'print_css' ) );
 		}
 
-		// The pointer
-		$content = __( 'You’ve just upgraded to the latest version of Polylang! Would you like to automatically translate your website for free?', 'polylang' );
+		// The admin notice
+		// Honor old dismissed pointers
+		if ( ! PLL_Admin_Notices::is_dismissed( 'lingotek' ) && ! in_array( 'pll_lgt', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ) ) {
+			$content = __( 'You’ve just upgraded to the latest version of Polylang! Would you like to automatically translate your website for free?', 'polylang' );
 
-		$buttons = array(
-			array(
-				'label' => __( 'Close' ),
-			),
-			array(
-				'label' => __( 'Learn more', 'polylang' ),
-				'link' => admin_url( 'admin.php?page=mlang&tab=lingotek' ),
-			),
-		);
-
-		if ( $link = $this->get_activate_link() ) {
-			$content .= ' ' . __( 'Click on Activate Lingotek to start translating.', 'polylang' );
-
-			$buttons[] = array(
-				'label' => __( 'Activate Lingotek', 'polylang' ),
-				'link' => str_replace( '&amp;', '&', $link ), // wp_nonce_url escapes the url for html display. Here we want it for js
+			$buttons = sprintf(
+				'<a href="%s" class="button button-primary" style="margin-right: 10px">%s</a>',
+				admin_url( 'admin.php?page=mlang_lingotek' ),
+				__( 'Learn more', 'polylang' )
 			);
+
+			if ( $link = $this->get_activate_link() ) {
+				$content .= ' ' . __( 'Click on Activate Lingotek to start translating.', 'polylang' );
+
+				$buttons = sprintf(
+					'<a href="%s" class="button button-primary" style="margin-right: 10px">%s</a>',
+					$link,
+					__( 'Activate Lingotek', 'polylang' )
+				) . $buttons;
+			}
+
+			if ( is_plugin_active( self::LINGOTEK ) ) { // Needs /wp-admin/includes/plugin.php to be loaded
+				PLL_Admin_Notices::dismiss( 'lingotek' );
+			} else {
+				PLL_Admin_Notices::add_notice( 'lingotek', '<p>' . $content . '</p><p>' . $buttons . '</p>' );
+			}
 		}
-
-		$args = array(
-			'pointer' => 'pll_lgt',
-			'id' => empty( $options['previous_version'] ) ? 'nav-tab-lingotek' : 'wp-admin-bar-languages',
-			'position' => array(
-				'edge' => 'top',
-				'align' => 'left',
-			),
-			'width' => 400,
-			'title' => __( 'Congratulations!', 'polylang' ),
-			'content' => $content,
-			'buttons' => $buttons,
-		);
-
-		new PLL_Pointer( $args );
 	}
 
 	/**
@@ -85,6 +76,8 @@ class PLL_Lingotek {
 	 * @since 1.7.7
 	 */
 	public function display_tab() {
+		PLL_Admin_Notices::dismiss( 'lingotek' );
+
 		$activate_link = $this->get_activate_link();
 
 		$links = array(
@@ -179,6 +172,10 @@ class PLL_Lingotek {
 			height: 630px;
 			background: #fafafa;
 		}
+		.rtl .ltk-feature {
+			text-align: right;
+			float: right;
+		}
 		.ltk-feature h3 {
 			height: 1em;
 		}
@@ -194,10 +191,16 @@ class PLL_Lingotek {
 		.ltk-feature ul {
 			margin-left: 10px;
 		}
+		.rtl .ltk-feature ul {
+			margin-right: 10px;
+		}
 		.ltk-feature ul li {
 			list-style: inside disc;
 			list-style-position: outside;
-				padding-left: 0;
+			padding-left: 0;
+		}
+		.rtl .ltk-feature ul li {
+			padding-right: 0;
 		}
 		.ltk-feature .ltk-desc {
 			height: 3em;
@@ -210,8 +213,6 @@ class PLL_Lingotek {
 		.ltk-feature .ltk-lower {
 			padding: 5px 20px 0px 20px;
 			border-top: 1px solid #eee;
-
-			text-align: left;
 			font-size: 95%;
 		}
 

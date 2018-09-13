@@ -68,7 +68,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	 * @param object $lang PLL_Language object
 	 * @return string
 	 */
-	function home_url( $lang ) {
+	public function home_url( $lang ) {
 		return trailingslashit( empty( $this->options['domains'][ $lang->slug ] ) ? $this->home : $this->options['domains'][ $lang->slug ] );
 	}
 

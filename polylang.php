@@ -3,7 +3,7 @@
 /**
 Plugin Name: Polylang
 Plugin URI: https://polylang.pro
-Version: 2.3.5
+Version: 2.4-dev
 Author: Frédéric Demarle
 Author uri: https://polylang.pro
 Description: Adds multilingual capability to WordPress
@@ -44,7 +44,7 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 			require_once ABSPATH . 'wp-includes/pluggable.php';
 			deactivate_plugins( plugin_basename( __FILE__ ) ); // Deactivate this plugin
 			// WP does not allow us to send a custom meaningful message, so just tell the plugin has been deactivated
-			wp_redirect( add_query_arg( 'deactivate', 'true', remove_query_arg( 'activate' ) ) );
+			wp_safe_redirect( add_query_arg( 'deactivate', 'true', remove_query_arg( 'activate' ) ) );
 			exit;
 		}
 	} else {
@@ -53,12 +53,13 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	}
 } else {
 	// Go on loading the plugin
-	define( 'POLYLANG_VERSION', '2.3.5' );
-	define( 'PLL_MIN_WP_VERSION', '4.4' );
+	define( 'POLYLANG_VERSION', '2.4-dev' );
+	define( 'PLL_MIN_WP_VERSION', '4.7' );
 
 	define( 'POLYLANG_FILE', __FILE__ ); // this file
 	define( 'POLYLANG_BASENAME', plugin_basename( POLYLANG_FILE ) ); // plugin name as known by WP
 	define( 'POLYLANG_DIR', dirname( POLYLANG_FILE ) ); // our directory
+	define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
 
 	define( 'PLL_ADMIN_INC', POLYLANG_DIR . '/admin' );
 	define( 'PLL_FRONT_INC', POLYLANG_DIR . '/frontend' );

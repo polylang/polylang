@@ -104,13 +104,15 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		$data['title'] = __( 'Language switcher', 'polylang' ); // The title
 
 		// Get all language switcher menu items
-		$items = get_posts( array(
-			'numberposts' => -1,
-			'nopaging'    => true,
-			'post_type'   => 'nav_menu_item',
-			'fields'      => 'ids',
-			'meta_key'    => '_pll_menu_item',
-		) );
+		$items = get_posts(
+			array(
+				'numberposts' => -1,
+				'nopaging'    => true,
+				'post_type'   => 'nav_menu_item',
+				'fields'      => 'ids',
+				'meta_key'    => '_pll_menu_item',
+			)
+		);
 
 		// The options values for the language switcher
 		$data['val'] = array();
@@ -272,7 +274,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 *
 	 * @param int $term_id nav menu id
 	 */
-	function delete_nav_menu( $term_id ) {
+	public function delete_nav_menu( $term_id ) {
 		if ( isset( $this->options['nav_menus'] ) ) {
 			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
 				foreach ( $locations as $loc => $languages ) {

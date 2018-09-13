@@ -96,7 +96,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 			if ( $options = get_post_meta( $item->ID, '_pll_menu_item', true ) ) {
 				$i = 0;
 
-				$switcher = new PLL_Switcher;
+				$switcher = new PLL_Switcher();
 				$args = array_merge( array( 'raw' => 1 ), $options );
 				$the_languages = $switcher->the_languages( PLL()->links, $args );
 

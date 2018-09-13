@@ -97,7 +97,7 @@ class Polylang {
 	 *
 	 * @return bool
 	 */
-	static public function is_ajax_on_front() {
+	public static function is_ajax_on_front() {
 		// Special test for plupload which does not use jquery ajax and thus does not pass our ajax prefilter
 		// Special test for customize_save done in frontend but for which we want to load the admin
 		$in = isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'upload-attachment', 'customize_save' ) );
@@ -119,7 +119,7 @@ class Polylang {
 	 *
 	 * @since 1.6
 	 */
-	static public function define_constants() {
+	public static function define_constants() {
 		// Cookie name. no cookie will be used if set to false
 		if ( ! defined( 'PLL_COOKIE' ) ) {
 			define( 'PLL_COOKIE', 'pll_language' );

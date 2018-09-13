@@ -60,7 +60,8 @@ class PLL_Admin_Filters extends PLL_Filters {
 		// Saving the widget reloads the form. And curiously the action is in $_REQUEST but neither in $_POST, not in $_GET.
 		if ( ( isset( $screen ) && 'widgets' === $screen->base ) || ( isset( $_REQUEST['action'] ) && 'save-widget' === $_REQUEST['action'] ) || isset( $GLOBALS['wp_customize'] ) ) {
 			$dropdown = new PLL_Walker_Dropdown();
-			printf( '<p><label for="%1$s">%2$s %3$s</label></p>',
+			printf(
+				'<p><label for="%1$s">%2$s %3$s</label></p>',
 				esc_attr( $widget->id . '_lang_choice' ),
 				esc_html__( 'The widget is displayed for:', 'polylang' ),
 				$dropdown->walk(
@@ -108,13 +109,6 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @param int $user_id
 	 */
 	public function personal_options_update( $user_id ) {
-		// Admin language
-		// FIXME Backward compatibility with WP < 4.7
-		if ( version_compare( $GLOBALS['wp_version'], '4.7alpha', '<' ) ) {
-			$user_lang = in_array( $_POST['user_lang'], $this->model->get_languages_list( array( 'fields' => 'locale' ) ) ) ? $_POST['user_lang'] : 0;
-			update_user_meta( $user_id, 'locale', $user_lang );
-		}
-
 		// Biography translations
 		foreach ( $this->model->get_languages_list() as $lang ) {
 			$meta = $lang->slug == $this->options['default_lang'] ? 'description' : 'description_' . $lang->slug;
@@ -127,44 +121,21 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Form for language user preference in user profile
+	 * Outputs hidden information to modify the biography form with js
 	 *
 	 * @since 0.4
 	 *
 	 * @param object $profileuser
 	 */
 	public function personal_options( $profileuser ) {
-		// FIXME: Backward compatibility with WP < 4.7
-		if ( version_compare( $GLOBALS['wp_version'], '4.7alpha', '<' ) ) {
-			$dropdown = new PLL_Walker_Dropdown();
-			printf( '
-				<tr>
-					<th><label for="user_lang">%s</label></th>
-					<td>%s</td>
-				</tr>',
-				esc_html__( 'Admin language', 'polylang' ),
-				$dropdown->walk(
-					array_merge(
-						array( (object) array( 'locale' => 0, 'name' => __( 'WordPress default', 'polylang' ) ) ),
-						$this->model->get_languages_list()
-					),
-					array(
-						'name'        => 'user_lang',
-						'value'       => 'locale',
-						'selected'    => get_user_meta( $profileuser->ID, 'locale', true ),
-					)
-				)
-			);
-		}
-
-		// Hidden information to modify the biography form with js
 		foreach ( $this->model->get_languages_list() as $lang ) {
 			$meta = $lang->slug == $this->options['default_lang'] ? 'description' : 'description_' . $lang->slug;
 
 			/** This filter is documented in wp-includes/user.php */
 			$description = apply_filters( 'user_description', get_user_meta( $profileuser->ID, $meta, true ) ); // Applies WP default filter wp_kses_data
 
-			printf( '<input type="hidden" class="biography" name="%s___%s" value="%s" />',
+			printf(
+				'<input type="hidden" class="biography" name="%s___%s" value="%s" />',
 				esc_attr( $lang->slug ),
 				esc_attr( $lang->name ),
 				esc_attr( $description )
@@ -198,7 +169,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @param array $locales Not used
 	 * @return array list of locales to update
 	 */
-	function update_check_locales( $locales ) {
+	public function update_check_locales( $locales ) {
 		return $this->model->get_languages_list( array( 'fields' => 'locale' ) );
 	}
 
@@ -212,7 +183,17 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @return string
 	 */
 	public function get_locale( $locale ) {
-		return $this->curlang->locale;
+		if ( isset( $_POST['post_lang_choice'] ) && $lang = $this->model->get_language( $_POST['post_lang_choice'] ) ) {
+			$locale = $lang->locale;
+		} elseif ( isset( $_POST['term_lang_choice'] ) && $lang = $this->model->get_language( $_POST['term_lang_choice'] ) ) {
+			$locale = $lang->locale;
+		} elseif ( isset( $_POST['inline_lang_choice'] ) && $lang = $this->model->get_language( $_POST['inline_lang_choice'] ) ) {
+			$locale = $lang->locale;
+		} elseif ( ! empty( $this->curlang ) ) {
+			$locale = $this->curlang->locale;
+		}
+
+		return $locale;
 	}
 
 	/**

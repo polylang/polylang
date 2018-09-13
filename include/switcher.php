@@ -17,7 +17,7 @@ class PLL_Switcher {
 	 * @param string $key  optional either 'string' or 'default', defaults to 'string'
 	 * @return array list of switcher options strings or default values
 	 */
-	static public function get_switcher_options( $type = 'widget', $key = 'string' ) {
+	public static function get_switcher_options( $type = 'widget', $key = 'string' ) {
 		$options = array(
 			'dropdown'               => array( 'string' => __( 'Displays as dropdown', 'polylang' ), 'default' => 0 ),
 			'show_names'             => array( 'string' => __( 'Displays language names', 'polylang' ), 'default' => 1 ),
@@ -33,8 +33,7 @@ class PLL_Switcher {
 	/**
 	 * Get the language elements for use in a walker
 	 *
-	 * List of parameters accepted in $args:
-	 * @see PLL_Switcher::the_languages
+	 * @see list of parameters accepted in $args documented for PLL_Switcher::the_languages
 	 *
 	 * @since 1.2
 	 *
@@ -195,8 +194,8 @@ class PLL_Switcher {
 			}
 
 			// Accept only few valid characters for the urls_x variable name ( as the widget id includes '-' which is invalid )
-			$out .= sprintf( '
-				<script type="text/javascript">
+			$out .= sprintf(
+				'<script type="text/javascript">
 					//<![CDATA[
 					var %1$s = %2$s;
 					document.getElementById( "%3$s" ).onchange = function() {
@@ -204,7 +203,9 @@ class PLL_Switcher {
 					}
 					//]]>
 				</script>',
-				'urls_' . preg_replace( '#[^a-zA-Z0-9]#', '', $args['dropdown'] ), json_encode( $urls ), esc_js( $args['name'] )
+				'urls_' . preg_replace( '#[^a-zA-Z0-9]#', '', $args['dropdown'] ),
+				json_encode( $urls ),
+				esc_js( $args['name'] )
 			);
 		}
 

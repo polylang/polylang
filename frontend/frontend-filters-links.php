@@ -236,12 +236,15 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			 *
 			 * @param array $args
 			 */
-			$white_list = apply_filters( 'pll_home_url_white_list', array(
-				array( 'file' => $theme_root ),
-				array( 'function' => 'wp_nav_menu' ),
-				array( 'function' => 'login_footer' ),
-				array( 'function' => 'get_custom_logo' ),
-			) );
+			$white_list = apply_filters(
+				'pll_home_url_white_list',
+				array(
+					array( 'file' => $theme_root ),
+					array( 'function' => 'wp_nav_menu' ),
+					array( 'function' => 'login_footer' ),
+					array( 'function' => 'get_custom_logo' ),
+				)
+			);
 		}
 
 		// We don't want to filter the home url in these cases
@@ -257,10 +260,13 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			 *
 			 * @param array $args
 			 */
-			$black_list = apply_filters( 'pll_home_url_black_list', array(
-				array( 'file' => 'searchform.php' ), // Since WP 3.6 searchform.php is passed through get_search_form
-				array( 'function' => 'get_search_form' ),
-			) );
+			$black_list = apply_filters(
+				'pll_home_url_black_list',
+				array(
+					array( 'file' => 'searchform.php' ), // Since WP 3.6 searchform.php is passed through get_search_form
+					array( 'function' => 'get_search_form' ),
+				)
+			);
 		}
 
 		$traces = version_compare( PHP_VERSION, '5.2.5', '>=' ) ? debug_backtrace( false ) : debug_backtrace();
@@ -392,7 +398,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		// The language is not correctly set so let's redirect to the correct url for this object
 		if ( $do_redirect && $redirect_url && $requested_url != $redirect_url ) {
-			wp_redirect( $redirect_url, 301 );
+			wp_redirect( $redirect_url, 301, POLYLANG );
 			exit;
 		}
 

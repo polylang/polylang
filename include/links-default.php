@@ -46,7 +46,7 @@ class PLL_Links_Default extends PLL_Links_Model {
 	 * @param string $url url to modify
 	 * @return string modified url
 	 */
-	function remove_paged_from_link( $url ) {
+	public function remove_paged_from_link( $url ) {
 		return remove_query_arg( 'paged', $url );
 	}
 
