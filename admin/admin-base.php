@@ -161,7 +161,7 @@ class PLL_Admin_Base extends PLL_Base {
 				'pll_widgets',
 				'pll_widgets',
 				array(
-					'flags' => wp_list_pluck( $this->model->get_languages_list(), 'flag', 'locale' ),
+					'flags' => wp_list_pluck( $this->model->get_languages_list(), 'flag', 'slug' ),
 				)
 			);
 		}

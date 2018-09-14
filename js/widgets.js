@@ -15,15 +15,9 @@ jQuery( function( $ ) {
 			return;
 		}
 		widget = $( widget );
-		var icon   = null,
-			title  = $( '.widget-top .widget-title h3', widget ),
-			locale = $( '.pll-lang-choice option:selected', widget ).attr( 'lang' );
-
-		// esc_attr() replaces underscores with dashes.
-		locale = ( locale ) ? locale.replace( '-', '_' ) : false;
-		if ( locale && flags.hasOwnProperty( locale ) ) {
-			icon = flags[ locale ];
-		}
+		var title  = $( '.widget-top .widget-title h3', widget ),
+			locale = $( '.pll-lang-choice option:selected', widget ).val(),
+			icon   = ( locale && flags.hasOwnProperty( locale ) ) ? flags[ locale ] : null;
 
 		if ( icon ) {
 			icon += ' &nbsp; ';
