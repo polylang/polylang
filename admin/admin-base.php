@@ -29,6 +29,8 @@ class PLL_Admin_Base extends PLL_Base {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
 
+		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
+
 		// Lingotek
 		if ( ! defined( 'POLYLANG_PRO' ) && ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) ) {
 			require_once POLYLANG_DIR . '/lingotek/lingotek.php';
@@ -121,6 +123,7 @@ class PLL_Admin_Base extends PLL_Base {
 			'media'          => array( array( 'upload' ), array( 'jquery' ), 0, 1 ),
 			'term'           => array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 ),
 			'user'           => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
+			'widgets'        => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
 		foreach ( $scripts as $script => $v ) {
@@ -130,6 +133,38 @@ class PLL_Admin_Base extends PLL_Base {
 		}
 
 		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
+
+		$this->localize_scripts();
+	}
+
+	/**
+	 * Enqueue scripts to the WP Customizer.
+	 *
+	 * @since 2.4.0
+	 */
+	public function customize_controls_enqueue_scripts() {
+		if ( $this->model->get_languages_list() ) {
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/widgets' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
+			$this->localize_scripts();
+		}
+	}
+
+	/**
+	 * Localize scripts.
+	 *
+	 * @since 2.4.0
+	 */
+	public function localize_scripts() {
+		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
+			wp_localize_script(
+				'pll_widgets',
+				'pll_widgets',
+				array(
+					'flags' => wp_list_pluck( $this->model->get_languages_list(), 'flag', 'slug' ),
+				)
+			);
+		}
 	}
 
 	/**

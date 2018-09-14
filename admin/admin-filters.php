@@ -71,7 +71,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 					),
 					array(
 						'name'        => $widget->id . '_lang_choice',
-						'class'       => 'tags-input',
+						'class'       => 'tags-input pll-lang-choice',
 						'selected'    => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
 					)
 				)
