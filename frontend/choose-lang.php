@@ -119,7 +119,7 @@ abstract class PLL_Choose_Lang {
 
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
 			// Break up string into pieces ( languages and q factors )
-			preg_match_all( '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*( 1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse );
+			preg_match_all( '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse );
 
 			$k = $lang_parse[1];
 			$v = $lang_parse[4];
@@ -127,7 +127,7 @@ abstract class PLL_Choose_Lang {
 			if ( $n = count( $k ) ) {
 				// Set default to 1 for any without q factor
 				foreach ( $v as $key => $val ) {
-					if ( '' === $val ) {
+					if ( '' === $val || (float) $val > 1 ) {
 						$v[ $key ] = 1;
 					}
 				}
@@ -153,7 +153,9 @@ abstract class PLL_Choose_Lang {
 			}
 		}
 
-		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // hides languages with no post
+		$accept_langs = wp_list_filter( $accept_langs, array( '0' ), 'NOT' ); // Remove languages markes as unacceptable (q=0).
+
+		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
 
 		/**
 		 * Filter the list of languages to use to match the browser preferences
@@ -164,16 +166,16 @@ abstract class PLL_Choose_Lang {
 		 */
 		$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
 
-		// looks through sorted list and use first one that matches our language list
+		// Looks through sorted list and use first one that matches our language list
 		foreach ( array_keys( $accept_langs ) as $accept_lang ) {
-			// first loop to match the exact locale
+			// First loop to match the exact locale
 			foreach ( $languages as $language ) {
 				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
 					return $language->slug;
 				}
 			}
 
-			// second loop to match the language set
+			// Second loop to match the language set
 			foreach ( $languages as $language ) {
 				if ( 0 === stripos( $accept_lang, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $accept_lang ) ) {
 					return $language->slug;
