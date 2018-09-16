@@ -32,8 +32,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	function prepare_options() {
 		// mirror options defined in the sample wpml-config.xml
 		$my_plugins_options = array(
-			'option_name_1' => 'val1',
-			'option_name_2' => 'val2',
+			'option_name_1'   => 'val1',
+			'option_name_2'   => 'val2',
 			'options_group_1' => array(
 				'sub_option_name_11' => 'val11',
 				'sub_option_name_12' => 'val12',

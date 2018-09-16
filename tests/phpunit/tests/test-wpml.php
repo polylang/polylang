@@ -60,14 +60,14 @@ class WPML_Test extends PLL_UnitTestCase {
 		$languages = apply_filters( 'wpml_active_languages', null );
 
 		$expected = array(
-			'id' => self::$polylang->model->get_language( 'fr' )->term_id,
-			'active' => 1,
-			'native_name' => 'Français',
-			'missing' => 0,
-			'translated_name' => '',
-			'language_code' => 'fr',
+			'id'               => self::$polylang->model->get_language( 'fr' )->term_id,
+			'active'           => 1,
+			'native_name'      => 'Français',
+			'missing'          => 0,
+			'translated_name'  => '',
+			'language_code'    => 'fr',
 			'country_flag_url' => plugins_url( '/flags/fr.png', POLYLANG_FILE ),
-			'url' => home_url( "?page_id={$fr}&lang=fr" ),
+			'url'              => home_url( "?page_id={$fr}&lang=fr" ),
 		);
 
 		$this->assertCount( 3, $languages ); // All languages are returned, even German which has no content

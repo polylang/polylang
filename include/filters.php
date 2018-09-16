@@ -146,7 +146,7 @@ class PLL_Filters {
 			$once = true; // avoid infinite loop
 
 			$r = array(
-				'lang' => 0, // So this query is not filtered
+				'lang'        => 0, // So this query is not filtered
 				'numberposts' => -1,
 				'nopaging'    => true,
 				'post_type'   => $args['post_type'],

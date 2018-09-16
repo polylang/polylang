@@ -18,9 +18,9 @@ class PLL_Settings_Tools extends PLL_Settings_Module {
 		parent::__construct(
 			$polylang,
 			array(
-				'module'        => 'tools',
-				'title'         => __( 'Tools', 'polylang' ),
-				'description'   => __( 'Decide whether to remove all data when deleting Polylang.', 'polylang' ),
+				'module'      => 'tools',
+				'title'       => __( 'Tools', 'polylang' ),
+				'description' => __( 'Decide whether to remove all data when deleting Polylang.', 'polylang' ),
 			)
 		);
 	}

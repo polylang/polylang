@@ -120,7 +120,7 @@ class PLL_Admin_Sync {
 				$wpdb->update(
 					$wpdb->posts,
 					array(
-						'post_date' => $original->post_date,
+						'post_date'     => $original->post_date,
 						'post_date_gmt' => $original->post_date_gmt,
 					),
 					array( 'ID' => $post_id )

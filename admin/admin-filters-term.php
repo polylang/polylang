@@ -417,14 +417,14 @@ class PLL_Admin_Filters_Term {
 		// $args copied from edit_tags.php except echo
 		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
 			$args = array(
-				'hide_empty' => 0,
-				'hide_if_empty' => false,
-				'taxonomy' => $taxonomy,
-				'name' => 'parent',
-				'orderby' => 'name',
-				'hierarchical' => true,
+				'hide_empty'       => 0,
+				'hide_if_empty'    => false,
+				'taxonomy'         => $taxonomy,
+				'name'             => 'parent',
+				'orderby'          => 'name',
+				'hierarchical'     => true,
 				'show_option_none' => __( 'None' ),
-				'echo' => 0,
+				'echo'             => 0,
 			);
 			$x->Add( array( 'what' => 'parent', 'data' => wp_dropdown_categories( $args ) ) );
 		}
@@ -479,9 +479,9 @@ class PLL_Admin_Filters_Term {
 
 			if ( $lang && $lang->slug == $translation_language->slug && ! $this->model->term->get_translation( $term->term_id, $term_language ) ) {
 				$return[] = array(
-					'id' => $term->term_id,
+					'id'    => $term->term_id,
 					'value' => $term->name,
-					'link' => $this->links->edit_term_translation_link( $term->term_id, $taxonomy, $post_type ),
+					'link'  => $this->links->edit_term_translation_link( $term->term_id, $taxonomy, $post_type ),
 				);
 			}
 		}
@@ -493,9 +493,9 @@ class PLL_Admin_Filters_Term {
 			array_unshift(
 				$return,
 				array(
-					'id' => $term_id,
+					'id'    => $term_id,
 					'value' => $term->name,
-					'link' => $this->links->edit_term_translation_link( $term->term_id, $taxonomy, $post_type ),
+					'link'  => $this->links->edit_term_translation_link( $term->term_id, $taxonomy, $post_type ),
 				)
 			);
 		}

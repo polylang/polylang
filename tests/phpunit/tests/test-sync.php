@@ -247,9 +247,9 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		edit_post(
 			array(
-				'post_ID'     => $from,
-				'post_format' => 'aside',
-				'meta'        => $metas,
+				'post_ID'       => $from,
+				'post_format'   => 'aside',
+				'meta'          => $metas,
 				'_thumbnail_id' => $thumbnail_id, // Since WP 4.6
 			)
 		); // fires the sync

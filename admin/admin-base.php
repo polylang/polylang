@@ -350,10 +350,10 @@ class PLL_Admin_Base extends PLL_Base {
 
 		$wp_admin_bar->add_menu(
 			array(
-				'id'     => 'languages',
-				'title'  => $selected->flag . $title,
-				'href'   => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
-				'meta'   => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
+				'id'    => 'languages',
+				'title' => $selected->flag . $title,
+				'href'  => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
+				'meta'  => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
 			)
 		);
 

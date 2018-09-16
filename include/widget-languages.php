@@ -17,7 +17,7 @@ class PLL_Widget_Languages extends WP_Widget {
 			'polylang',
 			__( 'Language Switcher', 'polylang' ),
 			array(
-				'description' => __( 'Displays a language switcher', 'polylang' ),
+				'description'                 => __( 'Displays a language switcher', 'polylang' ),
 				'customize_selective_refresh' => true,
 			)
 		);

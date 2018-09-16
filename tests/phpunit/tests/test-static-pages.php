@@ -19,8 +19,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		// page on front
 		self::$home_en = $en = self::factory()->post->create(
 			array(
-				'post_title' => 'home',
-				'post_type' => 'page',
+				'post_title'   => 'home',
+				'post_type'    => 'page',
 				'post_content' => 'en1<!--nextpage-->en2',
 			)
 		);
@@ -28,8 +28,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		self::$home_fr = $fr = self::factory()->post->create(
 			array(
-				'post_title' => 'accueil',
-				'post_type' => 'page',
+				'post_title'   => 'accueil',
+				'post_type'    => 'page',
 				'post_content' => 'fr1<!--nextpage-->fr2',
 			)
 		);
@@ -37,8 +37,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		self::$home_de = $de = self::factory()->post->create(
 			array(
-				'post_title' => 'startseite',
-				'post_type' => 'page',
+				'post_title'   => 'startseite',
+				'post_type'    => 'page',
 				'post_content' => 'de1<!--nextpage-->de2',
 			)
 		);

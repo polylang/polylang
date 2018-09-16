@@ -5,11 +5,11 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	function test_add_and_delete_language() {
 		// first language
 		$args = array(
-			'name' => 'English',
-			'slug' => 'en',
-			'locale' => 'en_US',
-			'rtl' => 0,
-			'flag' => 'us',
+			'name'       => 'English',
+			'slug'       => 'en',
+			'locale'     => 'en_US',
+			'rtl'        => 0,
+			'flag'       => 'us',
 			'term_group' => 2,
 		);
 
@@ -26,11 +26,11 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
 		// second language (rtl)
 		$args = array(
-			'name' => 'العربية',
-			'slug' => 'ar',
-			'locale' => 'ar',
-			'rtl' => 1,
-			'flag' => 'arab',
+			'name'       => 'العربية',
+			'slug'       => 'ar',
+			'locale'     => 'ar',
+			'rtl'        => 1,
+			'flag'       => 'arab',
 			'term_group' => 1,
 		);
 
@@ -77,11 +77,11 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	function test_unique_language_code_if_same_as_locale() {
 		// First language
 		$args = array(
-			'name' => 'العربية',
-			'slug' => 'a', // Intentional mistake
-			'locale' => 'ar',
-			'rtl' => 1,
-			'flag' => 'arab',
+			'name'       => 'العربية',
+			'slug'       => 'a', // Intentional mistake
+			'locale'     => 'ar',
+			'rtl'        => 1,
+			'flag'       => 'arab',
 			'term_group' => 1,
 		);
 
@@ -101,11 +101,11 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		global $wp_settings_errors;
 
 		$args = array(
-			'name' => '',
-			'slug' => 'en',
-			'locale' => 'en_US',
-			'rtl' => 0,
-			'flag' => 'us',
+			'name'       => '',
+			'slug'       => 'en',
+			'locale'     => 'en_US',
+			'rtl'        => 0,
+			'flag'       => 'us',
 			'term_group' => 1,
 		);
 

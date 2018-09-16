@@ -70,9 +70,9 @@ class PLL_Admin_Filters extends PLL_Filters {
 						$this->model->get_languages_list()
 					),
 					array(
-						'name'        => $widget->id . '_lang_choice',
-						'class'       => 'tags-input pll-lang-choice',
-						'selected'    => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
+						'name'     => $widget->id . '_lang_choice',
+						'class'    => 'tags-input pll-lang-choice',
+						'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
 					)
 				)
 			);

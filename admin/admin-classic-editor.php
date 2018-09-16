@@ -237,9 +237,9 @@ class PLL_Admin_Classic_Editor {
 		foreach ( $posts as $key => $post ) {
 			if ( ! $this->model->post->get_translation( $post->ID, $post_language ) ) {
 				$return[] = array(
-					'id' => $post->ID,
+					'id'    => $post->ID,
 					'value' => $post->post_title,
-					'link' => $this->links->edit_post_translation_link( $post->ID ),
+					'link'  => $this->links->edit_post_translation_link( $post->ID ),
 				);
 			}
 		}
@@ -250,9 +250,9 @@ class PLL_Admin_Classic_Editor {
 			array_unshift(
 				$return,
 				array(
-					'id' => $post_id,
+					'id'    => $post_id,
 					'value' => $post->post_title,
-					'link' => $this->links->edit_post_translation_link( $post_id ),
+					'link'  => $this->links->edit_post_translation_link( $post_id ),
 				)
 			);
 		}

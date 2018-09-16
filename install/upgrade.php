@@ -322,8 +322,8 @@ class PLL_Upgrade {
 								$translations[ $lang->slug ],
 								0,
 								array(
-									'menu-item-title' => __( 'Language switcher', 'polylang' ),
-									'menu-item-url' => '#pll_switcher',
+									'menu-item-title'  => __( 'Language switcher', 'polylang' ),
+									'menu-item-url'    => '#pll_switcher',
 									'menu-item-status' => 'publish',
 								)
 							);

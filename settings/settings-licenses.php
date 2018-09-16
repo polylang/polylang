@@ -19,9 +19,9 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 		parent::__construct(
 			$polylang,
 			array(
-				'module'        => 'licenses',
-				'title'         => __( 'License keys', 'polylang' ),
-				'description'   => __( 'Manage licenses for Polylang Pro or addons.', 'polylang' ),
+				'module'      => 'licenses',
+				'title'       => __( 'License keys', 'polylang' ),
+				'description' => __( 'Manage licenses for Polylang Pro or addons.', 'polylang' ),
 			)
 		);
 
@@ -218,7 +218,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 		$id = sanitize_text_field( substr( $_POST['id'], 11 ) );
 		wp_send_json(
 			array(
-				'id' => $id,
+				'id'   => $id,
 				'html' => $this->get_row( $this->items[ $id ]->deactivate_license() ),
 			)
 		);
