@@ -33,6 +33,7 @@ class PLL_Plugins_Compat {
 
 		// Twenty Fourteen
 		add_filter( 'transient_featured_content_ids', array( $this, 'twenty_fourteen_featured_content_ids' ) );
+		add_filter( 'pll_filter_query_excluded_query_vars', array( $this, 'twenty_fourteen_fix_featured_posts' ) );
 		add_filter( 'option_featured-content', array( $this, 'twenty_fourteen_option_featured_content' ) );
 
 		// Duplicate post
@@ -264,6 +265,22 @@ class PLL_Plugins_Compat {
 		set_transient( 'featured_content_ids', $ids );
 
 		return $ids;
+	}
+
+	/**
+	 * Twenty Fourteen
+	 * Allow to filter the featured posts query per language
+	 *
+	 * @since 2.4
+	 *
+	 * @param array $excludes Query vars excluded from the language filter
+	 * @return array
+	 */
+	public function twenty_fourteen_fix_featured_posts( $excludes ) {
+		if ( 'twentyfourteen' === get_template() && PLL() instanceof PLL_Frontend && doing_filter( 'twentyfourteen_get_featured_posts' ) ) {
+			$excludes = array_diff( $excludes, array( 'post__in' ) );
+		}
+		return $excludes;
 	}
 
 	/**
