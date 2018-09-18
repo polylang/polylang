@@ -21,6 +21,7 @@
  * filters_post    => reference to PLL_Admin_Filters_Post object
  * filters_term    => reference to PLL_Admin_filters_Term object
  * nav_menu        => reference to PLL_Admin_Nav_Menu object
+ * sync            => reference to PLL_Admin_Sync object
  * classic_editor  => reference to PLL_Admin_Classic_Editor object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
  *
