@@ -76,6 +76,49 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
+	 * Get post fields to synchornize
+	 *
+	 * @since 2.4
+	 *
+	 * @param object $post Post object
+	 * @return array
+	 */
+	protected function get_fields_to_sync( $post ) {
+		global $wpdb;
+
+		$postarr = parent::get_fields_to_sync( $post );
+
+		// For new drafts, save the date now otherwise it is overriden by WP. Thanks to JoryHogeveen. See #32.
+		if ( in_array( 'post_date', $this->options['sync'] ) && 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) ) {
+			unset( $postarr['post_date'] );
+			unset( $postarr['post_date_gmt'] );
+
+			$original = get_post( (int) $_GET['from_post'] );
+			$wpdb->update(
+				$wpdb->posts,
+				array(
+					'post_date'     => $original->post_date,
+					'post_date_gmt' => $original->post_date_gmt,
+				),
+				array( 'ID' => $post->ID )
+			);
+		}
+
+		if ( isset( $GLOBALS['post_type'] ) ) {
+			$post_type = $GLOBALS['post_type'];
+		} elseif ( isset( $_REQUEST['post_type'] ) ) {
+			$post_type = $_REQUEST['post_type']; // 2nd case for quick edit
+		}
+
+		// Make sure not to impact media translations when creating them at the same time as post
+		if ( in_array( 'post_parent', $this->options['sync'] ) && ( ! isset( $post_type ) || $post_type !== $post->post_type ) ) {
+			unset( $postarr['post_parent'] );
+		}
+
+		return $postarr;
+	}
+
+	/**
 	 * Synchronizes post fields in translations
 	 *
 	 * @since 1.2
@@ -85,64 +128,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @param array  $translations post translations
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
-		global $wpdb;
-
-		// Prepare properties to synchronize
-		foreach ( array( 'comment_status', 'ping_status', 'menu_order' ) as $property ) {
-			if ( in_array( $property, $this->options['sync'] ) ) {
-				$postarr[ $property ] = $post->$property;
-			}
-		}
-
-		if ( in_array( 'post_date', $this->options['sync'] ) ) {
-			// For new drafts, save the date now otherwise it is overriden by WP. Thanks to JoryHogeveen. See #32.
-			if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) ) {
-				$original = get_post( (int) $_GET['from_post'] );
-				$wpdb->update(
-					$wpdb->posts,
-					array(
-						'post_date'     => $original->post_date,
-						'post_date_gmt' => $original->post_date_gmt,
-					),
-					array( 'ID' => $post_id )
-				);
-			} else {
-				$postarr['post_date'] = $post->post_date;
-				$postarr['post_date_gmt'] = $post->post_date_gmt;
-			}
-		}
-
-		foreach ( $translations as $lang => $tr_id ) {
-			if ( ! $tr_id || $tr_id === $post_id ) {
-				continue;
-			}
-
-			// Add comment status, ping status, menu order... to synchronization
-			$tr_arr = empty( $postarr ) ? array() : $postarr;
-
-			if ( isset( $GLOBALS['post_type'] ) ) {
-				$post_type = $GLOBALS['post_type'];
-			} elseif ( isset( $_REQUEST['post_type'] ) ) {
-				$post_type = $_REQUEST['post_type']; // 2nd case for quick edit
-			}
-
-			// Add post parent to synchronization
-			// Make sure not to impact media translations when creating them at the same time as post
-			// Do not udpate the translation parent if the user set a parent with no translation
-			if ( in_array( 'post_parent', $this->options['sync'] ) && isset( $post_type ) && $post_type === $post->post_type ) {
-				$post_parent = ( $parent_id = wp_get_post_parent_id( $post_id ) ) ? $this->model->post->get_translation( $parent_id, $lang ) : 0;
-				if ( ! ( $parent_id && ! $post_parent ) ) {
-					$tr_arr['post_parent'] = $post_parent;
-				}
-			}
-
-			// Update all the row at once
-			// Don't use wp_update_post to avoid infinite loop
-			if ( ! empty( $tr_arr ) ) {
-				$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
-				clean_post_cache( $tr_id );
-			}
-		}
+		parent::pll_save_post( $post_id, $post, $translations );
 
 		// Sticky posts
 		if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {

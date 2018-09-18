@@ -38,18 +38,16 @@ class PLL_Sync {
 	}
 
 	/**
-	 * Synchronizes post fields in translations
+	 * Get post fields to synchornize
 	 *
 	 * @since 2.4
 	 *
-	 * @param int    $post_id      post id
-	 * @param object $post         post object
-	 * @param array  $translations post translations
+	 * @param object $post Post object
+	 * @return array
 	 */
-	public function pll_save_post( $post_id, $post, $translations ) {
-		global $wpdb;
+	protected function get_fields_to_sync( $post ) {
+		$postarr = array();
 
-		// Prepare properties to synchronize
 		foreach ( array( 'comment_status', 'ping_status', 'menu_order' ) as $property ) {
 			if ( in_array( $property, $this->options['sync'] ) ) {
 				$postarr[ $property ] = $post->$property;
@@ -61,26 +59,46 @@ class PLL_Sync {
 			$postarr['post_date_gmt'] = $post->post_date_gmt;
 		}
 
-		foreach ( $translations as $lang => $tr_id ) {
-			if ( ! $tr_id || $tr_id === $post_id ) {
-				continue;
-			}
+		if ( in_array( 'post_parent', $this->options['sync'] ) ) {
+			$postarr['post_parent'] = wp_get_post_parent_id( $post->ID );
+		}
 
-			// Add comment status, ping status, menu order... to synchronization
-			$tr_arr = empty( $postarr ) ? array() : $postarr;
+		return $postarr;
+	}
 
-			// Add post parent to synchronization
-			// Do not udpate the translation parent if the user set a parent with no translation
-			if ( in_array( 'post_parent', $this->options['sync'] ) ) {
-				$post_parent = ( $parent_id = wp_get_post_parent_id( $post_id ) ) ? $this->model->post->get_translation( $parent_id, $lang ) : 0;
-				if ( ! ( $parent_id && ! $post_parent ) ) {
-					$tr_arr['post_parent'] = $post_parent;
+	/**
+	 * Synchronizes post fields in translations
+	 *
+	 * @since 2.4
+	 *
+	 * @param int    $post_id      post id
+	 * @param object $post         post object
+	 * @param array  $translations post translations
+	 */
+	public function pll_save_post( $post_id, $post, $translations ) {
+		global $wpdb;
+
+		$postarr = $this->get_fields_to_sync( $post );
+
+		if ( ! empty( $postarr ) ) {
+			foreach ( $translations as $lang => $tr_id ) {
+				if ( ! $tr_id || $tr_id === $post_id ) {
+					continue;
 				}
-			}
 
-			// Update all the row at once
-			// Don't use wp_update_post to avoid infinite loop
-			if ( ! empty( $tr_arr ) ) {
+				$tr_arr = $postarr;
+				unset( $tr_arr['post_parent'] );
+
+				// Do not udpate the translation parent if the user set a parent with no translation
+				if ( isset( $postarr['post_parent'] ) ) {
+					$post_parent = $postarr['post_parent'] ? $this->model->post->get_translation( $postarr['post_parent'], $lang ) : 0;
+					if ( ! ( $postarr['post_parent'] && ! $post_parent ) ) {
+						$tr_arr['post_parent'] = $post_parent;
+					}
+				}
+
+				// Update all the row at once
+				// Don't use wp_update_post to avoid infinite loop
 				$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
 				clean_post_cache( $tr_id );
 			}
