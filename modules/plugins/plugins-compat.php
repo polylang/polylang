@@ -31,16 +31,12 @@ class PLL_Plugins_Compat {
 		// Aqua Resizer
 		add_filter( 'pll_home_url_black_list', array( $this, 'aq_home_url_black_list' ) );
 
-		// Twenty Fourteen
-		add_filter( 'transient_featured_content_ids', array( $this, 'twenty_fourteen_featured_content_ids' ) );
-		add_filter( 'pll_filter_query_excluded_query_vars', array( $this, 'twenty_fourteen_fix_featured_posts' ) );
-		add_filter( 'option_featured-content', array( $this, 'twenty_fourteen_option_featured_content' ) );
-
 		// Duplicate post
 		add_filter( 'option_duplicate_post_taxonomies_blacklist', array( $this, 'duplicate_post_taxonomies_blacklist' ) );
 
 		// Jetpack
-		$this->jetpack = new PLL_Jetpack(); // Must be loaded before the plugin is active
+		$this->jetpack          = new PLL_Jetpack(); // Must be loaded before the plugin is active
+		$this->featured_content = new PLL_Featured_Content();
 
 		// WP Sweep
 		add_filter( 'wp_sweep_excluded_taxonomies', array( $this, 'wp_sweep_excluded_taxonomies' ) );
@@ -215,91 +211,6 @@ class PLL_Plugins_Compat {
 		if ( isset( $custom_field_template, $_REQUEST['from_post'], $_REQUEST['new_lang'] ) && ! empty( $post ) ) {
 			$_REQUEST['post'] = $post->ID;
 		}
-	}
-
-	/**
-	 * Twenty Fourteen
-	 * Rewrites the function Featured_Content::get_featured_post_ids()
-	 *
-	 * @since 1.4
-	 *
-	 * @param array $featured_ids featured posts ids
-	 * @return array modified featured posts ids ( include all languages )
-	 */
-	public function twenty_fourteen_featured_content_ids( $featured_ids ) {
-		if ( 'twentyfourteen' != get_template() || ! did_action( 'pll_init' ) || false !== $featured_ids ) {
-			return $featured_ids;
-		}
-
-		$settings = Featured_Content::get_setting();
-
-		if ( ! $term = wpcom_vip_get_term_by( 'name', $settings['tag-name'], 'post_tag' ) ) {
-			return $featured_ids;
-		}
-
-		// Get featured tag translations
-		$tags = PLL()->model->term->get_translations( $term->term_id );
-		$ids = array();
-
-		// Query for featured posts in all languages
-		// One query per language to get the correct number of posts per language
-		foreach ( $tags as $tag ) {
-			$_ids = get_posts(
-				array(
-					'lang'        => 0, // avoid language filters
-					'fields'      => 'ids',
-					'numberposts' => Featured_Content::$max_posts,
-					'tax_query'   => array(
-						array(
-							'taxonomy' => 'post_tag',
-							'terms'    => (int) $tag,
-						),
-					),
-				)
-			);
-
-			$ids = array_merge( $ids, $_ids );
-		}
-
-		$ids = array_map( 'absint', $ids );
-		set_transient( 'featured_content_ids', $ids );
-
-		return $ids;
-	}
-
-	/**
-	 * Twenty Fourteen
-	 * Allow to filter the featured posts query per language
-	 *
-	 * @since 2.4
-	 *
-	 * @param array $excludes Query vars excluded from the language filter
-	 * @return array
-	 */
-	public function twenty_fourteen_fix_featured_posts( $excludes ) {
-		if ( 'twentyfourteen' === get_template() && PLL() instanceof PLL_Frontend && doing_filter( 'twentyfourteen_get_featured_posts' ) ) {
-			$excludes = array_diff( $excludes, array( 'post__in' ) );
-		}
-		return $excludes;
-	}
-
-	/**
-	 * Twenty Fourteen
-	 * Translates the featured tag id in featured content settings
-	 * Mainly to allow hiding it when requested in featured content options
-	 * Acts only on frontend
-	 *
-	 * @since 1.4
-	 *
-	 * @param array $settings featured content settings
-	 * @return array modified $settings
-	 */
-	public function twenty_fourteen_option_featured_content( $settings ) {
-		if ( 'twentyfourteen' == get_template() && PLL() instanceof PLL_Frontend && $settings['tag-id'] && $tr = pll_get_term( $settings['tag-id'] ) ) {
-			$settings['tag-id'] = $tr;
-		}
-
-		return $settings;
 	}
 
 	/**

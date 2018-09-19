@@ -23,10 +23,6 @@ if ( file_exists( $_tests_dir . '../wordpress/wp-content/themes/twentyfourteen/s
 		function setUp() {
 			parent::setUp();
 
-			// we need to add these filters manually as the constructor of PLL_Plugins_Compat is called before activation of Twenty Fourteen
-			add_filter( 'transient_featured_content_ids', array( PLL_Plugins_Compat::instance(), 'twenty_fourteen_featured_content_ids' ) );
-			add_filter( 'option_featured-content', array( PLL_Plugins_Compat::instance(), 'twenty_fourteen_option_featured_content' ) );
-
 			require_once get_template_directory() . '/functions.php';
 			twentyfourteen_setup();
 			Featured_Content::init();
