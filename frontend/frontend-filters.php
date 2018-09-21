@@ -6,6 +6,7 @@
  * @since 1.2
  */
 class PLL_Frontend_Filters extends PLL_Filters {
+	public $cache;
 
 	/**
 	 * Constructor: setups filters and actions
@@ -16,6 +17,8 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
+
+		$this->cache = new PLL_Cache();
 
 		// Filters the WordPress locale
 		add_filter( 'locale', array( $this, 'get_locale' ) );
@@ -136,7 +139,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 *
 	 * @since 0.3
 	 *
-	 * @param array  $instance widget settings
+	 * @param array  $instance Widget settings
 	 * @param object $widget   WP_Widget object
 	 * @return bool|array false if we hide the widget, unmodified $instance otherwise
 	 */
@@ -149,6 +152,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * Needed to allow is_active_sidebar() to return false if all widgets are not for the current language. See #54
 	 *
 	 * @since 2.1
+	 * @since 2.4 The result is cached as the function can be very expensive in case there are a lot of widgets
 	 *
 	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
 	 * @return array
@@ -156,8 +160,14 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	public function sidebars_widgets( $sidebars_widgets ) {
 		global $wp_registered_widgets;
 
+		$_sidebars_widgets = $this->cache->get( 'sidebars_widgets' );
+
+		if ( false !== $_sidebars_widgets ) {
+			return $_sidebars_widgets;
+		}
+
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
-			if ( 'wp_inactive_widgets' == $sidebar || empty( $widgets ) ) {
+			if ( 'wp_inactive_widgets' === $sidebar || empty( $widgets ) ) {
 				continue;
 			}
 
@@ -169,7 +179,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				}
 
 				$widget_settings = $wp_registered_widgets[ $widget ]['callback'][0]->get_settings();
-				$number = $wp_registered_widgets[ $widget ]['params'][0]['number'];
+				$number          = $wp_registered_widgets[ $widget ]['params'][0]['number'];
 
 				// Remove the widget if not visible in the current language
 				if ( ! empty( $widget_settings[ $number ]['pll_lang'] ) && $widget_settings[ $number ]['pll_lang'] !== $this->curlang->slug ) {
@@ -177,6 +187,8 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				}
 			}
 		}
+
+		$this->cache->set( 'sidebars_widgets', $sidebars_widgets );
 
 		return $sidebars_widgets;
 	}

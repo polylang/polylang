@@ -175,6 +175,10 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		self::$polylang->filters = new PLL_Frontend_Filters( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+
+		self::$polylang->filters->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		self::$polylang->filters->cache->method( 'get' )->willReturn( false );
+
 		$sidebars = wp_get_sidebars_widgets();
 		$this->assertTrue( in_array( 'search-2', $sidebars['sidebar-1'] ) );
 
