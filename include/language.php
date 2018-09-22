@@ -99,21 +99,67 @@ class PLL_Language {
 
 		// Polylang builtin flags
 		if ( ! empty( $this->flag_code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $this->flag_code . '.png' ) ) ) {
-			$flags['flag']['url'] = esc_url_raw( plugins_url( $file, POLYLANG_FILE ) );
+			$flags['flag']['url'] = $_url = plugins_url( $file, POLYLANG_FILE );
+		}
 
-			// If base64 encoded flags are preferred
-			if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
+		/**
+		 * Filter flag informations
+		 * 'url'    => Flag url
+		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded
+		 * 'width'  => Optional, flag width in pixels
+		 * 'height' => Optional, flag height in pixels
+		 *
+		 * @since 2.4
+		 *
+		 * @param array  $flag Information about the flag
+		 * @param string $code Flag code
+		 */
+		$flags['flag'] = apply_filters( 'pll_flag', $flags['flag'], $this->flag_code );
+
+		if ( empty( $flags['flag']['src'] ) ) {
+			// If using predefined flags and base64 encoded flags are preferred
+			if ( $flags['flag']['url'] === $_url && ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) ) {
 				$flags['flag']['src'] = 'data:image/png;base64,' . base64_encode( file_get_contents( POLYLANG_DIR . $file ) );
 			} else {
-				$flags['flag']['src'] = esc_url( plugins_url( $file, POLYLANG_FILE ) );
+				$flags['flag']['src'] = esc_url( $flags['flag']['url'] );
 			}
 		}
 
+		$flags['flag']['url'] = esc_url_raw( $flags['flag']['url'] );
+
 		// Custom flags ?
-		if ( file_exists( PLL_LOCAL_DIR . ( $file = '/' . $this->locale . '.png' ) ) || file_exists( PLL_LOCAL_DIR . ( $file = '/' . $this->locale . '.jpg' ) ) ) {
-			$url = content_url( '/polylang' . $file );
-			$flags['custom_flag']['url'] = esc_url_raw( $url );
-			$flags['custom_flag']['src'] = esc_url( $url );
+		$directories = array(
+			PLL_LOCAL_DIR,
+			get_stylesheet_directory() . '/polylang',
+			get_template_directory() . '/polylang',
+		);
+
+		if ( $files = glob( '{' . implode( ',', $directories ) . '}/' . $this->locale . '.{png,jpg,svg}', GLOB_BRACE ) ) {
+			$flags['custom_flag']['url'] = site_url( '/' . str_replace( ABSPATH, '', reset( $files ) ) );
+		}
+
+		/**
+		 * Filter the custom flag informations
+		 * 'url'    => Flag url
+		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded
+		 * 'width'  => Optional, flag width in pixels
+		 * 'height' => Optional, flag height in pixels
+		 *
+		 * @since 2.4
+		 *
+		 * @param array  $flag Information about the custom flag
+		 * @param string $code Flag code
+		 */
+		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $this->flag_code );
+
+		if ( ! empty( $flags['custom_flag']['url'] ) ) {
+			if ( empty( $flags['custom_flag']['src'] ) ) {
+				$flags['custom_flag']['src'] = esc_url( $flags['custom_flag']['url'] );
+			}
+
+			$flags['custom_flag']['url'] = esc_url_raw( $flags['custom_flag']['url'] );
+		} else {
+			unset( $flags['custom_flag'] );
 		}
 
 		/**
@@ -142,10 +188,12 @@ class PLL_Language {
 			$this->{$key} = apply_filters(
 				'pll_get_flag',
 				empty( $flag['src'] ) ? '' : sprintf(
-					'<img src="%s" title="%s" alt="%s" />',
+					'<img src="%s" title="%s" alt="%s"%s%s />',
 					$flag['src'],
 					esc_attr( $title ),
-					esc_attr( $this->name )
+					esc_attr( $this->name ),
+					empty( $flag['width'] ) ? '' : sprintf( ' width="%s"', (int) $flag['width'] ),
+					empty( $flag['height'] ) ? '' : sprintf( ' height="%s"', (int) $flag['height'] )
 				),
 				$this->slug
 			);

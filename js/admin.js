@@ -24,14 +24,15 @@ jQuery( document ).ready(function( $ ) {
 	// extends selectmenu to add flags in menu items
 	$.widget( "custom.iconselectmenu", $.ui.selectmenu, {
 		_renderItem: function( ul, item ) {
-			var li = $( "<li>", { text: item.label } );
+			var li  = $( "<li>", { text: item.label } );
+			var el  = $( item.element );
+			var url = el.data( "url" );
 
-			if ( item.value ) {
-				$( "<img>", {
-					src: pll_flag_base_url + item.value + '.png',
-					"class": "ui-icon"
-				}).appendTo( li );
-			}
+			if ( url ) {
+				var w = el.data( "width" );
+				var h = el.data( "height" );
+				$( "<img class='ui-icon' />" ).prop( "src", url ).prop( "width", w ).prop( "height", h ).appendTo( li );
+ 			}
 
 			return li.appendTo( ul );
 		}
@@ -39,11 +40,14 @@ jQuery( document ).ready(function( $ ) {
 
 	// allows to display the flag for the selected menu item
 	function add_icon( event, ui ) {
-		var value = $( this ).val();
-		if ( value ) {
+		var sel = $( this ).find( ":selected" );
+		var url = sel.data( "url" );
+
+		if ( url ) {
 			var txt = $( this ).iconselectmenu( "widget" ).children( ":last" );
-			var img = $( '<img class="ui-icon" >' ).appendTo( txt );
-			img.attr( "src", pll_flag_base_url + value + '.png' );
+			var w = sel.data( "width" );
+			var h = sel.data( "height" );
+			$( "<img class='ui-icon' />" ).prop( "src", url ).prop( "width", w ).prop( "height", h ).appendTo( txt );
 		}
 	}
 

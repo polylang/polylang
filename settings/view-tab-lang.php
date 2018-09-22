@@ -125,9 +125,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<?php
 							include PLL_SETTINGS_INC . '/flags.php';
 							foreach ( $flags as $code => $label ) {
+								/** This filter is documented in include/language.php */
+								$flag = apply_filters( 'pll_flag', array( 'url' => plugins_url( "/flags/{$code}.png", POLYLANG_FILE ) ), $code );
+
 								printf(
-									'<option value="%1$s"%2$s>%3$s</option>' . "\n",
+									'<option value="%s" data-url="%s"%s%s%s>%s</option>' . "\n",
 									esc_attr( $code ),
+									esc_url( $flag['url'] ),
+									empty( $flag['width'] ) ? '' : sprintf( ' data-width="%s"', (int) $flag['width'] ),
+									empty( $flag['height'] ) ? '' : sprintf( ' data-height="%s"', (int) $flag['height'] ),
 									isset( $edit_lang->flag_code ) && $edit_lang->flag_code == $code ? ' selected="selected"' : '',
 									esc_html( $label )
 								);
