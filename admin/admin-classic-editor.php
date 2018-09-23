@@ -117,6 +117,11 @@ class PLL_Admin_Classic_Editor {
 
 		$this->model->post->set_language( $post_ID, $lang ); // Save language, useful to set the language when uploading media from post
 
+		// We also need to save the translations to match the language change
+		$translations = $this->model->post->get_translations( $post_ID );
+		$translations = array_diff( $translations, array( $post_ID ) );
+		$this->model->post->save_translations( $post_ID, $translations );
+
 		ob_start();
 		if ( $lang ) {
 			include PLL_ADMIN_INC . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
