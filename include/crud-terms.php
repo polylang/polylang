@@ -143,7 +143,7 @@ class PLL_CRUD_Terms {
 		}
 
 		if ( isset( $this->tax_query_lang ) ) {
-			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
+			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $this->curlang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
 		}
 
 		if ( $lang = $this->get_queried_language( $taxonomies, $args ) ) {
