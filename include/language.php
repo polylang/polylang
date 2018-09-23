@@ -134,8 +134,11 @@ class PLL_Language {
 			get_template_directory() . '/polylang',
 		);
 
-		if ( $files = glob( '{' . implode( ',', $directories ) . '}/' . $this->locale . '.{png,jpg,svg}', GLOB_BRACE ) ) {
-			$flags['custom_flag']['url'] = site_url( '/' . str_replace( ABSPATH, '', reset( $files ) ) );
+		foreach ( $directories as $dir ) {
+			if ( file_exists( $file = "{$dir}/{$this->locale}.png" ) || file_exists( $file = "{$dir}/{$this->locale}.jpg" ) || file_exists( $file = "{$dir}/{$this->locale}.svg" ) ) {
+				$flags['custom_flag']['url'] = site_url( '/' . str_replace( ABSPATH, '', $file ) );
+				break;
+			}
 		}
 
 		/**
