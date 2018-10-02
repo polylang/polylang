@@ -121,7 +121,7 @@ class PLL_Language {
 			if ( $flags['flag']['url'] === $_url && ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) ) {
 				$flags['flag']['src'] = 'data:image/png;base64,' . base64_encode( file_get_contents( POLYLANG_DIR . $file ) );
 			} else {
-				$flags['flag']['src'] = esc_url( $flags['flag']['url'] );
+				$flags['flag']['src'] = esc_url( set_url_scheme( $flags['flag']['url'], 'relative' ) );
 			}
 		}
 
@@ -157,7 +157,7 @@ class PLL_Language {
 
 		if ( ! empty( $flags['custom_flag']['url'] ) ) {
 			if ( empty( $flags['custom_flag']['src'] ) ) {
-				$flags['custom_flag']['src'] = esc_url( $flags['custom_flag']['url'] );
+				$flags['custom_flag']['src'] = esc_url( set_url_scheme( $flags['custom_flag']['url'], 'relative' ) );
 			}
 
 			$flags['custom_flag']['url'] = esc_url_raw( $flags['custom_flag']['url'] );
@@ -218,13 +218,7 @@ class PLL_Language {
 		}
 
 		// Set url scheme, also for default flags
-		if ( is_ssl() ) {
-			$this->flag = str_replace( 'http://', 'https://', $this->flag );
-			$this->flag_url = str_replace( 'http://', 'https://', $this->flag_url );
-		} else {
-			$this->flag = str_replace( 'https://', 'http://', $this->flag );
-			$this->flag_url = str_replace( 'https://', 'http://', $this->flag_url );
-		}
+		$this->flag_url = set_url_scheme( $this->flag_url );
 	}
 
 	/**
@@ -257,15 +251,8 @@ class PLL_Language {
 	 * @since 1.6.4
 	 */
 	public function set_home_url_scheme() {
-		if ( is_ssl() ) {
-			$this->home_url = str_replace( 'http://', 'https://', $this->home_url );
-			$this->search_url = str_replace( 'http://', 'https://', $this->search_url );
-		}
-
-		else {
-			$this->home_url = str_replace( 'https://', 'http://', $this->home_url );
-			$this->search_url = str_replace( 'https://', 'http://', $this->search_url );
-		}
+		$this->home_url = set_url_scheme( $this->home_url );
+		$this->search_url = set_url_scheme( $this->search_url );
 	}
 
 	/**
