@@ -123,7 +123,7 @@ function pll_register_string( $name, $string, $context = 'polylang', $multiline 
  * @return string the string translation in the current language
  */
 function pll__( $string ) {
-	return is_scalar( $string ) ? __( $string, 'pll_string' ) : $string;
+	return is_scalar( $string ) ? __( $string, 'pll_string' ) : $string; // PHPCS:ignore WordPress.WP.I18n.NonSingularStringLiteralText
 }
 
 /**
@@ -374,6 +374,6 @@ function pll_count_posts( $lang, $args = array() ) {
  *
  * @since 1.8
  */
-function PLL() {
+function PLL() { // PHPCS:ignore WordPress.NamingConventions.ValidFunctionName
 	return $GLOBALS['polylang'];
 }

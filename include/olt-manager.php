@@ -216,9 +216,11 @@ class PLL_OLT_Manager {
 		foreach ( $type->labels as $key => $label ) {
 			if ( is_string( $label ) && isset( $this->labels[ $label ] ) ) {
 				if ( empty( $translated[ $label ] ) ) {
+					// PHPCS:disable WordPress.WP.I18n
 					$type->labels->$key = $translated[ $label ] = isset( $this->labels[ $label ]['context'] ) ?
 						_x( $label, $this->labels[ $label ]['context'], $this->labels[ $label ]['domain'] ) :
 						__( $label, $this->labels[ $label ]['domain'] );
+					// PHPCS:enable
 				}
 				else {
 					$type->labels->$key = $translated[ $label ];

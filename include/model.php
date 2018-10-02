@@ -421,6 +421,7 @@ class PLL_Model {
 			$where .= $wpdb->prepare( ' AND tt.parent = %d', $parent );
 		}
 
+		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 		return $wpdb->get_var( $select . $join . $where );
 	}
 
@@ -508,6 +509,7 @@ class PLL_Model {
 				}
 			}
 
+			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$res = $wpdb->get_results( $select . $join . $where . $groupby, ARRAY_A );
 			foreach ( (array) $res as $row ) {
 				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
