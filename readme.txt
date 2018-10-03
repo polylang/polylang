@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 2.3.10
+Stable tag: 2.3.11
 License: GPLv2 or later
 
 Making WordPress multilingual
