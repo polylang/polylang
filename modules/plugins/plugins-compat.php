@@ -332,11 +332,11 @@ class PLL_Plugins_Compat {
 	 * @param array $arr
 	 * @return array
 	 */
-	public function events_manager_langs($arr) {
+	public function events_manager_langs( $arr ) {
 		global $polylang;
 		$langs = array();
-		foreach ($polylang->model->get_languages_list() as $id => $lang) {
-			$langs[$lang->locale] = $lang->name;
+		foreach ( $polylang->model->get_languages_list() as $id => $lang ) {
+			$langs[ $lang->locale ] = $lang->name;
 		}
 		return $langs;
 	}
@@ -351,7 +351,7 @@ class PLL_Plugins_Compat {
 	 * @param string $val
 	 * @return string
 	 */
-	public function events_manager_wplang($val) {
-            return get_option('WPLANG');
+	public function events_manager_wplang( $val ) {
+            return get_option( 'WPLANG' );
 	}
 }
