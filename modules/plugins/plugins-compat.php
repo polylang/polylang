@@ -323,8 +323,8 @@ class PLL_Plugins_Compat {
 
 	/**
 	 * Events Manager
-	 * Returns an array containing the configured locales and language names.  
-	 * If there is more than one language configured, Events Manager will activate 
+	 * Returns an array containing the configured locales and language names.
+	 * If there is more than one language configured, Events Manager will activate
 	 * its multilingual support.
 	 *
 	 * @since 2.3.12
@@ -343,7 +343,7 @@ class PLL_Plugins_Compat {
 
 	/**
 	 * Events Manager
-	 * Return the site's default language, so that Events Manager will use localized options when 
+	 * Return the site's default language, so that Events Manager will use localized options when
 	 * necessary.
 	 *
 	 * @since 2.3.12
@@ -352,6 +352,6 @@ class PLL_Plugins_Compat {
 	 * @return string
 	 */
 	public function events_manager_wplang( $val ) {
-            return get_option( 'WPLANG' );
+		return get_option( 'WPLANG' );
 	}
 }
