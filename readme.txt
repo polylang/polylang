@@ -76,6 +76,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.3.11 (2018-10-03) =
+
+* Pro: Add action 'pll_created_sync_post'
+* Pro: Fix language and translations not included for tags in the REST API
+* Fix Assigning a parent category breaking the hierarchy of translated category
+
 = 2.3.10 (2018-08-16) =
 
 * Fix Lingotek notice not dismissable
