@@ -166,14 +166,7 @@ class PLL_CRUD_Terms {
 	 */
 	public function terms_clauses( $clauses, $taxonomies, $args ) {
 		$lang = $this->get_queried_language( $taxonomies, $args );
-
-		// Adds our clauses to filter by current language
-		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
-			$clauses['join']  .= $this->model->term->join_clause();
-			$clauses['where'] .= $this->model->term->where_clause( $lang );
-		}
-
-		return $clauses;
+		return $this->model->terms_clauses( $clauses, $lang );
 	}
 
 	/**
