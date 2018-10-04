@@ -271,10 +271,19 @@ class PLL_WPSEO {
 
 		// WPSEO already deals with the locale
 		if ( did_action( 'pll_init' ) && method_exists( $wpseo_og, 'og_tag' ) ) {
+			$alternates = array();
+
 			foreach ( PLL()->model->get_languages_list() as $language ) {
 				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && isset( $language->facebook ) ) {
-					$wpseo_og->og_tag( 'og:locale:alternate', $language->facebook );
+					$alternates[] = $language->facebook;
 				}
+			}
+
+			// There is a risk that 2 languages have the same Facebook locale. So let's make sure to output each locale only once.
+			$alternates = array_unique( $alternates );
+
+			foreach ( $alternates as $lang ) {
+				$wpseo_og->og_tag( 'og:locale:alternate', $lang );
 			}
 		}
 	}
