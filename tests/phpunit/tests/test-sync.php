@@ -642,4 +642,37 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( array( $en ), wp_get_post_categories( $post_en ) );
 	}
+
+	// Bug fixed in 2.3.11
+	function test_category_hierarchy() {
+		// Categories
+		$child_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$child_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		$parent_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		wp_update_term( $child_en, 'category', array( 'parent' => $parent_en ) );
+
+		$parent_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_update_term( $child_fr, 'category', array( 'parent' => $parent_fr ) );
+
+		$term = get_term( $child_fr );
+		$this->assertEquals( $parent_fr, $term->parent );
+
+		// The bug fixed
+		$term = get_term( $child_en );
+		$this->assertEquals( $parent_en, $term->parent );
+	}
 }
