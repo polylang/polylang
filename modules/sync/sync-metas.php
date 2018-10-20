@@ -144,7 +144,7 @@ abstract class PLL_Sync_Metas {
 			$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
 
 			foreach ( $tr_ids as $lang => $tr_id ) {
-				if ( $tr_id !== $id ) {
+				if ( $tr_id != $id ) {
 					$to_copy = $this->get_metas_to_copy( $id, $tr_id, $lang, true );
 					if ( in_array( $meta_key, $to_copy ) ) {
 						$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
@@ -252,7 +252,7 @@ abstract class PLL_Sync_Metas {
 			$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
 
 			foreach ( $tr_ids as $lang => $tr_id ) {
-				if ( $tr_id !== $id ) {
+				if ( $tr_id != $id ) {
 					if ( in_array( $key, $this->to_copy[ $id ][ $tr_id ] ) ) {
 						if ( '' !== $value && null !== $value && false !== $value ) { // Same test as WP
 							$value = $this->maybe_translate_value( $value, $key, $id, $tr_id, $lang );
@@ -332,7 +332,7 @@ abstract class PLL_Sync_Metas {
 		$src_lang = array_search( $object_id, $translations );
 
 		foreach ( $translations as $tr_lang => $tr_id ) {
-			if ( $tr_id !== $object_id ) {
+			if ( $tr_id != $object_id ) {
 				$this->copy( $object_id, $tr_id, $tr_lang, true );
 			}
 		}
