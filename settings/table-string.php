@@ -151,6 +151,29 @@ class PLL_Table_String extends WP_List_Table {
 	}
 
 	/**
+	 * Search for a string in translations. Case insensitive.
+	 *
+	 * @since 2.6
+	 *
+	 * @param array  $mos An array of PLL_MO objects
+	 * @param string $s   Searched string
+	 * @return array Found strings
+	 */
+	protected function search_in_translations( $mos, $s ) {
+		$founds = array();
+
+		foreach ( $mos as $mo ) {
+			foreach ( wp_list_pluck( $mo->entries, 'translations' ) as $string => $translation ) {
+				if ( false !== stripos( $translation[0], $s ) ) {
+					$founds[] = $string;
+				}
+			}
+		}
+
+		return array_unique( $founds );
+	}
+
+	/**
 	 * Sort items
 	 *
 	 * @since 0.6
@@ -170,37 +193,48 @@ class PLL_Table_String extends WP_List_Table {
 	 * @since 0.6
 	 */
 	public function prepare_items() {
-		$data = $this->strings;
-
-		// Filter for search string
-		$s = empty( $_GET['s'] ) ? '' : wp_unslash( $_GET['s'] );
-		foreach ( $data as $key => $row ) {
-			if ( ( -1 !== $this->selected_group && $row['context'] !== $this->selected_group ) || ( ! empty( $s ) && stripos( $row['name'], $s ) === false && stripos( $row['string'], $s ) === false ) ) {
-				unset( $data[ $key ] );
-			}
+		// Is admin language filter active?
+		if ( $lg = get_user_meta( get_current_user_id(), 'pll_filter_content', true ) ) {
+			$languages = wp_list_filter( $this->languages, array( 'slug' => $lg ) );
+		} else {
+			$languages = $this->languages;
 		}
 
 		// Load translations
-		foreach ( $this->languages as $language ) {
-			// Filters by language if requested
-			if ( ( $lg = get_user_meta( get_current_user_id(), 'pll_filter_content', true ) ) && $language->slug !== $lg ) {
-				continue;
-			}
+		foreach ( $languages as $language ) {
+			$mo[ $language->slug ] = new PLL_MO();
+			$mo[ $language->slug ]->import_from_db( $language );
+		}
 
-			$mo = new PLL_MO();
-			$mo->import_from_db( $language );
+		$data = $this->strings;
+
+		// Filter by selected group
+		if ( -1 !== $this->selected_group ) {
+			$data = wp_list_filter( $data, array( 'context' => $this->selected_group ) );
+		}
+
+		// Filter by searched string
+		$s = empty( $_GET['s'] ) ? '' : wp_unslash( $_GET['s'] );
+
+		if ( ! empty( $s ) ) {
+			// Search in translations
+			$in_translations = $this->search_in_translations( $mo, $s );
+
 			foreach ( $data as $key => $row ) {
-				$data[ $key ]['translations'][ $language->slug ] = $mo->translate( $row['string'] );
-				$data[ $key ]['row'] = $key; // Store the row number for convenience
+				if ( stripos( $row['name'], $s ) === false && stripos( $row['string'], $s ) === false && ! in_array( $row['string'], $in_translations ) ) {
+					unset( $data[ $key ] );
+				}
 			}
 		}
 
-		$per_page = $this->get_items_per_page( 'pll_strings_per_page' );
-		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
-
+		// Sorting
 		if ( ! empty( $_GET['orderby'] ) ) { // No sort by default
 			usort( $data, array( $this, 'usort_reorder' ) );
 		}
+
+		// Paging
+		$per_page = $this->get_items_per_page( 'pll_strings_per_page' );
+		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
 		$total_items = count( $data );
 		$this->items = array_slice( $data, ( $this->get_pagenum() - 1 ) * $per_page, $per_page );
@@ -212,6 +246,15 @@ class PLL_Table_String extends WP_List_Table {
 				'total_pages' => ceil( $total_items / $per_page ),
 			)
 		);
+
+		// Translate strings
+		// Kept for the end as it is a slow process
+		foreach ( $languages as $language ) {
+			foreach ( $this->items as $key => $row ) {
+				$this->items[ $key ]['translations'][ $language->slug ] = $mo[ $language->slug ]->translate( $row['string'] );
+				$this->items[ $key ]['row'] = $key; // Store the row number for convenience
+			}
+		}
 	}
 
 	/**
