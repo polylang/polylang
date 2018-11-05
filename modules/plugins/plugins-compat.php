@@ -48,9 +48,15 @@ class PLL_Plugins_Compat {
 		add_filter( 'get_terms_args', array( $this, 'no_category_base_get_terms_args' ), 5 ); // Before adding cache domain
 
 		// WordPress MU Domain Mapping
-		if ( function_exists( 'redirect_to_mapped_domain' ) && ! get_site_option( 'dm_no_primary_domain' ) ) {
-			remove_action( 'template_redirect', 'redirect_to_mapped_domain' );
-			add_action( 'template_redirect', array( $this, 'dm_redirect_to_mapped_domain' ) );
+		if ( function_exists( 'redirect_to_mapped_domain' ) ) {
+			if ( ! defined( 'PLL_CACHE_HOME_URL' ) && ( $options = get_option( 'polylang' ) ) && $options['force_lang'] < 2 ) {
+				define( 'PLL_CACHE_HOME_URL', false );
+			}
+
+			if ( ! get_site_option( 'dm_no_primary_domain' ) ) {
+				remove_action( 'template_redirect', 'redirect_to_mapped_domain' );
+				add_action( 'template_redirect', array( $this, 'dm_redirect_to_mapped_domain' ) );
+			}
 		}
 	}
 
