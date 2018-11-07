@@ -59,6 +59,11 @@ class PLL_Admin_Sync extends PLL_Sync {
 			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
 			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
 
+			if ( is_sticky( $from_post_id ) ) {
+				stick_post( $post->ID );
+			}
+
+			// Classic Editor
 			foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
 				$post->$property = $from_post->$property;
 			}
@@ -69,10 +74,35 @@ class PLL_Admin_Sync extends PLL_Sync {
 				$post->post_date_gmt = $from_post->post_date_gmt;
 			}
 
-			if ( is_sticky( $from_post_id ) ) {
-				stick_post( $post->ID );
-			}
+			// Blocks editor
+			add_filter( "rest_prepare_{$post_type}", array( $this, 'block_editor_copy_post_fields' ), 10, 2 );
 		}
+	}
+
+	/**
+	 * Copy menu order, comment, ping status and optionally the date
+	 * when creating a new tanslation with the block editor
+	 *
+	 * @since 2.4
+	 *
+	 * @param object $response The response object.
+	 * @param object $post     Post object.
+	 */
+	public function block_editor_copy_post_fields( $response, $post ) {
+		$from_post_id = (int) $_GET['from_post'];
+		$from_post = get_post( $from_post_id );
+
+		foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
+			$response->data[ $property ] = $from_post->$property;
+		}
+
+		// Copy the date only if the synchronization is activated
+		if ( in_array( 'post_date', PLL()->options['sync'] ) ) {
+			$response->data['date'] = $from_post->post_date;
+			$response->data['date_gmt'] = $from_post->post_date_gmt;
+		}
+
+		return $response;
 	}
 
 	/**
