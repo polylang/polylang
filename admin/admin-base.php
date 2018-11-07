@@ -126,6 +126,11 @@ class PLL_Admin_Base extends PLL_Base {
 			'widgets'        => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
+		// Block editor in WP 5.0+
+		if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() ) {
+			$scripts['block-editor'] = array( array( 'post' ), array( 'wp-api-fetch' ), 0, 1 );
+		}
+
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
 				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/' . $script . $suffix . '.js', POLYLANG_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
