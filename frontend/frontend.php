@@ -52,6 +52,28 @@ class PLL_Frontend extends PLL_Base {
 	}
 
 	/**
+	 * Is the current request a REST API request?
+	 * Inspired by WP::parse_request()
+	 * Needed because at this point, the constant REST_REQUEST is not defined yet
+	 *
+	 * @since 2.4.1
+	 *
+	 * @return bool
+	 */
+	public function is_rest_request() {
+		$home_path       = trim( parse_url( home_url(), PHP_URL_PATH ), '/' );
+		$home_path_regex = sprintf( '|^%s|i', preg_quote( $home_path, '|' ) );
+
+		$req_uri = trim( $_SERVER['REQUEST_URI'], '/' );
+		$req_uri = preg_replace( $home_path_regex, '', $req_uri );
+		$req_uri = trim( $req_uri, '/' );
+		$req_uri = str_replace( 'index.php', '', $req_uri );
+		$req_uri = trim( $req_uri, '/' );
+
+		return 0 === strpos( $req_uri, rest_get_url_prefix() . '/' );
+	}
+
+	/**
 	 * Setups the language chooser based on options
 	 *
 	 * @since 1.2
@@ -60,7 +82,7 @@ class PLL_Frontend extends PLL_Base {
 		$this->links = new PLL_Frontend_Links( $this );
 
 		// Don't set any language for REST requests when Polylang Pro is not active
-		if ( ! class_exists( 'PLL_REST_Translated_Object' ) && 0 === strpos( str_replace( 'index.php', '', $_SERVER['REQUEST_URI'] ), '/' . rest_get_url_prefix() . '/' ) ) {
+		if ( ! class_exists( 'PLL_REST_Translated_Object' ) && $this->is_rest_request() ) {
 			/** This action is documented in include/class-polylang.php */
 			do_action( 'pll_no_language_defined' );
 		} else {
