@@ -22,6 +22,7 @@
  * filters_term    => reference to PLL_Admin_filters_Term object
  * nav_menu        => reference to PLL_Admin_Nav_Menu object
  * sync            => reference to PLL_Admin_Sync object
+ * block_editor    => reference to PLL_Admin_Block_Editor object
  * classic_editor  => reference to PLL_Admin_Classic_Editor object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
  *
@@ -96,7 +97,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 */
 	public function add_filters() {
 		// All these are separated just for convenience and maintainability
-		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Sync', 'Classic_Editor' );
+		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Sync', 'Classic_Editor', 'Block_Editor' );
 
 		// Don't load media filters if option is disabled or if user has no right
 		if ( $this->options['media_support'] && ( $obj = get_post_type_object( 'attachment' ) ) && ( current_user_can( $obj->cap->edit_posts ) || current_user_can( $obj->cap->create_posts ) ) ) {
