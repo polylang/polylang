@@ -1470,4 +1470,3 @@ This version does include important changes in database. More than ever, make a 
 
 = 0.1 (2011-09-22) =
 * Initial release
-
