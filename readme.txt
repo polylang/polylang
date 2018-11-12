@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 4.9
-Stable tag: 2.3.11
+Stable tag: 2.4
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,7 +76,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.4 =
+= 2.4 (2018-11-12) =
 
 * Minimum WordPress version is now 4.7
 * Pro: Add the possibility to bulk duplicate or bulk synchronize posts.
@@ -84,6 +84,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Pro: Add synchronized posts to the REST API
 * Pro: Fix variations messed when changing WooCommerce attributes slugs
 * Pro: Fix incorrect language for ajax requests made on front by The Events Calendar
+* Pro: Fix term not duplicated correctly when the language is set from the content
 * Refactor the core to activate on front and for the REST api actions that were previously available only in the backend (language checks, synchronizations...).
 * Add flags to widgets displayed in only one language (Props Jory Hogeveen) #257
 * Honor 'pll_the_language_args' for all options in menus #237
@@ -92,6 +93,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Custom flags can now use SVG
 * Add compatibility with Jetpack featured content module
 * Fix Twenty Fourteen featured posts possibly not filtered per language
+* Fix home url not working with WordPress MU Domain mapping
 * Fix Assigning a parent category breaking the hierarchy of translated category
 * Fix: Accept 0,1 and 1.0 as q factors in browser preferred language detection (Props Dominic Rubas)
 * Fix performance issue when using hundreds of widgets
