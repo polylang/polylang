@@ -18,7 +18,6 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		parent::__construct( $polylang );
 
 		// Removes the editor and the template select dropdown for pages for posts
-		add_filter( 'use_block_editor_for_post', array( $this, 'use_block_editor_for_post' ), 10, 2 ); // Since WP 5.0
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
 
 		// Add post state for translations of the front page and posts page
@@ -33,27 +32,6 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 
 		// Prevents WP resetting the option
 		add_filter( 'pre_update_option_show_on_front', array( $this, 'update_show_on_front' ), 10, 2 );
-	}
-
-	/**
-	 * Don't use the block editor for the translations of the pages for posts
-	 *
-	 * @since 2.4
-	 *
-	 * @param bool    $use_block_editor Whether the post can be edited or not.
-	 * @param WP_Post $post             The post being checked.
-	 * @return bool
-	 */
-	public function use_block_editor_for_post( $use_block_editor, $post ) {
-		if ( 'page' === $post->post_type ) {
-			add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
-
-			if ( ( get_option( 'page_for_posts' ) == $post->ID ) && empty( $post->post_content ) ) {
-				return false;
-			}
-		}
-
-		return $use_block_editor;
 	}
 
 	/**
