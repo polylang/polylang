@@ -116,7 +116,7 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 		}
 
 		$pll_type = ( 'post' == $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' == $type || pll_is_translated_taxonomy( $type ) ? 'term' : false );
-		if ( $pll_type && ( $lang = pll_current_language() ) && ( $tr_id = PLL()->model->$pll_type->get_translation( $id, $lang ) ) && PLL()->links->current_user_can_read( $tr_id ) ) {
+		if ( $pll_type && ( $lang = pll_current_language() ) && ( $tr_id = PLL()->model->$pll_type->get_translation( $id, $lang ) ) && ( 'term' === $pll_type || PLL()->links->current_user_can_read( $tr_id ) ) ) {
 			$id = $tr_id;
 		} elseif ( ! $return_original_if_missing ) {
 			return '';
