@@ -162,7 +162,8 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	public function sidebars_widgets( $sidebars_widgets ) {
 		global $wp_registered_widgets;
 
-		$_sidebars_widgets = $this->cache->get( 'sidebars_widgets' );
+		$cache_key         = md5( serialize( $sidebars_widgets ) );
+		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$cache_key}" );
 
 		if ( false !== $_sidebars_widgets ) {
 			return $_sidebars_widgets;
@@ -190,7 +191,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			}
 		}
 
-		$this->cache->set( 'sidebars_widgets', $sidebars_widgets );
+		$this->cache->set( "sidebars_widgets_{$cache_key}", $sidebars_widgets );
 
 		return $sidebars_widgets;
 	}
