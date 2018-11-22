@@ -329,12 +329,11 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		global $post_ID;
 
 		self::$polylang->options['media_support'] = 1;
-		self::$polylang->filters_media = new PLL_Admin_Filters_Media( self::$polylang );
 
 		$en = $this->factory->attachment->create_object( 'image0.jpg' );
 		self::$polylang->model->post->set_language( $en, 'en' );
 
-		$post_ID = self::$polylang->filters_media->create_media_translation( $en, 'fr' );
+		$post_ID = self::$polylang->posts->create_media_translation( $en, 'fr' );
 
 		$lang = self::$polylang->model->get_language( 'fr' );
 
