@@ -18,7 +18,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 		parent::__construct( $polylang );
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 5, 2 ); // Before Types which populates custom fields in same hook with priority 10
+		add_action( 'rest_api_init', array( $this, 'new_post_translation' ) ); // Block editor
+		add_action( 'add_meta_boxes', array( $this, 'new_post_translation' ), 5 ); // Classic editor, before Types which populates custom fields in same hook with priority 10
 	}
 
 	/**
@@ -38,15 +39,14 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 	/**
 	 * Copy post metas, menu order, comment and ping status when using "Add new" ( translation )
-	 * formerly used dbx_post_advanced deprecated in WP 3.7
 	 *
-	 * @since 1.2
-	 *
-	 * @param string $post_type unused
-	 * @param object $post      current post object
+	 * @since 2.4
 	 */
-	public function add_meta_boxes( $post_type, $post ) {
-		if ( 'post-new.php' == $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $post->post_type ) ) {
+	public function new_post_translation() {
+		global $post;
+		static $done = false;
+
+		if ( ! $done && 'post-new.php' == $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $post->post_type ) ) {
 			// Capability check already done in post-new.php
 			$from_post_id = (int) $_GET['from_post'];
 			$from_post = get_post( $from_post_id );
@@ -55,6 +55,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 			if ( ! $from_post || ! $lang ) {
 				return;
 			}
+
+			$done = true; // Avoid a second duplication in the block editor
 
 			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
 			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
@@ -75,7 +77,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			}
 
 			// Blocks editor
-			add_filter( "rest_prepare_{$post_type}", array( $this, 'block_editor_copy_post_fields' ), 10, 2 );
+			add_filter( "rest_prepare_{$post->post_type}", array( $this, 'block_editor_copy_post_fields' ), 10, 2 );
 		}
 	}
 
