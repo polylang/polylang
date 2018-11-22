@@ -42,7 +42,7 @@ jQuery( document ).ready(function( $ ) {
 
 		let unsubscribe = null;
 
-		// listen if the savePost is done
+		// Listen if the savePost is done
 		const savePostIsDone = new Promise( function( resolve, reject ) {
 			unsubscribe = subscribe( function() {
 				const isSavePostSucceeded = select('core/editor').didPostSaveRequestSucceed();
@@ -57,11 +57,27 @@ jQuery( document ).ready(function( $ ) {
 			} );
 		});
 
+		// Specific case for empty posts
+		if ( location.pathname.match( /post-new.php/gi ) ) {
+			const title = select('core/editor').getEditedPostAttribute('title');
+			const content = select('core/editor').getEditedPostAttribute('content');
+			const excerpt = select('core/editor').getEditedPostAttribute('excerpt');
+			if ( '' === title && '' === content && '' === excerpt ) {
+				// Change the new_lang parameter with the new language value for reloading the page
+				if ( -1 != location.search.indexOf( 'new_lang' ) ) {
+					window.location.search = window.location.search.replace( /(?:new_lang=[^&]*)(&)?(.*)/, 'new_lang=' + this.value + '$1$2' );;
+				} else {
+					window.location.search = window.location.search + ( ( -1 != window.location.search.indexOf( '?' ) ) ? '&' : '?' ) + 'new_lang=' + this.value;
+				}
+			}
+		}
+
+		// For empty posts savePost does nothing
 		dispatch( 'core/editor' ).savePost();
 
 		savePostIsDone
 			.then( function() {
-				// if the post is well saved, we can reload the page
+				// If the post is well saved, we can reload the page
 				unsubscribe();
 				window.location.reload();
 			} )
