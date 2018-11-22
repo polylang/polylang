@@ -3,9 +3,9 @@
  *
  * @since 2.4
  */
-wp.apiFetch.use( ( options, next ) => {
+wp.apiFetch.use( function( options, next ) {
 	// If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
-if ( 'undefined' === typeof options.url ) {
+	if ( 'undefined' === typeof options.url ) {
 		if ( 'undefined' === typeof options.data ) {
 			// GET
 			options.path += ( ( options.path.indexOf ( '?' ) >= 0 ) ? '&lang=' : '?lang=' ) + getCurrentLanguage();
