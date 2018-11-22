@@ -140,4 +140,3 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$wp_settings_errors = array(); // clean "errors"
 	}
 }
-
