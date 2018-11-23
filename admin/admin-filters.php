@@ -212,7 +212,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	public function sanitize_title( $title, $raw_title, $context ) {
 		static $once = false;
 
-		if ( ! $once && 'save' == $context && ! empty( $this->curlang ) && ! empty( $title ) ) {
+		if ( ! $once && 'save' == $context && ! empty( $title ) ) {
 			$once = true;
 			add_filter( 'locale', array( $this, 'get_locale' ), 20 ); // After the filter for the admin interface
 			$title = sanitize_title( $raw_title, '', $context );
@@ -235,7 +235,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	public function sanitize_user( $username, $raw_username, $strict ) {
 		static $once = false;
 
-		if ( ! $once && ! empty( $this->curlang ) ) {
+		if ( ! $once ) {
 			$once = true;
 			add_filter( 'locale', array( $this, 'get_locale' ), 20 ); // After the filter for the admin interface
 			$username = sanitize_user( $raw_username, '', $strict );
