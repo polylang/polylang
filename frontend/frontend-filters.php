@@ -146,6 +146,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @return bool|array false if we hide the widget, unmodified $instance otherwise
 	 */
 	public function widget_display_callback( $instance, $widget ) {
+		// FIXME it looks like this filter is useless, now the we use the filter sidebars_widgets
 		return ! empty( $instance['pll_lang'] ) && $instance['pll_lang'] != $this->curlang->slug ? false : $instance;
 	}
 
@@ -161,6 +162,10 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 */
 	public function sidebars_widgets( $sidebars_widgets ) {
 		global $wp_registered_widgets;
+
+		if ( empty( $wp_registered_widgets ) ) {
+			return $sidebars_widgets;
+		}
 
 		$cache_key         = md5( serialize( $sidebars_widgets ) );
 		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$cache_key}" );
