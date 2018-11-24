@@ -18,6 +18,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		parent::__construct( $polylang );
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
+		add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ) );
 		add_action( 'rest_api_init', array( $this, 'new_post_translation' ) ); // Block editor
 		add_action( 'add_meta_boxes', array( $this, 'new_post_translation' ), 5 ); // Classic editor, before Types which populates custom fields in same hook with priority 10
 	}
@@ -38,7 +39,34 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Copy post metas, menu order, comment and ping status when using "Add new" ( translation )
+	 * Copy menu order, comment, ping status and optionally the date when creating a new tanslation
+	 *
+	 * @since 2.4
+	 *
+	 * @param array $data An array of slashed post data.
+	 * @return array
+	 */
+	public function wp_insert_post_data( $data ) {
+		if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $data['post_type'] ) ) {
+			$from_post_id = (int) $_GET['from_post'];
+			$from_post    = get_post( $from_post_id );
+
+			foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
+				$data[ $property ] = $from_post->$property;
+			}
+
+			// Copy the date only if the synchronization is activated
+			if ( in_array( 'post_date', PLL()->options['sync'] ) ) {
+				$data['post_date']     = $from_post->post_date;
+				$data['post_date_gmt'] = $from_post->post_date_gmt;
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Copy post metas, and taxonomies when using "Add new" ( translation )
 	 *
 	 * @since 2.4
 	 */
@@ -46,13 +74,12 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $post;
 		static $done = array();
 
-		if ( 'post-new.php' == $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $post->post_type ) ) {
+		if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $post->post_type ) ) {
 			// Capability check already done in post-new.php
 			$from_post_id = (int) $_GET['from_post'];
-			$from_post = get_post( $from_post_id );
-			$lang = $this->model->get_language( $_GET['new_lang'] );
+			$lang         = $this->model->get_language( $_GET['new_lang'] );
 
-			if ( ! $from_post || ! $lang || ! empty( $done[ $from_post_id ] ) ) {
+			if ( ! $from_post_id || ! $lang || ! empty( $done[ $from_post_id ] ) ) {
 				return;
 			}
 
@@ -64,51 +91,11 @@ class PLL_Admin_Sync extends PLL_Sync {
 			if ( is_sticky( $from_post_id ) ) {
 				stick_post( $post->ID );
 			}
-
-			// Classic Editor
-			foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
-				$post->$property = $from_post->$property;
-			}
-
-			// Copy the date only if the synchronization is activated
-			if ( in_array( 'post_date', $this->options['sync'] ) ) {
-				$post->post_date = $from_post->post_date;
-				$post->post_date_gmt = $from_post->post_date_gmt;
-			}
-
-			// Blocks editor
-			add_filter( "rest_prepare_{$post->post_type}", array( $this, 'block_editor_copy_post_fields' ), 10, 2 );
 		}
 	}
 
 	/**
-	 * Copy menu order, comment, ping status and optionally the date
-	 * when creating a new tanslation with the block editor
-	 *
-	 * @since 2.4
-	 *
-	 * @param object $response The response object.
-	 * @param object $post     Post object.
-	 */
-	public function block_editor_copy_post_fields( $response, $post ) {
-		$from_post_id = (int) $_GET['from_post'];
-		$from_post = get_post( $from_post_id );
-
-		foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
-			$response->data[ $property ] = $from_post->$property;
-		}
-
-		// Copy the date only if the synchronization is activated
-		if ( in_array( 'post_date', PLL()->options['sync'] ) ) {
-			$response->data['date'] = $from_post->post_date;
-			$response->data['date_gmt'] = $from_post->post_date_gmt;
-		}
-
-		return $response;
-	}
-
-	/**
-	 * Get post fields to synchornize
+	 * Get post fields to synchronize
 	 *
 	 * @since 2.4
 	 *
