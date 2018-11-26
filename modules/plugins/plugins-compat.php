@@ -22,9 +22,6 @@ class PLL_Plugins_Compat {
 		add_action( 'init', array( $this, 'maybe_wordpress_importer' ) );
 		add_filter( 'wp_import_terms', array( $this, 'wp_import_terms' ) );
 
-		// YARPP
-		add_action( 'init', array( $this, 'yarpp_init' ) ); // after Polylang has registered its taxonomy in setup_theme
-
 		// Custom field template
 		add_action( 'add_meta_boxes', array( $this, 'cft_copy' ), 10, 2 );
 
@@ -179,16 +176,6 @@ class PLL_Plugins_Compat {
 			}
 		}
 		return $terms;
-	}
-
-	/**
-	 * YARPP
-	 * Just makes YARPP aware of the language taxonomy ( after Polylang registered it )
-	 *
-	 * @since 1.0
-	 */
-	public function yarpp_init() {
-		$GLOBALS['wp_taxonomies']['language']->yarpp_support = 1;
 	}
 
 	/**
