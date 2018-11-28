@@ -345,7 +345,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		elseif ( is_category() || is_tag() || is_tax() ) {
 			$obj = $wp_query->get_queried_object();
-			if ( $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
+			if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
 				$language = $this->model->term->get_language( (int) $obj->term_id );
 			}
 		}
