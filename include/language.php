@@ -136,7 +136,7 @@ class PLL_Language {
 
 		foreach ( $directories as $dir ) {
 			if ( file_exists( $file = "{$dir}/{$this->locale}.png" ) || file_exists( $file = "{$dir}/{$this->locale}.jpg" ) || file_exists( $file = "{$dir}/{$this->locale}.svg" ) ) {
-				$flags['custom_flag']['url'] = site_url( '/' . str_replace( ABSPATH, '', $file ) );
+				$flags['custom_flag']['url'] = content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) );
 				break;
 			}
 		}
