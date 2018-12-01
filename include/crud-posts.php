@@ -251,10 +251,12 @@ class PLL_CRUD_Posts {
 		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug
 
 		// Create a new attachment ( translate attachment parent if exists )
+		add_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Avoid a conflict with automatic duplicate at upload
 		$post->ID = null; // Will force the creation
 		$post->post_parent = ( $post->post_parent && $tr_parent = $this->model->post->get_translation( $post->post_parent, $lang->slug ) ) ? $tr_parent : 0;
 		$post->tax_input = array( 'language' => array( $lang->slug ) ); // Assigns the language
 		$tr_id = wp_insert_attachment( $post );
+		remove_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Restore automatic duplicate at upload
 
 		// Copy metadata, attached file and alternative text
 		foreach ( array( '_wp_attachment_metadata', '_wp_attached_file', '_wp_attachment_image_alt' ) as $key ) {
