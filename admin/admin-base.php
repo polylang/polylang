@@ -118,7 +118,6 @@ class PLL_Admin_Base extends PLL_Base {
 		// 3 => 1 if loaded in footer
 		// FIXME: check if I can load more scripts in footer
 		$scripts = array(
-			'classic-editor' => array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-autocomplete' ), 0, 1 ),
 			'post'           => array( array( 'edit' ), array( 'jquery', 'wp-ajax-response' ), 0, 1 ),
 			'media'          => array( array( 'upload' ), array( 'jquery' ), 0, 1 ),
 			'term'           => array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 ),
@@ -126,9 +125,13 @@ class PLL_Admin_Base extends PLL_Base {
 			'widgets'        => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
-		// Block editor in WP 5.0+
-		if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() ) {
-			$scripts['block-editor'] = array( array( 'post' ), array( 'wp-api-fetch' ), 0, 1 );
+		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
+			$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-autocomplete' ), 0, 1 );
+
+			// Block editor in WP 5.0+
+			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() ) {
+				$scripts['block-editor'] = array( array( 'post' ), array( 'wp-api-fetch' ), 0, 1 );
+			}
 		}
 
 		foreach ( $scripts as $script => $v ) {
