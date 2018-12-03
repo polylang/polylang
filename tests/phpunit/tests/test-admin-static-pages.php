@@ -74,6 +74,10 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 	}
 
 	function test_use_block_editor_for_post() {
+		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+			$this->markTestSkipped();
+		}
+
 		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
 
