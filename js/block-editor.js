@@ -1,7 +1,7 @@
 /**
  * Filter REST API requests to add the language in the request
  *
- * @since 2.4
+ * @since 2.5
  */
 wp.apiFetch.use( function( options, next ) {
 	// If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
@@ -20,7 +20,7 @@ wp.apiFetch.use( function( options, next ) {
 /**
  * Get the language from the HTML form
  *
- * @since 2.4
+ * @since 2.5
  *
  * @return {Element.value}
  */
@@ -31,7 +31,7 @@ function getCurrentLanguage() {
 /**
  * save post after lang choice is done and redirect to the same page for refreshing all the data
  *
- * @since 2.4
+ * @since 2.5
  */
 jQuery( document ).ready(function( $ ) {
 	// savePost after changing the post's language and reload page for refreshing post translated data

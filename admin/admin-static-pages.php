@@ -38,7 +38,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	/**
 	 * Don't use the block editor for the translations of the pages for posts
 	 *
-	 * @since 2.4
+	 * @since 2.5
 	 *
 	 * @param bool    $use_block_editor Whether the post can be edited or not.
 	 * @param WP_Post $post             The post being checked.

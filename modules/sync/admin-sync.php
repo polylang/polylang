@@ -41,7 +41,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	/**
 	 * Copy menu order, comment, ping status and optionally the date when creating a new tanslation
 	 *
-	 * @since 2.4
+	 * @since 2.5
 	 *
 	 * @param array $data An array of slashed post data.
 	 * @return array
@@ -68,7 +68,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	/**
 	 * Copy post metas, and taxonomies when using "Add new" ( translation )
 	 *
-	 * @since 2.4
+	 * @since 2.5
 	 */
 	public function new_post_translation() {
 		global $post;

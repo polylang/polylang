@@ -3,14 +3,14 @@
 /**
  * Manages filters and actions related to the block editor
  *
- * @since 2.4
+ * @since 2.5
  */
 class PLL_Admin_Block_Editor {
 
 	/**
 	 * Constructor: setups filters and actions
 	 *
-	 * @since 2.4
+	 * @since 2.5
 	 *
 	 * @param object $polylang
 	 */
@@ -23,7 +23,7 @@ class PLL_Admin_Block_Editor {
 	 * Necessary otherwise subsequent REST requests all filtered by the language
 	 * would not hit the preloaded requests
 	 *
-	 * @since 2.4
+	 * @since 2.5
 	 *
 	 * @param array  $preload_paths Array of paths to preload.
 	 * @param object $post          The post resource data.
