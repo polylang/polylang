@@ -18,7 +18,9 @@ class PLL_Admin_Sync extends PLL_Sync {
 		parent::__construct( $polylang );
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 5, 2 ); // Before Types which populates custom fields in same hook with priority 10
+		add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ) );
+		add_action( 'rest_api_init', array( $this, 'new_post_translation' ) ); // Block editor
+		add_action( 'add_meta_boxes', array( $this, 'new_post_translation' ), 5 ); // Classic editor, before Types which populates custom fields in same hook with priority 10
 	}
 
 	/**
@@ -37,37 +39,54 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Copy post metas, menu order, comment and ping status when using "Add new" ( translation )
-	 * formerly used dbx_post_advanced deprecated in WP 3.7
+	 * Copy menu order, comment, ping status and optionally the date when creating a new tanslation
 	 *
-	 * @since 1.2
+	 * @since 2.5
 	 *
-	 * @param string $post_type unused
-	 * @param object $post      current post object
+	 * @param array $data An array of slashed post data.
+	 * @return array
 	 */
-	public function add_meta_boxes( $post_type, $post ) {
-		if ( 'post-new.php' == $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $post->post_type ) ) {
-			// Capability check already done in post-new.php
+	public function wp_insert_post_data( $data ) {
+		if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $data['post_type'] ) ) {
 			$from_post_id = (int) $_GET['from_post'];
-			$from_post = get_post( $from_post_id );
-			$lang = $this->model->get_language( $_GET['new_lang'] );
-
-			if ( ! $from_post || ! $lang ) {
-				return;
-			}
-
-			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
-			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
+			$from_post    = get_post( $from_post_id );
 
 			foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
-				$post->$property = $from_post->$property;
+				$data[ $property ] = $from_post->$property;
 			}
 
 			// Copy the date only if the synchronization is activated
-			if ( in_array( 'post_date', $this->options['sync'] ) ) {
-				$post->post_date = $from_post->post_date;
-				$post->post_date_gmt = $from_post->post_date_gmt;
+			if ( in_array( 'post_date', PLL()->options['sync'] ) ) {
+				$data['post_date']     = $from_post->post_date;
+				$data['post_date_gmt'] = $from_post->post_date_gmt;
 			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Copy post metas, and taxonomies when using "Add new" ( translation )
+	 *
+	 * @since 2.5
+	 */
+	public function new_post_translation() {
+		global $post;
+		static $done = array();
+
+		if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $post->post_type ) ) {
+			// Capability check already done in post-new.php
+			$from_post_id = (int) $_GET['from_post'];
+			$lang         = $this->model->get_language( $_GET['new_lang'] );
+
+			if ( ! $from_post_id || ! $lang || ! empty( $done[ $from_post_id ] ) ) {
+				return;
+			}
+
+			$done[ $from_post_id ] = true; // Avoid a second duplication in the block editor. Using an array only to allow multiple phpunit tests.
+
+			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
+			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
 
 			if ( is_sticky( $from_post_id ) ) {
 				stick_post( $post->ID );
@@ -76,7 +95,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Get post fields to synchornize
+	 * Get post fields to synchronize
 	 *
 	 * @since 2.4
 	 *

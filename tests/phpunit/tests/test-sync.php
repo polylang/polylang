@@ -157,18 +157,21 @@ class Sync_Test extends PLL_UnitTestCase {
 		set_post_format( $from, 'aside' );
 		stick_post( $from );
 
+		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$GLOBALS['pagenow'] = 'post-new.php';
 		$_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 		);
 
 		$to = $this->factory->post->create();
-		do_action( 'add_meta_boxes', 'post', get_post( $to ) ); // fires the copy
 
+		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['post'] = get_post( $to );
+
+		do_action( 'add_meta_boxes', 'post', $GLOBALS['post'] ); // fires the copy
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
 		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
@@ -195,7 +198,6 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$GLOBALS['pagenow'] = 'post-new.php';
 		$_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
@@ -203,11 +205,15 @@ class Sync_Test extends PLL_UnitTestCase {
 		);
 
 		$to = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		do_action( 'add_meta_boxes', 'page', $page = get_post( $to ) ); // fires the copy
+
+		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['post'] = get_post( $to );
+
+		do_action( 'add_meta_boxes', 'page', $GLOBALS['post'] ); // fires the copy
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
-		$this->assertEquals( 12, $page->menu_order );
+		$this->assertEquals( 12, $GLOBALS['post']->menu_order );
 		$this->assertEquals( 'full-width.php', get_page_template_slug( $to ) );
 	}
 
@@ -456,14 +462,17 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$GLOBALS['pagenow'] = 'post-new.php';
 		$_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 		);
 
 		$to = $this->factory->post->create();
-		do_action( 'add_meta_boxes', 'post', get_post( $to ) ); // fires the copy
+
+		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['post'] = get_post( $to );
+
+		do_action( 'add_meta_boxes', 'post', $GLOBALS['post'] ); // fires the copy
 		clean_post_cache( $to ); // Usually WordPress will do it for us when the post will be saved
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );

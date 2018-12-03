@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Manages filters and actions related to the editor
+ * Manages filters and actions related to the classic editor
  *
  * @since 2.4
  */

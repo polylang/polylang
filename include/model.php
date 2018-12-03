@@ -218,7 +218,7 @@ class PLL_Model {
 	 */
 	public function get_translated_post_types( $filter = true ) {
 		if ( false === $post_types = $this->cache->get( 'post_types' ) ) {
-			$post_types = array( 'post' => 'post', 'page' => 'page' );
+			$post_types = array( 'post' => 'post', 'page' => 'page', 'wp_block' => 'wp_block' );
 
 			if ( ! empty( $this->options['media_support'] ) ) {
 				$post_types['attachment'] = 'attachment';
