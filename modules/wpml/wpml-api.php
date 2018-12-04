@@ -20,23 +20,31 @@ class PLL_WPML_API {
 
 		add_filter( 'wpml_active_languages', array( $this, 'wpml_active_languages' ), 10, 2 );
 		add_filter( 'wpml_display_language_names', array( $this, 'wpml_display_language_names' ), 10, 5 );
-		// wpml_translated_language_name      => not applicable
+		// wpml_translated_language_name           => not applicable
 		add_filter( 'wpml_current_language', 'pll_current_language', 10, 0 );
 		add_filter( 'wpml_default_language', 'pll_default_language', 10, 0 );
-		// wpml_add_language_selector         => not implemented
-		// wpml_footer_language_selector      => not applicable
+		// wpml_add_language_selector              => not implemented
+		// wpml_footer_language_selector           => not applicable
 		add_action( 'wpml_add_language_form_field', array( $this, 'wpml_add_language_form_field' ) );
 		add_filter( 'wpml_language_is_active', array( $this, 'wpml_language_is_active' ), 10, 2 );
 		add_filter( 'wpml_is_rtl', array( $this, 'wpml_is_rtl' ) );
-		// wpml_language_form_input_field     => See wpml_add_language_form_field
-		// wpml_language_has_switched         => not implemented
+		// wpml_language_form_input_field          => See wpml_add_language_form_field
+		// wpml_language_has_switched              => not implemented
+		// wpml_element_trid                       => not implemented
+		// wpml_get_element_translations           => not implemented
+		// wpml_language_switcher                  => not implemented
+		// wpml_browser_redirect_language_params   => not implemented
+		// wpml_enqueue_browser_redirect_language  => not applicable
+		// wpml_enqueued_browser_redirect_language => not applicable
+		// wpml_encode_string                      => not applicable
+		// wpml_decode_string                      => not applicable
 
 		// Retrieving Language Information for Content
 
 		add_filter( 'wpml_post_language_details', 'wpml_get_language_information', 10, 2 );
-		// wpml_switch_language               => not implemented
+		// wpml_switch_language                    => not implemented
 		add_filter( 'wpml_element_language_code', array( $this, 'wpml_element_language_code' ), 10, 3 );
-		// wpml_element_language_details      => not applicable
+		// wpml_element_language_details           => not applicable
 
 		// Retrieving Localized Content
 
@@ -44,47 +52,59 @@ class PLL_WPML_API {
 		add_filter( 'wpml_element_link', 'icl_link_to_element', 10, 7 );
 		add_filter( 'wpml_object_id', 'icl_object_id', 10, 4 );
 		add_filter( 'wpml_translate_single_string', array( $this, 'wpml_translate_single_string' ), 10, 4 );
-		// wpml_translate_string              => not applicable
-		// wpml_unfiltered_admin_string       => not implemented
+		// wpml_translate_string                   => not applicable
+		// wpml_unfiltered_admin_string            => not implemented
 		add_filter( 'wpml_permalink', array( $this, 'wpml_permalink' ), 10, 2 );
-		// wpml_elements_without_translations => not implemented
+		// wpml_elements_without_translations      => not implemented
 		add_filter( 'wpml_get_translated_slug', array( $this, 'wpml_get_translated_slug' ), 10, 3 );
 
 		// Finding the Translation State of Content
 
-		// wpml_element_translation_type
+		// wpml_element_translation_type           => not implemented
 		add_filter( 'wpml_element_has_translations', array( $this, 'wpml_element_has_translations' ), 10, 3 );
-		// wpml_master_post_from_duplicate    => not applicable
-		// wpml_post_duplicates               => not applicable
+		// wpml_master_post_from_duplicate         => not applicable
+		// wpml_post_duplicates                    => not applicable
 
 		// Inserting Content
 
-		// wpml_admin_make_post_duplicates    => not applicable
-		// wpml_make_post_duplicates          => not applicable
+		// wpml_admin_make_post_duplicates         => not applicable
+		// wpml_make_post_duplicates               => not applicable
 		add_action( 'wpml_register_single_string', 'icl_register_string', 10, 3 );
-		// wpml_register_string               => not applicable
-		// wpml_register_string_packages      => not applicable
-		// wpml_delete_package_action         => not applicable
-		// wpml_show_package_language_ui      => not applicable
-		// wpml_set_element_language_details  => not implemented
+		// wpml_register_string                    => not applicable
+		// wpml_register_string_packages           => not applicable
+		// wpml_delete_package_action              => not applicable
+		// wpml_show_package_language_ui           => not applicable
+		// wpml_set_element_language_details       => not implemented
+		// wpml_multilingual_options               => not applicable
 
 		// Miscellaneous
 
-		// wpml_element_type                   => not applicable
-		// wpml_setting                        => not applicable
-		// wpml_sub_setting                    => not applicable
-		// wpml_editor_cf_to_display           => not applicable
-		// wpml_tm_save_translation_cf         => not implemented
-		// wpml_tm_xliff_export_translated_cf  => not applicable
-		// wpml_tm_xliff_export_original_cf    => not applicable
-		// wpml_duplicate_generic_string       => not applicable
-		// wpml_translatable_user_meta_fields  => not implemented
-		// wpml_cross_domain_language_data     => not applicable
-		// wpml_get_cross_domain_language_data => not applicable
-		// wpml_loaded                         => not applicable
-		// wpml_st_loaded                      => not applicable
-		// wpml_tm_loaded                      => not applicable
-		// wpml_hide_management_column (3.4.1) => not applicable
+		// wpml_element_type                       => not applicable
+		// wpml_setting                            => not applicable
+		// wpml_sub_setting                        => not applicable
+		// wpml_editor_cf_to_display               => not applicable
+		// wpml_tm_save_translation_cf             => not implemented
+		// wpml_tm_xliff_export_translated_cf      => not applicable
+		// wpml_tm_xliff_export_original_cf        => not applicable
+		// wpml_duplicate_generic_string           => not applicable
+		// wpml_translatable_user_meta_fields      => not implemented
+		// wpml_cross_domain_language_data         => not applicable
+		// wpml_get_cross_domain_language_data     => not applicable
+		// wpml_loaded                             => not applicable
+		// wpml_st_loaded                          => not applicable
+		// wpml_tm_loaded                          => not applicable
+		// wpml_hide_management_column (3.4.1)     => not applicable
+		// wpml_ls_directories_to_scan             => not applicable
+		// wpml_ls_model_css_classes               => not applicable
+		// wpml_ls_model_language_css_classes      => not applicable
+		// wpml_tf_feedback_open_link              => not applicable
+		// wpml_sync_custom_field                  => not implemented
+		// wpml_sync_all_custom_fields             => not implemented
+		// wpml_is_redirected                      => not implemented
+
+		// Updating Content
+
+		// wpml_set_translation_mode_for_post_type => not implemented
 	}
 
 	/**
