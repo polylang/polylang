@@ -47,7 +47,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return array
 	 */
 	public function wp_insert_post_data( $data ) {
-		if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $data['post_type'] ) ) {
+		if ( isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $data['post_type'] ) ) {
 			$from_post_id = (int) $_GET['from_post'];
 			$from_post    = get_post( $from_post_id );
 
@@ -74,7 +74,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $post;
 		static $done = array();
 
-		if ( 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) && $this->model->is_translated_post_type( $post->post_type ) ) {
+		if ( isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $post->post_type ) ) {
 			// Capability check already done in post-new.php
 			$from_post_id = (int) $_GET['from_post'];
 			$lang         = $this->model->get_language( $_GET['new_lang'] );
@@ -108,7 +108,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		$postarr = parent::get_fields_to_sync( $post );
 
 		// For new drafts, save the date now otherwise it is overriden by WP. Thanks to JoryHogeveen. See #32.
-		if ( in_array( 'post_date', $this->options['sync'] ) && 'post-new.php' === $GLOBALS['pagenow'] && isset( $_GET['from_post'], $_GET['new_lang'] ) ) {
+		if ( in_array( 'post_date', $this->options['sync'] ) && isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] ) {
 			unset( $postarr['post_date'] );
 			unset( $postarr['post_date_gmt'] );
 
