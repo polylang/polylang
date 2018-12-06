@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 5.0
-Stable tag: 2.4.1
+Stable tag: 2.5
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,7 +76,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.5 =
+= 2.5 (2018-12-06) =
 
 * Add compatibility with WP 5.0
 * Fix custom flags when the WP content folder is not in the WP install folder
