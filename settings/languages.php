@@ -884,6 +884,13 @@ $languages = array(
 		'flag'     => 'sk',
 		'facebook' => 'sk_SK',
 	),
+	'skr' => array(
+		'code'     => 'skr',
+		'locale'   => 'skr',
+		'name'     => 'سرائیکی',
+		'dir'      => 'rtl',
+		'flag'     => 'pk',
+	),
 	'sl_SI' => array(
 		'code'     => 'sl',
 		'locale'   => 'sl_SI',
