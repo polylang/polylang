@@ -1,17 +1,24 @@
 <?php
 
 /**
-Plugin Name: Polylang
-Plugin URI: https://polylang.pro
-Version: 2.5
-Author: Frédéric Demarle
-Author uri: https://polylang.pro
-Description: Adds multilingual capability to WordPress
-Text Domain: polylang
-Domain Path: /languages
+ * Polylang
+ *
+ * @author      Frédéric Demarle
+ * @license     GPL-2.0+
+ *
+ * @wordpress-plugin
+ * Plugin Name: Polylang
+ * Plugin URI: https://polylang.pro
+ * Description: Adds multilingual capability to WordPress.
+ * Version: 2.5
+ * Author: Frédéric Demarle
+ * Author URI: https://polylang.pro
+ * License: GPL-2.0+
+ * Text Domain: polylang
+ * Domain Path: /languages
  */
 
-/*
+/**
  * Copyright 2011-2018 Frédéric Demarle
  *
  * This program is free software; you can redistribute it and/or modify
