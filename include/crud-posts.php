@@ -242,6 +242,10 @@ class PLL_CRUD_Posts {
 	 * @return int id of the translated media
 	 */
 	public function create_media_translation( $post_id, $lang ) {
+		if ( empty( $post_id ) ) {
+			return $post_id;
+		}
+
 		$post = get_post( $post_id );
 
 		if ( empty( $post ) ) {
