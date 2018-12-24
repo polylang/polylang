@@ -86,27 +86,24 @@ class PLL_Widget_Languages extends WP_Widget {
 		// Title
 		printf(
 			'<p><label for="%1$s">%2$s</label><input class="widefat" id="%1$s" name="%3$s" type="text" value="%4$s" /></p>',
-			$this->get_field_id( 'title' ),
+			esc_attr( $this->get_field_id( 'title' ) ),
 			esc_html__( 'Title:', 'polylang' ),
-			$this->get_field_name( 'title' ),
+			esc_attr( $this->get_field_name( 'title' ) ),
 			esc_attr( $instance['title'] )
 		);
 
-		$fields = '';
 		foreach ( PLL_Switcher::get_switcher_options( 'widget' ) as $key => $str ) {
-			$fields .= sprintf(
+			printf(
 				'<div%5$s%6$s><input type="checkbox" class="checkbox %7$s" id="%1$s" name="%2$s"%3$s /><label for="%1$s">%4$s</label></div>',
-				$this->get_field_id( $key ),
-				$this->get_field_name( $key ),
+				esc_attr( $this->get_field_id( $key ) ),
+				esc_attr( $this->get_field_name( $key ) ),
 				checked( $instance[ $key ], true, false ),
 				esc_html( $str ),
-				in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? ' class="no-dropdown-' . $this->id . '"' : '',
-				! empty( $instance['dropdown'] ) && in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? ' style="display:none;"' : '',
-				'pll-' . $key
+				in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? sprintf( ' class="no-dropdown-%s"', esc_attr( $this->id ) ) : '',
+				( ! empty( $instance['dropdown'] ) && in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? ' style="display:none;"' : '' ),
+				esc_attr( 'pll-' . $key )
 			);
 		}
-
-		echo $fields;
 
 		// FIXME echoing script in form is not very clean
 		// but it does not work if enqueued properly :
