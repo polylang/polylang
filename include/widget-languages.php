@@ -98,7 +98,7 @@ class PLL_Widget_Languages extends WP_Widget {
 				'<div%5$s%6$s><input type="checkbox" class="checkbox %7$s" id="%1$s" name="%2$s"%3$s /><label for="%1$s">%4$s</label></div>',
 				$this->get_field_id( $key ),
 				$this->get_field_name( $key ),
-				$instance[ $key ] ? ' checked="checked"' : '',
+				checked( $instance[ $key ], true, false ),
 				esc_html( $str ),
 				in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? ' class="no-dropdown-' . $this->id . '"' : '',
 				! empty( $instance['dropdown'] ) && in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? ' style="display:none;"' : '',

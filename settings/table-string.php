@@ -301,7 +301,7 @@ class PLL_Table_String extends WP_List_Table {
 		echo '<select id="select-group" name="group">' . "\n";
 		printf(
 			'<option value="-1"%s>%s</option>' . "\n",
-			-1 === $this->group_selected ? ' selected="selected"' : '',
+			selected( $this->group_selected, -1, false ),
 			esc_html__( 'View all groups', 'polylang' )
 		);
 
@@ -309,7 +309,7 @@ class PLL_Table_String extends WP_List_Table {
 			printf(
 				'<option value="%s"%s>%s</option>' . "\n",
 				esc_attr( urlencode( $group ) ),
-				$this->selected_group === $group ? ' selected="selected"' : '',
+				selected( $this->selected_group, $group, false ),
 				esc_html( $group )
 			);
 		}

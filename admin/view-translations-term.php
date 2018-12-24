@@ -76,7 +76,7 @@ else {
 					esc_html__( 'Translation', 'polylang' ),
 					empty( $translation ) ? 0 : esc_attr( $translation->term_id ),
 					empty( $translation ) ? '' : esc_attr( $translation->name ),
-					empty( $disabled ) ? '' : ' disabled="disabled"',
+					disabled( empty( $disabled ), false, false ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					$language->is_rtl ? 'rtl' : 'ltr'
 				);

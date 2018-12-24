@@ -57,7 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					esc_html__( 'Translation', 'polylang' ),
 					empty( $value ) ? 0 : esc_attr( $selected->ID ),
 					empty( $value ) ? '' : esc_attr( $selected->post_title ),
-					empty( $link ) ? ' disabled="disabled"' : '',
+					disabled( empty( $link ), true, false ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					$language->is_rtl ? 'rtl' : 'ltr'
 				);

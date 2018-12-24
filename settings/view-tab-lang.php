@@ -106,12 +106,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 						printf(
 							'<label><input name="rtl" type="radio" value="0" %s /> %s</label>',
-							! empty( $edit_lang ) && $edit_lang->is_rtl ? '' : 'checked="checked"',
+							checked( ! empty( $edit_lang ) && $edit_lang->is_rtl, false, false ),
 							esc_html__( 'left to right', 'polylang' )
 						);
 						printf(
 							'<label><input name="rtl" type="radio" value="1" %s /> %s</label>',
-							! empty( $edit_lang ) && $edit_lang->is_rtl ? 'checked="checked"' : '',
+							checked( ! empty( $edit_lang ) && $edit_lang->is_rtl, true, false ),
 							esc_html__( 'right to left', 'polylang' )
 						);
 						?>
@@ -132,9 +132,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 									'<option value="%s" data-url="%s"%s%s%s>%s</option>' . "\n",
 									esc_attr( $code ),
 									esc_url( $flag['url'] ),
-									empty( $flag['width'] ) ? '' : sprintf( ' data-width="%s"', (int) $flag['width'] ),
-									empty( $flag['height'] ) ? '' : sprintf( ' data-height="%s"', (int) $flag['height'] ),
-									isset( $edit_lang->flag_code ) && $edit_lang->flag_code == $code ? ' selected="selected"' : '',
+									( empty( $flag['width'] ) ? '' : sprintf( ' data-width="%s"', (int) $flag['width'] ) ),
+									( empty( $flag['height'] ) ? '' : sprintf( ' data-height="%s"', (int) $flag['height'] ) ),
+									selected( isset( $edit_lang->flag_code ) && $edit_lang->flag_code === $code, true, false ),
 									esc_html( $label )
 								);
 							}
