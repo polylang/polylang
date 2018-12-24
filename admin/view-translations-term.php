@@ -48,7 +48,7 @@ else {
 		?>
 		<tr>
 			<th class = "pll-language-column">
-				<span class = "pll-translation-flag"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); ?></span>
+				<span class = "pll-translation-flag"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); // WCPS: XSS ok. ?></span>
 				<?php
 				printf(
 					'<span class="pll-language-name%1$s">%2$s</span>',
@@ -60,8 +60,8 @@ else {
 			<?php
 			if ( isset( $term_id ) ) {
 				?>
-				<td class = "hidden"><?php echo $add_link; ?></td>
-				<td class = "pll-edit-column"><?php echo $link; ?></td>
+				<td class = "hidden"><?php echo $add_link; // WCPS: XSS ok. ?></td>
+				<td class = "pll-edit-column"><?php echo $link; // WCPS: XSS ok. ?></td>
 				<?php
 			}
 			?>
@@ -74,11 +74,11 @@ else {
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
-					empty( $translation ) ? 0 : esc_attr( $translation->term_id ),
-					empty( $translation ) ? '' : esc_attr( $translation->name ),
+					( empty( $translation ) ? 0 : esc_attr( $translation->term_id ) ),
+					( empty( $translation ) ? '' : esc_attr( $translation->name ) ),
 					disabled( empty( $disabled ), false, false ),
 					esc_attr( $language->get_locale( 'display' ) ),
-					$language->is_rtl ? 'rtl' : 'ltr'
+					( $language->is_rtl ? 'rtl' : 'ltr' )
 				);
 				?>
 			</td>

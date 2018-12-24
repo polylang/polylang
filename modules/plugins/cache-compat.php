@@ -44,7 +44,7 @@ class PLL_Cache_Compat {
 			esc_js( COOKIEPATH ),
 			$domain ? '; domain=' . esc_js( $domain ) : ''
 		);
-		echo '<script type="text/javascript">' . $js . '</script>';
+		echo '<script type="text/javascript">' . $js . '</script>'; // WCPS: XSS ok.
 	}
 
 	/**

@@ -18,22 +18,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 		?>
 		<tr>
-			<td class = "pll-media-language-column"><span class = "pll-translation-flag"><?php echo $language->flag; ?></span><?php echo esc_html( $language->name ); ?></td>
+			<td class = "pll-media-language-column"><span class = "pll-translation-flag"><?php echo $language->flag; // WCPS: XSS ok. ?></span><?php echo esc_html( $language->name ); ?></td>
 			<td class = "pll-media-edit-column">
 				<?php
-				// The translation exists
 				if ( ( $translation_id = $this->model->post->get_translation( $post_id, $language ) ) && $translation_id !== $post_id ) {
+					// The translation exists
 					printf(
-						'<input type="hidden" name="media_tr_lang[%s]" value="%d" />%s',
+						'<input type="hidden" name="media_tr_lang[%s]" value="%d" />',
 						esc_attr( $language->slug ),
-						esc_attr( $translation_id ),
-						$this->links->edit_post_translation_link( $translation_id )
+						esc_attr( $translation_id )
 					);
-				}
-
-				// No translation
-				else {
-					echo $this->links->new_post_translation_link( $post_id, $language );
+					echo $this->links->edit_post_translation_link( $translation_id ); // WCPS: XSS ok.
+				} else {
+					// No translation
+					echo $this->links->new_post_translation_link( $post_id, $language ); // WCPS: XSS ok.
 				}
 				?>
 			</td>

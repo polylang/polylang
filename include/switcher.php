@@ -210,7 +210,7 @@ class PLL_Switcher {
 		}
 
 		if ( $args['echo'] ) {
-			echo $out;
+			echo $out; // WCPS: XSS ok.
 		}
 		return $out;
 	}

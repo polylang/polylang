@@ -28,7 +28,7 @@ class PLL_Upgrade {
 		if ( ! $this->can_upgrade() ) {
 			ob_start();
 			$this->admin_notices(); // FIXME the error message is displayed two times
-			die( ob_get_contents() );
+			die( ob_get_contents() ); // WCPS: XSS ok.
 		}
 	}
 
@@ -78,7 +78,7 @@ class PLL_Upgrade {
 				/* translators: %1$s and %2$s are Polylang version numbers */
 				esc_html__( 'Please upgrade first to %1$s before ugrading to %2$s.', 'polylang' ),
 				'<strong>0.9.8</strong>',
-				POLYLANG_VERSION
+				POLYLANG_VERSION // phpcs:ignore WordPress.Security.EscapeOutput
 			)
 		);
 	}

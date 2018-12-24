@@ -152,13 +152,14 @@ function pll_esc_attr__( $string ) {
 
 /**
  * Echoes a translated string ( previously registered with pll_register_string )
+ * It is an equivalent of _e() and is not escaped.
  *
  * @since 0.6
  *
  * @param string $string The string to translate
  */
 function pll_e( $string ) {
-	echo pll__( $string );
+	echo pll__( $string ); // phpcs:ignore
 }
 
 /**
@@ -169,7 +170,7 @@ function pll_e( $string ) {
  * @param string $string The string to translate
  */
 function pll_esc_html_e( $string ) {
-	echo pll_esc_html__( $string );
+	echo pll_esc_html__( $string ); // WCPS: XSS ok.
 }
 
 /**
@@ -180,7 +181,7 @@ function pll_esc_html_e( $string ) {
  * @param string $string The string to translate
  */
 function pll_esc_attr_e( $string ) {
-	echo pll_esc_attr__( $string );
+	echo pll_esc_attr__( $string ); // WCPS: XSS ok.
 }
 
 /**

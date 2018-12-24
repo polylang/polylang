@@ -80,12 +80,13 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 		<table id="pll-domains-table" class="form-table" <?php echo 3 == $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>>
 			<?php
 			foreach ( $this->model->get_languages_list() as  $lg ) {
+				$url = isset( $this->options['domains'][ $lg->slug ] ) ? $this->options['domains'][ $lg->slug ] : ( $lg->slug == $this->options['default_lang'] ? $this->links_model->home : '' );
 				printf(
 					'<tr><td><label for="pll-domain[%1$s]">%2$s</label></td>' .
 					'<td><input name="domains[%1$s]" id="pll-domain[%1$s]" type="text" value="%3$s" class="regular-text code" aria-required="true" /></td></tr>',
 					esc_attr( $lg->slug ),
 					esc_attr( $lg->name ),
-					esc_url( isset( $this->options['domains'][ $lg->slug ] ) ? $this->options['domains'][ $lg->slug ] : ( $lg->slug == $this->options['default_lang'] ? $this->links_model->home : '' ) )
+					esc_url( $url )
 				);
 			}
 			?>

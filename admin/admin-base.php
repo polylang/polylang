@@ -210,23 +210,23 @@ class PLL_Admin_Base extends PLL_Base {
 					$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
 						if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 							if ( 'undefined' === typeof options.data ) {
-								options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; ?>' : <?php echo $arr; ?>;
+								options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; // WCPS: XSS ok. ?>' : <?php echo $arr; // WCPS: XSS ok. ?>;
 							} else {
 								if ( 'string' === typeof options.data ) {
 									if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
-										options.url = options.url+'&<?php echo $str; ?>';
+										options.url = options.url+'&<?php echo $str; // WCPS: XSS ok. ?>';
 									} else {
 										try {
 											var o = $.parseJSON(options.data);
-											o = $.extend(o, <?php echo $arr; ?>);
+											o = $.extend(o, <?php echo $arr; // WCPS: XSS ok. ?>);
 											options.data = JSON.stringify(o);
 										}
 										catch(e) {
-											options.data = '<?php echo $str; ?>&'+options.data;
+											options.data = '<?php echo $str; // WCPS: XSS ok. ?>&'+options.data;
 										}
 									}
 								} else {
-									options.data = $.extend(options.data, <?php echo $arr; ?>);
+									options.data = $.extend(options.data, <?php echo $arr; // WCPS: XSS ok. ?>);
 								}
 							}
 						}

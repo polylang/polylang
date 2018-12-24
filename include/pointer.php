@@ -108,6 +108,6 @@ class PLL_Pointer {
 			empty( $this->args['width'] ) ? '' : sprintf( 'pointerWidth: %d,', $this->args['width'] ),
 			empty( $b ) ? '' : $b
 		);
-		echo '<script type="text/javascript">' . $js . '</script>';
+		echo '<script type="text/javascript">' . $js . '</script>'; // WPCS: XSS ok
 	}
 }
