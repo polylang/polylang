@@ -60,21 +60,24 @@ class PLL_Admin_Filters extends PLL_Filters {
 		// Saving the widget reloads the form. And curiously the action is in $_REQUEST but neither in $_POST, not in $_GET.
 		if ( ( isset( $screen ) && 'widgets' === $screen->base ) || ( isset( $_REQUEST['action'] ) && 'save-widget' === $_REQUEST['action'] ) || isset( $GLOBALS['wp_customize'] ) ) {
 			$dropdown = new PLL_Walker_Dropdown();
+
+			$dropdown_html = $dropdown->walk(
+				array_merge(
+					array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
+					$this->model->get_languages_list()
+				),
+				array(
+					'name'     => $widget->id . '_lang_choice',
+					'class'    => 'tags-input pll-lang-choice',
+					'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
+				)
+			);
+
 			printf(
 				'<p><label for="%1$s">%2$s %3$s</label></p>',
 				esc_attr( $widget->id . '_lang_choice' ),
 				esc_html__( 'The widget is displayed for:', 'polylang' ),
-				$dropdown->walk(
-					array_merge(
-						array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
-						$this->model->get_languages_list()
-					),
-					array(
-						'name'     => $widget->id . '_lang_choice',
-						'class'    => 'tags-input pll-lang-choice',
-						'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
-					)
-				)
+				$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
 			);
 		}
 	}

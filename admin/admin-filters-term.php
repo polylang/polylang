@@ -63,7 +63,18 @@ class PLL_Admin_Filters_Term {
 		}
 
 		$lang = isset( $_GET['new_lang'] ) ? $this->model->get_language( $_GET['new_lang'] ) : $this->pref_lang;
+
 		$dropdown = new PLL_Walker_Dropdown();
+
+		$dropdown_html = $dropdown->walk(
+			$this->model->get_languages_list(),
+			array(
+				'name'     => 'term_lang_choice',
+				'value'    => 'term_id',
+				'selected' => $lang ? $lang->term_id : '',
+				'flag'     => true,
+			)
+		);
 
 		wp_nonce_field( 'pll_language', '_pll_nonce' );
 
@@ -74,15 +85,7 @@ class PLL_Admin_Filters_Term {
 				<p>%s</p>
 			</div>',
 			esc_html__( 'Language', 'polylang' ),
-			$dropdown->walk(
-				$this->model->get_languages_list(),
-				array(
-					'name'     => 'term_lang_choice',
-					'value'    => 'term_id',
-					'selected' => $lang ? $lang->term_id : '',
-					'flag'     => true,
-				)
-			),
+			$dropdown_html, // phpcs:ignore
 			esc_html__( 'Sets the language', 'polylang' )
 		);
 
@@ -118,15 +121,27 @@ class PLL_Admin_Filters_Term {
 		$lang = $this->model->term->get_language( $term_id );
 		$lang = empty( $lang ) ? $this->pref_lang : $lang;
 
-		$dropdown = new PLL_Walker_Dropdown();
-
 		// Disable the language dropdown and the translations input fields for default categories to prevent removal
 		$disabled = in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
+
+		$dropdown = new PLL_Walker_Dropdown();
+
+		$dropdown_html = $dropdown->walk(
+			$this->model->get_languages_list(),
+			array(
+				'name'     => 'term_lang_choice',
+				'value'    => 'term_id',
+				'selected' => $lang ? $lang->term_id : '',
+				'disabled' => $disabled,
+				'flag'     => true,
+			)
+		);
+
+		wp_nonce_field( 'pll_language', '_pll_nonce' );
 
 		printf(
 			'<tr class="form-field">
 				<th scope="row">
-					%s
 					<label for="term_lang_choice">%s</label>
 				</th>
 				<td id="select-edit-term-language">
@@ -134,18 +149,8 @@ class PLL_Admin_Filters_Term {
 					<p class="description">%s</p>
 				</td>
 			</tr>',
-			wp_nonce_field( 'pll_language', '_pll_nonce', true, false ),
 			esc_html__( 'Language', 'polylang' ),
-			$dropdown->walk(
-				$this->model->get_languages_list(),
-				array(
-					'name'     => 'term_lang_choice',
-					'value'    => 'term_id',
-					'selected' => $lang ? $lang->term_id : '',
-					'disabled' => $disabled,
-					'flag'     => true,
-				)
-			),
+			$dropdown_html, // phpcs:ignore
 			esc_html__( 'Sets the language', 'polylang' )
 		);
 

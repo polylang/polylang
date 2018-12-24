@@ -62,6 +62,18 @@ class PLL_Admin_Classic_Editor {
 
 		$dropdown = new PLL_Walker_Dropdown();
 
+		$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', (int) $post_ID ) : 'post_lang_choice';
+
+		$dropdown_html = $dropdown->walk(
+			$this->model->get_languages_list(),
+			array(
+				'name'     => $id,
+				'class'    => 'post_lang_choice tags-input',
+				'selected' => $lang ? $lang->slug : '',
+				'flag'     => true,
+			)
+		);
+
 		wp_nonce_field( 'pll_language', '_pll_nonce' );
 
 		// NOTE: the class "tags-input" allows to include the field in the autosave $_POST ( see autosave.js )
@@ -70,17 +82,9 @@ class PLL_Admin_Classic_Editor {
 			<label class="screen-reader-text" for="%2$s">%1$s</label>
 			<div id="select-%3$s-language">%4$s</div>',
 			esc_html__( 'Language', 'polylang' ),
-			$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', $post_ID ) : 'post_lang_choice',
-			'attachment' === $post_type ? 'media' : 'post',
-			$dropdown->walk(
-				$this->model->get_languages_list(),
-				array(
-					'name'     => $id,
-					'class'    => 'post_lang_choice tags-input',
-					'selected' => $lang ? $lang->slug : '',
-					'flag'     => true,
-				)
-			)
+			esc_attr( $id ),
+			( 'attachment' === $post_type ? 'media' : 'post' ),
+			$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
 		);
 
 		/**
