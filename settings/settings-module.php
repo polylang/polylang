@@ -48,13 +48,13 @@ class PLL_Settings_Module {
 			'deactivate'  => sprintf(
 				'<a title="%s" href="%s">%s</a>',
 				esc_attr__( 'Deactivate this module', 'polylang' ),
-				wp_nonce_url( '?page=mlang&amp;tab=modules&amp;pll_action=deactivate&amp;noheader=true&amp;module=' . $this->module, 'pll_deactivate' ),
+				esc_url( wp_nonce_url( '?page=mlang&tab=modules&pll_action=deactivate&noheader=true&module=' . $this->module, 'pll_deactivate' ) ),
 				esc_html__( 'Deactivate', 'polylang' )
 			),
 			'activate'    => sprintf(
 				'<a title="%s" href="%s">%s</a>',
 				esc_attr__( 'Activate this module', 'polylang' ),
-				wp_nonce_url( '?page=mlang&amp;tab=modules&amp;pll_action=activate&amp;noheader=true&amp;module=' . $this->module, 'pll_activate' ),
+				esc_url( wp_nonce_url( '?page=mlang&tab=modules&pll_action=activate&noheader=true&module=' . $this->module, 'pll_activate' ) ),
 				esc_html__( 'Activate', 'polylang' )
 			),
 			'activated'   => esc_html__( 'Activated', 'polylang' ),

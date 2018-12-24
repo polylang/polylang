@@ -320,7 +320,7 @@ class PLL_Settings extends PLL_Admin_Base {
 			printf(
 				'<div class="error"><p>%s <a href="%s">%s</a></p></div>',
 				esc_html__( 'There are posts, pages, categories or tags without language.', 'polylang' ),
-				wp_nonce_url( '?page=mlang&amp;pll_action=content-default-lang&amp;noheader=true', 'content-default-lang' ),
+				esc_url( wp_nonce_url( '?page=mlang&pll_action=content-default-lang&noheader=true', 'content-default-lang' ) ),
 				esc_html__( 'You can set them all to the default language.', 'polylang' )
 			);
 		}
