@@ -115,10 +115,10 @@ abstract class PLL_Base {
 					trigger_error(
 						sprintf(
 							'%1$s was called incorrectly in %3$s on line %4$s: the call to $polylang->%1$s() has been deprecated in Polylang 1.2, use PLL()->%2$s->%1$s() instead.' . "\nError handler",
-							$func,
-							$prop,
-							$debug[ $i ]['file'],
-							$debug[ $i ]['line']
+							esc_html( $func ),
+							esc_html( $prop ),
+							esc_html( $debug[ $i ]['file'] ),
+							absint( $debug[ $i ]['line'] )
 						)
 					);
 				}
@@ -127,6 +127,14 @@ abstract class PLL_Base {
 		}
 
 		$debug = debug_backtrace();
-		trigger_error( sprintf( 'Call to undefined function PLL()->%1$s() in %2$s on line %3$s' . "\nError handler", $func, $debug[0]['file'], $debug[0]['line'] ), E_USER_ERROR );
+		trigger_error(
+			sprintf(
+				'Call to undefined function PLL()->%1$s() in %2$s on line %3$s' . "\nError handler",
+				esc_html( $func ),
+				esc_html( $debug[0]['file'] ),
+				absint( $debug[0]['line'] )
+			),
+			E_USER_ERROR
+		);
 	}
 }

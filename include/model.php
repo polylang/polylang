@@ -616,11 +616,11 @@ class PLL_Model {
 				trigger_error(
 					sprintf(
 						'%1$s was called incorrectly in %4$s on line %5$s: the call to $polylang->model->%1$s() has been deprecated in Polylang 1.8, use PLL()->model->%2$s->%3$s() instead.' . "\nError handler",
-						$func,
-						$o,
-						$f,
-						$debug[ $i ]['file'],
-						$debug[ $i ]['line']
+						esc_html( $func ),
+						esc_html( $o ),
+						esc_html( $f ),
+						esc_html( $debug[ $i ]['file'] ),
+						absint( $debug[ $i ]['line'] )
 					)
 				);
 			}
@@ -628,6 +628,14 @@ class PLL_Model {
 		}
 
 		$debug = debug_backtrace();
-		trigger_error( sprintf( 'Call to undefined function PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler", $func, $debug[0]['file'], $debug[0]['line'] ), E_USER_ERROR );
+		trigger_error(
+			sprintf(
+				'Call to undefined function PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler",
+				esc_html( $func ),
+				esc_html( $debug[0]['file'] ),
+				absint( $debug[0]['line'] )
+			),
+			E_USER_ERROR
+		);
 	}
 }
