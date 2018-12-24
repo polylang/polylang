@@ -35,7 +35,6 @@ class PLL_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
 
 		$args = array_merge( $values, $args );
 		self::$polylang->model->add_language( $args );
-		unset( $GLOBALS['wp_settings_errors'] ); // Clean "errors"
 	}
 
 	static function delete_all_languages() {
@@ -50,7 +49,6 @@ class PLL_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
 					$wpdb->delete( $wpdb->term_taxonomy, array( 'term_id' => $default_cat ) );
 				}
 				self::$polylang->model->delete_language( $lang->term_id );
-				unset( $GLOBALS['wp_settings_errors'] );
 			}
 		}
 	}

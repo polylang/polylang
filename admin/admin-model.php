@@ -28,8 +28,9 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @return bool true if success / false if failed
 	 */
 	public function add_language( $args ) {
-		if ( ! $this->validate_lang( $args ) ) {
-			return false;
+		$errors = $this->validate_lang( $args );
+		if ( $errors->get_error_code() ) { // Using has_errors() would be more meaningful but is available only since WP 5.0
+			return $errors;
 		}
 
 		// First the language taxonomy
@@ -37,8 +38,7 @@ class PLL_Admin_Model extends PLL_Model {
 		$r = wp_insert_term( $args['name'], 'language', array( 'slug' => $args['slug'], 'description' => $description ) );
 		if ( is_wp_error( $r ) ) {
 			// Avoid an ugly fatal error if something went wrong ( reported once in the forum )
-			add_settings_error( 'general', 'pll_add_language', __( 'Impossible to add the language.', 'polylang' ) );
-			return false;
+			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language.', 'polylang' ) );
 		}
 		wp_update_term( (int) $r['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // can't set the term group directly in wp_insert_term
 
@@ -74,8 +74,6 @@ class PLL_Admin_Model extends PLL_Model {
 
 		$this->clean_languages_cache(); // Again to set add mo_id in the cached languages list
 		flush_rewrite_rules(); // Refresh rewrite rules
-
-		add_settings_error( 'general', 'pll_languages_created', __( 'Language added.', 'polylang' ), 'updated' );
 		return true;
 	}
 
@@ -90,7 +88,7 @@ class PLL_Admin_Model extends PLL_Model {
 		$lang = $this->get_language( (int) $lang_id );
 
 		if ( empty( $lang ) ) {
-			return;
+			return false;
 		}
 
 		// Oops ! we are deleting the default language...
@@ -157,7 +155,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		update_option( 'polylang', $this->options );
 		flush_rewrite_rules(); // refresh rewrite rules
-		add_settings_error( 'general', 'pll_languages_deleted', __( 'Language deleted.', 'polylang' ), 'updated' );
+		return true;
 	}
 
 	/**
@@ -181,8 +179,10 @@ class PLL_Admin_Model extends PLL_Model {
 	 */
 	public function update_language( $args ) {
 		$lang = $this->get_language( (int) $args['lang_id'] );
-		if ( ! $this->validate_lang( $args, $lang ) ) {
-			return false;
+
+		$errors = $this->validate_lang( $args, $lang );
+		if ( $errors->get_error_code() ) { // Using has_errors() would be more meaningful but is available only since WP 5.0
+			return $errors;
 		}
 
 		// Update links to this language in posts and terms in case the slug has been modified
@@ -250,7 +250,6 @@ class PLL_Admin_Model extends PLL_Model {
 
 		$this->clean_languages_cache();
 		flush_rewrite_rules(); // Refresh rewrite rules
-		add_settings_error( 'general', 'pll_languages_updated', __( 'Language updated.', 'polylang' ), 'updated' );
 		return true;
 	}
 
@@ -266,35 +265,37 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @return bool true if success / false if failed
 	 */
 	protected function validate_lang( $args, $lang = null ) {
+		$errors = new WP_Error();
+
 		// Validate locale with the same pattern as WP 4.3. See #28303
 		if ( ! preg_match( '#^[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?$#', $args['locale'], $matches ) ) {
-			add_settings_error( 'general', 'pll_invalid_locale', __( 'Enter a valid WordPress locale', 'polylang' ) );
+			$errors->add( 'pll_invalid_locale', __( 'Enter a valid WordPress locale', 'polylang' ) );
 		}
 
 		// Validate slug characters
 		if ( ! preg_match( '#^[a-z_-]+$#', $args['slug'] ) ) {
-			add_settings_error( 'general', 'pll_invalid_slug', __( 'The language code contains invalid characters', 'polylang' ) );
+			$errors->add( 'pll_invalid_slug', __( 'The language code contains invalid characters', 'polylang' ) );
 		}
 
 		// Validate slug is unique
 		foreach ( $this->get_languages_list() as $language ) {
 			if ( $language->slug === $args['slug'] && ( null === $lang || ( isset( $lang ) && $lang->term_id != $language->term_id ) ) ) {
-				add_settings_error( 'general', 'pll_non_unique_slug', __( 'The language code must be unique', 'polylang' ) );
+				$errors->add( 'pll_non_unique_slug', __( 'The language code must be unique', 'polylang' ) );
 			}
 		}
 
 		// Validate name
 		// No need to sanitize it as wp_insert_term will do it for us
 		if ( empty( $args['name'] ) ) {
-			add_settings_error( 'general', 'pll_invalid_name', __( 'The language must have a name', 'polylang' ) );
+			$errors->add( 'pll_invalid_name', __( 'The language must have a name', 'polylang' ) );
 		}
 
 		// Validate flag
 		if ( ! empty( $args['flag'] ) && ! file_exists( POLYLANG_DIR . '/flags/' . $args['flag'] . '.png' ) ) {
-			add_settings_error( 'general', 'pll_invalid_flag', __( 'The flag does not exist', 'polylang' ) );
+			$errors->add( 'pll_invalid_flag', __( 'The flag does not exist', 'polylang' ) );
 		}
 
-		return get_settings_errors() ? false : true;
+		return $errors;
 	}
 
 	/**

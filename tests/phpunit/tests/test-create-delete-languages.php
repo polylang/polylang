@@ -109,34 +109,25 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'term_group' => 1,
 		);
 
-		$this->assertFalse( self::$polylang->model->add_language( $args ) );
-		$this->assertEquals( 'The language must have a name', $wp_settings_errors[0]['message'] );
-		$wp_settings_errors = array(); // clean "errors"
+		$this->assertWPError( self::$polylang->model->add_language( $args ), 'The language must have a name' );
 
 		$args['name'] = 'English';
 		$args['locale'] = 'EN';
 
-		$this->assertFalse( self::$polylang->model->add_language( $args ) );
-		$this->assertEquals( 'Enter a valid WordPress locale', $wp_settings_errors[0]['message'] );
-		$wp_settings_errors = array(); // clean "errors"
+		$this->assertWPError( self::$polylang->model->add_language( $args ), 'Enter a valid WordPress locale' );
 
 		$args['locale'] = 'en-US';
 
-		$this->assertFalse( self::$polylang->model->add_language( $args ) );
-		$this->assertEquals( 'Enter a valid WordPress locale', $wp_settings_errors[0]['message'] );
-		$wp_settings_errors = array(); // clean "errors"
+		$this->assertWPError( self::$polylang->model->add_language( $args ), 'Enter a valid WordPress locale' );
 
 		$args['locale'] = 'en_US';
 		$args['slug'] = 'EN';
 
-		$this->assertFalse( self::$polylang->model->add_language( $args ) );
-		$this->assertEquals( 'The language code contains invalid characters', $wp_settings_errors[0]['message'] );
-		$wp_settings_errors = array(); // clean "errors"
+		$this->assertWPError( self::$polylang->model->add_language( $args ), 'The language code contains invalid characters' );
 
 		$args['slug'] = 'en';
 		$args['flag'] = 'en';
-		$this->assertFalse( self::$polylang->model->add_language( $args ) );
-		$this->assertEquals( 'The flag does not exist', $wp_settings_errors[0]['message'] );
-		$wp_settings_errors = array(); // clean "errors"
+
+		$this->assertWPError( self::$polylang->model->add_language( $args ), 'The flag does not exist' );
 	}
 }
