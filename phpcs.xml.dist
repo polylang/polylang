@@ -2,34 +2,58 @@
 <ruleset name="Polylang">
 	<description>Coding standards for Polylang</description>
 
-	<rule ref="WordPress-Core">
-		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
-		<exclude name="WordPress.Files.FileName"/>
-		<exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCase"/>
-		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
+	<rule ref="WordPress">
+		<exclude name="Generic.Classes.DuplicateClassName.Found"/>
+		<exclude name="Generic.Commenting.Fixme.TaskFound"/>
+		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
+		<exclude name="PEAR.Files.IncludingFile.UseIncludeOnce"/>
+		<exclude name="PEAR.Files.IncludingFile.UseRequire"/>
+		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+		<exclude name="Squiz.Commenting.FileComment.Missing"/>
+		<exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
+		<exclude name="Squiz.Commenting.FileComment.SpacingAfterOpen"/>
+		<exclude name="Squiz.Commenting.FileComment.WrongStyle"/>
+		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+		<exclude name="Squiz.Commenting.InlineComment.SpacingAfter"/>
+		<exclude name="Squiz.Commenting.VariableComment.Missing"/>
+		<exclude name="Squiz.Commenting.VariableComment.WrongStyle"/>
+		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
+		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
 		<exclude name="WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound"/>
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned"/>
-		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
-		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
-		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
+		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.Found"/>
+		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.FoundInTernaryCondition"/>
+		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition"/>
+		<exclude name="WordPress.DB.DirectDatabaseQuery.DirectQuery"/>
+		<exclude name="WordPress.DB.DirectDatabaseQuery.NoCaching"/>
+		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_meta_key"/>
+		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_tax_query"/>
+		<exclude name="WordPress.Files.FileName"/>
+		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
+		<exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCase"/>
+		<exclude name="WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize" />
+		<exclude name="WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize" />
+		<exclude name="WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode" />
+		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
+		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
+		<exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents" />
+		<exclude name="WordPress.WP.AlternativeFunctions.json_encode_json_encode" />
+		<exclude name="WordPress.WP.AlternativeFunctions.parse_url_parse_url" />
+		<exclude name="WordPress.WP.AlternativeFunctions.strip_tags_strip_tags" />
+		<exclude name="WordPress.WP.EnqueuedResources.NonEnqueuedScript" />
+		<exclude name="WordPress.WP.EnqueuedResourceParameters.NotInFooter" />
+		<exclude name="WordPress.WP.GlobalVariablesOverride.OverrideProhibited" />
+		<exclude name="WordPress.WP.PostsPerPage.posts_per_page_posts_per_page" />
 	</rule>
 
-	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged" >
+	<rule ref="Generic.Commenting.Fixme.CommentFound" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="WordPress-Docs">
-		<exclude name="Squiz.Commenting.FileComment.Missing"/>
-		<exclude name="Squiz.Commenting.FileComment.SpacingAfterOpen"/>
-		<exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
-		<exclude name="Squiz.Commenting.FileComment.WrongStyle"/>
-		<exclude name="Squiz.Commenting.VariableComment.Missing"/>
-		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
-		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
-		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
-		<exclude name="Squiz.Commenting.InlineComment.SpacingAfter"/>
-		<exclude name="Squiz.Commenting.VariableComment.WrongStyle"/>
-		<exclude name="Generic.Commenting.Fixme.TaskFound"/>
+	<rule ref="Generic.Files.OneClassPerFile.MultipleFound" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
 	<rule ref="Squiz.Commenting.ClassComment.Missing" >
@@ -44,24 +68,24 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Generic.Commenting.Fixme.CommentFound" >
+	<rule ref="Squiz.PHP.CommentedOutCode.Found" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<!-- From WordPress-Extra -->
-	<rule ref="WordPress.Classes.ClassInstantiation"/>
+	<rule ref="Squiz.Scope.MemberVarScope.Missing" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
 
 	<rule ref="Squiz.Scope.MethodScope" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="PSR2.Methods.MethodDeclaration">
-		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="PEAR.Files.IncludingFile">
-		<exclude name="PEAR.Files.IncludingFile.UseIncludeOnce"/>
-		<exclude name="PEAR.Files.IncludingFile.UseRequire"/>
+	<rule ref="WordPress.Security" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
 	<exclude-pattern>coverage/*</exclude-pattern>
