@@ -187,7 +187,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			wp_die( -1 );
 		}
 
-		if ( $this->module === $_POST['module'] && ! empty( $_POST['licenses'] ) ) {
+		if ( isset( $_POST['module'] ) && $this->module === $_POST['module'] && ! empty( $_POST['licenses'] ) ) {
 			$x = new WP_Ajax_Response();
 			foreach ( $this->items as $item ) {
 				$updated_item = $item->activate_license( sanitize_text_field( $_POST['licenses'][ $item->id ] ) );
@@ -213,6 +213,10 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( -1 );
+		}
+
+		if ( ! isset( $_POST['id'] ) ) {
+			wp_die( 0 );
 		}
 
 		$id = sanitize_text_field( substr( $_POST['id'], 11 ) );

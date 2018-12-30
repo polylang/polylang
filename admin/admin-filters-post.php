@@ -160,7 +160,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @since 2.3
 	 */
 	public function bulk_edit_posts() {
-		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) && -1 !== $_GET['inline_lang_choice'] ) {
+		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'], $_REQUEST['post'] ) && -1 !== $_GET['inline_lang_choice'] ) {
 			check_admin_referer( 'bulk-posts' );
 
 			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {

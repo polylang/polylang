@@ -111,6 +111,10 @@ class PLL_Admin_Classic_Editor {
 	public function post_lang_choice() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
+		if ( ! isset( $_POST['post_id'], $_POST['lang'], $_POST['post_type'] ) ) {
+			wp_die( 0 );
+		}
+
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
 		$post_id = $post_ID = (int) $_POST['post_id'];
 		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
@@ -206,8 +210,12 @@ class PLL_Admin_Classic_Editor {
 	public function ajax_posts_not_translated() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
+		if ( ! isset( $_GET['post_type'], $_GET['post_language'], $_GET['translation_language'], $_GET['term'], $_GET['pll_post_id'] ) ) {
+			wp_die( 0 );
+		}
+
 		if ( ! post_type_exists( $_GET['post_type'] ) ) {
-			die( 0 );
+			wp_die( 0 );
 		}
 
 		$post_language = $this->model->get_language( sanitize_key( $_GET['post_language'] ) );

@@ -55,10 +55,13 @@ class PLL_Admin_Filters_Term {
 	 * @since 0.1
 	 */
 	public function add_term_form() {
-		$taxonomy = $_GET['taxonomy'];
-		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type'];
+		if ( isset( $_GET['taxonomy'] ) ) {
+			$taxonomy = sanitize_key( $_GET['taxonomy'] ); // WPCS: CSRF ok.
+		}
 
-		if ( ! taxonomy_exists( $taxonomy ) || ! post_type_exists( $post_type ) ) {
+		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+
+		if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) || ! post_type_exists( $post_type ) ) {
 			return;
 		}
 
@@ -212,7 +215,7 @@ class PLL_Admin_Filters_Term {
 
 		// Edit tags
 		if ( isset( $_POST['term_lang_choice'] ) ) {
-			if ( 'add-' . $taxonomy == $_POST['action'] ) {
+			if ( isset( $_POST['action'] ) && 'add-' . $taxonomy === $_POST['action'] ) {
 				check_ajax_referer( $_POST['action'], '_ajax_nonce-add-' . $taxonomy ); // category metabox
 			}
 			else {
@@ -404,13 +407,17 @@ class PLL_Admin_Filters_Term {
 	public function term_lang_choice() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
+		if ( ! isset( $_POST['taxonomy'], $_POST['post_type'], $_POST['lang'] ) ) {
+			wp_die( 0 );
+		}
+
 		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 		$term_id = isset( $_POST['term_id'] ) ? (int) $_POST['term_id'] : null;
 		$taxonomy = $_POST['taxonomy'];
 		$post_type = $_POST['post_type'];
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
-			die( 0 );
+			wp_die( 0 );
 		}
 
 		ob_start();
@@ -467,12 +474,16 @@ class PLL_Admin_Filters_Term {
 	public function ajax_terms_not_translated() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
+		if ( ! isset( $_GET['term'], $_GET['post_type'], $_GET['taxonomy'], $_GET['term_language'], $_GET['translation_language'] ) ) {
+			wp_die( 0 );
+		}
+
 		$s = wp_unslash( $_GET['term'] );
 		$post_type = $_GET['post_type'];
 		$taxonomy = $_GET['taxonomy'];
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
-			die( 0 );
+			wp_die( 0 );
 		}
 
 		$term_language = $this->model->get_language( sanitize_key( $_GET['term_language'] ) );
@@ -494,8 +505,8 @@ class PLL_Admin_Filters_Term {
 		}
 
 		// Add current translation in list
-		// Not in add term for as term_id is not set
-		if ( 'undefined' !== $_GET['term_id'] && $term_id = $this->model->term->get_translation( (int) $_GET['term_id'], $translation_language ) ) {
+		// Not in add term as term_id is not set
+		if ( isset( $_GET['term_id'] ) && 'undefined' !== $_GET['term_id'] && $term_id = $this->model->term->get_translation( (int) $_GET['term_id'], $translation_language ) ) {
 			$term = get_term( $term_id, $taxonomy );
 			array_unshift(
 				$return,

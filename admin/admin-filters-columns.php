@@ -284,8 +284,12 @@ class PLL_Admin_Filters_Columns {
 	public function ajax_update_post_rows() {
 		global $wp_list_table;
 
+		if ( ! isset( $_POST['post_type'], $_POST['post_id'], $_POST['screen'] ) ) {
+			wp_die( 0 );
+		}
+
 		if ( ! post_type_exists( $post_type = $_POST['post_type'] ) || ! $this->model->is_translated_post_type( $post_type ) ) {
-			die( 0 );
+			wp_die( 0 );
 		}
 
 		check_ajax_referer( 'inlineeditnonce', '_pll_nonce' );
@@ -318,8 +322,12 @@ class PLL_Admin_Filters_Columns {
 	public function ajax_update_term_rows() {
 		global $wp_list_table;
 
+		if ( ! isset( $_POST['taxonomy'], $_POST['term_id'], $_POST['screen'] ) ) {
+			wp_die( 0 );
+		}
+
 		if ( ! taxonomy_exists( $taxonomy = $_POST['taxonomy'] ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
-			die( 0 );
+			wp_die( 0 );
 		}
 
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
