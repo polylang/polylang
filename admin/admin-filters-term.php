@@ -67,7 +67,7 @@ class PLL_Admin_Filters_Term {
 
 		$from_term_id = isset( $_GET['from_tag'] ) ? (int) $_GET['from_tag'] : 0; // WPCS: CSRF ok.
 
-		$lang = isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : $this->pref_lang;
+		$lang = isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : $this->pref_lang; // WPCS: CSRF ok.
 
 		$dropdown = new PLL_Walker_Dropdown();
 
@@ -176,14 +176,14 @@ class PLL_Admin_Filters_Term {
 	 */
 	public function wp_dropdown_cats( $output ) {
 		if ( isset( $_GET['taxonomy'] ) ) {
-			$taxonomy = sanitize_key( $_GET['taxonomy'] );
+			$taxonomy = sanitize_key( $_GET['taxonomy'] ); // WPCS: CSRF ok.
 		}
 
 		if ( isset( $taxonomy, $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $taxonomy ) ) {
 			$term = get_term( (int) $_GET['from_tag'], $taxonomy ); // WPCS: CSRF ok.
 
 			if ( $term && $id = $term->parent ) {
-				$lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) );
+				$lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // WPCS: CSRF ok.
 				if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
 					return str_replace( '"' . $parent . '"', '"' . $parent . '" selected="selected"', $output );
 				}
@@ -200,7 +200,7 @@ class PLL_Admin_Filters_Term {
 	 * @param int $post_id
 	 */
 	public function pre_post_update( $post_id ) {
-		if ( isset( $_GET['bulk_edit'] ) ) {
+		if ( isset( $_GET['bulk_edit'] ) ) { // WPCS: CSRF ok.
 			$this->post_id = $post_id;
 		}
 	}
@@ -350,10 +350,10 @@ class PLL_Admin_Filters_Term {
 		// As 'wp_update_term' can be called from outside WP admin
 		// 2nd test for creating tags when creating / editing a post
 		$tax = get_taxonomy( $taxonomy );
-		if ( current_user_can( $tax->cap->edit_terms ) || ( isset( $_POST['tax_input'][ $taxonomy ] ) && current_user_can( $tax->cap->assign_terms ) ) ) {
+		if ( current_user_can( $tax->cap->edit_terms ) || ( isset( $_POST['tax_input'][ $taxonomy ] ) && current_user_can( $tax->cap->assign_terms ) ) ) { // WPCS: CSRF ok.
 			$this->save_language( $term_id, $taxonomy );
 
-			if ( isset( $_POST['term_tr_lang'] ) ) {
+			if ( isset( $_POST['term_tr_lang'] ) ) { // WPCS: CSRF ok.
 				$translations = $this->save_translations( $term_id );
 			}
 		}
@@ -385,21 +385,21 @@ class PLL_Admin_Filters_Term {
 
 		// If the term already exists in another language
 		if ( ! $slug && $this->model->is_translated_taxonomy( $taxonomy ) && term_exists( $name, $taxonomy ) ) {
-			if ( isset( $_POST['term_lang_choice'] ) ) {
-				$slug = $name . '-' . $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) )->slug;
+			if ( isset( $_POST['term_lang_choice'] ) ) { // WPCS: CSRF ok.
+				$slug = $name . '-' . $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) )->slug; // WPCS: CSRF ok.
 			}
 
-			elseif ( isset( $_POST['inline_lang_choice'] ) ) {
-				$slug = $name . '-' . $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) )->slug;
+			elseif ( isset( $_POST['inline_lang_choice'] ) ) { // WPCS: CSRF ok.
+				$slug = $name . '-' . $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) )->slug; // WPCS: CSRF ok.
 			}
 
 			// *Post* bulk edit, in case a new term is created
-			elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) {
+			elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) { // WPCS: CSRF ok.
 				// Bulk edit does not modify the language
-				if ( -1 == $_GET['inline_lang_choice'] ) {
+				if ( -1 == $_GET['inline_lang_choice'] ) { // WPCS: CSRF ok.
 					$slug = $name . '-' . $this->model->post->get_language( $this->post_id )->slug;
 				} else {
-					$slug = $name . '-' . $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) )->slug;
+					$slug = $name . '-' . $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) )->slug; // WPCS: CSRF ok.
 				}
 			}
 		}
@@ -486,7 +486,7 @@ class PLL_Admin_Filters_Term {
 			wp_die( 0 );
 		}
 
-		$s = wp_unslash( $_GET['term'] );
+		$s = wp_unslash( $_GET['term'] ); // WPCS: sanitization ok.
 		$post_type = sanitize_key( $_GET['post_type'] );
 		$taxonomy = sanitize_key( $_GET['taxonomy'] );
 
@@ -603,7 +603,7 @@ class PLL_Admin_Filters_Term {
 				$translations[ $key ] = _split_shared_term( $tr_id, $tr_term->term_taxonomy_id );
 
 				// Hack translation ids sent by the form to avoid overwrite in PLL_Admin_Filters_Term::save_translations
-				if ( isset( $_POST['term_tr_lang'][ $key ] ) && $_POST['term_tr_lang'][ $key ] == $tr_id ) {
+				if ( isset( $_POST['term_tr_lang'][ $key ] ) && $_POST['term_tr_lang'][ $key ] == $tr_id ) { // WPCS: CSRF ok.
 					$_POST['term_tr_lang'][ $key ] = $translations[ $key ];
 				}
 			}

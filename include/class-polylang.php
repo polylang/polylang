@@ -183,7 +183,7 @@ class Polylang {
 			$polylang = new PLL_Admin( $links_model );
 		}
 		// Do nothing on frontend if no language is defined
-		elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) {
+		elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // WPCS: CSRF ok.
 			$polylang = new PLL_Frontend( $links_model );
 		}
 

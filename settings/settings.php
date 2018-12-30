@@ -175,7 +175,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					}
 				} else {
 					add_settings_error( 'general', 'pll_languages_created', __( 'Language added.', 'polylang' ), 'updated' );
-					$locale = sanitize_text_field( wp_unslash( $_POST['locale'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.
+					$locale = sanitize_text_field( wp_unslash( $_POST['locale'] ) ); // phpcs:ignore WordPress.Security
 
 					if ( 'en_US' !== $locale ) {
 						// Attempts to install the language pack
@@ -296,9 +296,9 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		// Handle user input
-		$action = isset( $_REQUEST['pll_action'] ) ? $_REQUEST['pll_action'] : '';
-		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) {
-			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
+		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // WPCS: CSRF ok.
+		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // WPCS: CSRF ok.
+			$edit_lang = $this->model->get_language( (int) $_GET['lang'] ); // WPCS: CSRF ok.
 		} else {
 			$this->handle_actions( $action );
 		}

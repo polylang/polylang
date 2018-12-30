@@ -59,7 +59,7 @@ class PLL_Admin_Classic_Editor {
 		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0; // WPCS: CSRF ok.
 
 		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
-			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) :
+			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // WPCS: CSRF ok.
 			$this->pref_lang );
 
 		$dropdown = new PLL_Walker_Dropdown();
@@ -230,7 +230,7 @@ class PLL_Admin_Classic_Editor {
 
 		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
 		$args = array(
-			's'                => wp_unslash( $_GET['term'] ),
+			's'                => wp_unslash( $_GET['term'] ), // WCPS: sanitization ok.
 			'suppress_filters' => 0, // To make the post_fields filter work
 			'lang'             => 0, // Avoid admin language filter
 			'numberposts'      => 20, // Limit to 20 posts
@@ -296,7 +296,7 @@ class PLL_Admin_Classic_Editor {
 	 * @return array Modified arguments
 	 */
 	public function page_attributes_dropdown_pages_args( $dropdown_args, $post ) {
-		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // ajax or not ?
+		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // WPCS: CSRF ok.
 		if ( ! $dropdown_args['lang'] ) {
 			$dropdown_args['lang'] = $this->pref_lang;
 		}
