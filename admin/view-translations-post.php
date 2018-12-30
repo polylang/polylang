@@ -17,12 +17,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 
 		$value = $this->model->post->get_translation( $post_ID, $language );
-		if ( ! $value || $value == $post_ID ) { // $value == $post_ID happens if the post has been ( auto )saved before changing the language
+		if ( ! $value || $value == $post_ID ) { // $value == $post_ID happens if the post has been (auto)saved before changing the language
 			$value = '';
 		}
 
-		if ( isset( $_GET['from_post'] ) ) {
-			$value = $this->model->post->get( (int) $_GET['from_post'], $language );
+		if ( ! empty( $from_post_id ) ) {
+			$value = $this->model->post->get( $from_post_id, $language );
 		}
 
 		$link = $add_link = $this->links->new_post_translation_link( $post_ID, $language );

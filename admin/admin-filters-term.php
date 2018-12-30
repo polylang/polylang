@@ -62,7 +62,9 @@ class PLL_Admin_Filters_Term {
 			return;
 		}
 
-		$lang = isset( $_GET['new_lang'] ) ? $this->model->get_language( $_GET['new_lang'] ) : $this->pref_lang;
+		$from_term_id = isset( $_GET['from_tag'] ) ? (int) $_GET['from_tag'] : 0; // WPCS: CSRF ok.
+
+		$lang = isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : $this->pref_lang;
 
 		$dropdown = new PLL_Walker_Dropdown();
 
@@ -89,8 +91,8 @@ class PLL_Admin_Filters_Term {
 			esc_html__( 'Sets the language', 'polylang' )
 		);
 
-		if ( ! empty( $_GET['from_tag'] ) ) {
-			printf( '<input type="hidden" name="from_tag" value="%d" />', (int) $_GET['from_tag'] );
+		if ( ! empty( $from_term_id ) ) {
+			printf( '<input type="hidden" name="from_tag" value="%d" />', (int) $from_term_id );
 		}
 
 		// Adds translation fields

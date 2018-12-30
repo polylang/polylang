@@ -56,6 +56,8 @@ class PLL_Admin_Classic_Editor {
 		$post_id = $post_ID;
 		$post_type = get_post_type( $post_ID );
 
+		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0; // WPCS: CSRF ok.
+
 		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
 			( isset( $_GET['new_lang'] ) ? $this->model->get_language( $_GET['new_lang'] ) :
 			$this->pref_lang );
