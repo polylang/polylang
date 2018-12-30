@@ -220,11 +220,11 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.2
 	 */
 	protected function home_language() {
-		// test referer in case PLL_COOKIE is set to false
-		// thanks to Ov3rfly http://wordpress.org/support/topic/enhance-feature-when-front-page-is-visited-set-language-according-to-browser
-		$language = $this->options['hide_default'] && ( ( isset( $_SERVER['HTTP_REFERER'] ) && in_array( parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_HOST ), $this->links_model->get_hosts() ) ) || ! $this->options['browser'] ) ?
+		// Test referer in case PLL_COOKIE is set to false. Since WP 3.6.1, wp_get_referer() validates the host which is exactly what we want
+		// Thanks to Ov3rfly http://wordpress.org/support/topic/enhance-feature-when-front-page-is-visited-set-language-according-to-browser
+		$language = $this->options['hide_default'] && ( wp_get_referer() || ! $this->options['browser'] ) ?
 			$this->model->get_language( $this->options['default_lang'] ) :
-			$this->get_preferred_language(); // sets the language according to browser preference or default language
+			$this->get_preferred_language(); // Sets the language according to browser preference or default language
 		$this->set_language( $language );
 	}
 
