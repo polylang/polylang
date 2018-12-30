@@ -175,7 +175,7 @@ class PLL_Admin_Filters_Term {
 		if ( isset( $_GET['taxonomy'], $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $_GET['taxonomy'] ) ) {
 			$term = get_term( (int) $_GET['from_tag'], $_GET['taxonomy'] );
 			if ( $term && $id = $term->parent ) {
-				$lang = $this->model->get_language( $_GET['new_lang'] );
+				$lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) );
 				if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
 					return str_replace( '"' . $parent . '"', '"' . $parent . '" selected="selected"', $output );
 				}
@@ -219,7 +219,7 @@ class PLL_Admin_Filters_Term {
 				check_admin_referer( 'pll_language', '_pll_nonce' ); // edit tags or tags metabox
 			}
 
-			$this->model->term->set_language( $term_id, $this->model->get_language( $_POST['term_lang_choice'] ) );
+			$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ) );
 		}
 
 		// *Post* bulk edit, in case a new term is created
@@ -259,7 +259,7 @@ class PLL_Admin_Filters_Term {
 			}
 
 			else {
-				$this->model->term->set_language( $term_id, $this->model->get_language( $_GET['inline_lang_choice'] ) );
+				$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) );
 			}
 		}
 
@@ -271,7 +271,7 @@ class PLL_Admin_Filters_Term {
 			);
 
 			$old_lang = $this->model->term->get_language( $term_id ); // Stores the old  language
-			$lang = $this->model->get_language( $_POST['inline_lang_choice'] ); // New language
+			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ); // New language
 			$translations = $this->model->term->get_translations( $term_id );
 
 			// Checks if the new language already exists in the translation group
@@ -292,7 +292,7 @@ class PLL_Admin_Filters_Term {
 		// Edit post
 		elseif ( isset( $_POST['post_lang_choice'] ) ) { // FIXME should be useless now
 			check_admin_referer( 'pll_language', '_pll_nonce' );
-			$this->model->term->set_language( $term_id, $this->model->get_language( $_POST['post_lang_choice'] ) );
+			$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) ) );
 		}
 	}
 
@@ -375,11 +375,11 @@ class PLL_Admin_Filters_Term {
 		// If the term already exists in another language
 		if ( ! $slug && $this->model->is_translated_taxonomy( $taxonomy ) && term_exists( $name, $taxonomy ) ) {
 			if ( isset( $_POST['term_lang_choice'] ) ) {
-				$slug = $name . '-' . $this->model->get_language( $_POST['term_lang_choice'] )->slug;
+				$slug = $name . '-' . $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) )->slug;
 			}
 
 			elseif ( isset( $_POST['inline_lang_choice'] ) ) {
-				$slug = $name . '-' . $this->model->get_language( $_POST['inline_lang_choice'] )->slug;
+				$slug = $name . '-' . $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) )->slug;
 			}
 
 			// *Post* bulk edit, in case a new term is created
@@ -388,7 +388,7 @@ class PLL_Admin_Filters_Term {
 				if ( -1 == $_GET['inline_lang_choice'] ) {
 					$slug = $name . '-' . $this->model->post->get_language( $this->post_id )->slug;
 				} else {
-					$slug = $name . '-' . $this->model->get_language( $_GET['inline_lang_choice'] )->slug;
+					$slug = $name . '-' . $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) )->slug;
 				}
 			}
 		}
@@ -404,7 +404,7 @@ class PLL_Admin_Filters_Term {
 	public function term_lang_choice() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
-		$lang = $this->model->get_language( $_POST['lang'] );
+		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 		$term_id = isset( $_POST['term_id'] ) ? (int) $_POST['term_id'] : null;
 		$taxonomy = $_POST['taxonomy'];
 		$post_type = $_POST['post_type'];
@@ -475,8 +475,8 @@ class PLL_Admin_Filters_Term {
 			die( 0 );
 		}
 
-		$term_language = $this->model->get_language( $_GET['term_language'] );
-		$translation_language = $this->model->get_language( $_GET['translation_language'] );
+		$term_language = $this->model->get_language( sanitize_key( $_GET['term_language'] ) );
+		$translation_language = $this->model->get_language( sanitize_key( $_GET['translation_language'] ) );
 
 		$return = array();
 

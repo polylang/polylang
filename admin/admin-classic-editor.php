@@ -59,7 +59,7 @@ class PLL_Admin_Classic_Editor {
 		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0; // WPCS: CSRF ok.
 
 		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
-			( isset( $_GET['new_lang'] ) ? $this->model->get_language( $_GET['new_lang'] ) :
+			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) :
 			$this->pref_lang );
 
 		$dropdown = new PLL_Walker_Dropdown();
@@ -113,7 +113,7 @@ class PLL_Admin_Classic_Editor {
 
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
 		$post_id = $post_ID = (int) $_POST['post_id'];
-		$lang = $this->model->get_language( $_POST['lang'] );
+		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 
 		$post_type = $_POST['post_type'];
 		$post_type_object = get_post_type_object( $post_type );
@@ -210,8 +210,8 @@ class PLL_Admin_Classic_Editor {
 			die( 0 );
 		}
 
-		$post_language = $this->model->get_language( $_GET['post_language'] );
-		$translation_language = $this->model->get_language( $_GET['translation_language'] );
+		$post_language = $this->model->get_language( sanitize_key( $_GET['post_language'] ) );
+		$translation_language = $this->model->get_language( sanitize_key( $_GET['translation_language'] ) );
 
 		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
 		$args = array(
@@ -281,7 +281,7 @@ class PLL_Admin_Classic_Editor {
 	 * @return array Modified arguments
 	 */
 	public function page_attributes_dropdown_pages_args( $dropdown_args, $post ) {
-		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( $_POST['lang'] ) : $this->model->post->get_language( $post->ID ); // ajax or not ?
+		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // ajax or not ?
 		if ( ! $dropdown_args['lang'] ) {
 			$dropdown_args['lang'] = $this->pref_lang;
 		}

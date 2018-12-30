@@ -200,7 +200,7 @@ abstract class PLL_Choose_Lang {
 	public function get_preferred_language() {
 		// check first if the user was already browsing this site
 		if ( isset( $_COOKIE[ PLL_COOKIE ] ) ) {
-			return $this->model->get_language( $_COOKIE[ PLL_COOKIE ] );
+			return $this->model->get_language( sanitize_key( $_COOKIE[ PLL_COOKIE ] ) );
 		}
 
 		/**

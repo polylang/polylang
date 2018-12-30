@@ -81,12 +81,12 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		// Bails if the translations already exists
 		// See https://wordpress.org/support/topic/edit-translation-in-media-attachments?#post-7322303
 		// Or if the source media does not exist
-		if ( $this->model->post->get_translation( $post_id, $_GET['new_lang'] ) || ! get_post( $post_id ) ) {
+		if ( $this->model->post->get_translation( $post_id, sanitize_key( $_GET['new_lang'] ) ) || ! get_post( $post_id ) ) {
 			wp_safe_redirect( wp_get_referer() );
 			exit;
 		}
 
-		$tr_id = $this->posts->create_media_translation( $post_id, $_GET['new_lang'] );
+		$tr_id = $this->posts->create_media_translation( $post_id, sanitize_key( $_GET['new_lang'] ) );
 		wp_safe_redirect( admin_url( sprintf( 'post.php?post=%d&action=edit', $tr_id ) ) ); // WP 3.5+
 		exit;
 	}

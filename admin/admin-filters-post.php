@@ -111,7 +111,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			$post_type_object = get_post_type_object( $post->post_type );
 
 			if ( current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
-				$this->model->post->set_language( $post_id, $this->model->get_language( $_POST['post_lang_choice'] ) );
+				$this->model->post->set_language( $post_id, $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) ) );
 
 				if ( isset( $_POST['post_tr_lang'] ) ) {
 					$this->save_translations( $post_id, $_POST['post_tr_lang'] );
@@ -163,7 +163,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) && -1 !== $_GET['inline_lang_choice'] ) {
 			check_admin_referer( 'bulk-posts' );
 
-			if ( $lang = $this->model->get_language( $_GET['inline_lang_choice'] ) ) {
+			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {
 				$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
 				foreach ( $post_ids as $post_id ) {
 					$this->inline_save_language( $post_id, $lang );
@@ -182,7 +182,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		if ( isset( $_POST['post_ID'], $_POST['inline_lang_choice'] ) ) {
 			$post_id = (int) $_POST['post_ID'];
-			$lang = $this->model->get_language( $_POST['inline_lang_choice'] );
+			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
 			if ( $post_id && $lang ) {
 				$this->inline_save_language( $post_id, $lang );
 			}

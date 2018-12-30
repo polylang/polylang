@@ -251,7 +251,7 @@ class PLL_Admin_Base extends PLL_Base {
 		} elseif ( 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) && $lang = $this->model->post->get_language( (int) $_GET['post'] ) ) {
 			$this->curlang = $lang;
 		} elseif ( 'post-new.php' === $GLOBALS['pagenow'] && ( empty( $_GET['post_type'] ) || $this->model->is_translated_post_type( $_GET['post_type'] ) ) ) {
-			$this->curlang = empty( $_GET['new_lang'] ) ? $this->pref_lang : $this->model->get_language( $_GET['new_lang'] );
+			$this->curlang = empty( $_GET['new_lang'] ) ? $this->pref_lang : $this->model->get_language( sanitize_key( $_GET['new_lang'] ) );
 		}
 
 		// Edit Term
@@ -262,7 +262,7 @@ class PLL_Admin_Base extends PLL_Base {
 			$this->curlang = $lang;
 		} elseif ( 'edit-tags.php' === $GLOBALS['pagenow'] && isset( $_GET['taxonomy'] ) && $this->model->is_translated_taxonomy( $_GET['taxonomy'] ) ) {
 			if ( ! empty( $_GET['new_lang'] ) ) {
-				$this->curlang = $this->model->get_language( $_GET['new_lang'] );
+				$this->curlang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) );
 			} elseif ( empty( $this->curlang ) ) {
 				$this->curlang = $this->pref_lang;
 			}
@@ -270,7 +270,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Ajax
 		if ( wp_doing_ajax() && ! empty( $_REQUEST['lang'] ) ) {
-			$this->curlang = $this->model->get_language( $_REQUEST['lang'] );
+			$this->curlang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) );
 		}
 	}
 
@@ -283,7 +283,7 @@ class PLL_Admin_Base extends PLL_Base {
 		// Language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
 		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( $_GET['lang'] ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) {
-			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( $_GET['lang'] ) ) ? $lang->slug : '' );
+			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ) ) ? $lang->slug : '' );
 		}
 
 		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
