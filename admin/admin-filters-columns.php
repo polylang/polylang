@@ -282,7 +282,7 @@ class PLL_Admin_Filters_Columns {
 	 * @since 1.7
 	 */
 	public function ajax_update_post_rows() {
-		global $wp_list_table;
+		check_ajax_referer( 'inlineeditnonce', '_pll_nonce' );
 
 		if ( ! isset( $_POST['post_type'], $_POST['post_id'], $_POST['screen'] ) ) {
 			wp_die( 0 );
@@ -292,10 +292,10 @@ class PLL_Admin_Filters_Columns {
 			wp_die( 0 );
 		}
 
-		check_ajax_referer( 'inlineeditnonce', '_pll_nonce' );
+		global $wp_list_table;
+		$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => $_POST['screen'] ) );
 
 		$x = new WP_Ajax_Response();
-		$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => $_POST['screen'] ) );
 
 		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // collect old translations
 		$translations = array_merge( $translations, array( $_POST['post_id'] ) ); // add current post
@@ -320,7 +320,7 @@ class PLL_Admin_Filters_Columns {
 	 * @since 1.7
 	 */
 	public function ajax_update_term_rows() {
-		global $wp_list_table;
+		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
 		if ( ! isset( $_POST['taxonomy'], $_POST['term_id'], $_POST['screen'] ) ) {
 			wp_die( 0 );
@@ -330,10 +330,10 @@ class PLL_Admin_Filters_Columns {
 			wp_die( 0 );
 		}
 
-		check_ajax_referer( 'pll_language', '_pll_nonce' );
+		global $wp_list_table;
+		$wp_list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => $_POST['screen'] ) );
 
 		$x = new WP_Ajax_Response();
-		$wp_list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => $_POST['screen'] ) );
 
 		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // collect old translations
 		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // add current translations
