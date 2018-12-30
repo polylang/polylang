@@ -119,7 +119,12 @@ class PLL_Admin_Classic_Editor {
 		$post_id = $post_ID = (int) $_POST['post_id'];
 		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 
-		$post_type = $_POST['post_type'];
+		$post_type = sanitize_key( $_POST['post_type'] );
+
+		if ( ! post_type_exists( $post_type ) ) {
+			wp_die( 0 );
+		}
+
 		$post_type_object = get_post_type_object( $post_type );
 		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
 			wp_die( -1 );
@@ -214,7 +219,9 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 0 );
 		}
 
-		if ( ! post_type_exists( $_GET['post_type'] ) ) {
+		$post_type = sanitize_key( $_GET['post_type'] );
+
+		if ( ! post_type_exists( $post_type ) ) {
 			wp_die( 0 );
 		}
 
@@ -228,7 +235,7 @@ class PLL_Admin_Classic_Editor {
 			'lang'             => 0, // Avoid admin language filter
 			'numberposts'      => 20, // Limit to 20 posts
 			'post_status'      => 'any',
-			'post_type'        => $_GET['post_type'],
+			'post_type'        => $post_type,
 			'tax_query'        => array(
 				array(
 					'taxonomy' => 'language',

@@ -221,8 +221,8 @@ class PLL_Admin_Filters_Columns {
 			return $out;
 		}
 
-		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type']; // 2nd case for quick edit
-		$taxonomy = isset( $GLOBALS['taxonomy'] ) ? $GLOBALS['taxonomy'] : $_REQUEST['taxonomy'];
+		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+		$taxonomy = isset( $GLOBALS['taxonomy'] ) ? $GLOBALS['taxonomy'] : sanitize_key( $_REQUEST['taxonomy'] ); // WPCS: CSRF ok.
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			return $out;
@@ -288,7 +288,9 @@ class PLL_Admin_Filters_Columns {
 			wp_die( 0 );
 		}
 
-		if ( ! post_type_exists( $post_type = $_POST['post_type'] ) || ! $this->model->is_translated_post_type( $post_type ) ) {
+		$post_type = sanitize_key( $_POST['post_type'] );
+
+		if ( ! post_type_exists( $post_type ) || ! $this->model->is_translated_post_type( $post_type ) ) {
 			wp_die( 0 );
 		}
 
@@ -326,7 +328,9 @@ class PLL_Admin_Filters_Columns {
 			wp_die( 0 );
 		}
 
-		if ( ! taxonomy_exists( $taxonomy = $_POST['taxonomy'] ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+		$taxonomy = sanitize_key( $_POST['taxonomy'] );
+
+		if ( ! taxonomy_exists( $taxonomy ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			wp_die( 0 );
 		}
 

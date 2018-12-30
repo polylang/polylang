@@ -114,7 +114,7 @@ class PLL_Admin_Filters_Term {
 	 * @param object $tag
 	 */
 	public function edit_term_form( $tag ) {
-		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type'];
+		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
 
 		if ( ! post_type_exists( $post_type ) ) {
 			return;
@@ -175,8 +175,13 @@ class PLL_Admin_Filters_Term {
 	 * @return string modified html
 	 */
 	public function wp_dropdown_cats( $output ) {
-		if ( isset( $_GET['taxonomy'], $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $_GET['taxonomy'] ) ) {
-			$term = get_term( (int) $_GET['from_tag'], $_GET['taxonomy'] );
+		if ( isset( $_GET['taxonomy'] ) ) {
+			$taxonomy = sanitize_key( $_GET['taxonomy'] );
+		}
+
+		if ( isset( $taxonomy, $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $taxonomy ) ) {
+			$term = get_term( (int) $_GET['from_tag'], $taxonomy ); // WPCS: CSRF ok.
+
 			if ( $term && $id = $term->parent ) {
 				$lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) );
 				if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
@@ -215,11 +220,10 @@ class PLL_Admin_Filters_Term {
 
 		// Edit tags
 		if ( isset( $_POST['term_lang_choice'] ) ) {
-			if ( isset( $_POST['action'] ) && 'add-' . $taxonomy === $_POST['action'] ) {
-				check_ajax_referer( $_POST['action'], '_ajax_nonce-add-' . $taxonomy ); // category metabox
-			}
-			else {
-				check_admin_referer( 'pll_language', '_pll_nonce' ); // edit tags or tags metabox
+			if ( isset( $_POST['action'] ) && sanitize_key( $_POST['action'] ) === 'add-' . $taxonomy ) { // WPCS: CSRF ok.
+				check_ajax_referer( 'add-' . $taxonomy, '_ajax_nonce-add-' . $taxonomy ); // Category metabox
+			} else {
+				check_admin_referer( 'pll_language', '_pll_nonce' ); // Edit tags or tags metabox
 			}
 
 			$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ) );
@@ -413,8 +417,8 @@ class PLL_Admin_Filters_Term {
 
 		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 		$term_id = isset( $_POST['term_id'] ) ? (int) $_POST['term_id'] : null;
-		$taxonomy = $_POST['taxonomy'];
-		$post_type = $_POST['post_type'];
+		$taxonomy = sanitize_key( $_POST['taxonomy'] );
+		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			wp_die( 0 );
@@ -479,8 +483,8 @@ class PLL_Admin_Filters_Term {
 		}
 
 		$s = wp_unslash( $_GET['term'] );
-		$post_type = $_GET['post_type'];
-		$taxonomy = $_GET['taxonomy'];
+		$post_type = sanitize_key( $_GET['post_type'] );
+		$taxonomy = sanitize_key( $_GET['taxonomy'] );
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			wp_die( 0 );
