@@ -47,7 +47,7 @@ class PLL_Admin_Links extends PLL_Links {
 				'new_lang'  => $language->slug,
 			);
 
-			$link = add_query_arg( $args, admin_url( 'post-new.php' ) );
+			$link = wp_nonce_url( add_query_arg( $args, admin_url( 'post-new.php' ) ), 'new-post-translation' );
 		}
 
 		/**

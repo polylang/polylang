@@ -161,9 +161,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$_GET = array(
+		$_REQUEST = $_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
 		$to = $this->factory->post->create();
@@ -198,10 +199,11 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$_GET = array(
+		$_REQUEST = $_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'post_type' => 'page',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
 		$to = $this->factory->post->create( array( 'post_type' => 'page' ) );
@@ -404,9 +406,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->options['sync'] = array( 'post_date' ); // Sync publish date
 
 		$GLOBALS['pagenow'] = 'post-new.php';
-		$_GET = array(
+		$_REQUEST = $_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
 		$to = $this->factory->post->create();
@@ -462,9 +465,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$_GET = array(
+		$_REQUEST = $_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
 		$to = $this->factory->post->create();

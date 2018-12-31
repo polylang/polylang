@@ -34,8 +34,14 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $postarr ) {
-		// Make sure not to impact media translations created at the same time
-		return isset( $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) && $_GET['post_type'] === $postarr['post_type'] && ( $id = wp_get_post_parent_id( (int) $_GET['from_post'] ) ) && ( $parent = $this->model->post->get_translation( $id, $_GET['new_lang'] ) ) ? $parent : $post_parent;
+		if ( isset( $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
+			check_admin_referer( 'new-post-translation' );
+			// Make sure not to impact media translations created at the same time
+			if ( $_GET['post_type'] === $postarr['post_type'] && ( $id = wp_get_post_parent_id( (int) $_GET['from_post'] ) ) && $parent = $this->model->post->get_translation( $id, sanitize_key( $_GET['new_lang'] ) ) ) {
+				$post_parent = $parent;
+			}
+		}
+		return $post_parent;
 	}
 
 	/**
@@ -48,6 +54,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 */
 	public function wp_insert_post_data( $data ) {
 		if ( isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $data['post_type'] ) ) {
+			check_admin_referer( 'new-post-translation' );
+
 			$from_post_id = (int) $_GET['from_post'];
 			$from_post    = get_post( $from_post_id );
 
@@ -56,7 +64,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			}
 
 			// Copy the date only if the synchronization is activated
-			if ( in_array( 'post_date', PLL()->options['sync'] ) ) {
+			if ( in_array( 'post_date', $this->options['sync'] ) ) {
 				$data['post_date']     = $from_post->post_date;
 				$data['post_date_gmt'] = $from_post->post_date_gmt;
 			}
@@ -75,9 +83,11 @@ class PLL_Admin_Sync extends PLL_Sync {
 		static $done = array();
 
 		if ( isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $post->post_type ) ) {
+			check_admin_referer( 'new-post-translation' );
+
 			// Capability check already done in post-new.php
 			$from_post_id = (int) $_GET['from_post'];
-			$lang         = $this->model->get_language( $_GET['new_lang'] );
+			$lang         = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) );
 
 			if ( ! $from_post_id || ! $lang || ! empty( $done[ $from_post_id ] ) ) {
 				return;
@@ -109,6 +119,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		// For new drafts, save the date now otherwise it is overriden by WP. Thanks to JoryHogeveen. See #32.
 		if ( in_array( 'post_date', $this->options['sync'] ) && isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] ) {
+			check_admin_referer( 'new-post-translation' );
+
 			unset( $postarr['post_date'] );
 			unset( $postarr['post_date_gmt'] );
 
@@ -126,7 +138,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		if ( isset( $GLOBALS['post_type'] ) ) {
 			$post_type = $GLOBALS['post_type'];
 		} elseif ( isset( $_REQUEST['post_type'] ) ) {
-			$post_type = $_REQUEST['post_type']; // 2nd case for quick edit
+			$post_type = sanitize_key( $_REQUEST['post_type'] ); // 2nd case for quick edit
 		}
 
 		// Make sure not to impact media translations when creating them at the same time as post
