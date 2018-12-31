@@ -32,8 +32,9 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.8
 	 */
 	public function init() {
-		if ( Polylang::is_ajax_on_front() || false === stripos( $_SERVER['SCRIPT_FILENAME'], 'index.php' ) ) {
-			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( $_REQUEST['lang'] ) );
+		$filename = isset( $_SERVER['SCRIPT_FILENAME'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SCRIPT_FILENAME'] ) ) : '';
+		if ( Polylang::is_ajax_on_front() || false === stripos( $filename, 'index.php' ) ) {
+			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ); // WPCS: CSRF ok.
 		}
 
 		add_action( 'pre_comment_on_post', array( $this, 'pre_comment_on_post' ) ); // sets the language of comment
@@ -119,7 +120,11 @@ abstract class PLL_Choose_Lang {
 
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
 			// Break up string into pieces ( languages and q factors )
-			preg_match_all( '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse );
+			preg_match_all(
+				'/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?))?/i',
+				sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ),
+				$lang_parse
+			);
 
 			$k = $lang_parse[1];
 			$v = $lang_parse[4];
