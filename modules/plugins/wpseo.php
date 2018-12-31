@@ -144,9 +144,11 @@ class PLL_WPSEO {
 	 * @return $url
 	 */
 	public function wpseo_home_url( $url, $path ) {
-		$uri = empty( $path ) ? ltrim( $_SERVER['REQUEST_URI'], '/' ) : $path;
+		if ( empty( $path ) ) {
+			$path = ltrim( parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
+		}
 
-		if ( 'sitemap_index.xml' === $uri || preg_match( '#([^/]+?)-sitemap([0-9]+)?\.xml|([a-z]+)?-?sitemap\.xsl#', $uri ) ) {
+		if ( 'sitemap_index.xml' === $path || preg_match( '#([^/]+?)-sitemap([0-9]+)?\.xml|([a-z]+)?-?sitemap\.xsl#', $path ) ) {
 			$url = PLL()->links_model->switch_language_in_link( $url, PLL()->curlang );
 		}
 

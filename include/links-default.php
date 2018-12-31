@@ -75,7 +75,7 @@ class PLL_Links_Default extends PLL_Links_Model {
 	 */
 	public function get_language_from_url( $url = '' ) {
 		if ( empty( $url ) ) {
-			$url = $_SERVER['REQUEST_URI'];
+			$url = pll_get_requested_url();
 		}
 
 		$pattern = '#lang=(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')#';

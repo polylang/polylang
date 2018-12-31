@@ -35,7 +35,11 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 	 * @return string language slug
 	 */
 	public function get_language_from_url( $url = '' ) {
-		$host = empty( $url ) ? $_SERVER['HTTP_HOST'] : parse_url( $url, PHP_URL_HOST );
+		if ( empty( $url ) ) {
+			$url = pll_get_requested_url();
+		}
+
+		$host = parse_url( $url, PHP_URL_HOST );
 		return ( $lang = array_search( $host, $this->get_hosts() ) ) ? $lang : '';
 	}
 

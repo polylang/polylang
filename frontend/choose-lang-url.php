@@ -31,14 +31,16 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 	 * @since 1.2
 	 */
 	public function set_language_from_url() {
-		$host = str_replace( 'www.', '', parse_url( $this->links_model->home, PHP_URL_HOST ) ); // Remove www. for the comparison
-		$home_path = parse_url( $this->links_model->home, PHP_URL_PATH );
+		$host      = str_replace( 'www.', '', parse_url( $this->links_model->home, PHP_URL_HOST ) ); // Remove www. for the comparison
+		$home_path = (string) parse_url( $this->links_model->home, PHP_URL_PATH );
 
-		$requested_host = parse_url( 'http://' . str_replace( 'www.', '', $_SERVER['HTTP_HOST'] ), PHP_URL_HOST ); // Remove the port and www. for the comparison
-		$requested_uri = rtrim( str_replace( $this->index, '', $_SERVER['REQUEST_URI'] ), '/' ); // Some PHP setups turn requests for / into /index.php in REQUEST_URI
+		$requested_url   = pll_get_requested_url();
+		$requested_host  = str_replace( 'www.', '', parse_url( $requested_url, PHP_URL_HOST ) ); // Remove www. for the comparison
+		$requested_path  = rtrim( str_replace( $this->index, '', parse_url( $requested_url, PHP_URL_PATH ) ), '/' ); // Some PHP setups turn requests for / into /index.php in REQUEST_URI
+		$requested_query = parse_url( $requested_url, PHP_URL_QUERY );
 
 		// Home is requested
-		if ( $requested_host == $host && $requested_uri == $home_path && empty( $_SERVER['QUERY_STRING'] ) ) {
+		if ( $requested_host === $host && $requested_path === $home_path && empty( $requested_query ) ) {
 			$this->home_language();
 			add_action( 'setup_theme', array( $this, 'home_requested' ) );
 		}

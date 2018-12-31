@@ -334,7 +334,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		if ( empty( $requested_url ) ) {
-			$requested_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$requested_url = pll_get_requested_url();
 		}
 
 		if ( is_single() || is_page() ) {
@@ -362,11 +362,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		if ( 3 === $this->options['force_lang'] ) {
+			$requested_host = parse_url( $requested_url, PHP_URL_HOST );
 			foreach ( $this->options['domains'] as $lang => $domain ) {
 				$host = parse_url( $domain, PHP_URL_HOST );
-				if ( 'www.' . $_SERVER['HTTP_HOST'] === $host || 'www.' . $host === $_SERVER['HTTP_HOST'] ) {
+				if ( 'www.' . $requested_host === $host || 'www.' . $host === $requested_host ) {
 					$language = $this->model->get_language( $lang );
-					$redirect_url = str_replace( '://' . $_SERVER['HTTP_HOST'], '://' . $host, $requested_url );
+					$redirect_url = str_replace( '://' . $requested_host, '://' . $host, $requested_url );
 				}
 			}
 		}

@@ -295,12 +295,15 @@ class PLL_Plugins_Compat {
 			}
 
 			// If we can't associate the requested domain to a language, redirect to the default domain
+			$requested_url  = pll_get_requested_url();
+			$requested_host = parse_url( $requested_url, PHP_URL_HOST );
+
 			$hosts = PLL()->links_model->get_hosts();
-			$lang = array_search( $_SERVER['HTTP_HOST'], $hosts );
+			$lang  = array_search( $requested_host, $hosts );
 
 			if ( empty( $lang ) ) {
-				$status = get_site_option( 'dm_301_redirect' ) ? '301' : '302'; // Honor status redirect option
-				$redirect = ( is_ssl() ? 'https://' : 'http://' ) . $hosts[ $options['default_lang'] ] . $_SERVER['REQUEST_URI'];
+				$status   = get_site_option( 'dm_301_redirect' ) ? '301' : '302'; // Honor status redirect option
+				$redirect = str_replace( '://' . $requested_host, '://' . $hosts[ $options['default_lang'] ], $requested_url );
 				wp_safe_redirect( $redirect, $status );
 				exit;
 			}

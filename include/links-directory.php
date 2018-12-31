@@ -108,11 +108,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 */
 	public function get_language_from_url( $url = '' ) {
 		if ( empty( $url ) ) {
-			$path = $_SERVER['REQUEST_URI'];
-		} else {
-			$path = parse_url( $url, PHP_URL_PATH );
+			$url = pll_get_requested_url();
 		}
 
+		$path = parse_url( $url, PHP_URL_PATH );
 		$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
 
 		$pattern = parse_url( $root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );

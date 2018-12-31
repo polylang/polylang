@@ -251,9 +251,12 @@ abstract class PLL_Choose_Lang {
 		// Test to avoid crash if get_home_url returns something wrong
 		// FIXME why this happens? http://wordpress.org/support/topic/polylang-crashes-1
 		// Don't redirect if $_POST is not empty as it could break other plugins
-		// Don't forget the query string which may be added by plugins
-		elseif ( is_string( $redirect = $this->curlang->home_url ) && empty( $_POST ) ) {
-			$redirect = empty( $_SERVER['QUERY_STRING'] ) ? $redirect : $redirect . ( $this->links_model->using_permalinks ? '?' : '&' ) . $_SERVER['QUERY_STRING'];
+		elseif ( is_string( $redirect = $this->curlang->home_url ) && empty( $_POST ) ) { // WPCS: CSRF ok.
+			// Don't forget the query string which may be added by plugins
+			$query_string = parse_url( pll_get_requested_url(), PHP_URL_QUERY );
+			if ( ! empty( $query_string ) ) {
+				$redirect .= ( $this->links_model->using_permalinks ? '?' : '&' ) . $query_string;
+			}
 
 			/**
 			 * When a visitor reaches the site home, Polylang redirects to the home page in the correct language.
