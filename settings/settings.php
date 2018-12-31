@@ -30,7 +30,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		parent::__construct( $links_model );
 
 		if ( isset( $_GET['page'] ) ) {
-			$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( $_GET['page'], 6 );
+			$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( sanitize_key( $_GET['page'] ), 6 ); // WPCS: CSRF ok.
 		}
 
 		PLL_Admin_Strings::init();
@@ -175,11 +175,12 @@ class PLL_Settings extends PLL_Admin_Base {
 					}
 				} else {
 					add_settings_error( 'general', 'pll_languages_created', __( 'Language added.', 'polylang' ), 'updated' );
+					$locale = sanitize_text_field( wp_unslash( $_POST['locale'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.
 
-					if ( 'en_US' !== $_POST['locale'] ) {
+					if ( 'en_US' !== $locale ) {
 						// Attempts to install the language pack
 						require_once ABSPATH . 'wp-admin/includes/translation-install.php';
-						if ( ! wp_download_language_pack( $_POST['locale'] ) ) {
+						if ( ! wp_download_language_pack( $locale ) ) {
 							add_settings_error( 'general', 'pll_download_mo', __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' ) );
 						}
 
@@ -243,13 +244,23 @@ class PLL_Settings extends PLL_Admin_Base {
 
 			case 'activate':
 				check_admin_referer( 'pll_activate' );
-				$this->modules[ $_GET['module'] ]->activate();
+				if ( isset( $_GET['module'] ) ) {
+					$module = sanitize_key( $_GET['module'] );
+					if ( isset( $this->modules[ $module ] ) ) {
+						$this->modules[ $module ]->activate();
+					}
+				}
 				self::redirect();
 				break;
 
 			case 'deactivate':
 				check_admin_referer( 'pll_deactivate' );
-				$this->modules[ $_GET['module'] ]->deactivate();
+				if ( isset( $_GET['module'] ) ) {
+					$module = sanitize_key( $_GET['module'] );
+					if ( isset( $this->modules[ $module ] ) ) {
+						$this->modules[ $module ]->deactivate();
+					}
+				}
 				self::redirect();
 				break;
 

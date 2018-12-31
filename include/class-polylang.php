@@ -100,8 +100,8 @@ class Polylang {
 	public static function is_ajax_on_front() {
 		// Special test for plupload which does not use jquery ajax and thus does not pass our ajax prefilter
 		// Special test for customize_save done in frontend but for which we want to load the admin
-		$in = isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'upload-attachment', 'customize_save' ) );
-		$is_ajax_on_front = wp_doing_ajax() && empty( $_REQUEST['pll_ajax_backend'] ) && ! $in;
+		$in = isset( $_REQUEST['action'] ) && in_array( sanitize_key( $_REQUEST['action'] ), array( 'upload-attachment', 'customize_save' ) ); // WPCS: CSRF ok.
+		$is_ajax_on_front = wp_doing_ajax() && empty( $_REQUEST['pll_ajax_backend'] ) && ! $in; // WPCS: CSRF ok.
 
 		/**
 		 * Filters whether the current request is an ajax request on front.
@@ -137,7 +137,7 @@ class Polylang {
 
 		// Settings page whatever the tab
 		if ( ! defined( 'PLL_SETTINGS' ) ) {
-			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( $_GET['page'], 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) );
+			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( sanitize_key( $_GET['page'] ), 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) ); // WPCS: CSRF ok.
 		}
 	}
 

@@ -31,7 +31,15 @@ class PLL_Table_String extends WP_List_Table {
 		$this->languages = $languages;
 		$this->strings = PLL_Admin_Strings::get_strings();
 		$this->groups = array_unique( wp_list_pluck( $this->strings, 'context' ) );
-		$this->selected_group = empty( $_GET['group'] ) || ! in_array( $_GET['group'], $this->groups ) ? -1 : $_GET['group'];
+
+		$this->selected_group = -1;
+
+		if ( ! empty( $_GET['group'] ) ) {
+			$group = sanitize_text_field( wp_unslash( $_GET['group'] ) );
+			if ( in_array( $group, $this->groups ) ) {
+				$this->selected_group = $group;
+			}
+		}
 
 		add_action( 'mlang_action_string-translation', array( $this, 'save_translations' ) );
 	}
@@ -183,8 +191,15 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return int -1 or 1 if $a is considered to be respectively less than or greater than $b.
 	 */
 	protected function usort_reorder( $a, $b ) {
-			$result = strcmp( $a[ $_GET['orderby'] ], $b[ $_GET['orderby'] ] ); // determine sort order
-			return ( empty( $_GET['order'] ) || 'asc' === $_GET['order'] ) ? $result : -$result; // send final sort direction to usort
+		if ( ! empty( $_GET['orderby'] ) ) {
+			$orderby = sanitize_key( $_GET['orderby'] );
+			if ( isset( $a[ $orderby ], $b[ $orderby ] ) ) {
+				$result = strcmp( $a[ $orderby ], $b[ $orderby ] ); // Determine sort order
+				return ( empty( $_GET['order'] ) || 'asc' === $_GET['order'] ) ? $result : -$result; // send final sort direction to usort
+			}
+		}
+
+		return 0;
 	}
 
 	/**
@@ -228,9 +243,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		// Sorting
-		if ( ! empty( $_GET['orderby'] ) ) { // No sort by default
-			usort( $data, array( $this, 'usort_reorder' ) );
-		}
+		usort( $data, array( $this, 'usort_reorder' ) );
 
 		// Paging
 		$per_page = $this->get_items_per_page( 'pll_strings_per_page' );
@@ -376,7 +389,7 @@ class PLL_Table_String extends WP_List_Table {
 
 		// Unregisters strings registered through WPML API
 		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) ) {
-			foreach ( $_POST['strings'] as $key ) {
+			foreach ( array_map( 'sanitize_key', $_POST['strings'] ) as $key ) {
 				icl_unregister_string( $this->strings[ $key ]['context'], $this->strings[ $key ]['name'] );
 			}
 		}

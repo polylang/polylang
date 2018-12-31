@@ -114,7 +114,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 				$this->model->post->set_language( $post_id, $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) ) );
 
 				if ( isset( $_POST['post_tr_lang'] ) ) {
-					$this->save_translations( $post_id, $_POST['post_tr_lang'] );
+					$this->save_translations( $post_id, array_map( 'absint', $_POST['post_tr_lang'] ) );
 				}
 			}
 		}

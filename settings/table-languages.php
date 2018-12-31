@@ -235,7 +235,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @return int -1 or 1 if $a is considered to be respectively less than or greater than $b.
 	 */
 	protected function usort_reorder( $a, $b ) {
-		$orderby = ! empty( $_GET['orderby'] ) ? $_GET['orderby'] : 'name';
+		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_key( $_GET['orderby'] ) : 'name';
 		// Determine sort order
 		if ( is_numeric( $a->$orderby ) ) {
 			$result = $a->$orderby > $b->$orderby ? 1 : -1;
@@ -243,7 +243,7 @@ class PLL_Table_Languages extends WP_List_Table {
 			$result = strcmp( $a->$orderby, $b->$orderby );
 		}
 		// Send final sort direction to usort
-		return ( empty( $_GET['order'] ) || 'asc' == $_GET['order'] ) ? $result : -$result;
+		return ( empty( $_GET['order'] ) || 'asc' === $_GET['order'] ) ? $result : -$result;
 	}
 
 	/**

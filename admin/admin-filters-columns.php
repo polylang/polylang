@@ -295,13 +295,15 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		global $wp_list_table;
-		$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => $_POST['screen'] ) );
+		$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => sanitize_key( $_POST['screen'] ) ) );
 
 		$x = new WP_Ajax_Response();
 
-		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // collect old translations
-		$translations = array_merge( $translations, array( $_POST['post_id'] ) ); // add current post
+		// Collect old translations
+		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // WPCS: sanitization ok.
 		$translations = array_map( 'intval', $translations );
+
+		$translations = array_merge( $translations, array( (int) $_POST['post_id'] ) ); // Add current post
 
 		foreach ( $translations as $post_id ) {
 			$level = is_post_type_hierarchical( $post_type ) ? count( get_ancestors( $post_id, $post_type ) ) : 0;
@@ -335,14 +337,16 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		global $wp_list_table;
-		$wp_list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => $_POST['screen'] ) );
+		$wp_list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => sanitize_key( $_POST['screen'] ) ) );
 
 		$x = new WP_Ajax_Response();
 
-		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // collect old translations
-		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // add current translations
-		$translations = array_unique( $translations ); // remove duplicates
+		// Collect old translations
+		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // WPCS: sanitization ok.
 		$translations = array_map( 'intval', $translations );
+
+		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // Add current translations
+		$translations = array_unique( $translations ); // Remove duplicates
 
 		foreach ( $translations as $term_id ) {
 			$level = is_taxonomy_hierarchical( $taxonomy ) ? count( get_ancestors( $term_id, $taxonomy ) ) : 0;

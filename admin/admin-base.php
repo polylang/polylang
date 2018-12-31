@@ -248,7 +248,7 @@ class PLL_Admin_Base extends PLL_Base {
 		// Edit Post
 		if ( isset( $_REQUEST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] ) ) {
 			$this->curlang = $lang;
-		} elseif ( 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) && $lang = $this->model->post->get_language( (int) $_GET['post'] ) ) {
+		} elseif ( 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && $lang = $this->model->post->get_language( (int) $_GET['post'] ) ) { // WPCS: CSRF ok.
 			$this->curlang = $lang;
 		} elseif ( 'post-new.php' === $GLOBALS['pagenow'] && ( empty( $_GET['post_type'] ) || $this->model->is_translated_post_type( sanitize_key( $_GET['post_type'] ) ) ) ) { // WPCS: CSRF ok.
 			$this->curlang = empty( $_GET['new_lang'] ) ? $this->pref_lang : $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // WPCS: CSRF ok.
@@ -282,7 +282,7 @@ class PLL_Admin_Base extends PLL_Base {
 	public function init_user() {
 		// Language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
-		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( $_GET['lang'] ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) {
+		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( sanitize_key( $_GET['lang'] ) ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) {
 			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ) ) ? $lang->slug : '' );
 		}
 

@@ -147,7 +147,7 @@ class PLL_Admin_Classic_Editor {
 		// Categories
 		if ( isset( $_POST['taxonomies'] ) ) {
 			// Not set for pages
-			foreach ( $_POST['taxonomies'] as $taxname ) {
+			foreach ( array_map( 'sanitize_key', $_POST['taxonomies'] ) as $taxname ) {
 				$taxonomy = get_taxonomy( $taxname );
 
 				ob_start();
