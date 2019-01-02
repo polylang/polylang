@@ -195,4 +195,26 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	public function clean_term_cache( $ids ) {
 		clean_object_term_cache( $ids, 'term' );
 	}
+
+	/**
+	 * Check if a user can synchronize terms translations
+	 *
+	 * @since 2.6
+	 *
+	 * @param int $id Term id
+	 * @return bool
+	 */
+	public function current_user_can_synchronize( $id ) {
+		if ( ! current_user_can( 'edit_term', $id ) ) {
+			return false;
+		}
+
+		foreach ( $this->get_translations( $id ) as $tr_id ) {
+			if ( $tr_id !== $id && ! current_user_can( 'edit_term', $tr_id ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
