@@ -223,20 +223,16 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 			}
 
 			// Support for theme customizer
-			// Let's look for multilingual menu locations directly in $_POST as there are not in customizer object
-			if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) {
-				$customized = json_decode( wp_unslash( $_POST['customized'] ) );
-
-				if ( is_object( $customized ) ) {
-					foreach ( $customized as $key => $c ) {
-						if ( false !== strpos( $key, 'nav_menu_locations[' ) ) {
-							$loc = substr( trim( $key, ']' ), 19 );
-							$infos = $this->explode_location( $loc );
-							if ( $infos['lang'] == $this->curlang->slug ) {
-								$menus[ $infos['location'] ] = $c;
-							} elseif ( $this->curlang->slug == $this->options['default_lang'] ) {
-								$menus[ $loc ] = $c;
-							}
+			if ( is_customize_preview() ) {
+				global $wp_customize;
+				foreach ( $wp_customize->unsanitized_post_values() as $key => $value ) {
+					if ( false !== strpos( $key, 'nav_menu_locations[' ) ) {
+						$loc = substr( trim( $key, ']' ), 19 );
+						$infos = $this->explode_location( $loc );
+						if ( $infos['lang'] === $this->curlang->slug ) {
+							$menus[ $infos['location'] ] = (int) $value;
+						} elseif ( $this->curlang->slug === $this->options['default_lang'] ) {
+							$menus[ $loc ] = (int) $value;
 						}
 					}
 				}
