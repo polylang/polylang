@@ -23,6 +23,9 @@ class PLL_Sync {
 		$this->post_metas = new PLL_Sync_Post_Metas( $polylang );
 		$this->term_metas = new PLL_Sync_Term_Metas( $polylang );
 
+		add_filter( 'wp_insert_post_parent', array( $this, 'can_sync_post_parent' ), 10, 3 );
+		add_filter( 'wp_insert_post_data', array( $this, 'can_sync_post_data' ), 10, 2 );
+
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
 		add_action( 'pll_save_term', array( $this, 'sync_term_parent' ), 10, 3 );
 
@@ -67,6 +70,52 @@ class PLL_Sync {
 	}
 
 	/**
+	 * Prevents synchronized post parent modification if the current user hasn't enough rights
+	 *
+	 * @since 2.6
+	 *
+	 * @param int   $post_parent Post parent ID
+	 * @param int   $post_id     Post ID, unused
+	 * @param array $postarr     Array of parsed post data
+	 * @return int
+	 */
+	public function can_sync_post_parent( $post_parent, $post_id, $postarr ) {
+		if ( ! empty( $postarr['ID'] ) && ! $this->model->post->current_user_can_synchronize( $postarr['ID'] ) ) {
+			$tr_ids = $this->model->post->get_translations( $postarr['ID'] );
+			$orig_lang = array_search( $postarr['ID'], $tr_ids );
+			foreach ( $tr_ids as $tr_id ) {
+				if ( $tr_id !== $postarr['ID'] && $parent = $this->model->post->get_translation( $tr_id, $orig_lang ) ) {
+					$post_parent = $parent;
+					break;
+				}
+			}
+		}
+		return $post_parent;
+	}
+
+	/**
+	 * Prevents synchronized post data modification if the current user hasn't enough rights
+	 *
+	 * @since 2.6
+	 *
+	 * @param array $data    An array of slashed post data.
+	 * @param array $postarr An array of sanitized, but otherwise unmodified post data.
+	 * @return array
+	 */
+	public function can_sync_post_data( $data, $postarr ) {
+		if ( ! empty( $postarr['ID'] ) && ! $this->model->post->current_user_can_synchronize( $postarr['ID'] ) ) {
+			foreach ( $this->model->post->get_translations( $postarr['ID'] ) as $tr_id ) {
+				if ( $tr_id !== $postarr['ID'] && $post = get_post( $tr_id ) ) {
+					$to_sync = $this->get_fields_to_sync( $post );
+					$data = array_merge( $data, $to_sync );
+					break;
+				}
+			}
+		}
+		return $data;
+	}
+
+	/**
 	 * Synchronizes post fields in translations
 	 *
 	 * @since 2.4
@@ -78,29 +127,31 @@ class PLL_Sync {
 	public function pll_save_post( $post_id, $post, $translations ) {
 		global $wpdb;
 
-		$postarr = $this->get_fields_to_sync( $post );
+		if ( $this->model->post->current_user_can_synchronize( $post_id ) ) {
+			$postarr = $this->get_fields_to_sync( $post );
 
-		if ( ! empty( $postarr ) ) {
-			foreach ( $translations as $lang => $tr_id ) {
-				if ( ! $tr_id || $tr_id === $post_id ) {
-					continue;
-				}
-
-				$tr_arr = $postarr;
-				unset( $tr_arr['post_parent'] );
-
-				// Do not udpate the translation parent if the user set a parent with no translation
-				if ( isset( $postarr['post_parent'] ) ) {
-					$post_parent = $postarr['post_parent'] ? $this->model->post->get_translation( $postarr['post_parent'], $lang ) : 0;
-					if ( ! ( $postarr['post_parent'] && ! $post_parent ) ) {
-						$tr_arr['post_parent'] = $post_parent;
+			if ( ! empty( $postarr ) ) {
+				foreach ( $translations as $lang => $tr_id ) {
+					if ( ! $tr_id || $tr_id === $post_id ) {
+						continue;
 					}
-				}
 
-				// Update all the row at once
-				// Don't use wp_update_post to avoid infinite loop
-				$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
-				clean_post_cache( $tr_id );
+					$tr_arr = $postarr;
+					unset( $tr_arr['post_parent'] );
+
+					// Do not udpate the translation parent if the user set a parent with no translation
+					if ( isset( $postarr['post_parent'] ) ) {
+						$post_parent = $postarr['post_parent'] ? $this->model->post->get_translation( $postarr['post_parent'], $lang ) : 0;
+						if ( ! ( $postarr['post_parent'] && ! $post_parent ) ) {
+							$tr_arr['post_parent'] = $post_parent;
+						}
+					}
+
+					// Update all the row at once
+					// Don't use wp_update_post to avoid infinite loop
+					$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
+					clean_post_cache( $tr_id );
+				}
 			}
 		}
 	}
