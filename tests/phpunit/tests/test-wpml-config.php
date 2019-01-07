@@ -68,6 +68,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function test_cf() {
+		wp_set_current_user( 1 ); // To pass current_user_can_synchronize() test
+
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
 
