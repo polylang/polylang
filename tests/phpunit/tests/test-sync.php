@@ -1,7 +1,7 @@
 <?php
 
 class Sync_Test extends PLL_UnitTestCase {
-	static $editor;
+	static $editor, $author;
 
 	static function wpSetUpBeforeClass() {
 		parent::wpSetUpBeforeClass();
@@ -10,6 +10,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		self::$author = self::factory()->user->create( array( 'role' => 'author' ) );
 	}
 
 	function setUp() {
@@ -701,5 +702,68 @@ class Sync_Test extends PLL_UnitTestCase {
 		// The bug fixed
 		$term = get_term( $child_en );
 		$this->assertEquals( $parent_en, $term->parent );
+	}
+
+	function test_if_cannot_synchronize() {
+		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
+
+		// Post format
+		$this->factory->term->create( array( 'taxonomy' => 'post_format', 'name' => 'post-format-aside' ) ); // shouldn't WP do that ?
+
+		// Attachment for thumbnail
+		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$thumbnail_id = $this->factory->attachment->create_upload_object( $filename );
+
+		// Categories
+		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+
+		// Posts
+		wp_set_current_user( self::$editor );
+		$to = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		wp_set_current_user( self::$author );
+		$from = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $from, 'en' );
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
+		// The author cannot override synchronized data
+		wp_update_post( array( 'ID' => $from, 'post_category' => array( $en ), 'post_date' => '2007-09-04 00:00:00' ) );
+		add_post_meta( $from, '_thumbnail_id', $thumbnail_id );
+		set_post_format( $from, 'aside' );
+
+		$this->assertNotEquals( array( get_category( $fr ) ), get_the_category( $to ) );
+		$this->assertNotEquals( array( get_category( $en ) ), get_the_category( $from ) );
+		$this->assertNotEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
+		$this->assertNotEquals( '2007-09-04', get_the_date( 'Y-m-d', $from ) );
+		$this->assertNotEquals( $thumbnail_id, get_post_thumbnail_id( $to ) );
+		$this->assertNotEquals( $thumbnail_id, get_post_thumbnail_id( $from ) );
+		$this->assertNotEquals( 'aside', get_post_format( $to ) );
+		$this->assertNotEquals( 'aside', get_post_format( $from ) );
+
+		// The editor can override synchronized data
+		wp_set_current_user( self::$editor );
+
+		wp_update_post( array( 'ID' => $from, 'post_category' => array( $en ), 'post_date' => '2007-09-04 00:00:00' ) );
+		add_post_meta( $from, '_thumbnail_id', $thumbnail_id );
+		set_post_format( $from, 'aside' );
+
+		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
+		$this->assertEquals( array( get_category( $en ) ), get_the_category( $from ) );
+		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
+		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $from ) );
+		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $to ) );
+		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $from ) );
+		$this->assertEquals( 'aside', get_post_format( $to ) );
+		$this->assertEquals( 'aside', get_post_format( $from ) );
 	}
 }
