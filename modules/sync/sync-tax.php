@@ -254,7 +254,9 @@ class PLL_Sync_Tax {
 			$posts = array_unique( $posts );
 
 			foreach ( $posts as $post_id ) {
-				wp_set_object_terms( $post_id, $term_id, $taxonomy, true );
+				if ( current_user_can( 'assign_term', $term_id ) ) {
+					wp_set_object_terms( $post_id, $term_id, $taxonomy, true );
+				}
 			}
 		}
 	}
