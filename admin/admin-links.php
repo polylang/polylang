@@ -182,4 +182,3 @@ class PLL_Admin_Links extends PLL_Links {
 		) : '';
 	}
 }
-

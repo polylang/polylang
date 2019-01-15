@@ -80,8 +80,12 @@ jQuery( document ).ready(function( $ ) {
 				// If the post is well saved, we can reload the page
 				unsubscribe();
 				window.location.reload();
+			}, function() {
+				// If the post save failed
+				unsubscribe();
 			} )
 			.catch( function() {
+				// If an exception is thrown
 				unsubscribe();
 			} );
 	} );
