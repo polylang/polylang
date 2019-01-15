@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 5.0
-Stable tag: 2.5
+Stable tag: 2.5.1
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.5.1 (2018-01-16) =
+
+* Security: Fix categories and media duplication not protected from CSRF
+* Pro: Allow to update the plugin with WP CLI
+* Pro: Fix search in the button block not filtered in the correct language (needs WP 5.1)
+* Add Saraiki to the predefined languages list
+* Fix a conflict causing a blank page with Divi
 
 = 2.5 (2018-12-06) =
 
