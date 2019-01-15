@@ -25,6 +25,14 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	function test_copy_taxonomies() {
+		$tag_en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_en' ) );
+		self::$polylang->model->term->set_language( $tag_en, 'en' );
+
+		$tag_fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_fr' ) );
+		self::$polylang->model->term->set_language( $tag_fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $tag_en, array( 'en' => $tag_en, 'fr' => $tag_fr ) );
+
 		$untranslated = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$polylang->model->term->set_language( $untranslated, 'en' );
 
@@ -38,7 +46,8 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$from = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $from, 'en' );
-		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' );
+		wp_set_post_terms( $from, array( 'tag_en' ), 'post_tag' ); // Assigned by slug
+		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' ); // Assigned by term_id
 		set_post_format( $from, 'aside' );
 
 		$to = $this->factory->post->create();
@@ -50,20 +59,25 @@ class Sync_Test extends PLL_UnitTestCase {
 		$sync = new PLL_Admin_Sync( self::$polylang );
 		$sync->taxonomies->copy( $from, $to, 'fr' ); // copy
 
+		$this->assertEquals( array( $tag_fr ), wp_get_post_terms( $to, 'post_tag', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( array( $fr ), wp_get_post_terms( $to, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $to ) );
 
 		// sync
 		self::$polylang->options['sync'] = array( 'taxonomies' );
+		wp_set_post_terms( $from, array( 'tag_en' ), 'post_tag' );
 		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' );
 
+		$this->assertEquals( array( $tag_en ), wp_get_post_terms( $from, 'post_tag', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( array( $untranslated, $en ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
 
 		// remove taxonomies and post format and sync taxonomies
+		wp_set_post_terms( $to, array(), 'post_tag' );
 		wp_set_post_terms( $to, array(), 'category' );
 		set_post_format( $to, '' );
 
+		$this->assertEquals( array(), wp_get_post_terms( $from, 'post_tag', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( array( $untranslated ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
 
