@@ -114,6 +114,28 @@ class Polylang {
 	}
 
 	/**
+	 * Is the current request a REST API request?
+	 * Inspired by WP::parse_request()
+	 * Needed because at this point, the constant REST_REQUEST is not defined yet
+	 *
+	 * @since 2.4.1
+	 *
+	 * @return bool
+	 */
+	public static function is_rest_request() {
+		$home_path       = trim( parse_url( home_url(), PHP_URL_PATH ), '/' );
+		$home_path_regex = sprintf( '|^%s|i', preg_quote( $home_path, '|' ) );
+
+		$req_uri = trim( parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
+		$req_uri = preg_replace( $home_path_regex, '', $req_uri );
+		$req_uri = trim( $req_uri, '/' );
+		$req_uri = str_replace( 'index.php', '', $req_uri );
+		$req_uri = trim( $req_uri, '/' );
+
+		return 0 === strpos( $req_uri, rest_get_url_prefix() . '/' );
+	}
+
+	/**
 	 * Defines constants
 	 * May be overridden by a plugin if set before plugins_loaded, 1
 	 *
@@ -178,12 +200,11 @@ class Polylang {
 
 		if ( PLL_SETTINGS ) {
 			$polylang = new PLL_Settings( $links_model );
-		}
-		elseif ( PLL_ADMIN ) {
+		} elseif ( PLL_ADMIN ) {
 			$polylang = new PLL_Admin( $links_model );
-		}
-		// Do nothing on frontend if no language is defined
-		elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // WPCS: CSRF ok.
+		} elseif ( self::is_rest_request() ) {
+			$polylang = new PLL_REST_Request( $links_model );
+		} elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // WPCS: CSRF ok. Do nothing on frontend if no language is defined.
 			$polylang = new PLL_Frontend( $links_model );
 		}
 

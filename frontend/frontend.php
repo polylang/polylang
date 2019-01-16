@@ -52,28 +52,6 @@ class PLL_Frontend extends PLL_Base {
 	}
 
 	/**
-	 * Is the current request a REST API request?
-	 * Inspired by WP::parse_request()
-	 * Needed because at this point, the constant REST_REQUEST is not defined yet
-	 *
-	 * @since 2.4.1
-	 *
-	 * @return bool
-	 */
-	public function is_rest_request() {
-		$home_path       = trim( parse_url( home_url(), PHP_URL_PATH ), '/' );
-		$home_path_regex = sprintf( '|^%s|i', preg_quote( $home_path, '|' ) );
-
-		$req_uri = trim( parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
-		$req_uri = preg_replace( $home_path_regex, '', $req_uri );
-		$req_uri = trim( $req_uri, '/' );
-		$req_uri = str_replace( 'index.php', '', $req_uri );
-		$req_uri = trim( $req_uri, '/' );
-
-		return 0 === strpos( $req_uri, rest_get_url_prefix() . '/' );
-	}
-
-	/**
 	 * Setups the language chooser based on options
 	 *
 	 * @since 1.2
@@ -81,25 +59,19 @@ class PLL_Frontend extends PLL_Base {
 	public function init() {
 		$this->links = new PLL_Frontend_Links( $this );
 
-		// Don't set any language for REST requests when Polylang Pro is not active
-		if ( ! class_exists( 'PLL_REST_Translated_Object' ) && $this->is_rest_request() ) {
-			/** This action is documented in include/class-polylang.php */
-			do_action( 'pll_no_language_defined' );
-		} else {
-			// Static front page and page for posts
-			if ( 'page' === get_option( 'show_on_front' ) ) {
-				$this->static_pages = new PLL_Frontend_Static_Pages( $this );
-			}
-
-			// Setup the language chooser
-			$c = array( 'Content', 'Url', 'Url', 'Domain' );
-			$class = 'PLL_Choose_Lang_' . $c[ $this->options['force_lang'] ];
-			$this->choose_lang = new $class( $this );
-			$this->choose_lang->init();
-
-			// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
-			$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
+		// Static front page and page for posts
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->static_pages = new PLL_Frontend_Static_Pages( $this );
 		}
+
+		// Setup the language chooser
+		$c = array( 'Content', 'Url', 'Url', 'Domain' );
+		$class = 'PLL_Choose_Lang_' . $c[ $this->options['force_lang'] ];
+		$this->choose_lang = new $class( $this );
+		$this->choose_lang->init();
+
+		// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
+		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
 	}
 
 	/**
