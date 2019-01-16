@@ -33,7 +33,7 @@ class PLL_Pointer {
 	 * @param array $args
 	 */
 	public function __construct( $args ) {
-		trigger_error( 'The class PLL_Pointer has been deprecated since Polylang 2.3.9 and will be removed in a future version.', E_USER_ERROR );
+		trigger_error( 'The class PLL_Pointer has been deprecated since Polylang 2.3.9 and will be removed in a future version.', E_USER_ERROR ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 
 		$this->args = $args;
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );

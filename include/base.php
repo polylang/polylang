@@ -110,9 +110,9 @@ abstract class PLL_Base {
 		foreach ( $this as $prop => &$obj ) {
 			if ( is_object( $obj ) && method_exists( $obj, $func ) ) {
 				if ( WP_DEBUG ) {
-					$debug = debug_backtrace();
+					$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					$i = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func
-					trigger_error(
+					trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 						sprintf(
 							'%1$s was called incorrectly in %3$s on line %4$s: the call to $polylang->%1$s() has been deprecated in Polylang 1.2, use PLL()->%2$s->%1$s() instead.' . "\nError handler",
 							esc_html( $func ),
@@ -126,8 +126,8 @@ abstract class PLL_Base {
 			}
 		}
 
-		$debug = debug_backtrace();
-		trigger_error(
+		$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			sprintf(
 				'Call to undefined function PLL()->%1$s() in %2$s on line %3$s' . "\nError handler",
 				esc_html( $func ),

@@ -610,10 +610,10 @@ class PLL_Model {
 
 		if ( ! empty( $o ) && is_object( $this->$o ) && method_exists( $this->$o, $f ) ) {
 			if ( WP_DEBUG ) {
-				$debug = debug_backtrace();
+				$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 				$i = 1 + empty( $debug[1]['line'] ); // the file and line are in $debug[2] if the function was called using call_user_func
 
-				trigger_error(
+				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					sprintf(
 						'%1$s was called incorrectly in %4$s on line %5$s: the call to $polylang->model->%1$s() has been deprecated in Polylang 1.8, use PLL()->model->%2$s->%3$s() instead.' . "\nError handler",
 						esc_html( $func ),
@@ -627,8 +627,8 @@ class PLL_Model {
 			return call_user_func_array( array( $this->$o, $f ), $args );
 		}
 
-		$debug = debug_backtrace();
-		trigger_error(
+		$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			sprintf(
 				'Call to undefined function PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler",
 				esc_html( $func ),
