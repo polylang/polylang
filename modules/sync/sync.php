@@ -24,7 +24,8 @@ class PLL_Sync {
 		$this->term_metas = new PLL_Sync_Term_Metas( $polylang );
 
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
-		add_action( 'pll_save_term', array( $this, 'sync_term_parent' ), 10, 3 );
+		add_action( 'created_term', array( $this, 'sync_term_parent' ), 10, 3 );
+		add_action( 'edited_term', array( $this, 'sync_term_parent' ), 10, 3 );
 
 		add_action( 'pll_duplicate_term', array( $this->term_metas, 'copy' ), 10, 3 );
 
@@ -108,20 +109,19 @@ class PLL_Sync {
 	/**
 	 * Synchronize term parent in translations
 	 * Calling clean_term_cache *after* this is mandatory otherwise the $taxonomy_children option is not correctly updated
-	 * Before WP 3.9 clean_term_cache could be called ( efficiently ) only one time due to static array which prevented to update the option more than once
-	 * This is the reason to use the edit_term filter and not edited_term
 	 *
 	 * @since 2.3
 	 *
-	 * @param int    $term_id      Term id
-	 * @param string $taxonomy     Taxonomy name
-	 * @param array  $translations The list of translations term ids
+	 * @param int    $term_id  Term id.
+	 * @param int    $tt_id    Term taxonomy id, not used.
+	 * @param string $taxonomy Taxonomy name.
 	 */
-	public function sync_term_parent( $term_id, $taxonomy, $translations ) {
+	public function sync_term_parent( $term_id, $tt_id, $taxonomy ) {
 		global $wpdb;
 
 		if ( is_taxonomy_hierarchical( $taxonomy ) && $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			$term = get_term( $term_id );
+			$translations = $this->model->term->get_translations( $term_id );
 
 			foreach ( $translations as $lang => $tr_id ) {
 				if ( ! empty( $tr_id ) && $tr_id !== $term_id && $tr_parent = $this->model->term->get_translation( $term->parent, $lang ) ) {

@@ -361,8 +361,6 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_term_with_parent_sync() {
-		self::$polylang->options['sync'] = array( 'taxonomies' );
-
 		// Parents
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
@@ -687,5 +685,46 @@ class Sync_Test extends PLL_UnitTestCase {
 		// The bug fixed
 		$term = get_term( $child_en );
 		$this->assertEquals( $parent_en, $term->parent );
+	}
+
+	// Bug fixed in 2.5.2
+	function test_sync_category_parent_modification() {
+		// Parent 1
+		$p1en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$p1fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		// Parent 2
+		$p2en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$p2fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		// Child
+		$child_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category', 'parent' => $p1en ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$child_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'parent' => $p1fr ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_update_term( $child_fr, 'category', array( 'parent' => $p2fr ) );
+
+		$term = get_term( $child_fr );
+		$this->assertEquals( $p2fr, $term->parent );
+
+		// The bug fixed
+		$term = get_term( $child_en );
+		$this->assertEquals( $p2en, $term->parent );
 	}
 }
