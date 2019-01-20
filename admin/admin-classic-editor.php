@@ -30,6 +30,9 @@ class PLL_Admin_Classic_Editor {
 
 		// Filters the pages by language in the parent dropdown list in the page attributes metabox
 		add_filter( 'page_attributes_dropdown_pages_args', array( $this, 'page_attributes_dropdown_pages_args' ), 10, 2 );
+
+		// Notice
+		add_action( 'edit_form_top', array( $this, 'edit_form_top' ) );
 	}
 
 	/**
@@ -302,5 +305,28 @@ class PLL_Admin_Classic_Editor {
 		}
 
 		return $dropdown_args;
+	}
+
+	/**
+	 * Displays a notice if the user has not sufficient rights to overwrite synchronized taxonomies and metas
+	 *
+	 * @since 2.6
+	 *
+	 * @param object $post Post currently being edited
+	 */
+	public function edit_form_top( $post ) {
+		if ( ! $this->model->post->current_user_can_synchronize( $post->ID ) ) {
+			?>
+			<div class="pll-notice notice notice-warning">
+				<p>
+					<?php
+					esc_html_e( 'Some taxonomies or metadata may be synchronized with existing translations that you are not allowed to modify.', 'polylang' );
+					echo ' ';
+					esc_html_e( "If you attempt to modify them anyway, your modifications won't be taken into account.", 'polylang' );
+					?>
+				</p>
+			</div>
+			<?php
+		}
 	}
 }
