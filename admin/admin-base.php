@@ -31,9 +31,10 @@ class PLL_Admin_Base extends PLL_Base {
 
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
 
-		// Lingotek
-		if ( ! defined( 'POLYLANG_PRO' ) && ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) ) {
-			require_once POLYLANG_DIR . '/lingotek/lingotek.php';
+		if ( defined( 'POLYLANG_PRO' ) ) {
+			new PLL_Pro();
+		} elseif ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
+			require_once POLYLANG_DIR . '/lingotek/lingotek.php'; // Lingotek
 		}
 	}
 

@@ -68,10 +68,9 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'PLL_MODULES_INC', POLYLANG_DIR . '/modules' );
 	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 
-	require_once PLL_INC . '/class-polylang.php';
-
-	if ( file_exists( PLL_INC . '/class-polylang-pro.php' ) ) {
+	if ( file_exists( PLL_MODULES_INC . '/pro.php' ) ) {
 		define( 'POLYLANG_PRO', true );
-		require_once PLL_INC . '/class-polylang-pro.php';
 	}
+
+	require_once PLL_INC . '/class-polylang.php';
 }
