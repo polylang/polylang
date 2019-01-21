@@ -44,6 +44,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 1.2
 	 */
 	public function init() {
+		parent::init();
+
 		if ( ! $this->model->get_languages_list() ) {
 			return;
 		}
@@ -60,6 +62,12 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Adds the languages in admin bar
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ), 100 ); // 100 determines the position
+
+		// Translate slugs, only for pretty permalinks
+		if ( get_option( 'permalink_structure' ) && class_exists( 'PLL_Translate_Slugs' ) ) {
+			$slugs_model = new PLL_Translate_Slugs_Model( $this );
+			$this->translate_slugs = new PLL_Translate_Slugs( $slugs_model, $this->curlang );
+		}
 	}
 
 	/**

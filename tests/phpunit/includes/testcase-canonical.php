@@ -18,7 +18,11 @@ class PLL_Canonical_UnitTestCase extends PLL_UnitTestCase {
 
 		// Does the redirect match what's expected?
 		$can_url = self::$polylang->filters_links->check_canonical_url( home_url( $test_url ), false ); // FIXME TODO define links ( need $curlang )
-		$parsed_can_url = parse_url( $can_url );
+		if ( $wp_can_url = redirect_canonical( $can_url, false ) ) {
+			$parsed_can_url = parse_url( $wp_can_url );
+		} else {
+			$parsed_can_url = parse_url( $can_url );
+		}
 
 		// Just test the Path and Query if present
 		if ( isset( $expected['url'] ) ) {

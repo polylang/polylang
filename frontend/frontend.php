@@ -57,6 +57,8 @@ class PLL_Frontend extends PLL_Base {
 	 * @since 1.2
 	 */
 	public function init() {
+		parent::init();
+
 		$this->links = new PLL_Frontend_Links( $this );
 
 		// Static front page and page for posts
@@ -72,6 +74,14 @@ class PLL_Frontend extends PLL_Base {
 
 		// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
 		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
+
+		// Cross domain
+		if ( PLL_COOKIE ) {
+			$class = array( 2 => 'PLL_Xdata_Subdomain', 3 => 'PLL_Xdata_Domain' );
+			if ( isset( $class[ $this->options['force_lang'] ] ) && class_exists( $class[ $this->options['force_lang'] ] ) ) {
+				$this->xdata = new $class[ $this->options['force_lang'] ]( $this );
+			}
+		}
 	}
 
 	/**
@@ -92,6 +102,21 @@ class PLL_Frontend extends PLL_Base {
 		// Auto translate for Ajax
 		if ( ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) && wp_doing_ajax() ) {
 			$this->auto_translate();
+		}
+
+		if ( get_option( 'permalink_structure' ) ) {
+			// Translate slugs
+			if ( class_exists( 'PLL_Frontend_Translate_Slugs' ) ) {
+				$slugs_model = new PLL_Translate_Slugs_Model( $this );
+				$this->translate_slugs = new PLL_Frontend_Translate_Slugs( $slugs_model, $this->curlang );
+			}
+
+			// Share term slugs
+			if ( $this->options['force_lang'] && class_exists( 'PLL_Share_Term_Slug' ) ) {
+				$this->share_term_slug = version_compare( $GLOBALS['wp_version'], '4.8', '<' ) ?
+					new PLL_Frontend_Share_Term_Slug( $this ) :
+					new PLL_Share_Term_Slug( $this );
+			}
 		}
 	}
 

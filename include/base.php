@@ -33,6 +33,30 @@ abstract class PLL_Base {
 	}
 
 	/**
+	 * Instantiate classes always needed
+	 *
+	 * @since 2.6
+	 */
+	public function init() {
+		// REST API
+		if ( class_exists( 'PLL_REST_API' ) ) {
+			$this->rest_api = new PLL_REST_API( $this->model );
+		}
+
+		if ( $this->model->get_languages_list() ) {
+			// Active languages
+			if ( class_exists( 'PLL_Active_Languages' ) ) {
+				$this->active_languages = new PLL_Active_Languages( $this );
+			}
+
+			// Share post slugs
+			if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Share_Post_Slug' ) ) {
+				$this->share_post_slug = new PLL_Share_Post_Slug( $this );
+			}
+		}
+	}
+
+	/**
 	 * Registers our widgets
 	 *
 	 * @since 0.1

@@ -48,7 +48,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Aetups filters and action needed on all admin pages and on plugins page
+	 * Setups filters and action needed on all admin pages and on plugins page
 	 * Loads the settings pages or the filters base on the request
 	 *
 	 * @since 1.2
@@ -60,6 +60,11 @@ class PLL_Admin extends PLL_Admin_Base {
 		// Priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
+
+			// Bulk Translate
+			if ( class_exists( 'PLL_Bulk_Translate' ) ) {
+				add_action( 'current_screen', array( $this->bulk_translate = new PLL_Bulk_Translate( $this ), 'init' ) );
+			}
 		}
 	}
 
@@ -120,5 +125,24 @@ class PLL_Admin extends PLL_Admin_Base {
 
 		$this->posts = new PLL_CRUD_Posts( $this );
 		$this->terms = new PLL_CRUD_Terms( $this );
+
+		// Advanced media
+		if ( $this->options['media_support'] && class_exists( 'PLL_Admin_Advanced_Media' ) ) {
+			$this->advanced_media = new PLL_Admin_Advanced_Media( $this );
+		}
+
+		// Share term slugs
+		if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Admin_Share_Term_Slug' ) ) {
+			$this->share_term_slug = new PLL_Admin_Share_Term_Slug( $this );
+		}
+
+		// Duplicate content
+		if ( class_exists( 'PLL_Duplicate' ) ) {
+			$this->duplicate = new PLL_Duplicate( $this );
+		}
+
+		if ( class_exists( 'PLL_Sync_Post' ) ) {
+			$this->sync_post = new PLL_Sync_Post( $this );
+		}
 	}
 }
