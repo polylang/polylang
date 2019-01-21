@@ -3,7 +3,7 @@
 class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	protected $structure = '/%postname%/';
 	protected $hosts;
-	static protected $server;
+	protected static $server;
 
 	static function wpSetUpBeforeClass() {
 		parent::wpSetUpBeforeClass();

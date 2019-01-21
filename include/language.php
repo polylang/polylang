@@ -119,7 +119,7 @@ class PLL_Language {
 		if ( empty( $flags['flag']['src'] ) ) {
 			// If using predefined flags and base64 encoded flags are preferred
 			if ( isset( $_url ) && $flags['flag']['url'] === $_url && ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) ) {
-				$flags['flag']['src'] = 'data:image/png;base64,' . base64_encode( file_get_contents( POLYLANG_DIR . $file ) );
+				$flags['flag']['src'] = 'data:image/png;base64,' . base64_encode( file_get_contents( POLYLANG_DIR . $file ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			} else {
 				$flags['flag']['src'] = esc_url( set_url_scheme( $flags['flag']['url'], 'relative' ) );
 			}

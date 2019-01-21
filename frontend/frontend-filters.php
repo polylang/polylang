@@ -94,7 +94,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				$_posts = array_fill_keys( $languages, array() ); // Init with empty arrays
 				$languages = implode( ',', $languages );
 
-				// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+				// PHPCS:ignore WordPress.DB.PreparedSQL
 				$relations = $wpdb->get_results( "SELECT object_id, term_taxonomy_id FROM {$wpdb->term_relationships} WHERE object_id IN ({$posts}) AND term_taxonomy_id IN ({$languages})" );
 
 				foreach ( $relations as $relation ) {

@@ -10,7 +10,7 @@
  * @since 1.2
  */
 class PLL_OLT_Manager {
-	static protected $instance; // For singleton
+	protected static $instance; // For singleton
 	protected $default_locale;
 	protected $list_textdomains = array(); // All text domains
 	public $labels = array(); // Post types and taxonomies labels to translate

@@ -212,7 +212,7 @@ class PLL_Upgrade {
 			$terms = $slugs = $tts = $trs = array();
 
 			// Get all translated objects
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			// PHPCS:ignore WordPress.DB.PreparedSQL
 			$objects = $wpdb->get_col( "SELECT DISTINCT meta_value FROM {$wpdb->$table} WHERE meta_key = '_translations'" );
 
 			if ( empty( $objects ) ) {

@@ -7,7 +7,7 @@
  * @since 1.0
  */
 class PLL_Plugins_Compat {
-	static protected $instance; // for singleton
+	protected static $instance; // for singleton
 
 	/**
 	 * Constructor

@@ -447,7 +447,7 @@ class PLL_Admin_Model extends PLL_Model {
 			)
 		);
 
-		// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
+		// PHPCS:disable WordPress.DB.PreparedSQL
 		$terms = $wpdb->get_col(
 			sprintf(
 				"SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}

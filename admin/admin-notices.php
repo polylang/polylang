@@ -8,7 +8,7 @@
  * @since 2.3.9
  */
 class PLL_Admin_Notices {
-	static private $notices = array();
+	private static $notices = array();
 
 	/**
 	 * Constructor
