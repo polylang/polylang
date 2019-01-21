@@ -148,6 +148,9 @@ class PLL_Admin_Base extends PLL_Base {
 			}
 		}
 
+		$confirm = __( 'You are about to overwrite an existing translation. Are you sure?', 'polylang' );
+		wp_localize_script( 'pll_classic-editor', 'confirm_text', $confirm );
+
 		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
 
 		$this->localize_scripts();
