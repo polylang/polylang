@@ -42,8 +42,9 @@ class PLL_REST_Request extends PLL_Base {
 
 			// Translate slugs, only for pretty permalinks
 			if ( get_option( 'permalink_structure' ) && class_exists( 'PLL_Translate_Slugs' ) ) {
+				$curlang = null;
 				$slugs_model = new PLL_Translate_Slugs_Model( $this );
-				$this->translate_slugs = new PLL_Translate_Slugs( $slugs_model, null );
+				$this->translate_slugs = new PLL_Translate_Slugs( $slugs_model, $curlang );
 			}
 
 			// FIXME Duplicate content needed for PLL_Sync_Post
@@ -51,8 +52,8 @@ class PLL_REST_Request extends PLL_Base {
 				$this->duplicate = new PLL_Duplicate( $this );
 			}
 
-			if ( class_exists( 'PLL_Sync_Post' ) ) {
-				$this->sync_post = new PLL_Sync_Post( $this );
+			if ( class_exists( 'PLL_REST_Sync_Post' ) ) {
+				$this->sync_post = new PLL_REST_Sync_Post( $this );
 			}
 		}
 	}
