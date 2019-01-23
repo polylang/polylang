@@ -47,9 +47,8 @@ class PLL_REST_Request extends PLL_Base {
 				$this->translate_slugs = new PLL_Translate_Slugs( $slugs_model, $curlang );
 			}
 
-			// FIXME Duplicate content needed for PLL_Sync_Post
-			if ( class_exists( 'PLL_Duplicate' ) ) {
-				$this->duplicate = new PLL_Duplicate( $this );
+			if ( class_exists( 'PLL_Sync_Content' ) ) {
+				$this->sync_content = new PLL_Sync_Content( $this );
 			}
 
 			if ( class_exists( 'PLL_REST_Sync_Post' ) ) {

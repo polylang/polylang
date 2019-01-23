@@ -136,6 +136,10 @@ class PLL_Admin extends PLL_Admin_Base {
 			$this->share_term_slug = new PLL_Admin_Share_Term_Slug( $this );
 		}
 
+		if ( class_exists( 'PLL_Sync_Content' ) ) {
+			$this->sync_content = new PLL_Sync_Content( $this );
+		}
+
 		// Duplicate content
 		if ( class_exists( 'PLL_Duplicate' ) ) {
 			$this->duplicate = new PLL_Duplicate( $this );
