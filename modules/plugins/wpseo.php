@@ -12,22 +12,8 @@ class PLL_WPSEO {
 	 * @since 1.6.4
 	 */
 	public function init() {
-		if ( ! defined( 'WPSEO_VERSION' ) ) {
-			return;
-		}
-
 		if ( PLL() instanceof PLL_Frontend ) {
 			add_filter( 'option_wpseo_titles', array( $this, 'wpseo_translate_titles' ) );
-
-			// Reloads options once the language has been defined to enable translations
-			// Useful only when the language is set from content
-			if ( version_compare( WPSEO_VERSION, '7.0', '<' ) && did_action( 'wp_loaded' ) ) {
-				$wpseo_front = WPSEO_Frontend::get_instance();
-				$options = WPSEO_Options::get_option_names();
-				foreach ( $options as $opt ) {
-					$wpseo_front->options = array_merge( $wpseo_front->options, (array) get_option( $opt ) );
-				}
-			}
 
 			// Filters sitemap queries to remove inactive language or to get
 			// one sitemap per language when using multiple domains or subdomains

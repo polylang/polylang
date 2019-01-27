@@ -80,7 +80,7 @@ class PLL_Plugins_Compat {
 	public function plugins_loaded() {
 		// Yoast SEO
 		if ( defined( 'WPSEO_VERSION' ) ) {
-			add_action( 'pll_language_defined', array( $this->wpseo = new PLL_WPSEO(), 'init' ) );
+			add_action( 'pll_init', array( $this->wpseo = new PLL_WPSEO(), 'init' ) );
 		}
 
 		if ( pll_is_cache_active() ) {
