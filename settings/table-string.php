@@ -243,7 +243,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		// Sorting
-		usort( $data, array( $this, 'usort_reorder' ) );
+		uasort( $data, array( $this, 'usort_reorder' ) );
 
 		// Paging
 		$per_page = $this->get_items_per_page( 'pll_strings_per_page' );
