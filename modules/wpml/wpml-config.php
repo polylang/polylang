@@ -79,7 +79,7 @@ class PLL_WPML_Config {
 				foreach ( $xml->xpath( 'admin-texts/key' ) as $key ) {
 					$attributes = $key->attributes();
 					$name = (string) $attributes['name'];
-					if ( PLL() instanceof PLL_Frontend ) {
+					if ( PLL() instanceof PLL_Frontend || apply_filters('pll_always_translate_string', false, 'option_' . $name) ) {
 						$this->options[ $name ] = $key;
 						add_filter( 'option_' . $name, array( $this, 'translate_strings' ) );
 					} else {
