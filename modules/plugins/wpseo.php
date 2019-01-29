@@ -29,12 +29,9 @@ class PLL_WPSEO {
 			} else {
 				// Get all terms in all languages when the language is set from the content or directory name
 				add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
-
-				// Add the homepages for all languages to the sitemap when the front page displays posts
-				if ( ! get_option( 'page_on_front' ) ) {
-					add_filter( 'wpseo_sitemap_post_content', array( $this, 'add_language_home_urls' ) );
-				}
 			}
+
+			add_action( 'pre_get_posts', array( $this, 'before_sitemap' ), 0 ); // Needs to be fired before WPSEO_Sitemaps::redirect()
 
 			add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
 			add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
@@ -210,30 +207,55 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Adds the home urls for all (active) languages to the sitemap
+	 * Add filters before the sitemap is evaluated and outputed
 	 *
-	 * @since 1.9
+	 * @since 2.6
+	 */
+	public function before_sitemap() {
+		$type = get_query_var( 'sitemap' );
+
+		// Add the post post type archives in all languages to the sitemap
+		// Add the homepages for all languages to the sitemap when the front page displays posts
+		if ( $type && pll_is_translated_post_type( $type ) && ( 'post' !== $type || ( PLL()->options['force_lang'] < 2 && ! get_option( 'page_on_front' ) ) ) ) {
+			add_filter( "wpseo_sitemap_{$type}_content", array( $this, 'add_post_type_archive' ) );
+		}
+	}
+
+	/**
+	 * Adds the home and post type archives urls for all (active) languages to the sitemap
+	 *
+	 * @since 2.6
 	 *
 	 * @param string $str additional urls to sitemap post
 	 * @return string
 	 */
-	public function add_language_home_urls( $str ) {
+	public function add_post_type_archive( $str ) {
 		global $wpseo_sitemaps;
-		$renderer = version_compare( WPSEO_VERSION, '3.2', '<' ) ? $wpseo_sitemaps : $wpseo_sitemaps->renderer;
 
-		$languages = wp_list_pluck( wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' ), 'slug' );
+		$post_type = substr( substr( current_filter(), 14 ), 0, -8 );
+
+		$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' );
+
+		if ( 'post' !== $post_type ) {
+			// The post type archive in the current language is already added by WPSEO
+			$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'slug' => pll_current_language() ), 'NOT' );
+		} elseif ( ! empty( PLL()->options['hide_default'] ) ) {
+			// The home url is of course already added by WPSEO
+			$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'slug' => pll_default_language() ), 'NOT' );
+		}
 
 		foreach ( $languages as $lang ) {
-			if ( empty( PLL()->options['hide_default'] ) || pll_default_language() !== $lang ) {
-				$str .= $renderer->sitemap_url(
-					array(
-						'loc' => pll_home_url( $lang ),
-						'pri' => 1,
-						'chf' => apply_filters( 'wpseo_sitemap_homepage_change_freq', 'daily', pll_home_url( $lang ) ),
-					)
-				);
-			}
+			$link = 'post' === $post_type ? pll_home_url( $lang->slug ) : PLL()->links_model->switch_language_in_link( get_post_type_archive_link( $post_type ), $lang );
+			$str .= $wpseo_sitemaps->renderer->sitemap_url(
+				array(
+					'loc' => $link,
+					'mod' => WPSEO_Sitemaps::get_last_modified_gmt( $post_type ),
+					'pri' => 1,
+					'chf' => 'daily',
+				)
+			);
 		}
+
 		return $str;
 	}
 
