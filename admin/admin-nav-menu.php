@@ -36,7 +36,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	public function admin_init() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'wp_update_nav_menu_item', array( $this, 'wp_update_nav_menu_item' ), 10, 2 );
-		add_filter( 'wp_get_nav_menu_items', array( $this, 'translate_switcher_title' ) );
 
 		// Translation of menus based on chosen locations
 		add_filter( 'pre_update_option_theme_mods_' . $this->theme, array( $this, 'pre_update_option_theme_mods' ) );
@@ -68,10 +67,10 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 				<ul id="lang-switch-checklist" class="categorychecklist form-no-clear">
 					<li>
 						<label class="menu-item-title">
-							<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php echo (int) $_nav_menu_placeholder; ?>][menu-item-object-id]" value="-1"> <?php esc_html_e( 'Language switcher', 'polylang' ); ?>
+							<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php echo (int) $_nav_menu_placeholder; ?>][menu-item-object-id]" value="-1"> <?php esc_html_e( 'Languages', 'polylang' ); ?>
 						</label>
 						<input type="hidden" class="menu-item-type" name="menu-item[<?php echo (int) $_nav_menu_placeholder; ?>][menu-item-type]" value="custom">
-						<input type="hidden" class="menu-item-title" name="menu-item[<?php echo (int) $_nav_menu_placeholder; ?>][menu-item-title]" value="<?php esc_html_e( 'Language switcher', 'polylang' ); ?>">
+						<input type="hidden" class="menu-item-title" name="menu-item[<?php echo (int) $_nav_menu_placeholder; ?>][menu-item-title]" value="<?php esc_html_e( 'Languages', 'polylang' ); ?>">
 						<input type="hidden" class="menu-item-url" name="menu-item[<?php echo (int) $_nav_menu_placeholder; ?>][menu-item-url]" value="#pll_switcher">
 					</li>
 				</ul>
@@ -101,7 +100,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		wp_enqueue_script( 'pll_nav_menu', plugins_url( '/js/nav-menu' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION );
 
 		$data['strings'] = PLL_Switcher::get_switcher_options( 'menu', 'string' ); // The strings for the options
-		$data['title'] = __( 'Language switcher', 'polylang' ); // The title
+		$data['title'] = __( 'Languages', 'polylang' ); // The title
 
 		// Get all language switcher menu items
 		$items = get_posts(
@@ -155,23 +154,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 				update_post_meta( $menu_item_db_id, '_pll_menu_item', $options ); // Allow us to easily identify our nav menu item
 			}
 		}
-	}
-
-	/**
-	 * Translates the language switcher menu items title in case the user switches the admin language
-	 *
-	 * @since 1.1.1
-	 *
-	 * @param array $items
-	 * @return array modified $items
-	 */
-	public function translate_switcher_title( $items ) {
-		foreach ( $items as $item ) {
-			if ( '#pll_switcher' == $item->url ) {
-				$item->post_title = __( 'Language switcher', 'polylang' );
-			}
-		}
-		return $items;
 	}
 
 	/**

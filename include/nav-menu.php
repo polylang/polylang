@@ -20,8 +20,26 @@ class PLL_Nav_Menu {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
 
+		add_filter( 'wp_setup_nav_menu_item', array( $this, 'wp_setup_nav_menu_item' ) );
+
 		// Integration with WP customizer
 		add_action( 'customize_register', array( $this, 'create_nav_menu_locations' ), 5 );
+	}
+
+	/**
+	 * Assigns the title and label to the language switcher menu items
+	 *
+	 * @since 2.6
+	 *
+	 * @param object $item Menu item.
+	 * @return object
+	 */
+	public function wp_setup_nav_menu_item( $item ) {
+		if ( '#pll_switcher' === $item->url ) {
+			$item->post_title = __( 'Languages', 'polylang' );
+			$item->type_label = __( 'Language switcher', 'polylang' );
+		}
+		return $item;
 	}
 
 	/**
