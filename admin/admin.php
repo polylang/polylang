@@ -145,8 +145,14 @@ class PLL_Admin extends PLL_Admin_Base {
 			$this->duplicate = new PLL_Duplicate( $this );
 		}
 
+		// Post synchronization for classic editor
 		if ( class_exists( 'PLL_Sync_Post' ) ) {
 			$this->sync_post = new PLL_Sync_Post( $this );
+		}
+
+		// Post synchronization for the block editor
+		if ( class_exists( 'PLL_REST_Sync_Post' ) ) {
+			$this->sync_post = new PLL_REST_Sync_Post( $this );
 		}
 	}
 }
