@@ -105,7 +105,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 
 				// parent item for dropdown
 				if ( ! empty( $options['dropdown'] ) ) {
-					$item->title = $this->get_item_title( $this->curlang->flag, $this->curlang->name, $options );
+					$name = isset( $options['display_names_as'] ) && 'slug' === $options['display_names_as'] ? $this->curlang->slug : $this->curlang->name;
+					$item->title = $this->get_item_title( $this->curlang->flag, $name, $options );
 					$item->attr_title = '';
 					$item->classes = array( 'pll-parent-menu-item' );
 					$new_items[] = $item;
