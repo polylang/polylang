@@ -743,7 +743,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $p2en, $term->parent );
 	}
 
-	function test_if_cannot_synchronize() {
+	function test_if_cannot_synchronize_post() {
 		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Post format
@@ -788,6 +788,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertNotEquals( $thumbnail_id, get_post_thumbnail_id( $from ) );
 		$this->assertNotEquals( 'aside', get_post_format( $to ) );
 		$this->assertNotEquals( 'aside', get_post_format( $from ) );
+		$this->assertEquals( 0, wp_get_post_parent_id( $from ) ); // Bug fixed during 2.6 development
+		$this->assertEquals( 0, wp_get_post_parent_id( $to ) );
 
 		// The editor can override synchronized data
 		wp_set_current_user( self::$editor );
@@ -804,5 +806,47 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $from ) );
 		$this->assertEquals( 'aside', get_post_format( $to ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
+	}
+
+	// Bug fixed during 2.6 development
+	function test_if_cannot_synchronize_post_parent() {
+		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
+
+		self::$polylang->options['post_types'] = array(
+			'cpt' => 'cpt',
+		);
+
+		register_post_type( 'cpt', array( 'public' => true, 'hierarchical' => true ) ); // translated hierarchical post type
+
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
+		self::$polylang->sync = new PLL_Sync( self::$polylang );
+
+		wp_set_current_user( self::$editor );
+		$parent_to = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		self::$polylang->model->post->set_language( $parent_to, 'fr' );
+
+		$parent_from = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		self::$polylang->model->post->set_language( $parent_from, 'en' );
+		self::$polylang->model->post->save_translations( $parent_from, array( 'fr' => $parent_to ) );
+
+		$to = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		wp_set_current_user( self::$author );
+
+		$from = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		self::$polylang->model->post->set_language( $from, 'en' );
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
+		// The author cannot override synchronized data
+		wp_update_post( array( 'ID' => $from, 'post_parent' => $parent_from ) );
+		$this->assertEquals( 0, wp_get_post_parent_id( $from ) );
+		$this->assertEquals( 0, wp_get_post_parent_id( $to ) );
+
+		// The editor can override synchronized data
+		wp_set_current_user( self::$editor );
+		wp_update_post( array( 'ID' => $from, 'post_parent' => $parent_from ) );
+		$this->assertEquals( $parent_from, wp_get_post_parent_id( $from ) );
+		$this->assertEquals( $parent_to, wp_get_post_parent_id( $to ) );
 	}
 }

@@ -85,8 +85,8 @@ class PLL_Sync {
 			$tr_ids = $this->model->post->get_translations( $postarr['ID'] );
 			$orig_lang = array_search( $postarr['ID'], $tr_ids );
 			foreach ( $tr_ids as $tr_id ) {
-				if ( $tr_id !== $postarr['ID'] && $parent = $this->model->post->get_translation( $tr_id, $orig_lang ) ) {
-					$post_parent = $parent;
+				if ( $tr_id !== $postarr['ID'] && $post = get_post( $tr_id ) ) {
+					$post_parent = $post->post_parent;
 					break;
 				}
 			}
