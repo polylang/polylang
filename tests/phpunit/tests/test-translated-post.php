@@ -60,6 +60,8 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 	}
 
 	function test_current_user_can_synchronize() {
+		add_filter( 'pll_pre_current_user_can_synchronize_post', '__return_null' ); // Enable capability check
+
 		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 		$author = self::factory()->user->create( array( 'role' => 'author' ) );
 

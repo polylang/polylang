@@ -16,7 +16,8 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 */
 	public function __construct( &$model ) {
 		// init properties
-		$this->object_type = null;
+		$this->object_type = null; // For taxonomies
+		$this->type = 'post'; // For capabilities
 		$this->tax_language = 'language';
 		$this->tax_translations = 'post_translations';
 		$this->tax_tt = 'term_taxonomy_id';
@@ -145,27 +146,5 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		if ( ! empty( $query->query['post_type'] ) && $this->model->is_translated_post_type( $query->query['post_type'] ) ) {
 			$query->query_vars['update_post_term_cache'] = true;
 		}
-	}
-
-	/**
-	 * Check if a user can synchronize posts translations
-	 *
-	 * @since 2.6
-	 *
-	 * @param int $id Post id
-	 * @return bool
-	 */
-	public function current_user_can_synchronize( $id ) {
-		if ( ! current_user_can( 'edit_post', $id ) ) {
-			return false;
-		}
-
-		foreach ( $this->get_translations( $id ) as $tr_id ) {
-			if ( $tr_id !== $id && ! current_user_can( 'edit_post', $tr_id ) ) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 }
