@@ -154,18 +154,18 @@ class PLL_Admin extends PLL_Admin_Base {
 	 */
 	public function maybe_load_sync_post() {
 		// Disable Sync Post in the the meta box loader when running the block editor to avoid a conflict
-		if ( isset( $_GET['meta-box-loader'] ) ) {
+		if ( isset( $_GET['meta-box-loader'] ) ) { // WPCS: CSRF ok.
 			return;
 		}
 
 		$is_block_editor = false;
 
-		if( function_exists( 'use_block_editor_for_post' ) && 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && use_block_editor_for_post( (int) $_GET['post'] ) ) {
+		if ( function_exists( 'use_block_editor_for_post' ) && 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && use_block_editor_for_post( (int) $_GET['post'] ) ) { // WPCS: CSRF ok.
 			$is_block_editor = true;
 		}
 
 		if ( function_exists( 'use_block_editor_for_post_type' ) && 'post-new.php' === $GLOBALS['pagenow'] ) {
-			$post_type =  isset( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : 'post';
+			$post_type = isset( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : 'post'; // WPCS: CSRF ok.
 			if ( use_block_editor_for_post_type( $post_type ) ) {
 				$is_block_editor = true;
 			}
