@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 5.0
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -76,7 +76,13 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.5.1 (2018-01-16) =
+= 2.5.2 (2019-02-12) =
+
+* Pro: Fix translated slugs not accepting forward slashes
+* Pro: Fix fatal error with ACF Pro 5.7.11
+* Fix parent categories incorrectly synchronized #327
+
+= 2.5.1 (2019-01-16) =
 
 * Security: Fix categories and media duplication not protected from CSRF
 * Pro: Allow to update the plugin with WP CLI
