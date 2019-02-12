@@ -214,7 +214,7 @@ class PLL_Admin_Base extends PLL_Base {
 		}
 
 		$str = http_build_query( $params );
-		$arr = json_encode( $params );
+		$arr = wp_json_encode( $params );
 		?>
 		<script type="text/javascript">
 			if (typeof jQuery != 'undefined') {

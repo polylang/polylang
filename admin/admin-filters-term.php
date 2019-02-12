@@ -526,7 +526,7 @@ class PLL_Admin_Filters_Term {
 			);
 		}
 
-		wp_die( json_encode( $return ) );
+		wp_die( wp_json_encode( $return ) );
 	}
 
 	/**
