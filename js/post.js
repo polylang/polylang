@@ -1,4 +1,6 @@
-// tag suggest in quick edit
+/**
+ * Tag suggest in quick edit
+ */
 (function( $ ){
 	$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
 		if ( 'string' === typeof options.data && -1 !== options.data.indexOf( 'action=ajax-tag-search' ) && ( lang = $( ':input[name="inline_lang_choice"]' ).val() ) ) {
@@ -7,7 +9,9 @@
 	});
 })( jQuery );
 
-// quick edit
+/**
+ * Quick edit
+ */
 (function( $ ) {
 	$( document ).bind( 'DOMNodeInserted', function( e ) {
 		var t = $( e.target );
@@ -61,8 +65,10 @@
 	});
 })( jQuery );
 
-// update rows of translated posts when the language is modified in quick edit
-// acts on ajaxSuccess event
+/**
+ * Update rows of translated posts when the language is modified in quick edit
+ * Acts on ajaxSuccess event
+ */
 (function( $ ) {
 	$( document ).ajaxSuccess(function( event, xhr, settings ) {
 		function update_rows( post_id ) {
@@ -103,7 +109,22 @@
 	});
 })( jQuery );
 
-/* Bulk translate */
+/**
+ * Media list table
+ * When clicking on attach link, filters find post list per media language
+ */
+(function( $ ){
+	$.ajaxPrefilter( function ( options, originalOptions, jqXHR ) {
+		if ( 'string' === typeof options.data && -1 !== options.data.indexOf( 'action=find_posts' ) ) {
+			options.data = 'pll_post_id=' + $( '#affected' ).val() + '&' + options.data;
+		}
+	});
+})( jQuery )
+
+
+/**
+ * Bulk translate
+ */
 jQuery( document ).ready( function( $ ) {
 	var t = this;
 
