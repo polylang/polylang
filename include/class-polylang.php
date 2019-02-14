@@ -123,10 +123,10 @@ class Polylang {
 	 * @return bool
 	 */
 	public static function is_rest_request() {
-		$home_path       = trim( parse_url( home_url(), PHP_URL_PATH ), '/' );
+		$home_path       = trim( wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
 		$home_path_regex = sprintf( '|^%s|i', preg_quote( $home_path, '|' ) );
 
-		$req_uri = trim( parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
+		$req_uri = trim( wp_parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
 		$req_uri = preg_replace( $home_path_regex, '', $req_uri );
 		$req_uri = trim( $req_uri, '/' );
 		$req_uri = str_replace( 'index.php', '', $req_uri );

@@ -362,9 +362,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		if ( 3 === $this->options['force_lang'] ) {
-			$requested_host = parse_url( $requested_url, PHP_URL_HOST );
+			$requested_host = wp_parse_url( $requested_url, PHP_URL_HOST );
 			foreach ( $this->options['domains'] as $lang => $domain ) {
-				$host = parse_url( $domain, PHP_URL_HOST );
+				$host = wp_parse_url( $domain, PHP_URL_HOST );
 				if ( 'www.' . $requested_host === $host || 'www.' . $host === $requested_host ) {
 					$language = $this->model->get_language( $lang );
 					$redirect_url = str_replace( '://' . $requested_host, '://' . $host, $requested_url );

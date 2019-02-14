@@ -31,13 +31,13 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 	 * @since 1.2
 	 */
 	public function set_language_from_url() {
-		$host      = str_replace( 'www.', '', parse_url( $this->links_model->home, PHP_URL_HOST ) ); // Remove www. for the comparison
-		$home_path = (string) parse_url( $this->links_model->home, PHP_URL_PATH );
+		$host      = str_replace( 'www.', '', wp_parse_url( $this->links_model->home, PHP_URL_HOST ) ); // Remove www. for the comparison
+		$home_path = (string) wp_parse_url( $this->links_model->home, PHP_URL_PATH );
 
 		$requested_url   = pll_get_requested_url();
-		$requested_host  = str_replace( 'www.', '', parse_url( $requested_url, PHP_URL_HOST ) ); // Remove www. for the comparison
-		$requested_path  = rtrim( str_replace( $this->index, '', parse_url( $requested_url, PHP_URL_PATH ) ), '/' ); // Some PHP setups turn requests for / into /index.php in REQUEST_URI
-		$requested_query = parse_url( $requested_url, PHP_URL_QUERY );
+		$requested_host  = str_replace( 'www.', '', wp_parse_url( $requested_url, PHP_URL_HOST ) ); // Remove www. for the comparison
+		$requested_path  = rtrim( str_replace( $this->index, '', wp_parse_url( $requested_url, PHP_URL_PATH ) ), '/' ); // Some PHP setups turn requests for / into /index.php in REQUEST_URI
+		$requested_query = wp_parse_url( $requested_url, PHP_URL_QUERY );
 
 		// Home is requested
 		if ( $requested_host === $host && $requested_path === $home_path && empty( $requested_query ) ) {

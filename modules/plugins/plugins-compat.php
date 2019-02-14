@@ -296,7 +296,7 @@ class PLL_Plugins_Compat {
 
 			// If we can't associate the requested domain to a language, redirect to the default domain
 			$requested_url  = pll_get_requested_url();
-			$requested_host = parse_url( $requested_url, PHP_URL_HOST );
+			$requested_host = wp_parse_url( $requested_url, PHP_URL_HOST );
 
 			$hosts = PLL()->links_model->get_hosts();
 			$lang  = array_search( $requested_host, $hosts );

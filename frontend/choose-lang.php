@@ -101,7 +101,7 @@ abstract class PLL_Choose_Lang {
 				$this->curlang->slug,
 				time() + $expiration,
 				COOKIEPATH,
-				2 == $this->options['force_lang'] ? parse_url( $this->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN,
+				2 == $this->options['force_lang'] ? wp_parse_url( $this->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN,
 				is_ssl()
 			);
 		}
@@ -258,7 +258,7 @@ abstract class PLL_Choose_Lang {
 		// Don't redirect if $_POST is not empty as it could break other plugins
 		elseif ( is_string( $redirect = $this->curlang->home_url ) && empty( $_POST ) ) { // WPCS: CSRF ok.
 			// Don't forget the query string which may be added by plugins
-			$query_string = parse_url( pll_get_requested_url(), PHP_URL_QUERY );
+			$query_string = wp_parse_url( pll_get_requested_url(), PHP_URL_QUERY );
 			if ( ! empty( $query_string ) ) {
 				$redirect .= ( $this->links_model->using_permalinks ? '?' : '&' ) . $query_string;
 			}

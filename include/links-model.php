@@ -52,7 +52,7 @@ abstract class PLL_Links_Model {
 	 * @return array list of hosts
 	 */
 	public function get_hosts() {
-		return array( parse_url( $this->home, PHP_URL_HOST ) );
+		return array( wp_parse_url( $this->home, PHP_URL_HOST ) );
 	}
 
 	/**

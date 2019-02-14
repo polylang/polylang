@@ -131,7 +131,7 @@ class PLL_Jetpack {
 	 * @return array
 	 */
 	public function jetpack_infinite_scroll_js_settings( $settings ) {
-		$settings['history']['host'] = parse_url( pll_home_url(), PHP_URL_HOST ); // Jetpack uses get_option( 'home' )
+		$settings['history']['host'] = wp_parse_url( pll_home_url(), PHP_URL_HOST ); // Jetpack uses get_option( 'home' )
 		return $settings;
 	}
 }

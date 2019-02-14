@@ -90,7 +90,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 			$url = is_paged() ? $this->links_model->add_paged_to_link( $this->links->get_home_url(), $wp_query->query_vars['page'] ) : $this->links->get_home_url();
 
 			// Don't forget additional query vars
-			$query = parse_url( $redirect_url, PHP_URL_QUERY );
+			$query = wp_parse_url( $redirect_url, PHP_URL_QUERY );
 			if ( ! empty( $query ) ) {
 				parse_str( $query, $query_vars );
 				$query_vars = rawurlencode_deep( $query_vars ); // WP encodes query vars values

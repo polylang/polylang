@@ -39,7 +39,7 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 			$url = pll_get_requested_url();
 		}
 
-		$host = parse_url( $url, PHP_URL_HOST );
+		$host = wp_parse_url( $url, PHP_URL_HOST );
 		return ( $lang = array_search( $host, $this->get_hosts() ) ) ? $lang : '';
 	}
 
