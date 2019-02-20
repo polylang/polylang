@@ -60,7 +60,6 @@ class PLL_Admin extends PLL_Admin_Base {
 		// Priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
-			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ) );
 
 			// Bulk Translate
 			if ( class_exists( 'PLL_Bulk_Translate' ) ) {
@@ -145,30 +144,28 @@ class PLL_Admin extends PLL_Admin_Base {
 		if ( class_exists( 'PLL_Duplicate' ) ) {
 			$this->duplicate = new PLL_Duplicate( $this );
 		}
+
+		// Post synchronization
+		if ( 'post.php' === $GLOBALS['pagenow'] || 'post-new.php' === $GLOBALS['pagenow'] ) {
+			// We need to defer wait until we know which editor is in use
+			add_filter( 'use_block_editor_for_post', array( $this, 'use_block_editor_for_post' ), 999 ); // After the plugin Classic Editor
+		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
+			$this->sync_post = new PLL_Sync_Post( $this );
+		}
 	}
 
 	/**
 	 * Load the post synchronization object, depending on the editor in use.
 	 *
 	 * @since 2.6
+	 *
+	 * @param bool $is_block_editor Whether to use the block editor or not
+	 * @return bool
 	 */
-	public function maybe_load_sync_post() {
+	public function use_block_editor_for_post( $is_block_editor ) {
 		// Disable Sync Post in the the meta box loader when running the block editor to avoid a conflict
 		if ( isset( $_GET['meta-box-loader'] ) ) { // WPCS: CSRF ok.
-			return;
-		}
-
-		$is_block_editor = false;
-
-		if ( function_exists( 'use_block_editor_for_post' ) && 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && use_block_editor_for_post( (int) $_GET['post'] ) ) { // WPCS: CSRF ok.
-			$is_block_editor = true;
-		}
-
-		if ( function_exists( 'use_block_editor_for_post_type' ) && 'post-new.php' === $GLOBALS['pagenow'] ) {
-			$post_type = isset( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : 'post'; // WPCS: CSRF ok.
-			if ( use_block_editor_for_post_type( $post_type ) ) {
-				$is_block_editor = true;
-			}
+			return $is_block_editor;
 		}
 
 		if ( class_exists( 'PLL_REST_Sync_Post' ) && $is_block_editor ) {
@@ -176,5 +173,7 @@ class PLL_Admin extends PLL_Admin_Base {
 		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
 			$this->sync_post = new PLL_Sync_Post( $this );
 		}
+
+		return $is_block_editor;
 	}
 }
