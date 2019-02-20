@@ -16,6 +16,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
+		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 	}
 

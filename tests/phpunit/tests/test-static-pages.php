@@ -75,6 +75,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		self::$polylang->links_model = self::$polylang->model->get_links_model();
 		self::$polylang->links_model->init();
 
+		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 
 		update_option( 'show_on_front', 'page' );
