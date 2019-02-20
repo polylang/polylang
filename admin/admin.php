@@ -60,6 +60,7 @@ class PLL_Admin extends PLL_Admin_Base {
 		// Priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
+			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ) );
 
 			// Bulk Translate
 			if ( class_exists( 'PLL_Bulk_Translate' ) ) {
@@ -144,13 +145,22 @@ class PLL_Admin extends PLL_Admin_Base {
 		if ( class_exists( 'PLL_Duplicate' ) ) {
 			$this->duplicate = new PLL_Duplicate( $this );
 		}
+	}
 
+	/**
+	 * Load the post synchronization object, depending on the editor in use.
+	 *
+	 * @since 2.6
+	 */
+	public function maybe_load_sync_post() {
 		// Post synchronization
-		if ( 'post.php' === $GLOBALS['pagenow'] || 'post-new.php' === $GLOBALS['pagenow'] ) {
-			// We need to defer wait until we know which editor is in use
-			add_filter( 'use_block_editor_for_post', array( $this, 'use_block_editor_for_post' ), 999 ); // After the plugin Classic Editor
-		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
-			$this->sync_post = new PLL_Sync_Post( $this );
+		if ( 'post-new.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) ) {
+			// We need to wait until we know which editor is in use
+			add_filter( 'use_block_editor_for_post', array( $this, '_maybe_load_sync_post' ), 999 ); // After the plugin Classic Editor
+		} elseif ( 'post.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) && isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->_maybe_load_sync_post( use_block_editor_for_post( (int) $_GET['post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		} else {
+			$this->_maybe_load_sync_post( false );
 		}
 	}
 
@@ -162,16 +172,14 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * @param bool $is_block_editor Whether to use the block editor or not
 	 * @return bool
 	 */
-	public function use_block_editor_for_post( $is_block_editor ) {
-		// Disable Sync Post in the the meta box loader when running the block editor to avoid a conflict
-		if ( isset( $_GET['meta-box-loader'] ) ) { // WPCS: CSRF ok.
-			return $is_block_editor;
-		}
-
-		if ( class_exists( 'PLL_REST_Sync_Post' ) && $is_block_editor ) {
-			$this->sync_post = new PLL_REST_Sync_Post( $this );
-		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
-			$this->sync_post = new PLL_Sync_Post( $this );
+	public function _maybe_load_sync_post( $is_block_editor ) {
+		// Disable Sync Post in the meta box loader when running the block editor to avoid a conflict
+		if ( empty( $_GET['meta-box-loader'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( class_exists( 'PLL_REST_Sync_Post' ) && $is_block_editor ) {
+				$this->sync_post = new PLL_REST_Sync_Post( $this );
+			} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
+				$this->sync_post = new PLL_Sync_Post( $this );
+			}
 		}
 
 		return $is_block_editor;
