@@ -33,6 +33,8 @@ class PLL_REST_Request extends PLL_Base {
 			$this->terms = new PLL_CRUD_Terms( $this );
 			$this->sync  = new PLL_Sync( $this );
 
+			$this->nav_menu = new PLL_Nav_Menu( $this ); // For auto added pages to menu
+
 			// Share term slugs
 			if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Share_Term_Slug' ) ) {
 				$this->share_term_slug = version_compare( $GLOBALS['wp_version'], '4.8', '<' ) ?

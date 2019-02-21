@@ -17,8 +17,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
-		$this->theme = get_option( 'stylesheet' );
-
 		// Populates nav menus locations
 		// Since WP 4.4, must be done before customize_register is fired
 		add_filter( 'theme_mod_nav_menu_locations', array( $this, 'theme_mod_nav_menu_locations' ), 20 );
@@ -40,9 +38,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		// Translation of menus based on chosen locations
 		add_filter( 'pre_update_option_theme_mods_' . $this->theme, array( $this, 'pre_update_option_theme_mods' ) );
 		add_action( 'delete_nav_menu', array( $this, 'delete_nav_menu' ) );
-
-		// Filter _wp_auto_add_pages_to_menu by language
-		add_action( 'transition_post_status', array( $this, 'auto_add_pages_to_menu' ), 5, 3 ); // before _wp_auto_add_pages_to_menu
 
 		// FIXME is it possible to choose the order ( after theme locations in WP3.5 and older ) ?
 		// FIXME not displayed if Polylang is activated before the first time the user goes to nav menus http://core.trac.wordpress.org/ticket/16828
@@ -269,50 +264,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			}
 
 			update_option( 'polylang', $this->options );
-		}
-	}
-
-	/**
-	 * Filters the option nav_menu_options for auto added pages to menu
-	 *
-	 * @since 0.9.4
-	 *
-	 * @param array $options
-	 * @return array Modified options
-	 */
-	public function nav_menu_options( $options ) {
-		$options['auto_add'] = array_intersect( $options['auto_add'], $this->auto_add_menus );
-		return $options;
-	}
-
-	/**
-	 * Filters _wp_auto_add_pages_to_menu by language
-	 *
-	 * @since 0.9.4
-	 *
-	 * @param string $new_status Transition to this post status.
-	 * @param string $old_status Previous post status.
-	 * @param object $post Post data.
-	 */
-	public function auto_add_pages_to_menu( $new_status, $old_status, $post ) {
-		if ( 'publish' != $new_status || 'publish' == $old_status || 'page' != $post->post_type || ! empty( $post->post_parent ) ) {
-			return;
-		}
-
-		if ( ! empty( $this->options['nav_menus'][ $this->theme ] ) ) {
-			$this->auto_add_menus = array();
-
-			$lang = $this->model->post->get_language( $post->ID );
-			$lang = empty( $lang ) ? $this->options['default_lang'] : $lang->slug; // If the page has no language yet, the default language will be assigned
-
-			// Get all the menus in the page language
-			foreach ( $this->options['nav_menus'][ $this->theme ] as $loc ) {
-				if ( ! empty( $loc[ $lang ] ) ) {
-					$this->auto_add_menus[] = $loc[ $lang ];
-				}
-			}
-
-			add_filter( 'option_nav_menu_options', array( $this, 'nav_menu_options' ) );
 		}
 	}
 }
