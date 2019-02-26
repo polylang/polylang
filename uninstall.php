@@ -46,9 +46,18 @@ class PLL_Uninstall {
 			return;
 		}
 
+		global $wpdb;
+
+		//Execute uninstall scripts for each modules, if such scripts exists
+		foreach ( PLL_ACTIVE_MODULES as $pll_module ) {
+			$uninstall_script = PLL_MODULES_INC . $pll_module . 'uninstall.php';
+			if ( file_exists( $uninstall_script ) ) {
+				require $uninstall_script;
+			}
+		}
+
 		// Suppress data of the old model < 1.2
 		// FIXME: to remove when support for v1.1.6 will be dropped
-		global $wpdb;
 		$wpdb->termmeta = $wpdb->prefix . 'termmeta'; // registers the termmeta table in wpdb
 
 		// Do nothing if the termmeta table does not exists
@@ -138,7 +147,6 @@ class PLL_Uninstall {
 		// Delete transients
 		delete_transient( 'pll_languages_list' );
 		delete_transient( 'pll_upgrade_1_4' );
-		delete_transient( 'pll_translated_slugs' );
 	}
 }
 
