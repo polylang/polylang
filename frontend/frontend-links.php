@@ -58,12 +58,12 @@ class PLL_Frontend_Links extends PLL_Links {
 			$hide = $this->options['default_lang'] == $language->slug && $this->options['hide_default'];
 
 			// Post and attachment
-			if ( is_single() && ( $this->options['media_support'] || ! is_attachment() ) && ( $id = $this->model->post->get( $queried_object_id, $language ) ) && $this->current_user_can_read( $id ) ) {
+			if ( is_single() && ( $this->options['media_support'] || ! is_attachment() ) && ( $id = $this->model->post->get( $queried_object_id, $language ) ) && $this->model->post->current_user_can_read( $id ) ) {
 				$url = get_permalink( $id );
 			}
 
 			// Page
-			elseif ( is_page() && ( $id = $this->model->post->get( $queried_object_id, $language ) ) && $this->current_user_can_read( $id ) ) {
+			elseif ( is_page() && ( $id = $this->model->post->get( $queried_object_id, $language ) ) && $this->model->post->current_user_can_read( $id ) ) {
 				$url = get_page_link( $id );
 			}
 

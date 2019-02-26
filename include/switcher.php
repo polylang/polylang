@@ -67,7 +67,7 @@ class PLL_Switcher {
 				}
 			}
 
-			if ( null !== $args['post_id'] && ( $tr_id = $links->model->post->get( $args['post_id'], $language ) ) && $links->current_user_can_read( $tr_id ) ) {
+			if ( null !== $args['post_id'] && ( $tr_id = $links->model->post->get( $args['post_id'], $language ) ) && $links->model->post->current_user_can_read( $tr_id ) ) {
 				$url = get_permalink( $tr_id );
 			} elseif ( null === $args['post_id'] ) {
 				$url = $links->get_translation_url( $language );
