@@ -68,15 +68,6 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'PLL_MODULES_INC', POLYLANG_DIR . '/modules' );
 	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 
-	define( 'PLL_ACTIVE_MODULES', array(
-			'plugins',
-			'share-slug',
-			'sync',
-			'translate-slugs',
-			'wpml'
-		)
-	);
-
 	if ( file_exists( PLL_MODULES_INC . '/pro.php' ) ) {
 		define( 'POLYLANG_PRO', true );
 	}

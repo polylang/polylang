@@ -48,13 +48,16 @@ class PLL_Uninstall {
 
 		global $wpdb;
 
-		//Execute uninstall scripts for each modules, if such scripts exists
-		foreach ( PLL_ACTIVE_MODULES as $pll_module ) {
-			$uninstall_script = PLL_MODULES_INC . $pll_module . 'uninstall.php';
+		//Executes each module's uninstall script, if it exists
+		$pll_modules_dir = WP_CONTENT_DIR . '/plugins/polylang/modules';
+		opendir( $pll_modules_dir );
+		while ( ($module = readdir() ) != false ) {
+			$uninstall_script = $pll_modules_dir . '/' . $module . '/uninstall.php';
 			if ( file_exists( $uninstall_script ) ) {
 				require $uninstall_script;
 			}
 		}
+		closedir();
 
 		// Suppress data of the old model < 1.2
 		// FIXME: to remove when support for v1.1.6 will be dropped
@@ -79,7 +82,6 @@ class PLL_Uninstall {
 		// Delete users options
 		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
 			delete_user_meta( $user_id, 'pll_filter_content' );
-			delete_user_meta( $user_id, 'pll_duplicate_content' );
 			foreach ( $languages as $lang ) {
 				delete_user_meta( $user_id, 'description_' . $lang->slug );
 			}
