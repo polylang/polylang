@@ -147,4 +147,58 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 			$query->query_vars['update_post_term_cache'] = true;
 		}
 	}
+
+	/**
+	 * Returns a list of posts in a language ( $lang )
+	 * not translated in another language ( $untranslated_in )
+	 *
+	 * @since 2.6
+	 *
+	 * @param string $type            Post type
+	 * @param string $untranslated_in The posts must not be translated in this language
+	 * @param string $lang            Language of the search posts
+	 * @param string $search          Limit results to posts matching this string
+	 * @return array Array of posts
+	 */
+	public function get_untranslated( $type, $untranslated_in, $lang, $search = '' ) {
+		$return = array();
+
+		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
+		$args = array(
+			's'                => $search,
+			'suppress_filters' => 0, // To make the post_fields filter work
+			'lang'             => 0, // Avoid admin language filter
+			'numberposts'      => 20, // Limit to 20 posts
+			'post_status'      => 'any',
+			'post_type'        => $type,
+			'tax_query'        => array(
+				array(
+					'taxonomy' => 'language',
+					'field'    => 'term_taxonomy_id', // WP 3.5+
+					'terms'    => $lang->term_taxonomy_id,
+				),
+			),
+		);
+
+		/**
+		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox
+		 * This should help plugins to fix some edge cases
+		 *
+		 * @see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
+		 *
+		 * @since 1.7
+		 *
+		 * @param array $args WP_Query arguments
+		 */
+		$args  = apply_filters( 'pll_ajax_posts_not_translated_args', $args );
+		$posts = get_posts( $args );
+
+		foreach ( $posts as $post ) {
+			if ( ! $this->get_translation( $post->ID, $untranslated_in ) && current_user_can( 'read_post', $post->ID ) ) {
+				$return[] = $post;
+			}
+		}
+
+		return $return;
+	}
 }

@@ -228,49 +228,22 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 0 );
 		}
 
+		$term = wp_unslash( $_GET['term'] ); // WCPS: sanitization ok.
+
 		$post_language = $this->model->get_language( sanitize_key( $_GET['post_language'] ) );
 		$translation_language = $this->model->get_language( sanitize_key( $_GET['translation_language'] ) );
 
-		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
-		$args = array(
-			's'                => wp_unslash( $_GET['term'] ), // WCPS: sanitization ok.
-			'suppress_filters' => 0, // To make the post_fields filter work
-			'lang'             => 0, // Avoid admin language filter
-			'numberposts'      => 20, // Limit to 20 posts
-			'post_status'      => 'any',
-			'post_type'        => $post_type,
-			'tax_query'        => array(
-				array(
-					'taxonomy' => 'language',
-					'field'    => 'term_taxonomy_id', // WP 3.5+
-					'terms'    => $translation_language->term_taxonomy_id,
-				),
-			),
-		);
-
-		/**
-		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox
-		 * This should help plugins to fix some edge cases
-		 *
-		 * @see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
-		 *
-		 * @since 1.7
-		 *
-		 * @param array $args WP_Query arguments
-		 */
-		$args = apply_filters( 'pll_ajax_posts_not_translated_args', $args );
-		$posts = get_posts( $args );
-
 		$return = array();
 
-		foreach ( $posts as $key => $post ) {
-			if ( ! $this->model->post->get_translation( $post->ID, $post_language ) ) {
-				$return[] = array(
-					'id'    => $post->ID,
-					'value' => $post->post_title,
-					'link'  => $this->links->edit_post_translation_link( $post->ID ),
-				);
-			}
+		$untranslated_posts = $this->model->post->get_untranslated( $post_type, $post_language, $translation_language, $term );
+
+		// format output
+		foreach ( $untranslated_posts as $post ) {
+			$return[] = array(
+				'id'    => $post->ID,
+				'value' => $post->post_title,
+				'link'  => $this->links->edit_post_translation_link( $post->ID ),
+			);
 		}
 
 		// Add current translation in list
