@@ -48,13 +48,15 @@ class PLL_Uninstall {
 
 		global $wpdb;
 
-		//Executes each module's uninstall script, if it exists
-		$pll_modules_dir = WP_CONTENT_DIR . '/plugins/polylang/modules';
+		// Executes each module's uninstall script, if it exists
+		$pll_modules_dir = dirname( __FILE__ ) . '/modules';
 		opendir( $pll_modules_dir );
-		while ( ($module = readdir() ) != false ) {
-			$uninstall_script = $pll_modules_dir . '/' . $module . '/uninstall.php';
-			if ( file_exists( $uninstall_script ) ) {
-				require $uninstall_script;
+		while ( ( $module = readdir() ) != false ) {
+			if ( substr( $module, 0, 1 ) !== '.' ) {
+				$uninstall_script = $pll_modules_dir . '/' . $module . '/uninstall.php';
+				if ( file_exists( $uninstall_script ) ) {
+					require $uninstall_script;
+				}
 			}
 		}
 		closedir();
