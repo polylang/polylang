@@ -224,22 +224,22 @@ abstract class PLL_Sync_Metas {
 			$avoid_recursion = true;
 			$hash = md5( "$id|$meta_key|" . maybe_serialize( $meta_value ) );
 
-			$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
+			$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
 
-			foreach ( $tr_ids as $lang => $tr_id ) {
-				if ( $tr_id != $id ) {
-					$to_copy = $this->get_metas_to_copy( $id, $tr_id, $lang, true );
-					if ( in_array( $meta_key, $to_copy ) ) {
-						$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
-						$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
+			if ( $prev_meta ) {
+				$this->remove_add_meta_action(); // We don't want to sync back the new metas
+				$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
+
+				foreach ( $tr_ids as $lang => $tr_id ) {
+					if ( $tr_id != $id && in_array( $meta_key, $this->get_metas_to_copy( $id, $tr_id, $lang, true ) ) ) {
 						if ( empty( $this->prev_value[ $hash ] ) || $this->prev_value[ $hash ] === $prev_meta->meta_value ) {
 							$prev_value = $this->maybe_translate_value( $prev_meta->meta_value, $meta_key, $id, $tr_id, $lang );
-							$this->remove_add_meta_action(); // We don't want to sync back the new metas
+							$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
 							update_metadata( $this->meta_type, $tr_id, $meta_key, $meta_value, $prev_value );
-							$this->restore_add_meta_action();
 						}
 					}
 				}
+				$this->restore_add_meta_action();
 			}
 
 			unset( $this->prev_value[ $hash ] );
