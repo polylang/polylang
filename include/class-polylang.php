@@ -68,7 +68,7 @@ class Polylang {
 		}
 
 		$class = str_replace( '_', '-', strtolower( substr( $class, 4 ) ) );
-		$to_find = array( 'media', 'share', 'slug', 'slugs', 'sync', 'translate', 'wpml', 'xdata', 'rest', 'bulk' );
+		$to_find = array( 'media', 'share', 'slug', 'slugs', 'sync', 'translate', 'wpml', 'xdata', 'rest', 'bulk', 'duplicate', 'landing', 'page' );
 		$dir = implode( '-', array_intersect( explode( '-', $class ), $to_find ) );
 
 		$dirs = array(
