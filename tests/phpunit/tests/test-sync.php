@@ -70,7 +70,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' );
 
 		$this->assertEquals( array( $tag_en ), wp_get_post_terms( $from, 'post_tag', array( 'fields' => 'ids' ) ) );
-		$this->assertEquals( array( $untranslated, $en ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
+		$this->assertEqualSets( array( $untranslated, $en ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
 
 		// remove taxonomies and post format and sync taxonomies
