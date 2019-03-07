@@ -59,7 +59,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( ! empty( $lang ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
 			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug . '/';
-			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
+			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '/^https?:\/\//', '://', $this->home . '/' . $this->root );
 
 			if ( false === strpos( $url, $new = $root . $slug ) ) {
 				$pattern = str_replace( '/', '\/', $root );
@@ -87,7 +87,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		if ( ! empty( $languages ) ) {
-			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
+			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '/^https?:\/\//', '://', $this->home . '/' . $this->root );
 
 			$pattern = str_replace( '/', '\/', $root );
 			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language\/' ) . '(' . implode( '|', $languages ) . ')(\/|$)#';
