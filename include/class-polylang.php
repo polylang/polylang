@@ -197,15 +197,22 @@ class Polylang {
 		$class = apply_filters( 'pll_model', PLL_SETTINGS ? 'PLL_Admin_Model' : 'PLL_Model' );
 		$model = new $class( $options );
 		$links_model = $model->get_links_model();
+		$polylang_class = null;
 
 		if ( PLL_SETTINGS ) {
-			$polylang = new PLL_Settings( $links_model );
+			$polylang_class = 'PLL_Settings';
 		} elseif ( PLL_ADMIN ) {
-			$polylang = new PLL_Admin( $links_model );
+			$polylang_class = 'PLL_Admin';
 		} elseif ( self::is_rest_request() ) {
-			$polylang = new PLL_REST_Request( $links_model );
+			$polylang_class = 'PLL_REST_Request';
 		} elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // WPCS: CSRF ok. Do nothing on frontend if no language is defined.
-			$polylang = new PLL_Frontend( $links_model );
+			$polylang_class = 'PLL_Frontend';
+		}
+
+		$polylang_class = apply_filters( 'pll_class', $polylang_class );
+
+		if ( $polylang_class ) {
+			$polylang = new $polylang_class( $links_model );
 		}
 
 		if ( ! $model->get_languages_list() ) {
