@@ -212,16 +212,6 @@ class Polylang {
 		$model = new $class( $options );
 		$links_model = $model->get_links_model();
 
-		if ( PLL_SETTINGS ) {
-			$polylang = new PLL_Settings( $links_model );
-		} elseif ( PLL_ADMIN ) {
-			$polylang = new PLL_Admin( $links_model );
-		} elseif ( self::is_rest_request() ) {
-			$polylang = new PLL_REST_Request( $links_model );
-		} elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$polylang = new PLL_Frontend( $links_model );
-		}
-
 		if ( ! $model->get_languages_list() ) {
 			/**
 			 * Fires when no language has been defined yet
@@ -232,7 +222,30 @@ class Polylang {
 			do_action( 'pll_no_language_defined' );
 		}
 
-		if ( ! empty( $polylang ) ) {
+		$class = '';
+
+		if ( PLL_SETTINGS ) {
+			$class = 'PLL_Settings';
+		} elseif ( PLL_ADMIN ) {
+			$class = 'PLL_Admin';
+		} elseif ( self::is_rest_request() ) {
+			$class = 'PLL_REST_Request';
+		} elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$class = 'PLL_Frontend';
+		}
+
+		/**
+		 * Filters the class to use to instantiate the $polylang object
+		 *
+		 * @since 2.6
+		 *
+		 * @param string $class A class name.
+		 */
+		$class = apply_filters( 'pll_context', $class );
+
+		if ( ! empty( $class ) ) {
+			$polylang = new $class( $links_model );
+
 			/**
 			 * Fires after the $polylang object is created and before the API is loaded
 			 *
