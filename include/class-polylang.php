@@ -68,18 +68,32 @@ class Polylang {
 		}
 
 		$class = str_replace( '_', '-', strtolower( substr( $class, 4 ) ) );
-		$to_find = array( 'media', 'share', 'slug', 'slugs', 'sync', 'translate', 'wpml', 'xdata', 'rest', 'bulk', 'duplicate', 'landing', 'page' );
-		$dir = implode( '-', array_intersect( explode( '-', $class ), $to_find ) );
+		$dirs  = array();
+		$parts = explode( '-', $class );
+		$parts = array_values( array_diff( $parts, array( 'frontend', 'admin', 'settings', 'advanced' ) ) );
+		if ( isset( $parts[0] ) ) {
+			$dirs[] = PLL_MODULES_INC . "/{$parts[0]}";
+			if ( isset( $parts[1] ) ) {
+				$dirs[] = PLL_MODULES_INC . "/{$parts[0]}-{$parts[1]}";
+				if ( isset( $parts[2] ) && in_array( $parts[1], array( 'post', 'term' ) ) ) {
+					$dirs[] = PLL_MODULES_INC . "/{$parts[0]}-{$parts[2]}";
+				}
+			}
+		}
 
-		$dirs = array(
-			PLL_FRONT_INC,
-			PLL_MODULES_INC,
-			PLL_MODULES_INC . "/$dir",
-			PLL_MODULES_INC . '/plugins',
-			PLL_INSTALL_INC,
-			PLL_ADMIN_INC,
-			PLL_SETTINGS_INC,
-			PLL_INC,
+		$dirs = array_merge(
+			array(
+				PLL_FRONT_INC,
+				PLL_MODULES_INC,
+			),
+			$dirs,
+			array(
+				PLL_MODULES_INC . '/plugins',
+				PLL_INSTALL_INC,
+				PLL_ADMIN_INC,
+				PLL_SETTINGS_INC,
+				PLL_INC,
+			)
 		);
 
 		foreach ( $dirs as $dir ) {
