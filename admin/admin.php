@@ -176,8 +176,8 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * @return bool
 	 */
 	public function _maybe_load_sync_post( $is_block_editor ) {
-		if ( class_exists( 'PLL_REST_Sync_Post' ) && $is_block_editor ) {
-			$this->sync_post = new PLL_REST_Sync_Post( $this );
+		if ( class_exists( 'PLL_Sync_Post_REST' ) && $is_block_editor ) {
+			$this->sync_post = new PLL_Sync_Post_REST( $this );
 		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
 			$this->sync_post = new PLL_Sync_Post( $this );
 		}

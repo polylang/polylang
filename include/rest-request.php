@@ -53,8 +53,8 @@ class PLL_REST_Request extends PLL_Base {
 				$this->sync_content = new PLL_Sync_Content( $this );
 			}
 
-			if ( class_exists( 'PLL_REST_Sync_Post' ) ) {
-				$this->sync_post = new PLL_REST_Sync_Post( $this );
+			if ( class_exists( 'PLL_Sync_Post_REST' ) ) {
+				$this->sync_post = new PLL_Sync_Post_REST( $this );
 			}
 		}
 	}
