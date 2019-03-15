@@ -82,7 +82,8 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	public function get_hosts() {
 		$hosts = array();
 		foreach ( $this->options['domains'] as $lang => $domain ) {
-			$hosts[ $lang ] = wp_parse_url( $domain, PHP_URL_HOST );
+			$host = wp_parse_url( $domain, PHP_URL_HOST );
+			$hosts[ $lang ] = function_exists( 'idn_to_ascii' ) ? idn_to_ascii( $host ) : Requests_IDNAEncoder::encode( $host ); // idn_to_ascii is much faster than the WordPress method
 		}
 		return $hosts;
 	}
