@@ -129,6 +129,6 @@ class PLL_Frontend_Filters_Search {
 			}
 		}
 		//]]>";
-		echo '<script type="text/javascript">' . $js . '</script>';
+		echo '<script type="text/javascript">' . $js . '</script>'; // WCPS: XSS ok.
 	}
 }

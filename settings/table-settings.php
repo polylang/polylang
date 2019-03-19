@@ -59,7 +59,7 @@ class PLL_Table_Settings extends WP_List_Table {
 				'<tr class="plugin-update-tr">
 					<td colspan="3" class="plugin-update colspanchange">%s</td>
 				</tr>',
-				sprintf( '<div class="update-message notice inline notice-warning notice-alt"><p>%s</p></div>', $message )
+				sprintf( '<div class="update-message notice inline notice-warning notice-alt"><p>%s</p></div>', $message ) // phpcs:ignore WordPress.Security.EscapeOutput
 			);
 		}
 
@@ -78,8 +78,8 @@ class PLL_Table_Settings extends WP_List_Table {
 				</tr>',
 				esc_attr( $item->module ),
 				esc_html( $item->title ),
-				$form,
-				implode( $item->get_buttons() )
+				$form, // phpcs:ignore
+				implode( $item->get_buttons() ) // phpcs:ignore
 			);
 		}
 	}
@@ -106,12 +106,12 @@ class PLL_Table_Settings extends WP_List_Table {
 
 			if ( 'cb' == $column_name ) {
 				echo '<th scope="row" class="check-column">';
-				echo $this->column_cb( $item );
+				echo $this->column_cb( $item ); // WPCS: XSS ok.
 				echo '</th>';
 			}
 			else {
 				printf( '<td class="%s">', esc_attr( $classes ) );
-				echo $this->column_default( $item, $column_name );
+				echo $this->column_default( $item, $column_name ); // WPCS: XSS ok.
 				echo '</td>';
 			}
 		}

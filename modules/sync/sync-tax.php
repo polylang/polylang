@@ -101,6 +101,41 @@ class PLL_Sync_Tax {
 	}
 
 	/**
+	 * Maybe copy taxonomy terms from one post to the other
+	 *
+	 * @since 2.6
+	 *
+	 * @param int    $object_id Source object ID.
+	 * @param int    $tr_id     Target object ID.
+	 * @param string $lang      Target language.
+	 * @param array  $terms     An array of object terms.
+	 * @param string $taxonomy  Taxonomy slug.
+	 * @param bool   $append    Whether to append new terms to the old terms.
+	 */
+	protected function copy_object_terms( $object_id, $tr_id, $lang, $terms, $taxonomy, $append ) {
+		$to_copy = $this->get_taxonomies_to_copy( true, $object_id, $tr_id, $lang );
+
+		if ( in_array( $taxonomy, $to_copy ) ) {
+			$newterms = $this->maybe_translate_terms( $object_id, $terms, $taxonomy, $lang );
+
+			// For some reasons, the user may have untranslated terms in the translation. Don't forget them.
+			if ( $this->model->is_translated_taxonomy( $taxonomy ) ) {
+				$tr_terms = get_the_terms( $tr_id, $taxonomy );
+				if ( is_array( $tr_terms ) ) {
+					foreach ( $tr_terms as $term ) {
+						if ( ! $this->model->term->get_translation( $term->term_id, $this->model->post->get_language( $object_id ) ) ) {
+							$newterms[] = (int) $term->term_id;
+						}
+					}
+				}
+			}
+
+			wp_set_object_terms( $tr_id, $newterms, $taxonomy, $append );
+		}
+
+	}
+
+	/**
 	 * When assigning terms to a post, assign translated terms to the translated posts (synchronisation)
 	 *
 	 * @since 2.3
@@ -123,24 +158,17 @@ class PLL_Sync_Tax {
 
 			foreach ( $tr_ids as $lang => $tr_id ) {
 				if ( $tr_id !== $object_id ) {
-					$to_copy = $this->get_taxonomies_to_copy( true, $object_id, $tr_id, $lang );
-
-					if ( in_array( $taxonomy, $to_copy ) ) {
-						$newterms = $this->maybe_translate_terms( $object_id, $terms, $taxonomy, $lang );
-
-						// For some reasons, the user may have untranslated terms in the translation. Don't forget them.
-						if ( $this->model->is_translated_taxonomy( $taxonomy ) ) {
-							$tr_terms = get_the_terms( $tr_id, $taxonomy );
-							if ( is_array( $tr_terms ) ) {
-								foreach ( $tr_terms as $term ) {
-									if ( ! $this->model->term->get_translation( $term->term_id, $this->model->post->get_language( $object_id ) ) ) {
-										$newterms[] = (int) $term->term_id;
-									}
-								}
-							}
+					if ( $this->model->post->current_user_can_synchronize( $object_id ) ) {
+						$this->copy_object_terms( $object_id, $tr_id, $lang, $terms, $taxonomy, $append );
+					} else {
+						// No permission to synchronize, so let's synchronize in reverse order
+						$orig_lang = array_search( $object_id, $tr_ids );
+						$tr_terms = (array) get_the_terms( $tr_id, $taxonomy );
+						if ( is_array( $tr_terms ) ) {
+							$tr_terms = wp_list_pluck( $tr_terms, 'term_id' );
+							$this->copy_object_terms( $tr_id, $object_id, $orig_lang, $tr_terms, $taxonomy, $append );
 						}
-
-						wp_set_object_terms( $tr_id, $newterms, $taxonomy, $append );
+						break;
 					}
 				}
 			}
@@ -226,7 +254,9 @@ class PLL_Sync_Tax {
 			$posts = array_unique( $posts );
 
 			foreach ( $posts as $post_id ) {
-				wp_set_object_terms( $post_id, $term_id, $taxonomy, true );
+				if ( current_user_can( 'assign_term', $term_id ) ) {
+					wp_set_object_terms( $post_id, $term_id, $taxonomy, true );
+				}
 			}
 		}
 	}

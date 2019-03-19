@@ -116,7 +116,7 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 		}
 
 		$pll_type = ( 'post' == $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' == $type || pll_is_translated_taxonomy( $type ) ? 'term' : false );
-		if ( $pll_type && ( $lang = pll_current_language() ) && ( $tr_id = PLL()->model->$pll_type->get_translation( $id, $lang ) ) && PLL()->links->current_user_can_read( $tr_id ) ) {
+		if ( $pll_type && ( $lang = pll_current_language() ) && ( $tr_id = PLL()->model->$pll_type->get_translation( $id, $lang ) ) && ( 'term' === $pll_type || PLL()->model->post->current_user_can_read( $tr_id ) ) ) {
 			$id = $tr_id;
 		} elseif ( ! $return_original_if_missing ) {
 			return '';
@@ -149,7 +149,7 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 		$link = sprintf( '<a href="%s">%s</a>', esc_url( $link ), esc_html( $text ) );
 
 		if ( $echo ) {
-			echo $link;
+			echo $link; // WCPS: XSS ok.
 		}
 
 		return $link;
@@ -325,12 +325,14 @@ if ( ! function_exists( 'wpml_get_copied_fields_for_post_edit' ) ) {
 	 * @return array
 	 */
 	function wpml_get_copied_fields_for_post_edit() {
-		if ( empty( $_GET['from_post'] ) ) {
+		if ( empty( $_GET['from_post'] ) ) { // WPCS: CSRF ok.
 			return array();
 		}
 
+		$arr['original_post_id'] = (int) $_GET['from_post'];
+
 		// Don't know what WPML does but Polylang does copy all public meta keys by default
-		foreach ( $keys = array_unique( array_keys( get_post_custom( (int) $_GET['from_post'] ) ) ) as $k => $meta_key ) {
+		foreach ( $keys = array_unique( array_keys( get_post_custom( $arr['original_post_id'] ) ) ) as $k => $meta_key ) {
 			if ( is_protected_meta( $meta_key ) ) {
 				unset( $keys[ $k ] );
 			}
@@ -339,7 +341,6 @@ if ( ! function_exists( 'wpml_get_copied_fields_for_post_edit' ) ) {
 		// Apply our filter and fill the expected output ( see /types/embedded/includes/fields-post.php )
 		/** This filter is documented in modules/sync/admin-sync.php */
 		$arr['fields'] = array_unique( apply_filters( 'pll_copy_post_metas', empty( $keys ) ? array() : $keys, false ) );
-		$arr['original_post_id'] = (int) $_GET['from_post'];
 		return $arr;
 	}
 }

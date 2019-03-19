@@ -59,7 +59,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( ! empty( $lang ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
 			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug . '/';
-			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
+			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '/^https?:\/\//', '://', $this->home . '/' . $this->root );
 
 			if ( false === strpos( $url, $new = $root . $slug ) ) {
 				$pattern = str_replace( '/', '\/', $root );
@@ -87,7 +87,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		if ( ! empty( $languages ) ) {
-			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
+			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '/^https?:\/\//', '://', $this->home . '/' . $this->root );
 
 			$pattern = str_replace( '/', '\/', $root );
 			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language\/' ) . '(' . implode( '|', $languages ) . ')(\/|$)#';
@@ -108,14 +108,13 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 */
 	public function get_language_from_url( $url = '' ) {
 		if ( empty( $url ) ) {
-			$path = $_SERVER['REQUEST_URI'];
-		} else {
-			$path = parse_url( $url, PHP_URL_PATH );
+			$url = pll_get_requested_url();
 		}
 
+		$path = wp_parse_url( $url, PHP_URL_PATH );
 		$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
 
-		$pattern = parse_url( $root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
+		$pattern = wp_parse_url( $root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
 		$pattern = str_replace( '/', '\/', $pattern );
 		$pattern = '#' . $pattern . '(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')(\/|$)#';
 		return preg_match( $pattern, trailingslashit( $path ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language

@@ -15,7 +15,8 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @param object $model
 	 */
 	public function __construct( &$model ) {
-		$this->object_type = 'term';
+		$this->object_type = 'term'; // For taxonomies
+		$this->type = 'term'; // For capabilities
 		$this->tax_language = 'term_language';
 		$this->tax_translations = 'term_translations';
 		$this->tax_tt = 'tl_term_taxonomy_id';

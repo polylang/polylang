@@ -70,10 +70,10 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 				$( "input[name='force_lang']" ).change( function() {
 					var value = $( this ).val();
 					if ( value > 0 ) {
-						$( "#pll-module-share-slugs" ).removeClass( "inactive" ).addClass( "active" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $activated; ?>' );
+						$( "#pll-module-share-slugs" ).removeClass( "inactive" ).addClass( "active" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $activated; // WCPS: XSS ok. ?>' );
 					}
 					else {
-						$( "#pll-module-share-slugs" ).removeClass( "active" ).addClass( "inactive" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $deactivated; ?>' );
+						$( "#pll-module-share-slugs" ).removeClass( "active" ).addClass( "inactive" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $deactivated; // WCPS: XSS ok. ?>' );
 					}
 				} );
 			} )( jQuery );

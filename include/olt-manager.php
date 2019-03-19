@@ -10,7 +10,7 @@
  * @since 1.2
  */
 class PLL_OLT_Manager {
-	static protected $instance; // For singleton
+	protected static $instance; // For singleton
 	protected $default_locale;
 	protected $list_textdomains = array(); // All text domains
 	public $labels = array(); // Post types and taxonomies labels to translate
@@ -216,9 +216,11 @@ class PLL_OLT_Manager {
 		foreach ( $type->labels as $key => $label ) {
 			if ( is_string( $label ) && isset( $this->labels[ $label ] ) ) {
 				if ( empty( $translated[ $label ] ) ) {
+					// PHPCS:disable WordPress.WP.I18n
 					$type->labels->$key = $translated[ $label ] = isset( $this->labels[ $label ]['context'] ) ?
 						_x( $label, $this->labels[ $label ]['context'], $this->labels[ $label ]['domain'] ) :
 						__( $label, $this->labels[ $label ]['domain'] );
+					// PHPCS:enable
 				}
 				else {
 					$type->labels->$key = $translated[ $label ];

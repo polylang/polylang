@@ -1,7 +1,7 @@
 <?php
 
 class Sync_Test extends PLL_UnitTestCase {
-	static $editor;
+	static $editor, $author;
 
 	static function wpSetUpBeforeClass() {
 		parent::wpSetUpBeforeClass();
@@ -10,6 +10,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		self::$author = self::factory()->user->create( array( 'role' => 'author' ) );
 	}
 
 	function setUp() {
@@ -25,6 +26,14 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	function test_copy_taxonomies() {
+		$tag_en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_en' ) );
+		self::$polylang->model->term->set_language( $tag_en, 'en' );
+
+		$tag_fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_fr' ) );
+		self::$polylang->model->term->set_language( $tag_fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $tag_en, array( 'en' => $tag_en, 'fr' => $tag_fr ) );
+
 		$untranslated = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$polylang->model->term->set_language( $untranslated, 'en' );
 
@@ -38,7 +47,8 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$from = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $from, 'en' );
-		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' );
+		wp_set_post_terms( $from, array( 'tag_en' ), 'post_tag' ); // Assigned by slug
+		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' ); // Assigned by term_id
 		set_post_format( $from, 'aside' );
 
 		$to = $this->factory->post->create();
@@ -50,20 +60,25 @@ class Sync_Test extends PLL_UnitTestCase {
 		$sync = new PLL_Admin_Sync( self::$polylang );
 		$sync->taxonomies->copy( $from, $to, 'fr' ); // copy
 
+		$this->assertEquals( array( $tag_fr ), wp_get_post_terms( $to, 'post_tag', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( array( $fr ), wp_get_post_terms( $to, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $to ) );
 
 		// sync
 		self::$polylang->options['sync'] = array( 'taxonomies' );
+		wp_set_post_terms( $from, array( 'tag_en' ), 'post_tag' );
 		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' );
 
-		$this->assertEquals( array( $untranslated, $en ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
+		$this->assertEquals( array( $tag_en ), wp_get_post_terms( $from, 'post_tag', array( 'fields' => 'ids' ) ) );
+		$this->assertEqualSets( array( $untranslated, $en ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
 
 		// remove taxonomies and post format and sync taxonomies
+		wp_set_post_terms( $to, array(), 'post_tag' );
 		wp_set_post_terms( $to, array(), 'category' );
 		set_post_format( $to, '' );
 
+		$this->assertEquals( array(), wp_get_post_terms( $from, 'post_tag', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( array( $untranslated ), wp_get_post_terms( $from, 'category', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
 
@@ -157,18 +172,22 @@ class Sync_Test extends PLL_UnitTestCase {
 		set_post_format( $from, 'aside' );
 		stick_post( $from );
 
+		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$GLOBALS['pagenow'] = 'post-new.php';
-		$_GET = array(
+		$_REQUEST = $_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
 		$to = $this->factory->post->create();
-		do_action( 'add_meta_boxes', 'post', get_post( $to ) ); // fires the copy
 
+		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['post'] = get_post( $to );
+
+		do_action( 'add_meta_boxes', 'post', $GLOBALS['post'] ); // fires the copy
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
 		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
@@ -195,19 +214,23 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$GLOBALS['pagenow'] = 'post-new.php';
-		$_GET = array(
+		$_REQUEST = $_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'post_type' => 'page',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
 		$to = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		do_action( 'add_meta_boxes', 'page', $page = get_post( $to ) ); // fires the copy
+
+		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['post'] = get_post( $to );
+
+		do_action( 'add_meta_boxes', 'page', $GLOBALS['post'] ); // fires the copy
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
-		$this->assertEquals( 12, $page->menu_order );
+		$this->assertEquals( 12, $GLOBALS['post']->menu_order );
 		$this->assertEquals( 'full-width.php', get_page_template_slug( $to ) );
 	}
 
@@ -247,9 +270,9 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		edit_post(
 			array(
-				'post_ID'     => $from,
-				'post_format' => 'aside',
-				'meta'        => $metas,
+				'post_ID'       => $from,
+				'post_format'   => 'aside',
+				'meta'          => $metas,
 				'_thumbnail_id' => $thumbnail_id, // Since WP 4.6
 			)
 		); // fires the sync
@@ -353,8 +376,6 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_term_with_parent_sync() {
-		self::$polylang->options['sync'] = array( 'taxonomies' );
-
 		// Parents
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$polylang->model->term->set_language( $en, 'en' );
@@ -398,9 +419,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->options['sync'] = array( 'post_date' ); // Sync publish date
 
 		$GLOBALS['pagenow'] = 'post-new.php';
-		$_GET = array(
+		$_REQUEST = $_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
 		$to = $this->factory->post->create();
@@ -456,14 +478,18 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
 
-		$GLOBALS['pagenow'] = 'post-new.php';
-		$_GET = array(
+		$_REQUEST = $_GET = array(
 			'from_post' => $from,
 			'new_lang'  => 'fr',
+			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
 		$to = $this->factory->post->create();
-		do_action( 'add_meta_boxes', 'post', get_post( $to ) ); // fires the copy
+
+		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['post'] = get_post( $to );
+
+		do_action( 'add_meta_boxes', 'post', $GLOBALS['post'] ); // fires the copy
 		clean_post_cache( $to ); // Usually WordPress will do it for us when the post will be saved
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $to )->slug );
@@ -641,5 +667,143 @@ class Sync_Test extends PLL_UnitTestCase {
 		wp_delete_category( $fr );
 
 		$this->assertEquals( array( $en ), wp_get_post_categories( $post_en ) );
+	}
+
+	// Bug fixed in 2.3.11
+	function test_category_hierarchy() {
+		// Categories
+		$child_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$child_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		$parent_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		wp_update_term( $child_en, 'category', array( 'parent' => $parent_en ) );
+
+		$parent_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_update_term( $child_fr, 'category', array( 'parent' => $parent_fr ) );
+
+		$term = get_term( $child_fr );
+		$this->assertEquals( $parent_fr, $term->parent );
+
+		// The bug fixed
+		$term = get_term( $child_en );
+		$this->assertEquals( $parent_en, $term->parent );
+	}
+
+	// Bug fixed in 2.5.2
+	function test_sync_category_parent_modification() {
+		// Parent 1
+		$p1en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$p1fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		// Parent 2
+		$p2en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$p2fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		// Child
+		$child_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category', 'parent' => $p1en ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$child_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'parent' => $p1fr ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_update_term( $child_fr, 'category', array( 'parent' => $p2fr ) );
+
+		$term = get_term( $child_fr );
+		$this->assertEquals( $p2fr, $term->parent );
+
+		// The bug fixed
+		$term = get_term( $child_en );
+		$this->assertEquals( $p2en, $term->parent );
+	}
+
+	function test_if_cannot_synchronize() {
+		add_filter( 'pll_pre_current_user_can_synchronize_post', '__return_null' ); // Enable capability check
+		self::$polylang->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
+
+		// Post format
+		$this->factory->term->create( array( 'taxonomy' => 'post_format', 'name' => 'post-format-aside' ) ); // shouldn't WP do that ?
+
+		// Attachment for thumbnail
+		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$thumbnail_id = $this->factory->attachment->create_upload_object( $filename );
+
+		// Categories
+		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+
+		// Posts
+		wp_set_current_user( self::$editor );
+		$to = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		wp_set_current_user( self::$author );
+		$from = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $from, 'en' );
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
+		// The author cannot override synchronized data
+		wp_update_post( array( 'ID' => $from, 'post_category' => array( $en ), 'post_date' => '2007-09-04 00:00:00' ) );
+		add_post_meta( $from, '_thumbnail_id', $thumbnail_id );
+		set_post_format( $from, 'aside' );
+
+		$this->assertNotEquals( array( get_category( $fr ) ), get_the_category( $to ) );
+		$this->assertNotEquals( array( get_category( $en ) ), get_the_category( $from ) );
+		$this->assertNotEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
+		$this->assertNotEquals( '2007-09-04', get_the_date( 'Y-m-d', $from ) );
+		$this->assertNotEquals( $thumbnail_id, get_post_thumbnail_id( $to ) );
+		$this->assertNotEquals( $thumbnail_id, get_post_thumbnail_id( $from ) );
+		$this->assertNotEquals( 'aside', get_post_format( $to ) );
+		$this->assertNotEquals( 'aside', get_post_format( $from ) );
+
+		// The editor can override synchronized data
+		wp_set_current_user( self::$editor );
+
+		wp_update_post( array( 'ID' => $from, 'post_category' => array( $en ), 'post_date' => '2007-09-04 00:00:00' ) );
+		add_post_meta( $from, '_thumbnail_id', $thumbnail_id );
+		set_post_format( $from, 'aside' );
+
+		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
+		$this->assertEquals( array( get_category( $en ) ), get_the_category( $from ) );
+		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
+		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $from ) );
+		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $to ) );
+		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $from ) );
+		$this->assertEquals( 'aside', get_post_format( $to ) );
+		$this->assertEquals( 'aside', get_post_format( $from ) );
 	}
 }

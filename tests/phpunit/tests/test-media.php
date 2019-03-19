@@ -34,7 +34,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$en = $this->factory->attachment->create_upload_object( $filename );
-		$fr = self::$polylang->filters_media->create_media_translation( $en, 'fr' );
+		$fr = self::$polylang->posts->create_media_translation( $en, 'fr' );
 
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $fr )->slug );
 		$this->assertEquals( self::$polylang->model->post->get_translation( $en, 'fr' ), $fr );

@@ -31,7 +31,7 @@ class PLL_Cache_Compat {
 	 * @since 2.3
 	 */
 	public function add_cookie_script() {
-		$domain = ( 2 == PLL()->options['force_lang'] ) ? parse_url( PLL()->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN;
+		$domain = ( 2 == PLL()->options['force_lang'] ) ? wp_parse_url( PLL()->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN;
 		$js = sprintf(
 			'(function() {
 				var expirationDate = new Date();
@@ -44,7 +44,7 @@ class PLL_Cache_Compat {
 			esc_js( COOKIEPATH ),
 			$domain ? '; domain=' . esc_js( $domain ) : ''
 		);
-		echo '<script type="text/javascript">' . $js . '</script>';
+		echo '<script type="text/javascript">' . $js . '</script>'; // WCPS: XSS ok.
 	}
 
 	/**

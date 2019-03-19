@@ -26,7 +26,6 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 	}
 
 	function tearDown() {
-		unset( $GLOBALS['wp_settings_errors'] );
 		self::$polylang->model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient
 
 		parent::tearDown();
@@ -42,7 +41,6 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 
 		$args = array_merge( $values, $args );
 		self::$polylang->model->add_language( $args );
-		unset( $GLOBALS['wp_settings_errors'] ); // Clean "errors"
 	}
 
 	static function delete_all_languages() {
@@ -60,7 +58,6 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 
 			foreach ( $languages as $lang ) {
 				self::$polylang->model->delete_language( $lang->term_id );
-				unset( $GLOBALS['wp_settings_errors'] );
 			}
 		}
 	}

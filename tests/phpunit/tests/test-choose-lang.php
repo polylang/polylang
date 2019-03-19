@@ -19,7 +19,7 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 		self::create_language( 'fr_FR' );
 
-		// only languages with posts will be accepted
+		// Only languages with posts will be accepted
 		$post_id = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 		$post_id = $this->factory->post->create();
@@ -37,6 +37,16 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'de', $choose_lang->get_preferred_browser_language() );
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'es-es,fr-fr;q=0.8';
+		$this->assertFalse( $choose_lang->get_preferred_browser_language() );
+
+		// Bugs fixed in 2.4 with exotic values of q
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'de;q=0.3,en;q=1';
+		$this->assertEquals( 'en', $choose_lang->get_preferred_browser_language() );
+
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'de;q=0.3,en;q=1.0';
+		$this->assertEquals( 'en', $choose_lang->get_preferred_browser_language() );
+
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'de;q=0,es-es;';
 		$this->assertFalse( $choose_lang->get_preferred_browser_language() );
 	}
 

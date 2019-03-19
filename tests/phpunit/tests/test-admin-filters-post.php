@@ -329,12 +329,11 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		global $post_ID;
 
 		self::$polylang->options['media_support'] = 1;
-		self::$polylang->filters_media = new PLL_Admin_Filters_Media( self::$polylang );
 
 		$en = $this->factory->attachment->create_object( 'image0.jpg' );
 		self::$polylang->model->post->set_language( $en, 'en' );
 
-		$post_ID = self::$polylang->filters_media->create_media_translation( $en, 'fr' );
+		$post_ID = self::$polylang->posts->create_media_translation( $en, 'fr' );
 
 		$lang = self::$polylang->model->get_language( 'fr' );
 
@@ -457,7 +456,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			$terms[ $lang->slug ] = array( 'category' => array( self::$polylang->model->term->get( 1, $lang->slug ) ) );
 		}
 
-		$this->assertNotFalse( strpos( $footer, 'var pll_term_languages = ' . json_encode( $terms ) ) );
+		$this->assertNotFalse( strpos( $footer, 'var pll_term_languages = ' . wp_json_encode( $terms ) ) );
 
 		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'] );
 	}
@@ -482,7 +481,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$pages = array( 'en' => array( $en ), 'fr' => array( $fr ) );
 
-		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . json_encode( $pages ) ) );
+		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . wp_json_encode( $pages ) ) );
 
 		unset( $_REQUEST, $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'] );
 	}

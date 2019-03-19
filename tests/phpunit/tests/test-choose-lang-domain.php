@@ -61,7 +61,7 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 				unset( $GLOBALS[ $v ] );
 			}
 		}
-		$parts = parse_url( $url );
+		$parts = wp_parse_url( $url );
 		if ( isset( $parts['scheme'] ) ) {
 			$req = isset( $parts['path'] ) ? $parts['path'] : '';
 			if ( isset( $parts['query'] ) ) {
@@ -85,7 +85,7 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		// insert Polylang specificity
 		unset( $GLOBALS['wp_actions']['pll_language_defined'] );
 		unset( self::$polylang->curlang );
-		$_SERVER['HTTP_HOST'] = parse_url( $url, PHP_URL_HOST );
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $url, PHP_URL_HOST );
 		self::$polylang->init();
 
 		// restart copy paste of WP_UnitTestCase::go_to

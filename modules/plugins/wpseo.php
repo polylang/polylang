@@ -12,22 +12,8 @@ class PLL_WPSEO {
 	 * @since 1.6.4
 	 */
 	public function init() {
-		if ( ! defined( 'WPSEO_VERSION' ) ) {
-			return;
-		}
-
 		if ( PLL() instanceof PLL_Frontend ) {
 			add_filter( 'option_wpseo_titles', array( $this, 'wpseo_translate_titles' ) );
-
-			// Reloads options once the language has been defined to enable translations
-			// Useful only when the language is set from content
-			if ( version_compare( WPSEO_VERSION, '7.0', '<' ) && did_action( 'wp_loaded' ) ) {
-				$wpseo_front = WPSEO_Frontend::get_instance();
-				$options = WPSEO_Options::get_option_names();
-				foreach ( $options as $opt ) {
-					$wpseo_front->options = array_merge( $wpseo_front->options, (array) get_option( $opt ) );
-				}
-			}
 
 			// Filters sitemap queries to remove inactive language or to get
 			// one sitemap per language when using multiple domains or subdomains
@@ -43,12 +29,9 @@ class PLL_WPSEO {
 			} else {
 				// Get all terms in all languages when the language is set from the content or directory name
 				add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
-
-				// Add the homepages for all languages to the sitemap when the front page displays posts
-				if ( ! get_option( 'page_on_front' ) ) {
-					add_filter( 'wpseo_sitemap_post_content', array( $this, 'add_language_home_urls' ) );
-				}
 			}
+
+			add_action( 'pre_get_posts', array( $this, 'before_sitemap' ), 0 ); // Needs to be fired before WPSEO_Sitemaps::redirect()
 
 			add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
 			add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
@@ -144,9 +127,11 @@ class PLL_WPSEO {
 	 * @return $url
 	 */
 	public function wpseo_home_url( $url, $path ) {
-		$uri = empty( $path ) ? ltrim( $_SERVER['REQUEST_URI'], '/' ) : $path;
+		if ( empty( $path ) ) {
+			$path = ltrim( wp_parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
+		}
 
-		if ( 'sitemap_index.xml' === $uri || preg_match( '#([^/]+?)-sitemap([0-9]+)?\.xml|([a-z]+)?-?sitemap\.xsl#', $uri ) ) {
+		if ( 'sitemap_index.xml' === $path || preg_match( '#([^/]+?)-sitemap([0-9]+)?\.xml|([a-z]+)?-?sitemap\.xsl#', $path ) ) {
 			$url = PLL()->links_model->switch_language_in_link( $url, PLL()->curlang );
 		}
 
@@ -222,30 +207,55 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Adds the home urls for all (active) languages to the sitemap
+	 * Add filters before the sitemap is evaluated and outputed
 	 *
-	 * @since 1.9
+	 * @since 2.6
+	 */
+	public function before_sitemap() {
+		$type = get_query_var( 'sitemap' );
+
+		// Add the post post type archives in all languages to the sitemap
+		// Add the homepages for all languages to the sitemap when the front page displays posts
+		if ( $type && pll_is_translated_post_type( $type ) && ( 'post' !== $type || ( PLL()->options['force_lang'] < 2 && ! get_option( 'page_on_front' ) ) ) ) {
+			add_filter( "wpseo_sitemap_{$type}_content", array( $this, 'add_post_type_archive' ) );
+		}
+	}
+
+	/**
+	 * Adds the home and post type archives urls for all (active) languages to the sitemap
+	 *
+	 * @since 2.6
 	 *
 	 * @param string $str additional urls to sitemap post
 	 * @return string
 	 */
-	public function add_language_home_urls( $str ) {
+	public function add_post_type_archive( $str ) {
 		global $wpseo_sitemaps;
-		$renderer = version_compare( WPSEO_VERSION, '3.2', '<' ) ? $wpseo_sitemaps : $wpseo_sitemaps->renderer;
 
-		$languages = wp_list_pluck( wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' ), 'slug' );
+		$post_type = substr( substr( current_filter(), 14 ), 0, -8 );
+
+		$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' );
+
+		if ( 'post' !== $post_type ) {
+			// The post type archive in the current language is already added by WPSEO
+			$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'slug' => pll_current_language() ), 'NOT' );
+		} elseif ( ! empty( PLL()->options['hide_default'] ) ) {
+			// The home url is of course already added by WPSEO
+			$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'slug' => pll_default_language() ), 'NOT' );
+		}
 
 		foreach ( $languages as $lang ) {
-			if ( empty( PLL()->options['hide_default'] ) || pll_default_language() !== $lang ) {
-				$str .= $renderer->sitemap_url(
-					array(
-						'loc' => pll_home_url( $lang ),
-						'pri' => 1,
-						'chf' => apply_filters( 'wpseo_sitemap_homepage_change_freq', 'daily', pll_home_url( $lang ) ),
-					)
-				);
-			}
+			$link = 'post' === $post_type ? pll_home_url( $lang->slug ) : PLL()->links_model->switch_language_in_link( get_post_type_archive_link( $post_type ), $lang );
+			$str .= $wpseo_sitemaps->renderer->sitemap_url(
+				array(
+					'loc' => $link,
+					'mod' => WPSEO_Sitemaps::get_last_modified_gmt( $post_type ),
+					'pri' => 1,
+					'chf' => 'daily',
+				)
+			);
 		}
+
 		return $str;
 	}
 
@@ -271,10 +281,19 @@ class PLL_WPSEO {
 
 		// WPSEO already deals with the locale
 		if ( did_action( 'pll_init' ) && method_exists( $wpseo_og, 'og_tag' ) ) {
+			$alternates = array();
+
 			foreach ( PLL()->model->get_languages_list() as $language ) {
 				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && isset( $language->facebook ) ) {
-					$wpseo_og->og_tag( 'og:locale:alternate', $language->facebook );
+					$alternates[] = $language->facebook;
 				}
+			}
+
+			// There is a risk that 2 languages have the same Facebook locale. So let's make sure to output each locale only once.
+			$alternates = array_unique( $alternates );
+
+			foreach ( $alternates as $lang ) {
+				$wpseo_og->og_tag( 'og:locale:alternate', $lang );
 			}
 		}
 	}

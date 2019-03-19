@@ -108,8 +108,8 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $post_id
 	 */
 	public function post_column( $column, $post_id ) {
-		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action'];
-		$lang = $inline ? $this->model->get_language( $_POST['inline_lang_choice'] ) : $this->model->post->get_language( $post_id );
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action']; // WPCS: CSRF ok.
+		$lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id ); // WPCS: CSRF ok.
 
 		if ( false === strpos( $column, 'language_' ) || ! $lang ) {
 			return;
@@ -155,7 +155,7 @@ class PLL_Admin_Filters_Columns {
 		}
 		// Link to add a new translation
 		else {
-			echo $this->links->new_post_translation_link( $post_id, $language );
+			echo $this->links->new_post_translation_link( $post_id, $language ); // WCPS: XSS ok.
 		}
 	}
 
@@ -188,7 +188,7 @@ class PLL_Admin_Filters_Columns {
 					</div>
 				</fieldset>',
 				esc_html__( 'Language', 'polylang' ),
-				$dropdown->walk( $elements, array( 'name' => 'inline_lang_choice', 'id' => '' ) )
+				$dropdown->walk( $elements, array( 'name' => 'inline_lang_choice', 'id' => '' ) ) // phpcs:ignore WordPress.Security.EscapeOutput
 			);
 		}
 		return $column;
@@ -216,13 +216,13 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $term_id
 	 */
 	public function term_column( $out, $column, $term_id ) {
-		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action'];
-		if ( false === strpos( $column, 'language_' ) || ! ( $lang = $inline ? $this->model->get_language( $_POST['inline_lang_choice'] ) : $this->model->term->get_language( $term_id ) ) ) {
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action']; // WPCS: CSRF ok.
+		if ( false === strpos( $column, 'language_' ) || ! ( $lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id ) ) ) { // WPCS: CSRF ok.
 			return $out;
 		}
 
-		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : $_REQUEST['post_type']; // 2nd case for quick edit
-		$taxonomy = isset( $GLOBALS['taxonomy'] ) ? $GLOBALS['taxonomy'] : $_REQUEST['taxonomy'];
+		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+		$taxonomy = isset( $GLOBALS['taxonomy'] ) ? $GLOBALS['taxonomy'] : sanitize_key( $_REQUEST['taxonomy'] ); // WPCS: CSRF ok.
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			return $out;
@@ -282,20 +282,28 @@ class PLL_Admin_Filters_Columns {
 	 * @since 1.7
 	 */
 	public function ajax_update_post_rows() {
-		global $wp_list_table;
-
-		if ( ! post_type_exists( $post_type = $_POST['post_type'] ) || ! $this->model->is_translated_post_type( $post_type ) ) {
-			die( 0 );
-		}
-
 		check_ajax_referer( 'inlineeditnonce', '_pll_nonce' );
 
-		$x = new WP_Ajax_Response();
-		$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => $_POST['screen'] ) );
+		if ( ! isset( $_POST['post_type'], $_POST['post_id'], $_POST['screen'] ) ) {
+			wp_die( 0 );
+		}
 
-		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // collect old translations
-		$translations = array_merge( $translations, array( $_POST['post_id'] ) ); // add current post
+		$post_type = sanitize_key( $_POST['post_type'] );
+
+		if ( ! post_type_exists( $post_type ) || ! $this->model->is_translated_post_type( $post_type ) ) {
+			wp_die( 0 );
+		}
+
+		global $wp_list_table;
+		$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => sanitize_key( $_POST['screen'] ) ) );
+
+		$x = new WP_Ajax_Response();
+
+		// Collect old translations
+		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // WPCS: sanitization ok.
 		$translations = array_map( 'intval', $translations );
+
+		$translations = array_merge( $translations, array( (int) $_POST['post_id'] ) ); // Add current post
 
 		foreach ( $translations as $post_id ) {
 			$level = is_post_type_hierarchical( $post_type ) ? count( get_ancestors( $post_id, $post_type ) ) : 0;
@@ -316,21 +324,29 @@ class PLL_Admin_Filters_Columns {
 	 * @since 1.7
 	 */
 	public function ajax_update_term_rows() {
-		global $wp_list_table;
-
-		if ( ! taxonomy_exists( $taxonomy = $_POST['taxonomy'] ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
-			die( 0 );
-		}
-
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
-		$x = new WP_Ajax_Response();
-		$wp_list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => $_POST['screen'] ) );
+		if ( ! isset( $_POST['taxonomy'], $_POST['term_id'], $_POST['screen'] ) ) {
+			wp_die( 0 );
+		}
 
-		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // collect old translations
-		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // add current translations
-		$translations = array_unique( $translations ); // remove duplicates
+		$taxonomy = sanitize_key( $_POST['taxonomy'] );
+
+		if ( ! taxonomy_exists( $taxonomy ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+			wp_die( 0 );
+		}
+
+		global $wp_list_table;
+		$wp_list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => sanitize_key( $_POST['screen'] ) ) );
+
+		$x = new WP_Ajax_Response();
+
+		// Collect old translations
+		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // WPCS: sanitization ok.
 		$translations = array_map( 'intval', $translations );
+
+		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // Add current translations
+		$translations = array_unique( $translations ); // Remove duplicates
 
 		foreach ( $translations as $term_id ) {
 			$level = is_taxonomy_hierarchical( $taxonomy ) ? count( get_ancestors( $term_id, $taxonomy ) ) : 0;

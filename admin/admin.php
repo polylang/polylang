@@ -21,6 +21,8 @@
  * filters_post    => reference to PLL_Admin_Filters_Post object
  * filters_term    => reference to PLL_Admin_filters_Term object
  * nav_menu        => reference to PLL_Admin_Nav_Menu object
+ * sync            => reference to PLL_Admin_Sync object
+ * block_editor    => reference to PLL_Admin_Block_Editor object
  * classic_editor  => reference to PLL_Admin_Classic_Editor object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
  *
@@ -46,7 +48,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Aetups filters and action needed on all admin pages and on plugins page
+	 * Setups filters and action needed on all admin pages and on plugins page
 	 * Loads the settings pages or the filters base on the request
 	 *
 	 * @since 1.2
@@ -58,6 +60,12 @@ class PLL_Admin extends PLL_Admin_Base {
 		// Priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
+			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ) );
+
+			// Bulk Translate
+			if ( class_exists( 'PLL_Bulk_Translate' ) ) {
+				add_action( 'current_screen', array( $this->bulk_translate = new PLL_Bulk_Translate( $this ), 'init' ) );
+			}
 		}
 	}
 
@@ -95,7 +103,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 */
 	public function add_filters() {
 		// All these are separated just for convenience and maintainability
-		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Sync', 'Classic_Editor' );
+		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Sync', 'Classic_Editor', 'Block_Editor' );
 
 		// Don't load media filters if option is disabled or if user has no right
 		if ( $this->options['media_support'] && ( $obj = get_post_type_object( 'attachment' ) ) && ( current_user_can( $obj->cap->edit_posts ) || current_user_can( $obj->cap->create_posts ) ) ) {
@@ -118,5 +126,62 @@ class PLL_Admin extends PLL_Admin_Base {
 
 		$this->posts = new PLL_CRUD_Posts( $this );
 		$this->terms = new PLL_CRUD_Terms( $this );
+
+		// Advanced media
+		if ( $this->options['media_support'] && class_exists( 'PLL_Admin_Advanced_Media' ) ) {
+			$this->advanced_media = new PLL_Admin_Advanced_Media( $this );
+		}
+
+		// Share term slugs
+		if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Admin_Share_Term_Slug' ) ) {
+			$this->share_term_slug = new PLL_Admin_Share_Term_Slug( $this );
+		}
+
+		if ( class_exists( 'PLL_Sync_Content' ) ) {
+			$this->sync_content = new PLL_Sync_Content( $this );
+		}
+
+		// Duplicate content
+		if ( class_exists( 'PLL_Duplicate' ) ) {
+			$this->duplicate = new PLL_Duplicate( $this );
+		}
+	}
+
+	/**
+	 * Load the post synchronization object, depending on the editor in use.
+	 *
+	 * @since 2.6
+	 */
+	public function maybe_load_sync_post() {
+		// Post synchronization
+		if ( 'post-new.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) ) {
+			// We need to wait until we know which editor is in use
+			add_filter( 'use_block_editor_for_post', array( $this, '_maybe_load_sync_post' ), 999 ); // After the plugin Classic Editor
+		} elseif ( 'post.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) && isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// Disable Sync Post in the meta box loader when running the block editor to avoid a conflict
+			if ( empty( $_GET['meta-box-loader'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				$this->_maybe_load_sync_post( use_block_editor_for_post( (int) $_GET['post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+			}
+		} else {
+			$this->_maybe_load_sync_post( false );
+		}
+	}
+
+	/**
+	 * Load the post synchronization object, depending on the editor in use.
+	 *
+	 * @since 2.6
+	 *
+	 * @param bool $is_block_editor Whether to use the block editor or not
+	 * @return bool
+	 */
+	public function _maybe_load_sync_post( $is_block_editor ) {
+		if ( class_exists( 'PLL_Sync_Post_REST' ) && $is_block_editor ) {
+			$this->sync_post = new PLL_Sync_Post_REST( $this );
+		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
+			$this->sync_post = new PLL_Sync_Post( $this );
+		}
+
+		return $is_block_editor;
 	}
 }

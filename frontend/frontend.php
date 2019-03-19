@@ -18,6 +18,7 @@
  * posts          => reference to PLL_CRUD_Posts object
  * terms          => reference to PLL_CRUD_Terms object
  * nav_menu       => reference to PLL_Frontend_Nav_Menu object
+ * sync           => reference to PLL_Sync object
  * auto_translate => optional, reference to PLL_Auto_Translate object
  *
  * @since 1.2
@@ -56,26 +57,30 @@ class PLL_Frontend extends PLL_Base {
 	 * @since 1.2
 	 */
 	public function init() {
+		parent::init();
+
 		$this->links = new PLL_Frontend_Links( $this );
 
-		// Don't set any language for REST requests when Polylang Pro is not active
-		if ( ! class_exists( 'PLL_REST_Translated_Object' ) && 0 === strpos( str_replace( 'index.php', '', $_SERVER['REQUEST_URI'] ), '/' . rest_get_url_prefix() . '/' ) ) {
-			/** This action is documented in include/class-polylang.php */
-			do_action( 'pll_no_language_defined' );
-		} else {
-			// Static front page and page for posts
-			if ( 'page' === get_option( 'show_on_front' ) ) {
-				$this->static_pages = new PLL_Frontend_Static_Pages( $this );
+		// Static front page and page for posts
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->static_pages = new PLL_Frontend_Static_Pages( $this );
+		}
+
+		// Setup the language chooser
+		$c = array( 'Content', 'Url', 'Url', 'Domain' );
+		$class = 'PLL_Choose_Lang_' . $c[ $this->options['force_lang'] ];
+		$this->choose_lang = new $class( $this );
+		$this->choose_lang->init();
+
+		// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
+		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
+
+		// Cross domain
+		if ( PLL_COOKIE ) {
+			$class = array( 2 => 'PLL_Xdata_Subdomain', 3 => 'PLL_Xdata_Domain' );
+			if ( isset( $class[ $this->options['force_lang'] ] ) && class_exists( $class[ $this->options['force_lang'] ] ) ) {
+				$this->xdata = new $class[ $this->options['force_lang'] ]( $this );
 			}
-
-			// Setup the language chooser
-			$c = array( 'Content', 'Url', 'Url', 'Domain' );
-			$class = 'PLL_Choose_Lang_' . $c[ $this->options['force_lang'] ];
-			$this->choose_lang = new $class( $this );
-			$this->choose_lang->init();
-
-			// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
-			$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
 		}
 	}
 
@@ -92,9 +97,26 @@ class PLL_Frontend extends PLL_Base {
 		$this->posts = new PLL_CRUD_Posts( $this );
 		$this->terms = new PLL_CRUD_Terms( $this );
 
+		$this->sync = new PLL_Sync( $this );
+
 		// Auto translate for Ajax
 		if ( ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) && wp_doing_ajax() ) {
 			$this->auto_translate();
+		}
+
+		if ( get_option( 'permalink_structure' ) ) {
+			// Translate slugs
+			if ( class_exists( 'PLL_Frontend_Translate_Slugs' ) ) {
+				$slugs_model = new PLL_Translate_Slugs_Model( $this );
+				$this->translate_slugs = new PLL_Frontend_Translate_Slugs( $slugs_model, $this->curlang );
+			}
+
+			// Share term slugs
+			if ( $this->options['force_lang'] && class_exists( 'PLL_Share_Term_Slug' ) ) {
+				$this->share_term_slug = version_compare( $GLOBALS['wp_version'], '4.8', '<' ) ?
+					new PLL_Frontend_Share_Term_Slug( $this ) :
+					new PLL_Share_Term_Slug( $this );
+			}
 		}
 	}
 

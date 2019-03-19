@@ -33,6 +33,30 @@ abstract class PLL_Base {
 	}
 
 	/**
+	 * Instantiate classes always needed
+	 *
+	 * @since 2.6
+	 */
+	public function init() {
+		// REST API
+		if ( class_exists( 'PLL_REST_API' ) ) {
+			$this->rest_api = new PLL_REST_API( $this->model );
+		}
+
+		if ( $this->model->get_languages_list() ) {
+			// Active languages
+			if ( class_exists( 'PLL_Active_Languages' ) ) {
+				$this->active_languages = new PLL_Active_Languages( $this );
+			}
+
+			// Share post slugs
+			if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Share_Post_Slug' ) ) {
+				$this->share_post_slug = new PLL_Share_Post_Slug( $this );
+			}
+		}
+	}
+
+	/**
 	 * Registers our widgets
 	 *
 	 * @since 0.1
@@ -110,15 +134,15 @@ abstract class PLL_Base {
 		foreach ( $this as $prop => &$obj ) {
 			if ( is_object( $obj ) && method_exists( $obj, $func ) ) {
 				if ( WP_DEBUG ) {
-					$debug = debug_backtrace();
+					$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					$i = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func
-					trigger_error(
+					trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 						sprintf(
 							'%1$s was called incorrectly in %3$s on line %4$s: the call to $polylang->%1$s() has been deprecated in Polylang 1.2, use PLL()->%2$s->%1$s() instead.' . "\nError handler",
-							$func,
-							$prop,
-							$debug[ $i ]['file'],
-							$debug[ $i ]['line']
+							esc_html( $func ),
+							esc_html( $prop ),
+							esc_html( $debug[ $i ]['file'] ),
+							absint( $debug[ $i ]['line'] )
 						)
 					);
 				}
@@ -126,7 +150,15 @@ abstract class PLL_Base {
 			}
 		}
 
-		$debug = debug_backtrace();
-		trigger_error( sprintf( 'Call to undefined function PLL()->%1$s() in %2$s on line %3$s' . "\nError handler", $func, $debug[0]['file'], $debug[0]['line'] ), E_USER_ERROR );
+		$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			sprintf(
+				'Call to undefined function PLL()->%1$s() in %2$s on line %3$s' . "\nError handler",
+				esc_html( $func ),
+				esc_html( $debug[0]['file'] ),
+				absint( $debug[0]['line'] )
+			),
+			E_USER_ERROR
+		);
 	}
 }

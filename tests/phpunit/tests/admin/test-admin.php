@@ -55,7 +55,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$test = strpos( $footer, 'pll_ajax_backend' );
 		in_array( 'pll_ajax_backend', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
 
-		foreach ( array( 'post', 'media', 'term' ) as $key ) {
+		foreach ( array( 'post', 'term' ) as $key ) {
 			$test = strpos( $footer, plugins_url( "/js/$key.min.js", POLYLANG_FILE ) );
 			in_array( $key, $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
 		}
@@ -89,7 +89,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'upload.php';
 		set_current_screen( 'upload' );
 
-		$scripts = array( 'pll_ajax_backend', 'media', 'css' );
+		$scripts = array( 'pll_ajax_backend', 'post', 'css' );
 		$this->_test_scripts( $scripts );
 	}
 

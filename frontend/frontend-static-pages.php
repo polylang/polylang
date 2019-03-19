@@ -47,7 +47,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
 
 		// Support theme customizer
-		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) {
+		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // WPCS: CSRF ok.
 			add_filter( 'pre_option_page_on_front', 'pll_get_post', 20 );
 			add_filter( 'pre_option_page_for_post', 'pll_get_post', 20 );
 		}
@@ -90,7 +90,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 			$url = is_paged() ? $this->links_model->add_paged_to_link( $this->links->get_home_url(), $wp_query->query_vars['page'] ) : $this->links->get_home_url();
 
 			// Don't forget additional query vars
-			$query = parse_url( $redirect_url, PHP_URL_QUERY );
+			$query = wp_parse_url( $redirect_url, PHP_URL_QUERY );
 			if ( ! empty( $query ) ) {
 				parse_str( $query, $query_vars );
 				$query_vars = rawurlencode_deep( $query_vars ); // WP encodes query vars values
@@ -138,7 +138,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return bool|string
 	 */
 	public function pll_check_canonical_url( $redirect_url ) {
-		return $this->options['redirect_lang'] && ! empty( $this->curlang->page_on_front ) && is_page( $this->curlang->page_on_front ) ? false : $redirect_url;
+		return $this->options['redirect_lang'] && ! $this->options['force_lang'] && ! empty( $this->curlang->page_on_front ) && is_page( $this->curlang->page_on_front ) ? false : $redirect_url;
 	}
 
 	/**

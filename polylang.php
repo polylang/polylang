@@ -3,7 +3,7 @@
 /**
 Plugin Name: Polylang
 Plugin URI: https://polylang.pro
-Version: 2.4-dev
+Version: 2.6-dev
 Author: Frédéric Demarle
 Author uri: https://polylang.pro
 Description: Adds multilingual capability to WordPress
@@ -12,7 +12,7 @@ Domain Path: /languages
  */
 
 /*
- * Copyright 2011-2018 Frédéric Demarle
+ * Copyright 2011-2019 Frédéric Demarle
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	}
 } else {
 	// Go on loading the plugin
-	define( 'POLYLANG_VERSION', '2.4-dev' );
+	define( 'POLYLANG_VERSION', '2.6-dev' );
 	define( 'PLL_MIN_WP_VERSION', '4.7' );
 
 	define( 'POLYLANG_FILE', __FILE__ ); // this file
@@ -68,10 +68,9 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'PLL_MODULES_INC', POLYLANG_DIR . '/modules' );
 	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 
-	require_once PLL_INC . '/class-polylang.php';
-
-	if ( file_exists( PLL_INC . '/class-polylang-pro.php' ) ) {
+	if ( file_exists( PLL_MODULES_INC . '/pro.php' ) ) {
 		define( 'POLYLANG_PRO', true );
-		require_once PLL_INC . '/class-polylang-pro.php';
 	}
+
+	require_once PLL_INC . '/class-polylang.php';
 }

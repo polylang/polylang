@@ -28,7 +28,7 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 
 	function _ajax_test_locale() {
 		load_default_textdomain();
-		wp_die( json_encode( __( 'Dashboard' ) ) );
+		wp_die( wp_json_encode( __( 'Dashboard' ) ) );
 	}
 
 	function test_locale_for_logged_in_user() {

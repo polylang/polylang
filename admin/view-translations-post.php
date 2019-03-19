@@ -17,12 +17,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 
 		$value = $this->model->post->get_translation( $post_ID, $language );
-		if ( ! $value || $value == $post_ID ) { // $value == $post_ID happens if the post has been ( auto )saved before changing the language
+		if ( ! $value || $value == $post_ID ) { // $value == $post_ID happens if the post has been (auto)saved before changing the language
 			$value = '';
 		}
 
-		if ( isset( $_GET['from_post'] ) ) {
-			$value = $this->model->post->get( (int) $_GET['from_post'], $language );
+		if ( ! empty( $from_post_id ) ) {
+			$value = $this->model->post->get( $from_post_id, $language );
 		}
 
 		$link = $add_link = $this->links->new_post_translation_link( $post_ID, $language );
@@ -33,9 +33,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 		?>
 		<tr>
-			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); ?></th>
-			<td class = "hidden"><?php echo $add_link; ?></td>
-			<td class = "pll-edit-column pll-column-icon"><?php echo $link; ?></td>
+			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); // WCPS: XSS ok. ?></th>
+			<td class = "hidden"><?php echo $add_link; // WCPS: XSS ok. ?></td>
+			<td class = "pll-edit-column pll-column-icon"><?php echo $link; // WCPS: XSS ok. ?></td>
 			<?php
 
 			/**
@@ -55,11 +55,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
-					empty( $value ) ? 0 : esc_attr( $selected->ID ),
-					empty( $value ) ? '' : esc_attr( $selected->post_title ),
-					empty( $link ) ? ' disabled="disabled"' : '',
+					( empty( $value ) ? 0 : esc_attr( $selected->ID ) ),
+					( empty( $value ) ? '' : esc_attr( $selected->post_title ) ),
+					disabled( empty( $link ), true, false ),
 					esc_attr( $language->get_locale( 'display' ) ),
-					$language->is_rtl ? 'rtl' : 'ltr'
+					( $language->is_rtl ? 'rtl' : 'ltr' )
 				);
 				?>
 			</td>

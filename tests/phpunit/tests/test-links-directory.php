@@ -76,8 +76,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $this->root . '/fr/test/', self::$polylang->links_model->remove_paged_from_link( $this->root . '/fr/test/page/2/' ) );
 	}
 
-	function test_link_filters() {
-		// Absolute links
+	function test_link_filters_with_absolute_links() {
 		$this->root = $this->host;
 		$this->_test_add_language_to_link();
 		$this->_test_double_add_language_to_link();
@@ -86,8 +85,34 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->_test_add_paged_to_link();
 		$this->_test_remove_paged_from_link();
 
-		// Relative links
+	}
+
+	function test_link_filters_with_relative_links() {
 		$this->root = '';
+		$this->_test_add_language_to_link();
+		$this->_test_double_add_language_to_link();
+		$this->_test_remove_language_from_link();
+		$this->_test_switch_language_in_link();
+		$this->_test_add_paged_to_link();
+		$this->_test_remove_paged_from_link();
+
+	}
+
+	// Bug fixed in 2.6
+	function test_link_filters_mixing_ssl() {
+		$this->root = 'https://example.org'; // self::$polylang->links_model->home uses http
+		$this->_test_add_language_to_link();
+		$this->_test_double_add_language_to_link();
+		$this->_test_remove_language_from_link();
+		$this->_test_switch_language_in_link();
+		$this->_test_add_paged_to_link();
+		$this->_test_remove_paged_from_link();
+
+	}
+
+	function test_link_filters_with_home_in_subdirectory() {
+		$this->root = 'http://example.org/polylang-pro';
+		self::$polylang->links_model->home = $this->root;
 		$this->_test_add_language_to_link();
 		$this->_test_double_add_language_to_link();
 		$this->_test_remove_language_from_link();

@@ -3,7 +3,7 @@
 class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	protected $structure = '/%postname%/';
 	protected $hosts;
-	static protected $server;
+	protected static $server;
 
 	static function wpSetUpBeforeClass() {
 		parent::wpSetUpBeforeClass();
@@ -57,7 +57,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		// hack $_SERVER
 		$server = $_SERVER;
 		$_SERVER['REQUEST_URI'] = '/test/';
-		$_SERVER['HTTP_HOST'] = parse_url( $this->hosts['fr'], PHP_URL_HOST );
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['fr'], PHP_URL_HOST );
 		$this->assertEquals( 'fr', self::$polylang->links_model->get_language_from_url() );
 
 		// clean up
@@ -79,7 +79,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		// hack $_SERVER
 		$server = $_SERVER;
 		$_SERVER['REQUEST_URI'] = '/test/';
-		$_SERVER['HTTP_HOST'] = parse_url( $this->hosts['fr'], PHP_URL_HOST );
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['fr'], PHP_URL_HOST );
 		if ( function_exists( 'wp_get_upload_dir' ) ) {
 			$uploads = wp_get_upload_dir(); // Since WP 4.5
 		} else {
@@ -89,7 +89,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		$this->assertContains( $this->hosts['fr'], $uploads['url'] );
 		$this->assertContains( $this->hosts['fr'], $uploads['baseurl'] );
 
-		$_SERVER['HTTP_HOST'] = parse_url( $this->hosts['en'], PHP_URL_HOST );
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['en'], PHP_URL_HOST );
 		if ( function_exists( 'wp_get_upload_dir' ) ) {
 			$uploads = wp_get_upload_dir(); // Since WP 4.5
 		} else {

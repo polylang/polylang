@@ -49,7 +49,7 @@ class PLL_CRUD_Terms {
 	 */
 	protected function set_default_language( $term_id, $taxonomy ) {
 		if ( ! $this->model->term->get_language( $term_id ) ) {
-			if ( ! isset( $this->pref_lang ) && ! empty( $_REQUEST['lang'] ) && $lang = $this->model->get_language( $_REQUEST['lang'] ) ) {
+			if ( ! isset( $this->pref_lang ) && ! empty( $_REQUEST['lang'] ) && $lang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ) { // WPCS: CSRF ok.
 				// Testing $this->pref_lang makes this test pass only on frontend.
 				$this->model->term->set_language( $term_id, $lang );
 			} elseif ( ( $term = get_term( $term_id, $taxonomy ) ) && ! empty( $term->parent ) && $parent_lang = $this->model->term->get_language( $term->parent ) ) {
@@ -143,7 +143,7 @@ class PLL_CRUD_Terms {
 		}
 
 		if ( isset( $this->tax_query_lang ) ) {
-			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
+			$args['lang'] = empty( $this->tax_query_lang ) && ! empty( $this->curlang ) && ! empty( $args['slug'] ) ? $this->curlang->slug : $this->tax_query_lang;
 		}
 
 		if ( $lang = $this->get_queried_language( $taxonomies, $args ) ) {
@@ -166,14 +166,7 @@ class PLL_CRUD_Terms {
 	 */
 	public function terms_clauses( $clauses, $taxonomies, $args ) {
 		$lang = $this->get_queried_language( $taxonomies, $args );
-
-		// Adds our clauses to filter by current language
-		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
-			$clauses['join']  .= $this->model->term->join_clause();
-			$clauses['where'] .= $this->model->term->where_clause( $lang );
-		}
-
-		return $clauses;
+		return $this->model->terms_clauses( $clauses, $lang );
 	}
 
 	/**

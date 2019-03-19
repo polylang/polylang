@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Manages filters and actions related to the editor
+ * Manages filters and actions related to the classic editor
  *
  * @since 2.4
  */
@@ -30,6 +30,9 @@ class PLL_Admin_Classic_Editor {
 
 		// Filters the pages by language in the parent dropdown list in the page attributes metabox
 		add_filter( 'page_attributes_dropdown_pages_args', array( $this, 'page_attributes_dropdown_pages_args' ), 10, 2 );
+
+		// Notice
+		add_action( 'edit_form_top', array( $this, 'edit_form_top' ) );
 	}
 
 	/**
@@ -56,11 +59,25 @@ class PLL_Admin_Classic_Editor {
 		$post_id = $post_ID;
 		$post_type = get_post_type( $post_ID );
 
+		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0; // WPCS: CSRF ok.
+
 		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
-			( isset( $_GET['new_lang'] ) ? $this->model->get_language( $_GET['new_lang'] ) :
+			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // WPCS: CSRF ok.
 			$this->pref_lang );
 
 		$dropdown = new PLL_Walker_Dropdown();
+
+		$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', (int) $post_ID ) : 'post_lang_choice';
+
+		$dropdown_html = $dropdown->walk(
+			$this->model->get_languages_list(),
+			array(
+				'name'     => $id,
+				'class'    => 'post_lang_choice tags-input',
+				'selected' => $lang ? $lang->slug : '',
+				'flag'     => true,
+			)
+		);
 
 		wp_nonce_field( 'pll_language', '_pll_nonce' );
 
@@ -70,17 +87,9 @@ class PLL_Admin_Classic_Editor {
 			<label class="screen-reader-text" for="%2$s">%1$s</label>
 			<div id="select-%3$s-language">%4$s</div>',
 			esc_html__( 'Language', 'polylang' ),
-			$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', $post_ID ) : 'post_lang_choice',
-			'attachment' === $post_type ? 'media' : 'post',
-			$dropdown->walk(
-				$this->model->get_languages_list(),
-				array(
-					'name'     => $id,
-					'class'    => 'post_lang_choice tags-input',
-					'selected' => $lang ? $lang->slug : '',
-					'flag'     => true,
-				)
-			)
+			esc_attr( $id ),
+			( 'attachment' === $post_type ? 'media' : 'post' ),
+			$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
 		);
 
 		/**
@@ -105,17 +114,31 @@ class PLL_Admin_Classic_Editor {
 	public function post_lang_choice() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
+		if ( ! isset( $_POST['post_id'], $_POST['lang'], $_POST['post_type'] ) ) {
+			wp_die( 0 );
+		}
+
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
 		$post_id = $post_ID = (int) $_POST['post_id'];
-		$lang = $this->model->get_language( $_POST['lang'] );
+		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 
-		$post_type = $_POST['post_type'];
+		$post_type = sanitize_key( $_POST['post_type'] );
+
+		if ( ! post_type_exists( $post_type ) ) {
+			wp_die( 0 );
+		}
+
 		$post_type_object = get_post_type_object( $post_type );
 		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
 			wp_die( -1 );
 		}
 
 		$this->model->post->set_language( $post_ID, $lang ); // Save language, useful to set the language when uploading media from post
+
+		// We also need to save the translations to match the language change
+		$translations = $this->model->post->get_translations( $post_ID );
+		$translations = array_diff( $translations, array( $post_ID ) );
+		$this->model->post->save_translations( $post_ID, $translations );
 
 		ob_start();
 		if ( $lang ) {
@@ -127,7 +150,7 @@ class PLL_Admin_Classic_Editor {
 		// Categories
 		if ( isset( $_POST['taxonomies'] ) ) {
 			// Not set for pages
-			foreach ( $_POST['taxonomies'] as $taxname ) {
+			foreach ( array_map( 'sanitize_key', $_POST['taxonomies'] ) as $taxname ) {
 				$taxonomy = get_taxonomy( $taxname );
 
 				ob_start();
@@ -175,7 +198,7 @@ class PLL_Admin_Classic_Editor {
 			/** This filter is documented in wp-admin/includes/meta-boxes.php */
 			$dropdown_args = apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3
 
-			$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) );
+			$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) ); // WCPS: XSS ok.
 		}
 
 		// Flag
@@ -195,53 +218,32 @@ class PLL_Admin_Classic_Editor {
 	public function ajax_posts_not_translated() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
-		if ( ! post_type_exists( $_GET['post_type'] ) ) {
-			die( 0 );
+		if ( ! isset( $_GET['post_type'], $_GET['post_language'], $_GET['translation_language'], $_GET['term'], $_GET['pll_post_id'] ) ) {
+			wp_die( 0 );
 		}
 
-		$post_language = $this->model->get_language( $_GET['post_language'] );
-		$translation_language = $this->model->get_language( $_GET['translation_language'] );
+		$post_type = sanitize_key( $_GET['post_type'] );
 
-		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
-		$args = array(
-			's'                => wp_unslash( $_GET['term'] ),
-			'suppress_filters' => 0, // To make the post_fields filter work
-			'lang'             => 0, // Avoid admin language filter
-			'numberposts'      => 20, // Limit to 20 posts
-			'post_status'      => 'any',
-			'post_type'        => $_GET['post_type'],
-			'tax_query'        => array(
-				array(
-					'taxonomy' => 'language',
-					'field'    => 'term_taxonomy_id', // WP 3.5+
-					'terms'    => $translation_language->term_taxonomy_id,
-				),
-			),
-		);
+		if ( ! post_type_exists( $post_type ) ) {
+			wp_die( 0 );
+		}
 
-		/**
-		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox
-		 * This should help plugins to fix some edge cases
-		 *
-		 * @see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
-		 *
-		 * @since 1.7
-		 *
-		 * @param array $args WP_Query arguments
-		 */
-		$args = apply_filters( 'pll_ajax_posts_not_translated_args', $args );
-		$posts = get_posts( $args );
+		$term = wp_unslash( $_GET['term'] ); // WCPS: sanitization ok.
+
+		$post_language = $this->model->get_language( sanitize_key( $_GET['post_language'] ) );
+		$translation_language = $this->model->get_language( sanitize_key( $_GET['translation_language'] ) );
 
 		$return = array();
 
-		foreach ( $posts as $key => $post ) {
-			if ( ! $this->model->post->get_translation( $post->ID, $post_language ) ) {
-				$return[] = array(
-					'id' => $post->ID,
-					'value' => $post->post_title,
-					'link' => $this->links->edit_post_translation_link( $post->ID ),
-				);
-			}
+		$untranslated_posts = $this->model->post->get_untranslated( $post_type, $post_language, $translation_language, $term );
+
+		// format output
+		foreach ( $untranslated_posts as $post ) {
+			$return[] = array(
+				'id'    => $post->ID,
+				'value' => $post->post_title,
+				'link'  => $this->links->edit_post_translation_link( $post->ID ),
+			);
 		}
 
 		// Add current translation in list
@@ -250,14 +252,14 @@ class PLL_Admin_Classic_Editor {
 			array_unshift(
 				$return,
 				array(
-					'id' => $post_id,
+					'id'    => $post_id,
 					'value' => $post->post_title,
-					'link' => $this->links->edit_post_translation_link( $post_id ),
+					'link'  => $this->links->edit_post_translation_link( $post_id ),
 				)
 			);
 		}
 
-		wp_die( json_encode( $return ) );
+		wp_die( wp_json_encode( $return ) );
 	}
 
 	/**
@@ -270,11 +272,34 @@ class PLL_Admin_Classic_Editor {
 	 * @return array Modified arguments
 	 */
 	public function page_attributes_dropdown_pages_args( $dropdown_args, $post ) {
-		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( $_POST['lang'] ) : $this->model->post->get_language( $post->ID ); // ajax or not ?
+		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // WPCS: CSRF ok.
 		if ( ! $dropdown_args['lang'] ) {
 			$dropdown_args['lang'] = $this->pref_lang;
 		}
 
 		return $dropdown_args;
+	}
+
+	/**
+	 * Displays a notice if the user has not sufficient rights to overwrite synchronized taxonomies and metas
+	 *
+	 * @since 2.6
+	 *
+	 * @param object $post Post currently being edited
+	 */
+	public function edit_form_top( $post ) {
+		if ( ! $this->model->post->current_user_can_synchronize( $post->ID ) ) {
+			?>
+			<div class="pll-notice notice notice-warning">
+				<p>
+					<?php
+					esc_html_e( 'Some taxonomies or metadata may be synchronized with existing translations that you are not allowed to modify.', 'polylang' );
+					echo ' ';
+					esc_html_e( "If you attempt to modify them anyway, your modifications won't be taken into account.", 'polylang' );
+					?>
+				</p>
+			</div>
+			<?php
+		}
 	}
 }

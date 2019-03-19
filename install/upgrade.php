@@ -28,7 +28,7 @@ class PLL_Upgrade {
 		if ( ! $this->can_upgrade() ) {
 			ob_start();
 			$this->admin_notices(); // FIXME the error message is displayed two times
-			die( ob_get_contents() );
+			die( ob_get_contents() ); // WCPS: XSS ok.
 		}
 	}
 
@@ -78,7 +78,7 @@ class PLL_Upgrade {
 				/* translators: %1$s and %2$s are Polylang version numbers */
 				esc_html__( 'Please upgrade first to %1$s before ugrading to %2$s.', 'polylang' ),
 				'<strong>0.9.8</strong>',
-				POLYLANG_VERSION
+				POLYLANG_VERSION // phpcs:ignore WordPress.Security.EscapeOutput
 			)
 		);
 	}
@@ -193,7 +193,7 @@ class PLL_Upgrade {
 		}
 
 		// Get all terms with a language defined
-		$terms = $wpdb->get_results( "SELECT term_id, meta_value FROM $wpdb->termmeta WHERE meta_key = '_language'" );
+		$terms = $wpdb->get_results( "SELECT term_id, meta_value FROM {$wpdb->termmeta} WHERE meta_key = '_language'" );
 		foreach ( $terms as $key => $term ) {
 			$terms[ $key ] = $wpdb->prepare( '( %d, %d )', $term->term_id, $lang_tt_ids[ $term->meta_value ] );
 		}
@@ -202,7 +202,8 @@ class PLL_Upgrade {
 
 		// Assign language to each term
 		if ( ! empty( $terms ) ) {
-			$wpdb->query( "INSERT INTO $wpdb->term_relationships ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $terms ) );
+			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $terms ) );
 		}
 
 		// Translations
@@ -211,6 +212,7 @@ class PLL_Upgrade {
 			$terms = $slugs = $tts = $trs = array();
 
 			// Get all translated objects
+			// PHPCS:ignore WordPress.DB.PreparedSQL
 			$objects = $wpdb->get_col( "SELECT DISTINCT meta_value FROM {$wpdb->$table} WHERE meta_key = '_translations'" );
 
 			if ( empty( $objects ) ) {
@@ -229,10 +231,12 @@ class PLL_Upgrade {
 
 			// Insert terms
 			if ( ! empty( $terms ) ) {
-				$wpdb->query( "INSERT INTO $wpdb->terms ( slug, name ) VALUES " . implode( ',', $terms ) );
+				// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( "INSERT INTO {$wpdb->terms} ( slug, name ) VALUES " . implode( ',', $terms ) );
 			}
 
 			// Get all terms with their term_id
+			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$terms = $wpdb->get_results( "SELECT term_id, slug FROM $wpdb->terms WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
 
 			// Prepare terms taxonomy relationship
@@ -244,7 +248,8 @@ class PLL_Upgrade {
 
 			// Insert term_taxonomy
 			if ( ! empty( $tts ) ) {
-				$wpdb->query( "INSERT INTO $wpdb->term_taxonomy ( term_id, taxonomy, description ) VALUES " . implode( ',', $tts ) );
+				// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( "INSERT INTO {$wpdb->term_taxonomy} ( term_id, taxonomy, description ) VALUES " . implode( ',', $tts ) );
 			}
 
 			// Get all terms with term_taxonomy_id
@@ -264,7 +269,8 @@ class PLL_Upgrade {
 
 			// Insert term_relationships
 			if ( ! empty( $trs ) ) {
-				$wpdb->query( "INSERT INTO $wpdb->term_relationships ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
+				// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
 			}
 		}
 
@@ -322,8 +328,8 @@ class PLL_Upgrade {
 								$translations[ $lang->slug ],
 								0,
 								array(
-									'menu-item-title' => __( 'Language switcher', 'polylang' ),
-									'menu-item-url' => '#pll_switcher',
+									'menu-item-title'  => __( 'Language switcher', 'polylang' ),
+									'menu-item-url'    => '#pll_switcher',
 									'menu-item-status' => 'publish',
 								)
 							);

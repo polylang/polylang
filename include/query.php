@@ -7,7 +7,7 @@
  */
 class PLL_Query {
 
-	static protected $excludes = array(
+	protected static $excludes = array(
 		'p',
 		'post_parent',
 		'attachment',

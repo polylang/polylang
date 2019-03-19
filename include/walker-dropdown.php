@@ -25,7 +25,7 @@ class PLL_Walker_Dropdown extends Walker {
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
 			esc_attr( $element->$value ),
 			method_exists( $element, 'get_locale' ) ? sprintf( ' lang="%s"', esc_attr( $element->get_locale( 'display' ) ) ) : '',
-			isset( $args['selected'] ) && $args['selected'] === $element->$value ? ' selected="selected"' : '',
+			selected( isset( $args['selected'] ) && $args['selected'] === $element->$value, true, false ),
 			esc_html( $element->name )
 		);
 	}
@@ -85,7 +85,7 @@ class PLL_Walker_Dropdown extends Walker {
 			$name = esc_attr( $args['name'] ),
 			isset( $args['id'] ) && ! $args['id'] ? '' : ' id="' . ( empty( $args['id'] ) ? $name : esc_attr( $args['id'] ) ) . '"',
 			empty( $args['class'] ) ? '' : ' class="' . esc_attr( $args['class'] ) . '"',
-			empty( $args['disabled'] ) ? '' : ' disabled="disabled"',
+			disabled( empty( $args['disabled'] ), false, false ),
 			parent::walk( $elements, -1, $args )
 		);
 

@@ -54,7 +54,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 	}
 
 	function test_get_language_from_url() {
-		$_SERVER['HTTP_HOST'] = parse_url( $this->host, PHP_URL_HOST );
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->host, PHP_URL_HOST );
 		$_SERVER['REQUEST_URI'] = '/?p=test&lang=fr';
 		$this->assertEquals( 'fr', self::$polylang->links_model->get_language_from_url() );
 	}
