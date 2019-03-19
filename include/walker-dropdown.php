@@ -6,7 +6,7 @@
  * @since 1.2
  */
 class PLL_Walker_Dropdown extends Walker {
-	var $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
+	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
 
 	/**
 	 * Outputs one element
@@ -19,7 +19,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 * @param array  $args              An array of additional arguments.
 	 * @param int    $current_object_id ID of the current item.
 	 */
-	function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) {
+	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) {
 		$value = $args['value'];
 		$output .= sprintf(
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
@@ -42,7 +42,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 * @param array  $args              An array of arguments.
 	 * @param string $output            Passed by reference. Used to append additional content.
 	 */
-	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
+	public function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
 		$element = (object) $element; // Make sure we have an object
 		$element->parent = $element->id = 0; // Don't care about this
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
@@ -67,7 +67,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 * @param array $args
 	 * @return string
 	 */
-	function walk( $elements, $args = array() ) {
+	public function walk( $elements, $args = array() ) {
 		$output = '';
 		$args = wp_parse_args( $args, array( 'value' => 'slug', 'name' => 'lang_choice' ) );
 

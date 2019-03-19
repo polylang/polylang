@@ -4,6 +4,7 @@
 
 	<rule ref="WordPress-Core">
 		<exclude name="WordPress.WP.PreparedSQL.NotPrepared" /><!-- TEMPORARY -->
+		<exclude name="WordPress.DB.PreparedSQL.NotPrepared" /><!-- Same as above for WPCS 1.0+ -->
 		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
 		<exclude name="WordPress.Files.FileName"/>
 		<exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCase"/>
@@ -13,11 +14,6 @@
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
 		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
-	</rule>
-
-	<rule ref="Generic.WhiteSpace.ScopeIndent.Incorrect">
-		<exclude-pattern>*/tests/plugins/*</exclude-pattern>
-		<exclude-pattern>*/tests/themes/*</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress.WP.I18n.LowLevelTranslationFunction">
@@ -46,7 +42,7 @@
 		<exclude-pattern>*/include/api.php</exclude-pattern><!-- For PLL() -->
 	</rule>
 
-	<rule ref="Generic.PHP.NoSilencedErrors.Discouraged" >
+	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
@@ -62,11 +58,6 @@
 		<exclude name="Squiz.Commenting.InlineComment.SpacingAfter"/>
 		<exclude name="Squiz.Commenting.VariableComment.WrongStyle"/>
 		<exclude name="Generic.Commenting.Fixme.TaskFound"/>
-		<exclude name="Generic.Commenting.DocComment.ShortNotCapital"/>
-		<exclude name="Generic.Commenting.DocComment.LongNotCapital"/>
-		<exclude name="Generic.Commenting.DocComment.SpacingBeforeTags"/>
-		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
-		<exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.ContentAfterBrace"/>
 	</rule>
 
 	<rule ref="Squiz.Commenting.ClassComment.Missing" >
@@ -85,6 +76,22 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
+	<!-- From WordPress-Extra -->
+	<rule ref="WordPress.Classes.ClassInstantiation"/>
+
+	<rule ref="Squiz.Scope.MethodScope" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="PSR2.Methods.MethodDeclaration">
+		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+	</rule>
+
+	<rule ref="PEAR.Files.IncludingFile">
+		<exclude name="PEAR.Files.IncludingFile.UseIncludeOnce"/>
+		<exclude name="PEAR.Files.IncludingFile.UseRequire"/>
+	</rule>
+
 	<exclude-pattern>coverage/*</exclude-pattern>
 	<exclude-pattern>tests/phpunit/includes/speed-trap-listener.php</exclude-pattern>
 	<exclude-pattern>js/*.min.js</exclude-pattern>
@@ -92,4 +99,19 @@
 	<!-- Specific to Polylang -->
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
 	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
+
+	<!-- Specific to Polylang Pro -->
+	<rule ref="WordPress.WP.I18n.LowLevelTranslationFunction">
+		<exclude-pattern>*/modules/translate-slugs/translate-slugs-model.php</exclude-pattern>
+		<exclude-pattern>*/modules/plugins/tec.php</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n.NonSingularStringLiteralText">
+		<exclude-pattern>*/modules/translate-slugs/translate-slugs-model.php</exclude-pattern>
+		<exclude-pattern>*/modules/plugins/tec.php</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar">
+		<exclude-pattern>*/modules/plugins/tec.php</exclude-pattern>
+	</rule>
 </ruleset>

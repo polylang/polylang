@@ -33,33 +33,45 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		// create 3 menus
 		$menu_en = wp_create_nav_menu( 'menu_en' );
 		$post_id = $this->factory->post->create( array( 'post_title' => 'Hello World' ) );
-		$item_id = wp_update_nav_menu_item( $menu_en, 0, array(
-			'menu-item-type'      => 'post_type',
-			'menu-item-object'    => 'post',
-			'menu-item-object-id' => $post_id,
-			'menu-item-title'     => 'Hello World',
-			'menu-item-status'    => 'publish',
-		) );
+		$item_id = wp_update_nav_menu_item(
+			$menu_en,
+			0,
+			array(
+				'menu-item-type'      => 'post_type',
+				'menu-item-object'    => 'post',
+				'menu-item-object-id' => $post_id,
+				'menu-item-title'     => 'Hello World',
+				'menu-item-status'    => 'publish',
+			)
+		);
 
 		$menu_fr = wp_create_nav_menu( 'menu_fr' );
 		$post_id = $this->factory->post->create( array( 'post_title' => 'Bonjour' ) );
-		$item_id = wp_update_nav_menu_item( $menu_fr, 0, array(
-			'menu-item-type'      => 'post_type',
-			'menu-item-object'    => 'post',
-			'menu-item-object-id' => $post_id,
-			'menu-item-title'     => 'Bonjour',
-			'menu-item-status'    => 'publish',
-		) );
+		$item_id = wp_update_nav_menu_item(
+			$menu_fr,
+			0,
+			array(
+				'menu-item-type'      => 'post_type',
+				'menu-item-object'    => 'post',
+				'menu-item-object-id' => $post_id,
+				'menu-item-title'     => 'Bonjour',
+				'menu-item-status'    => 'publish',
+			)
+		);
 
 		$menu_0 = wp_create_nav_menu( 'menu_0' );
 		$post_id = $this->factory->post->create( array( 'post_title' => 'No language' ) );
-		$item_id = wp_update_nav_menu_item( $menu_0, 0, array(
-			'menu-item-type'      => 'post_type',
-			'menu-item-object'    => 'post',
-			'menu-item-object-id' => $post_id,
-			'menu-item-title'     => 'No language',
-			'menu-item-status'    => 'publish',
-		) );
+		$item_id = wp_update_nav_menu_item(
+			$menu_0,
+			0,
+			array(
+				'menu-item-type'      => 'post_type',
+				'menu-item-object'    => 'post',
+				'menu-item-object-id' => $post_id,
+				'menu-item-title'     => 'No language',
+				'menu-item-status'    => 'publish',
+			)
+		);
 
 		// assign our menus to locations
 		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
@@ -201,12 +213,16 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		// create 1 menu
 		$menu_en = wp_create_nav_menu( 'menu_en' );
-		$item_id = wp_update_nav_menu_item( $menu_en, 0, array(
-			'menu-item-type'   => 'custom',
-			'menu-item-title'  => 'Language switcher',
-			'menu-item-url'    => '#pll_switcher',
-			'menu-item-status' => 'publish',
-		) );
+		$item_id = wp_update_nav_menu_item(
+			$menu_en,
+			0,
+			array(
+				'menu-item-type'   => 'custom',
+				'menu-item-title'  => 'Language switcher',
+				'menu-item-url'    => '#pll_switcher',
+				'menu-item-status' => 'publish',
+			)
+		);
 
 		$options['hide_if_empty'] = 0; // FIXME for some reason the languages counts are 0 even if I manually call clean_languages_cache()
 		update_post_meta( $item_id, '_pll_menu_item', $options );

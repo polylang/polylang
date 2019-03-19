@@ -16,11 +16,14 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang, array(
-			'module'        => 'licenses',
-			'title'         => __( 'License keys', 'polylang' ),
-			'description'   => __( 'Manage licenses for Polylang Pro or addons.', 'polylang' ),
-		) );
+		parent::__construct(
+			$polylang,
+			array(
+				'module'        => 'licenses',
+				'title'         => __( 'License keys', 'polylang' ),
+				'description'   => __( 'Manage licenses for Polylang Pro or addons.', 'polylang' ),
+			)
+		);
 
 		$this->buttons['cancel'] = sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', __( 'Close' ) );
 
@@ -76,7 +79,9 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 		$out = sprintf(
 			'<td><label for="pll-licenses[%1$s]">%2$s</label></td>' .
 			'<td><input name="licenses[%1$s]" id="pll-licenses[%1$s]" type="text" value="%3$s" class="regular-text code" />',
-			esc_attr( $item->id ), esc_attr( $item->name ), esc_html( $item->license_key )
+			esc_attr( $item->id ),
+			esc_attr( $item->name ),
+			esc_html( $item->license_key )
 		);
 
 		if ( ! empty( $license ) && is_object( $license ) ) {
@@ -211,9 +216,11 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 		}
 
 		$id = sanitize_text_field( substr( $_POST['id'], 11 ) );
-		wp_send_json( array(
-			'id' => $id,
-			'html' => $this->get_row( $this->items[ $id ]->deactivate_license() ),
-		) );
+		wp_send_json(
+			array(
+				'id' => $id,
+				'html' => $this->get_row( $this->items[ $id ]->deactivate_license() ),
+			)
+		);
 	}
 }

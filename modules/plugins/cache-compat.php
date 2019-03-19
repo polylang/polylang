@@ -32,10 +32,12 @@ class PLL_Cache_Compat {
 	 */
 	public function add_cookie_script() {
 		$domain = ( 2 == PLL()->options['force_lang'] ) ? parse_url( PLL()->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN;
-		$js = sprintf( '
-			var date = new Date();
-			date.setTime( date.getTime() + %d );
-			document.cookie = "%s=%s; expires=" + date.toUTCString() + "; path=%s%s";',
+		$js = sprintf(
+			'(function() {
+				var expirationDate = new Date();
+				expirationDate.setTime( expirationDate.getTime() + %d * 1000 );
+				document.cookie = "%s=%s; expires=" + expirationDate.toUTCString() + "; path=%s%s";
+			}());',
 			esc_js( apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS ) ),
 			esc_js( PLL_COOKIE ),
 			esc_js( pll_current_language() ),

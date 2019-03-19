@@ -116,7 +116,7 @@ class PLL_Jetpack {
 	 * @param string $post_id Post ID of the post for which we are retrieving Related Posts.
 	 * @return array
 	 */
-	function jetpack_relatedposts_filter_filters( $filters, $post_id ) {
+	public function jetpack_relatedposts_filter_filters( $filters, $post_id ) {
 		$slug = sanitize_title( pll_get_post_language( $post_id, 'slug' ) );
 		$filters[] = array( 'term' => array( 'taxonomy.language.slug' => $slug ) );
 		return $filters;

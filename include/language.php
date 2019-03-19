@@ -90,7 +90,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * sets flag_url and flag properties
+	 * Sets flag_url and flag properties
 	 *
 	 * @since 1.2
 	 */
@@ -139,8 +139,9 @@ class PLL_Language {
 			 * @param string $flag html markup of the flag or empty string
 			 * @param string $slug language code
 			 */
-			$this->{$key} = apply_filters( 'pll_get_flag', empty( $flag['src'] ) ? '' :
-				sprintf(
+			$this->{$key} = apply_filters(
+				'pll_get_flag',
+				empty( $flag['src'] ) ? '' : sprintf(
 					'<img src="%s" title="%s" alt="%s" />',
 					$flag['src'],
 					esc_attr( $title ),

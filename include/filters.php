@@ -229,7 +229,7 @@ class PLL_Filters {
 	 * @return string
 	 */
 	public function language_attributes( $output ) {
-		if ( $language = $this->model->get_language( get_locale() ) ) {
+		if ( $language = $this->model->get_language( is_admin() ? get_user_locale() : get_locale() ) ) {
 			$output = str_replace( '"' . get_bloginfo( 'language' ) . '"', '"' . $language->get_locale( 'display' ) . '"', $output );
 		}
 		return $output;
@@ -300,7 +300,7 @@ class PLL_Filters {
 	 * @return array
 	 */
 	public function fix_privacy_policy_page_editing( $caps, $cap, $user_id, $args ) {
-			if ( in_array( $cap, array( 'edit_page', 'edit_post', 'delete_page', 'delete_post' ) ) ) {
+		if ( in_array( $cap, array( 'edit_page', 'edit_post', 'delete_page', 'delete_post' ) ) ) {
 			$privacy_page = get_option( 'wp_page_for_privacy_policy' );
 			if ( $privacy_page && array_intersect( $args, $this->model->post->get_translations( $privacy_page ) ) ) {
 				$caps = array_merge( $caps, map_meta_cap( 'manage_privacy_options', $user_id ) );

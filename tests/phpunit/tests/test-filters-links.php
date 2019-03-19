@@ -132,21 +132,29 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 	}
 
 	function test_unattached_attachment() {
-		$attachment_id = $this->factory->attachment->create_object( 'image.jpg', 0, array(
-			'post_mime_type' => 'image/jpeg',
-			'post_type' => 'attachment',
-			'post_title' => 'image-en',
-			'post_status' => 'inherit',
-		) );
+		$attachment_id = $this->factory->attachment->create_object(
+			'image.jpg',
+			0,
+			array(
+				'post_mime_type' => 'image/jpeg',
+				'post_type' => 'attachment',
+				'post_title' => 'image-en',
+				'post_status' => 'inherit',
+			)
+		);
 		self::$polylang->model->post->set_language( $attachment_id, 'en' );
 		$this->assertEquals( home_url( '/image-en/' ), get_permalink( $attachment_id ) );
 
-		$attachment_id = $this->factory->attachment->create_object( 'image.jpg', 0, array(
-			'post_mime_type' => 'image/jpeg',
-			'post_type' => 'attachment',
-			'post_title' => 'image-fr',
-			'post_status' => 'inherit',
-		) );
+		$attachment_id = $this->factory->attachment->create_object(
+			'image.jpg',
+			0,
+			array(
+				'post_mime_type' => 'image/jpeg',
+				'post_type' => 'attachment',
+				'post_title' => 'image-fr',
+				'post_status' => 'inherit',
+			)
+		);
 		self::$polylang->model->post->set_language( $attachment_id, 'fr' );
 		$this->assertEquals( home_url( '/fr/image-fr/' ), get_permalink( $attachment_id ) );
 	}

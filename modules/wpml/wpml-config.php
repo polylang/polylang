@@ -8,7 +8,7 @@
  * @since 1.0
  */
 class PLL_WPML_Config {
-	static protected $instance; // For singleton
+	protected static $instance; // For singleton
 	protected $xmls, $options;
 
 	/**
@@ -29,7 +29,7 @@ class PLL_WPML_Config {
 	 *
 	 * @return object
 	 */
-	static public function instance() {
+	public static function instance() {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self();
 		}

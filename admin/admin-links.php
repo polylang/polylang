@@ -1,14 +1,14 @@
 <?php
 
 /**
- * manages links related functions
+ * Manages links related functions
  *
  * @since 1.8
  */
 class PLL_Admin_Links extends PLL_Links {
 
 	/**
-	 * get the link to create a new post translation
+	 * Get the link to create a new post translation
 	 *
 	 * @since 1.5
 	 *
@@ -38,7 +38,7 @@ class PLL_Admin_Links extends PLL_Links {
 				'new_lang'   => $language->slug,
 			);
 
-			// add nonce for media as we will directly publish a new attachment from a click on this link
+			// Add nonce for media as we will directly publish a new attachment from a click on this link
 			$link = wp_nonce_url( add_query_arg( $args, admin_url( 'admin.php' ) ), 'translate_media' );
 		} else {
 			$args = array(
@@ -63,7 +63,7 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * returns html markup for a new post translation link
+	 * Returns html markup for a new post translation link
 	 *
 	 * @since 1.8
 	 *
@@ -82,7 +82,7 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * returns html markup for a translation link
+	 * Returns html markup for a translation link
 	 *
 	 * @since 1.4
 	 *
@@ -101,7 +101,7 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * get the link to create a new term translation
+	 * Get the link to create a new term translation
 	 *
 	 * @since 1.5
 	 *
@@ -141,7 +141,7 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * returns html markup for a new term translation
+	 * Returns html markup for a new term translation
 	 *
 	 * @since 1.8
 	 *
@@ -162,7 +162,7 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * returns html markup for a term translation link
+	 * Returns html markup for a term translation link
 	 *
 	 * @since 1.4
 	 *

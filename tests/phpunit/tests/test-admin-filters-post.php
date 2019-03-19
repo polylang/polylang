@@ -23,6 +23,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->classic_editor = new PLL_Admin_Classic_Editor( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 	}
 
 	function tearDown() {
@@ -232,7 +234,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		wp_set_object_terms( $post_ID, null, 'language' ); // Intentionally remove the language
 
 		ob_start();
-		self::$polylang->filters_post->post_language();
+		self::$polylang->classic_editor->post_language();
 		$form = ob_get_clean();
 		$doc = new DOMDocument();
 		$doc->loadHTML( $form );
@@ -258,7 +260,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$_GET['new_lang'] = 'fr';
 
 		ob_start();
-		self::$polylang->filters_post->post_language();
+		self::$polylang->classic_editor->post_language();
 		$form = ob_get_clean();
 		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
 		$doc = new DomDocument();
@@ -293,7 +295,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$lang = self::$polylang->model->get_language( 'fr' );
 
 		ob_start();
-		self::$polylang->filters_post->post_language();
+		self::$polylang->classic_editor->post_language();
 		$form = ob_get_clean();
 		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
 		$doc = new DomDocument();
@@ -337,7 +339,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$lang = self::$polylang->model->get_language( 'fr' );
 
 		ob_start();
-		self::$polylang->filters_post->post_language();
+		self::$polylang->classic_editor->post_language();
 		$form = ob_get_clean();
 		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
 		$doc = new DomDocument();

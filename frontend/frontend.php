@@ -5,18 +5,20 @@
  * accessible as $polylang global object
  *
  * Properties:
- * options          => inherited, reference to Polylang options array
- * model            => inherited, reference to PLL_Model object
- * links_model      => inherited, reference to PLL_Links_Model object
- * links            => reference to PLL_Links object
- * static_pages     => reference to PLL_Frontend_Static_Pages object
- * filters_links    => inherited, reference to PLL_Frontend_Filters_Links object
- * choose_lang      => reference to PLL_Choose_lang object
- * curlang          => current language
- * filters          => reference to PLL_Filters object
- * filters_search   => reference to PLL_Frontend_Filters_Search object
- * nav_menu         => reference to PLL_Frontend_Nav_Menu object
- * auto_translate   => optional, reference to PLL_Auto_Translate object
+ * options        => inherited, reference to Polylang options array
+ * model          => inherited, reference to PLL_Model object
+ * links_model    => inherited, reference to PLL_Links_Model object
+ * links          => reference to PLL_Links object
+ * static_pages   => reference to PLL_Frontend_Static_Pages object
+ * choose_lang    => reference to PLL_Choose_lang object
+ * curlang        => current language
+ * filters        => reference to PLL_Frontend_Filters object
+ * filters_links  => reference to PLL_Frontend_Filters_Links object
+ * filters_search => reference to PLL_Frontend_Filters_Search object
+ * posts          => reference to PLL_CRUD_Posts object
+ * terms          => reference to PLL_CRUD_Terms object
+ * nav_menu       => reference to PLL_Frontend_Nav_Menu object
+ * auto_translate => optional, reference to PLL_Auto_Translate object
  *
  * @since 1.2
  */
@@ -87,6 +89,8 @@ class PLL_Frontend extends PLL_Base {
 		$this->filters_links = new PLL_Frontend_Filters_Links( $this );
 		$this->filters = new PLL_Frontend_Filters( $this );
 		$this->filters_search = new PLL_Frontend_Filters_Search( $this );
+		$this->posts = new PLL_CRUD_Posts( $this );
+		$this->terms = new PLL_CRUD_Terms( $this );
 
 		// Auto translate for Ajax
 		if ( ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) && wp_doing_ajax() ) {
@@ -111,7 +115,7 @@ class PLL_Frontend extends PLL_Base {
 	}
 
 	/**
-	 * mMdifies some query vars to "hide" that the language is a taxonomy and avoid conflicts
+	 * Modifies some query vars to "hide" that the language is a taxonomy and avoid conflicts
 	 *
 	 * @since 1.2
 	 *

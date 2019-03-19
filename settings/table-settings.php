@@ -16,11 +16,13 @@ class PLL_Table_Settings extends WP_List_Table {
 	 *
 	 * @since 1.8
 	 */
-	function __construct() {
-		parent::__construct( array(
-			'plural' => 'Settings', // Do not translate ( used for css class )
-			'ajax'   => false,
-		) );
+	public function __construct() {
+		parent::__construct(
+			array(
+				'plural' => 'Settings', // Do not translate ( used for css class )
+				'ajax'   => false,
+			)
+		);
 	}
 
 	/**
@@ -53,24 +55,19 @@ class PLL_Table_Settings extends WP_List_Table {
 
 		// Display an upgrade message if there is any, reusing css from the plugins updates
 		if ( $message = $item->get_upgrade_message() ) {
-			printf( '
-				<tr class="plugin-update-tr">
+			printf(
+				'<tr class="plugin-update-tr">
 					<td colspan="3" class="plugin-update colspanchange">%s</td>
 				</tr>',
-				sprintf(
-					version_compare( $GLOBALS['wp_version'], '4.6', '<' ) ?
-						'<div class="update-message">%s</div>' : // backward compatibility with WP < 4.6
-						'<div class="update-message notice inline notice-warning notice-alt"><p>%s</p></div>',
-					$message
-				)
+				sprintf( '<div class="update-message notice inline notice-warning notice-alt"><p>%s</p></div>', $message )
 			);
 		}
 
 		// The settings if there are
 		// "inactive" class to reuse css from the plugins list table
 		if ( $form = $item->get_form() ) {
-			printf( '
-				<tr id="pll-configure-%s" class="pll-configure inactive inline-edit-row" style="display: none;">
+			printf(
+				'<tr id="pll-configure-%s" class="pll-configure inactive inline-edit-row" style="display: none;">
 					<td colspan="3">
 						<legend>%s</legend>
 						%s
@@ -79,7 +76,10 @@ class PLL_Table_Settings extends WP_List_Table {
 						</p>
 					</td>
 				</tr>',
-				esc_attr( $item->module ), esc_html( $item->title ), $form, implode( $item->get_buttons() )
+				esc_attr( $item->module ),
+				esc_html( $item->title ),
+				$form,
+				implode( $item->get_buttons() )
 			);
 		}
 	}

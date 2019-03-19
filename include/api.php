@@ -25,7 +25,7 @@
  */
 function pll_the_languages( $args = '' ) {
 	if ( PLL() instanceof PLL_Frontend ) {
-		$switcher = new PLL_Switcher;
+		$switcher = new PLL_Switcher();
 		return $switcher->the_languages( PLL()->links, $args );
 	}
 	return '';

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * displays the languages tab in Polylang settings
+ * Displays the languages tab in Polylang settings
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly
 };
 ?>
 <div id="col-container">
@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="hidden" name="pll_action" value="add" />
 					<?php
 				}
-					?>
+				?>
 					<div class="form-field">
 						<label for="lang_list"><?php esc_html_e( 'Choose a language', 'polylang' ); ?></label>
 						<select name="lang_list" id="lang_list">
