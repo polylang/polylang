@@ -120,6 +120,14 @@ class PLL_Widget_Languages extends WP_Widget {
 
 		echo $fields;
 
+		/**
+		 * Append fields to the Polylang language switcher widget form.
+		 *
+		 * @param array $instance Current settings
+		 * @param PLL_Widget_Languages $this The widget instance.
+		 */
+		add_action( 'pll_widget_language_switcher_form', $instance, $this );
+
 		// FIXME echoing script in form is not very clean
 		// but it does not work if enqueued properly :
 		// clicking save on a widget makes this code unreachable for the just saved widget ( ?! )
