@@ -85,7 +85,7 @@ class PLL_Widget_Languages extends WP_Widget {
 		 * @return array Custom settings to save
 		 */
 		$instance = apply_filters( 'pll_widget_language_switcher_update', $new_instance, $old_instance );
-		
+
 		$instance['title'] = strip_tags( $new_instance['title'] );
 		foreach ( array_keys( PLL_Switcher::get_switcher_options( 'widget' ) ) as $key ) {
 			$instance[ $key ] = ! empty( $new_instance[ $key ] ) ? 1 : 0;
