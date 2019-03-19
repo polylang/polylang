@@ -136,7 +136,7 @@ class PLL_Widget_Languages extends WP_Widget {
 		 * @param array $instance Current settings
 		 * @param PLL_Widget_Languages $this The widget instance.
 		 */
-		add_action( 'pll_widget_language_switcher_form', $instance, $this );
+		do_action( 'pll_widget_language_switcher_form', $instance, $this );
 
 		// FIXME echoing script in form is not very clean
 		// but it does not work if enqueued properly :
