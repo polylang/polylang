@@ -222,8 +222,10 @@ class Query_Test extends PLL_UnitTestCase {
 		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$post_id = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
-		wp_set_post_terms( $post_id, 'essai', 'trtax' ); // don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post
 		self::$polylang->model->post->set_language( $post_id, 'fr' );
+		wp_set_post_terms( $post_id, 'essai', 'trtax' ); // don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' ); // Otherwise the test fails for WP 4.8+ due to the changes in get_term_by()
 
 		$this->go_to( home_url( '/fr/trtax/essai/' ) );
 
@@ -235,8 +237,8 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) ); // no content in translation
 
 		$post_id = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
-		wp_set_post_terms( $post_id, 'test', 'trtax' );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
+		wp_set_post_terms( $post_id, 'test', 'trtax' );
 
 		$this->assertEquals( home_url( '/trtax/test/' ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
 	}

@@ -318,11 +318,15 @@ class PLL_Upgrade {
 
 						// Create the menu items for the language switcher
 						if ( ! empty( $has_switcher ) ) {
-							$menu_item_db_id = wp_update_nav_menu_item( $translations[ $lang->slug ], 0, array(
-								'menu-item-title' => __( 'Language switcher', 'polylang' ),
-								'menu-item-url' => '#pll_switcher',
-								'menu-item-status' => 'publish',
-							) );
+							$menu_item_db_id = wp_update_nav_menu_item(
+								$translations[ $lang->slug ],
+								0,
+								array(
+									'menu-item-title' => __( 'Language switcher', 'polylang' ),
+									'menu-item-url' => '#pll_switcher',
+									'menu-item-status' => 'publish',
+								)
+							);
 
 							update_post_meta( $menu_item_db_id, '_pll_menu_item', $switch_options );
 						}
@@ -488,7 +492,7 @@ class PLL_Upgrade {
 	 *
 	 * @since 1.6
 	 */
-	static function download_language_packs() {
+	public static function download_language_packs() {
 		$languages = pll_languages_list( array( 'fields' => 'locale' ) );
 
 		// Prevents upgrade if the .po file is already here. Let WP manage the upgrades :)
@@ -517,7 +521,7 @@ class PLL_Upgrade {
 
 		if ( ! empty( $translations_to_load ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-			$upgrader = new Language_Pack_Upgrader( new Automatic_Upgrader_Skin );
+			$upgrader = new Language_Pack_Upgrader( new Automatic_Upgrader_Skin() );
 			$upgrader->bulk_upgrade( $translations_to_load, array( 'clear_update_cache' => false ) );
 		}
 	}

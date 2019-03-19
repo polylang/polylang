@@ -17,7 +17,7 @@ class PLL_Uninstall {
 	 *
 	 * @since 0.5
 	 */
-	function __construct() {
+	public function __construct() {
 		global $wpdb;
 
 		// Check if it is a multisite uninstall - if so, run the uninstall function for each blog id
@@ -39,7 +39,7 @@ class PLL_Uninstall {
 	 *
 	 * @since 0.5
 	 */
-	function uninstall() {
+	public function uninstall() {
 		$options = get_option( 'polylang' );
 
 		if ( empty( $options['uninstall'] ) ) {
@@ -77,13 +77,15 @@ class PLL_Uninstall {
 		}
 
 		// Delete menu language switchers
-		$ids = get_posts( array(
-			'post_type'   => 'nav_menu_item',
-			'numberposts' => -1,
-			'nopaging'    => true,
-			'fields'      => 'ids',
-			'meta_key'    => '_pll_menu_item',
-		) );
+		$ids = get_posts(
+			array(
+				'post_type'   => 'nav_menu_item',
+				'numberposts' => -1,
+				'nopaging'    => true,
+				'fields'      => 'ids',
+				'meta_key'    => '_pll_menu_item',
+			)
+		);
 
 		foreach ( $ids as $id ) {
 			wp_delete_post( $id, true );
@@ -97,13 +99,15 @@ class PLL_Uninstall {
 
 		// Delete the strings translations 1.2+
 		register_post_type( 'polylang_mo', array( 'rewrite' => false, 'query_var' => false ) );
-		$ids = get_posts( array(
-			'post_type'   => 'polylang_mo',
-			'post_status' => 'any',
-			'numberposts' => -1,
-			'nopaging'    => true,
-			'fields'      => 'ids',
-		) );
+		$ids = get_posts(
+			array(
+				'post_type'   => 'polylang_mo',
+				'post_status' => 'any',
+				'numberposts' => -1,
+				'nopaging'    => true,
+				'fields'      => 'ids',
+			)
+		);
 		foreach ( $ids as $id ) {
 			wp_delete_post( $id, true );
 		}

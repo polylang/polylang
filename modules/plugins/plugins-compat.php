@@ -16,6 +16,7 @@ class PLL_Plugins_Compat {
 	 */
 	protected function __construct() {
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
+		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
 
 		// WordPress Importer
 		add_action( 'init', array( $this, 'maybe_wordpress_importer' ) );
@@ -63,7 +64,7 @@ class PLL_Plugins_Compat {
 	 *
 	 * @return object
 	 */
-	static public function instance() {
+	public static function instance() {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self();
 		}
@@ -82,15 +83,8 @@ class PLL_Plugins_Compat {
 			add_action( 'pll_language_defined', array( $this->wpseo = new PLL_WPSEO(), 'init' ) );
 		}
 
-		// Cache plugins, with specific test for WP Fastest Cache which doesn't use WP_CACHE
-		if ( ( defined( 'WP_CACHE' ) && WP_CACHE ) || defined( 'WPFC_MAIN_PATH' ) ) {
+		if ( pll_is_cache_active() ) {
 			add_action( 'pll_init', array( $this->cache_compat = new PLL_Cache_Compat(), 'init' ) );
-		}
-
-		// Advanced Custom Fields Pro
-		// The function acf_get_value() is not defined in ACF 4
-		if ( class_exists( 'acf' ) && function_exists( 'acf_get_value' ) && class_exists( 'PLL_ACF' ) ) {
-			add_action( 'init', array( $this->acf = new PLL_ACF(), 'init' ) );
 		}
 
 		// Custom Post Type UI
@@ -112,6 +106,24 @@ class PLL_Plugins_Compat {
 		if ( ( 'Divi' === get_template() || defined( 'ET_BUILDER_PLUGIN_VERSION' ) ) && class_exists( 'PLL_Divi_Builder' ) ) {
 			$this->divi_builder = new PLL_Divi_Builder();
 		}
+
+		// Admin Columns & Admin Columns Pro
+		if ( ( defined( 'AC_FILE' ) || defined( 'ACP_FILE' ) ) && class_exists( 'PLL_CPAC' ) ) {
+			add_action( 'admin_init', array( $this->cpac = new PLL_CPAC(), 'init' ) );
+		}
+	}
+
+	/**
+	 * Look for active plugins and load compatibility layer after the theme has been setup
+	 *
+	 * @since 2.3.8
+	 */
+	public function after_setup_theme() {
+		// Advanced Custom Fields Pro
+		// The function acf_get_value() is not defined in ACF 4
+		if ( class_exists( 'acf' ) && function_exists( 'acf_get_value' ) && class_exists( 'PLL_ACF' ) ) {
+			add_action( 'init', array( $this->acf = new PLL_ACF(), 'init' ) );
+		}
 	}
 
 	/**
@@ -120,7 +132,7 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 1.2
 	 */
-	function maybe_wordpress_importer() {
+	public function maybe_wordpress_importer() {
 		if ( defined( 'WP_LOAD_IMPORTERS' ) && class_exists( 'WP_Import' ) ) {
 			remove_action( 'admin_init', 'wordpress_importer_init' );
 			add_action( 'admin_init', array( $this, 'wordpress_importer_init' ) );
@@ -133,7 +145,7 @@ class PLL_Plugins_Compat {
 	 *
 	 * @since 1.2
 	 */
-	function wordpress_importer_init() {
+	public function wordpress_importer_init() {
 		$class = new ReflectionClass( 'WP_Import' );
 		load_plugin_textdomain( 'wordpress-importer', false, basename( dirname( $class->getFileName() ) ) . '/languages' );
 
@@ -151,7 +163,7 @@ class PLL_Plugins_Compat {
 	 * @param array $terms an array of arrays containing terms information form the WXR file
 	 * @return array
 	 */
-	function wp_import_terms( $terms ) {
+	public function wp_import_terms( $terms ) {
 		include PLL_SETTINGS_INC . '/languages.php';
 
 		foreach ( $terms as $key => $term ) {
@@ -231,17 +243,19 @@ class PLL_Plugins_Compat {
 		// Query for featured posts in all languages
 		// One query per language to get the correct number of posts per language
 		foreach ( $tags as $tag ) {
-			$_ids = get_posts( array(
-				'lang'        => 0, // avoid language filters
-				'fields'      => 'ids',
-				'numberposts' => Featured_Content::$max_posts,
-				'tax_query'   => array(
-					array(
-						'taxonomy' => 'post_tag',
-						'terms'    => (int) $tag,
+			$_ids = get_posts(
+				array(
+					'lang'        => 0, // avoid language filters
+					'fields'      => 'ids',
+					'numberposts' => Featured_Content::$max_posts,
+					'tax_query'   => array(
+						array(
+							'taxonomy' => 'post_tag',
+							'terms'    => (int) $tag,
+						),
 					),
-				),
-			) );
+				)
+			);
 
 			$ids = array_merge( $ids, $_ids );
 		}
@@ -280,7 +294,7 @@ class PLL_Plugins_Compat {
 	 * @param array|string $taxonomies
 	 * @return array
 	 */
-	function duplicate_post_taxonomies_blacklist( $taxonomies ) {
+	public function duplicate_post_taxonomies_blacklist( $taxonomies ) {
 		if ( empty( $taxonomies ) ) {
 			$taxonomies = array(); // As we get an empty string when there is no taxonomy
 		}
@@ -369,9 +383,9 @@ class PLL_Plugins_Compat {
 				wp_redirect( $redirect, $status );
 				exit;
 			}
+		} else {
+			// Otherwise rely on MU Domain Mapping
+			redirect_to_mapped_domain();
 		}
-
-		// Otherwise rely on MU Domain Mapping
-		redirect_to_mapped_domain();
 	}
 }

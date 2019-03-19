@@ -1,19 +1,20 @@
 <?php
 
 /**
- * a class to manage WP pointers
+ * A class to manage WP pointers
  * offers the possibility to have customized buttons
  *
  * @since 1.7.7
+ * @deprecated 2.3.9
  */
 class PLL_Pointer {
 	protected $args;
 
 	/**
-	 * constructor
+	 * Constructor
 	 * enqueues the pointer script
 	 *
-	 * list of parameters accepted in $args:
+	 * List of parameters accepted in $args:
 	 *
 	 * pointer  => required, unique identifier of the pointer
 	 * id       => required, the pointer will be attached to this html id
@@ -32,12 +33,14 @@ class PLL_Pointer {
 	 * @param array $args
 	 */
 	public function __construct( $args ) {
+		trigger_error( 'The class PLL_Pointer has been deprecated since Polylang 2.3.9 and will be removed in a future version.', E_USER_ERROR );
+
 		$this->args = $args;
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
 	/**
-	 * enqueue javascripts and styles if the pointer has not been dismissed
+	 * Enqueue javascripts and styles if the pointer has not been dismissed
 	 *
 	 * @since 1.7.7
 	 */
@@ -55,23 +58,23 @@ class PLL_Pointer {
 	}
 
 	/**
-	 * adds the javascript of our pointer to the page
+	 * Adds the javascript of our pointer to the page
 	 *
 	 * @since 1.7.7
 	 */
 	public function print_js() {
 
-		// add optional buttons
+		// Add optional buttons
 		if ( ! empty( $this->args['buttons'] ) ) {
 			$b = "
 				var widget = pointer.pointer( 'widget' );
 				var buttons = $( '.wp-pointer-buttons', widget );
 				$( 'a.close', widget ).remove();"; // removes the WP button
 
-			// all the buttons use the standard WP ajax action to remember the pointer has been dismissed
+			// All the buttons use the standard WP ajax action to remember the pointer has been dismissed
 			foreach ( $this->args['buttons'] as $button ) {
-				$b .= sprintf( "
-					$( '<a>' ).addClass( '%s' ).html( '%s' ).css( 'margin-left', '10px' ).click( function() {
+				$b .= sprintf(
+					"$( '<a>' ).addClass( '%s' ).html( '%s' ).css( 'margin-left', '10px' ).click( function() {
 						$.post( ajaxurl, {
 							pointer: '%s',
 							action: 'dismiss-wp-pointer'
@@ -87,8 +90,8 @@ class PLL_Pointer {
 			}
 		}
 
-		$js = sprintf( "
-			//<![CDATA[
+		$js = sprintf(
+			"//<![CDATA[
 			jQuery( document ).ready( function( $ ) {
 				var pointer = $( '#%s' ).pointer( {
 					content: '%s',

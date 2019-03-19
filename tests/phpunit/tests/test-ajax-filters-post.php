@@ -20,6 +20,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang );
+		self::$polylang->classic_editor = new PLL_Admin_Classic_Editor( self::$polylang );
 		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 	}
 
@@ -30,7 +31,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	function test_post_lang_choice() {
-		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang ); // we need this for categories and tags
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang ); // We need this for categories and tags
 
 		// categories
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );

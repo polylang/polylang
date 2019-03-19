@@ -149,7 +149,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		self::$polylang->model->term->set_language( $de, 'de' );
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		new PLL_Frontend_Filters( self::$polylang );
+		new PLL_CRUD_Terms( self::$polylang );
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false ) );
 		$this->assertEqualSets( array( $fr ), $terms );
 
@@ -232,7 +232,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_post() {
-		new PLL_Frontend_Filters( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 
 		$post_id = $this->factory->post->create();
@@ -246,7 +246,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_page_with_parent() {
-		new PLL_Frontend_Filters( self::$polylang );
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 
 		$parent = $this->factory->post->create( array( 'post_type' => 'page' ) );
@@ -258,7 +258,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_term() {
-		new PLL_Frontend_Filters( self::$polylang );
+		new PLL_CRUD_Terms( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 
 		$term_id = $this->factory->category->create();
@@ -272,7 +272,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_save_category_with_parent() {
-		new PLL_Frontend_Filters( self::$polylang );
+		new PLL_CRUD_Terms( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 
 		$parent = $this->factory->category->create();

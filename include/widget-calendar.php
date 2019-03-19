@@ -5,40 +5,50 @@ if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
 }
 
 /**
- * obliged to rewrite the whole functionality as there is no filter on sql queries and only a filter on final output
- * code base last checked with WP 4.4.2
- * a request for making a filter on sql queries exists: http://core.trac.wordpress.org/ticket/15202
- * method used in 0.4.x: use of the get_calendar filter and overwrite the output of get_calendar function -> not very efficient (add 4 to 5 sql queries)
- * method used since 0.5: remove the WP widget and replace it by our own -> our language filter will not work if get_calendar is called directly by a theme
+ * Obliged to rewrite the whole functionality as there is no filter on sql queries and only a filter on final output
+ * Code base last checked with WP 4.9.7
+ * A request for making a filter on sql queries exists: http://core.trac.wordpress.org/ticket/15202
+ * Method used in 0.4.x: use of the get_calendar filter and overwrite the output of get_calendar function -> not very efficient (add 4 to 5 sql queries)
+ * Method used since 0.5: remove the WP widget and replace it by our own -> our language filter will not work if get_calendar is called directly by a theme
  *
  * @since 0.5
  */
 class PLL_Widget_Calendar extends WP_Widget_Calendar {
+	protected static $pll_instance = 0; // Can't use $instance of WP_Widget_Calendar as it's private :/
 
 	/**
-	 * displays the widget
-	 * modified version of the parent function to call our own get_calendar function
+	 * Outputs the content for the current Calendar widget instance.
+	 * Modified version of the parent function to call our own get_calendar function.
 	 *
 	 * @since 0.5
 	 *
 	 * @param array $args Display arguments including before_title, after_title, before_widget, and after_widget.
-	 * @param array $instance The settings for the particular instance of the widget
+	 * @param array $instance The settings for the particular instance of the widget.
 	 */
-	function widget( $args, $instance ) {
+	public function widget( $args, $instance ) {
+		$title = ! empty( $instance['title'] ) ? $instance['title'] : '';
+
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
-		$title = apply_filters( 'widget_title', empty( $instance['title'] ) ? '&nbsp;' : $instance['title'], $instance, $this->id_base );
+		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
+
 		echo $args['before_widget'];
 		if ( $title ) {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
-		echo '<div id="calendar_wrap">';
+		if ( 0 === self::$pll_instance ) { #modified#
+			echo '<div id="calendar_wrap" class="calendar_wrap">';
+		} else {
+			echo '<div class="calendar_wrap">';
+		}
 		empty( PLL()->curlang ) ? get_calendar() : self::get_calendar(); #modified#
 		echo '</div>';
 		echo $args['after_widget'];
+
+		self::$pll_instance++; #modified#
 	}
 
 	/**
-	 * modified version of WP get_calendar function to filter the query
+	 * Modified version of WP get_calendar function to filter the query
 	 *
 	 * @since 0.5
 	 *
@@ -46,7 +56,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 	 * @param bool $echo Optional, default is true. Set to false for return.
 	 * @return string|null String when retrieving, null when displaying.
  	 */
-	static function get_calendar( $initial = true, $echo = true ) {
+	static public function get_calendar( $initial = true, $echo = true ) {
 		global $wpdb, $m, $monthnum, $year, $wp_locale, $posts;
 
 		$join_clause = PLL()->model->post->join_clause(); #added#
@@ -222,6 +232,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 			if ( in_array( $day, $daywithpost ) ) {
 				// any posts today?
 				$date_format = date( _x( 'F j, Y', 'daily archives date format' ), strtotime( "{$thisyear}-{$thismonth}-{$day}" ) );
+				/* translators: Post calendar label. 1: Date */
 				$label = sprintf( __( 'Posts published on %s' ), $date_format );
 				$calendar_output .= sprintf(
 					'<a href="%s" aria-label="%s">%s</a>',
@@ -250,7 +261,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 
 		if ( $echo ) {
 			/**
-			 * Filter the HTML calendar output.
+			 * Filters the HTML calendar output.
 			 *
 			 * @since 3.0.0
 			 *

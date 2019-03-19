@@ -25,6 +25,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		self::$polylang->auto_translate = new PLL_Frontend_Auto_Translate( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 		self::$polylang->filters = new PLL_Frontend_Filters( self::$polylang );
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
 	}
 
 	function tearDown() {

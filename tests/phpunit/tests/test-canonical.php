@@ -52,10 +52,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	function test_post() {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
-		$this->assertCanonical( '/en/post-format-test-audio/', array(
-			'url' => '/en/post-format-test-audio/',
-			'qv' => array( 'lang' => 'en', 'name' => 'post-format-test-audio', 'page' => '' ),
-		) );
+		$this->assertCanonical(
+			'/en/post-format-test-audio/',
+			array(
+				'url' => '/en/post-format-test-audio/',
+				'qv' => array( 'lang' => 'en', 'name' => 'post-format-test-audio', 'page' => '' ),
+			)
+		);
 		$this->assertCanonical( '/fr/post-format-test-audio/', '/en/post-format-test-audio/' );
 		$this->assertCanonical( '/post-format-test-audio/', '/en/post-format-test-audio/' );
 	}
@@ -64,10 +67,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'parent-page' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
-		$this->assertCanonical( '/en/parent-page/', array(
-			'url' => '/en/parent-page/',
-			'qv' => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
-		) );
+		$this->assertCanonical(
+			'/en/parent-page/',
+			array(
+				'url' => '/en/parent-page/',
+				'qv' => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
+			)
+		);
 		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
 		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
 	}
@@ -77,10 +83,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'import_id' => 416, 'post_type' => 'cpt', 'post_title' => 'custom-post' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
-		$this->assertCanonical( '/en/cpt/custom-post/', array(
-			'url' => '/en/cpt/custom-post/',
-			'qv' => array( 'lang' => 'en', 'cpt' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'cpt', 'page' => '' ),
-		) );
+		$this->assertCanonical(
+			'/en/cpt/custom-post/',
+			array(
+				'url' => '/en/cpt/custom-post/',
+				'qv' => array( 'lang' => 'en', 'cpt' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'cpt', 'page' => '' ),
+			)
+		);
 		$this->assertCanonical( '/fr/cpt/custom-post/', '/en/cpt/custom-post/' );
 		$this->assertCanonical( '/cpt/custom-post/', '/en/cpt/custom-post/' );
 	}
@@ -92,10 +101,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent-fr' ) );
 		self::$polylang->model->term->set_language( $term_id, 'fr' );
 
-		$this->assertCanonical( '/en/category/parent/', array(
-			'url' => '/en/category/parent/',
-			'qv' => array( 'lang' => 'en', 'category_name' => 'parent' ),
-		) );
+		$this->assertCanonical(
+			'/en/category/parent/',
+			array(
+				'url' => '/en/category/parent/',
+				'qv' => array( 'lang' => 'en', 'category_name' => 'parent' ),
+			)
+		);
 		$this->assertCanonical( '/fr/category/parent/', '/en/category/parent/' );
 		$this->assertCanonical( '/category/parent/', '/en/category/parent/' );
 
@@ -124,10 +136,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		self::$polylang->static_pages->pll_language_defined();
 
-		$this->assertCanonical( '/en/posts/', array(
-			'url' => '/en/posts/',
-			'qv' => array( 'lang' => 'en', 'pagename' => 'posts', 'page' => '' ),
-		) );
+		$this->assertCanonical(
+			'/en/posts/',
+			array(
+				'url' => '/en/posts/',
+				'qv' => array( 'lang' => 'en', 'pagename' => 'posts', 'page' => '' ),
+			)
+		);
 		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
 		$this->assertCanonical( '/posts/', '/en/posts/' );
 
@@ -150,10 +165,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		self::$polylang->static_pages->pll_language_defined();
 
-		$this->assertCanonical( '/en/parent-page/', array(
-			'url' => '/en/parent-page/',
-			'qv' => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
-		) );
+		$this->assertCanonical(
+			'/en/parent-page/',
+			array(
+				'url' => '/en/parent-page/',
+				'qv' => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
+			)
+		);
 		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
 		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
 	}

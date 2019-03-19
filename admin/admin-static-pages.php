@@ -43,7 +43,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @param string $post_type Current post type
 	 * @param object $post      Current post
 	 */
-	function add_meta_boxes( $post_type, $post ) {
+	public function add_meta_boxes( $post_type, $post ) {
 		if ( 'page' === $post_type ) {
 			add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
 

@@ -194,21 +194,23 @@ class PLL_Sync_Tax {
 	public function create_term( $term_id, $taxonomy, $translations ) {
 		if ( doing_action( 'create_term' ) && in_array( $taxonomy, $this->get_taxonomies_to_copy( true ) ) ) {
 			// Get all posts associated to the translated terms
-			$tr_posts = get_posts( array(
-				'numberposts' => -1,
-				'nopaging'    => true,
-				'post_type'   => 'any',
-				'post_status' => 'any',
-				'fields'      => 'ids',
-				'tax_query'   => array(
-					array(
-						'taxonomy'         => $taxonomy,
-						'field'            => 'id',
-						'terms'            => array_merge( array( $term_id ), array_values( $translations ) ),
-						'include_children' => false,
+			$tr_posts = get_posts(
+				array(
+					'numberposts' => -1,
+					'nopaging'    => true,
+					'post_type'   => 'any',
+					'post_status' => 'any',
+					'fields'      => 'ids',
+					'tax_query'   => array(
+						array(
+							'taxonomy'         => $taxonomy,
+							'field'            => 'id',
+							'terms'            => array_merge( array( $term_id ), array_values( $translations ) ),
+							'include_children' => false,
+						),
 					),
-				),
-			) );
+				)
+			);
 
 			$lang = $this->model->term->get_language( $term_id ); // Language of the created term
 			$posts = array();

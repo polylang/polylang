@@ -7,22 +7,25 @@
  */
 class PLL_Settings_Translate_Slugs extends PLL_Settings_Module {
 	/**
-	 * constructor
+	 * Constructor
 	 *
 	 * @since 1.9
 	 *
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang, array(
-			'module'      => 'translate-slugs',
-			'title'       => __( 'Translate slugs', 'polylang' ),
-			'description' => __( 'Allows to translate custom post types and taxonomies slugs in urls.', 'polylang' ),
-		) );
+		parent::__construct(
+			$polylang,
+			array(
+				'module'      => 'translate-slugs',
+				'title'       => __( 'Translate slugs', 'polylang' ),
+				'description' => __( 'Allows to translate custom post types and taxonomies slugs in urls.', 'polylang' ),
+			)
+		);
 	}
 
 	/**
-	 * tells if the module is active
+	 * Tells if the module is active
 	 *
 	 * @since 1.9
 	 *
@@ -33,7 +36,7 @@ class PLL_Settings_Translate_Slugs extends PLL_Settings_Module {
 	}
 
 	/**
-	 * displays upgrade message
+	 * Displays upgrade message
 	 *
 	 * @since 1.9
 	 *

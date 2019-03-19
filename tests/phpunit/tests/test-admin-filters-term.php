@@ -21,6 +21,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang ); // To activate the fix_delete_default_category() filter
 		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang );
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
 	}
 
 	function tearDown() {
@@ -115,6 +116,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 	function test_create_term_from_post_bulk_edit() {
 		self::$polylang->filters_post = new PLL_Admin_Filters_Post( self::$polylang ); // We need this too
+		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 
 		$posts = $this->factory->post->create_many( 2 );
 		self::$polylang->model->post->set_language( $posts[0], 'en' );

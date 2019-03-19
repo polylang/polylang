@@ -51,12 +51,16 @@ class Install_Test extends PLL_UnitTestCase {
 
 		// A menu with a language switcher
 		$menu_en = wp_create_nav_menu( 'menu_en' );
-		$item_id = wp_update_nav_menu_item( $menu_en, 0, array(
-			'menu-item-type'   => 'custom',
-			'menu-item-title'  => 'Language switcher',
-			'menu-item-url'    => '#pll_switcher',
-			'menu-item-status' => 'publish',
-		) );
+		$item_id = wp_update_nav_menu_item(
+			$menu_en,
+			0,
+			array(
+				'menu-item-type'   => 'custom',
+				'menu-item-title'  => 'Language switcher',
+				'menu-item-url'    => '#pll_switcher',
+				'menu-item-status' => 'publish',
+			)
+		);
 
 		update_post_meta( $item_id, '_pll_menu_item', array() );
 
@@ -64,7 +68,7 @@ class Install_Test extends PLL_UnitTestCase {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
 
-		include( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php' );
+		include dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php';
 
 		// Option Uninstall = false => nothing deleted
 		$options = get_option( 'polylang' );

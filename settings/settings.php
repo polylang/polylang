@@ -58,16 +58,19 @@ class PLL_Settings extends PLL_Admin_Base {
 		);
 
 		if ( $this->model->get_languages_list() ) {
-			$modules = array_merge( array(
-				'PLL_Settings_Url',
-				'PLL_Settings_Browser',
-				'PLL_Settings_Media',
-				'PLL_Settings_CPT',
-				'PLL_Settings_Sync',
-				'PLL_Settings_WPML',
-				'PLL_Settings_Share_Slug',
-				'PLL_Settings_Translate_Slugs',
-			), $modules );
+			$modules = array_merge(
+				array(
+					'PLL_Settings_Url',
+					'PLL_Settings_Browser',
+					'PLL_Settings_Media',
+					'PLL_Settings_CPT',
+					'PLL_Settings_Sync',
+					'PLL_Settings_WPML',
+					'PLL_Settings_Share_Slug',
+					'PLL_Settings_Translate_Slugs',
+				),
+				$modules
+			);
 		}
 
 		/**
@@ -110,11 +113,14 @@ class PLL_Settings extends PLL_Admin_Base {
 			);
 		}
 
-		add_screen_option( 'per_page', array(
-			'label'   => __( 'Languages', 'polylang' ),
-			'default' => 10,
-			'option'  => 'pll_lang_per_page',
-		) );
+		add_screen_option(
+			'per_page',
+			array(
+				'label'   => __( 'Languages', 'polylang' ),
+				'default' => 10,
+				'option'  => 'pll_lang_per_page',
+			)
+		);
 
 		add_action( 'admin_notices', array( $this, 'notice_objects_with_no_lang' ) );
 	}
@@ -125,11 +131,14 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 2.1
 	 */
 	public function load_page_strings() {
-		add_screen_option( 'per_page', array(
-			'label'   => __( 'Strings translations', 'polylang' ),
-			'default' => 10,
-			'option'  => 'pll_strings_per_page',
-		) );
+		add_screen_option(
+			'per_page',
+			array(
+				'label'   => __( 'Strings translations', 'polylang' ),
+				'default' => 10,
+				'option'  => 'pll_strings_per_page',
+			)
+		);
 	}
 
 	/**
@@ -307,7 +316,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @param array $args query arguments to add to the url
 	 */
-	static public function redirect( $args = array() ) {
+	public static function redirect( $args = array() ) {
 		if ( $errors = get_settings_errors() ) {
 			set_transient( 'settings_errors', $errors, 30 );
 			$args['settings-updated'] = 1;
@@ -323,7 +332,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 2.3
 	 */
 	public function get_predefined_languages() {
-		require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 		include PLL_SETTINGS_INC . '/languages.php';
 
 		$translations = wp_get_available_translations();

@@ -24,7 +24,7 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 	 * Used for building custom language selectors
 	 * available only on frontend
 	 *
-	 * list of paramaters accepted in $args
+	 * List of paramaters accepted in $args:
 	 *
 	 * skip_missing  => whether to skip missing translation or not, 0 or 1, defaults to 0
 	 * orderby       => 'id', 'code', 'name', defaults to 'id'
@@ -210,6 +210,7 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
 	/**
 	 * Undocumented function used by the theme Maya
 	 * returns the post language
+	 *
 	 * @see original WPML code at https://wpml.org/forums/topic/canonical-urls-for-wpml-duplicated-posts/#post-52198
 	 *
 	 * @since 1.8
@@ -359,6 +360,7 @@ if ( ! function_exists( 'icl_get_default_language' ) ) {
 if ( ! function_exists( 'wpml_get_default_language' ) ) {
 	/**
 	 * Undocumented function reported to be used by Table Rate Shipping for WooCommerce
+	 *
 	 * @see https://wordpress.org/support/topic/add-wpml-compatibility-function
 	 *
 	 * @since 1.8.2

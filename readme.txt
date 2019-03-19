@@ -2,9 +2,9 @@
 Contributors: Chouby
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
-Requires at least: 4.4
+Requires at least: 4.7
 Tested up to: 4.9
-Stable tag: 2.3.7
+Stable tag: 2.3.10
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -41,7 +41,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Installation ==
 
-1. Make sure you are using WordPress 4.4 or later and that your server is running PHP 5.2.4 or later (same requirement as WordPress itself)
+1. Make sure you are using WordPress 4.7 or later and that your server is running PHP 5.2.4 or later (same requirement as WordPress itself)
 1. If you tried other multilingual plugins, deactivate them before activating Polylang, otherwise, you may get unexpected results!
 1. Install and activate the plugin as usual from the 'Plugins' menu in WordPress.
 1. Go to the languages settings page and create the languages you need
@@ -75,6 +75,36 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.3.10 (2018-08-16) =
+
+* Fix Lingotek notice not dismissable
+* Fix fatal error with the widget calendar
+
+= 2.3.9 (2018-08-14) =
+
+* Add a notice to inform about Polylang for WooCommerce
+* Deprecate PLL_Pointer
+* Fix bulk editing pages with no language breaking hierarchy #281
+* Fix an edge case where rewrite rules could be messed on a multisite
+* MU Domain Mapping: fix secondary domain redirected to primary domain
+
+= 2.3.8 (2018-07-16) =
+
+* Pro: Duplicate term meta when duplicating a post creates new terms
+* Pro: Add compatibility with ACF Pro when it's bundled with the theme
+* Pro: Fix a fatal error when duplicating posts
+* Set cookie during the home redirect
+* Accept a port in the url to detect the site home
+* Add filter 'pll_is_cache_active' to allow to load the cache compatibility #270 #274
+* Fix potential fatal error when a 3rd party misuses the 'wpml_active_languages' filter #268
+* Fix Uncaught TypeError: s.split is not a function. Props Wouter Van Vliet #262
+* Fix text alignment for RTL scripts in Lingotek panel #247
+* Fix html language attribute filter on admin
+* Fix cookie expiration time when set in js. Props Jens Nachtigall #271
+* Fix fatal error when a 3rd party misuses the WP_Query tax_query param. Props JanneAalto #252
+* Fix an edge case which could mess home pages on a multisite
+
 
 = 2.3.7 (2018-06-07) =
 

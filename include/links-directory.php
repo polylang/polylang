@@ -79,7 +79,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @param string $url url to modify
 	 * @return string modified url
 	 */
-	function remove_language_from_link( $url ) {
+	public function remove_language_from_link( $url ) {
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( ! $this->options['hide_default'] || $this->options['default_lang'] != $language->slug ) {
 				$languages[] = $language->slug;
@@ -141,7 +141,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 *
 	 * @since 1.2
 	 */
-	function add_permastruct() {
+	public function add_permastruct() {
 		// Language information always in front of the uri ( 'with_front' => false )
 		// The 3rd parameter structure has been modified in WP 3.4
 		// Leads to error 404 for pages when there is no language created yet

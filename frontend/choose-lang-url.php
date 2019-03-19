@@ -8,10 +8,10 @@
  * @since 1.2
  */
 class PLL_Choose_Lang_Url extends PLL_Choose_lang {
-	protected $index = 'index.php'; // need this before $wp_rewrite is created, also hardcoded in wp-includes/rewrite.php
+	protected $index = 'index.php'; // Need this before $wp_rewrite is created, also hardcoded in wp-includes/rewrite.php
 
 	/**
-	 * sets the language
+	 * Sets the language
 	 *
 	 * @since 1.8
 	 */
@@ -68,7 +68,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 
 
 	/**
-	 * adds the current language in query vars
+	 * Adds the current language in query vars
 	 * useful for subdomains and multiple domains
 	 *
 	 * @since 1.8
@@ -80,14 +80,14 @@ class PLL_Choose_Lang_Url extends PLL_Choose_lang {
 		// FIXME take care not to break untranslated content
 		// FIXME media ?
 
-		// untranslated post types
+		// Untranslated post types
 		if ( isset( $qv['post_type'] ) && ! $this->model->is_translated_post_type( $qv['post_type'] ) ) {
 			return $qv;
 		}
 
-		// untranslated taxonomies
-		$tax_qv = array_filter( wp_list_pluck( get_taxonomies( array(), 'objects' ), 'query_var' ) ); // get all taxonomies query vars
-		$tax_qv = array_intersect( $tax_qv, array_keys( $qv ) ); // get all queried taxonomies query vars
+		// Untranslated taxonomies
+		$tax_qv = array_filter( wp_list_pluck( get_taxonomies( array(), 'objects' ), 'query_var' ) ); // Get all taxonomies query vars
+		$tax_qv = array_intersect( $tax_qv, array_keys( $qv ) ); // Get all queried taxonomies query vars
 
 		if ( ! $this->model->is_translated_taxonomy( array_keys( $tax_qv ) ) ) {
 			return $qv;

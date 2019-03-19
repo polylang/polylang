@@ -89,6 +89,7 @@ abstract class PLL_Base {
 		// 3rd test needed when Polylang is networked activated and a new site is created
 		if ( $new_blog != $old_blog && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' ) ) {
 			$this->options = get_option( 'polylang' ); // Needed for menus
+			remove_action( 'pre_option_rewrite_rules', array( $this->links_model, 'prepare_rewrite_rules' ) );
 			$this->links_model = $this->model->get_links_model();
 			return true;
 		}
@@ -111,10 +112,15 @@ abstract class PLL_Base {
 				if ( WP_DEBUG ) {
 					$debug = debug_backtrace();
 					$i = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func
-					trigger_error( sprintf(
-						'%1$s was called incorrectly in %3$s on line %4$s: the call to $polylang->%1$s() has been deprecated in Polylang 1.2, use PLL()->%2$s->%1$s() instead.' . "\nError handler",
-						$func, $prop, $debug[ $i ]['file'], $debug[ $i ]['line']
-					) );
+					trigger_error(
+						sprintf(
+							'%1$s was called incorrectly in %3$s on line %4$s: the call to $polylang->%1$s() has been deprecated in Polylang 1.2, use PLL()->%2$s->%1$s() instead.' . "\nError handler",
+							$func,
+							$prop,
+							$debug[ $i ]['file'],
+							$debug[ $i ]['line']
+						)
+					);
 				}
 				return call_user_func_array( array( $obj, $func ), $args );
 			}
