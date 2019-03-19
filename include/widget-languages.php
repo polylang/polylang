@@ -127,8 +127,6 @@ class PLL_Widget_Languages extends WP_Widget {
 			);
 		}
 
-		echo $fields;
-
 		/**
 		 * Append fields to the Polylang language switcher widget form.
 		 *
