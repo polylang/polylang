@@ -35,7 +35,19 @@ class PLL_Widget_Languages extends WP_Widget {
 		// Sets a unique id for dropdown
 		$instance['dropdown'] = empty( $instance['dropdown'] ) ? 0 : $args['widget_id'];
 
-		if ( $list = pll_the_languages( array_merge( $instance, array( 'echo' => 0 ) ) ) ) {
+		/**
+		 * Filter the language switcher widget content.
+		 *
+		 * @param array $instance The settings for the particular instance of the widget
+		 * @return string The switcher HTML.
+		 */
+		$list = apply_filters( 'pll_widget_language_switcher', '', $instance );
+
+		if ( ! $list ) {
+			$list = pll_the_languages( array_merge( $instance, array( 'echo' => 0 ) ) );
+		}
+
+		if ( $list ) {
 			$title = empty( $instance['title'] ) ? '' : $instance['title'];
 			/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 			$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
