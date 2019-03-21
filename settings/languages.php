@@ -815,6 +815,14 @@ $languages = array(
 		'flag'     => 'af',
 		'facebook' => 'ps_AF',
 	),
+	'pt_AO' => array(
+		'code'     => 'pt',
+		'locale'   => 'pt_AO',
+		'name'     => 'Português',
+		'dir'      => 'ltr',
+		'flag'     => 'ao',
+		'facebook' => 'pt_PT',
+	),
 	'pt_BR' => array(
 		'code'     => 'pt',
 		'locale'   => 'pt_BR',
