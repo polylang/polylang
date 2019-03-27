@@ -806,4 +806,43 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'aside', get_post_format( $to ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
 	}
+
+	function test_slashes() {
+		self::$polylang->options['sync'] = array( 'post_meta' );
+		$sync = new PLL_Admin_Sync( self::$polylang );
+
+		$slash_2 = '\\\\';
+		$slash_4 = '\\\\\\\\';
+
+		// Create posts
+		$to = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		$from = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $from, 'en' );
+
+		// Test copy()
+		add_post_meta( $from, 'key', $slash_2 );
+		$sync->post_metas->copy( $from, $to, 'fr' );
+		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $to, 'key', true ) );
+
+		update_post_meta( $from, 'key', $slash_4 );
+		$sync->post_metas->copy( $from, $to, 'fr' );
+		$this->assertEquals( wp_unslash( $slash_4 ), get_post_meta( $to, 'key', true ) );
+
+		delete_post_meta( $from, 'key' );
+		delete_post_meta( $to, 'key' );
+
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
+		// Test add, update, delete
+		add_post_meta( $from, 'key', $slash_2 );
+		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $to, 'key', true ) );
+
+		update_post_meta( $from, 'key', $slash_4 );
+		$this->assertEquals( wp_unslash( $slash_4 ), get_post_meta( $to, 'key', true ) );
+
+		delete_post_meta( $from, 'key', $slash_4 );
+		$this->assertEmpty( get_post_meta( $to, 'key', true ) );
+	}
 }
