@@ -97,4 +97,24 @@ class Media_Test extends PLL_UnitTestCase {
 
 		unset( $_REQUEST, $_POST );
 	}
+
+	function test_create_media_translation_with_slashes() {
+		$slash_2 = '\\\\';
+		$en = $this->factory->attachment->create(
+			array(
+				'post_title'   => $slash_2,
+				'post_content' => $slash_2,
+				'post_excerpt' => $slash_2,
+			)
+		);
+		add_post_meta( $en, '_wp_attachment_image_alt', $slash_2 );
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		$fr = self::$polylang->posts->create_media_translation( $en, 'fr' );
+		$post = get_post( $fr );
+		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_title );
+		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_content );
+		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_excerpt );
+		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $fr, '_wp_attachment_image_alt', true ) );
+	}
 }
