@@ -35,6 +35,7 @@ class PLL_Admin_Base extends PLL_Base {
 			new PLL_Pro();
 		} elseif ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
 			require_once POLYLANG_DIR . '/lingotek/lingotek.php'; // Lingotek
+			add_action( 'wp_loaded', array( new PLL_Lingotek(), 'init' ) );
 		}
 	}
 

@@ -73,4 +73,5 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	}
 
 	require_once PLL_INC . '/class-polylang.php';
+	new Polylang();
 }

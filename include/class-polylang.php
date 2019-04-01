@@ -262,5 +262,3 @@ class Polylang {
 		}
 	}
 }
-
-new Polylang();

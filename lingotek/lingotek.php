@@ -1,9 +1,5 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly
-};
-
 /**
  * Class to manage Lingotek ads
  *
@@ -300,5 +296,3 @@ class PLL_Lingotek {
 		return '';
 	}
 }
-
-add_action( 'wp_loaded', array( new PLL_Lingotek(), 'init' ) );
