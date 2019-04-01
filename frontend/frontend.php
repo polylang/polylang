@@ -10,7 +10,7 @@
  * links_model    => inherited, reference to PLL_Links_Model object
  * links          => reference to PLL_Links object
  * static_pages   => reference to PLL_Frontend_Static_Pages object
- * choose_lang    => reference to PLL_Choose_lang object
+ * choose_lang    => reference to PLL_Choose_Lang object
  * curlang        => current language
  * filters        => reference to PLL_Frontend_Filters object
  * filters_links  => reference to PLL_Frontend_Filters_Links object

@@ -7,7 +7,7 @@
  *
  * @since 1.2
  */
-class PLL_Choose_Lang_Url extends PLL_Choose_lang {
+class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 	protected $index = 'index.php'; // Need this before $wp_rewrite is created, also hardcoded in wp-includes/rewrite.php
 
 	/**

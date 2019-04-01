@@ -6,7 +6,7 @@
  *
  * @since 1.2
  */
-class PLL_Choose_Lang_Content extends PLL_Choose_lang {
+class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 
 	/**
 	 * Defers the language choice to the 'wp' action (when the content is known)
