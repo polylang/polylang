@@ -32,8 +32,8 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 	}
 
 	static function create_language( $locale, $args = array() ) {
-		include PLL_SETTINGS_INC . '/languages.php';
-		$values = $languages[ $locale ];
+		$languages = include PLL_SETTINGS_INC . '/languages.php';
+		$values    = $languages[ $locale ];
 
 		$values['slug'] = $values['code'];
 		$values['rtl'] = (int) ( 'rtl' === $values['dir'] );

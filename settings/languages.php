@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 'zu_ZA' (Zulu)
  * 'zz_TR' (Zazaki)
  */
-$languages = array(
+return array(
 	'af' => array(
 		'code'     => 'af',
 		'locale'   => 'af',

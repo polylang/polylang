@@ -270,4 +270,4 @@ $flags = array(
  *
  * @param array $flags
  */
-$flags = apply_filters( 'pll_predefined_flags', $flags );
+return apply_filters( 'pll_predefined_flags', $flags );

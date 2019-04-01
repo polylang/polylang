@@ -123,7 +123,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<select name="flag" id="flag_list">
 							<option value=""></option>
 							<?php
-							include PLL_SETTINGS_INC . '/flags.php';
+							$flags = include PLL_SETTINGS_INC . '/flags.php';
 							foreach ( $flags as $code => $label ) {
 								/** This filter is documented in include/language.php */
 								$flag = apply_filters( 'pll_flag', array( 'url' => plugins_url( "/flags/{$code}.png", POLYLANG_FILE ) ), $code );
