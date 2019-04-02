@@ -32,8 +32,8 @@ class PLL_Plugins_Compat {
 		add_filter( 'option_duplicate_post_taxonomies_blacklist', array( $this, 'duplicate_post_taxonomies_blacklist' ) );
 
 		// Jetpack
-		$this->jetpack          = new PLL_Jetpack(); // Must be loaded before the plugin is active
-		$this->featured_content = new PLL_Featured_Content();
+		$this->jetpack = new PLL_Jetpack(); // Must be loaded before the plugin is active
+		add_action( 'pll_init', array( $this->featured_content = new PLL_Featured_Content(), 'init' ) );
 
 		// WP Sweep
 		add_filter( 'wp_sweep_excluded_taxonomies', array( $this, 'wp_sweep_excluded_taxonomies' ) );

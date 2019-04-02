@@ -9,9 +9,9 @@ class PLL_Featured_Content {
 	/**
 	 * Constructor
 	 *
-	 * @since 2.4
+	 * @since 2.6
 	 */
-	public function __construct() {
+	public function init() {
 		add_filter( 'transient_featured_content_ids', array( $this, 'featured_content_ids' ) );
 		add_filter( 'pll_filter_query_excluded_query_vars', array( $this, 'fix_featured_posts' ) );
 		add_filter( 'option_featured-content', array( $this, 'option_featured_content' ) );
@@ -55,7 +55,7 @@ class PLL_Featured_Content {
 	 * @return array modified featured posts ids ( include all languages )
 	 */
 	public function featured_content_ids( $featured_ids ) {
-		if ( ! $this->is_active() || ! did_action( 'pll_init' ) || false !== $featured_ids ) {
+		if ( ! $this->is_active() || false !== $featured_ids ) {
 			return $featured_ids;
 		}
 
