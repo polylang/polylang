@@ -40,7 +40,7 @@ abstract class PLL_Base {
 	public function init() {
 		// REST API
 		if ( class_exists( 'PLL_REST_API' ) ) {
-			$this->rest_api = new PLL_REST_API( $this->model );
+			$this->rest_api = new PLL_REST_API( $this );
 		}
 
 		if ( $this->model->get_languages_list() ) {
