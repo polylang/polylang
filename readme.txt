@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 5.1
-Stable tag: 2.5.2
+Stable tag: 2.5.3
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,13 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.5.3 (2019-04-16) =
+
+* Add de_AT and pt_AO to the predefined languages list
+* Pro: Add filter pll_translate_blocks
+* Pro: fix PHP notice when the queried post type has been modified to an array
+* Pro: fix PHP warning when combined with The Event Calendar and Page builder by SiteOrigin
 
 = 2.5.2 (2019-02-12) =
 
