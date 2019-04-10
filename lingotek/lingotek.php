@@ -20,7 +20,7 @@ class PLL_Lingotek {
 		add_filter( 'pll_settings_tabs', array( $this, 'add_tab' ) );
 		add_action( 'pll_settings_active_tab_lingotek', array( $this, 'display_tab' ) );
 
-		if ( PLL_SETTINGS && isset( $_GET['page'] ) && 'mlang_lingotek' === $_GET['page'] ) { // WPCS: CSRF ok.
+		if ( PLL_SETTINGS && isset( $_GET['page'] ) && 'mlang_lingotek' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			add_action( 'admin_print_styles', array( $this, 'print_css' ) );
 		}
 

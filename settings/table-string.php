@@ -34,8 +34,8 @@ class PLL_Table_String extends WP_List_Table {
 
 		$this->selected_group = -1;
 
-		if ( ! empty( $_GET['group'] ) ) { // WPCS: CSRF ok.
-			$group = sanitize_text_field( wp_unslash( $_GET['group'] ) ); // WPCS: CSRF ok.
+		if ( ! empty( $_GET['group'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$group = sanitize_text_field( wp_unslash( $_GET['group'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 			if ( in_array( $group, $this->groups ) ) {
 				$this->selected_group = $group;
 			}
@@ -191,11 +191,11 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return int -1 or 1 if $a is considered to be respectively less than or greater than $b.
 	 */
 	protected function usort_reorder( $a, $b ) {
-		if ( ! empty( $_GET['orderby'] ) ) { // WPCS: CSRF ok.
-			$orderby = sanitize_key( $_GET['orderby'] ); // WPCS: CSRF ok.
+		if ( ! empty( $_GET['orderby'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$orderby = sanitize_key( $_GET['orderby'] ); // phpcs:ignore WordPress.Security.NonceVerification
 			if ( isset( $a[ $orderby ], $b[ $orderby ] ) ) {
 				$result = strcmp( $a[ $orderby ], $b[ $orderby ] ); // Determine sort order
-				return ( empty( $_GET['order'] ) || 'asc' === $_GET['order'] ) ? $result : -$result; // WPCS: CSRF ok.
+				return ( empty( $_GET['order'] ) || 'asc' === $_GET['order'] ) ? $result : -$result; // phpcs:ignore WordPress.Security.NonceVerification
 			}
 		}
 
@@ -229,7 +229,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		// Filter by searched string
-		$s = empty( $_GET['s'] ) ? '' : wp_unslash( $_GET['s'] ); // WPCS: CSRF, sanitization ok.
+		$s = empty( $_GET['s'] ) ? '' : wp_unslash( $_GET['s'] ); // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
 
 		if ( ! empty( $s ) ) {
 			// Search in translations
@@ -290,7 +290,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return string|false The action name or False if no action was selected
 	 */
 	public function current_action() {
-		return empty( $_POST['submit'] ) ? parent::current_action() : false; // WPCS: CSRF ok.
+		return empty( $_POST['submit'] ) ? parent::current_action() : false; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
 	/**
@@ -350,7 +350,7 @@ class PLL_Table_String extends WP_List_Table {
 				$mo = new PLL_MO();
 				$mo->import_from_db( $language );
 
-				foreach ( $_POST['translation'][ $language->slug ] as $key => $translation ) { // WPCS: sanitization ok.
+				foreach ( $_POST['translation'][ $language->slug ] as $key => $translation ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 					/**
 					 * Filter the string translation before it is saved in DB
 					 * Allows to sanitize strings registered with pll_register_string

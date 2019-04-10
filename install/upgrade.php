@@ -28,7 +28,7 @@ class PLL_Upgrade {
 		if ( ! $this->can_upgrade() ) {
 			ob_start();
 			$this->admin_notices(); // FIXME the error message is displayed two times
-			die( ob_get_contents() ); // WCPS: XSS ok.
+			die( ob_get_contents() ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 	}
 

@@ -40,17 +40,17 @@ class PLL_Widget_Languages extends WP_Widget {
 			/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 			$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
-			echo $args['before_widget']; // WCPS: XSS ok.
+			echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
 			if ( $title ) {
-				echo $args['before_title'] . $title . $args['after_title']; // WCPS: XSS ok.
+				echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput
 			}
 			if ( $instance['dropdown'] ) {
 				echo '<label class="screen-reader-text" for="' . esc_attr( 'lang_choice_' . $instance['dropdown'] ) . '">' . esc_html__( 'Choose a language', 'polylang' ) . '</label>';
-				echo $list; // WCPS: XSS ok.
+				echo $list; // phpcs:ignore WordPress.Security.EscapeOutput
 			} else {
-				echo "<ul>\n" . $list . "</ul>\n"; // WCPS: XSS ok.
+				echo "<ul>\n" . $list . "</ul>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
 			}
-			echo $args['after_widget']; // WCPS: XSS ok.
+			echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 	}
 

@@ -30,7 +30,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		add_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ) );
 
 		// The customizer
-		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // WPCS: CSRF ok.
+		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			add_filter( 'wp_nav_menu_args', array( $this, 'filter_args_before_customizer' ) );
 			add_filter( 'wp_nav_menu_args', array( $this, 'filter_args_after_customizer' ), 2000 );
 		}

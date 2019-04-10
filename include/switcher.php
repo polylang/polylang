@@ -210,7 +210,7 @@ class PLL_Switcher {
 		}
 
 		if ( $args['echo'] ) {
-			echo $out; // WCPS: XSS ok.
+			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 		return $out;
 	}

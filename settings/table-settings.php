@@ -106,12 +106,12 @@ class PLL_Table_Settings extends WP_List_Table {
 
 			if ( 'cb' == $column_name ) {
 				echo '<th scope="row" class="check-column">';
-				echo $this->column_cb( $item ); // WPCS: XSS ok.
+				echo $this->column_cb( $item ); // phpcs:ignore WordPress.Security.EscapeOutput
 				echo '</th>';
 			}
 			else {
 				printf( '<td class="%s">', esc_attr( $classes ) );
-				echo $this->column_default( $item, $column_name ); // WPCS: XSS ok.
+				echo $this->column_default( $item, $column_name ); // phpcs:ignore WordPress.Security.EscapeOutput
 				echo '</td>';
 			}
 		}

@@ -323,7 +323,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		// Don't redirect mysite.com/?attachment_id= to mysite.com/en/?attachment_id=
-		if ( 1 == $this->options['force_lang'] && is_attachment() && isset( $_GET['attachment_id'] ) ) { // WPCS: CSRF ok.
+		if ( 1 == $this->options['force_lang'] && is_attachment() && isset( $_GET['attachment_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
 		}
 

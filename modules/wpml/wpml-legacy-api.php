@@ -149,7 +149,7 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 		$link = sprintf( '<a href="%s">%s</a>', esc_url( $link ), esc_html( $text ) );
 
 		if ( $echo ) {
-			echo $link; // WCPS: XSS ok.
+			echo $link; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 
 		return $link;
@@ -325,11 +325,11 @@ if ( ! function_exists( 'wpml_get_copied_fields_for_post_edit' ) ) {
 	 * @return array
 	 */
 	function wpml_get_copied_fields_for_post_edit() {
-		if ( empty( $_GET['from_post'] ) ) { // WPCS: CSRF ok.
+		if ( empty( $_GET['from_post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return array();
 		}
 
-		$arr['original_post_id'] = (int) $_GET['from_post']; // WPCS: CSRF ok.
+		$arr['original_post_id'] = (int) $_GET['from_post']; // phpcs:ignore WordPress.Security.NonceVerification
 
 		// Don't know what WPML does but Polylang does copy all public meta keys by default
 		foreach ( $keys = array_unique( array_keys( get_post_custom( $arr['original_post_id'] ) ) ) as $k => $meta_key ) {

@@ -53,7 +53,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			<table id="pll-licenses-table" class="form-table">
 				<?php
 				foreach ( $this->items as $item ) {
-					echo $this->get_row( $item ); // WCPS: XSS ok.
+					echo $this->get_row( $item ); // phpcs:ignore WordPress.Security.EscapeOutput
 				}
 				?>
 			</table>

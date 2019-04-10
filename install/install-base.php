@@ -34,7 +34,7 @@ class PLL_Install_Base {
 	 * @return bool true if the plugin is currently beeing deactivated
 	 */
 	public function is_deactivation() {
-		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && $this->plugin_basename === $_GET['plugin']; // WPCS: CSRF ok.
+		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && $this->plugin_basename === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
 	/**

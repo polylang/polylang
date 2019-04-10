@@ -146,7 +146,7 @@ class PLL_WPML_API {
 		$lang = pll_current_language();
 		$field = sprintf( '<input type="hidden" name="lang" value="%s" />', esc_attr( $lang ) );
 		$field = apply_filters( 'wpml_language_form_input_field', $field, $lang );
-		echo $field; // WCPS: XSS ok.
+		echo $field; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
 	/**

@@ -104,7 +104,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @since 2.3
 	 */
 	public function edit_post() {
-		if ( isset( $_POST['post_lang_choice'], $_POST['post_ID'] ) && $post_id = (int) $_POST['post_ID'] ) { // WPCS: CSRF ok.
+		if ( isset( $_POST['post_lang_choice'], $_POST['post_ID'] ) && $post_id = (int) $_POST['post_ID'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			check_admin_referer( 'pll_language', '_pll_nonce' );
 
 			$post = get_post( $post_id );
@@ -160,7 +160,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @since 2.3
 	 */
 	public function bulk_edit_posts() {
-		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'], $_REQUEST['post'] ) && -1 !== $_GET['inline_lang_choice'] ) { // WPCS: CSRF ok.
+		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'], $_REQUEST['post'] ) && -1 !== $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			check_admin_referer( 'bulk-posts' );
 
 			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {

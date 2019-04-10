@@ -222,23 +222,23 @@ class PLL_Admin_Base extends PLL_Base {
 					$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
 						if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 							if ( 'undefined' === typeof options.data ) {
-								options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; // WCPS: XSS ok. ?>' : <?php echo $arr; // WCPS: XSS ok. ?>;
+								options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>' : <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>;
 							} else {
 								if ( 'string' === typeof options.data ) {
 									if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
-										options.url = options.url+'&<?php echo $str; // WCPS: XSS ok. ?>';
+										options.url = options.url+'&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
 									} else {
 										try {
 											var o = $.parseJSON(options.data);
-											o = $.extend(o, <?php echo $arr; // WCPS: XSS ok. ?>);
+											o = $.extend(o, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
 											options.data = JSON.stringify(o);
 										}
 										catch(e) {
-											options.data = '<?php echo $str; // WCPS: XSS ok. ?>&'+options.data;
+											options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>&'+options.data;
 										}
 									}
 								} else {
-									options.data = $.extend(options.data, <?php echo $arr; // WCPS: XSS ok. ?>);
+									options.data = $.extend(options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
 								}
 							}
 						}
@@ -258,31 +258,31 @@ class PLL_Admin_Base extends PLL_Base {
 		$this->curlang = $this->filter_lang;
 
 		// Edit Post
-		if ( isset( $_REQUEST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] ) ) { // WPCS: CSRF ok.
+		if ( isset( $_REQUEST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$this->curlang = $lang;
-		} elseif ( 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && $lang = $this->model->post->get_language( (int) $_GET['post'] ) ) { // WPCS: CSRF ok.
+		} elseif ( 'post.php' === $GLOBALS['pagenow'] && isset( $_GET['post'] ) && $lang = $this->model->post->get_language( (int) $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$this->curlang = $lang;
-		} elseif ( 'post-new.php' === $GLOBALS['pagenow'] && ( empty( $_GET['post_type'] ) || $this->model->is_translated_post_type( sanitize_key( $_GET['post_type'] ) ) ) ) { // WPCS: CSRF ok.
-			$this->curlang = empty( $_GET['new_lang'] ) ? $this->pref_lang : $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // WPCS: CSRF ok.
+		} elseif ( 'post-new.php' === $GLOBALS['pagenow'] && ( empty( $_GET['post_type'] ) || $this->model->is_translated_post_type( sanitize_key( $_GET['post_type'] ) ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->curlang = empty( $_GET['new_lang'] ) ? $this->pref_lang : $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		// Edit Term
 		// FIXME 'edit-tags.php' for backward compatibility with WP < 4.5
-		elseif ( in_array( $GLOBALS['pagenow'], array( 'edit-tags.php', 'term.php' ) ) && isset( $_GET['tag_ID'] ) && $lang = $this->model->term->get_language( (int) $_GET['tag_ID'] ) ) { // WPCS: CSRF ok.
+		elseif ( in_array( $GLOBALS['pagenow'], array( 'edit-tags.php', 'term.php' ) ) && isset( $_GET['tag_ID'] ) && $lang = $this->model->term->get_language( (int) $_GET['tag_ID'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$this->curlang = $lang;
-		} elseif ( isset( $_REQUEST['pll_term_id'] ) && $lang = $this->model->term->get_language( (int) $_REQUEST['pll_term_id'] ) ) { // WPCS: CSRF ok.
+		} elseif ( isset( $_REQUEST['pll_term_id'] ) && $lang = $this->model->term->get_language( (int) $_REQUEST['pll_term_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$this->curlang = $lang;
-		} elseif ( 'edit-tags.php' === $GLOBALS['pagenow'] && isset( $_GET['taxonomy'] ) && $this->model->is_translated_taxonomy( sanitize_key( $_GET['taxonomy'] ) ) ) { // WPCS: CSRF ok.
-			if ( ! empty( $_GET['new_lang'] ) ) { // WPCS: CSRF ok.
-				$this->curlang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // WPCS: CSRF ok.
+		} elseif ( 'edit-tags.php' === $GLOBALS['pagenow'] && isset( $_GET['taxonomy'] ) && $this->model->is_translated_taxonomy( sanitize_key( $_GET['taxonomy'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( ! empty( $_GET['new_lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				$this->curlang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 			} elseif ( empty( $this->curlang ) ) {
 				$this->curlang = $this->pref_lang;
 			}
 		}
 
 		// Ajax
-		if ( wp_doing_ajax() && ! empty( $_REQUEST['lang'] ) ) { // WPCS: CSRF ok.
-			$this->curlang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ); // WPCS: CSRF ok.
+		if ( wp_doing_ajax() && ! empty( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->curlang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 	}
 
@@ -295,8 +295,8 @@ class PLL_Admin_Base extends PLL_Base {
 		// Language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
 		// We intentionally don't use a nonce to update the language filter
-		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( sanitize_key( $_GET['lang'] ) ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) { // WPCS: CSRF ok.
-			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ) ) ? $lang->slug : '' ); // WPCS: CSRF ok.
+		if ( ! wp_doing_ajax() && ! empty( $_GET['lang'] ) && ! is_numeric( sanitize_key( $_GET['lang'] ) ) && current_user_can( 'edit_user', $user_id = get_current_user_id() ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ) ) ? $lang->slug : '' ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );

@@ -28,7 +28,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		add_filter( 'attachment_fields_to_save', array( $this, 'save_media' ), 10, 2 );
 
 		// Creates a media translation
-		if ( isset( $_GET['action'], $_GET['new_lang'], $_GET['from_media'] ) && 'translate_media' === $_GET['action'] ) { // WPCS: CSRF ok.
+		if ( isset( $_GET['action'], $_GET['new_lang'], $_GET['from_media'] ) && 'translate_media' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			add_action( 'admin_init', array( $this, 'translate_media' ) );
 		}
 	}
@@ -110,8 +110,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			$this->model->post->set_language( $post['ID'], $attachment['language'] );
 		}
 
-		if ( isset( $_POST['media_tr_lang'] ) ) { // WPCS: CSRF ok.
-			$this->save_translations( $post['ID'], array_map( 'absint', $_POST['media_tr_lang'] ) ); // WPCS: CSRF ok.
+		if ( isset( $_POST['media_tr_lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->save_translations( $post['ID'], array_map( 'absint', $_POST['media_tr_lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		return $post;

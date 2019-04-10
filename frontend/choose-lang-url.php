@@ -46,12 +46,12 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 		}
 
 		// Take care to post & page preview http://wordpress.org/support/topic/static-frontpage-url-parameter-url-language-information
-		elseif ( isset( $_GET['preview'] ) && ( ( isset( $_GET['p'] ) && $id = (int) $_GET['p'] ) || ( isset( $_GET['page_id'] ) && $id = (int) $_GET['page_id'] ) ) ) { // WPCS: CSRF ok.
+		elseif ( isset( $_GET['preview'] ) && ( ( isset( $_GET['p'] ) && $id = (int) $_GET['p'] ) || ( isset( $_GET['page_id'] ) && $id = (int) $_GET['page_id'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$curlang = ( $lg = $this->model->post->get_language( $id ) ) ? $lg : $this->model->get_language( $this->options['default_lang'] );
 		}
 
 		// Take care to ( unattached ) attachments
-		elseif ( isset( $_GET['attachment_id'] ) && $id = (int) $_GET['attachment_id'] ) { // WPCS: CSRF ok.
+		elseif ( isset( $_GET['attachment_id'] ) && $id = (int) $_GET['attachment_id'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$curlang = ( $lg = $this->model->post->get_language( $id ) ) ? $lg : $this->get_preferred_language();
 		}
 

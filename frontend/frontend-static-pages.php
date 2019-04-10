@@ -47,7 +47,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
 
 		// Support theme customizer
-		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // WPCS: CSRF ok.
+		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			add_filter( 'pre_option_page_on_front', 'pll_get_post', 20 );
 			add_filter( 'pre_option_page_for_post', 'pll_get_post', 20 );
 		}

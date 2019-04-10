@@ -114,8 +114,8 @@ class Polylang {
 	public static function is_ajax_on_front() {
 		// Special test for plupload which does not use jquery ajax and thus does not pass our ajax prefilter
 		// Special test for customize_save done in frontend but for which we want to load the admin
-		$in = isset( $_REQUEST['action'] ) && in_array( sanitize_key( $_REQUEST['action'] ), array( 'upload-attachment', 'customize_save' ) ); // WPCS: CSRF ok.
-		$is_ajax_on_front = wp_doing_ajax() && empty( $_REQUEST['pll_ajax_backend'] ) && ! $in; // WPCS: CSRF ok.
+		$in = isset( $_REQUEST['action'] ) && in_array( sanitize_key( $_REQUEST['action'] ), array( 'upload-attachment', 'customize_save' ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$is_ajax_on_front = wp_doing_ajax() && empty( $_REQUEST['pll_ajax_backend'] ) && ! $in; // phpcs:ignore WordPress.Security.NonceVerification
 
 		/**
 		 * Filters whether the current request is an ajax request on front.
@@ -173,7 +173,7 @@ class Polylang {
 
 		// Settings page whatever the tab
 		if ( ! defined( 'PLL_SETTINGS' ) ) {
-			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( sanitize_key( $_GET['page'] ), 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) ); // WPCS: CSRF ok.
+			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( sanitize_key( $_GET['page'] ), 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 	}
 
@@ -218,7 +218,7 @@ class Polylang {
 			$polylang = new PLL_Admin( $links_model );
 		} elseif ( self::is_rest_request() ) {
 			$polylang = new PLL_REST_Request( $links_model );
-		} elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // WPCS: CSRF ok. Do nothing on frontend if no language is defined.
+		} elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$polylang = new PLL_Frontend( $links_model );
 		}
 

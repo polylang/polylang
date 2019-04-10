@@ -59,10 +59,10 @@ class PLL_Admin_Classic_Editor {
 		$post_id = $post_ID;
 		$post_type = get_post_type( $post_ID );
 
-		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0; // WPCS: CSRF ok.
+		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0; // phpcs:ignore WordPress.Security.NonceVerification
 
 		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
-			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // WPCS: CSRF ok.
+			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification
 			$this->pref_lang );
 
 		$dropdown = new PLL_Walker_Dropdown();
@@ -198,7 +198,7 @@ class PLL_Admin_Classic_Editor {
 			/** This filter is documented in wp-admin/includes/meta-boxes.php */
 			$dropdown_args = apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3
 
-			$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) ); // WCPS: XSS ok.
+			$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 
 		// Flag
@@ -228,7 +228,7 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 0 );
 		}
 
-		$term = wp_unslash( $_GET['term'] ); // WCPS: sanitization ok.
+		$term = wp_unslash( $_GET['term'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 
 		$post_language = $this->model->get_language( sanitize_key( $_GET['post_language'] ) );
 		$translation_language = $this->model->get_language( sanitize_key( $_GET['translation_language'] ) );
@@ -272,7 +272,7 @@ class PLL_Admin_Classic_Editor {
 	 * @return array Modified arguments
 	 */
 	public function page_attributes_dropdown_pages_args( $dropdown_args, $post ) {
-		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // WPCS: CSRF ok.
+		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // phpcs:ignore WordPress.Security.NonceVerification
 		if ( ! $dropdown_args['lang'] ) {
 			$dropdown_args['lang'] = $this->pref_lang;
 		}

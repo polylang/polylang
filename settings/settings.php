@@ -29,8 +29,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
-		if ( isset( $_GET['page'] ) ) {
-			$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( sanitize_key( $_GET['page'] ), 6 ); // WPCS: CSRF ok.
+		if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->active_tab = 'mlang' === $_GET['page'] ? 'lang' : substr( sanitize_key( $_GET['page'] ), 6 ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		PLL_Admin_Strings::init();
@@ -296,9 +296,9 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		// Handle user input
-		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // WPCS: CSRF ok.
-		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // WPCS: CSRF ok.
-			$edit_lang = $this->model->get_language( (int) $_GET['lang'] ); // WPCS: CSRF ok.
+		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$edit_lang = $this->model->get_language( (int) $_GET['lang'] ); // phpcs:ignore WordPress.Security.NonceVerification
 		} else {
 			$this->handle_actions( $action );
 		}

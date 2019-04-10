@@ -170,7 +170,7 @@ function pll_e( $string ) {
  * @param string $string The string to translate
  */
 function pll_esc_html_e( $string ) {
-	echo pll_esc_html__( $string ); // WCPS: XSS ok.
+	echo pll_esc_html__( $string ); // phpcs:ignore WordPress.Security.EscapeOutput
 }
 
 /**
@@ -181,7 +181,7 @@ function pll_esc_html_e( $string ) {
  * @param string $string The string to translate
  */
 function pll_esc_attr_e( $string ) {
-	echo pll_esc_attr__( $string ); // WCPS: XSS ok.
+	echo pll_esc_attr__( $string ); // phpcs:ignore WordPress.Security.EscapeOutput
 }
 
 /**

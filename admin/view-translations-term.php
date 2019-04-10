@@ -48,7 +48,7 @@ else {
 		?>
 		<tr>
 			<th class = "pll-language-column">
-				<span class = "pll-translation-flag"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); // WCPS: XSS ok. ?></span>
+				<span class = "pll-translation-flag"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 				<?php
 				printf(
 					'<span class="pll-language-name%1$s">%2$s</span>',
@@ -60,8 +60,8 @@ else {
 			<?php
 			if ( isset( $term_id ) ) {
 				?>
-				<td class = "hidden"><?php echo $add_link; // WCPS: XSS ok. ?></td>
-				<td class = "pll-edit-column"><?php echo $link; // WCPS: XSS ok. ?></td>
+				<td class = "hidden"><?php echo $add_link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
+				<td class = "pll-edit-column"><?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
 				<?php
 			}
 			?>

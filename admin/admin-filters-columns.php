@@ -108,8 +108,8 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $post_id
 	 */
 	public function post_column( $column, $post_id ) {
-		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action']; // WPCS: CSRF ok.
-		$lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id ); // WPCS: CSRF ok.
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
+		$lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id ); // phpcs:ignore WordPress.Security.NonceVerification
 
 		if ( false === strpos( $column, 'language_' ) || ! $lang ) {
 			return;
@@ -155,7 +155,7 @@ class PLL_Admin_Filters_Columns {
 		}
 		// Link to add a new translation
 		else {
-			echo $this->links->new_post_translation_link( $post_id, $language ); // WCPS: XSS ok.
+			echo $this->links->new_post_translation_link( $post_id, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 	}
 
@@ -216,21 +216,21 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $term_id
 	 */
 	public function term_column( $out, $column, $term_id ) {
-		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action']; // WPCS: CSRF ok.
-		if ( false === strpos( $column, 'language_' ) || ! ( $lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id ) ) ) { // WPCS: CSRF ok.
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( false === strpos( $column, 'language_' ) || ! ( $lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return $out;
 		}
 
-		if ( isset( $_REQUEST['post_type'] ) ) {
-			$post_type = sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+		if ( isset( $_REQUEST['post_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$post_type = sanitize_key( $_REQUEST['post_type'] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		if ( isset( $GLOBALS['post_type'] ) ) {
 			$post_type = $GLOBALS['post_type'];
 		}
 
-		if ( isset( $_REQUEST['taxonomy'] ) ) {
-			$taxonomy = sanitize_key( $_REQUEST['taxonomy'] ); // WPCS: CSRF ok.
+		if ( isset( $_REQUEST['taxonomy'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$taxonomy = sanitize_key( $_REQUEST['taxonomy'] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		if ( isset( $GLOBALS['taxonomy'] ) ) {
@@ -313,7 +313,7 @@ class PLL_Admin_Filters_Columns {
 		$x = new WP_Ajax_Response();
 
 		// Collect old translations
-		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // WPCS: sanitization ok.
+		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$translations = array_map( 'intval', $translations );
 
 		$translations = array_merge( $translations, array( (int) $_POST['post_id'] ) ); // Add current post
@@ -355,7 +355,7 @@ class PLL_Admin_Filters_Columns {
 		$x = new WP_Ajax_Response();
 
 		// Collect old translations
-		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // WPCS: sanitization ok.
+		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$translations = array_map( 'intval', $translations );
 
 		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // Add current translations

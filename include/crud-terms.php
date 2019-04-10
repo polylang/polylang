@@ -49,7 +49,7 @@ class PLL_CRUD_Terms {
 	 */
 	protected function set_default_language( $term_id, $taxonomy ) {
 		if ( ! $this->model->term->get_language( $term_id ) ) {
-			if ( ! isset( $this->pref_lang ) && ! empty( $_REQUEST['lang'] ) && $lang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ) { // WPCS: CSRF ok.
+			if ( ! isset( $this->pref_lang ) && ! empty( $_REQUEST['lang'] ) && $lang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				// Testing $this->pref_lang makes this test pass only on frontend.
 				$this->model->term->set_language( $term_id, $lang );
 			} elseif ( ( $term = get_term( $term_id, $taxonomy ) ) && ! empty( $term->parent ) && $parent_lang = $this->model->term->get_language( $term->parent ) ) {
