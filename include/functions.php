@@ -111,11 +111,14 @@ function pll_is_cache_active() {
  * @return string Requested url
  */
 function pll_get_requested_url() {
-	$url = '';
-
 	if ( isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) ) {
-		$url = set_url_scheme( esc_url_raw( wp_unslash( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) ) );
+		return set_url_scheme( esc_url_raw( wp_unslash( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) ) );
 	}
 
-	return $url;
+	if ( WP_DEBUG ) {
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		trigger_error( '$_SERVER[\'HTTP_HOST\'] or $_SERVER[\'REQUEST_URI\'] are required but not set.' );
+	}
+
+	return '';
 }
