@@ -192,7 +192,7 @@ class PLL_Table_String extends WP_List_Table {
 	 */
 	protected function usort_reorder( $a, $b ) {
 		if ( ! empty( $_GET['orderby'] ) ) { // WPCS: CSRF ok.
-			$orderby = sanitize_key( $_GET['orderby'] );
+			$orderby = sanitize_key( $_GET['orderby'] ); // WPCS: CSRF ok.
 			if ( isset( $a[ $orderby ], $b[ $orderby ] ) ) {
 				$result = strcmp( $a[ $orderby ], $b[ $orderby ] ); // Determine sort order
 				return ( empty( $_GET['order'] ) || 'asc' === $_GET['order'] ) ? $result : -$result; // WPCS: CSRF ok.

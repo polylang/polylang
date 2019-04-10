@@ -221,8 +221,21 @@ class PLL_Admin_Filters_Columns {
 			return $out;
 		}
 
-		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
-		$taxonomy = isset( $GLOBALS['taxonomy'] ) ? $GLOBALS['taxonomy'] : sanitize_key( $_REQUEST['taxonomy'] ); // WPCS: CSRF ok.
+		if ( isset( $_REQUEST['post_type'] ) ) {
+			$post_type = sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+		}
+
+		if ( isset( $GLOBALS['post_type'] ) ) {
+			$post_type = $GLOBALS['post_type'];
+		}
+
+		if ( isset( $_REQUEST['taxonomy'] ) ) {
+			$taxonomy = sanitize_key( $_REQUEST['taxonomy'] ); // WPCS: CSRF ok.
+		}
+
+		if ( isset( $GLOBALS['taxonomy'] ) ) {
+			$taxonomy = $GLOBALS['taxonomy'];
+		}
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			return $out;

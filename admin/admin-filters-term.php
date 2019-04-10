@@ -59,7 +59,13 @@ class PLL_Admin_Filters_Term {
 			$taxonomy = sanitize_key( $_GET['taxonomy'] ); // WPCS: CSRF ok.
 		}
 
-		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+		if ( isset( $_REQUEST['post_type'] ) ) {
+			$post_type = sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+		}
+
+		if ( isset( $GLOBALS['post_type'] ) ) {
+			$post_type = $GLOBALS['post_type'];
+		}
 
 		if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) || ! post_type_exists( $post_type ) ) {
 			return;
@@ -114,7 +120,13 @@ class PLL_Admin_Filters_Term {
 	 * @param object $tag
 	 */
 	public function edit_term_form( $tag ) {
-		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+		if ( isset( $_REQUEST['post_type'] ) ) {
+			$post_type = sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
+		}
+
+		if ( isset( $GLOBALS['post_type'] ) ) {
+			$post_type = $GLOBALS['post_type'];
+		}
 
 		if ( ! post_type_exists( $post_type ) ) {
 			return;
