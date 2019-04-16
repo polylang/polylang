@@ -3,6 +3,10 @@
 	<description>Coding standards for Polylang</description>
 
 	<rule ref="WordPress-Core">
+		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.Found"/>
+		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.FoundInTernaryCondition"/>
+		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition"/>
+		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
 		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
 		<exclude name="WordPress.Files.FileName"/>
 		<exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
