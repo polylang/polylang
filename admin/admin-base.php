@@ -137,8 +137,8 @@ class PLL_Admin_Base extends PLL_Base {
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
 			$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-autocomplete' ), 0, 1 );
 
-			// Block editor in WP 5.0+
-			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() ) {
+			// Block editor with legacy metabox in WP 5.0+
+			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin() ) {
 				$scripts['block-editor'] = array( array( 'post' ), array( 'wp-api-fetch' ), 0, 1 );
 			}
 		}

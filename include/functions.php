@@ -122,3 +122,21 @@ function pll_get_requested_url() {
 
 	return '';
 }
+
+/**
+ * Determines whether we should load the block editor plugin or the legacy languages metabox.
+ *
+ * @since 2.6.0
+ *
+ * return bool True to use the block editor plugin.
+ */
+function pll_use_block_editor_plugin() {
+	/**
+	 * Filters whether we should load the block editor plugin or the legacy languages metabox.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param bool $use_plugin True when loading the block editor plugin.
+	 */
+	return class_exists( 'PLL_Block_Editor_Plugin' ) && apply_filters( 'pll_use_block_editor_plugin', ! defined( 'PLL_USE_BLOCK_EDITOR_PLUGIN' ) || PLL_USE_BLOCK_EDITOR_PLUGIN );
+}

@@ -145,6 +145,15 @@ class PLL_Admin extends PLL_Admin_Base {
 		if ( class_exists( 'PLL_Duplicate' ) ) {
 			$this->duplicate = new PLL_Duplicate( $this );
 		}
+
+		if ( class_exists( 'PLL_Duplicate_REST' ) ) {
+			$this->duplicate_rest = new PLL_Duplicate_REST();
+		}
+
+		// Block editor metabox
+		if ( pll_use_block_editor_plugin() ) {
+			$this->block_editor_plugin = new PLL_Block_Editor_Plugin( $this );
+		}
 	}
 
 	/**
@@ -176,7 +185,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * @return bool
 	 */
 	public function _maybe_load_sync_post( $is_block_editor ) {
-		if ( class_exists( 'PLL_Sync_Post_REST' ) && $is_block_editor ) {
+		if ( class_exists( 'PLL_Sync_Post_REST' ) && pll_use_block_editor_plugin() && $is_block_editor ) {
 			$this->sync_post = new PLL_Sync_Post_REST( $this );
 		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
 			$this->sync_post = new PLL_Sync_Post( $this );

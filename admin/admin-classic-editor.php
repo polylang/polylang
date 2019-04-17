@@ -45,7 +45,17 @@ class PLL_Admin_Classic_Editor {
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
-			add_meta_box( 'ml_box', __( 'Languages', 'polylang' ), array( $this, 'post_language' ), $post_type, 'side', 'high' );
+			add_meta_box(
+				'ml_box',
+				__( 'Languages', 'polylang' ),
+				array( $this, 'post_language' ),
+				$post_type,
+				'side',
+				'high',
+				array(
+					'__back_compat_meta_box' => pll_use_block_editor_plugin(),
+				)
+			);
 		}
 	}
 

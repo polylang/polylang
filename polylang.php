@@ -67,6 +67,7 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'PLL_INSTALL_INC', POLYLANG_DIR . '/install' );
 	define( 'PLL_MODULES_INC', POLYLANG_DIR . '/modules' );
 	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
+	define( 'PLL_PREFIX', 'pll_' );
 
 	if ( file_exists( PLL_MODULES_INC . '/pro.php' ) ) {
 		define( 'POLYLANG_PRO', true );
