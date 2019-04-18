@@ -32,8 +32,7 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.8
 	 */
 	public function init() {
-		$filename = isset( $_SERVER['SCRIPT_FILENAME'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SCRIPT_FILENAME'] ) ) : '';
-		if ( Polylang::is_ajax_on_front() || false === stripos( $filename, 'index.php' ) ) {
+		if ( Polylang::is_ajax_on_front() || ! wp_using_themes() ) {
 			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 

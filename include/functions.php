@@ -84,6 +84,21 @@ if ( ! function_exists( 'wp_doing_ajax' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_using_themes' ) ) {
+	/**
+	 * Determines whether the current request should use themes.
+	 * Backward compatibility function for WP < 5.1
+	 *
+	 * @since 2.6
+	 *
+	 * @return bool True if themes should be used, false otherwise.
+	 */
+	function wp_using_themes() {
+		/** This filter is documented in wp-includes/load.php */
+		return apply_filters( 'wp_using_themes', defined( 'WP_USE_THEMES' ) && WP_USE_THEMES );
+	}
+}
+
 /**
  * Determines whether we should load the cache compatibility
  *

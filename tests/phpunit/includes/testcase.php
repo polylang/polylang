@@ -11,8 +11,6 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 		self::$polylang->options['hide_default'] = 0; // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis
 		self::$polylang->model = new PLL_Admin_Model( self::$polylang->options );
 		self::$polylang->links_model = self::$polylang->model->get_links_model(); // We always need a links model due to PLL_Language::set_home_url()
-
-		$_SERVER['SCRIPT_FILENAME'] = '/index.php'; // To pass the test in PLL_Choose_Lang::init() by default
 	}
 
 	static function wpTearDownAfterClass() {
@@ -22,6 +20,7 @@ class PLL_UnitTestCase extends WP_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
+		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default
 		add_filter( 'wp_doing_ajax', '__return_false' );
 	}
 
