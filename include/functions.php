@@ -84,6 +84,21 @@ if ( ! function_exists( 'wp_doing_ajax' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_doing_cron' ) ) {
+	/**
+	 * Determines whether the current request is a WordPress cron request.
+	 * Backward compatibility function for WP < 4.8
+	 *
+	 * @since 2.6
+	 *
+	 * @return bool True if it's a WordPress cron request, false otherwise.
+	 */
+	function wp_doing_cron() {
+		/** This filter is documented in wp-includes/load.php */
+		return apply_filters( 'wp_doing_cron', defined( 'DOING_CRON' ) && DOING_CRON );
+	}
+}
+
 if ( ! function_exists( 'wp_using_themes' ) ) {
 	/**
 	 * Determines whether the current request should use themes.
