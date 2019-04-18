@@ -166,11 +166,8 @@ class PLL_Admin extends PLL_Admin_Base {
 		if ( 'post-new.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) ) {
 			// We need to wait until we know which editor is in use
 			add_filter( 'use_block_editor_for_post', array( $this, '_maybe_load_sync_post' ), 999 ); // After the plugin Classic Editor
-		} elseif ( 'post.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) && isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// Disable Sync Post in the meta box loader when running the block editor to avoid a conflict
-			if ( empty( $_GET['meta-box-loader'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$this->_maybe_load_sync_post( use_block_editor_for_post( (int) $_GET['post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
+		} elseif ( 'post.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) && isset( $_GET['post'] ) && empty( $_GET['meta-box-loader'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->_maybe_load_sync_post( use_block_editor_for_post( (int) $_GET['post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		} else {
 			$this->_maybe_load_sync_post( false );
 		}
