@@ -35,7 +35,19 @@ class PLL_Widget_Languages extends WP_Widget {
 		// Sets a unique id for dropdown
 		$instance['dropdown'] = empty( $instance['dropdown'] ) ? 0 : $args['widget_id'];
 
-		if ( $list = pll_the_languages( array_merge( $instance, array( 'echo' => 0 ) ) ) ) {
+		/**
+		 * Filter the language switcher widget content.
+		 *
+		 * @param array $instance The settings for the particular instance of the widget
+		 * @return string The switcher HTML.
+		 */
+		$list = apply_filters( 'pll_widget_language_switcher', '', $instance );
+
+		if ( ! $list ) {
+			$list = pll_the_languages( array_merge( $instance, array( 'echo' => 0 ) ) );
+		}
+
+		if ( $list ) {
 			$title = empty( $instance['title'] ) ? '' : $instance['title'];
 			/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 			$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
@@ -64,6 +76,16 @@ class PLL_Widget_Languages extends WP_Widget {
 	 * @return array Settings to save or bool false to cancel saving
 	 */
 	public function update( $new_instance, $old_instance ) {
+		/**
+		 * Filter for updating the Polylang switcher widget.
+		 * This is for custom options only, Polylang core options will be overwritten.
+		 *
+		 * @param array $new_instance New settings for this instance as input by the user via form()
+		 * @param array $old_instance Old settings for this instance
+		 * @return array Custom settings to save
+		 */
+		$instance = apply_filters( 'pll_widget_language_switcher_update', $new_instance, $old_instance );
+
 		$instance['title'] = strip_tags( $new_instance['title'] );
 		foreach ( array_keys( PLL_Switcher::get_switcher_options( 'widget' ) ) as $key ) {
 			$instance[ $key ] = ! empty( $new_instance[ $key ] ) ? 1 : 0;
@@ -104,6 +126,14 @@ class PLL_Widget_Languages extends WP_Widget {
 				esc_attr( 'pll-' . $key )
 			);
 		}
+
+		/**
+		 * Append fields to the Polylang language switcher widget form.
+		 *
+		 * @param array $instance Current settings
+		 * @param PLL_Widget_Languages $this The widget instance.
+		 */
+		do_action( 'pll_widget_language_switcher_form', $instance, $this );
 
 		// FIXME echoing script in form is not very clean
 		// but it does not work if enqueued properly :

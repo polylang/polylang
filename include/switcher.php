@@ -27,6 +27,16 @@ class PLL_Switcher {
 			'hide_if_no_translation' => array( 'string' => __( 'Hides languages with no translation', 'polylang' ), 'default' => 0 ),
 		);
 
+		/**
+		 * Filter the switcher options.
+		 *
+		 * @param array $options The default switcher options.
+		 * @param string $type optional either 'menu' or 'widget', defaults to 'widget'
+		 * @param string $key  optional either 'string' or 'default', defaults to 'string'
+		 * @return array
+		 */
+		$options = apply_filters( 'pll_get_switcher_options', $options, $type, $key );
+
 		return wp_list_pluck( $options, $key );
 	}
 
