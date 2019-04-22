@@ -77,6 +77,7 @@ class PLL_Featured_Content {
 					'lang'        => 0, // avoid language filters
 					'fields'      => 'ids',
 					'numberposts' => Featured_Content::$max_posts,
+					'post_type'   => Featured_Content::$post_types,
 					'tax_query'   => array(
 						array(
 							'taxonomy' => 'post_tag',
