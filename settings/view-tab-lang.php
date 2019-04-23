@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="col-wrap">
 
 			<div class="form-wrap">
-				<h3><?php echo ! empty( $edit_lang ) ? esc_html__( 'Edit language', 'polylang' ) : esc_html__( 'Add new language', 'polylang' ); ?></h3>
+				<h2><?php echo ! empty( $edit_lang ) ? esc_html__( 'Edit language', 'polylang' ) : esc_html__( 'Add new language', 'polylang' ); ?></h2>
 				<?php
 				// Displays the add ( or edit ) language form
 				// Adds noheader=true in the action url to allow using wp_redirect when processing the form
