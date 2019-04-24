@@ -116,6 +116,53 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 	}
 
+	function test_custom_term_field() {
+		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		PLL_WPML_Config::instance()->init();
+
+		$en = $from = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $from, 'en' );
+		add_term_meta( $from, 'term_meta_A', 'A' ); // copy
+		add_term_meta( $from, 'term_meta_B', 'B' ); // translate
+		add_term_meta( $from, 'term_meta_C', 'C' ); // ignore
+		add_term_meta( $from, 'term_meta_D', 'D' ); // copy-once
+
+		$fr = $to = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $to, 'fr' );
+		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+
+		// Copy
+		$sync = new PLL_Admin_Sync( self::$polylang );
+		$sync->term_metas->copy( $from, $to, 'fr' ); // copy
+
+		$this->assertEquals( 'A', get_term_meta( $to, 'term_meta_A', true ) );
+		$this->assertEquals( 'B', get_term_meta( $to, 'term_meta_B', true ) );
+		$this->assertEmpty( get_term_meta( $to, 'term_meta_C', true ) );
+		$this->assertEquals( 'D', get_term_meta( $to, 'term_meta_D', true ) );
+
+		// Sync
+		update_term_meta( $to, 'term_meta_A', 'A2' );
+		update_term_meta( $to, 'term_meta_B', 'B2' );
+		update_term_meta( $to, 'term_meta_C', 'C2' );
+		update_term_meta( $to, 'term_meta_D', 'D2' );
+
+		$this->assertEquals( 'A2', get_term_meta( $from, 'term_meta_A', true ) );
+		$this->assertEquals( 'B', get_term_meta( $from, 'term_meta_B', true ) );
+		$this->assertEquals( 'C', get_term_meta( $from, 'term_meta_C', true ) );
+		$this->assertEquals( 'D', get_term_meta( $from, 'term_meta_D', true ) );
+
+		// Remove custom field and sync
+		delete_term_meta( $to, 'term_meta_A' );
+		delete_term_meta( $to, 'term_meta_B' );
+		delete_term_meta( $to, 'term_meta_C' );
+		delete_term_meta( $to, 'term_meta_D' );
+
+		$this->assertEmpty( get_term_meta( $from, 'term_meta_A', true ) );
+		$this->assertEquals( 'B', get_term_meta( $from, 'term_meta_B', true ) );
+		$this->assertEquals( 'C', get_term_meta( $from, 'term_meta_C', true ) );
+		$this->assertEquals( 'D', get_term_meta( $from, 'term_meta_D', true ) );
+	}
+
 	function test_cpt() {
 		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
