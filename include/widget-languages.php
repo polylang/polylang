@@ -17,7 +17,7 @@ class PLL_Widget_Languages extends WP_Widget {
 			'polylang',
 			__( 'Language Switcher', 'polylang' ),
 			array(
-				'description' => __( 'Displays a language switcher', 'polylang' ),
+				'description'                 => __( 'Displays a language switcher', 'polylang' ),
 				'customize_selective_refresh' => true,
 			)
 		);
@@ -40,17 +40,17 @@ class PLL_Widget_Languages extends WP_Widget {
 			/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 			$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
-			echo $args['before_widget'];
+			echo $args['before_widget']; // WCPS: XSS ok.
 			if ( $title ) {
-				echo $args['before_title'] . $title . $args['after_title'];
+				echo $args['before_title'] . $title . $args['after_title']; // WCPS: XSS ok.
 			}
 			if ( $instance['dropdown'] ) {
 				echo '<label class="screen-reader-text" for="' . esc_attr( 'lang_choice_' . $instance['dropdown'] ) . '">' . esc_html__( 'Choose a language', 'polylang' ) . '</label>';
-				echo $list;
+				echo $list; // WCPS: XSS ok.
 			} else {
-				echo "<ul>\n" . $list . "</ul>\n";
+				echo "<ul>\n" . $list . "</ul>\n"; // WCPS: XSS ok.
 			}
-			echo $args['after_widget'];
+			echo $args['after_widget']; // WCPS: XSS ok.
 		}
 	}
 
@@ -86,27 +86,24 @@ class PLL_Widget_Languages extends WP_Widget {
 		// Title
 		printf(
 			'<p><label for="%1$s">%2$s</label><input class="widefat" id="%1$s" name="%3$s" type="text" value="%4$s" /></p>',
-			$this->get_field_id( 'title' ),
+			esc_attr( $this->get_field_id( 'title' ) ),
 			esc_html__( 'Title:', 'polylang' ),
-			$this->get_field_name( 'title' ),
+			esc_attr( $this->get_field_name( 'title' ) ),
 			esc_attr( $instance['title'] )
 		);
 
-		$fields = '';
 		foreach ( PLL_Switcher::get_switcher_options( 'widget' ) as $key => $str ) {
-			$fields .= sprintf(
+			printf(
 				'<div%5$s%6$s><input type="checkbox" class="checkbox %7$s" id="%1$s" name="%2$s"%3$s /><label for="%1$s">%4$s</label></div>',
-				$this->get_field_id( $key ),
-				$this->get_field_name( $key ),
-				$instance[ $key ] ? ' checked="checked"' : '',
+				esc_attr( $this->get_field_id( $key ) ),
+				esc_attr( $this->get_field_name( $key ) ),
+				checked( $instance[ $key ], true, false ),
 				esc_html( $str ),
-				in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? ' class="no-dropdown-' . $this->id . '"' : '',
-				! empty( $instance['dropdown'] ) && in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? ' style="display:none;"' : '',
-				'pll-' . $key
+				in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? sprintf( ' class="no-dropdown-%s"', esc_attr( $this->id ) ) : '',
+				( ! empty( $instance['dropdown'] ) && in_array( $key, array( 'show_names', 'show_flags', 'hide_current' ) ) ? ' style="display:none;"' : '' ),
+				esc_attr( 'pll-' . $key )
 			);
 		}
-
-		echo $fields;
 
 		// FIXME echoing script in form is not very clean
 		// but it does not work if enqueued properly :

@@ -127,7 +127,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		);
 		update_post_meta( $en, '_wp_attachment_image_alt', 'Alt text EN' );
 
-		$fr = self::$polylang->filters_media->create_media_translation( $en, 'fr' );
+		$fr = self::$polylang->posts->create_media_translation( $en, 'fr' );
 		wp_update_post(
 			array(
 				'ID'           => $fr,
@@ -175,6 +175,10 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		self::$polylang->filters = new PLL_Frontend_Filters( self::$polylang );
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+
+		self::$polylang->filters->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		self::$polylang->filters->cache->method( 'get' )->willReturn( false );
+
 		$sidebars = wp_get_sidebars_widgets();
 		$this->assertTrue( in_array( 'search-2', $sidebars['sidebar-1'] ) );
 

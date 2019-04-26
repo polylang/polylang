@@ -190,6 +190,23 @@ class PLL_Model {
 	}
 
 	/**
+	 * Adds terms clauses to get_terms to filter them by languages - used in both frontend and admin
+	 *
+	 * @since 1.2
+	 *
+	 * @param array  $clauses the list of sql clauses in terms query
+	 * @param object $lang    PLL_Language object
+	 * @return array modified list of clauses
+	 */
+	public function terms_clauses( $clauses, $lang ) {
+		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
+			$clauses['join'] .= $this->term->join_clause();
+			$clauses['where'] .= $this->term->where_clause( $lang );
+		}
+		return $clauses;
+	}
+
+	/**
 	 * Returns post types that need to be translated
 	 * the post types list is cached for better better performance
 	 * wait for 'after_setup_theme' to apply the cache to allow themes adding the filter in functions.php
@@ -201,7 +218,7 @@ class PLL_Model {
 	 */
 	public function get_translated_post_types( $filter = true ) {
 		if ( false === $post_types = $this->cache->get( 'post_types' ) ) {
-			$post_types = array( 'post' => 'post', 'page' => 'page' );
+			$post_types = array( 'post' => 'post', 'page' => 'page', 'wp_block' => 'wp_block' );
 
 			if ( ! empty( $this->options['media_support'] ) ) {
 				$post_types['attachment'] = 'attachment';
@@ -421,6 +438,7 @@ class PLL_Model {
 			$where .= $wpdb->prepare( ' AND tt.parent = %d', $parent );
 		}
 
+		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 		return $wpdb->get_var( $select . $join . $where );
 	}
 
@@ -508,6 +526,7 @@ class PLL_Model {
 				}
 			}
 
+			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$res = $wpdb->get_results( $select . $join . $where . $groupby, ARRAY_A );
 			foreach ( (array) $res as $row ) {
 				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
@@ -591,24 +610,32 @@ class PLL_Model {
 
 		if ( ! empty( $o ) && is_object( $this->$o ) && method_exists( $this->$o, $f ) ) {
 			if ( WP_DEBUG ) {
-				$debug = debug_backtrace();
+				$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 				$i = 1 + empty( $debug[1]['line'] ); // the file and line are in $debug[2] if the function was called using call_user_func
 
-				trigger_error(
+				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					sprintf(
 						'%1$s was called incorrectly in %4$s on line %5$s: the call to $polylang->model->%1$s() has been deprecated in Polylang 1.8, use PLL()->model->%2$s->%3$s() instead.' . "\nError handler",
-						$func,
-						$o,
-						$f,
-						$debug[ $i ]['file'],
-						$debug[ $i ]['line']
+						esc_html( $func ),
+						esc_html( $o ),
+						esc_html( $f ),
+						esc_html( $debug[ $i ]['file'] ),
+						absint( $debug[ $i ]['line'] )
 					)
 				);
 			}
 			return call_user_func_array( array( $this->$o, $f ), $args );
 		}
 
-		$debug = debug_backtrace();
-		trigger_error( sprintf( 'Call to undefined function PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler", $func, $debug[0]['file'], $debug[0]['line'] ), E_USER_ERROR );
+		$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			sprintf(
+				'Call to undefined function PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler",
+				esc_html( $func ),
+				esc_html( $debug[0]['file'] ),
+				absint( $debug[0]['line'] )
+			),
+			E_USER_ERROR
+		);
 	}
 }

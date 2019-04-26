@@ -31,7 +31,7 @@ class Strings_Test extends PLL_UnitTestCase {
 		parent::clean_up_global_scope();
 	}
 
-	function __return_fr_FR() {
+	function _return_fr_FR() {
 		return array( 'fr_FR' );
 	}
 
@@ -153,7 +153,7 @@ class Strings_Test extends PLL_UnitTestCase {
 		$mo->export_to_db( self::$polylang->model->get_language( 'fr' ) );
 
 		// Reset $wp_locale_switcher to add fr_FR in the list of available languages
-		add_filter( 'get_available_languages', array( $this, '__return_fr_FR' ) );
+		add_filter( 'get_available_languages', array( $this, '_return_fr_FR' ) );
 		$old_locale_switcher = $GLOBALS['wp_locale_switcher'];
 		$GLOBALS['wp_locale_switcher'] = new WP_Locale_Switcher();
 		$GLOBALS['wp_locale_switcher']->init();

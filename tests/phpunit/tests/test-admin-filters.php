@@ -17,18 +17,29 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_sanitize_title() {
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		self::$polylang->filters->curlang = self::$polylang->model->get_language( 'en' );
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'de' );
+		self::$polylang->filters->curlang = self::$polylang->model->get_language( 'de' );
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
+
+		unset( self::$polylang->filters->curlang );
+
+		// Bug fixed in 2.4.1
+		$_POST['post_lang_choice'] = 'en';
+		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
+
+		$_POST['post_lang_choice'] = 'de';
+		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
+
+		unset( $_POST );
 	}
 
 	function test_sanitize_user() {
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		self::$polylang->filters->curlang = self::$polylang->model->get_language( 'en' );
 		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'de' );
+		self::$polylang->filters->curlang = self::$polylang->model->get_language( 'de' );
 		$this->assertEquals( 'angstroem', sanitize_user( 'ångström' ) );
 	}
 

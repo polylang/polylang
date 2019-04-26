@@ -33,7 +33,14 @@ if ( file_exists( $_tests_dir . '../wordpress/wp-content/themes/twentyseventeen/
 			switch_theme( self::$stylesheet );
 		}
 
+		function get_template_part( $slug, $name ) {
+			include get_template_directory() . "/{$slug}-{$name}.php";
+		}
+
 		function test_front_page_panels() {
+			// Allow to locate the template part of Twenty Seventeen as the original mechanism uses constants
+			add_action( 'get_template_part_template-parts/page/content', array( $this, 'get_template_part' ), 10, 2 );
+
 			$en = self::factory()->post->create( array( 'post_title' => 'section 1 EN' ) );
 			self::$polylang->model->post->set_language( $en, 'en' );
 

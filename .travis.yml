@@ -26,6 +26,8 @@ matrix:
     - php: 7.1
       env: WP_VERSION=latest WP_MULTISITE=1
     - php: 7.2
+      env: WP_VERSION=latest WP_MULTISITE=0 PHPCS=1
+    - php: 7.3
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.3
       env: WP_VERSION=latest WP_MULTISITE=0
@@ -35,9 +37,12 @@ matrix:
       dist: precise
 
 before_script:
-  - phpenv config-rm xdebug.ini
+  - |
+    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
+      phpenv config-rm xdebug.ini
+    fi
+  - export PATH="$HOME/.config/composer/vendor/bin:$PATH"
   - bash tests/bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - |
     if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
       composer global require "phpunit/phpunit=5.7.*"
@@ -45,14 +50,14 @@ before_script:
       composer global require "phpunit/phpunit=4.8.*"
     fi
   - |
-    if [[ $TRAVIS_PHP_VERSION == '7.2' ]]; then
+    if [[ "$PHPCS" == "1" ]]; then
       composer global require wp-coding-standards/wpcs
-      phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
+      phpcs --config-set installed_paths $HOME/.config/composer/vendor/wp-coding-standards/wpcs
     fi
 
 script:
   - |
-    if [[ $TRAVIS_PHP_VERSION == '7.2' ]]; then
+    if [[ "$PHPCS" == "1" ]]; then
       phpcs -s --extensions=php .
     fi
   - phpunit

@@ -132,8 +132,8 @@ class PLL_WP_Import extends WP_Import {
 
 			// Make sure we don't attempt to insert already existing term relationships
 			$existing_trs = $wpdb->get_results(
-				"SELECT tr.object_id, tr.term_taxonomy_id FROM $wpdb->term_relationships AS tr
-				INNER JOIN $wpdb->term_taxonomy AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+				"SELECT tr.object_id, tr.term_taxonomy_id FROM {$wpdb->term_relationships} AS tr
+				INNER JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
 				WHERE tt.taxonomy IN ( 'term_language', 'term_translations' )"
 			);
 
@@ -144,7 +144,8 @@ class PLL_WP_Import extends WP_Import {
 			$trs = array_diff( $trs, $existing_trs );
 
 			if ( ! empty( $trs ) ) {
-				$wpdb->query( "INSERT INTO $wpdb->term_relationships ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
+				// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
 			}
 		}
 	}
@@ -177,11 +178,13 @@ class PLL_WP_Import extends WP_Import {
 		}
 
 		if ( ! empty( $u ) ) {
+			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query(
-				"UPDATE $wpdb->term_taxonomy
+				"UPDATE {$wpdb->term_taxonomy}
 				SET description = ( CASE term_id " . implode( ' ', $u['case'] ) . ' END )
 				WHERE term_id IN ( ' . implode( ',', $u['in'] ) . ' )'
 			);
+			// PHPCS:enable
 		}
 	}
 }

@@ -16,6 +16,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
+		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 	}
 
@@ -71,5 +72,37 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		ob_start();
 		do_action( 'edit_form_after_title', get_post( $fr ) );
 		$this->assertNotContains( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
+	}
+
+	function test_use_block_editor_for_post() {
+		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+			$this->markTestSkipped();
+		}
+
+		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', $en );
+
+		$fr = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) ); // Content must be empty to deactivate editor.
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+
+		self::$polylang->model->clean_languages_cache();
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$this->assertFalse( use_block_editor_for_post( $en ) );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$this->assertFalse( use_block_editor_for_post( $fr ) );
+
+		$page_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
+		self::$polylang->model->post->set_language( $page_id, 'fr' );
+		$this->assertTrue( use_block_editor_for_post( $page_id ) );
+
+		$post_id = $this->factory->post->create( array( 'post_content' => '' ) );
+		self::$polylang->model->post->set_language( $post_id, 'fr' );
+		$this->assertTrue( use_block_editor_for_post( $post_id ) );
 	}
 }

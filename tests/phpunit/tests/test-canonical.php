@@ -56,7 +56,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'/en/post-format-test-audio/',
 			array(
 				'url' => '/en/post-format-test-audio/',
-				'qv' => array( 'lang' => 'en', 'name' => 'post-format-test-audio', 'page' => '' ),
+				'qv'  => array( 'lang' => 'en', 'name' => 'post-format-test-audio', 'page' => '' ),
 			)
 		);
 		$this->assertCanonical( '/fr/post-format-test-audio/', '/en/post-format-test-audio/' );
@@ -71,7 +71,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'/en/parent-page/',
 			array(
 				'url' => '/en/parent-page/',
-				'qv' => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
+				'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
 			)
 		);
 		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
@@ -87,7 +87,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'/en/cpt/custom-post/',
 			array(
 				'url' => '/en/cpt/custom-post/',
-				'qv' => array( 'lang' => 'en', 'cpt' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'cpt', 'page' => '' ),
+				'qv'  => array( 'lang' => 'en', 'cpt' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'cpt', 'page' => '' ),
 			)
 		);
 		$this->assertCanonical( '/fr/cpt/custom-post/', '/en/cpt/custom-post/' );
@@ -105,7 +105,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'/en/category/parent/',
 			array(
 				'url' => '/en/category/parent/',
-				'qv' => array( 'lang' => 'en', 'category_name' => 'parent' ),
+				'qv'  => array( 'lang' => 'en', 'category_name' => 'parent' ),
 			)
 		);
 		$this->assertCanonical( '/fr/category/parent/', '/en/category/parent/' );
@@ -140,7 +140,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'/en/posts/',
 			array(
 				'url' => '/en/posts/',
-				'qv' => array( 'lang' => 'en', 'pagename' => 'posts', 'page' => '' ),
+				'qv'  => array( 'lang' => 'en', 'pagename' => 'posts', 'page' => '' ),
 			)
 		);
 		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
@@ -169,7 +169,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'/en/parent-page/',
 			array(
 				'url' => '/en/parent-page/',
-				'qv' => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
+				'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
 			)
 		);
 		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );

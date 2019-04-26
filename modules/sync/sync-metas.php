@@ -19,6 +19,10 @@ abstract class PLL_Sync_Metas {
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
 
+		add_filter( "add_{$this->meta_type}_metadata", array( $this, 'can_synchronize_metadata' ), 1, 3 );
+		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'can_synchronize_metadata' ), 1, 3 );
+		add_filter( "delete_{$this->meta_type}_metadata", array( $this, 'can_synchronize_metadata' ), 1, 3 );
+
 		$this->add_all_meta_actions();
 
 		add_action( "pll_save_{$this->meta_type}", array( $this, 'save_object' ), 10, 3 );
@@ -127,6 +131,32 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
+	 * Disallow modifying synchronized meta if the current user can not modify translations
+	 *
+	 * @since 2.6
+	 *
+	 * @param null|bool $check    Whether to allow adding/updating/deleting metadata.
+	 * @param int       $id       Object ID.
+	 * @param string    $meta_key Meta key.
+	 * @return null|bool
+	 */
+	public function can_synchronize_metadata( $check, $id, $meta_key ) {
+		if ( ! $this->model->{$this->meta_type}->current_user_can_synchronize( $id ) ) {
+			$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
+
+			foreach ( $tr_ids as $lang => $tr_id ) {
+				if ( $tr_id != $id ) {
+					$to_copy = $this->get_metas_to_copy( $id, $tr_id, $lang, true );
+					if ( in_array( $meta_key, $to_copy ) ) {
+						return false;
+					}
+				}
+			}
+		}
+		return $check;
+	}
+
+	/**
 	 * Synchronize added metas across translations
 	 *
 	 * @since 2.3
@@ -144,7 +174,7 @@ abstract class PLL_Sync_Metas {
 			$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
 
 			foreach ( $tr_ids as $lang => $tr_id ) {
-				if ( $tr_id !== $id ) {
+				if ( $tr_id != $id ) {
 					$to_copy = $this->get_metas_to_copy( $id, $tr_id, $lang, true );
 					if ( in_array( $meta_key, $to_copy ) ) {
 						$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
@@ -194,22 +224,22 @@ abstract class PLL_Sync_Metas {
 			$avoid_recursion = true;
 			$hash = md5( "$id|$meta_key|" . maybe_serialize( $meta_value ) );
 
-			$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
+			$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
 
-			foreach ( $tr_ids as $lang => $tr_id ) {
-				if ( $tr_id != $id ) {
-					$to_copy = $this->get_metas_to_copy( $id, $tr_id, $lang, true );
-					if ( in_array( $meta_key, $to_copy ) ) {
-						$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
-						$prev_meta = get_metadata_by_mid( $this->meta_type, $mid );
+			if ( $prev_meta ) {
+				$this->remove_add_meta_action(); // We don't want to sync back the new metas
+				$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
+
+				foreach ( $tr_ids as $lang => $tr_id ) {
+					if ( $tr_id != $id && in_array( $meta_key, $this->get_metas_to_copy( $id, $tr_id, $lang, true ) ) ) {
 						if ( empty( $this->prev_value[ $hash ] ) || $this->prev_value[ $hash ] === $prev_meta->meta_value ) {
 							$prev_value = $this->maybe_translate_value( $prev_meta->meta_value, $meta_key, $id, $tr_id, $lang );
-							$this->remove_add_meta_action(); // We don't want to sync back the new metas
+							$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
 							update_metadata( $this->meta_type, $tr_id, $meta_key, $meta_value, $prev_value );
-							$this->restore_add_meta_action();
 						}
 					}
 				}
+				$this->restore_add_meta_action();
 			}
 
 			unset( $this->prev_value[ $hash ] );
@@ -252,7 +282,7 @@ abstract class PLL_Sync_Metas {
 			$tr_ids = $this->model->{$this->meta_type}->get_translations( $id );
 
 			foreach ( $tr_ids as $lang => $tr_id ) {
-				if ( $tr_id !== $id ) {
+				if ( $tr_id != $id ) {
 					if ( in_array( $key, $this->to_copy[ $id ][ $tr_id ] ) ) {
 						if ( '' !== $value && null !== $value && false !== $value ) { // Same test as WP
 							$value = $this->maybe_translate_value( $value, $key, $id, $tr_id, $lang );
@@ -332,7 +362,7 @@ abstract class PLL_Sync_Metas {
 		$src_lang = array_search( $object_id, $translations );
 
 		foreach ( $translations as $tr_lang => $tr_id ) {
-			if ( $tr_id !== $object_id ) {
+			if ( $tr_id != $object_id ) {
 				$this->copy( $object_id, $tr_id, $tr_lang, true );
 			}
 		}

@@ -93,11 +93,11 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 
 		$args = array(
 			'post_mime_type' => 'image/jpeg',
-			'post_type' => 'attachment',
-			'post_title' => 'image-en',
-			'post_status' => 'inherit',
-			'post_parent' => $post_id,
-			'file' => 'image.jpg',
+			'post_type'      => 'attachment',
+			'post_title'     => 'image-en',
+			'post_status'    => 'inherit',
+			'post_parent'    => $post_id,
+			'file'           => 'image.jpg',
 		);
 
 		if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
@@ -114,11 +114,11 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 
 		$args = array(
 			'post_mime_type' => 'image/jpeg',
-			'post_type' => 'attachment',
-			'post_title' => 'image-fr',
-			'post_status' => 'inherit',
-			'post_parent' => $post_id,
-			'file' => 'image.jpg',
+			'post_type'      => 'attachment',
+			'post_title'     => 'image-fr',
+			'post_status'    => 'inherit',
+			'post_parent'    => $post_id,
+			'file'           => 'image.jpg',
 		);
 
 		if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
@@ -137,9 +137,9 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 			0,
 			array(
 				'post_mime_type' => 'image/jpeg',
-				'post_type' => 'attachment',
-				'post_title' => 'image-en',
-				'post_status' => 'inherit',
+				'post_type'      => 'attachment',
+				'post_title'     => 'image-en',
+				'post_status'    => 'inherit',
 			)
 		);
 		self::$polylang->model->post->set_language( $attachment_id, 'en' );
@@ -150,9 +150,9 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 			0,
 			array(
 				'post_mime_type' => 'image/jpeg',
-				'post_type' => 'attachment',
-				'post_title' => 'image-fr',
-				'post_status' => 'inherit',
+				'post_type'      => 'attachment',
+				'post_title'     => 'image-fr',
+				'post_status'    => 'inherit',
 			)
 		);
 		self::$polylang->model->post->set_language( $attachment_id, 'fr' );
@@ -218,7 +218,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 
 		// Setup logo
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
-		$contents = file_get_contents( $filename );
+		$contents = file_get_contents( $filename ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$upload   = wp_upload_bits( basename( $filename ), null, $contents );
 		$custom_logo_url = $upload['url'];
 		$custom_logo_id  = $this->_make_attachment( $upload );

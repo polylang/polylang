@@ -190,7 +190,7 @@ class PLL_Frontend_Auto_Translate {
 			if ( ! empty( $qv[ $key ] ) ) {
 				// post__in used by the 2 functions below
 				// Useless to filter them as output is already in the right language and would result in performance loss
-				foreach ( debug_backtrace() as $trace ) {
+				foreach ( debug_backtrace() as $trace ) { // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					if ( in_array( $trace['function'], array( 'wp_nav_menu', 'gallery_shortcode' ) ) ) {
 						return;
 					}

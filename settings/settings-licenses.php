@@ -19,9 +19,9 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 		parent::__construct(
 			$polylang,
 			array(
-				'module'        => 'licenses',
-				'title'         => __( 'License keys', 'polylang' ),
-				'description'   => __( 'Manage licenses for Polylang Pro or addons.', 'polylang' ),
+				'module'      => 'licenses',
+				'title'       => __( 'License keys', 'polylang' ),
+				'description' => __( 'Manage licenses for Polylang Pro or addons.', 'polylang' ),
 			)
 		);
 
@@ -53,7 +53,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			<table id="pll-licenses-table" class="form-table">
 				<?php
 				foreach ( $this->items as $item ) {
-					echo $this->get_row( $item );
+					echo $this->get_row( $item ); // WCPS: XSS ok.
 				}
 				?>
 			</table>
@@ -187,10 +187,10 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			wp_die( -1 );
 		}
 
-		if ( $this->module === $_POST['module'] && ! empty( $_POST['licenses'] ) ) {
+		if ( isset( $_POST['module'] ) && $this->module === $_POST['module'] && ! empty( $_POST['licenses'] ) ) {
 			$x = new WP_Ajax_Response();
 			foreach ( $this->items as $item ) {
-				$updated_item = $item->activate_license( sanitize_text_field( $_POST['licenses'][ $item->id ] ) );
+				$updated_item = $item->activate_license( sanitize_key( $_POST['licenses'][ $item->id ] ) );
 				$x->Add( array( 'what' => 'license-update', 'data' => $item->id, 'supplemental' => array( 'html' => $this->get_row( $updated_item ) ) ) );
 			}
 
@@ -215,10 +215,14 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			wp_die( -1 );
 		}
 
-		$id = sanitize_text_field( substr( $_POST['id'], 11 ) );
+		if ( ! isset( $_POST['id'] ) ) {
+			wp_die( 0 );
+		}
+
+		$id = substr( sanitize_text_field( wp_unslash( $_POST['id'] ) ), 11 );
 		wp_send_json(
 			array(
-				'id' => $id,
+				'id'   => $id,
 				'html' => $this->get_row( $this->items[ $id ]->deactivate_license() ),
 			)
 		);

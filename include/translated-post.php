@@ -16,7 +16,8 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 */
 	public function __construct( &$model ) {
 		// init properties
-		$this->object_type = null;
+		$this->object_type = null; // For taxonomies
+		$this->type = 'post'; // For capabilities
 		$this->tax_language = 'language';
 		$this->tax_translations = 'post_translations';
 		$this->tax_tt = 'term_taxonomy_id';
@@ -145,5 +146,88 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		if ( ! empty( $query->query['post_type'] ) && $this->model->is_translated_post_type( $query->query['post_type'] ) ) {
 			$query->query_vars['update_post_term_cache'] = true;
 		}
+	}
+
+	/**
+	 * Checks if the current user can read the post
+	 *
+	 * @since 1.5
+	 *
+	 * @param int $post_id
+	 * @return bool
+	 */
+	public function current_user_can_read( $post_id ) {
+		$post = get_post( $post_id );
+
+		if ( 'inherit' === $post->post_status && $post->post_parent ) {
+			$post = get_post( $post->post_parent );
+		}
+
+		if ( 'inherit' === $post->post_status || in_array( $post->post_status, get_post_stati( array( 'public' => true ) ) ) ) {
+			return true;
+		}
+
+		// Follow WP practices, which shows links to private posts ( when readable ), but not for draft posts ( ex: get_adjacent_post_link() )
+		if ( in_array( $post->post_status, get_post_stati( array( 'private' => true ) ) ) ) {
+			$post_type_object = get_post_type_object( $post->post_type );
+			$user = wp_get_current_user();
+			return is_user_logged_in() && ( current_user_can( $post_type_object->cap->read_private_posts ) || $user->ID == $post->post_author ); // Comparison must not be strict!
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns a list of posts in a language ( $lang )
+	 * not translated in another language ( $untranslated_in )
+	 *
+	 * @since 2.6
+	 *
+	 * @param string $type            Post type
+	 * @param string $untranslated_in The posts must not be translated in this language
+	 * @param string $lang            Language of the search posts
+	 * @param string $search          Limit results to posts matching this string
+	 * @return array Array of posts
+	 */
+	public function get_untranslated( $type, $untranslated_in, $lang, $search = '' ) {
+		$return = array();
+
+		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
+		$args = array(
+			's'                => $search,
+			'suppress_filters' => 0, // To make the post_fields filter work
+			'lang'             => 0, // Avoid admin language filter
+			'numberposts'      => 20, // Limit to 20 posts
+			'post_status'      => 'any',
+			'post_type'        => $type,
+			'tax_query'        => array(
+				array(
+					'taxonomy' => 'language',
+					'field'    => 'term_taxonomy_id', // WP 3.5+
+					'terms'    => $lang->term_taxonomy_id,
+				),
+			),
+		);
+
+		/**
+		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox
+		 * This should help plugins to fix some edge cases
+		 *
+		 * @see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
+		 *
+		 * @since 1.7
+		 *
+		 * @param array $args WP_Query arguments
+		 */
+		$args  = apply_filters( 'pll_ajax_posts_not_translated_args', $args );
+		$posts = get_posts( $args );
+
+		foreach ( $posts as $post ) {
+			if ( ! $this->get_translation( $post->ID, $untranslated_in ) && $this->current_user_can_read( $post->ID ) ) {
+				$return[] = $post;
+			}
+		}
+
+		return $return;
 	}
 }

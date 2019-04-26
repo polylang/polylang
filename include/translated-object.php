@@ -7,7 +7,7 @@
  */
 abstract class PLL_Translated_Object {
 	public $model;
-	protected $object_type, $tax_language, $tax_translations, $tax_tt;
+	protected $object_type, $type, $tax_language, $tax_translations, $tax_tt;
 
 	/**
 	 * Constructor
@@ -271,5 +271,43 @@ abstract class PLL_Translated_Object {
 		global $wpdb;
 		$tt_id = $this->tax_tt;
 		return $wpdb->get_col( $wpdb->prepare( "SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $lang->$tt_id ) );
+	}
+
+	/**
+	 * Check if a user can synchronize translations
+	 *
+	 * @since 2.6
+	 *
+	 * @param int $id Object id
+	 * @return bool
+	 */
+	public function current_user_can_synchronize( $id ) {
+		/**
+		 * Filters whether a synchronization capability check should take place
+		 *
+		 * @since 2.6
+		 *
+		 * @param $check null to enable the capability check,
+		 *               true to always allow the synchronization,
+		 *               false to always disallow the synchronization.
+		 *               Defaults to true.
+		 * @param $id    The synchronization source object id
+		 */
+		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
+		if ( null !== $check ) {
+			return $check;
+		}
+
+		if ( ! current_user_can( "edit_{$this->type}", $id ) ) {
+			return false;
+		}
+
+		foreach ( $this->get_translations( $id ) as $tr_id ) {
+			if ( $tr_id !== $id && ! current_user_can( "edit_{$this->type}", $tr_id ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

@@ -7,6 +7,8 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
+	public $posts;
+
 	/**
 	 * Constructor: setups filters and actions
 	 *
@@ -17,6 +19,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
+		$this->posts = &$polylang->posts;
+
 		// Adds the language field and translations tables in the 'Edit Media' panel
 		add_filter( 'attachment_fields_to_edit', array( $this, 'attachment_fields_to_edit' ), 10, 2 );
 
@@ -24,7 +28,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		add_filter( 'attachment_fields_to_save', array( $this, 'save_media' ), 10, 2 );
 
 		// Creates a media translation
-		if ( isset( $_GET['action'], $_GET['new_lang'], $_GET['from_media'] ) && 'translate_media' === $_GET['action'] ) {
+		if ( isset( $_GET['action'], $_GET['new_lang'], $_GET['from_media'] ) && 'translate_media' === $_GET['action'] ) { // WPCS: CSRF ok.
 			add_action( 'admin_init', array( $this, 'translate_media' ) );
 		}
 	}
@@ -67,78 +71,26 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	/**
 	 * Creates a media translation
 	 *
-	 * @since 1.8
-	 *
-	 * @param int           $post_id
-	 * @param string|object $lang
-	 * @return int id of the translated media
-	 */
-	public function create_media_translation( $post_id, $lang ) {
-		$post = get_post( $post_id );
-
-		if ( empty( $post ) ) {
-			return $post;
-		}
-
-		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug
-
-		// Create a new attachment ( translate attachment parent if exists )
-		$post->ID = null; // Will force the creation
-		$post->post_parent = ( $post->post_parent && $tr_parent = $this->model->post->get_translation( $post->post_parent, $lang->slug ) ) ? $tr_parent : 0;
-		$post->tax_input = array( 'language' => array( $lang->slug ) ); // Assigns the language
-		$tr_id = wp_insert_attachment( $post );
-
-		// Copy metadata, attached file and alternative text
-		foreach ( array( '_wp_attachment_metadata', '_wp_attached_file', '_wp_attachment_image_alt' ) as $key ) {
-			if ( $meta = get_post_meta( $post_id, $key, true ) ) {
-				add_post_meta( $tr_id, $key, $meta );
-			}
-		}
-
-		$this->model->post->set_language( $tr_id, $lang );
-
-		$translations = $this->model->post->get_translations( $post_id );
-		if ( ! $translations && $src_lang = $this->model->post->get_language( $post_id ) ) {
-			$translations[ $src_lang->slug ] = $post_id;
-		}
-
-		$translations[ $lang->slug ] = $tr_id;
-		$this->model->post->save_translations( $tr_id, $translations );
-
-		/**
-		 * Fires after a media translation is created
-		 *
-		 * @since 1.6.4
-		 *
-		 * @param int    $post_id post id of the source media
-		 * @param int    $tr_id   post id of the new media translation
-		 * @param string $slug    language code of the new translation
-		 */
-		do_action( 'pll_translate_media', $post_id, $tr_id, $lang->slug );
-		return $tr_id;
-	}
-
-	/**
-	 * Creates a media translation
-	 *
 	 * @since 0.9
 	 */
 	public function translate_media() {
-		// Security check
-		check_admin_referer( 'translate_media' );
-		$post_id = (int) $_GET['from_media'];
+		if ( isset( $_GET['from_media'], $_GET['new_lang'] ) ) {
+			// Security check
+			check_admin_referer( 'translate_media' );
+			$post_id = (int) $_GET['from_media'];
 
-		// Bails if the translations already exists
-		// See https://wordpress.org/support/topic/edit-translation-in-media-attachments?#post-7322303
-		// Or if the source media does not exist
-		if ( $this->model->post->get_translation( $post_id, $_GET['new_lang'] ) || ! get_post( $post_id ) ) {
-			wp_safe_redirect( wp_get_referer() );
+			// Bails if the translations already exists
+			// See https://wordpress.org/support/topic/edit-translation-in-media-attachments?#post-7322303
+			// Or if the source media does not exist
+			if ( $this->model->post->get_translation( $post_id, sanitize_key( $_GET['new_lang'] ) ) || ! get_post( $post_id ) ) {
+				wp_safe_redirect( wp_get_referer() );
+				exit;
+			}
+
+			$tr_id = $this->posts->create_media_translation( $post_id, sanitize_key( $_GET['new_lang'] ) );
+			wp_safe_redirect( admin_url( sprintf( 'post.php?post=%d&action=edit', $tr_id ) ) ); // WP 3.5+
 			exit;
 		}
-
-		$tr_id = $this->create_media_translation( $post_id, $_GET['new_lang'] );
-		wp_safe_redirect( admin_url( sprintf( 'post.php?post=%d&action=edit', $tr_id ) ) ); // WP 3.5+
-		exit;
 	}
 
 	/**
@@ -158,8 +110,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			$this->model->post->set_language( $post['ID'], $attachment['language'] );
 		}
 
-		if ( isset( $_POST['media_tr_lang'] ) ) {
-			$this->save_translations( $post['ID'], $_POST['media_tr_lang'] );
+		if ( isset( $_POST['media_tr_lang'] ) ) { // WPCS: CSRF ok.
+			$this->save_translations( $post['ID'], array_map( 'absint', $_POST['media_tr_lang'] ) ); // WPCS: CSRF ok.
 		}
 
 		return $post;

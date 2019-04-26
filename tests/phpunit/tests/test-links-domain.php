@@ -32,10 +32,10 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 	}
 
 	function test_login_url() {
-		$_SERVER['HTTP_HOST'] = parse_url( $this->hosts['en'], PHP_URL_HOST );
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['en'], PHP_URL_HOST );
 		$this->assertEquals( $this->hosts['en'] . '/wp-login.php', wp_login_url() );
 
-		$_SERVER['HTTP_HOST'] = parse_url( $this->hosts['fr'], PHP_URL_HOST );
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['fr'], PHP_URL_HOST );
 		$this->assertEquals( $this->hosts['fr'] . '/wp-login.php', wp_login_url() );
 	}
 

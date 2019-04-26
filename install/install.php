@@ -29,7 +29,7 @@ class PLL_Install extends PLL_Install_Base {
 						/* translators: %1$s and %2$s are WordPress version numbers */
 						esc_html__( 'You are using WordPress %1$s. Polylang requires at least WordPress %2$s.', 'polylang' ),
 						esc_html( $wp_version ),
-						PLL_MIN_WP_VERSION
+						PLL_MIN_WP_VERSION // phpcs:ignore WordPress.Security.EscapeOutput
 					)
 				)
 			);

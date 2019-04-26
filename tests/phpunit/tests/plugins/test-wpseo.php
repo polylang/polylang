@@ -56,7 +56,9 @@ if ( file_exists( $_tests_dir . '/../wordpress-seo/wp-seo.php' ) ) {
 
 			_wpseo_activate();
 			$GLOBALS['wpseo_sitemaps'] = new WPSEO_Sitemaps();
-			add_action( 'pll_language_defined', array( new PLL_WPSEO(), 'init' ) ); // Load the compatibility layer
+			$this->pll_seo = new PLL_WPSEO();
+			add_action( 'pll_init', array( $this->pll_seo, 'init' ) ); // Load the compatibility layer
+			WPSEO_Frontend::get_instance();
 
 			self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 			self::$polylang->init();
@@ -101,8 +103,11 @@ if ( file_exists( $_tests_dir . '/../wordpress-seo/wp-seo.php' ) ) {
 			$fr = $this->factory->post->create();
 			self::$polylang->model->post->set_language( $fr, 'fr' );
 
+			do_action_ref_array( 'pll_init', array( &self::$polylang ) );
+
 			$sm = new WPSEO_Sitemaps_Double();
 			set_query_var( 'sitemap', 'post' );
+			$this->pll_seo->before_sitemap(); // Need a direct call as we don't fire the 'pre_get_posts' filter
 
 			ob_start();
 			$sm->redirect( $GLOBALS['wp_the_query'] );
@@ -133,6 +138,8 @@ if ( file_exists( $_tests_dir . '/../wordpress-seo/wp-seo.php' ) ) {
 			$post_id = $this->factory->post->create();
 			self::$polylang->model->post->set_language( $post_id, 'fr' );
 			wp_set_post_terms( $post_id, array( $fr ), 'category' );
+
+			do_action_ref_array( 'pll_init', array( &self::$polylang ) );
 
 			$sm = new WPSEO_Sitemaps_Double();
 			set_query_var( 'sitemap', 'category' );

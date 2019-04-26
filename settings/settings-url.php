@@ -40,7 +40,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="force_lang" type="radio" value="0" %s /> %s',
-				$this->options['force_lang'] ? '' : 'checked="checked"',
+				checked( $this->options['force_lang'], 0, false ),
 				esc_html__( 'The language is set from content', 'polylang' )
 			);
 			?>
@@ -50,8 +50,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="force_lang" type="radio" value="1" %s/> %s',
-				1 == $this->options['force_lang'] ? 'checked="checked"' : '',
-				$this->links_model->using_permalinks ? esc_html__( 'The language is set from the directory name in pretty permalinks', 'polylang' ) : esc_html__( 'The language is set from the code in the URL', 'polylang' )
+				checked( $this->options['force_lang'], 1, false ),
+				( $this->links_model->using_permalinks ? esc_html__( 'The language is set from the directory name in pretty permalinks', 'polylang' ) : esc_html__( 'The language is set from the code in the URL', 'polylang' ) )
 			);
 			?>
 		</label>
@@ -60,8 +60,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="force_lang" type="radio" value="2" %s %s/> %s',
-				$this->links_model->using_permalinks ? '' : 'disabled="disabled"',
-				2 == $this->options['force_lang'] ? 'checked="checked"' : '',
+				disabled( $this->links_model->using_permalinks, false, false ),
+				checked( $this->options['force_lang'], 2, false ),
 				esc_html__( 'The language is set from the subdomain name in pretty permalinks', 'polylang' )
 			);
 			?>
@@ -71,8 +71,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="force_lang" type="radio" value="3" %s %s/> %s',
-				$this->links_model->using_permalinks ? '' : 'disabled="disabled"',
-				3 == $this->options['force_lang'] ? 'checked="checked"' : '',
+				disabled( $this->links_model->using_permalinks, false, false ),
+				checked( $this->options['force_lang'], 3, false ),
 				esc_html__( 'The language is set from different domains', 'polylang' )
 			);
 			?>
@@ -80,12 +80,13 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 		<table id="pll-domains-table" class="form-table" <?php echo 3 == $this->options['force_lang'] ? '' : 'style="display: none;"'; ?>>
 			<?php
 			foreach ( $this->model->get_languages_list() as  $lg ) {
+				$url = isset( $this->options['domains'][ $lg->slug ] ) ? $this->options['domains'][ $lg->slug ] : ( $lg->slug == $this->options['default_lang'] ? $this->links_model->home : '' );
 				printf(
 					'<tr><td><label for="pll-domain[%1$s]">%2$s</label></td>' .
 					'<td><input name="domains[%1$s]" id="pll-domain[%1$s]" type="text" value="%3$s" class="regular-text code" aria-required="true" /></td></tr>',
 					esc_attr( $lg->slug ),
 					esc_attr( $lg->name ),
-					esc_url( isset( $this->options['domains'][ $lg->slug ] ) ? $this->options['domains'][ $lg->slug ] : ( $lg->slug == $this->options['default_lang'] ? $this->links_model->home : '' ) )
+					esc_url( $url )
 				);
 			}
 			?>
@@ -104,7 +105,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="hide_default" type="checkbox" value="1" %s /> %s',
-				$this->options['hide_default'] ? 'checked="checked"' : '',
+				checked( $this->options['hide_default'], 1, false ),
 				esc_html__( 'Hide URL language information for default language', 'polylang' )
 			);
 			?>
@@ -123,8 +124,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="rewrite" type="radio" value="1" %s %s/> %s',
-				$this->links_model->using_permalinks ? '' : 'disabled="disabled"',
-				$this->options['rewrite'] ? 'checked="checked"' : '',
+				disabled( $this->links_model->using_permalinks, false, false ),
+				checked( $this->options['rewrite'], 1, false ),
 				esc_html__( 'Remove /language/ in pretty permalinks', 'polylang' )
 			);
 			?>
@@ -134,8 +135,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="rewrite" type="radio" value="0" %s %s/> %s',
-				$this->links_model->using_permalinks ? '' : 'disabled="disabled"',
-				$this->options['rewrite'] ? '' : 'checked="checked"',
+				disabled( $this->links_model->using_permalinks, false, false ),
+				checked( $this->options['rewrite'], 0, false ),
 				esc_html__( 'Keep /language/ in pretty permalinks', 'polylang' )
 			);
 			?>
@@ -155,7 +156,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="redirect_lang" type="checkbox" value="1" %s/> %s',
-				$this->options['redirect_lang'] ? 'checked="checked"' : '',
+				checked( $this->options['redirect_lang'], 1, false ),
 				esc_html__( 'The front page url contains the language code instead of the page name or page id', 'polylang' )
 			);
 			?>

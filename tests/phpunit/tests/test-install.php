@@ -46,7 +46,6 @@ class Install_Test extends PLL_UnitTestCase {
 
 		// User metas
 		update_user_meta( 1, 'pll_filter_content', 'en' );
-		update_user_meta( 1, 'pll_duplicate_content', array( 'post' => true ) );
 		update_user_meta( 1, 'description_fr', 'Biographie' );
 
 		// A menu with a language switcher
@@ -68,7 +67,8 @@ class Install_Test extends PLL_UnitTestCase {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
 
-		include dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php';
+		include_once dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php';
+		new PLL_Uninstall();
 
 		// Option Uninstall = false => nothing deleted
 		$options = get_option( 'polylang' );
@@ -102,7 +102,6 @@ class Install_Test extends PLL_UnitTestCase {
 
 		// Users metas
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='pll_filter_content'" ) );
-		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='pll_duplicate_content'" ) );
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='description_fr'" ) );
 
 		// Language switcher menu items

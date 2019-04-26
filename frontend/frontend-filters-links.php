@@ -269,7 +269,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			);
 		}
 
-		$traces = version_compare( PHP_VERSION, '5.2.5', '>=' ) ? debug_backtrace( false ) : debug_backtrace();
+		$traces = version_compare( PHP_VERSION, '5.2.5', '>=' ) ? debug_backtrace( false ) : debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		unset( $traces[0], $traces[1] ); // We don't need the last 2 calls: this function + call_user_func_array (or apply_filters on PHP7+)
 
 		foreach ( $traces as $trace ) {
@@ -323,7 +323,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		// Don't redirect mysite.com/?attachment_id= to mysite.com/en/?attachment_id=
-		if ( 1 == $this->options['force_lang'] && is_attachment() && isset( $_GET['attachment_id'] ) ) {
+		if ( 1 == $this->options['force_lang'] && is_attachment() && isset( $_GET['attachment_id'] ) ) { // WPCS: CSRF ok.
 			return;
 		}
 
@@ -334,7 +334,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		if ( empty( $requested_url ) ) {
-			$requested_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$requested_url = pll_get_requested_url();
 		}
 
 		if ( is_single() || is_page() ) {
@@ -345,7 +345,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		elseif ( is_category() || is_tag() || is_tax() ) {
 			$obj = $wp_query->get_queried_object();
-			if ( $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
+			if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
 				$language = $this->model->term->get_language( (int) $obj->term_id );
 			}
 		}
@@ -362,11 +362,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		if ( 3 === $this->options['force_lang'] ) {
+			$requested_host = wp_parse_url( $requested_url, PHP_URL_HOST );
 			foreach ( $this->options['domains'] as $lang => $domain ) {
-				$host = parse_url( $domain, PHP_URL_HOST );
-				if ( 'www.' . $_SERVER['HTTP_HOST'] === $host || 'www.' . $host === $_SERVER['HTTP_HOST'] ) {
+				$host = wp_parse_url( $domain, PHP_URL_HOST );
+				if ( 'www.' . $requested_host === $host || 'www.' . $host === $requested_host ) {
 					$language = $this->model->get_language( $lang );
-					$redirect_url = str_replace( '://' . $_SERVER['HTTP_HOST'], '://' . $host, $requested_url );
+					$redirect_url = str_replace( '://' . $requested_host, '://' . $host, $requested_url );
 				}
 			}
 		}
@@ -398,7 +399,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		// The language is not correctly set so let's redirect to the correct url for this object
 		if ( $do_redirect && $redirect_url && $requested_url != $redirect_url ) {
-			wp_redirect( $redirect_url, 301, POLYLANG );
+			wp_safe_redirect( $redirect_url, 301, POLYLANG );
 			exit;
 		}
 

@@ -19,7 +19,7 @@ class PLL_Jetpack {
 		add_filter( 'jetpack_relatedposts_filter_filters', array( $this, 'jetpack_relatedposts_filter_filters' ), 10, 2 );
 
 		// Jetpack infinite scroll
-		if ( isset( $_GET['infinity'], $_POST['action'] ) && 'infinite_scroll' == $_POST['action'] ) {
+		if ( isset( $_GET['infinity'], $_POST['action'] ) && 'infinite_scroll' == $_POST['action'] ) { // WPCS: CSRF ok.
 			add_filter( 'pll_is_ajax_on_front', '__return_true' );
 		}
 	}
@@ -131,7 +131,7 @@ class PLL_Jetpack {
 	 * @return array
 	 */
 	public function jetpack_infinite_scroll_js_settings( $settings ) {
-		$settings['history']['host'] = parse_url( pll_home_url(), PHP_URL_HOST ); // Jetpack uses get_option( 'home' )
+		$settings['history']['host'] = wp_parse_url( pll_home_url(), PHP_URL_HOST ); // Jetpack uses get_option( 'home' )
 		return $settings;
 	}
 }

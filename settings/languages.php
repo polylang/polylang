@@ -190,6 +190,14 @@ $languages = array(
 		'flag'     => 'dk',
 		'facebook' => 'da_DK',
 	),
+	'de_AT' => array(
+		'code'     => 'de',
+		'locale'   => 'de_AT',
+		'name'     => 'Deutsch',
+		'dir'      => 'ltr',
+		'flag'     => 'at',
+		'facebook' => 'de_DE',
+	),
 	'de_CH' => array(
 		'code'     => 'de',
 		'locale'   => 'de_CH',
@@ -883,6 +891,13 @@ $languages = array(
 		'dir'      => 'ltr',
 		'flag'     => 'sk',
 		'facebook' => 'sk_SK',
+	),
+	'skr' => array(
+		'code'     => 'skr',
+		'locale'   => 'skr',
+		'name'     => 'سرائیکی',
+		'dir'      => 'rtl',
+		'flag'     => 'pk',
 	),
 	'sl_SI' => array(
 		'code'     => 'sl',

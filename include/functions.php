@@ -102,3 +102,20 @@ function pll_is_cache_active() {
 	 */
 	return apply_filters( 'pll_is_cache_active', ( defined( 'WP_CACHE' ) && WP_CACHE ) || defined( 'WPFC_MAIN_PATH' ) );
 }
+
+/**
+ * Get the the current requested url
+ *
+ * @since 2.6
+ *
+ * @return string Requested url
+ */
+function pll_get_requested_url() {
+	$url = '';
+
+	if ( isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) ) {
+		$url = set_url_scheme( esc_url_raw( wp_unslash( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) ) );
+	}
+
+	return $url;
+}

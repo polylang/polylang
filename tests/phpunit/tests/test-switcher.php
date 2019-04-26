@@ -62,10 +62,10 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$args = array_merge(
 			$args,
 			array(
-				'force_home' => 1,
-				'hide_current' => 1,
+				'force_home'             => 1,
+				'hide_current'           => 1,
 				'hide_if_no_translation' => 1,
-				'display_names_as' => 'slug',
+				'display_names_as'       => 'slug',
 			)
 		);
 		$arr = $this->switcher->the_languages( self::$polylang->links, $args );
@@ -78,7 +78,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 		// Post_id
 		$args = array(
-			'raw' => 1,
+			'raw'     => 1,
 			'post_id' => $en,
 		);
 		$arr = $this->switcher->the_languages( self::$polylang->links, $args );
