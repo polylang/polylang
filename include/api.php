@@ -37,10 +37,13 @@ function pll_the_languages( $args = '' ) {
  *
  * @since 0.8.1
  *
- * @param string $field Optional, the language field to return ( see PLL_Language ), defaults to 'slug'
- * @return string|bool The requested field for the current language
+ * @param string $field Optional, the language field to return ( see PLL_Language ), defaults to 'slug', pass 'object' to get the language object.
+ * @return string|PLL_Language|bool The requested field for the current language
  */
 function pll_current_language( $field = 'slug' ) {
+	if ( 'object' === $field ) {
+		return PLL()->curlang;
+	}
 	return isset( PLL()->curlang->$field ) ? PLL()->curlang->$field : false;
 }
 
