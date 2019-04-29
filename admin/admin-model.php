@@ -292,7 +292,15 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Validate flag
 		if ( ! empty( $args['flag'] ) && ! file_exists( POLYLANG_DIR . '/flags/' . $args['flag'] . '.png' ) ) {
-			$errors->add( 'pll_invalid_flag', __( 'The flag does not exist', 'polylang' ) );
+			$flag = PLL_Language::get_flag_informations( $args['flag'] );
+
+			if ( ! empty( $flag['url'] ) ) {
+				$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $flag['url'] ) ) : wp_remote_get( esc_url_raw( $flag['url'] ) );
+			}
+
+			if ( empty( $response ) || is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+				$errors->add( 'pll_invalid_flag', __( 'The flag does not exist', 'polylang' ) );
+			}
 		}
 
 		return $errors;

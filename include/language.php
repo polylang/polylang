@@ -90,16 +90,23 @@ class PLL_Language {
 	}
 
 	/**
-	 * Sets flag_url and flag properties
+	 * Get the flag informations
+	 * 'url'    => Flag url
+	 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded
+	 * 'width'  => Optional, flag width in pixels
+	 * 'height' => Optional, flag height in pixels
 	 *
-	 * @since 1.2
+	 * @since 2.6
+	 *
+	 * @param string $code Flag code.
+	 * @return array Flag informations.
 	 */
-	public function set_flag() {
-		$flags['flag']['url'] = '';
+	public static function get_flag_informations( $code ) {
+		$flag['url'] = '';
 
 		// Polylang builtin flags
-		if ( ! empty( $this->flag_code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $this->flag_code . '.png' ) ) ) {
-			$flags['flag']['url'] = $_url = plugins_url( $file, POLYLANG_FILE );
+		if ( ! empty( $code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
+			$flag['url'] = $_url = plugins_url( $file, POLYLANG_FILE );
 		}
 
 		/**
@@ -114,20 +121,31 @@ class PLL_Language {
 		 * @param array  $flag Information about the flag
 		 * @param string $code Flag code
 		 */
-		$flags['flag'] = apply_filters( 'pll_flag', $flags['flag'], $this->flag_code );
+		$flag = apply_filters( 'pll_flag', $flag, $code );
 
-		if ( empty( $flags['flag']['src'] ) ) {
+		if ( empty( $flag['src'] ) ) {
 			// If using predefined flags and base64 encoded flags are preferred
-			if ( isset( $_url ) && $flags['flag']['url'] === $_url && ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) ) {
-				list( $flags['flag']['width'], $flags['flag']['height'] ) = getimagesize( POLYLANG_DIR . $file );
+			if ( isset( $_url ) && $flag['url'] === $_url && ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) ) {
+				list( $flag['width'], $flag['height'] ) = getimagesize( POLYLANG_DIR . $file );
 				$file_contents = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-				$flags['flag']['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+				$flag['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			} else {
-				$flags['flag']['src'] = esc_url( set_url_scheme( $flags['flag']['url'], 'relative' ) );
+				$flag['src'] = esc_url( set_url_scheme( $flag['url'], 'relative' ) );
 			}
 		}
 
-		$flags['flag']['url'] = esc_url_raw( $flags['flag']['url'] );
+		$flag['url'] = esc_url_raw( $flag['url'] );
+
+		return $flag;
+	}
+
+	/**
+	 * Sets flag_url and flag properties
+	 *
+	 * @since 1.2
+	 */
+	public function set_flag() {
+		$flags['flag'] = self::get_flag_informations( $this->flag_code );
 
 		// Custom flags ?
 		$directories = array(
