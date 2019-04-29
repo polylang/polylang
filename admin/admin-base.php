@@ -369,16 +369,27 @@ class PLL_Admin_Base extends PLL_Base {
 			esc_html( $selected->name )
 		);
 
-		$wp_admin_bar->add_menu(
-			array(
-				'id'    => 'languages',
-				'title' => $selected->flag . $title,
-				'href'  => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
-				'meta'  => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
-			)
-		);
+		/**
+		 * Filters the admin languages filter submenu items
+		 *
+		 * @since 2.6
+		 *
+		 * @param array $items The admin languages filter submenu items.
+		 */
+		$items = apply_filters( 'pll_admin_languages_filter', array_merge( array( $all_item ), $this->model->get_languages_list() ) );
 
-		foreach ( array_merge( array( $all_item ), $this->model->get_languages_list() ) as $lang ) {
+		if ( ! empty( $items ) ) {
+			$wp_admin_bar->add_menu(
+				array(
+					'id'    => 'languages',
+					'title' => $selected->flag . $title,
+					'href'  => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
+					'meta'  => array( 'title' => __( 'Filters content by language', 'polylang' ) ),
+				)
+			);
+		}
+
+		foreach ( $items as $lang ) {
 			if ( $selected->slug === $lang->slug ) {
 				continue;
 			}
