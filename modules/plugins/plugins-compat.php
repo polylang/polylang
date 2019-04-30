@@ -114,6 +114,16 @@ class PLL_Plugins_Compat {
 		if ( ( defined( 'AC_FILE' ) || defined( 'ACP_FILE' ) ) && class_exists( 'PLL_CPAC' ) ) {
 			add_action( 'admin_init', array( $this->cpac = new PLL_CPAC(), 'init' ) );
 		}
+
+		// WP Offload Media Lite
+		if ( function_exists( 'as3cf_init' ) && class_exists( 'PLL_AS3CF' ) ) {
+			add_action( 'pll_init', array( $this->as3cf = new PLL_AS3CF(), 'init' ) );
+		}
+
+		// Content Blocks (Custom Post Widget)
+		if ( function_exists( 'custom_post_widget_plugin_init' ) && class_exists( 'PLL_Content_Blocks' ) ) {
+			add_action( 'pll_init', array( $this->content_blocks = new PLL_Content_Blocks(), 'init' ) );
+		}
 	}
 
 	/**
