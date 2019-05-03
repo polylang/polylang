@@ -135,9 +135,17 @@ class PLL_Admin_Base extends PLL_Base {
 		);
 
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
-			$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-autocomplete' ), 0, 1 );
+			// Legacy metabox.
+			if ( ! pll_use_block_editor_plugin() ) {
+				$scripts['metabox'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 );
+			}
 
-			// Block editor with legacy metabox in WP 5.0+
+			// Classic editor.
+			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
+				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post' ), 0, 1 );
+			}
+
+			// Block editor with legacy metabox in WP 5.0+.
 			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin() ) {
 				$scripts['block-editor'] = array( array( 'post' ), array( 'wp-api-fetch' ), 0, 1 );
 			}
@@ -148,9 +156,6 @@ class PLL_Admin_Base extends PLL_Base {
 				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/' . $script . $suffix . '.js', POLYLANG_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
 			}
 		}
-
-		$confirm = __( 'You are about to overwrite an existing translation. Are you sure?', 'polylang' );
-		wp_localize_script( 'pll_classic-editor', 'confirm_text', $confirm );
 
 		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
 
@@ -176,6 +181,11 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 2.4.0
 	 */
 	public function localize_scripts() {
+		if ( wp_script_is( 'pll_metabox', 'enqueued' ) ) {
+			$confirm = __( 'You are about to overwrite an existing translation. Are you sure?', 'polylang' );
+			wp_localize_script( 'pll_metabox', 'confirm_text', $confirm );
+		}
+
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
 			wp_localize_script(
 				'pll_widgets',
