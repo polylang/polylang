@@ -6,8 +6,6 @@
 		<exclude name="Generic.Classes.DuplicateClassName.Found"/>
 		<exclude name="Generic.Commenting.Fixme.TaskFound"/>
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
-		<exclude name="PEAR.Files.IncludingFile.UseIncludeOnce"/>
-		<exclude name="PEAR.Files.IncludingFile.UseRequire"/>
 		<exclude name="PSR2.Classes.PropertyDeclaration.Multiple"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
 		<exclude name="Squiz.Commenting.FileComment.Missing"/>
