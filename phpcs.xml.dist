@@ -39,7 +39,6 @@
 		<exclude name="WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode" />
 		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
 		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
-		<exclude name="WordPress.WP.AlternativeFunctions.strip_tags_strip_tags" />
 		<exclude name="WordPress.WP.EnqueuedResources.NonEnqueuedScript" />
 		<exclude name="WordPress.WP.EnqueuedResourceParameters.NotInFooter" />
 		<exclude name="WordPress.WP.GlobalVariablesOverride.Prohibited" />
