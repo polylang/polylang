@@ -129,7 +129,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		if ( ! doing_action( 'pre_delete_term' ) && $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( * ) FROM $wpdb->terms WHERE term_id = %d;", $id ) ) ) {
 			// Always keep a group for terms to allow relationships remap when importing from a WXR file
 			$translations[ $slug ] = $id;
-			wp_insert_term( $group = uniqid( 'pll_' ), 'term_translations', array( 'description' => serialize( $translations ) ) );
+			wp_insert_term( $group = uniqid( 'pll_' ), 'term_translations', array( 'description' => maybe_serialize( $translations ) ) );
 			wp_set_object_terms( $id, $group, 'term_translations' );
 		}
 	}

@@ -470,7 +470,7 @@ class PLL_Model {
 			$q['post_type'] = array( 'post' ); // we *need* a post type
 		}
 
-		$cache_key = md5( serialize( $q ) );
+		$cache_key = md5( maybe_serialize( $q ) );
 		$counts = wp_cache_get( $cache_key, 'pll_count_posts' );
 
 		if ( false === $counts ) {

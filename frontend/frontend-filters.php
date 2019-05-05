@@ -167,7 +167,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			return $sidebars_widgets;
 		}
 
-		$cache_key         = md5( serialize( $sidebars_widgets ) );
+		$cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
 		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$cache_key}" );
 
 		if ( false !== $_sidebars_widgets ) {

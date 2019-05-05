@@ -34,7 +34,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// First the language taxonomy
-		$description = serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
+		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
 		$r = wp_insert_term( $args['name'], 'language', array( 'slug' => $args['slug'], 'description' => $description ) );
 		if ( is_wp_error( $r ) ) {
 			// Avoid an ugly fatal error if something went wrong ( reported once in the forum )
@@ -235,7 +235,7 @@ class PLL_Admin_Model extends PLL_Model {
 		update_option( 'polylang', $this->options );
 
 		// And finally update the language itself
-		$description = serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
+		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
 		wp_update_term( (int) $lang->term_id, 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
 		wp_update_term( (int) $lang->tl_term_id, 'term_language', array( 'slug' => 'pll_' . $slug, 'name' => $args['name'] ) );
 
@@ -364,7 +364,7 @@ class PLL_Admin_Model extends PLL_Model {
 			$term = uniqid( 'pll_' ); // the term name
 			$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
 			$slugs[] = $wpdb->prepare( '%s', $term );
-			$description[ $term ] = serialize( $t );
+			$description[ $term ] = maybe_serialize( $t );
 			$count[ $term ] = count( $t );
 		}
 
@@ -395,7 +395,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Prepare objects relationships
 		foreach ( $terms as $term ) {
-			$t = unserialize( $term->description );
+			$t = maybe_unserialize( $term->description );
 			if ( in_array( $t, $translations ) ) {
 				foreach ( $t as $object_id ) {
 					if ( ! empty( $object_id ) ) {
@@ -496,7 +496,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		foreach ( $terms as $term ) {
 			$term_ids[ $term->taxonomy ][] = $term->term_id;
-			$tr = unserialize( $term->description );
+			$tr = maybe_unserialize( $term->description );
 			if ( ! empty( $tr[ $old_slug ] ) ) {
 				if ( $new_slug ) {
 					$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
@@ -510,7 +510,7 @@ class PLL_Admin_Model extends PLL_Model {
 					$dt['t'][] = (int) $term->term_id;
 					$dt['tt'][] = (int) $term->term_taxonomy_id;
 				} else {
-					$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, serialize( $tr ) );
+					$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $tr ) );
 					$ut['in'][] = (int) $term->term_id;
 				}
 			}

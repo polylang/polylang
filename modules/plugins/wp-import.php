@@ -89,7 +89,7 @@ class PLL_WP_Import extends WP_Import {
 			$lang_id = (int) substr( $post['post_title'], 12 );
 
 			if ( ! empty( $this->processed_terms[ $lang_id ] ) ) {
-				if ( $strings = unserialize( $post['post_content'] ) ) {
+				if ( $strings = maybe_unserialize( $post['post_content'] ) ) {
 					$mo = new PLL_MO();
 					$mo->import_from_db( $this->processed_terms[ $lang_id ] );
 					foreach ( $strings as $msg ) {
@@ -114,7 +114,7 @@ class PLL_WP_Import extends WP_Import {
 		global $wpdb;
 
 		foreach ( $terms as $term ) {
-			$translations = unserialize( $term['term_description'] );
+			$translations = maybe_unserialize( $term['term_description'] );
 			foreach ( $translations as $slug => $old_id ) {
 				if ( $old_id && ! empty( $this->processed_terms[ $old_id ] ) && $lang = PLL()->model->get_language( $slug ) ) {
 					// Language relationship
@@ -162,7 +162,7 @@ class PLL_WP_Import extends WP_Import {
 		global $wpdb;
 
 		foreach ( $terms as $term ) {
-			$translations = unserialize( $term['term_description'] );
+			$translations = maybe_unserialize( $term['term_description'] );
 			$new_translations = array();
 
 			foreach ( $translations as $slug => $old_id ) {
@@ -172,7 +172,7 @@ class PLL_WP_Import extends WP_Import {
 			}
 
 			if ( ! empty( $new_translations ) ) {
-				$u['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $this->processed_terms[ $term['term_id'] ], serialize( $new_translations ) );
+				$u['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $this->processed_terms[ $term['term_id'] ], maybe_serialize( $new_translations ) );
 				$u['in'][] = (int) $this->processed_terms[ $term['term_id'] ];
 			}
 		}

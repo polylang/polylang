@@ -184,7 +184,7 @@ class PLL_Upgrade {
 		foreach ( $languages as $lang ) {
 			// First update language with new storage for locale and text direction
 			$text_direction = get_metadata( 'term', $lang->term_id, '_rtl', true );
-			$desc = serialize( array( 'locale' => $lang->description, 'rtl' => $text_direction ) );
+			$desc = maybe_serialize( array( 'locale' => $lang->description, 'rtl' => $text_direction ) );
 			wp_update_term( (int) $lang->term_id, 'language', array( 'description' => $desc ) );
 
 			// Add language to new 'term_language' taxonomy
@@ -223,8 +223,8 @@ class PLL_Upgrade {
 				$term = uniqid( 'pll_' ); // The term name
 				$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
 				$slugs[] = $wpdb->prepare( '%s', $term );
-				$translations = maybe_unserialize( maybe_unserialize( $obj ) ); // 2 unserialize due to an old storage bug
-				$description[ $term ] = serialize( $translations );
+				$translations = maybe_unserialize( maybe_unserialize( $obj ) ); // 2 maybe_unserialize due to an old storage bug
+				$description[ $term ] = maybe_serialize( $translations );
 			}
 
 			$terms = array_unique( $terms );
@@ -257,7 +257,7 @@ class PLL_Upgrade {
 
 			// Prepare objects relationships
 			foreach ( $terms as $term ) {
-				$translations = unserialize( $term->description );
+				$translations = maybe_unserialize( $term->description );
 				foreach ( $translations as $object_id ) {
 					if ( ! empty( $object_id ) ) {
 						$trs[] = $wpdb->prepare( '( %d, %d )', $object_id, $term->term_taxonomy_id );
@@ -557,7 +557,7 @@ class PLL_Upgrade {
 			$description = maybe_unserialize( $lang->description );
 			if ( isset( $languages[ $description['locale'] ] ) ) {
 				$description['flag_code'] = $languages[ $description['locale'] ]['flag'];
-				$description = serialize( $description );
+				$description = maybe_serialize( $description );
 				wp_update_term( (int) $lang->term_id, 'language', array( 'description' => $description ) );
 			}
 		}
@@ -589,7 +589,7 @@ class PLL_Upgrade {
 
 			if ( empty( $meta ) ) {
 				$post = get_post( $mo_id, OBJECT );
-				$strings = unserialize( $post->post_content );
+				$strings = maybe_unserialize( $post->post_content );
 				if ( is_array( $strings ) ) {
 					update_post_meta( $mo_id, '_pll_strings_translations', $strings );
 				}

@@ -184,7 +184,7 @@ class PLL_Plugins_Compat {
 				$description = maybe_unserialize( $term['term_description'] );
 				if ( empty( $description['flag_code'] ) && isset( $languages[ $description['locale'] ] ) ) {
 					$description['flag_code'] = $languages[ $description['locale'] ]['flag'];
-					$terms[ $key ]['term_description'] = serialize( $description );
+					$terms[ $key ]['term_description'] = maybe_serialize( $description );
 				}
 			}
 		}

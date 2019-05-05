@@ -115,14 +115,14 @@ abstract class PLL_Translated_Object {
 
 				// create a new term if necessary
 				if ( empty( $term ) ) {
-					wp_insert_term( $group = uniqid( 'pll_' ), $this->tax_translations, array( 'description' => serialize( $translations ) ) );
+					wp_insert_term( $group = uniqid( 'pll_' ), $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
 				}
 				else {
 					// take care not to overwrite extra data stored in description field, if any
-					$d = unserialize( $term->description );
+					$d = maybe_unserialize( $term->description );
 					$d = is_array( $d ) ? array_diff_key( $d, $old_translations ) : array(); // remove old translations
 					$d = array_merge( $d, $translations ); // add new one
-					wp_update_term( $group = (int) $term->term_id, $this->tax_translations, array( 'description' => serialize( $d ) ) );
+					wp_update_term( $group = (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $d ) ) );
 				}
 
 				// link all translations to the new term
@@ -153,7 +153,7 @@ abstract class PLL_Translated_Object {
 		$term = $this->get_object_term( $id, $this->tax_translations );
 
 		if ( ! empty( $term ) ) {
-			$d = unserialize( $term->description );
+			$d = maybe_unserialize( $term->description );
 			$slug = array_search( $id, $this->get_translations( $id ) ); // in case some plugin stores the same value with different key
 			unset( $d[ $slug ] );
 
@@ -161,7 +161,7 @@ abstract class PLL_Translated_Object {
 				wp_delete_term( (int) $term->term_id, $this->tax_translations );
 			}
 			else {
-				wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => serialize( $d ) ) );
+				wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $d ) ) );
 			}
 		}
 	}
@@ -176,7 +176,7 @@ abstract class PLL_Translated_Object {
 	 */
 	public function get_translations( $id ) {
 		$term = $this->get_object_term( $id, $this->tax_translations );
-		$translations = empty( $term ) ? array() : unserialize( $term->description );
+		$translations = empty( $term ) ? array() : maybe_unserialize( $term->description );
 
 		// make sure we return only translations ( thus we allow plugins to store other information in the array )
 		if ( is_array( $translations ) ) {
