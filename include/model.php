@@ -443,12 +443,12 @@ class PLL_Model {
 	}
 
 	/**
-	 * Gets the number of posts per language in a date, author or post type archive
+	 * Gets the number of posts per language in a date, author or post type archive.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $lang
-	 * @param array  $q WP_Query arguments ( accepted: post_type, m, year, monthnum, day, author, author_name, post_format )
+	 * @param object $lang PLL_Language instance.
+	 * @param array  $q    WP_Query arguments ( accepted: post_type, m, year, monthnum, day, author, author_name, post_format ).
 	 * @return int
 	 */
 	public function count_posts( $lang, $q = array() ) {
@@ -467,11 +467,11 @@ class PLL_Model {
 		}
 
 		if ( empty( $q['post_type'] ) ) {
-			$q['post_type'] = array( 'post' ); // we *need* a post type
+			$q['post_type'] = array( 'post' ); // We *need* a post type.
 		}
 
-		$cache_key = md5( maybe_serialize( $q ) );
-		$counts = wp_cache_get( $cache_key, 'pll_count_posts' );
+		$cache_key = 'pll_count_posts_' . md5( maybe_serialize( $q ) );
+		$counts = wp_cache_get( $cache_key, 'counts' );
 
 		if ( false === $counts ) {
 			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
@@ -515,7 +515,7 @@ class PLL_Model {
 				$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_author = %d", $q['author'] );
 			}
 
-			// filtered taxonomies ( post_format )
+			// Filtered taxonomies ( post_format ).
 			foreach ( $this->get_filtered_taxonomies_query_vars() as $tax_qv ) {
 
 				if ( ! empty( $q[ $tax_qv ] ) ) {
@@ -532,7 +532,7 @@ class PLL_Model {
 				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
 			}
 
-			wp_cache_set( $cache_key, $counts, 'pll_count_posts' );
+			wp_cache_set( $cache_key, $counts, 'counts' );
 		}
 
 		return empty( $counts[ $lang->term_taxonomy_id ] ) ? 0 : $counts[ $lang->term_taxonomy_id ];
