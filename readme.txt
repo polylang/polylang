@@ -1,11 +1,11 @@
 === Polylang ===
-Contributors: Chouby
+Contributors: Chouby, manooweb
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
-Tested up to: 5.1
+Tested up to: 5.2
 Stable tag: 2.5.3
-License: GPLv2 or later
+License: GPLv3 or later
 
 Making WordPress multilingual
 
@@ -75,6 +75,38 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6 =
+
+* Pro: Move the languages metabox to a block editor plugin
+* Pro: Better management of user capabilities when synchronizing posts
+* Pro: Separate REST requests from the frontend
+* Pro: Copy the post slug when duplicating a post
+* Pro: Duplicate ACF term metas when terms are automatically duplicated when creating a new post translation
+* Pro: Fix hierarchy lost when duplicating terms
+* Pro: Fix page shared slugs with special characters
+* Pro: Fix synchronized posts sharing their slug when the language is set from the content
+* Better management of user capablities when synchronizing taxonomies terms and custom fields
+* Extend string translations search to translated strings #207
+* Yoast SEO: Add post type archive url in all languages to the sitemap
+* Add compatibility with WP Offload Media Lite. Props Daniel Berkman
+* Add support for international domain names
+* Add Kannada to the predefined languages list
+* Add a title to the link icon used to add a translation #325
+* Modify the title and the label for the language switcher menu items #307
+* Add a notice when a static front page is not translated in a language
+* Add support for custom term fields in wpml-config.xml
+* Honor the filter `pll_flag` when performing the flag validation when creating a new language
+* Add filter `pll_admin_languages_filter` for the list of items the admin bar language filter
+* Update plugin updater to 1.6.18
+* Fix www. not redirected to not www. for the home page in multiple domains #311
+* Fix cropped images not being synchronized
+* Fix auto added page to menus when the page is created with the block editor
+* Fix embed of translated static front page #318
+* Fix fatal error with Jetpack when no languages has been defined yet #330
+* Fix style-rtl.css not loaded when the language is set from the content #356
+* Fix a conflict with Laravel Valet. Props @chesio. #250
+* Fix Jetpack featured pages not working. Props Anis Ladram. #357
 
 = 2.5.3 (2019-04-16) =
 
