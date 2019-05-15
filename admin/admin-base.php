@@ -135,11 +135,6 @@ class PLL_Admin_Base extends PLL_Base {
 		);
 
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
-			// Legacy metabox.
-			if ( ! pll_use_block_editor_plugin() ) {
-				$scripts['metabox'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 );
-			}
-
 			// Classic editor.
 			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
 				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post' ), 0, 1 );
@@ -147,7 +142,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 			// Block editor with legacy metabox in WP 5.0+.
 			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin() ) {
-				$scripts['block-editor'] = array( array( 'post' ), array( 'wp-api-fetch' ), 0, 1 );
+				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch' ), 0, 1 );
 			}
 		}
 
@@ -181,9 +176,20 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 2.4.0
 	 */
 	public function localize_scripts() {
-		if ( wp_script_is( 'pll_metabox', 'enqueued' ) ) {
-			$confirm = __( 'You are about to overwrite an existing translation. Are you sure?', 'polylang' );
-			wp_localize_script( 'pll_metabox', 'confirm_text', $confirm );
+		if ( wp_script_is( 'pll_classic-editor', 'enqueued' ) ) {
+			wp_localize_script(
+				'pll_classic-editor',
+				'confirm_text',
+				__( 'You are about to overwrite an existing translation. Are you sure?', 'polylang' )
+			);
+		}
+
+		if ( wp_script_is( 'pll_block-editor', 'enqueued' ) ) {
+			wp_localize_script(
+				'pll_block-editor',
+				'confirm_text',
+				__( 'You are about to overwrite an existing translation. Are you sure?', 'polylang' )
+			);
 		}
 
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
