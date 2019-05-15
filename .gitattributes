@@ -14,5 +14,6 @@ phpunit.xml export-ignore
 .babelrc export-ignore
 package.json export-ignore
 webpack.config.js export-ignore
+/bin/ export-ignore
 /modules/block-editor/build/*.map export-ignore
 /modules/block-editor/js/ export-ignore
