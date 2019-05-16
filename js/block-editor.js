@@ -29,7 +29,7 @@ function getCurrentLanguage() {
 }
 
 /**
- * save post after lang choice is done and redirect to the same page for refreshing all the data
+ * Save post after lang choice is done and redirect to the same page for refreshing all the data
  *
  * @since 2.5
  */
@@ -92,11 +92,38 @@ jQuery( document ).ready(function( $ ) {
 } );
 
 /**
- * Handles internals of the metabox: autocomplete input field and buttons.
+ * Handles internals of the metabox:
+ * Language select, autocomplete input field and buttons.
  *
  * @since 1.5
  */
 jQuery( document ).ready(function( $ ) {
+	// Ajax for changing the post's language in the languages metabox
+	$( '.post_lang_choice' ).change(function() {
+		var data = {
+			action:     'post_lang_choice',
+			lang:       $( this ).val(),
+			post_type:  $( '#post_type' ).val(),
+			post_id:    $( '#post_ID' ).val(),
+			_pll_nonce: $( '#_pll_nonce' ).val()
+		}
+
+		$.post( ajaxurl, data , function( response ) {
+			var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
+			$.each( res.responses, function() {
+				switch ( this.what ) {
+					case 'translations': // Translations fields
+						$( '.translations' ).html( this.data );
+						init_translations();
+					break;
+					case 'flag': // Flag in front of the select dropdown
+						$( '.pll-select-flag' ).html( this.data );
+					break;
+				}
+			});
+		});
+	});
+
 	// Translations autocomplete input box
 	function init_translations() {
 		$( '.tr_lang' ).each(function(){
