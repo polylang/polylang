@@ -319,30 +319,40 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Synchronize the primary category
+	 * Synchronize the primary term
 	 *
 	 * @since 2.3.3
 	 *
-	 * @param array $keys List of custom fields names
+	 * @param array $keys List of custom fields names.
 	 * @return array
 	 */
 	public function copy_post_metas( $keys ) {
-		$keys[] = '_yoast_wpseo_primary_category';
+		$taxonomies = get_taxonomies(
+			array(
+				'hierarchical' => true,
+				'public'       => true,
+			)
+		);
+
+		foreach ( $taxonomies as $taxonomy ) {
+			$keys[] = '_yoast_wpseo_primary_' . $taxonomy;
+		}
+
 		return $keys;
 	}
 
 	/**
-	 * Translate the primary category during the synchronization process
+	 * Translate the primary term during the synchronization process
 	 *
 	 * @since 2.3.3
 	 *
-	 * @param int    $value Meta value
-	 * @param string $key   Meta key
-	 * @param string $lang  Language of target
+	 * @param int    $value Meta value.
+	 * @param string $key   Meta key.
+	 * @param string $lang  Language of target.
 	 * @return int
 	 */
 	public function translate_post_meta( $value, $key, $lang ) {
-		if ( '_yoast_wpseo_primary_category' === $key ) {
+		if ( false !== strpos( $key, '_yoast_wpseo_primary_' ) ) {
 			$value = pll_get_term( $value, $lang );
 		}
 		return $value;
