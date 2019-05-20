@@ -12,13 +12,14 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 	 *
 	 * @since 2.0
 	 *
-	 * @param object $model PLL_Model instance
+	 * @param object $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
 		parent::__construct( $model );
 
-		// Avoid cross domain requests ( mainly for custom fonts )
+		// Avoid cross domain requests ( mainly for custom fonts ).
 		add_filter( 'content_url', array( $this, 'site_url' ) );
+		add_filter( 'theme_root_uri', array( $this, 'site_url' ) ); // The above filter is not sufficient with WPMU Domain Mapping.
 		add_filter( 'plugins_url', array( $this, 'site_url' ) );
 		add_filter( 'rest_url', array( $this, 'site_url' ) );
 		add_filter( 'upload_dir', array( $this, 'upload_dir' ) );
