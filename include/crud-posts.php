@@ -207,8 +207,8 @@ class PLL_CRUD_Posts {
 	 *
 	 * @since 0.9
 	 *
-	 * @param string $file
-	 * @return string unmodified $file
+	 * @param string $file Path to the file to delete.
+	 * @return string Empty or unmodified path.
 	 */
 	public function wp_delete_file( $file ) {
 		global $wpdb;
@@ -224,9 +224,10 @@ class PLL_CRUD_Posts {
 		);
 
 		if ( ! empty( $ids ) ) {
-			// Regenerate intermediate sizes if it's an image ( since we could not prevent WP deleting them before )
+			// Regenerate intermediate sizes if it's an image ( since we could not prevent WP deleting them before ).
+			require_once ABSPATH . 'wp-admin/includes/image.php'; // In case the file is deleted outside admin.
 			wp_update_attachment_metadata( $ids[0], wp_generate_attachment_metadata( $ids[0], $file ) );
-			return ''; // Prevent deleting the main file
+			return ''; // Prevent deleting the main file.
 		}
 
 		return $file;
