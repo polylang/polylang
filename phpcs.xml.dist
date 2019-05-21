@@ -31,7 +31,6 @@
 		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_tax_query"/>
 		<exclude name="WordPress.Files.FileName"/>
 		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
-		<exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
 		<exclude name="WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode" />
 		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
 		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
