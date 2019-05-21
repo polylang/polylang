@@ -201,21 +201,27 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		$screen = get_current_screen();
 
 		if ( $this->page_on_front && ( 'toplevel_page_mlang' === $screen->id || 'edit-page' === $screen->id ) ) {
+			$untranslated = array();
+
 			foreach ( $this->model->get_languages_list() as $language ) {
 				if ( ! $this->model->post->get( $this->page_on_front, $language ) ) {
-					printf(
-						'<div class="error"><p>%s</p></div>',
-						sprintf(
-							/* translators: %s is a native language name */
-							esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
-							sprintf(
-								'<a href="%s">%s</a>',
-								esc_url( $this->links->get_new_post_translation_link( $this->page_on_front, $language ) ),
-								esc_html( $language->name )
-							)
-						)
+					$untranslated[] = sprintf(
+						'<a href="%s">%s</a>',
+						esc_url( $this->links->get_new_post_translation_link( $this->page_on_front, $language ) ),
+						esc_html( $language->name )
 					);
 				}
+			}
+
+			if ( ! empty( $untranslated ) ) {
+				printf(
+					'<div class="error"><p>%s</p></div>',
+					sprintf(
+						/* translators: %s is a comma separated list of native language names */
+						esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
+						implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					)
+				);
 			}
 		}
 	}
