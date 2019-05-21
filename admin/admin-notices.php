@@ -155,7 +155,8 @@ class PLL_Admin_Notices {
 		printf(
 			'<a class="notice-dismiss" href="%s"><span class="screen-reader-text">%s</span></a>',
 			esc_url( wp_nonce_url( add_query_arg( 'pll-hide-notice', $name ), $name, '_pll_notice_nonce' ) ),
-			esc_html__( 'Dismiss this notice.' )
+			/* translators: accessibility text */
+			esc_html__( 'Dismiss this notice.', 'polylang' )
 		);
 	}
 

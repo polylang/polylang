@@ -92,11 +92,11 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 */
 	public function display_post_states( $post_states, $post ) {
 		if ( in_array( $post->ID, $this->model->get_languages_list( array( 'fields' => 'page_on_front' ) ) ) ) {
-			$post_states['page_on_front'] = __( 'Front Page' );
+			$post_states['page_on_front'] = __( 'Front Page', 'polylang' );
 		}
 
 		if ( in_array( $post->ID, $this->model->get_languages_list( array( 'fields' => 'page_for_posts' ) ) ) ) {
-			$post_states['page_for_posts'] = __( 'Posts Page' );
+			$post_states['page_for_posts'] = __( 'Posts Page', 'polylang' );
 		}
 
 		return $post_states;

@@ -385,7 +385,7 @@ class PLL_Model {
 
 		// create a new category
 		// FIXME this is translated in admin language when we would like it in $lang
-		$cat_name = __( 'Uncategorized' );
+		$cat_name = __( 'Uncategorized', 'polylang' );
 		$cat_slug = sanitize_title( $cat_name . '-' . $lang->slug );
 		$cat = wp_insert_term( $cat_name, 'category', array( 'slug' => $cat_slug ) );
 

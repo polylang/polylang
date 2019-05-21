@@ -51,10 +51,10 @@ class PLL_Admin_Strings {
 	public static function &get_strings() {
 		self::$default_strings = array(
 			'options' => array(
-				'blogname'        => __( 'Site Title' ),
-				'blogdescription' => __( 'Tagline' ),
-				'date_format'     => __( 'Date Format' ),
-				'time_format'     => __( 'Time Format' ),
+				'blogname'        => __( 'Site Title', 'polylang' ),
+				'blogdescription' => __( 'Tagline', 'polylang' ),
+				'date_format'     => __( 'Date Format', 'polylang' ),
+				'time_format'     => __( 'Time Format', 'polylang' ),
 			),
 			'widget_title' => __( 'Widget title', 'polylang' ),
 			'widget_text'  => __( 'Widget text', 'polylang' ),

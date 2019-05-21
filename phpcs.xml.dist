@@ -40,6 +40,15 @@
 		<exclude name="WordPress.WP.PostsPerPage.posts_per_page_posts_per_page" />
 	</rule>
 
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="polylang"/>
+				<element value="polylang-pro"/>
+			</property>
+		</properties>
+	</rule>
+
 	<rule ref="Generic.Commenting.Fixme.CommentFound" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>

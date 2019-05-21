@@ -70,7 +70,7 @@ class PLL_Table_String extends WP_List_Table {
 			'<label class="screen-reader-text" for="cb-select-%1$s">%2$s</label><input id="cb-select-%1$s" type="checkbox" name="strings[]" value="%1$s" %3$s />',
 			esc_attr( $item['row'] ),
 			/* translators:  accessibility text, %s is a string potentially in any language */
-			sprintf( __( 'Select %s' ), format_to_edit( $item['string'] ) ),
+			sprintf( __( 'Select %s', 'polylang' ), format_to_edit( $item['string'] ) ),
 			empty( $item['icl'] ) ? 'disabled' : '' // Only strings registered with WPML API can be removed
 		);
 	}
@@ -328,7 +328,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 		echo '</select>' . "\n";
 
-		submit_button( __( 'Filter' ), 'button', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
+		submit_button( __( 'Filter', 'polylang' ), 'button', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
 		echo '</div>';
 	}
 

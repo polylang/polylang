@@ -172,7 +172,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						do_action( 'pll_language_add_form_fields' );
 					}
 
-					submit_button( ! empty( $edit_lang ) ? __( 'Update' ) : __( 'Add new language', 'polylang' ) ); // since WP 3.1
+					submit_button( ! empty( $edit_lang ) ? __( 'Update', 'polylang' ) : __( 'Add new language', 'polylang' ) ); // since WP 3.1
 					?>
 				</form>
 			</div><!-- form-wrap -->

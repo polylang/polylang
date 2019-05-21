@@ -353,7 +353,7 @@ class PLL_Filters {
 			if ( ! empty( $user_data_to_export ) ) {
 				$data_to_export[] = array(
 					'group_id'    => 'user',
-					'group_label' => __( 'User' ),
+					'group_label' => __( 'User', 'polylang' ),
 					'item_id'     => "user-{$user->ID}",
 					'data'        => $user_data_to_export,
 				);

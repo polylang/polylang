@@ -173,7 +173,7 @@ class PLL_Admin_Filters_Columns {
 
 			$elements = $this->model->get_languages_list();
 			if ( current_filter() == 'bulk_edit_custom_box' ) {
-				array_unshift( $elements, (object) array( 'slug' => -1, 'name' => __( '&mdash; No Change &mdash;' ) ) );
+				array_unshift( $elements, (object) array( 'slug' => -1, 'name' => __( '&mdash; No Change &mdash;', 'polylang' ) ) );
 			}
 
 			$dropdown = new PLL_Walker_Dropdown();

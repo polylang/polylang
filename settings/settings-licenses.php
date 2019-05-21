@@ -25,7 +25,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			)
 		);
 
-		$this->buttons['cancel'] = sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', __( 'Close' ) );
+		$this->buttons['cancel'] = sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', __( 'Close', 'polylang' ) );
 
 		$this->items = apply_filters( 'pll_settings_licenses', array() );
 
@@ -197,7 +197,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			}
 
 			// Updated message
-			add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'updated' );
+			add_settings_error( 'general', 'settings_updated', __( 'Settings saved.', 'polylang' ), 'updated' );
 			ob_start();
 			settings_errors();
 			$x->Add( array( 'what' => 'success', 'data' => ob_get_clean() ) );
