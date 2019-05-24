@@ -27,14 +27,3 @@ if ( ! defined( 'ABSPATH' ) ) {
 	}
 	?>
 </p>
-<p>
-	<?php
-	printf(
-		/* translators: %1$s is link start tag, %2$s is link end tag. */
-		esc_html__( 'Polylang is released under the same license as WordPress, the %1$sGPL%2$s.', 'polylang' ),
-		'<a href="http://wordpress.org/about/gpl/">',
-		'</a>'
-	);
-	?>
-</p>
-
