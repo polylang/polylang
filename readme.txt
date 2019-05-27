@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 2.5.3
+Stable tag: 2.5.4
 License: GPLv3 or later
 
 Making WordPress multilingual
@@ -92,22 +92,25 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Honor the filter `pll_flag` when performing the flag validation when creating a new language
 * Modify the title and the label for the language switcher menu items #307
 * Add support for international domain names
-* Add Kannada to the predefined languages list
 * Add a title to the link icon used to add a translation #325
 * Add a notice when a static front page is not translated in a language
 * Add support for custom term fields in wpml-config.xml
 * Add filter `pll_admin_languages_filter` for the list of items the admin bar language filter
 * Add compatibility with WP Offload Media Lite. Props Daniel Berkman
 * Yoast SEO: Add post type archive url in all languages to the sitemap
-* Yoast SEO: Fix primary product cat not copied or synchronized
-* WPMU Domain Mapping: Fix incorrect domain used for the theme
 * Fix www. not redirected to not www. for the home page in multiple domains #311
 * Fix cropped images not being synchronized
 * Fix auto added page to menus when the page is created with the block editor
 * Fix embed of translated static front page #318
 * Fix fatal error with Jetpack when no languages has been defined yet #330
-* Fix style-rtl.css not loaded when the language is set from the content #356
 * Fix a conflict with Laravel Valet. Props @chesio. #250
+
+= 2.5.4 (2019-05-28) =
+
+* Add Kannada to the predefined languages list
+* Yoast SEO: Fix primary product cat not copied or synchronized
+* WPMU Domain Mapping: Fix incorrect domain used for the theme
+* Fix style-rtl.css not loaded when the language is set from the content #356
 * Fix Jetpack featured pages not working. Props Anis Ladram. #357
 * Fix Call to undefined function wp_generate_attachment_metadata()
 
