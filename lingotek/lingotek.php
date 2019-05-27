@@ -99,11 +99,11 @@ class PLL_Lingotek {
 		printf( '<p>%s</p>', esc_html__( 'Polylang is now fully integrated with Lingotek, a professional translation management system!', 'polylang' ) );
 
 		$this->box(
-			__( 'Automatically Translate My Site', 'polylang' ),
+			__( 'Automatically translate my site', 'polylang' ),
 			__( 'Polylang is now fully integrated with Lingotek!', 'polylang' ),
 			array(
 				__( 'Access free machine translation for your site for up to 100,000 characters.', 'polylang' ),
-				__( 'Machine translation is an excellent option if you\'re on a tight budget, looking for near-instant results, and are okay with less-than-perfect quality.', 'polylang' ),
+				__( 'If you\'re on a tight budget, looking for near-instant results, and are okay with less-than-perfect quality, machine translation is an excellent option.', 'polylang' ),
 			),
 			array_intersect_key( $links, array_flip( array( 'activate' ) ) ),
 			'image01.gif'
@@ -123,19 +123,19 @@ class PLL_Lingotek {
 		);
 
 		$this->box(
-			__( 'Professionally Translate My Site', 'polylang' ),
-			__( 'Do you need to professionally translate your site?', 'polylang' ),
+			__( 'Professionally translate my site', 'polylang' ),
+			__( 'Do you need professional translations for your site?', 'polylang' ),
 			array(
 				__( 'Start the process of getting a professional translation bid.', 'polylang' ),
-				__( 'Activate account so Lingotek can get an accurate count of how many words you have on your site and which languages you wish to translate into.', 'polylang' ),
-				__( 'Once activated click on the request translation bid and a certified translation project manager will contact you to give a no obligations translation bid.', 'polylang' ),
+				__( 'When you activate your account, Lingotek will be able to get an accurate count of the number of words in your site. Then tell them which languages you wish to have them translated into.', 'polylang' ),
+				__( 'Once activated, click on the "request translation bid" and a certified translation project manager will contact you for a no-obligations translation bid.', 'polylang' ),
 			),
 			array_intersect_key( $links, array_flip( array( 'activate', 'translation' ) ) ),
 			'image03.png'
 		);
 
 		$this->box(
-			__( 'Need Extra Services?', 'polylang' ),
+			__( 'Need extra services?', 'polylang' ),
 			__( 'Do you need help translating your site?', 'polylang' ),
 			array(
 				__( 'Start the process of getting extra services.', 'polylang' ),
@@ -165,7 +165,7 @@ class PLL_Lingotek {
 			border: 1px solid #ddd;
 			margin-right: 3px;
 			margin-bottom: 3px;
-			height: 630px;
+			height: 650px;
 			background: #fafafa;
 		}
 		.rtl .ltk-feature {
