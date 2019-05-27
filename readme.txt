@@ -3,8 +3,8 @@ Contributors: Chouby
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
-Tested up to: 5.1
-Stable tag: 2.5.3
+Tested up to: 5.2
+Stable tag: 2.5.4
 License: GPLv2 or later
 
 Making WordPress multilingual
@@ -75,6 +75,15 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.5.4 (2019-05-28) =
+
+* Add Kannada to the predefined languages list
+* Yoast SEO: Fix primary product cat not copied or synchronized
+* WPMU Domain Mapping: Fix incorrect domain used for the theme
+* Fix style-rtl.css not loaded when the language is set from the content #356
+* Fix Jetpack featured pages not working. Props Anis Ladram. #357
+* Fix Call to undefined function wp_generate_attachment_metadata()
 
 = 2.5.3 (2019-04-16) =
 
