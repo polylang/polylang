@@ -180,7 +180,7 @@ class PLL_Admin_Base extends PLL_Base {
 			wp_localize_script(
 				'pll_classic-editor',
 				'confirm_text',
-				__( 'You are about to overwrite an existing translation. Are you sure?', 'polylang' )
+				__( 'You are about to overwrite an existing translation. Are you sure you want to proceed?', 'polylang' )
 			);
 		}
 
@@ -188,7 +188,7 @@ class PLL_Admin_Base extends PLL_Base {
 			wp_localize_script(
 				'pll_block-editor',
 				'confirm_text',
-				__( 'You are about to overwrite an existing translation. Are you sure?', 'polylang' )
+				__( 'You are about to overwrite an existing translation. Are you sure you want to proceed?', 'polylang' )
 			);
 		}
 

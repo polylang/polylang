@@ -76,7 +76,7 @@ class PLL_Upgrade {
 			esc_html__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
 			sprintf(
 				/* translators: %1$s and %2$s are Polylang version numbers */
-				esc_html__( 'Please upgrade first to %1$s before ugrading to %2$s.', 'polylang' ),
+				esc_html__( 'Before upgrading to %2$s, please upgrade to %1$s.', 'polylang' ),
 				'<strong>0.9.8</strong>',
 				POLYLANG_VERSION // phpcs:ignore WordPress.Security.EscapeOutput
 			)

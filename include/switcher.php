@@ -19,7 +19,7 @@ class PLL_Switcher {
 	 */
 	public static function get_switcher_options( $type = 'widget', $key = 'string' ) {
 		$options = array(
-			'dropdown'               => array( 'string' => __( 'Displays as dropdown', 'polylang' ), 'default' => 0 ),
+			'dropdown'               => array( 'string' => __( 'Displays as a dropdown', 'polylang' ), 'default' => 0 ),
 			'show_names'             => array( 'string' => __( 'Displays language names', 'polylang' ), 'default' => 1 ),
 			'show_flags'             => array( 'string' => __( 'Displays flags', 'polylang' ), 'default' => 0 ),
 			'force_home'             => array( 'string' => __( 'Forces link to front page', 'polylang' ), 'default' => 0 ),

@@ -21,7 +21,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			array(
 				'module'      => 'licenses',
 				'title'       => __( 'License keys', 'polylang' ),
-				'description' => __( 'Manage licenses for Polylang Pro or addons.', 'polylang' ),
+				'description' => __( 'Manage licenses for Polylang Pro and add-ons.', 'polylang' ),
 			)
 		);
 
@@ -153,7 +153,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 					$class = 'notice-warning notice-alt';
 					$message = sprintf(
 						/* translators: %1$s is a date, %2$s is link start tag, %3$s is link end tag. */
-						__( 'Your license key expires soon! It expires on %1$s. %2$sRenew your license key%3$s.', 'polylang' ),
+						__( 'Your license key will expire soon! Precisely, it will expire on %1$s. %2$sRenew your license key today!%3$s.', 'polylang' ),
 						date_i18n( get_option( 'date_format' ), strtotime( $license->expires, $now ) ),
 						sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/checkout/?edd_license_key=' . $item->license_key ),
 						'</a>'

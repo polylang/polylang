@@ -45,7 +45,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			);
 			?>
 		</label>
-		<p class="description"><?php esc_html_e( 'Posts, pages, categories and tags urls are not modified.', 'polylang' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Posts, pages, categories and tags URLs will not be modified.', 'polylang' ); ?></p>
 		<label>
 			<?php
 			printf(
@@ -292,7 +292,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 					esc_html(
 						sprintf(
 							/* translators: %s is an url */
-							__( 'Polylang was unable to access the URL %s. Please check that the URL is valid.', 'polylang' ),
+							__( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' ),
 							$url
 						)
 					)

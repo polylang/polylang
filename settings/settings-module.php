@@ -230,7 +230,7 @@ class PLL_Settings_Module {
 	protected function default_upgrade_message() {
 		return sprintf(
 			'%s <a href="%s">%s</a>',
-			__( 'You need Polylang Pro to enable this feature.', 'polylang' ),
+			__( 'To enable this feature, you need Polylang Pro.', 'polylang' ),
 			'https://polylang.pro',
 			__( 'Upgrade now.', 'polylang' )
 		);

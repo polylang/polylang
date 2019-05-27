@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php
 	printf(
 		/* translators: %1$s is link start tag, %2$s is link end tag. */
-		esc_html__( 'Polylang is provided with an extensive %1$sdocumentation%2$s (in English only). It includes information on how to set up your multilingual site and use it on a daily basis, a FAQ, as well as a documentation for developers to adapt their plugins and themes.', 'polylang' ),
+		esc_html__( 'Polylang is provided with an extensive %1$sdocumentation%2$s (in English). It includes information on how to set up your multilingual site and use it on a daily basis; FAQs, and documentation for developers to adapt their plugins and themes.', 'polylang' ),
 		'<a href="https://polylang.pro/doc/">',
 		'</a>'
 	);

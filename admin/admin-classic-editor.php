@@ -305,7 +305,7 @@ class PLL_Admin_Classic_Editor {
 					<?php
 					esc_html_e( 'Some taxonomies or metadata may be synchronized with existing translations that you are not allowed to modify.', 'polylang' );
 					echo ' ';
-					esc_html_e( "If you attempt to modify them anyway, your modifications won't be taken into account.", 'polylang' );
+					esc_html_e( 'If you attempt to modify them anyway, your changes will not be saved.', 'polylang' );
 					?>
 				</p>
 			</div>

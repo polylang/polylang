@@ -19,8 +19,8 @@ class PLL_Settings_WPML extends PLL_Settings_Module {
 			$polylang,
 			array(
 				'module'      => 'wpml',
-				'title'       => __( 'WPML Compatibility', 'polylang' ),
-				'description' => __( 'WPML compatibility mode of Polylang', 'polylang' ),
+				'title'       => __( 'WPML compatibility', 'polylang' ),
+				'description' => __( 'Polylang\'s WPML compatibility mode', 'polylang' ),
 			)
 		);
 	}
