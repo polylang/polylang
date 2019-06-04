@@ -139,11 +139,17 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @since 1.2
 	 *
+	 * @param string $alias Alias for $wpdb->terms table
 	 * @return string join clause
 	 */
-	public function join_clause() {
+	public function join_clause( $alias = '' ) {
 		global $wpdb;
-		return " INNER JOIN $wpdb->term_relationships AS pll_tr ON pll_tr.object_id = t.term_id";
+
+		if ( empty( $alias ) ) {
+			$alias = 't';
+		}
+
+		return " INNER JOIN $wpdb->term_relationships AS pll_tr ON pll_tr.object_id = $alias.term_id";
 	}
 
 	/**
