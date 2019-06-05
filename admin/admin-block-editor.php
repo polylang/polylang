@@ -31,6 +31,9 @@ class PLL_Admin_Block_Editor {
 	 */
 	public function preload_paths( $preload_paths, $post ) {
 		$lang = pll_get_post_language( $post->ID );
+		if ( ! $lang ) {
+			return $preload_paths;
+		}
 
 		foreach ( $preload_paths as $k => $path ) {
 			if ( is_string( $path ) && '/' !== $path ) {
