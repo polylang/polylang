@@ -138,17 +138,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * A join clause to add to sql queries when filtering by language is needed directly in query
 	 *
 	 * @since 1.2
+	 * @since 2.6 The `$alias` parameter was added.
 	 *
 	 * @param string $alias Alias for $wpdb->terms table
 	 * @return string join clause
 	 */
-	public function join_clause( $alias = '' ) {
+	public function join_clause( $alias = 't' ) {
 		global $wpdb;
-
-		if ( empty( $alias ) ) {
-			$alias = 't';
-		}
-
 		return " INNER JOIN $wpdb->term_relationships AS pll_tr ON pll_tr.object_id = $alias.term_id";
 	}
 
