@@ -83,6 +83,12 @@ class PLL_Plugins_Compat {
 			add_action( 'pll_init', array( $this->wpseo = new PLL_WPSEO(), 'init' ) );
 		}
 
+		// Rank Math
+		if ( defined( 'RANK_MATH_VERSION' ) ) {
+			include PLL_MODULES_INC . '/plugins/rank-math.php';
+			add_action( 'pll_language_defined', array( $this->rank_math = new PLL_RankMath(), 'init' ) );
+		}
+
 		if ( pll_is_cache_active() ) {
 			add_action( 'pll_init', array( $this->cache_compat = new PLL_Cache_Compat(), 'init' ) );
 		}
