@@ -78,6 +78,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 = 2.6 =
 
+* Pro: Remove all languages files. All translations are now maintained on TranslationsPress
 * Pro: Move the languages metabox to a block editor plugin
 * Pro: Better management of user capabilities when synchronizing posts
 * Pro: Separate REST requests from the frontend
@@ -86,6 +87,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Pro: Fix hierarchy lost when duplicating terms
 * Pro: Fix page shared slugs with special characters
 * Pro: Fix synchronized posts sharing their slug when the language is set from the content
+* Pro: Fix PHP warning with ACF Pro 5.8.1
 * Better management of user capablities when synchronizing taxonomies terms and custom fields
 * Extend string translations search to translated strings #207
 * Update plugin updater to 1.6.18
@@ -102,8 +104,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix cropped images not being synchronized
 * Fix auto added page to menus when the page is created with the block editor
 * Fix embed of translated static front page #318
+* Fix a possible infinite redirect if the static front page is not translated
 * Fix fatal error with Jetpack when no languages has been defined yet #330
 * Fix a conflict with Laravel Valet. Props @chesio. #250
+* Fix a conflict with Thesis.
+* Fix a conflict with Pods in the block editor. Props Jory Hogeveen. #369
 
 = 2.5.4 (2019-05-28) =
 
