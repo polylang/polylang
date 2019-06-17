@@ -72,22 +72,25 @@ class PLL_Featured_Content {
 		// Query for featured posts in all languages
 		// One query per language to get the correct number of posts per language
 		foreach ( $tags as $tag ) {
-			$_ids = get_posts(
-				array(
-					'lang'        => 0, // avoid language filters
-					'fields'      => 'ids',
-					'numberposts' => Featured_Content::$max_posts,
-					'post_type'   => Featured_Content::$post_types,
-					'tax_query'   => array(
-						array(
-							'taxonomy' => 'post_tag',
-							'terms'    => (int) $tag,
-						),
+			$args = array(
+				'lang'        => 0, // Avoid language filters.
+				'fields'      => 'ids',
+				'numberposts' => Featured_Content::$max_posts,
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'post_tag',
+						'terms'    => (int) $tag,
 					),
-				)
+				),
 			);
 
-			$ids = array_merge( $ids, $_ids );
+			// Available in Jetpack, but not in Twenty Fourteen.
+			if ( isset( Featured_Content::$post_types ) ) {
+				$args['post_type'] = Featured_Content::$post_types;
+			}
+
+			$_ids = get_posts( $args );
+			$ids  = array_merge( $ids, $_ids );
 		}
 
 		$ids = array_map( 'absint', $ids );
