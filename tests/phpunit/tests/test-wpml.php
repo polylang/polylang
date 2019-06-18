@@ -26,6 +26,15 @@ class WPML_Test extends PLL_UnitTestCase {
 		PLL_WPML_Compat::instance()->api = new PLL_WPML_API(); // Loads the WPML API
 	}
 
+	function tearDown() {
+		parent::tearDown();
+
+		// Cleaning the previous registered strings translations that were added
+		foreach ( PLL_WPML_Compat::instance()->get_strings( array() ) as $string ) {
+			PLL_WPML_Compat::instance()->unregister_string( $string['context'], $string['name'] );
+		}
+	}
+
 	/**
 	 * Notice sent when ACF calls icl_object_id  with a non translated post type
 	 *
@@ -368,5 +377,43 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 		$this->assertEquals( home_url( '/fr/test/' ), apply_filters( 'wpml_permalink', home_url( '/test/' ) ) );
+	}
+
+	/**
+	 * Test behavior of wpml_register_single_string when duplicate name and context
+	 */
+	public function test_duplicate_string_translation() {
+		// Register single string.
+		do_action( 'wpml_register_single_string', 'Context', 'Name', 'My text to translate' );
+
+		// Translate the first single string.
+		foreach ( array( 'en', 'fr' ) as $lang ) {
+			$language = self::$polylang->model->get_language( $lang );
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+			$mo->add_entry( $mo->make_entry( 'My text to translate', "My text to translate_$lang" ) );
+			$mo->export_to_db( $language );
+		}
+
+		// Add duplicate string.
+		do_action( 'wpml_register_single_string', 'Context', 'Name', 'My text to translate 2' );
+
+		// Get translations of the registered string to test it later.
+		$string_translation = array();
+		foreach ( array( 'en', 'fr' ) as $lang ) {
+			$language = self::$polylang->model->get_language( $lang );
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+			$string_translation[ $lang ] = $mo->translate( 'My text to translate 2' );
+		}
+
+		$str = wp_list_filter( PLL_WPML_Compat::instance()->get_strings( array() ), array() );
+		$str = reset( $str );
+
+		$this->assertEquals( 'Context', $str['context'] );
+		$this->assertEquals( 'Name', $str['name'] );
+		$this->assertEquals( 'My text to translate 2', $str['string'] );
+		$this->assertEquals( 'My text to translate_en', $string_translation['en'] );
+		$this->assertEquals( 'My text to translate_fr', $string_translation['fr'] );
 	}
 }
