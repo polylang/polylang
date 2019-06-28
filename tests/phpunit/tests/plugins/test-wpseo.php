@@ -107,7 +107,7 @@ if ( file_exists( $_tests_dir . '/../wordpress-seo/wp-seo.php' ) ) {
 
 			$sm = new WPSEO_Sitemaps_Double();
 			set_query_var( 'sitemap', 'post' );
-			$this->pll_seo->before_sitemap(); // Need a direct call as we don't fire the 'pre_get_posts' filter
+			$this->pll_seo->before_sitemap( $GLOBALS['wp_query'] ); // Need a direct call as we don't fire the 'pre_get_posts' filter
 
 			ob_start();
 			$sm->redirect( $GLOBALS['wp_the_query'] );

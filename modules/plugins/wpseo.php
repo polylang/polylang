@@ -210,9 +210,11 @@ class PLL_WPSEO {
 	 * Add filters before the sitemap is evaluated and outputed
 	 *
 	 * @since 2.6
+	 *
+	 * @param object $query Instance of WP_Query being filtered.
 	 */
-	public function before_sitemap() {
-		$type = get_query_var( 'sitemap' );
+	public function before_sitemap( $query ) {
+		$type = $query->get( 'sitemap' );
 
 		// Add the post post type archives in all languages to the sitemap
 		// Add the homepages for all languages to the sitemap when the front page displays posts
