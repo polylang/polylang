@@ -224,6 +224,28 @@ class PLL_WPSEO {
 	}
 
 	/**
+	 * Generates a post type archive sitemap url
+	 *
+	 * @since 2.6.1
+	 *
+	 * @param string $link      The url.
+	 * @param string $post_type The post type name.
+	 * @return string Formatted sitemap url.
+	 */
+	protected function format_sitemap_url( $link, $post_type ) {
+		global $wpseo_sitemaps;
+
+		return $wpseo_sitemaps->renderer->sitemap_url(
+			array(
+				'loc' => $link,
+				'mod' => WPSEO_Sitemaps::get_last_modified_gmt( $post_type ),
+				'pri' => 1,
+				'chf' => 'daily',
+			)
+		);
+	}
+
+	/**
 	 * Adds the home and post type archives urls for all (active) languages to the sitemap
 	 *
 	 * @since 2.6
@@ -232,30 +254,38 @@ class PLL_WPSEO {
 	 * @return string
 	 */
 	public function add_post_type_archive( $str ) {
-		global $wpseo_sitemaps;
+		$post_type     = substr( substr( current_filter(), 14 ), 0, -8 );
+		$post_type_obj = get_post_type_object( $post_type );
+		$languages     = wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' );
 
-		$post_type = substr( substr( current_filter(), 14 ), 0, -8 );
-
-		$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' );
-
-		if ( 'post' !== $post_type ) {
-			// The post type archive in the current language is already added by WPSEO
-			$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'slug' => pll_current_language() ), 'NOT' );
-		} elseif ( ! empty( PLL()->options['hide_default'] ) ) {
-			// The home url is of course already added by WPSEO
-			$languages = wp_list_filter( PLL()->model->get_languages_list(), array( 'slug' => pll_default_language() ), 'NOT' );
+		// Keep only the current language for subdomains and multiple domains.
+		if ( PLL()->options['force_lang'] > 1 ) {
+			$languages = wp_list_filter( $languages, array( 'slug' => pll_current_language() ) );
 		}
 
-		foreach ( $languages as $lang ) {
-			$link = 'post' === $post_type ? pll_home_url( $lang->slug ) : PLL()->links_model->switch_language_in_link( get_post_type_archive_link( $post_type ), $lang );
-			$str .= $wpseo_sitemaps->renderer->sitemap_url(
-				array(
-					'loc' => $link,
-					'mod' => WPSEO_Sitemaps::get_last_modified_gmt( $post_type ),
-					'pri' => 1,
-					'chf' => 'daily',
-				)
-			);
+		if ( 'post' === $post_type ) {
+			if ( ! empty( PLL()->options['hide_default'] ) ) {
+				// The home url is of course already added by WPSEO.
+				$languages = wp_list_filter( $languages, array( 'slug' => pll_default_language() ), 'NOT' );
+			}
+
+			foreach ( $languages as $lang ) {
+				$str .= $this->format_sitemap_url( pll_home_url( $lang->slug ), $post_type );
+			}
+		} elseif ( $post_type_obj->has_archive ) {
+			// Exclude cases where a post type archive is attached to a page (ex: WooCommerce).
+			$slug = ( true === $post_type_obj->has_archive ) ? $post_type_obj->rewrite['slug'] : $post_type_obj->has_archive;
+
+			if ( ! get_page_by_path( $slug ) ) {
+				// The post type archive in the current language is already added by WPSEO.
+				$languages = wp_list_filter( $languages, array( 'slug' => pll_current_language() ), 'NOT' );
+
+				foreach ( $languages as $lang ) {
+					PLL()->curlang = $lang; // Switch the language to get the correct archive link.
+					$link = get_post_type_archive_link( $post_type );
+					$str .= $this->format_sitemap_url( $link, $post_type );
+				}
+			}
 		}
 
 		return $str;
