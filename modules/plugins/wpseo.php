@@ -26,6 +26,7 @@ class PLL_WPSEO {
 			if ( PLL()->options['force_lang'] > 1 ) {
 				add_filter( 'wpseo_enable_xml_sitemap_transient_caching', '__return_false' ); // Disable cache! otherwise WPSEO keeps only one domain (thanks to Junaid Bhura)
 				add_filter( 'home_url', array( $this, 'wpseo_home_url' ), 10, 2 ); // Fix home_url
+				add_action( 'setup_theme', array( $this, 'maybe_deactivate_sitemap' ) ); // Deactivate sitemaps for inactive languages.
 			} else {
 				// Get all terms in all languages when the language is set from the content or directory name
 				add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
@@ -204,6 +205,20 @@ class PLL_WPSEO {
 			$args['lang'] = implode( ',', $this->wpseo_get_active_languages() );
 		}
 		return $args;
+	}
+
+	/**
+	 * Deactivate the sitemap for inactive languages
+	 * when using subdomains or multiple domains
+	 *
+	 * @since 2.6.1
+	 */
+	public function maybe_deactivate_sitemap() {
+		global $wpseo_sitemaps;
+
+		if ( isset( $wpseo_sitemaps ) && ! in_array( pll_current_language(), $this->wpseo_get_active_languages() ) ) {
+			remove_action( 'pre_get_posts', array( $wpseo_sitemaps, 'redirect' ), 1 );
+		}
 	}
 
 	/**
