@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 2.6
+Stable tag: 2.6.1
 License: GPLv3 or later
 
 Making WordPress multilingual
@@ -75,6 +75,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6.1 (2019-07-03) =
+
+* Pro: Fix Yoast SEO sitemap for inactive languages when using subdomains or multiple domains
+* Fix fatal error in combination with Yoast SEO and Social Warfare
+* Fix post type archive url in Yoast SEO sitemap
 
 = 2.6 (2019-06-26) =
 
