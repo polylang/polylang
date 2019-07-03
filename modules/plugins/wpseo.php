@@ -2,6 +2,7 @@
 
 /**
  * Manages the compatibility with Yoast SEO
+ * Version tested: 11.5
  *
  * @since 2.3
  */
@@ -30,9 +31,8 @@ class PLL_WPSEO {
 			} else {
 				// Get all terms in all languages when the language is set from the content or directory name
 				add_filter( 'get_terms_args', array( $this, 'wpseo_remove_terms_filter' ) );
+				add_action( 'pre_get_posts', array( $this, 'before_sitemap' ), 0 ); // Needs to be fired before WPSEO_Sitemaps::redirect()
 			}
-
-			add_action( 'pre_get_posts', array( $this, 'before_sitemap' ), 0 ); // Needs to be fired before WPSEO_Sitemaps::redirect()
 
 			add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
 			add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
@@ -235,7 +235,7 @@ class PLL_WPSEO {
 
 		// Add the post post type archives in all languages to the sitemap
 		// Add the homepages for all languages to the sitemap when the front page displays posts
-		if ( $type && pll_is_translated_post_type( $type ) && ( 'post' !== $type || ( PLL()->options['force_lang'] < 2 && ! get_option( 'page_on_front' ) ) ) ) {
+		if ( $type && pll_is_translated_post_type( $type ) && ( 'post' !== $type || ! get_option( 'page_on_front' ) ) ) {
 			add_filter( "wpseo_sitemap_{$type}_content", array( $this, 'add_post_type_archive' ) );
 		}
 	}
@@ -274,11 +274,6 @@ class PLL_WPSEO {
 		$post_type     = substr( substr( current_filter(), 14 ), 0, -8 );
 		$post_type_obj = get_post_type_object( $post_type );
 		$languages     = wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' );
-
-		// Keep only the current language for subdomains and multiple domains.
-		if ( PLL()->options['force_lang'] > 1 ) {
-			$languages = wp_list_filter( $languages, array( 'slug' => pll_current_language() ) );
-		}
 
 		if ( 'post' === $post_type ) {
 			if ( ! empty( PLL()->options['hide_default'] ) ) {
