@@ -208,16 +208,18 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Deactivate the sitemap for inactive languages
-	 * when using subdomains or multiple domains
+	 * Deactivates the sitemap for inactive languages when using subdomains or multiple domains
 	 *
 	 * @since 2.6.1
 	 */
 	public function maybe_deactivate_sitemap() {
 		global $wpseo_sitemaps;
 
-		if ( isset( $wpseo_sitemaps ) && ! in_array( pll_current_language(), $this->wpseo_get_active_languages() ) ) {
-			remove_action( 'pre_get_posts', array( $wpseo_sitemaps, 'redirect' ), 1 );
+		if ( isset( $wpseo_sitemaps ) ) {
+			$active_languages = $this->wpseo_get_active_languages();
+			if ( ! empty( $active_languages ) && ! in_array( pll_current_language(), $active_languages ) ) {
+				remove_action( 'pre_get_posts', array( $wpseo_sitemaps, 'redirect' ), 1 );
+			}
 		}
 	}
 
