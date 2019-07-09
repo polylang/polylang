@@ -160,6 +160,10 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	public function current_user_can_read( $post_id, $context = 'view' ) {
 		$post = get_post( $post_id );
 
+		if ( empty( $post ) ) {
+			return false;
+		}
+
 		if ( 'inherit' === $post->post_status && $post->post_parent ) {
 			$post = get_post( $post->post_parent );
 		}
