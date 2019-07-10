@@ -250,7 +250,7 @@ class PLL_Table_String extends WP_List_Table {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
 		$total_items = count( $data );
-		$this->items = array_slice( $data, ( $this->get_pagenum() - 1 ) * $per_page, $per_page );
+		$this->items = array_slice( $data, ( $this->get_pagenum() - 1 ) * $per_page, $per_page, true );
 
 		$this->set_pagination_args(
 			array(
