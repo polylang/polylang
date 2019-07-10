@@ -100,7 +100,8 @@ class PLL_WPML_Compat {
 		// Registers the string if it does not exist yet (multiline as in WPML).
 		$to_register = array( 'context' => $context, 'name' => $name, 'string' => $string, 'multiline' => true, 'icl' => true );
 		if ( ! in_array( $to_register, self::$strings ) && $to_register['string'] ) {
-			self::$strings[] = $to_register;
+			$key = md5( "$context | $name" );
+			self::$strings[ $key ] = $to_register;
 			update_option( 'polylang_wpml_strings', self::$strings );
 		}
 	}
@@ -110,15 +111,14 @@ class PLL_WPML_Compat {
 	 *
 	 * @since 1.0.2
 	 *
-	 * @param string $context the group in which the string is registered, defaults to 'polylang'
-	 * @param string $name    a unique name for the string
+	 * @param string $context The group in which the string is registered.
+	 * @param string $name    A unique name for the string.
 	 */
 	public function unregister_string( $context, $name ) {
-		foreach ( self::$strings as $key => $string ) {
-			if ( $string['context'] == $context && $string['name'] == $name ) {
-				unset( self::$strings[ $key ] );
-				update_option( 'polylang_wpml_strings', self::$strings );
-			}
+		$key = md5( "$context | $name" );
+		if ( isset( self::$strings[ $key ] ) ) {
+			unset( self::$strings[ $key ] );
+			update_option( 'polylang_wpml_strings', self::$strings );
 		}
 	}
 
@@ -139,16 +139,12 @@ class PLL_WPML_Compat {
 	 *
 	 * @since 2.0
 	 *
-	 * @param string $context the group in which the string is registered
-	 * @param string $name    a unique name for the string
-	 * @return bool|string the registered string, false if none was found
+	 * @param string $context The group in which the string is registered.
+	 * @param string $name    A unique name for the string.
+	 * @return bool|string The registered string, false if none was found.
 	 */
 	public function get_string_by_context_and_name( $context, $name ) {
-		foreach ( self::$strings as $string ) {
-			if ( $string['context'] == $context && $string['name'] == $name ) {
-				return $string['string'];
-			}
-		}
-		return false;
+		$key = md5( "$context | $name" );
+		return isset( self::$strings[ $key ] ) ? self::$strings[ $key ]['string'] : false;
 	}
 }
