@@ -9,6 +9,7 @@
  * @since 2.0
  */
 class PLL_WPML_API {
+	private static $original_language = null;
 
 	/**
 	 * Constructor
@@ -29,7 +30,7 @@ class PLL_WPML_API {
 		add_filter( 'wpml_language_is_active', array( $this, 'wpml_language_is_active' ), 10, 2 );
 		add_filter( 'wpml_is_rtl', array( $this, 'wpml_is_rtl' ) );
 		// wpml_language_form_input_field          => See wpml_add_language_form_field
-		// wpml_language_has_switched              => not implemented
+		// wpml_language_has_switched              => See wpml_switch_language
 		// wpml_element_trid                       => not implemented
 		// wpml_get_element_translations           => not implemented
 		// wpml_language_switcher                  => not implemented
@@ -42,7 +43,7 @@ class PLL_WPML_API {
 		// Retrieving Language Information for Content
 
 		add_filter( 'wpml_post_language_details', 'wpml_get_language_information', 10, 2 );
-		// wpml_switch_language                    => not implemented
+		add_action( 'wpml_switch_language', array( __CLASS__, 'wpml_switch_language' ), 10, 2 );
 		add_filter( 'wpml_element_language_code', array( $this, 'wpml_element_language_code' ), 10, 3 );
 		// wpml_element_language_details           => not applicable
 
@@ -173,6 +174,35 @@ class PLL_WPML_API {
 	 */
 	public function wpml_is_rtl( $null ) {
 		return pll_current_language( 'is_rtl' );
+	}
+
+	/**
+	 * Switches whole site to the given language or restores the language that was set when first calling this function.
+	 * Unlike the WPML original action, it is not possible to set the current language and the cookie to different values.
+	 *
+	 * @since 2.7
+	 *
+	 * @param null|string $lang   Language code to switch into, restores the original language if null.
+	 * @param bool|string $cookie Optionally also switches the cookie.
+	 */
+	public static function wpml_switch_language( $lang = null, $cookie = false ) {
+		if ( null === self::$original_language ) {
+			self::$original_language = PLL()->curlang;
+		}
+
+		if ( empty( $lang ) ) {
+			PLL()->curlang = self::$original_language;
+		} elseif ( 'all' === $lang ) {
+			PLL()->curlang = null;
+		} elseif ( in_array( $lang, pll_languages_list() ) ) {
+			PLL()->curlang = PLL()->model->get_language( $lang );
+		}
+
+		if ( $cookie && isset( PLL()->choose_lang ) ) {
+			PLL()->choose_lang->maybe_setcookie();
+		}
+
+		do_action( 'wpml_language_has_switched', $lang, $cookie, self::$original_language );
 	}
 
 	/**

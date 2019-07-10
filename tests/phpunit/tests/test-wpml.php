@@ -416,4 +416,18 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'My text to translate_en', $string_translation['en'] );
 		$this->assertEquals( 'My text to translate_fr', $string_translation['fr'] );
 	}
+
+	public function test_wpml_switch_language() {
+		PLL()->curlang = self::$polylang->model->get_language( 'en' );
+
+		do_action( 'wpml_switch_language', 'all' );
+		$this->assertNull( PLL()->curlang );
+
+		do_action( 'wpml_switch_language', 'fr' );
+		$this->assertEquals( 'fr', PLL()->curlang->slug );
+
+		// Restore to the original language.
+		do_action( 'wpml_switch_language' );
+		$this->assertEquals( 'en', PLL()->curlang->slug );
+	}
 }
