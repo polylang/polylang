@@ -3,19 +3,22 @@
  *
  * @since 2.5
  */
-wp.apiFetch.use( function( options, next ) {
-	// If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
-	if ( 'undefined' === typeof options.url ) {
-		if ( 'undefined' === typeof options.data ) {
-			// GET
-			options.path += ( ( options.path.indexOf ( '?' ) >= 0 ) ? '&lang=' : '?lang=' ) + getCurrentLanguage();
-		} else {
-			// PUT, POST
-			options.data.lang = getCurrentLanguage();
+
+wp.apiFetch.use(
+	function( options, next ) {
+		// If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
+		if ( 'undefined' === typeof options.url ) {
+			if ( 'undefined' === typeof options.data ) {
+				// GET
+				options.path += ( ( options.path.indexOf( '?' ) >= 0 ) ? '&lang=' : '?lang=' ) + getCurrentLanguage();
+			} else {
+				// PUT, POST
+				options.data.lang = getCurrentLanguage();
+			}
 		}
+		return next( options );
 	}
-	return next( options );
-} );
+);
 
 /**
  * Get the language from the HTML form
@@ -33,63 +36,74 @@ function getCurrentLanguage() {
  *
  * @since 2.5
  */
-jQuery( document ).ready(function( $ ) {
-	// savePost after changing the post's language and reload page for refreshing post translated data
-	$( '.post_lang_choice' ).change(function() {
-		const select = wp.data.select;
-		const dispatch = wp.data.dispatch;
-		const subscribe = wp.data.subscribe;
+jQuery( document ).ready(
+	function( $ ) {
+		// savePost after changing the post's language and reload page for refreshing post translated data
+		$( '.post_lang_choice' ).change(
+			function() {
+				const select = wp.data.select;
+				const dispatch = wp.data.dispatch;
+				const subscribe = wp.data.subscribe;
 
-		let unsubscribe = null;
+				let unsubscribe = null;
 
-		// Listen if the savePost is done
-		const savePostIsDone = new Promise( function( resolve, reject ) {
-			unsubscribe = subscribe( function() {
-				const isSavePostSucceeded = select('core/editor').didPostSaveRequestSucceed();
-				const isSavePostFailed = select('core/editor').didPostSaveRequestFail();
-				if ( isSavePostSucceeded || isSavePostFailed ) {
-					if ( isSavePostFailed ) {
-						reject();
-					} else {
-						resolve();
+				// Listen if the savePost is done
+				const savePostIsDone = new Promise(
+					function( resolve, reject ) {
+						unsubscribe = subscribe(
+							function() {
+								const isSavePostSucceeded = select( 'core/editor' ).didPostSaveRequestSucceed();
+								const isSavePostFailed = select( 'core/editor' ).didPostSaveRequestFail();
+								if ( isSavePostSucceeded || isSavePostFailed ) {
+									if ( isSavePostFailed ) {
+										reject();
+									} else {
+										resolve();
+									}
+								}
+							}
+						);
+					}
+				);
+
+				// Specific case for empty posts
+				if ( location.pathname.match( /post-new.php/gi ) ) {
+					const title = select( 'core/editor' ).getEditedPostAttribute( 'title' );
+					const content = select( 'core/editor' ).getEditedPostAttribute( 'content' );
+					const excerpt = select( 'core/editor' ).getEditedPostAttribute( 'excerpt' );
+					if ( '' === title && '' === content && '' === excerpt ) {
+						// Change the new_lang parameter with the new language value for reloading the page
+						if ( -1 != location.search.indexOf( 'new_lang' ) ) {
+							window.location.search = window.location.search.replace( /(?:new_lang=[^&]*)(&)?(.*)/, 'new_lang=' + this.value + '$1$2' );;
+						} else {
+							window.location.search = window.location.search + ( ( -1 != window.location.search.indexOf( '?' ) ) ? '&' : '?' ) + 'new_lang=' + this.value;
+						}
 					}
 				}
-			} );
-		});
 
-		// Specific case for empty posts
-		if ( location.pathname.match( /post-new.php/gi ) ) {
-			const title = select('core/editor').getEditedPostAttribute('title');
-			const content = select('core/editor').getEditedPostAttribute('content');
-			const excerpt = select('core/editor').getEditedPostAttribute('excerpt');
-			if ( '' === title && '' === content && '' === excerpt ) {
-				// Change the new_lang parameter with the new language value for reloading the page
-				if ( -1 != location.search.indexOf( 'new_lang' ) ) {
-					window.location.search = window.location.search.replace( /(?:new_lang=[^&]*)(&)?(.*)/, 'new_lang=' + this.value + '$1$2' );;
-				} else {
-					window.location.search = window.location.search + ( ( -1 != window.location.search.indexOf( '?' ) ) ? '&' : '?' ) + 'new_lang=' + this.value;
-				}
-			}
-		}
+				// For empty posts savePost does nothing
+				dispatch( 'core/editor' ).savePost();
 
-		// For empty posts savePost does nothing
-		dispatch( 'core/editor' ).savePost();
-
-		savePostIsDone
-			.then( function() {
-				// If the post is well saved, we can reload the page
-				unsubscribe();
-				window.location.reload();
-			}, function() {
-				// If the post save failed
-				unsubscribe();
-			} )
-			.catch( function() {
-				// If an exception is thrown
-				unsubscribe();
-			} );
-	} );
-} );
+				savePostIsDone.then(
+					function() {
+						// If the post is well saved, we can reload the page
+						unsubscribe();
+						window.location.reload();
+					}, 
+					function() {
+						// If the post save failed
+						unsubscribe();
+					} 
+				).catch(
+					function() {
+						// If an exception is thrown
+						unsubscribe();
+					}
+				);
+			} 
+		);
+	} 
+);
 
 /**
  * Handles internals of the metabox:
@@ -97,88 +111,116 @@ jQuery( document ).ready(function( $ ) {
  *
  * @since 1.5
  */
-jQuery( document ).ready(function( $ ) {
-	// Ajax for changing the post's language in the languages metabox
-	$( '.post_lang_choice' ).change(function() {
-		var data = {
-			action:     'post_lang_choice',
-			lang:       $( this ).val(),
-			post_type:  $( '#post_type' ).val(),
-			post_id:    $( '#post_ID' ).val(),
-			_pll_nonce: $( '#_pll_nonce' ).val()
-		}
-
-		$.post( ajaxurl, data , function( response ) {
-			var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
-			$.each( res.responses, function() {
-				switch ( this.what ) {
-					case 'translations': // Translations fields
-						$( '.translations' ).html( this.data );
-						init_translations();
-					break;
-					case 'flag': // Flag in front of the select dropdown
-						$( '.pll-select-flag' ).html( this.data );
-					break;
+jQuery( document ).ready(
+	function( $ ) {
+		// Ajax for changing the post's language in the languages metabox
+		$( '.post_lang_choice' ).change(
+			function() {
+				var data = {
+					action:     'post_lang_choice',
+					lang:       $( this ).val(),
+					post_type:  $( '#post_type' ).val(),
+					post_id:    $( '#post_ID' ).val(),
+					_pll_nonce: $( '#_pll_nonce' ).val()
 				}
-			});
-		});
-	});
 
-	// Translations autocomplete input box
-	function init_translations() {
-		$( '.tr_lang' ).each(function(){
-			var tr_lang = $( this ).attr( 'id' ).substring( 8 );
-			var td = $( this ).parent().parent().siblings( '.pll-edit-column' );
-
-			$( this ).autocomplete({
-				minLength: 0,
-
-				source: ajaxurl + '?action=pll_posts_not_translated' +
-					'&post_language=' + $( '.post_lang_choice' ).val() +
-					'&translation_language=' + tr_lang +
-					'&post_type=' + $( '#post_type' ).val() +
-					'&_pll_nonce=' + $( '#_pll_nonce' ).val(),
-
-				select: function( event, ui ) {
-					$( '#htr_lang_' + tr_lang ).val( ui.item.id );
-					td.html( ui.item.link );
-				},
-			});
-
-			// When the input box is emptied
-			$( this ).blur(function() {
-				if ( ! $( this ).val() ) {
-					$( '#htr_lang_' + tr_lang ).val( 0 );
-					td.html( td.siblings( '.hidden' ).children().clone() );
-				}
-			});
-		});
-	}
-
-	init_translations();
-
-	// Handle the response to a click on a Languages metabox button
-	$( '#ml_box' ).on( 'click', '.pll-button', function(){
-		var value = $( this ).hasClass( 'wp-ui-text-highlight' );
-		var id = $( this ).attr( 'id' );
-		var post_id = $( '#htr_lang_' + id.replace( 'pll_sync_post[', '' ).replace( ']', '' ) ).val();
-
-		if ( 'undefined' == typeof( post_id ) || 0 == post_id || value || confirm( confirm_text ) ) {
-			var data = {
-				action:     'toggle_' + id,
-				value:      value,
-				post_type:  $( '#post_type' ).val(),
-				_pll_nonce: $( '#_pll_nonce' ).val()
+				$.post(
+					ajaxurl, 
+					data,
+					function( response ) {
+						var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
+						$.each(
+							res.responses,
+							function() {
+								switch ( this.what ) {
+									case 'translations': // Translations fields
+										$( '.translations' ).html( this.data );
+										init_translations();
+									break;
+									case 'flag': // Flag in front of the select dropdown
+										$( '.pll-select-flag' ).html( this.data );
+									break;
+								}
+							}
+						);
+					}
+				);
 			}
+		);
 
-			$.post( ajaxurl, data , function( response ){
-				var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
-				$.each( res.responses, function() {
-					id = id.replace( '[', '\\[' ).replace( ']', '\\]' );
-					$( '#' + id ).toggleClass( 'wp-ui-text-highlight' ).attr( 'title', this.data ).children( 'span' ).html( this.data );
-					$( 'input[name="' + id + '"]' ).val( ! data['value'] );
-				});
-			});
+		// Translations autocomplete input box
+		function init_translations() {
+			$( '.tr_lang' ).each(
+				function(){
+					var tr_lang = $( this ).attr( 'id' ).substring( 8 );
+					var td = $( this ).parent().parent().siblings( '.pll-edit-column' );
+
+					$( this ).autocomplete(
+						{
+							minLength: 0,
+
+							source: ajaxurl + '?action=pll_posts_not_translated' +
+								'&post_language=' + $( '.post_lang_choice' ).val() +
+								'&translation_language=' + tr_lang +
+								'&post_type=' + $( '#post_type' ).val() +
+								'&_pll_nonce=' + $( '#_pll_nonce' ).val(),
+
+							select: function( event, ui ) {
+								$( '#htr_lang_' + tr_lang ).val( ui.item.id );
+								td.html( ui.item.link );
+							},
+						}
+					);
+
+					// When the input box is emptied
+					$( this ).blur(
+						function() {
+							if ( ! $( this ).val() ) {
+								$( '#htr_lang_' + tr_lang ).val( 0 );
+								td.html( td.siblings( '.hidden' ).children().clone() );
+							}
+						}
+					);
+				}
+			);
 		}
-	});
-});
+
+		init_translations();
+
+		// Handle the response to a click on a Languages metabox button
+		$( '#ml_box' ).on(
+			'click',
+			'.pll-button', 
+			function(){
+				var value = $( this ).hasClass( 'wp-ui-text-highlight' );
+				var id = $( this ).attr( 'id' );
+				var post_id = $( '#htr_lang_' + id.replace( 'pll_sync_post[', '' ).replace( ']', '' ) ).val();
+
+				if ( 'undefined' == typeof( post_id ) || 0 == post_id || value || confirm( confirm_text ) ) {
+					var data = {
+						action:     'toggle_' + id,
+						value:      value,
+						post_type:  $( '#post_type' ).val(),
+						_pll_nonce: $( '#_pll_nonce' ).val()
+					}
+
+					$.post(
+						ajaxurl,
+						data,
+						function( response ){
+							var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
+							$.each(
+								res.responses,
+								function() {
+									id = id.replace( '[', '\\[' ).replace( ']', '\\]' );
+									$( '#' + id ).toggleClass( 'wp-ui-text-highlight' ).attr( 'title', this.data ).children( 'span' ).html( this.data );
+									$( 'input[name="' + id + '"]' ).val( ! data['value'] );
+								}
+							);
+						}
+					);
+				}
+			}
+		);
+	}
+);
