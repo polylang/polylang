@@ -76,6 +76,11 @@ class PLL_Sync_Tax {
 			$strings = array_map( 'is_string', $terms );
 			if ( in_array( true, $strings, true ) ) {
 				$terms = get_the_terms( $object_id, $taxonomy );
+
+				if ( ! is_array( $terms ) ) {
+					return $newterms;
+				}
+
 				$terms = wp_list_pluck( $terms, 'term_id' );
 			}
 

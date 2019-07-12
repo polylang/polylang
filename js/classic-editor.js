@@ -25,7 +25,14 @@
 				r = wpAjax.broken;
 			}
 
-			r = $( '<div id="tagcloud-' + tax + '" class="the-tagcloud">' + r + '</div>' );
+			var tagInnerText = r;
+			var tagCloudId = 'tagcloud-' + tax;
+
+			r = $( '<div></div>' );
+			r.attr( 'id', tagCloudId );
+			r.attr( 'class', 'the-tagcloud' );
+			r.text( tagInnerText );
+
 			$( 'a', r ).click(function(){
 				tagBox.flushTags( $( this ).closest( '.inside' ).children( '.tagsdiv' ), this );
 				return false;

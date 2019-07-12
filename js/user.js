@@ -11,7 +11,9 @@ jQuery( document ).ready(function( $ ) {
 		desc = d.clone();
 		desc.attr( 'name', 'description_' + lang[0] );
 		desc.html( $( this ).val() );
-		td.append( '<div>' + lang[1] + '</div' );
+		var langInner = $( '<div></div>' );
+		langInner.text(lang[1]);
+		td.append( langInner );
 		td.append( desc );
 	});
 
