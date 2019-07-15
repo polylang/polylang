@@ -154,16 +154,17 @@ class PLL_T15S {
 			return $translations->{$slug};
 		}
 
-		$result = json_decode( wp_remote_retrieve_body( wp_remote_get( $url, array( 'timeout' => 2 ) ) ), true );
-		if ( is_array( $result ) ) {
-			$translations->{$slug}       = $result;
-			$translations->_last_checked = time();
-
-			set_site_transient( self::TRANSIENT_KEY_PLUGIN, $translations );
-			return $result;
-		}
+		$result = json_decode( wp_remote_retrieve_body( wp_remote_get( $url, array( 'timeout' => 3 ) ) ), true );
 
 		// Nothing found.
-		return array();
+		if ( ! is_array( $result ) ) {
+			$result = array();
+		}
+
+		$translations->{$slug}       = $result;
+		$translations->_last_checked = time();
+
+		set_site_transient( self::TRANSIENT_KEY_PLUGIN, $translations );
+		return $result;
 	}
 }
