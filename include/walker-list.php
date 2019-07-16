@@ -26,7 +26,7 @@ class PLL_Walker_List extends Walker {
 			esc_attr( $element->locale ),
 			esc_url( $element->url ),
 			$element->flag,
-			$args['show_flags'] ? sprintf( '<span style="margin-%1$s:0.3em;">%2$s</span>', is_rtl() ? 'right' : 'left', esc_html( $element->name ) ) : esc_html( $element->name ),
+			$args['show_flags'] && $args['show_names'] ? sprintf( '<span style="margin-%1$s:0.3em;">%2$s</span>', is_rtl() ? 'right' : 'left', esc_html( $element->name ) ) : esc_html( $element->name ),
 			'discard' === $args['item_spacing'] ? '' : "\t",
 			'discard' === $args['item_spacing'] ? '' : "\n"
 		);

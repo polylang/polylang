@@ -104,15 +104,14 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 		$args = array( 'echo' => 0 );
 		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
-		$switcher = mb_convert_encoding( $switcher, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
 		$doc = new DomDocument();
 		$doc->loadHTML( $switcher );
 		$xpath = new DOMXpath( $doc );
 
-		$a = $xpath->query( '//li/a[.="English"]' );
+		$a = $xpath->query( '//li/a[@lang="en-US"]' );
 		$this->assertEquals( get_permalink( $en ), $a->item( 0 )->getAttribute( 'href' ) );
 
-		$a = $xpath->query( '//li/a[.="Français"]' );
+		$a = $xpath->query( '//li/a[@lang="fr-FR"]' );
 		$this->assertEquals( get_permalink( $fr ), $a->item( 0 )->getAttribute( 'href' ) );
 
 		// Test echo option
@@ -120,6 +119,24 @@ class Switcher_Test extends PLL_UnitTestCase {
 		ob_start();
 		$this->switcher->the_languages( self::$polylang->links, $args );
 		$this->assertNotEmpty( ob_get_clean() );
+
+		// Bug fixed in 2.6.3: No span when showing only flags
+		$args = array( 'show_names' => 0, 'show_flags' => 1, 'echo' => 0 );
+		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
+		$doc = new DomDocument();
+		$doc->loadHTML( $switcher );
+		$xpath = new DOMXpath( $doc );
+
+		$this->assertEmpty( $xpath->query( '//li/a[@lang="en-US"]/span' )->length );
+
+		// A span is used when shwoing names and flags
+		$args = array( 'show_names' => 1, 'show_flags' => 1, 'echo' => 0 );
+		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
+		$doc = new DomDocument();
+		$doc->loadHTML( $switcher );
+		$xpath = new DOMXpath( $doc );
+
+		$this->assertEquals( 'English', $xpath->query( '//li/a[@lang="en-US"]/span' )->item( 0 )->nodeValue );
 	}
 
 	/**
