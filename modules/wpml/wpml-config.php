@@ -76,6 +76,7 @@ class PLL_WPML_Config {
 		if ( ! empty( $this->xmls ) ) {
 			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
 			add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
+			add_filter( 'pll_export_term_metas', array( $this, 'export_term_metas' ) );
 			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
 			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
 			add_filter( 'pll_export_post_metas', array( $this, 'export_post_metas' ) );
@@ -159,6 +160,28 @@ class PLL_WPML_Config {
 	public function export_post_metas( $metas ) {
 		foreach ( $this->xmls as $xml ) {
 			foreach ( $xml->xpath( 'custom-fields/custom-field' ) as $cf ) {
+				$attributes = $cf->attributes();
+				if ( 'translate' === (string) $attributes['action'] ) {
+					$metas[] = (string) $cf;
+				}
+			}
+		}
+		return $metas;
+	}
+
+	/**
+	 *
+	 * Choice of the term metas that will be sent to the export
+	 *
+	 * @since 2.7
+	 *
+	 * @param array $metas Term Metas array that are sent by default.
+	 *
+	 * @return array
+	 */
+	public function export_term_metas( $metas ) {
+		foreach ( $this->xmls as $xml ) {
+			foreach ( $xml->xpath( 'custom-term-fields/custom-term-field' ) as $cf ) {
 				$attributes = $cf->attributes();
 				if ( 'translate' === (string) $attributes['action'] ) {
 					$metas[] = (string) $cf;
