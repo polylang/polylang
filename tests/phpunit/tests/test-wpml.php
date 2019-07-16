@@ -413,7 +413,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'Context', $str['context'] );
 		$this->assertEquals( 'Name', $str['name'] );
 		$this->assertEquals( 'My text to translate 2', $str['string'] );
-		$this->assertEquals( 'My text to translate_en', $string_translation['en'] );
+		$this->assertEquals( 'My text to translate 2', $string_translation['en'] ); // The updated source string should be used for the default language.
 		$this->assertEquals( 'My text to translate_fr', $string_translation['fr'] );
 	}
 }
