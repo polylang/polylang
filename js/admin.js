@@ -170,7 +170,8 @@ jQuery( document ).ready(
 												// Ensure plain text
 												$button.find( '.screen-reader-text' ).text( btnText );
 
-												$this.append( $button );
+												// Whitelist because of how the button is built. See above
+												$this.append( $button ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 												$button.on(
 													'click.wp-dismiss-notice',
