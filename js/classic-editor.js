@@ -30,7 +30,10 @@
 					r = wpAjax.broken;
 				}
 
-				r = $( '<div id="tagcloud-' + tax + '" class="the-tagcloud">' + r + '</div>' );
+				// r = $( '<div id="tagcloud-' + tax + '" class="the-tagcloud">' + r + '</div>' );
+				// @see code from WordPress core https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/js/tags-box.js#L291
+				// @see wp_generate_tag_cloud function which generate the escaped HTML https://github.com/WordPress/WordPress/blob/a02b5cc2a8eecb8e076fbb7cf4de7bd2ec8a8eb1/wp-includes/category-template.php#L966-L975
+				r = $( '<div />' ).addClass( 'the-tagcloud' ).attr( 'id', 'tagcloud-' + tax ).html( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 				$( 'a', r ).click(
 					function(){
 						tagBox.flushTags( $( this ).closest( '.inside' ).children( '.tagsdiv' ), this );
@@ -101,26 +104,34 @@ jQuery( document ).ready(
 							function() {
 								switch ( this.what ) {
 									case 'translations': // translations fields
-										$( '.translations' ).html( this.data );
+										// Data is built and come from server side and is well escaped when necessary
+										$( '.translations' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 										init_translations();
 									break;
 									case 'taxonomy': // categories metabox for posts
 										var tax = this.data;
-										$( '#' + tax + 'checklist' ).html( this.supplemental.all );
-										$( '#' + tax + 'checklist-pop' ).html( this.supplemental.populars );
+										// @see wp_terms_checklist https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/template.php#L175
+										// @see https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/class-walker-category-checklist.php#L89-L111
+										$( '#' + tax + 'checklist' ).html( this.supplemental.all ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+										// @see wp_popular_terms_checklist https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/template.php#L236
+										$( '#' + tax + 'checklist-pop' ).html( this.supplemental.populars ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 										$( '#new' + tax + '_parent' ).replaceWith( this.supplemental.dropdown );
 										$( '#' + tax + '-lang' ).val( $( '.post_lang_choice' ).val() ); // hidden field
 									break;
 									case 'pages': // parent dropdown list for pages
-										$( '#parent_id' ).html( this.data );
+										// @see wp_dropdown_pages https://github.com/WordPress/WordPress/blob/5.2.2/wp-includes/post-template.php#L1186-L1208
+										// @see https://github.com/WordPress/WordPress/blob/5.2.2/wp-includes/class-walker-page-dropdown.php#L88
+										$( '#parent_id' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 									break;
 									case 'flag': // flag in front of the select dropdown
-										$( '.pll-select-flag' ).html( this.data );
+										// Data is built and come from server side and is well escaped when necessary
+										$( '.pll-select-flag' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 									break;
 									case 'permalink': // Sample permalink
 										var div = $( '#edit-slug-box' );
 										if ( '-1' != this.data && div.children().length ) {
-											div.html( this.data );
+											// @see get_sample_permalink_html https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/post.php#L1425-L1454
+											div.html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 										}
 									break;
 								}
@@ -161,7 +172,8 @@ jQuery( document ).ready(
 								'&_pll_nonce=' + $( '#_pll_nonce' ).val(),
 							select: function( event, ui ) {
 								$( '#htr_lang_' + tr_lang ).val( ui.item.id );
-								td.html( ui.item.link );
+								// ui.item.link is built and come from server side and is well escaped when necessary
+								td.html( ui.item.link ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 							},
 						}
 					);
@@ -171,7 +183,8 @@ jQuery( document ).ready(
 						function() {
 							if ( ! $( this ).val() ) {
 								$( '#htr_lang_' + tr_lang ).val( 0 );
-								td.html( td.siblings( '.hidden' ).children().clone() );
+								// Value is retrieved from HTML already generated server side
+								td.html( td.siblings( '.hidden' ).children().clone() ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 							}
 						}
 					);
@@ -207,7 +220,7 @@ jQuery( document ).ready(
 								res.responses,
 								function() {
 									id = id.replace( '[', '\\[' ).replace( ']', '\\]' );
-									$( '#' + id ).toggleClass( 'wp-ui-text-highlight' ).attr( 'title', this.data ).children( 'span' ).html( this.data );
+									$( '#' + id ).toggleClass( 'wp-ui-text-highlight' ).attr( 'title', this.data ).children( 'span' ).text( this.data );
 									$( 'input[name="' + id + '"]' ).val( ! data['value'] );
 								}
 							);
