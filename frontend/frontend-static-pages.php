@@ -42,10 +42,6 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		// Translates our page on front and page for posts properties
 		$this->init();
 
-		// Translates page for posts and page on front
-		add_filter( 'option_page_on_front', array( $this, 'translate_page_on_front' ) );
-		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
-
 		// Support theme customizer
 		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			add_filter( 'pre_option_page_on_front', 'pll_get_post', 20 );
@@ -60,19 +56,6 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 */
 	public function pll_home_requested() {
 		set_query_var( 'page_id', $this->curlang->page_on_front );
-	}
-
-	/**
-	 * Translates page on front
-	 *
-	 * @since 1.8
-	 *
-	 * @param int $v page on front page id
-	 * @return int
-	 */
-	public function translate_page_on_front( $v ) {
-		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
-		return isset( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $v;
 	}
 
 	/**

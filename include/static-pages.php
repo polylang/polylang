@@ -36,12 +36,16 @@ class PLL_Static_Pages {
 
 		// OEmbed
 		add_filter( 'oembed_request_post_id', array( $this, 'oembed_request_post_id' ), 10, 2 );
+
+		add_filter( 'option_page_on_front', array( $this, 'translate_static_page' ), 10, 2 );
+		add_filter( 'option_page_for_posts', array( $this, 'translate_static_page' ), 10, 2 );
 	}
 
 	/**
 	 * Stores the page on front and page for posts ids
 	 *
 	 * @since 1.8
+	 * @since 2.7 This is used to get the option id stored in the database. Calls to get_option( 'page_on_front' ) or get_option( 'page_for_posts ) would return the current language's home / blog page instead.
 	 */
 	public function init() {
 		if ( 'page' == get_option( 'show_on_front' ) ) {
@@ -91,16 +95,31 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Translates page for posts
+	 * Translates static pages from the options
+	 *
+	 * @since 1.8
+	 * @since 2.7 Refactored from translate_page_on_front() and translate_page_for_posts()
+	 *
+	 * @param int $page_id Page's database id
+	 * @param string $page_name Either page_on_front or page_for_posts
+	 * @return int
+	 */
+	public function translate_static_page( $page_id, $page_name ) {
+		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
+		return isset( $this->curlang->$page_name ) && ! doing_action( 'switch_blog' ) ? $this->curlang->$page_name : $page_id;
+	}
+
+	/**
+	 * Translates page on front
 	 *
 	 * @since 1.8
 	 *
-	 * @param int $v page for posts page id
+	 * @param int $v page on front page id
 	 * @return int
 	 */
-	public function translate_page_for_posts( $v ) {
+	public function translate_page_on_front( $v ) {
 		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
-		return isset( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $v;
+		return isset( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $v;
 	}
 
 	/**
