@@ -6,7 +6,19 @@
  * @since 1.8
  */
 class PLL_Admin_Static_Pages extends PLL_Static_Pages {
+	/**
+	 * @var PLL_Links
+	 */
 	protected $links;
+
+	/**
+	 * A reference to the language the admin panel is currently translated into
+	 *
+	 * @since 2.7
+	 *
+	 * @var PLL_Language
+	 */
+	protected $filter_lang;
 
 	/**
 	 * Constructor: setups filters and actions
@@ -19,6 +31,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		parent::__construct( $polylang );
 
 		$this->links = &$polylang->links;
+		$this->filter_lang = &$polylang->filter_lang;
 
 		// Removes the editor and the template select dropdown for pages for posts
 		add_filter( 'use_block_editor_for_post', array( $this, 'use_block_editor_for_post' ), 10, 2 ); // Since WP 5.0
@@ -38,6 +51,8 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		add_filter( 'pre_update_option_show_on_front', array( $this, 'update_show_on_front' ), 10, 2 );
 
 		add_action( 'admin_notices', array( $this, 'notice_must_translate' ) );
+
+		add_filter( 'wp_dropdown_pages', array( $this, 'correct_dropdown_display' ), 10, 2 );
 	}
 
 	/**
@@ -224,5 +239,27 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Use the translated page for the page selection
+	 *
+	 * @since 2.7
+	 *
+	 * @param string $html The previously computed HTML, not in use.
+	 * @param array  $args The arguments passed by the WordPress options-reading.php page.
+	 *
+	 * @return string The new computed HTML
+	 */
+	public function correct_dropdown_display( $html, $args ) {
+		remove_filter( 'wp_dropdown_pages', array( $this, 'correct_dropdown_display' ) );
+
+		if ( ! empty( $this->filter_lang ) ) {
+			$pagename = $args['name'];
+			$html = wp_dropdown_pages( array_merge( $args, array( 'selected' => $this->filter_lang->$pagename ) ) );
+		}
+
+		return $html;
+
 	}
 }
