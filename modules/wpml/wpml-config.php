@@ -55,20 +55,7 @@ class PLL_WPML_Config {
 			}
 		}
 
-		// Theme
-		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-			$this->xmls[ get_template() ] = $xml;
-		}
-
-		// Child theme
-		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-			$this->xmls[ get_stylesheet() ] = $xml;
-		}
-
-		// Custom
-		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-			$this->xmls['Polylang'] = $xml;
-		}
+		$this->load_wpml_config_file();
 
 		if ( ! empty( $this->xmls ) ) {
 			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
@@ -101,6 +88,9 @@ class PLL_WPML_Config {
 	 * @return array the list of custom fields to copy or synchronize
 	 */
 	public function copy_post_metas( $metas, $sync ) {
+
+		$this->load_wpml_config_file();
+
 		foreach ( $this->xmls as $xml ) {
 			foreach ( $xml->xpath( 'custom-fields/custom-field' ) as $cf ) {
 				$attributes = $cf->attributes();
@@ -124,6 +114,9 @@ class PLL_WPML_Config {
 	 * @return array The list of term metas to copy or synchronize.
 	 */
 	public function copy_term_metas( $metas, $sync ) {
+
+		$this->load_wpml_config_file();
+
 		foreach ( $this->xmls as $xml ) {
 			foreach ( $xml->xpath( 'custom-term-fields/custom-term-field' ) as $cf ) {
 				$attributes = $cf->attributes();
@@ -147,6 +140,9 @@ class PLL_WPML_Config {
 	 * @return array list of post type names for which Polylang manages language and translations
 	 */
 	public function translate_types( $types, $hide ) {
+
+		$this->load_wpml_config_file();
+
 		foreach ( $this->xmls as $xml ) {
 			foreach ( $xml->xpath( 'custom-types/custom-type' ) as $pt ) {
 				$attributes = $pt->attributes();
@@ -170,6 +166,9 @@ class PLL_WPML_Config {
 	 * @return array list of taxonomy names for which Polylang manages language and translations
 	 */
 	public function translate_taxonomies( $taxonomies, $hide ) {
+
+		$this->load_wpml_config_file();
+
 		foreach ( $this->xmls as $xml ) {
 			foreach ( $xml->xpath( 'taxonomies/taxonomy' ) as $tax ) {
 				$attributes = $tax->attributes();
@@ -292,4 +291,26 @@ class PLL_WPML_Config {
 		}
 		return $options;
 	}
+
+	/**
+	 * Load WPML-Config.xml and assign it to local variable.
+	 */
+
+	protected function load_wpml_config_file() {
+		// Theme
+		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+			$this->xmls[ get_template() ] = $xml;
+		}
+
+		// Child theme
+		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+			$this->xmls[ get_stylesheet() ] = $xml;
+		}
+
+		// Custom
+		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
+			$this->xmls['Polylang'] = $xml;
+		}
+	}
+
 }
