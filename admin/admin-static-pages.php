@@ -7,6 +7,8 @@
  */
 class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	/**
+	 * Used to build links in admin notices
+	 *
 	 * @var PLL_Links
 	 */
 	protected $links;
@@ -256,7 +258,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 
 		if ( ! empty( $this->filter_lang ) ) {
 			$pagename = $args['name'];
-			$html = wp_dropdown_pages( array_merge( $args, array( 'selected' => $this->filter_lang->$pagename ) ) );
+			$html = wp_dropdown_pages( array_merge( $args, array( 'selected' => $this->filter_lang->$pagename ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
