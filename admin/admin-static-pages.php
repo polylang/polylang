@@ -54,7 +54,6 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 
 		add_action( 'admin_notices', array( $this, 'notice_must_translate' ) );
 
-		add_filter( 'wp_dropdown_pages', array( $this, 'correct_dropdown_display' ), 10, 2 );
 	}
 
 	/**
@@ -241,27 +240,5 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 				);
 			}
 		}
-	}
-
-	/**
-	 * Use the translated page for the page selection
-	 *
-	 * @since 2.7
-	 *
-	 * @param string $html The previously computed HTML, not in use.
-	 * @param array  $args The arguments passed by the WordPress options-reading.php page.
-	 *
-	 * @return string The new computed HTML
-	 */
-	public function correct_dropdown_display( $html, $args ) {
-		remove_filter( 'wp_dropdown_pages', array( $this, 'correct_dropdown_display' ) );
-
-		if ( ! empty( $this->filter_lang ) ) {
-			$pagename = $args['name'];
-			$html = wp_dropdown_pages( array_merge( $args, array( 'selected' => $this->filter_lang->$pagename ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
-
-		return $html;
-
 	}
 }

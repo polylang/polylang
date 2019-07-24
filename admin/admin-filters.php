@@ -42,6 +42,8 @@ class PLL_Admin_Filters extends PLL_Filters {
 		}
 
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
+
+		add_filter( 'wp_dropdown_pages', array( $this, 'correct_dropdown_display' ), 10, 3 );
 	}
 
 	/**
@@ -263,5 +265,48 @@ class PLL_Admin_Filters extends PLL_Filters {
 			$classes .= ' pll-dir-' . ( $this->curlang->is_rtl ? 'rtl' : 'ltr' );
 		}
 		return $classes;
+	}
+
+	/**
+	 * Use the translated page for the page selection
+	 *
+	 * @since 2.7
+	 *
+	 * @param string $html The previously computed HTML, not in use.
+	 * @param array  $args The arguments passed by the WordPress options-reading.php page.
+	 * @param int[]  $pages Ids of the queried pages.
+	 *
+	 * @return string The new computed HTML
+	 */
+	public function correct_dropdown_display( $html, $args, $pages ) {
+		if ( ! array_key_exists( 'avoid_recursion', $args ) || false === $args['avoid_recursion'] ) {
+			$new_args = [];
+
+
+			$pages_id = array_map(
+				function ( $post ) {
+					return $post->ID;
+				},
+				$pages
+			);
+
+			// Select the correct translation of the selected element.
+			if ( ! in_array( $args['selected'], $pages_id ) ) {
+				$translation = $this->model->post->get_translation( $args['selected'], $this->curlang );
+				if ( false != $translation ) {
+					$new_args['selected'] = $translation;
+				}
+			}
+
+			if ( ! empty( $new_args ) ) {
+				$args = array_merge(
+					$args,
+					$new_args,
+					array( 'avoid_recursion' => true )
+				);
+				$html = wp_dropdown_pages( $html, $args, $pages ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+		}
+		return $html;
 	}
 }
