@@ -97,6 +97,10 @@ class PLL_Frontend extends PLL_Base {
 					new PLL_Share_Term_Slug( $this );
 			}
 		}
+
+		if ( class_exists( 'PLL_Sync_Post' ) ) {
+			$this->sync_post = new PLL_Sync_Post( $this );
+		}
 	}
 
 	/**
