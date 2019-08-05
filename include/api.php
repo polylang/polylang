@@ -37,10 +37,13 @@ function pll_the_languages( $args = '' ) {
  *
  * @since 0.8.1
  *
- * @param string $field Optional, the language field to return ( see PLL_Language ), defaults to 'slug'
- * @return string|bool The requested field for the current language
+ * @param string $field Optional, the language field to return ( see PLL_Language ), defaults to 'slug', pass OBJECT constant to get the language object.
+ * @return string|PLL_Language|bool The requested field for the current language
  */
 function pll_current_language( $field = 'slug' ) {
+	if ( OBJECT === $field ) {
+		return PLL()->curlang;
+	}
 	return isset( PLL()->curlang->$field ) ? PLL()->curlang->$field : false;
 }
 
@@ -49,11 +52,20 @@ function pll_current_language( $field = 'slug' ) {
  *
  * @since 1.0
  *
- * @param string $field Optional, the language field to return ( see PLL_Language ), defaults to 'slug'
- * @return string The requested field for the default language
+ * @param string $field Optional, the language field to return ( see PLL_Language ), defaults to 'slug', pass OBJECT constant to get the language object.
+ * @return string|PLL_Language|bool The requested field for the default language
  */
 function pll_default_language( $field = 'slug' ) {
-	return isset( PLL()->options['default_lang'] ) && ( $lang = PLL()->model->get_language( PLL()->options['default_lang'] ) ) && isset( $lang->$field ) ? $lang->$field : false;
+	if ( isset( PLL()->options['default_lang'] ) ) {
+		$lang = PLL()->model->get_language( PLL()->options['default_lang'] );
+		if ( $lang ) {
+			if ( OBJECT === $field ) {
+				return $lang;
+			}
+			return isset( $lang->$field ) ? $lang->$field : false;
+		}
+	}
+	return false;
 }
 
 /**
