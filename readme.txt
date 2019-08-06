@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 2.6.2
+Stable tag: 2.6.3
 License: GPLv3 or later
 
 Making WordPress multilingual
@@ -75,6 +75,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6.3 (2019-08-06) =
+
+* Pro: Fix fatal error when updating an ACF field from frontend
+* Pro: Add action 'pll_post_synchronized'
+* Allow to get the current or default language object using the API. Props Jory Hogeveen. #359
+* Fix empty span in languages switcher widget when showing only flags
+* Fix wpml_register_single_string when updating the original string
 
 = 2.6.2 (2019-07-16) =
 
