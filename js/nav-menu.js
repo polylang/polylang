@@ -9,15 +9,18 @@ jQuery( document ).ready(
 							var item = $( this ).attr( 'id' ).substring( 19 );
 							$( this ).children( 'p:not( .field-move )' ).remove(); // remove default fields we don't need
 
+							// item is a number part of id of parent menu item built by WordPress
+							// pll_data is built server side with i18n strings without HTML and data retrieved from post meta
+							// the usage of attr method is safe before append call. 
 							h = $( '<input>' ).attr(
 								{
-									type:  'hidden',
-									id:    'edit-menu-item-title-' + item,
-									name:  'menu-item-title[' + item + ']',
+									type: 'hidden',
+									id:   'edit-menu-item-title-' + item,
+									name: 'menu-item-title[' + item + ']',
 									value: pll_data.title
 								}
 							);
-							$( this ).append( h );
+							$( this ).append( h ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 							h = $( '<input>' ).attr(
 								{
@@ -27,7 +30,7 @@ jQuery( document ).ready(
 									value: '#pll_switcher'
 								}
 							);
-							$( this ).append( h );
+							$( this ).append( h ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 							// a hidden field which exits only if our jQuery code has been executed
 							h = $( '<input>' ).attr(
@@ -38,7 +41,7 @@ jQuery( document ).ready(
 									value: 1
 								}
 							);
-							$( this ).append( h );
+							$( this ).append( h ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 							ids = Array( 'hide_if_no_translation', 'hide_current', 'force_home', 'show_flags', 'show_names', 'dropdown' ); // reverse order
 
@@ -46,8 +49,10 @@ jQuery( document ).ready(
 							for ( var i = 0, idsLength = ids.length; i < idsLength; i++ ) {
 								p = $( '<p>' ).attr( 'class', 'description' );
 								$( this ).prepend( p );
+								// item is a number part of id of parent menu item built by WordPress
+								// pll_data is built server side with i18n strings without HTML
 								label = $( '<label>' ).attr( 'for', 'edit-menu-item-' + ids[ i ] + '-' + item ).text( ' ' + pll_data.strings[ ids[ i ] ] );
-								p.append( label );
+								p.append( label ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 								cb = $( '<input>' ).attr(
 									{
 										type:  'checkbox',

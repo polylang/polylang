@@ -197,6 +197,7 @@ jQuery( document ).ready(
 			'.cancel',
 			function(){
 				$( '#pll-translate' ).siblings( '.hidden' ).remove();
+				// #pll-translate is built and come from server side and is well escaped when necessary
 				$( '#pll-bulk-translate' ).append( $( '#pll-translate' ) ); //phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 				// Move focus back to the Bulk Action button that was activated.
