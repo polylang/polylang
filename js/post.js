@@ -197,7 +197,7 @@ jQuery( document ).ready(
 			'.cancel',
 			function(){
 				$( '#pll-translate' ).siblings( '.hidden' ).remove();
-				$( '#pll-bulk-translate' ).append( $( '#pll-translate' ) );
+				$( '#pll-bulk-translate' ).append( $( '#pll-translate' ) ); //phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 				// Move focus back to the Bulk Action button that was activated.
 				$( '#' + t.whichBulkButtonId ).focus();
