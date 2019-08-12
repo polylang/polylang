@@ -19,15 +19,16 @@ jQuery(
 			widget = $( widget );
 			var title  = $( '.widget-top .widget-title h3', widget ),
 				locale = $( '.pll-lang-choice option:selected', widget ).val(),
-				icon   = ( locale && flags.hasOwnProperty( locale ) ) ? flags[ locale ] : null;
+				// Icon is HTML built and come from server side and is well escaped when necessary
+				icon = ( locale && flags.hasOwnProperty( locale ) ) ? flags[ locale ] : null;
 
 			if ( icon ) {
 				icon += ' &nbsp; ';
 				var current = $( '.pll-lang', title );
 				if ( current.length ) {
-					current.html( icon );
+					current.html( icon ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 				} else {
-					flag = '<span class="pll-lang">' + icon + '</span>';
+					flag = $( '<span />' ).addClass( 'pll-lang' ).html( icon );  // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 					title.prepend( flag );
 				}
 			} else {

@@ -126,7 +126,8 @@ jQuery( document ).ready(
 								'&_pll_nonce=' + $( '#_pll_nonce' ).val(),
 							select: function( event, ui ) {
 								$( '#htr_lang_' + tr_lang ).val( ui.item.id );
-								td.html( ui.item.link );
+								// ui.item.link is built and come from server side and is well escaped when necessary
+								td.html( ui.item.link ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 							},
 						}
 					);
@@ -136,7 +137,8 @@ jQuery( document ).ready(
 						function() {
 							if ( ! $( this ).val() ) {
 								$( '#htr_lang_' + tr_lang ).val( 0 );
-								td.html( td.siblings( '.hidden' ).children().clone() );
+								// Value is retrieved from HTML already generated server side
+								td.html( td.siblings( '.hidden' ).children().clone() ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 							}
 						}
 					);
@@ -173,7 +175,8 @@ jQuery( document ).ready(
 							function() {
 								switch ( this.what ) {
 									case 'translations': // translations fields
-										$( "#term-translations" ).html( this.data );
+										// Data is built and come from server side and is well escaped when necessary
+										$( "#term-translations" ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 										init_translations();
 									break;
 									case 'parent': // parent dropdown list for hierarchical taxonomies
@@ -183,7 +186,8 @@ jQuery( document ).ready(
 										$( '.tagcloud' ).replaceWith( this.data );
 									break;
 									case 'flag': // flag in front of the select dropdown
-										$( '.pll-select-flag' ).html( this.data );
+										// Data is built and come from server side and is well escaped when necessary
+										$( '.pll-select-flag' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 									break;
 								}
 							}
