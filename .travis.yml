@@ -6,11 +6,11 @@ dist: trusty
 notifications:
   email:
     on_success: never
-    on_failure: change
+    on_failure: never
 
 branches:
   only:
-    - master
+    - travis-phpcs
 
 php:
   - 5.6
@@ -22,12 +22,15 @@ env:
 
 matrix:
   include:
+    - name: PHPCS WPCS & WPCS VIP Minimum
+      php: 7.2
+      env: WP_VERSION=latest WP_MULTISITE=0 PHPCS=1
     - php: 7.1
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 7.1
       env: WP_VERSION=latest WP_MULTISITE=1
     - php: 7.2
-      env: WP_VERSION=latest WP_MULTISITE=0 PHPCS=1
+      env: WP_VERSION=latest WP_MULTISITE=0
     - php: 7.3
       env: WP_VERSION=latest WP_MULTISITE=0
 
@@ -46,8 +49,9 @@ before_script:
     fi
   - |
     if [[ "$PHPCS" == "1" ]]; then
+      composer global require dealerdirect/phpcodesniffer-composer-installer
       composer global require wp-coding-standards/wpcs
-      phpcs --config-set installed_paths $HOME/.config/composer/vendor/wp-coding-standards/wpcs
+      composer global require automattic/vipwpcs
     fi
 
 script:
@@ -55,4 +59,7 @@ script:
     if [[ "$PHPCS" == "1" ]]; then
       phpcs -s --extensions=php .
     fi
-  - phpunit
+  - |
+    if [[ "$PHPCS" != "1" ]]; then
+      phpunit
+    fi

@@ -8,6 +8,7 @@
 
 	<rule ref="WordPressVIPMinimum">
 		<exclude-pattern>tests/*</exclude-pattern>
+		<exclude-pattern>*.php</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress">
