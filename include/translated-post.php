@@ -179,9 +179,19 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 			return is_user_logged_in() && ( current_user_can( $post_type_object->cap->read_private_posts ) || $user->ID == $post->post_author ); // Comparison must not be strict!
 		}
 
-		if ( 'edit' === $context && 'draft' === $post->post_status ) {
-			$user = wp_get_current_user();
-			return is_user_logged_in() && ( current_user_can( 'edit_posts' ) || $user->ID == $post->post_author ); // Comparison must not be strict!
+		// In edit context, show draft and future posts.
+		if ( 'edit' === $context ) {
+			$states = get_post_stati(
+				array(
+					'protected'              => true,
+					'show_in_admin_all_list' => true,
+				)
+			);
+
+			if ( in_array( $post->post_status, $states ) ) {
+				$user = wp_get_current_user();
+				return is_user_logged_in() && ( current_user_can( 'edit_posts' ) || $user->ID == $post->post_author ); // Comparison must not be strict!
+			}
 		}
 
 		return false;
