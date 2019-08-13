@@ -57,7 +57,7 @@ before_script:
 script:
   - |
     if [[ "$PHPCS" == "1" ]]; then
-      phpcs -s --extensions=php .
+      phpcs -s --extensions=php,js .
     fi
   - |
     if [[ "$PHPCS" != "1" ]]; then
