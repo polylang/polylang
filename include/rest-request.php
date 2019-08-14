@@ -29,6 +29,10 @@ class PLL_REST_Request extends PLL_Base {
 		parent::init();
 
 		if ( $this->model->get_languages_list() ) {
+
+			/** This action is documented in include/class-polylang.php */
+			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
+
 			$this->filters_links = new PLL_Filters_Links( $this );
 
 			// Static front page and page for posts
