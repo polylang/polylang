@@ -178,7 +178,7 @@ abstract class PLL_Sync_Metas {
 					$to_copy = $this->get_metas_to_copy( $id, $tr_id, $lang, true );
 					if ( in_array( $meta_key, $to_copy ) ) {
 						$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
-						add_metadata( $this->meta_type, $tr_id, $meta_key, wp_slash( $meta_value ) );
+						add_metadata( $this->meta_type, $tr_id, $meta_key, is_string( $meta_value ) ? wp_slash( $meta_value ) : $meta_value );
 					}
 				}
 			}
@@ -235,7 +235,7 @@ abstract class PLL_Sync_Metas {
 						if ( empty( $this->prev_value[ $hash ] ) || $this->prev_value[ $hash ] === $prev_meta->meta_value ) {
 							$prev_value = $this->maybe_translate_value( $prev_meta->meta_value, $meta_key, $id, $tr_id, $lang );
 							$meta_value = $this->maybe_translate_value( $meta_value, $meta_key, $id, $tr_id, $lang );
-							update_metadata( $this->meta_type, $tr_id, $meta_key, wp_slash( $meta_value ), $prev_value );
+							update_metadata( $this->meta_type, $tr_id, $meta_key, is_string( $meta_value ) ? wp_slash( $meta_value ) : $meta_value, $prev_value );
 						}
 					}
 				}
@@ -287,7 +287,7 @@ abstract class PLL_Sync_Metas {
 						if ( '' !== $value && null !== $value && false !== $value ) { // Same test as WP
 							$value = $this->maybe_translate_value( $value, $key, $id, $tr_id, $lang );
 						}
-						delete_metadata( $this->meta_type, $tr_id, $key, wp_slash( $value ) );
+						delete_metadata( $this->meta_type, $tr_id, $key, is_string( $value ) ? wp_slash( $value ) : $value );
 					}
 				}
 			}
@@ -328,7 +328,7 @@ abstract class PLL_Sync_Metas {
 					$value = reset( $metas[ $key ] );
 					$value = maybe_unserialize( $value );
 					$to_value = $this->maybe_translate_value( $value, $key, $from, $to, $lang );
-					update_metadata( $this->meta_type, $to, $key, wp_slash( $to_value ) );
+					update_metadata( $this->meta_type, $to, $key, is_string( $to_value ) ? wp_slash( $to_value ) : $to_value );
 				} else {
 					// Multiple custom fields, either in the source or the target
 					if ( ! empty( $tr_metas[ $key ] ) ) {
@@ -339,7 +339,7 @@ abstract class PLL_Sync_Metas {
 					foreach ( $metas[ $key ] as $value ) {
 						$value = maybe_unserialize( $value );
 						$to_value = $this->maybe_translate_value( $value, $key, $from, $to, $lang );
-						add_metadata( $this->meta_type, $to, $key, wp_slash( $to_value ) );
+						add_metadata( $this->meta_type, $to, $key, is_string( $to_value ) ? wp_slash( $to_value ) : $to_value );
 					}
 				}
 			}
