@@ -44,6 +44,11 @@ abstract class PLL_Base {
 		}
 
 		if ( $this->model->get_languages_list() ) {
+			// Used by content duplicate and post synchronization
+			if ( class_exists( 'PLL_Sync_Content' ) ) {
+				$this->sync_content = new PLL_Sync_Content( $this );
+			}
+
 			// Active languages
 			if ( class_exists( 'PLL_Active_Languages' ) ) {
 				$this->active_languages = new PLL_Active_Languages( $this );

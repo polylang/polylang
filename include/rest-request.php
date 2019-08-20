@@ -61,10 +61,6 @@ class PLL_REST_Request extends PLL_Base {
 				$this->translate_slugs = new PLL_Translate_Slugs( $slugs_model, $curlang );
 			}
 
-			if ( class_exists( 'PLL_Sync_Content' ) ) {
-				$this->sync_content = new PLL_Sync_Content( $this );
-			}
-
 			if ( class_exists( 'PLL_Sync_Post_REST' ) ) {
 				$this->sync_post = new PLL_Sync_Post_REST( $this );
 			}
