@@ -102,7 +102,8 @@ abstract class PLL_Choose_Lang {
 				time() + $expiration,
 				COOKIEPATH,
 				2 == $this->options['force_lang'] ? wp_parse_url( $this->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN,
-				is_ssl()
+				is_ssl(),
+				true
 			);
 		}
 	}
