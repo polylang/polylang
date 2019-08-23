@@ -175,7 +175,8 @@ class PLL_Sync {
 			$translations = $this->model->term->get_translations( $term_id );
 
 			foreach ( $translations as $lang => $tr_id ) {
-				if ( ! empty( $tr_id ) && $tr_id !== $term_id && $tr_parent = $this->model->term->get_translation( $term->parent, $lang ) ) {
+				if ( ! empty( $tr_id ) && $tr_id !== $term_id ) {
+					$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 					$wpdb->update(
 						$wpdb->term_taxonomy,
 						array( 'parent' => isset( $tr_parent ) ? $tr_parent : 0 ),

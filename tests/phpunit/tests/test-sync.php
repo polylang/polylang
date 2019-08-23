@@ -409,6 +409,40 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $en, get_category( $from )->parent );
 	}
 
+	/**
+	 * Test the child sync if we edit (delete) the translated term parent
+	 * Bug fixed in 2.6.4
+	 */
+	function test_child_sync_if_delete_translated_term_parent() {
+		// Children.
+		$child_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $child_en, 'en' );
+
+		$child_fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $child_fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $child_en, array( 'fr' => $child_fr ) );
+
+		// Parents.
+		$parent_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $parent_en, 'en' );
+
+		wp_update_term( $child_en, 'category', array( 'parent' => $parent_en ) );
+
+		$parent_fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $parent_fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $parent_en, array( 'fr' => $parent_fr ) );
+
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_update_term( $child_fr, 'category', array( 'parent' => $parent_fr ) );
+
+		wp_update_term( $child_fr, 'category', array( 'parent' => 0 ) );
+
+		$this->assertEquals( get_term( $child_en )->parent, 0 );
+	}
+
 	function test_create_post_translation_with_sync_post_date() {
 		// source post
 		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
