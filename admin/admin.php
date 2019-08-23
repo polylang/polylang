@@ -150,6 +150,13 @@ class PLL_Admin extends PLL_Admin_Base {
 		if ( pll_use_block_editor_plugin() ) {
 			$this->block_editor_plugin = new PLL_Block_Editor_Plugin( $this );
 		}
+
+		// FIXME: Specific for WP CRON and WP CLI as the action admin_init is not fired.
+		// Waiting for a better way to handle the cases without loading the complete admin.
+		if ( wp_doing_cron() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			$this->maybe_load_sync_post();
+		}
+
 	}
 
 	/**
