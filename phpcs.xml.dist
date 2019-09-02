@@ -2,6 +2,10 @@
 <ruleset name="Polylang">
 	<description>Coding standards for Polylang</description>
 
+	<rule ref="PHPCompatibilityWP">
+		<config name="testVersion" value="5.6-"/>
+	</rule>
+
 	<rule ref="WordPress">
 		<exclude name="Generic.Classes.DuplicateClassName.Found"/>
 		<exclude name="Generic.Commenting.Fixme.TaskFound"/>
