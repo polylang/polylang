@@ -22,7 +22,7 @@ env:
 
 matrix:
   include:
-    - name: PHPCS WPCS & WPCS VIP Minimum
+    - name: PHPCS
       php: 7.2
       env: WP_VERSION=latest WP_MULTISITE=0 PHPCS=1
     - php: 7.1
@@ -52,6 +52,7 @@ before_script:
       composer global require dealerdirect/phpcodesniffer-composer-installer
       composer global require wp-coding-standards/wpcs
       composer global require automattic/vipwpcs
+      composer global require phpcompatibility/phpcompatibility-wp
     fi
 
 script:
