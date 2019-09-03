@@ -18,7 +18,7 @@ php:
 
 env:
   - WP_VERSION=latest WP_MULTISITE=0
-  - WP_VERSION=4.7 WP_MULTISITE=0
+  - WP_VERSION=4.9 WP_MULTISITE=0
 
 matrix:
   include:
@@ -30,12 +30,6 @@ matrix:
       env: WP_VERSION=latest WP_MULTISITE=0 PHPCS=1
     - php: 7.3
       env: WP_VERSION=latest WP_MULTISITE=0
-    - php: 5.3
-      env: WP_VERSION=5.1 WP_MULTISITE=0
-      dist: precise
-    - php: 5.3
-      env: WP_VERSION=4.7 WP_MULTISITE=0
-      dist: precise
 
 before_script:
   - |
