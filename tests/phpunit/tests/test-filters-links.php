@@ -100,12 +100,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 			'file'           => 'image.jpg',
 		);
 
-		if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
-			$attachment_id = $this->factory->attachment->create_object( 'image.jpg', 0, $args );
-		} else {
-			$attachment_id = $this->factory->attachment->create_object( $args );
-		}
-
+		$attachment_id = $this->factory->attachment->create_object( $args );
 		self::$polylang->model->post->set_language( $attachment_id, 'en' );
 		$this->assertEquals( home_url( '/test/image-en/' ), get_permalink( $attachment_id ) );
 
@@ -121,12 +116,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 			'file'           => 'image.jpg',
 		);
 
-		if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
-			$attachment_id = $this->factory->attachment->create_object( 'image.jpg', 0, $args );
-		} else {
-			$attachment_id = $this->factory->attachment->create_object( $args );
-		}
-
+		$attachment_id = $this->factory->attachment->create_object( $args );
 		self::$polylang->model->post->set_language( $attachment_id, 'fr' );
 		$this->assertEquals( home_url( '/fr/essai/image-fr/' ), get_permalink( $attachment_id ) );
 	}

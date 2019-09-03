@@ -451,13 +451,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		unset( $wp_settings_errors ); // cleanup
 	}
 
-	// bug fixed in 2.0
+	// Bug fixed in 2.0
 	function test_get_post_type_archive_link_for_posts() {
-		// get_post_type_archive_link() supports posts since WP 4.5
-		if ( version_compare( $GLOBALS['wp_version'], '4.5', '<' ) ) {
-			$this->markTestSkipped();
-		}
-
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 		$this->assertEquals( 'http://example.org/fr/articles/', get_post_type_archive_link( 'post' ) );
 	}

@@ -61,10 +61,6 @@ class Settings_Test extends PLL_UnitTestCase {
 	}
 
 	function test_notice_for_objects_with_no_lang() {
-		if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
-			$this->markTestSkipped(); // For some reason, the test dos not work in previous versions
-		}
-
 		$_GET['page'] = 'mlang';
 		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
 		set_current_screen();
