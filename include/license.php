@@ -147,7 +147,7 @@ class PLL_License {
 			$response = wp_remote_post(
 				$this->api_url,
 				array(
-					'timeout'   => 15,
+					'timeout'   => 3,
 					'sslverify' => false,
 					'body'      => $api_params,
 				)
