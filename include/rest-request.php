@@ -49,9 +49,7 @@ class PLL_REST_Request extends PLL_Base {
 
 			// Share term slugs
 			if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Share_Term_Slug' ) ) {
-				$this->share_term_slug = version_compare( $GLOBALS['wp_version'], '4.8', '<' ) ?
-					new PLL_Frontend_Share_Term_Slug( $this ) :
-					new PLL_Share_Term_Slug( $this );
+				$this->share_term_slug = new PLL_Share_Term_Slug( $this );
 			}
 
 			// Translate slugs, only for pretty permalinks
