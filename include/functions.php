@@ -18,7 +18,7 @@ if ( ! function_exists( 'wpcom_vip_get_page_by_title' ) ) {
 	 * @return WP_Post|array|null WP_Post (or array) on success, or null on failure.
 	 */
 	function wpcom_vip_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'page' ) {
-		return get_page_by_title( $page_title, $output, $post_type );
+		return get_page_by_title( $page_title, $output, $post_type ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_page_by_title_get_page_by_title
 	}
 }
 

@@ -55,7 +55,7 @@ class PLL_Uninstall {
 			if ( substr( $module, 0, 1 ) !== '.' ) {
 				$uninstall_script = $pll_modules_dir . '/' . $module . '/uninstall.php';
 				if ( file_exists( $uninstall_script ) ) {
-					require $uninstall_script;
+					require $uninstall_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 				}
 			}
 		}

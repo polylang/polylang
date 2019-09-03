@@ -185,7 +185,7 @@ class PLL_Frontend_Auto_Translate {
 
 		// Array of post ids
 		// post_parent__in & post_parent__not_in since WP 3.6
-		foreach ( array( 'post__in', 'post__not_in', 'post_parent__in', 'post_parent__not_in' ) as $key ) {
+		foreach ( array( 'post__in', 'post__not_in', 'post_parent__in', 'post_parent__not_in' ) as $key ) { // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn
 			$arr = array();
 			if ( ! empty( $qv[ $key ] ) ) {
 				// post__in used by the 2 functions below

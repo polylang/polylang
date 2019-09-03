@@ -98,7 +98,7 @@ class Polylang {
 
 		foreach ( $dirs as $dir ) {
 			if ( file_exists( $file = "$dir/$class.php" ) ) {
-				require_once $file;
+				require_once $file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 				return;
 			}
 		}
