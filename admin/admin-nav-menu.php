@@ -145,7 +145,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 				}
 			}
 			else {
-				foreach ( $options as $opt => $v ) {
+				foreach ( array_keys( $options ) as $opt ) {
 					$options[ $opt ] = empty( $_POST[ 'menu-item-' . $opt ][ $menu_item_db_id ] ) ? 0 : 1;
 				}
 				update_post_meta( $menu_item_db_id, '_pll_menu_item', $options ); // Allow us to easily identify our nav menu item
@@ -162,8 +162,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return array
 	 */
 	public function update_nav_menu_locations( $locations ) {
-		$default = $this->options['default_lang'];
-
 		// Extract language and menu from locations
 		foreach ( $locations as $loc => $menu ) {
 			$infos = $this->explode_location( $loc );
@@ -234,7 +232,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		if ( is_array( $menus ) ) {
-			foreach ( $menus as $loc => $menu ) {
+			foreach ( array_keys( $menus ) as $loc ) {
 				foreach ( $this->model->get_languages_list() as $lang ) {
 					if ( ! empty( $this->options['nav_menus'][ $this->theme ][ $loc ][ $lang->slug ] ) && term_exists( $this->options['nav_menus'][ $this->theme ][ $loc ][ $lang->slug ], 'nav_menu' ) ) {
 						$menus[ $this->combine_location( $loc, $lang ) ] = $this->options['nav_menus'][ $this->theme ][ $loc ][ $lang->slug ];

@@ -83,7 +83,6 @@ class PLL_Sync {
 	public function can_sync_post_parent( $post_parent, $post_id, $postarr ) {
 		if ( ! empty( $postarr['ID'] ) && ! $this->model->post->current_user_can_synchronize( $postarr['ID'] ) ) {
 			$tr_ids = $this->model->post->get_translations( $postarr['ID'] );
-			$orig_lang = array_search( $postarr['ID'], $tr_ids );
 			foreach ( $tr_ids as $tr_id ) {
 				if ( $tr_id !== $postarr['ID'] && $post = get_post( $tr_id ) ) {
 					$post_parent = $post->post_parent;

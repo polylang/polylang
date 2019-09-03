@@ -143,7 +143,7 @@ class PLL_Upgrade {
 		// Update strings register with icl_register_string
 		$strings = get_option( 'polylang_wpml_strings' );
 		if ( $strings ) {
-			foreach ( $strings as $key => $string ) {
+			foreach ( array_keys( $strings ) as $key ) {
 				$strings[ $key ]['icl'] = 1;
 			}
 			update_option( 'polylang_wpml_strings', $strings );
@@ -362,7 +362,7 @@ class PLL_Upgrade {
 				// Clean the WP option as it was a bad idea to pollute it
 				if ( version_compare( $this->options['version'], '1.2', '<' ) ) {
 					foreach ( $menus as $loc => $menu ) {
-						if ( $pos = strpos( $loc, '#' ) ) {
+						if ( strpos( $loc, '#' ) ) {
 							unset( $menus[ $loc ] );
 						}
 					}

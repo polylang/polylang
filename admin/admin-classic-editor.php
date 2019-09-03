@@ -66,10 +66,10 @@ class PLL_Admin_Classic_Editor {
 	 */
 	public function post_language() {
 		global $post_ID;
-		$post_id = $post_ID;
 		$post_type = get_post_type( $post_ID );
 
-		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0; // phpcs:ignore WordPress.Security.NonceVerification
+		// phpcs:ignore WordPress.Security.NonceVerification, WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
+		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0;
 
 		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
 			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification
@@ -129,9 +129,8 @@ class PLL_Admin_Classic_Editor {
 		}
 
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
-		$post_id = $post_ID = (int) $_POST['post_id'];
-		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
-
+		$post_ID   = (int) $_POST['post_id'];
+		$lang      = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( ! post_type_exists( $post_type ) ) {

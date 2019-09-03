@@ -55,7 +55,6 @@ class PLL_Frontend_Links extends PLL_Links {
 		 */
 		if ( ! $url = apply_filters( 'pll_pre_translation_url', '', $language, $queried_object_id ) ) {
 			$qv = $wp_query->query_vars;
-			$hide = $this->options['default_lang'] == $language->slug && $this->options['hide_default'];
 
 			// Post and attachment
 			if ( is_single() && ( $this->options['media_support'] || ! is_attachment() ) && ( $id = $this->model->post->get( $queried_object_id, $language ) ) && $this->model->post->current_user_can_read( $id ) ) {

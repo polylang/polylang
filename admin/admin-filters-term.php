@@ -132,8 +132,8 @@ class PLL_Admin_Filters_Term {
 			return;
 		}
 
-		$term_id = $tag->term_id;
-		$taxonomy = $tag->taxonomy;
+		$term_id  = $tag->term_id;
+		$taxonomy = $tag->taxonomy; // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
 
 		$lang = $this->model->term->get_language( $term_id );
 		$lang = empty( $lang ) ? $this->pref_lang : $lang;
@@ -368,7 +368,7 @@ class PLL_Admin_Filters_Term {
 			$this->save_language( $term_id, $taxonomy );
 
 			if ( isset( $_POST['term_tr_lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$translations = $this->save_translations( $term_id );
+				$this->save_translations( $term_id );
 			}
 		}
 	}
@@ -433,9 +433,9 @@ class PLL_Admin_Filters_Term {
 			wp_die( 0 );
 		}
 
-		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
-		$term_id = isset( $_POST['term_id'] ) ? (int) $_POST['term_id'] : null;
-		$taxonomy = sanitize_key( $_POST['taxonomy'] );
+		$lang      = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
+		$term_id   = isset( $_POST['term_id'] ) ? (int) $_POST['term_id'] : null; // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
+		$taxonomy  = sanitize_key( $_POST['taxonomy'] ); // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
 		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {

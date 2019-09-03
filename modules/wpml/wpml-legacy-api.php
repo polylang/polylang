@@ -174,7 +174,7 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 		if ( 'nav_menu' === $type ) {
 			$theme = get_option( 'stylesheet' );
 			if ( isset( PLL()->options['nav_menus'][ $theme ] ) ) {
-				foreach ( PLL()->options['nav_menus'][ $theme ] as $loc => $menu ) {
+				foreach ( PLL()->options['nav_menus'][ $theme ] as $menu ) {
 					if ( array_search( $id, $menu ) && ! empty( $menu[ $lang ] ) ) {
 						$tr_id = $menu[ $lang ];
 						break;

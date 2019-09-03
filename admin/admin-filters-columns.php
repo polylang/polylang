@@ -124,8 +124,6 @@ class PLL_Admin_Filters_Columns {
 			printf( '<div class="hidden" id="lang_%d">%s</div>', intval( $post_id ), esc_html( $lang->slug ) );
 		}
 
-		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
-
 		// Link to edit post ( or a translation )
 		if ( $id = $this->model->post->get( $post_id, $language ) ) {
 			// get_edit_post_link returns nothing if the user cannot edit the post

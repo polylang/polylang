@@ -128,7 +128,6 @@ class PLL_Table_Languages extends WP_List_Table {
 				/* translators: accessibility text */
 				esc_html__( 'Default language', 'polylang' )
 			);
-			$actions = array();
 		}
 
 		return $s;

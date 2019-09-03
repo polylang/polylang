@@ -240,7 +240,6 @@ abstract class PLL_Translated_Object {
 	 * @return string where clause
 	 */
 	public function where_clause( $lang ) {
-		global $wpdb;
 		$tt_id = $this->tax_tt;
 
 		// $lang is an object

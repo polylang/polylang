@@ -359,8 +359,6 @@ abstract class PLL_Sync_Metas {
 	 * @param array  $translations The list of translations object ids
 	 */
 	public function save_object( $object_id, $obj, $translations ) {
-		$src_lang = array_search( $object_id, $translations );
-
 		foreach ( $translations as $tr_lang => $tr_id ) {
 			if ( $tr_id != $object_id ) {
 				$this->copy( $object_id, $tr_id, $tr_lang, true );

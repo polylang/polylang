@@ -125,7 +125,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// Delete menus locations
 		if ( ! empty( $this->options['nav_menus'] ) ) {
 			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
-				foreach ( $locations as $location => $languages ) {
+				foreach ( array_keys( $locations ) as $location ) {
 					unset( $this->options['nav_menus'][ $theme ][ $location ][ $lang->slug ] );
 				}
 			}
@@ -211,7 +211,7 @@ class PLL_Admin_Model extends PLL_Model {
 			// Update menus locations
 			if ( ! empty( $this->options['nav_menus'] ) ) {
 				foreach ( $this->options['nav_menus'] as $theme => $locations ) {
-					foreach ( $locations as $location => $languages ) {
+					foreach ( array_keys( $locations ) as $location ) {
 						if ( ! empty( $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ] ) ) {
 							$this->options['nav_menus'][ $theme ][ $location ][ $slug ] = $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ];
 							unset( $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ] );

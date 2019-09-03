@@ -14,8 +14,6 @@ class PLL_Lingotek {
 	 * @since 1.7.7
 	 */
 	public function init() {
-		$options = get_option( 'polylang' );
-
 		// The Lingotek tab
 		add_filter( 'pll_settings_tabs', array( $this, 'add_tab' ) );
 		add_action( 'pll_settings_active_tab_lingotek', array( $this, 'display_tab' ) );

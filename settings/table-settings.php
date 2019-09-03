@@ -92,24 +92,21 @@ class PLL_Table_Settings extends WP_List_Table {
 	 * @param object $item The current item
 	 */
 	protected function single_row_columns( $item ) {
-		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
+		$column_info = $this->get_column_info();
+		$columns     = $column_info[0];
+		$primary     = $column_info[3];
 
-		foreach ( $columns as $column_name => $column_display_name ) {
+		foreach ( array_keys( $columns ) as $column_name ) {
 			$classes = "$column_name column-$column_name";
 			if ( $primary === $column_name ) {
 				$classes .= ' column-primary';
-			}
-
-			if ( in_array( $column_name, $hidden ) ) {
-				$classes .= ' hidden';
 			}
 
 			if ( 'cb' == $column_name ) {
 				echo '<th scope="row" class="check-column">';
 				echo $this->column_cb( $item ); // phpcs:ignore WordPress.Security.EscapeOutput
 				echo '</th>';
-			}
-			else {
+			} else {
 				printf( '<td class="%s">', esc_attr( $classes ) );
 				echo $this->column_default( $item, $column_name ); // phpcs:ignore WordPress.Security.EscapeOutput
 				echo '</td>';
