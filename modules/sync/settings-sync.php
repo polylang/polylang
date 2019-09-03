@@ -65,7 +65,7 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	 * @param array $options
 	 */
 	protected function update( $options ) {
-		$newoptions['sync'] = empty( $options['sync'] ) ? array() : array_keys( $options['sync'], 1 );
+		$newoptions = array( 'sync' => empty( $options['sync'] ) ? array() : array_keys( $options['sync'], 1 ) );
 		return $newoptions; // take care to return only validated options
 	}
 

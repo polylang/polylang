@@ -216,6 +216,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		// Load translations
+		$mo = array();
 		foreach ( $languages as $language ) {
 			$mo[ $language->slug ] = new PLL_MO();
 			$mo[ $language->slug ]->import_from_db( $language );

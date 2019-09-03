@@ -179,7 +179,8 @@ class PLL_Upgrade {
 		// Upgrade old model based on metas to new model based on taxonomies
 		global $wpdb;
 		$wpdb->termmeta = $wpdb->prefix . 'termmeta'; // Registers the termmeta table in wpdb
-		$languages = get_terms( 'language', array( 'hide_empty' => 0 ) ); // Don't use get_languages_list which can't work with the old model
+		$languages      = get_terms( 'language', array( 'hide_empty' => 0 ) ); // Don't use get_languages_list which can't work with the old model
+		$lang_tt_ids    = array();
 
 		foreach ( $languages as $lang ) {
 			// First update language with new storage for locale and text direction
@@ -208,8 +209,12 @@ class PLL_Upgrade {
 
 		// Translations
 		foreach ( array( 'post', 'term' ) as $type ) {
-			$table = $type . 'meta';
-			$terms = $slugs = $tts = $trs = array();
+			$table       = $type . 'meta';
+			$terms       = array();
+			$slugs       = array();
+			$tts         = array();
+			$trs         = array();
+			$description = array();
 
 			// Get all translated objects
 			// PHPCS:ignore WordPress.DB.PreparedSQL
@@ -307,6 +312,8 @@ class PLL_Upgrade {
 		// Multilingal locations and switcher item were stored in a dedicated option
 		if ( version_compare( $this->options['version'], '1.1', '<' ) ) {
 			if ( $menu_lang = get_option( 'polylang_nav_menus' ) ) {
+				$locations = array();
+
 				foreach ( $menu_lang as $location => $arr ) {
 					if ( ! in_array( $location, array_keys( get_registered_nav_menus() ) ) ) {
 						continue;
@@ -518,6 +525,8 @@ class PLL_Upgrade {
 			return;
 		}
 
+		$translations_to_load = array();
+
 		foreach ( $translations as $translation ) {
 			if ( in_array( $translation['language'], $languages ) ) {
 				$translation['type'] = 'core';
@@ -618,6 +627,8 @@ class PLL_Upgrade {
 	protected function upgrade_2_7() {
 		$strings = get_option( 'polylang_wpml_strings' );
 		if ( is_array( $strings ) ) {
+			$new_strings = array();
+
 			foreach ( $strings as $string ) {
 				$context = $string['context'];
 				$name    = $string['name'];

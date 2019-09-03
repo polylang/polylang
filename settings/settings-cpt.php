@@ -116,6 +116,8 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	 * @param array $options
 	 */
 	protected function update( $options ) {
+		$newoptions = array();
+
 		foreach ( array( 'post_types', 'taxonomies' ) as $key ) {
 			$newoptions[ $key ] = empty( $options[ $key ] ) ? array() : array_keys( $options[ $key ], 1 );
 		}

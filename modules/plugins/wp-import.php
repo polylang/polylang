@@ -113,6 +113,8 @@ class PLL_WP_Import extends WP_Import {
 	protected function remap_terms_relations( &$terms ) {
 		global $wpdb;
 
+		$trs = array();
+
 		foreach ( $terms as $term ) {
 			$translations = maybe_unserialize( $term['term_description'] );
 			foreach ( $translations as $slug => $old_id ) {
@@ -160,6 +162,8 @@ class PLL_WP_Import extends WP_Import {
 	 */
 	protected function remap_translations( &$terms, &$processed_objects ) {
 		global $wpdb;
+
+		$u = array();
 
 		foreach ( $terms as $term ) {
 			$translations = maybe_unserialize( $term['term_description'] );

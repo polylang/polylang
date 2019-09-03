@@ -97,6 +97,8 @@ class PLL_Admin_Base extends PLL_Base {
 		 */
 		$tabs = apply_filters( 'pll_settings_tabs', $tabs );
 
+		$parent = '';
+
 		foreach ( $tabs as $tab => $title ) {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
 			if ( empty( $parent ) ) {

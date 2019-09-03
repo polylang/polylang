@@ -216,6 +216,8 @@ class PLL_Frontend_Auto_Translate {
 	 */
 	public function get_terms_args( $args, $taxonomies ) {
 		if ( ! isset( $args['lang'] ) && ! empty( $args['include'] ) && ( empty( $taxonomies ) || $this->model->is_translated_taxonomy( $taxonomies ) ) ) {
+			$arr = array();
+
 			foreach ( wp_parse_id_list( $args['include'] ) as $id ) {
 				$arr[] = ( $tr = $this->get_term( $id ) ) ? $tr : $id;
 			}

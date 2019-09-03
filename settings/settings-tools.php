@@ -46,7 +46,7 @@ class PLL_Settings_Tools extends PLL_Settings_Module {
 	 * @param array $options
 	 */
 	protected function update( $options ) {
-		$newoptions['uninstall'] = isset( $options['uninstall'] ) ? 1 : 0;
+		$newoptions = array( 'uninstall' => isset( $options['uninstall'] ) ? 1 : 0 );
 		return $newoptions; // Take care to return only validated options
 	}
 }

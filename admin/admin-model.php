@@ -318,9 +318,10 @@ class PLL_Admin_Model extends PLL_Model {
 	public function set_language_in_mass( $type, $ids, $lang ) {
 		global $wpdb;
 
-		$ids = array_map( 'intval', $ids );
-		$lang = $this->get_language( $lang );
-		$tt_id = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
+		$ids    = array_map( 'intval', $ids );
+		$lang   = $this->get_language( $lang );
+		$tt_id  = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
+		$values = array();
 
 		foreach ( $ids as $id ) {
 			$values[] = $wpdb->prepare( '( %d, %d )', $id, $tt_id );
@@ -334,6 +335,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		if ( 'term' === $type ) {
 			clean_term_cache( $ids, 'term_language' );
+			$translations = array();
 
 			foreach ( $ids as $id ) {
 				$translations[] = array( $lang->slug => $id );
@@ -358,7 +360,11 @@ class PLL_Admin_Model extends PLL_Model {
 	public function set_translation_in_mass( $type, $translations ) {
 		global $wpdb;
 
-		$taxonomy = $type . '_translations';
+		$taxonomy    = $type . '_translations';
+		$terms       = array();
+		$slugs       = array();
+		$description = array();
+		$count       = array();
 
 		foreach ( $translations as $t ) {
 			$term = uniqid( 'pll_' ); // the term name
@@ -376,7 +382,9 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Get all terms with their term_id
 		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$terms = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
+		$terms    = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
+		$term_ids = array();
+		$tts      = array();
 
 		// Prepare terms taxonomy relationship
 		foreach ( $terms as $term ) {
@@ -392,6 +400,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Get all terms with term_taxonomy_id
 		$terms = get_terms( $taxonomy, array( 'hide_empty' => false ) );
+		$trs   = array();
 
 		// Prepare objects relationships
 		foreach ( $terms as $term ) {
@@ -492,7 +501,11 @@ class PLL_Admin_Model extends PLL_Model {
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
 
-		$terms = get_terms( array( 'post_translations', 'term_translations' ) );
+		$terms    = get_terms( array( 'post_translations', 'term_translations' ) );
+		$term_ids = array();
+		$dr       = array();
+		$dt       = array();
+		$ut       = array();
 
 		foreach ( $terms as $term ) {
 			$term_ids[ $term->taxonomy ][] = $term->term_id;
@@ -563,6 +576,8 @@ class PLL_Admin_Model extends PLL_Model {
 		// The nav menus stored in theme locations should be in the default language
 		$theme = get_stylesheet();
 		if ( ! empty( $this->options['nav_menus'][ $theme ] ) ) {
+			$menus = array();
+
 			foreach ( $this->options['nav_menus'][ $theme ] as $key => $loc ) {
 				$menus[ $key ] = empty( $loc[ $slug ] ) ? 0 : $loc[ $slug ];
 			}

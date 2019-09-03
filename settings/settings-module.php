@@ -194,6 +194,8 @@ class PLL_Settings_Module {
 	 * @return array
 	 */
 	protected function get_actions() {
+		$actions = array();
+
 		if ( $this->is_active() && $this->get_form() ) {
 			$actions[] = 'configure';
 		}

@@ -77,6 +77,8 @@ class PLL_Admin_Filters_Columns {
 	 * @return string first language column name
 	 */
 	protected function get_first_language_column() {
+		$columns = array();
+
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( empty( $this->filter_lang ) || $language->slug != $this->filter_lang->slug ) {
 				$columns[] = 'language_' . $language->slug;

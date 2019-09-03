@@ -82,8 +82,8 @@ class PLL_Walker_Dropdown extends Walker {
 
 		$output .= sprintf(
 			'<select name="%1$s"%2$s%3$s%4$s>' . "\n" . '%5$s' . "\n" . '</select>' . "\n",
-			$name = esc_attr( $args['name'] ),
-			isset( $args['id'] ) && ! $args['id'] ? '' : ' id="' . ( empty( $args['id'] ) ? $name : esc_attr( $args['id'] ) ) . '"',
+			esc_attr( $args['name'] ),
+			isset( $args['id'] ) && ! $args['id'] ? '' : ' id="' . ( empty( $args['id'] ) ? esc_attr( $args['name'] ) : esc_attr( $args['id'] ) ) . '"',
 			empty( $args['class'] ) ? '' : ' class="' . esc_attr( $args['class'] ) . '"',
 			disabled( empty( $args['disabled'] ), false, false ),
 			parent::walk( $elements, -1, $args )

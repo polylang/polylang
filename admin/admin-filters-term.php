@@ -269,8 +269,10 @@ class PLL_Admin_Filters_Term {
 
 				// If we have several terms with the same name, they are translations of each other
 				if ( count( $terms ) > 1 ) {
+					$translations = array();
+
 					foreach ( $terms as $term ) {
-							$translations[ $this->model->term->get_language( $term->term_id )->slug ] = $term->term_id;
+						$translations[ $this->model->term->get_language( $term->term_id )->slug ] = $term->term_id;
 					}
 
 					$this->model->term->save_translations( $term_id, $translations );
@@ -605,6 +607,7 @@ class PLL_Admin_Filters_Term {
 
 		$avoid_recursion = true;
 		$lang = $this->model->term->get_language( $term_id );
+		$translations = array();
 
 		foreach ( $this->model->term->get_translations( $term_id ) as $key => $tr_id ) {
 			if ( $lang->slug == $key ) {

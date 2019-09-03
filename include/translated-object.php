@@ -50,6 +50,7 @@ abstract class PLL_Translated_Object {
 			$taxonomies = array( $this->tax_language, $this->tax_translations );
 
 			// query terms
+			$terms = array();
 			foreach ( wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) ) as $t ) {
 				$terms[ $t->taxonomy ] = $t;
 				if ( $t->taxonomy == $taxonomy ) {
@@ -250,7 +251,8 @@ abstract class PLL_Translated_Object {
 
 		// $lang is a comma separated list of slugs ( or an array of slugs )
 		// generally the case is the query is coming from outside with 'lang' parameter
-		$slugs = is_array( $lang ) ? $lang : explode( ',', $lang );
+		$slugs     = is_array( $lang ) ? $lang : explode( ',', $lang );
+		$languages = array();
 		foreach ( $slugs as $slug ) {
 			$languages[] = absint( $this->model->get_language( $slug )->$tt_id );
 		}

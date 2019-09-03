@@ -102,7 +102,7 @@ class PLL_Language {
 	 * @return array Flag informations.
 	 */
 	public static function get_flag_informations( $code ) {
-		$flag['url'] = '';
+		$flag = array( 'url' => '' );
 
 		// Polylang builtin flags
 		if ( ! empty( $code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
@@ -145,7 +145,7 @@ class PLL_Language {
 	 * @since 1.2
 	 */
 	public function set_flag() {
-		$flags['flag'] = self::get_flag_informations( $this->flag_code );
+		$flags = array( 'flag' => self::get_flag_informations( $this->flag_code ) );
 
 		// Custom flags ?
 		$directories = array(

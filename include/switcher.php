@@ -42,8 +42,8 @@ class PLL_Switcher {
 	 * @return array
 	 */
 	protected function get_elements( $links, $args ) {
-
 		$first = true;
+		$out   = array();
 
 		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
 			$id = (int) $language->term_id;
@@ -101,7 +101,7 @@ class PLL_Switcher {
 			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes' );
 		}
 
-		return empty( $out ) ? array() : $out;
+		return $out;
 	}
 
 	/**
@@ -188,6 +188,8 @@ class PLL_Switcher {
 
 		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] ) {
+			$urls = array();
+
 			foreach ( $links->model->get_languages_list() as $language ) {
 				$url = $links->get_translation_url( $language );
 				$urls[ $language->slug ] = $args['force_home'] || empty( $url ) ? $links->get_home_url( $language ) : $url;

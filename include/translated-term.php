@@ -128,7 +128,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 		if ( ! doing_action( 'pre_delete_term' ) && $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( * ) FROM $wpdb->terms WHERE term_id = %d;", $id ) ) ) {
 			// Always keep a group for terms to allow relationships remap when importing from a WXR file
-			$translations[ $slug ] = $id;
+			$translations = array( $slug => $id );
 			wp_insert_term( $group = uniqid( 'pll_' ), 'term_translations', array( 'description' => maybe_serialize( $translations ) ) );
 			wp_set_object_terms( $id, $group, 'term_translations' );
 		}
@@ -158,6 +158,8 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return array unmodified $terms
 	 */
 	public function _prime_terms_cache( $terms, $taxonomies ) {
+		$term_ids = array();
+
 		if ( is_array( $terms ) && $this->model->is_translated_taxonomy( $taxonomies ) ) {
 			foreach ( $terms as $term ) {
 				$term_ids[] = is_object( $term ) ? $term->term_id : (int) $term;

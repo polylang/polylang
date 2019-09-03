@@ -64,7 +64,7 @@ class PLL_Widget_Languages extends WP_Widget {
 	 * @return array Settings to save or bool false to cancel saving
 	 */
 	public function update( $new_instance, $old_instance ) {
-		$instance['title'] = sanitize_text_field( $new_instance['title'] );
+		$instance = array( 'title' => sanitize_text_field( $new_instance['title'] ) );
 		foreach ( array_keys( PLL_Switcher::get_switcher_options( 'widget' ) ) as $key ) {
 			$instance[ $key ] = ! empty( $new_instance[ $key ] ) ? 1 : 0;
 		}

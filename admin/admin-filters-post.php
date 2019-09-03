@@ -47,6 +47,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		// Hierarchical taxonomies
 		if ( 'edit' == $screen->base && $taxonomies = get_object_taxonomies( $screen->post_type, 'object' ) ) {
 			// Get translated hierarchical taxonomies
+			$hierarchical_taxonomies = array();
 			foreach ( $taxonomies as $taxonomy ) {
 				if ( $taxonomy->hierarchical && $taxonomy->show_in_quick_edit && $this->model->is_translated_taxonomy( $taxonomy->name ) ) {
 					$hierarchical_taxonomies[] = $taxonomy->name;
@@ -54,7 +55,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			}
 
 			if ( ! empty( $hierarchical_taxonomies ) ) {
-				$terms = get_terms( $hierarchical_taxonomies, array( 'get' => 'all' ) );
+				$terms          = get_terms( $hierarchical_taxonomies, array( 'get' => 'all' ) );
+				$term_languages = array();
 
 				foreach ( $terms as $term ) {
 					if ( $lang = $this->model->term->get_language( $term->term_id ) ) {
@@ -71,7 +73,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		// Hierarchical post types
 		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) ) {
-			$pages = get_pages();
+			$pages          = get_pages();
+			$page_languages = array();
 
 			foreach ( $pages as $page ) {
 				if ( $lang = $this->model->post->get_language( $page->ID ) ) {

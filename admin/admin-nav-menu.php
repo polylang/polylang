@@ -94,8 +94,11 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_enqueue_script( 'pll_nav_menu', plugins_url( '/js/nav-menu' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION );
 
-		$data['strings'] = PLL_Switcher::get_switcher_options( 'menu', 'string' ); // The strings for the options
-		$data['title'] = __( 'Languages', 'polylang' ); // The title
+		$data = array(
+			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options
+			'title'   => __( 'Languages', 'polylang' ), // The title
+			'val'     => array(),
+		);
 
 		// Get all language switcher menu items
 		$items = get_posts(
@@ -109,7 +112,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		);
 
 		// The options values for the language switcher
-		$data['val'] = array();
 		foreach ( $items as $item ) {
 			$data['val'][ $item ] = get_post_meta( $item, '_pll_menu_item', true );
 		}
