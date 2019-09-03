@@ -61,7 +61,7 @@ class PLL_Featured_Content {
 
 		$settings = Featured_Content::get_setting();
 
-		if ( ! $term = wpcom_vip_get_term_by( 'name', $settings['tag-name'], 'post_tag' ) ) {
+		if ( ! $term = get_term_by( 'name', $settings['tag-name'], 'post_tag' ) ) {
 			return $featured_ids;
 		}
 

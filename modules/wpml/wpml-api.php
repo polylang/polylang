@@ -218,7 +218,7 @@ class PLL_WPML_API {
 		$type = $args['element_type'];
 		$id = $args['element_id'];
 		$pll_type = ( 'post' == $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' == $type || pll_is_translated_taxonomy( $type ) ? 'term' : false );
-		if ( 'term' === $pll_type && $term = wpcom_vip_get_term_by( 'term_taxonomy_id', $id ) ) {
+		if ( 'term' === $pll_type && $term = get_term_by( 'term_taxonomy_id', $id ) ) {
 			$id = $term->term_id;
 		}
 		return $pll_type ? call_user_func( "pll_get_{$pll_type}_language", $id ) : $language_code;

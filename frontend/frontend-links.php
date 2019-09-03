@@ -95,7 +95,7 @@ class PLL_Frontend_Links extends PLL_Links {
 				$lang = $this->model->term->get_language( $term->term_id );
 
 				if ( ! $lang || $language->slug == $lang->slug ) {
-					$url = wpcom_vip_get_term_link( $term, $term->taxonomy ); // Self link
+					$url = get_term_link( $term, $term->taxonomy ); // Self link
 				}
 
 				elseif ( $tr_id = $this->model->term->get_translation( $term->term_id, $language ) ) {
@@ -114,7 +114,7 @@ class PLL_Frontend_Links extends PLL_Links {
 						 * @param array  $args Arguments used to evaluated the number of posts in the archive
 						 */
 						if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count, $language->slug, array( 'taxonomy' => $term->taxonomy ) ) ) {
-							$url = wpcom_vip_get_term_link( $tr_term, $term->taxonomy );
+							$url = get_term_link( $tr_term, $term->taxonomy );
 						}
 					}
 				}
