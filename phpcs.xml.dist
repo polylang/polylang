@@ -6,6 +6,11 @@
 		<config name="testVersion" value="5.6-"/>
 	</rule>
 
+	<rule ref="WordPressVIPMinimum">
+		<exclude-pattern>tests/*</exclude-pattern>
+		<exclude-pattern>*.php</exclude-pattern>
+	</rule>
+
 	<rule ref="WordPress">
 		<exclude name="Generic.Classes.DuplicateClassName.Found"/>
 		<exclude name="Generic.Commenting.Fixme.TaskFound"/>
