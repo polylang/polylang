@@ -489,6 +489,33 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
+	 * Format a term to be included in ajax_terms_not_translated response.
+	 *
+	 * @since 2.7
+	 *
+	 * @param WP_Term $term      The term object to format.
+	 * @param string  $post_type The post type the term is attached to.
+	 * @return array
+	 */
+	protected function format_not_translated_term( $term, $post_type ) {
+		return array(
+			'id'    => $term->term_id,
+			'value' => rtrim( // Trim the seperator added at the end by WP.
+				get_term_parents_list(
+					$term->term_id,
+					$term->taxonomy,
+					array(
+						'separator' => ' > ',
+						'link' => false,
+					)
+				),
+				' >'
+			),
+			'link'  => $this->links->edit_term_translation_link( $term->term_id, $term->taxonomy, $post_type ),
+		);
+	}
+
+	/**
 	 * Ajax response for input in translation autocomplete input box
 	 *
 	 * @since 1.5
@@ -518,11 +545,7 @@ class PLL_Admin_Filters_Term {
 			$lang = $this->model->term->get_language( $term->term_id );
 
 			if ( $lang && $lang->slug == $translation_language->slug && ! $this->model->term->get_translation( $term->term_id, $term_language ) ) {
-				$return[] = array(
-					'id'    => $term->term_id,
-					'value' => $term->name,
-					'link'  => $this->links->edit_term_translation_link( $term->term_id, $taxonomy, $post_type ),
-				);
+				$return[] = $this->format_not_translated_term( $term, $post_type );
 			}
 		}
 
@@ -530,14 +553,7 @@ class PLL_Admin_Filters_Term {
 		// Not in add term as term_id is not set
 		if ( isset( $_GET['term_id'] ) && 'undefined' !== $_GET['term_id'] && $term_id = $this->model->term->get_translation( (int) $_GET['term_id'], $translation_language ) ) {
 			$term = get_term( $term_id, $taxonomy );
-			array_unshift(
-				$return,
-				array(
-					'id'    => $term_id,
-					'value' => $term->name,
-					'link'  => $this->links->edit_term_translation_link( $term->term_id, $taxonomy, $post_type ),
-				)
-			);
+			array_unshift( $return, $this->format_not_translated_term( $term, $post_type ) );
 		}
 
 		wp_die( wp_json_encode( $return ) );
