@@ -489,33 +489,6 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
-	 * Format a term to be included in ajax_terms_not_translated response.
-	 *
-	 * @since 2.7
-	 *
-	 * @param WP_Term $term      The term object to format.
-	 * @param string  $post_type The post type the term is attached to.
-	 * @return array
-	 */
-	protected function format_not_translated_term( $term, $post_type ) {
-		return array(
-			'id'    => $term->term_id,
-			'value' => rtrim( // Trim the seperator added at the end by WP.
-				get_term_parents_list(
-					$term->term_id,
-					$term->taxonomy,
-					array(
-						'separator' => ' > ',
-						'link' => false,
-					)
-				),
-				' >'
-			),
-			'link'  => $this->links->edit_term_translation_link( $term->term_id, $term->taxonomy, $post_type ),
-		);
-	}
-
-	/**
 	 * Ajax response for input in translation autocomplete input box
 	 *
 	 * @since 1.5
@@ -529,7 +502,7 @@ class PLL_Admin_Filters_Term {
 
 		$s = wp_unslash( $_GET['term'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$post_type = sanitize_key( $_GET['post_type'] );
-		$taxonomy = sanitize_key( $_GET['taxonomy'] );
+		$taxonomy  = sanitize_key( $_GET['taxonomy'] );
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			wp_die( 0 );
@@ -538,22 +511,41 @@ class PLL_Admin_Filters_Term {
 		$term_language = $this->model->get_language( sanitize_key( $_GET['term_language'] ) );
 		$translation_language = $this->model->get_language( sanitize_key( $_GET['translation_language'] ) );
 
+		$terms  = array();
 		$return = array();
 
-		// It is more efficient to use one common query for all languages as soon as there are more than 2
+		// Add current translation in list.
+		// Not in add term as term_id is not set.
+		if ( isset( $_GET['term_id'] ) && 'undefined' !== $_GET['term_id'] && $term_id = $this->model->term->get_translation( (int) $_GET['term_id'], $translation_language ) ) {
+			$terms = array( get_term( $term_id, $taxonomy ) );
+		}
+
+		// It is more efficient to use one common query for all languages as soon as there are more than 2.
 		foreach ( get_terms( $taxonomy, 'hide_empty=0&lang=0&name__like=' . $s ) as $term ) {
 			$lang = $this->model->term->get_language( $term->term_id );
 
 			if ( $lang && $lang->slug == $translation_language->slug && ! $this->model->term->get_translation( $term->term_id, $term_language ) ) {
-				$return[] = $this->format_not_translated_term( $term, $post_type );
+				$terms[] = $term;
 			}
 		}
 
-		// Add current translation in list
-		// Not in add term as term_id is not set
-		if ( isset( $_GET['term_id'] ) && 'undefined' !== $_GET['term_id'] && $term_id = $this->model->term->get_translation( (int) $_GET['term_id'], $translation_language ) ) {
-			$term = get_term( $term_id, $taxonomy );
-			array_unshift( $return, $this->format_not_translated_term( $term, $post_type ) );
+		// Format the ajax response.
+		foreach ( $terms as $term ) {
+			$return[] = array(
+				'id'    => $term->term_id,
+				'value' => rtrim( // Trim the seperator added at the end by WP.
+					get_term_parents_list(
+						$term->term_id,
+						$term->taxonomy,
+						array(
+							'separator' => ' > ',
+							'link' => false,
+						)
+					),
+					' >'
+				),
+				'link'  => $this->links->edit_term_translation_link( $term->term_id, $term->taxonomy, $post_type ),
+			);
 		}
 
 		wp_die( wp_json_encode( $return ) );
