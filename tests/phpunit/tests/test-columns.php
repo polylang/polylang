@@ -202,12 +202,11 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	function test_add_post_column_with_filter() {
-		// We need to call directly the filter "manage_{$screen->id}_columns" due to the static var in get_column_headers()
 		self::$polylang->filter_lang = self::$polylang->model->get_language( 'en' );
-		$columns = apply_filters( 'manage_edit-post_columns', array() );
-		$columns = array_keys( $columns );
-		$this->assertFalse( array_search( 'language_en', $columns ) );
-		$this->assertNotFalse( array_search( 'language_fr', $columns ) );
+		$list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => 'edit.php' ) );
+		list( $columns, $hidden, $sortable, $primary ) = $list_table->get_column_info();
+		$this->assertNotFalse( array_search( 'language_en', $hidden ) );
+		$this->assertFalse( array_search( 'language_fr', $hidden ) );
 	}
 
 	function test_add_term_column() {
@@ -225,12 +224,11 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	function test_add_term_column_with_filter() {
-		// We need to call directly the filter "manage_{$screen->id}_columns" due to the static var in get_column_headers()
 		self::$polylang->filter_lang = self::$polylang->model->get_language( 'fr' );
-		$columns = apply_filters( 'manage_edit-post_tag_columns', array() );
-		$columns = array_keys( $columns );
-		$this->assertFalse( array_search( 'language_fr', $columns ) );
-		$this->assertNotFalse( array_search( 'language_en', $columns ) );
+		$list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => 'edit-tags.php' ) );
+		list( $columns, $hidden, $sortable, $primary ) = $list_table->get_column_info();
+		$this->assertNotFalse( array_search( 'language_fr', $hidden ) );
+		$this->assertFalse( array_search( 'language_en', $hidden ) );
 	}
 
 	function test_post_inline_edit() {

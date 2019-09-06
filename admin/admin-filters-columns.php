@@ -21,25 +21,28 @@ class PLL_Admin_Filters_Columns {
 		$this->model = &$polylang->model;
 		$this->filter_lang = &$polylang->filter_lang;
 
-		// Add the language and translations columns in 'All Posts', 'All Pages' and 'Media library' panels
+		// Hide the column of the filtered language.
+		add_filter( 'hidden_columns', array( $this, 'hidden_columns' ) ); // Since WP 4.4.
+
+		// Add the language and translations columns in 'All Posts', 'All Pages' and 'Media library' panels.
 		foreach ( $this->model->get_translated_post_types() as $type ) {
 			// Use the latest filter late as some plugins purely overwrite what's done by others :(
-			// Specific case for media
+			// Specific case for media.
 			add_filter( 'manage_' . ( 'attachment' == $type ? 'upload' : 'edit-' . $type ) . '_columns', array( $this, 'add_post_column' ), 100 );
 			add_action( 'manage_' . ( 'attachment' == $type ? 'media' : $type . '_posts' ) . '_custom_column', array( $this, 'post_column' ), 10, 2 );
 		}
 
-		// Quick edit and bulk edit
+		// Quick edit and bulk edit.
 		add_filter( 'quick_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
 		add_filter( 'bulk_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
 
-		// Adds the language column in the 'Categories' and 'Post Tags' tables
+		// Adds the language column in the 'Categories' and 'Post Tags' tables.
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
 			add_filter( 'manage_edit-' . $tax . '_columns', array( $this, 'add_term_column' ) );
 			add_filter( 'manage_' . $tax . '_custom_column', array( $this, 'term_column' ), 10, 3 );
 		}
 
-		// Ajax responses to update list table rows
+		// Ajax responses to update list table rows.
 		add_action( 'wp_ajax_pll_update_post_rows', array( $this, 'ajax_update_post_rows' ) );
 		add_action( 'wp_ajax_pll_update_term_rows', array( $this, 'ajax_update_term_rows' ) );
 	}
@@ -60,10 +63,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			// Don't add the column for the filtered language
-			if ( empty( $this->filter_lang ) || $language->slug != $this->filter_lang->slug ) {
-				$columns[ 'language_' . $language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
-			}
+			$columns[ 'language_' . $language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
 		}
 
 		return isset( $end ) ? array_merge( $columns, $end ) : $columns;
@@ -80,12 +80,25 @@ class PLL_Admin_Filters_Columns {
 		$columns = array();
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( empty( $this->filter_lang ) || $language->slug != $this->filter_lang->slug ) {
-				$columns[] = 'language_' . $language->slug;
-			}
+			$columns[] = 'language_' . $language->slug;
 		}
 
 		return empty( $columns ) ? '' : reset( $columns );
+	}
+
+	/**
+	 * Hide the column for the filtered language
+	 *
+	 * @since 2.7
+	 *
+	 * @param array $hidden Array of hidden columns
+	 * @return array
+	 */
+	public function hidden_columns( $hidden ) {
+		if ( ! empty( $this->filter_lang ) ) {
+			$hidden[] = 'language_' . $this->filter_lang->slug;
+		}
+		return $hidden;
 	}
 
 	/**
