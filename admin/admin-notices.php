@@ -66,21 +66,33 @@ class PLL_Admin_Notices {
 	 *
 	 * @since 2.3.9
 	 *
+	 * @param  string $notice the notice name; by default empty string mean all notices
 	 * @return bool
 	 */
-	protected function can_display_notice() {
+	protected function can_display_notice( $notice = '' ) {
 		$screen = get_current_screen();
 		$screen_id = sanitize_title( __( 'Languages', 'polylang' ) );
 
-		return in_array(
-			$screen->id,
-			array(
-				'dashboard',
-				'plugins',
-				'toplevel_page_mlang',
-				$screen_id . '_page_mlang_strings',
-				$screen_id . '_page_mlang_settings',
-			)
+		/**
+		 * Filter notices can be displayed
+		 *
+		 * @since 2.7.0
+		 *
+		 * @param string $notice the notice name
+		 */
+		return apply_filters(
+			'pll_can_display_notice',
+			in_array(
+				$screen->id,
+				array(
+					'dashboard',
+					'plugins',
+					'toplevel_page_mlang',
+					$screen_id . '_page_mlang_strings',
+					$screen_id . '_page_mlang_settings',
+				)
+			),
+			$notice
 		);
 	}
 
@@ -123,14 +135,16 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 */
 	public function display_notices() {
-		if ( current_user_can( 'manage_options' ) && $this->can_display_notice() ) {
+		if ( current_user_can( 'manage_options' ) ) {
 			// Core notices
-			$this->pllwc_notice();
-			$this->review_notice();
+			if ( $this->can_display_notice() ) {
+				$this->pllwc_notice();
+				$this->review_notice();
+			}
 
 			// Custom notices
 			foreach ( $this->get_notices() as $notice => $html ) {
-				if ( ! $this->is_dismissed( $notice ) ) {
+				if ( $this->can_display_notice( $notice ) && ! $this->is_dismissed( $notice ) ) {
 					?>
 					<div class="pll-notice notice notice-info">
 						<?php
