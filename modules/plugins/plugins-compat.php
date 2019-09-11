@@ -133,8 +133,7 @@ class PLL_Plugins_Compat {
 	 */
 	public function after_setup_theme() {
 		// Advanced Custom Fields Pro
-		// The function acf_get_value() is not defined in ACF 4
-		if ( class_exists( 'acf' ) && function_exists( 'acf_get_value' ) && class_exists( 'PLL_ACF' ) ) {
+		if ( defined( 'ACF_VERSION' ) && version_compare( ACF_VERSION, '5.7.11', '>=' ) && class_exists( 'PLL_ACF' ) ) {
 			add_action( 'init', array( $this->acf = new PLL_ACF(), 'init' ) );
 		}
 	}
