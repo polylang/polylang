@@ -52,7 +52,8 @@ class PLL_Admin_Notices {
 	/**
 	 * Display an individual notice
 	 *
-	 * @param string $html An HTML formatted string to display
+	 * @param string $notice The notice id.
+	 * @param string $html An HTML formatted string to display.
 	 */
 	protected function display_notice( $notice, $html ) {
 		?>

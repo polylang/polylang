@@ -148,4 +148,21 @@ class Admin_Notice_Core_Test extends PLL_UnitTestCase {
 			$this->assertNotFalse( strpos( $out, 'lingotek' ) );
 		}
 	}
+
+	function test_dont_display_notice_for_unallowed_screen() {
+		$given = "an user with 'manage-option' capability,";
+		wp_set_current_user( 1 );
+		self::$polylang->admin_notices = new PLL_Admin_Notices_Core( self::$polylang );
+
+		$when = "the user go to the 'edit-post' page,";
+		set_current_screen( 'edit-post' );
+		ob_start();
+		do_action( 'admin_notices' );
+		$out = ob_get_clean();
+
+		$message = "Given " . $given . PHP_EOL . "When " . $when . PHP_EOL;
+		$this->assertFalse( strpos( $out, 'review' ), $message . "Then the user MUST NOT see the 'review' notice." );
+		$this->assertFalse( strpos( $out, 'lingotek' ), $message . "Then the user MUST NOT see the 'lingotek' notice." );
+		$this->assertFalse( strpos( $out, 'pllwc' ), $message . "Then the user MUST NOT see the 'pllwc' notice." );
+	}
 }
