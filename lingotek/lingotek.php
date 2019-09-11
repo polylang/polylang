@@ -24,7 +24,7 @@ class PLL_Lingotek {
 
 		// The admin notice
 		// Honor old dismissed pointers
-		if ( ! PLL_Admin_Notices::is_dismissed( 'lingotek' ) && ! in_array( 'pll_lgt', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ) ) {
+		if ( ! PLL_Admin_Notices_Core::is_dismissed( 'lingotek' ) && ! in_array( 'pll_lgt', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ) ) {
 			$content = __( 'You’ve just upgraded to the latest version of Polylang! Would you like to automatically translate your website for free?', 'polylang' );
 
 			$buttons = sprintf(
@@ -44,9 +44,9 @@ class PLL_Lingotek {
 			}
 
 			if ( is_plugin_active( self::LINGOTEK ) ) { // Needs /wp-admin/includes/plugin.php to be loaded
-				PLL_Admin_Notices::dismiss( 'lingotek' );
+				PLL_Admin_Notices_Core::dismiss( 'lingotek' );
 			} else {
-				PLL_Admin_Notices::add_notice( 'lingotek', '<p>' . $content . '</p><p>' . $buttons . '</p>' );
+				PLL_Admin_Notices_Core::add_notice( 'lingotek', '<p>' . $content . '</p><p>' . $buttons . '</p>' );
 			}
 		}
 	}
@@ -70,7 +70,7 @@ class PLL_Lingotek {
 	 * @since 1.7.7
 	 */
 	public function display_tab() {
-		PLL_Admin_Notices::dismiss( 'lingotek' );
+		PLL_Admin_Notices_Core::dismiss( 'lingotek' );
 
 		$activate_link = $this->get_activate_link();
 

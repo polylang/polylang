@@ -52,7 +52,7 @@ class PLL_Admin_Base extends PLL_Base {
 			return;
 		}
 
-		$this->notices = new PLL_Admin_Notices( $this );
+		$this->notices = new PLL_Admin_Notices_Core( $this );
 		$this->links = new PLL_Admin_Links( $this ); // FIXME needed here ?
 		$this->static_pages = new PLL_Admin_Static_Pages( $this ); // FIXME needed here ?
 		$this->filters_links = new PLL_Filters_Links( $this ); // FIXME needed here ?

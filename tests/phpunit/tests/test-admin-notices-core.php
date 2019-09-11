@@ -1,6 +1,6 @@
 <?php
 
-class Admin_Notice_Test extends PLL_UnitTestCase {
+class Admin_Notice_Core_Test extends PLL_UnitTestCase {
 
 	static function wp_redirect() {
 		throw new Exception( 'Call to wp_redirect' );
@@ -24,7 +24,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 			'_pll_notice_nonce' => wp_create_nonce( 'review' ),
 		);
 
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		self::$polylang->admin_notices = new PLL_Admin_Notices_Core( self::$polylang );
 		self::$polylang->admin_notices->hide_notice();
 
 		$this->assertEquals( array( 'review' ), get_user_meta( 1, 'pll_dismissed_notices', true ) );
@@ -37,7 +37,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		self::$polylang->admin_notices = new PLL_Admin_Notices_Core( self::$polylang );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -54,7 +54,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		set_current_screen();
 
 		self::$polylang->options['first_activation'] = 1; // Some very old timestanp
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		self::$polylang->admin_notices = new PLL_Admin_Notices_Core( self::$polylang );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -76,7 +76,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		set_current_screen();
 
 		self::$polylang->options['first_activation'] = 1; // Some very old timestanp
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		self::$polylang->admin_notices = new PLL_Admin_Notices_Core( self::$polylang );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -94,7 +94,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		set_current_screen();
 
 		self::$polylang->options['first_activation'] = 1; // Some very old timestanp
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		self::$polylang->admin_notices = new PLL_Admin_Notices_Core( self::$polylang );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -113,7 +113,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		if ( ! defined( 'WOOCOMMERCE_VERSION' ) ) {
 			define( 'WOOCOMMERCE_VERSION', '3.4.0' );
 		}
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		self::$polylang->admin_notices = new PLL_Admin_Notices_Core( self::$polylang );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -136,7 +136,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 			$l->init();
 		}
 
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		self::$polylang->admin_notices = new PLL_Admin_Notices_Core( self::$polylang );
 
 		ob_start();
 		do_action( 'admin_notices' );
