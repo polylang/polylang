@@ -454,7 +454,7 @@ class PLL_Model {
 	public function count_posts( $lang, $q = array() ) {
 		global $wpdb;
 
-		$q = wp_parse_args( $q, array( 'post_type' => 'post' ) );
+		$q = wp_parse_args( $q, array( 'post_type' => 'post', 'post_status' => 'publish' ) );
 
 		if ( ! is_array( $q['post_type'] ) ) {
 			$q['post_type'] = array( $q['post_type'] );
@@ -476,7 +476,7 @@ class PLL_Model {
 		if ( false === $counts ) {
 			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
 			$join = $this->post->join_clause();
-			$where = " WHERE post_status = 'publish'";
+			$where = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
 			$where .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", join( "', '", esc_sql( $q['post_type'] ) ) );
 			$where .= $this->post->where_clause( $this->get_languages_list() );
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
