@@ -66,19 +66,20 @@ class PLL_Admin_Notices {
 	 *
 	 * @since 2.3.9
 	 *
-	 * @param  string $notice the notice name; by default empty string mean all notices
+	 * @param  string $notice The notice name.
 	 * @return bool
 	 */
-	protected function can_display_notice( $notice = '' ) {
+	protected function can_display_notice( $notice ) {
 		$screen = get_current_screen();
 		$screen_id = sanitize_title( __( 'Languages', 'polylang' ) );
 
 		/**
-		 * Filter notices can be displayed
+		 * Filter admin notices which can be displayed
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param string $notice the notice name
+		 * @param bool   $display Whether the notice should be displayed or not.
+		 * @param string $notice  The notice name.
 		 */
 		return apply_filters(
 			'pll_can_display_notice',
@@ -137,8 +138,11 @@ class PLL_Admin_Notices {
 	public function display_notices() {
 		if ( current_user_can( 'manage_options' ) ) {
 			// Core notices
-			if ( $this->can_display_notice() ) {
+			if ( defined( 'WOOCOMMERCE_VERSION' ) && ! defined( 'PLLWC_VERSION' ) && $this->can_display_notice( 'pllwc' ) && ! $this->is_dismissed( 'pllwc' ) ) {
 				$this->pllwc_notice();
+			}
+
+			if ( ! defined( 'POLYLANG_PRO' ) && $this->can_display_notice( 'review' ) && ! $this->is_dismissed( 'review' ) && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
 				$this->review_notice();
 			}
 
@@ -180,23 +184,21 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 */
 	private function pllwc_notice() {
-		if ( defined( 'WOOCOMMERCE_VERSION' ) && ! defined( 'PLLWC_VERSION' ) && ! $this->is_dismissed( 'pllwc' ) ) {
-			?>
-			<div class="pll-notice notice notice-warning">
-			<?php $this->dismiss_button( 'pllwc' ); ?>
-				<p>
-					<?php
-					printf(
-						/* translators: %1$s is link start tag, %2$s is link end tag. */
-						esc_html__( 'We have noticed that you are using Polylang with WooCommerce. To ensure compatibility, we recommend you use %1$sPolylang for WooCommerce%2$s.', 'polylang' ),
-						'<a href="https://polylang.pro/downloads/polylang-for-woocommerce/">',
-						'</a>'
-					);
-					?>
-				</p>
-			</div>
-			<?php
-		}
+		?>
+		<div class="pll-notice notice notice-warning">
+		<?php $this->dismiss_button( 'pllwc' ); ?>
+			<p>
+				<?php
+				printf(
+					/* translators: %1$s is link start tag, %2$s is link end tag. */
+					esc_html__( 'We have noticed that you are using Polylang with WooCommerce. To ensure compatibility, we recommend you use %1$sPolylang for WooCommerce%2$s.', 'polylang' ),
+					'<a href="https://polylang.pro/downloads/polylang-for-woocommerce/">',
+					'</a>'
+				);
+				?>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
@@ -205,22 +207,20 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 */
 	private function review_notice() {
-		if ( ! defined( 'POLYLANG_PRO' ) && ! $this->is_dismissed( 'review' ) && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
-			?>
-			<div class="pll-notice notice notice-info">
-			<?php $this->dismiss_button( 'review' ); ?>
-				<p>
-					<?php
-					printf(
-						/* translators: %1$s is link start tag, %2$s is link end tag. */
-						esc_html__( 'We have noticed that you have been using Polylang for some time. We hope you love it, and we would really appreciate it if you would %1$sgive us a 5 stars rating%2$s.', 'polylang' ),
-						'<a href="https://wordpress.org/support/plugin/polylang/reviews/?rate=5#new-post">',
-						'</a>'
-					);
-					?>
-				</p>
-			</div>
-			<?php
-		}
+		?>
+		<div class="pll-notice notice notice-info">
+		<?php $this->dismiss_button( 'review' ); ?>
+			<p>
+				<?php
+				printf(
+					/* translators: %1$s is link start tag, %2$s is link end tag. */
+					esc_html__( 'We have noticed that you have been using Polylang for some time. We hope you love it, and we would really appreciate it if you would %1$sgive us a 5 stars rating%2$s.', 'polylang' ),
+					'<a href="https://wordpress.org/support/plugin/polylang/reviews/?rate=5#new-post">',
+					'</a>'
+				);
+				?>
+			</p>
+		</div>
+		<?php
 	}
 }
