@@ -448,7 +448,7 @@ class PLL_Model {
 	 * @since 1.2
 	 *
 	 * @param object $lang PLL_Language instance.
-	 * @param array  $q    WP_Query arguments ( accepted: post_type, m, year, monthnum, day, author, author_name, post_format ).
+	 * @param array  $q    WP_Query arguments ( accepted: post_type, m, year, monthnum, day, author, author_name, post_format, post_status ).
 	 * @return int
 	 */
 	public function count_posts( $lang, $q = array() ) {

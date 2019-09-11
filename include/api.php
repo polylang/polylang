@@ -372,9 +372,9 @@ function pll_get_term_translations( $term_id ) {
  *
  * @since 1.5
  *
- * @param string $lang language code
- * @param array  $args ( accepted keys: post_type, m, year, monthnum, day, author, author_name, post_format )
- * @return int posts count
+ * @param string $lang Language code.
+ * @param array  $args WP_Query arguments ( accepted keys: post_type, m, year, monthnum, day, author, author_name, post_format, post_status ).
+ * @return int Posts count.
  */
 function pll_count_posts( $lang, $args = array() ) {
 	return PLL()->model->count_posts( PLL()->model->get_language( $lang ), $args );
