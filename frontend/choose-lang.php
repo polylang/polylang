@@ -191,16 +191,25 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Returns the language according to browser preference or the default language
+	 * Returns the preferred language
+	 * either from the cookie if it's a returning visit
+	 * or according to browser preference
+	 * or the default language
 	 *
 	 * @since 0.1
 	 *
 	 * @return object browser preferred language or default language
 	 */
 	public function get_preferred_language() {
-		// check first if the user was already browsing this site
+		$language = false;
+		$cookie   = false;
+
 		if ( isset( $_COOKIE[ PLL_COOKIE ] ) ) {
-			return $this->model->get_language( sanitize_key( $_COOKIE[ PLL_COOKIE ] ) );
+			// Check first if the user was already browsing this site.
+			$language = sanitize_key( $_COOKIE[ PLL_COOKIE ] );
+			$cookie   = true;
+		} elseif ( $this->options['browser'] ) {
+			$language = $this->get_preferred_browser_language();
 		}
 
 		/**
@@ -210,12 +219,14 @@ abstract class PLL_Choose_Lang {
 		 * Polylang fallbacks to the default language
 		 *
 		 * @since 1.0
+		 * @since 2.7 Added $cookie parameter.
 		 *
-		 * @param string $language preferred language code
+		 * @param string|bool $language Preferred language code, false if none has been found.
+		 * @param bool        $cookie   Whether the preferred language has been defined by the cookie.
 		 */
-		$slug = apply_filters( 'pll_preferred_language', $this->options['browser'] ? $this->get_preferred_browser_language() : false );
+		$slug = apply_filters( 'pll_preferred_language', $language, $cookie );
 
-		// return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
+		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
 		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_language( $this->options['default_lang'] );
 	}
 
