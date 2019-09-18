@@ -156,7 +156,10 @@ abstract class PLL_Translated_Object {
 		if ( ! empty( $term ) ) {
 			$d = maybe_unserialize( $term->description );
 			$slug = array_search( $id, $this->get_translations( $id ) ); // in case some plugin stores the same value with different key
-			unset( $d[ $slug ] );
+
+			if ( $d && is_array( $d ) ) {
+				unset( $d[ $slug ] );
+			}
 
 			if ( empty( $d ) ) {
 				wp_delete_term( (int) $term->term_id, $this->tax_translations );
