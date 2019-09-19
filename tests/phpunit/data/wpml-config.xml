@@ -33,6 +33,12 @@
 						<key name="options_group_2">
 								<key name="*"/>
 						</key>
+						<key name="options_group_3">
+								<key name="*">
+										<key name="sub_sub_option_name_3x1" />
+										<key name="sub_sub_option_name_3x2" />
+								</key>
+						</key>
 				</key>
 				<key name="simple_string_option" />
 		</admin-texts>

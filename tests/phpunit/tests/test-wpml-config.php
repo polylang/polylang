@@ -47,6 +47,18 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 					),
 				),
 			),
+			'options_group_3' => array(
+				'sub_key_31' => array(
+					'sub_sub_option_name_3x1' => 'val311',
+					'sub_sub_option_name_3x2' => 'val312',
+					'sub_sub_option_name_3x3' => 'val313',
+				),
+				'sub_key_32' => array(
+					'sub_sub_option_name_3x1' => 'val321',
+					'sub_sub_option_name_3x2' => 'val322',
+					'sub_sub_option_name_3x3' => 'val323',
+				),
+			),
 		);
 		update_option( 'my_plugins_options', $my_plugins_options );
 		update_option( 'simple_string_option', 'val' );
@@ -64,6 +76,12 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$mo->add_entry( $mo->make_entry( 'val21', "val21_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val221', "val221_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val2221', "val2221_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val311', "val311_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val312', "val312_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val313', "val313_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val321', "val321_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val322', "val322_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val323', "val323_$slug" ) );
 		$mo->export_to_db( $language );
 	}
 
@@ -222,6 +240,12 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'val21_fr', $options['options_group_2']['sub_key_21'] );
 		$this->assertEquals( 'val221_fr', $options['options_group_2']['sub_key_22']['sub_sub_221'] );
 		$this->assertEquals( 'val2221_fr', $options['options_group_2']['sub_key_22']['sub_sub_222']['sub_sub_sub_2221'] );
+		$this->assertEquals( 'val311_fr', $options['options_group_3']['sub_key_31']['sub_sub_option_name_3x1'] );
+		$this->assertEquals( 'val312_fr', $options['options_group_3']['sub_key_31']['sub_sub_option_name_3x2'] );
+		$this->assertEquals( 'val313', $options['options_group_3']['sub_key_31']['sub_sub_option_name_3x3'] ); // This one must not be translated.
+		$this->assertEquals( 'val321_fr', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x1'] );
+		$this->assertEquals( 'val322_fr', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x2'] );
+		$this->assertEquals( 'val323', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x3'] ); // This one must not be translated.
 		$this->assertEquals( 'val_fr', get_option( 'simple_string_option' ) );
 	}
 
@@ -235,6 +259,12 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertContains( 'val21', $strings );
 		$this->assertContains( 'val221', $strings );
 		$this->assertContains( 'val2221', $strings );
+		$this->assertContains( 'val311', $strings );
+		$this->assertContains( 'val312', $strings );
+		$this->assertNotContains( 'val313', $strings ); // This one must not be registered.
+		$this->assertContains( 'val321', $strings );
+		$this->assertContains( 'val322', $strings );
+		$this->assertNotContains( 'val323', $strings ); // This one must not be registered.
 		$this->assertContains( 'val', $strings );
 	}
 }
