@@ -145,6 +145,15 @@ function pll_get_requested_url() {
 		return set_url_scheme( esc_url_raw( wp_unslash( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) ) );
 	}
 
+	/*
+	 * In WP CLI context, few developers define superglobals in wp-config.php
+	 * as proposed in https://make.wordpress.org/cli/handbook/common-issues/#php-notice-undefined-index-on-_server-superglobal
+	 * So let's return the unfiltered home url to avoid a bunch of notices.
+	 */
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		return get_option( 'home' );
+	}
+
 	if ( WP_DEBUG ) {
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		trigger_error( '$_SERVER[\'HTTP_HOST\'] or $_SERVER[\'REQUEST_URI\'] are required but not set.' );
