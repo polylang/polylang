@@ -15,13 +15,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
-	function setUp() {
-		parent::setUp();
-
-		$this->prepare_options(); // before reading the wpml-config.xml file
-		$this->translate_options( 'fr' );
-	}
-
 	static function wpTearDownAfterClass() {
 		parent::wpTearDownAfterClass();
 
@@ -237,6 +230,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function test_translate_strings() {
+		$this->prepare_options(); // Before reading the wpml-config.xml file.
+		$this->translate_options( 'fr' );
+
 		$GLOBALS['polylang'] = self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
 
@@ -262,6 +258,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function test_register_string() {
+		$this->prepare_options(); // Before reading the wpml-config.xml file.
+
 		$GLOBALS['polylang'] = self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
 
