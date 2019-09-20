@@ -59,6 +59,12 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 					'sub_sub_option_name_3x3' => 'val323',
 				),
 			),
+			'options_group_4' => array(
+				'sub_option_name_41' => 'val41',
+				'sub_option_name_42' => 'val42',
+				'sub_option_diff_43' => 'val43',
+			),
+
 		);
 		update_option( 'my_plugins_options', $my_plugins_options );
 		update_option( 'simple_string_option', 'val' );
@@ -82,6 +88,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$mo->add_entry( $mo->make_entry( 'val321', "val321_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val322', "val322_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val323', "val323_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val41', "val41_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val42', "val42_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val43', "val43_$slug" ) );
 		$mo->export_to_db( $language );
 	}
 
@@ -246,6 +255,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'val321_fr', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x1'] );
 		$this->assertEquals( 'val322_fr', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x2'] );
 		$this->assertEquals( 'val323', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x3'] ); // This one must not be translated.
+		$this->assertEquals( 'val41_fr', $options['options_group_4']['sub_option_name_41'] );
+		$this->assertEquals( 'val42_fr', $options['options_group_4']['sub_option_name_42'] );
+		$this->assertEquals( 'val43', $options['options_group_4']['sub_option_diff_43'] ); // This one must not be translated.
 		$this->assertEquals( 'val_fr', get_option( 'simple_string_option' ) );
 	}
 
@@ -265,6 +277,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertContains( 'val321', $strings );
 		$this->assertContains( 'val322', $strings );
 		$this->assertNotContains( 'val323', $strings ); // This one must not be registered.
+		$this->assertContains( 'val41', $strings );
+		$this->assertContains( 'val42', $strings );
+		$this->assertNotContains( 'val43', $strings ); // This one must not be registered.
 		$this->assertContains( 'val', $strings );
 	}
 }

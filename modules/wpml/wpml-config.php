@@ -214,8 +214,16 @@ class PLL_WPML_Config {
 				$attributes = $child->attributes();
 				$name = (string) $attributes['name'];
 				if ( '*' === $name && is_array( $values ) ) {
+					// This case could be handled by the next one, but we avoid calls to preg_match here.
 					foreach ( $values as $n => $value ) {
 						$this->register_string_recursive( $context, $n, $value, $child );
+					}
+				} elseif ( false !== strpos( $name, '*' ) ) {
+					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
+					foreach ( $values as $n => $value ) {
+						if ( preg_match( $pattern, $n ) ) {
+							$this->register_string_recursive( $context, $n, $value, $child );
+						}
 					}
 				} elseif ( isset( $values[ $name ] ) ) {
 					$this->register_string_recursive( $context, $name, $values[ $name ], $child );
@@ -247,8 +255,16 @@ class PLL_WPML_Config {
 				$attributes = $child->attributes();
 				$name = (string) $attributes['name'];
 				if ( '*' === $name && is_array( $values ) ) {
+					// This case could be handled by the next one, but we avoid calls to preg_match here.
 					foreach ( $values as $n => $value ) {
 						$values[ $n ] = $this->translate_strings_recursive( $value, $child );
+					}
+				} elseif ( false !== strpos( $name, '*' ) ) {
+					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
+					foreach ( $values as $n => $value ) {
+						if ( preg_match( $pattern, $n ) ) {
+							$values[ $n ] = $this->translate_strings_recursive( $value, $child );
+						}
 					}
 				} elseif ( isset( $values[ $name ] ) ) {
 					$values[ $name ] = $this->translate_strings_recursive( $values[ $name ], $child );
