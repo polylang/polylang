@@ -286,7 +286,7 @@ class PLL_Admin_Filters_Columns {
 					esc_html( $s )
 				);
 			} elseif ( $id === $term_id ) {
-				$out .= printf(
+				$out .= sprintf(
 					'<span class="pll_icon_tick"><span class="screen-reader-text">%s</span></span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) )

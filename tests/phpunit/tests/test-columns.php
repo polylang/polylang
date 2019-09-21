@@ -139,9 +139,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		// without capability
 		wp_set_current_user( 0 );
-		ob_start();
-		self::$polylang->filters_columns->term_column( '', 'language_en', $en );
-		$column = ob_get_clean();
+		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $en );
 		$this->assertNotFalse( strpos( $column, 'pll_icon_tick' ) );
 		$this->assertFalse( strpos( $column, 'href' ) );
 	}
