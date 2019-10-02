@@ -58,5 +58,27 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 		self::$polylang->curlang = self::$polylang->model->get_language( 'ar' );
 		$this->assertEquals( ' pll-dir-rtl', apply_filters( 'admin_body_class', '' ) );
+
+		unset( self::$polylang->curlang );
+	}
+
+	function test_privacy_page_post_states() {
+		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		update_option( 'wp_page_for_privacy_policy', $en );
+
+		$de = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		self::$polylang->model->post->set_language( $de, 'de' );
+
+		self::$polylang->model->post->save_translations( $en, compact( 'en', 'de' ) );
+
+		ob_start();
+		_post_states( get_post( $en ) );
+		$this->assertNotFalse( strpos( ob_get_clean(), "<span class='post-state'>Privacy Policy Page</span>" ) );
+
+		ob_start();
+		_post_states( get_post( $de ) );
+		$this->assertNotFalse( strpos( ob_get_clean(), "<span class='post-state'>Privacy Policy Page</span>" ) );
 	}
 }

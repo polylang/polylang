@@ -42,6 +42,9 @@ class PLL_Admin_Filters extends PLL_Filters {
 		}
 
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
+
+		// Add post state for translations of the privacy policy page
+		add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
 	}
 
 	/**
@@ -263,5 +266,24 @@ class PLL_Admin_Filters extends PLL_Filters {
 			$classes .= ' pll-dir-' . ( $this->curlang->is_rtl ? 'rtl' : 'ltr' );
 		}
 		return $classes;
+	}
+
+	/**
+	 * Add post state for translations of the privacy policy page
+	 *
+	 * @since 2.7
+	 *
+	 * @param array  $post_states An array of post display states.
+	 * @param object $post        The current post object.
+	 * @return array
+	 */
+	public function display_post_states( $post_states, $post ) {
+		$page_for_privacy_policy = get_option( 'wp_page_for_privacy_policy' );
+
+		if ( $page_for_privacy_policy && in_array( $post->ID, $this->model->post->get_translations( $page_for_privacy_policy ) ) ) {
+			$post_states['page_for_privacy_policy'] = __( 'Privacy Policy Page', 'polylang' );
+		}
+
+		return $post_states;
 	}
 }

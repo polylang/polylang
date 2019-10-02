@@ -86,8 +86,8 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array  $post_states
-	 * @param object $post
+	 * @param array  $post_states An array of post display states.
+	 * @param object $post        The current post object.
 	 * @return array
 	 */
 	public function display_post_states( $post_states, $post ) {
