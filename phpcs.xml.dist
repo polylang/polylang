@@ -123,6 +123,11 @@
 	<exclude-pattern>coverage/*</exclude-pattern>
 	<exclude-pattern>tests/phpunit/includes/speed-trap-listener.php</exclude-pattern>
 	<exclude-pattern>js/*.min.js</exclude-pattern>
+	<exclude-pattern>node_modules/*</exclude-pattern>
+	<exclude-pattern>webpack.config.js</exclude-pattern>
+	<exclude-pattern>bin/*</exclude-pattern>
+	<!-- Because files are built with Webpack/babel. It doesn't make sense to scan these files -->
+	<exclude-pattern>modules/block-editor/build/*</exclude-pattern>
 
 	<!-- Specific to Polylang -->
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
