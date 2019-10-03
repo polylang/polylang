@@ -181,14 +181,16 @@ class PLL_Admin extends PLL_Admin_Base {
 	 *
 	 * @since 2.6
 	 *
-	 * @param bool $is_block_editor Whether to use the block editor or not
+	 * @param bool $is_block_editor Whether to use the block editor or not.
 	 * @return bool
 	 */
 	public function _maybe_load_sync_post( $is_block_editor ) {
-		if ( class_exists( 'PLL_Sync_Post_REST' ) && pll_use_block_editor_plugin() && $is_block_editor ) {
-			$this->sync_post = new PLL_Sync_Post_REST( $this );
-		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
-			$this->sync_post = new PLL_Sync_Post( $this );
+		if ( ! isset( $this->sync_post ) ) { // Make sure to instantiate the class only once, as the function may be called from a filter.
+			if ( class_exists( 'PLL_Sync_Post_REST' ) && pll_use_block_editor_plugin() && $is_block_editor ) {
+				$this->sync_post = new PLL_Sync_Post_REST( $this );
+			} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
+				$this->sync_post = new PLL_Sync_Post( $this );
+			}
 		}
 
 		return $is_block_editor;
