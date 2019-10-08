@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.9
 Tested up to: 5.2
 Requires PHP: 5.6
-Stable tag: 2.6.4
+Stable tag: 2.6.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6.5 (2019-10-09) =
+
+* Pro: Require ACF 5.7.11+ to activate the compatibility to avoid fatal errors with older versions
+* Pro: Avoid translating empty front slug (could cause a wrong redirect to /wp-admin)
+* Pro: Fix filter wp_unique_term_slug not always correctly applied.
+* Pro: Fix a conflict with Divi causing post synchronization buttons to be displayed multiple times
+* Avoid notice in WP CLI context
 
 = 2.6.4 (2019-08-27) =
 
