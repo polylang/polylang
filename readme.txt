@@ -4,7 +4,7 @@ Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 2.6.4
+Stable tag: 2.6.5
 License: GPLv3 or later
 
 Making WordPress multilingual
@@ -75,6 +75,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6.5 (2019-10-09) =
+
+* Pro: Require ACF 5.7.11+ to activate the compatibility to avoid fatal errors with older versions
+* Pro: Avoid translating empty front slug (could cause a wrong redirect to /wp-admin)
+* Pro: Fix filter wp_unique_term_slug not always correctly applied.
+* Pro: Fix a conflict with Divi causing post synchronization buttons to be displayed multiple times
+* Avoid notice in WP CLI context
 
 = 2.6.4 (2019-08-27) =
 
