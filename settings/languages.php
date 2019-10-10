@@ -967,6 +967,11 @@ return array(
 		'facebook' => 'sv_SE',
 	),
 	'sw' => array(
+		'code'     => 'sw',
+		'locale'   => 'sw',
+		'name'     => 'Kiswahili',
+		'dir'      => 'ltr',
+		'flag'     => 'ke',
 		'facebook' => 'sw_KE',
 	),
 	'syr' => array(
