@@ -76,10 +76,10 @@ class PLL_WPML_Config {
 		if ( ! empty( $this->xmls ) ) {
 			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
 			add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
-			add_filter( 'pll_export_term_metas', array( $this, 'export_term_metas' ) );
+			add_filter( 'pll_term_metas_to_translate', array( $this, 'export_term_metas' ) );
 			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
 			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
-			add_filter( 'pll_export_post_metas', array( $this, 'export_post_metas' ) );
+			add_filter( 'pll_post_metas_to_translate', array( $this, 'export_post_metas' ) );
 
 			foreach ( $this->xmls as $context => $xml ) {
 				foreach ( $xml->xpath( 'admin-texts/key' ) as $key ) {
