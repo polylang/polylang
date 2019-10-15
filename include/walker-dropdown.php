@@ -75,7 +75,7 @@ class PLL_Walker_Dropdown extends Walker {
 		if ( is_array( $max_depth ) ) {
 			// Backward compatibility with Polylang < 2.7
 			if ( WP_DEBUG ) {
-				trigger_error(
+				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					sprintf(
 						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.7',
 						__METHOD__
