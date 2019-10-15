@@ -79,6 +79,7 @@ class PLL_Admin_Filters_Term {
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->get_languages_list(),
+			-1,
 			array(
 				'name'     => 'term_lang_choice',
 				'value'    => 'term_id',
@@ -145,6 +146,7 @@ class PLL_Admin_Filters_Term {
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->get_languages_list(),
+			-1,
 			array(
 				'name'     => 'term_lang_choice',
 				'value'    => 'term_id',

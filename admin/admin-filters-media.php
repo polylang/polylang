@@ -57,6 +57,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 			'input' => 'html',
 			'html'  => $dropdown->walk(
 				$this->model->get_languages_list(),
+				-1,
 				array(
 					'name'     => sprintf( 'attachments[%d][language]', $post_id ),
 					'class'    => 'media_lang_choice',
