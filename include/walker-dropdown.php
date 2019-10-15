@@ -52,6 +52,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 * Starts the output of the dropdown list
 	 *
 	 * @since 1.2
+	 * @since 2.7 Use $max_depth and ...$args parameters to follow the move of WP 5.3
 	 *
 	 * List of parameters accepted in $args:
 	 *
@@ -63,12 +64,30 @@ class PLL_Walker_Dropdown extends Walker {
 	 * class    => the class attribute
 	 * disabled => disables the dropdown if set to 1
 	 *
-	 * @param array $elements elements to display
-	 * @param array $args
-	 * @return string
+	 * @param array $elements  An array of elements.
+	 * @param int   $max_depth The maximum hierarchical depth.
+	 * @param mixed ...$args   Additional arguments.
+	 * @return string The hierarchical item output.
 	 */
-	public function walk( $elements, $args = array() ) {
+	public function walk( $elements, $max_depth, ...$args ) {
 		$output = '';
+
+		if ( is_array( $max_depth ) ) {
+			// Backward compatibility with Polylang < 2.7
+			if ( WP_DEBUG ) {
+				trigger_error(
+					sprintf(
+						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.7',
+						__METHOD__
+					)
+				);
+			}
+			$args = $max_depth;
+			$max_depth = -1;
+		} else {
+			$args = isset( $args[0] ) ? $args[0] : array();
+		}
+
 		$args = wp_parse_args( $args, array( 'value' => 'slug', 'name' => 'lang_choice' ) );
 
 		if ( ! empty( $args['flag'] ) ) {
@@ -86,7 +105,7 @@ class PLL_Walker_Dropdown extends Walker {
 			isset( $args['id'] ) && ! $args['id'] ? '' : ' id="' . ( empty( $args['id'] ) ? esc_attr( $args['name'] ) : esc_attr( $args['id'] ) ) . '"',
 			empty( $args['class'] ) ? '' : ' class="' . esc_attr( $args['class'] ) . '"',
 			disabled( empty( $args['disabled'] ), false, false ),
-			parent::walk( $elements, -1, $args )
+			parent::walk( $elements, $max_depth, $args )
 		);
 
 		return $output;

@@ -184,7 +184,7 @@ class PLL_Switcher {
 		 * @param string $html html returned/outputted by the template tag
 		 * @param array  $args arguments passed to the template tag
 		 */
-		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, $args ), $args );
+		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, -1, $args ), $args );
 
 		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] ) {

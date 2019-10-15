@@ -81,6 +81,7 @@ class PLL_Admin_Classic_Editor {
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->get_languages_list(),
+			-1,
 			array(
 				'name'     => $id,
 				'class'    => 'post_lang_choice tags-input',

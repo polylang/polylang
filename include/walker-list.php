@@ -54,12 +54,30 @@ class PLL_Walker_List extends Walker {
 	 * Overrides Walker:walk to set depth argument
 	 *
 	 * @since 1.2
+	 * @since 2.7 Use $max_depth and ...$args parameters to follow the move of WP 5.3
 	 *
-	 * @param array $elements elements to display
-	 * @param array $args
-	 * @return string
+	 * @param array $elements  An array of elements.
+	 * @param int   $max_depth The maximum hierarchical depth.
+	 * @param mixed ...$args   Additional arguments.
+	 * @return string The hierarchical item output.
 	 */
-	public function walk( $elements, $args = array() ) {
-		return parent::walk( $elements, -1, $args );
+	public function walk( $elements, $max_depth, ...$args ) {
+		if ( is_array( $max_depth ) ) {
+			// Backward compatibility with Polylang < 2.7
+			if ( WP_DEBUG ) {
+				trigger_error(
+					sprintf(
+						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.7',
+						__METHOD__
+					)
+				);
+			}
+			$args = $max_depth;
+			$max_depth = -1;
+		} else {
+			$args = isset( $args[0] ) ? $args[0] : array();
+		}
+
+		return parent::walk( $elements, $max_depth, $args );
 	}
 }
