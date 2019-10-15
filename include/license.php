@@ -169,4 +169,117 @@ class PLL_License {
 
 		update_option( 'polylang_licenses', $licenses ); // FIXME called multiple times when saving all licenses
 	}
+
+	/**
+	 * Get the html form field in a table row (one per license key) for display
+	 *
+	 * @since 2.7
+	 *
+	 * @return string
+	 */
+	public function get_form_field() {
+		if ( ! empty( $this->license_data ) ) {
+			$license = $this->license_data;
+		}
+
+		$class = 'license-null';
+
+		$out = sprintf(
+			'<td><label for="pll-licenses[%1$s]">%2$s</label></td>' .
+			'<td><input name="licenses[%1$s]" id="pll-licenses[%1$s]" type="text" value="%3$s" class="regular-text code" />',
+			esc_attr( $this->id ),
+			esc_attr( $this->name ),
+			esc_html( $this->license_key )
+		);
+
+		if ( ! empty( $license ) && is_object( $license ) ) {
+			$now = current_time( 'timestamp' );
+			$expiration = strtotime( $license->expires, $now );
+
+			// Special case: the license expired after the last check
+			if ( $license->success && $expiration < $now ) {
+				$license->success = false;
+				$license->error = 'expired';
+			}
+
+			if ( false === $license->success ) {
+				$class = 'notice-error notice-alt';
+
+				switch ( $license->error ) {
+					case 'expired':
+						$message = sprintf(
+							/* translators: %1$s is a date, %2$s is link start tag, %3$s is link end tag. */
+							esc_html__( 'Your license key expired on %1$s. Please %2$srenew your license key%3$s.', 'polylang' ),
+							esc_html( date_i18n( get_option( 'date_format' ), strtotime( $license->expires, current_time( 'timestamp' ) ) ) ),
+							sprintf( '<a href="%s" target="_blank">', esc_url( 'https://polylang.pro/checkout/?edd_license_key=' . $this->license_key ) ),
+							'</a>'
+						);
+						break;
+
+					case 'missing':
+						$message = sprintf(
+							/* translators: %1$s is link start tag, %2$s is link end tag. */
+							esc_html__( 'Invalid license. Please %1$svisit your account page%2$s and verify it.', 'polylang' ),
+							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
+							'</a>'
+						);
+						break;
+
+					case 'invalid':
+					case 'site_inactive':
+						$message = sprintf(
+							/* translators: %1$s is a product name, %2$s is link start tag, %3$s is link end tag. */
+							esc_html__( 'Your %1$s license key is not active for this URL. Please %2$svisit your account page%3$s to manage your license key URLs.', 'polylang' ),
+							esc_html( $this->name ),
+							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
+							'</a>'
+						);
+						break;
+
+					case 'item_name_mismatch':
+						/* translators: %s is a product name */
+						$message = sprintf( esc_html__( 'This is not a %s license key.', 'polylang' ), esc_html( $this->name ) );
+						break;
+
+					case 'no_activations_left':
+						$message = sprintf(
+							/* translators: %1$s is link start tag, %2$s is link end tag */
+							esc_html__( 'Your license key has reached its activation limit. %1$sView possible upgrades%2$s now.', 'polylang' ),
+							sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account' ),
+							'</a>'
+						);
+						break;
+				}
+			} else {
+				$class = 'license-valid';
+
+				$out .= sprintf( '<button id="deactivate_%s" type="button" class="button button-secondary pll-deactivate-license">%s</button>', esc_attr( $this->id ), esc_html__( 'Deactivate', 'polylang' ) );
+
+				if ( 'lifetime' === $license->expires ) {
+					$message = esc_html__( 'The license key never expires.', 'polylang' );
+				} elseif ( $expiration > $now && $expiration - $now < ( DAY_IN_SECONDS * 30 ) ) {
+					$class = 'notice-warning notice-alt';
+					$message = sprintf(
+						/* translators: %1$s is a date, %2$s is link start tag, %3$s is link end tag. */
+						esc_html__( 'Your license key will expire soon! Precisely, it will expire on %1$s. %2$sRenew your license key today!%3$s.', 'polylang' ),
+						esc_html( date_i18n( get_option( 'date_format' ), strtotime( $license->expires, $now ) ) ),
+						sprintf( '<a href="%s" target="_blank">', esc_url( 'https://polylang.pro/checkout/?edd_license_key=' . $this->license_key ) ),
+						'</a>'
+					);
+				} else {
+					$message = sprintf(
+						/* translators: %s is a date */
+						esc_html__( 'Your license key expires on %s.', 'polylang' ),
+						esc_html( date_i18n( get_option( 'date_format' ), strtotime( $license->expires, $now ) ) )
+					);
+				}
+			}
+		}
+
+		if ( ! empty( $message ) ) {
+			$out .= '<p>' . $message . '</p>';
+		}
+
+		return sprintf( '<tr id="pll-license-%s" class="%s">%s</tr>', esc_attr( $this->id ), $class, $out );
+	}
 }
