@@ -66,6 +66,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 					array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
 					$this->model->get_languages_list()
 				),
+				-1,
 				array(
 					'name'     => $widget->id . '_lang_choice',
 					'class'    => 'tags-input pll-lang-choice',
