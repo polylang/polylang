@@ -35,6 +35,7 @@ trait PLL_UnitTestCase_Trait {
 	 */
 	function tearDown() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		self::$polylang->model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient
+		Pluggable_Functions_Container::set_instance( null );
 
 		parent::tearDown();
 	}

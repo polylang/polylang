@@ -51,7 +51,7 @@
 						pll_term_languages,
 						function( lg, term_tax ) {
 							$.each(
-								term_tax, 
+								term_tax,
 								function( tax, terms ) {
 									$.each(
 										terms,
@@ -73,7 +73,7 @@
 					$.each(
 						pll_page_languages,
 						function( lg, pages ) {
-							$.each( 
+							$.each(
 								pages,
 								function( i ) {
 									v = $( '#post_parent option[value="' + pll_page_languages[ lg ][ i ] + '"]' );
@@ -155,8 +155,7 @@
 			}
 		}
 	);
-})( jQuery )
-
+})( jQuery );
 
 /**
  * Bulk translate
@@ -186,7 +185,7 @@ jQuery( document ).ready(
 					$( '#pll-translate td' ).attr( 'colspan', $( 'th:visible, td:visible', '.widefat:first thead' ).length );
 					$( 'table.widefat tbody' ).prepend( $( '#pll-translate' ) ).prepend( '<tr class="hidden"></tr>' ); // The hidden tr allows to keep the background color
 				} else {
-					$( '#pll-translate' ).find( '.cancel' ).click(); // Close the form on any other bulk action
+					$( '#pll-translate' ).find( '.cancel' ).click();
 				}
 			}
 		);
@@ -196,6 +195,7 @@ jQuery( document ).ready(
 			'click',
 			'.cancel',
 			function(){
+				// Close the form on any other bulk action
 				$( '#pll-translate' ).siblings( '.hidden' ).remove();
 				// #pll-translate is built and come from server side and is well escaped when necessary
 				$( '#pll-bulk-translate' ).append( $( '#pll-translate' ) ); //phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
@@ -212,12 +212,26 @@ jQuery( document ).ready(
 					event.preventDefault();
 					$( this ).find( 'input[type=submit]' ).click();
 				}
-
 				if ( 27 === event.keyCode ) {
 					event.preventDefault();
 					$( this ).find( '.cancel' ).click();
 				}
 			}
 		);
-	}
+
+		// Clean DOM in case of file download
+		$( '#posts-filter' ).on(
+			'submit',
+			function() {
+				$( '.settings-error' ).remove();
+				setTimeout(
+					function() {
+						$( 'input[type=checkbox]:checked' ).attr( 'checked', false );
+						$( '#pll-translate' ).find( '.cancel' ).trigger( 'click' );
+					},
+					500
+				);
+			}
+		);
+	} 
 );

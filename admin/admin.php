@@ -25,8 +25,10 @@
  * block_editor    => reference to PLL_Admin_Block_Editor object
  * classic_editor  => reference to PLL_Admin_Classic_Editor object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
+ * bulk_translate  => reference, a PLL_Bulk_Translate subclass instance
  *
  * @since 1.2
+ * @since 2.7 Added a reference to a PLL_Bulk_Translate instance.
  */
 class PLL_Admin extends PLL_Admin_Base {
 	public $filters, $filters_columns, $filters_post, $filters_term, $nav_menu, $sync, $filters_media;
@@ -61,11 +63,6 @@ class PLL_Admin extends PLL_Admin_Base {
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
 			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ) );
-
-			// Bulk Translate
-			if ( class_exists( 'PLL_Bulk_Translate' ) ) {
-				add_action( 'current_screen', array( $this->bulk_translate = new PLL_Bulk_Translate( $this ), 'init' ) );
-			}
 		}
 	}
 
@@ -100,6 +97,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * Setup filters for admin pages
 	 *
 	 * @since 1.2
+	 * @since 2.7 instantiate a PLL_Bulk_Translate instance.
 	 */
 	public function add_filters() {
 		// All these are separated just for convenience and maintainability
@@ -126,6 +124,13 @@ class PLL_Admin extends PLL_Admin_Base {
 
 		$this->posts = new PLL_CRUD_Posts( $this );
 		$this->terms = new PLL_CRUD_Terms( $this );
+
+		// Bulk Translate
+		// Needs to be loaded before other modules.
+		if ( class_exists( 'PLL_Bulk_Translate' ) ) {
+			$this->bulk_translate = new PLL_Bulk_Translate( $this->model );
+			add_action( 'current_screen', array( $this->bulk_translate, 'init' ) );
+		}
 
 		// Advanced media
 		if ( $this->options['media_support'] && class_exists( 'PLL_Admin_Advanced_Media' ) ) {
