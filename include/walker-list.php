@@ -61,7 +61,7 @@ class PLL_Walker_List extends Walker {
 	 * @param mixed ...$args   Additional arguments.
 	 * @return string The hierarchical item output.
 	 */
-	public function walk( $elements, $max_depth, ...$args ) {
+	public function walk( $elements, $max_depth, ...$args ) { // phpcs:ignore WordPressVIPMinimum.Classes.DeclarationCompatibility.DeclarationCompatibility
 		if ( is_array( $max_depth ) ) {
 			// Backward compatibility with Polylang < 2.7
 			if ( WP_DEBUG ) {
