@@ -130,7 +130,12 @@ abstract class PLL_Sync_Metas {
 		 * @param int    $to   Id of the post to which we paste informations
 		 * @param string $lang Language slug
 		 */
-		return array_unique( apply_filters( "pll_copy_{$this->meta_type}_metas", array(), $sync, $from, $to, $lang ) );
+		return array_unique(
+			array_merge(
+				apply_filters( "pll_copy_{$this->meta_type}_metas", array(), $sync, $from, $to, $lang ),
+				apply_filters( "pll_{$this->meta_type}_metas_to_translate", array(), $sync, $from, $to, $lang )
+			)
+		);
 	}
 
 	/**
