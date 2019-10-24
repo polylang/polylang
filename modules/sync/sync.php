@@ -140,7 +140,7 @@ class PLL_Sync {
 					$tr_arr = $postarr;
 					unset( $tr_arr['post_parent'] );
 
-					// Do not udpate the translation parent if the user set a parent with no translation
+					// Do not udpate the translation parent if the user set a parent with no translation.
 					if ( isset( $postarr['post_parent'] ) ) {
 						$post_parent = $postarr['post_parent'] ? $this->model->post->get_translation( $postarr['post_parent'], $lang ) : 0;
 						if ( ! ( $postarr['post_parent'] && ! $post_parent ) ) {
@@ -148,10 +148,12 @@ class PLL_Sync {
 						}
 					}
 
-					// Update all the row at once
-					// Don't use wp_update_post to avoid infinite loop
-					$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
-					clean_post_cache( $tr_id );
+					// Update all the rows at once.
+					if ( ! empty( $tr_arr ) ) {
+						// Don't use wp_update_post to avoid infinite loop.
+						$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
+						clean_post_cache( $tr_id );
+					}
 				}
 			}
 		}
