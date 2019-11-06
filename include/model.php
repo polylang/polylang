@@ -182,6 +182,7 @@ class PLL_Model {
 				$this->cache->set( 'language:' . $lang->tl_term_id, $lang );
 				$this->cache->set( 'language:' . $lang->slug, $lang );
 				$this->cache->set( 'language:' . $lang->locale, $lang );
+				$this->cache->set( 'language:' . $lang->w3c, $lang );
 			}
 			$return = $this->cache->get( 'language:' . $value );
 		}
