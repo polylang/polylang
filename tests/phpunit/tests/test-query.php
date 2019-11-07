@@ -628,4 +628,29 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( array( 'lang' => 'fr', 'author' => 1 ) );
 		$this->assertEquals( array( get_post( $post_id ) ), $query->posts );
 	}
+
+	// Issue fixed in 2.6.6
+	function test_category_with_post_type_added_late_in_query() {
+		register_taxonomy_for_object_type( 'category', array( 'post', 'trcpt' ) );
+
+		$cpt_id = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		self::$polylang->model->post->set_language( $cpt_id, 'fr' );
+
+		$cat_id = $this->factory->category->create();
+		self::$polylang->model->term->set_language( $cat_id, 'fr' );
+		wp_set_post_terms( $cpt_id, array( $cat_id ), 'category' );
+
+		// Assign the post type in a hook after our pare_query action
+		add_action(
+			'pre_get_posts',
+			function( $query ) {
+				if ( empty( $query->query_vars['post_type'] ) ) {
+					$query->set( 'post_type', 'trcpt' );
+				}
+			}
+		);
+
+		$query = new WP_Query( array( 'lang' => 'fr', 'cat' => $cat_id ) );
+		$this->assertEquals( array( get_post( $cpt_id ) ), $query->posts );
+	}
 }
