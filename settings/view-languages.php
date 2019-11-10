@@ -18,7 +18,7 @@ require ABSPATH . 'wp-admin/options-head.php'; // Displays the errors messages a
 		case 'strings':  // String translations tab
 		case 'settings': // Settings tab
 			include PLL_SETTINGS_INC . '/view-tab-' . $this->active_tab . '.php';
-			break;
+			// Intentional fall-through to upgrade to fire the action below.
 
 		default:
 			/**
