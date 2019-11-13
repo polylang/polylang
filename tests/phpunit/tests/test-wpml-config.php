@@ -188,21 +188,21 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		PLL_WPML_Config::instance()->init();
 
 		register_post_type( 'book' ); // translated
-		register_post_type( 'DVD' ); // untranslated
+		register_post_type( 'dvd' ); // untranslated
 		self::$polylang->model->cache->clean( 'post_types' );
 
 		$this->assertTrue( self::$polylang->model->is_translated_post_type( 'book' ) );
-		$this->assertFalse( self::$polylang->model->is_translated_post_type( 'DVD' ) );
+		$this->assertFalse( self::$polylang->model->is_translated_post_type( 'dvd' ) );
 
 		// settings
 		$post_types = get_post_types( array( 'public' => true, '_builtin' => false ) );
 		$post_types = array_diff( $post_types, get_post_types( array( '_pll' => true ) ) );
 		$post_types = array_unique( apply_filters( 'pll_get_post_types', $post_types, true ) );
 		$this->assertNotContains( 'book', $post_types );
-		$this->assertNotContains( 'DVD', $post_types );
+		$this->assertNotContains( 'dvd', $post_types );
 
 		_unregister_post_type( 'book' );
-		_unregister_post_type( 'DVD' );
+		_unregister_post_type( 'dvd' );
 	}
 
 	function test_tax() {

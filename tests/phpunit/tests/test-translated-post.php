@@ -115,7 +115,7 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 		$post_id = $this->factory->post->create(
 			array(
 				'post_status' => 'future',
-				'post_date'   => date( 'Y-m-d H:i:s', time() + 100 ),
+				'post_date'   => gmdate( 'Y-m-d H:i:s', time() + 100 ),
 			)
 		);
 
