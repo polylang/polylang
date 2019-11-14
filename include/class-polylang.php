@@ -33,7 +33,7 @@ class Polylang {
 		$install = new PLL_Install( POLYLANG_BASENAME );
 
 		// Stopping here if we are going to deactivate the plugin ( avoids breaking rewrite rules )
-		if ( $install->is_deactivation() ) {
+		if ( $install->is_deactivation() || ! $install->can_activate() ) {
 			return;
 		}
 
