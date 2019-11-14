@@ -16,12 +16,12 @@ class PLL_Install extends PLL_Install_Base {
 		global $wp_version;
 
 		if ( version_compare( PHP_VERSION, PLL_MIN_PHP_VERSION, '<' ) ) {
-			add_action( 'admin_notices', array( __CLASS__, 'php_version_notice' ) );
+			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
 			return false;
 		}
 
 		if ( version_compare( $wp_version, PLL_MIN_WP_VERSION, '<' ) ) {
-			add_action( 'admin_notices', array( __CLASS__, 'wp_version_notice' ) );
+			add_action( 'admin_notices', array( $this, 'wp_version_notice' ) );
 			return false;
 		}
 
