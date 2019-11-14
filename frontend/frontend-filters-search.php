@@ -129,6 +129,6 @@ class PLL_Frontend_Filters_Search {
 			}
 		}
 		//]]>";
-		echo '<script type="text/javascript">' . $js . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		echo '<script type="text/javascript">' . esc_html( $js ) . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }
