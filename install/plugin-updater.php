@@ -220,7 +220,7 @@ class PLL_Plugin_Updater {
 			// build a plugin list row, with update notification
 			$wp_list_table = _get_list_table( 'WP_Plugins_List_Table' );
 			# <tr class="plugin-update-tr"><td colspan="' . $wp_list_table->get_column_count() . '" class="plugin-update colspanchange">
-			echo '<tr class="plugin-update-tr" id="' . $this->slug . '-update" data-slug="' . $this->slug . '" data-plugin="' . $this->slug . '/' . $file . '">';
+			echo '<tr class="plugin-update-tr" id="' . esc_html( $this->slug ) . '-update" data-slug="' . esc_html( $this->slug ) . '" data-plugin="' . esc_html( $this->slug ) . '/' . esc_html( $file ) . '">';
 			echo '<td colspan="3" class="plugin-update colspanchange">';
 			echo '<div class="update-message notice inline notice-warning notice-alt">';
 
@@ -229,7 +229,7 @@ class PLL_Plugin_Updater {
 			if ( empty( $version_info->download_link ) ) {
 				printf(
 					/* translators: %1$s plugin name, %3$s plugin version, %2$s is link start tag, %4$s is link end tag. */
-					__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s.', 'polylang' ),
+					esc_html__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s.', 'polylang' ),
 					esc_html( $version_info->name ),
 					'<a target="_blank" class="thickbox" href="' . esc_url( $changelog_link ) . '">',
 					esc_html( $version_info->new_version ),
@@ -238,7 +238,7 @@ class PLL_Plugin_Updater {
 			} else {
 				printf(
 					/* translators: %1$s plugin name, %3$s plugin version, %2$s and %5$s are link start tags, %4$s and %6$s are link end tags. */
-					__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s or %5$supdate now%6$s.', 'polylang' ),
+					esc_html__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s or %5$supdate now%6$s.', 'polylang' ),
 					esc_html( $version_info->name ),
 					'<a target="_blank" class="thickbox" href="' . esc_url( $changelog_link ) . '">',
 					esc_html( $version_info->new_version ),
@@ -476,7 +476,7 @@ class PLL_Plugin_Updater {
 		}
 
 		if( ! current_user_can( 'update_plugins' ) ) {
-			wp_die( __( 'You do not have permission to install plugin updates', 'polylang' ), __( 'Error', 'polylang' ), array( 'response' => 403 ) );
+			wp_die( esc_html__( 'You do not have permission to install plugin updates', 'polylang' ), esc_html__( 'Error', 'polylang' ), array( 'response' => 403 ) );
 		}
 
 		$data         = $edd_plugin_data[ $_REQUEST['slug'] ];
@@ -521,7 +521,7 @@ class PLL_Plugin_Updater {
 		}
 
 		if( ! empty( $version_info ) && isset( $version_info->sections['changelog'] ) ) {
-			echo '<div style="background:#fff;padding:10px;">' . $version_info->sections['changelog'] . '</div>';
+			echo '<div style="background:#fff;padding:10px;">' . esc_html( $version_info->sections['changelog'] ) . '</div>';
 		}
 
 		exit;

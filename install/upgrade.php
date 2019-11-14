@@ -28,7 +28,7 @@ class PLL_Upgrade {
 		if ( ! $this->can_upgrade() ) {
 			ob_start();
 			$this->admin_notices(); // FIXME the error message is displayed two times
-			die( ob_get_contents() ); // phpcs:ignore WordPress.Security.EscapeOutput
+			die( esc_html( ob_get_contents() ) );
 		}
 	}
 
@@ -78,7 +78,7 @@ class PLL_Upgrade {
 				/* translators: %1$s and %2$s are Polylang version numbers */
 				esc_html__( 'Before upgrading to %2$s, please upgrade to %1$s.', 'polylang' ),
 				'<strong>0.9.8</strong>',
-				POLYLANG_VERSION // phpcs:ignore WordPress.Security.EscapeOutput
+				esc_html( POLYLANG_VERSION )
 			)
 		);
 	}
