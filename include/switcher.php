@@ -212,7 +212,7 @@ class PLL_Switcher {
 		}
 
 		if ( $args['echo'] ) {
-			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
+			esc_html_e(  $out );
 		}
 		return $out;
 	}

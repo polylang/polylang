@@ -31,18 +31,18 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
-		echo $args['before_widget'];
+		esc_html_e( $args['before_widget'] );
 		if ( $title ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			esc_html_e( $args['before_title'] . $title . $args['after_title'] );
 		}
 		if ( 0 === self::$pll_instance ) { #modified#
-			echo '<div id="calendar_wrap" class="calendar_wrap">';
+			esc_html_e( '<div id="calendar_wrap" class="calendar_wrap">' );
 		} else {
-			echo '<div class="calendar_wrap">';
+			esc_html_e( '<div class="calendar_wrap">' );
 		}
 		empty( PLL()->curlang ) ? get_calendar() : self::get_calendar(); #modified#
-		echo '</div>';
-		echo $args['after_widget'];
+		esc_html_e( '</div>' );
+		esc_html_e( $args['after_widget'] );
 
 		self::$pll_instance++; #modified#
 	}
@@ -70,7 +70,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 			$output = apply_filters( 'get_calendar', $cache[ $key ] );
 
 			if ( $echo ) {
-				echo $output;
+				esc_html_e( $output );
 				return;
 			}
 
@@ -267,7 +267,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 			 *
 			 * @param string $calendar_output HTML output of the calendar.
 			 */
-			echo apply_filters( 'get_calendar', $calendar_output );
+			esc_html_e( apply_filters( 'get_calendar', $calendar_output ) );
 			return;
 		}
 		/** This filter is documented in wp-includes/general-template.php */

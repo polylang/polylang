@@ -171,7 +171,7 @@ function pll_esc_attr__( $string ) {
  * @param string $string The string to translate
  */
 function pll_e( $string ) {
-	echo pll__( $string ); // phpcs:ignore
+	esc_html_e( pll__( $string ) );
 }
 
 /**
@@ -182,7 +182,7 @@ function pll_e( $string ) {
  * @param string $string The string to translate
  */
 function pll_esc_html_e( $string ) {
-	echo pll_esc_html__( $string ); // phpcs:ignore WordPress.Security.EscapeOutput
+	esc_html_e( pll_esc_html__( $string ) );
 }
 
 /**
@@ -193,7 +193,7 @@ function pll_esc_html_e( $string ) {
  * @param string $string The string to translate
  */
 function pll_esc_attr_e( $string ) {
-	echo pll_esc_attr__( $string ); // phpcs:ignore WordPress.Security.EscapeOutput
+	esc_html_e( pll_esc_attr__( $string ) );
 }
 
 /**
