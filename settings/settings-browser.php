@@ -79,10 +79,10 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 				$( "input[name='force_lang']" ).change( function() {
 					var value = $( this ).val();
 					if ( 3 > value ) {
-						$( "#pll-module-browser" ).<?php echo $func; // phpcs:ignore WordPress.Security.EscapeOutput ?>.children( "td" ).children( ".row-actions" ).html( '<?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
+						$( "#pll-module-browser" ).<?php esc_html_e( $func ); ?>.children( "td" ).children( ".row-actions" ).html( '<?php esc_html_e( $link ); ?>' );
 					}
 					else {
-						$( "#pll-module-browser" ).removeClass( "active" ).addClass( "inactive" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $deactivated; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
+						$( "#pll-module-browser" ).removeClass( "active" ).addClass( "inactive" ).children( "td" ).children( ".row-actions" ).html( '<?php esc_html_e( $deactivated ); ?>' );
 					}
 				} );
 			} )( jQuery );
