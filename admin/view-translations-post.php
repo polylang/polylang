@@ -33,9 +33,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 		?>
 		<tr>
-			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); // phpcs:ignore WordPress.Security.EscapeOutput ?></th>
-			<td class = "hidden"><?php echo $add_link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
-			<td class = "pll-edit-column pll-column-icon"><?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
+			<th class = "pll-language-column"><?php echo $language->flag ? esc_html( $language->flag ) : esc_html( $language->slug ); ?></th>
+			<td class = "hidden"><?php echo esc_html( $add_link ); ?></td>
+			<td class = "pll-edit-column pll-column-icon"><?php echo esc_html( $link ); ?></td>
 			<?php
 
 			/**

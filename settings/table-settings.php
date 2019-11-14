@@ -59,7 +59,7 @@ class PLL_Table_Settings extends WP_List_Table {
 				'<tr class="plugin-update-tr">
 					<td colspan="3" class="plugin-update colspanchange">%s</td>
 				</tr>',
-				sprintf( '<div class="update-message notice inline notice-warning notice-alt"><p>%s</p></div>', $message ) // phpcs:ignore WordPress.Security.EscapeOutput
+				sprintf( '<div class="update-message notice inline notice-warning notice-alt"><p>%s</p></div>', esc_html( $message ) )
 			);
 		}
 
@@ -78,8 +78,8 @@ class PLL_Table_Settings extends WP_List_Table {
 				</tr>',
 				esc_attr( $item->module ),
 				esc_html( $item->title ),
-				$form, // phpcs:ignore
-				implode( $item->get_buttons() ) // phpcs:ignore
+				esc_html( $form ),
+				implode( esc_html( $item->get_buttons() ) )
 			);
 		}
 	}
@@ -104,11 +104,11 @@ class PLL_Table_Settings extends WP_List_Table {
 
 			if ( 'cb' == $column_name ) {
 				echo '<th scope="row" class="check-column">';
-				echo $this->column_cb( $item ); // phpcs:ignore WordPress.Security.EscapeOutput
+				esc_html_e( $this->column_cb( $item ) );
 				echo '</th>';
 			} else {
 				printf( '<td class="%s">', esc_attr( $classes ) );
-				echo $this->column_default( $item, $column_name ); // phpcs:ignore WordPress.Security.EscapeOutput
+				esc_html_e( $this->column_default( esc_html( $item ), esc_html( $column_name ) ) );
 				echo '</td>';
 			}
 		}
