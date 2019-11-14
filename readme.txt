@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.9
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 2.6.6
+Stable tag: 2.6.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6.7 (2019-11-14) =
+
+* Require PHP 5.6
+* Fix PHP warning in WP 5.3
 
 = 2.6.6 (2019-11-12) =
 
