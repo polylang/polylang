@@ -54,7 +54,7 @@ class PLL_Walker_List extends Walker {
 	 * Overrides Walker:walk to set depth argument
 	 *
 	 * @since 1.2
-	 * @since 2.7 Use $max_depth and ...$args parameters to follow the move of WP 5.3
+	 * @since 2.6.7 Use $max_depth and ...$args parameters to follow the move of WP 5.3
 	 *
 	 * @param array $elements  An array of elements.
 	 * @param int   $max_depth The maximum hierarchical depth.
@@ -63,11 +63,11 @@ class PLL_Walker_List extends Walker {
 	 */
 	public function walk( $elements, $max_depth, ...$args ) { // phpcs:ignore WordPressVIPMinimum.Classes.DeclarationCompatibility.DeclarationCompatibility
 		if ( is_array( $max_depth ) ) {
-			// Backward compatibility with Polylang < 2.7
+			// Backward compatibility with Polylang < 2.6.7
 			if ( WP_DEBUG ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					sprintf(
-						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.7',
+						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.6.7',
 						__METHOD__
 					)
 				);

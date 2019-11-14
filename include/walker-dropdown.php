@@ -52,7 +52,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 * Starts the output of the dropdown list
 	 *
 	 * @since 1.2
-	 * @since 2.7 Use $max_depth and ...$args parameters to follow the move of WP 5.3
+	 * @since 2.6.7 Use $max_depth and ...$args parameters to follow the move of WP 5.3
 	 *
 	 * List of parameters accepted in $args:
 	 *
@@ -73,11 +73,11 @@ class PLL_Walker_Dropdown extends Walker {
 		$output = '';
 
 		if ( is_array( $max_depth ) ) {
-			// Backward compatibility with Polylang < 2.7
+			// Backward compatibility with Polylang < 2.6.7
 			if ( WP_DEBUG ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					sprintf(
-						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.7',
+						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.6.7',
 						__METHOD__
 					)
 				);
