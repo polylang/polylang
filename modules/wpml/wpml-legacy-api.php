@@ -149,7 +149,7 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 		$link = sprintf( '<a href="%s">%s</a>', esc_url( $link ), esc_html( $text ) );
 
 		if ( $echo ) {
-			echo $link; // phpcs:ignore WordPress.Security.EscapeOutput
+			echo esc_html( $link );
 		}
 
 		return $link;
