@@ -240,23 +240,23 @@ class PLL_Admin_Base extends PLL_Base {
 					$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
 						if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 							if ( 'undefined' === typeof options.data ) {
-								options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>' : <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>;
+								options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php esc_html_e( $str ); ?>' : <?php esc_html_e( $arr ); ?>;
 							} else {
 								if ( 'string' === typeof options.data ) {
 									if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
-										options.url = options.url+'&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
+										options.url = options.url+'&<?php esc_html_e( $str ); ?>';
 									} else {
 										try {
 											var o = $.parseJSON(options.data);
-											o = $.extend(o, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
+											o = $.extend(o, <?php esc_html_e( $arr ); ?>);
 											options.data = JSON.stringify(o);
 										}
 										catch(e) {
-											options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>&'+options.data;
+											options.data = '<?php esc_html_e( $str ); ?>&'+options.data;
 										}
 									}
 								} else {
-									options.data = $.extend(options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
+									options.data = $.extend(options.data, <?php esc_html_e( $arr ); ?>);
 								}
 							}
 						}

@@ -219,7 +219,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 					sprintf(
 						/* translators: %s is a comma separated list of native language names */
 						esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
-						implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						implode( ', ', esc_html( $untranslated ) )
 					)
 				);
 			}

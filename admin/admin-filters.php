@@ -81,7 +81,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 				'<p><label for="%1$s">%2$s %3$s</label></p>',
 				esc_attr( $widget->id . '_lang_choice' ),
 				esc_html__( 'The widget is displayed for:', 'polylang' ),
-				$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
+				esc_html( $dropdown_html )
 			);
 		}
 	}

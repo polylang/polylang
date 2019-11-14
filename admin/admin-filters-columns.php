@@ -168,7 +168,7 @@ class PLL_Admin_Filters_Columns {
 		}
 		// Link to add a new translation
 		else {
-			echo $this->links->new_post_translation_link( $post_id, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
+			echo esc_html( $this->links->new_post_translation_link( $post_id, $language ) );
 		}
 	}
 
@@ -201,7 +201,7 @@ class PLL_Admin_Filters_Columns {
 					</div>
 				</fieldset>',
 				esc_html__( 'Language', 'polylang' ),
-				$dropdown->walk( $elements, -1, array( 'name' => 'inline_lang_choice', 'id' => '' ) ) // phpcs:ignore WordPress.Security.EscapeOutput
+				esc_html( $dropdown->walk( $elements, -1, array( 'name' => 'inline_lang_choice', 'id' => '' ) ) )
 			);
 		}
 		return $column;

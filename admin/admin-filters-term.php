@@ -97,7 +97,7 @@ class PLL_Admin_Filters_Term {
 				<p>%s</p>
 			</div>',
 			esc_html__( 'Language', 'polylang' ),
-			$dropdown_html, // phpcs:ignore
+			esc_html( $dropdown_html ),
 			esc_html__( 'Sets the language', 'polylang' )
 		);
 
@@ -169,7 +169,7 @@ class PLL_Admin_Filters_Term {
 				</td>
 			</tr>',
 			esc_html__( 'Language', 'polylang' ),
-			$dropdown_html, // phpcs:ignore
+			esc_html( $dropdown_html ),
 			esc_html__( 'Sets the language', 'polylang' )
 		);
 
