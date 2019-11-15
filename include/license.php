@@ -193,11 +193,11 @@ class PLL_License {
 		);
 
 		if ( ! empty( $license ) && is_object( $license ) ) {
-			$now = current_time( 'timestamp' );
-			$expiration = strtotime( $license->expires, $now );
+			$now = time();
+			$expiration = isset( $license->expires ) ? strtotime( $license->expires ) : false;
 
 			// Special case: the license expired after the last check
-			if ( $license->success && $expiration < $now ) {
+			if ( $license->success && $expiration && $expiration < $now ) {
 				$license->success = false;
 				$license->error = 'expired';
 			}
@@ -210,10 +210,15 @@ class PLL_License {
 						$message = sprintf(
 							/* translators: %1$s is a date, %2$s is link start tag, %3$s is link end tag. */
 							esc_html__( 'Your license key expired on %1$s. Please %2$srenew your license key%3$s.', 'polylang' ),
-							esc_html( date_i18n( get_option( 'date_format' ), strtotime( $license->expires, current_time( 'timestamp' ) ) ) ),
+							esc_html( date_i18n( get_option( 'date_format' ), $expiration ) ),
 							sprintf( '<a href="%s" target="_blank">', esc_url( 'https://polylang.pro/checkout/?edd_license_key=' . $this->license_key ) ),
 							'</a>'
 						);
+						break;
+
+					case 'disabled':
+					case 'revoked':
+						$message = esc_html__( 'Your license key has been disabled.', 'polylang' );
 						break;
 
 					case 'missing':
@@ -262,7 +267,7 @@ class PLL_License {
 					$message = sprintf(
 						/* translators: %1$s is a date, %2$s is link start tag, %3$s is link end tag. */
 						esc_html__( 'Your license key will expire soon! Precisely, it will expire on %1$s. %2$sRenew your license key today!%3$s.', 'polylang' ),
-						esc_html( date_i18n( get_option( 'date_format' ), strtotime( $license->expires, $now ) ) ),
+						esc_html( date_i18n( get_option( 'date_format' ), $expiration ) ),
 						sprintf( '<a href="%s" target="_blank">', esc_url( 'https://polylang.pro/checkout/?edd_license_key=' . $this->license_key ) ),
 						'</a>'
 					);
@@ -270,7 +275,7 @@ class PLL_License {
 					$message = sprintf(
 						/* translators: %s is a date */
 						esc_html__( 'Your license key expires on %s.', 'polylang' ),
-						esc_html( date_i18n( get_option( 'date_format' ), strtotime( $license->expires, $now ) ) )
+						esc_html( date_i18n( get_option( 'date_format' ), $expiration ) )
 					);
 				}
 			}
