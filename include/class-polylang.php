@@ -137,6 +137,7 @@ class Polylang {
 	 * @return bool
 	 */
 	public static function is_rest_request() {
+		// Handle pretty permalinks.
 		$home_path       = trim( wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
 		$home_path_regex = sprintf( '|^%s|i', preg_quote( $home_path, '|' ) );
 
@@ -146,7 +147,12 @@ class Polylang {
 		$req_uri = str_replace( 'index.php', '', $req_uri );
 		$req_uri = trim( $req_uri, '/' );
 
-		return 0 === strpos( $req_uri, rest_get_url_prefix() . '/' );
+		// And also test rest_route query string parameter is not empty for plain permalinks.
+		$query_string = array();
+		wp_parse_str( wp_parse_url( pll_get_requested_url(), PHP_URL_QUERY ), $query_string );
+		$rest_route = isset( $query_string['rest_route'] ) ? trim( $query_string['rest_route'], '/' ) : false;
+
+		return 0 === strpos( $req_uri, rest_get_url_prefix() . '/' ) || ! empty( $rest_route );
 	}
 
 	/**
