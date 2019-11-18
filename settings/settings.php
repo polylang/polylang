@@ -361,7 +361,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 *
 	 * @since 2.3
 	 */
-	public function get_predefined_languages() {
+	public static function get_predefined_languages() {
 		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
 		$languages    = include PLL_SETTINGS_INC . '/languages.php';
