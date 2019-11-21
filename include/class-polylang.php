@@ -203,6 +203,11 @@ class Polylang {
 			}
 		}
 
+		// In some edge cases, it's possible that no options were found in the database. Load default options as we need some.
+		if ( ! $options ) {
+			$options = PLL_Install::get_default_options();
+		}
+
 		// Make sure that this filter is *always* added before PLL_Model::get_languages_list() is called for the first time
 		add_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 ); // Before PLL_Links_Model
 
