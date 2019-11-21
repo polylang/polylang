@@ -132,7 +132,13 @@ class PLL_License {
 	 */
 	private function api_request( $request ) {
 		$licenses = get_option( 'polylang_licenses' );
-		unset( $licenses[ $this->id ], $this->license_data );
+
+		if ( is_array( $licenses ) ) {
+			unset( $licenses[ $this->id ] );
+		} else {
+			$licenses = array();
+		}
+		unset( $this->license_data );
 
 		if ( ! empty( $this->license_key ) ) {
 			// Data to send in our API request
