@@ -6,6 +6,25 @@ class License_Test extends PLL_UnitTestCase {
 		parent::setUp();
 
 		$this->license = new PLL_License( 'polylang-pro/polylang.php', 'Polylang Pro', POLYLANG_VERSION, 'WP SYNTEX' );
+
+		// Fake the http call to not connect to the Internet for doing tests.
+		add_filter(
+			'pre_http_request',
+			function( $preempt, $parsed_args, $url ) {
+				return array(
+					'headers' => null,
+					'body'    => '{"success": true,"license": "valid","item_id": false,"item_name": "Polylang+Pro","license_limit": 1,"site_count": 1,"expires": "2020-05-28 23: 59: 59","activations_left": 0,"checksum": "11112222333344445555666677778888","payment_id": 9999,"customer_name": "","customer_email": "john@doe.com","price_id": "3"}',
+					'response' => array(
+						'code'    => 200,
+						'message' => 'OK',
+					),
+					'cookies' => null,
+					'filename' => null,
+				);
+			},
+			10,
+			3
+		);
 	}
 
 	function test_valid() {
@@ -89,5 +108,19 @@ class License_Test extends PLL_UnitTestCase {
 		);
 
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'Your license key has reached its activation limit' ) );
+	}
+
+	function test_activate_license() {
+		update_option( 'polylang_licenses', '' ); // Put wrong option for testing strenghness.
+
+		$this->license->activate_license( '00001111222233334444555566667777' );
+
+		$licenses = get_option( 'polylang_licenses' );
+
+		$this->assertArrayHasKey( 'polylang-pro', $licenses );
+		$this->assertArrayHasKey( 'key', $licenses['polylang-pro'] );
+		$this->assertEquals( $this->license->license_key, $licenses['polylang-pro']['key'] );
+		$this->assertArrayHasKey( 'data', $licenses['polylang-pro'] );
+
 	}
 }
