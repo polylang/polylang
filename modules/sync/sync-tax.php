@@ -163,7 +163,12 @@ class PLL_Sync_Tax {
 					} else {
 						// No permission to synchronize, so let's synchronize in reverse order
 						$orig_lang = array_search( $object_id, $tr_ids );
-						$tr_terms = (array) get_the_terms( $tr_id, $taxonomy );
+						$tr_terms = get_the_terms( $tr_id, $taxonomy );
+
+						if ( false === $tr_terms ) {
+							$tr_terms = array();
+						}
+
 						if ( is_array( $tr_terms ) ) {
 							$tr_terms = wp_list_pluck( $tr_terms, 'term_id' );
 							$this->copy_object_terms( $tr_id, $object_id, $orig_lang, $tr_terms, $taxonomy, $append );
