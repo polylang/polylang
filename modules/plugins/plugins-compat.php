@@ -124,6 +124,11 @@ class PLL_Plugins_Compat {
 		if ( function_exists( 'custom_post_widget_plugin_init' ) && class_exists( 'PLL_Content_Blocks' ) ) {
 			add_action( 'pll_init', array( $this->content_blocks = new PLL_Content_Blocks(), 'init' ) );
 		}
+
+		// AMP
+		if ( function_exists( 'amp_get_slug' ) ) {
+			add_filter( 'pll_front_page_ignored_query_vars', array( $this, 'add_amp_to_front_page_ignored_query_vars' ) );
+		}
 	}
 
 	/**
@@ -333,5 +338,16 @@ class PLL_Plugins_Compat {
 			// Otherwise rely on MU Domain Mapping
 			redirect_to_mapped_domain();
 		}
+	}
+
+	/**
+	 * Append the AMP query var to the supplied query vars.
+	 *
+	 * @param array $query_vars Query vars.
+	 * @return array Query vars with AMP added.
+	 */
+	public function add_amp_to_front_page_ignored_query_vars( $query_vars ) {
+		$query_vars[] = amp_get_slug();
+		return $query_vars;
 	}
 }
