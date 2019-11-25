@@ -121,6 +121,7 @@ class PLL_CRUD_Posts {
 
 				$term_ids = array_combine( $terms, $terms );
 				$languages = array_map( array( $this->model->term, 'get_language' ), $term_ids );
+				$languages = array_filter( $languages ); // Remove terms without language.
 				$languages = wp_list_pluck( $languages, 'slug' );
 				$wrong_terms = array_diff( $languages, array( $lang->slug ) );
 
