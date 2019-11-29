@@ -85,6 +85,7 @@ class PLL_Admin_Strings {
 
 				// Don't enable widget translation if the widget is visible in only one language or if there is no title
 				if ( empty( $widget_settings[ $number ]['pll_lang'] ) ) {
+					$widget_instance   = $widget_settings[ $number ];
 					$widget_properties = array(
 						'title' => self::$default_strings['widget_title'],
 						'text'  => self::$default_strings['widget_text'],
@@ -93,10 +94,11 @@ class PLL_Admin_Strings {
 					/**
 					 * Filter widget properties that should be available for string translation.
 					 * Array key is the widget property and the array value is the label used in the string translation page.
-					 * @param array $widget_properties
+					 * @param array $widget_properties The translatable widget properties.
+					 * @param array $widget_instance The widget instance.
 					 * @return array
 					 */
-					$widget_properties = apply_filters( 'pll_translate_widget_properties', $widget_properties );
+					$widget_properties = apply_filters( 'pll_translate_widget_properties', $widget_properties, $widget_instance );
 
 					foreach ( $widget_properties as $prop => $label ) {
 						if ( isset( $widget_settings[ $number ][ $prop ] ) && $prop = $widget_settings[ $number ][ $prop ] ) {
