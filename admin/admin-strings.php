@@ -85,12 +85,23 @@ class PLL_Admin_Strings {
 
 				// Don't enable widget translation if the widget is visible in only one language or if there is no title
 				if ( empty( $widget_settings[ $number ]['pll_lang'] ) ) {
-					if ( isset( $widget_settings[ $number ]['title'] ) && $title = $widget_settings[ $number ]['title'] ) {
-						self::register_string( self::$default_strings['widget_title'], $title, 'Widget' );
-					}
+					$widget_properties = array(
+						'title' => self::$default_strings['widget_title'],
+						'text'  => self::$default_strings['widget_text'],
+					);
 
-					if ( isset( $widget_settings[ $number ]['text'] ) && $text = $widget_settings[ $number ]['text'] ) {
-						self::register_string( self::$default_strings['widget_text'], $text, 'Widget', true );
+					/**
+					 * Filter widget properties that should be available for string translation.
+					 * Array key is the widget property and the array value is the label used in the string translation page.
+					 * @param array $widget_properties
+					 * @return array
+					 */
+					$widget_properties = apply_filters( 'pll_translate_widget_properties', $widget_properties );
+
+					foreach ( $widget_properties as $prop => $label ) {
+						if ( isset( $widget_settings[ $number ][ $prop ] ) && $prop = $widget_settings[ $number ][ $prop ] ) {
+							self::register_string( $label, $prop, 'Widget' );
+						}
 					}
 				}
 			}
