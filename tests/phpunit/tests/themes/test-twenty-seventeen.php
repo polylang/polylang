@@ -1,8 +1,6 @@
 <?php
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
-
-if ( file_exists( $_tests_dir . '../wordpress/wp-content/themes/twentyseventeen/style.css' ) ) {
+if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyseventeen/style.css' ) ) {
 
 	class Twenty_Seventeen_Test extends PLL_UnitTestCase {
 		static $stylesheet;

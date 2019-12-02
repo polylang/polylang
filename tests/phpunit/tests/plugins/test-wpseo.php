@@ -1,14 +1,8 @@
 <?php
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
+if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 
-if ( ! $_tests_dir ) {
-	$_tests_dir = '/tmp/wordpress-tests-lib';
-}
-
-if ( file_exists( $_tests_dir . '/../wordpress-seo/wp-seo.php' ) ) {
-
-	require_once $_tests_dir . '/../wordpress-seo/inc/sitemaps/class-sitemaps.php';
+	require_once DIR_TESTROOT . '/../wordpress-seo/inc/sitemaps/class-sitemaps.php';
 
 	/**
 	 * Copied from WPSEO unit tests
@@ -46,8 +40,7 @@ if ( file_exists( $_tests_dir . '/../wordpress-seo/wp-seo.php' ) ) {
 		function setUp() {
 			parent::setUp();
 
-			global $_tests_dir;
-			require_once $_tests_dir . '/../wordpress-seo/wp-seo.php';
+			require_once DIR_TESTROOT . '/../wordpress-seo/wp-seo.php';
 
 			require_once PLL_INC . '/api.php';
 			$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang

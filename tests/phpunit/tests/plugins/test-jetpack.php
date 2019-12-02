@@ -1,14 +1,8 @@
 <?php
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
+if ( file_exists( DIR_TESTROOT . '/../jetpack/jetpack.php' ) ) {
 
-if ( ! $_tests_dir ) {
-	$_tests_dir = '/tmp/wordpress-tests-lib';
-}
-
-if ( file_exists( $_tests_dir . '../jetpack/jetpack.php' ) ) {
-
-	require_once $_tests_dir . '../jetpack/functions.opengraph.php';
+	require_once DIR_TESTROOT . '/../jetpack/functions.opengraph.php';
 
 	class Jetpack_Test extends PLL_UnitTestCase {
 
@@ -22,9 +16,8 @@ if ( file_exists( $_tests_dir . '../jetpack/jetpack.php' ) ) {
 		function setUp() {
 			parent::setUp();
 
-			global $_tests_dir;
 			require_once PLL_INC . '/api.php'; // usually loaded only if an instance of Polylang exists
-			require_once $_tests_dir . '../jetpack/jetpack.php';
+			require_once DIR_TESTROOT . '/../jetpack/jetpack.php';
 
 			$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang
 			self::$polylang = new PLL_Frontend( self::$polylang->links_model );

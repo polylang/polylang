@@ -15,6 +15,11 @@ function _manually_load_plugin() {
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require_once $_tests_dir . '/includes/bootstrap.php';
+
+if ( ! defined( 'DIR_TESTROOT' ) ) {
+	define( 'DIR_TESTROOT', $_tests_dir );
+}
+
 require_once dirname( __FILE__ ) . '/testcase-trait.php';
 require_once dirname( __FILE__ ) . '/testcase.php';
 require_once dirname( __FILE__ ) . '/testcase-ajax.php';
