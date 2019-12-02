@@ -40,8 +40,8 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 		protected function _import_wp( $filename, $users = array(), $fetch_files = true ) {
 			$importer = new PLL_WP_Import(); // Change to our importer
 			$file = realpath( $filename );
-			assert( '!empty( $file )' );
-			assert( 'is_file( $file )' );
+			$this->assertTrue( ! empty( $file ), 'Path to import file is empty.' );
+			$this->assertTrue( is_file( $file ), 'Import file is not a file.' );
 
 			$authors = $mapping = $new = array();
 			$i = 0;
