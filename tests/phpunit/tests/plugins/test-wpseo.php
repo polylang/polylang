@@ -99,6 +99,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 			do_action_ref_array( 'pll_init', array( &self::$polylang ) );
 
 			$sm = new WPSEO_Sitemaps_Double();
+			$sm->init_sitemaps_providers(); // Since Yoast SEO 5.3.
 			set_query_var( 'sitemap', 'post' );
 			$this->pll_seo->before_sitemap( $GLOBALS['wp_query'] ); // Need a direct call as we don't fire the 'pre_get_posts' filter
 
@@ -135,6 +136,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 			do_action_ref_array( 'pll_init', array( &self::$polylang ) );
 
 			$sm = new WPSEO_Sitemaps_Double();
+			$sm->init_sitemaps_providers(); // Since Yoast SEO 5.3.
 			set_query_var( 'sitemap', 'category' );
 			$GLOBALS['wp_query']->query['sitemap'] = 'category'; // FIXME isn't that too hacky?
 
