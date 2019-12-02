@@ -27,6 +27,8 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 
 			self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 			self::$polylang->init();
+			self::$polylang->featured_content = new PLL_Featured_Content();
+			self::$polylang->featured_content->init();
 		}
 
 		static function wpTearDownAfterClass() {
