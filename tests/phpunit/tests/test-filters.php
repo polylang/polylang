@@ -9,6 +9,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
+		self::create_language( 'es_ES' );
 
 		require_once PLL_INC . '/api.php';
 		$GLOBALS['polylang'] = &self::$polylang;
@@ -315,14 +316,15 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_site_title_in_password_change_email() {
-		$language = self::$polylang->model->get_language( 'fr' );
+		// Important to use a language available in DIR_TESTDATA . '/languages/', otherwise switch_to_locale() doesn't switch.
+		$language = self::$polylang->model->get_language( 'es' );
 		$_mo = new PLL_MO();
-		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mon site' ) );
+		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mi sitio' ) );
 		$_mo->export_to_db( $language );
 
 		reset_phpmailer_instance();
 		$user_id = self::factory()->user->create();
-		update_user_meta( $user_id, 'locale', 'fr_FR' );
+		update_user_meta( $user_id, 'locale', 'es_ES' );
 
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
@@ -334,8 +336,8 @@ class Filters_Test extends PLL_UnitTestCase {
 		wp_update_user( $userdata );
 
 		$mailer = tests_retrieve_phpmailer_instance();
-		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'Mon site' ) );
-		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'Mon site' ) );
+		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'Mi sitio' ) );
+		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'Mi sitio' ) );
 		reset_phpmailer_instance();
 	}
 
