@@ -138,11 +138,6 @@ class Strings_Test extends PLL_UnitTestCase {
 	}
 
 	function test_switch_to_locale() {
-		// Only for WP 4.7+
-		if ( ! class_exists( 'WP_Locale_Switcher' ) ) {
-			$this->markTestSkipped();
-		}
-
 		// Strings translations
 		$mo = new PLL_MO();
 		$mo->add_entry( $mo->make_entry( 'test', 'test en' ) );
