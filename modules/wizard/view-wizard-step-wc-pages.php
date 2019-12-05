@@ -33,7 +33,7 @@ if ( count( $this->translation_updates ) > 0 ) {
 				if ( 'plugin' !== $translation->type ) {
 					continue;
 				}
-				$language_properties = $this->polylang->model->get_language( $translation->language );
+				$language_properties = $this->model->get_language( $translation->language );
 				?>
 				<tr>
 					<td><?php echo esc_html( $translation->slug ); ?></td>

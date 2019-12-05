@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
 };
 
-$languages_list = $this->polylang->model->get_languages_list();
-$default_language = $this->polylang->options['default_lang'];
+$languages_list = $this->model->get_languages_list();
+$default_language = $this->options['default_lang'];
 ?>
 <h2><?php esc_html_e( 'Content without language', 'polylang' ); ?></h2>
 <p>

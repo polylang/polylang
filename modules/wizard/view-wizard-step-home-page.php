@@ -8,16 +8,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
 };
 
-$languages = $this->polylang->model->get_languages_list();
-$default_language = count( $languages ) > 0 ? $this->polylang->options['default_lang'] : null;
+$languages = $this->model->get_languages_list();
+$default_language = count( $languages ) > 0 ? $this->options['default_lang'] : null;
 $home_page_id = get_option( 'page_on_front' );
-$translations = $this->polylang->model->post->get_translations( $home_page_id );
+$translations = $this->model->post->get_translations( $home_page_id );
 $untranslated_languages = array();
 $home_page = $home_page_id > 0 ? get_post( $home_page_id ) : null;
-$home_page_language = $this->polylang->model->post->get_language( $home_page_id );
+$home_page_language = $this->model->post->get_language( $home_page_id );
 
 foreach ( $languages as $language ) {
-	if ( ! $this->polylang->model->post->get( $home_page_id, $language ) ) {
+	if ( ! $this->model->post->get( $home_page_id, $language ) ) {
 		$untranslated_languages[] = $language;
 	}
 }
@@ -60,7 +60,7 @@ foreach ( $languages as $language ) {
 	<tbody>
 	<?php
 	foreach ( array_keys( $translations ) as $lang ) {
-		$language = $this->polylang->model->get_language( $lang );
+		$language = $this->model->get_language( $lang );
 		?>
 		<tr>
 			<td>

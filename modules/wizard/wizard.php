@@ -8,11 +8,17 @@ class PLL_Wizard {
 	const POLYLANG_PLUGIN_BASENAME = 'polylang/polylang.php';
 	const PLUGIN_FILTER = array( 'woocommerce', 'polylang', 'polylang-pro', 'polylang-wc' );
 	/**
-	 * Polylang instance
+	 * Reference to PLL_Model object
 	 *
-	 * @var object $polylang
+	 * @var object $model
 	 */
-	protected $polylang;
+	protected $model;
+	/**
+	 * Reference to Polylang options array
+	 *
+	 * @var object $options
+	 */
+	protected $options;
 	/**
 	 * List of steps
 	 *
@@ -35,10 +41,12 @@ class PLL_Wizard {
 	/**
 	 * Constructor
 	 *
-	 * @param object $polylang Polylang instance.
+	 * @param object $options Reference to Polylang options array.
+	 * @param object $model   Reference to PLL_Model object.
 	 */
-	public function __construct( $polylang ) {
-		$this->polylang = $polylang;
+	public function __construct( $options, $model ) {
+		$this->options = $options;
+		$this->model = $model;
 
 		// register an action when plugin is activating.
 		add_action( 'activated_plugin', array( $this, 'activated_plugin' ), 10, 2 );
@@ -130,7 +138,7 @@ class PLL_Wizard {
 			return true;
 		}
 		foreach ( $languages as $language ) {
-			$media[ $language->slug ] = $this->polylang->model->count_posts(
+			$media[ $language->slug ] = $this->model->count_posts(
 				$language,
 				array(
 					'post_type'   => array( 'attachment' ),
@@ -322,7 +330,7 @@ class PLL_Wizard {
 		$active_plugins  = array(); // Just to respect datas sent to WordPress.org API.
 		$plugins_to_send = compact( 'plugins', 'active_plugins' );
 
-		$locales = $this->polylang->model->get_languages_list( array( 'fields' => 'locale' ) );
+		$locales = $this->model->get_languages_list( array( 'fields' => 'locale' ) );
 
 		$timeout = 3 + (int) ( count( $plugins ) / 10 );
 
@@ -508,7 +516,7 @@ class PLL_Wizard {
 	public function save_step_languages() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$existing_languages = $this->polylang->model->get_languages_list();
+		$existing_languages = $this->model->get_languages_list();
 
 		// PLL_SETTINGS_INC is correctly defined relatively to the plugin folder.
 		$all_languages = include PLL_SETTINGS_INC . '/languages.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
@@ -543,12 +551,12 @@ class PLL_Wizard {
 				$saved_languages['rtl'] = (int) ( 'rtl' === $saved_languages['dir'] );
 				$saved_languages['term_group'] = 0; // Default term_group.
 
-				$language_added = $this->polylang->model->add_language( $saved_languages );
+				$language_added = $this->model->add_language( $saved_languages );
 
 				if ( $language_added instanceof WP_Error && array_key_exists( 'pll_non_unique_slug', $language_added->errors ) ) {
 					// Get the slug from the locale : lowercase and dash instead of underscore.
 					$saved_languages['slug'] = strtolower( str_replace( '_', '-', $saved_languages['locale'] ) );
-					$language_added = $this->polylang->model->add_language( $saved_languages );
+					$language_added = $this->model->add_language( $saved_languages );
 				}
 
 				if ( $language_added instanceof WP_Error ) {
@@ -578,7 +586,7 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_media( $steps ) {
-		$languages = $this->polylang->model->get_languages_list();
+		$languages = $this->model->get_languages_list();
 
 		if ( $this->is_media_step_displayable( $languages ) ) {
 			$steps['media'] = array(
@@ -607,9 +615,9 @@ class PLL_Wizard {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 		$media_support = isset( $_POST['media_support'] ) ? sanitize_key( $_POST['media_support'] ) === 'yes' : false;
 
-		$this->polylang->options['media_support'] = $media_support;
+		$this->options['media_support'] = $media_support;
 
-		update_option( 'polylang', $this->polylang->options );
+		update_option( 'polylang', $this->options );
 
 		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
 		exit;
@@ -622,7 +630,7 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_untranslated_contents( $steps ) {
-		if ( $this->polylang->model->get_objects_with_no_lang( 1 ) ) {
+		if ( $this->model->get_objects_with_no_lang( 1 ) ) {
 			wp_enqueue_script( 'pll-wizard-language-choice', plugins_url( '/modules/wizard/js/language-choice' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/modules/wizard/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(
@@ -653,17 +661,17 @@ class PLL_Wizard {
 		$lang = isset( $_POST['language'] ) ? sanitize_text_field( wp_unslash( $_POST['language'] ) ) : false;
 
 		if ( empty( $lang ) ) {
-			$lang = $this->polylang->options['default_lang'];
+			$lang = $this->options['default_lang'];
 		}
 
-		$language = $this->polylang->model->get_language( $lang );
+		$language = $this->model->get_language( $lang );
 
-		while ( $nolang = $this->polylang->model->get_objects_with_no_lang( 1000 ) ) {
+		while ( $nolang = $this->model->get_objects_with_no_lang( 1000 ) ) {
 			if ( ! empty( $nolang['posts'] ) ) {
-				$this->polylang->model->set_language_in_mass( 'post', $nolang['posts'], $language->slug );
+				$this->model->set_language_in_mass( 'post', $nolang['posts'], $language->slug );
 			}
 			if ( ! empty( $nolang['terms'] ) ) {
-				$this->polylang->model->set_language_in_mass( 'term', $nolang['terms'], $language->slug );
+				$this->model->set_language_in_mass( 'term', $nolang['terms'], $language->slug );
 			}
 		}
 
@@ -678,10 +686,10 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_home_page( $steps ) {
-		$languages = $this->polylang->model->get_languages_list();
+		$languages = $this->model->get_languages_list();
 		$home_page_id = get_option( 'page_on_front' );
 
-		$translations = $this->polylang->model->post->get_translations( $home_page_id );
+		$translations = $this->model->post->get_translations( $home_page_id );
 
 		if ( $home_page_id > 0 && ( ! $languages || count( $languages ) === 1 || count( $translations ) !== count( $languages ) ) ) {
 			$steps['home-page'] = array(
@@ -709,21 +717,21 @@ class PLL_Wizard {
 	public function save_step_home_page() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$languages = $this->polylang->model->get_languages_list();
+		$languages = $this->model->get_languages_list();
 
 		if ( count( $languages ) === 0 ) {
 			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'languages' ) ) );
 			exit;
 		}
 
-		$default_language = count( $languages ) > 0 ? $this->polylang->options['default_lang'] : null;
+		$default_language = count( $languages ) > 0 ? $this->options['default_lang'] : null;
 		$home_page = isset( $_POST['home_page'] ) ? sanitize_key( $_POST['home_page'] ) : false;
 		$home_page_title = isset( $_POST['home_page_title'] ) ? sanitize_text_field( wp_unslash( $_POST['home_page_title'] ) ) : esc_html__( 'Homepage', 'polylang' );
 		$home_page_language = isset( $_POST['home_page_language'] ) ? sanitize_key( $_POST['home_page_language'] ) : false;
 
 		$untranslated_languages = isset( $_POST['untranslated_languages'] ) ? array_map( 'sanitize_key', $_POST['untranslated_languages'] ) : array();
 
-		$translations = $this->polylang->model->post->get_translations( $home_page );
+		$translations = $this->model->post->get_translations( $home_page );
 
 		foreach ( $untranslated_languages as $language ) {
 			// In fact this case isn't possible if we come from the untranslated contents step.
@@ -731,7 +739,7 @@ class PLL_Wizard {
 			if ( $default_language === $language && false === $home_page_language && false !== $home_page && $home_page > 0 ) {
 				$id = $home_page;
 			} else {
-				$language_properties = $this->polylang->model->get_language( $language );
+				$language_properties = $this->model->get_language( $language );
 				$id = wp_insert_post(
 					array(
 						'post_title'  => $home_page_title . ' - ' . $language_properties->name,
@@ -745,7 +753,7 @@ class PLL_Wizard {
 		}
 		pll_save_post_translations( $translations );
 
-		$this->polylang->model->clean_languages_cache();
+		$this->model->clean_languages_cache();
 
 		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
 		exit;
