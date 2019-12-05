@@ -48,6 +48,8 @@ class PLL_Admin_Base extends PLL_Base {
 	public function init() {
 		parent::init();
 
+		new PLL_Wizard( $this );
+
 		if ( ! $this->model->get_languages_list() ) {
 			return;
 		}
