@@ -159,7 +159,6 @@ class PLL_Wizard {
 			return;
 		}
 
-		$languages = $this->polylang->model->get_languages_list();
 		if ( ! PLL_Admin_Notices::is_dismissed( 'wizard' ) ) {
 			PLL_Admin_Notices::add_notice( 'wizard', $this->wizard_notice() );
 		}
@@ -212,8 +211,8 @@ class PLL_Wizard {
 	 */
 	public function wizard_notice() {
 		ob_start();
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/html-wizard-notice.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/html-wizard-notice.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 		return ob_get_clean();
 	}
 
@@ -222,8 +221,8 @@ class PLL_Wizard {
 	 */
 	public function display_wizard_page() {
 		set_current_screen();
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/view-wizard-page.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/view-wizard-page.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 	}
 
 	/**
@@ -396,8 +395,8 @@ class PLL_Wizard {
 	 * Display the languages step form
 	 */
 	public function display_step_licenses() {
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/view-wizard-step-licenses.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/view-wizard-step-licenses.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 	}
 
 	/**
@@ -499,8 +498,8 @@ class PLL_Wizard {
 	 * Display the languages step form
 	 */
 	public function display_step_languages() {
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/view-wizard-step-languages.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/view-wizard-step-languages.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 	}
 
 	/**
@@ -597,8 +596,8 @@ class PLL_Wizard {
 	 * Display the media step form
 	 */
 	public function display_step_media() {
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/view-wizard-step-media.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/view-wizard-step-media.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 	}
 
 	/**
@@ -641,8 +640,8 @@ class PLL_Wizard {
 	 * Display the untranslated contents step form
 	 */
 	public function display_step_untranslated_contents() {
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/view-wizard-step-untranslated-contents.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/view-wizard-step-untranslated-contents.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 	}
 
 	/**
@@ -700,8 +699,8 @@ class PLL_Wizard {
 	 * Display the home page step form
 	 */
 	public function display_step_home_page() {
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/view-wizard-step-home-page.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/view-wizard-step-home-page.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 	}
 
 	/**
@@ -784,8 +783,8 @@ class PLL_Wizard {
 	 * Display the WooCommerce pages step form
 	 */
 	public function display_step_wc_pages() {
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/view-wizard-step-wc-pages.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/view-wizard-step-wc-pages.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 	}
 
 	/**
@@ -842,8 +841,8 @@ class PLL_Wizard {
 	public function display_step_last() {
 		// We ran the wizard once. So we can dismiss its notice.
 		PLL_Admin_Notices::dismiss( 'wizard' );
-		// PLL_WIZARD_MODULES_DIR is correctly defined relatively to the plugin folder.
-		include PLL_WIZARD_MODULES_DIR . '/wizard/view-wizard-step-last.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
+		include PLL_MODULES_INC . '/wizard/view-wizard-step-last.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 	}
 
 	/**
