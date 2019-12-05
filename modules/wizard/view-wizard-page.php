@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<h1 id="pll-logo">
 			<a href="https://polylang.pro/">
 				<img
-					src="<?php echo esc_url( plugins_url( '/modules/wizard/images/polylang-logo-back.png', PLL_WIZARD_FILE ) ); ?>"
+					src="<?php echo esc_url( plugins_url( '/modules/wizard/images/polylang-logo-back.png', POLYLANG_FILE ) ); ?>"
 					alt="Polylang"
 				/>
 			</a>

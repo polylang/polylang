@@ -231,11 +231,11 @@ class PLL_Wizard {
 	public function enqueue_scripts() {
 		if ( empty( $_GET['page'] ) || 'mlang_wizard' !== $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// We need some styles for the wizard notice on the other pages.
-			wp_enqueue_style( 'pll-wizard-notice', plugins_url( '/modules/wizard/css/wizard-notice' . $this->get_suffix() . '.css', PLL_WIZARD_FILE ), array( 'dashicons', 'common' ), POLYLANG_VERSION );
+			wp_enqueue_style( 'pll-wizard-notice', plugins_url( '/modules/wizard/css/wizard-notice' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'common' ), POLYLANG_VERSION );
 			return;
 		}
 		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $this->get_suffix() . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
-		wp_enqueue_style( 'pll-wizard', plugins_url( '/modules/wizard/css/wizard' . $this->get_suffix() . '.css', PLL_WIZARD_FILE ), array( 'dashicons', 'install', 'common', 'forms' ), POLYLANG_VERSION );
+		wp_enqueue_style( 'pll-wizard', plugins_url( '/modules/wizard/css/wizard' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'forms' ), POLYLANG_VERSION );
 
 		$this->styles = array( 'polylang_admin', 'pll-wizard' );
 	}
@@ -461,8 +461,8 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_languages( $steps ) {
-		wp_enqueue_script( 'pll-wizard-language-choice', plugins_url( '/modules/wizard/js/language-choice' . $this->get_suffix() . '.js', PLL_WIZARD_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-		wp_register_script( 'pll-wizard-languages', plugins_url( '/modules/wizard/js/languages-step' . $this->get_suffix() . '.js', PLL_WIZARD_FILE ), array( 'jquery', 'jquery-ui-dialog' ), POLYLANG_VERSION, true );
+		wp_enqueue_script( 'pll-wizard-language-choice', plugins_url( '/modules/wizard/js/language-choice' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
+		wp_register_script( 'pll-wizard-languages', plugins_url( '/modules/wizard/js/languages-step' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-dialog' ), POLYLANG_VERSION, true );
 		wp_localize_script(
 			'pll-wizard-languages',
 			'pll_wizard_params',
@@ -483,7 +483,7 @@ class PLL_Wizard {
 			)
 		);
 		wp_enqueue_script( 'pll-wizard-languages' );
-		wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/modules/wizard/css/selectmenu' . $this->get_suffix() . '.css', PLL_WIZARD_FILE ), array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
+		wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/modules/wizard/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
 		$steps['languages'] = array(
 			'name'    => __( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
@@ -623,8 +623,8 @@ class PLL_Wizard {
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( $this->polylang->model->get_objects_with_no_lang( 1 ) ) {
-			wp_enqueue_script( 'pll-wizard-language-choice', plugins_url( '/modules/wizard/js/language-choice' . $this->get_suffix() . '.js', PLL_WIZARD_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/modules/wizard/css/selectmenu' . $this->get_suffix() . '.css', PLL_WIZARD_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
+			wp_enqueue_script( 'pll-wizard-language-choice', plugins_url( '/modules/wizard/js/language-choice' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
+			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/modules/wizard/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(
 				'name'    => __( 'Content', 'polylang' ),
 				'view'    => array( $this, 'display_step_untranslated_contents' ),
