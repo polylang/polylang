@@ -17,8 +17,10 @@ download() {
 mkdir -p $TMPDIR/downloads
 
 # Install Twenty Fourteen
-download https://downloads.wordpress.org/theme/twentyfourteen.zip $TMPDIR/downloads/twentyfourteen.zip
-unzip -q $TMPDIR/downloads/twentyfourteen.zip -d $WP_CORE_DIR/wp-content/themes
+if [[ ! -f "$WP_CORE_DIR/wp-content/themes/twentyfourteen/style.css" ]]; then
+	download https://downloads.wordpress.org/theme/twentyfourteen.zip $TMPDIR/downloads/twentyfourteen.zip
+	unzip -q $TMPDIR/downloads/twentyfourteen.zip -d $WP_CORE_DIR/wp-content/themes
+fi
 
 # Install WordPress Importer
 download https://downloads.wordpress.org/plugin/wordpress-importer.zip $TMPDIR/downloads/wordpress-importer.zip
