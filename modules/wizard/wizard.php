@@ -31,18 +31,13 @@ class PLL_Wizard {
 	 * @var array $styles
 	 */
 	protected $styles = array();
-	/**
-	 * List of translation packages to download
-	 *
-	 * @var array $translation_updates
-	 */
-	protected $translation_updates;
 
 	/**
 	 * Constructor
 	 *
 	 * @param object $options Reference to Polylang options array.
 	 * @param object $model   Reference to PLL_Model object.
+	 * @since 2.7
 	 */
 	public function __construct( $options, $model ) {
 		$this->options = $options;
@@ -67,7 +62,6 @@ class PLL_Wizard {
 		add_filter( 'pll_wizard_steps', array( $this, 'add_step_media' ), 300 );
 		add_filter( 'pll_wizard_steps', array( $this, 'add_step_untranslated_contents' ), 400 );
 		add_filter( 'pll_wizard_steps', array( $this, 'add_step_home_page' ), 500 );
-		add_filter( 'pll_wizard_steps', array( $this, 'add_step_wc_pages' ), 600 );
 		add_filter( 'pll_wizard_steps', array( $this, 'add_step_last' ), 999 );
 	}
 
@@ -76,6 +70,7 @@ class PLL_Wizard {
 	 *
 	 * @param string $plugin_name  plugin basename.
 	 * @param bool   $network_wide if activated for all sites in the network.
+	 * @since 2.7
 	 */
 	public function activated_plugin( $plugin_name, $network_wide ) {
 		if ( wp_doing_ajax() || $network_wide ) {
@@ -89,6 +84,8 @@ class PLL_Wizard {
 
 	/**
 	 * Redirect to the wizard depending on the context
+	 *
+	 * @since 2.7
 	 */
 	public function redirect_to_wizard() {
 		if ( get_transient( 'pll_activation_redirect' ) ) {
@@ -119,6 +116,7 @@ class PLL_Wizard {
 	 *
 	 * @param array $tabs Submenus list.
 	 * @return array Submenus list updated.
+	 * @since 2.7
 	 */
 	public function settings_tabs( $tabs ) {
 		$tabs['wizard'] = __( 'Setup', 'polylang' );
@@ -130,6 +128,7 @@ class PLL_Wizard {
 	 *
 	 * @param array $languages List of language objects.
 	 * @return bool
+	 * @since 2.7
 	 */
 	public function is_media_step_displayable( $languages ) {
 		$media = array();
@@ -153,6 +152,7 @@ class PLL_Wizard {
 	 * Return if the licenses step is displayable
 	 *
 	 * @return bool
+	 * @since 2.7
 	 */
 	public function is_licenses_step_displayable() {
 		$licenses = apply_filters( 'pll_settings_licenses', array() );
@@ -160,6 +160,8 @@ class PLL_Wizard {
 	}
 	/**
 	 * Setup the wizard page
+	 *
+	 * @since 2.7
 	 */
 	public function setup_wizard_page() {
 		// if Polylang isn't activated wizard plugin can't work.
@@ -198,6 +200,7 @@ class PLL_Wizard {
 	 * @param bool   $can_display_notice Whether the notice can be displayed.
 	 * @param string $notice             The notice name.
 	 * @return bool
+	 * @since 2.7
 	 */
 	public function can_display_notice( $can_display_notice, $notice ) {
 		if ( ! $can_display_notice && 'wizard' === $notice ) {
@@ -216,6 +219,8 @@ class PLL_Wizard {
 
 	/**
 	 * Return html code of the wizard notice
+	 *
+	 * @since 2.7
 	 */
 	public function wizard_notice() {
 		ob_start();
@@ -226,6 +231,8 @@ class PLL_Wizard {
 
 	/**
 	 * Display the wizard page
+	 *
+	 * @since 2.7
 	 */
 	public function display_wizard_page() {
 		set_current_screen();
@@ -235,6 +242,8 @@ class PLL_Wizard {
 
 	/**
 	 * Enqueue scripts and styles for the wizard
+	 *
+	 * @since 2.7
 	 */
 	public function enqueue_scripts() {
 		if ( empty( $_GET['page'] ) || 'mlang_wizard' !== $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -252,6 +261,7 @@ class PLL_Wizard {
 	 *
 	 * @return string Empty when SCRIPT_DEBUG equal to true
 	 *                otherwise .min
+	 * @since 2.7
 	 */
 	public function get_suffix() {
 		return defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
@@ -263,6 +273,7 @@ class PLL_Wizard {
 	 * @param string $step  slug (default: current step).
 	 * @return string       URL for the step if it exists.
 	 *                      Empty string on failure.
+	 * @since 2.7
 	 */
 	public function get_step_link( $step = '' ) {
 		if ( ! $step ) {
@@ -286,6 +297,7 @@ class PLL_Wizard {
 	 * @return string       URL for next step if a next step exists.
 	 *                      Admin URL if it's the last step.
 	 *                      Empty string on failure.
+	 * @since 2.7
 	 */
 	public function get_next_step_link( $step = '' ) {
 		if ( ! $step ) {
@@ -306,85 +318,11 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Retrieve translation updates
-	 *
-	 * @return array List of translation packages to download
-	 */
-	public function get_translation_updates() {
-		global $wp_version;
-
-		// Filter to find translation updates only for plugins concerned.
-		$plugins = array_filter(
-			get_plugins(),
-			function( $key ) {
-				if ( in_array( explode( '/', $key )[0], PLL_Wizard::PLUGIN_FILTER ) ) {
-					return true;
-				}
-				return false;
-			},
-			ARRAY_FILTER_USE_KEY
-		);
-
-		$translations = wp_get_installed_translations( 'plugins' );
-
-		$active_plugins  = array(); // Just to respect datas sent to WordPress.org API.
-		$plugins_to_send = compact( 'plugins', 'active_plugins' );
-
-		$locales = $this->model->get_languages_list( array( 'fields' => 'locale' ) );
-
-		$timeout = 3 + (int) ( count( $plugins ) / 10 );
-
-		$options = array(
-			'timeout'    => $timeout,
-			'body'       => array(
-				'plugins'      => wp_json_encode( $plugins_to_send ),
-				'translations' => wp_json_encode( $translations ),
-				'locale'       => wp_json_encode( $locales ),
-				'all'          => wp_json_encode( true ),
-			),
-			'user-agent' => 'WordPress/' . $wp_version . '; ' . home_url( '/' ),
-		);
-
-		$url = 'http://api.wordpress.org/plugins/update-check/1.1/';
-		$http_url = $url;
-		$ssl = wp_http_supports( array( 'ssl' ) );
-		if ( $ssl ) {
-			$url = set_url_scheme( $url, 'https' );
-		}
-
-		$raw_response = wp_remote_post( $url, $options );
-		if ( $ssl && is_wp_error( $raw_response ) ) {
-			if ( WP_DEBUG ) {
-				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-					sprintf(
-						/* translators: %s: support forums URL */
-						__( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="%s">support forums</a>.' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
-						__( 'https://wordpress.org/support/' ) // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
-					) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
-					headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE
-				);
-			}
-			$raw_response = wp_remote_post( $http_url, $options );
-		}
-
-		if ( is_wp_error( $raw_response ) || 200 !== wp_remote_retrieve_response_code( $raw_response ) ) {
-			return;
-		}
-
-		$response = json_decode( wp_remote_retrieve_body( $raw_response ), true );
-
-		$translation_updates = array();
-		foreach ( $response['translations'] as $translation ) {
-			$translation_updates[] = (object) $translation;
-		}
-
-		return $translation_updates;
-	}
-	/**
 	 * Add licenses step in the wizard
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
+	 * @since 2.7
 	 */
 	public function add_step_licenses( $steps ) {
 		if ( $this->is_licenses_step_displayable() ) {
@@ -401,6 +339,8 @@ class PLL_Wizard {
 
 	/**
 	 * Display the languages step form
+	 *
+	 * @since 2.7
 	 */
 	public function display_step_licenses() {
 		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
@@ -409,6 +349,8 @@ class PLL_Wizard {
 
 	/**
 	 * Execute the languages step
+	 *
+	 * @since 2.7
 	 */
 	public function save_step_licenses() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -437,6 +379,8 @@ class PLL_Wizard {
 
 	/**
 	 * Ajax method to deactivate a license
+	 *
+	 * @since 2.7
 	 */
 	public function deactivate_license() {
 		check_ajax_referer( 'pll-wizard', '_pll_nonce' );
@@ -467,6 +411,7 @@ class PLL_Wizard {
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
+	 * @since 2.7
 	 */
 	public function add_step_languages( $steps ) {
 		wp_enqueue_script( 'pll-wizard-language-choice', plugins_url( '/modules/wizard/js/language-choice' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
@@ -504,6 +449,8 @@ class PLL_Wizard {
 
 	/**
 	 * Display the languages step form
+	 *
+	 * @since 2.7
 	 */
 	public function display_step_languages() {
 		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
@@ -512,6 +459,8 @@ class PLL_Wizard {
 
 	/**
 	 * Execute the languages step
+	 *
+	 * @since 2.7
 	 */
 	public function save_step_languages() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -584,6 +533,7 @@ class PLL_Wizard {
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
+	 * @since 2.7
 	 */
 	public function add_step_media( $steps ) {
 		$languages = $this->model->get_languages_list();
@@ -602,6 +552,8 @@ class PLL_Wizard {
 
 	/**
 	 * Display the media step form
+	 *
+	 * @since 2.7
 	 */
 	public function display_step_media() {
 		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
@@ -610,6 +562,8 @@ class PLL_Wizard {
 
 	/**
 	 * Execute the media step
+	 *
+	 * @since 2.7
 	 */
 	public function save_step_media() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -628,6 +582,7 @@ class PLL_Wizard {
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
+	 * @since 2.7
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( $this->model->get_objects_with_no_lang( 1 ) ) {
@@ -646,6 +601,8 @@ class PLL_Wizard {
 
 	/**
 	 * Display the untranslated contents step form
+	 *
+	 * @since 2.7
 	 */
 	public function display_step_untranslated_contents() {
 		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
@@ -654,6 +611,8 @@ class PLL_Wizard {
 
 	/**
 	 * Execute the untranslated contents step
+	 *
+	 * @since 2.7
 	 */
 	public function save_step_untranslated_contents() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -684,6 +643,7 @@ class PLL_Wizard {
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
+	 * @since 2.7
 	 */
 	public function add_step_home_page( $steps ) {
 		$languages = $this->model->get_languages_list();
@@ -713,6 +673,8 @@ class PLL_Wizard {
 
 	/**
 	 * Execute the home page step
+	 *
+	 * @since 2.7
 	 */
 	public function save_step_home_page() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -759,78 +721,12 @@ class PLL_Wizard {
 		exit;
 	}
 
-
-	/**
-	 * Add WooCommerce pages step in the wizard
-	 *
-	 * @param array $steps List of steps.
-	 * @return array List of steps updated.
-	 */
-	public function add_step_wc_pages( $steps ) {
-		$this->translation_updates = $this->get_translation_updates();
-
-		if ( defined( 'WOOCOMMERCE_VERSION' ) &&
-			defined( 'PLLWC_VERSION' ) &&
-			Polylang_Woocommerce::instance()->admin_status_reports->get_woocommerce_pages_status()->is_error ||
-			count( $this->translation_updates ) > 0
-		) {
-			wp_enqueue_style( 'woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css', array(), WC_VERSION );
-
-			$steps['wc-pages'] = array(
-				'name'    => __( 'WooCommerce', 'polylang' ),
-				'view'    => array( $this, 'display_step_wc_pages' ),
-				'handler' => array( $this, 'save_step_wc_pages' ),
-				'scripts' => array(),
-				'styles'  => array( 'woocommerce_admin_styles' ),
-			);
-		}
-		return $steps;
-	}
-
-	/**
-	 * Display the WooCommerce pages step form
-	 */
-	public function display_step_wc_pages() {
-		// PLL_MODULES_INC is correctly defined relatively to the plugin folder.
-		include PLL_MODULES_INC . '/wizard/view-wizard-step-wc-pages.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
-	}
-
-	/**
-	 * Execute the WooCommerce pages step
-	 */
-	public function save_step_wc_pages() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
-
-		$translation_updates = $this->get_translation_updates();
-		if ( count( $translation_updates ) > 0 ) {
-
-			include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-
-			$url     = esc_url_raw( $this->get_next_step_link() );
-			$nonce   = 'pll-wizard';
-			$title   = __( 'Update Translations' ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
-			$context = WP_LANG_DIR;
-
-			$upgrader = new Language_Pack_Upgrader( new Automatic_Upgrader_Skin( compact( 'url', 'nonce', 'title', 'context' ) ) );
-			$upgrader->bulk_upgrade( $translation_updates );
-		}
-
-		if ( Polylang_Woocommerce::instance()->admin_status_reports->get_woocommerce_pages_status()->is_error ) {
-			// Ensure that all specific WooCommerce pages are created and translated.
-			$admin_wc_install = new PLLWC_Admin_WC_Install();
-			$admin_wc_install->init_translated_pages();
-			$admin_wc_install->install_pages();
-		}
-
-		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
-		exit;
-	}
-
 	/**
 	 * Add last step in the wizard
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
+	 * @since 2.7
 	 */
 	public function add_step_last( $steps ) {
 		$steps['last'] = array(
@@ -845,6 +741,8 @@ class PLL_Wizard {
 
 	/**
 	 * Display the last step form
+	 *
+	 * @since 2.7
 	 */
 	public function display_step_last() {
 		// We ran the wizard once. So we can dismiss its notice.
@@ -855,6 +753,8 @@ class PLL_Wizard {
 
 	/**
 	 * Execute the last step
+	 *
+	 * @since 2.7
 	 */
 	public function save_step_last() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
