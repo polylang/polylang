@@ -5,7 +5,6 @@
  * @since 2.7
  */
 class PLL_Wizard {
-	const POLYLANG_PLUGIN_BASENAME = 'polylang/polylang.php';
 	const PLUGIN_FILTER = array( 'woocommerce', 'polylang', 'polylang-pro', 'polylang-wc' );
 	/**
 	 * Reference to PLL_Model object
@@ -74,7 +73,7 @@ class PLL_Wizard {
 		if ( wp_doing_ajax() || $network_wide ) {
 			return;
 		}
-		$polylang_plugins = array( PLL_WIZARD_BASENAME, self::POLYLANG_PLUGIN_BASENAME );
+		$polylang_plugins = array( POLYLANG_BASENAME, plugin_basename( PLLWC_FILE ) );
 		if ( in_array( $plugin_name, $polylang_plugins ) ) {
 			set_transient( 'pll_activation_redirect', 1, 30 );
 		}
