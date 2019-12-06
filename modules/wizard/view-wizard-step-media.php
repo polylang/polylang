@@ -49,7 +49,7 @@ $media_support = $options['media_support'];
 					<span class="dashicons dashicons-visibility"></span><?php esc_html_e( 'Help', 'polylang' ); ?>
 				</label>
 				<span id="screenshot">
-					<img src="<?php echo esc_url_raw( esc_url( plugins_url( '/modules/wizard/images/media-screen.png', PLL_WIZARD_FILE ) ) ); ?>" />
+					<img src="<?php echo esc_url_raw( esc_url( plugins_url( '/modules/wizard/images/media-screen.png', POLYLANG_FILE ) ) ); ?>" />
 				</span>
 			</p>
 		</div>
