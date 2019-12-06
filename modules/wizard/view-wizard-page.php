@@ -2,6 +2,8 @@
 
 /**
  * Displays the wizard
+ *
+ * @since 2.7
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

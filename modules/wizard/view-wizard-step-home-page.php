@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Displays the wizard
+ * Displays the wizard home page step
+ *
+ * @since 2.7
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
