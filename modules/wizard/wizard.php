@@ -43,8 +43,6 @@ class PLL_Wizard {
 		$this->options = $options;
 		$this->model = $model;
 
-		// register an action when plugin is activating.
-		add_action( 'activated_plugin', array( $this, 'activated_plugin' ), 10, 2 );
 		// Display Wizard page before any other action to ensure displaying it outside the WordPress admin context.
 		add_action( 'admin_init', array( $this, 'setup_wizard_page' ) );
 		// Add Wizard submenu.
