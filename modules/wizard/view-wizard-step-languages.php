@@ -87,7 +87,7 @@ $languages_list = array_diff_key(
 			esc_attr( $lg->locale ),
 			esc_html( $lg->name ),
 			$lg->flag,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			$default_language === $lg->slug ? ' <span class="icon-default-lang"><span class="screen-reader-text">' . esc_html( 'Default language', 'polylang' ) . '</span></span>' : ''
+			$default_language === $lg->slug ? ' <span class="icon-default-lang"><span class="screen-reader-text">' . esc_html__( 'Default language', 'polylang' ) . '</span></span>' : ''
 		);
 	}
 	?>
@@ -99,7 +99,7 @@ $languages_list = array_diff_key(
 	<?php
 	printf(
 		/* translators: %s is a language native name */
-		esc_html( "You selected %s but you didn't add it to the list before continuing to the next step.", 'polylang' ),
+		esc_html__( "You selected %s but you didn't add it to the list before continuing to the next step.", 'polylang' ),
 		'<strong id="dialog-language"></strong>'
 	);
 	?>
