@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.7
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 2.6.7
+Stable tag: 2.6.8
 License: GPLv3 or later
 
 Making WordPress multilingual
@@ -76,6 +76,13 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6.8 (2019-12-11) =
+
+* Pro: Fix conflict with JetThemesCore from Crocoblock
+* Fix: better detection of REST requests when using plain permalinks
+* Fix usage of deprecated action wpmu_new_blog in WP 5.1+
+* Fix PHP notices with PHP 7.4
 
 = 2.6.7 (2019-11-14) =
 
