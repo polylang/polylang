@@ -5,7 +5,6 @@
  * @since 2.7
  */
 class PLL_Wizard {
-	const PLUGIN_FILTER = array( 'woocommerce', 'polylang', 'polylang-pro', 'polylang-wc' );
 	/**
 	 * Reference to PLL_Model object
 	 *
