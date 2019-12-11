@@ -68,12 +68,11 @@ class PLL_Wizard {
 	 * @param bool   $network_wide if activated for all sites in the network.
 	 * @since 2.7
 	 */
-	public function activated_plugin( $plugin_name, $network_wide ) {
+	public static function activated_plugin( $plugin_name, $network_wide ) {
 		if ( wp_doing_ajax() || $network_wide ) {
 			return;
 		}
-		$polylang_plugins = array( POLYLANG_BASENAME, plugin_basename( PLLWC_FILE ) );
-		if ( in_array( $plugin_name, $polylang_plugins ) ) {
+		if ( POLYLANG_BASENAME === $plugin_name ) {
 			set_transient( 'pll_activation_redirect', 1, 30 );
 		}
 	}
