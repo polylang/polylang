@@ -159,14 +159,9 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function setup_wizard_page() {
-		// if Polylang isn't activated wizard plugin can't work.
-		if ( ! defined( 'POLYLANG_VERSION' ) ) {
-			return;
-		}
 
-		if ( ! PLL_Admin_Notices::is_dismissed( 'wizard' ) ) {
-			PLL_Admin_Notices::add_notice( 'wizard', $this->wizard_notice() );
-		}
+		PLL_Admin_Notices::add_notice( 'wizard', $this->wizard_notice() );
+
 		$this->redirect_to_wizard();
 		if ( empty( $_GET['page'] ) || 'mlang_wizard' !== $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
