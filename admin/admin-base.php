@@ -49,7 +49,7 @@ class PLL_Admin_Base extends PLL_Base {
 		parent::init();
 
 		$this->notices = new PLL_Admin_Notices( $this );
-		new PLL_Wizard( $this->options, $this->model );
+		$this->wizard  = new PLL_Wizard( $this->options, $this->model );
 
 		if ( ! $this->model->get_languages_list() ) {
 			return;
