@@ -32,7 +32,7 @@ $wizard_url = add_query_arg(
 	esc_html_e( 'You&lsquo;re almost ready to translate your contents!', 'polylang' );
 	?>
 </p>
-<p class="submit">
+<p class="buttons">
 	<a
 		href="<?php echo esc_url_raw( $wizard_url ); ?>"
 		class="button button-primary"

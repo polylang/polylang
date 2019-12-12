@@ -12,6 +12,6 @@
 	border-color: #dd5454;
 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 1px 0 #dd5454;
 }
-p.submit .button{
-	margin-right: 10px;
+p.buttons .button{
+	margin-right: 6px;
 }
