@@ -16,10 +16,10 @@ body {
 	text-transform: uppercase;
 	color: #000;
 	line-height: normal;
-	display: flex;
-	justify-content: center;
 }
 #pll-logo a {
+	display: flex;
+	justify-content: center;
 	color: #000;
 	text-decoration: none;
 }
@@ -1082,7 +1082,7 @@ textarea.field-in-error,
 
 }
 @media only screen and (max-width:500px) {
-	#pll-logo,
+	#pll-logo a,
 	.select-language-field{
 		flex-direction: column;
 	}

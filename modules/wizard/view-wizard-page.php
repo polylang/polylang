@@ -35,13 +35,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</head>
 	<body class="pll-wizard wp-core-ui">
 		<h1 id="pll-logo">
-			<a href="https://polylang.pro/">
-				<img
-					src="<?php echo esc_url( plugins_url( '/modules/wizard/images/polylang-logo-back.png', POLYLANG_FILE ) ); ?>"
-					alt="Polylang"
-				/>
+			<a href="https://polylang.pro/" class="title">
+				<span><img src="<?php echo esc_url( plugins_url( '/modules/wizard/images/polylang-logo.png', POLYLANG_FILE ) ); ?>" /></span>
+				<?php echo esc_html( POLYLANG ); ?>
 			</a>
-			<a href="https://polylang.pro/" class="title"><?php echo esc_html( POLYLANG ); ?></a>
 		</h1>
 		<ol class="pll-wizard-steps">
 			<?php
