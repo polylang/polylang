@@ -70,4 +70,20 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEquals( 'http://www.example.fr', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'], false ) );
 		$this->assertEquals( 'http://www.example.fr/test/', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
 	}
+
+	function test_permalink_and_shortlink() {
+		self::$polylang->filters_links = new PLL_Frontend_Filters_Links( self::$polylang );
+		self::$polylang->filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		self::$polylang->filters_links->cache->method( 'get' )->willReturn( false );
+
+		$post_id = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		self::$polylang->model->post->set_language( $post_id, 'en' );
+		$this->assertEquals( 'http://example.org/test/', get_permalink( $post_id ) );
+		$this->assertEquals( 'http://example.org/?p=' . $post_id, wp_get_shortlink( $post_id ) );
+
+		$post_id = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		self::$polylang->model->post->set_language( $post_id, 'fr' );
+		$this->assertEquals( 'http://example.fr/essai/', get_permalink( $post_id ) );
+		$this->assertEquals( 'http://example.fr/?p=' . $post_id, wp_get_shortlink( $post_id ) );
+	}
 }
