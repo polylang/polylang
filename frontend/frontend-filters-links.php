@@ -40,6 +40,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			// Rewrites next and previous post links when not automatically done by WordPress
 			add_filter( 'get_pagenum_link', array( $this, 'archive_link' ), 20 );
 
+			add_filter( 'get_shortlink', array( $this, 'shortlink' ), 20, 2 );
+
 			// Rewrites ajax url
 			add_filter( 'admin_url', array( $this, 'admin_url' ), 10, 2 );
 		}
@@ -145,6 +147,20 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$this->cache->set( $cache_key, $_link );
 		}
 		return $_link;
+	}
+
+	/**
+	 * Modifies the post short link when using one domain or subdomain per language.
+	 *
+	 * @since 2.6.9
+	 *
+	 * @param string $link    Post permalink.
+	 * @param int    $post_id Post id.
+	 * @return Post permalink with the correct domain.
+	 */
+	public function shortlink( $link, $post_id ) {
+		$post_type = get_post_type( $post_id );
+		return $this->model->is_translated_post_type( $post_type ) ? $this->links_model->switch_language_in_link( $link, $this->model->post->get_language( $post_id ) ) : $link;
 	}
 
 	/**
