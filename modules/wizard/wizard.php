@@ -476,6 +476,7 @@ class PLL_Wizard {
 
 		// Otherwise process the languages to add or skip the step if no language has been added.
 		if ( ! empty( $languages ) ) {
+			require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 			// Remove duplicate values.
 			$languages = array_unique( $languages );
 			// For each language add it in Polylang settings.
@@ -507,6 +508,9 @@ class PLL_Wizard {
 						)
 					);
 					exit;
+				}
+				if ( 'en_US' !== $locale ) {
+					wp_download_language_pack( $locale );
 				}
 			}
 		}
