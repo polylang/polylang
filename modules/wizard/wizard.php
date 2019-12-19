@@ -64,17 +64,16 @@ class PLL_Wizard {
 	/**
 	 * Save a activation transient when Polylang is activating to redirect to wizard
 	 *
-	 * @param string $plugin_name  plugin basename.
-	 * @param bool   $network_wide if activated for all sites in the network.
+	 * @param bool $network_wide if activated for all sites in the network.
 	 * @since 2.7
 	 */
-	public static function activated_plugin( $plugin_name, $network_wide ) {
-		if ( wp_doing_ajax() || $network_wide ) {
+	public static function start_wizard( $network_wide ) {
+		$options = get_option( 'polylang' );
+
+		if ( wp_doing_ajax() || $network_wide || ! empty( $options ) ) {
 			return;
 		}
-		if ( POLYLANG_BASENAME === $plugin_name ) {
-			set_transient( 'pll_activation_redirect', 1, 30 );
-		}
+		set_transient( 'pll_activation_redirect', 1, 30 );
 	}
 
 	/**

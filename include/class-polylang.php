@@ -31,7 +31,7 @@ class Polylang {
 		spl_autoload_register( array( $this, 'autoload' ) ); // Autoload classes
 
 		// register an action when plugin is activating.
-		add_action( 'activated_plugin', array( 'PLL_Wizard', 'activated_plugin' ), 10, 2 );
+		register_activation_hook( POLYLANG_BASENAME, array( 'PLL_Wizard', 'start_wizard' ) );
 
 		$install = new PLL_Install( POLYLANG_BASENAME );
 
