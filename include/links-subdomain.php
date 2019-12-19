@@ -58,7 +58,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 		}
 
 		if ( ! empty( $languages ) ) {
-			$url = preg_replace( '#:\/\/(' . implode( '|', $languages ) . ')\.#', $this->www, $url );
+			$url = preg_replace( '#://(' . implode( '|', $languages ) . ')\.#', $this->www, $url );
 		}
 
 		return $url;
