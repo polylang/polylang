@@ -94,6 +94,7 @@ class PLL_Admin_Strings {
 					/**
 					 * Filter widget properties that should be available for string translation.
 					 * Array key is the widget property and the array value is the label used in the string translation page.
+					 *
 					 * @param array $widget_properties The translatable widget properties.
 					 * @param array $widget_instance The widget instance.
 					 * @return array
