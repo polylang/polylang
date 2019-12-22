@@ -10,6 +10,7 @@
  * links_model    => inherited, reference to PLL_Links_Model object
  * links          => reference to PLL_Admin_Links object
  * static_pages   => reference to PLL_Static_Pages object
+ * filters        => reference to PLL_Frontend_Filters object
  * filters_links  => reference to PLL_Filters_Links object
  * posts          => reference to PLL_CRUD_Posts object
  * terms          => reference to PLL_CRUD_Terms object
@@ -18,7 +19,7 @@
  * @since 2.6
  */
 class PLL_REST_Request extends PLL_Base {
-	public $links, $posts, $terms, $filters_links, $sync;
+	public $links, $static_pages, $posts, $terms, $filters, $filters_links, $sync;
 
 	/**
 	 * Setup filters
@@ -34,6 +35,7 @@ class PLL_REST_Request extends PLL_Base {
 			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
 
 			$this->filters_links = new PLL_Filters_Links( $this );
+			$this->filters = new PLL_Filters( $this );
 
 			// Static front page and page for posts
 			if ( 'page' === get_option( 'show_on_front' ) ) {
