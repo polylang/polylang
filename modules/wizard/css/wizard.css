@@ -886,6 +886,9 @@ p.next-steps-help-text {
 	max-width: 100%;
 	margin-right: 0.5em;
 }
+.rtl .pll-wizard-content img{
+	margin-left: 0.5em;
+}
 
 .pll-wizard-content .form-field label{
 	margin-bottom: 5px;

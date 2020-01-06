@@ -30,6 +30,9 @@
 	/* support: IE10, see #8844 */
 	list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 }
+.rtl .ui-menu .ui-menu-item {
+	text-align: right;
+}
 
 .ui-menu .ui-menu-item img{
 	margin: 0 0.5em;
@@ -105,6 +108,10 @@
 	top: 50%;
 	text-indent: 0;
 }
+.rtl .ui-selectmenu-button span.ui-icon {
+	left: 0.5em;
+	right: auto;
+}
 
 .ui-selectmenu-button span.ui-selectmenu-text {
 	text-align: left;
@@ -114,6 +121,10 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+.rtl .ui-selectmenu-button span.ui-selectmenu-text {
+	text-align: right;
+	padding: 0.2em 0.2em 0.2em 2.1em;
 }
 
 .ui-selectmenu-button span.ui-selectmenu-text img{
