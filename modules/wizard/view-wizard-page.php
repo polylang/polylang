@@ -9,7 +9,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
 };
-
+$admin_body_class[] = 'pll-wizard';
+$admin_body_class[] = 'wp-core-ui';
+if ( function_exists( 'is_rtl' ) && is_rtl() ) {
+	$admin_body_class[] = 'rtl';
+}
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -33,7 +37,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php wp_print_styles( array_merge( $this->styles, $this->steps[ $this->step ]['styles'] ) ); ?>
 		<?php do_action( 'admin_head' ); ?>
 	</head>
-	<body class="pll-wizard wp-core-ui">
+	<!-- <body class="pll-wizard wp-core-ui"> -->
+	<body class="<?php echo join( ' ', $admin_body_class ); ?>">
 		<h1 id="pll-logo">
 			<a href="https://polylang.pro/" class="title">
 				<span><img src="<?php echo esc_url( plugins_url( '/modules/wizard/images/polylang-logo.png', POLYLANG_FILE ) ); ?>" /></span>
