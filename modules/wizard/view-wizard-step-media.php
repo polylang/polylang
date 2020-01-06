@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $default_options = PLL_Install::get_default_options();
 $options = wp_parse_args( get_option( 'polylang' ), $default_options );
 $media_support = $options['media_support'];
-$rtl= '';
+$rtl = '';
 if ( function_exists( 'is_rtl' ) && is_rtl() ) {
 	$rtl = '-rtl';
 }

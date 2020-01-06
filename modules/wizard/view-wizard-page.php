@@ -38,7 +38,7 @@ if ( function_exists( 'is_rtl' ) && is_rtl() ) {
 		<?php do_action( 'admin_head' ); ?>
 	</head>
 	<!-- <body class="pll-wizard wp-core-ui"> -->
-	<body class="<?php echo join( ' ', $admin_body_class ); ?>">
+	<body class="<?php echo join( ' ', array_map( 'sanitize_key', $admin_body_class ) ); ?>">
 		<h1 id="pll-logo">
 			<a href="https://polylang.pro/" class="title">
 				<span><img src="<?php echo esc_url( plugins_url( '/modules/wizard/images/polylang-logo.png', POLYLANG_FILE ) ); ?>" /></span>
