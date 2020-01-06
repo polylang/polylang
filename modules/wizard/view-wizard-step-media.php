@@ -13,6 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 $default_options = PLL_Install::get_default_options();
 $options = wp_parse_args( get_option( 'polylang' ), $default_options );
 $media_support = $options['media_support'];
+$rtl= '';
+if ( function_exists( 'is_rtl' ) && is_rtl() ) {
+	$rtl = '-rtl';
+}
+$help_screenshot = '/modules/wizard/images/media-screen' . $rtl . '.png';
 
 ?>
 <h2><?php esc_html_e( 'Media', 'polylang' ); ?></h2>
@@ -51,7 +56,7 @@ $media_support = $options['media_support'];
 					<span class="dashicons dashicons-visibility"></span><?php esc_html_e( 'Help', 'polylang' ); ?>
 				</label>
 				<span id="screenshot">
-					<img src="<?php echo esc_url_raw( esc_url( plugins_url( '/modules/wizard/images/media-screen.png', POLYLANG_FILE ) ) ); ?>" />
+					<img src="<?php echo esc_url_raw( esc_url( plugins_url( $help_screenshot, POLYLANG_FILE ) ) ); ?>" />
 				</span>
 			</p>
 		</div>
