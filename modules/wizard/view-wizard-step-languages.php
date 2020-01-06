@@ -83,7 +83,7 @@ $languages_list = array_diff_key(
 	<?php
 	foreach ( $existing_languages as $lg ) {
 		printf(
-			'<tr><td>%3$s %2$s - %1$s%4$s</td></tr>' . "\n",
+			'<tr><td>%3$s <span>%2$s - %1$s</span> %4$s</td></tr>' . "\n",
 			esc_attr( $lg->locale ),
 			esc_html( $lg->name ),
 			$lg->flag,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

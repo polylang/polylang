@@ -85,6 +85,9 @@ body {
 	width: 100%;
 	margin-top: 20px;
 }
+.pll-wizard-content table td span{
+	display: inline-block;
+}
 
 .pll-wizard-content table caption {
 	caption-side: bottom;
