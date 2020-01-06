@@ -19,7 +19,7 @@
  * @since 2.6
  */
 class PLL_REST_Request extends PLL_Base {
-	public $links, $stati_pages, $posts, $terms, $filters, $filters_links, $sync;
+	public $links, $static_pages, $posts, $terms, $filters, $filters_links, $sync;
 
 	/**
 	 * Setup filters
