@@ -91,6 +91,9 @@ body {
 	font-style: italic;
 	text-align: right;
 }
+.rtl .pll-wizard-content table caption {
+	text-align: left;
+}
 
 .pll-wizard-content table caption .icon-default-lang{
 	font-style: normal;
