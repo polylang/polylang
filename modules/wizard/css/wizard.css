@@ -711,7 +711,9 @@ body {
 .pll-wizard .button .dashicons{
 	vertical-align: middle;
 }
-
+.rtl .dashicons-arrow-right-alt2:before {
+    content: "\f341";
+}
 .pll-wizard .pll-wizard-actions .button:active,
 .pll-wizard .pll-wizard-actions .button:focus,
 .pll-wizard .pll-wizard-actions .button:hover {
