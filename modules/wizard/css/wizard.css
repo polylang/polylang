@@ -895,6 +895,17 @@ p.next-steps-help-text {
 .languages-step .form-field .button{
 	margin-left: 15px;
 }
+.languages-step .form-field .button > span{
+	margin-right: 0.3em;
+}
+.rtl .languages-step .form-field .button{
+	margin-left: 0;
+	margin-right: 15px;
+}
+.rtl .languages-step .form-field .button > span{
+	margin-left: 0.3em;
+	margin-right: 0;
+}
 
 .pll-wizard-content .languages-step .select-language-field{
 	display: flex;
