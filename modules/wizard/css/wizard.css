@@ -28,6 +28,10 @@ body {
 	max-width: 100%;
 	margin-right: 16px;
 }
+.rtl #pll-logo img {
+	margin-right: 0;
+	margin-left: 16px;
+}
 
 .pll-wizard-footer {
 	text-align: center
@@ -49,7 +53,10 @@ body {
 	background: #fff;
 	overflow: hidden;
 	zoom: 1;
-	text-align: left
+	text-align: left;
+}
+.rtl .pll-wizard-content{
+	text-align: right;
 }
 
 .pll-wizard-content h1,
