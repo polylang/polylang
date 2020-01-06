@@ -472,6 +472,9 @@ body {
 .pll-wizard-service-item .pll-wizard-service-example p{
 	text-align: right;
 }
+.rtl .pll-wizard-service-item .pll-wizard-service-example p{
+	text-align: left;
+}
 
 .pll-wizard-service-item .pll-wizard-service-description p,
 .pll-wizard-services-list-toggle .pll-wizard-service-description p {
@@ -950,7 +953,11 @@ p.next-steps-help-text {
 }
 
 .pll-wizard-content #slide-toggle + label .dashicons{
-	margin-right: 5px;
+	margin-right: 0.3em;
+}
+.rtl .pll-wizard-content #slide-toggle + label .dashicons{
+	margin-left: 0.3em;
+	margin-right: 0;
 }
 .pll-wizard-content #slide-toggle ~ #screenshot > img {
 	max-height: 500px;
