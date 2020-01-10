@@ -89,7 +89,7 @@ if ( function_exists( 'is_rtl' ) && is_rtl() ) {
 						value="continue"
 						name="save_step"
 					>
-						<span class="dashicons dashicons-arrow-right-alt2"></span><?php esc_html_e( 'Continue', 'polylang' ); ?>
+						<?php esc_html_e( 'Continue', 'polylang' ); ?><span class="dashicons dashicons-arrow-right-alt2"></span>
 					</button>
 				</p>
 				<?php endif; ?>
