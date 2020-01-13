@@ -18,6 +18,9 @@ jQuery( document ).ready(
 				}
 			);
 			li.prepend( img );
+			if ( typeof img !== 'undefined' ) {
+				li.children( 'img' ).addClass( 'ui-icon' );
+			}
 			li.data( 'value', item.value );
 			return li.appendTo( wrapper );
 		};
