@@ -422,7 +422,7 @@ class PLL_Wizard {
 			)
 		);
 		wp_enqueue_script( 'pll-wizard-languages' );
-		wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/modules/wizard/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
+		wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
 		$steps['languages'] = array(
 			'name'    => __( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
@@ -575,7 +575,7 @@ class PLL_Wizard {
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
 			wp_enqueue_script( 'pll-wizard-language-choice', plugins_url( '/modules/wizard/js/language-choice' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/modules/wizard/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
+			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(
 				'name'    => __( 'Content', 'polylang' ),
 				'view'    => array( $this, 'display_step_untranslated_contents' ),
