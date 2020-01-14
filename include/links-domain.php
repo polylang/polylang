@@ -83,13 +83,8 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 		$hosts = array();
 		foreach ( $this->options['domains'] as $lang => $domain ) {
 			$host = wp_parse_url( $domain, PHP_URL_HOST );
-			// idn_to_ascii is much faster than the WordPress method.
-			if ( function_exists( 'idn_to_ascii' ) ) {
-				// The use of the constant is mandatory in PHP 7.2 and PHP 7.3 to avoid a deprecated notice.
-				$hosts[ $lang ] = defined( 'INTL_IDNA_VARIANT_UTS46' ) ? idn_to_ascii( $host, 0, INTL_IDNA_VARIANT_UTS46 ) : idn_to_ascii( $host );
-			} else {
-				$hosts[ $lang ] = Requests_IDNAEncoder::encode( $host );
-			}
+			// The use of the constant is mandatory in PHP 7.2 and PHP 7.3 to avoid a deprecated notice.
+			$hosts[ $lang ] = defined( 'INTL_IDNA_VARIANT_UTS46' ) ? idn_to_ascii( $host, 0, INTL_IDNA_VARIANT_UTS46 ) : idn_to_ascii( $host );
 		}
 
 		return $hosts;
