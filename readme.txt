@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.7
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 2.6.8
+Stable tag: 2.6.9
 License: GPLv3 or later
 
 Making WordPress multilingual
@@ -76,6 +76,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6.9 (2020-01-15) =
+
+* Pro: Use 'parse_query' rather than 'rest_{$type}_query' to filter REST requests.
+* Pro: Filter the comments REST endpoint.
+* Pro: Fix duplication of terms without language.
+* Pro: Fix fatal error when Admin Columns is activated and no language is defined yet.
+* Fix shortlink when using one subdomain or domain per language
 
 = 2.6.8 (2019-12-11) =
 
