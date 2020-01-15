@@ -137,15 +137,6 @@
 	padding: 0.2em 2em 0.2em 2.1em;
 }
 
-/* Specific alignment for the wizard */
-.pll-wizard .ui-selectmenu-button span.ui-selectmenu-text {
-	padding-left: 0.3em;
-}
-.rtl.pll-wizard .ui-selectmenu-button span.ui-selectmenu-text {
-	padding-left: 2.1em;
-	padding-right: 0.3em;
-}
-
 .ui-widget-content,
 .ui-state-default,
 .ui-widget-content .ui-state-default,
