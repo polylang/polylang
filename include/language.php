@@ -210,17 +210,30 @@ class PLL_Language {
 			 */
 			$this->{$key} = apply_filters(
 				'pll_get_flag',
-				empty( $flag['src'] ) ? '' : sprintf(
-					'<img src="%s" title="%s" alt="%s"%s%s />',
-					$flag['src'],
-					esc_attr( $title ),
-					esc_attr( $this->name ),
-					empty( $flag['width'] ) ? '' : sprintf( ' width="%s"', (int) $flag['width'] ),
-					empty( $flag['height'] ) ? '' : sprintf( ' height="%s"', (int) $flag['height'] )
-				),
+				self::get_flag_html( $flag, $title, $this->name ),
 				$this->slug
 			);
 		}
+	}
+
+	/**
+	 * Get HTML code for flag
+	 *
+	 * @since 2.7
+	 *
+	 * @param array  $flag  flag properties: src, width and height
+	 * @param string $title optional title attribute
+	 * @param string $alt   optional alt attribute
+	 */
+	public static function get_flag_html( $flag, $title = '', $alt = '' ) {
+		return empty( $flag['src'] ) ? '' : sprintf(
+			'<img src="%s"%s%s%s%s />',
+			$flag['src'],
+			empty( $title ) ? '' : sprintf( ' title="%s"', esc_attr( $title ) ),
+			empty( $alt ) ? '' : sprintf( ' alt="%s"', esc_attr( $alt ) ),
+			empty( $flag['width'] ) ? '' : sprintf( ' width="%s"', (int) $flag['width'] ),
+			empty( $flag['height'] ) ? '' : sprintf( ' height="%s"', (int) $flag['height'] )
+		);
 	}
 
 	/**
