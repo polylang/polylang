@@ -34,7 +34,7 @@ $wizard_url = add_query_arg(
 </p>
 <p class="buttons">
 	<a
-		href="<?php echo esc_url_raw( $wizard_url ); ?>"
+		href="<?php echo esc_url( $wizard_url ); ?>"
 		class="button button-primary"
 	>
 		<?php esc_html_e( 'Run the Setup Wizard', 'polylang' ); ?>
