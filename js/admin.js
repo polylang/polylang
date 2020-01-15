@@ -28,51 +28,58 @@ jQuery( document ).ready(
 			'tr'
 		); // acts on the whole tr instead of single td as we have actions links in several columns
 
-		// extends selectmenu to add flags in menu items
-		$.widget(
-			"custom.iconselectmenu",
-			$.ui.selectmenu,
-			{
-				_renderItem: function( ul, item ) {
-					var li  = $( "<li>", { text: item.label } );
-					var el  = $( item.element );
-					var url = el.data( "url" );
+		// Common functions for overrinding language and flag dropdown list.
+		var selectmenuRenderItem = function( wrapper, item ) {
+			var li = $( '<li>' ).text( item.label ).prepend( $( item.element ).data( 'flag-html' ) );
+			li.children( 'img' ).addClass( 'ui-icon' );
+			return li.appendTo( wrapper );
+		};
+		var selectmenuRefreshButtonText = function( selectElement ) {
+			var buttonText = $( selectElement ).selectmenu( 'instance' ).buttonText;
+			buttonText.prepend( $( selectElement ).children( ':selected' ).data( 'flag-html' ) );
+			buttonText.children( 'img' ).addClass( 'ui-icon' );
+		};
+		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
 
-					if ( url ) {
-						var w = el.data( "width" );
-						var h = el.data( "height" );
-						$( "<img class='ui-icon' />" ).prop( "src", url ).prop( "width", w ).prop( "height", h ).appendTo( li );
-					}
-
-					return li.appendTo( ul );
-				}
+		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
+		$( '#flag_list' ).on(
+			'selectmenucreate selectmenuselect',
+			function(){
+				selectmenuRefreshButtonText( this );
 			}
 		);
-
-		// allows to display the flag for the selected menu item
-		function add_icon( event, ui ) {
-			var sel = $( this ).find( ":selected" );
-			var url = sel.data( "url" );
-
-			if ( url ) {
-				var txt = $( this ).iconselectmenu( "widget" ).children( ":last" );
-				var w = sel.data( "width" );
-				var h = sel.data( "height" );
-				$( "<img class='ui-icon' />" ).prop( "src", url ).prop( "width", w ).prop( "height", h ).appendTo( txt );
-			}
-		}
-
-		// overrides the flag dropdown list with our customized jquery ui selectmenu
-		$( "#flag_list" ).iconselectmenu(
-			{
-				create: add_icon,
-				select: add_icon,
+		// Refresh jQuery UI selectmenu when the value is changed programmatically: select another language or edit an existing language.
+		// For putting the focus in the list on the selected item and injecting the right flag on the selected item.
+		$( '#flag_list' ).on(
+			'selectmenuopen',
+			function(){
+				$( this ).selectmenu( 'refresh' ).trigger( 'selectmenuselect' );
 			}
 		);
+		// Create the jQuery UI selectmenu widget
+		$( '#flag_list' ).selectmenu( { width: '100%' } );
+		// Overrides each item in the jQuery UI selectmenu list by injecting flag image.
+		$( '#flag_list' ).selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
 
-		// languages form
-		// fills the fields based on the language dropdown list choice
-		$( '#lang_list' ).change(
+		// Language choice in predefined languages in Polylang Languages settings page and wizard.
+		// Overrides the predefined language dropdown list with our customized jquery ui selectmenu.
+
+		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
+		$( '#lang_list' ).on(
+			'selectmenucreate selectmenuselect',
+			function() {
+				selectmenuRefreshButtonText( this );
+			}
+		);
+		// Create the jQuery UI selectmenu widget
+		$( '#lang_list' ).selectmenu( { width: '100%' } );
+		// Overrides each element in the jQuery UI selectmenu list by injecting flag image.
+		$( '#lang_list' ).selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
+
+		// Languages form
+		// Fills the fields based on the language dropdown list choice
+		$( '#add-lang #lang_list' ).on(
+			'selectmenuchange',
 			function() {
 				var value = $( this ).val().split( ':' );
 				var selected = $( "option:selected", this ).text().split( ' - ' );
@@ -80,15 +87,10 @@ jQuery( document ).ready(
 				$( '#lang_locale' ).val( value[1] );
 				$( 'input[name="rtl"]' ).val( [value[2]] );
 				$( '#lang_name' ).val( selected[0] );
-				$( '#flag_list option[value="' + value[3] + '"]' ).attr( 'selected', 'selected' );
+				$( '#flag_list').val( value[3] );
 
-				// recreate the jquery ui selectmenu
-				$( "#flag_list" ).iconselectmenu( 'destroy' ).iconselectmenu(
-					{
-						create: add_icon,
-						select: add_icon,
-					}
-				)
+				// Refresh the jQuery UI selectmenu flags list.
+				$( '#flag_list' ).selectmenu( 'refresh' ).trigger( 'selectmenuselect' );
 			}
 		);
 
