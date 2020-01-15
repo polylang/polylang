@@ -13,11 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 $default_options = PLL_Install::get_default_options();
 $options = wp_parse_args( get_option( 'polylang' ), $default_options );
 $media_support = $options['media_support'];
-$rtl = '';
-if ( function_exists( 'is_rtl' ) && is_rtl() ) {
-	$rtl = '-rtl';
-}
-$help_screenshot = '/modules/wizard/images/media-screen' . $rtl . '.png';
+
+$help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' : '' ) . '.png';
 
 ?>
 <h2><?php esc_html_e( 'Media', 'polylang' ); ?></h2>
