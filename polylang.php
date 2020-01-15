@@ -13,7 +13,7 @@ Domain Path: /languages
 
 /*
  * Copyright 2011-2019 Frédéric Demarle
- * Copyright 2019 WP SYNTEX
+ * Copyright 2019-2020 WP SYNTEX
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
