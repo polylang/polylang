@@ -98,7 +98,7 @@ $languages_list = array_diff_key(
 	<p>
 	<?php
 	printf(
-		/* translators: 1: is a language flag image, 2: is a language native name */
+		/* translators: %1$s: is a language flag image, %2$s: is a language native name */
 		esc_html__( 'You selected %1$s %2$s but you didn\'t add it to the list before continuing to the next step.', 'polylang' ),
 		'<span id="dialog-language-flag"></span>',
 		'<strong id="dialog-language"></strong>'
@@ -110,13 +110,31 @@ $languages_list = array_diff_key(
 	</p>
 	<ul>
 		<li>
-			<strong><?php esc_html_e( 'Yes', 'polylang' ); ?>:</strong > <?php esc_html_e( 'add this language and continue to the next step', 'polylang' ); ?>
+			<?php
+			/* translators: %s: is the translated label of the 'Yes' button  */
+			printf(
+				esc_html__( '%s: add this language and continue to the next step', 'polylang' ),
+				'<strong>' . esc_html__( 'Yes', 'polylang' ) . '</strong >'
+			);
+			?>
 		</li>
 		<li>
-			<strong><?php esc_html_e( 'No', 'polylang' ); ?>:</strong> <?php esc_html_e( "don't add this language and continue to the next step", 'polylang' ); ?>
+		<?php
+			/* translators: %s: is the translated label of the 'No' button  */
+			printf(
+				esc_html__( "%s: don't add this language and continue to the next step", 'polylang' ),
+				'<strong>' . esc_html__( 'No', 'polylang' ) . '</strong >'
+			);
+			?>
 		</li>
 		<li>
-			<strong><?php esc_html_e( 'Ignore', 'polylang' ); ?>:</strong> <?php esc_html_e( 'stay at this step', 'polylang' ); ?>
+		<?php
+			/* translators: %s: is the translated label of the 'Ignore' button  */
+			printf(
+				esc_html__( '%s: stay at this step', 'polylang' ),
+				'<strong>' . esc_html__( 'Ignore', 'polylang' ) . '</strong >'
+			);
+			?>
 		</li>
 	</ul>
 </div>
