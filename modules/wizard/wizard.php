@@ -336,7 +336,7 @@ class PLL_Wizard {
 	 *
 	 * @since 2.7
 	 *
-	 * @param array $http_post array of form field values
+	 * @param array $http_post array of form field values.
 	 */
 	public function save_step_licenses( $http_post ) {
 
@@ -446,7 +446,7 @@ class PLL_Wizard {
 	 *
 	 * @since 2.7
 	 *
-	 * @param array $http_post array of form field values
+	 * @param array $http_post array of form field values.
 	 */
 	public function save_step_languages( $http_post ) {
 
@@ -553,7 +553,7 @@ class PLL_Wizard {
 	 *
 	 * @since 2.7
 	 *
-	 * @param array $http_post array of form field values
+	 * @param array $http_post array of form field values.
 	 */
 	public function save_step_media( $http_post ) {
 		$media_support = isset( $http_post['media_support'] ) ? sanitize_key( $http_post['media_support'] ) === 'yes' : false;
@@ -602,7 +602,7 @@ class PLL_Wizard {
 	 *
 	 * @since 2.7
 	 *
-	 * @param array $http_post array of form field values
+	 * @param array $http_post array of form field values.
 	 */
 	public function save_step_untranslated_contents( $http_post ) {
 
@@ -664,7 +664,7 @@ class PLL_Wizard {
 	 *
 	 * @since 2.7
 	 *
-	 * @param array $http_post array of form field values
+	 * @param array $http_post array of form field values.
 	 */
 	public function save_step_home_page( $http_post ) {
 
@@ -743,10 +743,10 @@ class PLL_Wizard {
 	 * Execute the last step
 	 *
 	 * @since 2.7
+	 *
+	 * @param array $http_post array of form field values.
 	 */
-	public function save_step_last() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
-
+	public function save_step_last( $http_post ) {
 		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
 		exit;
 	}
