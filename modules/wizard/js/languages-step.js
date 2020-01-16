@@ -214,6 +214,16 @@ jQuery( document ).ready(
 				minWidth: 600,
 				maxWidth: '100%',
 				open: function( event, ui ) {
+					// Change dialog box position for rtl language
+					if ( $( 'body' ).hasClass( 'rtl' ) ) {
+						$( this ).parent().css(
+							{
+								right: $( this ).parent().css( 'left' ),
+								left: 'auto'
+							}
+						);
+					}
+					// Display language name and flag information in dialog box.
 					$( '#dialog-language' ).text( $( '#lang_list' ).children( ':selected' )[0].innerText );
 					$( '#dialog-language' ).prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) );
 				},
