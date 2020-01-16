@@ -111,8 +111,8 @@ $languages_list = array_diff_key(
 	<ul>
 		<li>
 			<?php
-			/* translators: %s: is the translated label of the 'Yes' button  */
 			printf(
+				/* translators: %s: is the translated label of the 'Yes' button  */
 				esc_html__( '%s: add this language and continue to the next step', 'polylang' ),
 				'<strong>' . esc_html__( 'Yes', 'polylang' ) . '</strong >'
 			);
@@ -120,8 +120,8 @@ $languages_list = array_diff_key(
 		</li>
 		<li>
 		<?php
-			/* translators: %s: is the translated label of the 'No' button  */
 			printf(
+				/* translators: %s: is the translated label of the 'No' button  */
 				esc_html__( "%s: don't add this language and continue to the next step", 'polylang' ),
 				'<strong>' . esc_html__( 'No', 'polylang' ) . '</strong >'
 			);
@@ -129,8 +129,8 @@ $languages_list = array_diff_key(
 		</li>
 		<li>
 		<?php
-			/* translators: %s: is the translated label of the 'Ignore' button  */
 			printf(
+				/* translators: %s: is the translated label of the 'Ignore' button  */
 				esc_html__( '%s: stay at this step', 'polylang' ),
 				'<strong>' . esc_html__( 'Ignore', 'polylang' ) . '</strong >'
 			);
