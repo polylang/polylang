@@ -224,8 +224,8 @@ jQuery( document ).ready(
 						);
 					}
 					// Display language name and flag information in dialog box.
-					$( '#dialog-language' ).text( $( '#lang_list' ).children( ':selected' )[0].innerText );
-					$( '#dialog-language' ).prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) );
+					$( this ).find( '#dialog-language' ).text( $( '#lang_list' ).children( ':selected' )[0].innerText );
+					$( this ).find( '#dialog-language-flag' ).empty().prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) );
 				},
 				buttons: [
 				{

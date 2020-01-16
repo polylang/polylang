@@ -1081,9 +1081,6 @@ textarea.field-in-error,
 	margin-right: 0;
 	margin-left: 5px;
 }
-.ui-dialog-content img{
-	margin: 0 5px 0 0;
-}
 .pll-wizard .ui-dialog ul{
 	list-style: disc;
 	padding-left: 20px;

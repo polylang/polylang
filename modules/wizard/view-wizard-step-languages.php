@@ -98,8 +98,9 @@ $languages_list = array_diff_key(
 	<p>
 	<?php
 	printf(
-		/* translators: %s is a language native name */
-		esc_html__( "You selected %s but you didn't add it to the list before continuing to the next step.", 'polylang' ),
+		/* translators: 1: is a language flag image, 2: is a language native name */
+		esc_html__( 'You selected %1$s %2$s but you didn\'t add it to the list before continuing to the next step.', 'polylang' ),
+		'<span id="dialog-language-flag"></span>',
 		'<strong id="dialog-language"></strong>'
 	);
 	?>
