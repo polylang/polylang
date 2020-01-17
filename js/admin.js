@@ -28,7 +28,7 @@ jQuery( document ).ready(
 			'tr'
 		); // acts on the whole tr instead of single td as we have actions links in several columns
 
-		// Common functions for overrinding language and flag dropdown list.
+		// Common functions for overriding language and flag dropdown list.
 		var selectmenuRenderItem = function( wrapper, item ) {
 			var li = $( '<li>' ).text( item.label ).prepend( $( item.element ).data( 'flag-html' ) );
 			li.children( 'img' ).addClass( 'ui-icon' );
