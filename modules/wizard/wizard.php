@@ -172,10 +172,12 @@ class PLL_Wizard {
 		$this->step = $step && array_key_exists( $step, $this->steps ) ? $step : current( array_keys( $this->steps ) );
 
 		// Call the handler of the step for going to the next step.
+		// Be careful nonce verification with check_admin_referer must be done in each handler.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		if ( ! empty( $_POST['save_step'] ) && isset( $this->steps[ $this->step ]['handler'] ) ) {
-			check_admin_referer( 'pll-wizard', '_pll_nonce' );
-			call_user_func( $this->steps[ $this->step ]['handler'], $_POST );
+			call_user_func( $this->steps[ $this->step ]['handler'] );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 		$this->display_wizard_page();
 		// Ensure nothing is done after including the page.
 		exit;
@@ -335,17 +337,16 @@ class PLL_Wizard {
 	 * Execute the languages step
 	 *
 	 * @since 2.7
-	 *
-	 * @param array $http_post array of form field values.
 	 */
-	public function save_step_licenses( $http_post ) {
+	public function save_step_licenses() {
+		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
 		$redirect = $this->get_next_step_link();
 		$licenses = apply_filters( 'pll_settings_licenses', array() );
 
 		foreach ( $licenses as $license ) {
-			if ( ! empty( $http_post['licenses'][ $license->id ] ) ) {
-				$updated_license = $license->activate_license( sanitize_key( $http_post['licenses'][ $license->id ] ) );
+			if ( ! empty( $_POST['licenses'][ $license->id ] ) ) {
+				$updated_license = $license->activate_license( sanitize_key( $_POST['licenses'][ $license->id ] ) );
 				if ( ! empty( $updated_license->license_data ) && false === $updated_license->license_data->success ) {
 					// Stay on this step with an error.
 					$redirect = add_query_arg(
@@ -445,16 +446,15 @@ class PLL_Wizard {
 	 * Execute the languages step
 	 *
 	 * @since 2.7
-	 *
-	 * @param array $http_post array of form field values.
 	 */
-	public function save_step_languages( $http_post ) {
+	public function save_step_languages() {
+		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
 		$existing_languages = $this->model->get_languages_list();
 
 		// PLL_SETTINGS_INC is correctly defined relatively to the plugin folder.
 		$all_languages = include PLL_SETTINGS_INC . '/languages.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
-		$languages = isset( $http_post['languages'] ) ? array_map( 'sanitize_text_field', wp_unslash( $http_post['languages'] ) ) : false;
+		$languages = isset( $_POST['languages'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['languages'] ) ) : false;
 		$saved_languages = array();
 
 		// If there is no language added or defined.
@@ -552,11 +552,11 @@ class PLL_Wizard {
 	 * Execute the media step
 	 *
 	 * @since 2.7
-	 *
-	 * @param array $http_post array of form field values.
 	 */
-	public function save_step_media( $http_post ) {
-		$media_support = isset( $http_post['media_support'] ) ? sanitize_key( $http_post['media_support'] ) === 'yes' : false;
+	public function save_step_media() {
+		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+
+		$media_support = isset( $_POST['media_support'] ) ? sanitize_key( $_POST['media_support'] ) === 'yes' : false;
 
 		$this->options['media_support'] = $media_support;
 
@@ -601,12 +601,11 @@ class PLL_Wizard {
 	 * Execute the untranslated contents step
 	 *
 	 * @since 2.7
-	 *
-	 * @param array $http_post array of form field values.
 	 */
-	public function save_step_untranslated_contents( $http_post ) {
+	public function save_step_untranslated_contents() {
+		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$lang = isset( $http_post['language'] ) ? sanitize_text_field( wp_unslash( $http_post['language'] ) ) : false;
+		$lang = isset( $_POST['language'] ) ? sanitize_text_field( wp_unslash( $_POST['language'] ) ) : false;
 
 		if ( empty( $lang ) ) {
 			$lang = $this->options['default_lang'];
@@ -663,10 +662,9 @@ class PLL_Wizard {
 	 * Execute the home page step
 	 *
 	 * @since 2.7
-	 *
-	 * @param array $http_post array of form field values.
 	 */
-	public function save_step_home_page( $http_post ) {
+	public function save_step_home_page() {
+		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
 		$languages = $this->model->get_languages_list();
 
@@ -676,11 +674,11 @@ class PLL_Wizard {
 		}
 
 		$default_language = count( $languages ) > 0 ? $this->options['default_lang'] : null;
-		$home_page = isset( $http_post['home_page'] ) ? sanitize_key( $http_post['home_page'] ) : false;
-		$home_page_title = isset( $http_post['home_page_title'] ) ? sanitize_text_field( wp_unslash( $http_post['home_page_title'] ) ) : esc_html__( 'Homepage', 'polylang' );
-		$home_page_language = isset( $http_post['home_page_language'] ) ? sanitize_key( $http_post['home_page_language'] ) : false;
+		$home_page = isset( $_POST['home_page'] ) ? sanitize_key( $_POST['home_page'] ) : false;
+		$home_page_title = isset( $_POST['home_page_title'] ) ? sanitize_text_field( wp_unslash( $_POST['home_page_title'] ) ) : esc_html__( 'Homepage', 'polylang' );
+		$home_page_language = isset( $_POST['home_page_language'] ) ? sanitize_key( $_POST['home_page_language'] ) : false;
 
-		$untranslated_languages = isset( $http_post['untranslated_languages'] ) ? array_map( 'sanitize_key', $http_post['untranslated_languages'] ) : array();
+		$untranslated_languages = isset( $_POST['untranslated_languages'] ) ? array_map( 'sanitize_key', $_POST['untranslated_languages'] ) : array();
 
 		$translations = $this->model->post->get_translations( $home_page );
 
@@ -743,10 +741,10 @@ class PLL_Wizard {
 	 * Execute the last step
 	 *
 	 * @since 2.7
-	 *
-	 * @param array $http_post array of form field values.
 	 */
-	public function save_step_last( $http_post ) {
+	public function save_step_last() {
+		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+
 		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
 		exit;
 	}
