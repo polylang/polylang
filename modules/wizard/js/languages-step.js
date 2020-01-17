@@ -108,6 +108,15 @@ jQuery( document ).ready(
 		}
 
 		/**
+		 * Remove error when a new selection is done in languages list.
+		 */
+		languagesList.on(
+			'selectmenuchange',
+			function() {
+				hideError();;
+			}
+		);
+		/**
 		 * Bind click event on "Add language" button
 		 */
 		$( '#add-language' ).on(
