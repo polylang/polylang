@@ -1000,8 +1000,37 @@ input[type="url"].field-in-error,
 input[type="week"].field-in-error,
 select.field-in-error,
 textarea.field-in-error,
+span.field-in-error,
 .field-in-error{
 	border-color: #a03f3f;
+}
+
+input[type="text"].field-in-error:focus,
+input[type="password"].field-in-error:focus,
+input[type="checkbox"].field-in-error:focus,
+input[type="color"].field-in-error:focus,
+input[type="date"].field-in-error:focus,
+input[type="datetime"].field-in-error:focus,
+input[type="datetime-local"].field-in-error:focus,
+input[type="email"].field-in-error:focus,
+input[type="month"].field-in-error:focus,
+input[type="number"].field-in-error:focus,
+input[type="search"].field-in-error:focus,
+input[type="radio"].field-in-error:focus,
+input[type="tel"].field-in-error:focus,
+input[type="text"].field-in-error:focus,
+input[type="time"].field-in-error:focus,
+input[type="url"].field-in-error:focus,
+input[type="week"].field-in-error:focus,
+select.field-in-error:focus,
+textarea.field-in-error:focus,
+span.field-in-error:focus,
+.field-in-error:focus{
+	border: 1px solid #a03f3f;
+	box-shadow: 0 0 2px rgba(160, 63, 63, 0.8);
+	outline-color: #a03f3f;
+	outline-style: auto;
+	outline-width: thin;
 }
 
 /* override install styles by returning back to forms styles */
