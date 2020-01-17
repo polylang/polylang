@@ -152,9 +152,11 @@ jQuery( document ).ready(
 				if ( languagesMap.size <= 0 && ! isLanguagesAlreadyDefined ) {
 					if ( '' === $( '#lang_list' ).val() ) {
 						showError( pll_wizard_params.i18n_no_language_added );
+						showFieldInError( languagesList.next( 'span.ui-selectmenu-button' ) );
 						focusOnField( $( '#lang_list-button' ) );
 					} else {
 						showError( pll_wizard_params.i18n_add_language_needed );
+						showFieldInError( languagesList.next( 'span.ui-selectmenu-button' ) );
 						focusOnField( $( '#add-language' ) ); // Put the focus on the "Add language" button.
 					}
 					return false;
