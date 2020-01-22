@@ -11,18 +11,21 @@ class PLL_Wizard {
 	 * @var object $model
 	 */
 	protected $model;
+
 	/**
 	 * Reference to Polylang options array
 	 *
 	 * @var object $options
 	 */
 	protected $options;
+
 	/**
 	 * List of steps
 	 *
 	 * @var array $steps
 	 */
 	protected $steps = array();
+
 	/**
 	 * List of WordPress CSS file handles
 	 *
@@ -45,9 +48,9 @@ class PLL_Wizard {
 		add_action( 'admin_init', array( $this, 'setup_wizard_page' ) );
 		// Add Wizard submenu.
 		add_filter( 'pll_settings_tabs', array( $this, 'settings_tabs' ), 10, 1 );
-		// Enqueue scripts and styles especailly for the wizard.
+		// Enqueue scripts and styles especially for the wizard.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		// Add filter to add screen for the notice about the Wizard which needs to be displayed on some more screens than Polylang.
+		// Add filter to select screens where to display the notice.
 		add_filter( 'pll_can_display_notice', array( $this, 'can_display_notice' ), 10, 2 );
 		// Add ajax action on deactivate button in licenses step.
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
@@ -62,7 +65,7 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Save a activation transient when Polylang is activating to redirect to wizard
+	 * Save an activation transient when Polylang is activating to redirect to the wizard
 	 *
 	 * @param bool $network_wide if activated for all sites in the network.
 	 * @since 2.7
@@ -104,8 +107,9 @@ class PLL_Wizard {
 			}
 		}
 	}
+
 	/**
-	 * Add an admin Polylang submenu for accessing the wizard
+	 * Add an admin Polylang submenu to access the wizard
 	 *
 	 * @param array $tabs Submenus list.
 	 * @return array Submenus list updated.
@@ -142,7 +146,7 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Return if the licenses step is displayable
+	 * Check if the licenses step is displayable
 	 *
 	 * @return bool
 	 * @since 2.7
@@ -151,6 +155,7 @@ class PLL_Wizard {
 		$licenses = apply_filters( 'pll_settings_licenses', array() );
 		return count( $licenses ) > 0;
 	}
+
 	/**
 	 * Setup the wizard page
 	 *
@@ -241,6 +246,7 @@ class PLL_Wizard {
 
 		$this->styles = array( 'polylang_admin', 'pll-wizard' );
 	}
+
 	/**
 	 * Get the suffix to enqueue non minified files in a Debug context
 	 *
@@ -303,7 +309,7 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Add licenses step in the wizard
+	 * Add licenses step to the wizard
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
@@ -391,7 +397,7 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Add languages step in the wizard
+	 * Add languages step to the wizard
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
@@ -450,8 +456,7 @@ class PLL_Wizard {
 
 		$existing_languages = $this->model->get_languages_list();
 
-		// PLL_SETTINGS_INC is correctly defined relatively to the plugin folder.
-		$all_languages = include PLL_SETTINGS_INC . '/languages.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+		$all_languages = include PLL_SETTINGS_INC . '/languages.php';
 		$languages = isset( $_POST['languages'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['languages'] ) ) : false;
 		$saved_languages = array();
 
@@ -516,7 +521,8 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Add media step in the wizard
+	 * Add media step to the wizard
+	 * Add media step to the wizard
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
@@ -565,7 +571,7 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Add untranslated contents step in the wizard
+	 * Add untranslated contents step to the wizard
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
@@ -625,7 +631,7 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Add home page step in the wizard
+	 * Add home page step to the wizard
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
@@ -651,6 +657,8 @@ class PLL_Wizard {
 
 	/**
 	 * Display the home page step form
+	 *
+	 * @since 2.7
 	 */
 	public function display_step_home_page() {
 		include PLL_MODULES_INC . '/wizard/view-wizard-step-home-page.php';
@@ -707,7 +715,7 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Add last step in the wizard
+	 * Add last step to the wizard
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
