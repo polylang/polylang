@@ -48,11 +48,13 @@ class PLL_Admin_Base extends PLL_Base {
 	public function init() {
 		parent::init();
 
+		$this->notices = new PLL_Admin_Notices( $this );
+		$this->wizard  = new PLL_Wizard( $this->options, $this->model );
+
 		if ( ! $this->model->get_languages_list() ) {
 			return;
 		}
 
-		$this->notices = new PLL_Admin_Notices( $this );
 		$this->links = new PLL_Admin_Links( $this ); // FIXME needed here ?
 		$this->static_pages = new PLL_Admin_Static_Pages( $this ); // FIXME needed here ?
 		$this->filters_links = new PLL_Filters_Links( $this ); // FIXME needed here ?

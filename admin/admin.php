@@ -26,9 +26,11 @@
  * classic_editor  => reference to PLL_Admin_Classic_Editor object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
  * bulk_translate  => reference, a PLL_Bulk_Translate subclass instance
+ * wizard          => reference, a PLL_Wizard object
  *
  * @since 1.2
  * @since 2.7 Added a reference to a PLL_Bulk_Translate instance.
+ * @since 2.7 Added a reference to a PLL_Wizard object.
  */
 class PLL_Admin extends PLL_Admin_Base {
 	public $filters, $filters_columns, $filters_post, $filters_term, $nav_menu, $sync, $filters_media;

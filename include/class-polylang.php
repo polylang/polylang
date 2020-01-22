@@ -30,6 +30,9 @@ class Polylang {
 		require_once PLL_INC . '/functions.php'; // VIP functions
 		spl_autoload_register( array( $this, 'autoload' ) ); // Autoload classes
 
+		// register an action when plugin is activating.
+		register_activation_hook( POLYLANG_BASENAME, array( 'PLL_Wizard', 'start_wizard' ) );
+
 		$install = new PLL_Install( POLYLANG_BASENAME );
 
 		// Stopping here if we are going to deactivate the plugin ( avoids breaking rewrite rules )

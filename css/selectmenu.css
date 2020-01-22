@@ -24,10 +24,16 @@
 	position: relative;
 	margin: 0;
 	padding: 3px 1em 3px .4em;
+	cursor: pointer;
 	min-height: 0; /* support: IE7 */
 	/* support: IE10, see #8844 */
 	list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 }
+
+.rtl .ui-menu .ui-menu-item {
+	text-align: right;
+}
+
 
 /* icon support */
 .ui-menu-icons {
@@ -37,6 +43,10 @@
 .ui-menu-icons .ui-menu-item {
 	padding-left: 2em;
 }
+.rtl .ui-menu-icons .ui-menu-item {
+	padding-left: 1em;
+	padding-right: 2em;
+}
 
 /* left-aligned */
 .ui-selectmenu-text .ui-icon,
@@ -44,8 +54,14 @@
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	left: .2em;
+	left: .3em;
 	margin: auto 0;
+}
+
+.rtl .ui-selectmenu-text .ui-icon,
+.rtl .ui-menu .ui-icon {
+	right: .3em;
+	left: auto;
 }
 
 /* right-aligned */
@@ -97,7 +113,14 @@
 	margin-top: -10px;
 	position: absolute;
 	top: 50%;
+	text-indent: 0; /* due to text-indent for jquery ui-dialog in wizard */
 }
+
+.rtl .ui-selectmenu-button span.ui-icon {
+	left: 0.5em;
+	right: auto;
+}
+
 
 .ui-selectmenu-button span.ui-selectmenu-text {
 	text-align: left;
@@ -107,6 +130,11 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.rtl .ui-selectmenu-button span.ui-selectmenu-text {
+	text-align: right;
+	padding: 0.2em 2em 0.2em 2.1em;
 }
 
 .ui-widget-content,
