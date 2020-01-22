@@ -83,13 +83,12 @@ class PLL_Wizard {
 	 */
 	public function redirect_to_wizard() {
 		if ( get_transient( 'pll_activation_redirect' ) ) {
-			// phpcs:disable WordPress.Security.NonceVerification.Recommended
 			$do_redirect = true;
-			if ( ( isset( $_GET['page'] ) && 'mlang_wizard' === sanitize_key( $_GET['page'] ) || isset( $_GET['activate-multi'] ) ) ) {
+			if ( ( isset( $_GET['page'] ) && 'mlang_wizard' === sanitize_key( $_GET['page'] ) || isset( $_GET['activate-multi'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				delete_transient( 'pll_activation_redirect' );
 				$do_redirect = false;
 			}
-			// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
 			if ( $do_redirect ) {
 				wp_safe_redirect(
 					esc_url_raw(
@@ -173,11 +172,10 @@ class PLL_Wizard {
 
 		// Call the handler of the step for going to the next step.
 		// Be careful nonce verification with check_admin_referer must be done in each handler.
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		if ( ! empty( $_POST['save_step'] ) && isset( $this->steps[ $this->step ]['handler'] ) ) {
+		if ( ! empty( $_POST['save_step'] ) && isset( $this->steps[ $this->step ]['handler'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			call_user_func( $this->steps[ $this->step ]['handler'] );
 		}
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
 		$this->display_wizard_page();
 		// Ensure nothing is done after including the page.
 		exit;
