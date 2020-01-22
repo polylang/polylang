@@ -132,6 +132,10 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$_SERVER['REQUEST_URI'] = '/fr/test/';
 		$this->assertEquals( 'fr', self::$polylang->links_model->get_language_from_url() );
 
+		// Bug fixed in 2.6.10.
+		$_SERVER['REQUEST_URI'] = '/test/fr/';
+		$this->assertEmpty( self::$polylang->links_model->get_language_from_url() );
+
 		self::$polylang->options['rewrite'] = 0;
 		$_SERVER['REQUEST_URI'] = '/language/fr/test/';
 		$this->assertEquals( 'fr', self::$polylang->links_model->get_language_from_url() );
