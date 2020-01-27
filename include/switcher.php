@@ -53,16 +53,10 @@ class PLL_Switcher {
 			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
 			$url = null; // Avoids potential notice
 
-			if ( $first ) {
-				$classes[] = 'lang-item-first';
-				$first = false;
-			}
-
 			if ( $current_lang = $links->curlang->slug == $slug ) {
 				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
 					continue; // Hide current language except for dropdown
-				}
-				else {
+				} else {
 					$classes[] = 'current-lang';
 				}
 			}
@@ -97,6 +91,11 @@ class PLL_Switcher {
 
 			$name = $args['show_names'] || ! $args['show_flags'] || $args['raw'] ? ( 'slug' == $args['display_names_as'] ? $slug : $language->name ) : '';
 			$flag = $args['raw'] && ! $args['show_flags'] ? $language->flag_url : ( $args['show_flags'] ? $language->flag : '' );
+
+			if ( $first ) {
+				$classes[] = 'lang-item-first';
+				$first = false;
+			}
 
 			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes' );
 		}
