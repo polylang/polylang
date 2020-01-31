@@ -138,7 +138,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( 'English', $xpath->query( '//li/a[@lang="en-US"]/span' )->item( 0 )->nodeValue );
 
-		// Bug fixed in 2.9.10
+		// Bug fixed in 2.6.10.
 		$args = array( 'hide_current' => 1, 'echo' => 0 );
 		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
 		$doc = new DomDocument();
