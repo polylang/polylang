@@ -30,7 +30,7 @@ class License_Test extends PLL_UnitTestCase {
 	function test_valid() {
 		$this->license->license_data = (object) array(
 			'success' => 1,
-			'expires' => gmdate( 'Y-m-d H:i:s', strtotime( 'last day of next month' ) ),
+			'expires' => gmdate( 'Y-m-d H:i:s', strtotime( '+60 days' ) ),
 		);
 
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'Your license key expires on' ) );
