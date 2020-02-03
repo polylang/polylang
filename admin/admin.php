@@ -60,7 +60,7 @@ class PLL_Admin extends PLL_Admin_Base {
 		// Priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
-			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ) );
+			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ), 20 ); // After fusion Builder.
 
 			// Bulk Translate
 			if ( class_exists( 'PLL_Bulk_Translate' ) ) {
