@@ -343,6 +343,9 @@ class PLL_Table_String extends WP_List_Table {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );
 
 		if ( ! empty( $_POST['submit'] ) ) {
+
+			$this->import_translations();
+
 			foreach ( $this->languages as $language ) {
 				if ( empty( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
@@ -404,5 +407,74 @@ class PLL_Table_String extends WP_List_Table {
 			$args['s'] = urlencode( $args['s'] ); // Searched string needs to be encoded as it comes from $_POST
 		}
 		PLL_Settings::redirect( $args );
+	}
+
+	/**
+	 * Import translations from CSV file.
+	 * Appends translations to the existing POST translations.
+	 * Delimiter: `,`
+	 * Enclosure: `"`
+	 *
+	 * @todo context?
+	 *
+	 * @return void|string Nothing or error.
+	 */
+	public function import_translations() {
+		if ( empty( $_FILES['import']['tmp_name'] ) ) {
+			return;
+		}
+
+		$csv = array_map( 'str_getcsv', file( $_FILES['import']['tmp_name'] ) );
+
+		$headers = array_shift( $csv );
+
+		$name_key = array_search( 'name', $headers );
+		if ( false === $name_key ) {
+			$name_key = array_search( 'string', $headers );
+			if ( false === $name_key ) {
+				if ( isset( $headers[0] ) && '' === $headers[0] ) {
+					$name_key = 0;
+				}
+			}
+		}
+		if ( false === $name_key ) {
+			return ''; //@todo string identifier is required error.
+		}
+
+		//$context_key = array_search( 'context', $headers );
+
+		foreach ( $this->languages as $language ) {
+			$lang_key = array_search( $language->slug, $headers );
+			if ( false === $lang_key ) {
+				continue;
+			}
+
+			$translations = array();
+
+			foreach ( $csv as $line ) {
+				if ( empty( $line[ $name_key ] ) || empty( $line[ $lang_key ] ) ) {
+					continue;
+				}
+				$name = $line[ $name_key ];
+				$md5  = md5( $name );
+
+				if ( ! isset( $this->strings[ $md5 ] ) ) {
+					// String not found.
+					continue;
+				}
+
+				$translation = $line[ $lang_key ];
+
+				/*$context     = null;
+				if ( $context_key ) {
+					$context = $line[ $context_key ];
+				}*/
+
+				$translations[ md5( $name ) ] = $translation;
+			}
+
+			// Append imported strings to POST variable.
+			$_POST['translation'][ $language->slug ] = array_merge( $_POST['translation'][ $language->slug ], $translations );
+		}
 	}
 }

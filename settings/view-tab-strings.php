@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 };
 ?>
 <div class="form-wrap">
-	<form id="string-translation" method="post" action="<?php echo esc_url( add_query_arg( 'noheader', 'true' ) ); ?>">
+	<form id="string-translation" method="post" action="<?php echo esc_url( add_query_arg( 'noheader', 'true' ) ); ?>" enctype="multipart/form-data">
 		<input type="hidden" name="pll_action" value="string-translation" />
 		<?php
 		$string_table->search_box( __( 'Search translations', 'polylang' ), 'translations' );
@@ -18,6 +18,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		printf( '<br /><label><input name="clean" type="checkbox" value="1" /> %s</label>', esc_html__( 'Clean strings translation database', 'polylang' ) );
 		?>
 		<p><?php esc_html_e( 'Use this to remove unused strings from database, for example after a plugin has been uninstalled.', 'polylang' ); ?></p>
+		<?php
+		printf( '<br /><label>%s:<br /><input name="import" type="file" accept=".csv" /></label>', esc_html__( 'Import translations', 'polylang' ) . ' CSV' );
+		?><p><?php esc_html_e( 'Only registered strings will be imported.', 'polylang' ); ?></p>
 		<?php
 		submit_button(); // Since WP 3.1
 		?>
