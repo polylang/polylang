@@ -352,7 +352,16 @@ class PLL_Table_String extends WP_List_Table {
 				}
 
 				$mo = new PLL_MO();
-				$mo->import_from_db( $language );
+
+				if ( ! empty( $_POST['clean'] ) ) {
+					// Clean database ( removes all strings which were registered some day but are no more )
+					foreach ( $this->strings as $string ) {
+						$mo->add_entry( $mo->make_entry( $string['string'], $mo->translate( $string['string'] ) ) );
+					}
+				} else {
+					// Pull existing strings from database.
+					$mo->import_from_db( $language );
+				}
 
 				foreach ( $_POST['translation'][ $language->slug ] as $key => $translation ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 					/**
@@ -369,16 +378,7 @@ class PLL_Table_String extends WP_List_Table {
 					$mo->add_entry( $mo->make_entry( $this->strings[ $key ]['string'], $translation ) );
 				}
 
-				// Clean database ( removes all strings which were registered some day but are no more )
-				if ( ! empty( $_POST['clean'] ) ) {
-					$new_mo = new PLL_MO();
-
-					foreach ( $this->strings as $string ) {
-						$new_mo->add_entry( $mo->make_entry( $string['string'], $mo->translate( $string['string'] ) ) );
-					}
-				}
-
-				isset( $new_mo ) ? $new_mo->export_to_db( $language ) : $mo->export_to_db( $language );
+				$mo->export_to_db( $language );
 			}
 
 			add_settings_error( 'general', 'pll_strings_translations_updated', __( 'Translations updated.', 'polylang' ), 'updated' );
