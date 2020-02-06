@@ -279,7 +279,10 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		return array( 'delete' => __( 'Delete', 'polylang' ) );
+		return array(
+			'delete' => __( 'Delete', 'polylang' ),
+			'export' => __( 'Export', 'polylang' ),
+		);
 	}
 
 	/**
@@ -396,6 +399,8 @@ class PLL_Table_String extends WP_List_Table {
 			foreach ( array_map( 'sanitize_key', $_POST['strings'] ) as $key ) {
 				icl_unregister_string( $this->strings[ $key ]['context'], $this->strings[ $key ]['name'] );
 			}
+		} elseif ( 'export' === $this->current_action() ) {
+			$this->export_translations();
 		}
 
 		// To refresh the page ( possible thanks to the $_GET['noheader']=true )
@@ -476,5 +481,51 @@ class PLL_Table_String extends WP_List_Table {
 			// Append imported strings to POST variable.
 			$_POST['translation'][ $language->slug ] = array_merge( $_POST['translation'][ $language->slug ], $translations );
 		}
+	}
+
+	/**
+	 * Export all translations to a CSV file.
+	 */
+	public function export_translations() {
+		// Set string header.
+		$strings = array( array( 'name' ) );
+
+		$mo = new PLL_MO();
+		foreach ( $this->languages as $language ) {
+
+			// Set language header.
+			$strings[0][] = $language->slug;
+
+			$mo->import_from_db( $language );
+
+			if ( empty( $this->entries ) ) {
+				continue;
+			}
+
+			foreach ( $mo->entries as $entry ) {
+				if ( empty( $entry->singular ) ) {
+					continue;
+				}
+				// Use md5 as string identifier. This will not be exported to CSV.
+				$md5 = md5( $entry->singular );
+				if ( empty( $strings[ $md5 ] ) ) {
+					$strings[ $md5 ] = array(
+						$entry->singular,
+					);
+				}
+				$strings[ $md5 ][ $language->slug ] = $mo->translate( $entry->singular );
+			}
+		}
+
+		$filename = 'polylang-string-translations.csv';
+		header( "Content-Disposition: attachment; filename=" . $filename );
+		header( 'Content-Type: text/csv; charset=utf-8' );
+
+		$output_csv = fopen("php://output", 'w');
+		foreach($strings as $string) {
+			fputcsv($output_csv, $string);
+		}
+		fclose($output_csv);
+		die;
 	}
 }
