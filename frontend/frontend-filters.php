@@ -48,7 +48,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		// Support theme customizer
 		// FIXME of course does not work if 'transport' is set to 'postMessage'
-		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // WPCS: CSRF ok.
+		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			add_filter( 'pre_option_blogname', 'pll__', 20 );
 			add_filter( 'pre_option_blogdescription', 'pll__', 20 );
 		}
@@ -167,7 +167,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			return $sidebars_widgets;
 		}
 
-		$cache_key         = md5( serialize( $sidebars_widgets ) );
+		$cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
 		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$cache_key}" );
 
 		if ( false !== $_sidebars_widgets ) {

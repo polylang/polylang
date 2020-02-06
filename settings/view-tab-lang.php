@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="col-wrap">
 
 			<div class="form-wrap">
-				<h3><?php echo ! empty( $edit_lang ) ? esc_html__( 'Edit language', 'polylang' ) : esc_html__( 'Add new language', 'polylang' ); ?></h3>
+				<h2><?php echo ! empty( $edit_lang ) ? esc_html__( 'Edit language', 'polylang' ) : esc_html__( 'Add new language', 'polylang' ); ?></h2>
 				<?php
 				// Displays the add ( or edit ) language form
 				// Adds noheader=true in the action url to allow using wp_redirect when processing the form
@@ -54,13 +54,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<option value=""></option>
 							<?php
 							foreach ( $this->get_predefined_languages() as $lg ) {
+								$lg['flag_code'] = $lg['flag'];
+								$language = new PLL_Language( $lg );
+								$language->set_flag();
 								printf(
-									'<option value="%1$s:%2$s:%3$s:%4$s">%5$s - %2$s</option>' . "\n",
+									'<option value="%1$s:%2$s:%3$s:%4$s" data-flag-html="%6$s">%5$s - %2$s</option>' . "\n",
 									esc_attr( $lg['code'] ),
 									esc_attr( $lg['locale'] ),
 									'rtl' == $lg['dir'] ? '1' : '0',
 									esc_attr( $lg['flag'] ),
-									esc_html( $lg['name'] )
+									esc_html( $lg['name'] ),
+									esc_html( $language->flag )
 								);
 							}
 							?>
@@ -123,17 +127,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<select name="flag" id="flag_list">
 							<option value=""></option>
 							<?php
-							include PLL_SETTINGS_INC . '/flags.php';
+							$flags = include PLL_SETTINGS_INC . '/flags.php';
 							foreach ( $flags as $code => $label ) {
-								/** This filter is documented in include/language.php */
-								$flag = apply_filters( 'pll_flag', array( 'url' => plugins_url( "/flags/{$code}.png", POLYLANG_FILE ) ), $code );
-
 								printf(
-									'<option value="%s" data-url="%s"%s%s%s>%s</option>' . "\n",
+									'<option value="%s" data-flag-html="%s"%s>%s</option>' . "\n",
 									esc_attr( $code ),
-									esc_url( $flag['url'] ),
-									( empty( $flag['width'] ) ? '' : sprintf( ' data-width="%s"', (int) $flag['width'] ) ),
-									( empty( $flag['height'] ) ? '' : sprintf( ' data-height="%s"', (int) $flag['height'] ) ),
+									esc_html( PLL_Language::get_flag_html( PLL_Language::get_flag_informations( $code ) ) ),
 									selected( isset( $edit_lang->flag_code ) && $edit_lang->flag_code === $code, true, false ),
 									esc_html( $label )
 								);
@@ -172,7 +171,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						do_action( 'pll_language_add_form_fields' );
 					}
 
-					submit_button( ! empty( $edit_lang ) ? __( 'Update' ) : __( 'Add new language', 'polylang' ) ); // since WP 3.1
+					submit_button( ! empty( $edit_lang ) ? __( 'Update', 'polylang' ) : __( 'Add new language', 'polylang' ) ); // since WP 3.1
 					?>
 				</form>
 			</div><!-- form-wrap -->

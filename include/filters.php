@@ -335,9 +335,9 @@ class PLL_Filters {
 	 * @return array Personal data
 	 */
 	public function user_data_exporter( $email_address ) {
-		$email_address = trim( $email_address );
-
-		$data_to_export = array();
+		$email_address       = trim( $email_address );
+		$data_to_export      = array();
+		$user_data_to_export = array();
 
 		if ( $user = get_user_by( 'email', $email_address ) ) {
 			foreach ( $this->model->get_languages_list() as $lang ) {
@@ -353,7 +353,7 @@ class PLL_Filters {
 			if ( ! empty( $user_data_to_export ) ) {
 				$data_to_export[] = array(
 					'group_id'    => 'user',
-					'group_label' => __( 'User' ),
+					'group_label' => __( 'User', 'polylang' ),
 					'item_id'     => "user-{$user->ID}",
 					'data'        => $user_data_to_export,
 				);

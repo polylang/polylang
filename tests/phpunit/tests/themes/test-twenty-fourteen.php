@@ -1,8 +1,6 @@
 <?php
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
-
-if ( file_exists( $_tests_dir . '../wordpress/wp-content/themes/twentyfourteen/style.css' ) ) {
+if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen/style.css' ) ) {
 
 	class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 		static $stylesheet, $tag_en, $tag_fr;
@@ -29,6 +27,8 @@ if ( file_exists( $_tests_dir . '../wordpress/wp-content/themes/twentyfourteen/s
 
 			self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 			self::$polylang->init();
+			self::$polylang->featured_content = new PLL_Featured_Content();
+			self::$polylang->featured_content->init();
 		}
 
 		static function wpTearDownAfterClass() {

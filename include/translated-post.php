@@ -153,11 +153,16 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @since 1.5
 	 *
-	 * @param int $post_id
+	 * @param int    $post_id Post ID
+	 * @param string $context Optional, 'edit' or 'view', defaults to 'view'.
 	 * @return bool
 	 */
-	public function current_user_can_read( $post_id ) {
+	public function current_user_can_read( $post_id, $context = 'view' ) {
 		$post = get_post( $post_id );
+
+		if ( empty( $post ) ) {
+			return false;
+		}
 
 		if ( 'inherit' === $post->post_status && $post->post_parent ) {
 			$post = get_post( $post->post_parent );
@@ -172,6 +177,21 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 			$post_type_object = get_post_type_object( $post->post_type );
 			$user = wp_get_current_user();
 			return is_user_logged_in() && ( current_user_can( $post_type_object->cap->read_private_posts ) || $user->ID == $post->post_author ); // Comparison must not be strict!
+		}
+
+		// In edit context, show draft and future posts.
+		if ( 'edit' === $context ) {
+			$states = get_post_stati(
+				array(
+					'protected'              => true,
+					'show_in_admin_all_list' => true,
+				)
+			);
+
+			if ( in_array( $post->post_status, $states ) ) {
+				$user = wp_get_current_user();
+				return is_user_logged_in() && ( current_user_can( 'edit_posts' ) || $user->ID == $post->post_author ); // Comparison must not be strict!
+			}
 		}
 
 		return false;
@@ -223,7 +243,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		$posts = get_posts( $args );
 
 		foreach ( $posts as $post ) {
-			if ( ! $this->get_translation( $post->ID, $untranslated_in ) && $this->current_user_can_read( $post->ID ) ) {
+			if ( ! $this->get_translation( $post->ID, $untranslated_in ) && $this->current_user_can_read( $post->ID, 'edit' ) ) {
 				$return[] = $post;
 			}
 		}

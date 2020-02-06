@@ -47,6 +47,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		// Hierarchical taxonomies
 		if ( 'edit' == $screen->base && $taxonomies = get_object_taxonomies( $screen->post_type, 'object' ) ) {
 			// Get translated hierarchical taxonomies
+			$hierarchical_taxonomies = array();
 			foreach ( $taxonomies as $taxonomy ) {
 				if ( $taxonomy->hierarchical && $taxonomy->show_in_quick_edit && $this->model->is_translated_taxonomy( $taxonomy->name ) ) {
 					$hierarchical_taxonomies[] = $taxonomy->name;
@@ -54,7 +55,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			}
 
 			if ( ! empty( $hierarchical_taxonomies ) ) {
-				$terms = get_terms( $hierarchical_taxonomies, array( 'get' => 'all' ) );
+				$terms          = get_terms( $hierarchical_taxonomies, array( 'get' => 'all' ) );
+				$term_languages = array();
 
 				foreach ( $terms as $term ) {
 					if ( $lang = $this->model->term->get_language( $term->term_id ) ) {
@@ -71,7 +73,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		// Hierarchical post types
 		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) ) {
-			$pages = get_pages();
+			$pages          = get_pages();
+			$page_languages = array();
 
 			foreach ( $pages as $page ) {
 				if ( $lang = $this->model->post->get_language( $page->ID ) ) {
@@ -104,7 +107,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @since 2.3
 	 */
 	public function edit_post() {
-		if ( isset( $_POST['post_lang_choice'], $_POST['post_ID'] ) && $post_id = (int) $_POST['post_ID'] ) { // WPCS: CSRF ok.
+		if ( isset( $_POST['post_lang_choice'], $_POST['post_ID'] ) && $post_id = (int) $_POST['post_ID'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			check_admin_referer( 'pll_language', '_pll_nonce' );
 
 			$post = get_post( $post_id );
@@ -160,7 +163,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @since 2.3
 	 */
 	public function bulk_edit_posts() {
-		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'], $_REQUEST['post'] ) && -1 !== $_GET['inline_lang_choice'] ) { // WPCS: CSRF ok.
+		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'], $_REQUEST['post'] ) && -1 !== $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			check_admin_referer( 'bulk-posts' );
 
 			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {

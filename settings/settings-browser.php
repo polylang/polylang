@@ -15,6 +15,7 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
+		$this->options = &$polylang->options;
 		parent::__construct(
 			$polylang,
 			array(
@@ -79,10 +80,10 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 				$( "input[name='force_lang']" ).change( function() {
 					var value = $( this ).val();
 					if ( 3 > value ) {
-						$( "#pll-module-browser" ).<?php echo $func; // WCPS: XSS ok. ?>.children( "td" ).children( ".row-actions" ).html( '<?php echo $link; // WCPS: XSS ok. ?>' );
+						$( "#pll-module-browser" ).<?php echo $func; // phpcs:ignore WordPress.Security.EscapeOutput ?>.children( "td" ).children( ".row-actions" ).html( '<?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
 					}
 					else {
-						$( "#pll-module-browser" ).removeClass( "active" ).addClass( "inactive" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $deactivated; // WCPS: XSS ok. ?>' );
+						$( "#pll-module-browser" ).removeClass( "active" ).addClass( "inactive" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $deactivated; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
 					}
 				} );
 			} )( jQuery );

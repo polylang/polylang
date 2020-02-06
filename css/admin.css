@@ -340,8 +340,8 @@ td[class*='column-language_'] {
 
 #pll-translate .title {
 	display: block;
-  margin: 0.2em 0;
-  line-height: 2.5;
+	margin: 0.2em 0;
+	line-height: 2.5;
 }
 
 @media screen and ( max-width: 782px ) {

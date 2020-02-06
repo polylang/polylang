@@ -45,7 +45,17 @@ class PLL_Admin_Classic_Editor {
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
-			add_meta_box( 'ml_box', __( 'Languages', 'polylang' ), array( $this, 'post_language' ), $post_type, 'side', 'high' );
+			add_meta_box(
+				'ml_box',
+				__( 'Languages', 'polylang' ),
+				array( $this, 'post_language' ),
+				$post_type,
+				'side',
+				'high',
+				array(
+					'__back_compat_meta_box' => pll_use_block_editor_plugin(),
+				)
+			);
 		}
 	}
 
@@ -56,13 +66,13 @@ class PLL_Admin_Classic_Editor {
 	 */
 	public function post_language() {
 		global $post_ID;
-		$post_id = $post_ID;
 		$post_type = get_post_type( $post_ID );
 
-		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0; // WPCS: CSRF ok.
+		// phpcs:ignore WordPress.Security.NonceVerification, WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
+		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0;
 
 		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
-			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // WPCS: CSRF ok.
+			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification
 			$this->pref_lang );
 
 		$dropdown = new PLL_Walker_Dropdown();
@@ -71,6 +81,7 @@ class PLL_Admin_Classic_Editor {
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->get_languages_list(),
+			-1,
 			array(
 				'name'     => $id,
 				'class'    => 'post_lang_choice tags-input',
@@ -119,9 +130,8 @@ class PLL_Admin_Classic_Editor {
 		}
 
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
-		$post_id = $post_ID = (int) $_POST['post_id'];
-		$lang = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
-
+		$post_ID   = (int) $_POST['post_id'];
+		$lang      = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( ! post_type_exists( $post_type ) ) {
@@ -148,8 +158,9 @@ class PLL_Admin_Classic_Editor {
 		ob_end_clean();
 
 		// Categories
-		if ( isset( $_POST['taxonomies'] ) ) {
-			// Not set for pages
+		if ( isset( $_POST['taxonomies'] ) ) { // Not set for pages
+			$supplemental = array();
+
 			foreach ( array_map( 'sanitize_key', $_POST['taxonomies'] ) as $taxname ) {
 				$taxonomy = get_taxonomy( $taxname );
 
@@ -190,7 +201,7 @@ class PLL_Admin_Classic_Editor {
 				'exclude_tree'     => $post->ID,
 				'selected'         => $post->post_parent,
 				'name'             => 'parent_id',
-				'show_option_none' => __( '(no parent)' ),
+				'show_option_none' => __( '(no parent)', 'polylang' ),
 				'sort_column'      => 'menu_order, post_title',
 				'echo'             => 0,
 			);
@@ -198,7 +209,7 @@ class PLL_Admin_Classic_Editor {
 			/** This filter is documented in wp-admin/includes/meta-boxes.php */
 			$dropdown_args = apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3
 
-			$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) ); // WCPS: XSS ok.
+			$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 
 		// Flag
@@ -228,7 +239,7 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 0 );
 		}
 
-		$term = wp_unslash( $_GET['term'] ); // WCPS: sanitization ok.
+		$term = wp_unslash( $_GET['term'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 
 		$post_language = $this->model->get_language( sanitize_key( $_GET['post_language'] ) );
 		$translation_language = $this->model->get_language( sanitize_key( $_GET['translation_language'] ) );
@@ -272,7 +283,7 @@ class PLL_Admin_Classic_Editor {
 	 * @return array Modified arguments
 	 */
 	public function page_attributes_dropdown_pages_args( $dropdown_args, $post ) {
-		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // WPCS: CSRF ok.
+		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // phpcs:ignore WordPress.Security.NonceVerification
 		if ( ! $dropdown_args['lang'] ) {
 			$dropdown_args['lang'] = $this->pref_lang;
 		}
@@ -295,7 +306,7 @@ class PLL_Admin_Classic_Editor {
 					<?php
 					esc_html_e( 'Some taxonomies or metadata may be synchronized with existing translations that you are not allowed to modify.', 'polylang' );
 					echo ' ';
-					esc_html_e( "If you attempt to modify them anyway, your modifications won't be taken into account.", 'polylang' );
+					esc_html_e( 'If you attempt to modify them anyway, your changes will not be saved.', 'polylang' );
 					?>
 				</p>
 			</div>

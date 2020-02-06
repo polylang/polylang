@@ -21,25 +21,28 @@ class PLL_Admin_Filters_Columns {
 		$this->model = &$polylang->model;
 		$this->filter_lang = &$polylang->filter_lang;
 
-		// Add the language and translations columns in 'All Posts', 'All Pages' and 'Media library' panels
+		// Hide the column of the filtered language.
+		add_filter( 'hidden_columns', array( $this, 'hidden_columns' ) ); // Since WP 4.4.
+
+		// Add the language and translations columns in 'All Posts', 'All Pages' and 'Media library' panels.
 		foreach ( $this->model->get_translated_post_types() as $type ) {
 			// Use the latest filter late as some plugins purely overwrite what's done by others :(
-			// Specific case for media
+			// Specific case for media.
 			add_filter( 'manage_' . ( 'attachment' == $type ? 'upload' : 'edit-' . $type ) . '_columns', array( $this, 'add_post_column' ), 100 );
 			add_action( 'manage_' . ( 'attachment' == $type ? 'media' : $type . '_posts' ) . '_custom_column', array( $this, 'post_column' ), 10, 2 );
 		}
 
-		// Quick edit and bulk edit
+		// Quick edit and bulk edit.
 		add_filter( 'quick_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
 		add_filter( 'bulk_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
 
-		// Adds the language column in the 'Categories' and 'Post Tags' tables
+		// Adds the language column in the 'Categories' and 'Post Tags' tables.
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
 			add_filter( 'manage_edit-' . $tax . '_columns', array( $this, 'add_term_column' ) );
 			add_filter( 'manage_' . $tax . '_custom_column', array( $this, 'term_column' ), 10, 3 );
 		}
 
-		// Ajax responses to update list table rows
+		// Ajax responses to update list table rows.
 		add_action( 'wp_ajax_pll_update_post_rows', array( $this, 'ajax_update_post_rows' ) );
 		add_action( 'wp_ajax_pll_update_term_rows', array( $this, 'ajax_update_term_rows' ) );
 	}
@@ -60,10 +63,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			// Don't add the column for the filtered language
-			if ( empty( $this->filter_lang ) || $language->slug != $this->filter_lang->slug ) {
-				$columns[ 'language_' . $language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
-			}
+			$columns[ 'language_' . $language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
 		}
 
 		return isset( $end ) ? array_merge( $columns, $end ) : $columns;
@@ -77,13 +77,28 @@ class PLL_Admin_Filters_Columns {
 	 * @return string first language column name
 	 */
 	protected function get_first_language_column() {
+		$columns = array();
+
 		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( empty( $this->filter_lang ) || $language->slug != $this->filter_lang->slug ) {
-				$columns[] = 'language_' . $language->slug;
-			}
+			$columns[] = 'language_' . $language->slug;
 		}
 
 		return empty( $columns ) ? '' : reset( $columns );
+	}
+
+	/**
+	 * Hide the column for the filtered language
+	 *
+	 * @since 2.7
+	 *
+	 * @param array $hidden Array of hidden columns
+	 * @return array
+	 */
+	public function hidden_columns( $hidden ) {
+		if ( ! empty( $this->filter_lang ) ) {
+			$hidden[] = 'language_' . $this->filter_lang->slug;
+		}
+		return $hidden;
 	}
 
 	/**
@@ -108,8 +123,8 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $post_id
 	 */
 	public function post_column( $column, $post_id ) {
-		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action']; // WPCS: CSRF ok.
-		$lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id ); // WPCS: CSRF ok.
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
+		$lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->post->get_language( $post_id ); // phpcs:ignore WordPress.Security.NonceVerification
 
 		if ( false === strpos( $column, 'language_' ) || ! $lang ) {
 			return;
@@ -121,8 +136,6 @@ class PLL_Admin_Filters_Columns {
 		if ( $column == $this->get_first_language_column() ) {
 			printf( '<div class="hidden" id="lang_%d">%s</div>', intval( $post_id ), esc_html( $lang->slug ) );
 		}
-
-		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
 
 		// Link to edit post ( or a translation )
 		if ( $id = $this->model->post->get( $post_id, $language ) ) {
@@ -155,7 +168,7 @@ class PLL_Admin_Filters_Columns {
 		}
 		// Link to add a new translation
 		else {
-			echo $this->links->new_post_translation_link( $post_id, $language ); // WCPS: XSS ok.
+			echo $this->links->new_post_translation_link( $post_id, $language ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 	}
 
@@ -173,7 +186,7 @@ class PLL_Admin_Filters_Columns {
 
 			$elements = $this->model->get_languages_list();
 			if ( current_filter() == 'bulk_edit_custom_box' ) {
-				array_unshift( $elements, (object) array( 'slug' => -1, 'name' => __( '&mdash; No Change &mdash;' ) ) );
+				array_unshift( $elements, (object) array( 'slug' => -1, 'name' => __( '&mdash; No Change &mdash;', 'polylang' ) ) );
 			}
 
 			$dropdown = new PLL_Walker_Dropdown();
@@ -188,7 +201,7 @@ class PLL_Admin_Filters_Columns {
 					</div>
 				</fieldset>',
 				esc_html__( 'Language', 'polylang' ),
-				$dropdown->walk( $elements, array( 'name' => 'inline_lang_choice', 'id' => '' ) ) // phpcs:ignore WordPress.Security.EscapeOutput
+				$dropdown->walk( $elements, -1, array( 'name' => 'inline_lang_choice', 'id' => '' ) ) // phpcs:ignore WordPress.Security.EscapeOutput
 			);
 		}
 		return $column;
@@ -216,13 +229,26 @@ class PLL_Admin_Filters_Columns {
 	 * @param int    $term_id
 	 */
 	public function term_column( $out, $column, $term_id ) {
-		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action']; // WPCS: CSRF ok.
-		if ( false === strpos( $column, 'language_' ) || ! ( $lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id ) ) ) { // WPCS: CSRF ok.
+		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( false === strpos( $column, 'language_' ) || ! ( $lang = $inline ? $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) : $this->model->term->get_language( $term_id ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return $out;
 		}
 
-		$post_type = isset( $GLOBALS['post_type'] ) ? $GLOBALS['post_type'] : sanitize_key( $_REQUEST['post_type'] ); // WPCS: CSRF ok.
-		$taxonomy = isset( $GLOBALS['taxonomy'] ) ? $GLOBALS['taxonomy'] : sanitize_key( $_REQUEST['taxonomy'] ); // WPCS: CSRF ok.
+		if ( isset( $_REQUEST['post_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$post_type = sanitize_key( $_REQUEST['post_type'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+
+		if ( isset( $GLOBALS['post_type'] ) ) {
+			$post_type = $GLOBALS['post_type'];
+		}
+
+		if ( isset( $_REQUEST['taxonomy'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$taxonomy = sanitize_key( $_REQUEST['taxonomy'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+
+		if ( isset( $GLOBALS['taxonomy'] ) ) {
+			$taxonomy = $GLOBALS['taxonomy'];
+		}
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			return $out;
@@ -260,7 +286,7 @@ class PLL_Admin_Filters_Columns {
 					esc_html( $s )
 				);
 			} elseif ( $id === $term_id ) {
-				$out .= printf(
+				$out .= sprintf(
 					'<span class="pll_icon_tick"><span class="screen-reader-text">%s</span></span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) )
@@ -300,7 +326,7 @@ class PLL_Admin_Filters_Columns {
 		$x = new WP_Ajax_Response();
 
 		// Collect old translations
-		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // WPCS: sanitization ok.
+		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$translations = array_map( 'intval', $translations );
 
 		$translations = array_merge( $translations, array( (int) $_POST['post_id'] ) ); // Add current post
@@ -342,7 +368,7 @@ class PLL_Admin_Filters_Columns {
 		$x = new WP_Ajax_Response();
 
 		// Collect old translations
-		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // WPCS: sanitization ok.
+		$translations = empty( $_POST['translations'] ) ? array() : explode( ',', $_POST['translations'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$translations = array_map( 'intval', $translations );
 
 		$translations = array_merge( $translations, $this->model->term->get_translations( (int) $_POST['term_id'] ) ); // Add current translations

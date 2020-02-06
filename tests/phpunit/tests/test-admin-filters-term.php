@@ -310,7 +310,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			'name'             => 'parent',
 			'orderby'          => 'name',
 			'hierarchical'     => true,
-			'show_option_none' => __( 'None' ),
+			'show_option_none' => __( 'None' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
 		);
 
 		// FIXME this filter is available since WP 4.2 and is worth looking at ( could simplify get_queried_language? )

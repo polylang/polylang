@@ -30,10 +30,13 @@ class Polylang {
 		require_once PLL_INC . '/functions.php'; // VIP functions
 		spl_autoload_register( array( $this, 'autoload' ) ); // Autoload classes
 
+		// register an action when plugin is activating.
+		register_activation_hook( POLYLANG_BASENAME, array( 'PLL_Wizard', 'start_wizard' ) );
+
 		$install = new PLL_Install( POLYLANG_BASENAME );
 
 		// Stopping here if we are going to deactivate the plugin ( avoids breaking rewrite rules )
-		if ( $install->is_deactivation() ) {
+		if ( $install->is_deactivation() || ! $install->can_activate() ) {
 			return;
 		}
 
@@ -98,7 +101,7 @@ class Polylang {
 
 		foreach ( $dirs as $dir ) {
 			if ( file_exists( $file = "$dir/$class.php" ) ) {
-				require_once $file;
+				require_once $file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 				return;
 			}
 		}
@@ -114,8 +117,8 @@ class Polylang {
 	public static function is_ajax_on_front() {
 		// Special test for plupload which does not use jquery ajax and thus does not pass our ajax prefilter
 		// Special test for customize_save done in frontend but for which we want to load the admin
-		$in = isset( $_REQUEST['action'] ) && in_array( sanitize_key( $_REQUEST['action'] ), array( 'upload-attachment', 'customize_save' ) ); // WPCS: CSRF ok.
-		$is_ajax_on_front = wp_doing_ajax() && empty( $_REQUEST['pll_ajax_backend'] ) && ! $in; // WPCS: CSRF ok.
+		$in = isset( $_REQUEST['action'] ) && in_array( sanitize_key( $_REQUEST['action'] ), array( 'upload-attachment', 'customize_save' ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$is_ajax_on_front = wp_doing_ajax() && empty( $_REQUEST['pll_ajax_backend'] ) && ! $in; // phpcs:ignore WordPress.Security.NonceVerification
 
 		/**
 		 * Filters whether the current request is an ajax request on front.
@@ -137,6 +140,7 @@ class Polylang {
 	 * @return bool
 	 */
 	public static function is_rest_request() {
+		// Handle pretty permalinks.
 		$home_path       = trim( wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
 		$home_path_regex = sprintf( '|^%s|i', preg_quote( $home_path, '|' ) );
 
@@ -146,7 +150,12 @@ class Polylang {
 		$req_uri = str_replace( 'index.php', '', $req_uri );
 		$req_uri = trim( $req_uri, '/' );
 
-		return 0 === strpos( $req_uri, rest_get_url_prefix() . '/' );
+		// And also test rest_route query string parameter is not empty for plain permalinks.
+		$query_string = array();
+		wp_parse_str( wp_parse_url( pll_get_requested_url(), PHP_URL_QUERY ), $query_string );
+		$rest_route = isset( $query_string['rest_route'] ) ? trim( $query_string['rest_route'], '/' ) : false;
+
+		return 0 === strpos( $req_uri, rest_get_url_prefix() . '/' ) || ! empty( $rest_route );
 	}
 
 	/**
@@ -168,12 +177,12 @@ class Polylang {
 
 		// Admin
 		if ( ! defined( 'PLL_ADMIN' ) ) {
-			define( 'PLL_ADMIN', defined( 'DOING_CRON' ) || ( defined( 'WP_CLI' ) && WP_CLI ) || ( is_admin() && ! PLL_AJAX_ON_FRONT ) );
+			define( 'PLL_ADMIN', wp_doing_cron() || ( defined( 'WP_CLI' ) && WP_CLI ) || ( is_admin() && ! PLL_AJAX_ON_FRONT ) );
 		}
 
 		// Settings page whatever the tab
 		if ( ! defined( 'PLL_SETTINGS' ) ) {
-			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( sanitize_key( $_GET['page'] ), 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) ); // WPCS: CSRF ok.
+			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( sanitize_key( $_GET['page'] ), 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 	}
 
@@ -197,6 +206,11 @@ class Polylang {
 			}
 		}
 
+		// In some edge cases, it's possible that no options were found in the database. Load default options as we need some.
+		if ( ! $options ) {
+			$options = PLL_Install::get_default_options();
+		}
+
 		// Make sure that this filter is *always* added before PLL_Model::get_languages_list() is called for the first time
 		add_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 ); // Before PLL_Links_Model
 
@@ -212,16 +226,6 @@ class Polylang {
 		$model = new $class( $options );
 		$links_model = $model->get_links_model();
 
-		if ( PLL_SETTINGS ) {
-			$polylang = new PLL_Settings( $links_model );
-		} elseif ( PLL_ADMIN ) {
-			$polylang = new PLL_Admin( $links_model );
-		} elseif ( self::is_rest_request() ) {
-			$polylang = new PLL_REST_Request( $links_model );
-		} elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // WPCS: CSRF ok. Do nothing on frontend if no language is defined.
-			$polylang = new PLL_Frontend( $links_model );
-		}
-
 		if ( ! $model->get_languages_list() ) {
 			/**
 			 * Fires when no language has been defined yet
@@ -232,7 +236,30 @@ class Polylang {
 			do_action( 'pll_no_language_defined' );
 		}
 
-		if ( ! empty( $polylang ) ) {
+		$class = '';
+
+		if ( PLL_SETTINGS ) {
+			$class = 'PLL_Settings';
+		} elseif ( PLL_ADMIN ) {
+			$class = 'PLL_Admin';
+		} elseif ( self::is_rest_request() ) {
+			$class = 'PLL_REST_Request';
+		} elseif ( $model->get_languages_list() && empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$class = 'PLL_Frontend';
+		}
+
+		/**
+		 * Filters the class to use to instantiate the $polylang object
+		 *
+		 * @since 2.6
+		 *
+		 * @param string $class A class name.
+		 */
+		$class = apply_filters( 'pll_context', $class );
+
+		if ( ! empty( $class ) ) {
+			$polylang = new $class( $links_model );
+
 			/**
 			 * Fires after the $polylang object is created and before the API is loaded
 			 *
@@ -262,5 +289,3 @@ class Polylang {
 		}
 	}
 }
-
-new Polylang();

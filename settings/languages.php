@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 'zu_ZA' (Zulu)
  * 'zz_TR' (Zazaki)
  */
-$languages = array(
+return array(
 	'af' => array(
 		'code'     => 'af',
 		'locale'   => 'af',
@@ -624,6 +624,11 @@ $languages = array(
 		'facebook' => 'km_KH',
 	),
 	'kn' => array(
+		'code'     => 'kn',
+		'locale'   => 'kn',
+		'name'     => 'ಕನ್ನಡ',
+		'dir'      => 'ltr',
+		'flag'     => 'in',
 		'facebook' => 'kn_IN',
 	),
 	'ko_KR' => array(
@@ -815,6 +820,14 @@ $languages = array(
 		'flag'     => 'af',
 		'facebook' => 'ps_AF',
 	),
+	'pt_AO' => array(
+		'code'     => 'pt',
+		'locale'   => 'pt_AO',
+		'name'     => 'Português',
+		'dir'      => 'ltr',
+		'flag'     => 'ao',
+		'facebook' => 'pt_PT',
+	),
 	'pt_BR' => array(
 		'code'     => 'pt',
 		'locale'   => 'pt_BR',
@@ -954,6 +967,11 @@ $languages = array(
 		'facebook' => 'sv_SE',
 	),
 	'sw' => array(
+		'code'     => 'sw',
+		'locale'   => 'sw',
+		'name'     => 'Kiswahili',
+		'dir'      => 'ltr',
+		'flag'     => 'ke',
 		'facebook' => 'sw_KE',
 	),
 	'syr' => array(

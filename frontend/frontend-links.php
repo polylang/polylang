@@ -55,7 +55,6 @@ class PLL_Frontend_Links extends PLL_Links {
 		 */
 		if ( ! $url = apply_filters( 'pll_pre_translation_url', '', $language, $queried_object_id ) ) {
 			$qv = $wp_query->query_vars;
-			$hide = $this->options['default_lang'] == $language->slug && $this->options['hide_default'];
 
 			// Post and attachment
 			if ( is_single() && ( $this->options['media_support'] || ! is_attachment() ) && ( $id = $this->model->post->get( $queried_object_id, $language ) ) && $this->model->post->current_user_can_read( $id ) ) {
@@ -96,7 +95,7 @@ class PLL_Frontend_Links extends PLL_Links {
 				$lang = $this->model->term->get_language( $term->term_id );
 
 				if ( ! $lang || $language->slug == $lang->slug ) {
-					$url = wpcom_vip_get_term_link( $term, $term->taxonomy ); // Self link
+					$url = get_term_link( $term, $term->taxonomy ); // Self link
 				}
 
 				elseif ( $tr_id = $this->model->term->get_translation( $term->term_id, $language ) ) {
@@ -115,7 +114,7 @@ class PLL_Frontend_Links extends PLL_Links {
 						 * @param array  $args Arguments used to evaluated the number of posts in the archive
 						 */
 						if ( ! apply_filters( 'pll_hide_archive_translation_url', ! $count, $language->slug, array( 'taxonomy' => $term->taxonomy ) ) ) {
-							$url = wpcom_vip_get_term_link( $tr_term, $term->taxonomy );
+							$url = get_term_link( $tr_term, $term->taxonomy );
 						}
 					}
 				}

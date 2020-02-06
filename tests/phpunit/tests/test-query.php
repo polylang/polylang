@@ -574,4 +574,83 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( $args );
 		$this->assertEquals( array( get_post( $en ) ), $query->posts );
 	}
+
+	// Tests cases with 'lang' and no post type in query.
+	function test_language_and_no_post_type_in_query() {
+		$post_id = $this->factory->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		self::$polylang->model->post->set_language( $post_id, 'fr' );
+
+		$page_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test' ) );
+		self::$polylang->model->post->set_language( $page_id, 'fr' );
+
+		$query = new WP_Query( array( 'lang' => 'fr' ) );
+		$this->assertEquals( array( get_post( $post_id ) ), $query->posts );
+
+		$query = new WP_Query( array( 'lang' => 'fr', 'name' => 'test' ) );
+		$this->assertEquals( array( get_post( $post_id ) ), $query->posts );
+
+		$query = new WP_Query( array( 'lang' => 'fr', 's' => 'test' ) );
+		$this->assertEqualSets( array( get_post( $post_id ), get_post( $page_id ) ), $query->posts );
+
+		$query = new WP_Query( array( 'lang' => 'fr', 'pagename' => 'test' ) );
+		$this->assertEquals( array( get_post( $page_id ) ), $query->posts );
+
+		$media_id = $this->factory->post->create( array( 'post_type' => 'attachment', 'post_title' => 'attached' ) );
+		self::$polylang->model->post->set_language( $media_id, 'fr' );
+
+		$query = new WP_Query( array( 'lang' => 'fr', 'attachment' => 'attached' ) );
+		$this->assertEquals( array( get_post( $media_id ) ), $query->posts );
+
+		$cpt_id = $this->factory->post->create( array( 'post_type' => 'trcpt', 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		self::$polylang->model->post->set_language( $cpt_id, 'fr' );
+
+		$tax_id = $this->factory->term->create( array( 'taxonomy' => 'trtax' ) );
+		self::$polylang->model->term->set_language( $tax_id, 'fr' );
+		wp_set_post_terms( $cpt_id, array( $tax_id ), 'trtax' );
+
+		$args = array(
+			'lang'      => 'fr',
+			'tax_query' => array(
+				array(
+					'field'    => 'id',
+					'terms'    => $tax_id,
+					'taxonomy' => 'trtax',
+				),
+			),
+		);
+
+		$query = new WP_Query( $args );
+		$this->assertEquals( array( get_post( $cpt_id ) ), $query->posts );
+
+		$query = new WP_Query( array( 'lang' => 'fr', 'm' => 200709 ) );
+		$this->assertEquals( array( get_post( $post_id ) ), $query->posts );
+
+		$query = new WP_Query( array( 'lang' => 'fr', 'author' => 1 ) );
+		$this->assertEquals( array( get_post( $post_id ) ), $query->posts );
+	}
+
+	// Issue fixed in 2.6.6
+	function test_category_with_post_type_added_late_in_query() {
+		register_taxonomy_for_object_type( 'category', array( 'post', 'trcpt' ) );
+
+		$cpt_id = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		self::$polylang->model->post->set_language( $cpt_id, 'fr' );
+
+		$cat_id = $this->factory->category->create();
+		self::$polylang->model->term->set_language( $cat_id, 'fr' );
+		wp_set_post_terms( $cpt_id, array( $cat_id ), 'category' );
+
+		// Assign the post type in a hook after our pare_query action
+		add_action(
+			'pre_get_posts',
+			function( $query ) {
+				if ( empty( $query->query_vars['post_type'] ) ) {
+					$query->set( 'post_type', 'trcpt' );
+				}
+			}
+		);
+
+		$query = new WP_Query( array( 'lang' => 'fr', 'cat' => $cat_id ) );
+		$this->assertEquals( array( get_post( $cpt_id ) ), $query->posts );
+	}
 }

@@ -15,7 +15,7 @@ class PLL_Widget_Languages extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'polylang',
-			__( 'Language Switcher', 'polylang' ),
+			__( 'Language switcher', 'polylang' ),
 			array(
 				'description'                 => __( 'Displays a language switcher', 'polylang' ),
 				'customize_selective_refresh' => true,
@@ -40,17 +40,17 @@ class PLL_Widget_Languages extends WP_Widget {
 			/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 			$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
-			echo $args['before_widget']; // WCPS: XSS ok.
+			echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
 			if ( $title ) {
-				echo $args['before_title'] . $title . $args['after_title']; // WCPS: XSS ok.
+				echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput
 			}
 			if ( $instance['dropdown'] ) {
 				echo '<label class="screen-reader-text" for="' . esc_attr( 'lang_choice_' . $instance['dropdown'] ) . '">' . esc_html__( 'Choose a language', 'polylang' ) . '</label>';
-				echo $list; // WCPS: XSS ok.
+				echo $list; // phpcs:ignore WordPress.Security.EscapeOutput
 			} else {
-				echo "<ul>\n" . $list . "</ul>\n"; // WCPS: XSS ok.
+				echo "<ul>\n" . $list . "</ul>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
 			}
-			echo $args['after_widget']; // WCPS: XSS ok.
+			echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 	}
 
@@ -64,7 +64,7 @@ class PLL_Widget_Languages extends WP_Widget {
 	 * @return array Settings to save or bool false to cancel saving
 	 */
 	public function update( $new_instance, $old_instance ) {
-		$instance['title'] = strip_tags( $new_instance['title'] );
+		$instance = array( 'title' => sanitize_text_field( $new_instance['title'] ) );
 		foreach ( array_keys( PLL_Switcher::get_switcher_options( 'widget' ) ) as $key ) {
 			$instance[ $key ] = ! empty( $new_instance[ $key ] ) ? 1 : 0;
 		}

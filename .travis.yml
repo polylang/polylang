@@ -2,6 +2,9 @@ sudo: false
 
 language: php
 
+services:
+  - mysql
+
 notifications:
   email:
     on_success: never
@@ -14,27 +17,29 @@ branches:
 php:
   - 5.6
   - 7.0
+  - 7.1
+  - 7.2
 
 env:
   - WP_VERSION=latest WP_MULTISITE=0
-  - WP_VERSION=4.7 WP_MULTISITE=0
+  - WP_VERSION=4.9 WP_MULTISITE=0
 
 matrix:
   include:
-    - php: 7.1
-      env: WP_VERSION=latest WP_MULTISITE=0
-    - php: 7.1
-      env: WP_VERSION=latest WP_MULTISITE=1
-    - php: 7.2
-      env: WP_VERSION=latest WP_MULTISITE=0 PHPCS=1
-    - php: 7.3
-      env: WP_VERSION=latest WP_MULTISITE=0
-    - php: 5.3
-      env: WP_VERSION=latest WP_MULTISITE=0
-      dist: precise
-    - php: 5.3
-      env: WP_VERSION=4.7 WP_MULTISITE=0
-      dist: precise
+  - name: PHPCS
+    php: 7.3
+    env: WP_VERSION=latest WP_MULTISITE=0 PHPCS=1
+  - php: 7.3
+    env: WP_VERSION=latest WP_MULTISITE=0
+  - php: 7.3
+    env: WP_VERSION=latest WP_MULTISITE=1
+  - php: 7.4
+    env: WP_VERSION=latest WP_MULTISITE=0
+  - php: 7.3
+    env: WP_VERSION=nightly WP_MULTISITE=0
+  allow_failures:
+  - php: 7.3
+    env: WP_VERSION=nightly WP_MULTISITE=0
 
 before_script:
   - |
@@ -42,22 +47,22 @@ before_script:
       phpenv config-rm xdebug.ini
     fi
   - export PATH="$HOME/.config/composer/vendor/bin:$PATH"
-  - bash tests/bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - |
-    if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-      composer global require "phpunit/phpunit=5.7.*"
-    else
-      composer global require "phpunit/phpunit=4.8.*"
-    fi
   - |
     if [[ "$PHPCS" == "1" ]]; then
+      composer global require dealerdirect/phpcodesniffer-composer-installer
       composer global require wp-coding-standards/wpcs
-      phpcs --config-set installed_paths $HOME/.config/composer/vendor/wp-coding-standards/wpcs
+      composer global require automattic/vipwpcs
+      composer global require phpcompatibility/phpcompatibility-wp
+    else
+      bash tests/bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+      bash tests/bin/install-plugins.sh
+      composer global require "phpunit/phpunit=5.7.*"
     fi
 
 script:
   - |
     if [[ "$PHPCS" == "1" ]]; then
-      phpcs -s --extensions=php .
+      phpcs -s --extensions=php,js .
+    else
+      phpunit
     fi
-  - phpunit

@@ -32,9 +32,8 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.8
 	 */
 	public function init() {
-		$filename = isset( $_SERVER['SCRIPT_FILENAME'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SCRIPT_FILENAME'] ) ) : '';
-		if ( Polylang::is_ajax_on_front() || false === stripos( $filename, 'index.php' ) ) {
-			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ); // WPCS: CSRF ok.
+		if ( Polylang::is_ajax_on_front() || ! wp_using_themes() ) {
+			$this->set_language( empty( $_REQUEST['lang'] ) ? $this->get_preferred_language() : $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		add_action( 'pre_comment_on_post', array( $this, 'pre_comment_on_post' ) ); // sets the language of comment
@@ -61,7 +60,8 @@ abstract class PLL_Choose_Lang {
 		// See https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
 		$this->curlang = ( $curlang instanceof PLL_Language ) ? $curlang : $this->model->get_language( $this->options['default_lang'] );
 
-		$GLOBALS['text_direction'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
+		$GLOBALS['text_direction']  = $this->curlang->is_rtl ? 'rtl' : 'ltr';
+		wp_styles()->text_direction = $GLOBALS['text_direction'];
 
 		/**
 		 * Fires when the current language is defined
@@ -191,16 +191,25 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Returns the language according to browser preference or the default language
+	 * Returns the preferred language
+	 * either from the cookie if it's a returning visit
+	 * or according to browser preference
+	 * or the default language
 	 *
 	 * @since 0.1
 	 *
 	 * @return object browser preferred language or default language
 	 */
 	public function get_preferred_language() {
-		// check first if the user was already browsing this site
+		$language = false;
+		$cookie   = false;
+
 		if ( isset( $_COOKIE[ PLL_COOKIE ] ) ) {
-			return $this->model->get_language( sanitize_key( $_COOKIE[ PLL_COOKIE ] ) );
+			// Check first if the user was already browsing this site.
+			$language = sanitize_key( $_COOKIE[ PLL_COOKIE ] );
+			$cookie   = true;
+		} elseif ( $this->options['browser'] ) {
+			$language = $this->get_preferred_browser_language();
 		}
 
 		/**
@@ -210,12 +219,14 @@ abstract class PLL_Choose_Lang {
 		 * Polylang fallbacks to the default language
 		 *
 		 * @since 1.0
+		 * @since 2.7 Added $cookie parameter.
 		 *
-		 * @param string $language preferred language code
+		 * @param string|bool $language Preferred language code, false if none has been found.
+		 * @param bool        $cookie   Whether the preferred language has been defined by the cookie.
 		 */
-		$slug = apply_filters( 'pll_preferred_language', $this->options['browser'] ? $this->get_preferred_browser_language() : false );
+		$slug = apply_filters( 'pll_preferred_language', $language, $cookie );
 
-		// return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
+		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
 		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_language( $this->options['default_lang'] );
 	}
 
@@ -256,7 +267,7 @@ abstract class PLL_Choose_Lang {
 		// Test to avoid crash if get_home_url returns something wrong
 		// FIXME why this happens? http://wordpress.org/support/topic/polylang-crashes-1
 		// Don't redirect if $_POST is not empty as it could break other plugins
-		elseif ( is_string( $redirect = $this->curlang->home_url ) && empty( $_POST ) ) { // WPCS: CSRF ok.
+		elseif ( is_string( $redirect = $this->curlang->home_url ) && empty( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// Don't forget the query string which may be added by plugins
 			$query_string = wp_parse_url( pll_get_requested_url(), PHP_URL_QUERY );
 			if ( ! empty( $query_string ) ) {

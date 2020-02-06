@@ -28,7 +28,7 @@ class PLL_Upgrade {
 		if ( ! $this->can_upgrade() ) {
 			ob_start();
 			$this->admin_notices(); // FIXME the error message is displayed two times
-			die( ob_get_contents() ); // WCPS: XSS ok.
+			die( ob_get_contents() ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 	}
 
@@ -76,7 +76,7 @@ class PLL_Upgrade {
 			esc_html__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
 			sprintf(
 				/* translators: %1$s and %2$s are Polylang version numbers */
-				esc_html__( 'Please upgrade first to %1$s before ugrading to %2$s.', 'polylang' ),
+				esc_html__( 'Before upgrading to %2$s, please upgrade to %1$s.', 'polylang' ),
 				'<strong>0.9.8</strong>',
 				POLYLANG_VERSION // phpcs:ignore WordPress.Security.EscapeOutput
 			)
@@ -89,7 +89,7 @@ class PLL_Upgrade {
 	 * @since 1.2
 	 */
 	public function _upgrade() {
-		foreach ( array( '0.9', '1.0', '1.1', '1.2', '1.2.1', '1.2.3', '1.3', '1.4', '1.4.1', '1.4.4', '1.5', '1.6', '1.7.4', '1.8', '2.0.8', '2.1', '2.3' ) as $version ) {
+		foreach ( array( '0.9', '1.0', '1.1', '1.2', '1.2.1', '1.2.3', '1.3', '1.4', '1.4.1', '1.4.4', '1.5', '1.6', '1.7.4', '1.8', '2.0.8', '2.1', '2.3', '2.7' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				call_user_func( array( $this, 'upgrade_' . str_replace( '.', '_', $version ) ) );
 			}
@@ -143,7 +143,7 @@ class PLL_Upgrade {
 		// Update strings register with icl_register_string
 		$strings = get_option( 'polylang_wpml_strings' );
 		if ( $strings ) {
-			foreach ( $strings as $key => $string ) {
+			foreach ( array_keys( $strings ) as $key ) {
 				$strings[ $key ]['icl'] = 1;
 			}
 			update_option( 'polylang_wpml_strings', $strings );
@@ -179,12 +179,13 @@ class PLL_Upgrade {
 		// Upgrade old model based on metas to new model based on taxonomies
 		global $wpdb;
 		$wpdb->termmeta = $wpdb->prefix . 'termmeta'; // Registers the termmeta table in wpdb
-		$languages = get_terms( 'language', array( 'hide_empty' => 0 ) ); // Don't use get_languages_list which can't work with the old model
+		$languages      = get_terms( 'language', array( 'hide_empty' => 0 ) ); // Don't use get_languages_list which can't work with the old model
+		$lang_tt_ids    = array();
 
 		foreach ( $languages as $lang ) {
 			// First update language with new storage for locale and text direction
 			$text_direction = get_metadata( 'term', $lang->term_id, '_rtl', true );
-			$desc = serialize( array( 'locale' => $lang->description, 'rtl' => $text_direction ) );
+			$desc = maybe_serialize( array( 'locale' => $lang->description, 'rtl' => $text_direction ) );
 			wp_update_term( (int) $lang->term_id, 'language', array( 'description' => $desc ) );
 
 			// Add language to new 'term_language' taxonomy
@@ -208,8 +209,12 @@ class PLL_Upgrade {
 
 		// Translations
 		foreach ( array( 'post', 'term' ) as $type ) {
-			$table = $type . 'meta';
-			$terms = $slugs = $tts = $trs = array();
+			$table       = $type . 'meta';
+			$terms       = array();
+			$slugs       = array();
+			$tts         = array();
+			$trs         = array();
+			$description = array();
 
 			// Get all translated objects
 			// PHPCS:ignore WordPress.DB.PreparedSQL
@@ -223,8 +228,8 @@ class PLL_Upgrade {
 				$term = uniqid( 'pll_' ); // The term name
 				$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
 				$slugs[] = $wpdb->prepare( '%s', $term );
-				$translations = maybe_unserialize( maybe_unserialize( $obj ) ); // 2 unserialize due to an old storage bug
-				$description[ $term ] = serialize( $translations );
+				$translations = maybe_unserialize( maybe_unserialize( $obj ) ); // 2 maybe_unserialize due to an old storage bug
+				$description[ $term ] = maybe_serialize( $translations );
 			}
 
 			$terms = array_unique( $terms );
@@ -257,7 +262,7 @@ class PLL_Upgrade {
 
 			// Prepare objects relationships
 			foreach ( $terms as $term ) {
-				$translations = unserialize( $term->description );
+				$translations = maybe_unserialize( $term->description );
 				foreach ( $translations as $object_id ) {
 					if ( ! empty( $object_id ) ) {
 						$trs[] = $wpdb->prepare( '( %d, %d )', $object_id, $term->term_taxonomy_id );
@@ -307,6 +312,8 @@ class PLL_Upgrade {
 		// Multilingal locations and switcher item were stored in a dedicated option
 		if ( version_compare( $this->options['version'], '1.1', '<' ) ) {
 			if ( $menu_lang = get_option( 'polylang_nav_menus' ) ) {
+				$locations = array();
+
 				foreach ( $menu_lang as $location => $arr ) {
 					if ( ! in_array( $location, array_keys( get_registered_nav_menus() ) ) ) {
 						continue;
@@ -355,7 +362,7 @@ class PLL_Upgrade {
 				// Clean the WP option as it was a bad idea to pollute it
 				if ( version_compare( $this->options['version'], '1.2', '<' ) ) {
 					foreach ( $menus as $loc => $menu ) {
-						if ( $pos = strpos( $loc, '#' ) ) {
+						if ( strpos( $loc, '#' ) ) {
 							unset( $menus[ $loc ] );
 						}
 					}
@@ -518,6 +525,8 @@ class PLL_Upgrade {
 			return;
 		}
 
+		$translations_to_load = array();
+
 		foreach ( $translations as $translation ) {
 			if ( in_array( $translation['language'], $languages ) ) {
 				$translation['type'] = 'core';
@@ -549,7 +558,7 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_1_8() {
 		// Adds the flag code in languages stored in DB
-		include PLL_SETTINGS_INC . '/languages.php';
+		$languages = include PLL_SETTINGS_INC . '/languages.php';
 
 		$terms = get_terms( 'language', array( 'hide_empty' => 0 ) );
 
@@ -557,7 +566,7 @@ class PLL_Upgrade {
 			$description = maybe_unserialize( $lang->description );
 			if ( isset( $languages[ $description['locale'] ] ) ) {
 				$description['flag_code'] = $languages[ $description['locale'] ]['flag'];
-				$description = serialize( $description );
+				$description = maybe_serialize( $description );
 				wp_update_term( (int) $lang->term_id, 'language', array( 'description' => $description ) );
 			}
 		}
@@ -589,7 +598,7 @@ class PLL_Upgrade {
 
 			if ( empty( $meta ) ) {
 				$post = get_post( $mo_id, OBJECT );
-				$strings = unserialize( $post->post_content );
+				$strings = maybe_unserialize( $post->post_content );
 				if ( is_array( $strings ) ) {
 					update_post_meta( $mo_id, '_pll_strings_translations', $strings );
 				}
@@ -608,4 +617,27 @@ class PLL_Upgrade {
 	protected function upgrade_2_3() {
 		delete_transient( 'pll_languages_list' );
 	}
+
+	/**
+	 * Upgrades if the previous version is < 2.7
+	 * Replace numeric keys by hashes in WPML registered strings
+	 *
+	 * @since 2.7
+	 */
+	protected function upgrade_2_7() {
+		$strings = get_option( 'polylang_wpml_strings' );
+		if ( is_array( $strings ) ) {
+			$new_strings = array();
+
+			foreach ( $strings as $string ) {
+				$context = $string['context'];
+				$name    = $string['name'];
+
+				$key = md5( "$context | $name" );
+				$new_strings[ $key ] = $string;
+			}
+			update_option( 'polylang_wpml_strings', $new_strings );
+		}
+	}
+
 }

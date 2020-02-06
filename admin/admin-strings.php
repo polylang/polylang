@@ -51,10 +51,10 @@ class PLL_Admin_Strings {
 	public static function &get_strings() {
 		self::$default_strings = array(
 			'options' => array(
-				'blogname'        => __( 'Site Title' ),
-				'blogdescription' => __( 'Tagline' ),
-				'date_format'     => __( 'Date Format' ),
-				'time_format'     => __( 'Time Format' ),
+				'blogname'        => __( 'Site Title', 'polylang' ),
+				'blogdescription' => __( 'Tagline', 'polylang' ),
+				'date_format'     => __( 'Date Format', 'polylang' ),
+				'time_format'     => __( 'Time Format', 'polylang' ),
 			),
 			'widget_title' => __( 'Widget title', 'polylang' ),
 			'widget_text'  => __( 'Widget text', 'polylang' ),
@@ -125,11 +125,11 @@ class PLL_Admin_Strings {
 		}
 
 		if ( $name == self::$default_strings['widget_title'] ) {
-			$translation = strip_tags( $translation );
+			$translation = sanitize_text_field( $translation );
 		}
 
 		if ( $name == self::$default_strings['widget_text'] && ! current_user_can( 'unfiltered_html' ) ) {
-			$translation = wp_unslash( wp_filter_post_kses( addslashes( $translation ) ) ); // wp_filter_post_kses() expects slashed
+			$translation = wp_kses_post( $translation );
 		}
 
 		return $translation;

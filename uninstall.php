@@ -55,7 +55,7 @@ class PLL_Uninstall {
 			if ( substr( $module, 0, 1 ) !== '.' ) {
 				$uninstall_script = $pll_modules_dir . '/' . $module . '/uninstall.php';
 				if ( file_exists( $uninstall_script ) ) {
-					require $uninstall_script;
+					require $uninstall_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 				}
 			}
 		}
@@ -126,6 +126,9 @@ class PLL_Uninstall {
 		}
 
 		// Delete all what is related to languages and translations
+		$term_ids = array();
+		$tt_ids   = array();
+
 		foreach ( get_terms( $pll_taxonomies, array( 'hide_empty' => false ) ) as $term ) {
 			$term_ids[] = (int) $term->term_id;
 			$tt_ids[] = (int) $term->term_taxonomy_id;

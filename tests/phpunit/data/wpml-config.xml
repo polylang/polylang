@@ -7,6 +7,12 @@
 				<custom-field action="translate">custom-description</custom-field>
 				<custom-field action="ignore">date-added</custom-field>
 		</custom-fields>
+		<custom-term-fields>
+			<custom-term-field action="copy">term_meta_A</custom-term-field>
+			<custom-term-field action="translate">term_meta_B</custom-term-field>
+			<custom-term-field action="ignore">term_meta_C</custom-term-field>
+			<custom-term-field action="copy-once">term_meta_D</custom-term-field>
+		</custom-term-fields>
 		<custom-types>
 				<custom-type translate="1">book</custom-type>
 				<custom-type translate="0">DVD</custom-type>
@@ -26,6 +32,15 @@
 						</key>
 						<key name="options_group_2">
 								<key name="*"/>
+						</key>
+						<key name="options_group_3">
+								<key name="*">
+										<key name="sub_sub_option_name_3x1" />
+										<key name="sub_sub_option_name_3x2" />
+								</key>
+						</key>
+						<key name="options_group_4">
+								<key name="sub_option_name_*" />
 						</key>
 				</key>
 				<key name="simple_string_option" />

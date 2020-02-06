@@ -22,7 +22,7 @@ class PLL_Filters_Links {
 		$this->options = &$polylang->options;
 		$this->curlang = &$polylang->curlang;
 
-		// Low priority on links filters to come after any other modifications
+		// Low priority on links filters to come after any other modifications.
 		if ( $this->options['force_lang'] ) {
 			add_filter( 'post_link', array( $this, 'post_type_link' ), 20, 2 );
 			add_filter( '_get_page_link', array( $this, '_get_page_link' ), 20, 2 );
@@ -35,11 +35,12 @@ class PLL_Filters_Links {
 			add_filter( 'attachment_link', array( $this, 'attachment_link' ), 20, 2 );
 		}
 
-		if ( 3 === $this->options['force_lang'] ) {
+		// Keeps the preview post link on default domain when using multiple domains and SSO is not available.
+		if ( 3 === $this->options['force_lang'] && ! class_exists( 'PLL_Xdata_Domain' ) ) {
 			add_filter( 'preview_post_link', array( $this, 'preview_post_link' ), 20 );
 		}
 
-		// Rewrites post types archives links to filter them by language
+		// Rewrites post types archives links to filter them by language.
 		add_filter( 'post_type_archive_link', array( $this, 'post_type_archive_link' ), 20, 2 );
 	}
 
@@ -136,7 +137,7 @@ class PLL_Filters_Links {
 	}
 
 	/**
-	 * FIXME: keeps the preview post link on default domain when using multiple domains
+	 * Keeps the preview post link on default domain when using multiple domains
 	 *
 	 * @since 1.6.1
 	 *

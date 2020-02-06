@@ -106,10 +106,6 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 
 	function test_widget_media_image() {
-		if ( version_compare( $GLOBALS['wp_version'], '4.8', '<' ) ) {
-			$this->markTestSkipped();
-		}
-
 		self::$polylang->options['media_support'] = 1;
 		self::$polylang->filters_media = new PLL_Admin_Filters_Media( self::$polylang );
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );

@@ -44,7 +44,7 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 		 * @param string $modified_url The link to the first page
 		 * @param string $original_url  The link to the original paged page
 		 */
-		return apply_filters( 'pll_remove_paged_from_link', preg_replace( '#\/page\/[0-9]+\/?#', $this->use_trailing_slashes ? '/' : '', $url ), $url );
+		return apply_filters( 'pll_remove_paged_from_link', preg_replace( '#/page/[0-9]+/?#', $this->use_trailing_slashes ? '/' : '', $url ), $url );
 	}
 
 	/**

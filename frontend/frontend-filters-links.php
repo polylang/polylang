@@ -40,6 +40,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			// Rewrites next and previous post links when not automatically done by WordPress
 			add_filter( 'get_pagenum_link', array( $this, 'archive_link' ), 20 );
 
+			add_filter( 'get_shortlink', array( $this, 'shortlink' ), 20, 2 );
+
 			// Rewrites ajax url
 			add_filter( 'admin_url', array( $this, 'admin_url' ), 10, 2 );
 		}
@@ -148,6 +150,20 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
+	 * Modifies the post short link when using one domain or subdomain per language.
+	 *
+	 * @since 2.6.9
+	 *
+	 * @param string $link    Post permalink.
+	 * @param int    $post_id Post id.
+	 * @return Post permalink with the correct domain.
+	 */
+	public function shortlink( $link, $post_id ) {
+		$post_type = get_post_type( $post_id );
+		return $this->model->is_translated_post_type( $post_type ) ? $this->links_model->switch_language_in_link( $link, $this->model->post->get_language( $post_id ) ) : $link;
+	}
+
+	/**
 	 * Outputs references to translated pages ( if exists ) in the html head section
 	 *
 	 * @since 0.1
@@ -159,6 +175,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			return;
 		}
 
+		$urls = array();
+
 		// Google recommends to include self link https://support.google.com/webmasters/answer/189077?hl=en
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( $url = $this->links->get_translation_url( $language ) ) {
@@ -168,6 +186,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		// Outputs the section only if there are translations ( $urls always contains self link )
 		if ( ! empty( $urls ) && count( $urls ) > 1 ) {
+			$languages = array();
+			$hreflangs = array();
 
 			// Prepare the list of languages to remove the country code
 			foreach ( array_keys( $urls ) as $locale ) {
@@ -269,7 +289,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			);
 		}
 
-		$traces = version_compare( PHP_VERSION, '5.2.5', '>=' ) ? debug_backtrace( false ) : debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		$traces = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		unset( $traces[0], $traces[1] ); // We don't need the last 2 calls: this function + call_user_func_array (or apply_filters on PHP7+)
 
 		foreach ( $traces as $trace ) {
@@ -323,7 +343,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		// Don't redirect mysite.com/?attachment_id= to mysite.com/en/?attachment_id=
-		if ( 1 == $this->options['force_lang'] && is_attachment() && isset( $_GET['attachment_id'] ) ) { // WPCS: CSRF ok.
+		if ( 1 == $this->options['force_lang'] && is_attachment() && isset( $_GET['attachment_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
 		}
 

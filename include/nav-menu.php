@@ -57,6 +57,8 @@ class PLL_Nav_Menu {
 		static $once;
 		global $_wp_registered_nav_menus;
 
+		$arr = array();
+
 		if ( isset( $_wp_registered_nav_menus ) && ! $once ) {
 			foreach ( $_wp_registered_nav_menus as $loc => $name ) {
 				foreach ( $this->model->get_languages_list() as $lang ) {

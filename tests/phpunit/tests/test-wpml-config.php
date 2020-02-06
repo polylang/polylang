@@ -15,13 +15,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
-	function setUp() {
-		parent::setUp();
-
-		$this->prepare_options(); // before reading the wpml-config.xml file
-		$this->translate_options( 'fr' );
-	}
-
 	static function wpTearDownAfterClass() {
 		parent::wpTearDownAfterClass();
 
@@ -47,6 +40,24 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 					),
 				),
 			),
+			'options_group_3' => array(
+				'sub_key_31' => array(
+					'sub_sub_option_name_3x1' => 'val311',
+					'sub_sub_option_name_3x2' => 'val312',
+					'sub_sub_option_name_3x3' => 'val313',
+				),
+				'sub_key_32' => array(
+					'sub_sub_option_name_3x1' => 'val321',
+					'sub_sub_option_name_3x2' => 'val322',
+					'sub_sub_option_name_3x3' => 'val323',
+				),
+			),
+			'options_group_4' => array(
+				'sub_option_name_41' => 'val41',
+				'sub_option_name_42' => 'val42',
+				'sub_option_diff_43' => 'val43',
+			),
+
 		);
 		update_option( 'my_plugins_options', $my_plugins_options );
 		update_option( 'simple_string_option', 'val' );
@@ -64,6 +75,15 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$mo->add_entry( $mo->make_entry( 'val21', "val21_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val221', "val221_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val2221', "val2221_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val311', "val311_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val312', "val312_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val313', "val313_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val321', "val321_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val322', "val322_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val323', "val323_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val41', "val41_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val42', "val42_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'val43', "val43_$slug" ) );
 		$mo->export_to_db( $language );
 	}
 
@@ -116,26 +136,73 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 	}
 
+	function test_custom_term_field() {
+		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		PLL_WPML_Config::instance()->init();
+
+		$en = $from = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $from, 'en' );
+		add_term_meta( $from, 'term_meta_A', 'A' ); // copy
+		add_term_meta( $from, 'term_meta_B', 'B' ); // translate
+		add_term_meta( $from, 'term_meta_C', 'C' ); // ignore
+		add_term_meta( $from, 'term_meta_D', 'D' ); // copy-once
+
+		$fr = $to = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $to, 'fr' );
+		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+
+		// Copy
+		$sync = new PLL_Admin_Sync( self::$polylang );
+		$sync->term_metas->copy( $from, $to, 'fr' ); // copy
+
+		$this->assertEquals( 'A', get_term_meta( $to, 'term_meta_A', true ) );
+		$this->assertEquals( 'B', get_term_meta( $to, 'term_meta_B', true ) );
+		$this->assertEmpty( get_term_meta( $to, 'term_meta_C', true ) );
+		$this->assertEquals( 'D', get_term_meta( $to, 'term_meta_D', true ) );
+
+		// Sync
+		update_term_meta( $to, 'term_meta_A', 'A2' );
+		update_term_meta( $to, 'term_meta_B', 'B2' );
+		update_term_meta( $to, 'term_meta_C', 'C2' );
+		update_term_meta( $to, 'term_meta_D', 'D2' );
+
+		$this->assertEquals( 'A2', get_term_meta( $from, 'term_meta_A', true ) );
+		$this->assertEquals( 'B', get_term_meta( $from, 'term_meta_B', true ) );
+		$this->assertEquals( 'C', get_term_meta( $from, 'term_meta_C', true ) );
+		$this->assertEquals( 'D', get_term_meta( $from, 'term_meta_D', true ) );
+
+		// Remove custom field and sync
+		delete_term_meta( $to, 'term_meta_A' );
+		delete_term_meta( $to, 'term_meta_B' );
+		delete_term_meta( $to, 'term_meta_C' );
+		delete_term_meta( $to, 'term_meta_D' );
+
+		$this->assertEmpty( get_term_meta( $from, 'term_meta_A', true ) );
+		$this->assertEquals( 'B', get_term_meta( $from, 'term_meta_B', true ) );
+		$this->assertEquals( 'C', get_term_meta( $from, 'term_meta_C', true ) );
+		$this->assertEquals( 'D', get_term_meta( $from, 'term_meta_D', true ) );
+	}
+
 	function test_cpt() {
 		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		register_post_type( 'book' ); // translated
-		register_post_type( 'DVD' ); // untranslated
+		register_post_type( 'dvd' ); // untranslated
 		self::$polylang->model->cache->clean( 'post_types' );
 
 		$this->assertTrue( self::$polylang->model->is_translated_post_type( 'book' ) );
-		$this->assertFalse( self::$polylang->model->is_translated_post_type( 'DVD' ) );
+		$this->assertFalse( self::$polylang->model->is_translated_post_type( 'dvd' ) );
 
 		// settings
 		$post_types = get_post_types( array( 'public' => true, '_builtin' => false ) );
 		$post_types = array_diff( $post_types, get_post_types( array( '_pll' => true ) ) );
 		$post_types = array_unique( apply_filters( 'pll_get_post_types', $post_types, true ) );
 		$this->assertNotContains( 'book', $post_types );
-		$this->assertNotContains( 'DVD', $post_types );
+		$this->assertNotContains( 'dvd', $post_types );
 
 		_unregister_post_type( 'book' );
-		_unregister_post_type( 'DVD' );
+		_unregister_post_type( 'dvd' );
 	}
 
 	function test_tax() {
@@ -163,6 +230,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function test_translate_strings() {
+		$this->prepare_options(); // Before reading the wpml-config.xml file.
+		$this->translate_options( 'fr' );
+
 		$GLOBALS['polylang'] = self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
 
@@ -175,10 +245,21 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'val21_fr', $options['options_group_2']['sub_key_21'] );
 		$this->assertEquals( 'val221_fr', $options['options_group_2']['sub_key_22']['sub_sub_221'] );
 		$this->assertEquals( 'val2221_fr', $options['options_group_2']['sub_key_22']['sub_sub_222']['sub_sub_sub_2221'] );
+		$this->assertEquals( 'val311_fr', $options['options_group_3']['sub_key_31']['sub_sub_option_name_3x1'] );
+		$this->assertEquals( 'val312_fr', $options['options_group_3']['sub_key_31']['sub_sub_option_name_3x2'] );
+		$this->assertEquals( 'val313', $options['options_group_3']['sub_key_31']['sub_sub_option_name_3x3'] ); // This one must not be translated.
+		$this->assertEquals( 'val321_fr', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x1'] );
+		$this->assertEquals( 'val322_fr', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x2'] );
+		$this->assertEquals( 'val323', $options['options_group_3']['sub_key_32']['sub_sub_option_name_3x3'] ); // This one must not be translated.
+		$this->assertEquals( 'val41_fr', $options['options_group_4']['sub_option_name_41'] );
+		$this->assertEquals( 'val42_fr', $options['options_group_4']['sub_option_name_42'] );
+		$this->assertEquals( 'val43', $options['options_group_4']['sub_option_diff_43'] ); // This one must not be translated.
 		$this->assertEquals( 'val_fr', get_option( 'simple_string_option' ) );
 	}
 
 	function test_register_string() {
+		$this->prepare_options(); // Before reading the wpml-config.xml file.
+
 		$GLOBALS['polylang'] = self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
 
@@ -188,6 +269,15 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertContains( 'val21', $strings );
 		$this->assertContains( 'val221', $strings );
 		$this->assertContains( 'val2221', $strings );
+		$this->assertContains( 'val311', $strings );
+		$this->assertContains( 'val312', $strings );
+		$this->assertNotContains( 'val313', $strings ); // This one must not be registered.
+		$this->assertContains( 'val321', $strings );
+		$this->assertContains( 'val322', $strings );
+		$this->assertNotContains( 'val323', $strings ); // This one must not be registered.
+		$this->assertContains( 'val41', $strings );
+		$this->assertContains( 'val42', $strings );
+		$this->assertNotContains( 'val43', $strings ); // This one must not be registered.
 		$this->assertContains( 'val', $strings );
 	}
 }

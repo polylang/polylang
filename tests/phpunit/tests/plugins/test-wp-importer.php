@@ -1,12 +1,6 @@
 <?php
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
-
-if ( ! $_tests_dir ) {
-	$_tests_dir = '/tmp/wordpress-tests-lib';
-}
-
-if ( file_exists( $_tests_dir . '/../wordpress-importer/wordpress-importer.php' ) ) {
+if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php' ) ) {
 
 	class WP_Importer_Test extends PLL_UnitTestCase {
 
@@ -26,8 +20,7 @@ if ( file_exists( $_tests_dir . '/../wordpress-importer/wordpress-importer.php' 
 				define( 'WP_LOAD_IMPORTERS', true );
 			}
 
-			global $_tests_dir;
-			require_once $_tests_dir . '/../wordpress-importer/wordpress-importer.php';
+			require_once DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php';
 
 			global $wpdb;
 			// crude but effective: make sure there's no residual data in the main tables
@@ -47,8 +40,8 @@ if ( file_exists( $_tests_dir . '/../wordpress-importer/wordpress-importer.php' 
 		protected function _import_wp( $filename, $users = array(), $fetch_files = true ) {
 			$importer = new PLL_WP_Import(); // Change to our importer
 			$file = realpath( $filename );
-			assert( '!empty( $file )' );
-			assert( 'is_file( $file )' );
+			$this->assertTrue( ! empty( $file ), 'Path to import file is empty.' );
+			$this->assertTrue( is_file( $file ), 'Import file is not a file.' );
 
 			$authors = $mapping = $new = array();
 			$i = 0;

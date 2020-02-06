@@ -19,7 +19,7 @@ class PLL_Jetpack {
 		add_filter( 'jetpack_relatedposts_filter_filters', array( $this, 'jetpack_relatedposts_filter_filters' ), 10, 2 );
 
 		// Jetpack infinite scroll
-		if ( isset( $_GET['infinity'], $_POST['action'] ) && 'infinite_scroll' == $_POST['action'] ) { // WPCS: CSRF ok.
+		if ( isset( $_GET['infinity'], $_POST['action'] ) && 'infinite_scroll' == $_POST['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			add_filter( 'pll_is_ajax_on_front', '__return_true' );
 		}
 	}

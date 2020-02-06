@@ -1,3 +1,6 @@
 coverage
 /nbproject/*
 .idea/*
+/node_modules/
+package-lock.json
+.webpack-config.json

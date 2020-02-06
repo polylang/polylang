@@ -34,7 +34,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// First the language taxonomy
-		$description = serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
+		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
 		$r = wp_insert_term( $args['name'], 'language', array( 'slug' => $args['slug'], 'description' => $description ) );
 		if ( is_wp_error( $r ) ) {
 			// Avoid an ugly fatal error if something went wrong ( reported once in the forum )
@@ -125,7 +125,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// Delete menus locations
 		if ( ! empty( $this->options['nav_menus'] ) ) {
 			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
-				foreach ( $locations as $location => $languages ) {
+				foreach ( array_keys( $locations ) as $location ) {
 					unset( $this->options['nav_menus'][ $theme ][ $location ][ $lang->slug ] );
 				}
 			}
@@ -211,7 +211,7 @@ class PLL_Admin_Model extends PLL_Model {
 			// Update menus locations
 			if ( ! empty( $this->options['nav_menus'] ) ) {
 				foreach ( $this->options['nav_menus'] as $theme => $locations ) {
-					foreach ( $locations as $location => $languages ) {
+					foreach ( array_keys( $locations ) as $location ) {
 						if ( ! empty( $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ] ) ) {
 							$this->options['nav_menus'][ $theme ][ $location ][ $slug ] = $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ];
 							unset( $this->options['nav_menus'][ $theme ][ $location ][ $old_slug ] );
@@ -235,7 +235,7 @@ class PLL_Admin_Model extends PLL_Model {
 		update_option( 'polylang', $this->options );
 
 		// And finally update the language itself
-		$description = serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
+		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
 		wp_update_term( (int) $lang->term_id, 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
 		wp_update_term( (int) $lang->tl_term_id, 'term_language', array( 'slug' => 'pll_' . $slug, 'name' => $args['name'] ) );
 
@@ -292,7 +292,15 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Validate flag
 		if ( ! empty( $args['flag'] ) && ! file_exists( POLYLANG_DIR . '/flags/' . $args['flag'] . '.png' ) ) {
-			$errors->add( 'pll_invalid_flag', __( 'The flag does not exist', 'polylang' ) );
+			$flag = PLL_Language::get_flag_informations( $args['flag'] );
+
+			if ( ! empty( $flag['url'] ) ) {
+				$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $flag['url'] ) ) : wp_remote_get( esc_url_raw( $flag['url'] ) );
+			}
+
+			if ( empty( $response ) || is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+				$errors->add( 'pll_invalid_flag', __( 'The flag does not exist', 'polylang' ) );
+			}
 		}
 
 		return $errors;
@@ -310,9 +318,10 @@ class PLL_Admin_Model extends PLL_Model {
 	public function set_language_in_mass( $type, $ids, $lang ) {
 		global $wpdb;
 
-		$ids = array_map( 'intval', $ids );
-		$lang = $this->get_language( $lang );
-		$tt_id = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
+		$ids    = array_map( 'intval', $ids );
+		$lang   = $this->get_language( $lang );
+		$tt_id  = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
+		$values = array();
 
 		foreach ( $ids as $id ) {
 			$values[] = $wpdb->prepare( '( %d, %d )', $id, $tt_id );
@@ -326,6 +335,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		if ( 'term' === $type ) {
 			clean_term_cache( $ids, 'term_language' );
+			$translations = array();
 
 			foreach ( $ids as $id ) {
 				$translations[] = array( $lang->slug => $id );
@@ -350,13 +360,17 @@ class PLL_Admin_Model extends PLL_Model {
 	public function set_translation_in_mass( $type, $translations ) {
 		global $wpdb;
 
-		$taxonomy = $type . '_translations';
+		$taxonomy    = $type . '_translations';
+		$terms       = array();
+		$slugs       = array();
+		$description = array();
+		$count       = array();
 
 		foreach ( $translations as $t ) {
 			$term = uniqid( 'pll_' ); // the term name
 			$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
 			$slugs[] = $wpdb->prepare( '%s', $term );
-			$description[ $term ] = serialize( $t );
+			$description[ $term ] = maybe_serialize( $t );
 			$count[ $term ] = count( $t );
 		}
 
@@ -368,7 +382,9 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Get all terms with their term_id
 		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$terms = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
+		$terms    = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
+		$term_ids = array();
+		$tts      = array();
 
 		// Prepare terms taxonomy relationship
 		foreach ( $terms as $term ) {
@@ -384,10 +400,11 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Get all terms with term_taxonomy_id
 		$terms = get_terms( $taxonomy, array( 'hide_empty' => false ) );
+		$trs   = array();
 
 		// Prepare objects relationships
 		foreach ( $terms as $term ) {
-			$t = unserialize( $term->description );
+			$t = maybe_unserialize( $term->description );
 			if ( in_array( $t, $translations ) ) {
 				foreach ( $t as $object_id ) {
 					if ( ! empty( $object_id ) ) {
@@ -484,11 +501,15 @@ class PLL_Admin_Model extends PLL_Model {
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
 
-		$terms = get_terms( array( 'post_translations', 'term_translations' ) );
+		$terms    = get_terms( array( 'post_translations', 'term_translations' ) );
+		$term_ids = array();
+		$dr       = array();
+		$dt       = array();
+		$ut       = array();
 
 		foreach ( $terms as $term ) {
 			$term_ids[ $term->taxonomy ][] = $term->term_id;
-			$tr = unserialize( $term->description );
+			$tr = maybe_unserialize( $term->description );
 			if ( ! empty( $tr[ $old_slug ] ) ) {
 				if ( $new_slug ) {
 					$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
@@ -502,7 +523,7 @@ class PLL_Admin_Model extends PLL_Model {
 					$dt['t'][] = (int) $term->term_id;
 					$dt['tt'][] = (int) $term->term_taxonomy_id;
 				} else {
-					$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, serialize( $tr ) );
+					$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $tr ) );
 					$ut['in'][] = (int) $term->term_id;
 				}
 			}
@@ -555,6 +576,8 @@ class PLL_Admin_Model extends PLL_Model {
 		// The nav menus stored in theme locations should be in the default language
 		$theme = get_stylesheet();
 		if ( ! empty( $this->options['nav_menus'][ $theme ] ) ) {
+			$menus = array();
+
 			foreach ( $this->options['nav_menus'][ $theme ] as $key => $loc ) {
 				$menus[ $key ] = empty( $loc[ $slug ] ) ? 0 : $loc[ $slug ];
 			}

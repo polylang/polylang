@@ -80,8 +80,8 @@ class PLL_Frontend_Filters_Search {
 	public function admin_bar_search_menu( $wp_admin_bar ) {
 		$form  = '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="adminbarsearch">';
 		$form .= '<input class="adminbar-input" name="s" id="adminbar-search" type="text" value="" maxlength="150" />';
-		$form .= '<label for="adminbar-search" class="screen-reader-text">' . esc_html__( 'Search' ) . '</label>';
-		$form .= '<input type="submit" class="adminbar-button" value="' . esc_attr__( 'Search' ) . '"/>';
+		$form .= '<label for="adminbar-search" class="screen-reader-text">' . esc_html__( 'Search', 'polylang' ) . '</label>';
+		$form .= '<input type="submit" class="adminbar-button" value="' . esc_attr__( 'Search', 'polylang' ) . '"/>';
 		$form .= '</form>';
 
 		$wp_admin_bar->add_menu(
@@ -129,6 +129,6 @@ class PLL_Frontend_Filters_Search {
 			}
 		}
 		//]]>";
-		echo '<script type="text/javascript">' . $js . '</script>'; // WCPS: XSS ok.
+		echo '<script type="text/javascript">' . $js . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }

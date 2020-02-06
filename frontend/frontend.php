@@ -10,7 +10,7 @@
  * links_model    => inherited, reference to PLL_Links_Model object
  * links          => reference to PLL_Links object
  * static_pages   => reference to PLL_Frontend_Static_Pages object
- * choose_lang    => reference to PLL_Choose_lang object
+ * choose_lang    => reference to PLL_Choose_Lang object
  * curlang        => current language
  * filters        => reference to PLL_Frontend_Filters object
  * filters_links  => reference to PLL_Frontend_Filters_Links object
@@ -82,6 +82,23 @@ class PLL_Frontend extends PLL_Base {
 				$this->xdata = new $class[ $this->options['force_lang'] ]( $this );
 			}
 		}
+
+		if ( get_option( 'permalink_structure' ) ) {
+			// Translate slugs
+			if ( class_exists( 'PLL_Frontend_Translate_Slugs' ) ) {
+				$slugs_model = new PLL_Translate_Slugs_Model( $this );
+				$this->translate_slugs = new PLL_Frontend_Translate_Slugs( $slugs_model, $this->curlang );
+			}
+
+			// Share term slugs
+			if ( $this->options['force_lang'] && class_exists( 'PLL_Share_Term_Slug' ) ) {
+				$this->share_term_slug = new PLL_Share_Term_Slug( $this );
+			}
+		}
+
+		if ( class_exists( 'PLL_Sync_Post' ) ) {
+			$this->sync_post = new PLL_Sync_Post( $this );
+		}
 	}
 
 	/**
@@ -102,21 +119,6 @@ class PLL_Frontend extends PLL_Base {
 		// Auto translate for Ajax
 		if ( ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) && wp_doing_ajax() ) {
 			$this->auto_translate();
-		}
-
-		if ( get_option( 'permalink_structure' ) ) {
-			// Translate slugs
-			if ( class_exists( 'PLL_Frontend_Translate_Slugs' ) ) {
-				$slugs_model = new PLL_Translate_Slugs_Model( $this );
-				$this->translate_slugs = new PLL_Frontend_Translate_Slugs( $slugs_model, $this->curlang );
-			}
-
-			// Share term slugs
-			if ( $this->options['force_lang'] && class_exists( 'PLL_Share_Term_Slug' ) ) {
-				$this->share_term_slug = version_compare( $GLOBALS['wp_version'], '4.8', '<' ) ?
-					new PLL_Frontend_Share_Term_Slug( $this ) :
-					new PLL_Share_Term_Slug( $this );
-			}
 		}
 	}
 
@@ -160,7 +162,7 @@ class PLL_Frontend extends PLL_Base {
 
 			// Remove pages query when the language is set unless we do a search
 			// Take care not to break the single page, attachment and taxonomies queries!
-			if ( empty( $qv['post_type'] ) && ! $query->is_search && ! $query->is_page && ! $query->is_attachment && empty( $taxonomies ) ) {
+			if ( empty( $qv['post_type'] ) && ! $query->is_search && ! $query->is_singular && empty( $taxonomies ) && ! $query->is_category && ! $query->is_tag ) {
 				$query->set( 'post_type', 'post' );
 			}
 

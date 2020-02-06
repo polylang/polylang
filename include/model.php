@@ -182,6 +182,7 @@ class PLL_Model {
 				$this->cache->set( 'language:' . $lang->tl_term_id, $lang );
 				$this->cache->set( 'language:' . $lang->slug, $lang );
 				$this->cache->set( 'language:' . $lang->locale, $lang );
+				$this->cache->set( 'language:' . $lang->w3c, $lang );
 			}
 			$return = $this->cache->get( 'language:' . $value );
 		}
@@ -385,7 +386,7 @@ class PLL_Model {
 
 		// create a new category
 		// FIXME this is translated in admin language when we would like it in $lang
-		$cat_name = __( 'Uncategorized' );
+		$cat_name = __( 'Uncategorized', 'polylang' );
 		$cat_slug = sanitize_title( $cat_name . '-' . $lang->slug );
 		$cat = wp_insert_term( $cat_name, 'category', array( 'slug' => $cat_slug ) );
 
@@ -443,18 +444,18 @@ class PLL_Model {
 	}
 
 	/**
-	 * Gets the number of posts per language in a date, author or post type archive
+	 * Gets the number of posts per language in a date, author or post type archive.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $lang
-	 * @param array  $q WP_Query arguments ( accepted: post_type, m, year, monthnum, day, author, author_name, post_format )
+	 * @param object $lang PLL_Language instance.
+	 * @param array  $q    WP_Query arguments ( accepted: post_type, m, year, monthnum, day, author, author_name, post_format, post_status ).
 	 * @return int
 	 */
 	public function count_posts( $lang, $q = array() ) {
 		global $wpdb;
 
-		$q = wp_parse_args( $q, array( 'post_type' => 'post' ) );
+		$q = wp_parse_args( $q, array( 'post_type' => 'post', 'post_status' => 'publish' ) );
 
 		if ( ! is_array( $q['post_type'] ) ) {
 			$q['post_type'] = array( $q['post_type'] );
@@ -467,16 +468,16 @@ class PLL_Model {
 		}
 
 		if ( empty( $q['post_type'] ) ) {
-			$q['post_type'] = array( 'post' ); // we *need* a post type
+			$q['post_type'] = array( 'post' ); // We *need* a post type.
 		}
 
-		$cache_key = md5( serialize( $q ) );
-		$counts = wp_cache_get( $cache_key, 'pll_count_posts' );
+		$cache_key = 'pll_count_posts_' . md5( maybe_serialize( $q ) );
+		$counts = wp_cache_get( $cache_key, 'counts' );
 
 		if ( false === $counts ) {
 			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
 			$join = $this->post->join_clause();
-			$where = " WHERE post_status = 'publish'";
+			$where = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
 			$where .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", join( "', '", esc_sql( $q['post_type'] ) ) );
 			$where .= $this->post->where_clause( $this->get_languages_list() );
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
@@ -515,7 +516,7 @@ class PLL_Model {
 				$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_author = %d", $q['author'] );
 			}
 
-			// filtered taxonomies ( post_format )
+			// Filtered taxonomies ( post_format ).
 			foreach ( $this->get_filtered_taxonomies_query_vars() as $tax_qv ) {
 
 				if ( ! empty( $q[ $tax_qv ] ) ) {
@@ -532,7 +533,7 @@ class PLL_Model {
 				$counts[ $row['term_taxonomy_id'] ] = $row['num_posts'];
 			}
 
-			wp_cache_set( $cache_key, $counts, 'pll_count_posts' );
+			wp_cache_set( $cache_key, $counts, 'counts' );
 		}
 
 		return empty( $counts[ $lang->term_taxonomy_id ] ) ? 0 : $counts[ $lang->term_taxonomy_id ];
@@ -610,7 +611,7 @@ class PLL_Model {
 
 		if ( ! empty( $o ) && is_object( $this->$o ) && method_exists( $this->$o, $f ) ) {
 			if ( WP_DEBUG ) {
-				$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+				$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 				$i = 1 + empty( $debug[1]['line'] ); // the file and line are in $debug[2] if the function was called using call_user_func
 
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
@@ -627,7 +628,7 @@ class PLL_Model {
 			return call_user_func_array( array( $this->$o, $f ), $args );
 		}
 
-		$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			sprintf(
 				'Call to undefined function PLL()->model->%1$s() in %2$s on line %3$s' . "\nError handler",

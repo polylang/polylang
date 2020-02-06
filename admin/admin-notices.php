@@ -66,21 +66,34 @@ class PLL_Admin_Notices {
 	 *
 	 * @since 2.3.9
 	 *
+	 * @param  string $notice The notice name.
 	 * @return bool
 	 */
-	protected function can_display_notice() {
+	protected function can_display_notice( $notice ) {
 		$screen = get_current_screen();
 		$screen_id = sanitize_title( __( 'Languages', 'polylang' ) );
 
-		return in_array(
-			$screen->id,
-			array(
-				'dashboard',
-				'plugins',
-				'toplevel_page_mlang',
-				$screen_id . '_page_mlang_strings',
-				$screen_id . '_page_mlang_settings',
-			)
+		/**
+		 * Filter admin notices which can be displayed
+		 *
+		 * @since 2.7.0
+		 *
+		 * @param bool   $display Whether the notice should be displayed or not.
+		 * @param string $notice  The notice name.
+		 */
+		return apply_filters(
+			'pll_can_display_notice',
+			in_array(
+				$screen->id,
+				array(
+					'dashboard',
+					'plugins',
+					'toplevel_page_mlang',
+					$screen_id . '_page_mlang_strings',
+					$screen_id . '_page_mlang_settings',
+				)
+			),
+			$notice
 		);
 	}
 
@@ -123,14 +136,19 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 */
 	public function display_notices() {
-		if ( current_user_can( 'manage_options' ) && $this->can_display_notice() ) {
+		if ( current_user_can( 'manage_options' ) ) {
 			// Core notices
-			$this->pllwc_notice();
-			$this->review_notice();
+			if ( defined( 'WOOCOMMERCE_VERSION' ) && ! defined( 'PLLWC_VERSION' ) && $this->can_display_notice( 'pllwc' ) && ! $this->is_dismissed( 'pllwc' ) ) {
+				$this->pllwc_notice();
+			}
+
+			if ( ! defined( 'POLYLANG_PRO' ) && $this->can_display_notice( 'review' ) && ! $this->is_dismissed( 'review' ) && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
+				$this->review_notice();
+			}
 
 			// Custom notices
 			foreach ( $this->get_notices() as $notice => $html ) {
-				if ( ! $this->is_dismissed( $notice ) ) {
+				if ( $this->can_display_notice( $notice ) && ! $this->is_dismissed( $notice ) ) {
 					?>
 					<div class="pll-notice notice notice-info">
 						<?php
@@ -155,7 +173,8 @@ class PLL_Admin_Notices {
 		printf(
 			'<a class="notice-dismiss" href="%s"><span class="screen-reader-text">%s</span></a>',
 			esc_url( wp_nonce_url( add_query_arg( 'pll-hide-notice', $name ), $name, '_pll_notice_nonce' ) ),
-			esc_html__( 'Dismiss this notice.' )
+			/* translators: accessibility text */
+			esc_html__( 'Dismiss this notice.', 'polylang' )
 		);
 	}
 
@@ -165,23 +184,21 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 */
 	private function pllwc_notice() {
-		if ( defined( 'WOOCOMMERCE_VERSION' ) && ! defined( 'PLLWC_VERSION' ) && ! $this->is_dismissed( 'pllwc' ) ) {
-			?>
-			<div class="pll-notice notice notice-warning">
-			<?php $this->dismiss_button( 'pllwc' ); ?>
-				<p>
-					<?php
-					printf(
-						/* translators: %1$s is link start tag, %2$s is link end tag. */
-						esc_html__( 'We have noticed that you are using Polylang with WooCommerce. We recommend you to use %1$sPolylang for WooCommerce%2$s to ensure the compatibility.', 'polylang' ),
-						'<a href="https://polylang.pro/downloads/polylang-for-woocommerce/">',
-						'</a>'
-					);
-					?>
-				</p>
-			</div>
-			<?php
-		}
+		?>
+		<div class="pll-notice notice notice-warning">
+		<?php $this->dismiss_button( 'pllwc' ); ?>
+			<p>
+				<?php
+				printf(
+					/* translators: %1$s is link start tag, %2$s is link end tag. */
+					esc_html__( 'We have noticed that you are using Polylang with WooCommerce. To ensure compatibility, we recommend you use %1$sPolylang for WooCommerce%2$s.', 'polylang' ),
+					'<a href="https://polylang.pro/downloads/polylang-for-woocommerce/">',
+					'</a>'
+				);
+				?>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
@@ -190,22 +207,20 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 */
 	private function review_notice() {
-		if ( ! defined( 'POLYLANG_PRO' ) && ! $this->is_dismissed( 'review' ) && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
-			?>
-			<div class="pll-notice notice notice-info">
-			<?php $this->dismiss_button( 'review' ); ?>
-				<p>
-					<?php
-					printf(
-						/* translators: %1$s is link start tag, %2$s is link end tag. */
-						esc_html__( 'We have noticed that you are using Polylang for some time. We hope that you love it! We would be thrilled if you could %1$sgive us a 5 stars rating%2$s.', 'polylang' ),
-						'<a href="https://wordpress.org/support/plugin/polylang/reviews/?rate=5#new-post">',
-						'</a>'
-					);
-					?>
-				</p>
-			</div>
-			<?php
-		}
+		?>
+		<div class="pll-notice notice notice-info">
+		<?php $this->dismiss_button( 'review' ); ?>
+			<p>
+				<?php
+				printf(
+					/* translators: %1$s is link start tag, %2$s is link end tag. */
+					esc_html__( 'We have noticed that you have been using Polylang for some time. We hope you love it, and we would really appreciate it if you would %1$sgive us a 5 stars rating%2$s.', 'polylang' ),
+					'<a href="https://wordpress.org/support/plugin/polylang/reviews/?rate=5#new-post">',
+					'</a>'
+				);
+				?>
+			</p>
+		</div>
+		<?php
 	}
 }

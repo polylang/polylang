@@ -62,8 +62,8 @@ class PLL_Settings_Module {
 		);
 
 		$this->buttons = array(
-			'cancel' => sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', esc_html__( 'Cancel' ) ),
-			'save'   => sprintf( '<button type="button" class="button button-primary save">%s</button>', esc_html__( 'Save Changes' ) ),
+			'cancel' => sprintf( '<button type="button" class="button button-secondary cancel">%s</button>', esc_html__( 'Cancel', 'polylang' ) ),
+			'save'   => sprintf( '<button type="button" class="button button-primary save">%s</button>', esc_html__( 'Save Changes', 'polylang' ) ),
 		);
 
 		// Ajax action to save options
@@ -173,7 +173,7 @@ class PLL_Settings_Module {
 
 			if ( ! get_settings_errors() ) {
 				// Send update message
-				add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'updated' );
+				add_settings_error( 'general', 'settings_updated', __( 'Settings saved.', 'polylang' ), 'updated' );
 				settings_errors();
 				$x = new WP_Ajax_Response( array( 'what' => 'success', 'data' => ob_get_clean() ) );
 				$x->send();
@@ -194,6 +194,8 @@ class PLL_Settings_Module {
 	 * @return array
 	 */
 	protected function get_actions() {
+		$actions = array();
+
 		if ( $this->is_active() && $this->get_form() ) {
 			$actions[] = 'configure';
 		}
@@ -230,7 +232,7 @@ class PLL_Settings_Module {
 	protected function default_upgrade_message() {
 		return sprintf(
 			'%s <a href="%s">%s</a>',
-			__( 'You need Polylang Pro to enable this feature.', 'polylang' ),
+			__( 'To enable this feature, you need Polylang Pro.', 'polylang' ),
 			'https://polylang.pro',
 			__( 'Upgrade now.', 'polylang' )
 		);

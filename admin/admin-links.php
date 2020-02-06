@@ -57,11 +57,13 @@ class PLL_Admin_Links extends PLL_Links {
 	 *
 	 * @since 1.5
 	 *
-	 * @param int    $post_id  the source post id
-	 * @param object $language the language of the new translation
+	 * @param int    $post_id  The source post id.
+	 * @param object $language The language of the new translation.
+	 * @param string $context  Optional. Defaults to 'display' which encodes '&' to '&amp;'.
+	 *                         Otherwise, preserves '&'.
 	 * @return string
 	 */
-	public function get_new_post_translation_link( $post_id, $language ) {
+	public function get_new_post_translation_link( $post_id, $language, $context = 'display' ) {
 		$post_type = get_post_type( $post_id );
 		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
 		if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
@@ -76,15 +78,21 @@ class PLL_Admin_Links extends PLL_Links {
 			}
 		}
 
-		if ( 'attachment' == $post_type ) {
+		if ( 'attachment' === $post_type ) {
 			$args = array(
 				'action'     => 'translate_media',
 				'from_media' => $post_id,
 				'new_lang'   => $language->slug,
 			);
 
+			$link = add_query_arg( $args, admin_url( 'admin.php' ) );
+
 			// Add nonce for media as we will directly publish a new attachment from a click on this link
-			$link = wp_nonce_url( add_query_arg( $args, admin_url( 'admin.php' ) ), 'translate_media' );
+			if ( 'display' === $context ) {
+				$link = wp_nonce_url( $link, 'translate_media' );
+			} else {
+				$link = add_query_arg( '_wpnonce', wp_create_nonce( 'translate_media' ), $link );
+			}
 		} else {
 			$args = array(
 				'post_type' => $post_type,
@@ -92,7 +100,13 @@ class PLL_Admin_Links extends PLL_Links {
 				'new_lang'  => $language->slug,
 			);
 
-			$link = wp_nonce_url( add_query_arg( $args, admin_url( 'post-new.php' ) ), 'new-post-translation' );
+			$link = add_query_arg( $args, admin_url( 'post-new.php' ) );
+
+			if ( 'display' === $context ) {
+				$link = wp_nonce_url( $link, 'new-post-translation' );
+			} else {
+				$link = add_query_arg( '_wpnonce', wp_create_nonce( 'new-post-translation' ), $link );
+			}
 		}
 
 		/**

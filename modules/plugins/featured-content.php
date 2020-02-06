@@ -9,9 +9,9 @@ class PLL_Featured_Content {
 	/**
 	 * Constructor
 	 *
-	 * @since 2.4
+	 * @since 2.6
 	 */
-	public function __construct() {
+	public function init() {
 		add_filter( 'transient_featured_content_ids', array( $this, 'featured_content_ids' ) );
 		add_filter( 'pll_filter_query_excluded_query_vars', array( $this, 'fix_featured_posts' ) );
 		add_filter( 'option_featured-content', array( $this, 'option_featured_content' ) );
@@ -55,13 +55,13 @@ class PLL_Featured_Content {
 	 * @return array modified featured posts ids ( include all languages )
 	 */
 	public function featured_content_ids( $featured_ids ) {
-		if ( ! $this->is_active() || ! did_action( 'pll_init' ) || false !== $featured_ids ) {
+		if ( ! $this->is_active() || false !== $featured_ids ) {
 			return $featured_ids;
 		}
 
 		$settings = Featured_Content::get_setting();
 
-		if ( ! $term = wpcom_vip_get_term_by( 'name', $settings['tag-name'], 'post_tag' ) ) {
+		if ( ! $term = get_term_by( 'name', $settings['tag-name'], 'post_tag' ) ) {
 			return $featured_ids;
 		}
 
@@ -72,21 +72,25 @@ class PLL_Featured_Content {
 		// Query for featured posts in all languages
 		// One query per language to get the correct number of posts per language
 		foreach ( $tags as $tag ) {
-			$_ids = get_posts(
-				array(
-					'lang'        => 0, // avoid language filters
-					'fields'      => 'ids',
-					'numberposts' => Featured_Content::$max_posts,
-					'tax_query'   => array(
-						array(
-							'taxonomy' => 'post_tag',
-							'terms'    => (int) $tag,
-						),
+			$args = array(
+				'lang'        => 0, // Avoid language filters.
+				'fields'      => 'ids',
+				'numberposts' => Featured_Content::$max_posts,
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'post_tag',
+						'terms'    => (int) $tag,
 					),
-				)
+				),
 			);
 
-			$ids = array_merge( $ids, $_ids );
+			// Available in Jetpack, but not in Twenty Fourteen.
+			if ( isset( Featured_Content::$post_types ) ) {
+				$args['post_type'] = Featured_Content::$post_types;
+			}
+
+			$_ids = get_posts( $args );
+			$ids  = array_merge( $ids, $_ids );
 		}
 
 		$ids = array_map( 'absint', $ids );

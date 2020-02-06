@@ -59,10 +59,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( ! empty( $lang ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
 			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug . '/';
-			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '/^https?:\/\//', '://', $this->home . '/' . $this->root );
+			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
 			if ( false === strpos( $url, $new = $root . $slug ) ) {
-				$pattern = str_replace( '/', '\/', $root );
+				$pattern = preg_quote( $root, '#' );
 				$pattern = '#' . $pattern . '#';
 				return preg_replace( $pattern, $new, $url, 1 ); // Only once
 			}
@@ -80,6 +80,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return string modified url
 	 */
 	public function remove_language_from_link( $url ) {
+		$languages = array();
+
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( ! $this->options['hide_default'] || $this->options['default_lang'] != $language->slug ) {
 				$languages[] = $language->slug;
@@ -87,10 +89,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		if ( ! empty( $languages ) ) {
-			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '/^https?:\/\//', '://', $this->home . '/' . $this->root );
+			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
-			$pattern = str_replace( '/', '\/', $root );
-			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language\/' ) . '(' . implode( '|', $languages ) . ')(\/|$)#';
+			$pattern = preg_quote( $root, '#' );
+			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $languages ) . ')(/|$)#';
 			$url = preg_replace( $pattern, $root, $url );
 		}
 		return $url;
@@ -115,8 +117,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
 
 		$pattern = wp_parse_url( $root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
-		$pattern = str_replace( '/', '\/', $pattern );
-		$pattern = '#' . $pattern . '(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')(\/|$)#';
+		$pattern = preg_quote( $pattern, '#' );
+		$pattern = '#^' . $pattern . '(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')(/|$)#';
 		return preg_match( $pattern, trailingslashit( $path ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
 	}
 

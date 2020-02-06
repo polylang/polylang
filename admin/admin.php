@@ -25,8 +25,12 @@
  * block_editor    => reference to PLL_Admin_Block_Editor object
  * classic_editor  => reference to PLL_Admin_Classic_Editor object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
+ * bulk_translate  => reference, a PLL_Bulk_Translate subclass instance
+ * wizard          => reference, a PLL_Wizard object
  *
  * @since 1.2
+ * @since 2.7 Added a reference to a PLL_Bulk_Translate instance.
+ * @since 2.7 Added a reference to a PLL_Wizard object.
  */
 class PLL_Admin extends PLL_Admin_Base {
 	public $filters, $filters_columns, $filters_post, $filters_term, $nav_menu, $sync, $filters_media;
@@ -60,12 +64,7 @@ class PLL_Admin extends PLL_Admin_Base {
 		// Priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
-			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ) );
-
-			// Bulk Translate
-			if ( class_exists( 'PLL_Bulk_Translate' ) ) {
-				add_action( 'current_screen', array( $this->bulk_translate = new PLL_Bulk_Translate( $this ), 'init' ) );
-			}
+			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ), 20 ); // After fusion Builder.
 		}
 	}
 
@@ -100,6 +99,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * Setup filters for admin pages
 	 *
 	 * @since 1.2
+	 * @since 2.7 instantiate a PLL_Bulk_Translate instance.
 	 */
 	public function add_filters() {
 		// All these are separated just for convenience and maintainability
@@ -127,6 +127,13 @@ class PLL_Admin extends PLL_Admin_Base {
 		$this->posts = new PLL_CRUD_Posts( $this );
 		$this->terms = new PLL_CRUD_Terms( $this );
 
+		// Bulk Translate
+		// Needs to be loaded before other modules.
+		if ( class_exists( 'PLL_Bulk_Translate' ) ) {
+			$this->bulk_translate = new PLL_Bulk_Translate( $this->model );
+			add_action( 'current_screen', array( $this->bulk_translate, 'init' ) );
+		}
+
 		// Advanced media
 		if ( $this->options['media_support'] && class_exists( 'PLL_Admin_Advanced_Media' ) ) {
 			$this->advanced_media = new PLL_Admin_Advanced_Media( $this );
@@ -137,14 +144,26 @@ class PLL_Admin extends PLL_Admin_Base {
 			$this->share_term_slug = new PLL_Admin_Share_Term_Slug( $this );
 		}
 
-		if ( class_exists( 'PLL_Sync_Content' ) ) {
-			$this->sync_content = new PLL_Sync_Content( $this );
-		}
-
 		// Duplicate content
 		if ( class_exists( 'PLL_Duplicate' ) ) {
 			$this->duplicate = new PLL_Duplicate( $this );
 		}
+
+		if ( class_exists( 'PLL_Duplicate_REST' ) ) {
+			$this->duplicate_rest = new PLL_Duplicate_REST();
+		}
+
+		// Block editor metabox
+		if ( pll_use_block_editor_plugin() ) {
+			$this->block_editor_plugin = new PLL_Block_Editor_Plugin( $this );
+		}
+
+		// FIXME: Specific for WP CRON and WP CLI as the action admin_init is not fired.
+		// Waiting for a better way to handle the cases without loading the complete admin.
+		if ( wp_doing_cron() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			$this->maybe_load_sync_post();
+		}
+
 	}
 
 	/**
@@ -157,11 +176,8 @@ class PLL_Admin extends PLL_Admin_Base {
 		if ( 'post-new.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) ) {
 			// We need to wait until we know which editor is in use
 			add_filter( 'use_block_editor_for_post', array( $this, '_maybe_load_sync_post' ), 999 ); // After the plugin Classic Editor
-		} elseif ( 'post.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) && isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// Disable Sync Post in the meta box loader when running the block editor to avoid a conflict
-			if ( empty( $_GET['meta-box-loader'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$this->_maybe_load_sync_post( use_block_editor_for_post( (int) $_GET['post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
+		} elseif ( 'post.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) && isset( $_GET['post'] ) && empty( $_GET['meta-box-loader'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$this->_maybe_load_sync_post( use_block_editor_for_post( (int) $_GET['post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		} else {
 			$this->_maybe_load_sync_post( false );
 		}
@@ -172,14 +188,16 @@ class PLL_Admin extends PLL_Admin_Base {
 	 *
 	 * @since 2.6
 	 *
-	 * @param bool $is_block_editor Whether to use the block editor or not
+	 * @param bool $is_block_editor Whether to use the block editor or not.
 	 * @return bool
 	 */
 	public function _maybe_load_sync_post( $is_block_editor ) {
-		if ( class_exists( 'PLL_Sync_Post_REST' ) && $is_block_editor ) {
-			$this->sync_post = new PLL_Sync_Post_REST( $this );
-		} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
-			$this->sync_post = new PLL_Sync_Post( $this );
+		if ( ! isset( $this->sync_post ) ) { // Make sure to instantiate the class only once, as the function may be called from a filter.
+			if ( class_exists( 'PLL_Sync_Post_REST' ) && pll_use_block_editor_plugin() && $is_block_editor ) {
+				$this->sync_post = new PLL_Sync_Post_REST( $this );
+			} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
+				$this->sync_post = new PLL_Sync_Post( $this );
+			}
 		}
 
 		return $is_block_editor;

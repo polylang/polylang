@@ -83,7 +83,6 @@ class PLL_Sync {
 	public function can_sync_post_parent( $post_parent, $post_id, $postarr ) {
 		if ( ! empty( $postarr['ID'] ) && ! $this->model->post->current_user_can_synchronize( $postarr['ID'] ) ) {
 			$tr_ids = $this->model->post->get_translations( $postarr['ID'] );
-			$orig_lang = array_search( $postarr['ID'], $tr_ids );
 			foreach ( $tr_ids as $tr_id ) {
 				if ( $tr_id !== $postarr['ID'] && $post = get_post( $tr_id ) ) {
 					$post_parent = $post->post_parent;
@@ -140,7 +139,7 @@ class PLL_Sync {
 					$tr_arr = $postarr;
 					unset( $tr_arr['post_parent'] );
 
-					// Do not udpate the translation parent if the user set a parent with no translation
+					// Do not udpate the translation parent if the user set a parent with no translation.
 					if ( isset( $postarr['post_parent'] ) ) {
 						$post_parent = $postarr['post_parent'] ? $this->model->post->get_translation( $postarr['post_parent'], $lang ) : 0;
 						if ( ! ( $postarr['post_parent'] && ! $post_parent ) ) {
@@ -148,10 +147,12 @@ class PLL_Sync {
 						}
 					}
 
-					// Update all the row at once
-					// Don't use wp_update_post to avoid infinite loop
-					$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
-					clean_post_cache( $tr_id );
+					// Update all the rows at once.
+					if ( ! empty( $tr_arr ) ) {
+						// Don't use wp_update_post to avoid infinite loop.
+						$wpdb->update( $wpdb->posts, $tr_arr, array( 'ID' => $tr_id ) );
+						clean_post_cache( $tr_id );
+					}
 				}
 			}
 		}
@@ -175,7 +176,8 @@ class PLL_Sync {
 			$translations = $this->model->term->get_translations( $term_id );
 
 			foreach ( $translations as $lang => $tr_id ) {
-				if ( ! empty( $tr_id ) && $tr_id !== $term_id && $tr_parent = $this->model->term->get_translation( $term->parent, $lang ) ) {
+				if ( ! empty( $tr_id ) && $tr_id !== $term_id ) {
+					$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 					$wpdb->update(
 						$wpdb->term_taxonomy,
 						array( 'parent' => isset( $tr_parent ) ? $tr_parent : 0 ),

@@ -436,11 +436,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	function test_categories_script_data_in_footer() {
-		// Skip the test in WP < 4.7 as default category was managed differently
-		if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
-			$this->markTestSkipped();
-		}
-
 		$hook_suffix = $GLOBALS['hook_suffix'] = 'edit.php';
 		set_current_screen( 'edit' );
 		$GLOBALS['wp_scripts'] = new WP_Scripts();

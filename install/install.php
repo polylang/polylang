@@ -8,33 +8,66 @@
 class PLL_Install extends PLL_Install_Base {
 
 	/**
-	 * Plugin activation for multisite
+	 * Checks min PHP and WP version, displays a notice if a requirement is not met.
 	 *
-	 * @since 0.1
-	 *
-	 * @param bool $networkwide
+	 * @since 2.6.7
 	 */
-	public function activate( $networkwide ) {
+	public function can_activate() {
 		global $wp_version;
 
-		Polylang::define_constants();
-
-		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' ); // plugin i18n
+		if ( version_compare( PHP_VERSION, PLL_MIN_PHP_VERSION, '<' ) ) {
+			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
+			return false;
+		}
 
 		if ( version_compare( $wp_version, PLL_MIN_WP_VERSION, '<' ) ) {
-			die(
-				sprintf(
-					'<p style = "font-family: sans-serif; font-size: 12px; color: #333; margin: -5px">%s</p>',
-					sprintf(
-						/* translators: %1$s and %2$s are WordPress version numbers */
-						esc_html__( 'You are using WordPress %1$s. Polylang requires at least WordPress %2$s.', 'polylang' ),
-						esc_html( $wp_version ),
-						PLL_MIN_WP_VERSION // phpcs:ignore WordPress.Security.EscapeOutput
-					)
-				)
-			);
+			add_action( 'admin_notices', array( $this, 'wp_version_notice' ) );
+			return false;
 		}
-		$this->do_for_all_blogs( 'activate', $networkwide );
+
+		return true;
+	}
+
+	/**
+	 * Displays a notice if PHP min version is not met.
+	 *
+	 * @since 2.6.7
+	 */
+	public function php_version_notice() {
+		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' ); // Plugin i18n.
+
+		printf(
+			'<div class="error"><p>%s</p></div>',
+			sprintf(
+				/* translators: 1: Plugin name 2: Current PHP version 3: Required PHP version */
+				esc_html__( '%1$s has deactivated itself because you are using an old PHP version. You are using using PHP %2$s. %1$s requires PHP %3$s.', 'polylang' ),
+				esc_html( POLYLANG ),
+				PHP_VERSION,
+				esc_html( PLL_MIN_PHP_VERSION )
+			)
+		);
+	}
+
+	/**
+	 * Displays a notice if WP min version is not met.
+	 *
+	 * @since 2.6.7
+	 */
+	public function wp_version_notice() {
+		global $wp_version;
+
+		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' ); // Plugin i18n.
+
+		printf(
+			'<div class="error"><p>%s</p></div>',
+			sprintf(
+				/* translators: 1: Plugin name 2: Current WordPress version 3: Required WordPress version */
+				esc_html__( '%1$s has deactivated itself because you are using an old WordPress version. You are using using WordPress %2$s. %1$s requires at least WordPress %3$s.', 'polylang' ),
+				esc_html( POLYLANG ),
+				esc_html( $wp_version ),
+				esc_html( PLL_MIN_WP_VERSION )
+			)
+		);
 	}
 
 	/**

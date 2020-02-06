@@ -185,12 +185,12 @@ class PLL_Frontend_Auto_Translate {
 
 		// Array of post ids
 		// post_parent__in & post_parent__not_in since WP 3.6
-		foreach ( array( 'post__in', 'post__not_in', 'post_parent__in', 'post_parent__not_in' ) as $key ) {
+		foreach ( array( 'post__in', 'post__not_in', 'post_parent__in', 'post_parent__not_in' ) as $key ) { // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn
 			$arr = array();
 			if ( ! empty( $qv[ $key ] ) ) {
 				// post__in used by the 2 functions below
 				// Useless to filter them as output is already in the right language and would result in performance loss
-				foreach ( debug_backtrace() as $trace ) { // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+				foreach ( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) as $trace ) { // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					if ( in_array( $trace['function'], array( 'wp_nav_menu', 'gallery_shortcode' ) ) ) {
 						return;
 					}
@@ -216,6 +216,8 @@ class PLL_Frontend_Auto_Translate {
 	 */
 	public function get_terms_args( $args, $taxonomies ) {
 		if ( ! isset( $args['lang'] ) && ! empty( $args['include'] ) && ( empty( $taxonomies ) || $this->model->is_translated_taxonomy( $taxonomies ) ) ) {
+			$arr = array();
+
 			foreach ( wp_parse_id_list( $args['include'] ) as $id ) {
 				$arr[] = ( $tr = $this->get_term( $id ) ) ? $tr : $id;
 			}

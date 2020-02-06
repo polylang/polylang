@@ -40,10 +40,15 @@ abstract class PLL_Base {
 	public function init() {
 		// REST API
 		if ( class_exists( 'PLL_REST_API' ) ) {
-			$this->rest_api = new PLL_REST_API( $this->model );
+			$this->rest_api = new PLL_REST_API( $this );
 		}
 
 		if ( $this->model->get_languages_list() ) {
+			// Used by content duplicate and post synchronization
+			if ( class_exists( 'PLL_Sync_Content' ) ) {
+				$this->sync_content = new PLL_Sync_Content( $this );
+			}
+
 			// Active languages
 			if ( class_exists( 'PLL_Active_Languages' ) ) {
 				$this->active_languages = new PLL_Active_Languages( $this );
@@ -134,7 +139,7 @@ abstract class PLL_Base {
 		foreach ( $this as $prop => &$obj ) {
 			if ( is_object( $obj ) && method_exists( $obj, $func ) ) {
 				if ( WP_DEBUG ) {
-					$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+					$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					$i = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func
 					trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 						sprintf(
@@ -150,7 +155,7 @@ abstract class PLL_Base {
 			}
 		}
 
-		$debug = debug_backtrace(); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			sprintf(
 				'Call to undefined function PLL()->%1$s() in %2$s on line %3$s' . "\nError handler",

@@ -22,6 +22,9 @@ class PLL_Plugins_Compat {
 		add_action( 'init', array( $this, 'maybe_wordpress_importer' ) );
 		add_filter( 'wp_import_terms', array( $this, 'wp_import_terms' ) );
 
+		// YARPP
+		add_action( 'init', array( $this, 'yarpp_init' ) ); // after Polylang has registered its taxonomy in setup_theme
+
 		// Custom field template
 		add_action( 'add_meta_boxes', array( $this, 'cft_copy' ), 10, 2 );
 
@@ -32,8 +35,8 @@ class PLL_Plugins_Compat {
 		add_filter( 'option_duplicate_post_taxonomies_blacklist', array( $this, 'duplicate_post_taxonomies_blacklist' ) );
 
 		// Jetpack
-		$this->jetpack          = new PLL_Jetpack(); // Must be loaded before the plugin is active
-		$this->featured_content = new PLL_Featured_Content();
+		$this->jetpack = new PLL_Jetpack(); // Must be loaded before the plugin is active
+		add_action( 'pll_init', array( $this->featured_content = new PLL_Featured_Content(), 'init' ) );
 
 		// WP Sweep
 		add_filter( 'wp_sweep_excluded_taxonomies', array( $this, 'wp_sweep_excluded_taxonomies' ) );
@@ -107,9 +110,14 @@ class PLL_Plugins_Compat {
 			$this->divi_builder = new PLL_Divi_Builder();
 		}
 
-		// Admin Columns & Admin Columns Pro
-		if ( ( defined( 'AC_FILE' ) || defined( 'ACP_FILE' ) ) && class_exists( 'PLL_CPAC' ) ) {
-			add_action( 'admin_init', array( $this->cpac = new PLL_CPAC(), 'init' ) );
+		// WP Offload Media Lite
+		if ( function_exists( 'as3cf_init' ) && class_exists( 'PLL_AS3CF' ) ) {
+			add_action( 'pll_init', array( $this->as3cf = new PLL_AS3CF(), 'init' ) );
+		}
+
+		// Content Blocks (Custom Post Widget)
+		if ( function_exists( 'custom_post_widget_plugin_init' ) && class_exists( 'PLL_Content_Blocks' ) ) {
+			add_action( 'pll_init', array( $this->content_blocks = new PLL_Content_Blocks(), 'init' ) );
 		}
 	}
 
@@ -120,9 +128,13 @@ class PLL_Plugins_Compat {
 	 */
 	public function after_setup_theme() {
 		// Advanced Custom Fields Pro
-		// The function acf_get_value() is not defined in ACF 4
-		if ( class_exists( 'acf' ) && function_exists( 'acf_get_value' ) && class_exists( 'PLL_ACF' ) ) {
+		if ( defined( 'ACF_VERSION' ) && version_compare( ACF_VERSION, '5.7.11', '>=' ) && class_exists( 'PLL_ACF' ) ) {
 			add_action( 'init', array( $this->acf = new PLL_ACF(), 'init' ) );
+		}
+
+		// Admin Columns & Admin Columns Pro
+		if ( did_action( 'pll_init' ) && ( defined( 'AC_FILE' ) || defined( 'ACP_FILE' ) ) && class_exists( 'PLL_CPAC' ) ) {
+			add_action( 'admin_init', array( $this->cpac = new PLL_CPAC(), 'init' ) );
 		}
 	}
 
@@ -150,7 +162,7 @@ class PLL_Plugins_Compat {
 		load_plugin_textdomain( 'wordpress-importer', false, basename( dirname( $class->getFileName() ) ) . '/languages' );
 
 		$GLOBALS['wp_import'] = new PLL_WP_Import();
-		register_importer( 'wordpress', 'WordPress', __( 'Import <strong>posts, pages, comments, custom fields, categories, and tags</strong> from a WordPress export file.', 'wordpress-importer' ), array( $GLOBALS['wp_import'], 'dispatch' ) ); // phpcs:ignore WordPress.WP.CapitalPDangit.Misspelled
+		register_importer( 'wordpress', 'WordPress', __( 'Import <strong>posts, pages, comments, custom fields, categories, and tags</strong> from a WordPress export file.', 'polylang' ), array( $GLOBALS['wp_import'], 'dispatch' ) ); // phpcs:ignore WordPress.WP.CapitalPDangit.Misspelled
 	}
 
 	/**
@@ -164,18 +176,28 @@ class PLL_Plugins_Compat {
 	 * @return array
 	 */
 	public function wp_import_terms( $terms ) {
-		include PLL_SETTINGS_INC . '/languages.php';
+		$languages = include PLL_SETTINGS_INC . '/languages.php';
 
 		foreach ( $terms as $key => $term ) {
 			if ( 'language' === $term['term_taxonomy'] ) {
 				$description = maybe_unserialize( $term['term_description'] );
 				if ( empty( $description['flag_code'] ) && isset( $languages[ $description['locale'] ] ) ) {
 					$description['flag_code'] = $languages[ $description['locale'] ]['flag'];
-					$terms[ $key ]['term_description'] = serialize( $description );
+					$terms[ $key ]['term_description'] = maybe_serialize( $description );
 				}
 			}
 		}
 		return $terms;
+	}
+
+	/**
+	 * YARPP
+	 * Just makes YARPP aware of the language taxonomy ( after Polylang registered it )
+	 *
+	 * @since 1.0
+	 */
+	public function yarpp_init() {
+		$GLOBALS['wp_taxonomies']['language']->yarpp_support = 1;
 	}
 
 	/**
@@ -201,7 +223,7 @@ class PLL_Plugins_Compat {
 	 */
 	public function cft_copy( $post_type, $post ) {
 		global $custom_field_template;
-		if ( isset( $custom_field_template, $_REQUEST['from_post'], $_REQUEST['new_lang'] ) && ! empty( $post ) ) { // WPCS: CSRF ok.
+		if ( isset( $custom_field_template, $_REQUEST['from_post'], $_REQUEST['new_lang'] ) && ! empty( $post ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$_REQUEST['post'] = $post->ID;
 		}
 	}
@@ -285,12 +307,12 @@ class PLL_Plugins_Compat {
 			}
 
 			// Don't redirect post previews
-			if ( isset( $_GET['preview'] ) && 'true' === $_GET['preview'] ) { // WPCS: CSRF ok.
+			if ( isset( $_GET['preview'] ) && 'true' === $_GET['preview'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				return;
 			}
 
 			// Don't redirect theme customizer
-			if ( isset( $_POST['customize'] ) && isset( $_POST['theme'] ) && 'on' === $_POST['customize'] ) { // WPCS: CSRF ok.
+			if ( isset( $_POST['customize'] ) && isset( $_POST['theme'] ) && 'on' === $_POST['customize'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				return;
 			}
 

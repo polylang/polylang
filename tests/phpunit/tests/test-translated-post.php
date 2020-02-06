@@ -100,4 +100,41 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 		$this->assertFalse( self::$polylang->model->post->current_user_can_synchronize( $fr ) );
 		$this->assertFalse( self::$polylang->model->post->current_user_can_synchronize( $de ) );
 	}
+
+	function test_current_user_can_read() {
+		$post_id = $this->factory->post->create( array( 'post_status' => 'draft' ) );
+
+		wp_set_current_user( 0 );
+		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
+		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+
+		wp_set_current_user( 1 );
+		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
+		$this->assertTrue( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+
+		$post_id = $this->factory->post->create(
+			array(
+				'post_status' => 'future',
+				'post_date'   => gmdate( 'Y-m-d H:i:s', time() + 100 ),
+			)
+		);
+
+		wp_set_current_user( 0 );
+		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
+		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+
+		wp_set_current_user( 1 );
+		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
+		$this->assertTrue( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+
+		$post_id = $this->factory->post->create( array( 'post_status' => 'private' ) );
+
+		wp_set_current_user( 0 );
+		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
+		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+
+		wp_set_current_user( 1 );
+		$this->assertTrue( self::$polylang->model->post->current_user_can_read( $post_id ) );
+		$this->assertTrue( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+	}
 }

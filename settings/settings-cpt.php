@@ -21,7 +21,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 			array(
 				'module'      => 'cpt',
 				'title'       => __( 'Custom post types and Taxonomies', 'polylang' ),
-				'description' => __( 'Activate the languages and translations management for the custom post types and taxonomies.', 'polylang' ),
+				'description' => __( 'Activate languages and translations management for the custom post types and the taxonomies.', 'polylang' ),
 			)
 		);
 
@@ -116,6 +116,8 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	 * @param array $options
 	 */
 	protected function update( $options ) {
+		$newoptions = array();
+
 		foreach ( array( 'post_types', 'taxonomies' ) as $key ) {
 			$newoptions[ $key ] = empty( $options[ $key ] ) ? array() : array_keys( $options[ $key ], 1 );
 		}

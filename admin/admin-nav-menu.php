@@ -72,7 +72,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			</div>
 			<p class="button-controls">
 				<span class="add-to-menu">
-					<input type="submit" <?php disabled( $nav_menu_selected_id, 0 ); ?> class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' ); ?>" name="add-post-type-menu-item" id="submit-posttype-lang-switch">
+					<input type="submit" <?php disabled( $nav_menu_selected_id, 0 ); ?> class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu', 'polylang' ); ?>" name="add-post-type-menu-item" id="submit-posttype-lang-switch">
 					<span class="spinner"></span>
 				</span>
 			</p>
@@ -94,8 +94,11 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_enqueue_script( 'pll_nav_menu', plugins_url( '/js/nav-menu' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION );
 
-		$data['strings'] = PLL_Switcher::get_switcher_options( 'menu', 'string' ); // The strings for the options
-		$data['title'] = __( 'Languages', 'polylang' ); // The title
+		$data = array(
+			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options
+			'title'   => __( 'Languages', 'polylang' ), // The title
+			'val'     => array(),
+		);
 
 		// Get all language switcher menu items
 		$items = get_posts(
@@ -109,7 +112,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		);
 
 		// The options values for the language switcher
-		$data['val'] = array();
 		foreach ( $items as $item ) {
 			$data['val'][ $item ] = get_post_meta( $item, '_pll_menu_item', true );
 		}
@@ -127,7 +129,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @param int $menu_item_db_id
 	 */
 	public function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0 ) {
-		if ( empty( $_POST['menu-item-url'][ $menu_item_db_id ] ) || '#pll_switcher' !== $_POST['menu-item-url'][ $menu_item_db_id ] ) { // WPCS: CSRF ok.
+		if ( empty( $_POST['menu-item-url'][ $menu_item_db_id ] ) || '#pll_switcher' !== $_POST['menu-item-url'][ $menu_item_db_id ] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
 		}
 
@@ -143,7 +145,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 				}
 			}
 			else {
-				foreach ( $options as $opt => $v ) {
+				foreach ( array_keys( $options ) as $opt ) {
 					$options[ $opt ] = empty( $_POST[ 'menu-item-' . $opt ][ $menu_item_db_id ] ) ? 0 : 1;
 				}
 				update_post_meta( $menu_item_db_id, '_pll_menu_item', $options ); // Allow us to easily identify our nav menu item
@@ -160,8 +162,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return array
 	 */
 	public function update_nav_menu_locations( $locations ) {
-		$default = $this->options['default_lang'];
-
 		// Extract language and menu from locations
 		foreach ( $locations as $loc => $menu ) {
 			$infos = $this->explode_location( $loc );
@@ -187,7 +187,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		if ( current_user_can( 'edit_theme_options' ) && isset( $mods['nav_menu_locations'] ) ) {
 
 			// Manage Locations tab in Appearance -> Menus
-			if ( isset( $_GET['action'] ) && 'locations' === $_GET['action'] ) { // WPCS: CSRF ok.
+			if ( isset( $_GET['action'] ) && 'locations' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				check_admin_referer( 'save-menu-locations' );
 				$this->options['nav_menus'][ $this->theme ] = array();
 			}
@@ -232,7 +232,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		if ( is_array( $menus ) ) {
-			foreach ( $menus as $loc => $menu ) {
+			foreach ( array_keys( $menus ) as $loc ) {
 				foreach ( $this->model->get_languages_list() as $lang ) {
 					if ( ! empty( $this->options['nav_menus'][ $this->theme ][ $loc ][ $lang->slug ] ) && term_exists( $this->options['nav_menus'][ $this->theme ][ $loc ][ $lang->slug ], 'nav_menu' ) ) {
 						$menus[ $this->combine_location( $loc, $lang ) ] = $this->options['nav_menus'][ $this->theme ][ $loc ][ $lang->slug ];

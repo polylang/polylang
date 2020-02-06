@@ -409,6 +409,40 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $en, get_category( $from )->parent );
 	}
 
+	/**
+	 * Test the child sync if we edit (delete) the translated term parent
+	 * Bug fixed in 2.6.4
+	 */
+	function test_child_sync_if_delete_translated_term_parent() {
+		// Children.
+		$child_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $child_en, 'en' );
+
+		$child_fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $child_fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $child_en, array( 'fr' => $child_fr ) );
+
+		// Parents.
+		$parent_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $parent_en, 'en' );
+
+		wp_update_term( $child_en, 'category', array( 'parent' => $parent_en ) );
+
+		$parent_fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$polylang->model->term->set_language( $parent_fr, 'fr' );
+
+		self::$polylang->model->term->save_translations( $parent_en, array( 'fr' => $parent_fr ) );
+
+		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
+		self::$polylang->sync = new PLL_Admin_Sync( self::$polylang );
+		wp_update_term( $child_fr, 'category', array( 'parent' => $parent_fr ) );
+
+		wp_update_term( $child_fr, 'category', array( 'parent' => 0 ) );
+
+		$this->assertEquals( get_term( $child_en )->parent, 0 );
+	}
+
 	function test_create_post_translation_with_sync_post_date() {
 		// source post
 		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
@@ -805,5 +839,44 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $thumbnail_id, get_post_thumbnail_id( $from ) );
 		$this->assertEquals( 'aside', get_post_format( $to ) );
 		$this->assertEquals( 'aside', get_post_format( $from ) );
+	}
+
+	function test_slashes() {
+		self::$polylang->options['sync'] = array( 'post_meta' );
+		$sync = new PLL_Admin_Sync( self::$polylang );
+
+		$slash_2 = '\\\\';
+		$slash_4 = '\\\\\\\\';
+
+		// Create posts
+		$to = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $to, 'fr' );
+
+		$from = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $from, 'en' );
+
+		// Test copy()
+		add_post_meta( $from, 'key', $slash_2 );
+		$sync->post_metas->copy( $from, $to, 'fr' );
+		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $to, 'key', true ) );
+
+		update_post_meta( $from, 'key', $slash_4 );
+		$sync->post_metas->copy( $from, $to, 'fr' );
+		$this->assertEquals( wp_unslash( $slash_4 ), get_post_meta( $to, 'key', true ) );
+
+		delete_post_meta( $from, 'key' );
+		delete_post_meta( $to, 'key' );
+
+		self::$polylang->model->post->save_translations( $from, array( 'fr' => $to ) );
+
+		// Test add, update, delete
+		add_post_meta( $from, 'key', $slash_2 );
+		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $to, 'key', true ) );
+
+		update_post_meta( $from, 'key', $slash_4 );
+		$this->assertEquals( wp_unslash( $slash_4 ), get_post_meta( $to, 'key', true ) );
+
+		delete_post_meta( $from, 'key', $slash_4 );
+		$this->assertEmpty( get_post_meta( $to, 'key', true ) );
 	}
 }

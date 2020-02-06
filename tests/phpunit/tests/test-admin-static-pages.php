@@ -76,7 +76,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 
 	function test_use_block_editor_for_post() {
 		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
-			$this->markTestSkipped();
+			$this->markTestSkipped( 'This test requires WP 5.0+' );
 		}
 
 		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );

@@ -50,6 +50,7 @@ abstract class PLL_Translated_Object {
 			$taxonomies = array( $this->tax_language, $this->tax_translations );
 
 			// query terms
+			$terms = array();
 			foreach ( wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) ) as $t ) {
 				$terms[ $t->taxonomy ] = $t;
 				if ( $t->taxonomy == $taxonomy ) {
@@ -115,14 +116,14 @@ abstract class PLL_Translated_Object {
 
 				// create a new term if necessary
 				if ( empty( $term ) ) {
-					wp_insert_term( $group = uniqid( 'pll_' ), $this->tax_translations, array( 'description' => serialize( $translations ) ) );
+					wp_insert_term( $group = uniqid( 'pll_' ), $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
 				}
 				else {
 					// take care not to overwrite extra data stored in description field, if any
-					$d = unserialize( $term->description );
+					$d = maybe_unserialize( $term->description );
 					$d = is_array( $d ) ? array_diff_key( $d, $old_translations ) : array(); // remove old translations
 					$d = array_merge( $d, $translations ); // add new one
-					wp_update_term( $group = (int) $term->term_id, $this->tax_translations, array( 'description' => serialize( $d ) ) );
+					wp_update_term( $group = (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $d ) ) );
 				}
 
 				// link all translations to the new term
@@ -153,7 +154,7 @@ abstract class PLL_Translated_Object {
 		$term = $this->get_object_term( $id, $this->tax_translations );
 
 		if ( ! empty( $term ) ) {
-			$d = unserialize( $term->description );
+			$d = maybe_unserialize( $term->description );
 			$slug = array_search( $id, $this->get_translations( $id ) ); // in case some plugin stores the same value with different key
 			unset( $d[ $slug ] );
 
@@ -161,7 +162,7 @@ abstract class PLL_Translated_Object {
 				wp_delete_term( (int) $term->term_id, $this->tax_translations );
 			}
 			else {
-				wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => serialize( $d ) ) );
+				wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $d ) ) );
 			}
 		}
 	}
@@ -176,7 +177,7 @@ abstract class PLL_Translated_Object {
 	 */
 	public function get_translations( $id ) {
 		$term = $this->get_object_term( $id, $this->tax_translations );
-		$translations = empty( $term ) ? array() : unserialize( $term->description );
+		$translations = empty( $term ) ? array() : maybe_unserialize( $term->description );
 
 		// make sure we return only translations ( thus we allow plugins to store other information in the array )
 		if ( is_array( $translations ) ) {
@@ -239,7 +240,6 @@ abstract class PLL_Translated_Object {
 	 * @return string where clause
 	 */
 	public function where_clause( $lang ) {
-		global $wpdb;
 		$tt_id = $this->tax_tt;
 
 		// $lang is an object
@@ -250,7 +250,8 @@ abstract class PLL_Translated_Object {
 
 		// $lang is a comma separated list of slugs ( or an array of slugs )
 		// generally the case is the query is coming from outside with 'lang' parameter
-		$slugs = is_array( $lang ) ? $lang : explode( ',', $lang );
+		$slugs     = is_array( $lang ) ? $lang : explode( ',', $lang );
+		$languages = array();
 		foreach ( $slugs as $slug ) {
 			$languages[] = absint( $this->model->get_language( $slug )->$tt_id );
 		}
