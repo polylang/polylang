@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) { // If uninstall not called from WordPress exit
-	exit();
+	exit;
 }
 
 /**
@@ -19,6 +19,11 @@ class PLL_Uninstall {
 	 */
 	public function __construct() {
 		global $wpdb;
+
+		// Don't do anything except if the constant PLL_REMOVE_ALL_DATA is explicitely defined and true.
+		if ( ! defined( 'PLL_REMOVE_ALL_DATA' ) || ! PLL_REMOVE_ALL_DATA ) {
+			return;
+		}
 
 		// Check if it is a multisite uninstall - if so, run the uninstall function for each blog id
 		if ( is_multisite() ) {
@@ -40,12 +45,6 @@ class PLL_Uninstall {
 	 * @since 0.5
 	 */
 	public function uninstall() {
-		$options = get_option( 'polylang' );
-
-		if ( empty( $options['uninstall'] ) ) {
-			return;
-		}
-
 		global $wpdb;
 
 		// Executes each module's uninstall script, if it exists
