@@ -392,7 +392,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		// Unregisters strings registered through WPML API
-		if ( $this->current_action() === 'delete' && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) ) {
+		if ( 'delete' === $this->current_action() && ! empty( $_POST['strings'] ) && function_exists( 'icl_unregister_string' ) ) {
 			foreach ( array_map( 'sanitize_key', $_POST['strings'] ) as $key ) {
 				icl_unregister_string( $this->strings[ $key ]['context'], $this->strings[ $key ]['name'] );
 			}
