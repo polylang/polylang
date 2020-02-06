@@ -518,7 +518,7 @@ class PLL_Table_String extends WP_List_Table {
 		}
 
 		$filename = 'polylang-string-translations.csv';
-		header( "Content-Disposition: attachment; filename=" . $filename );
+		header( 'Content-Disposition: attachment; filename=' . $filename );
 		header( 'Content-Type: text/csv; charset=utf-8' );
 
 		$output_csv = fopen("php://output", 'w');
