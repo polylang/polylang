@@ -498,7 +498,7 @@ class PLL_Table_String extends WP_List_Table {
 
 			$mo->import_from_db( $language );
 
-			if ( empty( $this->entries ) ) {
+			if ( empty( $mo->entries ) ) {
 				continue;
 			}
 
