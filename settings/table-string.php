@@ -351,16 +351,18 @@ class PLL_Table_String extends WP_List_Table {
 				$mo = new PLL_MO();
 				$mo->import_from_db( $language );
 
-				foreach ( $_POST['translation'][ $language->slug ] as $key => $translation ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+				$translations = array_map( 'trim', wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				foreach ( $translations as $key => $translation ) {
 					/**
 					 * Filter the string translation before it is saved in DB
 					 * Allows to sanitize strings registered with pll_register_string
 					 *
 					 * @since 1.6
+					 * @since 2.7 The translation passed to the filter is unslashed.
 					 *
-					 * @param string $translation the string translation
-					 * @param string $name        the name as defined in pll_register_string
-					 * @param string $context     the context as defined in pll_register_string
+					 * @param string $translation The string translation.
+					 * @param string $name        The name as defined in pll_register_string.
+					 * @param string $context     The context as defined in pll_register_string.
 					 */
 					$translation = apply_filters( 'pll_sanitize_string_translation', $translation, $this->strings[ $key ]['name'], $this->strings[ $key ]['context'] );
 					$mo->add_entry( $mo->make_entry( $this->strings[ $key ]['string'], $translation ) );

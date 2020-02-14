@@ -15,7 +15,7 @@ class PLL_Wizard {
 	/**
 	 * Reference to Polylang options array
 	 *
-	 * @var object $options
+	 * @var array $options
 	 */
 	protected $options;
 
@@ -36,16 +36,16 @@ class PLL_Wizard {
 	/**
 	 * Constructor
 	 *
-	 * @param object $options Reference to Polylang options array.
-	 * @param object $model   Reference to PLL_Model object.
+	 * @param object $polylang Reference to Polylang global object.
 	 * @since 2.7
 	 */
-	public function __construct( $options, $model ) {
-		$this->options = $options;
-		$this->model = $model;
+	public function __construct( &$polylang ) {
+		$this->options = &$polylang->options;
+		$this->model   = &$polylang->model;
 
 		// Display Wizard page before any other action to ensure displaying it outside the WordPress admin context.
-		add_action( 'admin_init', array( $this, 'setup_wizard_page' ) );
+		// Hooked on admin_init with priority 40 to ensure PLL_Wizard_Pro is corretly initialized.
+		add_action( 'admin_init', array( $this, 'setup_wizard_page' ), 40 );
 		// Add Wizard submenu.
 		add_filter( 'pll_settings_tabs', array( $this, 'settings_tabs' ), 10, 1 );
 		// Enqueue scripts and styles especially for the wizard.
@@ -166,8 +166,11 @@ class PLL_Wizard {
 		PLL_Admin_Notices::add_notice( 'wizard', $this->wizard_notice() );
 
 		$this->redirect_to_wizard();
-		if ( empty( $_GET['page'] ) || 'mlang_wizard' !== $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! Polylang::is_wizard() ) {
 			return;
+		}
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to manage options for this site.', 'polylang' ) );
 		}
 
 		$this->steps = apply_filters( 'pll_wizard_steps', $this->steps );
@@ -686,6 +689,33 @@ class PLL_Wizard {
 
 		$untranslated_languages = isset( $_POST['untranslated_languages'] ) ? array_map( 'sanitize_key', $_POST['untranslated_languages'] ) : array();
 
+		call_user_func(
+			apply_filters( 'pll_wizard_create_home_page_translations', array( $this, 'create_home_page_translations' ) ),
+			$default_language,
+			$home_page,
+			$home_page_title,
+			$home_page_language,
+			$untranslated_languages
+		);
+
+		$this->model->clean_languages_cache();
+
+		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
+		exit;
+	}
+
+	/**
+	 * Create home page translations for each language defined.
+	 *
+	 * @since 2.7
+	 *
+	 * @param string $default_language       slug of the default language; null if no default language is defined.
+	 * @param int    $home_page              post_id of the home page if it's defined, false otherwise.
+	 * @param string $home_page_title        home page title if it's defined, 'Homepage' otherwise.
+	 * @param string $home_page_language     slug of the home page if it's defined, false otherwise.
+	 * @param array  $untranslated_languages array of languages which needs to have a home page translated.
+	 */
+	public function create_home_page_translations( $default_language, $home_page, $home_page_title, $home_page_language, $untranslated_languages ) {
 		$translations = $this->model->post->get_translations( $home_page );
 
 		foreach ( $untranslated_languages as $language ) {
@@ -707,11 +737,6 @@ class PLL_Wizard {
 			pll_set_post_language( $id, $language );
 		}
 		pll_save_post_translations( $translations );
-
-		$this->model->clean_languages_cache();
-
-		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
-		exit;
 	}
 
 	/**

@@ -159,6 +159,17 @@ class Polylang {
 	}
 
 	/**
+	 * Tells if we are in the wizard process.
+	 *
+	 * @since 2.7
+	 *
+	 * @return bool
+	 */
+	public static function is_wizard() {
+		return isset( $_GET['page'] ) && ! empty( $_GET['page'] ) && 'mlang_wizard' === sanitize_key( $_GET['page'] ); // phpcs:ignore WordPress.Security.NonceVerification
+	}
+
+	/**
 	 * Defines constants
 	 * May be overridden by a plugin if set before plugins_loaded, 1
 	 *
@@ -180,9 +191,9 @@ class Polylang {
 			define( 'PLL_ADMIN', wp_doing_cron() || ( defined( 'WP_CLI' ) && WP_CLI ) || ( is_admin() && ! PLL_AJAX_ON_FRONT ) );
 		}
 
-		// Settings page whatever the tab
+		// Settings page whatever the tab except for the wizard which needs to be an admin process.
 		if ( ! defined( 'PLL_SETTINGS' ) ) {
-			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( sanitize_key( $_GET['page'] ), 'mlang' ) ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
+			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 0 === strpos( sanitize_key( $_GET['page'] ), 'mlang' ) && ! self::is_wizard() ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 	}
 
@@ -222,7 +233,7 @@ class Polylang {
 		 *
 		 * @param string $class either PLL_Model or PLL_Admin_Model
 		 */
-		$class = apply_filters( 'pll_model', PLL_SETTINGS ? 'PLL_Admin_Model' : 'PLL_Model' );
+		$class = apply_filters( 'pll_model', PLL_SETTINGS || self::is_wizard() ? 'PLL_Admin_Model' : 'PLL_Model' );
 		$model = new $class( $options );
 		$links_model = $model->get_links_model();
 

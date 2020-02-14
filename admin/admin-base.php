@@ -49,7 +49,12 @@ class PLL_Admin_Base extends PLL_Base {
 		parent::init();
 
 		$this->notices = new PLL_Admin_Notices( $this );
-		$this->wizard  = new PLL_Wizard( $this->options, $this->model );
+		if ( class_exists( 'PLL_Wizard_Pro' ) ) {
+			// Instantiate PLL_Wizard_Pro class after all PLL_Admin object is all initialized.
+			// After PLL_Admin::maybe_load_sync_post which is hooked on admin_init with priority 20.
+			add_action( 'admin_init', array( $this, 'instantiate_wizard_pro' ), 30 );
+		}
+		$this->wizard = new PLL_Wizard( $this );
 
 		if ( ! $this->model->get_languages_list() ) {
 			return;
@@ -424,5 +429,13 @@ class PLL_Admin_Base extends PLL_Base {
 				)
 			);
 		}
+	}
+	/**
+	 * Instantiate PLL_Wizard_Pro class.
+	 *
+	 * @since 2.7
+	 */
+	public function instantiate_wizard_pro() {
+		$this->wizard_pro = new PLL_Wizard_Pro( $this );
 	}
 }
