@@ -57,12 +57,13 @@ class PLL_Nav_Menu {
 		static $once;
 		global $_wp_registered_nav_menus;
 
-		$arr = array();
-
+		$cur_lang = pll_current_language();
 		if ( isset( $_wp_registered_nav_menus ) && ! $once ) {
 			foreach ( $_wp_registered_nav_menus as $loc => $name ) {
 				foreach ( $this->model->get_languages_list() as $lang ) {
-					$arr[ $this->combine_location( $loc, $lang ) ] = $name . ' ' . $lang->name;
+					if ( $cur_lang === $lang->slug || ! $cur_lang ) {
+						$arr[ $this->combine_location( $loc, $lang ) ] = $name . ' ' . $lang->name;
+					}
 				}
 			}
 
