@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.7
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 2.6.9
+Stable tag: 2.6.10
 License: GPLv3 or later
 
 Making WordPress multilingual
@@ -76,6 +76,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.6.10 (2020-02-19) =
+
+* Pro: Fix sticky posts not filtered in REST API (introduced in 2.6.9)
+* Fix wrong language detected if a child page uses the slug of another language
+* Fix a PHP notice with PHP 7.4. #438
+* Fix lang-item-first class in language switcher when the current language is hidden. #445
+* Fix partially a conflict with Fusion Builder (the other part of the conflict being in Fusion Builder).
 
 = 2.6.9 (2020-01-15) =
 
