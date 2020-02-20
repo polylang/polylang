@@ -16,6 +16,29 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEquals( POLYLANG_VERSION, $options['version'] );
 	}
 
+	/**
+	 * This test requires the definition of the constants WP_UNINSTALL_PLUGIN
+	 * The constant PLL_REMOVE_ALL_DATA must not be defined
+	 */
+	function test_no_uninstall() {
+		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+			define( 'WP_UNINSTALL_PLUGIN', true );
+		}
+
+		do_action( 'activate_' . POLYLANG_BASENAME );
+
+		include_once dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php';
+		new PLL_Uninstall();
+
+		// Constant PLL_REMOVE_ALL_DATA undefined => nothing deleted
+		$options = get_option( 'polylang' );
+		$this->assertNotEmpty( $options );
+	}
+
+	/**
+	 * This test requires the definition of the constants WP_UNINSTALL_PLUGIN and PLL_REMOVE_ALL_DATA
+	 * It is expected that only this test defines PLL_REMOVE_ALL_DATA
+	 */
 	function test_uninstall() {
 		global $wpdb;
 
@@ -66,13 +89,6 @@ class Install_Test extends PLL_UnitTestCase {
 		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
-
-		include_once dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php';
-		new PLL_Uninstall();
-
-		// Constant PLL_REMOVE_ALL_DATA undefined => nothing deleted
-		$options = get_option( 'polylang' );
-		$this->assertNotEmpty( $options );
 
 		// Constant PLL_REMOVE_ALL_DATA = true
 		define( 'PLL_REMOVE_ALL_DATA', true );
