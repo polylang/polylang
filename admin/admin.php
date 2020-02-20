@@ -153,6 +153,10 @@ class PLL_Admin extends PLL_Admin_Base {
 			$this->duplicate_rest = new PLL_Duplicate_REST();
 		}
 
+		if ( class_exists( 'PLL_Sync_Post_Model' ) ) {
+			$this->sync_post_model = new PLL_Sync_Post_Model( $this );
+		}
+
 		// Block editor metabox
 		if ( pll_use_block_editor_plugin() ) {
 			$this->block_editor_plugin = new PLL_Block_Editor_Plugin( $this );
