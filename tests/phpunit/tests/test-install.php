@@ -16,10 +16,6 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEquals( POLYLANG_VERSION, $options['version'] );
 	}
 
-	function test_no_uninstall() {
-		$this->assertFalse( defined( 'PLL_REMOVE_ALL_DATA' ), 'The constant PLL_REMOVE_ALL_DATA mut not be defined for this test'  );
-	}
-
 	function test_uninstall() {
 		global $wpdb;
 
@@ -66,8 +62,6 @@ class Install_Test extends PLL_UnitTestCase {
 		);
 
 		update_post_meta( $item_id, '_pll_menu_item', array() );
-
-		$this->assertFalse( defined( 'PLL_REMOVE_ALL_DATA' ), 'The constant PLL_REMOVE_ALL_DATA must not be defined for this test'  );
 
 		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			define( 'WP_UNINSTALL_PLUGIN', true );
