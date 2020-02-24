@@ -20,7 +20,7 @@ class Install_Test extends PLL_UnitTestCase {
 	 * This test requires the definition of the constants WP_UNINSTALL_PLUGIN
 	 * The constant PLL_REMOVE_ALL_DATA must not be defined
 	 */
-	function test_no_uninstall() {
+	function test_uninstall_without_removing_data() {
 		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
@@ -39,7 +39,7 @@ class Install_Test extends PLL_UnitTestCase {
 	 * This test requires the definition of the constants WP_UNINSTALL_PLUGIN and PLL_REMOVE_ALL_DATA
 	 * It is expected that only this test defines PLL_REMOVE_ALL_DATA
 	 */
-	function test_uninstall() {
+	function test_uninstall_removing_data() {
 		global $wpdb;
 
 		do_action( 'activate_' . POLYLANG_BASENAME );
