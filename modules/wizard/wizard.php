@@ -319,6 +319,7 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function add_step_licenses( $steps ) {
+		wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 		if ( $this->is_licenses_step_displayable() ) {
 			$steps['licenses'] = array(
 				'name'    => __( 'Licenses', 'polylang' ),
