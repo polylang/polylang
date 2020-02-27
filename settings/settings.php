@@ -53,7 +53,6 @@ class PLL_Settings extends PLL_Admin_Base {
 	 */
 	public function register_settings_modules() {
 		$modules = array(
-			'PLL_Settings_Tools',
 			'PLL_Settings_Licenses',
 		);
 
