@@ -53,6 +53,11 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_admin_body_class() {
+		// Since WP 5.4, remove this filter which requires a WP_Screen that we don't provide and is not relevant for our test.
+		if ( class_exists( 'WP_Site_Health' ) ) {
+			remove_filter( 'admin_body_class', array( WP_Site_Health::get_instance(), 'admin_body_class' ) );
+		}
+
 		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
 		$this->assertEquals( ' pll-dir-ltr', apply_filters( 'admin_body_class', '' ) );
 
