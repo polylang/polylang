@@ -35,6 +35,10 @@ class Settings_Test extends PLL_UnitTestCase {
 		get_admin_page_title();
 		set_current_screen();
 
+		// languages_pages() calls wp_get_available_translations() which triggers a wp.org api request
+		// if the transient 'available_translations' is empty, so let's fill it with a dummy value.
+		set_site_transient( 'available_translations', array( 'fr_FR' => '' ) );
+
 		ob_start();
 		self::$polylang = new PLL_Settings( self::$polylang->links_model );
 		self::$polylang->languages_page();
