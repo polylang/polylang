@@ -8,6 +8,10 @@
 	>
 	<testsuites>
 		<testsuite>
+			<!-- These tests must run before others due to contant manipulation -->
+			<file>./tests/phpunit/tests/test-install.php</file>
+		</testsuite>
+		<testsuite>
 			<directory prefix="test-" suffix=".php">./tests/phpunit/tests</directory>
 		</testsuite>
 	</testsuites>
