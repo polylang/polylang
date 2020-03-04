@@ -368,6 +368,14 @@ return array(
 		'flag'     => 'pe',
 		'facebook' => 'es_LA',
 	),
+	'es_UY' => array(
+		'code'     => 'es',
+		'locale'   => 'es_UY',
+		'name'     => 'Español',
+		'dir'      => 'ltr',
+		'flag'     => 'uy',
+		'facebook' => 'es_LA',
+	),
 	'es_VE' => array(
 		'code'     => 'es',
 		'locale'   => 'es_VE',
@@ -536,6 +544,13 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'hu',
 		'facebook' => 'hu_HU',
+	),
+	'hsb' => array(
+		'code'     => 'hsb',
+		'locale'   => 'hsb',
+		'name'     => 'Hornjoserbšćina',
+		'dir'      => 'ltr',
+		'flag'     => 'de',
 	),
 	'hy' => array(
 		'code'     => 'hy',
@@ -922,6 +937,13 @@ return array(
 	),
 	'sna' => array(
 		'facebook' => 'sn_ZW',
+	),
+	'snd' => array(
+		'code'     => 'sd',
+		'locale'   => 'snd',
+		'name'     => 'سنڌي',
+		'dir'      => 'rtl',
+		'flag'     => 'pk',
 	),
 	'so_SO' => array(
 		'code'     => 'so',
