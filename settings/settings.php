@@ -17,7 +17,27 @@
  * @since 1.2
  */
 class PLL_Settings extends PLL_Admin_Base {
-	protected $active_tab, $modules;
+
+	/**
+	 * Name of the active module
+	 *
+	 * @var string $active_tab
+	 */
+	protected $active_tab;
+
+	/**
+	 * Array of modules classes
+	 *
+	 * @var array $modules
+	 */
+	protected $modules;
+
+	/**
+	 * Reference to PLL_Import_Export
+	 *
+	 * @var PLL_Import_Export $import_export
+	 */
+	protected $import_export;
 
 	/**
 	 * Constructor
@@ -34,6 +54,10 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		PLL_Admin_Strings::init();
+
+		if ( class_exists( 'PLL_Import_Export' ) ) {
+			$this->import_export = new PLL_Import_Export( $this );
+		}
 
 		// FIXME put this as late as possible
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
@@ -107,7 +131,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				'pll-about-box',
 				__( 'About Polylang', 'polylang' ),
 				array( $this, 'metabox_about' ),
-				'settings_page_mlang', // FIXME not shown in screen options
+				'toplevel_page_mlang', // FIXME not shown in screen options
 				'normal'
 			);
 		}

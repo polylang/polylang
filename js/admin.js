@@ -256,5 +256,10 @@ jQuery( document ).ready(
 			}
 		);
 
+		// Manage closing the metabox.
+		// close postboxes that should be closed
+		$( '.if-js-closed' ).removeClass( 'if-js-closed' ).addClass( 'closed' );
+		// postboxes setup
+		postboxes.add_postbox_toggles( pagenow );
 	}
 );

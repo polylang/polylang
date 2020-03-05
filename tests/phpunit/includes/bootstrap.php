@@ -20,6 +20,9 @@ if ( ! defined( 'DIR_TESTROOT' ) ) {
 	define( 'DIR_TESTROOT', $_tests_dir );
 }
 
+if ( ! defined( 'PLL_TEST_DATA_DIR' ) ) {
+	define( 'PLL_TEST_DATA_DIR', dirname( __FILE__ ) . '/../data/' );
+}
 require_once dirname( __FILE__ ) . '/testcase-trait.php';
 require_once dirname( __FILE__ ) . '/testcase.php';
 require_once dirname( __FILE__ ) . '/testcase-ajax.php';

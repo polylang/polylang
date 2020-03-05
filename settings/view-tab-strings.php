@@ -22,4 +22,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		submit_button(); // Since WP 3.1
 		?>
 	</form>
+	<div class="metabox-holder">
+		<?php
+		wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
+		do_meta_boxes( 'languages_page_mlang_strings', 'bottom', array() );
+		?>
+	</div>
+
 </div>

@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="metabox-holder">
 				<?php
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
-				do_meta_boxes( 'settings_page_mlang', 'normal', array() );
+				do_meta_boxes( 'toplevel_page_mlang', 'normal', array() );
 				?>
 			</div>
 		</div><!-- col-wrap -->
@@ -178,14 +178,3 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div><!-- col-wrap -->
 	</div><!-- col-left -->
 </div><!-- col-container -->
-
-<script type="text/javascript">
-	//<![CDATA[
-	jQuery( document ).ready( function( $ ) {
-		// close postboxes that should be closed
-		$( '.if-js-closed' ).removeClass( 'if-js-closed' ).addClass( 'closed' );
-		// postboxes setup
-		postboxes.add_postbox_toggles( 'settings_page_mlang' );
-	} );
-	//]]>
-</script>
