@@ -115,7 +115,7 @@ class PLL_Admin_Base extends PLL_Base {
 			if ( empty( $parent ) ) {
 				$parent = $page;
 				add_menu_page( $title, __( 'Languages', 'polylang' ), 'manage_options', $page, null, 'dashicons-translation' );
-				$admin_page_hooks[ $page ] = 'languages'; // Hack to avoid th localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
+				$admin_page_hooks[ $page ] = 'languages'; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
 			add_submenu_page( $parent, $title, $title, 'manage_options', $page, array( $this, 'languages_page' ) );
