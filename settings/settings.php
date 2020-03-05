@@ -131,7 +131,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				'pll-about-box',
 				__( 'About Polylang', 'polylang' ),
 				array( $this, 'metabox_about' ),
-				'toplevel_page_mlang', // FIXME not shown in screen options
+				'toplevel_page_mlang',
 				'normal'
 			);
 		}
