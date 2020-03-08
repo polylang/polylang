@@ -1,5 +1,5 @@
 === Polylang ===
-Contributors: Chouby, manooweb
+Contributors: Chouby, manooweb, raaaahman, marianne38
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.9
@@ -77,6 +77,31 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.7 =
+
+* Minimum WordPress version is now 4.9
+* Pro: Strings translations can now be exported and imported (in PO format)
+* Pro: Allow to decide individually which ACF fields to copy or synchronize
+* Pro: Add action pll_inactive_language_requested
+* Pro; Fix fatal error in The Events Calendar compatibility when no language is defined yet
+* Pro: Fix bulk translate when a post has no language
+* Add a setup wizard
+* Add Swahili, Upper Sorbian, Sindhi and Spanish from Uruguay to the list of predefined languages
+* Add flags in the predefined list of languages
+* Allow to hide the metaboxes from the screen options
+* The deletion of the plugin's data at uninstall is now controlled by a PHP constant instead of an option #456
+* Add parent in ajax response when selecting a term in autocomplete field #328
+* Add Vary: Accept-Language http header in home page redirect. Props @chesio #452
+* Improve performance to register/unregister WPML strings
+* Add support for the action wpml_switch_language
+* Add post_status to the list of accepted args of pll_count_posts()
+* Apply the filter pll_preferred_language in wp-login.php
+* Use filtered wrappers to create meta when creating media translations #231
+* Allow to translate the Twenty Seventeen header video Youtube url #460
+* Fix terms not visible in the quick edit when only one language is defined and teh admin language filter is active
+* Fix post state not displayed for translations of the privacy policy page #395
+* Fix wildcards not correctly interpreted in wpml-config.xml
 
 = 2.6.10 (2020-02-19) =
 
