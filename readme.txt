@@ -86,6 +86,8 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Pro: Add action pll_inactive_language_requested
 * Pro; Fix fatal error in The Events Calendar compatibility when no language is defined yet
 * Pro: Fix bulk translate when a post has no language
+* Pro: Fix reusable block saved without language
+* Pro: Fix post requested by slug not filtered in REST API, when the slug is shared
 * Add a setup wizard
 * Add Swahili, Upper Sorbian, Sindhi and Spanish from Uruguay to the list of predefined languages
 * Add flags in the predefined list of languages
