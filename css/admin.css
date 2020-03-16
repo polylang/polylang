@@ -21,6 +21,14 @@
 	font-family: 'dashicons';
 	content: "\f155";
 }
+.pll-icon:before{
+	display: inline-block;
+	text-align: left;
+	width: 15px;
+}
+.pll-circle:before{
+	content: "\25cf";
+}
 
 .form-field input[type="radio"] {
 	width: auto;
