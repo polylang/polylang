@@ -19,12 +19,12 @@ $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' :
 ?>
 <h2><?php esc_html_e( 'Media', 'polylang' ); ?></h2>
 <p>
-	<?php esc_html_e( 'Polylang allows you to translate the texts attached to your media such as the title, the alternative text, the caption and the description.', 'polylang' ); ?>
+	<?php esc_html_e( 'Polylang allows you to translate the text attached to your media, for example the title, the alternative text, the caption, or the description.', 'polylang' ); ?>
 	<?php esc_html_e( 'When you translate a media, the file is not duplicated on your disk, however you will see one entry per language in the media library.', 'polylang' ); ?>
-	<?php esc_html_e( 'When you want to insert a media in a post, only the media in the language of the current post are displayed.', 'polylang' ); ?>
+	<?php esc_html_e( 'When you want to insert media in a post, only the media in the language of the current post will be displayed.', 'polylang' ); ?>
 </p>
 <p>
-	<?php esc_html_e( 'If you need to translate the title, the alternative text, the caption or the description, then you must activate the media translation. Otherwise you can safely deactivate it.', 'polylang' ); ?>
+	<?php esc_html_e( 'You must activate media translation if you want to translate the title, the alternative text, the caption, or the description. Otherwise you can safely deactivate it.', 'polylang' ); ?>
 </p>
 <ul class="pll-wizard-services">
 	<li class="pll-wizard-service-item">
@@ -41,7 +41,7 @@ $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' :
 		</div>
 		<div class="pll-wizard-service-description">
 			<p>
-				<?php esc_html_e( 'Allow to translate media', 'polylang' ); ?>
+				<?php esc_html_e( 'Allow Polylang translate media', 'polylang' ); ?>
 			</p>
 		</div>
 	</li>

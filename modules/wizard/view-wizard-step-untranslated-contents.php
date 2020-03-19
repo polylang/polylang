@@ -17,10 +17,10 @@ $default_language = ! empty( $languages_list ) ? $this->options['default_lang'] 
 <p>
 	<?php esc_html_e( 'There are posts, pages, categories or tags without language.', 'polylang' ); ?><br />
 	<?php esc_html_e( 'For your site to work correctly, you need to assign a language to all your contents.', 'polylang' ); ?><br />
-	<?php esc_html_e( 'The selected language below will be applied to all your contents without language.', 'polylang' ); ?>
+	<?php esc_html_e( 'The selected language below will be applied to all your content without an assigned language.', 'polylang' ); ?>
 </p>
 <div class="form-field">
-	<label for="lang_list"><?php esc_html_e( 'Choose the language to assign', 'polylang' ); ?></label>
+	<label for="lang_list"><?php esc_html_e( 'Choose the language to be assigned', 'polylang' ); ?></label>
 	<select name="language" id="lang_list">
 		<?php
 		foreach ( $languages_list as $lg ) {

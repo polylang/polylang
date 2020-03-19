@@ -20,7 +20,7 @@ $languages_list = array_diff_key(
 ?>
 <div id="language-fields"></div>
 <p class="languages-setup">
-	<?php esc_html_e( 'This wizard will help you to configure your Polylang settings and get you started quickly with your multilingual website.', 'polylang' ); ?>
+	<?php esc_html_e( 'This wizard will help you configure your Polylang settings, and get you started quickly with your multilingual website.', 'polylang' ); ?>
 </p>
 <p class="languages-setup">
 	<?php esc_html_e( 'First we are going to define the languages that you will use on your website.', 'polylang' ); ?>
@@ -29,7 +29,7 @@ $languages_list = array_diff_key(
 <div id="messages">
 </div>
 <div class="form-field">
-	<label for="lang_list"><?php esc_html_e( 'Select a language to add', 'polylang' ); ?></label>
+	<label for="lang_list"><?php esc_html_e( 'Select a language to be added', 'polylang' ); ?></label>
 	<div class="select-language-field">
 		<select name="lang_list" id="lang_list">
 			<option value=""></option>

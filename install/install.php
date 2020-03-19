@@ -40,7 +40,7 @@ class PLL_Install extends PLL_Install_Base {
 			'<div class="error"><p>%s</p></div>',
 			sprintf(
 				/* translators: 1: Plugin name 2: Current PHP version 3: Required PHP version */
-				esc_html__( '%1$s has deactivated itself because you are using an old PHP version. You are using using PHP %2$s. %1$s requires PHP %3$s.', 'polylang' ),
+				esc_html__( '%1$s has deactivated itself because you are using an old version of PHP. You are using using PHP %2$s. %1$s requires PHP %3$s.', 'polylang' ),
 				esc_html( POLYLANG ),
 				PHP_VERSION,
 				esc_html( PLL_MIN_PHP_VERSION )
@@ -62,7 +62,7 @@ class PLL_Install extends PLL_Install_Base {
 			'<div class="error"><p>%s</p></div>',
 			sprintf(
 				/* translators: 1: Plugin name 2: Current WordPress version 3: Required WordPress version */
-				esc_html__( '%1$s has deactivated itself because you are using an old WordPress version. You are using using WordPress %2$s. %1$s requires at least WordPress %3$s.', 'polylang' ),
+				esc_html__( '%1$s has deactivated itself because you are using an old version of WordPress. You are using using WordPress %2$s. %1$s requires at least WordPress %3$s.', 'polylang' ),
 				esc_html( POLYLANG ),
 				esc_html( $wp_version ),
 				esc_html( PLL_MIN_WP_VERSION )

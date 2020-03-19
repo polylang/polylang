@@ -103,7 +103,7 @@ foreach ( $languages as $language ) {
 				</th>
 			</tr>
 			<tr>
-				<td><?php esc_html_e( "Don't forget to translate your homepage if you add a new language.", 'polylang' ); ?></td>
+				<td><?php esc_html_e( "If you add a new language, don't forget to translate your homepage.", 'polylang' ); ?></td>
 			</tr>
 		<?php else : ?>
 			<tr>
@@ -111,7 +111,7 @@ foreach ( $languages as $language ) {
 			</tr>
 			<tr>
 				<td>
-					<?php esc_html_e( "You need to add at least one language. You're going to be redirected to the languages step.", 'polylang' ); ?>
+					<?php esc_html_e( "You need to add at least one language. You're going to be redirected to the languages' step.", 'polylang' ); ?>
 				</td>
 			</tr>
 		<?php endif; ?>

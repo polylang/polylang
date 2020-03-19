@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<p class="next-step-heading"><?php esc_html_e( 'Next step', 'polylang' ); ?></p>
 			<h3 class="next-step-description"><?php esc_html_e( 'Create menus', 'polylang' ); ?></h3>
 			<p class="next-step-extra-info">
-				<?php esc_html_e( 'There are still two steps to do manually to make your website ready: add menus in each language and add a language switcher to allow your visitors to select the language.', 'polylang' ); ?>
+				<?php esc_html_e( 'To get your website ready, there are still two steps you need to perform manually: add menus in each language, and add a language switcher to allow your visitors to select their prefererd language.', 'polylang' ); ?>
 			</p>
 		</div>
 		<div class="pll-wizard-next-step-action">
@@ -49,7 +49,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="pll-wizard-next-step-description">
 			<p class="next-step-heading"><?php esc_html_e( 'Next step', 'polylang' ); ?></p>
 			<h3 class="next-step-description"><?php esc_html_e( 'Translate some pages', 'polylang' ); ?></h3>
-			<p class="next-step-extra-info"><?php esc_html_e( "You're ready to translate posts on your website.", 'polylang' ); ?></p>
+			<p class="next-step-extra-info"><?php esc_html_e( "You're ready to translate the posts on your website.", 'polylang' ); ?></p>
 		</div>
 		<div class="pll-wizard-next-step-action">
 			<p class="pll-wizard-actions step">
@@ -63,9 +63,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<li class="pll-wizard-next-step-item">
 			<div class="pll-wizard-next-step-description">
 				<p class="next-step-heading"><?php esc_html_e( 'Polylang Pro', 'polylang' ); ?></p>
-				<h3 class="next-step-description"><?php esc_html_e( 'Upgrade to the Pro version', 'polylang' ); ?></h3>
+				<h3 class="next-step-description"><?php esc_html_e( 'Upgrade to Polylang Pro', 'polylang' ); ?></h3>
 				<p class="next-step-extra-info">
-					<?php esc_html_e( 'You activated Polylang. If you want more advanced features - duplication, synchronization, REST API support, integration with other plugins... - or further help provided by our Premium support, we recommend to purchase Polylang Pro.', 'polylang' ); ?>
+					<?php esc_html_e( 'Thank you for activating Polylang. If you want more advanced features - duplication, synchronization, REST API support, integration with other plugins, etc. - or further help provided by our Premium support, we recommend you upgrade to Polylang Pro.', 'polylang' ); ?>
 				</p>
 			</div>
 			<div class="pll-wizard-next-step-action">
@@ -105,7 +105,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="pll-wizard-next-step-action">
 			<p class="pll-wizard-actions step">
 				<a class="button button-large" href="<?php echo esc_url( admin_url() ); ?>">
-					<?php esc_html_e( 'Return back to Dashboard', 'polylang' ); ?>
+					<?php esc_html_e( 'Return to the Dashboard', 'polylang' ); ?>
 				</a>
 			</p>
 		</div>

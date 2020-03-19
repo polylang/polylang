@@ -15,7 +15,7 @@ $is_error = isset( $_GET['activate_error'] ) && 'i18n_license_key_error' === san
 ?>
 <p>
 	<?php esc_html_e( 'You are using plugins which require a license key.', 'polylang' ); ?>
-	<?php esc_html_e( 'Please enter your license keys:', 'polylang' ); ?>
+	<?php esc_html_e( 'Please enter your license key(s):', 'polylang' ); ?>
 </p>
 <h2><?php esc_html_e( 'Licenses', 'polylang' ); ?></h2>
 <div id="messages">
