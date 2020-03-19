@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<p class="next-step-heading"><?php esc_html_e( 'Next step', 'polylang' ); ?></p>
 			<h3 class="next-step-description"><?php esc_html_e( 'Create menus', 'polylang' ); ?></h3>
 			<p class="next-step-extra-info">
-				<?php esc_html_e( 'To get your website ready, there are still two steps you need to perform manually: add menus in each language, and add a language switcher to allow your visitors to select their prefererd language.', 'polylang' ); ?>
+				<?php esc_html_e( 'To get your website ready, there are still two steps you need to perform manually: add menus in each language, and add a language switcher to allow your visitors to select their preferred language.', 'polylang' ); ?>
 			</p>
 		</div>
 		<div class="pll-wizard-next-step-action">
