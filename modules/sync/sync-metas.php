@@ -118,21 +118,32 @@ abstract class PLL_Sync_Metas {
 	 * @return array List of meta keys
 	 */
 	protected function get_metas_to_copy( $from, $to, $lang, $sync = false ) {
-		/**
-		 * Filter the custom fields to copy or synchronize
-		 *
-		 * @since 0.6
-		 * @since 1.9.2 The `$from`, `$to`, `$lang` parameters were added.
-		 *
-		 * @param array  $keys List of custom fields names
-		 * @param bool   $sync True if it is synchronization, false if it is a copy
-		 * @param int    $from Id of the post from which we copy informations
-		 * @param int    $to   Id of the post to which we paste informations
-		 * @param string $lang Language slug
-		 */
 		return array_unique(
 			array_merge(
+				/**
+				 * Filter the custom fields to copy or synchronize
+				 *
+				 * @since 0.6
+				 * @since 1.9.2 The `$from`, `$to`, `$lang` parameters were added.
+				 *
+				 * @param array  $keys List of custom fields names
+				 * @param bool   $sync True if it is synchronization, false if it is a copy
+				 * @param int    $from Id of the post from which we copy informations
+				 * @param int    $to   Id of the post to which we paste informations
+				 * @param string $lang Language slug
+				 */
 				apply_filters( "pll_copy_{$this->meta_type}_metas", array(), $sync, $from, $to, $lang ),
+				/**
+				 * Filter the custom fields to translate
+				 *
+				 * @since 2.8
+				 *
+				 * @param array  $keys List of custom fields names
+				 * @param bool   $sync True if it is synchronization, false if it is a copy
+				 * @param int    $from Id of the post from which we copy informations
+				 * @param int    $to   Id of the post to which we paste informations
+				 * @param string $lang Language slug
+				 */
 				apply_filters( "pll_{$this->meta_type}_metas_to_translate", array(), $sync, $from, $to, $lang )
 			)
 		);

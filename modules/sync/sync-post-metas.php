@@ -71,6 +71,7 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 			array_merge(
 				/** This filter is documented in modules/sync/sync-metas.php */
 				apply_filters( 'pll_copy_post_metas', $keys, $sync, $from, $to, $lang ),
+				/** This filter is documented in modules/sync/sync-metas.php */
 				apply_filters( 'pll_post_metas_to_translate', $keys, $sync, $from, $to, $lang )
 			)
 		);
