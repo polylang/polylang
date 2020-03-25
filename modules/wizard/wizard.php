@@ -52,8 +52,6 @@ class PLL_Wizard {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		// Add filter to select screens where to display the notice.
 		add_filter( 'pll_can_display_notice', array( $this, 'can_display_notice' ), 10, 2 );
-		// Add ajax action on deactivate button in licenses step.
-		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
 
 		// Default steps.
 		add_filter( 'pll_wizard_steps', array( $this, 'add_step_licenses' ), 100 );
@@ -319,6 +317,9 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function add_step_licenses( $steps ) {
+		// Add ajax action on deactivate button in licenses step.
+		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
+
 		wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 		if ( $this->is_licenses_step_displayable() ) {
 			$steps['licenses'] = array(
