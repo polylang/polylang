@@ -684,13 +684,6 @@ class PLL_Wizard {
 	public function save_step_home_page() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$languages = $this->model->get_languages_list();
-
-		if ( count( $languages ) === 0 ) {
-			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'languages' ) ) );
-			exit;
-		}
-
 		$default_language = count( $languages ) > 0 ? $this->options['default_lang'] : null;
 		$home_page = isset( $_POST['home_page'] ) ? sanitize_key( $_POST['home_page'] ) : false;
 		$home_page_title = isset( $_POST['home_page_title'] ) ? sanitize_text_field( wp_unslash( $_POST['home_page_title'] ) ) : esc_html__( 'Homepage', 'polylang' );
