@@ -176,6 +176,14 @@ class PLL_Wizard {
 
 		$this->step = $step && array_key_exists( $step, $this->steps ) ? $step : current( array_keys( $this->steps ) );
 
+		$languages = $this->model->get_languages_list();
+
+		if ( count( $languages ) === 0 && ! in_array( $this->step, array( 'licenses', 'languages' ) ) ) {
+			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'languages' ) ) );
+			exit;
+		}
+
+
 		// Call the handler of the step for going to the next step.
 		// Be careful nonce verification with check_admin_referer must be done in each handler.
 		if ( ! empty( $_POST['save_step'] ) && isset( $this->steps[ $this->step ]['handler'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -676,13 +684,6 @@ class PLL_Wizard {
 	 */
 	public function save_step_home_page() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
-
-		$languages = $this->model->get_languages_list();
-
-		if ( count( $languages ) === 0 ) {
-			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'languages' ) ) );
-			exit;
-		}
 
 		$default_language = count( $languages ) > 0 ? $this->options['default_lang'] : null;
 		$home_page = isset( $_POST['home_page'] ) ? sanitize_key( $_POST['home_page'] ) : false;
