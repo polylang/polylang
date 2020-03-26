@@ -428,6 +428,7 @@ class PLL_Model {
 		global $wpdb;
 
 		$term_name = trim( wp_unslash( $term_name ) );
+		$term_name = _wp_specialchars( $term_name );
 
 		$select = "SELECT t.term_id FROM $wpdb->terms AS t";
 		$join = " INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id";
