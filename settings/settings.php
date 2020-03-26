@@ -1,6 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Settings
+ *
  * A class for the Polylang settings pages
  * accessible in $polylang global object
  *
@@ -15,7 +20,6 @@
  * pref_lang        => inherited, preferred language used as default when saving posts or terms
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Settings extends PLL_Admin_Base {

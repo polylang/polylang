@@ -1,11 +1,15 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Choose_Lang_Content
+ *
  * Choose the language when it is set from content
  * The language is set either in parse_query with priority 2 or in wp with priority 5
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Choose_Lang_Content extends PLL_Choose_Lang {

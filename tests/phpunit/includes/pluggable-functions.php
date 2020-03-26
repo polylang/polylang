@@ -1,6 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class Pluggable_Functions
+ *
  * Used to Mock the functions from WordPress 'pluggable' API
  *
  * How it works :
@@ -10,7 +15,6 @@
  * - The Pluggable_Functions object is instantiated as a dependency of PLL_UnitTestCase, that's where the mock can be placed.
  *
  * For example, {
- * @package Polylang
  *@see PLL_Bulk_Translate_Test::test_handle_bulk_action_with_varying_parameters()}
  */
 

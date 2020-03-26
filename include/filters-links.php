@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Filters_Links
+ *
  * Manages links filters needed on both frontend and admin
  *
  *
- * @package Polylang
  *@since 1.8
  */
 class PLL_Filters_Links {

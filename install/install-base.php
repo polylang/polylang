@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Install_Base
+ *
  * A generic activation / de-activation class compatble with multisite
  *
  *
- * @package Polylang
  *@since 1.7
  */
 class PLL_Install_Base {

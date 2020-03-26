@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Frontend_Filters_Search
+ *
  * Filters search forms when using permalinks
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Frontend_Filters_Search {

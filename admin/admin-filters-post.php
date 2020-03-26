@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Admin_Filters_Post
+ *
  * Manages filters and actions related to posts on admin side
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {

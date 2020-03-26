@@ -1,6 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_REST_Request
+ *
  * REST API controller
  * accessible as $polylang global object
  *
@@ -17,7 +22,6 @@
  * sync           => reference to PLL_Sync object
  *
  *
- * @package Polylang
  *@since 2.6
  */
 class PLL_REST_Request extends PLL_Base {

@@ -1,12 +1,16 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Links_Domain
+ *
  * Links model for use when using one domain per language
  * for example mysite.com/sth and mysite.fr/qqch
  * implements the "links_model interface"
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Links_Domain extends PLL_Links_Abstract_Domain {

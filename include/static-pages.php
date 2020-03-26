@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Static_Pages
+ *
  * Base class to manage the static front page and the page for posts
  *
  *
- * @package Polylang
  *@since 1.8
  */
 class PLL_Static_Pages {

@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Frontend_Filters
+ *
  * Filters content by language on frontend
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Frontend_Filters extends PLL_Filters {

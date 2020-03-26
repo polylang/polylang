@@ -1,11 +1,15 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Admin_Filters_Media
+ *
  * Manages filters and actions related to media on admin side
  * Capability to edit / create media is checked before loading this class
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {

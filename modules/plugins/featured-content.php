@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Featured_Content
+ *
  * Manages the compatibility with the Jetpack Twenty Fourteenn Featured content
  *
  *
- * @package Polylang
  *@since 2.4
  */
 class PLL_Featured_Content {

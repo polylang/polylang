@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Settings_Sync
+ *
  * Settings class for synchronization settings management
  *
  *
- * @package Polylang
  *@since 1.8
  */
 class PLL_Settings_Sync extends PLL_Settings_Module {

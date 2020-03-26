@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Settings_Share_Slug
+ *
  * Settings class to advertize the Share slugs module
  *
  *
- * @package Polylang
  *@since 1.9
  */
 class PLL_Settings_Share_Slug extends PLL_Settings_Module {

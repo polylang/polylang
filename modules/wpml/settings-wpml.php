@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Settings_WPML
+ *
  * A class to inform about the WPML compatibility module in Polylang settings
  *
  *
- * @package Polylang
  *@since 1.8
  */
 class PLL_Settings_WPML extends PLL_Settings_Module {

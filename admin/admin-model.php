@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Admin_Model
+ *
  * Extends the PLL_Model class with methods needed only in Polylang settings pages
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Admin_Model extends PLL_Model {

@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Admin_Classic_Editor
+ *
  * Manages filters and actions related to the classic editor
  *
  *
- * @package Polylang
  *@since 2.4
  */
 class PLL_Admin_Classic_Editor {

@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Settings_Browser
+ *
  * Settings class for browser language preference detection
  *
  *
- * @package Polylang
  *@since 1.8
  */
 class PLL_Settings_Browser extends PLL_Settings_Module {

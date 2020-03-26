@@ -1,10 +1,12 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
- * Class to manage Lingotek ads
+ * Class PLL_Lingotek
  *
  *
- * @package Polylang
  *@since 1.7.7
  */
 class PLL_Lingotek {

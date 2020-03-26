@@ -1,12 +1,16 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_WPML_Config
+ *
  * Reads and interprets the file wpml-config.xml
  * See http://wpml.org/documentation/support/language-configuration-files/
  * The language switcher configuration is not interpreted
  *
  *
- * @package Polylang
  *@since 1.0
  */
 class PLL_WPML_Config {

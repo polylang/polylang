@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Sync_Term_Metas
+ *
  * A class to manage copy and synchronization of term metas
  *
  *
- * @package Polylang
  *@since 2.3
  */
 class PLL_Sync_Term_Metas extends PLL_Sync_Metas {

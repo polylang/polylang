@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Walker_Dropdown
+ *
  * Displays languages in a dropdown list
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Walker_Dropdown extends Walker {

@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Translated_Term
+ *
  * Setups the taxonomies languages and translations model
  *
  *
- * @package Polylang
  *@since 1.8
  */
 class PLL_Translated_Term extends PLL_Translated_Object {

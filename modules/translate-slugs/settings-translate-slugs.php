@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Settings_Translate_Slugs
+ *
  * Settings class to advertize the Translate slugs module
  *
  *
- * @package Polylang
  *@since 1.9
  */
 class PLL_Settings_Translate_Slugs extends PLL_Settings_Module {

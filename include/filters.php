@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Filters
+ *
  * Setup filters common to admin and frontend
  *
  *
- * @package Polylang
  *@since 1.4
  */
 class PLL_Filters {

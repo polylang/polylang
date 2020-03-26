@@ -1,11 +1,15 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_CRUD_Posts
+ *
  * Adds actions and filters related to languages when creating, updating or deleting posts
  * Actions a filters used when reaing posts are handled separately
  *
  *
- * @package Polylang
  *@since 2.4
  */
 class PLL_CRUD_Posts {

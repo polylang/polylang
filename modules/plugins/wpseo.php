@@ -1,11 +1,15 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_WPSEO
+ *
  * Manages the compatibility with Yoast SEO
  * Version tested: 11.5
  *
  *
- * @package Polylang
  *@since 2.3
  */
 class PLL_WPSEO {

@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Widget_Languages
+ *
  * The language switcher widget
  *
  *
- * @package Polylang
  *@since 0.1
  */
 class PLL_Widget_Languages extends WP_Widget {

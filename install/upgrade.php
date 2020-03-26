@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Upgrade
+ *
  * Manages Polylang upgrades
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Upgrade {

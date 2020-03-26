@@ -1,6 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Frontend
+ *
  * Frontend controller
  * accessible as $polylang global object
  *
@@ -22,7 +27,6 @@
  * auto_translate => optional, reference to PLL_Auto_Translate object
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Frontend extends PLL_Base {

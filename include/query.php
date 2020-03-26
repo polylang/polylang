@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Query
+ *
  * A class to manipulate the language query var in WP_Query
  *
  *
- * @package Polylang
  *@since 2.2
  */
 class PLL_Query {

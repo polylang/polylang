@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Admin_Strings
+ *
  * A fully static class to manage strings translations on admin side
  *
  *
- * @package Polylang
  *@since 1.6
  */
 class PLL_Admin_Strings {

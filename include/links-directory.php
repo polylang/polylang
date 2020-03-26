@@ -1,12 +1,16 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Links_Directory
+ *
  * Links model for use when the language code is added in url as a directory
  * for example mysite.com/en/something
  * implements the "links_model interface"
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Links_Directory extends PLL_Links_Permalinks {

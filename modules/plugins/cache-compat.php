@@ -1,11 +1,15 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Cache_Compat
+ *
  * A class to manage specific compatibility issue with cache plugins
  * Tested with WP Rocket 2.10.7
  *
  *
- * @package Polylang
  *@since 2.3
  */
 class PLL_Cache_Compat {

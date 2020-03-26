@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_License
+ *
  * A class to easily manage licenses for Polylang Pro and addons
  *
  *
- * @package Polylang
  *@since 1.9
  */
 class PLL_License {

@@ -1,11 +1,15 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Cache
+ *
  * An extremely simple non persistent cache system
  * not as fast as using directly an array but more readable
  *
  *
- * @package Polylang
  *@since 1.7
  */
 class PLL_Cache {

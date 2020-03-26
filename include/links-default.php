@@ -1,12 +1,16 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Links_Default
+ *
  * Links model for default permalinks
  * for example mysite.com/?somevar=something&lang=en
  * implements the "links_model interface"
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Links_Default extends PLL_Links_Model {

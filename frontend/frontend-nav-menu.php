@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
+ * Class PLL_Frontend_Nav_Menu
+ *
  * Manages custom menus translations as well as the language switcher menu item on frontend
  *
  *
- * @package Polylang
  *@since 1.2
  */
 class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
