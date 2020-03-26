@@ -14,12 +14,6 @@ class WPML_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang; // The WPML API uses the global $polylang
 	}
 
-	static function wpTearDownAfterClass() {
-		parent::wpTearDownAfterClass();
-
-		unset( $GLOBALS['polylang'] );
-	}
-
 	function setUp() {
 		parent::setUp();
 

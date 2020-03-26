@@ -11,6 +11,5 @@ class No_Languages_Test extends PLL_UnitTestCase {
 		$this->assertFalse( pll_current_language() );
 		$this->assertFalse( pll_default_language() ); // the bug
 		$this->assertEquals( home_url( '/' ), pll_home_url() );
-		unset( $GLOBALS['polylang'] );
 	}
 }

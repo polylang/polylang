@@ -26,8 +26,6 @@ class Columns_Test extends PLL_UnitTestCase {
 		unset( self::$polylang->filter_lang );
 
 		parent::tearDown();
-
-		$_REQUEST = $_GET = $_POST = array();
 	}
 
 	function test_post_with_no_language() {

@@ -24,12 +24,6 @@ if ( version_compare( $GLOBALS['wp_version'], '5.2', '>=' ) && file_exists( DIR_
 			self::$polylang->init();
 		}
 
-		function tearDown() {
-			parent::tearDown();
-
-			unset( $GLOBALS['polylang'] );
-		}
-
 		function test_opengraph() {
 			// create posts to get something  on home page
 			$en = $this->factory->post->create();

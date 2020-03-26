@@ -57,12 +57,6 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 			self::$polylang->init();
 		}
 
-		function tearDown() {
-			parent::tearDown();
-
-			unset( $GLOBALS['polylang'] );
-		}
-
 		function test_opengraph() {
 			// create posts to get something  on home page
 			$en = $this->factory->post->create();

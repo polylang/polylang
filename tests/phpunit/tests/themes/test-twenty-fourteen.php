@@ -34,7 +34,6 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 		static function wpTearDownAfterClass() {
 			parent::wpTearDownAfterClass();
 
-			unset( $GLOBALS['polylang'] );
 			switch_theme( self::$stylesheet );
 		}
 

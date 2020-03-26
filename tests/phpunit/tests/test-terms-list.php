@@ -21,13 +21,6 @@ class Terms_List_Test extends PLL_UnitTestCase {
 		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		$_REQUEST = $_GET = $_POST = array();
-		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'] );
-	}
-
 	function test_term_list_with_admin_language_filter() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$polylang->model->term->set_language( $fr, 'fr' );

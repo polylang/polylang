@@ -23,12 +23,6 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 		self::$polylang->links_model = self::$polylang->model->get_links_model();
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		unset( $GLOBALS['polylang'] );
-	}
-
 	function test_get_calendar() {
 		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );

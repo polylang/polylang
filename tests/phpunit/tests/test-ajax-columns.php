@@ -21,12 +21,6 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		self::$polylang->filters_columns = new PLL_Admin_Filters_Columns( self::$polylang );
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		unset( $_REQUEST, $_GET, $_POST );
-	}
-
 	function test_post_translations() {
 		$en = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $en, 'en' );

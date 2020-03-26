@@ -16,12 +16,6 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = self::$polylang; // We use PLL()
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		unset( $GLOBALS['polylang'] );
-	}
-
 	/**
 	 * Copied from WP widgets tests
 	 */
@@ -47,7 +41,6 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		ob_start();
 		$wp_widget_search->form_callback( 2 );
 		$this->assertNotFalse( strpos( ob_get_clean(), 'search-2_lang_choice' ) );
-		unset( $GLOBALS['current_screen'] );
 	}
 
 	function update_lang_choice( $widget, $lang ) {

@@ -31,8 +31,6 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 		$_POST['post_lang_choice'] = 'de';
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
-
-		unset( $_POST );
 	}
 
 	function test_sanitize_user() {
@@ -49,7 +47,6 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		remove_action( 'personal_options_update', 'send_confirmation_on_profile_email' );
 		do_action( 'personal_options_update', 1 );
 		$this->assertEquals( $_POST['description_de'], get_user_meta( 1, 'description_de', true ) );
-		unset( $_POST );
 	}
 
 	function test_admin_body_class() {

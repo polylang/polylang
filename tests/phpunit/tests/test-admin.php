@@ -64,8 +64,6 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		$test = strpos( $footer, 'polylang_admin-css' );
 		in_array( 'css', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
-
-		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'], $GLOBALS['wp_styles'] );
 	}
 
 	function test_scripts_in_post_list_table() {

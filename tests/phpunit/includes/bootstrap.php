@@ -9,7 +9,6 @@ require_once $_tests_dir . '/includes/functions.php';
 
 // load the plugin however *no* Polylang instance is created as no languages exist in DB
 function _manually_load_plugin() {
-	require_once dirname( __FILE__ ) . '/pluggable-functions.php';
 	require_once dirname( __FILE__ ) . '/../../../polylang.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );

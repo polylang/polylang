@@ -18,7 +18,6 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		$args['lang_id'] = $lang->term_id;
 		$args = wp_parse_args( $args, $defaults );
 		self::$polylang->model->update_language( $args );
-		unset( $GLOBALS['wp_settings_errors'] ); // clean "errors"
 	}
 
 	function test_change_language_slug() {

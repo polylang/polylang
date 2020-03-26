@@ -27,12 +27,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		$_REQUEST = $_GET = $_POST = array();
-	}
-
 	function test_default_language() {
 		// User preferred language
 		self::$polylang->pref_lang = self::$polylang->model->get_language( 'fr' );
@@ -221,8 +215,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $out, 'test' ) );
 		$this->assertFalse( strpos( $out, 'essai' ) );
-
-		unset( $_POST, $GLOBALS['hook_suffix'], $GLOBALS['current_screen'] );
 	}
 
 	function test_languages_meta_box_for_new_post() {
@@ -242,8 +234,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$option = $xpath->query( '//div/select/option[.="' . $lang->name . '"]' );
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
-
-		unset( $_GET );
 	}
 
 	function test_languages_meta_box_for_new_translation() {
@@ -275,8 +265,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$input = $xpath->query( '//input[@id="tr_lang_en"]' );
 		$this->assertEquals( 'test', $input->item( 0 )->getAttribute( 'value' ) );
-
-		unset( $_GET );
 	}
 
 	function test_languages_meta_box_for_existing_post_with_translations() {
@@ -452,8 +440,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		}
 
 		$this->assertNotFalse( strpos( $footer, 'var pll_term_languages = ' . wp_json_encode( $terms ) ) );
-
-		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'] );
 	}
 
 	function test_parent_pages_script_data_in_footer() {
@@ -477,7 +463,5 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$pages = array( 'en' => array( $en ), 'fr' => array( $fr ) );
 
 		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . wp_json_encode( $pages ) ) );
-
-		unset( $_REQUEST, $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'] );
 	}
 }

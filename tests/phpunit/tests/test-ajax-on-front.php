@@ -22,7 +22,6 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 	function tearDown() {
 		parent::tearDown();
 
-		unset( $_REQUEST, $_GET, $_POST );
 		unload_textdomain( 'default' );
 	}
 

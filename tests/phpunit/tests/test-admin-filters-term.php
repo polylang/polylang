@@ -24,12 +24,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		$_REQUEST = $_GET = $_POST = array();
-	}
-
 	function test_default_language() {
 		// User preferred language
 		self::$polylang->pref_lang = self::$polylang->model->get_language( 'fr' );
@@ -242,8 +236,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$form = $this->get_edit_term_form( $tag_ID, 'category' );
 		$this->assertFalse( strpos( $form, 'test' ) );
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
-
-		unset( $_REQUEST, $_GET, $_POST, $GLOBALS['post_type'] );
 	}
 
 	function test_language_dropdown_and_translations_in_edit_tags() {
@@ -316,7 +308,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		// FIXME this filter is available since WP 4.2 and is worth looking at ( could simplify get_queried_language? )
 		$dropdown_args = apply_filters( 'taxonomy_parent_dropdown_args', $dropdown_args, $taxonomy, 'new' );
 		wp_dropdown_categories( $dropdown_args );
-		unset( $GLOBALS['current_screen'] );
 		return ob_get_clean();
 	}
 
@@ -356,8 +347,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$dropdown = $this->get_parent_dropdown_in_new_term_form( 'category' );
 
 		$this->assertNotFalse( strpos( $dropdown, '<option class="level-0" value="' . $fr . '" selected="selected">essai</option>' ) );
-
-		unset( $_GET );
 	}
 
 	function test_language_dropdown_and_translations_in_new_tags() {
@@ -410,8 +399,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$input = $xpath->query( '//input[@id="tr_lang_de"]' );
 		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) ); // No translation in German
-
-		unset( $_GET, $GLOBALS['post_type'] );
 	}
 
 	function test_new_default_category() {
@@ -444,8 +431,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertFalse( strpos( $out, 'test' ) );
 		$this->assertNotFalse( strpos( $out, 'essai' ) );
-
-		unset( $_POST );
 	}
 
 	function test_nav_menu_item_taxonomy_meta_box() {

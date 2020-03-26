@@ -23,12 +23,6 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 	}
 
-	public function tearDown() {
-		parent::tearDown();
-
-		unset( $_REQUEST, $_GET, $_POST );
-	}
-
 	public function test_term_lang_choice_in_edit_category() {
 		// Possible parents.
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );

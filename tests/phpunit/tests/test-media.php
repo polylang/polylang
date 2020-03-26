@@ -94,8 +94,6 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $en )->slug );
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $fr )->slug );
 		$this->assertEqualSets( array( 'en' => $en, 'fr' => $fr ), self::$polylang->model->post->get_translations( $en ) );
-
-		unset( $_REQUEST, $_POST );
 	}
 
 	function test_create_media_translation_with_slashes() {

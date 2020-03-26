@@ -7,12 +7,6 @@ class YARPP_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang; // avoid conflicts when other tests are executed before
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		unset( $GLOBALS['polylang'] );
-	}
-
 	// bug introduced in 1.8 and fixed in 1.8.2
 	function test_yarpp_support() {
 		do_action( 'setup_theme' );

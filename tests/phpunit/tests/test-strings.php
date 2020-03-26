@@ -12,12 +12,6 @@ class Strings_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang; // The WPML API uses the global $polylang
 	}
 
-	static function wpTearDownAfterClass() {
-		parent::wpTearDownAfterClass();
-
-		unset( $GLOBALS['polylang'] );
-	}
-
 	// copied from WP widgets tests
 	function clean_up_global_scope() {
 		global $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
@@ -66,8 +60,6 @@ class Strings_Test extends PLL_UnitTestCase {
 		$strings = PLL_Admin_Strings::get_strings();
 		$strings = wp_list_pluck( $strings, 'string' );
 		$this->assertNotContains( 'My Title', $strings );
-
-		unset( $_POST );
 	}
 
 	function test_widget_title_in_all_languages() {
@@ -94,8 +86,6 @@ class Strings_Test extends PLL_UnitTestCase {
 		$strings = PLL_Admin_Strings::get_strings();
 		$strings = wp_list_pluck( $strings, 'string' );
 		$this->assertContains( 'My Title', $strings );
-
-		unset( $_POST );
 	}
 
 	// Bug fixed in 2.1

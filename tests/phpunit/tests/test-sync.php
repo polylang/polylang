@@ -19,12 +19,6 @@ class Sync_Test extends PLL_UnitTestCase {
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		$_REQUEST = $_GET = $_POST = array();
-	}
-
 	function test_copy_taxonomies() {
 		$tag_en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_en' ) );
 		self::$polylang->model->term->set_language( $tag_en, 'en' );
@@ -335,8 +329,6 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
 		$this->assertEquals( 12, $page->menu_order );
 		$this->assertEquals( 'templates/test.php', get_page_template_slug( $to ) );
-
-		unset( $GLOBALS['post_type'] );
 	}
 
 	function test_save_term_with_sync_in_post() {
@@ -498,8 +490,6 @@ class Sync_Test extends PLL_UnitTestCase {
 		$page = get_post( $to );
 
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
-
-		unset( $_REQUEST['post_type'] );
 	}
 
 	function test_create_post_translation_with_sync_date() {

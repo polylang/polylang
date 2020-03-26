@@ -14,7 +14,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 
 		$this->assertTrue( self::$polylang->model->add_language( $args ) );
-		unset( $GLOBALS['wp_settings_errors'] ); // clean "errors"
 
 		$lang = self::$polylang->model->get_language( 'en' );
 
@@ -35,7 +34,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 
 		$this->assertTrue( self::$polylang->model->add_language( $args ) );
-		unset( $GLOBALS['wp_settings_errors'] ); // clean "errors"
 
 		$lang = self::$polylang->model->get_language( 'ar' );
 
@@ -86,13 +84,11 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 
 		$this->assertTrue( self::$polylang->model->add_language( $args ) );
-		unset( $GLOBALS['wp_settings_errors'] ); // clean "errors"
 
 		$lang = self::$polylang->model->get_language( 'ar' );
 		$args['lang_id'] = $lang->term_id;
 		$args['slug'] = 'ar';
 		$this->assertTrue( self::$polylang->model->update_language( $args ) );
-		unset( $GLOBALS['wp_settings_errors'] ); // clean "errors"
 
 		self::$polylang->model->delete_language( $lang->term_id );
 	}

@@ -242,8 +242,6 @@ class Filters_Test extends PLL_UnitTestCase {
 		$_REQUEST['lang'] = 'fr';
 		$post_id = $this->factory->post->create();
 		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $post_id )->slug );
-
-		unset( $_REQUEST );
 	}
 
 	function test_save_page_with_parent() {
@@ -268,8 +266,6 @@ class Filters_Test extends PLL_UnitTestCase {
 		$_REQUEST['lang'] = 'fr';
 		$term_id = $this->factory->category->create();
 		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $term_id )->slug );
-
-		unset( $_REQUEST );
 	}
 
 	function test_save_category_with_parent() {

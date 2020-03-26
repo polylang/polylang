@@ -16,13 +16,6 @@ class Settings_Test extends PLL_UnitTestCase {
 		add_filter( 'pre_transient_available_translations', '__return_empty_array' );
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		$_REQUEST = $_GET = $_POST = array();
-		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'] );
-	}
-
 	// bug introduced and fixed in 1.9alpha
 	function test_edit_language() {
 		$lang = self::$polylang->model->get_language( 'fr' );

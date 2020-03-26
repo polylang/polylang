@@ -24,12 +24,6 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		unset( $_REQUEST, $_GET, $_POST );
-	}
-
 	function test_post_lang_choice() {
 		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang ); // We need this for categories and tags
 

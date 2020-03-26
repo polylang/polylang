@@ -19,12 +19,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-		$_POST = $_REQUEST = array();
-	}
-
 	function test_nav_menu_locations() {
 		// get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
@@ -261,8 +255,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
 		$this->assertContains( 'Français', wp_nav_menu( $args ) );
 		$this->assertContains( 'English', wp_nav_menu( $args ) );
-
-		unset( $GLOBALS['polylang'] );
 	}
 
 	function test_nav_menu_language_switcher_as_dropdown() {
@@ -288,8 +280,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/a[.="English"]' )->length );
 		$this->assertEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); // current language is hidden
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
-
-		unset( $GLOBALS['polylang'] );
 	}
 
 	function test_update_nav_menu_item() {
@@ -417,7 +407,5 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $head, 'pll_data' ) );
 		$this->assertNotFalse( strpos( $head, plugins_url( '/js/nav-menu.min.js', POLYLANG_FILE ) ) );
-
-		unset( $GLOBALS['hook_suffix'], $GLOBALS['current_screen'], $GLOBALS['wp_scripts'] );
 	}
 }
