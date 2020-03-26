@@ -5,7 +5,9 @@
  * Defines some WPML constants
  * Registers strings in a persistent way as done by WPML
  *
- * @since 1.0.2
+ *
+ * @package Polylang
+ *@since 1.0.2
  */
 class PLL_WPML_Compat {
 	protected static $instance; // For singleton

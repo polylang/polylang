@@ -3,7 +3,9 @@
 /**
  * Class to manage Lingotek ads
  *
- * @since 1.7.7
+ *
+ * @package Polylang
+ *@since 1.7.7
  */
 class PLL_Lingotek {
 	const LINGOTEK = 'lingotek-translation/lingotek.php';

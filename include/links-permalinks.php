@@ -3,7 +3,9 @@
 /**
  * Links model base class when using pretty permalinks
  *
- * @since 1.6
+ *
+ * @package Polylang
+ *@since 1.6
  */
 abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	public $using_permalinks = true;

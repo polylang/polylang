@@ -3,7 +3,9 @@
 /**
  * Filters search forms when using permalinks
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Frontend_Filters_Search {
 	public $links_model, $curlang;

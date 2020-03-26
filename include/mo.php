@@ -3,7 +3,9 @@
 /**
  * Manages strings translations storage
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  * @since 2.1 Stores the strings in a post meta instead of post content to avoid unserialize issues (See #63)
  */
 class PLL_MO extends MO {

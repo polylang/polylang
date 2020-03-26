@@ -3,7 +3,9 @@
 /**
  * Manages filters and actions related to the block editor
  *
- * @since 2.5
+ *
+ * @package Polylang
+ *@since 2.5
  */
 class PLL_Admin_Block_Editor {
 	public $model;

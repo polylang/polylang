@@ -3,7 +3,9 @@
 /**
  * Filters content by language on frontend
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Frontend_Filters extends PLL_Filters {
 	public $cache;

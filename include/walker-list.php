@@ -3,7 +3,9 @@
 /**
  * Displays a language list
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Walker_List extends Walker {
 	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );

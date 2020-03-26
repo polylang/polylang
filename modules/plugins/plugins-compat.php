@@ -4,7 +4,9 @@
  * Manages compatibility with 3rd party plugins ( and themes )
  * This class is available as soon as the plugin is loaded
  *
- * @since 1.0
+ *
+ * @package Polylang
+ *@since 1.0
  */
 class PLL_Plugins_Compat {
 	protected static $instance; // for singleton

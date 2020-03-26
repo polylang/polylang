@@ -3,7 +3,9 @@
 /**
  * Manages Polylang upgrades
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Upgrade {
 	public $options;

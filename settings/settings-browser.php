@@ -3,7 +3,9 @@
 /**
  * Settings class for browser language preference detection
  *
- * @since 1.8
+ *
+ * @package Polylang
+ *@since 1.8
  */
 class PLL_Settings_Browser extends PLL_Settings_Module {
 

@@ -5,7 +5,9 @@
  * for example mysite.com/?somevar=something&lang=en
  * implements the "links_model interface"
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Links_Default extends PLL_Links_Model {
 	public $using_permalinks = false;

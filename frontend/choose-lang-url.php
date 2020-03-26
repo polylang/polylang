@@ -5,7 +5,9 @@
  * The language is set in plugins_loaded with priority 1 as done by WPML
  * Some actions have to be delayed to wait for $wp_rewrite availability
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 	protected $index = 'index.php'; // Need this before $wp_rewrite is created, also hardcoded in wp-includes/rewrite.php

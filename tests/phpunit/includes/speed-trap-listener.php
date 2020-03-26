@@ -12,7 +12,9 @@ class SpeedTrapListener implements PHPUnit_Framework_TestListener
      * Increments as more suites are run, then decremented as they finish. All
      * suites have been run when returns to 0.
      *
-     * @var integer
+     *
+ * @package Polylang
+ *@var integer
      */
     protected $suites = 0;
 

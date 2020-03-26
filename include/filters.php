@@ -3,7 +3,9 @@
 /**
  * Setup filters common to admin and frontend
  *
- * @since 1.4
+ *
+ * @package Polylang
+ *@since 1.4
  */
 class PLL_Filters {
 	public $links_model, $model, $options, $curlang;

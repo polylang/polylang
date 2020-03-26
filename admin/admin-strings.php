@@ -3,7 +3,9 @@
 /**
  * A fully static class to manage strings translations on admin side
  *
- * @since 1.6
+ *
+ * @package Polylang
+ *@since 1.6
  */
 class PLL_Admin_Strings {
 	protected static $strings = array(); // strings to translate

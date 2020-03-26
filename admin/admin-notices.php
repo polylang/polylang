@@ -5,7 +5,9 @@
  * displayed only to admin, based on 'manage_options' capability
  * and only on dashboard, plugins and Polylang admin pages
  *
- * @since 2.3.9
+ *
+ * @package Polylang
+ *@since 2.3.9
  */
 class PLL_Admin_Notices {
 	private static $notices = array();

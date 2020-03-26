@@ -3,7 +3,9 @@
 /**
  * Links model for use when using one domain or subdomain per language
  *
- * @since 2.0
+ *
+ * @package Polylang
+ *@since 2.0
  */
 abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 

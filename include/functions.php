@@ -10,7 +10,9 @@ if ( ! function_exists( 'wpcom_vip_get_page_by_title' ) ) {
 	/**
 	 * Retrieve a page given its title.
 	 *
-	 * @since 2.0
+	 *
+ * @package Polylang
+ *@since 2.0
 	 *
 	 * @param string       $page_title Page title
 	 * @param string       $output     Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N. Default OBJECT

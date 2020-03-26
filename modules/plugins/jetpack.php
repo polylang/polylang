@@ -3,7 +3,9 @@
 /**
  * Manages the compatibility with Jetpack
  *
- * @since 2.3
+ *
+ * @package Polylang
+ *@since 2.3
  */
 class PLL_Jetpack {
 	/**

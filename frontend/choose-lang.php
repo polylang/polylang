@@ -3,7 +3,9 @@
 /**
  * Base class to choose the language
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 abstract class PLL_Choose_Lang {
 	public $links_model, $model, $options;

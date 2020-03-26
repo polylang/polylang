@@ -157,7 +157,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 						/**
 						 * Fires after the Edit Language form fields are displayed.
 						 *
-						 * @since 1.7.10
+						 *
+ * @package Polylang
+ *@since 1.7.10
 						 *
 						 * @param object $lang language being edited.
 						 */

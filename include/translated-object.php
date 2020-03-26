@@ -3,7 +3,9 @@
 /**
  * Setups the objects languages and translations model
  *
- * @since 1.8
+ *
+ * @package Polylang
+ *@since 1.8
  */
 abstract class PLL_Translated_Object {
 	public $model;

@@ -42,7 +42,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			 * Fires before the translation column is outputted in the language metabox
 			 * The dynamic portion of the hook name, `$lang`, refers to the language code
 			 *
-			 * @since 2.1
+			 *
+ * @package Polylang
+ *@since 2.1
 			 */
 			do_action( 'pll_before_post_translation_' . $language->slug );
 			?>

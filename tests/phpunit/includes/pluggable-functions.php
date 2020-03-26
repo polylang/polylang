@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Used to Mock the functions from WordPress 'pluggable' API
  *
@@ -8,7 +9,9 @@
  * - By default, this object contains a copy of the pluggeable.php functions, so they will behave like in production if they aren't mocked.
  * - The Pluggable_Functions object is instantiated as a dependency of PLL_UnitTestCase, that's where the mock can be placed.
  *
- * For example, {@see PLL_Bulk_Translate_Test::test_handle_bulk_action_with_varying_parameters()}
+ * For example, {
+ * @package Polylang
+ *@see PLL_Bulk_Translate_Test::test_handle_bulk_action_with_varying_parameters()}
  */
 
 /**

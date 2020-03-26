@@ -3,7 +3,9 @@
 /**
  * Displays the wizard licenses step
  *
- * @since 2.7
+ *
+ * @package Polylang
+ *@since 2.7
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

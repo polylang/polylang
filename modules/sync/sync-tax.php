@@ -3,7 +3,9 @@
 /**
  * A class to manage the sychronization of taxonomy terms across posts translations
  *
- * @since 2.3
+ *
+ * @package Polylang
+ *@since 2.3
  */
 class PLL_Sync_Tax {
 

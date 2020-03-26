@@ -3,7 +3,9 @@
 /**
  * Base class for both admin
  *
- * @since 1.8
+ *
+ * @package Polylang
+ *@since 1.8
  */
 class PLL_Admin_Base extends PLL_Base {
 	public $filter_lang, $curlang, $pref_lang;

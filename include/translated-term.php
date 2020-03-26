@@ -3,7 +3,9 @@
 /**
  * Setups the taxonomies languages and translations model
  *
- * @since 1.8
+ *
+ * @package Polylang
+ *@since 1.8
  */
 class PLL_Translated_Term extends PLL_Translated_Object {
 

@@ -32,7 +32,9 @@
  * page_on_front       => id of the page on front in this language ( set from pll_languages_list filter )
  * page_for_posts      => id of the page for posts in this language ( set from pll_languages_list filter )
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Language {
 	public $term_id, $name, $slug, $term_group, $term_taxonomy_id, $taxonomy, $description, $parent, $count;

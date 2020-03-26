@@ -3,7 +3,9 @@
 /**
  * Displays languages in a dropdown list
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Walker_Dropdown extends Walker {
 	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );

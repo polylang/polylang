@@ -3,7 +3,9 @@
 /**
  * Links model abstract class
  *
- * @since 1.5
+ *
+ * @package Polylang
+ *@since 1.5
  */
 abstract class PLL_Links_Model {
 	public $model, $options;

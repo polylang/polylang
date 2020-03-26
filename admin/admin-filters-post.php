@@ -3,7 +3,9 @@
 /**
  * Manages filters and actions related to posts on admin side
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	public $curlang;

@@ -16,7 +16,9 @@
  * terms          => reference to PLL_CRUD_Terms object
  * sync           => reference to PLL_Sync object
  *
- * @since 2.6
+ *
+ * @package Polylang
+ *@since 2.6
  */
 class PLL_REST_Request extends PLL_Base {
 	public $links, $static_pages, $posts, $terms, $filters, $filters_links, $sync;

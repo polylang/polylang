@@ -3,7 +3,9 @@
 /**
  * A class to easily manage licenses for Polylang Pro and addons
  *
- * @since 1.9
+ *
+ * @package Polylang
+ *@since 1.9
  */
 class PLL_License {
 	public $id, $name, $license_key, $license_data;

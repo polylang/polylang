@@ -4,7 +4,9 @@
  * Manages custom menus translations
  * Common to admin and frontend for the customizer
  *
- * @since 1.7.7
+ *
+ * @package Polylang
+ *@since 1.7.7
  */
 class PLL_Nav_Menu {
 	public $model, $options;

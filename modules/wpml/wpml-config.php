@@ -5,7 +5,9 @@
  * See http://wpml.org/documentation/support/language-configuration-files/
  * The language switcher configuration is not interpreted
  *
- * @since 1.0
+ *
+ * @package Polylang
+ *@since 1.0
  */
 class PLL_WPML_Config {
 	protected static $instance; // For singleton

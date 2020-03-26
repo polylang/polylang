@@ -3,7 +3,9 @@
 /**
  * A class to import languages and translations information form a WXR file
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_WP_Import extends WP_Import {
 	public $post_translations = array();

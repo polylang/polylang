@@ -3,7 +3,9 @@
 /**
  * Manages filters and actions related to the classic editor
  *
- * @since 2.4
+ *
+ * @package Polylang
+ *@since 2.4
  */
 class PLL_Admin_Classic_Editor {
 	public $model, $links, $curlang, $pref_lang;

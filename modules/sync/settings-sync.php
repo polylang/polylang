@@ -3,7 +3,9 @@
 /**
  * Settings class for synchronization settings management
  *
- * @since 1.8
+ *
+ * @package Polylang
+ *@since 1.8
  */
 class PLL_Settings_Sync extends PLL_Settings_Module {
 

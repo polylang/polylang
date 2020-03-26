@@ -3,7 +3,9 @@
 /**
  * Manages links related functions
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Links {
 	public $links_model, $model, $options;

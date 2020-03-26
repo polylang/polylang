@@ -3,7 +3,9 @@
 /**
  * Manages custom menus translations as well as the language switcher menu item on admin side
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 

@@ -3,7 +3,9 @@
 /**
  * Manages links filters needed on both frontend and admin
  *
- * @since 1.8
+ *
+ * @package Polylang
+ *@since 1.8
  */
 class PLL_Filters_Links {
 	public $links, $links_model, $model, $options, $curlang;

@@ -3,7 +3,9 @@
 /**
  * Setups the language and translations model based on WordPress taxonomies
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Model {
 	public $cache; // Our internal non persistent cache object

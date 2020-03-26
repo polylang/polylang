@@ -3,7 +3,9 @@
 /**
  * Manages copy and synchronization of terms and post metas on front
  *
- * @since 2.4
+ *
+ * @package Polylang
+ *@since 2.4
  */
 class PLL_Sync {
 	public $taxonomies, $post_metas, $term_meta;

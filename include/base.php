@@ -3,7 +3,9 @@
 /**
  * Base class for both admin and frontend
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 abstract class PLL_Base {
 	public $links_model, $model, $options;

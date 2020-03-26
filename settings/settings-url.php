@@ -3,7 +3,9 @@
 /**
  * A class to manage URL modifications settings
  *
- * @since 1.8
+ *
+ * @package Polylang
+ *@since 1.8
  */
 class PLL_Settings_Url extends PLL_Settings_Module {
 

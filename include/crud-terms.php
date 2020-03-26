@@ -4,7 +4,9 @@
  * Adds actions and filters related to languages when creating, reading, updating or deleting posts
  * Acts both on frontend and backend
  *
- * @since 2.4
+ *
+ * @package Polylang
+ *@since 2.4
  */
 class PLL_CRUD_Terms {
 	public $model, $curlang, $filter_lang, $pref_lang;

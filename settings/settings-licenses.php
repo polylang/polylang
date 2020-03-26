@@ -3,7 +3,9 @@
 /**
  * Settings class for licenses
  *
- * @since 1.9
+ *
+ * @package Polylang
+ *@since 1.9
  */
 class PLL_Settings_Licenses extends PLL_Settings_Module {
 	protected $items;

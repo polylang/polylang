@@ -3,7 +3,9 @@
 /**
  * Manages the compatibility with the Jetpack Twenty Fourteenn Featured content
  *
- * @since 2.4
+ *
+ * @package Polylang
+ *@since 2.4
  */
 class PLL_Featured_Content {
 	/**

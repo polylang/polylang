@@ -5,7 +5,9 @@
  * for example mysite.com/en/something
  * implements the "links_model interface"
  *
- * @since 1.2
+ *
+ * @package Polylang
+ *@since 1.2
  */
 class PLL_Links_Directory extends PLL_Links_Permalinks {
 	protected $home_relative;

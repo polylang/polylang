@@ -3,7 +3,9 @@
 /**
  * Base class for all settings
  *
- * @since 1.8
+ *
+ * @package Polylang
+ *@since 1.8
  */
 class PLL_Settings_Module {
 	public $active_option, $configure;
