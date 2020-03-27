@@ -186,7 +186,7 @@ class PLL_Wizard {
 		$home_page_id = get_option( 'page_on_front' );
 		$home_page_language = $this->model->post->get_language( $home_page_id );
 
-		if ( ! $home_page_language && in_array( $this->step, array( 'home-page', 'wc-pages' ) ) ) {
+		if ( ! $home_page_language && ! in_array( $this->step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
 			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'untranslated-contents' ) ) );
 			exit;
 		}
