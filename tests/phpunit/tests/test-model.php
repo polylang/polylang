@@ -39,6 +39,15 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( self::$polylang->model->term_exists( 'child', 'category', $parent, 'fr' ) );
 	}
 
+	/**
+	 * Bug fixed in 2.7
+	 */
+	function test_term_exists_with_special_character() {
+		$term = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'Cook & eat' ) );
+		self::$polylang->model->term->set_language( $term, 'en' );
+		$this->assertEquals( $term, self::$polylang->model->term_exists( 'Cook & eat', 'category', 0, 'en' ) );
+	}
+
 	function test_count_posts() {
 		$en = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $en, 'en' );
