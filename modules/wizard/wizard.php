@@ -183,6 +183,10 @@ class PLL_Wizard {
 			exit;
 		}
 
+		if ( $this->model->get_objects_with_no_lang( 1 ) && ! in_array( $this->step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
+			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'untranslated-contents' ) ) );
+			exit;
+		}
 
 		// Call the handler of the step for going to the next step.
 		// Be careful nonce verification with check_admin_referer must be done in each handler.
@@ -724,20 +728,14 @@ class PLL_Wizard {
 		$translations = $this->model->post->get_translations( $home_page );
 
 		foreach ( $untranslated_languages as $language ) {
-			// In fact this case isn't possible if we come from the untranslated contents step.
-			// And the static home page has already the default language assigned.
-			if ( $default_language === $language && false === $home_page_language && false !== $home_page && $home_page > 0 ) {
-				$id = $home_page;
-			} else {
-				$language_properties = $this->model->get_language( $language );
-				$id = wp_insert_post(
-					array(
-						'post_title'  => $home_page_title . ' - ' . $language_properties->name,
-						'post_type'   => 'page',
-						'post_status' => 'publish',
-					)
-				);
-			}
+			$language_properties = $this->model->get_language( $language );
+			$id = wp_insert_post(
+				array(
+					'post_title'  => $home_page_title . ' - ' . $language_properties->name,
+					'post_type'   => 'page',
+					'post_status' => 'publish',
+				)
+			);
 			$translations[ $language ] = $id;
 			pll_set_post_language( $id, $language );
 		}
