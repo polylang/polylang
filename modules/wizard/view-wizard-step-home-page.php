@@ -43,7 +43,7 @@ foreach ( $languages as $language ) {
 		printf(
 			/* translators: %s is the language of the front page ( flag, native name and locale ) */
 			esc_html__( 'Its language is : %s.', 'polylang' ),
-			false !== $home_page_language ? $home_page_language->flag . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' : '<strong>' . esc_html__( 'no language', 'polylang' ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$home_page_language->flag . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		)
 		?>
 	<br />
