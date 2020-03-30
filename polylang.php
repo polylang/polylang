@@ -3,7 +3,7 @@
 /**
 Plugin Name: Polylang
 Plugin URI: https://polylang.pro
-Version: 2.7-beta2
+Version: 2.7-rc1
 Author: WP SYNTEX
 Author uri: https://polylang.pro
 Description: Adds multilingual capability to WordPress
@@ -51,7 +51,7 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	}
 } else {
 	// Go on loading the plugin
-	define( 'POLYLANG_VERSION', '2.7-beta2' );
+	define( 'POLYLANG_VERSION', '2.7-rc1' );
 	define( 'PLL_MIN_WP_VERSION', '4.9' );
 	define( 'PLL_MIN_PHP_VERSION', '5.6' );
 

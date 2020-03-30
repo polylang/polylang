@@ -101,9 +101,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Apply the filter pll_preferred_language in wp-login.php
 * Use filtered wrappers to create meta when creating media translations #231
 * Allow to translate the Twenty Seventeen header video Youtube url #460
+* Notices are now dismissed per site instead of per user #478
 * Fix terms not visible in the quick edit when only one language is defined and teh admin language filter is active
 * Fix post state not displayed for translations of the privacy policy page #395
 * Fix wildcards not correctly interpreted in wpml-config.xml
+* Fix product categories with special characters duplicated when importing WooCommerce products #474
 
 = 2.6.10 (2020-02-19) =
 
