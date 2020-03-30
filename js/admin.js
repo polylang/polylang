@@ -260,6 +260,8 @@ jQuery( document ).ready(
 		// close postboxes that should be closed
 		$( '.if-js-closed' ).removeClass( 'if-js-closed' ).addClass( 'closed' );
 		// postboxes setup
-		postboxes.add_postbox_toggles( pagenow );
+		if ( 'undefined' !== typeof postboxes ) {
+			postboxes.add_postbox_toggles( pagenow );
+		}
 	}
 );
