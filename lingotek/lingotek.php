@@ -28,7 +28,7 @@ class PLL_Lingotek {
 			$content = __( 'You’ve just upgraded to the latest version of Polylang! Would you like to automatically translate your website for free?', 'polylang' );
 
 			$buttons = sprintf(
-				'<a href="%s" class="button button-primary" style="margin-right: 10px">%s</a>',
+				'<a href="%s" class="button button-primary">%s</a>',
 				admin_url( 'admin.php?page=mlang_lingotek' ),
 				__( 'Learn more', 'polylang' )
 			);
@@ -37,7 +37,7 @@ class PLL_Lingotek {
 				$content .= ' ' . __( 'Click on Activate Lingotek to start translating.', 'polylang' );
 
 				$buttons = sprintf(
-					'<a href="%s" class="button button-primary" style="margin-right: 10px">%s</a>',
+					'<a href="%s" class="button button-primary">%s</a>',
 					$link,
 					__( 'Activate Lingotek', 'polylang' )
 				) . $buttons;

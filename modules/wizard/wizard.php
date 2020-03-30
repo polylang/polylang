@@ -48,8 +48,6 @@ class PLL_Wizard {
 		add_action( 'admin_init', array( $this, 'setup_wizard_page' ), 40 );
 		// Add Wizard submenu.
 		add_filter( 'pll_settings_tabs', array( $this, 'settings_tabs' ), 10, 1 );
-		// Enqueue scripts and styles especially for the wizard.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		// Add filter to select screens where to display the notice.
 		add_filter( 'pll_can_display_notice', array( $this, 'can_display_notice' ), 10, 2 );
 
@@ -171,6 +169,9 @@ class PLL_Wizard {
 			wp_die( esc_html__( 'Sorry, you are not allowed to manage options for this site.', 'polylang' ) );
 		}
 
+		// Enqueue scripts and styles especially for the wizard.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
 		$this->steps = apply_filters( 'pll_wizard_steps', $this->steps );
 		$step  = isset( $_GET['step'] ) ? sanitize_key( $_GET['step'] ) : false; // phpcs:ignore WordPress.Security.NonceVerification
 
@@ -249,11 +250,6 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function enqueue_scripts() {
-		if ( empty( $_GET['page'] ) || 'mlang_wizard' !== $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// We need some styles for the wizard notice on the other pages.
-			wp_enqueue_style( 'pll-wizard-notice', plugins_url( '/modules/wizard/css/wizard-notice' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'common' ), POLYLANG_VERSION );
-			return;
-		}
 		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $this->get_suffix() . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
 		wp_enqueue_style( 'pll-wizard', plugins_url( '/modules/wizard/css/wizard' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'forms' ), POLYLANG_VERSION );
 
