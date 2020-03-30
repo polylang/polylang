@@ -621,6 +621,7 @@ class PLL_Upgrade {
 	/**
 	 * Upgrades if the previous version is < 2.7
 	 * Replace numeric keys by hashes in WPML registered strings
+	 * Dismiss the wizard notice for existing sites
 	 *
 	 * @since 2.7
 	 */
@@ -638,6 +639,7 @@ class PLL_Upgrade {
 			}
 			update_option( 'polylang_wpml_strings', $new_strings );
 		}
-	}
 
+		PLL_Admin_Notices::dismiss( 'wizard' );
+	}
 }

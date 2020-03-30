@@ -83,6 +83,7 @@ class PLL_Uninstall {
 		// Delete users options
 		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
 			delete_user_meta( $user_id, 'pll_filter_content' );
+			delete_user_meta( $user_id, 'pll_dismissed_notices' ); // Legacy meta.
 			foreach ( $languages as $lang ) {
 				delete_user_meta( $user_id, 'description_' . $lang->slug );
 			}
@@ -149,6 +150,7 @@ class PLL_Uninstall {
 		delete_option( 'widget_polylang' ); // Automatically created by WP
 		delete_option( 'polylang_wpml_strings' ); // Strings registered with icl_register_string
 		delete_option( 'polylang_licenses' );
+		delete_option( 'pll_dismissed_notices' );
 
 		// Delete transients
 		delete_transient( 'pll_languages_list' );

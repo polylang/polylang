@@ -6,6 +6,7 @@
  * and only on dashboard, plugins and Polylang admin pages
  *
  * @since 2.3.9
+ * @since 2.7 Dismissed notices are stored in an option instead of a user meta
  */
 class PLL_Admin_Notices {
 	private static $notices = array();
@@ -57,8 +58,22 @@ class PLL_Admin_Notices {
 	 * @return bool
 	 */
 	public static function is_dismissed( $notice ) {
-		$dismissed = get_user_meta( get_current_user_id(), 'pll_dismissed_notices', true );
-		return is_array( $dismissed ) && in_array( $notice, $dismissed );
+		$dismissed = get_option( 'pll_dismissed_notices', array() );
+
+		// Handle legacy user meta
+		$dismissed_meta = get_user_meta( get_current_user_id(), 'pll_dismissed_notices', true );
+		if ( is_array( $dismissed_meta ) ) {
+			if ( array_diff( $dismissed_meta, $dismissed ) ) {
+				$dismissed = array_merge( $dismissed, $dismissed_meta );
+				update_option( 'pll_dismissed_notices', $dismissed );
+			}
+			if ( ! is_multisite() ) {
+				// Don't delete on multisite to avoid the notices to appear in other sites.
+				delete_user_meta( get_current_user_id(), 'pll_dismissed_notices' );
+			}
+		}
+
+		return in_array( $notice, $dismissed );
 	}
 
 	/**
@@ -105,13 +120,11 @@ class PLL_Admin_Notices {
 	 * @param string $notice
 	 */
 	public static function dismiss( $notice ) {
-		if ( ! $dismissed = get_user_meta( get_current_user_id(), 'pll_dismissed_notices', true ) ) {
-			$dismissed = array();
-		}
+		$dismissed = get_option( 'pll_dismissed_notices', array() );
 
 		if ( ! in_array( $notice, $dismissed ) ) {
 			$dismissed[] = $notice;
-			update_user_meta( get_current_user_id(), 'pll_dismissed_notices', array_unique( $dismissed ) );
+			update_option( 'pll_dismissed_notices', array_unique( $dismissed ) );
 		}
 	}
 
