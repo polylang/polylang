@@ -148,4 +148,18 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 			$this->assertNotFalse( strpos( $out, 'lingotek' ) );
 		}
 	}
+
+	function test_legacy_user_meta() {
+		wp_set_current_user( 1 );
+		update_user_meta( 1, 'pll_dismissed_notices', array( 'test_notice' ) );
+
+		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		$this->assertTrue( self::$polylang->admin_notices->is_dismissed( 'test_notice' ) );
+		$this->assertEquals( array( 'test_notice' ), get_option( 'pll_dismissed_notices' ) );
+		if ( is_multisite() ) {
+			$this->assertEquals( array( 'test_notice' ), get_user_meta( 1, 'pll_dismissed_notices', true ) );
+		} else {
+			$this->assertEmpty( get_user_meta( 1, 'pll_dismissed_notices', true ) );
+		}
+	}
 }
