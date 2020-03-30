@@ -332,6 +332,10 @@ td[class*='column-language_'] {
 	text-decoration: none;
 }
 
+.pll-notice .button {
+	margin-right: 10px;
+}
+
 /* Bulk translate */
 .bulk-translate-save .button {
 	margin-right: 20px;
