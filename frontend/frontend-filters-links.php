@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Manages links filters on frontend
  *
- * @package Polylang
  * @since 1.8
  */
 class PLL_Frontend_Filters_Links extends PLL_Filters_Links {

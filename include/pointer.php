@@ -1,10 +1,12 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * A class to manage WP pointers
  * offers the possibility to have customized buttons
  *
- * @package Polylang
  * @since 1.7.7
  * @deprecated 2.3.9
  */

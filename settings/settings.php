@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * A class for the Polylang settings pages
@@ -14,7 +17,6 @@
  * curlang          => inherited, optional, current language used to filter admin content
  * pref_lang        => inherited, preferred language used as default when saving posts or terms
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_Settings extends PLL_Admin_Base {

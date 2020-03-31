@@ -1,10 +1,12 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Adds the language column in posts and terms list tables
  * Manages quick edit and bulk edit as well
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_Admin_Filters_Columns {

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Frontend controller
@@ -21,7 +24,6 @@
  * sync           => reference to PLL_Sync object
  * auto_translate => optional, reference to PLL_Auto_Translate object
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_Frontend extends PLL_Base {

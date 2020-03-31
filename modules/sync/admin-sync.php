@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Manages copy and synchronization of terms and post metas
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_Admin_Sync extends PLL_Sync {

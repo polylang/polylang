@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Displays a language list
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_Walker_List extends Walker {

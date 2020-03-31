@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * A class to manage URL modifications settings
  *
- * @package Polylang
  * @since 1.8
  */
 class PLL_Settings_Url extends PLL_Settings_Module {

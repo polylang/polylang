@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * A class to manage the sychronization of taxonomy terms across posts translations
  *
- * @package Polylang
  * @since 2.3
  */
 class PLL_Sync_Tax {

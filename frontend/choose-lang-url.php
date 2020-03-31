@@ -1,11 +1,13 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Choose the language when the language code is added to all urls
  * The language is set in plugins_loaded with priority 1 as done by WPML
  * Some actions have to be delayed to wait for $wp_rewrite availability
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_Choose_Lang_Url extends PLL_Choose_Lang {

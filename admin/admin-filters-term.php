@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Manages filters and actions related to terms on admin side
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_Admin_Filters_Term {

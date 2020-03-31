@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * REST API controller
@@ -16,7 +19,6 @@
  * terms          => reference to PLL_CRUD_Terms object
  * sync           => reference to PLL_Sync object
  *
- * @package Polylang
  * @since 2.6
  */
 class PLL_REST_Request extends PLL_Base {

@@ -1,10 +1,12 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Adds actions and filters related to languages when creating, reading, updating or deleting posts
  * Acts both on frontend and backend
  *
- * @package Polylang
  * @since 2.4
  */
 class PLL_CRUD_Terms {

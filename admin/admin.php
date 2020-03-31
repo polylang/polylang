@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Admin side controller
@@ -28,7 +31,6 @@
  * bulk_translate  => reference, a PLL_Bulk_Translate subclass instance
  * wizard          => reference, a PLL_Wizard object
  *
- * @package Polylang
  * @since 1.2
  * @since 2.7 Added a reference to a PLL_Bulk_Translate instance.
  * @since 2.7 Added a reference to a PLL_Wizard object.

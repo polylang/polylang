@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Settings class for custom post types and taxonomies language and translation management
  *
- * @package Polylang
  * @since 1.8
  */
 class PLL_Settings_CPT extends PLL_Settings_Module {

@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Manages copy and synchronization of terms and post metas on front
  *
- * @package Polylang
  * @since 2.4
  */
 class PLL_Sync {

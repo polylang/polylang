@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Main class for Polylang wizard.
  *
- * @package Polylang
  * @since 2.7
  */
 class PLL_Wizard {

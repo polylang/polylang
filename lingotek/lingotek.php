@@ -1,9 +1,9 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
- * Class to manage Lingotek ads
- *
- * @package Polylang
  * @since 1.7.7
  */
 class PLL_Lingotek {

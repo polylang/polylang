@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * It is best practice that plugins do nothing before plugins_loaded is fired
@@ -7,7 +10,6 @@
  * this class differs text domain loading until the language is defined
  * either in a plugins_loaded action or in a wp action ( when the language is set from content on frontend )
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_OLT_Manager {

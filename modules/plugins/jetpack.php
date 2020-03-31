@@ -1,9 +1,11 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Manages the compatibility with Jetpack
  *
- * @package Polylang
  * @since 2.3
  */
 class PLL_Jetpack {

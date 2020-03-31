@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * A language object is made of two terms in 'language' and 'term_language' taxonomies
@@ -32,7 +35,6 @@
  * page_on_front       => id of the page on front in this language ( set from pll_languages_list filter )
  * page_for_posts      => id of the page for posts in this language ( set from pll_languages_list filter )
  *
- * @package Polylang
  * @since 1.2
  */
 class PLL_Language {
