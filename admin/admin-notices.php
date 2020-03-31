@@ -5,6 +5,7 @@
  * displayed only to admin, based on 'manage_options' capability
  * and only on dashboard, plugins and Polylang admin pages
  *
+ * @package Polylang
  * @since 2.3.9
  * @since 2.7 Dismissed notices are stored in an option instead of a user meta
  */

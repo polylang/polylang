@@ -5,6 +5,7 @@
  * for example en.mysite.com/something
  * implements the "links_model interface"
  *
+ * @package Polylang
  * @since 1.2
  */
 class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {

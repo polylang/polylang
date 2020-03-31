@@ -3,6 +3,7 @@
 /**
  * Manages links related functions
  *
+ * @package Polylang
  * @since 1.8
  */
 class PLL_Admin_Links extends PLL_Links {

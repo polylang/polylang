@@ -3,6 +3,7 @@
 /**
  * Manages filters and actions related to the block editor
  *
+ * @package Polylang
  * @since 2.5
  */
 class PLL_Admin_Block_Editor {

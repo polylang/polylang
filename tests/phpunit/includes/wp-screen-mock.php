@@ -1,6 +1,8 @@
 <?php
+
 /**
- * Used to create mocks for {@see WP_Screen} because this is class declared as final.
+ * Used to create mocks for {@package Polylang
+ * @see WP_Screen} because this is class declared as final.
  * PHPUnit can't mock final classes, because the common way it mocks object is by inheriting them in child classes.
  *
  * WP_Screen has a few behaviour we don't want to trigger in our tests :

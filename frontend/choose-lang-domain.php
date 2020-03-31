@@ -3,6 +3,7 @@
 /**
  * Choose the language when the language is managed by different domains
  *
+ * @package Polylang
  * @since 1.5
  */
 class PLL_Choose_Lang_Domain extends PLL_Choose_Lang_Url {

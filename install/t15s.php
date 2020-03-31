@@ -5,6 +5,7 @@
  * This is a modified version of the library available at https://github.com/WP-Translations/t15s-registry
  * This version aims to be compatible with PHP 5.2, and supports only plugins.
  *
+ * @package Polylang
  * @since 2.6
  */
 class PLL_T15S {

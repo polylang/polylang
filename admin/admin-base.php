@@ -3,6 +3,7 @@
 /**
  * Base class for both admin
  *
+ * @package Polylang
  * @since 1.8
  */
 class PLL_Admin_Base extends PLL_Base {

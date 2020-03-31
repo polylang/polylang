@@ -3,6 +3,7 @@
 /**
  * Manages links filters and url of translations on frontend
  *
+ * @package Polylang
  * @since 1.2
  */
 class PLL_Frontend_Links extends PLL_Links {

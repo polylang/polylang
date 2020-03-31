@@ -3,6 +3,7 @@
 /**
  * Setups the objects languages and translations model
  *
+ * @package Polylang
  * @since 1.8
  */
 abstract class PLL_Translated_Object {

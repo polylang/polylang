@@ -3,6 +3,7 @@
 /**
  * Some common code for PLL_Admin_Filters_Post and PLL_Admin_Filters_Media
  *
+ * @package Polylang
  * @since 1.5
  */
 abstract class PLL_Admin_Filters_Post_Base {

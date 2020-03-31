@@ -3,6 +3,7 @@
 /**
  * Setups the posts languages and translations model
  *
+ * @package Polylang
  * @since 1.8
  */
 class PLL_Translated_Post extends PLL_Translated_Object {

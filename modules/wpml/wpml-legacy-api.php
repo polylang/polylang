@@ -10,7 +10,8 @@ if ( ! function_exists( 'icl_get_home_url' ) ) {
 	/**
 	 * Link to the home page in the active language
 	 *
-	 * @since 0.9.4
+	 * @package Polylang
+ * @since 0.9.4
 	 *
 	 * @return string
 	 */

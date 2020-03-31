@@ -7,7 +7,8 @@ trait PLL_UnitTestCase_Trait {
 	/**
 	 * A container for Polylang classes instances.
 	 *
-	 * @var object
+	 * @package Polylang
+ * @var object
 	 */
 	static $polylang;
 

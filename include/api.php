@@ -18,6 +18,7 @@
  * raw                    => set this to true to build your own custom language switcher, defaults to 0
  * item_spacing           => whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to preserve
  *
+ * @package Polylang
  * @since 0.5
  *
  * @param array $args optional

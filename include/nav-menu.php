@@ -4,6 +4,7 @@
  * Manages custom menus translations
  * Common to admin and frontend for the customizer
  *
+ * @package Polylang
  * @since 1.7.7
  */
 class PLL_Nav_Menu {

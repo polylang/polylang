@@ -3,6 +3,7 @@
 /**
  * Base class for both admin and frontend
  *
+ * @package Polylang
  * @since 1.2
  */
 abstract class PLL_Base {

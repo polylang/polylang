@@ -4,6 +4,7 @@
  * A class to manage the integration with WP Offload Media Lite.
  * Version tested: 2.1.1
  *
+ * @package Polylang
  * @since 2.6
  */
 class PLL_AS3CF {

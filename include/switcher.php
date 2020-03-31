@@ -3,6 +3,7 @@
 /**
  * A class to display a language switcher on frontend
  *
+ * @package Polylang
  * @since 1.2
  */
 class PLL_Switcher {

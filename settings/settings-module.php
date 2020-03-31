@@ -3,6 +3,7 @@
 /**
  * Base class for all settings
  *
+ * @package Polylang
  * @since 1.8
  */
 class PLL_Settings_Module {

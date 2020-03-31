@@ -3,6 +3,7 @@
 /**
  * Setup filters common to admin and frontend
  *
+ * @package Polylang
  * @since 1.4
  */
 class PLL_Filters {

@@ -3,6 +3,7 @@
 /**
  * Links model abstract class
  *
+ * @package Polylang
  * @since 1.5
  */
 abstract class PLL_Links_Model {

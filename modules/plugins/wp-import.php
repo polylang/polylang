@@ -3,6 +3,7 @@
 /**
  * A class to import languages and translations information form a WXR file
  *
+ * @package Polylang
  * @since 1.2
  */
 class PLL_WP_Import extends WP_Import {

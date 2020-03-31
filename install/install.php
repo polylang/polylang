@@ -3,6 +3,7 @@
 /**
  * Polylang activation / de-activation class
  *
+ * @package Polylang
  * @since 1.7
  */
 class PLL_Install extends PLL_Install_Base {

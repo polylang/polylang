@@ -3,6 +3,7 @@
 /**
  * Setup miscellaneous admin filters as well as filters common to admin and frontend
  *
+ * @package Polylang
  * @since 1.2
  */
 class PLL_Admin_Filters extends PLL_Filters {

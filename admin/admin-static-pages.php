@@ -3,6 +3,7 @@
 /**
  * Manages the static front page and the page for posts on admin side
  *
+ * @package Polylang
  * @since 1.8
  */
 class PLL_Admin_Static_Pages extends PLL_Static_Pages {

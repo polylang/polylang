@@ -4,6 +4,7 @@
  * Auto translates the posts and terms ids
  * Useful for example for themes querying a specific cat
  *
+ * @package Polylang
  * @since 1.1
  */
 class PLL_Frontend_Auto_Translate {
