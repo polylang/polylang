@@ -184,7 +184,7 @@ class PLL_Wizard {
 			exit;
 		}
 
-		if ( ! empty( $this->options['default_lang'] ) && $this->model->get_objects_with_no_lang( 1 ) && ! in_array( $this->step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
+		if ( count( $languages ) > 0 && $this->model->get_objects_with_no_lang( 1 ) && ! in_array( $this->step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
 			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'untranslated-contents' ) ) );
 			exit;
 		}
