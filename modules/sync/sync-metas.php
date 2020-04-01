@@ -1,9 +1,12 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Abstract class to manage the copy and synchronization of metas
  *
- * @package Polylang
  * @since 2.3
  */
 abstract class PLL_Sync_Metas {

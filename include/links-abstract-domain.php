@@ -1,9 +1,12 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Links model for use when using one domain or subdomain per language
  *
- * @package Polylang
  * @since 2.0
  */
 abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {

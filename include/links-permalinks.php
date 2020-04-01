@@ -1,9 +1,12 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Links model base class when using pretty permalinks
  *
- * @package Polylang
  * @since 1.6
  */
 abstract class PLL_Links_Permalinks extends PLL_Links_Model {

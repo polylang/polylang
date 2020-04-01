@@ -1,9 +1,12 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Displays the wizard media step
  *
- * @package Polylang
  * @since 2.7
  */
 

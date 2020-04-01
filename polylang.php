@@ -1,7 +1,10 @@
 <?php
 
-/**@package Polylang
- *
+/**
+ * @package Polylang
+ */
+
+/**
 Plugin Name: Polylang
 Plugin URI: https://polylang.pro
 Version: 2.7-rc1

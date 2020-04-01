@@ -1,9 +1,12 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Base class to choose the language
  *
- * @package Polylang
  * @since 1.2
  */
 abstract class PLL_Choose_Lang {
