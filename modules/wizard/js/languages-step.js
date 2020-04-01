@@ -158,7 +158,7 @@ jQuery( document ).ready(
 			function( event ) {
 				// verify if there is at least one language.
 				var isLanguagesAlreadyDefined = definedLanguagesListTable.children().length > 0;
-				var selectedLanguage =  $( '#lang_list' ).val();
+				var selectedLanguage = $( '#lang_list' ).val();
 				if ( languagesMap.size <= 0 && ! isLanguagesAlreadyDefined ) {
 					if ( '' === selectedLanguage ) {
 						showError( pll_wizard_params.i18n_no_language_added );
