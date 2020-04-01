@@ -1085,7 +1085,10 @@ span.field-in-error:focus,
 #dialog{
 	display: none;
 }
-.ui-dialog-title::before{
+.pll-wizard .ui-dialog.ui-widget-content{
+	max-height: none;
+}
+.pll-wizard .ui-dialog-title::before{
 	content: "\f534";
 	font-family: dashicons;
 	display: inline-block;
@@ -1106,7 +1109,7 @@ span.field-in-error:focus,
 	margin: 0 5px 5px 0;
 	transition: color 0.1s ease-in;
 }
-.rtl .ui-dialog-title::before{
+.rtl.pll-wizard .ui-dialog-title::before{
 	margin-right: 0;
 	margin-left: 5px;
 }
