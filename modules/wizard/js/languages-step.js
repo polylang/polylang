@@ -158,8 +158,9 @@ jQuery( document ).ready(
 			function( event ) {
 				// verify if there is at least one language.
 				var isLanguagesAlreadyDefined = definedLanguagesListTable.children().length > 0;
+				var selectedLanguage =  $( '#lang_list' ).val();
 				if ( languagesMap.size <= 0 && ! isLanguagesAlreadyDefined ) {
-					if ( '' === $( '#lang_list' ).val() ) {
+					if ( '' === selectedLanguage ) {
 						showError( pll_wizard_params.i18n_no_language_added );
 						showFieldInError( languagesList.next( 'span.ui-selectmenu-button' ) );
 						focusOnField( $( '#lang_list-button' ) );
@@ -171,8 +172,14 @@ jQuery( document ).ready(
 					return false;
 				}
 				// verfiy if the language has been added in the list otherwise display a dialog box to confirm what to do.
-				if ( '' !== $( '#lang_list' ).val() ) {
-					dialog.dialog( 'open' );
+				if ( '' !== selectedLanguage ) {
+					if ( ! languagesMap.has( selectedLanguage ) ) {
+						dialog.dialog( 'open' );
+					} else {
+						showError( pll_wizard_params.i18n_language_already_added );
+						showFieldInError( languagesList.next( 'span.ui-selectmenu-button' ) );
+						focusOnField( $( '#lang_list-button' ) );
+					}
 					return false;
 				}
 			}
