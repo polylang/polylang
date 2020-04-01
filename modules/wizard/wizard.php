@@ -427,8 +427,10 @@ class PLL_Wizard {
 				'i18n_language_already_added' => __( 'You already added this language.', 'polylang' ),
 				'i18n_no_language_added'      => __( 'You need to add at least one language.', 'polylang' ),
 				'i18n_add_language_needed'    => __( 'You selected a language, however, to be able to continue, you need to add it.', 'polylang' ),
+				'i18n_pll_add_language'       => __( 'Impossible to add the language.', 'polylang' ),
 				'i18n_pll_invalid_locale'     => __( 'Enter a valid WordPress locale', 'polylang' ),
 				'i18n_pll_invalid_slug'       => __( 'The language code contains invalid characters', 'polylang' ),
+				'i18n_pll_non_unique_slug'    => __( 'The language code must be unique', 'polylang' ),
 				'i18n_pll_invalid_name'       => __( 'The language must have a name', 'polylang' ),
 				'i18n_pll_invalid_flag'       => __( 'The flag does not exist', 'polylang' ),
 				'i18n_dialog_title'           => __( "A language wasn't added.", 'polylang' ),
@@ -512,12 +514,13 @@ class PLL_Wizard {
 
 				if ( $language_added instanceof WP_Error ) {
 					// Stay on this step with an error.
+					$error_keys = array_keys( $language_added->errors );
 					wp_safe_redirect(
 						esc_url_raw(
 							add_query_arg(
 								array(
 									'step'           => $this->step,
-									'activate_error' => 'i18n_' . reset( array_keys( $language_added->errors ) ),
+									'activate_error' => 'i18n_' . reset( $error_keys ),
 								)
 							)
 						)
