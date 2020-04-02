@@ -108,6 +108,25 @@ jQuery( document ).ready(
 		}
 
 		/**
+		 * Disable a specific button
+		 *
+		 * @param {object} button
+		 */
+		function disableButton( button ){
+			button.prop( 'disabled', true );
+			// Because the button is disabled we need to add the value of the button to ensure it will pass in the request.
+			addLanguageForm.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+				$( '<input />' ).prop(
+					{
+						type: 'hidden',
+						name: button.prop( 'name' ),
+						value: button.prop( 'value' )
+					}
+				)
+			);
+		}
+
+		/**
 		 * Remove error when a new selection is done in languages list.
 		 */
 		languagesList.on(
@@ -156,7 +175,7 @@ jQuery( document ).ready(
 		addLanguageForm.on(
 			'submit',
 			function( event ) {
-				// verify if there is at least one language.
+				// Verify if there is at least one language.
 				var isLanguagesAlreadyDefined = definedLanguagesListTable.children().length > 0;
 				var selectedLanguage = $( '#lang_list' ).val();
 				if ( languagesMap.size <= 0 && ! isLanguagesAlreadyDefined ) {
@@ -171,8 +190,9 @@ jQuery( document ).ready(
 					}
 					return false;
 				}
-				// verfiy if the language has been added in the list otherwise display a dialog box to confirm what to do.
+				// Verify if the language has been added in the list otherwise display a dialog box to confirm what to do.
 				if ( '' !== selectedLanguage ) {
+					// Verify we don't add a duplicate language before opening the dialog box otherwise display an error message.
 					if ( ! languagesMap.has( selectedLanguage ) ) {
 						dialog.dialog( 'open' );
 					} else {
@@ -182,6 +202,7 @@ jQuery( document ).ready(
 					}
 					return false;
 				}
+				disableButton( nextStepButton );
 			}
 		);
 
@@ -206,18 +227,18 @@ jQuery( document ).ready(
 							flagUrl: $( selectedOption ).data( 'flag-html' )
 						}
 					);
-					nextStepButton.click(); // Submit form by clicking on the button because it is verified server side.
 					break;
 				case 'no':
 					// Empty select form field and submit again the form.
 					languagesList.val( '' );
-					nextStepButton.click(); // Submit form by clicking on the button because it is verified server side.
 					break;
 				case 'ignore':
 			}
 			dialog.dialog( 'close' );
 			if ( 'ignore' === what ) {
 				focusOnField( $( '#lang_list-button' ) );
+			} else {
+				addLanguageForm.submit();
 			}
 		}
 

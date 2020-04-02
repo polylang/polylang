@@ -366,7 +366,16 @@ body {
 	border-color: #dd5454;
 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 1px 0 #dd5454
 }
-
+.pll-wizard .pll-wizard-actions .button-primary[disabled],
+.pll-wizard .pll-wizard-actions .button-primary:disabled,
+.pll-wizard .pll-wizard-actions .button-primary.disabled {
+	cursor: wait;
+	background-color: #bb5454 !important;
+	border-color: #bb5454 !important;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 1px 0 #bb5454  !important;
+	text-shadow: 0 -1px 1px #bb5454, 1px 0 1px #bb5454, 0 1px 1px #bb5454, -1px 0 1px #bb5454 !important;
+	color: #ffa3a3 !important;
+}
 .pll-wizard-content p:last-child {
 	margin-bottom: 0
 }
