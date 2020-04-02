@@ -57,32 +57,6 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 			self::$polylang->init();
 		}
 
-		function test_opengraph() {
-			// create posts to get something  on home page
-			$en = $this->factory->post->create();
-			self::$polylang->model->post->set_language( $en, 'en' );
-
-			$fr = $this->factory->post->create();
-			self::$polylang->model->post->set_language( $fr, 'fr' );
-
-			$this->go_to( home_url( '/?lang=fr' ) );
-			self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-
-			do_action( 'pll_language_defined' );
-			do_action_ref_array( 'pll_init', array( &self::$polylang ) );
-			do_action( 'template_redirect' ); // for home_url filter
-			wpseo_frontend_head_init();
-
-			ob_start();
-			do_action( 'wp_head' );
-			$output = ob_get_clean();
-
-			$this->assertNotFalse( strpos( $output, '<meta property="og:locale" content="fr_FR" />' ) ); // test WPSEO just in case
-			$this->assertFalse( strpos( $output, '<meta property="og:locale:alternate" content="fr_FR" />' ) ); // only for alternate languages
-			$this->assertNotFalse( strpos( $output, '<meta property="og:locale:alternate" content="en_US" />' ) );
-			$this->assertNotFalse( strpos( $output, '<link rel="canonical" href="http://example.org/?lang=fr" />' ) ); // covers pll_home_url_white_list
-		}
-
 		function test_post_sitemap_for_code_in_url() {
 			$en = $this->factory->post->create();
 			self::$polylang->model->post->set_language( $en, 'en' );
