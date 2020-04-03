@@ -107,7 +107,8 @@ body {
 }
 
 .pll-wizard-content a:focus,
-.pll-wizard-content a:hover {
+.pll-wizard-content a:hover,
+.pll-wizard-footer-links:hover {
 	color: #dd5454
 }
 
