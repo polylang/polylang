@@ -498,10 +498,6 @@ body {
 	border-bottom: 0
 }
 
-.pll-wizard-services.manual .pll-wizard-service-item {
-	display: none
-}
-
 .pll-wizard-services.shipping {
 	margin: 0
 }
