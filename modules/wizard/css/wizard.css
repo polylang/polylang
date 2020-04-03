@@ -103,12 +103,12 @@ body {
 }
 
 .pll-wizard-content a {
-	color: #a16696
+	color: #a03f3f;
 }
 
 .pll-wizard-content a:focus,
 .pll-wizard-content a:hover {
-	color: #111
+	color: #dd5454
 }
 
 .pll-wizard-content .pll-wizard-next-steps {
