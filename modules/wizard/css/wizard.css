@@ -314,8 +314,7 @@ body {
 	line-height: 1.5em
 }
 
-.pll-wizard-service-item,
-.pll-wizard-services-list-toggle {
+.pll-wizard-service-item {
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: flex;
@@ -344,13 +343,11 @@ body {
 	padding-bottom: 0;
 }
 
-.pll-wizard-service-item:last-child,
-.pll-wizard-services-list-toggle:last-child {
+.pll-wizard-service-item:last-child {
 	border-bottom: 0
 }
 
-.pll-wizard-service-item .pll-wizard-service-name,
-.pll-wizard-services-list-toggle .pll-wizard-service-name {
+.pll-wizard-service-item .pll-wizard-service-name {
 	-webkit-flex-basis: 0;
 	flex-basis: 0;
 	min-width: 160px;
@@ -367,13 +364,11 @@ body {
 	align-items: baseline
 }
 
-.pll-wizard-service-item .pll-wizard-service-name img,
-.pll-wizard-services-list-toggle .pll-wizard-service-name img {
+.pll-wizard-service-item .pll-wizard-service-name img {
 	max-width: 75px
 }
 
-.pll-wizard-service-item .pll-wizard-service-description,
-.pll-wizard-services-list-toggle .pll-wizard-service-description {
+.pll-wizard-service-item .pll-wizard-service-description {
 	-webkit-box-flex: 1;
 	-webkit-flex-grow: 1;
 	flex-grow: 1;
@@ -391,25 +386,21 @@ body {
 	text-align: left;
 }
 
-.pll-wizard-service-item .pll-wizard-service-description p,
-.pll-wizard-services-list-toggle .pll-wizard-service-description p {
+.pll-wizard-service-item .pll-wizard-service-description p {
 	margin-bottom: 1em
 }
 
-.pll-wizard-service-item .pll-wizard-service-description p:last-child,
-.pll-wizard-services-list-toggle .pll-wizard-service-description p:last-child {
+.pll-wizard-service-item .pll-wizard-service-description p:last-child {
 	margin-bottom: 0
 }
 
-.pll-wizard-service-item .pll-wizard-service-description .pll-wizard-service-settings-description,
-.pll-wizard-services-list-toggle .pll-wizard-service-description .pll-wizard-service-settings-description {
+.pll-wizard-service-item .pll-wizard-service-description .pll-wizard-service-settings-description {
 	display: block;
 	font-style: italic;
 	color: #999
 }
 
-.pll-wizard-service-item .pll-wizard-service-enable,
-.pll-wizard-services-list-toggle .pll-wizard-service-enable {
+.pll-wizard-service-item .pll-wizard-service-enable {
 	-webkit-flex-basis: 0;
 	flex-basis: 0;
 	min-width: 75px;
@@ -425,13 +416,11 @@ body {
 	order: 3
 }
 
-.pll-wizard-service-item .pll-wizard-service-toggle,
-.pll-wizard-services-list-toggle .pll-wizard-service-toggle {
+.pll-wizard-service-item .pll-wizard-service-toggle {
 	position: relative
 }
 
-.pll-wizard-service-item .pll-wizard-service-toggle input[type=checkbox],
-.pll-wizard-services-list-toggle .pll-wizard-service-toggle input[type=checkbox] {
+.pll-wizard-service-item .pll-wizard-service-toggle input[type=checkbox] {
 	position:absolute;
 	opacity: 0;
 }
@@ -486,57 +475,27 @@ body {
 	left:auto;
 }
 
-.pll-wizard-service-item .pll-wizard-service-settings,
-.pll-wizard-services-list-toggle .pll-wizard-service-settings {
+.pll-wizard-service-item .pll-wizard-service-settings {
 	display: none;
 	margin-top: .75em;
 	margin-bottom: 0;
 	cursor: default
 }
 
-.pll-wizard-service-item .pll-wizard-service-settings.hide,
-.pll-wizard-services-list-toggle .pll-wizard-service-settings.hide {
+.pll-wizard-service-item .pll-wizard-service-settings.hide {
 	display: none
 }
 
-.pll-wizard-service-item.checked .pll-wizard-service-settings,
-.pll-wizard-services-list-toggle.checked .pll-wizard-service-settings {
+.pll-wizard-service-item.checked .pll-wizard-service-settings {
 	display: inline-block
 }
 
-.pll-wizard-service-item.checked .pll-wizard-service-settings.hide,
-.pll-wizard-services-list-toggle.checked .pll-wizard-service-settings.hide {
+.pll-wizard-service-item.checked .pll-wizard-service-settings.hide {
 	display: none
 }
 
-.pll-wizard-service-item.closed,
-.pll-wizard-services-list-toggle.closed {
+.pll-wizard-service-item.closed {
 	border-bottom: 0
-}
-
-.pll-wizard-services-list-toggle {
-	cursor: pointer
-}
-
-.pll-wizard-services-list-toggle .pll-wizard-service-enable::before {
-	content: "\f343";
-	font-family: dashicons;
-	visibility: initial;
-	color: #666;
-	font-size: 25px;
-	margin-top: -7px;
-	margin-left: -5px;
-	position: absolute;
-	visibility: visible
-}
-
-.pll-wizard-services-list-toggle.closed .pll-wizard-service-enable::before {
-	content: "\f347"
-}
-
-.pll-wizard-services-list-toggle .pll-wizard-service-enable input {
-	visibility: hidden;
-	position: relative
 }
 
 .pll-wizard-services.manual .pll-wizard-service-item {
@@ -1082,34 +1041,29 @@ span.field-in-error:focus,
 	.pll-wizard-steps {
 		display: none
 	}
-	.pll-wizard-service-item,
-	.pll-wizard-services-list-toggle {
+	.pll-wizard-service-item {
 		-webkit-flex-wrap: wrap;
 		flex-wrap: wrap
 	}
-	.pll-wizard-service-item .pll-wizard-service-enable,
-	.pll-wizard-services-list-toggle .pll-wizard-service-enable {
+	.pll-wizard-service-item .pll-wizard-service-enable {
 		-webkit-box-ordinal-group: 3;
 		-webkit-order: 2;
 		order: 2;
 		padding: 20px 0 0
 	}
-	.pll-wizard-service-item .pll-wizard-service-description,
-	.pll-wizard-services-list-toggle .pll-wizard-service-description {
+	.pll-wizard-service-item .pll-wizard-service-description {
 		-webkit-box-ordinal-group: 4;
 		-webkit-order: 3;
 		order: 3
 	}
-	.pll-wizard-service-item .pll-wizard-service-name,
-	.pll-wizard-services-list-toggle .pll-wizard-service-name {
+	.pll-wizard-service-item .pll-wizard-service-name {
 		padding: 20px 20px 0;
 		text-align: left;
 		-webkit-box-pack: justify!important;
 		-webkit-justify-content: space-between!important;
 		justify-content: space-between!important
 	}
-	.pll-wizard-service-item .pll-wizard-service-name img,
-	.pll-wizard-services-list-toggle .pll-wizard-service-name img {
+	.pll-wizard-service-item .pll-wizard-service-name img {
 		margin: 0
 	}
 	.pll-wizard-next-steps .pll-wizard-next-step-item {
