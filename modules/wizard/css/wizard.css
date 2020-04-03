@@ -288,7 +288,7 @@ body {
 
 .pll-wizard-steps li a:focus,
 .pll-wizard-steps li a:hover {
-	color: #111;
+	color: #dd5454;
 	text-decoration: underline
 }
 
