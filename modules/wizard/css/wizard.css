@@ -367,13 +367,6 @@ body {
 	align-items: baseline
 }
 
-.pll-wizard-payment-gateway-form .pll-wizard-service-item .pll-wizard-service-name,
-.pll-wizard-payment-gateway-form .pll-wizard-services-list-toggle .pll-wizard-service-name {
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	justify-content: center
-}
-
 .pll-wizard-service-item .pll-wizard-service-name img,
 .pll-wizard-services-list-toggle .pll-wizard-service-name img {
 	max-width: 75px
