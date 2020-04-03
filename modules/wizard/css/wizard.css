@@ -514,35 +514,6 @@ body {
 	box-shadow: none
 }
 
-.pll-wizard .pll-wizard-actions .plugin-install-info {
-	display: block;
-	font-style: italic;
-	color: #999;
-	font-size: 14px;
-	line-height: 1.5em;
-	margin: 5px 0
-}
-
-.pll-wizard .pll-wizard-actions .plugin-install-info>* {
-	display: block
-}
-
-.pll-wizard .pll-wizard-actions .plugin-install-info .plugin-install-info-list-item::after {
-	content: ", "
-}
-
-.pll-wizard .pll-wizard-actions .plugin-install-info .plugin-install-info-list-item:last-of-type::after {
-	content: ". "
-}
-
-.pll-wizard .pll-wizard-actions .plugin-install-info a {
-	white-space: nowrap
-}
-
-.pll-wizard .pll-wizard-actions .plugin-install-info a:not(:hover):not(:focus) {
-	color: inherit
-}
-
 .plugin-install-source {
 	background: rgba(187, 119, 174, .15)
 }
