@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Polylang activation / de-activation class
  *
  * @since 1.7

@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Auto translates the posts and terms ids
  * Useful for example for themes querying a specific cat
  *

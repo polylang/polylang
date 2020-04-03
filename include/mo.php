@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages strings translations storage
  *
  * @since 1.2

@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * A language object is made of two terms in 'language' and 'term_language' taxonomies
  * manipulating only one object per language instead of two terms should make things easier
  *

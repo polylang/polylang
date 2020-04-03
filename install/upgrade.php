@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages Polylang upgrades
  *
  * @since 1.2

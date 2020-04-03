@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * WPML Compatibility class
  * Defines some WPML constants
  * Registers strings in a persistent way as done by WPML

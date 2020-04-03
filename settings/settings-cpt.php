@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Settings class for custom post types and taxonomies language and translation management
  *
  * @since 1.8

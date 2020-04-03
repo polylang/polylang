@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Settings class for browser language preference detection
  *
  * @since 1.8

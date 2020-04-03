@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages custom menus translations
  * Common to admin and frontend for the customizer
  *

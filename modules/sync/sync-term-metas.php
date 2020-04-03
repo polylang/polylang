@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * A class to manage copy and synchronization of term metas
  *
  * @since 2.3

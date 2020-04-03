@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * A class to display a language switcher on frontend
  *
  * @since 1.2

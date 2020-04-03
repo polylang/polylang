@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Setups the taxonomies languages and translations model
  *
  * @since 1.8

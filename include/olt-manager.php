@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * It is best practice that plugins do nothing before plugins_loaded is fired
  * so it is what Polylang intends to do
  * but some plugins load their text domain as soon as loaded, thus before plugins_loaded is fired

@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * A class to manage URL modifications settings
  *
  * @since 1.8

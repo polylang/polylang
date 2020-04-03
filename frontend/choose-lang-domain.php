@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Choose the language when the language is managed by different domains
  *
  * @since 1.5

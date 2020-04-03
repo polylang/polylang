@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Links model for use when the language code is added in url as a subdomain
  * for example en.mysite.com/something
  * implements the "links_model interface"

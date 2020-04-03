@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @package Polylang
+ */
+
 /**
  * Main class for Polylang wizard.
  *

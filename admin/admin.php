@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Admin side controller
  * accessible in $polylang global object
  *

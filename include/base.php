@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Base class for both admin and frontend
  *
  * @since 1.2

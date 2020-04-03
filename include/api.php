@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Template tag: displays the language switcher
  *
  * List of parameters accepted in $args:

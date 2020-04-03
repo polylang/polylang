@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Reads and interprets the file wpml-config.xml
  * See http://wpml.org/documentation/support/language-configuration-files/
  * The language switcher configuration is not interpreted

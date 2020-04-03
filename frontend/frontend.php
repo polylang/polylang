@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Frontend controller
  * accessible as $polylang global object
  *

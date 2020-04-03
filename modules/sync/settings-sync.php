@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Settings class for synchronization settings management
  *
  * @since 1.8

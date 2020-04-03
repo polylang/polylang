@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Links model base class when using pretty permalinks
  *
  * @since 1.6

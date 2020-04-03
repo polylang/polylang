@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages filters and actions related to posts on admin side
  *
  * @since 1.2

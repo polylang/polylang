@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Filters search forms when using permalinks
  *
  * @since 1.2

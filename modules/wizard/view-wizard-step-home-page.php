@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Displays the wizard home page step
  *
  * @since 2.7

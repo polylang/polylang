@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * A class for the Polylang settings pages
  * accessible in $polylang global object
  *

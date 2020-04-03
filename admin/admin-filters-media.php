@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages filters and actions related to media on admin side
  * Capability to edit / create media is checked before loading this class
  *

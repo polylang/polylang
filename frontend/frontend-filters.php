@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Filters content by language on frontend
  *
  * @since 1.2

@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Abstract class to manage the copy and synchronization of metas
  *
  * @since 2.3

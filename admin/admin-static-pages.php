@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages the static front page and the page for posts on admin side
  *
  * @since 1.8

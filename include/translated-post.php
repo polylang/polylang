@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Setups the posts languages and translations model
  *
  * @since 1.8

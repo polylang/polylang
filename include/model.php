@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Setups the language and translations model based on WordPress taxonomies
  *
  * @since 1.2

@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Links model for use when using one domain per language
  * for example mysite.com/sth and mysite.fr/qqch
  * implements the "links_model interface"

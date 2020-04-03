@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * A class to inform about the WPML compatibility module in Polylang settings
  *
  * @since 1.8

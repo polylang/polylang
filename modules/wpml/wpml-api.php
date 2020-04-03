@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * A class to handle the WPML API based on hooks, introduced since WPML 3.2
  * It partly relies on the legacy API
  *

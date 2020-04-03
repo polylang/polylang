@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Adds the language column in posts and terms list tables
  * Manages quick edit and bulk edit as well
  *

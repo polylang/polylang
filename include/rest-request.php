@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * REST API controller
  * accessible as $polylang global object
  *

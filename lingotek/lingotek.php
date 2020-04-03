@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Class to manage Lingotek ads
  *
  * @since 1.7.7

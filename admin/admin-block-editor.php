@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages filters and actions related to the block editor
  *
  * @since 2.5

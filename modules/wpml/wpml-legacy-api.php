@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Compatibility with WPML legacy API
  * Deprecated since WPML 3.2 and no more documented
  * But a lot of 3rd party plugins / themes are still using these functions

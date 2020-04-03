@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Define wordpress.com VIP equivalent of uncached functions
  * WordPress backward compatibility functions
  * and miscellaneous utility functions

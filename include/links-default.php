@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Links model for default permalinks
  * for example mysite.com/?somevar=something&lang=en
  * implements the "links_model interface"

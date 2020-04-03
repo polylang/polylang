@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages filters and actions related to the classic editor
  *
  * @since 2.4

@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Setup filters common to admin and frontend
  *
  * @since 1.4

@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * Manages the compatibility with the Jetpack Twenty Fourteenn Featured content
  *
  * @since 2.4

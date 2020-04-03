@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @package Polylang
+ */
+
+/**
  * A class to manage admin notices
  * displayed only to admin, based on 'manage_options' capability
  * and only on dashboard, plugins and Polylang admin pages
