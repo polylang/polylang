@@ -35,7 +35,11 @@ class PLL_WPSEO {
 			}
 
 			add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
-			add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
+			if ( version_compare( WPSEO_VERSION, '14.0', '<' ) ) {
+				add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
+			} else {
+				add_filter( 'wpseo_frontend_presenters', array( $this, 'wpseo_frontend_presenters' ) );
+			}
 			add_filter( 'wpseo_canonical', array( $this, 'wpseo_canonical' ) );
 		} else {
 			add_action( 'admin_init', array( $this, 'wpseo_register_strings' ) );
@@ -316,6 +320,26 @@ class PLL_WPSEO {
 	}
 
 	/**
+	 * Get alternate language codes for Opengraph
+	 *
+	 * @since 2.7.3
+	 *
+	 * @return array
+	 */
+	protected function get_ogp_alternate_languages() {
+		$alternates = array();
+
+		foreach ( PLL()->model->get_languages_list() as $language ) {
+			if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && isset( $language->facebook ) ) {
+				$alternates[] = $language->facebook;
+			}
+		}
+
+		// There is a risk that 2 languages have the same Facebook locale. So let's make sure to output each locale only once.
+		return array_unique( $alternates );
+	}
+
+	/**
 	 * Adds opengraph support for translations
 	 *
 	 * @since 1.6
@@ -325,21 +349,32 @@ class PLL_WPSEO {
 
 		// WPSEO already deals with the locale
 		if ( did_action( 'pll_init' ) && method_exists( $wpseo_og, 'og_tag' ) ) {
-			$alternates = array();
-
-			foreach ( PLL()->model->get_languages_list() as $language ) {
-				if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && isset( $language->facebook ) ) {
-					$alternates[] = $language->facebook;
-				}
-			}
-
-			// There is a risk that 2 languages have the same Facebook locale. So let's make sure to output each locale only once.
-			$alternates = array_unique( $alternates );
-
-			foreach ( $alternates as $lang ) {
+			foreach ( $this->get_ogp_alternate_languages() as $lang ) {
 				$wpseo_og->og_tag( 'og:locale:alternate', $lang );
 			}
 		}
+	}
+
+	/**
+	 * Adds opengraph support for translations
+	 *
+	 * @since 2.7.3
+	 *
+	 * @param array $presenters An array of objects implementing Abstract_Indexable_Presenter
+	 * @return array
+	 */
+	public function wpseo_frontend_presenters( $presenters ) {
+		$_presenters = array();
+
+		foreach ( $presenters as $presenter ) {
+			$_presenters[] = $presenter;
+			if ( $presenter instanceof Yoast\WP\SEO\Presenters\Open_Graph\Locale_Presenter ) {
+				foreach ( $this->get_ogp_alternate_languages() as $lang ) {
+					$_presenters[] = new PLL_WPSEO_OGP( $lang );
+				}
+			}
+		}
+		return $_presenters;
 	}
 
 	/**
