@@ -498,35 +498,6 @@ body {
 	border-bottom: 0
 }
 
-.pll-wizard-services.shipping {
-	margin: 0
-}
-
-.pll-wizard-services.shipping .pll-wizard-service-name {
-	font-weight: 400;
-	text-align: left;
-	-webkit-box-align: center;
-	-webkit-align-items: center;
-	align-items: center;
-	max-height: 5em;
-	padding: 0
-}
-
-.pll-wizard-services.shipping .pll-wizard-service-item {
-	padding-left: 2em;
-	padding-top: .67em
-}
-
-.pll-wizard-services.shipping .pll-wizard-service-item:first-child {
-	border-bottom: 0;
-	padding-bottom: 0;
-	font-weight: 700
-}
-
-.pll-wizard-services.shipping .pll-wizard-service-item:first-child .pll-wizard-service-name {
-	font-weight: 700
-}
-
 .pll-wizard-features {
 	display: -webkit-box;
 	display: -webkit-flex;
