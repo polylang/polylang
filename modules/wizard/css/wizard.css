@@ -514,14 +514,6 @@ body {
 	box-shadow: none
 }
 
-.plugin-install-source {
-	background: rgba(187, 119, 174, .15)
-}
-
-.plugin-install-source:not(.pll-wizard-service-item) {
-	box-shadow: 0 0 0 10px rgba(187, 119, 174, .15)
-}
-
 .pll-wizard-next-steps {
 	border: 1px solid #eee;
 	border-radius: 4px;
