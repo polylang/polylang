@@ -251,6 +251,11 @@ body {
 	color: #a03f3f;
 }
 
+.pll-wizard .pll-wizard-content .button {
+	border-color: #a03f3f;
+	color: #a03f3f;
+}
+
 .pll-wizard .pll-wizard-content .button-primary,
 .pll-wizard .pll-wizard-actions .button-primary {
 	background-color: #a03f3f;
