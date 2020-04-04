@@ -12,19 +12,19 @@ final class PLL_WPSEO_OGP extends Abstract_Indexable_Presenter {
 	/**
 	 * Facebook locale
 	 *
-	 * @var string
+	 * @var string $locale
 	 */
-	private $lang;
+	private $locale;
 
 	/**
 	 * Constructor
 	 *
 	 * @since 2.7
 	 *
-	 * @param string Facebook locale.
+	 * @param string $locale Facebook locale.
 	 */
-	public function __construct( $lang ) {
-		$this->lang = $lang;
+	public function __construct( $locale ) {
+		$this->locale = $locale;
 	}
 
 	/**
@@ -34,8 +34,8 @@ final class PLL_WPSEO_OGP extends Abstract_Indexable_Presenter {
 	 *
 	 * @return string
 	 */
-  public function present() {
-    return sprintf( '<meta property="og:locale:alternate" content="%s" />', esc_attr( $this->lang ) );
-  }
+	public function present() {
+		return sprintf( '<meta property="og:locale:alternate" content="%s" />', esc_attr( $this->locale ) );
+	}
 }
 

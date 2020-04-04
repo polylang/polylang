@@ -366,7 +366,7 @@ class PLL_WPSEO {
 	public function wpseo_frontend_presenters( $presenters ) {
 		$_presenters = array();
 
-		foreach ( $presenters as $key => $presenter ) {
+		foreach ( $presenters as $presenter ) {
 			$_presenters[] = $presenter;
 			if ( $presenter instanceof Yoast\WP\SEO\Presenters\Open_Graph\Locale_Presenter ) {
 				foreach ( $this->get_ogp_alternate_languages() as $lang ) {
