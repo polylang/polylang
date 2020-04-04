@@ -2,7 +2,9 @@
 
 if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 
+	require_once DIR_TESTROOT . '/../wordpress-seo/wp-seo.php';
 	require_once DIR_TESTROOT . '/../wordpress-seo/inc/sitemaps/class-sitemaps.php';
+	require_once DIR_TESTROOT . '/../wordpress-seo/src/functions.php';
 
 	/**
 	 * Copied from WPSEO unit tests
@@ -40,8 +42,6 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 		function setUp() {
 			parent::setUp();
 
-			require_once DIR_TESTROOT . '/../wordpress-seo/wp-seo.php';
-
 			require_once PLL_INC . '/api.php';
 			$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang
 
@@ -51,10 +51,32 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 			$GLOBALS['wpseo_sitemaps'] = new WPSEO_Sitemaps();
 			$this->pll_seo = new PLL_WPSEO();
 			add_action( 'pll_init', array( $this->pll_seo, 'init' ) ); // Load the compatibility layer
-			WPSEO_Frontend::get_instance();
 
 			self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 			self::$polylang->init();
+		}
+
+		function test_opengraph() {
+			// Create posts to get something on home page.
+			$en = $this->factory->post->create();
+			self::$polylang->model->post->set_language( $en, 'en' );
+
+			$fr = $this->factory->post->create();
+			self::$polylang->model->post->set_language( $fr, 'fr' );
+
+			$this->go_to( home_url( '/?lang=fr' ) );
+			self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+
+			do_action_ref_array( 'pll_init', array( &self::$polylang ) );
+			YoastSEO();
+
+			ob_start();
+			do_action( 'wpseo_head' );
+			$output = ob_get_clean();
+
+			$this->assertNotFalse( strpos( $output, '<meta property="og:locale" content="fr_FR" />' ) ); // Test WPSEO just in case.
+			$this->assertFalse( strpos( $output, '<meta property="og:locale:alternate" content="fr_FR" />' ) ); // Only for alternate languages.
+			$this->assertNotFalse( strpos( $output, '<meta property="og:locale:alternate" content="en_US" />' ) );
 		}
 
 		function test_post_sitemap_for_code_in_url() {
