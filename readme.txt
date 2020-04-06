@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.9
-Tested up to: 5.3
+Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 2.6.10
+Stable tag: 2.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -78,7 +78,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.7 =
+= 2.7 (2020-04-06) =
 
 * Minimum WordPress version is now 4.9
 * Pro: Strings translations can now be exported and imported (in PO format)
