@@ -136,4 +136,5 @@
 	<!-- Specific to Polylang -->
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
 	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
+	<exclude name="Generic.Commenting.DocComment.MissingShort" />
 </ruleset>
