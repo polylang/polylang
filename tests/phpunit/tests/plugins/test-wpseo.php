@@ -57,6 +57,9 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 		}
 
 		function test_opengraph() {
+			if ( version_compare( WPSEO_VERSION, '14.0-RC2', '<' ) ) {
+				$this->markTestSkipped( 'This test requires Yoast SEO 14.0-RC2 or newer' );
+			}
 			// Create posts to get something on home page.
 			$en = $this->factory->post->create();
 			self::$polylang->model->post->set_language( $en, 'en' );
