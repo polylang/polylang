@@ -43,6 +43,11 @@
 								<key name="sub_option_name_*" />
 						</key>
 				</key>
+				<key name="empty_option">
+					<key name="*">
+		            	<key name="label"/>
+					</key>
+				</key>
 				<key name="simple_string_option" />
 		</admin-texts>
 		<language-switcher-settings>
