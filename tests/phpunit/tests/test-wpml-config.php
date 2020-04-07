@@ -23,7 +23,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function prepare_options() {
-		// mirror options defined in the sample wpml-config.xml
+		// Mirror options defined in the sample wpml-config.xml (except the empty option).
 		$my_plugins_options = array(
 			'option_name_1'   => 'val1',
 			'option_name_2'   => 'val2',

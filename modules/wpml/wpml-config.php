@@ -209,6 +209,7 @@ class PLL_WPML_Config {
 	 */
 	protected function register_string_recursive( $context, $option, $values, $key ) {
 		$children = $key->children();
+
 		if ( count( $children ) ) {
 			foreach ( $children as $child ) {
 				$attributes = $child->attributes();
@@ -218,7 +219,7 @@ class PLL_WPML_Config {
 					foreach ( $values as $n => $value ) {
 						$this->register_string_recursive( $context, $n, $value, $child );
 					}
-				} elseif ( false !== strpos( $name, '*' ) ) {
+				} elseif ( false !== strpos( $name, '*' ) && is_array( $values ) ) {
 					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
 					foreach ( $values as $n => $value ) {
 						if ( preg_match( $pattern, $n ) ) {
@@ -259,7 +260,7 @@ class PLL_WPML_Config {
 					foreach ( $values as $n => $value ) {
 						$values[ $n ] = $this->translate_strings_recursive( $value, $child );
 					}
-				} elseif ( false !== strpos( $name, '*' ) ) {
+				} elseif ( false !== strpos( $name, '*' ) && is_array( $values ) ) {
 					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
 					foreach ( $values as $n => $value ) {
 						if ( preg_match( $pattern, $n ) ) {
