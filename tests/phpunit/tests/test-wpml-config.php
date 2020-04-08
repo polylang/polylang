@@ -22,8 +22,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		rmdir( WP_CONTENT_DIR . '/polylang' );
 	}
 
-	function prepare_options() {
-		// Mirror options defined in the sample wpml-config.xml (except the empty option).
+	function prepare_options( $method = 'ARRAY' ) {
+		// mirror options defined in the sample wpml-config.xml
 		$my_plugins_options = array(
 			'option_name_1'   => 'val1',
 			'option_name_2'   => 'val2',
@@ -57,8 +57,12 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				'sub_option_name_42' => 'val42',
 				'sub_option_diff_43' => 'val43',
 			),
-
 		);
+
+		if ( 'OBJECT' === $method ) {
+			$my_plugins_options = json_decode( json_encode( $my_plugins_options ) ); // Recursively converts the arrays to objects.
+		}
+
 		update_option( 'my_plugins_options', $my_plugins_options );
 		update_option( 'simple_string_option', 'val' );
 	}
@@ -230,7 +234,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function test_translate_strings() {
-		$this->prepare_options(); // Before reading the wpml-config.xml file.
+		$this->prepare_options( 'ARRAY' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
 		$GLOBALS['polylang'] = self::$polylang = new PLL_Frontend( self::$polylang->links_model );
@@ -257,9 +261,35 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'val_fr', get_option( 'simple_string_option' ) );
 	}
 
-	function test_register_string() {
-		$this->prepare_options(); // Before reading the wpml-config.xml file.
+	function test_translate_strings_object() {
+		$this->prepare_options( 'OBJECT' ); // Before reading the wpml-config.xml file.
+		$this->translate_options( 'fr' );
 
+		$GLOBALS['polylang'] = self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		PLL_WPML_Config::instance()->init();
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		do_action( 'pll_language_defined' );
+
+		$options = get_option( 'my_plugins_options' );
+		$this->assertEquals( 'val2_fr', $options->option_name_2 );
+		$this->assertEquals( 'val12_fr', $options->options_group_1->sub_option_name_12 );
+		$this->assertEquals( 'val21_fr', $options->options_group_2->sub_key_21 );
+		$this->assertEquals( 'val221_fr', $options->options_group_2->sub_key_22->sub_sub_221 );
+		$this->assertEquals( 'val2221_fr', $options->options_group_2->sub_key_22->sub_sub_222->sub_sub_sub_2221 );
+		$this->assertEquals( 'val311_fr', $options->options_group_3->sub_key_31->sub_sub_option_name_3x1 );
+		$this->assertEquals( 'val312_fr', $options->options_group_3->sub_key_31->sub_sub_option_name_3x2 );
+		$this->assertEquals( 'val313', $options->options_group_3->sub_key_31->sub_sub_option_name_3x3 ); // This one must not be translated.
+		$this->assertEquals( 'val321_fr', $options->options_group_3->sub_key_32->sub_sub_option_name_3x1 );
+		$this->assertEquals( 'val322_fr', $options->options_group_3->sub_key_32->sub_sub_option_name_3x2 );
+		$this->assertEquals( 'val323', $options->options_group_3->sub_key_32->sub_sub_option_name_3x3 ); // This one must not be translated.
+		$this->assertEquals( 'val41_fr', $options->options_group_4->sub_option_name_41 );
+		$this->assertEquals( 'val42_fr', $options->options_group_4->sub_option_name_42 );
+		$this->assertEquals( 'val43', $options->options_group_4->sub_option_diff_43 ); // This one must not be translated.
+	}
+
+
+	function _test_register_string() {
 		$GLOBALS['polylang'] = self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		PLL_WPML_Config::instance()->init();
 
@@ -279,5 +309,15 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertContains( 'val42', $strings );
 		$this->assertNotContains( 'val43', $strings ); // This one must not be registered.
 		$this->assertContains( 'val', $strings );
+	}
+
+	function test_register_string() {
+		$this->prepare_options( 'ARRAY' );
+		$this->_test_register_string();
+	}
+
+	function test_register_string_object() {
+		$this->prepare_options( 'OBJECT' );
+		$this->_test_register_string();
 	}
 }

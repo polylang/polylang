@@ -208,32 +208,37 @@ class PLL_WPML_Config {
 	 * @param object $key     XML node.
 	 */
 	protected function register_string_recursive( $context, $option, $values, $key ) {
+		if ( is_object( $values ) ) {
+			$values = (array) $values;
+		}
+
 		$children = $key->children();
 
-		if ( count( $children ) ) {
-			foreach ( $children as $child ) {
-				$attributes = $child->attributes();
-				$name = (string) $attributes['name'];
-				if ( '*' === $name && is_array( $values ) ) {
-					// This case could be handled by the next one, but we avoid calls to preg_match here.
-					foreach ( $values as $n => $value ) {
-						$this->register_string_recursive( $context, $n, $value, $child );
+		if ( is_array( $values ) ) {
+			if ( count( $children ) ) {
+				foreach ( $children as $child ) {
+					$attributes = $child->attributes();
+					$name = (string) $attributes['name'];
+
+					if ( isset( $values[ $name ] ) ) {
+						$this->register_string_recursive( $context, $name, $values[ $name ], $child );
+						continue;
 					}
-				} elseif ( false !== strpos( $name, '*' ) && is_array( $values ) ) {
+
 					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
+
 					foreach ( $values as $n => $value ) {
-						if ( preg_match( $pattern, $n ) ) {
+						// The first case could be handled by the next one, but we avoid calls to preg_match here.
+						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
 							$this->register_string_recursive( $context, $n, $value, $child );
 						}
 					}
-				} elseif ( isset( $values[ $name ] ) ) {
-					$this->register_string_recursive( $context, $name, $values[ $name ], $child );
 				}
-			}
-		} elseif ( is_array( $values ) ) {
-			// Parent key is a wildcard and no sub-key has been whitelisted.
-			foreach ( $values as $n => $value ) {
-				$this->register_string_recursive( $context, $n, $value, $key );
+			} else {
+				foreach ( $values as $n => $value ) {
+					// Parent key is a wildcard and no sub-key has been whitelisted.
+					$this->register_string_recursive( $context, $n, $value, $key );
+				}
 			}
 		} else {
 			pll_register_string( $option, $values, $context, true );  // Multiline as in WPML.
@@ -251,34 +256,42 @@ class PLL_WPML_Config {
 	 */
 	protected function translate_strings_recursive( $values, $key ) {
 		$children = $key->children();
-		if ( count( $children ) ) {
-			foreach ( $children as $child ) {
-				$attributes = $child->attributes();
-				$name = (string) $attributes['name'];
-				if ( '*' === $name && is_array( $values ) ) {
-					// This case could be handled by the next one, but we avoid calls to preg_match here.
-					foreach ( $values as $n => $value ) {
-						$values[ $n ] = $this->translate_strings_recursive( $value, $child );
+
+		if ( is_array( $values ) || is_object( $values ) ) {
+			if ( count( $children ) ) {
+				foreach ( $children as $child ) {
+					$attributes = $child->attributes();
+					$name = (string) $attributes['name'];
+
+					if ( is_array( $values ) && isset( $values[ $name ] ) ) {
+						$values[ $name ] = $this->translate_strings_recursive( $values[ $name ], $child );
+						continue;
 					}
-				} elseif ( false !== strpos( $name, '*' ) && is_array( $values ) ) {
+
+					if ( is_object( $values ) && isset( $values->$name ) ) {
+						$values->$name = $this->translate_strings_recursive( $values->$name, $child );
+						continue;
+					}
+
 					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-					foreach ( $values as $n => $value ) {
-						if ( preg_match( $pattern, $n ) ) {
-							$values[ $n ] = $this->translate_strings_recursive( $value, $child );
+
+					foreach ( $values as $n => &$value ) {
+						// The first case could be handled by the next one, but we avoid calls to preg_match here.
+						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
+							$value = $this->translate_strings_recursive( $value, $child );
 						}
 					}
-				} elseif ( isset( $values[ $name ] ) ) {
-					$values[ $name ] = $this->translate_strings_recursive( $values[ $name ], $child );
 				}
-			}
-		} elseif ( is_array( $values ) ) {
-			// Parent key is a wildcard and no sub-key has been whitelisted.
-			foreach ( $values as $n => $value ) {
-				$values[ $n ] = $this->translate_strings_recursive( $value, $key );
+			} else {
+				// Parent key is a wildcard and no sub-key has been whitelisted.
+				foreach ( $values as &$value ) {
+					$value = $this->translate_strings_recursive( $value, $key );
+				}
 			}
 		} else {
 			$values = pll__( $values );
 		}
+
 		return $values;
 	}
 }
