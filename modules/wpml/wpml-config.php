@@ -83,11 +83,16 @@ class PLL_WPML_Config {
 				foreach ( $xml->xpath( 'admin-texts/key' ) as $key ) {
 					$attributes = $key->attributes();
 					$name = (string) $attributes['name'];
-					if ( PLL() instanceof PLL_Frontend ) {
-						$this->options[ $name ] = $key;
-						add_filter( 'option_' . $name, array( $this, 'translate_strings' ) );
+
+					if ( false !== strpos( $name, '*' ) ) {
+						$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
+						$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
+
+						foreach ( $names as $_name ) {
+							$this->register_or_translate_option( $context, $_name, $key );
+						}
 					} else {
-						$this->register_string_recursive( $context, $name, get_option( $name ), $key );
+						$this->register_or_translate_option( $context, $name, $key );
 					}
 				}
 			}
@@ -184,6 +189,24 @@ class PLL_WPML_Config {
 			}
 		}
 		return $taxonomies;
+	}
+
+	/**
+	 * Registers or translates the strings for an option
+	 *
+	 * @since 2.8
+	 *
+	 * @param string $context The group in which the strings will be registered.
+	 * @param string $option  Option name.
+	 * @param object $key     XML node.
+	 */
+	protected function register_or_translate_option( $context, $name, $key ) {
+		if ( PLL() instanceof PLL_Frontend ) {
+			$this->options[ $name ] = $key;
+			add_filter( 'option_' . $name, array( $this, 'translate_strings' ) );
+		} else {
+			$this->register_string_recursive( $context, $name, get_option( $name ), $key );
+		}
 	}
 
 	/**
