@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.9
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 2.7
+Stable tag: 2.7.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,13 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.7.1 (2020-04-09) =
+
+* Pro: Fix untranslated post types filtered by the parameter in the REST API #493
+* Fix fatal error when the function idn_to_ascii is not available
+* Fix PHP warning warning when a 3rd party plugin declares options not stored in DB in wpml-config.xml #492
+* Fix fatal error when a 3rd party plugin declares options stored as objects in wpml-config.xml #494
 
 = 2.7 (2020-04-06) =
 
