@@ -35,7 +35,7 @@ class PLL_WPSEO {
 			}
 
 			add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
-			if ( version_compare( WPSEO_VERSION, '14.0-RC2', '<' ) ) {
+			if ( version_compare( WPSEO_VERSION, '14.0-RC3', '<' ) ) {
 				add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
 			} else {
 				add_filter( 'wpseo_frontend_presenters', array( $this, 'wpseo_frontend_presenters' ) );
@@ -322,7 +322,7 @@ class PLL_WPSEO {
 	/**
 	 * Get alternate language codes for Opengraph
 	 *
-	 * @since 2.7
+	 * @since 2.7.2
 	 *
 	 * @return array
 	 */
@@ -358,7 +358,7 @@ class PLL_WPSEO {
 	/**
 	 * Adds opengraph support for translations
 	 *
-	 * @since 2.7
+	 * @since 2.7.2
 	 *
 	 * @param array $presenters An array of objects implementing Abstract_Indexable_Presenter
 	 * @return array
