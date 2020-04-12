@@ -92,6 +92,7 @@ class PLL_Install extends PLL_Install_Base {
 			'domains'          => array(),
 			'version'          => POLYLANG_VERSION,
 			'first_activation' => time(),
+			'default_lang'     => '',
 		);
 	}
 
