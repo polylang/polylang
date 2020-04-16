@@ -197,7 +197,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 */
 	public function _maybe_load_sync_post( $is_block_editor ) {
 		/*
-		 * We must kake sure to instantiate the class only once, as the function may be called from a filter.
+		 * We must make sure to instantiate the class only once, as the function may be called from a filter.
 		 * and that the synchronization model has been instantiated (due to InfiniteWP messing the actions wp_loaded and admin_init).
 		 */
 		if ( ! isset( $this->sync_post ) && isset( $this->sync_post_model ) ) {
