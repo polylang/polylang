@@ -190,7 +190,8 @@ class PLL_Admin extends PLL_Admin_Base {
 	/**
 	 * Load the post synchronization object, depending on the editor in use.
 	 *
-	 * We must make sure to instantiate the class only once, as the function may be called from a filter and that the synchronization model has been instantiated (due to InfiniteWP messing the actions wp_loaded and admin_init).
+	 * We must make sure to instantiate the class only once, as the function may be called from a filter,
+	 * and that the synchronization model has been instantiated (due to InfiniteWP messing the actions wp_loaded and admin_init).
 	 *
 	 * @since 2.6
 	 *
