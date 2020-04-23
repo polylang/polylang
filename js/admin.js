@@ -1,3 +1,7 @@
+/**
+ * @package Polylang
+ */
+
 jQuery( document ).ready(
 	function( $ ) {
 		var transitionTimeout;

@@ -1,9 +1,12 @@
 /**
+ * @package Polylang
+ */
+
+/**
  * Filter REST API requests to add the language in the request
  *
  * @since 2.5
  */
-
 wp.apiFetch.use(
 	function( options, next ) {
 		// If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
@@ -92,20 +95,20 @@ jQuery( document ).ready(
 						// If the post is well saved, we can reload the page
 						unsubscribe();
 						window.location.reload();
-					}, 
+					},
 					function() {
 						// If the post save failed
 						unsubscribe();
-					} 
+					}
 				).catch(
 					function() {
 						// If an exception is thrown
 						unsubscribe();
 					}
 				);
-			} 
+			}
 		);
-	} 
+	}
 );
 
 /**
@@ -128,7 +131,7 @@ jQuery( document ).ready(
 				}
 
 				$.post(
-					ajaxurl, 
+					ajaxurl,
 					data,
 					function( response ) {
 						var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
@@ -197,7 +200,7 @@ jQuery( document ).ready(
 		// Handle the response to a click on a Languages metabox button
 		$( '#ml_box' ).on(
 			'click',
-			'.pll-button', 
+			'.pll-button',
 			function(){
 				var value = $( this ).hasClass( 'wp-ui-text-highlight' );
 				var id = $( this ).attr( 'id' );

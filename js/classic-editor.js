@@ -1,3 +1,7 @@
+/**
+ * @package Polylang
+ */
+
 // tag suggest in metabox
 (function( $ ){
 	$.ajaxPrefilter(
@@ -98,7 +102,7 @@ jQuery( document ).ready(
 					data,
 					function( response ) {
 						var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
-						$.each( 
+						$.each(
 							res.responses,
 							function() {
 								switch ( this.what ) {
@@ -196,7 +200,7 @@ jQuery( document ).ready(
 		// Handle the response to a click on a Languages metabox button
 		$( '#ml_box' ).on(
 			'click',
-			'.pll-button', 
+			'.pll-button',
 			function(){
 				var value = $( this ).hasClass( 'wp-ui-text-highlight' );
 				var id = $( this ).attr( 'id' );

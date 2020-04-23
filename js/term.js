@@ -1,3 +1,7 @@
+/**
+ * @package Polylang
+ */
+
 // quick edit
 (function( $ ) {
 	$( document ).bind(
