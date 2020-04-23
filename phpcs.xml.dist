@@ -30,14 +30,11 @@
 
 	<rule ref="WordPress">
 		<exclude name="Generic.Classes.DuplicateClassName.Found"/>
+		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Generic.Commenting.Fixme.TaskFound"/>
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
 		<exclude name="PSR2.Classes.PropertyDeclaration.Multiple"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
-		<exclude name="Squiz.Commenting.FileComment.Missing"/>
-		<exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
-		<exclude name="Squiz.Commenting.FileComment.SpacingAfterOpen"/>
-		<exclude name="Squiz.Commenting.FileComment.WrongStyle"/>
 		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
 		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
 		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
@@ -136,5 +133,4 @@
 	<!-- Specific to Polylang -->
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>
 	<exclude-pattern>include/widget-calendar.php</exclude-pattern>
-	<exclude name="Generic.Commenting.DocComment.MissingShort" />
 </ruleset>
