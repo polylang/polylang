@@ -4,7 +4,6 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 
 	require_once DIR_TESTROOT . '/../wordpress-seo/wp-seo.php';
 	require_once DIR_TESTROOT . '/../wordpress-seo/inc/sitemaps/class-sitemaps.php';
-	require_once DIR_TESTROOT . '/../wordpress-seo/src/functions.php';
 
 	/**
 	 * Copied from WPSEO unit tests
@@ -60,6 +59,9 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 			if ( version_compare( WPSEO_VERSION, '14.0-RC2', '<' ) ) {
 				$this->markTestSkipped( 'This test requires Yoast SEO 14.0-RC2 or newer' );
 			}
+
+			require_once DIR_TESTROOT . '/../wordpress-seo/src/functions.php';
+
 			// Create posts to get something on home page.
 			$en = $this->factory->post->create();
 			self::$polylang->model->post->set_language( $en, 'en' );
