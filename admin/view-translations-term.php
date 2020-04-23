@@ -1,10 +1,8 @@
 <?php
 /**
- * @package Polylang
- */
-
-/**
  * Displays the translations fields for terms
+ *
+ * @package Polylang
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

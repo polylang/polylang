@@ -1,11 +1,9 @@
 <?php
 /**
- * @package Polylang
- */
-
-/**
  * Displays the translations fields for media
  * Needs WP 3.5+
+ *
+ * @package Polylang
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

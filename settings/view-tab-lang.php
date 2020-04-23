@@ -1,10 +1,8 @@
 <?php
 /**
- * @package Polylang
- */
-
-/**
  * Displays the languages tab in Polylang settings
+ *
+ * @package Polylang
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
