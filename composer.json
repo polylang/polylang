@@ -1,0 +1,20 @@
+{
+	"name": "wpsyntex/polylang",
+	"description": "Making WordPress multilingual.",
+	"license": "GPL-3.0-or-later",
+	"homepage": "https://polylang.pro",
+	"type": "wordpress-plugin",
+	"require": {
+		"php": ">=5.6"
+	},
+	"autoload": {
+		"classmap": [
+			"admin/",
+			"frontend/",
+			"include/",
+			"install/",
+			"modules/",
+			"settings/"
+		]
+	}
+}

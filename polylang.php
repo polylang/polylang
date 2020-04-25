@@ -41,6 +41,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // don't access directly
 };
 
+require __DIR__ . '/vendor/autoload.php';
+
 if ( defined( 'POLYLANG_BASENAME' ) ) {
 	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -75,10 +77,6 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'PLL_MODULES_INC', POLYLANG_DIR . '/modules' );
 	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 	define( 'PLL_PREFIX', 'pll_' );
-
-	if ( file_exists( PLL_MODULES_INC . '/pro.php' ) ) {
-		define( 'POLYLANG_PRO', true );
-	}
 
 	require_once PLL_INC . '/class-polylang.php';
 	new Polylang();

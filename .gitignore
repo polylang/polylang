@@ -5,3 +5,4 @@ coverage
 package-lock.json
 .webpack-config.json
 .map
+/vendor/
