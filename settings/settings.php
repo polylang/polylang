@@ -58,10 +58,6 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		PLL_Admin_Strings::init();
 
-		if ( class_exists( 'PLL_Import_Export' ) ) {
-			$this->import_export = new PLL_Import_Export( $this );
-		}
-
 		// FIXME put this as late as possible
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 

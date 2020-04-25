@@ -77,35 +77,6 @@ class PLL_Frontend extends PLL_Base {
 
 		// Need to load nav menu class early to correctly define the locations in the customizer when the language is set from the content
 		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this );
-
-		// Cross domain
-		if ( PLL_COOKIE ) {
-			$class = array( 2 => 'PLL_Xdata_Subdomain', 3 => 'PLL_Xdata_Domain' );
-			if ( isset( $class[ $this->options['force_lang'] ] ) && class_exists( $class[ $this->options['force_lang'] ] ) ) {
-				$this->xdata = new $class[ $this->options['force_lang'] ]( $this );
-			}
-		}
-
-		if ( get_option( 'permalink_structure' ) ) {
-			// Translate slugs
-			if ( class_exists( 'PLL_Frontend_Translate_Slugs' ) ) {
-				$slugs_model = new PLL_Translate_Slugs_Model( $this );
-				$this->translate_slugs = new PLL_Frontend_Translate_Slugs( $slugs_model, $this->curlang );
-			}
-
-			// Share term slugs
-			if ( $this->options['force_lang'] && class_exists( 'PLL_Share_Term_Slug' ) ) {
-				$this->share_term_slug = new PLL_Share_Term_Slug( $this );
-			}
-		}
-
-		if ( class_exists( 'PLL_Sync_Post_Model' ) ) {
-			$this->sync_post_model = new PLL_Sync_Post_Model( $this );
-		}
-
-		if ( class_exists( 'PLL_Sync_Post' ) ) {
-			$this->sync_post = new PLL_Sync_Post( $this );
-		}
 	}
 
 	/**

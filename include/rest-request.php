@@ -51,30 +51,6 @@ class PLL_REST_Request extends PLL_Base {
 			$this->sync  = new PLL_Sync( $this );
 
 			$this->nav_menu = new PLL_Nav_Menu( $this ); // For auto added pages to menu
-
-			// Share term slugs
-			if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Share_Term_Slug' ) ) {
-				$this->share_term_slug = new PLL_Share_Term_Slug( $this );
-			}
-
-			// Translate slugs, only for pretty permalinks
-			if ( get_option( 'permalink_structure' ) && class_exists( 'PLL_Translate_Slugs' ) ) {
-				$curlang = null;
-				$slugs_model = new PLL_Translate_Slugs_Model( $this );
-				$this->translate_slugs = new PLL_Translate_Slugs( $slugs_model, $curlang );
-			}
-
-			if ( class_exists( 'PLL_Sync_Post_Model' ) ) {
-				$this->sync_post_model = new PLL_Sync_Post_Model( $this );
-			}
-
-			if ( class_exists( 'PLL_Sync_Post_REST' ) ) {
-				$this->sync_post = new PLL_Sync_Post_REST( $this );
-			}
-
-			if ( class_exists( 'PLL_Duplicate_REST' ) ) {
-				$this->duplicate_rest = new PLL_Duplicate_REST();
-			}
 		}
 	}
 }

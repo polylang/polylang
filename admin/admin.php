@@ -67,7 +67,6 @@ class PLL_Admin extends PLL_Admin_Base {
 		// Priority 5 to make sure filters are there before customize_register is fired
 		if ( $this->model->get_languages_list() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
-			add_action( 'admin_init', array( $this, 'maybe_load_sync_post' ), 20 ); // After fusion Builder.
 		}
 	}
 
@@ -129,87 +128,5 @@ class PLL_Admin extends PLL_Admin_Base {
 
 		$this->posts = new PLL_CRUD_Posts( $this );
 		$this->terms = new PLL_CRUD_Terms( $this );
-
-		// Bulk Translate
-		// Needs to be loaded before other modules.
-		if ( class_exists( 'PLL_Bulk_Translate' ) ) {
-			$this->bulk_translate = new PLL_Bulk_Translate( $this->model );
-			add_action( 'current_screen', array( $this->bulk_translate, 'init' ) );
-		}
-
-		// Advanced media
-		if ( $this->options['media_support'] && class_exists( 'PLL_Admin_Advanced_Media' ) ) {
-			$this->advanced_media = new PLL_Admin_Advanced_Media( $this );
-		}
-
-		// Share term slugs
-		if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Admin_Share_Term_Slug' ) ) {
-			$this->share_term_slug = new PLL_Admin_Share_Term_Slug( $this );
-		}
-
-		// Duplicate content
-		if ( class_exists( 'PLL_Duplicate' ) ) {
-			$this->duplicate = new PLL_Duplicate( $this );
-		}
-
-		if ( class_exists( 'PLL_Duplicate_REST' ) ) {
-			$this->duplicate_rest = new PLL_Duplicate_REST();
-		}
-
-		if ( class_exists( 'PLL_Sync_Post_Model' ) ) {
-			$this->sync_post_model = new PLL_Sync_Post_Model( $this );
-		}
-
-		// Block editor metabox
-		if ( pll_use_block_editor_plugin() ) {
-			$this->block_editor_plugin = new PLL_Block_Editor_Plugin( $this );
-		}
-
-		// FIXME: Specific for WP CRON and WP CLI as the action admin_init is not fired.
-		// Waiting for a better way to handle the cases without loading the complete admin.
-		if ( wp_doing_cron() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-			$this->maybe_load_sync_post();
-		}
-
-	}
-
-	/**
-	 * Load the post synchronization object, depending on the editor in use.
-	 *
-	 * @since 2.6
-	 */
-	public function maybe_load_sync_post() {
-		// Post synchronization
-		if ( 'post-new.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) ) {
-			// We need to wait until we know which editor is in use
-			add_filter( 'use_block_editor_for_post', array( $this, '_maybe_load_sync_post' ), 999 ); // After the plugin Classic Editor
-		} elseif ( 'post.php' === $GLOBALS['pagenow'] && function_exists( 'use_block_editor_for_post' ) && isset( $_GET['post'] ) && empty( $_GET['meta-box-loader'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$this->_maybe_load_sync_post( use_block_editor_for_post( (int) $_GET['post'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-		} else {
-			$this->_maybe_load_sync_post( false );
-		}
-	}
-
-	/**
-	 * Load the post synchronization object, depending on the editor in use.
-	 *
-	 * We must make sure to instantiate the class only once, as the function may be called from a filter,
-	 * and that the synchronization model has been instantiated (due to InfiniteWP messing the actions wp_loaded and admin_init).
-	 *
-	 * @since 2.6
-	 *
-	 * @param bool $is_block_editor Whether to use the block editor or not.
-	 * @return bool
-	 */
-	public function _maybe_load_sync_post( $is_block_editor ) {
-		if ( ! isset( $this->sync_post ) && isset( $this->sync_post_model ) ) {
-			if ( class_exists( 'PLL_Sync_Post_REST' ) && pll_use_block_editor_plugin() && $is_block_editor ) {
-				$this->sync_post = new PLL_Sync_Post_REST( $this );
-			} elseif ( class_exists( 'PLL_Sync_Post' ) ) {
-				$this->sync_post = new PLL_Sync_Post( $this );
-			}
-		}
-
-		return $is_block_editor;
 	}
 }
