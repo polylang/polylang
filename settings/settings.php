@@ -36,13 +36,6 @@ class PLL_Settings extends PLL_Admin_Base {
 	protected $modules;
 
 	/**
-	 * Reference to PLL_Import_Export
-	 *
-	 * @var PLL_Import_Export $import_export
-	 */
-	protected $import_export;
-
-	/**
 	 * Constructor
 	 *
 	 * @since 1.2

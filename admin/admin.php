@@ -28,7 +28,6 @@
  * block_editor    => reference to PLL_Admin_Block_Editor object
  * classic_editor  => reference to PLL_Admin_Classic_Editor object
  * filters_media   => optional, reference to PLL_Admin_Filters_Media object
- * bulk_translate  => reference, a PLL_Bulk_Translate subclass instance
  * wizard          => reference, a PLL_Wizard object
  *
  * @since 1.2
