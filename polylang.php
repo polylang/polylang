@@ -70,11 +70,7 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'POLYLANG_DIR', dirname( POLYLANG_FILE ) ); // our directory
 	define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
 
-	define( 'PLL_ADMIN_INC', POLYLANG_DIR . '/admin' );
-	define( 'PLL_FRONT_INC', POLYLANG_DIR . '/frontend' );
 	define( 'PLL_INC', POLYLANG_DIR . '/include' );
-	define( 'PLL_INSTALL_INC', POLYLANG_DIR . '/install' );
-	define( 'PLL_MODULES_INC', POLYLANG_DIR . '/modules' );
 	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 	define( 'PLL_PREFIX', 'pll_' );
 

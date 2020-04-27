@@ -115,7 +115,7 @@ class PLL_Admin_Classic_Editor {
 
 		echo '<div id="post-translations" class="translations">';
 		if ( $lang ) {
-			include PLL_ADMIN_INC . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
+			include __DIR__ . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
 		}
 		echo '</div>' . "\n";
 	}
@@ -155,7 +155,7 @@ class PLL_Admin_Classic_Editor {
 
 		ob_start();
 		if ( $lang ) {
-			include PLL_ADMIN_INC . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
+			include __DIR__ . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
 		}
 		$x = new WP_Ajax_Response( array( 'what' => 'translations', 'data' => ob_get_contents() ) );
 		ob_end_clean();

@@ -234,7 +234,7 @@ class PLL_Wizard {
 	 */
 	public function wizard_notice() {
 		ob_start();
-		include PLL_MODULES_INC . '/wizard/html-wizard-notice.php';
+		include __DIR__ . '/html-wizard-notice.php';
 		return ob_get_clean();
 	}
 
@@ -245,7 +245,7 @@ class PLL_Wizard {
 	 */
 	public function display_wizard_page() {
 		set_current_screen();
-		include PLL_MODULES_INC . '/wizard/view-wizard-page.php';
+		include __DIR__ . '/view-wizard-page.php';
 	}
 
 	/**
@@ -351,7 +351,7 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function display_step_licenses() {
-		include PLL_MODULES_INC . '/wizard/view-wizard-step-licenses.php';
+		include __DIR__ . '/view-wizard-step-licenses.php';
 	}
 
 	/**
@@ -462,7 +462,7 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function display_step_languages() {
-		include PLL_MODULES_INC . '/wizard/view-wizard-step-languages.php';
+		include __DIR__ . '/view-wizard-step-languages.php';
 	}
 
 	/**
@@ -569,7 +569,7 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function display_step_media() {
-		include PLL_MODULES_INC . '/wizard/view-wizard-step-media.php';
+		include __DIR__ . '/view-wizard-step-media.php';
 	}
 
 	/**
@@ -618,7 +618,7 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function display_step_untranslated_contents() {
-		include PLL_MODULES_INC . '/wizard/view-wizard-step-untranslated-contents.php';
+		include __DIR__ . '/view-wizard-step-untranslated-contents.php';
 	}
 
 	/**
@@ -681,7 +681,7 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function display_step_home_page() {
-		include PLL_MODULES_INC . '/wizard/view-wizard-step-home-page.php';
+		include __DIR__ . '/view-wizard-step-home-page.php';
 	}
 
 	/**
@@ -771,7 +771,7 @@ class PLL_Wizard {
 	public function display_step_last() {
 		// We ran the wizard once. So we can dismiss its notice.
 		PLL_Admin_Notices::dismiss( 'wizard' );
-		include PLL_MODULES_INC . '/wizard/view-wizard-step-last.php';
+		include __DIR__ . '/view-wizard-step-last.php';
 	}
 
 	/**

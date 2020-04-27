@@ -109,7 +109,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 0.8
 	 */
 	public function metabox_about() {
-		include PLL_SETTINGS_INC . '/view-about.php';
+		include __DIR__ . '/view-about.php';
 	}
 
 	/**
@@ -320,7 +320,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		}
 
 		// Displays the page
-		include PLL_SETTINGS_INC . '/view-languages.php';
+		include __DIR__ . '/view-languages.php';
 	}
 
 	/**
@@ -379,7 +379,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	public static function get_predefined_languages() {
 		require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
-		$languages    = include PLL_SETTINGS_INC . '/languages.php';
+		$languages    = include __DIR__ . '/languages.php';
 		$translations = wp_get_available_translations();
 
 		// Keep only languages with existing WP language pack
