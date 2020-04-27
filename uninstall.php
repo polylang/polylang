@@ -50,18 +50,7 @@ class PLL_Uninstall {
 	public function uninstall() {
 		global $wpdb;
 
-		// Executes each module's uninstall script, if it exists
-		$pll_modules_dir = dirname( __FILE__ ) . '/modules';
-		opendir( $pll_modules_dir );
-		while ( ( $module = readdir() ) != false ) {
-			if ( substr( $module, 0, 1 ) !== '.' ) {
-				$uninstall_script = $pll_modules_dir . '/' . $module . '/uninstall.php';
-				if ( file_exists( $uninstall_script ) ) {
-					require $uninstall_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-				}
-			}
-		}
-		closedir();
+		do_action( 'pll_uninstall' );
 
 		// Suppress data of the old model < 1.2
 		// FIXME: to remove when support for v1.1.6 will be dropped
