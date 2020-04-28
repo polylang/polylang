@@ -35,7 +35,7 @@ class PLL_WPSEO {
 			}
 
 			add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
-			if ( version_compare( WPSEO_VERSION, '14.0-RC3', '<' ) ) {
+			if ( version_compare( WPSEO_VERSION, '14.0', '<' ) ) {
 				add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
 			} else {
 				add_filter( 'wpseo_frontend_presenters', array( $this, 'wpseo_frontend_presenters' ) );

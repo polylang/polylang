@@ -56,8 +56,8 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 		}
 
 		function test_opengraph() {
-			if ( version_compare( WPSEO_VERSION, '14.0-RC2', '<' ) ) {
-				$this->markTestSkipped( 'This test requires Yoast SEO 14.0-RC2 or newer' );
+			if ( version_compare( WPSEO_VERSION, '14.0', '<' ) ) {
+				$this->markTestSkipped( 'This test requires Yoast SEO 14.0 or newer' );
 			}
 
 			require_once DIR_TESTROOT . '/../wordpress-seo/src/functions.php';
@@ -73,6 +73,9 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 			self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 
 			do_action_ref_array( 'pll_init', array( &self::$polylang ) );
+
+			// We need to inform Yoast SEO that the migration is ok, otherwise the class Front_End_Integration is not loaded.
+			update_option( 'yoast_migrations_free', array( 'version' => WPSEO_VERSION ) );
 			YoastSEO();
 
 			ob_start();
