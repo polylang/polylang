@@ -183,22 +183,6 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 2.4.0
 	 */
 	public function localize_scripts() {
-		if ( wp_script_is( 'pll_classic-editor', 'enqueued' ) ) {
-			wp_localize_script(
-				'pll_classic-editor',
-				'confirm_text',
-				__( 'You are about to overwrite an existing translation. Are you sure you want to proceed?', 'polylang' )
-			);
-		}
-
-		if ( wp_script_is( 'pll_block-editor', 'enqueued' ) ) {
-			wp_localize_script(
-				'pll_block-editor',
-				'confirm_text',
-				__( 'You are about to overwrite an existing translation. Are you sure you want to proceed?', 'polylang' )
-			);
-		}
-
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
 			wp_localize_script(
 				'pll_widgets',
