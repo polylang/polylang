@@ -73,7 +73,7 @@ class PLL_Upgrade {
 	 * @since 1.0
 	 */
 	public function admin_notices() {
-		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' );
+		load_plugin_textdomain( 'polylang' );
 		printf(
 			'<div class="error"><p>%s</p><p>%s</p></div>',
 			esc_html__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
