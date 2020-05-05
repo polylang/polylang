@@ -41,9 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // don't access directly
 };
 
-require __DIR__ . '/vendor/autoload.php';
-
-if ( defined( 'POLYLANG_BASENAME' ) ) {
+if ( defined( 'POLYLANG_VERSION' ) ) {
 	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	if ( defined( 'POLYLANG_PRO' ) ) {
@@ -65,15 +63,20 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 	define( 'PLL_MIN_WP_VERSION', '4.9' );
 	define( 'PLL_MIN_PHP_VERSION', '5.6' );
 
-	define( 'POLYLANG_FILE', __FILE__ ); // this file
-	define( 'POLYLANG_BASENAME', plugin_basename( POLYLANG_FILE ) ); // plugin name as known by WP
-	define( 'POLYLANG_DIR', dirname( POLYLANG_FILE ) ); // our directory
+	define( 'POLYLANG_FILE', __FILE__ ); // This file.
+	define( 'POLYLANG_DIR', __DIR__ ); // Our directory.
+
+	if ( ! defined( 'POLYLANG_BASENAME' ) ) {
+		define( 'POLYLANG_BASENAME', plugin_basename( __FILE__ ) ); // Plugin name as known by WP.
+	}
+
 	define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
 
 	define( 'PLL_INC', POLYLANG_DIR . '/include' );
 	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
 	define( 'PLL_PREFIX', 'pll_' );
 
+	require __DIR__ . '/vendor/autoload.php';
 	require_once PLL_INC . '/class-polylang.php';
 	new Polylang();
 }
