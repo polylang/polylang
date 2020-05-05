@@ -11,7 +11,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 		self::create_language( 'es_ES' );
 
-		require_once PLL_INC . '/api.php';
+		require_once POLYLANG_DIR . '/include/api.php';
 		$GLOBALS['polylang'] = &self::$polylang;
 
 		self::$polylang->model->post->register_taxonomy(); // needs this for 'lang' query var

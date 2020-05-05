@@ -8,7 +8,7 @@ class Strings_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		require_once PLL_INC . '/api.php';
+		require_once POLYLANG_DIR . '/include/api.php';
 		$GLOBALS['polylang'] = &self::$polylang; // The WPML API uses the global $polylang
 	}
 

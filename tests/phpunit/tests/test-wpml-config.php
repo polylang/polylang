@@ -11,7 +11,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		@mkdir( WP_CONTENT_DIR . '/polylang' );
 		copy( dirname( __FILE__ ) . '/../data/wpml-config.xml', WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 
-		require_once PLL_INC . '/api.php';
+		require_once POLYLANG_DIR . '/include/api.php';
 		$GLOBALS['polylang'] = &self::$polylang;
 	}
 

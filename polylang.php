@@ -63,8 +63,8 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	define( 'PLL_MIN_WP_VERSION', '4.9' );
 	define( 'PLL_MIN_PHP_VERSION', '5.6' );
 
-	define( 'POLYLANG_FILE', __FILE__ ); // This file.
-	define( 'POLYLANG_DIR', __DIR__ ); // Our directory.
+	define( 'POLYLANG_FILE', __FILE__ );
+	define( 'POLYLANG_DIR', __DIR__ );
 
 	if ( ! defined( 'POLYLANG_BASENAME' ) ) {
 		define( 'POLYLANG_BASENAME', plugin_basename( __FILE__ ) ); // Plugin name as known by WP.
@@ -72,11 +72,7 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 
 	define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
 
-	define( 'PLL_INC', POLYLANG_DIR . '/include' );
-	define( 'PLL_SETTINGS_INC', POLYLANG_DIR . '/settings' );
-	define( 'PLL_PREFIX', 'pll_' );
-
 	require __DIR__ . '/vendor/autoload.php';
-	require_once PLL_INC . '/class-polylang.php';
+	require __DIR__ . '/include/class-polylang.php';
 	new Polylang();
 }

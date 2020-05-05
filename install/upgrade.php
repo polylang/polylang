@@ -561,7 +561,7 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_1_8() {
 		// Adds the flag code in languages stored in DB
-		$languages = include PLL_SETTINGS_INC . '/languages.php';
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
 
 		$terms = get_terms( 'language', array( 'hide_empty' => 0 ) );
 

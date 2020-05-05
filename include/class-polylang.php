@@ -30,7 +30,7 @@ class Polylang {
 	 * @since 0.1
 	 */
 	public function __construct() {
-		require_once PLL_INC . '/functions.php'; // VIP functions
+		require_once __DIR__ . '/functions.php'; // VIP functions
 
 		// register an action when plugin is activating.
 		register_activation_hook( POLYLANG_BASENAME, array( 'PLL_Wizard', 'start_wizard' ) );
@@ -232,7 +232,7 @@ class Polylang {
 			 */
 			do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
 
-			require_once PLL_INC . '/api.php'; // Loads the API
+			require_once __DIR__ . '/api.php'; // Loads the API
 
 			if ( ! defined( 'PLL_WPML_COMPAT' ) || PLL_WPML_COMPAT ) {
 				PLL_WPML_Compat::instance(); // WPML API

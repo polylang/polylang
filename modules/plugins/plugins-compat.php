@@ -136,7 +136,7 @@ class PLL_Plugins_Compat {
 	 * @return array
 	 */
 	public function wp_import_terms( $terms ) {
-		$languages = include PLL_SETTINGS_INC . '/languages.php';
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
 
 		foreach ( $terms as $key => $term ) {
 			if ( 'language' === $term['term_taxonomy'] ) {

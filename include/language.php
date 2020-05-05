@@ -84,7 +84,7 @@ class PLL_Language {
 
 			$this->mo_id = PLL_MO::get_id( $this );
 
-			$languages = include PLL_SETTINGS_INC . '/languages.php';
+			$languages = include POLYLANG_DIR . '/settings/languages.php';
 			$this->w3c = isset( $languages[ $this->locale ]['w3c'] ) ? $languages[ $this->locale ]['w3c'] : str_replace( '_', '-', $this->locale );
 			if ( isset( $languages[ $this->locale ]['facebook'] ) ) {
 				$this->facebook = $languages[ $this->locale ]['facebook'];
