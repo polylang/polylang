@@ -41,6 +41,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-seo/wp-seo.php' ) ) {
 			parent::setUp();
 
 			require_once DIR_TESTROOT . '/../wordpress-seo/wp-seo.php';
+			require_once DIR_TESTROOT . '/../wordpress-seo/src/functions.php';
 
 			require_once PLL_INC . '/api.php';
 			$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang
