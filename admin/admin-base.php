@@ -135,20 +135,21 @@ class PLL_Admin_Base extends PLL_Base {
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		// For each script:
-		// 0 => the pages on which to load the script
-		// 1 => the scripts it needs to work
-		// 2 => 1 if loaded even if languages have not been defined yet, 0 otherwise
-		// 3 => 1 if loaded in footer
-		// FIXME: check if I can load more scripts in footer
+		/*
+		 * For each script:
+		 * 0 => the pages on which to load the script
+		 * 1 => the scripts it needs to work
+		 * 2 => 1 if loaded even if languages have not been defined yet, 0 otherwise
+		 * 3 => 1 if loaded in footer
+		 */
 		$scripts = array(
-			'post'           => array( array( 'edit', 'upload' ), array( 'jquery', 'wp-ajax-response' ), 0, 1 ),
-			'term'           => array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 ),
-			'user'           => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
-			'widgets'        => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
+			'user'    => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
+			'widgets' => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
+			$scripts['post'] = array( array( 'edit', 'upload' ), array( 'jquery', 'wp-ajax-response' ), 0, 1 );
+
 			// Classic editor.
 			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
 				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post' ), 0, 1 );
@@ -158,6 +159,10 @@ class PLL_Admin_Base extends PLL_Base {
 			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin() ) {
 				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch' ), 0, 1 );
 			}
+		}
+
+		if ( ! empty( $screen->taxonomy ) && $this->model->is_translated_taxonomy( $screen->taxonomy ) ) {
+			$scripts['term'] = array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 );
 		}
 
 		foreach ( $scripts as $script => $v ) {

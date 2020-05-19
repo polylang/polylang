@@ -68,23 +68,44 @@ class Admin_Test extends PLL_UnitTestCase {
 
 	function test_scripts_in_post_list_table() {
 		$GLOBALS['hook_suffix'] = 'edit.php';
-		set_current_screen( 'edit' );
+		set_current_screen();
 
 		$scripts = array( 'pll_ajax_backend', 'post', 'css' );
 		$this->_test_scripts( $scripts );
 	}
 
+	function test_scripts_in_untranslated_cpt_list_table() {
+		$GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type'] = 'cpt';
+		register_post_type( 'cpt' );
+		set_current_screen();
+
+		$scripts = array( 'pll_ajax_backend', 'css' );
+		$this->_test_scripts( $scripts );
+	}
+
 	function test_scripts_in_edit_post() {
 		$GLOBALS['hook_suffix'] = 'post.php';
-		set_current_screen( 'post' );
+		set_current_screen();
 
 		$scripts = array( 'pll_ajax_backend', 'classic-editor', 'metabox', 'css' );
 		$this->_test_scripts( $scripts );
 	}
 
+	function test_scripts_in_edit_untranslated_cpt() {
+		$GLOBALS['hook_suffix'] = 'post.php';
+		$_REQUEST['post_type'] = 'cpt';
+		register_post_type( 'cpt' );
+		set_current_screen();
+
+		$scripts = array( 'pll_ajax_backend', 'css' );
+		$this->_test_scripts( $scripts );
+	}
+
+
 	function test_scripts_in_media_list_table() {
 		$GLOBALS['hook_suffix'] = 'upload.php';
-		set_current_screen( 'upload' );
+		set_current_screen();
 
 		$scripts = array( 'pll_ajax_backend', 'post', 'css' );
 		$this->_test_scripts( $scripts );
@@ -92,23 +113,44 @@ class Admin_Test extends PLL_UnitTestCase {
 
 	function test_scripts_in_terms_list_table() {
 		$GLOBALS['hook_suffix'] = 'edit-tags.php';
-		set_current_screen( 'edit-tags' );
+		set_current_screen();
 
 		$scripts = array( 'pll_ajax_backend', 'term', 'css' );
+		$this->_test_scripts( $scripts );
+	}
+
+	function test_scripts_in_untranslated_custom_tax_list_table() {
+		$GLOBALS['hook_suffix'] = 'edit-tags.php';
+		$_REQUEST['taxonomy'] = 'tax';
+		register_taxonomy( 'tax', 'post' );
+		set_current_screen();
+
+		$scripts = array( 'pll_ajax_backend', 'css' );
 		$this->_test_scripts( $scripts );
 	}
 
 	function test_scripts_in_edit_term() {
 		$GLOBALS['hook_suffix'] = 'term.php';
-		set_current_screen( 'term' );
+		set_current_screen();
 
 		$scripts = array( 'pll_ajax_backend', 'term', 'css' );
 		$this->_test_scripts( $scripts );
 	}
 
+	function test_scripts_in_edit_unstranslated_custom_tax() {
+		$GLOBALS['hook_suffix'] = 'term.php';
+		$_REQUEST['taxonomy'] = 'tax';
+		register_taxonomy( 'tax', 'post' );
+		set_current_screen();
+
+		$scripts = array( 'pll_ajax_backend', 'css' );
+		$this->_test_scripts( $scripts );
+	}
+
+
 	function test_scripts_in_user_profile() {
 		$GLOBALS['hook_suffix'] = 'profile.php';
-		set_current_screen( 'profile' );
+		set_current_screen();
 
 		$scripts = array( 'pll_ajax_backend', 'user', 'css' );
 		$this->_test_scripts( $scripts );
