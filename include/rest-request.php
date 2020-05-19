@@ -46,8 +46,6 @@ class PLL_REST_Request extends PLL_Base {
 			}
 
 			$this->links = new PLL_Admin_Links( $this );
-			$this->posts = new PLL_CRUD_Posts( $this );
-			$this->terms = new PLL_CRUD_Terms( $this );
 			$this->sync  = new PLL_Sync( $this );
 
 			$this->nav_menu = new PLL_Nav_Menu( $this ); // For auto added pages to menu

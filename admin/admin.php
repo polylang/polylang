@@ -124,8 +124,5 @@ class PLL_Admin extends PLL_Admin_Base {
 			$class = apply_filters( 'pll_' . $obj, 'PLL_Admin_' . $class );
 			$this->$obj = new $class( $this );
 		}
-
-		$this->posts = new PLL_CRUD_Posts( $this );
-		$this->terms = new PLL_CRUD_Terms( $this );
 	}
 }

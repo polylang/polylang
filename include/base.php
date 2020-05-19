@@ -9,7 +9,40 @@
  * @since 1.2
  */
 abstract class PLL_Base {
-	public $links_model, $model, $options;
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	public $options;
+
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Instance of a child class of PLL_Links_Model.
+	 *
+	 * @var PLL_Links_Model
+	 */
+	public $links_model;
+
+	/**
+	 * Registers hooks on insert / update post related actions and filters.
+	 *
+	 * @var PLL_CRUD_Posts
+	 */
+	public $posts;
+
+	/**
+	 * Registers hooks on insert / update term related action and filters.
+	 *
+	 * @var PLL_CRUD_Terms
+	 */
+	public $terms;
 
 	/**
 	 * Constructor
@@ -36,11 +69,16 @@ abstract class PLL_Base {
 	}
 
 	/**
-	 * Instantiate classes always needed
+	 * Instantiates classes reacting to CRUD operations on posts and terms,
+	 * only when at least one language is defined.
 	 *
 	 * @since 2.6
 	 */
 	public function init() {
+		if ( $this->model->get_languages_list() ) {
+			$this->posts = new PLL_CRUD_Posts( $this );
+			$this->terms = new PLL_CRUD_Terms( $this );
+		}
 	}
 
 	/**
