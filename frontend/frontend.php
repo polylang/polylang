@@ -89,8 +89,6 @@ class PLL_Frontend extends PLL_Base {
 		$this->filters_links = new PLL_Frontend_Filters_Links( $this );
 		$this->filters = new PLL_Frontend_Filters( $this );
 		$this->filters_search = new PLL_Frontend_Filters_Search( $this );
-		$this->posts = new PLL_CRUD_Posts( $this );
-		$this->terms = new PLL_CRUD_Terms( $this );
 
 		$this->sync = new PLL_Sync( $this );
 
