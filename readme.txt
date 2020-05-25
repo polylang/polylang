@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.9
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 2.7.2
+Stable tag: 2.7.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,19 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.7.3 (2020-05-26) =
+
+* Security: Slash metas
+* Pro: Fix categories not savedafter the language has been switched in the block editor
+* Pro: Fix ACF fields stored as integers instead of strings
+* Pro: Fix ACF untranslated posts or terms being copied when creating a new translation
+* Pro: Fix PHP notice with ACF when a repeater or group is included in a flexible content
+* Pro: Fix "DevTools failed to load SourceMap" warning in browser console
+* Update plugin updater to 1.7.1
+* Honor the filter "pll_the_language_link" when the language switcher displays a dropdown #506
+* Fix "Something went wrong" message when quick editing untranslated post types #508
+* Fix wpseo_opengraph deprecated warning #509
 
 = 2.7.2 (2020-04-27) =
 
