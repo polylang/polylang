@@ -4,3 +4,4 @@ coverage
 /node_modules/
 package-lock.json
 .webpack-config.json
+.map
