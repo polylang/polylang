@@ -148,7 +148,8 @@ class PLL_Admin_Filters_Columns {
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
-					$class = esc_attr( 'pll_icon_edit translation_' . $id );
+					$class = /*esc_attr( 'pll_icon_edit translation_' . $id );*/
+					$flag = $language->flag;
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 				}
