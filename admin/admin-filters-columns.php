@@ -144,11 +144,11 @@ class PLL_Admin_Filters_Columns {
 			if ( $link = get_edit_post_link( $id ) ) {
 				if ( $id === $post_id ) {
 					$flag = $language->flag_url;
-					$class = '/*pll_icon_tick*/';
+					$class = apply_filters( 'pll_admin_flag_filter', '' );
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
-					$class = /*esc_attr( 'pll_icon_edit translation_' . $id );*/
+					$class = apply_filters( 'pll_admin_flag_filter', '' );
 					$flag = $language->flag_url;
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
