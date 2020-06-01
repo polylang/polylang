@@ -22,17 +22,29 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Facebook locales without equivalent WordPress locale:
  * 'ay_BO' (Aymara)
+ * 'bp_IN' (Bhojpuri)
  * 'ck_US' (Cherokee)
  * 'en_IN' (English India)
  * 'gx_GR' (Classical Greek)
  * 'ig_NG' (Igbo)
+ * 'ik_US' (Inupiak)
+ * 'iu_CA' (Inuktitut)
  * 'ja_KS' (Japanese Kansai)
+ * 'ks_IN' (Cachemiri)
  * 'lg_UG' (Ganda)
  * 'nd_ZW' (Ndebele)
+ * 'nr_ZA' (Southern Ndebele)
+ * 'ns_ZA' (Northern Sotho)
  * 'ny_MW' (Chewa)
+ * 'qc_GT' (Quiché)
  * 'qu_PE' (Quechua)
  * 'se_NO' (Northern Sami)
+ * 'ss_SZ' (Swazi)
+ * 'st_ZA' (Southern Sotho)
  * 'tl_ST' (Klingon)
+ * 'tn_BW' (Tswana)
+ * 'ts_ZA' (Tsonga)
+ * 've_ZA' (Venda)
  * 'wo_SN' (Wolof)
  * 'yi_DE' (Yiddish)
  * 'zu_ZA' (Zulu)
@@ -485,6 +497,9 @@ return array(
 	'ga' => array(
 		'facebook' => 'ga_IE',
 	),
+	'gax' => array(
+		'facebook' => 'om_ET',
+	),
 	'gd' => array(
 		'code'     => 'gd',
 		'locale'   => 'gd',
@@ -510,6 +525,9 @@ return array(
 		'dir'      => 'ltr',
 		'flag'     => 'in',
 		'facebook' => 'gu_IN',
+	),
+	'hat' => array(
+		'facebook' => 'ht_HT',
 	),
 	'hau' => array(
 		'facebook' => 'ha_NG',
@@ -987,6 +1005,7 @@ return array(
 		'name'     => 'Basa Sunda',
 		'dir'      => 'ltr',
 		'flag'     => 'id',
+		'facebook' => 'su_ID',
 	),
 	'sv_SE' => array(
 		'code'     => 'sv',
