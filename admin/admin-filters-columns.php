@@ -143,23 +143,23 @@ class PLL_Admin_Filters_Columns {
 			// Thanks to Solinx. See http://wordpress.org/support/topic/feature-request-incl-code-check-for-capabilities-in-admin-screens
 			if ( $link = get_edit_post_link( $id ) ) {
 				if ( $id === $post_id ) {
-					$flag = $language->flag;
+					$flag = $language->flag_url;
 					$class = '/*pll_icon_tick*/';
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
 					$class = /*esc_attr( 'pll_icon_edit translation_' . $id );*/
-					$flag = $language->flag;
+					$flag = $language->flag_url;
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 				}
 				printf(
-					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span>%5$s</a>',
+					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span><img src="%5$s" /></a>',
 					esc_attr( $class ),
 					esc_attr( get_post( $id )->post_title ),
 					esc_url( $link ),
 					esc_html( $s ),
-					$flag
+					esc_url( $flag )
 				);
 			} elseif ( $id === $post_id ) {
 				printf(
