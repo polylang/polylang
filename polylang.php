@@ -14,7 +14,7 @@
  * Requires at least: 4.9
  * Requires PHP:      5.6
  * Author:            WP SYNTEX
- * Author uri:        https://polylang.pro
+ * Author URI:        https://polylang.pro
  * Text Domain:       polylang
  * Domain Path:       /languages
  * License:           GPL v3 or later
