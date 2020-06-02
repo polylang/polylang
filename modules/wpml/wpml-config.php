@@ -197,7 +197,7 @@ class PLL_WPML_Config {
 	 * @since 2.8
 	 *
 	 * @param string $context The group in which the strings will be registered.
-	 * @param string $option  Option name.
+	 * @param string $name    Option name.
 	 * @param object $key     XML node.
 	 */
 	protected function register_or_translate_option( $context, $name, $key ) {
