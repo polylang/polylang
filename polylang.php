@@ -1,24 +1,25 @@
 <?php
 /**
- * @package Polylang
- */
-
-/**
- * Plugin Name: Polylang
- * Plugin URI: https://polylang.pro
- * Description: Adds multilingual capability to WordPress
- * Version: 2.7.3
+ * Polylang
+ *
+ * @package           Polylang
+ * @author            WP SYNTEX
+ * @license           GPL-3.0-or-later
+ *
+ * @wordpress-plugin
+ * Plugin Name:       Polylang
+ * Plugin URI:        https://polylang.pro
+ * Description:       Adds multilingual capability to WordPress
+ * Version:           2.8-dev
  * Requires at least: 4.9
- * Requires PHP: 5.6
- * Author: WP SYNTEX
- * Author uri: https://polylang.pro
- * License: GPL v3 or later
- * License URI: https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain: polylang
- * Domain Path: /languages
- */
-
-/*
+ * Requires PHP:      5.6
+ * Author:            WP SYNTEX
+ * Author uri:        https://polylang.pro
+ * Text Domain:       polylang
+ * Domain Path:       /languages
+ * License:           GPL v3 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
+ *
  * Copyright 2011-2019 Frédéric Demarle
  * Copyright 2019-2020 WP SYNTEX
  *
