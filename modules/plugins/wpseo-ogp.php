@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 use Yoast\WP\SEO\Presenters\Abstract_Indexable_Presenter;
 
