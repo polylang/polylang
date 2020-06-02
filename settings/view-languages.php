@@ -1,7 +1,8 @@
 <?php
-
 /**
  * Displays the Languages admin panel
+ *
+ * @package Polylang
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

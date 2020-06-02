@@ -1,7 +1,8 @@
 <?php
-
 /**
  * Displays the translations fields for posts
+ *
+ * @package Polylang
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

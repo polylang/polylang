@@ -1,3 +1,9 @@
+/**
+ * Adds a flag to the widgets filtered by a language.
+ *
+ * @package Polylang
+ */
+
 jQuery(
 	function( $ ) {
 		var widgets_container, widgets_selector, flags;
@@ -8,7 +14,7 @@ jQuery(
 
 		/**
 		 * Prepend widget titles with a flag once a language is selected.
-		 * 
+		 *
 		 * @param {object} widget The widget element.
 		 * @return {void} Nothing.
 		 */

@@ -1,7 +1,8 @@
 <?php
-
 /**
  * Displays the strings translations tab in Polylang settings
+ *
+ * @package Polylang
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

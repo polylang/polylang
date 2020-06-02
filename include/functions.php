@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Define wordpress.com VIP equivalent of uncached functions

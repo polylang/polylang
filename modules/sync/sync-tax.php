@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * A class to manage the sychronization of taxonomy terms across posts translations

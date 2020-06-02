@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) { // If uninstall not called from WordPress exit
 	exit;

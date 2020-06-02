@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Setup miscellaneous admin filters as well as filters common to admin and frontend

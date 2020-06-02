@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
 	require_once ABSPATH . '/wp-includes/default-widgets.php';

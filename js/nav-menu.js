@@ -1,3 +1,9 @@
+/**
+ * Handles the options in the language switcher nav menu metabox.
+ *
+ * @package Polylang
+ */
+
 jQuery( document ).ready(
 	function( $ ) {
 		$( '#update-nav-menu' ).bind(
@@ -11,7 +17,7 @@ jQuery( document ).ready(
 
 							// item is a number part of id of parent menu item built by WordPress
 							// pll_data is built server side with i18n strings without HTML and data retrieved from post meta
-							// the usage of attr method is safe before append call. 
+							// the usage of attr method is safe before append call.
 							h = $( '<input>' ).attr(
 								{
 									type: 'hidden',

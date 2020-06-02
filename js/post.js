@@ -1,7 +1,10 @@
 /**
- * Tag suggest in quick edit
+ * @package Polylang
  */
 
+/**
+ * Tag suggest in quick edit
+ */
 (function( $ ){
 	$.ajaxPrefilter(
 		function( options, originalOptions, jqXHR ) {
@@ -233,5 +236,5 @@ jQuery( document ).ready(
 				);
 			}
 		);
-	} 
+	}
 );

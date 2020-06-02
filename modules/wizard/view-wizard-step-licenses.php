@@ -1,7 +1,8 @@
 <?php
-
 /**
  * Displays the wizard licenses step
+ *
+ * @package Polylang
  *
  * @since 2.7
  */

@@ -1,7 +1,8 @@
 <?php
-
 /**
  * Displays the content of the About metabox
+ *
+ * @package Polylang
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
