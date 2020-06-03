@@ -145,6 +145,9 @@ class PLL_Admin_Filters_Columns {
 				$flag = '';
 				if ( $id === $post_id ) {
 					$flag = $language->flag;
+					if ( empty( $flag ) ) {
+						$flag = $language->slug;
+					}
 					$class = apply_filters( 'pll_admin_flag_filter', '' );
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
