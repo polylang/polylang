@@ -153,7 +153,15 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return bool
 	 */
 	protected function is_front_page( $query ) {
-		$query = array_diff( array_keys( $query->query ), array( 'preview', 'page', 'paged', 'cpage', 'orderby' ) );
+		/**
+		 * Filters list of query vars which do not impact whether the front page is served.
+		 *
+		 * @link https://github.com/WordPress/wordpress-develop/blob/0baa8ae85c670d338e78e408f8d6e301c6410c86/src/wp-includes/class-wp-query.php#L951-L971
+		 *
+		 * @param array $query_vars
+		 */
+		$query_vars = apply_filters( 'pll_front_page_ignored_query_vars', array( 'preview', 'page', 'paged', 'cpage', 'orderby' ) );
+		$query = array_diff( array_keys( $query->query ), $query_vars );
 		return 1 === count( $query ) && in_array( 'lang', $query );
 	}
 
