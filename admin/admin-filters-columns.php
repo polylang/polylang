@@ -1,7 +1,4 @@
 <?php
-/**
- * @package Polylang
- */
 
 /**
  * Adds the language column in posts and terms list tables
@@ -145,8 +142,10 @@ class PLL_Admin_Filters_Columns {
 			// get_edit_post_link returns nothing if the user cannot edit the post
 			// Thanks to Solinx. See http://wordpress.org/support/topic/feature-request-incl-code-check-for-capabilities-in-admin-screens
 			if ( $link = get_edit_post_link( $id ) ) {
+				$flag = '';
 				if ( $id === $post_id ) {
-					$class = 'pll_icon_tick';
+					$flag = $language->flag;
+					$class = apply_filters( 'pll_admin_flag_filter', '' );
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
@@ -155,18 +154,25 @@ class PLL_Admin_Filters_Columns {
 					$s = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 				}
 				printf(
-					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span></a>',
+					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span>%5$s</a>',
 					esc_attr( $class ),
 					esc_attr( get_post( $id )->post_title ),
 					esc_url( $link ),
-					esc_html( $s )
+					esc_html( $s ),
+					esc_attr( $flag )
 				);
 			} elseif ( $id === $post_id ) {
+				$flag = $language->flag;
+				$class = apply_filters( 'pll_admin_flag_filter', '' );
 				printf(
-					'<span class="pll_icon_tick"><span class="screen-reader-text">%s</span></span>',
+					'<span class="no-edit-link ' . esc_attr( $class ) . '" style=""><span class="screen-reader-text">%1$s</span>%2$s</span>',
 					/* translators: accessibility text, %s is a native language name */
-					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) )
+					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
+					esc_attr( $flag )
 				);
+			} else {
+				$class = apply_filters( 'pll_admin_flag_filter', '' );
+				echo '<span class="no-edit-link ' . esc_attr( $class ) . '" aria-hidden="true">—</span>';
 			}
 		}
 		// Link to add a new translation
@@ -273,7 +279,8 @@ class PLL_Admin_Filters_Columns {
 		if ( ( $id = $this->model->term->get( $term_id, $language ) ) && $term = get_term( $id, $taxonomy ) ) {
 			if ( $link = get_edit_term_link( $id, $taxonomy, $post_type ) ) {
 				if ( $id === $term_id ) {
-					$class = 'pll_icon_tick';
+					$flag = $language->flag;
+					$class = apply_filters( 'pll_admin_flag_filter', '' );
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
@@ -282,11 +289,12 @@ class PLL_Admin_Filters_Columns {
 					$s = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 				}
 				$out .= sprintf(
-					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span></a>',
+					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span>%5$s</a>',
 					$class,
 					esc_attr( $term->name ),
 					esc_url( $link ),
-					esc_html( $s )
+					esc_html( $s ),
+					$flag
 				);
 			} elseif ( $id === $term_id ) {
 				$out .= sprintf(
