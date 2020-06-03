@@ -144,13 +144,15 @@ class PLL_Admin_Filters_Columns {
 			if ( $link = get_edit_post_link( $id ) ) {
 				$flag = '';
 				if ( $id === $post_id ) {
-					$flag = $language->flag;
-					if ( empty( $flag ) ) {
+					/* translators: accessibility text, %s is a native language name */
+					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
+					$flag = $language->flag_url;
+					if ( ! empty( $flag ) ) {
+						$flag = '<img src="' . esc_url( $flag ) . '" alt="' . esc_attr( $s ) . '"  >';
+					} else {
 						$flag = $language->slug;
 					}
 					$class = apply_filters( 'pll_admin_flag_filter', '' );
-					/* translators: accessibility text, %s is a native language name */
-					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
 					$class = esc_attr( 'pll_icon_edit translation_' . $id );
 					/* translators: accessibility text, %s is a native language name */
@@ -162,7 +164,7 @@ class PLL_Admin_Filters_Columns {
 					esc_attr( get_post( $id )->post_title ),
 					esc_url( $link ),
 					esc_html( $s ),
-					esc_attr( $flag )
+					$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 			} elseif ( $id === $post_id ) {
 				$flag = $language->flag;
