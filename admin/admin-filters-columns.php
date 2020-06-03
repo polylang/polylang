@@ -146,10 +146,8 @@ class PLL_Admin_Filters_Columns {
 				if ( $id === $post_id ) {
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
-					$flag = $language->flag_url;
-					if ( ! empty( $flag ) ) {
-						$flag = '<img src="' . esc_url( $flag ) . '" alt="' . esc_attr( $s ) . '"  >';
-					} else {
+					$flag = $language->flag;
+					if ( empty( $flag ) ) {
 						$flag = $language->slug;
 					}
 					$class = apply_filters( 'pll_admin_flag_filter', '' );
@@ -283,6 +281,7 @@ class PLL_Admin_Filters_Columns {
 		// Link to edit term ( or a translation )
 		if ( ( $id = $this->model->term->get( $term_id, $language ) ) && $term = get_term( $id, $taxonomy ) ) {
 			if ( $link = get_edit_term_link( $id, $taxonomy, $post_type ) ) {
+				$flag = '';
 				if ( $id === $term_id ) {
 					$flag = $language->flag;
 					$class = apply_filters( 'pll_admin_flag_filter', '' );
@@ -299,7 +298,7 @@ class PLL_Admin_Filters_Columns {
 					esc_attr( $term->name ),
 					esc_url( $link ),
 					esc_html( $s ),
-					$flag
+					$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 			} elseif ( $id === $term_id ) {
 				$out .= sprintf(
