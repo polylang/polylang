@@ -289,6 +289,13 @@ class PLL_Admin_Filters_Columns {
 				if ( $id === $term_id ) {
 					$flag = $language->flag;
 					$class = apply_filters( 'pll_admin_flag_filter', '' );
+					if ( empty( $flag ) ) {
+						$flag = sprintf(
+							'<abbr title="%1$s">%2$s</abbr>',
+							esc_attr( $language->name ),
+							esc_html( $language->slug )
+						);
+					}
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
