@@ -148,7 +148,11 @@ class PLL_Admin_Filters_Columns {
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 					$flag = $language->flag;
 					if ( empty( $flag ) ) {
-						$flag = $language->slug;
+						$flag = sprintf(
+							'<abbr title="%1$s">%2$s</abbr>',
+							esc_attr( $language->name ),
+							esc_html( $language->slug )
+						);
 					}
 					$class = apply_filters( 'pll_admin_flag_filter', '' );
 				} else {
