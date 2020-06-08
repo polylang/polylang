@@ -34,7 +34,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 		?>
 		<tr>
-			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); // phpcs:ignore WordPress.Security.EscapeOutput ?></th>
+			<th class = "pll-language-column">
+			<?php
+			if ( $language->flag ) {
+					printf(
+						'<span class="pll-translation-flag">%s</span>',
+						$language->flag // phpcs:ignore WordPress.Security.EscapeOutput
+					);
+			} else {
+				printf(
+					'<abbr title="%1$s">%2$s</abbr>',
+					esc_attr( $language->name ),
+					esc_html( $language->slug )
+				);
+			}
+			printf(
+				'<span class="pll-language-name%1$s">%2$s</span>',
+				isset( $term_id ) ? '' : ' screen-reader-text',
+				esc_html( $language->name )
+			);
+			?>
+			</th>
 			<td class = "hidden"><?php echo $add_link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
 			<td class = "pll-edit-column pll-column-icon"><?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
 			<?php

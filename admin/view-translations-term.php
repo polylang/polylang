@@ -49,8 +49,19 @@ else {
 		?>
 		<tr>
 			<th class = "pll-language-column">
-				<span class = "pll-translation-flag"><?php echo $language->flag ? $language->flag : esc_html( $language->slug ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 				<?php
+				if ( $language->flag ) {
+					printf(
+						'<span class="pll-translation-flag">%s</span>',
+						$language->flag // phpcs:ignore WordPress.Security.EscapeOutput
+					);
+				} else {
+					printf(
+						'<abbr class="pll-translation-flag" title="%1$s">%2$s</abbr>',
+						esc_attr( $language->name ),
+						esc_html( $language->slug )
+					);
+				}
 				printf(
 					'<span class="pll-language-name%1$s">%2$s</span>',
 					isset( $term_id ) ? '' : ' screen-reader-text',
