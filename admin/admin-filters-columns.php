@@ -66,7 +66,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			$columns[ 'language_' . $language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
+			$columns[ 'language_' . $language->slug ] = ( $language->flag ? $language->flag : sprintf('<abbr title="%1$s">%2$s</abbr>', esc_attr( $language->name ), esc_html( $language->slug ) ) ) . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>';
 		}
 
 		return isset( $end ) ? array_merge( $columns, $end ) : $columns;
