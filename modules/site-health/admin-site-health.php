@@ -8,13 +8,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly.
 
 /**
- * Class PLL_Admin_Site_Health
+ * Class PLL_Admin_Site_Health to add debug info in WP Site Health
  *
- * @since
+ * @since 2.8
  */
 class PLL_Admin_Site_Health {
 	/**
 	 * PLL_Admin_Site_Health constructor.
+	 *
+	 * @since 2.8
 	 */
 	public function __construct() {
 		add_filter( 'debug_information', array( $this, 'pll_info_options' ), 15 );
@@ -22,10 +24,11 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * @param $debug_info array
+	 * Add Polylang Options to Site Health Informations tab.
 	 *
-	 * @return mixed
-	 * @since
+	 * @param array $debug_info array options to display.
+	 * @return array
+	 * @since   2.8
 	 */
 	public function pll_info_options( $debug_info ) {
 		$options = get_option( 'polylang' );
@@ -34,12 +37,12 @@ class PLL_Admin_Site_Health {
 			if ( ! is_array( $value ) ) {
 				switch ( $key ) {
 					case 'first_activation':
-						$fields[ $key ]['label']   = __( $key, 'polylang' );
+						$fields[ $key ]['label']   = $key;
 						$fields[ $key ]['value']   = date_i18n( 'd/m/Y', $value );
 						$fields[ $key ]['private'] = false;
 						break;
 					default:
-						$fields[ $key ]['label']   = __( $key, 'polylang' );
+						$fields[ $key ]['label']   = $key;
 						$fields[ $key ]['value']   = $value;
 						$fields[ $key ]['private'] = false;
 						break;
@@ -47,11 +50,11 @@ class PLL_Admin_Site_Health {
 			}
 			if ( is_array( $value ) ) {
 				if ( empty( $value ) ) {
-					$fields[ $key ]['label']   = __( $key, 'polylang' );
+					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = __( 'N/A', 'polylang' );
 					$fields[ $key ]['private'] = false;
 				} else {
-					$fields[ $key ]['label']   = __( $key, 'polylang' );
+					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = implode( ', ', $value );
 					$fields[ $key ]['private'] = false;
 				}
@@ -67,6 +70,13 @@ class PLL_Admin_Site_Health {
 		return $debug_info;
 	}
 
+	/**
+	 * Add Polylang Languages settings to Site Health Informations tab.
+	 *
+	 * @param array $debug_info array options to display.
+	 * @return array
+	 * @since   2.8
+	 */
 	public function pll_info_languages( $debug_info ) {
 		$languages = PLL()->model->get_languages_list();
 		$fields = array();
@@ -75,12 +85,17 @@ class PLL_Admin_Site_Health {
 				if ( empty( $value ) ) {
 					$value = __( 'N/A', 'polylang' );
 				}
-				// remove the flag as filter only display plain text
-				if ( 'flag' !== $key ) {
-					$fields[ $key ]['label']   = __( $key, 'polylang' );
+
+				$to_be_removed = array(
+					'flag' => true, // remove the flag as filter only display plain text
+					'host' => true, // Key not used by Polylang yet
+				);
+				if ( $to_be_removed[ $key ] ) {
+					continue;
+				}
+					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = $value;
 					$fields[ $key ]['private'] = false;
-				}
 			}
 			if ( empty( $language->flag ) ) {
 				$language->flag = __( 'Undefined', 'polylang' );
