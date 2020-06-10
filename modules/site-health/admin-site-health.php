@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class PLL_Admin_Site_Health to add debug info in WP Site Health
  *
  * @since 2.8
+ * @link https://make.wordpress.org/core/2019/04/25/site-health-check-in-5-2/
  */
 class PLL_Admin_Site_Health {
 	/**
@@ -19,8 +20,12 @@ class PLL_Admin_Site_Health {
 	 * @since 2.8
 	 */
 	public function __construct() {
+		// Information tab
 		add_filter( 'debug_information', array( $this, 'pll_info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'pll_info_languages' ), 16 );
+
+		// tests Tab
+		add_filter( 'site_status_tests', array( $this, 'pll_is_homepage' ) );
 	}
 
 	/**
@@ -109,5 +114,75 @@ class PLL_Admin_Site_Health {
 			);
 		}
 		return $debug_info;
+	}
+
+	/**
+	 * Add a Site Health test on Home Page translation
+	 *
+	 * @param array $tests array with tests declaration data
+	 * @return array
+	 * @since   2.8
+	 */
+	public function pll_is_homepage( $tests ) {
+		// add test only if static page on front page.
+		if ( '0' !== get_option( 'page_on_front' ) ) {
+			$tests['direct']['pll_hp'] = array(
+				'label' => __( 'Home Page Translated', 'polylang' ),
+				'test'  => array( $this, 'pll_homepage_test' ),
+			);
+		}
+		return $tests;
+	}
+
+	/**
+	 * Test if the home page is translated or not.
+	 *
+	 * @return array $result array with test results
+	 * @since 2.8
+	 */
+	public function pll_homepage_test() {
+		$result = array(
+			'label'       => __( 'All languages have a translated home page', 'polylang' ),
+			'status'      => 'good',
+			'badge'       => array(
+				'label' => __( 'i18n', 'polylang' ),
+				'color' => 'green',
+			),
+			'description' => sprintf(
+				'<p>%s</p>',
+				__( 'A website can\'t be displayed without homepage.', 'polylang' )
+			),
+			'actions'     => '',
+			'test'        => 'pll_hp',
+		);
+		$untranslated = array();
+		foreach ( PLL()->model->get_languages_list() as $language ) {
+			if ( ! $language->page_on_front ) {
+				$untranslated[] = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url( PLL()->links->get_new_post_translation_link( get_option( 'page_on_front' ), $language ) ),
+					esc_html( $language->name )
+				);
+			}
+		}
+		if ( ! empty( $untranslated ) ) {
+			$result['status'] = 'critical';
+			$result['label'] = __( 'Translation of Home page missing in one or more languages', 'polylang' );
+			$result['description'] = sprintf(
+			/* translators: %s is a comma separated list of native language names */
+				esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
+				implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			);
+			$result['actions'] .= sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( admin_url( 'edit.php?post_type=page' ) ),
+				__( 'Translate Missing Home Page', 'polylang' )
+			);
+			$result['badge']       = array(
+				'label' => __( 'i18n', 'polylang' ),
+				'color' => 'red',
+			);
+		}
+		return $result;
 	}
 }
