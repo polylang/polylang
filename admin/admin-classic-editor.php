@@ -115,7 +115,11 @@ class PLL_Admin_Classic_Editor {
 
 		echo '<div id="post-translations" class="translations">';
 		if ( $lang ) {
-			include __DIR__ . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
+			if ( 'attachment' === $post_type ) {
+				include __DIR__ . '/view-translations-media.php';
+			} else {
+				include __DIR__ . '/view-translations-post.php';
+			}
 		}
 		echo '</div>' . "\n";
 	}
@@ -155,7 +159,11 @@ class PLL_Admin_Classic_Editor {
 
 		ob_start();
 		if ( $lang ) {
-			include __DIR__ . '/view-translations-' . ( 'attachment' == $post_type ? 'media' : 'post' ) . '.php';
+			if ( 'attachment' === $post_type ) {
+				include __DIR__ . '/view-translations-media.php';
+			} else {
+				include __DIR__ . '/view-translations-post.php';
+			}
 		}
 		$x = new WP_Ajax_Response( array( 'what' => 'translations', 'data' => ob_get_contents() ) );
 		ob_end_clean();
