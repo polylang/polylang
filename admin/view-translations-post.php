@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 		?>
 		<tr>
-			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : '<abbr>' . esc_html( $language->slug ) . '</abbr>' . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>'; ?></th>
+			<th class = "pll-language-column"><?php echo $language->flag ? $language->flag : '<abbr>' . esc_html( $language->slug ) . '</abbr><span class="screen-reader-text">' . esc_html( $language->name ) . '</span>';  // phpcs:ignore WordPress.Security.EscapeOutput ?></th>
 			<td class = "hidden"><?php echo $add_link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
 			<td class = "pll-edit-column pll-column-icon"><?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
 			<?php
