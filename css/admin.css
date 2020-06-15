@@ -151,12 +151,10 @@
 }
 
 /* language columns in edit.php and edit-tags.php */
-.acf-admin-field-groups .wp-list-table td[class*='column-language_'],
-.acf-admin-field-groups .wp-list-table th[class*='column-language_'], /* override acf 5.9 styles */
-th[class*='column-language_'],
-td[class*='column-language_'] {
+.wp-list-table th[class*='column-language_'],
+.wp-list-table td[class*='column-language_'] {
 	width: 1.5em;
-	box-sizing: content-box;
+	box-sizing: content-box; /* Override ACF 5.9.0 styles */
 }
 
 /* Text direction in post.php and edit-tags.php */
