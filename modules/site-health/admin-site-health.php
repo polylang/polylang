@@ -128,7 +128,7 @@ class PLL_Admin_Site_Health {
 		if ( '0' !== get_option( 'page_on_front' ) ) {
 			$tests['direct']['pll_hp'] = array(
 				'label' => __( 'Home page translated', 'polylang' ),
-				'test'  => array( $this, 'pll_homepage_test' ),
+				'test'  => array( $this, 'homepage_test' ),
 			);
 		}
 		return $tests;
@@ -145,8 +145,7 @@ class PLL_Admin_Site_Health {
 			'label'       => __( 'All languages have a translated home page', 'polylang' ),
 			'status'      => 'good',
 			'badge'       => array(
-				'label' => __( 'i18n', 'polylang' ),
-				'color' => 'green',
+				'label' => __( 'Polylang', 'polylang' ),
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
@@ -173,13 +172,9 @@ class PLL_Admin_Site_Health {
 				esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
 				implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
-			$result['actions'] .= sprintf(
-				'<p><a href="%s">%s</a></p>',
-				esc_url( admin_url( 'edit.php?post_type=page' ) ),
-				__( 'Translate Missing Home Page', 'polylang' )
-			);
+			$result['actions'] .= '';
 			$result['badge']       = array(
-				'label' => __( 'i18n', 'polylang' ),
+				'label' => __( 'Polylang', 'polylang' ),
 				'color' => 'red',
 			);
 		}
