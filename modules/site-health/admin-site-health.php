@@ -53,17 +53,14 @@ class PLL_Admin_Site_Health {
 			if ( ! is_array( $value ) ) {
 				$fields[ $key ]['label']   = $key;
 				$fields[ $key ]['value']   = $value;
-				$fields[ $key ]['private'] = false;
 
 			} else {
 				if ( empty( $value ) ) {
 					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = __( 'N/A', 'polylang' );
-					$fields[ $key ]['private'] = false;
 				} else {
 					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = implode( ', ', $value );
-					$fields[ $key ]['private'] = false;
 				}
 			}
 		}
@@ -71,7 +68,6 @@ class PLL_Admin_Site_Health {
 		$debug_info['polylang'] = array(
 			'label'    => __( 'Polylang Options', 'polylang' ),
 			'fields' => $fields,
-			'show_count' => true,
 		);
 
 		return $debug_info;
@@ -105,7 +101,6 @@ class PLL_Admin_Site_Health {
 				}
 					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = $value;
-					$fields[ $key ]['private'] = false;
 			}
 			if ( empty( $language->flag ) ) {
 				$language->flag = __( 'Undefined', 'polylang' );
