@@ -3,10 +3,6 @@
  * @package Polylang
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-} // Exit if accessed directly.
-
 /**
  * Class PLL_Admin_Site_Health to add debug info in WP Site Health
  *
