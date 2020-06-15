@@ -175,7 +175,6 @@ class PLL_Admin_Site_Health {
 			$result['actions'] .= '';
 			$result['badge']       = array(
 				'label' => __( 'Polylang', 'polylang' ),
-				'color' => 'red',
 			);
 		}
 		return $result;
