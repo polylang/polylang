@@ -127,7 +127,7 @@ class PLL_Admin_Site_Health {
 		// add test only if static page on front page.
 		if ( '0' !== get_option( 'page_on_front' ) ) {
 			$tests['direct']['pll_hp'] = array(
-				'label' => __( 'Home Page Translated', 'polylang' ),
+				'label' => __( 'Home page translated', 'polylang' ),
 				'test'  => array( $this, 'pll_homepage_test' ),
 			);
 		}
