@@ -21,11 +21,11 @@ class PLL_Admin_Site_Health {
 	 */
 	public function __construct() {
 		// Information tab
-		add_filter( 'debug_information', array( $this, 'pll_info_options' ), 15 );
-		add_filter( 'debug_information', array( $this, 'pll_info_languages' ), 16 );
+		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
+		add_filter( 'debug_information', array( $this, 'info_languages' ), 16 );
 
 		// tests Tab
-		add_filter( 'site_status_tests', array( $this, 'pll_is_homepage' ) );
+		add_filter( 'site_status_tests', array( $this, 'is_homepage' ) );
 	}
 
 	/**
@@ -35,7 +35,7 @@ class PLL_Admin_Site_Health {
 	 * @return array
 	 * @since   2.8
 	 */
-	public function pll_info_options( $debug_info ) {
+	public function info_options( $debug_info ) {
 		$options = get_option( 'polylang' );
 		$fields = array();
 		foreach ( $options as $key => $value ) {
@@ -82,7 +82,7 @@ class PLL_Admin_Site_Health {
 	 * @return array
 	 * @since   2.8
 	 */
-	public function pll_info_languages( $debug_info ) {
+	public function info_languages( $debug_info ) {
 		$languages = PLL()->model->get_languages_list();
 		$fields = array();
 		foreach ( $languages as $language ) {
@@ -123,7 +123,7 @@ class PLL_Admin_Site_Health {
 	 * @return array
 	 * @since   2.8
 	 */
-	public function pll_is_homepage( $tests ) {
+	public function is_homepage( $tests ) {
 		// add test only if static page on front page.
 		if ( '0' !== get_option( 'page_on_front' ) ) {
 			$tests['direct']['pll_hp'] = array(
@@ -140,7 +140,7 @@ class PLL_Admin_Site_Health {
 	 * @return array $result array with test results
 	 * @since 2.8
 	 */
-	public function pll_homepage_test() {
+	public function homepage_test() {
 		$result = array(
 			'label'       => __( 'All languages have a translated home page', 'polylang' ),
 			'status'      => 'good',
