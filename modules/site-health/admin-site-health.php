@@ -39,21 +39,23 @@ class PLL_Admin_Site_Health {
 		$options = get_option( 'polylang' );
 		$fields = array();
 		foreach ( $options as $key => $value ) {
-			if ( ! is_array( $value ) ) {
-				switch ( $key ) {
-					case 'first_activation':
-						$fields[ $key ]['label']   = $key;
-						$fields[ $key ]['value']   = date_i18n( 'd/m/Y', $value );
-						$fields[ $key ]['private'] = false;
-						break;
-					default:
-						$fields[ $key ]['label']   = $key;
-						$fields[ $key ]['value']   = $value;
-						$fields[ $key ]['private'] = false;
-						break;
-				}
+			$to_be_removed = apply_filters(
+				'pll_site_heath_ignore_list',
+				array(
+					'flag'             => false, // remove the flag as filter only display plain text
+					'host'             => true, // Key not used by Polylang yet
+					'first_activation' => true, // not usefull key for debug purpose
+				)
+			);
+			if ( $to_be_removed[ $key ] ) {
+				continue;
 			}
-			if ( is_array( $value ) ) {
+			if ( ! is_array( $value ) ) {
+				$fields[ $key ]['label']   = $key;
+				$fields[ $key ]['value']   = $value;
+				$fields[ $key ]['private'] = false;
+
+			} else {
 				if ( empty( $value ) ) {
 					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = __( 'N/A', 'polylang' );
@@ -91,9 +93,12 @@ class PLL_Admin_Site_Health {
 					$value = __( 'N/A', 'polylang' );
 				}
 
-				$to_be_removed = array(
-					'flag' => true, // remove the flag as filter only display plain text
-					'host' => true, // Key not used by Polylang yet
+				$to_be_removed = apply_filters(
+					'pll_site_heath_ignore_list',
+					array(
+						'flag' => true, // remove the flag as filter only display plain text
+						'host' => true, // Key not used by Polylang yet
+					)
 				);
 				if ( $to_be_removed[ $key ] ) {
 					continue;
