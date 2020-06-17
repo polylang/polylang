@@ -11,7 +11,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyseventee
 			self::create_language( 'en_US' );
 			self::create_language( 'fr_FR' );
 
-			require_once PLL_INC . '/api.php';
+			require_once POLYLANG_DIR . '/include/api.php';
 			$GLOBALS['polylang'] = &self::$polylang;
 
 			self::$stylesheet = get_option( 'stylesheet' ); // save default theme

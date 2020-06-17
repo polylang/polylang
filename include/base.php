@@ -41,27 +41,6 @@ abstract class PLL_Base {
 	 * @since 2.6
 	 */
 	public function init() {
-		// REST API
-		if ( class_exists( 'PLL_REST_API' ) ) {
-			$this->rest_api = new PLL_REST_API( $this );
-		}
-
-		if ( $this->model->get_languages_list() ) {
-			// Used by content duplicate and post synchronization
-			if ( class_exists( 'PLL_Sync_Content' ) ) {
-				$this->sync_content = new PLL_Sync_Content( $this );
-			}
-
-			// Active languages
-			if ( class_exists( 'PLL_Active_Languages' ) ) {
-				$this->active_languages = new PLL_Active_Languages( $this );
-			}
-
-			// Share post slugs
-			if ( get_option( 'permalink_structure' ) && $this->options['force_lang'] && class_exists( 'PLL_Share_Post_Slug' ) ) {
-				$this->share_post_slug = new PLL_Share_Post_Slug( $this );
-			}
-		}
 	}
 
 	/**

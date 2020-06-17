@@ -73,7 +73,7 @@ class PLL_Upgrade {
 	 * @since 1.0
 	 */
 	public function admin_notices() {
-		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' );
+		load_plugin_textdomain( 'polylang' );
 		printf(
 			'<div class="error"><p>%s</p><p>%s</p></div>',
 			esc_html__( 'Polylang has been deactivated because you upgraded from a too old version.', 'polylang' ),
@@ -561,7 +561,7 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_1_8() {
 		// Adds the flag code in languages stored in DB
-		$languages = include PLL_SETTINGS_INC . '/languages.php';
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
 
 		$terms = get_terms( 'language', array( 'hide_empty' => 0 ) );
 

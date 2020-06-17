@@ -111,7 +111,7 @@ class PLL_Admin_Filters_Term {
 		// Adds translation fields
 		echo '<div id="term-translations" class="form-field">';
 		if ( $lang ) {
-			include PLL_ADMIN_INC . '/view-translations-term.php';
+			include __DIR__ . '/view-translations-term.php';
 		}
 		echo '</div>' . "\n";
 	}
@@ -178,7 +178,7 @@ class PLL_Admin_Filters_Term {
 
 		echo '<tr id="term-translations" class="form-field">';
 		if ( $lang ) {
-			include PLL_ADMIN_INC . '/view-translations-term.php';
+			include __DIR__ . '/view-translations-term.php';
 		}
 		echo '</tr>' . "\n";
 	}
@@ -449,7 +449,7 @@ class PLL_Admin_Filters_Term {
 
 		ob_start();
 		if ( $lang ) {
-			include PLL_ADMIN_INC . '/view-translations-term.php';
+			include __DIR__ . '/view-translations-term.php';
 		}
 		$x = new WP_Ajax_Response( array( 'what' => 'translations', 'data' => ob_get_contents() ) );
 		ob_end_clean();

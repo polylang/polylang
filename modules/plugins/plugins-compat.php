@@ -19,7 +19,6 @@ class PLL_Plugins_Compat {
 	 */
 	protected function __construct() {
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
-		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
 
 		// WordPress Importer
 		add_action( 'init', array( $this, 'maybe_wordpress_importer' ) );
@@ -93,51 +92,9 @@ class PLL_Plugins_Compat {
 			add_action( 'pll_init', array( $this->cache_compat = new PLL_Cache_Compat(), 'init' ) );
 		}
 
-		// Custom Post Type UI
-		if ( defined( 'CPTUI_VERSION' ) && class_exists( 'PLL_CPTUI' ) ) {
-			add_action( 'pll_init', array( $this->cptui = new PLL_CPTUI(), 'init' ) );
-		}
-
-		// The Event Calendar
-		if ( defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'PLL_TEC' ) ) {
-			add_action( 'pll_init', array( $this->tec = new PLL_TEC(), 'init' ) );
-		}
-
-		// Beaver Builder
-		if ( class_exists( 'FLBuilderLoader' ) && class_exists( 'PLL_FLBuilder' ) ) {
-			$this->flbuilder = new PLL_FLBuilder();
-		}
-
-		// Divi Builder
-		if ( ( 'Divi' === get_template() || defined( 'ET_BUILDER_PLUGIN_VERSION' ) ) && class_exists( 'PLL_Divi_Builder' ) ) {
-			$this->divi_builder = new PLL_Divi_Builder();
-		}
-
 		// WP Offload Media Lite
 		if ( function_exists( 'as3cf_init' ) && class_exists( 'PLL_AS3CF' ) ) {
 			add_action( 'pll_init', array( $this->as3cf = new PLL_AS3CF(), 'init' ) );
-		}
-
-		// Content Blocks (Custom Post Widget)
-		if ( function_exists( 'custom_post_widget_plugin_init' ) && class_exists( 'PLL_Content_Blocks' ) ) {
-			add_action( 'pll_init', array( $this->content_blocks = new PLL_Content_Blocks(), 'init' ) );
-		}
-	}
-
-	/**
-	 * Look for active plugins and load compatibility layer after the theme has been setup
-	 *
-	 * @since 2.3.8
-	 */
-	public function after_setup_theme() {
-		// Advanced Custom Fields Pro
-		if ( defined( 'ACF_VERSION' ) && version_compare( ACF_VERSION, '5.7.11', '>=' ) && class_exists( 'PLL_ACF' ) ) {
-			add_action( 'init', array( $this->acf = new PLL_ACF(), 'init' ) );
-		}
-
-		// Admin Columns & Admin Columns Pro
-		if ( did_action( 'pll_init' ) && ( defined( 'AC_FILE' ) || defined( 'ACP_FILE' ) ) && class_exists( 'PLL_CPAC' ) ) {
-			add_action( 'admin_init', array( $this->cpac = new PLL_CPAC(), 'init' ) );
 		}
 	}
 
@@ -179,7 +136,7 @@ class PLL_Plugins_Compat {
 	 * @return array
 	 */
 	public function wp_import_terms( $terms ) {
-		$languages = include PLL_SETTINGS_INC . '/languages.php';
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
 
 		foreach ( $terms as $key => $term ) {
 			if ( 'language' === $term['term_taxonomy'] ) {

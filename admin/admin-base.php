@@ -23,7 +23,7 @@ class PLL_Admin_Base extends PLL_Base {
 		parent::__construct( $links_model );
 
 		// Plugin i18n, only needed for backend
-		load_plugin_textdomain( 'polylang', false, basename( POLYLANG_DIR ) . '/languages' );
+		load_plugin_textdomain( 'polylang' );
 
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
@@ -34,9 +34,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
 
-		if ( defined( 'POLYLANG_PRO' ) ) {
-			new PLL_Pro();
-		} elseif ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) {
+		if ( ! defined( 'POLYLANG_PRO' ) && ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) ) {
 			require_once POLYLANG_DIR . '/lingotek/lingotek.php'; // Lingotek
 			add_action( 'wp_loaded', array( new PLL_Lingotek(), 'init' ) );
 		}
@@ -52,13 +50,6 @@ class PLL_Admin_Base extends PLL_Base {
 		parent::init();
 
 		$this->notices = new PLL_Admin_Notices( $this );
-
-		if ( Polylang::is_wizard() && class_exists( 'PLL_Wizard_Pro' ) ) {
-			// Instantiate PLL_Wizard_Pro class after all PLL_Admin object is all initialized.
-			// After PLL_Admin::maybe_load_sync_post which is hooked on admin_init with priority 20.
-			add_action( 'admin_init', array( $this, 'instantiate_wizard_pro' ), 30 );
-		}
-
 		$this->wizard = new PLL_Wizard( $this );
 
 		if ( ! $this->model->get_languages_list() ) {
@@ -76,12 +67,6 @@ class PLL_Admin_Base extends PLL_Base {
 
 		// Adds the languages in admin bar
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ), 100 ); // 100 determines the position
-
-		// Translate slugs, only for pretty permalinks
-		if ( get_option( 'permalink_structure' ) && class_exists( 'PLL_Translate_Slugs' ) ) {
-			$slugs_model = new PLL_Translate_Slugs_Model( $this );
-			$this->translate_slugs = new PLL_Translate_Slugs( $slugs_model, $this->curlang );
-		}
 	}
 
 	/**
@@ -198,22 +183,6 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 2.4.0
 	 */
 	public function localize_scripts() {
-		if ( wp_script_is( 'pll_classic-editor', 'enqueued' ) ) {
-			wp_localize_script(
-				'pll_classic-editor',
-				'confirm_text',
-				__( 'You are about to overwrite an existing translation. Are you sure you want to proceed?', 'polylang' )
-			);
-		}
-
-		if ( wp_script_is( 'pll_block-editor', 'enqueued' ) ) {
-			wp_localize_script(
-				'pll_block-editor',
-				'confirm_text',
-				__( 'You are about to overwrite an existing translation. Are you sure you want to proceed?', 'polylang' )
-			);
-		}
-
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
 			wp_localize_script(
 				'pll_widgets',
@@ -442,13 +411,5 @@ class PLL_Admin_Base extends PLL_Base {
 				)
 			);
 		}
-	}
-	/**
-	 * Instantiate PLL_Wizard_Pro class.
-	 *
-	 * @since 2.7
-	 */
-	public function instantiate_wizard_pro() {
-		$this->wizard_pro = new PLL_Wizard_Pro( $this );
 	}
 }

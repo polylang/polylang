@@ -12,7 +12,7 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		require_once PLL_INC . '/api.php'; // usually loaded only if an instance of Polylang exists
+		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
 		$GLOBALS['polylang'] = self::$polylang; // We use PLL()
 
 		self::$polylang->options['hide_default'] = 0;

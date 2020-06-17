@@ -7,7 +7,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 		function setUp() {
 			parent::setUp();
 
-			require_once PLL_INC . '/api.php';
+			require_once POLYLANG_DIR . '/include/api.php';
 			$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang
 			self::$polylang->options['hide_default'] = 0;
 			update_option( 'polylang', self::$polylang->options ); // make sure we have options in DB ( needed by PLL_WP_Import )

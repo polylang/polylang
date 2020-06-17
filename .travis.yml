@@ -46,21 +46,15 @@ before_script:
     fi
   - export PATH="$HOME/.config/composer/vendor/bin:$PATH"
   - |
-    if [[ "$PHPCS" == "1" ]]; then
-      composer global require dealerdirect/phpcodesniffer-composer-installer
-      composer global require wp-coding-standards/wpcs
-      composer global require automattic/vipwpcs
-      composer global require phpcompatibility/phpcompatibility-wp
-    else
+    if [[ "$PHPCS" != "1" ]]; then
       bash tests/bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
       bash tests/bin/install-plugins.sh
-      composer global require "phpunit/phpunit=5.7.*"
     fi
-
+  - composer install
 script:
   - |
     if [[ "$PHPCS" == "1" ]]; then
-      phpcs -s --extensions=php,js .
+      vendor/bin/phpcs -s --extensions=php,js .
     else
-      phpunit
+      vendor/bin/phpunit
     fi

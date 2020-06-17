@@ -16,7 +16,7 @@ if ( version_compare( $GLOBALS['wp_version'], '5.2', '>=' ) && file_exists( DIR_
 		function setUp() {
 			parent::setUp();
 
-			require_once PLL_INC . '/api.php'; // usually loaded only if an instance of Polylang exists
+			require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
 			require_once DIR_TESTROOT . '/../jetpack/jetpack.php';
 
 			$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang

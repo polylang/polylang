@@ -249,7 +249,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		self::$polylang->links = new PLL_Frontend_Links( self::$polylang );
 		self::$polylang->nav_menu = new PLL_Frontend_Nav_Menu( self::$polylang );
 
-		require_once PLL_INC . '/api.php'; // usually loaded only if an instance of Polylang exists
+		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
 		$GLOBALS['polylang'] = self::$polylang; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
@@ -266,7 +266,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		self::$polylang->links = new PLL_Frontend_Links( self::$polylang );
 		self::$polylang->nav_menu = new PLL_Frontend_Nav_Menu( self::$polylang );
 
-		require_once PLL_INC . '/api.php'; // usually loaded only if an instance of Polylang exists
+		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
 		$GLOBALS['polylang'] = self::$polylang; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );

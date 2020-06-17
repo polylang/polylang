@@ -12,7 +12,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		require_once PLL_INC . '/api.php'; // Usually loaded only if an instance of Polylang exists
+		require_once POLYLANG_DIR . '/include/api.php'; // Usually loaded only if an instance of Polylang exists
 		$GLOBALS['polylang'] = self::$polylang; // We use PLL()
 	}
 
