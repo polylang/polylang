@@ -51,7 +51,6 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		PLL_Admin_Strings::init();
 
-		// FIXME put this as late as possible
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
 		// Adds screen options and the about box in the languages admin panel
