@@ -33,11 +33,6 @@ class PLL_Admin_Base extends PLL_Base {
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
 
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
-
-		if ( ! defined( 'POLYLANG_PRO' ) && ( ! defined( 'PLL_LINGOTEK_AD' ) || PLL_LINGOTEK_AD ) ) {
-			require_once POLYLANG_DIR . '/lingotek/lingotek.php'; // Lingotek
-			add_action( 'wp_loaded', array( new PLL_Lingotek(), 'init' ) );
-		}
 	}
 
 	/**
@@ -50,7 +45,6 @@ class PLL_Admin_Base extends PLL_Base {
 		parent::init();
 
 		$this->notices = new PLL_Admin_Notices( $this );
-		$this->wizard = new PLL_Wizard( $this );
 
 		if ( ! $this->model->get_languages_list() ) {
 			return;

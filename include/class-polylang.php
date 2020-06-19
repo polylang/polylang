@@ -234,9 +234,9 @@ class Polylang {
 
 			require_once __DIR__ . '/api.php'; // Loads the API
 
-			if ( ! defined( 'PLL_WPML_COMPAT' ) || PLL_WPML_COMPAT ) {
-				PLL_WPML_Compat::instance(); // WPML API
-				PLL_WPML_Config::instance(); // wpml-config.xml
+			// Loads the modules.
+			foreach ( glob( POLYLANG_DIR . '/modules/*/load.php', GLOB_NOSORT ) as $load_script ) { // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
+				require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			}
 
 			$polylang->init();

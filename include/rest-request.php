@@ -17,12 +17,11 @@
  * filters_links  => reference to PLL_Filters_Links object
  * posts          => reference to PLL_CRUD_Posts object
  * terms          => reference to PLL_CRUD_Terms object
- * sync           => reference to PLL_Sync object
  *
  * @since 2.6
  */
 class PLL_REST_Request extends PLL_Base {
-	public $links, $static_pages, $posts, $terms, $filters, $filters_links, $sync;
+	public $links, $static_pages, $posts, $terms, $filters, $filters_links;
 
 	/**
 	 * Setup filters
@@ -46,7 +45,6 @@ class PLL_REST_Request extends PLL_Base {
 			}
 
 			$this->links = new PLL_Admin_Links( $this );
-			$this->sync  = new PLL_Sync( $this );
 
 			$this->nav_menu = new PLL_Nav_Menu( $this ); // For auto added pages to menu
 		}
