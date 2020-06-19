@@ -52,10 +52,12 @@ class Polylang {
 			PLL_OLT_Manager::instance();
 		}
 
-		// Extra code for compatibility with some plugins
-		// Loaded as soon as possible as we may need to act before other plugins are loaded
+		/*
+		 * Loads the compatibility with some plugins and themes.
+		 * Loaded as soon as possible as we may need to act before other plugins are loaded.
+		 */
 		if ( ! defined( 'PLL_PLUGINS_COMPAT' ) || PLL_PLUGINS_COMPAT ) {
-			PLL_Plugins_Compat::instance();
+			PLL_Integrations::instance();
 		}
 	}
 

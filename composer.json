@@ -24,6 +24,7 @@
 			"admin/",
 			"frontend/",
 			"include/",
+			"integrations/",
 			"install/",
 			"modules/",
 			"settings/"

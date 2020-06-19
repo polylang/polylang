@@ -51,7 +51,8 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyseventee
 			self::$polylang = new PLL_Frontend( self::$polylang->links_model );
 			self::$polylang->init();
 			do_action( 'pll_init' );
-			PLL_Plugins_Compat::instance()->twenty_seventeen_init(); // Called manually as the constructor of PLL_Plugins_Compat is called before activation of Twenty Seventeen
+			$twenty_seventeen = new PLL_Twenty_Seventeen();
+			$twenty_seventeen->init();
 
 			self::$polylang->curlang = self::$polylang->model->get_language( 'fr' ); // brute force
 
