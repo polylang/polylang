@@ -49,6 +49,7 @@
 					</key>
 				</key>
 				<key name="simple_string_option" />
+				<key name="generic_option_*" />
 		</admin-texts>
 		<language-switcher-settings>
 				<key name="icl_lang_sel_config">
