@@ -21,7 +21,6 @@
  * posts          => reference to PLL_CRUD_Posts object
  * terms          => reference to PLL_CRUD_Terms object
  * nav_menu       => reference to PLL_Frontend_Nav_Menu object
- * sync           => reference to PLL_Sync object
  * auto_translate => optional, reference to PLL_Auto_Translate object
  *
  * @since 1.2
@@ -89,8 +88,6 @@ class PLL_Frontend extends PLL_Base {
 		$this->filters_links = new PLL_Frontend_Filters_Links( $this );
 		$this->filters = new PLL_Frontend_Filters( $this );
 		$this->filters_search = new PLL_Frontend_Filters_Search( $this );
-
-		$this->sync = new PLL_Sync( $this );
 
 		// Auto translate for Ajax
 		if ( ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) && wp_doing_ajax() ) {
