@@ -10,6 +10,13 @@
  */
 class PLL_Settings_Translate_Slugs extends PLL_Settings_Module {
 	/**
+	 * Stores the display order priority.
+	 *
+	 * @var int
+	 */
+	public $priority = 80;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.9

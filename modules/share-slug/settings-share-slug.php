@@ -9,6 +9,12 @@
  * @since 1.9
  */
 class PLL_Settings_Share_Slug extends PLL_Settings_Module {
+	/**
+	 * Stores the display order priority.
+	 *
+	 * @var int
+	 */
+	public $priority = 70;
 
 	/**
 	 * Constructor

@@ -9,10 +9,83 @@
  * @since 1.8
  */
 class PLL_Settings_Module {
-	public $active_option, $configure;
-	public $module, $title, $description;
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
 	public $options;
-	protected $action_links, $buttons, $form = false;
+
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Instance of a child class of PLL_Links_Model.
+	 *
+	 * @var PLL_Links_Model
+	 */
+	public $links_model;
+
+	/**
+	 * Stores if the module is active.
+	 *
+	 * @var bool
+	 */
+	public $active_option;
+
+	/**
+	 * Stores the display order priority.
+	 *
+	 * @var int
+	 */
+	public $priority = 100;
+
+	/**
+	 * Stores the module name.
+	 * It must be unique.
+	 *
+	 * @var string
+	 */
+	public $module;
+
+	/**
+	 * Stores the module title.
+	 *
+	 * @var string
+	 */
+	public $title;
+
+	/**
+	 * Stores the module description.
+	 *
+	 * @var string
+	 */
+	public $description;
+
+	/**
+	 * Stores the settings actions.
+	 *
+	 * @var array
+	 */
+	protected $action_links;
+
+	/**
+	 * Stores html fragment for the buttons.
+	 *
+	 * @var array
+	 */
+	protected $buttons;
+
+	/**
+	 * Stores html form when provided by a child class.
+	 *
+	 * @var bool|string
+	 */
+	protected $form = false;
 
 	/**
 	 * Constructor

@@ -18,7 +18,7 @@ if ( $polylang->model->get_languages_list() ) {
 	add_filter(
 		'pll_settings_modules',
 		function( $modules ) {
-			$modules[20] = 'PLL_Settings_WPML';
+			$modules[] = 'PLL_Settings_WPML';
 			return $modules;
 		}
 	);

@@ -19,7 +19,7 @@ if ( $polylang->model->get_languages_list() ) {
 	add_filter(
 		'pll_settings_modules',
 		function( $modules ) {
-			$modules[10] = 'PLL_Settings_Sync';
+			$modules[] = 'PLL_Settings_Sync';
 			return $modules;
 		}
 	);
