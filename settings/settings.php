@@ -78,7 +78,7 @@ class PLL_Settings extends PLL_Admin_Base {
 			);
 		}
 
-		$modules[100] = 'PLL_Settings_Licenses';
+		$modules[] = 'PLL_Settings_Licenses';
 
 		/**
 		 * Filter the list of setting modules
@@ -88,7 +88,6 @@ class PLL_Settings extends PLL_Admin_Base {
 		 * @param array $modules the list of module classes
 		 */
 		$modules = apply_filters( 'pll_settings_modules', $modules );
-		ksort( $modules );
 
 		foreach ( $modules as $key => $class ) {
 			$key = is_numeric( $key ) ? strtolower( str_replace( 'PLL_Settings_', '', $class ) ) : $key;

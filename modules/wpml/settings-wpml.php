@@ -9,6 +9,12 @@
  * @since 1.8
  */
 class PLL_Settings_WPML extends PLL_Settings_Module {
+	/**
+	 * Stores the display order priority.
+	 *
+	 * @var int
+	 */
+	public $priority = 60;
 
 	/**
 	 * Constructor
