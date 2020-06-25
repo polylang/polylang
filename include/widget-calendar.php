@@ -9,7 +9,7 @@ if ( ! class_exists( 'WP_Widget_Calendar' ) ) {
 
 /**
  * This classes rewrite the whole Calendar widget functionality as there is no filter on sql queries and only a filter on final output.
- * Code last checked: WP 5.4.1.
+ * Code last checked: WP 5.5.
  *
  * A request to add filters on sql queries exists: http://core.trac.wordpress.org/ticket/15202.
  * Method used in 0.4.x: use of the get_calendar filter and overwrite the output of get_calendar function -> not very efficient (add 4 to 5 sql queries).
@@ -184,9 +184,10 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 			AND post_date <= '{$thisyear}-{$thismonth}-{$last_day} 23:59:59' $where_clause",
 			ARRAY_N
 		); #modified#
+
 		if ( $dayswithposts ) {
 			foreach ( (array) $dayswithposts as $daywith ) {
-				$daywithpost[] = $daywith[0];
+				$daywithpost[] = (int) $daywith[0];
 			}
 		}
 
@@ -213,7 +214,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 				$calendar_output .= '<td>';
 			}
 
-			if ( in_array( $day, $daywithpost ) ) {
+			if ( in_array( $day, $daywithpost, true ) ) {
 				// Any posts today?
 				$date_format = gmdate( _x( 'F j, Y', 'daily archives date format' ), strtotime( "{$thisyear}-{$thismonth}-{$day}" ) );
 				/* translators: Post calendar label. %s: Date. */
@@ -227,6 +228,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 			} else {
 				$calendar_output .= $day;
 			}
+
 			$calendar_output .= '</td>';
 
 			if ( 6 == calendar_week_mod( gmdate( 'w', mktime( 0, 0, 0, $thismonth, $day, $thisyear ) ) - $week_begins ) ) {
@@ -238,6 +240,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 		if ( 0 != $pad && 7 != $pad ) {
 			$calendar_output .= "\n\t\t" . '<td class="pad" colspan="' . esc_attr( $pad ) . '">&nbsp;</td>';
 		}
+
 		$calendar_output .= "\n\t</tr>\n\t</tbody>";
 
 		$calendar_output .= "\n\t</table>";
