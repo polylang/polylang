@@ -96,7 +96,7 @@ class PLL_Admin_Site_Health {
 				$language->flag = __( 'Undefined', 'polylang' );
 			}
 			$debug_info[ $language->name ] = array(
-				'label'  => $language->name,
+				'label'  => sprintf( __( 'Language: %s', 'polylang' ),$language->name ),
 				// translators: placeholder is the flag image
 				'description' => sprintf( __( 'Flag used in the language switcher: %s', 'polylang' ), $language->flag ),
 				'fields' => $fields,
@@ -115,7 +115,7 @@ class PLL_Admin_Site_Health {
 	public function is_homepage( $tests ) {
 		// add test only if static page on front page.
 		if ( '0' !== get_option( 'page_on_front' ) ) {
-			$tests['direct']['pll_hp'] = array(
+			$tests['direct']['pll_homepage'] = array(
 				'label' => __( 'Home page translated', 'polylang' ),
 				'test'  => array( $this, 'homepage_test' ),
 			);
@@ -141,7 +141,7 @@ class PLL_Admin_Site_Health {
 				__( 'A website can\'t be displayed without homepage.', 'polylang' )
 			),
 			'actions'     => '',
-			'test'        => 'pll_hp',
+			'test'        => 'pll_homepage',
 		);
 		$untranslated = array();
 		foreach ( PLL()->model->get_languages_list() as $language ) {
