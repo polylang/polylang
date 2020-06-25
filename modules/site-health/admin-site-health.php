@@ -85,18 +85,12 @@ class PLL_Admin_Site_Health {
 					$value = __( 'N/A', 'polylang' );
 				}
 
-				$to_be_removed = apply_filters(
-					'pll_site_heath_ignore_list',
-					array(
-						'flag' => true, // remove the flag as filter only display plain text
-						'host' => true, // Key not used by Polylang yet
-					)
-				);
-				if ( $to_be_removed[ $key ] ) {
+				if ( in_array( $key, array( 'flag', 'host' ) ) ) {
 					continue;
 				}
 					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = $value;
+
 			}
 			if ( empty( $language->flag ) ) {
 				$language->flag = __( 'Undefined', 'polylang' );
