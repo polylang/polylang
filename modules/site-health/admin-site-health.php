@@ -85,7 +85,7 @@ class PLL_Admin_Site_Health {
 					$value = __( 'N/A', 'polylang' );
 				}
 
-				if ( in_array( $key, array( 'flag', 'host' ) ) ) {
+				if ( in_array( $key, array( 'flag', 'host', 'taxonomy', 'description', 'parent', 'filter' ) ) ) {
 					continue;
 				}
 					$fields[ $key ]['label']   = $key;
