@@ -100,7 +100,6 @@ class PLL_Admin_Site_Health {
 				// translators: placeholder is the flag image
 				'description' => sprintf( __( 'Flag used in the language switcher: %s', 'polylang' ), $language->flag ),
 				'fields' => $fields,
-				'show_count' => true,
 			);
 		}
 		return $debug_info;
