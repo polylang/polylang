@@ -17,7 +17,7 @@ class PLL_Switcher {
 	 * @since 0.7
 	 *
 	 * @param string $type optional either 'menu' or 'widget', defaults to 'widget'
-	 * @param string $key  optional either 'string' or 'default', defaults to 'string'
+	 * @param string $key  optional either 'string' or 'default' or 'all', defaults to 'string'
 	 * @return array list of switcher options strings or default values
 	 */
 	public static function get_switcher_options( $type = 'widget', $key = 'string' ) {
@@ -29,7 +29,9 @@ class PLL_Switcher {
 			'hide_current'           => array( 'string' => __( 'Hides the current language', 'polylang' ), 'default' => 0 ),
 			'hide_if_no_translation' => array( 'string' => __( 'Hides languages with no translation', 'polylang' ), 'default' => 0 ),
 		);
-
+		if ( 'all' === $key ) {
+			return $options;
+		}
 		return wp_list_pluck( $options, $key );
 	}
 
