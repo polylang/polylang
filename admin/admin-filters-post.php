@@ -76,7 +76,9 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 
 		// Hierarchical post types
 		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) ) {
-			$pages          = get_pages();
+			$pages = get_pages( array( 'sort_column' => 'menu_order, post_title' ) ); // Same arguments as the parent pages dropdown to avoid an extra query.
+			update_post_caches( $pages, $screen->post_type );
+
 			$page_languages = array();
 
 			foreach ( $pages as $page ) {
