@@ -24,8 +24,14 @@ class PLL_Admin_Site_Health {
 		add_filter( 'site_status_tests', array( $this, 'is_homepage' ) );
 	}
 
-	public function exclude_key(){
-		$exclude_list = array(
+	/**
+	 * Return a list of key to exclude from site health informations
+	 *
+	 * @return array list of option key to ignore
+	 * @since   2.8
+	 */
+	public function exclude_key() {
+		return array(
 			'flag',
 			'host',
 			'taxonomy',
@@ -34,10 +40,8 @@ class PLL_Admin_Site_Health {
 			'filter',
 			'uninstall',
 			'first_activation',
-
+			'custom_flag',
 		);
-
-		return $exclude_list;
 	}
 
 	/**
