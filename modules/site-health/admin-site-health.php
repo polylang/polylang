@@ -127,11 +127,15 @@ class PLL_Admin_Site_Health {
 				) {
 					continue;
 				}
-					$fields[ $key ]['label']   = $key;
-					$fields[ $key ]['value']   = $value;
 
+				$fields[ $key ]['label'] = $key;
+				$fields[ $key ]['value'] = $value;
+
+				if ( 'term_group' === $key ) {
+					$fields[ $key ]['label'] = _x( 'order', 'Order of the language in the language switcher', 'polylang' );
+				}
 			}
-			$flag = $this->get_flag( $language );
+			$this->get_flag( $language );
 
 			$lang_name = sanitize_title( $language->name );
 			$debug_info[ $lang_name ] = array(
