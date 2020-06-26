@@ -51,6 +51,9 @@ class PLL_Admin_Site_Health {
 				continue;
 			}
 			if ( ! is_array( $value ) ) {
+				if ( false === $value ){
+					$value = '0';
+				}
 				$fields[ $key ]['label']   = $key;
 				$fields[ $key ]['value']   = $value;
 			} else {
