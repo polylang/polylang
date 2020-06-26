@@ -131,9 +131,8 @@ class PLL_Admin_Site_Health {
 					$fields[ $key ]['value']   = $value;
 
 			}
-			if ( empty( $language->flag ) ) {
-				$language->flag = __( 'Undefined', 'polylang' );
-			}
+			$flag = $this->get_flag( $language );
+
 			$lang_name = sanitize_title( $language->name );
 			$debug_info[ $lang_name ] = array(
 				// translators: placeholder is the language name
@@ -144,6 +143,23 @@ class PLL_Admin_Site_Health {
 			);
 		}
 		return $debug_info;
+	}
+
+	/**
+	 * Return the flag used in the language switcher
+	 *
+	 * @param object $language language object
+	 * @return mixed
+	 * @since   2.8
+	 */
+	public function get_flag( $language ) {
+		if ( empty( $language->flag ) ) {
+			$language->flag = __( 'Undefined', 'polylang' );
+		}
+		if ( ! empty( $language->custom_flag_url ) ) {
+			$language->flag = '<img src="' . $language->custom_flag_url . '" height="16">';
+		}
+		return $language;
 	}
 
 	/**
