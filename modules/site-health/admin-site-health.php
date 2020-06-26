@@ -53,14 +53,30 @@ class PLL_Admin_Site_Health {
 			if ( ! is_array( $value ) ) {
 				$fields[ $key ]['label']   = $key;
 				$fields[ $key ]['value']   = $value;
-
 			} else {
 				if ( empty( $value ) ) {
 					$fields[ $key ]['label']   = $key;
 					$fields[ $key ]['value']   = __( 'N/A', 'polylang' );
 				} else {
-					$fields[ $key ]['label']   = $key;
-					$fields[ $key ]['value']   = implode( ', ', $value );
+					switch ( $key ) {
+						case 'nav_menus':
+							$fields[ $key ]['label']   = $key;
+							$fields[ $key ]['value']   = key( $value ) . ': ';
+							foreach ( $value as $menus ) {
+								foreach ( $menus as $menu => $lang ) {
+									$fields[ $key ]['value'] .= '[' . $menu . ' ';
+									foreach ( $lang as $lang => $menu_id ) {
+										$fields[ $key ]['value'] .= $lang . ': ' . $menu_id . ', ';
+									}
+									$fields[ $key ]['value'] .= ']';
+								}
+							}
+							break;
+						default:
+							$fields[ $key ]['label']   = $key;
+							$fields[ $key ]['value']   = implode( ', ', $value );
+							break;
+					}
 				}
 			}
 		}
