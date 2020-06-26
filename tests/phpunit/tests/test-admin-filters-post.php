@@ -402,10 +402,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $en, reset( $posts ) );
 
 		$posts = get_posts( array( 'fields' => 'ids', 'post__in' => array( $fr ) ) );
-		$this->assertEquals( $fr, reset( $posts ) );
+		$this->assertEmpty( $posts );
+
+		$posts = get_posts( array( 'fields' => 'ids', 'post__in' => array( $en, $fr ) ) );
+		$this->assertEquals( array( $en ), $posts );
 
 		$posts = get_posts( array( 'fields' => 'ids', 'tag__in' => array( $tag ) ) );
-		$this->assertEquals( $fr, reset( $posts ) );
+		$this->assertEmpty( $posts );
 
 		$tax_query[] = array(
 			'taxonomy' => 'post_tag',

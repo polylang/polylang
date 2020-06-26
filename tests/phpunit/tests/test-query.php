@@ -514,10 +514,11 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( array( 'cat' => -$cat_en ) );
 		$this->assertEmpty( $query->posts );
 
-		// The test was broken by WP 4.9 and fixed in 2.2.7
-		// See also https://core.trac.wordpress.org/ticket/42104
 		$query = new WP_Query( array( 'cat' => $cat_fr ) );
-		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
+		$this->assertEmpty( $query->posts );
+
+		$query = new WP_Query( array( 'cat' => "{$cat_en},{$cat_fr}" ) );
+		$this->assertEquals( array( get_post( $en ) ), $query->posts );
 	}
 
 	// Bug introduced in 2.2 and fixed in 2.2.4
