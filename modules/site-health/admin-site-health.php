@@ -24,6 +24,22 @@ class PLL_Admin_Site_Health {
 		add_filter( 'site_status_tests', array( $this, 'is_homepage' ) );
 	}
 
+	public function exclude_key(){
+		$exclude_list = array(
+			'flag',
+			'host',
+			'taxonomy',
+			'description',
+			'parent',
+			'filter',
+			'uninstall',
+			'first_activation',
+
+		);
+
+		return $exclude_list;
+	}
+
 	/**
 	 * Add Polylang Options to Site Health Informations tab.
 	 *
@@ -37,21 +53,13 @@ class PLL_Admin_Site_Health {
 		foreach ( $options as $key => $value ) {
 			if ( in_array(
 				$key,
-				array(
-					'flag',
-					'host',
-					'taxonomy',
-					'description',
-					'parent',
-					'filter',
-					'uninstall',
-				)
+				$this->exclude_key()
 			)
-			) {
+				) {
 				continue;
 			}
 			if ( ! is_array( $value ) ) {
-				if ( false === $value ){
+				if ( false === $value ) {
 					$value = '0';
 				}
 				$fields[ $key ]['label']   = $key;
@@ -59,7 +67,7 @@ class PLL_Admin_Site_Health {
 			} else {
 				if ( empty( $value ) ) {
 					$fields[ $key ]['label']   = $key;
-					$fields[ $key ]['value']   = __( 'N/A', 'polylang' );
+					$fields[ $key ]['value']   = '0';
 				} else {
 					switch ( $key ) {
 						case 'nav_menus':
@@ -105,20 +113,12 @@ class PLL_Admin_Site_Health {
 		foreach ( $languages as $language ) {
 			foreach ( $language as $key => $value ) {
 				if ( empty( $value ) ) {
-					$value = __( 'N/A', 'polylang' );
+					$value = '0';
 				}
 
 				if ( in_array(
 					$key,
-					array(
-						'flag',
-						'host',
-						'taxonomy',
-						'description',
-						'parent',
-						'filter',
-						'uninstall',
-					)
+					$this->exclude_key()
 				)
 				) {
 					continue;
