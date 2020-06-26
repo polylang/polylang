@@ -35,15 +35,19 @@ class PLL_Admin_Site_Health {
 		$options = get_option( 'polylang' );
 		$fields = array();
 		foreach ( $options as $key => $value ) {
-			$to_be_removed = apply_filters(
-				'pll_site_heath_ignore_list',
+			if ( in_array(
+				$key,
 				array(
-					'flag'             => false, // remove the flag as filter only display plain text
-					'host'             => true, // Key not used by Polylang yet
-					'first_activation' => true, // not usefull key for debug purpose
+					'flag',
+					'host',
+					'taxonomy',
+					'description',
+					'parent',
+					'filter',
+					'uninstall',
 				)
-			);
-			if ( $to_be_removed[ $key ] ) {
+			)
+			) {
 				continue;
 			}
 			if ( ! is_array( $value ) ) {
@@ -85,7 +89,19 @@ class PLL_Admin_Site_Health {
 					$value = __( 'N/A', 'polylang' );
 				}
 
-				if ( in_array( $key, array( 'flag', 'host', 'taxonomy', 'description', 'parent', 'filter' ) ) ) {
+				if ( in_array(
+					$key,
+					array(
+						'flag',
+						'host',
+						'taxonomy',
+						'description',
+						'parent',
+						'filter',
+						'uninstall',
+					)
+				)
+				) {
 					continue;
 				}
 					$fields[ $key ]['label']   = $key;
