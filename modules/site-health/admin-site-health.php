@@ -132,7 +132,8 @@ class PLL_Admin_Site_Health {
 			}
 			$lang_name = sanitize_title( $language->name );
 			$debug_info[ $lang_name ] = array(
-				'label'  => sprintf( __( 'Language: %s', 'polylang' ),$language->name ),
+				// translators: placeholder is the language name
+				'label'  => sprintf( __( 'Language: %s', 'polylang' ), $language->name ),
 				// translators: placeholder is the flag image
 				'description' => sprintf( __( 'Flag used in the language switcher: %s', 'polylang' ), $language->flag ),
 				'fields' => $fields,
