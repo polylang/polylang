@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.9
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 2.7.3
+Stable tag: 2.7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,15 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.7.4 ( 2020-06-29) =
+
+* Pro: Allow using our /untranslated-posts REST endpoint for non-public post types
+* Pro: Fix broken display in the block editor sidebar when a language has no flag
+* Pro: Fix SSO breaking the preview on secondary domains
+* Pro: Fix ACF translation option not working for term custom fields
+* Pro: Fix a styling issue in the fields group list table in ACF 5.9
+* Add Spanish from Puerto Rico to the predefined list of languages
 
 = 2.7.3 (2020-05-26) =
 
