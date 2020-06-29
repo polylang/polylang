@@ -10,18 +10,23 @@
  * @link https://make.wordpress.org/core/2019/04/25/site-health-check-in-5-2/
  */
 class PLL_Admin_Site_Health {
+
+	public $model;
+
 	/**
 	 * PLL_Admin_Site_Health constructor.
 	 *
 	 * @since 2.8
 	 */
-	public function __construct() {
+	public function __construct( &$polylang ) {
 		// Information tab
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 16 );
 
 		// tests Tab
 		add_filter( 'site_status_tests', array( $this, 'is_homepage' ) );
+
+		$this->model = &$polylang;
 	}
 
 	/**
@@ -74,9 +79,15 @@ class PLL_Admin_Site_Health {
 					$fields[ $key ]['value']   = '0';
 				} else {
 					switch ( $key ) {
-						/*case 'post_types':
-
-							break;*/
+						case 'post_types':
+							$fields[ $key ]['label'] = $key;
+							$fields[ $key ]['value'] = implode( ', ', $this->model->model->get_translated_post_types() );
+							break;
+						case 'taxonomies':
+							$fields[ $key ]['label'] = $key;
+							$fields[ $key ]['value'] = implode( ', ',
+								$this->model->model->get_translated_taxonomies() );
+							break;
 						case 'nav_menus':
 							$current_theme = wp_get_theme();
 							foreach ( $value as $menus ) {
