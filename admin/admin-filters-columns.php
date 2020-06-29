@@ -177,11 +177,8 @@ class PLL_Admin_Filters_Columns {
 					'<span class="no-edit-link ' . esc_attr( $class ) . '" style=""><span class="screen-reader-text">%1$s</span>%2$s</span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
-					esc_attr( $flag )
+					$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
-			} else {
-				$class = apply_filters( 'pll_admin_flag_filter', '' );
-				echo '<span class="no-edit-link ' . esc_attr( $class ) . '" aria-hidden="true">—</span>';
 			}
 		}
 		// Link to add a new translation
