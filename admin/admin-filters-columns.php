@@ -147,7 +147,6 @@ class PLL_Admin_Filters_Columns {
 			if ( $link = get_edit_post_link( $id ) ) {
 				$flag = '';
 				if ( $id === $post_id ) {
-					// $class = 'pll_flag';
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 					$flag = $language->flag;
