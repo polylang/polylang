@@ -75,15 +75,12 @@ class PLL_Admin_Site_Health {
 				} else {
 					switch ( $key ) {
 						case 'nav_menus':
-							$fields[ $key ]['label']   = $key;
-							$fields[ $key ]['value']   = key( $value ) . ': ';
 							foreach ( $value as $menus ) {
-								foreach ( $menus as $menu => $lang ) {
-									$fields[ $key ]['value'] .= '[' . $menu . ' ';
-									foreach ( $lang as $lang => $menu_id ) {
-										$fields[ $key ]['value'] .= $lang . ': ' . $menu_id . ', ';
+								foreach ( $menus as $location => $lang ) {
+									$fields[ $location ]['label'] = $location;
+									foreach ( $lang as $code => $menu_id ) {
+										$fields[ $location ]['value'] .= sprintf( '%s: %s | ', $code, $menu_id );
 									}
-									$fields[ $key ]['value'] .= ']';
 								}
 							}
 							break;
