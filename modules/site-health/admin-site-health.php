@@ -74,8 +74,15 @@ class PLL_Admin_Site_Health {
 					$fields[ $key ]['value']   = '0';
 				} else {
 					switch ( $key ) {
+						/*case 'post_types':
+
+							break;*/
 						case 'nav_menus':
+							$current_theme = wp_get_theme();
 							foreach ( $value as $menus ) {
+								if ( key( $value ) !== $current_theme->stylesheet ) {
+									continue;
+								}
 								foreach ( $menus as $location => $lang ) {
 									$fields[ $location ]['label'] = $location;
 									foreach ( $lang as $code => $menu_id ) {
