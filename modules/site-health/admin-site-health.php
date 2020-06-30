@@ -26,7 +26,7 @@ class PLL_Admin_Site_Health {
 		// tests Tab
 		add_filter( 'site_status_tests', array( $this, 'is_homepage' ) );
 
-		$this->model = &$polylang;
+		$this->model = &$polylang->model;
 	}
 
 	/**
@@ -35,7 +35,20 @@ class PLL_Admin_Site_Health {
 	 * @return array list of option key to ignore
 	 * @since   2.8
 	 */
-	public function exclude_key() {
+	protected function exclude_options_key() {
+		return array(
+			'uninstall',
+			'first_activation',
+		);
+	}
+
+	/**
+	 * Return a list of key to exclude from site health informations.
+	 *
+	 * @return array list of language key to ignore
+	 * @since   2.8
+	 */
+	protected function exclude_lang_key() {
 		return array(
 			'flag',
 			'host',
@@ -43,8 +56,6 @@ class PLL_Admin_Site_Health {
 			'description',
 			'parent',
 			'filter',
-			'uninstall',
-			'first_activation',
 			'custom_flag',
 		);
 	}
@@ -62,7 +73,7 @@ class PLL_Admin_Site_Health {
 		foreach ( $options as $key => $value ) {
 			if ( in_array(
 				$key,
-				$this->exclude_key()
+				$this->exclude_options_key()
 			)
 				) {
 				continue;
@@ -81,12 +92,12 @@ class PLL_Admin_Site_Health {
 					switch ( $key ) {
 						case 'post_types':
 							$fields[ $key ]['label'] = $key;
-							$fields[ $key ]['value'] = implode( ', ', $this->model->model->get_translated_post_types() );
+							$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_post_types() );
 							break;
 						case 'taxonomies':
 							$fields[ $key ]['label'] = $key;
 							$fields[ $key ]['value'] = implode( ', ',
-								$this->model->model->get_translated_taxonomies() );
+								$this->model->get_translated_taxonomies() );
 							break;
 						case 'nav_menus':
 							$current_theme = wp_get_theme();
@@ -137,7 +148,7 @@ class PLL_Admin_Site_Health {
 
 				if ( in_array(
 					$key,
-					$this->exclude_key()
+					$this->exclude_lang_key()
 				)
 				) {
 					continue;
