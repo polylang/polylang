@@ -21,7 +21,7 @@ class PLL_Admin_Site_Health {
 	public function __construct( &$polylang ) {
 		// Information tab
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
-		add_filter( 'debug_information', array( $this, 'info_languages' ), 16 );
+		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
 
 		// tests Tab
 		add_filter( 'site_status_tests', array( $this, 'is_homepage' ) );
@@ -176,7 +176,7 @@ class PLL_Admin_Site_Health {
 			$language->flag = __( 'Undefined', 'polylang' );
 		}
 		if ( ! empty( $language->custom_flag_url ) ) {
-			$language->flag = '<img src="' . $language->custom_flag_url . '" height="16">';
+			$language->flag = '<img src="' . $language->custom_flag_url . '" height="11">';
 		}
 		return $language;
 	}
