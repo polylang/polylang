@@ -20,7 +20,6 @@
  * post_id                => if not null, link to translations of post defined by post_id, defaults to null
  * raw                    => set this to true to build your own custom language switcher, defaults to 0
  * item_spacing           => whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to preserve
- * admin_render           => specific rendering in admin outside a language context
  *
  * @api
  * @since 0.5
@@ -29,8 +28,11 @@
  * @return null|string|array null if displaying, array if raw is requested, string otherwise
  */
 function pll_the_languages( $args = '' ) {
-	$switcher = new PLL_Switcher();
-	return $switcher->the_languages( PLL()->links, $args );
+	if ( PLL() instanceof PLL_Frontend ) {
+		$switcher = new PLL_Switcher();
+		return $switcher->the_languages( PLL()->links, $args );
+	}
+	return '';
 }
 
 /**
