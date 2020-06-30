@@ -16,7 +16,6 @@ class PLL_Featured_Content {
 	 */
 	public function init() {
 		add_filter( 'transient_featured_content_ids', array( $this, 'featured_content_ids' ) );
-		add_filter( 'pll_filter_query_excluded_query_vars', array( $this, 'fix_featured_posts' ) );
 		add_filter( 'option_featured-content', array( $this, 'option_featured_content' ) );
 	}
 
@@ -100,21 +99,6 @@ class PLL_Featured_Content {
 		set_transient( 'featured_content_ids', $ids );
 
 		return $ids;
-	}
-
-	/**
-	 * Allow to filter the featured posts query per language
-	 *
-	 * @since 2.4
-	 *
-	 * @param array $excludes Query vars excluded from the language filter
-	 * @return array
-	 */
-	public function fix_featured_posts( $excludes ) {
-		if ( $this->is_active() && PLL() instanceof PLL_Frontend && doing_filter( $this->get_featured_posts_filter() ) ) {
-			$excludes = array_diff( $excludes, array( 'post__in' ) );
-		}
-		return $excludes;
 	}
 
 	/**
