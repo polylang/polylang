@@ -38,24 +38,18 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // don't access directly
+	exit; // Don't access directly.
 };
 
 if ( defined( 'POLYLANG_VERSION' ) ) {
-	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro
+	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro.
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
-	if ( defined( 'POLYLANG_PRO' ) ) {
-		// Polylang Pro is already activated
-		if ( is_plugin_active( plugin_basename( __FILE__ ) ) ) {
-			require_once ABSPATH . 'wp-includes/pluggable.php';
-			deactivate_plugins( plugin_basename( __FILE__ ) ); // Deactivate this plugin
-			// WP does not allow us to send a custom meaningful message, so just tell the plugin has been deactivated
-			wp_safe_redirect( add_query_arg( 'deactivate', 'true', remove_query_arg( 'activate' ) ) );
-			exit;
-		}
-	} else {
-		// Polylang was activated, deactivate it to keep only what we expect to be Polylang Pro
-		deactivate_plugins( POLYLANG_BASENAME );
+	require_once ABSPATH . 'wp-includes/pluggable.php';
+	if ( is_plugin_active( plugin_basename( __FILE__ ) ) ) {
+		deactivate_plugins( plugin_basename( __FILE__ ) ); // Deactivate this plugin.
+		// WP does not allow us to send a custom meaningful message, so just tell the plugin has been deactivated.
+		wp_safe_redirect( add_query_arg( 'deactivate', 'true', remove_query_arg( 'activate' ) ) );
+		exit;
 	}
 } else {
 	// Go on loading the plugin
