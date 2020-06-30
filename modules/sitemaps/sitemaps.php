@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Handles the core sitemaps.
@@ -107,11 +110,14 @@ class PLL_Sitemaps {
 	 * @return array
 	 */
 	public function providers( $providers ) {
+		$new_providers = array();
+
 		foreach ( $providers as $key => $provider ) {
 			foreach ( $this->get_active_languages() as $lang ) {
 				$new_providers[ "$key-$lang" ] = new PLL_Sitemaps_Provider_Decorator( $provider, $lang );
 			}
 		}
+
 		return $new_providers;
 	}
 

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang
+ */
 
 /**
  * Sitemaps providers decorator
@@ -28,6 +31,9 @@ class PLL_Sitemaps_Provider_Decorator extends WP_Sitemaps_Provider {
 	 * Constructor.
 	 *
 	 * @since 2.8
+	 *
+	 * @param WP_Sitemaps_Provider $provider An instance of a WP_Sitemaps_Provider child class.
+	 * @param string               $lang     Language code.
 	 */
 	public function __construct( $provider, $lang ) {
 		$this->name = $provider->name . '-' . $lang;
