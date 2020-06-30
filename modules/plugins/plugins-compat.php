@@ -60,6 +60,10 @@ class PLL_Plugins_Compat {
 				add_action( 'template_redirect', array( $this, 'dm_redirect_to_mapped_domain' ) );
 			}
 		}
+
+		// Events Manager
+		add_filter( 'em_ml_langs', array( $this, 'events_manager_langs' ) );
+		add_filter( 'em_ml_wplang', array( $this, 'events_manager_wplang' ) );
 	}
 
 	/**
@@ -301,5 +305,39 @@ class PLL_Plugins_Compat {
 			// Otherwise rely on MU Domain Mapping
 			redirect_to_mapped_domain();
 		}
+	}
+
+	/**
+	 * Events Manager
+	 * Returns an array containing the configured locales and language names.
+	 * If there is more than one language configured, Events Manager will activate
+	 * its multilingual support.
+	 *
+	 * @since 2.3.12
+	 *
+	 * @param array $arr
+	 * @return array
+	 */
+	public function events_manager_langs( $arr ) {
+		global $polylang;
+		$langs = array();
+		foreach ( $polylang->model->get_languages_list() as $id => $lang ) {
+			$langs[ $lang->locale ] = $lang->name;
+		}
+		return $langs;
+	}
+
+	/**
+	 * Events Manager
+	 * Return the site's default language, so that Events Manager will use localized options when
+	 * necessary.
+	 *
+	 * @since 2.3.12
+	 *
+	 * @param string $val
+	 * @return string
+	 */
+	public function events_manager_wplang( $val ) {
+		return get_option( 'WPLANG' );
 	}
 }
