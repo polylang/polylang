@@ -96,22 +96,25 @@ class PLL_Admin_Site_Health {
 							break;
 						case 'taxonomies':
 							$fields[ $key ]['label'] = $key;
-							$fields[ $key ]['value'] = implode( ', ',
-								$this->model->get_translated_taxonomies() );
+							$fields[ $key ]['value'] = implode(
+								', ',
+								$this->model->get_translated_taxonomies()
+							);
 							break;
 						case 'nav_menus':
-							$current_theme = wp_get_theme();
-							foreach ( $value as $menus ) {
-								if ( key( $value ) !== $current_theme->stylesheet ) {
-									continue;
-								}
-								foreach ( $menus as $location => $lang ) {
-									$fields[ $location ]['label'] = $location;
-									foreach ( $lang as $code => $menu_id ) {
-										$fields[ $location ]['value'] .= sprintf( '%s: %s | ', $code, $menu_id );
+							$current_theme = get_stylesheet();
+							foreach ( $value[ $current_theme ] as $location => $lang ) {
+								// translators: placeholder is the menu location name
+								$fields[ $location ]['label'] = sprintf( __( 'Menu: %s', 'polylang' ), $location );
+								array_walk(
+									$lang,
+									function ( &$value, $key ) {
+										$value = "$key:$value";
 									}
-								}
+								);
+								$fields[ $location ]['value'] .= implode( ' | ', $lang );
 							}
+
 							break;
 						default:
 							$fields[ $key ]['label']   = $key;
