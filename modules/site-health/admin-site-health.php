@@ -114,7 +114,16 @@ class PLL_Admin_Site_Health {
 								);
 								$fields[ $location ]['value'] .= implode( ' | ', $lang );
 							}
-
+							break;
+						case 'media':
+							array_walk(
+								$value,
+								function ( &$value, $key ) {
+									$value = "$key: $value";
+								}
+							);
+							$fields[ $key ]['label'] = '';
+							$fields[ $key ]['value'] .= implode( ',', $value );
 							break;
 						default:
 							$fields[ $key ]['label']   = $key;
