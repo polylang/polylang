@@ -78,7 +78,7 @@ class PLL_Switcher {
 				}
 			}
 
-			if ( $no_translation = empty( $url ) && 0 === $args['admin_render'] ) {
+			if ( $no_translation = empty( $url ) ) {
 				$classes[] = 'no-translation';
 			}
 
