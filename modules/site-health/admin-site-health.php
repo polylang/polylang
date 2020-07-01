@@ -173,14 +173,14 @@ class PLL_Admin_Site_Health {
 					$fields[ $key ]['label'] = _x( 'order', 'Order of the language in the language switcher', 'polylang' );
 				}
 			}
-			$this->get_flag( $language );
+			$flag = $this->get_flag( $language );
 
 			$lang_name = sanitize_title( $language->name );
 			$debug_info[ $lang_name ] = array(
 				// translators: placeholder is the language name
 				'label'  => sprintf( __( 'Language: %s', 'polylang' ), $language->name ),
 				// translators: placeholder is the flag image
-				'description' => sprintf( __( 'Flag used in the language switcher: %s', 'polylang' ), $language->flag ),
+				'description' => sprintf( __( 'Flag used in the language switcher: %s', 'polylang' ), $flag ),
 				'fields' => $fields,
 			);
 		}
@@ -196,12 +196,13 @@ class PLL_Admin_Site_Health {
 	 */
 	public function get_flag( $language ) {
 		if ( empty( $language->flag ) ) {
-			$language->flag = __( 'Undefined', 'polylang' );
+			return $flag = '<span class="no-flag">' . __( 'Undefined', 'polylang' ) . '</span>';
 		}
 		if ( ! empty( $language->custom_flag_url ) ) {
-			$language->flag = '<img src="' . $language->custom_flag_url . '" height="11">';
+			return $flag = '<img src="' . $language->custom_flag_url . '" height="11">';
+		} else {
+			return $flag = $language->flag;
 		}
-		return $language;
 	}
 
 	/**
