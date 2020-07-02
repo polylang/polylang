@@ -191,21 +191,23 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Return the flag used in the language switcher
+	 * Returns the flag used in the language switcher.
 	 *
-	 * @param object $language language object
-	 * @return mixed
-	 * @since   2.8
+	 * @since 2.8
+	 *
+	 * @param object $language Language object.
+	 * @return string
 	 */
-	public function get_flag( $language ) {
-		if ( empty( $language->flag ) ) {
-			return $flag = '<span class="no-flag">' . __( 'Undefined', 'polylang' ) . '</span>';
+	protected function get_flag( $language ) {
+		if ( ! empty( $language->custom_flag ) ) {
+			return $language->custom_flag;
 		}
-		if ( ! empty( $language->custom_flag_url ) ) {
-			return $flag = '<img src="' . $language->custom_flag_url . '" height="11">';
-		} else {
-			return $flag = $language->flag;
+
+		if ( ! empty( $language->flag ) ) {
+			return $language->flag;
 		}
+
+		return $flag = '<span>' . __( 'Undefined', 'polylang' ) . '</span>';
 	}
 
 	/**
