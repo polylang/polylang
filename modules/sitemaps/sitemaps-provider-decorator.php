@@ -59,6 +59,9 @@ class PLL_Sitemaps_Provider_Decorator extends WP_Sitemaps_Provider {
 	/**
 	 * Gets the max number of pages available for the object type.
 	 *
+	 * Returns 0 for all languages but the default language for untranslated post types
+	 * and untranslated taxonomies to avoid to duplicate the corresponding sitemaps.
+	 *
 	 * @since 2.8
 	 *
 	 * @param string $object_subtype Optional. Object subtype. Default empty.

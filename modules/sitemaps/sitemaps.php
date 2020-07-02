@@ -102,7 +102,8 @@ class PLL_Sitemaps {
 	}
 
 	/**
-	 * Replaces the list of sitemaps providers by our decorators.
+	 * Replaces the list of sitemaps providers by our decorators,
+	 * allowing to have one provider per language.
 	 *
 	 * @since 2.8
 	 *
