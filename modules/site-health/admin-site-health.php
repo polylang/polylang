@@ -4,16 +4,30 @@
  */
 
 /**
- * Class PLL_Admin_Site_Health to add debug info in WP Site Health
+ * Class PLL_Admin_Site_Health to add debug info in WP Site Health.
+ *
+ * @link https://make.wordpress.org/core/2019/04/25/site-health-check-in-5-2/
  *
  * @since 2.8
- * @link https://make.wordpress.org/core/2019/04/25/site-health-check-in-5-2/
  */
 class PLL_Admin_Site_Health {
+	/**
+	 * A reference to the PLL_Model instance.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Model
+	 */
+	protected $model;
 
-	public $model;
-
-	public $links;
+	/**
+	 * A reference to the PLL_Admin_Links instance.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Admin_Links
+	 */
+	protected $links;
 
 	/**
 	 * PLL_Admin_Site_Health constructor.
@@ -21,22 +35,23 @@ class PLL_Admin_Site_Health {
 	 * @since 2.8
 	 */
 	public function __construct( &$polylang ) {
-		// Information tab
+		$this->model = &$polylang->model;
+		$this->links = &$polylang->links;
+
+		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
 
-		// tests Tab
-		add_filter( 'site_status_tests', array( $this, 'is_homepage' ) );
-
-		$this->model = &$polylang->model;
-		$this->links = &$polylang->links;
+		// Tests Tab.
+		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
 	}
 
 	/**
-	 * Return a list of key to exclude from site health informations
+	 * Returns a list of keys to exclude from the site health information.
 	 *
-	 * @return array list of option key to ignore
-	 * @since   2.8
+	 * @since 2.8
+	 *
+	 * @return array List of option keys to ignore.
 	 */
 	protected function exclude_options_keys() {
 		return array(
@@ -46,10 +61,11 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Return a list of key to exclude from site health informations.
+	 * Returns a list of keys to exclude from the site health information.
 	 *
-	 * @return array list of language key to ignore
-	 * @since   2.8
+	 * @since 2.8
+	 *
+	 * @return array List of language keys to ignore.
 	 */
 	protected function exclude_language_keys() {
 		return array(
@@ -66,81 +82,71 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Add Polylang Options to Site Health Informations tab.
 	 *
-	 * @param array $debug_info array options to display.
+	 * @since 2.8
+	 *
+	 * @param array $debug_info The debug information to be added to the core information page.
 	 * @return array
-	 * @since   2.8
 	 */
 	public function info_options( $debug_info ) {
 		$fields = array();
 		foreach ( $this->model->options as $key => $value ) {
-			if ( in_array(
-				$key,
-				$this->exclude_options_keys()
-			)
-				) {
+			if ( in_array( $key, $this->exclude_options_keys() ) ) {
 				continue;
 			}
+
+			$fields[ $key ]['label'] = $key;
+
 			if ( ! is_array( $value ) ) {
 				if ( false === $value ) {
 					$value = '0';
 				}
-				$fields[ $key ]['label']   = $key;
-				$fields[ $key ]['value']   = $value;
-			} else {
-				if ( empty( $value ) ) {
-					$fields[ $key ]['label']   = $key;
-					$fields[ $key ]['value']   = '0';
-				} else {
-					switch ( $key ) {
-						case 'post_types':
-							$fields[ $key ]['label'] = $key;
-							$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_post_types() );
-							break;
-						case 'taxonomies':
-							$fields[ $key ]['label'] = $key;
-							$fields[ $key ]['value'] = implode(
-								', ',
-								$this->model->get_translated_taxonomies()
-							);
-							break;
-						case 'nav_menus':
-							$current_theme = get_stylesheet();
-							foreach ( $value[ $current_theme ] as $location => $lang ) {
-								// translators: placeholder is the menu location name
-								$fields[ $location ]['label'] = sprintf( __( 'Menu: %s', 'polylang' ), $location );
-								array_walk(
-									$lang,
-									function ( &$value, $key ) {
-										$value = "$key:$value";
-									}
-									);
-								$fields[ $location ]['value'] = implode( ' | ', $lang );
 
-							}
-							break;
-						case 'media':
+				$fields[ $key ]['value'] = $value;
+			} elseif ( empty( $value ) ) {
+					$fields[ $key ]['value'] = '0';
+			} else {
+				switch ( $key ) {
+					case 'post_types':
+						$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_post_types() );
+						break;
+					case 'taxonomies':
+						$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
+						break;
+					case 'nav_menus':
+						$current_theme = get_stylesheet();
+						foreach ( $value[ $current_theme ] as $location => $lang ) {
+							// translators: placeholder is the menu location name
+							$fields[ $location ]['label'] = sprintf( __( 'Menu: %s', 'polylang' ), $location );
 							array_walk(
-								$value,
+								$lang,
 								function ( &$value, $key ) {
-									$value = "$key: $value";
+									$value = "$key:$value";
 								}
-							);
-							$fields[ $key ]['label'] = '';
-							if ( ! empty( $fields[ $key ]['value'] ) ) {
-								$fields[ $key ]['value'] = implode( ',', $value );
+								);
+							$fields[ $location ]['value'] = implode( ' | ', $lang );
+						}
+						break;
+					case 'media':
+						array_walk(
+							$value,
+							function ( &$value, $key ) {
+								$value = "$key: $value";
 							}
-							break;
-						default:
-							$fields[ $key ]['label']   = $key;
-							$fields[ $key ]['value']   = implode( ', ', $value );
-							break;
-					}
+						);
+						$fields[ $key ]['label'] = '';
+						if ( ! empty( $fields[ $key ]['value'] ) ) {
+							$fields[ $key ]['value'] = implode( ',', $value );
+						}
+						break;
+					default:
+						$fields[ $key ]['value'] = implode( ', ', $value );
+						break;
 				}
 			}
 		}
 
 		$debug_info['pll_options'] = array(
-			'label'    => __( 'Polylang Options', 'polylang' ),
+			'label'  => __( 'Polylang Options', 'polylang' ),
 			'fields' => $fields,
 		);
 
@@ -150,9 +156,10 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Add Polylang Languages settings to Site Health Informations tab.
 	 *
-	 * @param array $debug_info array options to display.
+	 * @since 2.8
+	 *
+	 * @param array $debug_info The debug information to be added to the core information page.
 	 * @return array
-	 * @since   2.8
 	 */
 	public function info_languages( $debug_info ) {
 		foreach ( $this->model->get_languages_list() as $language ) {
@@ -208,17 +215,18 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Add a Site Health test on Home Page translation
+	 * Add a Site Health test on homepage translation.
 	 *
-	 * @param array $tests array with tests declaration data
+	 * @since 2.8
+	 *
+	 * @param array $tests Array with tests declaration data.
 	 * @return array
-	 * @since   2.8
 	 */
-	public function is_homepage( $tests ) {
-		// add test only if static page on front page.
-		if ( '0' !== get_option( 'page_on_front' ) ) {
+	public function status_tests( $tests ) {
+		// Add the test only if the homepage displays static page.
+		if ( 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) ) {
 			$tests['direct']['pll_homepage'] = array(
-				'label' => __( 'Home page translated', 'polylang' ),
+				'label' => __( 'Homepage translated', 'polylang' ),
 				'test'  => array( $this, 'homepage_test' ),
 			);
 		}
@@ -228,8 +236,9 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Test if the home page is translated or not.
 	 *
-	 * @return array $result array with test results
 	 * @since 2.8
+	 *
+	 * @return array $result Array with test results.
 	 */
 	public function homepage_test() {
 		$result = array(
