@@ -186,4 +186,22 @@ abstract class PLL_Base {
 			E_USER_ERROR
 		);
 	}
+
+	/**
+	 * Allow classes to find instances of their dependencies.
+	 *
+	 * Since lots of Polylang classes need to be shared instances, this code will require an instance of the said class if it exists, or instantiate a new one.
+	 *
+	 * @since 2.8
+	 *
+	 * @param string $dependency_class A class name.
+	 */
+	public function get( $dependency_class ) {
+		return array_filter(
+			get_object_vars( $this ),
+			function ( $property ) use ( $dependency_class ) {
+				return $property instanceof $dependency_class;
+			}
+		);
+	}
 }
