@@ -197,11 +197,17 @@ abstract class PLL_Base {
 	 * @param string $dependency_class A class name.
 	 */
 	public function get( $dependency_class ) {
-		return array_filter(
+		$instances = array_filter(
 			get_object_vars( $this ),
 			function ( $property ) use ( $dependency_class ) {
 				return $property instanceof $dependency_class;
 			}
 		);
+
+		if ( empty( $instances ) ) {
+			return new $dependency_class( $this );
+		} else {
+			return $instances[0];
+		}
 	}
 }
