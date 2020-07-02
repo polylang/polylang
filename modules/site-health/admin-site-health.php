@@ -13,6 +13,8 @@ class PLL_Admin_Site_Health {
 
 	public $model;
 
+	public $links;
+
 	/**
 	 * PLL_Admin_Site_Health constructor.
 	 *
@@ -27,6 +29,7 @@ class PLL_Admin_Site_Health {
 		add_filter( 'site_status_tests', array( $this, 'is_homepage' ) );
 
 		$this->model = &$polylang->model;
+		$this->links = &$polylang->links;
 	}
 
 	/**
@@ -68,9 +71,8 @@ class PLL_Admin_Site_Health {
 	 * @since   2.8
 	 */
 	public function info_options( $debug_info ) {
-		$options = get_option( 'polylang' );
 		$fields = array();
-		foreach ( $options as $key => $value ) {
+		foreach ( $this->model->options as $key => $value ) {
 			if ( in_array(
 				$key,
 				$this->exclude_options_key()
@@ -137,7 +139,7 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
-		$debug_info['polylang'] = array(
+		$debug_info['pll_options'] = array(
 			'label'    => __( 'Polylang Options', 'polylang' ),
 			'fields' => $fields,
 		);
@@ -153,14 +155,12 @@ class PLL_Admin_Site_Health {
 	 * @since   2.8
 	 */
 	public function info_languages( $debug_info ) {
-		$languages = PLL()->model->get_languages_list();
 		$fields = array();
-		foreach ( $languages as $language ) {
+		foreach ( $this->model->get_languages_list() as $language ) {
 			foreach ( $language as $key => $value ) {
 				if ( empty( $value ) ) {
 					$value = '0';
 				}
-
 				if ( in_array(
 					$key,
 					$this->exclude_lang_key()
@@ -179,7 +179,7 @@ class PLL_Admin_Site_Health {
 			$flag = $this->get_flag( $language );
 
 			$lang_name = sanitize_title( $language->name );
-			$debug_info[ $lang_name ] = array(
+			$debug_info[ 'pll_' . $lang_name ] = array(
 				// translators: placeholder is the language name
 				'label'  => sprintf( __( 'Language: %s', 'polylang' ), $language->name ),
 				// translators: placeholder is the flag image
@@ -247,11 +247,11 @@ class PLL_Admin_Site_Health {
 			'test'        => 'pll_homepage',
 		);
 		$untranslated = array();
-		foreach ( PLL()->model->get_languages_list() as $language ) {
+		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( ! $language->page_on_front ) {
 				$untranslated[] = sprintf(
 					'<a href="%s">%s</a>',
-					esc_url( PLL()->links->get_new_post_translation_link( get_option( 'page_on_front' ), $language ) ),
+					esc_url( $this->links->get_new_post_translation_link( get_option( 'page_on_front' ), $language ) ),
 					esc_html( $language->name )
 				);
 			}
