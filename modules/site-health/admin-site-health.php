@@ -111,8 +111,9 @@ class PLL_Admin_Site_Health {
 									function ( &$value, $key ) {
 										$value = "$key:$value";
 									}
-								);
-								$fields[ $location ]['value'] .= implode( ' | ', $lang );
+									);
+								$fields[ $location ]['value'] = implode( ' | ', $lang );
+
 							}
 							break;
 						case 'media':
@@ -123,7 +124,9 @@ class PLL_Admin_Site_Health {
 								}
 							);
 							$fields[ $key ]['label'] = '';
-							$fields[ $key ]['value'] .= implode( ',', $value );
+							if ( ! empty( $fields[ $key ]['value'] ) ) {
+								$fields[ $key ]['value'] = implode( ',', $value );
+							}
 							break;
 						default:
 							$fields[ $key ]['label']   = $key;
