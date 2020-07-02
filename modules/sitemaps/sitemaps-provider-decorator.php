@@ -65,6 +65,19 @@ class PLL_Sitemaps_Provider_Decorator extends WP_Sitemaps_Provider {
 	 * @return int Total number of pages.
 	 */
 	public function get_max_num_pages( $object_subtype = '' ) {
+		switch ( $this->provider->name ) {
+			case 'posts':
+				if ( ! PLL()->model->is_translated_post_type( $object_subtype ) && PLL()->model->options['default_lang'] !== $this->lang ) {
+					return 0;
+				}
+				break;
+			case 'taxonomies':
+				if ( ! PLL()->model->is_translated_taxonomy( $object_subtype ) && PLL()->model->options['default_lang'] !== $this->lang ) {
+					return 0;
+				}
+				break;
+		}
+
 		return $this->provider->get_max_num_pages( $object_subtype );
 	}
 
