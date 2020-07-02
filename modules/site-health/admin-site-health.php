@@ -38,7 +38,7 @@ class PLL_Admin_Site_Health {
 	 * @return array list of option key to ignore
 	 * @since   2.8
 	 */
-	protected function exclude_options_key() {
+	protected function exclude_options_keys() {
 		return array(
 			'uninstall',
 			'first_activation',
@@ -51,7 +51,7 @@ class PLL_Admin_Site_Health {
 	 * @return array list of language key to ignore
 	 * @since   2.8
 	 */
-	protected function exclude_lang_key() {
+	protected function exclude_language_keys() {
 		return array(
 			'flag',
 			'host',
@@ -75,7 +75,7 @@ class PLL_Admin_Site_Health {
 		foreach ( $this->model->options as $key => $value ) {
 			if ( in_array(
 				$key,
-				$this->exclude_options_key()
+				$this->exclude_options_keys()
 			)
 				) {
 				continue;
@@ -155,38 +155,35 @@ class PLL_Admin_Site_Health {
 	 * @since   2.8
 	 */
 	public function info_languages( $debug_info ) {
-		$fields = array();
 		foreach ( $this->model->get_languages_list() as $language ) {
+			$fields = array();
+
 			foreach ( $language as $key => $value ) {
+				if ( in_array( $key, $this->exclude_language_keys(), true ) ) {
+					continue;
+				}
+
 				if ( empty( $value ) ) {
 					$value = '0';
-				}
-				if ( in_array(
-					$key,
-					$this->exclude_lang_key()
-				)
-				) {
-					continue;
 				}
 
 				$fields[ $key ]['label'] = $key;
 				$fields[ $key ]['value'] = $value;
 
 				if ( 'term_group' === $key ) {
-					$fields[ $key ]['label'] = _x( 'order', 'Order of the language in the language switcher', 'polylang' );
+					$fields[ $key ]['label'] = 'order'; // Changed for readability but not translated as other keys are not.
 				}
 			}
-			$flag = $this->get_flag( $language );
 
-			$lang_name = sanitize_title( $language->name );
-			$debug_info[ 'pll_' . $lang_name ] = array(
-				// translators: placeholder is the language name
-				'label'  => sprintf( __( 'Language: %s', 'polylang' ), $language->name ),
-				// translators: placeholder is the flag image
-				'description' => sprintf( __( 'Flag used in the language switcher: %s', 'polylang' ), $flag ),
+			$debug_info[ 'pll_language_' . $language->slug ] = array(
+				/* translators: placeholder is the language name */
+				'label'  => sprintf( __( 'Language: %s', 'polylang' ), esc_html( $language->name ) ),
+				/* translators: placeholder is the flag image */
+				'description' => sprintf( __( 'Flag used in the language switcher: %s', 'polylang' ), $this->get_flag( $language ) ),
 				'fields' => $fields,
 			);
 		}
+
 		return $debug_info;
 	}
 
