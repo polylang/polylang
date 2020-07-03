@@ -131,15 +131,9 @@ class PLL_Admin_Site_Health {
 						}
 						break;
 					case 'media':
-						array_walk(
-							$value,
-							function ( &$value, $key ) {
-								$value = "$key: $value";
-							}
-						);
-						$fields[ $key ]['label'] = '';
-						if ( ! empty( $fields[ $key ]['value'] ) ) {
-							$fields[ $key ]['value'] = implode( ',', $value );
+						foreach ( $value as $sub_key => $sub_value ) {
+							$fields[ "$key-$sub_key" ]['label'] = "$key $sub_key";
+							$fields[ "$key-$sub_key" ]['value'] = $sub_value;
 						}
 						break;
 					default:
