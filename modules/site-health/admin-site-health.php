@@ -96,29 +96,31 @@ class PLL_Admin_Site_Health {
 				continue;
 			}
 
-			$fields[ $key ]['label'] = $key;
-
 			if ( ! is_array( $value ) ) {
 				if ( false === $value ) {
 					$value = '0';
 				}
 
+				$fields[ $key ]['label'] = $key;
 				$fields[ $key ]['value'] = $value;
 			} elseif ( empty( $value ) ) {
-					$fields[ $key ]['value'] = '0';
+				$fields[ $key ]['label'] = $key;
+				$fields[ $key ]['value'] = '0';
 			} else {
 				switch ( $key ) {
 					case 'post_types':
+						$fields[ $key ]['label'] = $key;
 						$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_post_types() );
 						break;
 					case 'taxonomies':
+						$fields[ $key ]['label'] = $key;
 						$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
 						break;
 					case 'nav_menus':
 						$current_theme = get_stylesheet();
 						foreach ( $value[ $current_theme ] as $location => $lang ) {
 							// translators: placeholder is the menu location name
-							$fields[ $location ]['label'] = sprintf( __( 'Menu: %s', 'polylang' ), $location );
+							$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
 							array_walk(
 								$lang,
 								function ( &$value, $key ) {
@@ -141,6 +143,7 @@ class PLL_Admin_Site_Health {
 						}
 						break;
 					default:
+						$fields[ $key ]['label'] = $key;
 						$fields[ $key ]['value'] = implode( ', ', $value );
 						break;
 				}
