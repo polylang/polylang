@@ -33,6 +33,8 @@ class PLL_Admin_Site_Health {
 	 * PLL_Admin_Site_Health constructor.
 	 *
 	 * @since 2.8
+	 *
+	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
@@ -122,7 +124,7 @@ class PLL_Admin_Site_Health {
 								function ( &$value, $key ) {
 									$value = "$key:$value";
 								}
-								);
+							);
 							$fields[ $location ]['value'] = implode( ' | ', $lang );
 						}
 						break;
@@ -146,7 +148,8 @@ class PLL_Admin_Site_Health {
 		}
 
 		$debug_info['pll_options'] = array(
-			'label'  => __( 'Polylang Options', 'polylang' ),
+			/* translators: placeholder is the plugin name */
+			'label'  => sprintf( esc_html__( '%s Options', 'polylang' ), POLYLANG ),
 			'fields' => $fields,
 		);
 
@@ -184,9 +187,9 @@ class PLL_Admin_Site_Health {
 
 			$debug_info[ 'pll_language_' . $language->slug ] = array(
 				/* translators: placeholder is the language name */
-				'label'  => sprintf( __( 'Language: %s', 'polylang' ), esc_html( $language->name ) ),
+				'label'  => sprintf( esc_html__( 'Language: %s', 'polylang' ), esc_html( $language->name ) ),
 				/* translators: placeholder is the flag image */
-				'description' => sprintf( __( 'Flag used in the language switcher: %s', 'polylang' ), $this->get_flag( $language ) ),
+				'description' => sprintf( esc_html__( 'Flag used in the language switcher: %s', 'polylang' ), $this->get_flag( $language ) ),
 				'fields' => $fields,
 			);
 		}
@@ -211,7 +214,7 @@ class PLL_Admin_Site_Health {
 			return $language->flag;
 		}
 
-		return $flag = '<span>' . __( 'Undefined', 'polylang' ) . '</span>';
+		return '<span>' . esc_html__( 'Undefined', 'polylang' ) . '</span>';
 	}
 
 	/**
@@ -226,7 +229,7 @@ class PLL_Admin_Site_Health {
 		// Add the test only if the homepage displays static page.
 		if ( 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) ) {
 			$tests['direct']['pll_homepage'] = array(
-				'label' => __( 'Homepage translated', 'polylang' ),
+				'label' => esc_html__( 'Homepage translated', 'polylang' ),
 				'test'  => array( $this, 'homepage_test' ),
 			);
 		}
@@ -242,15 +245,15 @@ class PLL_Admin_Site_Health {
 	 */
 	public function homepage_test() {
 		$result = array(
-			'label'       => __( 'All languages have a translated homepage', 'polylang' ),
+			'label'       => esc_html__( 'All languages have a translated homepage', 'polylang' ),
 			'status'      => 'good',
 			'badge'       => array(
-				'label' => __( 'Polylang', 'polylang' ),
+				'label' => POLYLANG,
 				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
-				__( 'It is mandatory to translate the static front page in all languages.', 'polylang' )
+				esc_html__( 'It is mandatory to translate the static front page in all languages.', 'polylang' )
 			),
 			'actions'     => '',
 			'test'        => 'pll_homepage',
@@ -260,7 +263,7 @@ class PLL_Admin_Site_Health {
 
 		if ( ! empty( $message ) ) {
 			$result['status']      = 'critical';
-			$result['label']       = __( 'The homepage is not translated in all languages', 'polylang' );
+			$result['label']       = esc_html__( 'The homepage is not translated in all languages', 'polylang' );
 			$result['description'] = sprintf( '<p>%s</p>', $message );
 		}
 		return $result;
