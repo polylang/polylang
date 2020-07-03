@@ -203,7 +203,29 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	public function notice_must_translate() {
 		$screen = get_current_screen();
 
-		if ( $this->page_on_front && ( 'toplevel_page_mlang' === $screen->id || 'edit-page' === $screen->id ) ) {
+		if ( 'toplevel_page_mlang' === $screen->id || 'edit-page' === $screen->id ) {
+			$message = $this->get_must_translate_message();
+
+			if ( ! empty( $message ) ) {
+				printf(
+					'<div class="error"><p>%s</p></div>',
+					$message // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				);
+			}
+		}
+	}
+
+	/**
+	 * Returns the message asking to translate the static front page in all languages.
+	 *
+	 * @since 2.8
+	 *
+	 * @return string
+	 */
+	public function get_must_translate_message() {
+		$message = '';
+
+		if ( $this->page_on_front ) {
 			$untranslated = array();
 
 			foreach ( $this->model->get_languages_list() as $language ) {
@@ -217,15 +239,14 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 			}
 
 			if ( ! empty( $untranslated ) ) {
-				printf(
-					'<div class="error"><p>%s</p></div>',
-					sprintf(
-						/* translators: %s is a comma separated list of native language names */
-						esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
-						implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					)
+				$message = sprintf(
+					/* translators: %s is a comma separated list of native language names */
+					esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
+					implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 			}
 		}
+
+		return $message;
 	}
 }

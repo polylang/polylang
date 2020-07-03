@@ -21,13 +21,13 @@ class PLL_Admin_Site_Health {
 	protected $model;
 
 	/**
-	 * A reference to the PLL_Admin_Links instance.
+	 * A reference to the PLL_Admin_Static_Pages instance.
 	 *
 	 * @since 2.8
 	 *
-	 * @var PLL_Admin_Links
+	 * @var PLL_Admin_Static_Pages
 	 */
-	protected $links;
+	protected $static_pages;
 
 	/**
 	 * PLL_Admin_Site_Health constructor.
@@ -36,7 +36,7 @@ class PLL_Admin_Site_Health {
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
-		$this->links = &$polylang->links;
+		$this->static_pages = &$polylang->static_pages;
 
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
@@ -242,41 +242,26 @@ class PLL_Admin_Site_Health {
 	 */
 	public function homepage_test() {
 		$result = array(
-			'label'       => __( 'All languages have a translated home page', 'polylang' ),
+			'label'       => __( 'All languages have a translated homepage', 'polylang' ),
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Polylang', 'polylang' ),
+				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
-				__( 'A website can\'t be displayed without homepage.', 'polylang' )
+				__( 'It is mandatory to translate the static front page in all languages.', 'polylang' )
 			),
 			'actions'     => '',
 			'test'        => 'pll_homepage',
 		);
-		$untranslated = array();
-		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( ! $language->page_on_front ) {
-				$untranslated[] = sprintf(
-					'<a href="%s">%s</a>',
-					esc_url( $this->links->get_new_post_translation_link( get_option( 'page_on_front' ), $language ) ),
-					esc_html( $language->name )
-				);
-			}
-		}
-		if ( ! empty( $untranslated ) ) {
-			$result['status'] = 'critical';
-			$result['label'] = __( 'Translation of Home page missing in one or more languages', 'polylang' );
-			$result['description'] = sprintf(
-			/* translators: %s is a comma separated list of native language names */
-				esc_html__( 'You must translate your static front page in %s.', 'polylang' ),
-				implode( ', ', $untranslated ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			);
-			$result['actions'] .= '';
-			$result['badge']       = array(
-				'label' => __( 'Polylang', 'polylang' ),
-				'color' => 'blue',
-			);
+
+		$message = $this->static_pages->get_must_translate_message();
+
+		if ( ! empty( $message ) ) {
+			$result['status']      = 'critical';
+			$result['label']       = __( 'The homepage is not translated in all languages', 'polylang' );
+			$result['description'] = sprintf( '<p>%s</p>', $message );
 		}
 		return $result;
 	}
