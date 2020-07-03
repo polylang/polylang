@@ -22,6 +22,7 @@ class PLL_CRUD_Posts {
 		$this->model = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
 		$this->curlang = &$polylang->curlang;
+		$this->sync = $polylang->get( PLL_Sync::class );
 
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 4 );

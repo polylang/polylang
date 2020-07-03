@@ -207,7 +207,7 @@ abstract class PLL_Base {
 		if ( empty( $instances ) ) {
 			return new $dependency_class( $this );
 		} else {
-			return $instances[0];
+			return array_pop( $instances );
 		}
 	}
 }
