@@ -54,28 +54,20 @@ class PLL_Switcher {
 			$locale = $language->get_locale( 'display' );
 			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
 			$url = null; // Avoids potential notice
-			$current_lang = ''; // Avoids potential notice
+			$current_lang = 0 === $args['admin_render'] ? $links->curlang->slug : $args['admin_current_lang'];
 
-			if ( 0 === $args['admin_render'] ) {
-				if ( $current_lang = $links->curlang->slug == $slug ) {
-					if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
-						continue; // Hide current language except for dropdown
-					} else {
-						$classes[] = 'current-lang';
-					}
+			if ( $current_lang == $slug ) {
+				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
+					continue; // Hide current language except for dropdown
+				} else {
+					$classes[] = 'current-lang';
 				}
+			}
 
-				if ( null !== $args['post_id'] && ( $tr_id = $links->model->post->get( $args['post_id'], $language ) ) && $links->model->post->current_user_can_read( $tr_id ) ) {
-					$url = get_permalink( $tr_id );
-				} elseif ( null === $args['post_id'] ) {
-					$url = $links->get_translation_url( $language );
-				}
-			} else {
-				if ( isset( $args['lang'] ) && $args['lang'] == $slug ) {
-					if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
-						continue; // Hide current language except for dropdown
-					}
-				}
+			if ( null !== $args['post_id'] && ( $tr_id = $links->model->post->get( $args['post_id'], $language ) ) && $links->model->post->current_user_can_read( $tr_id ) ) {
+				$url = get_permalink( $tr_id );
+			} elseif ( null === $args['post_id'] && 0 === $args['admin_render'] ) {
+				$url = $links->get_translation_url( $language );
 			}
 
 			if ( $no_translation = empty( $url ) ) {
@@ -132,7 +124,8 @@ class PLL_Switcher {
 	 * post_id                => returns links to translations of post defined by post_id if set, defaults not set
 	 * raw                    => return a raw array instead of html markup if set to 1, defaults to 0
 	 * item_spacing           => whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to preserve
-	 * admin_render           => specific rendering in admin outside a language context
+	 * admin_render           => allows to force the current language code in an admin context if set, default to 0. Need to set the admin_current_lang argument below
+	 * admin_current_lang     => the current language code in an admin context. Need to set the admin_render to 1, defaults not set
 	 *
 	 * @since 0.1
 	 *
@@ -155,7 +148,8 @@ class PLL_Switcher {
 			'post_id'                => null, // if not null, link to translations of post defined by post_id
 			'raw'                    => 0, // set this to true to build your own custom language switcher
 			'item_spacing'           => 'preserve', // 'preserve' or 'discard' whitespace between list items
-			'admin_render'           => 0, // specific rendering in admin outside a language context
+			'admin_render'           => 0, // make the switcher in an frontend context
+			'admin_current_lang'     => null, // use when admin_render is set to 1, if not null use it instead of the current language
 		);
 		$args = wp_parse_args( $args, $defaults );
 
@@ -182,7 +176,7 @@ class PLL_Switcher {
 		if ( $args['dropdown'] ) {
 			$args['name'] = 'lang_choice_' . $args['dropdown'];
 			$walker = new PLL_Walker_Dropdown();
-			$args['selected'] = 0 === $args['admin_render'] ? $links->curlang->slug : $args['lang'];
+			$args['selected'] = 0 === $args['admin_render'] ? $links->curlang->slug : $args['admin_current_lang'];
 		}
 		else {
 			$walker = new PLL_Walker_List();
