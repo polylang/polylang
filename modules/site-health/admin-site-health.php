@@ -82,6 +82,25 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
+	 * Formats an array with language as keys to display in options information.
+	 *
+	 * @since 2.8
+	 *
+	 * @param array $array An array with language as keys.
+	 * @return string
+	 */
+	protected function format_array_with_languages( $array ) {
+		array_walk(
+			$array,
+			function ( &$value, $key ) {
+				$value = "$key => $value";
+			}
+		);
+
+		return implode( ' | ', $array );
+	}
+
+	/**
 	 * Add Polylang Options to Site Health Informations tab.
 	 *
 	 * @since 2.8
@@ -116,19 +135,17 @@ class PLL_Admin_Site_Health {
 						$fields[ $key ]['label'] = $key;
 						$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
 						break;
+					case 'domains':
+						$fields[ $key ]['label'] = $key;
+						$fields[ $key ]['value'] = $this->format_array_with_languages( $value );
+						break;
 					case 'nav_menus':
 						$current_theme = get_stylesheet();
 						if ( isset( $value[ $current_theme ] ) ) {
 							foreach ( $value[ $current_theme ] as $location => $lang ) {
-								// translators: placeholder is the menu location name
+								/* translators: placeholder is the menu location name */
 								$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-								array_walk(
-									$lang,
-									function ( &$value, $key ) {
-										$value = "$key:$value";
-									}
-								);
-								$fields[ $location ]['value'] = implode( ' | ', $lang );
+								$fields[ $location ]['value'] = $this->format_array_with_languages( $lang );
 							}
 						}
 						break;
