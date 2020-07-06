@@ -116,7 +116,7 @@ class PLL_Admin_Site_Health {
 			}
 
 			if ( ! is_array( $value ) ) {
-				if ( false === $value ) {
+				if ( empty( $value ) ) {
 					$value = '0';
 				}
 
