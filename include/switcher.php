@@ -54,9 +54,10 @@ class PLL_Switcher {
 			$locale = $language->get_locale( 'display' );
 			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
 			$url = null; // Avoids potential notice
-			$current_lang = 0 === $args['admin_render'] ? $links->curlang->slug : $args['admin_current_lang'];
+			$curlang = 0 === $args['admin_render'] ? $links->curlang->slug : $args['admin_current_lang'];
+			$current_lang = $curlang == $slug;
 
-			if ( $current_lang == $slug ) {
+			if ( $current_lang ) {
 				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
 					continue; // Hide current language except for dropdown
 				} else {
