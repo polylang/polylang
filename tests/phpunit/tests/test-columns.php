@@ -45,14 +45,14 @@ class Columns_Test extends PLL_UnitTestCase {
 		ob_start();
 		self::$polylang->filters_columns->post_column( 'language_en', $en );
 		$column = ob_get_clean();
-		$this->assertNotFalse( strpos( $column, 'pll_flag' ) && strpos( $column, 'href' ) );
+		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) && strpos( $column, 'href' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
 		ob_start();
 		self::$polylang->filters_columns->post_column( 'language_en', $en );
 		$column = ob_get_clean();
-		$this->assertNotFalse( strpos( $column, 'no-edit-link' ) );
+		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 		$this->assertFalse( strpos( $column, 'href' ) );
 	}
 
@@ -133,12 +133,12 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		// with capability
 		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $en );
-		$this->assertNotFalse( strpos( $column, 'pll_flag' ) && strpos( $column, 'href' ) );
+		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) && strpos( $column, 'href' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
 		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $en );
-		$this->assertNotFalse( strpos( $column, 'pll_icon_tick' ) );
+		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 		$this->assertFalse( strpos( $column, 'href' ) );
 	}
 

@@ -55,7 +55,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$tr = $xpath->query( '//tr' );
 		$this->assertEquals( "post-$fr", $tr->item( 0 )->getAttribute( 'id' ) );
 
-		$a = $xpath->query( '//a[@class="pll_flag"]' );
+		$a = $xpath->query( '//a[@class="pll_column_flag"]' );
 		$this->assertContains( "post=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
@@ -72,7 +72,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$tr = $xpath->query( '//tr' );
 		$this->assertEquals( "post-$en", $tr->item( 0 )->getAttribute( 'id' ) );
 
-		$a = $xpath->query( '//a[@class="pll_flag"]' );
+		$a = $xpath->query( '//a[@class="pll_column_flag"]' );
 		$this->assertContains( "post=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
@@ -116,7 +116,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$tr = $xpath->query( '//tr' );
 		$this->assertEquals( "tag-$fr", $tr->item( 0 )->getAttribute( 'id' ) );
 
-		$a = $xpath->query( '//a[@class="pll_flag"]' );
+		$a = $xpath->query( '//a[@class="pll_column_flag"]' );
 		$this->assertContains( "tag_ID=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
@@ -133,7 +133,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$tr = $xpath->query( '//tr' );
 		$this->assertEquals( "tag-$en", $tr->item( 0 )->getAttribute( 'id' ) );
 
-		$a = $xpath->query( '//a[@class="pll_flag"]' );
+		$a = $xpath->query( '//a[@class="pll_column_flag"]' );
 		$this->assertContains( "tag_ID=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );

@@ -66,7 +66,7 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			$columns[ 'language_' . $language->slug ] = $language->flag ? $language->flag . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>' : esc_html( $language->slug );
+			$columns[ 'language_' . $language->slug ] = $this->get_flag_html( $language ) . '<span class="screen-reader-text">' . esc_html( $language->name ) . '</span>';
 		}
 
 		return isset( $end ) ? array_merge( $columns, $end ) : $columns;
@@ -147,16 +147,10 @@ class PLL_Admin_Filters_Columns {
 			if ( $link = get_edit_post_link( $id ) ) {
 				$flag = '';
 				if ( $id === $post_id ) {
+					$flag = $this->get_flag_html( $language );
+					$class = 'pll_column_flag';
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
-					$flag = $language->flag;
-					if ( empty( $flag ) ) {
-						$flag = sprintf(
-							'<abbr>%s</abbr>',
-							esc_html( $language->slug )
-						);
-					}
-					$class = apply_filters( 'pll_admin_flag_filter', 'pll_flag' );
 				} else {
 					$class = esc_attr( 'pll_icon_edit translation_' . $id );
 					/* translators: accessibility text, %s is a native language name */
@@ -171,13 +165,11 @@ class PLL_Admin_Filters_Columns {
 					$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 			} elseif ( $id === $post_id ) {
-				$flag = $language->flag;
-				$class = apply_filters( 'pll_admin_flag_filter', '' );
 				printf(
-					'<span class="no-edit-link ' . esc_attr( $class ) . '" style=""><span class="screen-reader-text">%1$s</span>%2$s</span>',
+					'<span class="pll_column_flag" style=""><span class="screen-reader-text">%1$s</span>%2$s</span>',
 					/* translators: accessibility text, %s is a native language name */
 					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
-					$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					$this->get_flag_html( $language ) // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 			}
 		}
@@ -286,14 +278,8 @@ class PLL_Admin_Filters_Columns {
 			if ( $link = get_edit_term_link( $id, $taxonomy, $post_type ) ) {
 				$flag = '';
 				if ( $id === $term_id ) {
-					$flag = $language->flag;
-					$class = apply_filters( 'pll_admin_flag_filter', 'pll_flag' );
-					if ( empty( $flag ) ) {
-						$flag = sprintf(
-							'<abbr>%s</abbr>',
-							esc_html( $language->slug )
-						);
-					}
+					$flag = $this->get_flag_html( $language );
+					$class = 'pll_column_flag';
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit this item in %s', 'polylang' ), $language->name );
 				} else {
@@ -311,9 +297,10 @@ class PLL_Admin_Filters_Columns {
 				);
 			} elseif ( $id === $term_id ) {
 				$out .= sprintf(
-					'<span class="pll_icon_tick"><span class="screen-reader-text">%s</span></span>',
+					'<span class="pll_column_flag"><span class="screen-reader-text">%1$s</span>%2$s</span>',
 					/* translators: accessibility text, %s is a native language name */
-					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) )
+					esc_html( sprintf( __( 'This item is in %s', 'polylang' ), $language->name ) ),
+					$this->get_flag_html( $language ) // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 			}
 		}
@@ -409,5 +396,17 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		$x->send();
+	}
+
+	/**
+	 * Returns the language flag or teh language slug if there is no flag.
+	 *
+	 * @since 2.8
+	 *
+	 * @param object $language PLL_Language object.
+	 * @return string
+	 */
+	protected function get_flag_html( $language ) {
+		return $language->flag ? $language->flag : sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
 	}
 }
