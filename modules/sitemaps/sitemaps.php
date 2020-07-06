@@ -10,7 +10,16 @@
  */
 class PLL_Sitemaps {
 	/**
-	 * A reference to teh PLL_Model instance.
+	 * A reference to the PLL_Links_Model instance.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Links_Model
+	 */
+	protected $links_model;
+
+	/**
+	 * A reference to the PLL_Model instance.
 	 *
 	 * @since 2.8
 	 *
@@ -35,6 +44,7 @@ class PLL_Sitemaps {
 	 * @param object $polylang Main Polylang object.
 	 */
 	public function __construct( $polylang ) {
+		$this->links_model = &$polylang->links_model;
 		$this->model = &$polylang->model;
 		$this->curlang = &$polylang->curlang;
 	}
@@ -45,24 +55,9 @@ class PLL_Sitemaps {
 	 * @since 2.8
 	 */
 	public function init() {
-		add_action( 'template_redirect', array( $this, 'set_language' ), 5 ); // Before WP_Sitemaps.
 		add_filter( 'pll_home_url_white_list', array( $this, 'home_url_white_list' ) );
 		add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
 		add_filter( 'wp_sitemaps_register_providers', array( $this, 'providers' ), 99 ); // 99 in an attempt to have all sitemaps providers in our filter.
-	}
-
-	/**
-	 * Sets the language for the current sitemap being rendered.
-	 *
-	 * @since 2.8
-	 */
-	public function set_language() {
-		$qv = get_query_var( 'sitemap' );
-		if ( $qv ) {
-			$arr = explode( '-', $qv );
-			$lang = end( $arr );
-			$this->curlang = $this->model->get_language( $lang );
-		}
 	}
 
 	/**
@@ -87,18 +82,21 @@ class PLL_Sitemaps {
 	 * @return array
 	 */
 	public function rewrite_rules( $rules ) {
-		$new_rules = array();
-		$languages = '(?:' . implode( '|', $this->get_active_languages() ) . ')';
+		$newrules = array();
+		$languages = '^(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')/';
 
 		foreach ( $rules as $key => $rule ) {
 			if ( false !== strpos( $rule, 'sitemap=$matches[1]' ) ) {
-				$new_key = str_replace( 'wp-sitemap-([a-z]+?)', 'wp-sitemap-([a-z]+?-' . $languages . ')', $key );
-				$new_rules[ $new_key ] = $rule;
-			} else {
-				$new_rules[ $key ] = $rule;
+				$newrules[ str_replace( '^wp-sitemap', $languages . 'wp-sitemap', $key ) ] = str_replace(
+					array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
+					array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
+					$rule
+				); // Should be enough!
 			}
+
+			$newrules[ $key ] = $rule;
 		}
-		return $new_rules;
+		return $newrules;
 	}
 
 	/**
@@ -114,24 +112,9 @@ class PLL_Sitemaps {
 		$new_providers = array();
 
 		foreach ( $providers as $key => $provider ) {
-			foreach ( $this->get_active_languages() as $lang ) {
-				$new_providers[ "$key-$lang" ] = new PLL_Sitemaps_Provider_Decorator( $provider, $lang );
-			}
+			$new_providers[ $key ] = new PLL_Sitemaps_Provider_Decorator( $provider, $this->links_model );
 		}
 
 		return $new_providers;
-	}
-
-	/**
-	 * Get active languages for the sitemap.
-	 *
-	 * @since 2.8
-	 */
-	protected function get_active_languages() {
-		$languages = $this->model->get_languages_list();
-		if ( wp_list_filter( $languages, array( 'active' => false ) ) ) {
-			return wp_list_pluck( wp_list_filter( $languages, array( 'active' => false ), 'NOT' ), 'slug' );
-		}
-		return wp_list_pluck( $languages, 'slug' );
 	}
 }

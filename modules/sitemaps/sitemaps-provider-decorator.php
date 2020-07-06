@@ -19,28 +19,48 @@ class PLL_Sitemaps_Provider_Decorator extends WP_Sitemaps_Provider {
 	protected $provider;
 
 	/**
-	 * Language code.
+	 * The PLL_Links_Model instance.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Links_Model
+	 */
+	protected $links_model;
+
+	/**
+	 * The PLL_Model instance.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+
+	/**
+	 * Language used to filter queries for the sitemap index.
 	 *
 	 * @since 2.8
 	 *
 	 * @var string
 	 */
-	protected $lang;
+	private $filter_lang;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 2.8
 	 *
-	 * @param WP_Sitemaps_Provider $provider An instance of a WP_Sitemaps_Provider child class.
-	 * @param string               $lang     Language code.
+	 * @param WP_Sitemaps_Provider $provider    An instance of a WP_Sitemaps_Provider child class.
+	 * @param PLL_Links_Model      $links_model The PLL_Links_Model instance.
 	 */
-	public function __construct( $provider, $lang ) {
-		$this->name = $provider->name . '-' . $lang;
+	public function __construct( $provider, $links_model ) {
+		$this->name = $provider->name;
 		$this->object_type = $provider->object_type;
 
 		$this->provider = $provider;
-		$this->lang = $lang;
+		$this->links_model = $links_model;
+		$this->model = $links_model->model;
 	}
 
 	/**
@@ -59,29 +79,113 @@ class PLL_Sitemaps_Provider_Decorator extends WP_Sitemaps_Provider {
 	/**
 	 * Gets the max number of pages available for the object type.
 	 *
-	 * Returns 0 for all languages but the default language for untranslated post types
-	 * and untranslated taxonomies to avoid to duplicate the corresponding sitemaps.
-	 *
 	 * @since 2.8
 	 *
 	 * @param string $object_subtype Optional. Object subtype. Default empty.
 	 * @return int Total number of pages.
 	 */
 	public function get_max_num_pages( $object_subtype = '' ) {
-		switch ( $this->provider->name ) {
-			case 'posts':
-				if ( ! PLL()->model->is_translated_post_type( $object_subtype ) && PLL()->model->options['default_lang'] !== $this->lang ) {
-					return 0;
-				}
-				break;
-			case 'taxonomies':
-				if ( ! PLL()->model->is_translated_taxonomy( $object_subtype ) && PLL()->model->options['default_lang'] !== $this->lang ) {
-					return 0;
-				}
-				break;
+		return $this->provider->get_max_num_pages( $object_subtype );
+	}
+
+	/**
+	 * Get active languages for the sitemap.
+	 *
+	 * @since 2.8
+	 */
+	protected function get_active_languages() {
+		$languages = $this->model->get_languages_list();
+		if ( wp_list_filter( $languages, array( 'active' => false ) ) ) {
+			return wp_list_pluck( wp_list_filter( $languages, array( 'active' => false ), 'NOT' ), 'slug' );
+		}
+		return wp_list_pluck( $languages, 'slug' );
+	}
+
+	/**
+	 * Filters the query arguments to add the language.
+	 *
+	 * @since 2.8
+	 *
+	 * @param array $args Sitemap provider WP_Query or WP_Term_Query arguments.
+	 * @return array
+	 */
+	public function query_args( $args ) {
+		if ( isset( $this->filter_lang ) ) {
+			$args['lang'] = $this->filter_lang;
+		}
+		return $args;
+	}
+
+	/**
+	 * Gets data for a given sitemap type.
+	 *
+	 * @since 2.8
+	 *
+	 * @param string $object_subtype_name Object subtype name if any.
+	 * @param string $lang                Optionnal language name.
+	 * @return array
+	 */
+	protected function get_sitemap_data( $object_subtype_name, $lang = '' ) {
+		$object_subtype_name = (string) $object_subtype_name;
+
+		if ( ! empty( $lang ) ) {
+			$this->filter_lang = $lang;
 		}
 
-		return $this->provider->get_max_num_pages( $object_subtype );
+		$return = array(
+			'name'  => implode( '-', array_filter( array( $object_subtype_name, $lang ) ) ),
+			'pages' => $this->get_max_num_pages( $object_subtype_name ),
+		);
+
+		unset( $this->filter_lang );
+		return $return;
+	}
+
+	/**
+	 * Gets data about each sitemap type.
+	 *
+	 * @since 2.8
+	 *
+	 * @return array[] Array of sitemap types including object subtype name and number of pages.
+	 */
+	public function get_sitemap_type_data() {
+		$sitemap_data = array();
+
+		add_filter( 'wp_sitemaps_posts_query_args', array( $this, 'query_args' ) );
+		add_filter( 'wp_sitemaps_taxonomies_query_args', array( $this, 'query_args' ) );
+
+		$object_subtypes = $this->get_object_subtypes();
+
+		if ( empty( $object_subtypes ) ) {
+			foreach ( $this->get_active_languages() as $language ) {
+				$sitemap_data[] = $this->get_sitemap_data( '', $language );
+			}
+		}
+
+		foreach ( array_keys( $object_subtypes ) as $object_subtype_name ) {
+			switch ( $this->provider->name ) {
+				case 'posts':
+					if ( $this->model->is_translated_post_type( $object_subtype_name ) ) {
+						foreach ( $this->get_active_languages() as $language ) {
+							$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name, $language );
+						}
+					} else {
+						$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name );
+					}
+					break;
+				case 'taxonomies':
+					if ( $this->model->is_translated_taxonomy( $object_subtype_name ) ) {
+						foreach ( $this->get_active_languages() as $language ) {
+							$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name, $language );
+						}
+					} else {
+						$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name );
+					}
+					break;
+			}
+		}
+
+		return $sitemap_data;
 	}
 
 	/**
@@ -94,8 +198,17 @@ class PLL_Sitemaps_Provider_Decorator extends WP_Sitemaps_Provider {
 	 * @return string The composed URL for a sitemap entry.
 	 */
 	public function get_sitemap_url( $name, $page ) {
-		$url = $this->provider->get_sitemap_url( $name, $page );
-		return str_replace( $this->provider->name, $this->name, $url );
+		$parts = explode( '-', $name );
+		$lang = end( $parts );
+		$lang = $this->model->get_language( $lang ); // Validates that we got an existing language code.
+
+		if ( $lang ) {
+			$name = preg_replace( '#(-?' . $lang->slug . ')$#', '', $name );
+			$url = $this->provider->get_sitemap_url( $name, $page );
+			$url = $this->links_model->add_language_to_link( $url, $lang );
+		}
+
+		return $url;
 	}
 
 	/**
