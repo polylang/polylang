@@ -272,10 +272,6 @@
 }
 
 /* icon fonts */
-.pll_icon_tick:before {
-	content: "\f147";
-}
-
 .pll_icon_add:before {
 	content: "\f132";
 }
