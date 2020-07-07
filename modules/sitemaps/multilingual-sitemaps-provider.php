@@ -196,11 +196,9 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 * @return string The composed URL for a sitemap entry.
 	 */
 	public function get_sitemap_url( $name, $page ) {
-		$parts = explode( '-', $name );
-		$lang = end( $parts );
-		$lang = $this->model->get_language( $lang ); // Validates that we got an existing language code.
-
-		if ( $lang ) {
+		$pattern = '#(' . implode( '|', $this->get_active_languages() ) . ')$#';
+		if ( preg_match( $pattern, $name, $matches ) ) {
+			$lang = $this->model->get_language( $matches[1] );
 			$name = preg_replace( '#(-?' . $lang->slug . ')$#', '', $name );
 			$url = $this->provider->get_sitemap_url( $name, $page );
 			$url = $this->links_model->add_language_to_link( $url, $lang );
