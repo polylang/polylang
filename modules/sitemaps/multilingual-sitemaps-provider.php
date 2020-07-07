@@ -162,26 +162,24 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 			}
 		}
 
+		switch ( $this->provider->name ) {
+			case 'posts':
+				$func = array( $this->model, 'is_translated_post_type' );
+				break;
+			case 'taxonomies':
+				$func = array( $this->model, 'is_translated_taxonomy' );
+				break;
+			default:
+				return $sitemap_data;
+		}
+
 		foreach ( array_keys( $object_subtypes ) as $object_subtype_name ) {
-			switch ( $this->provider->name ) {
-				case 'posts':
-					if ( $this->model->is_translated_post_type( $object_subtype_name ) ) {
-						foreach ( $this->get_active_languages() as $language ) {
-							$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name, $language );
-						}
-					} else {
-						$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name );
-					}
-					break;
-				case 'taxonomies':
-					if ( $this->model->is_translated_taxonomy( $object_subtype_name ) ) {
-						foreach ( $this->get_active_languages() as $language ) {
-							$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name, $language );
-						}
-					} else {
-						$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name );
-					}
-					break;
+			if ( call_user_func( $func, $object_subtype_name ) ) {
+				foreach ( $this->get_active_languages() as $language ) {
+					$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name, $language );
+				}
+			} else {
+				$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name );
 			}
 		}
 
