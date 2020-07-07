@@ -1,19 +1,18 @@
-=== Polylang ===
-Contributors: Chouby, manooweb, raaaahman, marianne38
-Donate link: https://polylang.pro
-Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
-Requires at least: 4.9
-Tested up to: 5.4
-Requires PHP: 5.6
-Stable tag: 2.7.4
-License: GPLv3 or later
-License URI: https://www.gnu.org/licenses/gpl-3.0.html
+# Polylang
+
+* Contributors: Chouby, manooweb, raaaahman, marianne38
+* Donate link: https://polylang.pro
+* Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
+* Requires at least: 4.9
+* Tested up to: 5.4
+* Requires PHP: 5.6
+* Stable tag: 2.7.4
+* License: GPLv3 or later
+* License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Making WordPress multilingual
 
-== Description ==
-
-= Features  =
+## Features
 
 Polylang allows you to create a bilingual or multilingual WordPress site. You write posts, pages and create categories and post tags as usual, and then define the language for each of them. The translation of a post, whether it is in the default language or not, is optional.
 
@@ -30,18 +29,18 @@ If you wish to migrate from WPML, you can use the plugin [WPML to Polylang](http
 
 If you wish to use a professional or automatic translation service, you can install [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/), as an addon of Polylang. Lingotek offers a complete translation management system which provides services such as translation memory or semi-automated translation processes (e.g. machine translation > human translation > legal review).
 
-= Credits =
+## Credits
 
 Thanks a lot to all translators who [help translating Polylang](https://translate.wordpress.org/projects/wp-plugins/polylang).
 Thanks a lot to [Alex Lopez](http://www.alexlopez.rocks/) for the design of the logo.
 Most of the flags included with Polylang are coming from [famfamfam](http://famfamfam.com/) and are public domain.
 Wherever third party code has been used, credit has been given in the code’s comments.
 
-= Do you like Polylang? =
+## Do you like Polylang?
 
 Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-reviews/polylang#postform).
 
-== Installation ==
+## Installation
 
 1. Make sure you are using WordPress 4.9 or later and that your server is running PHP 5.6 or later (same requirement as WordPress itself)
 1. If you tried other multilingual plugins, deactivate them before activating Polylang, otherwise, you may get unexpected results!
@@ -50,9 +49,9 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 1. Add the 'language switcher' widget to let your visitors switch the language.
 1. Take care that your theme must come with the corresponding .mo files (Polylang automatically downloads them when they are available for themes and plugins in this repository). If your theme is not internationalized yet, please refer to the [Theme Handbook](https://developer.wordpress.org/themes/functionality/internationalization/) or ask the theme author to internationalize it.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions
 
-= Where to find help ? =
+### Where to find help?
 
 * First time users should read [Polylang - Getting started](https://polylang.pro/doc-category/getting-started/), which explains the basics with a lot of screenshots.
 * Read the [documentation](https://polylang.pro/doc/). It includes a [FAQ](https://polylang.pro/doc-category/faq/) and the [documentation for developers](https://polylang.pro/doc-category/developers/).
@@ -61,24 +60,24 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * If you still have a problem, open a new thread in the [community support forum](http://wordpress.org/support/plugin/polylang).
 * [Polylang Pro](https://polylang.pro) users have access to our helpdesk.
 
-= Is Polylang compatible with WooCommerce? =
+### Is Polylang compatible with WooCommerce?
 
 * You need a separate addon to make Polylang and WooCommerce work together. [A Premium addon](https://polylang.pro/downloads/polylang-for-woocommerce/) is available.
 
-= Do you need translation services? =
+### Do you need translation services?
 
 * If you want to use professional or automatic translation services, install and activate the [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/) plugin.
 
-== Screenshots ==
+## Screenshots
 
 1. The Polylang languages admin panel
 2. The Strings translations admin panel
 3. Multilingual media library
 4. The Edit Post screen with the Languages metabox
 
-== Changelog ==
+## Changelog
 
-= 2.7.4 ( 2020-06-29) =
+### 2.7.4 (2020-06-29)
 
 * Pro: Allow using our /untranslated-posts REST endpoint for non-public post types
 * Pro: Fix broken display in the block editor sidebar when a language has no flag
@@ -87,7 +86,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Pro: Fix a styling issue in the fields group list table in ACF 5.9
 * Add Spanish from Puerto Rico to the predefined list of languages
 
-= 2.7.3 (2020-05-26) =
+### 2.7.3 (2020-05-26)
 
 * Security: Slash metas
 * Pro: Fix categories not savedafter the language has been switched in the block editor
@@ -100,7 +99,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix "Something went wrong" message when quick editing untranslated post types #508
 * Fix wpseo_opengraph deprecated warning #509
 
-= 2.7.2 (2020-04-27) =
+### 2.7.2 (2020-04-27)
 
 * Pro: Re-allow to modify the capability for strings translations
 * Pro: Fix redirect for posts having the same slug as a media
@@ -109,14 +108,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Update plugin updater to 1.7
 * Fix font in setup wizard
 
-= 2.7.1 (2020-04-09) =
+### 2.7.1 (2020-04-09)
 
 * Pro: Fix untranslated post types filtered by the parameter in the REST API #493
 * Fix fatal error when the function idn_to_ascii is not available
 * Fix PHP warning warning when a 3rd party plugin declares options not stored in DB in wpml-config.xml #492
 * Fix fatal error when a 3rd party plugin declares options stored as objects in wpml-config.xml #494
 
-= 2.7 (2020-04-06) =
+### 2.7 (2020-04-06)
 
 * Minimum WordPress version is now 4.9
 * Pro: Strings translations can now be exported and imported (in PO format)
