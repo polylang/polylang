@@ -44,7 +44,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 *
 	 * @var string
 	 */
-	private $filter_lang;
+	private static $filter_lang = '';
 
 	/**
 	 * Constructor.
@@ -109,9 +109,9 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 * @param array $args Sitemap provider WP_Query or WP_Term_Query arguments.
 	 * @return array
 	 */
-	public function query_args( $args ) {
-		if ( isset( $this->filter_lang ) ) {
-			$args['lang'] = $this->filter_lang;
+	public static function query_args( $args ) {
+		if ( ! empty( self::$filter_lang ) ) {
+			$args['lang'] = self::$filter_lang;
 		}
 		return $args;
 	}
@@ -129,7 +129,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 		$object_subtype_name = (string) $object_subtype_name;
 
 		if ( ! empty( $lang ) ) {
-			$this->filter_lang = $lang;
+			self::$filter_lang = $lang;
 		}
 
 		$return = array(
@@ -137,7 +137,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 			'pages' => $this->get_max_num_pages( $object_subtype_name ),
 		);
 
-		unset( $this->filter_lang );
+		self::$filter_lang = '';
 		return $return;
 	}
 
@@ -151,8 +151,8 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	public function get_sitemap_type_data() {
 		$sitemap_data = array();
 
-		add_filter( 'wp_sitemaps_posts_query_args', array( $this, 'query_args' ) );
-		add_filter( 'wp_sitemaps_taxonomies_query_args', array( $this, 'query_args' ) );
+		add_filter( 'wp_sitemaps_posts_query_args', array( __CLASS__, 'query_args' ) );
+		add_filter( 'wp_sitemaps_taxonomies_query_args', array( __CLASS__, 'query_args' ) );
 
 		$object_subtypes = $this->get_object_subtypes();
 
