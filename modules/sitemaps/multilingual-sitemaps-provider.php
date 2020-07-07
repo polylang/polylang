@@ -4,11 +4,11 @@
  */
 
 /**
- * Sitemaps providers decorator
+ * Decorator to add multilingual capability to sitemaps providers
  *
  * @since 2.8
  */
-class PLL_Sitemaps_Provider_Decorator extends WP_Sitemaps_Provider {
+class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	/**
 	 * The decorated sitemaps provider.
 	 *

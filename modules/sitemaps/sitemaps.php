@@ -100,19 +100,22 @@ class PLL_Sitemaps {
 	}
 
 	/**
-	 * Replaces the list of sitemaps providers by our decorators,
-	 * allowing to have one provider per language.
+	 * Replaces the list of sitemaps providers by our decorators.
 	 *
 	 * @since 2.8
 	 *
-	 * @param array $providers Array of WP_Sitemaps_Provider objects keyed by their name.
+	 * @param array $providers Array of Sitemaps provider objects keyed by their name.
 	 * @return array
 	 */
 	public function providers( $providers ) {
 		$new_providers = array();
 
 		foreach ( $providers as $key => $provider ) {
-			$new_providers[ $key ] = new PLL_Sitemaps_Provider_Decorator( $provider, $this->links_model );
+			if ( $provider instanceof WP_Sitemaps_Provider ) {
+				$new_providers[ $key ] = new PLL_Multilingual_Sitemaps_Provider( $provider, $this->links_model );
+			} else {
+				$new_providers[ $key ] = $provider; // Just in case some 3rd party doesn't extend WP_Sitemaps_Provider.
+			}
 		}
 
 		return $new_providers;
