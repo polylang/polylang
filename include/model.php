@@ -105,13 +105,6 @@ class PLL_Model {
 				}
 			}
 
-			// Custom flags
-			if ( ! PLL_ADMIN ) {
-				foreach ( $languages as $language ) {
-					$language->set_custom_flag();
-				}
-			}
-
 			/**
 			 * Filter the list of languages *after* it is stored in the persistent cache
 			 * /!\ this filter is fired *before* the $polylang object is available

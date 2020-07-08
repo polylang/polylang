@@ -240,21 +240,21 @@ class PLL_Language {
 	}
 
 	/**
-	 * Replace flag by custom flag
-	 * Takes care of url scheme
+	 * Returns the html of the custom flag if any, or the default flag otherwise.
 	 *
-	 * @since 1.7
+	 * @since 2.8
 	 */
-	public function set_custom_flag() {
-		// Overwrite with custom flags on frontend only
-		if ( ! empty( $this->custom_flag ) ) {
-			$this->flag = $this->custom_flag;
-			$this->flag_url = $this->custom_flag_url;
-			unset( $this->custom_flag, $this->custom_flag_url ); // hide this
-		}
+	public function maybe_get_custom_flag() {
+		return empty( $this->custom_flag ) ? $this->flag : $this->custom_flag;
+	}
 
-		// Set url scheme, also for default flags
-		$this->flag_url = set_url_scheme( $this->flag_url );
+	/**
+	 * Returns the url of the custom flag if any, or the default flag otherwise.
+	 *
+	 * @since 2.8
+	 */
+	public function maybe_get_custom_flag_url() {
+		return empty( $this->custom_flag_url ) ? $this->flag : $this->custom_flag_url;
 	}
 
 	/**
@@ -281,14 +281,21 @@ class PLL_Language {
 	}
 
 	/**
-	 * Set home_url scheme
-	 * this can't be cached across pages
+	 * Sets the scheme of the home url and the flag urls
 	 *
-	 * @since 1.6.4
+	 * This can't be cached across pages.
+	 *
+	 * @since 2.8
 	 */
-	public function set_home_url_scheme() {
+	public function set_url_scheme() {
 		$this->home_url = set_url_scheme( $this->home_url );
 		$this->search_url = set_url_scheme( $this->search_url );
+
+		// Set url scheme, also for the flags.
+		$this->flag_url = set_url_scheme( $this->flag_url );
+		if ( ! empty( $this->custom_flag_url ) ) {
+			$this->custom_flag_url = set_url_scheme( $this->custom_flag_url );
+		}
 	}
 
 	/**
