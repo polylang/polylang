@@ -87,10 +87,7 @@ class PLL_Sitemaps {
 	 * @return array;
 	 */
 	public function home_url_white_list( $whitelist ) {
-		$whitelist[] = array(
-			'file' => 'class-wp-sitemaps-posts',
-			'function' => 'get_url_list',
-		);
+		$whitelist[] = array( 'file' => 'class-wp-sitemaps-posts' );
 		return $whitelist;
 	}
 
