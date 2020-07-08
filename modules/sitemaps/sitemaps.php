@@ -55,9 +55,27 @@ class PLL_Sitemaps {
 	 * @since 2.8
 	 */
 	public function init() {
+		add_filter( 'pll_set_language_from_query', array( $this, 'set_language_from_query' ), 10, 2 );
 		add_filter( 'pll_home_url_white_list', array( $this, 'home_url_white_list' ) );
 		add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
 		add_filter( 'wp_sitemaps_register_providers', array( $this, 'providers' ), 99 ); // 99 in an attempt to have all sitemaps providers in our filter.
+	}
+
+	/**
+	 * Assigns the current language to the default language when the sitemap url
+	 * doesn't include any language.
+	 *
+	 * @since 2.8
+	 *
+	 * @param string|bool $lang  Current language code, false if not set yet.
+	 * @param object      $query Main WP query object.
+	 * @return string|bool
+	 */
+	public function set_language_from_query( $lang, $query ) {
+		if ( isset( $query->query['sitemap'] ) && empty( $query->query['lang'] ) ) {
+			$lang = $this->model->options['default_lang'];
+		}
+		return $lang;
 	}
 
 	/**
