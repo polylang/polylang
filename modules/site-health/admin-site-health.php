@@ -222,15 +222,8 @@ class PLL_Admin_Site_Health {
 	 * @return string
 	 */
 	protected function get_flag( $language ) {
-		if ( ! empty( $language->custom_flag ) ) {
-			return $language->custom_flag;
-		}
-
-		if ( ! empty( $language->flag ) ) {
-			return $language->flag;
-		}
-
-		return '<span>' . esc_html__( 'Undefined', 'polylang' ) . '</span>';
+		$flag = $language->get_display_flag();
+		return empty( $flag ) ? '<span>' . esc_html__( 'Undefined', 'polylang' ) . '</span>' : $flag;
 	}
 
 	/**

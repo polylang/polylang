@@ -93,7 +93,7 @@ class PLL_Switcher {
 			$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
 
 			$name = $args['show_names'] || ! $args['show_flags'] || $args['raw'] ? ( 'slug' == $args['display_names_as'] ? $slug : $language->name ) : '';
-			$flag = $args['raw'] && ! $args['show_flags'] ? $language->flag_url : ( $args['show_flags'] ? $language->flag : '' );
+			$flag = $args['raw'] && ! $args['show_flags'] ? $language->get_display_flag_url() : ( $args['show_flags'] ? $language->get_display_flag() : '' );
 
 			if ( $first ) {
 				$classes[] = 'lang-item-first';
