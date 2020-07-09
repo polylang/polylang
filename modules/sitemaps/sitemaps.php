@@ -69,7 +69,7 @@ class PLL_Sitemaps {
 			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
 			add_filter( 'wp_sitemaps_register_providers', array( $this, 'providers' ), 99 ); // 99 in an attempt to have all sitemaps providers in our filter.
 		} else {
-			add_filter( 'wp_sitemaps_index_entry', array( $this->links_model, 'site_url' ) );
+			add_filter( 'wp_sitemaps_index_entry', array( $this, 'index_entry' ) );
 			add_filter( 'wp_sitemaps_stylesheet_url', array( $this->links_model, 'site_url' ) );
 			add_filter( 'wp_sitemaps_stylesheet_index_url', array( $this->links_model, 'site_url' ) );
 		}
@@ -161,5 +161,18 @@ class PLL_Sitemaps {
 		}
 
 		return $new_providers;
+	}
+
+	/**
+	 * Filters the sitemap index entries for subdomains and multiple domains.
+	 *
+	 * @since 2.8
+	 *
+	 * @param array $sitemap_entry Sitemap entry for the post.
+	 * return array
+	 */
+	public function index_entry( $sitemap_entry ) {
+		$sitemap_entry['loc'] = $this->links_model->site_url( $sitemap_entry['loc'] );
+		return $sitemap_entry;
 	}
 }
