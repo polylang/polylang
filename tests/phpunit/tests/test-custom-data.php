@@ -25,8 +25,8 @@ class Custom_Data_Test extends PLL_UnitTestCase {
 
 	function test_custom_flag() {
 		$lang = self::$polylang->model->get_language( 'fr' );
-		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->maybe_get_custom_flag_url() );
-		$this->assertEquals( '<img src="/wp-content/polylang/fr_FR.png" title="Français" alt="Français" />', $lang->maybe_get_custom_flag() );
+		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->get_display_flag_url() );
+		$this->assertEquals( '<img src="/wp-content/polylang/fr_FR.png" title="Français" alt="Français" />', $lang->get_display_flag() );
 	}
 
 	/*
@@ -41,8 +41,8 @@ class Custom_Data_Test extends PLL_UnitTestCase {
 
 		// custom flags
 		$lang = self::$polylang->model->get_language( 'fr' );
-		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->maybe_get_custom_flag_url() );
-		$this->assertContains( 'https', $lang->maybe_get_custom_flag_url() );
+		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->get_display_flag_url() );
+		$this->assertContains( 'https', $lang->get_display_flag_url() );
 		unset( $_SERVER['HTTPS'] );
 	}
 

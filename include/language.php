@@ -244,7 +244,7 @@ class PLL_Language {
 	 *
 	 * @since 2.8
 	 */
-	public function maybe_get_custom_flag() {
+	public function get_display_flag() {
 		return empty( $this->custom_flag ) ? $this->flag : $this->custom_flag;
 	}
 
@@ -253,7 +253,7 @@ class PLL_Language {
 	 *
 	 * @since 2.8
 	 */
-	public function maybe_get_custom_flag_url() {
+	public function get_display_flag_url() {
 		return empty( $this->custom_flag_url ) ? $this->flag : $this->custom_flag_url;
 	}
 
