@@ -10,6 +10,15 @@
  */
 class PLL_Sitemaps {
 	/**
+	 * A reference to the current language.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Language
+	 */
+	protected $curlang;
+
+	/**
 	 * A reference to the PLL_Links_Model instance.
 	 *
 	 * @since 2.8
@@ -28,13 +37,11 @@ class PLL_Sitemaps {
 	protected $model;
 
 	/**
-	 * A reference to the current language.
+	 * Stores the plugin options.
 	 *
-	 * @since 2.8
-	 *
-	 * @var PLL_Language
+	 * @var array
 	 */
-	protected $curlang;
+	protected $options;
 
 	/**
 	 * Constructor.
@@ -44,9 +51,10 @@ class PLL_Sitemaps {
 	 * @param object $polylang Main Polylang object.
 	 */
 	public function __construct( $polylang ) {
+		$this->curlang = &$polylang->curlang;
 		$this->links_model = &$polylang->links_model;
 		$this->model = &$polylang->model;
-		$this->curlang = &$polylang->curlang;
+		$this->options = &$polylang->options;
 	}
 
 	/**
@@ -73,7 +81,7 @@ class PLL_Sitemaps {
 	 */
 	public function set_language_from_query( $lang, $query ) {
 		if ( isset( $query->query['sitemap'] ) && empty( $query->query['lang'] ) ) {
-			$lang = $this->model->options['default_lang'];
+			$lang = $this->options['default_lang'];
 		}
 		return $lang;
 	}
@@ -100,12 +108,22 @@ class PLL_Sitemaps {
 	 * @return array
 	 */
 	public function rewrite_rules( $rules ) {
+		global $wp_rewrite;
+
 		$newrules = array();
-		$languages = '^(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')/';
+
+		$languages = $this->model->get_languages_list( array( 'fields' => 'slug' ) );
+		if ( $this->options['hide_default'] ) {
+			$languages = array_diff( $languages, array( $this->options['default_lang'] ) );
+		}
+
+		if ( ! empty( $languages ) ) {
+			$slug = $wp_rewrite->root . ( $this->options['rewrite'] ? '^' : '^language/' ) . '(' . implode( '|', $languages ) . ')/';
+		}
 
 		foreach ( $rules as $key => $rule ) {
 			if ( false !== strpos( $rule, 'sitemap=$matches[1]' ) ) {
-				$newrules[ str_replace( '^wp-sitemap', $languages . 'wp-sitemap', $key ) ] = str_replace(
+				$newrules[ str_replace( '^wp-sitemap', $slug . 'wp-sitemap', $key ) ] = str_replace(
 					array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
 					array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
 					$rule
