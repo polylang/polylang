@@ -202,6 +202,9 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 			$name = preg_replace( '#(-?' . $lang->slug . ')$#', '', $name );
 			$url = $this->provider->get_sitemap_url( $name, $page );
 			$url = $this->links_model->add_language_to_link( $url, $lang );
+		} else {
+			// Untranslated post types and taxonomies.
+			$url = $this->provider->get_sitemap_url( $name, $page );
 		}
 
 		return $url;
