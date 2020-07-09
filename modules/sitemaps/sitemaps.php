@@ -63,10 +63,16 @@ class PLL_Sitemaps {
 	 * @since 2.8
 	 */
 	public function init() {
-		add_filter( 'pll_set_language_from_query', array( $this, 'set_language_from_query' ), 10, 2 );
-		add_filter( 'pll_home_url_white_list', array( $this, 'home_url_white_list' ) );
-		add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
-		add_filter( 'wp_sitemaps_register_providers', array( $this, 'providers' ), 99 ); // 99 in an attempt to have all sitemaps providers in our filter.
+		if ( $this->options['force_lang'] < 2 ) {
+			add_filter( 'pll_set_language_from_query', array( $this, 'set_language_from_query' ), 10, 2 );
+			add_filter( 'pll_home_url_white_list', array( $this, 'home_url_white_list' ) );
+			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
+			add_filter( 'wp_sitemaps_register_providers', array( $this, 'providers' ), 99 ); // 99 in an attempt to have all sitemaps providers in our filter.
+		} else {
+			add_filter( 'wp_sitemaps_index_entry', array( $this->links_model, 'site_url' ) );
+			add_filter( 'wp_sitemaps_stylesheet_url', array( $this->links_model, 'site_url' ) );
+			add_filter( 'wp_sitemaps_stylesheet_index_url', array( $this->links_model, 'site_url' ) );
+		}
 	}
 
 	/**
