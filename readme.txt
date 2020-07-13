@@ -78,6 +78,21 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.8 =
+
+* Pro: Add a language switcher block
+* Pro: Fix the possibility to create 2 terms with the same name in the same language, without specifying the second slug.
+* Pro: Fix our private taxonomies being displayed in the ACF field group rules.
+* Use composer for autoload and Polylang Pro dependency on Polylang
+* Display a flag for each post in the posts list tables (same for terms). #515
+* Add test for the homepage translations to Site Health
+* Add debug information to Site Health
+* Add compatibility with the sitemaps introduced in WP 5.5
+* Always filter WP_Query by the current language
+* Support wildcards in "admin-texts" parent keys in wpml-config.xml
+* Fix sticky posts showed for all languages when the admin language filter is active #469
+* Fix a performance issue on the pages list
+
 = 2.7.4 ( 2020-06-29) =
 
 * Pro: Allow using our /untranslated-posts REST endpoint for non-public post types
