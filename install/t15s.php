@@ -37,14 +37,14 @@ class PLL_T15S {
 	 *
 	 * @var array
 	 */
-	static private $installed_translations;
+	private static $installed_translations;
 
 	/**
 	 * Available languages.
 	 *
 	 * @var array
 	 */
-	static private $available_languages;
+	private static $available_languages;
 
 	/**
 	 * Adds a new project to load translations for.
@@ -207,7 +207,7 @@ class PLL_T15S {
 	 *
 	 * @return array
 	 */
-	static private function get_installed_translations() {
+	private static function get_installed_translations() {
 		if ( null === self::$installed_translations ) {
 			self::$installed_translations = wp_get_installed_translations( 'plugins' );
 		}
@@ -223,7 +223,7 @@ class PLL_T15S {
 	 *
 	 * @return array
 	 */
-	static private function get_available_languages() {
+	private static function get_available_languages() {
 		if ( null === self::$available_languages ) {
 			self::$available_languages = get_available_languages();
 		}
