@@ -11,11 +11,25 @@
  * @since 2.6
  */
 class PLL_T15S {
-
+	/**
+	 * Transient key
+	 *
+	 * @var string
+	 */
 	const TRANSIENT_KEY_PLUGIN = 't15s-registry-plugins';
 
-	private $type    = 'plugin';
-	private $slug    = '';
+	/**
+	 * Project directory slug
+	 *
+	 * @var string
+	 */
+	private $slug = '';
+
+	/**
+	 * Full GlotPress API URL for the project.
+	 *
+	 * @var string
+	 */
 	private $api_url = '';
 
 	/**
@@ -46,7 +60,7 @@ class PLL_T15S {
 
 		add_action( 'init', array( __CLASS__, 'register_clean_translations_cache' ), 9999 );
 		add_filter( 'translations_api', array( $this, 'translations_api' ), 10, 3 );
-		add_filter( 'site_transient_update_' . $this->type . 's', array( $this, 'site_transient_update_plugins' ) );
+		add_filter( 'site_transient_update_plugins', array( $this, 'site_transient_update_plugins' ) );
 	}
 
 	/**
@@ -60,8 +74,8 @@ class PLL_T15S {
 	 * @return bool|array
 	 */
 	public function translations_api( $result, $requested_type, $args ) {
-		if ( $this->type . 's' === $requested_type && $this->slug === $args['slug'] ) {
-			return self::get_translations( $this->type, $args['slug'], $this->api_url );
+		if ( 'plugins' === $requested_type && $this->slug === $args['slug'] ) {
+			return self::get_translations( $args['slug'], $this->api_url );
 		}
 
 		return $result;
@@ -85,7 +99,7 @@ class PLL_T15S {
 			$value->translations = array();
 		}
 
-		$translations = self::get_translations( $this->type, $this->slug, $this->api_url );
+		$translations = self::get_translations( $this->slug, $this->api_url );
 
 		if ( ! isset( $translations['translations'] ) ) {
 			return $value;
@@ -104,7 +118,7 @@ class PLL_T15S {
 					}
 				}
 
-				$translation['type'] = $this->type;
+				$translation['type'] = 'plugin';
 				$translation['slug'] = $this->slug;
 
 				$value->translations[] = $translation;
@@ -155,12 +169,11 @@ class PLL_T15S {
 	 *
 	 * @since 2.6
 	 *
-	 * @param string $type Project type. Either plugin or theme.
 	 * @param string $slug Project directory slug.
 	 * @param string $url  Full GlotPress API URL for the project.
 	 * @return array Translation data.
 	 */
-	private static function get_translations( $type, $slug, $url ) {
+	private static function get_translations( $slug, $url ) {
 		$translations = get_site_transient( self::TRANSIENT_KEY_PLUGIN );
 
 		if ( ! is_object( $translations ) ) {
