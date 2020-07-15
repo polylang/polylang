@@ -19,6 +19,20 @@ class PLL_T15S {
 	private $api_url = '';
 
 	/**
+	 * Installed translations.
+	 *
+	 * @var array
+	 */
+	static private $installed_translations;
+
+	/**
+	 * Available languages.
+	 *
+	 * @var array
+	 */
+	static private $available_languages;
+
+	/**
 	 * Adds a new project to load translations for.
 	 *
 	 * @since 2.6
@@ -77,10 +91,10 @@ class PLL_T15S {
 			return $value;
 		}
 
-		$installed_translations = wp_get_installed_translations( $this->type . 's' );
+		$installed_translations = self::get_installed_translations();
 
 		foreach ( (array) $translations['translations'] as $translation ) {
-			if ( in_array( $translation['language'], get_available_languages() ) ) {
+			if ( in_array( $translation['language'], self::get_available_languages() ) ) {
 				if ( isset( $installed_translations[ $this->slug ][ $translation['language'] ] ) && $translation['updated'] ) {
 					$local  = new DateTime( $installed_translations[ $this->slug ][ $translation['language'] ]['PO-Revision-Date'] );
 					$remote = new DateTime( $translation['updated'] );
@@ -169,5 +183,37 @@ class PLL_T15S {
 
 		set_site_transient( self::TRANSIENT_KEY_PLUGIN, $translations );
 		return $result;
+	}
+
+	/**
+	 * Returns installed translations.
+	 *
+	 * Used to cache the result of wp_get_installed_translations() as it is very expensive.
+	 *
+	 * @since 2.8
+	 *
+	 * @return array
+	 */
+	static private function get_installed_translations() {
+		if ( null === self::$installed_translations ) {
+			self::$installed_translations = wp_get_installed_translations( 'plugins' );
+		}
+		return self::$installed_translations;
+	}
+
+	/**
+	 * Returns available languages.
+	 *
+	 * Used to cache the result of get_available_languages() as it is very expensive.
+	 *
+	 * @since 2.8
+	 *
+	 * @return array
+	 */
+	static private function get_available_languages() {
+		if ( null === self::$available_languages ) {
+			self::$available_languages = get_available_languages();
+		}
+		return self::$available_languages;
 	}
 }
