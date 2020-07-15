@@ -85,7 +85,7 @@ jQuery( document ).ready(
 								function( i, v ) {
 									$( '#edit-menu-item-show_' + v + id ).change(
 										function() {
-											if ( 'checked' != $( this ).attr( 'checked' ) ) {
+											if ( true != $( this ).prop( 'checked' ) ) {
 												$( '#edit-menu-item-show_' + options[ 1 - i ] + id ).prop( 'checked', true );
 											}
 										}
