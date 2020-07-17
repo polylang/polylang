@@ -11,12 +11,40 @@
  * @since 2.6
  */
 class PLL_T15S {
-
+	/**
+	 * Transient key
+	 *
+	 * @var string
+	 */
 	const TRANSIENT_KEY_PLUGIN = 't15s-registry-plugins';
 
-	private $type    = 'plugin';
-	private $slug    = '';
+	/**
+	 * Project directory slug
+	 *
+	 * @var string
+	 */
+	private $slug = '';
+
+	/**
+	 * Full GlotPress API URL for the project.
+	 *
+	 * @var string
+	 */
 	private $api_url = '';
+
+	/**
+	 * Installed translations.
+	 *
+	 * @var array
+	 */
+	private static $installed_translations;
+
+	/**
+	 * Available languages.
+	 *
+	 * @var array
+	 */
+	private static $available_languages;
 
 	/**
 	 * Adds a new project to load translations for.
@@ -32,7 +60,7 @@ class PLL_T15S {
 
 		add_action( 'init', array( __CLASS__, 'register_clean_translations_cache' ), 9999 );
 		add_filter( 'translations_api', array( $this, 'translations_api' ), 10, 3 );
-		add_filter( 'site_transient_update_' . $this->type . 's', array( $this, 'site_transient_update_plugins' ) );
+		add_filter( 'site_transient_update_plugins', array( $this, 'site_transient_update_plugins' ) );
 	}
 
 	/**
@@ -46,8 +74,8 @@ class PLL_T15S {
 	 * @return bool|array
 	 */
 	public function translations_api( $result, $requested_type, $args ) {
-		if ( $this->type . 's' === $requested_type && $this->slug === $args['slug'] ) {
-			return self::get_translations( $this->type, $args['slug'], $this->api_url );
+		if ( 'plugins' === $requested_type && $this->slug === $args['slug'] ) {
+			return self::get_translations( $args['slug'], $this->api_url );
 		}
 
 		return $result;
@@ -71,16 +99,16 @@ class PLL_T15S {
 			$value->translations = array();
 		}
 
-		$translations = self::get_translations( $this->type, $this->slug, $this->api_url );
+		$translations = self::get_translations( $this->slug, $this->api_url );
 
 		if ( ! isset( $translations['translations'] ) ) {
 			return $value;
 		}
 
-		$installed_translations = wp_get_installed_translations( $this->type . 's' );
+		$installed_translations = self::get_installed_translations();
 
 		foreach ( (array) $translations['translations'] as $translation ) {
-			if ( in_array( $translation['language'], get_available_languages() ) ) {
+			if ( in_array( $translation['language'], self::get_available_languages() ) ) {
 				if ( isset( $installed_translations[ $this->slug ][ $translation['language'] ] ) && $translation['updated'] ) {
 					$local  = new DateTime( $installed_translations[ $this->slug ][ $translation['language'] ]['PO-Revision-Date'] );
 					$remote = new DateTime( $translation['updated'] );
@@ -90,7 +118,7 @@ class PLL_T15S {
 					}
 				}
 
-				$translation['type'] = $this->type;
+				$translation['type'] = 'plugin';
 				$translation['slug'] = $this->slug;
 
 				$value->translations[] = $translation;
@@ -141,12 +169,11 @@ class PLL_T15S {
 	 *
 	 * @since 2.6
 	 *
-	 * @param string $type Project type. Either plugin or theme.
 	 * @param string $slug Project directory slug.
 	 * @param string $url  Full GlotPress API URL for the project.
 	 * @return array Translation data.
 	 */
-	private static function get_translations( $type, $slug, $url ) {
+	private static function get_translations( $slug, $url ) {
 		$translations = get_site_transient( self::TRANSIENT_KEY_PLUGIN );
 
 		if ( ! is_object( $translations ) ) {
@@ -169,5 +196,37 @@ class PLL_T15S {
 
 		set_site_transient( self::TRANSIENT_KEY_PLUGIN, $translations );
 		return $result;
+	}
+
+	/**
+	 * Returns installed translations.
+	 *
+	 * Used to cache the result of wp_get_installed_translations() as it is very expensive.
+	 *
+	 * @since 2.8
+	 *
+	 * @return array
+	 */
+	private static function get_installed_translations() {
+		if ( null === self::$installed_translations ) {
+			self::$installed_translations = wp_get_installed_translations( 'plugins' );
+		}
+		return self::$installed_translations;
+	}
+
+	/**
+	 * Returns available languages.
+	 *
+	 * Used to cache the result of get_available_languages() as it is very expensive.
+	 *
+	 * @since 2.8
+	 *
+	 * @return array
+	 */
+	private static function get_available_languages() {
+		if ( null === self::$available_languages ) {
+			self::$available_languages = get_available_languages();
+		}
+		return self::$available_languages;
 	}
 }
