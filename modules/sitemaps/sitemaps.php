@@ -67,7 +67,7 @@ class PLL_Sitemaps {
 			add_filter( 'pll_set_language_from_query', array( $this, 'set_language_from_query' ), 10, 2 );
 			add_filter( 'pll_home_url_white_list', array( $this, 'home_url_white_list' ) );
 			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
-			add_filter( 'wp_sitemaps_register_providers', array( $this, 'providers' ), 99 ); // 99 in an attempt to have all sitemaps providers in our filter.
+			add_filter( 'wp_sitemaps_add_provider', array( $this, 'replace_provider' ) );
 		} else {
 			add_filter( 'wp_sitemaps_index_entry', array( $this, 'index_entry' ) );
 			add_filter( 'wp_sitemaps_stylesheet_url', array( $this->links_model, 'site_url' ) );
@@ -142,25 +142,18 @@ class PLL_Sitemaps {
 	}
 
 	/**
-	 * Replaces the list of sitemaps providers by our decorators.
+	 * Replaces a sitemap provider by our decorator.
 	 *
 	 * @since 2.8
 	 *
-	 * @param array $providers Array of Sitemaps provider objects keyed by their name.
-	 * @return array
+	 * @param WP_Sitemaps_Provider $provider Instance of a WP_Sitemaps_Provider.
+	 * @return WP_Sitemaps_Provider
 	 */
-	public function providers( $providers ) {
-		$new_providers = array();
-
-		foreach ( $providers as $key => $provider ) {
-			if ( $provider instanceof WP_Sitemaps_Provider ) {
-				$new_providers[ $key ] = new PLL_Multilingual_Sitemaps_Provider( $provider, $this->links_model );
-			} else {
-				$new_providers[ $key ] = $provider; // Just in case some 3rd party doesn't extend WP_Sitemaps_Provider.
-			}
+	public function replace_provider( $provider ) {
+		if ( $provider instanceof WP_Sitemaps_Provider ) {
+			$provider = new PLL_Multilingual_Sitemaps_Provider( $provider, $this->links_model );
 		}
-
-		return $new_providers;
+		return $provider;
 	}
 
 	/**
