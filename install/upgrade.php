@@ -92,7 +92,7 @@ class PLL_Upgrade {
 	 * @since 1.2
 	 */
 	public function _upgrade() {
-		foreach ( array( '0.9', '1.0', '1.1', '1.2', '1.2.1', '1.2.3', '1.3', '1.4', '1.4.1', '1.4.4', '1.5', '1.6', '1.7.4', '1.8', '2.0.8', '2.1', '2.3', '2.7' ) as $version ) {
+		foreach ( array( '0.9', '1.0', '1.1', '1.2', '1.2.1', '1.2.3', '1.3', '1.4', '1.4.1', '1.4.4', '1.5', '1.6', '1.7.4', '1.8', '2.0.8', '2.1', '2.7', '2.8' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				call_user_func( array( $this, 'upgrade_' . str_replace( '.', '_', $version ) ) );
 			}
@@ -610,18 +610,6 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * Upgrades if the previous version is < 2.3
-	 *
-	 * Deletes language cache due to 'redirect_lang' option removed for subdomains and multiple domains in 2.2
-	 * and W3C and Facebook locales added to PLL_Language objects in 2.3
-	 *
-	 * @since 2.3
-	 */
-	protected function upgrade_2_3() {
-		delete_transient( 'pll_languages_list' );
-	}
-
-	/**
 	 * Upgrades if the previous version is < 2.7
 	 * Replace numeric keys by hashes in WPML registered strings
 	 * Dismiss the wizard notice for existing sites
@@ -644,5 +632,19 @@ class PLL_Upgrade {
 		}
 
 		PLL_Admin_Notices::dismiss( 'wizard' );
+	}
+
+	/**
+	 * Upgrades if the previous version is < 2.8
+	 *
+	 * Deletes language cache due to:
+	 * - 'redirect_lang' option removed for subdomains and multiple domains in 2.2
+	 * - W3C and Facebook locales added to PLL_Language objects in 2.3
+	 * - flags moved to a different directory in Polylang Pro 2.8
+	 *
+	 * @since 2.8
+	 */
+	protected function upgrade_2_8() {
+		delete_transient( 'pll_languages_list' );
 	}
 }
