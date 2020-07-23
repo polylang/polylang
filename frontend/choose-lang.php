@@ -161,7 +161,7 @@ abstract class PLL_Choose_Lang {
 			}
 		}
 
-		$accept_langs = wp_list_filter( $accept_langs, array( '0' ), 'NOT' ); // Remove languages markes as unacceptable (q=0).
+		$accept_langs = array_filter( $accept_langs ); // Remove languages marked as unacceptable (q=0).
 
 		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
 
