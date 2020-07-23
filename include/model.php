@@ -441,6 +441,40 @@ class PLL_Model {
 	}
 
 	/**
+	 * Checks if a term slug exists in a given language, taxonomy, hierarchy
+	 *
+	 * @since 1.9
+	 * @since 2.8 Moved from PLL_Share_Term_Slug::term_exists() to PLL_Model::term_exists_by_slug()
+	 *
+	 * @param string        $slug     The term slug to test.
+	 * @param string|object $language The language slug or object.
+	 * @param string        $taxonomy Optional taxonomy name.
+	 * @param int           $parent   Optional parent term id.
+	 * @return null|int The term_id of the found term.
+	 */
+	public function term_exists_by_slug( $slug, $language, $taxonomy = '', $parent = 0 ) {
+		global $wpdb;
+
+		$select = "SELECT t.term_id FROM {$wpdb->terms} AS t";
+		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
+		$join  .= $this->term->join_clause();
+		$where  = $wpdb->prepare( ' WHERE t.slug = %s', $slug );
+		$where .= $this->term->where_clause( $this->get_language( $language ) );
+
+		if ( ! empty( $taxonomy ) ) {
+			$where .= $wpdb->prepare( ' AND tt.taxonomy = %s', $taxonomy );
+		}
+
+		if ( $parent > 0 ) {
+			$where .= $wpdb->prepare( ' AND tt.parent = %d', $parent );
+		}
+
+		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+		return $wpdb->get_var( $select . $join . $where );
+	}
+
+
+	/**
 	 * Gets the number of posts per language in a date, author or post type archive.
 	 *
 	 * @since 1.2

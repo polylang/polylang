@@ -485,4 +485,32 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
 		$this->assertEqualSets( array( $en, $fr ), $terms );
 	}
+
+	function test_create_terms_with_same_name() {
+		$_REQUEST = $_POST = array(
+			'action'           => 'add-tag',
+			'term_lang_choice' => 'en',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+		);
+
+		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$this->assertEquals( 'en', self::$polylang->model->term->get_language( $en )->slug );
+
+		// Second category in English with the same name.
+		$error = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+
+		$this->assertWPError( $error );
+
+		$_POST['term_lang_choice'] = 'fr';
+		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+
+		$term = get_term( $fr, 'category' );
+		$this->assertEquals( 'test-fr', $term->slug );
+		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $fr )->slug );
+
+		// Second category in French with the same name.
+		$error = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+
+		$this->assertWPError( $error );
+	}
 }
