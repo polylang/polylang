@@ -50,7 +50,7 @@ class PLL_Sitemaps {
 	 *
 	 * @param object $polylang Main Polylang object.
 	 */
-	public function __construct( $polylang ) {
+	public function __construct( &$polylang ) {
 		$this->curlang = &$polylang->curlang;
 		$this->links_model = &$polylang->links_model;
 		$this->model = &$polylang->model;

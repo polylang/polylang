@@ -54,13 +54,13 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 * @param WP_Sitemaps_Provider $provider    An instance of a WP_Sitemaps_Provider child class.
 	 * @param PLL_Links_Model      $links_model The PLL_Links_Model instance.
 	 */
-	public function __construct( $provider, $links_model ) {
+	public function __construct( $provider, &$links_model ) {
 		$this->name = $provider->name;
 		$this->object_type = $provider->object_type;
 
 		$this->provider = $provider;
-		$this->links_model = $links_model;
-		$this->model = $links_model->model;
+		$this->links_model = &$links_model;
+		$this->model = &$links_model->model;
 	}
 
 	/**
