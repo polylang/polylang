@@ -9,7 +9,26 @@
  * @since 1.8
  */
 class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
-	public $cache; // Our internal non persistent cache object
+	/**
+	 * Our internal non persistent cache object
+	 *
+	 * @var PLL_Cache
+	 */
+	public $cache;
+
+	/**
+	 * Stores a list of files and functions that home_url() must not filter.
+	 *
+	 * @var array
+	 */
+	private $black_list = array();
+
+	/**
+	 * Stores a list of files and functions that home_url() must filter.
+	 *
+	 * @var array
+	 */
+	private $white_list = array();
 
 	/**
 	 * Constructor
@@ -240,10 +259,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			return $url;
 		}
 
-		static $white_list, $black_list; // Avoid evaluating this at each function call
-
 		// We *want* to filter the home url in these cases
-		if ( empty( $white_list ) ) {
+		if ( empty( $this->white_list ) ) {
 			// On Windows get_theme_root() mixes / and \
 			// We want only \ for the comparison with debug_backtrace
 			$theme_root = get_theme_root();
@@ -259,7 +276,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			 *
 			 * @param array $args
 			 */
-			$white_list = apply_filters(
+			$this->white_list = apply_filters(
 				'pll_home_url_white_list',
 				array(
 					array( 'file' => $theme_root ),
@@ -271,7 +288,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		// We don't want to filter the home url in these cases
-		if ( empty( $black_list ) ) {
+		if ( empty( $this->black_list ) ) {
 
 			/**
 			 * Filter the black list of the Polylang 'home_url' filter
@@ -283,7 +300,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			 *
 			 * @param array $args
 			 */
-			$black_list = apply_filters(
+			$this->black_list = apply_filters(
 				'pll_home_url_black_list',
 				array(
 					array( 'file' => 'searchform.php' ), // Since WP 3.6 searchform.php is passed through get_search_form
@@ -297,13 +314,13 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		foreach ( $traces as $trace ) {
 			// Black list first
-			foreach ( $black_list as $v ) {
+			foreach ( $this->black_list as $v ) {
 				if ( ( isset( $trace['file'], $v['file'] ) && false !== strpos( $trace['file'], $v['file'] ) ) || ( isset( $trace['function'], $v['function'] ) && $trace['function'] == $v['function'] ) ) {
 					return $url;
 				}
 			}
 
-			foreach ( $white_list as $v ) {
+			foreach ( $this->white_list as $v ) {
 				if ( ( isset( $trace['function'], $v['function'] ) && $trace['function'] == $v['function'] ) ||
 					( isset( $trace['file'], $v['file'] ) && false !== strpos( $trace['file'], $v['file'] ) && in_array( $trace['function'], array( 'home_url', 'get_home_url', 'bloginfo', 'get_bloginfo' ) ) ) ) {
 					$ok = true;
