@@ -89,19 +89,6 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	}
 
 	/**
-	 * Get active languages for the sitemap.
-	 *
-	 * @since 2.8
-	 */
-	protected function get_active_languages() {
-		$languages = $this->model->get_languages_list();
-		if ( wp_list_filter( $languages, array( 'active' => false ) ) ) {
-			return wp_list_pluck( wp_list_filter( $languages, array( 'active' => false ), 'NOT' ), 'slug' );
-		}
-		return wp_list_pluck( $languages, 'slug' );
-	}
-
-	/**
 	 * Filters the query arguments to add the language.
 	 *
 	 * @since 2.8
@@ -157,7 +144,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 		$object_subtypes = $this->get_object_subtypes();
 
 		if ( empty( $object_subtypes ) ) {
-			foreach ( $this->get_active_languages() as $language ) {
+			foreach ( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) as $language ) {
 				$sitemap_data[] = $this->get_sitemap_data( '', $language );
 			}
 		}
@@ -175,7 +162,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 
 		foreach ( array_keys( $object_subtypes ) as $object_subtype_name ) {
 			if ( call_user_func( $func, $object_subtype_name ) ) {
-				foreach ( $this->get_active_languages() as $language ) {
+				foreach ( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) as $language ) {
 					$sitemap_data[] = $this->get_sitemap_data( $object_subtype_name, $language );
 				}
 			} else {
@@ -196,7 +183,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 * @return string The composed URL for a sitemap entry.
 	 */
 	public function get_sitemap_url( $name, $page ) {
-		$pattern = '#(' . implode( '|', $this->get_active_languages() ) . ')$#';
+		$pattern = '#(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')$#';
 		if ( preg_match( $pattern, $name, $matches ) ) {
 			$lang = $this->model->get_language( $matches[1] );
 			$name = preg_replace( '#(-?' . $lang->slug . ')$#', '', $name );
