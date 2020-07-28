@@ -21,8 +21,6 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 		// Initialize sitemaps.
 		$wp_sitemaps = null;
-		self::$polylang->sitemaps = new PLL_Sitemaps( self::$polylang );
-		self::$polylang->sitemaps->init();
 
 		// Switch to pretty permalinks.
 		$wp_rewrite->init();
@@ -34,10 +32,15 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		register_post_type( 'cpt', array( 'public' => true ) ); // *Untranslated* custom post type.
 		register_taxonomy( 'tax', 'cpt' ); // *Untranslated* custom tax.
 
-		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
-
 		self::$polylang->links_model = self::$polylang->model->get_links_model();
-		self::$polylang->links_model->init();
+		if ( method_exists( self::$polylang->links_model, 'init' ) ) {
+			self::$polylang->links_model->init();
+		}
+
+		self::$polylang->sitemaps = new PLL_Sitemaps( self::$polylang );
+		self::$polylang->sitemaps->init();
+
+		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
 
 		// Flush rules.
 		$wp_rewrite->flush_rules();
@@ -213,5 +216,39 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 			'http://example.org/fr/tag/tag-fr/',
 		);
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_url_list( 1, 'post_tag' ), 'loc' ) );
+	}
+
+	function test_subdomains() {
+		self::$polylang->options['force_lang'] = 2;
+		$this->init();
+
+		$_SERVER['HTTP_HOST'] = 'fr.example.org';
+		$_SERVER['REQUEST_URI'] = '/wp-sitemap.xml';
+
+		$providers = wp_get_sitemap_providers();
+
+		$expected = array(
+			'http://fr.example.org/wp-sitemap-posts-page-1.xml',
+		);
+		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
+	}
+
+	function test_domains() {
+		self::$polylang->options['force_lang'] = 3;
+		self::$polylang->options['domains'] = array(
+			'en' => 'http://example.org',
+			'fr' => 'http://example.fr',
+		);
+		$this->init();
+
+		$_SERVER['HTTP_HOST'] = 'example.fr';
+		$_SERVER['REQUEST_URI'] = '/wp-sitemap.xml';
+
+		$providers = wp_get_sitemap_providers();
+
+		$expected = array(
+			'http://example.fr/wp-sitemap-posts-page-1.xml',
+		);
+		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 	}
 }
