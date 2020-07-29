@@ -63,9 +63,10 @@ class PLL_Sitemaps {
 	 * @since 2.8
 	 */
 	public function init() {
+		add_filter( 'pll_home_url_white_list', array( $this, 'home_url_white_list' ) );
+
 		if ( $this->options['force_lang'] < 2 ) {
 			add_filter( 'pll_set_language_from_query', array( $this, 'set_language_from_query' ), 10, 2 );
-			add_filter( 'pll_home_url_white_list', array( $this, 'home_url_white_list' ) );
 			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
 			add_filter( 'wp_sitemaps_add_provider', array( $this, 'replace_provider' ) );
 		} else {
