@@ -654,4 +654,19 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( array( 'lang' => 'fr', 'cat' => $cat_id ) );
 		$this->assertEquals( array( get_post( $cpt_id ) ), $query->posts );
 	}
+
+	/**
+	 * Bug introduced by WP 5.5 and fixed in Polylang 2.8.
+	 * The sticky posts should appear only once.
+	 */
+	function test_sticky_posts() {
+		$fr = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+		stick_post( $fr );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+
+		$this->go_to( home_url( '/fr/' ) );
+		$this->assertEquals( 1, $GLOBALS['wp_query']->post_count );
+	}
 }

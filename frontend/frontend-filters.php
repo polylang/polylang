@@ -101,7 +101,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				$relations = $wpdb->get_results( "SELECT object_id, term_taxonomy_id FROM {$wpdb->term_relationships} WHERE object_id IN ({$posts}) AND term_taxonomy_id IN ({$languages})" );
 
 				foreach ( $relations as $relation ) {
-					$_posts[ $relation->term_taxonomy_id ][] = $relation->object_id;
+					$_posts[ $relation->term_taxonomy_id ][] = (int) $relation->object_id;
 				}
 				wp_cache_add( 'sticky_posts', $_posts, 'options' );
 			}
