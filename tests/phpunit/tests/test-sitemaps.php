@@ -233,6 +233,28 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 	}
 
+	function test_subdomains_home_url() {
+		self::$polylang->options['force_lang'] = 2;
+		$this->init();
+
+		$_SERVER['HTTP_HOST'] = 'fr.example.org';
+		$_SERVER['REQUEST_URI'] = '/wp-sitemap-posts-page-1.xml';
+
+		// For the home_url filter.
+		self::$polylang->links = new PLL_Frontend_Links( self::$polylang );
+		$GLOBALS['wp_actions']['template_redirect'] = 1;
+
+		$providers = wp_get_sitemap_providers();
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$expected = array(
+			'http://fr.example.org/',
+		);
+		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_url_list( 1, 'page' ), 'loc' ) );
+
+		unset( $GLOBALS['wp_actions']['template_redirect'] );
+	}
+
 	function test_domains() {
 		self::$polylang->options['force_lang'] = 3;
 		self::$polylang->options['domains'] = array(
