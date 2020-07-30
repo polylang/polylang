@@ -9,6 +9,7 @@ notifications:
   email:
     on_success: never
     on_failure: change
+  slack: wpsyntex:LIVXuF2AQ9HXNm93zkWtR8fw
 
 branches:
   only:
