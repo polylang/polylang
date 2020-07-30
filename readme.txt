@@ -81,11 +81,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 = 2.8 =
 
 * Pro: Add a language switcher block
-* Pro: Fix the possibility to create 2 terms with the same name in the same language, without specifying the second slug.
+* Pro: Add compatibility with block image edition introduced in WP 5.5
 * Pro: Fix our private taxonomies being displayed in the ACF field group rules.
 * Pro: Fix incorrect flags loaded from the block editor
 * Pro: Fix SSO causing a wrong redirect when using subdomains (introduced in 2.7.4)
 * Pro: Fix a performance issue on the plugins list
+* Pro: Fix option to automatically duplicate media in all languages when uploading a new file not honored in block image
 * Use composer for autoload and Polylang Pro dependency on Polylang
 * Display a flag for each post in the posts list tables (same for terms). #515
 * Add test for the homepage translations to Site Health
@@ -96,6 +97,9 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix sticky posts showed for all languages when the admin language filter is active #469
 * Fix a performance issue on the pages list
 * Fix dependency to jQuery Migrate removed from WP 5.5 #539
+* Fix: output secure cookie when using a cache plugin and ssl #542
+* Fix the possibility to create 2 terms with the same name in the same language, without specifying the second slug.
+* Fix sticky posts appearing 2 times in WP 5.5
 
 = 2.7.4 ( 2020-06-29) =
 
