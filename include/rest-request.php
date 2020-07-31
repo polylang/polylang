@@ -36,8 +36,9 @@ class PLL_REST_Request extends PLL_Base {
 			/** This action is documented in include/class-polylang.php */
 			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
 
-			$this->filters_links = new PLL_Filters_Links( $this );
-			$this->filters = new PLL_Filters( $this );
+			$this->filters_links    = new PLL_Filters_Links( $this );
+			$this->filters          = new PLL_Filters( $this );
+			$this->filters_sanitize = new PLL_Admin_Filters_Sanitize( $this );
 
 			// Static front page and page for posts
 			if ( 'page' === get_option( 'show_on_front' ) ) {
