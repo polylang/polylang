@@ -7,6 +7,7 @@
  * Setup specific admin filters usefull for sanitization.
  *
  * Extract from PLL_Admin_Filters to be able to use in a REST API context.
+ *
  * @since 2.9
  */
 class PLL_Admin_Filters_Sanitize extends PLL_Filters {
@@ -48,13 +49,13 @@ class PLL_Admin_Filters_Sanitize extends PLL_Filters {
 		if ( current_user_can( 'edit_posts' ) && null !== $request->get_param( 'is_block_editor' ) ) {
 			// When it's a post request on a new post the language is sent into the request.
 			if ( ! empty( $request->get_param( 'lang' ) ) ) {
-				// $lang = $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) );
 				$this->curlang = $this->model->get_language( sanitize_key( $request->get_param( 'lang' ) ) );
 			} else {
 				// Otherwise we need to get the language from the post itself.
 				$this->curlang = $this->model->post->get_language( sanitize_key( $request->get_param( 'id' ) ) );
 			}
 		}
+		return $result;
 	}
 
 	/**
