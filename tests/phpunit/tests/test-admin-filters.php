@@ -13,7 +13,8 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
+		self::$polylang->filters          = new PLL_Admin_Filters( self::$polylang );
+		self::$polylang->filters_sanitize = new PLL_Admin_Filters_Sanitize( self::$polylang );
 	}
 
 	function test_sanitize_title() {
