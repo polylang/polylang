@@ -116,7 +116,7 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function settings_tabs( $tabs ) {
-		$tabs['wizard'] = __( 'Setup', 'polylang' );
+		$tabs['wizard'] = esc_html__( 'Setup', 'polylang' );
 		return $tabs;
 	}
 
@@ -335,7 +335,7 @@ class PLL_Wizard {
 		wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 		if ( $this->is_licenses_step_displayable() ) {
 			$steps['licenses'] = array(
-				'name'    => __( 'Licenses', 'polylang' ),
+				'name'    => esc_html__( 'Licenses', 'polylang' ),
 				'view'    => array( $this, 'display_step_licenses' ),
 				'handler' => array( $this, 'save_step_licenses' ),
 				'scripts' => array( 'pll_admin' ), // Polylang admin script used by deactivate license button.
@@ -427,27 +427,27 @@ class PLL_Wizard {
 			'pll-wizard-languages',
 			'pll_wizard_params',
 			array(
-				'i18n_no_language_selected'   => __( 'You need to select a language to be added.', 'polylang' ),
-				'i18n_language_already_added' => __( 'You already added this language.', 'polylang' ),
-				'i18n_no_language_added'      => __( 'You need to add at least one language.', 'polylang' ),
-				'i18n_add_language_needed'    => __( 'You selected a language, however, to be able to continue, you need to add it.', 'polylang' ),
-				'i18n_pll_add_language'       => __( 'Impossible to add the language.', 'polylang' ),
-				'i18n_pll_invalid_locale'     => __( 'Enter a valid WordPress locale', 'polylang' ),
-				'i18n_pll_invalid_slug'       => __( 'The language code contains invalid characters', 'polylang' ),
-				'i18n_pll_non_unique_slug'    => __( 'The language code must be unique', 'polylang' ),
-				'i18n_pll_invalid_name'       => __( 'The language must have a name', 'polylang' ),
-				'i18n_pll_invalid_flag'       => __( 'The flag does not exist', 'polylang' ),
-				'i18n_dialog_title'           => __( "A language wasn't added.", 'polylang' ),
-				'i18n_dialog_yes_button'      => __( 'Yes', 'polylang' ),
-				'i18n_dialog_no_button'       => __( 'No', 'polylang' ),
-				'i18n_dialog_ignore_button'   => __( 'Ignore', 'polylang' ),
-				'i18n_remove_language_icon'   => __( 'Remove this language', 'polylang' ),
+				'i18n_no_language_selected'   => esc_html__( 'You need to select a language to be added.', 'polylang' ),
+				'i18n_language_already_added' => esc_html__( 'You already added this language.', 'polylang' ),
+				'i18n_no_language_added'      => esc_html__( 'You need to add at least one language.', 'polylang' ),
+				'i18n_add_language_needed'    => esc_html__( 'You selected a language, however, to be able to continue, you need to add it.', 'polylang' ),
+				'i18n_pll_add_language'       => esc_html__( 'Impossible to add the language.', 'polylang' ),
+				'i18n_pll_invalid_locale'     => esc_html__( 'Enter a valid WordPress locale', 'polylang' ),
+				'i18n_pll_invalid_slug'       => esc_html__( 'The language code contains invalid characters', 'polylang' ),
+				'i18n_pll_non_unique_slug'    => esc_html__( 'The language code must be unique', 'polylang' ),
+				'i18n_pll_invalid_name'       => esc_html__( 'The language must have a name', 'polylang' ),
+				'i18n_pll_invalid_flag'       => esc_html__( 'The flag does not exist', 'polylang' ),
+				'i18n_dialog_title'           => esc_html__( "A language wasn't added.", 'polylang' ),
+				'i18n_dialog_yes_button'      => esc_html__( 'Yes', 'polylang' ),
+				'i18n_dialog_no_button'       => esc_html__( 'No', 'polylang' ),
+				'i18n_dialog_ignore_button'   => esc_html__( 'Ignore', 'polylang' ),
+				'i18n_remove_language_icon'   => esc_html__( 'Remove this language', 'polylang' ),
 			)
 		);
 		wp_enqueue_script( 'pll-wizard-languages' );
 		wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
 		$steps['languages'] = array(
-			'name'    => __( 'Languages', 'polylang' ),
+			'name'    => esc_html__( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
 			'handler' => array( $this, 'save_step_languages' ),
 			'scripts' => array( 'pll-wizard-languages', 'pll-wizard-language-choice' ),
@@ -553,7 +553,7 @@ class PLL_Wizard {
 
 		if ( $this->is_media_step_displayable( $languages ) ) {
 			$steps['media'] = array(
-				'name'    => __( 'Media', 'polylang' ),
+				'name'    => esc_html__( 'Media', 'polylang' ),
 				'view'    => array( $this, 'display_step_media' ),
 				'handler' => array( $this, 'save_step_media' ),
 				'scripts' => array(),
@@ -602,7 +602,7 @@ class PLL_Wizard {
 			wp_enqueue_script( 'pll-wizard-language-choice', plugins_url( '/js/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(
-				'name'    => __( 'Content', 'polylang' ),
+				'name'    => esc_html__( 'Content', 'polylang' ),
 				'view'    => array( $this, 'display_step_untranslated_contents' ),
 				'handler' => array( $this, 'save_step_untranslated_contents' ),
 				'scripts' => array( 'pll-wizard-language-choice' ),
@@ -665,7 +665,7 @@ class PLL_Wizard {
 
 		if ( $home_page_id > 0 && ( ! $languages || count( $languages ) === 1 || count( $translations ) !== count( $languages ) ) ) {
 			$steps['home-page'] = array(
-				'name'    => __( 'Homepage', 'polylang' ),
+				'name'    => esc_html__( 'Homepage', 'polylang' ),
 				'view'    => array( $this, 'display_step_home_page' ),
 				'handler' => array( $this, 'save_step_home_page' ),
 				'scripts' => array(),
@@ -754,7 +754,7 @@ class PLL_Wizard {
 	 */
 	public function add_step_last( $steps ) {
 		$steps['last'] = array(
-			'name'    => __( 'Ready!', 'polylang' ),
+			'name'    => esc_html__( 'Ready!', 'polylang' ),
 			'view'    => array( $this, 'display_step_last' ),
 			'handler' => array( $this, 'save_step_last' ),
 			'scripts' => array(),
