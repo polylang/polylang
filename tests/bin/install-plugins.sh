@@ -41,8 +41,8 @@ mkdir -p $TMPDIR/wordpress-seo
 mv $TMPDIR/downloads/wordpress-seo/* $TMPDIR/wordpress-seo/
 
 #Install Duplicate Post
-download https://downloads.wordpress.org/plugin/duplicate_post.zip $TMPDIR/downloads/duplicate_post.zip
-unzip -q $TMPDIR/downloads/duplicate_post.zip -d  $TMPDIR/downloads/
-mkdir -p $TMPDIR/duplicate_post
-mv $TMPDIR/downloads/duplicate_post/* $TMPDIR/duplicate_post/
+download https://downloads.wordpress.org/plugin/duplicate-post.zip $TMPDIR/downloads/duplicate-post.zip
+unzip -q $TMPDIR/downloads/duplicate-post.zip -d  $TMPDIR/downloads/
+mkdir -p $TMPDIR/duplicate-post
+mv $TMPDIR/downloads/duplicate-post/* $TMPDIR/duplicate-post/
 
