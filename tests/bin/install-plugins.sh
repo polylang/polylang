@@ -40,3 +40,9 @@ unzip -q $TMPDIR/downloads/wordpress-seo.zip -d  $TMPDIR/downloads/
 mkdir -p $TMPDIR/wordpress-seo
 mv $TMPDIR/downloads/wordpress-seo/* $TMPDIR/wordpress-seo/
 
+#Install Duplicate Post
+download https://downloads.wordpress.org/plugin/duplicate_post.zip $TMPDIR/downloads/duplicate_post.zip
+unzip -q $TMPDIR/downloads/duplicate_post.zip -d  $TMPDIR/downloads/
+mkdir -p $TMPDIR/duplicate_post
+mv $TMPDIR/downloads/duplicate_post/* $TMPDIR/duplicate_post/
+
