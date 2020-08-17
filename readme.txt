@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 4.9
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 2.7.4
+Stable tag: 2.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -78,7 +78,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.8 =
+= 2.8 (2020-08-17) =
 
 * Pro: Add a language switcher block
 * Pro: Add compatibility with block image edition introduced in WP 5.5
@@ -101,7 +101,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix the possibility to create 2 terms with the same name in the same language, without specifying the second slug.
 * Fix sticky posts appearing 2 times in WP 5.5
 
-= 2.7.4 ( 2020-06-29) =
+= 2.7.4 (2020-06-29) =
 
 * Pro: Allow using our /untranslated-posts REST endpoint for non-public post types
 * Pro: Fix broken display in the block editor sidebar when a language has no flag
