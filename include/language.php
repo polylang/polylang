@@ -230,8 +230,10 @@ class PLL_Language {
 	 */
 	public static function get_flag_html( $flag, $title = '', $alt = '' ) {
 		return empty( $flag['src'] ) ? '' : sprintf(
-			'<img src="%s"%s%s%s%s />',
+			'<img src="%s" style="%s%s"%s%s%s%s />',
 			$flag['src'],
+			empty( $flag['width'] ) ? '' : sprintf( 'width: %spx;', (int) $flag['width'] ),
+			empty( $flag['height'] ) ? '' : sprintf( ' height: %spx;', (int) $flag['height'] ),
 			empty( $title ) ? '' : sprintf( ' title="%s"', esc_attr( $title ) ),
 			empty( $alt ) ? '' : sprintf( ' alt="%s"', esc_attr( $alt ) ),
 			empty( $flag['width'] ) ? '' : sprintf( ' width="%s"', (int) $flag['width'] ),
