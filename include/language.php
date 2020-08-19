@@ -229,15 +229,36 @@ class PLL_Language {
 	 * @param string $alt   optional alt attribute
 	 */
 	public static function get_flag_html( $flag, $title = '', $alt = '' ) {
-		return empty( $flag['src'] ) ? '' : sprintf(
-			'<img src="%s" style="%s%s"%s%s%s%s />',
+		if ( empty( $flag['src'] ) ) {
+			return '';
+		}
+
+		$title_attr  = empty( $title ) ? '' : sprintf( ' title="%s"', esc_attr( $title ) );
+		$alt_attr    = empty( $alt ) ? '' : sprintf( ' alt="%s"', esc_attr( $alt ) );
+		$width_attr  = empty( $flag['width'] ) ? '' : sprintf( ' width="%s"', (int) $flag['width'] );
+		$height_attr = empty( $flag['height'] ) ? '' : sprintf( ' height="%s"', (int) $flag['height'] );
+
+		$style = '';
+		$sizes = array_intersect_key( $flag, array_flip( array( 'width', 'height' ) ) );
+
+		if ( ! empty( $sizes ) ) {
+			array_walk(
+				$sizes,
+				function ( &$value, $key ) {
+					$value = sprintf( '%s: %dpx;', esc_attr( $key ), (int) $value );
+				}
+			);
+			$style = sprintf( ' style="%s"', implode( ' ', $sizes ) );
+		}
+
+		return sprintf(
+			'<img src="%s"%s%s%s%s%s />',
 			$flag['src'],
-			empty( $flag['width'] ) ? '' : sprintf( 'width: %spx;', (int) $flag['width'] ),
-			empty( $flag['height'] ) ? '' : sprintf( ' height: %spx;', (int) $flag['height'] ),
-			empty( $title ) ? '' : sprintf( ' title="%s"', esc_attr( $title ) ),
-			empty( $alt ) ? '' : sprintf( ' alt="%s"', esc_attr( $alt ) ),
-			empty( $flag['width'] ) ? '' : sprintf( ' width="%s"', (int) $flag['width'] ),
-			empty( $flag['height'] ) ? '' : sprintf( ' height="%s"', (int) $flag['height'] )
+			$title_attr,
+			$alt_attr,
+			$width_attr,
+			$height_attr,
+			$style
 		);
 	}
 
