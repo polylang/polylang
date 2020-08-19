@@ -254,7 +254,7 @@ class PLL_Language {
 	 * @since 2.8
 	 */
 	public function get_display_flag_url() {
-		return empty( $this->custom_flag_url ) ? $this->flag : $this->custom_flag_url;
+		return empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 	}
 
 	/**

@@ -57,6 +57,9 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->assertEquals( get_permalink( $fr ), $arr['fr']['url'] );
 		$this->assertEquals( home_url( '?lang=de' ), $arr['de']['url'] ); // No translation
 		$this->assertEquals( 'English', $arr['en']['name'] );
+		$this->assertEquals( 'en-US', $arr['en']['locale'] );
+		$this->assertEquals( 'en', $arr['en']['slug'] );
+		$this->assertEquals( plugins_url( '/flags/us.png', POLYLANG_FILE ), $arr['en']['flag'] );
 
 		// Other arguments
 		$args = array_merge(
