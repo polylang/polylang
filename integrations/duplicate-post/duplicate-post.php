@@ -27,7 +27,7 @@ class PLL_Duplicate_Post {
 	 * @param array|string $taxonomies
 	 * @return array
 	 */
-	public function duplicate_post_taxonomies_blacklist( $taxonomies ) {
+	public function taxonomies_blacklist( $taxonomies ) {
 		if ( empty( $taxonomies ) ) {
 			$taxonomies = array(); // As we get an empty string when there is no taxonomy
 		}
