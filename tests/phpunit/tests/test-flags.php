@@ -38,17 +38,22 @@ class Flags_Test extends PLL_UnitTestCase {
 	/*
 	 * bug fixed in 1.8
 	 */
-	function test_ssl() {
+	function test_default_flag_ssl() {
 		$_SERVER['HTTPS'] = 'on';
 
-		// Default flags.
 		$lang = self::$polylang->model->get_language( 'en' );
 		$this->assertContains( 'https', $lang->get_display_flag_url() );
 
-		// Custom flags.
+		unset( $_SERVER['HTTPS'] );
+	}
+
+	function test_custom_flag_ssl() {
+		$_SERVER['HTTPS'] = 'on';
+
 		$lang = self::$polylang->model->get_language( 'fr' );
 		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->get_display_flag_url() );
 		$this->assertContains( 'https', $lang->get_display_flag_url() );
+
 		unset( $_SERVER['HTTPS'] );
 	}
 }
