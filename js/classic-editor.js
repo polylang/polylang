@@ -45,9 +45,9 @@
 				);
 
 				// add an if else condition to allow modifying the tags outputed when switching the language
-				if ( v = $( '.the-tagcloud' ).css( 'display' ) ) {
-					$( '.the-tagcloud' ).replaceWith( r );
-					$( '.the-tagcloud' ).css( 'display', v );
+				if ( v = $( '#tagcloud-' + tax ).css( 'display' ) ) {
+					$( '#tagcloud-' + tax ).replaceWith( r );
+					$( '#tagcloud-' + tax ).css( 'display', v );
 				}
 				else {
 					$( '#' + id ).after( r );
