@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.9
 Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 2.8
+Stable tag: 2.8.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.8.1 (2020-08-25) =
+
+* Pro: Fix fatal error with WP 4.9
+* Fix pll_the_languages() with 'raw' option returning html flag instead of flag url #558
+* Fix compatibility with Duplicate Posts not correcly loaded #557
+* Fix custom flag size in admin bar language switcher #559
+* Fix tag clouds mixed in the classic editor #561
 
 = 2.8 (2020-08-17) =
 
