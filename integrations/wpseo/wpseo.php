@@ -44,6 +44,7 @@ class PLL_WPSEO {
 				add_filter( 'wpseo_frontend_presenters', array( $this, 'wpseo_frontend_presenters' ) );
 			}
 			add_filter( 'wpseo_canonical', array( $this, 'wpseo_canonical' ) );
+			add_filter( 'wpseo_frontend_presentation', array( $this, 'frontend_presentation' ) );
 		} else {
 			add_action( 'admin_init', array( $this, 'wpseo_register_strings' ) );
 
@@ -391,6 +392,37 @@ class PLL_WPSEO {
 	public function wpseo_canonical( $url ) {
 		return is_front_page( $url ) && get_option( 'permalink_structure' ) ? trailingslashit( $url ) : $url;
 	}
+
+	/**
+	 * Fixes the links and strings stored in the indexable table since Yoast SEO 14.0
+	 *
+	 * @since 2.8.2
+	 *
+	 * @param object $presentation The indexable presentation.
+	 * @return object
+	 */
+	public function frontend_presentation( $presentation ) {
+		if ( is_front_page() ) {
+			$presentation->model->permalink = pll_home_url();
+		}
+
+		if ( is_post_type_archive() ) {
+			$presentation->model->permalink = get_post_type_archive_link( get_post_type() );
+		}
+
+		$strings = array(
+			'title',
+			'description',
+			'breadcrumb_title',
+		);
+
+		foreach ( $strings as $string ) {
+			$presentation->model->$string = pll__( $presentation->model->$string );
+		}
+
+		return $presentation;
+	}
+
 
 	/**
 	 * Helper function to register strings for custom post types and custom taxonomies titles and meta descriptions
