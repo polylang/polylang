@@ -39,6 +39,10 @@ class Flags_Test extends PLL_UnitTestCase {
 		parent::tearDown();
 	}
 
+	function tearDown() {
+		remove_filter( 'pll_custom_flag', array( $this, 'override_custom_flag' ) );
+	}
+
 	function test_default_flag() {
 		$lang = self::$model->get_language( 'fr' );
 		$this->assertEquals( plugins_url( '/flags/fr.png', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
@@ -72,5 +76,23 @@ class Flags_Test extends PLL_UnitTestCase {
 		$lang = self::$model->get_language( 'fr' );
 		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->get_display_flag_url() );
 		$this->assertContains( 'https', $lang->get_display_flag_url() );
+	}
+
+	function test_remove_flag_inline_style_in_saved_language() {
+		self::create_language( 'de_CH_informal' );
+		copy( dirname( __FILE__ ) . '/../data/de_CH.png', WP_CONTENT_DIR . '/polylang/de_CH_informal.png' );
+		$language = $this->pll_env->model->get_language( 'de_CH_informal' );
+
+		$this->assertNotContains( 'style', $language->get_display_flag() );
+		$this->assertNotContains( 'width', $language->get_display_flag() );
+		$this->assertNotContains( 'height', $language->get_display_flag() );
+	}
+
+	function test_remove_flag_inline_style_in_new_language() {
+		$language = PLL_Language::create( self::$new_language );
+
+		$this->assertNotContains( 'style', $language->get_display_flag() );
+		$this->assertNotContains( 'width', $language->get_display_flag() );
+		$this->assertNotContains( 'height', $language->get_display_flag() );
 	}
 }
