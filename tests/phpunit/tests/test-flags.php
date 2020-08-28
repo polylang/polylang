@@ -41,6 +41,8 @@ class Flags_Test extends PLL_UnitTestCase {
 
 	function tearDown() {
 		remove_filter( 'pll_custom_flag', array( $this, 'override_custom_flag' ) );
+
+		parent::tearDown();
 	}
 
 	function test_default_flag() {
