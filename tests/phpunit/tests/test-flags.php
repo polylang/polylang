@@ -39,12 +39,6 @@ class Flags_Test extends PLL_UnitTestCase {
 		parent::tearDown();
 	}
 
-	function tearDown() {
-		remove_filter( 'pll_custom_flag', array( $this, 'override_custom_flag' ) );
-
-		parent::tearDown();
-	}
-
 	function test_default_flag() {
 		$lang = self::$model->get_language( 'fr' );
 		$this->assertEquals( plugins_url( '/flags/fr.png', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
