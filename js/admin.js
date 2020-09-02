@@ -171,7 +171,7 @@ jQuery( document ).ready(
 											function() {
 												var $this = $( this ),
 													$button = $( '<button type="button" class="notice-dismiss"><span class="screen-reader-text"></span></button>' ),
-													btnText = commonL10n.dismiss || '';
+													btnText = pll_dismiss_notice || '';
 
 												// Ensure plain text
 												$button.find( '.screen-reader-text' ).text( btnText );
