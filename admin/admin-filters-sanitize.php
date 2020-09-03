@@ -12,6 +12,13 @@
  */
 class PLL_Admin_Filters_Sanitize {
 	/**
+	 * Current language used for the sanitization depending on the context.
+	 *
+	 * @var string $curlang
+	 */
+	public $curlang;
+
+	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 2.9
