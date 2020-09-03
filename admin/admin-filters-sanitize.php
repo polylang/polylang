@@ -26,40 +26,12 @@ class PLL_Admin_Filters_Sanitize {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
-		// To get the language from REST API Request
-		add_filter( 'rest_pre_dispatch', array( $this, 'get_rest_query_params' ), 10, 3 );
-
 		// We need specific filters for some languages like German and Danish
 		$specific_locales = array( 'da_DK', 'de_DE', 'de_DE_formal', 'de_CH', 'de_CH_informal', 'ca', 'sr_RS', 'bs_BA' );
 		if ( array_intersect( $this->model->get_languages_list( array( 'fields' => 'locale' ) ), $specific_locales ) ) {
 			add_filter( 'sanitize_title', array( $this, 'sanitize_title' ), 10, 3 );
 			add_filter( 'sanitize_user', array( $this, 'sanitize_user' ), 10, 3 );
 		}
-	}
-
-	/**
-	 * Get REST API parameters to set the current language correctly.
-	 *
-	 * @see WP_REST_Server::dispatch()
-	 *
-	 * @since 2.9
-	 *
-	 * @param mixed           $result  Response to replace the requested version with. Can be anything
-	 *                                 a normal endpoint can return, or null to not hijack the request.
-	 * @param WP_REST_Server  $server  Server instance.
-	 * @param WP_REST_Request $request Request used to generate the response.
-	 */
-	public function get_rest_query_params( $result, $server, $request ) {
-		if ( current_user_can( 'edit_posts' ) && null !== $request->get_param( 'is_block_editor' ) ) {
-			// When it's a post request on a new post the language is sent into the request.
-			if ( ! empty( $request->get_param( 'lang' ) ) ) {
-				$this->curlang = $this->model->get_language( sanitize_key( $request->get_param( 'lang' ) ) );
-			} else {
-				// Otherwise we need to get the language from the post itself.
-				$this->curlang = $this->model->post->get_language( sanitize_key( $request->get_param( 'id' ) ) );
-			}
-		}
-		return $result;
 	}
 
 	/**
