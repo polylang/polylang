@@ -87,6 +87,10 @@ class PLL_Admin_Filters_Sanitize extends PLL_Filters {
 	 * used for the admin interface and if one this language is German or Danish, some specific
 	 * characters such as ä, ö, ü, ß are incorrectly sanitized.
 	 *
+	 * All the process is done by the remove_accents() WordPress function based on the locale value
+	 *
+	 * @link https://github.com/WordPress/WordPress/blob/5.5-branch/wp-includes/formatting.php#L1920-L1944
+	 *
 	 * @since 2.0
 	 *
 	 * @param string $title     Sanitized title.
@@ -109,6 +113,10 @@ class PLL_Admin_Filters_Sanitize extends PLL_Filters {
 
 	/**
 	 * Maybe fix the result of sanitize_user() in case the languages include German or Danish
+	 *
+	 * All the process is done by the remove_accents() WordPress function based on the locale value
+	 *
+	 * @link https://github.com/WordPress/WordPress/blob/5.5-branch/wp-includes/formatting.php#L1920-L1944
 	 *
 	 * @since 2.0
 	 *
