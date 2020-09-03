@@ -19,6 +19,13 @@ class PLL_Admin_Filters_Sanitize {
 	public $curlang;
 
 	/**
+	 * Instance of PLL_Model
+	 *
+	 * @var PLL_Model
+	 */
+	protected $model;
+	
+	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 2.9
@@ -26,6 +33,9 @@ class PLL_Admin_Filters_Sanitize {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
+		$this->model = &$polylang->model;
+		$this->curlang = &$polylang->curlang;
+
 		// We need specific filters for some languages like German and Danish
 		$specific_locales = array( 'da_DK', 'de_DE', 'de_DE_formal', 'de_CH', 'de_CH_informal', 'ca', 'sr_RS', 'bs_BA' );
 		if ( array_intersect( $this->model->get_languages_list( array( 'fields' => 'locale' ) ), $specific_locales ) ) {
