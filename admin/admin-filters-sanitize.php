@@ -4,7 +4,7 @@
  */
 
 /**
- * Setup specific admin filters usefull for sanitization.
+ * Setup specific admin filters useful for sanitization.
  *
  * Extract from PLL_Admin_Filters to be able to use in a REST API context.
  *
