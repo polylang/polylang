@@ -22,7 +22,8 @@ jQuery( document ).ready(
 		 */
 		function addLanguage( language ) {
 			// language properties come from the select dropdown which is built server side and well escaped.
-			var languageValueHtml = $( '<td />' ).text( language.text ).prepend( language.flagUrl );
+			// see template view-wizard-step-languages.php.
+			var languageValueHtml = $( '<td />' ).text( language.text ).prepend( language.flagUrl ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			var languageTrashIconHtml = $( '<td />' )
 				.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 					$( '<span />' )
@@ -34,7 +35,8 @@ jQuery( document ).ready(
 						.text( pll_wizard_params.i18n_remove_language_icon )
 					)
 				);
-			var languageLineHtml = $( '<tr />' ).prepend( languageTrashIconHtml ).prepend( languageValueHtml );
+			// see the comment and the harcoded code above. languageTrashIconHtml and languageValueHtml are safe.
+			var languageLineHtml = $( '<tr />' ).prepend( languageTrashIconHtml ).prepend( languageValueHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			var languageFieldHtml = $( '<input />' ).attr(
 				{
 					type: 'hidden',
@@ -82,7 +84,9 @@ jQuery( document ).ready(
 		 */
 		function showError( message ) {
 			messagesContainer.empty();
-			messagesContainer.prepend( $( '<p/>' ).addClass( 'error' ).text( message ) );
+			// html is harcoded and use of jQuery text method which is safe to add message value.
+			// In addition message is i18n value which is initialized server side in PLL_Wizard::add_step_languages and correctly escaped.
+			messagesContainer.prepend( $( '<p/>' ).addClass( 'error' ).text( message ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 		}
 
 		/**
@@ -246,7 +250,7 @@ jQuery( document ).ready(
 			}
 		}
 
-		// Initialize dialog box in the case a langauge is selected but not added in the list.
+		// Initialize dialog box in the case a language is selected but not added in the list.
 		dialog.dialog(
 			{
 				autoOpen: false,
@@ -268,7 +272,9 @@ jQuery( document ).ready(
 					}
 					// Display language name and flag information in dialog box.
 					$( this ).find( '#dialog-language' ).text( $( '#lang_list' ).children( ':selected' )[0].innerText );
-					$( this ).find( '#dialog-language-flag' ).empty().prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) );
+					// language properties come from the select dropdown #lang_list which is built server side and well escaped.
+					// see template view-wizard-step-languages.php.
+					$( this ).find( '#dialog-language-flag' ).empty().prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 				},
 				buttons: [
 				{

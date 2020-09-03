@@ -54,7 +54,8 @@ jQuery( document ).ready(
 							// add the fields
 							for ( var i = 0, idsLength = ids.length; i < idsLength; i++ ) {
 								p = $( '<p>' ).attr( 'class', 'description' );
-								$( this ).prepend( p );
+								// p is hardcoded just above by using attr method which is safe.
+								$( this ).prepend( p ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 								// item is a number part of id of parent menu item built by WordPress
 								// pll_data is built server side with i18n strings without HTML
 								label = $( '<label>' ).attr( 'for', 'edit-menu-item-' + ids[ i ] + '-' + item ).text( ' ' + pll_data.strings[ ids[ i ] ] );
@@ -70,7 +71,8 @@ jQuery( document ).ready(
 								if ( ( typeof( pll_data.val[ item ] ) != 'undefined' && pll_data.val[ item ][ ids[ i ] ] == 1 ) || ( typeof( pll_data.val[ item ] ) == 'undefined' && ids[ i ] == 'show_names' ) ) { // show_names as default value
 									cb.prop( 'checked', true );
 								}
-								label.prepend( cb );
+								// See reasons above. Checkbox are totaly hardcoded here with safe value
+								label.prepend( cb ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 							}
 						}
 					);

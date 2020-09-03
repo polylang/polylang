@@ -46,11 +46,13 @@
 
 				// add an if else condition to allow modifying the tags outputed when switching the language
 				if ( v = $( '#tagcloud-' + tax ).css( 'display' ) ) {
-					$( '#tagcloud-' + tax ).replaceWith( r );
+					// See the comment above when r variable is created.
+					$( '#tagcloud-' + tax ).replaceWith( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
 					$( '#tagcloud-' + tax ).css( 'display', v );
 				}
 				else {
-					$( '#' + id ).after( r );
+					// See the comment above when r variable is created.
+					$( '#' + id ).after( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
 				}
 			}
 		);
@@ -72,7 +74,8 @@ jQuery( document ).ready(
 
 				// add our hidden field in the new category form - for each hierarchical taxonomy
 				// to set the language when creating a new category
-				$( '#' + taxonomy + '-add-submit' ).before(
+				// html code inserted come from html code itself.
+				$( '#' + taxonomy + '-add-submit' ).before( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.before
 					$( '<input />' ).attr( 'type', 'hidden' )
 						.attr( 'id', taxonomy + '-lang' )
 						.attr( 'name', 'term_lang_choice' )
@@ -118,7 +121,9 @@ jQuery( document ).ready(
 										$( '#' + tax + 'checklist' ).html( this.supplemental.all ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 										// @see wp_popular_terms_checklist https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/template.php#L236
 										$( '#' + tax + 'checklist-pop' ).html( this.supplemental.populars ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-										$( '#new' + tax + '_parent' ).replaceWith( this.supplemental.dropdown );
+										// @see wp_dropdown_categories https://github.com/WordPress/WordPress/blob/5.5.1/wp-includes/category-template.php#L336
+										// which is called by PLL_Admin_Classic_Editor::post_lang_choice to generate supplemental.dropdown
+										$( '#new' + tax + '_parent' ).replaceWith( this.supplemental.dropdown ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
 										$( '#' + tax + '-lang' ).val( $( '.post_lang_choice' ).val() ); // hidden field
 									break;
 									case 'pages': // parent dropdown list for pages

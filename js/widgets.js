@@ -35,7 +35,8 @@ jQuery(
 					current.html( icon ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 				} else {
 					flag = $( '<span />' ).addClass( 'pll-lang' ).html( icon );  // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-					title.prepend( flag );
+					// See the comment above about the icon which is safe. So it is also safe to prepend flag which uses icon.
+					title.prepend( flag ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 				}
 			} else {
 				$( '.pll-lang', title ).remove();
