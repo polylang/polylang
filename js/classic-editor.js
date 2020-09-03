@@ -121,7 +121,7 @@ jQuery( document ).ready(
 										$( '#' + tax + 'checklist' ).html( this.supplemental.all ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
 										// @see wp_popular_terms_checklist https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/includes/template.php#L236
 										$( '#' + tax + 'checklist-pop' ).html( this.supplemental.populars ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-										// @see wp_dropdown_categories https://github.com/WordPress/WordPress/blob/5.5-branch/wp-includes/category-template.php#L336
+										// @see wp_dropdown_categories https://github.com/WordPress/WordPress/blob/5.5.1/wp-includes/category-template.php#L336
 										// which is called by PLL_Admin_Classic_Editor::post_lang_choice to generate supplemental.dropdown
 										$( '#new' + tax + '_parent' ).replaceWith( this.supplemental.dropdown ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
 										$( '#' + tax + '-lang' ).val( $( '.post_lang_choice' ).val() ); // hidden field
