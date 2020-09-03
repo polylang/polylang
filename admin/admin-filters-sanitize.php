@@ -10,8 +10,7 @@
  *
  * @since 2.9
  */
-class PLL_Admin_Filters_Sanitize extends PLL_Filters {
-
+class PLL_Admin_Filters_Sanitize {
 	/**
 	 * Constructor: setups filters and actions
 	 *
