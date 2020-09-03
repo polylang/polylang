@@ -19,8 +19,6 @@ class PLL_Admin_Filters_Sanitize {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
-		parent::__construct( $polylang );
-
 		// To get the language from REST API Request
 		add_filter( 'rest_pre_dispatch', array( $this, 'get_rest_query_params' ), 10, 3 );
 
