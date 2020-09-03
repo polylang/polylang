@@ -21,7 +21,7 @@ class Flags_Test extends PLL_UnitTestCase {
 	 *
 	 * @var string
 	 */
-	private static $flag_de_Ch_informal = WP_CONTENT_DIR . '/polylang/de_CH_informal.png';
+	private static $flag_de_ch_informal = WP_CONTENT_DIR . '/polylang/de_CH_informal.png';
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -94,7 +94,7 @@ class Flags_Test extends PLL_UnitTestCase {
 	}
 
 	function test_remove_flag_inline_style_in_saved_language() {
-		copy( dirname( __FILE__ ) . '/../data/de_CH.png', self::$flag_de_Ch_informal );
+		copy( dirname( __FILE__ ) . '/../data/de_CH.png', self::$flag_de_ch_informal );
 		self::create_language( 'de_CH_informal' );
 		$language = $this->pll_env->model->get_language( 'de_CH_informal' );
 
