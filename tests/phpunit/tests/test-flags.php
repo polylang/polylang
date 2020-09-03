@@ -17,6 +17,13 @@ class Flags_Test extends PLL_UnitTestCase {
 	private static $new_language;
 
 	/**
+	 * Path to a custom flag image.
+	 *
+	 * @var string
+	 */
+	private static $flag_de_Ch_informal = WP_CONTENT_DIR . '/polylang/de_CH_informal.png';
+
+	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
@@ -87,8 +94,8 @@ class Flags_Test extends PLL_UnitTestCase {
 	}
 
 	function test_remove_flag_inline_style_in_saved_language() {
-		self::create_language( 'de_CH_informal' );
 		copy( dirname( __FILE__ ) . '/../data/de_CH.png', self::$flag_de_Ch_informal );
+		self::create_language( 'de_CH_informal' );
 		$language = $this->pll_env->model->get_language( 'de_CH_informal' );
 
 		$this->assertNotContains( 'style', $language->get_display_flag() );
