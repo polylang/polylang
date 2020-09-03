@@ -5,6 +5,13 @@ class Flags_Test extends PLL_UnitTestCase {
 	private $pll_env;
 
 	/**
+	 * Language properties from {@see PLL_Settings::get_predefined_languages()} to be added as a new language.
+	 *
+	 * @var array
+	 */
+	private static $new_language;
+
+	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
