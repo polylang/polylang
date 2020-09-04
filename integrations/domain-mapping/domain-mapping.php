@@ -39,6 +39,11 @@ class PLL_Domain_Mapping {
 
 		// The language is set from the subdomain or domain name
 		if ( $options['force_lang'] > 1 ) {
+			// Don't go further if we stopped loading the plugin early ( for example when deactivate-polylang=1 ).
+			if ( ! function_exists( 'PLL' ) ) {
+				return;
+			}
+
 			// Don't redirect the main site
 			if ( is_main_site() ) {
 				return;
