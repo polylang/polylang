@@ -214,7 +214,7 @@ if ( ! function_exists( 'wpml_get_language_information' ) ) {
 	 * Undocumented function used by the theme Maya
 	 * returns the post language
 	 *
-	 * @see original WPML code at https://wpml.org/forums/topic/canonical-urls-for-wpml-duplicated-posts/#post-52198
+	 * @see https://wpml.org/forums/topic/canonical-urls-for-wpml-duplicated-posts/#post-52198 for the original WPML code
 	 *
 	 * @since 1.8
 	 *

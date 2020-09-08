@@ -387,7 +387,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		 *
 		 * @since 1.7.10
 		 * @since 2.3 The languages arrays use associative keys instead of numerical keys
-		 * @see settings/languages.php
+		 * @see https://github.com/polylang/polylang/blob/2.8.2/settings/languages.php the list of predefined languages
 		 *
 		 * @param array $languages
 		 */
