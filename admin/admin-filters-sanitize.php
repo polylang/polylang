@@ -24,7 +24,7 @@ class PLL_Admin_Filters_Sanitize {
 	 * @var PLL_Model
 	 */
 	protected $model;
-	
+
 	/**
 	 * Constructor: setups filters and actions
 	 *
@@ -75,7 +75,7 @@ class PLL_Admin_Filters_Sanitize {
 	 *
 	 * All the process is done by the remove_accents() WordPress function based on the locale value
 	 *
-	 * @link https://github.com/WordPress/WordPress/blob/5.5-branch/wp-includes/formatting.php#L1920-L1944
+	 * @link https://github.com/WordPress/WordPress/blob/5.5.1/wp-includes/formatting.php#L1920-L1944
 	 *
 	 * @since 2.0
 	 *
