@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.9
 Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 2.8.1
+Stable tag: 2.8.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -78,6 +78,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 2.8.2 (2020-09-08) =
+
+* Pro: Fix posts sharing the same slug displayed on the same page
+* Fix: Don't use a javascript localized string removed in WP 5.5 #568
+* Fix fatal error in site health when no language is defined #563
+* Fix various issues with Yoast SEO 14.x #65, #503, #505
+* Fix fatal error with MU Domain Mapping when saving domains in Polylang settings #569
+
 = 2.8.1 (2020-08-25) =
 
 * Pro: Fix fatal error with WP 4.9
@@ -108,72 +116,5 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix: output secure cookie when using a cache plugin and ssl #542
 * Fix the possibility to create 2 terms with the same name in the same language, without specifying the second slug.
 * Fix sticky posts appearing 2 times in WP 5.5
-
-= 2.7.4 (2020-06-29) =
-
-* Pro: Allow using our /untranslated-posts REST endpoint for non-public post types
-* Pro: Fix broken display in the block editor sidebar when a language has no flag
-* Pro: Fix SSO breaking the preview on secondary domains
-* Pro: Fix ACF translation option not working for term custom fields
-* Pro: Fix a styling issue in the fields group list table in ACF 5.9
-* Add Spanish from Puerto Rico to the predefined list of languages
-
-= 2.7.3 (2020-05-26) =
-
-* Security: Slash metas
-* Pro: Fix categories not savedafter the language has been switched in the block editor
-* Pro: Fix ACF fields stored as integers instead of strings
-* Pro: Fix ACF untranslated posts or terms being copied when creating a new translation
-* Pro: Fix PHP notice with ACF when a repeater or group is included in a flexible content
-* Pro: Fix "DevTools failed to load SourceMap" warning in browser console
-* Update plugin updater to 1.7.1
-* Honor the filter "pll_the_language_link" when the language switcher displays a dropdown #506
-* Fix "Something went wrong" message when quick editing untranslated post types #508
-* Fix wpseo_opengraph deprecated warning #509
-
-= 2.7.2 (2020-04-27) =
-
-* Pro: Re-allow to modify the capability for strings translations
-* Pro: Fix redirect for posts having the same slug as a media
-* Pro: Fix PHP notice with ACF flexible content
-* Pro: Fix a fatal error with InfiniteWP
-* Update plugin updater to 1.7
-* Fix font in setup wizard
-
-= 2.7.1 (2020-04-09) =
-
-* Pro: Fix untranslated post types filtered by the parameter in the REST API #493
-* Fix fatal error when the function idn_to_ascii is not available
-* Fix PHP warning warning when a 3rd party plugin declares options not stored in DB in wpml-config.xml #492
-* Fix fatal error when a 3rd party plugin declares options stored as objects in wpml-config.xml #494
-
-= 2.7 (2020-04-06) =
-
-* Minimum WordPress version is now 4.9
-* Pro: Strings translations can now be exported and imported (in PO format)
-* Pro: Allow to decide individually which ACF fields to copy or synchronize
-* Pro: Add action pll_inactive_language_requested
-* Pro; Fix fatal error in The Events Calendar compatibility when no language is defined yet
-* Pro: Fix bulk translate when a post has no language
-* Pro: Fix reusable block saved without language
-* Pro: Fix post requested by slug not filtered in REST API, when the slug is shared
-* Add a setup wizard
-* Add Swahili, Upper Sorbian, Sindhi and Spanish from Uruguay to the list of predefined languages
-* Add flags in the predefined list of languages
-* Allow to hide the metaboxes from the screen options
-* The deletion of the plugin's data at uninstall is now controlled by a PHP constant instead of an option #456
-* Add parent in ajax response when selecting a term in autocomplete field #328
-* Add Vary: Accept-Language http header in home page redirect. Props @chesio #452
-* Improve performance to register/unregister WPML strings
-* Add support for the action wpml_switch_language
-* Add post_status to the list of accepted args of pll_count_posts()
-* Apply the filter pll_preferred_language in wp-login.php
-* Use filtered wrappers to create meta when creating media translations #231
-* Allow to translate the Twenty Seventeen header video Youtube url #460
-* Notices are now dismissed per site instead of per user #478
-* Fix terms not visible in the quick edit when only one language is defined and teh admin language filter is active
-* Fix post state not displayed for translations of the privacy policy page #395
-* Fix wildcards not correctly interpreted in wpml-config.xml
-* Fix product categories with special characters duplicated when importing WooCommerce products #474
 
 See [changelog.txt](https://plugins.svn.wordpress.org/polylang/trunk/changelog.txt) for older changelog
