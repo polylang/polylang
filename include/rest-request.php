@@ -8,16 +8,16 @@
  * accessible as $polylang global object
  *
  * Properties:
- * options          => inherited, reference to Polylang options array
- * model            => inherited, reference to PLL_Model object
- * links_model      => inherited, reference to PLL_Links_Model object
- * links            => reference to PLL_Admin_Links object
- * static_pages     => reference to PLL_Static_Pages object
- * filters          => reference to PLL_Frontend_Filters object
- * filters_links    => reference to PLL_Filters_Links object
- * filters_sanitize => reference to PLL_Admin_Filters_Sanitize object
- * posts            => reference to PLL_CRUD_Posts object
- * terms            => reference to PLL_CRUD_Terms object
+ * options              => inherited, reference to Polylang options array
+ * model                => inherited, reference to PLL_Model object
+ * links_model          => inherited, reference to PLL_Links_Model object
+ * links                => reference to PLL_Admin_Links object
+ * static_pages         => reference to PLL_Static_Pages object
+ * filters              => reference to PLL_Frontend_Filters object
+ * filters_links        => reference to PLL_Filters_Links object
+ * filters_sanitization => reference to PLL_Filters_Sanitization object
+ * posts                => reference to PLL_CRUD_Posts object
+ * terms                => reference to PLL_CRUD_Terms object
  *
  * @since 2.6
  */
@@ -67,9 +67,9 @@ class PLL_REST_Request extends PLL_Base {
 	/**
 	 * Instance of PLL_Admin_Filters_Sanitize
 	 *
-	 * @var PLL_Admin_Filters_Sanitize
+	 * @var PLL_Filters_Sanitization
 	 */
-	public $filters_sanitize;
+	public $filters_sanitization;
 
 	/**
 	 * Setup filters
@@ -84,9 +84,9 @@ class PLL_REST_Request extends PLL_Base {
 			/** This action is documented in include/class-polylang.php */
 			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
 
-			$this->filters_links    = new PLL_Filters_Links( $this );
-			$this->filters          = new PLL_Filters( $this );
-			$this->filters_sanitize = new PLL_Admin_Filters_Sanitize( $this );
+			$this->filters_links        = new PLL_Filters_Links( $this );
+			$this->filters              = new PLL_Filters( $this );
+			$this->filters_sanitization = new PLL_Filters_Sanitization( $this, get_locale() );
 
 			// Static front page and page for posts
 			if ( 'page' === get_option( 'show_on_front' ) ) {
