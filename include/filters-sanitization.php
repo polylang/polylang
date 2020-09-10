@@ -16,7 +16,7 @@ class PLL_Filters_Sanitization {
 	 *
 	 * @var string $locale
 	 */
-	protected $locale;
+	public $locale;
 
 	/**
 	 * Instance of PLL_Model
