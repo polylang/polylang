@@ -13,32 +13,43 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		self::$polylang->filters          = new PLL_Admin_Filters( self::$polylang );
-		self::$polylang->filters_sanitize = new PLL_Admin_Filters_Sanitize( self::$polylang );
+		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
 	}
 
 	function test_sanitize_title() {
-		self::$polylang->filters->curlang = self::$polylang->model->get_language( 'en' );
+		$pll_admin = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin->curlang = self::$polylang->model->get_language( 'en' );
+		$pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 
-		self::$polylang->filters->curlang = self::$polylang->model->get_language( 'de' );
+		$pll_admin = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin->curlang = self::$polylang->model->get_language( 'de' );
+		$pll_admin->add_filters();
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
 
 		unset( self::$polylang->filters->curlang );
 
 		// Bug fixed in 2.4.1
 		$_POST['post_lang_choice'] = 'en';
+		$pll_admin = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 
 		$_POST['post_lang_choice'] = 'de';
+		$pll_admin = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin->add_filters();
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
 	function test_sanitize_user() {
-		self::$polylang->filters->curlang = self::$polylang->model->get_language( 'en' );
+		$pll_admin = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin->curlang = self::$polylang->model->get_language( 'en' );
+		$pll_admin->add_filters();
 		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
 
-		self::$polylang->filters->curlang = self::$polylang->model->get_language( 'de' );
+		$pll_admin = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin->curlang = self::$polylang->model->get_language( 'de' );
+		$pll_admin->add_filters();
 		$this->assertEquals( 'angstroem', sanitize_user( 'ångström' ) );
 	}
 
