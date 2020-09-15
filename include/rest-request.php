@@ -65,13 +65,6 @@ class PLL_REST_Request extends PLL_Base {
 	public $filters_links;
 
 	/**
-	 * Instance of PLL_Admin_Filters_Sanitize
-	 *
-	 * @var PLL_Filters_Sanitization
-	 */
-	public $filters_sanitization;
-
-	/**
 	 * Setup filters
 	 *
 	 * @since 2.6
@@ -86,7 +79,6 @@ class PLL_REST_Request extends PLL_Base {
 
 			$this->filters_links        = new PLL_Filters_Links( $this );
 			$this->filters              = new PLL_Filters( $this );
-			$this->filters_sanitization = new PLL_Filters_Sanitization( $this, get_locale() );
 
 			// Static front page and page for posts
 			if ( 'page' === get_option( 'show_on_front' ) ) {
