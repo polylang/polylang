@@ -6,7 +6,7 @@
 /**
  * Class PLL_Admin_Site_Health to add debug info in WP Site Health.
  *
- * @link https://make.wordpress.org/core/2019/04/25/site-health-check-in-5-2/
+ * @see https://make.wordpress.org/core/2019/04/25/site-health-check-in-5-2/ since WordPress 5.2
  *
  * @since 2.8
  */
