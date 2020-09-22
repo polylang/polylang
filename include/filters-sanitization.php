@@ -48,7 +48,7 @@ class PLL_Filters_Sanitization {
 	/**
 	 * Retrieve the locale code of the language.
 	 *
-	 * @since 2.9
+	 * @since 2.0
 	 *
 	 * @param string $locale
 	 * @return string

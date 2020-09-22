@@ -78,7 +78,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * Instance of PLL_Filters_Sanitization
 	 *
 	 * @since 2.9
-	 * 
+	 *
 	 * @var PLL_Filters_Sanitization
 	 */
 	public $filters_sanitization;
@@ -176,7 +176,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * Retrieve the locale according to the current language instead of the language
 	 * of the admin interface.
 	 *
-	 * @since 2.9
+	 * @since 2.0
 	 *
 	 * @return string
 	 */
