@@ -61,7 +61,7 @@ jQuery( document ).ready(
 			}
 		);
 		// Create the jQuery UI selectmenu widget
-		$( '#flag_list' ).selectmenu( { width: '100%' } );
+		$( '#flag_list' ).selectmenu( { width: '97%' } );
 		// Overrides each item in the jQuery UI selectmenu list by injecting flag image.
 		$( '#flag_list' ).selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
 
@@ -76,7 +76,11 @@ jQuery( document ).ready(
 			}
 		);
 		// Create the jQuery UI selectmenu widget
-		$( '#lang_list' ).selectmenu( { width: '100%' } );
+		$( '#lang_list' ).selectmenu( { width: '97%' } ); // jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
+		// However for the wizard we need a 100% width.
+		if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
+			$( '#lang_list' ).selectmenu( 'option', 'width', '102%' );
+		}
 		// Overrides each element in the jQuery UI selectmenu list by injecting flag image.
 		$( '#lang_list' ).selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
 
