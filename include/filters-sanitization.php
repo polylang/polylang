@@ -19,27 +19,18 @@ class PLL_Filters_Sanitization {
 	public $locale;
 
 	/**
-	 * Instance of PLL_Model
-	 *
-	 * @var PLL_Model
-	 */
-	protected $model;
-
-	/**
 	 * Constructor: setups filters and actions.
 	 *
 	 * @since 2.9
 	 *
-	 * @param object $polylang
 	 * @param string $locale Locale code of the language.
 	 */
-	public function __construct( &$polylang, $locale ) {
-		$this->model  = &$polylang->model;
+	public function __construct( $locale ) {
 		$this->locale = $locale;
 
 		// We need specific filters for some languages like German and Danish
 		$specific_locales = array( 'da_DK', 'de_DE', 'de_DE_formal', 'de_CH', 'de_CH_informal', 'ca', 'sr_RS', 'bs_BA' );
-		if ( array_intersect( $this->model->get_languages_list( array( 'fields' => 'locale' ) ), $specific_locales ) ) {
+		if ( in_array( $locale, $specific_locales ) ) {
 			add_filter( 'sanitize_title', array( $this, 'sanitize_title' ), 10, 3 );
 			add_filter( 'sanitize_user', array( $this, 'sanitize_user' ), 10, 3 );
 		}
