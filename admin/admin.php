@@ -149,7 +149,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * @since 2.7 instantiate a PLL_Bulk_Translate instance.
 	 */
 	public function add_filters() {
-		$this->filters_sanitization = new PLL_Filters_Sanitization( $this, $this->get_locale_for_sanitization() );
+		$this->filters_sanitization = new PLL_Filters_Sanitization( $this->get_locale_for_sanitization() );
 		// All these are separated just for convenience and maintainability
 		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Classic_Editor', 'Block_Editor' );
 
