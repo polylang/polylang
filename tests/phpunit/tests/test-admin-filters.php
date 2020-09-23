@@ -22,6 +22,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		$pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 
+		remove_filter( 'sanitize_title', array( $pll_admin->filters_sanitization, 'sanitize_title' ) );
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->curlang = self::$polylang->model->get_language( 'de' );
 		$pll_admin->add_filters();
@@ -30,11 +31,13 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		unset( self::$polylang->filters->curlang );
 
 		// Bug fixed in 2.4.1
+		remove_filter( 'sanitize_title', array( $pll_admin->filters_sanitization, 'sanitize_title' ) );
 		$_POST['post_lang_choice'] = 'en';
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 
+		remove_filter( 'sanitize_title', array( $pll_admin->filters_sanitization, 'sanitize_title' ) );
 		$_POST['post_lang_choice'] = 'de';
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->add_filters();
@@ -47,6 +50,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		$pll_admin->add_filters();
 		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
 
+		remove_filter( 'sanitize_user', array( $pll_admin->filters_sanitization, 'sanitize_user' ) );
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->curlang = self::$polylang->model->get_language( 'de' );
 		$pll_admin->add_filters();
