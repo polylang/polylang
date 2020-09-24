@@ -15,42 +15,42 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
 	}
-
-	function test_sanitize_title() {
+	function test_sanitize_title_for_current_language_without_character_conversion() {
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->curlang = self::$polylang->model->get_language( 'en' );
 		$pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
-
-		remove_filter( 'sanitize_title', array( $pll_admin->filters_sanitization, 'sanitize_title' ) );
-		$pll_admin = new PLL_Admin( self::$polylang->links_model );
-		$pll_admin->curlang = self::$polylang->model->get_language( 'de' );
-		$pll_admin->add_filters();
-		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
-
-		unset( self::$polylang->filters->curlang );
-
-		// Bug fixed in 2.4.1
-		remove_filter( 'sanitize_title', array( $pll_admin->filters_sanitization, 'sanitize_title' ) );
+	}
+	function test_sanitize_title_for_language_from_form_without_character_conversion() {
+			// Bug fixed in 2.4.1
 		$_POST['post_lang_choice'] = 'en';
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
+	}
+	function test_sanitize_title_for_current_language_with_character_conversion() {
+		$pll_admin = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin->curlang = self::$polylang->model->get_language( 'de' );
+		$pll_admin->add_filters();
+		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
+	}
 
-		remove_filter( 'sanitize_title', array( $pll_admin->filters_sanitization, 'sanitize_title' ) );
+	function test_sanitize_title_for_language_from_form_with_character_conversion() {
+		// Bug fixed in 2.4.1
 		$_POST['post_lang_choice'] = 'de';
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->add_filters();
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
-	function test_sanitize_user() {
+	function test_sanitize_user_without_character_conversion() {
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->curlang = self::$polylang->model->get_language( 'en' );
 		$pll_admin->add_filters();
 		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
+	}
 
-		remove_filter( 'sanitize_user', array( $pll_admin->filters_sanitization, 'sanitize_user' ) );
+	function test_sanitize_user_with_character_conversion() {
 		$pll_admin = new PLL_Admin( self::$polylang->links_model );
 		$pll_admin->curlang = self::$polylang->model->get_language( 'de' );
 		$pll_admin->add_filters();
