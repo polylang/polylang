@@ -167,15 +167,15 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Allows to update translations files for plugins and themes
+	 * Allows to update translations files for plugins and themes.
 	 *
 	 * @since 1.6
 	 *
-	 * @param array $locales Not used
-	 * @return array list of locales to update
+	 * @param array $locales List of locales to update for plugins and themes.
+	 * @return array
 	 */
 	public function update_check_locales( $locales ) {
-		return $this->model->get_languages_list( array( 'fields' => 'locale' ) );
+		return array_merge( $locales, $this->model->get_languages_list( array( 'fields' => 'locale' ) ) );
 	}
 
 	/**
