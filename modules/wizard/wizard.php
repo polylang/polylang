@@ -539,7 +539,8 @@ class PLL_Wizard {
 					);
 					exit;
 				}
-				if ( 'en_US' !== $locale ) {
+
+				if ( 'en_US' !== $locale && current_user_can( 'install_languages' ) ) {
 					wp_download_language_pack( $locale );
 				}
 			}
