@@ -184,7 +184,7 @@ class PLL_Settings extends PLL_Admin_Base {
 					add_settings_error( 'general', 'pll_languages_created', __( 'Language added.', 'polylang' ), 'updated' );
 					$locale = sanitize_text_field( wp_unslash( $_POST['locale'] ) ); // phpcs:ignore WordPress.Security
 
-					if ( 'en_US' !== $locale ) {
+					if ( 'en_US' !== $locale && current_user_can( 'install_languages' ) ) {
 						// Attempts to install the language pack
 						require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 						if ( ! wp_download_language_pack( $locale ) ) {
