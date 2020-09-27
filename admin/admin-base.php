@@ -22,9 +22,6 @@ class PLL_Admin_Base extends PLL_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
-		// Plugin i18n, only needed for backend
-		load_plugin_textdomain( 'polylang' );
-
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
 
@@ -326,6 +323,9 @@ class PLL_Admin_Base extends PLL_Base {
 			/** This action is documented in include/class-polylang.php */
 			do_action( 'pll_no_language_defined' ); // to load overridden textdomains
 		}
+
+		// Plugin i18n, only needed for backend.
+		load_plugin_textdomain( 'polylang' );
 	}
 
 	/**
