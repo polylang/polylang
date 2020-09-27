@@ -233,7 +233,6 @@ class PLL_Language {
 			return '';
 		}
 
-		$title_attr  = empty( $title ) ? '' : sprintf( ' title="%s"', esc_attr( $title ) );
 		$alt_attr    = empty( $alt ) ? '' : sprintf( ' alt="%s"', esc_attr( $alt ) );
 		$width_attr  = empty( $flag['width'] ) ? '' : sprintf( ' width="%s"', (int) $flag['width'] );
 		$height_attr = empty( $flag['height'] ) ? '' : sprintf( ' height="%s"', (int) $flag['height'] );
@@ -252,9 +251,8 @@ class PLL_Language {
 		}
 
 		return sprintf(
-			'<img src="%s"%s%s%s%s%s />',
+			'<img src="%s"%s%s%s%s />',
 			$flag['src'],
-			$title_attr,
 			$alt_attr,
 			$width_attr,
 			$height_attr,
