@@ -8,30 +8,80 @@
  * accessible in $polylang global object
  *
  * Properties:
- * options         => inherited, reference to Polylang options array
- * model           => inherited, reference to PLL_Model object
- * links_model     => inherited, reference to PLL_Links_Model object
- * links           => inherited, reference to PLL_Admin_Links object
- * static_pages    => inherited, reference to PLL_Admin_Static_Pages object
- * filters_links   => inherited, reference to PLL_Filters_Links object
- * curlang         => inherited, optional, current language used to filter the content (language of the post or term being edited, equal to filter_lang otherwise)
- * filter_lang     => inherited, optional, current status of the admin languages filter (in the admin bar)
- * pref_lang       => inherited, preferred language used as default when saving posts or terms
- * posts           => reference to PLL_CRUD_Posts object
- * terms           => reference to PLL_CRUD_Terms object
- * filters         => reference to PLL_Admin_Filters object
- * filters_columns => reference to PLL_Admin_Filters_Columns object
- * filters_post    => reference to PLL_Admin_Filters_Post object
- * filters_term    => reference to PLL_Admin_filters_Term object
- * nav_menu        => reference to PLL_Admin_Nav_Menu object
- * block_editor    => reference to PLL_Admin_Block_Editor object
- * classic_editor  => reference to PLL_Admin_Classic_Editor object
- * filters_media   => optional, reference to PLL_Admin_Filters_Media object
+ * options              => inherited, reference to Polylang options array
+ * model                => inherited, reference to PLL_Model object
+ * links_model          => inherited, reference to PLL_Links_Model object
+ * links                => inherited, reference to PLL_Admin_Links object
+ * static_pages         => inherited, reference to PLL_Admin_Static_Pages object
+ * filters_links        => inherited, reference to PLL_Filters_Links object
+ * curlang              => inherited, optional, current language used to filter the content (language of the post or term being edited, equal to filter_lang otherwise)
+ * filter_lang          => inherited, optional, current status of the admin languages filter (in the admin bar)
+ * pref_lang            => inherited, preferred language used as default when saving posts or terms
+ * posts                => reference to PLL_CRUD_Posts object
+ * terms                => reference to PLL_CRUD_Terms object
+ * filters              => reference to PLL_Admin_Filters object
+ * filters_sanitization => reference to PLL_Filters_Sanitization object
+ * filters_columns      => reference to PLL_Admin_Filters_Columns object
+ * filters_post         => reference to PLL_Admin_Filters_Post object
+ * filters_term         => reference to PLL_Admin_filters_Term object
+ * nav_menu             => reference to PLL_Admin_Nav_Menu object
+ * block_editor         => reference to PLL_Admin_Block_Editor object
+ * classic_editor       => reference to PLL_Admin_Classic_Editor object
+ * filters_media        => optional, reference to PLL_Admin_Filters_Media object
  *
  * @since 1.2
  */
 class PLL_Admin extends PLL_Admin_Base {
-	public $filters, $filters_columns, $filters_post, $filters_term, $nav_menu, $filters_media;
+	/**
+	 * Instance of PLL_Admin_Filters
+	 *
+	 * @var PLL_Admin_Filters
+	 */
+	public $filters;
+
+	/**
+	 * Instance of PLL_Admin_Filters_Columns
+	 *
+	 * @var PLL_Admin_Filters_Columns
+	 */
+	public $filters_columns;
+
+	/**
+	 * Instance of PLL_Admin_Filters_Post
+	 *
+	 * @var PLL_Admin_Filters_Post
+	 */
+	public $filters_post;
+
+	/**
+	 * Instance of PLL_Admin_filters_Term
+	 *
+	 * @var PLL_Admin_filters_Term
+	 */
+	public $filters_term;
+
+	/**
+	 * Instance of PLL_Admin_Nav_Menu
+	 *
+	 * @var PLL_Admin_Nav_Menu
+	 */
+	public $nav_menu;
+
+	/**
+	 * Instance of PLL_Admin_Filters_Media
+	 *
+	 * @var PLL_Admin_Filters_Media
+	 */
+	public $filters_media;
+
+	/**
+	 * Instance of PLL_Filters_Sanitization
+	 *
+	 * @since 2.9
+	 *
+	 * @var PLL_Filters_Sanitization
+	 */
+	public $filters_sanitization;
 
 	/**
 	 * Loads the polylang text domain
@@ -99,6 +149,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 * @since 2.7 instantiate a PLL_Bulk_Translate instance.
 	 */
 	public function add_filters() {
+		$this->filters_sanitization = new PLL_Filters_Sanitization( $this->get_locale_for_sanitization() );
 		// All these are separated just for convenience and maintainability
 		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Classic_Editor', 'Block_Editor' );
 
@@ -120,5 +171,28 @@ class PLL_Admin extends PLL_Admin_Base {
 			$class = apply_filters( 'pll_' . $obj, 'PLL_Admin_' . $class );
 			$this->$obj = new $class( $this );
 		}
+	}
+	/**
+	 * Retrieve the locale according to the current language instead of the language
+	 * of the admin interface.
+	 *
+	 * @since 2.0
+	 *
+	 * @return string
+	 */
+	public function get_locale_for_sanitization() {
+		$locale = get_locale();
+
+		if ( isset( $_POST['post_lang_choice'] ) && $lang = $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$locale = $lang->locale;
+		} elseif ( isset( $_POST['term_lang_choice'] ) && $lang = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$locale = $lang->locale;
+		} elseif ( isset( $_POST['inline_lang_choice'] ) && $lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$locale = $lang->locale;
+		} elseif ( ! empty( $this->curlang ) ) {
+			$locale = $this->curlang->locale;
+		}
+
+		return $locale;
 	}
 }
