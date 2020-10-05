@@ -45,6 +45,7 @@ class PLL_WPSEO {
 			}
 			add_filter( 'wpseo_canonical', array( $this, 'wpseo_canonical' ) );
 			add_filter( 'wpseo_frontend_presentation', array( $this, 'frontend_presentation' ) );
+			add_filter( 'wpseo_breadcrumb_indexables', array( $this, 'breadcrumb_indexables' ) );
 		} else {
 			add_action( 'admin_init', array( $this, 'wpseo_register_strings' ) );
 
@@ -423,6 +424,23 @@ class PLL_WPSEO {
 		return $presentation;
 	}
 
+	/**
+	 * Fixes the breadcrumb homepage link stored in the indexable table since Yoast SEO 14.0
+	 *
+	 * @since 2.8.3
+	 *
+	 * @param array $indexables An array of Indexable objects.
+	 * @return object
+	 */
+	public function breadcrumb_indexables( $indexables ) {
+		foreach ( $indexables as &$indexable ) {
+			if ( 'home-page' === $indexable->object_type ) {
+				$indexable->permalink = pll_home_url();
+			}
+		}
+
+		return $indexables;
+	}
 
 	/**
 	 * Helper function to register strings for custom post types and custom taxonomies titles and meta descriptions
