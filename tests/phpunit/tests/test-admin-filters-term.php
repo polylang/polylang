@@ -195,6 +195,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		// Prepare all needed info before loading the entire form
 		$GLOBALS['post_type'] = 'post';
 		$tax = get_taxonomy( $taxonomy );
+		$_GET['taxonomy'] = $taxonomy;
 		$_REQUEST['tag_ID'] = $_GET['tag_ID'] = $tag_ID;
 		$tag = get_term( $tag_ID, $taxonomy, OBJECT, 'edit' );
 		$wp_http_referer = home_url( '/wp-admin/edit-tags.php?taxonomy=category' );
