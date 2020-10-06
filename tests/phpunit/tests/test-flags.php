@@ -22,7 +22,7 @@ class Flags_Test extends PLL_UnitTestCase {
 
 		$options       = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en_US' ) );
 		$this->model         = new PLL_Model( $options );
-		$links_model = new PLL_Links_Default( $model ); // Registers the 'pll_languages_list' and 'pll_after_languages_cache' filters.
+		$links_model = new PLL_Links_Default( $this->model ); // Registers the 'pll_languages_list' and 'pll_after_languages_cache' filters.
 	}
 
 	public function tearDown() {
