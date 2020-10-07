@@ -74,7 +74,7 @@
 	</rule>
 
 	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable" >
-		<exclude-pattern>load.php</exclude-pattern>
+		<exclude-pattern>/load.php</exclude-pattern>
 		<exclude-pattern>/view-*</exclude-pattern>
 	</rule>
 

@@ -22,7 +22,7 @@ class PLL_Walker_List extends Walker {
 	 * @param array  $args              An array of additional arguments.
 	 * @param int    $current_object_id ID of the current item.
 	 */
-	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) {
+	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$output .= sprintf(
 			'%6$s<li class="%1$s"><a lang="%2$s" hreflang="%2$s" href="%3$s">%4$s%5$s</a></li>%7$s',
 			esc_attr( implode( ' ', $element->classes ) ),

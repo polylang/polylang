@@ -36,8 +36,8 @@ class PLL_Admin_Filters_Columns {
 		}
 
 		// Quick edit and bulk edit.
-		add_filter( 'quick_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
-		add_filter( 'bulk_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
+		add_filter( 'quick_edit_custom_box', array( $this, 'quick_edit_custom_box' ) );
+		add_filter( 'bulk_edit_custom_box', array( $this, 'quick_edit_custom_box' ) );
 
 		// Adds the language column in the 'Categories' and 'Post Tags' tables.
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
@@ -185,10 +185,9 @@ class PLL_Admin_Filters_Columns {
 	 * @since 0.9
 	 *
 	 * @param string $column column name
-	 * @param string $type either 'edit-tags' for terms list table or post type for posts list table
 	 * @return string unmodified $column
 	 */
-	public function quick_edit_custom_box( $column, $type ) {
+	public function quick_edit_custom_box( $column ) {
 		if ( $column == $this->get_first_language_column() ) {
 
 			$elements = $this->model->get_languages_list();

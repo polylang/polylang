@@ -16,8 +16,8 @@ class PLL_Jetpack {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'jetpack_init' ) );
-		add_action( 'jetpack_widget_get_top_posts', array( $this, 'jetpack_widget_get_top_posts' ), 10, 3 );
-		add_filter( 'grunion_contact_form_field_html', array( $this, 'grunion_contact_form_field_html_filter' ), 10, 3 );
+		add_action( 'jetpack_widget_get_top_posts', array( $this, 'jetpack_widget_get_top_posts' ) );
+		add_filter( 'grunion_contact_form_field_html', array( $this, 'grunion_contact_form_field_html_filter' ), 10, 2 );
 		add_filter( 'jetpack_open_graph_tags', array( $this, 'jetpack_ogp' ) );
 		add_filter( 'jetpack_relatedposts_filter_filters', array( $this, 'jetpack_relatedposts_filter_filters' ), 10, 2 );
 
@@ -50,12 +50,10 @@ class PLL_Jetpack {
 	 *
 	 * @since 1.5.4
 	 *
-	 * @param array  $posts    Array of the most popular posts.
-	 * @param array  $post_ids Array of Post IDs.
-	 * @param string $count    Number of Top Posts we want to display.
+	 * @param array $posts Array of the most popular posts.
 	 * @return array
 	 */
-	public function jetpack_widget_get_top_posts( $posts, $post_ids, $count ) {
+	public function jetpack_widget_get_top_posts( $posts ) {
 		foreach ( $posts as $k => $post ) {
 			if ( pll_current_language() !== pll_get_post_language( $post['post_id'] ) ) {
 				unset( $posts[ $k ] );
@@ -72,12 +70,11 @@ class PLL_Jetpack {
 	 *
 	 * @since 1.5.4
 	 *
-	 * @param string   $r           Contact Form HTML output.
-	 * @param string   $field_label Field label.
-	 * @param int|null $id          Post ID.
+	 * @param string $r           Contact Form HTML output.
+	 * @param string $field_label Field label.
 	 * @return string
 	 */
-	public function grunion_contact_form_field_html_filter( $r, $field_label, $id ) {
+	public function grunion_contact_form_field_html_filter( $r, $field_label ) {
 		if ( function_exists( 'icl_translate' ) ) {
 			if ( pll_current_language() !== pll_default_language() ) {
 				$label_translation = icl_translate( 'jetpack ', $field_label . '_label', $field_label );

@@ -126,18 +126,16 @@ class PLL_WPML_API {
 
 	/**
 	 * In WPML, get a language's native and translated name for display in a custom language switcher
-	 * Since Polylang does not implement the translated name, always returns only the native name
+	 * Since Polylang does not implement the translated name, always returns only the native name,
+	 * so the 3rd, 4th and 5th parameters are not used.
 	 *
 	 * @since 2.2
 	 *
-	 * @param mixed       $null              Not used.
-	 * @param string      $native_name       The language native name.
-	 * @param string|bool $translated_name   The language translated name. Not used.
-	 * @param bool        $native_hidden     Whether to hide the language native name or not. Not used.
-	 * @param bool        $translated_hidden Whether to hide the language translated name or not. Not used.
+	 * @param mixed  $null        Not used.
+	 * @param string $native_name The language native name.
 	 * @return string
 	 */
-	public function wpml_display_language_names( $null, $native_name, $translated_name = false, $native_hidden = false, $translated_hidden = false ) {
+	public function wpml_display_language_names( $null, $native_name ) {
 		return $native_name;
 	}
 
@@ -172,10 +170,9 @@ class PLL_WPML_API {
 	 *
 	 * @since 2.0
 	 *
-	 * @param mixed $null Not used
 	 * @return bool
 	 */
-	public function wpml_is_rtl( $null ) {
+	public function wpml_is_rtl() {
 		return pll_current_language( 'is_rtl' );
 	}
 

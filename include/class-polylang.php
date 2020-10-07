@@ -237,7 +237,7 @@ class Polylang {
 			require_once __DIR__ . '/api.php'; // Loads the API
 
 			// Loads the modules.
-			foreach ( glob( POLYLANG_DIR . '/modules/*/load.php', GLOB_NOSORT ) as $load_script ) { // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
+			foreach ( glob( POLYLANG_DIR . '/modules/*/load.php', GLOB_NOSORT ) as $load_script ) {
 				require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			}
 

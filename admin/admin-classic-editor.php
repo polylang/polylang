@@ -25,7 +25,7 @@ class PLL_Admin_Classic_Editor {
 		$this->pref_lang = &$polylang->pref_lang;
 
 		// Adds the Languages box in the 'Edit Post' and 'Edit Page' panels
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 
 		// Ajax response for changing the language in the post metabox
 		add_action( 'wp_ajax_post_lang_choice', array( $this, 'post_lang_choice' ) );
@@ -44,9 +44,8 @@ class PLL_Admin_Classic_Editor {
 	 * @since 0.1
 	 *
 	 * @param string $post_type Current post type
-	 * @param object $post      Current post
 	 */
-	public function add_meta_boxes( $post_type, $post ) {
+	public function add_meta_boxes( $post_type ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
 			add_meta_box(
 				'ml_box',
@@ -71,7 +70,7 @@ class PLL_Admin_Classic_Editor {
 		global $post_ID;
 		$post_type = get_post_type( $post_ID );
 
-		// phpcs:ignore WordPress.Security.NonceVerification, WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
+		// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0;
 
 		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
