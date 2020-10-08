@@ -403,13 +403,13 @@ class PLL_WPSEO {
 	 * @return object
 	 */
 	public function frontend_presentation( $presentation ) {
-		if ( is_front_page() ) {
-			$presentation->model->permalink = pll_home_url();
-			$presentation->model->title = WPSEO_Options::get( 'title-home-wpseo' );
-			$presentation->model->description = WPSEO_Options::get( 'title-home-wpseo' );
-		}
-
 		switch ( $presentation->model->object_type ) {
+			case 'home-page':
+				$presentation->model->permalink = pll_home_url();
+				$presentation->model->title = WPSEO_Options::get( 'title-home-wpseo' );
+				$presentation->model->description = WPSEO_Options::get( 'title-home-wpseo' );
+				break;
+
 			case 'post-type-archive':
 				$presentation->model->permalink = get_post_type_archive_link( $presentation->model->object_sub_type );
 				$presentation->model->title = WPSEO_Options::get( 'title-ptarchive-' . $presentation->model->object_sub_type );
