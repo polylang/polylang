@@ -22,12 +22,13 @@ if ( ! defined( 'DIR_TESTROOT' ) ) {
 if ( ! defined( 'PLL_TEST_DATA_DIR' ) ) {
 	define( 'PLL_TEST_DATA_DIR', dirname( __FILE__ ) . '/../data/' );
 }
-require_once dirname( __FILE__ ) . '/testcase-trait.php';
-require_once dirname( __FILE__ ) . '/testcase.php';
-require_once dirname( __FILE__ ) . '/testcase-ajax.php';
-require_once dirname( __FILE__ ) . '/testcase-canonical.php';
-require_once dirname( __FILE__ ) . '/testcase-domain.php';
-require_once dirname( __FILE__ ) . '/wp-screen-mock.php';
+require_once __DIR__ . '/testcase-trait.php';
+require_once __DIR__ . '/testcase.php';
+require_once __DIR__ . '/testcase-ajax.php';
+require_once __DIR__ . '/testcase-canonical.php';
+require_once __DIR__ . '/testcase-domain.php';
+require_once __DIR__ . '/wp-screen-mock.php';
+require_once __DIR__ . '/check-wp-functions-trait.php';
 
 printf(
 	'Testing Polylang%1$s %2$s with WordPress %3$s...' . PHP_EOL,
