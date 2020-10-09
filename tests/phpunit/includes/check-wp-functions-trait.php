@@ -1,6 +1,6 @@
 <?php
 
-Trait PLL_Check_WP_Functions_Trait {
+trait PLL_Check_WP_Functions_Trait {
 	protected function md5( ...$args ) {
 		if ( empty( $args[1] ) ) {
 			// We got a function.
