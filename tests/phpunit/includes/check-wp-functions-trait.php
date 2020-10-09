@@ -26,7 +26,11 @@ Trait PLL_Check_WP_Functions_Trait {
 	 * @param string ...$args Function name or class and method name.
 	 */
 	protected function check_method( $md5, $version, ...$args ) {
-		if ( version_compare( $GLOBALS['wp_version'], $version, '<' ) ) {
+		// Keep only the main part of the WP version (removing alpha, beta or rc).
+		$parts = explode( '-', $GLOBALS['wp_version'] );
+		$wp_version = $parts[0];
+
+		if ( version_compare( $wp_version, $version, '<' ) ) {
 			$this->markTestSkipped( "This test requires WordPress version {$version} or higher" );
 		}
 		$this->assertEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() has been modified', implode( '::', $args ) ) );
