@@ -41,10 +41,9 @@ class PLL_Filters_Sanitization {
 	 *
 	 * @since 2.0
 	 *
-	 * @param string $locale
 	 * @return string
 	 */
-	public function get_locale( $locale ) {
+	public function get_locale() {
 		return $this->locale;
 	}
 

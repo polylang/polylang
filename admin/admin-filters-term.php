@@ -137,7 +137,7 @@ class PLL_Admin_Filters_Term {
 		}
 
 		$term_id  = $tag->term_id;
-		$taxonomy = $tag->taxonomy; // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
+		$taxonomy = $tag->taxonomy; // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 
 		$lang = $this->model->term->get_language( $term_id );
 		$lang = empty( $lang ) ? $this->pref_lang : $lang;
@@ -443,8 +443,8 @@ class PLL_Admin_Filters_Term {
 		}
 
 		$lang      = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
-		$term_id   = isset( $_POST['term_id'] ) ? (int) $_POST['term_id'] : null; // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
-		$taxonomy  = sanitize_key( $_POST['taxonomy'] ); // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable
+		$term_id   = isset( $_POST['term_id'] ) ? (int) $_POST['term_id'] : null; // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		$taxonomy  = sanitize_key( $_POST['taxonomy'] );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {

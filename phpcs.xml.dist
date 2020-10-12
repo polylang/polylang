@@ -73,6 +73,17 @@
 		</properties>
 	</rule>
 
+	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable" >
+		<exclude-pattern>/load.php</exclude-pattern>
+		<exclude-pattern>/view-*</exclude-pattern>
+	</rule>
+
+	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable" >
+		<properties>
+			<property name="allowUnusedVariablesBeforeRequire" value="true"/>
+		</properties>
+	</rule>
+
 	<rule ref="Generic.Commenting.Fixme.CommentFound" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>

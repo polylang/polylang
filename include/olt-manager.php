@@ -139,16 +139,14 @@ class PLL_OLT_Manager {
 
 	/**
 	 * FIXME: Backward compatibility with Polylang for WooCommerce < 0.3.4
-	 * To remove in Polylang 2.1
+	 * Was formerly hooked to the filter 'override_load_textdomain'
 	 *
 	 * @since 0.1
 	 *
-	 * @param bool   $bool   not used
-	 * @param string $domain text domain name
-	 * @param string $mofile translation file name
+	 * @param bool $bool Whether to override the .mo file loading.
 	 * @return bool
 	 */
-	public function mofile( $bool, $domain, $mofile ) {
+	public function mofile( $bool ) {
 		return $bool;
 	}
 

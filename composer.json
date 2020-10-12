@@ -16,7 +16,7 @@
 		"phpunit/phpunit": "^5",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "*",
-		"automattic/vipwpcs": "~2.1.0",
+		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*"
 	},
 	"autoload": {

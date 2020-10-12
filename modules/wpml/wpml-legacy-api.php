@@ -243,15 +243,15 @@ if ( ! function_exists( 'icl_register_string' ) ) {
 	/**
 	 * Registers a string for translation in the "strings translation" panel
 	 *
+	 * The 4th and 5th parameters $allow_empty_value and $source_lang are not used by Polylang.
+	 *
 	 * @since 0.9.3
 	 *
 	 * @param string $context           the group in which the string is registered, defaults to 'polylang'
 	 * @param string $name              a unique name for the string
 	 * @param string $string            the string to register
-	 * @param bool   $allow_empty_value not used
-	 * @param string $source_lang       not used by Polylang
 	 */
-	function icl_register_string( $context, $name, $string, $allow_empty_value = false, $source_lang = '' ) {
+	function icl_register_string( $context, $name, $string ) {
 		PLL_WPML_Compat::instance()->register_string( $context, $name, $string );
 	}
 }

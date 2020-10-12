@@ -186,5 +186,5 @@ class PLL_Table_Settings extends WP_List_Table {
 	 *
 	 * @param string $which 'top' or 'bottom'
 	 */
-	protected function display_tablenav( $which ) {}
+	protected function display_tablenav( $which ) {} // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 }

@@ -27,7 +27,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		add_action( 'pll_home_requested', array( $this, 'pll_home_requested' ) );
 
 		// Manages the redirection of the homepage
-		add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ), 10, 2 );
+		add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ) );
 
 		add_filter( 'pll_pre_translation_url', array( $this, 'pll_pre_translation_url' ), 10, 3 );
 		add_filter( 'pll_check_canonical_url', array( $this, 'pll_check_canonical_url' ) );
@@ -84,10 +84,9 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @since 0.1
 	 *
 	 * @param string $redirect_url
-	 * @param string $requested_url
 	 * @return bool|string modified url, false if redirection is canceled
 	 */
-	public function redirect_canonical( $redirect_url, $requested_url ) {
+	public function redirect_canonical( $redirect_url ) {
 		global $wp_query;
 		if ( is_page() && ! is_feed() && isset( $wp_query->queried_object ) && $wp_query->queried_object->ID == $this->curlang->page_on_front ) {
 			$url = is_paged() ? $this->links_model->add_paged_to_link( $this->links->get_home_url(), $wp_query->query_vars['page'] ) : $this->links->get_home_url();
