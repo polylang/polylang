@@ -166,6 +166,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 * @param string|array $expected_url
 	 */
 	function test_category( $test_url, $expected_url ) {
+		$this->markTestSkipped( 'Needs fixing, see: https://github.com/polylang/polylang/issues/589' );
 		$term_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$polylang->model->term->set_language( $term_en, 'en' );
 
