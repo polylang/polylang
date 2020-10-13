@@ -18,6 +18,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		global $wp_rewrite;
 
+		$_SERVER['REQUEST_URI'] = '/not-homepage/';
 		$options = array_merge(
 			PLL_Install::get_default_options(),
 			array(
@@ -50,7 +51,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->flush_rules();
 
-		self::$polylang->filters_links = new PLL_Frontend_Filters_Links( self::$polylang );
+		// self::$polylang->filters_links = new PLL_Frontend_Filters_Links( self::$polylang );
 	}
 
 	function tearDown() {
@@ -60,8 +61,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	function test_post() {
-		$post_id = $this->factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
-		self::$polylang->model->post->set_language( $post_id, 'en' );
+		$post_en = $this->factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
+		self::$polylang->model->post->set_language( $post_en, 'en' );
+
 		$this->assertCanonical(
 			'/en/post-format-test-audio/',
 			array(
@@ -71,7 +73,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		$this->assertCanonical( '/fr/post-format-test-audio/', '/en/post-format-test-audio/' );
 		$this->assertCanonical( '/post-format-test-audio/', '/en/post-format-test-audio/' );
-		$this->assertCanonical( "?p={$post_id}", '/en/post-format-test-audio/' );
 	}
 
 	function test_page() {
@@ -87,8 +88,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
 		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
-		$this->assertCanonical( "?p={$post_id}", '/en/parent-page/' );
-
 	}
 
 	function test_cpt() {
@@ -105,7 +104,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		$this->assertCanonical( '/fr/cpt/custom-post/', '/en/cpt/custom-post/' );
 		$this->assertCanonical( '/cpt/custom-post/', '/en/cpt/custom-post/' );
-		$this->assertCanonical( "?p={$post_id}", '/en/cpt/custom-post/' );
 	}
 
 	function test_category() {
@@ -124,10 +122,22 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		$this->assertCanonical( '/fr/category/parent/', '/en/category/parent/' );
 		$this->assertCanonical( '/category/parent/', '/en/category/parent/' );
-		$this->assertCanonical( "?cat={$term_en}", '/en/category/parent/' );
 
 		$this->assertCanonical( '/en/category/parent-fr/', '/fr/category/parent-fr/' );
 		$this->assertCanonical( '/category/parent-fr/', '/fr/category/parent-fr/' );
+	}
+
+	/**
+	 * @see https://github.com/polylang/polylang-pro/issues/667 Polylang breaks canonical redirect for taxonomies
+	 */
+	function test_redirect_category_from_plain_link() {
+		$term_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
+		self::$polylang->model->term->set_language( $term_en, 'en' );
+
+		$term_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent-fr' ) );
+		self::$polylang->model->term->set_language( $term_fr, 'fr' );
+
+		$this->assertCanonical( "?cat={$term_en}", '/en/category/parent/' );
 		$this->assertCanonical( "?cat={$term_fr}", '/en/category/parent/' );
 	}
 
@@ -157,11 +167,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
 		$this->assertCanonical( '/posts/', '/en/posts/' );
-		$this->assertCanonical( "?p={$this->posts_en}", '/en/posts/' );
 
 		$this->assertCanonical( '/en/articles/', '/fr/articles/' );
 		$this->assertCanonical( '/articles/', '/fr/articles/' );
-		$this->assertCanonical( "?p={$this->posts_fr}", '/fr/articles/' );
 	}
 
 	// bug introduced in 1.8.2 and fixed in 1.8.3
@@ -185,19 +193,4 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
 		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
 	}
-
-	/**
-	 * @see https://github.com/polylang/polylang-pro/issues/667 Polylang breaks canonical redirect for taxonomies
-	 */
-	/*
-	public function test_canonical_redirect_from_plain_links() {
-		$category_en = $this->factory()->term->create( array(
-			'taxonomy' => 'category',
-			'name' => 'album'
-		) );
-		self::$polylang->model->term->set_language( $category_en, 'en' );
-
-		$this->assertCanonical( '?cat=' . $category_en, '/en/category/album/' );
-	}
-	*/
 }
