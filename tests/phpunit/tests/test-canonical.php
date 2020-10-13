@@ -13,12 +13,16 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
-	function setUp() {
-		parent::setUp();
-
+	/**
+	 * @param $test_url
+	 * @param $expected_url
+	 */
+	public function _test_canonical_redirect( $test_url, $expected_url ) {
 		global $wp_rewrite;
 
-		$_SERVER['REQUEST_URI'] = '/not-homepage/';
+		// Needed by {@see pll_requested_url()}.
+		$_SERVER['REQUEST_URI'] = $test_url;
+
 		$options = array_merge(
 			PLL_Install::get_default_options(),
 			array(
@@ -33,6 +37,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$links_model = new PLL_Links_Directory( $model );
 		self::$polylang = new PLL_Frontend( $links_model );
 		self::$polylang->init();
+
 
 		// switch to pretty permalinks
 		$wp_rewrite->init();
@@ -51,7 +56,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->flush_rules();
 
-		// self::$polylang->filters_links = new PLL_Frontend_Filters_Links( self::$polylang );
+		$this->assertCanonical( $test_url, $expected_url );
 	}
 
 	function tearDown() {
@@ -60,74 +65,134 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		_unregister_post_type( 'cpt' );
 	}
 
-	function test_post() {
+	public function post_canonical_url_provider() {
+		return array(
+			'post with name and language'  => array( '/en/post-format-test-audio/',
+				array(
+					'url' => '/en/post-format-test-audio/',
+					'qv'  => array( 'lang' => 'en', 'name' => 'post-format-test-audio', 'page' => '' ),
+				)
+			),
+			'post with incorrect language' => array( '/fr/post-format-test-audio/', '/en/post-format-test-audio/' ),
+			'post without language'        => array( '/post-format-test-audio/', '/en/post-format-test-audio/' ),
+		);
+	}
+
+	/**
+	 * @dataProvider post_canonical_url_provider
+	 *
+	 * @param string $test_url
+	 * @param string|array $expected_url
+	 */
+	function test_post( $test_url, $expected_url ) {
 		$post_en = $this->factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$polylang->model->post->set_language( $post_en, 'en' );
 
-		$this->assertCanonical(
-			'/en/post-format-test-audio/',
-			array(
-				'url' => '/en/post-format-test-audio/',
-				'qv'  => array( 'lang' => 'en', 'name' => 'post-format-test-audio', 'page' => '' ),
-			)
-		);
-		$this->assertCanonical( '/fr/post-format-test-audio/', '/en/post-format-test-audio/' );
-		$this->assertCanonical( '/post-format-test-audio/', '/en/post-format-test-audio/' );
+		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 
-	function test_page() {
+	public function page_canonical_url_provider() {
+		return array(
+			'page with name and language'  => array(
+				'/en/parent-page/',
+				array(
+					'url' => '/en/parent-page/',
+					'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
+				)
+			),
+			'page with incorrect language' => array( '/fr/parent-page/', '/en/parent-page/'	),
+			'page without language' => array( '/parent-page/', '/en/parent-page/' ),
+		);
+	}
+
+	/**
+	 * @dataProvider page_canonical_url_provider
+	 *
+	 * @param string $test_url
+	 * @param string|array $expected_url
+	 */
+	function test_page( $test_url, $expected_url ) {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'parent-page' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
-		$this->assertCanonical(
-			'/en/parent-page/',
-			array(
-				'url' => '/en/parent-page/',
-				'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
-			)
-		);
-		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
-		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
+		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 
-	function test_cpt() {
+	public function custom_post_type_canonical_url_provider() {
+		return array(
+			'custom post type with name and language' => array( '/en/cpt/custom-post/',
+				array(
+					'url' => '/en/cpt/custom-post/',
+					'qv'  => array( 'lang' => 'en', 'cpt' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'cpt', 'page' => '' ),
+				)
+			),
+			'custom post type with incorrect language' => array( '/fr/cpt/custom-post/', '/en/cpt/custom-post/'	),
+			'custom post type without language' => array( '/cpt/custom-post/', '/en/cpt/custom-post/' ),
+		);
+	}
+
+	/**
+	 * @dataProvider custom_post_type_canonical_url_provider
+	 *
+	 * @param string $test_url
+	 * @param string|array $expected_url
+	 */
+	function test_cpt( $test_url, $expected_url ) {
 		// custom post type
 		$post_id = $this->factory->post->create( array( 'import_id' => 416, 'post_type' => 'cpt', 'post_title' => 'custom-post' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
-		$this->assertCanonical(
-			'/en/cpt/custom-post/',
-			array(
-				'url' => '/en/cpt/custom-post/',
-				'qv'  => array( 'lang' => 'en', 'cpt' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'cpt', 'page' => '' ),
-			)
-		);
-		$this->assertCanonical( '/fr/cpt/custom-post/', '/en/cpt/custom-post/' );
-		$this->assertCanonical( '/cpt/custom-post/', '/en/cpt/custom-post/' );
+		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 
-	function test_category() {
+	public function category_canonical_url_provider() {
+		return array(
+			'category with name and language' => array(
+				'/en/category/parent/',
+				array(
+				'url' => '/en/category/parent/',
+				'qv'  => array( 'lang' => 'en', 'category_name' => 'parent' ),
+				),
+			),
+			'category with incorrect language' => array( '/fr/category/parent/', '/en/category/parent/' ),
+			'category without language' => array( '/category/parent/', '/en/category/parent/' ),
+		);
+	}
+
+	/**
+	 * @dataProvider category_canonical_url_provider
+	 *
+	 * @param string $test_url
+	 * @param string|array $expected_url
+	 */
+	function test_category( $test_url, $expected_url ) {
 		$term_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$polylang->model->term->set_language( $term_en, 'en' );
 
-		$term_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent-fr' ) );
-		self::$polylang->model->term->set_language( $term_fr, 'fr' );
-
-		$this->assertCanonical(
-			'/en/category/parent/',
-			array(
-				'url' => '/en/category/parent/',
-				'qv'  => array( 'lang' => 'en', 'category_name' => 'parent' ),
-			)
-		);
-		$this->assertCanonical( '/fr/category/parent/', '/en/category/parent/' );
-		$this->assertCanonical( '/category/parent/', '/en/category/parent/' );
-
-		$this->assertCanonical( '/en/category/parent-fr/', '/fr/category/parent-fr/' );
-		$this->assertCanonical( '/category/parent-fr/', '/fr/category/parent-fr/' );
+		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 
-	function test_posts_page() {
+	public function posts_page_canonical_url_provider() {
+		return array(
+			'page for posts with name and language' => array(
+				'/en/posts/',
+				array(
+					'url' => '/en/posts/',
+					'qv'  => array( 'lang' => 'en', 'pagename' => 'posts', 'page' => '' ),
+				),
+			),
+			'page for posts with incorrect language' => array( '/fr/posts/', '/en/posts/' ),
+			'page for poests without language' => array( '/posts/', '/en/posts/' ),
+		);
+	}
+
+	/**
+	 * @dataProvider posts_page_canonical_url_provider
+	 *
+	 * @param string $test_url
+	 * @param string|array $expected_url
+	 */
+	function test_posts_page( $test_url, $expected_url ) {
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 
@@ -141,42 +206,38 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		update_option( 'page_for_posts', $fr );
 
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
-		self::$polylang->static_pages->pll_language_defined();
-
-		$this->assertCanonical(
-			'/en/posts/',
-			array(
-				'url' => '/en/posts/',
-				'qv'  => array( 'lang' => 'en', 'pagename' => 'posts', 'page' => '' ),
-			)
-		);
-		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
-		$this->assertCanonical( '/posts/', '/en/posts/' );
-
-		$this->assertCanonical( '/en/articles/', '/fr/articles/' );
-		$this->assertCanonical( '/articles/', '/fr/articles/' );
+		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 
-	// bug introduced in 1.8.2 and fixed in 1.8.3
-	function test_page_when_static_front_page_displays_posts() {
+	public function static_front_page_canonical_url_provider() {
+		return array(
+			'static front page with name and language' => array(
+				'/en/parent-page/',
+				array(
+					'url' => '/en/parent-page/',
+					'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
+				),
+			),
+			'static front page with incorrect language' => array( '/fr/parent-page/', '/en/parent-page/' ),
+			'static front page without language' => array( '/parent-page/', '/en/parent-page/' ),
+		);
+	}
+
+	/**
+	 * bug introduced in 1.8.2 and fixed in 1.8.3
+	 *
+	 * @dataProvider static_front_page_canonical_url_provider()
+	 *
+	 * @param string $test_url
+	 * @param string|array $expected_url
+	 */
+	function test_page_when_static_front_page_displays_posts( $test_url, $expected_url ) {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'parent-page' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'posts' );
 
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
-		self::$polylang->static_pages->pll_language_defined();
-
-		$this->assertCanonical(
-			'/en/parent-page/',
-			array(
-				'url' => '/en/parent-page/',
-				'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
-			)
-		);
-		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
-		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
+		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 }
