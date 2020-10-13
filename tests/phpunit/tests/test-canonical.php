@@ -127,20 +127,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/category/parent-fr/', '/fr/category/parent-fr/' );
 	}
 
-	/**
-	 * @see https://github.com/polylang/polylang-pro/issues/667 Polylang breaks canonical redirect for taxonomies
-	 */
-	function test_redirect_category_from_plain_link() {
-		$term_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
-		self::$polylang->model->term->set_language( $term_en, 'en' );
-
-		$term_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent-fr' ) );
-		self::$polylang->model->term->set_language( $term_fr, 'fr' );
-
-		$this->assertCanonical( "?cat={$term_en}", '/en/category/parent/' );
-		$this->assertCanonical( "?cat={$term_fr}", '/en/category/parent/' );
-	}
-
 	function test_posts_page() {
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
