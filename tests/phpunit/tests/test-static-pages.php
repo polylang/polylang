@@ -312,6 +312,42 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 	}
 
+	function test_untranslated_page_for_posts_2() {
+		wp_delete_post( self::$posts_fr, true );
+
+		$en = $this->factory->post->create(
+			array(
+				'post_title' => 'english post',
+				'post_type'  => 'post',
+			)
+		);
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		$page_en = $en = $this->factory->post->create(
+			array(
+				'post_title' => 'page en',
+				'post_type'  => 'page',
+			)
+		);
+		self::$polylang->model->post->set_language( $en, 'en' );
+		$page_fr = $fr = $this->factory->post->create(
+			array(
+				'post_title' => 'page fr',
+				'post_type'  => 'page',
+			)
+		);
+		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+
+		wp_delete_post( $page_fr, true );
+
+		self::$polylang->curlang = self::$polylang->model->get_language( 'en' ); // brute force
+		$this->go_to( home_url( '/en/posts/' ) );
+
+		$this->assertEquals( array(), $GLOBALS['wp_query']->posts );
+	}
+
+
 	function test_paged_page_for_posts() {
 		update_option( 'posts_per_page', 2 ); // to avoid creating too much posts
 
