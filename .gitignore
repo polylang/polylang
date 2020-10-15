@@ -4,3 +4,5 @@ coverage
 /node_modules/
 .map
 /vendor/
+*.min.js
+*.min.css
