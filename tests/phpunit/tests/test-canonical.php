@@ -30,7 +30,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'hide_default' => 0,
 				'post_types' => array(
 					'cpt' => 'cpt', // translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
-				)
+				),
 			)
 		);
 		$model = new PLL_Model( $options );
@@ -67,11 +67,12 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function post_canonical_url_provider() {
 		return array(
-			'post with name and language'  => array( '/en/post-format-test-audio/',
+			'post with name and language'  => array(
+				'/en/post-format-test-audio/',
 				array(
 					'url' => '/en/post-format-test-audio/',
 					'qv'  => array( 'lang' => 'en', 'name' => 'post-format-test-audio', 'page' => '' ),
-				)
+				),
 			),
 			'post with incorrect language' => array( '/fr/post-format-test-audio/', '/en/post-format-test-audio/' ),
 			'post without language'        => array( '/post-format-test-audio/', '/en/post-format-test-audio/' ),
@@ -81,7 +82,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	/**
 	 * @dataProvider post_canonical_url_provider
 	 *
-	 * @param string $test_url
+	 * @param string       $test_url
 	 * @param string|array $expected_url
 	 */
 	function test_post( $test_url, $expected_url ) {
@@ -98,9 +99,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				array(
 					'url' => '/en/parent-page/',
 					'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
-				)
+				),
 			),
-			'page with incorrect language' => array( '/fr/parent-page/', '/en/parent-page/'	),
+			'page with incorrect language' => array( '/fr/parent-page/', '/en/parent-page/' ),
 			'page without language' => array( '/parent-page/', '/en/parent-page/' ),
 		);
 	}
@@ -108,7 +109,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	/**
 	 * @dataProvider page_canonical_url_provider
 	 *
-	 * @param string $test_url
+	 * @param string       $test_url
 	 * @param string|array $expected_url
 	 */
 	function test_page( $test_url, $expected_url ) {
@@ -120,13 +121,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function custom_post_type_canonical_url_provider() {
 		return array(
-			'custom post type with name and language' => array( '/en/cpt/custom-post/',
+			'custom post type with name and language' => array(
+				'/en/cpt/custom-post/',
 				array(
 					'url' => '/en/cpt/custom-post/',
 					'qv'  => array( 'lang' => 'en', 'cpt' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'cpt', 'page' => '' ),
-				)
+				),
 			),
-			'custom post type with incorrect language' => array( '/fr/cpt/custom-post/', '/en/cpt/custom-post/'	),
+			'custom post type with incorrect language' => array( '/fr/cpt/custom-post/', '/en/cpt/custom-post/' ),
 			'custom post type without language' => array( '/cpt/custom-post/', '/en/cpt/custom-post/' ),
 		);
 	}
@@ -134,7 +136,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	/**
 	 * @dataProvider custom_post_type_canonical_url_provider
 	 *
-	 * @param string $test_url
+	 * @param string       $test_url
 	 * @param string|array $expected_url
 	 */
 	function test_cpt( $test_url, $expected_url ) {
@@ -150,8 +152,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'category with name and language' => array(
 				'/en/category/parent/',
 				array(
-				'url' => '/en/category/parent/',
-				'qv'  => array( 'lang' => 'en', 'category_name' => 'parent' ),
+					'url' => '/en/category/parent/',
+					'qv'  => array( 'lang' => 'en', 'category_name' => 'parent' ),
 				),
 			),
 			'category with incorrect language' => array( '/fr/category/parent/', '/en/category/parent/' ),
@@ -162,7 +164,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	/**
 	 * @dataProvider category_canonical_url_provider
 	 *
-	 * @param string $test_url
+	 * @param string       $test_url
 	 * @param string|array $expected_url
 	 */
 	function test_category( $test_url, $expected_url ) {
@@ -189,7 +191,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	/**
 	 * @dataProvider posts_page_canonical_url_provider
 	 *
-	 * @param string $test_url
+	 * @param string       $test_url
 	 * @param string|array $expected_url
 	 */
 	function test_posts_page( $test_url, $expected_url ) {
@@ -228,7 +230,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 *
 	 * @dataProvider static_front_page_canonical_url_provider()
 	 *
-	 * @param string $test_url
+	 * @param string       $test_url
 	 * @param string|array $expected_url
 	 */
 	function test_page_when_static_front_page_displays_posts( $test_url, $expected_url ) {
