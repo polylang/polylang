@@ -76,6 +76,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			),
 			'post with incorrect language' => array( '/fr/post-format-test-audio/', '/en/post-format-test-audio/' ),
 			'post without language'        => array( '/post-format-test-audio/', '/en/post-format-test-audio/' ),
+			'post from plain permalink'    => array( '/en/?p={post_id}', '/en/post-format-test-audio/' ),
 		);
 	}
 
@@ -88,6 +89,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	function test_post( $test_url, $expected_url ) {
 		$post_en = $this->factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$polylang->model->post->set_language( $post_en, 'en' );
+		$test_url = str_replace( '{post_id}', $post_en, $test_url );
 
 		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
@@ -102,7 +104,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			),
 			'page with incorrect language' => array( '/fr/parent-page/', '/en/parent-page/' ),
-			'page without language' => array( '/parent-page/', '/en/parent-page/' ),
+			'page without language'        => array( '/parent-page/', '/en/parent-page/' ),
+			'page from plain permalink'    => array( '/en/?p={page_id}', '/en/parent-page/' ),
 		);
 	}
 
@@ -115,6 +118,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	function test_page( $test_url, $expected_url ) {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'parent-page' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
+		$test_url = str_replace( '{page_id}', $post_id, $test_url );
 
 		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
@@ -129,7 +133,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			),
 			'custom post type with incorrect language' => array( '/fr/cpt/custom-post/', '/en/cpt/custom-post/' ),
-			'custom post type without language' => array( '/cpt/custom-post/', '/en/cpt/custom-post/' ),
+			'custom post type without language'        => array( '/cpt/custom-post/', '/en/cpt/custom-post/' ),
+			'custom post type from plain permalink'    => array( '/en/?p={cpt_id}', '/en/cpt/custom-post/' ),
 		);
 	}
 
@@ -143,13 +148,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		// custom post type
 		$post_id = $this->factory->post->create( array( 'import_id' => 416, 'post_type' => 'cpt', 'post_title' => 'custom-post' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
+		$test_url = str_replace( '{cpt_id}', $post_id, $test_url );
 
 		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 
 	public function category_canonical_url_provider() {
 		return array(
-			'category with name and language' => array(
+			'category with name and language'  => array(
 				'/en/category/parent/',
 				array(
 					'url' => '/en/category/parent/',
@@ -157,7 +163,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			),
 			'category with incorrect language' => array( '/fr/category/parent/', '/en/category/parent/' ),
-			'category without language' => array( '/category/parent/', '/en/category/parent/' ),
+			'category without language'        => array( '/category/parent/', '/en/category/parent/' ),
+			'category from plain permalink'    => array( '/?cat={category_id}', '/en/category/parent/' ),
 		);
 	}
 
@@ -170,13 +177,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	function test_category( $test_url, $expected_url ) {
 		$term_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$polylang->model->term->set_language( $term_en, 'en' );
+		$test_url = str_replace( '{category_id}', $term_en, $test_url );
 
 		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 
 	public function posts_page_canonical_url_provider() {
 		return array(
-			'page for posts with name and language' => array(
+			'page for posts with name and language'  => array(
 				'/en/posts/',
 				array(
 					'url' => '/en/posts/',
@@ -184,7 +192,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			),
 			'page for posts with incorrect language' => array( '/fr/posts/', '/en/posts/' ),
-			'page for poests without language' => array( '/posts/', '/en/posts/' ),
+			'page for poests without language'       => array( '/posts/', '/en/posts/' ),
+			'page for post from plain permalink'     => array( '/?p={page_id}', '/en/posts/' ),
 		);
 	}
 
@@ -207,13 +216,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		update_option( 'page_for_posts', $fr );
+		$test_url = str_replace( '{page_id}', $en, $test_url );
 
 		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
 
 	public function static_front_page_canonical_url_provider() {
 		return array(
-			'static front page with name and language' => array(
+			'static front page with name and language'  => array(
 				'/en/parent-page/',
 				array(
 					'url' => '/en/parent-page/',
@@ -221,7 +231,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			),
 			'static front page with incorrect language' => array( '/fr/parent-page/', '/en/parent-page/' ),
-			'static front page without language' => array( '/parent-page/', '/en/parent-page/' ),
+			'static front page without language'        => array( '/parent-page/', '/en/parent-page/' ),
+			'static front page from plain permalink'    => array( '/?p={page_id}', '/en/parent-page/' ),
 		);
 	}
 
@@ -239,6 +250,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'posts' );
+		$test_url = str_replace( '{page_id}', $post_id, $test_url );
 
 		$this->_test_canonical_redirect( $test_url, $expected_url );
 	}
