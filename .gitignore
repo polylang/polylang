@@ -7,3 +7,5 @@ package-lock.json
 .map
 vendor
 tmp
+*.min.js
+*.min.css
