@@ -38,22 +38,21 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['REQUEST_URI'] = $test_url;
 
-		$model             = new PLL_Model( $this->options );
-		$links_model       = new PLL_Links_Directory( $model );
-		self::$polylang    = new PLL_Frontend( $links_model );
-		self::$polylang->init();
+		$model = new PLL_Model( $this->options );
 
 		// switch to pretty permalinks
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
 		// register post types and taxonomies
-		self::$polylang->model->post->register_taxonomy(); // needs this for 'lang' query var
+		$model->post->register_taxonomy(); // needs this for 'lang' query var
 		create_initial_taxonomies();
 
 		// reset the links model according to the permalink structure
-		self::$polylang->links_model = self::$polylang->model->get_links_model();
-		self::$polylang->links_model->init();
+		$links_model    = $model->get_links_model();
+		self::$polylang = new PLL_Frontend( $links_model );
+		self::$polylang->init();
+		do_action_ref_array( 'pll_init', array( self::$polylang ) );
 
 		// flush rules
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
