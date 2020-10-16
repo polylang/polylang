@@ -3,11 +3,25 @@
 class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	use PLL_UnitTestCase_Trait;
 
+	private $options;
+
 	public function setUp() {
 		parent::setUp();
 
 		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default.
 		add_filter( 'wp_doing_ajax', '__return_false' );
+
+		$this->options = array_merge(
+			PLL_Install::get_default_options(),
+			array(
+				'default_lang' => 'en',
+				'hide_default' => 0,
+				'post_types'   => array(
+					'cpt' => 'pllcanonical',
+					// translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
+				),
+			)
+		);
 	}
 
 	/**
@@ -24,19 +38,9 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['REQUEST_URI'] = $test_url;
 
-		$options = array_merge(
-			PLL_Install::get_default_options(),
-			array(
-				'default_lang' => 'en',
-				'hide_default' => 0,
-				'post_types' => array(
-					'cpt' => 'pllcanonical', // translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
-				),
-			)
-		);
-		$model = new PLL_Model( $options );
-		$links_model = new PLL_Links_Directory( $model );
-		self::$polylang = new PLL_Frontend( $links_model );
+		$model             = new PLL_Model( $this->options );
+		$links_model       = new PLL_Links_Directory( $model );
+		self::$polylang    = new PLL_Frontend( $links_model );
 		self::$polylang->init();
 
 		// switch to pretty permalinks
