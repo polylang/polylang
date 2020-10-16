@@ -1,54 +1,31 @@
 <?php
 
-class PLL_Canonical_UnitTestCase extends PLL_UnitTestCase {
+class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
+	use PLL_UnitTestCase_Trait;
 
-	// mainly copy paste from WP_Canonical_UnitTestCase::assertCanonical
-	public function assertCanonical( $test_url, $expected ) {
-		if ( is_string( $expected ) ) {
-			$expected = array( 'url' => $expected );
-		} elseif ( is_array( $expected ) && ! isset( $expected['url'] ) && ! isset( $expected['qv'] ) ) {
-			$expected = array( 'qv' => $expected );
+	public function setUp() {
+		parent::setUp();
+
+		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default.
+		add_filter( 'wp_doing_ajax', '__return_false' );
+	}
+
+	/**
+	 * Parses the canonical url if redirect, by either Polylang and/or WordPress.
+	 *
+	 * The {@see PLL_Frontend_Filters_Links::check_canonical_url()} method is hooked on {@see https://github.com/WordPress/wordpress-develop/blob/505fe2f0b87bba956d399f657f85a7073c978289/src/wp-includes/template-loader.php#L13 template_redirect}, which is not triggered during automated tests.
+	 *
+	 * @param string $test_url
+	 *
+	 * @return string Either the canonical url, if redirected, or the inputted $test_url.
+	 */
+	public function get_canonical( $test_url ) {
+		$pll_redirected_url = self::$polylang->filters_links->check_canonical_url( home_url( $test_url ), false );
+		$wp_redirected_url  = redirect_canonical( $pll_redirected_url, false );
+		if ( ! $wp_redirected_url ) {
+			return $pll_redirected_url;
 		}
 
-		if ( ! isset( $expected['url'] ) && ! isset( $expected['qv'] ) ) {
-			$this->markTestSkipped( 'No valid expected output was provided' );
-		}
-
-		$this->go_to( home_url( $test_url ) );
-
-		// Does the redirect match what's expected?
-		$can_url = self::$polylang->filters_links->check_canonical_url( home_url( $test_url ), false ); // FIXME TODO define links ( need $curlang )
-		if ( $wp_can_url = redirect_canonical( $can_url, false ) ) {
-			$parsed_can_url = wp_parse_url( $wp_can_url );
-		} else {
-			$parsed_can_url = wp_parse_url( $can_url );
-		}
-
-		// Just test the Path and Query if present
-		if ( isset( $expected['url'] ) ) {
-			$this->assertEquals( $expected['url'], $parsed_can_url['path'] . ( ! empty( $parsed_can_url['query'] ) ? '?' . $parsed_can_url['query'] : '' ) );
-		}
-
-		if ( ! isset( $expected['qv'] ) ) {
-			return;
-		}
-
-		// "make" that the request and check the query is correct
-		$this->go_to( $can_url );
-
-		// Are all query vars accounted for, And correct?
-		global $wp;
-
-		$query_vars = array_diff( $wp->query_vars, $wp->extra_query_vars );
-		if ( ! empty( $parsed_can_url['query'] ) ) {
-			parse_str( $parsed_can_url['query'], $_qv );
-
-			// $_qv should not contain any elements which are set in $query_vars already ( ie. $_GET vars should not be present in the Rewrite )
-			$this->assertEquals( array(), array_intersect( $query_vars, $_qv ) );
-
-			$query_vars = array_merge( $query_vars, $_qv );
-		}
-
-		$this->assertEquals( $expected['qv'], $query_vars );
+		return $wp_redirected_url;
 	}
 }
