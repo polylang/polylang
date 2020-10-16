@@ -13,52 +13,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
-	/**
-	 * @param $test_url
-	 * @param $expected_url
-	 */
-	public function _test_canonical_redirect( $test_url, $expected_url ) {
-		global $wp_rewrite;
-
-		// Needed by {@see pll_requested_url()}.
-		$_SERVER['REQUEST_URI'] = $test_url;
-
-		$options = array_merge(
-			PLL_Install::get_default_options(),
-			array(
-				'default_lang' => 'en',
-				'hide_default' => 0,
-				'post_types' => array(
-					'cpt' => 'cpt', // translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
-				),
-			)
-		);
-		$model = new PLL_Model( $options );
-		$links_model = new PLL_Links_Directory( $model );
-		self::$polylang = new PLL_Frontend( $links_model );
-		self::$polylang->init();
-
-
-		// switch to pretty permalinks
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $this->structure );
-
-		// register post types and taxonomies
-		self::$polylang->model->post->register_taxonomy(); // needs this for 'lang' query var
-		create_initial_taxonomies();
-		register_post_type( 'cpt', array( 'public' => true ) ); // add custom post type
-
-		// reset the links model according to the permalink structure
-		self::$polylang->links_model = self::$polylang->model->get_links_model();
-		self::$polylang->links_model->init();
-
-		// flush rules
-		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
-		$wp_rewrite->flush_rules();
-
-		$this->assertCanonical( $test_url, $expected_url );
-	}
-
 	function tearDown() {
 		parent::tearDown();
 
@@ -89,7 +43,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$post_en = $this->factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$polylang->model->post->set_language( $post_en, 'en' );
 
-		$this->_test_canonical_redirect( $test_url, $expected_url );
+		$this->assertCanonical( $test_url, $expected_url );
 	}
 
 	public function page_canonical_url_provider() {
@@ -116,7 +70,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'parent-page' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
-		$this->_test_canonical_redirect( $test_url, $expected_url );
+		$this->assertCanonical( $test_url, $expected_url );
 	}
 
 	public function custom_post_type_canonical_url_provider() {
@@ -144,7 +98,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'import_id' => 416, 'post_type' => 'cpt', 'post_title' => 'custom-post' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
-		$this->_test_canonical_redirect( $test_url, $expected_url );
+		$this->assertCanonical( $test_url, $expected_url );
 	}
 
 	public function category_canonical_url_provider() {
@@ -171,7 +125,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$term_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$polylang->model->term->set_language( $term_en, 'en' );
 
-		$this->_test_canonical_redirect( $test_url, $expected_url );
+		$this->assertCanonical( $test_url, $expected_url );
 	}
 
 	public function posts_page_canonical_url_provider() {
@@ -208,7 +162,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		update_option( 'page_for_posts', $fr );
 
-		$this->_test_canonical_redirect( $test_url, $expected_url );
+		$this->assertCanonical( $test_url, $expected_url );
 	}
 
 	public function static_front_page_canonical_url_provider() {
@@ -240,6 +194,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'posts' );
 
-		$this->_test_canonical_redirect( $test_url, $expected_url );
+		$this->assertCanonical( $test_url, $expected_url );
 	}
 }
