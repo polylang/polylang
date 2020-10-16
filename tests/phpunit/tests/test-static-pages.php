@@ -315,6 +315,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	function test_untranslated_page_for_posts_2() {
 		wp_delete_post( self::$posts_fr, true );
 
+		self::$polylang->model->clean_languages_cache();
+
 		$en = $this->factory->post->create(
 			array(
 				'post_title' => 'english post',
@@ -341,10 +343,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		wp_delete_post( $page_fr, true );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' ); // brute force
-		$this->go_to( home_url( '/en/posts/' ) );
-
-		$this->assertEquals( array(), $GLOBALS['wp_query']->posts );
+		$this->assertEquals( self::$posts_en, self::$polylang->model->get_language( 'en' )->page_for_posts );
 	}
 
 
