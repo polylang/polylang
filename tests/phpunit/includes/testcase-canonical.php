@@ -30,7 +30,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 				'default_lang' => 'en',
 				'hide_default' => 0,
 				'post_types' => array(
-					'cpt' => 'cpt', // translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
+					'cpt' => 'pllcanonical', // translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
 				),
 			)
 		);
@@ -46,7 +46,6 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		// register post types and taxonomies
 		self::$polylang->model->post->register_taxonomy(); // needs this for 'lang' query var
 		create_initial_taxonomies();
-		register_post_type( 'cpt', array( 'public' => true ) ); // add custom post type
 
 		// reset the links model according to the permalink structure
 		self::$polylang->links_model = self::$polylang->model->get_links_model();

@@ -16,7 +16,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	function tearDown() {
 		parent::tearDown();
 
-		_unregister_post_type( 'cpt' );
 	}
 
 	public function post_canonical_url_provider() {
@@ -76,14 +75,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public function custom_post_type_canonical_url_provider() {
 		return array(
 			'custom post type with name and language' => array(
-				'/en/cpt/custom-post/',
+				'/en/pllcanonical/custom-post/',
 				array(
-					'url' => '/en/cpt/custom-post/',
-					'qv'  => array( 'lang' => 'en', 'cpt' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'cpt', 'page' => '' ),
+					'url' => '/en/pllcanonical/custom-post/',
+					'qv'  => array( 'lang' => 'en', 'pllcanonical' => 'custom-post', 'name' => 'custom-post', 'post_type' => 'pllcanonical', 'page' => '' ),
 				),
 			),
-			'custom post type with incorrect language' => array( '/fr/cpt/custom-post/', '/en/cpt/custom-post/' ),
-			'custom post type without language' => array( '/cpt/custom-post/', '/en/cpt/custom-post/' ),
+			'custom post type with incorrect language' => array( '/fr/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' ),
+			'custom post type without language' => array( '/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' ),
 		);
 	}
 
@@ -94,11 +93,21 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 * @param string|array $expected_url
 	 */
 	function test_cpt( $test_url, $expected_url ) {
-		// custom post type
-		$post_id = $this->factory->post->create( array( 'import_id' => 416, 'post_type' => 'cpt', 'post_title' => 'custom-post' ) );
+		add_action(
+			'registered_taxonomy',
+			function( $taxonomy ) {
+				if ( 'post_format' === $taxonomy && ! post_type_exists( 'pllcanonical' ) ) { // Last taxonomy registered in {@see https://github.com/WordPress/wordpress-develop/blob/36ef9cbca96fca46e7daf1ee687bb6a20788385c/src/wp-includes/taxonomy.php#L158-L174 create_initial_taxonomies()}.
+					register_post_type( 'pllcanonical', array( 'public' => true ) );
+				}
+			}
+		);
+
+		$post_id = $this->factory->post->create( array( 'import_id' => 416, 'post_type' => 'pllcanonical', 'post_title' => 'custom-post' ) );
 		self::$polylang->model->post->set_language( $post_id, 'en' );
 
 		$this->assertCanonical( $test_url, $expected_url );
+
+		_unregister_post_type( 'pllcanonical' );
 	}
 
 	public function category_canonical_url_provider() {
