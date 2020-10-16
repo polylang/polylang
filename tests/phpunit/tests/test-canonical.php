@@ -13,11 +13,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
-	}
-
 	public function post_canonical_url_provider() {
 		return array(
 			'post with name and language'  => array(
@@ -191,7 +186,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	/**
-	 * bug introduced in 1.8.2 and fixed in 1.8.3
+	 * Bug introduced in 1.8.2 and fixed in 1.8.3
 	 *
 	 * @dataProvider static_front_page_canonical_url_provider()
 	 *
