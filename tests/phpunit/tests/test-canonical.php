@@ -146,8 +146,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 					'qv'  => array( 'lang' => 'en', 'pagename' => 'posts', 'page' => '' ),
 				),
 			),
-			'page for posts with incorrect language' => array( '/fr/posts/', '/en/posts/' ),
-			'page for poests without language' => array( '/posts/', '/en/posts/' ),
+			'page for posts should match page_for_post option when language is incorrect' => array( '/fr/posts/', '/en/posts/' ),
+			'page for should mathc page_for_post option posts without language' => array( '/posts/', '/en/posts/' ),
+			'page_for_post option should be translated when language is incorrect' => array( '/en/articles/', '/fr/articles/' ),
+			'page_for_post option should be translated when no language is set' => array( '/articles/', '/fr/articles/' ),
 		);
 	}
 
