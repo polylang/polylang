@@ -35,6 +35,10 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	public function assertCanonical( $test_url, $expected, $ticket = 0, $expected_doing_it_wrong = array() ) {
 		global $wp_rewrite;
 
+		if ( did_action( 'pll_language_defined' ) ) {
+			$this->fail( 'Canonical tests MUST have only one call to PLL_UnitTestCase_Canonical::assertCanonical() per test.' );
+		}
+
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['REQUEST_URI'] = $test_url;
 
