@@ -14,7 +14,7 @@ trait PLL_UnitTestCase_Trait {
 	/**
 	 * Initialization before all tests run.
 	 */
-	static function wpSetUpBeforeClass() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	static function wpSetUpBeforeClass( $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		self::$polylang = new StdClass();
 
 		self::$polylang->options = PLL_Install::get_default_options();
