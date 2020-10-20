@@ -201,123 +201,31 @@ class PLL_WPML_Config {
 	 * @param object $key     XML node.
 	 */
 	protected function register_or_translate_option( $context, $name, $key ) {
-		if ( PLL() instanceof PLL_Frontend ) {
-			$this->options[ $name ] = $key;
-			add_filter( 'option_' . $name, array( $this, 'translate_strings' ) );
-		} else {
-			$this->register_string_recursive( $context, $name, get_option( $name ), $key );
-		}
+		$option_keys = $this->xml_to_array( $key );
+		new PLL_Translate_Option( $name, reset( $option_keys ), array( 'context' => $context ) );
 	}
 
 	/**
-	 * Translates the strings for an option
+	 * Recursively transforms xml nodes to an array, ready for PLL_Translate_Option.
 	 *
-	 * @since 1.0
+	 * @since 2.9
 	 *
-	 * @param array|string $value Either a string to translate or a list of strings to translate
-	 * @return array|string translated string(s)
+	 * @param object $key XML node.
+	 * @param array  $arr Array of option keys to translate.
+	 * @return array
 	 */
-	public function translate_strings( $value ) {
-		$option = substr( current_filter(), 7 );
-		return $this->translate_strings_recursive( $value, $this->options[ $option ] );
-	}
-
-	/**
-	 * Recursively registers strings for a serialized option
-	 *
-	 * @since 1.0
-	 * @since 2.7 Signature modified
-	 *
-	 * @param string $context The group in which the strings will be registered.
-	 * @param string $option  Option name.
-	 * @param array  $values  Option value.
-	 * @param object $key     XML node.
-	 */
-	protected function register_string_recursive( $context, $option, $values, $key ) {
-		if ( is_object( $values ) ) {
-			$values = (array) $values;
-		}
-
+	protected function xml_to_array( $key, &$arr = array() ) {
+		$attributes = $key->attributes();
+		$name = (string) $attributes['name'];
 		$children = $key->children();
 
-		if ( is_array( $values ) ) {
-			if ( count( $children ) ) {
-				foreach ( $children as $child ) {
-					$attributes = $child->attributes();
-					$name = (string) $attributes['name'];
-
-					if ( isset( $values[ $name ] ) ) {
-						$this->register_string_recursive( $context, $name, $values[ $name ], $child );
-						continue;
-					}
-
-					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-
-					foreach ( $values as $n => $value ) {
-						// The first case could be handled by the next one, but we avoid calls to preg_match here.
-						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
-							$this->register_string_recursive( $context, $n, $value, $child );
-						}
-					}
-				}
-			} else {
-				foreach ( $values as $n => $value ) {
-					// Parent key is a wildcard and no sub-key has been whitelisted.
-					$this->register_string_recursive( $context, $n, $value, $key );
-				}
+		if ( count( $children ) ) {
+			foreach ( $children as $child ) {
+				$arr[ $name ] = $this->xml_to_array( $child, $arr[ $name ] );
 			}
 		} else {
-			pll_register_string( $option, $values, $context, true );  // Multiline as in WPML.
+			$arr[ $name ] = true; // Multiline as in WPML.
 		}
-	}
-
-	/**
-	 * Recursively translates strings for a serialized option
-	 *
-	 * @since 1.0
-	 *
-	 * @param array|string $values Either a string to translate or a list of strings to translate.
-	 * @param object       $key     XML node.
-	 * @return array|string Translated string(s)
-	 */
-	protected function translate_strings_recursive( $values, $key ) {
-		$children = $key->children();
-
-		if ( is_array( $values ) || is_object( $values ) ) {
-			if ( count( $children ) ) {
-				foreach ( $children as $child ) {
-					$attributes = $child->attributes();
-					$name = (string) $attributes['name'];
-
-					if ( is_array( $values ) && isset( $values[ $name ] ) ) {
-						$values[ $name ] = $this->translate_strings_recursive( $values[ $name ], $child );
-						continue;
-					}
-
-					if ( is_object( $values ) && isset( $values->$name ) ) {
-						$values->$name = $this->translate_strings_recursive( $values->$name, $child );
-						continue;
-					}
-
-					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-
-					foreach ( $values as $n => &$value ) {
-						// The first case could be handled by the next one, but we avoid calls to preg_match here.
-						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
-							$value = $this->translate_strings_recursive( $value, $child );
-						}
-					}
-				}
-			} else {
-				// Parent key is a wildcard and no sub-key has been whitelisted.
-				foreach ( $values as &$value ) {
-					$value = $this->translate_strings_recursive( $value, $key );
-				}
-			}
-		} else {
-			$values = pll__( $values );
-		}
-
-		return $values;
+		return $arr;
 	}
 }

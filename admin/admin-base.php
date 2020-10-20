@@ -281,6 +281,15 @@ class PLL_Admin_Base extends PLL_Base {
 		if ( wp_doing_ajax() && ! empty( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$this->curlang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
+
+		// Inform that the admin language has been set.
+		if ( $this->curlang ) {
+			/** This action is documented in frontend/choose-lang.php */
+			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
+		} else {
+			/** This action is documented in include/class-polylang.php */
+			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
+		}
 	}
 
 	/**
@@ -312,16 +321,6 @@ class PLL_Admin_Base extends PLL_Base {
 		$this->pref_lang = apply_filters( 'pll_admin_preferred_language', $this->pref_lang );
 
 		$this->set_current_language();
-
-		// Inform that the admin language has been set
-		// Only if the admin language is one of the Polylang defined language
-		if ( $curlang = $this->model->get_language( get_user_locale() ) ) {
-			/** This action is documented in frontend/choose-lang.php */
-			do_action( 'pll_language_defined', $curlang->slug, $curlang );
-		} else {
-			/** This action is documented in include/class-polylang.php */
-			do_action( 'pll_no_language_defined' ); // to load overridden textdomains
-		}
 
 		// Plugin i18n, only needed for backend.
 		load_plugin_textdomain( 'polylang' );
