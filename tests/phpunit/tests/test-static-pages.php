@@ -312,38 +312,22 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 	}
 
-	function test_untranslated_page_for_posts_2() {
+	function test_get_option_return() {
 		wp_delete_post( self::$posts_fr, true );
 
-		self::$polylang->model->clean_languages_cache();
+		update_option( 'page_for_posts', self::$posts_en );
+		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		self::$polylang->init();
 
-		$en = $this->factory->post->create(
-			array(
-				'post_title' => 'english post',
-				'post_type'  => 'post',
-			)
-		);
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 
-		$page_en = $en = $this->factory->post->create(
-			array(
-				'post_title' => 'page en',
-				'post_type'  => 'page',
-			)
-		);
-		self::$polylang->model->post->set_language( $en, 'en' );
-		$page_fr = $fr = $this->factory->post->create(
-			array(
-				'post_title' => 'page fr',
-				'post_type'  => 'page',
-			)
-		);
-		self::$polylang->model->post->set_language( $fr, 'fr' );
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		add_filter( 'option_page_for_posts', array( self::$polylang->static_pages, 'translate_page_for_posts' ) );
 
-		wp_delete_post( $page_fr, true );
+		$page_for_posts_fr = self::$polylang->model->post->get( get_option( 'page_for_posts' ), 'fr' );
+		$page_for_posts_en = self::$polylang->model->post->get( get_option( 'page_for_posts' ), 'en' );
 
-		$this->assertEquals( self::$posts_en, self::$polylang->model->get_language( 'en' )->page_for_posts );
+		$this->assertEquals( self::$posts_en, $page_for_posts_en );
+		$this->assertFalse( $page_for_posts_fr );
 	}
 
 
