@@ -12,7 +12,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
 	public function setUp() {

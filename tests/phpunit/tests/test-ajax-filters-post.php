@@ -13,7 +13,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		self::create_language( 'fr_FR' );
 		self::create_language( 'es_ES' );
 
-		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
 	function setUp() {

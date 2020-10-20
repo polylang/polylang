@@ -16,7 +16,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 		self::create_language( 'es_ES' );
 
-		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
 	function setUp() {
