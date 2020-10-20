@@ -42,19 +42,12 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		}
 
 		// Strings translation ( must be applied before WordPress applies its default formatting filters )
-		foreach ( array( 'widget_text', 'widget_title', 'option_blogname', 'option_blogdescription', 'option_date_format', 'option_time_format' ) as $filter ) {
+		foreach ( array( 'widget_text', 'widget_title' ) as $filter ) {
 			add_filter( $filter, 'pll__', 1 );
 		}
 
 		// Translates biography
 		add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 4 );
-
-		// Support theme customizer
-		// FIXME of course does not work if 'transport' is set to 'postMessage'
-		if ( isset( $_POST['wp_customize'], $_POST['customized'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			add_filter( 'pre_option_blogname', 'pll__', 20 );
-			add_filter( 'pre_option_blogdescription', 'pll__', 20 );
-		}
 
 		// FIXME test get_user_locale for backward compatibility with WP < 4.7
 		if ( Polylang::is_ajax_on_front() && function_exists( 'get_user_locale' ) ) {
