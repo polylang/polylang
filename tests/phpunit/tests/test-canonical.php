@@ -3,8 +3,8 @@
 class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public $structure = '/%postname%/';
 
-	static function wpSetUpBeforeClass( $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	static function wpSetUpBeforeClass() {
+		parent::wpSetUpBeforeClass();
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
