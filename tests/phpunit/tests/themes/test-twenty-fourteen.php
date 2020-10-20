@@ -5,8 +5,11 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 	class Twenty_Fourteen_Test extends PLL_UnitTestCase {
 		static $stylesheet, $tag_en, $tag_fr;
 
-		static function wpSetUpBeforeClass() {
-			parent::wpSetUpBeforeClass();
+		/**
+		 * @param WP_UnitTest_Factory $factory
+		 */
+		public static function wpSetUpBeforeClass( $factory ) {
+			parent::wpSetUpBeforeClass( $factory );
 
 			self::create_language( 'en_US' );
 			self::create_language( 'fr_FR' );

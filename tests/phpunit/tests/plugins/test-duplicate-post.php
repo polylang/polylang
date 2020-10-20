@@ -6,8 +6,11 @@ if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 
 	class Duplicate_Post_Test extends PLL_UnitTestCase {
 
-		static function wpSetUpBeforeClass() {
-			parent::wpSetUpBeforeClass();
+		/**
+		 * @param WP_UnitTest_Factory $factory
+		 */
+		public static function wpSetUpBeforeClass( $factory ) {
+			parent::wpSetUpBeforeClass( $factory );
 
 			self::$polylang->model->post->registered_post_type( 'post' ); // Important.
 

@@ -2,8 +2,11 @@
 
 class Nav_Menus_Test extends PLL_UnitTestCase {
 
-	static function wpSetUpBeforeClass() {
-		parent::wpSetUpBeforeClass();
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
