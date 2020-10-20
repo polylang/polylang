@@ -312,25 +312,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 	}
 
-	function test_get_option_return() {
-		wp_delete_post( self::$posts_fr, true );
-
-		update_option( 'page_for_posts', self::$posts_en );
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->init();
-
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-
-		add_filter( 'option_page_for_posts', array( self::$polylang->static_pages, 'translate_page_for_posts' ) );
-
-		$page_for_posts_fr = self::$polylang->model->post->get( get_option( 'page_for_posts' ), 'fr' );
-		$page_for_posts_en = self::$polylang->model->post->get( get_option( 'page_for_posts' ), 'en' );
-
-		$this->assertEquals( self::$posts_en, $page_for_posts_en );
-		$this->assertFalse( $page_for_posts_fr );
-	}
-
-
 	function test_paged_page_for_posts() {
 		update_option( 'posts_per_page', 2 ); // to avoid creating too much posts
 
