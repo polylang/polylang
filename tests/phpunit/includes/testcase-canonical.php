@@ -3,7 +3,7 @@
 class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	use PLL_UnitTestCase_Trait;
 
-	private $options;
+	protected $options;
 
 	public function setUp() {
 		parent::setUp();
@@ -56,7 +56,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		$links_model    = $model->get_links_model();
 		self::$polylang = new PLL_Frontend( $links_model );
 		self::$polylang->init();
-		do_action_ref_array( 'pll_init', array( self::$polylang ) );
+		do_action_ref_array( 'pll_init', array( &self::$polylang ) );
 
 		// flush rules
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
