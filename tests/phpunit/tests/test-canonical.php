@@ -149,6 +149,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/category/parent/', '/en/category/parent/' );
 	}
 
+	public function test_category_from_plain_permalink() {
+		$this->assertCanonical( '?cat=' . self::$term_en, '/en/category/parent/' );
+	}
+
 	public function test_page_for_posts_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/posts/',
