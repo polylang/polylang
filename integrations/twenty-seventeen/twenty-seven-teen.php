@@ -23,11 +23,8 @@ class PLL_Twenty_Seventeen {
 				}
 			}
 
-			if ( PLL() instanceof PLL_Frontend ) {
-				add_filter( 'theme_mod_external_header_video', 'pll__' );
-			} else {
-				pll_register_string( __( 'Header video', 'polylang' ), get_theme_mod( 'external_header_video' ), 'Twenty Seventeen', false );
-			}
+			$theme_slug = get_option( 'stylesheet' ); // In case we are using a child theme.
+			new PLL_Translate_Option( "theme_mods_$theme_slug", array( 'external_header_video' => 1 ), array( 'context' => 'Twenty Seventeen' ) );
 		}
 	}
 }
