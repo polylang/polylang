@@ -75,7 +75,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 */
 	public function translate_page_on_front( $v ) {
 		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
-		return isset( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $v;
+		return isset( $this->curlang->page_on_front ) && ( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $v;
 	}
 
 	/**
