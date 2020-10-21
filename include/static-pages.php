@@ -103,7 +103,7 @@ class PLL_Static_Pages {
 	 */
 	public function translate_page_for_posts( $v ) {
 		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
-		return isset( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $v;
+		return isset( $this->curlang->page_for_posts ) && ( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $v;
 	}
 
 	/**
