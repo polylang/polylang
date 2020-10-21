@@ -2,8 +2,8 @@
 
 class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 
-	static function wpSetUpBeforeClass() {
-		parent::wpSetUpBeforeClass();
+	static function wpSetUpBeforeClass( $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
@@ -18,7 +18,7 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translate_page_for_posts_on_default_language() {
-		// page for posts
+		// Pages for posts.
 		$en = self::factory()->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
 
@@ -38,7 +38,7 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translate_page_for_posts_on_secondary_language() {
-		// page for posts
+		// Pages for posts.
 		$en = self::factory()->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
 
@@ -58,7 +58,7 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translate_page_for_posts_when_page_for_posts_has_no_translations() {
-		// page for posts
+		// Only one page for posts.
 		$en = self::factory()->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( $en, 'en' );
 
