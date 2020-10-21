@@ -47,10 +47,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 
-		self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
+		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( self::$page_for_posts_en, 'en' );
 
-		self::$page_for_posts_fr = $factory->post->create( array( 'post_title' => 'articles', 'post_type' => 'page' ) );
+		$fr = self::$page_for_posts_fr = $factory->post->create( array( 'post_title' => 'articles', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( self::$page_for_posts_fr, 'fr' );
 
 		self::$polylang->model->post->save_translations( self::$page_for_posts_en, compact( 'en', 'fr' ) );
