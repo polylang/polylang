@@ -3,8 +3,11 @@
 class Switcher_Test extends PLL_UnitTestCase {
 	private $structure = '/%postname%/';
 
-	static function wpSetUpBeforeClass() {
-		parent::wpSetUpBeforeClass();
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );

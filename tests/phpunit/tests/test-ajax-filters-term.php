@@ -3,13 +3,16 @@
 class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 	protected static $editor;
 
-	public static function wpSetUpBeforeClass() {
-		parent::wpSetUpBeforeClass();
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
 	public function setUp() {

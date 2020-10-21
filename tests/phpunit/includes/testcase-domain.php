@@ -5,8 +5,11 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	protected $hosts;
 	protected static $server;
 
-	static function wpSetUpBeforeClass() {
-		parent::wpSetUpBeforeClass();
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
 
 		self::$server = $_SERVER; // backup
 

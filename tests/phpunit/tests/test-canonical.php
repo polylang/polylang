@@ -11,6 +11,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $page_for_posts_fr;
 	private static $page_on_front_en;
 
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
 	public static function wpSetUpBeforeClass( $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
