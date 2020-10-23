@@ -411,9 +411,11 @@ class PLL_WPSEO {
 				break;
 
 			case 'post-type-archive':
-				$presentation->model->permalink = get_post_type_archive_link( $presentation->model->object_sub_type );
-				$presentation->model->title = WPSEO_Options::get( 'title-ptarchive-' . $presentation->model->object_sub_type );
-				$presentation->model->description = WPSEO_Options::get( 'metadesc-ptarchive-' . $presentation->model->object_sub_type );
+				if ( pll_is_translated_post_type( $presentation->model->object_sub_type ) ) {
+					$presentation->model->permalink = get_post_type_archive_link( $presentation->model->object_sub_type );
+					$presentation->model->title = WPSEO_Options::get( 'title-ptarchive-' . $presentation->model->object_sub_type );
+					$presentation->model->description = WPSEO_Options::get( 'metadesc-ptarchive-' . $presentation->model->object_sub_type );
+				}
 				break;
 
 			case 'user':
@@ -447,8 +449,10 @@ class PLL_WPSEO {
 					break;
 
 				case 'post-type-archive':
-					$indexable->permalink = get_post_type_archive_link( $indexable->object_sub_type );
-					$indexable->breadcrumb_title = pll__( WPSEO_Options::get( 'bctitle-ptarchive-' . $indexable->object_sub_type ) );
+					if ( pll_is_translated_post_type( $indexable->object_sub_type ) ) {
+						$indexable->permalink = get_post_type_archive_link( $indexable->object_sub_type );
+						$indexable->breadcrumb_title = pll__( WPSEO_Options::get( 'bctitle-ptarchive-' . $indexable->object_sub_type ) );
+					}
 					break;
 			}
 		}
