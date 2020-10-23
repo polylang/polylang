@@ -44,10 +44,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$polylang->model->term->set_language( self::$term_en, 'en' );
 
-		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
-		update_option( 'show_on_front', 'page' );
 
 		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
+
 		self::$polylang->model->post->set_language( self::$page_for_posts_en, 'en' );
 
 		$fr = self::$page_for_posts_fr = $factory->post->create( array( 'post_title' => 'articles', 'post_type' => 'page' ) );
@@ -55,13 +54,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		self::$polylang->model->post->save_translations( self::$page_for_posts_en, compact( 'en', 'fr' ) );
 
-		update_option( 'page_for_posts', self::$page_for_posts_fr );
-
 		self::$page_on_front_en = $factory->post->create( array( 'post_type' => 'page', 'post_title' => 'home' ) );
 		self::$polylang->model->post->set_language( self::$page_on_front_en, 'en' );
-
-		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
-		update_option( 'show_on_front', 'posts' );
 	}
 
 	public static function wpTearDownAfterClass() {
@@ -172,10 +166,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_page_for_posts_should_match_page_for_post_option_when_language_is_incorrect() {
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
 	}
 
 	public function test_page_for_posts_should_match_page_for_post_option_posts_without_language() {
+		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		$this->assertCanonical( '/posts/', '/en/posts/' );
 	}
 
@@ -184,18 +182,26 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_page_for_post_option_should_be_translated_when_language_is_incorrect() {
+		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		$this->assertCanonical( '/en/articles/', '/fr/articles/' );
 	}
 
 	public function test_page_for_post_option_should_be_translated_when_no_language_is_set() {
+		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
 		$this->assertCanonical( '/articles/', '/fr/articles/' );
 	}
 
+	/**
+	 * 	Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
 	public function test_page_for_post_option_should_be_translated_from_plain_permalink() {
-		$this->assertCanonical( '?page_id=' . self::$page_for_posts_fr, '/fr/articles/' );
-	}
+		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
+		update_option( 'show_on_front', 'posts' );
 
-	public function test_static_front_page_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/home/',
 			array(
@@ -205,15 +211,30 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
+	/**
+	 * 	Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
 	public function test_static_front_page_with_incorrect_language() {
+		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
+		update_option( 'show_on_front', 'posts' );
+
 		$this->assertCanonical( '/fr/home/', '/en/home/' );
 	}
 
+	/**
+	 * 	Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
 	public function test_static_front_page_without_language() {
+		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
+		update_option( 'show_on_front', 'posts' );
+
 		$this->assertCanonical( '/home/', '/en/home/' );
 	}
 
 	public function test_static_front_page_from_plain_permalink() {
+		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
+		update_option( 'show_on_front', 'posts' );
+
 		$this->assertCanonical( '?page_id=' . self::$page_on_front_en, '/en/home/' );
 	}
 }
