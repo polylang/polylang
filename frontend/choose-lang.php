@@ -230,7 +230,7 @@ abstract class PLL_Choose_Lang {
 		$slug = apply_filters( 'pll_preferred_language', $language, $cookie );
 
 		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
-		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_language( $this->options['default_lang'] );
+		return ( $lang = $this->model->get_language( $slug ) && $this->model->get_language( $slug )->active ) ? $lang : $this->model->get_language( $this->options['default_lang'] );
 	}
 
 	/**
