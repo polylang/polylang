@@ -384,11 +384,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		elseif ( is_category() || is_tag() || is_tax() || ( is_404() && ! empty( $wp_query->tax_query ) ) ) {
-			$queried_terms = $wp_query->tax_query->queried_terms;
-			unset( $queried_terms['language'] );
-			$taxonomy = key( $queried_terms );
-			if ( $this->model->is_translated_taxonomy( $taxonomy ) ) {
-				$term_id = $this->get_queried_term_id( $taxonomy, $queried_terms[ $taxonomy ] );
+			$term_id = $this->get_queried_term_id( $wp_query->tax_query );
+			if ( $term_id ) {
 				$language = $this->model->term->get_language( $term_id );
 				$redirect_url = get_term_link( $term_id );
 			}
@@ -455,24 +452,24 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @since 2.8.4
 	 *
-	 * @param string $taxonomy     Taxonomy name
-	 * @param array  $queried_term {
-	 *   Information about the queried term
-	 *   @type string $field The field used to query the term(s).
-	 *   @type mixed  $term  Taxonomy term(s).
-	 * }
+	 * @param object $tax_query An instance of WP_Tax_Query.
 	 * @return int
 	 */
-	protected function get_queried_term_id( $taxonomy, $queried_term ) {
-		$field = $queried_term['field'];
-		$term  = reset( $queried_term['terms'] );
+	protected function get_queried_term_id( $tax_query ) {
+		$queried_terms = $tax_query->queried_terms;
+		unset( $queried_terms['language'] );
+
+		$taxonomy = key( $queried_terms );
+
+		$field = $queried_terms[ $taxonomy ]['field'];
+		$term  = reset( $queried_terms[ $taxonomy ]['terms'] );
 
 		// We can get a term_id when requesting a plain permalink, eg /?cat=1.
 		if ( 'term_id' === $field ) {
 			return $term;
 		}
 
-		// We get a slug when requeting a pretty peramlin with the wrong language.
+		// We get a slug when requesting a pretty permalink with the wrong language.
 		$args = array(
 			'lang' => '',
 			'taxonomy' => $taxonomy,
