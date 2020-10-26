@@ -377,29 +377,24 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$requested_url = pll_get_requested_url();
 		}
 
-		if ( is_single() || is_page() ) {
-			if ( isset( $post->ID ) && $this->model->is_translated_post_type( $post->post_type ) ) {
-				$language = $this->model->post->get_language( (int) $post->ID );
-			}
-		}
-
-		elseif ( is_category() || is_tag() || is_tax() || ( is_404() && ! empty( $wp_query->tax_query ) ) ) {
+		if ( is_category() || is_tag() || is_tax() || ( is_404() && ! empty( $wp_query->tax_query ) ) ) {
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $wp_query->tax_query ) ) ) {
 				$term_id = $this->get_queried_term_id( $wp_query->tax_query );
-				$language = $this->model->term->get_language( $term_id );
+				$language = $this->get_queried_term_language( $term_id );
+				$redirect_url = $this->get_queried_term_url( $term_id );
 			}
+		} elseif ( is_single() || is_page() || $wp_query->is_posts_page || ( is_404() && ! empty( $wp_query->query['page_id'] ) && $post_id = get_query_var( 'page_id' ) ) ) {
+			if ( $this->model->is_translated_post_type( $this->get_queried_post_type( $wp_query ) ) ) {
+				$post_id      = $this->get_queried_post_id( $wp_query );
+				$language     = $this->get_queried_post_language( $post_id );
+				$redirect_url = $this->get_queried_post_url( $requested_url, $language );
+
+			}
+		} else {
+			$language = $this->curlang;
+			$redirect_url = $requested_url;
 		}
 
-		elseif ( $wp_query->is_posts_page ) {
-			$obj = $wp_query->get_queried_object();
-			$language = $this->model->post->get_language( (int) $obj->ID );
-		}
-
-		elseif ( is_404() && ! empty( $wp_query->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
-			// Special case for page shortlinks when using subdomains or multiple domains
-			// Needed because redirect_canonical doesn't accept to change the domain name
-			$language = $this->model->post->get_language( (int) $id );
-		}
 
 		if ( 3 === $this->options['force_lang'] ) {
 			$requested_host = wp_parse_url( $requested_url, PHP_URL_HOST );
@@ -412,24 +407,6 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		if ( isset( $term_id ) ) {
-			$redirect_url = get_term_link( $term_id );
-		}
-
-		if ( empty( $language ) ) {
-			$language = $this->curlang;
-			$redirect_url = $requested_url;
-		} elseif ( empty( $redirect_url ) ) {
-			// First get the canonical url evaluated by WP
-			// Workaround a WP bug which removes the port for some urls and get it back at second call to redirect_canonical
-			$_redirect_url = ( ! $_redirect_url = redirect_canonical( $requested_url, false ) ) ? $requested_url : $_redirect_url;
-			$redirect_url = ( ! $redirect_url = redirect_canonical( $_redirect_url, false ) ) ? $_redirect_url : $redirect_url;
-
-			// Then get the right language code in url
-			$redirect_url = $this->options['force_lang'] ?
-				$this->links_model->switch_language_in_link( $redirect_url, $language ) :
-				$this->links_model->remove_language_from_link( $redirect_url ); // Works only for default permalinks
-		}
 
 		/**
 		 * Filters the canonical url detected by Polylang
@@ -495,4 +472,96 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		return key( $queried_terms );
 	}
+
+	/**
+	 * @param WP_Query $wp_query
+	 *
+	 * @return string
+	 */
+	protected function get_queried_post_type( $wp_query ) {
+		global $post;
+		if ( $wp_query->is_single() || $wp_query->is_page() ) {
+			$post_type = $post->post_type;
+		} elseif ( $wp_query->is_posts_page ) {
+			$post_type = $wp_query->get_queried_object()->post_type;
+		} elseif ( $wp_query->is_404() && ! empty( $wp_query->query['page_id'] ) && $wp_query->get( 'page_id' ) ) {
+			// Special case for page shortlinks when using subdomains or multiple domains
+			// Needed because redirect_canonical doesn't accept to change the domain name
+			$post_type = 'page';
+		}
+
+		return $post_type;
+	}
+
+	/**
+	 * @param WP_Query $wp_query
+	 *
+	 * @return int
+	 */
+	protected function get_queried_post_id( $wp_query ) {
+		global $post;
+		if ( $wp_query->is_single() || $wp_query->is_page() ) {
+			$post_id = $post->ID;
+		} elseif ( $wp_query->is_posts_page ) {
+			$post_id = $wp_query->get_queried_object()->ID;
+		} elseif ( $wp_query->is_404() && ! empty( $wp_query->query['page_id'] ) && $wp_query->get( 'page_id' ) ) {
+			$post_id = $wp_query->get( 'page_id' );
+		}
+
+		return (int) $post_id;
+	}
+
+	/**
+	 * @param $term_id
+	 *
+	 * @return mixed
+	 */
+	protected function get_queried_term_language( $term_id ) {
+		$language = $this->model->term->get_language( $term_id );
+
+		return $language;
+}
+
+	/**
+	 * @param $term_id
+	 *
+	 * @return array|false|int|object|string|WP_Error|WP_Term|null
+	 */
+	protected function get_queried_term_url( $term_id ) {
+		$redirect_url = get_term_link( $term_id );
+
+		return $redirect_url;
+}
+
+	/**
+	 * @param $post_id
+	 *
+	 * @return mixed
+	 */
+	protected function get_queried_post_language( $post_id ) {
+		$language = $this->model->post->get_language( $post_id );
+
+		return $language;
+	}
+
+	/**
+	 * @param $requested_url
+	 * @param $language
+	 *
+	 * @return mixed
+	 */
+	protected function get_queried_post_url( $requested_url, $language ) {
+// First get the canonical url evaluated by WP
+		// Workaround a WP bug which removes the port for some urls and get it back at second call to redirect_canonical
+		$_redirect_url = ( ! $_redirect_url = redirect_canonical( $requested_url, false ) ) ? $requested_url : $_redirect_url;
+		$redirect_url  = ( ! $redirect_url = redirect_canonical( $_redirect_url, false ) ) ? $_redirect_url : $redirect_url;
+
+		// Then get the right language code in url
+		$redirect_url = $this->options['force_lang'] ?
+			$this->links_model->switch_language_in_link( $redirect_url, $language ) :
+			$this->links_model->remove_language_from_link( $redirect_url );
+
+		return $redirect_url; // Works only for default permalinks
+	}
+
 }
