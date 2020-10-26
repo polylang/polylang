@@ -387,7 +387,6 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $wp_query->tax_query ) ) ) {
 				$term_id = $this->get_queried_term_id( $wp_query->tax_query );
 				$language = $this->model->term->get_language( $term_id );
-				$redirect_url = get_term_link( $term_id );
 			}
 		}
 
@@ -411,6 +410,10 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					$redirect_url = str_replace( '://' . $requested_host, '://' . $host, $requested_url );
 				}
 			}
+		}
+
+		if ( isset( $term_id ) ) {
+			$redirect_url = get_term_link( $term_id );
 		}
 
 		if ( empty( $language ) ) {
