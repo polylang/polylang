@@ -384,10 +384,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		elseif ( is_category() || is_tag() || is_tax() || ( is_404() && ! empty( $wp_query->tax_query ) ) ) {
-			$term_id = $this->get_queried_term_id( $wp_query->tax_query );
-			if ( $term_id ) {
+			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $wp_query->tax_query ) ) ) {
+				$term_id = $this->get_queried_term_id( $wp_query->tax_query );
 				$language = $this->model->term->get_language( $term_id );
-				$redirect_url = get_term_link( $term_id );
 			}
 		}
 
@@ -411,6 +410,10 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					$redirect_url = str_replace( '://' . $requested_host, '://' . $host, $requested_url );
 				}
 			}
+		}
+
+		if ( isset( $term_id ) ) {
+			$redirect_url = get_term_link( $term_id );
 		}
 
 		if ( empty( $language ) ) {
@@ -457,20 +460,13 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 */
 	protected function get_queried_term_id( $tax_query ) {
 		$queried_terms = $tax_query->queried_terms;
-		unset( $queried_terms['language'] );
-
-		$taxonomy = key( $queried_terms );
+		$taxonomy = $this->get_queried_taxonomy( $tax_query );
 
 		$field = $queried_terms[ $taxonomy ]['field'];
 		$term  = reset( $queried_terms[ $taxonomy ]['terms'] );
 
 		// We can get a term_id when requesting a plain permalink, eg /?cat=1.
 		if ( 'term_id' === $field ) {
-			return $term;
-		}
-
-		// Avoid a useless DB request if the taxonomy is not translatable.
-		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			return $term;
 		}
 
@@ -484,5 +480,19 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		);
 		$terms = get_terms( $args );
 		return reset( $terms );
+	}
+
+	/**
+	 * Find the taxonomy being queried.
+	 *
+	 * @param WP_Tax_Query
+	 *
+	 * @return string A taxonomy slug
+	 */
+	protected function get_queried_taxonomy( $tax_query ) {
+		$queried_terms = $tax_query->queried_terms;
+		unset( $queried_terms['language'] );
+
+		return key( $queried_terms );
 	}
 }
