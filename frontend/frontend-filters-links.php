@@ -453,7 +453,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	/**
 	 * Returns the term_id of the requested term.
 	 *
-	 * @since 2.8.4
+	 * @since 2.9
 	 *
 	 * @param object $tax_query An instance of WP_Tax_Query.
 	 * @return int
@@ -485,8 +485,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	/**
 	 * Find the taxonomy being queried.
 	 *
-	 * @param WP_Tax_Query
+	 * @since 2.9
 	 *
+	 * @param object $tax_query An instance of WP_Tax_Query.
 	 * @return string A taxonomy slug
 	 */
 	protected function get_queried_taxonomy( $tax_query ) {
