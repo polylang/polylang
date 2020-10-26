@@ -469,6 +469,11 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			return $term;
 		}
 
+		// Avoid a useless DB request if the taxonomy is not translatable.
+		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+			return $term;
+		}
+
 		// We get a slug when requesting a pretty permalink with the wrong language.
 		$args = array(
 			'lang' => '',
