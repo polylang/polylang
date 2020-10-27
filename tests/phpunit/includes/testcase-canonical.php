@@ -5,12 +5,6 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 	protected $options;
 
-	public static function wpTearDownAfterClass() {
-		$options = PLL_Install::get_default_options();
-		self::$polylang->model = new PLL_Admin_Model( $options ); // Needed for {@see PLL_UnitTest_Trait::delete_all_languages()}.
-		parent::wpTearDownAfterClass();
-	}
-
 	public function setUp() {
 		parent::setUp();
 
@@ -35,7 +29,6 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		// $wp_rewrite->flush_rules() is called in self::assertCanonical()
 	}
 
-
 	/**
 	 * Set up the Polylang environment before testing canonical redirects.
 	 *
@@ -54,7 +47,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['REQUEST_URI'] = $test_url;
 
-		$model = new PLL_Model( $this->options );
+		$model = new PLL_Admin_Model( $this->options );
 
 		// register post types and taxonomies
 		$model->post->register_taxonomy(); // needs this for 'lang' query var
