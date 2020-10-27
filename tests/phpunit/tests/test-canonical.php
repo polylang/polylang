@@ -76,6 +76,22 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		_unregister_post_type( 'pllcanonical' );
 	}
 
+	public function setUp() {
+		parent::setUp();
+
+		$this->options = array_merge(
+			PLL_Install::get_default_options(),
+			array(
+				'default_lang' => 'en',
+				'hide_default' => 0,
+				'post_types'   => array(
+					'cpt' => 'pllcanonical',
+					// translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
+				),
+			)
+		);
+	}
+
 	public function test_post_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/post-format-test-audio/',

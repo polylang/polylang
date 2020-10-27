@@ -17,17 +17,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default.
 		add_filter( 'wp_doing_ajax', '__return_false' );
 
-		$this->options = array_merge(
-			PLL_Install::get_default_options(),
-			array(
-				'default_lang' => 'en',
-				'hide_default' => 0,
-				'post_types'   => array(
-					'cpt' => 'pllcanonical',
-					// translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
-				),
-			)
-		);
+		$this->options = PLL_Install::get_default_options();
 	}
 
 	/**
