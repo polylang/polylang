@@ -44,10 +44,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				}
 			}
 		);
-		self::$custom_post_id = $factory->post->create( array( 'import_id'  => 416,
-		                                                       'post_type'  => 'pllcanonical',
-		                                                       'post_title' => 'custom-post'
-		) );
+		self::$custom_post_id = $factory->post->create(
+			array(
+				'import_id'  => 416,
+				'post_type'  => 'pllcanonical',
+				'post_title' => 'custom-post',
+			)
+		);
 		self::$polylang->model->post->set_language( self::$custom_post_id, 'en' );
 
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
