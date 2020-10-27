@@ -26,7 +26,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$fr = $this->factory->attachment->create_upload_object( $filename );
-		$this->assertEquals( self::$polylang->pref_lang, self::$polylang->model->post->get_language( $fr ) );
+		$this->assertEquals( self::$polylang->pref_lang->slug, self::$polylang->model->post->get_language( $fr )->slug );
 
 		// cleanup
 		wp_delete_attachment( $fr );

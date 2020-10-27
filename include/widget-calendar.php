@@ -104,7 +104,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 
 		// Let's figure out when we are.
 		if ( ! empty( $monthnum ) && ! empty( $year ) ) {
-			$thismonth = zeroise( intval( $monthnum ), 2 );
+			$thismonth = zeroise( (int) $monthnum, 2 );
 			$thisyear  = (int) $year;
 		} elseif ( ! empty( $w ) ) {
 			// We need to get the month from MySQL.

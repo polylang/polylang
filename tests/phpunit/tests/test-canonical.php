@@ -56,19 +56,18 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 
-		self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
+		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( self::$page_for_posts_en, 'en' );
 
-		self::$page_for_posts_fr = $factory->post->create( array( 'post_title' => 'articles', 'post_type' => 'page' ) );
+		$fr = self::$page_for_posts_fr = $factory->post->create( array( 'post_title' => 'articles', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( self::$page_for_posts_fr, 'fr' );
 
 		self::$polylang->model->post->save_translations( self::$page_for_posts_en, compact( 'en', 'fr' ) );
 
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 
-		self::$page_on_front_en = $factory->post->create( array( 'post_type'  => 'page',
-		                                                         'post_title' => 'parent-page'
-		) );
+		self::$page_on_front_en = $factory->post->create( array( 'post_type' => 'page', 'post_title' => 'home' ) );
+
 		self::$polylang->model->post->set_language( self::$page_on_front_en, 'en' );
 
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
@@ -127,6 +126,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/post-format-test-audio/', '/en/post-format-test-audio/' );
 	}
 
+	public function test_post_from_plain_permalink() {
+		$this->assertCanonical( '?p=' . self::$post_en, '/en/post-format-test-audio/' );
+	}
+
 	public function test_page_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/parent-page/',
@@ -143,6 +146,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_page_without_language() {
 		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
+	}
+
+	public function test_page_from_plain_permalink() {
+		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
 	}
 
 	public function test_custom_post_type_with_name_and_language() {
@@ -182,6 +189,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/category/parent/', '/en/category/parent/' );
 	}
 
+	public function test_category_from_plain_permalink() {
+		$this->assertCanonical( '?cat=' . self::$term_en, '/en/category/parent/' );
+	}
+
 	public function test_page_for_posts_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/posts/',
@@ -196,8 +207,12 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
 	}
 
-	public function test_page_for_should_match_page_for_post_option_posts_without_language() {
+	public function test_page_for_posts_should_match_page_for_post_option_posts_without_language() {
 		$this->assertCanonical( '/posts/', '/en/posts/' );
+	}
+
+	public function test_page_for_posts_should_match_page_for_post_option_posts_from_plain_permalink() {
+		$this->assertCanonical( '?page_id=' . self::$page_for_posts_en, '/en/posts/' );
 	}
 
 	public function test_page_for_post_option_should_be_translated_when_language_is_incorrect() {
@@ -208,21 +223,29 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/articles/', '/fr/articles/' );
 	}
 
+	public function test_page_for_post_option_should_be_translated_from_plain_permalink() {
+		$this->assertCanonical( '?page_id=' . self::$page_for_posts_fr, '/fr/articles/' );
+	}
+
 	public function test_static_front_page_with_name_and_language() {
 		$this->assertCanonical(
-			'/en/parent-page/',
+			'/en/home/',
 			array(
-				'url' => '/en/parent-page/',
-				'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
+				'url' => '/en/home/',
+				'qv'  => array( 'lang' => 'en', 'pagename' => 'home', 'page' => '' ),
 			)
 		);
 	}
 
 	public function test_static_front_page_with_incorrect_language() {
-		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
+		$this->assertCanonical( '/fr/home/', '/en/home/' );
 	}
 
 	public function test_static_front_page_without_language() {
-		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
+		$this->assertCanonical( '/home/', '/en/home/' );
+	}
+
+	public function test_static_front_page_from_plain_permalink() {
+		$this->assertCanonical( '?page_id=' . self::$page_on_front_en, '/en/home/' );
 	}
 }
