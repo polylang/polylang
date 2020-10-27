@@ -5,6 +5,12 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 	protected $options;
 
+	public static function wpTearDownAfterClass() {
+		$options = PLL_Install::get_default_options();
+		self::$polylang->model = new PLL_Admin_Model( $options ); // Needed for {@see PLL_UnitTest_Trait::delete_all_languages()}.
+		parent::wpTearDownAfterClass();
+	}
+
 	public function setUp() {
 		parent::setUp();
 
@@ -23,6 +29,22 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 			)
 		);
 	}
+
+	/**
+	 * Override WP_UnitTestCase_Base::set_permalink_structure() to allow polylang to do its logic.
+	 *
+	 * @param string $structure
+	 */
+	public function set_permalink_structure( $structure = '' ) {
+		global $wp_rewrite;
+
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+		$wp_rewrite->set_permalink_structure( $this->structure );
+
+		// $wp_rewrite->flush_rules() is called in self::assertCanonical()
+	}
+
 
 	/**
 	 * Set up the Polylang environment before testing canonical redirects.
@@ -44,10 +66,6 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 		$model = new PLL_Model( $this->options );
 
-		// switch to pretty permalinks
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $this->structure );
-
 		// register post types and taxonomies
 		$model->post->register_taxonomy(); // needs this for 'lang' query var
 		create_initial_taxonomies();
@@ -59,7 +77,6 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		do_action_ref_array( 'pll_init', array( &self::$polylang ) );
 
 		// flush rules
-		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->flush_rules();
 
 		return parent::assertCanonical( $test_url, $expected, $ticket, $expected_doing_it_wrong );
