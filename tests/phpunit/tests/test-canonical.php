@@ -23,6 +23,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 		$GLOBALS['polylang'] = &self::$polylang;
 
+		self::generate_shared_fixtures( $factory );
+	}
+
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function generate_shared_fixtures( $factory ) {
 		self::$post_en = $factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$polylang->model->post->set_language( self::$post_en, 'en' );
 
@@ -37,8 +44,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				}
 			}
 		);
-
-		self::$custom_post_id = $factory->post->create( array( 'import_id' => 416, 'post_type' => 'pllcanonical', 'post_title' => 'custom-post' ) );
+		self::$custom_post_id = $factory->post->create( array( 'import_id'  => 416,
+		                                                       'post_type'  => 'pllcanonical',
+		                                                       'post_title' => 'custom-post'
+		) );
 		self::$polylang->model->post->set_language( self::$custom_post_id, 'en' );
 
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
@@ -57,7 +66,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
 
-		self::$page_on_front_en = $factory->post->create( array( 'post_type' => 'page', 'post_title' => 'parent-page' ) );
+		self::$page_on_front_en = $factory->post->create( array( 'post_type'  => 'page',
+		                                                         'post_title' => 'parent-page'
+		) );
 		self::$polylang->model->post->set_language( self::$page_on_front_en, 'en' );
 
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
@@ -65,13 +76,19 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public static function wpTearDownAfterClass() {
-		self::$post_en = null;
-		self::$page_id = null;
-		self::$custom_post_id = null;
-		self::$term_en = null;
+		self::delete_shared_fixtures();
+
+		parent::wpTearDownAfterClass();
+	}
+
+	public static function delete_shared_fixtures() {
+		self::$post_en           = null;
+		self::$page_id           = null;
+		self::$custom_post_id    = null;
+		self::$term_en           = null;
 		self::$page_for_posts_en = null;
 		self::$page_for_posts_fr = null;
-		self::$page_on_front_en = null;
+		self::$page_on_front_en  = null;
 
 		_unregister_post_type( 'pllcanonical' );
 	}
