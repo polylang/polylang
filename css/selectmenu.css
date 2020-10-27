@@ -139,7 +139,8 @@
 
 .ui-widget-content,
 .ui-state-default,
-.ui-selectmenu-button-closed,  /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
+.ui-selectmenu-button-closed, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
+.ui-selectmenu-button-open, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
 	background: #fff;
@@ -149,7 +150,8 @@
 }
 /* Override to have same styles as WP form styles since WordPress 5.4 */
 .toplevel_page_mlang .ui-selectmenu-button.ui-state-default,
-.toplevel_page_mlang .ui-selectmenu-button.ui-selectmenu-button-closed{ /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
+.toplevel_page_mlang .ui-selectmenu-button.ui-selectmenu-button-closed, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
+.toplevel_page_mlang .ui-selectmenu-button.ui-selectmenu-button-open{ /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 	box-shadow: 0 0 0 transparent;
 	border-radius: 4px;
     border: 1px solid #7e8993;
