@@ -78,21 +78,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public static function wpTearDownAfterClass() {
-		self::delete_shared_fixtures();
+		_unregister_post_type( 'pllcanonical' );
 
 		parent::wpTearDownAfterClass();
-	}
-
-	public static function delete_shared_fixtures() {
-		self::$post_en           = null;
-		self::$page_id           = null;
-		self::$custom_post_id    = null;
-		self::$term_en           = null;
-		self::$page_for_posts_en = null;
-		self::$page_for_posts_fr = null;
-		self::$page_on_front_en  = null;
-
-		_unregister_post_type( 'pllcanonical' );
 	}
 
 	public function setUp() {
