@@ -3,7 +3,19 @@
 class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	use PLL_UnitTestCase_Trait;
 
-	private $options;
+	/**
+	 * Set in [@see PLL_Canonical_UnitTestCase::assertCanonical()}.
+	 *
+	 * @var PLL_Frontend
+	 */
+	protected $pll_env = null;
+
+	/**
+	 * Default to {@see PLL_Install::get_default_options()}.
+	 *
+	 * @var array
+	 */
+	protected $options;
 
 	public function setUp() {
 		parent::setUp();
@@ -11,17 +23,22 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default.
 		add_filter( 'wp_doing_ajax', '__return_false' );
 
-		$this->options = array_merge(
-			PLL_Install::get_default_options(),
-			array(
-				'default_lang' => 'en',
-				'hide_default' => 0,
-				'post_types'   => array(
-					'cpt' => 'pllcanonical',
-					// translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
-				),
-			)
-		);
+		$this->options = PLL_Install::get_default_options();
+	}
+
+	/**
+	 * Override WP_UnitTestCase_Base::set_permalink_structure() to allow polylang to do its logic.
+	 *
+	 * @param string $structure
+	 */
+	public function set_permalink_structure( $structure = '' ) {
+		global $wp_rewrite;
+
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+		$wp_rewrite->set_permalink_structure( $this->structure );
+
+		// $wp_rewrite->flush_rules() is called in self::assertCanonical()
 	}
 
 	/**
@@ -44,22 +61,17 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 		$model = new PLL_Model( $this->options );
 
-		// switch to pretty permalinks
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $this->structure );
-
 		// register post types and taxonomies
 		$model->post->register_taxonomy(); // needs this for 'lang' query var
 		create_initial_taxonomies();
 
 		// reset the links model according to the permalink structure
 		$links_model    = $model->get_links_model();
-		self::$polylang = new PLL_Frontend( $links_model );
-		self::$polylang->init();
-		do_action_ref_array( 'pll_init', array( self::$polylang ) );
+		$this->pll_env = new PLL_Frontend( $links_model );
+		$this->pll_env->init();
+		do_action_ref_array( 'pll_init', array( &$this->pll_env ) );
 
 		// flush rules
-		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->flush_rules();
 
 		return parent::assertCanonical( $test_url, $expected, $ticket, $expected_doing_it_wrong );
@@ -75,7 +87,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	 * @return string Either the canonical url, if redirected, or the inputted $test_url.
 	 */
 	public function get_canonical( $test_url ) {
-		$pll_redirected_url = self::$polylang->filters_links->check_canonical_url( home_url( $test_url ), false );
+		$pll_redirected_url = $this->pll_env->filters_links->check_canonical_url( home_url( $test_url ), false );
 		$wp_redirected_url  = redirect_canonical( $pll_redirected_url, false );
 		if ( ! $wp_redirected_url ) {
 			return $pll_redirected_url;
