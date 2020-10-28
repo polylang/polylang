@@ -39,7 +39,7 @@ class PLL_Admin_Strings {
 			$context = 'Polylang';
 		}
 
-		if ( $string && is_scalar( $string ) ) {
+		if ( is_scalar( $string ) && '' !== $string ) {
 			self::$strings[ md5( $string ) ] = compact( 'name', 'string', 'context', 'multiline' );
 		}
 	}
