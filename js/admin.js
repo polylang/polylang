@@ -59,6 +59,7 @@ jQuery( document ).ready(
 		}
 
 		// Selectmenu widget options
+		// jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
 		var selectmenuOptions = { width: '97%'};
 
 		// Create the jQuery UI selectmenu widget for flag list dropdown and return its jQuery object.
@@ -89,16 +90,16 @@ jQuery( document ).ready(
 		};
 
 		// Create the jQuery UI selectmenu widget language list dropdown and return its jQuery object.
+		// For the wizard we need a 100% width. So we override the previous defined value.
+		if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
+			selectmenuOptions = Object.assign( selectmenuOptions, { width: '102%' } );
+		}
 		var selectmenuLangListCallbacks = {
 			create: createSelectCallback,
 			select: createSelectCallback,
 			change: changeCallback,
 		};
 		var selectmenuLangList = $( '#lang_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuLangListCallbacks ) ); // jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
-		// However for the wizard we need a 100% width.
-		// if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
-		// 	$( '#lang_list' ).selectmenu( 'option', 'width', '102%' );
-		// }
 		// Overrides each element in the jQuery UI selectmenu list by injecting flag image.
 		selectmenuLangList.selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
 
