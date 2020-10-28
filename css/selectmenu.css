@@ -164,7 +164,8 @@
 }
 
 .ui-widget-content .ui-state-hover,
-.ui-widget-content .ui-state-focus {
+.ui-widget-content .ui-state-focus,
+.ui-widget-content .ui-state-active { /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 	background: #f5f5f5;
 }
 
