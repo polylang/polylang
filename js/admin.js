@@ -32,75 +32,75 @@ jQuery( document ).ready(
 			'tr'
 		); // acts on the whole tr instead of single td as we have actions links in several columns
 
+		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
 		// Common functions for overriding language and flag dropdown list.
+
+		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
 		var selectmenuRenderItem = function( wrapper, item ) {
 			var li = $( '<li>' ).text( item.label ).prepend( $( item.element ).data( 'flag-html' ) );
 			li.children( 'img' ).addClass( 'ui-icon' );
 			return li.appendTo( wrapper );
 		};
+		// Override selected item to inject flag for jQuery UI less than 1.12.
 		var selectmenuRefreshButtonText = function( selectElement ) {
 			var buttonText = $( selectElement ).selectmenu( 'instance' ).buttonText;
 			buttonText.prepend( $( selectElement ).children( ':selected' ).data( 'flag-html' ) );
 			buttonText.children( 'img' ).addClass( 'ui-icon' );
 		};
-		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
 
-		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
-		$( '#flag_list' ).on(
-			'selectmenucreate selectmenuselect',
-			function(){
-				selectmenuRefreshButtonText( this );
-			}
-		);
-		// Refresh jQuery UI selectmenu when the value is changed programmatically: select another language or edit an existing language.
-		// For putting the focus in the list on the selected item and injecting the right flag on the selected item.
-		$( '#flag_list' ).on(
-			'selectmenuopen',
-			function(){
-				$( this ).selectmenu( 'refresh' ).trigger( 'selectmenuselect' );
-			}
-		);
-		// Create the jQuery UI selectmenu widget
-		$( '#flag_list' ).selectmenu( { width: '97%' } );
+		// Selectmenu widget parameters.
+		// Callbacks when Selectmenu widget create or select event is triggered.
+		var createSelectCallback = function( event, ui ) {
+			selectmenuRefreshButtonText( event.target );
+		}
+		// Callbacks when Selectmenu widget open event is triggered.
+		var openCallback = function( event, ui ){
+			selectmenuRefreshButtonText( $( event.target ).selectmenu( 'refresh' ) );
+		}
+
+		// Selectmenu widget options
+		var selectmenuOptions = { width: '97%'};
+
+		// Create the jQuery UI selectmenu widget for flag list dropdown and return its jQuery object.
+		var selectmenuFlagListCallbacks = {
+			create: createSelectCallback,
+			select: createSelectCallback,
+			open: openCallback,
+		};
+		var selectmenuFlagList = $( '#flag_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuFlagListCallbacks ) );
 		// Overrides each item in the jQuery UI selectmenu list by injecting flag image.
-		$( '#flag_list' ).selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
+		selectmenuFlagList.selectmenu('instance')._renderItem = selectmenuRenderItem;
 
 		// Language choice in predefined languages in Polylang Languages settings page and wizard.
 		// Overrides the predefined language dropdown list with our customized jquery ui selectmenu.
 
-		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
-		$( '#lang_list' ).on(
-			'selectmenucreate selectmenuselect',
-			function() {
-				selectmenuRefreshButtonText( this );
-			}
-		);
-		// Create the jQuery UI selectmenu widget
-		$( '#lang_list' ).selectmenu( { width: '97%' } ); // jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
+		// Callback when Selectmenu widget change event is triggered.
+		var changeCallback = function( event, ui ) {
+			var value = $( event.target ).val().split( ':' );
+			var selected = $( "option:selected", event.target ).text().split( ' - ' );
+			$( '#lang_slug' ).val( value[0] );
+			$( '#lang_locale' ).val( value[1] );
+			$( 'input[name="rtl"]' ).val( [value[2]] );
+			$( '#lang_name' ).val( selected[0] );
+			$( '#flag_list').val( value[3] );
+
+			// Refresh the jQuery UI selectmenu flag list.
+			selectmenuRefreshButtonText( selectmenuFlagList.selectmenu( 'refresh' ) );
+		};
+
+		// Create the jQuery UI selectmenu widget language list dropdown and return its jQuery object.
+		var selectmenuLangListCallbacks = {
+			create: createSelectCallback,
+			select: createSelectCallback,
+			change: changeCallback,
+		};
+		var selectmenuLangList = $( '#lang_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuLangListCallbacks ) ); // jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
 		// However for the wizard we need a 100% width.
-		if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
-			$( '#lang_list' ).selectmenu( 'option', 'width', '102%' );
-		}
+		// if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
+		// 	$( '#lang_list' ).selectmenu( 'option', 'width', '102%' );
+		// }
 		// Overrides each element in the jQuery UI selectmenu list by injecting flag image.
-		$( '#lang_list' ).selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
-
-		// Languages form
-		// Fills the fields based on the language dropdown list choice
-		$( '#add-lang #lang_list' ).on(
-			'selectmenuchange',
-			function() {
-				var value = $( this ).val().split( ':' );
-				var selected = $( "option:selected", this ).text().split( ' - ' );
-				$( '#lang_slug' ).val( value[0] );
-				$( '#lang_locale' ).val( value[1] );
-				$( 'input[name="rtl"]' ).val( [value[2]] );
-				$( '#lang_name' ).val( selected[0] );
-				$( '#flag_list').val( value[3] );
-
-				// Refresh the jQuery UI selectmenu flags list.
-				$( '#flag_list' ).selectmenu( 'refresh' ).trigger( 'selectmenuselect' );
-			}
-		);
+		selectmenuLangList.selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
 
 		// strings translations
 		// save translations when pressing enter
