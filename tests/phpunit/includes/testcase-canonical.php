@@ -3,6 +3,18 @@
 class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	use PLL_UnitTestCase_Trait;
 
+	/**
+	 * Set in [@see PLL_Canonical_UnitTestCase::assertCanonical()}.
+	 *
+	 * @var PLL_Frontend
+	 */
+	protected $pll_env = null;
+
+	/**
+	 * Default to {@see PLL_Install::get_default_options()}.
+	 *
+	 * @var array
+	 */
 	protected $options;
 
 	public function setUp() {
@@ -47,7 +59,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['REQUEST_URI'] = $test_url;
 
-		$model = new PLL_Admin_Model( $this->options );
+		$model = new PLL_Model( $this->options );
 
 		// register post types and taxonomies
 		$model->post->register_taxonomy(); // needs this for 'lang' query var
@@ -55,9 +67,9 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 		// reset the links model according to the permalink structure
 		$links_model    = $model->get_links_model();
-		self::$polylang = new PLL_Frontend( $links_model );
-		self::$polylang->init();
-		do_action_ref_array( 'pll_init', array( &self::$polylang ) );
+		$this->pll_env = new PLL_Frontend( $links_model );
+		$this->pll_env->init();
+		do_action_ref_array( 'pll_init', array( &$this->pll_env ) );
 
 		// flush rules
 		$wp_rewrite->flush_rules();
@@ -75,7 +87,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	 * @return string Either the canonical url, if redirected, or the inputted $test_url.
 	 */
 	public function get_canonical( $test_url ) {
-		$pll_redirected_url = self::$polylang->filters_links->check_canonical_url( home_url( $test_url ), false );
+		$pll_redirected_url = $this->pll_env->filters_links->check_canonical_url( home_url( $test_url ), false );
 		$wp_redirected_url  = redirect_canonical( $pll_redirected_url, false );
 		if ( ! $wp_redirected_url ) {
 			return $pll_redirected_url;

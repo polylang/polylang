@@ -21,7 +21,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang;
 
 		self::generate_shared_fixtures( $factory );
 	}
@@ -85,6 +84,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
+
+		$GLOBALS['polylang'] = &$this->pll_env;
 
 		$this->options = array_merge(
 			PLL_Install::get_default_options(),
