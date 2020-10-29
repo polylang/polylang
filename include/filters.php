@@ -24,6 +24,11 @@ class PLL_Filters {
 		$this->options = &$polylang->options;
 		$this->curlang = &$polylang->curlang;
 
+		// Deletes our cache for sticky posts when the list is updated.
+		add_action( 'update_option_sticky_posts', array( $this, 'delete_sticky_posts_cache' ) );
+		add_action( 'add_option_sticky_posts', array( $this, 'delete_sticky_posts_cache' ) );
+		add_action( 'delete_option_sticky_posts', array( $this, 'delete_sticky_posts_cache' ) );
+
 		// Filters the comments according to the current language
 		add_action( 'parse_comment_query', array( $this, 'parse_comment_query' ) );
 		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 10, 2 );
@@ -53,6 +58,15 @@ class PLL_Filters {
 
 		// Personal data exporter
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_personal_data_exporter' ), 0 ); // Since WP 4.9.6
+	}
+
+	/**
+	 * Deletes the cache for multilingual sticky posts.
+	 *
+	 * @since 2.8.4
+	 */
+	public function delete_sticky_posts_cache() {
+		wp_cache_delete( 'sticky_posts', 'options' );
 	}
 
 	/**
