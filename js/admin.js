@@ -4,11 +4,16 @@
 
 jQuery( document ).ready(
 	function( $ ) {
-		var transitionTimeout;
+		// Add a boolean variable to be able to check jQuery UI >= 1.12 which is introduced in WP 5.6.
+		// Backward compatibility WP < 5.6
+		var isJqueryUImin112 = $.ui.version >= '1.12.0';
+		// Allow to check if a flag list dropdown is present. Not present in the Wizard steps.
+		var flagListExist = $( "#flag_list" ).length;
 
 		// languages list table
 		// accessibility to row actions on focus
 		// mainly copy paste of WP code from common.js
+		var transitionTimeout;
 		$( 'table.languages' ).on(
 			{ // restricted to languages list table
 				focusin: function() {
@@ -36,10 +41,23 @@ jQuery( document ).ready(
 		// Common functions for overriding language and flag dropdown list.
 
 		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
-		var selectmenuRenderItem = function( wrapper, item ) {
-			var li = $( '<li>' ).text( item.label ).prepend( $( item.element ).data( 'flag-html' ) );
-			li.children( 'img' ).addClass( 'ui-icon' );
-			return li.appendTo( wrapper );
+		// jQuery UI 1.12 introduce a wrapper inside de li tag which is necessary to selectmenu widget to work correctly.
+		// Mainly copy from the orginal jQuery UI 1.12 selectmenu widget _renderItem method.
+		// Note this code works fine with jQuery UI 1.11.4 too.
+		var selectmenuRenderItem = function( ul, item ) {
+			var li = $( '<li>' );
+			var wrapper = $( '<div>');
+
+			if ( item.disabled ) {
+				this._addClass( li, null, "ui-state-disabled" );
+			}
+			this._setText( wrapper, item.label );
+
+			// Add the flag from the data attribute in the selected element.
+			wrapper.prepend( $( item.element ).data( 'flag-html' ) );
+			wrapper.children( 'img' ).addClass( 'ui-icon' );
+
+			return li.append( wrapper ).appendTo( ul );
 		};
 		// Override selected item to inject flag for jQuery UI less than 1.12.
 		var selectmenuRefreshButtonText = function( selectElement ) {
@@ -47,6 +65,19 @@ jQuery( document ).ready(
 			buttonText.prepend( $( selectElement ).children( ':selected' ).data( 'flag-html' ) );
 			buttonText.children( 'img' ).addClass( 'ui-icon' );
 		};
+		// Override selected item since jQuery UI 1.12 which introduces extension point method _renderButtonItem.
+		// @see https://api.jqueryui.com/1.12/selectmenu/#method-_renderButtonItem _renderButtonItem documentation.
+		var selectmenuRenderButtonItem = function ( selectElement ) {
+			var buttonItem = $( '<span>' );
+			this._setText( buttonItem, selectElement.label );
+			this._addClass( buttonItem, "ui-selectmenu-text" );
+
+			// Add the flag from the data attribute in the selected element.
+			buttonItem.prepend( $( selectElement.element ).data( 'flag-html' ) );
+			buttonItem.children( 'img' ).addClass( 'ui-icon' );
+
+			return buttonItem;
+		}
 
 		// Selectmenu widget parameters.
 		// Callbacks when Selectmenu widget create or select event is triggered.
@@ -54,28 +85,51 @@ jQuery( document ).ready(
 			selectmenuRefreshButtonText( event.target );
 		}
 		// Callbacks when Selectmenu widget open event is triggered.
+		// Needed to corectly refresh the selected element in the list.
 		var openCallback = function( event, ui ){
-			selectmenuRefreshButtonText( $( event.target ).selectmenu( 'refresh' ) );
+			if ( isJqueryUImin112 ) {
+				// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
+				$( event.target ).selectmenu( 'refresh' );
+			} else {
+				selectmenuRefreshButtonText( $( event.target ).selectmenu( 'refresh' ) );
+			}
 		}
 
 		// Selectmenu widget options
 		// jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
 		var selectmenuOptions = { width: '97%'};
+		var selectmenuFlagListCallbacks = {};
 
-		// Create the jQuery UI selectmenu widget for flag list dropdown and return its jQuery object.
-		var selectmenuFlagListCallbacks = {
-			create: createSelectCallback,
-			select: createSelectCallback,
-			open: openCallback,
-		};
-		var selectmenuFlagList = $( '#flag_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuFlagListCallbacks ) );
-		// Overrides each item in the jQuery UI selectmenu list by injecting flag image.
-		selectmenuFlagList.selectmenu('instance')._renderItem = selectmenuRenderItem;
+		// Create the jQuery UI selectmenu widget for flag list dropdown and return its instance.
+		// There is no need of create and select callbacks with jQuery UI 1.12 because overrinding _renderButtonItem method do the job.
+		if ( isJqueryUImin112 ) {
+			selectmenuFlagListCallbacks =
+				{
+					open: openCallback,
+				};
+		} else {
+			selectmenuFlagListCallbacks = {
+				create: createSelectCallback,
+				select: createSelectCallback,
+				open: openCallback,
+			};
+		}
 
+		// Create the selectmenu widget only if the field is present.
+		if ( flagListExist ) {
+			var selectmenuFlagList = $( '#flag_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuFlagListCallbacks ) ).selectmenu( 'instance' );
+			// Overrides each item in the jQuery UI selectmenu list by injecting flag image.
+			selectmenuFlagList._renderItem = selectmenuRenderItem;
+			// Override the selected item rendering for jQuery UI 1.12
+			if ( isJqueryUImin112 ) {
+				selectmenuFlagList._renderButtonItem = selectmenuRenderButtonItem;
+				selectmenuFlagList.refresh(); // Need to refresh to take in account the button item rendering method after the selectmenu widget instanciaion.
+			}
+		}
 		// Language choice in predefined languages in Polylang Languages settings page and wizard.
-		// Overrides the predefined language dropdown list with our customized jquery ui selectmenu.
+		// Overrides the predefined language dropdown list with our customized jQuery ui selectmenu widget.
 
-		// Callback when Selectmenu widget change event is triggered.
+		// Callback when selectmenu widget change event is triggered.
 		var changeCallback = function( event, ui ) {
 			var value = $( event.target ).val().split( ':' );
 			var selected = $( "option:selected", event.target ).text().split( ' - ' );
@@ -83,25 +137,48 @@ jQuery( document ).ready(
 			$( '#lang_locale' ).val( value[1] );
 			$( 'input[name="rtl"]' ).val( [value[2]] );
 			$( '#lang_name' ).val( selected[0] );
-			$( '#flag_list').val( value[3] );
 
-			// Refresh the jQuery UI selectmenu flag list.
-			selectmenuRefreshButtonText( selectmenuFlagList.selectmenu( 'refresh' ) );
+			// Refresh the flag field only if it's present.
+			if ( flagListExist ) {
+				$( '#flag_list').val( value[3] );
+
+				// Refresh the jQuery UI selectmenu flag list.
+				if ( isJqueryUImin112 ) {
+					// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
+					selectmenuFlagList.refresh();
+				} else {
+					selectmenuRefreshButtonText( $( '#flag_list').selectmenu( 'refresh' ) );
+				}
+			}
 		};
 
-		// Create the jQuery UI selectmenu widget language list dropdown and return its jQuery object.
-		// For the wizard we need a 100% width. So we override the previous defined value.
+		// Create the jQuery UI selectmenu widget language list dropdown and return its instance.
+		var selectmenuLangListCallbacks = {};
+		// For the wizard we need a 100% width. So we override the previous defined value of selectmenuOptions. Remind that jQuery UI selectmenu widget substract 2% to this value.
 		if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
 			selectmenuOptions = Object.assign( selectmenuOptions, { width: '102%' } );
 		}
-		var selectmenuLangListCallbacks = {
-			create: createSelectCallback,
-			select: createSelectCallback,
-			change: changeCallback,
-		};
-		var selectmenuLangList = $( '#lang_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuLangListCallbacks ) ); // jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
+
+		// There is no need of create and select callbacks with jQuery UI 1.12 because overrinding _renderButtonItem method do the job.
+		if ( isJqueryUImin112 ) {
+			selectmenuLangListCallbacks = {
+				change: changeCallback,
+			};
+		} else {
+			selectmenuLangListCallbacks = {
+				create: createSelectCallback,
+				select: createSelectCallback,
+				change: changeCallback,
+			};
+		}
+		var selectmenuLangList = $( '#lang_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuLangListCallbacks ) ).selectmenu( 'instance' );
 		// Overrides each element in the jQuery UI selectmenu list by injecting flag image.
-		selectmenuLangList.selectmenu( 'instance' )._renderItem = selectmenuRenderItem;
+		selectmenuLangList._renderItem = selectmenuRenderItem;
+		// Override the selected item rendering for jQuery UI 1.12
+		if ( isJqueryUImin112 ) {
+			selectmenuLangList._renderButtonItem = selectmenuRenderButtonItem;
+			selectmenuLangList.refresh(); // Need to refresh to take in account the button item rendering method after the selectmenu widget instanciaion.
+		}
 
 		// strings translations
 		// save translations when pressing enter
