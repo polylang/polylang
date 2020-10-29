@@ -7,8 +7,10 @@ jQuery( document ).ready(
 		// Add a boolean variable to be able to check jQuery UI >= 1.12 which is introduced in WP 5.6.
 		// Backward compatibility WP < 5.6
 		var isJqueryUImin112 = $.ui.version >= '1.12.0';
-		// Allow to check if a flag list dropdown is present. Not present in the Wizard steps.
+		// Allow to check if a flag list dropdown is present. Not present in the Wizard steps or other settings page.
 		var flagListExist = $( "#flag_list" ).length;
+		// Allow to check if a language list dropdown is present. Not present in other settings page.
+		var langListExist = $( "#lang_list" ).length;
 
 		// languages list table
 		// accessibility to row actions on focus
@@ -171,13 +173,15 @@ jQuery( document ).ready(
 				change: changeCallback,
 			};
 		}
-		var selectmenuLangList = $( '#lang_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuLangListCallbacks ) ).selectmenu( 'instance' );
-		// Overrides each element in the jQuery UI selectmenu list by injecting flag image.
-		selectmenuLangList._renderItem = selectmenuRenderItem;
-		// Override the selected item rendering for jQuery UI 1.12
-		if ( isJqueryUImin112 ) {
-			selectmenuLangList._renderButtonItem = selectmenuRenderButtonItem;
-			selectmenuLangList.refresh(); // Need to refresh to take in account the button item rendering method after the selectmenu widget instanciaion.
+		if ( langListExist ) {
+			var selectmenuLangList = $( '#lang_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuLangListCallbacks ) ).selectmenu( 'instance' );
+			// Overrides each element in the jQuery UI selectmenu list by injecting flag image.
+			selectmenuLangList._renderItem = selectmenuRenderItem;
+			// Override the selected item rendering for jQuery UI 1.12
+			if ( isJqueryUImin112 ) {
+				selectmenuLangList._renderButtonItem = selectmenuRenderButtonItem;
+				selectmenuLangList.refresh(); // Need to refresh to take in account the button item rendering method after the selectmenu widget instanciaion.
+			}
 		}
 
 		// strings translations
