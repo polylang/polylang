@@ -30,20 +30,29 @@
 	list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 }
 
+/* for jQuery UI 1.12 which introduces a wrapper */
+.ui-menu .ui-menu-item:not([role]) {
+	padding: 0;
+}
+
+.ui-menu-item-wrapper {
+	padding: 3px 1em 3px 2em;
+}
 .rtl .ui-menu .ui-menu-item {
 	text-align: right;
 }
-
 
 /* icon support */
 .ui-menu-icons {
 	position: relative;
 }
 
-.ui-menu-icons .ui-menu-item {
+.ui-menu-icons .ui-menu-item[role] {
 	padding-left: 2em;
 }
-.rtl .ui-menu-icons .ui-menu-item {
+
+.rtl .ui-menu-item-wrapper, /* for jQuery UI 1.12 which introduces a wrapper */
+.rtl .ui-menu-icons .ui-menu-item[role] {
 	padding-left: 1em;
 	padding-right: 2em;
 }
