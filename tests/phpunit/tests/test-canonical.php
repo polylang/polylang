@@ -76,6 +76,18 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		update_option( 'show_on_front', 'posts' );
 	}
 
+	public function init_for_sitemaps() {
+		self::$polylang->links_model = self::$polylang->model->get_links_model();
+		if ( method_exists( self::$polylang->links_model, 'init' ) ) {
+			self::$polylang->links_model->init();
+		}
+
+		self::$polylang->sitemaps = new PLL_Sitemaps( self::$polylang );
+		self::$polylang->sitemaps->init();
+
+		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
+	}
+
 	public static function wpTearDownAfterClass() {
 		_unregister_post_type( 'pllcanonical' );
 
@@ -239,5 +251,109 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_static_front_page_from_plain_permalink() {
 		$this->assertCanonical( '?page_id=' . self::$page_on_front_en, '/en/home/' );
+	}
+
+	public function test_sitemap_with_translated_post() {
+		$this->init_for_sitemaps();
+		$this->assertCanonical(
+			'/en/wp-sitemap-posts-post-1.xml',
+			array(
+				'url' => '/en/wp-sitemap-posts-post-1.xml',
+				'qv'  => array(
+					'lang' => 'en',
+					'sitemap' => 'posts',
+					'sitemap-subtype' => 'post',
+					'paged' => '1'
+				),
+			)
+		);
+	}
+
+	public function test_sitemap_with_translated_cpt() {
+		$this->init_for_sitemaps();
+		register_post_type( 'cpt', array( 'public' => true ) );
+
+		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		$this->assertCanonical(
+			'/en/wp-sitemap-posts-cpt-1.xml',
+			array(
+				'url' => '/en/wp-sitemap-posts-cpt-1.xml',
+				'qv'  => array(
+					'lang' => 'en',
+					'sitemap' => 'posts',
+					'sitemap-subtype' => 'cpt',
+					'paged' => '1'
+				),
+			)
+		);
+	}
+
+	public function test_sitemap_with_translated_cpt_and_tax() {
+		$this->init_for_sitemaps();
+		register_post_type( 'cpt', array( 'public' => true ) );
+		register_taxonomy( 'tax', 'cpt' );
+
+		$en = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+		self::$polylang->model->term->set_language( $en, 'en' );
+
+		$post_id = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		self::$polylang->model->post->set_language( $post_id, 'fr' );
+		wp_set_post_terms( $post_id, 'test', 'tax' );
+
+		$this->assertCanonical(
+			'/en/wp-sitemap-taxonomies-tax-1.xml',
+			array(
+				'url' => '/en/wp-sitemap-taxonomies-tax-1.xml',
+				'qv'  => array(
+					'lang' => 'en',
+					'sitemap' => 'taxonomies',
+					'sitemap-subtype' => 'tax',
+					'paged' => '1'
+				),
+			)
+		);
+	}
+
+	public function test_sitemap_with_untranslated_cpt() {
+		$this->init_for_sitemaps();
+		register_post_type( 'cpt', array( 'public' => true ) ); // *Untranslated* custom post type.
+
+		$this->factory->post->create( array( 'post_type' => 'cpt' ) );
+
+		$this->assertCanonical(
+			'/wp-sitemap-posts-cpt-1.xml',
+			array(
+				'url' => '/wp-sitemap-posts-cpt-1.xml',
+				'qv'  => array(
+					'sitemap' => 'posts',
+					'sitemap-subtype' => 'cpt',
+					'paged' => '1'
+				),
+			)
+		);
+	}
+
+	public function test_sitemap_with_untranslated_cpt_and_tax() {
+		$this->init_for_sitemaps();
+		register_post_type( 'cpt', array( 'public' => true ) ); // *Untranslated* custom post type.
+		register_taxonomy( 'tax', 'cpt' ); // *Untranslated* custom tax.
+
+		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+		$post_id = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		wp_set_post_terms( $post_id, 'test', 'tax' );
+
+		$this->assertCanonical(
+			'/wp-sitemap-taxonomies-tax-1.xml',
+			array(
+				'url' => '/wp-sitemap-taxonomies-tax-1.xml',
+				'qv'  => array(
+					'sitemap' => 'taxonomies',
+					'sitemap-subtype' => 'tax',
+					'paged' => '1'
+				),
+			)
+		);
 	}
 }
