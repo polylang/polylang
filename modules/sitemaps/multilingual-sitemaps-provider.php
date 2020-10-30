@@ -36,6 +36,15 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 */
 	protected $model;
 
+	/**
+	 * A reference to the current language.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Language
+	 */
+	protected $curlang;
+
 
 	/**
 	 * Language used to filter queries for the sitemap index.
@@ -51,16 +60,21 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 *
 	 * @since 2.8
 	 *
-	 * @param WP_Sitemaps_Provider $provider    An instance of a WP_Sitemaps_Provider child class.
-	 * @param PLL_Links_Model      $links_model The PLL_Links_Model instance.
+	 * @param WP_Sitemaps_Provider $provider An instance of a WP_Sitemaps_Provider child class.
+	 * @param object               $polylang Main Polylang object.
 	 */
-	public function __construct( $provider, &$links_model ) {
+	public function __construct( $provider, &$polylang ) {
 		$this->name = $provider->name;
 		$this->object_type = $provider->object_type;
 
 		$this->provider = $provider;
-		$this->links_model = &$links_model;
-		$this->model = &$links_model->model;
+
+		$this->links_model = &$polylang->links_model;
+		$this->model = &$polylang->links_model->model;
+		$this->curlang = &$polylang->curlang;
+
+//		$this->links_model = &$links_model;
+//		$this->model = &$links_model->model;
 	}
 
 	/**
@@ -187,6 +201,10 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 		if ( preg_match( $pattern, $name, $matches ) ) {
 			$lang = $this->model->get_language( $matches[1] );
 			$name = preg_replace( '#(-?' . $lang->slug . ')$#', '', $name );
+			$url = $this->provider->get_sitemap_url( $name, $page );
+			$url = $this->links_model->add_language_to_link( $url, $lang );
+		} else if ( $this->curlang ) {
+			$lang = $this->curlang;
 			$url = $this->provider->get_sitemap_url( $name, $page );
 			$url = $this->links_model->add_language_to_link( $url, $lang );
 		} else {
