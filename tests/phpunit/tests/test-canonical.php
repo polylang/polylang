@@ -77,6 +77,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function init_for_sitemaps() {
+		if ( ! function_exists( 'wp_get_sitemap_providers' ) ) {
+			self::markTestSkipped( 'This test requires WP 5.5+' );
+		}
+
 		self::$polylang->links_model = self::$polylang->model->get_links_model();
 		if ( method_exists( self::$polylang->links_model, 'init' ) ) {
 			self::$polylang->links_model->init();
