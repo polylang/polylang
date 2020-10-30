@@ -10,13 +10,6 @@
  */
 class PLL_Sitemaps {
 	/**
-	 * Reference to the Polylang object.
-	 *
-	 * @var object
-	 */
-	protected $polylang;
-
-	/**
 	 * A reference to the current language.
 	 *
 	 * @since 2.8
@@ -58,7 +51,6 @@ class PLL_Sitemaps {
 	 * @param object $polylang Main Polylang object.
 	 */
 	public function __construct( &$polylang ) {
-		$this->polylang = &$polylang;
 		$this->curlang = &$polylang->curlang;
 		$this->links_model = &$polylang->links_model;
 		$this->model = &$polylang->model;
@@ -160,7 +152,7 @@ class PLL_Sitemaps {
 	 */
 	public function replace_provider( $provider ) {
 		if ( $provider instanceof WP_Sitemaps_Provider ) {
-			$provider = new PLL_Multilingual_Sitemaps_Provider( $provider, $this->polylang );
+			$provider = new PLL_Multilingual_Sitemaps_Provider( $provider, $this->links_model );
 		}
 		return $provider;
 	}

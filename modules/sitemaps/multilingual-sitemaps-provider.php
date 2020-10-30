@@ -36,15 +36,6 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 */
 	protected $model;
 
-	/**
-	 * A reference to the current language.
-	 *
-	 * @since 2.8
-	 *
-	 * @var PLL_Language
-	 */
-	protected $curlang;
-
 
 	/**
 	 * Language used to filter queries for the sitemap index.
@@ -60,18 +51,16 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 *
 	 * @since 2.8
 	 *
-	 * @param WP_Sitemaps_Provider $provider An instance of a WP_Sitemaps_Provider child class.
-	 * @param object               $polylang Main Polylang object.
+	 * @param WP_Sitemaps_Provider $provider    An instance of a WP_Sitemaps_Provider child class.
+	 * @param PLL_Links_Model      $links_model The PLL_Links_Model instance.
 	 */
-	public function __construct( $provider, &$polylang ) {
+	public function __construct( $provider, &$links_model ) {
 		$this->name = $provider->name;
 		$this->object_type = $provider->object_type;
 
 		$this->provider = $provider;
-
-		$this->links_model = &$polylang->links_model;
-		$this->model = &$polylang->links_model->model;
-		$this->curlang = &$polylang->curlang;
+		$this->links_model = &$links_model;
+		$this->model = &$links_model->model;
 	}
 
 	/**
@@ -200,11 +189,13 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 			$name = preg_replace( '#(-?' . $lang->slug . ')$#', '', $name );
 			$url = $this->provider->get_sitemap_url( $name, $page );
 			$url = $this->links_model->add_language_to_link( $url, $lang );
-		} elseif ( $this->curlang ) {
-			$lang = $this->curlang;
+		} elseif ( get_query_var( 'lang' ) ) {
+			// Set url when $name doesn't have a lang to avoid the canonical redirection.
+			$lang = $this->model->get_language( get_query_var( 'lang' ) );
 			$url = $this->provider->get_sitemap_url( $name, $page );
 			$url = $this->links_model->add_language_to_link( $url, $lang );
-		} else {
+		}
+		else {
 			// Untranslated post types and taxonomies.
 			$url = $this->provider->get_sitemap_url( $name, $page );
 		}
