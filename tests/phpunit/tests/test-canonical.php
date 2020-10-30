@@ -74,6 +74,30 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'posts' );
+
+		// Translated cpt and tax
+		register_post_type( 'trcpt', array( 'public' => true ) );
+		register_taxonomy( 'trtax', 'trcpt' );
+
+		$trcpt_en = $factory->post->create( array( 'post_type' => 'trcpt' ) );
+		self::$polylang->model->post->set_language( $trcpt_en, 'en' );
+		$trcpt_fr = $factory->post->create( array( 'post_type' => 'trcpt' ) );
+		self::$polylang->model->post->set_language( $trcpt_fr, 'fr' );
+
+		$trtax_en = $factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
+		self::$polylang->model->term->set_language( $trtax_en, 'en' );
+
+		wp_set_post_terms( $trcpt_en, 'test', 'trtax' );
+
+
+		// Untranslated cpt and tax
+		register_post_type( 'cpt', array( 'public' => true ) );
+		register_taxonomy( 'tax', 'cpt' );
+
+		$cpt = $factory->post->create( array( 'post_type' => 'cpt' ) );
+		$factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+
+		wp_set_post_terms( $cpt, 'test', 'tax' );
 	}
 
 	public function init_for_sitemaps() {
@@ -259,6 +283,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_sitemap_with_translated_post() {
 		$this->init_for_sitemaps();
+
 		$this->assertCanonical(
 			'/en/wp-sitemap-posts-post-1.xml',
 			array(
@@ -275,19 +300,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_sitemap_with_translated_cpt() {
 		$this->init_for_sitemaps();
-		register_post_type( 'cpt', array( 'public' => true ) );
-
-		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
 
 		$this->assertCanonical(
-			'/en/wp-sitemap-posts-cpt-1.xml',
+			'/en/wp-sitemap-posts-trcpt-1.xml',
 			array(
-				'url' => '/en/wp-sitemap-posts-cpt-1.xml',
+				'url' => '/en/wp-sitemap-posts-trcpt-1.xml',
 				'qv'  => array(
 					'lang' => 'en',
 					'sitemap' => 'posts',
-					'sitemap-subtype' => 'cpt',
+					'sitemap-subtype' => 'trcpt',
 					'paged' => '1',
 				),
 			)
@@ -296,24 +317,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_sitemap_with_translated_cpt_and_tax() {
 		$this->init_for_sitemaps();
-		register_post_type( 'cpt', array( 'public' => true ) );
-		register_taxonomy( 'tax', 'cpt' );
-
-		$en = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-
-		$post_id = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
-		self::$polylang->model->post->set_language( $post_id, 'fr' );
-		wp_set_post_terms( $post_id, 'test', 'tax' );
 
 		$this->assertCanonical(
-			'/en/wp-sitemap-taxonomies-tax-1.xml',
+			'/en/wp-sitemap-taxonomies-trtax-1.xml',
 			array(
-				'url' => '/en/wp-sitemap-taxonomies-tax-1.xml',
+				'url' => '/en/wp-sitemap-taxonomies-trtax-1.xml',
 				'qv'  => array(
 					'lang' => 'en',
 					'sitemap' => 'taxonomies',
-					'sitemap-subtype' => 'tax',
+					'sitemap-subtype' => 'trtax',
 					'paged' => '1',
 				),
 			)
@@ -322,9 +334,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_sitemap_with_untranslated_cpt() {
 		$this->init_for_sitemaps();
-		register_post_type( 'cpt', array( 'public' => true ) ); // *Untranslated* custom post type.
-
-		$this->factory->post->create( array( 'post_type' => 'cpt' ) );
 
 		$this->assertCanonical(
 			'/wp-sitemap-posts-cpt-1.xml',
@@ -341,12 +350,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_sitemap_with_untranslated_cpt_and_tax() {
 		$this->init_for_sitemaps();
-		register_post_type( 'cpt', array( 'public' => true ) ); // *Untranslated* custom post type.
-		register_taxonomy( 'tax', 'cpt' ); // *Untranslated* custom tax.
-
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
-		$post_id = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
-		wp_set_post_terms( $post_id, 'test', 'tax' );
 
 		$this->assertCanonical(
 			'/wp-sitemap-taxonomies-tax-1.xml',
@@ -355,6 +358,39 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'qv'  => array(
 					'sitemap' => 'taxonomies',
 					'sitemap-subtype' => 'tax',
+					'paged' => '1',
+				),
+			)
+		);
+	}
+
+	public function test_sitemap_with_user() {
+		$this->init_for_sitemaps();
+
+		$this->assertCanonical(
+			'/en/wp-sitemap-users-1.xml',
+			array(
+				'url' => '/en/wp-sitemap-users-1.xml',
+				'qv'  => array(
+					'lang' => 'en',
+					'sitemap' => 'users',
+					'paged' => '1',
+				),
+			)
+		);
+	}
+
+	public function test_sitemap_with_category() {
+		$this->init_for_sitemaps();
+
+		$this->assertCanonical(
+			'/en/wp-sitemap-taxonomies-category-1.xml',
+			array(
+				'url' => '/en/wp-sitemap-taxonomies-category-1.xml',
+				'qv'  => array(
+					'lang' => 'en',
+					'sitemap' => 'taxonomies',
+					'sitemap-subtype' => 'category',
 					'paged' => '1',
 				),
 			)
