@@ -72,9 +72,6 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 		$this->links_model = &$polylang->links_model;
 		$this->model = &$polylang->links_model->model;
 		$this->curlang = &$polylang->curlang;
-
-//		$this->links_model = &$links_model;
-//		$this->model = &$links_model->model;
 	}
 
 	/**
