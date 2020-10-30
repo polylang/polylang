@@ -263,7 +263,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 					'lang' => 'en',
 					'sitemap' => 'posts',
 					'sitemap-subtype' => 'post',
-					'paged' => '1'
+					'paged' => '1',
 				),
 			)
 		);
@@ -284,7 +284,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 					'lang' => 'en',
 					'sitemap' => 'posts',
 					'sitemap-subtype' => 'cpt',
-					'paged' => '1'
+					'paged' => '1',
 				),
 			)
 		);
@@ -310,7 +310,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 					'lang' => 'en',
 					'sitemap' => 'taxonomies',
 					'sitemap-subtype' => 'tax',
-					'paged' => '1'
+					'paged' => '1',
 				),
 			)
 		);
@@ -329,7 +329,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'qv'  => array(
 					'sitemap' => 'posts',
 					'sitemap-subtype' => 'cpt',
-					'paged' => '1'
+					'paged' => '1',
 				),
 			)
 		);
@@ -351,7 +351,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'qv'  => array(
 					'sitemap' => 'taxonomies',
 					'sitemap-subtype' => 'tax',
-					'paged' => '1'
+					'paged' => '1',
 				),
 			)
 		);
