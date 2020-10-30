@@ -279,7 +279,23 @@ abstract class PLL_Translated_Object {
 	public function get_objects_in_language( $lang ) {
 		global $wpdb;
 		$tt_id = $this->tax_tt;
-		return $wpdb->get_col( $wpdb->prepare( "SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $lang->$tt_id ) );
+
+		$last_changed = wp_cache_get_last_changed( 'terms' );
+		$cache_key    = "polylang:get_objects_in_language:{$lang->$tt_id}:{$last_changed}";
+		$cache        = wp_cache_get( $cache_key, 'terms' );
+
+		if ( false === $cache ) {
+			$object_ids = $wpdb->get_col( $wpdb->prepare( "SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $lang->$tt_id ) );
+			wp_cache_set( $cache_key, $object_ids, 'terms' );
+		} else {
+			$object_ids = (array) $cache;
+		}
+
+		if ( ! $object_ids ) {
+			return array();
+		}
+
+		return $object_ids;
 	}
 
 	/**
