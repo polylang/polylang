@@ -20,7 +20,7 @@ jQuery( document ).ready(
 			{ // restricted to languages list table
 				focusin: function() {
 					clearTimeout( transitionTimeout );
-					focusedRowActions = $( this ).find( '.row-actions' );
+					var focusedRowActions = $( this ).find( '.row-actions' );
 					// transitionTimeout is necessary for Firefox, but Chrome won't remove the CSS class without a little help.
 					$( '.row-actions' ).not( this ).removeClass( 'visible' );
 					focusedRowActions.addClass( 'visible' );
