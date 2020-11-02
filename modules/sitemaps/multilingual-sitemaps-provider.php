@@ -183,18 +183,23 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 * @return string The composed URL for a sitemap entry.
 	 */
 	public function get_sitemap_url( $name, $page ) {
+		// Check if a language was added in $name.
 		$pattern = '#(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')$#';
 		if ( preg_match( $pattern, $name, $matches ) ) {
 			$lang = $this->model->get_language( $matches[1] );
 			$name = preg_replace( '#(-?' . $lang->slug . ')$#', '', $name );
 			$url = $this->provider->get_sitemap_url( $name, $page );
-			$url = $this->links_model->add_language_to_link( $url, $lang );
-		} else {
-			// Untranslated post types and taxonomies.
-			$url = $this->provider->get_sitemap_url( $name, $page );
+			return $this->links_model->add_language_to_link( $url, $lang );
 		}
 
-		return $url;
+		// If no language is present in $name, we may attempt to get the current sitemap url (e.g. in redirect_canonical() ).
+		if ( get_query_var( 'lang' ) ) {
+			$lang = $this->model->get_language( get_query_var( 'lang' ) );
+			$url = $this->provider->get_sitemap_url( $name, $page );
+			return $this->links_model->add_language_to_link( $url, $lang );
+		}
+
+		return $this->provider->get_sitemap_url( $name, $page );
 	}
 
 	/**
