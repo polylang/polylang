@@ -33,9 +33,11 @@ class Strings_Test extends PLL_UnitTestCase {
 	}
 
 	function test_base_strings() {
+		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		self::$polylang->init();
 		$strings = PLL_Admin_Strings::get_strings();
 		$names = wp_list_pluck( $strings, 'name' );
-		$this->assertCount( 4, array_intersect( array( 'Site Title', 'Tagline', 'Date Format', 'Time Format' ), $names ) );
+		$this->assertCount( 4, array_intersect( array( 'blogname', 'blogdescription', 'date_format', 'time_format' ), $names ) );
 	}
 
 	// FIXME: order of nest two tests matters due to static protected strings in PLL_Admin_Strings

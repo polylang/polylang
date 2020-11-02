@@ -81,9 +81,9 @@ abstract class PLL_Base {
 
 			// WordPress options.
 			new PLL_Translate_Option( 'blogname', 1, array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option(	'blogdescription', 1, array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option(	'date_format', 1, array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option(	'time_format', 1, array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'blogdescription', 1, array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'date_format', 1, array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'time_format', 1, array( 'context' => 'WorPress' ) );
 		}
 	}
 
