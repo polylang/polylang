@@ -83,7 +83,7 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 				'missing'          => empty( $url ) ? 1 : 0,
 				'translated_name'  => '', // Does not exist in Polylang
 				'language_code'    => $lang->slug,
-				'country_flag_url' => $lang->flag_url,
+				'country_flag_url' => $lang->get_display_flag_url(),
 				'url'              => ! empty( $url ) ? $url :
 					( empty( $args['link_empty_to'] ) ? PLL()->links->get_home_url( $lang ) :
 					str_replace( '{$lang}', $lang->slug, $args['link_empty_to'] ) ),
