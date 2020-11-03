@@ -107,53 +107,5 @@ class PLL_Widget_Languages extends WP_Widget {
 				esc_attr( 'pll-' . $key )
 			);
 		}
-
-		// FIXME echoing script in form is not very clean
-		// but it does not work if enqueued properly :
-		// clicking save on a widget makes this code unreachable for the just saved widget ( ?! )
-		$this->admin_print_script();
-	}
-
-	/**
-	 * Add javascript to control the language switcher options
-	 *
-	 * @since 1.3
-	 */
-	public function admin_print_script() {
-		static $done = false;
-
-		if ( $done ) {
-			return;
-		}
-
-		$done = true;
-		?>
-		<script type='text/javascript'>
-			//<![CDATA[
-			jQuery( document ).ready( function( $ ) {
-				function pll_toggle( a, test ) {
-					test ? a.show() : a.hide();
-				}
-
-				// Remove all options if dropdown is checked
-				$( '.widgets-sortables,.control-section-sidebar' ).on( 'change', '.pll-dropdown', function() {
-					var this_id = $( this ).parent().parent().parent().children( '.widget-id' ).attr( 'value' );
-					pll_toggle( $( '.no-dropdown-' + this_id ), true != $( this ).prop( 'checked' ) );
-				} );
-
-				// Disallow unchecking both show names and show flags
-				var options = ['-show_flags', '-show_names'];
-				$.each( options, function( i, v ) {
-					$( '.widgets-sortables,.control-section-sidebar' ).on( 'change', '.pll' + v, function() {
-						var this_id = $( this ).parent().parent().parent().children( '.widget-id' ).attr( 'value' );
-						if ( true != $( this ).prop( 'checked' ) ) {
-							$( '#widget-' + this_id + options[ 1-i ] ).prop( 'checked', true );
-						}
-					} );
-				} );
-			} );
-			//]]>
-		</script>
-		<?php
 	}
 }
