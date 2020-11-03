@@ -51,7 +51,7 @@ class PLL_Widget_Languages extends WP_Widget {
 			}
 
 			// The title may be filtered: Strip out HTML and make sure the aria-label is never empty.
-			$aria_label = trim( strip_tags( $title ) );
+			$aria_label = trim( wp_strip_all_tags( $title ) );
 			if ( ! $aria_label ) {
 				$aria_label = __( 'Select a language', 'polylang' );
 			}
