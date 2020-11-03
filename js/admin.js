@@ -95,20 +95,21 @@ jQuery( document ).ready(
 		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
 
 		// Callbacks when Selectmenu widget open event is triggered.
-		// Needed to correctly refresh the selected element in the list.
+		// Needed to correctly refresh the selected element in the list when editing an existing language.
+		// jQuery UI 1.11 callback version.
 		var openCallback = function( event, ui ){
-			if ( isJqueryUImin112 ) {
-				// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
-				$( event.target ).selectmenu( 'refresh' );
-			} else {
-				selectmenuRefreshButtonText( $( event.target ).selectmenu( 'refresh' ) );
-			}
+			selectmenuRefreshButtonText( $( event.target ).selectmenu( 'refresh' ) );
+		}
+		// jQueryUI 1.12 callback version.
+		var openCallbackjQueryUI112 = function( event, ui ){
+			// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
+			$( event.target ).selectmenu( 'refresh' );
 		}
 		// There is no need of create and select callbacks with jQuery UI 1.12 because overriding _renderButtonItem method do the job.
 		if ( isJqueryUImin112 ) {
 			selectmenuFlagListCallbacks =
 				{
-					open: openCallback,
+					open: openCallbackjQueryUI112,
 				};
 		} else {
 			selectmenuFlagListCallbacks = {
