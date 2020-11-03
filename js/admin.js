@@ -4,13 +4,6 @@
 
 jQuery( document ).ready(
 	function( $ ) {
-		// Add a boolean variable to be able to check jQuery UI >= 1.12 which is introduced in WP 5.6.
-		// Backward compatibility WP < 5.6
-		var isJqueryUImin112 = $.ui.version >= '1.12.0';
-		// Allow to check if a flag list dropdown is present. Not present in the Wizard steps or other settings page.
-		var flagListExist = $( "#flag_list" ).length;
-		// Allow to check if a language list dropdown is present. Not present in other settings page.
-		var langListExist = $( "#lang_list" ).length;
 
 		// languages list table
 		// accessibility to row actions on focus
@@ -39,8 +32,15 @@ jQuery( document ).ready(
 			'tr'
 		); // acts on the whole tr instead of single td as we have actions links in several columns
 
-		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
-		// Common functions for overriding language and flag dropdown list.
+		// Common functions and variables for overriding languages and flags dropdown list.
+
+		// Add a boolean variable to be able to check jQuery UI >= 1.12 which is introduced in WP 5.6.
+		// Backward compatibility WP < 5.6
+		var isJqueryUImin112 = $.ui.version >= '1.12.0';
+		// Allow to check if a flag list dropdown is present. Not present in the Wizard steps or other settings page.
+		var flagListExist = $( "#flag_list" ).length;
+		// Allow to check if a language list dropdown is present. Not present in other settings page.
+		var langListExist = $( "#lang_list" ).length;
 
 		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
 		// jQuery UI 1.12 introduce a wrapper inside de li tag which is necessary to selectmenu widget to work correctly.
@@ -102,6 +102,7 @@ jQuery( document ).ready(
 		var selectmenuOptions = { width: '97%'};
 		var selectmenuFlagListCallbacks = {};
 
+		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
 		// Create the jQuery UI selectmenu widget for flag list dropdown and return its instance.
 		// There is no need of create and select callbacks with jQuery UI 1.12 because overrinding _renderButtonItem method do the job.
 		if ( isJqueryUImin112 ) {
@@ -154,7 +155,7 @@ jQuery( document ).ready(
 			}
 		};
 
-		// Create the jQuery UI selectmenu widget language list dropdown and return its instance.
+		// Create the jQuery UI selectmenu widget languages list dropdown and return its instance.
 		var selectmenuLangListCallbacks = {};
 		// For the wizard we need a 100% width. So we override the previous defined value of selectmenuOptions. Remind that jQuery UI selectmenu widget substract 2% to this value.
 		if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
