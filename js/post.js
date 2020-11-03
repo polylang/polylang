@@ -19,7 +19,7 @@
  * Quick edit
  */
 (function( $ ) {
-	$( document ).bind(
+	$( document ).on(
 		'DOMNodeInserted',
 		function( e ) {
 			var t = $( e.target );
@@ -47,7 +47,9 @@
 				}
 			}
 
-			// filter category checklist
+			/**
+			 * Filters the category checklist.
+			 */
 			function filter_terms( lang ) {
 				if ( "undefined" != typeof( pll_term_languages ) ) {
 					$.each(
@@ -70,7 +72,9 @@
 				}
 			}
 
-			// filter parent page dropdown list
+			/**
+			 * Filters the parent page dropdown list.
+			 */
 			function filter_pages( lang ) {
 				if ( "undefined" != typeof( pll_page_languages ) ) {
 					$.each(
