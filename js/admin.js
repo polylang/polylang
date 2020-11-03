@@ -86,8 +86,16 @@ jQuery( document ).ready(
 		var createSelectCallback = function( event, ui ) {
 			selectmenuRefreshButtonText( event.target );
 		}
+
+		// Selectmenu widget options
+		// jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
+		var selectmenuOptions = { width: '97%'};
+		var selectmenuFlagListCallbacks = {};
+
+		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
+
 		// Callbacks when Selectmenu widget open event is triggered.
-		// Needed to corectly refresh the selected element in the list.
+		// Needed to correctly refresh the selected element in the list.
 		var openCallback = function( event, ui ){
 			if ( isJqueryUImin112 ) {
 				// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
@@ -96,15 +104,7 @@ jQuery( document ).ready(
 				selectmenuRefreshButtonText( $( event.target ).selectmenu( 'refresh' ) );
 			}
 		}
-
-		// Selectmenu widget options
-		// jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
-		var selectmenuOptions = { width: '97%'};
-		var selectmenuFlagListCallbacks = {};
-
-		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
-		// Create the jQuery UI selectmenu widget for flag list dropdown and return its instance.
-		// There is no need of create and select callbacks with jQuery UI 1.12 because overrinding _renderButtonItem method do the job.
+		// There is no need of create and select callbacks with jQuery UI 1.12 because overriding _renderButtonItem method do the job.
 		if ( isJqueryUImin112 ) {
 			selectmenuFlagListCallbacks =
 				{
@@ -120,6 +120,7 @@ jQuery( document ).ready(
 
 		// Create the selectmenu widget only if the field is present.
 		if ( flagListExist ) {
+			// Create the jQuery UI selectmenu widget for flags list dropdown and return its instance.
 			var selectmenuFlagList = $( '#flag_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuFlagListCallbacks ) ).selectmenu( 'instance' );
 			// Overrides each item in the jQuery UI selectmenu list by injecting flag image.
 			selectmenuFlagList._renderItem = selectmenuRenderItem;
