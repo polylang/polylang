@@ -94,14 +94,14 @@ jQuery( document ).ready(
 
 		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
 
-		// Callbacks when Selectmenu widget open event is triggered.
-		// Needed to correctly refresh the selected element in the list when editing an existing language.
+		// Callbacks when Selectmenu widget change or open event is triggered.
+		// Needed to correctly refresh the selected element in the list when editing an existing language or when the value change is triggered by the language choice.
 		// jQuery UI 1.11 callback version.
-		var openCallback = function( event, ui ){
+		var changeOpenCallback = function( event, ui ){
 			selectmenuRefreshButtonText( $( event.target ).selectmenu( 'refresh' ) );
 		}
 		// jQueryUI 1.12 callback version.
-		var openCallbackjQueryUI112 = function( event, ui ){
+		var changeOpenCallbackjQueryUI112 = function( event, ui ){
 			// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
 			$( event.target ).selectmenu( 'refresh' );
 		}
@@ -109,13 +109,15 @@ jQuery( document ).ready(
 		if ( isJqueryUImin112 ) {
 			selectmenuFlagListCallbacks =
 				{
-					open: openCallbackjQueryUI112,
+					change: changeOpenCallbackjQueryUI112,
+					open: changeOpenCallbackjQueryUI112,
 				};
 		} else {
 			selectmenuFlagListCallbacks = {
 				create: createSelectCallback,
 				select: createSelectCallback,
-				open: openCallback,
+				change: changeOpenCallback,
+				open: changeOpenCallback,
 			};
 		}
 
@@ -131,6 +133,7 @@ jQuery( document ).ready(
 				selectmenuFlagList.refresh(); // Need to refresh to take in account the button item rendering method after the selectmenu widget instanciaion.
 			}
 		}
+
 		// Language choice in predefined languages in Polylang Languages settings page and wizard.
 		// Overrides the predefined language dropdown list with our customized jQuery ui selectmenu widget.
 
@@ -146,14 +149,8 @@ jQuery( document ).ready(
 			// Refresh the flag field only if it's present.
 			if ( flagListExist ) {
 				$( '#flag_list').val( value[3] );
-
-				// Refresh the jQuery UI selectmenu flag list.
-				if ( isJqueryUImin112 ) {
-					// Just a refresh of the menu is needed with jQuery UI 1.12 because _renderButtonItem is triggered and then inject correctly the flag.
-					selectmenuFlagList.refresh();
-				} else {
-					selectmenuRefreshButtonText( $( '#flag_list').selectmenu( 'refresh' ) );
-				}
+				// Refresh the jQuery UI selectmenu flag list widget by triggerring its change event.
+				selectmenuFlagList._trigger( 'change' );
 			}
 		};
 
