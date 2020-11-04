@@ -147,21 +147,32 @@ jQuery( document ).ready(
 		 * Overrides the predefined language dropdown list with our customized jQuery ui selectmenu widget.
 		 */
 
-		// Callback when selectmenu widget change event is triggered.
-		var changeCallback = function( event, ui ) {
-			var value = $( event.target ).val().split( ':' );
-			var selected = $( "option:selected", event.target ).text().split( ' - ' );
-			$( '#lang_slug' ).val( value[0] );
-			$( '#lang_locale' ).val( value[1] );
-			$( 'input[name="rtl"]' ).val( [value[2]] );
-			$( '#lang_name' ).val( selected[0] );
+		/**
+		 * Fill the other language form fields from the language element selected in the language list dropdown.
+		 *
+		 * @param {Object} languageSelected - jQuery object of the selected element in the language list dropdown.
+		 */
+		function fillLanguageFields( languageSelected ) {
+			// All field values is obtained by splitting the selected element value in the language list dropdown.
+			var fieldValues = languageSelected.val().split( ':' );
+			// Language name field is obtained by splitting the selected element text in the language list dropdown.
+			var languageName = languageSelected.text().split( ' - ' );
+			$( '#lang_slug' ).val( fieldValues[0] );
+			$( '#lang_locale' ).val( fieldValues[1] );
+			$( 'input[name="rtl"]' ).val( [fieldValues[2]] );
+			$( '#lang_name' ).val( languageName[0] );
 
 			// Refresh the flag field only if it's present.
 			if ( flagListExist ) {
-				$( '#flag_list').val( value[3] );
+				$( '#flag_list').val( fieldValues[3] );
 				// Refresh the jQuery UI selectmenu flag list widget by triggerring its change event.
 				selectmenuFlagList._trigger( 'change' );
 			}
+		};
+
+		// Callback when selectmenu widget change event is triggered.
+		var changeCallback = function( event, ui ) {
+			fillLanguageFields( $( 'option:selected', event.target ) );
 		};
 
 		// Create the jQuery UI selectmenu widget languages list dropdown and return its instance.
