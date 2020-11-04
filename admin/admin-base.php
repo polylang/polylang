@@ -227,7 +227,7 @@ class PLL_Admin_Base extends PLL_Base {
 										options.url = options.url+'&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
 									} else {
 										try {
-											var o = $.parseJSON(options.data);
+											var o = JSON.parse(options.data);
 											o = $.extend(o, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
 											options.data = JSON.stringify(o);
 										}
