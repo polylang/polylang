@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 4.9
 Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 2.8.3
+Stable tag: 2.8.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,16 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.8.4 (2020-11-03) =
+
+* Pro: Remove useless bulk translate action for ACF fields groups
+* Pro: Fix the translation of the CPTUI labels when the language is set from the content
+* Fix sitemaps redirected to the default language since WP 5.5.1
+* Fix object cache not flushed for sticky posts #601
+* Fix blog page broken when trashing a page and the blog page is not translated in all languages
+* Fix custom flags ignored in WPML compatibility mode
+* Fix breadcrumb for untranslated post types in Yoast SEO
 
 = 2.8.3 (2020-10-13) =
 
