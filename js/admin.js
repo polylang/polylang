@@ -32,7 +32,9 @@ jQuery( document ).ready(
 			'tr'
 		); // acts on the whole tr instead of single td as we have actions links in several columns
 
-		// Common functions and variables for overriding languages and flags dropdown list.
+		/**
+		 * Common functions and variables for overriding languages and flags dropdown list by a jQuery UI selectmenu widget.
+		*/
 
 		// Add a boolean variable to be able to check jQuery UI >= 1.12 which is introduced in WP 5.6.
 		// Backward compatibility WP < 5.6
@@ -81,18 +83,24 @@ jQuery( document ).ready(
 			return buttonItem;
 		}
 
-		// Selectmenu widget parameters.
+		/**
+		 *  Selectmenu widget common parameters for its configuration: options and callbacks.
+		 */
+
+		// Selectmenu widget options
+		// jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
+		var selectmenuOptions = { width: '97%'};
+
+		// Selectmenu widget callbacks
+		var selectmenuFlagListCallbacks = {};
 		// Callbacks when Selectmenu widget create or select event is triggered.
 		var createSelectCallback = function( event, ui ) {
 			selectmenuRefreshButtonText( event.target );
 		}
 
-		// Selectmenu widget options
-		// jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
-		var selectmenuOptions = { width: '97%'};
-		var selectmenuFlagListCallbacks = {};
-
-		// Overrides the flag dropdown list with our customized jquery ui selectmenu.
+		/**
+		 *  Overrides the flag dropdown list with our customized jquery ui selectmenu.
+		 */
 
 		// Callbacks when Selectmenu widget change or open event is triggered.
 		// Needed to correctly refresh the selected element in the list when editing an existing language or when the value change is triggered by the language choice.
@@ -134,8 +142,10 @@ jQuery( document ).ready(
 			}
 		}
 
-		// Language choice in predefined languages in Polylang Languages settings page and wizard.
-		// Overrides the predefined language dropdown list with our customized jQuery ui selectmenu widget.
+		/**
+		 * Language choice in predefined languages in Polylang Languages settings page and wizard.
+		 * Overrides the predefined language dropdown list with our customized jQuery ui selectmenu widget.
+		 */
 
 		// Callback when selectmenu widget change event is triggered.
 		var changeCallback = function( event, ui ) {
