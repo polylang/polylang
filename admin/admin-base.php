@@ -216,32 +216,34 @@ class PLL_Admin_Base extends PLL_Base {
 		?>
 		<script type="text/javascript">
 			if (typeof jQuery != 'undefined') {
-				(function($){
-					$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-						if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
-							if ( 'undefined' === typeof options.data ) {
-								options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>' : <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>;
-							} else {
-								if ( 'string' === typeof options.data ) {
-									if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
-										options.url = options.url+'&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
-									} else {
-										try {
-											var o = JSON.parse(options.data);
-											o = $.extend(o, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
-											options.data = JSON.stringify(o);
-										}
-										catch(e) {
-											options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>&'+options.data;
-										}
-									}
+				jQuery(
+					function($){
+						$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+							if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
+								if ( 'undefined' === typeof options.data ) {
+									options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>' : <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>;
 								} else {
-									options.data = $.extend(options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
+									if ( 'string' === typeof options.data ) {
+										if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
+											options.url = options.url+'&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
+										} else {
+											try {
+												var o = JSON.parse(options.data);
+												o = $.extend(o, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
+												options.data = JSON.stringify(o);
+											}
+											catch(e) {
+												options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>&'+options.data;
+											}
+										}
+									} else {
+										options.data = $.extend(options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
+									}
 								}
 							}
-						}
-					});
-				})(jQuery)
+						});
+					}
+				);
 			}
 		</script>
 		<?php
