@@ -84,6 +84,26 @@ jQuery( document ).ready(
 		}
 
 		/**
+		 * Initialize a jQuery UI selectmenu widget on a DOM element
+		 *
+		 * @param {*} element - The jQuery object representing the DOM element to attach the widget with.
+		 * @param {*} config  - All the parameters - options and callbacks - necessary to configure the jQuery UI selectmenu widget.
+		 * @return {Object} - The jQuery UI selectmenu widget object instance.
+		 */
+		function initializeSelectmenuWidget( element, config ) {
+			// Create the jQuery UI selectmenu widget for flags list dropdown and return its instance.
+			var selectmenuWidgetInstance = element.selectmenu( config ).selectmenu( 'instance' );
+			// Overrides each item in the jQuery UI selectmenu list by injecting flag image.
+			selectmenuWidgetInstance._renderItem = selectmenuRenderItem;
+			// Override the selected item rendering for jQuery UI 1.12
+			if ( isJqueryUImin112 ) {
+				selectmenuWidgetInstance._renderButtonItem = selectmenuRenderButtonItem;
+				// Need to refresh to take in account the new button item rendering method after the selectmenu widget instanciaion.
+				selectmenuWidgetInstance.refresh();
+			}
+			return selectmenuWidgetInstance
+		}
+		/**
 		 *  Selectmenu widget common parameters for its configuration: options and callbacks.
 		 */
 
@@ -132,14 +152,8 @@ jQuery( document ).ready(
 		// Create the selectmenu widget only if the field is present.
 		if ( flagListExist ) {
 			// Create the jQuery UI selectmenu widget for flags list dropdown and return its instance.
-			var selectmenuFlagList = $( '#flag_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuFlagListCallbacks ) ).selectmenu( 'instance' );
-			// Overrides each item in the jQuery UI selectmenu list by injecting flag image.
-			selectmenuFlagList._renderItem = selectmenuRenderItem;
-			// Override the selected item rendering for jQuery UI 1.12
-			if ( isJqueryUImin112 ) {
-				selectmenuFlagList._renderButtonItem = selectmenuRenderButtonItem;
-				selectmenuFlagList.refresh(); // Need to refresh to take in account the button item rendering method after the selectmenu widget instanciaion.
-			}
+			// Need to keep the instance to be able to use it in the managment of the languages list.
+			 var selectmenuFlagList = initializeSelectmenuWidget( $( '#flag_list' ), Object.assign( {}, selectmenuOptions, selectmenuFlagListCallbacks ) );
 		}
 
 		/**
@@ -195,14 +209,7 @@ jQuery( document ).ready(
 			};
 		}
 		if ( langListExist ) {
-			var selectmenuLangList = $( '#lang_list' ).selectmenu( Object.assign( {}, selectmenuOptions, selectmenuLangListCallbacks ) ).selectmenu( 'instance' );
-			// Overrides each element in the jQuery UI selectmenu list by injecting flag image.
-			selectmenuLangList._renderItem = selectmenuRenderItem;
-			// Override the selected item rendering for jQuery UI 1.12
-			if ( isJqueryUImin112 ) {
-				selectmenuLangList._renderButtonItem = selectmenuRenderButtonItem;
-				selectmenuLangList.refresh(); // Need to refresh to take in account the button item rendering method after the selectmenu widget instanciaion.
-			}
+			initializeSelectmenuWidget( $( '#lang_list' ), Object.assign( {}, selectmenuOptions, selectmenuLangListCallbacks ) );
 		}
 
 		// strings translations
