@@ -75,17 +75,19 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 		?>
 		<script type='text/javascript'>
 			//<![CDATA[
-			( function( $ ){
-				$( "input[name='force_lang']" ).on( 'change', function() {
-					var value = $( this ).val();
-					if ( value > 0 ) {
-						$( "#pll-module-share-slugs" ).removeClass( "inactive" ).addClass( "active" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $activated; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
-					}
-					else {
-						$( "#pll-module-share-slugs" ).removeClass( "active" ).addClass( "inactive" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $deactivated; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
-					}
-				} );
-			} )( jQuery );
+			jQuery(
+				function( $ ){
+					$( "input[name='force_lang']" ).on( 'change', function() {
+						var value = $( this ).val();
+						if ( value > 0 ) {
+							$( "#pll-module-share-slugs" ).removeClass( "inactive" ).addClass( "active" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $activated; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
+						}
+						else {
+							$( "#pll-module-share-slugs" ).removeClass( "active" ).addClass( "inactive" ).children( "td" ).children( ".row-actions" ).html( '<?php echo $deactivated; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
+						}
+					} );
+				}
+			);
 			// ]]>
 		</script>
 		<?php
