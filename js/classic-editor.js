@@ -6,7 +6,8 @@
 (function( $ ){
 	$.ajaxPrefilter(
 		function( options, originalOptions, jqXHR ) {
-			if ( 'string' === typeof options.data && -1 !== options.url.indexOf( 'action=ajax-tag-search' ) && ( lang = $( '.post_lang_choice' ).val() ) ) {
+			var lang = $( '.post_lang_choice' ).val();
+			if ( 'string' === typeof options.data && -1 !== options.url.indexOf( 'action=ajax-tag-search' ) && lang ) {
 				options.data = 'lang=' + lang + '&' + options.data;
 			}
 		}
@@ -44,8 +45,10 @@
 					}
 				);
 
+				var tagCloud = $('#tagcloud-' + tax);
 				// add an if else condition to allow modifying the tags outputed when switching the language
-				if ( v = $( '#tagcloud-' + tax ).css( 'display' ) ) {
+				var v = tagCloud.css( 'display' );
+				if ( v ) {
 					// See the comment above when r variable is created.
 					$( '#tagcloud-' + tax ).replaceWith( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
 					$( '#tagcloud-' + tax ).css( 'display', v );
