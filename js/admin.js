@@ -171,15 +171,21 @@ jQuery( document ).ready(
 		/**
 		 * Fill the other language form fields from the language element selected in the language list dropdown.
 		 *
-		 * @param {Object} languageSelected - jQuery object of the selected element in the language list dropdown.
+		 * @param {Object} language - language object of the selected element in the language list dropdown.
 		 */
 		function fillLanguageFields( language ) {
 			$( '#lang_slug' ).val( language.slug );
 			$( '#lang_locale' ).val( language.locale );
-			$( 'input[name="rtl"]' ).val( language.rtl ); 
+			$( 'input[name="rtl"]' ).val( language.rtl );
 			$( '#lang_name' ).val( language.name );
 		}
 
+		/**
+		 * Parse selected language element in the language list dropdown.
+		 *
+		 * @param {object} event - jQuery triggered event.
+		 * @return {object} The language object with its named properties.
+		 */
 		function parseSelectedLanguage( event ) {
 			var selectedElement = $('option:selected', event.target);
 			var values = selectedElement.val().split(':')
@@ -188,7 +194,7 @@ jQuery( document ).ready(
 				locale: values[1],
 				rtl: values[2],
 				flag: values[3],
-				name: selectedElement.text().split(' - ')[0] // at the moment there is no need of the 2nd part because it corresponding on the locale which is already by splitting the selected element value
+				name: selectedElement.text().split(' - ')[0] // At the moment there is no need of the 2nd part because it corresponds on the locale which is already known by splitting the selected element value
 			};
 		}
 
