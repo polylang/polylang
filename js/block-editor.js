@@ -42,7 +42,8 @@ function getCurrentLanguage() {
 jQuery( document ).ready(
 	function( $ ) {
 		// savePost after changing the post's language and reload page for refreshing post translated data
-		$( '.post_lang_choice' ).change(
+		$( '.post_lang_choice' ).on(
+			'change',
 			function() {
 				const select = wp.data.select;
 				const dispatch = wp.data.dispatch;
@@ -120,7 +121,8 @@ jQuery( document ).ready(
 jQuery( document ).ready(
 	function( $ ) {
 		// Ajax for changing the post's language in the languages metabox
-		$( '.post_lang_choice' ).change(
+		$( '.post_lang_choice' ).on(
+			'change',
 			function() {
 				var data = {
 					action:     'post_lang_choice',
@@ -182,7 +184,8 @@ jQuery( document ).ready(
 					);
 
 					// When the input box is emptied
-					$( this ).blur(
+					$( this ).on(
+						'blur',
 						function() {
 							if ( ! $( this ).val() ) {
 								$( '#htr_lang_' + tr_lang ).val( 0 );
