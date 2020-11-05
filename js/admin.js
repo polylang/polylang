@@ -2,7 +2,7 @@
  * @package Polylang
  */
 
-jQuery( document ).ready(
+jQuery(
 	function( $ ) {
 		var transitionTimeout;
 
@@ -104,9 +104,10 @@ jQuery( document ).ready(
 
 		// strings translations
 		// save translations when pressing enter
-		$( '.translation input' ).keypress(
+		$( '.translation input' ).on(
+			'keydown',
 			function( event ){
-				if ( 13 === event.keyCode ) {
+				if ( 'Enter' === event.key ) {
 					event.preventDefault();
 					$( '#submit' ).click();
 				}
@@ -213,14 +214,15 @@ jQuery( document ).ready(
 		);
 
 		// act when pressing enter or esc in configurations
-		$( '.pll-configure' ).keypress(
+		$( '.pll-configure' ).on(
+			'keydown',
 			function( event ){
-				if ( 13 === event.keyCode ) {
+				if ( 'Enter' === event.key ) {
 					event.preventDefault();
 					$( this ).find( '.save' ).click();
 				}
 
-				if ( 27 === event.keyCode ) {
+				if ( 'Escape' === event.key ) {
 					event.preventDefault();
 					$( this ).find( '.cancel' ).click();
 				}
@@ -229,7 +231,8 @@ jQuery( document ).ready(
 
 		// settings URL modifications
 		// manages visibility of fields
-		$( "input[name='force_lang']" ).change(
+		$( "input[name='force_lang']" ).on(
+			'change',
 			function() {
 				function pll_toggle( a, test ) {
 					test ? a.show() : a.hide();
