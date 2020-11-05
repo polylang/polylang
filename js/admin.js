@@ -231,7 +231,8 @@ jQuery(
 
 		// settings URL modifications
 		// manages visibility of fields
-		$( "input[name='force_lang']" ).change(
+		$( "input[name='force_lang']" ).on(
+			'change',
 			function() {
 				function pll_toggle( a, test ) {
 					test ? a.show() : a.hide();
