@@ -154,7 +154,7 @@ jQuery( document ).ready(
 			// Create the jQuery UI selectmenu widget for flags list dropdown and return its instance.
 			var selectmenuFlagList = initializeSelectmenuWidget( $( '#flag_list' ), Object.assign( {}, selectmenuOptions, selectmenuFlagListCallbacks ) );
 			$( '#lang_list' ).on(
-				'notifyChange',
+				'languageChanged',
 				function( event, flag ) {
 					// Refresh the flag field
 					selectmenuFlagList.element.val( flag );
@@ -198,7 +198,7 @@ jQuery( document ).ready(
 
 			fillLanguageFields( language );
 
-			$( event.target ).trigger( 'notifyChange', language.flag );
+			$( event.target ).trigger( 'languageChanged', language.flag );
 		};
 
 		// Create the jQuery UI selectmenu widget languages list dropdown and return its instance.
