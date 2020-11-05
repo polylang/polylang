@@ -3,7 +3,7 @@
  */
 
 // tag suggest in metabox
-(function( $ ){
+jQuery( function( $ ) {
 	$.ajaxPrefilter(
 		function( options, originalOptions, jqXHR ) {
 			var lang = $( '.post_lang_choice' ).val();
@@ -12,10 +12,10 @@
 			}
 		}
 	);
-})( jQuery );
+});
 
 // overrides tagBox.get
-(function( $ ){
+jQuery( function( $ ) {
 	// overrides function to add the language
 	tagBox.get = function( id ) {
 		var tax = id.substr( id.indexOf( '-' ) + 1 );
@@ -60,10 +60,9 @@
 			}
 		);
 	}
-})( jQuery );
+});
 
-jQuery( document ).ready(
-	function( $ ) {
+jQuery( function ( $ ) {
 		// collect taxonomies - code partly copied from WordPress
 		var taxonomies = new Array();
 		$( '.categorydiv' ).each(
