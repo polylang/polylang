@@ -3,64 +3,71 @@
  */
 
 // tag suggest in metabox
-(function( $ ){
-	$.ajaxPrefilter(
-		function( options, originalOptions, jqXHR ) {
-			if ( 'string' === typeof options.data && -1 !== options.url.indexOf( 'action=ajax-tag-search' ) && ( lang = $( '.post_lang_choice' ).val() ) ) {
-				options.data = 'lang=' + lang + '&' + options.data;
-			}
-		}
-	);
-})( jQuery );
-
-// overrides tagBox.get
-(function( $ ){
-	// overrides function to add the language
-	tagBox.get = function( id ) {
-		var tax = id.substr( id.indexOf( '-' ) + 1 );
-
-		// add the language in the $_POST variable
-		var data = {
-			action: 'get-tagcloud',
-			lang:   $( '.post_lang_choice' ).val(),
-			tax:    tax
-		}
-
-		$.post(
-			ajaxurl,
-			data,
-			function( r, stat ) {
-				if ( 0 == r || 'success' != stat ) {
-					r = wpAjax.broken;
-				}
-
-				// @see code from WordPress core https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/js/tags-box.js#L291
-				// @see wp_generate_tag_cloud function which generate the escaped HTML https://github.com/WordPress/WordPress/blob/a02b5cc2a8eecb8e076fbb7cf4de7bd2ec8a8eb1/wp-includes/category-template.php#L966-L975
-				r = $( '<div />' ).addClass( 'the-tagcloud' ).attr( 'id', 'tagcloud-' + tax ).html( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-				$( 'a', r ).click(
-					function(){
-						tagBox.flushTags( $( this ).closest( '.inside' ).children( '.tagsdiv' ), this );
-						return false;
-					}
-				);
-
-				// add an if else condition to allow modifying the tags outputed when switching the language
-				if ( v = $( '#tagcloud-' + tax ).css( 'display' ) ) {
-					// See the comment above when r variable is created.
-					$( '#tagcloud-' + tax ).replaceWith( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
-					$( '#tagcloud-' + tax ).css( 'display', v );
-				}
-				else {
-					// See the comment above when r variable is created.
-					$( '#' + id ).after( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
+jQuery(
+	function( $ ) {
+		$.ajaxPrefilter(
+			function( options, originalOptions, jqXHR ) {
+				var lang = $( '.post_lang_choice' ).val();
+				if ( 'string' === typeof options.data && -1 !== options.url.indexOf( 'action=ajax-tag-search' ) && lang ) {
+					options.data = 'lang=' + lang + '&' + options.data;
 				}
 			}
 		);
 	}
-})( jQuery );
+);
 
-jQuery( document ).ready(
+// overrides tagBox.get
+jQuery(
 	function( $ ) {
+		// overrides function to add the language
+		tagBox.get = function( id ) {
+			var tax = id.substr( id.indexOf( '-' ) + 1 );
+
+			// add the language in the $_POST variable
+			var data = {
+				action: 'get-tagcloud',
+				lang:   $( '.post_lang_choice' ).val(),
+				tax:    tax
+			}
+
+			$.post(
+				ajaxurl,
+				data,
+				function( r, stat ) {
+					if ( 0 == r || 'success' != stat ) {
+						r = wpAjax.broken;
+					}
+
+					// @see code from WordPress core https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/js/tags-box.js#L291
+					// @see wp_generate_tag_cloud function which generate the escaped HTML https://github.com/WordPress/WordPress/blob/a02b5cc2a8eecb8e076fbb7cf4de7bd2ec8a8eb1/wp-includes/category-template.php#L966-L975
+					r = $( '<div />' ).addClass( 'the-tagcloud' ).attr( 'id', 'tagcloud-' + tax ).html( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+					$( 'a', r ).click(
+						function(){
+							tagBox.flushTags( $( this ).closest( '.inside' ).children( '.tagsdiv' ), this );
+							return false;
+						}
+					);
+
+					var tagCloud = $( '#tagcloud-' + tax );
+					// add an if else condition to allow modifying the tags outputed when switching the language
+					var v = tagCloud.css( 'display' );
+					if ( v ) {
+						// See the comment above when r variable is created.
+						$( '#tagcloud-' + tax ).replaceWith( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.replaceWith
+						$( '#tagcloud-' + tax ).css( 'display', v );
+					}
+					else {
+						// See the comment above when r variable is created.
+						$( '#' + id ).after( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
+					}
+				}
+			);
+		}
+	}
+);
+
+jQuery(
+	function ( $ ) {
 		// collect taxonomies - code partly copied from WordPress
 		var taxonomies = new Array();
 		$( '.categorydiv' ).each(
@@ -187,7 +194,8 @@ jQuery( document ).ready(
 					);
 
 					// when the input box is emptied
-					$( this ).blur(
+					$( this ).on(
+						'blur',
 						function() {
 							if ( ! $( this ).val() ) {
 								$( '#htr_lang_' + tr_lang ).val( 0 );
