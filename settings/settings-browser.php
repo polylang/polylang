@@ -87,7 +87,7 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 			//<![CDATA[
 			jQuery(
 				function( $ ){
-					$( "input[name='force_lang']" ).change( function() {
+					$( "input[name='force_lang']" ).on( 'change', function() {
 						var value = $( this ).val();
 						if ( 3 > value ) {
 							$( "#pll-module-browser" ).<?php echo $func; // phpcs:ignore WordPress.Security.EscapeOutput ?>.children( "td" ).children( ".row-actions" ).html( '<?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput ?>' );
