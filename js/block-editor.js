@@ -39,7 +39,7 @@ function getCurrentLanguage() {
  *
  * @since 2.5
  */
-jQuery( document ).ready(
+jQuery(
 	function( $ ) {
 		// savePost after changing the post's language and reload page for refreshing post translated data
 		$( '.post_lang_choice' ).on(
@@ -118,7 +118,7 @@ jQuery( document ).ready(
  *
  * @since 1.5
  */
-jQuery( document ).ready(
+jQuery(
 	function( $ ) {
 		// Ajax for changing the post's language in the languages metabox
 		$( '.post_lang_choice' ).on(
