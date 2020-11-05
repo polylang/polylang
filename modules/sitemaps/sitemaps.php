@@ -118,16 +118,19 @@ class PLL_Sitemaps {
 	public function rewrite_rules( $rules ) {
 		global $wp_rewrite;
 
-		$newrules = array();
-
 		$languages = $this->model->get_languages_list( array( 'fields' => 'slug' ) );
+
+		if ( empty( $languages ) ) {
+			return $rules;
+		}
+
 		if ( $this->options['hide_default'] ) {
 			$languages = array_diff( $languages, array( $this->options['default_lang'] ) );
 		}
 
-		if ( ! empty( $languages ) ) {
-			$slug = $wp_rewrite->root . ( $this->options['rewrite'] ? '^' : '^language/' ) . '(' . implode( '|', $languages ) . ')/';
-		}
+		$slug = $wp_rewrite->root . ( $this->options['rewrite'] ? '^' : '^language/' ) . '(' . implode( '|', $languages ) . ')/';
+
+		$newrules = array();
 
 		foreach ( $rules as $key => $rule ) {
 			if ( isset( $slug ) && false !== strpos( $rule, 'sitemap=$matches[1]' ) ) {
