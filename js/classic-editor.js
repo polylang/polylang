@@ -187,7 +187,8 @@ jQuery( document ).ready(
 					);
 
 					// when the input box is emptied
-					$( this ).blur(
+					$( this ).on(
+						'blur',
 						function() {
 							if ( ! $( this ).val() ) {
 								$( '#htr_lang_' + tr_lang ).val( 0 );
