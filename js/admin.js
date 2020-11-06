@@ -237,7 +237,7 @@ jQuery(
 			function( event ){
 				if ( 'Enter' === event.key ) {
 					event.preventDefault();
-					$( '#submit' ).click();
+					$( '#submit' ).trigger( 'click' );
 				}
 			}
 		);
@@ -347,12 +347,12 @@ jQuery(
 			function( event ){
 				if ( 'Enter' === event.key ) {
 					event.preventDefault();
-					$( this ).find( '.save' ).click();
+					$( this ).find( '.save' ).trigger( 'click' );
 				}
 
 				if ( 'Escape' === event.key ) {
 					event.preventDefault();
-					$( this ).find( '.cancel' ).click();
+					$( this ).find( '.cancel' ).trigger( 'click' );
 				}
 			}
 		);
