@@ -60,7 +60,7 @@ jQuery( document ).ready(
 					// Remove line in languages table.
 					$( this ).parents( 'tr' ).remove();
 					// Remove input field.
-					languageField = languageFields.children( 'input[value=' + $( this ).data( 'language' ) + ']' ).remove();
+					var languageField = languageFields.children( 'input[value=' + $( this ).data( 'language' ) + ']' ).remove();
 					// If there is no more languages hide languages table.
 					if ( languagesListTable.children().length <= 0 ) {
 						languagesTable.hide();
