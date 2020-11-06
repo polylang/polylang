@@ -21,10 +21,10 @@ jQuery(
 		 * @param {object} language The language object
 		 */
 		function addLanguage( language ) {
-			  // language properties come from the select dropdown which is built server side and well escaped.
-			  // see template view-wizard-step-languages.php.
-			  var languageValueHtml = $( '<td />' ).text( language.text ).prepend( language.flagUrl ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
-			  var languageTrashIconHtml = $( '<td />' )
+			// language properties come from the select dropdown which is built server side and well escaped.
+			// see template view-wizard-step-languages.php.
+			var languageValueHtml = $( '<td />' ).text( language.text ).prepend( language.flagUrl ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+			var languageTrashIconHtml = $( '<td />' )
 			.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 				$( '<span />' )
 				.addClass( 'dashicons dashicons-trash' )
@@ -35,23 +35,23 @@ jQuery(
 					.text( pll_wizard_params.i18n_remove_language_icon )
 				)
 			);
-			  // see the comment and the harcoded code above. languageTrashIconHtml and languageValueHtml are safe.
-			  var languageLineHtml = $( '<tr />' ).prepend( languageTrashIconHtml ).prepend( languageValueHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
+			// see the comment and the harcoded code above. languageTrashIconHtml and languageValueHtml are safe.
+			var languageLineHtml = $( '<tr />' ).prepend( languageTrashIconHtml ).prepend( languageValueHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			var languageFieldHtml = $( '<input />' ).attr(
 				{
 					type: 'hidden',
 					name: 'languages[]'
-					  }
+				}
 			).val( language.locale );
 
-			  languagesList.val( '' );
-			  languagesList.selectmenu( 'refresh' ); // Refresh jQuery selectmenu widget after changing the value.
+			languagesList.val( '' );
+			languagesList.selectmenu( 'refresh' ); // Refresh jQuery selectmenu widget after changing the value.
 
-			  languagesMap.set( language.locale, language );
+			languagesMap.set( language.locale, language );
 
-			  // see above how languageLineHtml is built.
-			  languagesListTable.append( languageLineHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
-			  // Bind click event on trash icon.
+			// see above how languageLineHtml is built.
+			languagesListTable.append( languageLineHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			// Bind click event on trash icon.
 			languagesListTable.on(
 				'click',
 				'span[data-language=' + language.locale + ']',
@@ -71,9 +71,9 @@ jQuery(
 					hideError();
 				}
 			);
-			  // see above how languageFieldHtml is built.
-			  // Add hidden input field for posting the form.
-			  languageFields.append( languageFieldHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+			// see above how languageFieldHtml is built.
+			// Add hidden input field for posting the form.
+			languageFields.append( languageFieldHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
 		}
 
@@ -103,7 +103,7 @@ jQuery(
 		 * @param {object} field The jQuery element which is in error
 		 */
 		function showFieldInError( field ) {
-			   field.addClass( 'error field-in-error' );
+			field.addClass( 'error field-in-error' );
 		}
 
 		/**
@@ -112,7 +112,7 @@ jQuery(
 		 * @param {object} field The jQuery element which will be focused
 		 */
 		function focusOnField( field ) {
-			   field.trigger( 'focus' );
+			field.trigger( 'focus' );
 		}
 
 		/**
@@ -121,15 +121,15 @@ jQuery(
 		 * @param {object} button
 		 */
 		function disableButton( button ){
-			   button.prop( 'disabled', true );
-			   // Because the button is disabled we need to add the value of the button to ensure it will pass in the request.
+			button.prop( 'disabled', true );
+			// Because the button is disabled we need to add the value of the button to ensure it will pass in the request.
 			addLanguageForm.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 				$( '<input />' ).prop(
 					{
 						type: 'hidden',
 						name: button.prop( 'name' ),
 						value: button.prop( 'value' )
-							}
+					}
 				)
 			);
 		}
@@ -158,12 +158,12 @@ jQuery(
 							text: selectedOption.innerText,
 							name: $( selectedOption ).data( 'language-name' ),
 							flagUrl: $( selectedOption ).data( 'flag-html' )
-						  }
+						}
 					);
-					  // Show table of languages.
-					  languagesTable.show();
-					  // Put back the focus on the select language field after clicking on "Add language button".
-					  focusOnField( $( '#lang_list-button' ) );
+					// Show table of languages.
+					languagesTable.show();
+					// Put back the focus on the select language field after clicking on "Add language button".
+					focusOnField( $( '#lang_list-button' ) );
 				} else {
 					var message = pll_wizard_params.i18n_no_language_selected;
 					if ( languagesMap.has( selectedOption.value ) ) {
@@ -200,7 +200,7 @@ jQuery(
 				}
 				// Verify if the language has been added in the list otherwise display a dialog box to confirm what to do.
 				if ( '' !== selectedLanguage ) {
-					 // Verify we don't add a duplicate language before opening the dialog box otherwise display an error message.
+					// Verify we don't add a duplicate language before opening the dialog box otherwise display an error message.
 					if ( ! languagesMap.has( selectedLanguage ) ) {
 						dialog.dialog( 'open' );
 					} else {
@@ -226,20 +226,20 @@ jQuery(
 		function confirmDialog( what ) {
 			switch ( what ) {
 				case 'yes':
-					  var selectedOption = $( '#lang_list' ).children( ':selected' );
+					var selectedOption = $( '#lang_list' ).children( ':selected' );
 					addLanguage(
 						{
 							locale: selectedOption[0].value,
 							text: selectedOption[0].innerText,
 							name: $( selectedOption ).data( 'language-name' ),
 							flagUrl: $( selectedOption ).data( 'flag-html' )
-							  }
+						}
 					);
-			   break;
+					break;
 				case 'no':
 					// Empty select form field and submit again the form.
 					languagesList.val( '' );
-			   break;
+					break;
 				case 'ignore':
 			}
 			dialog.dialog( 'close' );
@@ -277,23 +277,23 @@ jQuery(
 					$( this ).find( '#dialog-language-flag' ).empty().prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 				},
 				buttons: [
-				{
-					text: pll_wizard_params.i18n_dialog_yes_button,
-					click: function( event ) {
-						confirmDialog( 'yes' );
-					}
+					{
+						text: pll_wizard_params.i18n_dialog_yes_button,
+						click: function( event ) {
+							confirmDialog( 'yes' );
+						}
 				},
-				{
-					text: pll_wizard_params.i18n_dialog_no_button,
-					click: function( event ) {
-						confirmDialog( 'no' );
-					}
+					{
+						text: pll_wizard_params.i18n_dialog_no_button,
+						click: function( event ) {
+							confirmDialog( 'no' );
+						}
 				},
-				{
-					text: pll_wizard_params.i18n_dialog_ignore_button,
-					click: function( event ) {
-						confirmDialog( 'ignore' );
-					}
+					{
+						text: pll_wizard_params.i18n_dialog_ignore_button,
+						click: function( event ) {
+							confirmDialog( 'ignore' );
+						}
 				}
 				]
 			}
