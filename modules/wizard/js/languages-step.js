@@ -112,7 +112,7 @@ jQuery( document ).ready(
 		 * @param {object} field The jQuery element which will be focused
 		 */
 		function focusOnField( field ) {
-			field.focus();
+			field.trigger( 'focus' );
 		}
 
 		/**
