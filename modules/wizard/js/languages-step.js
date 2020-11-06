@@ -277,24 +277,24 @@ jQuery(
 					$( this ).find( '#dialog-language-flag' ).empty().prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 				},
 				buttons: [
-					{
-						text: pll_wizard_params.i18n_dialog_yes_button,
-						click: function( event ) {
-							confirmDialog( 'yes' );
-						}
-					},
-					{
-						text: pll_wizard_params.i18n_dialog_no_button,
-						click: function( event ) {
-							confirmDialog( 'no' );
-						}
-					},
-					{
-						text: pll_wizard_params.i18n_dialog_ignore_button,
-						click: function( event ) {
-							confirmDialog( 'ignore' );
-						}
+				{
+					text: pll_wizard_params.i18n_dialog_yes_button,
+					click: function( event ) {
+						confirmDialog( 'yes' );
 					}
+				},
+				{
+					text: pll_wizard_params.i18n_dialog_no_button,
+					click: function( event ) {
+						confirmDialog( 'no' );
+					}
+				},
+				{
+					text: pll_wizard_params.i18n_dialog_ignore_button,
+					click: function( event ) {
+						confirmDialog( 'ignore' );
+					}
+				}
 				]
 			}
 		)
