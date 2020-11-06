@@ -2,7 +2,7 @@
  * @package Polylang
  */
 
-jQuery( document ).ready(
+jQuery(
 	function( $ ) {
 		var addLanguageForm = $( '.languages-step' ); // Form element.
 		var languageFields = $( '#language-fields' ); // Element where to append hidden fields for creating language.
@@ -25,16 +25,16 @@ jQuery( document ).ready(
 			// see template view-wizard-step-languages.php.
 			var languageValueHtml = $( '<td />' ).text( language.text ).prepend( language.flagUrl ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			var languageTrashIconHtml = $( '<td />' )
+			.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+				$( '<span />' )
+				.addClass( 'dashicons dashicons-trash' )
+				.attr( 'data-language', language.locale )
 				.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 					$( '<span />' )
-					.addClass( 'dashicons dashicons-trash' )
-					.attr( 'data-language', language.locale )
-					.append( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
-						$( '<span />' )
-						.addClass( 'screen-reader-text' )
-						.text( pll_wizard_params.i18n_remove_language_icon )
-					)
-				);
+					.addClass( 'screen-reader-text' )
+					.text( pll_wizard_params.i18n_remove_language_icon )
+				)
+			);
 			// see the comment and the harcoded code above. languageTrashIconHtml and languageValueHtml are safe.
 			var languageLineHtml = $( '<tr />' ).prepend( languageTrashIconHtml ).prepend( languageValueHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			var languageFieldHtml = $( '<input />' ).attr(
@@ -60,10 +60,10 @@ jQuery( document ).ready(
 					// Remove line in languages table.
 					$( this ).parents( 'tr' ).remove();
 					// Remove input field.
-					languageField = languageFields.children( 'input[value=' + $( this ).data( 'language' ) + ']' ).remove();
+					var languageField = languageFields.children( 'input[value=' + $( this ).data( 'language' ) + ']' ).remove();
 					// If there is no more languages hide languages table.
 					if ( languagesListTable.children().length <= 0 ) {
-						languagesTable.hide();
+							languagesTable.hide();
 					}
 					// Remove language from the Map.
 					languagesMap.delete( $( this ).data( 'language' ) );
@@ -112,7 +112,7 @@ jQuery( document ).ready(
 		 * @param {object} field The jQuery element which will be focused
 		 */
 		function focusOnField( field ) {
-			field.focus();
+			field.trigger( 'focus' );
 		}
 
 		/**
