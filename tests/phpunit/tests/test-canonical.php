@@ -44,7 +44,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$polylang->model->term->set_language( self::$term_en, 'en' );
 
-
 		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 
 		self::$polylang->model->post->set_language( self::$page_for_posts_en, 'en' );
@@ -196,7 +195,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	/**
-	 * 	Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
 	 */
 	public function test_page_for_post_option_should_be_translated_from_plain_permalink() {
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
@@ -212,7 +211,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	/**
-	 * 	Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
 	 */
 	public function test_static_front_page_with_incorrect_language() {
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
@@ -222,7 +221,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	/**
-	 * 	Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
 	 */
 	public function test_static_front_page_without_language() {
 		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
