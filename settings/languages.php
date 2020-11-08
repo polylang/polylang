@@ -247,6 +247,13 @@ return array(
 		'w3c'      => 'de-DE',
 		'facebook' => 'de_DE',
 	),
+	'dsb' => array(
+		'code'     => 'dsb',
+		'locale'   => 'dsb',
+		'name'     => 'Dolnoserbšćina',
+		'dir'      => 'ltr',
+		'flag'     => 'de',
+	),
 	'dzo' => array(
 		'code'     => 'dz',
 		'locale'   => 'dzo',
