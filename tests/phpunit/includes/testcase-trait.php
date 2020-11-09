@@ -45,9 +45,6 @@ trait PLL_UnitTestCase_Trait {
 
 		$_REQUEST = array(); // WP Cleans up only $_POST and $_GET.
 
-		$_SERVER['HTTP_HOST']   = WP_TESTS_DOMAIN;
-		$_SERVER['REQUEST_URI'] = '';
-
 		parent::tearDown();
 	}
 
