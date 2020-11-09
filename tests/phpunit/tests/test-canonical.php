@@ -55,9 +55,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$polylang->model->term->set_language( self::$term_en, 'en' );
 
-		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
-		update_option( 'show_on_front', 'page' );
-
 		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( self::$page_for_posts_en, 'en' );
 
@@ -83,7 +80,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->model->term->set_language( $trtax_en, 'en' );
 
 		wp_set_post_terms( $trcpt_en, 'test', 'trtax' );
-
 
 		// Untranslated cpt and tax
 		register_post_type( 'cpt', array( 'public' => true ) );
@@ -114,6 +110,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public static function wpTearDownAfterClass() {
 		_unregister_post_type( 'pllcanonical' );
 		_unregister_post_type( 'trcpt' );
+		_unregister_post_type( 'cpt' );
 
 		parent::wpTearDownAfterClass();
 	}
@@ -134,6 +131,12 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			)
 		);
+	}
+
+	public function tearDown() {
+		unset( self::$polylang->static_pages );
+
+		parent::tearDown();
 	}
 
 	public function test_post_with_name_and_language() {
