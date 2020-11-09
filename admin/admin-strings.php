@@ -53,20 +53,9 @@ class PLL_Admin_Strings {
 	 */
 	public static function &get_strings() {
 		self::$default_strings = array(
-			'options' => array(
-				'blogname'        => __( 'Site Title', 'polylang' ),
-				'blogdescription' => __( 'Tagline', 'polylang' ),
-				'date_format'     => __( 'Date Format', 'polylang' ),
-				'time_format'     => __( 'Time Format', 'polylang' ),
-			),
 			'widget_title' => __( 'Widget title', 'polylang' ),
 			'widget_text'  => __( 'Widget text', 'polylang' ),
 		);
-
-		// WP strings
-		foreach ( self::$default_strings['options'] as $option => $string ) {
-			self::register_string( $string, get_option( $option ), 'WordPress' );
-		}
 
 		// Widgets titles
 		global $wp_registered_widgets;
@@ -121,11 +110,6 @@ class PLL_Admin_Strings {
 	 * @return string
 	 */
 	public static function sanitize_string_translation( $translation, $name ) {
-
-		if ( false !== ( $option = array_search( $name, self::$default_strings['options'], true ) ) ) {
-			$translation = sanitize_option( $option, $translation );
-		}
-
 		if ( $name == self::$default_strings['widget_title'] ) {
 			$translation = sanitize_text_field( $translation );
 		}

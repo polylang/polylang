@@ -78,6 +78,12 @@ abstract class PLL_Base {
 		if ( $this->model->get_languages_list() ) {
 			$this->posts = new PLL_CRUD_Posts( $this );
 			$this->terms = new PLL_CRUD_Terms( $this );
+
+			// WordPress options.
+			new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'blogdescription', array(), array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'date_format', array(), array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'time_format', array(), array( 'context' => 'WorPress' ) );
 		}
 	}
 
