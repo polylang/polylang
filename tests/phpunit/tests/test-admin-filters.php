@@ -61,7 +61,6 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_personal_options_update() {
-		$_POST['user_lang'] = 'en_US'; // Backward compatibility with WP < 4.7
 		$_POST['description_de'] = 'Biography in German';
 		remove_action( 'personal_options_update', 'send_confirmation_on_profile_email' );
 		do_action( 'personal_options_update', 1 );
