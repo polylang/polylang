@@ -59,31 +59,20 @@ class PLL_WPML_Config {
 	 */
 	public function init() {
 		$this->xmls = array();
+		$files = $this->get_files();
 
-		// Plugins
-		// Don't forget sitewide active plugins thanks to Reactorshop http://wordpress.org/support/topic/polylang-and-yoast-seo-plugin/page/2?replies=38#post-4801829
-		$plugins = ( is_multisite() && $sitewide_plugins = get_site_option( 'active_sitewide_plugins' ) ) && is_array( $sitewide_plugins ) ? array_keys( $sitewide_plugins ) : array();
-		$plugins = array_merge( $plugins, get_option( 'active_plugins', array() ) );
+		if ( ! empty( $files ) ) {
+			add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require libxml in Site health.
 
-		foreach ( $plugins as $plugin ) {
-			if ( file_exists( $file = WP_PLUGIN_DIR . '/' . dirname( $plugin ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-				$this->xmls[ dirname( $plugin ) ] = $xml;
+			// Read all files.
+			if ( extension_loaded( 'simplexml' ) ) {
+				foreach ( $files as $context => $file ) {
+					$xml = simplexml_load_file( $file );
+					if ( false !== $xml ) {
+						$this->xmls[ $context ] = $xml;
+					}
+				}
 			}
-		}
-
-		// Theme
-		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-			$this->xmls[ get_template() ] = $xml;
-		}
-
-		// Child theme
-		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-			$this->xmls[ get_stylesheet() ] = $xml;
-		}
-
-		// Custom
-		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) && false !== $xml = simplexml_load_file( $file ) ) {
-			$this->xmls['Polylang'] = $xml;
 		}
 
 		if ( ! empty( $this->xmls ) ) {
@@ -115,6 +104,61 @@ class PLL_WPML_Config {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get all wpml-config.xml files in plugins, theme, child theme and Polylang custom directory.
+	 *
+	 * @since 3.1
+	 *
+	 * @return array
+	 */
+	protected function get_files() {
+		$files = array();
+
+		// Plugins
+		// Don't forget sitewide active plugins thanks to Reactorshop http://wordpress.org/support/topic/polylang-and-yoast-seo-plugin/page/2?replies=38#post-4801829
+		$plugins = ( is_multisite() && $sitewide_plugins = get_site_option( 'active_sitewide_plugins' ) ) && is_array( $sitewide_plugins ) ? array_keys( $sitewide_plugins ) : array();
+		$plugins = array_merge( $plugins, get_option( 'active_plugins', array() ) );
+
+		foreach ( $plugins as $plugin ) {
+			if ( file_exists( $file = WP_PLUGIN_DIR . '/' . dirname( $plugin ) . '/wpml-config.xml' ) ) {
+				$files[ dirname( $plugin ) ] = $file;
+			}
+		}
+
+		// Theme
+		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) ) {
+			$files[ get_template() ] = $file;
+		}
+
+		// Child theme
+		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) ) {
+			$files[ get_stylesheet() ] = $file;
+		}
+
+		// Custom
+		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) ) {
+			$files['Polylang'] = $file;
+		}
+
+		return $files;
+	}
+
+	/**
+	 * Requires the simplexml PHP module when a wpml-config.xml has been found.
+	 *
+	 * @since 3.1
+	 *
+	 * @param array $modules An associative array of modules to test for.
+	 * @return array
+	 */
+	public function site_status_test_php_modules( $modules ) {
+		$modules['simplexml'] = array(
+			'extension' => 'simplexml',
+			'required'  => true,
+		);
+		return $modules;
 	}
 
 	/**
