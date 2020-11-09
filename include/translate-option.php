@@ -170,7 +170,7 @@ class PLL_Translate_Option {
 				}
 			}
 		} else {
-			pll_register_string( $option, $values, $context, true );
+			PLL_Admin_Strings::register_string( $option, $values, $context, true );
 		}
 	}
 
