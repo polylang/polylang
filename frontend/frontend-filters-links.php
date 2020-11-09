@@ -387,18 +387,18 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $wp_query->tax_query ) ) ) {
 				$term_id = $this->get_queried_term_id( $wp_query->tax_query );
 				$language = $this->model->term->get_language( $term_id );
+				$redirect_url = get_term_link( $term_id );
 			}
+		}
+
+		elseif ( $wp_query->is_posts_page && ! empty( $wp_query->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
+			$language = $this->model->post->get_language( (int) $id );
+			$redirect_url = get_permalink( $id );
 		}
 
 		elseif ( $wp_query->is_posts_page ) {
 			$obj = $wp_query->get_queried_object();
 			$language = $this->model->post->get_language( (int) $obj->ID );
-		}
-
-		elseif ( is_404() && ! empty( $wp_query->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
-			// Special case for page shortlinks when using subdomains or multiple domains
-			// Needed because redirect_canonical doesn't accept to change the domain name
-			$language = $this->model->post->get_language( (int) $id );
 		}
 
 		if ( 3 === $this->options['force_lang'] ) {
@@ -410,10 +410,6 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					$redirect_url = str_replace( '://' . $requested_host, '://' . $host, $requested_url );
 				}
 			}
-		}
-
-		if ( isset( $term_id ) ) {
-			$redirect_url = get_term_link( $term_id );
 		}
 
 		if ( empty( $language ) ) {
