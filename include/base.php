@@ -80,10 +80,10 @@ abstract class PLL_Base {
 			$this->terms = new PLL_CRUD_Terms( $this );
 
 			// WordPress options.
-			new PLL_Translate_Option( 'blogname', 1, array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option( 'blogdescription', 1, array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option( 'date_format', 1, array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option( 'time_format', 1, array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'blogdescription', array(), array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'date_format', array(), array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'time_format', array(), array( 'context' => 'WorPress' ) );
 		}
 	}
 
