@@ -255,7 +255,7 @@ class PLL_Translate_Option {
 						continue;
 					}
 
-					if ( is_object( $values ) && is_object( $old_values ) && isset( $values->$name, $values->$name ) ) {
+					if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$name, $values->$name ) ) {
 						$values->$name = $this->check_value_recursive( $old_values->$name, $values->$name, $child );
 						continue;
 					}
@@ -269,7 +269,7 @@ class PLL_Translate_Option {
 								$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $values[ $n ], $child );
 							}
 
-							if ( is_object( $values ) && is_object( $old_values ) && isset( $values->$n, $values->$n ) ) {
+							if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$n, $values->$n ) ) {
 								$values->$n = $this->check_value_recursive( $old_values->$n, $values->$n, $child );
 							}
 						}
@@ -282,7 +282,7 @@ class PLL_Translate_Option {
 						$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $values[ $n ], $child );
 					}
 
-					if ( is_object( $values ) && is_object( $old_values ) && isset( $values->$n, $values->$n ) ) {
+					if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$n, $values->$n ) ) {
 						$values->$n = $this->check_value_recursive( $old_values->$n, $values->$n, $child );
 					}
 				}
