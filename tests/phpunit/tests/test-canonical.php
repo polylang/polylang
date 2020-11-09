@@ -273,7 +273,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
 	 */
 	public function test_page_with_name_and_language_when_front_page_displays_posts() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'posts' );
 
 		$this->assertCanonical(
@@ -289,9 +288,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
 	 */
 	public function test_page_with_incorrect_language_when_front_page_displays_posts() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'posts' );
-
 		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
 	}
 
@@ -299,7 +296,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
 	 */
 	public function test_page_without_language_when_front_page_displays_posts() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'posts' );
 		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
 	}
