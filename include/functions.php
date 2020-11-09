@@ -42,51 +42,6 @@ if ( ! function_exists( 'wpcom_vip_get_page_by_path' ) ) {
 	}
 }
 
-if ( ! function_exists( 'wp_doing_ajax' ) ) {
-	/**
-	 * Determines whether the current request is a WordPress Ajax request.
-	 * Backward compatibility function for WP < 4.7
-	 *
-	 * @since 2.2
-	 *
-	 * @return bool True if it's a WordPress Ajax request, false otherwise.
-	 */
-	function wp_doing_ajax() {
-		/** This filter is documented in wp-includes/load.php */
-		return apply_filters( 'wp_doing_ajax', defined( 'DOING_AJAX' ) && DOING_AJAX );
-	}
-}
-
-if ( ! function_exists( 'wp_doing_cron' ) ) {
-	/**
-	 * Determines whether the current request is a WordPress cron request.
-	 * Backward compatibility function for WP < 4.8
-	 *
-	 * @since 2.6
-	 *
-	 * @return bool True if it's a WordPress cron request, false otherwise.
-	 */
-	function wp_doing_cron() {
-		/** This filter is documented in wp-includes/load.php */
-		return apply_filters( 'wp_doing_cron', defined( 'DOING_CRON' ) && DOING_CRON );
-	}
-}
-
-if ( ! function_exists( 'wp_using_themes' ) ) {
-	/**
-	 * Determines whether the current request should use themes.
-	 * Backward compatibility function for WP < 5.1
-	 *
-	 * @since 2.6
-	 *
-	 * @return bool True if themes should be used, false otherwise.
-	 */
-	function wp_using_themes() {
-		/** This filter is documented in wp-includes/load.php */
-		return apply_filters( 'wp_using_themes', defined( 'WP_USE_THEMES' ) && WP_USE_THEMES );
-	}
-}
-
 /**
  * Determines whether we should load the cache compatibility
  *

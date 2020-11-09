@@ -59,11 +59,7 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 
 		// NB: When 'skip_missing' is false, WPML returns all languages even if there is no content
 		$languages = PLL()->model->get_languages_list( array( 'hide_empty' => $args['skip_missing'] ) );
-
-		// FIXME: Backward compatibility with WP < 4.7
-		if ( function_exists( 'wp_list_sort' ) ) {
-			$languages = wp_list_sort( $languages, $orderby, $order ); // Since WP 4.7
-		}
+		$languages = wp_list_sort( $languages, $orderby, $order ); // Since WP 4.7
 
 		foreach ( $languages as $lang ) {
 			// We can find a translation only on frontend once the global $wp_query object has been instantiated
