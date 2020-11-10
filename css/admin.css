@@ -327,7 +327,7 @@
 	margin-right: 10px;
 }
 
-/* Export / Import metaboxes in Strings translaions screen */
+/* Metaboxes holder in Strings translations screen */
 .languages_page_mlang_strings .metabox-holder > div {
 	display: flex;
 }
@@ -392,7 +392,7 @@
 		width: 95%;
 	}
 
-	/* Export / Import metaboxes in Strings translaions screen */
+	/* Metaboxes holder in Strings translations screen */
 	.languages_page_mlang_strings .metabox-holder > div {
 		flex-direction: column;
 	}
