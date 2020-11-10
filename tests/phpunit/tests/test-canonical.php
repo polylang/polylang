@@ -97,7 +97,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'hide_default' => 0,
 				'post_types'   => array(
 					'cpt' => 'pllcanonical',
-					// translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
 				),
 			)
 		);
