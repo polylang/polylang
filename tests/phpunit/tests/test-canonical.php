@@ -68,15 +68,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			self::markTestSkipped( 'This test requires WP 5.5+' );
 		}
 
-		self::$polylang->links_model = self::$polylang->model->get_links_model();
-		if ( method_exists( self::$polylang->links_model, 'init' ) ) {
-			self::$polylang->links_model->init();
-		}
-
-		self::$polylang->sitemaps = new PLL_Sitemaps( self::$polylang );
-		self::$polylang->sitemaps->init();
-
-		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
+		add_action(
+			'pll_init',
+			function ( $polylang ) {
+				$polylang->sitemaps = new PLL_Sitemaps( $polylang );
+				$polylang->sitemaps->init();
+				wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
+			}
+		);
 	}
 
 	public static function wpTearDownAfterClass() {
