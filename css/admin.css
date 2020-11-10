@@ -368,7 +368,8 @@
 		padding-left: 0;
 	}
 
-	.translation input {
+	.translation input,
+	.translation textarea {
 		width: 95%;
 	}
 
