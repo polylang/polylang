@@ -327,6 +327,25 @@
 	margin-right: 10px;
 }
 
+/* Metaboxes holder in Strings translations screen */
+.languages_page_mlang_strings .metabox-holder > div {
+	display: flex;
+}
+.languages_page_mlang_strings .metabox-holder > div > div {
+	flex-grow: 1;
+}
+.languages_page_mlang_strings .metabox-holder > div > div:nth-child(2n) {
+	margin-left: 1rem;
+}
+.languages_page_mlang_strings .metabox-holder > div > div.closed {
+	border:0;
+	background: none;
+}
+.languages_page_mlang_strings .metabox-holder > div > div.closed .postbox-header{
+	border: 1px solid #ccd0d4;
+	background: #fff;
+}
+
 @media screen and ( max-width: 782px ) {
 	/* settings */
 	#wpbody-content .pll-settings .pll-configure > td {
@@ -371,6 +390,14 @@
 	.translation input,
 	.translation textarea {
 		width: 95%;
+	}
+
+	/* Metaboxes holder in Strings translations screen */
+	.languages_page_mlang_strings .metabox-holder > div {
+		flex-direction: column;
+	}
+	.languages_page_mlang_strings .metabox-holder > div > div:nth-child(2n) {
+		margin-left: 0;
 	}
 
 	/* hide selected language flag and translations language name */
