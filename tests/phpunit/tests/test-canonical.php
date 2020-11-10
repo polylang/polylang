@@ -215,9 +215,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_page_for_posts_with_name_and_language() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical(
 			'/en/posts/',
 			array(
@@ -228,44 +228,44 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_page_for_posts_should_match_page_for_post_option_when_language_is_incorrect() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
 	}
 
 	public function test_page_for_posts_should_match_page_for_post_option_posts_without_language() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/posts/', '/en/posts/' );
 	}
 
 	public function test_page_for_posts_should_match_page_for_post_option_posts_from_plain_permalink() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_en, '/en/posts/' );
 	}
 
 	public function test_page_for_post_option_should_be_translated_when_language_is_incorrect() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/en/articles/', '/fr/articles/' );
 	}
 
 	public function test_page_for_post_option_should_be_translated_when_no_language_is_set() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/articles/', '/fr/articles/' );
 	}
 
 	public function test_page_for_post_option_should_be_translated_from_plain_permalink() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_fr, '/fr/articles/' );
 	}
 
@@ -301,8 +301,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_page_from_plain_permalink_when_front_page_displays_posts() {
-		self::$polylang->static_pages = new PLL_Frontend_Static_Pages( self::$polylang );
 		update_option( 'show_on_front', 'posts' );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
 	}
 
