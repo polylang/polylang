@@ -63,16 +63,22 @@
 	vertical-align: top;
 }
 
+.translation {
+	display: flex; /* fix #691 to remove default margin bottom */
+}
+@media screen and (max-width: 782px) { /* reset default display property for small device */
+	.translation{
+		display: block;
+	}
+}
+.translation textarea{
+	display: block; /* fix #691 to remove default margin bottom */
+}
 .translation input,
 .translation textarea {
 	width: 72%;
-}
-/* fix #691 */
-.translation input{
-	margin-bottom: 4px;
-}
-.translation textarea {
-	margin-bottom: 2px;
+	box-sizing: border-box; /* to be sure field don't overrun outside their wrapper */
+	margin-bottom: 4px; /* fix #691 set the same margin bottom for both textarea and input tags */
 }
 
 /* settings */
