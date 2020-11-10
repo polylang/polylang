@@ -192,7 +192,7 @@ jQuery(
 			return {
 				slug: values[0],
 				locale: values[1],
-				rtl: values[2],
+				rtl: [values[2]],
 				flag: values[3],
 				name: selectedElement.text().split(' - ')[0] // At the moment there is no need of the 2nd part because it corresponds on the locale which is already known by splitting the selected element value
 			};
