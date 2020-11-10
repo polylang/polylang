@@ -67,6 +67,13 @@
 .translation textarea {
 	width: 72%;
 }
+/* fix #691 */
+.translation input{
+	margin-bottom: 4px;
+}
+.translation textarea {
+	margin-bottom: 2px;
+}
 
 /* settings */
 .pll-settings {
