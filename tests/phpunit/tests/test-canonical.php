@@ -61,31 +61,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->model->post->set_language( self::$page_for_posts_fr, 'fr' );
 
 		self::$polylang->model->post->save_translations( self::$page_for_posts_en, compact( 'en', 'fr' ) );
-
-		// Translated cpt and tax
-		register_post_type( 'trcpt', array( 'public' => true ) );
-		register_taxonomy( 'trtax', 'trcpt' );
-
-		$trcpt_en = $factory->post->create( array( 'post_type' => 'trcpt' ) );
-		self::$polylang->model->post->set_language( $trcpt_en, 'en' );
-
-		$trcpt_fr = $factory->post->create( array( 'post_type' => 'trcpt' ) );
-		self::$polylang->model->post->set_language( $trcpt_fr, 'fr' );
-
-		$trtax_en = $factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $trtax_en, 'en' );
-
-		wp_set_post_terms( $trcpt_en, 'test', 'trtax' );
-
-
-		// Untranslated cpt and tax
-		register_post_type( 'cpt', array( 'public' => true ) );
-		register_taxonomy( 'tax', 'cpt' );
-
-		$cpt = $factory->post->create( array( 'post_type' => 'cpt' ) );
-		$factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
-
-		wp_set_post_terms( $cpt, 'test', 'tax' );
 	}
 
 	public function init_for_sitemaps() {
@@ -106,7 +81,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public static function wpTearDownAfterClass() {
 		_unregister_post_type( 'pllcanonical' );
-		_unregister_post_type( 'trcpt' );
 
 		parent::wpTearDownAfterClass();
 	}
