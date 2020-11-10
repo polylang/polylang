@@ -70,7 +70,7 @@ class PLL_Translate_Option {
 	}
 
 	/**
-	 * Translates the strings for an option.
+	 * Translates the strings registered for an option.
 	 *
 	 * @since 1.0
 	 *
@@ -82,7 +82,7 @@ class PLL_Translate_Option {
 	}
 
 	/**
-	 * Recursively translates the strings for an option.
+	 * Recursively translates the strings registered for an option.
 	 *
 	 * @since 1.0
 	 *
@@ -177,6 +177,10 @@ class PLL_Translate_Option {
 	/**
 	 * Filters an option before it is updated.
 	 *
+	 * This is the step 1 in the update process, in which we prevent the update of
+	 * strings to their translations by filtering them out, and we store the updated strings
+	 * for the next step.
+	 *
 	 * @since 2.9
 	 *
 	 * @param mixed  $value     The new, unserialized option value.
@@ -196,6 +200,7 @@ class PLL_Translate_Option {
 		}
 		PLL()->load_strings_translations( $locale );
 
+		// Filters out the strings which would be updated to their translations and stores the updated strings.
 		$value = $this->check_value_recursive( $this->old_value, $value, $this->keys );
 
 		return $value;
@@ -203,6 +208,10 @@ class PLL_Translate_Option {
 
 	/**
 	 * Updates the string translations to keep the same translated value when updating the original option.
+	 *
+	 * This is the step 2 in the update process. Knowing all strings that have been updated,
+	 * we remove the old strings from the strings translations and replace them by
+	 * the new strings with the old translations.
 	 *
 	 * @since 2.9
 	 */
@@ -233,9 +242,13 @@ class PLL_Translate_Option {
 	}
 
 	/**
-	 * Prevents updating the option if we are saving the translation of the original value
-	 * when the admin language filter is active.
-	 * Stores the updated strings to be able to later assign the translations to the new value.
+	 * Recursively compares the updated strings to the translation of the old string.
+	 *
+	 * This is the heart of the update process. If an updated string is found to be
+	 * the same as the translation of the old string, we restore the old string to
+	 * prevent the update in {@see PLL_Translate_Option::pre_update_option()}, otherwise
+	 * the updated string is stored in {@see PLL_Translate_Option::updated_strings} to be able to
+	 * later assign the translations to the new value in {@see PLL_Translate_Option::update_option()}.
 	 *
 	 * @since 2.9
 	 *
