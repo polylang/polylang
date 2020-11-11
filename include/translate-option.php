@@ -23,7 +23,7 @@ class PLL_Translate_Option {
 	 *
 	 * @var array
 	 */
-	private $udpated_strings = array();
+	private $updated_strings = array();
 
 	/**
 	 * Constructor
