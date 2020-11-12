@@ -68,7 +68,6 @@
 		<properties>
 			<property name="text_domain" type="array">
 				<element value="polylang"/>
-				<element value="polylang-pro"/>
 			</property>
 		</properties>
 	</rule>
