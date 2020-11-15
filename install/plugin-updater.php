@@ -10,10 +10,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Allows plugins to use their own update API.
- * Modified version with 'polylang' text domain and comments for translators
+ * Modified version with 'polylang' text domain and comments for translators.
  *
  * @author Easy Digital Downloads
- * @version 1.7.1
+ * @version 1.8.0
  */
 class PLL_Plugin_Updater {
 
@@ -112,47 +112,50 @@ class PLL_Plugin_Updater {
 			return $_transient_data;
 		}
 
+		$current = $this->get_repo_api_data();
+		if ( false !== $current && is_object( $current ) && isset( $current->new_version ) ) {
+			if ( version_compare( $this->version, $current->new_version, '<' ) ) {
+				$_transient_data->response[ $this->name ] = $current;
+			} else {
+				// Populating the no_update information is required to support auto-updates in WordPress 5.5.
+				$_transient_data->no_update[ $this->name ] = $current;
+			}
+		}
+		$_transient_data->last_checked           = time();
+		$_transient_data->checked[ $this->name ] = $this->version;
+
+		return $_transient_data;
+	}
+
+	/**
+	 * Get repo API data from store.
+	 * Save to cache.
+	 *
+	 * @return \stdClass
+	 */
+	public function get_repo_api_data() {
 		$version_info = $this->get_cached_version_info();
 
 		if ( false === $version_info ) {
-			$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug, 'beta' => $this->beta ) );
+			$version_info = $this->api_request(
+				'plugin_latest_version',
+				array(
+					'slug' => $this->slug,
+					'beta' => $this->beta,
+				)
+			);
+			if ( ! $version_info ) {
+				return false;
+			}
+
+			// This is required for your plugin to support auto-updates in WordPress 5.5.
+			$version_info->plugin = $this->name;
+			$version_info->id     = $this->name;
 
 			$this->set_version_info_cache( $version_info );
-
 		}
 
-		if ( false !== $version_info && is_object( $version_info ) && isset( $version_info->new_version ) ) {
-
-			$no_update = false;
-			if ( version_compare( $this->version, $version_info->new_version, '<' ) ) {
-
-				$_transient_data->response[ $this->name ] = $version_info;
-
-				// Make sure the plugin property is set to the plugin's name/location. See issue 1463 on Software Licensing's GitHub repo.
-				$_transient_data->response[ $this->name ]->plugin = $this->name;
-
-			} else {
-				$no_update              = new stdClass();
-				$no_update->id          = '';
-				$no_update->slug        = $this->slug;
-				$no_update->plugin      = $this->name;
-				$no_update->new_version = $version_info->new_version;
-				$no_update->url         = $version_info->homepage;
-				$no_update->package     = isset( $version_info->package ) ? $version_info->package : ''; #modified#
-				$no_update->icons       = $version_info->icons;
-				$no_update->banners     = $version_info->banners;
-				$no_update->banners_rtl = array();
-			}
-
-			$_transient_data->last_checked           = time();
-			$_transient_data->checked[ $this->name ] = $this->version;
-
-			if ( $no_update ) {
-				$_transient_data->no_update[ $this->name ] = $no_update;
-			}
-		}
-
-		return $_transient_data;
+		return $version_info;
 	}
 
 	/**
@@ -188,7 +191,7 @@ class PLL_Plugin_Updater {
 
 		if ( empty( $update_cache->response ) || empty( $update_cache->response[ $this->name ] ) ) {
 
-			$version_info = $this->get_cached_version_info();
+			$version_info = $this->get_repo_api_data();
 
 			if ( false === $version_info ) {
 				$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug, 'beta' => $this->beta ) );
@@ -217,29 +220,14 @@ class PLL_Plugin_Updater {
 				return;
 			}
 
-			$no_update = false;
 			if ( version_compare( $this->version, $version_info->new_version, '<' ) ) {
-
 				$update_cache->response[ $this->name ] = $version_info;
-
 			} else {
-				$no_update              = new stdClass();
-				$no_update->id          = '';
-				$no_update->slug        = $this->slug;
-				$no_update->plugin      = $this->name;
-				$no_update->new_version = $version_info->new_version;
-				$no_update->url         = $version_info->homepage;
-				$no_update->package     = isset( $version_info->package ) ? $version_info->package : ''; #modified#
-				$no_update->icons       = $version_info->icons;
-				$no_update->banners     = $version_info->banners;
-				$no_update->banners_rtl = array();
+				$update_cache->no_update[ $this->name ] = $version_info;
 			}
 
 			$update_cache->last_checked           = time();
 			$update_cache->checked[ $this->name ] = $this->version;
-			if ( $no_update ) {
-				$update_cache->no_update[ $this->name ] = $no_update;
-			}
 
 			set_site_transient( 'update_plugins', $update_cache );
 
@@ -445,16 +433,16 @@ class PLL_Plugin_Updater {
 		}
 
 		if ( false === $edd_plugin_url_available[ $store_hash ] ) {
-			return;
+			return false;
 		}
 
 		$data = array_merge( $this->api_data, $_data );
 
 		if ( $data['slug'] != $this->slug ) {
-			return;
+			return false;
 		}
 
-		if( $this->api_url == trailingslashit ( home_url() ) ) {
+		if ( $this->api_url == trailingslashit ( home_url() ) ) {
 			return false; // Don't allow a plugin to ping itself
 		}
 
@@ -490,7 +478,7 @@ class PLL_Plugin_Updater {
 			$request->icons = maybe_unserialize( $request->icons );
 		}
 
-		if( ! empty( $request->sections ) ) {
+		if ( ! empty( $request->sections ) ) {
 			foreach( $request->sections as $key => $section ) {
 				$request->$key = (array) $section;
 			}
@@ -634,4 +622,3 @@ class PLL_Plugin_Updater {
 	}
 
 }
-
