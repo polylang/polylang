@@ -67,6 +67,7 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 
 	define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
 
-	require __DIR__ . '/include/class-polylang.php';
-	new Polylang();
+	if ( empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		new Polylang();
+	}
 }
