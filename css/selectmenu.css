@@ -199,6 +199,11 @@
 	height: 16px;
 }
 
+.pll-wizard .ui-button:hover,
+.pll-wizard .ui-button:focus {
+	background: #fff; /* To override jQuery ui-dialog styles provided by WordPress */
+}
+
 .ui-widget-content {
 	max-height: 231px;
 	box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
