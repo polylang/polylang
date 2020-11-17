@@ -173,6 +173,10 @@
 	outline: 2px solid transparent;
 }
 
+.toplevel_page_mlang .ui-menu-item {
+	color: #016087; /* Same color as option in a WordPress focused select HTML tag */
+}
+
 .ui-widget-content .ui-state-hover,
 .ui-widget-content .ui-state-focus,
 .ui-widget-content .ui-state-active { /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
