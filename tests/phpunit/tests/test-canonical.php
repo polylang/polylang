@@ -9,7 +9,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $term_en;
 	private static $page_for_posts_en;
 	private static $page_for_posts_fr;
-	private static $page_on_front_en;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -55,9 +54,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$polylang->model->term->set_language( self::$term_en, 'en' );
 
-		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
-		update_option( 'show_on_front', 'page' );
-
 		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$polylang->model->post->set_language( self::$page_for_posts_en, 'en' );
 
@@ -65,39 +61,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$polylang->model->post->set_language( self::$page_for_posts_fr, 'fr' );
 
 		self::$polylang->model->post->save_translations( self::$page_for_posts_en, compact( 'en', 'fr' ) );
-
-		update_option( 'page_for_posts', self::$page_for_posts_fr );
-
-		self::$page_on_front_en = $factory->post->create( array( 'post_type' => 'page', 'post_title' => 'home' ) );
-
-		self::$polylang->model->post->set_language( self::$page_on_front_en, 'en' );
-
-		self::$polylang->static_pages = new PLL_Admin_Static_Pages( self::$polylang );
-		update_option( 'show_on_front', 'posts' );
-
-		// Translated cpt and tax
-		register_post_type( 'trcpt', array( 'public' => true ) );
-		register_taxonomy( 'trtax', 'trcpt' );
-
-		$trcpt_en = $factory->post->create( array( 'post_type' => 'trcpt' ) );
-		self::$polylang->model->post->set_language( $trcpt_en, 'en' );
-		$trcpt_fr = $factory->post->create( array( 'post_type' => 'trcpt' ) );
-		self::$polylang->model->post->set_language( $trcpt_fr, 'fr' );
-
-		$trtax_en = $factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $trtax_en, 'en' );
-
-		wp_set_post_terms( $trcpt_en, 'test', 'trtax' );
-
-
-		// Untranslated cpt and tax
-		register_post_type( 'cpt', array( 'public' => true ) );
-		register_taxonomy( 'tax', 'cpt' );
-
-		$cpt = $factory->post->create( array( 'post_type' => 'cpt' ) );
-		$factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
-
-		wp_set_post_terms( $cpt, 'test', 'tax' );
 	}
 
 	public function init_for_sitemaps() {
@@ -105,15 +68,16 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			self::markTestSkipped( 'This test requires WP 5.5+' );
 		}
 
-		self::$polylang->links_model = self::$polylang->model->get_links_model();
-		if ( method_exists( self::$polylang->links_model, 'init' ) ) {
-			self::$polylang->links_model->init();
-		}
+		add_action(
+			'pll_init',
+			function ( $polylang ) {
+				$polylang->sitemaps = new PLL_Sitemaps( $polylang );
+				$polylang->sitemaps->init();
 
-		self::$polylang->sitemaps = new PLL_Sitemaps( self::$polylang );
-		self::$polylang->sitemaps->init();
-
-		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
+				$GLOBALS['wp_sitemaps'] = null; // Reset the global 'wp_sitemaps', otherwise wp_sitemaps_get_server() doesn't run completely.
+				wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
+			}
+		);
 	}
 
 	public static function wpTearDownAfterClass() {
@@ -134,7 +98,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'hide_default' => 0,
 				'post_types'   => array(
 					'cpt' => 'pllcanonical',
-					// translate the cpt // FIXME /!\ 'after_setup_theme' already fired and the list of translated post types is already cached :(
 				),
 			)
 		);
@@ -226,6 +189,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_page_for_posts_with_name_and_language() {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical(
 			'/en/posts/',
 			array(
@@ -236,49 +202,82 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_page_for_posts_should_match_page_for_post_option_when_language_is_incorrect() {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/fr/posts/', '/en/posts/' );
 	}
 
 	public function test_page_for_posts_should_match_page_for_post_option_posts_without_language() {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/posts/', '/en/posts/' );
 	}
 
 	public function test_page_for_posts_should_match_page_for_post_option_posts_from_plain_permalink() {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_en, '/en/posts/' );
 	}
 
 	public function test_page_for_post_option_should_be_translated_when_language_is_incorrect() {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/en/articles/', '/fr/articles/' );
 	}
 
 	public function test_page_for_post_option_should_be_translated_when_no_language_is_set() {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '/articles/', '/fr/articles/' );
 	}
 
 	public function test_page_for_post_option_should_be_translated_from_plain_permalink() {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_fr, '/fr/articles/' );
 	}
 
-	public function test_static_front_page_with_name_and_language() {
+	/**
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
+	public function test_page_with_name_and_language_when_front_page_displays_posts() {
+		update_option( 'show_on_front', 'posts' );
+
 		$this->assertCanonical(
-			'/en/home/',
+			'/en/parent-page/',
 			array(
-				'url' => '/en/home/',
-				'qv'  => array( 'lang' => 'en', 'pagename' => 'home', 'page' => '' ),
+				'url' => '/en/parent-page/',
+				'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
 			)
 		);
 	}
 
-	public function test_static_front_page_with_incorrect_language() {
-		$this->assertCanonical( '/fr/home/', '/en/home/' );
+	/**
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
+	public function test_page_with_incorrect_language_when_front_page_displays_posts() {
+		update_option( 'show_on_front', 'posts' );
+		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
 	}
 
-	public function test_static_front_page_without_language() {
-		$this->assertCanonical( '/home/', '/en/home/' );
+	/**
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
+	public function test_page_without_language_when_front_page_displays_posts() {
+		update_option( 'show_on_front', 'posts' );
+		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
 	}
 
-	public function test_static_front_page_from_plain_permalink() {
-		$this->assertCanonical( '?page_id=' . self::$page_on_front_en, '/en/home/' );
+	public function test_page_from_plain_permalink_when_front_page_displays_posts() {
+		update_option( 'show_on_front', 'posts' );
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
+		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
 	}
 
 	public function test_sitemap_with_translated_post() {
