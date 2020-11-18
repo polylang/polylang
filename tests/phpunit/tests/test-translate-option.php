@@ -83,13 +83,17 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->assertArrayNotHasKey( 'val_en', $mo->entries );
 	}
 
-	protected function prepare_option_multiple() {
+	protected function prepare_option_multiple( $method = 'ARRAY' ) {
 		$options = array(
 			'option_name_1'   => 'val1',
 			'options_group_1' => array(
 				'sub_option_name_11' => 'val11',
 			),
 		);
+
+		if ( 'OBJECT' === $method ) {
+			$options = json_decode( json_encode( $options ) ); // Recursively converts the arrays to objects.
+		}
 
 		add_option( 'my_options', $options );
 
@@ -104,9 +108,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		new PLL_Translate_Option( 'my_options', $keys );
 	}
 
-	function test_update_option_multiple() {
-		$this->prepare_option_multiple();
-
+	protected function translate_strings() {
 		$languages = array( 'en', 'fr' );
 
 		foreach ( $languages as $lang ) {
@@ -116,6 +118,28 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 			);
 			$this->add_string_translations( $lang, $translations );
 		}
+	}
+
+	protected function update_option_with_new_val( $method = 'ARRAY' ) {
+		$options = array(
+			'option_name_1'   => 'new_val1',
+			'options_group_1' => array(
+				'sub_option_name_11' => 'new_val11',
+			),
+		);
+
+		if ( 'OBJECT' === $method ) {
+			$options = json_decode( json_encode( $options ) ); // Recursively converts the arrays to objects.
+		}
+
+		update_option( 'my_options', $options );
+	}
+
+	function test_update_option_multiple() {
+		$this->prepare_option_multiple( 'ARRAY' );
+		$this->translate_strings();
+
+		$languages = array( 'en', 'fr' );
 
 		// Quick check.
 		foreach ( $languages as $lang ) {
@@ -125,14 +149,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 			$this->assertEquals( 'val11_' . $lang, $options['options_group_1']['sub_option_name_11'] );
 		}
 
-		$options = array(
-			'option_name_1'   => 'new_val1',
-			'options_group_1' => array(
-				'sub_option_name_11' => 'new_val11',
-			),
-		);
-
-		update_option( 'my_options', $options );
+		$this->update_option_with_new_val( 'ARRAY' );
 
 		foreach ( $languages as $lang ) {
 			self::$polylang->load_strings_translations( $lang );
@@ -142,23 +159,36 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	function test_update_option_multiple_with_no_translation() {
-		$this->prepare_option_multiple();
+	function test_update_object_option_multiple() {
+		$this->prepare_option_multiple( 'OBJECT' );
+		$this->translate_strings();
 
+
+		$this->update_option_with_new_val( 'OBJECT' );
+
+		$languages = array( 'en', 'fr' );
+
+		foreach ( $languages as $lang ) {
+			self::$polylang->load_strings_translations( $lang );
+			$options = get_option( 'my_options' );
+			$this->assertEquals( 'val1_' . $lang, $options->option_name_1 );
+			$this->assertEquals( 'val11_' . $lang, $options->options_group_1->sub_option_name_11 );
+		}
+	}
+
+	protected function do_no_translate_strings() {
 		$translations = array(
 			'val1'  => 'val1',
 			'val11' => 'val11',
 		);
 		$this->add_string_translations( 'en', $translations );
+	}
 
-		$options = array(
-			'option_name_1'   => 'new_val1',
-			'options_group_1' => array(
-				'sub_option_name_11' => 'new_val11',
-			),
-		);
+	function test_update_option_multiple_with_no_translation() {
+		$this->prepare_option_multiple( 'ARRAY' );
+		$this->do_no_translate_strings();
 
-		update_option( 'my_options', $options );
+		$this->update_option_with_new_val( 'ARRAY' );
 
 		self::$polylang->load_strings_translations( 'en' );
 		$options = get_option( 'my_options' );
@@ -166,21 +196,29 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'new_val11', $options['options_group_1']['sub_option_name_11'] );
 	}
 
-	function test_update_option_multiple_when_filtered() {
-		$this->prepare_option_multiple();
+	function test_update_object_option_multiple_with_no_translation() {
+		$this->prepare_option_multiple( 'OBJECT' );
+		$this->do_no_translate_strings();
 
-		$translations = array(
-			'val1'  => 'val1_en',
-			'val11' => 'val11_en',
-		);
-		$this->add_string_translations( 'en', $translations );
+		$this->update_option_with_new_val( 'OBJECT' );
 
+		self::$polylang->load_strings_translations( 'en' );
+		$options = get_option( 'my_options' );
+		$this->assertEquals( 'new_val1', $options->option_name_1 );
+		$this->assertEquals( 'new_val11', $options->options_group_1->sub_option_name_11 );
+	}
+
+	protected function _test_update_option_with_translated_val( $method = 'ARRAY' ) {
 		$options = array(
 			'option_name_1'   => 'val1_en',
 			'options_group_1' => array(
 				'sub_option_name_11' => 'val11_en',
 			),
 		);
+
+		if ( 'OBJECT' === $method ) {
+			$options = json_decode( json_encode( $options ) ); // Recursively converts the arrays to objects.
+		}
 
 		PLL()->curlang = self::$polylang->model->get_language( 'en' );
 		update_option( 'my_options', $options );
@@ -192,5 +230,19 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->assertArrayNotHasKey( 'val1_en', $mo->entries );
 		$this->assertArrayHasKey( 'val11', $mo->entries );
 		$this->assertArrayNotHasKey( 'val11_en', $mo->entries );
+	}
+
+	function test_update_option_multiple_when_filtered() {
+		$this->prepare_option_multiple( 'ARRAY' );
+		$this->translate_strings();
+
+		$this->_test_update_option_with_translated_val( 'ARRAY' );
+	}
+
+	function test_update_object_option_multiple_when_filtered() {
+		$this->prepare_option_multiple( 'OBJECT' );
+		$this->translate_strings();
+
+		$this->_test_update_option_with_translated_val( 'OBJECT' );
 	}
 }
