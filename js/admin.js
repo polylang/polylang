@@ -43,6 +43,9 @@ jQuery(
 		var flagListExist = $( "#flag_list" ).length;
 		// Allow to check if a language list dropdown is present. Not present in other settings page.
 		var langListExist = $( "#lang_list" ).length;
+		// jQuery UI selectmenu widget width option
+		var defaultSelectmenuWidth = '95%';
+		var wizardSelectmenuWidth = '100%';
 
 		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
 		// jQuery UI 1.12 introduce a wrapper inside de li tag which is necessary to selectmenu widget to work correctly.
@@ -108,8 +111,7 @@ jQuery(
 		 */
 
 		// Selectmenu widget options
-		// jQuery UI selectmenu widget substract 2% and we need 95% for the width matches to the other fields width.
-		var selectmenuOptions = { width: '97%'};
+		var selectmenuOptions = { width: defaultSelectmenuWidth };
 
 		// Selectmenu widget callbacks
 		var selectmenuFlagListCallbacks = {};
@@ -209,9 +211,9 @@ jQuery(
 
 		// Create the jQuery UI selectmenu widget languages list dropdown and return its instance.
 		var selectmenuLangListCallbacks = {};
-		// For the wizard we need a 100% width. So we override the previous defined value of selectmenuOptions. Remind that jQuery UI selectmenu widget substract 2% to this value.
+		// For the wizard we need a 100% width. So we override the previous defined value of selectmenuOptions.
 		if( $( '#lang_list' ).closest( '.pll-wizard-content' ).length > 0 ) {
-			selectmenuOptions = Object.assign( selectmenuOptions, { width: '102%' } );
+			selectmenuOptions = Object.assign( selectmenuOptions, { width: wizardSelectmenuWidth } );
 		}
 
 		// There is no need of create and select callbacks with jQuery UI 1.12 because overrinding _renderButtonItem method do the job.
