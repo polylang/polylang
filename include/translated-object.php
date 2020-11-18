@@ -163,13 +163,14 @@ abstract class PLL_Translated_Object {
 
 		if ( ! empty( $term ) ) {
 			$d = maybe_unserialize( $term->description );
-			$slug = array_search( $id, $this->get_translations( $id ) ); // in case some plugin stores the same value with different key
-			unset( $d[ $slug ] );
+			if ( is_array( $d ) ) {
+				$slug = array_search( $id, $this->get_translations( $id ) ); // In case some plugin stores the same value with different key.
+				unset( $d[ $slug ] );
+			}
 
 			if ( empty( $d ) ) {
 				wp_delete_term( (int) $term->term_id, $this->tax_translations );
-			}
-			else {
+			} else {
 				wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $d ) ) );
 			}
 		}
