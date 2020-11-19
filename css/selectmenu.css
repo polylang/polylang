@@ -114,14 +114,16 @@
 	overflow: hidden;
 	position: relative;
 	text-decoration: none;
+	box-sizing: border-box; /* To keep width calculation in percent since WP 5.6 */
 }
 
 .ui-selectmenu-button span.ui-icon {
 	right: 0.5em;
 	left: auto;
-	margin-top: -10px;
 	position: absolute;
-	top: 50%;
+	top: 26%;
+	width: 16px;
+	height: 16px;
 	text-indent: 0; /* due to text-indent for jquery ui-dialog in wizard */
 }
 
@@ -163,19 +165,24 @@
 .toplevel_page_mlang .ui-selectmenu-button.ui-selectmenu-button-open{ /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 	box-shadow: 0 0 0 transparent;
 	border-radius: 4px;
-    border: 1px solid #7e8993;
+	border: 1px solid #7e8993;
 }
 
 .toplevel_page_mlang .ui-selectmenu-button:focus{
+	color: #016087; /* Same color as WordPress focused select HTML tag */
 	border-color: #007cba;
-    box-shadow: 0 0 0 1px #007cba;
-    outline: 2px solid transparent;
+	box-shadow: 0 0 0 1px #007cba;
+	outline: 2px solid transparent;
+}
+
+.toplevel_page_mlang .ui-menu-item {
+	color: #016087; /* Same color as option in a WordPress focused select HTML tag */
 }
 
 .ui-widget-content .ui-state-hover,
 .ui-widget-content .ui-state-focus,
 .ui-widget-content .ui-state-active { /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
-	background: #f5f5f5;
+	background: #d5d5d5;
 }
 
 .ui-selectmenu-button.ui-state-focus {
@@ -184,8 +191,18 @@
 }
 
 .ui-icon-triangle-1-s:before {
-	content: "\f140";
-	font: 20px/1 'dashicons';
+	content: "";
+	background: #fff url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 0px top 55%;
+	background-size: 16px 16px;
+	box-sizing: border-box;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+}
+
+.pll-wizard .ui-button:hover,
+.pll-wizard .ui-button:focus {
+	background: #fff; /* To override jQuery ui-dialog styles provided by WordPress */
 }
 
 .ui-widget-content {
