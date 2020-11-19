@@ -369,7 +369,7 @@ class PLL_WPSEO {
 			case 'home-page':
 				$presentation->model->permalink = pll_home_url();
 				$presentation->model->title = WPSEO_Options::get( 'title-home-wpseo' );
-				$presentation->model->description = WPSEO_Options::get( 'title-home-wpseo' );
+				$presentation->model->description = WPSEO_Options::get( 'metadesc-home-wpseo' );
 				break;
 
 			case 'post-type-archive':
