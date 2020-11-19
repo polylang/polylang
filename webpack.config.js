@@ -87,8 +87,8 @@ function configureWebpack( options){
 					minimizer: [
 						new cssMinimizerPlugin(),
 					],
-				  },
-							};
+				},
+			};
 			return config;
 		},
 		{}
