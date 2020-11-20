@@ -69,7 +69,7 @@ class PLL_Sitemaps {
 			add_filter( 'pll_set_language_from_query', array( $this, 'set_language_from_query' ), 10, 2 );
 			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
 			add_filter( 'wp_sitemaps_add_provider', array( $this, 'replace_provider' ) );
-		} else {
+		} elseif ( method_exists( $this->links_model, 'site_url' ) ) {
 			add_filter( 'wp_sitemaps_index_entry', array( $this, 'index_entry' ) );
 			add_filter( 'wp_sitemaps_stylesheet_url', array( $this->links_model, 'site_url' ) );
 			add_filter( 'wp_sitemaps_stylesheet_index_url', array( $this->links_model, 'site_url' ) );
