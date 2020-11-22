@@ -222,6 +222,19 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_en, '/en/posts/' );
 	}
 
+	public function test_paged_page_for_posts_should_match_page_for_post_option_posts_from_plain_permalink() {
+		update_option( 'posts_per_page', 1 );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', self::$page_for_posts_fr );
+
+		// Create 1 additional English post to have a paged page for posts.
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
+		$this->assertCanonical( '?paged=2&page_id=' . self::$page_for_posts_en, '/en/posts/page/2/' );
+	}
+
 	public function test_page_for_post_option_should_be_translated_when_language_is_incorrect() {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
