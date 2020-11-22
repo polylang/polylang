@@ -439,25 +439,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $out, "<span class='post-state'>Posts Page</span>" ) );
 	}
 
-	function test_update_page_on_front() {
-		global $wp_settings_errors;
-		unset( $wp_settings_errors ); // just in case
-
-		// attempt to assign an untranslated message
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
-		update_option( 'page_on_front', $en );
-
-		// test option in unchanged
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		$this->assertEquals( self::$home_fr, get_option( 'page_on_front' ) );
-
-		// test error message
-		$this->assertNotEmpty( get_settings_errors() );
-
-		unset( $wp_settings_errors ); // cleanup
-	}
-
 	// Bug fixed in 2.0
 	function test_get_post_type_archive_link_for_posts() {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );

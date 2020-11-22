@@ -36,10 +36,6 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		// Refresh language cache when a static front page has been translated
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
 
-		// Checks if chosen page on front is translated
-		add_filter( 'pre_update_option_page_on_front', array( $this, 'update_page_on_front' ), 10, 2 );
-		add_filter( 'customize_validate_page_on_front', array( $this, 'customize_validate_page_on_front' ), 10, 2 );
-
 		// Prevents WP resetting the option
 		add_filter( 'pre_update_option_show_on_front', array( $this, 'update_show_on_front' ), 10, 2 );
 
@@ -121,63 +117,6 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		if ( in_array( $this->page_on_front, $translations ) ) {
 			$this->model->clean_languages_cache();
 		}
-	}
-
-	/**
-	 * Checks if a page is translated in all languages
-	 *
-	 * @since 2.2
-	 *
-	 * @param int $page_id
-	 * @return bool
-	 */
-	protected function is_page_translated( $page_id ) {
-		if ( $page_id ) {
-			$translations = count( $this->model->post->get_translations( $page_id ) );
-			$languages = count( $this->model->get_languages_list() );
-
-			if ( $languages > 1 && $translations != $languages ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Prevents choosing an untranslated static front page
-	 * Displays an error message
-	 *
-	 * @since 1.6
-	 *
-	 * @param int $page_id New page on front page id
-	 * @param int $old_id  Old page on front page_id
-	 * @return int
-	 */
-	public function update_page_on_front( $page_id, $old_id ) {
-		if ( ! $this->is_page_translated( $page_id ) ) {
-			$page_id = $old_id;
-			add_settings_error( 'reading', 'pll_page_on_front_error', __( 'The chosen static front page must be translated in all languages.', 'polylang' ) );
-		}
-
-		return $page_id;
-	}
-
-	/**
-	 * Displays an error message in the customizer when choosing an untranslated static front page
-	 *
-	 * @since 2.2
-	 *
-	 * @param object $validity WP_Error object
-	 * @param int    $page_id  New page on front page id
-	 * @return object
-	 */
-	public function customize_validate_page_on_front( $validity, $page_id ) {
-		if ( ! $this->is_page_translated( $page_id ) ) {
-			return new WP_Error( 'pll_page_on_front_error', __( 'The chosen static front page must be translated in all languages.', 'polylang' ) );
-		}
-
-		return $validity;
 	}
 
 	/**
