@@ -391,9 +391,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		elseif ( $wp_query->is_posts_page && ! empty( $wp_query->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
+		elseif ( $this->links_model->using_permalinks && $wp_query->is_posts_page && ! empty( $wp_query->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
 			$language = $this->model->post->get_language( (int) $id );
 			$redirect_url = get_permalink( $id );
+			if ( ! empty( $wp_query->query['paged'] ) && $page = get_query_var( 'paged' ) ) {
+				$redirect_url = $this->links_model->add_paged_to_link( $redirect_url, $page );
+			}
 		}
 
 		elseif ( $wp_query->is_posts_page ) {
