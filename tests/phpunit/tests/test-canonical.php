@@ -188,6 +188,20 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?cat=' . self::$term_en, '/en/category/parent/' );
 	}
 
+	public function test_paged_category(){
+		update_option( 'posts_per_page', 1 );
+
+		// Create 1 additional English post to have a paged page for posts.
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		// Set category to the posts.
+		wp_set_post_terms( self::$post_en, array( self::$term_en ), 'category' );
+		wp_set_post_terms( $en, array( self::$term_en ), 'category' );
+
+		self::$polylang->model->clean_languages_cache(); // Clean the languages transient.
+		$this->assertCanonical( '/en/category/parent/page/2/', '/en/category/parent/page/2/' );
+	}
 	public function test_page_for_posts_with_name_and_language() {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
