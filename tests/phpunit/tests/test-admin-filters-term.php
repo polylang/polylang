@@ -414,7 +414,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
 	}
 
-	function test_new_default_category_2() {
+	function test_new_default_category_with_empty_translations() {
 		$old = self::$polylang->model->term;
 		self::create_language( 'pt_PT' );
 		$default = (int) get_option( 'default_category' );
