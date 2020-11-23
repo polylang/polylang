@@ -88,11 +88,11 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	 */
 	public function get_canonical( $test_url ) {
 		$pll_redirected_url = $this->pll_env->filters_links->check_canonical_url( home_url( $test_url ), false );
-		$wp_redirected_url  = redirect_canonical( $pll_redirected_url, false );
-		if ( ! $wp_redirected_url ) {
+
+		if ( $pll_redirected_url && $pll_redirected_url !== $test_url ) {
 			return $pll_redirected_url;
 		}
 
-		return $wp_redirected_url;
+		return redirect_canonical( $pll_redirected_url, false );
 	}
 }
