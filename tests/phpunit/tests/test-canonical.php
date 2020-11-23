@@ -188,7 +188,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?cat=' . self::$term_en, '/en/category/parent/' );
 	}
 
-	public function test_paged_category(){
+	public function test_paged_category() {
 		update_option( 'posts_per_page', 1 );
 
 		// Create 1 additional English post to have a paged page for posts.
