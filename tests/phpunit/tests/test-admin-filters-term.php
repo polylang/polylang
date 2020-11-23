@@ -432,14 +432,18 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			)
 			->getMock();
 		self::$polylang->model->term->method( 'get_translations' )
-			->will( $this->returnCallback( function( $id ) {
-				$test = new PLL_Translated_Term( self::$polylang->model );
-				$default = (int) get_option( 'default_category' );
-				if ( $id === $default ) {
-					return null;
-				}
-				return ( $test->get_translations( $id ) );
-			}));
+			->will(
+				$this->returnCallback(
+					function( $id ) {
+						$test = new PLL_Translated_Term( self::$polylang->model );
+						$default = (int) get_option( 'default_category' );
+						if ( $id === $default ) {
+							return null;
+						}
+						return ( $test->get_translations( $id ) );
+					}
+				)
+			);
 
 
 		self::$polylang->model->create_default_category( self::$polylang->model->get_language( 'pt' )->slug );
