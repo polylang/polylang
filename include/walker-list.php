@@ -47,7 +47,7 @@ class PLL_Walker_List extends Walker {
 	 * @param array  $args              An array of arguments.
 	 * @param string $output            Passed by reference. Used to append additional content.
 	 */
-	public function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
+	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
 		$element = (object) $element; // Make sure we have an object
 		$element->parent = $element->id = 0; // Don't care about this
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
