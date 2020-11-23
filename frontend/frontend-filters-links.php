@@ -383,20 +383,34 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		elseif ( is_category() || is_tag() || is_tax() || ( is_404() && ! empty( $wp_query->tax_query ) ) ) {
+		elseif ( $this->links_model->using_permalinks && is_category() && ! empty( $wp_query->query['cat'] ) ) {
+			// When we receive a plain permaling with a cat query var, we need to redirect to the pretty permalink.
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $wp_query->tax_query ) ) ) {
 				$term_id = $this->get_queried_term_id( $wp_query->tax_query );
 				$language = $this->model->term->get_language( $term_id );
-				$redirect_url = get_term_link( $term_id );
+				$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
+			}
+		}
+
+		elseif ( is_category() || is_tag() || is_tax() ) {
+			// We need to switch the language when there is no language provided in a pretty permalink.
+			$obj = $wp_query->get_queried_object();
+			if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
+				$language = $this->model->term->get_language( (int) $obj->term_id );
+			}
+		}
+
+		elseif ( is_404() && ! empty( $wp_query->tax_query ) ) {
+			// When a wrong language is passed through a pretty permalink, we just need to switch the language.
+			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $wp_query->tax_query ) ) ) {
+				$term_id = $this->get_queried_term_id( $wp_query->tax_query );
+				$language = $this->model->term->get_language( $term_id );
 			}
 		}
 
 		elseif ( $this->links_model->using_permalinks && $wp_query->is_posts_page && ! empty( $wp_query->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
 			$language = $this->model->post->get_language( (int) $id );
-			$redirect_url = get_permalink( $id );
-			if ( ! empty( $wp_query->query['paged'] ) && $page = get_query_var( 'paged' ) ) {
-				$redirect_url = $this->links_model->add_paged_to_link( $redirect_url, $page );
-			}
+			$redirect_url = $this->maybe_add_page_to_redirect_url( get_permalink( $id ) );
 		}
 
 		elseif ( $wp_query->is_posts_page ) {
@@ -446,6 +460,23 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			exit;
 		}
 
+		return $redirect_url;
+	}
+
+	/**
+	 * Returns the link to the paged page if requested.
+	 *
+	 * @since 2.9
+	 *
+	 * @param string $redirect_url The url to redirect to.
+	 * @return string
+	 */
+	protected function maybe_add_page_to_redirect_url( $redirect_url ) {
+		global $wp_query;
+
+		if ( ! empty( $wp_query->query['paged'] ) && $page = get_query_var( 'paged' ) ) {
+			$redirect_url = $this->links_model->add_paged_to_link( $redirect_url, $page );
+		}
 		return $redirect_url;
 	}
 

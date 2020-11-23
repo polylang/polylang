@@ -176,6 +176,20 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
+	public function test_paged_category_with_name_and_language() {
+		$this->assertCanonical(
+			'/en/category/parent/page/2/',
+			array(
+				'url' => '/en/category/parent/page/2/',
+				'qv'  => array(
+					'lang'          => 'en',
+					'category_name' => 'parent',
+					'paged'         => 2,
+				),
+			)
+		);
+	}
+
 	public function test_category_with_incorrect_language() {
 		$this->assertCanonical( '/fr/category/parent/', '/en/category/parent/' );
 	}
@@ -186,6 +200,20 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_category_from_plain_permalink() {
 		$this->assertCanonical( '?cat=' . self::$term_en, '/en/category/parent/' );
+	}
+
+	public function test_paged_category_from_plain_permalink() {
+		update_option( 'posts_per_page', 1 );
+
+		// Create 1 additional English post to have a paged category.
+		$en = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $en, 'en' );
+
+		// Set category to the posts.
+		wp_set_post_terms( self::$post_en, array( self::$term_en ), 'category' );
+		wp_set_post_terms( $en, array( self::$term_en ), 'category' );
+
+		$this->assertCanonical( '?paged=2&cat=' . self::$term_en, '/en/category/parent/page/2/' );
 	}
 
 	public function test_page_for_posts_with_name_and_language() {
