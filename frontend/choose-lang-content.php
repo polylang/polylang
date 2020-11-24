@@ -89,7 +89,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 * @param object $query instance of WP_Query
 	 */
 	public function parse_main_query( $query ) {
-		if ( $query !== $GLOBALS['wp_the_query'] ) {
+		if ( empty( $GLOBALS['wp_the_query'] ) || $query !== $GLOBALS['wp_the_query'] ) {
 			return;
 		}
 
