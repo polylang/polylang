@@ -37,7 +37,7 @@ function configureWebpack( options){
 			const entry = {};
 			entry[ path.parse( filename).name ] = filename;
 			const output = {
-				filename: `${path.parse( filename).dir}/${path.parse( filename).name}.min.js`,
+				filename: `${path.parse( filename).dir}/[name].min.js`,
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
 			}
 			const config = {
@@ -53,7 +53,7 @@ function configureWebpack( options){
 			const entry = {};
 			entry[ path.parse( filename).name ] = filename;
 			const output = {
-				filename: `${path.parse( filename).dir}/${path.parse( filename).name}.work`,
+				filename: `${path.parse( filename).dir}/[name].work`,
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
 			}
 			const config = {
@@ -62,7 +62,7 @@ function configureWebpack( options){
 				plugins: [
 					new miniCssExtractPlugin(
 						{
-							filename: `${path.parse( filename).dir}/${path.parse( filename).name}.min.css`
+							filename: `${path.parse( filename).dir}/[name].min.css`
 						}
 					),
 					new CleanWebpackPlugin(
