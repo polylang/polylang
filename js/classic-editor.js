@@ -220,8 +220,11 @@ jQuery(
  * @since 3.0
  */
 function resetFeaturedImage() {
-	if (wp.media.featuredImage._frame) {  // Check the property rather than calling to the function that will instantiate a wp.media.view.MediaFrame.Select object.
-		wp.media.featuredImage.frame()._selection.attachments.reset();
+	if (wp.media.featuredImage && 
+		wp.media.featuredImage._frame && // Check the property rather than calling to the function that will instantiate a wp.media.view.MediaFrame.Select object. 
+		wp.media.featuredImage._frame._selection && 
+		wp.media.featuredImage._frame._selection.attachments instanceof wp.media.model.Attachments) {
+			wp.media.featuredImage._frame._selection.attachments.reset();
 	}
 }
 
@@ -229,9 +232,17 @@ function resetFeaturedImage() {
  * @since 3.0
  */
 function resetCurrentMediaFrame() {
-	if (wp.media.frame) {
-		wp.media.frame.views.get( '.media-frame-content' )[0].attachments.collection.mirroring._hasMore = true;
-		wp.media.frame.views.get( '.media-frame-content' )[0].attachments.collection.reset();
+	if (wp.media.frame && wp.media.frame.views instanceof wp.Backbone.Subviews) {
+		var attachmentsBrowser = wp.media.frame.views.get( '.media-frame-content' );
+		if (attachmentsBrowser) {
+			var attachmentsCollection = attachmentsBrowser[0].attachments.collection;
+			if (attachmentsCollection) {
+				if (attachmentsCollection.mirroring) {
+					attachmentsCollection.mirroring._hasMore = true;
+				}
+				attachmentsBrowser[0].attachments.collection.reset();
+			}
+		}
 	}
 }
 
