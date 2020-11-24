@@ -39,6 +39,7 @@ function configureWebpack( options){
 			const output = {
 				filename: `${path.parse( filename).dir}/[name].min.js`,
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
+				iife: false, // Avoid Webpack to wrap files into a IIFE which is not needed for this kind of javascript files.
 			}
 			const config = {
 				entry: entry,
