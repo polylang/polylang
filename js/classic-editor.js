@@ -167,6 +167,10 @@ jQuery(
 						$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
 					}
 				);
+
+				resetCurrentMediaFrame();
+
+				resetFeaturedImage();
 			}
 		);
 
@@ -211,3 +215,23 @@ jQuery(
 		init_translations();
 	}
 );
+
+/**
+ * @since 3.0
+ */
+function resetFeaturedImage() {
+	if (wp.media.featuredImage._frame) {  // Check the property rather than calling to the function that will instantiate a wp.media.view.MediaFrame.Select object.
+		wp.media.featuredImage.frame()._selection.attachments.reset();
+	}
+}
+
+/**
+ * @since 3.0
+ */
+function resetCurrentMediaFrame() {
+	if (wp.media.frame) {
+		wp.media.frame.views.get( '.media-frame-content' )[0].attachments.collection.mirroring._hasMore = true;
+		wp.media.frame.views.get( '.media-frame-content' )[0].attachments.collection.reset();
+	}
+}
+
