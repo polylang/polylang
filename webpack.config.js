@@ -50,6 +50,7 @@ function configureWebpack( options){
 		{}
 	);
 
+	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
 	const cssFileNamesEntries = cssFileNames.map( ( filename ) => {
 			const entry = {};
 			entry[ path.parse( filename).name ] = filename;
