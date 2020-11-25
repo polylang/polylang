@@ -6,3 +6,4 @@ issue_template.md
 phpcs.xml.dist
 phpunit.xml
 /tests/
+/bin/
