@@ -145,6 +145,17 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $column, 'href' ) );
 	}
 
+	function test_term_language_with_default_category() {
+		$GLOBALS['post_type'] = 'post';
+		$GLOBALS['taxonomy'] = 'category';
+
+		$default = (int) get_option( 'default_category' );
+
+		// with capability
+		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $default );
+		$this->assertNotFalse( strpos( $column, 'default_cat' ) );
+	}
+
 	function test_untranslated_term() {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
