@@ -108,14 +108,6 @@ class PLL_Default_Category {
 		// this is a translation of the default category
 		$default = (int) get_option( 'default_category' );
 		$translations = $this->model->term->get_translations( $default );
-		if ( empty( $translations ) ) {
-			if ( $lg = $this->model->term->get_language( $default ) ) {
-				$translations[ $lg->slug ] = $default;
-			}
-			else {
-				$translations = array();
-			}
-		}
 
 		$this->model->term->save_translations( (int) $cat, $translations );
 	}
