@@ -97,16 +97,11 @@ function configureWebpack( options){
 	);
 
 	// Make webpack configuration.
-	const config = [];
-	// Add config for js files.
-	jsFileNamesEntries.forEach( element => {
-		config.push( element );
-	});
+	const config = [
+		...jsFileNamesEntries, // Add config for js files.
+		...cssFileNamesEntries, // Add config for css files.
+	];
 
-	// Add config for css files.
-	cssFileNamesEntries.forEach( element => {
-		config.push( element );
-	});
 	return config;
 }
 
