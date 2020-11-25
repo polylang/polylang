@@ -399,44 +399,6 @@ class PLL_Model {
 	}
 
 	/**
-	 * Create a default category for a language
-	 *
-	 * @since 1.2
-	 *
-	 * @param object|string|int $lang language
-	 * @return void
-	 */
-	public function create_default_category( $lang ) {
-		$lang = $this->get_language( $lang );
-
-		// create a new category
-		// FIXME this is translated in admin language when we would like it in $lang
-		$cat_name = __( 'Uncategorized', 'polylang' );
-		$cat_slug = sanitize_title( $cat_name . '-' . $lang->slug );
-		$cat = wp_insert_term( $cat_name, 'category', array( 'slug' => $cat_slug ) );
-
-		// check that the category was not previously created ( in case the language was deleted and recreated )
-		$cat = isset( $cat->error_data['term_exists'] ) ? $cat->error_data['term_exists'] : $cat['term_id'];
-
-		// set language
-		$this->term->set_language( (int) $cat, $lang );
-
-		// this is a translation of the default category
-		$default = (int) get_option( 'default_category' );
-		$translations = $this->term->get_translations( $default );
-		if ( empty( $translations ) ) {
-			if ( $lg = $this->term->get_language( $default ) ) {
-				$translations[ $lg->slug ] = $default;
-			}
-			else {
-				$translations = array();
-			}
-		}
-
-		$this->term->save_translations( (int) $cat, $translations );
-	}
-
-	/**
 	 * It is possible to have several terms with the same name in the same taxonomy ( one per language )
 	 * but the native term_exists() will return true even if only one exists.
 	 * So here the function adds the language parameter.
