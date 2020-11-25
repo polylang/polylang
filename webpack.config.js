@@ -3,8 +3,8 @@
  */
 const path = require( 'path' );
 const glob = require( 'glob' ).sync;
-const miniCssExtractPlugin = require('mini-css-extract-plugin');
-const cssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 function configureWebpack( options){
@@ -61,7 +61,7 @@ function configureWebpack( options){
 				entry: entry,
 				output: output,
 				plugins: [
-					new miniCssExtractPlugin(
+					new MiniCssExtractPlugin(
 						{
 							filename: `${path.parse( filename).dir}/[name].min.css`
 						}
@@ -79,14 +79,14 @@ function configureWebpack( options){
 					rules: [
 						{
 							test: /\.css$/i,
-							use: [ miniCssExtractPlugin.loader, 'css-loader'],
+							use: [ MiniCssExtractPlugin.loader, 'css-loader'],
 						},
 					],
 				},
 				optimization: {
 					minimize: true,
 					minimizer: [
-						new cssMinimizerPlugin(),
+						new CssMinimizerPlugin(),
 					],
 				},
 			};
