@@ -597,10 +597,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// The default category should be in the default language
-		$default_cats = $this->term->get_translations( get_option( 'default_category' ) );
-		if ( isset( $default_cats[ $slug ] ) ) {
-			update_option( 'default_category', $default_cats[ $slug ] );
-		}
+		do_action( 'update_default_category_language', $slug );
 
 		// Update options
 		$this->options['default_lang'] = $slug;

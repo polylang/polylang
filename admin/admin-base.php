@@ -88,6 +88,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$this->links = new PLL_Admin_Links( $this ); // FIXME needed here ?
 		$this->static_pages = new PLL_Admin_Static_Pages( $this ); // FIXME needed here ?
 		$this->filters_links = new PLL_Filters_Links( $this ); // FIXME needed here ?
+		$this->default_category = new PLL_Admin_Default_Category( $this );
 
 		// Filter admin language for users
 		// We must not call user info before WordPress defines user roles in wp-settings.php

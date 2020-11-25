@@ -55,6 +55,15 @@ class PLL_Admin_Filters_Term {
 	protected $post_id;
 
 	/**
+	 * A reference to the PLL_Admin_Default_Category instance.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Admin_Default_Category
+	 */
+	protected $default_category;
+
+	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @param object $polylang
@@ -64,6 +73,7 @@ class PLL_Admin_Filters_Term {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
 		$this->pref_lang = &$polylang->pref_lang;
+		$this->default_category = &$polylang->default_category;
 
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
 			// Adds the language field in the 'Categories' and 'Post Tags' panels
@@ -183,7 +193,7 @@ class PLL_Admin_Filters_Term {
 		$lang = empty( $lang ) ? $this->pref_lang : $lang;
 
 		// Disable the language dropdown and the translations input fields for default categories to prevent removal
-		$disabled = in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
+		$disabled = $this->default_category->is_term_the_default_category( $term_id );
 
 		$dropdown = new PLL_Walker_Dropdown();
 

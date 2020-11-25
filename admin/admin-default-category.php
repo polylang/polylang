@@ -1,7 +1,7 @@
 <?php
 
 
-class PLL_Default_Category {
+class PLL_Admin_Default_Category {
 
 	/**
 	 * A reference to the PLL_Model instance.
@@ -41,6 +41,8 @@ class PLL_Default_Category {
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
 			add_filter( 'manage_' . $tax . '_custom_column', array( $this, 'term_column' ), 10, 3 );
 		}
+
+		add_action( 'update_default_category_language', array( $this, 'update_default_category_language' ) );
 	}
 
 	/**
@@ -172,5 +174,16 @@ class PLL_Default_Category {
 		}
 
 		return $caps;
+	}
+
+	public function is_term_the_default_category( $term_id ) {
+		return in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
+	}
+
+	public function update_default_category_language( $slug ) {
+		$default_cats = $this->model->term->get_translations( get_option( 'default_category' ) );
+		if ( isset( $default_cats[ $slug ] ) ) {
+			update_option( 'default_category', $default_cats[ $slug ] );
+		}
 	}
 }
