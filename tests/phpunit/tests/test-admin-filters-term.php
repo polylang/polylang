@@ -414,47 +414,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
 	}
 
-	function test_new_default_category_with_empty_translations() {
-		$old = self::$polylang->model->term;
-		self::create_language( 'pt_PT' );
-		$default = (int) get_option( 'default_category' );
-
-		self::$polylang->model->term = $this->getMockBuilder( 'PLL_Translated_Term' )
-			->setMethods(
-				array(
-					'get_translations',
-				)
-			)
-			->setConstructorArgs(
-				array(
-					&self::$polylang->model,
-				)
-			)
-			->getMock();
-		self::$polylang->model->term->method( 'get_translations' )
-			->will(
-				$this->returnCallback(
-					function( $id ) {
-						$test = new PLL_Translated_Term( self::$polylang->model );
-						$default = (int) get_option( 'default_category' );
-						if ( $id === $default ) {
-							return null;
-						}
-						return ( $test->get_translations( $id ) );
-					}
-				)
-			);
-
-
-		self::$polylang->model->create_default_category( self::$polylang->model->get_language( 'pt' )->slug );
-
-		self::$polylang->model->term = $old;
-
-		$translations = self::$polylang->model->term->get_translations( $default );
-
-		$this->assertEqualSets( array( 'en', 'pt' ), array_keys( $translations ) );
-	}
-
 	function test_post_categories_meta_box() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$polylang->model->term->set_language( $fr, 'fr' );

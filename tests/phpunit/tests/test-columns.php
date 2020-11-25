@@ -154,11 +154,6 @@ class Columns_Test extends PLL_UnitTestCase {
 		// with capability
 		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $default );
 		$this->assertNotFalse( strpos( $column, 'default_cat' ) );
-
-		// without capability
-		wp_set_current_user( 0 );
-		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $default );
-		$this->assertNotFalse( strpos( $column, 'default_cat' ) );
 	}
 
 	function test_untranslated_term() {
