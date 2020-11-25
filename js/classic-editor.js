@@ -165,12 +165,11 @@ jQuery(
 						$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
 						$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', lang ).attr( 'dir', dir );
 						$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
+
+						resetCurrentMediaFrame();
+						resetFeaturedImage();
 					}
 				);
-
-				resetCurrentMediaFrame();
-
-				resetFeaturedImage();
 			}
 		);
 
@@ -220,11 +219,14 @@ jQuery(
  * @since 3.0
  */
 function resetFeaturedImage() {
-	if (wp.media.featuredImage && 
-		wp.media.featuredImage._frame && // Check the property rather than calling to the function that will instantiate a wp.media.view.MediaFrame.Select object. 
-		wp.media.featuredImage._frame._selection && 
-		wp.media.featuredImage._frame._selection.attachments instanceof wp.media.model.Attachments) {
-			wp.media.featuredImage._frame._selection.attachments.reset();
+	if (wp.media.featuredImage && wp.media.featuredImage._frame) { // Check the property rather than calling to the function that will instantiate a wp.media.view.MediaFrame.Select object. 
+		if (wp.media.featuredImage._frame._selection && wp.media.featuredImage._frame._selection.attachments instanceof wp.media.model.Attachments) {
+				wp.media.featuredImage._frame._selection.attachments.reset();
+		}
+
+		if (wp.media.frame !== wp.media.featuredImage._frame) {
+			resetMediaFrame( wp.media.featuredImage._frame );
+		}
 	}
 }
 
@@ -232,15 +234,27 @@ function resetFeaturedImage() {
  * @since 3.0
  */
 function resetCurrentMediaFrame() {
-	if (wp.media.frame && wp.media.frame.views instanceof wp.Backbone.Subviews) {
-		var attachmentsBrowser = wp.media.frame.views.get( '.media-frame-content' );
+	if (wp.media.frame) {
+		resetMediaFrame( wp.media.frame );
+	}
+}
+
+/**
+ * @since 3.0
+ * 
+ * Third party plugins may break the dependency tree, so each subcomponent existence is checked.
+ */
+function resetMediaFrame(frame) {
+	if (frame.views instanceof wp.Backbone.Subviews) {
+		var attachmentsBrowser = frame.views.get( '.media-frame-content' );
 		if (attachmentsBrowser) {
-			var attachmentsCollection = attachmentsBrowser[0].attachments.collection;
-			if (attachmentsCollection) {
+			var attachmentsView = attachmentsBrowser[0].attachments;
+			if (attachmentsView) {
+				var attachmentsCollection = attachmentsView.collection;
 				if (attachmentsCollection.mirroring) {
 					attachmentsCollection.mirroring._hasMore = true;
 				}
-				attachmentsBrowser[0].attachments.collection.reset();
+				attachmentsCollection.reset();
 			}
 		}
 	}
