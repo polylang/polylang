@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-function configureWebpack( options){
+function configureWebpack( options ){
 	const mode = options.mode;
 	const isProduction = mode === 'production' || false;
 	console.log('Webpack mode:', mode);
@@ -35,9 +35,9 @@ function configureWebpack( options){
 	// Prepare webpack configuration to minify js files to source folder as target folder and suffix file name with .min.js extension.
 	const jsFileNamesEntries = jsFileNames.map( ( filename ) => {
 			const entry = {};
-			entry[ path.parse( filename).name ] = filename;
+			entry[ path.parse( filename ).name ] = filename;
 			const output = {
-				filename: `${path.parse( filename).dir}/[name].min.js`,
+				filename: `${path.parse( filename ).dir}/[name].min.js`,
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
 				iife: false, // Avoid Webpack to wrap files into a IIFE which is not needed for this kind of javascript files.
 			}
@@ -53,9 +53,9 @@ function configureWebpack( options){
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
 	const cssFileNamesEntries = cssFileNames.map( ( filename ) => {
 			const entry = {};
-			entry[ path.parse( filename).name ] = filename;
+			entry[ path.parse( filename ).name ] = filename;
 			const output = {
-				filename: `${path.parse( filename).dir}/[name].work`,
+				filename: `${path.parse( filename ).dir}/[name].work`,
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
 			}
 			const config = {
@@ -64,7 +64,7 @@ function configureWebpack( options){
 				plugins: [
 					new MiniCssExtractPlugin(
 						{
-							filename: `${path.parse( filename).dir}/[name].min.css`
+							filename: `${path.parse( filename ).dir}/[name].min.css`
 						}
 					),
 					new CleanWebpackPlugin(
