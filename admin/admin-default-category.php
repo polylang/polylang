@@ -115,9 +115,11 @@ class PLL_Admin_Default_Category {
 	}
 
 	public function handle_default_category_on_create_language( $args ) {
+		$default = (int) get_option( 'default_category' );
+
 		// Assign default language to default category
-		if ( ! isset( $this->options['default_lang'] ) ) {
-			$this->model->term->set_language( (int) get_option( 'default_category' ), (int) $r['term_id'] );
+		if ( ! $this->model->term->get_language( $default ) ) {
+			$this->model->term->set_language( $default, $this->options['default_lang'] );
 		} elseif ( empty( $args['no_default_cat'] ) ) {
 			$this->create_default_category( $args['slug'] );
 		}
