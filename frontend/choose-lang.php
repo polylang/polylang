@@ -84,29 +84,13 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.5
 	 */
 	public function maybe_setcookie() {
-		// Don't set cookie in javascript when a cache plugin is active
-		// Check headers have not been sent to avoid ugly error
-		// Cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
-		if ( ! pll_is_cache_active() && ! headers_sent() && PLL_COOKIE !== false && ! empty( $this->curlang ) && ( ! isset( $_COOKIE[ PLL_COOKIE ] ) || $_COOKIE[ PLL_COOKIE ] != $this->curlang->slug ) && ! is_404() ) {
-
-			/**
-			 * Filter the Polylang cookie duration
-			 * /!\ this filter may be fired *before* the theme is loaded
-			 *
-			 * @since 1.8
-			 *
-			 * @param int $duration cookie duration in seconds
-			 */
-			$expiration = apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
-
-			setcookie(
-				PLL_COOKIE,
-				$this->curlang->slug,
-				time() + $expiration,
-				COOKIEPATH,
-				2 == $this->options['force_lang'] ? wp_parse_url( $this->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN,
-				is_ssl()
+		// Don't set cookie in javascript when a cache plugin is active.
+		if ( ! pll_is_cache_active() && ! empty( $this->curlang ) && ! is_404() ) {
+			$args = array(
+				'domain'   => 2 === $this->options['force_lang'] ? wp_parse_url( $this->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN,
+				'samesite' => 3 === $this->options['force_lang'] ? 'None' : 'Lax',
 			);
+			PLL_Cookie::set( $this->curlang->slug, $args );
 		}
 	}
 
