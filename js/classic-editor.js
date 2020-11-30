@@ -270,8 +270,8 @@ var media = _.extend(
 					 */
 					attachmentsCollection.reset();
 					if (attachmentsCollection.mirroring) {
-						  attachmentsCollection.mirroring._hasMore = true;
-						  attachmentsCollection.mirroring.reset();
+						attachmentsCollection.mirroring._hasMore = true;
+						attachmentsCollection.mirroring.reset();
 					}
 				}
 			);
