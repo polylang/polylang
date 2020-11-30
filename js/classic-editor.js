@@ -239,7 +239,7 @@ function resetCurrentMediaFrame() {
 	}
 	if (wp.media.editor) {
 		var editorFrame = wp.media.editor.get( wp.media.editor.activeEditor );
-		if (editorFrame) {
+		if (editorFrame && editorFrame !== wp.media.frame) {
 			resetMediaFrame( editorFrame );
 		}
 	}
@@ -257,10 +257,18 @@ function resetMediaFrame(frame) {
 			var attachmentsView = attachmentsBrowser[0].attachments;
 			if (attachmentsView) {
 				var attachmentsCollection = attachmentsView.collection;
+
+				/**
+				 * First reset the { @see wp.media.model.Attachments } collection.
+				 * Then, if it is mirroring a { @see wp.media.model.Query } collection, 
+				 * refresh this one too, so it will fetch new data from the server,
+				 * and then the wp.media.model.Attachments collection will syncrhonize with the new data.
+				 */
+				attachmentsCollection.reset();
 				if (attachmentsCollection.mirroring) {
 					attachmentsCollection.mirroring._hasMore = true;
+					attachmentsCollection.mirroring.reset();
 				}
-				attachmentsCollection.reset();
 			}
 		}
 	}
