@@ -237,6 +237,12 @@ function resetCurrentMediaFrame() {
 	if (wp.media.frame) {
 		resetMediaFrame( wp.media.frame );
 	}
+	if (wp.media.editor) {
+		var editorFrame = wp.media.editor.get( wp.media.editor.activeEditor );
+		if (editorFrame) {
+			resetMediaFrame( editorFrame );
+		}
+	}
 }
 
 /**
