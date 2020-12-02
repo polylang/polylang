@@ -6,3 +6,4 @@ tmp/
 *.map
 *.min.js
 *.min.css
+*.map
