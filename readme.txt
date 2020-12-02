@@ -3,7 +3,7 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 5.1
-Tested up to: 5.5
+Tested up to: 5.6
 Requires PHP: 5.6
 Stable tag: 2.8.4
 License: GPLv3 or later
@@ -82,6 +82,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 * Add compatibility with WordPress 5.6
 * Pro: Add locale fallback used when the theme or plugins translations are not available
+* Pro: Fix SSO and browser preferred language redirect when using multiple domains
 * Pro: Fix post slugs for German and Danish in the REST API
 * Pro: Fix a fatal error in ACF integration when saving url modifications with multiple domains
 * Pro: Fix a deprecated notice fired by ACF since the version 5.9.2
@@ -96,6 +97,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix a fatal error when switching to plain permalinks and using multiple domains
 * Fix a conflict with WP Sweep which could corrupt languages
 * Fix title displayed instead of meta description with Yoast SEO > 14.0
+* Fix PHP Notice: Undefined index: wp_the_query in /frontend/choose-lang-content.php on line 92
 
 = 2.8.4 (2020-11-03) =
 
