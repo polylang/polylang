@@ -84,6 +84,7 @@ function configureWebpack( options ){
 						},
 					],
 				},
+				devtool: ! isProduction ? 'source-map' : false,
 				optimization: {
 					minimize: true,
 					minimizer: [
