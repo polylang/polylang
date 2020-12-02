@@ -1,8 +1,7 @@
 coverage
-/nbproject/*
 .idea/*
 /node_modules/
-.map
 /vendor/
 *.min.js
 *.min.css
+*.map
