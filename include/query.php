@@ -10,12 +10,26 @@
  */
 class PLL_Query {
 	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+	/**
+	 * Instance of WP_Query.
+	 *
+	 * @var WP_Query
+	 */
+	protected $query;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.2
 	 *
-	 * @param array  $query Reference to the WP_Query object
-	 * @param object $model
+	 * @param array  $query Reference to the WP_Query object.
+	 * @param object $model Instance of PLL_Model.
 	 */
 	public function __construct( &$query, &$model ) {
 		$this->query = &$query;

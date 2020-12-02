@@ -37,6 +37,13 @@ class PLL_Wizard {
 	protected $steps = array();
 
 	/**
+	 * The current step.
+	 *
+	 * @var string
+	 */
+	protected $step;
+
+	/**
 	 * List of WordPress CSS file handles
 	 *
 	 * @var array $styles

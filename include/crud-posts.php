@@ -4,12 +4,32 @@
  */
 
 /**
- * Adds actions and filters related to languages when creating, updating or deleting posts
- * Actions a filters used when reaing posts are handled separately
+ * Adds actions and filters related to languages when creating, updating or deleting posts.
+ * Actions an filters used when reading posts are handled separately.
  *
  * @since 2.4
  */
 class PLL_CRUD_Posts {
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+	/**
+	 * Preferred language to assign.
+	 *
+	 * @var PLL_Language
+	 */
+	protected $pref_lang;
+
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Model
+	 */
+	protected $curlang;
 
 	/**
 	 * Constructor

@@ -10,7 +10,33 @@
  * @since 1.7.7
  */
 class PLL_Nav_Menu {
-	public $model, $options;
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	public $options;
+
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Theme name.
+	 *
+	 * @var string
+	 */
+	protected $theme;
+
+	/**
+	 * Array of menus in a given language used when auto add pages to menus.
+	 *
+	 * @var array
+	 */
+	protected $auto_add_menus = array();
 
 	/**
 	 * Constructor: setups filters and actions
@@ -133,8 +159,6 @@ class PLL_Nav_Menu {
 		}
 
 		if ( ! empty( $this->options['nav_menus'][ $this->theme ] ) ) {
-			$this->auto_add_menus = array();
-
 			$lang = $this->model->post->get_language( $post->ID );
 			$lang = empty( $lang ) ? $this->options['default_lang'] : $lang->slug; // If the page has no language yet, the default language will be assigned
 

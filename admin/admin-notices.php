@@ -12,6 +12,18 @@
  * @since 2.7 Dismissed notices are stored in an option instead of a user meta
  */
 class PLL_Admin_Notices {
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	protected $options;
+
+	/**
+	 * Stores custom notices.
+	 *
+	 * @var string[]
+	 */
 	private static $notices = array();
 
 	/**

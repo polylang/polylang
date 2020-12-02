@@ -11,6 +11,20 @@
 class PLL_Sync_Tax {
 
 	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	protected $options;
+
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.3
@@ -18,7 +32,7 @@ class PLL_Sync_Tax {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
-		$this->model = &$polylang->model;
+		$this->model   = &$polylang->model;
 		$this->options = &$polylang->options;
 
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
