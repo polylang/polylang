@@ -1,11 +1,9 @@
 coverage
-nbproject
 .idea
 node_modules
 package-lock.json
-.webpack-config.json
 .map
 vendor
 tmp
-*.min.js
-*.min.css
+.min.js
+.min.css
