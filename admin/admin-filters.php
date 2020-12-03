@@ -29,10 +29,6 @@ class PLL_Admin_Filters extends PLL_Filters {
 		add_action( 'edit_user_profile_update', array( $this, 'personal_options_update' ) );
 		add_action( 'personal_options', array( $this, 'personal_options' ) );
 
-		// Upgrades languages files after a core upgrade ( timing is important )
-		// Backward compatibility WP < 4.0 *AND* Polylang < 1.6
-		add_action( '_core_updated_successfully', array( $this, 'upgrade_languages' ), 1 ); // since WP 3.3
-
 		// Upgrades plugins and themes translations files
 		add_filter( 'themes_update_check_locales', array( $this, 'update_check_locales' ) );
 		add_filter( 'plugins_update_check_locales', array( $this, 'update_check_locales' ) );
@@ -145,24 +141,6 @@ class PLL_Admin_Filters extends PLL_Filters {
 				esc_attr( $lang->name ),
 				esc_attr( $description )
 			);
-		}
-	}
-
-	/**
-	 * Upgrades languages files after a core upgrade
-	 * only for backward compatibility WP < 4.0 *AND* Polylang < 1.6
-	 *
-	 * @since 0.6
-	 *
-	 * @param string $version new WP version
-	 */
-	public function upgrade_languages( $version ) {
-		// $GLOBALS['wp_version'] is the old WP version
-		if ( version_compare( $version, '4.0', '>=' ) && version_compare( $GLOBALS['wp_version'], '4.0', '<' ) ) {
-
-			/** This filter is documented in wp-admin/includes/update-core.php */
-			apply_filters( 'update_feedback', __( 'Upgrading language files&#8230;', 'polylang' ) );
-			PLL_Upgrade::download_language_packs();
 		}
 	}
 
