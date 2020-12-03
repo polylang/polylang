@@ -213,8 +213,6 @@ class PLL_Language {
 				'rtl' == $prop ? $this->is_rtl = $value : $this->$prop = $value;
 			}
 
-			$this->description = &$this->locale; // Backward compatibility with Polylang < 1.2
-
 			$this->mo_id = PLL_MO::get_id( $this );
 
 			$languages = include POLYLANG_DIR . '/settings/languages.php';

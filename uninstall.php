@@ -52,18 +52,6 @@ class PLL_Uninstall {
 
 		do_action( 'pll_uninstall' );
 
-		// Suppress data of the old model < 1.2
-		// FIXME: to remove when support for v1.1.6 will be dropped
-		$wpdb->termmeta = $wpdb->prefix . 'termmeta'; // registers the termmeta table in wpdb
-
-		// Do nothing if the termmeta table does not exists
-		if ( count( $wpdb->get_results( "SHOW TABLES LIKE '$wpdb->termmeta'" ) ) ) {
-			$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key = '_translations'" );
-			$wpdb->query( "DELETE FROM $wpdb->termmeta WHERE meta_key = '_language'" );
-			$wpdb->query( "DELETE FROM $wpdb->termmeta WHERE meta_key = '_rtl'" );
-			$wpdb->query( "DELETE FROM $wpdb->termmeta WHERE meta_key = '_translations'" );
-		}
-
 		// Need to register the taxonomies
 		$pll_taxonomies = array( 'language', 'term_language', 'post_translations', 'term_translations' );
 		foreach ( $pll_taxonomies as $taxonomy ) {
@@ -96,13 +84,7 @@ class PLL_Uninstall {
 			wp_delete_post( $id, true );
 		}
 
-		// Delete the strings translations ( <1.2 )
-		// FIXME: to remove when support for v1.1.6 will be dropped
-		foreach ( $languages as $lang ) {
-			delete_option( 'polylang_mo' . $lang->term_id );
-		}
-
-		// Delete the strings translations 1.2+
+		// Delete the strings translations.
 		register_post_type( 'polylang_mo', array( 'rewrite' => false, 'query_var' => false ) );
 		$ids = get_posts(
 			array(
@@ -146,7 +128,6 @@ class PLL_Uninstall {
 
 		// Delete transients
 		delete_transient( 'pll_languages_list' );
-		delete_transient( 'pll_upgrade_1_4' );
 	}
 }
 

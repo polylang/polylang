@@ -33,12 +33,6 @@ class PLL_Admin_Strings {
 	 * @param bool   $multiline Optional, whether the string table should display a multiline textarea or a single line input, defaults to single line
 	 */
 	public static function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
-		// Backward compatibility with Polylang older than 1.1
-		if ( is_bool( $context ) ) {
-			$multiline = $context;
-			$context = 'Polylang';
-		}
-
 		if ( $string && is_scalar( $string ) ) {
 			self::$strings[ md5( $string ) ] = compact( 'name', 'string', 'context', 'multiline' );
 		}

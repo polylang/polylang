@@ -150,46 +150,4 @@ abstract class PLL_Base {
 		}
 		return false;
 	}
-
-	/**
-	 * Some backward compatibility with Polylang < 1.2
-	 * Allows for example to call $polylang->get_languages_list() instead of $polylang->model->get_languages_list()
-	 * This works but should be slower than the direct call, thus an error is triggered in debug mode
-	 *
-	 * @since 1.2
-	 *
-	 * @param string $func function name
-	 * @param array  $args function arguments
-	 */
-	public function __call( $func, $args ) {
-		foreach ( $this as $prop => &$obj ) {
-			if ( is_object( $obj ) && method_exists( $obj, $func ) ) {
-				if ( WP_DEBUG ) {
-					$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-					$i = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func
-					trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-						sprintf(
-							'%1$s was called incorrectly in %3$s on line %4$s: the call to $polylang->%1$s() has been deprecated in Polylang 1.2, use PLL()->%2$s->%1$s() instead.' . "\nError handler",
-							esc_html( $func ),
-							esc_html( $prop ),
-							esc_html( $debug[ $i ]['file'] ),
-							absint( $debug[ $i ]['line'] )
-						)
-					);
-				}
-				return call_user_func_array( array( $obj, $func ), $args );
-			}
-		}
-
-		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-			sprintf(
-				'Call to undefined function PLL()->%1$s() in %2$s on line %3$s' . "\nError handler",
-				esc_html( $func ),
-				esc_html( $debug[0]['file'] ),
-				absint( $debug[0]['line'] )
-			),
-			E_USER_ERROR
-		);
-	}
 }
