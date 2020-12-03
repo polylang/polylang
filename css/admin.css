@@ -376,11 +376,6 @@
 	}
 
 	/* strings translations table */
-	.stringstranslations .column-context,
-	.stringstranslations .column-name {
-		display: none; /* backward compatibility WP < 4.3 */
-	}
-
 	.translation label {
 		display: block;
 		width: 95%;

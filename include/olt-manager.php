@@ -28,9 +28,8 @@ class PLL_OLT_Manager {
 		add_filter( 'pre_update_option_active_plugins', array( $this, 'make_polylang_first' ) );
 		add_filter( 'pre_update_option_active_sitewide_plugins', array( $this, 'make_polylang_first' ) );
 
-		// Overriding load text domain only on front since WP 4.7
-		// FIXME test get_user_locale for backward compatibility with WP < 4.7
-		if ( is_admin() && ! Polylang::is_ajax_on_front() && function_exists( 'get_user_locale' ) ) {
+		// Overriding load text domain only on front since WP 4.7.
+		if ( is_admin() && ! Polylang::is_ajax_on_front() ) {
 			return;
 		}
 
