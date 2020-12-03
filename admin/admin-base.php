@@ -141,7 +141,7 @@ class PLL_Admin_Base extends PLL_Base {
 		}
 
 		if ( ! empty( $screen->taxonomy ) && $this->model->is_translated_taxonomy( $screen->taxonomy ) ) {
-			$scripts['term'] = array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 );
+			$scripts['term'] = array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete', 'underscore', 'media-models' ), 0, 1 );
 		}
 
 		foreach ( $scripts as $script => $v ) {

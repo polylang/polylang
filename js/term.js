@@ -2,6 +2,10 @@
  * @package Polylang
  */
 
+ import pllMedia from './media';
+
+ pllMedia.init();
+
 /**
  * Quick edit
  */
@@ -212,6 +216,8 @@ jQuery(
 
 						// Modifies the text direction
 						$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
+					
+						pllMedia.resetAllAttachmentsCollections();
 					}
 				);
 			}
