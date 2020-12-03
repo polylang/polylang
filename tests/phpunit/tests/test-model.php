@@ -85,52 +85,6 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 2, self::$polylang->model->count_posts( $language, array( 'post_type' => array( 'post', 'page' ) ) ) );
 	}
 
-	function test_backward_compat_1_8() {
-		$lang_object = self::$polylang->model->get_language( 'en' );
-
-		// post
-		$en = $this->factory->post->create();
-		@self::$polylang->model->set_post_language( $en, 'en' );
-		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $en )->slug );
-		$this->assertEquals( 'en', @self::$polylang->model->get_post_language( $en )->slug );
-
-		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
-		@self::$polylang->model->save_translations( 'post', $en, compact( 'en', 'fr' ) );
-		$this->assertEquals( $en, @self::$polylang->model->get_post( $fr, 'en' ) );
-		$this->assertEquals( $fr, @self::$polylang->model->get_post( $fr, 'fr' ) );
-		$this->assertEquals( $en, @self::$polylang->model->get_translation( 'post', $fr, 'en' ) );
-		$this->assertEquals( self::$polylang->model->post->get_translations( $fr ), @self::$polylang->model->get_translations( 'post', $fr ) );
-		$this->assertEquals( self::$polylang->model->post->get_objects_in_language( $lang_object ), @self::$polylang->model->get_objects_in_language( $lang_object, 'post' ) );
-
-		$this->assertEquals( self::$polylang->model->post->get_object_term( $en, 'language' ), @self::$polylang->model->get_object_term( $en, 'language' ) );
-		$this->assertEquals( self::$polylang->model->post->get_object_term( $en, 'post_translations' ), @self::$polylang->model->get_object_term( $en, 'post_translations' ) );
-
-		$this->assertEquals( @self::$polylang->model->join_clause( 'post' ), self::$polylang->model->post->join_clause() );
-		$this->assertEquals( @self::$polylang->model->where_clause( 'en', 'post' ), self::$polylang->model->post->where_clause( 'en' ) );
-
-		// term
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-		$this->assertEquals( 'en', self::$polylang->model->term->get_language( $en )->slug );
-		$this->assertEquals( 'en', @self::$polylang->model->get_term_language( $en )->slug );
-
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		@self::$polylang->model->set_term_language( $fr, 'fr' );
-		@self::$polylang->model->save_translations( 'term', $en, compact( 'en', 'fr' ) );
-		$this->assertEquals( $en, @self::$polylang->model->get_term( $fr, 'en' ) );
-		$this->assertEquals( $fr, @self::$polylang->model->get_term( $fr, 'fr' ) );
-		$this->assertEquals( $en, @self::$polylang->model->get_translation( 'term', $fr, 'en' ) );
-		$this->assertEquals( self::$polylang->model->term->get_translations( $fr ), @self::$polylang->model->get_translations( 'term', $fr ) );
-		$this->assertEquals( self::$polylang->model->term->get_objects_in_language( $lang_object ), @self::$polylang->model->get_objects_in_language( $lang_object, 'term' ) );
-
-		$this->assertEquals( self::$polylang->model->term->get_object_term( $en, 'term_language' ), @self::$polylang->model->get_object_term( $en, 'term_language' ) );
-		$this->assertEquals( self::$polylang->model->term->get_object_term( $en, 'term_translations' ), @self::$polylang->model->get_object_term( $en, 'term_translations' ) );
-
-		$this->assertEquals( @self::$polylang->model->join_clause( 'term' ), self::$polylang->model->term->join_clause() );
-		$this->assertEquals( @self::$polylang->model->where_clause( 'en', 'term' ), self::$polylang->model->term->where_clause( 'en' ) );
-	}
-
 	function test_translated_post_types() {
 		// deactivate the cache
 		self::$polylang->model->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
