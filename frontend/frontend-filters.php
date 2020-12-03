@@ -49,8 +49,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		// Translates biography
 		add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 4 );
 
-		// FIXME test get_user_locale for backward compatibility with WP < 4.7
-		if ( Polylang::is_ajax_on_front() && function_exists( 'get_user_locale' ) ) {
+		if ( Polylang::is_ajax_on_front() ) {
 			add_filter( 'load_textdomain_mofile', array( $this, 'load_textdomain_mofile' ) );
 		}
 	}
