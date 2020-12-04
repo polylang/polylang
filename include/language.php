@@ -4,77 +4,210 @@
  */
 
 /**
- * A language object is made of two terms in 'language' and 'term_language' taxonomies
- * manipulating only one object per language instead of two terms should make things easier
- *
- * Properties:
- * term_id             => id of term in 'language' taxonomy
- * name                => language name. Ex: English
- * slug                => language code used in url. Ex: en
- * term_group          => order of the language when displayed in a list of languages
- * term_taxonomy_id    => term taxonomy id in 'language' taxonomy
- * taxonomy            => 'language'
- * description         => language locale for backward compatibility
- * parent              => 0 / not used
- * count               => number of posts and pages in that language
- * tl_term_id          => id of the term in 'term_language' taxonomy
- * tl_term_taxonomy_id => term taxonomy id in 'term_language' taxonomy
- * tl_count            => number of terms in that language ( not used by Polylang )
- * locale              => WordPress language locale. Ex: en_US
- * is_rtl              => 1 if the language is rtl
- * w3c                 => W3C locale
- * flag_code           => code of the flag
- * flag_url            => url of the flag
- * flag                => html img of the flag
- * custom_flag_url     => url of the custom flag if exists, internal use only, moves to flag_url on frontend
- * custom_flag         => html img of the custom flag if exists, internal use only, moves to flag on frontend
- * home_url            => home url in this language
- * search_url          => home url to use in search forms
- * host                => host of this language
- * mo_id               => id of the post storing strings translations
- * page_on_front       => id of the page on front in this language ( set from pll_languages_list filter )
- * page_for_posts      => id of the page for posts in this language ( set from pll_languages_list filter )
+ * A language object is made of two terms in 'language' and 'term_language' taxonomies.
+ * Manipulating only one object per language instead of two terms should make things easier.
  *
  * @since 1.2
  */
 class PLL_Language {
-	public $term_id, $name, $slug, $term_group, $term_taxonomy_id, $taxonomy, $description, $parent, $count;
-	public $tl_term_id, $tl_term_taxonomy_id, $tl_count;
-	public $locale, $is_rtl;
-	public $w3c, $facebook;
-	public $flag_url, $flag;
-	public $home_url, $search_url;
-	public $host, $mo_id;
-	public $page_on_front, $page_for_posts;
+	/**
+	 * Id of the term in 'language' taxonomy.
+	 *
+	 * @var int
+	 */
+	public $term_id;
 
 	/**
-	 * Constructor: builds a language object given its two corresponding terms in language and term_language taxonomies
+	 * Language name. Ex: English.
+	 *
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * Language code used in url. Ex: en.
+	 *
+	 * @var string
+	 */
+	public $slug;
+
+	/**
+	 * Order of the language when displayed in a list of languages.
+	 *
+	 * @var int
+	 */
+	public $term_group;
+
+	/**
+	 * Term taxonomy id in 'language' taxonomy.
+	 *
+	 * @var int
+	 */
+	public $term_taxonomy_id;
+
+	/**
+	 * Number of posts and pages in that language.
+	 *
+	 * @var int
+	 */
+	public $count;
+
+	/**
+	 * Id of the term in 'term_language' taxonomy.
+	 *
+	 * @var int
+	 */
+	public $tl_term_id;
+
+	/**
+	 * Term taxonomy id in 'term_language' taxonomy.
+	 *
+	 * @var int
+	 */
+	public $tl_term_taxonomy_id;
+
+	/**
+	 * Number of terms in that language.
+	 *
+	 * @var int
+	 */
+	public $tl_count;
+
+	/**
+	 * WordPress language locale. Ex: en_US.
+	 *
+	 * @var string
+	 */
+	public $locale;
+
+	/**
+	 * 1 if the language is rtl, 0 otherwise.
+	 *
+	 * @var int
+	 */
+	public $is_rtl;
+
+	/**
+	 * W3C locale.
+	 *
+	 * @var string.
+	 */
+	public $w3c;
+
+	/**
+	 * Facebook locale.
+	 *
+	 * @var string.
+	 */
+	public $facebook;
+
+	/**
+	 * Home url in this language.
+	 *
+	 * @var string
+	 */
+	public $home_url;
+
+	/**
+	 * Home url to use in search forms.
+	 *
+	 * @var string
+	 */
+	public $search_url;
+
+	/**
+	 * Host corresponding to this language.
+	 *
+	 * @var string
+	 */
+	public $host;
+
+	/**
+	 * Id of the post storing strings translations.
+	 *
+	 * @var int
+	 */
+	public $mo_id;
+
+	/**
+	 * Id of the page on front in this language ( set from pll_languages_list filter ).
+	 *
+	 * @var int
+	 */
+	public $page_on_front;
+
+	/**
+	 * Id of the page for posts in this language ( set from pll_languages_list filter ).
+	 *
+	 * @var int
+	 */
+	public $page_for_posts;
+
+	/**
+	 * Code of the flag.
+	 *
+	 * @var string
+	 */
+	public $flag_code;
+
+	/**
+	 * Url of the flag.
+	 *
+	 * @var string
+	 */
+	public $flag_url;
+
+	/**
+	 * Html markup of the flag.
+	 *
+	 * @var string
+	 */
+	public $flag;
+
+	/**
+	 * Url of the custom flag if it exists.
+	 *
+	 * @var string
+	 */
+	protected $custom_flag_url;
+
+	/**
+	 * Html markup of the custom flag if it exists.
+	 *
+	 * @var string
+	 */
+	protected $custom_flag;
+
+	/**
+	 * Constructor: builds a language object given its two corresponding terms in 'language' and 'term_language' taxonomies.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object|array $language      'language' term or language object properties stored as an array
-	 * @param object       $term_language Corresponding 'term_language' term
+	 * @param object|array $language      Term in 'language' taxonomy or language object properties stored as an array.
+	 * @param object       $term_language Corresponding 'term_language' term.
 	 */
 	public function __construct( $language, $term_language = null ) {
-		// Build the object from all properties stored as an array
+		// Build the object from all properties stored as an array.
 		if ( empty( $term_language ) ) {
 			foreach ( $language as $prop => $value ) {
 				$this->$prop = $value;
 			}
 		}
 
-		// Build the object from taxonomies
+		// Build the object from taxonomy terms.
 		else {
-			foreach ( $language as $prop => $value ) {
-				$this->$prop = in_array( $prop, array( 'term_id', 'term_taxonomy_id', 'count' ) ) ? (int) $language->$prop : $language->$prop;
-			}
+			$this->term_id = (int) $language->term_id;
+			$this->name = $language->name;
+			$this->slug = $language->slug;
+			$this->term_group = (int) $language->term_group;
+			$this->term_taxonomy_id = (int) $language->term_taxonomy_id;
+			$this->count = (int) $language->count;
 
 			$this->tl_term_id = (int) $term_language->term_id;
 			$this->tl_term_taxonomy_id = (int) $term_language->term_taxonomy_id;
 			$this->tl_count = (int) $term_language->count;
 
-			// The description field can contain any property
-			// Backward compatibility for is_rtl
+			// The description field can contain any property.
 			$description = maybe_unserialize( $language->description );
 			foreach ( $description as $prop => $value ) {
 				'rtl' == $prop ? $this->is_rtl = $value : $this->$prop = $value;
@@ -93,11 +226,11 @@ class PLL_Language {
 	}
 
 	/**
-	 * Get the flag informations
-	 * 'url'    => Flag url
-	 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded
-	 * 'width'  => Optional, flag width in pixels
-	 * 'height' => Optional, flag height in pixels
+	 * Get the flag informations:
+	 * 'url'    => Flag url.
+	 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
+	 * 'width'  => Optional, flag width in pixels.
+	 * 'height' => Optional, flag height in pixels.
 	 *
 	 * @since 2.6
 	 *
@@ -107,27 +240,27 @@ class PLL_Language {
 	public static function get_flag_informations( $code ) {
 		$flag = array( 'url' => '' );
 
-		// Polylang builtin flags
+		// Polylang builtin flags.
 		if ( ! empty( $code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
 			$flag['url'] = $_url = plugins_url( $file, POLYLANG_FILE );
 		}
 
 		/**
-		 * Filter flag informations
-		 * 'url'    => Flag url
-		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded
-		 * 'width'  => Optional, flag width in pixels
-		 * 'height' => Optional, flag height in pixels
+		 * Filters flag informations:
+		 * 'url'    => Flag url.
+		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
+		 * 'width'  => Optional, flag width in pixels.
+		 * 'height' => Optional, flag height in pixels.
 		 *
 		 * @since 2.4
 		 *
-		 * @param array  $flag Information about the flag
-		 * @param string $code Flag code
+		 * @param array  $flag Information about the flag.
+		 * @param string $code Flag code.
 		 */
 		$flag = apply_filters( 'pll_flag', $flag, $code );
 
 		if ( empty( $flag['src'] ) ) {
-			// If using predefined flags and base64 encoded flags are preferred
+			// If using predefined flags and base64 encoded flags are preferred.
 			if ( isset( $_url ) && $flag['url'] === $_url && ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) ) {
 				list( $flag['width'], $flag['height'] ) = getimagesize( POLYLANG_DIR . $file );
 				$file_contents = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
@@ -143,14 +276,14 @@ class PLL_Language {
 	}
 
 	/**
-	 * Sets flag_url and flag properties
+	 * Sets flag_url and flag properties.
 	 *
 	 * @since 1.2
 	 */
 	public function set_flag() {
 		$flags = array( 'flag' => self::get_flag_informations( $this->flag_code ) );
 
-		// Custom flags ?
+		// Custom flags?
 		$directories = array(
 			PLL_LOCAL_DIR,
 			get_stylesheet_directory() . '/polylang',
@@ -165,16 +298,16 @@ class PLL_Language {
 		}
 
 		/**
-		 * Filter the custom flag informations
-		 * 'url'    => Flag url
-		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded
-		 * 'width'  => Optional, flag width in pixels
-		 * 'height' => Optional, flag height in pixels
+		 * Filters the custom flag informations:
+		 * 'url'    => Flag url.
+		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
+		 * 'width'  => Optional, flag width in pixels.
+		 * 'height' => Optional, flag height in pixels.
 		 *
 		 * @since 2.4
 		 *
-		 * @param array  $flag Information about the custom flag
-		 * @param string $code Flag code
+		 * @param array  $flag Information about the custom flag.
+		 * @param string $code Flag code.
 		 */
 		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $this->flag_code );
 
@@ -189,14 +322,14 @@ class PLL_Language {
 		}
 
 		/**
-		 * Filter the flag title attribute
-		 * Defaults to the language name
+		 * Filters the flag title attribute.
+		 * Defaults to the language name.
 		 *
 		 * @since 0.7
 		 *
-		 * @param string $title  the flag title attribute
-		 * @param string $slug   the language code
-		 * @param string $locale the language locale
+		 * @param string $title  The flag title attribute.
+		 * @param string $slug   The language code.
+		 * @param string $locale The language locale.
 		 */
 		$title = apply_filters( 'pll_flag_title', $this->name, $this->slug, $this->locale );
 
@@ -204,12 +337,12 @@ class PLL_Language {
 			$this->{$key . '_url'} = empty( $flag['url'] ) ? '' : $flag['url'];
 
 			/**
-			 * Filter the html markup of a flag
+			 * Filters the html markup of a flag.
 			 *
 			 * @since 1.0.2
 			 *
-			 * @param string $flag html markup of the flag or empty string
-			 * @param string $slug language code
+			 * @param string $flag Html markup of the flag or empty string.
+			 * @param string $slug Language code.
 			 */
 			$this->{$key} = apply_filters(
 				'pll_get_flag',
@@ -220,13 +353,13 @@ class PLL_Language {
 	}
 
 	/**
-	 * Get HTML code for flag
+	 * Get HTML code for flag.
 	 *
 	 * @since 2.7
 	 *
-	 * @param array  $flag  flag properties: src, width and height
-	 * @param string $title optional title attribute
-	 * @param string $alt   optional alt attribute
+	 * @param array  $flag  Flag properties: src, width and height.
+	 * @param string $title Optional title attribute.
+	 * @param string $alt   Optional alt attribute.
 	 */
 	public static function get_flag_html( $flag, $title = '', $alt = '' ) {
 		if ( empty( $flag['src'] ) ) {
@@ -281,22 +414,22 @@ class PLL_Language {
 	}
 
 	/**
-	 * Updates post and term count
+	 * Updates post and term count.
 	 *
 	 * @since 1.2
 	 */
 	public function update_count() {
-		wp_update_term_count( $this->term_taxonomy_id, 'language' ); // posts count
-		wp_update_term_count( $this->tl_term_taxonomy_id, 'term_language' ); // terms count
+		wp_update_term_count( $this->term_taxonomy_id, 'language' ); // Posts count.
+		wp_update_term_count( $this->tl_term_taxonomy_id, 'term_language' ); // Terms count.
 	}
 
 	/**
-	 * Set home_url and search_url properties
+	 * Set home_url and search_url properties.
 	 *
 	 * @since 1.3
 	 *
-	 * @param string $search_url
-	 * @param string $home_url
+	 * @param string $search_url Home url to use in search forms.
+	 * @param string $home_url   Home url.
 	 */
 	public function set_home_url( $search_url, $home_url ) {
 		$this->search_url = $search_url;
@@ -304,7 +437,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * Sets the scheme of the home url and the flag urls
+	 * Sets the scheme of the home url and the flag urls.
 	 *
 	 * This can't be cached across pages.
 	 *
@@ -322,12 +455,12 @@ class PLL_Language {
 	}
 
 	/**
-	 * Returns the language locale
-	 * Converts WP locales to W3C valid locales for display
+	 * Returns the language locale.
+	 * Converts WP locales to W3C valid locales for display.
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $filter either 'display' or 'raw', defaults to raw
+	 * @param string $filter Either 'display' or 'raw', defaults to raw.
 	 * @return string
 	 */
 	public function get_locale( $filter = 'raw' ) {
