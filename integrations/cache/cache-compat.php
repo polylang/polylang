@@ -35,7 +35,7 @@ class PLL_Cache_Compat {
 	 */
 	public function add_cookie_script() {
 		$domain   = ( 2 === PLL()->options['force_lang'] ) ? wp_parse_url( PLL()->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN;
-		$samesite = ( 3 === $this->options['force_lang'] ) ? 'None' : 'Lax';
+		$samesite = ( 3 === PLL()->options['force_lang'] ) ? 'None' : 'Lax';
 
 		$js = sprintf(
 			'(function() {
