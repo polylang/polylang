@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.1
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 2.8.4
+Stable tag: 2.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -78,7 +78,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 2.9 =
+= 2.9 (2020-12-07) =
 
 * Add compatibility with WordPress 5.6
 * Pro: Add locale fallback used when the theme or plugins translations are not available
