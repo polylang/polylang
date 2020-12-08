@@ -263,6 +263,12 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		// Get the nav menu based on the requested menu
 		$menu = wp_get_nav_menu_object( $args['menu'] );
 
+		// Get the nav menu based on the theme_location.
+		$locations = get_nav_menu_locations();	
+		if ( ! $menu && $args['theme_location'] && $locations && isset( $locations[ $args['theme_location'] ] ) ) {
+			$menu = wp_get_nav_menu_object( $locations[ $args['theme_location'] ] );
+		}
+
 		// Attempt to find a translation of this menu
 		// This obviously does not work if the nav menu has no associated theme location
 		if ( $menu ) {
