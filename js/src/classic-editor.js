@@ -2,7 +2,7 @@
  * @package Polylang
  */
 
-import pllMedia from './media';
+import pllMedia from './media.dep';
 
 pllMedia.init();
 
