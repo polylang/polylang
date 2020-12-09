@@ -19,9 +19,20 @@ function configureWebpack( options ){
 		'*.config.js',
 		'node_modules/**/*.js',
 		'vendor/**/*.js',
-		'**/*.min.js'
+		'**/*.min.js',
+		'**/*.dep.js'
 	];
-	const jsFileNames = glob( '**/*.js', { 'ignore': jsFileNamesToIgnore } ).map( filename => `./${ filename }`);
+	const jsSourceFileNames = glob( '**/src/*.js', { 'ignore': jsFileNamesToIgnore } ).map( filename => `./${ filename }`);
+	console.log( 'js files to build:', jsSourceFileNames );
+	const jsFileNames = glob( 
+		'**/*.js', 
+		{ 
+			'ignore': jsFileNamesToIgnore.concat( 
+				[ '**/src/*.js' ], 
+				jsSourceFileNames.map( filename => `./js/${ path.parse( filename ).base }` ) 
+			)
+		} 
+	).map( filename => `./${ filename }`);
 	console.log( 'js files to minify:', jsFileNames );
 
 	const cssFileNamesToIgnore = [
@@ -33,11 +44,12 @@ function configureWebpack( options ){
 	console.log( 'css files to minify:', cssFileNames );
 
 	// Prepare webpack configuration to minify js files to source folder as target folder and suffix file name with .min.js extension.
-	const jsFileNamesEntries = jsFileNames.map( ( filename ) => {
+	function mapJsFiles(jsFileNames, suffix, destinationFolder ) {
+		return jsFileNames.map( ( filename ) => {
 			const entry = {};
 			entry[ path.parse( filename ).name ] = filename;
 			const output = {
-				filename: `${path.parse( filename ).dir}/[name].min.js`,
+				filename: `${ destinationFolder ? destinationFolder : path.parse( filename ).dir }/[name]${ suffix ? '.' + suffix : '' }.js`,
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
 				iife: false, // Avoid Webpack to wrap files into a IIFE which is not needed for this kind of javascript files.
 			}
@@ -47,8 +59,8 @@ function configureWebpack( options ){
 			};
 			return config;
 		},
-		{}
-	);
+		{});
+	}
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
 	const cssFileNamesEntries = cssFileNames.map( ( filename ) => {
@@ -99,7 +111,8 @@ function configureWebpack( options ){
 
 	// Make webpack configuration.
 	const config = [
-		...jsFileNamesEntries, // Add config for js files.
+		...mapJsFiles(jsFileNames, 'min'), // Add config for js files.
+		...mapJsFiles(jsSourceFileNames, 'min', './js' ),
 		...cssFileNamesEntries, // Add config for css files.
 	];
 
