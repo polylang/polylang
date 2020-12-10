@@ -7,3 +7,5 @@ tmp/
 *.min.js
 *.min.css
 *.map
+js/block-editor.js
+js/classic-editor.js
