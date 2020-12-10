@@ -5,3 +5,5 @@ coverage
 *.min.js
 *.min.css
 *.map
+js/classic-editor.js
+js/term.js
