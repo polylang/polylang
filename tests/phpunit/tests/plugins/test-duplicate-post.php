@@ -9,7 +9,7 @@ if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 		/**
 		 * @param WP_UnitTest_Factory $factory
 		 */
-		public static function wpSetUpBeforeClass( $factory ) {
+		public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 			parent::wpSetUpBeforeClass( $factory );
 
 			self::$polylang->model->post->registered_post_type( 'post' ); // Important.

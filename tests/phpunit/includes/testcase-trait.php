@@ -16,7 +16,7 @@ trait PLL_UnitTestCase_Trait {
 	 *
 	 * @param WP_UnitTest_Factory $factory
 	 */
-	static function wpSetUpBeforeClass( $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		self::$polylang = new StdClass();
 
 		self::$polylang->options = PLL_Install::get_default_options();
