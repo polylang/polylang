@@ -29,7 +29,7 @@ function configureWebpack( options ){
 		{ 
 			'ignore': commonFileNamesToIgnore.concat( 
 				[ '**/src/*.js' ], 
-				jsSourceFileNames.map( filename => `./js/${ path.parse( filename ).base }` ) 
+				jsSourceFileNames.map( filename => 'js/' + path.parse( filename ).base )
 			)
 		} 
 	).map( filename => `./${ filename }`);
@@ -39,7 +39,7 @@ function configureWebpack( options ){
 	console.log( 'css files to minify:', cssFileNames );
 
 	// Prepare webpack configuration to minify js files to source folder as target folder and suffix file name with .min.js extension.
-	function mapJsFiles(jsFileNames, suffix, destinationFolder ) {
+	function mapJsFiles( jsFileNames, suffix, destinationFolder ) {
 		return jsFileNames.map( ( filename ) => {
 			const entry = {};
 			entry[ path.parse( filename ).name ] = filename;
@@ -56,6 +56,9 @@ function configureWebpack( options ){
 		},
 		{});
 	}
+	const jsFileNamesEntries = isProduction ? 
+		mapJsFiles( jsFileNames, 'min' ).concat( mapJsFiles( jsSourceFileNames, 'min', './js' )) : 
+		mapJsFiles( jsSourceFileNames, '', './js' );
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
 	const cssFileNamesEntries = cssFileNames.map( ( filename ) => {
@@ -79,7 +82,10 @@ function configureWebpack( options ){
 							dry: false,
 							verbose: false,
 							cleanOnceBeforeBuildPatterns: [], // Disable to clean nothing before build.
-							cleanAfterEveryBuildPatterns: ['**/*.work'],
+							cleanAfterEveryBuildPatterns: [
+								'**/*.work',
+								'**/*.LICENSE.txt'
+							],
 						}
 					)
 				],
@@ -106,8 +112,7 @@ function configureWebpack( options ){
 
 	// Make webpack configuration.
 	const config = [
-		...mapJsFiles(jsFileNames, 'min'), // Add config for js files.
-		...mapJsFiles(jsSourceFileNames, 'min', './js' ),
+		...jsFileNamesEntries, // Add config for js files.
 		...cssFileNamesEntries, // Add config for css files.
 	];
 
