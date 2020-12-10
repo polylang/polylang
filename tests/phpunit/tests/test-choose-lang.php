@@ -5,7 +5,7 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
-	public static function wpSetUpBeforeClass( $factory ) {
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::$polylang->model->post->register_taxonomy();

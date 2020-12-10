@@ -13,7 +13,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
-	public static function wpSetUpBeforeClass( $factory ) {
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
@@ -27,7 +27,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
-	public static function generate_shared_fixtures( $factory ) {
+	public static function generate_shared_fixtures( WP_UnitTest_Factory $factory ) {
 		self::$post_en = $factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$polylang->model->post->set_language( self::$post_en, 'en' );
 

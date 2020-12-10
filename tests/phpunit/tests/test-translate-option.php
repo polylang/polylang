@@ -6,7 +6,7 @@
  */
 class Translate_Option_Test extends PLL_UnitTestCase {
 
-	static function wpSetUpBeforeClass( $factory ) {
+	static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
