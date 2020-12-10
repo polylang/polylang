@@ -14,25 +14,31 @@ function configureWebpack( options ){
 	console.log('isProduction:', isProduction);
 	console.log('dirname:', __dirname);
 
-
-	const jsFileNamesToIgnore = [
-		'*.config.js',
+	const jsFoldersToIgnore = [
 		'node_modules/**/*.js',
 		'vendor/**/*.js',
-		'**/*.min.js',
-		'**/*.dep.js'
 	];
-	const jsSourceFileNames = glob( '**/src/*.js', { 'ignore': jsFileNamesToIgnore } ).map( filename => `./${ filename }`);
+	const jsFileNamesToIgnore = [
+		'*.config.js',
+		'**/*.src.js',
+		'**/*.min.js',
+		'**/*.dep.js',
+	];
+	
+	const jsSourceFileNames = glob( '**/*.src.js', { 'ignore': jsFoldersToIgnore } ).map( filename => `./${ filename }` );
 	console.log( 'js files to build:', jsSourceFileNames );
+
 	const jsFileNames = glob( 
 		'**/*.js', 
 		{ 
-			'ignore': jsFileNamesToIgnore.concat( 
-				[ '**/src/*.js' ], 
-				jsSourceFileNames.map( filename => 'js/' + path.parse( filename ).base )
-			)
+			'ignore': [
+				...jsFoldersToIgnore, 
+				...jsFileNamesToIgnore, 
+				// Glob ignore pathes cannot use the '.' special character
+				...jsSourceFileNames.map( filename => computeBuildFilename( filename ).substr( 2 ) )
+			]
 		} 
-	).map( filename => `./${ filename }`);
+	).map( filename => `./${ filename }` );
 	console.log( 'js files to minify:', jsFileNames );
 
 	const cssFileNamesToIgnore = [
@@ -43,13 +49,20 @@ function configureWebpack( options ){
 	const cssFileNames = glob( '**/*.css', { 'ignore': cssFileNamesToIgnore } ).map( filename => `./${ filename }`);
 	console.log( 'css files to minify:', cssFileNames );
 
+	function computeBuildFilename( filename, suffix ) {
+		const nameWithoutSuffix = path.parse( filename ).name.split( '.' )[0];		
+		suffix = suffix ? '.' + suffix : '';
+
+		return `${ path.parse( filename ).dir }/${ nameWithoutSuffix + suffix }.js`;
+	}
+
 	// Prepare webpack configuration to minify js files to source folder as target folder and suffix file name with .min.js extension.
-	function mapJsFiles( jsFileNames, suffix, destinationFolder ) {
+	function mapJsFiles( jsFileNames, suffix ) {
 		return jsFileNames.map( ( filename ) => {
 			const entry = {};
 			entry[ path.parse( filename ).name ] = filename;
 			const output = {
-				filename: `${ destinationFolder ? destinationFolder : path.parse( filename ).dir }/[name]${ suffix ? '.' + suffix : '' }.js`,
+				filename: computeBuildFilename( filename, suffix ),
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
 				iife: false, // Avoid Webpack to wrap files into a IIFE which is not needed for this kind of javascript files.
 			}
@@ -62,8 +75,8 @@ function configureWebpack( options ){
 		{});
 	}
 	const jsFileNamesEntries = isProduction ? 
-		mapJsFiles( jsFileNames, 'min' ).concat( mapJsFiles( jsSourceFileNames, 'min', './js' )) : 
-		mapJsFiles( jsSourceFileNames, '', './js' );
+		mapJsFiles( [ ...jsFileNames, ...jsSourceFileNames ], 'min' ) : 
+		mapJsFiles( jsSourceFileNames );
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
 	const cssFileNamesEntries = cssFileNames.map( ( filename ) => {
