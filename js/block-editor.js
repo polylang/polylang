@@ -53,7 +53,7 @@ jQuery(
 		// Ajax for changing the post's language in the languages metabox
 		$( '.post_lang_choice' ).on(
 			'change',
-			function() {
+			function( event ) {
 				const select = wp.data.select;
 				const dispatch = wp.data.dispatch;
 				const subscribe = wp.data.subscribe;
@@ -71,7 +71,7 @@ jQuery(
 				// Need to wait the ajax response before triggering the block editor post save action.
 				var data = {
 					action:     'post_lang_choice',
-					lang:       $( this ).val(),
+					lang:       event.target.value,
 					post_type:  $( '#post_type' ).val(),
 					post_id:    $( '#post_ID' ).val(),
 					_pll_nonce: $( '#_pll_nonce' ).val()
@@ -153,7 +153,6 @@ jQuery(
 					savePostIsDone.then(
 						function() {
 							// If the post is well saved, we can reload the page
-							unsubscribe();
 							window.location.reload();
 						},
 						function() {
