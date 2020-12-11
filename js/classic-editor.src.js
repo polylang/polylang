@@ -121,7 +121,7 @@ jQuery(
 									case 'translations': // translations fields
 										// Data is built and come from server side and is well escaped when necessary
 										$( '.translations' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-										init_translations();
+										init_translations( $ );
 									break;
 									case 'taxonomy': // categories metabox for posts
 										var tax = this.data;

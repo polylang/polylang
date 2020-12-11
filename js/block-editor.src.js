@@ -146,7 +146,7 @@ jQuery(
 									case 'translations': // Translations fields
 										// Data is built and come from server side and is well escaped when necessary
 										$( '.translations' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-										init_translations();
+										init_translations( $ );
 									break;
 									case 'flag': // Flag in front of the select dropdown
 										// Data is built and come from server side and is well escaped when necessary
