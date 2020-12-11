@@ -385,8 +385,13 @@ class PLL_WPSEO {
 				break;
 
 			case 'system-page':
-				if ( '404' === $presentation->model->object_sub_type ) {
-					$presentation->model->title = WPSEO_Options::get( 'title-404-wpseo' );
+				switch ( $presentation->model->object_sub_type ) {
+					case '404':
+						$presentation->model->title = WPSEO_Options::get( 'title-404-wpseo' );
+						break;
+					case 'search-result':
+						$presentation->model->title = WPSEO_Options::get( 'title-search-wpseo' );
+						break;
 				}
 				break;
 		}
