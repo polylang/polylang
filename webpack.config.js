@@ -57,26 +57,28 @@ function configureWebpack( options ){
 	}
 
 	// Prepare webpack configuration to minify js files to source folder as target folder and suffix file name with .min.js extension.
-	function mapJsFiles( jsFileNames, suffix ) {
+	function mapJsFiles( jsFileNames, minimize = false ) {
 		return jsFileNames.map( ( filename ) => {
 			const entry = {};
 			entry[ path.parse( filename ).name ] = filename;
 			const output = {
-				filename: computeBuildFilename( filename, suffix ),
+				filename: computeBuildFilename( filename, minimize ? 'min' : '' ),
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
 				iife: false, // Avoid Webpack to wrap files into a IIFE which is not needed for this kind of javascript files.
 			}
 			const config = {
 				entry: entry,
 				output: output,
+				optimization: { minimize: minimize }
 			};
 			return config;
 		},
 		{});
 	}
-	const jsFileNamesEntries = isProduction ? 
-		mapJsFiles( [ ...jsFileNames, ...jsSourceFileNames ], 'min' ) : 
-		mapJsFiles( jsSourceFileNames );
+	const jsFileNamesEntries = [
+		...mapJsFiles( [ ...jsFileNames, ...jsSourceFileNames ], true ),
+		...mapJsFiles( jsSourceFileNames )
+	];
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
 	const cssFileNamesEntries = cssFileNames.map( ( filename ) => {
