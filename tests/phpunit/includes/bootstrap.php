@@ -1,15 +1,12 @@
 <?php
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
-if ( ! $_tests_dir ) {
-	$_tests_dir = '/tmp/wordpress-tests-lib';
-}
+$_tests_dir = dirname( dirname( dirname( __DIR__ ) ) ) . '/tmp/wordpress-tests-lib';
 
 require_once $_tests_dir . '/includes/functions.php';
 
 // load the plugin however *no* Polylang instance is created as no languages exist in DB
 function _manually_load_plugin() {
-	require_once dirname( __FILE__ ) . '/../../../polylang.php';
+	require_once dirname( dirname( dirname( __DIR__ ) ) ) . '/polylang.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
@@ -20,7 +17,7 @@ if ( ! defined( 'DIR_TESTROOT' ) ) {
 }
 
 if ( ! defined( 'PLL_TEST_DATA_DIR' ) ) {
-	define( 'PLL_TEST_DATA_DIR', dirname( __FILE__ ) . '/../data/' );
+	define( 'PLL_TEST_DATA_DIR', dirname( __DIR__ ) . '/data/' );
 }
 require_once __DIR__ . '/testcase-trait.php';
 require_once __DIR__ . '/testcase.php';

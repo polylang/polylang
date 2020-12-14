@@ -7,11 +7,11 @@
 	convertWarningsToExceptions="true"
 	>
 	<testsuites>
-		<testsuite>
+		<testsuite name="install">
 			<!-- These tests must run before others due to contant manipulation -->
 			<file>./tests/phpunit/tests/test-install.php</file>
 		</testsuite>
-		<testsuite>
+		<testsuite name="main">
 			<directory prefix="test-" suffix=".php">./tests/phpunit/tests</directory>
 		</testsuite>
 	</testsuites>
@@ -31,15 +31,4 @@
 			</exclude>
 		</whitelist>
 	</filter>
-	<listeners>
-		<listener class="SpeedTrapListener" file="tests/phpunit/includes/speed-trap-listener.php">
-			<arguments>
-				<array>
-					<element key="slowThreshold">
-						<integer>400</integer>
-					</element>
-				</array>
-			</arguments>
-		</listener>
-	</listeners>
 </phpunit>
