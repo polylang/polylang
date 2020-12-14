@@ -2,9 +2,9 @@
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
-WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
 
 WORKING_DIR="$PWD"
+WP_CORE_DIR=$WORKING_DIR/tmp/wordpress
 
 download() {
     if [ `which curl` ]; then
@@ -25,24 +25,24 @@ fi
 # Install WordPress Importer
 download https://downloads.wordpress.org/plugin/wordpress-importer.zip $TMPDIR/downloads/wordpress-importer.zip
 unzip -q $TMPDIR/downloads/wordpress-importer.zip -d  $TMPDIR/downloads/
-mkdir -p $TMPDIR/wordpress-importer
-mv $TMPDIR/downloads/wordpress-importer/* $TMPDIR/wordpress-importer/
+mkdir -p $WORKING_DIR/tmp/wordpress-importer
+mv $TMPDIR/downloads/wordpress-importer/* $WORKING_DIR/tmp/wordpress-importer/
 
 # Install Jetpack
 download https://downloads.wordpress.org/plugin/jetpack.zip $TMPDIR/downloads/jetpack.zip
 unzip -q $TMPDIR/downloads/jetpack.zip -d  $TMPDIR/downloads/
-mkdir -p $TMPDIR/jetpack
-mv $TMPDIR/downloads/jetpack/* $TMPDIR/jetpack/
+mkdir -p $WORKING_DIR/tmp/jetpack
+mv $TMPDIR/downloads/jetpack/* $WORKING_DIR/tmp/jetpack/
 
 #Install Yoast SEO
 download https://downloads.wordpress.org/plugin/wordpress-seo.zip $TMPDIR/downloads/wordpress-seo.zip
 unzip -q $TMPDIR/downloads/wordpress-seo.zip -d  $TMPDIR/downloads/
-mkdir -p $TMPDIR/wordpress-seo
-mv $TMPDIR/downloads/wordpress-seo/* $TMPDIR/wordpress-seo/
+mkdir -p $WORKING_DIR/tmp/wordpress-seo
+mv $TMPDIR/downloads/wordpress-seo/* $WORKING_DIR/tmp/wordpress-seo/
 
 #Install Duplicate Post
 download https://downloads.wordpress.org/plugin/duplicate-post.zip $TMPDIR/downloads/duplicate-post.zip
 unzip -q $TMPDIR/downloads/duplicate-post.zip -d  $TMPDIR/downloads/
-mkdir -p $TMPDIR/duplicate-post
-mv $TMPDIR/downloads/duplicate-post/* $TMPDIR/duplicate-post/
+mkdir -p $WORKING_DIR/tmp/duplicate-post
+mv $TMPDIR/downloads/duplicate-post/* $WORKING_DIR/tmp/duplicate-post/
 
