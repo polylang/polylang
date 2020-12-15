@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.1
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 2.9
+Stable tag: 2.9.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 2.9.1 (2020-12-15) =
+
+* Fix PHP notice: Undefined property: PLL_Cache_Compat::$options with cache plugins. Props bahaa-almahamid. #658
+* Fix title of the search results page with Yoast SEO > 14.0
 
 = 2.9 (2020-12-07) =
 
