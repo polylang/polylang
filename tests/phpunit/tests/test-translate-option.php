@@ -96,7 +96,9 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		}
 
 		add_option( 'my_options', $options );
+	}
 
+	protected function register_option_multiple() {
 		$keys = array(
 			'option_name_1'   => 1,
 			'options_group_1' => array(
@@ -107,6 +109,17 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		new PLL_Translate_Option( 'my_options', $keys );
 	}
+
+	protected function register_option_multiple_with_wildcard() {
+		$keys = array(
+			'option_name_1' => 1,
+			'options_*'     => 1,
+		);
+
+		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		new PLL_Translate_Option( 'my_options', $keys );
+	}
+
 
 	protected function translate_strings() {
 		$languages = array( 'en', 'fr' );
@@ -135,8 +148,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		update_option( 'my_options', $options );
 	}
 
-	function test_update_option_multiple() {
-		$this->prepare_option_multiple( 'ARRAY' );
+	protected function _test_update_option_multiple() {
 		$this->translate_strings();
 
 		$languages = array( 'en', 'fr' );
@@ -159,11 +171,20 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	function test_update_object_option_multiple() {
-		$this->prepare_option_multiple( 'OBJECT' );
+	function test_update_option_multiple() {
+		$this->prepare_option_multiple( 'ARRAY' );
+		$this->register_option_multiple();
+		$this->_test_update_option_multiple();
+	}
+
+	function test_update_option_multiple_with_wildcard() {
+		$this->prepare_option_multiple( 'ARRAY' );
+		$this->register_option_multiple_with_wildcard();
+		$this->_test_update_option_multiple();
+	}
+
+	protected function _test_update_object_option_multiple() {
 		$this->translate_strings();
-
-
 		$this->update_option_with_new_val( 'OBJECT' );
 
 		$languages = array( 'en', 'fr' );
@@ -176,6 +197,18 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		}
 	}
 
+	function test_update_object_option_multiple() {
+		$this->prepare_option_multiple( 'OBJECT' );
+		$this->register_option_multiple();
+		$this->_test_update_object_option_multiple();
+	}
+
+	function test_update_object_option_multiple_with_wildcard() {
+		$this->prepare_option_multiple( 'OBJECT' );
+		$this->register_option_multiple_with_wildcard();
+		$this->_test_update_object_option_multiple();
+	}
+
 	protected function do_no_translate_strings() {
 		$translations = array(
 			'val1'  => 'val1',
@@ -184,8 +217,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->add_string_translations( 'en', $translations );
 	}
 
-	function test_update_option_multiple_with_no_translation() {
-		$this->prepare_option_multiple( 'ARRAY' );
+	protected function _test_update_option_multiple_with_no_translation() {
 		$this->do_no_translate_strings();
 
 		$this->update_option_with_new_val( 'ARRAY' );
@@ -196,8 +228,19 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'new_val11', $options['options_group_1']['sub_option_name_11'] );
 	}
 
-	function test_update_object_option_multiple_with_no_translation() {
-		$this->prepare_option_multiple( 'OBJECT' );
+	function test_update_option_multiple_with_no_translation() {
+		$this->prepare_option_multiple( 'ARRAY' );
+		$this->register_option_multiple();
+		$this->_test_update_option_multiple_with_no_translation();
+	}
+
+	function test_update_option_multiple_with_no_translation_with_wildcard() {
+		$this->prepare_option_multiple( 'ARRAY' );
+		$this->register_option_multiple_with_wildcard();
+		$this->_test_update_option_multiple_with_no_translation();
+	}
+
+	function _test_update_object_option_multiple_with_no_translation() {
 		$this->do_no_translate_strings();
 
 		$this->update_option_with_new_val( 'OBJECT' );
@@ -208,7 +251,21 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'new_val11', $options->options_group_1->sub_option_name_11 );
 	}
 
+	function test_update_object_option_multiple_with_no_translation() {
+		$this->prepare_option_multiple( 'OBJECT' );
+		$this->register_option_multiple();
+		$this->_test_update_object_option_multiple_with_no_translation();
+	}
+
+	function test_update_object_option_multiple_with_no_translation_with_wildcard() {
+		$this->prepare_option_multiple( 'OBJECT' );
+		$this->register_option_multiple_with_wildcard();
+		$this->_test_update_object_option_multiple_with_no_translation();
+	}
+
 	protected function _test_update_option_with_translated_val( $method = 'ARRAY' ) {
+		$this->translate_strings();
+
 		$options = array(
 			'option_name_1'   => 'val1_en',
 			'options_group_1' => array(
@@ -234,15 +291,25 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 	function test_update_option_multiple_when_filtered() {
 		$this->prepare_option_multiple( 'ARRAY' );
-		$this->translate_strings();
+		$this->register_option_multiple();
+		$this->_test_update_option_with_translated_val( 'ARRAY' );
+	}
 
+	function test_update_option_multiple_when_filtered_with_wildcard() {
+		$this->prepare_option_multiple( 'ARRAY' );
+		$this->register_option_multiple_with_wildcard();
 		$this->_test_update_option_with_translated_val( 'ARRAY' );
 	}
 
 	function test_update_object_option_multiple_when_filtered() {
 		$this->prepare_option_multiple( 'OBJECT' );
-		$this->translate_strings();
+		$this->register_option_multiple();
+		$this->_test_update_option_with_translated_val( 'OBJECT' );
+	}
 
+	function test_update_object_option_multiple_when_filtered_with_wildcard() {
+		$this->prepare_option_multiple( 'OBJECT' );
+		$this->register_option_multiple_with_wildcard();
 		$this->_test_update_option_with_translated_val( 'OBJECT' );
 	}
 }

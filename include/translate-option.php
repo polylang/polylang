@@ -275,28 +275,28 @@ class PLL_Translate_Option {
 
 					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
 
-					foreach ( array_keys( $values ) as $n ) {
+					foreach ( $values as $n => $value ) {
 						// The first case could be handled by the next one, but we avoid calls to preg_match here.
 						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
-							if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $n ], $values[ $n ] ) ) {
-								$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $values[ $n ], $child );
+							if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $n ] ) ) {
+								$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $value, $child );
 							}
 
-							if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$n, $values->$n ) ) {
-								$values->$n = $this->check_value_recursive( $old_values->$n, $values->$n, $child );
+							if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$n ) ) {
+								$values->$n = $this->check_value_recursive( $old_values->$n, $value, $child );
 							}
 						}
 					}
 				}
 			} else {
 				// Parent key is a wildcard and no sub-key has been whitelisted.
-				foreach ( array_keys( $values ) as $n ) {
-					if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $n ], $values[ $n ] ) ) {
-						$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $values[ $n ], $child );
+				foreach ( $values as $n => $value ) {
+					if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $n ] ) ) {
+						$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $value, $key );
 					}
 
-					if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$n, $values->$n ) ) {
-						$values->$n = $this->check_value_recursive( $old_values->$n, $values->$n, $child );
+					if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$n ) ) {
+						$values->$n = $this->check_value_recursive( $old_values->$n, $value, $key );
 					}
 				}
 			}
