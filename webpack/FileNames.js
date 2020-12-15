@@ -42,19 +42,19 @@ function getJsFileNamesEntries( jsFoldersToIgnore , jsFileNamesToIgnore ) {
 	function mapJsFiles( jsFileNames, minimize = false ) {
 		return jsFileNames.map( 
 			( filename ) => {
-            const entry = {};
-            entry[ path.parse( filename ).name ] = filename;
-            const output = {
+				const entry = {};
+				entry[ path.parse( filename ).name ] = filename;
+				const output = {
 					filename: computeBuildFilename( filename, minimize ? 'min' : '' ),
 					path: process.cwd(),
 					iife: false, // Avoid Webpack to wrap files into a IIFE which is not needed for this kind of javascript files.
 				};
-            const config = {
+				const config = {
 					entry: entry,
 					output: output,
 					optimization: { minimize: minimize }
 				};
-            return config;
+				return config;
 			},
 			{}
 		);
