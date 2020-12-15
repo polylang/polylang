@@ -4,30 +4,73 @@
  */
 
 /**
- * Frontend controller
- * accessible as $polylang global object
- *
- * Properties:
- * options        => inherited, reference to Polylang options array
- * model          => inherited, reference to PLL_Model object
- * links_model    => inherited, reference to PLL_Links_Model object
- * links          => reference to PLL_Links object
- * static_pages   => reference to PLL_Frontend_Static_Pages object
- * choose_lang    => reference to PLL_Choose_Lang object
- * curlang        => current language
- * filters        => reference to PLL_Frontend_Filters object
- * filters_links  => reference to PLL_Frontend_Filters_Links object
- * filters_search => reference to PLL_Frontend_Filters_Search object
- * posts          => reference to PLL_CRUD_Posts object
- * terms          => reference to PLL_CRUD_Terms object
- * nav_menu       => reference to PLL_Frontend_Nav_Menu object
- * auto_translate => optional, reference to PLL_Auto_Translate object
+ * Frontend controller, accessible from PLL().
  *
  * @since 1.2
  */
 class PLL_Frontend extends PLL_Base {
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
 	public $curlang;
-	public $links, $choose_lang, $filters, $filters_search, $nav_menu, $auto_translate;
+
+	/**
+	 * Instance of PLL_Auto_Translate.
+	 *
+	 * @var PLL_Auto_Translate
+	 */
+	public $auto_translate;
+
+	/**
+	 * Instance of the class selecting the current language.
+	 *
+	 * @var PLL_Choose_Lang
+	 */
+	public $choose_lang;
+
+	/**
+	 * Instance of PLL_Frontend_Filters.
+	 *
+	 * @var PLL_Frontend_Filters
+	 */
+	public $filters;
+
+	/**
+	 * Instance of PLL_Frontend_Filters_Links.
+	 *
+	 * @var PLL_Frontend_Filters_Links
+	 */
+	public $filters_links;
+
+	/**
+	 * Instance of PLL_Frontend_Filters_Search.
+	 *
+	 * @var PLL_Frontend_Filters_Search
+	 */
+	public $filters_search;
+
+	/**
+	 * Instance of PLL_Frontend_Links.
+	 *
+	 * @var PLL_Frontend_Links
+	 */
+	public $links;
+
+	/**
+	 * Instance of PLL_Frontend_Nav_Menu.
+	 *
+	 * @var PLL_Frontend_Nav_Menu
+	 */
+	public $nav_menu;
+
+	/**
+	 * Instance of PLL_Frontend_Static_Pages.
+	 *
+	 * @var PLL_Frontend_Static_Pages
+	 */
+	public $static_pages;
 
 	/**
 	 * Constructor
