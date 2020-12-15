@@ -11,8 +11,19 @@
  * @since 1.0
  */
 class PLL_WPML_Config {
-	protected static $instance; // For singleton
-	protected $xmls, $options;
+	/**
+	 * Singleton instance
+	 *
+	 * @var PLL_OLT_Manager
+	 */
+	protected static $instance;
+
+	/**
+	 * The content of all read xml files.
+	 *
+	 * @var SimpleXMLElement[]
+	 */
+	protected $xmls;
 
 	/**
 	 * Constructor

@@ -12,6 +12,11 @@
  * @since 2.0
  */
 class PLL_WPML_API {
+	/**
+	 * Stores the original language when the language is switched.
+	 *
+	 * @var PLL_Language
+	 */
 	private static $original_language = null;
 
 	/**

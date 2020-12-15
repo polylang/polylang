@@ -11,6 +11,12 @@
  * @since 1.2
  */
 class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
+	/**
+	 * Stores whether the home url includes www. or not.
+	 * Either '://' or '://www.'.
+	 *
+	 * @var string
+	 */
 	protected $www;
 
 	/**

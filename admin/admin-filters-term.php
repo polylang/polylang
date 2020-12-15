@@ -9,9 +9,47 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Term {
-	public $links, $model, $options, $pref_lang;
-	protected $pre_term_name; // Used to store the term name before creating a slug if needed
-	protected $post_id; // Used to store the current post_id when bulk editing posts
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	public $options;
+
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Instance of PLL_Links.
+	 *
+	 * @var PLL_Links
+	 */
+	public $links;
+
+	/**
+	 * Language selected in the admin language filter.
+	 *
+	 * @var PLL_Language
+	 */
+	public $filter_lang;
+
+	/**
+	 * Stores the term name before creating a slug if needed.
+	 *
+	 * @var string
+	 */
+	protected $pre_term_name;
+
+	/**
+	 * Stores the current post_id when bulk editing posts.
+	 *
+	 * @var int
+	 */
+	protected $post_id;
 
 	/**
 	 * Constructor: setups filters and actions

@@ -9,6 +9,11 @@
  * @since 1.7
  */
 class PLL_Install_Base {
+	/**
+	 * The plugin basename.
+	 *
+	 * @var string
+	 */
 	protected $plugin_basename;
 
 	/**

@@ -14,7 +14,33 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * @since 0.6
  */
 class PLL_Table_String extends WP_List_Table {
-	protected $languages, $strings, $groups, $selected_group;
+	/**
+	 * The list of languages.
+	 *
+	 * @var PLL_Language[]
+	 */
+	protected $languages;
+
+	/**
+	 * Registered strings.
+	 *
+	 * @var array
+	 */
+	protected $strings;
+
+	/**
+	 * The string groups.
+	 *
+	 * @var string[]
+	 */
+	protected $groups;
+
+	/**
+	 * The selected string group or -1 if none is selected.
+	 *
+	 * @var string|int
+	 */
+	protected $selected_group;
 
 	/**
 	 * Constructor

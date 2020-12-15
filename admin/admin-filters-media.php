@@ -10,6 +10,11 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
+	/**
+	 * Instance of PLL_CRUD_Posts.
+	 *
+	 * @var string PLL_CRUD_Posts
+	 */
 	public $posts;
 
 	/**

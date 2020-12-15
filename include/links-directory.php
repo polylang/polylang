@@ -11,6 +11,11 @@
  * @since 1.2
  */
 class PLL_Links_Directory extends PLL_Links_Permalinks {
+	/**
+	 * Relative path to the home url.
+	 *
+	 * @var string
+	 */
 	protected $home_relative;
 
 	/**

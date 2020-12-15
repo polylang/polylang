@@ -9,8 +9,19 @@
  * @since 1.6
  */
 class PLL_Admin_Strings {
-	protected static $strings = array(); // strings to translate
-	protected static $default_strings; // default strings to register
+	/**
+	 * Stores the strings to translate.
+	 *
+	 * @var array
+	 */
+	protected static $strings = array();
+
+	/**
+	 * The strings to register by default
+	 *
+	 * @var string[]
+	 */
+	protected static $default_strings;
 
 	/**
 	 * Add filters

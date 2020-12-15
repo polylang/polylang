@@ -9,8 +9,33 @@
  * @since 2.3
  */
 abstract class PLL_Sync_Metas {
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
 	public $model;
-	protected $meta_type, $prev_value, $to_copy;
+
+	/**
+	 * Meta type. Typically 'post' or 'term'.
+	 *
+	 * @var string
+	 */
+	protected $meta_type;
+
+	/**
+	 * Stores the previous values when updating a meta.
+	 *
+	 * @var array
+	 */
+	protected $prev_value;
+
+	/**
+	 * Stores the metas to synchronize before deleting them.
+	 *
+	 * @var array
+	 */
+	protected $to_copy;
 
 	/**
 	 * Constructor

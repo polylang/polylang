@@ -9,6 +9,12 @@
  * @since 1.2
  */
 class PLL_Walker_Dropdown extends Walker {
+	/**
+	 * Database fields to use.
+	 * See Walker::$db_fields
+	 *
+	 * @var array
+	 */
 	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
 
 	/**

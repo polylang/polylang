@@ -9,9 +9,33 @@
  * @since 1.2
  */
 class PLL_Model {
-	public $cache; // Our internal non persistent cache object
+	/**
+	 * Internal non persistent cache object.
+	 *
+	 * @var PLL_Cache
+	 */
+	public $cache;
+
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
 	public $options;
-	public $post, $term; // Translated objects models
+
+	/**
+	 * Translated post model.
+	 *
+	 * @var PLL_Translated_Post
+	 */
+	public $post;
+
+	/**
+	 * Translated term model.
+	 *
+	 * @var PLL_Translated_Term
+	 */
+	public $term;
 
 	/**
 	 * Constructor

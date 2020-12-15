@@ -10,7 +10,19 @@
  * @since 1.1
  */
 class PLL_Frontend_Auto_Translate {
-	public $model, $curlang;
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
 
 	/**
 	 * Constructor

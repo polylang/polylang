@@ -11,8 +11,25 @@
  * @since 1.0.2
  */
 class PLL_WPML_Compat {
-	protected static $instance; // For singleton
-	protected static $strings; // Used for cache
+	/**
+	 * Singleton instance
+	 *
+	 * @var PLL_OLT_Manager
+	 */
+	protected static $instance;
+
+	/**
+	 * Stores the strings registered with the WPML API.
+	 *
+	 * @var array
+	 */
+	protected static $strings;
+
+	/**
+	 * Instance of PLL_WPML_API.
+	 *
+	 * @var PLL_WPML_API
+	 */
 	public $api;
 
 	/**
