@@ -1,9 +1,14 @@
 # Files to exclude from the distribution.
 
+bin/
+node_modules/
+tests/
+tmp/
 composer.json
 composer.lock
 issue_template.md
+package.json
+package-lock.json
 phpcs.xml.dist
 phpunit.xml
-tests
-tmp
+webpack.config.js

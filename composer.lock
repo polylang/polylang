@@ -118,10 +118,6 @@
                 "stylecheck",
                 "tests"
             ],
-            "support": {
-                "issues": "https://github.com/dealerdirect/phpcodesniffer-composer-installer/issues",
-                "source": "https://github.com/dealerdirect/phpcodesniffer-composer-installer"
-            },
             "time": "2020-12-07T18:04:37+00:00"
         },
         {
@@ -1571,11 +1567,6 @@
                 }
             ],
             "description": "A PHPCS sniff to detect problems with variables.",
-            "support": {
-                "issues": "https://github.com/sirbrillig/phpcs-variable-analysis/issues",
-                "source": "https://github.com/sirbrillig/phpcs-variable-analysis",
-                "wiki": "https://github.com/sirbrillig/phpcs-variable-analysis/wiki"
-            },
             "time": "2020-12-12T18:28:57+00:00"
         },
         {
@@ -1892,9 +1883,6 @@
             ],
             "description": "PHPUnit library for WordPress",
             "homepage": "https://polylang.pro",
-            "support": {
-                "source": "https://github.com/polylang/wp-phpunit/tree/branch-5.7"
-            },
             "time": "2020-12-14T13:58:03+00:00"
         }
     ],

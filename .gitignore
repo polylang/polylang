@@ -1,9 +1,8 @@
-coverage
-nbproject
-.idea
-node_modules
-package-lock.json
-.webpack-config.json
-.map
-vendor
-tmp
+coverage/
+node_modules/
+vendor/
+tmp/
+.idea/
+*.map
+*.min.js
+*.min.css
