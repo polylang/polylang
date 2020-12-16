@@ -1,8 +1,8 @@
-coverage
-.idea
-node_modules
-.map
-vendor
-tmp
-.min.js
-.min.css
+coverage/
+node_modules/
+vendor/
+tmp/
+.idea/
+*.map
+*.min.js
+*.min.css
