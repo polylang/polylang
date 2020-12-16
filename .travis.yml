@@ -1,64 +1,73 @@
-sudo: false
+# TravisCI configuration for polylang/polylang
 
-language: php
+if: "branch = master"
+
+language: "php"
+os:
+  - "linux"
+dist: "xenial"
+
+jobs:
+  include:
+    - name: "PHPCS - PHP 7.2"
+      php: "7.2"
+      env: "WP_VERSION=latest WP_MULTISITE=0"
+      install:
+        - "composer install"
+      script:
+        - "vendor/bin/phpcs -s --extensions=php,js ./"
+
+    - name: "WP oldest - PHP 7.2"
+      php: "7.2"
+      env: "WP_VERSION=5.1 WP_MULTISITE=0"
+
+    - name: "WP latest - PHP 5.6"
+      php: "5.6"
+      env: "WP_VERSION=latest WP_MULTISITE=0"
+  
+    - name: "WP latest - PHP 8.0"
+      php: "8.0"
+      env: "WP_VERSION=latest WP_MULTISITE=0"
+  
+    - name: "WP latest multisite - PHP 7.2"
+      php: "7.2"
+      env: "WP_VERSION=latest WP_MULTISITE=1"
+
+    - name: "WP nightly - PHP 8.0"
+      php: "8.0"
+      env: "WP_VERSION=nightly WP_MULTISITE=0"
+  allow_failures:
+    - php: "8.0"
+      env: "WP_VERSION=nightly WP_MULTISITE=0"
 
 services:
-  - mysql
+  - "mysql"
+
+cache:
+  directories:
+    - "${HOME}/.composer/cache"
+
+before_install:
+  - "phpenv config-rm xdebug.ini"
+  - "export PATH=\"$(composer config --absolute --global bin-dir):${PATH}\""
+
+install:
+  - |
+    if [[ "${TRAVIS_PHP_VERSION:0:1}" == "8" ]]; then
+      composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "wpsyntex/wp-phpunit:dev-branch-7.5"
+    elif [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
+      composer require --no-interaction --update-with-dependencies --dev "wpsyntex/wp-phpunit:dev-branch-5.7"
+    else
+      composer install --no-interaction
+    fi
+  - "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-tests.sh wordpress_test root \"\" localhost \"${WP_VERSION}\""
+  - "bash tests/bin/install-plugins.sh"
+
+script:
+  - "vendor/bin/phpunit --verbose"
 
 notifications:
   email:
-    on_success: never
-    on_failure: change
-  slack: wpsyntex:LIVXuF2AQ9HXNm93zkWtR8fw
-
-branches:
-  only:
-    - master
-
-matrix:
-  include:
-  - name: PHPCS
-    php: 7.2
-    env: WP_VERSION=latest WP_MULTISITE=0
-    install:
-      - composer install
-    script:
-      - vendor/bin/phpcs -s --extensions=php,js .
-  - name: WP 5.1 (oldest)
-    php: 7.2
-    env: WP_VERSION=5.1 WP_MULTISITE=0
-  - name: PHP 5.6
-    php: 5.6
-    env: WP_VERSION=latest WP_MULTISITE=0
-  - name: PHP 8.0
-    php: 8.0
-    env: WP_VERSION=latest WP_MULTISITE=0
-  - name: Multisite
-    php: 7.2
-    env: WP_VERSION=latest WP_MULTISITE=1
-  - name: WP Nightly
-    php: 8.0
-    env: WP_VERSION=nightly WP_MULTISITE=0
-  allow_failures:
-  - name: WP Nightly
-    php: 8.0
-    env: WP_VERSION=nightly WP_MULTISITE=0
-
-before_install:
-  - phpenv config-rm xdebug.ini
-
-install:
-  - export PATH="$(composer config --absolute --global bin-dir):${PATH}"
-  - |
-    if [[ ${TRAVIS_PHP_VERSION:0:1} == "8" ]]; then
-      composer require --dev wpsyntex/wp-phpunit:"dev-branch-7.5" --update-with-dependencies --no-interaction --ignore-platform-reqs
-    elif [[ ${TRAVIS_PHP_VERSION:0:3} == "5.6" ]]; then
-      composer require --dev wpsyntex/wp-phpunit:"dev-branch-5.7" --update-with-dependencies --no-interaction
-    else
-      composer install
-    fi
-  - bash vendor/wpsyntex/wp-phpunit/bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - bash tests/bin/install-plugins.sh
-
-script:
-  - vendor/bin/phpunit
+    on_success: "never"
+    on_failure: "change"
+  slack: "wpsyntex:LIVXuF2AQ9HXNm93zkWtR8fw"
