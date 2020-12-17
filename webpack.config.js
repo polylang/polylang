@@ -25,11 +25,11 @@ function configureWebpack( options ){
 	console.log('isProduction:', isProduction);
 	console.log('dirname:', __dirname);
 
-	const jsFoldersToIgnore = [
-		'node_modules/**/*.js',
-		'vendor/**/*.js',
+	const commonFoldersToIgnore = [
+		'node_modules/**',
+		'vendor/**',
 		'tmp/**',
-		'webpack/*.js'
+		'webpack/**'
 	];
 
 	const jsFileNamesToIgnore = [
@@ -39,16 +39,9 @@ function configureWebpack( options ){
 		'**/*.dep.js',
 	];
 	
-	const jsFileNamesEntries = getJsFileNamesEntries( jsFoldersToIgnore, jsFileNamesToIgnore );
+	const jsFileNamesEntries = getJsFileNamesEntries( commonFoldersToIgnore, jsFileNamesToIgnore );
 
-	const cssFileNamesToIgnore = [
-		'node_modules/**/*.css',
-		'vendor/**/*.css',
-		'tmp/**',
-		'**/*.min.css'
-	]
-
-	const cssFileNames = glob( '**/*.css', { 'ignore': cssFileNamesToIgnore } ).map( filename => `./${ filename }`);
+	const cssFileNames = glob( '**/*.css', { 'ignore': [ ...commonFoldersToIgnore, '**/*.min.css' ] } ).map( filename => `./${ filename }`);
 	console.log( 'css files to minify:', cssFileNames );
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
