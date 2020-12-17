@@ -9,7 +9,19 @@
  * @since 2.5
  */
 class PLL_Admin_Block_Editor {
-	public $model;
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+	/**
+	 * Preferred language to assign to a new post.
+	 *
+	 * @var PLL_Language
+	 */
+	protected $pref_lang;
 
 	/**
 	 * Constructor: setups filters and actions

@@ -9,6 +9,19 @@
  * @since 1.8
  */
 class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
+	/**
+	 * Instance of a child class of PLL_Links_Model.
+	 *
+	 * @var PLL_Links_Model
+	 */
+	protected $links_model;
+
+	/**
+	 * Instance of PLL_Links.
+	 *
+	 * @var PLL_Links
+	 */
+	protected $links;
 
 	/**
 	 * Constructor: setups filters and actions

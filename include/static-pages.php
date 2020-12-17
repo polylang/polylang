@@ -9,8 +9,40 @@
  * @since 1.8
  */
 class PLL_Static_Pages {
-	public $model, $options;
-	public $page_on_front, $page_for_posts;
+	/**
+	 * Id of the page on front.
+	 *
+	 * @var int
+	 */
+	public $page_on_front;
+
+	/**
+	 * Id of the page for posts.
+	 *
+	 * @var int
+	 */
+	public $page_for_posts;
+
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	protected $options;
+
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
+	protected $curlang;
 
 	/**
 	 * Constructor: setups filters and actions
