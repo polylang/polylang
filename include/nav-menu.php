@@ -32,9 +32,9 @@ class PLL_Nav_Menu {
 	protected $theme;
 
 	/**
-	 * Array of menus in a given language used when auto add pages to menus.
+	 * Array of menu ids in a given language used when auto add pages to menus.
 	 *
-	 * @var array
+	 * @var int[]
 	 */
 	protected $auto_add_menus = array();
 

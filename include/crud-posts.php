@@ -5,7 +5,7 @@
 
 /**
  * Adds actions and filters related to languages when creating, updating or deleting posts.
- * Actions an filters used when reading posts are handled separately.
+ * Actions and filters triggered when reading posts are handled separately.
  *
  * @since 2.4
  */
@@ -18,7 +18,7 @@ class PLL_CRUD_Posts {
 	protected $model;
 
 	/**
-	 * Preferred language to assign.
+	 * Preferred language to assign to a new post.
 	 *
 	 * @var PLL_Language
 	 */
