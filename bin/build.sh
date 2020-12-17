@@ -1,11 +1,11 @@
 #!/bin/sh
 echo "Installing PHP packages..."
-composer install
-
-echo "Installing javascript packages..."
-npm install
+composer update # Need update to ensure to have the latest version of Polylang dependencies.
 
 echo "Running Polylang build..."
-npm run build
+npm install && npm run build
 
 echo "Build done!"
+
+echo "Cleanup" # Discard composer.lock and package-lock.json changings to ensure they'll never be pushed on repository.
+git checkout -- composer.lock package-lock.json
