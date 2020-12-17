@@ -1,3 +1,12 @@
+/**
+ * @package Polylang
+ */
+
+ /**
+  * Refresh translations fields and correctly set auto-completion.
+  * 
+  * @param {jQuery} $ The jQuery library instance.
+  */
 function init_translations( $ ) {
 	$( '.tr_lang' ).each(
 		function(){

@@ -2,7 +2,7 @@
  * @package Polylang
  */
 
- import { init_translations } from './metabox-translations.dep';
+import { init_translations } from './metabox-translations.dep';
 
 // tag suggest in metabox
 jQuery(
