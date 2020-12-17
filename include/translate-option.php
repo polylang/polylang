@@ -190,7 +190,7 @@ class PLL_Translate_Option {
 	public function pre_update_option( $value, $old_value, $name ) {
 		// Stores the unfiltered old option value before it is updated in DB.
 		remove_filter( 'option_' . $name, array( $this, 'translate' ), 10, 2 );
-		$this->old_value = get_option( $name );
+		$unfiltered_old_value = get_option( $name );
 		add_filter( 'option_' . $name, array( $this, 'translate' ), 20, 2 );
 
 		// Load strings translations according to the admin language filter
@@ -201,7 +201,7 @@ class PLL_Translate_Option {
 		PLL()->load_strings_translations( $locale );
 
 		// Filters out the strings which would be updated to their translations and stores the updated strings.
-		$value = $this->check_value_recursive( $this->old_value, $value, $this->keys );
+		$value = $this->check_value_recursive( $unfiltered_old_value, $value, $this->keys );
 
 		return $value;
 	}
