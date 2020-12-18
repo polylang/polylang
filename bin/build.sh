@@ -1,6 +1,12 @@
 #!/bin/sh
+COMPOSER_COMMAND='install'
+
+if [ "$1" = "-u" ] || [ "$1" = "-update" ]; then
+    COMPOSER_COMMAND='update'
+fi
+
 echo "Installing PHP packages..."
-composer update # Need update to ensure to have the latest version of Polylang dependencies.
+composer $COMPOSER_COMMAND # Need update to ensure to have the latest version of Polylang dependencies.
 
 echo "Running Polylang build..."
 npm install && npm run build
