@@ -1,7 +1,7 @@
 #!/bin/sh
 COMPOSER_COMMAND='install'
 
-if [ "$1" = "-u" ] || [ "$1" = "-update" ]; then
+if [ "$1" = "-u" ] || [ "$1" = "--update" ]; then
     COMPOSER_COMMAND='update'
 fi
 
