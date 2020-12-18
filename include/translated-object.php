@@ -165,7 +165,7 @@ abstract class PLL_Translated_Object {
 	public function save_translations( $id, $translations ) {
 		$id = (int) $id;
 
-		if ( ( $lang = $this->get_language( $id ) ) && isset( $translations ) && is_array( $translations ) ) {
+		if ( ( $lang = $this->get_language( $id ) ) && is_array( $translations ) ) {
 			// Sanitize the translations array.
 			$translations = array_map( 'intval', $translations );
 			$translations = array_merge( array( $lang->slug => $id ), $translations ); // Make sure this object is in translations.

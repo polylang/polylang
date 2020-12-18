@@ -70,7 +70,7 @@ class PLL_Admin_Filters_Term {
 			$post_type = $GLOBALS['post_type'];
 		}
 
-		if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) || ! post_type_exists( $post_type ) ) {
+		if ( ! isset( $taxonomy, $post_type ) || ! taxonomy_exists( $taxonomy ) || ! post_type_exists( $post_type ) ) {
 			return;
 		}
 
@@ -132,7 +132,7 @@ class PLL_Admin_Filters_Term {
 			$post_type = $GLOBALS['post_type'];
 		}
 
-		if ( ! post_type_exists( $post_type ) ) {
+		if ( ! isset( $post_type ) || ! post_type_exists( $post_type ) ) {
 			return;
 		}
 
