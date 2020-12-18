@@ -4,12 +4,59 @@
  */
 
 /**
- * Base class for both admin
+ * Setup features available on all admin pages.
  *
  * @since 1.8
  */
-class PLL_Admin_Base extends PLL_Base {
-	public $filter_lang, $curlang, $pref_lang;
+abstract class PLL_Admin_Base extends PLL_Base {
+	/**
+	 * Current language (used to filter the content).
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
+
+	/**
+	 * Language selected in the admin language filter.
+	 *
+	 * @var PLL_Language
+	 */
+	public $filter_lang;
+
+	/**
+	 * Preferred language to assign to new contents.
+	 *
+	 * @var PLL_Language
+	 */
+	public $pref_lang;
+
+	/**
+	 * Instance of PLL_Filters_Links.
+	 *
+	 * @var PLL_Filters_Links
+	 */
+	public $filters_links;
+
+	/**
+	 * Instance of PLL_Admin_Links.
+	 *
+	 * @var PLL_Admin_Links
+	 */
+	public $links;
+
+	/**
+	 * Instance of PLL_Admin_Notices.
+	 *
+	 * @var PLL_Admin_Notices
+	 */
+	public $notices;
+
+	/**
+	 * Instance of PLL_Admin_Static_Pages.
+	 *
+	 * @var PLL_Admin_Static_Pages
+	 */
+	public $static_pages;
 
 	/**
 	 * Loads the polylang text domain

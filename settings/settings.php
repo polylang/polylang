@@ -4,34 +4,23 @@
  */
 
 /**
- * A class for the Polylang settings pages
- * accessible in $polylang global object
- *
- * Properties:
- * options          => inherited, reference to Polylang options array
- * model            => inherited, reference to PLL_Model object
- * links_model      => inherited, reference to PLL_Links_Model object
- * links            => inherited, reference to PLL_Admin_Links object
- * static_pages     => inherited, reference to PLL_Admin_Static_Pages object
- * filters_links    => inherited, reference to PLL_Filters_Links object
- * curlang          => inherited, optional, current language used to filter admin content
- * pref_lang        => inherited, preferred language used as default when saving posts or terms
+ * A class for the Polylang settings pages, accessible from @see PLL().
  *
  * @since 1.2
  */
 class PLL_Settings extends PLL_Admin_Base {
 
 	/**
-	 * Name of the active module
+	 * Name of the active module.
 	 *
-	 * @var string $active_tab
+	 * @var string
 	 */
 	protected $active_tab;
 
 	/**
-	 * Array of modules classes
+	 * Array of modules classes.
 	 *
-	 * @var array $modules
+	 * @var PLL_Settings_Module[]
 	 */
 	protected $modules;
 
