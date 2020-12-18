@@ -4,7 +4,7 @@
  */
 
 /**
- * Base class for both PLL_Admin and PLL_Settings.
+ * Setup features available on all admin pages.
  *
  * @since 1.8
  */

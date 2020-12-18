@@ -4,7 +4,7 @@
  */
 
 /**
- * A class for the Polylang settings pages, accessible from PLL().
+ * A class for the Polylang settings pages, accessible from @see PLL().
  *
  * @since 1.2
  */
@@ -13,14 +13,14 @@ class PLL_Settings extends PLL_Admin_Base {
 	/**
 	 * Name of the active module.
 	 *
-	 * @var string $active_tab
+	 * @var string
 	 */
 	protected $active_tab;
 
 	/**
 	 * Array of modules classes.
 	 *
-	 * @var array $modules
+	 * @var PLL_Settings_Module[]
 	 */
 	protected $modules;
 

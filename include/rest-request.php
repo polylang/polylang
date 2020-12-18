@@ -4,7 +4,7 @@
  */
 
 /**
- * REST API controller, accessible from PLL().
+ * Main Polylang class for REST API requrests, accessible from @see PLL().
  *
  * @since 2.6
  */
@@ -61,7 +61,7 @@ class PLL_REST_Request extends PLL_Base {
 			$this->filters_links = new PLL_Filters_Links( $this );
 			$this->filters = new PLL_Filters( $this );
 
-			// Static front page and page for posts?
+			// Static front page and page for posts.
 			if ( 'page' === get_option( 'show_on_front' ) ) {
 				$this->static_pages = new PLL_Static_Pages( $this );
 			}

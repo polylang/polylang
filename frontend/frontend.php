@@ -4,7 +4,7 @@
  */
 
 /**
- * Frontend controller, accessible from PLL().
+ * Main Polylang class when on frontend, accessible from @see PLL().
  *
  * @since 1.2
  */
@@ -24,7 +24,7 @@ class PLL_Frontend extends PLL_Base {
 	public $auto_translate;
 
 	/**
-	 * Instance of the class selecting the current language.
+	 * The class selecting the current language.
 	 *
 	 * @var PLL_Choose_Lang
 	 */

@@ -4,7 +4,7 @@
  */
 
 /**
- * Admin side controller, accessible from PLL().
+ * Main Polylang class for admin (except Polylang pages), accessible from @see PLL().
  *
  * @since 1.2
  */
