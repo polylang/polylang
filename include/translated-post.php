@@ -61,7 +61,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @since 0.1
 	 *
 	 * @param int $post_id post id
-	 * @return bool|object PLL_Language object, false if no language is associated to that post
+	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that post
 	 */
 	public function get_language( $post_id ) {
 		$lang = $this->get_object_term( $post_id, 'language' );
@@ -137,13 +137,13 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Forces calling 'update_object_term_cache' when querying posts or pages
-	 * this is especially useful for nav menus with a lot of pages
-	 * without doing this, we would have one query per page in the menu to get the page language for the permalink
+	 * Forces calling 'update_object_term_cache' when querying posts or pages.
+	 * This is especially useful for nav menus with a lot of pages as, without doing this,
+	 * we would have one query per page in the menu to get the page language for the permalink.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $query reference to the query object
+	 * @param WP_Query $query Reference to the query object.
 	 */
 	public function pre_get_posts( $query ) {
 		if ( ! empty( $query->query['post_type'] ) && $this->model->is_translated_post_type( $query->query['post_type'] ) ) {
@@ -202,14 +202,14 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 	/**
 	 * Returns a list of posts in a language ( $lang )
-	 * not translated in another language ( $untranslated_in )
+	 * not translated in another language ( $untranslated_in ).
 	 *
 	 * @since 2.6
 	 *
-	 * @param string $type            Post type
-	 * @param string $untranslated_in The posts must not be translated in this language
-	 * @param string $lang            Language of the search posts
-	 * @param string $search          Limit results to posts matching this string
+	 * @param string       $type            Post type.
+	 * @param string       $untranslated_in The language the posts must not be translated in.
+	 * @param PLL_Language $lang            Language of the searched posts.
+	 * @param string       $search          Limit the results to the posts matching this string.
 	 * @return array Array of posts
 	 */
 	public function get_untranslated( $type, $untranslated_in, $lang, $search = '' ) {

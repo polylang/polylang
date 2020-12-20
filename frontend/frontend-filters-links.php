@@ -178,7 +178,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @param string $link    Post permalink.
 	 * @param int    $post_id Post id.
-	 * @return Post permalink with the correct domain.
+	 * @return string Post permalink with the correct domain.
 	 */
 	public function shortlink( $link, $post_id ) {
 		$post_type = get_post_type( $post_id );

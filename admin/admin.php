@@ -33,7 +33,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	/**
 	 * Instance of PLL_Admin_filters_Term.
 	 *
-	 * @var PLL_Admin_filters_Term
+	 * @var PLL_Admin_Filters_Term
 	 */
 	public $filters_term;
 

@@ -29,7 +29,7 @@
  * @param array $args optional
  * @return null|string|array null if displaying, array if raw is requested, string otherwise
  */
-function pll_the_languages( $args = '' ) {
+function pll_the_languages( $args = array() ) {
 	if ( PLL() instanceof PLL_Frontend ) {
 		$switcher = new PLL_Switcher();
 		return $switcher->the_languages( PLL()->links, $args );
@@ -412,11 +412,13 @@ function pll_count_posts( $lang, $args = array() ) {
 }
 
 /**
- * Allows to access the Polylang instance
- * It is always preferable to use API functions
- * Internal methods may be changed without prior notice
+ * Allows to access the Polylang instance.
+ * However, it is always preferable to use API functions
+ * as internal methods may be changed without prior notice.
  *
  * @since 1.8
+ *
+ * @return PLL_Frontend|PLL_Admin|PLL_Settings|PLL_REST_Request
  */
 function PLL() { // PHPCS:ignore WordPress.NamingConventions.ValidFunctionName
 	return $GLOBALS['polylang'];

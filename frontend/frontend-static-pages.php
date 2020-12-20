@@ -17,9 +17,9 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	protected $links_model;
 
 	/**
-	 * Instance of PLL_Links.
+	 * Instance of PLL_Frontend_Links.
 	 *
-	 * @var PLL_Links
+	 * @var PLL_Frontend_Links
 	 */
 	protected $links;
 
@@ -174,9 +174,9 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param bool|object $lang
-	 * @param object      $query
-	 * @return bool|object
+	 * @param PLL_Language|false $lang  The current language, false if it is not set yet.
+	 * @param WP_Query           $query The main WP query.
+	 * @return PLL_Language|false
 	 */
 	public function page_on_front_query( $lang, $query ) {
 		if ( ! empty( $lang ) || ! $this->page_on_front ) {

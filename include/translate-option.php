@@ -31,21 +31,21 @@ class PLL_Translate_Option {
 	 * @since 2.9
 	 *
 	 * @param string $name Option name.
-	 * @param object $keys Recursive array of option keys to translate in the form:
-	 *   array(
-	 *     'option_key_to_translate_1' => 1,
-	 *     'option_key_to_translate_2' => 1,
-	 *     'my_group' => array(
-	 *       'sub_key_to_translate_1' => 1,
-	 *       'sub_key_to_translate_2' => 1,
-	 *     ),
-	 *   )
-	 *   Note: only keys are interpreted. Any scalar can be used as values.
-	 * @param string $args {
-	 *   Optional. Array of arguments for registering the option.
+	 * @param array  $keys Recursive array of option keys to translate in the form:
+	 *    array(
+	 *      'option_key_to_translate_1' => 1,
+	 *      'option_key_to_translate_2' => 1,
+	 *      'my_group' => array(
+	 *        'sub_key_to_translate_1' => 1,
+	 *        'sub_key_to_translate_2' => 1,
+	 *      ),
+	 *    )
+	 *    Note: only keys are interpreted. Any scalar can be used as values.
+	 * @param array  $args {
+	 *    Optional. Array of arguments for registering the option.
 	 *
-	 *   @type string $context           The group in which the strings will be registered.
-	 *   @type string $sanitize_callback A callback function that sanitizes the option's value.
+	 *    @type string $context           The group in which the strings will be registered.
+	 *    @type string $sanitize_callback A callback function that sanitizes the option's value.
 	 * }
 	 */
 	public function __construct( $name, $keys = array(), $args = array() ) {
