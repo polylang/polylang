@@ -256,7 +256,7 @@ class PLL_Admin_Filters_Columns {
 			$taxonomy = $GLOBALS['taxonomy'];
 		}
 
-		if (  ! isset( $taxonomy, $post_type ) || ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
+		if ( ! isset( $taxonomy, $post_type ) || ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			return $out;
 		}
 
