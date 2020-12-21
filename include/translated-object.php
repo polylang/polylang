@@ -391,7 +391,7 @@ abstract class PLL_Translated_Object {
 		 *                         true to always allow the synchronization,
 		 *                         false to always disallow the synchronization.
 		 *                         Defaults to true.
-		 * @param itn       $id    The synchronization source object id.
+		 * @param int       $id    The synchronization source object id.
 		 */
 		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
 		if ( null !== $check ) {

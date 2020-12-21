@@ -434,7 +434,12 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @since 2.2.6 Add the $limit argument.
 	 *
 	 * @param int $limit Max number of posts or terms to return. Defaults to -1 (no limit).
-	 * @return array Array made of an array of post ids and an array of term ids
+	 * @return array {
+	 *     Objects without language.
+	 *
+	 *     @type int[] $posts Array of post ids.
+	 *     @type int[] $terms Array of term ids.
+	 * }
 	 */
 	public function get_objects_with_no_lang( $limit = -1 ) {
 		global $wpdb;
