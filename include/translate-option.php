@@ -32,7 +32,7 @@ class PLL_Translate_Option {
 	 *
 	 * @param string $name Option name.
 	 * @param array  $keys Recursive array of option keys to translate in the form:
-	 *    array(
+	 *    @example array(
 	 *      'option_key_to_translate_1' => 1,
 	 *      'option_key_to_translate_2' => 1,
 	 *      'my_group' => array(
@@ -40,6 +40,7 @@ class PLL_Translate_Option {
 	 *        'sub_key_to_translate_2' => 1,
 	 *      ),
 	 *    )
+	 *
 	 *    Note: only keys are interpreted. Any scalar can be used as values.
 	 * @param array  $args {
 	 *    Optional. Array of arguments for registering the option.
