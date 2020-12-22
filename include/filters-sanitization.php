@@ -97,7 +97,7 @@ class PLL_Filters_Sanitization {
 		if ( ! $once ) {
 			$once = true;
 			add_filter( 'locale', array( $this, 'get_locale' ), 20 ); // After the filter for the admin interface
-			$username = sanitize_user( $raw_username, '', $strict );
+			$username = sanitize_user( $raw_username, $strict );
 			remove_filter( 'locale', array( $this, 'get_locale' ), 20 );
 			$once = false;
 		}
