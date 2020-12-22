@@ -65,7 +65,7 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $post_id, 'us' );
 
-		self::$polylang->model->clean_languages_cache(); // FIXME foor some reason the cache is not clean before (resulting in wrong count)
+		self::$polylang->model->clean_languages_cache(); // FIXME for some reason the cache is not clean before (resulting in wrong count)
 
 		$choose_lang = new PLL_Choose_Lang_Url( self::$polylang );
 
@@ -78,5 +78,29 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		// when the exact locale is not specified, return the preferred language according to the order
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en;q=0.8,fr;q=0.5';
 		$this->assertEquals( 'us', $choose_lang->get_preferred_browser_language() );
+	}
+
+	/**
+	 * @since 3.0
+	 * @see https://github.com/polylang/polylang/issues/591
+	 */
+	function test_browser_preferred_language_with_script_tag() {
+		self::create_language( 'zh_CN', array( 'slug' => 'zh' ) );
+		self::create_language( 'zh_HK', array( 'slug' => 'zh-hk' ) );
+		self::create_language( 'zh_HK', array( 'slug' => 'zh-hant-hk' ) );
+
+		$post_id = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $post_id, 'zh' );
+		$post_id = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $post_id, 'zh-hk' );
+		$post_id = $this->factory->post->create();
+		self::$polylang->model->post->set_language( $post_id, 'zh-hant-hk' );
+
+		self::$polylang->model->clean_languages_cache(); // FIXME for some reason the cache is not clean before (resulting in wrong count)
+
+		$choose_lang = new PLL_Choose_Lang_Url( self::$polylang );
+
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'zh-Hant-HK,zh-HK;q=0.8,zh;q=0.5';
+		$this->assertEquals( 'zh-hk', $choose_lang->get_preferred_browser_language() );
 	}
 }
