@@ -208,7 +208,7 @@ class PLL_Sync {
 					$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 					$wpdb->update(
 						$wpdb->term_taxonomy,
-						array( 'parent' => isset( $tr_parent ) ? $tr_parent : 0 ),
+						array( 'parent' => $tr_parent ? $tr_parent : 0 ),
 						array( 'term_taxonomy_id' => get_term( (int) $tr_id, $taxonomy )->term_taxonomy_id )
 					);
 
