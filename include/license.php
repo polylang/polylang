@@ -243,7 +243,8 @@ class PLL_License {
 			$license = $this->license_data;
 		}
 
-		$class = 'license-null';
+		$class   = 'license-null';
+		$message = '';
 
 		$out = sprintf(
 			'<td><label for="pll-licenses[%1$s]">%2$s</label></td>' .
