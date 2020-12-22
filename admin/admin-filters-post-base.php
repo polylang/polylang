@@ -10,15 +10,11 @@
  */
 abstract class PLL_Admin_Filters_Post_Base {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;
 
 	/**
-	 * Instance of PLL_Links
-	 *
 	 * @var PLL_Links
 	 */
 	public $links;

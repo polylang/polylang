@@ -31,8 +31,6 @@ class PLL_Static_Pages {
 	protected $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	protected $model;

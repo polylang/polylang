@@ -17,8 +17,6 @@ class PLL_Settings_Module {
 	public $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;

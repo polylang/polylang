@@ -10,8 +10,6 @@
  */
 class PLL_Admin_Block_Editor {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	protected $model;

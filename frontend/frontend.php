@@ -17,8 +17,6 @@ class PLL_Frontend extends PLL_Base {
 	public $curlang;
 
 	/**
-	 * Instance of PLL_Frontend_Auto_Translate.
-	 *
 	 * @var PLL_Frontend_Auto_Translate
 	 */
 	public $auto_translate;
@@ -31,43 +29,31 @@ class PLL_Frontend extends PLL_Base {
 	public $choose_lang;
 
 	/**
-	 * Instance of PLL_Frontend_Filters.
-	 *
 	 * @var PLL_Frontend_Filters
 	 */
 	public $filters;
 
 	/**
-	 * Instance of PLL_Frontend_Filters_Links.
-	 *
 	 * @var PLL_Frontend_Filters_Links
 	 */
 	public $filters_links;
 
 	/**
-	 * Instance of PLL_Frontend_Filters_Search.
-	 *
 	 * @var PLL_Frontend_Filters_Search
 	 */
 	public $filters_search;
 
 	/**
-	 * Instance of PLL_Frontend_Links.
-	 *
 	 * @var PLL_Frontend_Links
 	 */
 	public $links;
 
 	/**
-	 * Instance of PLL_Frontend_Nav_Menu.
-	 *
 	 * @var PLL_Frontend_Nav_Menu
 	 */
 	public $nav_menu;
 
 	/**
-	 * Instance of PLL_Frontend_Static_Pages.
-	 *
 	 * @var PLL_Frontend_Static_Pages
 	 */
 	public $static_pages;

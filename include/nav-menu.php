@@ -18,8 +18,6 @@ class PLL_Nav_Menu {
 	public $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;

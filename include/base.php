@@ -17,8 +17,6 @@ abstract class PLL_Base {
 	public $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;

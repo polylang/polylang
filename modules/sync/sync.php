@@ -10,22 +10,16 @@
  */
 class PLL_Sync {
 	/**
-	 * Instance of PLL_Sync_Tax.
-	 *
 	 * @var PLL_Sync_Tax
 	 */
 	public $taxonomies;
 
 	/**
-	 * Instance of PLL_Sync_Post_Metas.
-	 *
 	 * @var PLL_Sync_Post_Metas
 	 */
 	public $post_metas;
 
 	/**
-	 * Instance of PLL_Sync_Term_Metas.
-	 *
 	 * @var PLL_Sync_Term_Metas
 	 */
 	public $term_metas;
@@ -38,8 +32,6 @@ class PLL_Sync {
 	protected $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	protected $model;

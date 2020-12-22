@@ -14,7 +14,7 @@ class PLL_WPML_Compat {
 	/**
 	 * Singleton instance
 	 *
-	 * @var PLL_OLT_Manager
+	 * @var PLL_WPML_Compat
 	 */
 	protected static $instance;
 
@@ -26,8 +26,6 @@ class PLL_WPML_Compat {
 	protected static $strings;
 
 	/**
-	 * Instance of PLL_WPML_API.
-	 *
 	 * @var PLL_WPML_API
 	 */
 	public $api;

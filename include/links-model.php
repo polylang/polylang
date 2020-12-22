@@ -24,8 +24,6 @@ abstract class PLL_Links_Model {
 	public $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;

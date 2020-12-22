@@ -10,15 +10,11 @@
  */
 class PLL_Query {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	protected $model;
 
 	/**
-	 * Instance of WP_Query.
-	 *
 	 * @var WP_Query
 	 */
 	protected $query;

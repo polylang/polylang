@@ -10,8 +10,6 @@
  */
 class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	/**
-	 * Instance of PLL_Admin_Links.
-	 *
 	 * @var PLL_Admin_Links
 	 */
 	protected $links;

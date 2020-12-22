@@ -10,15 +10,11 @@
  */
 class PLL_Admin_Classic_Editor {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;
 
 	/**
-	 * Instance of PLL_Admin_Links.
-	 *
 	 * @var PLL_Admin_Links
 	 */
 	public $links;

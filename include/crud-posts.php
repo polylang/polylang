@@ -11,8 +11,6 @@
  */
 class PLL_CRUD_Posts {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	protected $model;
