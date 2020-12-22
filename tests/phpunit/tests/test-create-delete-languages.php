@@ -54,7 +54,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->assertEqualSetsWithIndex( array( 'ar', 'en' ), self::$polylang->model->get_languages_list( array( 'fields' => 'slug' ) ) );
 
 		// attempt to create a language with the same slug as an existing one
-		self::create_language( 'en_GB' );
+		self::$polylang->model->add_language( array( 'slug' => 'en-gb', 'locale' => 'en_GB' ) );
 		$lang = self::$polylang->model->get_language( 'en' );
 		$this->assertEquals( 'en_US', $lang->locale );
 		$this->assertFalse( self::$polylang->model->get_language( 'en_GB' ) );
