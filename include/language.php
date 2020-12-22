@@ -183,8 +183,8 @@ class PLL_Language {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object|array $language      Term in 'language' taxonomy or language object properties stored as an array.
-	 * @param object       $term_language Corresponding 'term_language' term.
+	 * @param WP_Term|array $language      Term in 'language' taxonomy or language object properties stored as an array.
+	 * @param WP_Term       $term_language Corresponding 'term_language' term.
 	 */
 	public function __construct( $language, $term_language = null ) {
 		// Build the object from all properties stored as an array.
