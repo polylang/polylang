@@ -133,7 +133,7 @@ class PLL_Sitemaps {
 		$newrules = array();
 
 		foreach ( $rules as $key => $rule ) {
-			if ( isset( $slug ) && false !== strpos( $rule, 'sitemap=$matches[1]' ) ) {
+			if ( false !== strpos( $rule, 'sitemap=$matches[1]' ) ) {
 				$newrules[ str_replace( '^wp-sitemap', $slug . 'wp-sitemap', $key ) ] = str_replace(
 					array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
 					array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
