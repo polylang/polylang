@@ -9,8 +9,24 @@
  * @since 1.6
  */
 class PLL_Admin_Strings {
-	protected static $strings = array(); // strings to translate
-	protected static $default_strings; // default strings to register
+	/**
+	 * Stores the strings to translate.
+	 *
+	 * @var array {
+	 *   @type string $name      A unique name for the string.
+	 *   @type string $string    The actual string to translate.
+	 *   @type string $context   The group in which the string is registered.
+	 *   @type bool   $multiline Whether the string table should display a multiline textarea or a single line input.
+	 * }
+	 */
+	protected static $strings = array();
+
+	/**
+	 * The strings to register by default.
+	 *
+	 * @var string[]
+	 */
+	protected static $default_strings;
 
 	/**
 	 * Add filters

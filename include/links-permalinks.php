@@ -9,9 +9,41 @@
  * @since 1.6
  */
 abstract class PLL_Links_Permalinks extends PLL_Links_Model {
+	/**
+	 * Tells this child class of PLL_Links_Model is for pretty permalinks.
+	 *
+	 * @var bool
+	 */
 	public $using_permalinks = true;
-	protected $index = 'index.php'; // Need this before $wp_rewrite is created, also hardcoded in wp-includes/rewrite.php
-	protected $root, $use_trailing_slashes;
+
+	/**
+	 * The name of the index file which is the entry point to all requests.
+	 * We need this before the global $wp_rewrite is created.
+	 * Also hardcoded in WP_Rewrite.
+	 *
+	 * @var string
+	 */
+	protected $index = 'index.php';
+
+	/**
+	 * The prefix for all permalink structures.
+	 *
+	 * @var string
+	 */
+	protected $root;
+
+	/**
+	 * Whether to add trailing slashes.
+	 *
+	 * @var bool
+	 */
+	protected $use_trailing_slashes;
+
+	/**
+	 * The name of the rewrite rules to always modify.
+	 *
+	 * @var string[]
+	 */
 	protected $always_rewrite = array( 'date', 'root', 'comments', 'search', 'author' );
 
 	/**

@@ -9,7 +9,33 @@
  * @since 2.4
  */
 class PLL_Admin_Classic_Editor {
-	public $model, $links, $curlang, $pref_lang;
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Instance of PLL_Admin_Links.
+	 *
+	 * @var PLL_Admin_Links
+	 */
+	public $links;
+
+	/**
+	 * Current language (used to filter the content).
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
+
+	/**
+	 * Preferred language to assign to new contents.
+	 *
+	 * @var PLL_Language
+	 */
+	public $pref_lang;
 
 	/**
 	 * Constructor: setups filters and actions

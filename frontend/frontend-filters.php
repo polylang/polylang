@@ -9,6 +9,11 @@
  * @since 1.2
  */
 class PLL_Frontend_Filters extends PLL_Filters {
+	/**
+	 * Internal non persistent cache object.
+	 *
+	 * @var PLL_Cache
+	 */
 	public $cache;
 
 	/**

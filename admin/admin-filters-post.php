@@ -9,6 +9,11 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
+	/**
+	 * Current language (used to filter the content).
+	 *
+	 * @var PLL_Language
+	 */
 	public $curlang;
 
 	/**

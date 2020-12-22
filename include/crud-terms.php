@@ -10,7 +10,39 @@
  * @since 2.4
  */
 class PLL_CRUD_Terms {
-	public $model, $curlang, $filter_lang, $pref_lang;
+	/**
+	 * Instance of PLL_Model.
+	 *
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Current language (used to filter the content).
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
+
+	/**
+	 * Language selected in the admin language filter.
+	 *
+	 * @var PLL_Language
+	 */
+	public $filter_lang;
+
+	/**
+	 * Preferred language to assign to new contents.
+	 *
+	 * @var PLL_Language
+	 */
+	public $pref_lang;
+
+	/**
+	 * Stores the 'lang' query var from WP_Query.
+	 *
+	 * @var string
+	 */
 	private $tax_query_lang;
 
 	/**

@@ -13,10 +13,33 @@
  * @since 1.2
  */
 class PLL_OLT_Manager {
-	protected static $instance; // For singleton
+	/**
+	 * Singleton instance
+	 *
+	 * @var PLL_OLT_Manager
+	 */
+	protected static $instance;
+
+	/**
+	 * Stores the default site locale before it is modified.
+	 *
+	 * @var string
+	 */
 	protected $default_locale;
-	protected $list_textdomains = array(); // All text domains
-	public $labels = array(); // Post types and taxonomies labels to translate
+
+	/**
+	 * Stores all loded text domains and mo files.
+	 *
+	 * @var array
+	 */
+	protected $list_textdomains = array();
+
+	/**
+	 * Stores post types an taxonomies labels to translate.
+	 *
+	 * @var array
+	 */
+	public $labels = array();
 
 	/**
 	 * Constructor: setups relevant filters

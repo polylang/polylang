@@ -10,7 +10,19 @@
  * @since 1.7
  */
 class PLL_Cache {
-	protected $blog_id, $cache;
+	/**
+	 * Current site id.
+	 *
+	 * @var int
+	 */
+	protected $blog_id;
+
+	/**
+	 * The cache container.
+	 *
+	 * @var array
+	 */
+	protected $cache;
 
 	/**
 	 * Constructor

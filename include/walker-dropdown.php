@@ -9,6 +9,13 @@
  * @since 1.2
  */
 class PLL_Walker_Dropdown extends Walker {
+	/**
+	 * Database fields to use.
+	 *
+	 * @see https://developer.wordpress.org/reference/classes/walker/#properties Walker::$db_fields.
+	 *
+	 * @var array
+	 */
 	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
 
 	/**

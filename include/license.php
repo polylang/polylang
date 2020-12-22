@@ -9,8 +9,60 @@
  * @since 1.9
  */
 class PLL_License {
-	public $id, $name, $license_key, $license_data;
-	private $file, $version, $author;
+	/**
+	 * Sanitized plugin name.
+	 *
+	 * @var string
+	 */
+	public $id;
+
+	/**
+	 * Plugin name.
+	 *
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * License key.
+	 *
+	 * @var string
+	 */
+	public $license_key;
+
+	/**
+	 * License data, obtained from the API request.
+	 *
+	 * @var array
+	 */
+	public $license_data;
+
+	/**
+	 * Main plugin file.
+	 *
+	 * @var string
+	 */
+	private $file;
+
+	/**
+	 * Current plugin version.
+	 *
+	 * @var string
+	 */
+	private $version;
+
+	/**
+	 * Plugin author.
+	 *
+	 * @var string
+	 */
+	private $author;
+
+	/**
+	 * API url.
+	 *
+	 * @var string.
+	 */
 	private $api_url = 'https://polylang.pro';
 
 	/**

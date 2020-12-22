@@ -9,7 +9,19 @@
  * @since 1.2
  */
 class PLL_Frontend_Filters_Search {
-	public $links_model, $curlang;
+	/**
+	 * Instance of a child class of PLL_Links_Model.
+	 *
+	 * @var PLL_Links_Model
+	 */
+	public $links_model;
+
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
 
 	/**
 	 * Constructor

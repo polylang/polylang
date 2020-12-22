@@ -9,6 +9,11 @@
  * @since 1.2
  */
 class PLL_Upgrade {
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
 	public $options;
 
 	/**
