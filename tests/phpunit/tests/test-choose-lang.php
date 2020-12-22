@@ -87,8 +87,12 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 
 	function accepted_language_with_script_provider() {
 		return array(
-			array( 'zh-Hant-HK,zh-HK;q=0.8,zh;q=0.5', 'zh-hk' ),
-			array( 'zh-Hant-HK', 'zh-hk' ),
+			'Registered script gets picked'  => array( 'zh-Hant-HK,en;q=0.1', 'zh-hant-hk' ),
+			'Registered script get priority' => array( 'zh-Hant-HK,zh-HK;q=0.8,zh;q=0.5,en;q=0.1', 'zh-hant-hk' ),
+			'Non registered script fallbacks to base language' => array( 'zh-Hans-HK', 'zh' ),
+			'Quality supersedes closest language when supplied' => array( 'zh-Hans-HK,en;q=0.8,zh-CN;q=0.5,zh-HK;q=0.2', 'en' ),
+			'Non registered script fallback to existing region' => array( 'zh-Hans-HK', 'zh-hk' ),
+			'Quality supersedes closest region when supplied' => array( 'zh-Hans-HK,zh-CN;q=0.5,zh-HK;q=0.2,en;q=0.1', 'zh' ),
 		);
 	}
 
@@ -101,6 +105,7 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 	 * @param string|bool $expected_preference Expected results of our preferred browser language detection.
 	 */
 	function test_browser_preferred_language_with_script_tag( $accept_languages_header, $expected_preference ) {
+		self::create_language( 'en_GB', array( 'slug' => 'en' ) );
 		self::create_language( 'zh_CN', array( 'slug' => 'zh' ) );
 		self::create_language( 'zh_HK', array( 'slug' => 'zh-hk' ) );
 		self::create_language( 'zh_HK', array( 'slug' => 'zh-hant-hk' ) );
