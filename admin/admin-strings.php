@@ -12,12 +12,17 @@ class PLL_Admin_Strings {
 	/**
 	 * Stores the strings to translate.
 	 *
-	 * @var array
+	 * @var array {
+	 *   @type string $name      A unique name for the string.
+	 *   @type string $string    The actual string to translate.
+	 *   @type string $context   The group in which the string is registered.
+	 *   @type bool   $multiline Whether the string table should display a multiline textarea or a single line input.
+	 * }
 	 */
 	protected static $strings = array();
 
 	/**
-	 * The strings to register by default
+	 * The strings to register by default.
 	 *
 	 * @var string[]
 	 */
