@@ -18,8 +18,6 @@ class PLL_Sync_Tax {
 	protected $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	protected $model;

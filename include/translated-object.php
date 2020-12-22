@@ -10,8 +10,6 @@
  */
 abstract class PLL_Translated_Object {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;

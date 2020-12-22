@@ -11,8 +11,6 @@
  */
 class PLL_Frontend_Auto_Translate {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;

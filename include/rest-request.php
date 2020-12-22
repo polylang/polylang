@@ -11,36 +11,26 @@
 class PLL_REST_Request extends PLL_Base {
 
 	/**
-	 * Instance of PLL_Filters.
-	 *
 	 * @var PLL_Filters
 	 */
 	public $filters;
 
 	/**
-	 * Instance of PLL_Filters_Links.
-	 *
 	 * @var PLL_Filters_Links
 	 */
 	public $filters_links;
 
 	/**
-	 * Instance of PLL_Admin_Links.
-	 *
 	 * @var PLL_Admin_Links
 	 */
 	public $links;
 
 	/**
-	 * Instance of PLL_Nav_Menu.
-	 *
 	 * @var PLL_Nav_Menu
 	 */
 	public $nav_menu;
 
 	/**
-	 * Instance of PLL_Static_Pages.
-	 *
 	 * @var PLL_Static_Pages
 	 */
 	public $static_pages;

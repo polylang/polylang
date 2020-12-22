@@ -17,8 +17,6 @@ class PLL_Filters_Links {
 	public $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;
@@ -31,8 +29,6 @@ class PLL_Filters_Links {
 	public $links_model;
 
 	/**
-	 * Instance of PLL_Links
-	 *
 	 * @var PLL_Links
 	 */
 	public $links;

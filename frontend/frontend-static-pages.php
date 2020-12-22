@@ -17,8 +17,6 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	protected $links_model;
 
 	/**
-	 * Instance of PLL_Frontend_Links.
-	 *
 	 * @var PLL_Frontend_Links
 	 */
 	protected $links;

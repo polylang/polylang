@@ -10,8 +10,6 @@
  */
 abstract class PLL_Sync_Metas {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;

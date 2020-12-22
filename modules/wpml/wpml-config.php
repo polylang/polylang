@@ -14,7 +14,7 @@ class PLL_WPML_Config {
 	/**
 	 * Singleton instance
 	 *
-	 * @var PLL_OLT_Manager
+	 * @var PLL_WPML_Config
 	 */
 	protected static $instance;
 

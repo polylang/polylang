@@ -11,8 +11,6 @@
  */
 class PLL_CRUD_Terms {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;
