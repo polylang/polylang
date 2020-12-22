@@ -40,7 +40,7 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	protected $use_trailing_slashes;
 
 	/**
-	 * Rewrite rules to always filter
+	 * The name of the rewrite rules to always modify.
 	 *
 	 * @var string[]
 	 */
