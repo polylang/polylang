@@ -63,7 +63,10 @@ trait PLL_UnitTestCase_Trait {
 		$values['term_group'] = 0; // Default term_group.
 
 		$args = array_merge( $values, $args );
-		self::$polylang->model->add_language( $args );
+		$errors = self::$polylang->model->add_language( $args );
+		if ( is_wp_error( $errors ) ) {
+			throw new InvalidArgumentException( $errors->get_error_message() );
+		}
 	}
 
 	/**
