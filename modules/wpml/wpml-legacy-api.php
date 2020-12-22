@@ -167,7 +167,7 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 	 * @param string $lang                       Optional, language code, defaults to current language
 	 * @return int|null The object id of the translation, null if the translation is missing and $return_original_if_missing set to false
 	 */
-	function icl_object_id( $id, $type = 'post', $return_original_if_missing = false, $lang = false ) {
+	function icl_object_id( $id, $type = 'post', $return_original_if_missing = false, $lang = '' ) {
 		$lang = $lang ? $lang : pll_current_language();
 
 		if ( 'nav_menu' === $type ) {
@@ -282,7 +282,7 @@ if ( ! function_exists( 'icl_t' ) ) {
 	 * @param string|null $lang            optional, return the translation in this language, defaults to current language
 	 * @return string the translated string
 	 */
-	function icl_t( $context, $name, $string = false, &$has_translation = null, $bool = false, $lang = null ) {
+	function icl_t( $context, $name, $string = '', &$has_translation = null, $bool = false, $lang = null ) {
 		return icl_translate( $context, $name, $string, false, $has_translation, $lang );
 	}
 }
@@ -303,7 +303,7 @@ if ( ! function_exists( 'icl_translate' ) ) {
 	 * @param string|null $lang            optional, return the translation in this language, defaults to current language
 	 * @return string the translated string
 	 */
-	function icl_translate( $context, $name, $string = false, $bool = false, &$has_translation = null, $lang = null ) {
+	function icl_translate( $context, $name, $string = '', $bool = false, &$has_translation = null, $lang = null ) {
 		// FIXME WPML can automatically registers the string based on an option
 		if ( empty( $string ) ) {
 			$string = PLL_WPML_Compat::instance()->get_string_by_context_and_name( $context, $name );

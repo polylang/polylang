@@ -17,9 +17,9 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	public $priority = 100;
 
 	/**
-	 * Stores an array of PLL_License instances.
+	 * Stores an array of objects allowing to manage a license.
 	 *
-	 * @var array
+	 * @var PLL_License[]
 	 */
 	protected $items;
 
@@ -77,11 +77,11 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	}
 
 	/**
-	 * Get the html for a row (one per license key) for display
+	 * Get the html for a row (one per license key) for display.
 	 *
 	 * @since 1.9
 	 *
-	 * @param array $item licence id, name and key
+	 * @param PLL_License $item Object allowing to manage a license.
 	 * @return string
 	 */
 	protected function get_row( $item ) {

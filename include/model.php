@@ -160,12 +160,12 @@ class PLL_Model {
 	}
 
 	/**
-	 * Returns the language by its term_id, tl_term_id, slug or locale
+	 * Returns the language by its term_id, tl_term_id, slug or locale.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int|string $value term_id, tl_term_id, slug or locale of the queried language
-	 * @return object|bool PLL_Language object, false if no language found
+	 * @param int|string $value term_id, tl_term_id, slug or locale of the queried language.
+	 * @return PLL_Language|false Language object, false if no language found.
 	 */
 	public function get_language( $value ) {
 		if ( is_object( $value ) ) {

@@ -79,7 +79,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @param int|string $value    term id or term slug
 	 * @param string     $taxonomy optional taxonomy needed when the term slug is passed as first parameter
-	 * @return bool|object PLL_Language object, false if no language is associated to that term
+	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that term
 	 */
 	public function get_language( $value, $taxonomy = '' ) {
 		if ( is_numeric( $value ) ) {

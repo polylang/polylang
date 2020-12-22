@@ -11,6 +11,13 @@
 class PLL_Settings extends PLL_Admin_Base {
 
 	/**
+	 * Instance of PLL_Admin_Model.
+	 *
+	 * @var PLL_Admin_Model
+	 */
+	public $model;
+
+	/**
 	 * Name of the active module.
 	 *
 	 * @var string

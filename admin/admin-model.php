@@ -257,15 +257,15 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Validates data entered when creating or updating a language
+	 * Validates data entered when creating or updating a language.
 	 *
 	 * @see PLL_Admin_Model::add_language()
 	 *
 	 * @since 0.4
 	 *
-	 * @param array  $args
-	 * @param object $lang optional the language currently updated, the language is created if not set
-	 * @return bool true if success / false if failed
+	 * @param array  $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
+	 * @param object $lang Optional the language currently updated, the language is created if not set.
+	 * @return WP_Error
 	 */
 	protected function validate_lang( $args, $lang = null ) {
 		$errors = new WP_Error();
@@ -428,13 +428,18 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Returns untranslated posts and terms ids ( used in settings )
+	 * Returns untranslated posts and terms ids ( used in settings ).
 	 *
 	 * @since 0.9
-	 * @since 2.2.6 Add the $limit argument
+	 * @since 2.2.6 Add the $limit argument.
 	 *
-	 * @param in $limit Max number of posts or terms to return. Defaults to -1 (no limit).
-	 * @return array Array made of an array of post ids and an array of term ids
+	 * @param int $limit Max number of posts or terms to return. Defaults to -1 (no limit).
+	 * @return array {
+	 *     Objects without language.
+	 *
+	 *     @type int[] $posts Array of post ids.
+	 *     @type int[] $terms Array of term ids.
+	 * }
 	 */
 	public function get_objects_with_no_lang( $limit = -1 ) {
 		global $wpdb;

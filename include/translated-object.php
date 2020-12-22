@@ -88,7 +88,7 @@ abstract class PLL_Translated_Object {
 	 * @since 0.1
 	 *
 	 * @param int $id Object id.
-	 * @return bool|object PLL_Language object, false if no language is associated to that object.
+	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that object.
 	 */
 	abstract public function get_language( $id );
 
@@ -100,7 +100,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param int    $object_id Object id ( typically a post_id or term_id ).
 	 * @param string $taxonomy  Polylang taxonomy depending if we are looking for a post ( or term ) language ( or translation ).
-	 * @return bool|object The term associated to the object in the requested taxonomy if it exists, false otherwise.
+	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, false otherwise.
 	 */
 	public function get_object_term( $object_id, $taxonomy ) {
 		if ( empty( $object_id ) || is_wp_error( $object_id ) ) {
@@ -387,11 +387,11 @@ abstract class PLL_Translated_Object {
 		 *
 		 * @since 2.6
 		 *
-		 * @param $check Null to enable the capability check,
-		 *               true to always allow the synchronization,
-		 *               false to always disallow the synchronization.
-		 *               Defaults to true.
-		 * @param $id    The synchronization source object id.
+		 * @param bool|null $check Null to enable the capability check,
+		 *                         true to always allow the synchronization,
+		 *                         false to always disallow the synchronization.
+		 *                         Defaults to true.
+		 * @param int       $id    The synchronization source object id.
 		 */
 		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
 		if ( null !== $check ) {

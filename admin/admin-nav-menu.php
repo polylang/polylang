@@ -179,12 +179,12 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Assign menu languages and translations based on ( temporary ) locations
+	 * Assign menu languages and translations based on ( temporary ) locations.
 	 *
 	 * @since 1.1
 	 *
-	 * @param array $mods theme mods
-	 * @return unmodified $mods
+	 * @param mixed $mods Theme mods.
+	 * @return mixed
 	 */
 	public function pre_update_option_theme_mods( $mods ) {
 		if ( current_user_can( 'edit_theme_options' ) && isset( $mods['nav_menu_locations'] ) ) {

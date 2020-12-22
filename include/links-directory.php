@@ -155,12 +155,12 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	}
 
 	/**
-	 * Prepares rewrite rules filters
+	 * Prepares the rewrite rules filters.
 	 *
 	 * @since 0.8.1
 	 *
-	 * @param array $pre not used
-	 * @return unmodified $pre
+	 * @param mixed $pre Not used as the filter is used as an action.
+	 * @return mixed
 	 */
 	public function prepare_rewrite_rules( $pre ) {
 		// Don't modify the rules if there is no languages created yet

@@ -109,32 +109,32 @@ class PLL_Switcher {
 
 	/**
 	 * Displays a language switcher
-	 * or returns the raw elements to build a custom language switcher
-	 *
-	 * List of parameters accepted in $args:
-	 *
-	 * dropdown               => the list is displayed as dropdown if set, defaults to 0
-	 * echo                   => echoes the list if set to 1, defaults to 1
-	 * hide_if_empty          => hides languages with no posts ( or pages ) if set to 1, defaults to 1
-	 * show_flags             => displays flags if set to 1, defaults to 0
-	 * show_names             => show language names if set to 1, defaults to 1
-	 * display_names_as       => whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name
-	 * force_home             => will always link to home in translated language if set to 1, defaults to 0
-	 * hide_if_no_translation => hide the link if there is no translation if set to 1, defaults to 0
-	 * hide_current           => hide the current language if set to 1, defaults to 0
-	 * post_id                => returns links to translations of post defined by post_id if set, defaults not set
-	 * raw                    => return a raw array instead of html markup if set to 1, defaults to 0
-	 * item_spacing           => whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to preserve
-	 * admin_render           => allows to force the current language code in an admin context if set, default to 0. Need to set the admin_current_lang argument below
-	 * admin_current_lang     => the current language code in an admin context. Need to set the admin_render to 1, defaults not set
+	 * or returns the raw elements to build a custom language switcher.
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $links instance of PLL_Frontend_Links
-	 * @param array  $args
+	 * @param object $links Instance of PLL_Frontend_Links.
+	 * @param array  $args {
+	 *   Optional array of arguments.
+	 *
+	 *   @type int    $dropdown               The list is displayed as dropdown if set, defaults to 0.
+	 *   @type int    $echo                   Echoes the list if set to 1, defaults to 1.
+	 *   @type int    $hide_if_empty          Hides languages with no posts ( or pages ) if set to 1, defaults to 1.
+	 *   @type int    $show_flags             Displays flags if set to 1, defaults to 0.
+	 *   @type int    $show_names             Shows language names if set to 1, defaults to 1.
+	 *   @type string $display_names_as       Whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name.
+	 *   @type int    $force_home             Will always link to home in translated language if set to 1, defaults to 0.
+	 *   @type int    $hide_if_no_translation Hides the link if there is no translation if set to 1, defaults to 0.
+	 *   @type int    $hide_current           Hides the current language if set to 1, defaults to 0.
+	 *   @type int    $post_id                Returns links to the translations of the post defined by post_id if set, defaults not set.
+	 *   @type int    $raw                    Return a raw array instead of html markup if set to 1, defaults to 0.
+	 *   @type string $item_spacing           Whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to 'preserve'.
+	 *   @type int    $admin_render           Allows to force the current language code in an admin context if set, default to 0. Need to set the admin_current_lang argument below.
+	 *   @type string $admin_current_lang     The current language code in an admin context. Need to set the admin_render to 1, defaults not set.
+	 * }
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
-	public function the_languages( $links, $args = '' ) {
+	public function the_languages( $links, $args = array() ) {
 		$defaults = array(
 			'dropdown'               => 0, // display as list and not as dropdown
 			'echo'                   => 1, // echoes the list

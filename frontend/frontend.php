@@ -17,9 +17,9 @@ class PLL_Frontend extends PLL_Base {
 	public $curlang;
 
 	/**
-	 * Instance of PLL_Auto_Translate.
+	 * Instance of PLL_Frontend_Auto_Translate.
 	 *
-	 * @var PLL_Auto_Translate
+	 * @var PLL_Frontend_Auto_Translate
 	 */
 	public $auto_translate;
 
