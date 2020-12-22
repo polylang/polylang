@@ -13,6 +13,13 @@
 class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 	/**
+	 * An array with language code as keys and the host as values.
+	 *
+	 * @var string[]
+	 */
+	protected $hosts;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.8

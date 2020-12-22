@@ -34,6 +34,13 @@ class PLL_Admin_Filters_Term {
 	public $filter_lang;
 
 	/**
+	 * Preferred language to assign to the new terms.
+	 *
+	 * @var PLL_Language
+	 */
+	public $pref_lang;
+
+	/**
 	 * Stores the term name before creating a slug if needed.
 	 *
 	 * @var string
