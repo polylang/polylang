@@ -22,7 +22,7 @@ class PLL_Admin_Filters_Term {
 	public $model;
 
 	/**
-	 * @var PLL_Links
+	 * @var PLL_Admin_Links
 	 */
 	public $links;
 

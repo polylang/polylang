@@ -9,6 +9,12 @@
  * @since 1.8
  */
 class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
+
+	/**
+	 * @var PLL_Frontend_Links
+	 */
+	public $links;
+
 	/**
 	 * Our internal non persistent cache object
 	 *
