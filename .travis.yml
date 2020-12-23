@@ -24,11 +24,11 @@ jobs:
     - name: "WP latest - PHP 5.6"
       php: "5.6"
       env: "WP_VERSION=latest WP_MULTISITE=0"
-  
+
     - name: "WP latest - PHP 8.0"
       php: "8.0"
       env: "WP_VERSION=latest WP_MULTISITE=0"
-  
+
     - name: "WP latest multisite - PHP 7.2"
       php: "7.2"
       env: "WP_VERSION=latest WP_MULTISITE=1"
@@ -70,4 +70,8 @@ notifications:
   email:
     on_success: "never"
     on_failure: "change"
-  slack: "wpsyntex:LIVXuF2AQ9HXNm93zkWtR8fw"
+  slack:
+    rooms:
+      - secure: "Ydrk6ilDyS5ymD1qGnHlRYIyyTNnZjjM2ZS7HK/D0n/FXCWNHeOxPzEiyO2QZ5eEtREuceKGBfPiDe
+      +cG3P4x6kQvS8w8p62hrlMapOJQF2jCxVlczhQmbFgv8FFlKHwyfVhrIGDitDCa+rAzsBRS/cIm6C9YzQ1BQ7zbF2Mfr0c/1hVQ
+      /0OMVuvqYR71KjV5G6kSe/j57ch4IoB0Emz2TWHAErk204wvXgO+1g55GzI3okufopgdmm8/86D1pc1/Sx/uzrTdHI5/zgLSFbQVIp7+Ib1GaAJmHdG3Ks/8nfJdJOKxfNbaJBSzOCtJjkjW4oa/1Kq6i7qA1vsUj/f4C5Bz0aKZ0D5CMN6zVjVRnmQ9xuhm4uSjV42MGDaR9tqT/QZICOG2rFINgNfvNT6l8cqADWZs200JE+0EDF6apbfihLDIFhjBg8fCaxRZHbHfH541l6TLTGjefZLXusFi1n7iMpt37PbX8WZgRliDxu3f5HA0IW6S4LzFXlaj+qeMbDmxIeNDFdKgA+6/DwC7D28+IjXXISHsR7u5kC7ccAxRKUYTPcN7Jk737UpDYc7a5YKNg1QDRagbQCCRvJyYHLWlFwtNUFu/0dWKUIk+G3FhZfDvkNGUdOpU5DBongCVTT3Hpw2JfsvRkYNkY8VYXNT8H5J0+1ZsNR/aWMmlqo="
