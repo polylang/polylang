@@ -64,6 +64,8 @@ trait PLL_UnitTestCase_Trait {
 
 		$args = array_merge( $values, $args );
 		self::$polylang->model->add_language( $args );
+
+		return $args['slug'];
 	}
 
 	/**
