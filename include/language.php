@@ -240,7 +240,14 @@ class PLL_Language {
 
 		// Polylang builtin flags.
 		if ( ! empty( $code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
-			$flag['url'] = $_url = plugins_url( $file, POLYLANG_FILE );
+			$flag['url'] = plugins_url( $file, POLYLANG_FILE );
+
+			// If base64 encoded flags are preferred.
+			if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
+				list( $flag['width'], $flag['height'] ) = getimagesize( POLYLANG_DIR . $file );
+				$file_contents = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+				$flag['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+			}
 		}
 
 		/**
@@ -257,18 +264,11 @@ class PLL_Language {
 		 */
 		$flag = apply_filters( 'pll_flag', $flag, $code );
 
-		if ( empty( $flag['src'] ) ) {
-			// If using predefined flags and base64 encoded flags are preferred.
-			if ( isset( $_url ) && $flag['url'] === $_url && ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) ) {
-				list( $flag['width'], $flag['height'] ) = getimagesize( POLYLANG_DIR . $file );
-				$file_contents = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-				$flag['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-			} else {
-				$flag['src'] = esc_url( set_url_scheme( $flag['url'], 'relative' ) );
-			}
-		}
-
 		$flag['url'] = esc_url_raw( $flag['url'] );
+
+		if ( empty( $flag['src'] ) ) {
+			$flag['src'] = esc_url( set_url_scheme( $flag['url'], 'relative' ) );
+		}
 
 		return $flag;
 	}
