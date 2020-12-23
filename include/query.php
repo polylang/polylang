@@ -24,8 +24,8 @@ class PLL_Query {
 	 *
 	 * @since 2.2
 	 *
-	 * @param array  $query Reference to the WP_Query object.
-	 * @param object $model Instance of PLL_Model.
+	 * @param WP_Query  $query Reference to the WP_Query object.
+	 * @param PLL_Model $model Instance of PLL_Model.
 	 */
 	public function __construct( &$query, &$model ) {
 		$this->query = &$query;
