@@ -345,7 +345,7 @@ class PLL_Admin_Filters_Columns {
 			wp_die( 0 );
 		}
 
-		global $wp_list_table;
+		/** @var WP_Posts_List_Table $wp_list_table */
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => sanitize_key( $_POST['screen'] ) ) );
 
 		$x = new WP_Ajax_Response();
@@ -387,7 +387,7 @@ class PLL_Admin_Filters_Columns {
 			wp_die( 0 );
 		}
 
-		global $wp_list_table;
+		/** @var WP_Terms_List_Table $wp_list_table */
 		$wp_list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => sanitize_key( $_POST['screen'] ) ) );
 
 		$x = new WP_Ajax_Response();
