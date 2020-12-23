@@ -163,12 +163,12 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Removes current-menu and current-menu-ancestor classes to lang switcher when not on the home page
+	 * Removes current-menu and current-menu-ancestor classes to lang switcher when not on the home page.
 	 *
 	 * @since 1.1.1
 	 *
-	 * @param array $items
-	 * @return array modified menu items
+	 * @param stdClass[] $items An array of menu items.
+	 * @return stdClass[]
 	 */
 	public function wp_nav_menu_objects( $items ) {
 		$r_ids = $k_ids = array();
