@@ -1,0 +1,24 @@
+includes:
+	- vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+	level: 1
+	paths:
+		- polylang.php
+		- admin/
+		- frontend/
+		- include/
+		- install/
+		- modules/
+		- settings/
+	excludes_analyse:
+		- **/load.php
+		- **/view*.php
+		- include/widget-calendar.php
+		- install/plugin-updater.php
+	bootstrapFiles:
+		- tests/phpstan/constants.php
+	ignoreErrors:
+		- '#^Function apply_filters invoked with [34567] parameters, 2 required\.$#'
+		- '#^Function remove_filter invoked with [4567] parameters, 2-3 required\.$#'
+		- '#^Function remove_action invoked with [4567] parameters, 2-3 required\.$#'
+		- '#^Function vip_safe_wp_remote_get not found\.$#'
