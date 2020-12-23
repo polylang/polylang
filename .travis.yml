@@ -1,73 +1,60 @@
-# TravisCI configuration for polylang/polylang
-
-if: "branch = master"
-
-language: "php"
+if: branch = master
+language: php
 os:
-  - "linux"
-dist: "xenial"
-
+- linux
+dist: xenial
 jobs:
   include:
-    - name: "PHPCS - PHP 7.2"
-      php: "7.2"
-      env: "WP_VERSION=latest WP_MULTISITE=0"
-      install:
-        - "composer install"
-      script:
-        - "vendor/bin/phpcs -s --extensions=php,js ./"
-
-    - name: "WP oldest - PHP 7.2"
-      php: "7.2"
-      env: "WP_VERSION=5.1 WP_MULTISITE=0"
-
-    - name: "WP latest - PHP 5.6"
-      php: "5.6"
-      env: "WP_VERSION=latest WP_MULTISITE=0"
-  
-    - name: "WP latest - PHP 8.0"
-      php: "8.0"
-      env: "WP_VERSION=latest WP_MULTISITE=0"
-  
-    - name: "WP latest multisite - PHP 7.2"
-      php: "7.2"
-      env: "WP_VERSION=latest WP_MULTISITE=1"
-
-    - name: "WP nightly - PHP 8.0"
-      php: "8.0"
-      env: "WP_VERSION=nightly WP_MULTISITE=0"
+  - name: PHPCS - PHP 7.2
+    php: '7.2'
+    env: WP_VERSION=latest WP_MULTISITE=0
+    install:
+    - composer install
+    script:
+    - vendor/bin/phpcs -s --extensions=php,js ./
+  - name: WP oldest - PHP 7.2
+    php: '7.2'
+    env: WP_VERSION=5.1 WP_MULTISITE=0
+  - name: WP latest - PHP 5.6
+    php: '5.6'
+    env: WP_VERSION=latest WP_MULTISITE=0
+  - name: WP latest - PHP 8.0
+    php: '8.0'
+    env: WP_VERSION=latest WP_MULTISITE=0
+  - name: WP latest multisite - PHP 7.2
+    php: '7.2'
+    env: WP_VERSION=latest WP_MULTISITE=1
+  - name: WP nightly - PHP 8.0
+    php: '8.0'
+    env: WP_VERSION=nightly WP_MULTISITE=0
   allow_failures:
-    - php: "8.0"
-      env: "WP_VERSION=nightly WP_MULTISITE=0"
-
+  - php: '8.0'
+    env: WP_VERSION=nightly WP_MULTISITE=0
 services:
-  - "mysql"
-
+- mysql
 cache:
   directories:
-    - "${HOME}/.composer/cache"
-
+  - "${HOME}/.composer/cache"
 before_install:
-  - "phpenv config-rm xdebug.ini"
-  - "export PATH=\"$(composer config --absolute --global bin-dir):${PATH}\""
-
+- phpenv config-rm xdebug.ini
+- export PATH="$(composer config --absolute --global bin-dir):${PATH}"
 install:
-  - |
-    if [[ "${TRAVIS_PHP_VERSION:0:1}" == "8" ]]; then
-      composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "wpsyntex/wp-phpunit:dev-branch-7.5"
-    elif [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
-      composer require --no-interaction --update-with-dependencies --dev "wpsyntex/wp-phpunit:dev-branch-5.7"
-    else
-      composer install --no-interaction
-    fi
-  - "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-tests.sh wordpress_test root \"\" localhost \"${WP_VERSION}\""
-  - "bash tests/bin/install-plugins.sh"
-
+- |
+  if [[ "${TRAVIS_PHP_VERSION:0:1}" == "8" ]]; then
+    composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "wpsyntex/wp-phpunit:dev-branch-7.5"
+  elif [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
+    composer require --no-interaction --update-with-dependencies --dev "wpsyntex/wp-phpunit:dev-branch-5.7"
+  else
+    composer install --no-interaction
+  fi
+- bash vendor/wpsyntex/wp-phpunit/bin/install-wp-tests.sh wordpress_test root "" localhost
+  "${WP_VERSION}"
+- bash tests/bin/install-plugins.sh
 script:
-  - "vendor/bin/phpunit --verbose"
-
+- vendor/bin/phpunit --verbose
 notifications:
   email:
-    on_success: "never"
-    on_failure: "change"
-  slack: "wpsyntex:LIVXuF2AQ9HXNm93zkWtR8fw"
+    on_success: never
+    on_failure: change
+  slack:
+    secure: AX45FExy4SzgcwIZvDocI6BXfWuW5H8JnDhDI4LY9SVEZKZd2qzYaDIYAD1Dvr8YfEQC0ACOE3RWaVI0poTlj54hS4hOYhwhpf/FVGTuepUAqGG0QNUCg+53aTG7f11K2+GlRYpSi163mHpe32TwtTSrM7ytGaap2p1B6v1DKoODIQWmWZZchAYWXIgAlGNDk46C4x0bDI9Qd8+NnXABfIk1uYoGuRvahQMSGPNNN5BDxX5ktWwxTln2f/vyb8gv77xk9KEcsyw1+uC97UBQOzQaqic1/ELZoXpWGF53xkZcc2gJBfKFYPV+8sqskJX8XnCUkfsW6myLYIIleQbeF5UOyqG/x62Nyoq7PHFsRkI5MXCvgJTOjNUJAhYFkLqkgAaZkUY7V/3jRbUAqO5qDYcs0nubik7QlEO5pdr08Jv+vAi5gkACGwJoEsfEuvP2EdSU/r5sSbzcJCoIqsEqXYa6YfUae6oXv4I6u24o2HQCl2HwE096pmFIq0qoZheh2wMVwkU5rMuz0lY1M+v3x2fFNUKF1O9Vsxdz1/lIcs12b6i7Ya84ssDuOJFlewYy6cd44wl63ZenIjfyD28Qoe29ARx3s64TQ86evJ2ngcXXhcqYYcLmIMEcamrfderFJz16jq7LV8ZzVDhAwmv5HW0bYu5+51AaSd7Z3ISaHxU=
