@@ -103,7 +103,7 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.FileComment.Missing" >
+	<rule ref="Squiz.Commenting.FileComment" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
