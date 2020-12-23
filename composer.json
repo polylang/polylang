@@ -12,7 +12,8 @@
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "*",
 		"automattic/vipwpcs": "*",
-		"phpcompatibility/phpcompatibility-wp": "*"
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"behat/behat": "^3.8"
 	},
 	"autoload": {
 		"classmap": [
@@ -26,4 +27,3 @@
 		]
 	}
 }
-
