@@ -98,14 +98,15 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 			'Registered script get priority' => array( 'zh-Hant-HK,zh-HK;q=0.8,zh;q=0.5,en;q=0.1', 'zh-hant-hk' ),
 			'Non registered script fallbacks to base language' => array( 'zh-Hans-HK', 'zh' ),
 			'Quality supersedes closest language when supplied' => array( 'zh-Hans-HK,en;q=0.8,zh-CN;q=0.5,zh-HK;q=0.2', 'en' ),
-			'Non registered script fallback to existing region' => array( 'zh-Hans-HK', 'zh-hk' ),
+			'Unregistered script get skipped for next highest quality' => array( 'zh-hant-cn;q=1.0,zh-hk;q=0.8', 'zh-hk' ), // @see https://github.com/polylang/polylang/issues/591
+			'Non registered script fallback to existing region' => array( 'zh-Hans-HK', 'zh-hk' ), // @see https://github.com/polylang/polylang/issues/591
+			'Non registered script fallback to existing language' => array( 'zh-Hans-TW', 'zh' ),
 			'Quality supersedes closest region when supplied' => array( 'zh-Hans-HK,zh-CN;q=0.5,zh-HK;q=0.2,en;q=0.1', 'zh' ),
 		);
 	}
 
 	/**
 	 * @since 3.0 Bugifx
-	 * @see https://github.com/polylang/polylang/issues/591
 	 *
 	 * @dataProvider accepted_language_with_script_provider
 	 * @param string      $accept_languages_header Accept-Language HTTP header like those issued by web browsers.
