@@ -106,7 +106,7 @@ abstract class PLL_Choose_Lang {
 		$accept_langs = array();
 
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
-			$lang_parse = $this->parse_accept_language_header();
+			$lang_parse = $this->parse_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
 
 			$k = $lang_parse['language'];
 			$v = $lang_parse['quality'];
@@ -170,6 +170,39 @@ abstract class PLL_Choose_Lang {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Parse Accept-Language HTTP header according to IETF BCP 47.
+	 *
+	 * TODO: Add grand-fathered language codes.
+	 *
+	 * @param string $header Value of the Accept-Language HTTP Header.
+	 * @return array {
+	 * @since 3.0
+	 * @type string $language A language code as defined by the IETF BCP 47 @see https://tools.ietf.org/html/bcp47#section-2.1
+	 */
+	protected function parse_accept_language_header( $header ) {
+		$lang_parse = array();
+		// Break up string into pieces ( languages and q factors )
+		$subtags = array(
+			'language' => '([a-z]{2,3}|[a-z]{4}|[a-z]{5-8})\b',
+			'language-extension' => '(-(?:[a-z]{3}){1,3}\b)?',
+			'script' => '(-[a-z]{4}\b)?',
+			'region' => '(-(?:[a-z]{2}|[0-9]{3})\b)?',
+			'variant' => '(-(?:[0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\b)?',
+			'extension' => '(-[a-wy-z]-[a-z0-9]{2,8}\b)?',
+			'private-use' => '(-x-[a-z0-9]{1,8}\b)?',
+		);
+		$language_pattern = "{$subtags['language']}{$subtags['language-extension']}{$subtags['script']}{$subtags['region']}{$subtags['variant']}{$subtags['extension']}{$subtags['private-use']}";
+		$quality_pattern = '\s*;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?)';
+		$full_pattern = "/({$language_pattern})({$quality_pattern})?/i";
+		preg_match_all(
+			$full_pattern,
+			sanitize_text_field( wp_unslash( $header ) ),
+			$lang_parse
+		);
+		return array( 'language' => $lang_parse[1], 'quality' => $lang_parse[10] );
 	}
 
 	/**
@@ -332,39 +365,5 @@ abstract class PLL_Choose_Lang {
 	protected function set_curlang_in_query( &$query ) {
 		$pll_query = new PLL_Query( $query, $this->model );
 		$pll_query->set_language( $this->curlang );
-	}
-
-	/**
-	 * Parse Accept-Language HTTP header according to IETF BCP 47.
-	 *
-	 * TODO: Add grand-fathered language codes.
-	 *
-	 * @since 3.0
-	 * @return array {
-	 *   @type string $language A language code as defined by the IETF BCP 47 @see https://tools.ietf.org/html/bcp47#section-2.1
-	 *   @type float $quality A quality factor associated with this language.
-	 * }
-	 */
-	protected function parse_accept_language_header() {
-		 $lang_parse = array();
-		// Break up string into pieces ( languages and q factors )
-		$subtags = array(
-			'language' => '([a-z]{2,3}|[a-z]{4}|[a-z]{5-8})\b',
-			'language-extension' => '(-(?:[a-z]{3}){1,3}\b)?',
-			'script' => '(-[a-z]{4}\b)?',
-			'region' => '(-(?:[a-z]{2}|[0-9]{3})\b)?',
-			'variant' => '(-(?:[0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\b)?',
-			'extension' => '(-[a-wy-z]-[a-z0-9]{2,8}\b)?',
-			'private-use' => '(-x-[a-z0-9]{1,8}\b)?',
-		);
-		$language_pattern = "{$subtags['language']}{$subtags['language-extension']}{$subtags['script']}{$subtags['region']}{$subtags['variant']}{$subtags['extension']}{$subtags['private-use']}";
-		$quality_pattern = '\s*;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?)';
-		$full_pattern = "/({$language_pattern})({$quality_pattern})?/i";
-		preg_match_all(
-			$full_pattern,
-			sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ),
-			$lang_parse
-		);
-		return array( 'language' => $lang_parse[1], 'quality' => $lang_parse[10] );
 	}
 }
