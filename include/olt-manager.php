@@ -161,36 +161,23 @@ class PLL_OLT_Manager {
 	}
 
 	/**
-	 * FIXME: Backward compatibility with Polylang for WooCommerce < 0.3.4
-	 * Was formerly hooked to the filter 'override_load_textdomain'
-	 *
-	 * @since 0.1
-	 *
-	 * @param bool $bool Whether to override the .mo file loading.
-	 * @return bool
-	 */
-	public function mofile( $bool ) {
-		return $bool;
-	}
-
-	/**
-	 * Saves all text domains in a table for later usage
-	 * It replaces the 'override_load_textdomain' filter used since 0.1
+	 * Saves all text domains in a table for later usage.
+	 * It replaces the 'override_load_textdomain' filter previously used.
 	 *
 	 * @since 2.0.4
 	 *
-	 * @param string $mofile translation file name
-	 * @param string $domain text domain name
-	 * @return bool
+	 * @param string $mofile The translation file name.
+	 * @param string $domain The text domain name.
+	 * @return string
 	 */
 	public function load_textdomain_mofile( $mofile, $domain ) {
-		// On multisite, 2 files are sharing the same domain so we need to distinguish them
+		// On multisite, 2 files are sharing the same domain so we need to distinguish them.
 		if ( 'default' === $domain && false !== strpos( $mofile, '/ms-' ) ) {
 			$this->list_textdomains['ms-default'] = array( 'mo' => $mofile, 'domain' => $domain );
 		} else {
 			$this->list_textdomains[ $domain ] = array( 'mo' => $mofile, 'domain' => $domain );
 		}
-		return ''; // Hack to prevent WP loading text domains as we will load them all later
+		return ''; // Hack to prevent WP loading text domains as we will load them all later.
 	}
 
 	/**
