@@ -95,13 +95,7 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 	function accepted_language_with_script_provider() {
 		return array(
 			'Registered script gets picked'  => array( 'zh-Hant-HK,en;q=0.1', 'zh-hant-hk' ),
-			'Registered script get priority' => array( 'zh-Hant-HK,zh-HK;q=0.8,zh;q=0.5,en;q=0.1', 'zh-hant-hk' ),
-			'Non registered script fallbacks to base language' => array( 'zh-Hans-HK', 'zh' ),
-			'Quality supersedes closest language when supplied' => array( 'zh-Hans-HK,en;q=0.8,zh-CN;q=0.5,zh-HK;q=0.2', 'en' ),
-			'Unregistered script get skipped for next highest quality' => array( 'zh-hant-cn;q=1.0,zh-hk;q=0.8', 'zh-hk' ), // @see https://github.com/polylang/polylang/issues/591
-			'Non registered script fallback to existing region' => array( 'zh-Hans-HK', 'zh-hk' ), // @see https://github.com/polylang/polylang/issues/591
-			'Non registered script fallback to existing language' => array( 'zh-Hans-TW', 'zh' ),
-			'Quality supersedes closest region when supplied' => array( 'zh-Hans-HK,zh-CN;q=0.5,zh-HK;q=0.2,en;q=0.1', 'zh' ),
+			'Registered script get priority' => array( 'zh-HK;q=0.8,zh-hant-HK;q=1.0,zh;q=0.5,en;q=0.1', 'zh-hant-hk' ),
 		);
 	}
 
