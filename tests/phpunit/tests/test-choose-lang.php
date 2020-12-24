@@ -113,10 +113,10 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 	 * @param string|bool $expected_preference Expected results of our preferred browser language detection.
 	 */
 	function test_browser_preferred_language_with_script_tag( $accept_languages_header, $expected_preference ) {
-		self::create_language( 'en_GB', array( 'slug' => 'en' ) );
-		self::create_language( 'zh_CN', array( 'slug' => 'zh' ) );
-		self::create_language( 'zh_HK', array( 'slug' => 'zh-hk' ) );
-		self::create_language( 'zh_HK', array( 'slug' => 'zh-hant-hk' ) );
+		self::create_language( 'en_GB', array( 'slug' => 'en', 'w3c' => 'en' ) );
+		self::create_language( 'zh_CN', array( 'slug' => 'zh', 'w3c' => 'zh' ) );
+		self::create_language( 'zh_HK', array( 'slug' => 'zh-hk', 'w3c' => 'zh-hk' ) );
+		self::create_language( 'zh_HK', array( 'slug' => 'zh-hant-hk', 'w3c' => 'zh-hant-hk' ) );
 
 		$post_id = $this->factory->post->create();
 		self::$polylang->model->post->set_language( $post_id, 'zh' );
