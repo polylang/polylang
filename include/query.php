@@ -12,12 +12,12 @@ class PLL_Query {
 	/**
 	 * @var PLL_Model
 	 */
-	protected $model;
+	public $model;
 
 	/**
 	 * @var WP_Query
 	 */
-	protected $query;
+	public $query;
 
 	/**
 	 * Constructor
