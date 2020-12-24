@@ -95,7 +95,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_enqueue_script( 'pll_nav_menu', plugins_url( '/js/nav-menu' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION );
+		wp_enqueue_script( 'pll_nav_menu', plugins_url( '/js/build/nav-menu' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION );
 
 		$data = array(
 			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options
