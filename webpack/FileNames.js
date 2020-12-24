@@ -10,19 +10,13 @@ const glob = require( 'glob' ).sync;
 
 /**
  * Retrieves the javascript filenames to build and minify.
- * 
- * @param {string[]} jsFoldersToIgnore 
+ *
  * @param {string[]} jsFileNamesToIgnore 
  */
-function getJsFileNamesEntries( jsFoldersToIgnore , jsFileNamesToIgnore ) {
+function getJsFileNamesEntries( jsFileNamesToIgnore ) {
 	const jsFileNames = glob(
 		'**/*.js',
-		{
-			'ignore': [
-				...jsFoldersToIgnore,
-				...jsFileNamesToIgnore,
-			]
-		}
+		{ 'ignore': jsFileNamesToIgnore	}
 	).map( filename => `./${ filename }` );
 	console.log( 'js files to minify:', jsFileNames );
 
