@@ -29,14 +29,14 @@ function configureWebpack( options ){
 		'node_modules/**',
 		'vendor/**',
 		'tmp/**',
-		'webpack/**'
+		'webpack/**',
+		'js/build/**',
+		'js/lib/**',
 	];
 
 	const jsFileNamesToIgnore = [
 		'*.config.js',
-		'**/*.src.js',
-		'**/*.min.js',
-		'**/*.dep.js',
+		'*.min.js',
 	];
 	
 	const jsFileNamesEntries = getJsFileNamesEntries( commonFoldersToIgnore, jsFileNamesToIgnore );

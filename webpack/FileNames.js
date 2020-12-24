@@ -15,25 +15,20 @@ const glob = require( 'glob' ).sync;
  * @param {string[]} jsFileNamesToIgnore 
  */
 function getJsFileNamesEntries( jsFoldersToIgnore , jsFileNamesToIgnore ) {
-	const jsSourceFileNames = glob( '**/*.src.js', { 'ignore': jsFoldersToIgnore } ).map( filename => `./${ filename }` );
-	console.log( 'js files to build:', jsSourceFileNames );
-
 	const jsFileNames = glob(
 		'**/*.js',
 		{
 			'ignore': [
 				...jsFoldersToIgnore,
 				...jsFileNamesToIgnore,
-				// Glob ignore pathes cannot use the '.' special character
-				...jsSourceFileNames.map( filename => computeBuildFilename( filename ).substr( 2 ) )
 			]
 		}
 	).map( filename => `./${ filename }` );
 	console.log( 'js files to minify:', jsFileNames );
 
 	const jsFileNamesEntries = [
-		...mapJsFiles( [ ...jsFileNames, ...jsSourceFileNames ], true ),
-		...mapJsFiles( jsSourceFileNames )
+		...mapJsFiles( jsFileNames, true ),
+		...mapJsFiles( jsFileNames )
 	];
 	return jsFileNamesEntries;
 }
@@ -43,10 +38,10 @@ function getJsFileNamesEntries( jsFoldersToIgnore , jsFileNamesToIgnore ) {
  * @param {string} suffix To add before file extension.
  */
 function computeBuildFilename( filename, suffix ) {
-	const nameWithoutSuffix = path.parse( filename ).name.split( '.' )[0];
+	const nameWithoutSuffix = path.parse( filename ).name;
 	suffix = suffix ? '.' + suffix : '';
 
-	return `${ path.parse( filename ).dir }/${ nameWithoutSuffix + suffix }.js`; // phpcs:ignore WordPress.WhiteSpace.OperatorSpacing
+	return `js/build/${ nameWithoutSuffix + suffix }.js`; // phpcs:ignore WordPress.WhiteSpace.OperatorSpacing
 }
 
 /**
