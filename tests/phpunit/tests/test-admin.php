@@ -58,11 +58,11 @@ class Admin_Test extends PLL_UnitTestCase {
 		in_array( 'pll_ajax_backend', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
 
 		foreach ( array( 'post', 'term' ) as $key ) {
-			$test = strpos( $footer, plugins_url( "/js/$key.min.js", POLYLANG_FILE ) );
+			$test = strpos( $footer, plugins_url( "/js/build/$key.min.js", POLYLANG_FILE ) );
 			in_array( $key, $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
 		}
 
-		$test = strpos( $head, plugins_url( '/js/user.min.js', POLYLANG_FILE ) );
+		$test = strpos( $head, plugins_url( '/js/build/user.min.js', POLYLANG_FILE ) );
 		in_array( 'user', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
 
 		$test = strpos( $footer, 'polylang_admin-css' );
