@@ -53,6 +53,7 @@ trait PLL_UnitTestCase_Trait {
 	 *
 	 * @param string $locale Language locale.
 	 * @param array  $args   Allows to optionnally override the default values for the language
+	 * @throws InvalidArgumentException If language is not created.
 	 */
 	static function create_language( $locale, $args = array() ) {
 		$languages = include POLYLANG_DIR . '/settings/languages.php';
