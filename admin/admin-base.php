@@ -193,7 +193,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			}
 		}
 
-		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
 
 		$this->localize_scripts();
 	}

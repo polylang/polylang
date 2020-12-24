@@ -4,6 +4,7 @@ vendor/
 tmp/
 js/build/
 js/lib/
+css/build/
 .idea/
 *.map
 *.min.js

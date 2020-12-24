@@ -25,23 +25,19 @@ function configureWebpack( options ){
 	console.log('isProduction:', isProduction);
 	console.log('dirname:', __dirname);
 
-	const commonFoldersToIgnore = [
+	const commonFileNamesToIgnore = [
 		'node_modules/**',
 		'vendor/**',
 		'tmp/**',
 		'webpack/**',
 		'js/build/**',
 		'js/lib/**',
-	];
-
-	const jsFileNamesToIgnore = [
-		'*.config.js',
-		'*.min.js',
+		'**/*.min.*',
 	];
 	
-	const jsFileNamesEntries = getJsFileNamesEntries( commonFoldersToIgnore, jsFileNamesToIgnore );
+	const jsFileNamesEntries = getJsFileNamesEntries( [ ...commonFileNamesToIgnore, '*.config.js' ] );
 
-	const cssFileNames = glob( '**/*.css', { 'ignore': [ ...commonFoldersToIgnore, '**/*.min.css' ] } ).map( filename => `./${ filename }`);
+	const cssFileNames = glob( '**/*.css', { 'ignore': commonFileNamesToIgnore } ).map( filename => `./${ filename }`);
 	console.log( 'css files to minify:', cssFileNames );
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
@@ -49,7 +45,7 @@ function configureWebpack( options ){
 			const entry = {};
 			entry[ path.parse( filename ).name ] = filename;
 			const output = {
-				filename: `${path.parse( filename ).dir}/[name].work`,
+				filename: `css/build/[name].work`,
 				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
 			}
 			const config = {
@@ -58,7 +54,7 @@ function configureWebpack( options ){
 				plugins: [
 					new MiniCssExtractPlugin(
 						{
-							filename: `${path.parse( filename ).dir}/[name].min.css`
+							filename: `css/build/[name].min.css`
 						}
 					),
 					new CleanWebpackPlugin(
