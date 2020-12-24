@@ -146,7 +146,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
-				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/build/' . $script . $suffix . '.js', POLYLANG_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
+				wp_enqueue_script( 'pll_' . $script, self::get_script_path( $script, $suffix ), $v[1], POLYLANG_VERSION, $v[3] );
 			}
 		}
 
@@ -163,7 +163,7 @@ class PLL_Admin_Base extends PLL_Base {
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
+			wp_enqueue_script( 'pll_widgets', self::get_script_path( 'widgets', $suffix ), array( 'jquery' ), POLYLANG_VERSION, true );
 			$this->localize_scripts();
 		}
 	}
@@ -247,6 +247,15 @@ class PLL_Admin_Base extends PLL_Base {
 			}
 		</script>
 		<?php
+	}
+
+	/**
+	 * @param string $script Script name, without path nor extension.
+	 * @param string $suffix Suffix to add before extension, typically '.min'.
+	 * @return string
+	 */
+	public static function get_script_path( $script, $suffix ) {
+		return plugins_url( '/js/dist/' . $script . $suffix . '.js', POLYLANG_FILE );
 	}
 
 	/**

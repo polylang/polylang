@@ -323,7 +323,7 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION );
+		wp_enqueue_script( 'pll_admin', PLL_Admin_Base::get_script_path( 'admin', $suffix ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION );
 		wp_localize_script( 'pll_admin', 'pll_flag_base_url', plugins_url( '/flags/', POLYLANG_FILE ) );
 		wp_localize_script( 'pll_admin', 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
 

@@ -409,6 +409,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$head = ob_get_clean();
 
 		$this->assertNotFalse( strpos( $head, 'pll_data' ) );
-		$this->assertNotFalse( strpos( $head, plugins_url( '/js/build/nav-menu.min.js', POLYLANG_FILE ) ) );
+		$this->assertNotFalse( strpos( $head, PLL_Admin_Base::get_script_path( 'nav-menu', '.min' ) ) );
 	}
 }
