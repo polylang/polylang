@@ -31,9 +31,9 @@ Feature: Browser Preferred Language
 	When  I visit the webpage for the first time
 	Then I should be served this page in zh-CN language
 
-	Scenario:
-	  Polylang infers language from unmatched language-script-region code.
-	  Given I chose zh-Hant-HK, zh-HK (in this order) as my preferred browsing languages
-	  And a webpage exists in zh-CN, en-US
-	  When I visit the webpage for the first time
-	  Then I should be served this page in zh-CN language
+  Scenario:
+	Polylang infers language from unmatched language-script-region code.
+	Given I chose zh-Hant-HK, zh-HK (in this order) as my preferred browsing languages
+	And a webpage exists in zh-CN, en-US languages
+	When I visit the webpage for the first time
+	Then I should be served this page in zh-CN language
