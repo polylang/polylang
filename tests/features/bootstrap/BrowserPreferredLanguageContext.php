@@ -11,6 +11,11 @@ use Behat\Gherkin\Node\TableNode;
 class BrowserPreferredLanguageContext implements Context {
 
 	/**
+	 * @var PLL_UnitTestCase
+	 */
+	private $test_case;
+
+	/**
 	 * @BeforeSuite
 	 */
 	public static function prepare_for_suite() {
@@ -21,18 +26,51 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @BeforeFeature
 	 */
 	public static function prepare_for_feature() {
-		PLL_UnitTestCase::wpSetUpBeforeClass( new WP_UnitTest_Factory() );
+		PLL_UnitTestCase::setUpBeforeClass();
 	}
 
 	/**
-	 * Initializes context.
-	 *
-	 * Every scenario gets its own context instance.
-	 * You can also pass arbitrary arguments to the
-	 * context constructor through behat.yml.
+	 * @AfterFeature
+	 */
+	public static function clean_after_feature() {
+		PLL_UnitTestCase::tearDownAfterClass();
+	}
+
+	/**
+	 * Initializes context and test framework.
 	 */
 	public function __construct() {
 		$this->test_case = new PLL_UnitTestCase();
+	}
+
+	/**
+	 * @BeforeScenario
+	 */
+	public function prepare_for_scenario() {
+		$this->test_case->setUp();
+	}
+
+	/**
+	 * @AfterScenario
+	 */
+	public function clean_after_scenario() {
+		$this->test_case->tearDown();
+	}
+
+	/**
+	 * @Given /^a webpage exists in ((?:[-_a-zA-Z]+(?:, )?)+) languages?$/
+	 * @param string[] $language_codes Language codes as defined by IETF's BCP 47 {@see https://tools.ietf.org/html/bcp47#section-2.1}
+	 */
+	public function a_webpage_exists_in_languages( $language_codes ) {
+		$language_codes = array_map( 'trim', explode( ',', $language_codes ) );
+
+		foreach ( $language_codes as $language_code ) {
+			// $language_slug = strtolower( $language_code );
+			$language_slug = PLL_UnitTestCase::create_language( Locale::canonicalize( $language_code )/*, array ( 'slug' => $language_slug )*/ );
+
+			$post_id = $this->test_case->factory->post->create();
+			PLL_UnitTestCase::$polylang->model->post->set_language( $post_id, $language_slug );
+		}
 	}
 
 	/**
@@ -50,22 +88,6 @@ class BrowserPreferredLanguageContext implements Context {
 			$accept_languages_header .= $language_codes[ $i ] . ';q=' . ( 10 - $i ) / 10;
 		}
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $accept_languages_header;
-	}
-
-	/**
-	 * @Given /^a webpage exists in ((?:[-_a-zA-Z]+(?:, )?)+) languages?$/
-	 * @param string[] $language_codes Language codes as defined by IETF's BCP 47 {@see https://tools.ietf.org/html/bcp47#section-2.1}
-	 */
-	public function a_webpage_exists_in_languages( $language_codes ) {
-		$language_codes = array_map( 'trim', explode( ',', $language_codes ) );
-
-		foreach ( $language_codes as $language_code ) {
-			// $language_slug = strtolower( $language_code );
-			$language_slug = PLL_UnitTestCase::create_language( Locale::canonicalize( $language_code )/*, array ( 'slug' => $language_slug )*/ );
-
-			$post_id = $this->test_case->factory->post->create();
-			PLL_UnitTestCase::$polylang->model->post->set_language( $post_id, $language_slug );
-		}
 	}
 
 	/**
