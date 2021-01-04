@@ -98,9 +98,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return bool|string modified url, false if redirection is canceled
 	 */
 	public function redirect_canonical( $redirect_url ) {
-		global $wp_query;
-		if ( is_page() && ! is_feed() && isset( $wp_query->queried_object ) && $wp_query->queried_object->ID == $this->curlang->page_on_front ) {
-			$url = is_paged() ? $this->links_model->add_paged_to_link( $this->links->get_home_url(), $wp_query->query_vars['page'] ) : $this->links->get_home_url();
+		if ( is_page() && ! is_feed() && get_queried_object_id() == $this->curlang->page_on_front ) {
+			$url = is_paged() ? $this->links_model->add_paged_to_link( $this->links->get_home_url(), get_query_var( 'page' ) ) : $this->links->get_home_url();
 
 			// Don't forget additional query vars
 			$query = wp_parse_url( $redirect_url, PHP_URL_QUERY );
