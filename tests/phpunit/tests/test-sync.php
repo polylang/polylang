@@ -1,7 +1,8 @@
 <?php
 
 class Sync_Test extends PLL_UnitTestCase {
-	static $editor, $author;
+	protected static $editor;
+	protected static $author;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory

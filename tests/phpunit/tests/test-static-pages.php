@@ -2,7 +2,11 @@
 
 class Static_Pages_Test extends PLL_UnitTestCase {
 	public $structure = '/%postname%/';
-	static $home_en, $home_fr, $home_de, $posts_en, $posts_fr;
+	protected static $home_en;
+	protected static $home_fr;
+	protected static $home_de;
+	protected static $posts_en;
+	protected static $posts_fr;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
