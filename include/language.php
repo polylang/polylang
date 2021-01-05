@@ -297,10 +297,10 @@ class PLL_Language {
 
 		/**
 		 * Filters the custom flag informations:
-		 * 'url'    => Flag url.
-		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
-		 * 'width'  => Optional, flag width in pixels.
-		 * 'height' => Optional, flag height in pixels.
+		 * - 'url'    => Flag url.
+		 * - 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
+		 * - 'width'  => Optional, flag width in pixels.
+		 * - 'height' => Optional, flag height in pixels.
 		 *
 		 * @since 2.4
 		 *
