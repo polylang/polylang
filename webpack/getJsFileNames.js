@@ -9,20 +9,25 @@ const path = require( 'path' );
 const glob = require( 'glob' ).sync;
 
 /**
+ * Internal dependecies
+ */
+const commonFileNamesToIgnore = require( './commonFileNamesToIgnore' );
+
+/**
  * Retrieves the javascript filenames to build and minify.
  *
- * @param {string[]} jsFileNamesToIgnore 
+ * @param {string} URI of the plugin's root path to output files.
  */
-function getJsFileNamesEntries( jsFileNamesToIgnore ) {
+function getJsFileNamesEntries( root ) {
 	const jsFileNames = glob(
 		'**/*.js',
-		{ 'ignore': jsFileNamesToIgnore	}
+		{ 'ignore': [ ...commonFileNamesToIgnore, 'js/lib/**', '*.config.js' ]	}
 	).map( filename => `./${ filename }` );
 	console.log( 'js files to minify:', jsFileNames );
 
 	const jsFileNamesEntries = [
-		...mapJsFiles( jsFileNames, true ),
-		...mapJsFiles( jsFileNames )
+		...jsFileNames.map( mapJsFiles( root, true ) ),
+		...jsFileNames.map( mapJsFiles( root ) )
 	];
 	return jsFileNamesEntries;
 }
@@ -43,25 +48,22 @@ function computeBuildFilename( filename, suffix ) {
  * @param {string[]} jsFileNames Source files to build.
  * @param {boolean} minimize True to generate minified files.
  */
- function mapJsFiles( jsFileNames, minimize = false ) {
-	return jsFileNames.map( 
-		( filename ) => {
-			const entry = {};
-			entry[ path.parse( filename ).name ] = filename;
-			const output = {
-				filename: computeBuildFilename( filename, minimize ? 'min' : '' ),
-				path: process.cwd(),
-				iife: false, // Avoid Webpack to wrap files into a IIFE which is not needed for this kind of javascript files.
-			};
-			const config = {
-				entry: entry,
-				output: output,
-				optimization: { minimize: minimize }
-			};
-			return config;
-		},
-		{}
-	);
+ function mapJsFiles( root, minimize = false ) {
+	return ( filename ) => {
+		const entry = {};
+		entry[ path.parse( filename ).name ] = filename;
+		const output = {
+			filename: computeBuildFilename( filename, minimize ? 'min' : '' ),
+			path: root, // Output path from the plugin's root folder, passed as parameter.
+			iife: false, // Avoid Webpack to wrap files into a IIFE which is not needed for this kind of javascript files.
+		};
+		const config = {
+			entry: entry,
+			output: output,
+			optimization: { minimize: minimize }
+		};
+		return config;
+	}
 }
 
 module.exports = getJsFileNamesEntries;
