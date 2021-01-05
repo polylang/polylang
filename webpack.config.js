@@ -11,6 +11,7 @@ const glob = require( 'glob' ).sync;
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
+const CopyPlugin = require( 'copy-webpack-plugin' );
 
 /**
  * Internal dependencies
@@ -30,7 +31,7 @@ function configureWebpack( options ){
 		'vendor/**',
 		'tmp/**',
 		'webpack/**',
-		'js/build/**',
+		'**/build/**',
 		'js/lib/**',
 		'**/*.min.*',
 	];
@@ -41,16 +42,29 @@ function configureWebpack( options ){
 	console.log( 'css files to minify:', cssFileNames );
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
-	const cssFileNamesEntries = cssFileNames.map( ( filename ) => {
+	const cssFileNamesEntries = [
+		...cssFileNames.map( mapCssMinifiedFiles(), {} ),
+		...cssFileNames.map( mapCssFiles(), {} )
+	];
+
+	// Make webpack configuration.
+	const config = [
+		...jsFileNamesEntries, // Add config for js files.
+		...cssFileNamesEntries, // Add config for css files.
+	];
+
+	return config;
+
+	function mapCssMinifiedFiles() {
+		return ( filename ) => {
 			const entry = {};
 			entry[ path.parse( filename ).name ] = filename;
-			const output = {
-				filename: `css/build/[name].work`,
-				path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
-			}
 			const config = {
 				entry: entry,
-				output: output,
+				output: {
+					filename: `css/build/[name].work`,
+					path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
+				},
 				plugins: [
 					new MiniCssExtractPlugin(
 						{
@@ -61,23 +75,23 @@ function configureWebpack( options ){
 						{
 							dry: false,
 							verbose: false,
-							cleanOnceBeforeBuildPatterns: [], // Disable to clean nothing before build.
+							cleanOnceBeforeBuildPatterns: [],
 							cleanAfterEveryBuildPatterns: [
 								'**/*.work',
 								'**/*.LICENSE.txt'
 							],
 						}
-					)
+					),
 				],
 				module: {
 					rules: [
 						{
 							test: /\.css$/i,
-							use: [ MiniCssExtractPlugin.loader, 'css-loader'],
+							use: [ MiniCssExtractPlugin.loader, 'css-loader' ],
 						},
 					],
 				},
-				devtool: ! isProduction ? 'source-map' : false,
+				devtool: !isProduction ? 'source-map' : false,
 				optimization: {
 					minimize: true,
 					minimizer: [
@@ -86,17 +100,35 @@ function configureWebpack( options ){
 				},
 			};
 			return config;
-		},
-		{}
-	);
+		};
+	}
 
-	// Make webpack configuration.
-	const config = [
-		...jsFileNamesEntries, // Add config for js files.
-		...cssFileNamesEntries, // Add config for css files.
-	];
-
-	return config;
+	function mapCssFiles() {
+		return ( filename ) => {
+			const entry = {};
+			entry[ path.parse( filename ).name ] = filename;
+			const config = {
+				entry: entry,
+				output: {
+					filename: `css/build/[name].css`,
+					path: path.resolve( __dirname ), // Output folder as project root to put files in the same folder as source files.
+				},
+				devtool: !isProduction ? 'source-map' : false,
+				optimization: {
+					minimize: false
+				},
+				module: {
+					rules: [
+						{
+							test: /\.css$/i,
+							use: ['css-loader' ],
+						},
+					],
+				}
+			};
+			return config;
+		};
+	}
 }
 
 module.exports = ( env, options ) => {
