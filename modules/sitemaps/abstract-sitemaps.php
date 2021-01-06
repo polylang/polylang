@@ -6,9 +6,11 @@
 /**
  * Common class for handling the core sitemaps.
  *
+ * The child classes must called the init() method.
+ *
  * @since 3.0
  */
-class PLL_Abstract_Sitemaps {
+abstract class PLL_Abstract_Sitemaps {
 	/**
 	 * Setups actions and filters.
 	 *
