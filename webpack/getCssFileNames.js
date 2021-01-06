@@ -21,8 +21,14 @@ const commonFileNamesToIgnore = require( './commonFileNamesToIgnore' );
  *
  * @param {string} URI of the plugin's root path to output files.
  */
-function getCssFileNamesEntries( root, isProduction ) {
-	const cssFileNames = glob('**/*.css', { 'ignore': commonFileNamesToIgnore }).map(filename => `./${filename}`);
+function getCssFileNamesEntries( root, isProduction = false ) {
+	const cssFileNames = glob(
+		'**/*.css', 
+		{ 
+			cwd: root,
+			ignore: commonFileNamesToIgnore
+		}
+	).map(filename => `./${filename}`);
 	console.log('css files to minify:', cssFileNames);
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
