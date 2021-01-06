@@ -21,7 +21,10 @@ const commonFileNamesToIgnore = require( './commonFileNamesToIgnore' );
 function getJsFileNamesEntries( root ) {
 	const jsFileNames = glob(
 		'**/*.js',
-		{ 'ignore': [ ...commonFileNamesToIgnore, 'js/lib/**', '*.config.js' ]	}
+		{
+			cwd: root, 
+			ignore: [ ...commonFileNamesToIgnore, 'js/lib/**', '*.config.js' ]	
+		}
 	).map( filename => `./${ filename }` );
 	console.log( 'js files to minify:', jsFileNames );
 
