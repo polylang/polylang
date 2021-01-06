@@ -25,7 +25,7 @@ function getJsFileNamesEntries( root ) {
 			cwd: root, 
 			ignore: [ ...commonFileNamesToIgnore, 'js/lib/**', '*.config.js' ]	
 		}
-	).map( filename => `./${ filename }` );
+	).map( filename => `${root}/${ filename }` );
 	console.log( 'js files to minify:', jsFileNames );
 
 	const jsFileNamesEntries = [

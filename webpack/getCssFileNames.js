@@ -28,7 +28,7 @@ function getCssFileNamesEntries( root, isProduction = false ) {
 			cwd: root,
 			ignore: commonFileNamesToIgnore
 		}
-	).map(filename => `./${filename}`);
+	).map(filename => `${root}/${filename}`);
 	console.log('css files to minify:', cssFileNames);
 
 	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
