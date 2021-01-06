@@ -27,6 +27,7 @@ class BrowserPreferredLanguageContext implements Context {
 	 */
 	public static function prepare_for_feature() {
 		PLL_UnitTestCase::setUpBeforeClass();
+		PLL_UnitTestCase::$polylang->model->post->register_taxonomy();
 	}
 
 	/**
@@ -65,8 +66,8 @@ class BrowserPreferredLanguageContext implements Context {
 		$language_codes = array_map( 'trim', explode( ',', $language_codes ) );
 
 		foreach ( $language_codes as $language_code ) {
-			// $language_slug = strtolower( $language_code );
-			$language_slug = PLL_UnitTestCase::create_language( Locale::canonicalize( $language_code )/*, array ( 'slug' => $language_slug )*/ );
+			$language_slug = strtolower( $language_code );
+			PLL_UnitTestCase::create_language( Locale::canonicalize( $language_code ), array( 'slug' => $language_slug ) );
 
 			$post_id = $this->test_case->factory->post->create();
 			PLL_UnitTestCase::$polylang->model->post->set_language( $post_id, $language_slug );
@@ -102,8 +103,12 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @param string $language_code Language codes as defined by IETF's BCP 47 {@see https://tools.ietf.org/html/bcp47#section-2.1}
 	 */
 	public function i_should_be_served_this_page_in_language( $language_code ) {
+		PLL_UnitTestCase::$polylang->model->clean_languages_cache();
+
 		$choose_lang = new PLL_Choose_Lang_Url( PLL_UnitTestCase::$polylang );
 
-		PLL_UnitTestCase::assertEquals( $language_code, $choose_lang->get_preferred_browser_language() );
+		$preferred_browser_language = $choose_lang->get_preferred_browser_language();
+		$expected_language = strtolower( $language_code );
+		PLL_UnitTestCase::assertEquals( $expected_language, $preferred_browser_language, "{$preferred_browser_language} does not match {$expected_language}" );
 	}
 }
