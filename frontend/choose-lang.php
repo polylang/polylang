@@ -34,6 +34,10 @@ abstract class PLL_Choose_Lang {
 	 * @var PLL_Language
 	 */
 	public $curlang;
+	/**
+	 * @var PLL_Accept_Language
+	 */
+	private $lang_parse;
 
 	/**
 	 * Constructor
@@ -133,7 +137,7 @@ abstract class PLL_Choose_Lang {
 		$accept_langs = array();
 
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
-			$lang_parse = $this->parse_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
+			$lang_parse = PLL_Accept_Language::parse_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
 
 			$k = $lang_parse['language'];
 			$v = $lang_parse['quality'];
@@ -183,53 +187,22 @@ abstract class PLL_Choose_Lang {
 		// Looks through sorted list and use first one that matches our language list
 		foreach ( array_keys( $accept_langs ) as $accept_lang ) {
 			// First loop to match the exact locale
-			foreach ( $languages as $language_pattern ) {
-				if ( 0 === strcasecmp( $accept_lang, $language_pattern->get_locale( 'display' ) ) ) {
-					return $language_pattern->slug;
+			foreach ( $languages as $language ) {
+				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
+					return $language->slug;
 				}
 			}
+		}
 
+		foreach ( array_keys( $accept_langs ) as $accept_lang ) {
 			// Second loop to match the language set
-			foreach ( $languages as $language_pattern ) {
-				if ( 0 === stripos( $accept_lang, $language_pattern->slug ) || 0 === stripos( $language_pattern->get_locale( 'display' ), $accept_lang ) ) {
-					return $language_pattern->slug;
+			foreach ( $languages as $language ) {
+				if ( 0 === stripos( $accept_lang, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $accept_lang ) ) {
+					return $language->slug;
 				}
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Parse Accept-Language HTTP header according to IETF BCP 47.
-	 *
-	 * TODO: Add grand-fathered language codes.
-	 *
-	 * @param string $header Value of the Accept-Language HTTP Header.
-	 * @return array {
-	 * @since 3.0
-	 * @type string $language A language code as defined by the IETF BCP 47 @see https://tools.ietf.org/html/bcp47#section-2.1
-	 */
-	protected function parse_accept_language_header( $header ) {
-		$lang_parse = array();
-		// Break up string into pieces ( languages and q factors )
-		$subtags = array(
-			'language' => '([a-z]{2,3}|[a-z]{4}|[a-z]{5-8})\b',
-			'language-extension' => '(-(?:[a-z]{3}){1,3}\b)?',
-			'script' => '(-[a-z]{4}\b)?',
-			'region' => '(-(?:[a-z]{2}|[0-9]{3})\b)?',
-			'variant' => '(-(?:[0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\b)?',
-			'extension' => '(-[a-wy-z]-[a-z0-9]{2,8}\b)?',
-			'private-use' => '(-x-[a-z0-9]{1,8}\b)?',
-		);
-		$language_pattern = "{$subtags['language']}{$subtags['language-extension']}{$subtags['script']}{$subtags['region']}{$subtags['variant']}{$subtags['extension']}{$subtags['private-use']}";
-		$quality_pattern = '\s*;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?)';
-		$full_pattern = "/({$language_pattern})({$quality_pattern})?/i";
-		preg_match_all(
-			$full_pattern,
-			sanitize_text_field( wp_unslash( $header ) ),
-			$lang_parse
-		);
-		return array( 'language' => $lang_parse[1], 'quality' => $lang_parse[10] );
 	}
 
 	/**
