@@ -10,6 +10,29 @@
  */
 class PLL_Accept_Language {
 	/**
+	 * @var string[]
+	 */
+	protected $subtags;
+
+	/**
+	 * @var float
+	 */
+	protected $quality;
+
+	/**
+	 * @var string[] Regular expression patterns.
+	 */
+	public static $subtag_patterns = array(
+		'language' => '([a-z]{2,3}|[a-z]{4}|[a-z]{5-8})\b',
+		'language-extension' => '(?:-([a-z]{3}){1,3}\b)?',
+		'script' => '(?:-([a-z]{4})\b)?',
+		'region' => '(?:-([a-z]{2}|[0-9]{3})\b)?',
+		'variant' => '(?:-([0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\b)?',
+		'extension' => '(?:-([a-wy-z]-[a-z0-9]{2,8})\b)?',
+		'private-use' => '(?:-(x-[a-z0-9]{1,8})\b)?',
+	);
+
+	/**
 	 * Parse Accept-Language HTTP header according to IETF BCP 47.
 	 *
 	 * TODO: Add grand-fathered language codes.
@@ -21,23 +44,73 @@ class PLL_Accept_Language {
 	public static function parse_accept_language_header( $http_header ) {
 		$lang_parse = array();
 		// Break up string into pieces ( languages and q factors )
-		$subtags = array(
-			'language' => '([a-z]{2,3}|[a-z]{4}|[a-z]{5-8})\b',
-			'language-extension' => '(-(?:[a-z]{3}){1,3}\b)?',
-			'script' => '(-[a-z]{4}\b)?',
-			'region' => '(-(?:[a-z]{2}|[0-9]{3})\b)?',
-			'variant' => '(-(?:[0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\b)?',
-			'extension' => '(-[a-wy-z]-[a-z0-9]{2,8}\b)?',
-			'private-use' => '(-x-[a-z0-9]{1,8}\b)?',
-		);
-		$language_pattern = "{$subtags['language']}{$subtags['language-extension']}{$subtags['script']}{$subtags['region']}{$subtags['variant']}{$subtags['extension']}{$subtags['private-use']}";
+		$language_pattern = implode( '', self::$subtag_patterns );
 		$quality_pattern = '\s*;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?)';
-		$full_pattern = "/({$language_pattern})({$quality_pattern})?/i";
+		$full_pattern = "/{$language_pattern}(?:{$quality_pattern})?/i";
+
 		preg_match_all(
 			$full_pattern,
 			sanitize_text_field( wp_unslash( $http_header ) ),
+			$lang_parse,
+			PREG_SET_ORDER
+		);
+
+		$accept_langs = array_map(
+			array( self::class, 'from_array' ),
 			$lang_parse
 		);
-		return array('language' => $lang_parse[1], 'quality' => $lang_parse[10]);
+
+		return $accept_langs;
+	}
+
+	/**
+	 * PLL_Accept_Language constructor.
+	 *
+	 * @param string[] $subtags With subtag name as keys and subtag values as names.
+	 * @param int      $quality
+	 */
+	public function __construct( $subtags, $quality = 1.0 ) {
+		$this->subtags = $subtags;
+		$this->quality = $quality;
+	}
+
+	/**
+	 * Creates a new instance from an array resulting of a PHP {@see preg_match()} or {@see preg_match_all()} call.
+	 *
+	 * @param string[] $matches Expects first entry to be full match, following entries to be subtags and last entry to be quality factor.
+	 * @return PLL_Accept_Language
+	 */
+	public static function from_array( $matches ) {
+		$subtags = array_combine(
+			array_keys( array_slice( self::$subtag_patterns, 0, count( $matches ) - 1 ) ),
+			array_slice( $matches, 1, count( self::$subtag_patterns ) )
+		);
+		$quality = count( $matches ) === 9 ? floatval( $matches[8] ) : 1.0;
+
+		return new PLL_Accept_Language( $subtags, $quality );
+	}
+
+	/**
+	 * Returns the full language tag.
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		$subtags = array_filter(
+			$this->subtags,
+			function ( $subtag ) {
+				return ! empty( trim( $subtag ) );
+			}
+		);
+		return implode( '-', $subtags );
+	}
+
+	/**
+	 * Returns the quality factor as negotiated by the browser agent.
+	 *
+	 * @return float
+	 */
+	public function get_quality() {
+		return $this->quality;
 	}
 }
