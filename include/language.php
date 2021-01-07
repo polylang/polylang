@@ -225,15 +225,18 @@ class PLL_Language {
 
 	/**
 	 * Get the flag informations:
-	 * 'url'    => Flag url.
-	 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
-	 * 'width'  => Optional, flag width in pixels.
-	 * 'height' => Optional, flag height in pixels.
 	 *
 	 * @since 2.6
 	 *
 	 * @param string $code Flag code.
-	 * @return array Flag informations.
+	 * @return array {
+	 *   Flag informations.
+	 *
+	 *   @type string $url    Flag url.
+	 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+	 *   @type int    $width  Optional, flag width in pixels.
+	 *   @type int    $height Optional, flag height in pixels.
+	 * }
 	 */
 	public static function get_flag_informations( $code ) {
 		$flag = array( 'url' => '' );
@@ -252,14 +255,17 @@ class PLL_Language {
 
 		/**
 		 * Filters flag informations:
-		 * 'url'    => Flag url.
-		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
-		 * 'width'  => Optional, flag width in pixels.
-		 * 'height' => Optional, flag height in pixels.
 		 *
 		 * @since 2.4
 		 *
-		 * @param array  $flag Information about the flag.
+		 * @param array  $flag {
+		 *   Information about the flag.
+		 *
+		 *   @type string $url    Flag url.
+		 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+		 *   @type int    $width  Optional, flag width in pixels.
+		 *   @type int    $height Optional, flag height in pixels.
+		 * }
 		 * @param string $code Flag code.
 		 */
 		$flag = apply_filters( 'pll_flag', $flag, $code );
@@ -296,16 +302,19 @@ class PLL_Language {
 		}
 
 		/**
-		 * Filters the custom flag informations:
-		 * 'url'    => Flag url.
-		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
-		 * 'width'  => Optional, flag width in pixels.
-		 * 'height' => Optional, flag height in pixels.
+		 * Filters the custom flag informations.
+		 *
+		 * @param array  $flag {
+		 *   Information about the custom flag.
+		 *
+		 *   @type string $url    Flag url.
+		 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+		 *   @type int    $width  Optional, flag width in pixels.
+		 *   @type int    $height Optional, flag height in pixels.
+		 * }
+		 * @param string $code Flag code.
 		 *
 		 * @since 2.4
-		 *
-		 * @param array  $flag Information about the custom flag.
-		 * @param string $code Flag code.
 		 */
 		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $this->flag_code );
 
