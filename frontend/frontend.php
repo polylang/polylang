@@ -192,20 +192,22 @@ class PLL_Frontend extends PLL_Base {
 	}
 
 	/**
-	 * Resets some variables when switching blog
-	 * Overrides parent method
+	 * Resets some variables when the blog is switched.
+	 * Overrides the parent method.
 	 *
 	 * @since 1.5.1
 	 *
-	 * @param int $new_blog
-	 * @param int $old_blog
+	 * @param int $new_blog_id  New blog ID.
+	 * @param int $prev_blog_id Previous blog ID.
 	 */
-	public function switch_blog( $new_blog, $old_blog ) {
-		// Need to check that some languages are defined when user is logged in, has several blogs, some without any languages
-		if ( parent::switch_blog( $new_blog, $old_blog ) && did_action( 'pll_language_defined' ) && $this->model->get_languages_list() ) {
+	public function switch_blog( $new_blog_id, $prev_blog_id ) {
+		parent::switch_blog( $new_blog_id, $prev_blog_id );
+
+		// Need to check that some languages are defined when user is logged in, has several blogs, some without any languages.
+		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) && did_action( 'pll_language_defined' ) && $this->model->get_languages_list() ) {
 			static $restore_curlang;
 			if ( empty( $restore_curlang ) ) {
-				$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs
+				$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs.
 			}
 
 			$lang = $this->model->get_language( $restore_curlang );
