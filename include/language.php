@@ -317,7 +317,6 @@ class PLL_Language {
 		 * @param string $code   Flag code.
 		 *
 		 * @since 2.4
-		 *
 		 */
 		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $this->flag_code );
 
