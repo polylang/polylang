@@ -213,7 +213,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @since 2.6
 	 *
 	 * @param string       $type            Post type.
-	 * @param string       $untranslated_in The language the posts must not be translated in.
+	 * @param PLL_Language $untranslated_in The language the posts must not be translated in.
 	 * @param PLL_Language $lang            Language of the searched posts.
 	 * @param string       $search          Limit the results to the posts matching this string.
 	 * @return array Array of posts

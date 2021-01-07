@@ -87,8 +87,8 @@ class PLL_Translate_Option {
 	 *
 	 * @since 1.0
 	 *
-	 * @param array|string $values Either a string to translate or a list of strings to translate.
-	 * @param array|bool   $key    Array of option keys to translate.
+	 * @param mixed      $values Either a string to translate or a list of strings to translate.
+	 * @param array|bool $key    Array of option keys to translate.
 	 * @return array|string Translated string(s)
 	 */
 	protected function translate_string_recursive( $values, $key ) {
@@ -137,7 +137,7 @@ class PLL_Translate_Option {
 	 *
 	 * @param string     $context The group in which the strings will be registered.
 	 * @param string     $option  Option name.
-	 * @param array      $values  Option value.
+	 * @param mixed      $values  Option value.
 	 * @param array|bool $key     Array of option keys to translate.
 	 * @return void
 	 */

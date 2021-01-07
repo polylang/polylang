@@ -102,7 +102,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @since 2.3
 	 *
-	 * @param array $id           Post id or term id
+	 * @param int   $id           Post id or term id
 	 * @param array $translations An associative array of translations with language code as key and translation id as value
 	 * @return bool
 	 */
