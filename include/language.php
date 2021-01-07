@@ -228,15 +228,15 @@ class PLL_Language {
 	 *
 	 * @since 2.6
 	 *
-	 * @param string $code Flag code. {
-	 *   Get the flag informations:
+	 * @param string $code Flag code.
+	 * @return array {
+	 *   Flag informations.
 	 *
-	 *   @type  string $url    Flag url.
-	 *   @type string  $src    Optional, src attribute value if different of the url, for example if base64 encoded.
-	 *   @type  int    $width  Optional, flag width in pixels.
-	 *   @type int     $height Optional, flag height in pixels.
+	 *   @type string $url    Flag url.
+	 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+	 *   @type int    $width  Optional, flag width in pixels.
+	 *   @type int    $height Optional, flag height in pixels.
 	 * }
-	 * @return array Flag informations.
 	 */
 	public static function get_flag_informations( $code ) {
 		$flag = array( 'url' => '' );
@@ -258,13 +258,13 @@ class PLL_Language {
 		 *
 		 * @since 2.4
 		 *
-		 * @param array  $flag Information about the flag. {
-		 *   Filters flag informations:
+		 * @param array  $flag {
+		 *   Information about the flag.
 		 *
-		 *   @type  string $url    Flag url.
-		 *   @type string  $src    Optional, src attribute value if different of the url, for example if base64 encoded.
-		 *   @type  int    $width  Optional, flag width in pixels.
-		 *   @type int     $height Optional, flag height in pixels.
+		 *   @type string $url    Flag url.
+		 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+		 *   @type int    $width  Optional, flag width in pixels.
+		 *   @type int    $height Optional, flag height in pixels.
 		 * }
 		 * @param string $code Flag code.
 		 */
@@ -302,19 +302,17 @@ class PLL_Language {
 		}
 
 		/**
-		 * Filters the custom flag informations:
-		 *         *
+		 * Filters the custom flag informations.
 		 *
-		 * @param array  $flag   {
+		 * @param array  $flag {
 		 *   Information about the custom flag.
 		 *
-		 *   @type  string $url    Flag url.
-		 *   @type string  $src    Optional, src attribute value if different of the url, for example if base64 encoded.
-		 *   @type  int    $width  Optional, flag width in pixels.
-		 *   @type int     $height Optional, flag height in pixels.
+		 *   @type string $url    Flag url.
+		 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+		 *   @type int    $width  Optional, flag width in pixels.
+		 *   @type int    $height Optional, flag height in pixels.
 		 * }
-		 *
-		 * @param string $code   Flag code.
+		 * @param string $code Flag code.
 		 *
 		 * @since 2.4
 		 */
