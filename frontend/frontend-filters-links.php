@@ -351,14 +351,14 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * If the language code is not in agreement with the language of the content
-	 * redirects incoming links to the proper URL to avoid duplicate content
+	 * If the language code is not in agreement with the language of the content,
+	 * redirects incoming links to the proper URL to avoid duplicate content.
 	 *
 	 * @since 0.9.6
 	 *
-	 * @param string $requested_url optional
-	 * @param bool   $do_redirect   optional, whether to perform the redirection or not
-	 * @return string if redirect is not performed
+	 * @param string $requested_url Optional, defaults to requested url.
+	 * @param bool   $do_redirect   Optional, whether to perform the redirect or not.
+	 * @return string|void Returns if redirect is not performed.
 	 */
 	public function check_canonical_url( $requested_url = '', $do_redirect = true ) {
 		// Don't redirect in same cases as WP.

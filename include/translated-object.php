@@ -18,7 +18,7 @@ abstract class PLL_Translated_Object {
 	 * Object type to use when registering the taxonomies.
 	 * Left empty for posts.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $object_type;
 
