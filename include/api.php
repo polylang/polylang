@@ -76,31 +76,31 @@ function pll_default_language( $field = 'slug' ) {
 }
 
 /**
- * Among the post and its translations, returns the id of the post which is in the language represented by $slug.
+ * Among the post and its translations, returns the id of the post which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
  *
  * @param int    $post_id Post id.
- * @param string $slug    Optional language code, defaults to the current language.
+ * @param string $lang    Optional language code, defaults to the current language.
  * @return int|false|null Post id of the translation if it exists, false otherwise, null if the current language is not defined yet.
  */
-function pll_get_post( $post_id, $slug = '' ) {
-	return ( $slug = $slug ? $slug : pll_current_language() ) ? PLL()->model->post->get( $post_id, $slug ) : null;
+function pll_get_post( $post_id, $lang = '' ) {
+	return ( $lang = $lang ? $lang : pll_current_language() ) ? PLL()->model->post->get( $post_id, $lang ) : null;
 }
 
 /**
- * Among the term and its translations, returns the id of the term which is in the language represented by $slug.
+ * Among the term and its translations, returns the id of the term which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
  *
  * @param int    $term_id Term id.
- * @param string $slug    Optional language code, defaults to the current language.
+ * @param string $lang    Optional language code, defaults to the current language.
  * @return int|false|null Term id of the translation if it exists, false otherwise, null if the current language is not defined yet.
  */
-function pll_get_term( $term_id, $slug = '' ) {
-	return ( $slug = $slug ? $slug : pll_current_language() ) ? PLL()->model->term->get( $term_id, $slug ) : null;
+function pll_get_term( $term_id, $lang = '' ) {
+	return ( $lang = $lang ? $lang : pll_current_language() ) ? PLL()->model->term->get( $term_id, $lang ) : null;
 }
 
 /**
