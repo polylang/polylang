@@ -165,6 +165,8 @@ jQuery(
 						$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
 						$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', lang ).attr( 'dir', dir );
 						$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
+
+						pll.media.resetAllAttachmentsCollections();
 					}
 				);
 			}
@@ -211,3 +213,87 @@ jQuery(
 		init_translations();
 	}
 );
+
+/**
+ * @since 3.0
+ * 
+ * @namespace pll
+ */
+var pll = window.pll || {};
+
+/**
+ * @since 3.0
+ * 
+ * @namespace pll.media
+ */
+_.extend( pll, { media: {} } );
+
+/**
+ * @since 3.0
+ * 
+ * @alias pll.media
+ * @memberOf pll
+ * @namespace
+ */
+var media = _.extend(
+	pll.media, /** @lends pll.media.prototype */
+	{
+		/**
+		 * TODO: Find a way to delete references to Attachments collections that are not used anywhere else.
+		 *
+		 * @type {wp.media.model.Attachments}
+		 */
+		attachmentsCollections : [],
+
+		/**
+		 * Imitates { @see wp.media.query } but log all Attachments collections created.
+		 * 
+		 * @param {Object} [props]
+		 * @return {wp.media.model.Attachments}
+		 */
+		query: function( props ) {
+			var attachments = pll.media.query.delegate();
+
+			pll.media.attachmentsCollections.push( attachments );
+
+			return attachments;
+		},
+
+		resetAllAttachmentsCollections: function() {
+			this.attachmentsCollections.forEach(
+				function( attachmentsCollection ) {
+					/**
+					 * First reset the { @see wp.media.model.Attachments } collection.
+					 * Then, if it is mirroring a { @see wp.media.model.Query } collection, 
+					 * refresh this one too, so it will fetch new data from the server,
+					 * and then the wp.media.model.Attachments collection will syncrhonize with the new data.
+					 */
+					attachmentsCollection.reset();
+					if (attachmentsCollection.mirroring) {
+						attachmentsCollection.mirroring._hasMore = true;
+						attachmentsCollection.mirroring.reset();
+					}
+				}
+			);
+		}
+	}
+);
+
+/**
+ * @since 3.0
+ * 
+ * @memberOf pll.media
+ */
+media.query = _.extend(
+	media.query, /** @lends pll.media.query prototype */
+	{
+		/**
+		 * @type Function References WordPress { @see wp.media.query } constructor
+		 */
+		delegate: wp.media.query
+	}
+)
+
+// Substitute WordPress media query shortcut with our decorated function.
+wp.media.query = media.query
+
