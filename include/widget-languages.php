@@ -99,11 +99,12 @@ class PLL_Widget_Languages extends WP_Widget {
 	}
 
 	/**
-	 * Displays the widget form
+	 * Displays the widget form.
 	 *
 	 * @since 0.4
 	 *
-	 * @param array $instance Current settings
+	 * @param array $instance Current settings.
+	 * @return string
 	 */
 	public function form( $instance ) {
 		// Default values
@@ -130,5 +131,7 @@ class PLL_Widget_Languages extends WP_Widget {
 				esc_attr( 'pll-' . $key )
 			);
 		}
+
+		return ''; // Because the parent class returns a string, however not used.
 	}
 }

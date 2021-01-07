@@ -266,13 +266,13 @@ class PLL_CRUD_Posts {
 	 */
 	public function create_media_translation( $post_id, $lang ) {
 		if ( empty( $post_id ) ) {
-			return $post_id;
+			return 0;
 		}
 
 		$post = get_post( $post_id, ARRAY_A );
 
 		if ( empty( $post ) ) {
-			return $post;
+			return 0;
 		}
 
 		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug.
