@@ -19,7 +19,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
-	function init() {
+	function init( $sitemap_class = 'PLL_Sitemaps' ) {
 		global $wp_rewrite, $wp_sitemaps;
 
 		// Initialize sitemaps.
@@ -40,7 +40,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 			self::$polylang->links_model->init();
 		}
 
-		self::$polylang->sitemaps = new PLL_Sitemaps( self::$polylang );
+		self::$polylang->sitemaps = new $sitemap_class( self::$polylang );
 		self::$polylang->sitemaps->init();
 
 		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
@@ -223,7 +223,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 	function test_subdomains() {
 		self::$polylang->options['force_lang'] = 2;
-		$this->init();
+		$this->init( 'PLL_Sitemaps_Domain' );
 
 		$_SERVER['HTTP_HOST'] = 'fr.example.org';
 		$_SERVER['REQUEST_URI'] = '/wp-sitemap.xml';
@@ -238,7 +238,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 	function test_subdomains_home_url() {
 		self::$polylang->options['force_lang'] = 2;
-		$this->init();
+		$this->init( 'PLL_Sitemaps_Domain' );
 
 		$_SERVER['HTTP_HOST'] = 'fr.example.org';
 		$_SERVER['REQUEST_URI'] = '/wp-sitemap-posts-page-1.xml';
@@ -264,7 +264,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 			'en' => 'http://example.org',
 			'fr' => 'http://example.fr',
 		);
-		$this->init();
+		$this->init( 'PLL_Sitemaps_Domain' );
 
 		$_SERVER['HTTP_HOST'] = 'example.fr';
 		$_SERVER['REQUEST_URI'] = '/wp-sitemap.xml';
