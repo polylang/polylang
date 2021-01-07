@@ -137,10 +137,15 @@ abstract class PLL_Choose_Lang {
 		$accept_langs = array();
 
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
-			$lang_parse = PLL_Accept_Language::parse_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
+			$accept_langs = PLL_Accept_Language::parse_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
 
-			$k = $lang_parse['language'];
-			$v = $lang_parse['quality'];
+			$k = $accept_langs;
+			$v = array_map(
+				function( $accept_lang ) {
+					return $accept_lang->get_quality();
+				},
+				$accept_langs
+			);
 
 			if ( $n = count( $k ) ) {
 				// Set default to 1 for any without q factor
