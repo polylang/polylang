@@ -172,11 +172,14 @@ abstract class PLL_Choose_Lang {
 						}
 					}
 				}
-				$accept_langs = array_combine( $k, $v );
+				$accept_langs = array_filter(
+					$k,
+					function( $accept_lang ) {
+						return $accept_lang->get_quality() > 0;
+					}
+				);
 			}
 		}
-
-		$accept_langs = array_filter( $accept_langs ); // Remove languages marked as unacceptable (q=0).
 
 		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
 
@@ -190,7 +193,7 @@ abstract class PLL_Choose_Lang {
 		$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
 
 		// Looks through sorted list and use first one that matches our language list
-		foreach ( array_keys( $accept_langs ) as $accept_lang ) {
+		foreach ( $accept_langs as $accept_lang ) {
 			// First loop to match the exact locale
 			foreach ( $languages as $language ) {
 				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
@@ -198,10 +201,24 @@ abstract class PLL_Choose_Lang {
 				}
 			}
 
-			// Second loop to match the language set
+			// In order of priority
+			$subsets = array();
+			if ( ! empty( $accept_lang->get_subtag( 'region' ) ) ) {
+				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'region' );
+				$subsets[] = $accept_lang->get_subtag( 'region' );
+			}
+			if ( ! empty( $accept_lang->get_subtag( 'variant' ) ) ) {
+				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'variant' );
+			}
+			$subsets[] = $accept_lang->get_subtag( 'language' );
+
+			// More loops to match the subsets
 			foreach ( $languages as $language ) {
-				if ( 0 === stripos( $accept_lang, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $accept_lang ) ) {
-					return $language->slug;
+				foreach ( $subsets as $subset ) {
+
+					if ( 0 === stripos( $subset, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $subset ) ) {
+						return $language->slug;
+					}
 				}
 			}
 		}
