@@ -23,13 +23,13 @@ class PLL_Accept_Language {
 	 * @var string[] Regular expression patterns.
 	 */
 	public static $subtag_patterns = array(
-		'language' => '([a-z]{2,3}|[a-z]{4}|[a-z]{5-8})\b',
-		'language-extension' => '(?:-([a-z]{3}){1,3}\b)?',
-		'script' => '(?:-([a-z]{4})\b)?',
-		'region' => '(?:-([a-z]{2}|[0-9]{3})\b)?',
-		'variant' => '(?:-([0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\b)?',
-		'extension' => '(?:-([a-wy-z]-[a-z0-9]{2,8})\b)?',
-		'private-use' => '(?:-(x-[a-z0-9]{1,8})\b)?',
+		'language' => '(\b[a-z]{2,3}|[a-z]{4}|[a-z]{5-8}\b)',
+		'language-extension' => '(?:-(\b[a-z]{3}){1,3}\b)?',
+		'script' => '(?:-(\b[a-z]{4})\b)?',
+		'region' => '(?:-(\b[a-z]{2}|[0-9]{3})\b)?',
+		'variant' => '(?:-(\b[0-9][a-z]{1,3}|[a-z][a-z0-9]{4,7})\b)?',
+		'extension' => '(?:-(\b[a-wy-z]-[a-z0-9]{2,8})\b)?',
+		'private-use' => '(?:-(\bx-[a-z0-9]{1,8})\b)?',
 	);
 
 	/**
@@ -112,5 +112,16 @@ class PLL_Accept_Language {
 	 */
 	public function get_quality() {
 		return $this->quality;
+	}
+
+	/**
+	 * Returns a subtag from the language tag.
+	 *
+	 * @see PLL_Accept_Language::$subtag_patterns for available subtag names.
+	 *
+	 * @return string
+	 */
+	public function get_subtag( $name ) {
+		return isset( $this->subtags[ $name ] ) ? $this->subtags[ $name ] : '';
 	}
 }
