@@ -197,9 +197,7 @@ abstract class PLL_Choose_Lang {
 					return $language->slug;
 				}
 			}
-		}
 
-		foreach ( array_keys( $accept_langs ) as $accept_lang ) {
 			// Second loop to match the language set
 			foreach ( $languages as $language ) {
 				if ( 0 === stripos( $accept_lang, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $accept_lang ) ) {

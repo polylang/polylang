@@ -59,19 +59,18 @@ class BrowserPreferredLanguageContext implements Context {
 	}
 
 	/**
-	 * @Given /^a webpage exists in ((?:[-_a-zA-Z]+(?:, )?)+) languages?$/
-	 * @param string[] $language_codes Language codes as defined by IETF's BCP 47 {@see https://tools.ietf.org/html/bcp47#section-2.1}
+	 * @Given /^my website has content in.*([a-z]{2}-[A-Z]{2}).*?(?:with the slug ([a-z]{2}-[a-z]{2}))?$/
+	 * @param string $language_code Language tag as defined by IETF's BCP 47 {@see https://tools.ietf.org/html/bcp47#section-2.1}
+	 * @param string $language_slug Optional. User's custom slug for given language.
 	 */
-	public function a_webpage_exists_in_languages( $language_codes ) {
-		$language_codes = array_map( 'trim', explode( ',', $language_codes ) );
+	public function my_website_has_content_in( $language_code, $language_slug = '' ) {
+		$args = empty( $language_slug ) ? array() : array( 'slug' => $language_slug );
+		PLL_UnitTestCase::create_language( Locale::canonicalize( $language_code ), $args );
 
-		foreach ( $language_codes as $language_code ) {
-			$language_slug = strtolower( $language_code );
-			PLL_UnitTestCase::create_language( Locale::canonicalize( $language_code ), array( 'slug' => $language_slug ) );
+		$post_id = $this->test_case->factory->post->create();
 
-			$post_id = $this->test_case->factory->post->create();
-			PLL_UnitTestCase::$polylang->model->post->set_language( $post_id, $language_slug );
-		}
+		$default_slug = explode( '-', $language_code )[0];
+		PLL_UnitTestCase::$polylang->model->post->set_language( $post_id, empty( $language_slug ) ? $default_slug : $language_slug );
 	}
 
 	/**
@@ -92,23 +91,24 @@ class BrowserPreferredLanguageContext implements Context {
 	}
 
 	/**
-	 * @When I visit the webpage for the first time
+	 * @When I visit my website's homepage for the first time
 	 */
-	public function i_visit_the_webpage_for_the_firstT_time() {
+	public function i_visit_my_website_homepage_for_the_first_time() {
 		// TODO: define step
 	}
 
 	/**
-	 * @Then /^I should be served this page in ([-_a-zA-Z]+) language$/
+	 * @Then /^Polylang will remember.*([a-z]{2}-[A-Z]{2}).*as my preferred browsing language$/
 	 * @param string $language_code Language codes as defined by IETF's BCP 47 {@see https://tools.ietf.org/html/bcp47#section-2.1}
 	 */
-	public function i_should_be_served_this_page_in_language( $language_code ) {
+	public function polylang_will_remember( $language_code ) {
 		PLL_UnitTestCase::$polylang->model->clean_languages_cache();
 
 		$choose_lang = new PLL_Choose_Lang_Url( PLL_UnitTestCase::$polylang );
 
 		$preferred_browser_language = $choose_lang->get_preferred_browser_language();
-		$expected_language = strtolower( $language_code );
-		PLL_UnitTestCase::assertEquals( $expected_language, $preferred_browser_language, "{$preferred_browser_language} does not match {$expected_language}" );
+		$preferred_locale = PLL_UnitTestCase::$polylang->model->get_language( $preferred_browser_language )->locale;
+		$expected_locale = Locale::canonicalize( $language_code );
+		PLL_UnitTestCase::assertEquals( $expected_locale, $preferred_locale, "{$preferred_locale} does not match {$expected_locale}" );
 	}
 }
