@@ -70,4 +70,43 @@ class PLL_Accept_Languages_Collection {
 		return $this->accept_languages;
 	}
 
+	/**
+	 * Looks through sorted list and use first one that matches our language list
+	 *
+	 * @param PLL_Language[] $languages
+	 * @return string|false A language slug if there's a match, false otherwise.
+	 */
+	public function find_best_match( $languages ) {
+		foreach ( $this->accept_languages as $accept_lang ) {
+			// First loop to match the exact locale
+			foreach ( $languages as $language ) {
+				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
+					return $language->slug;
+				}
+			}
+
+			// In order of priority
+			$subsets = array();
+			if ( ! empty( $accept_lang->get_subtag( 'region' ) ) ) {
+				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'region' );
+				$subsets[] = $accept_lang->get_subtag( 'region' );
+			}
+			if ( ! empty( $accept_lang->get_subtag( 'variant' ) ) ) {
+				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'variant' );
+			}
+			$subsets[] = $accept_lang->get_subtag( 'language' );
+
+			// More loops to match the subsets
+			foreach ( $languages as $language ) {
+				foreach ( $subsets as $subset ) {
+
+					if ( 0 === stripos( $subset, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $subset ) ) {
+						return $language->slug;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 }

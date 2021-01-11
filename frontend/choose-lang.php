@@ -159,8 +159,7 @@ abstract class PLL_Choose_Lang {
 		 */
 		$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
 
-		// Looks through sorted list and use first one that matches our language list
-		return $this->find_best_match( $accept_langs, $languages );
+		return $this->accept_langs->find_best_match( $languages );
 	}
 
 	/**
@@ -201,44 +200,6 @@ abstract class PLL_Choose_Lang {
 
 		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
 		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_language( $this->options['default_lang'] );
-	}
-
-	/**
-	 * @param array     $accept_langs
-	 * @param $languages
-	 * @return false
-	 */
-	public function find_best_match( array $accept_langs, $languages ) {
-		foreach ( $accept_langs as $accept_lang ) {
-			// First loop to match the exact locale
-			foreach ( $languages as $language ) {
-				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
-					return $language->slug;
-				}
-			}
-
-			// In order of priority
-			$subsets = array();
-			if ( ! empty( $accept_lang->get_subtag( 'region' ) ) ) {
-				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'region' );
-				$subsets[] = $accept_lang->get_subtag( 'region' );
-			}
-			if ( ! empty( $accept_lang->get_subtag( 'variant' ) ) ) {
-				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'variant' );
-			}
-			$subsets[] = $accept_lang->get_subtag( 'language' );
-
-			// More loops to match the subsets
-			foreach ( $languages as $language ) {
-				foreach ( $subsets as $subset ) {
-
-					if ( 0 === stripos( $subset, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $subset ) ) {
-						return $language->slug;
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	/**
