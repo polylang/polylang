@@ -67,6 +67,8 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 	 * as the preferred browser language is not used when the language is set from different domains
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function print_js() {
 		wp_enqueue_script( 'jquery' );

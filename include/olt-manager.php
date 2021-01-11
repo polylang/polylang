@@ -88,6 +88,8 @@ class PLL_OLT_Manager {
 	 * Loads text domains
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function load_textdomains() {
 		// Our load_textdomain_mofile filter has done its job. let's remove it before calling load_textdomain
@@ -219,6 +221,7 @@ class PLL_OLT_Manager {
 	 * @since 0.9
 	 *
 	 * @param object $type either a post type or a taxonomy
+	 * @return void
 	 */
 	public function translate_labels( $type ) {
 		// Use static array to avoid translating several times the same ( default ) labels

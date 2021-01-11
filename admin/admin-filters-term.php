@@ -97,6 +97,8 @@ class PLL_Admin_Filters_Term {
 	 * Adds the language field in the 'Categories' and 'Post Tags' panels
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function add_term_form() {
 		if ( isset( $_GET['taxonomy'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -163,6 +165,7 @@ class PLL_Admin_Filters_Term {
 	 * @since 0.1
 	 *
 	 * @param object $tag
+	 * @return void
 	 */
 	public function edit_term_form( $tag ) {
 		if ( isset( $_REQUEST['post_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -256,6 +259,7 @@ class PLL_Admin_Filters_Term {
 	 * @since 1.7
 	 *
 	 * @param int $post_id
+	 * @return void
 	 */
 	public function pre_post_update( $post_id ) {
 		if ( isset( $_GET['bulk_edit'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -270,6 +274,7 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @param int    $term_id
 	 * @param string $taxonomy
+	 * @return void
 	 */
 	protected function save_language( $term_id, $taxonomy ) {
 		global $wpdb;
@@ -399,6 +404,7 @@ class PLL_Admin_Filters_Term {
 	 * @param int    $term_id
 	 * @param int    $tt_id    term taxonomy id
 	 * @param string $taxonomy
+	 * @return void
 	 */
 	public function save_term( $term_id, $tt_id, $taxonomy ) {
 		// Does nothing except on taxonomies which are filterable
@@ -475,6 +481,8 @@ class PLL_Admin_Filters_Term {
 	 * Ajax response for edit term form
 	 *
 	 * @since 0.2
+	 *
+	 * @return void
 	 */
 	public function term_lang_choice() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
@@ -542,6 +550,8 @@ class PLL_Admin_Filters_Term {
 	 * Ajax response for input in translation autocomplete input box
 	 *
 	 * @since 1.5
+	 *
+	 * @return void
 	 */
 	public function ajax_terms_not_translated() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
@@ -624,6 +634,7 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @param int $old_value
 	 * @param int $value
+	 * @return void
 	 */
 	public function update_option_default_category( $old_value, $value ) {
 		$default_cat_lang = $this->model->term->get_language( $value );
@@ -651,6 +662,7 @@ class PLL_Admin_Filters_Term {
 	 * @param int    $new_term_id
 	 * @param int    $term_taxonomy_id
 	 * @param string $taxonomy
+	 * @return void
 	 */
 	public function split_shared_term( $term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {
 		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {

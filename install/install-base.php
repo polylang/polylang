@@ -52,6 +52,7 @@ class PLL_Install_Base {
 	 *
 	 * @param string $what        Either 'activate' or 'deactivate'
 	 * @param bool   $networkwide
+	 * @return void
 	 */
 	protected function do_for_all_blogs( $what, $networkwide ) {
 		// Network
@@ -77,6 +78,7 @@ class PLL_Install_Base {
 	 * @since 1.7
 	 *
 	 * @param bool $networkwide
+	 * @return void
 	 */
 	public function activate( $networkwide ) {
 		$this->do_for_all_blogs( 'activate', $networkwide );
@@ -86,6 +88,8 @@ class PLL_Install_Base {
 	 * Plugin activation
 	 *
 	 * @since 0.5
+	 *
+	 * @return void
 	 */
 	protected function _activate() {
 		// Can be overriden in child class
@@ -97,6 +101,7 @@ class PLL_Install_Base {
 	 * @since 0.1
 	 *
 	 * @param bool $networkwide
+	 * @return void
 	 */
 	public function deactivate( $networkwide ) {
 		$this->do_for_all_blogs( 'deactivate', $networkwide );
@@ -106,6 +111,8 @@ class PLL_Install_Base {
 	 * Plugin deactivation
 	 *
 	 * @since 0.5
+	 *
+	 * @return void
 	 */
 	protected function _deactivate() {
 		// Can be overriden in child class
@@ -117,6 +124,7 @@ class PLL_Install_Base {
 	 * @since 2.6.8
 	 *
 	 * @param WP_Site $new_site New site object.
+	 * @return void
 	 */
 	public function new_site( $new_site ) {
 		switch_to_blog( $new_site->id );

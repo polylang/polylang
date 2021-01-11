@@ -79,6 +79,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 * Creates a media translation
 	 *
 	 * @since 0.9
+	 *
+	 * @return void
 	 */
 	public function translate_media() {
 		if ( isset( $_GET['from_media'], $_GET['new_lang'] ) ) {

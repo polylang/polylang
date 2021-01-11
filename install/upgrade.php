@@ -31,6 +31,8 @@ class PLL_Upgrade {
 	 * Check if upgrade is possible otherwise die to avoid activation
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function can_activate() {
 		if ( ! $this->can_upgrade() ) {
@@ -76,6 +78,8 @@ class PLL_Upgrade {
 	 * Displays a notice when ugrading from a too old version
 	 *
 	 * @since 1.0
+	 *
+	 * @return void
 	 */
 	public function admin_notices() {
 		load_plugin_textdomain( 'polylang' );
@@ -95,6 +99,8 @@ class PLL_Upgrade {
 	 * Upgrades the plugin depending on the previous version
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function _upgrade() {
 		foreach ( array( '2.0.8', '2.1', '2.7', '2.8.1' ) as $version ) {
@@ -113,6 +119,8 @@ class PLL_Upgrade {
 	 * Changes the user meta 'user_lang' to 'locale' to match WP 4.7 choice
 	 *
 	 * @since 2.0.8
+	 *
+	 * @return void
 	 */
 	protected function upgrade_2_0_8() {
 		global $wpdb;
@@ -124,6 +132,8 @@ class PLL_Upgrade {
 	 * Moves strings translations from polylang_mo post_content to post meta _pll_strings_translations
 	 *
 	 * @since 2.1
+	 *
+	 * @return void
 	 */
 	protected function upgrade_2_1() {
 		foreach ( get_terms( 'language', array( 'hide_empty' => 0 ) ) as $lang ) {
@@ -146,6 +156,8 @@ class PLL_Upgrade {
 	 * Dismiss the wizard notice for existing sites
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	protected function upgrade_2_7() {
 		$strings = get_option( 'polylang_wpml_strings' );
@@ -175,6 +187,8 @@ class PLL_Upgrade {
 	 * - bug of flags url returning html fixed in 2.8.1
 	 *
 	 * @since 2.8.1
+	 *
+	 * @return void
 	 */
 	protected function upgrade_2_8_1() {
 		delete_transient( 'pll_languages_list' );

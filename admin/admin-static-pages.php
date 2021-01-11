@@ -71,6 +71,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @param string $post_type Current post type
 	 * @param object $post      Current post
+	 * @return void
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
 		if ( 'page' === $post_type ) {
@@ -112,6 +113,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @param int    $post_id      Not used
 	 * @param object $post         Not used
 	 * @param array  $translations
+	 * @return void
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
 		if ( in_array( $this->page_on_front, $translations ) ) {
@@ -141,6 +143,8 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * The notice is not dismissible and displayed on the Languages pages and the list of pages.
 	 *
 	 * @since 2.6
+	 *
+	 * @return void
 	 */
 	public function notice_must_translate() {
 		$screen = get_current_screen();

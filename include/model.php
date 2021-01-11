@@ -160,6 +160,7 @@ class PLL_Model {
 	 *
 	 * @param int    $term     not used
 	 * @param string $taxonomy taxonomy name
+	 * @return void
 	 */
 	public function clean_languages_cache( $term = 0, $taxonomy = null ) {
 		if ( empty( $taxonomy ) || 'language' == $taxonomy ) {
@@ -400,6 +401,7 @@ class PLL_Model {
 	 * @since 1.2
 	 *
 	 * @param object|string|int $lang language
+	 * @return void
 	 */
 	public function create_default_category( $lang ) {
 		$lang = $this->get_language( $lang );

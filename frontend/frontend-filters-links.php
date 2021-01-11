@@ -195,6 +195,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * Outputs references to translated pages ( if exists ) in the html head section
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function wp_head() {
 		// Don't output anything on paged archives: see https://wordpress.org/support/topic/hreflang-on-page2

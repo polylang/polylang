@@ -48,6 +48,7 @@ class PLL_Links {
 	 *
 	 * @param PLL_Language|string $language  The language.
 	 * @param bool                $is_search Optional, whether we need the home url for a search form, defaults to false.
+	 * @return string
 	 */
 	public function get_home_url( $language, $is_search = false ) {
 		$language = is_object( $language ) ? $language : $this->model->get_language( $language );

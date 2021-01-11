@@ -89,6 +89,7 @@ class PLL_T15S {
 	 * @since 2.6
 	 *
 	 * @param bool|array $value The transient value.
+	 * @return bool|array
 	 */
 	public function site_transient_update_plugins( $value ) {
 		if ( ! $value ) {
@@ -132,6 +133,8 @@ class PLL_T15S {
 	 * Registers actions for clearing translation caches.
 	 *
 	 * @since 2.6
+	 *
+	 * @return void
 	 */
 	public static function register_clean_translations_cache() {
 		add_action( 'set_site_transient_update_plugins', array( __CLASS__, 'clean_translations_cache' ) );
@@ -142,6 +145,8 @@ class PLL_T15S {
 	 * Clears existing translation cache.
 	 *
 	 * @since 2.6
+	 *
+	 * @return void
 	 */
 	public static function clean_translations_cache() {
 		$translations = get_site_transient( self::TRANSIENT_KEY_PLUGIN );

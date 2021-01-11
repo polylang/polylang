@@ -15,6 +15,8 @@ class PLL_Lingotek {
 	 * Init
 	 *
 	 * @since 1.7.7
+	 *
+	 * @return void
 	 */
 	public function init() {
 		// The Lingotek tab
@@ -71,6 +73,8 @@ class PLL_Lingotek {
 	 * Displays the content in the Lingotek tab
 	 *
 	 * @since 1.7.7
+	 *
+	 * @return void
 	 */
 	public function display_tab() {
 		PLL_Admin_Notices::dismiss( 'lingotek' );
@@ -154,6 +158,8 @@ class PLL_Lingotek {
 	 * Styles the content of the Lingotek tab
 	 *
 	 * @since 1.7.7
+	 *
+	 * @return void
 	 */
 	public function print_css() {
 		?>
@@ -233,6 +239,7 @@ class PLL_Lingotek {
 	 * @param array  $list
 	 * @param array  $links
 	 * @param string $img
+	 * @return void
 	 */
 	protected function box( $title, $desc, $list, $links, $img ) {
 		?>

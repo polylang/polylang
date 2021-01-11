@@ -103,6 +103,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * Adds the link to the languages panel in the WordPress admin menu
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function add_menus() {
 		global $admin_page_hooks;
@@ -144,6 +146,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * Setup js scripts & css styles ( only on the relevant pages )
 	 *
 	 * @since 0.6
+	 *
+	 * @return void
 	 */
 	public function admin_enqueue_scripts() {
 		$screen = get_current_screen();
@@ -198,6 +202,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * Enqueue scripts to the WP Customizer.
 	 *
 	 * @since 2.4.0
+	 *
+	 * @return void
 	 */
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
@@ -211,6 +217,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * Localize scripts.
 	 *
 	 * @since 2.4.0
+	 *
+	 * @return void
 	 */
 	public function localize_scripts() {
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
@@ -237,6 +245,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * see: https://wordpress.org/support/topic/invalid-url-during-wordpress-new-dashboard-widget-operation
 	 *
 	 * @since 1.4
+	 *
+	 * @return void
 	 */
 	public function admin_print_footer_scripts() {
 		global $post_ID, $tag_ID;
@@ -292,6 +302,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * Sets the admin current language, used to filter the content
 	 *
 	 * @since 2.0
+	 *
+	 * @return void
 	 */
 	public function set_current_language() {
 		$this->curlang = $this->filter_lang;
@@ -337,6 +349,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * Defines the backend language and the admin language filter based on user preferences
 	 *
 	 * @since 1.2.3
+	 *
+	 * @return void
 	 */
 	public function init_user() {
 		// Language for admin language filter: may be empty
@@ -392,6 +406,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @since 0.9
 	 *
 	 * @param object $wp_admin_bar
+	 * @return void
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
 		$all_item = (object) array(

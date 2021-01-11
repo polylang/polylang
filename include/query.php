@@ -78,6 +78,7 @@ class PLL_Query {
 	 * @since 2.2
 	 *
 	 * @param object $lang
+	 * @return void
 	 */
 	public function set_language( $lang ) {
 		// Defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
@@ -113,6 +114,7 @@ class PLL_Query {
 	 * @since 2.2
 	 *
 	 * @param object $lang Language
+	 * @return void
 	 */
 	public function filter_query( $lang ) {
 		$qvars = &$this->query->query_vars;

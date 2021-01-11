@@ -43,6 +43,8 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	 * Setups actions and filters.
 	 *
 	 * @since 2.8
+	 *
+	 * @return void
 	 */
 	public function init() {
 		parent::init();

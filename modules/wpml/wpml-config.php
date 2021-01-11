@@ -54,6 +54,8 @@ class PLL_WPML_Config {
 	 * Finds the wpml-config.xml files to parse and setup filters
 	 *
 	 * @since 1.0
+	 *
+	 * @return void
 	 */
 	public function init() {
 		$this->xmls = array();
@@ -210,6 +212,7 @@ class PLL_WPML_Config {
 	 * @param string $context The group in which the strings will be registered.
 	 * @param string $name    Option name.
 	 * @param object $key     XML node.
+	 * @return void
 	 */
 	protected function register_or_translate_option( $context, $name, $key ) {
 		$option_keys = $this->xml_to_array( $key );

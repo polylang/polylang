@@ -24,6 +24,8 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 	 * Sets the language
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function init() {
 		parent::init();
@@ -39,6 +41,8 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 	 * Finds the language according to information found in the url
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function set_language_from_url() {
 		$host      = str_replace( 'www.', '', wp_parse_url( $this->links_model->home, PHP_URL_HOST ) ); // Remove www. for the comparison

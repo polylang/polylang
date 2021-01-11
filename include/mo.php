@@ -31,6 +31,7 @@ class PLL_MO extends MO {
 	 * @since 1.2
 	 *
 	 * @param object $lang The language in which we want to export strings
+	 * @return void
 	 */
 	public function export_to_db( $lang ) {
 		$this->add_entry( $this->make_entry( '', '' ) ); // Empty string translation, just in case
@@ -63,6 +64,7 @@ class PLL_MO extends MO {
 	 * @since 1.2
 	 *
 	 * @param object $lang The language in which we want to get strings
+	 * @return void
 	 */
 	public function import_from_db( $lang ) {
 		if ( ! empty( $lang->mo_id ) ) {
@@ -101,6 +103,8 @@ class PLL_MO extends MO {
 	 * Invalidate the cache when adding a new language
 	 *
 	 * @since 2.0.5
+	 *
+	 * @return void
 	 */
 	public function clean_cache() {
 		wp_cache_delete( 'polylang_mo_ids' );
@@ -112,6 +116,7 @@ class PLL_MO extends MO {
 	 * @since 2.9
 	 *
 	 * @param string $string The source string to remove from the translations.
+	 * @return void
 	 */
 	public function delete_entry( $string ) {
 		unset( $this->entries[ $string ] );

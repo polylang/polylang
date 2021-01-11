@@ -47,6 +47,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @param object $widget   Widget instance
 	 * @param null   $return   Not used
 	 * @param array  $instance Widget settings
+	 * @return void
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
 		$screen = get_current_screen();
@@ -108,6 +109,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @since 0.4
 	 *
 	 * @param int $user_id
+	 * @return void
 	 */
 	public function personal_options_update( $user_id ) {
 		// Biography translations
@@ -127,6 +129,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @since 0.4
 	 *
 	 * @param object $profileuser
+	 * @return void
 	 */
 	public function personal_options( $profileuser ) {
 		foreach ( $this->model->get_languages_list() as $lang ) {

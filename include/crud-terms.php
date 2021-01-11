@@ -79,6 +79,7 @@ class PLL_CRUD_Terms {
 	 *
 	 * @param int    $term_id
 	 * @param string $taxonomy
+	 * @return void
 	 */
 	protected function set_default_language( $term_id, $taxonomy ) {
 		if ( ! $this->model->term->get_language( $term_id ) ) {
@@ -107,6 +108,7 @@ class PLL_CRUD_Terms {
 	 * @param int    $term_id
 	 * @param int    $tt_id    Term taxonomy id
 	 * @param string $taxonomy
+	 * @return void
 	 */
 	public function save_term( $term_id, $tt_id, $taxonomy ) {
 		if ( $this->model->is_translated_taxonomy( $taxonomy ) ) {
@@ -209,6 +211,7 @@ class PLL_CRUD_Terms {
 	 * @since 2.3.2
 	 *
 	 * @param object $query WP_Query object
+	 * @return void
 	 */
 	public function set_tax_query_lang( $query ) {
 		$this->tax_query_lang = isset( $query->query_vars['lang'] ) ? $query->query_vars['lang'] : '';
@@ -219,6 +222,8 @@ class PLL_CRUD_Terms {
 	 * Needed since WP 4.9
 	 *
 	 * @since 2.3.2
+	 *
+	 * @return void
 	 */
 	public function unset_tax_query_lang() {
 		unset( $this->tax_query_lang );
@@ -231,6 +236,7 @@ class PLL_CRUD_Terms {
 	 * @since 0.1
 	 *
 	 * @param int $term_id
+	 * @return void
 	 */
 	public function delete_term( $term_id ) {
 		$this->model->term->delete_translation( $term_id );

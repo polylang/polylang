@@ -44,6 +44,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @param int               $post_id post id
 	 * @param int|string|object $lang    language ( term_id or slug or object )
+	 * @return void
 	 */
 	public function set_language( $post_id, $lang ) {
 		$old_lang = $this->get_language( $post_id );
@@ -74,6 +75,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $id post id
+	 * @return void
 	 */
 	public function delete_translation( $id ) {
 		parent::delete_translation( $id );
@@ -100,6 +102,8 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * Register the language taxonomy
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function register_taxonomy() {
 		register_taxonomy(
@@ -128,6 +132,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @since 1.2
 	 *
 	 * @param string $post_type post type name
+	 * @return void
 	 */
 	public function registered_post_type( $post_type ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
@@ -144,6 +149,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @since 1.8
 	 *
 	 * @param WP_Query $query Reference to the query object.
+	 * @return void
 	 */
 	public function pre_get_posts( $query ) {
 		if ( ! empty( $query->query['post_type'] ) && $this->model->is_translated_post_type( $query->query['post_type'] ) ) {

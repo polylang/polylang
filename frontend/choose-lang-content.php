@@ -15,6 +15,8 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 * Defers the language choice to the 'wp' action (when the content is known)
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function init() {
 		parent::init();
@@ -34,6 +36,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 * @since 1.2
 	 *
 	 * @param object $curlang current language
+	 * @return void
 	 */
 	protected function set_language( $curlang ) {
 		parent::set_language( $curlang );
@@ -87,6 +90,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 * @since 1.2
 	 *
 	 * @param object $query instance of WP_Query
+	 * @return void
 	 */
 	public function parse_main_query( $query ) {
 		if ( empty( $GLOBALS['wp_the_query'] ) || $query !== $GLOBALS['wp_the_query'] ) {
@@ -122,6 +126,8 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 * Sets the language from content
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function wp() {
 		// Nothing to do if the language has already been set ( although normally the filter has been removed )
@@ -136,7 +142,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 * @since 0.9
 	 *
 	 * @param object|bool $lang Language found in get_language_from_content
-	 * @return object Language
+	 * @return PLL_Language
 	 */
 	public function pll_get_current_language( $lang ) {
 		return ! $lang ? $this->get_preferred_language() : $lang;

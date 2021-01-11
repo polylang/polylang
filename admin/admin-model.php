@@ -83,6 +83,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @since 1.2
 	 *
 	 * @param int $lang_id Language term_id.
+	 * @return bool
 	 */
 	public function delete_language( $lang_id ) {
 		$lang = $this->get_language( (int) $lang_id );
@@ -311,6 +312,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @param string              $type Either 'post' or 'term'.
 	 * @param int[]               $ids  Array of post ids or term ids.
 	 * @param PLL_Language|string $lang Language to assign to the posts or terms.
+	 * @return void
 	 */
 	public function set_language_in_mass( $type, $ids, $lang ) {
 		global $wpdb;
@@ -353,6 +355,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 *
 	 * @param string $type         Either 'post' or 'term'
 	 * @param array  $translations Array of translations arrays.
+	 * @return void
 	 */
 	public function set_translation_in_mass( $type, $translations ) {
 		global $wpdb;
@@ -500,6 +503,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 *
 	 * @param string $old_slug The old language slug.
 	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
+	 * @return void
 	 */
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
@@ -574,6 +578,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @since 1.8
 	 *
 	 * @param string $slug New language slug.
+	 * @return void
 	 */
 	public function update_default_lang( $slug ) {
 		// The nav menus stored in theme locations should be in the default language

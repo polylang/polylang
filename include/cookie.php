@@ -55,6 +55,7 @@ class PLL_Cookie {
 	 *   @type bool   $httponly Should the cookie accessed only over http protocol? Defaults to false.
 	 *   @type string $samesite Either 'Strict', 'Lax' or 'None', defaults to 'Lax'.
 	 * }
+	 * @return void
 	 */
 	public static function set( $lang, $args = array() ) {
 		$args = self::parse_args( $args );

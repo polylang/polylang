@@ -59,6 +59,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * Initializes the modules
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function register_settings_modules() {
 		$modules = array();
@@ -93,6 +95,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * Loads the about metabox
 	 *
 	 * @since 0.8
+	 *
+	 * @return void
 	 */
 	public function metabox_about() {
 		include __DIR__ . '/view-about.php';
@@ -102,6 +106,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * Adds screen options and the about box in the languages admin panel
 	 *
 	 * @since 0.9.5
+	 *
+	 * @return void
 	 */
 	public function load_page() {
 		if ( ! defined( 'PLL_DISPLAY_ABOUT' ) || PLL_DISPLAY_ABOUT ) {
@@ -130,6 +136,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * Adds screen options in the strings translations admin panel
 	 *
 	 * @since 2.1
+	 *
+	 * @return void
 	 */
 	public function load_page_strings() {
 		add_screen_option(
@@ -163,6 +171,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 1.9
 	 *
 	 * @param string $action
+	 * @return void
 	 */
 	public function handle_actions( $action ) {
 		switch ( $action ) {
@@ -281,6 +290,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * Also manages user input for these pages
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function languages_page() {
 		switch ( $this->active_tab ) {
@@ -311,6 +322,8 @@ class PLL_Settings extends PLL_Admin_Base {
 
 	/**
 	 * Enqueues scripts and styles
+	 *
+	 * @return void
 	 */
 	public function admin_enqueue_scripts() {
 		parent::admin_enqueue_scripts();
@@ -327,6 +340,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * Displays a notice when there are objects with no language assigned
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function notice_objects_with_no_lang() {
 		if ( ! empty( $this->options['default_lang'] ) && $this->model->get_objects_with_no_lang( 1 ) ) {
@@ -346,6 +361,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @since 1.5
 	 *
 	 * @param array $args query arguments to add to the url
+	 * @return void
 	 */
 	public static function redirect( $args = array() ) {
 		if ( $errors = get_settings_errors() ) {
@@ -361,6 +377,16 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * Get the list of predefined languages
 	 *
 	 * @since 2.3
+	 *
+	 * @return string[] {
+	 *   @type string $code     ISO 639-1 language code.
+	 *   @type string $locale   WordPress locale.
+	 *   @type string $name     Native language name.
+	 *   @type string $dir      Text direction: 'ltr' or 'rtl'.
+	 *   @type string $flag     Flag code, generally the country code.
+	 *   @type string $w3c      W3C locale.
+	 *   @type string $facebook Facebook locale.
+	 * }
 	 */
 	public static function get_predefined_languages() {
 		require_once ABSPATH . 'wp-admin/includes/translation-install.php';

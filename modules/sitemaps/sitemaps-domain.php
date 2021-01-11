@@ -29,6 +29,8 @@ class PLL_Sitemaps_Domain extends PLL_Abstract_Sitemaps {
 	 * Setups actions and filters.
 	 *
 	 * @since 3.0
+	 *
+	 * @return void
 	 */
 	public function init() {
 		parent::init();
@@ -45,7 +47,7 @@ class PLL_Sitemaps_Domain extends PLL_Abstract_Sitemaps {
 	 * @since 2.8
 	 *
 	 * @param array $sitemap_entry Sitemap entry for the post.
-	 * return array
+	 * @return array
 	 */
 	public function index_entry( $sitemap_entry ) {
 		$sitemap_entry['loc'] = $this->links_model->site_url( $sitemap_entry['loc'] );

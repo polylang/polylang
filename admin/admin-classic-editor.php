@@ -66,6 +66,7 @@ class PLL_Admin_Classic_Editor {
 	 * @since 0.1
 	 *
 	 * @param string $post_type Current post type
+	 * @return void
 	 */
 	public function add_meta_boxes( $post_type ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
@@ -87,6 +88,8 @@ class PLL_Admin_Classic_Editor {
 	 * Displays the Languages metabox in the 'Edit Post' and 'Edit Page' panels
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function post_language() {
 		global $post_ID;
@@ -149,6 +152,8 @@ class PLL_Admin_Classic_Editor {
 	 * Ajax response for changing the language in the post metabox
 	 *
 	 * @since 0.2
+	 *
+	 * @return void
 	 */
 	public function post_lang_choice() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
@@ -257,6 +262,8 @@ class PLL_Admin_Classic_Editor {
 	 * Ajax response for input in translation autocomplete input box
 	 *
 	 * @since 1.5
+	 *
+	 * @return void
 	 */
 	public function ajax_posts_not_translated() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
@@ -329,6 +336,7 @@ class PLL_Admin_Classic_Editor {
 	 * @since 2.6
 	 *
 	 * @param object $post Post currently being edited
+	 * @return void
 	 */
 	public function edit_form_top( $post ) {
 		if ( ! $this->model->post->current_user_can_synchronize( $post->ID ) ) {

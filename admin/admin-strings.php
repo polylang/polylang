@@ -32,6 +32,8 @@ class PLL_Admin_Strings {
 	 * Add filters
 	 *
 	 * @since 1.6
+	 *
+	 * @return void
 	 */
 	public static function init() {
 		// default strings translations sanitization
@@ -47,6 +49,7 @@ class PLL_Admin_Strings {
 	 * @param string $string    The string to register
 	 * @param string $context   Optional, the group in which the string is registered, defaults to 'polylang'
 	 * @param bool   $multiline Optional, whether the string table should display a multiline textarea or a single line input, defaults to single line
+	 * @return void
 	 */
 	public static function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
 		if ( $string && is_scalar( $string ) ) {

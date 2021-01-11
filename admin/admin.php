@@ -108,6 +108,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 *
 	 * @param array  $plugin_data Not used
 	 * @param object $r           Plugin update data
+	 * @return void
 	 */
 	public function plugin_update_message( $plugin_data, $r ) {
 		if ( isset( $r->upgrade_notice ) ) {
@@ -120,6 +121,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 *
 	 * @since 1.2
 	 * @since 2.7 instantiate a PLL_Bulk_Translate instance.
+	 * @return void
 	 */
 	public function add_filters() {
 		$this->filters_sanitization = new PLL_Filters_Sanitization( $this->get_locale_for_sanitization() );

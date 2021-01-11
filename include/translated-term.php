@@ -40,6 +40,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @param int               $term_id term id
 	 * @param int|string|object $lang    language ( term_id or slug or object )
+	 * @return void
 	 */
 	public function set_language( $term_id, $lang ) {
 		$term_id = (int) $term_id;
@@ -67,6 +68,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $term_id term id
+	 * @return void
 	 */
 	public function delete_language( $term_id ) {
 		wp_delete_object_term_relationships( $term_id, 'term_language' );
@@ -102,6 +104,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @param array $id           Post id or term id
 	 * @param array $translations An associative array of translations with language code as key and translation id as value
+	 * @return bool
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
 		// Don't do anything if no translations have been added to the group
@@ -121,6 +124,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $id term id
+	 * @return void
 	 */
 	public function delete_translation( $id ) {
 		global $wpdb;
@@ -199,6 +203,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @since 2.0
 	 *
 	 * @param array $ids An array of term IDs.
+	 * @return void
 	 */
 	public function clean_term_cache( $ids ) {
 		clean_object_term_cache( $ids, 'term' );

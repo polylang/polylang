@@ -159,6 +159,8 @@ class PLL_Settings_Module {
 	 * Activates the module
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function activate() {
 		if ( ! empty( $this->active_option ) ) {
@@ -171,6 +173,8 @@ class PLL_Settings_Module {
 	 * Deactivates the module
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function deactivate() {
 		if ( ! empty( $this->active_option ) ) {
@@ -183,6 +187,8 @@ class PLL_Settings_Module {
 	 * Protected method to display a configuration form
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	protected function form() {
 		// Child classes can provide a form
@@ -222,6 +228,8 @@ class PLL_Settings_Module {
 	 * Ajax method to save the options
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function save_options() {
 		check_ajax_referer( 'pll_options', '_pll_nonce' );
