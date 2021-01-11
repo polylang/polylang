@@ -33,37 +33,6 @@ class PLL_Accept_Language {
 	);
 
 	/**
-	 * Parse Accept-Language HTTP header according to IETF BCP 47.
-	 *
-	 * TODO: Add grand-fathered language codes.
-	 *
-	 * @param string $http_header Value of the Accept-Language HTTP Header. Formatted as stated BCP 47 for language tags {@see https://tools.ietf.org/html/bcp47}.
-	 * @return array {
-	 * @since 3.0
-	 */
-	public static function parse_accept_language_header( $http_header ) {
-		$lang_parse = array();
-		// Break up string into pieces ( languages and q factors )
-		$language_pattern = implode( '', self::$subtag_patterns );
-		$quality_pattern = '\s*;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?)';
-		$full_pattern = "/{$language_pattern}(?:{$quality_pattern})?/i";
-
-		preg_match_all(
-			$full_pattern,
-			sanitize_text_field( wp_unslash( $http_header ) ),
-			$lang_parse,
-			PREG_SET_ORDER
-		);
-
-		$accept_langs = array_map(
-			array( self::class, 'from_array' ),
-			$lang_parse
-		);
-
-		return $accept_langs;
-	}
-
-	/**
 	 * PLL_Accept_Language constructor.
 	 *
 	 * @param string[] $subtags With subtag name as keys and subtag values as names.

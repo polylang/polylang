@@ -15,16 +15,47 @@ class PLL_Accept_Languages_Collection {
 	protected $accept_languages = array();
 
 	/**
+	 * Parse Accept-Language HTTP header according to IETF BCP 47.
+	 *
+	 * TODO: Add grand-fathered language codes.
+	 *
+	 * @param string $http_header Value of the Accept-Language HTTP Header. Formatted as stated BCP 47 for language tags {@see https://tools.ietf.org/html/bcp47}.
+	 * @return PLL_Accept_Languages_Collection
+	 * @since 3.0
+	 */
+	public static function from_accept_language_header( $http_header ) {
+		$lang_parse = array();
+		// Break up string into pieces ( languages and q factors )
+		$language_pattern = implode( '', PLL_Accept_Language::$subtag_patterns );
+		$quality_pattern = '\s*;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?)';
+		$full_pattern = "/{$language_pattern}(?:{$quality_pattern})?/i";
+
+		preg_match_all(
+			$full_pattern,
+			sanitize_text_field( wp_unslash( $http_header ) ),
+			$lang_parse,
+			PREG_SET_ORDER
+		);
+
+		return new PLL_Accept_Languages_Collection(
+			array_map(
+				array( PLL_Accept_Language::class, 'from_array' ),
+				$lang_parse
+			)
+		);
+	}
+
+	/**
 	 * PLL_Accept_Languages_Collection constructor.
 	 *
 	 * @param PLL_Accept_Language[] $accept_languages
 	 */
-	public function __construct( $accept_languages ) {
+	public function __construct( $accept_languages = array() ) {
 		$this->accept_languages = $accept_languages;
 	}
 
 	/**
-	 * @return PLL_Accept_Language[]
+	 * Bubble sort ( need a stable sort for Android, so can't use a PHP sort function )
 	 */
 	public function bubble_sort() {
 		$k = $this->accept_languages;
@@ -43,7 +74,6 @@ class PLL_Accept_Languages_Collection {
 				}
 			}
 
-			// Bubble sort ( need a stable sort for Android, so can't use a PHP sort function )
 			if ( $n > 1 ) {
 				for ( $i = 2; $i <= $n; $i++ ) {
 					for ( $j = 0; $j <= $n - 2; $j++ ) {
@@ -67,7 +97,6 @@ class PLL_Accept_Languages_Collection {
 				}
 			);
 		}
-		return $this->accept_languages;
 	}
 
 	/**
@@ -76,7 +105,7 @@ class PLL_Accept_Languages_Collection {
 	 * @param PLL_Language[] $languages
 	 * @return string|false A language slug if there's a match, false otherwise.
 	 */
-	public function find_best_match( $languages ) {
+	public function find_best_match( $languages = array() ) {
 		foreach ( $this->accept_languages as $accept_lang ) {
 			// First loop to match the exact locale
 			foreach ( $languages as $language ) {

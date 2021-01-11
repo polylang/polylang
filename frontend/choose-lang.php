@@ -138,14 +138,12 @@ abstract class PLL_Choose_Lang {
 	 * @return string|bool the preferred language slug or false
 	 */
 	public function get_preferred_browser_language() {
-		$accept_langs = array();
+		$accept_langs = new PLL_Accept_Languages_Collection();
 
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
-			$accept_langs = PLL_Accept_Language::parse_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
+			$accept_langs = PLL_Accept_Languages_Collection::from_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
 
-			$this->accept_langs = new PLL_Accept_Languages_Collection( $accept_langs );
-
-			$accept_langs = $this->accept_langs->bubble_sort();
+			$accept_langs->bubble_sort();
 		}
 
 		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
@@ -159,7 +157,7 @@ abstract class PLL_Choose_Lang {
 		 */
 		$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
 
-		return $this->accept_langs->find_best_match( $languages );
+		return $accept_langs->find_best_match( $languages );
 	}
 
 	/**
