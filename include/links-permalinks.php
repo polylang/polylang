@@ -137,6 +137,8 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 * Prepares rewrite rules filters
 	 *
 	 * @since 1.6
+	 *
+	 * @return string[]
 	 */
 	public function get_rewrite_rules_filters() {
 		// Make sure we have the right post types and taxonomies

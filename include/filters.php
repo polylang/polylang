@@ -88,6 +88,8 @@ class PLL_Filters {
 	 * Deletes the cache for multilingual sticky posts.
 	 *
 	 * @since 2.8.4
+	 *
+	 * @return void
 	 */
 	public function delete_sticky_posts_cache() {
 		wp_cache_delete( 'sticky_posts', 'options' );
@@ -125,6 +127,7 @@ class PLL_Filters {
 	 * @since 2.0
 	 *
 	 * @param object $query
+	 * @return void
 	 */
 	public function parse_comment_query( $query ) {
 		if ( $lang = $this->get_comments_queried_language( $query ) ) {
@@ -357,7 +360,7 @@ class PLL_Filters {
 	 * @since 2.3.6
 	 *
 	 * @param array $exporters Personal data exporters
-	 * @retun array
+	 * @return array
 	 */
 	public function register_personal_data_exporter( $exporters ) {
 		$exporters[] = array(

@@ -65,6 +65,8 @@ class PLL_Settings_Share_Slug extends PLL_Settings_Module {
 	 * as sharing slugs is not possible when the language is set from the content
 	 *
 	 * @since 1.9
+	 *
+	 * @return void
 	 */
 	public function print_js() {
 		wp_enqueue_script( 'jquery' );

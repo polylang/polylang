@@ -283,6 +283,8 @@ class PLL_Language {
 	 * Sets flag_url and flag properties.
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function set_flag() {
 		$flags = array( 'flag' => self::get_flag_informations( $this->flag_code ) );
@@ -367,6 +369,7 @@ class PLL_Language {
 	 * @param array  $flag  Flag properties: src, width and height.
 	 * @param string $title Optional title attribute.
 	 * @param string $alt   Optional alt attribute.
+	 * @return string
 	 */
 	public static function get_flag_html( $flag, $title = '', $alt = '' ) {
 		if ( empty( $flag['src'] ) ) {
@@ -406,6 +409,8 @@ class PLL_Language {
 	 * Returns the html of the custom flag if any, or the default flag otherwise.
 	 *
 	 * @since 2.8
+	 *
+	 * @return string
 	 */
 	public function get_display_flag() {
 		return empty( $this->custom_flag ) ? $this->flag : $this->custom_flag;
@@ -415,6 +420,8 @@ class PLL_Language {
 	 * Returns the url of the custom flag if any, or the default flag otherwise.
 	 *
 	 * @since 2.8
+	 *
+	 * @return string
 	 */
 	public function get_display_flag_url() {
 		return empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
@@ -424,6 +431,8 @@ class PLL_Language {
 	 * Updates post and term count.
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function update_count() {
 		wp_update_term_count( $this->term_taxonomy_id, 'language' ); // Posts count.
@@ -437,6 +446,7 @@ class PLL_Language {
 	 *
 	 * @param string $search_url Home url to use in search forms.
 	 * @param string $home_url   Home url.
+	 * @return void
 	 */
 	public function set_home_url( $search_url, $home_url ) {
 		$this->search_url = $search_url;
@@ -449,6 +459,8 @@ class PLL_Language {
 	 * This can't be cached across pages.
 	 *
 	 * @since 2.8
+	 *
+	 * @return void
 	 */
 	public function set_url_scheme() {
 		$this->home_url = set_url_scheme( $this->home_url );

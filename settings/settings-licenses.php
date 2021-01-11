@@ -122,6 +122,8 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 	 * Ajax method to deactivate a license
 	 *
 	 * @since 1.9
+	 *
+	 * @return void
 	 */
 	public function deactivate_license() {
 		check_ajax_referer( 'pll_options', '_pll_nonce' );

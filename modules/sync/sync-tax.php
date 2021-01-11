@@ -126,6 +126,7 @@ class PLL_Sync_Tax {
 	 * @param array  $terms     An array of object terms.
 	 * @param string $taxonomy  Taxonomy slug.
 	 * @param bool   $append    Whether to append new terms to the old terms.
+	 * @return void
 	 */
 	protected function copy_object_terms( $object_id, $tr_id, $lang, $terms, $taxonomy, $append ) {
 		$to_copy = $this->get_taxonomies_to_copy( true, $object_id, $tr_id, $lang );
@@ -160,6 +161,7 @@ class PLL_Sync_Tax {
 	 * @param array  $tt_ids    An array of term taxonomy IDs.
 	 * @param string $taxonomy  Taxonomy slug.
 	 * @param bool   $append    Whether to append new terms to the old terms.
+	 * @return void
 	 */
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append ) {
 		static $avoid_recursion = false;
@@ -205,6 +207,7 @@ class PLL_Sync_Tax {
 	 * @param int    $from  Id of the source post
 	 * @param int    $to    Id of the target post
 	 * @param string $lang  Language slug
+	 * @return void
 	 */
 	public function copy( $from, $to, $lang ) {
 		remove_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 6 );
@@ -238,6 +241,7 @@ class PLL_Sync_Tax {
 	 * @param int    $term_id      Id of the created term
 	 * @param string $taxonomy     Taxonomy
 	 * @param array  $translations Ids of the translations of the created term
+	 * @return void
 	 */
 	public function create_term( $term_id, $taxonomy, $translations ) {
 		if ( doing_action( 'create_term' ) && in_array( $taxonomy, $this->get_taxonomies_to_copy( true ) ) ) {
@@ -286,6 +290,8 @@ class PLL_Sync_Tax {
 	 * to avoid translated terms to be removed from translated posts
 	 *
 	 * @since 2.3.2
+	 *
+	 * @return void
 	 */
 	public function pre_delete_term() {
 		remove_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
@@ -295,6 +301,8 @@ class PLL_Sync_Tax {
 	 * Re-activate the synchronization of terms after a term is deleted
 	 *
 	 * @since 2.3.2
+	 *
+	 * @return void
 	 */
 	public function delete_term() {
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );

@@ -15,6 +15,8 @@ abstract class PLL_Abstract_Sitemaps {
 	 * Setups actions and filters.
 	 *
 	 * @since 2.8
+	 *
+	 * @return void
 	 */
 	public function init() {
 		add_filter( 'pll_home_url_white_list', array( $this, 'home_url_white_list' ) );

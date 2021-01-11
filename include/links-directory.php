@@ -41,6 +41,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * Called only at first object creation to avoid duplicating filters when switching blog
 	 *
 	 * @since 1.6
+	 *
+	 * @return void
 	 */
 	public function init() {
 		if ( did_action( 'setup_theme' ) ) {
@@ -149,6 +151,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * Optionally removes 'language' in permalinks so that we get http://www.myblog/en/ instead of http://www.myblog/language/en/
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function add_permastruct() {
 		// Language information always in front of the uri ( 'with_front' => false )

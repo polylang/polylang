@@ -235,6 +235,8 @@ class PLL_Table_String extends WP_List_Table {
 	 * Prepares the list of items for displaying
 	 *
 	 * @since 0.6
+	 *
+	 * @return void
 	 */
 	public function prepare_items() {
 		// Is admin language filter active?
@@ -329,6 +331,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @since 1.1
 	 *
 	 * @param string $which only 'top' is supported
+	 * @return void
 	 */
 	public function extra_tablenav( $which ) {
 		if ( 'top' !== $which ) {
@@ -367,6 +370,8 @@ class PLL_Table_String extends WP_List_Table {
 	 * Optionaly clean the DB
 	 *
 	 * @since 1.9
+	 *
+	 * @return void
 	 */
 	public function save_translations() {
 		check_admin_referer( 'string-translation', '_wpnonce_string-translation' );

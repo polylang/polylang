@@ -67,6 +67,8 @@ class PLL_WPML_Compat {
 	 * in 'setup_theme' by Polylang ( based on user info ) and 'plugins_loaded' by WPML ( based on cookie )
 	 *
 	 * @since 0.9.5
+	 *
+	 * @return void
 	 */
 	public function define_constants() {
 		if ( ! empty( PLL()->curlang ) ) {
@@ -98,6 +100,7 @@ class PLL_WPML_Compat {
 	 * @param string $context The group in which the string is registered.
 	 * @param string $name    A unique name for the string.
 	 * @param string $string  The string to register.
+	 * @return void
 	 */
 	public function register_string( $context, $name, $string ) {
 		// If a string has already been registered with the same name and context, let's replace it.
@@ -133,6 +136,7 @@ class PLL_WPML_Compat {
 	 *
 	 * @param string $context The group in which the string is registered.
 	 * @param string $name    A unique name for the string.
+	 * @return void
 	 */
 	public function unregister_string( $context, $name ) {
 		$key = md5( "$context | $name" );

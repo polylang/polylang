@@ -139,6 +139,7 @@ class PLL_Translate_Option {
 	 * @param string     $option  Option name.
 	 * @param array      $values  Option value.
 	 * @param array|bool $key     Array of option keys to translate.
+	 * @return void
 	 */
 	protected function register_string_recursive( $context, $option, $values, $key ) {
 		if ( is_object( $values ) ) {
@@ -187,6 +188,7 @@ class PLL_Translate_Option {
 	 * @param mixed  $value     The new, unserialized option value.
 	 * @param mixed  $old_value The old (filtered) option value.
 	 * @param string $name      Option name.
+	 * @return mixed
 	 */
 	public function pre_update_option( $value, $old_value, $name ) {
 		// Stores the unfiltered old option value before it is updated in DB.
@@ -215,6 +217,8 @@ class PLL_Translate_Option {
 	 * the new strings with the old translations.
 	 *
 	 * @since 2.9
+	 *
+	 * @return void
 	 */
 	public function update_option() {
 		$curlang = pll_current_language();

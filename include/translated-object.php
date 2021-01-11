@@ -77,6 +77,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param int               $id   Object id.
 	 * @param int|string|object $lang Language ( term_id or slug or object ).
+	 * @return void
 	 */
 	abstract public function set_language( $id, $lang );
 
@@ -145,6 +146,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param array $id           Object id ( typically a post_id or term_id ).
 	 * @param array $translations An associative array of translations with language code as key and translation id as value.
+	 * @return bool
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
 		// Don't do anything if no translations have been added to the group.
@@ -159,6 +161,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
 	 * @param array $translations An associative array of translations with language code as key and translation id as value.
+	 * @return void
 	 */
 	public function save_translations( $id, $translations ) {
 		$id = (int) $id;
@@ -214,6 +217,7 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $id Object id ( typically a post_id or term_id ).
+	 * @return void
 	 */
 	public function delete_translation( $id ) {
 		$id = (int) $id;

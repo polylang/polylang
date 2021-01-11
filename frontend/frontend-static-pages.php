@@ -51,6 +51,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * Init the filters
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function pll_language_defined() {
 		// Translates our page on front and page for posts properties
@@ -71,6 +73,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * Translates the page_id query var when the site root page is requested
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function pll_home_requested() {
 		set_query_var( 'page_id', $this->curlang->page_on_front );

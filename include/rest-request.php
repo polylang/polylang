@@ -39,6 +39,8 @@ class PLL_REST_Request extends PLL_Base {
 	 * Setup filters.
 	 *
 	 * @since 2.6
+	 *
+	 * @return void
 	 */
 	public function init() {
 		parent::init();

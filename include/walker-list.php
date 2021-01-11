@@ -28,6 +28,7 @@ class PLL_Walker_List extends Walker {
 	 * @param int    $depth             Depth of the item.
 	 * @param array  $args              An array of additional arguments.
 	 * @param int    $current_object_id ID of the current item.
+	 * @return void
 	 */
 	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$output .= sprintf(
@@ -53,6 +54,7 @@ class PLL_Walker_List extends Walker {
 	 * @param int    $depth             Depth of current element.
 	 * @param array  $args              An array of arguments.
 	 * @param string $output            Passed by reference. Used to append additional content.
+	 * @return void
 	 */
 	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
 		$element = (object) $element; // Make sure we have an object

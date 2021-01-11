@@ -139,6 +139,7 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @param string $column  Column name
 	 * @param int    $post_id
+	 * @return void
 	 */
 	public function post_column( $column, $post_id ) {
 		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
@@ -248,6 +249,7 @@ class PLL_Admin_Filters_Columns {
 	 * @param string $out
 	 * @param string $column  Column name
 	 * @param int    $term_id
+	 * @return string
 	 */
 	public function term_column( $out, $column, $term_id ) {
 		$inline = wp_doing_ajax() && isset( $_REQUEST['action'], $_POST['inline_lang_choice'] ) && 'inline-save-tax' === $_REQUEST['action']; // phpcs:ignore WordPress.Security.NonceVerification
@@ -331,6 +333,8 @@ class PLL_Admin_Filters_Columns {
 	 * Update rows of translated posts when the language is modified in quick edit
 	 *
 	 * @since 1.7
+	 *
+	 * @return void
 	 */
 	public function ajax_update_post_rows() {
 		check_ajax_referer( 'inlineeditnonce', '_pll_nonce' );
@@ -373,6 +377,8 @@ class PLL_Admin_Filters_Columns {
 	 * Update rows of translated terms when adding / deleting a translation or when the language is modified in quick edit
 	 *
 	 * @since 1.7
+	 *
+	 * @return void
 	 */
 	public function ajax_update_term_rows() {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );

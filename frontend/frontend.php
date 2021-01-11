@@ -111,6 +111,8 @@ class PLL_Frontend extends PLL_Base {
 	 * Setups filters and nav menus once the language has been defined
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function pll_language_defined() {
 		// Filters
@@ -130,6 +132,7 @@ class PLL_Frontend extends PLL_Base {
 	 * @since 1.8
 	 *
 	 * @param object $query WP_Query object
+	 * @return void
 	 */
 	public function parse_tax_query( $query ) {
 		$pll_query = new PLL_Query( $query, $this->model );
@@ -146,6 +149,7 @@ class PLL_Frontend extends PLL_Base {
 	 * @since 1.2
 	 *
 	 * @param object $query WP_Query object
+	 * @return void
 	 */
 	public function parse_query( $query ) {
 		$qv = $query->query_vars;
@@ -186,6 +190,8 @@ class PLL_Frontend extends PLL_Base {
 	 * Auto translate posts and terms ids
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function auto_translate() {
 		$this->auto_translate = new PLL_Frontend_Auto_Translate( $this );
@@ -199,6 +205,7 @@ class PLL_Frontend extends PLL_Base {
 	 *
 	 * @param int $new_blog_id  New blog ID.
 	 * @param int $prev_blog_id Previous blog ID.
+	 * @return void
 	 */
 	public function switch_blog( $new_blog_id, $prev_blog_id ) {
 		parent::switch_blog( $new_blog_id, $prev_blog_id );

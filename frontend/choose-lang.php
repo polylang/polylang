@@ -56,6 +56,8 @@ abstract class PLL_Choose_Lang {
 	 * Any child class must call this method if it overrides it
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function init() {
 		if ( Polylang::is_ajax_on_front() || ! wp_using_themes() ) {
@@ -75,6 +77,7 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.2
 	 *
 	 * @param object $curlang current language
+	 * @return void
 	 */
 	protected function set_language( $curlang ) {
 		// Don't set the language a second time
@@ -105,6 +108,8 @@ abstract class PLL_Choose_Lang {
 	 * Setting PLL_COOKIE to false will disable cookie although it will break some functionalities
 	 *
 	 * @since 1.5
+	 *
+	 * @return void
 	 */
 	public function maybe_setcookie() {
 		// Don't set cookie in javascript when a cache plugin is active.
@@ -244,6 +249,8 @@ abstract class PLL_Choose_Lang {
 	 * Sets the language when home page is requested
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	protected function home_language() {
 		// Test referer in case PLL_COOKIE is set to false. Since WP 3.6.1, wp_get_referer() validates the host which is exactly what we want
@@ -260,6 +267,8 @@ abstract class PLL_Choose_Lang {
 	 * Performs a redirection to the home page in the current language if needed
 	 *
 	 * @since 0.9
+	 *
+	 * @return void
 	 */
 	public function home_requested() {
 		// We are already on the right page
@@ -308,6 +317,7 @@ abstract class PLL_Choose_Lang {
 	 * @since 0.8.4
 	 *
 	 * @param int $post_id the post being commented
+	 * @return void
 	 */
 	public function pre_comment_on_post( $post_id ) {
 		$this->set_language( $this->model->post->get_language( $post_id ) );
@@ -320,6 +330,7 @@ abstract class PLL_Choose_Lang {
 	 * @since 1.2
 	 *
 	 * @param object $query instance of WP_Query
+	 * @return void
 	 */
 	public function parse_main_query( $query ) {
 		if ( ! $query->is_main_query() ) {
@@ -356,6 +367,7 @@ abstract class PLL_Choose_Lang {
 	 * @since 2.2
 	 *
 	 * @param object $query
+	 * @return void
 	 */
 	protected function set_curlang_in_query( &$query ) {
 		$pll_query = new PLL_Query( $query, $this->model );

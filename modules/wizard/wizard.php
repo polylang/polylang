@@ -80,8 +80,10 @@ class PLL_Wizard {
 	/**
 	 * Save an activation transient when Polylang is activating to redirect to the wizard
 	 *
-	 * @param bool $network_wide if activated for all sites in the network.
 	 * @since 2.7
+	 *
+	 * @param bool $network_wide if activated for all sites in the network.
+	 * @return void
 	 */
 	public static function start_wizard( $network_wide ) {
 		$options = get_option( 'polylang' );
@@ -96,6 +98,8 @@ class PLL_Wizard {
 	 * Redirect to the wizard depending on the context
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function redirect_to_wizard() {
 		if ( get_transient( 'pll_activation_redirect' ) ) {
@@ -124,9 +128,10 @@ class PLL_Wizard {
 	/**
 	 * Add an admin Polylang submenu to access the wizard
 	 *
+	 * @since 2.7
+	 *
 	 * @param array $tabs Submenus list.
 	 * @return array Submenus list updated.
-	 * @since 2.7
 	 */
 	public function settings_tabs( $tabs ) {
 		$tabs['wizard'] = esc_html__( 'Setup', 'polylang' );
@@ -136,9 +141,10 @@ class PLL_Wizard {
 	/**
 	 * Return if the media step is displayable
 	 *
+	 * @since 2.7
+	 *
 	 * @param array $languages List of language objects.
 	 * @return bool
-	 * @since 2.7
 	 */
 	public function is_media_step_displayable( $languages ) {
 		$media = array();
@@ -161,8 +167,9 @@ class PLL_Wizard {
 	/**
 	 * Check if the licenses step is displayable
 	 *
-	 * @return bool
 	 * @since 2.7
+	 *
+	 * @return bool
 	 */
 	public function is_licenses_step_displayable() {
 		$licenses = apply_filters( 'pll_settings_licenses', array() );
@@ -173,6 +180,8 @@ class PLL_Wizard {
 	 * Setup the wizard page
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function setup_wizard_page() {
 
@@ -220,10 +229,11 @@ class PLL_Wizard {
 	/**
 	 * Adds some admin screens where to display the wizard notice
 	 *
+	 * @since 2.7
+	 *
 	 * @param bool   $can_display_notice Whether the notice can be displayed.
 	 * @param string $notice             The notice name.
 	 * @return bool
-	 * @since 2.7
 	 */
 	public function can_display_notice( $can_display_notice, $notice ) {
 		if ( ! $can_display_notice && 'wizard' === $notice ) {
@@ -244,6 +254,8 @@ class PLL_Wizard {
 	 * Return html code of the wizard notice
 	 *
 	 * @since 2.7
+	 *
+	 * @return string
 	 */
 	public function wizard_notice() {
 		ob_start();
@@ -255,6 +267,8 @@ class PLL_Wizard {
 	 * Display the wizard page
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function display_wizard_page() {
 		set_current_screen();
@@ -265,6 +279,8 @@ class PLL_Wizard {
 	 * Enqueue scripts and styles for the wizard
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $this->get_suffix() . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
@@ -276,9 +292,10 @@ class PLL_Wizard {
 	/**
 	 * Get the suffix to enqueue non minified files in a Debug context
 	 *
+	 * @since 2.7
+	 *
 	 * @return string Empty when SCRIPT_DEBUG equal to true
 	 *                otherwise .min
-	 * @since 2.7
 	 */
 	public function get_suffix() {
 		return defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
@@ -287,10 +304,11 @@ class PLL_Wizard {
 	/**
 	 * Get the URL for the step's screen.
 	 *
+	 * @since 2.7
+	 *
 	 * @param string $step  slug (default: current step).
 	 * @return string       URL for the step if it exists.
 	 *                      Empty string on failure.
-	 * @since 2.7
 	 */
 	public function get_step_link( $step = '' ) {
 		if ( ! $step ) {
@@ -310,11 +328,12 @@ class PLL_Wizard {
 	/**
 	 * Get the URL for the next step's screen.
 	 *
+	 * @since 2.7
+	 *
 	 * @param string $step  slug (default: current step).
 	 * @return string       URL for next step if a next step exists.
 	 *                      Admin URL if it's the last step.
 	 *                      Empty string on failure.
-	 * @since 2.7
 	 */
 	public function get_next_step_link( $step = '' ) {
 		if ( ! $step ) {
@@ -337,9 +356,10 @@ class PLL_Wizard {
 	/**
 	 * Add licenses step to the wizard
 	 *
+	 * @since 2.7
+	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
-	 * @since 2.7
 	 */
 	public function add_step_licenses( $steps ) {
 		// Add ajax action on deactivate button in licenses step.
@@ -364,6 +384,8 @@ class PLL_Wizard {
 	 * Display the languages step form
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function display_step_licenses() {
 		include __DIR__ . '/view-wizard-step-licenses.php';
@@ -373,6 +395,8 @@ class PLL_Wizard {
 	 * Execute the languages step
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function save_step_licenses() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -403,6 +427,8 @@ class PLL_Wizard {
 	 * Ajax method to deactivate a license
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function deactivate_license() {
 		check_ajax_referer( 'pll-wizard', '_pll_nonce' );
@@ -431,9 +457,10 @@ class PLL_Wizard {
 	/**
 	 * Add languages step to the wizard
 	 *
+	 * @since 2.7
+	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
-	 * @since 2.7
 	 */
 	public function add_step_languages( $steps ) {
 		wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
@@ -476,6 +503,8 @@ class PLL_Wizard {
 	 * Display the languages step form
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function display_step_languages() {
 		include __DIR__ . '/view-wizard-step-languages.php';
@@ -485,6 +514,8 @@ class PLL_Wizard {
 	 * Execute the languages step
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function save_step_languages() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -558,12 +589,12 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Add media step to the wizard
-	 * Add media step to the wizard
+	 * Add the media step to the wizard.
+	 *
+	 * @since 2.7
 	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
-	 * @since 2.7
 	 */
 	public function add_step_media( $steps ) {
 		$languages = $this->model->get_languages_list();
@@ -584,6 +615,8 @@ class PLL_Wizard {
 	 * Display the media step form
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function display_step_media() {
 		include __DIR__ . '/view-wizard-step-media.php';
@@ -593,6 +626,8 @@ class PLL_Wizard {
 	 * Execute the media step
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function save_step_media() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -610,9 +645,10 @@ class PLL_Wizard {
 	/**
 	 * Add untranslated contents step to the wizard
 	 *
+	 * @since 2.7
+	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
-	 * @since 2.7
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
@@ -634,6 +670,8 @@ class PLL_Wizard {
 	 * Display the untranslated contents step form
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function display_step_untranslated_contents() {
 		include __DIR__ . '/view-wizard-step-untranslated-contents.php';
@@ -643,6 +681,8 @@ class PLL_Wizard {
 	 * Execute the untranslated contents step
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function save_step_untranslated_contents() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -671,9 +711,10 @@ class PLL_Wizard {
 	/**
 	 * Add home page step to the wizard
 	 *
+	 * @since 2.7
+	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
-	 * @since 2.7
 	 */
 	public function add_step_home_page( $steps ) {
 		$languages = $this->model->get_languages_list();
@@ -697,6 +738,8 @@ class PLL_Wizard {
 	 * Display the home page step form
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function display_step_home_page() {
 		include __DIR__ . '/view-wizard-step-home-page.php';
@@ -706,6 +749,8 @@ class PLL_Wizard {
 	 * Execute the home page step
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function save_step_home_page() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
@@ -744,6 +789,7 @@ class PLL_Wizard {
 	 * @param string $home_page_title        home page title if it's defined, 'Homepage' otherwise.
 	 * @param string $home_page_language     slug of the home page if it's defined, false otherwise.
 	 * @param array  $untranslated_languages array of languages which needs to have a home page translated.
+	 * @return void
 	 */
 	public function create_home_page_translations( $default_language, $home_page, $home_page_title, $home_page_language, $untranslated_languages ) {
 		$translations = $this->model->post->get_translations( $home_page );
@@ -766,9 +812,10 @@ class PLL_Wizard {
 	/**
 	 * Add last step to the wizard
 	 *
+	 * @since 2.7
+	 *
 	 * @param array $steps List of steps.
 	 * @return array List of steps updated.
-	 * @since 2.7
 	 */
 	public function add_step_last( $steps ) {
 		$steps['last'] = array(
@@ -785,6 +832,8 @@ class PLL_Wizard {
 	 * Display the last step form
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function display_step_last() {
 		// We ran the wizard once. So we can dismiss its notice.
@@ -796,6 +845,8 @@ class PLL_Wizard {
 	 * Execute the last step
 	 *
 	 * @since 2.7
+	 *
+	 * @return void
 	 */
 	public function save_step_last() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );

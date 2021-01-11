@@ -109,6 +109,8 @@ class PLL_License {
 	 * Auto updater
 	 *
 	 * @since 1.9
+	 *
+	 * @return void
 	 */
 	public function auto_updater() {
 		$args = array(
@@ -184,6 +186,7 @@ class PLL_License {
 	 * @since 1.9
 	 *
 	 * @param string $request check_license | activate_license | deactivate_license
+	 * @return void
 	 */
 	private function api_request( $request ) {
 		$licenses = get_option( 'polylang_licenses' );

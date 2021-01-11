@@ -151,6 +151,7 @@ class PLL_Sync {
 	 * @param int    $post_id      post id
 	 * @param object $post         post object
 	 * @param array  $translations post translations
+	 * @return void
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
 		global $wpdb;
@@ -195,6 +196,7 @@ class PLL_Sync {
 	 * @param int    $term_id  Term id.
 	 * @param int    $tt_id    Term taxonomy id, not used.
 	 * @param string $taxonomy Taxonomy name.
+	 * @return void
 	 */
 	public function sync_term_parent( $term_id, $tt_id, $taxonomy ) {
 		global $wpdb;
@@ -224,6 +226,7 @@ class PLL_Sync {
 	 * @since 1.8
 	 *
 	 * @param int $post_id post id
+	 * @return void
 	 */
 	public function edit_attachment( $post_id ) {
 		$this->pll_save_post( $post_id, get_post( $post_id ), $this->model->post->get_translations( $post_id ) );

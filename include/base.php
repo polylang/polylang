@@ -71,6 +71,8 @@ abstract class PLL_Base {
 	 * only when at least one language is defined.
 	 *
 	 * @since 2.6
+	 *
+	 * @return void
 	 */
 	public function init() {
 		if ( $this->model->get_languages_list() ) {
@@ -89,6 +91,8 @@ abstract class PLL_Base {
 	 * Registers our widgets
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function widgets_init() {
 		register_widget( 'PLL_Widget_Languages' );
@@ -107,6 +111,7 @@ abstract class PLL_Base {
 	 * @since 2.1.3 $locale parameter added.
 	 *
 	 * @param string $locale Locale. Defaults to current locale.
+	 * @return void
 	 */
 	public function load_strings_translations( $locale = '' ) {
 		if ( empty( $locale ) ) {
@@ -132,6 +137,7 @@ abstract class PLL_Base {
 	 *
 	 * @param int $new_blog_id  New blog ID.
 	 * @param int $prev_blog_id Previous blog ID.
+	 * @return void
 	 */
 	public function switch_blog( $new_blog_id, $prev_blog_id ) {
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {

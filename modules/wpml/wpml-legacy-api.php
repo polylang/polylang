@@ -246,6 +246,7 @@ if ( ! function_exists( 'icl_register_string' ) ) {
 	 * @param string $context           the group in which the string is registered, defaults to 'polylang'
 	 * @param string $name              a unique name for the string
 	 * @param string $string            the string to register
+	 * @return void
 	 */
 	function icl_register_string( $context, $name, $string ) {
 		PLL_WPML_Compat::instance()->register_string( $context, $name, $string );
@@ -260,6 +261,7 @@ if ( ! function_exists( 'icl_unregister_string' ) ) {
 	 *
 	 * @param string $context the group in which the string is registered, defaults to 'polylang'
 	 * @param string $name    a unique name for the string
+	 * @return void
 	 */
 	function icl_unregister_string( $context, $name ) {
 		PLL_WPML_Compat::instance()->unregister_string( $context, $name );

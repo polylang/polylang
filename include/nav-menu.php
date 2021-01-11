@@ -79,6 +79,8 @@ class PLL_Nav_Menu {
 	 * to do only one time
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function create_nav_menu_locations() {
 		static $once;
@@ -150,6 +152,7 @@ class PLL_Nav_Menu {
 	 * @param string $new_status Transition to this post status.
 	 * @param string $old_status Previous post status.
 	 * @param object $post Post data.
+	 * @return void
 	 */
 	public function auto_add_pages_to_menu( $new_status, $old_status, $post ) {
 		if ( 'publish' != $new_status || 'publish' == $old_status || 'page' != $post->post_type || ! empty( $post->post_parent ) ) {

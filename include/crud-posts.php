@@ -60,6 +60,7 @@ class PLL_CRUD_Posts {
 	 * @since 1.5
 	 *
 	 * @param int $post_id
+	 * @return void
 	 */
 	public function set_default_language( $post_id ) {
 		if ( ! $this->model->post->get_language( $post_id ) ) {
@@ -89,6 +90,7 @@ class PLL_CRUD_Posts {
 	 *
 	 * @param int    $post_id
 	 * @param object $post
+	 * @return void
 	 */
 	public function save_post( $post_id, $post ) {
 		// Does nothing except on post types which are filterable
@@ -125,6 +127,7 @@ class PLL_CRUD_Posts {
 	 * @param array  $terms     An array of object terms.
 	 * @param array  $tt_ids    An array of term taxonomy IDs.
 	 * @param string $taxonomy  Taxonomy slug.
+	 * @return void
 	 */
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy ) {
 		static $avoid_recursion;
@@ -216,6 +219,7 @@ class PLL_CRUD_Posts {
 	 * @since 0.1
 	 *
 	 * @param int $post_id
+	 * @return void
 	 */
 	public function delete_post( $post_id ) {
 		if ( ! wp_is_post_revision( $post_id ) ) {

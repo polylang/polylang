@@ -80,6 +80,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * Copy post metas, and taxonomies when using "Add new" ( translation )
 	 *
 	 * @since 2.5
+	 *
+	 * @return void
 	 */
 	public function new_post_translation() {
 		global $post;
@@ -186,6 +188,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 *
 	 * @param string $func Function name
 	 * @param array  $args Function arguments
+	 * @return mixed|void
 	 */
 	public function __call( $func, $args ) {
 		$obj = substr( $func, 5 );

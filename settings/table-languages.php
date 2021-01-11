@@ -35,6 +35,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @since 1.8
 	 *
 	 * @param object $item The current item
+	 * @return void
 	 */
 	public function single_row( $item ) {
 		/**
@@ -254,6 +255,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @since 0.1
 	 *
 	 * @param array $data
+	 * @return void
 	 */
 	public function prepare_items( $data = array() ) {
 		$per_page = $this->get_items_per_page( 'pll_lang_per_page' );

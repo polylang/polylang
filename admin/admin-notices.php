@@ -48,6 +48,7 @@ class PLL_Admin_Notices {
 	 *
 	 * @param string $name Notice name
 	 * @param string $html Content of the notice
+	 * @return void
 	 */
 	public static function add_notice( $name, $html ) {
 		self::$notices[ $name ] = $html;
@@ -133,6 +134,7 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 *
 	 * @param string $notice
+	 * @return void
 	 */
 	public static function dismiss( $notice ) {
 		$dismissed = get_option( 'pll_dismissed_notices', array() );
@@ -147,6 +149,8 @@ class PLL_Admin_Notices {
 	 * Handle a click on the dismiss button
 	 *
 	 * @since 2.3.9
+	 *
+	 * @return void
 	 */
 	public function hide_notice() {
 		if ( isset( $_GET['pll-hide-notice'], $_GET['_pll_notice_nonce'] ) ) {
@@ -162,6 +166,8 @@ class PLL_Admin_Notices {
 	 * Displays notices
 	 *
 	 * @since 2.3.9
+	 *
+	 * @return void
 	 */
 	public function display_notices() {
 		if ( current_user_can( 'manage_options' ) ) {
@@ -196,6 +202,7 @@ class PLL_Admin_Notices {
 	 * @since 2.3.9
 	 *
 	 * @param string $name Notice name
+	 * @return void
 	 */
 	public function dismiss_button( $name ) {
 		printf(
@@ -210,6 +217,8 @@ class PLL_Admin_Notices {
 	 * Displays a notice if WooCommerce is activated without Polylang for WooCommerce
 	 *
 	 * @since 2.3.9
+	 *
+	 * @return void
 	 */
 	private function pllwc_notice() {
 		?>
@@ -233,6 +242,8 @@ class PLL_Admin_Notices {
 	 * Displays a notice asking for a review
 	 *
 	 * @since 2.3.9
+	 *
+	 * @return void
 	 */
 	private function review_notice() {
 		?>
