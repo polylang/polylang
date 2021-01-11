@@ -20,14 +20,6 @@ Feature: Browser Preferred Language
 	Then Polylang will remember Chinese(zh-CN) as my preferred browsing language
 
   Scenario:
-	Polylang doesn't deduce the language from unmatched language-region code for language with custom slug.
-	Given my website has content in English(en-US)
-	And my website has content in Chinese(zh-CN) with the slug zh-cn
-	And I chose zh-HK, en (in this order) as my preferred browsing languages
-	When I visit my website's homepage for the first time
-	Then Polylang will remember Chinese(en-US) as my preferred browsing language
-
-  Scenario:
   	Polylang deduces language from unmatched language-script-region code.
 	Given my website has content in Chinese(zh-CN)
   	And my website has content in English(en-US)
