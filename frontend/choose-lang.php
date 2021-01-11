@@ -38,6 +38,10 @@ abstract class PLL_Choose_Lang {
 	 * @var PLL_Accept_Language
 	 */
 	private $lang_parse;
+	/**
+	 * @var PLL_Accept_Languages_Collection
+	 */
+	private $accept_langs;
 
 	/**
 	 * Constructor
@@ -139,46 +143,9 @@ abstract class PLL_Choose_Lang {
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
 			$accept_langs = PLL_Accept_Language::parse_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
 
-			$k = $accept_langs;
-			$v = array_map(
-				function( $accept_lang ) {
-					return $accept_lang->get_quality();
-				},
-				$accept_langs
-			);
+			$this->accept_langs = new PLL_Accept_Languages_Collection( $accept_langs );
 
-			if ( $n = count( $k ) ) {
-				// Set default to 1 for any without q factor
-				foreach ( $v as $key => $val ) {
-					if ( '' === $val || (float) $val > 1 ) {
-						$v[ $key ] = 1;
-					}
-				}
-
-				// Bubble sort ( need a stable sort for Android, so can't use a PHP sort function )
-				if ( $n > 1 ) {
-					for ( $i = 2; $i <= $n; $i++ ) {
-						for ( $j = 0; $j <= $n - 2; $j++ ) {
-							if ( $v[ $j ] < $v[ $j + 1 ] ) {
-								// Swap values
-								$temp = $v[ $j ];
-								$v[ $j ] = $v[ $j + 1 ];
-								$v[ $j + 1 ] = $temp;
-								// Swap keys
-								$temp = $k[ $j ];
-								$k[ $j ] = $k[ $j + 1 ];
-								$k[ $j + 1 ] = $temp;
-							}
-						}
-					}
-				}
-				$accept_langs = array_filter(
-					$k,
-					function( $accept_lang ) {
-						return $accept_lang->get_quality() > 0;
-					}
-				);
-			}
+			$accept_langs = $this->accept_langs->bubble_sort();
 		}
 
 		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
@@ -193,36 +160,7 @@ abstract class PLL_Choose_Lang {
 		$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
 
 		// Looks through sorted list and use first one that matches our language list
-		foreach ( $accept_langs as $accept_lang ) {
-			// First loop to match the exact locale
-			foreach ( $languages as $language ) {
-				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
-					return $language->slug;
-				}
-			}
-
-			// In order of priority
-			$subsets = array();
-			if ( ! empty( $accept_lang->get_subtag( 'region' ) ) ) {
-				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'region' );
-				$subsets[] = $accept_lang->get_subtag( 'region' );
-			}
-			if ( ! empty( $accept_lang->get_subtag( 'variant' ) ) ) {
-				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'variant' );
-			}
-			$subsets[] = $accept_lang->get_subtag( 'language' );
-
-			// More loops to match the subsets
-			foreach ( $languages as $language ) {
-				foreach ( $subsets as $subset ) {
-
-					if ( 0 === stripos( $subset, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $subset ) ) {
-						return $language->slug;
-					}
-				}
-			}
-		}
-		return false;
+		return $this->find_best_match( $accept_langs, $languages );
 	}
 
 	/**
@@ -263,6 +201,44 @@ abstract class PLL_Choose_Lang {
 
 		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
 		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_language( $this->options['default_lang'] );
+	}
+
+	/**
+	 * @param array     $accept_langs
+	 * @param $languages
+	 * @return false
+	 */
+	public function find_best_match( array $accept_langs, $languages ) {
+		foreach ( $accept_langs as $accept_lang ) {
+			// First loop to match the exact locale
+			foreach ( $languages as $language ) {
+				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
+					return $language->slug;
+				}
+			}
+
+			// In order of priority
+			$subsets = array();
+			if ( ! empty( $accept_lang->get_subtag( 'region' ) ) ) {
+				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'region' );
+				$subsets[] = $accept_lang->get_subtag( 'region' );
+			}
+			if ( ! empty( $accept_lang->get_subtag( 'variant' ) ) ) {
+				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'variant' );
+			}
+			$subsets[] = $accept_lang->get_subtag( 'language' );
+
+			// More loops to match the subsets
+			foreach ( $languages as $language ) {
+				foreach ( $subsets as $subset ) {
+
+					if ( 0 === stripos( $subset, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $subset ) ) {
+						return $language->slug;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
