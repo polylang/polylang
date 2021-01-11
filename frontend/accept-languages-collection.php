@@ -56,6 +56,8 @@ class PLL_Accept_Languages_Collection {
 
 	/**
 	 * Bubble sort ( need a stable sort for Android, so can't use a PHP sort function )
+	 *
+	 * @return void
 	 */
 	public function bubble_sort() {
 		$k = $this->accept_languages;

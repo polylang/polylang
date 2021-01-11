@@ -36,7 +36,7 @@ class PLL_Accept_Language {
 	 * PLL_Accept_Language constructor.
 	 *
 	 * @param string[] $subtags With subtag name as keys and subtag values as names.
-	 * @param int      $quality
+	 * @param float    $quality
 	 */
 	public function __construct( $subtags, $quality = 1.0 ) {
 		$this->subtags = $subtags;
@@ -87,7 +87,7 @@ class PLL_Accept_Language {
 	 * Returns a subtag from the language tag.
 	 *
 	 * @see PLL_Accept_Language::$subtag_patterns for available subtag names.
-	 *
+	 * @param string $name A valid subtag name, {@see PLL_Accept_Language::$subtag_patterns}.
 	 * @return string
 	 */
 	public function get_subtag( $name ) {
