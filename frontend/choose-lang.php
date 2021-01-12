@@ -63,8 +63,7 @@ abstract class PLL_Choose_Lang {
 		// See https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
 		$this->curlang = ( $curlang instanceof PLL_Language ) ? $curlang : $this->model->get_language( $this->options['default_lang'] );
 
-		$GLOBALS['text_direction']  = $this->curlang->is_rtl ? 'rtl' : 'ltr';
-		wp_styles()->text_direction = $GLOBALS['text_direction'];
+		wp_styles()->text_direction = $this->curlang->is_rtl ? 'rtl' : 'ltr';
 
 		/**
 		 * Fires when the current language is defined

@@ -245,16 +245,16 @@ class PLL_Plugin_Updater {
 			// build a plugin list row, with update notification
 			$wp_list_table = _get_list_table( 'WP_Plugins_List_Table' );
 			# <tr class="plugin-update-tr"><td colspan="' . $wp_list_table->get_column_count() . '" class="plugin-update colspanchange">
-			echo '<tr class="plugin-update-tr" id="' . $this->slug . '-update" data-slug="' . $this->slug . '" data-plugin="' . $this->slug . '/' . $file . '">';
+			echo '<tr class="plugin-update-tr" id="' . esc_attr( $this->slug ) . '-update" data-slug="' . esc_attr( $this->slug ) . '" data-plugin="' . esc_attr( $this->slug . '/' . $file ) . '">';
 			echo '<td colspan="3" class="plugin-update colspanchange">';
 			echo '<div class="update-message notice inline notice-warning notice-alt">';
 
-			$changelog_link = self_admin_url( 'index.php?edd_sl_action=view_plugin_changelog&plugin=' . $this->name . '&slug=' . $this->slug . '&TB_iframe=true&width=772&height=911' );
+			$changelog_link = self_admin_url( 'index.php?edd_sl_action=view_plugin_changelog&plugin=' . $this->name . '&slug=' . esc_attr( $this->slug ) . '&TB_iframe=true&width=772&height=911' );
 
 			if ( empty( $version_info->download_link ) ) {
 				printf(
 					/* translators: %1$s plugin name, %3$s plugin version, %2$s is link start tag, %4$s is link end tag. */
-					__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s.', 'polylang' ),
+					__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s.', 'polylang' ), // phpcs:ignore
 					esc_html( $version_info->name ),
 					'<a target="_blank" class="thickbox" href="' . esc_url( $changelog_link ) . '">',
 					esc_html( $version_info->new_version ),
@@ -263,7 +263,7 @@ class PLL_Plugin_Updater {
 			} else {
 				printf(
 					/* translators: %1$s plugin name, %3$s plugin version, %2$s and %5$s are link start tags, %4$s and %6$s are link end tags. */
-					__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s or %5$supdate now%6$s.', 'polylang' ),
+					__( 'There is a new version of %1$s available. %2$sView version %3$s details%4$s or %5$supdate now%6$s.', 'polylang' ), // phpcs:ignore
 					esc_html( $version_info->name ),
 					'<a target="_blank" class="thickbox" href="' . esc_url( $changelog_link ) . '">',
 					esc_html( $version_info->new_version ),
@@ -494,24 +494,25 @@ class PLL_Plugin_Updater {
 
 		global $edd_plugin_data;
 
-		if( empty( $_REQUEST['edd_sl_action'] ) || 'view_plugin_changelog' != $_REQUEST['edd_sl_action'] ) {
+		if( empty( $_REQUEST['edd_sl_action'] ) || 'view_plugin_changelog' != $_REQUEST['edd_sl_action'] ) { // phpcs:ignore
 			return;
 		}
 
-		if( empty( $_REQUEST['plugin'] ) ) {
+		if( empty( $_REQUEST['plugin'] ) ) { // phpcs:ignore
 			return;
 		}
 
-		if( empty( $_REQUEST['slug'] ) ) {
+		if( empty( $_REQUEST['slug'] ) ) { // phpcs:ignore
 			return;
 		}
 
 		if( ! current_user_can( 'update_plugins' ) ) {
-			wp_die( __( 'You do not have permission to install plugin updates', 'polylang' ), __( 'Error', 'polylang' ), array( 'response' => 403 ) );
+			wp_die( __( 'You do not have permission to install plugin updates', 'polylang' ), __( 'Error', 'polylang' ), array( 'response' => 403 ) ); // phpcs:ignore
 		}
 
-		$data         = $edd_plugin_data[ $_REQUEST['slug'] ];
-		$version_info = $this->get_cached_version_info();
+		$unslashed_slug = wp_unslash( $_REQUEST['slug'] ); // phpcs:ignore
+		$data           = $edd_plugin_data[ $unslashed_slug ];
+		$version_info   = $this->get_cached_version_info();
 
 		if( false === $version_info ) {
 
@@ -519,7 +520,7 @@ class PLL_Plugin_Updater {
 				'edd_action' => 'get_version',
 				'item_name'  => isset( $data['item_name'] ) ? $data['item_name'] : false,
 				'item_id'    => isset( $data['item_id'] ) ? $data['item_id'] : false,
-				'slug'       => $_REQUEST['slug'],
+				'slug'       => $unslashed_slug,
 				'author'     => $data['author'],
 				'url'        => home_url(),
 				'beta'       => ! empty( $data['beta'] )
@@ -547,7 +548,7 @@ class PLL_Plugin_Updater {
 			$this->set_version_info_cache( $version_info );
 
 			// Delete the unneeded option
-			delete_option( md5( 'edd_plugin_' . sanitize_key( $_REQUEST['plugin'] ) . '_' . $this->beta . '_version_info' ) );
+			delete_option( md5( 'edd_plugin_' . sanitize_key( $_REQUEST['plugin'] ) . '_' . $this->beta . '_version_info' ) ); // phpcs:ignore
 		}
 
 		if ( isset( $version_info->sections ) ) {
