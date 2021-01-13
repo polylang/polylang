@@ -82,7 +82,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		global $wpdb;
 
 		// Do not filter sticky posts on REST requests as $this->curlang is *not* the 'lang' parameter set in the request
-		if ( ! defined( 'REST_REQUEST' ) && $this->curlang && ! empty( $posts ) ) {
+		if ( ! defined( 'REST_REQUEST' ) && ! empty( $this->curlang ) && ! empty( $posts ) ) {
 			$_posts = wp_cache_get( 'sticky_posts', 'options' ); // This option is usually cached in 'all_options' by WP
 
 			if ( empty( $_posts ) || ! is_array( $_posts[ $this->curlang->term_taxonomy_id ] ) ) {
