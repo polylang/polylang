@@ -6,12 +6,7 @@
   * External dependencies
   */
  const path = require( 'path' );
-
- /**
- * Internal dependencies
- */
-const getJsFileNamesEntries = require( './webpack/getJsFileNames' );
-const getCssFileNamesEntries = require('./webpack/getCssFileNames' );
+ const { getJsFileNamesEntries, getCssFileNamesEntries } = require('@wpsyntex/polylang-build-scripts' );
 
 function configureWebpack( options ){
 	const mode = options.mode;
