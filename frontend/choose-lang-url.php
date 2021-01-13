@@ -73,6 +73,10 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 			$curlang = $this->model->get_language( $slug );
 		}
 
+		elseif ( $_GET['lng'] && $this->model->get_language( $_GET['lng'] ) ) {
+      			$curlang = $this->model->get_language( $_GET['lng'] );
+		}
+		
 		elseif ( $this->options['hide_default'] ) {
 			$curlang = $this->model->get_language( $this->options['default_lang'] );
 		}
