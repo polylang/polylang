@@ -96,22 +96,22 @@ class PLL_Filters {
 	}
 
 	/**
-	 * Get the language to filter a comments query
+	 * Get the language to filter a comments query.
 	 *
 	 * @since 2.0
 	 *
-	 * @param object $query
-	 * @return object|bool the language(s) to use in the filter, false otherwise
+	 * @param WP_Comment_Query $query  WP_Comment_Query object.
+	 * @return PLL_Language|false The language to use in the filter, false otherwise.
 	 */
 	protected function get_comments_queried_language( $query ) {
-		// Don't filter comments if comment ids or post ids are specified
+		// Don't filter comments if comment ids or post ids are specified.
 		$plucked = wp_array_slice_assoc( $query->query_vars, array( 'comment__in', 'parent', 'post_id', 'post__in', 'post_parent' ) );
 		$fields = array_filter( $plucked );
 		if ( ! empty( $fields ) ) {
 			return false;
 		}
 
-		// Don't filter comments if a non translated post type is specified
+		// Don't filter comments if a non translated post type is specified.
 		if ( ! empty( $query->query_vars['post_type'] ) && ! $this->model->is_translated_post_type( $query->query_vars['post_type'] ) ) {
 			return false;
 		}
@@ -120,31 +120,32 @@ class PLL_Filters {
 	}
 
 	/**
-	 * Adds language dependent cache domain when querying comments
-	 * Useful as the 'lang' parameter is not included in cache key by WordPress
-	 * Needed since WP 4.6 as comments have been added to persistent cache. See #36906, #37419
+	 * Adds a language dependent cache domain when querying comments.
+	 * Useful as the 'lang' parameter is not included in cache key by WordPress.
+	 * Needed since WP 4.6 as comments have been added to persistent cache. See #36906, #37419.
 	 *
 	 * @since 2.0
 	 *
-	 * @param object $query
+	 * @param WP_Comment_Query $query WP_Comment_Query object.
 	 * @return void
 	 */
 	public function parse_comment_query( $query ) {
-		if ( $lang = $this->get_comments_queried_language( $query ) ) {
-			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
+		$lang = $this->get_comments_queried_language( $query );
+		if ( $lang ) {
+			$key = '_' . $lang->slug;
 			$query->query_vars['cache_domain'] = empty( $query->query_vars['cache_domain'] ) ? 'pll' . $key : $query->query_vars['cache_domain'] . $key;
 		}
 	}
 
 	/**
-	 * Filters the comments according to the current language
-	 * Used by the recent comments widget and admin language filter
+	 * Filters the comments according to the current language.
+	 * Used by the recent comments widget and admin language filter.
 	 *
 	 * @since 0.2
 	 *
-	 * @param array  $clauses sql clauses
-	 * @param object $query   WP_Comment_Query object
-	 * @return array modified $clauses
+	 * @param string[]         $clauses SQL clauses.
+	 * @param WP_Comment_Query $query   WP_Comment_Query object.
+	 * @return string[] Modified $clauses.
 	 */
 	public function comments_clauses( $clauses, $query ) {
 		global $wpdb;
@@ -152,7 +153,7 @@ class PLL_Filters {
 		$lang = $this->get_comments_queried_language( $query );
 
 		if ( ! empty( $lang ) ) {
-			// If this clause is not already added by WP
+			// If this clause is not already added by WP.
 			if ( ! strpos( $clauses['join'], '.ID' ) ) {
 				$clauses['join'] .= " JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->comments.comment_post_ID";
 			}
