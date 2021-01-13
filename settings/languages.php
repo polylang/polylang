@@ -358,6 +358,14 @@ return array(
 		'flag'     => 'cr',
 		'facebook' => 'es_LA',
 	),
+	'es_EC' => array(
+		'code'     => 'es',
+		'locale'   => 'es_EC',
+		'name'     => 'Español',
+		'dir'      => 'ltr',
+		'flag'     => 'ec',
+		'facebook' => 'es_LA',
+	),
 	'es_ES' => array(
 		'code'     => 'es',
 		'locale'   => 'es_ES',
