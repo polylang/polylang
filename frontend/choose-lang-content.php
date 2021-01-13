@@ -131,7 +131,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 */
 	public function wp() {
 		// Nothing to do if the language has already been set ( although normally the filter has been removed )
-		if ( ! $this->curlang && $curlang = $this->get_language_from_content() ) {
+		if ( empty( $this->curlang ) && $curlang = $this->get_language_from_content() ) {
 			parent::set_language( $curlang );
 		}
 	}
