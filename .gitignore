@@ -1,6 +1,7 @@
 node_modules/
 vendor/
 tmp/
+css/build/
 js/build/
 css/build/
 .idea/
