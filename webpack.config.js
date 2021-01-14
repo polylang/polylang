@@ -3,10 +3,12 @@
  */
 
  /**
-  * External dependencies
-  */
- const path = require( 'path' );
- const { getJsFileNamesEntries, getCssFileNamesEntries } = require('@wpsyntex/polylang-build-scripts' );
+ * External dependencies
+ */
+
+const path = require( 'path' );
+const glob = require( 'glob' ).sync;
+const { transformJsEntry, transformCssEntry } = require( '@wpsyntex/polylang-build-scripts' );
 
 function configureWebpack( options ){
 	const mode = options.mode;
@@ -14,10 +16,37 @@ function configureWebpack( options ){
 	console.log('Webpack mode:', mode);
 	console.log('isProduction:', isProduction);
 	console.log('dirname:', __dirname);
-	
-	const jsFileNamesEntries = getJsFileNamesEntries( path.resolve( __dirname ) );
 
-	const cssFileNamesEntries = getCssFileNamesEntries( path.resolve( __dirname ), isProduction );
+	const commonFoldersToIgnore = [
+		'node_modules/**',
+		'vendor/**',
+		'tmp/**',
+		'webpack/**',
+		'**/build/**',
+	];
+
+	const jsFileNamesToIgnore = [
+		'js/lib/**',
+		'*.config.js',
+		'*.min.js',
+	];
+
+	const jsFileNames = glob( '**/*.js', { 'ignore': [ ...commonFoldersToIgnore, ...jsFileNamesToIgnore ] } ).map( filename => `./${ filename }`);
+	console.log( 'js files to minify:', jsFileNames );
+
+	const jsFileNamesEntries = [
+		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ), true ) ),
+		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ), false ) )
+	]
+
+	const cssFileNames = glob( '**/*.css', { 'ignore': [ ...commonFoldersToIgnore, '**/*.min.css' ] } ).map( filename => `./${ filename }`);
+	console.log( 'css files to minify:', cssFileNames );
+
+	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
+	const cssFileNamesEntries = [
+		...cssFileNames.map( transformCssEntry( path.resolve( __dirname ), isProduction, true ) ),
+		...cssFileNames.map( transformCssEntry( path.resolve( __dirname ), isProduction, false ) )
+	];
 
 	// Make webpack configuration.
 	const config = [
