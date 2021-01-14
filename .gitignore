@@ -2,6 +2,7 @@ coverage/
 node_modules/
 vendor/
 tmp/
+css/build/
 js/build/
 js/lib/
 .idea/

@@ -146,7 +146,6 @@
 	<exclude-pattern>vendor/*</exclude-pattern>
 	<exclude-pattern>tmp/*</exclude-pattern>
 	<exclude-pattern>webpack.config.js</exclude-pattern>
-	<exclude-pattern>webpack/*</exclude-pattern>
 	<exclude-pattern>bin/*</exclude-pattern>
 	<!-- Because files are built with Webpack/babel. It doesn't make sense to scan these files -->
 	<exclude-pattern>modules/block-editor/build/*</exclude-pattern>
