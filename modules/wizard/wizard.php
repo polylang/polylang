@@ -51,6 +51,11 @@ class PLL_Wizard {
 	protected $styles = array();
 
 	/**
+	 * @var PLL_Scripts_Builder
+	 */
+	protected $scripts;
+
+	/**
 	 * Constructor
 	 *
 	 * @param object $polylang Reference to Polylang global object.
@@ -365,9 +370,8 @@ class PLL_Wizard {
 		// Add ajax action on deactivate button in licenses step.
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
 
-		wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
-
+		$this->scripts->enqueue( 'admin', array( 'jquery', 'jquery-ui-selectmenu' ), true );
+		wp_localize_script( 'pll_admin', 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
 		if ( $this->is_licenses_step_displayable() ) {
 			$steps['licenses'] = array(
 				'name'    => esc_html__( 'Licenses', 'polylang' ),
@@ -463,31 +467,29 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_languages( $steps ) {
-		wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
-		wp_register_script( 'pll-wizard-languages', plugins_url( '/modules/wizard/js/languages-step' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-dialog' ), POLYLANG_VERSION, true );
-		wp_localize_script(
-			'pll-wizard-languages',
-			'pll_wizard_params',
-			array(
-				'i18n_no_language_selected'   => esc_html__( 'You need to select a language to be added.', 'polylang' ),
-				'i18n_language_already_added' => esc_html__( 'You already added this language.', 'polylang' ),
-				'i18n_no_language_added'      => esc_html__( 'You need to add at least one language.', 'polylang' ),
-				'i18n_add_language_needed'    => esc_html__( 'You selected a language, however, to be able to continue, you need to add it.', 'polylang' ),
-				'i18n_pll_add_language'       => esc_html__( 'Impossible to add the language.', 'polylang' ),
-				'i18n_pll_invalid_locale'     => esc_html__( 'Enter a valid WordPress locale', 'polylang' ),
-				'i18n_pll_invalid_slug'       => esc_html__( 'The language code contains invalid characters', 'polylang' ),
-				'i18n_pll_non_unique_slug'    => esc_html__( 'The language code must be unique', 'polylang' ),
-				'i18n_pll_invalid_name'       => esc_html__( 'The language must have a name', 'polylang' ),
-				'i18n_pll_invalid_flag'       => esc_html__( 'The flag does not exist', 'polylang' ),
-				'i18n_dialog_title'           => esc_html__( "A language wasn't added.", 'polylang' ),
-				'i18n_dialog_yes_button'      => esc_html__( 'Yes', 'polylang' ),
-				'i18n_dialog_no_button'       => esc_html__( 'No', 'polylang' ),
-				'i18n_dialog_ignore_button'   => esc_html__( 'Ignore', 'polylang' ),
-				'i18n_remove_language_icon'   => esc_html__( 'Remove this language', 'polylang' ),
-			)
-		);
-		wp_enqueue_script( 'pll-wizard-languages' );
+		$this->scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
+			->localize( 'dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
+		$this->scripts->register( 'wizard-languages', array( 'jquery', 'jquery-ui-dialog' ), true )
+			->localize(
+				'pll_wizard_params',
+				array(
+					'i18n_no_language_selected'   => esc_html__( 'You need to select a language to be added.', 'polylang' ),
+					'i18n_language_already_added' => esc_html__( 'You already added this language.', 'polylang' ),
+					'i18n_no_language_added'      => esc_html__( 'You need to add at least one language.', 'polylang' ),
+					'i18n_add_language_needed'    => esc_html__( 'You selected a language, however, to be able to continue, you need to add it.', 'polylang' ),
+					'i18n_pll_add_language'       => esc_html__( 'Impossible to add the language.', 'polylang' ),
+					'i18n_pll_invalid_locale'     => esc_html__( 'Enter a valid WordPress locale', 'polylang' ),
+					'i18n_pll_invalid_slug'       => esc_html__( 'The language code contains invalid characters', 'polylang' ),
+					'i18n_pll_non_unique_slug'    => esc_html__( 'The language code must be unique', 'polylang' ),
+					'i18n_pll_invalid_name'       => esc_html__( 'The language must have a name', 'polylang' ),
+					'i18n_pll_invalid_flag'       => esc_html__( 'The flag does not exist', 'polylang' ),
+					'i18n_dialog_title'           => esc_html__( "A language wasn't added.", 'polylang' ),
+					'i18n_dialog_yes_button'      => esc_html__( 'Yes', 'polylang' ),
+					'i18n_dialog_no_button'       => esc_html__( 'No', 'polylang' ),
+					'i18n_dialog_ignore_button'   => esc_html__( 'Ignore', 'polylang' ),
+					'i18n_remove_language_icon'   => esc_html__( 'Remove this language', 'polylang' ),
+				)
+			)->enqueue();
 		wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
 		$steps['languages'] = array(
 			'name'    => esc_html__( 'Languages', 'polylang' ),
@@ -652,8 +654,8 @@ class PLL_Wizard {
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
-			wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-			wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
+			$this->scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
+				->localize( 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
 			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(
 				'name'    => esc_html__( 'Content', 'polylang' ),

@@ -51,6 +51,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public $static_pages;
 
 	/**
+	 * @var PLL_Scripts_Builder
+	 */
+	public $scripts;
+
+	/**
 	 * Loads the polylang text domain
 	 * Setups actions needed on all admin pages
 	 *
@@ -60,6 +65,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
+		$this->scripts = new PLL_Scripts_Builder();
 
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
@@ -189,7 +195,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
-				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/' . $script . $suffix . '.js', POLYLANG_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
+				$this->scripts->enqueue( $script, $v[1], $v[3] );
 			}
 		}
 
@@ -207,8 +213,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/widgets' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
+			$this->scripts->enqueue( 'widgets', array( 'jquery' ), true );
 			$this->localize_scripts();
 		}
 	}

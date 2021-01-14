@@ -328,10 +328,11 @@ class PLL_Settings extends PLL_Admin_Base {
 	public function admin_enqueue_scripts() {
 		parent::admin_enqueue_scripts();
 
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$this->scripts->enqueue( 'admin', array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION )
+			->localize( 'pll_flag_base_url', plugins_url( '/flags/', POLYLANG_FILE ) )
+			->localize( 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
 
-		wp_enqueue_script( 'pll_admin', plugins_url( '/js/admin' . $suffix . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_enqueue_style( 'pll_selectmenu', plugins_url( '/css/selectmenu' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
 	}
