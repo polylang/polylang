@@ -32,6 +32,8 @@ class WPML_Test extends PLL_UnitTestCase {
 		foreach ( PLL_WPML_Compat::instance()->get_strings( array() ) as $string ) {
 			PLL_WPML_Compat::instance()->unregister_string( $string['context'], $string['name'] );
 		}
+
+		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
 	/**
@@ -256,7 +258,11 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	function test_wpml_object_id_nav_menu() {
-		self::$polylang->options['default_lang'] = 'en';
+		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
+		$model = new PLL_Model( $options );
+		$links_model = new PLL_Links_Default( $model );
+		$polylang = new PLL_Admin( $links_model );
+		$GLOBALS['polylang'] = $polylang;
 
 		$registered_nav_menus = get_registered_nav_menus();
 
@@ -271,7 +277,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) ); // Just to test the PHP notice fixed in 2.2.7
 
 		// Assign our menus to locations
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$nav_menu = new PLL_Admin_Nav_Menu( $polylang );
 		$nav_menu->create_nav_menu_locations();
 
 		$locations = array_keys( get_registered_nav_menus() );
@@ -283,11 +289,11 @@ class WPML_Test extends PLL_UnitTestCase {
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$nav_menu->update_nav_menu_locations( $nav_menu_locations ); // Our filter update_nav_menu_locations does not run due to security checks
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$polylang->curlang = $polylang->model->get_language( 'en' );
 		$this->assertEquals( $menu_en, apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) );
 		$this->assertEquals( $menu_en, apply_filters( 'wpml_object_id', $menu_fr, 'nav_menu' ) );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$polylang->curlang = $polylang->model->get_language( 'fr' );
 		$this->assertEquals( $menu_fr, apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) );
 		$this->assertEquals( $menu_fr, apply_filters( 'wpml_object_id', $menu_fr, 'nav_menu' ) );
 	}
