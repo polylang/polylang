@@ -125,6 +125,18 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?p=' . self::$post_en, '/en/post-format-test-audio/' );
 	}
 
+	public function test_post_feed_with_incorrect_language() {
+		$this->assertCanonical( '/fr/post-format-test-audio/feed/', '/en/post-format-test-audio/feed/' );
+	}
+
+	public function test_post_feed_without_language() {
+		$this->assertCanonical( '/post-format-test-audio/feed/', '/en/post-format-test-audio/feed/' );
+	}
+
+	public function test_post_feed_from_plain_permalink() {
+		$this->assertCanonical( '?feed=rss&p=' . self::$post_en, '/en/post-format-test-audio/feed/' );
+	}
+
 	public function test_page_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/parent-page/',
@@ -147,6 +159,18 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
 	}
 
+	public function test_page_feed_with_incorrect_language() {
+		$this->assertCanonical( '/fr/parent-page/feed/', '/en/parent-page/feed/' );
+	}
+
+	public function test_page_feed_without_language() {
+		$this->assertCanonical( '/parent-page/feed/', '/en/parent-page/feed/' );
+	}
+
+	public function test_page_feed_from_plain_permalink() {
+		$this->assertCanonical( '?feed=rss&page_id=' . self::$page_id, '/en/parent-page/feed/' );
+	}
+
 	public function test_custom_post_type_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/pllcanonical/custom-post/',
@@ -160,7 +184,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public function test_custom_post_type_with_incorrect_language() {
 		$this->assertCanonical( '/fr/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' );
 	}
-
 
 	public function test_custom_post_type_without_language() {
 		$this->assertCanonical( '/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' );
