@@ -55,7 +55,7 @@ class PLL_Scripts_Builder {
 	 * @return PLL_Script
 	 */
 	protected function create_script( $filename, $dependencies = array(), $in_footer = false ) {
-		$handle = 'pll_' . $filename;
+		$handle = 'pll_' . str_replace( '-', '_', strtolower( $filename ) );
 		$path = plugins_url( '/js/build/' . $filename . $this->suffix . '.js', $this->plugin_file );
 		return new PLL_Script( $handle, $path, $dependencies, $in_footer );
 	}
