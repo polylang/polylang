@@ -1,7 +1,6 @@
 <?php
 
 class Nav_Menus_Test extends PLL_UnitTestCase {
-
 	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
@@ -10,6 +9,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+
+		self::$polylang->scripts = new PLL_Scripts_Builder();
 	}
 
 	function setUp() {
@@ -69,7 +70,6 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 				'menu-item-status'    => 'publish',
 			)
 		);
-
 		// assign our menus to locations
 		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
 		$nav_menu->create_nav_menu_locations();

@@ -15,6 +15,8 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		require_once POLYLANG_DIR . '/include/api.php';
 		$GLOBALS['polylang'] = &self::$polylang; // The WPML API uses the global $polylang
+
+		self::$polylang->scripts = new stdClass(); // Avoid fatal error in tests.
 	}
 
 	function setUp() {

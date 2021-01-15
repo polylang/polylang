@@ -10,9 +10,9 @@
  */
 class PLL_Scripts_Builder {
 	/**
-	 * @var string Path to the plugin root directory.
+	 * @var string Path to the file containing the plugin's header.
 	 */
-	public $root;
+	public $plugin_file;
 
 	/**
 	 * @var string To be appended to script names, before extension.
@@ -25,7 +25,7 @@ class PLL_Scripts_Builder {
 	 * Sets up the root path to find Polylang scripts in by default.
 	 */
 	public function __construct() {
-		$this->root = POLYLANG_DIR;
+		$this->plugin_file = POLYLANG_FILE;
 		$this->suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	}
 
@@ -56,7 +56,7 @@ class PLL_Scripts_Builder {
 	 */
 	protected function create_script( $filename, $dependencies = array(), $in_footer = false ) {
 		$handle = 'pll_' . $filename;
-		$path = plugins_url( '/js/build/' . $filename . $this->suffix . '.js', $this->root );
+		$path = plugins_url( '/js/build/' . $filename . $this->suffix . '.js', $this->plugin_file );
 		return new PLL_Script( $handle, $path, $dependencies, $in_footer );
 	}
 }
