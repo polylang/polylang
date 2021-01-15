@@ -107,7 +107,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			return;
 		}
 
-		$this->scripts->enqueue( 'nav_menu', array( 'jquery' ), POLYLANG_VERSION );
+		$nav_menu_script = $this->scripts->enqueue( 'nav-menu', array( 'jquery' ) );
 
 		$data = array(
 			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options
@@ -132,7 +132,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		// Send all these data to javascript
-		wp_localize_script( 'pll_nav_menu', 'pll_data', $data );
+		$nav_menu_script->localize( 'pll_data', $data );
 	}
 
 	/**
