@@ -36,14 +36,16 @@ class PLL_MO extends MO {
 	public function export_to_db( $lang ) {
 		$this->add_entry( $this->make_entry( '', '' ) ); // Empty string translation, just in case
 
-		// Would be convenient to store the whole object but it would take a huge space in DB
-		// So let's keep only the strings in an array
+		/*
+		 * It would be convenient to store the whole object but it would take a huge space in DB.
+		 * So let's keep only the strings in an array.
+		 * The strings are slashed to avoid breaking slashed strings in update_post_meta.
+		 * @see https://codex.wordpress.org/Function_Reference/update_post_meta#Character_Escaping.
+		 */
 		$strings = array();
 		foreach ( $this->entries as $entry ) {
-			$strings[] = array( $entry->singular, $this->translate( $entry->singular ) );
+			$strings[] = wp_slash( array( $entry->singular, $this->translate( $entry->singular ) ) );
 		}
-
-		$strings = wp_slash( $strings ); // Avoid breaking slashed strings in update_post_meta. See https://codex.wordpress.org/Function_Reference/update_post_meta#Character_Escaping
 
 		if ( empty( $lang->mo_id ) ) {
 			$post = array(
