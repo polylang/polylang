@@ -44,7 +44,7 @@ class PLL_Wizard {
 	protected $styles = array();
 
 	/**
-	 * @var PLL_Scripts_Builder
+	 * @var PLL_Resource_Queue
 	 */
 	protected $scripts;
 
@@ -57,6 +57,7 @@ class PLL_Wizard {
 	public function __construct( &$polylang ) {
 		$this->options = &$polylang->options;
 		$this->model   = &$polylang->model;
+
 
 		// Display Wizard page before any other action to ensure displaying it outside the WordPress admin context.
 		// Hooked on admin_init with priority 40 to ensure PLL_Wizard_Pro is corretly initialized.
@@ -343,7 +344,7 @@ class PLL_Wizard {
 		// Add ajax action on deactivate button in licenses step.
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
 
-		$this->scripts->enqueue( 'admin', array( 'jquery', 'jquery-ui-selectmenu' ), true );
+		PLL_Resource_Queue::$scripts->enqueue( 'admin', array( 'jquery', 'jquery-ui-selectmenu' ), true );
 		wp_localize_script( 'pll_admin', 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
 		if ( $this->is_licenses_step_displayable() ) {
 			$steps['licenses'] = array(
@@ -433,9 +434,9 @@ class PLL_Wizard {
 	 * @since 2.7
 	 */
 	public function add_step_languages( $steps ) {
-		$this->scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
+		PLL_Resource_Queue::$scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
 			->localize( 'dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
-		$this->scripts->register( 'wizard-languages', array( 'jquery', 'jquery-ui-dialog' ), true )
+		PLL_Resource_Queue::$scripts->register( 'wizard-languages', array( 'jquery', 'jquery-ui-dialog' ), true )
 			->localize(
 				'pll_wizard_params',
 				array(
@@ -611,7 +612,7 @@ class PLL_Wizard {
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
-			$this->scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
+			PLL_Resource_Queue::$scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
 				->localize( 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
 			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(

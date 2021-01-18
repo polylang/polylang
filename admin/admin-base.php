@@ -12,9 +12,14 @@ class PLL_Admin_Base extends PLL_Base {
 	public $filter_lang, $curlang, $pref_lang;
 
 	/**
-	 * @var PLL_Scripts_Builder
+	 * Registers, localize and enqueue Polylang javascript files.
+	 *
+	 * @since 3.0
+	 *
+	 * @var PLL_Resource_Queue
 	 */
 	public $scripts;
+
 
 	/**
 	 * Loads the polylang text domain
@@ -26,7 +31,7 @@ class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
-		$this->scripts = new PLL_Scripts_Builder();
+		PLL_Resource_Queue::$scripts = new PLL_Resource_Queue( PLL_Script::class, POLYLANG_FILE );
 
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
@@ -152,7 +157,7 @@ class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
-				$this->scripts->enqueue( $script, $v[1], $v[3] );
+				PLL_Resource_Queue::$scripts->enqueue( $script, $v[1], $v[3] );
 			}
 		}
 
@@ -168,7 +173,7 @@ class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
-			$this->scripts->enqueue( 'widgets', array( 'jquery' ), true );
+			PLL_Resource_Queue::$scripts->enqueue( 'widgets', array( 'jquery' ), true );
 			$this->localize_scripts();
 		}
 	}

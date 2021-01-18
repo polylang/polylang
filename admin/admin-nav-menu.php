@@ -11,7 +11,7 @@
 class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 
 	/**
-	 * @var PLL_Scripts_Builder
+	 * @var PLL_Resource_Queue
 	 */
 	protected $scripts;
 
@@ -25,7 +25,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
-		$this->scripts = $polylang->scripts;
+
 
 		// Populates nav menus locations
 		// Since WP 4.4, must be done before customize_register is fired
@@ -101,7 +101,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			return;
 		}
 
-		$nav_menu_script = $this->scripts->enqueue( 'nav-menu', array( 'jquery' ) );
+		$nav_menu_script = PLL_Resource_Queue::$scripts->enqueue( 'nav-menu', array( 'jquery' ) );
 
 		$data = array(
 			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options

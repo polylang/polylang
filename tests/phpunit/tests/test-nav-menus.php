@@ -10,7 +10,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		self::$polylang->scripts = new PLL_Scripts_Builder();
+		self::$polylang->scripts = new stdClass();
 	}
 
 	function setUp() {
