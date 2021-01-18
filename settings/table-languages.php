@@ -142,7 +142,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @since 0.1
 	 *
-	 * @return array the list of column titles
+	 * @return string[] the list of column titles
 	 */
 	public function get_columns() {
 		return array(

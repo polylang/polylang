@@ -145,7 +145,7 @@ abstract class PLL_Translated_Object {
 	 * @since 2.3
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
-	 * @param array $translations An associative array of translations with language code as key and translation id as value.
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
 	 * @return bool
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
@@ -160,7 +160,7 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
-	 * @param array $translations An associative array of translations with language code as key and translation id as value.
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
 	 * @return void
 	 */
 	public function save_translations( $id, $translations ) {
@@ -244,7 +244,7 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $id Object id ( typically a post_id or term_id ).
-	 * @return array An associative array of translations with language code as key and translation id as value.
+	 * @return int[] An associative array of translations with language code as key and translation id as value.
 	 */
 	public function get_translations( $id ) {
 		$term = $this->get_object_term( $id, $this->tax_translations );
@@ -268,9 +268,9 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 0.5
 	 *
-	 * @param int           $id   Object id ( typically a post_id or term_id ).
-	 * @param object|string $lang Language ( slug or object ).
-	 * @return bool|int Object id of the translation, false if there is none.
+	 * @param int                 $id   Object id ( typically a post_id or term_id ).
+	 * @param PLL_Language|string $lang Language ( slug or object ).
+	 * @return int|false Object id of the translation, false if there is none.
 	 */
 	public function get_translation( $id, $lang ) {
 		if ( ! $lang = $this->model->get_language( $lang ) ) {
@@ -287,9 +287,9 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int               $id   Object id ( typically a post_id or term_id ).
-	 * @param int|string|object $lang Language ( term_id or slug or object ).
-	 * @return bool|int The translation object id if exists, otherwise the passed id, false if the passed object has no language.
+	 * @param int                     $id   Object id ( typically a post_id or term_id ).
+	 * @param int|string|PLL_Language $lang Language ( term_id or slug or object ).
+	 * @return int|false The translation object id if exists, otherwise the passed id, false if the passed object has no language.
 	 */
 	public function get( $id, $lang ) {
 		$id = (int) $id;
@@ -317,7 +317,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object|array|string $lang PLL_Language object or a comma separated list of language slug or an array of language slugs.
+	 * @param PLL_Language|string|string[] $lang PLL_Language object or a comma separated list of language slug or an array of language slugs.
 	 * @return string Where clause.
 	 */
 	public function where_clause( $lang ) {
@@ -350,8 +350,8 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 1.4
 	 *
-	 * @param object $lang PLL_Language object.
-	 * @return array
+	 * @param PLL_Language $lang PLL_Language object.
+	 * @return int[]
 	 */
 	public function get_objects_in_language( $lang ) {
 		global $wpdb;

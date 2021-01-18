@@ -85,13 +85,13 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Add post state for translations of the front page and posts page
+	 * Adds post state for translations of the front page and posts page.
 	 *
 	 * @since 1.8
 	 *
-	 * @param array  $post_states An array of post display states.
-	 * @param object $post        The current post object.
-	 * @return array
+	 * @param string[] $post_states An array of post display states.
+	 * @param WP_Post  $post        The current post object.
+	 * @return string[]
 	 */
 	public function display_post_states( $post_states, $post ) {
 		if ( in_array( $post->ID, $this->model->get_languages_list( array( 'fields' => 'page_on_front' ) ) ) ) {
@@ -106,13 +106,13 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Refresh language cache when a static front page has been translated
+	 * Refreshes the language cache when a static front page has been translated.
 	 *
 	 * @since 1.8
 	 *
-	 * @param int    $post_id      Not used
-	 * @param object $post         Not used
-	 * @param array  $translations
+	 * @param int     $post_id      Not used.
+	 * @param WP_Post $post         Not used.
+	 * @param int[]   $translations Translations of the post being saved.
 	 * @return void
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {

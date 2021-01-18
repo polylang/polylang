@@ -113,13 +113,13 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Adds custom fields to the list of metas to copy when creating a new translation
+	 * Adds custom fields to the list of metas to copy when creating a new translation.
 	 *
 	 * @since 1.0
 	 *
-	 * @param array $metas the list of custom fields to copy or synchronize
-	 * @param bool  $sync  true for sync, false for copy
-	 * @return array the list of custom fields to copy or synchronize
+	 * @param string[] $metas The list of custom fields to copy or synchronize.
+	 * @param bool     $sync  True for sync, false for copy.
+	 * @return string[] The list of custom fields to copy or synchronize.
 	 */
 	public function copy_post_metas( $metas, $sync ) {
 		foreach ( $this->xmls as $xml ) {
@@ -136,13 +136,13 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Adds term metas to the list of metas to copy when creating a new translation
+	 * Adds term metas to the list of metas to copy when creating a new translation.
 	 *
 	 * @since 2.6
 	 *
-	 * @param array $metas The list of term metas to copy or synchronize.
-	 * @param bool  $sync  True for sync, false for copy.
-	 * @return array The list of term metas to copy or synchronize.
+	 * @param string[] $metas The list of term metas to copy or synchronize.
+	 * @param bool     $sync  True for sync, false for copy.
+	 * @return string[] The list of term metas to copy or synchronize.
 	 */
 	public function copy_term_metas( $metas, $sync ) {
 		foreach ( $this->xmls as $xml ) {
@@ -159,13 +159,13 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Language and translation management for custom post types
+	 * Language and translation management for custom post types.
 	 *
 	 * @since 1.0
 	 *
-	 * @param array $types list of post type names for which Polylang manages language and translations
-	 * @param bool  $hide  true when displaying the list in Polylang settings
-	 * @return array list of post type names for which Polylang manages language and translations
+	 * @param string[] $types list of post type names for which Polylang manages language and translations.
+	 * @param bool     $hide  true when displaying the list in Polylang settings.
+	 * @return string[] list of post type names for which Polylang manages language and translations.
 	 */
 	public function translate_types( $types, $hide ) {
 		foreach ( $this->xmls as $xml ) {
@@ -182,13 +182,13 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Language and translation management for custom taxonomies
+	 * Language and translation management for custom taxonomies.
 	 *
 	 * @since 1.0
 	 *
-	 * @param array $taxonomies list of taxonomy names for which Polylang manages language and translations
-	 * @param bool  $hide       true when displaying the list in Polylang settings
-	 * @return array list of taxonomy names for which Polylang manages language and translations
+	 * @param string[] $taxonomies list of taxonomy names for which Polylang manages language and translations.
+	 * @param bool     $hide       true when displaying the list in Polylang settings.
+	 * @return string[] list of taxonomy names for which Polylang manages language and translations.
 	 */
 	public function translate_taxonomies( $taxonomies, $hide ) {
 		foreach ( $this->xmls as $xml ) {

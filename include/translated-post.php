@@ -216,7 +216,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @param PLL_Language $untranslated_in The language the posts must not be translated in.
 	 * @param PLL_Language $lang            Language of the searched posts.
 	 * @param string       $search          Limit the results to the posts matching this string.
-	 * @return array Array of posts
+	 * @return WP_Post[] Array of posts.
 	 */
 	public function get_untranslated( $type, $untranslated_in, $lang, $search = '' ) {
 		$return = array();

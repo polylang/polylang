@@ -79,22 +79,22 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	}
 
 	/**
-	 * Get the row actions
+	 * Get the row actions.
 	 *
 	 * @since 1.8
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	protected function get_actions() {
 		return empty( $this->options['sync'] ) ? array( 'configure' ) : array( 'configure', 'deactivate' );
 	}
 
 	/**
-	 * List the post metas to synchronize
+	 * List the post metas to synchronize.
 	 *
 	 * @since 1.0
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public static function list_metas_to_sync() {
 		return array(

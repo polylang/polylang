@@ -137,7 +137,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.5
 	 *
-	 * @return array The list of hosts.
+	 * @return string[] The list of hosts.
 	 */
 	public function get_hosts() {
 		return array( wp_parse_url( $this->home, PHP_URL_HOST ) );
@@ -178,8 +178,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $languages Array of PLL_Language objects.
-	 * @return array
+	 * @param PLL_Language[] $languages Array of PLL_Language objects.
+	 * @return PLL_Language[]
 	 */
 	public function pll_languages_list( $languages ) {
 		foreach ( $languages as $language ) {
@@ -195,8 +195,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $languages Array of PLL_Language objects.
-	 * @return array
+	 * @param PLL_Language[] $languages Array of PLL_Language objects.
+	 * @return PLL_Language[]
 	 */
 	public function pll_after_languages_cache( $languages ) {
 		foreach ( $languages as $language ) {
@@ -212,12 +212,12 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Adds our domains or subdomains to allowed hosts for safe redirection
+	 * Adds our domains or subdomains to allowed hosts for safe redirect.
 	 *
 	 * @since 1.4.3
 	 *
-	 * @param array $hosts Allowed hosts.
-	 * @return array
+	 * @param string[] $hosts Allowed hosts.
+	 * @return string[]
 	 */
 	public function allowed_redirect_hosts( $hosts ) {
 		return array_unique( array_merge( $hosts, array_values( $this->get_hosts() ) ) );

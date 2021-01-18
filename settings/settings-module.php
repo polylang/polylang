@@ -269,11 +269,11 @@ class PLL_Settings_Module {
 	}
 
 	/**
-	 * Get the row actions
+	 * Get the row actions.
 	 *
 	 * @since 1.8
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	protected function get_actions() {
 		$actions = array();
@@ -294,11 +294,11 @@ class PLL_Settings_Module {
 	}
 
 	/**
-	 * Get the actions links
+	 * Get the actions links.
 	 *
 	 * @since 1.8
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function get_action_links() {
 		return array_intersect_key( $this->action_links, array_flip( $this->get_actions() ) );
@@ -332,11 +332,11 @@ class PLL_Settings_Module {
 	}
 
 	/**
-	 * Get the buttons
+	 * Get the buttons.
 	 *
 	 * @since 1.9
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function get_buttons() {
 		return $this->buttons;

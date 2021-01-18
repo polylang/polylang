@@ -44,9 +44,9 @@ class PLL_Wizard {
 	protected $step;
 
 	/**
-	 * List of WordPress CSS file handles
+	 * List of WordPress CSS file handles.
 	 *
-	 * @var array $styles
+	 * @var string[]
 	 */
 	protected $styles = array();
 
@@ -130,8 +130,8 @@ class PLL_Wizard {
 	 *
 	 * @since 2.7
 	 *
-	 * @param array $tabs Submenus list.
-	 * @return array Submenus list updated.
+	 * @param string[] $tabs Submenus list.
+	 * @return string[] Submenus list updated.
 	 */
 	public function settings_tabs( $tabs ) {
 		$tabs['wizard'] = esc_html__( 'Setup', 'polylang' );
@@ -139,11 +139,11 @@ class PLL_Wizard {
 	}
 
 	/**
-	 * Return if the media step is displayable
+	 * Returns true if the media step is displayable, false otherwise.
 	 *
 	 * @since 2.7
 	 *
-	 * @param array $languages List of language objects.
+	 * @param PLL_Language[] $languages List of language objects.
 	 * @return bool
 	 */
 	public function is_media_step_displayable( $languages ) {
@@ -784,11 +784,11 @@ class PLL_Wizard {
 	 *
 	 * @since 2.7
 	 *
-	 * @param string $default_language       slug of the default language; null if no default language is defined.
-	 * @param int    $home_page              post_id of the home page if it's defined, false otherwise.
-	 * @param string $home_page_title        home page title if it's defined, 'Homepage' otherwise.
-	 * @param string $home_page_language     slug of the home page if it's defined, false otherwise.
-	 * @param array  $untranslated_languages array of languages which needs to have a home page translated.
+	 * @param string   $default_language       slug of the default language; null if no default language is defined.
+	 * @param int      $home_page              post_id of the home page if it's defined, false otherwise.
+	 * @param string   $home_page_title        home page title if it's defined, 'Homepage' otherwise.
+	 * @param string   $home_page_language     slug of the home page if it's defined, false otherwise.
+	 * @param string[] $untranslated_languages array of languages which needs to have a home page translated.
 	 * @return void
 	 */
 	public function create_home_page_translations( $default_language, $home_page, $home_page_title, $home_page_language, $untranslated_languages ) {

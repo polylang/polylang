@@ -19,28 +19,28 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	/**
 	 * The list of post types to show in the form.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	private $post_types;
 
 	/**
 	 * The list of post types to disable in the form.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	private $disabled_post_types;
 
 	/**
 	 * The list of taxonomies to show in the form.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	private $taxonomies;
 
 	/**
 	 * The list of taxonomies to disable in the form.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	private $disabled_taxonomies;
 

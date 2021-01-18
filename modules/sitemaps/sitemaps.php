@@ -89,8 +89,8 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	 *
 	 * @since 2.8
 	 *
-	 * @param array $rules Rewrite rules.
-	 * @return array
+	 * @param string[] $rules Rewrite rules.
+	 * @return string[]
 	 */
 	public function rewrite_rules( $rules ) {
 		global $wp_rewrite;

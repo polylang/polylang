@@ -189,13 +189,13 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 	/**
 	 * The rewrite rules !
-	 * always make sure the default language is at the end in case the language information is hidden for default language
-	 * thanks to brbrbr http://wordpress.org/support/topic/plugin-polylang-rewrite-rules-not-correct
+	 * Always make sure that the default language is at the end in case the language information is hidden for default language.
+	 * Thanks to brbrbr http://wordpress.org/support/topic/plugin-polylang-rewrite-rules-not-correct.
 	 *
 	 * @since 0.8.1
 	 *
-	 * @param array $rules rewrite rules
-	 * @return array modified rewrite rules
+	 * @param string[] $rules Rewrite rules.
+	 * @return string[] Modified rewrite rules.
 	 */
 	public function rewrite_rules( $rules ) {
 		$filter = str_replace( '_rewrite_rules', '', current_filter() );

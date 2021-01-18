@@ -114,14 +114,15 @@ class PLL_Nav_Menu {
 	}
 
 	/**
-	 * Get nav menu locations and language from a temporary location
+	 * Get nav menu locations and language from a temporary location.
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $loc temporary location
-	 * @return array
-	 *   'location' => nav menu location
-	 *   'lang'     => language slug
+	 * @param string $loc Temporary location
+	 * @return string[] {
+	 *   @type string $location Nav menu location.
+	 *   @type string $lang     Language code.
+	 * }
 	 */
 	public function explode_location( $loc ) {
 		$infos = explode( '___', $loc );
