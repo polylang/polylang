@@ -465,8 +465,13 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		// The language is not correctly set so let's redirect to the correct url for this object
 		if ( $do_redirect && $redirect_url && $requested_url != $redirect_url ) {
-			wp_safe_redirect( $redirect_url, 301, POLYLANG );
-			exit;
+			// Protect against chained redirects.
+			if ( ! redirect_canonical( $redirect_url, false ) ) {
+				wp_safe_redirect( $redirect_url, 301, POLYLANG );
+				exit;
+			} else {
+				return;
+			}
 		}
 
 		return $redirect_url;
