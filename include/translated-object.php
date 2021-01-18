@@ -144,7 +144,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 2.3
 	 *
-	 * @param array $id           Object id ( typically a post_id or term_id ).
+	 * @param int   $id           Object id ( typically a post_id or term_id ).
 	 * @param array $translations An associative array of translations with language code as key and translation id as value.
 	 * @return bool
 	 */

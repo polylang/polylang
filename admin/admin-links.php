@@ -4,19 +4,19 @@
  */
 
 /**
- * Manages links related functions
+ * Manages links related functions.
  *
  * @since 1.8
  */
 class PLL_Admin_Links extends PLL_Links {
 
 	/**
-	 * Returns html markup for a new translation link
+	 * Returns the html markup for a new translation link.
 	 *
 	 * @since 2.6
 	 *
-	 * @param string $link     The new translation link.
-	 * @param object $language The language of the new translation.
+	 * @param string       $link     The new translation link.
+	 * @param PLL_Language $language The language of the new translation.
 	 * @return string
 	 */
 	protected function new_translation_link( $link, $language ) {
@@ -38,12 +38,12 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * Returns html markup for a translation link
+	 * Returns the html markup for a translation link.
 	 *
 	 * @since 2.6
 	 *
-	 * @param string $link     The translation link.
-	 * @param object $language The language of the translation.
+	 * @param string       $link     The translation link.
+	 * @param PLL_Language $language The language of the translation.
 	 * @return string
 	 */
 	public function edit_translation_link( $link, $language ) {
@@ -56,14 +56,14 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * Get the link to create a new post translation
+	 * Get the link to create a new post translation.
 	 *
 	 * @since 1.5
 	 *
-	 * @param int    $post_id  The source post id.
-	 * @param object $language The language of the new translation.
-	 * @param string $context  Optional. Defaults to 'display' which encodes '&' to '&amp;'.
-	 *                         Otherwise, preserves '&'.
+	 * @param int          $post_id  The source post id.
+	 * @param PLL_Language $language The language of the new translation.
+	 * @param string       $context  Optional. Defaults to 'display' which encodes '&' to '&amp;'.
+	 *                               Otherwise, preserves '&'.
 	 * @return string
 	 */
 	public function get_new_post_translation_link( $post_id, $language, $context = 'display' ) {
@@ -113,24 +113,24 @@ class PLL_Admin_Links extends PLL_Links {
 		}
 
 		/**
-		 * Filter the new post translation link
+		 * Filters the new post translation link.
 		 *
 		 * @since 1.8
 		 *
-		 * @param string $link     the new post translation link
-		 * @param object $language the language of the new translation
-		 * @param int    $post_id  the source post id
+		 * @param string       $link     The new post translation link.
+		 * @param PLL_Language $language The language of the new translation.
+		 * @param int          $post_id  The source post id.
 		 */
 		return apply_filters( 'pll_get_new_post_translation_link', $link, $language, $post_id );
 	}
 
 	/**
-	 * Returns html markup for a new post translation link
+	 * Returns the html markup for a new post translation link.
 	 *
 	 * @since 1.8
 	 *
-	 * @param int    $post_id
-	 * @param object $language
+	 * @param int          $post_id  The source post id.
+	 * @param PLL_Language $language The language of the new translation.
 	 * @return string
 	 */
 	public function new_post_translation_link( $post_id, $language ) {
@@ -139,11 +139,11 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * Returns html markup for a translation link
+	 * Returns the html markup for a post translation link.
 	 *
 	 * @since 1.4
 	 *
-	 * @param int $post_id translation post id
+	 * @param int $post_id The translation post id.
 	 * @return string
 	 */
 	public function edit_post_translation_link( $post_id ) {
@@ -153,14 +153,14 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * Get the link to create a new term translation
+	 * Get the link to create a new term translation.
 	 *
 	 * @since 1.5
 	 *
-	 * @param int    $term_id
-	 * @param string $taxonomy
-	 * @param string $post_type
-	 * @param object $language
+	 * @param int          $term_id   Source term id.
+	 * @param string       $taxonomy  Taxonomy name.
+	 * @param string       $post_type Post type name.
+	 * @param PLL_Language $language  The language of the new translation.
 	 * @return string
 	 */
 	public function get_new_term_translation_link( $term_id, $taxonomy, $post_type, $language ) {
@@ -179,28 +179,28 @@ class PLL_Admin_Links extends PLL_Links {
 		$link = add_query_arg( $args, admin_url( 'edit-tags.php' ) );
 
 		/**
-		 * Filter the new term translation link
+		 * Filters the new term translation link.
 		 *
 		 * @since 1.8
 		 *
-		 * @param string $link      the new term translation link
-		 * @param object $language  the language of the new translation
-		 * @param int    $term_id   the source term id
-		 * @param string $taxonomy
-		 * @param string $post_type
+		 * @param string       $link      The new term translation link.
+		 * @param PLL_Language $language  The language of the new translation.
+		 * @param int          $term_id   The source term id.
+		 * @param string       $taxonomy  Taxonomy name.
+		 * @param string       $post_type Post type name.
 		 */
 		return apply_filters( 'pll_get_new_term_translation_link', $link, $language, $term_id, $taxonomy, $post_type );
 	}
 
 	/**
-	 * Returns html markup for a new term translation
+	 * Returns the html markup for a new term translation.
 	 *
 	 * @since 1.8
 	 *
-	 * @param int    $term_id
-	 * @param string $taxonomy
-	 * @param string $post_type
-	 * @param object $language
+	 * @param int          $term_id   Source term id.
+	 * @param string       $taxonomy  Taxonomy name.
+	 * @param string       $post_type Post type name.
+	 * @param PLL_Language $language  The language of the new translation.
 	 * @return string
 	 */
 	public function new_term_translation_link( $term_id, $taxonomy, $post_type, $language ) {
@@ -209,13 +209,13 @@ class PLL_Admin_Links extends PLL_Links {
 	}
 
 	/**
-	 * Returns html markup for a term translation link
+	 * Returns the html markup for a term translation link.
 	 *
 	 * @since 1.4
 	 *
-	 * @param object $term_id   translation term id
-	 * @param string $taxonomy
-	 * @param string $post_type
+	 * @param int    $term_id   Translation term id.
+	 * @param string $taxonomy  Taxonomy name.
+	 * @param string $post_type Post type name.
 	 * @return string
 	 */
 	public function edit_term_translation_link( $term_id, $taxonomy, $post_type ) {

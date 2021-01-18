@@ -77,7 +77,7 @@ class PLL_Sync_Tax {
 	 *
 	 * @since 2.3
 	 *
-	 * @param array  $object_id Object ID
+	 * @param int    $object_id Object ID
 	 * @param array  $terms     List of terms ids assigned to the source post
 	 * @param string $taxonomy  Taxonomy name
 	 * @param string $lang      Language slug
