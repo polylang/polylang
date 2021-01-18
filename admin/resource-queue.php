@@ -17,9 +17,16 @@ class PLL_Resource_Queue {
 	public static $scripts;
 
 	/**
+	 * The resource queue for Polylang CSS files.
+	 *
+	 * @var PLL_Resource_Queue
+	 */
+	public static $styles;
+
+	/**
 	 * @var string Path to the file containing the plugin's header.
 	 */
-	private $plugin_file;
+	protected $build_dir;
 
 	/**
 	 * @var string Class name.
@@ -27,24 +34,30 @@ class PLL_Resource_Queue {
 	private $resource_type;
 
 	/**
+	 * @var string
+	 */
+	protected $extension;
+
+	/**
 	 * @var string To be appended to script names, before extension.
 	 */
-	private $suffix;
+	protected $suffix;
 
 	/**
 	 * PLL_Scripts constructor.
 	 *
 	 * Sets up the root path to find Polylang scripts in by default.
 	 *
-	 * @since 3.0
-	 *
 	 * @param string $resource_type Class name, either {@see PLL_Script} or {@see PLL_Stylesheet}.
-	 * @param string $plugin_file Plugin's Header filepath, to use in {@see https://developer.wordpress.org/reference/functions/plugins_url/ plugins_url()}.
+	 * @param string $build_dir Plugin's Header filepath, to use in {@see https://developer.wordpress.org/reference/functions/plugins_url/ plugins_url()}.
+	 * @param string $extension
+	 * @since 3.0
 	 */
-	public function __construct( $resource_type, $plugin_file ) {
+	public function __construct( $resource_type, $build_dir, $extension ) {
 		$this->resource_type = $resource_type;
-		$this->plugin_file = $plugin_file;
+		$this->build_dir = $build_dir;
 		$this->suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$this->extension = $extension;
 	}
 
 	/**
@@ -90,13 +103,32 @@ class PLL_Resource_Queue {
 	 * @return PLL_Script
 	 */
 	protected function create( $filename, $dependencies = array(), $extra = false ) {
-		$handle = 'pll_' . str_replace( '-', '_', strtolower( $filename ) );
-		$path = plugins_url( '/js/build/' . $filename . $this->suffix . '.js', $this->plugin_file );
+		$handle = $this->compute_handle( $filename );
+		$path = $this->compute_path( $filename );
 		if ( $extra ) {
 			$resource = new $this->resource_type( $handle, $path, $dependencies, $extra );
 		} else {
 			$resource = new $this->resource_type( $handle, $path, $dependencies );
 		}
 		return $resource;
+	}
+
+	/**
+	 * @since 3.0
+	 *
+	 * @param string $filename Name of the resource file.
+	 * @return string
+	 */
+	protected function compute_handle( $filename ) {
+		return 'pll_' . str_replace( '-', '_', strtolower( $filename ) );
+	}
+
+	/**
+	 * @since 3.0
+	 * @param string $filename Name of the resource file.
+	 * @return string
+	 */
+	protected function compute_path( $filename ) {
+		return $this->build_dir . $filename . $this->suffix . $this->extension;
 	}
 }
