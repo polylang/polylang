@@ -65,7 +65,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$test = strpos( $head, plugins_url( '/js/user.min.js', POLYLANG_FILE ) );
 		in_array( 'user', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
 
-		$test = strpos( $footer, 'polylang_admin-css' );
+		$test = strpos( $footer, 'pll_admin-css' );
 		in_array( 'css', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
 	}
 

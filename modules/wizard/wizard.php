@@ -51,11 +51,6 @@ class PLL_Wizard {
 	protected $styles = array();
 
 	/**
-	 * @var PLL_Resource_Queue
-	 */
-	protected $scripts;
-
-	/**
 	 * Constructor
 	 *
 	 * @param object $polylang Reference to Polylang global object.
@@ -289,8 +284,8 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $this->get_suffix() . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
-		wp_enqueue_style( 'pll-wizard', plugins_url( '/modules/wizard/css/wizard' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'forms' ), POLYLANG_VERSION );
+		PLL_Resource_Queue::$styles->enqueue( 'admin', array() );
+		PLL_Resource_Queue::$styles->enqueue( 'wizard', array( 'dashicons', 'install', 'common', 'forms' ) );
 
 		$this->styles = array( 'polylang_admin', 'pll-wizard' );
 	}
@@ -491,7 +486,7 @@ class PLL_Wizard {
 					'i18n_remove_language_icon'   => esc_html__( 'Remove this language', 'polylang' ),
 				)
 			)->enqueue();
-		wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
+		PLL_Resource_Queue::$styles->enqueue( 'selectmenu', array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ) );
 		$steps['languages'] = array(
 			'name'    => esc_html__( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
@@ -657,7 +652,7 @@ class PLL_Wizard {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
 			PLL_Resource_Queue::$scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
 				->localize( 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
-			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
+			PLL_Resource_Queue::$styles->enqueue( 'selectmenu', array( 'dashicons', 'install', 'common' ) );
 			$steps['untranslated-contents'] = array(
 				'name'    => esc_html__( 'Content', 'polylang' ),
 				'view'    => array( $this, 'display_step_untranslated_contents' ),
