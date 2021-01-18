@@ -107,7 +107,7 @@ class PLL_OLT_Manager {
 			 * See WP_Locale_Switcher::change_locale()
 			 */
 			if ( ! class_exists( 'WP_Textdomain_Registry' ) && function_exists( '_get_path_to_translation' ) ) {
-				_get_path_to_translation( null, true );
+				_get_path_to_translation( '', true );
 			}
 
 			foreach ( $this->list_textdomains as $textdomain ) {
