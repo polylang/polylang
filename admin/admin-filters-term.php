@@ -197,7 +197,7 @@ class PLL_Admin_Filters_Term {
 			array(
 				'name'     => 'term_lang_choice',
 				'value'    => 'term_id',
-				'selected' => $lang ? $lang->term_id : '',
+				'selected' => $lang->term_id,
 				'disabled' => $disabled,
 				'flag'     => true,
 			)
@@ -221,9 +221,7 @@ class PLL_Admin_Filters_Term {
 		);
 
 		echo '<tr id="term-translations" class="form-field">';
-		if ( $lang ) {
-			include __DIR__ . '/view-translations-term.php';
-		}
+		include __DIR__ . '/view-translations-term.php';
 		echo '</tr>' . "\n";
 	}
 

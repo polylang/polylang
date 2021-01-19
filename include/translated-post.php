@@ -70,16 +70,16 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Deletes a translation
+	 * Deletes a translation.
 	 *
 	 * @since 0.5
 	 *
-	 * @param int $id post id
+	 * @param int $id Post id.
 	 * @return void
 	 */
 	public function delete_translation( $id ) {
 		parent::delete_translation( $id );
-		wp_set_object_terms( $id, null, $this->tax_translations );
+		wp_set_object_terms( $id, array(), $this->tax_translations );
 	}
 
 	/**

@@ -216,7 +216,7 @@ class PLL_Sync_Tax {
 		$taxonomies = array_intersect( get_post_taxonomies( $from ), $this->get_taxonomies_to_copy( false, $from, $to, $lang ) );
 
 		// Update the term cache to reduce the number of queries in the loop
-		update_object_term_cache( $from, get_post_type( $from ) );
+		update_object_term_cache( array( $from ), get_post_type( $from ) );
 
 		// Copy
 		foreach ( $taxonomies as $tax ) {

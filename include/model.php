@@ -189,7 +189,7 @@ class PLL_Model {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int|string $value term_id, tl_term_id, slug or locale of the queried language.
+	 * @param mixed $value term_id, tl_term_id, slug or locale of the queried language.
 	 * @return PLL_Language|false Language object, false if no language found.
 	 */
 	public function get_language( $value ) {
@@ -548,7 +548,7 @@ class PLL_Model {
 			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
 			$join = $this->post->join_clause();
 			$where = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
-			$where .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", join( "', '", esc_sql( $q['post_type'] ) ) );
+			$where .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
 			$where .= $this->post->where_clause( $this->get_languages_list() );
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
 
