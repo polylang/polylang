@@ -31,7 +31,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
-		PLL_Resource_Queue::$scripts = new PLL_Resource_Queue( PLL_Script::class, POLYLANG_FILE );
+		PLL_Resource_Queue::$scripts = new PLL_Resource_Queue( PLL_Script::class, plugins_url( 'js/build/', POLYLANG_FILE ), '.js' );
+		PLL_Resource_Queue::$styles = new PLL_Resource_Queue( PLL_Stylesheet::class, plugins_url( 'css/build/', POLYLANG_FILE ), '.css' );
 
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
@@ -123,8 +124,6 @@ class PLL_Admin_Base extends PLL_Base {
 			return;
 		}
 
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
 		/*
 		 * For each script:
 		 * 0 => the pages on which to load the script
@@ -161,7 +160,7 @@ class PLL_Admin_Base extends PLL_Base {
 			}
 		}
 
-		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/admin' . $suffix . '.css', POLYLANG_FILE ), array(), POLYLANG_VERSION );
+		PLL_Resource_Queue::$styles->enqueue( 'admin', array() );
 
 		$this->localize_scripts();
 	}
