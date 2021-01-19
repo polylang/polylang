@@ -120,10 +120,13 @@ abstract class PLL_Translated_Object {
 
 			// Query terms.
 			$terms = array();
-			foreach ( wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) ) as $t ) {
-				$terms[ $t->taxonomy ] = $t;
-				if ( $t->taxonomy == $taxonomy ) {
-					$term = $t;
+			$object_terms = wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) );
+			if ( is_array( $object_terms ) ) {
+				foreach ( $object_terms as $t ) {
+					$terms[ $t->taxonomy ] = $t;
+					if ( $t->taxonomy == $taxonomy ) {
+						$term = $t;
+					}
 				}
 			}
 

@@ -402,13 +402,15 @@ class PLL_Admin_Model extends PLL_Model {
 		$terms = get_terms( $taxonomy, array( 'hide_empty' => false ) );
 		$trs   = array();
 
-		// Prepare objects relationships
-		foreach ( $terms as $term ) {
-			$t = maybe_unserialize( $term->description );
-			if ( in_array( $t, $translations ) ) {
-				foreach ( $t as $object_id ) {
-					if ( ! empty( $object_id ) ) {
-						$trs[] = $wpdb->prepare( '( %d, %d )', $object_id, $term->term_taxonomy_id );
+		// Prepare objects relationships.
+		if ( is_array( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$t = maybe_unserialize( $term->description );
+				if ( in_array( $t, $translations ) ) {
+					foreach ( $t as $object_id ) {
+						if ( ! empty( $object_id ) ) {
+							$trs[] = $wpdb->prepare( '( %d, %d )', $object_id, $term->term_taxonomy_id );
+						}
 					}
 				}
 			}
@@ -514,24 +516,26 @@ class PLL_Admin_Model extends PLL_Model {
 		$dt       = array();
 		$ut       = array();
 
-		foreach ( $terms as $term ) {
-			$term_ids[ $term->taxonomy ][] = $term->term_id;
-			$tr = maybe_unserialize( $term->description );
-			if ( ! empty( $tr[ $old_slug ] ) ) {
-				if ( $new_slug ) {
-					$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
-				} else {
-					$dr['id'][] = (int) $tr[ $old_slug ];
-					$dr['tt'][] = (int) $term->term_taxonomy_id;
-				}
-				unset( $tr[ $old_slug ] );
+		if ( is_array( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$term_ids[ $term->taxonomy ][] = $term->term_id;
+				$tr = maybe_unserialize( $term->description );
+				if ( ! empty( $tr[ $old_slug ] ) ) {
+					if ( $new_slug ) {
+						$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
+					} else {
+						$dr['id'][] = (int) $tr[ $old_slug ];
+						$dr['tt'][] = (int) $term->term_taxonomy_id;
+					}
+					unset( $tr[ $old_slug ] );
 
-				if ( empty( $tr ) || 1 == count( $tr ) ) {
-					$dt['t'][] = (int) $term->term_id;
-					$dt['tt'][] = (int) $term->term_taxonomy_id;
-				} else {
-					$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $tr ) );
-					$ut['in'][] = (int) $term->term_id;
+					if ( empty( $tr ) || 1 == count( $tr ) ) {
+						$dt['t'][] = (int) $term->term_id;
+						$dt['tt'][] = (int) $term->term_taxonomy_id;
+					} else {
+						$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $tr ) );
+						$ut['in'][] = (int) $term->term_id;
+					}
 				}
 			}
 		}

@@ -136,15 +136,18 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	protected function upgrade_2_1() {
-		foreach ( get_terms( 'language', array( 'hide_empty' => 0 ) ) as $lang ) {
-			$mo_id = PLL_MO::get_id( $lang );
-			$meta = get_post_meta( $mo_id, '_pll_strings_translations', true );
+		$languages = get_terms( 'language', array( 'hide_empty' => 0 ) );
+		if ( is_array( $languages ) ) {
+			foreach ( $languages as $lang ) {
+				$mo_id = PLL_MO::get_id( $lang );
+				$meta = get_post_meta( $mo_id, '_pll_strings_translations', true );
 
-			if ( empty( $meta ) ) {
-				$post = get_post( $mo_id, OBJECT );
-				$strings = maybe_unserialize( $post->post_content );
-				if ( is_array( $strings ) ) {
-					update_post_meta( $mo_id, '_pll_strings_translations', $strings );
+				if ( empty( $meta ) ) {
+					$post = get_post( $mo_id, OBJECT );
+					$strings = maybe_unserialize( $post->post_content );
+					if ( is_array( $strings ) ) {
+						update_post_meta( $mo_id, '_pll_strings_translations', $strings );
+					}
 				}
 			}
 		}

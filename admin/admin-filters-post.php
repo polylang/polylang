@@ -68,9 +68,11 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 				$terms          = get_terms( $hierarchical_taxonomies, array( 'get' => 'all' ) );
 				$term_languages = array();
 
-				foreach ( $terms as $term ) {
-					if ( $lang = $this->model->term->get_language( $term->term_id ) ) {
-						$term_languages[ $lang->slug ][ $term->taxonomy ][] = $term->term_id;
+				if ( is_array( $terms ) ) {
+					foreach ( $terms as $term ) {
+						if ( $lang = $this->model->term->get_language( $term->term_id ) ) {
+							$term_languages[ $lang->slug ][ $term->taxonomy ][] = $term->term_id;
+						}
 					}
 				}
 

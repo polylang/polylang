@@ -188,7 +188,7 @@ class PLL_Language {
 	 */
 	public function __construct( $language, $term_language = null ) {
 		// Build the object from all properties stored as an array.
-		if ( empty( $term_language ) ) {
+		if ( is_array( $language ) ) {
 			foreach ( $language as $prop => $value ) {
 				$this->$prop = $value;
 			}
