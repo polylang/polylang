@@ -9,12 +9,6 @@
  * @since 1.2
  */
 class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
-
-	/**
-	 * @var PLL_Resource_Queue
-	 */
-	protected $scripts;
-
 	/**
 	 * Constructor: setups filters and actions
 	 *
@@ -24,8 +18,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
-
-
 
 		// Populates nav menus locations
 		// Since WP 4.4, must be done before customize_register is fired

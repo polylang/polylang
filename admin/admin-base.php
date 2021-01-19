@@ -51,16 +51,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public $static_pages;
 
 	/**
-	 * Registers, localize and enqueue Polylang javascript files.
-	 *
-	 * @since 3.0
-	 *
-	 * @var PLL_Resource_Queue
-	 */
-	public $scripts;
-
-
-	/**
 	 * Loads the polylang text domain
 	 * Setups actions needed on all admin pages
 	 *

@@ -74,10 +74,10 @@ class PLL_Script {
 	 *
 	 * @see https://developer.wordpress.org/reference/functions/wp_localize_script/ wp_localize_script().
 	 *
-	 * @param string       $object_name A valid javascript variable name.
-	 * @param string|array $value The javascript data to pass. Associative arrays are mapped as javascript objects.
+	 * @param string          $object_name A valid javascript variable name.
+	 * @param string|string[] $value The javascript data to pass. Associative arrays are mapped as javascript objects, and can have nested arrays as well.
 	 * @return PLL_Script $this
-	 * @throws InvalidArgumentException
+	 * @throws InvalidArgumentException When value is neither an array or a string.
 	 */
 	public function localize( $object_name, $value ) {
 		if ( is_string( $value ) ) {
