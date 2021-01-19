@@ -351,7 +351,7 @@ abstract class PLL_Translated_Object {
 	 * @since 1.4
 	 *
 	 * @param PLL_Language $lang PLL_Language object.
-	 * @return int[]
+	 * @return int[] Object ids.
 	 */
 	public function get_objects_in_language( $lang ) {
 		global $wpdb;

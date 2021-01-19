@@ -242,7 +242,7 @@ class PLL_Filters {
 	 * @param int[]   $excluded_terms Array of excluded term IDs.
 	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
 	 * @param WP_Post $post           WP_Post object.
-	 * @return string modified JOIN clause.
+	 * @return string Modified JOIN clause.
 	 */
 	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
 		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
@@ -258,7 +258,7 @@ class PLL_Filters {
 	 * @param int[]   $excluded_terms Array of excluded term IDs.
 	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
 	 * @param WP_Post $post           WP_Post object.
-	 * @return string modified WHERE clause.
+	 * @return string Modified WHERE clause.
 	 */
 	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
 		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
@@ -311,7 +311,7 @@ class PLL_Filters {
 	 * @since 2.1.3
 	 *
 	 * @param string[] $email Email contents.
-	 * @return string[]
+	 * @return string[] Translated email contents.
 	 */
 	public function translate_user_email( $email ) {
 		$blog_name = wp_specialchars_decode( pll__( get_option( 'blogname' ) ), ENT_QUOTES );

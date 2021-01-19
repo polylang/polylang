@@ -77,7 +77,7 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	 * @since 2.8
 	 *
 	 * @param array $whitelist White list.
-	 * @return array;
+	 * @return array
 	 */
 	public function home_url_white_list( $whitelist ) {
 		$whitelist[] = array( 'file' => 'class-wp-sitemaps-posts' );
@@ -90,7 +90,7 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	 * @since 2.8
 	 *
 	 * @param string[] $rules Rewrite rules.
-	 * @return string[]
+	 * @return string[] Modified rewrite rules.
 	 */
 	public function rewrite_rules( $rules ) {
 		global $wp_rewrite;

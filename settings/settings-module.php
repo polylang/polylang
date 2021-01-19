@@ -298,7 +298,7 @@ class PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 *
-	 * @return string[]
+	 * @return string[] Action links.
 	 */
 	public function get_action_links() {
 		return array_intersect_key( $this->action_links, array_flip( $this->get_actions() ) );
@@ -336,7 +336,7 @@ class PLL_Settings_Module {
 	 *
 	 * @since 1.9
 	 *
-	 * @return string[]
+	 * @return string[] An array of html fragment for the buttons.
 	 */
 	public function get_buttons() {
 		return $this->buttons;

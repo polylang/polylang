@@ -784,11 +784,11 @@ class PLL_Wizard {
 	 *
 	 * @since 2.7
 	 *
-	 * @param string   $default_language       slug of the default language; null if no default language is defined.
-	 * @param int      $home_page              post_id of the home page if it's defined, false otherwise.
-	 * @param string   $home_page_title        home page title if it's defined, 'Homepage' otherwise.
-	 * @param string   $home_page_language     slug of the home page if it's defined, false otherwise.
-	 * @param string[] $untranslated_languages array of languages which needs to have a home page translated.
+	 * @param string   $default_language       Slug of the default language; null if no default language is defined.
+	 * @param int      $home_page              Post ID of the home page if it's defined, false otherwise.
+	 * @param string   $home_page_title        Home page title if it's defined, 'Homepage' otherwise.
+	 * @param string   $home_page_language     Slug of the home page if it's defined, false otherwise.
+	 * @param string[] $untranslated_languages Array of languages which needs to have a home page translated.
 	 * @return void
 	 */
 	public function create_home_page_translations( $default_language, $home_page, $home_page_title, $home_page_language, $untranslated_languages ) {

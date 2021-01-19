@@ -179,7 +179,7 @@ abstract class PLL_Links_Model {
 	 * @since 1.8
 	 *
 	 * @param PLL_Language[] $languages Array of PLL_Language objects.
-	 * @return PLL_Language[]
+	 * @return PLL_Language[] Array of PLL_Language objects with home url and flag.
 	 */
 	public function pll_languages_list( $languages ) {
 		foreach ( $languages as $language ) {
@@ -196,7 +196,7 @@ abstract class PLL_Links_Model {
 	 * @since 1.8
 	 *
 	 * @param PLL_Language[] $languages Array of PLL_Language objects.
-	 * @return PLL_Language[]
+	 * @return PLL_Language[] Array of PLL_Language objects.
 	 */
 	public function pll_after_languages_cache( $languages ) {
 		foreach ( $languages as $language ) {
@@ -217,7 +217,7 @@ abstract class PLL_Links_Model {
 	 * @since 1.4.3
 	 *
 	 * @param string[] $hosts Allowed hosts.
-	 * @return string[]
+	 * @return string[] Modified list of allowed hosts.
 	 */
 	public function allowed_redirect_hosts( $hosts ) {
 		return array_unique( array_merge( $hosts, array_values( $this->get_hosts() ) ) );

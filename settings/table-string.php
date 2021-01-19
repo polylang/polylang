@@ -307,7 +307,7 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @since 1.1
 	 *
-	 * @return string[]
+	 * @return string[] Array of bulk actions.
 	 */
 	public function get_bulk_actions() {
 		return array( 'delete' => __( 'Delete', 'polylang' ) );

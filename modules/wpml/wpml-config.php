@@ -163,9 +163,9 @@ class PLL_WPML_Config {
 	 *
 	 * @since 1.0
 	 *
-	 * @param string[] $types list of post type names for which Polylang manages language and translations.
-	 * @param bool     $hide  true when displaying the list in Polylang settings.
-	 * @return string[] list of post type names for which Polylang manages language and translations.
+	 * @param string[] $types The list of post type names for which Polylang manages language and translations.
+	 * @param bool     $hide  True when displaying the list in Polylang settings.
+	 * @return string[] The list of post type names for which Polylang manages language and translations.
 	 */
 	public function translate_types( $types, $hide ) {
 		foreach ( $this->xmls as $xml ) {
@@ -186,9 +186,9 @@ class PLL_WPML_Config {
 	 *
 	 * @since 1.0
 	 *
-	 * @param string[] $taxonomies list of taxonomy names for which Polylang manages language and translations.
-	 * @param bool     $hide       true when displaying the list in Polylang settings.
-	 * @return string[] list of taxonomy names for which Polylang manages language and translations.
+	 * @param string[] $taxonomies The list of taxonomy names for which Polylang manages language and translations.
+	 * @param bool     $hide       True when displaying the list in Polylang settings.
+	 * @return string[] The list of taxonomy names for which Polylang manages language and translations.
 	 */
 	public function translate_taxonomies( $taxonomies, $hide ) {
 		foreach ( $this->xmls as $xml ) {

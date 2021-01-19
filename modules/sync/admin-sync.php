@@ -115,7 +115,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @since 2.4
 	 *
 	 * @param WP_Post $post Post object.
-	 * @return array
+	 * @return array Fields to synchronize.
 	 */
 	protected function get_fields_to_sync( $post ) {
 		global $wpdb;
