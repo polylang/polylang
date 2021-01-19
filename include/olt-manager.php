@@ -28,16 +28,16 @@ class PLL_OLT_Manager {
 	protected $default_locale;
 
 	/**
-	 * Stores all loded text domains and mo files.
+	 * Stores all loaded text domains and mo files.
 	 *
-	 * @var array
+	 * @var string[][]
 	 */
 	protected $list_textdomains = array();
 
 	/**
 	 * Stores post types an taxonomies labels to translate.
 	 *
-	 * @var array
+	 * @var string[][]
 	 */
 	public $labels = array();
 
@@ -244,12 +244,12 @@ class PLL_OLT_Manager {
 	}
 
 	/**
-	 * Allows Polylang to be the first plugin loaded ;- )
+	 * Allows Polylang to be the first plugin loaded ;-).
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $plugins list of active plugins
-	 * @return array list of active plugins
+	 * @param string[] $plugins List of active plugins.
+	 * @return string[] List of active plugins.
 	 */
 	public function make_polylang_first( $plugins ) {
 		if ( $key = array_search( POLYLANG_BASENAME, $plugins ) ) {

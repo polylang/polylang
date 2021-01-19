@@ -110,12 +110,12 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Get post fields to synchronize
+	 * Get post fields to synchronize.
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $post Post object
-	 * @return array
+	 * @param WP_Post $post Post object.
+	 * @return array Fields to synchronize.
 	 */
 	protected function get_fields_to_sync( $post ) {
 		global $wpdb;
@@ -155,13 +155,13 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Synchronizes post fields in translations
+	 * Synchronizes post fields in translations.
 	 *
 	 * @since 1.2
 	 *
-	 * @param int    $post_id      post id
-	 * @param object $post         post object
-	 * @param array  $translations post translations
+	 * @param int     $post_id      Post id.
+	 * @param WP_Post $post         Post object.
+	 * @param int[]   $translations Post translations.
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
 		parent::pll_save_post( $post_id, $post, $translations );

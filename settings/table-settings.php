@@ -136,11 +136,11 @@ class PLL_Table_Settings extends WP_List_Table {
 	}
 
 	/**
-	 * Gets the list of columns
+	 * Gets the list of columns.
 	 *
 	 * @since 1.8
 	 *
-	 * @return array the list of column titles
+	 * @return string[] The list of column titles.
 	 */
 	public function get_columns() {
 		return array(

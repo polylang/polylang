@@ -43,11 +43,11 @@ class PLL_Table_String extends WP_List_Table {
 	protected $selected_group;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 0.6
 	 *
-	 * @param array $languages list of languages
+	 * @param PLL_Language[] $languages List of languages.
 	 */
 	public function __construct( $languages ) {
 		parent::__construct(
@@ -145,15 +145,15 @@ class PLL_Table_String extends WP_List_Table {
 	}
 
 	/**
-	 * Gets the list of columns
+	 * Gets the list of columns.
 	 *
 	 * @since 0.6
 	 *
-	 * @return array the list of column titles
+	 * @return string[] The list of column titles.
 	 */
 	public function get_columns() {
 		return array(
-			'cb'           => '<input type="checkbox" />', // Checkbox
+			'cb'           => '<input type="checkbox" />', // Checkbox.
 			'string'       => esc_html__( 'String', 'polylang' ),
 			'name'         => esc_html__( 'Name', 'polylang' ),
 			'context'      => esc_html__( 'Group', 'polylang' ),
@@ -192,9 +192,9 @@ class PLL_Table_String extends WP_List_Table {
 	 *
 	 * @since 2.6
 	 *
-	 * @param array  $mos An array of PLL_MO objects
-	 * @param string $s   Searched string
-	 * @return array Found strings
+	 * @param PLL_MO[] $mos An array of PLL_MO objects.
+	 * @param string   $s   Searched string.
+	 * @return string[] Found strings.
 	 */
 	protected function search_in_translations( $mos, $s ) {
 		$founds = array();
@@ -303,11 +303,11 @@ class PLL_Table_String extends WP_List_Table {
 	}
 
 	/**
-	 * Get the list of possible bulk actions
+	 * Get the list of possible bulk actions.
 	 *
 	 * @since 1.1
 	 *
-	 * @return array
+	 * @return string[] Array of bulk actions.
 	 */
 	public function get_bulk_actions() {
 		return array( 'delete' => __( 'Delete', 'polylang' ) );

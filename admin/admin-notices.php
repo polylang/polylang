@@ -55,11 +55,11 @@ class PLL_Admin_Notices {
 	}
 
 	/**
-	 * Get custom notices
+	 * Get custom notices.
 	 *
 	 * @since 2.3.9
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public static function get_notices() {
 		return self::$notices;

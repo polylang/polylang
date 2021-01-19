@@ -70,11 +70,11 @@ class PLL_Sync {
 	}
 
 	/**
-	 * Get post fields to synchornize
+	 * Get post fields to synchronize.
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $post Post object
+	 * @param WP_Post $post Post object.
 	 * @return array
 	 */
 	protected function get_fields_to_sync( $post ) {
@@ -144,13 +144,13 @@ class PLL_Sync {
 	}
 
 	/**
-	 * Synchronizes post fields in translations
+	 * Synchronizes post fields in translations.
 	 *
 	 * @since 2.4
 	 *
-	 * @param int    $post_id      post id
-	 * @param object $post         post object
-	 * @param array  $translations post translations
+	 * @param int     $post_id      Post id.
+	 * @param WP_Post $post         Post object.
+	 * @param int[]   $translations Post translations.
 	 * @return void
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
@@ -233,13 +233,13 @@ class PLL_Sync {
 	}
 
 	/**
-	 * Synchronize sticky posts
+	 * Synchronize sticky posts.
 	 *
 	 * @since 2.3
 	 *
-	 * @param array $value     New option value
-	 * @param array $old_value Old option value
-	 * @return array
+	 * @param int[] $value     New option value.
+	 * @param int[] $old_value Old option value.
+	 * @return int[]
 	 */
 	public function sync_sticky_posts( $value, $old_value ) {
 		if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {

@@ -89,12 +89,12 @@ class PLL_Admin extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Adds a 'settings' link in the plugins table
+	 * Adds a 'settings' link for our plugin in the plugins list table.
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $links list of links associated to the plugin
-	 * @return array modified list of links
+	 * @param string[] $links List of links associated to the plugin.
+	 * @return string[] Modified list of links.
 	 */
 	public function plugin_action_links( $links ) {
 		array_unshift( $links, '<a href="admin.php?page=mlang">' . __( 'Settings', 'polylang' ) . '</a>' );

@@ -100,14 +100,14 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Called when a category or post tag is created or edited
-	 * Does nothing except on taxonomies which are filterable
+	 * Called when a category or post tag is created or edited.
+	 * Does nothing except on taxonomies which are filterable.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int    $term_id
-	 * @param int    $tt_id    Term taxonomy id
-	 * @param string $taxonomy
+	 * @param int    $term_id  Term id of the term being saved.
+	 * @param int    $tt_id    Term taxonomy id.
+	 * @param string $taxonomy Taxonomy name.
 	 * @return void
 	 */
 	public function save_term( $term_id, $tt_id, $taxonomy ) {
@@ -120,26 +120,26 @@ class PLL_CRUD_Terms {
 			}
 
 			/**
-			 * Fires after the term language and translations are saved
+			 * Fires after the term language and translations are saved.
 			 *
 			 * @since 1.2
 			 *
-			 * @param int    $term_id      term id
-			 * @param string $taxonomy     taxonomy name
-			 * @param array  $translations the list of translations term ids
+			 * @param int    $term_id      Term id.
+			 * @param string $taxonomy     Taxonomy name.
+			 * @param int[]  $translations The list of translations term ids.
 			 */
 			do_action( 'pll_save_term', $term_id, $taxonomy, $this->model->term->get_translations( $term_id ) );
 		}
 	}
 
 	/**
-	 * Get the language(s) to filter get_terms
+	 * Get the language(s) to filter WP_Term_Query.
 	 *
 	 * @since 1.7.6
 	 *
-	 * @param array $taxonomies queried taxonomies
-	 * @param array $args       get_terms arguments
-	 * @return object|string|bool the language(s) to use in the filter, false otherwise
+	 * @param string[] $taxonomies Queried taxonomies.
+	 * @param array    $args       WP_Term_Query arguments.
+	 * @return PLL_Language|string|false The language(s) to use in the filter, false otherwise.
 	 */
 	protected function get_queried_language( $taxonomies, $args ) {
 		// Does nothing except on taxonomies which are filterable
@@ -162,17 +162,17 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Adds language dependent cache domain when querying terms
-	 * Useful as the 'lang' parameter is not included in cache key by WordPress
+	 * Adds language dependent cache domain when querying terms.
+	 * Useful as the 'lang' parameter is not included in cache key by WordPress.
 	 *
 	 * @since 1.3
 	 *
-	 * @param array $args
-	 * @param array $taxonomies
-	 * @return array modified arguments
+	 * @param array    $args       WP_Term_Query arguments.
+	 * @param string[] $taxonomies Queried taxonomies.
+	 * @return array Modified arguments.
 	 */
 	public function get_terms_args( $args, $taxonomies ) {
-		// Don't break _get_term_hierarchy()
+		// Don't break _get_term_hierarchy().
 		if ( 'all' === $args['get'] && 'id' === $args['orderby'] && 'id=>parent' === $args['fields'] ) {
 			$args['lang'] = '';
 		}
@@ -194,10 +194,10 @@ class PLL_CRUD_Terms {
 	 *
 	 * @since 0.2
 	 *
-	 * @param array $clauses    list of sql clauses
-	 * @param array $taxonomies list of taxonomies
-	 * @param array $args       get_terms arguments
-	 * @return array modified sql clauses
+	 * @param string[] $clauses    List of sql clauses.
+	 * @param string[] $taxonomies List of taxonomies.
+	 * @param array    $args       WP_Term_Query arguments.
+	 * @return string[] Modified sql clauses.
 	 */
 	public function terms_clauses( $clauses, $taxonomies, $args ) {
 		$lang = $this->get_queried_language( $taxonomies, $args );
@@ -205,12 +205,12 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Sets the WP_Term_Query language when doing a WP_Query
-	 * Needed since WP 4.9
+	 * Sets the WP_Term_Query language when doing a WP_Query.
+	 * Needed since WP 4.9.
 	 *
 	 * @since 2.3.2
 	 *
-	 * @param object $query WP_Query object
+	 * @param WP_Query $query WP_Query object.
 	 * @return void
 	 */
 	public function set_tax_query_lang( $query ) {
@@ -218,8 +218,8 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Removes the WP_Term_Query language filter for WP_Query
-	 * Needed since WP 4.9
+	 * Removes the WP_Term_Query language filter for WP_Query.
+	 * Needed since WP 4.9.
 	 *
 	 * @since 2.3.2
 	 *

@@ -36,15 +36,15 @@ class PLL_Admin_Block_Editor {
 	}
 
 	/**
-	 * Filter the preload REST requests by the current language of the post
-	 * Necessary otherwise subsequent REST requests all filtered by the language
-	 * would not hit the preloaded requests
+	 * Filters the preload REST requests by the current language of the post.
+	 * Necessary otherwise subsequent REST requests, all filtered by the language,
+	 * would not hit the preloaded requests.
 	 *
 	 * @since 2.5
 	 *
-	 * @param array  $preload_paths Array of paths to preload.
-	 * @param object $post          The post resource data.
-	 * @return array
+	 * @param (string|string[])[] $preload_paths Array of paths to preload.
+	 * @param WP_Post             $post          The post resource data.
+	 * @return (string|string[])[]
 	 */
 	public function preload_paths( $preload_paths, $post ) {
 		if ( $this->model->is_translated_post_type( $post->post_type ) ) {

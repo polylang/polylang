@@ -34,15 +34,15 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 	}
 
 	/**
-	 * Get the custom fields to copy or synchronize
+	 * Get the custom fields to copy or synchronize.
 	 *
 	 * @since 2.3
 	 *
-	 * @param int    $from Id of the post from which we copy informations
-	 * @param int    $to   Id of the post to which we paste informations
-	 * @param string $lang Language slug
-	 * @param bool   $sync True if it is synchronization, false if it is a copy
-	 * @return array List of meta keys
+	 * @param int    $from Id of the post from which we copy informations.
+	 * @param int    $to   Id of the post to which we paste informations.
+	 * @param string $lang Language slug.
+	 * @param bool   $sync True if it is synchronization, false if it is a copy.
+	 * @return string[] List of meta keys.
 	 */
 	protected function get_metas_to_copy( $from, $to, $lang, $sync = false ) {
 		// Copy or synchronize post metas and allow plugins to do the same

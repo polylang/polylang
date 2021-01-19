@@ -66,13 +66,13 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Adds languages and translations columns in posts, pages, media, categories and tags tables
+	 * Adds languages and translations columns in posts, pages, media, categories and tags tables.
 	 *
 	 * @since 0.8.2
 	 *
-	 * @param array  $columns List of table columns
-	 * @param string $before  The column before which we want to add our languages
-	 * @return array modified list of columns
+	 * @param string[] $columns List of table columns.
+	 * @param string   $before  The column before which we want to add our languages.
+	 * @return string[] Modified list of columns.
 	 */
 	protected function add_column( $columns, $before ) {
 		if ( $n = array_search( $before, array_keys( $columns ) ) ) {
@@ -105,12 +105,12 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Hide the column for the filtered language
+	 * Hides the column for the filtered language.
 	 *
 	 * @since 2.7
 	 *
-	 * @param array $hidden Array of hidden columns
-	 * @return array
+	 * @param string[] $hidden Array of hidden columns.
+	 * @return string[]
 	 */
 	public function hidden_columns( $hidden ) {
 		if ( ! empty( $this->filter_lang ) ) {
@@ -120,12 +120,12 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Adds the language and translations columns ( before the comments column ) in the posts, pages and media library tables
+	 * Adds the language and translations columns ( before the comments column ) in the posts, pages and media library tables.
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $columns list of posts table columns
-	 * @return array modified list of columns
+	 * @param string[] $columns List of posts table columns.
+	 * @return string[] Modified list of columns.
 	 */
 	public function add_post_column( $columns ) {
 		return $this->add_column( $columns, 'comments' );
@@ -230,12 +230,12 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Adds the language column ( before the posts column ) in the 'Categories' or 'Post Tags' table
+	 * Adds the language column ( before the posts column ) in the 'Categories' or 'Post Tags' table.
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $columns list of terms table columns
-	 * @return array modified list of columns
+	 * @param string[] $columns List of terms table columns.
+	 * @return string[] modified List of columns.
 	 */
 	public function add_term_column( $columns ) {
 		return $this->add_column( $columns, 'posts' );

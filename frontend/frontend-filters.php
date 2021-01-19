@@ -71,12 +71,12 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Filters sticky posts by current language
+	 * Filters sticky posts by current language.
 	 *
 	 * @since 0.8
 	 *
-	 * @param array $posts list of sticky posts ids
-	 * @return array modified list of sticky posts ids
+	 * @param int[] $posts List of sticky posts ids.
+	 * @return int[] Modified list of sticky posts ids
 	 */
 	public function option_sticky_posts( $posts ) {
 		global $wpdb;

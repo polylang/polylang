@@ -165,13 +165,13 @@ class PLL_Filters {
 	}
 
 	/**
-	 * Filters get_pages per language
+	 * Filters get_pages() per language.
 	 *
 	 * @since 1.4
 	 *
-	 * @param array $pages an array of pages already queried
-	 * @param array $args  get_pages arguments
-	 * @return array modified list of pages
+	 * @param WP_Post[] $pages An array of pages already queried.
+	 * @param array     $args  Array of get_pages() arguments.
+	 * @return WP_Post[] Modified list of pages.
 	 */
 	public function get_pages( $pages, $args ) {
 		if ( isset( $args['lang'] ) && empty( $args['lang'] ) ) {
@@ -234,32 +234,32 @@ class PLL_Filters {
 	}
 
 	/**
-	 * Modifies the sql request for get_adjacent_post to filter by the current language
+	 * Modifies the sql request for get_adjacent_post to filter by the current language.
 	 *
 	 * @since 0.1
 	 *
 	 * @param string  $sql            The JOIN clause in the SQL.
 	 * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
-	 * @param array   $excluded_terms Array of excluded term IDs.
+	 * @param int[]   $excluded_terms Array of excluded term IDs.
 	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
 	 * @param WP_Post $post           WP_Post object.
-	 * @return string modified JOIN clause
+	 * @return string Modified JOIN clause.
 	 */
 	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
 		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
 	}
 
 	/**
-	 * Modifies the sql request for wp_get_archives and get_adjacent_post to filter by the current language
+	 * Modifies the sql request for wp_get_archives and get_adjacent_post to filter by the current language.
 	 *
 	 * @since 0.1
 	 *
 	 * @param string  $sql            The WHERE clause in the SQL.
 	 * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
-	 * @param array   $excluded_terms Array of excluded term IDs.
+	 * @param int[]   $excluded_terms Array of excluded term IDs.
 	 * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
 	 * @param WP_Post $post           WP_Post object.
-	 * @return string modified WHERE clause
+	 * @return string Modified WHERE clause.
 	 */
 	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
 		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
@@ -306,13 +306,13 @@ class PLL_Filters {
 	}
 
 	/**
-	 * Translates the site title in emails sent to the user (change email, reset password)
-	 * It is necessary to filter the email because WP evaluates the site title before calling switch_to_locale()
+	 * Translates the site title in emails sent to the user (change email, reset password).
+	 * It is necessary to filter the email because WP evaluates the site title before calling switch_to_locale().
 	 *
 	 * @since 2.1.3
 	 *
-	 * @param array $email
-	 * @return array
+	 * @param string[] $email Email contents.
+	 * @return string[] Translated email contents.
 	 */
 	public function translate_user_email( $email ) {
 		$blog_name = wp_specialchars_decode( pll__( get_option( 'blogname' ) ), ENT_QUOTES );

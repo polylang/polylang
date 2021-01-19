@@ -74,11 +74,11 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	}
 
 	/**
-	 * Get hosts managed on the website
+	 * Get hosts managed on the website.
 	 *
 	 * @since 1.5
 	 *
-	 * @return array list of hosts
+	 * @return string[] The list of hosts.
 	 */
 	public function get_hosts() {
 		$hosts = array();

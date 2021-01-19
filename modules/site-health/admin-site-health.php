@@ -53,7 +53,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 2.8
 	 *
-	 * @return array List of option keys to ignore.
+	 * @return string[] List of option keys to ignore.
 	 */
 	protected function exclude_options_keys() {
 		return array(
@@ -67,7 +67,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 2.8
 	 *
-	 * @return array List of language keys to ignore.
+	 * @return string[] List of language keys to ignore.
 	 */
 	protected function exclude_language_keys() {
 		return array(

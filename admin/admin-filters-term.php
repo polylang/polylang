@@ -367,20 +367,20 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
-	 * Save translations from our form
+	 * Save translations from our form.
 	 *
 	 * @since 1.5
 	 *
-	 * @param int $term_id
-	 * @return array
+	 * @param int $term_id The term id of teh term being saved.
+	 * @return int[] The array of translated term ids.
 	 */
 	protected function save_translations( $term_id ) {
-		// Security check as 'wp_update_term' can be called from outside WP admin
+		// Security check as 'wp_update_term' can be called from outside WP admin.
 		check_admin_referer( 'pll_language', '_pll_nonce' );
 
 		$translations = array();
 
-		// Save translations after checking the translated term is in the right language ( as well as cast id to int )
+		// Save translations after checking the translated term is in the right language ( as well as cast id to int ).
 		if ( isset( $_POST['term_tr_lang'] ) ) {
 			foreach ( array_map( 'absint', $_POST['term_tr_lang'] ) as $lang => $tr_id ) {
 				$tr_lang = $this->model->term->get_language( $tr_id );

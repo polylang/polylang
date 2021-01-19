@@ -138,28 +138,28 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
-	 * Get the custom fields to copy or synchronize
+	 * Get the custom fields to copy or synchronize.
 	 *
 	 * @since 2.3
 	 *
-	 * @param int    $from Id of the post from which we copy informations
-	 * @param int    $to   Id of the post to which we paste informations
-	 * @param string $lang Language slug
-	 * @param bool   $sync True if it is synchronization, false if it is a copy
-	 * @return array List of meta keys
+	 * @param int    $from Id of the post from which we copy informations.
+	 * @param int    $to   Id of the post to which we paste informations.
+	 * @param string $lang Language slug.
+	 * @param bool   $sync True if it is synchronization, false if it is a copy.
+	 * @return string[] List of meta keys.
 	 */
 	protected function get_metas_to_copy( $from, $to, $lang, $sync = false ) {
 		/**
-		 * Filter the custom fields to copy or synchronize
+		 * Filters the custom fields to copy or synchronize.
 		 *
 		 * @since 0.6
 		 * @since 1.9.2 The `$from`, `$to`, `$lang` parameters were added.
 		 *
-		 * @param array  $keys List of custom fields names
-		 * @param bool   $sync True if it is synchronization, false if it is a copy
-		 * @param int    $from Id of the post from which we copy informations
-		 * @param int    $to   Id of the post to which we paste informations
-		 * @param string $lang Language slug
+		 * @param string[] $keys List of custom fields names.
+		 * @param bool     $sync True if it is synchronization, false if it is a copy.
+		 * @param int      $from Id of the post from which we copy informations.
+		 * @param int      $to   Id of the post to which we paste informations.
+		 * @param string   $lang Language slug.
 		 */
 		return array_unique( apply_filters( "pll_copy_{$this->meta_type}_metas", array(), $sync, $from, $to, $lang ) );
 	}
@@ -284,11 +284,11 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
-	 * Store metas to synchronize before deleting them
+	 * Store metas to synchronize before deleting them.
 	 *
 	 * @since 2.3
 	 *
-	 * @param array $mids  Not used
+	 * @param int[] $mids  Not used.
 	 * @param int   $id    Object ID.
 	 * @return void
 	 */
@@ -301,11 +301,11 @@ abstract class PLL_Sync_Metas {
 	}
 
 	/**
-	 * Synchronize deleted meta across translations
+	 * Synchronizes deleted meta across translations.
 	 *
 	 * @since 2.3
 	 *
-	 * @param array  $mids  Not used
+	 * @param int[]  $mids  Not used.
 	 * @param int    $id    Object ID.
 	 * @param string $key   Meta key.
 	 * @param mixed  $value Meta value.
@@ -393,9 +393,9 @@ abstract class PLL_Sync_Metas {
 	 *
 	 * @since 2.3
 	 *
-	 * @param int    $object_id    Id of the object being asaved
-	 * @param object $obj          Not used
-	 * @param array  $translations The list of translations object ids
+	 * @param int    $object_id    Id of the object being saved.
+	 * @param object $obj          Not used.
+	 * @param int[]  $translations The list of translations object ids.
 	 * @return void
 	 */
 	public function save_object( $object_id, $obj, $translations ) {

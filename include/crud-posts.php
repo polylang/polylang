@@ -83,17 +83,17 @@ class PLL_CRUD_Posts {
 	}
 
 	/**
-	 * Called when a post ( or page ) is saved, published or updated
+	 * Called when a post ( or page ) is saved, published or updated.
 	 *
 	 * @since 0.1
-	 * @since 2.3 Does not save the language and translations anymore, unless the post has no language yet
+	 * @since 2.3 Does not save the language and translations anymore, unless the post has no language yet.
 	 *
-	 * @param int    $post_id
-	 * @param object $post
+	 * @param int     $post_id Post id of the post being saved.
+	 * @param WP_Post $post    The post being saved.
 	 * @return void
 	 */
 	public function save_post( $post_id, $post ) {
-		// Does nothing except on post types which are filterable
+		// Does nothing except on post types which are filterable.
 		if ( $this->model->is_translated_post_type( $post->post_type ) ) {
 			if ( $id = wp_is_post_revision( $post_id ) ) {
 				$post_id = $id;
@@ -106,27 +106,27 @@ class PLL_CRUD_Posts {
 			}
 
 			/**
-			 * Fires after the post language and translations are saved
+			 * Fires after the post language and translations are saved.
 			 *
 			 * @since 1.2
 			 *
-			 * @param int    $post_id      Post id
-			 * @param object $post         Post object
-			 * @param array  $translations The list of translations post ids
+			 * @param int     $post_id      Post id.
+			 * @param WP_Post $post         Post object.
+			 * @param int[]   $translations The list of translations post ids.
 			 */
 			do_action( 'pll_save_post', $post_id, $post, $this->model->post->get_translations( $post_id ) );
 		}
 	}
 
 	/**
-	 * Make sure saved terms are in the right language (especially tags with same name in different languages)
+	 * Makes sure that saved terms are in the right language (especially tags with same name in different languages).
 	 *
 	 * @since 2.3
 	 *
-	 * @param int    $object_id Object ID.
-	 * @param array  $terms     An array of object terms.
-	 * @param array  $tt_ids    An array of term taxonomy IDs.
-	 * @param string $taxonomy  Taxonomy slug.
+	 * @param int       $object_id Object ID.
+	 * @param WP_Term[] $terms     An array of object terms.
+	 * @param int[]     $tt_ids    An array of term taxonomy IDs.
+	 * @param string    $taxonomy  Taxonomy slug.
 	 * @return void
 	 */
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy ) {
