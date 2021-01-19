@@ -1,12 +1,14 @@
 <?php
 /**
- * @packe Polylang
+ * @package Polylang
  */
 
 /**
  * Class PLL_Stylesheet
  *
  * Represents a CSS file.
+ *
+ * @since 3.0
  */
 class PLL_Stylesheet {
 	/**
@@ -41,11 +43,24 @@ class PLL_Stylesheet {
 		$this->media = $media;
 	}
 
+	/**
+	 * Registers a Polylang stylesheet in WordPress.
+	 *
+	 * @see https://developer.wordpress.org/reference/functions/wp_register_style/ wp_register_style().
+	 *
+	 * @return PLL_Stylesheet $this
+	 */
 	public function register() {
 		wp_register_style( $this->handle, $this->path, $this->dependencies, POLYLANG_VERSION, $this->media );
 		return $this;
 	}
 
+	/**
+	 * Enqueues a Polylang stylesheet in WordPress.
+	 *
+	 * @see https://developer.wordpress.org/reference/functions/wp_enqueue_style/ wp_enqueue_style().
+	 * @return PLL_Stylesheet $this
+	 */
 	public function enqueue() {
 		if ( wp_style_is( $this->handle, 'registered' ) ) {
 			wp_enqueue_style( $this->handle );
@@ -54,6 +69,9 @@ class PLL_Stylesheet {
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_handle() {
 		return $this->handle;
 	}

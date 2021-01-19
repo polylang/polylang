@@ -7,6 +7,8 @@
  * Class PLL_Script
  *
  * Represents a single script to be enqueue in WordPress dashboard.
+ *
+ * @since 3.0
  */
 class PLL_Script {
 	/**
@@ -41,11 +43,24 @@ class PLL_Script {
 		$this->in_footer = $in_footer;
 	}
 
+	/**
+	 * Registers a Polylang script in WordPress.
+	 *
+	 * @see https://developer.wordpress.org/reference/functions/wp_register_script/ wp_register_script().
+	 *
+	 * @return PLL_Script $this
+	 */
 	public function register() {
 		wp_register_script( $this->handle, $this->path, $this->dependencies, POLYLANG_VERSION, $this->in_footer );
 		return $this;
 	}
 
+	/**
+	 * Enqueues a Polylang script in WordPress.
+	 *
+	 * @see https://developer.wordpress.org/reference/functions/wp_enqueue_script/ wp_enqueue_script().
+	 * @return PLL_Script $this
+	 */
 	public function enqueue() {
 		if ( wp_script_is( $this->handle, 'registered' ) ) {
 			wp_enqueue_script( $this->handle );
@@ -54,11 +69,23 @@ class PLL_Script {
 		return $this;
 	}
 
+	/**
+	 * Localizes a Polylang script in WordPress.
+	 *
+	 * @see https://developer.wordpress.org/reference/functions/wp_localize_script/ wp_localize_script().
+	 *
+	 * @param string       $object_name A valid javascript variable name.
+	 * @param string|array $value The javascript data to pass. Associative arrays are mapped as javascript objects.
+	 * @return $this
+	 */
 	public function localize( $object_name, $value ) {
 		wp_localize_script( $this->handle, $object_name, $value );
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_handle() {
 		return $this->handle;
 	}
