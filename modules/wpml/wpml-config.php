@@ -208,7 +208,7 @@ class PLL_WPML_Config {
 		foreach ( $this->xmls as $xml ) {
 			$taxos = $xml->xpath( 'taxonomies/taxonomy' );
 			if ( is_array( $taxos ) ) {
-				foreach (  $taxos as $tax ) {
+				foreach ( $taxos as $tax ) {
 					$attributes = $tax->attributes();
 					if ( 1 == $attributes['translate'] && ! $hide ) {
 						$taxonomies[ (string) $tax ] = (string) $tax;
