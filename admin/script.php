@@ -76,9 +76,17 @@ class PLL_Script {
 	 *
 	 * @param string       $object_name A valid javascript variable name.
 	 * @param string|array $value The javascript data to pass. Associative arrays are mapped as javascript objects.
-	 * @return $this
+	 * @return PLL_Script $this
+	 * @throws InvalidArgumentException
 	 */
 	public function localize( $object_name, $value ) {
+		if ( is_string( $value ) ) {
+			$value = esc_html( $value );
+		} elseif ( is_array( $value ) ) {
+			array_walk_recursive( $value, 'esc_html' );
+		} else {
+			throw new InvalidArgumentException( 'wp_localize_script() only accepts strings or arrays as value objects.' );
+		}
 		wp_localize_script( $this->handle, $object_name, $value );
 		return $this;
 	}
