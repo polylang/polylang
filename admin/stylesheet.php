@@ -53,4 +53,8 @@ class PLL_Stylesheet {
 		wp_enqueue_style( $this->handle, $this->path, $this->dependencies, POLYLANG_VERSION, $this->media );
 		return $this;
 	}
+
+	public function get_handle() {
+		return $this->handle;
+	}
 }

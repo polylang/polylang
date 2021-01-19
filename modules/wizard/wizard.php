@@ -284,10 +284,12 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function enqueue_scripts() {
-		PLL_Resource_Queue::$styles->enqueue( 'admin', array() );
-		PLL_Resource_Queue::$styles->enqueue( 'wizard', array( 'dashicons', 'install', 'common', 'forms' ) );
+		$admin_style = PLL_Resource_Queue::$styles->enqueue( 'css/admin', array() )
+			->get_handle();
+		$wizard_style = PLL_Resource_Queue::$styles->enqueue( 'modules/wizard/css/wizard', array( 'dashicons', 'install', 'common', 'forms' ) )
+			->get_handle();
 
-		$this->styles = array( 'polylang_admin', 'pll-wizard' );
+		$this->styles = array( $admin_style, $wizard_style );
 	}
 
 	/**
@@ -366,14 +368,15 @@ class PLL_Wizard {
 		// Add ajax action on deactivate button in licenses step.
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
 
-		PLL_Resource_Queue::$scripts->enqueue( 'admin', array( 'jquery', 'jquery-ui-selectmenu' ), true );
-		wp_localize_script( 'pll_admin', 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
+		$admin_script = PLL_Resource_Queue::$scripts->enqueue( 'js/admin', array( 'jquery', 'jquery-ui-selectmenu' ), true )
+			->localize( 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) )
+			->get_handle();
 		if ( $this->is_licenses_step_displayable() ) {
 			$steps['licenses'] = array(
 				'name'    => esc_html__( 'Licenses', 'polylang' ),
 				'view'    => array( $this, 'display_step_licenses' ),
 				'handler' => array( $this, 'save_step_licenses' ),
-				'scripts' => array( 'pll_admin' ), // Polylang admin script used by deactivate license button.
+				'scripts' => array( $admin_script ), // Polylang admin script used by deactivate license button.
 				'styles'  => array(),
 			);
 		}
@@ -463,9 +466,10 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_languages( $steps ) {
-		PLL_Resource_Queue::$scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
-			->localize( 'dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
-		PLL_Resource_Queue::$scripts->register( 'wizard-languages', array( 'jquery', 'jquery-ui-dialog' ), true )
+		$admin_script = PLL_Resource_Queue::$scripts->enqueue( 'js/admin', array( 'jquery', 'jquery-ui-selectmenu' ), true )
+			->localize( 'dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) )
+			->get_handle();
+		$languages_script = PLL_Resource_Queue::$scripts->register( 'modules/wizard/js/languages-step', array( 'jquery', 'jquery-ui-dialog' ), true )
 			->localize(
 				'pll_wizard_params',
 				array(
@@ -485,14 +489,16 @@ class PLL_Wizard {
 					'i18n_dialog_ignore_button'   => esc_html__( 'Ignore', 'polylang' ),
 					'i18n_remove_language_icon'   => esc_html__( 'Remove this language', 'polylang' ),
 				)
-			)->enqueue();
-		PLL_Resource_Queue::$styles->enqueue( 'selectmenu', array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ) );
+			)->enqueue()
+			->get_handle();
+		$select_style = PLL_Resource_Queue::$styles->enqueue( 'css/selectmenu', array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ) )
+			->get_handle();
 		$steps['languages'] = array(
 			'name'    => esc_html__( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
 			'handler' => array( $this, 'save_step_languages' ),
-			'scripts' => array( 'pll-wizard-languages', 'pll-wizard-language-choice' ),
-			'styles'  => array( 'pll-wizard-selectmenu' ),
+			'scripts' => array( $admin_script, $languages_script ),
+			'styles'  => array( $select_style ),
 		);
 		return $steps;
 	}
@@ -650,15 +656,17 @@ class PLL_Wizard {
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
-			PLL_Resource_Queue::$scripts->enqueue( 'language-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
-				->localize( 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) );
-			PLL_Resource_Queue::$styles->enqueue( 'selectmenu', array( 'dashicons', 'install', 'common' ) );
+			$languages_script = PLL_Resource_Queue::$scripts->enqueue( 'modules/wizard/js/languages-step', array( 'jquery', 'jquery-ui-selectmenu' ), true )
+				->localize( 'pll_dismiss_notice', esc_html__( 'Dismiss this notice.', 'polylang' ) )
+				->get_handle();
+			$select_style = PLL_Resource_Queue::$styles->enqueue( 'css/selectmenu', array( 'dashicons', 'install', 'common' ) )
+				->get_handle();
 			$steps['untranslated-contents'] = array(
 				'name'    => esc_html__( 'Content', 'polylang' ),
 				'view'    => array( $this, 'display_step_untranslated_contents' ),
 				'handler' => array( $this, 'save_step_untranslated_contents' ),
-				'scripts' => array( 'pll-wizard-language-choice' ),
-				'styles'  => array( 'pll-wizard-selectmenu' ),
+				'scripts' => array( $languages_script ),
+				'styles'  => array( $select_style ),
 			);
 		}
 		return $steps;

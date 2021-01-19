@@ -114,12 +114,13 @@ class PLL_Resource_Queue {
 	}
 
 	/**
-	 * @since 3.0
-	 *
-	 * @param string $filename Name of the resource file.
+	 * @param string $path Path of the resource file.
 	 * @return string
+	 * @since 3.0
 	 */
-	protected function compute_handle( $filename ) {
+	protected function compute_handle( $path ) {
+		$parts = explode( '/', $path );
+		$filename = array_pop( $parts );
 		return 'pll_' . str_replace( '-', '_', strtolower( $filename ) );
 	}
 

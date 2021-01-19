@@ -58,4 +58,8 @@ class PLL_Script {
 		wp_localize_script( $this->handle, $object_name, $value );
 		return $this;
 	}
+
+	public function get_handle() {
+		return $this->handle;
+	}
 }

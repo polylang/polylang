@@ -107,7 +107,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			return;
 		}
 
-		$nav_menu_script = PLL_Resource_Queue::$scripts->enqueue( 'nav-menu', array( 'jquery' ) );
+		$nav_menu_script = PLL_Resource_Queue::$scripts->enqueue( 'js/nav-menu', array( 'jquery' ) );
 
 		$data = array(
 			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options
