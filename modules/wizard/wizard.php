@@ -493,7 +493,7 @@ class PLL_Wizard {
 			'name'    => esc_html__( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
 			'handler' => array( $this, 'save_step_languages' ),
-			'scripts' => array( 'pll-wizard-languages', 'pll-wizard-language-choice' ),
+			'scripts' => array( 'pll-wizard-languages', 'pll_admin' ),
 			'styles'  => array( 'pll-wizard-selectmenu' ),
 		);
 		return $steps;
