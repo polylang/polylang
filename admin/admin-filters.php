@@ -40,13 +40,13 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Modifies the widgets forms to add our language dropdown list
+	 * Modifies the widgets forms to add our language dropdown list.
 	 *
 	 * @since 0.3
 	 *
-	 * @param object $widget   Widget instance
-	 * @param null   $return   Not used
-	 * @param array  $instance Widget settings
+	 * @param WP_Widget $widget   Widget instance.
+	 * @param null      $return   Not used.
+	 * @param array     $instance Widget settings.
 	 * @return void
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
@@ -80,16 +80,16 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Called when widget options are saved
-	 * saves the language associated to the widget
+	 * Called when widget options are saved.
+	 * Saves the language associated to the widget.
 	 *
 	 * @since 0.3
 	 *
-	 * @param array  $instance     Widget options
-	 * @param array  $new_instance Not used
-	 * @param array  $old_instance Not used
-	 * @param object $widget       WP_Widget object
-	 * @return array Widget options
+	 * @param array     $instance     Widget options.
+	 * @param array     $new_instance Not used.
+	 * @param array     $old_instance Not used.
+	 * @param WP_Widget $widget       WP_Widget object.
+	 * @return array Widget options.
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
 		$key = $widget->id . '_lang_choice';
@@ -124,11 +124,11 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Outputs hidden information to modify the biography form with js
+	 * Outputs hidden information to modify the biography form with js.
 	 *
 	 * @since 0.4
 	 *
-	 * @param object $profileuser
+	 * @param WP_User $profileuser The current WP_User object.
 	 * @return void
 	 */
 	public function personal_options( $profileuser ) {

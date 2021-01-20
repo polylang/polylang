@@ -30,11 +30,11 @@ class PLL_Table_Languages extends WP_List_Table {
 	}
 
 	/**
-	 * Generates content for a single row of the table
+	 * Generates content for a single row of the table.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $item The current item
+	 * @param PLL_Language $item The language item.
 	 * @return void
 	 */
 	public function single_row( $item ) {
@@ -43,8 +43,8 @@ class PLL_Table_Languages extends WP_List_Table {
 		 *
 		 * @since 1.8
 		 *
-		 * @param array  $classes list of class names
-		 * @param object $item    the current item
+		 * @param array        $classes The list of class names.
+		 * @param PLL_Language $item    The language item.
 		 */
 		$classes = apply_filters( 'pll_languages_row_classes', array(), $item );
 		echo '<tr' . ( empty( $classes ) ? '>' : ' class="' . esc_attr( implode( ' ', $classes ) ) . '">' );
@@ -57,7 +57,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @since 0.1
 	 *
-	 * @param PLL_Language $item        The current item.
+	 * @param PLL_Language $item        The language item.
 	 * @param string       $column_name The column name.
 	 * @return string|int
 	 */
@@ -82,7 +82,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $item
+	 * @param PLL_Language $item The language item.
 	 * @return string
 	 */
 	public function column_name( $item ) {
@@ -100,7 +100,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $item
+	 * @param PLL_Language $item The language item.
 	 * @return string
 	 */
 	public function column_default_lang( $item ) {
@@ -118,12 +118,12 @@ class PLL_Table_Languages extends WP_List_Table {
 			);
 
 			/**
-			 * Filter the default language row action in the languages list table
+			 * Filters the default language row action in the languages list table.
 			 *
 			 * @since 1.8
 			 *
-			 * @param string $s    html markup of the action
-			 * @param object $item
+			 * @param string       $s    The html markup of the action.
+			 * @param PLL_Language $item The language item.
 			 */
 			$s = apply_filters( 'pll_default_lang_row_action', $s, $item );
 		} else {
@@ -189,9 +189,9 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $item        The item being acted upon.
-	 * @param string $column_name Current column name.
-	 * @param string $primary     Primary column name.
+	 * @param PLL_Language $item        The language item being acted upon.
+	 * @param string       $column_name Current column name.
+	 * @param string       $primary     Primary column name.
 	 * @return string The row actions output.
 	 */
 	protected function handle_row_actions( $item, $column_name, $primary ) {
@@ -216,12 +216,12 @@ class PLL_Table_Languages extends WP_List_Table {
 		);
 
 		/**
-		 * Filter the list of row actions in the languages list table
+		 * Filters the list of row actions in the languages list table.
 		 *
 		 * @since 1.8
 		 *
-		 * @param array  $actions list of html markup actions
-		 * @param object $item
+		 * @param array        $actions A list of html markup actions.
+		 * @param PLL_Language $item    The language item.
 		 */
 		$actions = apply_filters( 'pll_languages_row_actions', $actions, $item );
 

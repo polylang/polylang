@@ -72,12 +72,12 @@ class PLL_Query {
 	}
 
 	/**
-	 * Sets the language in query
-	 * Optimized for ( needs ) WP 3.5+
+	 * Sets the language in query.
+	 * Optimized for (and requires) WP 3.5+.
 	 *
 	 * @since 2.2
 	 *
-	 * @param object $lang
+	 * @param PLL_Language $lang Language object.
 	 * @return void
 	 */
 	public function set_language( $lang ) {

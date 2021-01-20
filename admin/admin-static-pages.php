@@ -64,13 +64,13 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Removes the editor for translations of the pages for posts
-	 * Removes the page template select dropdown in page attributes metabox too
+	 * Removes the editor for the translations of the pages for posts.
+	 * Removes the page template select dropdown in page attributes metabox too.
 	 *
 	 * @since 2.2.2
 	 *
-	 * @param string $post_type Current post type
-	 * @param object $post      Current post
+	 * @param string  $post_type Current post type.
+	 * @param WP_Post $post      Current post.
 	 * @return void
 	 */
 	public function add_meta_boxes( $post_type, $post ) {

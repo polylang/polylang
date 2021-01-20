@@ -45,12 +45,12 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Sort menu items by menu order
+	 * Sorts menu items by menu order.
 	 *
 	 * @since 1.7.9
 	 *
-	 * @param object $a The first object to compare
-	 * @param object $b The second object to compare
+	 * @param stdClass $a The first object to compare.
+	 * @param stdClass $b The second object to compare.
 	 * @return int -1 or 1 if $a is considered to be respectively less than or greater than $b.
 	 */
 	protected function usort_menu_items( $a, $b ) {

@@ -160,11 +160,11 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
-	 * Adds the language field and translations tables in the 'Edit Category' and 'Edit Tag' panels
+	 * Adds the language field and translations tables in the 'Edit Category' and 'Edit Tag' panels.
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $tag
+	 * @param WP_Term $tag The term being edited.
 	 * @return void
 	 */
 	public function edit_term_form( $tag ) {

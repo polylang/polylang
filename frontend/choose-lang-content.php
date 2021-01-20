@@ -84,12 +84,12 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	}
 
 	/**
-	 * Sets the language for home page
-	 * Add the lang query var when querying archives with no language code
+	 * Sets the language for the home page.
+	 * Adds the lang query var when querying archives with no language code.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $query instance of WP_Query
+	 * @param WP_Query $query Instance of WP_Query.
 	 * @return void
 	 */
 	public function parse_main_query( $query ) {

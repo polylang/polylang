@@ -216,11 +216,11 @@ class PLL_OLT_Manager {
 	}
 
 	/**
-	 * Translates post types and taxonomies labels once the language is known
+	 * Translates post types and taxonomies labels once the language is known.
 	 *
 	 * @since 0.9
 	 *
-	 * @param object $type either a post type or a taxonomy
+	 * @param WP_Post_Type|WP_Taxonomy $type Either a post type or a taxonomy.
 	 * @return void
 	 */
 	public function translate_labels( $type ) {

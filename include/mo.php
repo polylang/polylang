@@ -26,11 +26,11 @@ class PLL_MO extends MO {
 	}
 
 	/**
-	 * Writes a PLL_MO object into a custom post meta
+	 * Writes a PLL_MO object into a custom post meta.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $lang The language in which we want to export strings
+	 * @param PLL_Language $lang The language in which we want to export strings.
 	 * @return void
 	 */
 	public function export_to_db( $lang ) {
@@ -61,11 +61,11 @@ class PLL_MO extends MO {
 	}
 
 	/**
-	 * Reads a PLL_MO object from a custom post meta
+	 * Reads a PLL_MO object from a custom post meta.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $lang The language in which we want to get strings
+	 * @param PLL_Language $lang The language in which we want to get strings.
 	 * @return void
 	 */
 	public function import_from_db( $lang ) {
@@ -80,11 +80,11 @@ class PLL_MO extends MO {
 	}
 
 	/**
-	 * Returns the post id of the post storing the strings translations
+	 * Returns the post id of the post storing the strings translations.
 	 *
 	 * @since 1.4
 	 *
-	 * @param object $lang
+	 * @param PLL_Language $lang The language object.
 	 * @return int
 	 */
 	public static function get_id( $lang ) {

@@ -63,8 +63,8 @@ class PLL_Nav_Menu {
 	 *
 	 * @since 2.6
 	 *
-	 * @param object $item Menu item.
-	 * @return object
+	 * @param stdClass $item Menu item.
+	 * @return stdClass
 	 */
 	public function wp_setup_nav_menu_item( $item ) {
 		if ( '#pll_switcher' === $item->url ) {
@@ -105,8 +105,8 @@ class PLL_Nav_Menu {
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $loc nav menu location
-	 * @param object $lang
+	 * @param string       $loc  Nav menu location.
+	 * @param PLL_Language $lang Language object.
 	 * @return string
 	 */
 	public function combine_location( $loc, $lang ) {
@@ -118,7 +118,7 @@ class PLL_Nav_Menu {
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $loc Temporary location
+	 * @param string $loc Temporary location.
 	 * @return string[] {
 	 *   @type string $location Nav menu location.
 	 *   @type string $lang     Language code.
@@ -146,13 +146,13 @@ class PLL_Nav_Menu {
 	}
 
 	/**
-	 * Filters _wp_auto_add_pages_to_menu by language
+	 * Filters _wp_auto_add_pages_to_menu by language.
 	 *
 	 * @since 0.9.4
 	 *
-	 * @param string $new_status Transition to this post status.
-	 * @param string $old_status Previous post status.
-	 * @param object $post Post data.
+	 * @param string  $new_status Transition to this post status.
+	 * @param string  $old_status Previous post status.
+	 * @param WP_Post $post       Post object.
 	 * @return void
 	 */
 	public function auto_add_pages_to_menu( $new_status, $old_status, $post ) {
