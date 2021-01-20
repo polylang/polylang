@@ -10,28 +10,28 @@
  */
 class PLL_Wizard {
 	/**
-	 * Reference to PLL_Model object
+	 * Reference to the model object
 	 *
-	 * @var object $model
+	 * @var PLL_Admin_Model
 	 */
 	protected $model;
 
 	/**
-	 * Reference to Polylang options array
+	 * Reference to the Polylang options array.
 	 *
-	 * @var array $options
+	 * @var array
 	 */
 	protected $options;
 
 	/**
-	 * List of steps
+	 * List of steps.
 	 *
 	 * @var array $steps {
-	 *     @type string $name      i18n string which names the step.
+	 *     @type string   $name    I18n string which names the step.
 	 *     @type callable $view    The callback function use to display the step content.
 	 *     @type callable $handler The callback function use to process the step after it is submitted.
-	 *     @type array $scripts    List of scripts handle needed by the step.
-	 *     @type array $styles     The list of styles handle needed by the step.
+	 *     @type array    $scripts List of scripts handle needed by the step.
+	 *     @type array    $styles  The list of styles handle needed by the step.
 	 * }
 	 */
 	protected $steps = array();

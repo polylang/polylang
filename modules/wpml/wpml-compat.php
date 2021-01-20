@@ -52,7 +52,7 @@ class PLL_WPML_Compat {
 	 *
 	 * @since 1.7
 	 *
-	 * @return object
+	 * @return PLL_WPML_Compat
 	 */
 	public static function instance() {
 		if ( empty( self::$instance ) ) {

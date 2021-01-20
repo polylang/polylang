@@ -66,7 +66,7 @@ class PLL_Frontend_Auto_Translate {
 	 *
 	 * @since 1.1
 	 *
-	 * @param object $query WP_Query object
+	 * @param WP_Query $query WP_Query object
 	 * @return void
 	 */
 	public function pre_get_posts( $query ) {

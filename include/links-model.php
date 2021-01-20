@@ -161,7 +161,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $language PLL_Language object.
+	 * @param PLL_Language $language PLL_Language object.
 	 * @return void
 	 */
 	protected function set_home_url( $language ) {

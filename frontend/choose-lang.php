@@ -324,12 +324,12 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Modifies some main query vars for home page and page for posts
-	 * to enable one home page ( and one page for posts ) per language
+	 * Modifies some main query vars for the home page and the page for posts
+	 * to enable one home page (and one page for posts) per language.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $query instance of WP_Query
+	 * @param WP_Query $query Instance of WP_Query.
 	 * @return void
 	 */
 	public function parse_main_query( $query ) {
@@ -342,8 +342,8 @@ abstract class PLL_Choose_Lang {
 		 *
 		 * @since 1.8
 		 *
-		 * @param bool|object $lang  false or language object
-		 * @param object      $query WP_Query object
+		 * @param PLL_Language|false $lang  Language object or false.
+		 * @param WP_Query           $query WP_Query object.
 		 */
 		if ( $lang = apply_filters( 'pll_set_language_from_query', false, $query ) ) {
 			$this->set_language( $lang );
