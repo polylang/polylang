@@ -109,6 +109,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 
 				$switcher = new PLL_Switcher();
 				$args = array_merge( array( 'raw' => 1 ), $options );
+
+				/** @var array */
 				$the_languages = $switcher->the_languages( PLL()->links, $args );
 
 				// parent item for dropdown

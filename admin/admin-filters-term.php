@@ -558,6 +558,7 @@ class PLL_Admin_Filters_Term {
 			wp_die( 0 );
 		}
 
+		/** @var string */
 		$s = wp_unslash( $_GET['term'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$post_type = sanitize_key( $_GET['post_type'] );
 		$taxonomy  = sanitize_key( $_GET['taxonomy'] );
@@ -579,11 +580,14 @@ class PLL_Admin_Filters_Term {
 		}
 
 		// It is more efficient to use one common query for all languages as soon as there are more than 2.
-		foreach ( get_terms( $taxonomy, 'hide_empty=0&lang=0&name__like=' . $s ) as $term ) {
-			$lang = $this->model->term->get_language( $term->term_id );
+		$all_terms = get_terms( $taxonomy, 'hide_empty=0&lang=0&name__like=' . $s );
+		if ( is_array( $all_terms ) ) {
+			foreach ( $all_terms as $term ) {
+				$lang = $this->model->term->get_language( $term->term_id );
 
-			if ( $lang && $lang->slug == $translation_language->slug && ! $this->model->term->get_translation( $term->term_id, $term_language ) ) {
-				$terms[] = $term;
+				if ( $lang && $lang->slug == $translation_language->slug && ! $this->model->term->get_translation( $term->term_id, $term_language ) ) {
+					$terms[] = $term;
+				}
 			}
 		}
 
