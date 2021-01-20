@@ -9,7 +9,32 @@
  * @since 2.4
  */
 class PLL_Sync {
-	public $taxonomies, $post_metas, $term_meta;
+	/**
+	 * @var PLL_Sync_Tax
+	 */
+	public $taxonomies;
+
+	/**
+	 * @var PLL_Sync_Post_Metas
+	 */
+	public $post_metas;
+
+	/**
+	 * @var PLL_Sync_Term_Metas
+	 */
+	public $term_metas;
+
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	protected $options;
+
+	/**
+	 * @var PLL_Model
+	 */
+	protected $model;
 
 	/**
 	 * Constructor
@@ -45,11 +70,11 @@ class PLL_Sync {
 	}
 
 	/**
-	 * Get post fields to synchornize
+	 * Get post fields to synchronize.
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $post Post object
+	 * @param WP_Post $post Post object.
 	 * @return array
 	 */
 	protected function get_fields_to_sync( $post ) {
@@ -119,13 +144,14 @@ class PLL_Sync {
 	}
 
 	/**
-	 * Synchronizes post fields in translations
+	 * Synchronizes post fields in translations.
 	 *
 	 * @since 2.4
 	 *
-	 * @param int    $post_id      post id
-	 * @param object $post         post object
-	 * @param array  $translations post translations
+	 * @param int     $post_id      Post id.
+	 * @param WP_Post $post         Post object.
+	 * @param int[]   $translations Post translations.
+	 * @return void
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
 		global $wpdb;
@@ -170,6 +196,7 @@ class PLL_Sync {
 	 * @param int    $term_id  Term id.
 	 * @param int    $tt_id    Term taxonomy id, not used.
 	 * @param string $taxonomy Taxonomy name.
+	 * @return void
 	 */
 	public function sync_term_parent( $term_id, $tt_id, $taxonomy ) {
 		global $wpdb;
@@ -183,7 +210,7 @@ class PLL_Sync {
 					$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 					$wpdb->update(
 						$wpdb->term_taxonomy,
-						array( 'parent' => isset( $tr_parent ) ? $tr_parent : 0 ),
+						array( 'parent' => $tr_parent ? $tr_parent : 0 ),
 						array( 'term_taxonomy_id' => get_term( (int) $tr_id, $taxonomy )->term_taxonomy_id )
 					);
 
@@ -199,19 +226,20 @@ class PLL_Sync {
 	 * @since 1.8
 	 *
 	 * @param int $post_id post id
+	 * @return void
 	 */
 	public function edit_attachment( $post_id ) {
 		$this->pll_save_post( $post_id, get_post( $post_id ), $this->model->post->get_translations( $post_id ) );
 	}
 
 	/**
-	 * Synchronize sticky posts
+	 * Synchronize sticky posts.
 	 *
 	 * @since 2.3
 	 *
-	 * @param array $value     New option value
-	 * @param array $old_value Old option value
-	 * @return array
+	 * @param int[] $value     New option value.
+	 * @param int[] $old_value Old option value.
+	 * @return int[]
 	 */
 	public function sync_sticky_posts( $value, $old_value ) {
 		if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {

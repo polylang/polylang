@@ -9,7 +9,19 @@
  * @since 1.2
  */
 class PLL_Frontend_Filters_Search {
-	public $links_model, $curlang;
+	/**
+	 * Instance of a child class of PLL_Links_Model.
+	 *
+	 * @var PLL_Links_Model
+	 */
+	public $links_model;
+
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
 
 	/**
 	 * Constructor
@@ -66,6 +78,8 @@ class PLL_Frontend_Filters_Search {
 	 * Adds the language information in admin bar search form
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function add_admin_bar_menus() {
 		remove_action( 'admin_bar_menu', 'wp_admin_bar_search_menu', 4 );
@@ -79,6 +93,7 @@ class PLL_Frontend_Filters_Search {
 	 * @since 0.9
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
+	 * @return void
 	 */
 	public function admin_bar_search_menu( $wp_admin_bar ) {
 		$form  = '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="adminbarsearch">';
@@ -104,6 +119,8 @@ class PLL_Frontend_Filters_Search {
 	 * Allows modifying the search form if it does not pass get_search_form
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function wp_print_footer_scripts() {
 		// Don't use directly e[0] just in case there is somewhere else an element named 's'

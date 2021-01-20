@@ -9,8 +9,60 @@
  * @since 1.9
  */
 class PLL_License {
-	public $id, $name, $license_key, $license_data;
-	private $file, $version, $author;
+	/**
+	 * Sanitized plugin name.
+	 *
+	 * @var string
+	 */
+	public $id;
+
+	/**
+	 * Plugin name.
+	 *
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * License key.
+	 *
+	 * @var string
+	 */
+	public $license_key;
+
+	/**
+	 * License data, obtained from the API request.
+	 *
+	 * @var stdClass
+	 */
+	public $license_data;
+
+	/**
+	 * Main plugin file.
+	 *
+	 * @var string
+	 */
+	private $file;
+
+	/**
+	 * Current plugin version.
+	 *
+	 * @var string
+	 */
+	private $version;
+
+	/**
+	 * Plugin author.
+	 *
+	 * @var string
+	 */
+	private $author;
+
+	/**
+	 * API url.
+	 *
+	 * @var string.
+	 */
 	private $api_url = 'https://polylang.pro';
 
 	/**
@@ -57,6 +109,8 @@ class PLL_License {
 	 * Auto updater
 	 *
 	 * @since 1.9
+	 *
+	 * @return void
 	 */
 	public function auto_updater() {
 		$args = array(
@@ -132,6 +186,7 @@ class PLL_License {
 	 * @since 1.9
 	 *
 	 * @param string $request check_license | activate_license | deactivate_license
+	 * @return void
 	 */
 	private function api_request( $request ) {
 		$licenses = get_option( 'polylang_licenses' );
@@ -191,7 +246,8 @@ class PLL_License {
 			$license = $this->license_data;
 		}
 
-		$class = 'license-null';
+		$class   = 'license-null';
+		$message = '';
 
 		$out = sprintf(
 			'<td><label for="pll-licenses[%1$s]">%2$s</label></td>' .

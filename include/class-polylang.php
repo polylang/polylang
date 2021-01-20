@@ -128,6 +128,8 @@ class Polylang {
 	 * May be overridden by a plugin if set before plugins_loaded, 1
 	 *
 	 * @since 1.6
+	 *
+	 * @return void
 	 */
 	public static function define_constants() {
 		// Cookie name. no cookie will be used if set to false
@@ -156,6 +158,8 @@ class Polylang {
 	 * setups models and separate admin and frontend
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function init() {
 		global $polylang;

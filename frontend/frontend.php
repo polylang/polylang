@@ -4,30 +4,59 @@
  */
 
 /**
- * Frontend controller
- * accessible as $polylang global object
- *
- * Properties:
- * options        => inherited, reference to Polylang options array
- * model          => inherited, reference to PLL_Model object
- * links_model    => inherited, reference to PLL_Links_Model object
- * links          => reference to PLL_Links object
- * static_pages   => reference to PLL_Frontend_Static_Pages object
- * choose_lang    => reference to PLL_Choose_Lang object
- * curlang        => current language
- * filters        => reference to PLL_Frontend_Filters object
- * filters_links  => reference to PLL_Frontend_Filters_Links object
- * filters_search => reference to PLL_Frontend_Filters_Search object
- * posts          => reference to PLL_CRUD_Posts object
- * terms          => reference to PLL_CRUD_Terms object
- * nav_menu       => reference to PLL_Frontend_Nav_Menu object
- * auto_translate => optional, reference to PLL_Auto_Translate object
+ * Main Polylang class when on frontend, accessible from @see PLL().
  *
  * @since 1.2
  */
 class PLL_Frontend extends PLL_Base {
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
 	public $curlang;
-	public $links, $choose_lang, $filters, $filters_search, $nav_menu, $auto_translate;
+
+	/**
+	 * @var PLL_Frontend_Auto_Translate
+	 */
+	public $auto_translate;
+
+	/**
+	 * The class selecting the current language.
+	 *
+	 * @var PLL_Choose_Lang
+	 */
+	public $choose_lang;
+
+	/**
+	 * @var PLL_Frontend_Filters
+	 */
+	public $filters;
+
+	/**
+	 * @var PLL_Frontend_Filters_Links
+	 */
+	public $filters_links;
+
+	/**
+	 * @var PLL_Frontend_Filters_Search
+	 */
+	public $filters_search;
+
+	/**
+	 * @var PLL_Frontend_Links
+	 */
+	public $links;
+
+	/**
+	 * @var PLL_Frontend_Nav_Menu
+	 */
+	public $nav_menu;
+
+	/**
+	 * @var PLL_Frontend_Static_Pages
+	 */
+	public $static_pages;
 
 	/**
 	 * Constructor
@@ -82,6 +111,8 @@ class PLL_Frontend extends PLL_Base {
 	 * Setups filters and nav menus once the language has been defined
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function pll_language_defined() {
 		// Filters
@@ -101,6 +132,7 @@ class PLL_Frontend extends PLL_Base {
 	 * @since 1.8
 	 *
 	 * @param object $query WP_Query object
+	 * @return void
 	 */
 	public function parse_tax_query( $query ) {
 		$pll_query = new PLL_Query( $query, $this->model );
@@ -117,6 +149,7 @@ class PLL_Frontend extends PLL_Base {
 	 * @since 1.2
 	 *
 	 * @param object $query WP_Query object
+	 * @return void
 	 */
 	public function parse_query( $query ) {
 		$qv = $query->query_vars;
@@ -157,26 +190,31 @@ class PLL_Frontend extends PLL_Base {
 	 * Auto translate posts and terms ids
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function auto_translate() {
 		$this->auto_translate = new PLL_Frontend_Auto_Translate( $this );
 	}
 
 	/**
-	 * Resets some variables when switching blog
-	 * Overrides parent method
+	 * Resets some variables when the blog is switched.
+	 * Overrides the parent method.
 	 *
 	 * @since 1.5.1
 	 *
-	 * @param int $new_blog
-	 * @param int $old_blog
+	 * @param int $new_blog_id  New blog ID.
+	 * @param int $prev_blog_id Previous blog ID.
+	 * @return void
 	 */
-	public function switch_blog( $new_blog, $old_blog ) {
-		// Need to check that some languages are defined when user is logged in, has several blogs, some without any languages
-		if ( parent::switch_blog( $new_blog, $old_blog ) && did_action( 'pll_language_defined' ) && $this->model->get_languages_list() ) {
+	public function switch_blog( $new_blog_id, $prev_blog_id ) {
+		parent::switch_blog( $new_blog_id, $prev_blog_id );
+
+		// Need to check that some languages are defined when user is logged in, has several blogs, some without any languages.
+		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) && did_action( 'pll_language_defined' ) && $this->model->get_languages_list() ) {
 			static $restore_curlang;
 			if ( empty( $restore_curlang ) ) {
-				$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs
+				$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs.
 			}
 
 			$lang = $this->model->get_language( $restore_curlang );

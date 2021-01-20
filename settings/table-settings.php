@@ -43,6 +43,7 @@ class PLL_Table_Settings extends WP_List_Table {
 	 * @since 1.8
 	 *
 	 * @param object $item PLL_Settings_Module object
+	 * @return void
 	 */
 	public function single_row( $item ) {
 		// Classes to reuse css from the plugins list table
@@ -93,6 +94,7 @@ class PLL_Table_Settings extends WP_List_Table {
 	 * @since 1.8
 	 *
 	 * @param object $item The current item
+	 * @return void
 	 */
 	protected function single_row_columns( $item ) {
 		$column_info = $this->get_column_info();
@@ -134,11 +136,11 @@ class PLL_Table_Settings extends WP_List_Table {
 	}
 
 	/**
-	 * Gets the list of columns
+	 * Gets the list of columns.
 	 *
 	 * @since 1.8
 	 *
-	 * @return array the list of column titles
+	 * @return string[] The list of column titles.
 	 */
 	public function get_columns() {
 		return array(
@@ -165,6 +167,7 @@ class PLL_Table_Settings extends WP_List_Table {
 	 * @since 1.8
 	 *
 	 * @param array $items
+	 * @return void
 	 */
 	public function prepare_items( $items = array() ) {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns(), $this->get_primary_column_name() );
@@ -185,6 +188,7 @@ class PLL_Table_Settings extends WP_List_Table {
 	 * @since 2.1
 	 *
 	 * @param string $which 'top' or 'bottom'
+	 * @return void
 	 */
 	protected function display_tablenav( $which ) {} // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 }

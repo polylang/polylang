@@ -9,7 +9,7 @@ if ( version_compare( $GLOBALS['wp_version'], '5.2', '>=' ) && file_exists( DIR_
 		/**
 		 * @param WP_UnitTest_Factory $factory
 		 */
-		public static function wpSetUpBeforeClass( $factory ) {
+		public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 			parent::wpSetUpBeforeClass( $factory );
 
 			self::create_language( 'en_US' );

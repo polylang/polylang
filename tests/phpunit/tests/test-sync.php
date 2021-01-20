@@ -1,12 +1,13 @@
 <?php
 
 class Sync_Test extends PLL_UnitTestCase {
-	static $editor, $author;
+	protected static $editor;
+	protected static $author;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
-	public static function wpSetUpBeforeClass( $factory ) {
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );

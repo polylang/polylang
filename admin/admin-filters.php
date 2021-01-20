@@ -47,6 +47,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @param object $widget   Widget instance
 	 * @param null   $return   Not used
 	 * @param array  $instance Widget settings
+	 * @return void
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
 		$screen = get_current_screen();
@@ -108,6 +109,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @since 0.4
 	 *
 	 * @param int $user_id
+	 * @return void
 	 */
 	public function personal_options_update( $user_id ) {
 		// Biography translations
@@ -127,6 +129,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 * @since 0.4
 	 *
 	 * @param object $profileuser
+	 * @return void
 	 */
 	public function personal_options( $profileuser ) {
 		foreach ( $this->model->get_languages_list() as $lang ) {
@@ -149,8 +152,8 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 *
 	 * @since 1.6
 	 *
-	 * @param array $locales List of locales to update for plugins and themes.
-	 * @return array
+	 * @param string[] $locales List of locales to update for plugins and themes.
+	 * @return string[]
 	 */
 	public function update_check_locales( $locales ) {
 		return array_merge( $locales, $this->model->get_languages_list( array( 'fields' => 'locale' ) ) );
@@ -172,13 +175,13 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Add post state for translations of the privacy policy page
+	 * Adds post state for translations of the privacy policy page.
 	 *
 	 * @since 2.7
 	 *
-	 * @param array  $post_states An array of post display states.
-	 * @param object $post        The current post object.
-	 * @return array
+	 * @param string[] $post_states An array of post display states.
+	 * @param WP_Post  $post        The current post object.
+	 * @return string[]
 	 */
 	public function display_post_states( $post_states, $post ) {
 		$page_for_privacy_policy = get_option( 'wp_page_for_privacy_policy' );

@@ -4,12 +4,51 @@
  */
 
 /**
- * Base class for both admin
+ * Setup features available on all admin pages.
  *
  * @since 1.8
  */
-class PLL_Admin_Base extends PLL_Base {
-	public $filter_lang, $curlang, $pref_lang;
+abstract class PLL_Admin_Base extends PLL_Base {
+	/**
+	 * Current language (used to filter the content).
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
+
+	/**
+	 * Language selected in the admin language filter.
+	 *
+	 * @var PLL_Language
+	 */
+	public $filter_lang;
+
+	/**
+	 * Preferred language to assign to new contents.
+	 *
+	 * @var PLL_Language
+	 */
+	public $pref_lang;
+
+	/**
+	 * @var PLL_Filters_Links
+	 */
+	public $filters_links;
+
+	/**
+	 * @var PLL_Admin_Links
+	 */
+	public $links;
+
+	/**
+	 * @var PLL_Admin_Notices
+	 */
+	public $notices;
+
+	/**
+	 * @var PLL_Admin_Static_Pages
+	 */
+	public $static_pages;
 
 	/**
 	 * Loads the polylang text domain
@@ -64,6 +103,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * Adds the link to the languages panel in the WordPress admin menu
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function add_menus() {
 		global $admin_page_hooks;
@@ -93,7 +134,7 @@ class PLL_Admin_Base extends PLL_Base {
 			$page = 'lang' === $tab ? 'mlang' : "mlang_$tab";
 			if ( empty( $parent ) ) {
 				$parent = $page;
-				add_menu_page( $title, __( 'Languages', 'polylang' ), 'manage_options', $page, null, 'dashicons-translation' );
+				add_menu_page( $title, __( 'Languages', 'polylang' ), 'manage_options', $page, '__return_null', 'dashicons-translation' );
 				$admin_page_hooks[ $page ] = 'languages'; // Hack to avoid the localization of the hook name. See: https://core.trac.wordpress.org/ticket/18857
 			}
 
@@ -105,6 +146,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * Setup js scripts & css styles ( only on the relevant pages )
 	 *
 	 * @since 0.6
+	 *
+	 * @return void
 	 */
 	public function admin_enqueue_scripts() {
 		$screen = get_current_screen();
@@ -159,6 +202,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * Enqueue scripts to the WP Customizer.
 	 *
 	 * @since 2.4.0
+	 *
+	 * @return void
 	 */
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
@@ -172,6 +217,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * Localize scripts.
 	 *
 	 * @since 2.4.0
+	 *
+	 * @return void
 	 */
 	public function localize_scripts() {
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
@@ -198,6 +245,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * see: https://wordpress.org/support/topic/invalid-url-during-wordpress-new-dashboard-widget-operation
 	 *
 	 * @since 1.4
+	 *
+	 * @return void
 	 */
 	public function admin_print_footer_scripts() {
 		global $post_ID, $tag_ID;
@@ -253,6 +302,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * Sets the admin current language, used to filter the content
 	 *
 	 * @since 2.0
+	 *
+	 * @return void
 	 */
 	public function set_current_language() {
 		$this->curlang = $this->filter_lang;
@@ -298,6 +349,8 @@ class PLL_Admin_Base extends PLL_Base {
 	 * Defines the backend language and the admin language filter based on user preferences
 	 *
 	 * @since 1.2.3
+	 *
+	 * @return void
 	 */
 	public function init_user() {
 		// Language for admin language filter: may be empty
@@ -353,6 +406,7 @@ class PLL_Admin_Base extends PLL_Base {
 	 * @since 0.9
 	 *
 	 * @param object $wp_admin_bar
+	 * @return void
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
 		$all_item = (object) array(

@@ -13,6 +13,13 @@
 class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 	/**
+	 * An array with language code as keys and the host as values.
+	 *
+	 * @var string[]
+	 */
+	protected $hosts;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.8
@@ -76,11 +83,11 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	}
 
 	/**
-	 * Get hosts managed on the website
+	 * Get hosts managed on the website.
 	 *
 	 * @since 1.5
 	 *
-	 * @return array list of hosts
+	 * @return string[] List of hosts.
 	 */
 	public function get_hosts() {
 		$hosts = array();

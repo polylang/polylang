@@ -10,12 +10,22 @@
  */
 class PLL_Query {
 	/**
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * @var WP_Query
+	 */
+	public $query;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.2
 	 *
-	 * @param array  $query Reference to the WP_Query object
-	 * @param object $model
+	 * @param WP_Query  $query Reference to the WP_Query object.
+	 * @param PLL_Model $model Instance of PLL_Model.
 	 */
 	public function __construct( &$query, &$model ) {
 		$this->query = &$query;
@@ -68,6 +78,7 @@ class PLL_Query {
 	 * @since 2.2
 	 *
 	 * @param object $lang
+	 * @return void
 	 */
 	public function set_language( $lang ) {
 		// Defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
@@ -103,6 +114,7 @@ class PLL_Query {
 	 * @since 2.2
 	 *
 	 * @param object $lang Language
+	 * @return void
 	 */
 	public function filter_query( $lang ) {
 		$qvars = &$this->query->query_vars;

@@ -17,6 +17,13 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	public $priority = 10;
 
 	/**
+	 * The page id of the static front page.
+	 *
+	 * @var int
+	 */
+	protected $page_on_front;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.8
@@ -34,7 +41,6 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			)
 		);
 
-		$this->links_model = &$polylang->links_model;
 		$this->page_on_front = &$polylang->static_pages->page_on_front;
 	}
 
@@ -42,6 +48,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * Displays the fieldset to choose how the language is set
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	protected function force_lang() {
 		?>
@@ -107,6 +115,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * Displays the fieldset to choose to hide the default language information in url
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	protected function hide_default() {
 		?>
@@ -126,6 +136,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * Displays the fieldset to choose to hide /language/ in url
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	protected function rewrite() {
 		?>
@@ -158,6 +170,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * Displays the fieldset to choose to redirect the home page to language page
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	protected function redirect_lang() {
 		?>
@@ -190,6 +204,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * Displays the settings
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function form() {
 		?>
@@ -230,6 +246,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @since 1.8
 	 *
 	 * @param array $options
+	 * @return array
 	 */
 	protected function update( $options ) {
 		$newoptions = array();
@@ -285,6 +302,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @since 1.8
 	 *
 	 * @param array $options new set of options to test
+	 * @return void
 	 */
 	protected function check_domains( $options ) {
 		$options = array_merge( $this->options, $options );

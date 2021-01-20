@@ -47,7 +47,7 @@ if ( ! function_exists( 'wpcom_vip_get_page_by_path' ) ) {
  *
  * @since 2.3.8
  *
- * return bool True if the cache compatibility must be loaded
+ * @return bool True if the cache compatibility must be loaded
  */
 function pll_is_cache_active() {
 	/**
@@ -95,7 +95,7 @@ function pll_get_requested_url() {
  *
  * @since 2.6.0
  *
- * return bool True to use the block editor plugin.
+ * @return bool True to use the block editor plugin.
  */
 function pll_use_block_editor_plugin() {
 	/**

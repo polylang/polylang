@@ -35,6 +35,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @since 1.8
 	 *
 	 * @param object $item The current item
+	 * @return void
 	 */
 	public function single_row( $item ) {
 		/**
@@ -52,13 +53,13 @@ class PLL_Table_Languages extends WP_List_Table {
 	}
 
 	/**
-	 * Displays the item information in a column ( default case )
+	 * Displays the item information in a column ( default case ).
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $item
-	 * @param string $column_name
-	 * @return string
+	 * @param PLL_Language $item        The current item.
+	 * @param string       $column_name The column name.
+	 * @return string|int
 	 */
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
@@ -71,7 +72,7 @@ class PLL_Table_Languages extends WP_List_Table {
 				return (int) $item->$column_name;
 
 			default:
-				return $item->$column_name; // flag
+				return $item->$column_name; // Flag.
 		}
 	}
 
@@ -141,7 +142,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 *
 	 * @since 0.1
 	 *
-	 * @return array the list of column titles
+	 * @return string[] The list of column titles.
 	 */
 	public function get_columns() {
 		return array(
@@ -254,6 +255,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @since 0.1
 	 *
 	 * @param array $data
+	 * @return void
 	 */
 	public function prepare_items( $data = array() ) {
 		$per_page = $this->get_items_per_page( 'pll_lang_per_page' );

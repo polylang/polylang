@@ -16,7 +16,7 @@ trait PLL_UnitTestCase_Trait {
 	 *
 	 * @param WP_UnitTest_Factory $factory
 	 */
-	static function wpSetUpBeforeClass( $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		self::$polylang = new StdClass();
 
 		self::$polylang->options = PLL_Install::get_default_options();
@@ -53,6 +53,7 @@ trait PLL_UnitTestCase_Trait {
 	 *
 	 * @param string $locale Language locale.
 	 * @param array  $args   Allows to optionnally override the default values for the language
+	 * @throws InvalidArgumentException If language is not created.
 	 */
 	static function create_language( $locale, $args = array() ) {
 		$languages = include POLYLANG_DIR . '/settings/languages.php';
@@ -63,7 +64,10 @@ trait PLL_UnitTestCase_Trait {
 		$values['term_group'] = 0; // Default term_group.
 
 		$args = array_merge( $values, $args );
-		self::$polylang->model->add_language( $args );
+		$errors = self::$polylang->model->add_language( $args );
+		if ( is_wp_error( $errors ) ) {
+			throw new InvalidArgumentException( $errors->get_error_message() );
+		}
 	}
 
 	/**

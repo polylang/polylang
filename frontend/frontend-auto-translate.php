@@ -10,7 +10,17 @@
  * @since 1.1
  */
 class PLL_Frontend_Auto_Translate {
-	public $model, $curlang;
+	/**
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
 
 	/**
 	 * Constructor
@@ -57,6 +67,7 @@ class PLL_Frontend_Auto_Translate {
 	 * @since 1.1
 	 *
 	 * @param object $query WP_Query object
+	 * @return void
 	 */
 	public function pre_get_posts( $query ) {
 		global $wpdb;

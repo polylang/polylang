@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2e163c2aad20c162fbeb3086a2c0d75",
+    "content-hash": "b2924bffa44847aab8cbead701176039",
     "packages": [],
     "packages-dev": [
         {
@@ -238,6 +238,46 @@
                 }
             ],
             "time": "2020-11-13T09:40:50+00:00"
+        },
+        {
+            "name": "php-stubs/wordpress-stubs",
+            "version": "v5.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-stubs/wordpress-stubs.git",
+                "reference": "ed446cce304cd49f13900274b3ed60d1b526297e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/ed446cce304cd49f13900274b3ed60d1b526297e",
+                "reference": "ed446cce304cd49f13900274b3ed60d1b526297e",
+                "shasum": ""
+            },
+            "replace": {
+                "giacocorsiglia/wordpress-stubs": "*"
+            },
+            "require-dev": {
+                "giacocorsiglia/stubs-generator": "^0.5.0",
+                "php": "~7.1"
+            },
+            "suggest": {
+                "paragonie/sodium_compat": "Pure PHP implementation of libsodium",
+                "symfony/polyfill-php73": "Symfony polyfill backporting some PHP 7.3+ features to lower PHP versions",
+                "szepeviktor/phpstan-wordpress": "WordPress extensions for PHPStan"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "WordPress function and class declaration stubs for static analysis.",
+            "homepage": "https://github.com/php-stubs/wordpress-stubs",
+            "keywords": [
+                "PHPStan",
+                "static analysis",
+                "wordpress"
+            ],
+            "time": "2020-12-09T00:38:16+00:00"
         },
         {
             "name": "phpcompatibility/php-compatibility",
@@ -609,6 +649,62 @@
                 "stub"
             ],
             "time": "2020-03-05T15:02:03+00:00"
+        },
+        {
+            "name": "phpstan/phpstan",
+            "version": "0.12.64",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpstan.git",
+                "reference": "23eb1cb7ae125f45f1d0e48051bcf67a9a9b08aa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/23eb1cb7ae125f45f1d0e48051bcf67a9a9b08aa",
+                "reference": "23eb1cb7ae125f45f1d0e48051bcf67a9a9b08aa",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1|^8.0"
+            },
+            "conflict": {
+                "phpstan/phpstan-shim": "*"
+            },
+            "bin": [
+                "phpstan",
+                "phpstan.phar"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.12-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan - PHP Static Analysis Tool",
+            "funding": [
+                {
+                    "url": "https://github.com/ondrejmirtes",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/phpstan",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-12-21T11:59:02+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1697,17 +1793,93 @@
             "time": "2020-10-23T14:02:19+00:00"
         },
         {
-            "name": "symfony/yaml",
-            "version": "v4.4.17",
+            "name": "symfony/polyfill-php73",
+            "version": "v1.20.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/yaml.git",
-                "reference": "7531361cf38e4816821b4a12a42542b3c6143ad1"
+                "url": "https://github.com/symfony/polyfill-php73.git",
+                "reference": "8ff431c517be11c78c48a39a66d37431e26a6bed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/7531361cf38e4816821b4a12a42542b3c6143ad1",
-                "reference": "7531361cf38e4816821b4a12a42542b3c6143ad1",
+                "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/8ff431c517be11c78c48a39a66d37431e26a6bed",
+                "reference": "8ff431c517be11c78c48a39a66d37431e26a6bed",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.20-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php73\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ],
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 7.3+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "v4.4.18",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "bbce94f14d73732340740366fcbe63363663a403"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/bbce94f14d73732340740366fcbe63363663a403",
+                "reference": "bbce94f14d73732340740366fcbe63363663a403",
                 "shasum": ""
             },
             "require": {
@@ -1762,7 +1934,67 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-24T12:28:30+00:00"
+            "time": "2020-12-08T16:59:59+00:00"
+        },
+        {
+            "name": "szepeviktor/phpstan-wordpress",
+            "version": "v0.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/szepeviktor/phpstan-wordpress.git",
+                "reference": "6195a6a19830d5ad187df0a3fb350e77cd571a5f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/szepeviktor/phpstan-wordpress/zipball/6195a6a19830d5ad187df0a3fb350e77cd571a5f",
+                "reference": "6195a6a19830d5ad187df0a3fb350e77cd571a5f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0",
+                "php-stubs/wordpress-stubs": "^4.7 || ^5.0",
+                "phpstan/phpstan": "^0.12.26",
+                "symfony/polyfill-php73": "^1.12.0"
+            },
+            "require-dev": {
+                "composer/composer": "^1.8.6",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+                "php-parallel-lint/php-parallel-lint": "^1.1",
+                "phpstan/phpstan-strict-rules": "^0.12",
+                "szepeviktor/phpcs-psr-12-neutron-hybrid-ruleset": "^0.4.3"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\WordPress\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "WordPress extensions for PHPStan",
+            "keywords": [
+                "PHPStan",
+                "code analyse",
+                "code analysis",
+                "static analysis",
+                "wordpress"
+            ],
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/szepeviktor",
+                    "type": "custom"
+                }
+            ],
+            "time": "2020-11-05T00:12:19+00:00"
         },
         {
             "name": "webmozart/assert",

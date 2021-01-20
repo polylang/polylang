@@ -4,84 +4,57 @@
  */
 
 /**
- * Admin side controller
- * accessible in $polylang global object
- *
- * Properties:
- * options              => inherited, reference to Polylang options array
- * model                => inherited, reference to PLL_Model object
- * links_model          => inherited, reference to PLL_Links_Model object
- * links                => inherited, reference to PLL_Admin_Links object
- * static_pages         => inherited, reference to PLL_Admin_Static_Pages object
- * filters_links        => inherited, reference to PLL_Filters_Links object
- * curlang              => inherited, optional, current language used to filter the content (language of the post or term being edited, equal to filter_lang otherwise)
- * filter_lang          => inherited, optional, current status of the admin languages filter (in the admin bar)
- * pref_lang            => inherited, preferred language used as default when saving posts or terms
- * posts                => reference to PLL_CRUD_Posts object
- * terms                => reference to PLL_CRUD_Terms object
- * filters              => reference to PLL_Admin_Filters object
- * filters_sanitization => reference to PLL_Filters_Sanitization object
- * filters_columns      => reference to PLL_Admin_Filters_Columns object
- * filters_post         => reference to PLL_Admin_Filters_Post object
- * filters_term         => reference to PLL_Admin_filters_Term object
- * nav_menu             => reference to PLL_Admin_Nav_Menu object
- * block_editor         => reference to PLL_Admin_Block_Editor object
- * classic_editor       => reference to PLL_Admin_Classic_Editor object
- * filters_media        => optional, reference to PLL_Admin_Filters_Media object
+ * Main Polylang class for admin (except Polylang pages), accessible from @see PLL().
  *
  * @since 1.2
  */
 class PLL_Admin extends PLL_Admin_Base {
 	/**
-	 * Instance of PLL_Admin_Filters
-	 *
 	 * @var PLL_Admin_Filters
 	 */
 	public $filters;
 
 	/**
-	 * Instance of PLL_Admin_Filters_Columns
-	 *
 	 * @var PLL_Admin_Filters_Columns
 	 */
 	public $filters_columns;
 
 	/**
-	 * Instance of PLL_Admin_Filters_Post
-	 *
 	 * @var PLL_Admin_Filters_Post
 	 */
 	public $filters_post;
 
 	/**
-	 * Instance of PLL_Admin_filters_Term
-	 *
-	 * @var PLL_Admin_filters_Term
+	 * @var PLL_Admin_Filters_Term
 	 */
 	public $filters_term;
 
 	/**
-	 * Instance of PLL_Admin_Nav_Menu
-	 *
-	 * @var PLL_Admin_Nav_Menu
-	 */
-	public $nav_menu;
-
-	/**
-	 * Instance of PLL_Admin_Filters_Media
-	 *
 	 * @var PLL_Admin_Filters_Media
 	 */
 	public $filters_media;
 
 	/**
-	 * Instance of PLL_Filters_Sanitization
-	 *
 	 * @since 2.9
 	 *
 	 * @var PLL_Filters_Sanitization
 	 */
 	public $filters_sanitization;
+
+	/**
+	 * @var PLL_Admin_Block_Editor
+	 */
+	public $block_editor;
+
+	/**
+	 * @var PLL_Admin_Classic_Editor
+	 */
+	public $classic_editor;
+
+	/**
+	 * @var PLL_Admin_Nav_Menu
+	 */
+	public $nav_menu;
 
 	/**
 	 * Loads the polylang text domain
@@ -116,12 +89,12 @@ class PLL_Admin extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Adds a 'settings' link in the plugins table
+	 * Adds a 'settings' link for our plugin in the plugins list table.
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $links list of links associated to the plugin
-	 * @return array modified list of links
+	 * @param string[] $links List of links associated to the plugin.
+	 * @return string[] Modified list of links.
 	 */
 	public function plugin_action_links( $links ) {
 		array_unshift( $links, '<a href="admin.php?page=mlang">' . __( 'Settings', 'polylang' ) . '</a>' );
@@ -135,6 +108,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 *
 	 * @param array  $plugin_data Not used
 	 * @param object $r           Plugin update data
+	 * @return void
 	 */
 	public function plugin_update_message( $plugin_data, $r ) {
 		if ( isset( $r->upgrade_notice ) ) {
@@ -147,6 +121,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 *
 	 * @since 1.2
 	 * @since 2.7 instantiate a PLL_Bulk_Translate instance.
+	 * @return void
 	 */
 	public function add_filters() {
 		$this->filters_sanitization = new PLL_Filters_Sanitization( $this->get_locale_for_sanitization() );
@@ -172,6 +147,7 @@ class PLL_Admin extends PLL_Admin_Base {
 			$this->$obj = new $class( $this );
 		}
 	}
+
 	/**
 	 * Retrieve the locale according to the current language instead of the language
 	 * of the admin interface.

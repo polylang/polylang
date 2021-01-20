@@ -3,12 +3,14 @@
 if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen/style.css' ) ) {
 
 	class Twenty_Fourteen_Test extends PLL_UnitTestCase {
-		static $stylesheet, $tag_en, $tag_fr;
+		protected static $stylesheet;
+		protected static $tag_en;
+		protected static $tag_fr;
 
 		/**
 		 * @param WP_UnitTest_Factory $factory
 		 */
-		public static function wpSetUpBeforeClass( $factory ) {
+		public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 			parent::wpSetUpBeforeClass( $factory );
 
 			self::create_language( 'en_US' );

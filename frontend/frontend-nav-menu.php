@@ -9,6 +9,11 @@
  * @since 1.2
  */
 class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
 	public $curlang;
 
 	/**
@@ -76,13 +81,13 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Splits the one item of backend in several items on frontend
-	 * take care to menu_order as it is used later in wp_nav_menu
+	 * Splits the one language switcher menu item of backend in several menu items on frontend.
+	 * Takes care to menu_order as it is used later in wp_nav_menu().
 	 *
 	 * @since 1.1.1
 	 *
-	 * @param array $items menu items
-	 * @return array modified items
+	 * @param stdClass[] $items Menu items.
+	 * @return stdClass[] Modified menu items.
 	 */
 	public function wp_get_nav_menu_items( $items ) {
 		if ( doing_action( 'customize_register' ) ) { // needed since WP 4.3, doing_action available since WP 3.9
@@ -141,12 +146,12 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Returns the ancestors of a menu item
+	 * Returns the ancestors of a menu item.
 	 *
 	 * @since 1.1.1
 	 *
-	 * @param object $item
-	 * @return array ancestors ids
+	 * @param stdClass $item Menu item.
+	 * @return int[] Ancestors ids.
 	 */
 	public function get_ancestors( $item ) {
 		$ids = array();
@@ -158,12 +163,12 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Removes current-menu and current-menu-ancestor classes to lang switcher when not on the home page
+	 * Removes current-menu and current-menu-ancestor classes to lang switcher when not on the home page.
 	 *
 	 * @since 1.1.1
 	 *
-	 * @param array $items
-	 * @return array modified menu items
+	 * @param stdClass[] $items An array of menu items.
+	 * @return stdClass[]
 	 */
 	public function wp_nav_menu_objects( $items ) {
 		$r_ids = $k_ids = array();
@@ -192,14 +197,14 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Adds hreflang attribute for the language switcher menu items
-	 * available since WP 3.6
+	 * Adds hreflang attribute for the language switcher menu items.
+	 * available since WP 3.6.
 	 *
 	 * @since 1.1
 	 *
-	 * @param array  $atts
-	 * @param object $item
-	 * @return array modified $atts
+	 * @param string[] $atts HTML attributes applied to the menu item's `<a>` element.
+	 * @param stdClass $item Menu item.
+	 * @return string[] Modified attributes.
 	 */
 	public function nav_menu_link_attributes( $atts, $item ) {
 		if ( isset( $item->lang ) ) {

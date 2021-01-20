@@ -10,7 +10,19 @@
  * @since 1.7
  */
 class PLL_Cache {
-	protected $blog_id, $cache;
+	/**
+	 * Current site id.
+	 *
+	 * @var int
+	 */
+	protected $blog_id;
+
+	/**
+	 * The cache container.
+	 *
+	 * @var array
+	 */
+	protected $cache;
 
 	/**
 	 * Constructor
@@ -28,6 +40,7 @@ class PLL_Cache {
 	 * @since 1.7
 	 *
 	 * @param int $new_blog
+	 * @return void
 	 */
 	public function switch_blog( $new_blog ) {
 		$this->blog_id = $new_blog;
@@ -40,6 +53,7 @@ class PLL_Cache {
 	 *
 	 * @param string $key
 	 * @param mixed  $data
+	 * @return void
 	 */
 	public function set( $key, $data ) {
 		$this->cache[ $this->blog_id ][ $key ] = $data;
@@ -63,6 +77,7 @@ class PLL_Cache {
 	 * @since 1.7
 	 *
 	 * @param string $key
+	 * @return void
 	 */
 	public function clean( $key = '' ) {
 		if ( empty( $key ) ) {

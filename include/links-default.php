@@ -11,6 +11,11 @@
  * @since 1.2
  */
 class PLL_Links_Default extends PLL_Links_Model {
+	/**
+	 * Tells this child class of PLL_Links_Model does not use pretty permalinks.
+	 *
+	 * @var bool
+	 */
 	public $using_permalinks = false;
 
 	/**

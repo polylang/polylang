@@ -11,6 +11,11 @@
  * @since 1.2
  */
 class PLL_Links_Directory extends PLL_Links_Permalinks {
+	/**
+	 * Relative path to the home url.
+	 *
+	 * @var string
+	 */
 	protected $home_relative;
 
 	/**
@@ -36,6 +41,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * Called only at first object creation to avoid duplicating filters when switching blog
 	 *
 	 * @since 1.6
+	 *
+	 * @return void
 	 */
 	public function init() {
 		if ( did_action( 'setup_theme' ) ) {
@@ -144,6 +151,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * Optionally removes 'language' in permalinks so that we get http://www.myblog/en/ instead of http://www.myblog/language/en/
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function add_permastruct() {
 		// Language information always in front of the uri ( 'with_front' => false )
@@ -155,12 +164,12 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	}
 
 	/**
-	 * Prepares rewrite rules filters
+	 * Prepares the rewrite rules filters.
 	 *
 	 * @since 0.8.1
 	 *
-	 * @param array $pre not used
-	 * @return unmodified $pre
+	 * @param mixed $pre Not used as the filter is used as an action.
+	 * @return mixed
 	 */
 	public function prepare_rewrite_rules( $pre ) {
 		// Don't modify the rules if there is no languages created yet
@@ -180,13 +189,13 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 	/**
 	 * The rewrite rules !
-	 * always make sure the default language is at the end in case the language information is hidden for default language
-	 * thanks to brbrbr http://wordpress.org/support/topic/plugin-polylang-rewrite-rules-not-correct
+	 * Always make sure that the default language is at the end in case the language information is hidden for default language.
+	 * Thanks to brbrbr http://wordpress.org/support/topic/plugin-polylang-rewrite-rules-not-correct.
 	 *
 	 * @since 0.8.1
 	 *
-	 * @param array $rules rewrite rules
-	 * @return array modified rewrite rules
+	 * @param string[] $rules Rewrite rules.
+	 * @return string[] Modified rewrite rules.
 	 */
 	public function rewrite_rules( $rules ) {
 		$filter = str_replace( '_rewrite_rules', '', current_filter() );

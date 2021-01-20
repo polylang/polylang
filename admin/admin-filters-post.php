@@ -9,6 +9,11 @@
  * @since 1.2
  */
 class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
+	/**
+	 * Current language (used to filter the content).
+	 *
+	 * @var PLL_Language
+	 */
 	public $curlang;
 
 	/**
@@ -43,6 +48,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * to filter the parent dropdown per post language in quick edit
 	 *
 	 * @since 1.7
+	 *
+	 * @return void
 	 */
 	public function admin_enqueue_scripts() {
 		$screen = get_current_screen();
@@ -100,6 +107,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * @since 0.1
 	 *
 	 * @param object $query a WP_Query object
+	 * @return void
 	 */
 	public function parse_query( $query ) {
 		$pll_query = new PLL_Query( $query, $this->model );
@@ -110,6 +118,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * Save language and translation when editing a post (post.php)
 	 *
 	 * @since 2.3
+	 *
+	 * @return void
 	 */
 	public function edit_post() {
 		if ( isset( $_POST['post_lang_choice'], $_POST['post_ID'] ) && $post_id = (int) $_POST['post_ID'] ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -136,6 +146,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 *
 	 * @param int    $post_id Post ID
 	 * @param object $lang    Language
+	 * @return void
 	 */
 	protected function inline_save_language( $post_id, $lang ) {
 		$post = get_post( $post_id );
@@ -166,6 +177,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * Save language when bulk editing a post
 	 *
 	 * @since 2.3
+	 *
+	 * @return void
 	 */
 	public function bulk_edit_posts() {
 		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'], $_REQUEST['post'] ) && -1 !== $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -184,6 +197,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 * Save language when inline editing a post
 	 *
 	 * @since 2.3
+	 *
+	 * @return void
 	 */
 	public function inline_edit_post() {
 		check_admin_referer( 'inlineeditnonce', '_inline_edit' );

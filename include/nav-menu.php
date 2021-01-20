@@ -10,7 +10,31 @@
  * @since 1.7.7
  */
 class PLL_Nav_Menu {
-	public $model, $options;
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	public $options;
+
+	/**
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Theme name.
+	 *
+	 * @var string
+	 */
+	protected $theme;
+
+	/**
+	 * Array of menu ids in a given language used when auto add pages to menus.
+	 *
+	 * @var int[]
+	 */
+	protected $auto_add_menus = array();
 
 	/**
 	 * Constructor: setups filters and actions
@@ -55,6 +79,8 @@ class PLL_Nav_Menu {
 	 * to do only one time
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function create_nav_menu_locations() {
 		static $once;
@@ -88,14 +114,15 @@ class PLL_Nav_Menu {
 	}
 
 	/**
-	 * Get nav menu locations and language from a temporary location
+	 * Get nav menu locations and language from a temporary location.
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $loc temporary location
-	 * @return array
-	 *   'location' => nav menu location
-	 *   'lang'     => language slug
+	 * @param string $loc Temporary location
+	 * @return string[] {
+	 *   @type string $location Nav menu location.
+	 *   @type string $lang     Language code.
+	 * }
 	 */
 	public function explode_location( $loc ) {
 		$infos = explode( '___', $loc );
@@ -126,6 +153,7 @@ class PLL_Nav_Menu {
 	 * @param string $new_status Transition to this post status.
 	 * @param string $old_status Previous post status.
 	 * @param object $post Post data.
+	 * @return void
 	 */
 	public function auto_add_pages_to_menu( $new_status, $old_status, $post ) {
 		if ( 'publish' != $new_status || 'publish' == $old_status || 'page' != $post->post_type || ! empty( $post->post_parent ) ) {
@@ -133,8 +161,6 @@ class PLL_Nav_Menu {
 		}
 
 		if ( ! empty( $this->options['nav_menus'][ $this->theme ] ) ) {
-			$this->auto_add_menus = array();
-
 			$lang = $this->model->post->get_language( $post->ID );
 			$lang = empty( $lang ) ? $this->options['default_lang'] : $lang->slug; // If the page has no language yet, the default language will be assigned
 

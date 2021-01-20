@@ -9,13 +9,31 @@
  * @since 1.6
  */
 class PLL_Admin_Strings {
-	protected static $strings = array(); // strings to translate
-	protected static $default_strings; // default strings to register
+	/**
+	 * Stores the strings to translate.
+	 *
+	 * @var array {
+	 *   @type string $name      A unique name for the string.
+	 *   @type string $string    The actual string to translate.
+	 *   @type string $context   The group in which the string is registered.
+	 *   @type bool   $multiline Whether the string table should display a multiline textarea or a single line input.
+	 * }
+	 */
+	protected static $strings = array();
+
+	/**
+	 * The strings to register by default.
+	 *
+	 * @var string[]
+	 */
+	protected static $default_strings;
 
 	/**
 	 * Add filters
 	 *
 	 * @since 1.6
+	 *
+	 * @return void
 	 */
 	public static function init() {
 		// default strings translations sanitization
@@ -31,6 +49,7 @@ class PLL_Admin_Strings {
 	 * @param string $string    The string to register
 	 * @param string $context   Optional, the group in which the string is registered, defaults to 'polylang'
 	 * @param bool   $multiline Optional, whether the string table should display a multiline textarea or a single line input, defaults to single line
+	 * @return void
 	 */
 	public static function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
 		if ( $string && is_scalar( $string ) ) {

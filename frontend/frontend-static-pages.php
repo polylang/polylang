@@ -9,6 +9,17 @@
  * @since 1.8
  */
 class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
+	/**
+	 * Instance of a child class of PLL_Links_Model.
+	 *
+	 * @var PLL_Links_Model
+	 */
+	protected $links_model;
+
+	/**
+	 * @var PLL_Frontend_Links
+	 */
+	protected $links;
 
 	/**
 	 * Constructor: setups filters and actions
@@ -40,6 +51,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * Init the filters
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function pll_language_defined() {
 		// Translates our page on front and page for posts properties
@@ -60,6 +73,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * Translates the page_id query var when the site root page is requested
 	 *
 	 * @since 1.8
+	 *
+	 * @return void
 	 */
 	public function pll_home_requested() {
 		set_query_var( 'page_id', $this->curlang->page_on_front );
@@ -87,9 +102,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return bool|string modified url, false if redirection is canceled
 	 */
 	public function redirect_canonical( $redirect_url ) {
-		global $wp_query;
-		if ( is_page() && ! is_feed() && isset( $wp_query->queried_object ) && $wp_query->queried_object->ID == $this->curlang->page_on_front ) {
-			$url = is_paged() ? $this->links_model->add_paged_to_link( $this->links->get_home_url(), $wp_query->query_vars['page'] ) : $this->links->get_home_url();
+		if ( is_page() && ! is_feed() && get_queried_object_id() == $this->curlang->page_on_front ) {
+			$url = is_paged() ? $this->links_model->add_paged_to_link( $this->links->get_home_url(), get_query_var( 'page' ) ) : $this->links->get_home_url();
 
 			// Don't forget additional query vars
 			$query = wp_parse_url( $redirect_url, PHP_URL_QUERY );
@@ -161,9 +175,9 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param bool|object $lang
-	 * @param object      $query
-	 * @return bool|object
+	 * @param PLL_Language|false $lang  The current language, false if it is not set yet.
+	 * @param WP_Query           $query The main WP query.
+	 * @return PLL_Language|false
 	 */
 	public function page_on_front_query( $lang, $query ) {
 		if ( ! empty( $lang ) || ! $this->page_on_front ) {

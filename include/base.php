@@ -17,8 +17,6 @@ abstract class PLL_Base {
 	public $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;
@@ -73,6 +71,8 @@ abstract class PLL_Base {
 	 * only when at least one language is defined.
 	 *
 	 * @since 2.6
+	 *
+	 * @return void
 	 */
 	public function init() {
 		if ( $this->model->get_languages_list() ) {
@@ -80,10 +80,10 @@ abstract class PLL_Base {
 			$this->terms = new PLL_CRUD_Terms( $this );
 
 			// WordPress options.
-			new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option( 'blogdescription', array(), array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option( 'date_format', array(), array( 'context' => 'WorPress' ) );
-			new PLL_Translate_Option( 'time_format', array(), array( 'context' => 'WorPress' ) );
+			new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WordPress' ) );
+			new PLL_Translate_Option( 'blogdescription', array(), array( 'context' => 'WordPress' ) );
+			new PLL_Translate_Option( 'date_format', array(), array( 'context' => 'WordPress' ) );
+			new PLL_Translate_Option( 'time_format', array(), array( 'context' => 'WordPress' ) );
 		}
 	}
 
@@ -91,6 +91,8 @@ abstract class PLL_Base {
 	 * Registers our widgets
 	 *
 	 * @since 0.1
+	 *
+	 * @return void
 	 */
 	public function widgets_init() {
 		register_widget( 'PLL_Widget_Languages' );
@@ -109,6 +111,7 @@ abstract class PLL_Base {
 	 * @since 2.1.3 $locale parameter added.
 	 *
 	 * @param string $locale Locale. Defaults to current locale.
+	 * @return void
 	 */
 	public function load_strings_translations( $locale = '' ) {
 		if ( empty( $locale ) ) {
@@ -127,27 +130,40 @@ abstract class PLL_Base {
 	}
 
 	/**
-	 * Resets some variables when switching blog
-	 * Applies only if Polylang is active on the new blog
+	 * Resets some variables when the blog is switched.
+	 * Applied only if Polylang is active on the new blog.
 	 *
 	 * @since 1.5.1
 	 *
-	 * @param int $new_blog
-	 * @param int $old_blog
-	 * @return bool not used by WP but by child class
+	 * @param int $new_blog_id  New blog ID.
+	 * @param int $prev_blog_id Previous blog ID.
+	 * @return void
 	 */
-	public function switch_blog( $new_blog, $old_blog ) {
+	public function switch_blog( $new_blog_id, $prev_blog_id ) {
+		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
+			$this->options = get_option( 'polylang' ); // Needed for menus.
+			remove_action( 'pre_option_rewrite_rules', array( $this->links_model, 'prepare_rewrite_rules' ) );
+			$this->links_model = $this->model->get_links_model();
+		}
+	}
+
+	/**
+	 * Checks if Polylang is active on the new blog when the blog is switched.
+	 *
+	 * @since 3.0
+	 *
+	 * @param int $new_blog_id  New blog ID.
+	 * @param int $prev_blog_id Previous blog ID.
+	 * @return bool
+	 */
+	protected function is_active_on_new_blog( $new_blog_id, $prev_blog_id ) {
 		$plugins = ( $sitewide_plugins = get_site_option( 'active_sitewide_plugins' ) ) && is_array( $sitewide_plugins ) ? array_keys( $sitewide_plugins ) : array();
 		$plugins = array_merge( $plugins, get_option( 'active_plugins', array() ) );
 
-		// 2nd test needed when Polylang is not networked activated
-		// 3rd test needed when Polylang is networked activated and a new site is created
-		if ( $new_blog != $old_blog && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' ) ) {
-			$this->options = get_option( 'polylang' ); // Needed for menus
-			remove_action( 'pre_option_rewrite_rules', array( $this->links_model, 'prepare_rewrite_rules' ) );
-			$this->links_model = $this->model->get_links_model();
-			return true;
-		}
-		return false;
+		/*
+		 * The 2nd test is needed when Polylang is not networked activated.
+		 * The 3rd test is needed when Polylang is networked activated and a new site is created.
+		 */
+		return $new_blog_id !== $prev_blog_id && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' );
 	}
 }

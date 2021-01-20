@@ -9,7 +9,36 @@
  * @since 1.8
  */
 class PLL_Filters_Links {
-	public $links, $links_model, $model, $options, $curlang;
+	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	public $options;
+
+	/**
+	 * @var PLL_Model
+	 */
+	public $model;
+
+	/**
+	 * Instance of a child class of PLL_Links_Model.
+	 *
+	 * @var PLL_Links_Model
+	 */
+	public $links_model;
+
+	/**
+	 * @var PLL_Links
+	 */
+	public $links;
+
+	/**
+	 * Current language.
+	 *
+	 * @var PLL_Language
+	 */
+	public $curlang;
 
 	/**
 	 * Constructor

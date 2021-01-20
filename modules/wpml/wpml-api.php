@@ -12,6 +12,11 @@
  * @since 2.0
  */
 class PLL_WPML_API {
+	/**
+	 * Stores the original language when the language is switched.
+	 *
+	 * @var PLL_Language
+	 */
 	private static $original_language = null;
 
 	/**
@@ -143,6 +148,8 @@ class PLL_WPML_API {
 	 * Returns an HTML hidden input field with name=”lang” and as value the current language
 	 *
 	 * @since 2.0
+	 *
+	 * @return void
 	 */
 	public function wpml_add_language_form_field() {
 		$lang = pll_current_language();
@@ -184,6 +191,7 @@ class PLL_WPML_API {
 	 *
 	 * @param null|string $lang   Language code to switch into, restores the original language if null.
 	 * @param bool|string $cookie Optionally also switches the cookie.
+	 * @return void
 	 */
 	public static function wpml_switch_language( $lang = null, $cookie = false ) {
 		if ( null === self::$original_language ) {

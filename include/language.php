@@ -183,8 +183,8 @@ class PLL_Language {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object|array $language      Term in 'language' taxonomy or language object properties stored as an array.
-	 * @param object       $term_language Corresponding 'term_language' term.
+	 * @param WP_Term|array $language      Term in 'language' taxonomy or language object properties stored as an array.
+	 * @param WP_Term       $term_language Corresponding 'term_language' term.
 	 */
 	public function __construct( $language, $term_language = null ) {
 		// Build the object from all properties stored as an array.
@@ -225,50 +225,56 @@ class PLL_Language {
 
 	/**
 	 * Get the flag informations:
-	 * 'url'    => Flag url.
-	 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
-	 * 'width'  => Optional, flag width in pixels.
-	 * 'height' => Optional, flag height in pixels.
 	 *
 	 * @since 2.6
 	 *
 	 * @param string $code Flag code.
-	 * @return array Flag informations.
+	 * @return array {
+	 *   Flag informations.
+	 *
+	 *   @type string $url    Flag url.
+	 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+	 *   @type int    $width  Optional, flag width in pixels.
+	 *   @type int    $height Optional, flag height in pixels.
+	 * }
 	 */
 	public static function get_flag_informations( $code ) {
 		$flag = array( 'url' => '' );
 
 		// Polylang builtin flags.
 		if ( ! empty( $code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
-			$flag['url'] = $_url = plugins_url( $file, POLYLANG_FILE );
+			$flag['url'] = plugins_url( $file, POLYLANG_FILE );
+
+			// If base64 encoded flags are preferred.
+			if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
+				list( $flag['width'], $flag['height'] ) = getimagesize( POLYLANG_DIR . $file );
+				$file_contents = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+				$flag['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+			}
 		}
 
 		/**
 		 * Filters flag informations:
-		 * 'url'    => Flag url.
-		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
-		 * 'width'  => Optional, flag width in pixels.
-		 * 'height' => Optional, flag height in pixels.
 		 *
 		 * @since 2.4
 		 *
-		 * @param array  $flag Information about the flag.
+		 * @param array  $flag {
+		 *   Information about the flag.
+		 *
+		 *   @type string $url    Flag url.
+		 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+		 *   @type int    $width  Optional, flag width in pixels.
+		 *   @type int    $height Optional, flag height in pixels.
+		 * }
 		 * @param string $code Flag code.
 		 */
 		$flag = apply_filters( 'pll_flag', $flag, $code );
 
-		if ( empty( $flag['src'] ) ) {
-			// If using predefined flags and base64 encoded flags are preferred.
-			if ( isset( $_url ) && $flag['url'] === $_url && ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) ) {
-				list( $flag['width'], $flag['height'] ) = getimagesize( POLYLANG_DIR . $file );
-				$file_contents = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-				$flag['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-			} else {
-				$flag['src'] = esc_url( set_url_scheme( $flag['url'], 'relative' ) );
-			}
-		}
-
 		$flag['url'] = esc_url_raw( $flag['url'] );
+
+		if ( empty( $flag['src'] ) ) {
+			$flag['src'] = esc_url( set_url_scheme( $flag['url'], 'relative' ) );
+		}
 
 		return $flag;
 	}
@@ -277,6 +283,8 @@ class PLL_Language {
 	 * Sets flag_url and flag properties.
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function set_flag() {
 		$flags = array( 'flag' => self::get_flag_informations( $this->flag_code ) );
@@ -296,16 +304,19 @@ class PLL_Language {
 		}
 
 		/**
-		 * Filters the custom flag informations:
-		 * 'url'    => Flag url.
-		 * 'src'    => Optional, src attribute value if different of the url, for example if base64 encoded.
-		 * 'width'  => Optional, flag width in pixels.
-		 * 'height' => Optional, flag height in pixels.
+		 * Filters the custom flag informations.
+		 *
+		 * @param array  $flag {
+		 *   Information about the custom flag.
+		 *
+		 *   @type string $url    Flag url.
+		 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+		 *   @type int    $width  Optional, flag width in pixels.
+		 *   @type int    $height Optional, flag height in pixels.
+		 * }
+		 * @param string $code Flag code.
 		 *
 		 * @since 2.4
-		 *
-		 * @param array  $flag Information about the custom flag.
-		 * @param string $code Flag code.
 		 */
 		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $this->flag_code );
 
@@ -358,6 +369,7 @@ class PLL_Language {
 	 * @param array  $flag  Flag properties: src, width and height.
 	 * @param string $title Optional title attribute.
 	 * @param string $alt   Optional alt attribute.
+	 * @return string
 	 */
 	public static function get_flag_html( $flag, $title = '', $alt = '' ) {
 		if ( empty( $flag['src'] ) ) {
@@ -397,6 +409,8 @@ class PLL_Language {
 	 * Returns the html of the custom flag if any, or the default flag otherwise.
 	 *
 	 * @since 2.8
+	 *
+	 * @return string
 	 */
 	public function get_display_flag() {
 		return empty( $this->custom_flag ) ? $this->flag : $this->custom_flag;
@@ -406,6 +420,8 @@ class PLL_Language {
 	 * Returns the url of the custom flag if any, or the default flag otherwise.
 	 *
 	 * @since 2.8
+	 *
+	 * @return string
 	 */
 	public function get_display_flag_url() {
 		return empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
@@ -415,6 +431,8 @@ class PLL_Language {
 	 * Updates post and term count.
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function update_count() {
 		wp_update_term_count( $this->term_taxonomy_id, 'language' ); // Posts count.
@@ -428,6 +446,7 @@ class PLL_Language {
 	 *
 	 * @param string $search_url Home url to use in search forms.
 	 * @param string $home_url   Home url.
+	 * @return void
 	 */
 	public function set_home_url( $search_url, $home_url ) {
 		$this->search_url = $search_url;
@@ -440,6 +459,8 @@ class PLL_Language {
 	 * This can't be cached across pages.
 	 *
 	 * @since 2.8
+	 *
+	 * @return void
 	 */
 	public function set_url_scheme() {
 		$this->home_url = set_url_scheme( $this->home_url );

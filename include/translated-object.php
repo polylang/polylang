@@ -10,8 +10,6 @@
  */
 abstract class PLL_Translated_Object {
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;
@@ -20,7 +18,7 @@ abstract class PLL_Translated_Object {
 	 * Object type to use when registering the taxonomies.
 	 * Left empty for posts.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $object_type;
 
@@ -79,6 +77,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param int               $id   Object id.
 	 * @param int|string|object $lang Language ( term_id or slug or object ).
+	 * @return void
 	 */
 	abstract public function set_language( $id, $lang );
 
@@ -88,7 +87,7 @@ abstract class PLL_Translated_Object {
 	 * @since 0.1
 	 *
 	 * @param int $id Object id.
-	 * @return bool|object PLL_Language object, false if no language is associated to that object.
+	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that object.
 	 */
 	abstract public function get_language( $id );
 
@@ -100,7 +99,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param int    $object_id Object id ( typically a post_id or term_id ).
 	 * @param string $taxonomy  Polylang taxonomy depending if we are looking for a post ( or term ) language ( or translation ).
-	 * @return bool|object The term associated to the object in the requested taxonomy if it exists, false otherwise.
+	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, false otherwise.
 	 */
 	public function get_object_term( $object_id, $taxonomy ) {
 		if ( empty( $object_id ) || is_wp_error( $object_id ) ) {
@@ -145,8 +144,9 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 2.3
 	 *
-	 * @param array $id           Object id ( typically a post_id or term_id ).
-	 * @param array $translations An associative array of translations with language code as key and translation id as value.
+	 * @param int   $id           Object id ( typically a post_id or term_id ).
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
+	 * @return bool
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
 		// Don't do anything if no translations have been added to the group.
@@ -160,12 +160,13 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
-	 * @param array $translations An associative array of translations with language code as key and translation id as value.
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
+	 * @return void
 	 */
 	public function save_translations( $id, $translations ) {
 		$id = (int) $id;
 
-		if ( ( $lang = $this->get_language( $id ) ) && isset( $translations ) && is_array( $translations ) ) {
+		if ( ( $lang = $this->get_language( $id ) ) && is_array( $translations ) ) {
 			// Sanitize the translations array.
 			$translations = array_map( 'intval', $translations );
 			$translations = array_merge( array( $lang->slug => $id ), $translations ); // Make sure this object is in translations.
@@ -216,6 +217,7 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $id Object id ( typically a post_id or term_id ).
+	 * @return void
 	 */
 	public function delete_translation( $id ) {
 		$id = (int) $id;
@@ -242,7 +244,7 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $id Object id ( typically a post_id or term_id ).
-	 * @return array An associative array of translations with language code as key and translation id as value.
+	 * @return int[] An associative array of translations with language code as key and translation id as value.
 	 */
 	public function get_translations( $id ) {
 		$term = $this->get_object_term( $id, $this->tax_translations );
@@ -266,9 +268,9 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 0.5
 	 *
-	 * @param int           $id   Object id ( typically a post_id or term_id ).
-	 * @param object|string $lang Language ( slug or object ).
-	 * @return bool|int Object id of the translation, false if there is none.
+	 * @param int                 $id   Object id ( typically a post_id or term_id ).
+	 * @param PLL_Language|string $lang Language ( slug or object ).
+	 * @return int|false Object id of the translation, false if there is none.
 	 */
 	public function get_translation( $id, $lang ) {
 		if ( ! $lang = $this->model->get_language( $lang ) ) {
@@ -285,9 +287,9 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int               $id   Object id ( typically a post_id or term_id ).
-	 * @param int|string|object $lang Language ( term_id or slug or object ).
-	 * @return bool|int The translation object id if exists, otherwise the passed id, false if the passed object has no language.
+	 * @param int                     $id   Object id ( typically a post_id or term_id ).
+	 * @param int|string|PLL_Language $lang Language ( term_id or slug or object ).
+	 * @return int|false The translation object id if exists, otherwise the passed id, false if the passed object has no language.
 	 */
 	public function get( $id, $lang ) {
 		$id = (int) $id;
@@ -315,7 +317,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object|array|string $lang PLL_Language object or a comma separated list of language slug or an array of language slugs.
+	 * @param PLL_Language|string|string[] $lang PLL_Language object or a comma separated list of language slug or an array of language slugs.
 	 * @return string Where clause.
 	 */
 	public function where_clause( $lang ) {
@@ -348,8 +350,8 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 1.4
 	 *
-	 * @param object $lang PLL_Language object.
-	 * @return array
+	 * @param PLL_Language $lang PLL_Language object.
+	 * @return int[] Object ids.
 	 */
 	public function get_objects_in_language( $lang ) {
 		global $wpdb;
@@ -387,11 +389,11 @@ abstract class PLL_Translated_Object {
 		 *
 		 * @since 2.6
 		 *
-		 * @param $check Null to enable the capability check,
-		 *               true to always allow the synchronization,
-		 *               false to always disallow the synchronization.
-		 *               Defaults to true.
-		 * @param $id    The synchronization source object id.
+		 * @param bool|null $check Null to enable the capability check,
+		 *                         true to always allow the synchronization,
+		 *                         false to always disallow the synchronization.
+		 *                         Defaults to true.
+		 * @param int       $id    The synchronization source object id.
 		 */
 		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
 		if ( null !== $check ) {

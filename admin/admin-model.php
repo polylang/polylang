@@ -4,7 +4,7 @@
  */
 
 /**
- * Extends the PLL_Model class with methods needed only in Polylang settings pages
+ * Extends the PLL_Model class with methods needed only in Polylang settings pages.
  *
  * @since 1.2
  */
@@ -12,23 +12,20 @@ class PLL_Admin_Model extends PLL_Model {
 
 	/**
 	 * Adds a new language
-	 * Creates a default category for this language
-	 *
-	 * List of arguments that $args must contain:
-	 * name           -> language name ( used only for display )
-	 * slug           -> language code ( ideally 2-letters ISO 639-1 language code )
-	 * locale         -> WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
-	 * rtl            -> 1 if rtl language, 0 otherwise
-	 * term_group     -> language order when displayed
-	 *
-	 * Optional arguments that $args can contain:
-	 * no_default_cat -> if set, no default category will be created for this language
-	 * flag           -> country code, see flags.php
+	 * and creates a default category for this language.
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $args
-	 * @return bool true if success / false if failed
+	 * @param array $args {
+	 *   @type string $name           Language name ( used only for display ).
+	 *   @type string $slug           Language code ( ideally 2-letters ISO 639-1 language code ).
+	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
+	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
+	 *   @type int    $term_group     Language order when displayed.
+	 *   @type string $no_default_cat Optional, if set, no default category will be created for this language.
+	 *   @type string $flag           Optional, country code, @see flags.php.
+	 * }
+	 * @return WP_Error|true true if success / WP_Error if failed.
 	 */
 	public function add_language( $args ) {
 		$errors = $this->validate_lang( $args );
@@ -67,11 +64,11 @@ class PLL_Admin_Model extends PLL_Model {
 		$mo->export_to_db( $this->get_language( $args['slug'] ) );
 
 		/**
-		 * Fires when a language is added
+		 * Fires when a language is added.
 		 *
 		 * @since 1.9
 		 *
-		 * @param array $args arguments used to create the language
+		 * @param array $args Arguments used to create the language. @see PLL_Admin_Model::add_language().
 		 */
 		do_action( 'pll_add_language', $args );
 
@@ -81,11 +78,12 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Delete a language
+	 * Delete a language.
 	 *
 	 * @since 1.2
 	 *
-	 * @param int $lang_id language term_id
+	 * @param int $lang_id Language term_id.
+	 * @return bool
 	 */
 	public function delete_language( $lang_id ) {
 		$lang = $this->get_language( (int) $lang_id );
@@ -162,23 +160,20 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Update language properties
-	 *
-	 * List of arguments that $args must contain:
-	 * lang_id    -> term_id of the language to modify
-	 * name       -> language name ( used only for display )
-	 * slug       -> language code ( ideally 2-letters ISO 639-1 language code
-	 * locale     -> WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
-	 * rtl        -> 1 if rtl language, 0 otherwise
-	 * term_group -> language order when displayed
-	 *
-	 * Optional arguments that $args can contain:
-	 * flag       -> country code, see flags.php
+	 * Updates language properties.
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $args
-	 * @return bool true if success / false if failed
+	 * @param array $args {
+	 *   @type int    $lang_id        Id of the language to modify.
+	 *   @type string $name           Language name ( used only for display ).
+	 *   @type string $slug           Language code ( ideally 2-letters ISO 639-1 language code ).
+	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
+	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
+	 *   @type int    $term_group     Language order when displayed.
+	 *   @type string $flag           Optional, country code, @see flags.php.
+	 * }
+	 * @return WP_Error|true true if success / WP_Error if failed.
 	 */
 	public function update_language( $args ) {
 		$lang = $this->get_language( (int) $args['lang_id'] );
@@ -243,11 +238,11 @@ class PLL_Admin_Model extends PLL_Model {
 		wp_update_term( (int) $lang->tl_term_id, 'term_language', array( 'slug' => 'pll_' . $slug, 'name' => $args['name'] ) );
 
 		/**
-		 * Fires when a language is added
+		 * Fires when a language is updated.
 		 *
 		 * @since 1.9
 		 *
-		 * @param array $args arguments used to modify the language
+		 * @param array $args Arguments used to modify the language. @see PLL_Admin_Model::update_language().
 		 */
 		do_action( 'pll_update_language', $args );
 
@@ -257,15 +252,15 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Validates data entered when creating or updating a language
+	 * Validates data entered when creating or updating a language.
 	 *
-	 * @see PLL_Admin_Model::add_language()
+	 * @see PLL_Admin_Model::add_language().
 	 *
 	 * @since 0.4
 	 *
-	 * @param array  $args
-	 * @param object $lang optional the language currently updated, the language is created if not set
-	 * @return bool true if success / false if failed
+	 * @param array  $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
+	 * @param object $lang Optional the language currently updated, the language is created if not set.
+	 * @return WP_Error
 	 */
 	protected function validate_lang( $args, $lang = null ) {
 		$errors = new WP_Error();
@@ -282,7 +277,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Validate slug is unique
 		foreach ( $this->get_languages_list() as $language ) {
-			if ( $language->slug === $args['slug'] && ( null === $lang || ( isset( $lang ) && $lang->term_id != $language->term_id ) ) ) {
+			if ( $language->slug === $args['slug'] && ( null === $lang || $lang->term_id !== $language->term_id ) ) {
 				$errors->add( 'pll_non_unique_slug', __( 'The language code must be unique', 'polylang' ) );
 			}
 		}
@@ -310,13 +305,14 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Used to set the language of posts or terms in mass
+	 * Assigns a language to posts or terms in mass.
 	 *
 	 * @since 1.2
 	 *
-	 * @param string        $type either 'post' or 'term'
-	 * @param array         $ids  array of post ids or term ids
-	 * @param object|string $lang object or slug
+	 * @param string              $type Either 'post' or 'term'.
+	 * @param int[]               $ids  Array of post ids or term ids.
+	 * @param PLL_Language|string $lang Language to assign to the posts or terms.
+	 * @return void
 	 */
 	public function set_language_in_mass( $type, $ids, $lang ) {
 		global $wpdb;
@@ -353,12 +349,13 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Used to create a translations groups in mass
+	 * Creates translations groups in mass.
 	 *
 	 * @since 1.6.3
 	 *
-	 * @param string $type         either 'post' or 'term'
-	 * @param array  $translations array of translations arrays
+	 * @param string $type         Either 'post' or 'term'
+	 * @param array  $translations Array of translations arrays.
+	 * @return void
 	 */
 	public function set_translation_in_mass( $type, $translations ) {
 		global $wpdb;
@@ -428,25 +425,30 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Returns untranslated posts and terms ids ( used in settings )
+	 * Returns untranslated posts and terms ids ( used in settings ).
 	 *
 	 * @since 0.9
-	 * @since 2.2.6 Add the $limit argument
+	 * @since 2.2.6 Add the $limit argument.
 	 *
-	 * @param in $limit Max number of posts or terms to return. Defaults to -1 (no limit).
-	 * @return array Array made of an array of post ids and an array of term ids
+	 * @param int $limit Max number of posts or terms to return. Defaults to -1 (no limit).
+	 * @return array {
+	 *     Objects without language.
+	 *
+	 *     @type int[] $posts Array of post ids.
+	 *     @type int[] $terms Array of term ids.
+	 * }
 	 */
 	public function get_objects_with_no_lang( $limit = -1 ) {
 		global $wpdb;
 
 		/**
-		 * Filters the max number of posts or terms to return when searching objects with no language
+		 * Filters the max number of posts or terms to return when searching objects with no language.
 		 * This filter can be used to decrease the memory usage in case the number of objects
 		 * without language is too big. Using a negative value is equivalent to have no limit.
 		 *
 		 * @since 2.2.6
 		 *
-		 * @param int $limit Max number of posts or terms to retrieve from the database
+		 * @param int $limit Max number of posts or terms to retrieve from the database.
 		 */
 		$limit = (int) apply_filters( 'get_objects_with_no_lang_limit', $limit );
 
@@ -484,22 +486,24 @@ class PLL_Admin_Model extends PLL_Model {
 		// PHPCS:enable
 
 		/**
-		 * Filter the list of untranslated posts ids and terms ids
+		 * Filters the list of untranslated posts ids and terms ids
 		 *
 		 * @since 0.9
 		 *
-		 * @param bool|array $objects false if no ids found, list of post and/or term ids otherwise
+		 * @param array|false $objects false if no ids found, list of post and/or term ids otherwise.
 		 */
 		return apply_filters( 'pll_get_objects_with_no_lang', empty( $posts ) && empty( $terms ) ? false : array( 'posts' => $posts, 'terms' => $terms ) );
 	}
 
 	/**
-	 * Used to delete translations or update the translations when a language slug has been modified in settings
+	 * Updates the translations when a language slug has been modified in settings
+	 * or deletes them when a language is removed.
 	 *
 	 * @since 0.5
 	 *
-	 * @param string $old_slug the old language slug
-	 * @param string $new_slug optional, the new language slug, if not set it means the correspondent has been deleted
+	 * @param string $old_slug The old language slug.
+	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
+	 * @return void
 	 */
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
@@ -569,11 +573,12 @@ class PLL_Admin_Model extends PLL_Model {
 
 	/**
 	 * Updates the default language
-	 * taking care to update the default category & the nav menu locations
+	 * taking care to update the default category & the nav menu locations.
 	 *
 	 * @since 1.8
 	 *
-	 * @param string $slug new language slug
+	 * @param string $slug New language slug.
+	 * @return void
 	 */
 	public function update_default_lang( $slug ) {
 		// The nav menus stored in theme locations should be in the default language

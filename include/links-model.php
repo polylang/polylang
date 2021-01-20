@@ -24,8 +24,6 @@ abstract class PLL_Links_Model {
 	public $options;
 
 	/**
-	 * Instance of PLL_Model.
-	 *
 	 * @var PLL_Model
 	 */
 	public $model;
@@ -139,7 +137,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.5
 	 *
-	 * @return array The list of hosts.
+	 * @return string[] The list of hosts.
 	 */
 	public function get_hosts() {
 		return array( wp_parse_url( $this->home, PHP_URL_HOST ) );
@@ -164,6 +162,7 @@ abstract class PLL_Links_Model {
 	 * @since 1.8
 	 *
 	 * @param object $language PLL_Language object.
+	 * @return void
 	 */
 	protected function set_home_url( $language ) {
 		// We should always have a default language here, except, temporarily, in PHPUnit tests. The test here protects against PHP notices.
@@ -179,8 +178,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $languages Array of PLL_Language objects.
-	 * @return array
+	 * @param PLL_Language[] $languages Array of PLL_Language objects.
+	 * @return PLL_Language[] Array of PLL_Language objects with home url and flag.
 	 */
 	public function pll_languages_list( $languages ) {
 		foreach ( $languages as $language ) {
@@ -196,8 +195,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $languages Array of PLL_Language objects.
-	 * @return array
+	 * @param PLL_Language[] $languages Array of PLL_Language objects.
+	 * @return PLL_Language[] Array of PLL_Language objects.
 	 */
 	public function pll_after_languages_cache( $languages ) {
 		foreach ( $languages as $language ) {
@@ -213,12 +212,12 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Adds our domains or subdomains to allowed hosts for safe redirection
+	 * Adds our domains or subdomains to allowed hosts for safe redirect.
 	 *
 	 * @since 1.4.3
 	 *
-	 * @param array $hosts Allowed hosts.
-	 * @return array
+	 * @param string[] $hosts Allowed hosts.
+	 * @return string[] Modified list of allowed hosts.
 	 */
 	public function allowed_redirect_hosts( $hosts ) {
 		return array_unique( array_merge( $hosts, array_values( $this->get_hosts() ) ) );

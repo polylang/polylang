@@ -9,6 +9,9 @@
  * @since 1.8
  */
 class PLL_Admin_Static_Pages extends PLL_Static_Pages {
+	/**
+	 * @var PLL_Admin_Links
+	 */
 	protected $links;
 
 	/**
@@ -32,10 +35,6 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 
 		// Refresh language cache when a static front page has been translated
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
-
-		// Checks if chosen page on front is translated
-		add_filter( 'pre_update_option_page_on_front', array( $this, 'update_page_on_front' ), 10, 2 );
-		add_filter( 'customize_validate_page_on_front', array( $this, 'customize_validate_page_on_front' ), 10, 2 );
 
 		// Prevents WP resetting the option
 		add_filter( 'pre_update_option_show_on_front', array( $this, 'update_show_on_front' ), 10, 2 );
@@ -72,6 +71,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @param string $post_type Current post type
 	 * @param object $post      Current post
+	 * @return void
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
 		if ( 'page' === $post_type ) {
@@ -85,13 +85,13 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Add post state for translations of the front page and posts page
+	 * Adds post state for translations of the front page and posts page.
 	 *
 	 * @since 1.8
 	 *
-	 * @param array  $post_states An array of post display states.
-	 * @param object $post        The current post object.
-	 * @return array
+	 * @param string[] $post_states An array of post display states.
+	 * @param WP_Post  $post        The current post object.
+	 * @return string[]
 	 */
 	public function display_post_states( $post_states, $post ) {
 		if ( in_array( $post->ID, $this->model->get_languages_list( array( 'fields' => 'page_on_front' ) ) ) ) {
@@ -106,75 +106,19 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Refresh language cache when a static front page has been translated
+	 * Refreshes the language cache when a static front page has been translated.
 	 *
 	 * @since 1.8
 	 *
-	 * @param int    $post_id      Not used
-	 * @param object $post         Not used
-	 * @param array  $translations
+	 * @param int     $post_id      Not used.
+	 * @param WP_Post $post         Not used.
+	 * @param int[]   $translations Translations of the post being saved.
+	 * @return void
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
 		if ( in_array( $this->page_on_front, $translations ) ) {
 			$this->model->clean_languages_cache();
 		}
-	}
-
-	/**
-	 * Checks if a page is translated in all languages
-	 *
-	 * @since 2.2
-	 *
-	 * @param int $page_id
-	 * @return bool
-	 */
-	protected function is_page_translated( $page_id ) {
-		if ( $page_id ) {
-			$translations = count( $this->model->post->get_translations( $page_id ) );
-			$languages = count( $this->model->get_languages_list() );
-
-			if ( $languages > 1 && $translations != $languages ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Prevents choosing an untranslated static front page
-	 * Displays an error message
-	 *
-	 * @since 1.6
-	 *
-	 * @param int $page_id New page on front page id
-	 * @param int $old_id  Old page on front page_id
-	 * @return int
-	 */
-	public function update_page_on_front( $page_id, $old_id ) {
-		if ( ! $this->is_page_translated( $page_id ) ) {
-			$page_id = $old_id;
-			add_settings_error( 'reading', 'pll_page_on_front_error', __( 'The chosen static front page must be translated in all languages.', 'polylang' ) );
-		}
-
-		return $page_id;
-	}
-
-	/**
-	 * Displays an error message in the customizer when choosing an untranslated static front page
-	 *
-	 * @since 2.2
-	 *
-	 * @param object $validity WP_Error object
-	 * @param int    $page_id  New page on front page id
-	 * @return object
-	 */
-	public function customize_validate_page_on_front( $validity, $page_id ) {
-		if ( ! $this->is_page_translated( $page_id ) ) {
-			return new WP_Error( 'pll_page_on_front_error', __( 'The chosen static front page must be translated in all languages.', 'polylang' ) );
-		}
-
-		return $validity;
 	}
 
 	/**
@@ -199,6 +143,8 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * The notice is not dismissible and displayed on the Languages pages and the list of pages.
 	 *
 	 * @since 2.6
+	 *
+	 * @return void
 	 */
 	public function notice_must_translate() {
 		$screen = get_current_screen();

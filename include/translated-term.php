@@ -28,7 +28,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 		// Filters to prime terms cache
 		add_filter( 'get_terms', array( $this, '_prime_terms_cache' ), 10, 2 );
-		add_filter( 'wp_get_object_terms', array( $this, 'wp_get_object_terms' ), 10, 3 );
+		add_filter( 'get_object_terms', array( $this, 'wp_get_object_terms' ), 10, 3 );
 
 		add_action( 'clean_term_cache', array( $this, 'clean_term_cache' ) );
 	}
@@ -40,6 +40,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @param int               $term_id term id
 	 * @param int|string|object $lang    language ( term_id or slug or object )
+	 * @return void
 	 */
 	public function set_language( $term_id, $lang ) {
 		$term_id = (int) $term_id;
@@ -67,6 +68,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $term_id term id
+	 * @return void
 	 */
 	public function delete_language( $term_id ) {
 		wp_delete_object_term_relationships( $term_id, 'term_language' );
@@ -79,7 +81,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @param int|string $value    term id or term slug
 	 * @param string     $taxonomy optional taxonomy needed when the term slug is passed as first parameter
-	 * @return bool|object PLL_Language object, false if no language is associated to that term
+	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that term
 	 */
 	public function get_language( $value, $taxonomy = '' ) {
 		if ( is_numeric( $value ) ) {
@@ -96,12 +98,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Tells whether a translation term must updated
+	 * Tells whether a translation term must updated.
 	 *
 	 * @since 2.3
 	 *
-	 * @param array $id           Post id or term id
-	 * @param array $translations An associative array of translations with language code as key and translation id as value
+	 * @param int   $id           Post id or term id.
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
+	 * @return bool
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
 		// Don't do anything if no translations have been added to the group
@@ -121,6 +124,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int $id term id
+	 * @return void
 	 */
 	public function delete_translation( $id ) {
 		global $wpdb;
@@ -152,13 +156,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Cache language and translations when terms are queried by get_terms
+	 * Caches the language and translations when terms are queried by get_terms().
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $terms      queried terms
-	 * @param array $taxonomies queried taxonomies
-	 * @return array unmodified $terms
+	 * @param WP_Term[]|int[] $terms      Queried terms.
+	 * @param string[]        $taxonomies Queried taxonomies.
+	 * @return WP_Term[]|int[] Unmodified $terms.
 	 */
 	public function _prime_terms_cache( $terms, $taxonomies ) {
 		$term_ids = array();
@@ -176,17 +180,16 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	}
 
 	/**
-	 * When terms are found for posts, add their language and translations to cache
+	 * When terms are found for posts, add their language and translations to cache.
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $terms      terms found
-	 * @param array $object_ids not used
-	 * @param array $taxonomies terms taxonomies
-	 * @return array unmodified $terms
+	 * @param WP_Term[] $terms      Array of terms for the given object or objects.
+	 * @param int[]     $object_ids Array of object IDs for which terms were retrieved.
+	 * @param string[]  $taxonomies Array of taxonomy names from which terms were retrieved.
+	 * @return WP_Term[] Unmodified $terms.
 	 */
 	public function wp_get_object_terms( $terms, $object_ids, $taxonomies ) {
-		$taxonomies = explode( "', '", trim( $taxonomies, "'" ) );
 		if ( ! in_array( 'term_translations', $taxonomies ) ) {
 			$this->_prime_terms_cache( $terms, $taxonomies );
 		}
@@ -194,11 +197,12 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	}
 
 	/**
-	 * When the term cache is cleaned, clean the object term cache too
+	 * When the term cache is cleaned, cleans the object term cache too.
 	 *
 	 * @since 2.0
 	 *
-	 * @param array $ids An array of term IDs.
+	 * @param int[] $ids An array of term IDs.
+	 * @return void
 	 */
 	public function clean_term_cache( $ids ) {
 		clean_object_term_cache( $ids, 'term' );
