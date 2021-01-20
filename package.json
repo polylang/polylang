@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/polylang/polylang#readme",
   "devDependencies": {
-    "@wpsyntex/polylang-build-scripts": "^2.0.1",
+    "@wpsyntex/polylang-build-scripts": "^2.0.2",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.1",
