@@ -162,7 +162,8 @@ class PLL_Filters_Links {
 
 		// In case someone calls get_term_link for the 'language' taxonomy.
 		if ( 'language' === $tax ) {
-			return $this->links_model->home_url( $term );
+			$lang = $this->model->get_language( $term->term_id );
+			return $this->links_model->home_url( $lang );
 		}
 
 		return $link;
