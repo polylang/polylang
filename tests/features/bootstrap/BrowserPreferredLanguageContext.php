@@ -19,7 +19,9 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @BeforeSuite
 	 */
 	public static function prepare_for_suite() {
+		error_reporting( E_ERROR );
 		require_once __DIR__ . '/../../phpunit/includes/bootstrap.php';
+		error_reporting( E_ALL );
 	}
 
 	/**
