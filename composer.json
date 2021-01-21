@@ -14,7 +14,7 @@
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"szepeviktor/phpstan-wordpress": "*",
-		"behat/behat": "3.7.*"
+		"behat/behat": "^3.8"
 	},
 	"autoload": {
 		"classmap": [
