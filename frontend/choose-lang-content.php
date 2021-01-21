@@ -31,11 +31,11 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	}
 
 	/**
-	 * Overwrites parent::set_language to remove the 'wp' action if the language is set before
+	 * Overwrites parent::set_language to remove the 'wp' action if the language is set before.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $curlang current language
+	 * @param PLL_Language $curlang Current language.
 	 * @return void
 	 */
 	protected function set_language( $curlang ) {
@@ -74,11 +74,11 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 		}
 
 		/**
-		 * Filter the language before it is set from the content
+		 * Filters the language before it is set from the content.
 		 *
 		 * @since 0.9
 		 *
-		 * @param bool|object $lang language object or false if none was found
+		 * @param PLL_Language|false $lang Language object or false if none was found.
 		 */
 		return apply_filters( 'pll_get_current_language', isset( $lang ) ? $lang : false );
 	}
@@ -137,11 +137,11 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	}
 
 	/**
-	 * If no language found by get_language_from_content, return the preferred one
+	 * If no language is found by {@see PLL_Choose_Lang_Content::get_language_from_content()}, returns the preferred one.
 	 *
 	 * @since 0.9
 	 *
-	 * @param object|bool $lang Language found in get_language_from_content
+	 * @param PLL_Language|false $lang Language found by {@see PLL_Choose_Lang_Content::get_language_from_content()}.
 	 * @return PLL_Language
 	 */
 	public function pll_get_current_language( $lang ) {

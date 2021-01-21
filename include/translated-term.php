@@ -34,12 +34,12 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Stores the term language in the database
+	 * Stores the term language in the database.
 	 *
 	 * @since 0.6
 	 *
-	 * @param int               $term_id term id
-	 * @param int|string|object $lang    language ( term_id or slug or object )
+	 * @param int                     $term_id Term id.
+	 * @param int|string|PLL_Language $lang    Language (term_id or slug or object).
 	 * @return void
 	 */
 	public function set_language( $term_id, $lang ) {

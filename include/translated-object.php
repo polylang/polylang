@@ -55,7 +55,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $model Instance of PLL_Model.
+	 * @param PLL_Model $model Instance of PLL_Model.
 	 */
 	public function __construct( &$model ) {
 		$this->model = &$model;
@@ -75,8 +75,8 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 0.6
 	 *
-	 * @param int               $id   Object id.
-	 * @param int|string|object $lang Language ( term_id or slug or object ).
+	 * @param int                     $id   Object id.
+	 * @param int|string|PLL_Language $lang Language (term_id or slug or object).
 	 * @return void
 	 */
 	abstract public function set_language( $id, $lang );

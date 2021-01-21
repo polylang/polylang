@@ -19,11 +19,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	protected $home_relative;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $model PLL_Model instance
+	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
 		parent::__construct( $model );

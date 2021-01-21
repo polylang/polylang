@@ -47,11 +47,11 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	protected $always_rewrite = array( 'date', 'root', 'comments', 'search', 'author' );
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $model PLL_Model instance
+	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
 		parent::__construct( $model );
@@ -105,11 +105,11 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	}
 
 	/**
-	 * Returns the home url
+	 * Returns the home url.
 	 *
 	 * @since 1.3.1
 	 *
-	 * @param object $lang PLL_Language object
+	 * @param PLL_Language $lang PLL_Language object.
 	 * @return string
 	 */
 	public function home_url( $lang ) {

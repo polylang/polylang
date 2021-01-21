@@ -195,11 +195,11 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Add filters before the sitemap is evaluated and outputed
+	 * Add filters before the sitemap is evaluated and outputed.
 	 *
 	 * @since 2.6
 	 *
-	 * @param object $query Instance of WP_Query being filtered.
+	 * @param WP_Query $query Instance of WP_Query being filtered.
 	 */
 	public function before_sitemap( $query ) {
 		$type = $query->get( 'sitemap' );

@@ -131,13 +131,13 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 	/**
 	 * Modifies custom posts links
-	 * and caches the result
+	 * and caches the result.
 	 *
 	 * @since 1.6
 	 *
-	 * @param string $link post link
-	 * @param object $post post object
-	 * @return string modified post link
+	 * @param string  $link Post link.
+	 * @param WP_Post $post Post object.
+	 * @return string Modified post link.
 	 */
 	public function post_type_link( $link, $post ) {
 		$cache_key = "post:{$post->ID}:{$link}";
@@ -150,14 +150,14 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 	/**
 	 * Modifies filtered taxonomies ( post format like ) and translated taxonomies links
-	 * and caches the result
+	 * and caches the result.
 	 *
 	 * @since 0.7
 	 *
-	 * @param string $link
-	 * @param object $term term object
-	 * @param string $tax  taxonomy name
-	 * @return string modified link
+	 * @param string  $link Term link.
+	 * @param WP_Term $term Term object.
+	 * @param string  $tax  Taxonomy name.
+	 * @return string Modified link.
 	 */
 	public function term_link( $link, $term, $tax ) {
 		$cache_key = "term:{$term->term_id}:{$link}";
@@ -454,12 +454,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		/**
-		 * Filters the canonical url detected by Polylang
+		 * Filters the canonical url detected by Polylang.
 		 *
 		 * @since 1.6
 		 *
-		 * @param bool|string $redirect_url false or the url to redirect to
-		 * @param object      $language the language detected
+		 * @param string|false $redirect_url False or the url to redirect to.
+		 * @param PLL_Language $language The language detected.
 		 */
 		$redirect_url = apply_filters( 'pll_check_canonical_url', $redirect_url, $language );
 

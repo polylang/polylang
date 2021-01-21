@@ -57,3 +57,9 @@ parameters:
 			message: "#^Call to function is_wp_error\\(\\) with int will always evaluate to false\\.$#"
 			count: 1
 			path: include/translated-object.php
+
+		# Ignored because of https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: frontend/choose-lang.php

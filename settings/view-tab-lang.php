@@ -160,7 +160,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						 *
 						 * @since 1.7.10
 						 *
-						 * @param object $lang language being edited.
+						 * @param PLL_Language $lang language being edited.
 						 */
 						do_action( 'pll_language_edit_form_fields', $edit_lang );
 					} else {

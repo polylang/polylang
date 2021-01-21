@@ -23,8 +23,8 @@ class PLL_Cft {
 	 *
 	 * @since 1.0.2
 	 *
-	 * @param string $post_type Unused.
-	 * @param object $post      Current post object.
+	 * @param string  $post_type Unused.
+	 * @param WP_Post $post      Current post object.
 	 */
 	public function cft_copy( $post_type, $post ) {
 		global $custom_field_template;

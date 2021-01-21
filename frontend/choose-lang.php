@@ -70,13 +70,12 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Writes language cookie
-	 * Loads user defined translations
-	 * Fires the action 'pll_language_defined'
+	 * Sets the current language
+	 * and fires the action 'pll_language_defined'.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $curlang current language
+	 * @param PLL_Language $curlang Current language.
 	 * @return void
 	 */
 	protected function set_language( $curlang ) {
@@ -93,12 +92,12 @@ abstract class PLL_Choose_Lang {
 		wp_styles()->text_direction = $GLOBALS['text_direction'];
 
 		/**
-		 * Fires when the current language is defined
+		 * Fires when the current language is defined.
 		 *
 		 * @since 0.9.5
 		 *
-		 * @param string $slug    current language code
-		 * @param object $curlang current language object
+		 * @param string       $slug    Current language code.
+		 * @param PLL_Language $curlang Current language object.
 		 */
 		do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 	}
@@ -362,11 +361,11 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Sets the current language in the query
+	 * Sets the current language in the query.
 	 *
 	 * @since 2.2
 	 *
-	 * @param object $query
+	 * @param WP_Query $query Instance of WP_Query.
 	 * @return void
 	 */
 	protected function set_curlang_in_query( &$query ) {
