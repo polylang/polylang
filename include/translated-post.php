@@ -11,11 +11,11 @@
 class PLL_Translated_Post extends PLL_Translated_Object {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $model
+	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
 		// init properties
@@ -38,12 +38,12 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Store the post language in the database
+	 * Store the post language in the database.
 	 *
 	 * @since 0.6
 	 *
-	 * @param int               $post_id post id
-	 * @param int|string|object $lang    language ( term_id or slug or object )
+	 * @param int                     $post_id Post id.
+	 * @param int|string|PLL_Language $lang    Language (term_id or slug or object).
 	 * @return void
 	 */
 	public function set_language( $post_id, $lang ) {

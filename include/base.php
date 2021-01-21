@@ -43,11 +43,11 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $links_model
+	 * @param PLL_Links_Model $links_model Links Model.
 	 */
 	public function __construct( &$links_model ) {
 		$this->links_model = &$links_model;

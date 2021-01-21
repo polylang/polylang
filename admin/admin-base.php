@@ -51,12 +51,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public $static_pages;
 
 	/**
-	 * Loads the polylang text domain
-	 * Setups actions needed on all admin pages
+	 * Setups actions needed on all admin pages.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $links_model
+	 * @param PLL_Links_Model $links_model Reference to the links model.
 	 */
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
@@ -366,12 +365,12 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_language( $this->options['default_lang'] ) : $this->filter_lang;
 
 		/**
-		 * Filter the preferred language on admin side
-		 * The preferred language is used for example to determine the language of a new post
+		 * Filters the preferred language on admin side.
+		 * The preferred language is used for example to determine the language of a new post.
 		 *
 		 * @since 1.2.3
 		 *
-		 * @param object $pref_lang preferred language
+		 * @param PLL_Language $pref_lang Preferred language.
 		 */
 		$this->pref_lang = apply_filters( 'pll_admin_preferred_language', $this->pref_lang );
 

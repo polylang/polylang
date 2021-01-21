@@ -11,11 +11,11 @@
 abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 2.0
 	 *
-	 * @param object $model PLL_Model instance.
+	 * @param PLL_Model $model Instance of PLL_Model.
 	 */
 	public function __construct( &$model ) {
 		parent::__construct( $model );

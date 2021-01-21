@@ -59,11 +59,11 @@ class PLL_Frontend extends PLL_Base {
 	public $static_pages;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $links_model
+	 * @param PLL_Links_Model $links_model Reference to the links model.
 	 */
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );

@@ -109,11 +109,11 @@ class PLL_Query {
 	}
 
 	/**
-	 * Add the language in query after it has checked that it won't conflict with other query vars
+	 * Adds the language in the query after it has checked that it won't conflict with other query vars.
 	 *
 	 * @since 2.2
 	 *
-	 * @param object $lang Language
+	 * @param PLL_Language $lang Language.
 	 * @return void
 	 */
 	public function filter_query( $lang ) {

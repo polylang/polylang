@@ -20,11 +20,11 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	protected $www;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.7.4
 	 *
-	 * @param object $model PLL_Model instance
+	 * @param PLL_Model $model Instance of PLL_Model.
 	 */
 	public function __construct( &$model ) {
 		parent::__construct( $model );

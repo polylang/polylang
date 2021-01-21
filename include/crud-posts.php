@@ -25,7 +25,7 @@ class PLL_CRUD_Posts {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Model
+	 * @var PLL_Language
 	 */
 	protected $curlang;
 

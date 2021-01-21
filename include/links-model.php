@@ -40,7 +40,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.5
 	 *
-	 * @param object $model PLL_Model instance.
+	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
 		$this->model   = &$model;
