@@ -151,6 +151,10 @@ class PLL_Admin_Filters_Columns {
 
 		$language = $this->model->get_language( substr( $column, 9 ) );
 
+		if ( empty( $language ) ) {
+			return;
+		}
+
 		// Hidden field containing the post language for quick edit
 		if ( $column == $this->get_first_language_column() ) {
 			printf( '<div class="hidden" id="lang_%d">%s</div>', intval( $post_id ), esc_html( $lang->slug ) );
@@ -172,14 +176,19 @@ class PLL_Admin_Filters_Columns {
 					/* translators: accessibility text, %s is a native language name */
 					$s = sprintf( __( 'Edit the translation in %s', 'polylang' ), $language->name );
 				}
-				printf(
-					'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span>%5$s</a>',
-					esc_attr( $class ),
-					esc_attr( get_post( $id )->post_title ),
-					esc_url( $link ),
-					esc_html( $s ),
-					$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-				);
+
+				$post = get_post( $id );
+
+				if ( ! empty( $post ) ) {
+					printf(
+						'<a class="%1$s" title="%2$s" href="%3$s"><span class="screen-reader-text">%4$s</span>%5$s</a>',
+						esc_attr( $class ),
+						esc_attr( $post->post_title ),
+						esc_url( $link ),
+						esc_html( $s ),
+						$flag // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					);
+				}
 			} elseif ( $id === $post_id ) {
 				printf(
 					'<span class="pll_column_flag" style=""><span class="screen-reader-text">%1$s</span>%2$s</span>',
@@ -279,6 +288,10 @@ class PLL_Admin_Filters_Columns {
 
 		$term_id = (int) $term_id;
 		$language = $this->model->get_language( substr( $column, 9 ) );
+
+		if ( empty( $language ) ) {
+			return $out;
+		}
 
 		if ( $column == $this->get_first_language_column() ) {
 			$out = sprintf( '<div class="hidden" id="lang_%d">%s</div>', intval( $term_id ), esc_html( $lang->slug ) );

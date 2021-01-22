@@ -62,14 +62,16 @@ class PLL_Admin_Sync extends PLL_Sync {
 			$from_post_id = (int) $_GET['from_post'];
 			$from_post    = get_post( $from_post_id );
 
-			foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
-				$data[ $property ] = $from_post->$property;
-			}
+			if ( $from_post instanceof WP_Post ) {
+				foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
+					$data[ $property ] = $from_post->$property;
+				}
 
-			// Copy the date only if the synchronization is activated
-			if ( in_array( 'post_date', $this->options['sync'] ) ) {
-				$data['post_date']     = $from_post->post_date;
-				$data['post_date_gmt'] = $from_post->post_date_gmt;
+				// Copy the date only if the synchronization is activated
+				if ( in_array( 'post_date', $this->options['sync'] ) ) {
+					$data['post_date']     = $from_post->post_date;
+					$data['post_date_gmt'] = $from_post->post_date_gmt;
+				}
 			}
 		}
 
@@ -130,14 +132,17 @@ class PLL_Admin_Sync extends PLL_Sync {
 			unset( $postarr['post_date_gmt'] );
 
 			$original = get_post( (int) $_GET['from_post'] );
-			$wpdb->update(
-				$wpdb->posts,
-				array(
-					'post_date'     => $original->post_date,
-					'post_date_gmt' => $original->post_date_gmt,
-				),
-				array( 'ID' => $post->ID )
-			);
+
+			if ( $original instanceof WP_Post ) {
+				$wpdb->update(
+					$wpdb->posts,
+					array(
+						'post_date'     => $original->post_date,
+						'post_date_gmt' => $original->post_date_gmt,
+					),
+					array( 'ID' => $post->ID )
+				);
+			}
 		}
 
 		if ( isset( $GLOBALS['post_type'] ) ) {

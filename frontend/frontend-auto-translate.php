@@ -144,7 +144,7 @@ class PLL_Frontend_Auto_Translate {
 		foreach ( array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) ) as $taxonomy ) {
 			$tax = get_taxonomy( $taxonomy );
 			$arr = array();
-			if ( ! empty( $qv[ $tax->query_var ] ) ) {
+			if ( ! empty( $tax ) && ! empty( $qv[ $tax->query_var ] ) ) {
 				$sep = strpos( $qv[ $tax->query_var ], ',' ) !== false ? ',' : '+'; // Two possible separators
 				foreach ( explode( $sep, $qv[ $tax->query_var ] ) as $slug ) {
 					$arr[] = $this->get_translated_term_by( 'slug', $slug, $taxonomy );

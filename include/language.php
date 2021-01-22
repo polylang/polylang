@@ -195,7 +195,7 @@ class PLL_Language {
 		}
 
 		// Build the object from taxonomy terms.
-		else {
+		elseif ( ! empty( $term_language ) ) {
 			$this->term_id = (int) $language->term_id;
 			$this->name = $language->name;
 			$this->slug = $language->slug;

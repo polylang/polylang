@@ -140,7 +140,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Delete the string translations
 		$post = wpcom_vip_get_page_by_title( 'polylang_mo_' . $lang->term_id, OBJECT, 'polylang_mo' );
-		if ( ! empty( $post ) ) {
+		if ( $post instanceof WP_Post ) {
 			wp_delete_post( $post->ID );
 		}
 
@@ -317,10 +317,15 @@ class PLL_Admin_Model extends PLL_Model {
 	public function set_language_in_mass( $type, $ids, $lang ) {
 		global $wpdb;
 
-		$ids    = array_map( 'intval', $ids );
-		$lang   = $this->get_language( $lang );
+		$lang = $this->get_language( $lang );
+
+		if ( empty( $lang ) ) {
+			return;
+		}
+
 		$tt_id  = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
 		$values = array();
+		$ids    = array_map( 'intval', $ids );
 
 		foreach ( $ids as $id ) {
 			$values[] = $wpdb->prepare( '( %d, %d )', $id, $tt_id );

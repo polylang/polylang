@@ -296,12 +296,12 @@ abstract class PLL_Translated_Object {
 	 */
 	public function get( $id, $lang ) {
 		$id = (int) $id;
+		$lang = $this->model->get_language( $lang );
 		$obj_lang = $this->get_language( $id );
-		if ( ! $lang || ! $obj_lang ) {
+		if ( empty( $lang ) || empty( $obj_lang ) ) {
 			return false;
 		}
 
-		$lang = $this->model->get_language( $lang );
 		return $obj_lang->term_id == $lang->term_id ? $id : $this->get_translation( $id, $lang );
 	}
 

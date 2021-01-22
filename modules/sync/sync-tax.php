@@ -168,7 +168,7 @@ class PLL_Sync_Tax {
 		$taxonomy_object = get_taxonomy( $taxonomy );
 
 		// Make sure that the taxonomy is registered for a post type
-		if ( ! $avoid_recursion && array_filter( $taxonomy_object->object_type, 'post_type_exists' ) ) {
+		if ( ! $avoid_recursion && ! empty( $taxonomy_object ) && array_filter( $taxonomy_object->object_type, 'post_type_exists' ) ) {
 			$avoid_recursion = true;
 
 			$tr_ids = $this->model->post->get_translations( $object_id );

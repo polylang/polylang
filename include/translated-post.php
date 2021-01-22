@@ -49,7 +49,9 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	public function set_language( $post_id, $lang ) {
 		$old_lang = $this->get_language( $post_id );
 		$old_lang = $old_lang ? $old_lang->slug : '';
-		$lang = $lang ? $this->model->get_language( $lang )->slug : '';
+
+		$lang = $this->model->get_language( $lang );
+		$lang = $lang ? $lang->slug : '';
 
 		if ( $old_lang !== $lang ) {
 			wp_set_post_terms( (int) $post_id, $lang, 'language' );
@@ -175,6 +177,10 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		if ( 'inherit' === $post->post_status && $post->post_parent ) {
 			$post = get_post( $post->post_parent );
+
+			if ( empty( $post ) ) {
+				return false;
+			}
 		}
 
 		if ( 'inherit' === $post->post_status || in_array( $post->post_status, get_post_stati( array( 'public' => true ) ) ) ) {
@@ -252,7 +258,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		$posts = get_posts( $args );
 
 		foreach ( $posts as $post ) {
-			if ( ! $this->get_translation( $post->ID, $untranslated_in ) && $this->current_user_can_read( $post->ID, 'edit' ) ) {
+			if ( $post instanceof WP_Post && ! $this->get_translation( $post->ID, $untranslated_in ) && $this->current_user_can_read( $post->ID, 'edit' ) ) {
 				$return[] = $post;
 			}
 		}

@@ -391,7 +391,9 @@ class PLL_Model {
 		$query_vars = array();
 		foreach ( $this->get_filtered_taxonomies() as $filtered_tax ) {
 			$tax = get_taxonomy( $filtered_tax );
-			$query_vars[] = $tax->query_var;
+			if ( ! empty( $tax ) ) {
+				$query_vars[] = $tax->query_var;
+			}
 		}
 		return $query_vars;
 	}

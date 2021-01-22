@@ -47,7 +47,9 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 		$old_lang = $this->get_language( $term_id );
 		$old_lang = $old_lang ? $old_lang->tl_term_id : '';
-		$lang = $lang ? $this->model->get_language( $lang )->tl_term_id : '';
+
+		$lang = $this->model->get_language( $lang );
+		$lang = $lang ? $lang->tl_term_id : '';
 
 		if ( $old_lang !== $lang ) {
 			wp_set_object_terms( $term_id, $lang, 'term_language' );
@@ -90,7 +92,10 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 		// get_term_by still not cached in WP 3.5.1 but internally, the function is always called by term_id
 		elseif ( is_string( $value ) && $taxonomy ) {
-			$term_id = get_term_by( 'slug', $value, $taxonomy )->term_id;
+			$term = get_term_by( 'slug', $value, $taxonomy );
+			if ( $term instanceof WP_Term ) {
+				$term_id = $term->term_id;
+			}
 		}
 
 		// Get the language and make sure it is a PLL_Language object

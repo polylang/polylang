@@ -245,7 +245,7 @@ class PLL_Filters {
 	 * @param WP_Post $post           WP_Post object.
 	 * @return string Modified JOIN clause.
 	 */
-	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
+	public function posts_join( $sql, $in_same_term, $excluded_terms, $taxonomy, $post ) {
 		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->join_clause( 'p' ) : $sql;
 	}
 
@@ -261,7 +261,7 @@ class PLL_Filters {
 	 * @param WP_Post $post           WP_Post object.
 	 * @return string Modified WHERE clause.
 	 */
-	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy = '', $post = null ) {
+	public function posts_where( $sql, $in_same_term, $excluded_terms, $taxonomy, $post ) {
 		return $this->model->is_translated_post_type( $post->post_type ) && ! empty( $this->curlang ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
 	}
 
