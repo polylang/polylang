@@ -27,8 +27,8 @@ function configureWebpack( options ){
 
 	const jsFileNamesToIgnore = [
 		'js/lib/**',
-		'*.config.js',
-		'*.min.js',
+		'**/*.config.js',
+		'**/*.min.js',
 	];
 
 	const jsFileNames = glob( '**/*.js', { 'ignore': [ ...commonFoldersToIgnore, ...jsFileNamesToIgnore ] } ).map( filename => `./${ filename }`);
