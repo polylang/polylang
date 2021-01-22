@@ -12,14 +12,14 @@ class PLL_Resource_Queue {
 	/**
 	 * The resource queue for Polylang javascript files.
 	 *
-	 * @var PLL_Resource_Queue
+	 * @var PLL_Scripts_Queue
 	 */
 	public static $scripts;
 
 	/**
 	 * The resource queue for Polylang CSS files.
 	 *
-	 * @var PLL_Resource_Queue
+	 * @var PLL_Styles_Queue
 	 */
 	public static $styles;
 
@@ -27,11 +27,6 @@ class PLL_Resource_Queue {
 	 * @var string Path to the file containing the plugin's header.
 	 */
 	protected $build_dir;
-
-	/**
-	 * @var string Class name.
-	 */
-	private $resource_type;
 
 	/**
 	 * @var string
@@ -48,13 +43,11 @@ class PLL_Resource_Queue {
 	 *
 	 * Sets up the root path to find Polylang scripts in by default.
 	 *
-	 * @param string $resource_type Class name, either {@see PLL_Script} or {@see PLL_Stylesheet}.
 	 * @param string $build_dir Plugin's Header filepath, to use in {@see https://developer.wordpress.org/reference/functions/plugins_url/ plugins_url()}.
 	 * @param string $extension
 	 * @since 3.0
 	 */
-	public function __construct( $resource_type, $build_dir, $extension ) {
-		$this->resource_type = $resource_type;
+	public function __construct( $build_dir, $extension ) {
 		$this->build_dir = $build_dir;
 		$this->suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$this->extension = $extension;
@@ -88,27 +81,6 @@ class PLL_Resource_Queue {
 	public function register( $filename, $dependencies, $extra ) {
 		$resource = $this->create( $filename, $dependencies, $extra );
 		$resource->register();
-		return $resource;
-	}
-
-	/**
-	 * Instantiate a new resource.
-	 *
-	 * @since 3.0
-	 *
-	 * @param string   $filename Name of the file to enqueue.
-	 * @param string[] $dependencies Array of resources handles this resource depends on. Default empty array.
-	 * @param mixed    $extra Additional parameters to instantiate this resource with. Default false.
-	 * @return PLL_Script|PLL_Stylesheet
-	 */
-	protected function create( $filename, $dependencies = array(), $extra = false ) {
-		$handle = $this->compute_handle( $filename );
-		$path = $this->compute_path( $filename );
-		if ( $extra ) {
-			$resource = new $this->resource_type( $handle, $path, $dependencies, $extra );
-		} else {
-			$resource = new $this->resource_type( $handle, $path, $dependencies );
-		}
 		return $resource;
 	}
 

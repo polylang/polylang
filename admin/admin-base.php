@@ -60,8 +60,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
-		PLL_Resource_Queue::$scripts = new PLL_Resource_Queue( PLL_Script::class, plugins_url( '/', POLYLANG_FILE ), '.js' );
-		PLL_Resource_Queue::$styles = new PLL_Resource_Queue( PLL_Stylesheet::class, plugins_url( '/', POLYLANG_FILE ), '.css' );
+		PLL_Resource_Queue::$scripts = new PLL_Scripts_Queue( plugins_url( '/', POLYLANG_BASENAME ), '.js' );
+		PLL_Resource_Queue::$styles = new PLL_Styles_Queue( plugins_url( '/', POLYLANG_BASENAME ), '.css' );
 
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
