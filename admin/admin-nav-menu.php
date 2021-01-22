@@ -124,7 +124,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		// Send all these data to javascript
-		$nav_menu_script->localize( 'pll_data', $data );
+		PLL_resource_Queue::$scripts->localize( 'js/nav-menu', 'pll_data', $data );
 	}
 
 	/**
