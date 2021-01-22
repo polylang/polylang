@@ -328,11 +328,11 @@ class PLL_Settings extends PLL_Admin_Base {
 	public function admin_enqueue_scripts() {
 		parent::admin_enqueue_scripts();
 
-		PLL_Resource_Queue::$scripts->enqueue( 'js/admin', array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION )
+		PLL_Scripts_Queue::enqueue( 'js/admin', array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION )
 			->localize( 'pll_flag_base_url', plugins_url( '/flags/', POLYLANG_FILE ) )
 			->localize( 'pll_dismiss_notice', __( 'Dismiss this notice.', 'polylang' ) );
 
-		PLL_Resource_Queue::$styles->enqueue( 'css/selectmenu', array() );
+		PLL_Styles_Queue::enqueue( 'css/selectmenu', array() );
 	}
 
 	/**

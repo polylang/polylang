@@ -284,8 +284,8 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function enqueue_scripts() {
-		$admin_style = PLL_Resource_Queue::$styles->enqueue( 'css/admin', array() );
-		$wizard_style = PLL_Resource_Queue::$styles->enqueue( 'modules/wizard/css/wizard', array( 'dashicons', 'install', 'common', 'forms' ) );
+		$admin_style = PLL_Styles_Queue::enqueue( 'css/admin', array() );
+		$wizard_style = PLL_Styles_Queue::enqueue( 'modules/wizard/css/wizard', array( 'dashicons', 'install', 'common', 'forms' ) );
 
 		$this->styles = array( $admin_style, $wizard_style );
 	}
@@ -366,8 +366,8 @@ class PLL_Wizard {
 		// Add ajax action on deactivate button in licenses step.
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
 
-		$admin_script = PLL_Resource_Queue::$scripts->enqueue( 'js/admin', array( 'jquery', 'jquery-ui-selectmenu' ), true );
-		PLL_Resource_Queue::$scripts->localize( 'js/admin', 'pll_dismiss_notice', __( 'Dismiss this notice.', 'polylang' ) );
+		$admin_script = PLL_Scripts_Queue::enqueue( 'js/admin', array( 'jquery', 'jquery-ui-selectmenu' ), true );
+		PLL_Scripts_Queue::localize( 'js/admin', 'pll_dismiss_notice', __( 'Dismiss this notice.', 'polylang' ) );
 		if ( $this->is_licenses_step_displayable() ) {
 			$steps['licenses'] = array(
 				'name'    => esc_html__( 'Licenses', 'polylang' ),
@@ -463,10 +463,10 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_languages( $steps ) {
-		$admin_script = PLL_Resource_Queue::$scripts->enqueue( 'js/admin', array( 'jquery', 'jquery-ui-selectmenu' ), true );
-		PLL_Resource_Queue::$scripts->localize( 'js/admin', 'dismiss_notice', __( 'Dismiss this notice.', 'polylang' ) );
-		$languages_script = PLL_Resource_Queue::$scripts->register( 'modules/wizard/js/languages-step', array( 'jquery', 'jquery-ui-dialog' ), true );
-		PLL_Resource_Queue::$scripts->localize(
+		$admin_script = PLL_Scripts_Queue::enqueue( 'js/admin', array( 'jquery', 'jquery-ui-selectmenu' ), true );
+		PLL_Scripts_Queue::localize( 'js/admin', 'dismiss_notice', __( 'Dismiss this notice.', 'polylang' ) );
+		$languages_script = PLL_Scripts_Queue::register( 'modules/wizard/js/languages-step', array( 'jquery', 'jquery-ui-dialog' ), true );
+		PLL_Scripts_Queue::localize(
 			'modules/js/languages-step',
 			'pll_wizard_params',
 			array(
@@ -487,8 +487,8 @@ class PLL_Wizard {
 				'i18n_remove_language_icon'   => __( 'Remove this language', 'polylang' ),
 			)
 		);
-		PLL_Resource_Queue::$scripts->enqueue( 'modules/wizard/js/languages-step' );
-		$select_style = PLL_Resource_Queue::$styles->enqueue( 'css/selectmenu', array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ) );
+		PLL_Scripts_Queue::enqueue( 'modules/wizard/js/languages-step' );
+		$select_style = PLL_Styles_Queue::enqueue( 'css/selectmenu', array( 'dashicons', 'install', 'common', 'wp-jquery-ui-dialog' ) );
 		$steps['languages'] = array(
 			'name'    => esc_html__( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
@@ -652,9 +652,9 @@ class PLL_Wizard {
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
-			$languages_script = PLL_Resource_Queue::$scripts->enqueue( 'modules/wizard/js/languages-step', array( 'jquery', 'jquery-ui-selectmenu' ), true );
-			PLL_Resource_Queue::$scripts->localize( 'modules/wizard/js/languages-step', 'pll_dismiss_notice', __( 'Dismiss this notice.', 'polylang' ) );
-			$select_style = PLL_Resource_Queue::$styles->enqueue( 'css/selectmenu', array( 'dashicons', 'install', 'common' ) );
+			$languages_script = PLL_Scripts_Queue::enqueue( 'modules/wizard/js/languages-step', array( 'jquery', 'jquery-ui-selectmenu' ), true );
+			PLL_Scripts_Queue::localize( 'modules/wizard/js/languages-step', 'pll_dismiss_notice', __( 'Dismiss this notice.', 'polylang' ) );
+			$select_style = PLL_Styles_Queue::enqueue( 'css/selectmenu', array( 'dashicons', 'install', 'common' ) );
 			$steps['untranslated-contents'] = array(
 				'name'    => esc_html__( 'Content', 'polylang' ),
 				'view'    => array( $this, 'display_step_untranslated_contents' ),

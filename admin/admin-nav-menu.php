@@ -99,7 +99,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			return;
 		}
 
-		$nav_menu_script = PLL_Resource_Queue::$scripts->enqueue( 'js/nav-menu', array( 'jquery' ) );
+		$nav_menu_script = PLL_Scripts_Queue::enqueue( 'js/nav-menu', array( 'jquery' ) );
 
 		$data = array(
 			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options
@@ -124,7 +124,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		// Send all these data to javascript
-		PLL_resource_Queue::$scripts->localize( 'js/nav-menu', 'pll_data', $data );
+		PLL_Scripts_Queue::localize( 'js/nav-menu', 'pll_data', $data );
 	}
 
 	/**

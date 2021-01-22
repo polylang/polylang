@@ -8,21 +8,7 @@
  *
  * Responsible for enqueueing Polylang scripts for WordPress Dashboard pages.
  */
-class PLL_Resource_Queue {
-	/**
-	 * The resource queue for Polylang javascript files.
-	 *
-	 * @var PLL_Scripts_Queue
-	 */
-	public static $scripts;
-
-	/**
-	 * The resource queue for Polylang CSS files.
-	 *
-	 * @var PLL_Styles_Queue
-	 */
-	public static $styles;
-
+abstract class PLL_Resource_Queue {
 	/**
 	 * @var string Path to the file containing the plugin's header.
 	 */
@@ -43,14 +29,11 @@ class PLL_Resource_Queue {
 	 *
 	 * Sets up the root path to find Polylang scripts in by default.
 	 *
-	 * @param string $build_dir Plugin's Header filepath, to use in {@see https://developer.wordpress.org/reference/functions/plugins_url/ plugins_url()}.
-	 * @param string $extension
 	 * @since 3.0
 	 */
-	public function __construct( $build_dir, $extension ) {
-		$this->build_dir = $build_dir;
+	public function __construct() {
+		$this->build_dir = plugins_url( '/', POLYLANG_BASENAME );
 		$this->suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		$this->extension = $extension;
 	}
 
 	/**
