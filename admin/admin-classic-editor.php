@@ -167,11 +167,16 @@ class PLL_Admin_Classic_Editor {
 		$lang      = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
-		if ( ! post_type_exists( $post_type ) ) {
+		if ( empty( $lang ) || ! post_type_exists( $post_type ) ) {
 			wp_die( 0 );
 		}
 
 		$post_type_object = get_post_type_object( $post_type );
+
+		if ( empty( $post_type_object ) ) {
+			wp_die( 0 );
+		}
+
 		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
 			wp_die( -1 );
 		}
@@ -184,12 +189,10 @@ class PLL_Admin_Classic_Editor {
 		$this->model->post->save_translations( $post_ID, $translations );
 
 		ob_start();
-		if ( $lang ) {
-			if ( 'attachment' === $post_type ) {
-				include __DIR__ . '/view-translations-media.php';
-			} else {
-				include __DIR__ . '/view-translations-post.php';
-			}
+		if ( 'attachment' === $post_type ) {
+			include __DIR__ . '/view-translations-media.php';
+		} else {
+			include __DIR__ . '/view-translations-post.php';
 		}
 		$x = new WP_Ajax_Response( array( 'what' => 'translations', 'data' => ob_get_contents() ) );
 		ob_end_clean();
@@ -201,30 +204,32 @@ class PLL_Admin_Classic_Editor {
 			foreach ( array_map( 'sanitize_key', $_POST['taxonomies'] ) as $taxname ) {
 				$taxonomy = get_taxonomy( $taxname );
 
-				ob_start();
-				$popular_ids = wp_popular_terms_checklist( $taxonomy->name );
-				$supplemental['populars'] = ob_get_contents();
-				ob_end_clean();
+				if ( ! empty( $taxonomy ) ) {
+					ob_start();
+					$popular_ids = wp_popular_terms_checklist( $taxonomy->name );
+					$supplemental['populars'] = ob_get_contents();
+					ob_end_clean();
 
-				ob_start();
-				// Use $post_ID to remember checked terms in case we come back to the original language
-				wp_terms_checklist( $post_ID, array( 'taxonomy' => $taxonomy->name, 'popular_cats' => $popular_ids ) );
-				$supplemental['all'] = ob_get_contents();
-				ob_end_clean();
+					ob_start();
+					// Use $post_ID to remember checked terms in case we come back to the original language
+					wp_terms_checklist( $post_ID, array( 'taxonomy' => $taxonomy->name, 'popular_cats' => $popular_ids ) );
+					$supplemental['all'] = ob_get_contents();
+					ob_end_clean();
 
-				$supplemental['dropdown'] = wp_dropdown_categories(
-					array(
-						'taxonomy'         => $taxonomy->name,
-						'hide_empty'       => 0,
-						'name'             => 'new' . $taxonomy->name . '_parent',
-						'orderby'          => 'name',
-						'hierarchical'     => 1,
-						'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;',
-						'echo'             => 0,
-					)
-				);
+					$supplemental['dropdown'] = wp_dropdown_categories(
+						array(
+							'taxonomy'         => $taxonomy->name,
+							'hide_empty'       => 0,
+							'name'             => 'new' . $taxonomy->name . '_parent',
+							'orderby'          => 'name',
+							'hierarchical'     => 1,
+							'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;',
+							'echo'             => 0,
+						)
+					);
 
-				$x->Add( array( 'what' => 'taxonomy', 'data' => $taxonomy->name, 'supplemental' => $supplemental ) );
+					$x->Add( array( 'what' => 'taxonomy', 'data' => $taxonomy->name, 'supplemental' => $supplemental ) );
+				}
 			}
 		}
 
@@ -232,21 +237,23 @@ class PLL_Admin_Classic_Editor {
 		if ( in_array( $post_type, get_post_types( array( 'hierarchical' => true ) ) ) ) {
 			$post = get_post( $post_ID );
 
-			// Args and filter from 'page_attributes_meta_box' in wp-admin/includes/meta-boxes.php of WP 4.2.1
-			$dropdown_args = array(
-				'post_type'        => $post->post_type,
-				'exclude_tree'     => $post->ID,
-				'selected'         => $post->post_parent,
-				'name'             => 'parent_id',
-				'show_option_none' => __( '(no parent)', 'polylang' ),
-				'sort_column'      => 'menu_order, post_title',
-				'echo'             => 0,
-			);
+			if ( ! empty( $post ) ) {
+				// Args and filter from 'page_attributes_meta_box' in wp-admin/includes/meta-boxes.php of WP 4.2.1
+				$dropdown_args = array(
+					'post_type'        => $post->post_type,
+					'exclude_tree'     => $post->ID,
+					'selected'         => $post->post_parent,
+					'name'             => 'parent_id',
+					'show_option_none' => __( '(no parent)', 'polylang' ),
+					'sort_column'      => 'menu_order, post_title',
+					'echo'             => 0,
+				);
 
-			/** This filter is documented in wp-admin/includes/meta-boxes.php */
-			$dropdown_args = apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3
+				/** This filter is documented in wp-admin/includes/meta-boxes.php */
+				$dropdown_args = apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3
 
-			$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+				$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+			}
 		}
 
 		// Flag
@@ -299,14 +306,17 @@ class PLL_Admin_Classic_Editor {
 		// Add current translation in list
 		if ( $post_id = $this->model->post->get_translation( (int) $_GET['pll_post_id'], $translation_language ) ) {
 			$post = get_post( $post_id );
-			array_unshift(
-				$return,
-				array(
-					'id'    => $post_id,
-					'value' => $post->post_title,
-					'link'  => $this->links->edit_post_translation_link( $post_id ),
-				)
-			);
+
+			if ( ! empty( $post ) ) {
+				array_unshift(
+					$return,
+					array(
+						'id'    => $post_id,
+						'value' => $post->post_title,
+						'link'  => $this->links->edit_post_translation_link( $post_id ),
+					)
+				);
+			}
 		}
 
 		wp_die( wp_json_encode( $return ) );

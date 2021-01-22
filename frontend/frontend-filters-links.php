@@ -387,7 +387,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		if ( is_single() || is_page() ) {
 			$post = get_post();
-			if ( $this->model->is_translated_post_type( $post->post_type ) ) {
+			if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
 				$language = $this->model->post->get_language( (int) $post->ID );
 			}
 		}
@@ -424,7 +424,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		elseif ( $this->wp_query()->is_posts_page ) {
 			$obj = get_queried_object();
-			$language = $this->model->post->get_language( (int) $obj->ID );
+			if ( $obj instanceof WP_Post ) {
+				$language = $this->model->post->get_language( (int) $obj->ID );
+			}
 		}
 
 		if ( 3 === $this->options['force_lang'] ) {

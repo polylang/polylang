@@ -203,18 +203,25 @@ class PLL_Sync {
 
 		if ( is_taxonomy_hierarchical( $taxonomy ) && $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			$term = get_term( $term_id );
-			$translations = $this->model->term->get_translations( $term_id );
 
-			foreach ( $translations as $lang => $tr_id ) {
-				if ( ! empty( $tr_id ) && $tr_id !== $term_id ) {
-					$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
-					$wpdb->update(
-						$wpdb->term_taxonomy,
-						array( 'parent' => $tr_parent ? $tr_parent : 0 ),
-						array( 'term_taxonomy_id' => get_term( (int) $tr_id, $taxonomy )->term_taxonomy_id )
-					);
+			if ( $term instanceof WP_Term ) {
+				$translations = $this->model->term->get_translations( $term_id );
 
-					clean_term_cache( $tr_id, $taxonomy ); // OK since WP 3.9
+				foreach ( $translations as $lang => $tr_id ) {
+					if ( ! empty( $tr_id ) && $tr_id !== $term_id ) {
+						$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
+						$tr_term   = get_term( (int) $tr_id, $taxonomy );
+
+						if ( $tr_term instanceof WP_Term ) {
+							$wpdb->update(
+								$wpdb->term_taxonomy,
+								array( 'parent' => $tr_parent ? $tr_parent : 0 ),
+								array( 'term_taxonomy_id' => $tr_term->term_taxonomy_id )
+							);
+
+							clean_term_cache( $tr_id, $taxonomy ); // OK since WP 3.9.
+						}
+					}
 				}
 			}
 		}

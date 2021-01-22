@@ -69,7 +69,7 @@ class PLL_Admin_Links extends PLL_Links {
 	public function get_new_post_translation_link( $post_id, $language, $context = 'display' ) {
 		$post_type = get_post_type( $post_id );
 		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
-		if ( ! current_user_can( $post_type_object->cap->create_posts ) ) {
+		if ( empty( $post_type_object ) || ! current_user_can( $post_type_object->cap->create_posts ) ) {
 			return '';
 		}
 

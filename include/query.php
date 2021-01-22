@@ -123,8 +123,8 @@ class PLL_Query {
 			$taxonomies = array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) );
 
 			foreach ( $taxonomies as $tax ) {
-				$tax = get_taxonomy( $tax );
-				if ( ! empty( $qvars[ $tax->query_var ] ) ) {
+				$tax_object = get_taxonomy( $tax );
+				if ( ! empty( $tax_object ) && ! empty( $qvars[ $tax_object->query_var ] ) ) {
 					return;
 				}
 			}
@@ -140,7 +140,7 @@ class PLL_Query {
 				if ( $taxonomies && ( empty( $qvars['post_type'] ) || 'any' === $qvars['post_type'] ) ) {
 					foreach ( $taxonomies as $taxonomy ) {
 						$tax_object = get_taxonomy( $taxonomy );
-						if ( $this->model->is_translated_post_type( $tax_object->object_type ) ) {
+						if ( ! empty( $tax_object ) && $this->model->is_translated_post_type( $tax_object->object_type ) ) {
 							$this->set_language( $lang );
 							break;
 						}

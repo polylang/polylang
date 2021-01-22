@@ -238,7 +238,7 @@ class PLL_Wizard {
 	public function can_display_notice( $can_display_notice, $notice ) {
 		if ( ! $can_display_notice && 'wizard' === $notice ) {
 			$screen = get_current_screen();
-			$can_display_notice = in_array(
+			$can_display_notice = ! empty( $screen ) && in_array(
 				$screen->base,
 				array(
 					'edit',

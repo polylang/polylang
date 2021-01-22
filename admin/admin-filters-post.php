@@ -54,6 +54,10 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	public function admin_enqueue_scripts() {
 		$screen = get_current_screen();
 
+		if ( empty( $screen ) ) {
+			return;
+		}
+
 		// Hierarchical taxonomies
 		if ( 'edit' == $screen->base && $taxonomies = get_object_taxonomies( $screen->post_type, 'object' ) ) {
 			// Get translated hierarchical taxonomies
@@ -128,7 +132,16 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			check_admin_referer( 'pll_language', '_pll_nonce' );
 
 			$post = get_post( $post_id );
+
+			if ( empty( $post ) ) {
+				return;
+			}
+
 			$post_type_object = get_post_type_object( $post->post_type );
+
+			if ( empty( $post_type_object ) ) {
+				return;
+			}
 
 			if ( current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
 				$this->model->post->set_language( $post_id, $this->model->get_language( sanitize_key( $_POST['post_lang_choice'] ) ) );
@@ -152,7 +165,16 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	 */
 	protected function inline_save_language( $post_id, $lang ) {
 		$post = get_post( $post_id );
+
+		if ( empty( $post ) ) {
+			return;
+		}
+
 		$post_type_object = get_post_type_object( $post->post_type );
+
+		if ( empty( $post_type_object ) ) {
+			return;
+		}
 
 		if ( current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
 			$old_lang = $this->model->post->get_language( $post_id ); // Stores the old  language

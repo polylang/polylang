@@ -241,7 +241,7 @@ class PLL_Admin_Filters_Term {
 		if ( isset( $taxonomy, $_GET['from_tag'], $_GET['new_lang'] ) && taxonomy_exists( $taxonomy ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$term = get_term( (int) $_GET['from_tag'], $taxonomy ); // phpcs:ignore WordPress.Security.NonceVerification
 
-			if ( $term && $id = $term->parent ) {
+			if ( $term instanceof WP_Term && $id = $term->parent ) {
 				$lang = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 				if ( $parent = $this->model->term->get_translation( $id, $lang ) ) {
 					return str_replace( '"' . $parent . '"', '"' . $parent . '" selected="selected"', $output );
@@ -410,10 +410,15 @@ class PLL_Admin_Filters_Term {
 			return;
 		}
 
+		$tax = get_taxonomy( $taxonomy );
+
+		if ( empty( $tax ) ) {
+			return;
+		}
+
 		// Capability check
 		// As 'wp_update_term' can be called from outside WP admin
 		// 2nd test for creating tags when creating / editing a post
-		$tax = get_taxonomy( $taxonomy );
 		if ( current_user_can( $tax->cap->edit_terms ) || ( isset( $_POST['tax_input'][ $taxonomy ] ) && current_user_can( $tax->cap->assign_terms ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$this->save_language( $term_id, $taxonomy );
 
@@ -494,14 +499,12 @@ class PLL_Admin_Filters_Term {
 		$taxonomy  = sanitize_key( $_POST['taxonomy'] );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
-		if ( ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
+		if ( empty( $lang ) || ! post_type_exists( $post_type ) || ! taxonomy_exists( $taxonomy ) ) {
 			wp_die( 0 );
 		}
 
 		ob_start();
-		if ( $lang ) {
-			include __DIR__ . '/view-translations-term.php';
-		}
+		include __DIR__ . '/view-translations-term.php';
 		$x = new WP_Ajax_Response( array( 'what' => 'translations', 'data' => ob_get_contents() ) );
 		ob_end_clean();
 
@@ -525,7 +528,7 @@ class PLL_Admin_Filters_Term {
 		// Tests copied from edit_tags.php
 		else {
 			$tax = get_taxonomy( $taxonomy );
-			if ( ! is_null( $tax->labels->popular_items ) ) {
+			if ( ! empty( $tax ) && ! is_null( $tax->labels->popular_items ) ) {
 				$args = array( 'taxonomy' => $taxonomy, 'echo' => false );
 				if ( current_user_can( $tax->cap->edit_terms ) ) {
 					$args = array_merge( $args, array( 'link' => 'edit' ) );
@@ -593,21 +596,23 @@ class PLL_Admin_Filters_Term {
 
 		// Format the ajax response.
 		foreach ( $terms as $term ) {
-			$return[] = array(
-				'id'    => $term->term_id,
-				'value' => rtrim( // Trim the seperator added at the end by WP.
-					get_term_parents_list(
-						$term->term_id,
-						$term->taxonomy,
-						array(
-							'separator' => ' > ',
-							'link' => false,
-						)
+			if ( $term instanceof WP_Term ) {
+				$return[] = array(
+					'id'    => $term->term_id,
+					'value' => rtrim( // Trim the seperator added at the end by WP.
+						get_term_parents_list(
+							$term->term_id,
+							$term->taxonomy,
+							array(
+								'separator' => ' > ',
+								'link' => false,
+							)
+						),
+						' >'
 					),
-					' >'
-				),
-				'link'  => $this->links->edit_term_translation_link( $term->term_id, $term->taxonomy, $post_type ),
-			);
+					'link'  => $this->links->edit_term_translation_link( $term->term_id, $term->taxonomy, $post_type ),
+				);
+			}
 		}
 
 		wp_die( wp_json_encode( $return ) );
@@ -677,8 +682,12 @@ class PLL_Admin_Filters_Term {
 			return;
 		}
 
-		$avoid_recursion = true;
 		$lang = $this->model->term->get_language( $term_id );
+		if ( empty( $lang ) ) {
+			return;
+		}
+
+		$avoid_recursion = true;
 		$translations = array();
 
 		foreach ( $this->model->term->get_translations( $term_id ) as $key => $tr_id ) {

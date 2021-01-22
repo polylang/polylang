@@ -96,7 +96,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 */
 	public function admin_enqueue_scripts() {
 		$screen = get_current_screen();
-		if ( 'nav-menus' != $screen->base ) {
+		if ( empty( $screen ) || 'nav-menus' !== $screen->base ) {
 			return;
 		}
 

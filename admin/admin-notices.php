@@ -102,6 +102,11 @@ class PLL_Admin_Notices {
 	 */
 	protected function can_display_notice( $notice ) {
 		$screen = get_current_screen();
+
+		if ( empty( $screen ) ) {
+			return false;
+		}
+
 		$screen_id = sanitize_title( __( 'Languages', 'polylang' ) );
 
 		/**

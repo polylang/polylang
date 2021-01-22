@@ -281,6 +281,10 @@ class PLL_CRUD_Posts {
 
 		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug.
 
+		if ( empty( $lang ) ) {
+			return 0;
+		}
+
 		// Create a new attachment ( translate attachment parent if exists ).
 		add_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Avoid a conflict with automatic duplicate at upload.
 		unset( $post['ID'] ); // Will force the creation.
