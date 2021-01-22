@@ -44,32 +44,6 @@ class PLL_Stylesheet {
 	}
 
 	/**
-	 * Registers a Polylang stylesheet in WordPress.
-	 *
-	 * @see https://developer.wordpress.org/reference/functions/wp_register_style/ wp_register_style().
-	 *
-	 * @return PLL_Stylesheet $this
-	 */
-	public function register() {
-		wp_register_style( $this->handle, $this->path, $this->dependencies, POLYLANG_VERSION, $this->media );
-		return $this;
-	}
-
-	/**
-	 * Enqueues a Polylang stylesheet in WordPress.
-	 *
-	 * @see https://developer.wordpress.org/reference/functions/wp_enqueue_style/ wp_enqueue_style().
-	 * @return PLL_Stylesheet $this
-	 */
-	public function enqueue() {
-		if ( wp_style_is( $this->handle, 'registered' ) ) {
-			wp_enqueue_style( $this->handle );
-		}
-		wp_enqueue_style( $this->handle, $this->path, $this->dependencies, POLYLANG_VERSION, $this->media );
-		return $this;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function get_handle() {

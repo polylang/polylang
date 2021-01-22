@@ -44,32 +44,6 @@ class PLL_Script {
 	}
 
 	/**
-	 * Registers a Polylang script in WordPress.
-	 *
-	 * @see https://developer.wordpress.org/reference/functions/wp_register_script/ wp_register_script().
-	 *
-	 * @return PLL_Script $this
-	 */
-	public function register() {
-		wp_register_script( $this->handle, $this->path, $this->dependencies, POLYLANG_VERSION, $this->in_footer );
-		return $this;
-	}
-
-	/**
-	 * Enqueues a Polylang script in WordPress.
-	 *
-	 * @see https://developer.wordpress.org/reference/functions/wp_enqueue_script/ wp_enqueue_script().
-	 * @return PLL_Script $this
-	 */
-	public function enqueue() {
-		if ( wp_script_is( $this->handle, 'registered' ) ) {
-			wp_enqueue_script( $this->handle );
-		}
-		wp_enqueue_script( $this->handle, $this->path, $this->dependencies, POLYLANG_VERSION, $this->in_footer );
-		return $this;
-	}
-
-	/**
 	 * Localizes a Polylang script in WordPress.
 	 *
 	 * @see https://developer.wordpress.org/reference/functions/wp_localize_script/ wp_localize_script().

@@ -54,37 +54,6 @@ class PLL_Resource_Queue {
 	}
 
 	/**
-	 * Enqueues a Polylang resource in WordPress.
-	 *
-	 * @since 3.0
-	 *
-	 * @param string   $filename Will be used as scritpt's handle.
-	 * @param string[] $dependencies Array of scripts handles the enqueued script depends on.
-	 * @param mixed    $extra Extra parameters to pass to the resource.
-	 * @return PLL_Script|PLL_Stylesheet
-	 */
-	public function enqueue( $filename, $dependencies = array(), $extra = false ) {
-		$resource = $this->create( $filename, $dependencies, $extra );
-		$resource->enqueue();
-		return $resource;
-	}
-
-	/**
-	 * Registers a Polylang resource in WordPress.
-	 *
-	 * @param string   $filename Will be used as scritpt's handle.
-	 * @param string[] $dependencies Array of scripts handles the enqueued script depends on.
-	 * @param mixed    $extra Extra parameter to pass to the resource.
-	 * @return PLL_Script|PLL_Stylesheet
-	 * @since 3.0
-	 */
-	public function register( $filename, $dependencies, $extra ) {
-		$resource = $this->create( $filename, $dependencies, $extra );
-		$resource->register();
-		return $resource;
-	}
-
-	/**
 	 * @param string $path Path of the resource file.
 	 * @return string
 	 * @since 3.0
