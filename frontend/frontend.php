@@ -127,11 +127,11 @@ class PLL_Frontend extends PLL_Base {
 	}
 
 	/**
-	 * When querying multiple taxonomies, makes sure that the language is not the queried object
+	 * When querying multiple taxonomies, makes sure that the language is not the queried object.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $query WP_Query object
+	 * @param WP_Query $query WP_Query object.
 	 * @return void
 	 */
 	public function parse_tax_query( $query ) {
@@ -144,11 +144,11 @@ class PLL_Frontend extends PLL_Base {
 	}
 
 	/**
-	 * Modifies some query vars to "hide" that the language is a taxonomy and avoid conflicts
+	 * Modifies some query vars to "hide" that the language is a taxonomy and avoid conflicts.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $query WP_Query object
+	 * @param WP_Query $query WP_Query object.
 	 * @return void
 	 */
 	public function parse_query( $query ) {

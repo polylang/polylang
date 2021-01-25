@@ -401,11 +401,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
-	 * Adds the languages list in admin bar for the admin languages filter
+	 * Adds the languages list in admin bar for the admin languages filter.
 	 *
 	 * @since 0.9
 	 *
-	 * @param object $wp_admin_bar
+	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar global object.
 	 * @return void
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {

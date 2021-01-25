@@ -61,7 +61,7 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	 * @since 2.8
 	 *
 	 * @param string|bool $lang  Current language code, false if not set yet.
-	 * @param object      $query Main WP query object.
+	 * @param WP_Query    $query Main WP query object.
 	 * @return string|bool
 	 */
 	public function set_language_from_query( $lang, $query ) {

@@ -117,12 +117,12 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	}
 
 	/**
-	 * Returns the static front page url
+	 * Returns the static front page url.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $lang
-	 * @return string
+	 * @param PLL_Language $lang The language object.
+	 * @return string The static front page url.
 	 */
 	public function front_page_url( $lang ) {
 		if ( $this->options['hide_default'] && $lang->slug == $this->options['default_lang'] ) {

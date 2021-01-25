@@ -60,8 +60,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string $url  The url to modify.
-	 * @param object $lang Language.
+	 * @param string       $url  The url to modify.
+	 * @param PLL_Language $lang The language object.
 	 * @return string Modified url.
 	 */
 	abstract public function add_language_to_link( $url, $lang );
@@ -113,8 +113,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $lang Language.
-	 * @return string The front page url.
+	 * @param PLL_Language $lang The language object.
+	 * @return string The static front page url.
 	 */
 	abstract public function front_page_url( $lang );
 
@@ -123,8 +123,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.5
 	 *
-	 * @param string $url  The url to modify.
-	 * @param object $lang Language.
+	 * @param string       $url  The url to modify.
+	 * @param PLL_Language $lang The language object.
 	 * @return string Modified url.
 	 */
 	public function switch_language_in_link( $url, $lang ) {
@@ -148,7 +148,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.3.1
 	 *
-	 * @param object $lang PLL_Language object.
+	 * @param PLL_Language $lang PLL_Language object.
 	 * @return string
 	 */
 	public function home_url( $lang ) {
@@ -161,7 +161,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $language PLL_Language object.
+	 * @param PLL_Language $language PLL_Language object.
 	 * @return void
 	 */
 	protected function set_home_url( $language ) {

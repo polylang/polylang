@@ -218,7 +218,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 2.8
 	 *
-	 * @param object $language Language object.
+	 * @param PLL_Language $language Language object.
 	 * @return string
 	 */
 	protected function get_flag( $language ) {

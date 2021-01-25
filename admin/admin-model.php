@@ -258,8 +258,8 @@ class PLL_Admin_Model extends PLL_Model {
 	 *
 	 * @since 0.4
 	 *
-	 * @param array  $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
-	 * @param object $lang Optional the language currently updated, the language is created if not set.
+	 * @param array        $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
+	 * @param PLL_Language $lang Optional the language currently updated, the language is created if not set.
 	 * @return WP_Error
 	 */
 	protected function validate_lang( $args, $lang = null ) {

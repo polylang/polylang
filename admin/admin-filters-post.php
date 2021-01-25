@@ -104,11 +104,11 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * Filters posts, pages and media by language
+	 * Filters posts, pages and media by language.
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $query a WP_Query object
+	 * @param WP_Query $query WP_Query object.
 	 * @return void
 	 */
 	public function parse_query( $query ) {
@@ -141,13 +141,13 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * Save language when inline editing or bulk editing a post
-	 * Fix translations if necessary
+	 * Saves a post language when inline editing or bulk editing.
+	 * Fixes the translations if necessary.
 	 *
 	 * @since 2.3
 	 *
-	 * @param int    $post_id Post ID
-	 * @param object $lang    Language
+	 * @param int          $post_id Post ID.
+	 * @param PLL_Language $lang    Language.
 	 * @return void
 	 */
 	protected function inline_save_language( $post_id, $lang ) {

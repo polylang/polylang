@@ -35,13 +35,11 @@ class PLL_Switcher {
 	/**
 	 * Get the language elements for use in a walker
 	 *
-	 * @see PLL_Switcher::the_languages() for the list of parameters accepted in $args
-	 *
 	 * @since 1.2
 	 *
-	 * @param object $links instance of PLL_Frontend_Links
-	 * @param array  $args
-	 * @return array
+	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
+	 * @param array              $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
+	 * @return array Language switcher elements.
 	 */
 	protected function get_elements( $links, $args ) {
 		$first = true;
@@ -113,8 +111,8 @@ class PLL_Switcher {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $links Instance of PLL_Frontend_Links.
-	 * @param array  $args {
+	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
+	 * @param array              $args {
 	 *   Optional array of arguments.
 	 *
 	 *   @type int    $dropdown               The list is displayed as dropdown if set, defaults to 0.

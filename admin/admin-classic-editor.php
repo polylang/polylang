@@ -313,13 +313,13 @@ class PLL_Admin_Classic_Editor {
 	}
 
 	/**
-	 * Filters the pages by language in the parent dropdown list in the page attributes metabox
+	 * Filters the pages by language in the parent dropdown list in the page attributes metabox.
 	 *
 	 * @since 0.6
 	 *
-	 * @param array  $dropdown_args Arguments passed to wp_dropdown_pages
-	 * @param object $post
-	 * @return array Modified arguments
+	 * @param array   $dropdown_args Arguments passed to wp_dropdown_pages().
+	 * @param WP_Post $post          The page being edited.
+	 * @return array Modified arguments.
 	 */
 	public function page_attributes_dropdown_pages_args( $dropdown_args, $post ) {
 		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // phpcs:ignore WordPress.Security.NonceVerification
@@ -331,11 +331,11 @@ class PLL_Admin_Classic_Editor {
 	}
 
 	/**
-	 * Displays a notice if the user has not sufficient rights to overwrite synchronized taxonomies and metas
+	 * Displays a notice if the user has not sufficient rights to overwrite synchronized taxonomies and metas.
 	 *
 	 * @since 2.6
 	 *
-	 * @param object $post Post currently being edited
+	 * @param WP_Post $post the post currently being edited.
 	 * @return void
 	 */
 	public function edit_form_top( $post ) {

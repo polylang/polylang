@@ -423,7 +423,7 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @since 2.8
 	 *
-	 * @param object $language PLL_Language object.
+	 * @param PLL_Language $language PLL_Language object.
 	 * @return string
 	 */
 	protected function get_flag_html( $language ) {

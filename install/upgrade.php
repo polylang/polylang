@@ -128,25 +128,31 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * Upgrades if the previous version is < 2.1
-	 * Moves strings translations from polylang_mo post_content to post meta _pll_strings_translations
+	 * Upgrades if the previous version is < 2.1.
+	 * Moves strings translations from polylang_mo post_content to post meta _pll_strings_translations.
 	 *
 	 * @since 2.1
 	 *
 	 * @return void
 	 */
 	protected function upgrade_2_1() {
-		$languages = get_terms( 'language', array( 'hide_empty' => 0 ) );
-		if ( is_array( $languages ) ) {
-			foreach ( $languages as $lang ) {
-				$mo_id = PLL_MO::get_id( $lang );
-				$meta = get_post_meta( $mo_id, '_pll_strings_translations', true );
+		$posts = get_posts(
+			array(
+				'post_type'   => 'polylang_mo',
+				'post_status' => 'any',
+				'numberposts' => -1,
+				'nopaging'    => true,
+			)
+		);
+
+		if ( is_array( $posts ) ) {
+			foreach ( $posts as $post ) {
+				$meta = get_post_meta( $post->ID, '_pll_strings_translations', true );
 
 				if ( empty( $meta ) ) {
-					$post = get_post( $mo_id, OBJECT );
 					$strings = maybe_unserialize( $post->post_content );
 					if ( is_array( $strings ) ) {
-						update_post_meta( $mo_id, '_pll_strings_translations', $strings );
+						update_post_meta( $post->ID, '_pll_strings_translations', $strings );
 					}
 				}
 			}

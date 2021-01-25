@@ -32,14 +32,14 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	}
 
 	/**
-	 * Adds the language code in url
-	 * links_model interface
+	 * Adds the language code in a url.
+	 * links_model interface.
 	 *
 	 * @since 1.2
 	 *
-	 * @param string $url  url to modify
-	 * @param object $lang language
-	 * @return string modified url
+	 * @param string       $url  The url to modify.
+	 * @param PLL_Language $lang The language object.
+	 * @return string Modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
 		if ( ! empty( $lang ) && false === strpos( $url, '://' . $lang->slug . '.' ) ) {
