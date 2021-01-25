@@ -1,7 +1,8 @@
-coverage/
 node_modules/
 vendor/
 tmp/
+css/build/
+js/build/
 .idea/
 *.map
 *.min.js
