@@ -365,7 +365,9 @@ class PLL_Wizard {
 		// Add ajax action on deactivate button in licenses step.
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
 
-		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
+		// Be careful pll_admin script is enqueued here without depedency except jquery because only code useful for deactivate license button is needed.
+		// To be really loaded the script need to be passed to the $steps['licenses']['scripts'] array below with the same handle than in wp_enqueue_script().
+		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
 		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
 
 		if ( $this->is_licenses_step_displayable() ) {
@@ -463,7 +465,10 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_languages( $steps ) {
-		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
+		wp_deregister_script( 'pll_admin' ); // Deregister after the licenses step enqueue to update jquery-ui-selectmenu dependency.
+		// The wp-ajax-response and postbox dependencies is useless in wizard steps espacially postbox which triggers a javascript error otherwise.
+		// To be really loaded the script need to be passed to the $steps['languages']['scripts'] array below with the same handle than in wp_enqueue_script().
+		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
 		wp_register_script( 'pll-wizard-languages', plugins_url( '/js/build/languages-step' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-dialog' ), POLYLANG_VERSION, true );
 		wp_localize_script(
@@ -493,7 +498,7 @@ class PLL_Wizard {
 			'name'    => esc_html__( 'Languages', 'polylang' ),
 			'view'    => array( $this, 'display_step_languages' ),
 			'handler' => array( $this, 'save_step_languages' ),
-			'scripts' => array( 'pll-wizard-languages', 'pll-wizard-language-choice' ),
+			'scripts' => array( 'pll-wizard-languages', 'pll_admin' ),
 			'styles'  => array( 'pll-wizard-selectmenu' ),
 		);
 		return $steps;
@@ -652,14 +657,16 @@ class PLL_Wizard {
 	 */
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
-			wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
+			// Even if pll_admin is already enqueued with the same dependencies by the languages step, it is interesting to keep that it's also useful for the untranslated-contents step.
+			// To be really loaded the script need to be passed to the $steps['untranslated-contents']['scripts'] array below with the same handle than in wp_enqueue_script().
+			wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 			wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
 			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/build/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(
 				'name'    => esc_html__( 'Content', 'polylang' ),
 				'view'    => array( $this, 'display_step_untranslated_contents' ),
 				'handler' => array( $this, 'save_step_untranslated_contents' ),
-				'scripts' => array( 'pll-wizard-language-choice' ),
+				'scripts' => array( 'pll_admin' ),
 				'styles'  => array( 'pll-wizard-selectmenu' ),
 			);
 		}
