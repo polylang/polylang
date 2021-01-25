@@ -653,7 +653,7 @@ class PLL_Wizard {
 	public function add_step_untranslated_contents( $steps ) {
 		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
 			wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_FILE ), array( 'jquery', 'wp-ajax-response', 'postbox', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
-			wp_localize_script( 'pll_admin', 'pll_admin', array( 'pll_dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
+			wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
 			wp_enqueue_style( 'pll-wizard-selectmenu', plugins_url( '/css/build/selectmenu' . $this->get_suffix() . '.css', POLYLANG_FILE ), array( 'dashicons', 'install', 'common' ), POLYLANG_VERSION );
 			$steps['untranslated-contents'] = array(
 				'name'    => esc_html__( 'Content', 'polylang' ),
