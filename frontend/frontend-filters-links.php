@@ -464,9 +464,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		$redirect_url = apply_filters( 'pll_check_canonical_url', $redirect_url, $language );
 
 		// The language is not correctly set so let's redirect to the correct url for this object
-		if ( $do_redirect && $redirect_url && $requested_url != $redirect_url ) {
+		if ( $do_redirect ) {
 			// Protect against chained redirects.
-			if ( $redirect_url === $this->check_canonical_url( $redirect_url, false ) ) {
+			if ( $redirect_url && $requested_url != $redirect_url && $redirect_url === $this->check_canonical_url( $redirect_url, false ) ) {
 				wp_safe_redirect( $redirect_url, 301, POLYLANG );
 				exit;
 			} else {
