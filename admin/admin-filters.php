@@ -54,7 +54,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 
 		// Test the Widgets screen and the Customizer to avoid displaying the option in page builders
 		// Saving the widget reloads the form. And curiously the action is in $_REQUEST but neither in $_POST, nor in $_GET.
-		if ( ( isset( $screen ) && 'widgets' === $screen->base ) || ( isset( $_REQUEST['action'] ) && 'save-widget' === $_REQUEST['action'] ) || isset( $GLOBALS['wp_customize'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ( isset( $screen ) && 'widgets' === $screen->base || 'appearance_page_gutenberg-widgets' === $screen->base ) || ( isset( $_REQUEST['action'] ) && 'save-widget' === $_REQUEST['action'] ) || isset( $GLOBALS['wp_customize'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$dropdown = new PLL_Walker_Dropdown();
 
 			$dropdown_html = $dropdown->walk(
