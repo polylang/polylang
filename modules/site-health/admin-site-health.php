@@ -94,7 +94,7 @@ class PLL_Admin_Site_Health {
 		array_walk(
 			$array,
 			function ( &$value, $key ) {
-				if ( is_array( $value ) ){
+				if ( is_array( $value ) ) {
 					$ids = implode( ' , ', $value );
 					$value = "$key => $ids";
 				} else {
@@ -168,13 +168,12 @@ class PLL_Admin_Site_Health {
 						break;
 				}
 			}
-
 		}
 		$post_no_lang = $this->get_post_ids_without_lang();
 
 		if ( ! empty( $post_no_lang ) ) {
-			$fields[ 'post-no-lang' ]['label'] = __( 'Posts without language', 'polylang' );
-			$fields[ 'post-no-lang' ]['value'] = $this->format_array( $post_no_lang );
+			$fields['post-no-lang']['label'] = __( 'Posts without language', 'polylang' );
+			$fields['post-no-lang']['value'] = $this->format_array( $post_no_lang );
 		}
 
 
@@ -194,19 +193,19 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since   3.0
 	 */
-	public function     get_post_ids_without_lang() {
+	public function get_post_ids_without_lang() {
 		$languages                  = pll_languages_list();
-		$args = array(
-			'public' => true,
-			'publicly_queryable' => true,
+		$args                       = array(
+			'public'              => true,
+			'publicly_queryable'  => true,
 			'exclude_from_search' => false,
 
 		);
-		$post_types_list = get_post_types( $args );
+		$post_types_list            = get_post_types( $args );
 		$posts_ids_with_no_language = get_posts(
 			array(
 				'numberposts' => - 1,
-				'post_type'   => $post_types_list, //Add your CPT here
+				'post_type'   => $post_types_list,
 				'post_status' => 'any',
 				'fields'      => 'ids',
 				'tax_query'   => array(
@@ -219,10 +218,10 @@ class PLL_Admin_Site_Health {
 			)
 		);
 
-		foreach ( $posts_ids_with_no_language as $post_id ){
-			$post_type = get_post_type( $post_id );
-			$posts_ids[$post_type][] = $post_id;
-			;
+		$posts_ids = array();
+		foreach ( $posts_ids_with_no_language as $post_id ) {
+			$post_type                 = get_post_type( $post_id );
+			$posts_ids[ $post_type ][] = $post_id;
 		}
 
 		return $posts_ids;
