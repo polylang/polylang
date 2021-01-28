@@ -102,6 +102,20 @@ class Filters_Test extends PLL_UnitTestCase {
 
 		$posts = get_posts( array( 'fields' => 'ids', 'lang' => array( 'fr', 'de' ) ) );
 		$this->assertCount( 4, $posts );
+
+		$args = array(
+			'fields'   => 'ids',
+			'tax_query'   => array(
+				array(
+					'taxonomy' => 'language',
+					'terms'    => self::$polylang->model->get_language( 'en' )->term_id,
+				),
+			),
+		);
+		$posts = get_posts( $args );
+		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $posts ), 'slug' );
+		$this->assertCount( 3, $posts );
+		$this->assertEquals( array( 'en' ), array_values( array_unique( $languages ) ) );
 	}
 
 	function test_sticky_posts() {
