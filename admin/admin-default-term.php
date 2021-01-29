@@ -1,7 +1,7 @@
 <?php
 
 
-class PLL_Admin_Default_Category {
+class PLL_Admin_Default_Term {
 
 	/**
 	 * A reference to the PLL_Model instance.
@@ -29,20 +29,28 @@ class PLL_Admin_Default_Category {
 		$this->pref_lang = &$polylang->pref_lang;
 		$this->options = &$polylang->options;
 
-		// Allows to get the default categories in all languages
-		add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
-		add_action( 'update_option_default_category', array( $this, 'update_option_default_category' ), 10, 2 );
-		add_action( 'pll_add_language', array( $this, 'handle_default_category_on_create_language' ) );
+		$taxonomies = get_taxonomies();
+		foreach ( $taxonomies as $taxonomy ) {
+			if ( $taxonomy === 'category' ) {
+				// Allows to get the default categories in all languages
+				add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
+				add_action( 'update_option_default_category', array( $this, 'update_option_default_category' ), 10, 2 );
+				add_action( 'pll_add_language', array( $this, 'handle_default_category_on_create_language' ) );
+
+				add_action( 'update_default_category_language', array( $this, 'update_default_category_language' ) );
+
+				// Adds the language column in the 'Categories' table.
+				add_filter( 'manage_' . $taxonomy . '_custom_column', array( $this, 'term_column' ), 10, 3 );
+			}
+
+			// Adds the language column in the 'Post Tags'table.
+			if ( $taxonomy === 'post_tag' ) {
+				add_filter( 'manage_' . $taxonomy . '_custom_column', array( $this, 'term_column' ), 10, 3 );
+			}
+		}
 
 		// Prevents deleting all the translations of the default category
 		add_filter( 'map_meta_cap', array( $this, 'fix_delete_default_category' ), 10, 4 );
-
-		// Adds the language column in the 'Categories' and 'Post Tags' tables.
-		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
-			add_filter( 'manage_' . $tax . '_custom_column', array( $this, 'term_column' ), 10, 3 );
-		}
-
-		add_action( 'update_default_category_language', array( $this, 'update_default_category_language' ) );
 	}
 
 	/**
