@@ -169,7 +169,8 @@ class PLL_Admin_Site_Health {
 				}
 			}
 		}
-		$post_no_lang = $this->get_post_ids_without_lang();
+
+		$post_no_lang = $this->get_post_ids_without_lang( 5 );
 
 		if ( ! empty( $post_no_lang ) ) {
 			$fields['post-no-lang']['label'] = __( 'Posts without language', 'polylang' );
@@ -193,38 +194,33 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since   3.0
 	 */
-	public function get_post_ids_without_lang() {
+	public function get_post_ids_without_lang( $limit = 10 ) {
+		$posts = array();
 		$languages                  = pll_languages_list();
-		$args                       = array(
-			'public'              => true,
-			'publicly_queryable'  => true,
-			'exclude_from_search' => false,
 
-		);
-		$post_types_list            = get_post_types( $args );
-		$posts_ids_with_no_language = get_posts(
-			array(
-				'numberposts' => - 1,
-				'post_type'   => $post_types_list,
-				'post_status' => 'any',
-				'fields'      => 'ids',
-				'tax_query'   => array(
-					array(
-						'taxonomy' => 'language',
-						'terms'    => $languages,
-						'operator' => 'NOT IN',
+		foreach ( $this->model->get_translated_post_types() as $post_type ) {
+			$posts_ids_with_no_language = get_posts(
+				array(
+					'numberposts' => $limit,
+					'post_type'   => $post_type,
+					'post_status' => 'any',
+					'tax_query'   => array(
+						array(
+							'taxonomy' => 'language',
+							'terms'    => $languages,
+							'operator' => 'NOT IN',
+						),
 					),
-				),
-			)
-		);
+				)
+			);
 
-		$posts_ids = array();
-		foreach ( $posts_ids_with_no_language as $post_id ) {
-			$post_type                 = get_post_type( $post_id );
-			$posts_ids[ $post_type ][] = $post_id;
+			foreach ( $posts_ids_with_no_language as $untranslated ){
+				$posts[$untranslated->post_type][] = $untranslated->ID;
+			}
 		}
 
-		return $posts_ids;
+
+		return $posts;
 	}
 
 	/**
