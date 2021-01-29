@@ -1,6 +1,13 @@
 <?php
+/**
+ * @package Polylang
+ */
 
-
+/**
+ * Manages filters and actions related to default terms.
+ *
+ * @since 3.0
+ */
 class PLL_Admin_Default_Term {
 
 	/**
@@ -12,6 +19,11 @@ class PLL_Admin_Default_Term {
 	 */
 	protected $model;
 
+	/**
+	 * Preferred language to assign to new contents.
+	 *
+	 * @var PLL_Language
+	 */
 	protected $pref_lang;
 
 	/**
@@ -31,7 +43,7 @@ class PLL_Admin_Default_Term {
 
 		$taxonomies = get_taxonomies();
 		foreach ( $taxonomies as $taxonomy ) {
-			if ( $taxonomy === 'category' ) {
+			if ( 'category' === $taxonomy ) {
 				// Allows to get the default categories in all languages
 				add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
 				add_action( 'update_option_default_category', array( $this, 'update_option_default_category' ), 10, 2 );
@@ -44,7 +56,7 @@ class PLL_Admin_Default_Term {
 			}
 
 			// Adds the language column in the 'Post Tags'table.
-			if ( $taxonomy === 'post_tag' ) {
+			if ( 'post_tag' === $taxonomy ) {
 				add_filter( 'manage_' . $taxonomy . '_custom_column', array( $this, 'term_column' ), 10, 3 );
 			}
 		}
@@ -122,6 +134,11 @@ class PLL_Admin_Default_Term {
 		$this->model->term->save_translations( (int) $cat, $translations );
 	}
 
+	/**
+	 * Manages the default category when new languages are created.
+	 *
+	 * @param array $args Argument used to create the language. @see PLL_Admin_Model::add_language().
+	 */
 	public function handle_default_category_on_create_language( $args ) {
 		$default = (int) get_option( 'default_category' );
 
@@ -133,6 +150,15 @@ class PLL_Admin_Default_Term {
 		}
 	}
 
+	/**
+	 * Adds the language column in the tables.
+	 *
+	 * @param string $out The output.
+	 * @param string $column The custom column's name.
+	 * @param int    $term_id The term id.
+	 *
+	 * @return string
+	 */
 	public function term_column( $out, $column, $term_id ) {
 		if ( $column == $this->get_first_language_column() ) {
 			// Identify the default categories to disable the language dropdown in js
@@ -186,10 +212,18 @@ class PLL_Admin_Default_Term {
 		return $caps;
 	}
 
+	/**
+	 * @param int $term_id The term id.
+	 *
+	 * @return bool
+	 */
 	public function is_term_the_default_category( $term_id ) {
 		return in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
 	}
 
+	/**
+	 * @param string $slug
+	 */
 	public function update_default_category_language( $slug ) {
 		$default_cats = $this->model->term->get_translations( get_option( 'default_category' ) );
 		if ( isset( $default_cats[ $slug ] ) ) {
