@@ -15,20 +15,22 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		self::$polylang->options['post_types'] = array(
+		self::$model->options['post_types'] = array(
 			'trcpt' => 'trcpt',
 		);
-		self::$polylang->options['taxonomies'] = array(
+		self::$model->options['taxonomies'] = array(
 			'trtax' => 'trtax',
 		);
 
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // translated custom post type with archives
 		register_taxonomy( 'trtax', 'trcpt' ); // translated custom tax
 
-		self::$polylang->auto_translate = new PLL_Frontend_Auto_Translate( self::$polylang );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		self::$polylang->filters = new PLL_Frontend_Filters( self::$polylang );
-		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
+		$links_model = self::$model->get_links_model();
+		$frontend = new PLL_Frontend( $links_model );
+		new PLL_Frontend_Auto_Translate( $frontend );
+		$frontend->curlang = self::$model->get_language( 'fr' );
+		new PLL_Frontend_Filters( $frontend );
+		new PLL_CRUD_Terms( $frontend );
 	}
 
 	function tearDown() {
@@ -40,18 +42,18 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 	function test_category() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->set_language( $en, 'en' );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$post_fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_fr, 'fr' );
+		self::$model->post->set_language( $post_fr, 'fr' );
 		wp_set_post_terms( $post_fr, array( $fr ), 'category' );
 
 		$post_en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_en, 'en' );
+		self::$model->post->set_language( $post_en, 'en' );
 		wp_set_post_terms( $post_en, array( $en ), 'category' );
 
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'cat' => $en ) ) );
@@ -61,24 +63,24 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 	function test_tag() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->set_language( $en, 'en' );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai2' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test2' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->set_language( $en, 'en' );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$post_fr = $this->factory->post->create( array( 'tags_input' => array( 'essai', 'essai2' ) ) );
-		self::$polylang->model->post->set_language( $post_fr, 'fr' );
+		self::$model->post->set_language( $post_fr, 'fr' );
 
 		$post_en = $this->factory->post->create( array( 'tags_input' => array( 'test', 'test2' ) ) );
-		self::$polylang->model->post->set_language( $post_en, 'en' );
+		self::$model->post->set_language( $post_en, 'en' );
 
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag_id' => $en ) ) );
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => 'test' ) ) );
@@ -89,33 +91,33 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 	function test_custom_tax() {
 		$term_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$term_en = $en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->set_language( $en, 'en' );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai2' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test2' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->set_language( $en, 'en' );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai3' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test3' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->set_language( $en, 'en' );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$post_fr = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
 		wp_set_post_terms( $post_fr, array( 'essai', 'essai2' ), 'trtax' ); // don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post
-		self::$polylang->model->post->set_language( $post_fr, 'fr' );
+		self::$model->post->set_language( $post_fr, 'fr' );
 
 		$post_en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
 		wp_set_post_terms( $post_en, array( 'test', 'test2' ), 'trtax' ); // don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post
-		self::$polylang->model->post->set_language( $post_en, 'en' );
+		self::$model->post->set_language( $post_en, 'en' );
 
 		// old way
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test' ) ) );
@@ -187,12 +189,12 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 	function test_post() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'p' => $en ) ) );
 		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test' ) ) );
@@ -204,20 +206,20 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 	function test_page() {
 		$parent_en = $en = $this->factory->post->create( array( 'post_title' => 'test_parent', 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$parent_fr = $fr = $this->factory->post->create( array( 'post_title' => 'essai_parent', 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page', 'post_parent' => $parent_en ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create( array( 'post_title' => 'essai', 'post_type' => 'page', 'post_parent' => $parent_fr ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$query = new WP_Query( array( 'page_id' => $en ) );
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
@@ -233,11 +235,11 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 
 	function test_get_terms() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->set_language( $en, 'en' );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$expected = get_term( $fr, 'category' );
 		$terms = get_terms( 'category', array( 'hide_empty' => 0, 'include' => array( $en ) ) );

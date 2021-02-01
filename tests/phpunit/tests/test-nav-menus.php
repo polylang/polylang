@@ -20,6 +20,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		if ( empty( $registered_nav_menus ) ) {
 			register_nav_menu( 'primary', 'Primary menu' );
 		}
+
+		$this->links_model = self::$model->get_links_model();
 	}
 
 	function test_nav_menu_locations() {
@@ -70,8 +72,10 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 			)
 		);
 
+
 		// assign our menus to locations
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
 		$locations = array_keys( get_registered_nav_menus() );
@@ -83,13 +87,15 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$nav_menu->update_nav_menu_locations( $nav_menu_locations ); // our filter update_nav_menu_locations does not run due to security checks
 
+		$frontend = new PLL_Frontend( $this->links_model );
+
 		// test nav menus on frontend when using theme locations
-		self::$polylang->nav_menu = new PLL_Frontend_Nav_Menu( self::$polylang );
+		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
 		$this->assertContains( 'Hello World', wp_nav_menu( $args ) );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend->curlang = self::$model->get_language( 'fr' );
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
 		$this->assertContains( 'Bonjour', wp_nav_menu( $args ) );
@@ -123,7 +129,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$menu_fr = wp_create_nav_menu( 'menu_fr' );
 
 		// assign our menus to locations
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
 		$locations = array_keys( get_registered_nav_menus() );
@@ -163,7 +170,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		);
 
 		// assign our menus to locations
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
@@ -174,7 +182,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		// create a draft as we want to set the language *before* publication
 		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_status' => 'draft' ) );
-		self::$polylang->model->post->set_language( $post_id, 'fr' );
+		self::$model->post->set_language( $post_id, 'fr' );
 		wp_publish_post( $post_id );
 
 		$this->assertEquals( array(), wp_get_nav_menu_items( $menu_en ) ); // no menu item in menu_en
@@ -184,15 +192,17 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	}
 
 	function test_combine_location() {
-		$nav_menu = new PLL_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 
-		$this->assertEquals( 'primary', $nav_menu->combine_location( 'primary', self::$polylang->model->get_language( 'en' ) ) ); // default language
-		$this->assertEquals( 'primary___fr', $nav_menu->combine_location( 'primary', self::$polylang->model->get_language( 'fr' ) ) );
-		$this->assertEquals( 'primary___fr', $nav_menu->combine_location( 'primary___fr', self::$polylang->model->get_language( 'fr' ) ) );
+		$this->assertEquals( 'primary', $nav_menu->combine_location( 'primary', self::$model->get_language( 'en' ) ) ); // default language
+		$this->assertEquals( 'primary___fr', $nav_menu->combine_location( 'primary', self::$model->get_language( 'fr' ) ) );
+		$this->assertEquals( 'primary___fr', $nav_menu->combine_location( 'primary___fr', self::$model->get_language( 'fr' ) ) );
 	}
 
 	function test_explode_location() {
-		$nav_menu = new PLL_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 
 		$this->assertEquals( array( 'location' => 'primary', 'lang' => 'en' ), $nav_menu->explode_location( 'primary' ) );
 		$this->assertEquals( array( 'location' => 'primary', 'lang' => 'fr' ), $nav_menu->explode_location( 'primary___fr' ) );
@@ -201,12 +211,12 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	function setup_nav_menus( $options ) {
 		// create posts
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// create 1 menu
 		$menu_en = wp_create_nav_menu( 'menu_en' );
@@ -229,7 +239,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$primary_location = reset( $locations );
 
 		// assign our menus to locations
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
 		$locations = array_keys( get_registered_nav_menus() );
@@ -248,16 +259,19 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$primary_location = $this->setup_nav_menus( $options );
 
 		// test nav menus on frontend when using theme locations
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
-		self::$polylang->links = new PLL_Frontend_Links( self::$polylang );
-		self::$polylang->nav_menu = new PLL_Frontend_Nav_Menu( self::$polylang );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$frontend->curlang = self::$model->get_language( 'en' );
+		$frontend->links = new PLL_Frontend_Links( $frontend );
+		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
 
 		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
-		$GLOBALS['polylang'] = self::$polylang; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
+		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
 		$this->assertContains( 'Français', wp_nav_menu( $args ) );
 		$this->assertContains( 'English', wp_nav_menu( $args ) );
+
+		unset( $GLOBALS['polylang'] );
 	}
 
 	function test_nav_menu_language_switcher_as_dropdown() {
@@ -265,12 +279,13 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$primary_location = $this->setup_nav_menus( $options );
 
 		// test nav menus on frontend when using theme locations
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
-		self::$polylang->links = new PLL_Frontend_Links( self::$polylang );
-		self::$polylang->nav_menu = new PLL_Frontend_Nav_Menu( self::$polylang );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$frontend->curlang = self::$model->get_language( 'en' );
+		$frontend->links = new PLL_Frontend_Links( $frontend );
+		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
 
 		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
-		$GLOBALS['polylang'] = self::$polylang; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
+		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
 		$doc = new DomDocument();
@@ -283,11 +298,14 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/a[.="English"]' )->length );
 		$this->assertEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); // current language is hidden
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
+
+		unset( $GLOBALS['polylang'] );
 	}
 
 	function test_update_nav_menu_item() {
 		wp_set_current_user( 1 );
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->admin_init(); // Setup filters
 
 		$args = array(
@@ -315,7 +333,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	}
 
 	function test_language_switcher_metabox() {
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->admin_init(); // Setup filters
 
 		ob_start();
@@ -336,7 +355,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$locations = array_keys( get_registered_nav_menus() );
 		$primary_location = reset( $locations );
 
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->admin_init(); // Setup filters
 		$nav_menu->create_nav_menu_locations();
 
@@ -368,7 +388,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$locations = array_keys( get_registered_nav_menus() );
 		$primary_location = reset( $locations );
 
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->admin_init(); // Setup filters
 		$nav_menu->create_nav_menu_locations();
 
@@ -391,10 +412,10 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	}
 
 	function test_admin_nav_menus_scripts() {
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
-		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
-		self::$polylang->nav_menus = new PLL_Admin_Nav_Menu( self::$polylang );
-		self::$polylang->nav_menus->admin_init();
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
+		$pll_admin->nav_menus = new PLL_Admin_Nav_Menu( $pll_admin );
+		$pll_admin->nav_menus->admin_init();
 
 		$GLOBALS['hook_suffix'] = 'nav-menus.php';
 		set_current_screen( 'nav-menus' );

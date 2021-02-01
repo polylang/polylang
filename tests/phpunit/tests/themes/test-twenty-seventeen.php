@@ -15,7 +15,6 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyseventee
 			self::create_language( 'fr_FR' );
 
 			require_once POLYLANG_DIR . '/include/api.php';
-			$GLOBALS['polylang'] = &self::$polylang;
 
 			self::$stylesheet = get_option( 'stylesheet' ); // save default theme
 			switch_theme( 'twentyseventeen' );
@@ -42,32 +41,36 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyseventee
 			add_action( 'get_template_part_template-parts/page/content', array( $this, 'get_template_part' ), 10, 2 );
 
 			$en = self::factory()->post->create( array( 'post_title' => 'section 1 EN' ) );
-			self::$polylang->model->post->set_language( $en, 'en' );
+			self::$model->post->set_language( $en, 'en' );
 
 			$fr = self::factory()->post->create( array( 'post_title' => 'section 1 FR' ) );
-			self::$polylang->model->post->set_language( $fr, 'fr' );
+			self::$model->post->set_language( $fr, 'fr' );
 
-			self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+			self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 			set_theme_mod( 'panel_1', $en );
 
-			self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-			self::$polylang->init();
+			$links_model = self::$model->get_links_model();
+			$frontend = new PLL_Frontend( $links_model );
+			$GLOBALS['polylang'] = &$frontend;
+			$frontend->init();
 			do_action( 'pll_init' );
 			$twenty_seventeen = new PLL_Twenty_Seventeen();
 			$twenty_seventeen->init();
 
-			self::$polylang->curlang = self::$polylang->model->get_language( 'fr' ); // brute force
+			$frontend->curlang = self::$model->get_language( 'fr' ); // brute force
 
 			ob_start();
 			twentyseventeen_front_page_section( null, 1 );
 			$this->assertNotFalse( strpos( ob_get_clean(), 'section 1 FR' ) );
 
-			self::$polylang->curlang = self::$polylang->model->get_language( 'en' ); // brute force
+			$frontend->curlang = self::$model->get_language( 'en' ); // brute force
 
 			ob_start();
 			twentyseventeen_front_page_section( null, 1 );
 			$this->assertNotFalse( strpos( ob_get_clean(), 'section 1 EN' ) );
+
+			unset( $GLOBALS['polylang'] );
 		}
 	}
 

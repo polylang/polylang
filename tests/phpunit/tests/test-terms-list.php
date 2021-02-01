@@ -19,29 +19,31 @@ class Terms_List_Test extends PLL_UnitTestCase {
 		parent::setUp();
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
-		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang ); // To activate the fix_delete_default_category() filter
-		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
+
+		$links_model = self::$model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
+		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // To activate the fix_delete_default_category() filter
+		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
 	}
 
 	function test_term_list_with_admin_language_filter() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'enfant', 'parent' => $fr ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'child', 'parent' => $en ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$GLOBALS['taxnow'] = $_REQUEST['taxonomy'] = $_GET['taxonomy'] = 'category'; // WP_Screen tests $_REQUEST, Polylang tests $_GET
 		$GLOBALS['hook_suffix'] = 'edit-tags.php';
 		set_current_screen();
 		$wp_list_table = _get_list_table( 'WP_Terms_List_Table' );
-		self::$polylang->set_current_language();
+		$this->pll_admin->set_current_language();
 
 		// without filter
 		ob_start();
@@ -55,8 +57,8 @@ class Terms_List_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $list, 'enfant' ) );
 
 		// the filter is active
-		self::$polylang->pref_lang = self::$polylang->filter_lang = self::$polylang->model->get_language( 'en' );
-		self::$polylang->set_current_language();
+		$this->pll_admin->pref_lang = $this->pll_admin->filter_lang = self::$model->get_language( 'en' );
+		$this->pll_admin->set_current_language();
 
 		ob_start();
 		$wp_list_table->prepare_items();
@@ -73,8 +75,8 @@ class Terms_List_Test extends PLL_UnitTestCase {
 	function test_default_category_in_list_table() {
 		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) ); // a non default category
 		$default = get_option( 'default_category' );
-		$en = self::$polylang->model->term->get( $default, 'en' );
-		$fr = self::$polylang->model->term->get( $default, 'fr' );
+		$en = self::$model->term->get( $default, 'en' );
+		$fr = self::$model->term->get( $default, 'fr' );
 
 		$GLOBALS['taxnow'] = $_REQUEST['taxonomy'] = $_GET['taxonomy'] = 'category'; // WP_Screen tests $_REQUEST, Polylang tests $_GET
 		$GLOBALS['hook_suffix'] = 'edit-tags.php';

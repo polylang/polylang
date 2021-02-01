@@ -14,11 +14,12 @@ class WPML_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang; // The WPML API uses the global $polylang
 	}
 
 	function setUp() {
 		parent::setUp();
+
+		$this->links_model = self::$model->get_links_model();
 
 		PLL_WPML_Compat::instance()->api = new PLL_WPML_API(); // Loads the WPML API
 	}
@@ -30,6 +31,8 @@ class WPML_Test extends PLL_UnitTestCase {
 		foreach ( PLL_WPML_Compat::instance()->get_strings( array() ) as $string ) {
 			PLL_WPML_Compat::instance()->unregister_string( $string['context'], $string['name'] );
 		}
+
+		unset( $GLOBALS['polylang'] );
 	}
 
 	/**
@@ -38,6 +41,9 @@ class WPML_Test extends PLL_UnitTestCase {
 	 * @see https://wordpress.org/support/topic/after-update-apeared-warnings
 	 */
 	function test_acf() {
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
 		register_post_type( 'acf' );
 
 		$id = $this->factory->post->create( array( 'post_type' => 'acf' ) );
@@ -47,26 +53,27 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	function test_wpml_active_languages() {
-		self::$polylang->model->post->register_taxonomy(); // Needed otherwise posts are not counted
+		self::$model->post->register_taxonomy(); // Needed otherwise posts are not counted
 
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->clean_languages_cache(); // For some reason (global state?) we need to reset the posts count
+		self::$model->clean_languages_cache(); // For some reason (global state?) we need to reset the posts count
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->init();
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+		$frontend->init();
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend->curlang = self::$model->get_language( 'fr' );
 		$this->go_to( home_url( '?page_id=' . $fr ) );
 
 		$languages = apply_filters( 'wpml_active_languages', null );
 
 		$expected = array(
-			'id'               => self::$polylang->model->get_language( 'fr' )->term_id,
+			'id'               => self::$model->get_language( 'fr' )->term_id,
 			'active'           => 1,
 			'native_name'      => 'Français',
 			'missing'          => 0,
@@ -96,22 +103,31 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	function test_wpml_current_language() {
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
+		$frontend->curlang = self::$model->get_language( 'en' );
 		$this->assertEquals( 'en', apply_filters( 'wpml_current_language', null ) );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend->curlang = self::$model->get_language( 'fr' );
 		$this->assertEquals( 'fr', apply_filters( 'wpml_current_language', null ) );
 	}
 
 	function test_wpml_default_language() {
-		self::$polylang->options['default_lang'] = 'fr';
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
+		self::$model->options['default_lang'] = 'fr';
 		$this->assertEquals( 'fr', apply_filters( 'wpml_default_language', null ) );
 		$this->assertEquals( 'fr', icl_get_default_language() ); // Legacy
 		$this->assertEquals( 'fr', wpml_get_default_language() ); // Legacy
 	}
 
 	function test_wpml_add_language_form_field() {
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
+		$frontend->curlang = self::$model->get_language( 'fr' );
 		ob_start();
 		do_action( 'wpml_add_language_form_field' );
 
@@ -119,10 +135,13 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	function test_wpml_post_language_details() {
-		$id = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $id, 'en' );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		self::$model->post->set_language( $id, 'en' );
+
+		$frontend->curlang = self::$model->get_language( 'fr' );
 		$lang = apply_filters( 'wpml_post_language_details', null, $id );
 
 		$this->assertEquals( 'en', $lang['language_code'] );
@@ -132,7 +151,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertTrue( $lang['different_language'] );
 
 		$GLOBALS['post'] = get_post( $id );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$frontend->curlang = self::$model->get_language( 'en' );
 		$lang = apply_filters( 'wpml_post_language_details', null );
 
 		$this->assertEquals( 'en', $lang['language_code'] );
@@ -140,20 +159,25 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	function test_wpml_language_code() {
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
 		$id = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $id, 'en' );
+		self::$model->post->set_language( $id, 'en' );
 
 		$this->assertEquals( 'en', apply_filters( 'wpml_element_language_code', null, array( 'element_id' => $id, 'element_type' => 'page' ) ) );
 
 		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $id, 'en' );
+		self::$model->term->set_language( $id, 'en' );
 
 		$this->assertEquals( 'en', apply_filters( 'wpml_element_language_code', null, array( 'element_id' => $id, 'element_type' => 'category' ) ) );
 	}
 
 	function test_wpml_home_url() {
-		self::$polylang->links = new PLL_Frontend_Links( self::$polylang );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+		$frontend->links = new PLL_Frontend_Links( $frontend );
+		$frontend->curlang = self::$model->get_language( 'fr' );
 
 		$this->assertEquals( 'http://example.org/?lang=fr', apply_filters( 'wpml_home_url', null ) );
 		$this->assertEquals( 'http://example.org/?lang=fr', icl_get_home_url() ); // Legacy
@@ -168,25 +192,26 @@ class WPML_Test extends PLL_UnitTestCase {
 		$wp_rewrite->set_permalink_structure( $this->structure );
 		create_initial_taxonomies(); // Needed for catery links
 
-		self::$polylang->options['force_lang'] = 1;
-		self::$polylang->links_model = self::$polylang->model->get_links_model();
-		self::$polylang->links_model->init();
+		self::$model->options['force_lang'] = 1;
+		$links_model = self::$model->get_links_model();
+		$links_model->init();
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->init();
+		$frontend = new PLL_Frontend( $links_model );
+		$GLOBALS['polylang'] = $frontend;
+		$frontend->init();
 
 		// De-activate cache for links
-		self::$polylang->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		self::$polylang->links->cache->method( 'get' )->willReturn( false );
+		$frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		$frontend->links->cache->method( 'get' )->willReturn( false );
 
-		self::$polylang->filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		self::$polylang->filters_links->cache->method( 'get' )->willReturn( false );
+		$frontend->filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		$frontend->filters_links->cache->method( 'get' )->willReturn( false );
 
 		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$tag = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $tag, 'en' );
+		self::$model->term->set_language( $tag, 'en' );
 
 		ob_start();
 		$link = apply_filters( 'wpml_element_link', $en );
@@ -213,7 +238,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		apply_filters( 'wpml_element_link', $tag, 'tag' );
 		$this->assertEquals( '<a href="http://example.org/en/tag/test/">test</a>', ob_get_clean() );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend->curlang = self::$model->get_language( 'fr' );
 
 		ob_start();
 		$link = apply_filters( 'wpml_element_link', $en );
@@ -223,8 +248,8 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '', $link ); // return_original_if_missing false
 
 		$fr = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test fr' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->set_language( $fr, 'fr' );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		ob_start();
 		apply_filters( 'wpml_element_link', $en, 'page', '', '', '' ); // Translation
@@ -232,29 +257,35 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	function test_wpml_object_id() {
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
+		$frontend->curlang = self::$model->get_language( 'fr' );
 
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
 		$this->assertEquals( $fr, apply_filters( 'wpml_object_id', $fr, 'page' ) );
 		$this->assertEquals( $fr, apply_filters( 'wpml_object_id', $en, 'page' ) );
 		$this->assertEquals( $en, apply_filters( 'wpml_object_id', $fr, 'page', false, 'en' ) );
 
 		$cat = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $cat, 'en' );
+		self::$model->term->set_language( $cat, 'en' );
 
 		$this->assertNull( apply_filters( 'wpml_object_id', $cat, 'category' ) );
 		$this->assertEquals( $cat, apply_filters( 'wpml_object_id', $cat, 'category', true ) );
 	}
 
 	function test_wpml_object_id_nav_menu() {
-		self::$polylang->options['default_lang'] = 'en';
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+
+		self::$model->options['default_lang'] = 'en';
 
 		$registered_nav_menus = get_registered_nav_menus();
 
@@ -269,7 +300,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) ); // Just to test the PHP notice fixed in 2.2.7
 
 		// Assign our menus to locations
-		$nav_menu = new PLL_Admin_Nav_Menu( self::$polylang );
+		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->create_nav_menu_locations();
 
 		$locations = array_keys( get_registered_nav_menus() );
@@ -281,41 +312,44 @@ class WPML_Test extends PLL_UnitTestCase {
 		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$nav_menu->update_nav_menu_locations( $nav_menu_locations ); // Our filter update_nav_menu_locations does not run due to security checks
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$pll_admin->curlang = self::$model->get_language( 'en' );
 		$this->assertEquals( $menu_en, apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) );
 		$this->assertEquals( $menu_en, apply_filters( 'wpml_object_id', $menu_fr, 'nav_menu' ) );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$pll_admin->curlang = self::$model->get_language( 'fr' );
 		$this->assertEquals( $menu_fr, apply_filters( 'wpml_object_id', $menu_en, 'nav_menu' ) );
 		$this->assertEquals( $menu_fr, apply_filters( 'wpml_object_id', $menu_fr, 'nav_menu' ) );
 	}
 
 	function test_wpml_element_has_translations() {
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
 		$id = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $id, 'en' );
+		self::$model->post->set_language( $id, 'en' );
 
 		$this->assertTrue( apply_filters( 'wpml_element_has_translations', null, $en, 'page' ) );
 		$this->assertTrue( apply_filters( 'wpml_element_has_translations', null, $fr, 'page' ) );
 		$this->assertFalse( apply_filters( 'wpml_element_has_translations', null, $id, 'page' ) );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
-		self::$polylang->model->term->save_translations( $en, compact( 'fr' ) );
+		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $id, 'en' );
+		self::$model->term->set_language( $id, 'en' );
 
 		$this->assertTrue( apply_filters( 'wpml_element_has_translations', null, $en, 'category' ) );
 		$this->assertTrue( apply_filters( 'wpml_element_has_translations', null, $fr, 'category' ) );
@@ -337,15 +371,16 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		// Translate
 		foreach ( array( 'en', 'fr' ) as $lang ) {
-			$language = self::$polylang->model->get_language( $lang );
+			$language = self::$model->get_language( $lang );
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
 			$mo->add_entry( $mo->make_entry( 'wpml_string_test', "wpml_string_test_$lang" ) );
 			$mo->export_to_db( $language );
 		}
 
-		$GLOBALS['polylang'] = self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+		$frontend->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined' );
 
 		$this->assertEquals( 'wpml_string_test_en', apply_filters( 'wpml_translate_single_string', 'wpml_string_test', 'wpml_string_context', 'wpml_string_name', 'en' ) );
@@ -366,13 +401,16 @@ class WPML_Test extends PLL_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // Brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
-		self::$polylang->options['force_lang'] = 1;
-		self::$polylang->links_model = self::$polylang->model->get_links_model();
-		self::$polylang->links_model->init();
+		self::$model->options['force_lang'] = 1;
+		$links_model = self::$model->get_links_model();
+		$links_model->init();
+
+		$frontend = new PLL_Frontend( $links_model );
+		$GLOBALS['polylang'] = $frontend; // The WPML API uses PLL().
 
 		$this->assertEquals( home_url( '/fr/test/' ), apply_filters( 'wpml_permalink', home_url( '/test/' ), 'fr' ) );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend->curlang = self::$model->get_language( 'fr' );
 		$this->assertEquals( home_url( '/fr/test/' ), apply_filters( 'wpml_permalink', home_url( '/test/' ) ) );
 	}
 
@@ -380,12 +418,15 @@ class WPML_Test extends PLL_UnitTestCase {
 	 * Test behavior of wpml_register_single_string when duplicate name and context
 	 */
 	public function test_duplicate_string_translation() {
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$GLOBALS['polylang'] = $pll_admin;
+
 		// Register single string.
 		do_action( 'wpml_register_single_string', 'Context', 'Name', 'My text to translate' );
 
 		// Translate the first single string.
 		foreach ( array( 'en', 'fr' ) as $lang ) {
-			$language = self::$polylang->model->get_language( $lang );
+			$language = self::$model->get_language( $lang );
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
 			$mo->add_entry( $mo->make_entry( 'My text to translate', "My text to translate_$lang" ) );
@@ -398,7 +439,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		// Get translations of the registered string to test it later.
 		$string_translation = array();
 		foreach ( array( 'en', 'fr' ) as $lang ) {
-			$language = self::$polylang->model->get_language( $lang );
+			$language = self::$model->get_language( $lang );
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
 			$string_translation[ $lang ] = $mo->translate( 'My text to translate 2' );
@@ -415,7 +456,9 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_wpml_switch_language() {
-		PLL()->curlang = self::$polylang->model->get_language( 'en' );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+		PLL()->curlang = self::$model->get_language( 'en' );
 
 		do_action( 'wpml_switch_language', 'all' );
 		$this->assertNull( PLL()->curlang );

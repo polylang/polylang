@@ -13,14 +13,16 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	function test_term_slugs() {
-		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang ); // activate our filters
+		$links_model = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		new PLL_Admin_Filters_Term( $pll_admin ); // activate our filters
 
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $term_id, 'en' );
+		self::$model->term->set_language( $term_id, 'en' );
 
 		$_POST['term_lang_choice'] = 'fr';
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $term_id, 'fr' );
+		self::$model->term->set_language( $term_id, 'fr' );
 
 		$term = get_term( $term_id, 'category' );
 		$this->assertEquals( 'test-fr', $term->slug );

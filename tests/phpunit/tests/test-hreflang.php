@@ -13,44 +13,46 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang;
 
-		self::$polylang->options['hide_default'] = 0;
+		self::$model->options['hide_default'] = 0;
 	}
 
 	function setUp() {
 		parent::setUp();
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->init();
+		$links_model = self::$model->get_links_model();
+		$this->frontend = new PLL_Frontend( $links_model );
+		$this->frontend->init();
 
 		// add links filter and de-activate the cache
-		self::$polylang->filters_links = new PLL_Frontend_Filters_Links( self::$polylang );
+		$this->frontend->filters_links = new PLL_Frontend_Filters_Links( $this->frontend );
 
-		self::$polylang->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		self::$polylang->links->cache->method( 'get' )->willReturn( false );
+		$this->frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		$this->frontend->links->cache->method( 'get' )->willReturn( false );
 
-		self::$polylang->filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		self::$polylang->filters_links->cache->method( 'get' )->willReturn( false );
+		$this->frontend->filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		$this->frontend->filters_links->cache->method( 'get' )->willReturn( false );
+
+		$GLOBALS['polylang'] = &$this->frontend;
 	}
 
 	function test_hreflang() {
 		$uk = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $uk, 'uk' );
+		self::$model->post->set_language( $uk, 'uk' );
 
 		$us = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $us, 'us' );
+		self::$model->post->set_language( $us, 'us' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $fr, compact( 'uk', 'us', 'fr' ) );
+		self::$model->post->save_translations( $fr, compact( 'uk', 'us', 'fr' ) );
 
 		// posts
 		$this->go_to( get_permalink( $fr ) );
 
 		ob_start();
-		self::$polylang->filters_links->wp_head();
+		$this->frontend->filters_links->wp_head();
 		$out = ob_get_clean();
 
 		$this->assertNotFalse( strpos( $out, 'hreflang="en-GB"' ) );
@@ -62,7 +64,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '?lang=fr' ) );
 
 		ob_start();
-		self::$polylang->filters_links->wp_head();
+		$this->frontend->filters_links->wp_head();
 		$out = ob_get_clean();
 
 		$this->assertNotFalse( strpos( $out, 'hreflang="en-GB"' ) );
@@ -73,18 +75,18 @@ class Hreflang_Test extends PLL_UnitTestCase {
 
 	function test_paginated_post() {
 		$uk = $this->factory->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
-		self::$polylang->model->post->set_language( $uk, 'uk' );
+		self::$model->post->set_language( $uk, 'uk' );
 
 		$us = $this->factory->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
-		self::$polylang->model->post->set_language( $us, 'us' );
+		self::$model->post->set_language( $us, 'us' );
 
-		self::$polylang->model->post->save_translations( $uk, compact( 'uk', 'us' ) );
+		self::$model->post->save_translations( $uk, compact( 'uk', 'us' ) );
 
 		// Page 1
 		$this->go_to( get_permalink( $uk ) );
 
 		ob_start();
-		self::$polylang->filters_links->wp_head();
+		$this->frontend->filters_links->wp_head();
 		$out = ob_get_clean();
 
 		$this->assertNotFalse( strpos( $out, 'hreflang="en-GB"' ) );
@@ -93,7 +95,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$this->go_to( add_query_arg( 'page', 2, get_permalink( $uk ) ) );
 
 		ob_start();
-		self::$polylang->filters_links->wp_head();
+		$this->frontend->filters_links->wp_head();
 		$out = ob_get_clean();
 
 		$this->assertEmpty( $out );
@@ -106,16 +108,16 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$posts_uk = $this->factory->post->create_many( 3 );
 
 		for ( $i = 0; $i < 3; $i++ ) {
-			self::$polylang->model->post->set_language( $us = $posts_us[ $i ], 'us' );
-			self::$polylang->model->post->set_language( $uk = $posts_uk[ $i ], 'uk' );
-			self::$polylang->model->post->save_translations( $uk, compact( 'uk', 'us' ) );
+			self::$model->post->set_language( $us = $posts_us[ $i ], 'us' );
+			self::$model->post->set_language( $uk = $posts_uk[ $i ], 'uk' );
+			self::$model->post->save_translations( $uk, compact( 'uk', 'us' ) );
 		}
 
 		// Page 1
 		$this->go_to( home_url( '?lang=us' ) );
 
 		ob_start();
-		self::$polylang->filters_links->wp_head();
+		$this->frontend->filters_links->wp_head();
 		$out = ob_get_clean();
 
 		$this->assertNotFalse( strpos( $out, 'hreflang="en-GB"' ) );
@@ -124,7 +126,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '?lang=us&paged=2' ) );
 
 		ob_start();
-		self::$polylang->filters_links->wp_head();
+		$this->frontend->filters_links->wp_head();
 		$out = ob_get_clean();
 
 		$this->assertEmpty( $out );

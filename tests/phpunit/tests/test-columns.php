@@ -21,12 +21,15 @@ class Columns_Test extends PLL_UnitTestCase {
 		// set a user to pass current_user_can tests
 		wp_set_current_user( self::$editor );
 
-		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
-		self::$polylang->filters_columns = new PLL_Admin_Filters_Columns( self::$polylang );
+		$links_model = self::$model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
+
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
 	}
 
 	function tearDown() {
-		unset( self::$polylang->filter_lang );
+		unset( $this->pll_admin->filter_lang );
 
 		parent::tearDown();
 	}
@@ -35,25 +38,25 @@ class Columns_Test extends PLL_UnitTestCase {
 		$post_id = $this->factory->post->create();
 
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_en', $post_id );
-		self::$polylang->filters_columns->post_column( 'language_fr', $post_id );
+		$this->pll_admin->filters_columns->post_column( 'language_en', $post_id );
+		$this->pll_admin->filters_columns->post_column( 'language_fr', $post_id );
 		$this->assertEmpty( ob_get_clean() );
 	}
 
 	function test_post_language() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		// with capability
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_en', $en );
+		$this->pll_admin->filters_columns->post_column( 'language_en', $en );
 		$column = ob_get_clean();
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) && strpos( $column, 'href' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_en', $en );
+		$this->pll_admin->filters_columns->post_column( 'language_en', $en );
 		$column = ob_get_clean();
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 		$this->assertFalse( strpos( $column, 'href' ) );
@@ -61,57 +64,57 @@ class Columns_Test extends PLL_UnitTestCase {
 
 	function test_untranslated_post() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		// with capability
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_fr', $en );
+		$this->pll_admin->filters_columns->post_column( 'language_fr', $en );
 		$column = ob_get_clean();
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) && strpos( $column, 'from_post' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_fr', $en );
+		$this->pll_admin->filters_columns->post_column( 'language_fr', $en );
 		$this->assertEmpty( ob_get_clean() );
 	}
 
 	// special case for media
 	function test_untranslated_media() {
 		$en = $this->factory->attachment->create_object( 'image.jpg' );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		// with capability
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_fr', $en );
+		$this->pll_admin->filters_columns->post_column( 'language_fr', $en );
 		$column = ob_get_clean();
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) && strpos( $column, 'from_media' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_fr', $en );
+		$this->pll_admin->filters_columns->post_column( 'language_fr', $en );
 		$this->assertEmpty( ob_get_clean() );
 	}
 
 	function test_translated_post() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// with capability
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_fr', $en );
+		$this->pll_admin->filters_columns->post_column( 'language_fr', $en );
 		$this->assertNotFalse( strpos( ob_get_clean(), 'pll_icon_edit' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
 		ob_start();
-		self::$polylang->filters_columns->post_column( 'language_fr', $en );
+		$this->pll_admin->filters_columns->post_column( 'language_fr', $en );
 		$this->assertEmpty( ob_get_clean() );
 	}
 
@@ -121,8 +124,8 @@ class Columns_Test extends PLL_UnitTestCase {
 
 		$term_id = $this->factory->category->create();
 
-		$column_en = self::$polylang->filters_columns->term_column( '', 'language_en', $term_id );
-		$column_fr = self::$polylang->filters_columns->term_column( '', 'language_fr', $term_id );
+		$column_en = $this->pll_admin->filters_columns->term_column( '', 'language_en', $term_id );
+		$column_fr = $this->pll_admin->filters_columns->term_column( '', 'language_fr', $term_id );
 		$this->assertEmpty( $column_en );
 		$this->assertEmpty( $column_fr );
 	}
@@ -132,15 +135,15 @@ class Columns_Test extends PLL_UnitTestCase {
 		$GLOBALS['taxonomy'] = 'category';
 
 		$en = $this->factory->category->create();
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		// with capability
-		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $en );
+		$column = $this->pll_admin->filters_columns->term_column( '', 'language_en', $en );
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) && strpos( $column, 'href' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
-		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $en );
+		$column = $this->pll_admin->filters_columns->term_column( '', 'language_en', $en );
 		$this->assertNotFalse( strpos( $column, 'pll_column_flag' ) );
 		$this->assertFalse( strpos( $column, 'href' ) );
 	}
@@ -152,7 +155,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$default = (int) get_option( 'default_category' );
 
 		// with capability
-		$column = self::$polylang->filters_columns->term_column( '', 'language_en', $default );
+		$column = $this->pll_admin->filters_columns->term_column( '', 'language_en', $default );
 		$this->assertNotFalse( strpos( $column, 'default_cat' ) );
 	}
 
@@ -161,16 +164,16 @@ class Columns_Test extends PLL_UnitTestCase {
 		$GLOBALS['taxonomy'] = 'category';
 
 		$en = $this->factory->category->create();
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		// with capability
-		$column = self::$polylang->filters_columns->term_column( '', 'language_fr', $en );
+		$column = $this->pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 		$this->assertNotFalse( strpos( $column, 'pll_icon_add' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
 		ob_start();
-		self::$polylang->filters_columns->term_column( '', 'language_fr', $en );
+		$this->pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 		$this->assertEmpty( ob_get_clean() );
 	}
 
@@ -179,21 +182,21 @@ class Columns_Test extends PLL_UnitTestCase {
 		$GLOBALS['taxonomy'] = 'category';
 
 		$en = $this->factory->category->create();
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$fr = $this->factory->category->create();
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// with capability
-		$column = self::$polylang->filters_columns->term_column( '', 'language_fr', $en );
+		$column = $this->pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 		$this->assertNotFalse( strpos( $column, 'pll_icon_edit' ) );
 
 		// without capability
 		wp_set_current_user( 0 );
 		ob_start();
-		self::$polylang->filters_columns->term_column( '', 'language_fr', $en );
+		$this->pll_admin->filters_columns->term_column( '', 'language_fr', $en );
 		$this->assertEmpty( ob_get_clean() );
 	}
 
@@ -212,7 +215,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	function test_add_post_column_with_filter() {
-		self::$polylang->filter_lang = self::$polylang->model->get_language( 'en' );
+		$this->pll_admin->filter_lang = self::$model->get_language( 'en' );
 		$list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => 'edit.php' ) );
 		list( $columns, $hidden, $sortable, $primary ) = $list_table->get_column_info();
 		$this->assertNotFalse( array_search( 'language_en', $hidden ) );
@@ -234,7 +237,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	function test_add_term_column_with_filter() {
-		self::$polylang->filter_lang = self::$polylang->model->get_language( 'fr' );
+		$this->pll_admin->filter_lang = self::$model->get_language( 'fr' );
 		$list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => 'edit-tags.php' ) );
 		list( $columns, $hidden, $sortable, $primary ) = $list_table->get_column_info();
 		$this->assertNotFalse( array_search( 'language_fr', $hidden ) );
@@ -243,7 +246,7 @@ class Columns_Test extends PLL_UnitTestCase {
 
 	function test_post_inline_edit() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => 'edit.php' ) );
 		$list_table->prepare_items();

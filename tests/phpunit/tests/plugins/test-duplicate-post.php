@@ -12,7 +12,7 @@ if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 		public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 			parent::wpSetUpBeforeClass( $factory );
 
-			self::$polylang->model->post->registered_post_type( 'post' ); // Important.
+			self::$model->post->registered_post_type( 'post' ); // Important.
 
 			self::create_language( 'en_US' );
 			self::create_language( 'fr_FR' );
@@ -23,12 +23,12 @@ if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 
 		function test_exclude_post_translations() {
 			$en = $this->factory->post->create();
-			self::$polylang->model->post->set_language( $en, 'en' );
+			self::$model->post->set_language( $en, 'en' );
 
 			$fr = $this->factory->post->create();
-			self::$polylang->model->post->set_language( $fr, 'fr' );
+			self::$model->post->set_language( $fr, 'fr' );
 
-			self::$polylang->model->post->save_translations( $en, compact( 'fr' ) );
+			self::$model->post->save_translations( $en, compact( 'fr' ) );
 
 			$post = get_post( $en );
 			duplicate_post_admin_init();
@@ -39,8 +39,8 @@ if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 			$this->assertContains( 'post_translations', get_option( 'duplicate_post_taxonomies_blacklist' ) );
 
 			// Check the integration.
-			$this->assertEquals( $fr, self::$polylang->model->post->get( $en, 'fr' ) );
-			$this->assertFalse( self::$polylang->model->post->get( $new_id, 'fr' ) );
+			$this->assertEquals( $fr, self::$model->post->get( $en, 'fr' ) );
+			$this->assertFalse( self::$model->post->get( $new_id, 'fr' ) );
 		}
 	}
 }

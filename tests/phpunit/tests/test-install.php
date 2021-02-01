@@ -44,21 +44,21 @@ class Install_Test extends PLL_UnitTestCase {
 		do_action( 'activate_' . POLYLANG_BASENAME );
 
 		self::create_language( 'en_US' );
-		$english = self::$polylang->model->get_language( 'en' );
+		$english = self::$model->get_language( 'en' );
 
 		self::create_language( 'fr_FR' );
 
 		// Posts and terms
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$post_translations_groups = get_terms( 'post_translations' );
 		$post_group = reset( $post_translations_groups );
