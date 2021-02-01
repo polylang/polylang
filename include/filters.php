@@ -36,6 +36,11 @@ class PLL_Filters {
 	public $curlang;
 
 	/**
+	 * @var PLL_Widgets_Filters
+	 */
+	public $widgets_filters;
+
+	/**
 	 * Constructor: setups filters
 	 *
 	 * @since 1.4
@@ -47,6 +52,7 @@ class PLL_Filters {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
 		$this->curlang = &$polylang->curlang;
+		$this->widgets_filters = new PLL_Widgets_Filters( $polylang );
 
 		// Deletes our cache for sticky posts when the list is updated.
 		add_action( 'update_option_sticky_posts', array( $this, 'delete_sticky_posts_cache' ) );
