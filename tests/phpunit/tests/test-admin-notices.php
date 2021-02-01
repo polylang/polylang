@@ -1,9 +1,16 @@
 <?php
 
-class Admin_Notice_Test extends PLL_UnitTestCase {
+class Admin_Notices_Test extends PLL_UnitTestCase {
 
 	static function wp_redirect() {
 		throw new Exception( 'Call to wp_redirect' );
+	}
+
+	function setUp() {
+		parent::setUp();
+
+		$links_model = self::$model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
 	function test_hide_notice() {
@@ -24,8 +31,8 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 			'_pll_notice_nonce' => wp_create_nonce( 'review' ),
 		);
 
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
-		self::$polylang->admin_notices->hide_notice();
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
+		$this->pll_admin->admin_notices->hide_notice();
 
 		$this->assertEquals( array( 'review' ), get_user_meta( 1, 'pll_dismissed_notices', true ) );
 	}
@@ -37,7 +44,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -53,8 +60,8 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		self::$polylang->options['first_activation'] = 1; // Some very old timestanp
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		$this->pll_admin->options['first_activation'] = 1; // Some very old timestanp
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -75,8 +82,8 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		self::$polylang->options['first_activation'] = 1; // Some very old timestanp
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		$this->pll_admin->options['first_activation'] = 1; // Some very old timestanp
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -93,8 +100,8 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		self::$polylang->options['first_activation'] = 1; // Some very old timestanp
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		$this->pll_admin->options['first_activation'] = 1; // Some very old timestanp
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -113,7 +120,7 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		if ( ! defined( 'WOOCOMMERCE_VERSION' ) ) {
 			define( 'WOOCOMMERCE_VERSION', '3.4.0' );
 		}
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -129,14 +136,12 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
-
 		if ( class_exists( 'PLL_Lingotek' ) ) {
 			$l = new PLL_Lingotek();
 			$l->init();
 		}
 
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();
 		do_action( 'admin_notices' );
@@ -153,8 +158,8 @@ class Admin_Notice_Test extends PLL_UnitTestCase {
 		wp_set_current_user( 1 );
 		update_user_meta( 1, 'pll_dismissed_notices', array( 'test_notice' ) );
 
-		self::$polylang->admin_notices = new PLL_Admin_Notices( self::$polylang );
-		$this->assertTrue( self::$polylang->admin_notices->is_dismissed( 'test_notice' ) );
+		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
+		$this->assertTrue( $this->pll_admin->admin_notices->is_dismissed( 'test_notice' ) );
 		$this->assertEquals( array( 'test_notice' ), get_option( 'pll_dismissed_notices' ) );
 		if ( is_multisite() ) {
 			$this->assertEquals( array( 'test_notice' ), get_user_meta( 1, 'pll_dismissed_notices', true ) );

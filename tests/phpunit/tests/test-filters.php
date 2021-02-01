@@ -15,51 +15,52 @@ class Filters_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang;
 
-		self::$polylang->model->post->register_taxonomy(); // needs this for 'lang' query var
+		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
 	}
 
 	function setUp() {
 		parent::setUp();
 
-		self::$polylang->filters_links = new PLL_Frontend_Filters_Links( self::$polylang );
+		$links_model = self::$model->get_links_model();
+		$this->frontend = new PLL_Frontend( $links_model );
+		new PLL_Frontend_Filters_Links( $this->frontend );
 	}
 
 	function test_get_pages() {
 		foreach ( $this->factory->post->create_many( 3, array( 'post_type' => 'page' ) ) as $page ) {
-			self::$polylang->model->post->set_language( $page, 'en' );
+			self::$model->post->set_language( $page, 'en' );
 		}
 
 		foreach ( $this->factory->post->create_many( 3, array( 'post_type' => 'page' ) ) as $page ) {
-			self::$polylang->model->post->set_language( $page, 'fr' );
+			self::$model->post->set_language( $page, 'fr' );
 		}
 
 		// one post for good measure
 		$p = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $p, 'fr' );
+		self::$model->post->set_language( $p, 'fr' );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		new PLL_Frontend_Filters( self::$polylang );
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		new PLL_Frontend_Filters( $this->frontend );
 
 		// request all pages
 		$pages = get_pages();
 		$fr_page_ids = $pages = wp_list_pluck( $pages, 'ID' );
-		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $pages ), 'slug' );
+		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $pages ), 'slug' );
 		$this->assertCount( 3, $pages );
 		$this->assertEquals( array( 'fr' ), array_values( array_unique( $languages ) ) );
 
 		// request less pages than exist
 		$pages = get_pages( array( 'number' => 2 ) );
 		$pages = wp_list_pluck( $pages, 'ID' );
-		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $pages ), 'slug' );
+		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $pages ), 'slug' );
 		$this->assertCount( 2, $pages );
 		$this->assertEquals( array( 'fr' ), array_values( array_unique( $languages ) ) );
 
 		// request more pages than exist
 		$pages = get_pages( array( 'number' => 20 ) );
 		$pages = wp_list_pluck( $pages, 'ID' );
-		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $pages ), 'slug' );
+		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $pages ), 'slug' );
 		$this->assertCount( 3, $pages );
 		$this->assertEquals( array( 'fr' ), array_values( array_unique( $languages ) ) );
 
@@ -74,26 +75,25 @@ class Filters_Test extends PLL_UnitTestCase {
 
 	function test_get_posts() {
 		foreach ( $this->factory->post->create_many( 3, array() ) as $p ) {
-			self::$polylang->model->post->set_language( $p, 'en' );
+			self::$model->post->set_language( $p, 'en' );
 		}
 
 		foreach ( $this->factory->post->create_many( 3, array() ) as $p ) {
-			self::$polylang->model->post->set_language( $p, 'fr' );
+			self::$model->post->set_language( $p, 'fr' );
 		}
 
 		$de = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $de, 'de' );
+		self::$model->post->set_language( $de, 'de' );
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->init();
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$this->frontend->init();
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$posts = get_posts( array( 'fields' => 'ids' ) );
-		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $posts ), 'slug' );
+		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $posts ), 'slug' );
 		$this->assertCount( 3, $posts );
 		$this->assertEquals( array( 'fr' ), array_values( array_unique( $languages ) ) );
 
 		$posts = get_posts( array( 'fields' => 'ids', 'lang' => 'en' ) );
-		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $posts ), 'slug' );
+		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $posts ), 'slug' );
 		$this->assertCount( 3, $posts );
 		$this->assertEquals( array( 'en' ), array_values( array_unique( $languages ) ) );
 
@@ -106,16 +106,15 @@ class Filters_Test extends PLL_UnitTestCase {
 
 	function test_sticky_posts() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 		stick_post( $en );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 		stick_post( $fr );
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->init();
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$this->frontend->init();
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$sticky = get_option( 'sticky_posts' );
 		$this->assertCount( 1, $sticky );
 		$this->assertEquals( $fr, reset( $sticky ) ); // the sticky post
@@ -123,15 +122,15 @@ class Filters_Test extends PLL_UnitTestCase {
 
 	function test_get_comments() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 		$en = $this->factory->comment->create( array( 'comment_post_ID' => $en, 'comment_approved' => '1' ) );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 		$fr = $this->factory->comment->create( array( 'comment_post_ID' => $fr, 'comment_approved' => '1' ) );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		new PLL_Frontend_Filters( self::$polylang );
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		new PLL_Frontend_Filters( $this->frontend );
 		$comments = get_comments();
 		$this->assertCount( 1, $comments );
 		$this->assertEquals( get_comment( $fr )->comment_ID, reset( $comments )->comment_ID );
@@ -144,16 +143,16 @@ class Filters_Test extends PLL_UnitTestCase {
 
 	function test_get_terms() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$de = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
-		self::$polylang->model->term->set_language( $de, 'de' );
+		self::$model->term->set_language( $de, 'de' );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		new PLL_CRUD_Terms( self::$polylang );
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		new PLL_CRUD_Terms( $this->frontend );
 		$terms = get_terms( 'post_tag', array( 'fields' => 'ids', 'hide_empty' => false ) );
 		$this->assertEqualSets( array( $fr ), $terms );
 
@@ -174,15 +173,15 @@ class Filters_Test extends PLL_UnitTestCase {
 		for ( $i = 1; $i <= 3; $i++ ) {
 			$m = 2 * $i - 1;
 			$en[ $i ] = $this->factory->post->create( array( 'post_date' => "2012-0$m-01 12:00:00" ) );
-			self::$polylang->model->post->set_language( $en[ $i ], 'en' );
+			self::$model->post->set_language( $en[ $i ], 'en' );
 
 			$m = 2 * $i;
 			$fr[ $i ] = $this->factory->post->create( array( 'post_date' => "2012-0$m-01 12:00:00" ) );
-			self::$polylang->model->post->set_language( $fr[ $i ], 'fr' );
+			self::$model->post->set_language( $fr[ $i ], 'fr' );
 		}
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		new PLL_Frontend_Filters( self::$polylang );
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		new PLL_Frontend_Filters( $this->frontend );
 		$this->go_to( get_permalink( $fr[2] ) );
 
 		$this->assertEquals( get_post( $fr[1] ), get_previous_post() );
@@ -204,8 +203,8 @@ class Filters_Test extends PLL_UnitTestCase {
 			$p[ $m ] = $this->factory->post->create( array( 'post_type' => 'cpt', 'post_date' => "2012-0$m-01 12:00:00" ) );
 		}
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		new PLL_Frontend_Filters( self::$polylang );
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		new PLL_Frontend_Filters( $this->frontend );
 		$this->go_to( get_permalink( $p[2] ) );
 
 		$this->assertEquals( get_post( $p[1] ), get_previous_post() );
@@ -220,84 +219,84 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_language_attributes_for_valid_locale() {
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
-		new PLL_Frontend_Filters( self::$polylang );
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		new PLL_Frontend_Filters( $this->frontend );
 
 		$this->expectOutputString( 'lang="fr-FR"' );
 		language_attributes();
 	}
 
 	function test_language_attributes_for_invalid_locale() {
-		self::$polylang->curlang = self::$polylang->model->get_language( 'de' );
-		new PLL_Frontend_Filters( self::$polylang );
+		$this->frontend->curlang = self::$model->get_language( 'de' );
+		new PLL_Frontend_Filters( $this->frontend );
 
 		$this->expectOutputString( 'lang="de-DE"' );
 		language_attributes();
 	}
 
 	function test_save_post() {
-		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$this->frontend->posts = new PLL_CRUD_Posts( $this->frontend );
+		$this->frontend->curlang = self::$model->get_language( 'en' );
 
 		$post_id = $this->factory->post->create();
-		$this->assertEquals( 'en', self::$polylang->model->post->get_language( $post_id )->slug );
+		$this->assertEquals( 'en', self::$model->post->get_language( $post_id )->slug );
 
 		$_REQUEST['lang'] = 'fr';
 		$post_id = $this->factory->post->create();
-		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $post_id )->slug );
+		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
 	function test_save_page_with_parent() {
-		self::$polylang->posts = new PLL_CRUD_Posts( self::$polylang );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$this->frontend->posts = new PLL_CRUD_Posts( $this->frontend );
+		$this->frontend->curlang = self::$model->get_language( 'en' );
 
 		$parent = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $parent, 'fr' );
+		self::$model->post->set_language( $parent, 'fr' );
 		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_parent' => $parent ) );
 
-		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $parent )->slug );
-		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $post_id )->slug );
+		$this->assertEquals( 'fr', self::$model->post->get_language( $parent )->slug );
+		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
 	function test_save_term() {
-		new PLL_CRUD_Terms( self::$polylang );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		new PLL_CRUD_Terms( $this->frontend );
+		$this->frontend->curlang = self::$model->get_language( 'en' );
 
 		$term_id = $this->factory->category->create();
-		$this->assertEquals( 'en', self::$polylang->model->term->get_language( $term_id )->slug );
+		$this->assertEquals( 'en', self::$model->term->get_language( $term_id )->slug );
 
 		$_REQUEST['lang'] = 'fr';
 		$term_id = $this->factory->category->create();
-		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $term_id )->slug );
+		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
 	}
 
 	function test_save_category_with_parent() {
-		new PLL_CRUD_Terms( self::$polylang );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		new PLL_CRUD_Terms( $this->frontend );
+		$this->frontend->curlang = self::$model->get_language( 'en' );
 
 		$parent = $this->factory->category->create();
-		self::$polylang->model->term->set_language( $parent, 'fr' );
+		self::$model->term->set_language( $parent, 'fr' );
 		$term_id = $this->factory->category->create( array( 'parent' => $parent ) );
 
-		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $parent )->slug );
-		$this->assertEquals( 'fr', self::$polylang->model->term->get_language( $term_id )->slug );
+		$this->assertEquals( 'fr', self::$model->term->get_language( $parent )->slug );
+		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
 	}
 
 	function test_get_pages_language_filter() {
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->filters = new PLL_Filters( self::$polylang );
+		$this->frontend->filters = new PLL_Filters( $this->frontend );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$this->frontend->curlang = self::$model->get_language( 'en' );
 		$pages = get_pages();
 		$this->assertCount( 1, $pages );
 		$this->assertEquals( $en, reset( $pages )->ID );
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$pages = get_pages();
 		$this->assertCount( 1, $pages );
 		$this->assertEquals( $fr, reset( $pages )->ID );
@@ -316,7 +315,7 @@ class Filters_Test extends PLL_UnitTestCase {
 
 	function test_site_title_in_password_change_email() {
 		// Important to use a language available in DIR_TESTDATA . '/languages/', otherwise switch_to_locale() doesn't switch.
-		$language = self::$polylang->model->get_language( 'es' );
+		$language = self::$model->get_language( 'es' );
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mi sitio' ) );
 		$_mo->export_to_db( $language );
@@ -325,8 +324,8 @@ class Filters_Test extends PLL_UnitTestCase {
 		$user_id = self::factory()->user->create();
 		update_user_meta( $user_id, 'locale', 'es_ES' );
 
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
-		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
+		$this->frontend = new PLL_Admin( $this->frontend->links_model );
+		$this->frontend->filters = new PLL_Admin_Filters( $this->frontend );
 
 		$userdata = array(
 			'ID'        => $user_id,
@@ -342,7 +341,7 @@ class Filters_Test extends PLL_UnitTestCase {
 
 	function _action_pre_get_posts() {
 		$terms = get_terms( 'post_tag', array( 'hide_empty' => false ) );
-		$language = self::$polylang->model->term->get_language( $terms[0]->term_id );
+		$language = self::$model->term->get_language( $terms[0]->term_id );
 
 		$this->assertCount( 1, $terms );
 		$this->assertEquals( 'fr', $language->slug );
@@ -351,14 +350,13 @@ class Filters_Test extends PLL_UnitTestCase {
 	// Bug fixed in 2.3.5
 	function test_get_terms_inside_query() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->init();
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$this->frontend->init();
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		add_action( 'pre_get_posts', array( $this, '_action_pre_get_posts' ) );
 		$posts = get_posts();
 	}

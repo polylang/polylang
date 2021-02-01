@@ -14,44 +14,44 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang;
 
-		self::$polylang->model->post->register_taxonomy(); // Needed for post counting
+		self::$model->post->register_taxonomy(); // Needed for post counting
 	}
 
 	function setUp() {
 		parent::setUp();
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->init();
+		$links_model = self::$model->get_links_model();
+		$this->frontend = new PLL_Frontend( $links_model );
+		$this->frontend->init();
 
 		// De-activate cache for links
-		self::$polylang->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		self::$polylang->links->cache->method( 'get' )->willReturn( false );
+		$this->frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		$this->frontend->links->cache->method( 'get' )->willReturn( false );
 
 		$this->switcher = new PLL_Switcher();
 	}
 
 	function test_the_languages_raw() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
 		$de = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $de, 'de' );
+		self::$model->post->set_language( $de, 'de' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
-		self::$polylang->links->curlang = self::$polylang->model->get_language( 'en' );
+		$this->frontend->links->curlang = self::$model->get_language( 'en' );
 		$this->go_to( get_permalink( $en ) );
 
 		// Raw with default arguments
 		$args = array(
 			'raw' => 1,
 		);
-		$arr = $this->switcher->the_languages( self::$polylang->links, $args );
+		$arr = $this->switcher->the_languages( $this->frontend->links, $args );
 
 		$this->assertCount( 3, $arr );
 		$this->assertTrue( $arr['de']['no_translation'] );
@@ -74,7 +74,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 				'display_names_as'       => 'slug',
 			)
 		);
-		$arr = $this->switcher->the_languages( self::$polylang->links, $args );
+		$arr = $this->switcher->the_languages( $this->frontend->links, $args );
 
 		$this->assertCount( 1, $arr ); // Only fr in the array
 		$this->assertEquals( home_url( '?lang=fr' ), $arr['fr']['url'] ); // force_home
@@ -87,7 +87,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 			'raw'     => 1,
 			'post_id' => $en,
 		);
-		$arr = $this->switcher->the_languages( self::$polylang->links, $args );
+		$arr = $this->switcher->the_languages( $this->frontend->links, $args );
 		$this->assertEquals( get_permalink( $fr ), $arr['fr']['url'] );
 	}
 
@@ -96,20 +96,20 @@ class Switcher_Test extends PLL_UnitTestCase {
 	 */
 	function test_list() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
-		self::$polylang->model->clean_languages_cache(); // FIXME for some reason, I need to clear the cache to get an exact count
+		self::$model->clean_languages_cache(); // FIXME for some reason, I need to clear the cache to get an exact count
 
-		self::$polylang->links->curlang = self::$polylang->model->get_language( 'en' );
+		$this->frontend->links->curlang = self::$model->get_language( 'en' );
 		$this->go_to( get_permalink( $en ) );
 
 		$args = array( 'echo' => 0 );
-		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
+		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
 		$doc = new DomDocument();
 		$doc->loadHTML( $switcher );
 		$xpath = new DOMXpath( $doc );
@@ -123,12 +123,12 @@ class Switcher_Test extends PLL_UnitTestCase {
 		// Test echo option
 		$args = array( 'echo' => 1 );
 		ob_start();
-		$this->switcher->the_languages( self::$polylang->links, $args );
+		$this->switcher->the_languages( $this->frontend->links, $args );
 		$this->assertNotEmpty( ob_get_clean() );
 
 		// Bug fixed in 2.6.3: No span when showing only flags
 		$args = array( 'show_names' => 0, 'show_flags' => 1, 'echo' => 0 );
-		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
+		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
 		$doc = new DomDocument();
 		$doc->loadHTML( $switcher );
 		$xpath = new DOMXpath( $doc );
@@ -137,7 +137,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 		// A span is used when shwoing names and flags
 		$args = array( 'show_names' => 1, 'show_flags' => 1, 'echo' => 0 );
-		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
+		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
 		$doc = new DomDocument();
 		$doc->loadHTML( $switcher );
 		$xpath = new DOMXpath( $doc );
@@ -146,7 +146,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 		// Bug fixed in 2.6.10.
 		$args = array( 'hide_current' => 1, 'echo' => 0 );
-		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
+		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
 		$doc = new DomDocument();
 		$doc->loadHTML( $switcher );
 		$xpath = new DOMXpath( $doc );
@@ -159,23 +159,23 @@ class Switcher_Test extends PLL_UnitTestCase {
 	 */
 	function test_dropdown() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
-		self::$polylang->model->clean_languages_cache(); // FIXME for some reason, I need to clear the cache to get an exact count
+		self::$model->clean_languages_cache(); // FIXME for some reason, I need to clear the cache to get an exact count
 
-		self::$polylang->links->curlang = self::$polylang->model->get_language( 'en' );
+		$this->frontend->links->curlang = self::$model->get_language( 'en' );
 		$this->go_to( get_permalink( $en ) );
 
 		$args = array(
 			'dropdown' => 1,
 			'echo'     => 0,
 		);
-		$switcher = $this->switcher->the_languages( self::$polylang->links, $args );
+		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
 		$switcher = mb_convert_encoding( $switcher, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
 		$doc = new DomDocument();
 		$doc->loadHTML( $switcher );

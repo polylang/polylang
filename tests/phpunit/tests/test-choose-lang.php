@@ -8,13 +8,20 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
-		self::$polylang->model->post->register_taxonomy();
+		self::$model->post->register_taxonomy();
 	}
 
 	function tearDown() {
 		self::delete_all_languages();
 
 		parent::tearDown();
+	}
+
+	function setUp() {
+		parent::setUp();
+
+		$links_model = self::$model->get_links_model();
+		$this->frontend = new PLL_Frontend( $links_model );
 	}
 
 	function test_browser_preferred_language() {
@@ -24,11 +31,11 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 
 		// Only languages with posts will be accepted
 		$post_id = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_id, 'en' );
+		self::$model->post->set_language( $post_id, 'en' );
 		$post_id = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_id, 'de' );
+		self::$model->post->set_language( $post_id, 'de' );
 
-		$choose_lang = new PLL_Choose_Lang_Url( self::$polylang );
+		$choose_lang = new PLL_Choose_Lang_Url( $this->frontend );
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'fr,fr-fr;q=0.8,en-us;q=0.5,en;q=0.3';
 		$this->assertEquals( 'en', $choose_lang->get_preferred_browser_language() );
@@ -61,13 +68,13 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 
 		// only languages with posts will be accepted
 		$post_id = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_id, 'en' );
+		self::$model->post->set_language( $post_id, 'en' );
 		$post_id = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_id, 'us' );
+		self::$model->post->set_language( $post_id, 'us' );
 
-		self::$polylang->model->clean_languages_cache(); // FIXME foor some reason the cache is not clean before (resulting in wrong count)
+		self::$model->clean_languages_cache(); // FIXME foor some reason the cache is not clean before (resulting in wrong count)
 
-		$choose_lang = new PLL_Choose_Lang_Url( self::$polylang );
+		$choose_lang = new PLL_Choose_Lang_Url( $this->frontend );
 
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-gb;q=0.8,en-us;q=0.5,en;q=0.3';
 		$this->assertEquals( 'en', $choose_lang->get_preferred_browser_language() );

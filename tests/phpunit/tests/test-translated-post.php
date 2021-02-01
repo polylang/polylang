@@ -15,51 +15,51 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 
 	function test_post_language() {
 		$post_id = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $post_id, 'fr' );
+		self::$model->post->set_language( $post_id, 'fr' );
 
-		$this->assertEquals( 'fr', self::$polylang->model->post->get_language( $post_id )->slug );
+		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
 	function test_post_translation() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
 		$de = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $de, 'de' );
+		self::$model->post->set_language( $de, 'de' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 
-		$this->assertEquals( self::$polylang->model->post->get_translation( $en, 'en' ), $en );
-		$this->assertEquals( self::$polylang->model->post->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$polylang->model->post->get_translation( $fr, 'en' ), $en );
-		$this->assertEquals( self::$polylang->model->post->get_translation( $en, 'fr' ), $fr );
-		$this->assertEquals( self::$polylang->model->post->get_translation( $de, 'fr' ), $fr );
+		$this->assertEquals( self::$model->post->get_translation( $en, 'en' ), $en );
+		$this->assertEquals( self::$model->post->get_translation( $fr, 'fr' ), $fr );
+		$this->assertEquals( self::$model->post->get_translation( $fr, 'en' ), $en );
+		$this->assertEquals( self::$model->post->get_translation( $en, 'fr' ), $fr );
+		$this->assertEquals( self::$model->post->get_translation( $de, 'fr' ), $fr );
 	}
 
 	function test_delete_post_translation() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
 		$de = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $de, 'de' );
+		self::$model->post->set_language( $de, 'de' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
-		self::$polylang->model->post->delete_translation( $fr );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
+		self::$model->post->delete_translation( $fr );
 
-		$this->assertEquals( self::$polylang->model->post->get_translation( $fr, 'fr' ), $fr );
-		$this->assertEquals( self::$polylang->model->post->get_translation( $en, 'de' ), $de );
-		$this->assertEquals( self::$polylang->model->post->get_translation( $de, 'en' ), $en );
+		$this->assertEquals( self::$model->post->get_translation( $fr, 'fr' ), $fr );
+		$this->assertEquals( self::$model->post->get_translation( $en, 'de' ), $de );
+		$this->assertEquals( self::$model->post->get_translation( $de, 'en' ), $en );
 
-		$this->assertFalse( self::$polylang->model->post->get_translation( $en, 'fr' ) ); // fails
-		$this->assertFalse( self::$polylang->model->post->get_translation( $fr, 'en' ) );
-		$this->assertFalse( self::$polylang->model->post->get_translation( $fr, 'de' ) );
-		$this->assertFalse( self::$polylang->model->post->get_translation( $de, 'fr' ) ); // fails
+		$this->assertFalse( self::$model->post->get_translation( $en, 'fr' ) ); // fails
+		$this->assertFalse( self::$model->post->get_translation( $fr, 'en' ) );
+		$this->assertFalse( self::$model->post->get_translation( $fr, 'de' ) );
+		$this->assertFalse( self::$model->post->get_translation( $de, 'fr' ) ); // fails
 	}
 
 	function test_current_user_can_synchronize() {
@@ -71,49 +71,49 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 		wp_set_current_user( $author );
 
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$this->assertTrue( self::$polylang->model->post->current_user_can_synchronize( $en ) );
-		$this->assertTrue( self::$polylang->model->post->current_user_can_synchronize( $fr ) );
+		$this->assertTrue( self::$model->post->current_user_can_synchronize( $en ) );
+		$this->assertTrue( self::$model->post->current_user_can_synchronize( $fr ) );
 
 		wp_set_current_user( $editor );
 
-		$this->assertTrue( self::$polylang->model->post->current_user_can_synchronize( $en ) );
-		$this->assertTrue( self::$polylang->model->post->current_user_can_synchronize( $fr ) );
+		$this->assertTrue( self::$model->post->current_user_can_synchronize( $en ) );
+		$this->assertTrue( self::$model->post->current_user_can_synchronize( $fr ) );
 
 		$de = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $de, 'de' );
+		self::$model->post->set_language( $de, 'de' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
 
 		wp_set_current_user( $editor );
 
-		$this->assertTrue( self::$polylang->model->post->current_user_can_synchronize( $en ) );
-		$this->assertTrue( self::$polylang->model->post->current_user_can_synchronize( $fr ) );
-		$this->assertTrue( self::$polylang->model->post->current_user_can_synchronize( $de ) );
+		$this->assertTrue( self::$model->post->current_user_can_synchronize( $en ) );
+		$this->assertTrue( self::$model->post->current_user_can_synchronize( $fr ) );
+		$this->assertTrue( self::$model->post->current_user_can_synchronize( $de ) );
 
 		wp_set_current_user( $author );
 
-		$this->assertFalse( self::$polylang->model->post->current_user_can_synchronize( $en ) );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_synchronize( $fr ) );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_synchronize( $de ) );
+		$this->assertFalse( self::$model->post->current_user_can_synchronize( $en ) );
+		$this->assertFalse( self::$model->post->current_user_can_synchronize( $fr ) );
+		$this->assertFalse( self::$model->post->current_user_can_synchronize( $de ) );
 	}
 
 	function test_current_user_can_read() {
 		$post_id = $this->factory->post->create( array( 'post_status' => 'draft' ) );
 
 		wp_set_current_user( 0 );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 
 		wp_set_current_user( 1 );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
-		$this->assertTrue( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 
 		$post_id = $this->factory->post->create(
 			array(
@@ -123,21 +123,21 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 		);
 
 		wp_set_current_user( 0 );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 
 		wp_set_current_user( 1 );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
-		$this->assertTrue( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 
 		$post_id = $this->factory->post->create( array( 'post_status' => 'private' ) );
 
 		wp_set_current_user( 0 );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id ) );
-		$this->assertFalse( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
+		$this->assertFalse( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 
 		wp_set_current_user( 1 );
-		$this->assertTrue( self::$polylang->model->post->current_user_can_read( $post_id ) );
-		$this->assertTrue( self::$polylang->model->post->current_user_can_read( $post_id, 'edit' ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $post_id ) );
+		$this->assertTrue( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 	}
 }

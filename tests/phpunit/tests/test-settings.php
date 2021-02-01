@@ -21,7 +21,7 @@ class Settings_Test extends PLL_UnitTestCase {
 
 	// bug introduced and fixed in 1.9alpha
 	function test_edit_language() {
-		$lang = self::$polylang->model->get_language( 'fr' );
+		$lang = self::$model->get_language( 'fr' );
 
 		// setup globals
 		$_GET['page'] = 'mlang';
@@ -36,8 +36,9 @@ class Settings_Test extends PLL_UnitTestCase {
 		set_site_transient( 'available_translations', array( 'fr_FR' => '' ) );
 
 		ob_start();
-		self::$polylang = new PLL_Settings( self::$polylang->links_model );
-		self::$polylang->languages_page();
+		$links_model = self::$model->get_links_model();
+		$pll_env = new PLL_Settings( $links_model );
+		$pll_env->languages_page();
 		$out = ob_get_clean();
 		$out = mb_convert_encoding( $out, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
 		$doc = new DomDocument();
@@ -65,7 +66,8 @@ class Settings_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
 		set_current_screen();
 
-		self::$polylang = new PLL_Settings( self::$polylang->links_model );
+		$links_model = self::$model->get_links_model();
+		$pll_env = new PLL_Settings( $links_model );
 		do_action( 'load-toplevel_page_mlang' );
 
 		ob_start();
@@ -76,7 +78,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $out );
 
 		ob_start();
-		self::$polylang->model->post->set_language( $id, 'en' );
+		self::$model->post->set_language( $id, 'en' );
 		do_action( 'admin_notices' );
 		$out = ob_get_clean();
 
@@ -90,7 +92,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $out );
 
 		ob_start();
-		self::$polylang->model->term->set_language( $id, 'en' );
+		self::$model->term->set_language( $id, 'en' );
 		do_action( 'admin_notices' );
 		$out = ob_get_clean();
 
@@ -100,10 +102,11 @@ class Settings_Test extends PLL_UnitTestCase {
 	// Bug introduced in 2.1-dev
 	function test_display_settings_errors() {
 		add_settings_error( 'test', 'test', 'ERROR' );
-		self::$polylang = new PLL_Settings( self::$polylang->links_model );
+		$links_model = self::$model->get_links_model();
+		$pll_env = new PLL_Settings( $links_model );
 
 		ob_start();
-		self::$polylang->languages_page();
+		$pll_env->languages_page();
 		$out = ob_get_clean();
 
 		$this->assertNotFalse( strpos( $out, 'ERROR' ) );

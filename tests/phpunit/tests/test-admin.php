@@ -17,8 +17,9 @@ class Admin_Test extends PLL_UnitTestCase {
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar
 
 		$this->go_to( home_url( '/wp-admin/edit.php' ) );
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
-		self::$polylang->init();
+		$links_model = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$pll_admin->init();
 
 		_wp_admin_bar_init();
 		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
@@ -37,8 +38,9 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 	function _test_scripts( $scripts ) {
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
-		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
+		$links_model = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
 
 		$GLOBALS['wp_styles'] = new WP_Styles();
 		$GLOBALS['wp_scripts'] = new WP_Scripts();

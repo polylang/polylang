@@ -15,7 +15,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		copy( dirname( __FILE__ ) . '/../data/wpml-config.xml', WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
 	static function wpTearDownAfterClass() {
@@ -23,6 +22,12 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 		unlink( WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 		rmdir( WP_CONTENT_DIR . '/polylang' );
+	}
+
+	function setUp() {
+		parent::setUp();
+
+		$this->links_model = self::$model->get_links_model();
 	}
 
 	function prepare_options( $method = 'ARRAY' ) {
@@ -73,7 +78,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function translate_options( $slug ) {
-		$language = self::$polylang->model->get_language( $slug );
+		$language = self::$model->get_language( $slug );
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
 		$mo->add_entry( $mo->make_entry( 'val', "val_$slug" ) );
@@ -101,22 +106,22 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	function test_cf() {
 		wp_set_current_user( 1 ); // To pass current_user_can_synchronize() test
 
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		$en = $from = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $from, 'en' );
+		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'quantity', 1 ); // copy
 		add_post_meta( $from, 'custom-title', 'title' ); // translate
 		add_post_meta( $from, 'bg-color', '#23282d' ); // copy-once
 		add_post_meta( $from, 'date-added', 2007 ); // ignore
 
 		$fr = $to = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $to, 'fr' );
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->set_language( $to, 'fr' );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// copy
-		$sync = new PLL_Admin_Sync( self::$polylang );
+		$sync = new PLL_Admin_Sync( $pll_admin );
 		$sync->post_metas->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( 1, get_post_meta( $to, 'quantity', true ) );
@@ -148,22 +153,22 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function test_custom_term_field() {
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		$en = $from = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $from, 'en' );
+		self::$model->term->set_language( $from, 'en' );
 		add_term_meta( $from, 'term_meta_A', 'A' ); // copy
 		add_term_meta( $from, 'term_meta_B', 'B' ); // translate
 		add_term_meta( $from, 'term_meta_C', 'C' ); // ignore
 		add_term_meta( $from, 'term_meta_D', 'D' ); // copy-once
 
 		$fr = $to = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $to, 'fr' );
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->set_language( $to, 'fr' );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// Copy
-		$sync = new PLL_Admin_Sync( self::$polylang );
+		$sync = new PLL_Admin_Sync( $pll_admin );
 		$sync->term_metas->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( 'A', get_term_meta( $to, 'term_meta_A', true ) );
@@ -195,15 +200,15 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function test_cpt() {
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		$frontend = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		register_post_type( 'book' ); // translated
 		register_post_type( 'dvd' ); // untranslated
-		self::$polylang->model->cache->clean( 'post_types' );
+		self::$model->cache->clean( 'post_types' );
 
-		$this->assertTrue( self::$polylang->model->is_translated_post_type( 'book' ) );
-		$this->assertFalse( self::$polylang->model->is_translated_post_type( 'dvd' ) );
+		$this->assertTrue( self::$model->is_translated_post_type( 'book' ) );
+		$this->assertFalse( self::$model->is_translated_post_type( 'dvd' ) );
 
 		// settings
 		$post_types = get_post_types( array( 'public' => true, '_builtin' => false ) );
@@ -217,16 +222,16 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	function test_tax() {
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		$frontend = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		register_post_type( 'book' ); // translated
 		register_taxonomy( 'genre', 'book' ); // translated
 		register_taxonomy( 'publisher', 'book' ); // untranslated
-		self::$polylang->model->cache->clean( 'taxonomies' );
+		self::$model->cache->clean( 'taxonomies' );
 
-		$this->assertTrue( self::$polylang->model->is_translated_taxonomy( 'genre' ) );
-		$this->assertFalse( self::$polylang->model->is_translated_taxonomy( 'publisher' ) );
+		$this->assertTrue( self::$model->is_translated_taxonomy( 'genre' ) );
+		$this->assertFalse( self::$model->is_translated_taxonomy( 'publisher' ) );
 
 		// settings
 		$taxonomies = get_taxonomies( array( 'public' => true, '_builtin' => false ) );
@@ -244,10 +249,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->prepare_options( 'ARRAY' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
-		$GLOBALS['polylang'] = self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		$GLOBALS['polylang'] = $frontend = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined' );
 
 		$options = get_option( 'my_plugins_options' );
@@ -274,10 +279,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->prepare_options( 'OBJECT' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
-		$GLOBALS['polylang'] = self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		$GLOBALS['polylang'] = $frontend = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
-		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$frontend->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined' );
 
 		$options = get_option( 'my_plugins_options' );
@@ -299,7 +304,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 
 	function _test_register_string() {
-		$GLOBALS['polylang'] = self::$polylang = new PLL_Admin( self::$polylang->links_model );
+		$GLOBALS['polylang'] = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		$strings = wp_list_pluck( PLL_Admin_Strings::get_strings(), 'string' );

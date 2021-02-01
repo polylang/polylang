@@ -5,7 +5,6 @@ if ( version_compare( $GLOBALS['wp_version'], '5.2', '>=' ) && file_exists( DIR_
 	require_once DIR_TESTROOT . '/../jetpack/functions.opengraph.php';
 
 	class Jetpack_Test extends PLL_UnitTestCase {
-
 		/**
 		 * @param WP_UnitTest_Factory $factory
 		 */
@@ -22,23 +21,24 @@ if ( version_compare( $GLOBALS['wp_version'], '5.2', '>=' ) && file_exists( DIR_
 			require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
 			require_once DIR_TESTROOT . '/../jetpack/jetpack.php';
 
-			$GLOBALS['polylang'] = &self::$polylang; // we still use the global $polylang
-			self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-			self::$polylang->init();
+			$links_model = self::$model->get_links_model();
+			$this->frontend = new PLL_Frontend( $links_model );
+			$this->frontend->init();
+			$GLOBALS['polylang'] = &$this->frontend; // we still use the global $polylang
 		}
 
 		function test_opengraph() {
 			// create posts to get something  on home page
 			$en = $this->factory->post->create();
-			self::$polylang->model->post->set_language( $en, 'en' );
+			self::$model->post->set_language( $en, 'en' );
 
 			$fr = $this->factory->post->create();
-			self::$polylang->model->post->set_language( $fr, 'fr' );
+			self::$model->post->set_language( $fr, 'fr' );
 
 			$this->go_to( home_url( '/?lang=fr' ) );
-			self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+			$this->frontend->curlang = self::$model->get_language( 'fr' );
 
-			do_action_ref_array( 'pll_init', array( &self::$polylang ) );
+			do_action_ref_array( 'pll_init', array( &$this->frontend ) );
 
 			ob_start();
 			jetpack_og_tags();

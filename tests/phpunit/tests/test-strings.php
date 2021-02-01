@@ -12,7 +12,12 @@ class Strings_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang; // The WPML API uses the global $polylang
+	}
+
+	function setUp() {
+		parent::setUp();
+
+		$this->links_model = self::$model->get_links_model();
 	}
 
 	// copied from WP widgets tests
@@ -33,8 +38,8 @@ class Strings_Test extends PLL_UnitTestCase {
 	}
 
 	function test_base_strings() {
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
-		self::$polylang->init();
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$pll_admin->init();
 		$strings = PLL_Admin_Strings::get_strings();
 		$names = wp_list_pluck( $strings, 'name' );
 		$this->assertCount( 4, array_intersect( array( 'blogname', 'blogdescription', 'date_format', 'time_format' ), $names ) );
@@ -46,7 +51,9 @@ class Strings_Test extends PLL_UnitTestCase {
 		wp_widgets_init();
 		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
 
-		new PLL_Admin_Filters_Widgets_Options( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$pll_admin->init();
+		new PLL_Admin_Filters_Widgets_Options( $pll_admin );
 
 		$_POST = array(
 			'widget-id'     => 'search-2',
@@ -72,7 +79,9 @@ class Strings_Test extends PLL_UnitTestCase {
 		wp_widgets_init();
 		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
 
-		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$pll_admin->init();
+		new PLL_Admin_Filters( $pll_admin );
 
 		$_POST = array(
 			'widget-id'     => 'search-2',
@@ -97,7 +106,7 @@ class Strings_Test extends PLL_UnitTestCase {
 	// Test #63
 	function test_html_string() {
 		update_option( 'use_balanceTags', 1 ); // To break malformed html in versions < 2.1
-		self::$polylang->curlang = $language = self::$polylang->model->get_language( 'fr' );
+		$language = self::$model->get_language( 'fr' );
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( '<p>test</p>', '<p>test fr</p>' ) );
 		$_mo->add_entry( $_mo->make_entry( '<p>malformed<p>', '<p>malformed fr<p>' ) );
@@ -106,6 +115,9 @@ class Strings_Test extends PLL_UnitTestCase {
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
 		$GLOBALS['l10n']['pll_string'] = &$mo;
+
+		$frontend = new PLL_Frontend( $this->links_model );
+		$frontend->curlang = $language;
 		do_action( 'pll_language_defined' );
 
 		$this->assertEquals( '<p>test fr</p>', pll__( '<p>test</p>' ) );
@@ -115,7 +127,7 @@ class Strings_Test extends PLL_UnitTestCase {
 	// Bug introduced in 2.1 and fixed in 2.1.1
 	// Test #94
 	function test_slashed_string() {
-		self::$polylang->curlang = $language = self::$polylang->model->get_language( 'fr' );
+		$language = self::$model->get_language( 'fr' );
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( '\slashed', '\slashed fr' ) );
 		$_mo->add_entry( $_mo->make_entry( '\\slashed', '\\slashed fr' ) );
@@ -125,6 +137,9 @@ class Strings_Test extends PLL_UnitTestCase {
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
 		$GLOBALS['l10n']['pll_string'] = &$mo;
+
+		$frontend = new PLL_Frontend( $this->links_model );
+		$frontend->curlang = $language;
 		do_action( 'pll_language_defined' );
 
 		$this->assertEquals( '\slashed fr', pll__( '\slashed' ) );
@@ -136,11 +151,11 @@ class Strings_Test extends PLL_UnitTestCase {
 		// Strings translations
 		$mo = new PLL_MO();
 		$mo->add_entry( $mo->make_entry( 'test', 'test en' ) );
-		$mo->export_to_db( self::$polylang->model->get_language( 'en' ) );
+		$mo->export_to_db( self::$model->get_language( 'en' ) );
 
 		$mo = new PLL_MO();
 		$mo->add_entry( $mo->make_entry( 'test', 'test fr' ) );
-		$mo->export_to_db( self::$polylang->model->get_language( 'fr' ) );
+		$mo->export_to_db( self::$model->get_language( 'fr' ) );
 
 		// Reset $wp_locale_switcher to add fr_FR in the list of available languages
 		add_filter( 'get_available_languages', array( $this, '_return_fr_FR' ) );
@@ -148,8 +163,8 @@ class Strings_Test extends PLL_UnitTestCase {
 		$GLOBALS['wp_locale_switcher'] = new WP_Locale_Switcher();
 		$GLOBALS['wp_locale_switcher']->init();
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
-		self::$polylang->curlang = self::$polylang->model->get_language( 'en' );
+		$frontend = new PLL_Frontend( $this->links_model );
+		$frontend->curlang = self::$model->get_language( 'en' );
 		do_action( 'pll_language_defined' );
 
 		$this->assertEquals( 'test en', pll__( 'test' ) );

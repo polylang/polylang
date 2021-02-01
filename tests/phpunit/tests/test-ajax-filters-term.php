@@ -20,19 +20,22 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		remove_all_actions( 'admin_init' ); // To save (a lot of) time as WP will attempt to update core and plugins.
 
 		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests.
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
-		self::$polylang->filters_term = new PLL_Admin_Filters_Term( self::$polylang );
-		self::$polylang->terms = new PLL_CRUD_Terms( self::$polylang );
-		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
+
+		$links_model = self::$model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
+
+		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
+		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 	}
 
 	public function test_term_lang_choice_in_edit_category() {
 		// Possible parents.
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		// The category.
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
@@ -47,7 +50,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		);
 
 		$_REQUEST['lang'] = $_POST['lang'];
-		self::$polylang->set_current_language();
+		$this->pll_admin->set_current_language();
 
 		try {
 			$this->_handleAjax( 'term_lang_choice' );
@@ -77,10 +80,10 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 	public function test_term_lang_choice_in_new_tag() {
 		// Possible parents.
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		// We need posts for the tag cloud.
 		$this->factory->post->create( array( 'tags_input' => 'test' ) );
@@ -98,7 +101,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		);
 
 		$_REQUEST['lang'] = $_POST['lang'];
-		self::$polylang->set_current_language();
+		$this->pll_admin->set_current_language();
 
 		try {
 			$this->_handleAjax( 'term_lang_choice' );
@@ -128,18 +131,18 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 
 	public function test_terms_not_translated() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$searched = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test searched' ) );
-		self::$polylang->model->term->set_language( $searched, 'en' );
+		self::$model->term->set_language( $searched, 'en' );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$_GET = array(
 			'action'               => 'pll_terms_not_translated',
@@ -152,7 +155,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 			'term_id'              => $fr,
 		);
 
-		self::$polylang->set_current_language();
+		$this->pll_admin->set_current_language();
 
 		try {
 			$this->_handleAjax( 'pll_terms_not_translated' );
@@ -166,9 +169,9 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 
 		// Translate the current term.
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// The search must contain the current translation.
 		try {
@@ -184,12 +187,12 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 
 	public function test_format_not_translated_term() {
 		$parent = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'Parent' ) );
-		self::$polylang->model->term->set_language( $parent, 'en' );
+		self::$model->term->set_language( $parent, 'en' );
 
 		$child = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'Child', 'parent' => $parent ) );
-		self::$polylang->model->term->set_language( $child, 'en' );
+		self::$model->term->set_language( $child, 'en' );
 
-		self::$polylang->set_current_language();
+		$this->pll_admin->set_current_language();
 
 		// A term with a parent.
 		$_GET = array(

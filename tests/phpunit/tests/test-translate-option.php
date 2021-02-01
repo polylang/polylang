@@ -13,11 +13,24 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang;
+	}
+
+	function setUp() {
+		parent::setUp();
+
+		$links_model = self::$model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
+		$GLOBALS['polylang'] = &$this->pll_admin;
+	}
+
+	function tearDown() {
+		parent::tearDown();
+
+		unset( $GLOBALS['polylang'] );
 	}
 
 	protected function add_string_translations( $lang, $translations ) {
-		$language = self::$polylang->model->get_language( $lang );
+		$language = self::$model->get_language( $lang );
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
 		foreach ( $translations as $original => $translation ) {
@@ -28,8 +41,6 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 	protected function prepare_option_simple() {
 		add_option( 'my_option', 'val' );
-
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		new PLL_Translate_Option( 'my_option' );
 	}
 
@@ -42,16 +53,16 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		}
 
 		// Quick check.
-		self::$polylang->load_strings_translations( 'en' );
+		$this->pll_admin->load_strings_translations( 'en' );
 		$this->assertEquals( 'val_en', get_option( 'my_option' ) );
-		self::$polylang->load_strings_translations( 'fr' );
+		$this->pll_admin->load_strings_translations( 'fr' );
 		$this->assertEquals( 'val_fr', get_option( 'my_option' ) );
 
 		update_option( 'my_option', 'new_val' );
 
-		self::$polylang->load_strings_translations( 'en' );
+		$this->pll_admin->load_strings_translations( 'en' );
 		$this->assertEquals( 'val_en', get_option( 'my_option' ) );
-		self::$polylang->load_strings_translations( 'fr' );
+		$this->pll_admin->load_strings_translations( 'fr' );
 		$this->assertEquals( 'val_fr', get_option( 'my_option' ) );
 	}
 
@@ -60,12 +71,12 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->add_string_translations( 'en', array( 'val' => 'val' ) );
 
 		// Quick check.
-		self::$polylang->load_strings_translations( 'en' );
+		$this->pll_admin->load_strings_translations( 'en' );
 		$this->assertEquals( 'val', get_option( 'my_option' ) );
 
 		update_option( 'my_option', 'new_val' );
 
-		self::$polylang->load_strings_translations( 'en' );
+		$this->pll_admin->load_strings_translations( 'en' );
 		$this->assertEquals( 'new_val', get_option( 'my_option' ) );
 	}
 
@@ -73,10 +84,10 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->prepare_option_simple();
 		$this->add_string_translations( 'en', array( 'val' => 'val_en' ) );
 
-		PLL()->curlang = self::$polylang->model->get_language( 'en' );
+		PLL()->curlang = self::$model->get_language( 'en' );
 		update_option( 'my_option', 'val_en' );
 
-		$language = self::$polylang->model->get_language( 'en' );
+		$language = self::$model->get_language( 'en' );
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
 		$this->assertArrayHasKey( 'val', $mo->entries );
@@ -106,7 +117,6 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 			),
 		);
 
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		new PLL_Translate_Option( 'my_options', $keys );
 	}
 
@@ -116,7 +126,6 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 			'options_*'     => 1,
 		);
 
-		self::$polylang = new PLL_Admin( self::$polylang->links_model );
 		new PLL_Translate_Option( 'my_options', $keys );
 	}
 
@@ -155,7 +164,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 		// Quick check.
 		foreach ( $languages as $lang ) {
-			self::$polylang->load_strings_translations( $lang );
+			$this->pll_admin->load_strings_translations( $lang );
 			$options = get_option( 'my_options' );
 			$this->assertEquals( 'val1_' . $lang, $options['option_name_1'] );
 			$this->assertEquals( 'val11_' . $lang, $options['options_group_1']['sub_option_name_11'] );
@@ -164,7 +173,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->update_option_with_new_val( 'ARRAY' );
 
 		foreach ( $languages as $lang ) {
-			self::$polylang->load_strings_translations( $lang );
+			$this->pll_admin->load_strings_translations( $lang );
 			$options = get_option( 'my_options' );
 			$this->assertEquals( 'val1_' . $lang, $options['option_name_1'] );
 			$this->assertEquals( 'val11_' . $lang, $options['options_group_1']['sub_option_name_11'] );
@@ -190,7 +199,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$languages = array( 'en', 'fr' );
 
 		foreach ( $languages as $lang ) {
-			self::$polylang->load_strings_translations( $lang );
+			$this->pll_admin->load_strings_translations( $lang );
 			$options = get_option( 'my_options' );
 			$this->assertEquals( 'val1_' . $lang, $options->option_name_1 );
 			$this->assertEquals( 'val11_' . $lang, $options->options_group_1->sub_option_name_11 );
@@ -222,7 +231,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 		$this->update_option_with_new_val( 'ARRAY' );
 
-		self::$polylang->load_strings_translations( 'en' );
+		$this->pll_admin->load_strings_translations( 'en' );
 		$options = get_option( 'my_options' );
 		$this->assertEquals( 'new_val1', $options['option_name_1'] );
 		$this->assertEquals( 'new_val11', $options['options_group_1']['sub_option_name_11'] );
@@ -245,7 +254,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 		$this->update_option_with_new_val( 'OBJECT' );
 
-		self::$polylang->load_strings_translations( 'en' );
+		$this->pll_admin->load_strings_translations( 'en' );
 		$options = get_option( 'my_options' );
 		$this->assertEquals( 'new_val1', $options->option_name_1 );
 		$this->assertEquals( 'new_val11', $options->options_group_1->sub_option_name_11 );
@@ -277,10 +286,10 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 			$options = json_decode( json_encode( $options ) ); // Recursively converts the arrays to objects.
 		}
 
-		PLL()->curlang = self::$polylang->model->get_language( 'en' );
+		PLL()->curlang = self::$model->get_language( 'en' );
 		update_option( 'my_options', $options );
 
-		$language = self::$polylang->model->get_language( 'en' );
+		$language = self::$model->get_language( 'en' );
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
 		$this->assertArrayHasKey( 'val1', $mo->entries );

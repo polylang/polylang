@@ -22,6 +22,12 @@ if [[ ! -f "$WP_CORE_DIR/wp-content/themes/twentyfourteen/style.css" ]]; then
 	unzip -q $TMPDIR/downloads/twentyfourteen.zip -d $WP_CORE_DIR/wp-content/themes
 fi
 
+# Install Twenty Seventeen
+if [[ ! -f "$WP_CORE_DIR/wp-content/themes/twentyseventeen/style.css" ]]; then
+	download https://downloads.wordpress.org/theme/twentyseventeen.zip $TMPDIR/downloads/twentyseventeen.zip
+	unzip -q $TMPDIR/downloads/twentyseventeen.zip -d $WP_CORE_DIR/wp-content/themes
+fi
+
 # Install WordPress Importer
 download https://downloads.wordpress.org/plugin/wordpress-importer.zip $TMPDIR/downloads/wordpress-importer.zip
 unzip -q $TMPDIR/downloads/wordpress-importer.zip -d  $TMPDIR/downloads/

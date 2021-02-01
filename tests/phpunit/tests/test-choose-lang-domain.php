@@ -13,7 +13,6 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
-		$GLOBALS['polylang'] = &self::$polylang;
 	}
 
 	function setUp() {
@@ -29,24 +28,24 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 			'de' => 'http://example.de',
 		);
 
-		self::$polylang->options['hide_default'] = 1;
-		self::$polylang->options['force_lang'] = 3;
-		self::$polylang->options['domains'] = $this->hosts;
+		self::$model->options['hide_default'] = 1;
+		self::$model->options['force_lang'] = 3;
+		self::$model->options['domains'] = $this->hosts;
 
 		// switch to pretty permalinks
 		$wp_rewrite->init();
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
-		self::$polylang->model->post->register_taxonomy(); // needs this for 'lang' query var
+		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
 		create_initial_taxonomies();
 
-		self::$polylang->links_model = self::$polylang->model->get_links_model();
+		$links_model = self::$model->get_links_model();
 
 		// flush rules
 		$wp_rewrite->flush_rules();
 
-		self::$polylang = new PLL_Frontend( self::$polylang->links_model );
+		$this->frontend = new PLL_Frontend( $links_model );
 	}
 
 	function tearDown() {
@@ -87,9 +86,9 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 
 		// insert Polylang specificity
 		unset( $GLOBALS['wp_actions']['pll_language_defined'] );
-		unset( self::$polylang->curlang );
+		unset( $this->frontend->curlang );
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $url, PHP_URL_HOST );
-		self::$polylang->init();
+		$this->frontend->init();
 
 		// restart copy paste of WP_UnitTestCase::go_to
 		$GLOBALS['wp_the_query'] = new WP_Query();
@@ -102,35 +101,35 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 
 	function test_home_latest_posts() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( $this->hosts['fr'] );
-		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', $this->frontend->curlang->slug );
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
 		$this->assertEquals( array( get_post( $fr ) ), $GLOBALS['wp_query']->posts ); // bug introduced in 1.8.0.1, fixed in 1.8.0.2
-		$this->assertEquals( trailingslashit( $this->hosts['en'] ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'en' ) ) );
+		$this->assertEquals( trailingslashit( $this->hosts['en'] ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 
 		$this->go_to( $this->hosts['en'] );
-		$this->assertEquals( 'en', self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
-		$this->assertEquals( trailingslashit( $this->hosts['fr'] ), self::$polylang->links->get_translation_url( self::$polylang->model->get_language( 'fr' ) ) );
+		$this->assertEquals( trailingslashit( $this->hosts['fr'] ), $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) );
 	}
 
 	function test_single_post() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( $this->hosts['fr'] . '/essai/' );
-		$this->assertEquals( 'fr', self::$polylang->curlang->slug );
+		$this->assertEquals( 'fr', $this->frontend->curlang->slug );
 
 		$this->go_to( $this->hosts['en'] . '/test/' );
-		$this->assertEquals( 'en', self::$polylang->curlang->slug );
+		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 }

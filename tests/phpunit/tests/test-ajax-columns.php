@@ -20,18 +20,21 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		remove_all_actions( 'admin_init' ); // to save ( a lot of ) time as WP will attempt to update core and plugins
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
-		self::$polylang->links = new PLL_Admin_Links( self::$polylang );
-		self::$polylang->filters_columns = new PLL_Admin_Filters_Columns( self::$polylang );
+
+		$links_model = self::$model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
 	}
 
 	function test_post_translations() {
 		$en = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $en, 'en' );
+		self::$model->post->set_language( $en, 'en' );
 
 		$fr = $this->factory->post->create();
-		self::$polylang->model->post->set_language( $fr, 'fr' );
+		self::$model->post->set_language( $fr, 'fr' );
 
-		self::$polylang->model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$_POST = array(
 			'action'       => 'pll_update_post_rows',
@@ -86,12 +89,12 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 
 	function test_term_translations() {
 		$en = $this->factory->category->create();
-		self::$polylang->model->term->set_language( $en, 'en' );
+		self::$model->term->set_language( $en, 'en' );
 
 		$fr = $this->factory->category->create();
-		self::$polylang->model->term->set_language( $fr, 'fr' );
+		self::$model->term->set_language( $fr, 'fr' );
 
-		self::$polylang->model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$_POST = array(
 			'action'       => 'pll_update_term_rows',
