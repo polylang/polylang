@@ -29,13 +29,13 @@ class Flags_Test extends PLL_UnitTestCase {
 	function test_default_flag() {
 		$lang = self::$polylang->model->get_language( 'en' );
 		$this->assertEquals( plugins_url( '/flags/us.png', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
-		$this->assertEquals( 1, preg_match( '#<img src="data:image\/png;base64,(.+)" title="English" alt="English" width="16" height="11" style="(.+)" \/>#', $lang->get_display_flag() ) );
+		$this->assertEquals( 1, preg_match( '#<img src="data:image\/png;base64,(.+)" alt="English" width="16" height="11" style="(.+)" \/>#', $lang->get_display_flag() ) );
 	}
 
 	function test_custom_flag() {
 		$lang = self::$polylang->model->get_language( 'fr' );
 		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->get_display_flag_url() );
-		$this->assertEquals( '<img src="/wp-content/polylang/fr_FR.png" title="Français" alt="Français" />', $lang->get_display_flag() );
+		$this->assertEquals( '<img src="/wp-content/polylang/fr_FR.png" alt="Français" />', $lang->get_display_flag() );
 	}
 
 	/*
