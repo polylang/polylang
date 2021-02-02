@@ -29,4 +29,13 @@ class PLL_Widgets_Filters_Admin extends PLL_Widgets_Filters {
 		}
 	}
 
+	public function widget_update_callback($instance, $new_instance, $old_instance, $widget)
+	{
+		$key = $this->get_language_key($widget);
+		if ( ! empty( $_POST[$key] ) ) {
+			$new_instance[$key] = sanitize_key( $_POST[ $key ] );
+		}
+		return parent::widget_update_callback($instance, $new_instance, $old_instance, $widget);
+	}
+
 }
