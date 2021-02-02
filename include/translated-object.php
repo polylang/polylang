@@ -114,7 +114,7 @@ abstract class PLL_Translated_Object {
 
 		$term = get_object_term_cache( $object_id, $taxonomy );
 
-		if ( false === $term ) {
+		if ( empty( $term ) ) {
 			// Query language and translations at the same time.
 			$taxonomies = array( $this->tax_language, $this->tax_translations );
 
