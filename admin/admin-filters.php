@@ -19,9 +19,6 @@ class PLL_Admin_Filters extends PLL_Filters {
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
-		remove_action( 'in_widget_form', array( $this->widgets_filters, 'in_widget_form' ) );
-		remove_action( 'widget_update_callback', array( $this->widgets_filters, 'widget_update_callback' ) );
-		$this->widgets_filters = new PLL_Widgets_Filters_Admin( $polylang );
 
 		// Language management for users
 		add_action( 'personal_options_update', array( $this, 'personal_options_update' ) );
