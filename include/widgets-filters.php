@@ -48,7 +48,7 @@ class PLL_Widgets_Filters {
 			),
 			-1,
 			array(
-				'name' => $this->get_language_key($widget),
+				'name' => $this->get_language_key( $widget ),
 				'class' => 'tags-input pll-lang-choice',
 				'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
 			)
@@ -56,7 +56,7 @@ class PLL_Widgets_Filters {
 
 		printf(
 			'<p><label for="%1$s">%2$s %3$s</label></p>',
-			esc_attr($this->get_language_key($widget)),
+			esc_attr( $this->get_language_key( $widget ) ),
 			esc_html__( 'The widget is displayed for:', 'polylang' ),
 			$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
 		);
@@ -66,8 +66,8 @@ class PLL_Widgets_Filters {
 	 * Called when widget options are saved.
 	 * Saves the language associated to the widget.
 	 *
-	 * @param array     $instance Widget options.
-	 * @param array     $new_instance Not used.
+	 * @param array     $instance The current Widget's options.
+	 * @param array     $new_instance The new Widget's options.
 	 * @param array     $old_instance Not used.
 	 * @param WP_Widget $widget WP_Widget object.
 	 * @return array Widget options.
@@ -75,9 +75,9 @@ class PLL_Widgets_Filters {
 	 * @since 3.0 Moved from PLL_Admin_Filters
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
-		$key = $this->get_language_key($widget);
+		$key = $this->get_language_key( $widget );
 
-		if ( ! empty( $new_instance[ $key ] ) && $lang = $this->model->get_language(  $new_instance[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! empty( $new_instance[ $key ] ) && $lang = $this->model->get_language( $new_instance[ $key ] ) ) {
 			$instance['pll_lang'] = $lang->slug;
 		} else {
 			unset( $instance['pll_lang'] );
@@ -92,8 +92,7 @@ class PLL_Widgets_Filters {
 	 * @param WP_Widget $widget
 	 * @return string
 	 */
-	protected function get_language_key($widget)
-	{
+	protected function get_language_key( $widget ) {
 		return $widget->id . '_lang_choice';
 	}
 }
