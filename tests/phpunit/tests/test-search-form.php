@@ -60,12 +60,28 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 		$form = get_search_form( false ); // don't echo
 
-		$this->assertContains( home_url( '/fr/' ), $form );
+		$this->assertContains( 'action="' . home_url( '/fr/' ) . '"', $form );
 
 		$wp_rewrite->set_permalink_structure( '' );
 		self::$polylang->links_model = self::$polylang->model->get_links_model();
 
 		$form = get_search_form( false );
 		$this->assertContains( '<input type="hidden" name="lang" value="fr" />', $form );
+	}
+
+	/**
+	 * Issue #829
+	 */
+	function test_get_search_form_with_wrong_inital_url() {
+		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
+		$form = '<form role="search" method="get" class="search-form" action="http://example.org/fr/accueil/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="test" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form>';
+		$form = apply_filters( 'get_search_form', $form );
+		$this->assertContains( 'action="' . home_url( '/fr/' ) . '"', $form );
 	}
 }

@@ -49,13 +49,14 @@ class PLL_Frontend_Filters_Search {
 	}
 
 	/**
-	 * Adds the language information in the search form
+	 * Adds the language information in the search form.
+	 *
 	 * Does not work if searchform.php ( prior to WP 3.6 ) is used or if the search form is hardcoded in another template file
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $form Search form
-	 * @return string Modified search form
+	 * @param string $form The search form HTML.
+	 * @return string Modified search form.
 	 */
 	public function get_search_form( $form ) {
 		if ( $form ) {
@@ -63,10 +64,9 @@ class PLL_Frontend_Filters_Search {
 				// Take care to modify only the url in the <form> tag.
 				preg_match( '#<form.+>#', $form, $matches );
 				$old = reset( $matches );
-				$new = preg_replace( '#' . esc_url( $this->links_model->home ) . '\/?#', esc_url( $this->curlang->search_url ), $old );
+				$new = preg_replace( '#action="(.+)"#', 'action="' . esc_url( $this->curlang->search_url ) . '"', $old );
 				$form = str_replace( $old, $new, $form );
-			}
-			else {
+			} else {
 				$form = str_replace( '</form>', '<input type="hidden" name="lang" value="' . esc_attr( $this->curlang->slug ) . '" /></form>', $form );
 			}
 		}
