@@ -6,9 +6,9 @@
 /**
  * Class PLL_Widgets_Filters
  *
- * Registers filters for {@see https://developer.wordpress.org/reference/classes/wp_widget/ WP_Widget} methods.
+ * Add new options to {@see https://developer.wordpress.org/reference/classes/wp_widget/ WP_Widget} and saves them.
  */
-class PLL_Widgets_Filters {
+class PLL_Widgets_Options_Filters {
 
 	/**
 	 * @var PLL_Model

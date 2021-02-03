@@ -5,10 +5,10 @@
 
 /**
  * Class PLL_Widgets_Filters
+ *
+ * Adds new options to {@see https://developer.wordpress.org/reference/classes/wp_widget/ WP_Widget} and saves them.
  */
-class PLL_Widgets_Filters_Admin extends PLL_Widgets_Filters {
-
-
+class PLL_Widgets_Options_Filters_Admin extends PLL_Widgets_Options_Filters {
 	/**
 	 * Modifies the widgets forms to add our language dropdown list.
 	 *
