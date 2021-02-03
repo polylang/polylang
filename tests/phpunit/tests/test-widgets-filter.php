@@ -178,4 +178,23 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$sidebars = wp_get_sidebars_widgets();
 		$this->assertFalse( in_array( 'search-2', $sidebars['sidebar-1'] ) );
 	}
+
+	function test_widgets_language_filter_is_not_displayed_for_page_builders() {
+		set_current_screen( 'post' );
+		$options = PLL_Install::get_default_options();
+		$model = new PLL_Admin_Model( $options );
+		$links_model = new PLL_Links_Default( $model );
+		$polylang = new PLL_Admin( $links_model );
+
+		new PLL_Widgets_Options_Filters_Admin( $polylang );
+
+		$widget_mock = new WP_Widget( 'tes_wiget', 'Test Widget' );
+		$widget_mock->_set( 1 );
+
+		ob_start();
+		do_action_ref_array( 'in_widget_form', array( $widget_mock, array(), array() ) );
+		$widget_form = ob_get_clean();
+
+		$this->assertEmpty( $widget_form );
+	}
 }
