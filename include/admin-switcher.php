@@ -19,7 +19,7 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
 			list( $id, $order, $slug, $locale, $classes, $url ) = $this->init_foreach_language( $language );
 
-			$curlang = $this->polylang->options['default_lang'];
+			$curlang = $links->options['default_lang'];
 
 			$current_lang = $curlang == $slug;
 
@@ -76,7 +76,7 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 			return $elements;
 		}
 
-		list( $out, $args ) = $this->prepare_pll_walker( $this->polylang->options['default_lang']], $args, $elements );
+		list( $out, $args ) = $this->prepare_pll_walker( $links->options['default_lang'], $args, $elements );
 
 		if ( $args['echo'] ) {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
