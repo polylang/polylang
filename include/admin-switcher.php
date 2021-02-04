@@ -19,7 +19,7 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
 			list( $id, $order, $slug, $locale, $classes, $url ) = $this->init_foreach_language( $language );
 
-			$curlang = $args['admin_current_lang'];
+			$curlang = $this->polylang->options['default_lang'];
 
 			$current_lang = $curlang == $slug;
 
@@ -66,13 +66,17 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 
 		$args = $this->filter_arguments_pll_languages( $args, $defaults );
 
+		$args['hide_if_empty'] = 0;
+		// Force not to hide the language for the block preview even if the option is checked.
+		$args['hide_if_no_translation'] = 0;
+
 		$elements = $this->get_elements( $links, $args );
 
 		if ( $args['raw'] ) {
 			return $elements;
 		}
 
-		list( $out, $args ) = $this->prepare_pll_walker( $args['admin_current_lang'], $args, $elements );
+		list( $out, $args ) = $this->prepare_pll_walker( $this->polylang->options['default_lang']], $args, $elements );
 
 		if ( $args['echo'] ) {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
