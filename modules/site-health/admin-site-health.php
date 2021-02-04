@@ -190,10 +190,12 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Get an array with post_type as key and post IDs as value
 	 *
+	 * @param int $limit  Nb of post max to show per post type.
 	 * @return array
 	 *
 	 * @since   3.0
 	 */
+
 	public function get_post_ids_without_lang( $limit = 10 ) {
 		$posts = array();
 		$languages                  = pll_languages_list();
@@ -214,8 +216,8 @@ class PLL_Admin_Site_Health {
 				)
 			);
 
-			foreach ( $posts_ids_with_no_language as $untranslated ){
-				$posts[$untranslated->post_type][] = $untranslated->ID;
+			foreach ( $posts_ids_with_no_language as $untranslated ) {
+				$posts[ $untranslated->post_type ][] = $untranslated->ID;
 			}
 		}
 
