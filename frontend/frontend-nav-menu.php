@@ -17,6 +17,13 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	public $curlang;
 
 	/**
+	 * Reference to the Polylang object.
+	 *
+	 * @var object
+	 */
+	protected $polylang;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.2
@@ -26,6 +33,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
+		$this->polylang = &$polylang;
 		$this->curlang = &$polylang->curlang;
 
 		// Split the language switcher menu item in several language menu items
@@ -107,7 +115,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				/** This filter is documented in include/switcher.php */
 				$options = apply_filters( 'pll_the_languages_args', $options ); // Honor the filter here for 'show_flags', 'show_names' and 'dropdown'.
 
-				$switcher = new PLL_Switcher();
+				$switcher = PLL_Switcher::create( $this->polylang );
 				$args = array_merge( array( 'raw' => 1 ), $options );
 
 				/** @var array */
