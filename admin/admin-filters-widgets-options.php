@@ -6,18 +6,21 @@
 /**
  * Class PLL_Widgets_Filters
  *
+ * @since 3.0
+ *
  * Adds new options to {@see https://developer.wordpress.org/reference/classes/wp_widget/ WP_Widget} and saves them.
  */
 class PLL_Admin_Filters_Widgets_Options extends PLL_Filters_Widgets_Options {
 	/**
 	 * Modifies the widgets forms to add our language dropdown list.
 	 *
+	 * @since 0.3
+	 * @since 3.0 Moved from PLL_Admin_Filters
+	 *
 	 * @param WP_Widget $widget Widget instance.
 	 * @param null      $return Not used.
 	 * @param array     $instance Widget settings.
 	 * @return void
-	 * @since 0.3
-	 * @since 3.0 Moved from PLL_Admin_Filters
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
 		$screen = get_current_screen();
@@ -33,12 +36,13 @@ class PLL_Admin_Filters_Widgets_Options extends PLL_Filters_Widgets_Options {
 	 * Called when widget options are saved.
 	 * Saves the language associated to the widget.
 	 *
+	 * @since 3.0
+	 *
 	 * @param array     $instance The current Widget's options.
 	 * @param array     $new_instance The new Widget's options.
 	 * @param array     $old_instance Not used.
 	 * @param WP_Widget $widget The Widget object.
 	 * @return array The processed Widget options.
-	 * @since 3.0
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
 		$key = $this->get_language_key( $widget );

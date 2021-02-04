@@ -6,6 +6,8 @@
 /**
  * Class PLL_Widgets_Filters
  *
+ * @since 3.0
+ *
  * Add new options to {@see https://developer.wordpress.org/reference/classes/wp_widget/ WP_Widget} and saves them.
  */
 class PLL_Filters_Widgets_Options {
@@ -18,10 +20,10 @@ class PLL_Filters_Widgets_Options {
 	/**
 	 * PLL_Widgets_Filters constructor.
 	 *
+	 * @since 3.0 Moved actions from PLL_Admin_Filters.
+	 *
 	 * @param PLL_Base $polylang
 	 * @return void
-	 *
-	 * @since 3.0 Moved actions from PLL_Admin_Filters.
 	 */
 	public function __construct( $polylang ) {
 		$this->model = $polylang->model;
@@ -31,12 +33,14 @@ class PLL_Filters_Widgets_Options {
 	}
 
 	/**
+	 * Add the language filter field to the widgets options form.
+	 *
+	 * @since 3.0 Moved PLL_Admin_Filters
+	 *
 	 * @param WP_Widget $widget
 	 * @param null      $return
 	 * @param array     $instance
 	 * @return void
-	 *
-	 * @since 3.0 Moved PLL_Admin_Filters
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
 		$dropdown = new PLL_Walker_Dropdown();
@@ -66,13 +70,14 @@ class PLL_Filters_Widgets_Options {
 	 * Called when widget options are saved.
 	 * Saves the language associated to the widget.
 	 *
+	 * @since 0.3
+	 * @since 3.0 Moved from PLL_Admin_Filters
+	 *
 	 * @param array     $instance The current Widget's options.
 	 * @param array     $new_instance The new Widget's options.
 	 * @param array     $old_instance Not used.
 	 * @param WP_Widget $widget WP_Widget object.
 	 * @return array Widget options.
-	 * @since 0.3
-	 * @since 3.0 Moved from PLL_Admin_Filters
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
 		$key = $this->get_language_key( $widget );
@@ -88,6 +93,8 @@ class PLL_Filters_Widgets_Options {
 
 	/**
 	 * Returns the key used by Polylang to pass language data.
+	 *
+	 * @since 3.0
 	 *
 	 * @param WP_Widget $widget
 	 * @return string
