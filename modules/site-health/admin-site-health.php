@@ -190,6 +190,7 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Get an array with post_type as key and post IDs as value
 	 *
+	 * @param int $limit  Nb of post max to show per post type.
 	 * @return array
 	 *
 	 * @since   3.0
@@ -214,8 +215,8 @@ class PLL_Admin_Site_Health {
 				)
 			);
 
-			foreach ( $posts_ids_with_no_language as $untranslated ){
-				$posts[$untranslated->post_type][] = $untranslated->ID;
+			foreach ( $posts_ids_with_no_language as $untranslated ) {
+				$posts[ $untranslated->post_type ][] = $untranslated->ID;
 			}
 		}
 
