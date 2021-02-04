@@ -195,6 +195,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since   3.0
 	 */
+
 	public function get_post_ids_without_lang( $limit = 10 ) {
 		$posts = array();
 		$languages                  = pll_languages_list();
