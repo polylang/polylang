@@ -59,7 +59,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	/**
 	 * @var PLL_Admin_Filters_Widgets_Options
 	 */
-	public $widgets_filters;
+	public $filters_widgets;
 
 	/**
 	 * Setups filters and action needed on all admin pages and on plugins page.
@@ -129,7 +129,7 @@ class PLL_Admin extends PLL_Admin_Base {
 	 */
 	public function add_filters() {
 		$this->filters_sanitization = new PLL_Filters_Sanitization( $this->get_locale_for_sanitization() );
-		$this->widgets_filters = new PLL_Admin_Filters_Widgets_Options( $this );
+		$this->filters_widgets = new PLL_Admin_Filters_Widgets_Options( $this );
 
 		// All these are separated just for convenience and maintainability
 		$classes = array( 'Filters', 'Filters_Columns', 'Filters_Post', 'Filters_Term', 'Nav_Menu', 'Classic_Editor', 'Block_Editor' );
