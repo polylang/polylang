@@ -46,7 +46,7 @@ class Strings_Test extends PLL_UnitTestCase {
 		wp_widgets_init();
 		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
 
-		new PLL_Widgets_Options_Filters_Admin( self::$polylang );
+		new PLL_Admin_Filters_Widgets_Options( self::$polylang );
 
 		$_POST = array(
 			'widget-id'     => 'search-2',

@@ -8,7 +8,7 @@
  *
  * Add new options to {@see https://developer.wordpress.org/reference/classes/wp_widget/ WP_Widget} and saves them.
  */
-class PLL_Widgets_Options_Filters {
+class PLL_Filters_Widgets_Options {
 
 	/**
 	 * @var PLL_Model

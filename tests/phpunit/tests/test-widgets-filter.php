@@ -40,14 +40,14 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		set_current_screen( 'widgets' );
 		wp_widgets_init();
 		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
-		new PLL_Widgets_Options_Filters_Admin( self::$polylang );
+		new PLL_Admin_Filters_Widgets_Options( self::$polylang );
 		ob_start();
 		$wp_widget_search->form_callback( 2 );
 		$this->assertNotFalse( strpos( ob_get_clean(), 'search-2_lang_choice' ) );
 	}
 
 	function update_lang_choice( $widget, $lang ) {
-		new PLL_Widgets_Options_Filters_Admin( self::$polylang );
+		new PLL_Admin_Filters_Widgets_Options( self::$polylang );
 
 		$_POST = array(
 			'widget-id'     => $widget->id,
@@ -186,7 +186,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$links_model = new PLL_Links_Default( $model );
 		$polylang = new PLL_Admin( $links_model );
 
-		new PLL_Widgets_Options_Filters_Admin( $polylang );
+		new PLL_Admin_Filters_Widgets_Options( $polylang );
 
 		$widget_mock = new WP_Widget( 'tes_wiget', 'Test Widget' );
 		$widget_mock->_set( 1 );
