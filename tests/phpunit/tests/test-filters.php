@@ -108,12 +108,12 @@ class Filters_Test extends PLL_UnitTestCase {
 			'tax_query'   => array(
 				array(
 					'taxonomy' => 'language',
-					'terms'    => self::$polylang->model->get_language( 'en' )->term_id,
+					'terms'    => self::$model->get_language( 'en' )->term_id,
 				),
 			),
 		);
 		$posts = get_posts( $args );
-		$languages = wp_list_pluck( array_map( array( self::$polylang->model->post, 'get_language' ), $posts ), 'slug' );
+		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $posts ), 'slug' );
 		$this->assertCount( 3, $posts );
 		$this->assertEquals( array( 'en' ), array_values( array_unique( $languages ) ) );
 	}
