@@ -40,14 +40,14 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		set_current_screen( 'widgets' );
 		wp_widgets_init();
 		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
-		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
+		new PLL_Admin_Filters_Widgets_Options( self::$polylang );
 		ob_start();
 		$wp_widget_search->form_callback( 2 );
 		$this->assertNotFalse( strpos( ob_get_clean(), 'search-2_lang_choice' ) );
 	}
 
 	function update_lang_choice( $widget, $lang ) {
-		self::$polylang->filters = new PLL_Admin_Filters( self::$polylang );
+		new PLL_Admin_Filters_Widgets_Options( self::$polylang );
 
 		$_POST = array(
 			'widget-id'     => $widget->id,
@@ -177,5 +177,24 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		self::$polylang->curlang = self::$polylang->model->get_language( 'fr' );
 		$sidebars = wp_get_sidebars_widgets();
 		$this->assertFalse( in_array( 'search-2', $sidebars['sidebar-1'] ) );
+	}
+
+	function test_widgets_language_filter_is_not_displayed_for_page_builders() {
+		set_current_screen( 'post' );
+		$options = PLL_Install::get_default_options();
+		$model = new PLL_Admin_Model( $options );
+		$links_model = new PLL_Links_Default( $model );
+		$polylang = new PLL_Admin( $links_model );
+
+		new PLL_Admin_Filters_Widgets_Options( $polylang );
+
+		$widget_mock = new WP_Widget( 'tes_wiget', 'Test Widget' );
+		$widget_mock->_set( 1 );
+
+		ob_start();
+		do_action_ref_array( 'in_widget_form', array( $widget_mock, array(), array() ) );
+		$widget_form = ob_get_clean();
+
+		$this->assertEmpty( $widget_form );
 	}
 }

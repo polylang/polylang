@@ -20,10 +20,6 @@ class PLL_Admin_Filters extends PLL_Filters {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
-		// Widgets languages filter
-		add_action( 'in_widget_form', array( $this, 'in_widget_form' ), 10, 3 );
-		add_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ), 10, 4 );
-
 		// Language management for users
 		add_action( 'personal_options_update', array( $this, 'personal_options_update' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'personal_options_update' ) );
@@ -37,70 +33,6 @@ class PLL_Admin_Filters extends PLL_Filters {
 
 		// Add post state for translations of the privacy policy page
 		add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
-	}
-
-	/**
-	 * Modifies the widgets forms to add our language dropdown list.
-	 *
-	 * @since 0.3
-	 *
-	 * @param WP_Widget $widget   Widget instance.
-	 * @param null      $return   Not used.
-	 * @param array     $instance Widget settings.
-	 * @return void
-	 */
-	public function in_widget_form( $widget, $return, $instance ) {
-		$screen = get_current_screen();
-
-		// Test the Widgets screen and the Customizer to avoid displaying the option in page builders
-		// Saving the widget reloads the form. And curiously the action is in $_REQUEST but neither in $_POST, nor in $_GET.
-		if ( ( isset( $screen ) && 'widgets' === $screen->base ) || ( isset( $_REQUEST['action'] ) && 'save-widget' === $_REQUEST['action'] ) || isset( $GLOBALS['wp_customize'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$dropdown = new PLL_Walker_Dropdown();
-
-			$dropdown_html = $dropdown->walk(
-				array_merge(
-					array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
-					$this->model->get_languages_list()
-				),
-				-1,
-				array(
-					'name'     => $widget->id . '_lang_choice',
-					'class'    => 'tags-input pll-lang-choice',
-					'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
-				)
-			);
-
-			printf(
-				'<p><label for="%1$s">%2$s %3$s</label></p>',
-				esc_attr( $widget->id . '_lang_choice' ),
-				esc_html__( 'The widget is displayed for:', 'polylang' ),
-				$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
-			);
-		}
-	}
-
-	/**
-	 * Called when widget options are saved.
-	 * Saves the language associated to the widget.
-	 *
-	 * @since 0.3
-	 *
-	 * @param array     $instance     Widget options.
-	 * @param array     $new_instance Not used.
-	 * @param array     $old_instance Not used.
-	 * @param WP_Widget $widget       WP_Widget object.
-	 * @return array Widget options.
-	 */
-	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
-		$key = $widget->id . '_lang_choice';
-
-		if ( ! empty( $_POST[ $key ] ) && $lang = $this->model->get_language( sanitize_key( $_POST[ $key ] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$instance['pll_lang'] = $lang->slug;
-		} else {
-			unset( $instance['pll_lang'] );
-		}
-
-		return $instance;
 	}
 
 	/**
