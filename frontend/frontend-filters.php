@@ -39,7 +39,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		add_filter( 'getarchives_where', array( $this, 'getarchives_where' ), 10, 2 );
 
 		// Filters the widgets according to the current language
-		add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ) );
 		add_filter( 'sidebars_widgets', array( $this, 'sidebars_widgets' ) );
 
 		if ( $this->options['media_support'] ) {
@@ -132,20 +131,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 */
 	public function getarchives_where( $sql, $r ) {
 		return ! empty( $r['post_type'] ) && $this->model->is_translated_post_type( $r['post_type'] ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
-	}
-
-	/**
-	 * Filters the widgets according to the current language
-	 * Don't display if a language filter is set and this is not the current one
-	 *
-	 * @since 0.3
-	 *
-	 * @param array $instance Widget settings
-	 * @return bool|array false if we hide the widget, unmodified $instance otherwise
-	 */
-	public function widget_display_callback( $instance ) {
-		// FIXME it looks like this filter is useless, now the we use the filter sidebars_widgets
-		return ! empty( $instance['pll_lang'] ) && $instance['pll_lang'] != $this->curlang->slug ? false : $instance;
 	}
 
 	/**
