@@ -1,6 +1,10 @@
 <?php
 
 class Choose_Lang_Test extends PLL_UnitTestCase {
+	/**
+	 * @var PLL_Frontend
+	 */
+	private $frontend;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -20,6 +24,7 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
+		// FIXME: Tests fail when trying to use a new instance of PLL_Admin_Model
 		$links_model = self::$model->get_links_model();
 		$this->frontend = new PLL_Frontend( $links_model );
 	}
@@ -52,7 +57,7 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		self::$model->post->set_language( $post_id, 'de' );
 
-		self::$polylang->model->clean_languages_cache();
+		self::$model->clean_languages_cache();
 
 		$choose_lang = new PLL_Choose_Lang_Url( $this->frontend );
 
