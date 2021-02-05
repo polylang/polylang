@@ -19,7 +19,6 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @BeforeSuite
 	 */
 	public static function prepare_for_suite() {
-		error_reporting( E_ERROR );
 		require_once __DIR__ . '/../../phpunit/includes/bootstrap.php';
 	}
 
@@ -28,8 +27,7 @@ class BrowserPreferredLanguageContext implements Context {
 	 */
 	public static function prepare_for_feature() {
 		PLL_UnitTestCase::setUpBeforeClass();
-		PLL_UnitTestCase::$polylang->model->post->register_taxonomy();
-		error_reporting( E_ALL );
+		PLL_UnitTestCase::$model->post->register_taxonomy();
 	}
 
 	/**
@@ -72,7 +70,7 @@ class BrowserPreferredLanguageContext implements Context {
 		$post_id = $this->test_case->factory->post->create();
 
 		$default_slug = explode( '-', $language_code )[0];
-		PLL_UnitTestCase::$polylang->model->post->set_language( $post_id, empty( $language_slug ) ? $default_slug : $language_slug );
+		PLL_UnitTestCase::$model->post->set_language( $post_id, empty( $language_slug ) ? $default_slug : $language_slug );
 	}
 
 	/**
@@ -104,12 +102,14 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @param string $language_code Language codes as defined by IETF's BCP 47 {@see https://tools.ietf.org/html/bcp47#section-2.1}
 	 */
 	public function polylang_will_remember( $language_code ) {
-		PLL_UnitTestCase::$polylang->model->clean_languages_cache();
+		PLL_UnitTestCase::$model->clean_languages_cache();
 
-		$choose_lang = new PLL_Choose_Lang_Url( PLL_UnitTestCase::$polylang );
+		$polylang = new stdClass();
+		$polylang->model = PLL_UnitTestCase::$model;
+		$choose_lang = new PLL_Choose_Lang_Url( $polylang );
 
 		$preferred_browser_language = $choose_lang->get_preferred_browser_language();
-		$preferred_locale = PLL_UnitTestCase::$polylang->model->get_language( $preferred_browser_language )->locale;
+		$preferred_locale = PLL_UnitTestCase::$model->get_language( $preferred_browser_language )->locale;
 		$expected_locale = Locale::canonicalize( $language_code );
 		PLL_UnitTestCase::assertEquals( $expected_locale, $preferred_locale, "{$preferred_locale} does not match {$expected_locale}" );
 	}
