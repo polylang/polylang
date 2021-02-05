@@ -29,17 +29,7 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
 	public function the_languages( $links, $args = array() ) {
-		$defaults = $this->get_default_the_languages();
-
-		$args = $this->filter_arguments_pll_languages( $args, $defaults );
-
-		$elements = $this->get_elements( $links, $args );
-
-		if ( $args['raw'] ) {
-			return $elements;
-		}
-
-		list( $out, $args ) = $this->prepare_pll_walker( $this->get_current_language( $links ), $args, $elements );
+		list( $out, $args ) = $this->get_the_languages( $links, $args );
 
 		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] ) {
@@ -74,7 +64,7 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 	 *
 	 * @return false|array
 	 */
-	private function manage_url( $classes, $args, $links, $language, $url ) {
+	public function manage_url( $classes, $args, $links, $language, $url ) {
 		if ( null !== $args['post_id'] && ( $tr_id = $links->model->post->get( $args['post_id'], $language ) ) && $links->model->post->current_user_can_read( $tr_id ) ) {
 			$url = get_permalink( $tr_id );
 		} elseif ( null === $args['post_id'] ) {
@@ -101,7 +91,8 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 			return false;
 		}
 
-		$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
+		// If the page is not translated, link to the home page
+		$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url;
 
 		return array( $url, $no_translation, $classes );
 	}
@@ -111,7 +102,17 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 	 *
 	 * @return mixed
 	 */
-	protected function get_current_language( $links ) {
+	public function get_current_language( $links ) {
 		return $links->curlang->slug;
+	}
+
+	/**
+	 * @param $links
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
+	public function get_languages_list( $links, $args ) {
+		return $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) );
 	}
 }

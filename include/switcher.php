@@ -8,7 +8,7 @@
  *
  * @since 1.2
  */
-class PLL_Switcher {
+abstract class PLL_Switcher {
 
 	public static function create( $polylang ) {
 		if ( $polylang instanceof PLL_Frontend ) {
@@ -55,7 +55,7 @@ class PLL_Switcher {
 		$first = true;
 		$out   = array();
 
-		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
+		foreach ( $this->get_languages_list( $links, $args ) as $language ) {
 			list( $id, $order, $slug, $locale, $classes, $url ) = $this->init_foreach_language( $language );
 
 			$curlang = $this->get_current_language( $links );
@@ -69,8 +69,9 @@ class PLL_Switcher {
 				continue;
 			}
 
-			if ( $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first ) ) {
-				list( $classes, $name, $flag, $first ) = $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first );
+			$manage_current_lang = $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first );
+			if ( $manage_current_lang ) {
+				list( $classes, $name, $flag, $first ) = $manage_current_lang;
 			} else {
 				continue;
 			}
@@ -112,7 +113,7 @@ class PLL_Switcher {
 		return array( $classes, $name, $flag, $first );
 	}
 
-	protected function get_default_the_languages() {
+	private function get_default_the_languages() {
 		return array(
 			'dropdown'               => 0, // display as list and not as dropdown
 			'echo'                   => 1, // echoes the list
@@ -131,7 +132,7 @@ class PLL_Switcher {
 		);
 	}
 
-	protected function filter_arguments_pll_languages( $args, $defaults) {
+	private function filter_arguments_pll_languages( $args, $defaults) {
 		$args = wp_parse_args( $args, $defaults );
 
 		/**
@@ -151,7 +152,7 @@ class PLL_Switcher {
 		return $args;
 	}
 
-	protected function prepare_pll_walker( $curlang, $args, $elements ) {
+	private function prepare_pll_walker( $curlang, $args, $elements ) {
 		if ( $args['dropdown'] ) {
 			$args['name'] = 'lang_choice_' . $args['dropdown'];
 			$walker = new PLL_Walker_Dropdown();
@@ -173,4 +174,23 @@ class PLL_Switcher {
 
 		return array( $out, $args );
 	}
+
+	protected function get_the_languages( $links, $args ) {
+		$defaults = $this->get_default_the_languages();
+
+		$args = $this->filter_arguments_pll_languages( $args, $defaults );
+
+		$elements = $this->get_elements( $links, $args );
+
+		if ( $args['raw'] ) {
+			return $elements;
+		}
+
+		return $this->prepare_pll_walker( $this->get_current_language( $links ), $args, $elements );
+	}
+	abstract function get_current_language( $links );
+
+	abstract function get_languages_list( $links, $args );
+
+	abstract function manage_url( $classes, $args, $links, $language, $url );
 }

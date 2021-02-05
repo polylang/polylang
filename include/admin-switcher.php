@@ -30,21 +30,7 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
 	public function the_languages( $links, $args = array() ) {
-		$defaults = $this->get_default_the_languages();
-
-		$args = $this->filter_arguments_pll_languages( $args, $defaults );
-
-		$args['hide_if_empty'] = 0;
-		// Force not to hide the language for the block preview even if the option is checked.
-		$args['hide_if_no_translation'] = 0;
-
-		$elements = $this->get_elements( $links, $args );
-
-		if ( $args['raw'] ) {
-			return $elements;
-		}
-
-		list( $out, $args ) = $this->prepare_pll_walker( $this->get_current_language( $links ), $args, $elements );
+		list( $out, $args ) = $this->get_the_languages( $links, $args );
 
 		if ( $args['echo'] ) {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
@@ -53,32 +39,12 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 		return $out;
 	}
 
-	private function manage_url( $classes, $args, $links, $language, $url ) {
-		if ( null !== $args['post_id'] && ( $tr_id = $links->model->post->get( $args['post_id'], $language ) ) && $links->model->post->current_user_can_read( $tr_id ) ) {
-			$url = get_permalink( $tr_id );
-		}
+	public function manage_url( $classes, $args, $links, $language, $url ) {
+		$no_translation = false;
+		$classes[] = 'no-translation';
 
-		if ( $no_translation = empty( $url ) ) {
-			$classes[] = 'no-translation';
-		}
-
-		/**
-		 * Filter the link in the language switcher
-		 *
-		 * @since 0.7
-		 *
-		 * @param string $url    the link
-		 * @param string $slug   language code
-		 * @param string $locale language locale
-		 */
-		$url = apply_filters( 'pll_the_language_link', $url, $language->slug, $language->locale );
-
-		// Hide if no translation exists
-		if ( empty( $url ) && $args['hide_if_no_translation'] ) {
-			return false;
-		}
-
-		$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
+		// If the page is not translated, link to the home page
+		$url = $links->get_home_url( $language );
 
 		return array( $url, $no_translation, $classes );
 	}
@@ -88,8 +54,17 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 	 *
 	 * @return mixed
 	 */
-	protected function get_current_language( $links ) {
+	public function get_current_language( $links ) {
 		return $links->options['default_lang'];
 	}
 
+	/**
+	 * @param $links
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
+	public function get_languages_list( $links, $args ) {
+		return $links->model->get_languages_list();
+	}
 }
