@@ -31,7 +31,11 @@
 function pll_the_languages( $args = array() ) {
 	$switcher = PLL_Switcher::create( PLL() );
 
-	return $switcher->the_languages( PLL()->links, $args );
+	if ( $switcher ) {
+		return $switcher->the_languages( PLL()->links, $args );
+	} else {
+		return '';
+	}
 }
 
 /**

@@ -16,7 +16,7 @@ class PLL_Switcher {
 		} else if ( $polylang instanceof  PLL_Admin ) {
 			return new PLL_Admin_Switcher();
 		} else {
-			return '';
+			return null;
 		}
 	}
 
@@ -40,6 +40,45 @@ class PLL_Switcher {
 			'hide_if_no_translation' => array( 'string' => __( 'Hides languages with no translation', 'polylang' ), 'default' => 0 ),
 		);
 		return wp_list_pluck( $options, $key );
+	}
+
+	/**
+	 * Get the language elements for use in a walker
+	 *
+	 * @since 1.2
+	 *
+	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
+	 * @param array              $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
+	 * @return array Language switcher elements.
+	 */
+	protected function get_elements( $links, $args ) {
+		$first = true;
+		$out   = array();
+
+		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
+			list( $id, $order, $slug, $locale, $classes, $url ) = $this->init_foreach_language( $language );
+
+			$curlang = $this->get_current_language( $links );
+
+			$current_lang = $curlang == $slug;
+
+			$manage_url = $this->manage_url( $classes, $args, $links, $language, $url );
+			if ( $manage_url ) {
+				list( $url, $no_translation, $classes ) = $manage_url;
+			} else {
+				continue;
+			}
+
+			if ( $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first ) ) {
+				list( $classes, $name, $flag, $first ) = $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first );
+			} else {
+				continue;
+			}
+
+			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes' );
+		}
+
+		return $out;
 	}
 
 	protected function init_foreach_language( $language ) {

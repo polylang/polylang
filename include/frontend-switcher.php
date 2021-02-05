@@ -4,44 +4,6 @@
 class PLL_Frontend_Switcher extends PLL_Switcher {
 
 	/**
-	 * Get the language elements for use in a walker
-	 *
-	 * @since 1.2
-	 *
-	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
-	 * @param array              $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
-	 * @return array Language switcher elements.
-	 */
-	protected function get_elements( $links, $args ) {
-		$first = true;
-		$out   = array();
-
-		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
-			list( $id, $order, $slug, $locale, $classes, $url ) = $this->init_foreach_language( $language );
-
-			$curlang = $links->curlang->slug;
-
-			$current_lang = $curlang == $slug;
-
-			if ( $this->manage_url( $classes, $args, $links, $language, $url ) ) {
-				list( $url, $no_translation, $classes ) = $this->manage_url( $classes, $args, $links, $language, $url );
-			} else {
-				continue;
-			}
-
-			if ( $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first ) ) {
-				list( $classes, $name, $flag, $first ) = $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first );
-			} else {
-				continue;
-			}
-
-			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes' );
-		}
-
-		return $out;
-	}
-
-	/**
 	 * Displays a language switcher
 	 * or returns the raw elements to build a custom language switcher.
 	 *
@@ -77,7 +39,7 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 			return $elements;
 		}
 
-		list( $out, $args ) = $this->prepare_pll_walker( $links->curlang->slug, $args, $elements );
+		list( $out, $args ) = $this->prepare_pll_walker( $this->get_current_language( $links ), $args, $elements );
 
 		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] ) {
@@ -142,5 +104,14 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 		$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
 
 		return array( $url, $no_translation, $classes );
+	}
+
+	/**
+	 * @param $links
+	 *
+	 * @return mixed
+	 */
+	protected function get_current_language( $links ) {
+		return $links->curlang->slug;
 	}
 }

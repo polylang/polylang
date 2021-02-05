@@ -4,38 +4,6 @@
 class PLL_Admin_Switcher extends PLL_Switcher {
 
 	/**
-	 * Get the language elements for use in a walker
-	 *
-	 * @since 1.2
-	 *
-	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
-	 * @param array              $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
-	 * @return array Language switcher elements.
-	 */
-	protected function get_elements( $links, $args ) {
-		$first = true;
-		$out   = array();
-
-		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
-			list( $id, $order, $slug, $locale, $classes, $url ) = $this->init_foreach_language( $language );
-
-			$curlang = $links->options['default_lang'];
-
-			$current_lang = $curlang == $slug;
-
-			if ( $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first ) ) {
-				list( $classes, $name, $flag, $first ) = $this->manage_current_lang_display( $classes, $current_lang, $args, $language, $first );
-			} else {
-				continue;
-			}
-
-			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'classes' );
-		}
-
-		return $out;
-	}
-
-	/**
 	 * Displays a language switcher
 	 * or returns the raw elements to build a custom language switcher.
 	 *
@@ -76,13 +44,52 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 			return $elements;
 		}
 
-		list( $out, $args ) = $this->prepare_pll_walker( $links->options['default_lang'], $args, $elements );
+		list( $out, $args ) = $this->prepare_pll_walker( $this->get_current_language( $links ), $args, $elements );
 
 		if ( $args['echo'] ) {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 
 		return $out;
+	}
+
+	private function manage_url( $classes, $args, $links, $language, $url ) {
+		if ( null !== $args['post_id'] && ( $tr_id = $links->model->post->get( $args['post_id'], $language ) ) && $links->model->post->current_user_can_read( $tr_id ) ) {
+			$url = get_permalink( $tr_id );
+		}
+
+		if ( $no_translation = empty( $url ) ) {
+			$classes[] = 'no-translation';
+		}
+
+		/**
+		 * Filter the link in the language switcher
+		 *
+		 * @since 0.7
+		 *
+		 * @param string $url    the link
+		 * @param string $slug   language code
+		 * @param string $locale language locale
+		 */
+		$url = apply_filters( 'pll_the_language_link', $url, $language->slug, $language->locale );
+
+		// Hide if no translation exists
+		if ( empty( $url ) && $args['hide_if_no_translation'] ) {
+			return false;
+		}
+
+		$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
+
+		return array( $url, $no_translation, $classes );
+	}
+
+	/**
+	 * @param $links
+	 *
+	 * @return mixed
+	 */
+	protected function get_current_language( $links ) {
+		return $links->options['default_lang'];
 	}
 
 }
