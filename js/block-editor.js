@@ -4,8 +4,7 @@
 
 import {
 	initializeLanguageOldValue,
-	initializeConfimationModal,
-	bypassConfirmation
+	initializeConfimationModal
 } from './lib/confirmation-modal';
 
 /**
@@ -67,10 +66,12 @@ jQuery(
 				const select = wp.data.select;
 				const dispatch = wp.data.dispatch;
 				const subscribe = wp.data.subscribe;
-				const emptyPost = bypassConfirmation();
+				const emptyPost = isEmptyPost();
 
 				// Initialize the confirmation dialog box.
-				const { dialogContainer : dialog, dialogResult } = initializeConfimationModal();
+				const confirmationModal = initializeConfimationModal();
+				const { dialogContainer : dialog } = confirmationModal;
+				let { dialogResult } = confirmationModal;
 				// The selected option in the dropdown list.
 				const selectedOption = event.target;
 
@@ -86,9 +87,10 @@ jQuery(
 				if ( $( this ).data( 'old-value' ) !== selectedOption.value && ! emptyPost ) {
 					dialog.dialog( 'open' );
 				} else {
-					// Block editor doesn't allow to save an empty post.
-					// So we must revert the language to the old one because the browser asks if we want to quit the page if we trigger its reloading.
-					selectedOption.value = $( this ).data( 'old-value' );
+					// Update the old language with the new one to be able to compare it in the next changing.
+					// Because the page isn't reloaded in this case.
+					initializeLanguageOldValue();
+					dialogResult = Promise.resolve();
 				}
 
 				dialogResult.then(
@@ -129,6 +131,15 @@ jQuery(
 					() => {} // Do nothing when promise is rejected by clicking the Cancel dialog button.
 				);
 
+				function isEmptyPost() {
+					const editor = wp.data.select( 'core/editor' );
+					const title = editor.getEditedPostAttribute( 'title' ).trim();
+					const content = editor.getEditedPostAttribute( 'content' ).trim();
+					const excerpt = editor.getEditedPostAttribute( 'excerpt' ).trim();
+
+					return ! title && ! content && ! excerpt;
+				}
+
 				/**
 				 * Reload the block editor page for empty posts.
 				 *
@@ -136,7 +147,7 @@ jQuery(
 				 */
 				function reloadPageForEmptyPost( lang ) {
 					// Change the new_lang parameter with the new language value for reloading the page
-					// WPCS location.search is never written in the page, just used to relaoad page ( See line 94 ) with the right value of new_lang
+					// WPCS location.search is never written in the page, just used to reload page with the right value of new_lang
 					// new_lang input is controlled server side in PHP. The value come from the dropdown list of language returned and escaped server side.
 					// Notice that window.location changing triggers automatically page reloading.
 					if ( -1 != location.search.indexOf( 'new_lang' ) ) {

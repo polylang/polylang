@@ -4,8 +4,7 @@
 
 import {
 	initializeLanguageOldValue,
-	initializeConfimationModal,
-	bypassConfirmation
+	initializeConfimationModal
 } from './lib/confirmation-modal';
 
 // tag suggest in metabox
@@ -104,7 +103,6 @@ jQuery(
 		$( '.post_lang_choice' ).on(
 			'change',
 			function( event ) {
-				const emptyPost = bypassConfirmation();
 				// Initialize the confirmation dialog box.
 				const confirmationModal = initializeConfimationModal();
 				const { dialogContainer: dialog } = confirmationModal;
@@ -112,7 +110,7 @@ jQuery(
 				// The selected option in the dropdown list.
 				const selectedOption = event.target;
 
-				if ( $( this ).data( 'old-value' ) !== selectedOption.value && ! emptyPost ) {
+				if ( $( this ).data( 'old-value' ) !== selectedOption.value && ! isEmptyPost() ) {
 					dialog.dialog( 'open' );
 				} else {
 					dialogResult = Promise.resolve();
@@ -201,6 +199,14 @@ jQuery(
 					() => {} // Do nothing when promise is rejected by clicking the Cancel dialog button.
 				);
 				// phpcs:enable PEAR.Functions.FunctionCallSignature.EmptyLine
+
+				function isEmptyPost() {
+					const title = jQuery( 'input#title' ).val();
+					const content = jQuery( 'textarea#content' ).val();
+					const excerpt = jQuery( 'textarea#excerpt' ).val();
+
+					return ! title && ! content && ! excerpt;
+				}
 			}
 		);
 

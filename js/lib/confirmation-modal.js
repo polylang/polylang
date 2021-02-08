@@ -8,20 +8,6 @@ const { __ } = wp.i18n;
 
 const languagesList = jQuery( '#post_lang_choice' );
 
-export const bypassConfirmation = () => {
-	let title = jQuery( 'input#title' ).val();
-	let content = jQuery( 'textarea#content' ).val();
-	let excerpt = jQuery( 'textarea#excerpt' ).val();
-	// Block editor case
-	if ( document.getElementById( 'editor' ) && 'undefined' !== typeof wp.data ) {
-		const editor = wp.data.select( 'core/editor' );
-		title = editor.getEditedPostAttribute( 'title' ).trim();
-		content = editor.getEditedPostAttribute( 'content' ).trim();
-		excerpt = editor.getEditedPostAttribute( 'excerpt' ).trim();
-	}
-	return ! title && ! content && ! excerpt;
-}
-
 // Dialog box for alerting the user about a risky changing.
 export const initializeConfimationModal = () => {
 	// Create dialog container.
