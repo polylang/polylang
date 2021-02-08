@@ -138,26 +138,26 @@ abstract class PLL_Choose_Lang {
 	 * @return string|bool the preferred language slug or false
 	 */
 	public function get_preferred_browser_language() {
-		$accept_langs = new PLL_Accept_Languages_Collection();
-
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
 			$accept_langs = PLL_Accept_Languages_Collection::from_accept_language_header( sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) );
 
 			$accept_langs->bubble_sort();
+
+			$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
+
+			/**
+			 * Filter the list of languages to use to match the browser preferences
+			 *
+			 * @since 1.9.3
+			 *
+			 * @param array $languages array of PLL_Language objects
+			 */
+			$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
+
+			return $accept_langs->find_best_match( $languages );
+		} else {
+			return false;
 		}
-
-		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
-
-		/**
-		 * Filter the list of languages to use to match the browser preferences
-		 *
-		 * @since 1.9.3
-		 *
-		 * @param array $languages array of PLL_Language objects
-		 */
-		$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
-
-		return $accept_langs->find_best_match( $languages );
 	}
 
 	/**
