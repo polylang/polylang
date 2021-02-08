@@ -67,14 +67,14 @@ export const initializeConfimationModal = () => {
 					maxWidth: '100%',
 					open: function( event, ui ) {
 						// Change dialog box position for rtl language
-						// if ( $( 'body' ).hasClass( 'rtl' ) ) {
-						// 	$( this ).parent().css(
-						// 		{
-						// 			right: $( this ).parent().css( 'left' ),
-						// 			left: 'auto'
-						// 		}
-						// 	);
-						// }
+						if ( jQuery( 'body' ).hasClass( 'rtl' ) ) {
+							jQuery( this ).parent().css(
+								{
+									right: jQuery( this ).parent().css( 'left' ),
+									left: 'auto'
+								}
+							);
+						}
 					},
 					buttons: [
 					{
