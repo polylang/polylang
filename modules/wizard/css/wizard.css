@@ -3,7 +3,8 @@ body {
 	margin: 65px auto 24px;
 	box-shadow: none;
 	background: #f1f1f1;
-	padding: 0
+	padding: 0;
+	border: 0; /* fix-pro #856 override WP install.css */
 }
 
 #pll-logo {
