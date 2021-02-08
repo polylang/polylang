@@ -109,7 +109,7 @@ abstract class PLL_Switcher {
 
 	/**
 	 * @param array        $classes
-	 * @param bool       $current_lang
+	 * @param bool         $current_lang
 	 * @param array        $args
 	 * @param PLL_Language $language
 	 * @param bool         $first
