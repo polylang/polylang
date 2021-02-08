@@ -33,6 +33,30 @@ class PLL_Query {
 	}
 
 	/**
+	 * Checks if the query already includes a language taxonomy.
+	 *
+	 * @since 3.0
+	 *
+	 * @param array $qvars WP_Query query vars.
+	 * @return bool
+	 */
+	protected function is_already_filtered( $qvars ) {
+		if ( isset( $qvars['lang'] ) ) {
+			return true;
+		}
+
+		if ( ! empty( $qvars['tax_query'] ) && is_array( $qvars['tax_query'] ) ) {
+			foreach ( $qvars['tax_query'] as $tax_query ) {
+				if ( isset( $tax_query['taxonomy'] ) && 'language' === $tax_query['taxonomy'] ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Check if translated taxonomy is queried
 	 * Compatible with nested queries introduced in WP 4.1
 	 *
@@ -119,7 +143,7 @@ class PLL_Query {
 	public function filter_query( $lang ) {
 		$qvars = &$this->query->query_vars;
 
-		if ( ! isset( $qvars['lang'] ) ) {
+		if ( ! $this->is_already_filtered( $qvars ) ) {
 			$taxonomies = array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) );
 
 			foreach ( $taxonomies as $tax ) {
