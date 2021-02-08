@@ -141,7 +141,7 @@ abstract class PLL_Choose_Lang {
 		$accept_langs = new PLL_Accept_Languages_Collection();
 
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
-			$accept_langs = PLL_Accept_Languages_Collection::from_accept_language_header( sanitize_text_field( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
+			$accept_langs = PLL_Accept_Languages_Collection::from_accept_language_header( sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) );
 
 			$accept_langs->bubble_sort();
 		}

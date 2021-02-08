@@ -9,20 +9,7 @@
  * Represents an Accept-Language HTTP Header, as defined in RFC 2616 Section 14.4 {@see https://tools.ietf.org/html/rfc2616.html#section-14.4}.
  */
 class PLL_Accept_Language {
-	/**
-	 * @var string[]
-	 */
-	protected $subtags;
-
-	/**
-	 * @var float
-	 */
-	protected $quality;
-
-	/**
-	 * @var string[] Regular expression patterns.
-	 */
-	public static $subtag_patterns = array(
+	const SUBTAG_PATTERNS = array(
 		'language' => '(\b[a-z]{2,3}|[a-z]{4}|[a-z]{5-8}\b)',
 		'language-extension' => '(?:-(\b[a-z]{3}){1,3}\b)?',
 		'script' => '(?:-(\b[a-z]{4})\b)?',
@@ -31,6 +18,24 @@ class PLL_Accept_Language {
 		'extension' => '(?:-(\b[a-wy-z]-[a-z0-9]{2,8})\b)?',
 		'private-use' => '(?:-(\bx-[a-z0-9]{1,8})\b)?',
 	);
+
+	/**
+	 * @var string[] {
+	 *  @type string $language           Usually 2 or three letters (ISO 639).
+	 *  @type string $language-extension Up to three groups of 3 letters.
+	 *  @type string $script             Four letters.
+	 *  @type string $region             Either two letters of three digits.
+	 *  @type string $variant            Either one digit followed by 1 to 3 letters, or a letter followed by 2 to 7 alphanumerical characters.
+	 *  @type string $extension          One letter that cannot be an 'x', followed by 2 to 8 alphanumerical characters.
+	 *  @type string $private-use        Starts by 'x-', followed by 1 to 8 alphanumerical characters.
+	 * }
+	 */
+	protected $subtags;
+
+	/**
+	 * @var float
+	 */
+	protected $quality;
 
 	/**
 	 * PLL_Accept_Language constructor.
@@ -51,8 +56,8 @@ class PLL_Accept_Language {
 	 */
 	public static function from_array( $matches ) {
 		$subtags = array_combine(
-			array_keys( array_slice( self::$subtag_patterns, 0, count( $matches ) - 1 ) ),
-			array_slice( $matches, 1, count( self::$subtag_patterns ) )
+			array_keys( array_slice( self::SUBTAG_PATTERNS, 0, count( $matches ) - 1 ) ),
+			array_slice( $matches, 1, count( self::SUBTAG_PATTERNS ) )
 		);
 		$quality = count( $matches ) === 9 ? floatval( $matches[8] ) : 1.0;
 
@@ -86,8 +91,8 @@ class PLL_Accept_Language {
 	/**
 	 * Returns a subtag from the language tag.
 	 *
-	 * @see PLL_Accept_Language::$subtag_patterns for available subtag names.
-	 * @param string $name A valid subtag name, {@see PLL_Accept_Language::$subtag_patterns}.
+	 * @see PLL_Accept_Language::SUBTAG_PATTERNS for available subtag names.
+	 * @param string $name A valid subtag name, {@see PLL_Accept_Language::SUBTAG_PATTERNS}.
 	 * @return string
 	 */
 	public function get_subtag( $name ) {

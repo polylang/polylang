@@ -26,13 +26,13 @@ class PLL_Accept_Languages_Collection {
 	public static function from_accept_language_header( $http_header ) {
 		$lang_parse = array();
 		// Break up string into pieces ( languages and q factors )
-		$language_pattern = implode( '', PLL_Accept_Language::$subtag_patterns );
+		$language_pattern = implode( '', PLL_Accept_Language::SUBTAG_PATTERNS );
 		$quality_pattern = '\s*;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?)';
 		$full_pattern = "/{$language_pattern}(?:{$quality_pattern})?/i";
 
 		preg_match_all(
 			$full_pattern,
-			sanitize_text_field( wp_unslash( $http_header ) ),
+			$http_header,
 			$lang_parse,
 			PREG_SET_ORDER
 		);
