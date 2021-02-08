@@ -1,6 +1,13 @@
 <?php
+/**
+ * @package Polylang
+ */
 
-
+/**
+ * A class to display a language switcher on Admin
+ *
+ * @since 3.0
+ */
 class PLL_Admin_Switcher extends PLL_Switcher {
 
 	/**
@@ -39,6 +46,15 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 		return $out;
 	}
 
+	/**
+	 * @param array              $classes
+	 * @param array              $args
+	 * @param PLL_Frontend_Links $links
+	 * @param PLL_Language       $language
+	 * @param string             $url
+	 *
+	 * @return array|mixed
+	 */
 	public function manage_url( $classes, $args, $links, $language, $url ) {
 		$no_translation = false;
 		$classes[] = 'no-translation';
@@ -50,7 +66,7 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 	}
 
 	/**
-	 * @param $links
+	 * @param PLL_Frontend_Links $links
 	 *
 	 * @return mixed
 	 */
@@ -59,8 +75,8 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 	}
 
 	/**
-	 * @param $links
-	 * @param $args
+	 * @param PLL_Frontend_Links $links
+	 * @param array              $args
 	 *
 	 * @return mixed
 	 */
