@@ -1,6 +1,13 @@
 <?php
+/**
+ * @package Polylang
+ */
 
-
+/**
+ * A class to display a language switcher on Frontend
+ *
+ * @since 3.0
+ */
 class PLL_Frontend_Switcher extends PLL_Switcher {
 
 	/**
@@ -62,11 +69,11 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 	}
 
 	/**
-	 * @param $classes
-	 * @param $args
-	 * @param $links
-	 * @param $language
-	 * @param $slug
+	 * @param array              $classes
+	 * @param array              $args
+	 * @param PLL_Frontend_Links $links
+	 * @param PLL_Language       $language
+	 * @param string             $url
 	 *
 	 * @return false|array
 	 */
@@ -104,17 +111,17 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 	}
 
 	/**
-	 * @param $links
+	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function get_current_language( $links ) {
 		return $links->curlang->slug;
 	}
 
 	/**
-	 * @param $links
-	 * @param $args
+	 * @param PLL_Frontend_Links $links
+	 * @param array              $args
 	 *
 	 * @return mixed
 	 */
