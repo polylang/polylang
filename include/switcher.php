@@ -4,7 +4,7 @@
  */
 
 /**
- * A class to display a language switcher on frontend
+ * A class to display a language switcher
  *
  * @since 1.2
  */
