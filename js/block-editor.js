@@ -93,7 +93,7 @@ jQuery(
 
 				dialogResult.then(
 					() => {
-						var data = {
+						var data = { // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
 							action:     'post_lang_choice',
 							lang:       selectedOption.value,
 							post_type:  $( '#post_type' ).val(),
@@ -150,7 +150,7 @@ jQuery(
 				/**
 				 * Triggers block editor post save and reload the block editor page when everything is ok.
 				 */
-				 function blockEditorSavePostAndReloadPage() {
+				function blockEditorSavePostAndReloadPage() {
 
 					let unsubscribe = null;
 

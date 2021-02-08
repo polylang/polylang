@@ -118,12 +118,13 @@ jQuery(
 					dialogResult = Promise.resolve();
 				}
 
+				// phpcs:disable PEAR.Functions.FunctionCallSignature.EmptyLine
 				dialogResult.then(
 					() => {
-						var lang  = selectedOption.options[selectedOption.options.selectedIndex].lang;
-						var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' );
+						var lang  = selectedOption.options[selectedOption.options.selectedIndex].lang; // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
+						var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' ); // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
 
-						var data = {
+						var data = {  // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
 							action:     'post_lang_choice',
 							lang:       selectedOption.value,
 							post_type:  $( '#post_type' ).val(),
@@ -199,6 +200,7 @@ jQuery(
 					},
 					() => {} // Do nothing when promise is rejected by clicking the Cancel dialog button.
 				);
+				// phpcs:enable PEAR.Functions.FunctionCallSignature.EmptyLine
 			}
 		);
 

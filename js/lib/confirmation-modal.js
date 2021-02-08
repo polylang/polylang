@@ -6,7 +6,7 @@
 // Classic editor underscore is loaded, Block editor lodash is loaded.
 const { __ } = wp.i18n;
 
-const languagesList = jQuery( '#post_lang_choice');
+const languagesList = jQuery( '#post_lang_choice' );
 
 export const bypassConfirmation = () => {
 	let title = jQuery( 'input#title' ).val();
@@ -34,12 +34,13 @@ export const initializeConfimationModal = () => {
 	).text( __( 'Are you sure you want to change the language of the current content?', 'polylang' ) );
 
 	// Put it after languages list dropdown.
-	languagesList.after( dialogContainer );
+	// PHPCS ignore dialogContainer is a new safe HTML code generated above.
+	languagesList.after( dialogContainer ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
 
 	const dialogResult = new Promise(
 		( confirm, cancel ) => {
-			const confirmDialog = ( what ) => {
-				switch ( what ) {
+			const confirmDialog = ( what ) => { // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
+				switch ( what ) { // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
 					case 'yes':
 						// Confirm the new language.
 						languagesList.data( 'old-value', languagesList.children( ':selected' )[0].value );
@@ -47,12 +48,12 @@ export const initializeConfimationModal = () => {
 						break;
 					case 'no':
 						// Revert to the old language.
-						languagesList.val( languagesList.data( 'old-value') );
+						languagesList.val( languagesList.data( 'old-value' ) );
 						cancel( 'Cancel' );
 						break;
 				}
-				dialogContainer.dialog( 'close' );
-			}
+				dialogContainer.dialog( 'close' ); // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
+			} // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
 
 			// Initialize dialog box in the case a language is selected but not added in the list.
 			dialogContainer.dialog(
