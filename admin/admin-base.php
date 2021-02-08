@@ -173,12 +173,12 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 			// Classic editor.
 			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
-				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post' ), 0, 1 );
+				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-dialog' ), 0, 1 );
 			}
 
 			// Block editor with legacy metabox in WP 5.0+.
 			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin() ) {
-				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch' ), 0, 1 );
+				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog' ), 0, 1 );
 			}
 		}
 
@@ -192,7 +192,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			}
 		}
 
-		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_BASENAME ), array(), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_BASENAME ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
 
 		$this->localize_scripts();
 	}
