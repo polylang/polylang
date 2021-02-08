@@ -29,7 +29,13 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
 	public function the_languages( $links, $args = array() ) {
-		list( $out, $args ) = $this->get_the_languages( $links, $args );
+		$get_the_languages = $this->get_the_languages( $links, $args );
+
+		if ( array_key_exists( 'elements', $get_the_languages ) ) {
+			return $get_the_languages['elements'];
+		} else {
+			list( $out, $args, $elements ) = $get_the_languages;
+		}
 
 		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] ) {

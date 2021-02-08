@@ -172,7 +172,7 @@ abstract class PLL_Switcher {
 		 */
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, -1, $args ), $args );
 
-		return array( $out, $args );
+		return array( $out, $args, $elements );
 	}
 
 	protected function get_the_languages( $links, $args ) {
@@ -183,11 +183,12 @@ abstract class PLL_Switcher {
 		$elements = $this->get_elements( $links, $args );
 
 		if ( $args['raw'] ) {
-			return $elements;
+			return array ('elements' =>  $elements );
 		}
 
 		return $this->prepare_pll_walker( $this->get_current_language( $links ), $args, $elements );
 	}
+
 	abstract function get_current_language( $links );
 
 	abstract function get_languages_list( $links, $args );
