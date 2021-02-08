@@ -37,6 +37,8 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
 	public function the_languages( $links, $args = array() ) {
+		$args['hide_if_empty'] = 0;
+
 		list( $out, $args ) = $this->get_the_languages( $links, $args );
 
 		if ( $args['echo'] ) {
@@ -81,6 +83,6 @@ class PLL_Admin_Switcher extends PLL_Switcher {
 	 * @return mixed
 	 */
 	public function get_languages_list( $links, $args ) {
-		return $links->model->get_languages_list();
+		return $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) );
 	}
 }
