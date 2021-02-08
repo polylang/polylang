@@ -10,10 +10,17 @@
  */
 abstract class PLL_Switcher {
 
+	/**
+	 * Define which class of the switcher to return.
+	 *
+	 * @param object $polylang Polylang Object.
+	 *
+	 * @return PLL_Admin_Switcher|PLL_Frontend_Switcher|null
+	 */
 	public static function create( $polylang ) {
 		if ( $polylang instanceof PLL_Frontend ) {
 			return new PLL_Frontend_Switcher();
-		} else if ( $polylang instanceof  PLL_Admin ) {
+		} elseif ( $polylang instanceof PLL_Admin ) {
 			return new PLL_Admin_Switcher();
 		} else {
 			return null;
@@ -82,6 +89,13 @@ abstract class PLL_Switcher {
 		return $out;
 	}
 
+	/**
+	 * Inits all the variables used in the loop.
+	 *
+	 * @param PLL_Language $language
+	 *
+	 * @return array
+	 */
 	protected function init_foreach_language( $language ) {
 		$id = (int) $language->term_id;
 		$order = (int) $language->term_group;
@@ -93,6 +107,15 @@ abstract class PLL_Switcher {
 		return array( $id, $order, $slug, $locale, $classes, $url );
 	}
 
+	/**
+	 * @param array        $classes
+	 * @param string       $current_lang
+	 * @param array        $args
+	 * @param PLL_Language $language
+	 * @param bool         $first
+	 *
+	 * @return array|bool
+	 */
 	protected function manage_current_lang_display( $classes, $current_lang, $args, $language, $first ) {
 		if ( $current_lang ) {
 			if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
@@ -113,6 +136,11 @@ abstract class PLL_Switcher {
 		return array( $classes, $name, $flag, $first );
 	}
 
+	/**
+	 * Get the default languages switcher options array.
+	 *
+	 * @return array
+	 */
 	private function get_default_the_languages() {
 		return array(
 			'dropdown'               => 0, // display as list and not as dropdown
@@ -132,7 +160,15 @@ abstract class PLL_Switcher {
 		);
 	}
 
-	private function filter_arguments_pll_languages( $args, $defaults) {
+	/**
+	 * Filters the args.
+	 *
+	 * @param array $args
+	 * @param array $defaults
+	 *
+	 * @return array|mixed|void
+	 */
+	private function filter_arguments_pll_languages( $args, $defaults ) {
 		$args = wp_parse_args( $args, $defaults );
 
 		/**
@@ -152,6 +188,15 @@ abstract class PLL_Switcher {
 		return $args;
 	}
 
+	/**
+	 * Define PLL walker to use and filter the HTML.
+	 *
+	 * @param string $curlang
+	 * @param array  $args
+	 * @param array  $elements
+	 *
+	 * @return array
+	 */
 	private function prepare_pll_walker( $curlang, $args, $elements ) {
 		if ( $args['dropdown'] ) {
 			$args['name'] = 'lang_choice_' . $args['dropdown'];
@@ -175,6 +220,12 @@ abstract class PLL_Switcher {
 		return array( $out, $args, $elements );
 	}
 
+	/**
+	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
+	 * @param array              $args
+	 *
+	 * @return array
+	 */
 	protected function get_the_languages( $links, $args ) {
 		$defaults = $this->get_default_the_languages();
 
@@ -183,15 +234,35 @@ abstract class PLL_Switcher {
 		$elements = $this->get_elements( $links, $args );
 
 		if ( $args['raw'] ) {
-			return array ('elements' =>  $elements );
+			return array( 'elements' => $elements );
 		}
 
 		return $this->prepare_pll_walker( $this->get_current_language( $links ), $args, $elements );
 	}
 
-	abstract function get_current_language( $links );
+	/**
+	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
+	 *
+	 * @return string
+	 */
+	abstract public function get_current_language( $links );
 
-	abstract function get_languages_list( $links, $args );
+	/**
+	 * @param PLL_Frontend_Links $links
+	 * @param array              $args
+	 *
+	 * @return mixed
+	 */
+	abstract public function get_languages_list( $links, $args );
 
-	abstract function manage_url( $classes, $args, $links, $language, $url );
+	/**
+	 * @param array              $classes
+	 * @param array              $args
+	 * @param PLL_Frontend_Links $links
+	 * @param PLL_Language       $language
+	 * @param string             $url
+	 *
+	 * @return mixed
+	 */
+	abstract public function manage_url( $classes, $args, $links, $language, $url );
 }
