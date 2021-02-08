@@ -29,7 +29,8 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		$this->frontend->links->cache->method( 'get' )->willReturn( false );
 
-		$this->switcher = PLL_Switcher::create( self::$polylang );
+		$polylang = new PLL_Frontend( $links_model );
+		$this->switcher = PLL_Switcher::create( $polylang );
 	}
 
 	function test_the_languages_raw() {
