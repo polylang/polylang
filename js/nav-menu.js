@@ -6,7 +6,7 @@
 
 jQuery( document ).ready(
 	function( $ ) {
-		$( '#update-nav-menu' ).bind(
+		$( '#update-nav-menu' ).on(
 			'click',
 			function( e ) {
 				if ( e.target && e.target.className && -1 != e.target.className.indexOf( 'item-edit' ) ) {
