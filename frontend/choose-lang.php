@@ -34,6 +34,14 @@ abstract class PLL_Choose_Lang {
 	 * @var PLL_Language
 	 */
 	public $curlang;
+	/**
+	 * @var PLL_Accept_Language
+	 */
+	private $lang_parse;
+	/**
+	 * @var PLL_Accept_Languages_Collection
+	 */
+	private $accept_langs;
 
 	/**
 	 * Constructor
@@ -122,85 +130,32 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Get the preferred language according to the browser preferences
-	 * Code adapted from http://www.thefutureoftheweb.com/blog/use-accept-language-header
+	 * Get the preferred language according to the browser preferences.
 	 *
 	 * @since 1.8
 	 *
-	 * @return string|bool the preferred language slug or false
+	 * @return string|bool The preferred language slug or false.
 	 */
 	public function get_preferred_browser_language() {
-		$accept_langs = array();
-
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
-			// Break up string into pieces ( languages and q factors )
-			preg_match_all(
-				'/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?))?/i',
-				sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ),
-				$lang_parse
-			);
+			$accept_langs = PLL_Accept_Languages_Collection::from_accept_language_header( sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) );
 
-			$k = $lang_parse[1];
-			$v = $lang_parse[4];
+			$accept_langs->bubble_sort();
 
-			if ( $n = count( $k ) ) {
-				// Set default to 1 for any without q factor
-				foreach ( $v as $key => $val ) {
-					if ( '' === $val || (float) $val > 1 ) {
-						$v[ $key ] = 1;
-					}
-				}
+			$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post.
 
-				// Bubble sort ( need a stable sort for Android, so can't use a PHP sort function )
-				if ( $n > 1 ) {
-					for ( $i = 2; $i <= $n; $i++ ) {
-						for ( $j = 0; $j <= $n - 2; $j++ ) {
-							if ( $v[ $j ] < $v[ $j + 1 ] ) {
-								// Swap values
-								$temp = $v[ $j ];
-								$v[ $j ] = $v[ $j + 1 ];
-								$v[ $j + 1 ] = $temp;
-								// Swap keys
-								$temp = $k[ $j ];
-								$k[ $j ] = $k[ $j + 1 ];
-								$k[ $j + 1 ] = $temp;
-							}
-						}
-					}
-				}
-				$accept_langs = array_combine( $k, $v );
-			}
+			/**
+			 * Filters the list of languages to use to match the browser preferences.
+			 *
+			 * @since 1.9.3
+			 *
+			 * @param array $languages Array of PLL_Language objects.
+			 */
+			$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
+
+			return $accept_langs->find_best_match( $languages );
 		}
 
-		$accept_langs = array_filter( $accept_langs ); // Remove languages marked as unacceptable (q=0).
-
-		$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
-
-		/**
-		 * Filter the list of languages to use to match the browser preferences
-		 *
-		 * @since 1.9.3
-		 *
-		 * @param array $languages array of PLL_Language objects
-		 */
-		$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
-
-		// Looks through sorted list and use first one that matches our language list
-		foreach ( array_keys( $accept_langs ) as $accept_lang ) {
-			// First loop to match the exact locale
-			foreach ( $languages as $language ) {
-				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
-					return $language->slug;
-				}
-			}
-
-			// Second loop to match the language set
-			foreach ( $languages as $language ) {
-				if ( 0 === stripos( $accept_lang, $language->slug ) || 0 === stripos( $language->get_locale( 'display' ), $accept_lang ) ) {
-					return $language->slug;
-				}
-			}
-		}
 		return false;
 	}
 

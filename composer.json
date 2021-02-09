@@ -13,7 +13,8 @@
 		"wp-coding-standards/wpcs": "*",
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
-		"szepeviktor/phpstan-wordpress": "*"
+		"szepeviktor/phpstan-wordpress": "*",
+		"behat/behat": "3.7.*"
 	},
 	"autoload": {
 		"classmap": [
@@ -27,4 +28,3 @@
 		]
 	}
 }
-

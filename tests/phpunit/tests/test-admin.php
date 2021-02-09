@@ -1,4 +1,5 @@
 <?php
+require POLYLANG_DIR . '/include/api.php';
 
 class Admin_Test extends PLL_UnitTestCase {
 
