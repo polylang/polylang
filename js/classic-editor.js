@@ -201,9 +201,9 @@ jQuery(
 				// phpcs:enable PEAR.Functions.FunctionCallSignature.EmptyLine
 
 				function isEmptyPost() {
-					const title = jQuery( 'input#title' ).val();
-					const content = jQuery( 'textarea#content' ).val();
-					const excerpt = jQuery( 'textarea#excerpt' ).val();
+					const title = $( 'input#title' ).val();
+					const content = $( 'textarea#content' ).val();
+					const excerpt = $( 'textarea#excerpt' ).val();
 
 					return ! title && ! content && ! excerpt;
 				}
