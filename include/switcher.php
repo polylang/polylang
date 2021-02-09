@@ -62,7 +62,7 @@ abstract class PLL_Switcher {
 		$first = true;
 		$out   = array();
 
-		foreach ( $this->get_languages_list( $links, $args ) as $language ) {
+		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
 			list( $id, $order, $slug, $locale, $classes, $url ) = $this->init_foreach_language( $language );
 
 			$curlang = $this->get_current_language( $links );
@@ -246,14 +246,6 @@ abstract class PLL_Switcher {
 	 * @return string
 	 */
 	abstract public function get_current_language( $links );
-
-	/**
-	 * @param PLL_Frontend_Links $links
-	 * @param array              $args
-	 *
-	 * @return mixed
-	 */
-	abstract public function get_languages_list( $links, $args );
 
 	/**
 	 * @param array              $classes

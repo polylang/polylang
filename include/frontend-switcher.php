@@ -118,14 +118,4 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 	public function get_current_language( $links ) {
 		return $links->curlang->slug;
 	}
-
-	/**
-	 * @param PLL_Frontend_Links $links
-	 * @param array              $args
-	 *
-	 * @return mixed
-	 */
-	public function get_languages_list( $links, $args ) {
-		return $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) );
-	}
 }
