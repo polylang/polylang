@@ -6,7 +6,7 @@
 // Classic editor underscore is loaded, Block editor lodash is loaded.
 const { __ } = wp.i18n;
 
-const languagesList = jQuery( '#post_lang_choice' );
+const languagesList = jQuery( '.post_lang_choice' );
 
 // Dialog box for alerting the user about a risky changing.
 export const initializeConfimationModal = () => {
