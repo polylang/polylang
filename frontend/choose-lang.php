@@ -130,12 +130,11 @@ abstract class PLL_Choose_Lang {
 	}
 
 	/**
-	 * Get the preferred language according to the browser preferences
-	 * Code adapted from http://www.thefutureoftheweb.com/blog/use-accept-language-header
+	 * Get the preferred language according to the browser preferences.
 	 *
 	 * @since 1.8
 	 *
-	 * @return string|bool the preferred language slug or false
+	 * @return string|bool The preferred language slug or false.
 	 */
 	public function get_preferred_browser_language() {
 		if ( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
@@ -143,21 +142,21 @@ abstract class PLL_Choose_Lang {
 
 			$accept_langs->bubble_sort();
 
-			$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post
+			$languages = $this->model->get_languages_list( array( 'hide_empty' => true ) ); // Hides languages with no post.
 
 			/**
-			 * Filter the list of languages to use to match the browser preferences
+			 * Filters the list of languages to use to match the browser preferences.
 			 *
 			 * @since 1.9.3
 			 *
-			 * @param array $languages array of PLL_Language objects
+			 * @param array $languages Array of PLL_Language objects.
 			 */
 			$languages = apply_filters( 'pll_languages_for_browser_preferences', $languages );
 
 			return $accept_langs->find_best_match( $languages );
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	/**

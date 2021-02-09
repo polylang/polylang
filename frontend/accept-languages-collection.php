@@ -4,9 +4,11 @@
  */
 
 /**
- * Class PLL_Accept_Languages_Collection
+ * Class PLL_Accept_Languages_Collection.
  *
  * Represents a collection of values parsed from an Accept-Language HTTP header.
+ *
+ * @since 3.0
  */
 class PLL_Accept_Languages_Collection {
 	/**
@@ -17,15 +19,14 @@ class PLL_Accept_Languages_Collection {
 	/**
 	 * Parse Accept-Language HTTP header according to IETF BCP 47.
 	 *
-	 * TODO: Add grand-fathered language codes.
+	 * @since 3.0
 	 *
 	 * @param string $http_header Value of the Accept-Language HTTP Header. Formatted as stated BCP 47 for language tags {@see https://tools.ietf.org/html/bcp47}.
 	 * @return PLL_Accept_Languages_Collection
-	 * @since 3.0
 	 */
 	public static function from_accept_language_header( $http_header ) {
 		$lang_parse = array();
-		// Break up string into pieces ( languages and q factors )
+		// Break up string into pieces ( languages and q factors ).
 		$language_pattern = implode( '', PLL_Accept_Language::SUBTAG_PATTERNS );
 		$quality_pattern = '\s*;\s*q\s*=\s*((?>1|0)(?>\.[0-9]+)?)';
 		$full_pattern = "/{$language_pattern}(?:{$quality_pattern})?/i";
@@ -48,6 +49,8 @@ class PLL_Accept_Languages_Collection {
 	/**
 	 * PLL_Accept_Languages_Collection constructor.
 	 *
+	 * @since 3.0
+	 *
 	 * @param PLL_Accept_Language[] $accept_languages
 	 */
 	public function __construct( $accept_languages = array() ) {
@@ -55,7 +58,9 @@ class PLL_Accept_Languages_Collection {
 	}
 
 	/**
-	 * Bubble sort ( need a stable sort for Android, so can't use a PHP sort function )
+	 * Bubble sort ( need a stable sort for Android, so can't use a PHP sort function ).
+	 *
+	 * @since 3.0
 	 *
 	 * @return void
 	 */
@@ -69,7 +74,7 @@ class PLL_Accept_Languages_Collection {
 		);
 
 		if ( $n = count( $k ) ) {
-			// Set default to 1 for any without q factor
+			// Set default to 1 for any without q factor.
 			foreach ( $v as $key => $val ) {
 				if ( '' === $val || (float) $val > 1 ) {
 					$v[ $key ] = 1;
@@ -80,11 +85,11 @@ class PLL_Accept_Languages_Collection {
 				for ( $i = 2; $i <= $n; $i++ ) {
 					for ( $j = 0; $j <= $n - 2; $j++ ) {
 						if ( $v[ $j ] < $v[ $j + 1 ] ) {
-							// Swap values
+							// Swap values.
 							$temp = $v[ $j ];
 							$v[ $j ] = $v[ $j + 1 ];
 							$v[ $j + 1 ] = $temp;
-							// Swap keys
+							// Swap keys.
 							$temp = $k[ $j ];
 							$k[ $j ] = $k[ $j + 1 ];
 							$k[ $j + 1 ] = $temp;
@@ -102,21 +107,23 @@ class PLL_Accept_Languages_Collection {
 	}
 
 	/**
-	 * Looks through sorted list and use first one that matches our language list
+	 * Looks through sorted list and use first one that matches our language list.
+	 *
+	 * @since 3.0
 	 *
 	 * @param PLL_Language[] $languages
 	 * @return string|false A language slug if there's a match, false otherwise.
 	 */
 	public function find_best_match( $languages = array() ) {
 		foreach ( $this->accept_languages as $accept_lang ) {
-			// First loop to match the exact locale
+			// First loop to match the exact locale.
 			foreach ( $languages as $language ) {
 				if ( 0 === strcasecmp( $accept_lang, $language->get_locale( 'display' ) ) ) {
 					return $language->slug;
 				}
 			}
 
-			// In order of priority
+			// In order of priority.
 			$subsets = array();
 			if ( ! empty( $accept_lang->get_subtag( 'region' ) ) ) {
 				$subsets[] = $accept_lang->get_subtag( 'language' ) . '-' . $accept_lang->get_subtag( 'region' );
@@ -127,7 +134,7 @@ class PLL_Accept_Languages_Collection {
 			}
 			$subsets[] = $accept_lang->get_subtag( 'language' );
 
-			// More loops to match the subsets
+			// More loops to match the subsets.
 			foreach ( $languages as $language ) {
 				foreach ( $subsets as $subset ) {
 
@@ -139,5 +146,4 @@ class PLL_Accept_Languages_Collection {
 		}
 		return false;
 	}
-
 }

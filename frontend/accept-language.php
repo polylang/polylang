@@ -4,9 +4,11 @@
  */
 
 /**
- * Class Accept_Language
+ * Class Accept_Language.
  *
  * Represents an Accept-Language HTTP Header, as defined in RFC 2616 Section 14.4 {@see https://tools.ietf.org/html/rfc2616.html#section-14.4}.
+ *
+ * @since 3.0
  */
 class PLL_Accept_Language {
 	const SUBTAG_PATTERNS = array(
@@ -40,6 +42,8 @@ class PLL_Accept_Language {
 	/**
 	 * PLL_Accept_Language constructor.
 	 *
+	 * @since 3.0
+	 *
 	 * @param string[] $subtags With subtag name as keys and subtag values as names.
 	 * @param float    $quality
 	 */
@@ -50,6 +54,8 @@ class PLL_Accept_Language {
 
 	/**
 	 * Creates a new instance from an array resulting of a PHP {@see preg_match()} or {@see preg_match_all()} call.
+	 *
+	 * @since 3.0
 	 *
 	 * @param string[] $matches Expects first entry to be full match, following entries to be subtags and last entry to be quality factor.
 	 * @return PLL_Accept_Language
@@ -67,6 +73,8 @@ class PLL_Accept_Language {
 	/**
 	 * Returns the full language tag.
 	 *
+	 * @since 3.0
+	 *
 	 * @return string
 	 */
 	public function __toString() {
@@ -82,6 +90,8 @@ class PLL_Accept_Language {
 	/**
 	 * Returns the quality factor as negotiated by the browser agent.
 	 *
+	 * @since 3.0
+	 *
 	 * @return float
 	 */
 	public function get_quality() {
@@ -91,8 +101,9 @@ class PLL_Accept_Language {
 	/**
 	 * Returns a subtag from the language tag.
 	 *
-	 * @see PLL_Accept_Language::SUBTAG_PATTERNS for available subtag names.
-	 * @param string $name A valid subtag name, {@see PLL_Accept_Language::SUBTAG_PATTERNS}.
+	 * @since 3.0
+	 *
+	 * @param string $name A valid subtag name, {@see PLL_Accept_Language::SUBTAG_PATTERNS} for available subtag names.
 	 * @return string
 	 */
 	public function get_subtag( $name ) {
