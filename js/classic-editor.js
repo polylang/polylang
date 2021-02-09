@@ -46,7 +46,8 @@ jQuery(
 					// @see code from WordPress core https://github.com/WordPress/WordPress/blob/5.2.2/wp-admin/js/tags-box.js#L291
 					// @see wp_generate_tag_cloud function which generate the escaped HTML https://github.com/WordPress/WordPress/blob/a02b5cc2a8eecb8e076fbb7cf4de7bd2ec8a8eb1/wp-includes/category-template.php#L966-L975
 					r = $( '<div />' ).addClass( 'the-tagcloud' ).attr( 'id', 'tagcloud-' + tax ).html( r ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-					$( 'a', r ).click(
+					$( 'a', r ).on(
+						'click',
 						function(){
 							tagBox.flushTags( $( this ).closest( '.inside' ).children( '.tagsdiv' ), this );
 							return false;
@@ -72,7 +73,7 @@ jQuery(
 );
 
 jQuery(
-	function ( $ ) {
+	function( $ ) {
 		// collect taxonomies - code partly copied from WordPress
 		var taxonomies = new Array();
 		$( '.categorydiv' ).each(
