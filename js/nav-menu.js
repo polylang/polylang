@@ -4,7 +4,7 @@
  * @package Polylang
  */
 
-jQuery( document ).ready(
+jQuery(
 	function( $ ) {
 		$( '#update-nav-menu' ).on(
 			'click',
