@@ -41,7 +41,8 @@ jQuery(
 						filter_pages( lang ); // initial filter for parent dropdown
 
 						// modify category checklist an parent dropdown on language change
-						select.change(
+						select.on(
+							'change',
 							function() {
 								filter_terms( $( this ).val() );
 								filter_pages( $( this ).val() );

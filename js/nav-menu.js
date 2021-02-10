@@ -85,7 +85,8 @@ jQuery(
 							$.each(
 								options,
 								function( i, v ) {
-									$( '#edit-menu-item-show_' + v + id ).change(
+									$( '#edit-menu-item-show_' + v + id ).on(
+										'change',
 										function() {
 											if ( true != $( this ).prop( 'checked' ) ) {
 												$( '#edit-menu-item-show_' + options[ 1 - i ] + id ).prop( 'checked', true );
