@@ -51,6 +51,9 @@ export const initializeConfimationModal = () => {
 					title: __( 'Change language', 'polylang' ),
 					minWidth: 600,
 					maxWidth: '100%',
+					classes: {
+						'ui-dialog': 'pll-confirmation-modal',
+					},
 					open: function( event, ui ) {
 						// Change dialog box position for rtl language
 						if ( jQuery( 'body' ).hasClass( 'rtl' ) ) {
