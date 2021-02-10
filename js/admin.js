@@ -111,7 +111,13 @@ jQuery(
 		 */
 
 		// Selectmenu widget options
-		var selectmenuOptions = { width: defaultSelectmenuWidth };
+		var selectmenuOptions = {
+			width: defaultSelectmenuWidth,
+			classes: {
+				'ui-selectmenu-menu': 'pll-selectmenu-menu',
+				'ui-selectmenu-button': 'pll-selectmenu-button',
+			}
+		};
 
 		// Selectmenu widget callbacks
 		var selectmenuFlagListCallbacks = {};
