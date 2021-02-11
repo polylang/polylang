@@ -14,7 +14,7 @@ trait PLL_UnitTestCase_Trait {
 	/**
 	 * Initialization before all tests run.
 	 *
-	 * @param WP_UnitTest_Factory $factory
+	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
 	 */
 	static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		$options = PLL_Install::get_default_options();
@@ -49,7 +49,7 @@ trait PLL_UnitTestCase_Trait {
 	 * Helper function to create a language
 	 *
 	 * @param string $locale Language locale.
-	 * @param array  $args   Allows to optionnally override the default values for the language
+	 * @param array  $args   Allows to optionnally override the default values for the language.
 	 * @throws InvalidArgumentException If language is not created.
 	 */
 	static function create_language( $locale, $args = array() ) {
