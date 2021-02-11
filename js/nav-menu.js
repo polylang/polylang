@@ -4,9 +4,9 @@
  * @package Polylang
  */
 
-jQuery( document ).ready(
+jQuery(
 	function( $ ) {
-		$( '#update-nav-menu' ).bind(
+		$( '#update-nav-menu' ).on(
 			'click',
 			function( e ) {
 				if ( e.target && e.target.className && -1 != e.target.className.indexOf( 'item-edit' ) ) {
@@ -85,7 +85,8 @@ jQuery( document ).ready(
 							$.each(
 								options,
 								function( i, v ) {
-									$( '#edit-menu-item-show_' + v + id ).change(
+									$( '#edit-menu-item-show_' + v + id ).on(
+										'change',
 										function() {
 											if ( true != $( this ).prop( 'checked' ) ) {
 												$( '#edit-menu-item-show_' + options[ 1 - i ] + id ).prop( 'checked', true );
