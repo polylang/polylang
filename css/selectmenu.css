@@ -109,12 +109,16 @@
 	display: block;
 }
 
-.ui-selectmenu-button {
+.ui-selectmenu-button.ui-button {
 	display: inline-block;
 	overflow: hidden;
 	position: relative;
 	text-decoration: none;
 	box-sizing: border-box; /* To keep width calculation in percent since WP 5.6 */
+	text-align: left;
+	white-space: nowrap;
+	vertical-align: top;
+	padding: 0;
 }
 
 .ui-selectmenu-button span.ui-icon {
@@ -125,6 +129,7 @@
 	width: 16px;
 	height: 16px;
 	text-indent: 0; /* due to text-indent for jquery ui-dialog in wizard */
+	background: none;
 }
 
 .rtl .ui-selectmenu-button span.ui-icon {
@@ -135,12 +140,13 @@
 
 .ui-selectmenu-button span.ui-selectmenu-text {
 	text-align: left;
-	padding: 0.2em 2.1em 0.2em 2em;
+	padding: 0.1em 2.1em 0.2em 2em;
 	display: block;
 	line-height: 23px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	margin: 0;
 }
 
 .rtl .ui-selectmenu-button span.ui-selectmenu-text {
@@ -150,8 +156,8 @@
 
 .ui-widget-content,
 .ui-state-default,
-.ui-selectmenu-button-closed, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
-.ui-selectmenu-button-open, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
+.ui-button.ui-selectmenu-button-closed, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
+.ui-button.ui-selectmenu-button-open, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
 	background: #fff;
@@ -168,21 +174,34 @@
 	border: 1px solid #7e8993;
 }
 
-.toplevel_page_mlang .ui-selectmenu-button:focus{
+/* From this line and below: override WooCommerce bookings plugin styles which overrides default WordPress styles */
+.pll-selectmenu-menu .ui-widget,
+.pll-selectmenu-button.ui-widget {
+	font-size: 13px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.toplevel_page_mlang .ui-button.ui-selectmenu-button:focus{
 	color: #016087; /* Same color as WordPress focused select HTML tag */
 	border-color: #007cba;
 	box-shadow: 0 0 0 1px #007cba;
 	outline: 2px solid transparent;
+	background: #fff; /* Override bookings plugin styles which overrides default WordPress styles */
 }
 
-.toplevel_page_mlang .ui-menu-item {
+.toplevel_page_mlang .ui-menu-item,
+.toplevel_page_mlang .ui-widget-content .ui-state-hover,
+.toplevel_page_mlang .ui-widget-content .ui-state-focus,
+.toplevel_page_mlang .ui-widget-content .ui-state-active {
 	color: #016087; /* Same color as option in a WordPress focused select HTML tag */
+	margin: 0;
 }
 
-.ui-widget-content .ui-state-hover,
-.ui-widget-content .ui-state-focus,
-.ui-widget-content .ui-state-active { /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
+.pll-selectmenu-menu .ui-widget-content .ui-state-hover,
+.pll-selectmenu-menu .ui-widget-content .ui-state-focus,
+.pll-selectmenu-menu .ui-widget-content .ui-state-active { /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 	background: #d5d5d5;
+	border: 0;
 }
 
 .ui-selectmenu-button.ui-state-focus {
@@ -200,6 +219,7 @@
 	height: 16px;
 }
 
+.pll-selectmenu-button.ui-button:hover,
 .pll-wizard .ui-button:hover,
 .pll-wizard .ui-button:focus {
 	background: #fff; /* To override jQuery ui-dialog styles provided by WordPress */
