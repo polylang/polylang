@@ -65,6 +65,10 @@ export const initializeConfimationModal = () => {
 							);
 						}
 					},
+					close: function( event, ui ) {
+						// When we're closing the dialog box we need to cancel the language change as we click on Cancel button.
+						confirmDialog( 'no' );
+					},
 					buttons: [
 					{
 						text: __( 'OK', 'polylang' ),
