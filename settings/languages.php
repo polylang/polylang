@@ -162,9 +162,9 @@ return array(
 		'flag'     => 'catalonia',
 		'facebook' => 'ca_ES',
 	),
-	'ca-valencia' => array(
-		'code'     => 'ca-valencia',
-		'locale'   => 'ca',
+	'ca_valencia' => array(
+		'code'     => 'ca_valencia',
+		'locale'   => 'ca_valencia',
 		'name'     => 'Valencià',
 		'dir'      => 'ltr',
 		'flag'     => 'catalonia-valencia',
