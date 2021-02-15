@@ -162,6 +162,14 @@ return array(
 		'flag'     => 'catalonia',
 		'facebook' => 'ca_ES',
 	),
+	'ca-valencia' => array(
+		'code'     => 'ca-valencia',
+		'locale'   => 'ca',
+		'name'     => 'Valencià',
+		'dir'      => 'ltr',
+		'flag'     => 'catalonia-valencia',
+		'facebook' => 'ca_ES',
+	),
 	'ceb' => array(
 		'code'     => 'ceb',
 		'locale'   => 'ceb',

@@ -53,6 +53,7 @@ $flags = array(
 	'bz'        => __( 'Belize', 'polylang' ),
 	'ca'        => __( 'Canada', 'polylang' ),
 	'catalonia' => __( 'Catalonia', 'polylang' ),
+	'catalonia-valencia' => __( 'Valencia', 'polylang' ),
 	'cc'        => __( 'Cocos', 'polylang' ),
 	'cd'        => __( 'Democratic Republic of the Congo', 'polylang' ),
 	'cf'        => __( 'Central African Republic', 'polylang' ),
