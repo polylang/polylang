@@ -4,11 +4,13 @@ bin/
 node_modules/
 tests/
 tmp/
+behat.yml
 composer.json
 composer.lock
 issue_template.md
 package.json
 package-lock.json
 phpcs.xml.dist
+phpstan.neon.dist
 phpunit.xml
 webpack.config.js
