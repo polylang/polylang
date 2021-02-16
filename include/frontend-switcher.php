@@ -69,8 +69,8 @@ class PLL_Frontend_Switcher extends PLL_Switcher {
 	}
 
 	/**
-	 * @param array              $classes
-	 * @param array              $args
+	 * @param string[]           $classes CSS classes, without the leading '.'.
+	 * @param array              $args {@see PLL_Frontend_Switcher::the_languages()}
 	 * @param PLL_Frontend_Links $links
 	 * @param PLL_Language       $language
 	 * @param string             $url

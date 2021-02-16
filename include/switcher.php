@@ -13,7 +13,7 @@ abstract class PLL_Switcher {
 	/**
 	 * Define which class of the switcher to return.
 	 *
-	 * @param object $polylang Polylang Object.
+	 * @param PLL_Base $polylang Polylang Object.
 	 *
 	 * @return PLL_Admin_Switcher|PLL_Frontend_Switcher|null
 	 */
@@ -54,8 +54,8 @@ abstract class PLL_Switcher {
 	 *
 	 * @since 1.2
 	 *
-	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
-	 * @param array              $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
+	 * @param PLL_Links $links
+	 * @param array     $args  Arguments passed to {@see PLL_Switcher::get_the_languages()}.
 	 * @return array Language switcher elements.
 	 */
 	protected function get_elements( $links, $args ) {
@@ -108,9 +108,9 @@ abstract class PLL_Switcher {
 	}
 
 	/**
-	 * @param array        $classes
+	 * @param string[]     $classes CSS classes, without the leading '.'.
 	 * @param bool         $current_lang
-	 * @param array        $args
+	 * @param array        $args {@see PLL_Switcher::get_the_languages()}.
 	 * @param PLL_Language $language
 	 * @param bool         $first
 	 *
@@ -163,10 +163,10 @@ abstract class PLL_Switcher {
 	/**
 	 * Filters the args.
 	 *
-	 * @param array $args
-	 * @param array $defaults
+	 * @param array $args {@see PLL_Switcher::get_the_languages()}.
+	 * @param array $defaults {@see PLL_Switcher::get_default_the_languages()}.
 	 *
-	 * @return array|mixed|void
+	 * @return mixed
 	 */
 	private function filter_arguments_pll_languages( $args, $defaults ) {
 		$args = wp_parse_args( $args, $defaults );
@@ -192,10 +192,10 @@ abstract class PLL_Switcher {
 	 * Define PLL walker to use and filter the HTML.
 	 *
 	 * @param string $curlang
-	 * @param array  $args
-	 * @param array  $elements
+	 * @param array  $args {@see PLL_Switcher::get_the_languages()}.
+	 * @param array  $elements {@see PLL_Switcher::get_elements()}.
 	 *
-	 * @return array
+	 * @return mixed
 	 */
 	private function prepare_pll_walker( $curlang, $args, $elements ) {
 		if ( $args['dropdown'] ) {
@@ -221,10 +221,25 @@ abstract class PLL_Switcher {
 	}
 
 	/**
-	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
-	 * @param array              $args
+	 * @param PLL_Links $links
+	 * @param array     $args {
+	 *   Optional array of arguments.
 	 *
-	 * @return array
+	 *   @type int    $dropdown               The list is displayed as dropdown if set, defaults to 0.
+	 *   @type int    $echo                   Echoes the list if set to 1, defaults to 1.
+	 *   @type int    $hide_if_empty          Hides languages with no posts ( or pages ) if set to 1, defaults to 1.
+	 *   @type int    $show_flags             Displays flags if set to 1, defaults to 0.
+	 *   @type int    $show_names             Shows language names if set to 1, defaults to 1.
+	 *   @type string $display_names_as       Whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name.
+	 *   @type int    $force_home             Will always link to home in translated language if set to 1, defaults to 0.
+	 *   @type int    $hide_if_no_translation Hides the link if there is no translation if set to 1, defaults to 0.
+	 *   @type int    $hide_current           Hides the current language if set to 1, defaults to 0.
+	 *   @type int    $post_id                Returns links to the translations of the post defined by post_id if set, defaults not set.
+	 *   @type int    $raw                    Return a raw array instead of html markup if set to 1, defaults to 0.
+	 *   @type string $item_spacing           Whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to 'preserve'.
+	 * }
+	 *
+	 * @return mixed
 	 */
 	protected function get_the_languages( $links, $args ) {
 		$defaults = $this->get_default_the_languages();
@@ -241,18 +256,18 @@ abstract class PLL_Switcher {
 	}
 
 	/**
-	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
+	 * @param PLL_Links $links
 	 *
 	 * @return string
 	 */
 	abstract public function get_current_language( $links );
 
 	/**
-	 * @param array              $classes
-	 * @param array              $args
-	 * @param PLL_Frontend_Links $links
-	 * @param PLL_Language       $language
-	 * @param string             $url
+	 * @param string[]     $classes CSS classes, without the leading '.'.
+	 * @param array        $args {@see PLL_Admin_Switcher::the_languages()}.
+	 * @param PLL_Links    $links
+	 * @param PLL_Language $language
+	 * @param string       $url
 	 *
 	 * @return mixed
 	 */
