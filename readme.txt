@@ -78,6 +78,26 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 3.0 =
+
+* Add compatibility with WordPress 5.7
+* Remove upgrades from Polylang older than 1.8
+* Pro: Hide the license keys
+* Pro: Fix redirect to the home page of a deactivated language
+* Pro: Fix synchronization of post status not working
+* Add a dialog box to ask a confirmation about a language change in classic and block editors
+* Improve browser language detection #591
+* Improve robustness and documentation of code
+* Fix media library after the language has been chnaged in the editor metabox
+* Fix duplicated title attribute on flag link in posts list
+* Fix legacy block editor language metabox compatibility with WordPress 5.6
+* Fix uploaded theme and plugin files in media library
+* Fix remaining deprecated jQuery notices
+* Fix compatibility with GN publisher
+* Fix compatibility with Woodmart theme search form
+* Fix CSS conflict with WooCommerce Bookings
+* Fix PHP notice in REST API
+
 = 2.9.2 (2021-02-02) =
 
 * Pro: Fix translation of CPTUI plural label and description not working
