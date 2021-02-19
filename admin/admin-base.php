@@ -51,6 +51,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public $static_pages;
 
 	/**
+	 * @var PLL_Admin_Default_Term
+	 */
+	public $default_term;
+
+	/**
 	 * Setups actions needed on all admin pages.
 	 *
 	 * @since 1.8
