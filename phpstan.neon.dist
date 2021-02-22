@@ -1,5 +1,5 @@
 includes:
-	- vendor/szepeviktor/phpstan-wordpress/extension.neon
+	- vendor/wpsyntex/polylang-phpstan/extension.neon
 parameters:
 	level: 6
 	paths:
@@ -15,11 +15,6 @@ parameters:
 		- **/view*.php
 		- include/widget-calendar.php
 		- install/plugin-updater.php
-	bootstrapFiles:
-		- tests/phpstan/constants.php
-	dynamicConstantNames:
-		- PLL_ADMIN
-		- PLL_SETTINGS
 	checkMissingIterableValueType: false
 	ignoreErrors:
 		- '#^Function apply_filters invoked with [34567] parameters, 2 required\.$#'
