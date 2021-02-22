@@ -59,7 +59,7 @@ install:
     if [[ "${TRAVIS_PHP_VERSION:0:1}" == "8" ]]; then
       composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "wpsyntex/wp-phpunit:dev-branch-7.5" "behat/behat ^3.8"
     elif [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
-      composer remove --no-interaction --no-update --dev "szepeviktor/phpstan-wordpress"
+      composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
       composer require --no-interaction --update-with-dependencies --dev "wpsyntex/wp-phpunit:dev-branch-5.7" "behat/behat ^3.7"
     else
       composer install --no-interaction

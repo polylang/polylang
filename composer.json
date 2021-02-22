@@ -9,11 +9,11 @@
 	},
 	"require-dev": {
 		"wpsyntex/wp-phpunit": "dev-branch-5.7",
+		"wpsyntex/polylang-phpstan": "dev-master",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "*",
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
-		"szepeviktor/phpstan-wordpress": "*",
 		"behat/behat": "3.7.*"
 	},
 	"autoload": {
