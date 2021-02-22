@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e43feb5073ec3095e286599bee0ea543",
+    "content-hash": "c89fa2be00d1274dc512e9ac0b9f7910",
     "packages": [],
     "packages-dev": [
         {
@@ -3180,12 +3180,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/polylang/polylang-phpstan.git",
-                "reference": "2fc5e3abf2dd3185370045051f1695bb97f026b2"
+                "reference": "932d6cff0bfda4e9ea1abddecaa3cce7a90adf3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/polylang/polylang-phpstan/zipball/2fc5e3abf2dd3185370045051f1695bb97f026b2",
-                "reference": "2fc5e3abf2dd3185370045051f1695bb97f026b2",
+                "url": "https://api.github.com/repos/polylang/polylang-phpstan/zipball/932d6cff0bfda4e9ea1abddecaa3cce7a90adf3e",
+                "reference": "932d6cff0bfda4e9ea1abddecaa3cce7a90adf3e",
                 "shasum": ""
             },
             "require": {
@@ -3206,7 +3206,7 @@
             ],
             "description": "Polylang extension for PHPStan",
             "homepage": "https://polylang.pro",
-            "time": "2021-02-22T13:14:22+00:00"
+            "time": "2021-02-22T13:30:09+00:00"
         },
         {
             "name": "wpsyntex/wp-phpunit",
