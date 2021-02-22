@@ -378,7 +378,7 @@ class PLL_Table_String extends WP_List_Table {
 
 		if ( ! empty( $_POST['submit'] ) ) {
 			foreach ( $this->languages as $language ) {
-				if ( empty( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
+				if ( ! is_array( $_POST['translation'][ $language->slug ] ) ) { // In case the language filter is active ( thanks to John P. Bloch )
 					continue;
 				}
 

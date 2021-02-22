@@ -294,7 +294,8 @@ class PLL_CRUD_Posts {
 		remove_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Restore automatic duplicate at upload.
 
 		// Copy metadata.
-		if ( $data = wp_get_attachment_metadata( $post_id, true ) ) { // Unfiltered.
+		$data = wp_get_attachment_metadata( $post_id, true ); // Unfiltered.
+		if ( is_array( $data ) ) {
 			wp_update_attachment_metadata( $tr_id, wp_slash( $data ) ); // Directly uses update_post_meta, so expects slashed.
 		}
 

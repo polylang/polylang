@@ -58,3 +58,10 @@ parameters:
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
 			count: 1
 			path: frontend/choose-lang.php
+
+		# False positive due to a probable wrong WordPress doc. See https://core.trac.wordpress.org/ticket/52603
+		-
+			message: "#^Parameter \\#2 \\$data of function wp_update_attachment_metadata expects array, string given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
