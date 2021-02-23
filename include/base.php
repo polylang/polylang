@@ -166,4 +166,12 @@ abstract class PLL_Base {
 		 */
 		return $new_blog_id !== $prev_blog_id && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' );
 	}
+
+	/**
+	 * Returns the language matching the request.
+	 *
+	 * @param array $args
+	 * @return PLL_Language
+	 */
+	abstract public function get_requested_language( $args );
 }
