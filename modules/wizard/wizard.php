@@ -528,7 +528,7 @@ class PLL_Wizard {
 		$existing_languages = $this->model->get_languages_list();
 
 		$all_languages = include POLYLANG_DIR . '/settings/languages.php';
-		$languages = isset( $_POST['languages'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['languages'] ) ) : false;
+		$languages = isset( $_POST['languages'] ) && is_array( $_POST['languages'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['languages'] ) ) : false;
 		$saved_languages = array();
 
 		// If there is no language added or defined.

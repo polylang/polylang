@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c89fa2be00d1274dc512e9ac0b9f7910",
+    "content-hash": "4fae2e5cfe10d7fb8f6f9ef738cea653",
     "packages": [],
     "packages-dev": [
         {
@@ -3021,16 +3021,16 @@
         },
         {
             "name": "szepeviktor/phpstan-wordpress",
-            "version": "v0.7.2",
+            "version": "v0.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/szepeviktor/phpstan-wordpress.git",
-                "reference": "191eafa7283497645de920d262133cf17de5353f"
+                "reference": "07349418f182cbe72a92b2e34ca98f0c0aace566"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/szepeviktor/phpstan-wordpress/zipball/191eafa7283497645de920d262133cf17de5353f",
-                "reference": "191eafa7283497645de920d262133cf17de5353f",
+                "url": "https://api.github.com/repos/szepeviktor/phpstan-wordpress/zipball/07349418f182cbe72a92b2e34ca98f0c0aace566",
+                "reference": "07349418f182cbe72a92b2e34ca98f0c0aace566",
                 "shasum": ""
             },
             "require": {
@@ -3077,7 +3077,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2021-01-03T13:45:42+00:00"
+            "time": "2021-02-17T21:38:11+00:00"
         },
         {
             "name": "webmozart/assert",
