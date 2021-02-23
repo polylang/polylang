@@ -61,6 +61,7 @@ abstract class PLL_Base {
 		// User defined strings translations
 		add_action( 'pll_language_defined', array( $this, 'load_strings_translations' ), 5 );
 		add_action( 'change_locale', array( $this, 'load_strings_translations' ) ); // Since WP 4.7
+		add_action( 'personal_options_update', array( $this, 'load_strings_translations' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
 
 		// Switch_to_blog
 		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 2 );
@@ -115,7 +116,7 @@ abstract class PLL_Base {
 	 */
 	public function load_strings_translations( $locale = '' ) {
 		if ( empty( $locale ) ) {
-			$locale = get_locale();
+			$locale = ( is_admin() && ! Polylang::is_ajax_on_front() ) ? get_user_locale() : get_locale();
 		}
 
 		$language = $this->model->get_language( $locale );

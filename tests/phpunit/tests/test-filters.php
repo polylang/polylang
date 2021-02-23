@@ -353,6 +353,33 @@ class Filters_Test extends PLL_UnitTestCase {
 		reset_phpmailer_instance();
 	}
 
+	function test_site_title_in_email_change_confirmation_email() {
+		$language = self::$model->get_language( 'es' );
+		$_mo = new PLL_MO();
+		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mi sitio' ) );
+		$_mo->export_to_db( $language );
+
+		reset_phpmailer_instance();
+		$user_id = self::factory()->user->create();
+		update_user_meta( $user_id, 'locale', 'es_ES' );
+		wp_set_current_user( $user_id );
+		set_current_screen( 'profile.php' );
+
+		$pll_env = new PLL_Admin( $this->frontend->links_model );
+		$pll_env->init();
+
+		$_POST = array(
+			'user_id' => $user_id,
+			'email'   => 'my_new_email@example.org',
+		);
+		do_action( 'personal_options_update', $user_id );
+
+		$mailer = tests_retrieve_phpmailer_instance();
+		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'Mi sitio' ) );
+		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'Mi sitio' ) );
+		reset_phpmailer_instance();
+	}
+
 	function _action_pre_get_posts() {
 		$terms = get_terms( 'post_tag', array( 'hide_empty' => false ) );
 		$language = self::$model->term->get_language( $terms[0]->term_id );
