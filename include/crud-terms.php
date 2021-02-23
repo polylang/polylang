@@ -23,13 +23,6 @@ class PLL_CRUD_Terms {
 	public $curlang;
 
 	/**
-	 * Language selected in the admin language filter.
-	 *
-	 * @var PLL_Language
-	 */
-	public $filter_lang;
-
-	/**
 	 * Preferred language to assign to new contents.
 	 *
 	 * @var PLL_Language
@@ -51,9 +44,9 @@ class PLL_CRUD_Terms {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
+		$this->polylang = $polylang;
 		$this->model = &$polylang->model;
 		$this->curlang = &$polylang->curlang;
-		$this->filter_lang = &$polylang->filter_lang;
 		$this->pref_lang = &$polylang->pref_lang;
 
 		// Saving terms
@@ -153,12 +146,7 @@ class PLL_CRUD_Terms {
 			return $args['lang'];
 		}
 
-		// On tags page, everything should be filtered according to the admin language filter except the parent dropdown
-		if ( 'edit-tags.php' === $GLOBALS['pagenow'] && empty( $args['class'] ) ) {
-			return $this->filter_lang;
-		}
-
-		return $this->curlang;
+		return $this->polylang->get_requested_language( $args );
 	}
 
 	/**

@@ -460,4 +460,17 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			);
 		}
 	}
+
+	/**
+	 * @param array $args
+	 * @return PLL_Language
+	 */
+	public function get_requested_language( $args ) {
+		// On tags page, everything should be filtered according to the admin language filter except the parent dropdown
+		if ( 'edit-tags.php' === $GLOBALS['pagenow'] && empty( $args['class'] ) ) {
+			return $this->filter_lang;
+		}
+
+		return $this->curlang;
+	}
 }

@@ -227,4 +227,8 @@ class PLL_Frontend extends PLL_Base {
 			$this->load_strings_translations();
 		}
 	}
+
+	public function get_requested_language( $args ) {
+		return $this->curlang;
+	}
 }
