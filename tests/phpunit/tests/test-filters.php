@@ -354,7 +354,6 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	function test_site_title_in_email_change_confirmation_email() {
-		// Important to use a language available in DIR_TESTDATA . '/languages/', otherwise switch_to_locale() doesn't switch.
 		$language = self::$model->get_language( 'es' );
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mi sitio' ) );
