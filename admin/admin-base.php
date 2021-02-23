@@ -462,6 +462,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
+	 * Returns the language matching the request.
+	 *
 	 * @param array $args
 	 * @return PLL_Language
 	 */

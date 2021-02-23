@@ -228,6 +228,12 @@ class PLL_Frontend extends PLL_Base {
 		}
 	}
 
+	/**
+	 * Returns the language matching the request.
+	 *
+	 * @param array $args
+	 * @return PLL_Language
+	 */
 	public function get_requested_language( $args ) {
 		return $this->curlang;
 	}
