@@ -39,7 +39,7 @@ class PLL_CRUD_Terms {
 	/**
 	 * The Polylang context.
 	 *
-	 * @var PLL_Base
+	 * @var PLL_Frontend|PLL_Admin_Base
 	 */
 	private $polylang;
 
@@ -48,7 +48,7 @@ class PLL_CRUD_Terms {
 	 *
 	 * @since 2.4
 	 *
-	 * @param PLL_Base $polylang
+	 * @param PLL_Frontend|PLL_Admin_Base $polylang
 	 */
 	public function __construct( &$polylang ) {
 		$this->polylang = $polylang;
