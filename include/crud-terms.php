@@ -37,11 +37,18 @@ class PLL_CRUD_Terms {
 	private $tax_query_lang;
 
 	/**
+	 * The Polylang context.
+	 *
+	 * @var PLL_Base
+	 */
+	private $polylang;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $polylang
+	 * @param PLL_Base $polylang
 	 */
 	public function __construct( &$polylang ) {
 		$this->polylang = $polylang;
