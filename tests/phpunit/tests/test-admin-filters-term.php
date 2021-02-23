@@ -272,27 +272,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) ); // No translation in German
 	}
 
-	function test_default_category_in_edit_tags() {
-		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-
-		$default = self::$model->term->get( get_option( 'default_category' ), 'de' );
-		$de = self::$model->get_language( 'de' );
-		$form = $this->get_edit_term_form( $default, 'category' );
-		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
-		$doc = new DomDocument();
-		$doc->loadHTML( $form );
-		$xpath = new DOMXpath( $doc );
-
-		$option = $xpath->query( '//select[@name="term_lang_choice"]' );
-		$this->assertEquals( 'disabled', $option->item( 0 )->getAttribute( 'disabled' ) );
-
-		$option = $xpath->query( '//select[@name="term_lang_choice"]/option[.="' . $de->name . '"]' );
-		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
-
-		$input = $xpath->query( '//input[@id="tr_lang_fr"]' );
-		$this->assertEquals( 'disabled', $input->item( 0 )->getAttribute( 'disabled' ) );
-	}
-
 	function get_parent_dropdown_in_new_term_form( $taxonomy ) {
 		// NB: impossible to load edit-tags.php entirely as it would attempt to load a second instance of WP
 		// which is impossible due to constant definitions such as ABSPATH
