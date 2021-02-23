@@ -97,4 +97,15 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$default_cat_lang = self::$model->term->get_language( get_option( 'default_category' ) );
 		$this->assertEquals( 'en', $default_cat_lang->slug );
 	}
+
+	function test_new_default_category() {
+		$this->init_languages_and_default_term();
+
+		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'new-default' ) );
+		update_option( 'default_category', $term_id );
+
+		$this->assertEquals( $term_id, get_option( 'default_category' ) );
+		$translations = self::$model->term->get_translations( $term_id );
+		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
+	}
 }
