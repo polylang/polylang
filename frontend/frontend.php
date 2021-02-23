@@ -234,7 +234,7 @@ class PLL_Frontend extends PLL_Base {
 	 * @param array $args
 	 * @return PLL_Language
 	 */
-	public function get_requested_language( $args ) {
+	public function get_requested_language( $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return $this->curlang;
 	}
 }
