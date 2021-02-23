@@ -115,7 +115,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				/** This filter is documented in include/switcher.php */
 				$options = apply_filters( 'pll_the_languages_args', $options ); // Honor the filter here for 'show_flags', 'show_names' and 'dropdown'.
 
-				$switcher = PLL_Switcher::create( $this->polylang );
+				$switcher = new PLL_Frontend_Switcher();
 				$args = array_merge( array( 'raw' => 1 ), $options );
 
 				/** @var array */
