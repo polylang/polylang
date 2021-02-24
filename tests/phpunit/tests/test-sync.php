@@ -279,10 +279,6 @@ class Sync_Test extends PLL_UnitTestCase {
 		); // fires the sync
 		stick_post( $from );
 
-		$taxonomies = get_taxonomies();
-
-
-
 		$this->assertEquals( 'fr', self::$model->post->get_language( $to )->slug );
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$model->post->get_translations( $from ) );
 		wp_remove_object_terms( $to, (int) get_option( 'default_category' ), 'category' );
