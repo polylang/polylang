@@ -17,13 +17,6 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	public $curlang;
 
 	/**
-	 * Reference to the Polylang object.
-	 *
-	 * @var object
-	 */
-	protected $polylang;
-
-	/**
 	 * Constructor
 	 *
 	 * @since 1.2
@@ -33,7 +26,6 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
 
-		$this->polylang = &$polylang;
 		$this->curlang = &$polylang->curlang;
 
 		// Split the language switcher menu item in several language menu items
