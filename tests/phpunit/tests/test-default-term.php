@@ -3,13 +3,6 @@
 
 class Default_Term_Test extends PLL_UnitTestCase {
 
-	/**
-	 * @param WP_UnitTest_Factory $factory
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
-	}
-
 	function setUp() {
 		parent::setUp();
 
