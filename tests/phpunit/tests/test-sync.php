@@ -279,8 +279,13 @@ class Sync_Test extends PLL_UnitTestCase {
 		); // fires the sync
 		stick_post( $from );
 
+		$taxonomies = get_taxonomies();
+
+
+
 		$this->assertEquals( 'fr', self::$model->post->get_language( $to )->slug );
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$model->post->get_translations( $from ) );
+		wp_remove_object_terms($to, (int) get_option( 'default_category' ), 'category');
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
 		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
 		$this->assertEquals( array( 'value' ), get_post_meta( $to, 'key' ) );
@@ -828,6 +833,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		add_post_meta( $from, '_thumbnail_id', $thumbnail_id );
 		set_post_format( $from, 'aside' );
 
+		wp_remove_object_terms($to, (int) get_option( 'default_category' ), 'category');
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
 		$this->assertEquals( array( get_category( $en ) ), get_the_category( $from ) );
 		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
