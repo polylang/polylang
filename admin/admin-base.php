@@ -284,7 +284,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 								 * @See https://github.com/jquery/jquery/blob/3.5.1/src/ajax.js#L563-L569 jQuery ajax function.
 								 */
 								if ( options.processData ) {
-									addStringParamaters();
+									addStringParameters();
 								} else {
 									/*
 									 * If options.processData is set to false data could be undefined or pass as a string.
