@@ -270,7 +270,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 						$.ajaxPrefilter( function ( options, originalOptions, jqXHR ) {
 							if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 
-								function addStringParamaters() {
+								function addStringParameters() {
 									if ( 'undefined' === typeof options.data || '' === options.data ) {
 										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
 									} else {
@@ -278,14 +278,18 @@ abstract class PLL_Admin_Base extends PLL_Base {
 									}
 								}
 
-								// options.processData set to true is the default jQuery process where the data is converted in a query string by using jQuery.param().
-								// This step is done before applying filters. Thus here the options.data is already a string in this case.
-								// @See https://github.com/jquery/jquery/blob/3.5.1/src/ajax.js#L563-L569 jQuery ajax function.
+								/*
+								 * options.processData set to true is the default jQuery process where the data is converted in a query string by using jQuery.param().
+								 * This step is done before applying filters. Thus here the options.data is already a string in this case.
+								 * @See https://github.com/jquery/jquery/blob/3.5.1/src/ajax.js#L563-L569 jQuery ajax function.
+								 */
 								if ( options.processData ) {
 									addStringParamaters();
 								} else {
-									// If options.processData is set to false data could be undefined or pass as a string.
-									// So data as to be processed as if options.processData is set to true.
+									/*
+									 * If options.processData is set to false data could be undefined or pass as a string.
+									 * So data as to be processed as if options.processData is set to true.
+									 */
 									if ( 'undefined' === typeof options.data || 'string' === typeof options.data ) {
 										addStringParameters();
 									} else {
