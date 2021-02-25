@@ -266,27 +266,32 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		<script type="text/javascript">
 			if (typeof jQuery != 'undefined') {
 				jQuery(
-					function($){
-						$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+					function( $ ){
+						$.ajaxPrefilter( function ( options, originalOptions, jqXHR ) {
 							if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
-								if ( 'undefined' === typeof options.data ) {
-									options.data = ( 'get' === options.type.toLowerCase() ) ? '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>' : <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>;
-								} else {
-									if ( 'string' === typeof options.data ) {
-										if ( '' === options.data && 'get' === options.type.toLowerCase() ) {
-											options.url = options.url+'&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
-										} else {
-											try {
-												var o = JSON.parse(options.data);
-												o = $.extend(o, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
-												options.data = JSON.stringify(o);
-											}
-											catch(e) {
-												options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>&'+options.data;
-											}
-										}
+								console.log( 'pll', '$str = <?php echo $str; ?>');
+								console.log( 'pll', '$arr <?php echo $arr; ?>');
+
+								function addStringParamaters() {
+									if ( 'undefined' === typeof options.data || '' === options.data ) {
+										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
 									} else {
-										options.data = $.extend(options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?>);
+										options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
+									}
+								}
+								// options.processData set to true is the default jQuery process where the data is converted in a query string by using jQuery.param().
+								// This step is done before applying filters. Thus here the options.data is already a string in this case.
+								// @See https://github.com/jquery/jquery/blob/3.5.1/src/ajax.js#L563-L569 jQuery ajax function.
+								if ( options.processData ) {
+									addStringParamaters();
+								} else {
+									// If options.processData is set to false data could be undefined or pass as a string.
+									// So data as to be processed as if options.processData is set to true.
+									if ( 'undefined' === typeof options.data || 'string' === typeof options.data ) {
+										addStringParameters();
+									} else {
+										// Otherwise options.data is probably an object.
+										options.data = Object.assign( options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> );
 									}
 								}
 							}
