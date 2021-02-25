@@ -297,7 +297,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 						});
 					}
 				);
-			}q
+			}
 		</script>
 		<?php
 	}
