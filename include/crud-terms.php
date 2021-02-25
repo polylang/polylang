@@ -142,6 +142,8 @@ class PLL_CRUD_Terms {
 	 * @return PLL_Language|string|false The language(s) to use in the filter, false otherwise.
 	 */
 	protected function get_queried_language( $taxonomies, $args ) {
+		global $pagenow;
+
 		// Does nothing except on taxonomies which are filterable
 		// Since WP 4.7, make sure not to filter wp_get_object_terms()
 		if ( ! $this->model->is_translated_taxonomy( $taxonomies ) || ! empty( $args['object_ids'] ) ) {
@@ -154,7 +156,7 @@ class PLL_CRUD_Terms {
 		}
 
 		// On tags page, everything should be filtered according to the admin language filter except the parent dropdown
-		if ( 'edit-tags.php' === $GLOBALS['pagenow'] && empty( $args['class'] ) ) {
+		if ( 'edit-tags.php' === $pagenow && empty( $args['class'] ) ) {
 			return $this->filter_lang;
 		}
 
