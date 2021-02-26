@@ -62,7 +62,15 @@ class PLL_Switcher {
 	 * @return string
 	 */
 	protected function get_current_language( $args ) {
-		return 0 === $args['admin_render'] ? $this->links->curlang->slug : $args['admin_current_lang'];
+		if ( $args['admin_current_lang'] ) {
+			return $args['admin_current_lang'];
+		}
+
+		if ( isset( $this->links->curlang ) ) {
+			return $this->links->curlang->slug;
+		}
+
+		return $this->links->options['default_lang'];
 	}
 
 	/**
