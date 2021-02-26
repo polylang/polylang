@@ -94,7 +94,7 @@ class PLL_Switcher {
 		}
 
 		// If we are on frontend.
-		if ( $this->links instanceof PLL_Frontend ) {
+		if ( $this->links instanceof PLL_Frontend_Links ) {
 			return $this->links->get_translation_url( $language );
 		}
 
