@@ -137,6 +137,8 @@ class PLL_Switcher {
 				}
 			}
 
+			$url = $this->get_link( $language, $args );
+
 			if ( $no_translation = empty( $url ) ) {
 				$classes[] = 'no-translation';
 			}
@@ -150,7 +152,7 @@ class PLL_Switcher {
 			 * @param string      $slug   The language code.
 			 * @param string      $locale The language locale
 			 */
-			$url = apply_filters( 'pll_the_language_link', $this->get_link( $language, $args ), $slug, $language->locale );
+			$url = apply_filters( 'pll_the_language_link', $url, $slug, $language->locale );
 
 			// Hide if no translation exists
 			if ( empty( $url ) && $args['hide_if_no_translation'] ) {
