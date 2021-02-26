@@ -9,6 +9,22 @@
  * @since 1.2
  */
 class PLL_Switcher {
+	const DEFAULTS = array(
+		'dropdown'               => 0, // Display as list and not as dropdown.
+		'echo'                   => 1, // Echoes the list.
+		'hide_if_empty'          => 1, // Hides languages with no posts (or pages).
+		'show_flags'             => 0, // Don't show flags.
+		'show_names'             => 1, // Show language names.
+		'display_names_as'       => 'name', // Display the language name.
+		'force_home'             => 0, // Tries to find a translation.
+		'hide_if_no_translation' => 0, // Don't hide the link if there is no translation.
+		'hide_current'           => 0, // Don't hide the current language.
+		'post_id'                => null, // Link to the translations of the current page.
+		'raw'                    => 0, // Build the language switcher.
+		'item_spacing'           => 'preserve', // Preserve whitespace between list items.
+		'admin_render'           => 0, // Make the switcher in a frontend context.
+		'admin_current_lang'     => null, // Use the global current language.
+	);
 
 	/**
 	 * @var PLL_Links
@@ -152,25 +168,7 @@ class PLL_Switcher {
 	 */
 	public function the_languages( $links, $args = array() ) {
 		$this->links = $links;
-
-		$defaults = array(
-			'dropdown'               => 0, // display as list and not as dropdown
-			'echo'                   => 1, // echoes the list
-			'hide_if_empty'          => 1, // hides languages with no posts ( or pages )
-			'menu'                   => 0, // not for nav menu ( this argument is deprecated since v1.1.1 )
-			'show_flags'             => 0, // don't show flags
-			'show_names'             => 1, // show language names
-			'display_names_as'       => 'name', // valid options are slug and name
-			'force_home'             => 0, // tries to find a translation
-			'hide_if_no_translation' => 0, // don't hide the link if there is no translation
-			'hide_current'           => 0, // don't hide current language
-			'post_id'                => null, // if not null, link to translations of post defined by post_id
-			'raw'                    => 0, // set this to true to build your own custom language switcher
-			'item_spacing'           => 'preserve', // 'preserve' or 'discard' whitespace between list items
-			'admin_render'           => 0, // make the switcher in an frontend context
-			'admin_current_lang'     => null, // use when admin_render is set to 1, if not null use it instead of the current language
-		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = wp_parse_args( $args, self::DEFAULTS );
 
 		/**
 		 * Filter the arguments of the 'pll_the_languages' template tag
