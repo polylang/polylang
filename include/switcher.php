@@ -38,6 +38,27 @@ class PLL_Switcher {
 	}
 
 	/**
+	 * Returns the link for a given language.
+	 *
+	 * @since 3.0
+	 *
+	 * @param PLL_Language $language Language.
+	 * @param array        $args     Arguments passed to {@see PLL_Switcher::the_languages()}.
+	 * @return string|null
+	 */
+	protected function get_link( $language, $args ) {
+		$url = null;
+
+		if ( null !== $args['post_id'] && ( $tr_id = $this->links->model->post->get( $args['post_id'], $language ) ) && $this->links->model->post->current_user_can_read( $tr_id ) ) {
+			$url = get_permalink( $tr_id );
+		} elseif ( null === $args['post_id'] && 0 === $args['admin_render'] ) {
+			$url = $this->links->get_translation_url( $language );
+		}
+
+		return $url;
+	}
+
+	/**
 	 * Get the language elements for use in a walker
 	 *
 	 * @since 1.2
@@ -55,7 +76,6 @@ class PLL_Switcher {
 			$slug = $language->slug;
 			$locale = $language->get_locale( 'display' );
 			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
-			$url = null; // Avoids potential notice
 			$curlang = 0 === $args['admin_render'] ? $this->links->curlang->slug : $args['admin_current_lang'];
 			$current_lang = $curlang == $slug;
 
@@ -67,12 +87,6 @@ class PLL_Switcher {
 				}
 			}
 
-			if ( null !== $args['post_id'] && ( $tr_id = $this->links->model->post->get( $args['post_id'], $language ) ) && $this->links->model->post->current_user_can_read( $tr_id ) ) {
-				$url = get_permalink( $tr_id );
-			} elseif ( null === $args['post_id'] && 0 === $args['admin_render'] ) {
-				$url = $this->links->get_translation_url( $language );
-			}
-
 			if ( $no_translation = empty( $url ) ) {
 				$classes[] = 'no-translation';
 			}
@@ -82,11 +96,11 @@ class PLL_Switcher {
 			 *
 			 * @since 0.7
 			 *
-			 * @param string $url    the link
-			 * @param string $slug   language code
-			 * @param string $locale language locale
+			 * @param string|null $url    The link, null if no translation was found.
+			 * @param string      $slug   The language code.
+			 * @param string      $locale The language locale
 			 */
-			$url = apply_filters( 'pll_the_language_link', $url, $slug, $language->locale );
+			$url = apply_filters( 'pll_the_language_link', $this->get_link( $language, $args ), $slug, $language->locale );
 
 			// Hide if no translation exists
 			if ( empty( $url ) && $args['hide_if_no_translation'] ) {
