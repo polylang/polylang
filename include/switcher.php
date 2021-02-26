@@ -9,6 +9,27 @@
  * @since 1.2
  */
 class PLL_Switcher {
+	const DEFAULTS = array(
+		'dropdown'               => 0, // Display as list and not as dropdown.
+		'echo'                   => 1, // Echoes the list.
+		'hide_if_empty'          => 1, // Hides languages with no posts (or pages).
+		'show_flags'             => 0, // Don't show flags.
+		'show_names'             => 1, // Show language names.
+		'display_names_as'       => 'name', // Display the language name.
+		'force_home'             => 0, // Tries to find a translation.
+		'hide_if_no_translation' => 0, // Don't hide the link if there is no translation.
+		'hide_current'           => 0, // Don't hide the current language.
+		'post_id'                => null, // Link to the translations of the current page.
+		'raw'                    => 0, // Build the language switcher.
+		'item_spacing'           => 'preserve', // Preserve whitespace between list items.
+		'admin_render'           => 0, // Make the switcher in a frontend context.
+		'admin_current_lang'     => null, // Use the global current language.
+	);
+
+	/**
+	 * @var PLL_Links
+	 */
+	protected $links;
 
 	/**
 	 * Returns options available for the language switcher - menu or widget
@@ -33,27 +54,80 @@ class PLL_Switcher {
 	}
 
 	/**
+	 * Returns the current language code.
+	 *
+	 * @since 3.0
+	 *
+	 * @param array $args Arguments passed to {@see PLL_Switcher::the_languages()}.
+	 * @return string
+	 */
+	protected function get_current_language( $args ) {
+		if ( $args['admin_current_lang'] ) {
+			return $args['admin_current_lang'];
+		}
+
+		if ( isset( $this->links->curlang ) ) {
+			return $this->links->curlang->slug;
+		}
+
+		return $this->links->options['default_lang'];
+	}
+
+	/**
+	 * Returns the link for a given language.
+	 *
+	 * @since 3.0
+	 *
+	 * @param PLL_Language $language Language.
+	 * @param array        $args     Arguments passed to {@see PLL_Switcher::the_languages()}.
+	 * @return string|null
+	 */
+	protected function get_link( $language, $args ) {
+		global $post;
+
+		// Priority to the post passed in parameters.
+		if ( null !== $args['post_id'] ) {
+			$tr_id = $this->links->model->post->get( $args['post_id'], $language );
+			if ( $tr_id && $this->links->model->post->current_user_can_read( $tr_id ) ) {
+				return get_permalink( $tr_id );
+			}
+		}
+
+		// If we are on frontend.
+		if ( $this->links instanceof PLL_Frontend_Links ) {
+			return $this->links->get_translation_url( $language );
+		}
+
+		// For blocks in posts in REST requests.
+		if ( $post instanceof WP_Post ) {
+			$tr_id = $this->links->model->post->get( $post->ID, $language );
+			if ( $tr_id && $this->links->model->post->current_user_can_read( $tr_id ) ) {
+				return get_permalink( $tr_id );
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Get the language elements for use in a walker
 	 *
 	 * @since 1.2
 	 *
-	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
-	 * @param array              $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
+	 * @param array $args  Arguments passed to {@see PLL_Switcher::the_languages()}.
 	 * @return array Language switcher elements.
 	 */
-	protected function get_elements( $links, $args ) {
+	protected function get_elements( $args ) {
 		$first = true;
 		$out   = array();
 
-		foreach ( $links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
+		foreach ( $this->links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
 			$id = (int) $language->term_id;
 			$order = (int) $language->term_group;
 			$slug = $language->slug;
 			$locale = $language->get_locale( 'display' );
 			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
-			$url = null; // Avoids potential notice
-			$curlang = 0 === $args['admin_render'] ? $links->curlang->slug : $args['admin_current_lang'];
-			$current_lang = $curlang == $slug;
+			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {
 				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
@@ -63,11 +137,7 @@ class PLL_Switcher {
 				}
 			}
 
-			if ( null !== $args['post_id'] && ( $tr_id = $links->model->post->get( $args['post_id'], $language ) ) && $links->model->post->current_user_can_read( $tr_id ) ) {
-				$url = get_permalink( $tr_id );
-			} elseif ( null === $args['post_id'] && 0 === $args['admin_render'] ) {
-				$url = $links->get_translation_url( $language );
-			}
+			$url = $this->get_link( $language, $args );
 
 			if ( $no_translation = empty( $url ) ) {
 				$classes[] = 'no-translation';
@@ -78,9 +148,9 @@ class PLL_Switcher {
 			 *
 			 * @since 0.7
 			 *
-			 * @param string $url    the link
-			 * @param string $slug   language code
-			 * @param string $locale language locale
+			 * @param string|null $url    The link, null if no translation was found.
+			 * @param string      $slug   The language code.
+			 * @param string      $locale The language locale
 			 */
 			$url = apply_filters( 'pll_the_language_link', $url, $slug, $language->locale );
 
@@ -89,7 +159,7 @@ class PLL_Switcher {
 				continue;
 			}
 
-			$url = empty( $url ) || $args['force_home'] ? $links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
+			$url = empty( $url ) || $args['force_home'] ? $this->links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
 
 			$name = $args['show_names'] || ! $args['show_flags'] || $args['raw'] ? ( 'slug' == $args['display_names_as'] ? $slug : $language->name ) : '';
 			$flag = $args['raw'] && ! $args['show_flags'] ? $language->get_display_flag_url() : ( $args['show_flags'] ? $language->get_display_flag() : '' );
@@ -111,8 +181,8 @@ class PLL_Switcher {
 	 *
 	 * @since 0.1
 	 *
-	 * @param PLL_Frontend_Links $links Instance of PLL_Frontend_Links.
-	 * @param array              $args {
+	 * @param PLL_Links $links Instance of PLL_Links.
+	 * @param array     $args {
 	 *   Optional array of arguments.
 	 *
 	 *   @type int    $dropdown               The list is displayed as dropdown if set, defaults to 0.
@@ -133,24 +203,8 @@ class PLL_Switcher {
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
 	public function the_languages( $links, $args = array() ) {
-		$defaults = array(
-			'dropdown'               => 0, // display as list and not as dropdown
-			'echo'                   => 1, // echoes the list
-			'hide_if_empty'          => 1, // hides languages with no posts ( or pages )
-			'menu'                   => 0, // not for nav menu ( this argument is deprecated since v1.1.1 )
-			'show_flags'             => 0, // don't show flags
-			'show_names'             => 1, // show language names
-			'display_names_as'       => 'name', // valid options are slug and name
-			'force_home'             => 0, // tries to find a translation
-			'hide_if_no_translation' => 0, // don't hide the link if there is no translation
-			'hide_current'           => 0, // don't hide current language
-			'post_id'                => null, // if not null, link to translations of post defined by post_id
-			'raw'                    => 0, // set this to true to build your own custom language switcher
-			'item_spacing'           => 'preserve', // 'preserve' or 'discard' whitespace between list items
-			'admin_render'           => 0, // make the switcher in an frontend context
-			'admin_current_lang'     => null, // use when admin_render is set to 1, if not null use it instead of the current language
-		);
-		$args = wp_parse_args( $args, $defaults );
+		$this->links = $links;
+		$args = wp_parse_args( $args, self::DEFAULTS );
 
 		/**
 		 * Filter the arguments of the 'pll_the_languages' template tag
@@ -166,7 +220,7 @@ class PLL_Switcher {
 			$args['show_names'] = 1;
 		}
 
-		$elements = $this->get_elements( $links, $args );
+		$elements = $this->get_elements( $args );
 
 		if ( $args['raw'] ) {
 			return $elements;
@@ -175,9 +229,8 @@ class PLL_Switcher {
 		if ( $args['dropdown'] ) {
 			$args['name'] = 'lang_choice_' . $args['dropdown'];
 			$walker = new PLL_Walker_Dropdown();
-			$args['selected'] = 0 === $args['admin_render'] ? $links->curlang->slug : $args['admin_current_lang'];
-		}
-		else {
+			$args['selected'] = $this->get_current_language( $args );
+		} else {
 			$walker = new PLL_Walker_List();
 		}
 
