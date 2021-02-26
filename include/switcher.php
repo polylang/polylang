@@ -179,8 +179,8 @@ class PLL_Switcher {
 	 *
 	 * @since 0.1
 	 *
-	 * @param Links $links Instance of PLL_Links.
-	 * @param array $args {
+	 * @param PLL_Links $links Instance of PLL_Links.
+	 * @param array     $args {
 	 *   Optional array of arguments.
 	 *
 	 *   @type int    $dropdown               The list is displayed as dropdown if set, defaults to 0.
