@@ -54,6 +54,18 @@ class PLL_Switcher {
 	}
 
 	/**
+	 * Returns the current language code.
+	 *
+	 * @since 3.0
+	 *
+	 * @param array $args Arguments passed to {@see PLL_Switcher::the_languages()}.
+	 * @return string
+	 */
+	protected function get_current_language( $args ) {
+		return 0 === $args['admin_render'] ? $this->links->curlang->slug : $args['admin_current_lang'];
+	}
+
+	/**
 	 * Returns the link for a given language.
 	 *
 	 * @since 3.0
@@ -92,8 +104,7 @@ class PLL_Switcher {
 			$slug = $language->slug;
 			$locale = $language->get_locale( 'display' );
 			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
-			$curlang = 0 === $args['admin_render'] ? $this->links->curlang->slug : $args['admin_current_lang'];
-			$current_lang = $curlang == $slug;
+			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {
 				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
@@ -193,9 +204,8 @@ class PLL_Switcher {
 		if ( $args['dropdown'] ) {
 			$args['name'] = 'lang_choice_' . $args['dropdown'];
 			$walker = new PLL_Walker_Dropdown();
-			$args['selected'] = 0 === $args['admin_render'] ? $this->links->curlang->slug : $args['admin_current_lang'];
-		}
-		else {
+			$args['selected'] = $this->get_current_language( $args );
+		} else {
 			$walker = new PLL_Walker_List();
 		}
 
