@@ -83,15 +83,30 @@ class PLL_Switcher {
 	 * @return string|null
 	 */
 	protected function get_link( $language, $args ) {
-		$url = null;
+		global $post;
 
-		if ( null !== $args['post_id'] && ( $tr_id = $this->links->model->post->get( $args['post_id'], $language ) ) && $this->links->model->post->current_user_can_read( $tr_id ) ) {
-			$url = get_permalink( $tr_id );
-		} elseif ( null === $args['post_id'] && 0 === $args['admin_render'] ) {
-			$url = $this->links->get_translation_url( $language );
+		// Priority to the post passed in parameters.
+		if ( null !== $args['post_id'] ) {
+			$tr_id = $this->links->model->post->get( $args['post_id'], $language );
+			if ( $tr_id && $this->links->model->post->current_user_can_read( $tr_id ) ) {
+				return get_permalink( $tr_id );
+			}
 		}
 
-		return $url;
+		// If we are on frontend.
+		if ( method_exists( $this->links, 'get_translation_url' ) ) {
+			return $this->links->get_translation_url( $language );
+		}
+
+		// For blocks in posts in REST requests.
+		if ( $post instanceof WP_Post ) {
+			$tr_id = $this->links->model->post->get( $post->ID, $language );
+			if ( $tr_id && $this->links->model->post->current_user_can_read( $tr_id ) ) {
+				return get_permalink( $tr_id );
+			}
+		}
+
+		return null;
 	}
 
 	/**
