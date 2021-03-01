@@ -3,7 +3,7 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 5.1
-Tested up to: 5.6
+Tested up to: 5.7
 Requires PHP: 5.6
 Stable tag: 2.9.2
 License: GPLv3 or later
@@ -82,9 +82,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 * Add compatibility with WordPress 5.7
 * Remove upgrades from Polylang older than 1.8
+* Remove deprecated class PLL_Pointer
 * Pro: Hide the license keys
 * Pro: Fix redirect to the home page of a deactivated language
 * Pro: Fix synchronization of post status not working
+* Pro: Fix language switcher block not working in a post retrieved in REST API
+* Pro: Fix PO export of strings with line breaks
 * Add a dialog box to ask a confirmation about a language change in classic and block editors
 * Improve browser language detection #591
 * Improve robustness and documentation of code
@@ -92,10 +95,13 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix duplicated title attribute on flag link in posts list
 * Fix legacy block editor language metabox compatibility with WordPress 5.6
 * Fix uploaded theme and plugin files in media library
-* Fix remaining deprecated jQuery notices
+* Fix site title not translated in email change confirmation email
+* Fix remaining deprecated jQuery notices #741
 * Fix compatibility with GN publisher
 * Fix compatibility with Woodmart theme search form
+* Fix compatibility issue with 3rd party ajax requests since jQuery 3.3 #744
 * Fix CSS conflict with WooCommerce Bookings
+* Fix post type archive title and metadesc not translated in Yoast SEO
 * Fix PHP notice in REST API
 
 = 2.9.2 (2021-02-02) =
