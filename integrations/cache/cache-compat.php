@@ -27,13 +27,18 @@ class PLL_Cache_Compat {
 	}
 
 	/**
-	 * Currently all tested cache plugins don't send cookies with cached pages
-	 * This makes us impossible know the language of the last browsed page
-	 * This functions allows to create the cookie in javascript as a workaround
+	 * Currently all tested cache plugins don't send cookies with cached pages.
+	 * This makes us impossible to know the language of the last browsed page.
+	 * This functions allows to create the cookie in javascript as a workaround.
 	 *
 	 * @since 2.3
 	 */
 	public function add_cookie_script() {
+		// Embeds should not set the cookie.
+		if ( is_embed() ) {
+			return;
+		}
+
 		$domain   = ( 2 === PLL()->options['force_lang'] ) ? wp_parse_url( PLL()->links_model->home, PHP_URL_HOST ) : COOKIE_DOMAIN;
 		$samesite = ( 3 === PLL()->options['force_lang'] ) ? 'None' : 'Lax';
 
