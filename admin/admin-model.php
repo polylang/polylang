@@ -596,8 +596,14 @@ class PLL_Admin_Model extends PLL_Model {
 			set_theme_mod( 'nav_menu_locations', $menus );
 		}
 
-		// The default category should be in the default language
-		do_action( 'update_default_category_language', $slug );
+		/**
+		 * Fires when a default language is updated.
+		 *
+		 * @since 3.1
+		 *
+		 * @param string $slug Slug.
+		 */
+		do_action( 'update_default_lang', $slug );
 
 		// Update options
 		$this->options['default_lang'] = $slug;

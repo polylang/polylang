@@ -101,43 +101,4 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$translations = self::$model->term->get_translations( $term_id );
 		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
 	}
-
-	function test_notice_for_objects_with_no_lang() {
-		$this->init_languages_and_default_term();
-
-		$_GET['page'] = 'mlang';
-		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
-		set_current_screen();
-
-		$links_model = self::$model->get_links_model();
-		$pll_env = new PLL_Settings( $links_model );
-		do_action( 'load-toplevel_page_mlang' );
-
-		ob_start();
-		$id = $this->factory->post->create();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
-
-		$this->assertNotEmpty( $out );
-
-		ob_start();
-		self::$model->post->set_language( $id, 'en' );
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
-		$this->assertEmpty( $out );
-
-		ob_start();
-		$id = $this->factory->term->create();
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
-
-		$this->assertNotEmpty( $out );
-
-		ob_start();
-		self::$model->term->set_language( $id, 'en' );
-		do_action( 'admin_notices' );
-		$out = ob_get_clean();
-
-		$this->assertEmpty( $out );
-	}
 }

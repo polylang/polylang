@@ -24,6 +24,9 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
+
+		$this->pll_admin->filters_term    = new PLL_Admin_Filters_Term( $this->pll_admin );
+		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
 	}
 
 	function test_copy_taxonomies() {
@@ -235,7 +238,12 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'full-width.php', get_page_template_slug( $to ) );
 	}
 
-	function test_save_post_with_sync() {
+	function test_save_post_with_syncd() {
+		self::delete_all_languages();
+		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Attachment for thumbnail
@@ -263,8 +271,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		$key = add_post_meta( $from, 'key', 'value' );
 		$metas[ $key ] = array( 'key' => 'key', 'value' => 'value' );
 
+		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 		$_REQUEST['sticky'] = 'sticky'; // sticky posts not managed by wp_insert_post
 		add_post_meta( $from, '_thumbnail_id', $thumbnail_id );
@@ -281,7 +291,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $to )->slug );
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$model->post->get_translations( $from ) );
-		wp_remove_object_terms( $to, (int) get_option( 'default_category' ), 'category' );
+//		wp_remove_object_terms( $to, (int) get_option( 'default_category' ), 'category' );
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
 		$this->assertEquals( '2007-09-04', get_the_date( 'Y-m-d', $to ) );
 		$this->assertEquals( array( 'value' ), get_post_meta( $to, 'key' ) );
