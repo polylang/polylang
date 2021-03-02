@@ -45,7 +45,7 @@ class PLL_Admin_Default_Term {
 		foreach ( $taxonomies as $taxonomy ) {
 			if ( 'category' === $taxonomy ) {
 				// Allows to get the default categories in all languages
-				add_filter( 'default_option_' . $taxonomy, array( $this, 'option_default_category' ) );
+				add_filter( 'option_default' . $taxonomy, array( $this, 'option_default_category' ) );
 				add_action( 'update_option_default_' . $taxonomy, array( $this, 'update_option_default_category' ), 10, 2 );
 				add_action( 'pll_add_language', array( $this, 'handle_default_category_on_create_language' ) );
 
