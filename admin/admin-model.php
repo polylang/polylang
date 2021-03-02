@@ -603,7 +603,7 @@ class PLL_Admin_Model extends PLL_Model {
 		 *
 		 * @param string $slug Slug.
 		 */
-		do_action( 'update_default_lang', $slug );
+		do_action( 'pll_update_default_lang', $slug );
 
 		// Update options
 		$this->options['default_lang'] = $slug;

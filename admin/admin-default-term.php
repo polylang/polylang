@@ -50,7 +50,7 @@ class PLL_Admin_Default_Term {
 				add_action( 'pll_add_language', array( $this, 'handle_default_category_on_create_language' ) );
 
 				// The default category should be in the default language
-				add_action( 'update_default_lang', array( $this, 'update_default_category_language' ) );
+				add_action( 'pll_update_default_lang', array( $this, 'update_default_category_language' ) );
 
 				// Adds the language column in the 'Categories' table.
 				add_filter( 'manage_' . $taxonomy . '_custom_column', array( $this, 'term_column' ), 10, 3 );
