@@ -89,6 +89,8 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @param int $old_value
 	 * @param int $value
+	 *
+	 * @return void
 	 */
 	public function update_option_default_category( $old_value, $value ) {
 		$default_cat_lang = $this->model->term->get_language( $value );
@@ -112,6 +114,8 @@ class PLL_Admin_Default_Term {
 	 * @since 1.2
 	 *
 	 * @param object|string|int $lang language
+	 *
+	 * @return void
 	 */
 	public function create_default_category( $lang ) {
 		$lang = $this->model->get_language( $lang );
@@ -139,6 +143,8 @@ class PLL_Admin_Default_Term {
 	 * Manages the default category when new languages are created.
 	 *
 	 * @param array $args Argument used to create the language. @see PLL_Admin_Model::add_language().
+	 *
+	 * @return void
 	 */
 	public function handle_default_category_on_create_language( $args ) {
 		$default = (int) get_option( 'default_category' );
@@ -224,6 +230,8 @@ class PLL_Admin_Default_Term {
 
 	/**
 	 * @param string $slug
+	 *
+	 * @return void
 	 */
 	public function update_default_category_language( $slug ) {
 		$default_cats = $this->model->term->get_translations( get_option( 'default_category' ) );
