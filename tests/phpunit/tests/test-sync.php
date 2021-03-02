@@ -271,7 +271,6 @@ class Sync_Test extends PLL_UnitTestCase {
 		$key = add_post_meta( $from, 'key', 'value' );
 		$metas[ $key ] = array( 'key' => 'key', 'value' => 'value' );
 
-		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
 
