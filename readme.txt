@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 2.9.2
+Stable tag: 3.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -78,7 +78,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-= 3.0 =
+= 3.0 (2021-03-08) =
 
 * Add compatibility with WordPress 5.7
 * Remove upgrades from Polylang older than 1.8
@@ -88,6 +88,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Pro: Fix synchronization of post status not working
 * Pro: Fix language switcher block not working in a post retrieved in REST API
 * Pro: Fix PO export of strings with line breaks
+* Pro: Fix file block title customization lost
 * Add a dialog box to ask a confirmation about a language change in classic and block editors
 * Improve browser language detection #591
 * Improve robustness and documentation of code
@@ -101,6 +102,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix compatibility with Woodmart theme search form
 * Fix compatibility issue with 3rd party ajax requests since jQuery 3.3 #744
 * Fix CSS conflict with WooCommerce Bookings
+* Fix browser error when displaying an embed and using a cache plugin #757
 * Fix post type archive title and metadesc not translated in Yoast SEO
 * Fix PHP notice in REST API
 
