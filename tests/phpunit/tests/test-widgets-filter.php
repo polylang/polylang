@@ -66,6 +66,51 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$widget->update_callback();
 	}
 
+	function test_display_with_filter() {
+		global $wp_registered_widgets;
+
+		wp_widgets_init();
+		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
+		$this->update_lang_choice( $wp_widget_search, 'en' );
+
+		$frontend = new PLL_Frontend( $this->links_model );
+		new PLL_Frontend_Filters( $frontend );
+
+		$args = array( 'before_title' => '', 'after_title' => '', 'before_widget' => '', 'after_widget' => '' );
+		$frontend->curlang = self::$model->get_language( 'en' );
+		ob_start();
+		$wp_widget_search->display_callback( $args, 2 );
+		$this->assertNotEmpty( ob_get_clean() );
+
+		$frontend->curlang = self::$model->get_language( 'fr' );
+		ob_start();
+		$wp_widget_search->display_callback( $args, 2 );
+		$this->assertEmpty( ob_get_clean() );
+	}
+
+	function test_display_with_no_filter() {
+		global $wp_registered_widgets;
+
+		wp_widgets_init();
+		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
+		$this->update_lang_choice( $wp_widget_search, 0 );
+
+		$frontend = new PLL_Frontend( $this->links_model );
+		new PLL_Frontend_Filters( $frontend );
+
+		$args = array( 'before_title' => '', 'after_title' => '', 'before_widget' => '', 'after_widget' => '' );
+		$frontend->curlang = self::$model->get_language( 'en' );
+		ob_start();
+		$wp_widget_search->display_callback( $args, 2 );
+		$this->assertNotEmpty( ob_get_clean() );
+
+		$frontend->curlang = self::$model->get_language( 'fr' );
+		ob_start();
+		$wp_widget_search->display_callback( $args, 2 );
+		$this->assertNotEmpty( ob_get_clean() );
+	}
+
+
 	function test_widget_media_image() {
 		self::$model->options['media_support'] = 1;
 		$pll_admin = new PLL_Admin( $this->links_model );
