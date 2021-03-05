@@ -137,6 +137,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	/**
 	 * Filters the widgets according to the current language
 	 * Don't display if a language filter is set and this is not the current one
+	 * Needed for {@see https://developer.wordpress.org/reference/functions/the_widget/ the_widget()}.
 	 *
 	 * @since 0.3
 	 *
@@ -144,7 +145,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @return bool|array false if we hide the widget, unmodified $instance otherwise
 	 */
 	public function widget_display_callback( $instance ) {
-		// FIXME it looks like this filter is useless, now the we use the filter sidebars_widgets
 		return ! empty( $instance['pll_lang'] ) && $instance['pll_lang'] != $this->curlang->slug ? false : $instance;
 	}
 
