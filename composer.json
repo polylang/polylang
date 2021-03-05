@@ -1,30 +1,30 @@
 {
-	"name": "wpsyntex/polylang",
-	"description": "Making WordPress multilingual.",
-	"license": "GPL-3.0-or-later",
-	"homepage": "https://polylang.pro",
-	"type": "wordpress-plugin",
-	"require": {
-		"php": ">=5.6"
-	},
-	"require-dev": {
-		"wpsyntex/wp-phpunit": "dev-branch-5.7",
-		"wpsyntex/polylang-phpstan": "dev-master",
-		"dealerdirect/phpcodesniffer-composer-installer": "*",
-		"wp-coding-standards/wpcs": "*",
-		"automattic/vipwpcs": "*",
-		"phpcompatibility/phpcompatibility-wp": "*",
-		"behat/behat": "3.7.*"
-	},
-	"autoload": {
-		"classmap": [
-			"admin/",
-			"frontend/",
-			"include/",
-			"integrations/",
-			"install/",
-			"modules/",
-			"settings/"
-		]
-	}
+  "name": "wpsyntex/polylang",
+  "description": "Making WordPress multilingual.",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://polylang.pro",
+  "type": "wordpress-plugin",
+  "require": {
+	"php": ">=5.6"
+  },
+  "require-dev": {
+	"wpsyntex/wp-phpunit": "dev-branch-5.7",
+	"wpsyntex/polylang-phpstan": "dev-master",
+	"dealerdirect/phpcodesniffer-composer-installer": "*",
+	"wp-coding-standards/wpcs": "*",
+	"automattic/vipwpcs": "*",
+	"phpcompatibility/phpcompatibility-wp": "*",
+	"behat/behat": "3.7.*"
+  },
+  "autoload": {
+	"classmap": [
+	  "admin/",
+	  "frontend/",
+	  "include/",
+	  "integrations/",
+	  "install/",
+	  "modules/",
+	  "settings/"
+	]
+  }
 }
