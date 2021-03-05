@@ -40,6 +40,7 @@ class PLL_Admin_Site_Health {
 		$this->model = &$polylang->model;
 		$this->static_pages = &$polylang->static_pages;
 
+
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
@@ -82,23 +83,29 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Formats an array with language as keys to display in options information.
+	 * Formats an array to display in options information.
 	 *
 	 * @since 2.8
 	 *
-	 * @param array $array An array with language as keys.
+	 * @param array $array An array of formatted data.
 	 * @return string
 	 */
-	protected function format_array_with_languages( $array ) {
+	protected function format_array( $array ) {
 		array_walk(
 			$array,
 			function ( &$value, $key ) {
-				$value = "$key => $value";
+				if ( is_array( $value ) ) {
+					$ids = implode( ' , ', $value );
+					$value = "$key => $ids";
+				} else {
+					$value = "$key => $value";
+				}
 			}
 		);
 
 		return implode( ' | ', $array );
 	}
+
 
 	/**
 	 * Add Polylang Options to Site Health Informations tab.
@@ -137,7 +144,7 @@ class PLL_Admin_Site_Health {
 						break;
 					case 'domains':
 						$fields[ $key ]['label'] = $key;
-						$fields[ $key ]['value'] = $this->format_array_with_languages( $value );
+						$fields[ $key ]['value'] = $this->format_array( $value );
 						break;
 					case 'nav_menus':
 						$current_theme = get_stylesheet();
@@ -145,7 +152,7 @@ class PLL_Admin_Site_Health {
 							foreach ( $value[ $current_theme ] as $location => $lang ) {
 								/* translators: placeholder is the menu location name */
 								$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-								$fields[ $location ]['value'] = $this->format_array_with_languages( $lang );
+								$fields[ $location ]['value'] = $this->format_array( $lang );
 							}
 						}
 						break;
@@ -163,6 +170,14 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
+		$post_no_lang = $this->get_post_ids_without_lang( 5 );
+
+		if ( ! empty( $post_no_lang ) ) {
+			$fields['post-no-lang']['label'] = __( 'Posts without language', 'polylang' );
+			$fields['post-no-lang']['value'] = $this->format_array( $post_no_lang );
+		}
+
+
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
 			'label'  => sprintf( esc_html__( '%s Options', 'polylang' ), POLYLANG ),
@@ -170,6 +185,43 @@ class PLL_Admin_Site_Health {
 		);
 
 		return $debug_info;
+	}
+
+	/**
+	 * Get an array with post_type as key and post IDs as value
+	 *
+	 * @param int $limit  Nb of post max to show per post type.
+	 * @return array
+	 *
+	 * @since   3.0
+	 */
+	public function get_post_ids_without_lang( $limit = 10 ) {
+		$posts = array();
+		$languages                  = pll_languages_list();
+
+		foreach ( $this->model->get_translated_post_types() as $post_type ) {
+			$posts_ids_with_no_language = get_posts(
+				array(
+					'numberposts' => $limit,
+					'post_type'   => $post_type,
+					'post_status' => 'any',
+					'tax_query'   => array(
+						array(
+							'taxonomy' => 'language',
+							'terms'    => $languages,
+							'operator' => 'NOT IN',
+						),
+					),
+				)
+			);
+
+			foreach ( $posts_ids_with_no_language as $untranslated ) {
+				$posts[ $untranslated->post_type ][] = $untranslated->ID;
+			}
+		}
+
+
+		return $posts;
 	}
 
 	/**
@@ -218,7 +270,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 2.8
 	 *
-	 * @param PLL_Language $language Language object.
+	 * @param object $language Language object.
 	 * @return string
 	 */
 	protected function get_flag( $language ) {
