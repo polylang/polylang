@@ -44,6 +44,8 @@ class PLL_Admin_Default_Term {
 
 	/**
 	 * Setups filters and actions needed.
+	 *
+	 * @return void
 	 */
 	public function add_hooks() {
 		$taxonomies = get_taxonomies();
