@@ -450,7 +450,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$terms['fr'] = array( 'category' => array( self::$model->term->get( $term_id, 'fr' ) ) );
 
 		// Deletion of the last three characters of the string we are looking for, because we also have the default category ( {"fr":{"category":[term_fr]}} )
-		$this->assertNotFalse( strpos( $footer, substr('var pll_term_languages = ' . wp_json_encode( $terms ), 0, -3 ) ) );
+		$this->assertNotFalse( strpos( $footer, substr( 'var pll_term_languages = ' . wp_json_encode( $terms ), 0, -3 ) ) );
 	}
 
 	function test_parent_pages_script_data_in_footer() {

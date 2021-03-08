@@ -42,6 +42,9 @@ class PLL_Admin_Default_Term {
 		$this->options = &$polylang->options;
 	}
 
+	/**
+	 * Setups filters and actions needed.
+	 */
 	public function add_hooks() {
 		$taxonomies = get_taxonomies();
 		foreach ( $taxonomies as $taxonomy ) {
