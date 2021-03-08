@@ -61,6 +61,12 @@ trait PLL_UnitTestCase_Trait {
 		$values['term_group'] = 0; // Default term_group.
 
 		$args = array_merge( $values, $args );
+
+		$links_model     = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
+		add_action( 'pll_add_language', array( $admin_default_term, 'handle_default_category_on_create_language' ) );
+
 		$errors = self::$model->add_language( $args );
 		if ( is_wp_error( $errors ) ) {
 			throw new InvalidArgumentException( $errors->get_error_message() );

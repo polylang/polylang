@@ -121,6 +121,6 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		$terms = get_terms( 'post_tag', array( 'hide_empty' => false, 'fields' => 'ids' ) );
 		$languages = wp_list_pluck( array_map( array( self::$model->term, 'get_language' ), $terms ), 'slug' );
 		$this->assertEquals( array( 'fr' => 4, 'en' => 2 ), array_count_values( $languages ) );
-		$this->assertCount( 6, get_terms( 'term_translations' ) ); // one translation group per tag and none for default categories
+		$this->assertCount( 7, get_terms( 'term_translations' ) ); // one translation group per tag + 1 for default categories
 	}
 }

@@ -238,12 +238,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'full-width.php', get_page_template_slug( $to ) );
 	}
 
-	function test_save_post_with_syncd() {
-		self::delete_all_languages();
-		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-
+	function test_save_post_with_sync() {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Attachment for thumbnail

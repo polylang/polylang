@@ -2,9 +2,21 @@
 
 
 class Default_Term_Test extends PLL_UnitTestCase {
+	static $editor;
+
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
+
+		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+	}
 
 	function setUp() {
 		parent::setUp();
+
+		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		$links_model     = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
@@ -40,6 +52,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 
 	function init_languages_and_default_term() {
 		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
+		$this->pll_admin->default_term->add_hooks();
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
@@ -100,5 +113,35 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $term_id, get_option( 'default_category' ) );
 		$translations = self::$model->term->get_translations( $term_id );
 		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
+	}
+
+	// bug introduced by WP 4.3 and fixed in v1.8.2
+	function test_default_category_in_list_table() {
+		$this->init_languages_and_default_term();
+
+		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) ); // a non default category
+		$default = get_option( 'default_category' );
+		$en = self::$model->term->get( $default, 'en' );
+		$fr = self::$model->term->get( $default, 'fr' );
+
+		$GLOBALS['taxnow'] = $_REQUEST['taxonomy'] = $_GET['taxonomy'] = 'category'; // WP_Screen tests $_REQUEST, Polylang tests $_GET
+		$GLOBALS['hook_suffix'] = 'edit-tags.php';
+		set_current_screen();
+		$wp_list_table = _get_list_table( 'WP_Terms_List_Table' );
+
+		ob_start();
+		$wp_list_table->prepare_items();
+		$wp_list_table->display();
+		$list = ob_get_clean();
+
+		// checkbox only for non default category
+		$this->assertFalse( strpos( $list, '"cb-select-' . $en . '"' ) );
+		$this->assertFalse( strpos( $list, '"cb-select-' . $fr . '"' ) );
+		$this->assertNotFalse( strpos( $list, '"cb-select-' . $id . '"' ) );
+
+		// delete link only for non default category
+		$this->assertFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $en . '&amp;' ) );
+		$this->assertFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $fr . '&amp;' ) );
+		$this->assertNotFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $id . '&amp;' ) );
 	}
 }

@@ -40,7 +40,9 @@ class PLL_Admin_Default_Term {
 		$this->model = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
 		$this->options = &$polylang->options;
+	}
 
+	public function add_hooks() {
 		$taxonomies = get_taxonomies();
 		foreach ( $taxonomies as $taxonomy ) {
 			if ( 'category' === $taxonomy ) {

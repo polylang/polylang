@@ -62,13 +62,6 @@ class Settings_Test extends PLL_UnitTestCase {
 	}
 
 	function test_notice_for_objects_with_no_lang() {
-		$links_model = self::$model->get_links_model();
-		$this->pll_admin = new PLL_Admin( $links_model );
-		self::delete_all_languages();
-		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-
 		$_GET['page'] = 'mlang';
 		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
 		set_current_screen();
