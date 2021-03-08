@@ -49,7 +49,7 @@ class PLL_Accept_Language {
 	 */
 	public function __construct( $subtags, $quality = 1.0 ) {
 		$this->subtags = $subtags;
-		$this->quality = $quality;
+		$this->quality = is_numeric( $quality ) ? floatval( $quality ) : 1.0;
 	}
 
 	/**
