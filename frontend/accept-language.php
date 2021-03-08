@@ -45,7 +45,7 @@ class PLL_Accept_Language {
 	 * @since 3.0
 	 *
 	 * @param string[] $subtags With subtag name as keys and subtag values as names.
-	 * @param float    $quality
+	 * @param mixed    $quality Floating point value from 0.0 to 1.0. Higher values indicates a user's preference.
 	 */
 	public function __construct( $subtags, $quality = 1.0 ) {
 		$this->subtags = $subtags;
