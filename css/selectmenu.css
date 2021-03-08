@@ -141,6 +141,7 @@
 }
 
 
+.ui-selectmenu-button.ui-widget span.ui-selectmenu-text, /* Override WC Bookings styles with WP < 5.6 */
 .ui-selectmenu-button span.ui-selectmenu-text {
 	text-align: left;
 	padding: 0.1em 2.1em 0.2em 2em;
