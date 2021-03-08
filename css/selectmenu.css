@@ -157,6 +157,7 @@
 
 .ui-widget-content,
 .ui-state-default,
+.ui-selectmenu-button.ui-state-default, /* Override WC Bookings styles with WP < 5.6 */
 .ui-button.ui-selectmenu-button-closed, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 .ui-button.ui-selectmenu-button-open, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 .ui-widget-content .ui-state-default,
@@ -198,6 +199,9 @@
 	margin: 0;
 }
 
+.ui-selectmenu-open .ui-widget-content .ui-state-hover, /* Override WC Bookings styles with WP < 5.6 */
+.ui-selectmenu-open .ui-widget-content .ui-state-focus, /* Override WC Bookings styles with WP < 5.6 */
+.ui-selectmenu-open .ui-widget-content .ui-state-active, /* Override WC Bookings styles with WP < 5.6 */
 .pll-selectmenu-menu .ui-widget-content .ui-state-hover,
 .pll-selectmenu-menu .ui-widget-content .ui-state-focus,
 .pll-selectmenu-menu .ui-widget-content .ui-state-active { /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
