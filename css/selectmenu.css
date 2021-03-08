@@ -120,6 +120,8 @@
 	white-space: nowrap;
 	vertical-align: top;
 	padding: 0;
+	line-height: normal; /* Override WC Bookings styles with WP < 5.6 */
+	height: 28px; /* Override WC Bookings styles with WP < 5.6 */
 }
 
 .ui-selectmenu-button span.ui-icon {
