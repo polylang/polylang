@@ -84,7 +84,9 @@ class PLL_WPSEO {
 		}
 
 		if ( ! empty( $keys ) ) {
-			WPSEO_Options::clear_cache();
+			if ( method_exists( 'WPSEO_Options', 'clear_cache' ) ) {
+				WPSEO_Options::clear_cache();
+			}
 			new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
 		}
 	}
