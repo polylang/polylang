@@ -11,6 +11,10 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+		self::create_language( 'de_DE_formal' );
+		self::create_language( 'es_ES' );
 	}
 
 	function setUp() {
@@ -23,12 +27,8 @@ class Default_Term_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->filters_term    = new PLL_Admin_Filters_Term( $this->pll_admin );
 		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
-	}
-
-	function tearDown() {
-		self::delete_all_languages();
-
-		parent::tearDown();
+		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
+		$this->pll_admin->default_term->add_hooks();
 	}
 
 	function get_edit_term_form( $tag_ID, $taxonomy ) {
@@ -50,20 +50,9 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		return ob_get_clean();
 	}
 
-	function init_languages_and_default_term() {
-		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
-		$this->pll_admin->default_term->add_hooks();
-
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-		self::create_language( 'de_DE_formal' );
-		self::create_language( 'es_ES' );
-	}
-
 	function test_default_category_in_edit_tags() {
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
-		$this->init_languages_and_default_term();
 
 		$default = self::$model->term->get( get_option( 'default_category' ), 'de' );
 		$de      = self::$model->get_language( 'de' );
@@ -84,7 +73,6 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	}
 
 	function test_term_language_with_default_category() {
-		$this->init_languages_and_default_term();
 
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy']  = 'category';
@@ -97,7 +85,6 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	}
 
 	function test_add_and_delete_language() {
-		$this->init_languages_and_default_term();
 
 		// check default category
 		$default_cat_lang = self::$model->term->get_language( get_option( 'default_category' ) );
@@ -105,7 +92,6 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	}
 
 	function test_new_default_category() {
-		$this->init_languages_and_default_term();
 
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'new-default' ) );
 		update_option( 'default_category', $term_id );
@@ -117,7 +103,6 @@ class Default_Term_Test extends PLL_UnitTestCase {
 
 	// bug introduced by WP 4.3 and fixed in v1.8.2
 	function test_default_category_in_list_table() {
-		$this->init_languages_and_default_term();
 
 		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) ); // a non default category
 		$default = get_option( 'default_category' );
