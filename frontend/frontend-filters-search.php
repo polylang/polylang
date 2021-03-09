@@ -64,7 +64,7 @@ class PLL_Frontend_Filters_Search {
 				// Take care to modify only the url in the <form> tag.
 				preg_match( '#<form.+>#', $form, $matches );
 				$old = reset( $matches );
-				$new = preg_replace( '#action="(.+)"#', 'action="' . esc_url( $this->curlang->search_url ) . '"', $old );
+				$new = preg_replace( '#action="(.+?)"#', 'action="' . esc_url( $this->curlang->search_url ) . '"', $old );
 				$form = str_replace( $old, $new, $form );
 			} else {
 				$form = str_replace( '</form>', '<input type="hidden" name="lang" value="' . esc_attr( $this->curlang->slug ) . '" /></form>', $form );
