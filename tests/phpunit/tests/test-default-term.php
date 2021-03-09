@@ -99,6 +99,17 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	function test_add_and_delete_language() {
 		$this->init_languages_and_default_term();
 
+		$args = array(
+			'name'       => 'العربية',
+			'slug'       => 'ar',
+			'locale'     => 'ar',
+			'rtl'        => 1,
+			'flag'       => 'arab',
+			'term_group' => 1,
+		);
+
+		$this->assertTrue( $this->pll_admin->model->add_language( $args ) );
+
 		// check default category
 		$default_cat_lang = self::$model->term->get_language( get_option( 'default_category' ) );
 		$this->assertEquals( 'en', $default_cat_lang->slug );
