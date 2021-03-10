@@ -81,4 +81,34 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		$form = apply_filters( 'get_search_form', $form );
 		$this->assertContains( 'action="' . home_url( '/fr/' ) . '"', $form );
 	}
+
+	/**
+	 * PR #780
+	 */
+	function test_search_form_is_not_emptied() {
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		$form = '<form action="http://example.org" method="get"><input type="submit" value="Search" /></form>';
+		$form = apply_filters( 'get_search_form', $form );
+		$this->assertEquals( '<form action="http://example.org/fr/" method="get"><input type="submit" value="Search" /></form>', $form );
+	}
+
+	/**
+	 * PR #780
+	 */
+	function test_search_form_with_simple_quotes_in_html() {
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		$form = "<form action='http://example.org' method='get'><input type='submit' value='Search' /></form>";
+		$form = apply_filters( 'get_search_form', $form );
+		$this->assertEquals( "<form action=\"http://example.org/fr/\" method='get'><input type='submit' value='Search' /></form>", $form );
+	}
+
+	/**
+	 * PR #780
+	 */
+	function test_search_form_with_no_quotes_in_html() {
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		$form = '<form action=http://example.org method=get><input type=submit value=Search /></form>';
+		$form = apply_filters( 'get_search_form', $form );
+		$this->assertEquals( '<form action="http://example.org/fr/" method=get><input type=submit value=Search /></form>', $form );
+	}
 }
