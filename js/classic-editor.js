@@ -318,21 +318,24 @@ var media = _.extend(
 	}
 );
 
-/**
- * @since 3.0
- *
- * @memberOf pll.media
- */
-media.query = _.extend(
-	media.query, /** @lends pll.media.query prototype */
-	{
-		/**
-		 * @type Function References WordPress { @see wp.media.query } constructor
-		 */
-		delegate: wp.media.query
-	}
-)
+if ( 'undefined' !== typeof wp && 'undefined' !== typeof wp.media ) {
 
-// Substitute WordPress media query shortcut with our decorated function.
-wp.media.query = media.query
+	/**
+	 * @since 3.0
+	 *
+	 * @memberOf pll.media
+	 */
+	media.query = _.extend(
+		media.query, /** @lends pll.media.query prototype */
+		{
+			/**
+			 * @type Function References WordPress { @see wp.media.query } constructor
+			 */
+			delegate: wp.media.query
+		}
+	)
 
+	// Substitute WordPress media query shortcut with our decorated function.
+	wp.media.query = media.query
+
+}
