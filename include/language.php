@@ -169,14 +169,14 @@ class PLL_Language {
 	 *
 	 * @var string
 	 */
-	protected $custom_flag_url;
+	public $custom_flag_url;
 
 	/**
 	 * Html markup of the custom flag if it exists.
 	 *
 	 * @var string
 	 */
-	protected $custom_flag;
+	public $custom_flag;
 
 	/**
 	 * Constructor: builds a language object given its two corresponding terms in 'language' and 'term_language' taxonomies.
