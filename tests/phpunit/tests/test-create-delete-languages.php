@@ -126,4 +126,51 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
 		$this->assertWPError( self::$model->add_language( $args ), 'The flag does not exist' );
 	}
+
+	/**
+	 * Issue #910
+	 */
+	function test_language_properties_in_transient() {
+		$args = array(
+			'name'       => 'English',
+			'slug'       => 'en',
+			'locale'     => 'en_US',
+			'rtl'        => 0,
+			'flag'       => 'us',
+			'term_group' => 2,
+		);
+
+		self::$model->add_language( $args );
+		self::$model->get_languages_list(); // Saves the transient.
+
+		$properties = array(
+     'term_id',
+     'name',
+     'slug',
+     'term_group',
+     'term_taxonomy_id',
+     'count',
+     'tl_term_id',
+     'tl_term_taxonomy_id',
+     'tl_count',
+     'locale',
+     'is_rtl',
+     'w3c',
+     'facebook',
+     'home_url',
+     'search_url',
+     'host',
+     'mo_id',
+     'page_on_front',
+     'page_for_posts',
+     'flag_code',
+     'flag_url',
+     'flag',
+     'custom_flag_url',
+     'custom_flag',
+    );
+
+		$languages = get_transient( 'pll_languages_list' );
+		$this->assertEqualSets( $properties, array_keys( reset( $languages ) ) );
+	}
 }
