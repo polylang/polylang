@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 3.0
+Stable tag: 3.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,15 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.0.1 (2021-03-10) =
+
+* Fix media gallery messed when editing a post in the classic editor
+* Fix missing script dependency on old WP versions
+* Fix CSS conflict with WooCommerce Bookings for WP < 5.6
+* Fix conflict resulting in '__' already defined in block-editor.js. #779
+* Fix search form removed for some themes. Props Marián Kadaňka. #780
+* Fix fatal error with very old versions of Yoast SEO. Props Nicola Peluchetti. #781
 
 = 3.0 (2021-03-08) =
 
