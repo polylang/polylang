@@ -64,6 +64,7 @@ class PLL_Frontend_Filters_Search {
 				// Take care to modify only the url in the <form> tag.
 				preg_match( '#<form.+?>#', $form, $matches );
 				$old = reset( $matches );
+				// Replace action attribute (a text with no space and no closing tag within double quotes or simple quotes or without quotes).
 				$new = preg_replace( '#\saction=("[^"\r\n]+"|\'[^\'\r\n]+\'|[^\'"][^>\s]+)#', ' action="' . esc_url( $this->curlang->search_url ) . '"', $old );
 				$form = str_replace( $old, $new, $form );
 			} else {
