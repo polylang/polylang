@@ -194,10 +194,20 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 				// Remove the widget if not visible in the current language (blocks in legacy widget).
 				if ( ! empty( $widget_settings[ $number ]['content'] ) ) {
-					preg_match( "/{\"pll_lang\":\"([a-z]*)\"}/", $widget_settings[ $number ]['content' ], $matches );
-					$lang_should_be_displayed = $matches[1];
-					if ( $this->curlang->slug !== $lang_should_be_displayed ) {
-						unset( $sidebars_widgets[ $sidebar ][ $key ] );
+					$parser = new WP_Block_Parser();
+					$parser->parse( $widget_settings[ $number ]['content'] );
+					if ( is_array( $parser->output ) ) {
+						foreach ( $parser->output as $output ) {
+							if ( isset( $output['attrs'] ) ) {
+								if ( array_key_exists( 'pll_lang', $output['attrs'] ) ) {
+									$lang_to_be_displayed = $output['attrs']['pll_lang'];
+
+									if ( $this->curlang->slug !== $lang_to_be_displayed ) {
+										unset( $sidebars_widgets[ $sidebar ][ $key ] );
+									}
+								}
+							}
+						}
 					}
 				}
 			}
