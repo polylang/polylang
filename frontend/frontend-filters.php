@@ -191,6 +191,15 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				if ( ! empty( $widget_settings[ $number ]['pll_lang'] ) && $widget_settings[ $number ]['pll_lang'] !== $this->curlang->slug ) {
 					unset( $sidebars_widgets[ $sidebar ][ $key ] );
 				}
+
+				// Remove the widget if not visible in the current language (blocks in legacy widget).
+				if ( ! empty( $widget_settings[ $number ]['content'] ) ) {
+					preg_match( "/{\"pll_lang\":\"([a-z]*)\"}/", $widget_settings[ $number ]['content' ], $matches );
+					$lang_should_be_displayed = $matches[1];
+					if ( $this->curlang->slug !== $lang_should_be_displayed ) {
+						unset( $sidebars_widgets[ $sidebar ][ $key ] );
+					}
+				}
 			}
 		}
 
