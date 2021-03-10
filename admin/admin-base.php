@@ -173,7 +173,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 			// Classic editor.
 			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
-				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-dialog', 'wp-i18n', 'wp-media' ), 0, 1 );
+				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
 			}
 
 			// Block editor with legacy metabox in WP 5.0+.
