@@ -291,7 +291,7 @@ var media = _.extend(
 		 * @return {wp.media.model.Attachments}
 		 */
 		query: function( props ) {
-			var attachments = pll.media.query.delegate();
+			var attachments = pll.media.query.delegate( props );
 
 			pll.media.attachmentsCollections.push( attachments );
 
