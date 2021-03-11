@@ -3,13 +3,6 @@
 class Flags_Test extends PLL_UnitTestCase {
 
 	/**
-	 * Instance of the Polylang context for these tests.
-	 *
-	 * @var PLL_Frontend
-	 */
-	private $pll_env;
-
-	/**
 	 * Language properties from {@see PLL_Settings::get_predefined_languages()} to be added as a new language.
 	 *
 	 * @var array
@@ -33,6 +26,12 @@ class Flags_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+
+		self::$new_language = array(
+			'locale' => 'de_CH_informal',
+			'slug' => 'de',
+			'flag' => 'de_CH_informal',
+		);
 
 		$wp_filter['pll_languages_list']->remove_all_filters();
 		$wp_filter['pll_after_languages_cache']->remove_all_filters();
@@ -108,14 +107,20 @@ class Flags_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_CH_informal' );
 		$language = self::$model->get_language( 'de_CH_informal' );
 
+		$this->assertNotEmpty( $language->get_display_flag() );
 		$this->assertNotContains( 'style', $language->get_display_flag() );
 		$this->assertNotContains( 'width', $language->get_display_flag() );
 		$this->assertNotContains( 'height', $language->get_display_flag() );
+
+		self::$model->delete_language( 'de_CH_informal' );
 	}
 
 	function test_remove_flag_inline_style_in_new_language() {
+		@mkdir( WP_CONTENT_DIR . '/polylang' );
+		copy( dirname( __FILE__ ) . '/../data/de_CH.png', self::$flag_de_ch_informal );
 		$language = PLL_Language::create( self::$new_language );
 
+		$this->assertNotEmpty( $language->get_display_flag() );
 		$this->assertNotContains( 'style', $language->get_display_flag() );
 		$this->assertNotContains( 'width', $language->get_display_flag() );
 		$this->assertNotContains( 'height', $language->get_display_flag() );
