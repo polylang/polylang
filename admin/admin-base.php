@@ -189,6 +189,9 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
 				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/build/' . $script . $suffix . '.js', POLYLANG_BASENAME ), $v[1], POLYLANG_VERSION, $v[3] );
+				if ( 'classic-editor' === $script || 'block-editor' === $script ) {
+					wp_set_script_translations( 'pll_' . $script, 'polylang' );
+				}
 			}
 		}
 
