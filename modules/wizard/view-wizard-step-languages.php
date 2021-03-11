@@ -36,10 +36,7 @@ $languages_list = array_diff_key(
 			<option value=""></option>
 			<?php
 			foreach ( $languages_list as $lg ) {
-				// To set flag base64 encoded for predefined languages as user defined languages.
-				$lg['flag_code'] = $lg['flag'];
-				$language = new PLL_Language( $lg );
-				$language->set_flag();
+				$language = PLL_Language::create( $lg );
 				printf(
 					'<option value="%1$s" data-flag-html="%3$s" data-language-name="%2$s" >%2$s - %1$s</option>' . "\n",
 					esc_attr( $language->locale ),

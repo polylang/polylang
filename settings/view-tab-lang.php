@@ -55,9 +55,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<option value=""></option>
 							<?php
 							foreach ( $this->get_predefined_languages() as $lg ) {
-								$lg['flag_code'] = $lg['flag'];
-								$language = new PLL_Language( $lg );
-								$language->set_flag();
+								$language = PLL_Language::create( $lg );
 								printf(
 									'<option value="%1$s:%2$s:%3$s:%4$s" data-flag-html="%6$s">%5$s - %2$s</option>' . "\n",
 									esc_attr( $lg['code'] ),

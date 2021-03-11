@@ -2,7 +2,19 @@
 
 class Flags_Test extends PLL_UnitTestCase {
 
-	private $pll_env;
+	/**
+	 * Language properties from {@see PLL_Settings::get_predefined_languages()} to be added as a new language.
+	 *
+	 * @var array
+	 */
+	private static $new_language;
+
+	/**
+	 * Path to a custom flag image.
+	 *
+	 * @var string
+	 */
+	private static $flag_de_ch_informal = WP_CONTENT_DIR . '/polylang/de_CH_informal.png';
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -14,6 +26,12 @@ class Flags_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+
+		self::$new_language = array(
+			'locale' => 'de_CH_informal',
+			'slug' => 'de',
+			'flag' => 'de_CH_informal',
+		);
 
 		$wp_filter['pll_languages_list']->remove_all_filters();
 		$wp_filter['pll_after_languages_cache']->remove_all_filters();
@@ -28,9 +46,18 @@ class Flags_Test extends PLL_UnitTestCase {
 	}
 
 	public function tearDown() {
-		if ( file_exists( WP_CONTENT_DIR . '/polylang/fr_FR.png' ) ) {
-			unlink( WP_CONTENT_DIR . '/polylang/fr_FR.png' );
-			rmdir( WP_CONTENT_DIR . '/polylang' );
+		$flags = array(
+			WP_CONTENT_DIR . '/polylang/fr_FR.png',
+			WP_CONTENT_DIR . '/polylang/de_CH_informal.png',
+		);
+		foreach ( $flags as $flag ) {
+			if ( file_exists( $flag ) ) {
+				unlink( $flag );
+			}
+		}
+		$flag_dir = WP_CONTENT_DIR . '/polylang';
+		if ( is_dir( $flag_dir ) ) {
+			rmdir( $flag_dir );
 		}
 
 		if ( isset( $_SERVER['HTTPS'] ) ) {
@@ -72,5 +99,30 @@ class Flags_Test extends PLL_UnitTestCase {
 		$lang = self::$model->get_language( 'fr' );
 		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->get_display_flag_url() );
 		$this->assertContains( 'https', $lang->get_display_flag_url() );
+	}
+
+	function test_remove_flag_inline_style_in_saved_language() {
+		@mkdir( WP_CONTENT_DIR . '/polylang' );
+		copy( dirname( __FILE__ ) . '/../data/de_CH.png', self::$flag_de_ch_informal );
+		self::create_language( 'de_CH_informal' );
+		$language = self::$model->get_language( 'de_CH_informal' );
+
+		$this->assertNotEmpty( $language->get_display_flag() );
+		$this->assertNotContains( 'style', $language->get_display_flag() );
+		$this->assertNotContains( 'width', $language->get_display_flag() );
+		$this->assertNotContains( 'height', $language->get_display_flag() );
+
+		self::$model->delete_language( 'de_CH_informal' );
+	}
+
+	function test_remove_flag_inline_style_in_new_language() {
+		@mkdir( WP_CONTENT_DIR . '/polylang' );
+		copy( dirname( __FILE__ ) . '/../data/de_CH.png', self::$flag_de_ch_informal );
+		$language = PLL_Language::create( self::$new_language );
+
+		$this->assertNotEmpty( $language->get_display_flag() );
+		$this->assertNotContains( 'style', $language->get_display_flag() );
+		$this->assertNotContains( 'width', $language->get_display_flag() );
+		$this->assertNotContains( 'height', $language->get_display_flag() );
 	}
 }
