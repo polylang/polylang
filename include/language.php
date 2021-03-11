@@ -178,6 +178,23 @@ class PLL_Language {
 	 */
 	public $custom_flag;
 
+
+	/**
+	 * Creates PLL_Language objects for languages not registered in the database.
+	 *
+	 * Set flag base64 encoded for predefined languages as user defined languages.
+	 *
+	 * @since 2.8.2
+	 * @param array $properties Where keys are PLL_Language properties names.
+	 * @return PLL_Language
+	 */
+	public static function create( $properties ) {
+		$properties['flag_code'] = $properties['flag'];
+		$language = new PLL_Language( $properties );
+		$language->set_flag();
+		return $language;
+	}
+
 	/**
 	 * Constructor: builds a language object given its two corresponding terms in 'language' and 'term_language' taxonomies.
 	 *
