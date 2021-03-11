@@ -8,6 +8,8 @@ class Flags_Test extends PLL_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		global $wp_filter;
+
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
@@ -21,8 +23,8 @@ class Flags_Test extends PLL_UnitTestCase {
 		parent::setUp();
 
 		$options       = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en_US' ) );
-		$this->model         = new PLL_Model( $options );
-		$links_model = new PLL_Links_Default( $this->model ); // Registers the 'pll_languages_list' and 'pll_after_languages_cache' filters.
+		$model         = new PLL_Model( $options );
+		$links_model   = new PLL_Links_Default( $model ); // Registers the 'pll_languages_list' and 'pll_after_languages_cache' filters.
 	}
 
 	public function tearDown() {
@@ -38,9 +40,9 @@ class Flags_Test extends PLL_UnitTestCase {
 	}
 
 	function test_default_flag() {
-		$lang = self::$model->get_language( 'en' );
-		$this->assertEquals( plugins_url( '/flags/us.png', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
-		$this->assertEquals( 1, preg_match( '#<img src="data:image\/png;base64,(.+)" alt="English" width="16" height="11" style="(.+)" \/>#', $lang->get_display_flag() ) );
+		$lang = self::$model->get_language( 'fr' );
+		$this->assertEquals( plugins_url( '/flags/fr.png', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
+		$this->assertEquals( 1, preg_match( '#<img src="data:image\/png;base64,(.+)" alt="Français" width="16" height="11" style="(.+)" \/>#', $lang->get_display_flag() ) );
 	}
 
 	function test_custom_flag() {
@@ -58,7 +60,7 @@ class Flags_Test extends PLL_UnitTestCase {
 	function test_default_flag_ssl() {
 		$_SERVER['HTTPS'] = 'on';
 
-		$lang = self::$model->get_language( 'en' );
+		$lang = self::$model->get_language( 'fr' );
 		$this->assertContains( 'https', $lang->get_display_flag_url() );
 	}
 
