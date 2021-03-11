@@ -47,9 +47,18 @@ class Flags_Test extends PLL_UnitTestCase {
 	}
 
 	public function tearDown() {
-		if ( file_exists( WP_CONTENT_DIR . '/polylang/fr_FR.png' ) ) {
-			unlink( WP_CONTENT_DIR . '/polylang/fr_FR.png' );
-			rmdir( WP_CONTENT_DIR . '/polylang' );
+		$flags = array(
+			WP_CONTENT_DIR . '/polylang/fr_FR.png',
+			WP_CONTENT_DIR . '/polylang/de_CH_informal.png',
+		);
+		foreach ( $flags as $flag ) {
+			if ( file_exists( $flag ) ) {
+				unlink( $flag );
+			}
+		}
+		$flag_dir = WP_CONTENT_DIR . '/polylang';
+		if ( is_dir( $flag_dir ) ) {
+			rmdir( $flag_dir );
 		}
 
 		if ( isset( $_SERVER['HTTPS'] ) ) {
@@ -94,9 +103,10 @@ class Flags_Test extends PLL_UnitTestCase {
 	}
 
 	function test_remove_flag_inline_style_in_saved_language() {
+		@mkdir( WP_CONTENT_DIR . '/polylang' );
 		copy( dirname( __FILE__ ) . '/../data/de_CH.png', self::$flag_de_ch_informal );
 		self::create_language( 'de_CH_informal' );
-		$language = $this->pll_env->model->get_language( 'de_CH_informal' );
+		$language = self::$model->get_language( 'de_CH_informal' );
 
 		$this->assertNotContains( 'style', $language->get_display_flag() );
 		$this->assertNotContains( 'width', $language->get_display_flag() );
