@@ -96,8 +96,8 @@ abstract class PLL_Choose_Lang {
 		// See https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
 		$this->curlang = ( $curlang instanceof PLL_Language ) ? $curlang : $this->model->get_language( $this->options['default_lang'] );
 
-		$GLOBALS['text_direction']  = $this->curlang->is_rtl ? 'rtl' : 'ltr';
-		wp_styles()->text_direction = $GLOBALS['text_direction'];
+		$GLOBALS['text_direction'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
+		add_action( 'wp_default_styles', array( $this, 'set_styles_text_direction' ) );
 
 		/**
 		 * Fires when the current language is defined.
@@ -108,6 +108,21 @@ abstract class PLL_Choose_Lang {
 		 * @param PLL_Language $curlang Current language object.
 		 */
 		do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
+	}
+
+	/**
+	 * Overrides the theme text direction with the correct text direction for the language.
+	 *
+	 * @param mixed $styles
+	 *
+	 * @return WP_Styles
+	 */
+	public function set_styles_text_direction( $styles ) {
+		if ( WP_Styles::class !== get_class( $styles ) ) {
+			$styles = wp_styles();
+		}
+		$styles->text_direction = $GLOBALS['text_direction'];
+		return $styles;
 	}
 
 	/**
