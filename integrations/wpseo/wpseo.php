@@ -106,7 +106,7 @@ class PLL_WPSEO {
 			$path = ltrim( wp_parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
 		}
 
-		if ( 'sitemap_index.xml' === $path || preg_match( '#([^/]+?)-sitemap([0-9]+)?\.xml|([a-z]+)?-?sitemap\.xsl#', $path ) ) {
+		if ( preg_match( '#sitemap(_index)?\.xml|([^\/]+?)-?sitemap([0-9]+)?\.xml|([a-z]+)?-?sitemap\.xsl#', $path ) ) {
 			$url = PLL()->links_model->switch_language_in_link( $url, PLL()->curlang );
 		}
 
