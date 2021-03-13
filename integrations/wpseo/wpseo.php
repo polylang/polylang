@@ -5,7 +5,7 @@
 
 /**
  * Manages the compatibility with Yoast SEO
- * Version tested: 11.5
+ * Version tested: 15.9.2
  *
  * @since 2.3
  */
@@ -79,6 +79,13 @@ class PLL_WPSEO {
 		);
 
 		new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
+
+		$keys = array(
+			'og_frontpage_title',
+			'og_frontpage_desc',
+		);
+
+		new PLL_Translate_Option( 'wpseo_social', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
 	}
 
 	/**
@@ -363,6 +370,8 @@ class PLL_WPSEO {
 				$presentation->model->permalink = pll_home_url();
 				$presentation->model->title = WPSEO_Options::get( 'title-home-wpseo' );
 				$presentation->model->description = WPSEO_Options::get( 'metadesc-home-wpseo' );
+				$presentation->model->open_graph_title = WPSEO_Options::get( 'og_frontpage_title' );
+				$presentation->model->open_graph_description = WPSEO_Options::get( 'og_frontpage_desc' );
 				break;
 
 			case 'post-type-archive':
