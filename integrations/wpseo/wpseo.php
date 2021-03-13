@@ -418,7 +418,7 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Synchronize the primary term
+	 * Synchronizes the metas.
 	 *
 	 * @since 2.3.3
 	 *
@@ -426,6 +426,10 @@ class PLL_WPSEO {
 	 * @return array
 	 */
 	public function copy_post_metas( $keys ) {
+		$keys[] = '_yoast_wpseo_meta-robots-noindex';
+		$keys[] = '_yoast_wpseo_meta-robots-nofollow';
+		$keys[] = '_yoast_wpseo_meta-robots-adv';
+
 		$taxonomies = get_taxonomies(
 			array(
 				'hierarchical' => true,
