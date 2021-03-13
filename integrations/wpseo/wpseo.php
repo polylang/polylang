@@ -54,41 +54,28 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Registers custom post types and taxonomy titles for translation.
+	 * Registers options for translation.
 	 *
 	 * @since 2.9
 	 */
 	public function wpseo_translate_options() {
-		$keys = array();
-
-		foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_post_type( $t ) ) {
-				$keys[] = 'title-' . $t;
-				$keys[] = 'metadesc-' . $t;
-			}
+		if ( method_exists( 'WPSEO_Options', 'clear_cache' ) ) {
+			WPSEO_Options::clear_cache();
 		}
 
-		foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_post_type( $t ) ) {
-				$keys[] = 'title-ptarchive-' . $t;
-				$keys[] = 'metadesc-ptarchive-' . $t;
-				$keys[] = 'bctitle-ptarchive-' . $t;
-			}
-		}
+		$keys = array(
+			'title-*',
+			'metadesc-*',
+			'bctitle-*',
+			'breadcrumbs-sep',
+			'breadcrumbs-home',
+			'breadcrumbs-prefix',
+			'breadcrumbs-archiveprefix',
+			'breadcrumbs-searchprefix',
+			'breadcrumbs-404crumb',
+		);
 
-		foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_taxonomy( $t ) ) {
-				$keys[] = 'title-tax-' . $t;
-				$keys[] = 'metadesc-tax-' . $t;
-			}
-		}
-
-		if ( ! empty( $keys ) ) {
-			if ( method_exists( 'WPSEO_Options', 'clear_cache' ) ) {
-				WPSEO_Options::clear_cache();
-			}
-			new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
-		}
+		new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
 	}
 
 	/**
