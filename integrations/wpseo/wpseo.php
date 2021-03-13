@@ -421,7 +421,9 @@ class PLL_WPSEO {
 				case 'post-type-archive':
 					if ( pll_is_translated_post_type( $indexable->object_sub_type ) ) {
 						$indexable->permalink = get_post_type_archive_link( $indexable->object_sub_type );
-						$indexable->breadcrumb_title = pll__( WPSEO_Options::get( 'bctitle-ptarchive-' . $indexable->object_sub_type ) );
+						$breadcrumb_title = WPSEO_Options::get( 'bctitle-ptarchive-' . $indexable->object_sub_type );
+						$breadcrumb_title = $breadcrumb_title ? $breadcrumb_title : $indexable->breadcrumb_title; // The option may be empty.
+						$indexable->breadcrumb_title = pll__( $breadcrumb_title );
 					}
 					break;
 			}
