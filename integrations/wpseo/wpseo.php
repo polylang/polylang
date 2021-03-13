@@ -73,6 +73,9 @@ class PLL_WPSEO {
 			'breadcrumbs-archiveprefix',
 			'breadcrumbs-searchprefix',
 			'breadcrumbs-404crumb',
+			'company_name',
+			'rssbefore',
+			'rssafter',
 		);
 
 		new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
