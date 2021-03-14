@@ -47,8 +47,7 @@ class PLL_WPSEO {
 			add_filter( 'wpseo_frontend_presentation', array( $this, 'frontend_presentation' ) );
 			add_filter( 'wpseo_breadcrumb_indexables', array( $this, 'breadcrumb_indexables' ) );
 		} else {
-			// Primary category
-			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ) );
+			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 10, 2 );
 			add_filter( 'pll_translate_post_meta', array( $this, 'translate_post_meta' ), 10, 3 );
 		}
 	}
@@ -430,14 +429,31 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Synchronizes the metas.
+	 * Copies or synchronizes the metas.
 	 *
 	 * @since 2.3.3
 	 *
-	 * @param array $keys List of custom fields names.
+	 * @param string[] $keys List of custom fields names.
+	 * @param bool     $sync True if it is synchronization, false if it is a copy.
 	 * @return array
 	 */
-	public function copy_post_metas( $keys ) {
+	public function copy_post_metas( $keys, $sync ) {
+		if ( ! $sync ) {
+			// Text requiring translation.
+			$keys[] = '_yoast_wpseo_title';
+			$keys[] = '_yoast_wpseo_metadesc';
+			$keys[] = '_yoast_wpseo_bctitle';
+			$keys[] = '_yoast_wpseo_focuskw';
+			$keys[] = '_yoast_wpseo_opengraph-title';
+			$keys[] = '_yoast_wpseo_opengraph-description';
+			$keys[] = '_yoast_wpseo_twitter-title';
+			$keys[] = '_yoast_wpseo_twitter-description';
+
+			// Copy the image urls.
+			$keys[] = '_yoast_wpseo_opengraph-image';
+			$keys[] = '_yoast_wpseo_twitter-image';
+		}
+
 		$keys[] = '_yoast_wpseo_meta-robots-noindex';
 		$keys[] = '_yoast_wpseo_meta-robots-nofollow';
 		$keys[] = '_yoast_wpseo_meta-robots-adv';
