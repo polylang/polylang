@@ -57,7 +57,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		// Meta in the html head section
-		add_action( 'wp_head', array( $this, 'wp_head' ) );
+		add_action( 'wp_head', array( $this, 'wp_head' ), 1 );
 
 		// Modifies the home url
 		if ( ! defined( 'PLL_FILTER_HOME_URL' ) || PLL_FILTER_HOME_URL ) {
