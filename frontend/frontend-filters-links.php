@@ -507,7 +507,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		$taxonomy = $this->get_queried_taxonomy( $tax_query );
 
 		$field = $queried_terms[ $taxonomy ]['field'];
-		$term  = is_array( $queried_terms[ $taxonomy ]['terms'] )  ? reset( $queried_terms[ $taxonomy ]['terms'] ) : false;
+		$term  = is_array( $queried_terms[ $taxonomy ]['terms'] ) ? reset( $queried_terms[ $taxonomy ]['terms'] ) : false;
 
 		// We can get a term_id when requesting a plain permalink, eg /?cat=1.
 		if ( 'term_id' === $field ) {
