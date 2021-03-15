@@ -188,15 +188,15 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
-				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/build/' . $script . $suffix . '.js', POLYLANG_OR_PRO_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
+				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/build/' . $script . $suffix . '.js', POLYLANG_ROOT_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
 				if ( 'classic-editor' === $script || 'block-editor' === $script ) {
 					wp_set_script_translations( 'pll_' . $script, 'polylang' );
 				}
 			}
 		}
 
-		wp_register_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_OR_PRO_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
-		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_OR_PRO_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
+		wp_register_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
 		$this->localize_scripts();
 	}
@@ -211,7 +211,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_OR_PRO_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
+			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
 			$this->localize_scripts();
 		}
 	}

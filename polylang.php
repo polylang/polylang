@@ -61,8 +61,8 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	define( 'POLYLANG_DIR', __DIR__ );
 
 	// Whether we are using Polylang or Polylang Pro, get the filename of the plugin in use.
-	if ( ! defined( 'POLYLANG_OR_PRO_FILE' ) ) {
-		define( 'POLYLANG_OR_PRO_FILE', __FILE__ );
+	if ( ! defined( 'POLYLANG_ROOT_FILE' ) ) {
+		define( 'POLYLANG_ROOT_FILE', __FILE__ );
 	}
 
 	if ( ! defined( 'POLYLANG_BASENAME' ) ) {
