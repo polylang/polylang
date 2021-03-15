@@ -5,7 +5,7 @@
 
 /**
  * Manages the compatibility with Yoast SEO
- * Version tested: 11.5
+ * Version tested: 15.9.2
  *
  * @since 2.3
  */
@@ -47,48 +47,44 @@ class PLL_WPSEO {
 			add_filter( 'wpseo_frontend_presentation', array( $this, 'frontend_presentation' ) );
 			add_filter( 'wpseo_breadcrumb_indexables', array( $this, 'breadcrumb_indexables' ) );
 		} else {
-			// Primary category
-			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ) );
+			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 10, 2 );
 			add_filter( 'pll_translate_post_meta', array( $this, 'translate_post_meta' ), 10, 3 );
 		}
 	}
 
 	/**
-	 * Registers custom post types and taxonomy titles for translation.
+	 * Registers options for translation.
 	 *
 	 * @since 2.9
 	 */
 	public function wpseo_translate_options() {
-		$keys = array();
-
-		foreach ( get_post_types( array( 'public' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_post_type( $t ) ) {
-				$keys[] = 'title-' . $t;
-				$keys[] = 'metadesc-' . $t;
-			}
+		if ( method_exists( 'WPSEO_Options', 'clear_cache' ) ) {
+			WPSEO_Options::clear_cache();
 		}
 
-		foreach ( get_post_types( array( 'has_archive' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_post_type( $t ) ) {
-				$keys[] = 'title-ptarchive-' . $t;
-				$keys[] = 'metadesc-ptarchive-' . $t;
-				$keys[] = 'bctitle-ptarchive-' . $t;
-			}
-		}
+		$keys = array(
+			'title-*',
+			'metadesc-*',
+			'bctitle-*',
+			'breadcrumbs-sep',
+			'breadcrumbs-home',
+			'breadcrumbs-prefix',
+			'breadcrumbs-archiveprefix',
+			'breadcrumbs-searchprefix',
+			'breadcrumbs-404crumb',
+			'company_name',
+			'rssbefore',
+			'rssafter',
+		);
 
-		foreach ( get_taxonomies( array( 'public' => true, '_builtin' => false ) ) as $t ) {
-			if ( pll_is_translated_taxonomy( $t ) ) {
-				$keys[] = 'title-tax-' . $t;
-				$keys[] = 'metadesc-tax-' . $t;
-			}
-		}
+		new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
 
-		if ( ! empty( $keys ) ) {
-			if ( method_exists( 'WPSEO_Options', 'clear_cache' ) ) {
-				WPSEO_Options::clear_cache();
-			}
-			new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
-		}
+		$keys = array(
+			'og_frontpage_title',
+			'og_frontpage_desc',
+		);
+
+		new PLL_Translate_Option( 'wpseo_social', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
 	}
 
 	/**
@@ -373,6 +369,8 @@ class PLL_WPSEO {
 				$presentation->model->permalink = pll_home_url();
 				$presentation->model->title = WPSEO_Options::get( 'title-home-wpseo' );
 				$presentation->model->description = WPSEO_Options::get( 'metadesc-home-wpseo' );
+				$presentation->model->open_graph_title = WPSEO_Options::get( 'og_frontpage_title' );
+				$presentation->model->open_graph_description = WPSEO_Options::get( 'og_frontpage_desc' );
 				break;
 
 			case 'post-type-archive':
@@ -433,14 +431,35 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Synchronize the primary term
+	 * Copies or synchronizes the metas.
 	 *
 	 * @since 2.3.3
 	 *
-	 * @param array $keys List of custom fields names.
+	 * @param string[] $keys List of custom fields names.
+	 * @param bool     $sync True if it is synchronization, false if it is a copy.
 	 * @return array
 	 */
-	public function copy_post_metas( $keys ) {
+	public function copy_post_metas( $keys, $sync ) {
+		if ( ! $sync ) {
+			// Text requiring translation.
+			$keys[] = '_yoast_wpseo_title';
+			$keys[] = '_yoast_wpseo_metadesc';
+			$keys[] = '_yoast_wpseo_bctitle';
+			$keys[] = '_yoast_wpseo_focuskw';
+			$keys[] = '_yoast_wpseo_opengraph-title';
+			$keys[] = '_yoast_wpseo_opengraph-description';
+			$keys[] = '_yoast_wpseo_twitter-title';
+			$keys[] = '_yoast_wpseo_twitter-description';
+
+			// Copy the image urls.
+			$keys[] = '_yoast_wpseo_opengraph-image';
+			$keys[] = '_yoast_wpseo_twitter-image';
+		}
+
+		$keys[] = '_yoast_wpseo_meta-robots-noindex';
+		$keys[] = '_yoast_wpseo_meta-robots-nofollow';
+		$keys[] = '_yoast_wpseo_meta-robots-adv';
+
 		$taxonomies = get_taxonomies(
 			array(
 				'hierarchical' => true,
