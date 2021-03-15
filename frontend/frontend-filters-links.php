@@ -500,7 +500,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @since 2.9
 	 *
 	 * @param WP_Tax_Query $tax_query An instance of WP_Tax_Query.
-	 * @return int | false
+	 * @return int|false
 	 */
 	protected function get_queried_term_id( $tax_query ) {
 		$queried_terms = $tax_query->queried_terms;
