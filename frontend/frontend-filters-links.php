@@ -500,14 +500,17 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @since 2.9
 	 *
 	 * @param WP_Tax_Query $tax_query An instance of WP_Tax_Query.
-	 * @return int
+	 * @return int | false
 	 */
 	protected function get_queried_term_id( $tax_query ) {
 		$queried_terms = $tax_query->queried_terms;
 		$taxonomy = $this->get_queried_taxonomy( $tax_query );
 
+		if ( ! is_array( $queried_terms[ $taxonomy ]['terms'] ) ) {
+			return false;
+		}
 		$field = $queried_terms[ $taxonomy ]['field'];
-		$term  = is_array( $queried_terms[ $taxonomy ]['terms'] ) ? reset( $queried_terms[ $taxonomy ]['terms'] ) : false;
+		$term  = reset( $queried_terms[ $taxonomy ]['terms'] );
 
 		// We can get a term_id when requesting a plain permalink, eg /?cat=1.
 		if ( 'term_id' === $field ) {
