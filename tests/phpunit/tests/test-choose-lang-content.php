@@ -190,4 +190,22 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '?year=2007' ) );
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
+
+	/**
+	 * @see https://github.com/polylang/polylang/issues/356
+	 */
+	public function test_update_stylesheet_text_direction_when_language_is_set_by_content() {
+		self::create_language( 'ar' );
+		$this->frontend->init();
+
+		// Usually happens on 'setup_theme'
+		wp_style_add_data( 'default', 'key', 'value' );
+
+		// Happens on 'wp'
+		$set_language = new ReflectionMethod( PLL_Choose_Lang::class, 'set_language' );
+		$set_language->setAccessible( true );
+		$set_language->invokeArgs( $this->frontend->choose_lang, array( $this->frontend->model->get_language( 'ar' ) ) );
+
+		$this->assertEquals( 'rtl', wp_styles()->text_direction );
+	}
 }
