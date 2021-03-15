@@ -60,6 +60,11 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	define( 'POLYLANG_FILE', __FILE__ );
 	define( 'POLYLANG_DIR', __DIR__ );
 
+	// Whether we are using Polylang or Polylang Pro, get the filename of the plugin in use.
+	if ( ! defined( 'POLYLANG_ROOT_FILE' ) ) {
+		define( 'POLYLANG_ROOT_FILE', __FILE__ );
+	}
+
 	if ( ! defined( 'POLYLANG_BASENAME' ) ) {
 		define( 'POLYLANG_BASENAME', plugin_basename( __FILE__ ) ); // Plugin name as known by WP.
 		require __DIR__ . '/vendor/autoload.php';
