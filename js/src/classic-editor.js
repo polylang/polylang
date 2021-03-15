@@ -5,7 +5,7 @@
 import {
 	initializeLanguageOldValue,
 	initializeConfimationModal
-} from './lib/confirmation-modal';
+} from '../lib/confirmation-modal';
 
 // tag suggest in metabox
 jQuery(

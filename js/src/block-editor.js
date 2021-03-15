@@ -5,7 +5,7 @@
 import {
 	initializeLanguageOldValue,
 	initializeConfimationModal
-} from './lib/confirmation-modal';
+} from '../lib/confirmation-modal';
 
 /**
  * Filter REST API requests to add the language in the request
