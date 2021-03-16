@@ -1,6 +1,7 @@
 # Files to exclude from the distribution.
 
 bin/
+css/src/
 js/src/
 node_modules/
 tests/
