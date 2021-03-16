@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,18 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.0.2 (2021-03-16) =
+
+* Move hreflang attributes higher in the head section #771
+* Fix custom flags not working (introduced in 3.0)
+* Fix translation of the confirmation modal when changing the language of a post
+* Fix js and css not loaded when Polylang is used as a mu-plugin ((introduced in 3.0))
+* Fix support for html5 stylesheet link tags #775
+* Fix possible warning in frontend-filters-links.php
+* Yoast SEO Premium: Take over the multilingual compatibility removed in Yoast SEO Premium 15.8 #796
+* Yoast SEO: Fix CPT breadcrumb title when the option is left empty #794
+* Yoast SEO: Fix sitemap.xml not redirected on secondary domains #789
 
 = 3.0.1 (2021-03-10) =
 
