@@ -235,7 +235,12 @@ class PLL_Admin_Model extends PLL_Model {
 		// And finally update the language itself
 		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
 		wp_update_term( (int) $lang->term_id, 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
-		wp_update_term( (int) $lang->tl_term_id, 'term_language', array( 'slug' => 'pll_' . $slug, 'name' => $args['name'] ) );
+		if ( empty( $lang->tl_term_id ) ) {
+			// Attempt to repair the term_language if it has been deleted by a database cleaning tool.
+			wp_insert_term( $args['name'], 'term_language', array( 'slug' => 'pll_' . $slug ) );
+		} else {
+			wp_update_term( (int) $lang->tl_term_id, 'term_language', array( 'slug' => 'pll_' . $slug, 'name' => $args['name'] ) );
+		}
 
 		/**
 		 * Fires when a language is updated.
