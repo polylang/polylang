@@ -265,4 +265,17 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		return $return;
 	}
+
+	/**
+	 * @param $post_ID
+	 * @param PLL_Language $lang
+	 */
+	public function update_language( $post_ID, $lang ) {
+		$this->set_language( $post_ID, $lang ); // Save language, useful to set the language when uploading media from post
+
+		// We also need to save the translations to match the language change
+		$translations = $this->get_translations( $post_ID );
+		$translations = array_diff( $translations, array( $post_ID ) );
+		$this->save_translations( $post_ID, $translations );
+	}
 }

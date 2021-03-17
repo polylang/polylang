@@ -181,12 +181,7 @@ class PLL_Admin_Classic_Editor {
 			wp_die( -1 );
 		}
 
-		$this->model->post->set_language( $post_ID, $lang ); // Save language, useful to set the language when uploading media from post
-
-		// We also need to save the translations to match the language change
-		$translations = $this->model->post->get_translations( $post_ID );
-		$translations = array_diff( $translations, array( $post_ID ) );
-		$this->model->post->save_translations( $post_ID, $translations );
+		$this->model->post->update_language( $post_ID, $lang, $this );
 
 		ob_start();
 		if ( 'attachment' === $post_type ) {
@@ -363,4 +358,5 @@ class PLL_Admin_Classic_Editor {
 			<?php
 		}
 	}
+
 }
