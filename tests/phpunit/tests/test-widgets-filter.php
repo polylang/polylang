@@ -111,8 +111,8 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		$_POST = array(
 			'widget-block' => array(
-				$wp_registered_widgets['block-1']['params'][0]['number'] => array( 'content' => '<!-- wp:latest-posts {"pll_lang":"en"} /-->' )
-			)
+				$wp_registered_widgets['block-1']['params'][0]['number'] => array( 'content' => '<!-- wp:latest-posts {"pll_lang":"en"} /-->' ),
+			),
 		);
 		$wp_widget_block->update_callback();
 
