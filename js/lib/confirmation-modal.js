@@ -80,11 +80,13 @@ export const initializeConfimationModal = () => {
 					}
 				]
 			};
+
 			if ( jQuery.ui.version >= '1.12.0' ) {
 				Object.assign( dialogOptions, { classes: { 'ui-dialog': 'pll-confirmation-modal' } } );
 			} else {
-				Object.assign( dialogOptions, { dialogClass: 'pll-confirmation-modal' } ); // jQuery UI 1.11.4 - WP < 5.6
+			Object.assign( dialogOptions, { dialogClass: 'pll-confirmation-modal' } ); // jQuery UI 1.11.4 - WP < 5.6
 			}
+
 			dialogContainer.dialog( dialogOptions );
 		}
 	);
