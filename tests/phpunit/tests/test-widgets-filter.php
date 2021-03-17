@@ -88,6 +88,43 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( ob_get_clean() );
 	}
 
+
+	function test_wp_get_sidebars_widgets_with_block() {
+		if ( file_exists( DIR_TESTROOT . '/../gutenberg/gutenberg.php' ) ) {
+			require_once DIR_TESTROOT . '/../gutenberg/gutenberg.php';
+		} else {
+			$this->markTestSkipped( 'This test requires gutenberg library' );
+		}
+
+		global $wp_registered_widgets, $_wp_sidebars_widgets;
+
+		wp_widgets_init();
+
+		$wp_widget_block = $wp_registered_widgets['block-1']['callback'][0];
+		$_wp_sidebars_widgets['sidebar-1'][3] = $wp_widget_block->id;
+
+		$frontend = new PLL_Frontend( $this->links_model );
+		$frontend->filters = new PLL_Frontend_Filters( $frontend );
+
+		$frontend->filters->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		$frontend->filters->cache->method( 'get' )->willReturn( false );
+
+		$_POST = array(
+			'widget-block' => array(
+				$wp_registered_widgets['block-1']['params'][0]['number'] => array( 'content' => '<!-- wp:latest-posts {"pll_lang":"en"} /-->' )
+			)
+		);
+		$wp_widget_block->update_callback();
+
+		$frontend->curlang = self::$model->get_language( 'en' );
+		$sidebars = wp_get_sidebars_widgets();
+		$this->assertTrue( in_array( 'block-1', $sidebars['sidebar-1'] ) );
+
+		$frontend->curlang = self::$model->get_language( 'fr' );
+		$sidebars = wp_get_sidebars_widgets();
+		$this->assertFalse( in_array( 'block-1', $sidebars['sidebar-1'] ) );
+	}
+
 	function test_display_with_no_filter() {
 		global $wp_registered_widgets;
 
