@@ -275,6 +275,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 								function addStringParameters() {
 									if ( 'undefined' === typeof options.data || '' === options.data.trim() ) {
+										// Only Polylang data need to be send. So it could be as a simple query string.
 										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
 									} else {
 										options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
@@ -285,6 +286,9 @@ abstract class PLL_Admin_Base extends PLL_Base {
 								 * options.processData set to true is the default jQuery process where the data is converted in a query string by using jQuery.param().
 								 * This step is done before applying filters. Thus here the options.data is already a string in this case.
 								 * @See https://github.com/jquery/jquery/blob/3.5.1/src/ajax.js#L563-L569 jQuery ajax function.
+								 * It is the most case WordPress send ajax request this way however third party plugins or themes could be send JSON string.
+								 * Use JSON format is recommended in jQuery.param() documentation to be able to send complex data structures.
+								 * @See https://api.jquery.com/jquery.param/ jQuery param function.
 								 */
 								if ( options.processData ) {
 									addStringParameters();
