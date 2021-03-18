@@ -40,27 +40,48 @@ class Save_Translations_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @dataProvider update_language_provider
+	 * @param $original_group
+	 * @param $to
+	 * @param $post_type
+	 * @param $expected_new_group
+	 * @param array              $expected_former_group
+	 *
+	 * @throws Exception
+	 */
+	public function test_update_language( $original_group, $to, $expected_new_group, $expected_former_group = array() ) {
+		wp_set_current_user( 1 ); // Needs edit_post capability.
+
+		list( $en1, $translations1 ) = $this->create_post_and_translations( $original_group );
+
+		$this->translated_post->update_language( $en1, $to, 'post' );
+
+		$updated_language_translations_group = array_keys( $this->translated_post->get_translations( $en1 ) );
+		$updated_language_old_translations_group = array_keys( $this->translated_post->get_translations( array_values( $translations1 )[0] ) );
+		$this->assertEqualSets( $expected_new_group, $updated_language_translations_group );
+		if ( ! empty( $expected_former_group ) ) {
+			$this->assertEqualSets( $expected_former_group, $updated_language_old_translations_group );
+		}
+	}
+
+	/**
+	 * @dataProvider update_language_provider
 	 * @param string $to Language slug.
 	 *
 	 * @throws ReflectionException
 	 */
-	public function test_inline_save_equivalent_to_update_translations( $original_group, $to, $post_type ) {
-		wp_set_current_user( 1 );
-
-		list( $en1, $translations1 ) = $this->create_post_and_translations( $original_group );
-
-		$this->translated_post->update_language( $en1, $to, $post_type );
+	public function test_inline_save_language( $original_group, $to, $expected_new_group, $expected_former_group = array() ) {
+		wp_set_current_user( 1 ); // Needs edit_post capability.
 
 		list( $en2, $translations2 ) = $this->create_post_and_translations( $original_group );
 
 		$this->inline_save_language->invokeArgs( $this->filters_post, array( $en2, self::$model->get_language( $to ) ) );
 
-		$updated_language_translations_group = array_keys( $this->translated_post->get_translations( $en1 ) );
-		$updated_language_old_translations_group = array_keys( $this->translated_post->get_translations( array_values( $translations1 )[0] ) );
 		$inline_saved_language_translations_group = array_keys( $this->translated_post->get_translations( $en2 ) );
 		$inline_saved_language_old_translations_group = array_keys( $this->translated_post->get_translations( array_values( $translations2 )[0] ) );
-		$this->assertEquals( $updated_language_translations_group, $inline_saved_language_translations_group );
-		$this->assertEquals( $updated_language_old_translations_group, $inline_saved_language_old_translations_group );
+		$this->assertEqualSets( $expected_new_group, $inline_saved_language_translations_group );
+		if ( ! empty( $expected_former_group ) ) {
+			$this->assertEqualSets( $expected_former_group, $inline_saved_language_old_translations_group );
+		}
 	}
 
 	public function update_language_provider() {
@@ -68,17 +89,18 @@ class Save_Translations_Test extends PLL_UnitTestCase {
 			'Update to same language' => array(
 				'original_group' => array( 'en', 'fr' ),
 				'to' => 'en',
-				'post_type' => 'post',
+				'expected_new_group' => array( 'en', 'fr' ),
 			),
 			'Update to language not in translations group' => array(
 				'original_group' => array( 'en', 'fr' ),
 				'to' => 'de',
-				'post_type' => 'post',
+				'expected_new_group' => array( 'fr', 'de' ),
 			),
 			'Update to language already in translations group' => array(
 				'original_group' => array( 'en', 'fr', 'de' ),
 				'to' => 'fr',
-				'post_type' => 'post',
+				'expected_new_group' => array( 'fr' ),
+				'expected_former_group' => array( 'fr', 'de' ),
 			),
 		);
 	}
