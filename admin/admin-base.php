@@ -273,7 +273,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 						$.ajaxPrefilter( function ( options, originalOptions, jqXHR ) {
 							if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 
-								function addStringParameters() {
+								function addPolylangParametersAsString() {
 									if ( 'undefined' === typeof options.data || '' === options.data.trim() ) {
 										// Only Polylang data need to be send. So it could be as a simple query string.
 										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
@@ -291,14 +291,14 @@ abstract class PLL_Admin_Base extends PLL_Base {
 								 * @See https://api.jquery.com/jquery.param/ jQuery param function.
 								 */
 								if ( options.processData ) {
-									addStringParameters();
+									addPolylangParametersAsString();
 								} else {
 									/*
 									 * If options.processData is set to false data could be undefined or pass as a string.
 									 * So data as to be processed as if options.processData is set to true.
 									 */
 									if ( 'undefined' === typeof options.data || 'string' === typeof options.data ) {
-										addStringParameters();
+										addPolylangParametersAsString();
 									} else {
 										// Otherwise options.data is probably an object.
 										options.data = Object.assign( options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> );
