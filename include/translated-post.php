@@ -270,7 +270,17 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @param $post_ID
 	 * @param PLL_Language $lang
 	 */
-	public function update_language( $post_ID, $lang ) {
+	public function update_language( $post_ID, $lang, $post_type ) {
+		$post_type_object = get_post_type_object( $post_type );
+
+		if ( empty( $post_type_object ) ) {
+			throw new InvalidArgumentException( "{$post_type} is not a valid Post Type." );
+		}
+
+		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
+			throw new Exception( "User does not have {$post_type_object->cap->edit_post} capability." );
+		}
+
 		$this->set_language( $post_ID, $lang ); // Save language, useful to set the language when uploading media from post
 
 		// We also need to save the translations to match the language change

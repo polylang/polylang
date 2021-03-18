@@ -44,47 +44,60 @@ class Save_Translations_Test extends PLL_UnitTestCase {
 	 *
 	 * @throws ReflectionException
 	 */
-	public function test_inline_save_equivalent_to_update_translations( $to ) {
-		$en1 = $this->factory()->attachment->create();
-		self::$model->post->set_language( $en1, 'en' );
-		$fr1 = $this->factory()->post->create();
-		self::$model->post->set_language( $fr1, 'fr' );
-		self::$model->post->save_translations( $en1, array( 'fr' => $fr1 ) );
+	public function test_inline_save_equivalent_to_update_translations( $original_group, $to, $post_type ) {
+		wp_set_current_user( 1 );
 
-		$this->translated_post->update_language( $en1, $to );
+		list( $en1, $translations1 ) = $this->create_post_and_translations( $original_group );
 
-		$en2 = $this->factory()->attachment->create();
-		self::$model->post->set_language( $en2, 'en' );
-		$fr2 = $this->factory()->post->create();
-		self::$model->post->set_language( $fr2, 'fr' );
-		self::$model->post->save_translations( $en2, array( 'fr' => $fr2 ) );
+		$this->translated_post->update_language( $en1, $to, $post_type );
 
-		$this->inline_save_language->invokeArgs( $this->filters_post, array( $en2, $to ) );
+		list( $en2, $translations2 ) = $this->create_post_and_translations( $original_group );
+
+		$this->inline_save_language->invokeArgs( $this->filters_post, array( $en2, self::$model->get_language( $to ) ) );
 
 		$updated_language_translations_group = array_keys( $this->translated_post->get_translations( $en1 ) );
+		$updated_language_old_translations_group = array_keys( $this->translated_post->get_translations( array_values( $translations1 )[0] ) );
 		$inline_saved_language_translations_group = array_keys( $this->translated_post->get_translations( $en2 ) );
+		$inline_saved_language_old_translations_group = array_keys( $this->translated_post->get_translations( array_values( $translations2 )[0] ) );
 		$this->assertEquals( $updated_language_translations_group, $inline_saved_language_translations_group );
-	}
-
-	public function test_save_translations_from_filter_post_equivalent_to_update_translations() {
-		$this->markTestIncomplete();
-	}
-
-	public function test_dave_translations_from_filter_post_equivalent_to_save_inline_post() {
-		$this->markTestIncomplete();
+		$this->assertEquals( $updated_language_old_translations_group, $inline_saved_language_old_translations_group );
 	}
 
 	public function update_language_provider() {
 		return array(
 			'Update to same language' => array(
+				'original_group' => array( 'en', 'fr' ),
 				'to' => 'en',
-			),
-			'Update to language already in translations group' => array(
-				'to' => 'fr',
+				'post_type' => 'post',
 			),
 			'Update to language not in translations group' => array(
+				'original_group' => array( 'en', 'fr' ),
 				'to' => 'de',
+				'post_type' => 'post',
+			),
+			'Update to language already in translations group' => array(
+				'original_group' => array( 'en', 'fr', 'de' ),
+				'to' => 'fr',
+				'post_type' => 'post',
 			),
 		);
+	}
+
+	/**
+	 * @param string[] $languages
+	 *
+	 * @return array
+	 */
+	public function create_post_and_translations( $languages ) {
+		$translations = array();
+		foreach ( $languages as $language ) {
+			$new_post = $this->factory()->attachment->create();
+			self::$model->post->set_language( $new_post, $language );
+			$translations[ $language ] = $new_post;
+		}
+		$post_id = array_shift( $translations );
+		self::$model->post->save_translations( $post_id, $translations );
+
+		return array( $post_id, $translations );
 	}
 }
