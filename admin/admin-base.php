@@ -278,7 +278,16 @@ abstract class PLL_Admin_Base extends PLL_Base {
 										// Only Polylang data need to be send. So it could be as a simple query string.
 										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
 									} else {
-										options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
+										/*
+										 * In some cases data could be a JSON string like in third party plugins.
+										 * So we need not to break their process by adding polylang parameters as valid JSON datas.
+										 */
+										try {
+											options.data = JSON.stringify( Object.assign( JSON.parse( options.data ), <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> ) );
+										} catch( exception ) {
+											// Add Polylang data to the existing query string.
+											options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
+										}
 									}
 								}
 
