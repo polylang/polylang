@@ -267,25 +267,27 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * @param $post_ID
+	 * @param $post_id
 	 * @param PLL_Language $lang
 	 */
-	public function update_language( $post_ID, $lang, $post_type ) {
+	public function update_language( $post_id, $lang, $post_type ) {
 		$post_type_object = get_post_type_object( $post_type );
 
 		if ( empty( $post_type_object ) ) {
-			throw new InvalidArgumentException( "{$post_type} is not a valid Post Type." );
+			return new WP_Error( 'invalid_argument', "{$post_type} is not a valid Post Type." );
 		}
 
-		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
-			throw new Exception( "User does not have {$post_type_object->cap->edit_post} capability." );
+		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
+			return new WP_Error( 'missing_capability', "User does not have {$post_type_object->cap->edit_post} capability." );
 		}
 
-		$this->set_language( $post_ID, $lang ); // Save language, useful to set the language when uploading media from post
+		$this->set_language( $post_id, $lang ); // Save language, useful to set the language when uploading media from post
 
 		// We also need to save the translations to match the language change
-		$translations = $this->get_translations( $post_ID );
-		$translations = array_diff( $translations, array( $post_ID ) );
-		$this->save_translations( $post_ID, $translations );
+		$translations = $this->get_translations( $post_id );
+		$translations = array_diff( $translations, array( $post_id ) );
+		$this->save_translations( $post_id, $translations );
+
+		return true;
 	}
 }

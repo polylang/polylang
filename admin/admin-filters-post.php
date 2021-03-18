@@ -154,50 +154,6 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 	}
 
 	/**
-	 * Saves a post language when inline editing or bulk editing.
-	 * Fixes the translations if necessary.
-	 *
-	 * @since 2.3
-	 *
-	 * @param int          $post_id Post ID.
-	 * @param PLL_Language $lang    Language.
-	 * @return void
-	 */
-	protected function inline_save_language( $post_id, $lang ) {
-		$post = get_post( $post_id );
-
-		if ( empty( $post ) ) {
-			return;
-		}
-
-		$post_type_object = get_post_type_object( $post->post_type );
-
-		if ( empty( $post_type_object ) ) {
-			return;
-		}
-
-		if ( current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
-			$old_lang = $this->model->post->get_language( $post_id ); // Stores the old  language
-			$this->model->post->set_language( $post_id, $lang ); // set new language
-
-			// Checks if the new language already exists in the translation group
-			if ( $old_lang && $old_lang->slug != $lang->slug ) {
-				$translations = $this->model->post->get_translations( $post_id );
-
-				// If yes, separate this post from the translation group
-				if ( array_key_exists( $lang->slug, $translations ) ) {
-					$this->model->post->delete_translation( $post_id );
-				}
-
-				elseif ( array_key_exists( $old_lang->slug, $translations ) ) {
-					unset( $translations[ $old_lang->slug ] );
-					$this->model->post->save_translations( $post_id, $translations );
-				}
-			}
-		}
-	}
-
-	/**
 	 * Save language when bulk editing a post
 	 *
 	 * @since 2.3
@@ -211,7 +167,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {
 				$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
 				foreach ( $post_ids as $post_id ) {
-					$this->inline_save_language( $post_id, $lang );
+					$this->model->post->update_language( $post_id, $lang, get_post_type( $post_id ) );
 				}
 			}
 		}
@@ -231,7 +187,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			$post_id = (int) $_POST['post_ID'];
 			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
 			if ( $post_id && $lang ) {
-				$this->inline_save_language( $post_id, $lang );
+				$this->model->post->update_language( $post_id, $lang, get_post_type( $post_id ) );
 			}
 		}
 	}

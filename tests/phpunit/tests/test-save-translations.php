@@ -33,9 +33,6 @@ class Save_Translations_Test extends PLL_UnitTestCase {
 		$links_model = new PLL_Links_Default( $model );
 		$polylang = new PLL_Admin( $links_model );
 		$this->filters_post = new PLL_Admin_Filters_Post( $polylang );
-		$this->inline_save_language = new ReflectionMethod( PLL_Admin_Filters_Post::class, 'inline_save_language' );
-		$this->inline_save_language->setAccessible( true );
-
 	}
 
 	/**
@@ -60,27 +57,6 @@ class Save_Translations_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( $expected_new_group, $updated_language_translations_group );
 		if ( ! empty( $expected_former_group ) ) {
 			$this->assertEqualSets( $expected_former_group, $updated_language_old_translations_group );
-		}
-	}
-
-	/**
-	 * @dataProvider update_language_provider
-	 * @param string $to Language slug.
-	 *
-	 * @throws ReflectionException
-	 */
-	public function test_inline_save_language( $original_group, $to, $expected_new_group, $expected_former_group = array() ) {
-		wp_set_current_user( 1 ); // Needs edit_post capability.
-
-		list( $en2, $translations2 ) = $this->create_post_and_translations( $original_group );
-
-		$this->inline_save_language->invokeArgs( $this->filters_post, array( $en2, self::$model->get_language( $to ) ) );
-
-		$inline_saved_language_translations_group = array_keys( $this->translated_post->get_translations( $en2 ) );
-		$inline_saved_language_old_translations_group = array_keys( $this->translated_post->get_translations( array_values( $translations2 )[0] ) );
-		$this->assertEqualSets( $expected_new_group, $inline_saved_language_translations_group );
-		if ( ! empty( $expected_former_group ) ) {
-			$this->assertEqualSets( $expected_former_group, $inline_saved_language_old_translations_group );
 		}
 	}
 

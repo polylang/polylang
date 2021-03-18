@@ -171,13 +171,13 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 0 );
 		}
 
-		try {
-			$this->model->post->update_language( $post_ID, $lang, $post_type );
-		} catch ( Exception $exception ) {
-			if ( $exception instanceof InvalidArgumentException ) {
-				wp_die( 0 );
-			} else {
-				wp_die( -1 );
+		$return = $this->model->post->update_language( $post_ID, $lang, $post_type );
+		if ( is_wp_error( $return ) ) {
+			switch ( $return->get_error_code() ) {
+				case 'missing_capability':
+					wp_die( -1 );
+				default:
+					wp_die( 0 );
 			}
 		}
 
