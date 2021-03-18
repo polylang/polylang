@@ -274,7 +274,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 							if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 
 								function addStringParameters() {
-									if ( 'undefined' === typeof options.data || '' === options.data ) {
+									if ( 'undefined' === typeof options.data || '' === options.data.trim() ) {
 										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
 									} else {
 										options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
