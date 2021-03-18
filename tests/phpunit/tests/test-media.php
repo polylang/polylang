@@ -79,11 +79,15 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertFalse( isset( $fields['language'] ) );
 	}
 
+	/**
+	 * @since 3.1 User cannot change the translations group from the update media request anymore.
+	 */
 	function test_attachment_fields_to_save() {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$en = $this->factory->attachment->create_upload_object( $filename );
 		self::$model->post->set_language( $en, 'en' );
 		$fr = $this->factory->attachment->create_upload_object( $filename );
+		self::$model->post->save_translations( $en, array( 'fr' => $fr ) );
 
 		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $editor ); // Set a user to pass current_user_can tests
@@ -92,7 +96,6 @@ class Media_Test extends PLL_UnitTestCase {
 			'post_ID'       => $fr,
 			'post_title'    => 'Test image',
 			'attachments'   => array( $fr => array( 'language' => 'fr' ) ),
-			'media_tr_lang' => array( 'en' => $en ),
 			'_pll_nonce'    => wp_create_nonce( 'pll_language' ),
 		);
 		edit_post();
