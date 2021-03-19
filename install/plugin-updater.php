@@ -1,7 +1,4 @@
 <?php
-/**
- * @package Polylang
- */
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
