@@ -88,4 +88,22 @@ trait PLL_UnitTestCase_Trait {
 			}
 		}
 	}
+
+	/**
+	 * @param PHPUnit_Framework_MockObject_Matcher $matcher How many times the hook is expected to be called.
+	 * @param string                               $hook_name Hook name expected to be called.
+	 * @param int                                  $priority Priority set to the spy hook (use if it needs to be called after or before another hook).
+	 * @param int                                  $args Number of action / filter arguments to spy on.
+	 *
+	 * @return PHPUnit_Framework_MockObject_Builder_InvocationMocker
+	 */
+	public function expect_hook( $matcher, $hook_name, $priority = 10, $args = 1 ) {
+		$spy_hook = $this->getMockBuilder( stdClass::class )
+			->setMethods( array( 'trigger' ) )
+			->getMock();
+		add_action( $hook_name, array( $spy_hook, 'trigger' ), $priority, $args );
+
+		return $spy_hook->expects( $matcher )
+						->method( 'trigger' );
+	}
 }

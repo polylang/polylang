@@ -288,6 +288,10 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 			return new WP_Error( 'missing_capability', "User does not have {$post_type_object->cap->edit_post} capability." );
 		}
 
+		if ( $this->get_language( $post_id ) === $lang ) {
+			return true;
+		}
+
 		$this->set_language( $post_id, $lang );
 
 		$translations = $this->get_translations( $post_id );

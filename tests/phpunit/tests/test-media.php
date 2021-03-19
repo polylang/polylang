@@ -80,29 +80,33 @@ class Media_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @since 3.1 User cannot change the translations group from the update media request anymore.
+	 * @since 3.1 Since the language and translations are updated through a previous AJAX call, we'd rather not perform an unnecessary update now.
 	 */
 	function test_attachment_fields_to_save() {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$en = $this->factory->attachment->create_upload_object( $filename );
 		self::$model->post->set_language( $en, 'en' );
-		$fr = $this->factory->attachment->create_upload_object( $filename );
-		self::$model->post->save_translations( $en, array( 'fr' => $fr ) );
 
 		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $editor ); // Set a user to pass current_user_can tests
 
+		// Any term relationship could be updated, except for the 'language' term.
+		$this->expectHook( $this->any(), 'set_object_terms', 10, 4 )
+			->with(
+				$this->anything(),
+				$this->anything(),
+				$this->anything(),
+				$this->logicalNot( $this->equalTo( 'language' ) )
+			);
+
 		$_REQUEST = $_POST = array(
-			'post_ID'       => $fr,
+			'post_ID'       => $en,
 			'post_title'    => 'Test image',
-			'attachments'   => array( $fr => array( 'language' => 'fr' ) ),
+			'attachments'   => array( $en => array( 'language' => 'en' ) ),
 			'_pll_nonce'    => wp_create_nonce( 'pll_language' ),
 		);
 		edit_post();
 
-		$this->assertEquals( 'en', self::$model->post->get_language( $en )->slug );
-		$this->assertEquals( 'fr', self::$model->post->get_language( $fr )->slug );
-		$this->assertEqualSets( array( 'en' => $en, 'fr' => $fr ), self::$model->post->get_translations( $en ) );
 	}
 
 	function test_create_media_translation_with_slashes() {
