@@ -9,7 +9,6 @@
  * Testes PLL_Translated_Object methods tha are common to PLL_Translated_Post and PLL_Translated_Term.
  */
 class PLL_Translated_Object_UnitTestCase extends PLL_UnitTestCase {
-
 	/**
 	 * @covers PLL_Translated_Object::save_translations()
 	 *
@@ -25,6 +24,6 @@ class PLL_Translated_Object_UnitTestCase extends PLL_UnitTestCase {
 
 		$translated_object->save_translations( $id, array( 'fr' => $id ) );
 
-		$this->assertNotEquals( $translated_object->get_translations( $id )['fr'], $id );
+		$this->assertNotContains( 'fr', array_keys( $translated_object->get_translations( $id ) ) );
 	}
 }
