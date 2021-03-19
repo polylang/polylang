@@ -140,4 +140,56 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 		$this->assertTrue( self::$model->post->current_user_can_read( $post_id ) );
 		$this->assertTrue( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 	}
+
+	/**
+	 * @dataProvider update_language_provider
+	 * @param $original_group
+	 * @param $to
+	 * @param $expected_new_group
+	 * @param array              $expected_former_group
+	 *
+	 * @throws Exception
+	 */
+	public function test_update_language( $original_group, $to, $expected_new_group, $expected_former_group = array() ) {
+		wp_set_current_user( 1 ); // Needs edit_post capability.
+
+		$translations = array();
+		foreach ( $original_group as $language ) {
+			$new_post = $this->factory()->attachment->create();
+			self::$model->post->set_language( $new_post, $language );
+			$translations[ $language ] = $new_post;
+		}
+		$post_id = array_shift( $translations );
+		self::$model->post->save_translations( $post_id, $translations );
+
+		self::$model->post->update_language( $post_id, $to, 'post' );
+
+		$updated_language_translations_group = array_keys( self::$model->post->get_translations( $post_id ) );
+		$updated_language_old_translations_group = array_keys( self::$model->post->get_translations( array_values( $translations )[0] ) );
+		$this->assertEqualSets( $expected_new_group, $updated_language_translations_group );
+		if ( ! empty( $expected_former_group ) ) {
+			$this->assertEqualSets( $expected_former_group, $updated_language_old_translations_group );
+		}
+	}
+
+	public function update_language_provider() {
+		return array(
+			'Update to same language' => array(
+				'original_group' => array( 'en', 'fr' ),
+				'to' => 'en',
+				'expected_new_group' => array( 'en', 'fr' ),
+			),
+			'Update to language not in translations group' => array(
+				'original_group' => array( 'en', 'fr' ),
+				'to' => 'de',
+				'expected_new_group' => array( 'fr', 'de' ),
+			),
+			'Update to language already in translations group' => array(
+				'original_group' => array( 'en', 'fr', 'de' ),
+				'to' => 'fr',
+				'expected_new_group' => array( 'fr' ),
+				'expected_former_group' => array( 'fr', 'de' ),
+			),
+		);
+	}
 }
