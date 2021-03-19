@@ -45,11 +45,11 @@ class PLL_Accept_Language {
 	 * @since 3.0
 	 *
 	 * @param string[] $subtags With subtag name as keys and subtag values as names.
-	 * @param float    $quality
+	 * @param mixed    $quality Floating point value from 0.0 to 1.0. Higher values indicates a user's preference.
 	 */
 	public function __construct( $subtags, $quality = 1.0 ) {
 		$this->subtags = $subtags;
-		$this->quality = $quality;
+		$this->quality = is_numeric( $quality ) ? floatval( $quality ) : 1.0;
 	}
 
 	/**
@@ -65,7 +65,7 @@ class PLL_Accept_Language {
 			array_keys( array_slice( self::SUBTAG_PATTERNS, 0, count( $matches ) - 1 ) ),
 			array_slice( $matches, 1, count( self::SUBTAG_PATTERNS ) )
 		);
-		$quality = count( $matches ) === 9 ? floatval( $matches[8] ) : 1.0;
+		$quality = count( $matches ) === 9 ? $matches[8] : 1.0;
 
 		return new PLL_Accept_Language( $subtags, $quality );
 	}
