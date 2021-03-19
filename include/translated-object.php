@@ -188,13 +188,21 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
+<<<<<<< HEAD
 	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
 	 * @return void
+=======
+	 * @param array $translations An associative array of translations with language code as key and translation id as value.
+	 *
+	 * @return string[] An associative array containing the processed translations.
+>>>>>>> 34d62ce (fix(include): Move the translations group validation to the model)
 	 */
 	public function save_translations( $id, $translations ) {
+		$translations = $this->validate_translations( $translations );
+
 		$id = (int) $id;
 
-		if ( ( $lang = $this->get_language( $id ) ) && is_array( $translations ) ) {
+		if ( $lang = $this->get_language( $id ) ) {
 			// Sanitize the translations array.
 			$translations = array_map( 'intval', $translations );
 			$translations = array_merge( array( $lang->slug => $id ), $translations ); // Make sure this object is in translations.
@@ -236,7 +244,27 @@ abstract class PLL_Translated_Object {
 					}
 				}
 			}
+			return $translations;
+		} else {
+			return array();
 		}
+	}
+
+	/**
+	 * Returns translations after checking the translated post is in the right language
+	 *
+	 * @param array $translations Locales as keys and post ids as values.
+	 *
+	 * @return array
+	 */
+	public function validate_translations( $translations ) {
+		$valid_translations = array();
+
+		foreach ( $translations as $lang => $tr_id ) {
+			$valid_translations[ $lang ] = ( $tr_id && $this->get_language( (int) $tr_id )->slug == $lang ) ? (int) $tr_id : 0;
+		}
+
+		return $valid_translations;
 	}
 
 	/**
