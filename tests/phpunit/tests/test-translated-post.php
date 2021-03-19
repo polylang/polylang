@@ -143,10 +143,10 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @dataProvider update_language_provider
-	 * @param $original_group
-	 * @param $to
-	 * @param $expected_new_group
-	 * @param array              $expected_former_group
+	 * @param string[] $original_group An array of language locales to be included in the original translations group.
+	 * @param string   $to A language locale to update the post to.
+	 * @param string[] $expected_new_group An array of language locales to be included in the new translations group.
+	 * @param string[] $expected_former_group Optional. Represents the former translations group of the post if changing language should have set the post in a separate group.
 	 *
 	 * @throws Exception
 	 */

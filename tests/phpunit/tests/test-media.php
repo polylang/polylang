@@ -91,7 +91,7 @@ class Media_Test extends PLL_UnitTestCase {
 		wp_set_current_user( $editor ); // Set a user to pass current_user_can tests
 
 		// Any term relationship could be updated, except for the 'language' term.
-		$this->expectHook( $this->any(), 'set_object_terms', 10, 4 )
+		$this->expect_hook( $this->any(), 'set_object_terms', 10, 4 )
 			->with(
 				$this->anything(),
 				$this->anything(),
