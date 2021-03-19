@@ -14,6 +14,7 @@
 	background: #fff;
 	border: 0;
 	color: #444;
+	border-radius: 0; /* Override WooCommerce dialog styles - jQuery UI 1.11.4 - WP < 5.6 */
 }
 .ui-dialog.pll-confirmation-modal .ui-dialog-titlebar {
 	background: #fcfcfc;
@@ -44,6 +45,8 @@
 	right: 0;
 	width: 36px;
 	height: 36px;
+	border: 0; /* Override WooCommerce dialog styles - jQuery UI 1.11.4 - WP < 5.6 */
+	background: none; /* Override WooCommerce dialog styles - jQuery UI 1.11.4 - WP < 5.6 */
 }
 .ui-dialog.pll-confirmation-modal .ui-dialog-content {
 	border: 0;
