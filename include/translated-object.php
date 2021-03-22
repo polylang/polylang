@@ -188,14 +188,9 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
-<<<<<<< HEAD
-	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
-	 * @return void
-=======
 	 * @param array $translations An associative array of translations with language code as key and translation id as value.
 	 *
-	 * @return string[] An associative array containing the processed translations.
->>>>>>> 34d62ce (fix(include): Move the translations group validation to the model)
+	 * @return int[] An associative array with locales as key and post ids as values.
 	 */
 	public function save_translations( $id, $translations ) {
 		$translations = $this->validate_translations( $translations );
