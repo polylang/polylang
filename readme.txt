@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,12 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.0.3 (2021-03-23) =
+
+* Fix a warning when a language is corrupted in database (term_language missing)
+* Fix confirmation modal with WooCommerce and WordPress < 5.6
+* Fix an ajax conflict with WooCommerce Tree Table Rate Shipping and HubSpot All-In-One Marketing
 
 = 3.0.2 (2021-03-16) =
 
