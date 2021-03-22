@@ -81,6 +81,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @since 3.1 Since the language and translations are updated through a previous AJAX call, we'd rather not perform an unnecessary update now.
+	 * @doesNotPerformAssertions Uses internal {@see PLL_UnitTestCase_Trait::expect_hook()} that is not recognized by PHPUnit as an assertion.
 	 */
 	function test_attachment_fields_to_save() {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
