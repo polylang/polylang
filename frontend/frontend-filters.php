@@ -17,6 +17,11 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	public $cache;
 
 	/**
+	 * @var string $cache_key Cache key.
+	 */
+	public $cache_key;
+
+	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.2
@@ -161,16 +166,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	public function sidebars_widgets( $sidebars_widgets ) {
 		global $wp_registered_widgets;
 
-		if ( empty( $wp_registered_widgets ) ) {
-			return $sidebars_widgets;
-		}
-
-		$cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
-		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$cache_key}" );
-
-		if ( false !== $_sidebars_widgets ) {
-			return $_sidebars_widgets;
-		}
+		$this->init_sidebars_widgets( $sidebars_widgets );
 
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( 'wp_inactive_widgets' === $sidebar || empty( $widgets ) ) {
@@ -178,25 +174,95 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			}
 
 			foreach ( $widgets as $key => $widget ) {
-				// Nothing can be done if the widget is created using pre WP2.8 API :(
-				// There is no object, so we can't access it to get the widget options
-				if ( ! isset( $wp_registered_widgets[ $widget ]['callback'] ) || ! is_array( $wp_registered_widgets[ $widget ]['callback'] ) || ! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
+				if ( ! $this->is_widget_object( $wp_registered_widgets, $widget ) ) {
 					continue;
 				}
 
-				$widget_settings = $wp_registered_widgets[ $widget ]['callback'][0]->get_settings();
-				$number          = $wp_registered_widgets[ $widget ]['params'][0]['number'];
+				$widget_data = $this->get_widget_data( $wp_registered_widgets, $widget );
 
 				// Remove the widget if not visible in the current language
-				if ( ! empty( $widget_settings[ $number ]['pll_lang'] ) && $widget_settings[ $number ]['pll_lang'] !== $this->curlang->slug ) {
+				if ( ! empty( $widget_data['settings'][ $widget_data['number'] ]['pll_lang'] ) && $widget_data['settings'][ $widget_data['number'] ]['pll_lang'] !== $this->curlang->slug ) {
 					unset( $sidebars_widgets[ $sidebar ][ $key ] );
 				}
 			}
 		}
 
-		$this->cache->set( "sidebars_widgets_{$cache_key}", $sidebars_widgets );
+		$this->set_sidebars_widgets_cache( $sidebars_widgets );
 
 		return $sidebars_widgets;
+	}
+
+	/**
+	 * Init widgets sidebars, checks if they already exist in the cache to use them later.
+	 *
+	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
+	 *
+	 * @return mixed|void
+	 */
+	public function init_sidebars_widgets( $sidebars_widgets ) {
+		if ( empty( $wp_registered_widgets ) ) {
+			return $sidebars_widgets;
+		}
+
+		$this->cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
+		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$this->cache_key}" );
+
+		if ( false !== $_sidebars_widgets ) {
+			return $_sidebars_widgets;
+		}
+	}
+
+	/**
+	 * Test if the widget is an object.
+	 *
+	 * @since 3.1
+	 *
+	 * @param array  $wp_registered_widgets Array of all registered widgets.
+	 * @param string $widget                String that identifies the widget.
+	 * @return bool
+	 */
+	public function is_widget_object( $wp_registered_widgets, $widget ) {
+		// Nothing can be done if the widget is created using pre WP2.8 API :(
+		// There is no object, so we can't access it to get the widget options
+		if ( ! isset( $wp_registered_widgets[ $widget ]['callback'] ) ||
+			! is_array( $wp_registered_widgets[ $widget ]['callback'] ) ||
+			! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) ||
+			! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) ||
+			! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Get widgets settings and number.
+	 *
+	 * @since 3.1
+	 *
+	 * @param array  $wp_registered_widgets Array of all registered widgets.
+	 * @param string $widget                String that identifies the widget.
+	 * @return array An array containing the widget settings and number.
+	 */
+	public function get_widget_data( $wp_registered_widgets, $widget ) {
+		$widget_settings = $wp_registered_widgets[ $widget ]['callback'][0]->get_settings();
+		$number          = $wp_registered_widgets[ $widget ]['params'][0]['number'];
+
+		return array(
+			'settings' => $widget_settings,
+			'number'   => $number,
+		);
+	}
+
+	/**
+	 * Add the sidebars widgets in cache.
+	 *
+	 * @since 3.1
+	 *
+	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
+	 * @return void
+	 */
+	public function set_sidebars_widgets_cache( $sidebars_widgets ) {
+		$this->cache->set( "sidebars_widgets_{$this->cache_key}", $sidebars_widgets );
 	}
 
 	/**
