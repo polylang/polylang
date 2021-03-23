@@ -168,6 +168,43 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		$this->init_sidebars_widgets( $sidebars_widgets );
 
+		$sidebars_widgets = $this->sort_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, array( $this, 'handle_widget_in_sidebar_callback' ) );
+
+		$this->set_sidebars_widgets_cache( $sidebars_widgets );
+
+		return $sidebars_widgets;
+	}
+
+	/**
+	 * Callback method that handles the removal of widgets in the sidebars depending on their display language.
+	 *
+	 * @since 3.1
+	 *
+	 * @param array  $widget_data      An array containing the widget data
+	 * @param array  $sidebars_widgets An associative array of sidebars and their widgets
+	 * @param string $sidebar          Sidebar name
+	 * @param int    $key              Widget number
+	 * @return array                   An associative array of sidebars and their widgets
+	 */
+	public function handle_widget_in_sidebar_callback( $widget_data, $sidebars_widgets, $sidebar, $key ) {
+		// Remove the widget if not visible in the current language
+		if ( ! empty( $widget_data['settings'][ $widget_data['number'] ]['pll_lang'] ) && $widget_data['settings'][ $widget_data['number'] ]['pll_lang'] !== $this->curlang->slug ) {
+			unset( $sidebars_widgets[ $sidebar ][ $key ] );
+		}
+		return $sidebars_widgets;
+	}
+
+	/**
+	 * Browse the widgets sidebars and sort the ones that should be displayed or not.
+	 *
+	 * @since 3.1
+	 *
+	 * @param  array $sidebars_widgets       An associative array of sidebars and their widgets
+	 * @param  array $wp_registered_widgets  Array of all registered widgets.
+	 * @param  array $callback               Array of the callback function to call.
+	 * @return array                         An associative array of sidebars and their widgets
+	 */
+	public function sort_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, $callback ) {
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( 'wp_inactive_widgets' === $sidebar || empty( $widgets ) ) {
 				continue;
@@ -180,23 +217,24 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 				$widget_data = $this->get_widget_data( $wp_registered_widgets, $widget );
 
-				// Remove the widget if not visible in the current language
-				if ( ! empty( $widget_data['settings'][ $widget_data['number'] ]['pll_lang'] ) && $widget_data['settings'][ $widget_data['number'] ]['pll_lang'] !== $this->curlang->slug ) {
-					unset( $sidebars_widgets[ $sidebar ][ $key ] );
-				}
+				$args = array(
+					$widget_data,
+					$sidebars_widgets,
+					$sidebar,
+					$key,
+				);
+				$sidebars_widgets = call_user_func_array( $callback, $args );
 			}
 		}
-
-		$this->set_sidebars_widgets_cache( $sidebars_widgets );
-
 		return $sidebars_widgets;
 	}
 
 	/**
 	 * Init widgets sidebars, checks if they already exist in the cache to use them later.
 	 *
-	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
+	 * @since 3.1
 	 *
+	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
 	 * @return mixed|void
 	 */
 	public function init_sidebars_widgets( $sidebars_widgets ) {
