@@ -173,14 +173,14 @@ class PLL_Admin_Classic_Editor {
 
 		$return = $this->model->post->update_language( $post_ID, $lang, $post_type );
 		if ( is_wp_error( $return ) ) {
+			// phpcs:disable PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
 			switch ( $return->get_error_code() ) {
 				case 'missing_capability':
 					wp_die( -1 );
-					break;
 				default:
 					wp_die( 0 );
-					break;
 			}
+			// phpcs:enable PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
 		}
 
 		ob_start();
