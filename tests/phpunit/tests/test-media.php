@@ -15,8 +15,9 @@ class Media_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		self::$model->options['media_support'] = 1;
-		$links_model = self::$model->get_links_model();
+		$options = array_merge( PLL_Install::get_default_options(), array( 'media_support' => 1 ) );
+		$model = new PLL_Admin_Model( $options );
+		$links_model = new PLL_Links_Default( $model );
 		$this->pll_admin = new PLL_Admin( $links_model );
 
 		$this->pll_admin->filters_media = new PLL_Admin_Filters_Media( $this->pll_admin );
@@ -91,14 +92,14 @@ class Media_Test extends PLL_UnitTestCase {
 		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $editor ); // Set a user to pass current_user_can tests
 
-		// Any term relationship could be updated, except for the 'language' term.
-		$this->expect_hook( $this->any(), 'set_object_terms', 10, 4 )
-			->with(
-				$this->anything(),
-				$this->anything(),
-				$this->anything(),
-				$this->logicalNot( $this->equalTo( 'language' ) )
-			);
+		$this->pll_admin->model->post = $this->getMockBuilder( PLL_Translated_Post::class )
+			->setConstructorArgs( array( &$this->pll_admin->model ) )
+			->setMethods( array( 'set_language', 'save_translations' ) )
+			->getMock();
+		$this->pll_admin->model->post->expects( $save_translations_spy = $this->any() )
+			->method( 'save_translations' );
+		$this->pll_admin->model->post->expects( $set_language_spy = $this->any() )
+			->method( 'set_language' );
 
 		$_REQUEST = $_POST = array(
 			'post_ID'       => $en,
@@ -108,6 +109,8 @@ class Media_Test extends PLL_UnitTestCase {
 		);
 		edit_post();
 
+		$this->assertEquals( 0, $save_translations_spy->getInvocationCount() );
+		$this->assertEquals( 0, $set_language_spy->getInvocationCount() );
 	}
 
 	function test_create_media_translation_with_slashes() {
