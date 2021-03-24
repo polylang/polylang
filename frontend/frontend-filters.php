@@ -166,7 +166,10 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	public function sidebars_widgets( $sidebars_widgets ) {
 		global $wp_registered_widgets;
 
-		$this->init_sidebars_widgets( $sidebars_widgets );
+		$existing_sidebars_widgets = $this->init_sidebars_widgets( $sidebars_widgets );
+		if ( $existing_sidebars_widgets ) {
+			return $existing_sidebars_widgets;
+		}
 
 		$sidebars_widgets = $this->sort_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, array( $this, 'handle_widget_in_sidebar_callback' ) );
 
@@ -235,7 +238,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @since 3.1
 	 *
 	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
-	 * @return mixed|void
+	 * @return array|null             An associative array of sidebars and their widgets or nothing.
 	 */
 	public function init_sidebars_widgets( $sidebars_widgets ) {
 		if ( empty( $wp_registered_widgets ) ) {
@@ -248,6 +251,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		if ( false !== $_sidebars_widgets ) {
 			return $_sidebars_widgets;
 		}
+		return null;
 	}
 
 	/**
