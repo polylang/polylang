@@ -6,7 +6,7 @@
 /**
  * Manages filters and actions related to default terms.
  *
- * @since 3.0
+ * @since 3.1
  */
 class PLL_Admin_Default_Term {
 
