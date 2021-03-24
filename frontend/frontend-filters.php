@@ -237,9 +237,9 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 *
 	 * @since 3.1
 	 *
-	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
+	 * @param array $sidebars_widgets        An associative array of sidebars and their widgets
 	 * @param  array $wp_registered_widgets  Array of all registered widgets.
-	 * @return array|null             An associative array of sidebars and their widgets or nothing.
+	 * @return array|null                    An associative array of sidebars and their widgets or nothing.
 	 */
 	public function init_sidebars_widgets( $sidebars_widgets, $wp_registered_widgets ) {
 		if ( empty( $wp_registered_widgets ) ) {
