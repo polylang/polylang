@@ -193,7 +193,7 @@ class PLL_Admin_Filters_Term {
 		$lang = empty( $lang ) ? $this->pref_lang : $lang;
 
 		// Disable the language dropdown and the translations input fields for default categories to prevent removal
-		$disabled = $this->default_term->is_term_the_default_category( $term_id );
+		$disabled = $this->default_term->is_default_term( $term_id );
 
 		$dropdown = new PLL_Walker_Dropdown();
 

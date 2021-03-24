@@ -70,7 +70,7 @@ trait PLL_UnitTestCase_Trait {
 		if ( is_wp_error( $errors ) ) {
 			throw new InvalidArgumentException( $errors->get_error_message() );
 		}
-		$admin_default_term->handle_default_category_on_create_language( $args );
+		$admin_default_term->handle_default_term_on_create_language( $args );
 		self::$model->clean_languages_cache();
 	}
 

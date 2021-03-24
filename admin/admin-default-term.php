@@ -51,15 +51,15 @@ class PLL_Admin_Default_Term {
 		$taxonomies = get_taxonomies();
 		foreach ( $taxonomies as $taxonomy ) {
 			if ( 'category' === $taxonomy ) {
-				// Allows to get the default categories in all languages
-				add_filter( 'option_default' . $taxonomy, array( $this, 'option_default_category' ) );
-				add_action( 'update_option_default_' . $taxonomy, array( $this, 'update_option_default_category' ), 10, 2 );
-				add_action( 'pll_add_language', array( $this, 'handle_default_category_on_create_language' ) );
+				// Allows to get the default terms in all languages
+				add_filter( 'option_default' . $taxonomy, array( $this, 'option_default_term' ) );
+				add_action( 'update_option_default_' . $taxonomy, array( $this, 'update_option_default_term' ), 10, 2 );
+				add_action( 'pll_add_language', array( $this, 'handle_default_term_on_create_language' ) );
 
-				// The default category should be in the default language
-				add_action( 'pll_update_default_lang', array( $this, 'update_default_category_language' ) );
+				// The default term should be in the default language
+				add_action( 'pll_update_default_lang', array( $this, 'update_default_term_language' ) );
 
-				// Adds the language column in the 'Categories' table.
+				// Adds the language column in the 'Terms' table.
 				add_filter( 'manage_' . $taxonomy . '_custom_column', array( $this, 'term_column' ), 10, 3 );
 			}
 
@@ -69,19 +69,19 @@ class PLL_Admin_Default_Term {
 			}
 		}
 
-		// Prevents deleting all the translations of the default category
-		add_filter( 'map_meta_cap', array( $this, 'fix_delete_default_category' ), 10, 4 );
+		// Prevents deleting all the translations of the default term
+		add_filter( 'map_meta_cap', array( $this, 'fix_delete_default_term' ), 10, 4 );
 	}
 
 	/**
-	 * Filters the default category in note below the category list table and in settings->writing dropdown
+	 * Filters the default term in note below the term list table and in settings->writing dropdown
 	 *
 	 * @since 1.2
 	 *
 	 * @param int $value
 	 * @return int
 	 */
-	public function option_default_category( $value ) {
+	public function option_default_term( $value ) {
 		if ( isset( $this->pref_lang ) && $tr = $this->model->term->get( $value, $this->pref_lang ) ) {
 			$value = $tr;
 		}
@@ -89,7 +89,7 @@ class PLL_Admin_Default_Term {
 	}
 
 	/**
-	 * Checks if the new default category is translated in all languages
+	 * Checks if the new default term is translated in all languages
 	 * If not, create the translations
 	 *
 	 * @since 1.7
@@ -99,10 +99,10 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @return void
 	 */
-	public function update_option_default_category( $old_value, $value ) {
+	public function update_option_default_term( $old_value, $value ) {
 		$default_cat_lang = $this->model->term->get_language( $value );
 
-		// Assign a default language to default category
+		// Assign a default language to default term
 		if ( ! $default_cat_lang ) {
 			$default_cat_lang = $this->model->get_language( $this->options['default_lang'] );
 			$this->model->term->set_language( (int) $value, $default_cat_lang );
@@ -110,13 +110,13 @@ class PLL_Admin_Default_Term {
 
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( $language->slug != $default_cat_lang->slug && ! $this->model->term->get_translation( $value, $language ) ) {
-				$this->create_default_category( $language );
+				$this->create_default_term( $language );
 			}
 		}
 	}
 
 	/**
-	 * Create a default category for a language
+	 * Create a default term for a language
 	 *
 	 * @since 1.2
 	 *
@@ -124,22 +124,22 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @return void
 	 */
-	public function create_default_category( $lang ) {
+	public function create_default_term( $lang ) {
 		$lang = $this->model->get_language( $lang );
 
-		// create a new category
+		// create a new term
 		// FIXME this is translated in admin language when we would like it in $lang
 		$cat_name = __( 'Uncategorized', 'polylang' );
 		$cat_slug = sanitize_title( $cat_name . '-' . $lang->slug );
 		$cat = wp_insert_term( $cat_name, 'category', array( 'slug' => $cat_slug ) );
 
-		// check that the category was not previously created ( in case the language was deleted and recreated )
+		// check that the term was not previously created ( in case the language was deleted and recreated )
 		$cat = isset( $cat->error_data['term_exists'] ) ? $cat->error_data['term_exists'] : $cat['term_id'];
 
 		// set language
 		$this->model->term->set_language( (int) $cat, $lang );
 
-		// this is a translation of the default category
+		// this is a translation of the default term
 		$default = (int) get_option( 'default_category' );
 		$translations = $this->model->term->get_translations( $default );
 
@@ -147,20 +147,20 @@ class PLL_Admin_Default_Term {
 	}
 
 	/**
-	 * Manages the default category when new languages are created.
+	 * Manages the default term when new languages are created.
 	 *
 	 * @param array $args Argument used to create the language. @see PLL_Admin_Model::add_language().
 	 *
 	 * @return void
 	 */
-	public function handle_default_category_on_create_language( $args ) {
+	public function handle_default_term_on_create_language( $args ) {
 		$default = (int) get_option( 'default_category' );
 
-		// Assign default language to default category
+		// Assign default language to default term
 		if ( ! $this->model->term->get_language( $default ) ) {
 			$this->model->term->set_language( $default, $args['slug'] );
 		} elseif ( empty( $args['no_default_cat'] ) && ! $this->model->term->get( $default, $args['slug'] ) ) {
-			$this->create_default_category( $args['slug'] );
+			$this->create_default_term( $args['slug'] );
 		}
 	}
 
@@ -175,7 +175,7 @@ class PLL_Admin_Default_Term {
 	 */
 	public function term_column( $out, $column, $term_id ) {
 		if ( $column == $this->get_first_language_column() ) {
-			// Identify the default categories to disable the language dropdown in js
+			// Identify the default terms to disable the language dropdown in js
 			if ( in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) ) ) {
 				$out .= sprintf( '<div class="hidden" id="default_cat_%1$d">%1$d</div>', intval( $term_id ) );
 			}
@@ -202,17 +202,17 @@ class PLL_Admin_Default_Term {
 	}
 
 	/**
-	 * Prevents deleting all the translations of the default category
+	 * Prevents deleting all the translations of the default term
 	 *
 	 * @since 2.1
 	 *
 	 * @param array  $caps    The user's actual capabilities.
 	 * @param string $cap     Capability name.
 	 * @param int    $user_id The user ID.
-	 * @param array  $args    Adds the context to the cap. The category id.
+	 * @param array  $args    Adds the context to the cap. The term id.
 	 * @return array
 	 */
-	public function fix_delete_default_category( $caps, $cap, $user_id, $args ) {
+	public function fix_delete_default_term( $caps, $cap, $user_id, $args ) {
 		if ( 'delete_term' === $cap ) {
 			$term = get_term( reset( $args ) ); // Since WP 4.4, we can get the term to get the taxonomy
 			if ( $term instanceof WP_Term ) {
@@ -231,7 +231,7 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @return bool
 	 */
-	public function is_term_the_default_category( $term_id ) {
+	public function is_default_term( $term_id ) {
 		return in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
 	}
 
@@ -240,7 +240,7 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @return void
 	 */
-	public function update_default_category_language( $slug ) {
+	public function update_default_term_language( $slug ) {
 		$default_cats = $this->model->term->get_translations( get_option( 'default_category' ) );
 		if ( isset( $default_cats[ $slug ] ) ) {
 			update_option( 'default_category', $default_cats[ $slug ] );
