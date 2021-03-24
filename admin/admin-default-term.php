@@ -13,8 +13,6 @@ class PLL_Admin_Default_Term {
 	/**
 	 * A reference to the PLL_Model instance.
 	 *
-	 * @since 2.8
-	 *
 	 * @var PLL_Model
 	 */
 	protected $model;
@@ -29,7 +27,7 @@ class PLL_Admin_Default_Term {
 	/**
 	 * Reference to Polylang options array
 	 *
-	 * @var array $options
+	 * @var array
 	 */
 	protected $options;
 
