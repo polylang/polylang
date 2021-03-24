@@ -32,6 +32,10 @@ class PLL_Admin_Default_Term {
 	protected $options;
 
 	/**
+	 * Constructor: setups properties.
+	 *
+	 * @since 3.1
+	 *
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
@@ -42,6 +46,8 @@ class PLL_Admin_Default_Term {
 
 	/**
 	 * Setups filters and actions needed.
+	 *
+	 * @since 3.1
 	 *
 	 * @return void
 	 */
@@ -76,7 +82,7 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @since 1.2
 	 *
-	 * @param int $value
+	 * @param  int $value The option value.
 	 * @return int
 	 */
 	public function option_default_term( $value ) {
@@ -92,9 +98,8 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @since 1.7
 	 *
-	 * @param int $old_value
-	 * @param int $value
-	 *
+	 * @param  int $old_value The old option value.
+	 * @param  int $value     The new option value.
 	 * @return void
 	 */
 	public function update_option_default_term( $old_value, $value ) {
@@ -119,7 +124,6 @@ class PLL_Admin_Default_Term {
 	 * @since 1.2
 	 *
 	 * @param object|string|int $lang language
-	 *
 	 * @return void
 	 */
 	public function create_default_term( $lang ) {
@@ -147,8 +151,9 @@ class PLL_Admin_Default_Term {
 	/**
 	 * Manages the default term when new languages are created.
 	 *
-	 * @param array $args Argument used to create the language. @see PLL_Admin_Model::add_language().
+	 * @since 3.1
 	 *
+	 * @param  array $args Argument used to create the language. @see PLL_Admin_Model::add_language().
 	 * @return void
 	 */
 	public function handle_default_term_on_create_language( $args ) {
@@ -165,11 +170,12 @@ class PLL_Admin_Default_Term {
 	/**
 	 * Adds the language column in the tables.
 	 *
-	 * @param string $out The output.
-	 * @param string $column The custom column's name.
-	 * @param int    $term_id The term id.
+	 * @since 3.1
 	 *
-	 * @return string
+	 * @param  string $out     The output.
+	 * @param  string $column  The custom column's name.
+	 * @param  int    $term_id The term id.
+	 * @return string          The HTML string.
 	 */
 	public function term_column( $out, $column, $term_id ) {
 		if ( $column == $this->get_first_language_column() ) {
@@ -204,10 +210,10 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @since 2.1
 	 *
-	 * @param array  $caps    The user's actual capabilities.
-	 * @param string $cap     Capability name.
-	 * @param int    $user_id The user ID.
-	 * @param array  $args    Adds the context to the cap. The term id.
+	 * @param  array  $caps    The user's actual capabilities.
+	 * @param  string $cap     Capability name.
+	 * @param  int    $user_id The user ID.
+	 * @param  array  $args    Adds the context to the cap. The term id.
 	 * @return array
 	 */
 	public function fix_delete_default_term( $caps, $cap, $user_id, $args ) {
@@ -225,17 +231,23 @@ class PLL_Admin_Default_Term {
 	}
 
 	/**
-	 * @param int $term_id The term id.
+	 * Check if the term is the default term.
 	 *
-	 * @return bool
+	 * @since 3.1
+	 *
+	 * @param  int $term_id The term id.
+	 * @return bool         True if the term is the default term, false otherwise.
 	 */
 	public function is_default_term( $term_id ) {
 		return in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
 	}
 
 	/**
-	 * @param string $slug
+	 * Updates the default term language.
 	 *
+	 * @since 3.1
+	 *
+	 * @param  string $slug Language slug.
 	 * @return void
 	 */
 	public function update_default_term_language( $slug ) {
