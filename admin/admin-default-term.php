@@ -66,11 +66,6 @@ class PLL_Admin_Default_Term {
 				// Adds the language column in the 'Terms' table.
 				add_filter( 'manage_' . $taxonomy . '_custom_column', array( $this, 'term_column' ), 10, 3 );
 			}
-
-			// Adds the language column in the 'Post Tags'table.
-			if ( 'post_tag' === $taxonomy ) {
-				add_filter( 'manage_' . $taxonomy . '_custom_column', array( $this, 'term_column' ), 10, 3 );
-			}
 		}
 
 		// Prevents deleting all the translations of the default term
@@ -82,7 +77,7 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @since 1.2
 	 *
-	 * @param  int $value The option value.
+	 * @param  int $value The taxonomy term id.
 	 * @return int
 	 */
 	public function option_default_term( $value ) {
