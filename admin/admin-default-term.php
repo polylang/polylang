@@ -77,14 +77,14 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @since 1.2
 	 *
-	 * @param  int $value The taxonomy term id.
-	 * @return int
+	 * @param  int $taxonomy_term_id The taxonomy term id.
+	 * @return int                   A taxonomy term id.
 	 */
-	public function option_default_term( $value ) {
-		if ( isset( $this->pref_lang ) && $tr = $this->model->term->get( $value, $this->pref_lang ) ) {
-			$value = $tr;
+	public function option_default_term( $taxonomy_term_id ) {
+		if ( isset( $this->pref_lang ) && $tr = $this->model->term->get( $taxonomy_term_id, $this->pref_lang ) ) {
+			$taxonomy_term_id = $tr;
 		}
-		return $value;
+		return $taxonomy_term_id;
 	}
 
 	/**
