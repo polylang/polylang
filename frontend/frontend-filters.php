@@ -173,7 +173,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		$sidebars_widgets = $this->sort_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, array( $this, 'handle_widget_in_sidebar_callback' ) );
 
-		$this->set_sidebars_widgets_cache( $sidebars_widgets );
+		$this->cache->set( "sidebars_widgets_{$this->cache_key}", $sidebars_widgets );
 
 		return $sidebars_widgets;
 	}
@@ -237,17 +237,20 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 *
 	 * @since 3.1
 	 *
-	 * @param array $sidebars_widgets        An associative array of sidebars and their widgets
-	 * @param  array $wp_registered_widgets  Array of all registered widgets.
+	 * @param  array  $sidebars_widgets      An associative array of sidebars and their widgets
+	 * @param  array  $wp_registered_widgets Array of all registered widgets.
+	 * @param  object $instance              Instance of class that handles widgets blocks filters.
 	 * @return array|null                    An associative array of sidebars and their widgets or nothing.
 	 */
-	public function init_sidebars_widgets( $sidebars_widgets, $wp_registered_widgets ) {
+	public function init_sidebars_widgets( $sidebars_widgets, $wp_registered_widgets, $instance = null ) {
 		if ( empty( $wp_registered_widgets ) ) {
 			return $sidebars_widgets;
 		}
 
-		$this->cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
-		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$this->cache_key}" );
+		$instance = $instance ? $instance : $this;
+
+		$instance->cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
+		$_sidebars_widgets = $instance->cache->get( "sidebars_widgets_{$instance->cache_key}" );
 
 		if ( false !== $_sidebars_widgets ) {
 			return $_sidebars_widgets;
@@ -294,18 +297,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			'settings' => $widget_settings,
 			'number'   => $number,
 		);
-	}
-
-	/**
-	 * Add the sidebars widgets in cache.
-	 *
-	 * @since 3.1
-	 *
-	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
-	 * @return void
-	 */
-	public function set_sidebars_widgets_cache( $sidebars_widgets ) {
-		$this->cache->set( "sidebars_widgets_{$this->cache_key}", $sidebars_widgets );
 	}
 
 	/**
