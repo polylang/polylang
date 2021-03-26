@@ -92,6 +92,29 @@ abstract class PLL_Translated_Object {
 	abstract public function get_language( $id );
 
 	/**
+	 * @param int          $id
+	 * @param PLL_Language $lang
+	 *
+	 * @return bool
+	 */
+	public function update_language( $id, $lang ) {
+		if ( $this->get_language( $id ) === $lang ) {
+			return true;
+		}
+
+		$this->set_language( $id, $lang );
+
+		$translations = $this->get_translations( $id );
+		if ( $translations ) {
+			// Remove the post's former language from the new translations group.
+			$translations = array_diff( $translations, array( $id ) );
+			$this->save_translations( $id, $translations );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Wrap wp_get_object_terms() to cache it and return only one object.
 	 * inspired by the WordPress function get_the_terms().
 	 *

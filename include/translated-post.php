@@ -266,41 +266,4 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		return $return;
 	}
 
-	/**
-	 * Changes the language of a post, and updates its translations.
-	 *
-	 * @since 3.1
-	 *
-	 * @param int          $post_id Id of the post to change the language of.
-	 * @param PLL_Language $lang New language to set to the post.
-	 * @param string       $post_type Post type of the post to change language of.
-	 *
-	 * @return WP_Error|true
-	 */
-	public function update_language( $post_id, $lang, $post_type ) {
-		$post_type_object = get_post_type_object( $post_type );
-
-		if ( empty( $post_type_object ) ) {
-			return new WP_Error( 'invalid_argument', "{$post_type} is not a valid Post Type." );
-		}
-
-		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_id ) ) {
-			return new WP_Error( 'missing_capability', "User does not have {$post_type_object->cap->edit_post} capability." );
-		}
-
-		if ( $this->get_language( $post_id ) === $lang ) {
-			return true;
-		}
-
-		$this->set_language( $post_id, $lang );
-
-		$translations = $this->get_translations( $post_id );
-		if ( $translations ) {
-			// Remove the post's former language from the new translations group.
-			$translations = array_diff( $translations, array( $post_id ) );
-			$this->save_translations( $post_id, $translations );
-		}
-
-		return true;
-	}
 }

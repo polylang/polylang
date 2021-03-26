@@ -171,17 +171,17 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 0 );
 		}
 
-		$return = $this->model->post->update_language( $post_ID, $lang, $post_type );
-		if ( is_wp_error( $return ) ) {
-			// phpcs:disable PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
-			switch ( $return->get_error_code() ) {
-				case 'missing_capability':
-					wp_die( -1 );
-				default:
-					wp_die( 0 );
-			}
-			// phpcs:enable PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
+		$post_type_object = get_post_type_object( $post_type );
+
+		if ( empty( $post_type_object ) ) {
+			wp_die( 'invalid_argument', "{$post_type} is not a valid Post Type." );
 		}
+
+		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
+			wp_die( 'missing_capability', "User does not have {$post_type_object->cap->edit_post} capability." );
+		}
+
+		$this->model->post->update_language( $post_ID, $lang );
 
 		ob_start();
 		if ( 'attachment' === $post_type ) {
