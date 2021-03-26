@@ -159,26 +159,27 @@ class PLL_Admin_Classic_Editor {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
 		if ( ! isset( $_POST['post_id'], $_POST['lang'], $_POST['post_type'] ) ) {
-			wp_die( 0 );
+			wp_die( "Request is missing parameter 'post_type', 'lang' and/or 'post_id'" );
 		}
 
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
 		$post_ID   = (int) $_POST['post_id'];
-		$lang      = $this->model->get_language( sanitize_key( $_POST['lang'] ) );
+		$lang_slug     = sanitize_key( $_POST['lang'] );
+		$lang      = $this->model->get_language( $lang_slug );
 		$post_type = sanitize_key( $_POST['post_type'] );
 
-		if ( empty( $lang ) || ! post_type_exists( $post_type ) ) {
-			wp_die( 0 );
+		if ( empty( $lang ) ) {
+			wp_die( esc_html( "{$lang_slug} is not a valid language." ) );
 		}
 
 		$post_type_object = get_post_type_object( $post_type );
 
 		if ( empty( $post_type_object ) ) {
-			wp_die( 'invalid_argument', "{$post_type} is not a valid Post Type." );
+			wp_die( esc_html( "{$post_type} is not a valid Post Type." ) );
 		}
 
 		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
-			wp_die( 'missing_capability', "User does not have {$post_type_object->cap->edit_post} capability." );
+			wp_die( esc_html( "User does not have {$post_type_object->cap->edit_post} capability." ) );
 		}
 
 		$this->model->post->update_language( $post_ID, $lang );
