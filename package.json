@@ -1,6 +1,6 @@
 {
-  "name": "polylang",
-  "version": "2.8.3",
+  "name": "@wpsyntex/polylang",
+  "version": "3.0.3",
   "description": "Adds multilingual capability to WordPress",
   "main": "index.js",
   "directories": {
