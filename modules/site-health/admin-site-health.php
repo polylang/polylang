@@ -168,7 +168,7 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
-		$post_no_lang = $this->get_post_ids_without_lang( );
+		$post_no_lang = $this->get_post_ids_without_lang();
 
 		if ( ! empty( $post_no_lang ) ) {
 			$fields['post-no-lang']['label'] = __( 'Posts without language', 'polylang' );
