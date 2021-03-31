@@ -34,14 +34,19 @@ class PLL_Admin_Classic_Editor {
 	public $pref_lang;
 
 	/**
+	 * @var PLL_Translated_Object_With_Capapbilty
+	 */
+	private $translated_post;
+
+	/**
 	 * Constructor: setups filters and actions
 	 *
+	 * @param PLL_Base $polylang
 	 * @since 2.4
-	 *
-	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
+		$this->translated_post = new PLL_Translated_Object_With_Capapbilty( $polylang->model->post, 'edit_post' );
 		$this->links = &$polylang->links;
 		$this->curlang = &$polylang->curlang;
 		$this->pref_lang = &$polylang->pref_lang;
@@ -98,7 +103,7 @@ class PLL_Admin_Classic_Editor {
 		// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$from_post_id = isset( $_GET['from_post'] ) ? (int) $_GET['from_post'] : 0;
 
-		$lang = ( $lg = $this->model->post->get_language( $post_ID ) ) ? $lg :
+		$lang = ( $lg = $this->translated_post->get_language( $post_ID ) ) ? $lg :
 			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification
 			$this->pref_lang );
 
@@ -178,11 +183,11 @@ class PLL_Admin_Classic_Editor {
 			wp_die( esc_html( "{$post_type} is not a valid post type." ) );
 		}
 
-		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
+		$did_update = $this->translated_post->update_language( $post_ID, $lang );
+
+		if ( ! $did_update ) {
 			wp_die( esc_html( "You are not allowed to edit this {$post_type}." ) );
 		}
-
-		$this->model->post->update_language( $post_ID, $lang );
 
 		ob_start();
 		if ( 'attachment' === $post_type ) {
@@ -288,7 +293,7 @@ class PLL_Admin_Classic_Editor {
 
 		$return = array();
 
-		$untranslated_posts = $this->model->post->get_untranslated( $post_type, $post_language, $translation_language, $term );
+		$untranslated_posts = $this->translated_post->get_untranslated( $post_type, $post_language, $translation_language, $term );
 
 		// format output
 		foreach ( $untranslated_posts as $post ) {
@@ -300,7 +305,7 @@ class PLL_Admin_Classic_Editor {
 		}
 
 		// Add current translation in list
-		if ( $post_id = $this->model->post->get_translation( (int) $_GET['pll_post_id'], $translation_language ) ) {
+		if ( $post_id = $this->translated_post->get_translation( (int) $_GET['pll_post_id'], $translation_language ) ) {
 			$post = get_post( $post_id );
 
 			if ( ! empty( $post ) ) {
@@ -328,7 +333,7 @@ class PLL_Admin_Classic_Editor {
 	 * @return array Modified arguments.
 	 */
 	public function page_attributes_dropdown_pages_args( $dropdown_args, $post ) {
-		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // phpcs:ignore WordPress.Security.NonceVerification
+		$dropdown_args['lang'] = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->translated_post->get_language( $post->ID ); // phpcs:ignore WordPress.Security.NonceVerification
 		if ( ! $dropdown_args['lang'] ) {
 			$dropdown_args['lang'] = $this->pref_lang;
 		}
@@ -345,7 +350,7 @@ class PLL_Admin_Classic_Editor {
 	 * @return void
 	 */
 	public function edit_form_top( $post ) {
-		if ( ! $this->model->post->current_user_can_synchronize( $post->ID ) ) {
+		if ( ! $this->translated_post->current_user_can_synchronize( $post->ID ) ) {
 			?>
 			<div class="pll-notice notice notice-warning">
 				<p>

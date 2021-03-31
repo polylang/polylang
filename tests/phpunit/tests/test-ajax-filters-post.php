@@ -27,6 +27,9 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin );
 		$this->pll_admin->classic_editor = new PLL_Admin_Classic_Editor( $this->pll_admin );
+		$translated_post = new ReflectionProperty( PLL_Admin_Classic_Editor::class, 'translated_post' );
+		$translated_post->setAccessible( true );
+		$translated_post->setValue( $this->pll_admin->classic_editor, new PLL_Translated_Post( $this->pll_admin->model ) );
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 	}
 
