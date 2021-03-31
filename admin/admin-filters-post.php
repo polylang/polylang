@@ -167,7 +167,10 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {
 				$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
 				foreach ( $post_ids as $post_id ) {
-					$this->model->post->update_language( $post_id, $lang, get_post_type( $post_id ) );
+					if ( ! current_user_can( 'edit_post', $post_id ) ) {
+						continue;
+					}
+					$this->model->post->update_language( $post_id, $lang );
 				}
 			}
 		}
@@ -186,8 +189,8 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		if ( isset( $_POST['post_ID'], $_POST['inline_lang_choice'] ) ) {
 			$post_id = (int) $_POST['post_ID'];
 			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
-			if ( $post_id && $lang ) {
-				$this->model->post->update_language( $post_id, $lang, get_post_type( $post_id ) );
+			if ( $post_id && $lang && current_user_can( 'edit_post', $post_id ) ) {
+				$this->model->post->update_language( $post_id, $lang );
 			}
 		}
 	}
