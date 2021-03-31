@@ -8,7 +8,7 @@
  *
  * @since 1.8
  */
-abstract class PLL_Translated_Object {
+abstract class PLL_Translated_Object implements PLL_Translated_Object_Interface {
 	/**
 	 * @var PLL_Model
 	 */
