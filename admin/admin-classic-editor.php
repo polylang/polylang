@@ -175,11 +175,11 @@ class PLL_Admin_Classic_Editor {
 		$post_type_object = get_post_type_object( $post_type );
 
 		if ( empty( $post_type_object ) ) {
-			wp_die( esc_html( "{$post_type} is not a valid Post Type." ) );
+			wp_die( esc_html( "{$post_type} is not a valid post type." ) );
 		}
 
 		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
-			wp_die( esc_html( "User does not have {$post_type_object->cap->edit_post} capability." ) );
+			wp_die( esc_html( "You are not allowed to edit this {$post_type}." ) );
 		}
 
 		$this->model->post->update_language( $post_ID, $lang );
