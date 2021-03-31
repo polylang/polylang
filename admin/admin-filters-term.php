@@ -329,7 +329,9 @@ class PLL_Admin_Filters_Term {
 			}
 
 			else {
-				$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) );
+				if ( current_user_can( 'edit_term', $term_id ) ) {
+					$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) );
+				}
 			}
 		}
 
