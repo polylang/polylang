@@ -40,7 +40,6 @@ class PLL_Admin_Site_Health {
 		$this->model = &$polylang->model;
 		$this->static_pages = &$polylang->static_pages;
 
-
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
@@ -106,7 +105,6 @@ class PLL_Admin_Site_Health {
 		return implode( ' | ', $array );
 	}
 
-
 	/**
 	 * Add Polylang Options to Site Health Informations tab.
 	 *
@@ -170,13 +168,12 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
-		$post_no_lang = $this->get_post_ids_without_lang( 5 );
+		$post_no_lang = $this->get_post_ids_without_lang( );
 
 		if ( ! empty( $post_no_lang ) ) {
 			$fields['post-no-lang']['label'] = __( 'Posts without language', 'polylang' );
 			$fields['post-no-lang']['value'] = $this->format_array( $post_no_lang );
 		}
-
 
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
@@ -195,9 +192,9 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since   3.0
 	 */
-	public function get_post_ids_without_lang( $limit = 10 ) {
-		$posts = array();
-		$languages                  = pll_languages_list();
+	public function get_post_ids_without_lang( $limit = 5 ) {
+		$posts     = array();
+		$languages = pll_languages_list();
 
 		foreach ( $this->model->get_translated_post_types() as $post_type ) {
 			$posts_ids_with_no_language = get_posts(
@@ -270,7 +267,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 2.8
 	 *
-	 * @param object $language Language object.
+	 * @param PLL_Language $language Language object.
 	 * @return string
 	 */
 	protected function get_flag( $language ) {
