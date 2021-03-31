@@ -156,4 +156,16 @@ class PLL_Translated_Object_With_Capapbilty implements PLL_Translated_Object_Int
 	public function get( $id, $lang ) {
 		return $this->translated_object->get( $id, $lang );
 	}
+
+	/**
+	 * Check if a user can synchronize translations.
+	 *
+	 * @since 2.6
+	 *
+	 * @param int $id Object id.
+	 * @return bool
+	 */
+	public function current_user_can_synchronize( $id ) {
+		return $this->translated_object->current_user_can_synchronize( $id );
+	}
 }

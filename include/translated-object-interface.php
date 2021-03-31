@@ -95,4 +95,14 @@ interface PLL_Translated_Object_Interface {
 	 * @return int|false The translation object id if exists, otherwise the passed id, false if the passed object has no language.
 	 */
 	public function get( $id, $lang );
+
+	/**
+	 * Check if a user can synchronize translations.
+	 *
+	 * @since 2.6
+	 *
+	 * @param int $id Object id.
+	 * @return bool
+	 */
+	public function current_user_can_synchronize( $id );
 }
