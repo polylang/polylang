@@ -26,7 +26,7 @@ function configureWebpack( options ){
 	];
 
 	const jsFileNamesToIgnore = [
-		'js/lib/**',
+		'js/src/lib/**',
 		'**/*.config.js',
 		'**/*.min.js',
 	];
