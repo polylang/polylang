@@ -108,7 +108,8 @@ class PLL_Admin_Default_Term {
 
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( $language->slug != $default_cat_lang->slug && ! $this->model->term->get_translation( $value, $language ) ) {
-				$this->create_default_term( $language );
+				$term = get_term( $value );
+				$this->create_default_term( $language, $term->taxonomy );
 			}
 		}
 	}
@@ -118,17 +119,18 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object|string|int $lang language
+	 * @param object|string|int $lang     language
+	 * @param string            $taxonomy The current taxonomy
 	 * @return void
 	 */
-	public function create_default_term( $lang ) {
+	public function create_default_term( $lang, $taxonomy ) {
 		$lang = $this->model->get_language( $lang );
 
 		// create a new term
 		// FIXME this is translated in admin language when we would like it in $lang
 		$cat_name = __( 'Uncategorized', 'polylang' );
 		$cat_slug = sanitize_title( $cat_name . '-' . $lang->slug );
-		$cat = wp_insert_term( $cat_name, 'category', array( 'slug' => $cat_slug ) );
+		$cat = wp_insert_term( $cat_name, $taxonomy, array( 'slug' => $cat_slug ) );
 
 		// check that the term was not previously created ( in case the language was deleted and recreated )
 		$cat = isset( $cat->error_data['term_exists'] ) ? $cat->error_data['term_exists'] : $cat['term_id'];
@@ -137,7 +139,7 @@ class PLL_Admin_Default_Term {
 		$this->model->term->set_language( (int) $cat, $lang );
 
 		// this is a translation of the default term
-		$default = (int) get_option( 'default_category' );
+		$default = (int) get_option( 'default_' . $taxonomy );
 		$translations = $this->model->term->get_translations( $default );
 
 		$this->model->term->save_translations( (int) $cat, $translations );
@@ -152,13 +154,18 @@ class PLL_Admin_Default_Term {
 	 * @return void
 	 */
 	public function handle_default_term_on_create_language( $args ) {
-		$default = (int) get_option( 'default_category' );
+		$taxonomies = get_taxonomies();
+		foreach ( $taxonomies as $taxonomy ) {
+			if ( 'category' === $taxonomy ) {
+				$default = (int) get_option( 'default_' . $taxonomy );
 
-		// Assign default language to default term
-		if ( ! $this->model->term->get_language( $default ) ) {
-			$this->model->term->set_language( $default, $args['slug'] );
-		} elseif ( empty( $args['no_default_cat'] ) && ! $this->model->term->get( $default, $args['slug'] ) ) {
-			$this->create_default_term( $args['slug'] );
+				// Assign default language to default term
+				if ( ! $this->model->term->get_language( $default ) ) {
+					$this->model->term->set_language( $default, $args['slug'] );
+				} elseif ( empty( $args['no_default_cat'] ) && ! $this->model->term->get( $default, $args['slug'] ) ) {
+					$this->create_default_term( $args['slug'], $taxonomy );
+				}
+			}
 		}
 	}
 
@@ -173,9 +180,10 @@ class PLL_Admin_Default_Term {
 	 * @return string          The HTML string.
 	 */
 	public function term_column( $out, $column, $term_id ) {
+		$term = get_term( $term_id );
 		if ( $column == $this->get_first_language_column() ) {
 			// Identify the default terms to disable the language dropdown in js
-			if ( in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) ) ) {
+			if ( in_array( get_option( 'default_' . $term->taxonomy ), $this->model->term->get_translations( $term_id ) ) ) {
 				$out .= sprintf( '<div class="hidden" id="default_cat_%1$d">%1$d</div>', intval( $term_id ) );
 			}
 		}
@@ -234,7 +242,8 @@ class PLL_Admin_Default_Term {
 	 * @return bool         True if the term is the default term, false otherwise.
 	 */
 	public function is_default_term( $term_id ) {
-		return in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
+		$term = get_term( $term_id );
+		return in_array( get_option( 'default_' . $term->taxonomy ), $this->model->term->get_translations( $term_id ) );
 	}
 
 	/**
@@ -246,9 +255,14 @@ class PLL_Admin_Default_Term {
 	 * @return void
 	 */
 	public function update_default_term_language( $slug ) {
-		$default_cats = $this->model->term->get_translations( get_option( 'default_category' ) );
-		if ( isset( $default_cats[ $slug ] ) ) {
-			update_option( 'default_category', $default_cats[ $slug ] );
+		$taxonomies = get_taxonomies();
+		foreach ( $taxonomies as $taxonomy ) {
+			if ( 'category' === $taxonomy ) {
+				$default_cats = $this->model->term->get_translations( get_option( 'default_' . $taxonomy ) );
+				if ( isset( $default_cats[ $slug ] ) ) {
+					update_option( 'default_' . $taxonomy, $default_cats[ $slug ] );
+				}
+			}
 		}
 	}
 }
