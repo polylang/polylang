@@ -172,24 +172,23 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		}
 	}
 
-	public function update_language_provider()
-	{
+	public function update_language_provider() {
 		return array(
 			'Update to same language' => array(
-				'original_group' => array('en', 'fr'),
+				'original_group' => array( 'en', 'fr' ),
 				'to' => 'en',
-				'expected_new_group' => array('en', 'fr'),
+				'expected_new_group' => array( 'en', 'fr' ),
 			),
 			'Update to language not in translations group' => array(
-				'original_group' => array('en', 'fr'),
+				'original_group' => array( 'en', 'fr' ),
 				'to' => 'de',
-				'expected_new_group' => array('fr', 'de'),
+				'expected_new_group' => array( 'fr', 'de' ),
 			),
 			'Update to language already in translations group' => array(
-				'original_group' => array('en', 'fr', 'de'),
+				'original_group' => array( 'en', 'fr', 'de' ),
 				'to' => 'fr',
-				'expected_new_group' => array('fr'),
-				'expected_former_group' => array('fr', 'de'),
+				'expected_new_group' => array( 'fr' ),
+				'expected_former_group' => array( 'fr', 'de' ),
 			),
 		);
 	}
