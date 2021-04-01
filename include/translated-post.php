@@ -265,4 +265,5 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		return $return;
 	}
+
 }

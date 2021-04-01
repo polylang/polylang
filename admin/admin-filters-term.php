@@ -329,7 +329,9 @@ class PLL_Admin_Filters_Term {
 			}
 
 			else {
-				$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) );
+				if ( current_user_can( 'edit_term', $term_id ) ) {
+					$this->model->term->set_language( $term_id, $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) );
+				}
 			}
 		}
 
@@ -340,23 +342,8 @@ class PLL_Admin_Filters_Term {
 				'_inline_edit'
 			);
 
-			$old_lang = $this->model->term->get_language( $term_id ); // Stores the old  language
-			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ); // New language
-			$translations = $this->model->term->get_translations( $term_id );
-
-			// Checks if the new language already exists in the translation group
-			if ( $old_lang && $old_lang->slug != $lang->slug ) {
-				if ( array_key_exists( $lang->slug, $translations ) ) {
-					$this->model->term->delete_translation( $term_id );
-				}
-
-				elseif ( array_key_exists( $old_lang->slug, $translations ) ) {
-					unset( $translations[ $old_lang->slug ] );
-					$this->model->term->save_translations( $term_id, $translations );
-				}
-			}
-
-			$this->model->term->set_language( $term_id, $lang ); // Set new language
+			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
+			$this->model->term->update_language( $term_id, $lang );
 		}
 
 		// Edit post

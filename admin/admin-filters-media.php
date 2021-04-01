@@ -115,12 +115,8 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	public function save_media( $post, $attachment ) {
 		// Language is filled in attachment by the function applying the filter 'attachment_fields_to_save'
 		// All security checks have been done by functions applying this filter
-		if ( ! empty( $attachment['language'] ) ) {
-			$this->model->post->set_language( $post['ID'], $attachment['language'] );
-		}
-
-		if ( isset( $_POST['media_tr_lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$this->save_translations( $post['ID'], array_map( 'absint', $_POST['media_tr_lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! empty( $attachment['language'] ) && current_user_can( 'edit_post', $post['ID'] ) ) {
+			$this->model->post->update_language( $post['ID'], $this->model->get_language( $attachment['language'] ) );
 		}
 
 		return $post;

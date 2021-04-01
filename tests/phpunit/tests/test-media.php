@@ -15,8 +15,9 @@ class Media_Test extends PLL_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 
-		self::$model->options['media_support'] = 1;
-		$links_model = self::$model->get_links_model();
+		$options = array_merge( PLL_Install::get_default_options(), array( 'media_support' => 1 ) );
+		$model = new PLL_Admin_Model( $options );
+		$links_model = new PLL_Links_Default( $model );
 		$this->pll_admin = new PLL_Admin( $links_model );
 
 		$this->pll_admin->filters_media = new PLL_Admin_Filters_Media( $this->pll_admin );
@@ -79,27 +80,36 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertFalse( isset( $fields['language'] ) );
 	}
 
+	/**
+	 * @since 3.1 Since the language and translations are updated through a previous AJAX call, we'd rather not perform an unnecessary update now.
+	 */
 	function test_attachment_fields_to_save() {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$en = $this->factory->attachment->create_upload_object( $filename );
 		self::$model->post->set_language( $en, 'en' );
-		$fr = $this->factory->attachment->create_upload_object( $filename );
 
 		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $editor ); // Set a user to pass current_user_can tests
 
+		$this->pll_admin->model->post = $this->getMockBuilder( PLL_Translated_Post::class )
+			->setConstructorArgs( array( &$this->pll_admin->model ) )
+			->setMethods( array( 'set_language', 'save_translations' ) )
+			->getMock();
+		$this->pll_admin->model->post->expects( $save_translations_spy = $this->any() )
+			->method( 'save_translations' );
+		$this->pll_admin->model->post->expects( $set_language_spy = $this->any() )
+			->method( 'set_language' );
+
 		$_REQUEST = $_POST = array(
-			'post_ID'       => $fr,
+			'post_ID'       => $en,
 			'post_title'    => 'Test image',
-			'attachments'   => array( $fr => array( 'language' => 'fr' ) ),
-			'media_tr_lang' => array( 'en' => $en ),
+			'attachments'   => array( $en => array( 'language' => 'en' ) ),
 			'_pll_nonce'    => wp_create_nonce( 'pll_language' ),
 		);
 		edit_post();
 
-		$this->assertEquals( 'en', self::$model->post->get_language( $en )->slug );
-		$this->assertEquals( 'fr', self::$model->post->get_language( $fr )->slug );
-		$this->assertEqualSets( array( 'en' => $en, 'fr' => $fr ), self::$model->post->get_translations( $en ) );
+		$this->assertEquals( 0, $save_translations_spy->getInvocationCount() );
+		$this->assertEquals( 0, $set_language_spy->getInvocationCount() );
 	}
 
 	function test_create_media_translation_with_slashes() {
