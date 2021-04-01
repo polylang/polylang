@@ -12,7 +12,7 @@ Before starting, make sure you have the following software installed and working
 1. A local [WordPress](https://wordpress.org/support/article/how-to-install-wordpress/) (5.1 or later) instance
 2. [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) to clone the Polylang repository (or your fork of the Polylang repository).
 3. [NVM](https://github.com/nvm-sh/nvm) or [chocolatey](https://chocolatey.org/install) (on Windows OS) to install [Node.js](https://nodejs.org/en/download/) and [NPM](https://docs.npmjs.com/). They are required by [Webpack](https://webpack.js.org/guides/getting-started/) that Polylang uses to build and minifies CSS and javascript files.
-4. [Composer](https://getcomposer.org/doc/00-intro.md) because Polylang uses its autoloader to work and required to install development tools such as PHP CodeSniffer that ensures your code follows code standards.
+4. [Composer](https://getcomposer.org/doc/00-intro.md) because Polylang uses its autoloader to work and it is required to install development tools such as PHP CodeSniffer that ensures your code follows code standards.
 
 ## [How to set up Polylang](#how-to-setup-polylang)
 
