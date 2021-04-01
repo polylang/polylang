@@ -167,10 +167,9 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			if ( $lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ) ) {
 				$post_ids = array_map( 'intval', (array) $_REQUEST['post'] );
 				foreach ( $post_ids as $post_id ) {
-					if ( ! current_user_can( 'edit_post', $post_id ) ) {
-						continue;
+					if ( current_user_can( 'edit_post', $post_id ) ) {
+						$this->model->post->update_language( $post_id, $lang );
 					}
-					$this->model->post->update_language( $post_id, $lang );
 				}
 			}
 		}

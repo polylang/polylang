@@ -159,7 +159,7 @@ class PLL_Admin_Classic_Editor {
 		check_ajax_referer( 'pll_language', '_pll_nonce' );
 
 		if ( ! isset( $_POST['post_id'], $_POST['lang'], $_POST['post_type'] ) ) {
-			wp_die( "Request is missing parameter 'post_type', 'lang' and/or 'post_id'" );
+			wp_die( 'The request is missing the parameter "post_type", "lang" and/or "post_id".' );
 		}
 
 		global $post_ID; // Obliged to use the global variable for wp_popular_terms_checklist
@@ -169,7 +169,7 @@ class PLL_Admin_Classic_Editor {
 		$post_type = sanitize_key( $_POST['post_type'] );
 
 		if ( empty( $lang ) ) {
-			wp_die( esc_html( "{$lang_slug} is not a valid language." ) );
+			wp_die( esc_html( "{$lang_slug} is not a valid language code." ) );
 		}
 
 		$post_type_object = get_post_type_object( $post_type );
@@ -179,7 +179,7 @@ class PLL_Admin_Classic_Editor {
 		}
 
 		if ( ! current_user_can( $post_type_object->cap->edit_post, $post_ID ) ) {
-			wp_die( esc_html( "You are not allowed to edit this {$post_type}." ) );
+			wp_die( 'You are not allowed to edit this post.' );
 		}
 
 		$this->model->post->update_language( $post_ID, $lang );
@@ -359,5 +359,4 @@ class PLL_Admin_Classic_Editor {
 			<?php
 		}
 	}
-
 }
