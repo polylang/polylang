@@ -32,6 +32,13 @@ class PLL_Admin_Default_Term {
 	protected $options;
 
 	/**
+	 * Array of registered taxonomy names for which Polylang manages languages and translations.
+	 *
+	 * @var string[]
+	 */
+	protected $taxonomies;
+
+	/**
 	 * Constructor: setups properties.
 	 *
 	 * @since 3.1
@@ -42,6 +49,7 @@ class PLL_Admin_Default_Term {
 		$this->model = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
 		$this->options = &$polylang->options;
+		$this->taxonomies = $this->model->get_translated_taxonomies();
 	}
 
 	/**
@@ -52,8 +60,7 @@ class PLL_Admin_Default_Term {
 	 * @return void
 	 */
 	public function add_hooks() {
-		$taxonomies = get_taxonomies();
-		foreach ( $taxonomies as $taxonomy ) {
+		foreach ( $this->taxonomies as $taxonomy ) {
 			if ( 'category' === $taxonomy ) {
 				// Allows to get the default terms in all languages
 				add_filter( 'option_default' . $taxonomy, array( $this, 'option_default_term' ) );
@@ -154,8 +161,7 @@ class PLL_Admin_Default_Term {
 	 * @return void
 	 */
 	public function handle_default_term_on_create_language( $args ) {
-		$taxonomies = get_taxonomies();
-		foreach ( $taxonomies as $taxonomy ) {
+		foreach ( $this->taxonomies as $taxonomy ) {
 			if ( 'category' === $taxonomy ) {
 				$default = (int) get_option( 'default_' . $taxonomy );
 
@@ -255,8 +261,7 @@ class PLL_Admin_Default_Term {
 	 * @return void
 	 */
 	public function update_default_term_language( $slug ) {
-		$taxonomies = get_taxonomies();
-		foreach ( $taxonomies as $taxonomy ) {
+		foreach ( $this->taxonomies as $taxonomy ) {
 			if ( 'category' === $taxonomy ) {
 				$default_cats = $this->model->term->get_translations( get_option( 'default_' . $taxonomy ) );
 				if ( isset( $default_cats[ $slug ] ) ) {
