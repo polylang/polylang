@@ -187,14 +187,13 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Get an array with post_type as key and post IDs as value
 	 *
-	 * @param int $limit  Nb of post max to show per post type.
-	 * @return array
-	 *
 	 * @since   3.0
+	 * @param int[][] $limit  Nb of post max to show per post type.
+	 * @return int[][] Array containing an array of post IDs
 	 */
 	public function get_post_ids_without_lang( $limit = 5 ) {
 		$posts     = array();
-		$languages = pll_languages_list();
+		$languages = $this->model->get_languages_list();
 
 		foreach ( $this->model->get_translated_post_types() as $post_type ) {
 			$posts_ids_with_no_language = get_posts(
