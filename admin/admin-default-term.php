@@ -58,15 +58,15 @@ class PLL_Admin_Default_Term {
 				// Allows to get the default terms in all languages
 				add_filter( 'option_default' . $taxonomy, array( $this, 'option_default_term' ) );
 				add_action( 'update_option_default_' . $taxonomy, array( $this, 'update_option_default_term' ), 10, 2 );
-				add_action( 'pll_add_language', array( $this, 'handle_default_term_on_create_language' ) );
-
-				// The default term should be in the default language
-				add_action( 'pll_update_default_lang', array( $this, 'update_default_term_language' ) );
 
 				// Adds the language column in the 'Terms' table.
 				add_filter( 'manage_' . $taxonomy . '_custom_column', array( $this, 'term_column' ), 10, 3 );
 			}
 		}
+		add_action( 'pll_add_language', array( $this, 'handle_default_term_on_create_language' ) );
+
+		// The default term should be in the default language
+		add_action( 'pll_update_default_lang', array( $this, 'update_default_term_language' ) );
 
 		// Prevents deleting all the translations of the default term
 		add_filter( 'map_meta_cap', array( $this, 'fix_delete_default_term' ), 10, 4 );
