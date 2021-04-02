@@ -2,14 +2,14 @@
  * @package Polylang
  */
 
-// We can't use underscore or lodash in this common code because it depends of the context classic or block editor.
-// Classic editor underscore is loaded, Block editor lodash is loaded.
-const { __ } = wp.i18n;
-
 const languagesList = jQuery( '.post_lang_choice' );
 
 // Dialog box for alerting the user about a risky changing.
 export const initializeConfimationModal = () => {
+	// We can't use underscore or lodash in this common code because it depends of the context classic or block editor.
+	// Classic editor underscore is loaded, Block editor lodash is loaded.
+	const { __ } = wp.i18n;
+
 	// Create dialog container.
 	const dialogContainer = jQuery(
 		'<div/>',
@@ -42,34 +42,30 @@ export const initializeConfimationModal = () => {
 			} // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
 
 			// Initialize dialog box in the case a language is selected but not added in the list.
-			dialogContainer.dialog(
-				{
-					autoOpen: false,
-					modal: true,
-					draggable: false,
-					resizable: false,
-					title: __( 'Change language', 'polylang' ),
-					minWidth: 600,
-					maxWidth: '100%',
-					classes: {
-						'ui-dialog': 'pll-confirmation-modal',
-					},
-					open: function( event, ui ) {
-						// Change dialog box position for rtl language
-						if ( jQuery( 'body' ).hasClass( 'rtl' ) ) {
-							jQuery( this ).parent().css(
-								{
-									right: jQuery( this ).parent().css( 'left' ),
-									left: 'auto'
-								}
-							);
-						}
-					},
-					close: function( event, ui ) {
-						// When we're closing the dialog box we need to cancel the language change as we click on Cancel button.
-						confirmDialog( 'no' );
-					},
-					buttons: [
+			const dialogOptions = {
+				autoOpen: false,
+				modal: true,
+				draggable: false,
+				resizable: false,
+				title: __( 'Change language', 'polylang' ),
+				minWidth: 600,
+				maxWidth: '100%',
+				open: function( event, ui ) {
+					// Change dialog box position for rtl language
+					if ( jQuery( 'body' ).hasClass( 'rtl' ) ) {
+						jQuery( this ).parent().css(
+							{
+								right: jQuery( this ).parent().css( 'left' ),
+								left: 'auto'
+							}
+						);
+					}
+				},
+				close: function( event, ui ) {
+					// When we're closing the dialog box we need to cancel the language change as we click on Cancel button.
+					confirmDialog( 'no' );
+				},
+				buttons: [
 					{
 						text: __( 'OK', 'polylang' ),
 						click: function( event ) {
@@ -81,9 +77,17 @@ export const initializeConfimationModal = () => {
 						click: function( event ) {
 							confirmDialog( 'no' );
 						}
-					}				]
-				}
-			);
+					}
+				]
+			};
+
+			if ( jQuery.ui.version >= '1.12.0' ) {
+				Object.assign( dialogOptions, { classes: { 'ui-dialog': 'pll-confirmation-modal' } } );
+			} else {
+			Object.assign( dialogOptions, { dialogClass: 'pll-confirmation-modal' } ); // jQuery UI 1.11.4 - WP < 5.6
+			}
+
+			dialogContainer.dialog( dialogOptions );
 		}
 	);
 	return { dialogContainer, dialogResult };

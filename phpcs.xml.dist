@@ -144,6 +144,15 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
+	<!-- PHPCS cannot correctly parse JavaScript syntax -->
+	<rule ref="PEAR.Functions.FunctionCallSignature">
+		<exclude-pattern>*/*.js</exclude-pattern>
+	</rule>
+
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<exclude-pattern>*/*.js</exclude-pattern>
+	</rule>
+	
 	<exclude-pattern>js/*.min.js</exclude-pattern>
 	<exclude-pattern>js/build</exclude-pattern>
 	<exclude-pattern>node_modules/*</exclude-pattern>

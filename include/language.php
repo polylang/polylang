@@ -169,14 +169,14 @@ class PLL_Language {
 	 *
 	 * @var string
 	 */
-	protected $custom_flag_url;
+	public $custom_flag_url;
 
 	/**
 	 * Html markup of the custom flag if it exists.
 	 *
 	 * @var string
 	 */
-	protected $custom_flag;
+	public $custom_flag;
 
 	/**
 	 * Constructor: builds a language object given its two corresponding terms in 'language' and 'term_language' taxonomies.
@@ -187,15 +187,13 @@ class PLL_Language {
 	 * @param WP_Term       $term_language Corresponding 'term_language' term.
 	 */
 	public function __construct( $language, $term_language = null ) {
-		// Build the object from all properties stored as an array.
-		if ( is_array( $language ) ) {
+		if ( empty( $term_language ) ) {
+			// Build the object from all properties stored as an array.
 			foreach ( $language as $prop => $value ) {
 				$this->$prop = $value;
 			}
-		}
-
-		// Build the object from taxonomy terms.
-		elseif ( ! empty( $term_language ) ) {
+		} else {
+			// Build the object from taxonomy terms.
 			$this->term_id = (int) $language->term_id;
 			$this->name = $language->name;
 			$this->slug = $language->slug;

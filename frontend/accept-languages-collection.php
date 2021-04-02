@@ -74,12 +74,6 @@ class PLL_Accept_Languages_Collection {
 		);
 
 		if ( $n = count( $k ) ) {
-			// Set default to 1 for any without q factor.
-			foreach ( $v as $key => $val ) {
-				if ( '' === $val || (float) $val > 1 ) {
-					$v[ $key ] = 1;
-				}
-			}
 
 			if ( $n > 1 ) {
 				for ( $i = 2; $i <= $n; $i++ ) {

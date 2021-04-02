@@ -109,6 +109,7 @@
 	display: block;
 }
 
+.ui-selectmenu-button, /* jQuery UI 1.11.4 - WP < 5.6 */
 .ui-selectmenu-button.ui-button {
 	display: inline-block;
 	overflow: hidden;
@@ -119,6 +120,8 @@
 	white-space: nowrap;
 	vertical-align: top;
 	padding: 0;
+	line-height: normal; /* Override WC Bookings styles with WP < 5.6 */
+	height: 28px; /* Override WC Bookings styles with WP < 5.6 */
 }
 
 .ui-selectmenu-button span.ui-icon {
@@ -138,6 +141,7 @@
 }
 
 
+.ui-selectmenu-button.ui-widget span.ui-selectmenu-text, /* Override WC Bookings styles with WP < 5.6 */
 .ui-selectmenu-button span.ui-selectmenu-text {
 	text-align: left;
 	padding: 0.1em 2.1em 0.2em 2em;
@@ -156,6 +160,7 @@
 
 .ui-widget-content,
 .ui-state-default,
+.ui-selectmenu-button.ui-state-default, /* Override WC Bookings styles with WP < 5.6 */
 .ui-button.ui-selectmenu-button-closed, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 .ui-button.ui-selectmenu-button-open, /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */
 .ui-widget-content .ui-state-default,
@@ -197,6 +202,9 @@
 	margin: 0;
 }
 
+.ui-selectmenu-open .ui-widget-content .ui-state-hover, /* Override WC Bookings styles with WP < 5.6 */
+.ui-selectmenu-open .ui-widget-content .ui-state-focus, /* Override WC Bookings styles with WP < 5.6 */
+.ui-selectmenu-open .ui-widget-content .ui-state-active, /* Override WC Bookings styles with WP < 5.6 */
 .pll-selectmenu-menu .ui-widget-content .ui-state-hover,
 .pll-selectmenu-menu .ui-widget-content .ui-state-focus,
 .pll-selectmenu-menu .ui-widget-content .ui-state-active { /* To be compatible jQuery UI 1.12.1 since WordPress 5.6 */

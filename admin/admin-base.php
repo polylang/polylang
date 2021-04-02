@@ -173,12 +173,12 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 			// Classic editor.
 			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
-				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-dialog' ), 0, 1 );
+				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
 			}
 
 			// Block editor with legacy metabox in WP 5.0+.
 			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin() ) {
-				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog' ), 0, 1 );
+				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
 			}
 		}
 
@@ -188,12 +188,15 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		foreach ( $scripts as $script => $v ) {
 			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
-				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/build/' . $script . $suffix . '.js', POLYLANG_BASENAME ), $v[1], POLYLANG_VERSION, $v[3] );
+				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/build/' . $script . $suffix . '.js', POLYLANG_ROOT_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
+				if ( 'classic-editor' === $script || 'block-editor' === $script ) {
+					wp_set_script_translations( 'pll_' . $script, 'polylang' );
+				}
 			}
 		}
 
-		wp_register_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_BASENAME ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
-		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_BASENAME ), array( 'polylang_admin' ), POLYLANG_VERSION );
+		wp_register_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
 		$this->localize_scripts();
 	}
@@ -208,7 +211,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public function customize_controls_enqueue_scripts() {
 		if ( $this->model->get_languages_list() ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_BASENAME ), array( 'jquery' ), POLYLANG_VERSION, true );
+			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
 			$this->localize_scripts();
 		}
 	}
@@ -270,11 +273,21 @@ abstract class PLL_Admin_Base extends PLL_Base {
 						$.ajaxPrefilter( function ( options, originalOptions, jqXHR ) {
 							if ( -1 != options.url.indexOf( ajaxurl ) || -1 != ajaxurl.indexOf( options.url ) ) {
 
-								function addStringParameters() {
-									if ( 'undefined' === typeof options.data || '' === options.data ) {
+								function addPolylangParametersAsString() {
+									if ( 'undefined' === typeof options.data || '' === options.data.trim() ) {
+										// Only Polylang data need to be send. So it could be as a simple query string.
 										options.data = '<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
 									} else {
-										options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
+										/*
+										 * In some cases data could be a JSON string like in third party plugins.
+										 * So we need not to break their process by adding polylang parameters as valid JSON datas.
+										 */
+										try {
+											options.data = JSON.stringify( Object.assign( JSON.parse( options.data ), <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> ) );
+										} catch( exception ) {
+											// Add Polylang data to the existing query string.
+											options.data = options.data + '&<?php echo $str; // phpcs:ignore WordPress.Security.EscapeOutput ?>';
+										}
 									}
 								}
 
@@ -282,16 +295,19 @@ abstract class PLL_Admin_Base extends PLL_Base {
 								 * options.processData set to true is the default jQuery process where the data is converted in a query string by using jQuery.param().
 								 * This step is done before applying filters. Thus here the options.data is already a string in this case.
 								 * @See https://github.com/jquery/jquery/blob/3.5.1/src/ajax.js#L563-L569 jQuery ajax function.
+								 * It is the most case WordPress send ajax request this way however third party plugins or themes could be send JSON string.
+								 * Use JSON format is recommended in jQuery.param() documentation to be able to send complex data structures.
+								 * @See https://api.jquery.com/jquery.param/ jQuery param function.
 								 */
 								if ( options.processData ) {
-									addStringParameters();
+									addPolylangParametersAsString();
 								} else {
 									/*
 									 * If options.processData is set to false data could be undefined or pass as a string.
 									 * So data as to be processed as if options.processData is set to true.
 									 */
 									if ( 'undefined' === typeof options.data || 'string' === typeof options.data ) {
-										addStringParameters();
+										addPolylangParametersAsString();
 									} else {
 										// Otherwise options.data is probably an object.
 										options.data = Object.assign( options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> );
