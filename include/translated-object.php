@@ -188,9 +188,9 @@ abstract class PLL_Translated_Object {
 	 * @since 0.5
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
-	 * @param array $translations An associative array of translations with language code as key and translation id as value.
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
 	 *
-	 * @return int[] An associative array with locales as key and post ids as values.
+	 * @return int[] An associative array with language codes as key and post ids as values.
 	 */
 	public function save_translations( $id, $translations ) {
 		$translations = $this->validate_translations( $translations );
@@ -248,9 +248,11 @@ abstract class PLL_Translated_Object {
 	/**
 	 * Returns translations after checking the translated post is in the right language
 	 *
-	 * @param array $translations Locales as keys and post ids as values.
+	 * @since 3.1
 	 *
-	 * @return array
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
+	 *
+	 * @return int[]
 	 */
 	public function validate_translations( $translations ) {
 		$valid_translations = array();
