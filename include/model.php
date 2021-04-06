@@ -45,7 +45,6 @@ class PLL_Model {
 	 * @param array $options Polylang options.
 	 *
 	 * @since 1.2
-	 *
 	 */
 	public function __construct( &$options ) {
 		$this->options = &$options;
@@ -78,7 +77,6 @@ class PLL_Model {
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 * @since 0.1
-	 *
 	 */
 	public function get_languages_list( $args = array() ) {
 		if ( false === $languages = $this->cache->get( 'languages' ) ) {
@@ -109,7 +107,6 @@ class PLL_Model {
 					 * @param PLL_Model      $model     PLL_Model object.
 					 *
 					 * @since 1.7.5
-					 *
 					 */
 					$languages = apply_filters( 'pll_languages_list', $languages, $this );
 
@@ -136,7 +133,6 @@ class PLL_Model {
 			 * @param PLL_Language[] $languages The list of language objects.
 			 *
 			 * @since 1.8
-			 *
 			 */
 			$languages = apply_filters( 'pll_after_languages_cache', $languages );
 			$this->cache->set( 'languages', $languages );
@@ -162,7 +158,6 @@ class PLL_Model {
 	 *
 	 * @return void
 	 * @since 1.2
-	 *
 	 */
 	public function clean_languages_cache( $term = 0, $taxonomy = null ) {
 		if ( empty( $taxonomy ) || 'language' == $taxonomy ) {
@@ -178,15 +173,17 @@ class PLL_Model {
 	 *
 	 * @return array
 	 * @since 2.3
-	 *
 	 */
 	public function get_terms_args( $args ) {
-		if ( isset( $args['taxonomy'] ) && ! array_diff( (array) $args['taxonomy'], array(
+		if ( isset( $args['taxonomy'] ) && ! array_diff(
+			(array) $args['taxonomy'],
+			array(
 				'language',
 				'term_language',
 				'post_translations',
-				'term_translations'
-			) ) ) {
+				'term_translations',
+			) 
+		) ) {
 			$args['update_term_meta_cache'] = false;
 		}
 
@@ -200,7 +197,6 @@ class PLL_Model {
 	 *
 	 * @return PLL_Language|false Language object, false if no language found.
 	 * @since 0.1
-	 *
 	 */
 	public function get_language( $value ) {
 		if ( is_object( $value ) ) {
@@ -229,7 +225,6 @@ class PLL_Model {
 	 *
 	 * @return string[] Modified list of clauses.
 	 * @since 1.2
-	 *
 	 */
 	public function terms_clauses( $clauses, $lang ) {
 		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
@@ -250,7 +245,6 @@ class PLL_Model {
 	 *
 	 * @return string[] Post type names for which Polylang manages languages and translations.
 	 * @since 1.2
-	 *
 	 */
 	public function get_translated_post_types( $filter = true ) {
 		if ( false === $post_types = $this->cache->get( 'post_types' ) ) {
@@ -274,7 +268,6 @@ class PLL_Model {
 			 * @param bool     $is_settings True when displaying the list of custom post types in Polylang settings.
 			 *
 			 * @since 0.8
-			 *
 			 */
 			$post_types = apply_filters( 'pll_get_post_types', $post_types, false );
 
@@ -293,7 +286,6 @@ class PLL_Model {
 	 *
 	 * @return bool
 	 * @since 1.2
-	 *
 	 */
 	public function is_translated_post_type( $post_type ) {
 		$post_types = $this->get_translated_post_types( false );
@@ -308,7 +300,6 @@ class PLL_Model {
 	 *
 	 * @return string[] Array of registered taxonomy names for which Polylang manages languages and translations.
 	 * @since 1.2
-	 *
 	 */
 	public function get_translated_taxonomies( $filter = true ) {
 		if ( false === $taxonomies = $this->cache->get( 'taxonomies' ) ) {
@@ -328,7 +319,6 @@ class PLL_Model {
 			 * @param bool     $is_settings True when displaying the list of custom taxonomies in Polylang settings.
 			 *
 			 * @since 0.8
-			 *
 			 */
 			$taxonomies = apply_filters( 'pll_get_taxonomies', $taxonomies, false );
 			if ( did_action( 'after_setup_theme' ) ) {
@@ -346,7 +336,6 @@ class PLL_Model {
 	 *
 	 * @return bool
 	 * @since 1.2
-	 *
 	 */
 	public function is_translated_taxonomy( $tax ) {
 		$taxonomies = $this->get_translated_taxonomies( false );
@@ -361,7 +350,6 @@ class PLL_Model {
 	 *
 	 * @return string[] Array of registered taxonomy names.
 	 * @since 1.7
-	 *
 	 */
 	public function get_filtered_taxonomies( $filter = true ) {
 		if ( did_action( 'after_setup_theme' ) ) {
@@ -381,7 +369,6 @@ class PLL_Model {
 			 * @param bool     $is_settings True when displaying the list of custom taxonomies in Polylang settings.
 			 *
 			 * @since 1.7
-			 *
 			 */
 			$taxonomies = apply_filters( 'pll_filtered_taxonomies', $taxonomies, false );
 		}
@@ -396,7 +383,6 @@ class PLL_Model {
 	 *
 	 * @return bool
 	 * @since 1.7
-	 *
 	 */
 	public function is_filtered_taxonomy( $tax ) {
 		$taxonomies = $this->get_filtered_taxonomies( false );
@@ -409,7 +395,6 @@ class PLL_Model {
 	 *
 	 * @return array
 	 * @since 1.7
-	 *
 	 */
 	public function get_filtered_taxonomies_query_vars() {
 		$query_vars = array();
@@ -430,7 +415,6 @@ class PLL_Model {
 	 *
 	 * @return void
 	 * @since 1.2
-	 *
 	 */
 	public function create_default_category( $lang ) {
 		$lang = $this->get_language( $lang );
@@ -473,7 +457,6 @@ class PLL_Model {
 	 *
 	 * @return null|int The term_id of the found term.
 	 * @since 1.4
-	 *
 	 */
 	public function term_exists( $term_name, $taxonomy, $parent, $language ) {
 		global $wpdb;
@@ -533,9 +516,9 @@ class PLL_Model {
 	/**
 	 * Gets the number of posts per language in a date, author or post type archive.
 	 *
-	 * @param PLL_Language   $lang        PLL_Language instance.
-	 * @param array          $q           {
-	 *                                    WP_Query arguments:
+	 * @param PLL_Language $lang        PLL_Language instance.
+	 * @param array        $q           {
+	 *                                  WP_Query arguments:
 	 *
 	 * @type string|string[] $post_type   Post type or array of post types.
 	 * @type int             $m           Combination YearMonth. Accepts any four-digit year and month.
@@ -549,7 +532,6 @@ class PLL_Model {
 	 * }
 	 * @return int
 	 * @since 1.2
-	 *
 	 */
 	public function count_posts( $lang, $q = array() ) {
 		global $wpdb;
@@ -643,7 +625,6 @@ class PLL_Model {
 	 *
 	 * @return PLL_Links_Model
 	 * @since 1.2
-	 *
 	 */
 	public function get_links_model() {
 		$c     = array( 'Directory', 'Directory', 'Subdomain', 'Domain' );
@@ -656,7 +637,6 @@ class PLL_Model {
 		 * @param string $class A class name: PLL_Links_Default, PLL_Links_Directory, PLL_Links_Subdomain, PLL_Links_Domain.
 		 *
 		 * @since 2.1.1
-		 *
 		 */
 		$class = apply_filters( 'pll_links_model', $class );
 
