@@ -1,6 +1,6 @@
 <?php
 
-class Translated_Term_Test extends PLL_UnitTestCase {
+class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -61,5 +61,13 @@ class Translated_Term_Test extends PLL_UnitTestCase {
 		$this->assertFalse( self::$model->term->get_translation( $fr, 'en' ) );
 		$this->assertFalse( self::$model->term->get_translation( $fr, 'de' ) );
 		$this->assertFalse( self::$model->term->get_translation( $de, 'fr' ) );
+	}
+
+	public function test_dont_save_translations_with_incorrect_language() {
+		$options = PLL_Install::get_default_options();
+		$model = new PLL_Model( $options );
+		$model->term = new PLL_Translated_Term( $model );
+
+		$this->dont_save_translations_with_incorrect_language( $model->term );
 	}
 }

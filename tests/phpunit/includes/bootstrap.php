@@ -24,6 +24,7 @@ require_once __DIR__ . '/testcase.php';
 require_once __DIR__ . '/testcase-ajax.php';
 require_once __DIR__ . '/testcase-canonical.php';
 require_once __DIR__ . '/testcase-domain.php';
+require_once __DIR__ . '/testcase-translated-object.php';
 require_once __DIR__ . '/wp-screen-mock.php';
 require_once __DIR__ . '/check-wp-functions-trait.php';
 

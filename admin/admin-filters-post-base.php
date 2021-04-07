@@ -52,14 +52,7 @@ abstract class PLL_Admin_Filters_Post_Base {
 		// Security check as 'wp_insert_post' can be called from outside WP admin.
 		check_admin_referer( 'pll_language', '_pll_nonce' );
 
-		$translations = array();
-
-		// Save translations after checking the translated post is in the right language.
-		foreach ( $arr as $lang => $tr_id ) {
-			$translations[ $lang ] = ( $tr_id && $this->model->post->get_language( (int) $tr_id )->slug == $lang ) ? (int) $tr_id : 0;
-		}
-
-		$this->model->post->save_translations( $post_id, $translations );
+		$translations = $this->model->post->save_translations( $post_id, $arr );
 		return $translations;
 	}
 }

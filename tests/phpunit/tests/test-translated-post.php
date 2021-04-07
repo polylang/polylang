@@ -1,6 +1,6 @@
 <?php
 
-class Translated_Post_Test extends PLL_UnitTestCase {
+class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -191,5 +191,16 @@ class Translated_Post_Test extends PLL_UnitTestCase {
 				'expected_former_group' => array( 'fr', 'de' ),
 			),
 		);
+	}
+
+	/**
+	 * @covers PLL_Translated_Object::save_translations()
+	 */
+	public function test_dont_save_translations_with_incorrect_language() {
+		$options = PLL_Install::get_default_options();
+		$model = new PLL_Model( $options );
+		$model->post = new PLL_Translated_Post( $model );
+
+		$this->dont_save_translations_with_incorrect_language( $model->post );
 	}
 }
