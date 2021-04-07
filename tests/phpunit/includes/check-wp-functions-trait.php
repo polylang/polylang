@@ -43,6 +43,6 @@ trait PLL_Check_WP_Functions_Trait {
 	 * @param string ...$args Function name or class and method name.
 	 */
 	protected function check_internal_method( $md5, ...$args ) {
-		$this->asserEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() emulates a WordPress function, are you sure that it needs to be modified?', implode( '::', $args ) ) );
+		$this->assertEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() emulates a WordPress function, are you sure that it needs to be modified?', implode( '::', $args ) ) );
 	}
 }
