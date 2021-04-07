@@ -92,14 +92,11 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertCount( 1, $languages );
 		$this->assertNotEmpty( $languages['fr'] );
 
-		// test orderby and order only in WP 4.7+
-		if ( function_exists( 'wp_list_sort' ) ) {
-			$languages = apply_filters( 'wpml_active_languages', null, 'orderby=code&order=asc' );
-			$this->assertEqualSetsWithIndex( array( 'de', 'en', 'fr' ), array_keys( $languages ) );
+		$languages = apply_filters( 'wpml_active_languages', null, 'orderby=code&order=asc' );
+		$this->assertEqualSetsWithIndex( array( 'de', 'en', 'fr' ), array_keys( $languages ) );
 
-			$languages = apply_filters( 'wpml_active_languages', null, 'orderby=code&order=desc' );
-			$this->assertEqualSetsWithIndex( array( 'fr', 'en', 'de' ), array_keys( $languages ) );
-		}
+		$languages = apply_filters( 'wpml_active_languages', null, 'orderby=code&order=desc' );
+		$this->assertEqualSetsWithIndex( array( 'fr', 'en', 'de' ), array_keys( $languages ) );
 	}
 
 	function test_wpml_current_language() {

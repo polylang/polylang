@@ -20,7 +20,7 @@ jobs:
 
     - name: "WP oldest - PHP 7.2"
       php: "7.2"
-      env: "WP_VERSION=5.1 WP_MULTISITE=0"
+      env: "WP_VERSION=5.4 WP_MULTISITE=0"
       script:
         - "vendor/bin/phpunit --verbose"
 

@@ -79,30 +79,22 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	}
 
 	function test_upload_dir() {
-		// hack $_SERVER
+		// Hack $_SERVER.
 		$server = $_SERVER;
 		$_SERVER['REQUEST_URI'] = '/test/';
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['fr'], PHP_URL_HOST );
-		if ( function_exists( 'wp_get_upload_dir' ) ) {
-			$uploads = wp_get_upload_dir(); // Since WP 4.5
-		} else {
-			$uploads = wp_upload_dir( null, false );
-		}
+		$uploads = wp_get_upload_dir(); // Since WP 4.5.
 
 		$this->assertContains( $this->hosts['fr'], $uploads['url'] );
 		$this->assertContains( $this->hosts['fr'], $uploads['baseurl'] );
 
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['en'], PHP_URL_HOST );
-		if ( function_exists( 'wp_get_upload_dir' ) ) {
-			$uploads = wp_get_upload_dir(); // Since WP 4.5
-		} else {
-			$uploads = wp_upload_dir( null, false );
-		}
+		$uploads = wp_get_upload_dir(); // Since WP 4.5.
 
 		$this->assertContains( $this->hosts['en'], $uploads['url'] );
 		$this->assertContains( $this->hosts['en'], $uploads['baseurl'] );
 
-		// clean up
+		// Clean up.
 		$_SERVER = $server;
 	}
 }
