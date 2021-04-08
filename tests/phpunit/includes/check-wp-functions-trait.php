@@ -35,4 +35,14 @@ trait PLL_Check_WP_Functions_Trait {
 		}
 		$this->assertEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() has been modified', implode( '::', $args ) ) );
 	}
+
+	/**
+	 * Check if a Polylang function that is duplicated from a WordPress has been modified.
+	 *
+	 * @param string $md5 Expected method md5.
+	 * @param string ...$args Function name or class and method name.
+	 */
+	protected function check_internal_method( $md5, ...$args ) {
+		$this->assertEquals( $md5, $this->md5( ...$args ), sprintf( 'The function %s() emulates a WordPress function, are you sure that it needs to be modified?', implode( '::', $args ) ) );
+	}
 }
