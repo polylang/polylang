@@ -1,6 +1,4 @@
-<link href=".github/assets/readme.css" rel="stylesheet"></link>
-
-# ![Polylang](.github/assets/polylang-logo.png) <span>Polylang<span>
+# <div style="display: flex;align-items: center;justify-content: center;font-family: sans-serif;text-transform: uppercase;">![Polylang](.github/assets/polylang-logo.png) <span style="font-size: 5.6rem;padding: 0 2rem;">Polylang<span></div>
 
 Welcome to the Polylang repository on GitHub. Here you can browse the source, discuss open issues and keep track of the development.
 
