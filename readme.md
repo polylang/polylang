@@ -15,7 +15,7 @@ Before starting, make sure that you have the following software installed and wo
 
 ## [How to set up Polylang](#how-to-setup-polylang)
 
-The simplest way is to clone locally this repository and build it directly in your local WordPress instance by following the steps bellow:
+The simplest way is to clone locally this repository and build it directly in your local WordPress instance by following the steps below:
 
 1. Go to your local WordPress instance wp-content/plugins/ folder:<br/>
 `cd your/local/wordpress/path/wp-content/plugins`
