@@ -1,4 +1,6 @@
-# ![Polylang](.github/assets/polylang-logo.png) Polylang
+<link href=".github/assets/readme.css" rel="stylesheet"></link>
+
+# ![Polylang](.github/assets/polylang-logo.png) <span>Polylang<span>
 
 Welcome to the Polylang repository on GitHub. Here you can browse the source, discuss open issues and keep track of the development.
 
