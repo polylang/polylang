@@ -1,6 +1,5 @@
 # Files to exclude from the distribution.
 
-assets/
 bin/
 node_modules/
 tests/
