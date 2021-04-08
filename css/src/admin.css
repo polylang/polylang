@@ -313,6 +313,10 @@
 	top: 1px;
 }
 
+#wp-admin-bar-languages.pll-filtered-languages {
+	background: #DD5454;
+}
+
 /* Notices */
 .pll-notice.notice {
 	padding-right: 38px;
