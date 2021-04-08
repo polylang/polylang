@@ -462,9 +462,9 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			'href'  => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
 			'meta' => array(
 				'title' => __( 'Filters content by language', 'polylang' ),
+				'class' => '',
 			),
 		);
-		$menu['meta']['class'] = '';
 		if ( 'all' !== $selected->slug ) {
 			$menu['meta']['class'] = 'pll-filtered-languages';
 		}
