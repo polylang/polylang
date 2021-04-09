@@ -90,7 +90,26 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		// Hierarchical post types
 		if ( 'edit' == $screen->base && is_post_type_hierarchical( $screen->post_type ) ) {
 			$pages = get_pages( array( 'sort_column' => 'menu_order, post_title' ) ); // Same arguments as the parent pages dropdown to avoid an extra query.
-			update_post_caches( $pages, $screen->post_type );
+
+			/**
+			 * Allow to retrieve the taxonomy during update_post_caches().
+			 *
+			 * @since 3.1
+			 *
+			 * @param bool $filter_term true to retrieve taxonomy terms.
+			 */
+			$filter_term = apply_filters( 'pll_update_post_filter_term', true );
+
+			/**
+			 * Allow to retrieve the postmeta during update_post_caches().
+			 *
+			 * @since 3.1
+			 *
+			 * @param bool $filter_meta true to retrieve postmeta.
+			 */
+			$filter_meta = apply_filters( 'pll_update_post_filter_meta', true );
+
+			update_post_caches( $pages, $screen->post_type, $filter_term, $filter_meta );
 
 			$page_languages = array();
 
