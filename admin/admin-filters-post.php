@@ -92,15 +92,6 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			$pages = get_pages( array( 'sort_column' => 'menu_order, post_title' ) ); // Same arguments as the parent pages dropdown to avoid an extra query.
 
 			/**
-			 * Allow to retrieve the taxonomy during update_post_caches().
-			 *
-			 * @since 3.1
-			 *
-			 * @param bool $filter_term true to retrieve taxonomy terms.
-			 */
-			$filter_term = apply_filters( 'pll_update_post_filter_term', true );
-
-			/**
 			 * Allow to retrieve the postmeta during update_post_caches().
 			 *
 			 * @since 3.1
@@ -109,7 +100,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 			 */
 			$filter_meta = apply_filters( 'pll_update_post_filter_meta', true );
 
-			update_post_caches( $pages, $screen->post_type, $filter_term, $filter_meta );
+			update_post_caches( $pages, $screen->post_type, true, $filter_meta );
 
 			$page_languages = array();
 
