@@ -238,9 +238,9 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 *
 	 * @since 3.1
 	 *
-	 * @param array  $wp_registered_widgets Array of all registered widgets.
-	 * @param string $widget                String that identifies the widget.
-	 * @return bool                         True if object, false otherwise.
+	 * @param  array  $wp_registered_widgets Array of all registered widgets.
+	 * @param  string $widget                String that identifies the widget.
+	 * @return bool                          True if object, false otherwise.
 	 */
 	protected function is_widget_object( $wp_registered_widgets, $widget ) {
 		// Nothing can be done if the widget is created using pre WP2.8 API :(
