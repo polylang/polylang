@@ -17,11 +17,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	public $cache;
 
 	/**
-	 * @var string $cache_key Cache key.
-	 */
-	public $cache_key;
-
-	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.2
@@ -170,16 +165,16 @@ class PLL_Frontend_Filters extends PLL_Filters {
 			return $sidebars_widgets;
 		}
 
-		$this->cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
-		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$this->cache_key}" );
+		$cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
+		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$cache_key}" );
 
 		if ( false !== $_sidebars_widgets ) {
 			return $_sidebars_widgets;
 		}
 
-		$sidebars_widgets = $this->sort_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, array( $this, 'handle_widget_in_sidebar_callback' ) );
+		$sidebars_widgets = $this->filter_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, array( $this, 'handle_widget_in_sidebar_callback' ) );
 
-		$this->cache->set( "sidebars_widgets_{$this->cache_key}", $sidebars_widgets );
+		$this->cache->set( "sidebars_widgets_{$cache_key}", $sidebars_widgets );
 
 		return $sidebars_widgets;
 	}
@@ -213,7 +208,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @param  array $callback               Array of the callback function to call.
 	 * @return array                         An associative array of sidebars and their widgets
 	 */
-	public function sort_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, $callback ) {
+	public function filter_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, $callback ) {
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( 'wp_inactive_widgets' === $sidebar || empty( $widgets ) ) {
 				continue;
@@ -245,19 +240,16 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 *
 	 * @param array  $wp_registered_widgets Array of all registered widgets.
 	 * @param string $widget                String that identifies the widget.
-	 * @return bool
+	 * @return bool                         True if object, false otherwise.
 	 */
-	public function is_widget_object( $wp_registered_widgets, $widget ) {
+	protected function is_widget_object( $wp_registered_widgets, $widget ) {
 		// Nothing can be done if the widget is created using pre WP2.8 API :(
 		// There is no object, so we can't access it to get the widget options
-		if ( ! isset( $wp_registered_widgets[ $widget ]['callback'] ) ||
-			! is_array( $wp_registered_widgets[ $widget ]['callback'] ) ||
-			! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) ||
-			! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) ||
-			! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
-			return false;
-		}
-		return true;
+		return isset( $wp_registered_widgets[ $widget ]['callback'] ) &&
+			is_array( $wp_registered_widgets[ $widget ]['callback'] ) &&
+			isset( $wp_registered_widgets[ $widget ]['callback'][0] ) &&
+			is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) &&
+			method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' );
 	}
 
 	/**
@@ -269,7 +261,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @param string $widget                String that identifies the widget.
 	 * @return array An array containing the widget settings and number.
 	 */
-	public function get_widget_data( $wp_registered_widgets, $widget ) {
+	protected function get_widget_data( $wp_registered_widgets, $widget ) {
 		$widget_settings = $wp_registered_widgets[ $widget ]['callback'][0]->get_settings();
 		$number          = $wp_registered_widgets[ $widget ]['params'][0]['number'];
 
