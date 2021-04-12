@@ -177,7 +177,7 @@ class PLL_Admin_Default_Term {
 	}
 
 	/**
-	 * Adds the language column in the tables.
+	 * Identify the default term in the terms list table to disable the language dropdown in js.
 	 *
 	 * @since 3.1
 	 *
