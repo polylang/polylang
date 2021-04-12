@@ -187,12 +187,8 @@ class PLL_Admin_Default_Term {
 	 * @return string          The HTML string.
 	 */
 	public function term_column( $out, $column, $term_id ) {
-		$term = get_term( $term_id );
-		if ( $column == $this->get_first_language_column() ) {
-			// Identify the default terms to disable the language dropdown in js
-			if ( in_array( get_option( 'default_' . $term->taxonomy ), $this->model->term->get_translations( $term_id ) ) ) {
-				$out .= sprintf( '<div class="hidden" id="default_cat_%1$d">%1$d</div>', intval( $term_id ) );
-			}
+		if ( $column === $this->get_first_language_column() && $this->is_default_term( $term_id ) ) {
+			$out .= sprintf( '<div class="hidden" id="default_cat_%1$d">%1$d</div>', intval( $term_id ) );
 		}
 
 		return $out;
@@ -227,14 +223,8 @@ class PLL_Admin_Default_Term {
 	 * @return array
 	 */
 	public function fix_delete_default_term( $caps, $cap, $user_id, $args ) {
-		if ( 'delete_term' === $cap ) {
-			$term = get_term( reset( $args ) ); // Since WP 4.4, we can get the term to get the taxonomy
-			if ( $term instanceof WP_Term ) {
-				$default_cat = get_option( 'default_' . $term->taxonomy );
-				if ( $default_cat && array_intersect( $args, $this->model->term->get_translations( $default_cat ) ) ) {
-					$caps[] = 'do_not_allow';
-				}
-			}
+		if ( 'delete_term' === $cap && $this->is_default_term( reset( $args ) ) ) {
+			$caps[] = 'do_not_allow';
 		}
 
 		return $caps;
@@ -250,7 +240,11 @@ class PLL_Admin_Default_Term {
 	 */
 	public function is_default_term( $term_id ) {
 		$term = get_term( $term_id );
-		return in_array( get_option( 'default_' . $term->taxonomy ), $this->model->term->get_translations( $term_id ) );
+		if ( $term instanceof WP_Term ) {
+			$default_term_id = get_option( 'default_' . $term->taxonomy );
+			return $default_term_id && in_array( $default_term_id, $this->model->term->get_translations( $term_id ) );
+		}
+		return false;
 	}
 
 	/**
