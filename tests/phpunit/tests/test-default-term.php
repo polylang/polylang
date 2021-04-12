@@ -53,7 +53,6 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	function test_default_category_in_edit_tags() {
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
-
 		$default = self::$model->term->get( get_option( 'default_category' ), 'de' );
 		$de      = self::$model->get_language( 'de' );
 		$form    = $this->get_edit_term_form( $default, 'category' );
