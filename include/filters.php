@@ -69,9 +69,6 @@ class PLL_Filters {
 		// Converts the locale to a valid W3C locale
 		add_filter( 'language_attributes', array( $this, 'language_attributes' ) );
 
-		// Prevents deleting all the translations of the default category
-		add_filter( 'map_meta_cap', array( $this, 'fix_delete_default_category' ), 10, 4 );
-
 		// Translate the site title in emails sent to users
 		add_filter( 'password_change_email', array( $this, 'translate_user_email' ) );
 		add_filter( 'email_change_email', array( $this, 'translate_user_email' ) );
@@ -281,33 +278,8 @@ class PLL_Filters {
 	}
 
 	/**
-	 * Prevents deleting all the translations of the default category
-	 *
-	 * @since 2.1
-	 *
-	 * @param array  $caps    The user's actual capabilities.
-	 * @param string $cap     Capability name.
-	 * @param int    $user_id The user ID.
-	 * @param array  $args    Adds the context to the cap. The category id.
-	 * @return array
-	 */
-	public function fix_delete_default_category( $caps, $cap, $user_id, $args ) {
-		if ( 'delete_term' === $cap ) {
-			$term = get_term( reset( $args ) ); // Since WP 4.4, we can get the term to get the taxonomy
-			if ( $term instanceof WP_Term ) {
-				$default_cat = get_option( 'default_' . $term->taxonomy );
-				if ( $default_cat && array_intersect( $args, $this->model->term->get_translations( $default_cat ) ) ) {
-					$caps[] = 'do_not_allow';
-				}
-			}
-		}
-
-		return $caps;
-	}
-
-	/**
-	 * Translates the site title in emails sent to the user (change email, reset password).
-	 * It is necessary to filter the email because WP evaluates the site title before calling switch_to_locale().
+	 * Translates the site title in emails sent to the user (change email, reset password)
+	 * It is necessary to filter the email because WP evaluates the site title before calling switch_to_locale()
 	 *
 	 * @since 2.1.3
 	 *

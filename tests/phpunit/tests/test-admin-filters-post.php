@@ -437,18 +437,20 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		set_current_screen( 'edit' );
 		$GLOBALS['wp_scripts'] = new WP_Scripts();
 		wp_default_scripts( $GLOBALS['wp_scripts'] );
+
+		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		self::$model->term->set_language( $term_id, 'fr' );
+
 		do_action( 'admin_enqueue_scripts' );
 
 		ob_start();
 		do_action( 'admin_print_footer_scripts' );
 		$footer = ob_get_clean();
 
-		// All categories we have i.e. default categories
-		foreach ( self::$model->get_languages_list() as $lang ) {
-			$terms[ $lang->slug ] = array( 'category' => array( self::$model->term->get( 1, $lang->slug ) ) );
-		}
+		$terms['fr'] = array( 'category' => array( self::$model->term->get( $term_id, 'fr' ) ) );
 
-		$this->assertNotFalse( strpos( $footer, 'var pll_term_languages = ' . wp_json_encode( $terms ) ) );
+		$this->assertEquals( 1, preg_match( '/var pll_term_languages = {"fr":{"category":\[(\d+),\d+\]}/', $footer, $matches ) );
+		$this->assertEquals( $term_id, $matches[1] );
 	}
 
 	function test_parent_pages_script_data_in_footer() {

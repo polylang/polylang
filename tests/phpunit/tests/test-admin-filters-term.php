@@ -21,7 +21,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		parent::setUp();
 
 		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests
-
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 
@@ -216,6 +215,8 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	function test_parent_dropdown_in_edit_tags() {
+		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
+
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -246,6 +247,8 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	function test_language_dropdown_and_translations_in_edit_tags() {
+		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
+
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -271,27 +274,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$input = $xpath->query( '//input[@id="tr_lang_de"]' );
 		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) ); // No translation in German
-	}
-
-	function test_default_category_in_edit_tags() {
-		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-
-		$default = self::$model->term->get( get_option( 'default_category' ), 'de' );
-		$de = self::$model->get_language( 'de' );
-		$form = $this->get_edit_term_form( $default, 'category' );
-		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
-		$doc = new DomDocument();
-		$doc->loadHTML( $form );
-		$xpath = new DOMXpath( $doc );
-
-		$option = $xpath->query( '//select[@name="term_lang_choice"]' );
-		$this->assertEquals( 'disabled', $option->item( 0 )->getAttribute( 'disabled' ) );
-
-		$option = $xpath->query( '//select[@name="term_lang_choice"]/option[.="' . $de->name . '"]' );
-		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
-
-		$input = $xpath->query( '//input[@id="tr_lang_fr"]' );
-		$this->assertEquals( 'disabled', $input->item( 0 )->getAttribute( 'disabled' ) );
 	}
 
 	function get_parent_dropdown_in_new_term_form( $taxonomy ) {
@@ -406,15 +388,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$input = $xpath->query( '//input[@id="tr_lang_de"]' );
 		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) ); // No translation in German
-	}
-
-	function test_new_default_category() {
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'new-default' ) );
-		update_option( 'default_category', $term_id );
-
-		$this->assertEquals( $term_id, get_option( 'default_category' ) );
-		$translations = self::$model->term->get_translations( $term_id );
-		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
 	}
 
 	function test_post_categories_meta_box() {

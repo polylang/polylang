@@ -52,11 +52,6 @@ class PLL_Admin_Model extends PLL_Model {
 			// If this is the first language created, set it as default language
 			$this->options['default_lang'] = $args['slug'];
 			update_option( 'polylang', $this->options );
-
-			// And assign default language to default category
-			$this->term->set_language( (int) get_option( 'default_category' ), (int) $r['term_id'] );
-		} elseif ( empty( $args['no_default_cat'] ) ) {
-			$this->create_default_category( $args['slug'] );
 		}
 
 		// Init a mo_id for this language
@@ -606,11 +601,14 @@ class PLL_Admin_Model extends PLL_Model {
 			set_theme_mod( 'nav_menu_locations', $menus );
 		}
 
-		// The default category should be in the default language
-		$default_cats = $this->term->get_translations( get_option( 'default_category' ) );
-		if ( isset( $default_cats[ $slug ] ) ) {
-			update_option( 'default_category', $default_cats[ $slug ] );
-		}
+		/**
+		 * Fires when a default language is updated.
+		 *
+		 * @since 3.1
+		 *
+		 * @param string $slug Slug.
+		 */
+		do_action( 'pll_update_default_lang', $slug );
 
 		// Update options
 		$this->options['default_lang'] = $slug;

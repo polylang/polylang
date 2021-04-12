@@ -46,10 +46,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		// check default language
 		$this->assertEquals( 'en', self::$model->options['default_lang'] );
 
-		// check default category
-		$default_cat_lang = self::$model->term->get_language( get_option( 'default_category' ) );
-		$this->assertEquals( 'en', $default_cat_lang->slug );
-
 		// check language order
 		$this->assertEqualSetsWithIndex( array( 'ar', 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
 

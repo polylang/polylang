@@ -70,32 +70,4 @@ class Terms_List_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $list, 'child' ) );
 		$this->assertFalse( strpos( $list, 'enfant' ) );
 	}
-
-	// bug introduced by WP 4.3 and fixed in v1.8.2
-	function test_default_category_in_list_table() {
-		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) ); // a non default category
-		$default = get_option( 'default_category' );
-		$en = self::$model->term->get( $default, 'en' );
-		$fr = self::$model->term->get( $default, 'fr' );
-
-		$GLOBALS['taxnow'] = $_REQUEST['taxonomy'] = $_GET['taxonomy'] = 'category'; // WP_Screen tests $_REQUEST, Polylang tests $_GET
-		$GLOBALS['hook_suffix'] = 'edit-tags.php';
-		set_current_screen();
-		$wp_list_table = _get_list_table( 'WP_Terms_List_Table' );
-
-		ob_start();
-		$wp_list_table->prepare_items();
-		$wp_list_table->display();
-		$list = ob_get_clean();
-
-		// checkbox only for non default category
-		$this->assertFalse( strpos( $list, '"cb-select-' . $en . '"' ) );
-		$this->assertFalse( strpos( $list, '"cb-select-' . $fr . '"' ) );
-		$this->assertNotFalse( strpos( $list, '"cb-select-' . $id . '"' ) );
-
-		// delete link only for non default category
-		$this->assertFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $en . '&amp;' ) );
-		$this->assertFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $fr . '&amp;' ) );
-		$this->assertNotFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $id . '&amp;' ) );
-	}
 }

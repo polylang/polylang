@@ -55,6 +55,15 @@ class PLL_Admin_Filters_Term {
 	protected $post_id;
 
 	/**
+	 * A reference to the PLL_Admin_Default_Term instance.
+	 *
+	 * @since 2.8
+	 *
+	 * @var PLL_Admin_Default_Term
+	 */
+	protected $default_term;
+
+	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @param object $polylang
@@ -64,6 +73,7 @@ class PLL_Admin_Filters_Term {
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
 		$this->pref_lang = &$polylang->pref_lang;
+		$this->default_term = &$polylang->default_term;
 
 		foreach ( $this->model->get_translated_taxonomies() as $tax ) {
 			// Adds the language field in the 'Categories' and 'Post Tags' panels
@@ -84,10 +94,6 @@ class PLL_Admin_Filters_Term {
 		// Ajax response for edit term form
 		add_action( 'wp_ajax_term_lang_choice', array( $this, 'term_lang_choice' ) );
 		add_action( 'wp_ajax_pll_terms_not_translated', array( $this, 'ajax_terms_not_translated' ) );
-
-		// Allows to get the default categories in all languages
-		add_filter( 'option_default_category', array( $this, 'option_default_category' ) );
-		add_action( 'update_option_default_category', array( $this, 'update_option_default_category' ), 10, 2 );
 
 		// Updates the translations term ids when splitting a shared term
 		add_action( 'split_shared_term', array( $this, 'split_shared_term' ), 10, 4 ); // WP 4.2
@@ -186,8 +192,8 @@ class PLL_Admin_Filters_Term {
 		$lang = $this->model->term->get_language( $term_id );
 		$lang = empty( $lang ) ? $this->pref_lang : $lang;
 
-		// Disable the language dropdown and the translations input fields for default categories to prevent removal
-		$disabled = in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) );
+		// Disable the language dropdown and the translations input fields for default terms to prevent removal
+		$disabled = $this->default_term->is_default_term( $term_id );
 
 		$dropdown = new PLL_Walker_Dropdown();
 
@@ -603,47 +609,6 @@ class PLL_Admin_Filters_Term {
 		}
 
 		wp_die( wp_json_encode( $return ) );
-	}
-
-	/**
-	 * Filters the default category in note below the category list table and in settings->writing dropdown
-	 *
-	 * @since 1.2
-	 *
-	 * @param int $value
-	 * @return int
-	 */
-	public function option_default_category( $value ) {
-		if ( isset( $this->pref_lang ) && $tr = $this->model->term->get( $value, $this->pref_lang ) ) {
-			$value = $tr;
-		}
-		return $value;
-	}
-
-	/**
-	 * Checks if the new default category is translated in all languages
-	 * If not, create the translations
-	 *
-	 * @since 1.7
-	 *
-	 * @param int $old_value
-	 * @param int $value
-	 * @return void
-	 */
-	public function update_option_default_category( $old_value, $value ) {
-		$default_cat_lang = $this->model->term->get_language( $value );
-
-		// Assign a default language to default category
-		if ( ! $default_cat_lang ) {
-			$default_cat_lang = $this->model->get_language( $this->options['default_lang'] );
-			$this->model->term->set_language( (int) $value, $default_cat_lang );
-		}
-
-		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( $language->slug != $default_cat_lang->slug && ! $this->model->term->get_translation( $value, $language ) ) {
-				$this->model->create_default_category( $language );
-			}
-		}
 	}
 
 	/**

@@ -295,11 +295,6 @@ class PLL_Admin_Filters_Columns {
 
 		if ( $column == $this->get_first_language_column() ) {
 			$out = sprintf( '<div class="hidden" id="lang_%d">%s</div>', intval( $term_id ), esc_html( $lang->slug ) );
-
-			// Identify the default categories to disable the language dropdown in js
-			if ( in_array( get_option( 'default_category' ), $this->model->term->get_translations( $term_id ) ) ) {
-				$out .= sprintf( '<div class="hidden" id="default_cat_%1$d">%1$d</div>', intval( $term_id ) );
-			}
 		}
 
 		// Link to edit term ( or a translation )
