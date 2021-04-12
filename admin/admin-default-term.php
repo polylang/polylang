@@ -113,10 +113,11 @@ class PLL_Admin_Default_Term {
 			$this->model->term->set_language( (int) $value, $default_cat_lang );
 		}
 
+		$taxonomy = substr( current_filter(), 22 );
+
 		foreach ( $this->model->get_languages_list() as $language ) {
 			if ( $language->slug != $default_cat_lang->slug && ! $this->model->term->get_translation( $value, $language ) ) {
-				$term = get_term( $value );
-				$this->create_default_term( $language, $term->taxonomy );
+				$this->create_default_term( $language, $taxonomy );
 			}
 		}
 	}
