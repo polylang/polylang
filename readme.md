@@ -1,4 +1,4 @@
-# ![Polylang](.github/assets/polylang-title.svg)
+# ![Polylang](.github/assets/polylang-logo.svg) [POLYLANG](https://wordpress.org/plugins/polylang/)
 
 Welcome to the Polylang repository on GitHub. Here you can browse the source, discuss open issues and keep track of the development.
 
