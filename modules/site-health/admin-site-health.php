@@ -190,12 +190,8 @@ class PLL_Admin_Site_Health {
 	 * @return int[][] Array containing an array of post IDs
 	 */
 	public function get_post_ids_without_lang( $limit = 5 ) {
-		$posts             = array();
-		$languages         = $this->model->get_languages_list();
-		$languages_list_id = array();
-		foreach ( $languages as $language ) {
-			$languages_list_id[] = $language->term_id;
-		}
+		$posts        = array();
+		$language_ids = $this->get_languages_list( array( 'fields' => 'term_id' ) );
 
 		foreach ( $this->model->get_translated_post_types() as $post_type ) {
 			$posts_ids_with_no_language = get_posts(
@@ -206,7 +202,7 @@ class PLL_Admin_Site_Health {
 					'tax_query'   => array(
 						array(
 							'taxonomy' => 'language',
-							'terms'    => $languages_list_id,
+							'terms'    => $language_ids,
 							'operator' => 'NOT IN',
 						),
 					),
