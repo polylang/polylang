@@ -43,6 +43,9 @@ class PLL_Admin_Site_Health {
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
+		if ( $this->warning_exists() ) {
+			add_filter( 'debug_information', array( $this, 'info_warning' ), 15 );
+		}
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
@@ -82,18 +85,23 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Formats an array with language as keys to display in options information.
+	 * Formats an array to display in options information.
 	 *
 	 * @since 2.8
 	 *
-	 * @param array $array An array with language as keys.
+	 * @param array $array An array of formatted data.
 	 * @return string
 	 */
-	protected function format_array_with_languages( $array ) {
+	protected function format_array( $array ) {
 		array_walk(
 			$array,
 			function ( &$value, $key ) {
-				$value = "$key => $value";
+				if ( is_array( $value ) ) {
+					$ids = implode( ' , ', $value );
+					$value = "$key => $ids";
+				} else {
+					$value = "$key => $value";
+				}
 			}
 		);
 
@@ -137,7 +145,7 @@ class PLL_Admin_Site_Health {
 						break;
 					case 'domains':
 						$fields[ $key ]['label'] = $key;
-						$fields[ $key ]['value'] = $this->format_array_with_languages( $value );
+						$fields[ $key ]['value'] = $this->format_array( $value );
 						break;
 					case 'nav_menus':
 						$current_theme = get_stylesheet();
@@ -145,7 +153,7 @@ class PLL_Admin_Site_Health {
 							foreach ( $value[ $current_theme ] as $location => $lang ) {
 								/* translators: placeholder is the menu location name */
 								$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-								$fields[ $location ]['value'] = $this->format_array_with_languages( $lang );
+								$fields[ $location ]['value'] = $this->format_array( $lang );
 							}
 						}
 						break;
@@ -162,7 +170,6 @@ class PLL_Admin_Site_Health {
 				}
 			}
 		}
-
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
 			'label'  => sprintf( esc_html__( '%s Options', 'polylang' ), POLYLANG ),
@@ -170,6 +177,50 @@ class PLL_Admin_Site_Health {
 		);
 
 		return $debug_info;
+	}
+
+	/**
+	 * Get an array with post_type as key and post IDs as value
+	 *
+	 * @since   3.0 initial.
+	 * @since   3.1 Use internal method to get languages list.
+	 *
+	 * @param int $limit Nb of post max to show per post type.
+	 *
+	 * @return int[][] Array containing an array of post IDs
+	 */
+	public function get_post_ids_without_lang( $limit = 5 ) {
+		$posts             = array();
+		$languages         = $this->model->get_languages_list();
+		$languages_list_id = array();
+		foreach ( $languages as $language ) {
+			$languages_list_id[] = $language->term_id;
+		}
+
+		foreach ( $this->model->get_translated_post_types() as $post_type ) {
+			$posts_ids_with_no_language = get_posts(
+				array(
+					'numberposts' => $limit,
+					'post_type'   => $post_type,
+					'post_status' => 'any',
+					'tax_query'   => array(
+						array(
+							'taxonomy' => 'language',
+							'terms'    => $languages_list_id,
+							'operator' => 'NOT IN',
+						),
+					),
+				)
+			);
+
+			if ( ! empty( $posts_ids_with_no_language ) ) {
+				foreach ( $posts_ids_with_no_language as $untranslated ) {
+					$posts[ $untranslated->post_type ][] = $untranslated->ID;
+				}
+			}
+		}
+
+		return $posts;
 	}
 
 	/**
@@ -276,5 +327,46 @@ class PLL_Admin_Site_Health {
 			$result['description'] = sprintf( '<p>%s</p>', $message );
 		}
 		return $result;
+	}
+
+	/**
+	 * Add Polylang Warnings to Site Health Informations tab.
+	 *
+	 * @since 3.1
+	 *
+	 * @param array $debug_info The debug information to be added to the core information page.
+	 * @return array
+	 */
+	public function info_warning( $debug_info ) {
+		$post_no_lang = $this->get_post_ids_without_lang();
+		$fields       = array();
+
+		if ( ! empty( $post_no_lang ) ) {
+			$fields['post-no-lang']['label'] = __( 'Posts without language', 'polylang' );
+			$fields['post-no-lang']['value'] = $this->format_array( $post_no_lang );
+		}
+
+		$debug_info['pll_warnings'] = array(
+			/* translators: placeholder is the plugin name */
+			'label'  => sprintf( esc_html__( '%s Warnings', 'polylang' ), POLYLANG ),
+			'fields' => $fields,
+		);
+
+		return $debug_info;
+	}
+
+	/**
+	 * Check if a Polylang warning exists.
+	 *
+	 * @since 3.1
+	 *
+	 * @return bool
+	 */
+	public function warning_exists() {
+		$post_no_lang = $this->get_post_ids_without_lang();
+		if ( ! empty( $post_no_lang ) ) {
+			return true;
+		}
+		return false;
 	}
 }
