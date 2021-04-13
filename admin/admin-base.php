@@ -310,7 +310,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 										addPolylangParametersAsString();
 									} else {
 										// Otherwise options.data is probably an object.
-										options.data = Object.assign( options.data, <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> );
+										options.data = Object.assign( options.data || {} , <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> );
 									}
 								}
 							}
