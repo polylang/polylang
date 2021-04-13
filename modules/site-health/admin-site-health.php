@@ -43,9 +43,7 @@ class PLL_Admin_Site_Health {
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
-		if ( $this->warning_exists() ) {
-			add_filter( 'debug_information', array( $this, 'info_warning' ), 15 );
-		}
+		add_filter( 'debug_information', array( $this, 'info_warning' ), 15 );
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
@@ -180,46 +178,6 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Get an array with post_type as key and post IDs as value
-	 *
-	 * @since   3.0 initial.
-	 * @since   3.1 Use internal method to get languages list.
-	 *
-	 * @param int $limit Nb of post max to show per post type.
-	 *
-	 * @return int[][] Array containing an array of post IDs
-	 */
-	public function get_post_ids_without_lang( $limit = 5 ) {
-		$posts        = array();
-		$language_ids = $this->get_languages_list( array( 'fields' => 'term_id' ) );
-
-		foreach ( $this->model->get_translated_post_types() as $post_type ) {
-			$posts_ids_with_no_language = get_posts(
-				array(
-					'numberposts' => $limit,
-					'post_type'   => $post_type,
-					'post_status' => 'any',
-					'tax_query'   => array(
-						array(
-							'taxonomy' => 'language',
-							'terms'    => $language_ids,
-							'operator' => 'NOT IN',
-						),
-					),
-				)
-			);
-
-			if ( ! empty( $posts_ids_with_no_language ) ) {
-				foreach ( $posts_ids_with_no_language as $untranslated ) {
-					$posts[ $untranslated->post_type ][] = $untranslated->ID;
-				}
-			}
-		}
-
-		return $posts;
-	}
-
-	/**
 	 * Add Polylang Languages settings to Site Health Informations tab.
 	 *
 	 * @since 2.8
@@ -334,35 +292,77 @@ class PLL_Admin_Site_Health {
 	 * @return array
 	 */
 	public function info_warning( $debug_info ) {
-		$post_no_lang = $this->get_post_ids_without_lang();
-		$fields       = array();
+		$fields = array();
 
-		if ( ! empty( $post_no_lang ) ) {
+		$posts_no_lang = $this->get_post_ids_without_lang();
+
+		if ( ! empty( $posts_no_lang ) ) {
 			$fields['post-no-lang']['label'] = __( 'Posts without language', 'polylang' );
-			$fields['post-no-lang']['value'] = $this->format_array( $post_no_lang );
+			$fields['post-no-lang']['value'] = $this->format_array( $posts_no_lang );
 		}
 
-		$debug_info['pll_warnings'] = array(
-			/* translators: placeholder is the plugin name */
-			'label'  => sprintf( esc_html__( '%s Warnings', 'polylang' ), POLYLANG ),
-			'fields' => $fields,
-		);
+		$terms_no_lang = $this->get_term_ids_without_lang();
+
+		if ( ! empty( $terms_no_lang ) ) {
+			$fields['term-no-lang']['label'] = __( 'Terms without language', 'polylang' );
+			$fields['term-no-lang']['value'] = $this->format_array( $terms_no_lang );
+		}
+
+		if ( ! empty( $fields ) ) {
+			$debug_info['pll_warnings'] = array(
+				'label'  => sprintf( esc_html__( 'Polylang warnings', 'polylang' ), POLYLANG ),
+				'fields' => $fields,
+			);
+		}
 
 		return $debug_info;
 	}
 
 	/**
-	 * Check if a Polylang warning exists.
+	 * Get an array with post_type as key and post ids as value.
 	 *
 	 * @since 3.1
 	 *
-	 * @return bool
+	 * @param int $limit Max number of posts to show per post type.
+	 * @return int[][] Array containing an array of post ids.
 	 */
-	public function warning_exists() {
-		$post_no_lang = $this->get_post_ids_without_lang();
-		if ( ! empty( $post_no_lang ) ) {
-			return true;
+	public function get_post_ids_without_lang( $limit = 5 ) {
+		$posts = array();
+
+		foreach ( $this->model->get_translated_post_types() as $post_type ) {
+			$post_ids_with_no_language = $this->model->get_posts_with_no_lang( $post_type, $limit );
+
+			if ( ! empty( $post_ids_with_no_language ) ) {
+				foreach ( $post_ids_with_no_language as $id ) {
+					$posts[ $post_type ][] = $id;
+				}
+			}
 		}
-		return false;
+
+		return $posts;
+	}
+
+	/**
+	 * Get an array with taxonomy as key and term ids as value.
+	 *
+	 * @since 3.1
+	 *
+	 * @param int $limit Max number of terms to show per post type.
+	 * @return int[][] Array containing an array of term ids.
+	 */
+	public function get_term_ids_without_lang( $limit = 5 ) {
+		$terms = array();
+
+		foreach ( $this->model->get_translated_taxonomies() as $taxonomy ) {
+			$term_ids_with_no_language = $this->model->get_terms_with_no_lang( $taxonomy, $limit );
+
+			if ( ! empty( $term_ids_with_no_language ) ) {
+				foreach ( $term_ids_with_no_language as $id ) {
+					$terms[ $taxonomy ][] = $id;
+				}
+			}
+		}
+
+		return $terms;
 	}
 }
