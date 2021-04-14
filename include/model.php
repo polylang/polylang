@@ -677,21 +677,30 @@ class PLL_Model {
 		global $wpdb;
 
 		$taxonomies = (array) $taxonomies;
+		$cache_key  = md5( implode( '|', $taxonomies ) . "|{$limit}" );
 
-		// PHPCS:disable WordPress.DB.PreparedSQL
-		return $wpdb->get_col(
-			sprintf(
-				"SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}
-				WHERE taxonomy IN ('%s')
-				AND {$wpdb->term_taxonomy}.term_id NOT IN (
-					SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+		$term_ids = wp_cache_get( $cache_key, 'pll_terms_no_lang' );
+
+		if ( false === $term_ids ) {
+			// PHPCS:disable WordPress.DB.PreparedSQL
+			$term_ids = $wpdb->get_col(
+				sprintf(
+					"SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}
+					WHERE taxonomy IN ('%s')
+					AND {$wpdb->term_taxonomy}.term_id NOT IN (
+						SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+					)
+					%s",
+					implode( "','", array_map( 'esc_sql', $taxonomies ) ),
+					implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
+					$limit > 0 ? sprintf( 'LIMIT %d', intval( $limit ) ) : ''
 				)
-				%s",
-				implode( "','", array_map( 'esc_sql', $taxonomies ) ),
-				implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
-				$limit > 0 ? "LIMIT {$limit}" : ''
-			)
-		);
-		// PHPCS:enable
+			);
+			// PHPCS:enable
+
+			wp_cache_set( $cache_key, $term_ids, 'pll_terms_no_lang' );
+		}
+
+		return $term_ids;
 	}
 }
