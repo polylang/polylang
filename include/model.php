@@ -677,28 +677,28 @@ class PLL_Model {
 		global $wpdb;
 
 		$taxonomies = (array) $taxonomies;
-		$cache_key  = md5( implode( '|', $taxonomies ) . "|{$limit}" );
 
-		$term_ids = wp_cache_get( $cache_key, 'pll_terms_no_lang' );
+		$sql = sprintf(
+			"SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}
+			WHERE taxonomy IN ('%s')
+			AND {$wpdb->term_taxonomy}.term_id NOT IN (
+				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+			)
+			%s",
+			implode( "','", array_map( 'esc_sql', $taxonomies ) ),
+			implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
+			$limit > 0 ? sprintf( 'LIMIT %d', intval( $limit ) ) : ''
+		);
+
+		$key          = md5( $sql );
+		$last_changed = wp_cache_get_last_changed( 'terms' );
+		$cache_key    = "terms_no_lang:{$key}:{$last_changed}";
+
+		$term_ids = wp_cache_get( $cache_key, 'terms' );
 
 		if ( false === $term_ids ) {
-			// PHPCS:disable WordPress.DB.PreparedSQL
-			$term_ids = $wpdb->get_col(
-				sprintf(
-					"SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}
-					WHERE taxonomy IN ('%s')
-					AND {$wpdb->term_taxonomy}.term_id NOT IN (
-						SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
-					)
-					%s",
-					implode( "','", array_map( 'esc_sql', $taxonomies ) ),
-					implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
-					$limit > 0 ? sprintf( 'LIMIT %d', intval( $limit ) ) : ''
-				)
-			);
-			// PHPCS:enable
-
-			wp_cache_set( $cache_key, $term_ids, 'pll_terms_no_lang' );
+			$term_ids = $wpdb->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			wp_cache_set( $cache_key, $term_ids, 'terms' );
 		}
 
 		return $term_ids;
