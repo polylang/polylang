@@ -183,11 +183,11 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$this->update_lang_choice( $wp_widget_search, 'en' );
 
 		$frontend = new PLL_Frontend( $this->links_model );
-		$frontend->filters = new PLL_Frontend_Filters( $frontend );
+		$frontend->filters_widgets = new PLL_Frontend_Filters_Widgets( $frontend );
 		$frontend->curlang = self::$model->get_language( 'en' );
 
-		$frontend->filters->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		$frontend->filters->cache->method( 'get' )->willReturn( false );
+		$frontend->filters_widgets->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
+		$frontend->filters_widgets->cache->method( 'get' )->willReturn( false );
 
 		$sidebars = wp_get_sidebars_widgets();
 		$this->assertTrue( in_array( 'search-2', $sidebars['sidebar-1'] ) );
