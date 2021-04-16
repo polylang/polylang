@@ -3,6 +3,11 @@
  * @package Polylang
  */
 
+/**
+ * Filters widgets by language on frontend
+ *
+ * @since 3.1
+ */
 class PLL_Frontend_Filters_Widgets {
 	/**
 	 * Internal non persistent cache object.
@@ -89,10 +94,9 @@ class PLL_Frontend_Filters_Widgets {
 	 *
 	 * @param  array $sidebars_widgets       An associative array of sidebars and their widgets
 	 * @param  array $wp_registered_widgets  Array of all registered widgets.
-	 * @param  array $callback               Array of the callback function to call.
 	 * @return array                         An associative array of sidebars and their widgets
 	 */
-	public function filter_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets, $callback ) {
+	public function filter_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets ) {
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( 'wp_inactive_widgets' === $sidebar || empty( $widgets ) ) {
 				continue;
@@ -105,12 +109,6 @@ class PLL_Frontend_Filters_Widgets {
 
 				$widget_data = $this->get_widget_data( $wp_registered_widgets, $widget );
 
-				$args = array(
-					$widget_data,
-					$sidebars_widgets,
-					$sidebar,
-					$key,
-				);
 				$sidebars_widgets = $this->handle_widget_in_sidebar_callback( $widget_data, $sidebars_widgets, $sidebar, $key );
 			}
 		}
@@ -130,10 +128,10 @@ class PLL_Frontend_Filters_Widgets {
 		// Nothing can be done if the widget is created using pre WP2.8 API :(
 		// There is no object, so we can't access it to get the widget options
 		return isset( $wp_registered_widgets[ $widget ]['callback'] ) &&
-		       is_array( $wp_registered_widgets[ $widget ]['callback'] ) &&
-		       isset( $wp_registered_widgets[ $widget ]['callback'][0] ) &&
-		       is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) &&
-		       method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' );
+				is_array( $wp_registered_widgets[ $widget ]['callback'] ) &&
+				isset( $wp_registered_widgets[ $widget ]['callback'][0] ) &&
+				is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) &&
+				method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' );
 	}
 
 	/**
