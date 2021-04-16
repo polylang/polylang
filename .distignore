@@ -15,4 +15,5 @@ package-lock.json
 phpcs.xml.dist
 phpstan.neon.dist
 phpunit.xml
+readme.md
 webpack.config.js
