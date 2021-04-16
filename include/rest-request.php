@@ -38,7 +38,7 @@ class PLL_REST_Request extends PLL_Base {
 	/**
 	 * @var PLL_Filters_Widgets_Options
 	 */
-	public $filters_widgets;
+	public $filters_widgets_options;
 
 	/**
 	 * Setup filters.
@@ -57,7 +57,7 @@ class PLL_REST_Request extends PLL_Base {
 
 			$this->filters_links = new PLL_Filters_Links( $this );
 			$this->filters = new PLL_Filters( $this );
-			$this->filters_widgets = new PLL_Filters_Widgets_Options( $this );
+			$this->filters_widgets_options = new PLL_Filters_Widgets_Options( $this );
 
 			// Static front page and page for posts.
 			if ( 'page' === get_option( 'show_on_front' ) ) {
