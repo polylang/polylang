@@ -10,13 +10,6 @@
  */
 class PLL_Frontend_Filters extends PLL_Filters {
 	/**
-	 * Internal non persistent cache object.
-	 *
-	 * @var PLL_Cache
-	 */
-	public $cache;
-
-	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.2
@@ -25,8 +18,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
-
-		$this->cache = new PLL_Cache();
 
 		// Filters the WordPress locale
 		add_filter( 'locale', array( $this, 'get_locale' ) );
