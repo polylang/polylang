@@ -10,13 +10,6 @@
  */
 class PLL_Frontend_Filters extends PLL_Filters {
 	/**
-	 * Internal non persistent cache object.
-	 *
-	 * @var PLL_Cache
-	 */
-	public $cache;
-
-	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.2
@@ -25,8 +18,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
-
-		$this->cache = new PLL_Cache();
 
 		// Filters the WordPress locale
 		add_filter( 'locale', array( $this, 'get_locale' ) );
@@ -40,7 +31,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		// Filters the widgets according to the current language
 		add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ) );
-		add_filter( 'sidebars_widgets', array( $this, 'sidebars_widgets' ) );
 
 		if ( $this->options['media_support'] ) {
 			add_filter( 'widget_media_image_instance', array( $this, 'widget_media_instance' ), 1 ); // Since WP 4.8
@@ -146,57 +136,6 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 */
 	public function widget_display_callback( $instance ) {
 		return ! empty( $instance['pll_lang'] ) && $instance['pll_lang'] != $this->curlang->slug ? false : $instance;
-	}
-
-	/**
-	 * Remove widgets from sidebars if they are not visible in the current language
-	 * Needed to allow is_active_sidebar() to return false if all widgets are not for the current language. See #54
-	 *
-	 * @since 2.1
-	 * @since 2.4 The result is cached as the function can be very expensive in case there are a lot of widgets
-	 *
-	 * @param array $sidebars_widgets An associative array of sidebars and their widgets
-	 * @return array
-	 */
-	public function sidebars_widgets( $sidebars_widgets ) {
-		global $wp_registered_widgets;
-
-		if ( empty( $wp_registered_widgets ) ) {
-			return $sidebars_widgets;
-		}
-
-		$cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
-		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$cache_key}" );
-
-		if ( false !== $_sidebars_widgets ) {
-			return $_sidebars_widgets;
-		}
-
-		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
-			if ( 'wp_inactive_widgets' === $sidebar || empty( $widgets ) ) {
-				continue;
-			}
-
-			foreach ( $widgets as $key => $widget ) {
-				// Nothing can be done if the widget is created using pre WP2.8 API :(
-				// There is no object, so we can't access it to get the widget options
-				if ( ! isset( $wp_registered_widgets[ $widget ]['callback'] ) || ! is_array( $wp_registered_widgets[ $widget ]['callback'] ) || ! isset( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! is_object( $wp_registered_widgets[ $widget ]['callback'][0] ) || ! method_exists( $wp_registered_widgets[ $widget ]['callback'][0], 'get_settings' ) ) {
-					continue;
-				}
-
-				$widget_settings = $wp_registered_widgets[ $widget ]['callback'][0]->get_settings();
-				$number          = $wp_registered_widgets[ $widget ]['params'][0]['number'];
-
-				// Remove the widget if not visible in the current language
-				if ( ! empty( $widget_settings[ $number ]['pll_lang'] ) && $widget_settings[ $number ]['pll_lang'] !== $this->curlang->slug ) {
-					unset( $sidebars_widgets[ $sidebar ][ $key ] );
-				}
-			}
-		}
-
-		$this->cache->set( "sidebars_widgets_{$cache_key}", $sidebars_widgets );
-
-		return $sidebars_widgets;
 	}
 
 	/**

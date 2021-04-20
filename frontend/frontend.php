@@ -59,6 +59,11 @@ class PLL_Frontend extends PLL_Base {
 	public $static_pages;
 
 	/**
+	 * @var PLL_Frontend_Filters_Widgets
+	 */
+	public $filters_widgets;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -119,6 +124,7 @@ class PLL_Frontend extends PLL_Base {
 		$this->filters_links = new PLL_Frontend_Filters_Links( $this );
 		$this->filters = new PLL_Frontend_Filters( $this );
 		$this->filters_search = new PLL_Frontend_Filters_Search( $this );
+		$this->filters_widgets = new PLL_Frontend_Filters_Widgets( $this );
 
 		// Auto translate for Ajax
 		if ( ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) && wp_doing_ajax() ) {
