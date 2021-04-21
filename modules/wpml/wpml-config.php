@@ -62,7 +62,7 @@ class PLL_WPML_Config {
 		$files = $this->get_files();
 
 		if ( ! empty( $files ) ) {
-			add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require libxml in Site health.
+			add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
 
 			// Read all files.
 			if ( extension_loaded( 'simplexml' ) ) {
