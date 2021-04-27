@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -78,6 +78,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
+= 3.0.4 (2021-04-27) =
+
+* Improve performance in the pages (or hierarchical post types) list table
+* Fix an ajax conflict with WooCommerce License manager
+
 = 3.0.3 (2021-03-23) =
 
 * Fix a warning when a language is corrupted in database (term_language missing)
@@ -132,37 +137,5 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Fix browser error when displaying an embed and using a cache plugin #757
 * Fix post type archive title and metadesc not translated in Yoast SEO
 * Fix PHP notice in REST API
-
-= 2.9.2 (2021-02-02) =
-
-* Pro: Fix translation of CPTUI plural label and description not working
-* Add Spanish (Ecuador) to the list of predefined languages
-* Fix typo in "WordPress" string translation group. Props Viktor Szépe #682
-
-= 2.9.1 (2020-12-15) =
-
-* Fix PHP notice: Undefined property: PLL_Cache_Compat::$options with cache plugins. Props bahaa-almahamid. #658
-* Fix title of the search results page with Yoast SEO > 14.0
-
-= 2.9 (2020-12-07) =
-
-* Add compatibility with WordPress 5.6
-* Pro: Add locale fallback used when the theme or plugins translations are not available
-* Pro: Fix SSO and browser preferred language redirect when using multiple domains
-* Pro: Fix post slugs for German and Danish in the REST API
-* Pro: Fix a fatal error in ACF integration when saving url modifications with multiple domains
-* Pro: Fix a deprecated notice fired by ACF since the version 5.9.2
-* Pro: Fix ACF relationship fields not reloaded when changing the language in the classic editor
-* Update plugin updater to version 1.8
-* Add Lower Sorbian to the list of predefined language
-* Options are now translated on backend when using the admin language filter
-* Keep previous translations when modifying an option value
-* Add navigation markup to the language switcher widget
-* Fix canonical redirect for taxonomy terms
-* Fix a fatal error when deleting a post with a translation group corrupted in the database
-* Fix a fatal error when switching to plain permalinks and using multiple domains
-* Fix a conflict with WP Sweep which could corrupt languages
-* Fix title displayed instead of meta description with Yoast SEO > 14.0
-* Fix PHP Notice: Undefined index: wp_the_query in /frontend/choose-lang-content.php on line 92
 
 See [changelog.txt](https://plugins.svn.wordpress.org/polylang/trunk/changelog.txt) for older changelog
