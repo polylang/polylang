@@ -228,8 +228,7 @@ class PLL_CRUD_Posts {
 	}
 
 	/**
-	 * Prevents WP deleting files when there are still media using them
-	 * Thanks to Bruno "Aesqe" Babic and its plugin file gallery in which I took all the ideas for this function
+	 * Prevents WP deleting files when there are still media using them.
 	 *
 	 * @since 0.9
 	 *
@@ -241,19 +240,20 @@ class PLL_CRUD_Posts {
 
 		$uploadpath = wp_upload_dir();
 
+		// Get the main attached file.
+		$attached_file = substr_replace( $file, '', 0, strlen( trailingslashit( $uploadpath['basedir'] ) ) );
+		$attached_file = preg_replace( '#-\d+x\d+\.([a-z]+)$#', '.$1', $attached_file );
+
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT post_id FROM $wpdb->postmeta
 				WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
-				substr_replace( $file, '', 0, strlen( trailingslashit( $uploadpath['basedir'] ) ) )
+				$attached_file
 			)
 		);
 
 		if ( ! empty( $ids ) ) {
-			// Regenerate intermediate sizes if it's an image ( since we could not prevent WP deleting them before ).
-			require_once ABSPATH . 'wp-admin/includes/image.php'; // In case the file is deleted outside admin.
-			wp_update_attachment_metadata( $ids[0], wp_slash( wp_generate_attachment_metadata( $ids[0], $file ) ) ); // Directly uses update_post_meta, so expects slashed.
-			return ''; // Prevent deleting the main file.
+			return ''; // Prevent deleting the file.
 		}
 
 		return $file;
