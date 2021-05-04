@@ -24,6 +24,8 @@ class PLL_Cache_Compat {
 		if ( ! defined( 'WP_ROCKET_VERSION' ) || version_compare( WP_ROCKET_VERSION, '3.0.5', '<' ) ) {
 			add_action( 'wp', array( $this, 'do_not_cache_site_home' ) );
 		}
+
+		add_action( 'clean_post_cache', array( $this, 'clean_post_cache' ), 1 );
 	}
 
 	/**
@@ -68,6 +70,22 @@ class PLL_Cache_Compat {
 	public function do_not_cache_site_home() {
 		if ( ! defined( 'DONOTCACHEPAGE' ) && PLL()->options['browser'] && PLL()->options['hide_default'] && is_front_page() && pll_current_language() === pll_default_language() ) {
 			define( 'DONOTCACHEPAGE', true );
+		}
+	}
+
+	/**
+	 * Defines the current language as the current post language when cleaning the post cache.
+	 *
+	 * This allows cache plugins to clean the right post type archive cache.
+	 *
+	 * @since 3.0.5
+	 *
+	 * @param int $post_id Post id.
+	 */
+	public function clean_post_cache( $post_id ) {
+		$lang = PLL()->model->post->get_language( $post_id );
+		if ( $lang ) {
+			PLL()->curlang = $lang;
 		}
 	}
 }
