@@ -42,7 +42,7 @@ $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' :
 		</div>
 		<div class="pll-wizard-service-description">
 			<p>
-				<?php esc_html_e( 'Allow Polylang translate media', 'polylang' ); ?>
+				<?php esc_html_e( 'Allow Polylang to translate media', 'polylang' ); ?>
 			</p>
 		</div>
 	</li>
