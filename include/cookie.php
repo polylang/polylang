@@ -10,7 +10,7 @@
  */
 class PLL_Cookie {
 	/**
-	 * Parses the cookie parameters
+	 * Parses the cookie parameters.
 	 *
 	 * @since 2.9
 	 *
@@ -19,17 +19,19 @@ class PLL_Cookie {
 	 */
 	protected static function parse_args( $args ) {
 		/**
-		 * Filter the Polylang cookie duration
-		 * /!\ this filter may be fired *before* the theme is loaded
+		 * Filters the Polylang cookie duration.
+		 *
+		 * If a cookie duration of 0 is specified, a session cookie will be set.
+		 * /!\ This filter may be fired *before* the theme is loaded.
 		 *
 		 * @since 1.8
 		 *
-		 * @param int $duration cookie duration in seconds
+		 * @param int $duration Cookie duration in seconds.
 		 */
 		$expiration = apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
 
 		$defaults = array(
-			'expires'  => time() + $expiration,
+			'expires'  => $expiration > 0 ? time() + $expiration : 0,
 			'path'     => COOKIEPATH,
 			'domain'   => COOKIE_DOMAIN, // Cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
 			'secure'   => is_ssl(),
