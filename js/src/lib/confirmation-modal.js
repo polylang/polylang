@@ -94,6 +94,9 @@ export const initializeConfimationModal = () => {
 }
 
 export const initializeLanguageOldValue = () => {
-	// Keep the old language value to be able to compare to the new one and revert to it if necessary.
-	languagesList.attr( 'data-old-value', languagesList.children( ':selected' )[0].value );
+	// Avoid outputting errors when there is no metabox
+	if ( languagesList.val() ) {
+		// Keep the old language value to be able to compare to the new one and revert to it if necessary.
+		languagesList.attr( 'data-old-value', languagesList.children( ':selected' )[0].value );
+	}
 };
