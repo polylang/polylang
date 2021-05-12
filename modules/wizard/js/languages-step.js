@@ -271,7 +271,7 @@ jQuery(
 						);
 					}
 					// Display language name and flag information in dialog box.
-					$( this ).find( '#dialog-language' ).text( $( '#lang_list' ).children( ':selected' )[0].innerText );
+					$( this ).find( '#dialog-language' ).text( $( '#lang_list' ).children( ':selected' ).first().text() );
 					// language properties come from the select dropdown #lang_list which is built server side and well escaped.
 					// see template view-wizard-step-languages.php.
 					$( this ).find( '#dialog-language-flag' ).empty().prepend( $( '#lang_list' ).children( ':selected' ).data( 'flag-html' ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
