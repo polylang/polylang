@@ -126,11 +126,11 @@ class PLL_Switcher {
 			$order = (int) $language->term_group;
 			$slug = $language->slug;
 			$locale = $language->get_locale( 'display' );
-			$item_classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
-			$classes = isset( $args['classes'] ) && is_array( $args['classes'] ) ? array_merge(
-				$args['classes'],
-				$item_classes
-			) : $item_classes;
+			$classes = isset( $args['classes'] ) ? $args['classes'] : array();
+			$classes['item'] = array_merge(
+				isset( $classes['item'] ) ? $classes['item'] : array(),
+				array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) )
+			);
 			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {
