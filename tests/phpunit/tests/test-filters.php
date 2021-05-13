@@ -143,16 +143,24 @@ class Filters_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 		$fr = $this->factory->comment->create( array( 'comment_post_ID' => $fr, 'comment_approved' => '1' ) );
 
+		$de = $this->factory->post->create();
+		self::$model->post->set_language( $de, 'de' );
+		$de = $this->factory->comment->create( array( 'comment_post_ID' => $de, 'comment_approved' => '1' ) );
+
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		new PLL_Frontend_Filters( $this->frontend );
 		$comments = get_comments();
 		$this->assertCount( 1, $comments );
-		$this->assertEquals( get_comment( $fr )->comment_ID, reset( $comments )->comment_ID );
+		$this->assertEquals( $fr, reset( $comments )->comment_ID );
 
 		// don't use the same default args as above to avoid hitting the cache
 		$comments = get_comments( array( 'fields' => 'ids', 'lang' => 'en' ) );
 		$this->assertCount( 1, $comments );
-		$this->assertEquals( get_comment( $en )->comment_ID, reset( $comments ) );
+		$this->assertEquals( $en, reset( $comments ) );
+
+		$comments = get_comments( array( 'fields' => 'ids', 'lang' => 'en,fr' ) );
+		$this->assertCount( 2, $comments );
+		$this->assertEqualSets( array( $en, $fr ), $comments );
 	}
 
 	function test_get_terms() {
