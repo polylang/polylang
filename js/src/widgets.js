@@ -101,7 +101,7 @@ jQuery(
 		}
 
 		// Remove all options if dropdown is checked.
-		$( '.widgets-sortables,.control-section-sidebar,.edit-widgets-main-block-list' ).on(
+		$( '.widgets-sortables,.control-section-sidebar' ).on(
 			'change',
 			'.pll-dropdown',
 			function() {
@@ -115,7 +115,7 @@ jQuery(
 		$.each(
 			options,
 			function( i, v ) {
-				$( '.widgets-sortables,.control-section-sidebar,.edit-widgets-main-block-list' ).on(
+				$( '.widgets-sortables,.control-section-sidebar' ).on(
 					'change',
 					'.pll' + v,
 					function() {
