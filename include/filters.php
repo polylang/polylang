@@ -98,7 +98,7 @@ class PLL_Filters {
 	 * @since 2.0
 	 *
 	 * @param WP_Comment_Query $query  WP_Comment_Query object.
-	 * @return PLL_Language|false The language to use in the filter, false otherwise.
+	 * @return PLL_Language|string|false The language to use in the filter, false otherwise.
 	 */
 	protected function get_comments_queried_language( $query ) {
 		// Don't filter comments if comment ids or post ids are specified.
@@ -113,7 +113,12 @@ class PLL_Filters {
 			return false;
 		}
 
-		return empty( $query->query_vars['lang'] ) ? $this->curlang : $this->model->get_language( $query->query_vars['lang'] );
+		// If comments are queried with a 'lang' parameter.
+		if ( isset( $query->query_vars['lang'] ) ) {
+			return $query->query_vars['lang'];
+		}
+
+		return $this->curlang;
 	}
 
 	/**
@@ -129,7 +134,8 @@ class PLL_Filters {
 	public function parse_comment_query( $query ) {
 		$lang = $this->get_comments_queried_language( $query );
 		if ( $lang ) {
-			$key = '_' . $lang->slug;
+			$lang = is_string( $lang ) && strpos( $lang, ',' ) ? explode( ',', $lang ) : $lang;
+			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
 			$query->query_vars['cache_domain'] = empty( $query->query_vars['cache_domain'] ) ? 'pll' . $key : $query->query_vars['cache_domain'] . $key;
 		}
 	}
