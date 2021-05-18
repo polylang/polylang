@@ -29,7 +29,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		$this->frontend->links->cache->method( 'get' )->willReturn( false );
 
-		$this->switcher = new PLL_Switcher();
+		$this->switcher = new PLL_Switcher( new PLL_Walker_Factory_Classic() );
 	}
 
 	function test_the_languages_raw() {

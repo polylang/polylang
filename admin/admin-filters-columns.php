@@ -220,7 +220,7 @@ class PLL_Admin_Filters_Columns {
 				array_unshift( $elements, (object) array( 'slug' => -1, 'name' => __( '&mdash; No Change &mdash;', 'polylang' ) ) );
 			}
 
-			$dropdown = new PLL_Walker_Dropdown();
+			$dropdown = new PLL_Walker_Dropdown( 'inline_lang_choice', '');
 			// The hidden field 'old_lang' allows to pass the old language to ajax request
 			printf(
 				'<fieldset class="inline-edit-col-left">
@@ -232,7 +232,7 @@ class PLL_Admin_Filters_Columns {
 					</div>
 				</fieldset>',
 				esc_html__( 'Language', 'polylang' ),
-				$dropdown->walk( $elements, -1, array( 'name' => 'inline_lang_choice', 'id' => '' ) ) // phpcs:ignore WordPress.Security.EscapeOutput
+				$dropdown->walk( $elements, -1, array( 'id' => '' ) ) // phpcs:ignore WordPress.Security.EscapeOutput
 			);
 		}
 		return $column;

@@ -35,11 +35,11 @@ class PLL_Walker_Dropdown extends Walker {
 	 *
 	 * @since 3.1
 	 *
-	 * @param string $suffix A suffix to differentiate several dropdown. Must be unique.
-	 * @param string $selected The selected language's locale.
+	 * @param string     $name     A name to differentiate several dropdown. Must be unique.
+	 * @param string|int $selected The selected language's locale.
 	 */
-	public function __construct( $suffix, $selected ) {
-		$this->name = 'lang_choice_' . $suffix;
+	public function __construct( $name, $selected ) {
+		$this->name = $name;
 		$this->selected = $selected;
 	}
 
