@@ -126,11 +126,8 @@ class PLL_Switcher {
 			$order = (int) $language->term_group;
 			$slug = $language->slug;
 			$locale = $language->get_locale( 'display' );
-			$classes = isset( $args['classes'] ) ? $args['classes'] : array();
-			$classes['item'] = array_merge(
-				isset( $classes['item'] ) ? $classes['item'] : array(),
-				array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) )
-			);
+			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
+			$link_classes = isset( $args['link_classes'] ) ? $args['link_classes'] : array();
 			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {
@@ -173,7 +170,7 @@ class PLL_Switcher {
 				$first = false;
 			}
 
-			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes' );
+			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes', 'link_classes' );
 		}
 
 		return $out;

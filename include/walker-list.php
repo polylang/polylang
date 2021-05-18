@@ -33,14 +33,14 @@ class PLL_Walker_List extends Walker {
 	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$output .= sprintf(
 			'%6$s<li class="%1$s"><a class="%8$s" lang="%2$s" hreflang="%2$s" href="%3$s">%4$s%5$s</a></li>%7$s',
-			esc_attr( implode( ' ', $element->classes['item'] ) ),
+			esc_attr( implode( ' ', $element->classes ) ),
 			esc_attr( $element->locale ),
 			esc_url( $element->url ),
 			$element->flag,
 			$args['show_flags'] && $args['show_names'] ? sprintf( '<span style="margin-%1$s:0.3em;">%2$s</span>', is_rtl() ? 'right' : 'left', esc_html( $element->name ) ) : esc_html( $element->name ),
 			'discard' === $args['item_spacing'] ? '' : "\t",
 			'discard' === $args['item_spacing'] ? '' : "\n",
-			isset( $element->classes['link'] ) ? implode( ' ', $element->classes['link'] ) : ''
+			empty( $element->link_classes ) ? '' : implode( ' ', $element->link_classes )
 		);
 	}
 
