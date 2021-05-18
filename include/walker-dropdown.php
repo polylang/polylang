@@ -19,6 +19,31 @@ class PLL_Walker_Dropdown extends Walker {
 	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
 
 	/**
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * The selected language's locale.
+	 *
+	 * @var string
+	 */
+	private $selected;
+
+	/**
+	 * PLL_Walker_Dropdown constructor.
+	 *
+	 * @since 3.1
+	 *
+	 * @param string $suffix A suffix to differentiate several dropdown. Must be unique.
+	 * @param string $selected The selected language's locale.
+	 */
+	public function __construct( $suffix, $selected ) {
+		$this->name = 'lang_choice_' . $suffix;
+		$this->selected = $selected;
+	}
+
+	/**
 	 * Outputs one element
 	 *
 	 * @since 1.2
@@ -36,7 +61,7 @@ class PLL_Walker_Dropdown extends Walker {
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
 			esc_attr( $element->$value ),
 			method_exists( $element, 'get_locale' ) ? sprintf( ' lang="%s"', esc_attr( $element->get_locale( 'display' ) ) ) : '',
-			selected( isset( $args['selected'] ) && $args['selected'] === $element->$value, true, false ),
+			selected( isset( $this->selected ) && $this->selected === $element->$value, true, false ),
 			esc_html( $element->name )
 		);
 	}
@@ -72,7 +97,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 * value    => the language field to use as value attribute, defaults to 'slug'
 	 * selected => the selected value, mandatory
 	 * name     => the select name attribute, defaults to 'lang_choice'
-	 * id       => the select id attribute, defaults to $args['name']
+	 * id       => the select id attribute, defaults to $this->name
 	 * class    => the class attribute
 	 * disabled => disables the dropdown if set to 1
 	 *
@@ -103,7 +128,7 @@ class PLL_Walker_Dropdown extends Walker {
 		$args = wp_parse_args( $args, array( 'value' => 'slug', 'name' => 'lang_choice' ) );
 
 		if ( ! empty( $args['flag'] ) ) {
-			$current = wp_list_filter( $elements, array( $args['value'] => $args['selected'] ) );
+			$current = wp_list_filter( $elements, array( $args['value'] => $this->selected ) );
 			$lang = reset( $current );
 			$output = sprintf(
 				'<span class="pll-select-flag">%s</span>',
@@ -113,8 +138,8 @@ class PLL_Walker_Dropdown extends Walker {
 
 		$output .= sprintf(
 			'<select name="%1$s"%2$s%3$s%4$s>' . "\n" . '%5$s' . "\n" . '</select>' . "\n",
-			esc_attr( $args['name'] ),
-			isset( $args['id'] ) && ! $args['id'] ? '' : ' id="' . ( empty( $args['id'] ) ? esc_attr( $args['name'] ) : esc_attr( $args['id'] ) ) . '"',
+			esc_attr( $this->name ),
+			isset( $args['id'] ) && ! $args['id'] ? '' : ' id="' . ( empty( $args['id'] ) ? esc_attr( $this->name ) : esc_attr( $args['id'] ) ) . '"',
 			empty( $args['class'] ) ? '' : ' class="' . esc_attr( $args['class'] ) . '"',
 			disabled( empty( $args['disabled'] ), false, false ),
 			parent::walk( $elements, $max_depth, $args )

@@ -234,9 +234,7 @@ class PLL_Switcher {
 		}
 
 		if ( $args['dropdown'] ) {
-			$args['name'] = 'lang_choice_' . $args['dropdown'];
-			$walker = new PLL_Walker_Dropdown();
-			$args['selected'] = $this->get_current_language( $args );
+			$walker = new PLL_Walker_Dropdown( $args['dropdown'], $this->get_current_language( $args ) );
 		} else {
 			$walker = new PLL_Walker_List();
 		}
@@ -265,7 +263,7 @@ class PLL_Switcher {
 				</script>',
 				'urls_' . preg_replace( '#[^a-zA-Z0-9]#', '', $args['dropdown'] ),
 				wp_json_encode( wp_list_pluck( $elements, 'url' ) ),
-				esc_js( $args['name'] )
+				esc_js( $walker->name )
 			);
 		}
 
