@@ -4,9 +4,12 @@
  * @package Polylang
  */
 
-jQuery(
+ jQuery(
 	function( $ ) {
-		var widgets_container, widgets_selector, flags;
+		var widgets_container,
+			widgets_selector,
+			flags,
+			isBlockEditor = 'undefined' !== typeof wp.blockEditor;
 
 		if ( 'undefined' !== typeof pll_widgets && pll_widgets.hasOwnProperty( 'flags' ) ) {
 			flags = pll_widgets.flags;
@@ -23,7 +26,7 @@ jQuery(
 				return;
 			}
 			widget = $( widget );
-			var title  = $( '.widget-top .widget-title h3', widget ),
+			var title  = isBlockEditor ? widget.prev('h3') : $( '.widget-top .widget-title h3', widget ),
 				locale = $( '.pll-lang-choice option:selected', widget ).val(),
 				// Icon is HTML built and come from server side and is well escaped when necessary
 				icon = ( locale && flags.hasOwnProperty( locale ) ) ? flags[ locale ] : null;
@@ -73,6 +76,11 @@ jQuery(
 			wp.customize.control.each( customize_add_flag );
 			wp.customize.control.bind( 'add', customize_add_flag );
 
+		} else if ( isBlockEditor ) {
+
+			widgets_container = $( '.edit-widgets-main-block-list' );
+			widgets_selector  = '.widget';
+
 		} else {
 
 			widgets_container = $( '#widgets-right' );
@@ -80,12 +88,23 @@ jQuery(
 
 		}
 
-		// Add flags on load.
-		$( widgets_selector, widgets_container ).each(
-			function() {
-				add_flag( this );
-			}
-		);
+		if ( ! isBlockEditor ) {
+			// Add flags on load.
+			$( widgets_selector, widgets_container ).each(
+				function() {
+					add_flag( this );
+				}
+			);
+		} else {
+			// Update flags when we click on the legacy widget to display its form.
+			widgets_container.on(
+				'click',
+				'.wp-block-legacy-widget',
+				function() {
+					add_flag( $( this ).find( '.widget' ) );
+				}
+			);
+		}
 
 		// Update flags.
 		widgets_container.on(
@@ -101,7 +120,7 @@ jQuery(
 		}
 
 		// Remove all options if dropdown is checked.
-		$( '.widgets-sortables,.control-section-sidebar' ).on(
+		$( '.widgets-sortables,.control-section-sidebar,.edit-widgets-main-block-list' ).on(
 			'change',
 			'.pll-dropdown',
 			function() {
@@ -115,7 +134,7 @@ jQuery(
 		$.each(
 			options,
 			function( i, v ) {
-				$( '.widgets-sortables,.control-section-sidebar' ).on(
+				$( '.widgets-sortables,.control-section-sidebar,.edit-widgets-main-block-list' ).on(
 					'change',
 					'.pll' + v,
 					function() {

@@ -172,8 +172,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 */
 		$scripts = array(
 			'user'    => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
-			'widgets' => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
-			'widgets-block-editor' => array( array( 'appearance_page_gutenberg-widgets' ), array( 'jquery' ), 0, 0 ),
+			'widgets' => array( array( 'widgets', 'appearance_page_gutenberg-widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
@@ -232,16 +231,9 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @return void
 	 */
 	public function localize_scripts() {
-		$widget_script_handle = '';
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
-			$widget_script_handle = 'pll_widgets';
-		}
-		elseif ( wp_script_is( 'pll_widgets-block-editor', 'enqueued' ) ) {
-			$widget_script_handle = 'pll_widgets-block-editor';
-		}
-		if ( ! empty( $widget_script_handle ) ) {
 			wp_localize_script(
-				$widget_script_handle,
+				'pll_widgets',
 				'pll_widgets',
 				array(
 					'flags' => wp_list_pluck( $this->model->get_languages_list(), 'flag', 'slug' ),
