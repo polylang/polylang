@@ -101,7 +101,6 @@
 				'click',
 				'.wp-block-legacy-widget',
 				function() {
-					console.log( $( this ) );
 					add_flag( $( this ).find( '.widget' ) );
 				}
 			);
