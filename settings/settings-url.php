@@ -53,6 +53,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 */
 	protected function force_lang() {
 		?>
+		<p class="description"><?php esc_html_e( 'Some themes or plugins may not be fully compatible with the language defined by the content or by domains.', 'polylang' ); ?></p>
 		<label>
 			<?php
 			printf(

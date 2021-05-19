@@ -29,7 +29,7 @@ class PLL_Settings_Media extends PLL_Settings_Module {
 			array(
 				'module'        => 'media',
 				'title'         => __( 'Media', 'polylang' ),
-				'description'   => __( 'Activate languages and translations for media', 'polylang' ),
+				'description'   => __( 'Activate languages and translations for media only if you need to translate the text attached to the media: the title, the alternative text, the caption, the description... Note that the file is not duplicated.', 'polylang' ),
 				'active_option' => 'media_support',
 			)
 		);
