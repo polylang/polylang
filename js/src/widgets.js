@@ -4,7 +4,7 @@
  * @package Polylang
  */
 
- jQuery(
+jQuery(
 	function( $ ) {
 		var widgets_container,
 			widgets_selector,
