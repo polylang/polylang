@@ -57,11 +57,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 		$post_id = $post->ID;
 		$lang = $this->model->post->get_language( $post_id );
 
-		$dropdown = new PLL_Walker_Dropdown(
-			sprintf( 'attachments[%d][language]', $post_id ),
-			$lang ? $lang->slug : ''
-		);
-
+		$dropdown = new PLL_Walker_Dropdown();
 		$fields['language'] = array(
 			'label' => __( 'Language', 'polylang' ),
 			'input' => 'html',
@@ -69,7 +65,9 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 				$this->model->get_languages_list(),
 				-1,
 				array(
+					'name'     => sprintf( 'attachments[%d][language]', $post_id ),
 					'class'    => 'media_lang_choice',
+					'selected' => $lang ? $lang->slug : '',
 				)
 			),
 		);

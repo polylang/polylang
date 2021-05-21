@@ -127,13 +127,15 @@ class PLL_Admin_Filters_Term {
 
 		$lang = isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : $this->pref_lang; // phpcs:ignore WordPress.Security.NonceVerification
 
-		$dropdown = new PLL_Walker_Dropdown( 'term_lang_choice', $lang ? $lang->term_id : '' );
+		$dropdown = new PLL_Walker_Dropdown();
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->get_languages_list(),
 			-1,
 			array(
+				'name'     => 'term_lang_choice',
 				'value'    => 'term_id',
+				'selected' => $lang ? $lang->term_id : '',
 				'flag'     => true,
 			)
 		);
@@ -193,13 +195,15 @@ class PLL_Admin_Filters_Term {
 		// Disable the language dropdown and the translations input fields for default terms to prevent removal
 		$disabled = $this->default_term->is_default_term( $term_id );
 
-		$dropdown = new PLL_Walker_Dropdown( 'term_lang_choice', $lang->term_id );
+		$dropdown = new PLL_Walker_Dropdown();
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->get_languages_list(),
 			-1,
 			array(
+				'name'     => 'term_lang_choice',
 				'value'    => 'term_id',
+				'selected' => $lang->term_id,
 				'disabled' => $disabled,
 				'flag'     => true,
 			)

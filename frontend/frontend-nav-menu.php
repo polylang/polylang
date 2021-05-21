@@ -107,7 +107,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				/** This filter is documented in include/switcher.php */
 				$options = apply_filters( 'pll_the_languages_args', $options ); // Honor the filter here for 'show_flags', 'show_names' and 'dropdown'.
 
-				$switcher = new PLL_Switcher( new PLL_Walker_Factory_Classic() );
+				$switcher = new PLL_Switcher();
 				$args = array_merge( array( 'raw' => 1 ), $options );
 
 				/** @var array */

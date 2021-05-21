@@ -65,8 +65,3 @@ parameters:
 			count: 1
 			path: include/crud-posts.php
 
-		# Could be removed with some refactoring
-		-
-			message: "#^Access to an undefined property Walker::\\$name.$#"
-			count: 1
-			path: include/switcher.php

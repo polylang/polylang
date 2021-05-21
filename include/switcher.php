@@ -32,22 +32,6 @@ class PLL_Switcher {
 	protected $links;
 
 	/**
-	 * @var PLL_Walker_Factory_Interface
-	 */
-	private $walker_factory;
-
-	/**
-	 * PLL_Switcher constructor.
-	 *
-	 * @since 3.1
-	 *
-	 * @param PLL_Walker_Factory_Interface $walker_factory A factory to generate the Walker responsible for rendering the switcher.
-	 */
-	public function __construct( $walker_factory ) {
-		$this->walker_factory = $walker_factory;
-	}
-
-	/**
 	 * Returns options available for the language switcher - menu or widget
 	 * either strings to display the options or default values
 	 *
@@ -143,14 +127,14 @@ class PLL_Switcher {
 			$slug = $language->slug;
 			$locale = $language->get_locale( 'display' );
 			$item_classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
-			$classes = isset( $args['classes'] ) && is_array( $args['classes'] ) ?
+			$classes = isset( $args['classes'] ) && is_array( $args['classes' ] ) ?
 				array_merge(
 					$item_classes,
 					$args['classes']
 				) :
 				$item_classes;
 			$link_classes = isset( $args['link_classes'] ) ? $args['link_classes'] : array();
-			$current_lang = $args['current_language'] === $slug;
+			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {
 				if ( $args['hide_current'] && ! ( $args['dropdown'] && ! $args['raw'] ) ) {
@@ -228,7 +212,6 @@ class PLL_Switcher {
 	public function the_languages( $links, $args = array() ) {
 		$this->links = $links;
 		$args = wp_parse_args( $args, self::DEFAULTS );
-		$args['current_language'] = $this->get_current_language( $args );
 
 		/**
 		 * Filter the arguments of the 'pll_the_languages' template tag
@@ -250,7 +233,11 @@ class PLL_Switcher {
 			return $elements;
 		}
 
-		$walker = $this->walker_factory->get_walker( $args );
+		if ( $args['dropdown'] ) {
+			$walker = new PLL_Walker_Dropdown( $args['dropdown'], $this->get_current_language( $args ) );
+		} else {
+			$walker = new PLL_Walker_List();
+		}
 
 		/**
 		 * Filter the whole html markup returned by the 'pll_the_languages' template tag
@@ -285,5 +272,4 @@ class PLL_Switcher {
 		}
 		return $out;
 	}
-
 }

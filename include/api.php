@@ -29,7 +29,7 @@
  * @return string|array Either the html markup of the switcher or the raw elements to build a custom language switcher.
  */
 function pll_the_languages( $args = array() ) {
-	$switcher = new PLL_Switcher( new PLL_Walker_Factory_Classic() );
+	$switcher = new PLL_Switcher();
 	return $switcher->the_languages( PLL()->links, $args );
 }
 

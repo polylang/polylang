@@ -102,14 +102,17 @@ class PLL_Admin_Classic_Editor {
 			( isset( $_GET['new_lang'] ) ? $this->model->get_language( sanitize_key( $_GET['new_lang'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification
 			$this->pref_lang );
 
+		$dropdown = new PLL_Walker_Dropdown();
+
 		$id = ( 'attachment' === $post_type ) ? sprintf( 'attachments[%d][language]', (int) $post_ID ) : 'post_lang_choice';
-		$dropdown = new PLL_Walker_Dropdown( $id, $lang ? $lang->slug : '' );
 
 		$dropdown_html = $dropdown->walk(
 			$this->model->get_languages_list(),
 			-1,
 			array(
+				'name'     => $id,
 				'class'    => 'post_lang_choice tags-input',
+				'selected' => $lang ? $lang->slug : '',
 				'flag'     => true,
 			)
 		);
