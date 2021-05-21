@@ -43,7 +43,7 @@ class PLL_Filters_Widgets_Options {
 	 * @return void
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
-		$dropdown = new PLL_Walker_Dropdown();
+		$dropdown = new PLL_Walker_Dropdown( $this->get_language_key( $widget ), empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'] );
 
 		$dropdown_html = $dropdown->walk(
 			array_merge(
@@ -52,9 +52,7 @@ class PLL_Filters_Widgets_Options {
 			),
 			-1,
 			array(
-				'name' => $this->get_language_key( $widget ),
 				'class' => 'tags-input pll-lang-choice',
-				'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
 			)
 		);
 
