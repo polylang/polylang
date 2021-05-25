@@ -246,16 +246,16 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 				/** This filter is documented in include/links-directory.php */
 				if ( apply_filters( 'pll_modify_rewrite_rule', true, array( $key => $rule ), $filter, empty( $matches[1] ) ? false : $matches[1] ) ) {
+					if ( $this->options['hide_default'] ) {
+						$newrules[ $key ] = str_replace( '?', '?lang=' . $this->options['default_lang'] . '&', $rule );
+					}
+
 					if ( isset( $slug ) ) {
 						$newrules[ $slug . str_replace( $wp_rewrite->root, '', ltrim( $key, '^' ) ) ] = str_replace(
 							array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
 							array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
 							$rule
 						); // Should be enough!
-					}
-
-					if ( $this->options['hide_default'] ) {
-						$newrules[ $key ] = str_replace( '?', '?lang=' . $this->options['default_lang'] . '&', $rule );
 					}
 				} else {
 					$newrules[ $key ] = $rule;
