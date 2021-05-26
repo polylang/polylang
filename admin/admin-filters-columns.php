@@ -247,7 +247,7 @@ class PLL_Admin_Filters_Columns {
 	 * @return string[] modified List of columns.
 	 */
 	public function add_term_column( $columns ) {
-		if ( empty( $columns ) ){
+		if ( empty( $columns ) ) {
 			return $columns;
 		}
 		return $this->add_column( $columns, 'posts' );
