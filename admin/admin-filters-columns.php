@@ -247,10 +247,13 @@ class PLL_Admin_Filters_Columns {
 	 * @return string[] modified List of columns.
 	 */
 	public function add_term_column( $columns ) {
-		if ( empty( $columns ) ) {
-			return $columns;
+		$screen = get_current_screen();
+
+		if ( 'edit-tags' === $screen->base ) { // Don't add our columns when editing a term.
+			return $this->add_column( $columns, 'posts' );
 		}
-		return $this->add_column( $columns, 'posts' );
+
+		return $columns;
 	}
 
 	/**
