@@ -172,7 +172,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 */
 		$scripts = array(
 			'user'    => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
-			'widgets' => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
+			'widgets' => array( array( 'widgets', 'appearance_page_gutenberg-widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
