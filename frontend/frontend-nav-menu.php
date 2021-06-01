@@ -101,8 +101,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		$offset = 0;
 
 		foreach ( $items as $item ) {
+			$i = 0;
 			if ( $options = get_post_meta( $item->ID, '_pll_menu_item', true ) ) {
-				$i = 0;
 
 				/** This filter is documented in include/switcher.php */
 				$options = apply_filters( 'pll_the_languages_args', $options ); // Honor the filter here for 'show_flags', 'show_names' and 'dropdown'.
@@ -119,10 +119,11 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 					$item->title = $this->get_item_title( $this->curlang->get_display_flag(), $name, $options );
 					$item->attr_title = '';
 					$item->classes = array( 'pll-parent-menu-item' );
+					$item->menu_order += $offset + $i++;
 					$new_items[] = $item;
 					$offset++;
 				}
-
+				
 				foreach ( $the_languages as $lang ) {
 					$lang_item = clone $item;
 					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
