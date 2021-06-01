@@ -212,6 +212,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	function test_add_term_column() {
+		set_current_screen( 'edit-tags.php' );
 		// We need to call directly the filter "manage_{$screen->id}_columns" due to the static var in get_column_headers()
 		$list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => 'edit-tags.php' ) );
 		list( $columns, $hidden, $sortable, $primary ) = $list_table->get_column_info();
@@ -226,6 +227,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	function test_add_term_column_with_filter() {
+		set_current_screen( 'edit-tags.php' );
 		$this->pll_admin->filter_lang = self::$model->get_language( 'fr' );
 		$list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => 'edit-tags.php' ) );
 		list( $columns, $hidden, $sortable, $primary ) = $list_table->get_column_info();
