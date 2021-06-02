@@ -123,7 +123,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 					$new_items[] = $item;
 					$offset++;
 				}
-				
+
 				foreach ( $the_languages as $lang ) {
 					$lang_item = clone $item;
 					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
