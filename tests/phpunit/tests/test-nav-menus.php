@@ -10,6 +10,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+		self::create_language( 'de_DE' );
 	}
 
 	function setUp() {
@@ -298,6 +299,58 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/a[.="English"]' )->length );
 		$this->assertEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); // current language is hidden
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
+
+		unset( $GLOBALS['polylang'] );
+	}
+
+	function test_multiple_nav_menu_language_switcher_as_dropdown() {
+		// the switchers dropdown options
+		$switchers_options = array( 
+			array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 1 ),
+			array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 1, 'show_names' => 1, 'dropdown' => 1 ),
+		);
+
+		// create the menu with two switchers
+		$menu_en = wp_create_nav_menu( 'menu_en' );
+
+		// add two language switchers to our menu
+		foreach ( $switchers_options as $options ) {
+			$item_id = wp_update_nav_menu_item(
+				$menu_en,
+				0,
+				array(
+					'menu-item-type'   => 'custom',
+					'menu-item-title'  => 'Language switcher',
+					'menu-item-url'    => '#pll_switcher',
+					'menu-item-status' => 'publish',
+				)
+			);
+	
+			$options['hide_if_empty'] = 0; // FIXME for some reason the languages counts are 0 even if I manually call clean_languages_cache()
+			update_post_meta( $item_id, '_pll_menu_item', $options );
+		};
+
+		// frontend to test the displayed menu
+		$frontend = new PLL_Frontend( $this->links_model );
+		$frontend->curlang = self::$model->get_language( 'en' );
+		$frontend->links = new PLL_Frontend_Links( $frontend );
+		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
+
+		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
+
+		$args = array( 'echo' => false );
+		$menu = wp_nav_menu( $args );
+		$menu = preg_replace( '#<svg(.+)</svg>#', '', $menu ); // Remove SVG Added by Twenty Seventeen to avoid an error in loadHTML()
+		$menu = mb_convert_encoding( $menu, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$doc = new DomDocument();
+		$doc->loadHTML( $menu );
+		$xpath = new DOMXpath( $doc );
+
+		// Verify that the two language switchers display each languages in the submenus.
+		$this->assertEquals( 2, $xpath->query( '//div/ul/li/a[.="English"]' )->length );
+		$this->assertEquals( 2, $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); 
+		$this->assertEquals( 2, $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
+		$this->assertEquals( 2, $xpath->query( '//div/ul/li/ul/li/a[.="Deutsch"]' )->length );
 
 		unset( $GLOBALS['polylang'] );
 	}
