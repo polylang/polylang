@@ -101,8 +101,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		$offset = 0;
 
 		foreach ( $items as $item ) {
-			$i = 0;
 			if ( $options = get_post_meta( $item->ID, '_pll_menu_item', true ) ) {
+				$i = 0;
 
 				/** This filter is documented in include/switcher.php */
 				$options = apply_filters( 'pll_the_languages_args', $options ); // Honor the filter here for 'show_flags', 'show_names' and 'dropdown'.
