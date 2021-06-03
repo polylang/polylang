@@ -71,7 +71,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
 			$this->assertTrue(
 				is_array( $preload_path ) ||
 				'/' === $preload_path ||
-				str_ends_with( $preload_path, 'en' )
+				preg_match( '#lang=en#', $preload_path )
 			);
 		}
 	}
@@ -87,7 +87,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
 			$this->assertTrue(
 				is_array( $preload_path ) ||
 				'/' === $preload_path ||
-				str_ends_with( $preload_path, 'fr' )
+				preg_match( '#lang=fr#', $preload_path )
 			);
 		}
 	}
