@@ -303,17 +303,18 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	function test_multiple_nav_menu_language_switcher_as_dropdown() {
-		// the switchers dropdown options
-		$switchers_options = array( 
+	function test_menu_items_with_multiple_language_switchers() {
+		// The switchers dropdown options.
+		$switchers_options = array(
 			array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 1 ),
 			array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 1, 'show_names' => 1, 'dropdown' => 1 ),
+			array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 0 ),
 		);
 
-		// create the menu with two switchers
+		// Create the menu with the switchers.
 		$menu_en = wp_create_nav_menu( 'menu_en' );
 
-		// add two language switchers to our menu
+		// Add two language switchers to our menu.
 		foreach ( $switchers_options as $options ) {
 			$item_id = wp_update_nav_menu_item(
 				$menu_en,
@@ -325,12 +326,12 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 					'menu-item-status' => 'publish',
 				)
 			);
-	
+
 			$options['hide_if_empty'] = 0; // FIXME for some reason the languages counts are 0 even if I manually call clean_languages_cache()
 			update_post_meta( $item_id, '_pll_menu_item', $options );
 		};
 
-		// frontend to test the displayed menu
+		// Frontend to test the displayed menu.
 		$frontend = new PLL_Frontend( $this->links_model );
 		$frontend->curlang = self::$model->get_language( 'en' );
 		$frontend->links = new PLL_Frontend_Links( $frontend );
@@ -338,19 +339,15 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
-		$args = array( 'echo' => false );
-		$menu = wp_nav_menu( $args );
-		$menu = preg_replace( '#<svg(.+)</svg>#', '', $menu ); // Remove SVG Added by Twenty Seventeen to avoid an error in loadHTML()
-		$menu = mb_convert_encoding( $menu, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
-		$doc = new DomDocument();
-		$doc->loadHTML( $menu );
-		$xpath = new DOMXpath( $doc );
+		$menu_items = $frontend->nav_menu->wp_get_nav_menu_items( wp_get_nav_menu_items( $menu_en ) );
 
-		// Verify that the two language switchers display each languages in the submenus.
-		$this->assertEquals( 2, $xpath->query( '//div/ul/li/a[.="English"]' )->length );
-		$this->assertEquals( 2, $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); 
-		$this->assertEquals( 2, $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
-		$this->assertEquals( 2, $xpath->query( '//div/ul/li/ul/li/a[.="Deutsch"]' )->length );
+		$menu_items_order = array();
+		$menu_items_length = count( $menu_items );
+		for ( $i = 0; $i < $menu_items_length; $i++ ) {
+			$menu_items_order[ $i + 1 ] = $menu_items[ $i ]->menu_order;
+		}
+		// Check that order of each menu item corresponds to its position.
+		$this->assertEquals( array_keys( $menu_items_order ), array_values( $menu_items_order ) );
 
 		unset( $GLOBALS['polylang'] );
 	}
