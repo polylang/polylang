@@ -1,28 +1,26 @@
 <?php
 
 
-class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
-{
+class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
+
 	/**
 	 * @var PLL_Admin_Block_Editor
 	 */
 	private $admin_block_editor;
 
 	/**
-	 * @var
+	 * @var PLL_Admin
 	 */
 	private $pll_admin;
 
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory )
-	{
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 	}
 
-	public function setUp()
-	{
+	public function setUp() {
 		parent::setUp();
 
 		$options = PLL_Install::get_default_options();
@@ -45,14 +43,14 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
 		register_post_type( 'custom' );
 		$post = $this->factory()->post->create_and_get(
 			array(
-				'post_type' => 'custom'
+				'post_type' => 'custom',
 			)
 		);
 
 		$preload_paths = $this->preload_paths( $post );
 
 		$this->assertNotEmpty( $preload_paths );
-		foreach( $preload_paths as $preload_path ) {
+		foreach ( $preload_paths as $preload_path ) {
 			$this->assertFalse(
 				is_string( $preload_path ) &&
 				stripos( $preload_path, 'lang' )
@@ -67,7 +65,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
 		$preload_paths = $this->preload_paths( $post );
 
 		$this->assertNotEmpty( $preload_paths );
-		foreach( $preload_paths as $preload_path ) {
+		foreach ( $preload_paths as $preload_path ) {
 			$this->assertTrue(
 				is_array( $preload_path ) ||
 				'/' === $preload_path ||
@@ -83,7 +81,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
 		$preload_paths = $this->preload_paths( $post );
 
 		$this->assertNotEmpty( $preload_paths );
-		foreach( $preload_paths as $preload_path ) {
+		foreach ( $preload_paths as $preload_path ) {
 			$this->assertTrue(
 				is_array( $preload_path ) ||
 				'/' === $preload_path ||
@@ -98,9 +96,8 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
 	 * @param WP_Post|mixed $post Represents the post being edited. Or a preload path without if no post is being edited.
 	 * @return mixed
 	 */
-	protected function preload_paths( $post )
-	{
-		$preload_paths = array (
+	protected function preload_paths( $post ) {
+		$preload_paths = array(
 			0 => '/',
 			1 => '/wp/v2/types?context=edit',
 			2 => '/wp/v2/taxonomies?per_page=-1&context=edit',
@@ -108,23 +105,21 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
 			4 => "/wp/v2/posts/{$post->ID}?context=edit",
 			5 => "/wp/v2/types/{$post->post_type}?context=edit",
 			6 => "/wp/v2/users/me?post_type={$post->post_type}&context=edit",
-			7 =>
-				array (
-					0 => '/wp/v2/media',
-					1 => 'OPTIONS',
-				),
-			8 =>
-				array (
-					0 => '/wp/v2/blocks',
-					1 => 'OPTIONS',
-				),
+			7 => array(
+				0 => '/wp/v2/media',
+				1 => 'OPTIONS',
+			),
+			8 => array(
+				0 => '/wp/v2/blocks',
+				1 => 'OPTIONS',
+			),
 			9 => "/wp/v2/posts/{$post->ID}/autosaves?context=edit",
 		);
 
-		if (version_compare($GLOBALS['wp_version'], '5.8-alpha', '>=')) {
-			$preload_paths = block_editor_rest_api_preload( $preload_paths, new WP_Block_Editor_Context(array('post' => $post)));
+		if ( version_compare( $GLOBALS['wp_version'], '5.8-alpha', '>=' ) ) {
+			$preload_paths = block_editor_rest_api_preload( $preload_paths, new WP_Block_Editor_Context( array( 'post' => $post ) ) );
 		} else {
-			$preload_paths = apply_filters('block_editor_preload_paths', $preload_paths, $post);
+			$preload_paths = apply_filters( 'block_editor_preload_paths', $preload_paths, $post );
 		}
 		return $preload_paths;
 	}
