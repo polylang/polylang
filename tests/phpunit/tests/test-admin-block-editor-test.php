@@ -122,7 +122,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase
 		);
 
 		if (version_compare($GLOBALS['wp_version'], '5.8-alpha', '>=')) {
-			$preload_paths = block_editor_rest_api_preload_paths( $preload_paths, new WP_Block_Editor_Context(array('post' => $post)));
+			$preload_paths = block_editor_rest_api_preload( $preload_paths, new WP_Block_Editor_Context(array('post' => $post)));
 		} else {
 			$preload_paths = apply_filters('block_editor_preload_paths', $preload_paths, $post);
 		}
