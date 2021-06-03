@@ -96,29 +96,35 @@ class PLL_Filters {
 	 * Get the language to filter a comments query.
 	 *
 	 * @since 2.0
+	 * @since 3.1 Always returns an array. Renamed from get_comments_queried_language().
 	 *
-	 * @param WP_Comment_Query $query  WP_Comment_Query object.
-	 * @return PLL_Language|string|false The language to use in the filter, false otherwise.
+	 * @param WP_Comment_Query $query WP_Comment_Query object.
+	 * @return string[] The languages to use in the filter.
 	 */
-	protected function get_comments_queried_language( $query ) {
+	protected function get_comments_queried_languages( $query ) {
 		// Don't filter comments if comment ids or post ids are specified.
 		$plucked = wp_array_slice_assoc( $query->query_vars, array( 'comment__in', 'parent', 'post_id', 'post__in', 'post_parent' ) );
 		$fields = array_filter( $plucked );
 		if ( ! empty( $fields ) ) {
-			return false;
+			return array();
 		}
 
 		// Don't filter comments if a non translated post type is specified.
 		if ( ! empty( $query->query_vars['post_type'] ) && ! $this->model->is_translated_post_type( $query->query_vars['post_type'] ) ) {
-			return false;
+			return array();
 		}
 
-		// If comments are queried with a 'lang' parameter.
+		// If comments are queried with a 'lang' parameter, keeps only language codes.
 		if ( isset( $query->query_vars['lang'] ) ) {
-			return $query->query_vars['lang'];
+			$languages = is_string( $query->query_vars['lang'] ) ? explode( ',', $query->query_vars['lang'] ) : $query->query_vars['lang'];
+			if ( is_array( $languages ) ) {
+				$languages = array_map( array( $this->model, 'get_language' ), $languages );
+				$languages = array_filter( $languages );
+				return wp_list_pluck( $languages, 'slug' );
+			}
 		}
 
-		return $this->curlang;
+		return array( $this->curlang->slug );
 	}
 
 	/**
@@ -132,10 +138,9 @@ class PLL_Filters {
 	 * @return void
 	 */
 	public function parse_comment_query( $query ) {
-		$lang = $this->get_comments_queried_language( $query );
-		if ( $lang ) {
-			$lang = is_string( $lang ) && strpos( $lang, ',' ) ? explode( ',', $lang ) : $lang;
-			$key = '_' . ( is_array( $lang ) ? implode( ',', $lang ) : $this->model->get_language( $lang )->slug );
+		$lang = $this->get_comments_queried_languages( $query );
+		if ( ! empty( $lang ) ) {
+			$key = '_' . implode( ',', $lang );
 			$query->query_vars['cache_domain'] = empty( $query->query_vars['cache_domain'] ) ? 'pll' . $key : $query->query_vars['cache_domain'] . $key;
 		}
 	}
@@ -153,7 +158,7 @@ class PLL_Filters {
 	public function comments_clauses( $clauses, $query ) {
 		global $wpdb;
 
-		$lang = $this->get_comments_queried_language( $query );
+		$lang = $this->get_comments_queried_languages( $query );
 
 		if ( ! empty( $lang ) ) {
 			// If this clause is not already added by WP.
