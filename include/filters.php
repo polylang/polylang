@@ -99,7 +99,7 @@ class PLL_Filters {
 	 * @since 3.1 Always returns an array. Renamed from get_comments_queried_language().
 	 *
 	 * @param WP_Comment_Query $query WP_Comment_Query object.
-	 * @return string[] The languages to use in the filter.
+	 * @return PLL_Language[] The languages to use in the filter.
 	 */
 	protected function get_comments_queried_languages( $query ) {
 		// Don't filter comments if comment ids or post ids are specified.
@@ -119,12 +119,11 @@ class PLL_Filters {
 			$languages = is_string( $query->query_vars['lang'] ) ? explode( ',', $query->query_vars['lang'] ) : $query->query_vars['lang'];
 			if ( is_array( $languages ) ) {
 				$languages = array_map( array( $this->model, 'get_language' ), $languages );
-				$languages = array_filter( $languages );
-				return wp_list_pluck( $languages, 'slug' );
+				return array_filter( $languages );
 			}
 		}
 
-		return array( $this->curlang->slug );
+		return array( $this->curlang );
 	}
 
 	/**
@@ -140,6 +139,7 @@ class PLL_Filters {
 	public function parse_comment_query( $query ) {
 		$lang = $this->get_comments_queried_languages( $query );
 		if ( ! empty( $lang ) ) {
+			$lang = wp_list_pluck( $lang, 'slug' );
 			$key = '_' . implode( ',', $lang );
 			$query->query_vars['cache_domain'] = empty( $query->query_vars['cache_domain'] ) ? 'pll' . $key : $query->query_vars['cache_domain'] . $key;
 		}
@@ -161,6 +161,8 @@ class PLL_Filters {
 		$lang = $this->get_comments_queried_languages( $query );
 
 		if ( ! empty( $lang ) ) {
+			$lang = wp_list_pluck( $lang, 'slug' );
+
 			// If this clause is not already added by WP.
 			if ( ! strpos( $clauses['join'], '.ID' ) ) {
 				$clauses['join'] .= " JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->comments.comment_post_ID";
