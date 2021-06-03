@@ -32,7 +32,7 @@ class PLL_Admin_Block_Editor {
 		$this->model     = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
 
-		add_filter( 'block_editor_preload_paths', array( $this, 'preload_paths' ), 10, 2 );
+		$this->block_editor_filter_preload_paths = new PLL_Block_Editor_Filter_Preload_Paths( array( $this, 'preload_paths' ), 10, 2 );
 	}
 
 	/**
