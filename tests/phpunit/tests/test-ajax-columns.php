@@ -88,8 +88,6 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	function test_term_translations() {
-		set_current_screen( 'edit-tags.php' );
-
 		$en = $this->factory->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
