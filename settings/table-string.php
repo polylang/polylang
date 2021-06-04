@@ -382,10 +382,11 @@ class PLL_Table_String extends WP_List_Table {
 					continue;
 				}
 
+				$translations = array_map( 'trim', wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
 				$mo = new PLL_MO();
 				$mo->import_from_db( $language );
 
-				$translations = array_map( 'trim', wp_unslash( $_POST['translation'][ $language->slug ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				foreach ( $translations as $key => $translation ) {
 					/**
 					 * Filter the string translation before it is saved in DB

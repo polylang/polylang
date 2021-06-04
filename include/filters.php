@@ -216,8 +216,8 @@ class PLL_Filters {
 				),
 			);
 
-			// Take care that 'exclude' argument accepts integer or strings too
-			$args['exclude'] = array_merge( wp_parse_id_list( $args['exclude'] ), get_posts( $r ) );
+			// Take care that 'exclude' argument accepts integer or strings too.
+			$args['exclude'] = array_merge( wp_parse_id_list( $args['exclude'] ), get_posts( $r ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 			$pages = get_pages( $args );
 		}
 
