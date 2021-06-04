@@ -19,6 +19,7 @@ trait PLL_UnitTestCase_Trait {
 	static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		$options = PLL_Install::get_default_options();
 		$options['hide_default'] = 0; // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis.
+		$options['media_support'] = 1; // Force option to pre 3.1 value otherwise phpunit tests break on Travis.
 		self::$model = new PLL_Admin_Model( $options );
 	}
 
