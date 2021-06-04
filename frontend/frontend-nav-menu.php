@@ -135,12 +135,10 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 					$lang_item->classes = $lang['classes'];
 					if ( ! empty( $options['dropdown'] ) ) {
 						$lang_item->menu_order = $item->menu_order + $i;
-					} else {
-						$lang_item->menu_order += $offset;
-					}
-					if ( ! empty( $options['dropdown'] ) ) {
 						$lang_item->menu_item_parent = $item->db_id;
 						$lang_item->db_id = 0; // to avoid recursion
+					} else {
+						$lang_item->menu_order += $offset;
 					}
 					$new_items[] = $lang_item;
 					$offset++;
