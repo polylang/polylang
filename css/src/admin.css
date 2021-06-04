@@ -314,7 +314,11 @@
 }
 
 #wp-admin-bar-languages.pll-filtered-languages {
-	background: #dba617;
+	background: #a03f3f;
+}
+/* Enforce white color for WordPress admin light theme. */
+#wpadminbar #wp-admin-bar-languages.pll-filtered-languages span.ab-label{
+		color: #fff;
 }
 
 /* Notices */
