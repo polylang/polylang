@@ -116,13 +116,6 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
 			9 => "/wp/v2/posts/{$post->ID}/autosaves?context=edit",
 		);
 
-		if ( version_compare( $GLOBALS['wp_version'], '5.8-alpha', '>=' ) ) {
-			$preload_paths = block_editor_rest_api_preload( $preload_paths, new WP_Block_Editor_Context( array( 'post' => $post ) ) );
-		} else {
-			$preload_paths = apply_filters( 'block_editor_preload_paths', $preload_paths, $post );
-		}
-		return $preload_paths;
+		return $this->admin_block_editor->preload_paths( $preload_paths, $post );
 	}
-
-
 }
