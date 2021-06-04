@@ -98,12 +98,11 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		usort( $items, array( $this, 'usort_menu_items' ) );
 
 		$new_items = array();
+
 		$offset = 0;
 
 		foreach ( $items as $item ) {
 			if ( $options = get_post_meta( $item->ID, '_pll_menu_item', true ) ) {
-				$i = 0;
-
 				/** This filter is documented in include/switcher.php */
 				$options = apply_filters( 'pll_the_languages_args', $options ); // Honor the filter here for 'show_flags', 'show_names' and 'dropdown'.
 
@@ -119,11 +118,14 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 					$item->title = $this->get_item_title( $this->curlang->get_display_flag(), $name, $options );
 					$item->attr_title = '';
 					$item->classes = array( 'pll-parent-menu-item' );
+					$item->menu_order += $offset;
 					$new_items[] = $item;
 					$offset++;
 				}
 
+				$i = 0; // for incrementation of menu order only in case of dropdown
 				foreach ( $the_languages as $lang ) {
+					$i++;
 					$lang_item = clone $item;
 					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
 					$lang_item->title = $this->get_item_title( $lang['flag'], $lang['name'], $options );
@@ -131,14 +133,17 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 					$lang_item->url = $lang['url'];
 					$lang_item->lang = $lang['locale']; // Save this for use in nav_menu_link_attributes
 					$lang_item->classes = $lang['classes'];
-					$lang_item->menu_order += $offset + $i++;
 					if ( ! empty( $options['dropdown'] ) ) {
+						$lang_item->menu_order = $item->menu_order + $i;
 						$lang_item->menu_item_parent = $item->db_id;
 						$lang_item->db_id = 0; // to avoid recursion
+					} else {
+						$lang_item->menu_order += $offset;
 					}
 					$new_items[] = $lang_item;
+					$offset++;
 				}
-				$offset += $i - 1;
+				$offset--;
 			} else {
 				$item->menu_order += $offset;
 				$new_items[] = $item;
