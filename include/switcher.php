@@ -236,7 +236,7 @@ class PLL_Switcher {
 		}
 
 		if ( $args['dropdown'] ) {
-			$args['name'] = 'lang_choice_' . $args['dropdown'];
+			$args['name'] = 'lang_choice_' . $args['dropdown_count'];
 			$walker = new PLL_Walker_Dropdown();
 			$args['selected'] = $this->get_current_language( $args );
 		} else {
