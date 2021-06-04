@@ -34,6 +34,14 @@ class Columns_Test extends PLL_UnitTestCase {
 		parent::tearDown();
 	}
 
+	/**
+	 * This must be the first test due to the static variable in get_culumn_headers().
+	 */
+	function test_no_screen_options_in_term_screen() {
+		set_current_screen( 'term.php' );
+		$this->assertEmpty( get_column_headers( get_current_screen() ) );
+	}
+
 	function test_post_with_no_language() {
 		$post_id = $this->factory->post->create();
 
