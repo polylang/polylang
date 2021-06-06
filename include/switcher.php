@@ -236,7 +236,8 @@ class PLL_Switcher {
 		}
 
 		if ( $args['dropdown'] ) {
-			$args['name'] = 'lang_choice_' . $args['dropdown_count'];
+			// Set a unique ID for the name of the select tag.
+			$args['name'] = wp_unique_id( 'lang_choice_' );
 			$walker = new PLL_Walker_Dropdown();
 			$args['selected'] = $this->get_current_language( $args );
 		} else {
