@@ -5,14 +5,10 @@
 
 /**
  * Class PLL_Block_Editor_Filter_Preload_Paths
+ *
+ * @since 3.1
  */
 class PLL_Block_Editor_Filter_Preload_Paths {
-
-
-	/**
-	 * @var int
-	 */
-	private $arguments_number;
 
 	/**
 	 * @var callable
