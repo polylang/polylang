@@ -261,13 +261,11 @@ class PLL_Switcher {
 					if ( typeof selectElements === "undefined" ) {
 						var selectElements = document.getElementsByClassName( "lang_choice" );
 					}
-					if ( typeof langChangedHandler !== "function" ) {
-						function langChangeHandler( e ) {
-							location.href = e.target.value;
-						}
-					}
 					// Listen to changes on the current select tag.
-					selectElements[selectElements.length - 1].addEventListener( "change", langChangeHandler );
+					selectElements[selectElements.length - 1].addEventListener( "change", function langChangeHandler( e ) {
+								location.href = e.target.value;
+							}
+						);
 					//]]>
 				</script>';
 		}
