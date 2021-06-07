@@ -22,11 +22,6 @@ class PLL_Admin_Block_Editor {
 	protected $pref_lang;
 
 	/**
-	 * @var PLL_Block_Editor_Filter_Preload_Paths
-	 */
-	private $block_editor_filter_preload_paths;
-
-	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 2.5
@@ -37,7 +32,7 @@ class PLL_Admin_Block_Editor {
 		$this->model     = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
 
-		$this->block_editor_filter_preload_paths = new PLL_Block_Editor_Filter_Preload_Paths( array( $this, 'preload_paths' ), 10, 2 );
+		new PLL_Block_Editor_Filter_Preload_Paths( array( $this, 'preload_paths' ), 10, 2 );
 	}
 
 	/**
