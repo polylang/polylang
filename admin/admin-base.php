@@ -456,22 +456,22 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 * @param array $items The admin languages filter submenu items.
 		 */
 		$items = apply_filters( 'pll_admin_languages_filter', array_merge( array( $all_item ), $this->model->get_languages_list() ) );
+
 		$menu = array(
 			'id'    => 'languages',
 			'title' => $selected->flag . $title,
 			'href'  => esc_url( add_query_arg( 'lang', $selected->slug, remove_query_arg( 'paged' ) ) ),
-			'meta' => array(
+			'meta'  => array(
 				'title' => __( 'Filters content by language', 'polylang' ),
-				'class' => '',
 			),
 		);
+
 		if ( 'all' !== $selected->slug ) {
 			$menu['meta']['class'] = 'pll-filtered-languages';
 		}
+
 		if ( ! empty( $items ) ) {
-			$wp_admin_bar->add_menu(
-				$menu
-			);
+			$wp_admin_bar->add_menu( $menu );
 		}
 
 		foreach ( $items as $lang ) {
