@@ -313,6 +313,14 @@
 	top: 1px;
 }
 
+#wp-admin-bar-languages.pll-filtered-languages {
+	background: #a03f3f;
+}
+/* Enforce white color for WordPress admin light theme. */
+#wpadminbar #wp-admin-bar-languages.pll-filtered-languages span.ab-label{
+		color: #fff;
+}
+
 /* Notices */
 .pll-notice.notice {
 	padding-right: 38px;
