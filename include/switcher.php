@@ -237,7 +237,7 @@ class PLL_Switcher {
 
 		if ( $args['dropdown'] ) {
 			// Set a unique ID for the name of the select tag.
-			$args['name'] = wp_unique_id( 'lang_choice_' );
+			$args['name'] = $args['dropdown'];
 			$walker = new PLL_Walker_Dropdown();
 			$args['selected'] = $this->get_current_language( $args );
 		} else {
@@ -258,12 +258,14 @@ class PLL_Switcher {
 		if ( $args['dropdown'] && 0 === $args['admin_render'] ) {
 			$out .= '<script type="text/javascript">
 					//<![CDATA[
-					if ( typeof selectElements === "undefined" ) {
-						var selectElements = document.getElementsByClassName( "lang_choice" );
-					}
+					// if ( typeof selectElements === "undefined" ) {
+						var selectElements = document.getElementsByClassName( "pll-lang-choice" );
+						console.log(selectElements);
+					// }
 					// Listen to changes on the current select tag.
 					selectElements[selectElements.length - 1].addEventListener( "change", function langChangeHandler( e ) {
-								location.href = e.target.value;
+						console.log(e);
+								// location.href = e.target.value;
 							}
 						);
 					//]]>
