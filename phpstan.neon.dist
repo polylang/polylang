@@ -68,5 +68,5 @@ parameters:
 		# Will not be an issue after WordPress 5.8 release
 		-
 			message: "#^Access to property \\$post on an unknown class WP_Block_Editor_Context\\.$#"
-			count: 2
+			count: 1
 			path: admin/block-editor-filter-preload-paths.php
