@@ -257,36 +257,33 @@ class PLL_Switcher {
 		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] && 0 === $args['admin_render'] ) {
 			// Accept only few valid characters for the urls_x variable name ( as the widget id includes '-' which is invalid )
-			$out .= sprintf(
-				'<script type="text/javascript">
-					//<![CDATA[
-					var %1$s = %2$s;
-					document.getElementById( "%3$s" ).onchange = function() {
-						location.href = %1$s[this.value];
-					}
-					//]]>
-				</script>',
-				'urls_' . preg_replace( '#[^a-zA-Z0-9]#', '', $args['dropdown'] ),
-				wp_json_encode( wp_list_pluck( $elements, 'url' ) ),
-				esc_js( $args['name'] )
-			);
-			// $out .= '<script type="text/javascript">
+			// $out .= sprintf(
+			// 	'<script type="text/javascript">
 			// 		//<![CDATA[
-			// 		if ( typeof selectElements === "undefined" ) {
-			// 			var selectElements = document.getElementsByClassName( "lang_choice" );
-			// 		}
-			// 		if ( typeof langChangedHandler !== "function" ) {
-			// 			function langChangeHandler( e ) {
-			// 				console.log(e);
-			// 			}
-			// 		}
-			// 		for ( i = 0; i < selectElements.length; i++ ) {
-			// 			console.log(selectElements[i]);
-			// 			selectElements[i].addEventListener( "change", langChangeHandler );
-			// 			// location.href = selectElement[this.value];
+			// 		var %1$s = %2$s;
+			// 		document.getElementById( "%3$s" ).onchange = function() {
+			// 			location.href = %1$s[this.value];
 			// 		}
 			// 		//]]>
-			// 	</script>';
+			// 	</script>',
+			// 	'urls_' . preg_replace( '#[^a-zA-Z0-9]#', '', $args['dropdown'] ),
+			// 	wp_json_encode( wp_list_pluck( $elements, 'url' ) ),
+			// 	esc_js( $args['name'] )
+			// );
+			$out .= '<script type="text/javascript">
+					//<![CDATA[
+					if ( typeof selectElements === "undefined" ) {
+						var selectElements = document.getElementsByClassName( "lang_choice" );
+					}
+					if ( typeof langChangedHandler !== "function" ) {
+						function langChangeHandler( e ) {
+							location.href = e.target.value;
+						}
+					}
+					// Listen to changes on the current select tag.
+					selectElements[selectElements.length - 1].addEventListener( "change", langChangeHandler );
+					//]]>
+				</script>';
 		}
 
 		if ( $args['echo'] ) {
