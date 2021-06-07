@@ -31,12 +31,12 @@ class PLL_Walker_Dropdown extends Walker {
 	 * @return void
 	 */
 	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$value = $args['value'];
+		$value_type = $args['value_type'];
 		$output .= sprintf(
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
-			esc_url( $element->url ),
+			'slug' === $value_type ? esc_attr( $element->$value_type ) : esc_url( $element->$value_type ),
 			method_exists( $element, 'get_locale' ) ? sprintf( ' lang="%s"', esc_attr( $element->get_locale( 'display' ) ) ) : '',
-			selected( isset( $args['selected'] ) && $args['selected'] === $element->$value, true, false ),
+			selected( isset( $args['selected'] ) && $args['selected'] === $element->$value_type, true, false ),
 			esc_html( $element->name )
 		);
 	}
@@ -112,11 +112,11 @@ class PLL_Walker_Dropdown extends Walker {
 		}
 
 		$output .= sprintf(
-			'<select name="%1$s"%2$s%3$s%4$s class="pll-lang-choice">' . "\n" . '%5$s' . "\n" . '</select>' . "\n",
-			// esc_attr( $args['name'] ),
-			// isset( $args['id'] ) && ! $args['id'] ? '' : ' id="' . ( empty( $args['id'] ) ? esc_attr( $args['name'] ) : esc_attr( $args['id'] ) ) . '"',
-			// empty( $args['class'] ) ? '' : ' class="' . esc_attr( $args['class'] ) . '"',
-			// disabled( empty( $args['disabled'] ), false, false ),
+			'<select name="%1$s"%2$s%3$s%4$s>' . "\n" . '%5$s' . "\n" . '</select>' . "\n",
+			esc_attr( $args['name'] ),
+			isset( $args['id'] ) && ! $args['id'] ? '' : ' id="' . ( empty( $args['id'] ) ? esc_attr( $args['name'] ) : esc_attr( $args['id'] ) ) . '"',
+			empty( $args['class'] ) ? '' : ' class="' . esc_attr( $args['class'] ) . '"',
+			disabled( empty( $args['disabled'] ), false, false ),
 			parent::walk( $elements, $max_depth, $args )
 		);
 

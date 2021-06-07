@@ -238,8 +238,10 @@ class PLL_Switcher {
 		if ( $args['dropdown'] ) {
 			// Set a unique ID for the name of the select tag.
 			$args['name'] = $args['dropdown'];
+			$args['class'] = 'pll-switcher-select';
+			$args['value_type'] = 'url';
+			$args['selected'] = $this->get_link( $this->links->model->get_language( $this->get_current_language( $args ) ), $args );
 			$walker = new PLL_Walker_Dropdown();
-			$args['selected'] = $this->get_current_language( $args );
 		} else {
 			$walker = new PLL_Walker_List();
 		}
@@ -258,18 +260,17 @@ class PLL_Switcher {
 		if ( $args['dropdown'] && 0 === $args['admin_render'] ) {
 			$out .= '<script type="text/javascript">
 					//<![CDATA[
-					// if ( typeof selectElements === "undefined" ) {
-						var selectElements = document.getElementsByClassName( "pll-lang-choice" );
-						console.log(selectElements);
-					// }
-					// Listen to changes on the current select tag.
-					selectElements[selectElements.length - 1].addEventListener( "change", function langChangeHandler( e ) {
-						console.log(e);
-								// location.href = e.target.value;
+						document.querySelectorAll(".pll-switcher-select").forEach(
+							select => { select.addEventListener( "change",
+								event => {
+									console.log(event);
+									// location.href = event.currentTarget.value
+									}
+								)
 							}
 						);
 					//]]>
-				</script>';
+					</script>';
 		}
 
 		if ( $args['echo'] ) {

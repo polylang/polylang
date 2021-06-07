@@ -110,10 +110,11 @@ class PLL_Admin_Classic_Editor {
 			$this->model->get_languages_list(),
 			-1,
 			array(
-				'name'     => $id,
-				'class'    => 'post_lang_choice tags-input',
-				'selected' => $lang ? $lang->slug : '',
-				'flag'     => true,
+				'name'       => $id,
+				'class'      => 'post_lang_choice tags-input',
+				'selected'   => $lang ? $lang->slug : '',
+				'flag'       => true,
+				'value_type' => 'slug',
 			)
 		);
 
