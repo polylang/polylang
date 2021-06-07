@@ -58,3 +58,15 @@ parameters:
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
 			count: 1
 			path: frontend/choose-lang.php
+
+		# Will not be an issue after WordPress 5.8 release
+		-
+			message: "#^Parameter \\$block_editor_context of method PLL_Block_Editor_Filter_Preload_Paths::block_editor_rest_api_preload_paths\\(\\) has invalid typehint type WP_Block_Editor_Context\\.$#"
+			count: 1
+			path: admin/block-editor-filter-preload-paths.php
+
+		# Will not be an issue after WordPress 5.8 release
+		-
+			message: "#^Access to property \\$post on an unknown class WP_Block_Editor_Context\\.$#"
+			count: 1
+			path: admin/block-editor-filter-preload-paths.php
