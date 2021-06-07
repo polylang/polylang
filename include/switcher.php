@@ -258,19 +258,8 @@ class PLL_Switcher {
 
 		// Javascript to switch the language when using a dropdown list
 		if ( $args['dropdown'] && 0 === $args['admin_render'] ) {
-			$out .= '<script type="text/javascript">
-					//<![CDATA[
-						document.querySelectorAll(".pll-switcher-select").forEach(
-							select => { select.addEventListener( "change",
-								event => {
-									console.log(event);
-									// location.href = event.currentTarget.value
-									}
-								)
-							}
-						);
-					//]]>
-					</script>';
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			wp_enqueue_script( 'pll_switcher_dropdown', plugins_url( '/js/build/switcher-dropdown' . $suffix . '.js', POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION, true );
 		}
 
 		if ( $args['echo'] ) {
