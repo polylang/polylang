@@ -124,7 +124,7 @@ class PLL_Filters {
 		}
 
 		if ( ! empty( $this->curlang ) ) {
-			array( $this->curlang );
+			return array( $this->curlang );
 		}
 
 		return array();
