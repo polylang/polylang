@@ -270,6 +270,23 @@ class PLL_Switcher {
 				wp_json_encode( wp_list_pluck( $elements, 'url' ) ),
 				esc_js( $args['name'] )
 			);
+			// $out .= '<script type="text/javascript">
+			// 		//<![CDATA[
+			// 		if ( typeof selectElements === "undefined" ) {
+			// 			var selectElements = document.getElementsByClassName( "lang_choice" );
+			// 		}
+			// 		if ( typeof langChangedHandler !== "function" ) {
+			// 			function langChangeHandler( e ) {
+			// 				console.log(e);
+			// 			}
+			// 		}
+			// 		for ( i = 0; i < selectElements.length; i++ ) {
+			// 			console.log(selectElements[i]);
+			// 			selectElements[i].addEventListener( "change", langChangeHandler );
+			// 			// location.href = selectElement[this.value];
+			// 		}
+			// 		//]]>
+			// 	</script>';
 		}
 
 		if ( $args['echo'] ) {
