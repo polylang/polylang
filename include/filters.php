@@ -123,7 +123,11 @@ class PLL_Filters {
 			}
 		}
 
-		return array( $this->curlang );
+		if ( ! empty( $this->curlang ) ) {
+			return array( $this->curlang );
+		}
+
+		return array();
 	}
 
 	/**
