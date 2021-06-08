@@ -21,6 +21,17 @@ trait PLL_UnitTestCase_Trait {
 		$options['hide_default'] = 0; // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis.
 		$options['media_support'] = 1; // Force option to pre 3.1 value otherwise phpunit tests break on Travis.
 		self::$model = new PLL_Admin_Model( $options );
+
+		// Since WP 5.8 firing the 'init' action registers the legacy widget block which can be registered only once, so let's clean it up to avoid notices.
+		add_action(
+			'init',
+			function() {
+				if ( class_exists( 'WP_Block_Type_Registry' ) && WP_Block_Type_Registry::get_instance()->is_registered( 'core/legacy-widget' ) ) {
+					unregister_block_type( 'core/legacy-widget' );
+				}
+			},
+			0
+		);
 	}
 
 	/**
