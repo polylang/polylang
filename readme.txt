@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 3.0.4
+Stable tag: 3.0.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,15 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.0.5 (2021-06-08) =
+
+* Pro: fix original post not assigned to a new translation when the languages sidebar is closed
+* Pro: Attempt to fix zip file corrupted on some installations when exporting string translations
+* Support session cookie with the pll_cookie_expiration filter #835
+* Fix javascript error when a plugin defines its own editor for translated post types #837
+* Fix languages displayed in screen options when editing a term #850
+* Cache: fix post type archive cache not cleared when saving a post #828
 
 = 3.0.4 (2021-04-27) =
 
