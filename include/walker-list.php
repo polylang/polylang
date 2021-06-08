@@ -40,7 +40,7 @@ class PLL_Walker_List extends Walker {
 			$args['show_flags'] && $args['show_names'] ? sprintf( '<span style="margin-%1$s:0.3em;">%2$s</span>', is_rtl() ? 'right' : 'left', esc_html( $element->name ) ) : esc_html( $element->name ),
 			'discard' === $args['item_spacing'] ? '' : "\t",
 			'discard' === $args['item_spacing'] ? '' : "\n",
-			empty( $element->link_classes ) ? '' : 'class="' . implode( ' ', $element->link_classes ) . '"'
+			empty( $element->link_classes ) ? '' : 'class="' . esc_attr( implode( ' ', $element->link_classes ) ) . '"'
 		);
 	}
 
