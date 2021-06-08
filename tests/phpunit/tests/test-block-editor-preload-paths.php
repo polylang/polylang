@@ -35,6 +35,19 @@ class PLL_Block_Editor_Filter_Preload_Paths_Test extends PLL_UnitTestCase {
 		}
 	}
 
+	public function test_do_not_invoke_callback_with_no_post_in_context() {
+		if ( ! class_exists( WP_Block_Editor_Context::class ) ) {
+			$this->markTestSkipped( 'block_editor_preload_paths is not called without a WP_Post as argument' );
+		}
+
+		$this->spy->expects( $this->never() )
+			->method( '__invoke' );
+
+		new PLL_Block_Editor_Filter_Preload_Paths( array( $this->spy, '__invoke' ), 10, 2 );
+
+		block_editor_rest_api_preload( array( '/' ), new WP_Block_Editor_Context() );
+	}
+
 	public function test_register_filter_with_custom_priority() {
 		global $wp_filter;
 

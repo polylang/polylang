@@ -45,8 +45,12 @@ class PLL_Block_Editor_Filter_Preload_Paths {
 	 * @return array|mixed|string[] (string|string[])[]
 	 */
 	public function block_editor_rest_api_preload_paths( $preload_paths, $block_editor_context = null ) {
-		$args = null === $block_editor_context ? array( $preload_paths ) : array( $preload_paths, $block_editor_context->post );
-
-		return call_user_func_array( $this->callback, $args );
+		if ( null === $block_editor_context ) {
+			return call_user_func( $this->callback, $preload_paths );
+		} else if ( null === $block_editor_context->post ) {
+			return $preload_paths;
+		} else {
+			return call_user_func_array( $this->callback, array( $preload_paths, $block_editor_context->post ) );
+		}
 	}
 }
