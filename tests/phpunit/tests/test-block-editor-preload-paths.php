@@ -19,14 +19,14 @@ class PLL_Block_Editor_Filter_Preload_Paths_Test extends PLL_UnitTestCase {
 	public function test_invoke_filter_with_one_argument() {
 		new PLL_Block_Editor_Filter_Preload_Paths( array( $this->spy, '__invoke' ) );
 
-		$fail_if_more_than_one_argument = function (...$args) {
-			if ( count( $args ) > 1) {
+		$fail_if_more_than_one_argument = function ( ...$args ) {
+			if ( count( $args ) > 1 ) {
 				$this->fail( 'Filter registered with one parameter is expected to be called with one argument.' );
 			}
 		};
 		$this->spy->expects( $this->once() )
 			->method( '__invoke' )
-			->willReturnCallback( $fail_if_more_than_one_argument	);
+			->willReturnCallback( $fail_if_more_than_one_argument );
 
 		if ( class_exists( WP_Block_Editor_Context::class ) ) {
 			block_editor_rest_api_preload( array( '/' ), new WP_Block_Editor_Context( array( 'post' => new WP_Post( new stdClass() ) ) ) );

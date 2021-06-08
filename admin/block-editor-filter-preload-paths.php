@@ -47,7 +47,7 @@ class PLL_Block_Editor_Filter_Preload_Paths {
 	public function block_editor_rest_api_preload_paths( $preload_paths, $block_editor_context = null ) {
 		if ( null === $block_editor_context ) {
 			return call_user_func( $this->callback, $preload_paths );
-		} else if ( null === $block_editor_context->post ) {
+		} elseif ( null === $block_editor_context->post ) {
 			return $preload_paths;
 		} else {
 			return call_user_func_array( $this->callback, array( $preload_paths, $block_editor_context->post ) );
