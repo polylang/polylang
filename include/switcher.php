@@ -126,7 +126,14 @@ class PLL_Switcher {
 			$order = (int) $language->term_group;
 			$slug = $language->slug;
 			$locale = $language->get_locale( 'display' );
-			$classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
+			$item_classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
+			$classes = isset( $args['classes'] ) && is_array( $args['classes'] ) ?
+				array_merge(
+					$item_classes,
+					$args['classes']
+				) :
+				$item_classes;
+			$link_classes = isset( $args['link_classes'] ) ? $args['link_classes'] : array();
 			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {
@@ -169,7 +176,7 @@ class PLL_Switcher {
 				$first = false;
 			}
 
-			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes' );
+			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes', 'link_classes' );
 		}
 
 		return $out;
@@ -185,20 +192,22 @@ class PLL_Switcher {
 	 * @param array     $args {
 	 *   Optional array of arguments.
 	 *
-	 *   @type int    $dropdown               The list is displayed as dropdown if set, defaults to 0.
-	 *   @type int    $echo                   Echoes the list if set to 1, defaults to 1.
-	 *   @type int    $hide_if_empty          Hides languages with no posts ( or pages ) if set to 1, defaults to 1.
-	 *   @type int    $show_flags             Displays flags if set to 1, defaults to 0.
-	 *   @type int    $show_names             Shows language names if set to 1, defaults to 1.
-	 *   @type string $display_names_as       Whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name.
-	 *   @type int    $force_home             Will always link to home in translated language if set to 1, defaults to 0.
-	 *   @type int    $hide_if_no_translation Hides the link if there is no translation if set to 1, defaults to 0.
-	 *   @type int    $hide_current           Hides the current language if set to 1, defaults to 0.
-	 *   @type int    $post_id                Returns links to the translations of the post defined by post_id if set, defaults not set.
-	 *   @type int    $raw                    Return a raw array instead of html markup if set to 1, defaults to 0.
-	 *   @type string $item_spacing           Whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to 'preserve'.
-	 *   @type int    $admin_render           Allows to force the current language code in an admin context if set, default to 0. Need to set the admin_current_lang argument below.
-	 *   @type string $admin_current_lang     The current language code in an admin context. Need to set the admin_render to 1, defaults not set.
+	 *   @type int      $dropdown               The list is displayed as dropdown if set, defaults to 0.
+	 *   @type int      $echo                   Echoes the list if set to 1, defaults to 1.
+	 *   @type int      $hide_if_empty          Hides languages with no posts ( or pages ) if set to 1, defaults to 1.
+	 *   @type int      $show_flags             Displays flags if set to 1, defaults to 0.
+	 *   @type int      $show_names             Shows language names if set to 1, defaults to 1.
+	 *   @type string   $display_names_as       Whether to display the language name or its slug, valid options are 'slug' and 'name', defaults to name.
+	 *   @type int      $force_home             Will always link to home in translated language if set to 1, defaults to 0.
+	 *   @type int      $hide_if_no_translation Hides the link if there is no translation if set to 1, defaults to 0.
+	 *   @type int      $hide_current           Hides the current language if set to 1, defaults to 0.
+	 *   @type int      $post_id                Returns links to the translations of the post defined by post_id if set, defaults not set.
+	 *   @type int      $raw                    Return a raw array instead of html markup if set to 1, defaults to 0.
+	 *   @type string   $item_spacing           Whether to preserve or discard whitespace between list items, valid options are 'preserve' and 'discard', defaults to 'preserve'.
+	 *   @type int      $admin_render           Allows to force the current language code in an admin context if set, default to 0. Need to set the admin_current_lang argument below.
+	 *   @type string   $admin_current_lang     The current language code in an admin context. Need to set the admin_render to 1, defaults not set.
+	 *   @type string[] $classes                A list of CSS classes to set to each elements outputted.
+	 *   @type string[] $link_classes           A list of CSS classes to set to each link outputted.
 	 * }
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
