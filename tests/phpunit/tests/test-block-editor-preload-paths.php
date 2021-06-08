@@ -64,7 +64,7 @@ class PLL_Block_Editor_Filter_Preload_Paths_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_transform_block_editor_context_into_related_post() {
-		if ( version_compare( $GLOBALS['wp_version'], '5.8-alpha', '<' ) ) {
+		if ( ! class_exists( WP_Block_Editor_Context::class ) ) {
 			$this->markTestSkipped( 'This test needs WordPress version 5.8+' );
 		} else {
 			new PLL_Block_Editor_Filter_Preload_Paths( array( $this->spy, '__invoke' ), 10, 2 );
@@ -81,7 +81,7 @@ class PLL_Block_Editor_Filter_Preload_Paths_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_honor_backward_compatibility() {
-		if ( version_compare( $GLOBALS['wp_version'], '5.8-alpha', '>=' ) ) {
+		if ( class_exists( WP_Block_Editor_Context::class ) ) {
 			$this->markTestSkipped( 'This test needs WordPress version < 5.8' );
 		} else {
 			new PLL_Block_Editor_Filter_Preload_Paths( array( $this->spy, '__invoke' ), 10, 2 );
