@@ -4,7 +4,9 @@
  */
 
 /**
- * Class PLL_Block_Editor_Filter_Preload_Paths
+ * This class handles the deprecated filter 'block_editor_preload_paths'
+ * to replace it by the new filter 'block_editor_rest_api_preload_paths'
+ * and is used for backward compatibility with WP < 5.8.
  *
  * @since 3.1
  */
@@ -27,7 +29,7 @@ class PLL_Block_Editor_Filter_Preload_Paths {
 	public function __construct( $callback, $priority = 10, $arguments_number = 1 ) {
 		$this->callback = $callback;
 
-		if ( class_exists( 'WP_Block_Editor_Context' ) ) {
+		if ( class_exists( 'WP_Block_Editor_Context' ) ) { // Since WP 5.8.
 			add_filter( 'block_editor_rest_api_preload_paths', array( $this, 'block_editor_rest_api_preload_paths' ), $priority, $arguments_number );
 		} else {
 			add_filter( 'block_editor_preload_paths', $callback, $priority, $arguments_number );
@@ -35,18 +37,24 @@ class PLL_Block_Editor_Filter_Preload_Paths {
 	}
 
 	/**
-	 * Filters the preload REST requests by the current language of the post
-	 * Necessary otherwise subsequent REST requests filtered by the language
-	 * would not hit the preloaded requests
+	 * Filters the array of REST API paths that will be used to preloaded common data to use with the block editor.
+	 *
+	 * Converts the WP_Block_Editor_Context object to a WP_Post when the second parameter if used.
+	 * Bails if the WP_Block_Editor_Context object is passed without post.
 	 *
 	 * @since 3.1
+	 *
 	 * @param string[]                $preload_paths        The preload paths loaded by the Block Editor.
 	 * @param WP_Block_Editor_Context $block_editor_context The post resource data.
 	 * @return array|mixed|string[] (string|string[])[]
 	 */
 	public function block_editor_rest_api_preload_paths( $preload_paths, $block_editor_context = null ) {
-		$args = null === $block_editor_context ? array( $preload_paths ) : array( $preload_paths, $block_editor_context->post );
+		if ( null === $block_editor_context ) {
+			return call_user_func( $this->callback, $preload_paths );
+		} elseif ( ! empty( $block_editor_context->post ) ) {
+			return call_user_func_array( $this->callback, array( $preload_paths, $block_editor_context->post ) );
+		}
 
-		return call_user_func_array( $this->callback, $args );
+		return $preload_paths;
 	}
 }
