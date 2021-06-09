@@ -40,8 +40,12 @@ class PLL_Block_Editor_Filter_Preload_Paths_Test extends PLL_UnitTestCase {
 			$this->markTestSkipped( 'block_editor_preload_paths is not called without a WP_Post as argument' );
 		}
 
-		$this->spy->expects( $this->never() )
-			->method( '__invoke' );
+		$this->spy->expects( $this->once() )
+			->method( '__invoke' )
+			->with(
+				$this->isType( 'array' ),
+				$this->isInstanceOf( WP_Block_Editor_Context::class )
+			);
 
 		new PLL_Block_Editor_Filter_Preload_Paths( array( $this->spy, '__invoke' ), 10, 2 );
 
