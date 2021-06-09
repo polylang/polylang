@@ -39,8 +39,7 @@ class PLL_Block_Editor_Filter_Preload_Paths {
 	/**
 	 * Filters the array of REST API paths that will be used to preloaded common data to use with the block editor.
 	 *
-	 * Converts the WP_Block_Editor_Context object to a WP_Post when the second parameter if used.
-	 * Bails if the WP_Block_Editor_Context object is passed without post.
+	 * Converts the WP_Block_Editor_Context object to a WP_Post if provided in the context.
 	 *
 	 * @since 3.1
 	 *
@@ -55,6 +54,6 @@ class PLL_Block_Editor_Filter_Preload_Paths {
 			return call_user_func_array( $this->callback, array( $preload_paths, $block_editor_context->post ) );
 		}
 
-		return $preload_paths;
+		return call_user_func_array( $this->callback, array( $preload_paths, $block_editor_context ) );
 	}
 }
