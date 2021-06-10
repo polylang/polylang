@@ -22,8 +22,9 @@ class Strings_Test extends PLL_UnitTestCase {
 
 	// copied from WP widgets tests
 	function clean_up_global_scope() {
-		global $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
+		global $_wp_sidebars_widgets, $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
 
+		$_wp_sidebars_widgets = array();
 		$wp_registered_sidebars = array();
 		$wp_registered_widgets = array();
 		$wp_registered_widget_controls = array();
@@ -31,6 +32,24 @@ class Strings_Test extends PLL_UnitTestCase {
 		$wp_widget_factory->widgets = array();
 
 		parent::clean_up_global_scope();
+	}
+
+	function add_widget_search() {
+		update_option(
+			'widget_search',
+			array(
+				2              => array( 'title' => '' ),
+				'_multiwidget' => 1,
+			)
+		);
+
+		update_option(
+			'sidebars_widgets',
+			array(
+				'wp_inactive_widgets' => array(),
+				'sidebar-1'           => array( 'search-2' ),
+			)
+		);
 	}
 
 	function _return_fr_FR() {
@@ -48,6 +67,9 @@ class Strings_Test extends PLL_UnitTestCase {
 	// FIXME: order of nest two tests matters due to static protected strings in PLL_Admin_Strings
 	function test_widget_title_filtered_by_language() {
 		global $wp_registered_widgets;
+
+		$this->add_widget_search();
+
 		wp_widgets_init();
 		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
 
@@ -76,6 +98,9 @@ class Strings_Test extends PLL_UnitTestCase {
 
 	function test_widget_title_in_all_languages() {
 		global $wp_registered_widgets;
+
+		$this->add_widget_search();
+
 		wp_widgets_init();
 		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
 
