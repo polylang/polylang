@@ -18,14 +18,23 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 
 		require_once POLYLANG_DIR . '/include/api.php'; // Usually loaded only if an instance of Polylang exists
+
+		update_option(
+			'widget_search',
+			array(
+				2              => array( 'title' => '' ),
+				'_multiwidget' => 1,
+			)
+		);
 	}
 
 	/**
 	 * Copied from WP widgets tests
 	 */
 	function clean_up_global_scope() {
-		global $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
+		global $_wp_sidebars_widgets, $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
 
+		$_wp_sidebars_widgets = array();
 		$wp_registered_sidebars = array();
 		$wp_registered_widgets = array();
 		$wp_registered_widget_controls = array();
@@ -177,6 +186,14 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 	function test_wp_get_sidebars_widgets() {
 		global $wp_registered_widgets;
+
+		update_option(
+			'sidebars_widgets',
+			array(
+				'wp_inactive_widgets' => array(),
+				'sidebar-1'           => array( 'search-2' ),
+			)
+		);
 
 		wp_widgets_init();
 		$wp_widget_search = $wp_registered_widgets['search-2']['callback'][0];
