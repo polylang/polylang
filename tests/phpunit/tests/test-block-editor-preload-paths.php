@@ -59,7 +59,7 @@ class PLL_Block_Editor_Filter_Preload_Paths_Test extends PLL_UnitTestCase {
 
 		if ( version_compare( $GLOBALS['wp_version'], '5.8-alpha', '<' ) ) {
 			$this->assertArrayHasKey( 'block_editor_preload_paths', $wp_filter );
-			$this->assertArrayHasKey( 50, $wp_filter['block_editor_preload_paths']->callbacks  );
+			$this->assertArrayHasKey( 50, $wp_filter['block_editor_preload_paths']->callbacks );
 		} else {
 			$this->assertArrayHasKey( 'block_editor_rest_api_preload_paths', $wp_filter );
 			$this->assertArrayHasKey( 50, $wp_filter['block_editor_rest_api_preload_paths']->callbacks );
