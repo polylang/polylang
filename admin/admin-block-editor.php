@@ -47,7 +47,7 @@ class PLL_Admin_Block_Editor {
 	 * @return (string|string[])[]
 	 */
 	public function preload_paths( $preload_paths, $post ) {
-		if ( $this->model->is_translated_post_type( $post->post_type ) ) {
+		if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
 			$lang = $this->model->post->get_language( $post->ID );
 
 			if ( ! $lang ) {
