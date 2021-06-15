@@ -236,7 +236,6 @@ class PLL_Switcher {
 		}
 
 		if ( $args['dropdown'] ) {
-			// Set a unique ID for the name of the select tag.
 			$args['name'] = $args['dropdown'];
 			$args['class'] = 'pll-switcher-select';
 			$args['value_type'] = 'url';
