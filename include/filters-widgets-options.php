@@ -81,7 +81,8 @@ class PLL_Filters_Widgets_Options {
 	 * @return array Widget options.
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
-		if ( ! empty( $new_instance[ 'lang_choice' ] ) && $lang = $this->model->get_language( $new_instance[ 'lang_choice' ] ) ) {
+		if ( ( ! empty( $new_instance[ 'lang_choice' ] ) && $lang = $this->model->get_language( $new_instance[ 'lang_choice' ] ) ) || // For legacy widget screen and when updating the widget language field in the block-based widget screen.
+			 ( ! empty( $new_instance[ 'pll_lang' ] ) && $lang = $this->model->get_language( $new_instance[ 'pll_lang' ] ) ) ) { // When updating the block-based widget screen the real widget setting name is passed to the new widget instance.
 			$instance['pll_lang'] = $lang->slug;
 		} else {
 			unset( $instance['pll_lang'] );
