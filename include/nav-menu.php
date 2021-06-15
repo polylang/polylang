@@ -67,7 +67,7 @@ class PLL_Nav_Menu {
 	 * @return stdClass
 	 */
 	public function wp_setup_nav_menu_item( $item ) {
-		if ( '#pll_switcher' === $item->url ) {
+		if ( isset( $item->url ) && '#pll_switcher' === $item->url ) {
 			$item->post_title = __( 'Languages', 'polylang' );
 			$item->type_label = __( 'Language switcher', 'polylang' );
 		}
