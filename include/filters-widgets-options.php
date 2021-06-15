@@ -35,7 +35,8 @@ class PLL_Filters_Widgets_Options {
 	/**
 	 * Add the language filter field to the widgets options form.
 	 *
-	 * @since 3.0 Moved PLL_Admin_Filters
+	 * @since 3.0 Moved PLL_Admin_Filters.
+	 * @since 3.1 Rename lang_choice field name and id to pll_lang as the widget setting.
 	 *
 	 * @param WP_Widget $widget
 	 * @param null      $return
@@ -72,15 +73,15 @@ class PLL_Filters_Widgets_Options {
 	 * Saves the language associated to the widget.
 	 *
 	 * @since 0.3
-	 * @since 3.0 Moved from PLL_Admin_Filters
+	 * @since 3.0 Moved from PLL_Admin_Filters.
+	 * @since 3.1 Retrieve pll_lang widget setting from widget new instance instead of $_POST global variable.
+	 *            Remove unused $old_instance and $widget parameters.
 	 *
-	 * @param array     $instance The current Widget's options.
-	 * @param array     $new_instance The new Widget's options.
-	 * @param array     $old_instance Not used.
-	 * @param WP_Widget $widget WP_Widget object.
+	 * @param array $instance The current Widget's options.
+	 * @param array $new_instance The new Widget's options.
 	 * @return array Widget options.
 	 */
-	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
+	public function widget_update_callback( $instance, $new_instance ) {
 		if ( ! empty( $new_instance['pll_lang'] ) && $lang = $this->model->get_language( $new_instance['pll_lang'] ) ) {
 			$instance['pll_lang'] = $lang->slug;
 		} else {
