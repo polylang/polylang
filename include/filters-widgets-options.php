@@ -52,7 +52,8 @@ class PLL_Filters_Widgets_Options {
 			),
 			-1,
 			array(
-				'name' => $this->get_language_key( $widget ),
+				'id' => $widget->get_field_id( 'lang_choice' ),
+				'name' => $widget->get_field_name( 'lang_choice' ),
 				'class' => 'tags-input pll-lang-choice',
 				'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
 			)
@@ -60,7 +61,7 @@ class PLL_Filters_Widgets_Options {
 
 		printf(
 			'<p><label for="%1$s">%2$s %3$s</label></p>',
-			esc_attr( $this->get_language_key( $widget ) ),
+			esc_attr( $widget->get_field_id( 'lang_choice' ) ),
 			esc_html__( 'The widget is displayed for:', 'polylang' ),
 			$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
 		);
