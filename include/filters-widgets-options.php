@@ -90,15 +90,4 @@ class PLL_Filters_Widgets_Options {
 		return $instance;
 	}
 
-	/**
-	 * Returns the key used by Polylang to pass language data.
-	 *
-	 * @since 3.0
-	 *
-	 * @param WP_Widget $widget
-	 * @return string
-	 */
-	protected function get_language_key( $widget ) {
-		return $widget->id . '_lang_choice';
-	}
 }
