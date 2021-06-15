@@ -31,7 +31,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 * @return void
 	 */
 	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$value_type = $args['value_type'];
+		$value_type = $args['value'];
 		$output .= sprintf(
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
 			'slug' === $value_type ? esc_attr( $element->$value_type ) : esc_url( $element->$value_type ),

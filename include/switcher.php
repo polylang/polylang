@@ -238,7 +238,7 @@ class PLL_Switcher {
 		if ( $args['dropdown'] ) {
 			$args['name'] = $args['dropdown'];
 			$args['class'] = 'pll-switcher-select';
-			$args['value_type'] = 'url';
+			$args['value'] = 'url';
 			$args['selected'] = $this->get_link( $this->links->model->get_language( $this->get_current_language( $args ) ), $args );
 			$walker = new PLL_Walker_Dropdown();
 		} else {
