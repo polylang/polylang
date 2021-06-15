@@ -81,9 +81,7 @@ class PLL_Filters_Widgets_Options {
 	 * @return array Widget options.
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
-		$key = $this->get_language_key( $widget );
-
-		if ( ! empty( $new_instance[ $key ] ) && $lang = $this->model->get_language( $new_instance[ $key ] ) ) {
+		if ( ! empty( $new_instance[ 'lang_choice' ] ) && $lang = $this->model->get_language( $new_instance[ 'lang_choice' ] ) ) {
 			$instance['pll_lang'] = $lang->slug;
 		} else {
 			unset( $instance['pll_lang'] );
