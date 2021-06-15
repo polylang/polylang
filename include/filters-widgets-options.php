@@ -52,8 +52,8 @@ class PLL_Filters_Widgets_Options {
 			),
 			-1,
 			array(
-				'id' => $widget->get_field_id( 'lang_choice' ),
-				'name' => $widget->get_field_name( 'lang_choice' ),
+				'id' => $widget->get_field_id( 'pll_lang' ),
+				'name' => $widget->get_field_name( 'pll_lang' ),
 				'class' => 'tags-input pll-lang-choice',
 				'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
 			)
@@ -61,7 +61,7 @@ class PLL_Filters_Widgets_Options {
 
 		printf(
 			'<p><label for="%1$s">%2$s %3$s</label></p>',
-			esc_attr( $widget->get_field_id( 'lang_choice' ) ),
+			esc_attr( $widget->get_field_id( 'pll_lang' ) ),
 			esc_html__( 'The widget is displayed for:', 'polylang' ),
 			$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
 		);
@@ -81,8 +81,7 @@ class PLL_Filters_Widgets_Options {
 	 * @return array Widget options.
 	 */
 	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
-		if ( ( ! empty( $new_instance[ 'lang_choice' ] ) && $lang = $this->model->get_language( $new_instance[ 'lang_choice' ] ) ) || // For legacy widget screen and when updating the widget language field in the block-based widget screen.
-			 ( ! empty( $new_instance[ 'pll_lang' ] ) && $lang = $this->model->get_language( $new_instance[ 'pll_lang' ] ) ) ) { // When updating the block-based widget screen the real widget setting name is passed to the new widget instance.
+		if ( ! empty( $new_instance[ 'pll_lang' ] ) && $lang = $this->model->get_language( $new_instance[ 'pll_lang' ] ) ) {
 			$instance['pll_lang'] = $lang->slug;
 		} else {
 			unset( $instance['pll_lang'] );
