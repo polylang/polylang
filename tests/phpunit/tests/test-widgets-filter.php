@@ -56,7 +56,8 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		$wp_widget_search->form_callback( 2 );
-		$this->assertNotFalse( strpos( ob_get_clean(), 'search-2_lang_choice' ) );
+		$form = ob_get_clean();
+		$this->assertNotFalse( strpos( $form, 'widget-search-2-pll_lang' ) );
 	}
 
 	function update_lang_choice( $widget, $lang ) {
@@ -71,7 +72,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 			'multi_number'  => '',
 		);
 
-		$_POST[ $widget->id . '_lang_choice' ] = $lang;
+		$_POST[ 'widget-' . $widget->id_base ][2]['pll_lang'] = $lang;
 		$widget->update_callback();
 	}
 
