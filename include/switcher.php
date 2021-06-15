@@ -226,7 +226,7 @@ class PLL_Switcher {
 
 		// Force not to hide the language for the widget preview even if the option is checked.
 		if ( $this->links instanceof PLL_Admin_Links ) {
-			$attributes['hide_if_no_translation'] = 0;
+			$args['hide_if_no_translation'] = 0;
 		}
 
 		// Prevents showing empty options in dropdown
