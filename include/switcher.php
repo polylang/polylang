@@ -98,10 +98,6 @@ class PLL_Switcher {
 			return $this->links->get_translation_url( $language );
 		}
 
-		if ( 1 === $args['admin_render'] ) {
-			return $this->links->get_home_url( $language );
-		}
-
 		// For blocks in posts in REST requests.
 		if ( $post instanceof WP_Post ) {
 			$tr_id = $this->links->model->post->get( $post->ID, $language );
@@ -219,10 +215,6 @@ class PLL_Switcher {
 		$this->links = $links;
 		$args = wp_parse_args( $args, self::DEFAULTS );
 
-		if ( $this->links instanceof PLL_Admin_Links ) {
-			$args['admin_render'] = 1;
-		}
-
 		/**
 		 * Filter the arguments of the 'pll_the_languages' template tag
 		 *
@@ -231,6 +223,11 @@ class PLL_Switcher {
 		 * @param array $args
 		 */
 		$args = apply_filters( 'pll_the_languages_args', $args );
+
+		// Force not to hide the language for the widget preview even if the option is checked.
+		if ( $this->links instanceof PLL_Admin_Links ) {
+			$attributes['hide_if_no_translation'] = 0;
+		}
 
 		// Prevents showing empty options in dropdown
 		if ( $args['dropdown'] ) {
