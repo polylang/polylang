@@ -25,6 +25,9 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->frontend = new PLL_Frontend( $links_model );
 		$this->frontend->init();
 
+		$this->admin = new PLL_Admin( $links_model );
+		$this->admin->init();
+
 		// De-activate cache for links
 		$this->frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		$this->frontend->links->cache->method( 'get' )->willReturn( false );
@@ -185,5 +188,29 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
 		$this->assertNotEmpty( $xpath->query( '//select/option[.="Français"]' )->length );
 		$this->assertNotEmpty( $xpath->query( '//script' )->length );
+	}
+
+	function test_with_hide_if_no_translation_option_in_admin_context() {
+		$en = $this->factory->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$fr = $this->factory->post->create();
+		self::$model->post->set_language( $fr, 'fr' );
+
+		self::$model->clean_languages_cache(); // FIXME for some reason, I need to clear the cache to get an exact count
+		$this->admin->links->curlang = self::$model->get_language( 'en' );
+
+		$args['hide_if_no_translation'] = 1;
+		$switcher = $this->switcher->the_languages( $this->admin->links, $args );
+
+		$doc = new DomDocument();
+		$doc->loadHTML( $switcher );
+		$xpath = new DOMXpath( $doc );
+
+		$a = $xpath->query( '//li/a[@lang="en-US"]' );
+		$this->assertEquals( $this->admin->links->get_home_url( self::$model->get_language( 'en' ) ), $a->item( 0 )->getAttribute( 'href' ) );
+
+		$a = $xpath->query( '//li/a[@lang="fr-FR"]' );
+		$this->assertEquals( $this->admin->links->get_home_url( self::$model->get_language( 'fr' ) ), $a->item( 0 )->getAttribute( 'href' ) );
 	}
 }
