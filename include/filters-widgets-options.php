@@ -29,13 +29,14 @@ class PLL_Filters_Widgets_Options {
 		$this->model = $polylang->model;
 
 		add_action( 'in_widget_form', array( $this, 'in_widget_form' ), 10, 3 );
-		add_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ), 10, 4 );
+		add_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ), 10, 2 );
 	}
 
 	/**
 	 * Add the language filter field to the widgets options form.
 	 *
-	 * @since 3.0 Moved PLL_Admin_Filters
+	 * @since 3.0 Moved PLL_Admin_Filters.
+	 * @since 3.1 Rename lang_choice field name and id to pll_lang as the widget setting.
 	 *
 	 * @param WP_Widget $widget
 	 * @param null      $return
@@ -52,7 +53,8 @@ class PLL_Filters_Widgets_Options {
 			),
 			-1,
 			array(
-				'name' => $this->get_language_key( $widget ),
+				'id' => $widget->get_field_id( 'pll_lang' ),
+				'name' => $widget->get_field_name( 'pll_lang' ),
 				'class' => 'tags-input pll-lang-choice',
 				'selected' => empty( $instance['pll_lang'] ) ? '' : $instance['pll_lang'],
 			)
@@ -60,7 +62,7 @@ class PLL_Filters_Widgets_Options {
 
 		printf(
 			'<p><label for="%1$s">%2$s %3$s</label></p>',
-			esc_attr( $this->get_language_key( $widget ) ),
+			esc_attr( $widget->get_field_id( 'pll_lang' ) ),
 			esc_html__( 'The widget is displayed for:', 'polylang' ),
 			$dropdown_html // phpcs:ignore WordPress.Security.EscapeOutput
 		);
@@ -71,18 +73,15 @@ class PLL_Filters_Widgets_Options {
 	 * Saves the language associated to the widget.
 	 *
 	 * @since 0.3
-	 * @since 3.0 Moved from PLL_Admin_Filters
+	 * @since 3.0 Moved from PLL_Admin_Filters.
+	 * @since 3.1 Remove unused $old_instance and $widget parameters.
 	 *
-	 * @param array     $instance The current Widget's options.
-	 * @param array     $new_instance The new Widget's options.
-	 * @param array     $old_instance Not used.
-	 * @param WP_Widget $widget WP_Widget object.
+	 * @param array $instance The current Widget's options.
+	 * @param array $new_instance The new Widget's options.
 	 * @return array Widget options.
 	 */
-	public function widget_update_callback( $instance, $new_instance, $old_instance, $widget ) {
-		$key = $this->get_language_key( $widget );
-
-		if ( ! empty( $new_instance[ $key ] ) && $lang = $this->model->get_language( $new_instance[ $key ] ) ) {
+	public function widget_update_callback( $instance, $new_instance ) {
+		if ( ! empty( $new_instance['pll_lang'] ) && $lang = $this->model->get_language( $new_instance['pll_lang'] ) ) {
 			$instance['pll_lang'] = $lang->slug;
 		} else {
 			unset( $instance['pll_lang'] );
@@ -91,15 +90,4 @@ class PLL_Filters_Widgets_Options {
 		return $instance;
 	}
 
-	/**
-	 * Returns the key used by Polylang to pass language data.
-	 *
-	 * @since 3.0
-	 *
-	 * @param WP_Widget $widget
-	 * @return string
-	 */
-	protected function get_language_key( $widget ) {
-		return $widget->id . '_lang_choice';
-	}
 }

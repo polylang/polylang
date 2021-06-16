@@ -85,10 +85,9 @@ class Strings_Test extends PLL_UnitTestCase {
 		);
 
 		$_POST['widget-search'][2] = array(
-			'title' => 'My Title',
+			'title'    => 'My Title',
+			'pll_lang' => 'en',
 		);
-
-		$_POST['search-2_lang_choice'] = 'en';
 
 		$wp_widget_search->update_callback();
 		$strings = PLL_Admin_Strings::get_strings();
