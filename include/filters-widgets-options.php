@@ -29,7 +29,7 @@ class PLL_Filters_Widgets_Options {
 		$this->model = $polylang->model;
 
 		add_action( 'in_widget_form', array( $this, 'in_widget_form' ), 10, 3 );
-		add_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ), 10, 4 );
+		add_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ), 10, 2 );
 	}
 
 	/**
