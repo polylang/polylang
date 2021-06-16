@@ -74,8 +74,7 @@ class PLL_Filters_Widgets_Options {
 	 *
 	 * @since 0.3
 	 * @since 3.0 Moved from PLL_Admin_Filters.
-	 * @since 3.1 Retrieve pll_lang widget setting from widget new instance instead of $_POST global variable.
-	 *            Remove unused $old_instance and $widget parameters.
+	 * @since 3.1 Remove unused $old_instance and $widget parameters.
 	 *
 	 * @param array $instance The current Widget's options.
 	 * @param array $new_instance The new Widget's options.
