@@ -25,9 +25,6 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->frontend = new PLL_Frontend( $links_model );
 		$this->frontend->init();
 
-		$this->admin = new PLL_Admin( $links_model );
-		$this->admin->init();
-
 		// De-activate cache for links
 		$this->frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		$this->frontend->links->cache->method( 'get' )->willReturn( false );
@@ -191,6 +188,10 @@ class Switcher_Test extends PLL_UnitTestCase {
 	}
 
 	function test_with_hide_if_no_translation_option_in_admin_context() {
+		$links_model = self::$model->get_links_model();
+		$this->admin = new PLL_Admin( $links_model );
+		$this->admin->init();
+
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -198,7 +199,6 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->clean_languages_cache(); // FIXME for some reason, I need to clear the cache to get an exact count
-		$this->admin->links->curlang = self::$model->get_language( 'en' );
 
 		$args['hide_if_no_translation'] = 1;
 		$switcher = $this->switcher->the_languages( $this->admin->links, $args );
