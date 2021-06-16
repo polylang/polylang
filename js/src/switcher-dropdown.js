@@ -3,7 +3,8 @@
  *
  * @package Polylang
  */
- document.querySelectorAll(".pll-switcher-select").forEach(
+
+ document.querySelectorAll( ".pll-switcher-select" ).forEach(
 	select => {
 		select.addEventListener( "change",
 			event => {
