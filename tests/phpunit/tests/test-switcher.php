@@ -203,6 +203,8 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$args['hide_if_no_translation'] = 1;
 		$switcher = $this->switcher->the_languages( $this->admin->links, $args );
 
+		$this->assertNotEmpty( $switcher );
+
 		$doc = new DomDocument();
 		$doc->loadHTML( $switcher );
 		$xpath = new DOMXpath( $doc );
