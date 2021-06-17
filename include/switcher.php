@@ -224,6 +224,11 @@ class PLL_Switcher {
 		 */
 		$args = apply_filters( 'pll_the_languages_args', $args );
 
+		// Force not to hide the language for the widget preview even if the option is checked.
+		if ( $this->links instanceof PLL_Admin_Links ) {
+			$args['hide_if_no_translation'] = 0;
+		}
+
 		// Prevents showing empty options in dropdown
 		if ( $args['dropdown'] ) {
 			$args['show_names'] = 1;
