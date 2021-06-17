@@ -201,6 +201,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::$model->clean_languages_cache(); // FIXME for some reason, I need to clear the cache to get an exact count
 
 		$args['hide_if_no_translation'] = 1;
+		$args['echo'] = 0;
 		$switcher = $this->switcher->the_languages( $this->admin->links, $args );
 
 		$this->assertNotEmpty( $switcher );
