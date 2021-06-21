@@ -114,7 +114,7 @@ class PLL_Admin_Classic_Editor {
 				'class'      => 'post_lang_choice tags-input',
 				'selected'   => $lang ? $lang->slug : '',
 				'flag'       => true,
-				'value' => 'slug',
+				'value'      => 'slug',
 			)
 		);
 
