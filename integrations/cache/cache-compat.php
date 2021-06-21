@@ -83,9 +83,7 @@ class PLL_Cache_Compat {
 	}
 
 	/**
-	 * Defines the current language as the current post language when cleaning the post cache.
-	 *
-	 * This allows cache plugins to clean the right post type archive cache.
+	 * Allows cache plugins to clean the right post type archive cache when cleaning a post cache.
 	 *
 	 * @since 3.0.5
 	 *
@@ -93,8 +91,12 @@ class PLL_Cache_Compat {
 	 */
 	public function clean_post_cache( $post_id ) {
 		$lang = PLL()->model->post->get_language( $post_id );
+
 		if ( $lang ) {
-			PLL()->curlang = $lang;
+			$filter_callback = function ( $link, $post_type ) use ( $lang ) {
+				return pll_is_translated_post_type( $post_type ) && 'post' !== $post_type ? PLL()->links_model->switch_language_in_link( $link, $lang ) : $link;
+			};
+			add_filter( 'post_type_archive_link', $filter_callback, 99, 2 );
 		}
 	}
 }
