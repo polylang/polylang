@@ -261,7 +261,7 @@ abstract class PLL_Choose_Lang {
 			if ( $redirect = apply_filters( 'pll_redirect_home', $redirect ) ) {
 				$this->maybe_setcookie();
 				header( 'Vary: Accept-Language' );
-				wp_safe_redirect( $redirect, 302, POLYLANG );
+				wp_redirect( $redirect, 302, POLYLANG );
 				exit;
 			}
 		}
