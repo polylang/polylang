@@ -26,5 +26,13 @@
 			"modules/",
 			"settings/"
 		]
+	},
+	"scripts": {
+		"cs": "vendor/bin/phpcs --colors",
+		"stan": "vendor/bin/phpstan analyze --memory-limit=400M",
+		"run-lints": [
+			"@cs",
+			"@stan"
+		]
 	}
 }
