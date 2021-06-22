@@ -258,10 +258,11 @@ abstract class PLL_Choose_Lang {
 			 *
 			 * @param string $redirect the url the visitor will be redirected to
 			 */
-			if ( $redirect = apply_filters( 'pll_redirect_home', $redirect ) ) {
+			$redirect = apply_filters( 'pll_redirect_home', $redirect );
+			if ( $redirect && wp_validate_redirect( $redirect ) ) {
 				$this->maybe_setcookie();
 				header( 'Vary: Accept-Language' );
-				wp_redirect( $redirect, 302, POLYLANG );
+				wp_safe_redirect( $redirect, 302, POLYLANG );
 				exit;
 			}
 		}
