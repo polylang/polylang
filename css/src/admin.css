@@ -463,3 +463,8 @@
 		line-height: 20px !important;
 	}
 }
+
+/* manage translation icon in widget title for old screen */
+.widget-title h3 .dashicons-translation {
+	margin: -5px 6px -5px auto;
+}
