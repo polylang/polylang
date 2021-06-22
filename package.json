@@ -10,7 +10,7 @@
     "build": "npm run clean && webpack --mode production",
     "build:dev": "npm run clean && webpack --mode development",
     "dev": "npm run clean && webpack --mode development --watch",
-		"clean": "rimraf js/build css/build",
+    "clean": "rimraf js/build css/build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "preinstall": "npx npm-force-resolutions"
   },
