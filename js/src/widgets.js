@@ -41,7 +41,14 @@ jQuery(
 					// See the comment above about the icon which is safe. So it is also safe to prepend flag which uses icon.
 					title.prepend( flag ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 				}
+				$( '.dashicons-translation', title ).remove();
 			} else {
+				if ( $( '<span />', title ).hasClass( 'dashicons-translation' )   ) {
+					$( '.dashicons-translation', title ).remove();
+				}
+				translationIcon = $( '<span />' ).addClass( 'dashicons dashicons-translation' );  // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+				// See the comment above about the icon which is safe. So it is also safe to prepend flag which uses icon.
+				title.prepend( translationIcon ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 				$( '.pll-lang', title ).remove();
 			}
 		}
