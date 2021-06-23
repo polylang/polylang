@@ -45,7 +45,7 @@ jQuery(
 			} else {
 				if ( $( '.dashicons-translation', title ).length === 0 ) {
 					translationIcon = $( '<span />' ).addClass( 'dashicons dashicons-translation' );
-					title.prepend( translationIcon );
+					title.prepend( translationIcon ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 					$( '.pll-lang', title ).remove(); // Remove potential language icon.
 				}
 			}
