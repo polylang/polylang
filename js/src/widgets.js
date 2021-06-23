@@ -41,15 +41,13 @@ jQuery(
 					// See the comment above about the icon which is safe. So it is also safe to prepend flag which uses icon.
 					title.prepend( flag ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 				}
-				$( '.dashicons-translation', title ).remove();
+				$( '.dashicons-translation', title ).remove(); // Remove potential translation icon.
 			} else {
-				if ( $( '<span />', title ).hasClass( 'dashicons-translation' )   ) {
-					$( '.dashicons-translation', title ).remove();
+				if ( ! $( '<span />', title ).hasClass( 'dashicons-translation' ) ) {
+					translationIcon = $( '<span />' ).addClass( 'dashicons dashicons-translation' );
+					title.prepend( translationIcon );
+					$( '.pll-lang', title ).remove(); // Remove potential language icon.
 				}
-				translationIcon = $( '<span />' ).addClass( 'dashicons dashicons-translation' );  // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-				// See the comment above about the icon which is safe. So it is also safe to prepend flag which uses icon.
-				title.prepend( translationIcon ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
-				$( '.pll-lang', title ).remove();
 			}
 		}
 
@@ -121,6 +119,12 @@ jQuery(
 				add_flag( $( this ).parents( '.widget' ) );
 			}
 		);
+
+		// Add translation icon to added widgets as all languages is selected by default.
+		// @link https://core.trac.wordpress.org/changeset/27969 for wp event.
+		$( document ).on( 'widget-added', function(event, widget) {
+			add_flag( widget );
+		});
 
 		function pll_toggle( a, test ) {
 			test ? a.show() : a.hide();
