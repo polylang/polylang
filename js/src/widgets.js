@@ -43,7 +43,7 @@ jQuery(
 				}
 				$( '.dashicons-translation', title ).remove(); // Remove potential translation icon.
 			} else {
-				if ( ! $( '<span />', title ).hasClass( 'dashicons-translation' ) ) {
+				if ( $( '.dashicons-translation', title ).length === 0 ) {
 					translationIcon = $( '<span />' ).addClass( 'dashicons dashicons-translation' );
 					title.prepend( translationIcon );
 					$( '.pll-lang', title ).remove(); // Remove potential language icon.
