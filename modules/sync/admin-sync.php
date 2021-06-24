@@ -88,12 +88,20 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return bool
 	 */
 	public function new_post_translation( $is_block_editor, $post ) {
+		static $done = array();
+
 		if ( isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $post->post_type ) ) {
 			check_admin_referer( 'new-post-translation' );
 
 			// Capability check already done in post-new.php
 			$from_post_id = (int) $_GET['from_post'];
 			$lang         = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) );
+
+			if ( ! $from_post_id || ! $lang || ! empty( $done[ $from_post_id ] ) ) {
+				return $is_block_editor;
+			}
+
+			$done[ $from_post_id ] = true; // Avoid a second duplication in the block editor. Using an array only to allow multiple phpunit tests.
 
 			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
 			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
