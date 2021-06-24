@@ -22,7 +22,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
 		add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ) );
-		add_filter( 'use_block_editor_for_post', array( $this, 'new_post_translation' ), 10, 2 );
+		add_filter( 'use_block_editor_for_post', array( $this, 'new_post_translation' ) );
 	}
 
 	/**
@@ -84,10 +84,10 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @since 3.1 Use of use_block_editor_for_post filter instead of rest_api_init which is triggered too early in WP 5.8.
 	 *
 	 * @param bool    $is_block_editor Whether the post can be edited or not.
-	 * @param WP_Post $post             The post being checked.
 	 * @return bool
 	 */
-	public function new_post_translation( $is_block_editor, $post ) {
+	public function new_post_translation( $is_block_editor ) {
+		global $post;
 		static $done = array();
 
 		if ( isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $post->post_type ) ) {
