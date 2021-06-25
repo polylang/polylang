@@ -188,7 +188,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$GLOBALS['pagenow'] = 'post-new.php';
 		$GLOBALS['post'] = get_post( $to );
 
-		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // fires the copy
+		apply_filters( 'use_block_editor_for_post', false ); // fires the copy
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $to )->slug );
 		$this->assertEquals( array( get_category( $fr ) ), get_the_category( $to ) );
@@ -228,7 +228,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$GLOBALS['pagenow'] = 'post-new.php';
 		$GLOBALS['post'] = get_post( $to );
 
-		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // fires the copy
+		apply_filters( 'use_block_editor_for_post', false ); // fires the copy
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $to )->slug );
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
