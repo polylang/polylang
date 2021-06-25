@@ -90,7 +90,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $post;
 		static $done = array();
 
-		if ( isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $post->post_type ) ) {
+		if ( ! empty( $post ) && isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $post->post_type ) ) {
 			check_admin_referer( 'new-post-translation' );
 
 			// Capability check already done in post-new.php
