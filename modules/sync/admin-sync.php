@@ -83,7 +83,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @since 2.5
 	 * @since 3.1 Use of use_block_editor_for_post filter instead of rest_api_init which is triggered too early in WP 5.8.
 	 *
-	 * @param bool    $is_block_editor Whether the post can be edited or not.
+	 * @param bool $is_block_editor Whether the post can be edited or not.
 	 * @return bool
 	 */
 	public function new_post_translation( $is_block_editor ) {
