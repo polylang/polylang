@@ -459,4 +459,26 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			)
 		);
 	}
+
+	public function test_category_feed() {
+		// Create an untranslated category.
+		$cat_id = $this->factory->category->create(
+			array(
+				'name' => 'Test Category',
+				'slug' => 'test-category',
+				)
+		);
+		self::$model->term->set_language( $cat_id, 'en' );
+		// Create a post with the previous category.
+		$post_id = $this->factory->post->create(
+			array(
+				'post_title' => 'test',
+				'post_type'  => 'page',
+				'category'   => $cat_id,
+			)
+		);
+		self::$model->post->set_language( $post_id, 'en' );
+
+		$this->assertCanonical( '/fr/category/test-category/feed/', '/en/category/test-category/feed/' );
+	}
 }
