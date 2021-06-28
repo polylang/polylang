@@ -478,7 +478,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			array(
 				'name' => 'Test Category',
 				'slug' => 'test-category',
-				)
+			)
 		);
 		self::$model->term->set_language( $cat_id, 'en' );
 		// Create a post with the previous category.
