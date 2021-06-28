@@ -22,7 +22,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
 		add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ) );
-		add_filter( 'use_block_editor_for_post', array( $this, 'new_post_translation' ) );
+		add_filter( 'use_block_editor_for_post', array( $this, 'new_post_translation' ), 5000 ); // After content duplication.
 	}
 
 	/**
