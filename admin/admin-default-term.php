@@ -63,7 +63,7 @@ class PLL_Admin_Default_Term {
 		foreach ( $this->taxonomies as $taxonomy ) {
 			if ( 'category' === $taxonomy ) {
 				// Allows to get the default terms in all languages
-				add_filter( 'option_default' . $taxonomy, array( $this, 'option_default_term' ) );
+				add_filter( 'option_default_' . $taxonomy, array( $this, 'option_default_term' ) );
 				add_action( 'update_option_default_' . $taxonomy, array( $this, 'update_option_default_term' ), 10, 2 );
 
 				// Adds the language column in the 'Terms' table.
