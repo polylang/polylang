@@ -110,13 +110,15 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
+	 * @since 3.2 Do the same with page for posts
+	 *
 	 * @param int     $post_id      Not used.
 	 * @param WP_Post $post         Not used.
 	 * @param int[]   $translations Translations of the post being saved.
 	 * @return void
 	 */
 	public function pll_save_post( $post_id, $post, $translations ) {
-		if ( in_array( $this->page_on_front, $translations ) ) {
+		if ( in_array( $this->page_on_front, $translations ) || in_array( $this->page_for_posts, $translations ) ) {
 			$this->model->clean_languages_cache();
 		}
 	}
