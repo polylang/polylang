@@ -139,4 +139,18 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $fr . '&amp;' ) );
 		$this->assertNotFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $id . '&amp;' ) );
 	}
+
+	function test_get_option_default_category() {
+		$option = get_option( 'default_category' );
+		$option_lang = self::$model->term->get_language( $option );
+
+		$this->assertEquals( 'en', $option_lang->slug );
+
+		$this->pll_admin->pref_lang = self::$model->get_language( 'es' );
+
+		$option = get_option( 'default_category' );
+		$option_lang = self::$model->term->get_language( $option );
+
+		$this->assertEquals( 'es', $option_lang->slug );
+	}
 }
