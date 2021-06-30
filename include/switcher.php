@@ -259,7 +259,7 @@ class PLL_Switcher {
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, -1, $args ), $args );
 
 		// Javascript to switch the language when using a dropdown list, added only once.
-		if ( $dropdown_count === 1 ) {
+		if ( 1 === $dropdown_count ) {
 			add_action( 'wp_print_footer_scripts', array( $this, 'print_dropdown_javascript' ) );
 		}
 
@@ -269,8 +269,12 @@ class PLL_Switcher {
 		return $out;
 	}
 
-	public function print_dropdown_javascript()
-	{
+	/**
+	 * Echo the Javascript for all the dropdown language switchers.
+	 *
+	 * @return void
+	 */
+	public function print_dropdown_javascript() {
 		$script =
 			'//<![CDATA[
 				document.querySelectorAll( ".pll-switcher-select" ).forEach(
