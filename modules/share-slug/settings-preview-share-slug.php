@@ -43,7 +43,7 @@ class PLL_Settings_Preview_Share_Slug extends PLL_Settings_Module {
 	 * @return string
 	 */
 	protected function get_description() {
-		return __( 'Allows to share the same url slug across languages for posts and terms.', 'polylang' );
+		return __( 'Allows to share the same URL slug across languages for posts and terms.', 'polylang' );
 	}
 
 	/**

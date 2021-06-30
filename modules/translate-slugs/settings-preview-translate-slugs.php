@@ -43,7 +43,7 @@ class PLL_Settings_Preview_Translate_Slugs extends PLL_Settings_Module {
 	 * @return string
 	 */
 	protected function get_description() {
-		return __( 'Allows to translate custom post types and taxonomies slugs in urls.', 'polylang' );
+		return __( 'Allows to translate custom post types and taxonomies slugs in URLs.', 'polylang' );
 	}
 
 	/**
