@@ -256,14 +256,30 @@ class PLL_Switcher {
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, -1, $args ), $args );
 
 		// Javascript to switch the language when using a dropdown list
-		if ( $args['dropdown'] && 0 === $args['admin_render'] ) {
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			wp_enqueue_script( 'pll_switcher_dropdown', plugins_url( '/js/build/switcher-dropdown' . $suffix . '.js', POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION, true );
-		}
+		add_action( 'wp_print_footer_scripts', array( $this, 'print_dropdown_javascript' ) );
 
 		if ( $args['echo'] ) {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 		return $out;
+	}
+
+	public function print_dropdown_javascript()
+	{
+		$script =
+			'//<![CDATA[
+				document.querySelectorAll( ".pll-switcher-select" ).forEach(
+					select => {
+						select.addEventListener( "change",
+							event => {
+								location.href = event.currentTarget.value
+							}
+						)
+					console.log(select);
+					}
+				);
+			//]]>';
+
+		echo '<script type="text/javascript" id="pll-switcher-script">' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }
