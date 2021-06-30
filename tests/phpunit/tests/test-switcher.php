@@ -184,5 +184,6 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$option = $xpath->query( '//select/option[.="English"]' );
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
 		$this->assertNotEmpty( $xpath->query( '//select/option[.="Français"]' )->length );
+		$this->assertNotEmpty( $xpath->query( '//script' )->length );
 	}
 }
