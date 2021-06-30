@@ -270,14 +270,13 @@ class PLL_Switcher {
 			'//<![CDATA[
 				document.querySelectorAll( ".pll-switcher-select" ).forEach(
 					select => {
-						select.addEventListener( "change",
-							event => {
-								location.href = event.currentTarget.value
-							}
-						)
+						select.addEventListener( "change", pllHandleDropdownSwitcher )
 					console.log(select);
 					}
 				);
+				function pllHandleDropdownSwitcher ( event ) {
+					location.href = event.currentTarget.value;
+				}
 			//]]>';
 
 		echo '<script type="text/javascript" id="pll-switcher-script">' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
