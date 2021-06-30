@@ -212,7 +212,6 @@ class PLL_Switcher {
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
 	public function the_languages( $links, $args = array() ) {
-		static $dropdown_count = 0;
 
 		$this->links = $links;
 		$args = wp_parse_args( $args, self::DEFAULTS );
@@ -229,7 +228,6 @@ class PLL_Switcher {
 		// Prevents showing empty options in dropdown
 		if ( $args['dropdown'] ) {
 			$args['show_names'] = 1;
-			$dropdown_count++;
 		}
 
 		$elements = $this->get_elements( $args );
@@ -258,36 +256,22 @@ class PLL_Switcher {
 		 */
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, -1, $args ), $args );
 
-		// Javascript to switch the language when using a dropdown list, added only once.
-		if ( 1 === $dropdown_count ) {
-			add_action( 'wp_print_footer_scripts', array( $this, 'print_dropdown_javascript' ) );
+		// Javascript to switch the language when using a dropdown list
+		if ( $args['dropdown'] && 0 === $args['admin_render'] ) {
+			// Accept only few valid characters for the urls_x variable name ( as the widget id includes '-' which is invalid )
+			$out .= sprintf(
+				'<script type="text/javascript">
+					//<![CDATA[
+					document.getElementById( "%1$s" ).addEventListener( "change", function ( event ) { location.href = event.currentTarget.value; } )
+					//]]>
+				</script>',
+				esc_js( $args['name'] )
+			);
 		}
 
 		if ( $args['echo'] ) {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 		return $out;
-	}
-
-	/**
-	 * Echo the Javascript for all the dropdown language switchers.
-	 *
-	 * @return void
-	 */
-	public function print_dropdown_javascript() {
-		$script =
-			'//<![CDATA[
-				document.querySelectorAll( ".pll-switcher-select" ).forEach(
-					select => {
-						select.addEventListener( "change", pllHandleDropdownSwitcher )
-					console.log(select);
-					}
-				);
-				function pllHandleDropdownSwitcher ( event ) {
-					location.href = event.currentTarget.value;
-				}
-			//]]>';
-
-		echo '<script type="text/javascript" id="pll-switcher-script">' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }
