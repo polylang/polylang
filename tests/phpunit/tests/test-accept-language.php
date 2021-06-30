@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Test a single {@see PLL_Aceept_Language} instance.
+ * Test a single {@see PLL_Accept_Language} instance.
  */
 class Accept_Language_Test extends PHPUnit_Framework_TestCase {
 
