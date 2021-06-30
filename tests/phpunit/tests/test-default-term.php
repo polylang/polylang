@@ -141,6 +141,11 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	}
 
 	function test_get_option_default_category() {
+		$option = get_option( 'default_category' );
+		$option_lang = self::$model->term->get_language( $option );
+
+		$this->assertEquals( 'en', $option_lang->slug );
+
 		$this->pll_admin->pref_lang = self::$model->get_language( 'es' );
 
 		$option = get_option( 'default_category' );
