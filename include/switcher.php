@@ -212,6 +212,8 @@ class PLL_Switcher {
 	 * @return string|array either the html markup of the switcher or the raw elements to build a custom language switcher
 	 */
 	public function the_languages( $links, $args = array() ) {
+		static $dropdown_count = 0;
+
 		$this->links = $links;
 		$args = wp_parse_args( $args, self::DEFAULTS );
 
@@ -227,6 +229,7 @@ class PLL_Switcher {
 		// Prevents showing empty options in dropdown
 		if ( $args['dropdown'] ) {
 			$args['show_names'] = 1;
+			$dropdown_count++;
 		}
 
 		$elements = $this->get_elements( $args );
@@ -236,7 +239,7 @@ class PLL_Switcher {
 		}
 
 		if ( $args['dropdown'] ) {
-			$args['name'] = $args['dropdown'];
+			$args['name'] = 'lang_choice_' . $args['dropdown'];
 			$args['class'] = 'pll-switcher-select';
 			$args['value'] = 'url';
 			$args['selected'] = $this->get_link( $this->links->model->get_language( $this->get_current_language( $args ) ), $args );
@@ -255,8 +258,10 @@ class PLL_Switcher {
 		 */
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, -1, $args ), $args );
 
-		// Javascript to switch the language when using a dropdown list
-		add_action( 'wp_print_footer_scripts', array( $this, 'print_dropdown_javascript' ) );
+		// Javascript to switch the language when using a dropdown list, added only once.
+		if ( $dropdown_count === 1 ) {
+			add_action( 'wp_print_footer_scripts', array( $this, 'print_dropdown_javascript' ) );
+		}
 
 		if ( $args['echo'] ) {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
