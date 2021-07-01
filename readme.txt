@@ -2,7 +2,7 @@
 Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
-Requires at least: 5.1
+Requires at least: 5.4
 Tested up to: 5.8
 Requires PHP: 5.6
 Stable tag: 3.0.6
@@ -86,6 +86,8 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Pro: Allow to export and import XLIFF files for string translations
 * Pro: Add the language switcher in the navigation block (experimental)
 * Pro: Replace dashicons by svg icons in the block editor
+* Pro: The Events Calendar: Add compatibility with Views V2 (only fors sites using only one domain)
+* Pro: Fix + icon displayed in the block editor sidebar when the user cannot create a translation
 * Add a warning section to the site health for posts and terms without languages #825
 * Require the simplexml extension in the site health if a wpml-config.xml is found #827
 * Remove the information about the WPML compabitility mode in settings #843
@@ -95,6 +97,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Allow to query comments in multiple languages (just as posts and terms) #840
 * Don't disable the translation input field in the classic metabox #841 Props Onatcer
 * Optimize all images including flags #848 Props lowwebtech
+* Don't redirect if WordPress doesn't validate the redirect url to avoid redirects to /wp-admin/ #879
 * Fix media appearing to have a language after the language is changed in the media library grid view  #807
 * Fix media not all deleted when bulk deleting from the grid view of the media library #830
 * Fix when more than one language switcher are added to the same menu #853
