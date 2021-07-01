@@ -157,6 +157,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	function test_update_term_when_updating_default_language() {
 		$option = get_option( 'default_category' );
 		$option_lang = self::$model->term->get_language( $option );
+		$es_option = self::$model->term->get_translation( $option, 'es' );
 
 		$this->assertEquals( 'en', $option_lang->slug );
 
@@ -166,5 +167,6 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$option_lang = self::$model->term->get_language( $option );
 
 		$this->assertEquals( 'es', $option_lang->slug );
+		$this->assertEquals( $option, $es_option );
 	}
 }
