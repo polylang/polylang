@@ -214,16 +214,16 @@
 	padding: 2px;
 }
 
+#post-translations p {
+	margin: 1em 0;
+}
+
 #post-translations .spinner,
 #term-translations .spinner {
 	float: none;
 	margin: 0;
 	background-position: center;
 	width: auto;
-}
-
-.pll-column-icon {
-	text-align: center;
 }
 
 #select-post-language .pll-select-flag {
