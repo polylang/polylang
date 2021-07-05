@@ -222,13 +222,9 @@
 	width: auto;
 }
 
-.pll-column-icon {
-	text-align: center;
-}
-
 #select-post-language .pll-select-flag {
 	padding: 4px;
-	margin-right: 32px;
+	margin-right: 10px;
 }
 
 /* specific cases for media */
