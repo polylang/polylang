@@ -191,6 +191,10 @@
 	float: left;
 }
 
+.rtl #post-translations p {
+	float: right;
+}
+
 #post-translations table {
 	table-layout: fixed;
 	width: 100%;
