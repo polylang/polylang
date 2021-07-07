@@ -187,12 +187,10 @@
 }
 
 /* languages metabox in post.php */
-#post-translations {
-	margin-top: 1em;
-}
 
 #post-translations p {
 	float: left;
+	margin-top: 1em;
 }
 
 .rtl #post-translations p {
