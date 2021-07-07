@@ -14,9 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "preinstall": "npx npm-force-resolutions"
   },
-  "resolutions": {
-    "css-what": "5.0.1"
-  },
+  "resolutions": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/polylang/polylang.git"
