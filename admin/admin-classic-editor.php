@@ -121,7 +121,7 @@ class PLL_Admin_Classic_Editor {
 
 		// NOTE: the class "tags-input" allows to include the field in the autosave $_POST ( see autosave.js )
 		printf(
-			'<p id="pll-metabox-select-language-title"><strong>%1$s</strong></p>
+			'<p><strong>%1$s</strong></p>
 			<label class="screen-reader-text" for="%2$s">%1$s</label>
 			<div id="select-%3$s-language">%4$s</div>',
 			esc_html__( 'Language', 'polylang' ),
