@@ -182,8 +182,17 @@
 }
 
 /* languages metabox in post.php */
+#ml_box p {
+	margin-top: 1em;
+}
+
 #post-translations p {
 	float: left;
+	margin-top: 1em;
+}
+
+.rtl #post-translations p {
+	float: right;
 }
 
 #post-translations table {
@@ -220,6 +229,12 @@
 #select-post-language .pll-select-flag {
 	padding: 4px;
 	margin-right: 10px;
+}
+
+.rtl #select-post-language .pll-select-flag {
+    padding: 4px;
+    margin-right: 0px;
+    margin-left: 10px;
 }
 
 /* specific cases for media */
