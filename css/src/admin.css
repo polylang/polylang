@@ -30,11 +30,6 @@
 	content: "\25cf";
 }
 
-.form-field input[type="radio"] {
-	width: auto;
-	margin-right: 2px;
-}
-
 /* about Polylang metabox */
 #pll-about-box p,
 #pll-recommended p {
