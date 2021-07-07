@@ -187,6 +187,9 @@
 }
 
 /* languages metabox in post.php */
+#pll-metabox-select-language-title {
+	margin-top: 1em;
+}
 
 #post-translations p {
 	float: left;
