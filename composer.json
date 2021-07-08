@@ -26,5 +26,24 @@
 			"modules/",
 			"settings/"
 		]
+	},
+	"scripts": {
+		"test":"phpunit",
+		"cs":"phpcs",
+		"stan": "phpstan analyze --memory-limit=400M",
+		"lint": [
+			"@cs",
+			"@stan"
+		],
+		"build": "bin/build.sh",
+		"dist": "bin/distribute.sh"
+	},
+	"scripts-descriptions": {
+		"test":"Runs PHPUnit tests.",
+		"cs":"Runs PHPCS linter.",
+		"stan": "Runs PHPStan analysis.",
+		"lint": "Runs both PHPCS and PHPStan.",
+		"build": "Builds the project.",
+		"dist": "Make the zip file to distibute the project release."
 	}
 }
