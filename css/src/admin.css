@@ -7,6 +7,11 @@
 	margin: 0.35em 0 0.5em;
 }
 
+.pll-legend {
+	margin: 0.35em 0 0.5em;
+	padding: 2px 0;
+}
+
 .column-locale,
 .languages .column-slug {
 	width : 15%

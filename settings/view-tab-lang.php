@@ -107,7 +107,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</div>
 
 					<div class="form-field"><fieldset>
-						<legend><?php esc_html_e( 'Text direction', 'polylang' ); ?></legend>
+						<legend class="pll-legend"><?php esc_html_e( 'Text direction', 'polylang' ); ?></legend>
 						<?php
 						printf(
 							'<label><input name="rtl" type="radio" value="0" %s /> %s</label>',
