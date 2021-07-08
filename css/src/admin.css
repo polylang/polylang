@@ -3,6 +3,10 @@
 	width: 95%;
 }
 
+#add-lang label {
+	margin: 0.35em 0 0.5em;
+}
+
 .column-locale,
 .languages .column-slug {
 	width : 15%
