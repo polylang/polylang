@@ -8,8 +8,12 @@
 }
 
 .pll-legend {
-	margin: 0.35em 0 0.5em;
+	display: block;
 	padding: 2px 0;
+	color: #1d2327;
+	font-weight: 400;
+	text-shadow: none;
+	margin: 0.35em 0 0.5em;
 }
 
 .column-locale,
