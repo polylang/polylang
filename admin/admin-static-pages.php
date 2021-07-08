@@ -33,7 +33,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		// Add post state for translations of the front page and posts page
 		add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
 
-		// Refresh language cache when a static front page has been translated
+		// Refreshes the language cache when a static front page or page for for posts has been translated.
 		add_action( 'pll_save_post', array( $this, 'pll_save_post' ), 10, 3 );
 
 		// Prevents WP resetting the option
@@ -106,11 +106,9 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Refreshes the language cache when a static front page has been translated.
+	 * Refreshes the language cache when a static front page or page for for posts has been translated.
 	 *
 	 * @since 1.8
-	 *
-	 * @since 3.2 Do the same with page for posts
 	 *
 	 * @param int     $post_id      Not used.
 	 * @param WP_Post $post         Not used.
