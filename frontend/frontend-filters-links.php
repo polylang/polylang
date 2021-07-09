@@ -407,6 +407,13 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
 				$language = $this->model->term->get_language( (int) $obj->term_id );
 			}
+
+			if ( is_feed() && empty( $obj ) ) { // Allows to replace the language correctly in a category feed query.
+				if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
+					$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
+					$language = $this->model->term->get_language( $term_id );
+				}
+			}
 		}
 
 		elseif ( is_404() && ! empty( $this->wp_query()->tax_query ) ) {
