@@ -489,7 +489,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'name' => 'Test Tag',
 				'slug' => 'test-tag',
 			)
-			);
+		);
 		self::$model->term->set_language( $tag_id, 'en' );
 		// Create a post with the previous tag.
 		$post_id = $this->factory->post->create(
