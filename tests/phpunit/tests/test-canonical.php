@@ -471,8 +471,12 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public function test_plain_tag_feed() {
 		$this->assertCanonical( '/?tag=test-tag&feed=rss2', '/en/tag/test-tag/feed/' );
 	}
-		
+
 	public function test_untranslated_category_feed() {
 		$this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
+	}
+
+	public function test_custom_post_type_from_plain_permalink() {
+		$this->assertCanonical( '?pllcanonical=' . self::$custom_post_id, '/en/pllcanonical/custom-post/' );
 	}
 }

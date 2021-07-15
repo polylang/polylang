@@ -435,6 +435,11 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
+		elseif ( 'page' !== $this->wp_query()->query && 'post' !== $this->wp_query()->query && $this->links_model->using_permalinks ) {
+			$language = $this->curlang;
+			$redirect_url = $this->maybe_add_page_to_redirect_url( get_permalink( $this->wp_query()->query['name'] ) );
+		}
+
 		if ( 3 === $this->options['force_lang'] ) {
 			$requested_host = wp_parse_url( $requested_url, PHP_URL_HOST );
 			foreach ( $this->options['domains'] as $lang => $domain ) {
