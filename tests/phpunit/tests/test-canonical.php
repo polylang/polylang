@@ -479,4 +479,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public function test_custom_post_type_from_plain_permalink() {
 		$this->assertCanonical( '?pllcanonical=' . self::$custom_post_id, '/en/pllcanonical/custom-post/' );
 	}
+
+	public function test_custom_post_type_feed_with_incorrect_language() {
+		$this->assertCanonical( '/fr/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	}
 }
