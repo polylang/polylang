@@ -392,8 +392,18 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		elseif ( $this->links_model->using_permalinks && is_category() && ! empty( $this->wp_query()->query['cat'] ) ) {
-			// When we receive a plain permaling with a cat query var, we need to redirect to the pretty permalink.
+		elseif ( is_feed() && ( is_category() || is_tag() || is_tax() ) ) {
+			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
+				$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
+				$language = $this->model->term->get_language( $term_id );
+				if ( $this->links_model->using_permalinks ) {
+					$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term_id, '' ) );
+				}
+			}
+		}
+
+		elseif ( $this->links_model->using_permalinks && ( is_category() || is_tag() || is_tax() ) && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] )) ) {
+			// When we receive a plain permalink with a cat or tag query var, we need to redirect to the pretty permalink.
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
 				$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
 				$language = $this->model->term->get_language( $term_id );
