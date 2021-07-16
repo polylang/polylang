@@ -23,13 +23,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	public function setUp() {
-		global $wp_rewrite;
-
 		parent::setUp();
-
-		$wp_rewrite->extra_rules_top = array();
-		$wp_rewrite->set_permalink_structure( $this->structure );
-		$wp_rewrite->flush_rules();
 
 		$links_model         = self::$model->get_links_model();
 		$this->frontend      = new PLL_REST_Request( $links_model );
