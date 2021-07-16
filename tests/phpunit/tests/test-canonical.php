@@ -39,7 +39,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'registered_taxonomy',
 			function( $taxonomy ) {
 				if ( 'post_format' === $taxonomy && ! post_type_exists( 'pllcanonical' ) ) { // Last taxonomy registered in {@see https://github.com/WordPress/wordpress-develop/blob/36ef9cbca96fca46e7daf1ee687bb6a20788385c/src/wp-includes/taxonomy.php#L158-L174 create_initial_taxonomies()}
-					register_post_type( 'pllcanonical', array( 'public' => true ) );
+					register_post_type( 'pllcanonical',
+						array(
+							'public' => true,
+							'has_archive' => true,
+							'rewrite' => true,
+						)
+					);
 				}
 			}
 		);
