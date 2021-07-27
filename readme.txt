@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.4
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 3.0.6
+Stable tag: 3.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -78,7 +78,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-== 3.1 ==
+== 3.1 (2021-07-27) ==
 
 * Add compatibility with WordPress 5.8
 * Raise Minimum WordPress version to 5.4
@@ -86,7 +86,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Pro: Allow to export and import XLIFF files for string translations
 * Pro: Add the language switcher in the navigation block (experimental)
 * Pro: Replace dashicons by svg icons in the block editor
-* Pro: The Events Calendar: Add compatibility with Views V2 (only fors sites using only one domain)
+* Pro: The Events Calendar: Add compatibility with Views V2 (only for sites using only one domain)
 * Pro: Fix + icon displayed in the block editor sidebar when the user cannot create a translation
 * Add a warning section to the site health for posts and terms without languages #825
 * Require the simplexml extension in the site health if a wpml-config.xml is found #827
@@ -132,7 +132,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 * Move hreflang attributes higher in the head section #771
 * Fix custom flags not working (introduced in 3.0)
 * Fix translation of the confirmation modal when changing the language of a post
-* Fix js and css not loaded when Polylang is used as a mu-plugin ((introduced in 3.0))
+* Fix js and css not loaded when Polylang is used as a mu-plugin (introduced in 3.0)
 * Fix support for html5 stylesheet link tags #775
 * Fix possible warning in frontend-filters-links.php
 * Yoast SEO Premium: Take over the multilingual compatibility removed in Yoast SEO Premium 15.8 #796
