@@ -78,7 +78,7 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 
 == Changelog ==
 
-== 3.1 (2021-07-27) ==
+= 3.1 (2021-07-27) =
 
 * Add compatibility with WordPress 5.8
 * Raise Minimum WordPress version to 5.4
