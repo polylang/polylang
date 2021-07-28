@@ -3,15 +3,13 @@ includes:
 parameters:
 	level: 6
 	paths:
+		- polylang.php
 		- admin/
 		- frontend/
 		- include/
 		- install/
 		- modules/
 		- settings/
-	scanFiles:
-		- polylang.php
-		- uninstall.php
 	excludes_analyse:
 		- **/load.php
 		- **/view*.php
