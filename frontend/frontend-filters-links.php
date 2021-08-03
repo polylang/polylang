@@ -410,7 +410,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 						$language = $this->model->term->get_language( (int) $obj->term_id );
 					}
 				}
-				}
+			}
 		}
 
 		elseif ( is_404() && ! empty( $this->wp_query()->tax_query ) ) {
