@@ -394,7 +394,11 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		elseif ( $this->links_model->using_permalinks && is_category() && ! empty( $this->wp_query()->query['cat'] ) ) {
 			// When we receive a plain permaling with a cat query var, we need to redirect to the pretty permalink.
-			extract( $this->get_queried_term_language( true ) );
+			$language = $this->get_queried_term_language();
+			if ( $language ) {
+				$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
+				$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
+			}
 		}
 
 		elseif ( is_category() || is_tag() || is_tax() ) {
@@ -419,13 +423,13 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 			if ( is_feed() && empty( $obj ) ) { 
 				// Allows to replace the language correctly in a category feed query.
-				extract( $this->get_queried_term_language() );
+				$language = $this->get_queried_term_language();
 			}
 		}
 
 		elseif ( is_404() && ! empty( $this->wp_query()->tax_query ) ) {
 			// When a wrong language is passed through a pretty permalink, we just need to switch the language.
-			extract( $this->get_queried_term_language() );
+			$language = $this->get_queried_term_language();
 		}
 
 		elseif ( $this->links_model->using_permalinks && $this->wp_query()->is_posts_page && ! empty( $this->wp_query()->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
@@ -567,23 +571,15 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * Get the language and the redirect URL corresponding to the queried term.
+	 * Get the language corresponding to the queried term.
 	 * 
-	 * @param bool $need_url optionnal, whether or not it should return the redirect URL.
-	 * 
-	 * @return array an associative array containing the langugage and the redirect URL as keys.
+	 * @return PLL_Language|false the language object or false.
 	 */
-	public function get_queried_term_language( $need_url = false ) {
+	public function get_queried_term_language() {
 		if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
 			$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
-			return array(
-				'language'     => $this->model->term->get_language( $term_id ),
-				'redirect_url' => $need_url ? $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) ) : false,
-			);
+			return $this->model->term->get_language( $term_id );
 		}
-		return array(
-			'language'     => false,
-			'redirect_url' => false,
-		);
+		return false;
 	}
 }
