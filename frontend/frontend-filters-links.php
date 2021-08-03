@@ -387,17 +387,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		if ( is_single() || is_page() ) {
 			$post = get_post();
-
-			// In case the request is for custom post type.
-			$post_type = isset( $this->wp_query()->query['post_type'] ) ? $this->wp_query()->query['post_type'] : null;
-			if ( isset( $this->wp_query()->query[ $post_type ] ) && empty( $post ) ) {
-				$post = get_post( $this->wp_query()->query[ $post_type ] );
-			}
 			if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
 				$language = $this->model->post->get_language( (int) $post->ID );
-			}
-			if ( $this->links_model->using_permalinks && ! empty( $this->wp_query()->query['post_type'] ) ) {
-				$redirect_url = is_feed() ? get_post_permalink( $post ) . 'feed/' : get_post_permalink( $post );
 			}
 		}
 
@@ -443,23 +434,15 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 				$language = $this->model->post->get_language( (int) $obj->ID );
 			}
 		}
-
-		elseif ( isset( $this->wp_query()->query['post_type'] ) && 'page' !== $this->wp_query()->query['post_type'] && 'post' !== $this->wp_query()->query['post_type'] && ! is_post_type_archive() ) {
-			// When querying a single custom post type.
+		
+		elseif ( isset( $this->wp_query()->query['post_type'] ) && pll_is_translated_post_type( $this->wp_query()->query['post_type'] ) && ! in_array( $this->wp_query()->query['post_type'], array( 'post', 'page', 'attachment' ) ) ) {
+			// For archive CPT feed query with wrong language.
 			$language = $this->curlang;
-			$post_type_id = isset( $this->wp_query()->query[ $this->wp_query()->query['post_type'] ] ) ? $this->wp_query()->query[ $this->wp_query()->query['post_type'] ] : null;
-			if ( $post_type_id && $this->links_model->using_permalinks ) {
-				$redirect_url = $this->maybe_add_page_to_redirect_url( get_permalink( $post_type_id ) );
-			}
 		}
 
-		elseif ( isset( $this->wp_query()->query['post_type'] ) && is_post_type_archive( $this->wp_query()->query['post_type'] ) && pll_is_translated_post_type( $this->wp_query()->query['post_type'] ) ) {
-			// When querying custom post type archive.
+		elseif ( isset( $this->wp_query()->query['name'] ) && pll_is_translated_post_type( $this->wp_query()->query['name'] ) && ! isset( $this->wp_query()->query['lang'] ) ) {
+			// For archive CPT query without language.
 			$language = $this->curlang;
-			if ( $this->links_model->using_permalinks ) {
-				$redirect_url = $this->maybe_add_page_to_redirect_url( get_post_type_archive_link( $this->wp_query()->query['post_type'] ) );
-				$redirect_url = is_feed() ? $redirect_url . 'feed/' : $redirect_url;
-			}
 		}
 
 		if ( 3 === $this->options['force_lang'] ) {
