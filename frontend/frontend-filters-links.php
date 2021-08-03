@@ -402,13 +402,15 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					} else {
 						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
 					}
+					$language = $this->model->term->get_language( $term_id );
+				} else {
+					// We need to switch the language when there is no language provided in a pretty permalink.
+					$obj = get_queried_object();
+					if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
+						$language = $this->model->term->get_language( (int) $obj->term_id );
+					}
 				}
-			}
-			// We need to switch the language when there is no language provided in a pretty permalink.
-			$obj = get_queried_object();
-			if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
-				$language = $this->model->term->get_language( (int) $obj->term_id );
-			}
+				}
 		}
 
 		elseif ( is_404() && ! empty( $this->wp_query()->tax_query ) ) {
