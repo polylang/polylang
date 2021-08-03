@@ -7,6 +7,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $page_id;
 	private static $custom_post_id;
 	private static $term_en;
+	private static $tag_en;
 	private static $page_for_posts_en;
 	private static $page_for_posts_fr;
 
@@ -53,6 +54,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$model->term->set_language( self::$term_en, 'en' );
+
+		self::$tag_en = $factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test-tag' ) );
+		self::$model->term->set_language( self::$tag_en, 'en' );
 
 		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$model->post->set_language( self::$page_for_posts_en, 'en' );
@@ -461,46 +465,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_plain_cat_feed() {
-		// Create a category.
-		$cat_id = $this->factory->category->create(
-			array(
-				'name' => 'Test Category',
-				'slug' => 'test-category',
-			)
-		);
-		self::$model->term->set_language( $cat_id, 'en' );
-		// Create a post with the previous category.
-		$post_id = $this->factory->post->create(
-			array(
-				'post_title' => 'test',
-				'post_type'  => 'page',
-				'category'   => $cat_id,
-			)
-		);
-		self::$model->post->set_language( $post_id, 'en' );
-
-		$this->assertCanonical( '/?cat=' . $cat_id . '&feed=rss2', '/en/category/test-category/feed/' );
+		$this->assertCanonical( '/?cat=' . self::$term_en . '&feed=rss2', '/en/category/parent/feed/' );
 	}
 
 	public function test_plain_tag_feed() {
-		// Create a tag.
-		$tag_id = $this->factory->tag->create(
-			array(
-				'name' => 'Test Tag',
-				'slug' => 'test-tag',
-			)
-		);
-		self::$model->term->set_language( $tag_id, 'en' );
-		// Create a post with the previous tag.
-		$post_id = $this->factory->post->create(
-			array(
-				'post_title' => 'test',
-				'post_type'  => 'page',
-				'tag'        => $tag_id,
-			)
-		);
-		self::$model->post->set_language( $post_id, 'en' );
-
 		$this->assertCanonical( '/?tag=test-tag&feed=rss2', '/en/tag/test-tag/feed/' );
 	}
 }
