@@ -309,9 +309,9 @@ class PLL_WPML_API {
 	 */
 	public function wpml_element_has_translations( $null, $id, $type ) {
 		if ( 'post' === $type || pll_is_translated_post_type( $type ) ) {
-			return count( pll_get_post_translations( $id ) > 1 );
+			return count( pll_get_post_translations( $id ) ) > 1;
 		} elseif ( 'term' === $type || pll_is_translated_taxonomy( $type ) ) {
-			return count( pll_get_term_translations( $id ) > 1 );
+			return count( pll_get_term_translations( $id ) ) > 1;
 		}
 
 		return false;
