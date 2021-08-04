@@ -22,7 +22,7 @@ The simplest way is to clone locally this repository and build it directly in yo
 2. Clone there the polylang repository (or your fork) from GitHub:<br/>
 `git clone https://github.com/polylang/polylang.git`
 3. Go to your local Polylang clone folder from there: `cd polylang`
-4. Run the bash script: `./bin/build.sh`
+4. Run the composer command: `composer build`
 5. Activate Polylang as if you had installed it from WordPress.org:<br/>
 See <https://wordpress.org/plugins/polylang/#installation>
 
