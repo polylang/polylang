@@ -49,7 +49,7 @@ parameters:
 
 		# Ignored because of https://github.com/polylang/polylang/pull/166
 		-
-			message: "#^Call to function is_wp_error\\(\\) with int will always evaluate to false\\.$#"
+			message: "#^Call to function is_wp_error\\(\\) with (.+) will always evaluate to false\\.$#"
 			count: 1
 			path: include/translated-object.php
 
@@ -59,14 +59,8 @@ parameters:
 			count: 1
 			path: frontend/choose-lang.php
 
-		# Will not be an issue after WordPress 5.8 release
+		# Temporarily ignored
 		-
-			message: "#^Parameter \\$block_editor_context of method PLL_Block_Editor_Filter_Preload_Paths::block_editor_rest_api_preload_paths\\(\\) has invalid typehint type WP_Block_Editor_Context\\.$#"
+			message: "#^Parameter \\#2 \\$input1 of function array_map expects array, string given\\.$#"
 			count: 1
-			path: admin/block-editor-filter-preload-paths.php
-
-		# Will not be an issue after WordPress 5.8 release
-		-
-			message: "#^Access to property \\$post on an unknown class WP_Block_Editor_Context\\.$#"
-			count: 2
-			path: admin/block-editor-filter-preload-paths.php
+			path: settings/table-string.php
