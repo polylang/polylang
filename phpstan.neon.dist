@@ -61,12 +61,6 @@ parameters:
 
 		# Temporarily ignored
 		-
-			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\): mixed, non-empty-string given\\.$#"
-			count: 2
-			path: modules/wpml/wpml-api.php
-
-		# Temporarily ignored
-		-
 			message: "#^Parameter \\#2 \\$input1 of function array_map expects array, string given\\.$#"
 			count: 1
 			path: settings/table-string.php
