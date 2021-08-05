@@ -7,6 +7,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $page_id;
 	private static $custom_post_id;
 	private static $term_en;
+	private static $tag_en;
 	private static $page_for_posts_en;
 	private static $page_for_posts_fr;
 
@@ -53,6 +54,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$model->term->set_language( self::$term_en, 'en' );
+
+		self::$tag_en = $factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test-tag' ) );
+		self::$model->term->set_language( self::$tag_en, 'en' );
 
 		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$model->post->set_language( self::$page_for_posts_en, 'en' );
@@ -458,5 +462,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			)
 		);
+	}
+
+	public function test_plain_cat_feed() {
+		$this->assertCanonical( '/?cat=' . self::$term_en . '&feed=rss2', '/en/category/parent/feed/' );
+	}
+
+	public function test_plain_tag_feed() {
+		$this->assertCanonical( '/?tag=test-tag&feed=rss2', '/en/tag/test-tag/feed/' );
 	}
 }
