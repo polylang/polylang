@@ -71,8 +71,6 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		if ( ! empty( $this->curlang ) ) {
-			$GLOBALS['text_direction'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
-
 			/** This action is documented in frontend/choose-lang.php */
 			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 		} else {
