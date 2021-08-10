@@ -412,7 +412,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 				}
 			}
 
-			if ( is_feed() && empty( $obj ) ) { 
+			if ( is_feed() && empty( $obj ) ) {
 				// Allows to replace the language correctly in a category feed query.
 				$language = $this->get_queried_term_language();
 			}
@@ -563,8 +563,10 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 	/**
 	 * Get the language corresponding to the queried term.
-	 * 
-	 * @return PLL_Language|false the language object or false.
+	 *
+	 * @since 3.2
+	 *
+	 * @return PLL_Language|false The language object or false.
 	 */
 	public function get_queried_term_language() {
 		if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
