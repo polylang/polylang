@@ -47,7 +47,7 @@ class PLL_Cache_Compat {
 		/** This filter is documented in include/cookie.php */
 		$expiration = apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
 
-		if ( $expiration !== 0 ) {
+		if ( 0 !== $expiration ) {
 			$format = 'var expirationDate = new Date();
 				expirationDate.setTime( expirationDate.getTime() + %7$d * 1000 );
 				document.cookie = "%1$s=%2$s; expires=" + expirationDate.toUTCString() + "; path=%3$s%4$s%5$s%6$s";';

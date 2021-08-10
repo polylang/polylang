@@ -32,7 +32,7 @@ class PLL_Cookie {
 		$expiration = apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
 
 		$defaults = array(
-			'expires'  => $expiration !== 0 ? time() + $expiration : 0,
+			'expires'  => 0 !== $expiration ? time() + $expiration : 0,
 			'path'     => COOKIEPATH,
 			'domain'   => COOKIE_DOMAIN, // Cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
 			'secure'   => is_ssl(),
