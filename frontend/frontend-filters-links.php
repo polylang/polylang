@@ -434,7 +434,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 				$language = $this->model->post->get_language( (int) $obj->ID );
 			}
 		}
-		
+
 		elseif ( isset( $this->wp_query()->query['post_type'] ) && pll_is_translated_post_type( $this->wp_query()->query['post_type'] ) && ! in_array( $this->wp_query()->query['post_type'], array( 'post', 'page', 'attachment' ) ) ) {
 			// For archive CPT feed query with wrong language.
 			$language = $this->curlang;
