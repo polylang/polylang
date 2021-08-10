@@ -22,6 +22,7 @@ class PLL_Cookie {
 		 * Filters the Polylang cookie duration.
 		 *
 		 * If a cookie duration of 0 is specified, a session cookie will be set.
+		 * If a negative cookie duration is specified, the cookie is removed.
 		 * /!\ This filter may be fired *before* the theme is loaded.
 		 *
 		 * @since 1.8
@@ -31,7 +32,7 @@ class PLL_Cookie {
 		$expiration = apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
 
 		$defaults = array(
-			'expires'  => $expiration > 0 ? time() + $expiration : 0,
+			'expires'  => $expiration !== 0 ? time() + $expiration : 0,
 			'path'     => COOKIEPATH,
 			'domain'   => COOKIE_DOMAIN, // Cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
 			'secure'   => is_ssl(),
