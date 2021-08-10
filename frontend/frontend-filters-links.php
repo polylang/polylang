@@ -402,7 +402,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					} else {
 						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
 					}
-					$language = $this->model->term->get_language( $term_id );
+					$language = $this->get_queried_term_language();
 				} else {
 					// We need to switch the language when there is no language provided in a pretty permalink.
 					$obj = get_queried_object();
@@ -411,14 +411,16 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					}
 				}
 			}
+
+			if ( is_feed() && empty( $obj ) ) {
+				// Allows to replace the language correctly in a category feed query.
+				$language = $this->get_queried_term_language();
+			}
 		}
 
 		elseif ( is_404() && ! empty( $this->wp_query()->tax_query ) ) {
 			// When a wrong language is passed through a pretty permalink, we just need to switch the language.
-			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
-				$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
-				$language = $this->model->term->get_language( $term_id );
-			}
+			$language = $this->get_queried_term_language();
 		}
 
 		elseif ( $this->links_model->using_permalinks && $this->wp_query()->is_posts_page && ! empty( $this->wp_query()->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
@@ -557,5 +559,20 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 */
 	protected function wp_query() {
 		return $GLOBALS['wp_query'];
+	}
+
+	/**
+	 * Get the language corresponding to the queried term.
+	 *
+	 * @since 3.2
+	 *
+	 * @return PLL_Language|false The language object or false.
+	 */
+	public function get_queried_term_language() {
+		if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
+			$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
+			return $this->model->term->get_language( $term_id );
+		}
+		return false;
 	}
 }
