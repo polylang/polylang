@@ -183,6 +183,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			}
 
 			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // needed for post type archives
+
+			add_filter( 'rewrite_rules_array', array( $this, 'handle_cpt_archive_rules' ), 999 );
 		}
 		return $pre;
 	}
@@ -274,5 +276,20 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		return $newrules;
+	}
+
+	public function handle_cpt_archive_rules( $rules ) {
+		// Specific rule for CPT archive to get the correct query_vars (i.e. '?post_type=cpt_name').
+		$cpts_list = get_post_types( array( '_builtin' => false ), 'objects' );
+		foreach ($cpts_list as $cpt) {
+			if ( apply_filters( 'pll_modify_rewrite_rule', true, array( $cpt->name . '/?$' => 'index.php?post_type=' . $cpt->name ), $cpt->name, false ) && $cpt->has_archive && $this->model->is_translated_post_type( $cpt->name ) ) {
+				// Hack to set a high priority.
+				$rules = array_reverse( $rules );
+				$rules[ $cpt->name . '/?$' ] = 'index.php?post_type=' . $cpt->name;
+				$rules = array_reverse( $rules );
+			}
+		}
+
+		return $rules;
 	}
 }

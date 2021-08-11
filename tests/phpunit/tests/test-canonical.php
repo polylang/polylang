@@ -487,6 +487,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/pllcanonical/', '/en/pllcanonical/' );
 	}
 
+	public function test_custom_post_type_archive_with_no_content_in_language() {
+		$this->assertCanonical( 'fr/pllcanonical/', '/en/pllcanonical/' );
+	}
+
 	public function test_custom_post_type_feed_with_incorrect_language() {
 		$this->assertCanonical( '/fr/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
 	}
