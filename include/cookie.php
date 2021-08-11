@@ -29,7 +29,7 @@ class PLL_Cookie {
 		 *
 		 * @param int $duration Cookie duration in seconds.
 		 */
-		$expiration = apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
+		$expiration = (int) apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
 
 		$defaults = array(
 			'expires'  => 0 !== $expiration ? time() + $expiration : 0,

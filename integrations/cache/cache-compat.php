@@ -45,7 +45,7 @@ class PLL_Cache_Compat {
 		$samesite = ( 3 === PLL()->options['force_lang'] ) ? 'None' : 'Lax';
 
 		/** This filter is documented in include/cookie.php */
-		$expiration = apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
+		$expiration = (int) apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
 
 		if ( 0 !== $expiration ) {
 			$format = 'var expirationDate = new Date();
