@@ -184,7 +184,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // needed for post type archives
 
-			add_filter( 'rewrite_rules_array', array( $this, 'handle_cpt_archive_rules' ), 999 );
+			// Set a lower priority to be shure $this->rewrite_rules won't filter after.
+			add_filter( 'rewrite_rules_array', array( $this, 'handle_cpt_archive_rules' ), 11 );
 		}
 		return $pre;
 	}
@@ -278,10 +279,18 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		return $newrules;
 	}
 
+	/**
+	 * Filter the rewrite rules array to add the specific rules for CPT archive.
+	 * It allow to have canonical redirection by getting the correct query_vars 'post_type'.
+	 *
+	 * @since 3.2
+	 *
+	 * @param string[] $rules All the rewrite rules.
+	 * @return string[] The filtered rewrite rules.
+	 */
 	public function handle_cpt_archive_rules( $rules ) {
-		// Specific rule for CPT archive to get the correct query_vars (i.e. '?post_type=cpt_name').
 		$cpts_list = get_post_types( array( '_builtin' => false ), 'objects' );
-		foreach ($cpts_list as $cpt) {
+		foreach ( $cpts_list as $cpt ) {
 			if ( apply_filters( 'pll_modify_rewrite_rule', true, array( $cpt->name . '/?$' => 'index.php?post_type=' . $cpt->name ), $cpt->name, false ) && $cpt->has_archive && $this->model->is_translated_post_type( $cpt->name ) ) {
 				// Hack to set a high priority.
 				$rules = array_reverse( $rules );

@@ -440,10 +440,6 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 				// For archive CPT query without language.
 				$language = $this->curlang;
 			}
-			if ( is_404() ) {
-				// For archive CPT feed query with wrong language.
-				$this->model->get_language( $this->model->options['default_lang'] );
-			}
 		}
 
 		if ( 3 === $this->options['force_lang'] ) {
