@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.4
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 3.1
+Stable tag: 3.1.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.1.1 (2021-08-16) =
+
+* Pro: Fix a fatal error with The Events Calendar
+* Allow to remove the cookie with the pll_cookie_expiration filter #905
 
 = 3.1 (2021-07-27) =
 
