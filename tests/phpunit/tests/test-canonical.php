@@ -39,7 +39,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'registered_taxonomy',
 			function( $taxonomy ) {
 				if ( 'post_format' === $taxonomy && ! post_type_exists( 'pllcanonical' ) ) { // Last taxonomy registered in {@see https://github.com/WordPress/wordpress-develop/blob/36ef9cbca96fca46e7daf1ee687bb6a20788385c/src/wp-includes/taxonomy.php#L158-L174 create_initial_taxonomies()}
-					register_post_type( 'pllcanonical', array( 'public' => true ) );
+					register_post_type(
+						'pllcanonical',
+						array(
+							'public' => true,
+							'has_archive' => true, // Implies to build the feed permastruct by default.
+						)
+					);
 				}
 			}
 		);
@@ -471,8 +477,16 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public function test_plain_tag_feed() {
 		$this->assertCanonical( '/?tag=test-tag&feed=rss2', '/en/tag/test-tag/feed/' );
 	}
-		
+
 	public function test_untranslated_category_feed() {
 		$this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
+	}
+
+	public function test_custom_post_type_feed_with_incorrect_language() {
+		$this->assertCanonical( '/fr/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	}
+
+	public function test_custom_post_type_feed_without_language() {
+		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
 	}
 }
