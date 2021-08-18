@@ -435,13 +435,6 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		elseif ( isset( $this->wp_query()->query['post_type'] ) && pll_is_translated_post_type( $this->wp_query()->query['post_type'] ) && ! in_array( $this->wp_query()->query['post_type'], array( 'post', 'page', 'attachment' ) ) ) {
-			if ( ! isset( $this->wp_query()->query['lang'] ) ) {
-				// For archive CPT query without language.
-				$language = $this->curlang;
-			}
-		}
-
 		if ( 3 === $this->options['force_lang'] ) {
 			$requested_host = wp_parse_url( $requested_url, PHP_URL_HOST );
 			foreach ( $this->options['domains'] as $lang => $domain ) {

@@ -43,12 +43,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 						'pllcanonical',
 						array(
 							'public' => true,
-							'has_archive' => true,
-							'rewrite' => true,
+							'has_archive' => true, // Implies to build the feed permastruct by default.
 						)
 					);
 				}
-				self::$model->options['post_types']['pllcanonical'] = 'pllcanonical'; // CPT translatable.
 			}
 		);
 		self::$custom_post_id = $factory->post->create(
@@ -484,32 +482,11 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
 	}
 
-	public function test_custom_post_type_archive_without_language() {
-		$this->assertCanonical( '/pllcanonical/', '/en/pllcanonical/' );
-	}
-
 	public function test_custom_post_type_feed_with_incorrect_language() {
 		$this->assertCanonical( '/fr/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
 	}
 
 	public function test_custom_post_type_feed_without_language() {
 		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
-	}
-
-	public function test_custom_post_type_archive_feed_without_language() {
-		$this->assertCanonical( '/pllcanonical/feed/', '/en/pllcanonical/feed/' );
-	}
-
-	public function test_custom_post_type_archive_rewrite_rule() {
-		// Mimics what is done in PLL_Links_Directory.
-		$links_directory = new PLL_Links_Directory( self::$model );
-		add_filter( 'rewrite_rules_array', array( $links_directory, 'handle_cpt_archive_rules' ), 11 );
-
-		// Retrieves the rewrite rules.
-		global $wp_rewrite;
-		$rules = $wp_rewrite->wp_rewrite_rules();
-
-		$this->assertArrayHasKey( 'pllcanonical/?$', $rules );
-		$this->assertTrue( 'index.php?post_type=pllcanonical' === $rules['pllcanonical/?$'] );
 	}
 }
