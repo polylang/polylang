@@ -191,8 +191,8 @@ class PLL_CRUD_Posts {
 	 *
 	 * @since 1.8
 	 *
-	 * @param int   $post_parent Post parent ID.
-	 * @param int   $post_id     Post ID.
+	 * @param int $post_parent Post parent ID.
+	 * @param int $post_id     Post ID.
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id ) {
