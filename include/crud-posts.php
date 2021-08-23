@@ -198,11 +198,11 @@ class PLL_CRUD_Posts {
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $new_postarr, $postarr ) {
-			$lang = $this->model->post->get_language( $post_id );
-			// Dont break the hierarchy in case the post has no language
-			if ( ! empty( $lang ) ) {
-				$post_parent = $this->model->post->get_translation( $post_parent, $lang );
-			}
+		$lang = $this->model->post->get_language( $post_id );
+		// Dont break the hierarchy in case the post has no language
+		if ( ! empty( $lang ) ) {
+			$post_parent = $this->model->post->get_translation( $post_parent, $lang );
+		}
 		return $post_parent;
 	}
 
