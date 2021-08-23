@@ -17,6 +17,7 @@ class PLL_WPSEO {
 	 */
 	public function init() {
 		add_action( 'wp_loaded', array( $this, 'wpseo_translate_options' ) );
+		add_filter( 'wpseo_dynamic_permalinks_enabled', '__return_true', 999 );
 
 		if ( PLL() instanceof PLL_Frontend ) {
 			// Filters sitemap queries to remove inactive language or to get
@@ -366,7 +367,6 @@ class PLL_WPSEO {
 	public function frontend_presentation( $presentation ) {
 		switch ( $presentation->model->object_type ) {
 			case 'home-page':
-				$presentation->model->permalink = pll_home_url();
 				$presentation->model->title = WPSEO_Options::get( 'title-home-wpseo' );
 				$presentation->model->description = WPSEO_Options::get( 'metadesc-home-wpseo' );
 				$presentation->model->open_graph_title = WPSEO_Options::get( 'og_frontpage_title' );
@@ -375,14 +375,9 @@ class PLL_WPSEO {
 
 			case 'post-type-archive':
 				if ( pll_is_translated_post_type( $presentation->model->object_sub_type ) ) {
-					$presentation->model->permalink = get_post_type_archive_link( $presentation->model->object_sub_type );
 					$presentation->model->title = WPSEO_Options::get( 'title-ptarchive-' . $presentation->model->object_sub_type );
 					$presentation->model->description = WPSEO_Options::get( 'metadesc-ptarchive-' . $presentation->model->object_sub_type );
 				}
-				break;
-
-			case 'user':
-				$presentation->model->permalink = get_author_posts_url( $presentation->model->object_id );
 				break;
 
 			case 'system-page':
