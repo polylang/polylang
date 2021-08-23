@@ -187,7 +187,7 @@ class PLL_CRUD_Posts {
 	}
 
 	/**
-	 * Make sure that the post parent is in the correct language when using bulk edit
+	 * Make sure that the post parent is in the correct language.
 	 *
 	 * @since 1.8
 	 *
@@ -198,16 +198,11 @@ class PLL_CRUD_Posts {
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $new_postarr, $postarr ) {
-		if ( isset( $postarr['bulk_edit'], $postarr['inline_lang_choice'] ) ) {
-			check_admin_referer( 'bulk-posts' );
-			$lang = -1 == $postarr['inline_lang_choice'] ?
-				$this->model->post->get_language( $post_id ) :
-				$this->model->get_language( $postarr['inline_lang_choice'] );
+			$lang = $this->model->post->get_language( $post_id );
 			// Dont break the hierarchy in case the post has no language
 			if ( ! empty( $lang ) ) {
 				$post_parent = $this->model->post->get_translation( $post_parent, $lang );
 			}
-		}
 		return $post_parent;
 	}
 
