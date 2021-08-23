@@ -43,7 +43,7 @@ class PLL_CRUD_Posts {
 
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 4 );
-		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 4 );
+		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, 'delete_post' ) );
 
 		// Specific for media
@@ -193,11 +193,9 @@ class PLL_CRUD_Posts {
 	 *
 	 * @param int   $post_parent Post parent ID.
 	 * @param int   $post_id     Post ID.
-	 * @param array $new_postarr Array of parsed post data.
-	 * @param array $postarr     Array of sanitized, but otherwise unmodified post data.
 	 * @return int
 	 */
-	public function wp_insert_post_parent( $post_parent, $post_id, $new_postarr, $postarr ) {
+	public function wp_insert_post_parent( $post_parent, $post_id ) {
 		$lang = $this->model->post->get_language( $post_id );
 		// Dont break the hierarchy in case the post has no language
 		if ( ! empty( $lang ) ) {
