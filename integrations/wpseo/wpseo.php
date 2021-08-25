@@ -413,7 +413,7 @@ class PLL_WPSEO {
 				$indexable->breadcrumb_title = pll__( WPSEO_Options::get( 'breadcrumbs-home' ) );
 			}
 
-			if ( 'post' === $indexable->object_type && 'page' === $indexable->object_sub_type && get_option( 'page_for_posts' ) === $indexable->object_id ) ) {
+			if ( 'post' === $indexable->object_type && 'page' === $indexable->object_sub_type && get_option( 'page_for_posts' ) === $indexable->object_id ) {
 				$indexable->permalink = get_permalink( $indexable->object_id );
 			}
 
