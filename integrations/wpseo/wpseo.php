@@ -396,29 +396,32 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Fixes the breadcrumb links and strings stored in the indexable table since Yoast SEO 14.0
+	 * Fixes the breadcrumb links and strings stored in the indexable table since Yoast SEO 14.0.
+	 *
+	 * In version 17.0, the breadcrumb links do not honor the filter `wpseo_dynamic_permalinks_enabled`.
 	 *
 	 * @since 2.8.3
 	 *
 	 * @param array $indexables An array of Indexable objects.
-	 * @return object
+	 * @return array
 	 */
 	public function breadcrumb_indexables( $indexables ) {
 		foreach ( $indexables as &$indexable ) {
-			switch ( $indexable->object_type ) {
-				case 'home-page':
-					$indexable->permalink = pll_home_url();
-					$indexable->breadcrumb_title = pll__( WPSEO_Options::get( 'breadcrumbs-home' ) );
-					break;
+			// Handles both when the front page displays the list of posts or a static page.
+			if ( 'home-page' === $indexable->object_type || ( 'post' === $indexable->object_type && 'page' === $indexable->object_sub_type && get_option( 'page_on_front' ) === $indexable->object_id ) ) {
+				$indexable->permalink = pll_home_url();
+				$indexable->breadcrumb_title = pll__( WPSEO_Options::get( 'breadcrumbs-home' ) );
+			}
 
-				case 'post-type-archive':
-					if ( pll_is_translated_post_type( $indexable->object_sub_type ) ) {
-						$indexable->permalink = get_post_type_archive_link( $indexable->object_sub_type );
-						$breadcrumb_title = WPSEO_Options::get( 'bctitle-ptarchive-' . $indexable->object_sub_type );
-						$breadcrumb_title = $breadcrumb_title ? $breadcrumb_title : $indexable->breadcrumb_title; // The option may be empty.
-						$indexable->breadcrumb_title = pll__( $breadcrumb_title );
-					}
-					break;
+			if ( 'post' === $indexable->object_type && 'page' === $indexable->object_sub_type && get_option( 'page_for_posts' ) === $indexable->object_id ) ) {
+				$indexable->permalink = get_permalink( $indexable->object_id );
+			}
+
+			if ( 'post-type-archive' === $indexable->object_type && pll_is_translated_post_type( $indexable->object_sub_type ) ) {
+				$indexable->permalink = get_post_type_archive_link( $indexable->object_sub_type );
+				$breadcrumb_title = WPSEO_Options::get( 'bctitle-ptarchive-' . $indexable->object_sub_type );
+				$breadcrumb_title = $breadcrumb_title ? $breadcrumb_title : $indexable->breadcrumb_title; // The option may be empty.
+				$indexable->breadcrumb_title = pll__( $breadcrumb_title );
 			}
 		}
 
