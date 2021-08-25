@@ -423,6 +423,10 @@ class PLL_WPSEO {
 				$breadcrumb_title = $breadcrumb_title ? $breadcrumb_title : $indexable->breadcrumb_title; // The option may be empty.
 				$indexable->breadcrumb_title = pll__( $breadcrumb_title );
 			}
+
+			if ( 'term' === $indexable->object_type && pll_is_translated_taxonomy( $indexable->object_sub_type ) ) {
+				$indexable->permalink = get_term_link( $indexable->object_id );
+			}
 		}
 
 		return $indexables;
