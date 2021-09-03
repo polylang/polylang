@@ -38,11 +38,7 @@ class PLL_WPSEO {
 			}
 
 			add_filter( 'pll_home_url_white_list', array( $this, 'wpseo_home_url_white_list' ) );
-			if ( version_compare( WPSEO_VERSION, '14.0', '<' ) ) {
-				add_action( 'wpseo_opengraph', array( $this, 'wpseo_ogp' ), 2 );
-			} else {
-				add_filter( 'wpseo_frontend_presenters', array( $this, 'wpseo_frontend_presenters' ) );
-			}
+			add_filter( 'wpseo_frontend_presenters', array( $this, 'wpseo_frontend_presenters' ) );
 			add_filter( 'wpseo_canonical', array( $this, 'wpseo_canonical' ) );
 			add_filter( 'wpseo_frontend_presentation', array( $this, 'frontend_presentation' ) );
 			add_filter( 'wpseo_breadcrumb_indexables', array( $this, 'breadcrumb_indexables' ) );
@@ -303,22 +299,6 @@ class PLL_WPSEO {
 
 		// There is a risk that 2 languages have the same Facebook locale. So let's make sure to output each locale only once.
 		return array_unique( $alternates );
-	}
-
-	/**
-	 * Adds opengraph support for translations
-	 *
-	 * @since 1.6
-	 */
-	public function wpseo_ogp() {
-		global $wpseo_og;
-
-		// WPSEO already deals with the locale
-		if ( did_action( 'pll_init' ) && method_exists( $wpseo_og, 'og_tag' ) ) {
-			foreach ( $this->get_ogp_alternate_languages() as $lang ) {
-				$wpseo_og->og_tag( 'og:locale:alternate', $lang );
-			}
-		}
 	}
 
 	/**
