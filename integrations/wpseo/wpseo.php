@@ -407,24 +407,18 @@ class PLL_WPSEO {
 	 */
 	public function breadcrumb_indexables( $indexables ) {
 		foreach ( $indexables as &$indexable ) {
-			// Handles both when the front page displays the list of posts or a static page.
 			if ( 'home-page' === $indexable->object_type || ( 'post' === $indexable->object_type && 'page' === $indexable->object_sub_type && get_option( 'page_on_front' ) === $indexable->object_id ) ) {
+				// Handles both when the front page displays the list of posts or a static page.
 				$indexable->permalink = pll_home_url();
 				$indexable->breadcrumb_title = pll__( WPSEO_Options::get( 'breadcrumbs-home' ) );
-			}
-
-			if ( 'post' === $indexable->object_type && 'page' === $indexable->object_sub_type && get_option( 'page_for_posts' ) === $indexable->object_id ) {
+			} elseif ( 'post' === $indexable->object_type && 'page' === $indexable->object_sub_type && get_option( 'page_for_posts' ) === $indexable->object_id ) {
 				$indexable->permalink = get_permalink( $indexable->object_id );
-			}
-
-			if ( 'post-type-archive' === $indexable->object_type && pll_is_translated_post_type( $indexable->object_sub_type ) ) {
+			} elseif ( 'post-type-archive' === $indexable->object_type && pll_is_translated_post_type( $indexable->object_sub_type ) ) {
 				$indexable->permalink = get_post_type_archive_link( $indexable->object_sub_type );
 				$breadcrumb_title = WPSEO_Options::get( 'bctitle-ptarchive-' . $indexable->object_sub_type );
 				$breadcrumb_title = $breadcrumb_title ? $breadcrumb_title : $indexable->breadcrumb_title; // The option may be empty.
 				$indexable->breadcrumb_title = pll__( $breadcrumb_title );
-			}
-
-			if ( 'term' === $indexable->object_type && pll_is_translated_taxonomy( $indexable->object_sub_type ) ) {
+			} elseif ( 'term' === $indexable->object_type && pll_is_translated_taxonomy( $indexable->object_sub_type ) ) {
 				$indexable->permalink = get_term_link( $indexable->object_id );
 			}
 		}
