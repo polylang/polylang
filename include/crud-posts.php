@@ -43,7 +43,7 @@ class PLL_CRUD_Posts {
 
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 4 );
-		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 4 );
+		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, 'delete_post' ) );
 
 		// Specific for media
@@ -187,26 +187,19 @@ class PLL_CRUD_Posts {
 	}
 
 	/**
-	 * Make sure that the post parent is in the correct language when using bulk edit
+	 * Make sure that the post parent is in the correct language.
 	 *
 	 * @since 1.8
 	 *
-	 * @param int   $post_parent Post parent ID.
-	 * @param int   $post_id     Post ID.
-	 * @param array $new_postarr Array of parsed post data.
-	 * @param array $postarr     Array of sanitized, but otherwise unmodified post data.
+	 * @param int $post_parent Post parent ID.
+	 * @param int $post_id     Post ID.
 	 * @return int
 	 */
-	public function wp_insert_post_parent( $post_parent, $post_id, $new_postarr, $postarr ) {
-		if ( isset( $postarr['bulk_edit'], $postarr['inline_lang_choice'] ) ) {
-			check_admin_referer( 'bulk-posts' );
-			$lang = -1 == $postarr['inline_lang_choice'] ?
-				$this->model->post->get_language( $post_id ) :
-				$this->model->get_language( $postarr['inline_lang_choice'] );
-			// Dont break the hierarchy in case the post has no language
-			if ( ! empty( $lang ) ) {
-				$post_parent = $this->model->post->get_translation( $post_parent, $lang );
-			}
+	public function wp_insert_post_parent( $post_parent, $post_id ) {
+		$lang = $this->model->post->get_language( $post_id );
+		// Dont break the hierarchy in case the post has no language
+		if ( ! empty( $lang ) ) {
+			$post_parent = $this->model->post->get_translation( $post_parent, $lang );
 		}
 		return $post_parent;
 	}
