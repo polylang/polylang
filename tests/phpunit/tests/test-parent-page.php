@@ -51,7 +51,7 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 
 		$child_page = get_post( $child_page_id );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $child_page_id )->slug );
-		$this->assertEquals( get_post( $child_page_id )->post_parent, $en );
+		$this->assertEquals( get_post( $child_page_id )->post_parent, $fr );
 
 	}
 
