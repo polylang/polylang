@@ -71,7 +71,7 @@ install:
     else
       composer install --no-interaction
     fi
-  - "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh \"${WP_VERSION}\""
+  - "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh \"${WP_VERSION}\"" true
   - "bash tests/bin/install-plugins.sh"
 
 script:
