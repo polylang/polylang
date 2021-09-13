@@ -789,46 +789,6 @@
             "time": "2018-07-08T19:19:57+00:00"
         },
         {
-            "name": "php-stubs/woocommerce-stubs",
-            "version": "v5.6.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-stubs/woocommerce-stubs.git",
-                "reference": "310159b717404028f8703e8adf9a4e87a93edc56"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/woocommerce-stubs/zipball/310159b717404028f8703e8adf9a4e87a93edc56",
-                "reference": "310159b717404028f8703e8adf9a4e87a93edc56",
-                "shasum": ""
-            },
-            "require": {
-                "php-stubs/wordpress-stubs": "^5.3.0"
-            },
-            "require-dev": {
-                "giacocorsiglia/stubs-generator": "^0.5.0",
-                "php": "~7.1"
-            },
-            "suggest": {
-                "symfony/polyfill-php73": "Symfony polyfill backporting some PHP 7.3+ features to lower PHP versions",
-                "szepeviktor/phpstan-wordpress": "WordPress extensions for PHPStan"
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "WooCommerce function and class declaration stubs for static analysis.",
-            "homepage": "https://github.com/php-stubs/woocommerce-stubs",
-            "keywords": [
-                "PHPStan",
-                "static analysis",
-                "woocommerce",
-                "wordpress"
-            ],
-            "time": "2021-08-18T05:07:47+00:00"
-        },
-        {
             "name": "php-stubs/wordpress-stubs",
             "version": "v5.8.0",
             "source": {
@@ -1241,16 +1201,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.98",
+            "version": "0.12.99",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3bb7cc246c057405dd5e290c3ecc62ab51d57e00"
+                "reference": "b4d40f1d759942f523be267a1bab6884f46ca3f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3bb7cc246c057405dd5e290c3ecc62ab51d57e00",
-                "reference": "3bb7cc246c057405dd5e290c3ecc62ab51d57e00",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b4d40f1d759942f523be267a1bab6884f46ca3f7",
+                "reference": "b4d40f1d759942f523be267a1bab6884f46ca3f7",
                 "shasum": ""
             },
             "require": {
@@ -1297,7 +1257,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-02T12:33:01+00:00"
+            "time": "2021-09-12T20:09:55+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3805,61 +3765,31 @@
             "time": "2021-03-09T14:15:21+00:00"
         },
         {
-            "name": "wpsyntex/polylang-stubs",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/polylang/polylang-stubs.git",
-                "reference": "4acff1c42fa48a451f06ddf4006546e81713ff3a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/polylang/polylang-stubs/zipball/4acff1c42fa48a451f06ddf4006546e81713ff3a",
-                "reference": "4acff1c42fa48a451f06ddf4006546e81713ff3a",
-                "shasum": ""
-            },
-            "require-dev": {
-                "giacocorsiglia/stubs-generator": "*",
-                "php": "~7.1"
-            },
-            "suggest": {
-                "wpsyntex/polylang-phpstan": "Polylang extension for PHPStan"
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-or-later"
-            ],
-            "description": "Polylang and Polylang Pro function and class declaration stubs for static analysis.",
-            "homepage": "https://polylang.pro",
-            "time": "2021-07-30T08:13:44+00:00"
-        },
-        {
             "name": "wpsyntex/wp-phpunit",
             "version": "dev-phpunit-version",
             "source": {
                 "type": "git",
                 "url": "https://github.com/polylang/wp-phpunit.git",
-                "reference": "1f0c028947ecf6d59a4f4fafa623e2aa9f3d4faa"
+                "reference": "19170ca936de8739ca4bdb827f9d1bbb898178a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/polylang/wp-phpunit/zipball/1f0c028947ecf6d59a4f4fafa623e2aa9f3d4faa",
-                "reference": "1f0c028947ecf6d59a4f4fafa623e2aa9f3d4faa",
+                "url": "https://api.github.com/repos/polylang/wp-phpunit/zipball/19170ca936de8739ca4bdb827f9d1bbb898178a7",
+                "reference": "19170ca936de8739ca4bdb827f9d1bbb898178a7",
                 "shasum": ""
             },
             "require": {
                 "brain/monkey": "^2.0",
                 "cheprasov/php-cli-args": "^3.0",
                 "php": ">=5.6",
-                "php-stubs/woocommerce-stubs": "*",
                 "phpunit/phpunit": "^5.7 || ^7.5 || ^8.5",
-                "symfony/console": "^3.4 || ^4.4",
-                "wpsyntex/polylang-phpstan": "dev-master",
-                "wpsyntex/polylang-stubs": "dev-master"
+                "symfony/console": "^3.4 || ^4.4"
             },
             "require-dev": {
-                "wpsyntex/polylang-cs": "dev-main"
+                "php-stubs/woocommerce-stubs": "*",
+                "wpsyntex/polylang-cs": "dev-main",
+                "wpsyntex/polylang-phpstan": "dev-master",
+                "wpsyntex/polylang-stubs": "dev-master"
             },
             "type": "library",
             "autoload": {
@@ -3873,7 +3803,7 @@
             ],
             "description": "PHPUnit library for WordPress",
             "homepage": "https://polylang.pro",
-            "time": "2021-09-10T11:50:20+00:00"
+            "time": "2021-09-13T08:22:53+00:00"
         },
         {
             "name": "yoast/phpunit-polyfills",
