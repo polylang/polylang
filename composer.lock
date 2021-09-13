@@ -3770,12 +3770,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/polylang/wp-phpunit.git",
-                "reference": "19170ca936de8739ca4bdb827f9d1bbb898178a7"
+                "reference": "449b8b9dba006e4d79ca57b7e8dabd3b0c8893e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/polylang/wp-phpunit/zipball/19170ca936de8739ca4bdb827f9d1bbb898178a7",
-                "reference": "19170ca936de8739ca4bdb827f9d1bbb898178a7",
+                "url": "https://api.github.com/repos/polylang/wp-phpunit/zipball/449b8b9dba006e4d79ca57b7e8dabd3b0c8893e7",
+                "reference": "449b8b9dba006e4d79ca57b7e8dabd3b0c8893e7",
                 "shasum": ""
             },
             "require": {
@@ -3803,7 +3803,7 @@
             ],
             "description": "PHPUnit library for WordPress",
             "homepage": "https://polylang.pro",
-            "time": "2021-09-13T08:22:53+00:00"
+            "time": "2021-09-13T11:50:23+00:00"
         },
         {
             "name": "yoast/phpunit-polyfills",
