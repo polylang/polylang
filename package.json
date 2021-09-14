@@ -39,7 +39,7 @@
     "@wpsyntex/polylang-build-scripts": "^2.0.3",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^9.0.1",
-    "css-loader": "^5.2.7",
+    "css-loader": "^6.2.0",
     "css-minimizer-webpack-plugin": "^3.0.2",
     "mini-css-extract-plugin": "^2.3.0",
     "postcss": "^8.3.6",
