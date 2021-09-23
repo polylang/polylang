@@ -12,8 +12,6 @@ jobs:
     - name: "PHPCS + PHPStan - PHP 7.2"
       php: "7.2"
       env: "WP_VERSION=latest WP_MULTISITE=0"
-      install:
-        - "composer install"
       script:
         - "vendor/bin/phpcs -s --extensions=php,js ./"
         - "vendor/bin/phpstan analyze --memory-limit=512M"
@@ -49,6 +47,8 @@ jobs:
 
     - php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
+      install:
+        - "composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "phpunit/phpunit ^9.5" "behat/behat ^3.8""
 
 services:
   - "mysql"
@@ -69,6 +69,7 @@ install:
       composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
       composer require --no-interaction --update-with-dependencies --dev "phpunit/phpunit ^5.7" "behat/behat ^3.7"
     else
+      composer require --no-interaction --update-with-dependencies --dev "phpunit/phpunit ^7.5"
       composer install --no-interaction
     fi
   - "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-suite.sh \"${WP_VERSION}\" true"
