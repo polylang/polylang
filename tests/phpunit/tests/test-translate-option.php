@@ -15,16 +15,16 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 		$GLOBALS['polylang'] = &$this->pll_admin;
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		unset( $GLOBALS['polylang'] );
 	}

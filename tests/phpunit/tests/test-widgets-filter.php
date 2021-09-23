@@ -12,8 +12,8 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$this->links_model = self::$model->get_links_model();
 

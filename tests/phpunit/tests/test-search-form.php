@@ -13,8 +13,8 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		global $wp_rewrite;
 

@@ -20,8 +20,8 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyseventee
 			switch_theme( 'twentyseventeen' );
 		}
 
-		function setUp() {
-			parent::setUp();
+		function set_up() {
+			parent::set_up();
 
 			require_once get_template_directory() . '/functions.php';
 		}

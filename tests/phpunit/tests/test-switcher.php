@@ -18,8 +18,8 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::$model->post->register_taxonomy(); // Needed for post counting
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
 		$this->frontend = new PLL_Frontend( $links_model );

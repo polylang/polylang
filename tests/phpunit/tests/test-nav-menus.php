@@ -13,8 +13,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$registered_nav_menus = get_registered_nav_menus();
 

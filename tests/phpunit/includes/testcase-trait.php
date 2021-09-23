@@ -33,7 +33,7 @@ trait PLL_UnitTestCase_Trait {
 	/**
 	 * Empties the languages cache after all tests
 	 */
-	function tearDown() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	function tear_down() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		self::$model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient
 
 		$globals = array( 'current_screen', 'hook_suffix', 'wp_settings_errors', 'post_type', 'wp_scripts', 'wp_styles' );
@@ -43,7 +43,7 @@ trait PLL_UnitTestCase_Trait {
 
 		$_REQUEST = array(); // WP Cleans up only $_POST and $_GET.
 
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	/**

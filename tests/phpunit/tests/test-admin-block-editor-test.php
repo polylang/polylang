@@ -20,8 +20,8 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		$options = PLL_Install::get_default_options();
 		$model = new PLL_Admin_Model( $options );

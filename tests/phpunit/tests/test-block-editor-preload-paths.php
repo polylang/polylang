@@ -8,8 +8,8 @@
  */
 class PLL_Block_Editor_Filter_Preload_Paths_Test extends PLL_UnitTestCase {
 
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		$this->spy = $this->getMockBuilder( stdClass::class )
 			->setMethods( array( '__invoke' ) )

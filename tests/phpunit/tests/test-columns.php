@@ -15,8 +15,8 @@ class Columns_Test extends PLL_UnitTestCase {
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		// set a user to pass current_user_can tests
 		wp_set_current_user( self::$editor );
@@ -28,10 +28,10 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
 	}
 
-	function tearDown() {
+	function tear_down() {
 		unset( $this->pll_admin->filter_lang );
 
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	/**

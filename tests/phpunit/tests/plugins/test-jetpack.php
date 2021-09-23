@@ -15,8 +15,8 @@ if ( version_compare( $GLOBALS['wp_version'], '5.6', '>=' ) && file_exists( DIR_
 			self::create_language( 'fr_FR' );
 		}
 
-		function setUp() {
-			parent::setUp();
+		function set_up() {
+			parent::set_up();
 
 			require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
 			require_once DIR_TESTROOT . '/../jetpack/jetpack.php';

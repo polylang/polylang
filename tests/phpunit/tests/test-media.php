@@ -12,8 +12,8 @@ class Media_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$options = array_merge( PLL_Install::get_default_options(), array( 'media_support' => 1 ) );
 		$model = new PLL_Admin_Model( $options );

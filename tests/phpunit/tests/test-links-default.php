@@ -14,8 +14,8 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		self::$model->options['post_types'] = array(
 			'cpt' => 'cpt',

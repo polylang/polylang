@@ -15,14 +15,14 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		self::$model->post->register_taxonomy();
 	}
 
-	function tearDown() {
+	function tear_down() {
 		self::delete_all_languages();
 
-		parent::tearDown();
+		parent::tear_down();
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		// FIXME: Tests fail when trying to use a new instance of PLL_Admin_Model
 		$links_model = self::$model->get_links_model();

@@ -12,8 +12,8 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
@@ -22,8 +22,8 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_admin->static_pages = new PLL_Admin_Static_Pages( $this->pll_admin );
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		add_post_type_support( 'page', 'editor' );
 	}

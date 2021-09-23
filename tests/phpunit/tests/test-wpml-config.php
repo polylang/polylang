@@ -24,8 +24,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		rmdir( WP_CONTENT_DIR . '/polylang' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$this->links_model = self::$model->get_links_model();
 	}

@@ -15,8 +15,8 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		global $wp_rewrite;
 

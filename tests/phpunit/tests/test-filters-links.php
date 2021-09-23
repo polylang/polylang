@@ -13,8 +13,8 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		global $wp_rewrite;
 
@@ -47,8 +47,8 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->frontend->filters_links->cache->method( 'get' )->willReturn( false );
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		_unregister_post_type( 'cpt' );
 		_unregister_taxonomy( 'tax' );

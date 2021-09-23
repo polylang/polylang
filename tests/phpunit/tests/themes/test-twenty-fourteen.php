@@ -22,8 +22,8 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			switch_theme( 'twentyfourteen' );
 		}
 
-		function setUp() {
-			parent::setUp();
+		function set_up() {
+			parent::set_up();
 
 			require_once get_template_directory() . '/functions.php';
 			twentyfourteen_setup();
@@ -42,8 +42,8 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			switch_theme( self::$stylesheet );
 		}
 
-		function tearDown() {
-			parent::tearDown();
+		function tear_down() {
+			parent::tear_down();
 
 			unset( $GLOBALS['polylang'] );
 		}

@@ -9,8 +9,8 @@ class Accept_Languages_Collection_Test extends PHPUnit_Framework_TestCase {
 	 */
 	protected static $known_languages;
 
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
+	public static function set_up_before_class() {
+		parent::set_up_before_class();
 		self::$known_languages = include POLYLANG_DIR . '/settings/languages.php';
 	}
 
