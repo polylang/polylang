@@ -1,6 +1,6 @@
 <?php
 
-class Accept_Languages_Collection_Test extends PHPUnit_Framework_TestCase {
+class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 	/**
 	 * Polylang pre-registered languages.
 	 *
