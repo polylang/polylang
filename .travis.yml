@@ -41,6 +41,9 @@ jobs:
     - name: "WP nightly - PHP 8.0"
       php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
+      install:
+        - composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "phpunit/phpunit ^9.5" "behat/behat ^3.8"
+
   allow_failures:
     - php: "5.6"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
@@ -48,7 +51,7 @@ jobs:
     - php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
       install:
-        - "composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "phpunit/phpunit ^9.5" "behat/behat ^3.8""
+        - composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "phpunit/phpunit ^9.5" "behat/behat ^3.8"
 
 services:
   - "mysql"
