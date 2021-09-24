@@ -12,6 +12,8 @@ jobs:
     - name: "PHPCS + PHPStan - PHP 7.2"
       php: "7.2"
       env: "WP_VERSION=latest WP_MULTISITE=0"
+      install:
+        - "composer install"
       script:
         - "vendor/bin/phpcs -s --extensions=php,js ./"
         - "vendor/bin/phpstan analyze --memory-limit=512M"
@@ -41,8 +43,6 @@ jobs:
     - name: "WP nightly - PHP 8.0"
       php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
-      install:
-        - composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "phpunit/phpunit ^9.5" "behat/behat ^3.8"
 
   allow_failures:
     - php: "5.6"
@@ -50,8 +50,6 @@ jobs:
 
     - php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
-      install:
-        - composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "phpunit/phpunit ^9.5" "behat/behat ^3.8"
 
 services:
   - "mysql"
@@ -67,7 +65,10 @@ before_install:
 install:
   - |
     if [[ "${TRAVIS_PHP_VERSION:0:1}" == "8" ]]; then
-      composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "phpunit/phpunit ^7.5" "behat/behat ^3.8"
+      if [[ $WP_VERSION == 'nightly' ]]; then
+        composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^9.5"
+      fi
+      composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "behat/behat ^3.8"
     elif [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
       composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
       composer require --no-interaction --update-with-dependencies --dev "phpunit/phpunit ^5.7" "behat/behat ^3.7"
