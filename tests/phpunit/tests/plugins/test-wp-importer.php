@@ -43,6 +43,9 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 
 		// mostly copied from WP_Import_UnitTestCase
 		protected function _import_wp( $filename, $users = array(), $fetch_files = true ) {
+			if ( ! class_exists( 'WP_Import' ) ) {
+				self::markTestSkipped( 'This test requires the class WP_Import' );
+			}
 			$importer = new PLL_WP_Import(); // Change to our importer
 			$file = realpath( $filename );
 			$this->assertTrue( ! empty( $file ), 'Path to import file is empty.' );
