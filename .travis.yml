@@ -21,8 +21,6 @@ jobs:
     - name: "WP oldest - PHP 7.2"
       php: "7.2"
       env: "WP_VERSION=5.4 WP_MULTISITE=0"
-      script:
-        - "vendor/bin/phpunit --verbose"
 
     - name: "WP latest - PHP 5.6"
       php: "5.6"
@@ -64,17 +62,8 @@ before_install:
 
 install:
   - |
-    if [[ "${TRAVIS_PHP_VERSION:0:1}" == "8" ]]; then
-      if [[ $WP_VERSION == 'nightly' ]]; then
-        composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^9.5"
-      fi
-      composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "behat/behat ^3.8"
-    elif [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
+    if [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
       composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
-      composer require --no-interaction --update-with-dependencies --dev "phpunit/phpunit ^5.7" "behat/behat ^3.7"
-    else
-      composer require --no-interaction --update-with-dependencies --dev "phpunit/phpunit ^7.5"
-      composer install --no-interaction
     fi
   - "bash tests/bin/install-wp-tests.sh wordpress_test root \"\" localhost \"${WP_VERSION}\""
   - "bash tests/bin/install-plugins.sh"
