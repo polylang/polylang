@@ -26,7 +26,7 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @BeforeFeature
 	 */
 	public static function prepare_for_feature() {
-		PLL_UnitTestCase::setUpBeforeClass();
+		PLL_UnitTestCase::set_up_before_class();
 		PLL_UnitTestCase::$model->post->register_taxonomy();
 	}
 
@@ -34,7 +34,7 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @AfterFeature
 	 */
 	public static function clean_after_feature() {
-		PLL_UnitTestCase::tearDownAfterClass();
+		PLL_UnitTestCase::tear_down_after_class();
 	}
 
 	/**
@@ -48,14 +48,14 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @BeforeScenario
 	 */
 	public function prepare_for_scenario() {
-		$this->test_case->setUp();
+		$this->test_case->set_up();
 	}
 
 	/**
 	 * @AfterScenario
 	 */
 	public function clean_after_scenario() {
-		$this->test_case->tearDown();
+		$this->test_case->tear_down();
 	}
 
 	/**
