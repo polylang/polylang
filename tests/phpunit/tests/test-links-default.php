@@ -82,7 +82,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$fr = $this->factory->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$this->assertNotContains( 'lang=en', get_permalink( $en ) );
+		$this->assertStringNotContainsString( 'lang=en', get_permalink( $en ) );
 		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
@@ -91,7 +91,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$this->assertNotContains( 'lang=en', get_permalink( $en ) );
+		$this->assertStringNotContainsString( 'lang=en', get_permalink( $en ) );
 		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 
 		$en = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
@@ -100,7 +100,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$fr = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$this->assertNotContains( 'lang=en', get_permalink( $en ) );
+		$this->assertStringNotContainsString( 'lang=en', get_permalink( $en ) );
 		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 	}
 
@@ -112,16 +112,16 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$fr = $this->factory->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$this->assertNotContains( 'lang=fr', get_permalink( $fr ) );
+		$this->assertStringNotContainsString( 'lang=fr', get_permalink( $fr ) );
 
 		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$this->assertNotContains( 'lang=fr', get_permalink( $fr ) );
+		$this->assertStringNotContainsString( 'lang=fr', get_permalink( $fr ) );
 
 		$fr = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$this->assertNotContains( 'lang=fr', get_permalink( $fr ) );
+		$this->assertStringNotContainsString( 'lang=fr', get_permalink( $fr ) );
 	}
 }

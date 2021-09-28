@@ -79,7 +79,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 				<input type="submit" class="search-submit" value="Search" />
 			</form>';
 		$form = apply_filters( 'get_search_form', $form );
-		$this->assertContains( 'action="' . home_url( '/fr/' ) . '"', $form );
+		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form );
 	}
 
 	/**
