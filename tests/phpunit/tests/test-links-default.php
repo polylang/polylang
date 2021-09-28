@@ -83,7 +83,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertNotContains( 'lang=en', get_permalink( $en ) );
-		$this->assertContains( 'lang=fr', get_permalink( $fr ) );
+		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -92,7 +92,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertNotContains( 'lang=en', get_permalink( $en ) );
-		$this->assertContains( 'lang=fr', get_permalink( $fr ) );
+		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 
 		$en = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -101,7 +101,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertNotContains( 'lang=en', get_permalink( $en ) );
-		$this->assertContains( 'lang=fr', get_permalink( $fr ) );
+		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 	}
 
 	function test_language_from_post_content() {

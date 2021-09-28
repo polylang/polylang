@@ -94,28 +94,28 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
-		$this->assertContains( 'Hello World', wp_nav_menu( $args ) );
+		$this->assertStringContainsString( 'Hello World', wp_nav_menu( $args ) );
 
 		$frontend->curlang = self::$model->get_language( 'fr' );
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
-		$this->assertContains( 'Bonjour', wp_nav_menu( $args ) );
+		$this->assertStringContainsString( 'Bonjour', wp_nav_menu( $args ) );
 
 		// test with hardcoded menu
 		$args = array( 'menu' => 'menu_en', 'echo' => false );
-		$this->assertContains( 'Bonjour', wp_nav_menu( $args ) );
+		$this->assertStringContainsString( 'Bonjour', wp_nav_menu( $args ) );
 
 		// test with wrong hardcoded menu
 		$args = array( 'menu' => $primary_location, 'echo' => false ); // this is what we often see in themes
-		$this->assertContains( 'Bonjour', wp_nav_menu( $args ) );
+		$this->assertStringContainsString( 'Bonjour', wp_nav_menu( $args ) );
 
 		// test without theme location or hardcoded menu
 		$args = array( 'echo' => false );
-		$this->assertContains( 'Bonjour', wp_nav_menu( $args ) );
+		$this->assertStringContainsString( 'Bonjour', wp_nav_menu( $args ) );
 
 		// test with untranslated menu hardcoded
 		$args = array( 'menu' => 'menu_0', 'echo' => false );
-		$this->assertContains( 'No language', wp_nav_menu( $args ) );
+		$this->assertStringContainsString( 'No language', wp_nav_menu( $args ) );
 	}
 
 	function test_delete_nav_menu() {
@@ -269,8 +269,8 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
-		$this->assertContains( 'Français', wp_nav_menu( $args ) );
-		$this->assertContains( 'English', wp_nav_menu( $args ) );
+		$this->assertStringContainsString( 'Français', wp_nav_menu( $args ) );
+		$this->assertStringContainsString( 'English', wp_nav_menu( $args ) );
 
 		unset( $GLOBALS['polylang'] );
 	}

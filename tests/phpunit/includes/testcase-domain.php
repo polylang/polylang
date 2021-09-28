@@ -85,14 +85,14 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['fr'], PHP_URL_HOST );
 		$uploads = wp_get_upload_dir(); // Since WP 4.5.
 
-		$this->assertContains( $this->hosts['fr'], $uploads['url'] );
-		$this->assertContains( $this->hosts['fr'], $uploads['baseurl'] );
+		$this->assertStringContainsString( $this->hosts['fr'], $uploads['url'] );
+		$this->assertStringContainsString( $this->hosts['fr'], $uploads['baseurl'] );
 
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['en'], PHP_URL_HOST );
 		$uploads = wp_get_upload_dir(); // Since WP 4.5.
 
-		$this->assertContains( $this->hosts['en'], $uploads['url'] );
-		$this->assertContains( $this->hosts['en'], $uploads['baseurl'] );
+		$this->assertStringContainsString( $this->hosts['en'], $uploads['url'] );
+		$this->assertStringContainsString( $this->hosts['en'], $uploads['baseurl'] );
 
 		// Clean up.
 		$_SERVER = $server;

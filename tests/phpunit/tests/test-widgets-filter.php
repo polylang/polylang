@@ -167,10 +167,10 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertContains( "wp-image-{$fr}", $output ); // CSS class
-		$this->assertContains( 'Alt text FR', $output );
-		$this->assertContains( 'Caption FR', $output );
-		$this->assertNotContains( 'Test image FR', $output );
+		$this->assertStringContainsString( "wp-image-{$fr}", $output ); // CSS class
+		$this->assertStringContainsString( 'Alt text FR', $output );
+		$this->assertStringContainsString( 'Caption FR', $output );
+		$this->assertStringNotContainsString( 'Test image FR', $output );
 
 		// Edit Image fields are filled
 		$instance = array( 'attachment_id' => $en, 'alt' => 'Custom alt', 'caption' => 'Custom caption', 'image_title' => 'Custom title' );
@@ -178,9 +178,9 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertContains( 'Alt text FR', $output );
-		$this->assertContains( 'Caption FR', $output );
-		$this->assertContains( 'Test image FR', $output );
+		$this->assertStringContainsString( 'Alt text FR', $output );
+		$this->assertStringContainsString( 'Caption FR', $output );
+		$this->assertStringContainsString( 'Test image FR', $output );
 
 		unset( $GLOBALS['polylang'] );
 	}
