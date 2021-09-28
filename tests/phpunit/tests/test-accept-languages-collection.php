@@ -21,7 +21,9 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 	 * @return PLL_Language
 	 */
 	protected function get_known_language( $locale ) {
-		return new PLL_Language( self::$known_languages[ $locale ] );
+		$language = self::$known_languages[ $locale ];
+		$language['slug'] = $language['code'];
+		return new PLL_Language( $language );
 	}
 
 	/**
