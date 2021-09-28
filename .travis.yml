@@ -75,7 +75,10 @@ install:
 
 script:
   - "vendor/bin/phpunit --verbose"
-  - "vendor/bin/behat --verbose"
+  - |
+    if [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
+      "vendor/bin/behat --verbose"
+    fi
 
 notifications:
   email:
