@@ -56,7 +56,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		// deleting all translations deletes the file
 		wp_delete_attachment( $fr );
-		$this->assertFileNotExists( $filename );
+		$this->assertFileDoesNotExist( $filename );
 	}
 
 	function test_attachment_fields_to_edit() {
