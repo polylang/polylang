@@ -2,8 +2,8 @@
 
 class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		global $wp_rewrite;
 

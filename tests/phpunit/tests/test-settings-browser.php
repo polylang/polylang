@@ -2,8 +2,8 @@
 
 class Settings_Browser_Test extends PLL_UnitTestCase {
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
 		$this->pll_env = new PLL_Settings( $links_model );

@@ -12,8 +12,8 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
 

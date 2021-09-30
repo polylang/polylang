@@ -12,8 +12,8 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		self::$model->options['post_types'] = array(
 			'trcpt' => 'trcpt',
@@ -33,8 +33,8 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		new PLL_CRUD_Terms( $frontend );
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		_unregister_post_type( 'trcpt' );
 		_unregister_taxonomy( 'trtax' );

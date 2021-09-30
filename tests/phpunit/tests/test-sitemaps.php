@@ -53,8 +53,8 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->pll_env->filters_links->cache->method( 'get' )->willReturn( false );
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		_unregister_post_type( 'cpt' );
 		_unregister_taxonomy( 'tax' );

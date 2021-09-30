@@ -6,8 +6,8 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		throw new Exception( 'Call to wp_redirect' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );

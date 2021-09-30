@@ -41,7 +41,7 @@ class Flags_Test extends PLL_UnitTestCase {
 		$_SERVER['HTTPS'] = 'on';
 
 		$lang = self::$model->get_language( 'en' );
-		$this->assertContains( 'https', $lang->get_display_flag_url() );
+		$this->assertStringContainsString( 'https', $lang->get_display_flag_url() );
 
 		unset( $_SERVER['HTTPS'] );
 	}
@@ -51,7 +51,7 @@ class Flags_Test extends PLL_UnitTestCase {
 
 		$lang = self::$model->get_language( 'fr' );
 		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->get_display_flag_url() );
-		$this->assertContains( 'https', $lang->get_display_flag_url() );
+		$this->assertStringContainsString( 'https', $lang->get_display_flag_url() );
 
 		unset( $_SERVER['HTTPS'] );
 	}

@@ -2,8 +2,8 @@
 
 class Settings_CPT_Test extends PLL_UnitTestCase {
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		// De-activate cache for translated post types and taxonomies
 		self::$model->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
@@ -16,8 +16,8 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 		$this->pll_env = new PLL_Settings( $links_model );
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		_unregister_post_type( 'cpt' );
 		_unregister_taxonomy( 'tax' );

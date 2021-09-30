@@ -1,6 +1,6 @@
 <?php
 
-class Accept_Languages_Collection_Test extends PHPUnit_Framework_TestCase {
+class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 	/**
 	 * Polylang pre-registered languages.
 	 *
@@ -9,8 +9,8 @@ class Accept_Languages_Collection_Test extends PHPUnit_Framework_TestCase {
 	 */
 	protected static $known_languages;
 
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
+	public static function set_up_before_class() {
+		parent::set_up_before_class();
 		self::$known_languages = include POLYLANG_DIR . '/settings/languages.php';
 	}
 
@@ -21,7 +21,9 @@ class Accept_Languages_Collection_Test extends PHPUnit_Framework_TestCase {
 	 * @return PLL_Language
 	 */
 	protected function get_known_language( $locale ) {
-		return new PLL_Language( self::$known_languages[ $locale ] );
+		$language = self::$known_languages[ $locale ];
+		$language['slug'] = $language['code'];
+		return new PLL_Language( $language );
 	}
 
 	/**

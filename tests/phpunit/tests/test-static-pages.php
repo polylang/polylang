@@ -61,8 +61,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		self::$model->options['hide_default'] = 0;
 		self::$model->options['redirect_lang'] = 0;

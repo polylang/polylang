@@ -22,8 +22,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	/**
 	 * @return void
 	 */
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		$links_model         = self::$model->get_links_model();
 		$this->frontend      = new PLL_REST_Request( $links_model );
@@ -33,8 +33,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	/**
 	 * @return void
 	 */
-	public function tearDown() {
-		parent::tearDown();
+	public function tear_down() {
+		parent::tear_down();
 
 		unset( $GLOBALS['polylang'] );
 	}

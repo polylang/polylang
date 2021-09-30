@@ -12,8 +12,8 @@ class Settings_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		// Avoid http call
 		add_filter( 'pre_transient_available_translations', '__return_empty_array' );

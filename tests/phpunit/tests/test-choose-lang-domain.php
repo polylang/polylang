@@ -15,8 +15,8 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		global $wp_rewrite;
 
@@ -48,8 +48,8 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		$this->frontend = new PLL_Frontend( $links_model );
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		$_SERVER = $this->server;
 	}

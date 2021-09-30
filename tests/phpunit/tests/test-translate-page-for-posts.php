@@ -9,8 +9,8 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		update_option( 'show_on_front', 'page' );
 

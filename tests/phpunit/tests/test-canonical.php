@@ -96,8 +96,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		parent::wpTearDownAfterClass();
 	}
 
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		$GLOBALS['polylang'] = &$this->pll_env;
 

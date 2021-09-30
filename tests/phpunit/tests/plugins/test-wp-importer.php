@@ -4,8 +4,8 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 
 	class WP_Importer_Test extends PLL_UnitTestCase {
 
-		function setUp() {
-			parent::setUp();
+		function set_up() {
+			parent::set_up();
 
 			require_once POLYLANG_DIR . '/include/api.php';
 
@@ -34,11 +34,11 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 			$GLOBALS['polylang'] = &$pll_admin;
 		}
 
-		function tearDown() {
+		function tear_down() {
 			unset( $GLOBALS['polylang'] );
 			self::delete_all_languages();
 
-			parent::tearDown();
+			parent::tear_down();
 		}
 
 		// mostly copied from WP_Import_UnitTestCase

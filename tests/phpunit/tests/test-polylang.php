@@ -2,8 +2,8 @@
 
 class Polylang_Test extends PLL_UnitTestCase {
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		// The call to go_to triggers the parse_request action and rest_api_loaded ends with a die().
 		remove_action( 'parse_request', 'rest_api_loaded' );

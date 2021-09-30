@@ -17,8 +17,8 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 

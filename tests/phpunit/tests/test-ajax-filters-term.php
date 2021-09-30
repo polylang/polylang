@@ -15,8 +15,8 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 		remove_all_actions( 'admin_init' ); // To save (a lot of) time as WP will attempt to update core and plugins.
 
 		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests.

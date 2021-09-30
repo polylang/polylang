@@ -13,7 +13,7 @@ jobs:
       php: "7.2"
       env: "WP_VERSION=latest WP_MULTISITE=0"
       install:
-        - "composer install"
+        - "composer update"
       script:
         - "vendor/bin/phpcs -s --extensions=php,js ./"
         - "vendor/bin/phpstan analyze --memory-limit=512M"
@@ -24,17 +24,17 @@ jobs:
       script:
         - "vendor/bin/phpunit --verbose"
 
-    - name: "WP latest - PHP 5.6"
+    - name: "WP 5.8 - PHP 5.6"
       php: "5.6"
-      env: "WP_VERSION=latest WP_MULTISITE=0"
+      env: "WP_VERSION=5.8 WP_MULTISITE=0"
 
-    - name: "WP latest - PHP 8.0"
-      php: "8.0"
-      env: "WP_VERSION=latest WP_MULTISITE=0"
+    - name: "WP 5.8 - PHP 7.4"
+      php: "7.4"
+      env: "WP_VERSION=5.8 WP_MULTISITE=0"
 
-    - name: "WP latest multisite - PHP 7.2"
+    - name: "WP 5.8 multisite - PHP 7.2"
       php: "7.2"
-      env: "WP_VERSION=latest WP_MULTISITE=1"
+      env: "WP_VERSION=5.8 WP_MULTISITE=1"
 
     - name: "WP nightly - PHP 5.6"
       php: "5.6"
@@ -43,6 +43,7 @@ jobs:
     - name: "WP nightly - PHP 8.0"
       php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
+
   allow_failures:
     - php: "5.6"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
@@ -63,20 +64,17 @@ before_install:
 
 install:
   - |
-    if [[ "${TRAVIS_PHP_VERSION:0:1}" == "8" ]]; then
-      composer require --no-interaction --update-with-dependencies --ignore-platform-reqs --dev "wpsyntex/wp-phpunit:dev-branch-7.5" "behat/behat ^3.8"
-    elif [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
+    if [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
       composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
-      composer require --no-interaction --update-with-dependencies --dev "wpsyntex/wp-phpunit:dev-branch-5.7" "behat/behat ^3.7"
-    else
-      composer install --no-interaction
+    elif [[ $WP_VERSION != 'nightly' ]]; then
+      composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^7.5"
     fi
-  - "bash vendor/wpsyntex/wp-phpunit/bin/install-wp-tests.sh wordpress_test root \"\" localhost \"${WP_VERSION}\""
+  - "composer update"
+  - "bash tests/bin/install-wp-tests.sh wordpress_test root \"\" localhost \"${WP_VERSION}\""
   - "bash tests/bin/install-plugins.sh"
 
 script:
   - "vendor/bin/phpunit --verbose"
-  - "vendor/bin/behat --verbose"
 
 notifications:
   email:

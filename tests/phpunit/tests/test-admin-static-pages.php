@@ -12,8 +12,8 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
@@ -22,8 +22,8 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_admin->static_pages = new PLL_Admin_Static_Pages( $this->pll_admin );
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		add_post_type_support( 'page', 'editor' );
 	}
@@ -47,7 +47,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		do_action( 'edit_form_after_title', get_post( $fr ) );
-		$this->assertContains( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
+		$this->assertStringContainsString( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
 	}
 
 	// Bug introduced in 2.2.2 and fixed in 2.2.3
@@ -73,7 +73,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		do_action( 'edit_form_after_title', get_post( $fr ) );
-		$this->assertNotContains( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
+		$this->assertStringNotContainsString( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
 	}
 
 	function test_use_block_editor_for_post() {

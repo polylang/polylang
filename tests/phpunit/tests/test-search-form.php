@@ -13,8 +13,8 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		global $wp_rewrite;
 
@@ -48,7 +48,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		do_action_ref_array( 'admin_bar_menu', array( &$admin_bar ) ); // ndeed add menus to the admin bar
 		$node = $admin_bar->get_node( 'search' );
 
-		$this->assertContains( home_url( '/fr/' ), $node->title );
+		$this->assertStringContainsString( home_url( '/fr/' ), $node->title );
 	}
 
 	function test_get_search_form() {
@@ -57,13 +57,13 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$form = get_search_form( false ); // don't echo
 
-		$this->assertContains( 'action="' . home_url( '/fr/' ) . '"', $form );
+		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form );
 
 		$wp_rewrite->set_permalink_structure( '' );
 		$this->frontend->links_model = self::$model->get_links_model();
 
 		$form = get_search_form( false );
-		$this->assertContains( '<input type="hidden" name="lang" value="fr" />', $form );
+		$this->assertStringContainsString( '<input type="hidden" name="lang" value="fr" />', $form );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 				<input type="submit" class="search-submit" value="Search" />
 			</form>';
 		$form = apply_filters( 'get_search_form', $form );
-		$this->assertContains( 'action="' . home_url( '/fr/' ) . '"', $form );
+		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form );
 	}
 
 	/**

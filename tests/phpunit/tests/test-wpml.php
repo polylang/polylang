@@ -16,16 +16,16 @@ class WPML_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		$this->links_model = self::$model->get_links_model();
 
 		PLL_WPML_Compat::instance()->api = new PLL_WPML_API(); // Loads the WPML API
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 
 		// Cleaning the previous registered strings translations that were added
 		foreach ( PLL_WPML_Compat::instance()->get_strings( array() ) as $string ) {

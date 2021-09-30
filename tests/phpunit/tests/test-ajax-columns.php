@@ -15,8 +15,8 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 	}
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 		remove_all_actions( 'admin_init' ); // to save ( a lot of ) time as WP will attempt to update core and plugins
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
@@ -62,10 +62,10 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEquals( "post-$fr", $tr->item( 0 )->getAttribute( 'id' ) );
 
 		$a = $xpath->query( '//a[@class="pll_column_flag"]' );
-		$this->assertContains( "post=$fr", $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertStringContainsString( "post=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
-		$this->assertContains( "post=$en", $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertStringContainsString( "post=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->assertEquals( $fr, (string) $xml->response[0]->row->supplemental->post_id );
 
@@ -79,10 +79,10 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEquals( "post-$en", $tr->item( 0 )->getAttribute( 'id' ) );
 
 		$a = $xpath->query( '//a[@class="pll_column_flag"]' );
-		$this->assertContains( "post=$en", $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertStringContainsString( "post=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
-		$this->assertContains( "post=$fr", $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertStringContainsString( "post=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->assertEquals( $en, (string) $xml->response[1]->row->supplemental->post_id );
 	}
@@ -123,10 +123,10 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEquals( "tag-$fr", $tr->item( 0 )->getAttribute( 'id' ) );
 
 		$a = $xpath->query( '//a[@class="pll_column_flag"]' );
-		$this->assertContains( "tag_ID=$fr", $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertStringContainsString( "tag_ID=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $en . '"]' );
-		$this->assertContains( "tag_ID=$en", $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertStringContainsString( "tag_ID=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->assertEquals( $fr, (string) $xml->response[0]->row->supplemental->term_id );
 
@@ -140,10 +140,10 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEquals( "tag-$en", $tr->item( 0 )->getAttribute( 'id' ) );
 
 		$a = $xpath->query( '//a[@class="pll_column_flag"]' );
-		$this->assertContains( "tag_ID=$en", $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertStringContainsString( "tag_ID=$en", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//a[@class="pll_icon_edit translation_' . $fr . '"]' );
-		$this->assertContains( "tag_ID=$fr", $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertStringContainsString( "tag_ID=$fr", $a->item( 0 )->getAttribute( 'href' ) );
 
 		$this->assertEquals( $en, (string) $xml->response[1]->row->supplemental->term_id );
 	}
