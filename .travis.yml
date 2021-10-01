@@ -75,6 +75,7 @@ install:
 
 script:
   - "vendor/bin/phpunit --verbose"
+  - "vendor/bin/behat"
 
 notifications:
   email:
