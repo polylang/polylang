@@ -45,7 +45,7 @@ jobs:
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
     - name: "WP nightly - PHP 8.1"
-      php: "nightly"
+      php: "8.1"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
   allow_failures:
@@ -55,7 +55,7 @@ jobs:
     - php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
-    - php: "nightly"
+    - php: "8.1"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
 services:
