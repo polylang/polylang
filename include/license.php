@@ -138,12 +138,12 @@ class PLL_License {
 	}
 
 	/**
-	 * Activate the license key
+	 * Activates the license key.
 	 *
 	 * @since 1.9
 	 *
-	 * @param string $license_key activation key
-	 * @return object updated $this
+	 * @param string $license_key Activation key.
+	 * @return PLL_License Updated PLL_License object.
 	 */
 	public function activate_license( $license_key ) {
 		$this->license_key = $license_key;
@@ -156,11 +156,11 @@ class PLL_License {
 
 
 	/**
-	 * Deactivate the license key
+	 * Deactivates the license key.
 	 *
 	 * @since 1.9
 	 *
-	 * @return object updated $this
+	 * @return PLL_License Updated PLL_License object.
 	 */
 	public function deactivate_license() {
 		$this->api_request( 'deactivate_license' );
@@ -168,11 +168,11 @@ class PLL_License {
 	}
 
 	/**
-	 * Check if license key is valid
+	 * Checks if the license key is valid.
 	 *
 	 * @since 1.9
 	 *
-	 * @return object updated $this
+	 * @return PLL_License Updated PLL_License object.
 	 */
 	public function check_license() {
 		$this->api_request( 'check_license' );

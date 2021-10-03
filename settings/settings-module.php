@@ -81,7 +81,7 @@ class PLL_Settings_Module {
 	/**
 	 * Stores html form when provided by a child class.
 	 *
-	 * @var bool|string
+	 * @var string|false
 	 */
 	protected $form = false;
 

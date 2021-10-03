@@ -41,7 +41,7 @@ class PLL_WPML_Config {
 	 *
 	 * @since 1.7
 	 *
-	 * @return object
+	 * @return PLL_WPML_Config
 	 */
 	public static function instance() {
 		if ( empty( self::$instance ) ) {
@@ -270,9 +270,9 @@ class PLL_WPML_Config {
 	 *
 	 * @since 2.8
 	 *
-	 * @param string $context The group in which the strings will be registered.
-	 * @param string $name    Option name.
-	 * @param object $key     XML node.
+	 * @param string           $context The group in which the strings will be registered.
+	 * @param string           $name    Option name.
+	 * @param SimpleXMLElement $key     XML node.
 	 * @return void
 	 */
 	protected function register_or_translate_option( $context, $name, $key ) {
@@ -285,8 +285,8 @@ class PLL_WPML_Config {
 	 *
 	 * @since 2.9
 	 *
-	 * @param object $key XML node.
-	 * @param array  $arr Array of option keys to translate.
+	 * @param SimpleXMLElement $key XML node.
+	 * @param array            $arr Array of option keys to translate.
 	 * @return array
 	 */
 	protected function xml_to_array( $key, &$arr = array() ) {
