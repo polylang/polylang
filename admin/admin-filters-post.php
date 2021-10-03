@@ -59,7 +59,7 @@ class PLL_Admin_Filters_Post extends PLL_Admin_Filters_Post_Base {
 		}
 
 		// Hierarchical taxonomies
-		if ( 'edit' == $screen->base && $taxonomies = get_object_taxonomies( $screen->post_type, 'object' ) ) {
+		if ( 'edit' == $screen->base && $taxonomies = get_object_taxonomies( $screen->post_type, 'objects' ) ) {
 			// Get translated hierarchical taxonomies
 			$hierarchical_taxonomies = array();
 			foreach ( $taxonomies as $taxonomy ) {
