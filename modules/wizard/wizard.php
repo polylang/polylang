@@ -401,7 +401,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_licenses() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$redirect = $this->get_next_step_link();
 		$licenses = apply_filters( 'pll_settings_licenses', array() );
@@ -523,7 +523,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_languages() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$existing_languages = $this->model->get_languages_list();
 
@@ -635,7 +635,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_media() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$media_support = isset( $_POST['media_support'] ) ? sanitize_key( $_POST['media_support'] ) === 'yes' : false;
 
@@ -692,7 +692,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_untranslated_contents() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$lang = isset( $_POST['language'] ) ? sanitize_text_field( wp_unslash( $_POST['language'] ) ) : false;
 
@@ -760,7 +760,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_home_page() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$languages = $this->model->get_languages_list();
 
@@ -856,7 +856,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_last() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
 		exit;
