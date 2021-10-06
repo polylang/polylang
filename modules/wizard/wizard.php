@@ -362,9 +362,6 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_licenses( $steps ) {
-		// Add ajax action on deactivate button in licenses step.
-		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
-
 		// Be careful pll_admin script is enqueued here without depedency except jquery because only code useful for deactivate license button is needed.
 		// To be really loaded the script need to be passed to the $steps['licenses']['scripts'] array below with the same handle than in wp_enqueue_script().
 		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
@@ -401,7 +398,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_licenses() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$redirect = $this->get_next_step_link();
 		$licenses = apply_filters( 'pll_settings_licenses', array() );
@@ -423,37 +420,6 @@ class PLL_Wizard {
 
 		wp_safe_redirect( esc_url_raw( $redirect ) );
 		exit;
-	}
-
-	/**
-	 * Ajax method to deactivate a license
-	 *
-	 * @since 2.7
-	 *
-	 * @return void
-	 */
-	public function deactivate_license() {
-		check_ajax_referer( 'pll-wizard', '_pll_nonce' );
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( -1 );
-		}
-
-		if ( ! isset( $_POST['id'] ) ) {
-			wp_die( 0 );
-		}
-
-		$id = substr( sanitize_text_field( wp_unslash( $_POST['id'] ) ), 11 );
-		$licenses = apply_filters( 'pll_settings_licenses', array() );
-		$license = $licenses[ $id ];
-		$license->deactivate_license();
-
-		wp_send_json(
-			array(
-				'id'   => $id,
-				'html' => $license->get_form_field(),
-			)
-		);
 	}
 
 	/**
@@ -523,7 +489,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_languages() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$existing_languages = $this->model->get_languages_list();
 
@@ -635,7 +601,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_media() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$media_support = isset( $_POST['media_support'] ) ? sanitize_key( $_POST['media_support'] ) === 'yes' : false;
 
@@ -692,7 +658,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_untranslated_contents() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$lang = isset( $_POST['language'] ) ? sanitize_text_field( wp_unslash( $_POST['language'] ) ) : false;
 
@@ -760,7 +726,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_home_page() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		$languages = $this->model->get_languages_list();
 
@@ -856,7 +822,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function save_step_last() {
-		check_admin_referer( 'pll-wizard', '_pll_nonce' );
+		check_admin_referer( 'pll-wizard', '_pll_wizard_nonce' );
 
 		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
 		exit;
