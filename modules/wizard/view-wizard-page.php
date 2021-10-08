@@ -74,7 +74,7 @@ if ( is_rtl() ) {
 		<div class="pll-wizard-content">
 			<form method="post" class="<?php echo esc_attr( "{$this->step}-step" ); ?>">
 				<?php
-				wp_nonce_field( 'pll-wizard', '_pll_wizard_nonce' );
+				wp_nonce_field( 'pll-wizard', '_pll_nonce' );
 
 				if ( ! empty( $this->steps[ $this->step ]['view'] ) ) {
 					call_user_func( $this->steps[ $this->step ]['view'], $this );
