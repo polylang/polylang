@@ -10,7 +10,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
 };
-wp_nonce_field( 'pll_options', '_pll_nonce' ); // Specific nonce to be able to deactivate licenses {@see js/src/admin.js} in ajax call context.
 
 $licenses = apply_filters( 'pll_settings_licenses', array() );
 $is_error = isset( $_GET['activate_error'] ) && 'i18n_license_key_error' === sanitize_key( $_GET['activate_error'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
