@@ -13,22 +13,37 @@ Making WordPress multilingual
 
 == Description ==
 
+Go multilingual in a simple and efficient way. Keep writing posts, pages, creating categories and post tags as usual while defining the language for each of them all at the same time.
+
 = Features  =
 
-Polylang allows you to create a bilingual or multilingual WordPress site. You write posts, pages and create categories and post tags as usual, and then define the language for each of them. The translation of a post, whether it is in the default language or not, is optional.
+Whether you are looking to go global with your business or you simply realized that your visitors started coming from all over. Having a multilingual site is the solution you are looking for and Polylang will help you reach this goal. With it you'll be able to create a multilingual WordPress site in no time, creating from just a second language to 10 or more, the choice is yours.
 
-* You can use as many languages as you want. RTL language scripts are supported. WordPress languages packs are automatically downloaded and updated.
-* You can translate posts, pages, media, categories, post tags, menus, widgets...
-* Custom post types, custom taxonomies, sticky posts and post formats, RSS feeds and all default WordPress widgets are supported.
+Polylang and Polylang Pro share the same core features. Note that neither of them will allow you (for the time being) to do automated translation. If you wish to use a professional or automatic translation service, you can install [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/), as an add-on of Polylang. Lingotek offers a complete translation management system which provides services such as translation memory or semi-automated translation processes (e.g. machine translation > human translation > legal review).
+
+Features included in Polylang (free version) :
+
+* No limit on the number of languages added and WordPress language packs are automatically downloaded and updated. Creating a translation remains optional for all languages.
+* Translate posts, pages, media, categories, post tags, menus, widgets...
+* RTL language scripts are supported.
+* All default WordPress widget blocks are supported, custom post types, custom taxonomies, sticky posts, post format and RSS feeds.
 * The language is either set by the content or by the language code in url, or you can use one different subdomain or domain per language
-* Categories, post tags as well as some other metas are automatically copied when adding a new post or page translation
-* A customizable language switcher is provided as a widget or in the nav menu
+* Automatic copy of categories, post tags and other metas when creating a new post or page translation
 
-> The author does not provide support on the wordpress.org forum. Support and extra features are available to [Polylang Pro](https://polylang.pro) users.
+What Polylang Pro will provide you with are some very useful extra features helping you optimize the time spent translating your site :
 
-If you wish to migrate from WPML, you can use the plugin [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/)
+* Sharing the same slug,
+* [Translate the slugs in the URL](https://polylang.pro/doc/translating-urls-slugs/),
+* [Duplicate posts across languages](https://polylang.pro/doc/duplicating-content-across-post-translations/),
+* [Enable or disable languages](https://polylang.pro/doc/configure-the-languages/#deactivate-language) ... (see more [here](https://polylang.pro/downloads/polylang-pro/)),
+* [A customizable language switcher is provided as a widget or in the nav menu](https://polylang.pro/doc/the-language-switcher/),
+* [Compatibility with ACF Pro](https://polylang.pro/doc/working-with-acf-pro/),
+* And more importantly access to a Premium Support for personalized assistance.
 
-If you wish to use a professional or automatic translation service, you can install [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/), as an addon of Polylang. Lingotek offers a complete translation management system which provides services such as translation memory or semi-automated translation processes (e.g. machine translation > human translation > legal review).
+For users of the Polylang Free version support is on the wordpress.org forum.
+The author does not provide support on the wordpress.org forum. Support and extra features are available to [Polylang Pro](https://polylang.pro/) users.
+
+If you wish to migrate from WPML, you can use the plugin [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/).
 
 = Credits =
 
