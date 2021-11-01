@@ -174,8 +174,8 @@ class PLL_Admin_Site_Health {
 		$wpml = new PLL_WPML_Config();
 		$wpml_files = $wpml->files;
 		if ( ! empty( $wpml_files ) ) {
-			$fields[ 'wpml' ]['label'] = 'wpml-config.xml';
-			$fields[ 'wpml' ]['value'] = $wpml_files;
+			$fields['wpml']['label'] = 'wpml-config.xml';
+			$fields['wpml']['value'] = $wpml_files;
 		}
 
 		$debug_info['pll_options'] = array(
