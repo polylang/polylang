@@ -26,6 +26,13 @@ class PLL_WPML_Config {
 	protected $xmls;
 
 	/**
+	 * Array of wpml-config.xml files.
+	 *
+	 * @var string[]
+	 */
+	public $files;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0
@@ -59,14 +66,14 @@ class PLL_WPML_Config {
 	 */
 	public function init() {
 		$this->xmls = array();
-		$files = $this->get_files();
+		$this->files = $this->get_files();
 
-		if ( ! empty( $files ) ) {
+		if ( ! empty( $this->files ) ) {
 			add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
 
 			// Read all files.
 			if ( extension_loaded( 'simplexml' ) ) {
-				foreach ( $files as $context => $file ) {
+				foreach ( $this->files as $context => $file ) {
 					$xml = simplexml_load_file( $file );
 					if ( false !== $xml ) {
 						$this->xmls[ $context ] = $xml;
