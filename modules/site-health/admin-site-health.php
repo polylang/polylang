@@ -168,6 +168,16 @@ class PLL_Admin_Site_Health {
 				}
 			}
 		}
+
+		// does a wpml-config.xml exists
+		// @todo Check with Fred if it can't be accessed through PLL().
+		$wpml = new PLL_WPML_Config();
+		$wpml_files = $wpml->files;
+		if ( ! empty( $wpml_files ) ) {
+			$fields[ 'wpml' ]['label'] = 'wpml-config.xml';
+			$fields[ 'wpml' ]['value'] = $wpml_files;
+		}
+
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
 			'label'  => sprintf( esc_html__( '%s Options', 'polylang' ), POLYLANG ),
