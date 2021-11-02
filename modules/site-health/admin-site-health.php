@@ -169,8 +169,7 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
-		// does a wpml-config.xml exists
-		// @todo Check with Fred if it can't be accessed through PLL().
+		// does a wpml-config.xml exists ?
 		$wpml = new PLL_WPML_Config();
 		$wpml_files = $wpml->files;
 		if ( ! empty( $wpml_files ) ) {
