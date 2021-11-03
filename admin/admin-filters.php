@@ -66,15 +66,13 @@ class PLL_Admin_Filters extends PLL_Filters {
 	public function personal_options( $profileuser ) {
 		foreach ( $this->model->get_languages_list() as $lang ) {
 			$meta = $lang->slug == $this->options['default_lang'] ? 'description' : 'description_' . $lang->slug;
-
-			/** This filter is documented in wp-includes/user.php */
-			$description = apply_filters( 'user_description', get_user_meta( $profileuser->ID, $meta, true ) ); // Applies WP default filter wp_kses_data
+			$description = get_user_meta( $profileuser->ID, $meta, true );
 
 			printf(
 				'<input type="hidden" class="biography" name="%s___%s" value="%s" />',
 				esc_attr( $lang->slug ),
 				esc_attr( $lang->name ),
-				esc_attr( $description )
+				sanitize_user_field( 'description', $description, $profileuser->ID, 'edit' )
 			);
 		}
 	}
