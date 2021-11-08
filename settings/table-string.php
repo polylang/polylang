@@ -211,7 +211,7 @@ class PLL_Table_String extends WP_List_Table {
 	}
 
 	/**
-	 * Sort registered string items.
+	 * Sorts registered string items.
 	 *
 	 * @since 0.6
 	 *
