@@ -26,6 +26,13 @@ class PLL_WPML_Config {
 	protected $xmls;
 
 	/**
+	 * The list xml files.
+	 *
+	 * @var string[]
+	 */
+	protected $files;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0
@@ -59,7 +66,6 @@ class PLL_WPML_Config {
 	 */
 	public function init() {
 		$this->xmls = array();
-		$files = $this->get_files();
 
 		if ( ! empty( $files ) ) {
 			add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
@@ -114,6 +120,11 @@ class PLL_WPML_Config {
 	 * @return array
 	 */
 	public function get_files() {
+
+		if ( ! empty( $this->files ) ) {
+			return $this->files;
+		}
+
 		$files = array();
 
 		// Plugins
@@ -141,6 +152,8 @@ class PLL_WPML_Config {
 		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) ) {
 			$files['Polylang'] = $file;
 		}
+
+		$this->files = $files;
 
 		return $files;
 	}
