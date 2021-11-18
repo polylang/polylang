@@ -67,6 +67,8 @@ class PLL_WPML_Config {
 	public function init() {
 		$this->xmls = array();
 
+		$files = $this->get_files();
+
 		if ( ! empty( $files ) ) {
 			add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
 
