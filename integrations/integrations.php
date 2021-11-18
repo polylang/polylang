@@ -35,7 +35,7 @@ class PLL_Integrations {
 	 *
 	 * @since 1.7
 	 *
-	 * @return object
+	 * @return PLL_Integrations
 	 */
 	public static function instance() {
 		if ( empty( self::$instance ) ) {
