@@ -2,7 +2,7 @@
 
 if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 	require_once DIR_TESTROOT . '/../duplicate-post/duplicate-post.php';
-	require_once DIR_TESTROOT . '/../duplicate-post/duplicate-post-admin.php';
+	require_once DIR_TESTROOT . '/../duplicate-post/admin-functions.php';
 
 	class Duplicate_Post_Test extends PLL_UnitTestCase {
 
