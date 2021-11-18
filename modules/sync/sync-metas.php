@@ -348,9 +348,6 @@ abstract class PLL_Sync_Metas {
 	public function copy( $from, $to, $lang, $sync = false ) {
 		$this->remove_all_meta_actions();
 
-		remove_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ), 10, 2 );
-		remove_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
-
 		$to_copy = $this->get_metas_to_copy( $from, $to, $lang, $sync );
 		$metas = get_metadata( $this->meta_type, $from );
 		$tr_metas = get_metadata( $this->meta_type, $to );
