@@ -66,7 +66,6 @@ class PLL_WPML_Config {
 	 */
 	public function init() {
 		$this->xmls = array();
-
 		$files = $this->get_files();
 
 		if ( ! empty( $files ) ) {
