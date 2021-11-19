@@ -26,7 +26,7 @@ class PLL_WPML_Config {
 	protected $xmls;
 
 	/**
-	 * The list xml files.
+	 * The list of xml files.
 	 *
 	 * @var string[]
 	 */
