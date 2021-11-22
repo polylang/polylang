@@ -313,8 +313,8 @@ abstract class PLL_Choose_Lang {
 		elseif ( ( count( $query->query ) == 1 || ( is_paged() && count( $query->query ) == 2 ) || ( isset( $query->query['s'] ) && ! $query->query['s'] ) ) && $lang = get_query_var( 'lang' ) ) {
 			$lang = $this->model->get_language( $lang );
 			$this->set_language( $lang ); // sets the language now otherwise it will be too late to filter sticky posts !
-			$query->is_home = true;
-			$query->is_archive = $query->is_tax = false;
+			$query->is_home = $query->is_404 = true;
+			$query->is_archive = $query->is_tax = $query->is_page = $query->is_singular = false;
 		}
 	}
 
