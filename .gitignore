@@ -8,3 +8,4 @@ js/build/
 *.min.js
 *.min.css
 composer.lock
+.phpunit.result.cache
