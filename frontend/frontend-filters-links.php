@@ -393,26 +393,30 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 
 		elseif ( is_category() || is_tag() || is_tax() ) {
+			$term = get_queried_object();
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
 				if ( $this->links_model->using_permalinks && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] ) ) ) {
 					// When we receive a plain permalink with a cat or tag query var, we need to redirect to the pretty permalink.
-					$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
 					if ( is_feed() ) {
-						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term_id, '' ) );
+						global $wp_version;
+						if ( version_compare( $wp_version, '5.9-alpha', '>=' ) ) {
+							$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term ) );
+						} else {
+							$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term->term_id, $term->taxonomy ) );
+						}
 					} else {
-						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
+						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term ) );
 					}
 					$language = $this->get_queried_term_language();
 				} else {
 					// We need to switch the language when there is no language provided in a pretty permalink.
-					$obj = get_queried_object();
-					if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
-						$language = $this->model->term->get_language( (int) $obj->term_id );
+					if ( ! empty( $term ) && $this->model->is_translated_taxonomy( $term->taxonomy ) ) {
+						$language = $this->model->term->get_language( (int) $term->term_id );
 					}
 				}
 			}
 
-			if ( is_feed() && empty( $obj ) ) {
+			if ( is_feed() && empty( $term ) ) {
 				// Allows to replace the language correctly in a category feed query.
 				$language = $this->get_queried_term_language();
 			}
