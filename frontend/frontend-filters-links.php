@@ -398,9 +398,11 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 				if ( $this->links_model->using_permalinks && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] ) ) ) {
 					// When we receive a plain permalink with a cat or tag query var, we need to redirect to the pretty permalink.
 					if ( is_feed() ) {
+						// Backward compatibility with WP < 5.9 due to change in how get_term_feed_link() works.
+						// @see https://github.com/WordPress/wordpress-develop/commit/a8485376d27b5b3348a68963f6fd38200b6e64cf
 						global $wp_version;
 						if ( version_compare( $wp_version, '5.9-alpha', '>=' ) ) {
-							$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term ) );
+							$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term ) ); // @phpstan-ignore-line
 						} else {
 							$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term->term_id, $term->taxonomy ) );
 						}
