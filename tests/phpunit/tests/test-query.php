@@ -364,6 +364,22 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/?s=test' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
+	/**
+	 * After https://core.trac.wordpress.org/ticket/11330 an empty search doesn't return the homepage anymore.
+	 */
+	function test_empty_search() {
+		$this->go_to( home_url( '/fr/?s=' ) );
+		$this->assertQueryTrue( 'is_search' );
+	}
+
+	/**
+	 * Issue #937.
+	 */
+	function test_invalid_search() {
+		$this->go_to( home_url( '/fr/random/?s=' ) );
+		$this->assertQueryTrue( 'is_404' );
+	}
+
 	function test_search_in_category() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
