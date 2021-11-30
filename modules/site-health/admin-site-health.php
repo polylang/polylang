@@ -317,7 +317,7 @@ class PLL_Admin_Site_Health {
 			$fields['wpml']['value'] = $wpml_files;
 		}
 
-		// Create the section
+		//Create the section
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
 				'label'  => sprintf( esc_html__( 'Polylang informations', 'polylang' ), POLYLANG ),
