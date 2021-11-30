@@ -320,7 +320,8 @@ class PLL_Admin_Site_Health {
 		// Create the section.
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
-				'label'  => sprintf( esc_html__( 'Polylang informations', 'polylang' ), POLYLANG ),
+				/* translators: placeholder is the plugin name */
+				'label'  => sprintf( esc_html__( '%s informations', 'polylang' ), POLYLANG ),
 				'fields' => $fields,
 			);
 		}
