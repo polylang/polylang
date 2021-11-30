@@ -169,13 +169,6 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
-		// does a wpml-config.xml exists ?
-		$wpml_files = PLL_WPML_Config::instance()->get_files();
-		if ( ! empty( $wpml_files ) ) {
-			$fields['wpml']['label'] = 'wpml-config.xml files';
-			$fields['wpml']['value'] = $wpml_files;
-		}
-
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
 			'label'  => sprintf( esc_html__( '%s Options', 'polylang' ), POLYLANG ),
@@ -302,6 +295,7 @@ class PLL_Admin_Site_Health {
 	public function info_warning( $debug_info ) {
 		$fields = array();
 
+		// add Post Types without languages
 		$posts_no_lang = $this->get_post_ids_without_lang();
 
 		if ( ! empty( $posts_no_lang ) ) {
@@ -316,6 +310,14 @@ class PLL_Admin_Site_Health {
 			$fields['term-no-lang']['value'] = $this->format_array( $terms_no_lang );
 		}
 
+		// add WPML files
+		$wpml_files = PLL_WPML_Config::instance()->get_files();
+		if ( ! empty( $wpml_files ) ) {
+			$fields['wpml']['label'] = 'wpml-config.xml files';
+			$fields['wpml']['value'] = $wpml_files;
+		}
+
+		// Create the section
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
 				'label'  => sprintf( esc_html__( 'Polylang informations', 'polylang' ), POLYLANG ),
