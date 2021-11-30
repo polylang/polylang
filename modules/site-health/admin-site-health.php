@@ -171,7 +171,7 @@ class PLL_Admin_Site_Health {
 
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
-			'label'  => sprintf( esc_html__( '%s Options', 'polylang' ), POLYLANG ),
+			'label'  => sprintf( esc_html__( '%s options', 'polylang' ), POLYLANG ),
 			'fields' => $fields,
 		);
 
