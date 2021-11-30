@@ -318,7 +318,7 @@ class PLL_Admin_Site_Health {
 
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
-				'label'  => sprintf( esc_html__( 'Polylang warnings', 'polylang' ), POLYLANG ),
+				'label'  => sprintf( esc_html__( 'Polylang informations', 'polylang' ), POLYLANG ),
 				'fields' => $fields,
 			);
 		}
