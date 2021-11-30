@@ -172,7 +172,7 @@ class PLL_Admin_Site_Health {
 		// does a wpml-config.xml exists ?
 		$wpml_files = PLL_WPML_Config::instance()->get_files();
 		if ( ! empty( $wpml_files ) ) {
-			$fields['wpml']['label'] = 'wpml-config.xml';
+			$fields['wpml']['label'] = 'wpml-config.xml files';
 			$fields['wpml']['value'] = $wpml_files;
 		}
 
