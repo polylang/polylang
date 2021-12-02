@@ -26,6 +26,13 @@ class PLL_WPML_Config {
 	protected $xmls;
 
 	/**
+	 * The list of xml files.
+	 *
+	 * @var string[]
+	 */
+	protected $files;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0
@@ -113,7 +120,12 @@ class PLL_WPML_Config {
 	 *
 	 * @return array
 	 */
-	protected function get_files() {
+	public function get_files() {
+
+		if ( ! empty( $this->files ) ) {
+			return $this->files;
+		}
+
 		$files = array();
 
 		// Plugins
@@ -141,6 +153,8 @@ class PLL_WPML_Config {
 		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) ) {
 			$files['Polylang'] = $file;
 		}
+
+		$this->files = $files;
 
 		return $files;
 	}

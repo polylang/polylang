@@ -43,7 +43,7 @@ class PLL_Admin_Site_Health {
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
-		add_filter( 'debug_information', array( $this, 'info_warning' ), 15 );
+		add_filter( 'debug_information', array( $this, 'info' ), 15 );
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
@@ -168,9 +168,10 @@ class PLL_Admin_Site_Health {
 				}
 			}
 		}
+
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
-			'label'  => sprintf( esc_html__( '%s Options', 'polylang' ), POLYLANG ),
+			'label'  => sprintf( esc_html__( '%s options', 'polylang' ), POLYLANG ),
 			'fields' => $fields,
 		);
 
@@ -291,9 +292,10 @@ class PLL_Admin_Site_Health {
 	 * @param array $debug_info The debug information to be added to the core information page.
 	 * @return array
 	 */
-	public function info_warning( $debug_info ) {
+	public function info( $debug_info ) {
 		$fields = array();
 
+		// Add Post Types without languages.
 		$posts_no_lang = $this->get_post_ids_without_lang();
 
 		if ( ! empty( $posts_no_lang ) ) {
@@ -308,9 +310,18 @@ class PLL_Admin_Site_Health {
 			$fields['term-no-lang']['value'] = $this->format_array( $terms_no_lang );
 		}
 
+		// Add WPML files.
+		$wpml_files = PLL_WPML_Config::instance()->get_files();
+		if ( ! empty( $wpml_files ) ) {
+			$fields['wpml']['label'] = 'wpml-config.xml files';
+			$fields['wpml']['value'] = $wpml_files;
+		}
+
+		// Create the section.
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
-				'label'  => sprintf( esc_html__( 'Polylang warnings', 'polylang' ), POLYLANG ),
+				/* translators: placeholder is the plugin name */
+				'label'  => sprintf( esc_html__( '%s informations', 'polylang' ), POLYLANG ),
 				'fields' => $fields,
 			);
 		}
