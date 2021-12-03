@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.5
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 3.1.2
+Stable tag: 3.1.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,14 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.1.3 (2021-12-14) =
+
+* Fix user description escaping #934
+* Fix dismissable notice when creating a term in WP 5.9 #936
+* Fix empty search not handled correctly. Props Dominik Schilling #937
+* Fix warning occurring when a 3rd party plugin attempts to register anything else than a string using the WPML API #942
+* Fix Yoast SEO columns not corectly drawn when quick editing a post #943
 
 = 3.1.2 (2021-10-11) =
 
