@@ -305,16 +305,13 @@ abstract class PLL_Choose_Lang {
 		if ( $lang = apply_filters( 'pll_set_language_from_query', false, $query ) ) {
 			$this->set_language( $lang );
 			$this->set_curlang_in_query( $query );
-		}
-
-		// sets is_home on translated home page when it displays posts
-		// is_home must be true on page 2, 3... too
-		// as well as when searching an empty string: http://wordpress.org/support/topic/plugin-polylang-polylang-breaks-search-in-spun-theme
-		elseif ( ( count( $query->query ) == 1 || ( is_paged() && count( $query->query ) == 2 ) || ( isset( $query->query['s'] ) && ! $query->query['s'] ) ) && $lang = get_query_var( 'lang' ) ) {
+		} elseif ( ( count( $query->query ) == 1 || ( is_paged() && count( $query->query ) == 2 ) ) && $lang = get_query_var( 'lang' ) ) {
+			// Set is_home on translated home page when it displays posts. It must be true on page 2, 3... too.
 			$lang = $this->model->get_language( $lang );
-			$this->set_language( $lang ); // sets the language now otherwise it will be too late to filter sticky posts !
+			$this->set_language( $lang ); // Set the language now otherwise it will be too late to filter sticky posts!
 			$query->is_home = true;
-			$query->is_archive = $query->is_tax = false;
+			$query->is_tax = false;
+			$query->is_archive = false;
 		}
 	}
 
