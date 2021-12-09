@@ -48,7 +48,7 @@ class PLL_WPSEO {
 			add_filter( 'pll_translate_post_meta', array( $this, 'translate_post_meta' ), 10, 3 );
 
 			// Yoast SEO adds the columns hooks only for the 'inline-save' action. We need them for 'pll_update_post_rows' too.
-			if ( filter_input( INPUT_POST, 'action' ) === 'pll_update_post_rows' ) {
+			if ( doing_ajax() && isset( $_POST['action'] ) && 'pll_update_post_rows' === $_POST['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				$GLOBALS['wpseo_meta_columns'] = new WPSEO_Meta_Columns();
 			}
 		}
