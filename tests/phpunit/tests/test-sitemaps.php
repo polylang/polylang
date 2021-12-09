@@ -5,11 +5,6 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		// Sitemaps were introduced in WP 5.5.
-		if ( ! function_exists( 'wp_get_sitemap_providers' ) ) {
-			self::markTestSkipped( 'These tests require WP 5.5+' );
-		}
-
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
