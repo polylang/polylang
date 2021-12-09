@@ -1,7 +1,7 @@
 <?php
 
 class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
-	static $editor;
+	protected static $editor;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -15,7 +15,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 		remove_all_actions( 'admin_init' ); // to save ( a lot of ) time as WP will attempt to update core and plugins
 
@@ -27,7 +27,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
 	}
 
-	function test_post_translations() {
+	public function test_post_translations() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -87,7 +87,7 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEquals( $en, (string) $xml->response[1]->row->supplemental->post_id );
 	}
 
-	function test_term_translations() {
+	public function test_term_translations() {
 		$en = $this->factory->category->create();
 		self::$model->term->set_language( $en, 'en' );
 

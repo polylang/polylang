@@ -2,7 +2,7 @@
 
 class License_Test extends PLL_UnitTestCase {
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$this->license = new PLL_License( 'polylang-pro/polylang.php', 'Polylang Pro', POLYLANG_VERSION, 'WP SYNTEX' );
@@ -27,7 +27,7 @@ class License_Test extends PLL_UnitTestCase {
 		);
 	}
 
-	function test_valid() {
+	public function test_valid() {
 		$this->license->license_data = (object) array(
 			'success' => 1,
 			'expires' => gmdate( 'Y-m-d H:i:s', strtotime( '+60 days' ) ),
@@ -36,7 +36,7 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'Your license key expires on' ) );
 	}
 
-	function test_expires_soon() {
+	public function test_expires_soon() {
 		$this->license->license_data = (object) array(
 			'success' => 1,
 			'expires' => gmdate( 'Y-m-d H:i:s', strtotime( '+14 days' ) ),
@@ -45,7 +45,7 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'Your license key will expire soon' ) );
 	}
 
-	function test_lifetime() {
+	public function test_lifetime() {
 		$this->license->license_data = (object) array(
 			'success' => 1,
 			'expires' => 'lifetime',
@@ -54,7 +54,7 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'The license key never expires' ) );
 	}
 
-	function test_expired_after_last_check() {
+	public function test_expired_after_last_check() {
 		$this->license->license_data = (object) array(
 			'success' => 1,
 			'expires' => gmdate( 'Y-m-d H:i:s', strtotime( '-1 days' ) ),
@@ -63,7 +63,7 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'Your license key expired on' ) );
 	}
 
-	function test_expired() {
+	public function test_expired() {
 		$this->license->license_data = (object) array(
 			'success' => false,
 			'error' => 'expired',
@@ -73,7 +73,7 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'Your license key expired on' ) );
 	}
 
-	function test_invalid_license() {
+	public function test_invalid_license() {
 		$this->license->license_data = (object) array(
 			'success' => false,
 			'error' => 'missing',
@@ -82,7 +82,7 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'Invalid license' ) );
 	}
 
-	function test_disabled_license() {
+	public function test_disabled_license() {
 		$this->license->license_data = (object) array(
 			'success' => false,
 			'error' => 'disabled',
@@ -92,7 +92,7 @@ class License_Test extends PLL_UnitTestCase {
 	}
 
 
-	function test_license_exists_but_wrong_product() {
+	public function test_license_exists_but_wrong_product() {
 		$this->license->license_data = (object) array(
 			'success' => false,
 			'error' => 'item_name_mismatch',
@@ -101,7 +101,7 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'This is not a Polylang Pro license key' ) );
 	}
 
-	function test_limit_reached() {
+	public function test_limit_reached() {
 		$this->license->license_data = (object) array(
 			'success' => false,
 			'error' => 'no_activations_left',
@@ -110,7 +110,7 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $this->license->get_form_field(), 'Your license key has reached its activation limit' ) );
 	}
 
-	function test_activate_license() {
+	public function test_activate_license() {
 		update_option( 'polylang_licenses', '' ); // Put wrong option for testing strenghness.
 
 		$this->license->activate_license( '00001111222233334444555566667777' );

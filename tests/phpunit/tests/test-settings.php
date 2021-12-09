@@ -12,15 +12,17 @@ class Settings_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		// Avoid http call
 		add_filter( 'pre_transient_available_translations', '__return_empty_array' );
 	}
 
-	// bug introduced and fixed in 1.9alpha
-	function test_edit_language() {
+	/**
+	 * Bug introduced and fixed in 1.9alpha.
+	 */
+	public function test_edit_language() {
 		$lang = self::$model->get_language( 'fr' );
 
 		// setup globals
@@ -61,7 +63,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
 	}
 
-	function test_notice_for_objects_with_no_lang() {
+	public function test_notice_for_objects_with_no_lang() {
 		$_GET['page'] = 'mlang';
 		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
 		set_current_screen();
@@ -99,8 +101,10 @@ class Settings_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $out );
 	}
 
-	// Bug introduced in 2.1-dev
-	function test_display_settings_errors() {
+	/**
+	 * Bug introduced in 2.1-dev.
+	 */
+	public function test_display_settings_errors() {
 		add_settings_error( 'test', 'test', 'ERROR' );
 		$links_model = self::$model->get_links_model();
 		$pll_env = new PLL_Settings( $links_model );

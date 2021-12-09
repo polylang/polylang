@@ -16,7 +16,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function init( $sitemap_class = 'PLL_Sitemaps' ) {
+	protected function init( $sitemap_class = 'PLL_Sitemaps' ) {
 		global $wp_rewrite, $wp_sitemaps;
 
 		// Initialize sitemaps.
@@ -53,14 +53,14 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->pll_env->filters_links->cache->method( 'get' )->willReturn( false );
 	}
 
-	function tear_down() {
+	public function tear_down() {
 		parent::tear_down();
 
 		_unregister_post_type( 'cpt' );
 		_unregister_taxonomy( 'tax' );
 	}
 
-	function test_sitemap_providers() {
+	public function test_sitemap_providers() {
 		$this->init();
 
 		$providers = wp_get_sitemap_providers();
@@ -69,8 +69,10 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	// The page sitemaps always include the homepages.
-	function test_sitemaps_page() {
+	/**
+	 * The page sitemaps always include the homepages.
+	 */
+	public function test_sitemaps_page() {
 		$this->init();
 
 		$providers = wp_get_sitemap_providers();
@@ -82,7 +84,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 	}
 
-	function test_sitemaps_posts() {
+	public function test_sitemaps_posts() {
 		$this->init();
 
 		$en = self::factory()->post->create( array( 'post_author' => 1 ) );
@@ -114,7 +116,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_sitemap_entries(), 'loc' ) );
 	}
 
-	function test_sitemaps_untranslated_cpt_and_tax() {
+	public function test_sitemaps_untranslated_cpt_and_tax() {
 		$this->init();
 
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
@@ -136,7 +138,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_sitemap_entries(), 'loc' ) );
 	}
 
-	function test_home_urls() {
+	public function test_home_urls() {
 		self::$model->options['hide_default'] = 1;
 		$this->init();
 
@@ -161,7 +163,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['wp_actions']['template_redirect'] );
 	}
 
-	function test_url_list_posts() {
+	public function test_url_list_posts() {
 		self::$model->options['hide_default'] = 1;
 		$this->init();
 		$this->pll_env->terms = new PLL_CRUD_Terms( $this->pll_env );
@@ -218,7 +220,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['taxonomies']->get_url_list( 1, 'post_tag' ), 'loc' ) );
 	}
 
-	function test_subdomains() {
+	public function test_subdomains() {
 		self::$model->options['force_lang'] = 2;
 		$this->init( 'PLL_Sitemaps_Domain' );
 
@@ -233,7 +235,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( $expected, wp_list_pluck( $providers['posts']->get_sitemap_entries(), 'loc' ) );
 	}
 
-	function test_subdomains_home_url() {
+	public function test_subdomains_home_url() {
 		self::$model->options['force_lang'] = 2;
 		$this->init( 'PLL_Sitemaps_Domain' );
 
@@ -255,7 +257,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['wp_actions']['template_redirect'] );
 	}
 
-	function test_domains() {
+	public function test_domains() {
 		self::$model->options['force_lang'] = 3;
 		self::$model->options['domains'] = array(
 			'en' => 'http://example.org',

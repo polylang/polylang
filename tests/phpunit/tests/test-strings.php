@@ -14,14 +14,16 @@ class Strings_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$this->links_model = self::$model->get_links_model();
 	}
 
-	// copied from WP widgets tests
-	function clean_up_global_scope() {
+	/**
+	 * Copied from WP widgets tests.
+	 */
+	public function clean_up_global_scope() {
 		global $_wp_sidebars_widgets, $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
 
 		$_wp_sidebars_widgets = array();
@@ -34,7 +36,7 @@ class Strings_Test extends PLL_UnitTestCase {
 		parent::clean_up_global_scope();
 	}
 
-	function add_widget_search() {
+	protected function add_widget_search() {
 		update_option(
 			'widget_search',
 			array(
@@ -52,11 +54,11 @@ class Strings_Test extends PLL_UnitTestCase {
 		);
 	}
 
-	function _return_fr_FR() {
+	public function _return_fr_FR() {
 		return array( 'fr_FR' );
 	}
 
-	function test_base_strings() {
+	public function test_base_strings() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$pll_admin->init();
 		$strings = PLL_Admin_Strings::get_strings();
@@ -64,8 +66,10 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertCount( 4, array_intersect( array( 'blogname', 'blogdescription', 'date_format', 'time_format' ), $names ) );
 	}
 
-	// FIXME: order of nest two tests matters due to static protected strings in PLL_Admin_Strings
-	function test_widget_title_filtered_by_language() {
+	/**
+	 * /!\ The order of nest two tests matters due to static protected strings in PLL_Admin_Strings.
+	 */
+	public function test_widget_title_filtered_by_language() {
 		global $wp_registered_widgets;
 
 		$this->add_widget_search();
@@ -95,7 +99,7 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertNotContains( 'My Title', $strings );
 	}
 
-	function test_widget_title_in_all_languages() {
+	public function test_widget_title_in_all_languages() {
 		global $wp_registered_widgets;
 
 		$this->add_widget_search();
@@ -126,9 +130,11 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertContains( 'My Title', $strings );
 	}
 
-	// Bug fixed in 2.1
-	// Test #63
-	function test_html_string() {
+	/**
+	 * Bug fixed in 2.1.
+	 * Issue #63.
+	 */
+	public function test_html_string() {
 		update_option( 'use_balanceTags', 1 ); // To break malformed html in versions < 2.1
 		$language = self::$model->get_language( 'fr' );
 		$_mo = new PLL_MO();
@@ -148,9 +154,11 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '<p>malformed fr<p>', pll__( '<p>malformed<p>' ) );
 	}
 
-	// Bug introduced in 2.1 and fixed in 2.1.1
-	// Test #94
-	function test_slashed_string() {
+	/**
+	 * Bug introduced in 2.1 and fixed in 2.1.1.
+	 * Issue #94.
+	 */
+	public function test_slashed_string() {
 		$language = self::$model->get_language( 'fr' );
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( '\slashed', '\slashed fr' ) );
@@ -171,7 +179,7 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '\\\slashed fr', pll__( '\\\slashed' ) );
 	}
 
-	function test_switch_to_locale() {
+	public function test_switch_to_locale() {
 		// Strings translations
 		$mo = new PLL_MO();
 		$mo->add_entry( $mo->make_entry( 'test', 'test en' ) );

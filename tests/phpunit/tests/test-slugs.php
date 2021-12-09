@@ -12,7 +12,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function test_term_slugs() {
+	public function test_term_slugs() {
 		$links_model = self::$model->get_links_model();
 		$pll_admin = new PLL_Admin( $links_model );
 		new PLL_Admin_Filters_Term( $pll_admin ); // activate our filters

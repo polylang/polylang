@@ -14,7 +14,7 @@ class Model_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	function test_languages_list() {
+	public function test_languages_list() {
 		self::$model->post->register_taxonomy(); // needed otherwise posts are not counted
 
 		$this->assertEquals( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
@@ -27,7 +27,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
 	}
 
-	function test_term_exists() {
+	public function test_term_exists() {
 		$parent = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$model->term->set_language( $parent, 'en' );
 		$child = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'child', 'parent' => $parent ) );
@@ -44,13 +44,13 @@ class Model_Test extends PLL_UnitTestCase {
 	/**
 	 * Bug fixed in 2.7
 	 */
-	function test_term_exists_with_special_character() {
+	public function test_term_exists_with_special_character() {
 		$term = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'Cook & eat' ) );
 		self::$model->term->set_language( $term, 'en' );
 		$this->assertEquals( $term, self::$model->term_exists( 'Cook & eat', 'category', 0, 'en' ) );
 	}
 
-	function test_count_posts() {
+	public function test_count_posts() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -84,7 +84,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 2, self::$model->count_posts( $language, array( 'post_type' => array( 'post', 'page' ) ) ) );
 	}
 
-	function test_translated_post_types() {
+	public function test_translated_post_types() {
 		// deactivate the cache
 		self::$model->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		self::$model->cache->method( 'get' )->willReturn( false );
@@ -102,7 +102,7 @@ class Model_Test extends PLL_UnitTestCase {
 		self::$model->cache = new PLL_Cache();
 	}
 
-	function test_translated_taxonomies() {
+	public function test_translated_taxonomies() {
 		$this->assertTrue( self::$model->is_translated_taxonomy( 'category' ) );
 		$this->assertTrue( self::$model->is_translated_taxonomy( 'post_tag' ) );
 		$this->assertFalse( self::$model->is_translated_taxonomy( 'post_format' ) );
@@ -110,7 +110,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertFalse( self::$model->is_translated_taxonomy( 'language' ) );
 	}
 
-	function test_filtered_taxonomies() {
+	public function test_filtered_taxonomies() {
 		$this->assertTrue( self::$model->is_filtered_taxonomy( 'post_format' ) );
 		$this->assertFalse( self::$model->is_filtered_taxonomy( 'category' ) );
 		$this->assertFalse( self::$model->is_filtered_taxonomy( 'post_tag' ) );
@@ -118,7 +118,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertFalse( self::$model->is_filtered_taxonomy( 'language' ) );
 	}
 
-	function test_is_translated_post_type() {
+	public function test_is_translated_post_type() {
 		self::$model->options['post_types'] = array(
 			'trcpt' => 'trcpt',
 		);
@@ -143,7 +143,7 @@ class Model_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	function test_is_translated_taxonomy() {
+	public function test_is_translated_taxonomy() {
 		self::$model->options['taxonomies'] = array(
 			'trtax' => 'trtax',
 		);
@@ -167,7 +167,7 @@ class Model_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	function test_is_filtered_taxonomy() {
+	public function test_is_filtered_taxonomy() {
 		$this->assertTrue( self::$model->is_filtered_taxonomy( array( 'post_format' ) ) );
 		$this->assertFalse( self::$model->is_filtered_taxonomy( array( 'category' ) ) );
 		$this->assertTrue( self::$model->is_filtered_taxonomy( array( 'post_format', 'category' ) ) );

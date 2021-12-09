@@ -12,7 +12,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$this->links_model = self::$model->get_links_model();
@@ -31,7 +31,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 	/**
 	 * Copied from WP widgets tests
 	 */
-	function clean_up_global_scope() {
+	public function clean_up_global_scope() {
 		global $_wp_sidebars_widgets, $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
 
 		$_wp_sidebars_widgets = array();
@@ -44,7 +44,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		parent::clean_up_global_scope();
 	}
 
-	function test_form() {
+	public function test_form() {
 		global $wp_registered_widgets;
 
 		set_current_screen( 'widgets' );
@@ -60,7 +60,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $form, 'widget-search-2-pll_lang' ) );
 	}
 
-	function update_lang_choice( $widget, $lang ) {
+	protected function update_lang_choice( $widget, $lang ) {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		new PLL_Admin_Filters_Widgets_Options( $pll_admin );
 
@@ -76,7 +76,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$widget->update_callback();
 	}
 
-	function test_display_with_filter() {
+	public function test_display_with_filter() {
 		global $wp_registered_widgets;
 
 		wp_widgets_init();
@@ -98,7 +98,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( ob_get_clean() );
 	}
 
-	function test_display_with_no_filter() {
+	public function test_display_with_no_filter() {
 		global $wp_registered_widgets;
 
 		wp_widgets_init();
@@ -121,7 +121,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 	}
 
 
-	function test_widget_media_image() {
+	public function test_widget_media_image() {
 		self::$model->options['media_support'] = 1;
 		$pll_admin = new PLL_Admin( $this->links_model );
 
@@ -185,7 +185,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	function test_wp_get_sidebars_widgets() {
+	public function test_wp_get_sidebars_widgets() {
 		global $wp_registered_widgets;
 
 		update_option(
@@ -215,7 +215,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$this->assertFalse( in_array( 'search-2', $sidebars['sidebar-1'] ) );
 	}
 
-	function test_widgets_language_filter_is_not_displayed_for_page_builders() {
+	public function test_widgets_language_filter_is_not_displayed_for_page_builders() {
 		set_current_screen( 'post' );
 		$options = PLL_Install::get_default_options();
 		$model = new PLL_Admin_Model( $options );

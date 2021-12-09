@@ -2,7 +2,7 @@
 
 class OLT_Manager_Test extends PLL_UnitTestCase {
 
-	function test_polylang_first() {
+	public function test_polylang_first() {
 		$plugins = array(
 			'jetpack/jetpack.php',
 			POLYLANG_BASENAME,

@@ -19,8 +19,6 @@ class Wp_Screen_Mock {
 
 	/**
 	 * Wp_Screen_Mock constructor.
-	 *
-	 * @throws ReflectionException
 	 */
 	public function __construct() {
 		$this->screen = new ReflectionClass( WP_Screen::class );

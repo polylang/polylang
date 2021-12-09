@@ -21,7 +21,7 @@ if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 			PLL_Integrations::instance()->duplicate_post->init();
 		}
 
-		function test_exclude_post_translations() {
+		public function test_exclude_post_translations() {
 			$en = $this->factory->post->create();
 			self::$model->post->set_language( $en, 'en' );
 

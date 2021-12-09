@@ -16,7 +16,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$this->links_model = self::$model->get_links_model();
@@ -24,7 +24,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		PLL_WPML_Compat::instance()->api = new PLL_WPML_API(); // Loads the WPML API
 	}
 
-	function tear_down() {
+	public function tear_down() {
 		parent::tear_down();
 
 		// Cleaning the previous registered strings translations that were added
@@ -40,7 +40,7 @@ class WPML_Test extends PLL_UnitTestCase {
 	 *
 	 * @see https://wordpress.org/support/topic/after-update-apeared-warnings
 	 */
-	function test_acf() {
+	public function test_acf() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -52,7 +52,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		_unregister_post_type( 'acf' );
 	}
 
-	function test_wpml_active_languages() {
+	public function test_wpml_active_languages() {
 		self::$model->post->register_taxonomy(); // Needed otherwise posts are not counted
 
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
@@ -99,7 +99,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEqualSetsWithIndex( array( 'fr', 'en', 'de' ), array_keys( $languages ) );
 	}
 
-	function test_wpml_current_language() {
+	public function test_wpml_current_language() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -110,7 +110,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', apply_filters( 'wpml_current_language', null ) );
 	}
 
-	function test_wpml_default_language() {
+	public function test_wpml_default_language() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -120,7 +120,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', wpml_get_default_language() ); // Legacy
 	}
 
-	function test_wpml_add_language_form_field() {
+	public function test_wpml_add_language_form_field() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -131,7 +131,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '<input type="hidden" name="lang" value="fr" />', ob_get_clean() );
 	}
 
-	function test_wpml_post_language_details() {
+	public function test_wpml_post_language_details() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -155,7 +155,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertFalse( $lang['different_language'] );
 	}
 
-	function test_wpml_language_code() {
+	public function test_wpml_language_code() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -170,7 +170,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', apply_filters( 'wpml_element_language_code', null, array( 'element_id' => $id, 'element_type' => 'category' ) ) );
 	}
 
-	function test_wpml_home_url() {
+	public function test_wpml_home_url() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 		$frontend->links = new PLL_Frontend_Links( $frontend );
@@ -180,7 +180,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'http://example.org/?lang=fr', icl_get_home_url() ); // Legacy
 	}
 
-	function test_wpml_element_link() {
+	public function test_wpml_element_link() {
 		global $wp_rewrite;
 
 		// Switch to pretty permalinks
@@ -253,7 +253,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '<a href="http://example.org/fr/test-fr/">test fr</a>', ob_get_clean() );
 	}
 
-	function test_wpml_object_id() {
+	public function test_wpml_object_id() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -278,7 +278,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $cat, apply_filters( 'wpml_object_id', $cat, 'category', true ) );
 	}
 
-	function test_wpml_object_id_nav_menu() {
+	public function test_wpml_object_id_nav_menu() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$GLOBALS['polylang'] = $pll_admin;
 
@@ -318,7 +318,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $menu_fr, apply_filters( 'wpml_object_id', $menu_fr, 'nav_menu' ) );
 	}
 
-	function test_wpml_element_has_translations() {
+	public function test_wpml_element_has_translations() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
@@ -353,7 +353,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertFalse( apply_filters( 'wpml_element_has_translations', null, $id, 'category' ) );
 	}
 
-	function test_strings_translations() {
+	public function test_strings_translations() {
 		add_action( 'pll_get_strings', array( PLL_WPML_Compat::instance(), 'get_strings' ) ); // Add filter as it is removed at the end of fisrt test (singleton!)
 
 		// Register
@@ -390,7 +390,7 @@ class WPML_Test extends PLL_UnitTestCase {
 	/**
 	 * Bug fixed in version 2.2
 	 */
-	function test_wpml_permalink() {
+	public function test_wpml_permalink() {
 		global $wp_rewrite;
 
 		// Switch to pretty permalinks

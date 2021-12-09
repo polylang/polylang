@@ -15,7 +15,7 @@ if ( version_compare( $GLOBALS['wp_version'], '5.6', '>=' ) && file_exists( DIR_
 			self::create_language( 'fr_FR' );
 		}
 
-		function set_up() {
+		public function set_up() {
 			parent::set_up();
 
 			require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
@@ -27,7 +27,7 @@ if ( version_compare( $GLOBALS['wp_version'], '5.6', '>=' ) && file_exists( DIR_
 			$GLOBALS['polylang'] = &$this->frontend; // we still use the global $polylang
 		}
 
-		function test_opengraph() {
+		public function test_opengraph() {
 			// create posts to get something  on home page
 			$en = $this->factory->post->create();
 			self::$model->post->set_language( $en, 'en' );

@@ -2,7 +2,7 @@
 
 class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		global $wp_rewrite;
@@ -23,7 +23,7 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 	}
 
-	function test_wrong_get_language_from_url() {
+	public function test_wrong_get_language_from_url() {
 		$_SERVER['HTTP_HOST'] = 'de.example.fr';
 		$this->assertEmpty( $this->links_model->get_language_from_url() );
 
@@ -31,7 +31,7 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEmpty( $this->links_model->get_language_from_url() );
 	}
 
-	function test_login_url() {
+	public function test_login_url() {
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['en'], PHP_URL_HOST );
 		$this->assertEquals( $this->hosts['en'] . '/wp-login.php', wp_login_url() );
 
@@ -39,8 +39,10 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEquals( $this->hosts['fr'] . '/wp-login.php', wp_login_url() );
 	}
 
-	// Bug fixed in version 2.1.2
-	function test_second_level_domain() {
+	/**
+	 * Bug fixed in version 2.1.2.
+	 */
+	public function test_second_level_domain() {
 		self::$model->options['domains']['fr'] = 'http://example.org.fr';
 		$this->links_model = self::$model->get_links_model();
 
@@ -55,8 +57,10 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEquals( 'http://example.org/test/', $this->links_model->remove_language_from_link( $url, self::$model->get_language( 'fr' ) ) );
 	}
 
-	// Bug fixed in 2.3.5
-	function test_redirect_www() {
+	/**
+	 * Bug fixed in 2.3.5.
+	 */
+	public function test_redirect_www() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$filters_links = new PLL_Frontend_Filters_Links( $frontend );
 
@@ -72,7 +76,7 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEquals( 'http://www.example.fr/test/', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
 	}
 
-	function test_permalink_and_shortlink() {
+	public function test_permalink_and_shortlink() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$filters_links = new PLL_Frontend_Filters_Links( $frontend );
 

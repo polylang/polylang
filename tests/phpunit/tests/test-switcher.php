@@ -18,7 +18,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		self::$model->post->register_taxonomy(); // Needed for post counting
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
@@ -32,7 +32,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->switcher = new PLL_Switcher();
 	}
 
-	function test_the_languages_raw() {
+	public function test_the_languages_raw() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -94,7 +94,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 	/**
 	 *  Very basic tests for the switcher as list
 	 */
-	function test_list() {
+	public function test_list() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -157,7 +157,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 	/**
 	 * Very basic tests for the switcher as dropdown
 	 */
-	function test_dropdown() {
+	public function test_dropdown() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -187,7 +187,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $xpath->query( '//script' )->length );
 	}
 
-	function test_with_hide_if_no_translation_option_in_admin_context() {
+	public function test_with_hide_if_no_translation_option_in_admin_context() {
 		$links_model = self::$model->get_links_model();
 		$this->admin = new PLL_Admin( $links_model );
 		$this->admin->init();

@@ -12,7 +12,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function update_language( $lang, $args ) {
+	protected function update_language( $lang, $args ) {
 		foreach ( array( 'name', 'slug', 'locale', 'term_group' ) as $key ) {
 			$defaults[ $key ] = $lang->$key;
 		}
@@ -23,7 +23,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		self::$model->update_language( $args );
 	}
 
-	function test_change_language_slug() {
+	public function test_change_language_slug() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -44,7 +44,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		// FIXME test widgets, menu locations and domains
 	}
 
-	function test_get_objects_with_no_lang() {
+	public function test_get_objects_with_no_lang() {
 		register_post_type( 'cpt' ); // add untranslated custom post type
 		register_taxonomy( 'tax', 'cpt' ); // add untranslated taxonomy
 
@@ -88,7 +88,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		_unregister_taxonomy( 'tax' );
 	}
 
-	function test_set_language_in_mass_for_posts() {
+	public function test_set_language_in_mass_for_posts() {
 		foreach ( $this->factory->post->create_many( 2, array() ) as $p ) {
 			self::$model->post->set_language( $p, 'en' );
 		}
@@ -106,7 +106,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_terms( 'post_translations' ) ); // no translation group for posts
 	}
 
-	function test_set_language_in_mass_for_terms() {
+	public function test_set_language_in_mass_for_terms() {
 		foreach ( $this->factory->tag->create_many( 2 ) as $t ) {
 			self::$model->term->set_language( $t, 'en' );
 		}

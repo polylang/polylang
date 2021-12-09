@@ -94,10 +94,6 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="PSR2.Classes.PropertyDeclaration.ScopeMissing" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
 	<rule ref="Squiz.Commenting.ClassComment.Missing" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
@@ -106,15 +102,7 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.FunctionComment.EmptyThrows" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
 	<rule ref="Squiz.Commenting.FunctionComment.Missing" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
-	<rule ref="Squiz.Commenting.FunctionComment.WrongStyle" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
@@ -122,19 +110,7 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.VariableComment.WrongStyle" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
 	<rule ref="Squiz.PHP.CommentedOutCode.Found" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
-	<rule ref="Squiz.Scope.MemberVarScope.Missing" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
-	<rule ref="Squiz.Scope.MethodScope" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
@@ -154,7 +130,7 @@
 	<rule ref="Generic.WhiteSpace.ScopeIndent">
 		<exclude-pattern>*/*.js</exclude-pattern>
 	</rule>
-	
+
 	<exclude-pattern>js/*.min.js</exclude-pattern>
 	<exclude-pattern>js/build</exclude-pattern>
 	<exclude-pattern>node_modules/*</exclude-pattern>

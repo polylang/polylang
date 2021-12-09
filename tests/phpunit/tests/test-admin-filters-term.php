@@ -1,7 +1,7 @@
 <?php
 
 class Admin_Filters_Term_Test extends PLL_UnitTestCase {
-	static $editor;
+	protected static $editor;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -17,7 +17,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests
@@ -29,7 +29,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
 	}
 
-	function test_default_language() {
+	public function test_default_language() {
 		// User preferred language
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
 		$term_id = $this->factory->category->create();
@@ -42,7 +42,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'de', self::$model->term->get_language( $term_id )->slug );
 	}
 
-	function test_save_term_from_edit_tags() {
+	public function test_save_term_from_edit_tags() {
 		$_REQUEST = $_POST = array(
 			'action'           => 'add-tag',
 			'term_lang_choice' => 'en',
@@ -64,7 +64,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( compact( 'en', 'fr' ), self::$model->term->get_translations( $en ) );
 	}
 
-	function test_create_term_from_categories_metabox() {
+	public function test_create_term_from_categories_metabox() {
 		$_REQUEST = $_POST = array(
 			'action'                   => 'add-category',
 			'term_lang_choice'         => 'fr',
@@ -75,7 +75,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', self::$model->term->get_language( $fr )->slug );
 	}
 
-	function test_save_term_from_quick_edit() {
+	public function test_save_term_from_quick_edit() {
 		$term_id = $en = $this->factory->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
@@ -113,7 +113,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( 'de' => $term_id ), self::$model->term->get_translations( $term_id ) );
 	}
 
-	function test_create_term_from_post_bulk_edit() {
+	public function test_create_term_from_post_bulk_edit() {
 		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin ); // We need this too
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
 
@@ -175,7 +175,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( $new_fr, $test_fr, $third ), $tags );
 	}
 
-	function test_delete_term() {
+	public function test_delete_term() {
 		$en = $this->factory->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
@@ -196,7 +196,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 2, $group->count ); // Count updated
 	}
 
-	function get_edit_term_form( $tag_ID, $taxonomy ) {
+	protected function get_edit_term_form( $tag_ID, $taxonomy ) {
 		// Prepare all needed info before loading the entire form
 		$GLOBALS['post_type'] = 'post';
 		$tax = get_taxonomy( $taxonomy );
@@ -214,7 +214,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		return ob_get_clean();
 	}
 
-	function test_parent_dropdown_in_edit_tags() {
+	public function test_parent_dropdown_in_edit_tags() {
 		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
@@ -246,7 +246,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $form, 'essai' ) );
 	}
 
-	function test_language_dropdown_and_translations_in_edit_tags() {
+	public function test_language_dropdown_and_translations_in_edit_tags() {
 		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
@@ -276,7 +276,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) ); // No translation in German
 	}
 
-	function get_parent_dropdown_in_new_term_form( $taxonomy ) {
+	protected function get_parent_dropdown_in_new_term_form( $taxonomy ) {
 		// NB: impossible to load edit-tags.php entirely as it would attempt to load a second instance of WP
 		// which is impossible due to constant definitions such as ABSPATH
 
@@ -300,7 +300,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		return ob_get_clean();
 	}
 
-	function test_parent_dropdown_in_new_tag() {
+	public function test_parent_dropdown_in_new_tag() {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
 		$_GET['taxonomy'] = 'category';
 
@@ -338,7 +338,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $dropdown, '<option class="level-0" value="' . $fr . '" selected="selected">essai</option>' ) );
 	}
 
-	function test_language_dropdown_and_translations_in_new_tags() {
+	public function test_language_dropdown_and_translations_in_new_tags() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
@@ -390,7 +390,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '', $input->item( 0 )->getAttribute( 'value' ) ); // No translation in German
 	}
 
-	function test_post_categories_meta_box() {
+	public function test_post_categories_meta_box() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -413,7 +413,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $out, 'essai' ) );
 	}
 
-	function test_nav_menu_item_taxonomy_meta_box() {
+	public function test_nav_menu_item_taxonomy_meta_box() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -443,7 +443,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $out, 'essai' ) );
 	}
 
-	function test_get_terms_language_filter() {
+	public function test_get_terms_language_filter() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -466,7 +466,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( $en, $fr ), $terms );
 	}
 
-	function test_create_terms_with_same_name() {
+	public function test_create_terms_with_same_name() {
 		$_REQUEST = $_POST = array(
 			'action'           => 'add-tag',
 			'term_lang_choice' => 'en',

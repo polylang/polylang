@@ -4,7 +4,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 
 	class WP_Importer_Test extends PLL_UnitTestCase {
 
-		function set_up() {
+		public function set_up() {
 			parent::set_up();
 
 			require_once POLYLANG_DIR . '/include/api.php';
@@ -34,14 +34,22 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 			$GLOBALS['polylang'] = &$pll_admin;
 		}
 
-		function tear_down() {
+		public function tear_down() {
 			unset( $GLOBALS['polylang'] );
 			self::delete_all_languages();
 
 			parent::tear_down();
 		}
 
-		// mostly copied from WP_Import_UnitTestCase
+		/**
+		 * Import a WXR file.
+		 *
+		 * Mostly copied from WP_Import_UnitTestCase.
+		 *
+		 * @param string $filename    Full path of the file to import.
+		 * @param array  $users       User import settings.
+		 * @param bool   $fetch_files Whether or not do download remote attachments.
+		 */
 		protected function _import_wp( $filename, $users = array(), $fetch_files = true ) {
 			$importer = new PLL_WP_Import(); // Change to our importer
 			$file = realpath( $filename );
@@ -75,7 +83,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 			$_POST = array();
 		}
 
-		function test_simple_import() {
+		public function test_simple_import() {
 			$this->_import_wp( dirname( __FILE__ ) . '/../../data/test-import.xml' );
 
 			// languages

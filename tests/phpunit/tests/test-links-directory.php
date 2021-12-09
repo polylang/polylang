@@ -15,7 +15,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		global $wp_rewrite;
@@ -30,7 +30,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->links_model->init();
 	}
 
-	function _test_add_language_to_link() {
+	protected function _test_add_language_to_link() {
 		$url = $this->root . '/test/';
 
 		self::$model->options['rewrite'] = 1;
@@ -42,7 +42,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $this->root . '/language/fr/test/', $this->links_model->add_language_to_link( $url, self::$model->get_language( 'fr' ) ) );
 	}
 
-	function _test_double_add_language_to_link() {
+	protected function _test_double_add_language_to_link() {
 		self::$model->options['rewrite'] = 1;
 		$this->assertEquals( $this->root . '/fr/test/', $this->links_model->add_language_to_link( $this->root . '/fr/test/', self::$model->get_language( 'fr' ) ) );
 
@@ -50,7 +50,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $this->root . '/language/fr/test/', $this->links_model->add_language_to_link( $this->root . '/language/fr/test/', self::$model->get_language( 'fr' ) ) );
 	}
 
-	function _test_remove_language_from_link() {
+	protected function _test_remove_language_from_link() {
 		self::$model->options['rewrite'] = 1;
 		$this->assertEquals( $this->root . '/en/test/', $this->links_model->remove_language_from_link( $this->root . '/en/test/' ) );
 		$this->assertEquals( $this->root . '/test/', $this->links_model->remove_language_from_link( $this->root . '/fr/test/' ) );
@@ -60,26 +60,26 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $this->root . '/test/', $this->links_model->remove_language_from_link( $this->root . '/language/fr/test/' ) );
 	}
 
-	function _test_switch_language_in_link() {
+	protected function _test_switch_language_in_link() {
 		self::$model->options['rewrite'] = 1;
 		$this->assertEquals( $this->root . '/test/', $this->links_model->switch_language_in_link( $this->root . '/fr/test/', self::$model->get_language( 'en' ) ) );
 		$this->assertEquals( $this->root . '/de/test/', $this->links_model->switch_language_in_link( $this->root . '/fr/test/', self::$model->get_language( 'de' ) ) );
 		$this->assertEquals( $this->root . '/fr/test/', $this->links_model->switch_language_in_link( $this->root . '/test/', self::$model->get_language( 'fr' ) ) );
 	}
 
-	function _test_add_paged_to_link() {
+	protected function _test_add_paged_to_link() {
 		self::$model->options['rewrite'] = 1;
 		$this->assertEquals( $this->root . '/test/page/2/', $this->links_model->add_paged_to_link( $this->root . '/test/', 2 ) );
 		$this->assertEquals( $this->root . '/fr/test/page/2/', $this->links_model->add_paged_to_link( $this->root . '/fr/test/', 2 ) );
 	}
 
-	function _test_remove_paged_from_link() {
+	protected function _test_remove_paged_from_link() {
 		self::$model->options['rewrite'] = 1;
 		$this->assertEquals( $this->root . '/test/', $this->links_model->remove_paged_from_link( $this->root . '/test/page/2/' ) );
 		$this->assertEquals( $this->root . '/fr/test/', $this->links_model->remove_paged_from_link( $this->root . '/fr/test/page/2/' ) );
 	}
 
-	function test_link_filters_with_absolute_links() {
+	public function test_link_filters_with_absolute_links() {
 		$this->root = $this->host;
 		$this->_test_add_language_to_link();
 		$this->_test_double_add_language_to_link();
@@ -87,10 +87,9 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->_test_switch_language_in_link();
 		$this->_test_add_paged_to_link();
 		$this->_test_remove_paged_from_link();
-
 	}
 
-	function test_link_filters_with_relative_links() {
+	public function test_link_filters_with_relative_links() {
 		$this->root = '';
 		$this->_test_add_language_to_link();
 		$this->_test_double_add_language_to_link();
@@ -98,11 +97,12 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->_test_switch_language_in_link();
 		$this->_test_add_paged_to_link();
 		$this->_test_remove_paged_from_link();
-
 	}
 
-	// Bug fixed in 2.6
-	function test_link_filters_mixing_ssl() {
+	/**
+	 * Bug fixed in 2.6.
+	 */
+	public function test_link_filters_mixing_ssl() {
 		$this->root = 'https://example.org'; // $this->links_model->home uses http
 		$this->_test_add_language_to_link();
 		$this->_test_double_add_language_to_link();
@@ -110,10 +110,9 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->_test_switch_language_in_link();
 		$this->_test_add_paged_to_link();
 		$this->_test_remove_paged_from_link();
-
 	}
 
-	function test_link_filters_with_home_in_subdirectory() {
+	public function test_link_filters_with_home_in_subdirectory() {
 		$this->root = 'http://example.org/polylang-pro';
 		$this->links_model->home = $this->root;
 		$this->_test_add_language_to_link();
@@ -124,7 +123,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->_test_remove_paged_from_link();
 	}
 
-	function test_get_language_from_url() {
+	public function test_get_language_from_url() {
 		$server = $_SERVER;
 
 		$this->assertEquals( 'fr', $this->links_model->get_language_from_url( home_url( '/fr' ) ) );
@@ -146,7 +145,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$_SERVER = $server;
 	}
 
-	function test_home_url() {
+	public function test_home_url() {
 		$this->assertEquals( $this->host . '/', $this->links_model->home_url( self::$model->get_language( 'en' ) ) );
 		$this->assertEquals( $this->host . '/fr/', $this->links_model->home_url( self::$model->get_language( 'fr' ) ) );
 
@@ -155,8 +154,10 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $this->host . '/language/fr/', $this->links_model->home_url( self::$model->get_language( 'fr' ) ) );
 	}
 
-	// Issue fixed in version 2.1.2
-	function test_get_language_from_url_with_wrong_ssl() {
+	/**
+	 * Issue fixed in version 2.1.2.
+	 */
+	public function test_get_language_from_url_with_wrong_ssl() {
 		$server = $_SERVER;
 
 		$_SERVER['REQUEST_URI'] = '/fr/test/';

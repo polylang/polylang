@@ -13,52 +13,52 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		self::create_language( 'ar' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
-	function test_sanitize_title_for_current_language_without_character_conversion() {
+	public function test_sanitize_title_for_current_language_without_character_conversion() {
 		$this->pll_admin->curlang = self::$model->get_language( 'en' );
 		$this->pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
-	function test_sanitize_title_for_language_from_form_without_character_conversion() {
+	public function test_sanitize_title_for_language_from_form_without_character_conversion() {
 			// Bug fixed in 2.4.1
 		$_POST['post_lang_choice'] = 'en';
 		$this->pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
-	function test_sanitize_title_for_current_language_with_character_conversion() {
+	public function test_sanitize_title_for_current_language_with_character_conversion() {
 		$this->pll_admin->curlang = self::$model->get_language( 'de' );
 		$this->pll_admin->add_filters();
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
-	function test_sanitize_title_for_language_from_form_with_character_conversion() {
+	public function test_sanitize_title_for_language_from_form_with_character_conversion() {
 		// Bug fixed in 2.4.1
 		$_POST['post_lang_choice'] = 'de';
 		$this->pll_admin->add_filters();
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
-	function test_sanitize_user_without_character_conversion() {
+	public function test_sanitize_user_without_character_conversion() {
 		$this->pll_admin->curlang = self::$model->get_language( 'en' );
 		$this->pll_admin->add_filters();
 		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
 	}
 
-	function test_sanitize_user_with_character_conversion() {
+	public function test_sanitize_user_with_character_conversion() {
 		$this->pll_admin->curlang = self::$model->get_language( 'de' );
 		$this->pll_admin->add_filters();
 		$this->assertEquals( 'angstroem', sanitize_user( 'ångström' ) );
 	}
 
-	function test_personal_options_update() {
+	public function test_personal_options_update() {
 		$this->pll_admin->add_filters();
 		$_POST['description_de'] = 'Biography in German';
 		remove_action( 'personal_options_update', 'send_confirmation_on_profile_email' );
@@ -66,7 +66,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $_POST['description_de'], get_user_meta( 1, 'description_de', true ) );
 	}
 
-	function test_admin_body_class_ltr() {
+	public function test_admin_body_class_ltr() {
 		// Since WP 5.4, remove this filter which requires a WP_Screen that we don't provide and is not relevant for our test.
 		if ( class_exists( 'WP_Site_Health' ) ) {
 			remove_filter( 'admin_body_class', array( WP_Site_Health::get_instance(), 'admin_body_class' ) );
@@ -77,7 +77,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( ' pll-dir-ltr', apply_filters( 'admin_body_class', '' ) );
 	}
 
-	function test_admin_body_class_rtl() {
+	public function test_admin_body_class_rtl() {
 		// Since WP 5.4, remove this filter which requires a WP_Screen that we don't provide and is not relevant for our test.
 		if ( class_exists( 'WP_Site_Health' ) ) {
 			remove_filter( 'admin_body_class', array( WP_Site_Health::get_instance(), 'admin_body_class' ) );
@@ -89,7 +89,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 
-	function test_privacy_page_post_states() {
+	public function test_privacy_page_post_states() {
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 

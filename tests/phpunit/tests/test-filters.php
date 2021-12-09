@@ -19,7 +19,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
@@ -27,7 +27,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		new PLL_Frontend_Filters_Links( $this->frontend );
 	}
 
-	function test_get_pages() {
+	public function test_get_pages() {
 		foreach ( $this->factory->post->create_many( 3, array( 'post_type' => 'page' ) ) as $page ) {
 			self::$model->post->set_language( $page, 'en' );
 		}
@@ -73,7 +73,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertCount( 1, $pages );
 	}
 
-	function test_get_posts() {
+	public function test_get_posts() {
 		foreach ( $this->factory->post->create_many( 3, array() ) as $p ) {
 			self::$model->post->set_language( $p, 'en' );
 		}
@@ -118,7 +118,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( 'en' ), array_values( array_unique( $languages ) ) );
 	}
 
-	function test_sticky_posts() {
+	public function test_sticky_posts() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 		stick_post( $en );
@@ -134,7 +134,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $fr, reset( $sticky ) ); // the sticky post
 	}
 
-	function test_get_comments() {
+	public function test_get_comments() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 		$en = $this->factory->comment->create( array( 'comment_post_ID' => $en, 'comment_approved' => '1' ) );
@@ -163,7 +163,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( $en, $fr ), $comments );
 	}
 
-	function test_get_terms() {
+	public function test_get_terms() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -191,7 +191,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( $en, $fr, $de ), $terms );
 	}
 
-	function test_adjacent_post_and_archives() {
+	public function test_adjacent_post_and_archives() {
 		for ( $i = 1; $i <= 3; $i++ ) {
 			$m = 2 * $i - 1;
 			$en[ $i ] = $this->factory->post->create( array( 'post_date' => "2012-0$m-01 12:00:00" ) );
@@ -217,8 +217,10 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $archives, 'February 2012' ) );
 	}
 
-	// Bug fixed in v1.9
-	function test_adjacent_post_and_archives_for_untranslated_post_type() {
+	/**
+	 * Bug fixed in v1.9.
+	 */
+	public function test_adjacent_post_and_archives_for_untranslated_post_type() {
 		register_post_type( 'cpt', array( 'public' => true, 'has_archive' => true ) ); // *untranslated* custom post type with archives
 
 		for ( $m = 1; $m <= 3; $m++ ) {
@@ -240,7 +242,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		_unregister_post_type( 'cpt' );
 	}
 
-	function test_language_attributes_for_valid_locale() {
+	public function test_language_attributes_for_valid_locale() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		new PLL_Frontend_Filters( $this->frontend );
 
@@ -248,7 +250,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		language_attributes();
 	}
 
-	function test_language_attributes_for_invalid_locale() {
+	public function test_language_attributes_for_invalid_locale() {
 		$this->frontend->curlang = self::$model->get_language( 'de' );
 		new PLL_Frontend_Filters( $this->frontend );
 
@@ -256,7 +258,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		language_attributes();
 	}
 
-	function test_save_post() {
+	public function test_save_post() {
 		$this->frontend->posts = new PLL_CRUD_Posts( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
@@ -268,7 +270,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
-	function test_save_page_with_parent() {
+	public function test_save_page_with_parent() {
 		$this->frontend->posts = new PLL_CRUD_Posts( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
@@ -280,7 +282,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
-	function test_save_term() {
+	public function test_save_term() {
 		new PLL_CRUD_Terms( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
@@ -292,7 +294,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
 	}
 
-	function test_save_category_with_parent() {
+	public function test_save_category_with_parent() {
 		new PLL_CRUD_Terms( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
@@ -304,7 +306,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
 	}
 
-	function test_get_pages_language_filter() {
+	public function test_get_pages_language_filter() {
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -335,7 +337,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertCount( 2, get_pages( array( 'lang' => '' ) ) );
 	}
 
-	function test_site_title_in_password_change_email() {
+	public function test_site_title_in_password_change_email() {
 		// Important to use a language available in DIR_TESTDATA . '/languages/', otherwise switch_to_locale() doesn't switch.
 		$language = self::$model->get_language( 'es' );
 		$_mo = new PLL_MO();
@@ -361,7 +363,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		reset_phpmailer_instance();
 	}
 
-	function test_site_title_in_email_change_confirmation_email() {
+	public function test_site_title_in_email_change_confirmation_email() {
 		$language = self::$model->get_language( 'es' );
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mi sitio' ) );
@@ -388,7 +390,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		reset_phpmailer_instance();
 	}
 
-	function _action_pre_get_posts() {
+	public function _action_pre_get_posts() {
 		$terms = get_terms( 'post_tag', array( 'hide_empty' => false ) );
 		$language = self::$model->term->get_language( $terms[0]->term_id );
 
@@ -396,8 +398,10 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', $language->slug );
 	}
 
-	// Bug fixed in 2.3.5
-	function test_get_terms_inside_query() {
+	/**
+	 * Bug fixed in 2.3.5.
+	 */
+	public function test_get_terms_inside_query() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $en, 'en' );
 

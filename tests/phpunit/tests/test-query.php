@@ -13,7 +13,7 @@ class Query_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		global $wp_rewrite;
@@ -55,7 +55,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->frontend->filters_links->cache->method( 'get' )->willReturn( false );
 	}
 
-	function tear_down() {
+	public function tear_down() {
 		parent::tear_down();
 
 		_unregister_post_type( 'cpt' );
@@ -64,7 +64,7 @@ class Query_Test extends PLL_UnitTestCase {
 		_unregister_taxonomy( 'trtax' );
 	}
 
-	function test_home_latest_posts() {
+	public function test_home_latest_posts() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -83,7 +83,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_single_post() {
+	public function test_single_post() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -99,7 +99,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/test/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_single_post_private_translation() {
+	public function test_single_post_private_translation() {
 		// the 'get_user_metadata' filter in frontend-filters breaks this user_description gets '' instead of an array ?
 		$author_en = $this->factory->user->create( array( 'role' => 'author' ) );
 
@@ -127,7 +127,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->delete_user( $author_en );
 	}
 
-	function test_page() {
+	public function test_page() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -143,7 +143,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/test/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_category() {
+	public function test_category() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -169,7 +169,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/category/test/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_post_tag() {
+	public function test_post_tag() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
@@ -193,7 +193,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/tag/test/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_post_format() {
+	public function test_post_format() {
 		$post_id = $this->factory->post->create();
 		set_post_format( $post_id, 'aside' );
 		self::$model->post->set_language( $post_id, 'fr' );
@@ -213,7 +213,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/type/aside/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_translated_custom_tax() {
+	public function test_translated_custom_tax() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
@@ -243,7 +243,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/trtax/test/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_untranslated_custom_tax() {
+	public function test_untranslated_custom_tax() {
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
 		$post_id = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
 		wp_set_post_terms( $post_id, 'test', 'tax' );
@@ -256,7 +256,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) );
 	}
 
-	function test_translated_post_type_archive() {
+	public function test_translated_post_type_archive() {
 		$fr = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
@@ -275,7 +275,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/trcpt/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_untranslated_post_type_archive() {
+	public function test_untranslated_post_type_archive() {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
 
 		$this->go_to( home_url( '/cpt/' ) );
@@ -289,7 +289,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 	}
 
-	function test_archives() {
+	public function test_archives() {
 		$fr = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
@@ -349,7 +349,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/2007/09/04/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_search() {
+	public function test_search() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -367,7 +367,7 @@ class Query_Test extends PLL_UnitTestCase {
 	/**
 	 * After https://core.trac.wordpress.org/ticket/11330 an empty search doesn't return the homepage anymore.
 	 */
-	function test_empty_search() {
+	public function test_empty_search() {
 		$this->go_to( home_url( '/fr/?s=' ) );
 		$this->assertQueryTrue( 'is_search' );
 	}
@@ -375,12 +375,12 @@ class Query_Test extends PLL_UnitTestCase {
 	/**
 	 * Issue #937.
 	 */
-	function test_invalid_search() {
+	public function test_invalid_search() {
 		$this->go_to( home_url( '/fr/random/?s=' ) );
 		$this->assertQueryTrue( 'is_404' );
 	}
 
-	function test_search_in_category() {
+	public function test_search_in_category() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
@@ -404,9 +404,11 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/category/test/?s=test' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	// bug fixed in v1.7.11: error 404 for attachments
-	// bug fixed in v1.9.1: language switcher does not link to media translation for anonymous user
-	function test_attachment() {
+	/**
+	 * Bug fixed in v1.7.11: error 404 for attachments.
+	 * Bug fixed in v1.9.1: language switcher does not link to media translation for anonymous user.
+	 */
+	public function test_attachment() {
 		$post_en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_en, 'en' );
 
@@ -428,8 +430,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/test/img_en/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // bug fixed in v1.9.1
 	}
 
-	// Bug fixed in 2.1: language switcher does not link to media translation for unattached media
-	function test_unattached_attachment() {
+	/**
+	 * Bug fixed in 2.1: language switcher does not link to media translation for unattached media.
+	 */
+	public function test_unattached_attachment() {
 		$en = $this->factory->post->create( array( 'post_title' => 'img_en', 'post_type' => 'attachment' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -445,8 +449,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/img_en/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // bug fixed in v1.9.1
 	}
 
-	// bug fixed in v1.8: is_tax set on main feeds
-	function test_main_feed() {
+	/**
+	 * Bug fixed in v1.8: is_tax set on main feeds.
+	 */
+	public function test_main_feed() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -461,9 +467,12 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertQueryTrue( 'is_feed' );
 	}
 
-	// bug in 1.8 on secondary query, fixed in 1.8.1
-	// see https://wordpress.org/support/topic/issue-with-get_posts-in-version-18
-	function test_untranslated_custom_tax_with_translated_cpt() {
+	/**
+	 * Bug in 1.8 on secondary query, fixed in 1.8.1.
+	 *
+	 * @see https://wordpress.org/support/topic/issue-with-get_posts-in-version-18
+	 */
+	public function test_untranslated_custom_tax_with_translated_cpt() {
 		register_taxonomy( 'tax', 'trcpt' );
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
 
@@ -486,8 +495,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 	}
 
-	// "Issue" fixed in 2.0.10: Drafts should not appear in language switcher
-	function test_draft() {
+	/**
+	 * "Issue" fixed in 2.0.10: Drafts should not appear in language switcher.
+	 */
+	public function test_draft() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_status' => 'draft' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -501,7 +512,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	function test_cat() {
+	public function test_cat() {
 		// Categories
 		$cat_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $cat_en, 'en' );
@@ -537,8 +548,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $query->posts );
 	}
 
-	// Bug introduced in 2.2 and fixed in 2.2.4
-	function test_any() {
+	/**
+	 * Bug introduced in 2.2 and fixed in 2.2.4.
+	 */
+	public function test_any() {
 		// Posts
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
@@ -558,8 +571,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 	}
 
-	// Bug fixed in 2.3.3
-	function test_tax_query_with_relation_or() {
+	/**
+	 * Bug fixed in 2.3.3
+	 */
+	public function test_tax_query_with_relation_or() {
 		register_taxonomy_for_object_type( 'tax', 'trcpt' ); // *untranslated* custom tax
 
 		// Taxonomy
@@ -592,8 +607,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $query->posts );
 	}
 
-	// Tests cases with 'lang' and no post type in query.
-	function test_language_and_no_post_type_in_query() {
+	/**
+	 * Tests cases with 'lang' and no post type in query.
+	 */
+	public function test_language_and_no_post_type_in_query() {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 
@@ -646,8 +663,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_id ) ), $query->posts );
 	}
 
-	// Issue fixed in 2.6.6
-	function test_category_with_post_type_added_late_in_query() {
+	/**
+	 * Issue fixed in 2.6.6.
+	 */
+	public function test_category_with_post_type_added_late_in_query() {
 		register_taxonomy_for_object_type( 'category', array( 'post', 'trcpt' ) );
 
 		$cpt_id = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
@@ -675,7 +694,7 @@ class Query_Test extends PLL_UnitTestCase {
 	 * Bug introduced by WP 5.5 and fixed in Polylang 2.8.
 	 * The sticky posts should appear only once.
 	 */
-	function test_sticky_posts() {
+	public function test_sticky_posts() {
 		$fr = $this->factory->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 		stick_post( $fr );

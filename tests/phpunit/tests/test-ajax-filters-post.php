@@ -1,7 +1,7 @@
 <?php
 
 class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
-	static $editor;
+	protected static $editor;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -16,7 +16,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 		remove_all_actions( 'admin_init' ); // to save ( a lot of ) time as WP will attempt to update core and plugins
 
@@ -30,7 +30,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 	}
 
-	function test_post_lang_choice() {
+	public function test_post_lang_choice() {
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin ); // We need this for categories and tags
 
 		// categories
@@ -84,7 +84,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertNotFalse( strpos( $flag = $xml->response[3]->flag->response_data, 'Français' ) );
 	}
 
-	function test_page_lang_choice() {
+	public function test_page_lang_choice() {
 		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // we need this for the pages dropdown
 
 		// possible parents
@@ -137,7 +137,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertNotFalse( strpos( $flag = $xml->response[2]->flag->response_data, 'Français' ) );
 	}
 
-	function test_posts_not_translated() {
+	public function test_posts_not_translated() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test english' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -192,7 +192,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEqualSets( array( $searched, $en ), wp_list_pluck( $response, 'id' ) );
 	}
 
-	function test_save_post_from_quick_edit() {
+	public function test_save_post_from_quick_edit() {
 		$post_id = $en = $this->factory->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 

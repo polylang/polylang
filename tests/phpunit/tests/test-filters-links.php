@@ -13,7 +13,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		global $wp_rewrite;
@@ -47,7 +47,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->frontend->filters_links->cache->method( 'get' )->willReturn( false );
 	}
 
-	function tear_down() {
+	public function tear_down() {
 		parent::tear_down();
 
 		_unregister_post_type( 'cpt' );
@@ -56,7 +56,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		_unregister_taxonomy( 'trtax' );
 	}
 
-	function test_get_permalink_for_posts() {
+	public function test_get_permalink_for_posts() {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		$this->assertEquals( home_url( '/test/' ), get_permalink( $post_id ) );
@@ -66,7 +66,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/essai/' ), get_permalink( $post_id ) );
 	}
 
-	function test_get_permalink_for_pages() {
+	public function test_get_permalink_for_pages() {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'page-test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		$this->assertEquals( home_url( '/page-test/' ), get_permalink( $post_id ) );
@@ -76,7 +76,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/page-essai/' ), get_permalink( $post_id ) );
 	}
 
-	function test_get_permalink_for_cpt() {
+	public function test_get_permalink_for_cpt() {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		$this->assertEquals( home_url( '/trcpt/test/' ), get_permalink( $post_id ) );
@@ -86,12 +86,12 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/trcpt/essai/' ), get_permalink( $post_id ) );
 	}
 
-	function test_get_permalink_for_untranslated_cpt() {
+	public function test_get_permalink_for_untranslated_cpt() {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'cpt' ) );
 		$this->assertEquals( home_url( '/cpt/test/' ), get_permalink( $post_id ) );
 	}
 
-	function test_attached_attachment() {
+	public function test_attached_attachment() {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 
@@ -125,7 +125,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/essai/image-fr/' ), get_permalink( $attachment_id ) );
 	}
 
-	function test_unattached_attachment() {
+	public function test_unattached_attachment() {
 		$attachment_id = $this->factory->attachment->create_object(
 			'image.jpg',
 			0,
@@ -153,7 +153,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/image-fr/' ), get_permalink( $attachment_id ) );
 	}
 
-	function test_translated_term_link() {
+	public function test_translated_term_link() {
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'cats' ) );
 		self::$model->term->set_language( $term_id, 'en' );
 		$this->assertEquals( home_url( '/category/cats/' ), get_term_link( $term_id, 'category' ) );
@@ -163,19 +163,19 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/category/chats/' ), get_term_link( $term_id, 'category' ) );
 	}
 
-	function test_untranslated_term_link() {
+	public function test_untranslated_term_link() {
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'cats' ) );
 		$this->assertEquals( home_url( '/tax/cats/' ), get_term_link( $term_id, 'tax' ) );
 	}
 
-	function test_language_term_link() {
+	public function test_language_term_link() {
 		$term_id = self::$model->get_language( 'en' )->term_id;
 		$this->assertEquals( home_url( '/' ), get_term_link( $term_id, 'language' ) );
 		$term_id = self::$model->get_language( 'fr' )->term_id;
 		$this->assertEquals( home_url( '/fr/' ), get_term_link( $term_id, 'language' ) );
 	}
 
-	function test_post_format_link() {
+	public function test_post_format_link() {
 		$this->factory->term->create( array( 'taxonomy' => 'post_format', 'name' => 'post-format-aside' ) ); // shouldn't WP do that ?
 
 		$this->frontend->curlang = self::$model->get_language( 'en' );
@@ -185,7 +185,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/type/aside/' ), get_post_format_link( 'aside' ) );
 	}
 
-	function test_archive_link() {
+	public function test_archive_link() {
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 		$this->assertEquals( home_url( '/trcpt/' ), get_post_type_archive_link( 'trcpt' ) );
 		$this->assertEquals( home_url( '/feed/' ), get_feed_link() );
@@ -205,7 +205,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/2015/10/05/' ), get_day_link( 2015, 10, 5 ) );
 	}
 
-	function test_get_custom_logo() {
+	public function test_get_custom_logo() {
 		// Setup logo
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$contents = file_get_contents( $filename ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents

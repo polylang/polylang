@@ -12,7 +12,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
@@ -22,13 +22,13 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_admin->static_pages = new PLL_Admin_Static_Pages( $this->pll_admin );
 	}
 
-	function tear_down() {
+	public function tear_down() {
 		parent::tear_down();
 
 		add_post_type_support( 'page', 'editor' );
 	}
 
-	function test_deactivate_editor_for_page_for_posts() {
+	public function test_deactivate_editor_for_page_for_posts() {
 		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -50,8 +50,10 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
 	}
 
-	// Bug introduced in 2.2.2 and fixed in 2.2.3
-	function test_editor_on_page() {
+	/**
+	 * Bug introduced in 2.2.2 and fixed in 2.2.3.
+	 */
+	public function test_editor_on_page() {
 		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -76,7 +78,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertStringNotContainsString( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
 	}
 
-	function test_use_block_editor_for_post() {
+	public function test_use_block_editor_for_post() {
 		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
 		self::$model->post->set_language( $en, 'en' );
 

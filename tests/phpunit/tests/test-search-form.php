@@ -13,7 +13,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		global $wp_rewrite;
@@ -38,7 +38,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		$this->frontend->init();
 	}
 
-	function test_admin_bar_search_form() {
+	public function test_admin_bar_search_form() {
 		require_once ABSPATH . WPINC . '/class-wp-admin-bar.php';
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
@@ -51,7 +51,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( home_url( '/fr/' ), $node->title );
 	}
 
-	function test_get_search_form() {
+	public function test_get_search_form() {
 		global $wp_rewrite;
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
@@ -69,7 +69,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 	/**
 	 * Issue #829
 	 */
-	function test_get_search_form_with_wrong_inital_url() {
+	public function test_get_search_form_with_wrong_inital_url() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$form = '<form role="search" method="get" class="search-form" action="http://example.org/fr/accueil/">
 				<label>
@@ -85,7 +85,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 	/**
 	 * PR #780
 	 */
-	function test_search_form_is_not_emptied() {
+	public function test_search_form_is_not_emptied() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$form = '<form action="http://example.org" method="get"><input type="submit" value="Search" /></form>';
 		$form = apply_filters( 'get_search_form', $form );
@@ -95,7 +95,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 	/**
 	 * PR #780
 	 */
-	function test_search_form_with_simple_quotes_in_html() {
+	public function test_search_form_with_simple_quotes_in_html() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$form = "<form action='http://example.org' method='get'><input type='submit' value='Search' /></form>";
 		$form = apply_filters( 'get_search_form', $form );
@@ -105,7 +105,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 	/**
 	 * PR #780
 	 */
-	function test_search_form_with_no_quotes_in_html() {
+	public function test_search_form_with_no_quotes_in_html() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$form = '<form action=http://example.org method=get><input type=submit value=Search /></form>';
 		$form = apply_filters( 'get_search_form', $form );

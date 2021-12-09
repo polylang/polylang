@@ -61,7 +61,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		self::$model->options['hide_default'] = 0;
@@ -95,7 +95,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->frontend->static_pages->pll_language_defined();
 	}
 
-	static function wpTearDownAfterClass() {
+	public static function wpTearDownAfterClass() {
 		wp_delete_post( self::$home_en );
 		wp_delete_post( self::$home_fr );
 		wp_delete_post( self::$home_de );
@@ -106,7 +106,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		remove_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 ); // Avoid breaking next tests
 	}
 
-	function test_front_page_with_default_options() {
+	public function test_front_page_with_default_options() {
 		global $wp_rewrite;
 
 		self::$model->clean_languages_cache();
@@ -128,7 +128,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/accueil/' ), false ) );
 	}
 
-	function test_front_page_with_query() {
+	public function test_front_page_with_query() {
 		global $wp_rewrite;
 
 		self::$model->clean_languages_cache();
@@ -147,7 +147,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/accueil/?query=1' ), false ) );
 	}
 
-	function test_paged_front_page() {
+	public function test_paged_front_page() {
 		global $wp_rewrite;
 
 		self::$model->clean_languages_cache();
@@ -176,7 +176,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '/en/home/page/2/' ), false ) );
 	}
 
-	function test_front_page_with_hide_default() {
+	public function test_front_page_with_hide_default() {
 		global $wp_rewrite;
 
 		self::$model->options['hide_default'] = 1;
@@ -209,8 +209,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/' ), redirect_canonical( home_url( '/en/home/' ), false ) );
 	}
 
-	// special case for default permalinks
-	function test_front_page_with_hide_default_plain_permalinks() {
+	/**
+	 * Special case for default permalinks.
+	 */
+	public function test_front_page_with_hide_default_plain_permalinks() {
 		global $wp_rewrite;
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( '' );
@@ -242,7 +244,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '/' ), false ) );
 	}
 
-	function test_paged_front_page_plain_permalinks() {
+	public function test_paged_front_page_plain_permalinks() {
 		global $wp_rewrite;
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( '' );
@@ -272,7 +274,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '?page=2' ), false ) );
 	}
 
-	function test_front_page_with_redirect_lang() {
+	public function test_front_page_with_redirect_lang() {
 		global $wp_rewrite;
 
 		self::$model->options['redirect_lang'] = 1;
@@ -295,7 +297,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/' ), false ) );
 	}
 
-	function test_page_for_posts() {
+	public function test_page_for_posts() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -317,7 +319,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 	}
 
-	function test_paged_page_for_posts() {
+	public function test_paged_page_for_posts() {
 		update_option( 'posts_per_page', 2 ); // to avoid creating too much posts
 
 		$en = $this->factory->post->create_many( 3 );
@@ -345,8 +347,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertCount( 1, $GLOBALS['wp_query']->posts );
 	}
 
-	// bug fixed in 1.8beta3 : non translated posts page always link to the static front page even when they should not
-	function test_untranslated_page_for_posts() {
+	/**
+	 * Bug fixed in 1.8beta3 : non translated posts page always link to the static front page even when they should not
+	 */
+	public function test_untranslated_page_for_posts() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -359,8 +363,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'de' ) ) );
 	}
 
-	// bug fixed in 1.8.1
-	function test_paged_front_page_with_hide_default() {
+	/**
+	 * Bug fixed in 1.8.1.
+	 */
+	public function test_paged_front_page_with_hide_default() {
 		global $wp_rewrite;
 
 		self::$model->options['hide_default'] = 1;
@@ -381,8 +387,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '/page/2/' ), false ) );
 	}
 
-	// for good measure test that too
-	function test_front_page_with_redirect_lang_and_hide_default() {
+	/**
+	 * For good measure test that too.
+	 */
+	public function test_front_page_with_redirect_lang_and_hide_default() {
 		global $wp_rewrite;
 
 		self::$model->options['redirect_lang'] = 1;
@@ -403,7 +411,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '/fr/page/2/' ), false ) );
 	}
 
-	function test_post_states() {
+	public function test_post_states() {
 		ob_start();
 		_post_states( get_post( self::$home_en ) );
 		$this->assertNotFalse( strpos( ob_get_clean(), "<span class='post-state'>Front Page</span>" ) );
@@ -437,14 +445,18 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $out, "<span class='post-state'>Posts Page</span>" ) );
 	}
 
-	// Bug fixed in 2.0
-	function test_get_post_type_archive_link_for_posts() {
+	/**
+	 * Bug fixed in 2.0.
+	 */
+	public function test_get_post_type_archive_link_for_posts() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$this->assertEquals( 'http://example.org/fr/articles/', get_post_type_archive_link( 'post' ) );
 	}
 
-	// Bug introduced and fixed in 2.3
-	function test_archives_with_front_page_with_redirect_lang() {
+	/**
+	 * Bug introduced and fixed in 2.3.
+	 */
+	public function test_archives_with_front_page_with_redirect_lang() {
 		global $wp_rewrite;
 
 		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
@@ -470,8 +482,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 	}
 
-	// Bug introduced and fixed in 2.3
-	function test_post_type_archives_with_front_page_with_redirect_lang() {
+	/**
+	 * Bug introduced and fixed in 2.3.
+	 */
+	public function test_post_type_archives_with_front_page_with_redirect_lang() {
 		global $wp_rewrite;
 
 		$wp_rewrite->init();
@@ -497,20 +511,30 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		_unregister_post_type( 'trcpt' );
 	}
 
-	// Add custom query var
-	function extra_query_vars( $query_vars ) {
+	/**
+	 * Add custom query var.
+	 *
+	 * @param string[] $query_vars Query vars.
+	 */
+	public function extra_query_vars( $query_vars ) {
 		$query_vars[] = 'action';
 		return $query_vars;
 	}
 
-	// Add custom root rewrite rule
-	function extra_root_rewrite_rules( $rules ) {
+	/**
+	 * Add custom root rewrite rule.
+	 *
+	 * @param string[] $rules Extra rewrite rules.
+	 */
+	public function extra_root_rewrite_rules( $rules ) {
 		$rules['^testing/?$'] = 'index.php?action=testing';
 		return $rules;
 	}
 
-	// Bug introduced in 2.3 and fixed in 2.3.1
-	function test_extra_query_var_with_front_page_with_query_with_redirect_lang() {
+	/**
+	 * Bug introduced in 2.3 and fixed in 2.3.1.
+	 */
+	public function test_extra_query_var_with_front_page_with_query_with_redirect_lang() {
 		global $wp_rewrite;
 
 		add_filter( 'query_vars', array( $this, 'extra_query_vars' ) );
@@ -530,7 +554,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertFalse( is_front_page() );
 	}
 
-	function test_front_page_with_orderby_with_redirect_lang() {
+	public function test_front_page_with_orderby_with_redirect_lang() {
 		global $wp_rewrite;
 
 		self::$model->options['redirect_lang'] = 1;

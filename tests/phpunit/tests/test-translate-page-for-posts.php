@@ -2,14 +2,14 @@
 
 class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 
-	static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		update_option( 'show_on_front', 'page' );

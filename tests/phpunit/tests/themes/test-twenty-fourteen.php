@@ -22,7 +22,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			switch_theme( 'twentyfourteen' );
 		}
 
-		function set_up() {
+		public function set_up() {
 			parent::set_up();
 
 			require_once get_template_directory() . '/functions.php';
@@ -36,19 +36,19 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			$this->frontend->featured_content->init();
 		}
 
-		static function wpTearDownAfterClass() {
+		public static function wpTearDownAfterClass() {
 			parent::wpTearDownAfterClass();
 
 			switch_theme( self::$stylesheet );
 		}
 
-		function tear_down() {
+		public function tear_down() {
 			parent::tear_down();
 
 			unset( $GLOBALS['polylang'] );
 		}
 
-		function test_ephemera_widget() {
+		public function test_ephemera_widget() {
 			global $content_width; // The widget accesses this global, no matter what it contains.
 			$GLOBALS['wp_rewrite']->set_permalink_structure( '' );
 
@@ -77,7 +77,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			unset( $content_width );
 		}
 
-		function setup_featured_tags() {
+		protected function setup_featured_tags() {
 			self::$tag_en = $en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'featured' ) );
 			self::$model->term->set_language( $en, 'en' );
 
@@ -94,7 +94,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			update_option( 'featured-content', $options );
 		}
 
-		function test_option_featured_content() {
+		public function test_option_featured_content() {
 			$this->setup_featured_tags();
 
 			$this->frontend->curlang = self::$model->get_language( 'en' );
@@ -106,7 +106,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			$this->assertEquals( self::$tag_fr, $settings['tag-id'] );
 		}
 
-		function test_featured_content_ids() {
+		public function test_featured_content_ids() {
 			$this->setup_featured_tags();
 
 			$en = $this->factory->post->create( array( 'tags_input' => array( 'featured' ) ) );

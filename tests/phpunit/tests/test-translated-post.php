@@ -13,14 +13,14 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 	}
 
-	function test_post_language() {
+	public function test_post_language() {
 		$post_id = $this->factory->post->create();
 		self::$model->post->set_language( $post_id, 'fr' );
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
-	function test_post_translation() {
+	public function test_post_translation() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -39,7 +39,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertEquals( self::$model->post->get_translation( $de, 'fr' ), $fr );
 	}
 
-	function test_delete_post_translation() {
+	public function test_delete_post_translation() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -62,7 +62,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertFalse( self::$model->post->get_translation( $de, 'fr' ) ); // fails
 	}
 
-	function test_current_user_can_synchronize() {
+	public function test_current_user_can_synchronize() {
 		add_filter( 'pll_pre_current_user_can_synchronize_post', '__return_null' ); // Enable capability check
 
 		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
@@ -104,7 +104,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertFalse( self::$model->post->current_user_can_synchronize( $de ) );
 	}
 
-	function test_current_user_can_read() {
+	public function test_current_user_can_read() {
 		$post_id = $this->factory->post->create( array( 'post_status' => 'draft' ) );
 
 		wp_set_current_user( 0 );
@@ -143,12 +143,11 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 	/**
 	 * @dataProvider update_language_provider
+	 *
 	 * @param string[] $original_group An array of language locales to be included in the original translations group.
 	 * @param string   $to A language locale to update the post to.
 	 * @param string[] $expected_new_group An array of language locales to be included in the new translations group.
 	 * @param string[] $expected_former_group Optional. Represents the former translations group of the post if changing language should have set the post in a separate group.
-	 *
-	 * @throws Exception
 	 */
 	public function test_update_language( $original_group, $to, $expected_new_group, $expected_former_group = array() ) {
 		wp_set_current_user( 1 ); // Needs edit_post capability.
