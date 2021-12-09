@@ -143,12 +143,11 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 	/**
 	 * @dataProvider update_language_provider
+	 *
 	 * @param string[] $original_group An array of language locales to be included in the original translations group.
 	 * @param string   $to A language locale to update the post to.
 	 * @param string[] $expected_new_group An array of language locales to be included in the new translations group.
 	 * @param string[] $expected_former_group Optional. Represents the former translations group of the post if changing language should have set the post in a separate group.
-	 *
-	 * @throws Exception
 	 */
 	public function test_update_language( $original_group, $to, $expected_new_group, $expected_former_group = array() ) {
 		wp_set_current_user( 1 ); // Needs edit_post capability.

@@ -102,10 +102,6 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.FunctionComment.EmptyThrows" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
 	<rule ref="Squiz.Commenting.FunctionComment.Missing" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
