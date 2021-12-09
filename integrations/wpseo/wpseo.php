@@ -46,6 +46,10 @@ class PLL_WPSEO {
 		} else {
 			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 10, 2 );
 			add_filter( 'pll_translate_post_meta', array( $this, 'translate_post_meta' ), 10, 3 );
+
+			if ( filter_input( INPUT_POST, 'action' ) === 'pll_update_post_rows' ) {
+				$GLOBALS['wpseo_meta_columns'] = new WPSEO_Meta_Columns();
+			}
 		}
 	}
 
