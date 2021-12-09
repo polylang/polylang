@@ -1,7 +1,7 @@
 <?php
 
 class Terms_List_Test extends PLL_UnitTestCase {
-	static $editor;
+	protected static $editor;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory

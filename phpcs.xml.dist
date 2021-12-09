@@ -94,10 +94,6 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="PSR2.Classes.PropertyDeclaration.ScopeMissing" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
 	<rule ref="Squiz.Commenting.ClassComment.Missing" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
@@ -127,10 +123,6 @@
 	</rule>
 
 	<rule ref="Squiz.PHP.CommentedOutCode.Found" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
-	<rule ref="Squiz.Scope.MemberVarScope.Missing" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 

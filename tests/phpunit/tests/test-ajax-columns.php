@@ -1,7 +1,7 @@
 <?php
 
 class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
-	static $editor;
+	protected static $editor;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory

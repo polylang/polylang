@@ -3,7 +3,7 @@
 if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyseventeen/style.css' ) ) {
 
 	class Twenty_Seventeen_Test extends PLL_UnitTestCase {
-		static $stylesheet;
+		protected static $stylesheet;
 
 		/**
 		 * @param WP_UnitTest_Factory $factory

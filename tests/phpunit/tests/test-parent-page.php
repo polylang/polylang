@@ -1,7 +1,7 @@
 <?php
 
 class Parent_Page_Test extends PLL_UnitTestCase {
-	static $editor;
+	protected static $editor;
 
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );

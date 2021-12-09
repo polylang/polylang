@@ -9,7 +9,7 @@ trait PLL_UnitTestCase_Trait {
 	 *
 	 * @var object
 	 */
-	static $model;
+	protected static $model;
 
 	/**
 	 * Initialization before all tests run.
