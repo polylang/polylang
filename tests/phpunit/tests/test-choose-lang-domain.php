@@ -54,7 +54,11 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		$_SERVER = $this->server;
 	}
 
-	// overrides WP_UnitTestCase::go_to
+	/**
+	 * Overrides WP_UnitTestCase::go_to().
+	 *
+	 * @param string $url The URL for the request.
+	 */
 	public function go_to( $url ) {
 		// copy paste of WP_UnitTestCase::go_to
 		$_GET = $_POST = array();

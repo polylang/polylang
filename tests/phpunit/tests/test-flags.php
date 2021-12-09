@@ -34,8 +34,8 @@ class Flags_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '<img src="/wp-content/polylang/fr_FR.png" alt="Français" />', $lang->get_display_flag() );
 	}
 
-	/*
-	 * bug fixed in 1.8
+	/**
+	 * Bug fixed in 1.8
 	 */
 	public function test_default_flag_ssl() {
 		$_SERVER['HTTPS'] = 'on';

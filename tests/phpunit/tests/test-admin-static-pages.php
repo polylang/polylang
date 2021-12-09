@@ -50,7 +50,9 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
 	}
 
-	// Bug introduced in 2.2.2 and fixed in 2.2.3
+	/**
+	 * Bug introduced in 2.2.2 and fixed in 2.2.3.
+	 */
 	public function test_editor_on_page() {
 		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
 		self::$model->post->set_language( $en, 'en' );

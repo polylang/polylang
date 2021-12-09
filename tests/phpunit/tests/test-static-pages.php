@@ -209,7 +209,9 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/' ), redirect_canonical( home_url( '/en/home/' ), false ) );
 	}
 
-	// special case for default permalinks
+	/**
+	 * Special case for default permalinks.
+	 */
 	public function test_front_page_with_hide_default_plain_permalinks() {
 		global $wp_rewrite;
 		$wp_rewrite->init();
@@ -345,7 +347,9 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertCount( 1, $GLOBALS['wp_query']->posts );
 	}
 
-	// bug fixed in 1.8beta3 : non translated posts page always link to the static front page even when they should not
+	/**
+	 * Bug fixed in 1.8beta3 : non translated posts page always link to the static front page even when they should not
+	 */
 	public function test_untranslated_page_for_posts() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
@@ -359,7 +363,9 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'de' ) ) );
 	}
 
-	// bug fixed in 1.8.1
+	/**
+	 * Bug fixed in 1.8.1.
+	 */
 	public function test_paged_front_page_with_hide_default() {
 		global $wp_rewrite;
 
@@ -381,7 +387,9 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( redirect_canonical( home_url( '/page/2/' ), false ) );
 	}
 
-	// for good measure test that too
+	/**
+	 * For good measure test that too.
+	 */
 	public function test_front_page_with_redirect_lang_and_hide_default() {
 		global $wp_rewrite;
 
@@ -437,13 +445,17 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $out, "<span class='post-state'>Posts Page</span>" ) );
 	}
 
-	// Bug fixed in 2.0
+	/**
+	 * Bug fixed in 2.0.
+	 */
 	public function test_get_post_type_archive_link_for_posts() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$this->assertEquals( 'http://example.org/fr/articles/', get_post_type_archive_link( 'post' ) );
 	}
 
-	// Bug introduced and fixed in 2.3
+	/**
+	 * Bug introduced and fixed in 2.3.
+	 */
 	public function test_archives_with_front_page_with_redirect_lang() {
 		global $wp_rewrite;
 
@@ -470,7 +482,9 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $GLOBALS['wp_query']->posts );
 	}
 
-	// Bug introduced and fixed in 2.3
+	/**
+	 * Bug introduced and fixed in 2.3.
+	 */
 	public function test_post_type_archives_with_front_page_with_redirect_lang() {
 		global $wp_rewrite;
 
@@ -497,19 +511,29 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		_unregister_post_type( 'trcpt' );
 	}
 
-	// Add custom query var
+	/**
+	 * Add custom query var.
+	 *
+	 * @param string[] $query_vars Query vars.
+	 */
 	public function extra_query_vars( $query_vars ) {
 		$query_vars[] = 'action';
 		return $query_vars;
 	}
 
-	// Add custom root rewrite rule
+	/**
+	 * Add custom root rewrite rule.
+	 *
+	 * @param string[] $rules Extra rewrite rules.
+	 */
 	public function extra_root_rewrite_rules( $rules ) {
 		$rules['^testing/?$'] = 'index.php?action=testing';
 		return $rules;
 	}
 
-	// Bug introduced in 2.3 and fixed in 2.3.1
+	/**
+	 * Bug introduced in 2.3 and fixed in 2.3.1.
+	 */
 	public function test_extra_query_var_with_front_page_with_query_with_redirect_lang() {
 		global $wp_rewrite;
 

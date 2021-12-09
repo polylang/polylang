@@ -69,7 +69,9 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	// The page sitemaps always include the homepages.
+	/**
+	 * The page sitemaps always include the homepages.
+	 */
 	public function test_sitemaps_page() {
 		$this->init();
 

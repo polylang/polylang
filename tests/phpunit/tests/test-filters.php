@@ -217,7 +217,9 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $archives, 'February 2012' ) );
 	}
 
-	// Bug fixed in v1.9
+	/**
+	 * Bug fixed in v1.9.
+	 */
 	public function test_adjacent_post_and_archives_for_untranslated_post_type() {
 		register_post_type( 'cpt', array( 'public' => true, 'has_archive' => true ) ); // *untranslated* custom post type with archives
 
@@ -396,7 +398,9 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', $language->slug );
 	}
 
-	// Bug fixed in 2.3.5
+	/**
+	 * Bug fixed in 2.3.5.
+	 */
 	public function test_get_terms_inside_query() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $en, 'en' );

@@ -67,7 +67,9 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array(), self::$model->get_languages_list() );
 	}
 
-	// Bug fixed in 2.3
+	/**
+	 * Bug fixed in 2.3.
+	 */
 	public function test_unique_language_code_if_same_as_locale() {
 		// First language
 		$args = array(

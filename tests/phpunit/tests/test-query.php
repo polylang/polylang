@@ -404,8 +404,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/category/test/?s=test' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
-	// bug fixed in v1.7.11: error 404 for attachments
-	// bug fixed in v1.9.1: language switcher does not link to media translation for anonymous user
+	/**
+	 * Bug fixed in v1.7.11: error 404 for attachments.
+	 * Bug fixed in v1.9.1: language switcher does not link to media translation for anonymous user.
+	 */
 	public function test_attachment() {
 		$post_en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_en, 'en' );
@@ -428,7 +430,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/test/img_en/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // bug fixed in v1.9.1
 	}
 
-	// Bug fixed in 2.1: language switcher does not link to media translation for unattached media
+	/**
+	 * Bug fixed in 2.1: language switcher does not link to media translation for unattached media.
+	 */
 	public function test_unattached_attachment() {
 		$en = $this->factory->post->create( array( 'post_title' => 'img_en', 'post_type' => 'attachment' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -445,7 +449,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/img_en/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // bug fixed in v1.9.1
 	}
 
-	// bug fixed in v1.8: is_tax set on main feeds
+	/**
+	 * Bug fixed in v1.8: is_tax set on main feeds.
+	 */
 	public function test_main_feed() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
@@ -461,8 +467,11 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertQueryTrue( 'is_feed' );
 	}
 
-	// bug in 1.8 on secondary query, fixed in 1.8.1
-	// see https://wordpress.org/support/topic/issue-with-get_posts-in-version-18
+	/**
+	 * Bug in 1.8 on secondary query, fixed in 1.8.1.
+	 *
+	 * @see https://wordpress.org/support/topic/issue-with-get_posts-in-version-18
+	 */
 	public function test_untranslated_custom_tax_with_translated_cpt() {
 		register_taxonomy( 'tax', 'trcpt' );
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
@@ -486,7 +495,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 	}
 
-	// "Issue" fixed in 2.0.10: Drafts should not appear in language switcher
+	/**
+	 * "Issue" fixed in 2.0.10: Drafts should not appear in language switcher.
+	 */
 	public function test_draft() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_status' => 'draft' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -537,7 +548,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $query->posts );
 	}
 
-	// Bug introduced in 2.2 and fixed in 2.2.4
+	/**
+	 * Bug introduced in 2.2 and fixed in 2.2.4.
+	 */
 	public function test_any() {
 		// Posts
 		$en = $this->factory->post->create();
@@ -558,7 +571,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 	}
 
-	// Bug fixed in 2.3.3
+	/**
+	 * Bug fixed in 2.3.3
+	 */
 	public function test_tax_query_with_relation_or() {
 		register_taxonomy_for_object_type( 'tax', 'trcpt' ); // *untranslated* custom tax
 
@@ -592,7 +607,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $en ) ), $query->posts );
 	}
 
-	// Tests cases with 'lang' and no post type in query.
+	/**
+	 * Tests cases with 'lang' and no post type in query.
+	 */
 	public function test_language_and_no_post_type_in_query() {
 		$post_id = $this->factory->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		self::$model->post->set_language( $post_id, 'fr' );
@@ -646,7 +663,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_id ) ), $query->posts );
 	}
 
-	// Issue fixed in 2.6.6
+	/**
+	 * Issue fixed in 2.6.6.
+	 */
 	public function test_category_with_post_type_added_late_in_query() {
 		register_taxonomy_for_object_type( 'category', array( 'post', 'trcpt' ) );
 

@@ -111,7 +111,9 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'en', 'fr', 'de', 'es' ), array_keys( $translations ) );
 	}
 
-	// bug introduced by WP 4.3 and fixed in v1.8.2
+	/**
+	 * Bug introduced by WP 4.3 and fixed in v1.8.2.
+	 */
 	public function test_default_category_in_list_table() {
 
 		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) ); // a non default category

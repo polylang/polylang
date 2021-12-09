@@ -99,7 +99,9 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->_test_remove_paged_from_link();
 	}
 
-	// Bug fixed in 2.6
+	/**
+	 * Bug fixed in 2.6.
+	 */
 	public function test_link_filters_mixing_ssl() {
 		$this->root = 'https://example.org'; // $this->links_model->home uses http
 		$this->_test_add_language_to_link();
@@ -152,7 +154,9 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $this->host . '/language/fr/', $this->links_model->home_url( self::$model->get_language( 'fr' ) ) );
 	}
 
-	// Issue fixed in version 2.1.2
+	/**
+	 * Issue fixed in version 2.1.2.
+	 */
 	public function test_get_language_from_url_with_wrong_ssl() {
 		$server = $_SERVER;
 

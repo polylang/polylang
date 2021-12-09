@@ -19,7 +19,9 @@ class Settings_Test extends PLL_UnitTestCase {
 		add_filter( 'pre_transient_available_translations', '__return_empty_array' );
 	}
 
-	// bug introduced and fixed in 1.9alpha
+	/**
+	 * Bug introduced and fixed in 1.9alpha.
+	 */
 	public function test_edit_language() {
 		$lang = self::$model->get_language( 'fr' );
 
@@ -99,7 +101,9 @@ class Settings_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $out );
 	}
 
-	// Bug introduced in 2.1-dev
+	/**
+	 * Bug introduced in 2.1-dev.
+	 */
 	public function test_display_settings_errors() {
 		add_settings_error( 'test', 'test', 'ERROR' );
 		$links_model = self::$model->get_links_model();

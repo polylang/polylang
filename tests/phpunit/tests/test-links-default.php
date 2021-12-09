@@ -64,13 +64,17 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', $this->links_model->get_language_from_url() );
 	}
 
-	// bug fixed in 1.8
+	/**
+	 * Bug fixed in 1.8.
+	 */
 	public function test_home_url() {
 		$this->assertEquals( $this->host . '/', $this->links_model->home_url( self::$model->get_language( 'en' ) ) );
 		$this->assertEquals( $this->host . '/?lang=fr', $this->links_model->home_url( self::$model->get_language( 'fr' ) ) );
 	}
 
-	// bug fixed in v1.8
+	/**
+	 * Bug fixed in 1.8.
+	 */
 	public function test_language_code_in_post_url() {
 		self::$model->options['force_lang'] = 1;
 		$frontend = new PLL_Frontend( $this->links_model );

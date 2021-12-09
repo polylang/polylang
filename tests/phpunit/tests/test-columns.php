@@ -87,7 +87,9 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( ob_get_clean() );
 	}
 
-	// special case for media
+	/**
+	 * Special case for media.
+	 */
 	public function test_untranslated_media() {
 		$en = $this->factory->attachment->create_object( 'image.jpg' );
 		self::$model->post->set_language( $en, 'en' );

@@ -466,7 +466,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( get_post( $from )->post_date_gmt, get_post( $to )->post_date_gmt );
 	}
 
-	// Bug introduced in 2.0.8 and fixed in 2.1
+	/**
+	 * Bug introduced in 2.0.8 and fixed in 2.1.
+	 */
 	public function test_quick_edit_with_sync_page_parent() {
 		$_REQUEST['post_type'] = 'page';
 
@@ -672,7 +674,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertfalse( is_sticky( $to ) );
 	}
 
-	// Bug fixed in 2.3.2
+	/**
+	 * Bug fixed in 2.3.2.
+	 */
 	public function test_delete_term() {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
@@ -701,7 +705,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( $en ), wp_get_post_categories( $post_en ) );
 	}
 
-	// Bug fixed in 2.3.11
+	/**
+	 * Bug fixed in 2.3.11.
+	 */
 	public function test_category_hierarchy() {
 		// Categories
 		$child_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
@@ -734,7 +740,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $parent_en, $term->parent );
 	}
 
-	// Bug fixed in 2.5.2
+	/**
+	 * Bug fixed in 2.5.2.
+	 */
 	public function test_sync_category_parent_modification() {
 		// Parent 1
 		$p1en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );

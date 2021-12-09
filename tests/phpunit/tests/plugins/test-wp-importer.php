@@ -41,7 +41,15 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 			parent::tear_down();
 		}
 
-		// mostly copied from WP_Import_UnitTestCase
+		/**
+		 * Import a WXR file.
+		 *
+		 * Mostly copied from WP_Import_UnitTestCase.
+		 *
+		 * @param string $filename    Full path of the file to import.
+		 * @param array  $users       User import settings.
+		 * @param bool   $fetch_files Whether or not do download remote attachments.
+		 */
 		protected function _import_wp( $filename, $users = array(), $fetch_files = true ) {
 			$importer = new PLL_WP_Import(); // Change to our importer
 			$file = realpath( $filename );

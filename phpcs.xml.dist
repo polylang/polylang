@@ -110,15 +110,7 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.FunctionComment.WrongStyle" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
 	<rule ref="Squiz.Commenting.VariableComment.Missing" >
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-
-	<rule ref="Squiz.Commenting.VariableComment.WrongStyle" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 

@@ -39,7 +39,9 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEquals( $this->hosts['fr'] . '/wp-login.php', wp_login_url() );
 	}
 
-	// Bug fixed in version 2.1.2
+	/**
+	 * Bug fixed in version 2.1.2.
+	 */
 	public function test_second_level_domain() {
 		self::$model->options['domains']['fr'] = 'http://example.org.fr';
 		$this->links_model = self::$model->get_links_model();
@@ -55,7 +57,9 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEquals( 'http://example.org/test/', $this->links_model->remove_language_from_link( $url, self::$model->get_language( 'fr' ) ) );
 	}
 
-	// Bug fixed in 2.3.5
+	/**
+	 * Bug fixed in 2.3.5.
+	 */
 	public function test_redirect_www() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$filters_links = new PLL_Frontend_Filters_Links( $frontend );

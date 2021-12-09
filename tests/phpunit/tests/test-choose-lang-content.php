@@ -41,7 +41,11 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->frontend = new PLL_Frontend( $links_model );
 	}
 
-	// overrides WP_UnitTestCase::go_to
+	/**
+	 * Overrides WP_UnitTestCase::go_to().
+	 *
+	 * @param string $url The URL for the request.
+	 */
 	public function go_to( $url ) {
 		// copy paste of WP_UnitTestCase::go_to
 		$_GET = $_POST = array();
