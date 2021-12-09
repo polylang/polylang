@@ -103,6 +103,10 @@ class PLL_WPML_Compat {
 	 * @return void
 	 */
 	public function register_string( $context, $name, $string ) {
+		if ( ! $string || ! is_scalar( $string ) ) {
+			return;
+		}
+
 		// If a string has already been registered with the same name and context, let's replace it.
 		$exist_string = $this->get_string_by_context_and_name( $context, $name );
 		if ( $exist_string && $exist_string !== $string ) {
@@ -122,7 +126,7 @@ class PLL_WPML_Compat {
 
 		// Registers the string if it does not exist yet (multiline as in WPML).
 		$to_register = array( 'context' => $context, 'name' => $name, 'string' => $string, 'multiline' => true, 'icl' => true );
-		if ( ! in_array( $to_register, self::$strings ) && $to_register['string'] ) {
+		if ( ! in_array( $to_register, self::$strings ) ) {
 			$key = md5( "$context | $name" );
 			self::$strings[ $key ] = $to_register;
 			update_option( 'polylang_wpml_strings', self::$strings );
