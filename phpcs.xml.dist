@@ -8,7 +8,7 @@
 
 	<file>.</file>
 
-	<config name="minimum_supported_wp_version" value="5.4"/>
+	<config name="minimum_supported_wp_version" value="5.5"/>
 
 	<rule ref="PHPCompatibilityWP">
 		<config name="testVersion" value="5.6-"/>
@@ -154,7 +154,7 @@
 	<rule ref="Generic.WhiteSpace.ScopeIndent">
 		<exclude-pattern>*/*.js</exclude-pattern>
 	</rule>
-	
+
 	<exclude-pattern>js/*.min.js</exclude-pattern>
 	<exclude-pattern>js/build</exclude-pattern>
 	<exclude-pattern>node_modules/*</exclude-pattern>
