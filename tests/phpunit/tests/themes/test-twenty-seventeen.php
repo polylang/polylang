@@ -20,23 +20,23 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyseventee
 			switch_theme( 'twentyseventeen' );
 		}
 
-		function set_up() {
+		public function set_up() {
 			parent::set_up();
 
 			require_once get_template_directory() . '/functions.php';
 		}
 
-		static function wpTearDownAfterClass() {
+		public static function wpTearDownAfterClass() {
 			parent::wpTearDownAfterClass();
 
 			switch_theme( self::$stylesheet );
 		}
 
-		function get_template_part( $slug, $name ) {
+		public function get_template_part( $slug, $name ) {
 			include get_template_directory() . "/{$slug}-{$name}.php";
 		}
 
-		function test_front_page_panels() {
+		public function test_front_page_panels() {
 			// Allow to locate the template part of Twenty Seventeen as the original mechanism uses constants
 			add_action( 'get_template_part_template-parts/page/content', array( $this, 'get_template_part' ), 10, 2 );
 

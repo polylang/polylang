@@ -2,7 +2,7 @@
 
 class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
-	function test_add_and_delete_language() {
+	public function test_add_and_delete_language() {
 		// first language
 		$args = array(
 			'name'       => 'English',
@@ -68,7 +68,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	// Bug fixed in 2.3
-	function test_unique_language_code_if_same_as_locale() {
+	public function test_unique_language_code_if_same_as_locale() {
 		// First language
 		$args = array(
 			'name'       => 'العربية',
@@ -89,7 +89,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		self::$model->delete_language( $lang->term_id );
 	}
 
-	function test_invalid_languages() {
+	public function test_invalid_languages() {
 		global $wp_settings_errors;
 
 		$args = array(
@@ -126,7 +126,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	/**
 	 * Issue #910
 	 */
-	function test_language_properties_in_transient() {
+	public function test_language_properties_in_transient() {
 		$args = array(
 			'name'       => 'English',
 			'slug'       => 'en',

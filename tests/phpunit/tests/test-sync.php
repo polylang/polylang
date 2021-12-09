@@ -17,7 +17,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$author = $factory->user->create( array( 'role' => 'author' ) );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
@@ -26,7 +26,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
-	function test_copy_taxonomies() {
+	public function test_copy_taxonomies() {
 		$tag_en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_en' ) );
 		self::$model->term->set_language( $tag_en, 'en' );
 
@@ -89,7 +89,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertFalse( get_post_format( $from ) );
 	}
 
-	function test_copy_custom_fields() {
+	public function test_copy_custom_fields() {
 		$from = $this->factory->post->create();
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'key', 'value' );
@@ -114,7 +114,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_post_meta( $from, 'key', true ) );
 	}
 
-	function test_sync_multiple_custom_fields() {
+	public function test_sync_multiple_custom_fields() {
 		self::$model->options['sync'] = array( 'post_meta' );
 		$sync = new PLL_Admin_Sync( $this->pll_admin );
 
@@ -155,7 +155,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_post_meta( $to, 'key' ) );
 	}
 
-	function test_create_post_translation() {
+	public function test_create_post_translation() {
 		// categories
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
@@ -198,7 +198,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_sticky( $to ) );
 	}
 
-	function test_create_page_translation() {
+	public function test_create_page_translation() {
 		// parent pages
 		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -236,7 +236,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'full-width.php', get_page_template_slug( $to ) );
 	}
 
-	function test_save_post_with_sync() {
+	public function test_save_post_with_sync() {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Attachment for thumbnail
@@ -291,11 +291,11 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_sticky( $to ) );
 	}
 
-	function filter_theme_page_templates() {
+	public function filter_theme_page_templates() {
 		return array( 'templates/test.php' => 'Test Template Page' );
 	}
 
-	function test_save_page_with_sync() {
+	public function test_save_page_with_sync() {
 		$GLOBALS['post_type'] = 'page';
 		add_filter( 'theme_page_templates', array( $this, 'filter_theme_page_templates' ) ); // Allow to test templates with themes without templates
 
@@ -339,7 +339,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'templates/test.php', get_page_template_slug( $to ) );
 	}
 
-	function test_save_term_with_sync_in_post() {
+	public function test_save_term_with_sync_in_post() {
 		self::$model->options['sync'] = array( 'taxonomies' );
 
 		$from = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
@@ -375,7 +375,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_object_in_term( $fr, 'category', $to ) );
 	}
 
-	function test_save_term_with_parent_sync() {
+	public function test_save_term_with_parent_sync() {
 		// Parents
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
@@ -413,7 +413,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	 * Test the child sync if we edit (delete) the translated term parent
 	 * Bug fixed in 2.6.4
 	 */
-	function test_child_sync_if_delete_translated_term_parent() {
+	public function test_child_sync_if_delete_translated_term_parent() {
 		// Children.
 		$child_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $child_en, 'en' );
@@ -443,7 +443,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( get_term( $child_en )->parent, 0 );
 	}
 
-	function test_create_post_translation_with_sync_post_date() {
+	public function test_create_post_translation_with_sync_post_date() {
 		// source post
 		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $from, 'en' );
@@ -467,7 +467,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	// Bug introduced in 2.0.8 and fixed in 2.1
-	function test_quick_edit_with_sync_page_parent() {
+	public function test_quick_edit_with_sync_page_parent() {
 		$_REQUEST['post_type'] = 'page';
 
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
@@ -500,7 +500,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
 	}
 
-	function test_create_post_translation_with_sync_date() {
+	public function test_create_post_translation_with_sync_date() {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// source post
@@ -528,11 +528,11 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '2007-09-04 00:00:00', get_post( $to )->post_date );
 	}
 
-	function _add_term_meta_to_copy() {
+	public function _add_term_meta_to_copy() {
 		return array( 'key' );
 	}
 
-	function test_copy_term_metas() {
+	public function test_copy_term_metas() {
 		$from = $this->factory->term->create();
 		self::$model->term->set_language( $from, 'en' );
 		add_term_meta( $from, 'key', 'value' );
@@ -557,7 +557,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_term_meta( $from, 'key', true ) );
 	}
 
-	function test_sync_multiple_term_metas() {
+	public function test_sync_multiple_term_metas() {
 		$sync = new PLL_Admin_Sync( $this->pll_admin );
 
 		$from = $this->factory->term->create();
@@ -585,7 +585,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'value1', 'value4' ), get_term_meta( $to, 'key' ) );
 	}
 
-	function test_sync_post_with_metas_to_remove() {
+	public function test_sync_post_with_metas_to_remove() {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Posts
@@ -620,7 +620,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( 'value1' ), get_post_meta( $from, 'key2' ) );
 	}
 
-	function test_source_post_was_sticky_before_sync_was_active() {
+	public function test_source_post_was_sticky_before_sync_was_active() {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Posts
@@ -649,7 +649,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertTrue( is_sticky( $to ) );
 	}
 
-	function test_target_post_was_sticky_before_sync_was_active() {
+	public function test_target_post_was_sticky_before_sync_was_active() {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Posts
@@ -673,7 +673,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	// Bug fixed in 2.3.2
-	function test_delete_term() {
+	public function test_delete_term() {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Categories
@@ -702,7 +702,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	// Bug fixed in 2.3.11
-	function test_category_hierarchy() {
+	public function test_category_hierarchy() {
 		// Categories
 		$child_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
@@ -735,7 +735,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	// Bug fixed in 2.5.2
-	function test_sync_category_parent_modification() {
+	public function test_sync_category_parent_modification() {
 		// Parent 1
 		$p1en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
@@ -775,7 +775,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $p2en, $term->parent );
 	}
 
-	function test_if_cannot_synchronize() {
+	public function test_if_cannot_synchronize() {
 		add_filter( 'pll_pre_current_user_can_synchronize_post', '__return_null' ); // Enable capability check
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
@@ -839,7 +839,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'aside', get_post_format( $from ) );
 	}
 
-	function test_slashes() {
+	public function test_slashes() {
 		self::$model->options['sync'] = array( 'post_meta' );
 		$sync = new PLL_Admin_Sync( $this->pll_admin );
 

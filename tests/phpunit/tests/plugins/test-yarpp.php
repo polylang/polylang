@@ -2,7 +2,7 @@
 
 class YARPP_Test extends PLL_UnitTestCase {
 	// bug introduced in 1.8 and fixed in 1.8.2
-	function test_yarpp_support() {
+	public function test_yarpp_support() {
 		define( 'YARPP_VERSION', '1.0' ); // Fake.
 		do_action( 'plugins_loaded' );
 		do_action( 'init' );

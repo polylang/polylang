@@ -17,23 +17,23 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 		copy( dirname( __FILE__ ) . '/../data/fr_FR.mo', WP_LANG_DIR . '/fr_FR.mo' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 		remove_all_actions( 'admin_init' ); // to save ( a lot of ) time as WP will attempt to update core and plugins
 	}
 
-	function tear_down() {
+	public function tear_down() {
 		parent::tear_down();
 
 		unload_textdomain( 'default' );
 	}
 
-	function _ajax_test_locale() {
+	public function _ajax_test_locale() {
 		load_default_textdomain();
 		wp_die( wp_json_encode( __( 'Dashboard' ) ) ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
 	}
 
-	function test_locale_for_logged_in_user() {
+	public function test_locale_for_logged_in_user() {
 		wp_set_current_user( 1 );
 		update_user_meta( 1, 'locale', 'en_US' );
 

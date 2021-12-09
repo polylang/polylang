@@ -3,7 +3,7 @@
 class Parent_Page_Test extends PLL_UnitTestCase {
 	static $editor;
 
-	static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
@@ -12,7 +12,7 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests.

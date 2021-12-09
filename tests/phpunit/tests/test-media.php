@@ -12,7 +12,7 @@ class Media_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$options = array_merge( PLL_Install::get_default_options(), array( 'media_support' => 1 ) );
@@ -25,7 +25,7 @@ class Media_Test extends PLL_UnitTestCase {
 		add_filter( 'intermediate_image_sizes', '__return_empty_array' );  // don't create intermediate sizes to save time
 	}
 
-	function test_upload() {
+	public function test_upload() {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
 
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
@@ -36,7 +36,7 @@ class Media_Test extends PLL_UnitTestCase {
 		wp_delete_attachment( $fr );
 	}
 
-	function test_media_translation_and_delete_attachment() {
+	public function test_media_translation_and_delete_attachment() {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
 
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
@@ -59,7 +59,7 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertFileDoesNotExist( $filename );
 	}
 
-	function test_attachment_fields_to_edit() {
+	public function test_attachment_fields_to_edit() {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$fr = $this->factory->attachment->create_upload_object( $filename );
 		self::$model->post->set_language( $fr, 'fr' );
@@ -83,7 +83,7 @@ class Media_Test extends PLL_UnitTestCase {
 	/**
 	 * @since 3.1 Since the language and translations are updated through a previous AJAX call, we'd rather not perform an unnecessary update now.
 	 */
-	function test_attachment_fields_to_save() {
+	public function test_attachment_fields_to_save() {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 		$en = $this->factory->attachment->create_upload_object( $filename );
 		self::$model->post->set_language( $en, 'en' );
@@ -112,7 +112,7 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 0, $set_language_spy->getInvocationCount() );
 	}
 
-	function test_create_media_translation_with_slashes() {
+	public function test_create_media_translation_with_slashes() {
 		$slash_2 = '\\\\';
 		$en = $this->factory->attachment->create(
 			array(

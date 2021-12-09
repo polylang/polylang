@@ -2,18 +2,18 @@
 
 class Admin_Notices_Test extends PLL_UnitTestCase {
 
-	static function wp_redirect() {
-		throw new Exception( 'Call to wp_redirect' );
-	}
-
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
-	function test_hide_notice() {
+	public static function wp_redirect() {
+		throw new Exception( 'Call to wp_redirect' );
+	}
+
+	public function test_hide_notice() {
 		// Allows to continue the execution after wp_redirect + exit.
 		add_filter( 'wp_redirect', array( __CLASS__, 'wp_redirect' ) );
 		if ( method_exists( $this, 'setExpectedException' ) ) {
@@ -37,7 +37,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( 'review' ), get_user_meta( 1, 'pll_dismissed_notices', true ) );
 	}
 
-	function test_no_review_notice_for_old_users() {
+	public function test_no_review_notice_for_old_users() {
 		wp_set_current_user( 1 );
 
 		$_GET['page'] = 'mlang';
@@ -53,7 +53,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $out, 'review' ) );
 	}
 
-	function test_review_notice() {
+	public function test_review_notice() {
 		wp_set_current_user( 1 );
 
 		$_GET['page'] = 'mlang';
@@ -74,7 +74,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	function test_hidden_review_notice() {
+	public function test_hidden_review_notice() {
 		wp_set_current_user( 1 );
 		update_user_meta( 1, 'pll_dismissed_notices', array( 'review' ) );
 
@@ -92,7 +92,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $out, 'review' ) );
 	}
 
-	function test_no_review_notice_for_non_admin() {
+	public function test_no_review_notice_for_non_admin() {
 		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $editor );
 
@@ -110,7 +110,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $out );
 	}
 
-	function test_pllwc_notice() {
+	public function test_pllwc_notice() {
 		wp_set_current_user( 1 );
 
 		$_GET['page'] = 'mlang';
@@ -129,7 +129,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $out, 'pllwc' ) );
 	}
 
-	function test_lingotek_notice() {
+	public function test_lingotek_notice() {
 		wp_set_current_user( 1 );
 
 		$_GET['page'] = 'mlang';
@@ -154,7 +154,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		}
 	}
 
-	function test_legacy_user_meta() {
+	public function test_legacy_user_meta() {
 		wp_set_current_user( 1 );
 		update_user_meta( 1, 'pll_dismissed_notices', array( 'test_notice' ) );
 

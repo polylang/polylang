@@ -12,7 +12,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		self::$model->options['post_types'] = array(
@@ -33,14 +33,14 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		new PLL_CRUD_Terms( $frontend );
 	}
 
-	function tear_down() {
+	public function tear_down() {
 		parent::tear_down();
 
 		_unregister_post_type( 'trcpt' );
 		_unregister_taxonomy( 'trtax' );
 	}
 
-	function test_category() {
+	public function test_category() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -61,7 +61,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'category__in' => array( $en ) ) ) );
 	}
 
-	function test_tag() {
+	public function test_tag() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -89,7 +89,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag_slug__in' => array( 'test' ) ) ) );
 	}
 
-	function test_custom_tax() {
+	public function test_custom_tax() {
 		$term_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -187,7 +187,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( array( $post_en, $post_fr ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
-	function test_post() {
+	public function test_post() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -204,7 +204,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'post__in' => array( $en ) ) ) );
 	}
 
-	function test_page() {
+	public function test_page() {
 		$parent_en = $en = $this->factory->post->create( array( 'post_title' => 'test_parent', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -233,7 +233,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
 	}
 
-	function test_get_terms() {
+	public function test_get_terms() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 

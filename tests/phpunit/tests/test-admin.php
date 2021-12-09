@@ -13,7 +13,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function test_admin_bar_menu() {
+	public function test_admin_bar_menu() {
 		global $wp_admin_bar;
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar
 
@@ -38,7 +38,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '/wp-admin/edit.php?lang=fr', $fr->href );
 	}
 
-	function _test_scripts( $scripts ) {
+	protected function _test_scripts( $scripts ) {
 		$links_model = self::$model->get_links_model();
 		$pll_admin = new PLL_Admin( $links_model );
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
@@ -72,7 +72,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		in_array( 'css', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
 	}
 
-	function test_scripts_in_post_list_table() {
+	public function test_scripts_in_post_list_table() {
 		$GLOBALS['hook_suffix'] = 'edit.php';
 		set_current_screen();
 
@@ -80,7 +80,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->_test_scripts( $scripts );
 	}
 
-	function test_scripts_in_untranslated_cpt_list_table() {
+	public function test_scripts_in_untranslated_cpt_list_table() {
 		$GLOBALS['hook_suffix'] = 'edit.php';
 		$_REQUEST['post_type'] = 'cpt';
 		register_post_type( 'cpt' );
@@ -90,7 +90,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->_test_scripts( $scripts );
 	}
 
-	function test_scripts_in_edit_post() {
+	public function test_scripts_in_edit_post() {
 		$GLOBALS['hook_suffix'] = 'post.php';
 		set_current_screen();
 
@@ -98,7 +98,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->_test_scripts( $scripts );
 	}
 
-	function test_scripts_in_edit_untranslated_cpt() {
+	public function test_scripts_in_edit_untranslated_cpt() {
 		$GLOBALS['hook_suffix'] = 'post.php';
 		$_REQUEST['post_type'] = 'cpt';
 		register_post_type( 'cpt' );
@@ -109,7 +109,7 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 
-	function test_scripts_in_media_list_table() {
+	public function test_scripts_in_media_list_table() {
 		$GLOBALS['hook_suffix'] = 'upload.php';
 		set_current_screen();
 
@@ -117,7 +117,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->_test_scripts( $scripts );
 	}
 
-	function test_scripts_in_terms_list_table() {
+	public function test_scripts_in_terms_list_table() {
 		$GLOBALS['hook_suffix'] = 'edit-tags.php';
 		set_current_screen();
 
@@ -125,7 +125,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->_test_scripts( $scripts );
 	}
 
-	function test_scripts_in_untranslated_custom_tax_list_table() {
+	public function test_scripts_in_untranslated_custom_tax_list_table() {
 		$GLOBALS['hook_suffix'] = 'edit-tags.php';
 		$_REQUEST['taxonomy'] = 'tax';
 		register_taxonomy( 'tax', 'post' );
@@ -135,7 +135,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->_test_scripts( $scripts );
 	}
 
-	function test_scripts_in_edit_term() {
+	public function test_scripts_in_edit_term() {
 		$GLOBALS['hook_suffix'] = 'term.php';
 		set_current_screen();
 
@@ -143,7 +143,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->_test_scripts( $scripts );
 	}
 
-	function test_scripts_in_edit_unstranslated_custom_tax() {
+	public function test_scripts_in_edit_unstranslated_custom_tax() {
 		$GLOBALS['hook_suffix'] = 'term.php';
 		$_REQUEST['taxonomy'] = 'tax';
 		register_taxonomy( 'tax', 'post' );
@@ -154,7 +154,7 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 
-	function test_scripts_in_user_profile() {
+	public function test_scripts_in_user_profile() {
 		$GLOBALS['hook_suffix'] = 'profile.php';
 		set_current_screen();
 

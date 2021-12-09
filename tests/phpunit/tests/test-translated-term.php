@@ -13,7 +13,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 	}
 
-	function test_term_language() {
+	public function test_term_language() {
 		$term_id = $this->factory->term->create();
 		self::$model->term->set_language( $term_id, 'fr' );
 
@@ -21,7 +21,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertCount( 2, get_terms( 'term_translations' ) ); // 1 translation group per term + 1 for default categories
 	}
 
-	function test_term_translation() {
+	public function test_term_translation() {
 		$en = $this->factory->term->create();
 		self::$model->term->set_language( $en, 'en' );
 
@@ -40,7 +40,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertEquals( self::$model->term->get_translation( $de, 'fr' ), $fr );
 	}
 
-	function test_delete_term_translation() {
+	public function test_delete_term_translation() {
 		$en = $this->factory->term->create();
 		self::$model->term->set_language( $en, 'en' );
 

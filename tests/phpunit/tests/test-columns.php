@@ -15,7 +15,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		// set a user to pass current_user_can tests
@@ -28,7 +28,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
 	}
 
-	function tear_down() {
+	public function tear_down() {
 		unset( $this->pll_admin->filter_lang );
 
 		parent::tear_down();
@@ -37,12 +37,12 @@ class Columns_Test extends PLL_UnitTestCase {
 	/**
 	 * This must be the first test due to the static variable in get_culumn_headers().
 	 */
-	function test_no_screen_options_in_term_screen() {
+	public function test_no_screen_options_in_term_screen() {
 		set_current_screen( 'term.php' );
 		$this->assertEmpty( get_column_headers( get_current_screen() ) );
 	}
 
-	function test_post_with_no_language() {
+	public function test_post_with_no_language() {
 		$post_id = $this->factory->post->create();
 
 		ob_start();
@@ -51,7 +51,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( ob_get_clean() );
 	}
 
-	function test_post_language() {
+	public function test_post_language() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -70,7 +70,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $column, 'href' ) );
 	}
 
-	function test_untranslated_post() {
+	public function test_untranslated_post() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -88,7 +88,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	// special case for media
-	function test_untranslated_media() {
+	public function test_untranslated_media() {
 		$en = $this->factory->attachment->create_object( 'image.jpg' );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -105,7 +105,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( ob_get_clean() );
 	}
 
-	function test_translated_post() {
+	public function test_translated_post() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -126,7 +126,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( ob_get_clean() );
 	}
 
-	function test_term_with_no_language() {
+	public function test_term_with_no_language() {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
@@ -138,7 +138,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $column_fr );
 	}
 
-	function test_term_language() {
+	public function test_term_language() {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
@@ -156,7 +156,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertFalse( strpos( $column, 'href' ) );
 	}
 
-	function test_untranslated_term() {
+	public function test_untranslated_term() {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
@@ -174,7 +174,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( ob_get_clean() );
 	}
 
-	function test_translated_term() {
+	public function test_translated_term() {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
@@ -197,7 +197,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( ob_get_clean() );
 	}
 
-	function test_add_post_column() {
+	public function test_add_post_column() {
 		// We need to call directly the filter "manage_{$screen->id}_columns" due to the static var in get_column_headers()
 		$list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => 'edit.php' ) );
 		list( $columns, $hidden, $sortable, $primary ) = $list_table->get_column_info();
@@ -211,7 +211,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'comments', $columns[ $en + 2 ] );
 	}
 
-	function test_add_post_column_with_filter() {
+	public function test_add_post_column_with_filter() {
 		$this->pll_admin->filter_lang = self::$model->get_language( 'en' );
 		$list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => 'edit.php' ) );
 		list( $columns, $hidden, $sortable, $primary ) = $list_table->get_column_info();
@@ -219,7 +219,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertFalse( array_search( 'language_fr', $hidden ) );
 	}
 
-	function test_add_term_column() {
+	public function test_add_term_column() {
 		set_current_screen( 'edit-tags.php' );
 		// We need to call directly the filter "manage_{$screen->id}_columns" due to the static var in get_column_headers()
 		$list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => 'edit-tags.php' ) );
@@ -234,7 +234,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'posts', $columns[ $en + 2 ] );
 	}
 
-	function test_add_term_column_with_filter() {
+	public function test_add_term_column_with_filter() {
 		set_current_screen( 'edit-tags.php' );
 		$this->pll_admin->filter_lang = self::$model->get_language( 'fr' );
 		$list_table = _get_list_table( 'WP_Terms_List_Table', array( 'screen' => 'edit-tags.php' ) );
@@ -243,7 +243,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertFalse( array_search( 'language_en', $hidden ) );
 	}
 
-	function test_post_inline_edit() {
+	public function test_post_inline_edit() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 

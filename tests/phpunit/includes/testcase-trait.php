@@ -16,7 +16,7 @@ trait PLL_UnitTestCase_Trait {
 	 *
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
 	 */
-	static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		$options = PLL_Install::get_default_options();
 		$options['hide_default'] = 0; // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis.
 		$options['media_support'] = 1; // Force option to pre 3.1 value otherwise phpunit tests break on Travis.
@@ -26,14 +26,14 @@ trait PLL_UnitTestCase_Trait {
 	/**
 	 * Deletes all languages after all tests have run.
 	 */
-	static function wpTearDownAfterClass() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public static function wpTearDownAfterClass() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		self::delete_all_languages();
 	}
 
 	/**
 	 * Empties the languages cache after all tests
 	 */
-	function tear_down() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public function tear_down() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		self::$model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient
 
 		$globals = array( 'current_screen', 'hook_suffix', 'wp_settings_errors', 'post_type', 'wp_scripts', 'wp_styles' );
@@ -53,7 +53,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @param array  $args   Allows to optionnally override the default values for the language.
 	 * @throws InvalidArgumentException If language is not created.
 	 */
-	static function create_language( $locale, $args = array() ) {
+	public static function create_language( $locale, $args = array() ) {
 		$languages = include POLYLANG_DIR . '/settings/languages.php';
 		$values    = $languages[ $locale ];
 
@@ -78,7 +78,7 @@ trait PLL_UnitTestCase_Trait {
 	/**
 	 * Deletes all languages
 	 */
-	static function delete_all_languages() {
+	public static function delete_all_languages() {
 		$languages = self::$model->get_languages_list();
 		if ( is_array( $languages ) ) {
 			// Delete the default categories first.

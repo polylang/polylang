@@ -14,7 +14,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		self::$model->options['post_types'] = array(
@@ -27,51 +27,51 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 	}
 
-	function test_add_language_to_link() {
+	public function test_add_language_to_link() {
 		$url = $this->host . '/?p=test';
 
 		$this->assertEquals( $this->host . '/?p=test', $this->links_model->add_language_to_link( $url, self::$model->get_language( 'en' ) ) );
 		$this->assertEquals( $this->host . '/?p=test&lang=fr', $this->links_model->add_language_to_link( $url, self::$model->get_language( 'fr' ) ) );
 	}
 
-	function test_double_add_language_to_link() {
+	public function test_double_add_language_to_link() {
 		$this->assertEquals( $this->host . '/?p=test&lang=fr', $this->links_model->add_language_to_link( $this->host . '/?p=test&lang=fr', self::$model->get_language( 'fr' ) ) );
 	}
 
-	function test_remove_language_from_link() {
+	public function test_remove_language_from_link() {
 		$this->assertEquals( $this->host . '/?p=test', $this->links_model->remove_language_from_link( $this->host . '/?p=test&lang=fr' ) );
 	}
 
-	function test_switch_language_in_link() {
+	public function test_switch_language_in_link() {
 		$this->assertEquals( $this->host . '/?p=test', $this->links_model->switch_language_in_link( $this->host . '/?p=test&lang=fr', self::$model->get_language( 'en' ) ) );
 		$this->assertEquals( $this->host . '/?p=test&lang=de', $this->links_model->switch_language_in_link( $this->host . '/?p=test&lang=fr', self::$model->get_language( 'de' ) ) );
 		$this->assertEquals( $this->host . '/?p=test&lang=fr', $this->links_model->switch_language_in_link( $this->host . '/?p=test', self::$model->get_language( 'fr' ) ) );
 	}
 
-	function test_add_paged_to_link() {
+	public function test_add_paged_to_link() {
 		$this->assertEquals( $this->host . '/?p=test&paged=2', $this->links_model->add_paged_to_link( $this->host . '/?p=test', 2 ) );
 		$this->assertEquals( $this->host . '/?p=test&lang=fr&paged=2', $this->links_model->add_paged_to_link( $this->host . '/?p=test&lang=fr', 2 ) );
 	}
 
-	function test_remove_paged_from_link() {
+	public function test_remove_paged_from_link() {
 		$this->assertEquals( $this->host . '/?p=test', $this->links_model->remove_paged_from_link( $this->host . '/?p=test&paged=2' ) );
 		$this->assertEquals( $this->host . '/?p=test&lang=fr', $this->links_model->remove_paged_from_link( $this->host . '/?p=test&lang=fr&paged=2' ) );
 	}
 
-	function test_get_language_from_url() {
+	public function test_get_language_from_url() {
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->host, PHP_URL_HOST );
 		$_SERVER['REQUEST_URI'] = '/?p=test&lang=fr';
 		$this->assertEquals( 'fr', $this->links_model->get_language_from_url() );
 	}
 
 	// bug fixed in 1.8
-	function test_home_url() {
+	public function test_home_url() {
 		$this->assertEquals( $this->host . '/', $this->links_model->home_url( self::$model->get_language( 'en' ) ) );
 		$this->assertEquals( $this->host . '/?lang=fr', $this->links_model->home_url( self::$model->get_language( 'fr' ) ) );
 	}
 
 	// bug fixed in v1.8
-	function test_language_code_in_post_url() {
+	public function test_language_code_in_post_url() {
 		self::$model->options['force_lang'] = 1;
 		$frontend = new PLL_Frontend( $this->links_model );
 		new PLL_Filters_Links( $frontend );
@@ -104,7 +104,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 	}
 
-	function test_language_from_post_content() {
+	public function test_language_from_post_content() {
 		self::$model->options['force_lang'] = 0;
 		$frontend = new PLL_Frontend( $this->links_model );
 		new PLL_Filters_Links( $frontend );

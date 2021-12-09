@@ -17,7 +17,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		self::$model->options['hide_default'] = 0;
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$links_model = self::$model->get_links_model();
@@ -36,7 +36,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &$this->frontend;
 	}
 
-	function test_hreflang() {
+	public function test_hreflang() {
 		$uk = $this->factory->post->create();
 		self::$model->post->set_language( $uk, 'uk' );
 
@@ -73,7 +73,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $out, 'x-default' ) );
 	}
 
-	function test_paginated_post() {
+	public function test_paginated_post() {
 		$uk = $this->factory->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
 		self::$model->post->set_language( $uk, 'uk' );
 
@@ -101,7 +101,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $out );
 	}
 
-	function test_paged_archive() {
+	public function test_paged_archive() {
 		update_option( 'posts_per_page', 2 ); // to avoid creating too much posts
 
 		$posts_us = $this->factory->post->create_many( 3 );

@@ -15,7 +15,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		global $wp_rewrite;
@@ -42,7 +42,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	// overrides WP_UnitTestCase::go_to
-	function go_to( $url ) {
+	public function go_to( $url ) {
 		// copy paste of WP_UnitTestCase::go_to
 		$_GET = $_POST = array();
 		foreach ( array( 'query_string', 'id', 'postdata', 'authordata', 'day', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages', 'pagenow' ) as $v ) {
@@ -85,7 +85,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$GLOBALS['wp']->main( $parts['query'] );
 	}
 
-	function test_home_latest_posts() {
+	public function test_home_latest_posts() {
 		$fr = $this->factory->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
@@ -93,7 +93,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', $this->frontend->curlang->slug );
 	}
 
-	function test_home_latest_posts_with_hide_default() {
+	public function test_home_latest_posts_with_hide_default() {
 		$en = $this->factory->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
@@ -101,7 +101,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 
-	function test_single_post() {
+	public function test_single_post() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -115,7 +115,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 
-	function test_page() {
+	public function test_page() {
 		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
@@ -129,7 +129,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 
-	function test_category_default_lang() {
+	public function test_category_default_lang() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
@@ -137,7 +137,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 
-	function test_category_non_default_lang() {
+	public function test_category_non_default_lang() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -145,7 +145,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', $this->frontend->curlang->slug );
 	}
 
-	function test_post_tag_default_lang() {
+	public function test_post_tag_default_lang() {
 		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
@@ -153,7 +153,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 
-	function test_post_tag_non_default_lang() {
+	public function test_post_tag_non_default_lang() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
@@ -161,7 +161,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'fr', $this->frontend->curlang->slug );
 	}
 
-	function test_archive() {
+	public function test_archive() {
 		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->term->set_language( $en, 'en' );
 
@@ -175,7 +175,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->frontend->curlang->slug );
 	}
 
-	function test_archive_with_default_permalinks() {
+	public function test_archive_with_default_permalinks() {
 		$GLOBALS['wp_rewrite']->set_permalink_structure( '' );
 
 		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );

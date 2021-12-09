@@ -12,7 +12,7 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
@@ -25,7 +25,7 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 	}
 
-	function test_get_calendar() {
+	public function test_get_calendar() {
 		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $en, 'en' );
 

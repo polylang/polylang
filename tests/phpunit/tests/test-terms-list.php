@@ -15,7 +15,7 @@ class Terms_List_Test extends PLL_UnitTestCase {
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
@@ -26,7 +26,7 @@ class Terms_List_Test extends PLL_UnitTestCase {
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
 	}
 
-	function test_term_list_with_admin_language_filter() {
+	public function test_term_list_with_admin_language_filter() {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 

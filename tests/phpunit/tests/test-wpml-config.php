@@ -17,20 +17,20 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	static function wpTearDownAfterClass() {
+	public static function wpTearDownAfterClass() {
 		parent::wpTearDownAfterClass();
 
 		unlink( WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 		rmdir( WP_CONTENT_DIR . '/polylang' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$this->links_model = self::$model->get_links_model();
 	}
 
-	function prepare_options( $method = 'ARRAY' ) {
+	protected function prepare_options( $method = 'ARRAY' ) {
 		// mirror options defined in the sample wpml-config.xml
 		$my_plugins_options = array(
 			'option_name_1'   => 'val1',
@@ -77,7 +77,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		update_option( 'generic_option_2', 'generic_val_2' );
 	}
 
-	function translate_options( $slug ) {
+	protected function translate_options( $slug ) {
 		$language = self::$model->get_language( $slug );
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
@@ -103,7 +103,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$mo->export_to_db( $language );
 	}
 
-	function test_cf() {
+	public function test_cf() {
 		wp_set_current_user( 1 ); // To pass current_user_can_synchronize() test
 
 		$pll_admin = new PLL_Admin( $this->links_model );
@@ -152,7 +152,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
 	}
 
-	function test_custom_term_field() {
+	public function test_custom_term_field() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
@@ -199,7 +199,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'D', get_term_meta( $from, 'term_meta_D', true ) );
 	}
 
-	function test_cpt() {
+	public function test_cpt() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
@@ -221,7 +221,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		_unregister_post_type( 'dvd' );
 	}
 
-	function test_tax() {
+	public function test_tax() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
@@ -245,7 +245,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		_unregister_taxonomy( 'publisher' );
 	}
 
-	function test_translate_strings() {
+	public function test_translate_strings() {
 		$this->prepare_options( 'ARRAY' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
@@ -275,7 +275,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'generic_val_2_fr', get_option( 'generic_option_2' ) );
 	}
 
-	function test_translate_strings_object() {
+	public function test_translate_strings_object() {
 		$this->prepare_options( 'OBJECT' ); // Before reading the wpml-config.xml file.
 		$this->translate_options( 'fr' );
 
@@ -303,7 +303,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 
-	function _test_register_string() {
+	protected function _test_register_string() {
 		$GLOBALS['polylang'] = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
@@ -327,12 +327,12 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertContains( 'generic_val_2', $strings );
 	}
 
-	function test_register_string() {
+	public function test_register_string() {
 		$this->prepare_options( 'ARRAY' );
 		$this->_test_register_string();
 	}
 
-	function test_register_string_object() {
+	public function test_register_string_object() {
 		$this->prepare_options( 'OBJECT' );
 		$this->_test_register_string();
 	}

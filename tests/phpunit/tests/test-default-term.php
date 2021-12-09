@@ -17,7 +17,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
@@ -31,7 +31,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->pll_admin->default_term->add_hooks();
 	}
 
-	function get_edit_term_form( $tag_ID, $taxonomy ) {
+	protected function get_edit_term_form( $tag_ID, $taxonomy ) {
 		// Prepare all needed info before loading the entire form
 		$GLOBALS['post_type'] = 'post';
 		$tax                  = get_taxonomy( $taxonomy );
@@ -50,7 +50,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		return ob_get_clean();
 	}
 
-	function test_default_category_in_edit_tags() {
+	public function test_default_category_in_edit_tags() {
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
 		$default = self::$model->term->get( get_option( 'default_category' ), 'de' );
@@ -71,7 +71,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'disabled', $input->item( 0 )->getAttribute( 'disabled' ) );
 	}
 
-	function test_term_language_with_default_category() {
+	public function test_term_language_with_default_category() {
 
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy']  = 'category';
@@ -83,7 +83,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $column, 'default_cat' ) );
 	}
 
-	function test_add_and_delete_language() {
+	public function test_add_and_delete_language() {
 
 		$args = array(
 			'name'       => 'العربية',
@@ -101,7 +101,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $default_cat_lang->slug );
 	}
 
-	function test_new_default_category() {
+	public function test_new_default_category() {
 
 		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'new-default' ) );
 		update_option( 'default_category', $term_id );
@@ -112,7 +112,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	}
 
 	// bug introduced by WP 4.3 and fixed in v1.8.2
-	function test_default_category_in_list_table() {
+	public function test_default_category_in_list_table() {
 
 		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) ); // a non default category
 		$default = get_option( 'default_category' );
@@ -140,7 +140,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $list, 'edit-tags.php?action=delete&amp;taxonomy=category&amp;tag_ID=' . $id . '&amp;' ) );
 	}
 
-	function test_get_option_default_category() {
+	public function test_get_option_default_category() {
 		$option = get_option( 'default_category' );
 		$option_lang = self::$model->term->get_language( $option );
 
@@ -154,7 +154,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'es', $option_lang->slug );
 	}
 
-	function test_update_term_when_updating_default_language() {
+	public function test_update_term_when_updating_default_language() {
 		$option = get_option( 'default_category' );
 		$option_lang = self::$model->term->get_language( $option );
 		$es_option = self::$model->term->get_translation( $option, 'es' );

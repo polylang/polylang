@@ -13,7 +13,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		self::create_language( 'de_DE' );
 	}
 
-	function set_up() {
+	public function set_up() {
 		parent::set_up();
 
 		$registered_nav_menus = get_registered_nav_menus();
@@ -25,7 +25,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 	}
 
-	function test_nav_menu_locations() {
+	public function test_nav_menu_locations() {
 		// get the primary location of the current theme
 		$locations = array_keys( get_registered_nav_menus() );
 		$primary_location = reset( $locations );
@@ -118,7 +118,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( 'No language', wp_nav_menu( $args ) );
 	}
 
-	function test_delete_nav_menu() {
+	public function test_delete_nav_menu() {
 		$theme = get_option( 'stylesheet' );
 
 		// get the primary location of the current theme
@@ -156,7 +156,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( 'fr' => $menu_fr ), $options['nav_menus'][ $theme ][ $primary_location ] );
 	}
 
-	function test_auto_add_pages_to_menu() {
+	public function test_auto_add_pages_to_menu() {
 		// create 2 menus
 		$menu_en = wp_create_nav_menu( 'menu_en' );
 		$menu_fr = wp_create_nav_menu( 'menu_fr' );
@@ -192,7 +192,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $post_id, reset( $menu_items )->object_id ); // our page menu item in menu_fr
 	}
 
-	function test_combine_location() {
+	public function test_combine_location() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 
@@ -201,7 +201,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'primary___fr', $nav_menu->combine_location( 'primary___fr', self::$model->get_language( 'fr' ) ) );
 	}
 
-	function test_explode_location() {
+	public function test_explode_location() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 
@@ -209,7 +209,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( 'location' => 'primary', 'lang' => 'fr' ), $nav_menu->explode_location( 'primary___fr' ) );
 	}
 
-	function setup_nav_menus( $options ) {
+	protected function setup_nav_menus( $options ) {
 		// create posts
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
@@ -255,7 +255,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		return $primary_location;
 	}
 
-	function test_nav_menu_language_switcher() {
+	public function test_nav_menu_language_switcher() {
 		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1 ); // default values
 		$primary_location = $this->setup_nav_menus( $options );
 
@@ -275,7 +275,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	function test_nav_menu_language_switcher_as_dropdown() {
+	public function test_nav_menu_language_switcher_as_dropdown() {
 		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 1, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 1 );
 		$primary_location = $this->setup_nav_menus( $options );
 
@@ -303,7 +303,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	function test_menu_items_with_multiple_language_switchers() {
+	public function test_menu_items_with_multiple_language_switchers() {
 		// The switchers dropdown options.
 		$switchers_options = array(
 			array( 'hide_if_no_translation' => 0, 'hide_current' => 0, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 1 ),
@@ -352,7 +352,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	function test_update_nav_menu_item() {
+	public function test_update_nav_menu_item() {
 		wp_set_current_user( 1 );
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
@@ -382,7 +382,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEqualSets( $expected, get_post_meta( $item_id, '_pll_menu_item', true ) );
 	}
 
-	function test_language_switcher_metabox() {
+	public function test_language_switcher_metabox() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$nav_menu = new PLL_Admin_Nav_Menu( $pll_admin );
 		$nav_menu->admin_init(); // Setup filters
@@ -398,7 +398,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $xpath->query( '//input[@value="#pll_switcher"]' )->length );
 	}
 
-	function test_set_theme_mod_from_edit_menus_tab() {
+	public function test_set_theme_mod_from_edit_menus_tab() {
 		wp_set_current_user( 1 );
 
 		// Get the primary location of the current theme
@@ -431,7 +431,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 2, $options['nav_menu_locations'][ $primary_location ] );
 	}
 
-	function test_set_theme_mod_from_manage_locations_tab() {
+	public function test_set_theme_mod_from_manage_locations_tab() {
 		wp_set_current_user( 1 );
 
 		// Get the primary location of the current theme
@@ -461,7 +461,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 4, $options['nav_menu_locations'][ $primary_location ] );
 	}
 
-	function test_admin_nav_menus_scripts() {
+	public function test_admin_nav_menus_scripts() {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
 		$pll_admin->nav_menus = new PLL_Admin_Nav_Menu( $pll_admin );
