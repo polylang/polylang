@@ -8,7 +8,7 @@
 
 	<file>.</file>
 
-	<config name="minimum_supported_wp_version" value="5.4"/>
+	<config name="minimum_supported_wp_version" value="5.5"/>
 
 	<rule ref="PHPCompatibilityWP">
 		<config name="testVersion" value="5.6-"/>
