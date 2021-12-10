@@ -8,7 +8,7 @@ If you are not a developer, we recommend to [download Polylang](https://wordpres
 
 Before starting, make sure that you have the following software installed and working on your computer:
 
-1. A local [WordPress](https://wordpress.org/support/article/how-to-install-wordpress/) (5.4 or later) instance
+1. A local [WordPress](https://wordpress.org/support/article/how-to-install-wordpress/) (5.5 or later) instance
 2. [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) to clone the Polylang repository (or your fork of the Polylang repository).
 3. [Node.js](https://nodejs.org/en/download/) which provides [NPM](https://docs.npmjs.com/). They are both required by [Webpack](https://webpack.js.org/guides/getting-started/) that Polylang uses to build and minify CSS and javascript files. We recommend to install Node.js LTS version.
 4. [Composer](https://getcomposer.org/doc/00-intro.md) because Polylang uses its autoloader to work and it is required to install development tools such as PHP CodeSniffer that ensures your code follows coding standards.
