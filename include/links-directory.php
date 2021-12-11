@@ -123,10 +123,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			$url = pll_get_requested_url();
 		}
 
-		$path = wp_parse_url( $url, PHP_URL_PATH );
+		$path = (string) wp_parse_url( $url, PHP_URL_PATH );
 		$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : $this->home . '/' . $this->root;
 
-		$pattern = wp_parse_url( $root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
+		$pattern = (string) wp_parse_url( $root . ( $this->options['rewrite'] ? '' : 'language/' ), PHP_URL_PATH );
 		$pattern = preg_quote( $pattern, '#' );
 		$pattern = '#^' . $pattern . '(' . implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) . ')(/|$)#';
 		return preg_match( $pattern, trailingslashit( $path ), $matches ) ? $matches[1] : ''; // $matches[1] is the slug of the requested language
