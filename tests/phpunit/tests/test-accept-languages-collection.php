@@ -23,6 +23,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 	protected function get_known_language( $locale ) {
 		$language = self::$known_languages[ $locale ];
 		$language['slug'] = $language['code'];
+		$language['w3c']  = isset( $language['w3c'] ) ? $language['w3c'] : str_replace( '_', '-', $language['locale'] );
 		return new PLL_Language( $language );
 	}
 
