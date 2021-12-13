@@ -1,5 +1,7 @@
 <?php
 
+use Brain\Monkey\Functions;
+
 class Rest_Request_Test extends PLL_UnitTestCase {
 	/**
 	 * @var string
@@ -28,6 +30,12 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		$links_model         = self::$model->get_links_model();
 		$this->frontend      = new PLL_REST_Request( $links_model );
 		$GLOBALS['polylang'] = &$this->frontend;
+
+		Functions\when( 'pll_filter_input' )->alias(
+			function ( $type, $var_name, $filter, $options ) {
+				return INPUT_GET === $type && 'rest_route' === $var_name ? '/wp/v2/foobar' : null;
+			}
+		);
 	}
 
 	/**
@@ -42,7 +50,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	public function test_should_define_language_when_language_is_valid() {
 		self::$model->options['default_lang'] = 'en';
 
-		$_REQUEST['lang'] = 'fr';
+		$_GET['lang'] = 'fr';
 
 		$this->frontend->init();
 
@@ -53,7 +61,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	public function test_should_define_default_language_when_language_is_invalid() {
 		self::$model->options['default_lang'] = 'en';
 
-		$_REQUEST['lang'] = 'it';
+		$_GET['lang'] = 'it';
 
 		$this->frontend->init();
 
@@ -64,7 +72,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	public function test_should_not_define_default_language_when_default_language_is_invalid() {
 		self::$model->options['default_lang'] = 'es';
 
-		$_REQUEST['lang'] = 'it';
+		$_GET['lang'] = 'it';
 
 		$this->frontend->init();
 
@@ -74,7 +82,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	public function test_should_not_define_language_when_not_sent() {
 		self::$model->options['default_lang'] = 'en';
 
-		unset( $_REQUEST['lang'] );
+		unset( $_GET['lang'] );
 
 		$this->frontend->init();
 

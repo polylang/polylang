@@ -14,7 +14,7 @@
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"behat/behat": "^3.7|^3.8",
-		"yoast/phpunit-polyfills": "^1.0"
+		"yoast/wp-test-utils": "^1.0"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,

@@ -129,9 +129,6 @@ class PLL_REST_Request extends PLL_Base {
 			/** This action is documented in frontend/choose-lang.php */
 			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 		} else {
-			// Make sure it is `false`, not `null`.
-			$this->curlang = false;
-
 			/** This action is documented in include/class-polylang.php */
 			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
 		}
@@ -148,7 +145,7 @@ class PLL_REST_Request extends PLL_Base {
 	public function get_rest_route() {
 		if ( empty( get_option( 'permalink_structure' ) ) ) {
 			// Not using permalinks.
-			$current_route = $this->filter_input(
+			$current_route = pll_filter_input(
 				INPUT_GET,
 				'rest_route',
 				FILTER_CALLBACK,

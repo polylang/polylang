@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../../../vendor/antecedent/patchwork/Patchwork.php';
 $_root_dir = dirname( dirname( dirname( __DIR__ ) ) );
 $_tests_dir = $_root_dir . '/tmp/wordpress-tests-lib';
 require_once $_tests_dir . '/includes/functions.php';
