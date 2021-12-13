@@ -376,7 +376,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		/**
-		 * Fires after the language is defined by PLL in the admin context.
+		 * Fires after the language is (maybe) defined by PLL in the admin context.
 		 *
 		 * @since 1234
 		 *
