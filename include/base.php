@@ -167,4 +167,25 @@ abstract class PLL_Base {
 		 */
 		return $new_blog_id !== $prev_blog_id && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' );
 	}
+
+	/**
+	 * Wrapper of `filter_input()` to make things testable.
+	 * For internal use only.
+	 *
+	 * @since  1234
+	 * @access private
+	 * @link   https://www.php.net/manual/en/function.filter-input.php
+	 *
+	 * @param  int         $type     One of `INPUT_GET`, `INPUT_POST`, `INPUT_COOKIE`, `INPUT_SERVER`, or `INPUT_ENV`.
+	 * @param  string      $var_name Name of a variable to get.
+	 * @param  int         $filter   The ID of the filter to apply. If omitted, FILTER_DEFAULT will be used, which is
+	 *                               equivalent to FILTER_UNSAFE_RAW. This will result in no filtering taking place by
+	 *                               default.
+	 * @param  mixed[]|int $options  Associative array of options or bitwise disjunction of flags. If filter accepts
+	 *                               options, flags can be provided in "flags" field of array.
+	 * @return mixed
+	 */
+	public function filter_input( $type, $var_name, $filter = FILTER_DEFAULT, $options = 0 ) {
+		return filter_input( $type, $var_name, $filter, $options );
+	}
 }
