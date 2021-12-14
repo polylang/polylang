@@ -30,6 +30,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$_GET['pll_action'] = $_REQUEST['pll_action'] = 'edit'; // languages_page() tests $_REQUEST
 		$_GET['lang'] = $lang->term_id;
 		$GLOBALS['hook_suffix'] = 'settings_page_mlang';
+		$GLOBALS['plugin_page'] = 'mlang';
 		get_admin_page_title();
 		set_current_screen();
 
