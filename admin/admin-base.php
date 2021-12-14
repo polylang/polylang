@@ -342,7 +342,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		/**
 		 * Fires before the language is defined by PLL in the admin context.
 		 *
-		 * @since 1234
+		 * @since 3.2
 		 *
 		 * @param PLL_Admin_Base $polylang Instance of the main PLL's object.
 		 */
@@ -378,7 +378,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		/**
 		 * Fires after the language is (maybe) defined by PLL in the admin context.
 		 *
-		 * @since 1234
+		 * @since 3.2
 		 *
 		 * @param PLL_Admin_Base $polylang Instance of the main PLL's object.
 		 */
