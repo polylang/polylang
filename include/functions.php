@@ -112,9 +112,9 @@ function pll_use_block_editor_plugin() {
  * Wrapper of `filter_input()` to make things testable.
  * For internal use only.
  *
- * @since  1234
- * @access private
- * @link   https://www.php.net/manual/en/function.filter-input.php
+ * @since 3.2
+ * @link  https://www.php.net/manual/en/function.filter-input.php
+ * @private
  *
  * @param  int         $type     One of `INPUT_GET`, `INPUT_POST`, `INPUT_COOKIE`, `INPUT_SERVER`, or `INPUT_ENV`.
  * @param  string      $var_name Name of a variable to get.

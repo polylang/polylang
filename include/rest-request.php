@@ -79,7 +79,7 @@ class PLL_REST_Request extends PLL_Base {
 	/**
 	 * Sets the current language in the REST context, used to filter the content.
 	 *
-	 * @since 1234
+	 * @since 3.2
 	 *
 	 * @return void
 	 */
@@ -89,7 +89,7 @@ class PLL_REST_Request extends PLL_Base {
 		/**
 		 * Fires before the language is defined by PLL in the REST context.
 		 *
-		 * @since 1234
+		 * @since 3.2
 		 *
 		 * @param PLL_REST_Request      $polylang Instance of the main PLL's object.
 		 * @param WP_REST_Request|false $request  A `WP_REST_Request` request. False on failure to retrieve the current
@@ -115,7 +115,7 @@ class PLL_REST_Request extends PLL_Base {
 		/**
 		 * Fires after the language is (maybe) defined by PLL in the REST context.
 		 *
-		 * @since 1234
+		 * @since 3.2
 		 *
 		 * @param PLL_REST_Request      $polylang Instance of the main PLL's object.
 		 * @param WP_REST_Request|false $request  A `WP_REST_Request` request. False on failure to retrieve the current
@@ -137,7 +137,7 @@ class PLL_REST_Request extends PLL_Base {
 	/**
 	 * Returns the current REST route (the path after `/wp-json`).
 	 *
-	 * @since  1234
+	 * @since  3.2
 	 * @global mixed[] $HTTP_SERVER_VARS
 	 *
 	 * @return string
@@ -186,7 +186,7 @@ class PLL_REST_Request extends PLL_Base {
 	 * `$wp_rewrite` is not defined.
 	 * Note: The returned URL is NOT escaped.
 	 *
-	 * @since  1234
+	 * @since  3.2
 	 * @see    rest_url()
 	 * @global WP_Rewrite $wp_rewrite
 	 *
@@ -218,7 +218,7 @@ class PLL_REST_Request extends PLL_Base {
 	/**
 	 * Returns a dummy `WP_REST_Request` object for the current REST route, which can be used to retrieve data.
 	 *
-	 * @since 1234
+	 * @since 3.2
 	 * @see   WP_REST_Server->serve_request()
 	 *
 	 * @return WP_REST_Request|false
@@ -253,7 +253,7 @@ class PLL_REST_Request extends PLL_Base {
 	/**
 	 * Returns a REST server instance without triggering `rest_api_init`.
 	 *
-	 * @since  1234
+	 * @since  3.2
 	 * @see    rest_get_server()
 	 * @global WP_REST_Server $wp_rest_server
 	 *
