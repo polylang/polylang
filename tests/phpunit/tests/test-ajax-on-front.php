@@ -9,12 +9,7 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-
-		// Copy language file
-		@mkdir( DIR_TESTDATA );
-		@mkdir( WP_LANG_DIR );
-		copy( dirname( __FILE__ ) . '/../data/fr_FR.mo', WP_LANG_DIR . '/fr_FR.mo' );
+		self::create_language( 'es_ES' );
 	}
 
 	public function set_up() {
@@ -30,7 +25,7 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 
 	public function _ajax_test_locale() {
 		load_default_textdomain();
-		wp_die( wp_json_encode( __( 'Dashboard' ) ) ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
+		_e( 'Invalid parameter.' ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
 	}
 
 	public function test_locale_for_logged_in_user() {
@@ -39,20 +34,15 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 
 		$links_model = self::$model->get_links_model();
 		$frontend = new PLL_Frontend( $links_model );
-		$frontend->curlang = self::$model->get_language( 'fr' );
+		$frontend->curlang = self::$model->get_language( 'es' );
 		new PLL_Frontend_Filters( $frontend );
 
 		add_action( 'wp_ajax_test_locale', array( $this, '_ajax_test_locale' ) );
 
 		$_REQUEST['action'] = 'test_locale';
 
-		try {
-			$this->_handleAjax( 'test_locale' );
-		} catch ( WPAjaxDieStopException $e ) {
-			$response = json_decode( $e->getMessage(), true );
-			unset( $e );
-		}
+		$this->_handleAjax( 'test_locale' );
 
-		$this->assertEquals( 'Tableau de bord', $response );
+		$this->assertEquals( 'Parámetro no válido. ', $this->_last_response );
 	}
 }
