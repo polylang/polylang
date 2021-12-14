@@ -1,8 +1,13 @@
 <?php
 
+use Brain\Monkey;
 use Brain\Monkey\Functions;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 class Rest_Request_Test extends PLL_UnitTestCase {
+	// Adds Mockery expectations to the PHPUnit assertions count.
+	use MockeryPHPUnitIntegration;
+
 	/**
 	 * @var string
 	 */
@@ -26,6 +31,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
+		Monkey\setUp();
 
 		$links_model         = self::$model->get_links_model();
 		$this->frontend      = new PLL_REST_Request( $links_model );
@@ -42,6 +48,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	public function tear_down() {
+		Monkey\tearDown();
 		parent::tear_down();
 
 		unset( $GLOBALS['polylang'] );
