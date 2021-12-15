@@ -66,6 +66,36 @@ class PLL_Model {
 	}
 
 	/**
+	 * Builds the languages list from the taxonomy terms stored in the database.
+	 *
+	 * @since 3.2
+	 *
+	 * @return PLL_Language[]
+	 */
+	protected function get_languages_list_from_terms() {
+		$language_terms = get_terms( 'language', array( 'hide_empty' => false, 'orderby' => 'term_group' ) );
+		if ( empty( $language_terms ) || is_wp_error( $language_terms ) ) {
+			return array();
+		}
+
+		$term_language_terms = get_terms( 'term_language', array( 'hide_empty' => false ) );
+		if ( empty( $term_language_terms ) || is_wp_error( $term_language_terms ) ) {
+			return array();
+		}
+
+		$term_language_terms = array_combine( wp_list_pluck( $term_language_terms, 'slug' ), $term_language_terms );
+
+		$languages = array();
+		foreach ( $language_terms as $k => $v ) {
+			if ( isset( $term_language_terms[ 'pll_' . $v->slug ] ) ) {
+				$languages[ $k ] = new PLL_Language( $v, $term_language_terms[ 'pll_' . $v->slug ] );
+			}
+		}
+
+		return $languages;
+	}
+
+	/**
 	 * Returns the list of available languages.
 	 * - Stores the list in a db transient ( except flags ), unless PLL_CACHE_LANGUAGES is set to false.
 	 * - Caches the list ( with flags ) in a PLL_Cache object.
@@ -80,49 +110,32 @@ class PLL_Model {
 	 */
 	public function get_languages_list( $args = array() ) {
 		if ( false === $languages = $this->cache->get( 'languages' ) ) {
-
-			// Create the languages from taxonomies.
 			if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || false === ( $languages = get_transient( 'pll_languages_list' ) ) ) {
-				$languages = get_terms( 'language', array( 'hide_empty' => false, 'orderby' => 'term_group' ) );
-				$languages = empty( $languages ) || is_wp_error( $languages ) ? array() : $languages;
+				// Create the languages from the taxonomy terms.
+				$languages = $this->get_languages_list_from_terms();
 
-				$term_languages = get_terms( 'term_language', array( 'hide_empty' => false ) );
-				$term_languages = empty( $term_languages ) || is_wp_error( $term_languages ) ?
-					array() : array_combine( wp_list_pluck( $term_languages, 'slug' ), $term_languages );
+				// We will need the languages list to allow its access in the filter below.
+				$this->cache->set( 'languages', $languages );
 
-				if ( ! empty( $languages ) && ! empty( $term_languages ) ) {
-					foreach ( $languages as $k => $v ) {
-						$languages[ $k ] = new PLL_Language( $v, $term_languages[ 'pll_' . $v->slug ] );
-					}
+				/**
+				 * Filters the list of languages *before* it is stored in the persistent cache.
+				 * /!\ This filter is fired *before* the $polylang object is available.
+				 *
+				 * @since 1.7.5
+				 *
+				 * @param PLL_Language[] $languages The list of language objects.
+				 * @param PLL_Model      $model     PLL_Model object.
+				 */
+				$languages = apply_filters( 'pll_languages_list', $languages, $this );
 
-					// We will need the languages list to allow its access in the filter below.
-					$this->cache->set( 'languages', $languages );
-
-					/**
-					 * Filters the list of languages *before* it is stored in the persistent cache.
-					 * /!\ This filter is fired *before* the $polylang object is available.
-					 *
-					 * @since 1.7.5
-					 *
-					 * @param PLL_Language[] $languages The list of language objects.
-					 * @param PLL_Model      $model     PLL_Model object.
-					 */
-					$languages = apply_filters( 'pll_languages_list', $languages, $this );
-
-					/*
-					 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
-					 * Thanks to captin411 for catching this!
-					 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
-					 */
-					set_transient( 'pll_languages_list', array_map( 'get_object_vars', $languages ) );
-				}
-				else {
-					$languages = array(); // In case something went wrong.
-				}
-			}
-
-			// Create the languages directly from arrays stored in transients.
-			else {
+				/*
+				 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
+				 * Thanks to captin411 for catching this!
+				 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
+				 */
+				set_transient( 'pll_languages_list', array_map( 'get_object_vars', $languages ) );
+			} else {
+				// Create the languages directly from arrays stored in transients.
 				foreach ( $languages as $k => $v ) {
 					$languages[ $k ] = new PLL_Language( $v );
 				}
