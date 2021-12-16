@@ -122,7 +122,9 @@ class PLL_Switcher {
 		$out   = array();
 		
 		// Prevent fatal errors in missing model definition
-		if (!isset($this->links) || !isset($this->links->model) || !isset($this->links->model->get_languages_list)) return $out;
+		if ( ! isset( $this->links ) || ! isset( $this->links->model ) || ! isset( $this->links->model->get_languages_list ) ) {
+			return $out;
+		}
 
 		foreach ( $this->links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
 			$id = (int) $language->term_id;
