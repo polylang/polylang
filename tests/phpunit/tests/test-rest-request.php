@@ -2,11 +2,8 @@
 
 use Brain\Monkey;
 use Brain\Monkey\Functions;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 class Rest_Request_Test extends PLL_UnitTestCase {
-	// Adds Mockery expectations to the PHPUnit assertions count.
-	use MockeryPHPUnitIntegration;
 
 	/**
 	 * @var string
