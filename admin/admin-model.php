@@ -463,6 +463,13 @@ class PLL_Admin_Model extends PLL_Model {
 					}
 					unset( $tr[ $old_slug ] );
 
+					// Delete sync between translations when the old slug doesn't exist anymore.
+					if ( isset( $tr['sync'] ) ) {
+						if ( array_key_exists( $old_slug, $tr['sync'] ) ) {
+							unset( $tr['sync'][$old_slug] );
+						}
+					}
+
 					if ( empty( $tr ) || 1 == count( $tr ) ) {
 						$dt['t'][] = (int) $term->term_id;
 						$dt['tt'][] = (int) $term->term_taxonomy_id;
