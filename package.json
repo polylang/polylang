@@ -11,10 +11,8 @@
     "build:dev": "npm run clean && webpack --mode development",
     "dev": "npm run clean && webpack --mode development --watch",
     "clean": "rimraf js/build css/build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "preinstall": "npx npm-force-resolutions"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "resolutions": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/polylang/polylang.git"
