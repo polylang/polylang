@@ -64,7 +64,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_dont_save_translations_with_incorrect_language() {
-		$options = PLL_Install::get_default_options();
+		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
 		$model = new PLL_Model( $options );
 		$model->term = new PLL_Translated_Term( $model );
 

@@ -50,7 +50,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 
 		$requested_url   = pll_get_requested_url();
 		$requested_host  = str_replace( 'www.', '', wp_parse_url( $requested_url, PHP_URL_HOST ) ); // Remove www. for the comparison
-		$requested_path  = rtrim( str_replace( $this->index, '', wp_parse_url( $requested_url, PHP_URL_PATH ) ), '/' ); // Some PHP setups turn requests for / into /index.php in REQUEST_URI
+		$requested_path  = rtrim( str_replace( $this->index, '', (string) wp_parse_url( $requested_url, PHP_URL_PATH ) ), '/' ); // Some PHP setups turn requests for / into /index.php in REQUEST_URI
 		$requested_query = wp_parse_url( $requested_url, PHP_URL_QUERY );
 
 		// Home is requested

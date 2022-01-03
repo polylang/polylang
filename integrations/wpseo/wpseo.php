@@ -101,7 +101,7 @@ class PLL_WPSEO {
 	 */
 	public function wpseo_home_url( $url, $path ) {
 		if ( empty( $path ) ) {
-			$path = ltrim( wp_parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
+			$path = ltrim( (string) wp_parse_url( pll_get_requested_url(), PHP_URL_PATH ), '/' );
 		}
 
 		if ( preg_match( '#sitemap(_index)?\.xml|([^\/]+?)-?sitemap([0-9]+)?\.xml|([a-z]+)?-?sitemap\.xsl#', $path ) ) {

@@ -229,7 +229,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$lang = $this->pll_admin->pref_lang = self::$model->get_language( 'en' );
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 		$post_ID = $this->factory->post->create();
-		wp_set_object_terms( $post_ID, null, 'language' ); // Intentionally remove the language
+		wp_set_object_terms( $post_ID, array(), 'language' ); // Intentionally remove the language
 
 		ob_start();
 		$this->pll_admin->classic_editor->post_language();
@@ -247,7 +247,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 		$post_ID = $this->factory->post->create();
-		wp_set_object_terms( $post_ID, null, 'language' ); // Intentionally remove the language
+		wp_set_object_terms( $post_ID, array(), 'language' ); // Intentionally remove the language
 
 		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );

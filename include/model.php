@@ -508,6 +508,8 @@ class PLL_Model {
 		$counts = wp_cache_get( $cache_key, 'counts' );
 
 		if ( false === $counts ) {
+			$counts = array();
+
 			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
 			$join = $this->post->join_clause();
 			$where = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );

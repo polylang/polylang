@@ -52,11 +52,11 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			global $content_width; // The widget accesses this global, no matter what it contains.
 			$GLOBALS['wp_rewrite']->set_permalink_structure( '' );
 
-			$en = $this->factory->post->create( array( 'post_content' => 'Test' ) );
+			$en = $this->factory->post->create( array( 'post_content' => 'Test', 'post_author' => 1 ) );
 			set_post_format( $en, 'aside' );
 			self::$model->post->set_language( $en, 'en' );
 
-			$fr = $this->factory->post->create( array( 'post_content' => 'Essai' ) );
+			$fr = $this->factory->post->create( array( 'post_content' => 'Essai', 'post_author' => 1 ) );
 			set_post_format( $fr, 'aside' );
 			self::$model->post->set_language( $fr, 'fr' );
 
