@@ -23,6 +23,7 @@ trait PLL_UnitTestCase_Trait {
 		self::$model = new PLL_Admin_Model( $options );
 
 		remove_action( 'current_screen', '_load_remote_block_patterns' );
+		remove_action( 'current_screen', '_load_remote_featured_patterns' );
 	}
 
 	/**
