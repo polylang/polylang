@@ -107,3 +107,24 @@ function pll_use_block_editor_plugin() {
 	 */
 	return class_exists( 'PLL_Block_Editor_Plugin' ) && apply_filters( 'pll_use_block_editor_plugin', ! defined( 'PLL_USE_BLOCK_EDITOR_PLUGIN' ) || PLL_USE_BLOCK_EDITOR_PLUGIN );
 }
+
+/**
+ * Wrapper of `filter_input()` to make things testable.
+ * For internal use only.
+ *
+ * @since 3.2
+ * @link  https://www.php.net/manual/en/function.filter-input.php
+ * @private
+ *
+ * @param  int       $type     One of `INPUT_GET`, `INPUT_POST`, `INPUT_COOKIE`, `INPUT_SERVER`, or `INPUT_ENV`.
+ * @param  string    $var_name Name of a variable to get.
+ * @param  int       $filter   The ID of the filter to apply. If omitted, FILTER_DEFAULT will be used, which is
+ *                             equivalent to FILTER_UNSAFE_RAW. This will result in no filtering taking place by
+ *                             default.
+ * @param  array|int $options  Associative array of options or bitwise disjunction of flags. If filter accepts
+ *                             options, flags can be provided in "flags" field of array.
+ * @return mixed
+ */
+function pll_filter_input( $type, $var_name, $filter = FILTER_DEFAULT, $options = 0 ) {
+	return filter_input( $type, $var_name, $filter, $options );
+}
