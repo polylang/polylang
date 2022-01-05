@@ -454,6 +454,18 @@ class PLL_Admin_Model extends PLL_Model {
 			foreach ( $terms as $term ) {
 				$term_ids[ $term->taxonomy ][] = $term->term_id;
 				$tr = maybe_unserialize( $term->description );
+
+				/**
+				 * Filters the post translations group.
+				 *
+				 * @since 3.2
+				 *
+				 * @param array  $tr       The post translations group.
+				 * @param string $old_slug The old language slug.
+				 * @param string $new_slug The new language slug.
+				 */
+				$tr = apply_filters( 'update_post_translations_group', $tr, $old_slug, $new_slug );
+
 				if ( ! empty( $tr[ $old_slug ] ) ) {
 					if ( $new_slug ) {
 						$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
@@ -462,16 +474,6 @@ class PLL_Admin_Model extends PLL_Model {
 						$dr['tt'][] = (int) $term->term_taxonomy_id;
 					}
 					unset( $tr[ $old_slug ] );
-
-					// Delete sync between translations when deleting a language or update slug.
-					if ( isset( $tr['sync'] ) ) {
-						if ( array_key_exists( $old_slug, $tr['sync'] ) ) {
-							if ( $new_slug ) {
-								$tr['sync'][ $new_slug ] = $tr['sync'][ $old_slug ];
-							}
-							unset( $tr['sync'][ $old_slug ] );
-						}
-					}
 
 					if ( empty( $tr ) || 1 == count( $tr ) ) {
 						$dt['t'][] = (int) $term->term_id;
