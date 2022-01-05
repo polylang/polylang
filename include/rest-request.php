@@ -145,16 +145,7 @@ class PLL_REST_Request extends PLL_Base {
 	public function get_rest_route() {
 		if ( empty( get_option( 'permalink_structure' ) ) ) {
 			// Not using permalinks.
-			$current_route = pll_filter_input(
-				INPUT_GET,
-				'rest_route',
-				FILTER_CALLBACK,
-				array(
-					'options' => function ( $route ) {
-						return ! empty( $route ) && is_string( $route ) ? wp_unslash( $route ) : false;
-					},
-				)
-			);
+			$current_route = ! empty( $_GET['rest_route'] ) && is_string( $_GET['rest_route'] ) ? wp_unslash( $_GET['rest_route'] ) : false; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 			return ! empty( $current_route ) ? $current_route : '';
 		}

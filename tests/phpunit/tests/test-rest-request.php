@@ -1,14 +1,16 @@
 <?php
 
-use Brain\Monkey;
-use Brain\Monkey\Functions;
-
 class Rest_Request_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @var string
 	 */
 	public $structure = '/%postname%/';
+
+	/**
+	 * @var mixed
+	 */
+	private $rest_route_reset;
 
 	/**
 	 * Initialization before all tests run.
@@ -28,27 +30,29 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
-		Monkey\setUp();
 
 		$links_model         = self::$model->get_links_model();
 		$this->frontend      = new PLL_REST_Request( $links_model );
 		$GLOBALS['polylang'] = &$this->frontend;
 
-		Functions\when( 'pll_filter_input' )->alias(
-			function ( $type, $var_name, $filter, $options ) {
-				return INPUT_GET === $type && 'rest_route' === $var_name ? '/wp/v2/foobar' : null;
-			}
-		);
+		$this->rest_route_reset = isset( $_GET['rest_route'] ) ? $_GET['rest_route'] : null;
+		$_GET['rest_route']     = '/wp/v2/foobar';
 	}
 
 	/**
 	 * @return void
 	 */
 	public function tear_down() {
-		Monkey\tearDown();
 		parent::tear_down();
 
 		unset( $GLOBALS['polylang'] );
+
+		if ( isset( $this->rest_route_reset ) ) {
+			$_GET['rest_route'] = $this->rest_route_reset;
+			unset( $this->rest_route_reset );
+		} else {
+			unset( $_GET['rest_route'] );
+		}
 	}
 
 	public function test_should_define_language_when_language_is_valid() {
