@@ -67,7 +67,7 @@ class PLL_Widget_Languages extends WP_Widget {
 				$format = apply_filters( 'navigation_widgets_format', $format );
 
 				if ( 'html5' === $format ) {
-					echo '<nav role="navigation" aria-label="' . esc_attr( $aria_label ) . '">';
+					echo '<nav aria-label="' . esc_attr( $aria_label ) . '">';
 				}
 
 				echo "<ul>\n" . $list . "</ul>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
