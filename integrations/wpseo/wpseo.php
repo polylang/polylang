@@ -288,17 +288,17 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Get alternate language codes for Opengraph
+	 * Get alternate language codes for Opengraph.
 	 *
 	 * @since 2.7.3
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	protected function get_ogp_alternate_languages() {
 		$alternates = array();
 
 		foreach ( PLL()->model->get_languages_list() as $language ) {
-			if ( PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && isset( $language->facebook ) ) {
+			if ( isset( PLL()->curlang ) && PLL()->curlang->slug !== $language->slug && PLL()->links->get_translation_url( $language ) && isset( $language->facebook ) ) {
 				$alternates[] = $language->facebook;
 			}
 		}
