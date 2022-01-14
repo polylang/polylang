@@ -22,6 +22,19 @@ class Flags_Test extends PLL_UnitTestCase {
 		rmdir( WP_CONTENT_DIR . '/polylang' );
 	}
 
+	public function set_up() {
+		parent::set_up();
+
+		$options       = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en_US' ) );
+		$model         = new PLL_Model( $options );
+		$links_model   = new PLL_Links_Default( $model ); // Registers the 'pll_languages_list' and 'pll_after_languages_cache' filters.
+	}
+
+	public function tear_down() {
+		unset( $_SERVER['HTTPS'] );
+		parent::tear_down();
+	}
+
 	public function test_default_flag() {
 		$lang = self::$model->get_language( 'en' );
 		$this->assertEquals( plugins_url( '/flags/us.png', POLYLANG_FILE ), $lang->get_display_flag_url() ); // Bug fixed in 2.8.1.
@@ -42,8 +55,6 @@ class Flags_Test extends PLL_UnitTestCase {
 
 		$lang = self::$model->get_language( 'en' );
 		$this->assertStringContainsString( 'https', $lang->get_display_flag_url() );
-
-		unset( $_SERVER['HTTPS'] );
 	}
 
 	public function test_custom_flag_ssl() {
@@ -52,7 +63,5 @@ class Flags_Test extends PLL_UnitTestCase {
 		$lang = self::$model->get_language( 'fr' );
 		$this->assertEquals( content_url( '/polylang/fr_FR.png' ), $lang->get_display_flag_url() );
 		$this->assertStringContainsString( 'https', $lang->get_display_flag_url() );
-
-		unset( $_SERVER['HTTPS'] );
 	}
 }
