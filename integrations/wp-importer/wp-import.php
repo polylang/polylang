@@ -17,14 +17,14 @@ class PLL_WP_Import extends WP_Import {
 	public $post_translations = array();
 
 	/**
-	 * Overrides WP_Import::process_terms to remap terms translations
+	 * Overrides WP_Import::process_terms to remap terms translations.
 	 *
 	 * @since 1.2
 	 */
 	public function process_terms() {
 		$term_translations = array();
 
-		// Store this for future usage as parent function unsets $this->terms
+		// Store this for future usage as parent function unsets $this->terms.
 		foreach ( $this->terms as $term ) {
 			if ( 'post_translations' == $term['term_taxonomy'] ) {
 				$this->post_translations[] = $term;
@@ -36,16 +36,15 @@ class PLL_WP_Import extends WP_Import {
 
 		parent::process_terms();
 
-		// Update the languages list if needed
 		// First reset the core terms cache as WordPress Importer calls wp_suspend_cache_invalidation( true );
 		wp_cache_set( 'last_changed', microtime(), 'terms' );
-		PLL()->model->clean_languages_cache();
 
-		if ( ( $options = get_option( 'polylang' ) ) && empty( $options['default_lang'] ) && ( $languages = PLL()->model->get_languages_list() ) ) {
-			// Assign the default language if importer created the first language
+		// Assign the default language in case the importer created the first language.
+		if ( PLL()->options && empty( PLL()->options['default_lang'] ) ) {
+			$languages = get_terms( 'language', array( 'hide_empty' => false, 'orderby' => 'term_id' ) );
 			$default_lang = reset( $languages );
-			$options['default_lang'] = $default_lang->slug;
-			update_option( 'polylang', $options );
+			PLL()->options['default_lang'] = $default_lang->slug;
+			update_option( 'polylang', PLL()->options );
 		}
 
 		$this->remap_terms_relations( $term_translations );
