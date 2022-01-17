@@ -19,7 +19,7 @@ if ( version_compare( $GLOBALS['wp_version'], '5.6', '>=' ) && file_exists( DIR_
 			parent::set_up();
 
 			require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
-			require_once DIR_TESTROOT . '/../jetpack/jetpack.php';
+			$this->load_jetpack();
 
 			$links_model = self::$model->get_links_model();
 			$this->frontend = new PLL_Frontend( $links_model );
@@ -27,9 +27,15 @@ if ( version_compare( $GLOBALS['wp_version'], '5.6', '>=' ) && file_exists( DIR_
 			$GLOBALS['polylang'] = &$this->frontend; // we still use the global $polylang
 		}
 
-		public function test_opengraph() {
-			self::markTestSkipped( 'Temporarily skipped. See Issue Pro#1179' );
+		protected function load_jetpack() {
+			global $wp_actions;
 
+			$wp_actions['wp_default_scripts'] = 0; // Trick Jetpack to avoid a doing_it_wrong notice.
+			require_once DIR_TESTROOT . '/../jetpack/jetpack.php';
+			$wp_actions['wp_default_scripts'] = 1;
+		}
+
+		public function test_opengraph() {
 			// create posts to get something  on home page
 			$en = $this->factory->post->create();
 			self::$model->post->set_language( $en, 'en' );
