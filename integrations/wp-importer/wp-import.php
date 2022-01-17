@@ -40,7 +40,7 @@ class PLL_WP_Import extends WP_Import {
 		wp_cache_set( 'last_changed', microtime(), 'terms' );
 
 		// Assign the default language in case the importer created the first language.
-		if ( PLL()->options && empty( PLL()->options['default_lang'] ) ) {
+		if ( empty( PLL()->options['default_lang'] ) ) {
 			$languages = get_terms( 'language', array( 'hide_empty' => false, 'orderby' => 'term_id' ) );
 			$default_lang = reset( $languages );
 			PLL()->options['default_lang'] = $default_lang->slug;
