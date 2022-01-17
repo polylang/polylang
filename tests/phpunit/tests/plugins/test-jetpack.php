@@ -28,6 +28,8 @@ if ( version_compare( $GLOBALS['wp_version'], '5.6', '>=' ) && file_exists( DIR_
 		}
 
 		public function test_opengraph() {
+			self:markTestSkipped( 'Temporarily skipped. See Issue Pro#1179' );
+
 			// create posts to get something  on home page
 			$en = $this->factory->post->create();
 			self::$model->post->set_language( $en, 'en' );
