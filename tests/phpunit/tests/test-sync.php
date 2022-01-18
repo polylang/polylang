@@ -10,6 +10,11 @@ class Sync_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
+		$links_model     = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
+		$admin_default_term->add_hooks();
+
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 

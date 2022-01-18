@@ -11,6 +11,11 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		self::$model->post->register_taxonomy();
 
+		$links_model     = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
+		$admin_default_term->add_hooks();
+
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
