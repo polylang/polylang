@@ -464,7 +464,7 @@ class PLL_Admin_Model extends PLL_Model {
 				 * @param string $old_slug The old language slug.
 				 * @param string $new_slug The new language slug.
 				 */
-				$tr = apply_filters( 'update_post_translations_group', $tr, $old_slug, $new_slug );
+				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug );
 
 				if ( ! empty( $tr[ $old_slug ] ) ) {
 					if ( $new_slug ) {
