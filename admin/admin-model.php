@@ -456,7 +456,7 @@ class PLL_Admin_Model extends PLL_Model {
 				$tr = maybe_unserialize( $term->description );
 
 				/**
-				 * Filters the post translations group.
+				 * Filters the translation group before updating it in database.
 				 *
 				 * @since 3.2
 				 *
