@@ -454,6 +454,25 @@ class PLL_Admin_Model extends PLL_Model {
 			foreach ( $terms as $term ) {
 				$term_ids[ $term->taxonomy ][] = $term->term_id;
 				$tr = maybe_unserialize( $term->description );
+
+				/**
+				 * Filters the unserialized translation group description before it is
+				 * updated when a language is deleted or a language slug is changed.
+				 *
+				 * @since 3.2
+				 *
+				 * @param array<int|array<string>> $tr {
+				 *     List of translations with lang codes as array keys and IDs as array values.
+				 *     Also in this array:
+				 *
+				 *     @type array<string> $sync List of synchronized translations with lang codes as array keys and array values.
+				 * }
+				 * @param string                   $old_slug The old language slug.
+				 * @param string                   $new_slug The new language slug.
+				 * @param WP_Term                  $term     The term containing the post or term translation group.
+				 */
+				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug, $term );
+
 				if ( ! empty( $tr[ $old_slug ] ) ) {
 					if ( $new_slug ) {
 						$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
