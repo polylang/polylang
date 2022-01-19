@@ -461,10 +461,15 @@ class PLL_Admin_Model extends PLL_Model {
 				 *
 				 * @since 3.2
 				 *
-				 * @param array   $tr       The translations group.
-				 * @param string  $old_slug The old language slug.
-				 * @param string  $new_slug The new language slug.
-				 * @param WP_Term $term     The term containing the post or term translations.
+				 * @param array<int|array<string>> $tr {
+				 *     List of translations with lang codes as array keys and IDs as array values.
+				 *     Also in this array:
+				 *
+				 *     @type array<string> $sync List of synchronized translations with lang codes as array keys and array values.
+				 * }
+				 * @param string                   $old_slug The old language slug.
+				 * @param string                   $new_slug The new language slug.
+				 * @param WP_Term                  $term     The term containing the post or term translations.
 				 */
 				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug, $term );
 
