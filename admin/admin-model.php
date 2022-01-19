@@ -469,7 +469,7 @@ class PLL_Admin_Model extends PLL_Model {
 				 * }
 				 * @param string                   $old_slug The old language slug.
 				 * @param string                   $new_slug The new language slug.
-				 * @param WP_Term                  $term     The term containing the post or term translations.
+				 * @param WP_Term                  $term     The term containing the post or term translation group.
 				 */
 				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug, $term );
 
