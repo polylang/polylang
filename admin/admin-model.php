@@ -456,7 +456,8 @@ class PLL_Admin_Model extends PLL_Model {
 				$tr = maybe_unserialize( $term->description );
 
 				/**
-				 * Filters the translation group before updating it in database.
+				 * Filters the unserialized translation group description before it is
+				 * updated when a language is deleted or a language slug is changed.
 				 *
 				 * @since 3.2
 				 *
