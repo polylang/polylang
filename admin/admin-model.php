@@ -461,11 +461,12 @@ class PLL_Admin_Model extends PLL_Model {
 				 *
 				 * @since 3.2
 				 *
-				 * @param array  $tr       The post translations group.
-				 * @param string $old_slug The old language slug.
-				 * @param string $new_slug The new language slug.
+				 * @param array   $tr       The translations group.
+				 * @param string  $old_slug The old language slug.
+				 * @param string  $new_slug The new language slug.
+				 * @param WP_Term $term     The term containing the post or term translations.
 				 */
-				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug );
+				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug, $term );
 
 				if ( ! empty( $tr[ $old_slug ] ) ) {
 					if ( $new_slug ) {
