@@ -38,9 +38,7 @@ class PLL_WPML_Config {
 	 * @since 1.0
 	 */
 	public function __construct() {
-		if ( extension_loaded( 'simplexml' ) ) {
-			$this->init();
-		}
+
 	}
 
 	/**
@@ -69,7 +67,6 @@ class PLL_WPML_Config {
 		$files = $this->get_files();
 
 		if ( ! empty( $files ) ) {
-			add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
 
 			// Read all files.
 			if ( extension_loaded( 'simplexml' ) ) {
@@ -157,22 +154,6 @@ class PLL_WPML_Config {
 		$this->files = $files;
 
 		return $files;
-	}
-
-	/**
-	 * Requires the simplexml PHP module when a wpml-config.xml has been found.
-	 *
-	 * @since 3.1
-	 *
-	 * @param array $modules An associative array of modules to test for.
-	 * @return array
-	 */
-	public function site_status_test_php_modules( $modules ) {
-		$modules['simplexml'] = array(
-			'extension' => 'simplexml',
-			'required'  => true,
-		);
-		return $modules;
 	}
 
 	/**

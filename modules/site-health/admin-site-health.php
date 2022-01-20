@@ -47,6 +47,8 @@ class PLL_Admin_Site_Health {
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
+		add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
+
 	}
 
 	/**
@@ -248,7 +250,42 @@ class PLL_Admin_Site_Health {
 				'test'  => array( $this, 'homepage_test' ),
 			);
 		}
+		$tests['direct']['pll_simplexml'] = array(
+			'label' => esc_html__( 'SimpleXML', 'polylang' ),
+			'test'  => array( $this, 'simplexml_available' ),
+		);
 		return $tests;
+	}
+
+	public function simplexml_available() {
+		$result = array(
+			'label'       => esc_html__( 'Simplexml ok', 'polylang' ),
+			'status'      => 'good',
+			'badge'       => array(
+				'label' => POLYLANG,
+				'color' => 'blue',
+			),
+			'description' => sprintf(
+				'<p>%s</p>',
+				esc_html__( 'You need it.', 'polylang' )
+			),
+			'actions'     => '',
+			'test'        => 'pll_simplexml',
+		);
+
+		$site_health = new WP_Site_Health();
+		$php_ext = $site_health->get_test_php_extensions();
+		var_dump( $php_ext);
+die;
+		$simplexml = false;
+
+		if (! $simplexml ) {
+			$result['status']      = 'critical';
+			$result['label']       = esc_html__( 'Simplexml not available', 'polylang' );
+			$result['description'] = sprintf( '<p>%s</p>', 'test' );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -375,5 +412,25 @@ class PLL_Admin_Site_Health {
 		}
 
 		return $terms;
+	}
+
+	/**
+	 * Requires the simplexml PHP module when a wpml-config.xml has been found.
+	 *
+	 * @since 3.1
+	 *
+	 * @param array $modules An associative array of modules to test for.
+	 * @return array
+	 */
+	public function site_status_test_php_modules( $modules ) {
+		$files = PLL_WPML_Config::instance()->get_files();
+
+		if ( ! empty( $files ) ) {
+			$modules['simplexml'] = array(
+				'extension' => 'simplexml',
+				'required'  => true,
+			);
+		}
+		return $modules;
 	}
 }
