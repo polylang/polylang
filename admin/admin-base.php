@@ -506,12 +506,12 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @since 3.2
 	 */
 	public function remove_customize_submenu() {
-		global $submenu;
-
 		// Exit if a block theme isn't activated.
 		if ( ! wp_is_block_theme() ) {
 			return;
 		}
+
+		global $submenu;
 
 		if ( ! empty( $submenu['themes.php'] ) ) {
 			foreach ( $submenu['themes.php'] as $submenu_item ) {

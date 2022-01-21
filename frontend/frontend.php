@@ -242,9 +242,9 @@ class PLL_Frontend extends PLL_Base {
 	 * @since 3.2
 	 */
 	public function remove_customize_admin_bar() {
-		global $wp_admin_bar;
-
 		if ( wp_is_block_theme() ) {
+			global $wp_admin_bar;
+
 			$wp_admin_bar->remove_menu( 'customize' );
 		}
 	}
