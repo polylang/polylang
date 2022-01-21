@@ -85,6 +85,8 @@ class PLL_Frontend extends PLL_Base {
 		if ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) {
 			add_action( 'template_redirect', array( $this, 'auto_translate' ), 7 );
 		}
+
+		add_action( 'wp_before_admin_bar_render', array( $this, 'remove_customize_admin_bar' ) );
 	}
 
 	/**
@@ -231,6 +233,19 @@ class PLL_Frontend extends PLL_Base {
 			}
 
 			$this->load_strings_translations();
+		}
+	}
+
+	/**
+	 * Remove the customize admin bar on front-end when using a block theme.
+	 *
+	 * @since 3.2
+	 */
+	public function remove_customize_admin_bar() {
+		global $wp_admin_bar;
+
+		if ( wp_is_block_theme() ) {
+			$wp_admin_bar->remove_menu( 'customize' );
 		}
 	}
 }

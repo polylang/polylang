@@ -68,6 +68,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
 
+		add_action( 'admin_menu', array( $this, 'remove_customize_submenu' ) );
+
 		// Setup js scripts and css styles
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
@@ -495,6 +497,23 @@ abstract class PLL_Admin_Base extends PLL_Base {
 					'meta'   => 'all' === $lang->slug ? array() : array( 'lang' => esc_attr( $lang->get_locale( 'display' ) ) ),
 				)
 			);
+		}
+	}
+
+	/**
+	 * Remove the customize submenu when using a block theme.
+	 *
+	 * @since 3.2
+	 */
+	public function remove_customize_submenu() {
+		global $submenu;
+
+		if ( ! empty( $submenu['themes.php'] ) ) {
+			foreach ( $submenu['themes.php'] as $submenu_item ) {
+				if ( 'customize' === $submenu_item[1] && wp_is_block_theme() ) {
+					remove_submenu_page( 'themes.php', $submenu_item[2] );
+				}
+			}
 		}
 	}
 }
