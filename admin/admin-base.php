@@ -367,16 +367,17 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		/**
-		 * Fires after the language is (maybe) defined by PLL in the admin context.
+		 * Filters the current language used by Polylang in the admin context.
 		 *
 		 * @since 3.2
 		 *
-		 * @param PLL_Admin_Base $polylang Instance of the main PLL's object.
+		 * @param PLL_Language   $curlang  Instance of the current language.
+		 * @param PLL_Admin_Base $polylang Instance of the main Polylang's object.
 		 */
-		do_action( 'pll_after_admin_language_defined', $this );
+		$this->curlang = apply_filters( 'pll_admin_current_language', $this->curlang, $this );
 
 		// Inform that the admin language has been set.
-		if ( ! empty( $this->curlang ) ) {
+		if ( $this->curlang instanceof PLL_Language ) {
 			/** This action is documented in frontend/choose-lang.php */
 			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 		} else {
