@@ -68,7 +68,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @return bool
 	 */
-	protected function set_simplexml(){
+	protected function set_simplexml() {
 		return extension_loaded( 'simplexml' );
 	}
 
@@ -297,10 +297,10 @@ class PLL_Admin_Site_Health {
 			'test'        => 'pll_simplexml',
 		);
 
-		if (! $this->simplexml ) {
+		if ( ! $this->simplexml ) {
 			$result['status']      = 'critical';
 			$result['label']       = esc_html__( 'Simplexml PHP extension is not available.', 'polylang' );
-			$result['description'] = sprintf( '<p>%1$s</br>%2$s</p>', __('Please contact your host provider and ask him to activate it.', 'polylang' ), __( 'Polylang needs it to read wpml-config.xml files' ) );
+			$result['description'] = sprintf( '<p>%1$s</br>%2$s</p>', __( 'Please contact your host provider and ask him to activate it.', 'polylang' ), __( 'Polylang needs it to read wpml-config.xml files', 'polylang' ) );
 		}
 
 		return $result;
