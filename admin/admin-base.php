@@ -339,15 +339,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public function set_current_language() {
 		$this->curlang = $this->filter_lang;
 
-		/**
-		 * Fires before the language is defined by PLL in the admin context.
-		 *
-		 * @since 3.2
-		 *
-		 * @param PLL_Admin_Base $polylang Instance of the main PLL's object.
-		 */
-		do_action( 'pll_before_admin_language_defined', $this );
-
 		// Edit Post
 		if ( isset( $_REQUEST['pll_post_id'] ) && $lang = $this->model->post->get_language( (int) $_REQUEST['pll_post_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$this->curlang = $lang;
