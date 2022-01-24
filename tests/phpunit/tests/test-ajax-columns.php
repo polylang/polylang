@@ -17,7 +17,6 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();
-		remove_all_actions( 'admin_init' ); // to save ( a lot of ) time as WP will attempt to update core and plugins
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
