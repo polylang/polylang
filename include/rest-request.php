@@ -85,21 +85,7 @@ class PLL_REST_Request extends PLL_Base {
 	 */
 	public function set_current_language() { // phpcs:ignore Squiz.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 		$request = $this->get_rest_request();
-
-		/**
-		 * Fires before the language is defined by PLL in the REST context.
-		 *
-		 * @since 3.2
-		 *
-		 * @param PLL_REST_Request      $polylang Instance of the main PLL's object.
-		 * @param WP_REST_Request|false $request  A `WP_REST_Request` request. False on failure to retrieve the current
-		 *                                        REST route. Be aware that this object may bot be 100% accurate since
-		 *                                        it is created before the real one and dos not run the REST-related
-		 *                                        hooks.
-		 */
-		do_action( 'pll_before_rest_language_defined', $this, $request );
-
-		$lang = ! empty( $request ) ? $request->get_param( 'lang' ) : null;
+		$lang    = ! empty( $request ) ? $request->get_param( 'lang' ) : null;
 
 		if ( ! empty( $lang ) ) {
 			if ( is_string( $lang ) ) {
@@ -113,19 +99,21 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		/**
-		 * Fires after the language is (maybe) defined by PLL in the REST context.
+		 * Filters the current language used by Polylang in the REST context.
 		 *
 		 * @since 3.2
 		 *
-		 * @param PLL_REST_Request      $polylang Instance of the main PLL's object.
-		 * @param WP_REST_Request|false $request  A `WP_REST_Request` request. False on failure to retrieve the current
-		 *                                        REST route. Be aware that this object may bot be 100% accurate since
-		 *                                        it is created before the real one and dos not run the REST-related
-		 *                                        hooks.
+		 * @param PLL_Language|false|null $curlang  Instance of the current language.
+		 * @param PLL_REST_Request        $polylang Instance of the main Polylang's object.
+		 * @param WP_REST_Request|false   $request  A `WP_REST_Request` request. False on failure to retrieve the
+		 *                                          current REST route. Be aware that this object may bot be 100%
+		 *                                          accurate since it is created before the real one and dos not run the
+		 *                                          REST-related hooks.
 		 */
-		do_action( 'pll_after_rest_language_defined', $this, $request );
+		$this->curlang = apply_filters( 'pll_rest_current_language', $this->curlang, $this, $request );
 
-		if ( ! empty( $this->curlang ) ) {
+		// Inform that the REST language has been set.
+		if ( $this->curlang instanceof PLL_Language ) {
 			/** This action is documented in frontend/choose-lang.php */
 			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 		} else {
