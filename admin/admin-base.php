@@ -371,8 +371,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 *
 		 * @since 3.2
 		 *
-		 * @param PLL_Language   $curlang  Instance of the current language.
-		 * @param PLL_Admin_Base $polylang Instance of the main Polylang's object.
+		 * @param PLL_Language|false|null $curlang  Instance of the current language.
+		 * @param PLL_Admin_Base          $polylang Instance of the main Polylang's object.
 		 */
 		$this->curlang = apply_filters( 'pll_admin_current_language', $this->curlang, $this );
 
