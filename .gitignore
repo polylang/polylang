@@ -9,3 +9,4 @@ js/build/
 *.min.css
 composer.lock
 package-lock.json
+.phpunit.result.cache
