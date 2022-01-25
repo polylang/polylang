@@ -507,7 +507,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function remove_customize_submenu() {
 		// Exit if a block theme isn't activated.
-		if ( ! wp_is_block_theme() ) {
+		if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
 			return;
 		}
 
