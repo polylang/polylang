@@ -366,8 +366,18 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			$this->curlang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
+		/**
+		 * Filters the current language used by Polylang in the admin context.
+		 *
+		 * @since 3.2
+		 *
+		 * @param PLL_Language|false|null $curlang  Instance of the current language.
+		 * @param PLL_Admin_Base          $polylang Instance of the main Polylang's object.
+		 */
+		$this->curlang = apply_filters( 'pll_admin_current_language', $this->curlang, $this );
+
 		// Inform that the admin language has been set.
-		if ( $this->curlang ) {
+		if ( $this->curlang instanceof PLL_Language ) {
 			/** This action is documented in frontend/choose-lang.php */
 			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
 		} else {
