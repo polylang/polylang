@@ -86,7 +86,7 @@ class PLL_Frontend extends PLL_Base {
 			add_action( 'template_redirect', array( $this, 'auto_translate' ), 7 );
 		}
 
-		add_action( 'wp_before_admin_bar_render', array( $this, 'remove_customize_admin_bar' ) );
+		add_action( 'admin_bar_menu', array( $this, 'remove_customize_admin_bar' ), 41 ); // After WP_Admin_Bar::add_menus
 	}
 
 	/**
@@ -245,6 +245,7 @@ class PLL_Frontend extends PLL_Base {
 		if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
 			global $wp_admin_bar;
 
+			remove_action( 'wp_before_admin_bar_render', 'wp_customize_support_script' ); // To avoid the script launch.
 			$wp_admin_bar->remove_menu( 'customize' );
 		}
 	}
