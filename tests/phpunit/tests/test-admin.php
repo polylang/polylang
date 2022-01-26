@@ -192,6 +192,8 @@ class Admin_Test extends PLL_UnitTestCase {
 		global $_wp_theme_features;
 		unset( $_wp_theme_features['widgets'] );
 
+		global $_wp_submenu_nopriv;
+
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
