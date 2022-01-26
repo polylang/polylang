@@ -511,6 +511,14 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			return;
 		}
 
+		global $wp_filter;
+		if ( isset( $wp_filter['customize_register'] ) ) {
+			$customize_register_hooks = count( $wp_filter['customize_register']->callbacks );
+			if ( $customize_register_hooks > 1 ) {
+				return;
+			}
+		}
+
 		global $submenu;
 
 		if ( ! empty( $submenu['themes.php'] ) ) {
