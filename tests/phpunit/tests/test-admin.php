@@ -200,6 +200,6 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		do_action( 'admin_menu', '' );
 
-		$this->assertFalse( in_array( 'customize', array_merge( ...array_values($submenu['themes.php'] ) ), true ) );
+		$this->assertFalse( in_array( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ), true ) );
 	}
 }

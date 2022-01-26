@@ -47,7 +47,7 @@ class Frontend_Test extends PLL_UnitTestCase {
 		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
 		do_action( 'wp_before_admin_bar_render' );
 
-		$this->assertEquals( null, $wp_admin_bar->get_node('customize') );
+		$this->assertEquals( null, $wp_admin_bar->get_node( 'customize' ) );
 	}
 
 	public function test_remove_customize_admin_bar_with_non_block_base_theme() {
@@ -65,6 +65,6 @@ class Frontend_Test extends PLL_UnitTestCase {
 
 		do_action( 'wp_before_admin_bar_render' );
 
-		$this->assertInstanceOf( stdClass::class, $wp_admin_bar->get_node('customize') );
+		$this->assertInstanceOf( stdClass::class, $wp_admin_bar->get_node( 'customize' ) );
 	}
 }
