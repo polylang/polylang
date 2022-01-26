@@ -2,6 +2,8 @@
 require POLYLANG_DIR . '/include/api.php';
 
 class Admin_Test extends PLL_UnitTestCase {
+	protected static $editor;
+	protected static $stylesheet;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -11,6 +13,22 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+
+		self::$editor = $factory->user->create( array( 'role' => 'administrator' ) );
+
+		self::$stylesheet = get_option( 'stylesheet' ); // save default theme
+	}
+
+	public function set_up() {
+		parent::set_up();
+
+		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests
+	}
+
+	public function tear_down() {
+		parent::tear_down();
+
+		switch_theme( self::$stylesheet );
 	}
 
 	public function test_admin_bar_menu() {
@@ -160,5 +178,28 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		$scripts = array( 'pll_ajax_backend', 'user', 'css' );
 		$this->_test_scripts( $scripts );
+	}
+
+	public function test_remove_customize_submenu_with_block_base_theme() {
+		$block_base_theme = wp_get_theme( 'twentytwentytwo' );
+		if ( ! $block_base_theme->exists() ) {
+			self::markTestSkipped( 'This test requires twenty twenty two' );
+		}
+
+		global $submenu;
+		switch_theme( 'twentytwentytwo' );
+
+		global $_wp_theme_features;
+		unset( $_wp_theme_features['widgets'] );
+
+		$links_model = self::$model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
+		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
+
+		require_once ABSPATH . 'wp-admin/menu.php';
+
+		do_action( 'admin_menu', '' );
+
+		$this->assertFalse( in_array( 'customize', array_merge( ...array_values($submenu['themes.php'] ) ), true ) );
 	}
 }
