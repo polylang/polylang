@@ -30,6 +30,12 @@ class Frontend_Test extends PLL_UnitTestCase {
 
 	public function test_remove_customize_admin_bar_with_block_base_theme() {
 		global $wp_admin_bar;
+
+		$block_base_theme = wp_get_theme( 'twentytwentytwo' );
+		if ( ! $block_base_theme->exists() ) {
+			self::markTestSkipped( 'This test requires twenty twenty two' );
+		}
+
 		switch_theme( 'twentytwentytwo' );
 		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar
 
