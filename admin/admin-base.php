@@ -504,6 +504,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * Remove the customize submenu when using a block theme.
 	 *
 	 * @since 3.2
+	 *
+	 * @return void
 	 */
 	public function remove_customize_submenu() {
 		// Exit if a block theme isn't activated.

@@ -240,6 +240,8 @@ class PLL_Frontend extends PLL_Base {
 	 * Remove the customize admin bar on front-end when using a block theme.
 	 *
 	 * @since 3.2
+	 *
+	 * @return void
 	 */
 	public function remove_customize_admin_bar() {
 		if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
