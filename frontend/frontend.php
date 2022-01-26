@@ -249,11 +249,13 @@ class PLL_Frontend extends PLL_Base {
 		}
 
 		global $wp_filter;
-		if ( isset( $wp_filter['customize_register'] ) ) {
-			$customize_register_hooks = count( $wp_filter['customize_register']->callbacks );
-			if ( $customize_register_hooks > 1 ) {
-				return;
-			}
+		if ( empty( $wp_filter['customize_register'] ) ) {
+			return;
+		}
+
+		$customize_register_hooks = count( $wp_filter['customize_register']->callbacks );
+		if ( $customize_register_hooks > 1 ) {
+			return;
 		}
 
 		global $wp_admin_bar;
