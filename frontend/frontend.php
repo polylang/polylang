@@ -244,20 +244,21 @@ class PLL_Frontend extends PLL_Base {
 	 * @return void
 	 */
 	public function remove_customize_admin_bar() {
-		if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
-
-			global $wp_filter;
-			if ( isset( $wp_filter['customize_register'] ) ) {
-				$customize_register_hooks = count( $wp_filter['customize_register']->callbacks );
-				if ( $customize_register_hooks > 1 ) {
-					return;
-				}
-			}
-
-			global $wp_admin_bar;
-
-			remove_action( 'wp_before_admin_bar_render', 'wp_customize_support_script' ); // To avoid the script launch.
-			$wp_admin_bar->remove_menu( 'customize' );
+		if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
+			return;
 		}
+
+		global $wp_filter;
+		if ( isset( $wp_filter['customize_register'] ) ) {
+			$customize_register_hooks = count( $wp_filter['customize_register']->callbacks );
+			if ( $customize_register_hooks > 1 ) {
+				return;
+			}
+		}
+
+		global $wp_admin_bar;
+
+		remove_action( 'wp_before_admin_bar_render', 'wp_customize_support_script' ); // To avoid the script launch.
+		$wp_admin_bar->remove_menu( 'customize' );
 	}
 }
