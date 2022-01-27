@@ -64,3 +64,9 @@ parameters:
 			message: "#^Parameter \\#2 \\$input1 of function array_map expects array, string given\\.$#"
 			count: 1
 			path: settings/table-string.php
+
+		# Ignored due to a wrong doc of wp_tag_cloud()
+		-
+			message: "#^Parameter \\#1 \\$args of function wp_tag_cloud expects (.+) given\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
