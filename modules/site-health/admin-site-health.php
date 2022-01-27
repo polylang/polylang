@@ -279,7 +279,11 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * @return array
+	 * Test if the SimpleXML PHP extension is available.
+	 *
+	 * @since 3.2
+	 *
+	 * @return array $result with test results.
 	 */
 	public function simplexml_available() {
 		$result = array(
