@@ -364,7 +364,7 @@ class PLL_Admin_Site_Health {
 			$fields['wpml']['label'] = 'wpml-config.xml files';
 			$fields['wpml']['value'] = $wpml_files;
 
-			if ( false === $this->simplexml ) {
+			if ( ! $this->simplexml ) {
 				$fields['simplexml']['label'] = __( 'PHP SimpleXML extension', 'polylang' );
 				$fields['simplexml']['value'] = __( 'Not loaded. Contact your host provider.', 'polylang' );
 			}
