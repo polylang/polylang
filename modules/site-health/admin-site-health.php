@@ -441,6 +441,7 @@ class PLL_Admin_Site_Health {
 	 * Requires the simplexml PHP module when a wpml-config.xml has been found.
 	 *
 	 * @since 3.1
+	 * @since 3.2 Moved from PLL_WPML_Config
 	 *
 	 * @param array $modules An associative array of modules to test for.
 	 * @return array
