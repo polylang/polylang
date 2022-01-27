@@ -136,7 +136,7 @@ jQuery(
 							ajaxurl,
 							data,
 							function( response ) {
-								var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
+								var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
 								$.each(
 									res.responses,
 									function() {
