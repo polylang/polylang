@@ -48,7 +48,7 @@ class PLL_Admin_Site_Health {
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
 		$this->static_pages = &$polylang->static_pages;
-		$this->simplexml = $this->set_simplexml();
+		$this->simplexml = extension_loaded( 'simplexml' );
 
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
@@ -59,17 +59,6 @@ class PLL_Admin_Site_Health {
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
 		add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
 
-	}
-
-	/**
-	 * Setter
-	 *
-	 * @since 3.2
-	 *
-	 * @return bool
-	 */
-	protected function set_simplexml() {
-		return extension_loaded( 'simplexml' );
 	}
 
 	/**
