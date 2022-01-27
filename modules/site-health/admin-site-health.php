@@ -272,7 +272,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 3.2
 	 *
-	 * @return array $result with test results.
+	 * @return array $result Array with test results.
 	 */
 	public function simplexml_available() {
 		$result = array(
