@@ -199,8 +199,6 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		self::require_wp_menus();
 
-		do_action( 'admin_menu', '' );
-
 		$this->assertFalse( in_array( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ), true ) );
 	}
 
@@ -215,8 +213,6 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
 
 		self::require_wp_menus();
-
-		do_action( 'admin_menu', '' );
 
 		$this->assertTrue( in_array( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ), true ) );
 	}
