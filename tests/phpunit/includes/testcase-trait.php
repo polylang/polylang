@@ -109,6 +109,7 @@ trait PLL_UnitTestCase_Trait {
 
 	protected function require_wp_menus( $trigger_hooks = true ) {
 		global $submenu, $wp_filter;
+		global $_wp_submenu_nopriv;
 
 		if ( isset( static::$submenu ) ) {
 			$submenu = static::$submenu;
