@@ -199,7 +199,7 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		self::require_wp_menus();
 
-		$this->assertFalse( in_array( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ), true ) );
+		$this->assertNotContains( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ) );
 	}
 
 	public function test_remove_customize_submenu_with_non_block_base_theme() {
@@ -214,6 +214,6 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		self::require_wp_menus();
 
-		$this->assertTrue( in_array( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ), true ) );
+		$this->assertContains( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ) );
 	}
 }
