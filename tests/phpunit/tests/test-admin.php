@@ -28,6 +28,8 @@ class Admin_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
+		remove_action( 'customize_register', array( $this, 'whatever' ) );
+
 		switch_theme( self::$stylesheet );
 	}
 
