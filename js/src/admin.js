@@ -292,7 +292,8 @@ jQuery(
 					ajaxurl,
 					data,
 					function( response ) {
-						var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
+						// Target a non existing WP HTML id to avoid a conflict with WP ajax requests.
+						var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
 						$.each(
 							res.responses,
 							function() {
