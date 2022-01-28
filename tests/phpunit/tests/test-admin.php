@@ -216,4 +216,27 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		$this->assertContains( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ) );
 	}
+
+	public function test_do_not_remove_customize_submenu_with_block_base_theme_if_a_plugin_use_it() {
+		$block_base_theme = wp_get_theme( 'twentytwentytwo' );
+		if ( ! $block_base_theme->exists() ) {
+			self::markTestSkipped( 'This test requires twenty twenty two' );
+		}
+
+		global $submenu;
+		switch_theme( 'twentytwentytwo' );
+
+		global $_wp_theme_features;
+		unset( $_wp_theme_features['widgets'] );
+
+		$links_model = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$this->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
+
+		add_action( 'customize_register', array( $this, 'whatever' ) );
+
+		self::require_wp_menus();
+
+		$this->assertContains( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ) );
+	}
 }

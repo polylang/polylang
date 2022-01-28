@@ -253,7 +253,7 @@ class PLL_Frontend extends PLL_Base {
 			return;
 		}
 
-		$customize_register_hooks = count( $wp_filter['customize_register']->callbacks );
+		$customize_register_hooks = count( array_merge( ...array_values( $wp_filter['customize_register']->callbacks ) ) );
 		if ( $customize_register_hooks > 1 ) {
 			return;
 		}
