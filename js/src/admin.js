@@ -292,7 +292,9 @@ jQuery(
 					ajaxurl,
 					data,
 					function( response ) {
-						var res = wpAjax.parseAjaxResponse( response, 'ajax-response' );
+						// Since WP changeset #52710 parseAjaxReponse() return content to notice the user in a HTML tag with ajax-response id.
+						// Not to disturb this behaviour by executing another ajax request in the ajaxSuccess event, we need to target another unexisting id.
+						var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
 						$.each(
 							res.responses,
 							function() {
