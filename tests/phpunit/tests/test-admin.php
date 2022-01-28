@@ -194,8 +194,8 @@ class Admin_Test extends PLL_UnitTestCase {
 
 
 		$links_model = self::$model->get_links_model();
-		$this->pll_admin = new PLL_Admin( $links_model );
-		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
+		$pll_admin = new PLL_Admin( $links_model );
+		$this->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
 
 		self::require_wp_menus();
 
@@ -209,8 +209,8 @@ class Admin_Test extends PLL_UnitTestCase {
 		unset( $_wp_theme_features['widgets'] );
 
 		$links_model = self::$model->get_links_model();
-		$this->pll_admin = new PLL_Admin( $links_model );
-		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
+		$pll_admin = new PLL_Admin( $links_model );
+		$this->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
 
 		self::require_wp_menus();
 
