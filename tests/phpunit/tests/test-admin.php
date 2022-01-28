@@ -198,10 +198,29 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
 
-		require_once ABSPATH . 'wp-admin/menu.php';
+		self::require_wp_menus();
 
 		do_action( 'admin_menu', '' );
 
 		$this->assertFalse( in_array( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ), true ) );
+	}
+
+	public function test_remove_customize_submenu_with_non_block_base_theme() {
+		global $submenu;
+
+		global $_wp_theme_features;
+		unset( $_wp_theme_features['widgets'] );
+
+		global $_wp_submenu_nopriv;
+
+		$links_model = self::$model->get_links_model();
+		$this->pll_admin = new PLL_Admin( $links_model );
+		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
+
+		self::require_wp_menus();
+
+		do_action( 'admin_menu', '' );
+
+		$this->assertTrue( in_array( 'customize', array_merge( ...array_values( $submenu['themes.php'] ) ), true ) );
 	}
 }
