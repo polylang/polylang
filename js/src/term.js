@@ -67,8 +67,7 @@ jQuery(
 						data,
 						function( response ) {
 							if ( response ) {
-								// Since WP changeset #52710 parseAjaxReponse() return content to notice the user in a HTML tag with ajax-response id.
-								// Not to disturb this behaviour by executing another ajax request in the ajaxSuccess event, we need to target another unexisting id.
+								// Target a non existing WP HTML id to avoid a conflict with WP ajax requests.
 								var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
 								$.each(
 									res.responses,
@@ -91,8 +90,7 @@ jQuery(
 					switch ( data['action'] ) {
 						// when adding a term, the new term_id is in the ajax response
 						case 'add-tag':
-							// Since WP changeset #52710 parseAjaxReponse() return content to notice the user in a HTML tag with ajax-response id.
-							// Not to disturb this behaviour by executing another ajax request in the ajaxSuccess event, we need to target another unexisting id.
+							// Target a non existing WP HTML id to avoid a conflict with WP ajax requests.
 							res = wpAjax.parseAjaxResponse( xhr.responseXML, 'pll-ajax-response' );
 							$.each(
 								res.responses,
@@ -189,8 +187,7 @@ jQuery(
 					ajaxurl,
 					data,
 					function( response ) {
-						// Since WP changeset #52710 parseAjaxReponse() return content to notice the user in a HTML tag with ajax-response id.
-						// Not to disturb this behaviour by executing another ajax request in the ajaxSuccess event, we need to target another unexisting id.
+						// Target a non existing WP HTML id to avoid a conflict with WP ajax requests.
 						var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
 						$.each(
 							res.responses,
