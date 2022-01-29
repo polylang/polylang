@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.4
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,6 +77,11 @@ Don't hesitate to [give your feedback](http://wordpress.org/support/view/plugin-
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.1.4 (2022-01-31) =
+
+* Pro: Adapt duplication and synchronization of the gallery block refactored in WP 5.9
+* Fix UI glitch in the classic editor custom fields form when changing a post language in WP 5.9 #970
 
 = 3.1.3 (2021-12-14) =
 
