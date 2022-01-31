@@ -244,17 +244,7 @@ class PLL_Frontend extends PLL_Base {
 	 * @return void
 	 */
 	public function remove_customize_admin_bar() {
-		if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
-			return;
-		}
-
-		global $wp_filter;
-		if ( empty( $wp_filter['customize_register'] ) ) {
-			return;
-		}
-
-		$customize_register_hooks = count( array_merge( ...array_values( $wp_filter['customize_register']->callbacks ) ) );
-		if ( $customize_register_hooks > 1 ) {
+		if ( ! $this->should_customize_menu_be_removed() ) {
 			return;
 		}
 
