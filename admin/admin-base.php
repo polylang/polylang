@@ -503,6 +503,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	/**
 	 * Remove the customize submenu when using a block theme.
 	 *
+	 * WordPress removes the Customizer menu if a block theme is activated and no other plugins interact with it.
+	 * As Polylang interacts with the Customizer, we have to delete this menu ourselves in the case of a block theme,
+	 * unless another plugin than Polylang interacts with the Customizer.
+	 *
 	 * @since 3.2
 	 *
 	 * @return void
