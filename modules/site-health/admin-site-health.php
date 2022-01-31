@@ -30,15 +30,6 @@ class PLL_Admin_Site_Health {
 	protected $static_pages;
 
 	/**
-	 * Is SimpleXML PHP extension loaded ?
-	 *
-	 * @since 3.2
-	 *
-	 * @var bool
-	 */
-	protected $simplexml;
-
-	/**
 	 * PLL_Admin_Site_Health constructor.
 	 *
 	 * @since 2.8
@@ -48,7 +39,6 @@ class PLL_Admin_Site_Health {
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
 		$this->static_pages = &$polylang->static_pages;
-		$this->simplexml = extension_loaded( 'simplexml' );
 
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
@@ -260,10 +250,6 @@ class PLL_Admin_Site_Health {
 				'test'  => array( $this, 'homepage_test' ),
 			);
 		}
-		$tests['direct']['pll_simplexml'] = array(
-			'label' => esc_html__( 'SimpleXML', 'polylang' ),
-			'test'  => array( $this, 'simplexml_available' ),
-		);
 		return $tests;
 	}
 
@@ -290,7 +276,7 @@ class PLL_Admin_Site_Health {
 			'test'        => 'pll_simplexml',
 		);
 
-		if ( ! $this->simplexml ) {
+		if ( ! extension_loaded( 'simplexml' ) ) {
 			$result['status']      = 'critical';
 			$result['label']       = esc_html__( 'Simplexml PHP extension is not available.', 'polylang' );
 			$result['description'] = sprintf( '<p>%1$s</br>%2$s</p>', __( 'Please contact your host provider and ask him to activate it.', 'polylang' ), __( 'Polylang needs it to read wpml-config.xml files', 'polylang' ) );
@@ -364,7 +350,7 @@ class PLL_Admin_Site_Health {
 			$fields['wpml']['label'] = 'wpml-config.xml files';
 			$fields['wpml']['value'] = $wpml_files;
 
-			if ( ! $this->simplexml ) {
+			if ( ! extension_loaded( 'simplexml' ) ) {
 				$fields['simplexml']['label'] = __( 'PHP SimpleXML extension', 'polylang' );
 				$fields['simplexml']['value'] = __( 'Not loaded. Contact your host provider.', 'polylang' );
 			}
