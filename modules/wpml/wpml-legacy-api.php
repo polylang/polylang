@@ -168,9 +168,24 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 	 * @return int|null The object id of the translation, null if the translation is missing and $return_original_if_missing set to false
 	 */
 	function icl_object_id( $id, $type = 'post', $return_original_if_missing = false, $lang = '' ) {
-		$lang = $lang ? $lang : pll_current_language();
+		if ( empty( $id ) ) {
+			return null;
+		}
+
+		if ( 'any' === $type ) {
+			$type = get_post_type( $id );
+		}
+
+		if ( empty( $type ) ) {
+			return null;
+		}
+
+		if ( empty( $lang ) ) {
+			$lang = pll_current_language();
+		}
 
 		if ( 'nav_menu' === $type ) {
+			$tr_id = false;
 			$theme = get_option( 'stylesheet' );
 			if ( isset( PLL()->options['nav_menus'][ $theme ] ) ) {
 				foreach ( PLL()->options['nav_menus'][ $theme ] as $menu ) {
@@ -180,11 +195,21 @@ if ( ! function_exists( 'icl_object_id' ) ) {
 					}
 				}
 			}
-		} elseif ( $pll_type = ( 'post' === $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' === $type || pll_is_translated_taxonomy( $type ) ? 'term' : false ) ) {
-			$tr_id = PLL()->model->$pll_type->get_translation( $id, $lang );
+		} elseif ( pll_is_translated_post_type( $type ) ) {
+			$tr_id = PLL()->model->post->get_translation( $id, $lang );
+		} elseif ( pll_is_translated_taxonomy( $type ) ) {
+			$tr_id = PLL()->model->term->get_translation( $id, $lang );
 		}
 
-		return ! empty( $tr_id ) ? $tr_id : ( $return_original_if_missing ? $id : null );
+		if ( ! isset( $tr_id ) ) {
+			return $id; // WPML doesn't honor $return_original_if_missing if the post type or taxonomy is not translated.
+		}
+
+		if ( empty( $tr_id ) ) {
+			return $return_original_if_missing ? $id : null;
+		}
+
+		return $tr_id;
 	}
 }
 
