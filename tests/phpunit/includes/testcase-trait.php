@@ -12,6 +12,13 @@ trait PLL_UnitTestCase_Trait {
 	public static $model;
 
 	/**
+	 * The admin submenu.
+	 *
+	 * @var array $submenu
+	 */
+	protected static $submenu;
+
+	/**
 	 * Initialization before all tests run.
 	 *
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
@@ -98,5 +105,37 @@ trait PLL_UnitTestCase_Trait {
 				self::$model->delete_language( $lang->term_id );
 			}
 		}
+	}
+
+	protected function require_wp_menus( $trigger_hooks = true ) {
+		global $submenu, $wp_filter;
+		global $_wp_submenu_nopriv;
+
+		if ( isset( static::$submenu ) ) {
+			$submenu = static::$submenu;
+
+			if ( $trigger_hooks ) {
+				do_action( 'admin_menu', '' );
+			}
+
+			return static::$submenu;
+		}
+
+		$hooks = isset( $wp_filter['admin_menu'] ) ? $wp_filter['admin_menu'] : null;
+		unset( $wp_filter['admin_menu'] );
+
+		require_once ABSPATH . 'wp-admin/menu.php';
+
+		static::$submenu = $submenu;
+
+		if ( isset( $hooks ) ) {
+			$wp_filter['admin_menu'] = $hooks;
+		}
+
+		if ( $trigger_hooks ) {
+			do_action( 'admin_menu', '' );
+		}
+
+		return static::$submenu;
 	}
 }

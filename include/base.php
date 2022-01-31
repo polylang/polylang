@@ -167,4 +167,30 @@ abstract class PLL_Base {
 		 */
 		return $new_blog_id !== $prev_blog_id && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' );
 	}
+
+	/**
+	 * Check if the customize menu should be removed or not.
+	 *
+	 * @since 3.2
+	 *
+	 * @return bool True if it should be removed, false otherwise.
+	 */
+	public function should_customize_menu_be_removed() {
+		// Exit if a block theme isn't activated.
+		if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
+			return false;
+		}
+
+		global $wp_filter;
+		if ( empty( $wp_filter['customize_register'] ) ) {
+			return false;
+		}
+
+		$customize_register_hooks = count( array_merge( ...array_values( $wp_filter['customize_register']->callbacks ) ) );
+		if ( $customize_register_hooks > 1 ) {
+			return false;
+		}
+
+		return true;
+	}
 }

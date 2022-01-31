@@ -85,6 +85,8 @@ class PLL_Frontend extends PLL_Base {
 		if ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) {
 			add_action( 'template_redirect', array( $this, 'auto_translate' ), 7 );
 		}
+
+		add_action( 'admin_bar_menu', array( $this, 'remove_customize_admin_bar' ), 41 ); // After WP_Admin_Bar::add_menus
 	}
 
 	/**
@@ -232,5 +234,27 @@ class PLL_Frontend extends PLL_Base {
 
 			$this->load_strings_translations();
 		}
+	}
+
+	/**
+	 * Remove the customize admin bar on front-end when using a block theme.
+	 *
+	 * WordPress removes the Customizer menu if a block theme is activated and no other plugins interact with it.
+	 * As Polylang interacts with the Customizer, we have to delete this menu ourselves in the case of a block theme,
+	 * unless another plugin than Polylang interacts with the Customizer.
+	 *
+	 * @since 3.2
+	 *
+	 * @return void
+	 */
+	public function remove_customize_admin_bar() {
+		if ( ! $this->should_customize_menu_be_removed() ) {
+			return;
+		}
+
+		global $wp_admin_bar;
+
+		remove_action( 'wp_before_admin_bar_render', 'wp_customize_support_script' ); // To avoid the script launch.
+		$wp_admin_bar->remove_menu( 'customize' );
 	}
 }
