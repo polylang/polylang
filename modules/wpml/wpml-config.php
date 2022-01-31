@@ -38,7 +38,9 @@ class PLL_WPML_Config {
 	 * @since 1.0
 	 */
 	public function __construct() {
-
+		if ( extension_loaded( 'simplexml' ) ) {
+			$this->init();
+		}
 	}
 
 	/**
