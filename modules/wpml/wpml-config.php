@@ -33,6 +33,15 @@ class PLL_WPML_Config {
 	protected $files;
 
 	/**
+	 * Constructor
+	 *
+	 * @since 1.0
+	 */
+	public function __construct() {
+
+	}
+
+	/**
 	 * Access to the single instance of the class
 	 *
 	 * @since 1.7
