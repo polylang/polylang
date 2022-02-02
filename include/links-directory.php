@@ -71,6 +71,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug . '/';
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
+			if (preg_match( '/\/\/$/', $root)) {
+				  $root = substr( $root, 0, -1 );
+			}
+
 			if ( false === strpos( $url, $new = $root . $slug ) ) {
 				$pattern = preg_quote( $root, '#' );
 				$pattern = '#' . $pattern . '#';
