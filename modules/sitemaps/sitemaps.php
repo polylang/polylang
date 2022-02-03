@@ -72,19 +72,6 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	}
 
 	/**
-	 * Whitelists the home url filter for the sitemaps
-	 *
-	 * @since 2.8
-	 *
-	 * @param array $whitelist White list.
-	 * @return array
-	 */
-	public function home_url_white_list( $whitelist ) {
-		$whitelist[] = array( 'file' => 'class-wp-sitemaps-posts' );
-		return $whitelist;
-	}
-
-	/**
 	 * Filters the sitemaps rewrite rules to take the languages into account.
 	 *
 	 * @since 2.8
