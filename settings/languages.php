@@ -252,7 +252,7 @@ return array(
 		'locale'   => 'dsb',
 		'name'     => 'Dolnoserbšćina',
 		'dir'      => 'ltr',
-		'flag'     => 'de',
+		'flag'     => 'dsb',
 	),
 	'dzo' => array(
 		'code'     => 'dz',
@@ -594,7 +594,7 @@ return array(
 		'locale'   => 'hsb',
 		'name'     => 'Hornjoserbšćina',
 		'dir'      => 'ltr',
-		'flag'     => 'de',
+		'flag'     => 'hsb',
 	),
 	'hy' => array(
 		'code'     => 'hy',
