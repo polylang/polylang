@@ -594,7 +594,7 @@ return array(
 		'locale'   => 'hsb',
 		'name'     => 'Hornjoserbšćina',
 		'dir'      => 'ltr',
-		'flag'     => 'hsb',
+		'flag'     => 'dsb',
 	),
 	'hy' => array(
 		'code'     => 'hy',
