@@ -157,34 +157,61 @@ if ( ! function_exists( 'icl_link_to_element' ) ) {
 
 if ( ! function_exists( 'icl_object_id' ) ) {
 	/**
-	 * Used for calculating the IDs of objects (usually categories) in the current language
+	 * Returns an element’s ID in the current language or in another specified language.
 	 *
 	 * @since 0.9.5
 	 *
-	 * @param int    $id                         Object id
-	 * @param string $type                       Optional, post type or taxonomy name of the object, defaults to 'post'
-	 * @param bool   $return_original_if_missing Optional, true if Polylang should return the original id if the translation is missing, defaults to false
-	 * @param string $lang                       Optional, language code, defaults to current language
-	 * @return int|null The object id of the translation, null if the translation is missing and $return_original_if_missing set to false
+	 * @param int         $element_id                 Object id.
+	 * @param string      $element_type               Optional, post type or taxonomy name of the object, defaults to 'post'.
+	 * @param bool        $return_original_if_missing Optional, true if Polylang should return the original id if the translation is missing, defaults to false.
+	 * @param string|null $ulanguage_code             Optional, language code, defaults to the current language.
+	 * @return int|null The object id of the translation, null if the translation is missing and $return_original_if_missing set to false.
 	 */
-	function icl_object_id( $id, $type = 'post', $return_original_if_missing = false, $lang = '' ) {
-		$lang = $lang ? $lang : pll_current_language();
+	function icl_object_id( $element_id, $element_type = 'post', $return_original_if_missing = false, $ulanguage_code = null ) {
+		if ( empty( $element_id ) ) {
+			return null;
+		}
 
-		if ( 'nav_menu' === $type ) {
+		$element_id = (int) $element_id;
+
+		if ( 'any' === $element_type ) {
+			$element_type = get_post_type( $element_id );
+		}
+
+		if ( empty( $element_type ) ) {
+			return null;
+		}
+
+		if ( empty( $ulanguage_code ) ) {
+			$ulanguage_code = pll_current_language();
+		}
+
+		if ( 'nav_menu' === $element_type ) {
+			$tr_id = false;
 			$theme = get_option( 'stylesheet' );
 			if ( isset( PLL()->options['nav_menus'][ $theme ] ) ) {
 				foreach ( PLL()->options['nav_menus'][ $theme ] as $menu ) {
-					if ( array_search( $id, $menu ) && ! empty( $menu[ $lang ] ) ) {
-						$tr_id = $menu[ $lang ];
+					if ( array_search( $element_id, $menu ) && ! empty( $menu[ $ulanguage_code ] ) ) {
+						$tr_id = $menu[ $ulanguage_code ];
 						break;
 					}
 				}
 			}
-		} elseif ( $pll_type = ( 'post' === $type || pll_is_translated_post_type( $type ) ) ? 'post' : ( 'term' === $type || pll_is_translated_taxonomy( $type ) ? 'term' : false ) ) {
-			$tr_id = PLL()->model->$pll_type->get_translation( $id, $lang );
+		} elseif ( pll_is_translated_post_type( $element_type ) ) {
+			$tr_id = PLL()->model->post->get_translation( $element_id, $ulanguage_code );
+		} elseif ( pll_is_translated_taxonomy( $element_type ) ) {
+			$tr_id = PLL()->model->term->get_translation( $element_id, $ulanguage_code );
 		}
 
-		return ! empty( $tr_id ) ? $tr_id : ( $return_original_if_missing ? $id : null );
+		if ( ! isset( $tr_id ) ) {
+			return $element_id; // WPML doesn't honor $return_original_if_missing if the post type or taxonomy is not translated.
+		}
+
+		if ( empty( $tr_id ) ) {
+			return $return_original_if_missing ? $element_id : null;
+		}
+
+		return (int) $tr_id;
 	}
 }
 
