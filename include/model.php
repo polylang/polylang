@@ -58,7 +58,6 @@ class PLL_Model {
 		add_action( 'update_option_permalink_structure', array( $this, 'clean_languages_cache' ) );
 		add_action( 'update_option_siteurl', array( $this, 'clean_languages_cache' ) );
 		add_action( 'update_option_home', array( $this, 'clean_languages_cache' ) );
-		add_action( 'create_language', array( $this, 'clean_languages_cache' ) );
 
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ) );
 
@@ -93,8 +92,11 @@ class PLL_Model {
 
 				if ( ! empty( $languages ) && ! empty( $term_languages ) ) {
 					foreach ( $languages as $k => $v ) {
-						$term_language   = isset( $term_languages[ 'pll_' . $v->slug ] ) ? $term_languages[ 'pll_' . $v->slug ] : null;
-						$languages[ $k ] = new PLL_Language( $v, $term_language );
+						if ( ! isset( $term_languages[ 'pll_' . $v->slug ] ) ) {
+							unset( $languages[ $k ] );
+							continue;
+						}
+						$languages[ $k ] = new PLL_Language( $v, $term_languages[ 'pll_' . $v->slug ] );
 					}
 
 					// We will need the languages list to allow its access in the filter below.
