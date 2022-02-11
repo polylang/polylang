@@ -200,36 +200,20 @@ class PLL_Filters {
 
 		static $once = false;
 
-		// Obliged to redo the get_pages query if we want to get the right number
 		if ( ! empty( $args['number'] ) && ! $once ) {
-			$once = true; // avoid infinite loop
-
-			$r = array(
-				'lang'        => 0, // So this query is not filtered
-				'numberposts' => -1,
-				'nopaging'    => true,
-				'post_type'   => $args['post_type'],
-				'fields'      => 'ids',
-				'tax_query'   => array(
-					array(
-						'taxonomy' => 'language',
-						'field'    => 'term_taxonomy_id', // Since WP 3.5
-						'terms'    => $language->term_taxonomy_id,
-						'operator' => 'NOT IN',
-					),
-				),
-			);
+			// We are obliged to redo the get_pages() query if we want to get the right number.
+			$once = true; // Avoid infinite loop.
 
 			// Take care that 'exclude' argument accepts integer or strings too.
-			$args['exclude'] = array_merge( wp_parse_id_list( $args['exclude'] ), get_posts( $r ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
+			$args['exclude'] = array_merge( wp_parse_id_list( $args['exclude'] ), $this->get_related_page_ids( $language, 'NOT IN', $args ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 			$pages = get_pages( $args );
 		}
 
 		$ids = wp_list_pluck( $pages, 'ID' );
 
-		// Filters the queried list of pages by language
 		if ( ! $once ) {
-			$ids = array_intersect( $ids, $this->model->post->get_objects_in_language( $language ) );
+			// Filters the queried list of pages by language.
+			$ids = array_intersect( $ids, $this->get_related_page_ids( $language, 'IN', $args ) );
 
 			foreach ( $pages as $key => $page ) {
 				if ( ! in_array( $page->ID, $ids ) ) {
@@ -237,14 +221,45 @@ class PLL_Filters {
 				}
 			}
 
-			$pages = array_values( $pages ); // In case 3rd parties suppose the existence of $pages[0]
+			$pages = array_values( $pages ); // In case 3rd parties suppose the existence of $pages[0].
 		}
 
-		// Not done by WP but extremely useful for performance when manipulating taxonomies
+		// Not done by WP but extremely useful for performance when manipulating taxonomies.
 		update_object_term_cache( $ids, $args['post_type'] );
 
-		$once = false; // In case get_pages is called another time
+		$once = false; // In case get_pages() is called another time.
 		return $pages;
+	}
+
+	/**
+	 * Get page ids related to a get_pages() in or not in a given language.
+	 *
+	 * @since 3.2
+	 *
+	 * @param PLL_Language $language The language to use in the relationship
+	 * @param string       $relation 'IN' or 'NOT IN'.
+	 * @param array        $args     Array of get_pages() arguments.
+	 * @return int[]
+	 */
+	protected function get_related_page_ids( $language, $relation, $args ) {
+		$r = array(
+			'lang'        => '', // Ensure this query is not filtered.
+			'numberposts' => -1,
+			'nopaging'    => true,
+			'post_type'   => $args['post_type'],
+			'post_status' => $args['post_status'],
+			'fields'      => 'ids',
+			'tax_query'   => array(
+				array(
+					'taxonomy' => 'language',
+					'field'    => 'term_taxonomy_id', // Since WP 3.5.
+					'terms'    => $language->term_taxonomy_id,
+					'operator' => $relation,
+				),
+			),
+		);
+
+		return get_posts( $r );
 	}
 
 	/**
