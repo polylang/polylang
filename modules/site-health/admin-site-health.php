@@ -254,38 +254,6 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Test if the SimpleXML PHP extension is available.
-	 *
-	 * @since 3.2
-	 *
-	 * @return array $result Array with test results.
-	 */
-	public function simplexml_available() {
-		$result = array(
-			'label'       => esc_html__( 'SimpleXML PHP extension', 'polylang' ),
-			'status'      => 'good',
-			'badge'       => array(
-				'label' => POLYLANG,
-				'color' => 'blue',
-			),
-			'description' => sprintf(
-				'<p>%s</p>',
-				esc_html__( 'PHP extension is installed and activated, it\'s important to read wpml-config.xml.', 'polylang' )
-			),
-			'actions'     => '',
-			'test'        => 'pll_simplexml',
-		);
-
-		if ( ! extension_loaded( 'simplexml' ) ) {
-			$result['status']      = 'critical';
-			$result['label']       = esc_html__( 'Simplexml PHP extension is not available.', 'polylang' );
-			$result['description'] = sprintf( '<p>%1$s</br>%2$s</p>', __( 'Please contact your host provider and ask him to activate it.', 'polylang' ), __( 'Polylang needs it to read wpml-config.xml files', 'polylang' ) );
-		}
-
-		return $result;
-	}
-
-	/**
 	 * Test if the home page is translated or not.
 	 *
 	 * @since 2.8
