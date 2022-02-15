@@ -47,6 +47,8 @@ class PLL_Admin_Site_Health {
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
+		add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
+
 	}
 
 	/**
@@ -315,6 +317,11 @@ class PLL_Admin_Site_Health {
 		if ( ! empty( $wpml_files ) ) {
 			$fields['wpml']['label'] = 'wpml-config.xml files';
 			$fields['wpml']['value'] = $wpml_files;
+
+			if ( ! extension_loaded( 'simplexml' ) ) {
+				$fields['simplexml']['label'] = __( 'PHP SimpleXML extension', 'polylang' );
+				$fields['simplexml']['value'] = __( 'Not loaded. Contact your host provider.', 'polylang' );
+			}
 		}
 
 		// Create the section.
@@ -375,5 +382,25 @@ class PLL_Admin_Site_Health {
 		}
 
 		return $terms;
+	}
+
+	/**
+	 * Requires the simplexml PHP module when a wpml-config.xml has been found.
+	 *
+	 * @since 3.1
+	 * @since 3.2 Moved from PLL_WPML_Config
+	 *
+	 * @param array $modules An associative array of modules to test for.
+	 * @return array
+	 */
+	public function site_status_test_php_modules( $modules ) {
+		$files = PLL_WPML_Config::instance()->get_files();
+		if ( ! empty( $files ) ) {
+			$modules['simplexml'] = array(
+				'extension' => 'simplexml',
+				'required'  => true,
+			);
+		}
+		return $modules;
 	}
 }
