@@ -331,7 +331,7 @@ class PLL_License {
 					$class = 'notice-warning notice-alt';
 					$message = sprintf(
 						/* translators: %1$s is a date, %2$s is link start tag, %3$s is link end tag. */
-						esc_html__( 'Your license key will expire soon! Precisely, it will expire on %1$s. %2$sRenew your license key today!%3$s.', 'polylang' ),
+						esc_html__( 'Your license key will expire soon! Precisely, it will expire on %1$s. %2$sRenew your license key today!%3$s', 'polylang' ),
 						esc_html( date_i18n( get_option( 'date_format' ), $expiration ) ),
 						sprintf( '<a href="%s" target="_blank">', 'https://polylang.pro/account/' ),
 						'</a>'
