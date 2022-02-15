@@ -83,19 +83,15 @@ class PLL_Model {
 
 			// Create the languages from taxonomies.
 			if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || false === ( $languages = get_transient( 'pll_languages_list' ) ) ) {
-				$languages = get_terms( 'language', array( 'hide_empty' => false, 'orderby' => 'term_group' ) );
-				$languages = empty( $languages ) || is_wp_error( $languages ) ? array() : $languages;
+				$post_languages = get_terms( 'language', array( 'hide_empty' => false, 'orderby' => 'term_group' ) );
+				$post_languages = empty( $post_languages ) || is_wp_error( $post_languages ) ? array() : $post_languages;
 
 				$term_languages = get_terms( 'term_language', array( 'hide_empty' => false ) );
 				$term_languages = empty( $term_languages ) || is_wp_error( $term_languages ) ?
 					array() : array_combine( wp_list_pluck( $term_languages, 'slug' ), $term_languages );
 
-				if ( ! empty( $languages ) && ! empty( $term_languages ) ) {
-					foreach ( $languages as $k => $v ) {
-						if ( ! isset( $term_languages[ 'pll_' . $v->slug ] ) ) {
-							unset( $languages[ $k ] );
-							continue;
-						}
+				if ( ! empty( $post_languages ) && ! empty( $term_languages ) ) {
+					foreach ( $post_languages as $k => $v ) {
 						$languages[ $k ] = new PLL_Language( $v, $term_languages[ 'pll_' . $v->slug ] );
 					}
 
