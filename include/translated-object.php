@@ -207,7 +207,7 @@ abstract class PLL_Translated_Object {
 		// Sanitize and validate the translations array.
 		$translations = $this->sanitize_int_ids_list( $translations );
 		$translations = array_merge( array( $lang->slug => $id ), $translations ); // Make sure this object is in translations.
-		$translations = $this->validate_translations( $translations, $id );
+		$translations = $this->validate_translations( $translations );
 
 		// Unlink removed translations.
 		$old_translations = $this->get_translations( $id );
