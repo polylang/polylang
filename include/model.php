@@ -92,7 +92,7 @@ class PLL_Model {
 
 				if ( ! empty( $post_languages ) && ! empty( $term_languages ) ) {
 					foreach ( $post_languages as $k => $v ) {
-						if ( isset ( $term_languages[ 'pll_' . $v->slug ] ) ) {
+						if ( isset( $term_languages[ 'pll_' . $v->slug ] ) ) {
 							$languages[ $k ] = new PLL_Language( $v, $term_languages[ 'pll_' . $v->slug ] );
 						}
 					}
