@@ -43,7 +43,11 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return void
 	 */
 	public function set_language( $term_id, $lang ) {
-		$term_id = (int) $term_id;
+		$term_id = $this->sanitize_int_id( $term_id );
+
+		if ( empty( $term_id ) ) {
+			return;
+		}
 
 		$old_lang = $this->get_language( $term_id );
 		$old_lang = $old_lang ? $old_lang->tl_term_id : '';
@@ -73,7 +77,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return void
 	 */
 	public function delete_language( $term_id ) {
-		wp_delete_object_term_relationships( $term_id, 'term_language' );
+		wp_delete_object_term_relationships( $this->sanitize_int_id( $term_id ), 'term_language' );
 	}
 
 	/**
@@ -87,7 +91,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 */
 	public function get_language( $value, $taxonomy = '' ) {
 		if ( is_numeric( $value ) ) {
-			$term_id = $value;
+			$term_id = $this->sanitize_int_id( $value );
 		}
 
 		// get_term_by still not cached in WP 3.5.1 but internally, the function is always called by term_id
@@ -108,7 +112,8 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @since 2.3
 	 *
 	 * @param int   $id           Post id or term id.
-	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as
+	 *                            value. Make sure to sanitize this.
 	 * @return bool
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
@@ -133,6 +138,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 */
 	public function delete_translation( $id ) {
 		global $wpdb;
+		$id   = $this->sanitize_int_id( $id );
 		$slug = array_search( $id, $this->get_translations( $id ) ); // in case some plugin stores the same value with different key
 
 		parent::delete_translation( $id );
@@ -210,6 +216,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return void
 	 */
 	public function clean_term_cache( $ids ) {
-		clean_object_term_cache( $ids, 'term' );
+		clean_object_term_cache( $this->sanitize_int_ids_list( $ids ), 'term' );
 	}
 }

@@ -47,6 +47,12 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @return void
 	 */
 	public function set_language( $post_id, $lang ) {
+		$post_id = $this->sanitize_int_id( $post_id );
+
+		if ( empty( $post_id ) ) {
+			return;
+		}
+
 		$old_lang = $this->get_language( $post_id );
 		$old_lang = $old_lang ? $old_lang->slug : '';
 
@@ -67,8 +73,12 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that post
 	 */
 	public function get_language( $post_id ) {
-		$lang = $this->get_object_term( $post_id, 'language' );
-		return ( $lang ) ? $this->model->get_language( $lang ) : false;
+		$post_id = $this->sanitize_int_id( $post_id );
+
+		if ( empty( $post_id ) ) {
+			return false;
+		}
+
 	}
 
 	/**
@@ -80,6 +90,12 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @return void
 	 */
 	public function delete_translation( $id ) {
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
+			return;
+		}
+
 		parent::delete_translation( $id );
 		wp_set_object_terms( $id, array(), $this->tax_translations );
 	}
@@ -169,6 +185,12 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @return bool
 	 */
 	public function current_user_can_read( $post_id, $context = 'view' ) {
+		$post_id = $this->sanitize_int_id( $post_id );
+
+		if ( empty( $post_id ) ) {
+			return false;
+		}
+
 		$post = get_post( $post_id );
 
 		if ( empty( $post ) ) {
