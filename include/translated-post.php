@@ -60,7 +60,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		$lang = $lang ? $lang->slug : '';
 
 		if ( $old_lang !== $lang ) {
-			wp_set_post_terms( (int) $post_id, $lang, 'language' );
+			wp_set_post_terms( $post_id, $lang, $this->tax_language );
 		}
 	}
 
@@ -79,6 +79,8 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 			return false;
 		}
 
+		$lang = $this->get_object_term( $post_id, $this->tax_language );
+		return ! empty( $lang ) ? $this->model->get_language( $lang ) : false;
 	}
 
 	/**
@@ -125,7 +127,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 */
 	public function register_taxonomy() {
 		register_taxonomy(
-			'language',
+			$this->tax_language,
 			$this->model->get_translated_post_types(),
 			array(
 				'labels' => array(
@@ -154,8 +156,8 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 */
 	public function registered_post_type( $post_type ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
-			register_taxonomy_for_object_type( 'language', $post_type );
-			register_taxonomy_for_object_type( 'post_translations', $post_type );
+			register_taxonomy_for_object_type( $this->tax_language, $post_type );
+			register_taxonomy_for_object_type( $this->tax_translations, $post_type );
 		}
 	}
 
@@ -211,9 +213,19 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		// Follow WP practices, which shows links to private posts ( when readable ), but not for draft posts ( ex: get_adjacent_post_link() )
 		if ( in_array( $post->post_status, get_post_stati( array( 'private' => true ) ) ) ) {
-			$post_type_object = get_post_type_object( $post->post_type );
+			if ( ! is_user_logged_in() ) {
+				return false;
+			}
+
 			$user = wp_get_current_user();
-			return is_user_logged_in() && ( current_user_can( $post_type_object->cap->read_private_posts ) || $user->ID == $post->post_author ); // Comparison must not be strict!
+
+			if ( $user->ID == $post->post_author ) { // Comparison must not be strict!
+				return true;
+			}
+
+			$post_type_object = get_post_type_object( $post->post_type );
+
+			return ! empty( $post_type_object ) && current_user_can( $post_type_object->cap->read_private_posts );
 		}
 
 		// In edit context, show draft and future posts.
@@ -259,7 +271,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 			'post_type'        => $type,
 			'tax_query'        => array(
 				array(
-					'taxonomy' => 'language',
+					'taxonomy' => $this->tax_language,
 					'field'    => 'term_taxonomy_id', // WP 3.5+
 					'terms'    => $lang->term_taxonomy_id,
 				),

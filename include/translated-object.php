@@ -119,8 +119,8 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Wrap wp_get_object_terms() to cache it and return only one object.
-	 * inspired by the WordPress function get_the_terms().
+	 * Wraps wp_get_object_terms() to cache it and return only one object.
+	 * Inspired by the WordPress function get_the_terms().
 	 *
 	 * @since 1.2
 	 *
@@ -137,32 +137,33 @@ abstract class PLL_Translated_Object {
 
 		$term = get_object_term_cache( $object_id, $taxonomy );
 
-		if ( false === $term ) {
-			// Query language and translations at the same time.
-			$taxonomies = array( $this->tax_language, $this->tax_translations );
+		if ( is_array( $term ) ) {
+			return ! empty( $term ) ? reset( $term ) : false;
+		}
 
-			// Query terms.
-			$terms = array();
-			$object_terms = wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) );
-			if ( is_array( $object_terms ) ) {
-				foreach ( $object_terms as $t ) {
-					$terms[ $t->taxonomy ] = $t;
-					if ( $t->taxonomy == $taxonomy ) {
-						$term = $t;
-					}
+		// Query language and translations at the same time.
+		$taxonomies = array( $this->tax_language, $this->tax_translations );
+
+		// Query terms.
+		$terms        = array();
+		$term         = false;
+		$object_terms = wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) );
+
+		if ( is_array( $object_terms ) ) {
+			foreach ( $object_terms as $t ) {
+				$terms[ $t->taxonomy ] = $t;
+				if ( $t->taxonomy === $taxonomy ) {
+					$term = $t;
 				}
 			}
-
-			// Stores it the way WP expects it. Set an empty cache if no term was found in the taxonomy.
-			foreach ( $taxonomies as $tax ) {
-				wp_cache_add( $object_id, empty( $terms[ $tax ] ) ? array() : array( $terms[ $tax ] ), $tax . '_relationships' );
-			}
-		}
-		else {
-			$term = reset( $term );
 		}
 
-		return empty( $term ) ? false : $term;
+		// Stores it the way WP expects it. Set an empty cache if no term was found in the taxonomy.
+		foreach ( $taxonomies as $tax ) {
+			wp_cache_add( $object_id, empty( $terms[ $tax ] ) ? array() : array( $terms[ $tax ] ), $tax . '_relationships' );
+		}
+
+		return $term;
 	}
 
 	/**
@@ -178,7 +179,7 @@ abstract class PLL_Translated_Object {
 	protected function should_update_translation_group( $id, $translations ) {
 		// Don't do anything if no translations have been added to the group.
 		$old_translations = $this->get_translations( $id ); // Includes at least $id itself.
-		return count( array_diff_assoc( $translations, $old_translations ) ) > 0;
+		return ! empty( array_diff_assoc( $translations, $old_translations ) );
 	}
 
 	/**
@@ -188,8 +189,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
 	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
-	 *
-	 * @return int[] An associative array with language codes as key and post ids as values.
+	 * @return int[]              An associative array with language codes as key and post ids as values.
 	 */
 	public function save_translations( $id, $translations ) {
 		$id = $this->sanitize_int_id( $id );
@@ -251,7 +251,7 @@ abstract class PLL_Translated_Object {
 			// Get fresh count value.
 			$term = get_term( $term->term_id, $this->tax_translations );
 
-			if ( empty( $term->count ) ) {
+			if ( $term instanceof WP_Term && empty( $term->count ) ) {
 				wp_delete_term( $term->term_id, $this->tax_translations );
 			}
 		}
@@ -276,18 +276,24 @@ abstract class PLL_Translated_Object {
 
 		$term = $this->get_object_term( $id, $this->tax_translations );
 
-		if ( ! empty( $term ) ) {
-			$d = maybe_unserialize( $term->description );
-			if ( is_array( $d ) ) {
-				$slug = array_search( $id, $this->get_translations( $id ) ); // In case some plugin stores the same value with different key.
-				unset( $d[ $slug ] );
-			}
+		if ( empty( $term ) ) {
+			return;
+		}
 
-			if ( empty( $d ) ) {
-				wp_delete_term( (int) $term->term_id, $this->tax_translations );
-			} else {
-				wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $d ) ) );
+		$descr = maybe_unserialize( $term->description );
+
+		if ( ! empty( $descr ) && is_array( $descr ) ) {
+			$slug = array_search( $id, $this->get_translations( $id ) ); // In case some plugin stores the same value with different key.
+
+			if ( false !== $slug ) {
+				unset( $descr[ $slug ] );
 			}
+		}
+
+		if ( empty( $descr ) || ! is_array( $descr ) ) {
+			wp_delete_term( (int) $term->term_id, $this->tax_translations );
+		} else {
+			wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $descr ) ) );
 		}
 	}
 
@@ -351,12 +357,18 @@ abstract class PLL_Translated_Object {
 		}
 
 		$lang = $this->model->get_language( $lang );
-		$obj_lang = $this->get_language( $id );
-		if ( empty( $lang ) || empty( $obj_lang ) ) {
+
+		if ( empty( $lang ) ) {
 			return false;
 		}
 
-		return $obj_lang->term_id == $lang->term_id ? $id : $this->get_translation( $id, $lang );
+		$obj_lang = $this->get_language( $id );
+
+		if ( empty( $obj_lang ) ) {
+			return false;
+		}
+
+		return $obj_lang->term_id === $lang->term_id ? $id : $this->get_translation( $id, $lang );
 	}
 
 	/**
@@ -430,7 +442,7 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Check if a user can synchronize translations.
+	 * Checks if a user can synchronize translations.
 	 *
 	 * @since 2.6
 	 *
@@ -456,8 +468,9 @@ abstract class PLL_Translated_Object {
 		 * @param int       $id    The synchronization source object id.
 		 */
 		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
+
 		if ( null !== $check ) {
-			return $check;
+			return (bool) $check;
 		}
 
 		if ( ! current_user_can( "edit_{$this->type}", $id ) ) {
