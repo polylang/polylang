@@ -171,4 +171,43 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$languages = get_transient( 'pll_languages_list' );
 		$this->assertEqualSets( $properties, array_keys( reset( $languages ) ) );
 	}
+
+	/**
+	 * @doesNotPerformAssertions
+	 */
+	public function test_create_secondary_language_with_yoast() {
+		// first language
+		$args = array(
+			'name'       => 'English',
+			'slug'       => 'en',
+			'locale'     => 'en_US',
+			'rtl'        => 0,
+			'flag'       => 'us',
+			'term_group' => 2,
+		);
+		self::$model->add_language( $args );
+
+		$links_model     = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		new PLL_Filters_Links( $pll_admin );
+
+		add_action(
+			'created_term',
+			function ( $term ) {
+				get_term_link( $term, 'language' );
+			},
+			PHP_INT_MAX
+		);
+
+		// second language
+		$args = array(
+			'name'       => 'Francais',
+			'slug'       => 'fr',
+			'locale'     => 'fr_FR',
+			'rtl'        => 0,
+			'flag'       => 'fr',
+		);
+		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
+		wp_insert_term( $args['name'], 'language', array( 'slug' => $args['slug'], 'description' => $description ) );
+	}
 }
