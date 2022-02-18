@@ -173,9 +173,9 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @doesNotPerformAssertions
+	 * This test a conflict with Yoast SEO.
 	 */
-	public function test_create_secondary_language_with_yoast() {
+	public function test_create_language_when_term_link_requested_on_created_term() {
 		// first language
 		$args = array(
 			'name'       => 'English',
@@ -191,12 +191,22 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$pll_admin = new PLL_Admin( $links_model );
 		new PLL_Filters_Links( $pll_admin );
 
+		// These filters reproduces Yoast SEO's behavior.
 		add_action(
 			'created_term',
-			function ( $term ) {
-				get_term_link( $term, 'language' );
+			function ( $term_id, $tt_id, $taxonomy ) {
+				get_term_link( $term_id, $taxonomy );
 			},
-			PHP_INT_MAX
+			PHP_INT_MAX,
+			3
+		);
+		add_action(
+			'edited_term',
+			function ( $term_id,  $tt_id, $taxonomy ) {
+				get_term_link( $term_id, $taxonomy );
+			},
+			PHP_INT_MAX,
+			3
 		);
 
 		// second language
@@ -206,8 +216,8 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'locale'     => 'fr_FR',
 			'rtl'        => 0,
 			'flag'       => 'fr',
+			'term_group' => 2,
 		);
-		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
-		wp_insert_term( $args['name'], 'language', array( 'slug' => $args['slug'], 'description' => $description ) );
+		$this->assertTrue( self::$model->add_language( $args ) );
 	}
 }
