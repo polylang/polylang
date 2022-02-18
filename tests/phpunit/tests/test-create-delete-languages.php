@@ -171,4 +171,54 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$languages = get_transient( 'pll_languages_list' );
 		$this->assertEqualSets( $properties, array_keys( reset( $languages ) ) );
 	}
+
+	/**
+	 * This test a conflict with Yoast SEO.
+	 */
+	public function test_create_language_when_term_link_requested_on_created_term() {
+		// first language
+		$args = array(
+			'name'       => 'English',
+			'slug'       => 'en',
+			'locale'     => 'en_US',
+			'rtl'        => 0,
+			'flag'       => 'us',
+			'term_group' => 2,
+		);
+		self::$model->add_language( $args );
+
+		$links_model     = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$pll_admin->options['hide_default'] = 1;
+		new PLL_Filters_Links( $pll_admin );
+
+		// These filters reproduces Yoast SEO's behavior.
+		add_action(
+			'created_term',
+			function ( $term_id, $tt_id, $taxonomy ) {
+				get_term_link( $term_id, $taxonomy );
+			},
+			PHP_INT_MAX,
+			3
+		);
+		add_action(
+			'edited_term',
+			function ( $term_id, $tt_id, $taxonomy ) {
+				get_term_link( $term_id, $taxonomy );
+			},
+			PHP_INT_MAX,
+			3
+		);
+
+		// second language
+		$args = array(
+			'name'       => 'Francais',
+			'slug'       => 'fr',
+			'locale'     => 'fr_FR',
+			'rtl'        => 0,
+			'flag'       => 'fr',
+			'term_group' => 2,
+		);
+		$this->assertTrue( self::$model->add_language( $args ) );
+	}
 }
