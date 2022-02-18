@@ -189,6 +189,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
 		$links_model     = self::$model->get_links_model();
 		$pll_admin = new PLL_Admin( $links_model );
+		$pll_admin->options['hide_default'] = 1;
 		new PLL_Filters_Links( $pll_admin );
 
 		// These filters reproduces Yoast SEO's behavior.
