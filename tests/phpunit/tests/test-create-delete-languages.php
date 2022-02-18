@@ -202,7 +202,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 		add_action(
 			'edited_term',
-			function ( $term_id,  $tt_id, $taxonomy ) {
+			function ( $term_id, $tt_id, $taxonomy ) {
 				get_term_link( $term_id, $taxonomy );
 			},
 			PHP_INT_MAX,
