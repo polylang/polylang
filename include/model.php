@@ -80,9 +80,12 @@ class PLL_Model {
 	 */
 	public function get_languages_list( $args = array() ) {
 		if ( false === $languages = $this->cache->get( 'languages' ) ) {
+			$languages = array();
 
 			// Create the languages from taxonomies.
 			if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || false === ( $languages = get_transient( 'pll_languages_list' ) ) ) {
+				$languages = array();
+
 				$post_languages = get_terms( 'language', array( 'hide_empty' => false, 'orderby' => 'term_group' ) );
 				$post_languages = empty( $post_languages ) || is_wp_error( $post_languages ) ? array() : $post_languages;
 
@@ -117,9 +120,6 @@ class PLL_Model {
 					 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
 					 */
 					set_transient( 'pll_languages_list', array_map( 'get_object_vars', $languages ) );
-				}
-				else {
-					$languages = array(); // In case something went wrong.
 				}
 			}
 
