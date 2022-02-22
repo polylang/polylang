@@ -414,34 +414,6 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Returns ids of objects in a language similarly to get_objects_in_term() for a taxonomy.
-	 * It is faster than get_objects_in_term() as it avoids a JOIN.
-	 *
-	 * @since 1.4
-	 *
-	 * @param PLL_Language $lang PLL_Language object.
-	 * @return int[] Object ids.
-	 */
-	public function get_objects_in_language( $lang ) {
-		global $wpdb;
-		$tt_id = $this->tax_tt;
-
-		$last_changed = wp_cache_get_last_changed( 'terms' );
-		$cache_key    = "polylang:get_objects_in_language:{$lang->$tt_id}:{$last_changed}";
-		$cache        = wp_cache_get( $cache_key, 'terms' );
-
-		if ( false !== $cache ) {
-			return $this->sanitize_int_ids_list( $cache );
-		}
-
-		$object_ids = $wpdb->get_col( $wpdb->prepare( "SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $lang->$tt_id ) );
-		$object_ids = $this->sanitize_int_ids_list( $object_ids );
-		wp_cache_set( $cache_key, $object_ids, 'terms' );
-
-		return $object_ids;
-	}
-
-	/**
 	 * Checks if a user can synchronize translations.
 	 *
 	 * @since 2.6

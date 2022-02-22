@@ -219,7 +219,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 			$user = wp_get_current_user();
 
-			if ( $user->ID == $post->post_author ) { // Comparison must not be strict!
+			if ( (int) $user->ID === (int) $post->post_author ) {
 				return true;
 			}
 
