@@ -580,10 +580,10 @@ abstract class PLL_Translated_Object {
 		// Make sure to return at least the passed object in its translation array.
 		$lang = $this->get_language( $id );
 
-		if ( empty( $lang ) ) {
-			return $translations;
+		if ( ! empty( $lang ) ) {
+			$translations[ $lang->slug ] = $id;
 		}
 
-		return array_merge( array( $lang->slug => $id ), $translations );
+		return $translations;
 	}
 }
