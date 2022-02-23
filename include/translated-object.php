@@ -167,6 +167,33 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
+	 * Returns a list of post translations, given a `tax_translations` term ID.
+	 *
+	 * @since 3.2
+	 *
+	 * @param  int $term_id Term ID.
+	 * @return array<int>   An associative array of translations with language code as key and translation id as value.
+	 */
+	public function get_translations_from_term_id( $term_id ) {
+		$term_id = $this->sanitize_int_id( $term_id );
+
+		if ( empty( $term_id ) ) {
+			return array();
+		}
+
+		$translations_term = get_term( $term_id, $this->tax_translations );
+
+		if ( ! $translations_term instanceof WP_Term || empty( $translations_term->description ) ) {
+			return array();
+		}
+
+		// Lang slugs as array keys, template IDs as array values.
+		$translations = maybe_unserialize( $translations_term->description );
+
+		return $this->validate_translations( $translations, $term_id, 'display' );
+	}
+
+	/**
 	 * Tells whether a translation term must be updated.
 	 *
 	 * @since 2.3
