@@ -205,9 +205,7 @@ abstract class PLL_Translated_Object {
 		}
 
 		// Sanitize and validate the translations array.
-		$translations = $this->sanitize_int_ids_list( $translations );
-		$translations = array_merge( array( $lang->slug => $id ), $translations ); // Make sure this object is in translations.
-		$translations = $this->validate_translations( $translations );
+		$translations = $this->validate_translations( $translations, $id );
 
 		// Unlink removed translations.
 		$old_translations = $this->get_translations( $id );
@@ -314,7 +312,6 @@ abstract class PLL_Translated_Object {
 
 		$term         = $this->get_object_term( $id, $this->tax_translations );
 		$translations = empty( $term->description ) ? array() : maybe_unserialize( $term->description );
-		$translations = $this->sanitize_int_ids_list( $translations );
 
 		return $this->validate_translations( $translations, $id, 'display' );
 	}
@@ -491,11 +488,11 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Validates translations.
-	 * Make sure to sanitize arguments passed to this method.
+	 * Validates and sanitizes translations.
 	 * This will:
 	 * - Make sure to return only translations in existing languages (and only translations).
-	 * - Add the provided translation (`$id`) if the list is empty.
+	 * - Sanitize the values.
+	 * - Make sure the provided translation (`$id`) is in the list.
 	 * - Check that the translated objects are in the right language, if `$context` is set to 'save'.
 	 *
 	 * @since 3.1
@@ -511,7 +508,23 @@ abstract class PLL_Translated_Object {
 	 *                              'display' should be used otherwise. Default 'save'.
 	 * @return int[]
 	 */
-	public function validate_translations( array $translations, $id = 0, $context = 'save' ) {
+	protected function validate_translations( $translations, $id = 0, $context = 'save' ) {
+		if ( ! is_array( $translations ) ) {
+			$translations = array();
+		}
+
+		/**
+		 * Remove translations in non-existing languages, and non-translation data (we allow plugins to store other
+		 * information in the array).
+		 */
+		$translations = array_intersect_key(
+			$translations,
+			array_flip( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) )
+		);
+
+		// Make sure values are clean before working with them.
+		$translations = $this->sanitize_int_ids_list( $translations );
+
 		if ( 'save' === $context ) {
 			/**
 			 * Check that the translated objects are in the right language.
@@ -531,30 +544,19 @@ abstract class PLL_Translated_Object {
 			$translations = $valid_translations;
 		}
 
-		if ( ! empty( $id ) && empty( $translations ) ) {
-			// Make sure to return at least the passed object in its translation array.
-			$lang = $this->get_language( $id );
+		$id = $this->sanitize_int_id( $id );
 
-			if ( ! empty( $lang ) ) {
-				$translations[ $lang->slug ] = $id;
-			}
-		}
-
-		if ( empty( $translations ) || 'save' === $context ) {
-			/**
-			 * No need to go further in the 'save' context: thanks to the 1st step, we already know that the languages
-			 * are valid.
-			 */
+		if ( empty( $id ) ) {
 			return $translations;
 		}
 
-		/**
-		 * Make sure we return only translations in existing languages (thus we allow plugins to store other information
-		 * in the array).
-		 */
-		return array_intersect_key(
-			$translations,
-			array_flip( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) )
-		);
+		// Make sure to return at least the passed object in its translation array.
+		$lang = $this->get_language( $id );
+
+		if ( empty( $lang ) ) {
+			return $translations;
+		}
+
+		return array_merge( array( $lang->slug => $id ), $translations );
 	}
 }
