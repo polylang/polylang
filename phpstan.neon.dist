@@ -1,7 +1,7 @@
 includes:
 	- vendor/wpsyntex/polylang-phpstan/extension.neon
 parameters:
-	level: max
+	level: 6
 	paths:
 		- polylang.php
 		- admin/
