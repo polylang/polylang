@@ -190,7 +190,7 @@ abstract class PLL_Translated_Object {
 		// Lang slugs as array keys, template IDs as array values.
 		$translations = maybe_unserialize( $translations_term->description );
 
-		return $this->validate_translations( $translations, $term_id, 'display' );
+		return $this->validate_translations( $translations, 0, 'display' );
 	}
 
 	/**
