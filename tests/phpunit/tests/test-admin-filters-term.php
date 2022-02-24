@@ -493,4 +493,43 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertWPError( $error );
 	}
+
+	public function test_get_translations_from_term_id() {
+		// With 3 posts.
+		$en = $this->factory->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$de = $this->factory->post->create();
+		self::$model->post->set_language( $de, 'de' );
+
+		$es = $this->factory->post->create();
+		self::$model->post->set_language( $es, 'es' );
+
+		$expected = compact( 'en', 'de', 'es' );
+
+		self::$model->post->save_translations( $en, $expected );
+
+		$term = wp_get_object_terms( $en, 'post_translations' );
+
+		$this->assertIsArray( $term, 'The list of translation terms should be an array.' );
+		$this->assertCount( 1, $term, 'The list of translation terms should contain the term we just created, and only it.' );
+
+		$term         = reset( $term );
+		$translations = self::$model->post->get_translations_from_term_id( $term->term_id );
+
+		$this->assertSameSets( $expected, $translations, 'The list of translation terms should match the one we just created.' );
+
+		// With only 1 post.
+		$en = $this->factory->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$expected = compact( 'en' );
+
+		self::$model->post->save_translations( $en, array() );
+
+		$term = wp_get_object_terms( $en, 'post_translations' );
+
+		$this->assertIsArray( $term, 'The list of translation terms should be an array.' );
+		$this->assertEmpty( $term, 'The list of translation terms should be empty.' );
+	}
 }
