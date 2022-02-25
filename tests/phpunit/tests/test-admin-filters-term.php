@@ -517,7 +517,9 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$term         = reset( $term );
 		$translations = self::$model->post->get_translations_from_term_id( $term->term_id );
 
-		$this->assertSameSets( $expected, $translations, 'The list of translation terms should match the one we just created.' );
+		ksort( $expected );
+		ksort( $translations );
+		$this->assertSame( $expected, $translations, 'The list of translation terms should match the one we just created.' );
 
 		// With only 1 post.
 		$en = $this->factory->post->create();
