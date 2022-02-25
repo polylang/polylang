@@ -101,7 +101,9 @@ abstract class PLL_Translated_Object {
 	 * @return void
 	 */
 	public function update_language( $id, $lang ) {
-		if ( $this->get_language( $id ) === $lang ) {
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) || $this->get_language( $id ) === $lang ) {
 			return;
 		}
 
@@ -117,8 +119,8 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Wrap wp_get_object_terms() to cache it and return only one object.
-	 * inspired by the WordPress function get_the_terms().
+	 * Wraps wp_get_object_terms() to cache it and return only one object.
+	 * Inspired by the WordPress function get_the_terms().
 	 *
 	 * @since 1.2
 	 *
@@ -127,44 +129,68 @@ abstract class PLL_Translated_Object {
 	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, false otherwise.
 	 */
 	public function get_object_term( $object_id, $taxonomy ) {
-		if ( empty( $object_id ) || is_wp_error( $object_id ) ) {
-			return false;
-		}
+		$object_id = $this->sanitize_int_id( $object_id );
 
-		$object_id = (int) $object_id;
-
-		if ( $object_id < 0 ) {
+		if ( empty( $object_id ) ) {
 			return false;
 		}
 
 		$term = get_object_term_cache( $object_id, $taxonomy );
 
-		if ( false === $term ) {
-			// Query language and translations at the same time.
-			$taxonomies = array( $this->tax_language, $this->tax_translations );
+		if ( is_array( $term ) ) {
+			return ! empty( $term ) ? reset( $term ) : false;
+		}
 
-			// Query terms.
-			$terms = array();
-			$object_terms = wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) );
-			if ( is_array( $object_terms ) ) {
-				foreach ( $object_terms as $t ) {
-					$terms[ $t->taxonomy ] = $t;
-					if ( $t->taxonomy == $taxonomy ) {
-						$term = $t;
-					}
+		// Query language and translations at the same time.
+		$taxonomies = array( $this->tax_language, $this->tax_translations );
+
+		// Query terms.
+		$terms        = array();
+		$term         = false;
+		$object_terms = wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) );
+
+		if ( is_array( $object_terms ) ) {
+			foreach ( $object_terms as $t ) {
+				$terms[ $t->taxonomy ] = $t;
+				if ( $t->taxonomy === $taxonomy ) {
+					$term = $t;
 				}
 			}
-
-			// Stores it the way WP expects it. Set an empty cache if no term was found in the taxonomy.
-			foreach ( $taxonomies as $tax ) {
-				wp_cache_add( $object_id, empty( $terms[ $tax ] ) ? array() : array( $terms[ $tax ] ), $tax . '_relationships' );
-			}
-		}
-		else {
-			$term = reset( $term );
 		}
 
-		return empty( $term ) ? false : $term;
+		// Stores it the way WP expects it. Set an empty cache if no term was found in the taxonomy.
+		foreach ( $taxonomies as $tax ) {
+			wp_cache_add( $object_id, empty( $terms[ $tax ] ) ? array() : array( $terms[ $tax ] ), $tax . '_relationships' );
+		}
+
+		return $term;
+	}
+
+	/**
+	 * Returns a list of post translations, given a `tax_translations` term ID.
+	 *
+	 * @since 3.2
+	 *
+	 * @param  int $term_id Term ID.
+	 * @return array<int>   An associative array of translations with language code as key and translation id as value.
+	 */
+	public function get_translations_from_term_id( $term_id ) {
+		$term_id = $this->sanitize_int_id( $term_id );
+
+		if ( empty( $term_id ) ) {
+			return array();
+		}
+
+		$translations_term = get_term( $term_id, $this->tax_translations );
+
+		if ( ! $translations_term instanceof WP_Term || empty( $translations_term->description ) ) {
+			return array();
+		}
+
+		// Lang slugs as array keys, template IDs as array values.
+		$translations = maybe_unserialize( $translations_term->description );
+
+		return $this->validate_translations( $translations, 0, 'display' );
 	}
 
 	/**
@@ -173,13 +199,14 @@ abstract class PLL_Translated_Object {
 	 * @since 2.3
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
-	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as
+	 *                            value. Make sure to sanitize this.
 	 * @return bool
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
 		// Don't do anything if no translations have been added to the group.
 		$old_translations = $this->get_translations( $id ); // Includes at least $id itself.
-		return count( array_diff_assoc( $translations, $old_translations ) ) > 0;
+		return ! empty( array_diff_assoc( $translations, $old_translations ) );
 	}
 
 	/**
@@ -189,79 +216,72 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param int   $id           Object id ( typically a post_id or term_id ).
 	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
-	 *
-	 * @return int[] An associative array with language codes as key and post ids as values.
+	 * @return int[]              An associative array with language codes as key and post ids as values.
 	 */
 	public function save_translations( $id, $translations ) {
-		$translations = $this->validate_translations( $translations );
+		$id = $this->sanitize_int_id( $id );
 
-		$id = (int) $id;
-
-		if ( $lang = $this->get_language( $id ) ) {
-			// Sanitize the translations array.
-			$translations = array_map( 'intval', $translations );
-			$translations = array_merge( array( $lang->slug => $id ), $translations ); // Make sure this object is in translations.
-			$translations = array_diff( $translations, array( 0 ) ); // Don't keep non translated languages.
-			$translations = array_intersect_key( $translations, array_flip( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) ); // Keep only valid languages slugs as keys.
-
-			// Unlink removed translations.
-			$old_translations = $this->get_translations( $id );
-			foreach ( array_diff_assoc( $old_translations, $translations ) as $object_id ) {
-				$this->delete_translation( $object_id );
-			}
-
-			// Check id we need to create or update the translation group.
-			if ( $this->should_update_translation_group( $id, $translations ) ) {
-				$terms = wp_get_object_terms( $translations, $this->tax_translations );
-				$term = reset( $terms );
-
-				// Create a new term if necessary.
-				if ( empty( $term ) ) {
-					wp_insert_term( $group = uniqid( 'pll_' ), $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
-				} else {
-					// Take care not to overwrite extra data stored in the description field, if any.
-					$d = maybe_unserialize( $term->description );
-					$d = is_array( $d ) ? array_diff_key( $d, $old_translations ) : array(); // Remove old translations.
-					$d = array_merge( $d, $translations ); // Add new one.
-					wp_update_term( $group = (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $d ) ) );
-				}
-
-				// Link all translations to the new term.
-				foreach ( $translations as $p ) {
-					wp_set_object_terms( $p, $group, $this->tax_translations );
-				}
-
-				// Clean now unused translation groups.
-				foreach ( wp_list_pluck( $terms, 'term_id' ) as $term_id ) {
-					$term = get_term( $term_id, $this->tax_translations );
-					if ( empty( $term->count ) ) {
-						wp_delete_term( $term_id, $this->tax_translations );
-					}
-				}
-			}
-			return $translations;
-		} else {
+		if ( empty( $id ) ) {
 			return array();
 		}
-	}
 
-	/**
-	 * Returns translations after checking the translated post is in the right language
-	 *
-	 * @since 3.1
-	 *
-	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
-	 *
-	 * @return int[]
-	 */
-	public function validate_translations( $translations ) {
-		$valid_translations = array();
+		$lang = $this->get_language( $id );
 
-		foreach ( $translations as $lang => $tr_id ) {
-			$valid_translations[ $lang ] = ( $tr_id && $this->get_language( (int) $tr_id )->slug == $lang ) ? (int) $tr_id : 0;
+		if ( empty( $lang ) ) {
+			return array();
 		}
 
-		return $valid_translations;
+		// Sanitize and validate the translations array.
+		$translations = $this->validate_translations( $translations, $id );
+
+		// Unlink removed translations.
+		$old_translations = $this->get_translations( $id );
+
+		foreach ( array_diff_assoc( $old_translations, $translations ) as $object_id ) {
+			$this->delete_translation( $object_id );
+		}
+
+		// Check id we need to create or update the translation group.
+		if ( ! $this->should_update_translation_group( $id, $translations ) ) {
+			return $translations;
+		}
+
+		$terms = wp_get_object_terms( $translations, $this->tax_translations );
+		$term  = is_array( $terms ) && ! empty( $terms ) ? reset( $terms ) : false;
+
+		if ( empty( $term ) ) {
+			// Create a new term if necessary.
+			$group = uniqid( 'pll_' );
+			wp_insert_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
+		} else {
+			// Take care not to overwrite extra data stored in the description field, if any.
+			$group = (int) $term->term_id;
+			$descr = maybe_unserialize( $term->description );
+			$descr = is_array( $descr ) ? array_diff_key( $descr, $old_translations ) : array(); // Remove old translations.
+			$descr = array_merge( $descr, $translations ); // Add new one.
+			wp_update_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $descr ) ) );
+		}
+
+		// Link all translations to the new term.
+		foreach ( $translations as $p ) {
+			wp_set_object_terms( $p, $group, $this->tax_translations );
+		}
+
+		if ( ! is_array( $terms ) ) {
+			return $translations;
+		}
+
+		// Clean now unused translation groups.
+		foreach ( $terms as $term ) {
+			// Get fresh count value.
+			$term = get_term( $term->term_id, $this->tax_translations );
+
+			if ( $term instanceof WP_Term && empty( $term->count ) ) {
+				wp_delete_term( $term->term_id, $this->tax_translations );
+			}
+		}
+
+		return $translations;
 	}
 
 	/**
@@ -273,21 +293,32 @@ abstract class PLL_Translated_Object {
 	 * @return void
 	 */
 	public function delete_translation( $id ) {
-		$id = (int) $id;
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
+			return;
+		}
+
 		$term = $this->get_object_term( $id, $this->tax_translations );
 
-		if ( ! empty( $term ) ) {
-			$d = maybe_unserialize( $term->description );
-			if ( is_array( $d ) ) {
-				$slug = array_search( $id, $this->get_translations( $id ) ); // In case some plugin stores the same value with different key.
-				unset( $d[ $slug ] );
-			}
+		if ( empty( $term ) ) {
+			return;
+		}
 
-			if ( empty( $d ) ) {
-				wp_delete_term( (int) $term->term_id, $this->tax_translations );
-			} else {
-				wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $d ) ) );
+		$descr = maybe_unserialize( $term->description );
+
+		if ( ! empty( $descr ) && is_array( $descr ) ) {
+			$slug = array_search( $id, $this->get_translations( $id ) ); // In case some plugin stores the same value with different key.
+
+			if ( false !== $slug ) {
+				unset( $descr[ $slug ] );
 			}
+		}
+
+		if ( empty( $descr ) || ! is_array( $descr ) ) {
+			wp_delete_term( (int) $term->term_id, $this->tax_translations );
+		} else {
+			wp_update_term( (int) $term->term_id, $this->tax_translations, array( 'description' => maybe_serialize( $descr ) ) );
 		}
 	}
 
@@ -300,20 +331,16 @@ abstract class PLL_Translated_Object {
 	 * @return int[] An associative array of translations with language code as key and translation id as value.
 	 */
 	public function get_translations( $id ) {
-		$term = $this->get_object_term( $id, $this->tax_translations );
-		$translations = empty( $term ) ? array() : maybe_unserialize( $term->description );
+		$id = $this->sanitize_int_id( $id );
 
-		// Make sure we return only translations ( thus we allow plugins to store other information in the array ).
-		if ( is_array( $translations ) ) {
-			$translations = array_intersect_key( $translations, array_flip( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) ) );
+		if ( empty( $id ) ) {
+			return array();
 		}
 
-		// Make sure to return at least the passed object in its translation array.
-		if ( empty( $translations ) && $lang = $this->get_language( $id ) ) {
-			$translations = array( $lang->slug => $id );
-		}
+		$term         = $this->get_object_term( $id, $this->tax_translations );
+		$translations = empty( $term->description ) ? array() : maybe_unserialize( $term->description );
 
-		return $translations;
+		return $this->validate_translations( $translations, $id, 'display' );
 	}
 
 	/**
@@ -326,7 +353,9 @@ abstract class PLL_Translated_Object {
 	 * @return int|false Object id of the translation, false if there is none.
 	 */
 	public function get_translation( $id, $lang ) {
-		if ( ! $lang = $this->model->get_language( $lang ) ) {
+		$lang = $this->model->get_language( $lang );
+
+		if ( empty( $lang ) ) {
 			return false;
 		}
 
@@ -345,14 +374,25 @@ abstract class PLL_Translated_Object {
 	 * @return int|false The translation object id if exists, otherwise the passed id, false if the passed object has no language.
 	 */
 	public function get( $id, $lang ) {
-		$id = (int) $id;
-		$lang = $this->model->get_language( $lang );
-		$obj_lang = $this->get_language( $id );
-		if ( empty( $lang ) || empty( $obj_lang ) ) {
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
 			return false;
 		}
 
-		return $obj_lang->term_id == $lang->term_id ? $id : $this->get_translation( $id, $lang );
+		$lang = $this->model->get_language( $lang );
+
+		if ( empty( $lang ) ) {
+			return false;
+		}
+
+		$obj_lang = $this->get_language( $id );
+
+		if ( empty( $obj_lang ) ) {
+			return false;
+		}
+
+		return $obj_lang->term_id === $lang->term_id ? $id : $this->get_translation( $id, $lang );
 	}
 
 	/**
@@ -398,7 +438,7 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Check if a user can synchronize translations.
+	 * Checks if a user can synchronize translations.
 	 *
 	 * @since 2.6
 	 *
@@ -406,6 +446,12 @@ abstract class PLL_Translated_Object {
 	 * @return bool
 	 */
 	public function current_user_can_synchronize( $id ) {
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
+			return false;
+		}
+
 		/**
 		 * Filters whether a synchronization capability check should take place.
 		 *
@@ -418,8 +464,9 @@ abstract class PLL_Translated_Object {
 		 * @param int       $id    The synchronization source object id.
 		 */
 		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
+
 		if ( null !== $check ) {
-			return $check;
+			return (bool) $check;
 		}
 
 		if ( ! current_user_can( "edit_{$this->type}", $id ) ) {
@@ -433,5 +480,110 @@ abstract class PLL_Translated_Object {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Sanitizes an ID as positive integer.
+	 * Kind of similar to `absint()`, but rejects negetive integers instead of making them positive.
+	 *
+	 * @since 3.2
+	 *
+	 * @param  mixed $id A supposedly numeric ID.
+	 * @return int       A positive integer. `0` for non numeric values and negative integers.
+	 */
+	public function sanitize_int_id( $id ) {
+		return is_numeric( $id ) && $id >= 1 ? (int) $id : 0;
+	}
+
+	/**
+	 * Sanitizes an array of IDs as positive integers.
+	 * `0` values are removed.
+	 *
+	 * @since 3.2
+	 *
+	 * @param  mixed $ids An associative array of translations with language code as key and translation ID as value.
+	 * @return array<int> An associative array of translations with language code as key and translation ID as value.
+	 */
+	public function sanitize_int_ids_list( $ids ) {
+		if ( empty( $ids ) || ! is_array( $ids ) ) {
+			return array();
+		}
+
+		$ids = array_map( array( $this, 'sanitize_int_id' ), $ids );
+
+		return array_filter( $ids );
+	}
+
+	/**
+	 * Validates and sanitizes translations.
+	 * This will:
+	 * - Make sure to return only translations in existing languages (and only translations).
+	 * - Sanitize the values.
+	 * - Make sure the provided translation (`$id`) is in the list.
+	 * - Check that the translated objects are in the right language, if `$context` is set to 'save'.
+	 *
+	 * @since 3.1
+	 * @since 3.2 Doesn't return `0` ID values.
+	 * @since 3.2 Added parameters `$id` and `$context`.
+	 *
+	 * @param  int[]  $translations An associative array of translations with language code as key and translation ID as
+	 *                              value.
+	 * @param  int    $id           Optional. The object ID for which the translations are validated. When provided, the
+	 *                              process makes sure it is added to the list. Default 0.
+	 * @param  string $context      Optional. The operation for which the translations are validated. When set to
+	 *                              'save', a check is done to verify that the IDs and langs correspond.
+	 *                              'display' should be used otherwise. Default 'save'.
+	 * @return int[]
+	 */
+	protected function validate_translations( $translations, $id = 0, $context = 'save' ) {
+		if ( ! is_array( $translations ) ) {
+			$translations = array();
+		}
+
+		/**
+		 * Remove translations in non-existing languages, and non-translation data (we allow plugins to store other
+		 * information in the array).
+		 */
+		$translations = array_intersect_key(
+			$translations,
+			array_flip( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) )
+		);
+
+		// Make sure values are clean before working with them.
+		$translations = $this->sanitize_int_ids_list( $translations );
+
+		if ( 'save' === $context ) {
+			/**
+			 * Check that the translated objects are in the right language.
+			 * For better performance, this should be done only when saving the data into the database, not when
+			 * retrieving data from it.
+			 */
+			$valid_translations = array();
+
+			foreach ( $translations as $lang_slug => $tr_id ) {
+				$tr_lang = $this->get_language( $tr_id );
+
+				if ( ! empty( $tr_lang ) && $tr_lang->slug === $lang_slug ) {
+					$valid_translations[ $lang_slug ] = $tr_id;
+				}
+			}
+
+			$translations = $valid_translations;
+		}
+
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
+			return $translations;
+		}
+
+		// Make sure to return at least the passed object in its translation array.
+		$lang = $this->get_language( $id );
+
+		if ( empty( $lang ) ) {
+			return $translations;
+		}
+
+		return array_merge( array( $lang->slug => $id ), $translations );
 	}
 }

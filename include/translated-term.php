@@ -43,7 +43,11 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return void
 	 */
 	public function set_language( $term_id, $lang ) {
-		$term_id = (int) $term_id;
+		$term_id = $this->sanitize_int_id( $term_id );
+
+		if ( empty( $term_id ) ) {
+			return;
+		}
 
 		$old_lang = $this->get_language( $term_id );
 		$old_lang = $old_lang ? $old_lang->tl_term_id : '';
@@ -51,17 +55,21 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		$lang = $this->model->get_language( $lang );
 		$lang = $lang ? $lang->tl_term_id : '';
 
-		if ( $old_lang !== $lang ) {
-			wp_set_object_terms( $term_id, $lang, 'term_language' );
-
-			// Add translation group for correct WXR export
-			$translations = $this->get_translations( $term_id );
-			if ( $slug = array_search( $term_id, $translations ) ) {
-				unset( $translations[ $slug ] );
-			}
-
-			$this->save_translations( $term_id, $translations );
+		if ( $old_lang === $lang ) {
+			return;
 		}
+
+		wp_set_object_terms( $term_id, $lang, $this->tax_language );
+
+		// Add translation group for correct WXR export.
+		$translations = $this->get_translations( $term_id );
+		$slug         = array_search( $term_id, $translations );
+
+		if ( ! empty( $slug ) ) {
+			unset( $translations[ $slug ] );
+		}
+
+		$this->save_translations( $term_id, $translations );
 	}
 
 	/**
@@ -73,7 +81,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return void
 	 */
 	public function delete_language( $term_id ) {
-		wp_delete_object_term_relationships( $term_id, 'term_language' );
+		wp_delete_object_term_relationships( $this->sanitize_int_id( $term_id ), $this->tax_language );
 	}
 
 	/**
@@ -87,7 +95,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 */
 	public function get_language( $value, $taxonomy = '' ) {
 		if ( is_numeric( $value ) ) {
-			$term_id = $value;
+			$term_id = $this->sanitize_int_id( $value );
 		}
 
 		// get_term_by still not cached in WP 3.5.1 but internally, the function is always called by term_id
@@ -98,8 +106,18 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 			}
 		}
 
-		// Get the language and make sure it is a PLL_Language object
-		return isset( $term_id ) && ( $lang = $this->get_object_term( $term_id, 'term_language' ) ) ? $this->model->get_language( $lang->term_id ) : false;
+		if ( empty( $term_id ) ) {
+			return false;
+		}
+
+		// Get the language and make sure it is a PLL_Language object.
+		$lang = $this->get_object_term( $term_id, $this->tax_language );
+
+		if ( empty( $lang ) ) {
+			return false;
+		}
+
+		return $this->model->get_language( $lang->term_id );
 	}
 
 	/**
@@ -108,19 +126,20 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @since 2.3
 	 *
 	 * @param int   $id           Post id or term id.
-	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
+	 * @param int[] $translations An associative array of translations with language code as key and translation id as
+	 *                            value. Make sure to sanitize this.
 	 * @return bool
 	 */
 	protected function should_update_translation_group( $id, $translations ) {
 		// Don't do anything if no translations have been added to the group
 		$old_translations = $this->get_translations( $id );
-		if ( count( $translations ) > 1 && count( array_diff_assoc( $translations, $old_translations ) ) > 0 ) {
+		if ( count( $translations ) > 1 && ! empty( array_diff_assoc( $translations, $old_translations ) ) ) {
 			return true;
 		}
 
 		// But we need a translation group for terms to allow relationships remap when importing from a WXR file
 		$term = $this->get_object_term( $id, $this->tax_translations );
-		return empty( $term ) || count( array_diff_assoc( $translations, $old_translations ) );
+		return empty( $term ) || ! empty( array_diff_assoc( $translations, $old_translations ) );
 	}
 
 	/**
@@ -133,16 +152,18 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 */
 	public function delete_translation( $id ) {
 		global $wpdb;
+		$id   = $this->sanitize_int_id( $id );
 		$slug = array_search( $id, $this->get_translations( $id ) ); // in case some plugin stores the same value with different key
 
 		parent::delete_translation( $id );
-		wp_delete_object_term_relationships( $id, 'term_translations' );
+		wp_delete_object_term_relationships( $id, $this->tax_translations );
 
 		if ( ! doing_action( 'pre_delete_term' ) && $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( * ) FROM $wpdb->terms WHERE term_id = %d;", $id ) ) ) {
 			// Always keep a group for terms to allow relationships remap when importing from a WXR file
+			$group        = uniqid( 'pll_' );
 			$translations = array( $slug => $id );
-			wp_insert_term( $group = uniqid( 'pll_' ), 'term_translations', array( 'description' => maybe_serialize( $translations ) ) );
-			wp_set_object_terms( $id, $group, 'term_translations' );
+			wp_insert_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
+			wp_set_object_terms( $id, $group, $this->tax_translations );
 		}
 	}
 
@@ -195,7 +216,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return WP_Term[] Unmodified $terms.
 	 */
 	public function wp_get_object_terms( $terms, $object_ids, $taxonomies ) {
-		if ( ! in_array( 'term_translations', $taxonomies ) ) {
+		if ( ! in_array( $this->tax_translations, $taxonomies ) ) {
 			$this->_prime_terms_cache( $terms, $taxonomies );
 		}
 		return $terms;
@@ -210,6 +231,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @return void
 	 */
 	public function clean_term_cache( $ids ) {
-		clean_object_term_cache( $ids, 'term' );
+		clean_object_term_cache( $this->sanitize_int_ids_list( $ids ), 'term' );
 	}
 }
