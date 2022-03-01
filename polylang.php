@@ -11,7 +11,7 @@
  * Plugin URI:        https://polylang.pro
  * Description:       Adds multilingual capability to WordPress
  * Version:           3.2-dev
- * Requires at least: 5.5
+ * Requires at least: 5.6
  * Requires PHP:      5.6
  * Author:            WP SYNTEX
  * Author URI:        https://polylang.pro
@@ -54,7 +54,7 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 } else {
 	// Go on loading the plugin
 	define( 'POLYLANG_VERSION', '3.2-dev' );
-	define( 'PLL_MIN_WP_VERSION', '5.5' );
+	define( 'PLL_MIN_WP_VERSION', '5.6' );
 	define( 'PLL_MIN_PHP_VERSION', '5.6' );
 
 	define( 'POLYLANG_FILE', __FILE__ );
