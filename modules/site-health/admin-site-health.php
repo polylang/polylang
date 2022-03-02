@@ -173,7 +173,7 @@ class PLL_Admin_Site_Health {
 
 		$debug_info['pll_options'] = array(
 			/* translators: placeholder is the plugin name */
-			'label'  => sprintf( esc_html__( '%s options', 'polylang' ), POLYLANG ),
+			'label'  => sprintf( __( '%s options', 'polylang' ), POLYLANG ),
 			'fields' => $fields,
 		);
 
@@ -211,7 +211,7 @@ class PLL_Admin_Site_Health {
 
 			$debug_info[ 'pll_language_' . $language->slug ] = array(
 				/* translators: placeholder is the language name */
-				'label'  => sprintf( esc_html__( 'Language: %s', 'polylang' ), esc_html( $language->name ) ),
+				'label'  => sprintf( __( 'Language: %s', 'polylang' ), $language->name ),
 				/* translators: placeholder is the flag image */
 				'description' => sprintf( esc_html__( 'Flag used in the language switcher: %s', 'polylang' ), $this->get_flag( $language ) ),
 				'fields' => $fields,
@@ -328,7 +328,7 @@ class PLL_Admin_Site_Health {
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
 				/* translators: placeholder is the plugin name */
-				'label'  => sprintf( esc_html__( '%s informations', 'polylang' ), POLYLANG ),
+				'label'  => sprintf( __( '%s informations', 'polylang' ), POLYLANG ),
 				'fields' => $fields,
 			);
 		}
