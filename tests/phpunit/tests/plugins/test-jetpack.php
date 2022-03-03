@@ -1,6 +1,6 @@
 <?php
 
-if ( version_compare( $GLOBALS['wp_version'], '5.6', '>=' ) && file_exists( DIR_TESTROOT . '/../jetpack/jetpack.php' ) ) {
+if ( version_compare( $GLOBALS['wp_version'], '5.8', '>=' ) && file_exists( DIR_TESTROOT . '/../jetpack/jetpack.php' ) ) {
 
 	require_once DIR_TESTROOT . '/../jetpack/functions.opengraph.php';
 
