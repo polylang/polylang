@@ -238,13 +238,26 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		/**
-		 * Fires when a language is updated.
+		 * Fires after a language is updated.
+		 * Language cache has not been cleared yet.
 		 *
 		 * @since 1.9
+		 * @since 3.2 Added $lang parameter.
 		 *
-		 * @param array $args Arguments used to modify the language. @see PLL_Admin_Model::update_language().
+		 * @param array<mixed> $args {
+		 *   Arguments used to modify the language. @see PLL_Admin_Model::update_language().
+		 *
+		 *   @type string $name           Language name (used only for display).
+		 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
+		 *   @type string $locale         WordPress locale.
+		 *   @type int    $rtl            1 if rtl language, 0 otherwise.
+		 *   @type int    $term_group     Language order when displayed.
+		 *   @type string $no_default_cat Optional, if set, no default category has been created for this language.
+		 *   @type string $flag           Optional, country code, @see flags.php.
+		 * }
+		 * @param PLL_Language $lang Previous value of the language beeing edited.
 		 */
-		do_action( 'pll_update_language', $args );
+		do_action( 'pll_update_language', $args, $lang );
 
 		$this->clean_languages_cache();
 		flush_rewrite_rules(); // Refresh rewrite rules
