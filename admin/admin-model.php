@@ -239,7 +239,6 @@ class PLL_Admin_Model extends PLL_Model {
 
 		/**
 		 * Fires after a language is updated.
-		 * Language cache has not been cleared yet.
 		 *
 		 * @since 1.9
 		 * @since 3.2 Added $lang parameter.
