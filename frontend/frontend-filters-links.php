@@ -291,6 +291,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					array( 'function' => 'wp_nav_menu' ),
 					array( 'function' => 'login_footer' ),
 					array( 'function' => 'get_custom_logo' ),
+					array( 'function' => 'render_block_core_site_title' ),
 				)
 			);
 		}
