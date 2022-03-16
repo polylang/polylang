@@ -29,6 +29,7 @@ jobs:
       env: "WP_VERSION=5.9 WP_MULTISITE=0"
 
     - name: "WP 5.9 - PHP 7.4"
+      dist: "bionic"
       php: "7.4"
       env: "WP_VERSION=5.9 WP_MULTISITE=0"
 
