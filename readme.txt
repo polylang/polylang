@@ -37,7 +37,7 @@ Helps optimizing the time spent translating your site with some very useful extr
 * Duplicate and/or synchronize content across post translations.
 * Improved compatibilities with other plugins such as [ACF Pro](https://polylang.pro/doc/working-with-acf-pro/).
 * Share the same URL slug for posts or terms across languages.
-* Translate the slugs in the URL for category and author bases, custom post types and more…(https://polylang.pro/doc/translating-urls-slugs/).
+* [Translate the slugs](https://polylang.pro/doc/translating-urls-slugs/) in the URL for category and author bases, custom post types and more...
 * Access to a Premium Support for personalized assistance.
 
 ### Polylang for WooCommerce
@@ -51,7 +51,7 @@ Helps optimizing the time spent translating your site with some very useful extr
 * Ability to use the WooCommerce REST API (available with Polylang Pro)
 * Access to a Premium Support for personalized assistance.
 
-Neither of them will allow you to do automated translation. Nevertheless, you can install, alongside Polylang Pro or Polylang, a third party plugin such as Lingotek Translation which offers a complete translation management system and provides services such as a translation memory or semi-automated translation processes (e.g., machine translation => human translation => legal review).
+Neither of them will allow you to do automated translation. Nevertheless, you can install, alongside Polylang Pro or Polylang, a third party plugin such as [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/) which offers a complete translation management system and provides services such as a translation memory or semi-automated translation processes (e.g., machine translation => human translation => legal review).
 
 If you wish to migrate from WPML, you can use the plugin [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/).
 
