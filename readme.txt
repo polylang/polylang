@@ -22,7 +22,7 @@ Depending on the type of site you have built or are planning to build, a combina
 ### Polylang
 
 Polylang and [Polylang Pro](https://polylang.pro) share the same core providing features such as:
-* Translating posts, pages, media, categories, post tags, custom post types and taxonomies, RSS feeds, RTL scripts are supported.
+* Translating posts, pages, media, categories, post tags, custom post types and taxonomies, RSS feeds; RTL scripts are supported.
 * The language is either set by the language code in URL, or you can use a different sub-domain or domain per language.
 * Automatic copy of categories, post tags and other metas when creating a new post or page translation.
 * Translating menus and widgets.
