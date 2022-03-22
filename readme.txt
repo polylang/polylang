@@ -45,10 +45,10 @@ Helps optimizing the time spent translating your site with some very useful extr
 [Add-on](https://polylang.pro/downloads/polylang-for-woocommerce/) for the compatibility with WooCommerce will provide features such as:
 * Translating WooCommerce pages (shop, check-out, cart, my account), product categories and global attribute terms directly in the WooCommerce interface.
 * Translating WooCommerce e-mails and sending them to customers in their language.
-* Products metadata synchronization
-* Compatibility with the native WooCommerce CSV import & export  tool.
+* Products metadata synchronization.
+* Compatibility with the native WooCommerce CSV import & export tool.
 * Compatibility with popular plugins such as WooCommerce Subscriptions, Product Bundles, WooCommerce Bookings, Shipment tracking and more.
-* Ability to use the WooCommerce REST API (available with Polylang Pro)
+* Ability to use the WooCommerce REST API (available with Polylang Pro).
 * **Access to a Premium Support for personalized assistance**
 
 Neither of them will allow you to do automated translation. Nevertheless, you can install, alongside Polylang Pro or Polylang, a third party plugin such as [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/) which offers a complete translation management system and provides services such as a translation memory or semi-automated translation processes (e.g., machine translation => human translation => legal review).
