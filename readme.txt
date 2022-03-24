@@ -1,9 +1,9 @@
 === Polylang ===
-Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre
+Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone, hugod
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 5.6
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.6
 Stable tag: 3.1.4
 License: GPLv3 or later
@@ -96,6 +96,30 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.2 =
+
+* Requires WP 5.6 as minimum version
+* Pro: Add compatibility with the full site editing introduced in WP 5.9
+* Pro: Add a language switcher block for the navigation block introduced in WP 5.9
+* Pro: Add compatibility with the new gallery block introduced in WP 5.9
+* Pro: Make the language switcher block available in the widget section of the customizer
+* Pro: Fix wrong category when translating the latest block
+* Pro: Fix the language switcher block when using the dropdown option
+* Pro: Fix some edge cases with locale fallback
+* Pro: Fix post template replacing the post content when duplicating a post
+* Pro: Fix synchronization groups not correctly cleaned up when a language is deleted
+* Pro: Fix incorrect sticky property when duplicating / synchronizing posts
+* Pro: Synchronize ACF layout fields if a child field is synchronized or translatable
+* Pro: Fix wrong field group translation displayed when using object cache with ACF
+* Add the list of wpml-config.xml files in the site health information
+* Improve the performance of the get_pages() filter #980
+* Improve the compatibility of 'wpml_object_id' with the original filter #972
+* Fix some PHP 8.1 deprecations #949 #985
+* Fix a fatal error in PHP 8.1 #987
+* Fix category feed not redirected when the langage code is wrong #887
+* Fix a PHP Notice when adding a new language and Yoast SEO is active #979
+* Fix a PHP warning in Yoast SEO compatibility #954
 
 = 3.1.4 (2022-01-31) =
 
