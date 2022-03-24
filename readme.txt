@@ -110,8 +110,11 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Fix post template replacing the post content when duplicating a post
 * Pro: Fix synchronization groups not correctly cleaned up when a language is deleted
 * Pro: Fix incorrect sticky property when duplicating / synchronizing posts
+* Pro: Fix "Page for posts" label after the page has been bulk translated
 * Pro: Synchronize ACF layout fields if a child field is synchronized or translatable
 * Pro: Fix wrong field group translation displayed when using object cache with ACF
+* Update plugin updater to 1.9.1
+* Add compatibility with the block site title introduced in WP 5.9
 * Add the list of wpml-config.xml files in the site health information
 * Improve the performance of the get_pages() filter #980
 * Improve the compatibility of 'wpml_object_id' with the original filter #972
