@@ -67,7 +67,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 1. Make sure you are using WordPress 5.6 or later and that your server is running PHP 5.6 or later (same requirement as WordPress itself).
 1. If you tried other multilingual plugins, deactivate them before activating Polylang, otherwise, you may get unexpected results!
 1. Install and activate the plugin as usual from the 'Plugins' menu in WordPress.
-1. The [setup wizard](https://polylang.pro/doc/setup-wizard/) is automatically started to help you get started more easily with Polylang by configuring the main features.
+1. The [setup wizard](https://polylang.pro/doc/setup-wizard/) is automatically launched to help you get started more easily with Polylang by configuring the main features.
 
 == Frequently Asked Questions ==
 
