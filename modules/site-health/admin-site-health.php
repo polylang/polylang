@@ -328,7 +328,7 @@ class PLL_Admin_Site_Health {
 		if ( ! empty( $fields ) ) {
 			$debug_info['pll_warnings'] = array(
 				/* translators: placeholder is the plugin name */
-				'label'  => sprintf( __( '%s informations', 'polylang' ), POLYLANG ),
+				'label'  => sprintf( __( '%s information', 'polylang' ), POLYLANG ),
 				'fields' => $fields,
 			);
 		}
