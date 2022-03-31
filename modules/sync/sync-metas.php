@@ -15,11 +15,18 @@ abstract class PLL_Sync_Metas {
 	public $model;
 
 	/**
+	 * Stores the plugin options.
+	 *
+	 * @var array
+	 */
+	protected $options;
+
+	/**
 	 * Meta type. Typically 'post' or 'term'.
 	 *
 	 * @var string
 	 */
-	protected $meta_type;
+	protected $meta_type = '';
 
 	/**
 	 * Stores the previous values when updating a meta.
@@ -36,14 +43,18 @@ abstract class PLL_Sync_Metas {
 	protected $to_copy = array();
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 2.3
+	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param object $polylang
+	 * @param  PLL_Model    $model   Instance of PLL_Model, passed by reference.
+	 * @param  array<mixed> $options Options, passed by reference.
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		$this->model = &$polylang->model;
+	public function __construct( PLL_Model &$model, array &$options ) {
+		$this->model   = &$model;
+		$this->options = &$options;
 
 		add_filter( "add_{$this->meta_type}_metadata", array( $this, 'can_synchronize_metadata' ), 1, 3 );
 		add_filter( "update_{$this->meta_type}_metadata", array( $this, 'can_synchronize_metadata' ), 1, 3 );
