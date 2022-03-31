@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang_DI\Container;
+
 /**
  * Base class for both admin and frontend
  *
@@ -43,6 +45,15 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
+	 * Instance of Container.
+	 *
+	 * @since 3.3
+	 *
+	 * @var Container
+	 */
+	public $container;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -51,8 +62,9 @@ abstract class PLL_Base {
 	 */
 	public function __construct( &$links_model ) {
 		$this->links_model = &$links_model;
-		$this->model = &$links_model->model;
-		$this->options = &$this->model->options;
+		$this->model       = &$links_model->model;
+		$this->options     = &$this->model->options;
+		$this->container   = new Container();
 
 		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
 
