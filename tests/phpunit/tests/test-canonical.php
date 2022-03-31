@@ -77,8 +77,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		add_action(
 			'pll_init',
 			function ( $polylang ) {
-				$polylang->sitemaps = new PLL_Sitemaps( $polylang );
-				$polylang->sitemaps->init();
+				$polylang->container->addShared( 'sitemaps', new PLL_Sitemaps( $polylang->links_model, $polylang->model, $polylang->options ) );
+				$polylang->container->get( 'sitemaps' )->init();
 
 				$GLOBALS['wp_sitemaps'] = null; // Reset the global 'wp_sitemaps', otherwise wp_sitemaps_get_server() doesn't run completely.
 				wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.

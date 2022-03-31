@@ -37,19 +37,22 @@ class PLL_Sync {
 	protected $model;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.2
+	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param object $polylang
+	 * @param  PLL_Model    $model   Instance of PLL_Model, passed by reference.
+	 * @param  array<mixed> $options Options, passed by reference.
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		$this->model   = &$polylang->model;
-		$this->options = &$polylang->options;
+	public function __construct( PLL_Model &$model, array &$options ) {
+		$this->model   = &$model;
+		$this->options = &$options;
 
-		$this->taxonomies = new PLL_Sync_Tax( $polylang );
-		$this->post_metas = new PLL_Sync_Post_Metas( $polylang );
-		$this->term_metas = new PLL_Sync_Term_Metas( $polylang );
+		$this->taxonomies = new PLL_Sync_Tax( $model, $options );
+		$this->post_metas = new PLL_Sync_Post_Metas( $model, $options );
+		$this->term_metas = new PLL_Sync_Term_Metas( $model, $options );
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'can_sync_post_parent' ), 10, 3 );
 		add_filter( 'wp_insert_post_data', array( $this, 'can_sync_post_data' ), 10, 2 );

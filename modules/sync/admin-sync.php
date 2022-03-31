@@ -11,14 +11,17 @@
 class PLL_Admin_Sync extends PLL_Sync {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.2
+	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param object $polylang
+	 * @param  PLL_Model    $model   Instance of PLL_Model, passed by reference.
+	 * @param  array<mixed> $options Options, passed by reference.
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		parent::__construct( $polylang );
+	public function __construct( PLL_Model &$model, array &$options ) {
+		parent::__construct( $model, $options );
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
 		add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ) );

@@ -9,26 +9,26 @@
  * @since 2.3
  */
 class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
-	/**
-	 * Stores the plugin options.
-	 *
-	 * @var array
-	 */
-	public $options;
 
 	/**
-	 * Constructor
+	 * Meta type.
+	 *
+	 * @var string
+	 */
+	protected $meta_type = 'post';
+
+	/**
+	 * Constructor.
 	 *
 	 * @since 2.3
+	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param object $polylang
+	 * @param  PLL_Model    $model   Instance of PLL_Model, passed by reference.
+	 * @param  array<mixed> $options Options, passed by reference.
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		$this->meta_type = 'post';
-
-		parent::__construct( $polylang );
-
-		$this->options = &$polylang->options;
+	public function __construct( PLL_Model &$model, array &$options ) {
+		parent::__construct( $model, $options );
 
 		add_filter( 'pll_translate_post_meta', array( $this, 'translate_thumbnail_id' ), 10, 3 );
 	}

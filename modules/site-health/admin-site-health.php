@@ -33,12 +33,15 @@ class PLL_Admin_Site_Health {
 	 * PLL_Admin_Site_Health constructor.
 	 *
 	 * @since 2.8
+	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param object $polylang
+	 * @param  PLL_Model              $model        Instance of PLL_Model, passed by reference.
+	 * @param  PLL_Admin_Static_Pages $static_pages Instance of PLL_Admin_Static_Pages, passed by reference.
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		$this->model = &$polylang->model;
-		$this->static_pages = &$polylang->static_pages;
+	public function __construct( PLL_Model &$model, PLL_Admin_Static_Pages &$static_pages ) {
+		$this->model        = &$model;
+		$this->static_pages = &$static_pages;
 
 		// Information tab.
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
