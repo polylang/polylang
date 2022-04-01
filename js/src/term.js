@@ -5,7 +5,7 @@
 /**
  * Quick edit
  */
- jQuery(
+jQuery(
 	function( $ ) {
 		const table = document.getElementById( 'the-list' );
 		const config = { attributes: true, childList: true, subtree: true };
