@@ -27,7 +27,7 @@ jQuery(
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
 				const form = $( mutation.addedNodes[0] );
-				if ( mutation.type === 'childList' && 0 < mutation.addedNodes.length && 'hidden' !== form.attr( 'class' ) ) {
+				if ( mutation.type === 'childList' && 0 < mutation.addedNodes.length && 'TR' === form.get( 0 ).nodeName && 'hidden' !== form.attr( 'class' ) ) {
 					const post_id = form.attr( 'id' ).replace( "edit-", "" );
 
 					if ( post_id > 0 ) {
