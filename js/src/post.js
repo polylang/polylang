@@ -22,19 +22,18 @@ jQuery(
  */
 jQuery(
 	function( $ ) {
-		$( document ).on(
-			'DOMNodeInserted',
-			function( e ) {
-				var t = $( e.target );
-
-				// WP inserts the quick edit from
-				if ( 'inline-edit' == t.attr( 'id' ) ) {
-					var post_id = t.prev().attr( 'id' ).replace( "post-", "" );
+		const table = document.getElementById( 'the-list' );
+		const config = { attributes: true, childList: true, subtree: true };
+		const handleQuickEditInsertion = ( mutationsList ) => {
+			for ( const mutation of mutationsList ) {
+				const form = $( mutation.addedNodes[0] );
+				if ( mutation.type === 'childList' && 0 < mutation.addedNodes.length && 'hidden' !== form.attr( 'class' ) ) {
+					const post_id = form.attr( 'id' ).replace( "edit-", "" );
 
 					if ( post_id > 0 ) {
 						// language dropdown
-						var select = t.find( ':input[name="inline_lang_choice"]' );
-						var lang = $( '#lang_' + post_id ).html();
+						const select = form.find( ':input[name="inline_lang_choice"]' );
+						const lang = $( '#lang_' + post_id ).html();
 						select.val( lang ); // populates the dropdown
 
 						filter_terms( lang ); // initial filter for category checklist
@@ -50,7 +49,6 @@ jQuery(
 						);
 					}
 				}
-
 				/**
 				 * Filters the category checklist.
 				 */
@@ -79,7 +77,7 @@ jQuery(
 				/**
 				 * Filters the parent page dropdown list.
 				 */
-				function filter_pages( lang ) {
+					function filter_pages( lang ) {
 					if ( "undefined" != typeof( pll_page_languages ) ) {
 						$.each(
 							pll_page_languages,
@@ -96,7 +94,10 @@ jQuery(
 					}
 				}
 			}
-		);
+		}
+		const observer = new MutationObserver( handleQuickEditInsertion );
+
+		observer.observe( table, config);
 	}
 );
 
