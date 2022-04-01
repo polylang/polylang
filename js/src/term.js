@@ -5,32 +5,38 @@
 /**
  * Quick edit
  */
-jQuery(
+ jQuery(
 	function( $ ) {
-		$( document ).on(
-			'DOMNodeInserted',
-			function( e ) {
-				var t = $( e.target );
-
-				// WP inserts the quick edit from
-				if ( 'inline-edit' == t.attr( 'id' ) ) {
-					var term_id = t.prev().attr( 'id' ).replace( "tag-", "" );
+		const table = document.getElementById( 'the-list' );
+		const config = { attributes: true, childList: true, subtree: true };
+		const handleQuickEditInsertion = ( mutationsList ) => {
+			for ( const mutation of mutationsList ) {
+				const form = $( mutation.addedNodes[0] );
+				if ( mutation.type === 'childList' && 0 < mutation.addedNodes.length && 'hidden' !== form.attr( 'class' ) ) {
+					// WP inserts the quick edit from
+					const term_id = form.attr( 'id' ).replace( "edit-", "" );
 
 					if ( term_id > 0 ) {
 						// language dropdown
-						var select = t.find( ':input[name="inline_lang_choice"]' );
-						var lang = $( '#lang_' + term_id ).html();
+						const select = form.find( ':input[name="inline_lang_choice"]' );
+						const lang = $( '#lang_' + term_id ).html();
 						select.val( lang ); // populates the dropdown
 
 						// disable the language dropdown for default categories
-						var default_cat = $( '#default_cat_' + term_id ).html();
+						const default_cat = $( '#default_cat_' + term_id ).html();
 						if ( term_id == default_cat ) {
 							select.prop( 'disabled', true );
 						}
 					}
 				}
 			}
-		);
+		}
+		if ( null !== table ) {
+			// Ensure the table is displayed before listening to any change.
+			const observer = new MutationObserver( handleQuickEditInsertion );
+
+			observer.observe( table, config);
+		}
 	}
 );
 
