@@ -111,6 +111,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Fix synchronization groups not correctly cleaned up when a language is deleted
 * Pro: Fix incorrect sticky property when duplicating / synchronizing posts
 * Pro: Fix "Page for posts" label after the page has been bulk translated
+* Pro: Fix translated slug when the url includes a query string
 * Pro: Synchronize ACF layout fields if a child field is synchronized or translatable
 * Pro: Fix wrong field group translation displayed when using object cache with ACF
 * Update plugin updater to 1.9.1
@@ -118,9 +119,13 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Add the list of wpml-config.xml files in the site health information
 * Improve the performance of the get_pages() filter #980
 * Improve the compatibility of 'wpml_object_id' with the original filter #972
+* Prevent term_exists to be filtered by language in WP 6.0
 * Fix some PHP 8.1 deprecations #949 #985
 * Fix a fatal error in PHP 8.1 #987
 * Fix category feed not redirected when the langage code is wrong #887
+* Fix default category not created for secondary languages (introduced in 3.1) #997
+* Fix parent page when the parent post type is not translatable #1001
+* Fix the Yoast SEO breadcrumb when it includes a non-synchronized taxonomy #1005
 * Fix a PHP Notice when adding a new language and Yoast SEO is active #979
 * Fix a PHP warning in Yoast SEO compatibility #954
 
