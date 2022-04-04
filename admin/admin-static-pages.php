@@ -52,12 +52,8 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @return bool
 	 */
 	public function use_block_editor_for_post( $use_block_editor, $post ) {
-		if ( 'page' === $post->post_type ) {
-			add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
-
-			if ( ( get_option( 'page_for_posts' ) == $post->ID ) && empty( $post->post_content ) ) {
-				return false;
-			}
+		if ( 'page' === $post->post_type && empty( $post->post_content ) && (int) get_option( 'page_for_posts' ) === $post->ID ) {
+			return false;
 		}
 
 		return $use_block_editor;
@@ -74,13 +70,9 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @return void
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
-		if ( 'page' === $post_type ) {
-			add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
-
-			if ( ( get_option( 'page_for_posts' ) == $post->ID ) && empty( $post->post_content ) ) {
-				add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
-				remove_post_type_support( $post_type, 'editor' );
-			}
+		if ( 'page' === $post_type && empty( $post->post_content ) && (int) get_option( 'page_for_posts' ) === $post->ID ) {
+			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
+			remove_post_type_support( $post_type, 'editor' );
 		}
 	}
 
