@@ -450,7 +450,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	 */
 	public function test_get_post_type_archive_link_for_posts() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
-		$this->assertEquals( 'http://example.org/fr/articles/', get_post_type_archive_link( 'post' ) );
+		$this->assertSame( 'http://example.org/fr/articles/', get_post_type_archive_link( 'post' ) );
+
+		$this->frontend->curlang = self::$model->get_language( 'en' );
+		$this->assertSame( 'http://example.org/en/posts/', get_post_type_archive_link( 'post' ) );
 	}
 
 	/**
