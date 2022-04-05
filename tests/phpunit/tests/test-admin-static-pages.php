@@ -83,15 +83,9 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 
 		ob_start();
 		do_action( 'edit_form_after_title', get_post( $fr ) );
-		$after_title = ob_get_clean();
 
-		if ( $this->is_wp_58() ) {
-			$this->assertTrue( post_type_supports( 'page', 'editor' ) );
-			$this->assertStringNotContainsString( 'You are currently editing the page that shows your latest posts.', $after_title );
-		} else {
-			$this->assertFalse( post_type_supports( 'page', 'editor' ) );
-			$this->assertStringContainsString( 'You are currently editing the page that shows your latest posts.', $after_title );
-		}
+		$this->assertTrue( post_type_supports( 'page', 'editor' ) );
+		$this->assertStringNotContainsString( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
 	}
 
 	public function test_use_block_editor_for_post() {
@@ -115,7 +109,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined', $this->pll_admin->curlang->slug, $this->pll_admin->curlang );
 
-		$this->assertSame( $this->is_wp_58(), use_block_editor_for_post( $en ) );
+		$this->assertSame( $this->is_wp_58(), use_block_editor_for_post( $fr ) );
 
 		$page_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
 		self::$model->post->set_language( $page_id, 'fr' );
