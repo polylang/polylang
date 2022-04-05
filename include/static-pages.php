@@ -93,7 +93,7 @@ class PLL_Static_Pages {
 	/**
 	 * Init the hooks that filter the "page on front" and "page for posts" options.
 	 *
-	 * @since 3.3
+	 * @since 3.2
 	 *
 	 * @return void
 	 */
@@ -145,7 +145,7 @@ class PLL_Static_Pages {
 	 * Translates the page on front option.
 	 *
 	 * @since 1.8
-	 * @since 3.3 Was previously defined in PLL_Frontend_Static_Pages.
+	 * @since 3.2 Was previously defined in PLL_Frontend_Static_Pages.
 	 *
 	 * @param  int $page_id ID of the page on front.
 	 * @return int
