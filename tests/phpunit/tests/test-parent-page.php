@@ -81,4 +81,18 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		$this->assertEquals( get_post( $child_page_id )->post_parent, 0 );
 
 	}
+
+	public function test_should_not_modify_parent_when_its_post_type_is_untranslatable() {
+		register_post_type( 'unstranslatable_cpt' );
+
+		$parent_id = $this->factory->post->create( array( 'post_title' => 'untranslated parent cpt', 'post_type' => 'unstranslatable_cpt' ) );
+
+		$child_page_id = $this->factory->post->create( array( 'post_title' => 'post with a untranslated parent', 'post_type' => 'page' ) );
+		self::$model->post->set_language( $child_page_id, 'en' );
+
+		wp_update_post( array( 'ID' => $child_page_id, 'post_parent' => $parent_id ) );
+
+		$child_page = get_post( $child_page_id );
+		$this->assertEquals( get_post( $child_page_id )->post_parent, $parent_id, "The unstranlated parent post id should be {$parent_id}" );
+	}
 }
