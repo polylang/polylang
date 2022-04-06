@@ -79,6 +79,9 @@ class PLL_Filters {
 
 		// Personal data exporter
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_personal_data_exporter' ), 0 ); // Since WP 4.9.6
+
+		// Fix for `term_exists()`.
+		add_filter( 'term_exists_default_query_args', array( $this, 'term_exists_default_query_args' ), 0, 3 ); // Since WP 6.0.0.
 	}
 
 	/**
@@ -413,5 +416,33 @@ class PLL_Filters {
 			'data' => $data_to_export,
 			'done' => true,
 		);
+	}
+
+	/**
+	 * Filters default query arguments for checking if a term exists.
+	 * In `term_exists()`, WP 6.0 uses `get_terms()`, which is filtered by language by Polylang.
+	 * This filter prevents `term_exists()` to be filtered by language.
+	 *
+	 * @since 3.2
+	 *
+	 * @param  array<mixed> $defaults An array of arguments passed to get_terms().
+	 * @param  int|string   $term     The term to check. Accepts term ID, slug, or name.
+	 * @param  string       $taxonomy The taxonomy name to use. An empty string indicates the search is against all taxonomies.
+	 * @return array<mixed>
+	 */
+	public function term_exists_default_query_args( $defaults, $term, $taxonomy ) {
+		if ( ! empty( $taxonomy ) && ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+			return $defaults;
+		}
+
+		if ( ! is_array( $defaults ) ) {
+			$defaults = array();
+		}
+
+		if ( ! isset( $defaults['lang'] ) ) {
+			$defaults['lang'] = '';
+		}
+
+		return $defaults;
 	}
 }
