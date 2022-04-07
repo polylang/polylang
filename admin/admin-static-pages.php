@@ -46,7 +46,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * Don't use the block editor for the translations of the pages for posts with WP < 5.8.
 	 *
 	 * @since 2.5
-	 * @since 3.2 Don't disable the block editor for the page for posts in WP >= 5.8.
+	 * @since 3.3 Don't disable the block editor for the page for posts in WP >= 5.8.
 	 *
 	 * @param bool    $use_block_editor Whether the post can be edited or not.
 	 * @param WP_Post $post             The post being checked.
@@ -197,7 +197,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * Tells if we should disable the block editor.
 	 * The block editor was disabled for the page for posts in WP 5.0, then enabled again in WP 5.8.
 	 *
-	 * @since 3.2
+	 * @since 3.3
 	 *
 	 * @param WP_Post $post Current post.
 	 * @return bool
