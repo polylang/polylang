@@ -44,7 +44,7 @@ class PLL_WPSEO {
 			add_filter( 'wpseo_frontend_presentation', array( $this, 'frontend_presentation' ) );
 			add_filter( 'wpseo_breadcrumb_indexables', array( $this, 'breadcrumb_indexables' ) );
 		} else {
-			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 10, 2 );
+			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 10, 4 );
 			add_filter( 'pll_translate_post_meta', array( $this, 'translate_post_meta' ), 10, 3 );
 
 			// Yoast SEO adds the columns hooks only for the 'inline-save' action. We need them for 'pll_update_post_rows' too.
@@ -418,9 +418,11 @@ class PLL_WPSEO {
 	 *
 	 * @param string[] $keys List of custom fields names.
 	 * @param bool     $sync True if it is synchronization, false if it is a copy.
+	 * @param int      $from Id of the post from which we copy informations.
+	 * @param int      $to   Id of the post to which we paste informations.
 	 * @return array
 	 */
-	public function copy_post_metas( $keys, $sync ) {
+	public function copy_post_metas( $keys, $sync, $from, $to ) {
 		if ( ! $sync ) {
 			// Text requiring translation.
 			$keys[] = '_yoast_wpseo_title';
@@ -441,12 +443,7 @@ class PLL_WPSEO {
 		$keys[] = '_yoast_wpseo_meta-robots-nofollow';
 		$keys[] = '_yoast_wpseo_meta-robots-adv';
 
-		$taxonomies = get_taxonomies(
-			array(
-				'hierarchical' => true,
-				'public'       => true,
-			)
-		);
+		$taxonomies = PLL()->sync->taxonomies->get_taxonomies_to_copy( $sync, $from, $to );
 
 		foreach ( $taxonomies as $taxonomy ) {
 			$keys[] = '_yoast_wpseo_primary_' . $taxonomy;
@@ -467,7 +464,11 @@ class PLL_WPSEO {
 	 */
 	public function translate_post_meta( $value, $key, $lang ) {
 		if ( false !== strpos( $key, '_yoast_wpseo_primary_' ) ) {
-			$value = pll_get_term( $value, $lang );
+			$term_id = pll_get_term( $value, $lang );
+			if ( $term_id ) {
+				return $term_id;
+			}
+			return $value;
 		}
 		return $value;
 	}
