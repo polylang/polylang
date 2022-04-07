@@ -51,7 +51,7 @@ class PLL_Sync_Tax {
 	 * @param string $lang Language slug, optional, defaults to null.
 	 * @return string[] List of taxonomy names.
 	 */
-	protected function get_taxonomies_to_copy( $sync, $from = null, $to = null, $lang = null ) {
+	public function get_taxonomies_to_copy( $sync, $from = null, $to = null, $lang = null ) {
 		$taxonomies = ! $sync || in_array( 'taxonomies', $this->options['sync'] ) ? $this->model->get_translated_taxonomies() : array();
 		if ( ! $sync || in_array( 'post_format', $this->options['sync'] ) ) {
 			$taxonomies[] = 'post_format';
