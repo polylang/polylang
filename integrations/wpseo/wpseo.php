@@ -472,11 +472,15 @@ class PLL_WPSEO {
 	 * @return int
 	 */
 	public function translate_post_meta( $value, $key, $lang ) {
-		if ( false !== strpos( $key, '_yoast_wpseo_primary_' ) ) {
-			if ( PLL()->model->is_translated_taxonomy( $key ) ) {
-				return pll_get_term( $value, $lang );
-			}
+		if ( ! strpos( $key, '_yoast_wpseo_primary_' ) ) {
+			return $value;
 		}
-		return $value;
+
+		$taxonomy = str_replace( '_yoast_wpseo_primary_', '', $key );
+		if ( ! PLL()->model->is_translated_taxonomy( $taxonomy ) ) {
+			return $value;
+		}
+
+		return pll_get_term( $value, $lang );
 	}
 }
