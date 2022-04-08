@@ -443,7 +443,17 @@ class PLL_WPSEO {
 		$keys[] = '_yoast_wpseo_meta-robots-nofollow';
 		$keys[] = '_yoast_wpseo_meta-robots-adv';
 
-		$taxonomies = PLL()->sync->taxonomies->get_taxonomies_to_copy( $sync, $from, $to );
+
+		$taxonomies = get_taxonomies(
+			array(
+				'hierarchical' => true,
+				'public'       => true,
+			)
+		);
+
+		$sync_taxonomies = PLL()->sync->taxonomies->get_taxonomies_to_copy( $sync, $from, $to );
+
+		$taxonomies = array_intersect( $taxonomies, $sync_taxonomies );
 
 		foreach ( $taxonomies as $taxonomy ) {
 			$keys[] = '_yoast_wpseo_primary_' . $taxonomy;
