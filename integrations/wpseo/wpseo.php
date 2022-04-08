@@ -472,7 +472,7 @@ class PLL_WPSEO {
 	 * @return int
 	 */
 	public function translate_post_meta( $value, $key, $lang ) {
-		if ( ! strpos( $key, '_yoast_wpseo_primary_' ) ) {
+		if ( 0 !== strpos( $key, '_yoast_wpseo_primary_' ) ) {
 			return $value;
 		}
 
