@@ -44,6 +44,7 @@ class PLL_Sync_Tax {
 	 *
 	 * @since 1.7
 	 * @since 2.1 The `$from`, `$to`, `$lang` parameters were added.
+	 * @since 3.2 Changed visibility from protected to public.
 	 *
 	 * @param bool   $sync True if it is synchronization, false if it is a copy.
 	 * @param int    $from Id of the post from which we copy informations, optional, defaults to null.
