@@ -443,7 +443,6 @@ class PLL_WPSEO {
 		$keys[] = '_yoast_wpseo_meta-robots-nofollow';
 		$keys[] = '_yoast_wpseo_meta-robots-adv';
 
-
 		$taxonomies = get_taxonomies(
 			array(
 				'hierarchical' => true,
