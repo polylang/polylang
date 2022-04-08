@@ -474,11 +474,9 @@ class PLL_WPSEO {
 	 */
 	public function translate_post_meta( $value, $key, $lang ) {
 		if ( false !== strpos( $key, '_yoast_wpseo_primary_' ) ) {
-			$term_id = pll_get_term( $value, $lang );
-			if ( $term_id ) {
-				return $term_id;
+			if ( PLL()->model->is_translated_taxonomy( $key ) ) {
+				return pll_get_term( $value, $lang );
 			}
-			return $value;
 		}
 		return $value;
 	}
