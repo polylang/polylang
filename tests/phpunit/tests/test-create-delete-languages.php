@@ -259,8 +259,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( $post_translations, self::$model->post->get_translations( $en_post ) );
 
-		// $random_term = $this->factory->term->create();
-		
 		$en_term = $this->factory->term->create();
 		self::$model->term->set_language( $en_term, 'en' );
 		$fr_term = $this->factory->term->create();
