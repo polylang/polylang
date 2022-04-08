@@ -17,14 +17,14 @@ class Model_Test extends PLL_UnitTestCase {
 	public function test_languages_list() {
 		self::$model->post->register_taxonomy(); // needed otherwise posts are not counted
 
-		$this->assertEquals( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
-		$this->assertEquals( array( 'English', 'Français' ), self::$model->get_languages_list( array( 'fields' => 'name' ) ) );
-		$this->assertEquals( array(), self::$model->get_languages_list( array( 'hide_empty' => true ) ) );
+		$this->assertSameSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
+		$this->assertSameSets( array( 'English', 'Français' ), self::$model->get_languages_list( array( 'fields' => 'name' ) ) );
+		$this->assertSameSets( array(), self::$model->get_languages_list( array( 'hide_empty' => true ) ) );
 
 		$post_id = $this->factory->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 
-		$this->assertEquals( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
+		$this->assertSameSets( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
 	}
 
 	public function test_term_exists() {
