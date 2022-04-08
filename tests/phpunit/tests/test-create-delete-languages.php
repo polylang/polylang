@@ -356,9 +356,9 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			$wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $fr->term_taxonomy_id ) ), 
 			'French deletion shoud clean the corresponding term relationships.' 
 		);
-		$post_relationships_to_post_translations_term = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $post_translations_id ) );
-		$term_relationships_to_post_translations_term = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $term_translations_id ) );
-		$this->assertEmpty( $post_relationships_to_post_translations_term, 'It should not remain any post_translations term relationships after deleting the last secondary language.' );
-		$this->assertEmpty( $term_relationships_to_post_translations_term, 'It should not remain any term_translations term relationships after deleting the last secondary language.' );
+		$post_and_term_translations_in_wp_term_relationships = $wpdb->get_results( 
+			$wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN ('%1d', '%2d')", $post_translations_id, $term_translations_id ) 
+		);
+		$this->assertEmpty( $post_and_term_translations_in_wp_term_relationships, 'It should not remain any term_translations or post_translations term relationships after deleting the last secondary language.' );
 	}
 }
