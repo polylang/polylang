@@ -230,13 +230,13 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 		self::create_language( 'es_ES' );
 
-		$langues = self::$model->get_languages_list();
+		$languages = self::$model->get_languages_list();
 
 		$en = self::$model->get_language( 'en' );
 		$fr = self::$model->get_language( 'fr' );
 		$es = self::$model->get_language( 'es' );
 
-		$this->assertCount( 3, $langues, 'There should be three languages created.' );
+		$this->assertCount( 3, $languages, 'There should be three languages created.' );
 		$this->assertInstanceOf( PLL_Language::class, $en, 'English should have been created.' );
 		$this->assertInstanceOf( PLL_Language::class, $fr, 'French should have been created.' );
 		$this->assertInstanceOf( PLL_Language::class, $es, 'Spanish should have been created.' );
@@ -277,8 +277,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		// Let's delete one language.
 		self::$model->delete_language( $es->term_id );
 
-
-		$this->assertCount( 2, self::$model->get_languages_list(), 'It should be only two languages left.' );
 		$this->assertFalse( self::$model->get_language( 'es' ), 'Spanish shoud have been deleted.' );
 		$this->assertEmpty(
 			$wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $es->term_taxonomy_id ) ), 
@@ -353,7 +351,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		// Let's delete a second language.
 		self::$model->delete_language( $fr->term_id );
 		
-		$this->assertCount( 1, self::$model->get_languages_list(), 'It should be only one language left.' );
 		$this->assertFalse( self::$model->get_language( 'fr' ), 'French shoud have been deleted.' );
 		$this->assertEmpty(
 			$wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $fr->term_taxonomy_id ) ), 
