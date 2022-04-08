@@ -145,30 +145,30 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Translates page on front.
+	 * Translates the page on front option.
 	 *
 	 * @since 1.8
 	 * @since 3.3 Was previously defined in PLL_Frontend_Static_Pages.
 	 *
-	 * @param int $v page on front page id.
+	 * @param  int $page_id ID of the page on front.
 	 * @return int
 	 */
-	public function translate_page_on_front( $v ) {
-		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
-		return isset( $this->curlang->page_on_front ) && ( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $v;
+	public function translate_page_on_front( $page_id ) {
+		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
+		return ! empty( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $page_id;
 	}
 
 	/**
-	 * Translates page for posts
+	 * Translates the page for posts option.
 	 *
 	 * @since 1.8
 	 *
-	 * @param int $v page for posts page id
+	 * @param  int $page_id ID of the page for posts.
 	 * @return int
 	 */
-	public function translate_page_for_posts( $v ) {
-		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
-		return isset( $this->curlang->page_for_posts ) && ( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $v;
+	public function translate_page_for_posts( $page_id ) {
+		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
+		return ! empty( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $page_id;
 	}
 
 	/**
