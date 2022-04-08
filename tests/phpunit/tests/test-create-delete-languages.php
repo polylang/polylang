@@ -291,7 +291,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 					INNER JOIN {$wpdb->term_taxonomy} 
 					ON {$wpdb->term_relationships}.term_taxonomy_id={$wpdb->term_taxonomy}.term_taxonomy_id
 					AND {$wpdb->term_relationships}.object_id=%d
-					AND wptests_term_taxonomy.taxonomy='post_translations'",
+					AND {$wpdb->term_taxonomy}.taxonomy='post_translations'",
 				$en_post
 			),
 			ARRAY_A
@@ -308,7 +308,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 					INNER JOIN {$wpdb->term_taxonomy} 
 					ON {$wpdb->term_relationships}.term_taxonomy_id={$wpdb->term_taxonomy}.term_taxonomy_id
 					AND {$wpdb->term_relationships}.object_id=%d
-					AND wptests_term_taxonomy.taxonomy='term_translations'",
+					AND {$wpdb->term_taxonomy}.taxonomy='term_translations'",
 				$en_term
 			),
 			ARRAY_A
