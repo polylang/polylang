@@ -18,8 +18,6 @@ parameters:
 	checkMissingIterableValueType: false
 	ignoreErrors:
 		- '#^Function apply_filters invoked with [34567] parameters, 2 required\.$#'
-		- '#^Function remove_filter invoked with [4567] parameters, 2-3 required\.$#'
-		- '#^Function remove_action invoked with [4567] parameters, 2-3 required\.$#'
 		- '#^Function vip_safe_wp_remote_get not found\.$#'
 		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
 
