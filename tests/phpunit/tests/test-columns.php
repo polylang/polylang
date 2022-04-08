@@ -257,20 +257,34 @@ class Columns_Test extends PLL_UnitTestCase {
 		$list_table->inline_edit();
 		$form = ob_get_clean();
 		$doc = new DomDocument();
-		$doc->loadHTML( $form );
+		$doc->loadHTML( $form, LIBXML_NOERROR );
 		$xpath = new DOMXpath( $doc );
 
 		// Quick Edit
-		$options = $xpath->query( '//tr[@id="inline-edit"]/td/fieldset/div/label/select[@name="inline_lang_choice"]/option' );
-		$this->assertEquals( 2, $options->length );
-		$this->assertEquals( 'en', $options->item( 0 )->getAttribute( 'value' ) );
-		$this->assertEquals( 'fr', $options->item( 1 )->getAttribute( 'value' ) );
+		$tr      = $doc->getElementById( 'inline-edit' );
+		$options = $xpath->query( './/select[@name="inline_lang_choice"]/option', $tr );
+		$this->assertSame( 2, $options->length, 'Expected the <select> tag to contain 2 <option> tags.' );
+		$this->assertSameSets(
+			array( 'en', 'fr' ),
+			array(
+				$options->item( 0 )->getAttribute( 'value' ),
+				$options->item( 1 )->getAttribute( 'value' ),
+			),
+			"'Expected the <select> tag to contain a 'en' and a 'fr' choices."
+		);
 
 		// Bulk Edit
-		$options = $xpath->query( '//tr[@id="bulk-edit"]/td/fieldset/div/label/select[@name="inline_lang_choice"]/option' );
-		$this->assertEquals( 3, $options->length );
-		$this->assertEquals( '-1', $options->item( 0 )->getAttribute( 'value' ) );
-		$this->assertEquals( 'en', $options->item( 1 )->getAttribute( 'value' ) );
-		$this->assertEquals( 'fr', $options->item( 2 )->getAttribute( 'value' ) );
+		$tr      = $doc->getElementById( 'bulk-edit' );
+		$options = $xpath->query( './/select[@name="inline_lang_choice"]/option', $tr );
+		$this->assertSame( 3, $options->length, 'Expected the <select> tag to contain 3 <option> tags.' );
+		$this->assertSameSets(
+			array( '-1', 'en', 'fr' ),
+			array(
+				$options->item( 0 )->getAttribute( 'value' ),
+				$options->item( 1 )->getAttribute( 'value' ),
+				$options->item( 2 )->getAttribute( 'value' ),
+			),
+			"'Expected the <select> tag to contain a '-1', a 'en', and a 'fr' choices."
+		);
 	}
 }
