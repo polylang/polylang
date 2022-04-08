@@ -456,16 +456,16 @@ class PLL_Admin_Model extends PLL_Model {
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
 
-		$terms    = get_terms( array( 'post_translations', 'term_translations' ) );
-		$term_ids = array();
-		$dr       = array();
-		$dt       = array();
-		$ut       = array();
+		$terms                   = get_terms( array( 'post_translations', 'term_translations' ) );
+		$term_ids                = array();
+		$relationships_to_delete = array();
+		$terms_to_delete         = array();
+		$terms_to_update         = array();
 
 		if ( is_array( $terms ) ) {
 			foreach ( $terms as $term ) {
 				$term_ids[ $term->taxonomy ][] = $term->term_id;
-				$tr = maybe_unserialize( $term->description );
+				$translations_group = maybe_unserialize( $term->description );
 
 				/**
 				 * Filters the unserialized translation group description before it is
@@ -473,7 +473,7 @@ class PLL_Admin_Model extends PLL_Model {
 				 *
 				 * @since 3.2
 				 *
-				 * @param array<int|array<string>> $tr {
+				 * @param array<int|array<string>> $translations_group {
 				 *     List of translations with lang codes as array keys and IDs as array values.
 				 *     Also in this array:
 				 *
@@ -483,52 +483,56 @@ class PLL_Admin_Model extends PLL_Model {
 				 * @param string                   $new_slug The new language slug.
 				 * @param WP_Term                  $term     The term containing the post or term translation group.
 				 */
-				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug, $term );
+				$translations_group = apply_filters( 'update_translations_group', $translations_group, $old_slug, $new_slug, $term );
 
-				if ( ! empty( $tr[ $old_slug ] ) ) {
+				if ( ! empty( $translations_group[ $old_slug ] ) ) {
 					if ( $new_slug ) {
-						$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
+						$translations_group[ $new_slug ] = $translations_group[ $old_slug ]; // Suppress this for delete
 					} else {
-						$dr['id'][] = (int) $tr[ $old_slug ];
-						$dr['tt'][] = (int) $term->term_taxonomy_id;
+						$relationships_to_delete['id'][] = (int) $translations_group[ $old_slug ];
+						$relationships_to_delete['tt'][] = (int) $term->term_taxonomy_id;
 					}
-					unset( $tr[ $old_slug ] );
+					unset( $translations_group[ $old_slug ] );
 
-					if ( empty( $tr ) || 1 == count( $tr ) ) {
-						$dt['t'][] = (int) $term->term_id;
-						$dt['tt'][] = (int) $term->term_taxonomy_id;
+					if ( empty( $translations_group ) || 1 == count( $translations_group ) ) {
+						$terms_to_delete['t'][]  = (int) $term->term_id;
+						$terms_to_delete['tt'][] = (int) $term->term_taxonomy_id;
+						$remaining_object = reset( $translations_group );
+						if ( $remaining_object ) {
+							$relationships_to_delete['id'][] = (int) $remaining_object;
+						}
 					} else {
-						$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $tr ) );
-						$ut['in'][] = (int) $term->term_id;
+						$terms_to_update['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $translations_group ) );
+						$terms_to_update['in'][]   = (int) $term->term_id;
 					}
 				}
 			}
 		}
 
 		// Delete relationships
-		if ( ! empty( $dr ) ) {
+		if ( ! empty( $relationships_to_delete ) ) {
 			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query(
 				"DELETE FROM $wpdb->term_relationships
-				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' )
-				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )'
+				WHERE object_id IN ( " . implode( ',', $relationships_to_delete['id'] ) . ' )
+				AND term_taxonomy_id IN ( ' . implode( ',', $relationships_to_delete['tt'] ) . ' )'
 			);
 			// PHPCS:enable
 		}
 
 		// Delete terms
-		if ( ! empty( $dt ) ) {
-			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $dt['t'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $dt['tt'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+		if ( ! empty( $terms_to_delete ) ) {
+			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $terms_to_delete['t'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $terms_to_delete['tt'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
 		// Update terms
-		if ( ! empty( $ut ) ) {
+		if ( ! empty( $terms_to_update ) ) {
 			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query(
 				"UPDATE $wpdb->term_taxonomy
-				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END )
-				WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )'
+				SET description = ( CASE term_id " . implode( ' ', $terms_to_update['case'] ) . ' END )
+				WHERE term_id IN ( ' . implode( ',', $terms_to_update['in'] ) . ' )'
 			);
 			// PHPCS:enable
 		}
