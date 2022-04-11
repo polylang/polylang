@@ -192,7 +192,7 @@ class PLL_Translate_Option {
 	 */
 	public function pre_update_option( $value, $old_value, $name ) {
 		// Stores the unfiltered old option value before it is updated in DB.
-		remove_filter( 'option_' . $name, array( $this, 'translate' ), 10, 2 );
+		remove_filter( 'option_' . $name, array( $this, 'translate' ) );
 		$unfiltered_old_value = get_option( $name );
 		add_filter( 'option_' . $name, array( $this, 'translate' ), 20, 2 );
 

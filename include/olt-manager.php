@@ -93,9 +93,9 @@ class PLL_OLT_Manager {
 	 */
 	public function load_textdomains() {
 		// Our load_textdomain_mofile filter has done its job. let's remove it before calling load_textdomain
-		remove_filter( 'load_textdomain_mofile', array( $this, 'load_textdomain_mofile' ), 10, 2 );
-		remove_filter( 'gettext', array( $this, 'gettext' ), 10, 3 );
-		remove_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ), 10, 4 );
+		remove_filter( 'load_textdomain_mofile', array( $this, 'load_textdomain_mofile' ) );
+		remove_filter( 'gettext', array( $this, 'gettext' ) );
+		remove_filter( 'gettext_with_context', array( $this, 'gettext_with_context' ) );
 		$new_locale = get_locale();
 
 		// Don't try to save time for en_US as some users have theme written in another language

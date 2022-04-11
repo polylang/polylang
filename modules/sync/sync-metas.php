@@ -62,7 +62,7 @@ abstract class PLL_Sync_Metas {
 	 * @return void
 	 */
 	protected function remove_add_meta_action() {
-		remove_action( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ), 10, 4 );
+		remove_action( "added_{$this->meta_type}_meta", array( $this, 'add_meta' ) );
 	}
 
 	/**
@@ -75,11 +75,11 @@ abstract class PLL_Sync_Metas {
 	protected function remove_all_meta_actions() {
 		$this->remove_add_meta_action();
 
-		remove_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999, 5 );
-		remove_action( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ), 10, 4 );
+		remove_filter( "update_{$this->meta_type}_metadata", array( $this, 'update_metadata' ), 999 );
+		remove_action( "update_{$this->meta_type}_meta", array( $this, 'update_meta' ) );
 
-		remove_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ), 10, 2 );
-		remove_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ), 10, 4 );
+		remove_action( "delete_{$this->meta_type}_meta", array( $this, 'store_metas_to_sync' ) );
+		remove_action( "deleted_{$this->meta_type}_meta", array( $this, 'delete_meta' ) );
 	}
 
 	/**
