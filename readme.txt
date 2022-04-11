@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.6
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 3.1.4
+Stable tag: 3.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -97,7 +97,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
-= 3.2 =
+= 3.2 (2022-04-12) =
 
 * Requires WP 5.6 as minimum version
 * Pro: Add compatibility with the full site editing introduced in WP 5.9
