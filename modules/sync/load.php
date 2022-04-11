@@ -11,12 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( $polylang->model->get_languages_list() ) {
 	if ( $polylang instanceof PLL_Admin_Base ) {
-		$polylang->container->addShared( 'sync', new PLL_Admin_Sync( $polylang->model, $polylang->options ) );
+		$polylang->add_shared( 'sync', new PLL_Admin_Sync( $polylang->model, $polylang->options ) );
 	} else {
-		$polylang->container->addShared( 'sync', new PLL_Sync( $polylang->model, $polylang->options ) );
+		$polylang->add_shared( 'sync', new PLL_Sync( $polylang->model, $polylang->options ) );
 	}
 
-	$polylang->sync = $polylang->container->get( 'sync' );
+	$polylang->sync = $polylang->get( 'sync' );
 
 	add_filter(
 		'pll_settings_modules',
