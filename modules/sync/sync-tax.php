@@ -211,7 +211,7 @@ class PLL_Sync_Tax {
 	 * @return void
 	 */
 	public function copy( $from, $to, $lang ) {
-		remove_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 6 );
+		remove_action( 'set_object_terms', array( $this, 'set_object_terms' ) );
 
 		// Get taxonomies to sync for this post type
 		$taxonomies = array_intersect( get_post_taxonomies( $from ), $this->get_taxonomies_to_copy( false, $from, $to, $lang ) );
@@ -295,7 +295,7 @@ class PLL_Sync_Tax {
 	 * @return void
 	 */
 	public function pre_delete_term() {
-		remove_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
+		remove_action( 'set_object_terms', array( $this, 'set_object_terms' ) );
 	}
 
 	/**
