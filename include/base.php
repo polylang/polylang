@@ -4,6 +4,10 @@
  */
 
 use WP_Syntex\Polylang_DI\Container;
+use WP_Syntex\Polylang_DI\ContainerInterface;
+use WP_Syntex\Polylang_DI\Definition\DefinitionInterface;
+use WP_Syntex\Polylang_DI\Exception\InvalidArgumentException;
+use WP_Syntex\Polylang_DI\Exception\NotFoundException;
 
 /**
  * Base class for both admin and frontend
@@ -45,13 +49,13 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
-	 * Instance of Container.
+	 * Instance of ContainerInterface.
 	 *
 	 * @since 3.3
 	 *
-	 * @var Container
+	 * @var ContainerInterface
 	 */
-	public $container;
+	protected $container;
 
 	/**
 	 * Constructor.
@@ -204,5 +208,48 @@ abstract class PLL_Base {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Finds an entry of the container by its identifier and returns it.
+	 *
+	 * @since  3.3
+	 * @throws NotFoundException No entry was found for this identifier.
+	 * @throws InvalidArgumentException The identifier is not a string.
+	 *
+	 * @param  string $id Identifier of the entry to look for.
+	 * @return mixed      Entry.
+	 */
+	public function get( $id ) {
+		return $this->container->get( $id );
+	}
+
+	/**
+	 * Returns true if the container can return an entry for the given identifier.
+	 * Returns false otherwise.
+	 *
+	 * @since  3.3
+	 * @throws InvalidArgumentException The identifier is not a string.
+	 *
+	 * @param  string $id Identifier of the entry to look for.
+	 * @return bool
+	 */
+	public function has( $id ) {
+		return $this->container->has( $id );
+	}
+
+	/**
+	 * Adds a shared item to the container.
+	 *
+	 * @since  3.3
+	 * @throws InvalidArgumentException The identifier is not a string.
+	 *
+	 * @param  string $id               Alias used to store the item.
+	 * @param  mixed  $concrete         The item to store.
+	 * @return DefinitionInterface|null A `DefinitionInterface` object when matching one of the definitions.
+	 *                                  Null otherwise.
+	 */
+	public function add_shared( $id, $concrete ) {
+		return $this->container->addShared( $id, $concrete );
 	}
 }
