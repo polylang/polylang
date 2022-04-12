@@ -22,12 +22,11 @@ jQuery(
  */
 jQuery(
 	function( $ ) {
-		const table = document.getElementById( 'the-list' );
-		const config = { attributes: true, childList: true, subtree: true };
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
 				const form = $( mutation.addedNodes[0] );
 				if ( mutation.type === 'childList' && 0 < mutation.addedNodes.length && 'TR' === form.get( 0 ).nodeName && 'hidden' !== form.attr( 'class' ) ) {
+					// WordPress has inserted the quick edit form.
 					const post_id = form.attr( 'id' ).replace( "edit-", "" );
 
 					if ( post_id > 0 ) {
@@ -46,55 +45,57 @@ jQuery(
 								filter_terms( $( this ).val() );
 								filter_pages( $( this ).val() );
 							}
-						);
+							);
+						}
 					}
-				}
-				/**
-				 * Filters the category checklist.
-				 */
-				function filter_terms( lang ) {
-					if ( "undefined" != typeof( pll_term_languages ) ) {
-						$.each(
-							pll_term_languages,
-							function( lg, term_tax ) {
-								$.each(
-									term_tax,
-									function( tax, terms ) {
-										$.each(
-											terms,
-											function( i ) {
-												id = '#' + tax + '-' + pll_term_languages[ lg ][ tax ][ i ];
-												lang == lg ? $( id ).show() : $( id ).hide();
-											}
-										);
-									}
-								);
-							}
-						);
+					/**
+					 * Filters the category checklist.
+					 */
+					function filter_terms( lang ) {
+						if ( "undefined" != typeof( pll_term_languages ) ) {
+							$.each(
+								pll_term_languages,
+								function( lg, term_tax ) {
+									$.each(
+										term_tax,
+										function( tax, terms ) {
+											$.each(
+												terms,
+												function( i ) {
+													id = '#' + tax + '-' + pll_term_languages[ lg ][ tax ][ i ];
+													lang == lg ? $( id ).show() : $( id ).hide();
+												}
+											);
+										}
+									);
+								}
+							);
+						}
 					}
-				}
 
-				/**
-				 * Filters the parent page dropdown list.
-				 */
+					/**
+					 * Filters the parent page dropdown list.
+					 */
 					function filter_pages( lang ) {
-					if ( "undefined" != typeof( pll_page_languages ) ) {
-						$.each(
-							pll_page_languages,
-							function( lg, pages ) {
-								$.each(
-									pages,
-									function( i ) {
-										v = $( '#post_parent option[value="' + pll_page_languages[ lg ][ i ] + '"]' );
-										lang == lg ? v.show() : v.hide();
-									}
-								);
-							}
-						);
+						if ( "undefined" != typeof( pll_page_languages ) ) {
+							$.each(
+								pll_page_languages,
+								function( lg, pages ) {
+									$.each(
+										pages,
+										function( i ) {
+											v = $( '#post_parent option[value="' + pll_page_languages[ lg ][ i ] + '"]' );
+											lang == lg ? v.show() : v.hide();
+										}
+									);
+								}
+							);
+						}
 					}
 				}
-			}
 		}
+		const table = document.getElementById( 'the-list' );
+		const config = { childList: true, subtree: true };
 		const observer = new MutationObserver( handleQuickEditInsertion );
 
 		observer.observe( table, config);

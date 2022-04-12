@@ -7,13 +7,11 @@
  */
 jQuery(
 	function( $ ) {
-		const table = document.getElementById( 'the-list' );
-		const config = { attributes: true, childList: true, subtree: true };
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
 				const form = $( mutation.addedNodes[0] );
 				if ( mutation.type === 'childList' && 0 < mutation.addedNodes.length && 'hidden' !== form.attr( 'class' ) ) {
-					// WP inserts the quick edit from
+					// WordPress has inserted the quick edit form.
 					const term_id = form.attr( 'id' ).replace( "edit-", "" );
 
 					if ( term_id > 0 ) {
@@ -33,6 +31,8 @@ jQuery(
 		}
 		if ( null !== table ) {
 			// Ensure the table is displayed before listening to any change.
+			const table = document.getElementById( 'the-list' );
+			const config = { childList: true, subtree: true };
 			const observer = new MutationObserver( handleQuickEditInsertion );
 
 			observer.observe( table, config);
