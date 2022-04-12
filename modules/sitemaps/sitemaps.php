@@ -30,17 +30,13 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	 * Constructor.
 	 *
 	 * @since 2.8
-	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param  PLL_Links_Model $links_model Instance of PLL_Links_Model, passed by reference.
-	 * @param  PLL_Model       $model       Instance of PLL_Model, passed by reference.
-	 * @param  array<mixed>    $options     Options, passed by reference.
-	 * @return void
+	 * @param object $polylang Main Polylang object.
 	 */
-	public function __construct( PLL_Links_Model &$links_model, PLL_Model &$model, array &$options ) {
-		$this->links_model = &$links_model;
-		$this->model       = &$model;
-		$this->options     = &$options;
+	public function __construct( &$polylang ) {
+		$this->links_model = &$polylang->links_model;
+		$this->model = &$polylang->model;
+		$this->options = &$polylang->options;
 	}
 
 	/**

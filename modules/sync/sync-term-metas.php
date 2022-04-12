@@ -11,9 +11,15 @@
 class PLL_Sync_Term_Metas extends PLL_Sync_Metas {
 
 	/**
-	 * Meta type.
+	 * Constructor
 	 *
-	 * @var string
+	 * @since 2.3
+	 *
+	 * @param object $polylang
 	 */
-	protected $meta_type = 'term';
+	public function __construct( &$polylang ) {
+		$this->meta_type = 'term';
+
+		parent::__construct( $polylang );
+	}
 }

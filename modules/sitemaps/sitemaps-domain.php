@@ -18,13 +18,11 @@ class PLL_Sitemaps_Domain extends PLL_Abstract_Sitemaps {
 	 * Constructor.
 	 *
 	 * @since 3.0
-	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param  PLL_Links_Abstract_Domain $links_model Instance of PLL_Links_Abstract_Domain, passed by reference.
-	 * @return void
+	 * @param object $polylang Main Polylang object.
 	 */
-	public function __construct( PLL_Links_Abstract_Domain &$links_model ) {
-		$this->links_model = &$links_model;
+	public function __construct( &$polylang ) {
+		$this->links_model = &$polylang->links_model;
 	}
 
 	/**

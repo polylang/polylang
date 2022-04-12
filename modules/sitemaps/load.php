@@ -9,11 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( $polylang->model->get_languages_list() ) {
 	if ( $polylang->links_model instanceof PLL_Links_Abstract_Domain ) {
-		$polylang->add_shared( 'sitemaps', new PLL_Sitemaps_Domain( $polylang->links_model ) );
+		$polylang->sitemaps = new PLL_Sitemaps_Domain( $polylang );
 	} else {
-		$polylang->add_shared( 'sitemaps', new PLL_Sitemaps( $polylang->links_model, $polylang->model, $polylang->options ) );
+		$polylang->sitemaps = new PLL_Sitemaps( $polylang );
 	}
-
-	$polylang->sitemaps = $polylang->get( 'sitemaps' );
 	$polylang->sitemaps->init();
 }
