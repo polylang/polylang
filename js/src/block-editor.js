@@ -106,25 +106,7 @@ jQuery(
 						$.post(
 							ajaxurl,
 							data,
-							function( response ) {
-								// Target a non existing WP HTML id to avoid a conflict with WP ajax requests.
-								var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
-								$.each(
-									res.responses,
-									function() {
-										switch ( this.what ) {
-											case 'translations': // Translations fields
-												// Data is built and come from server side and is well escaped when necessary
-												$( '.translations' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-												init_translations();
-											break;
-											case 'flag': // Flag in front of the select dropdown
-												// Data is built and come from server side and is well escaped when necessary
-												$( '.pll-select-flag' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-											break;
-										}
-									}
-								);
+							function() {
 								blockEditorSavePostAndReloadPage();
 							}
 						);
