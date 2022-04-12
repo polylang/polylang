@@ -165,12 +165,9 @@ abstract class PLL_Links_Model {
 	 * @return void
 	 */
 	protected function set_home_url( $language ) {
-		// We should always have a default language here, except, temporarily, in PHPUnit tests. The test here protects against PHP notices.
-		if ( isset( $this->options['default_lang'] ) ) {
-			$search_url = $this->home_url( $language );
-			$home_url = empty( $language->page_on_front ) || $this->options['redirect_lang'] ? $search_url : $this->front_page_url( $language );
-			$language->set_home_url( $search_url, $home_url );
-		}
+		$search_url = $this->home_url( $language );
+		$home_url = empty( $language->page_on_front ) || $this->options['redirect_lang'] ? $search_url : $this->front_page_url( $language );
+		$language->set_home_url( $search_url, $home_url );
 	}
 
 	/**

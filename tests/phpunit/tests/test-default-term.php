@@ -11,6 +11,12 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+
+		$links_model     = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
+		$admin_default_term->add_hooks();
+
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );

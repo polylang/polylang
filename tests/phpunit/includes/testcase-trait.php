@@ -73,15 +73,11 @@ trait PLL_UnitTestCase_Trait {
 
 		$args = array_merge( $values, $args );
 
-		$links_model     = self::$model->get_links_model();
-		$pll_admin = new PLL_Admin( $links_model );
-		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
-
 		$errors = self::$model->add_language( $args );
 		if ( is_wp_error( $errors ) ) {
 			throw new InvalidArgumentException( $errors->get_error_message() );
 		}
-		$admin_default_term->handle_default_term_on_create_language( $args );
+
 		self::$model->clean_languages_cache();
 	}
 
