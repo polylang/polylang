@@ -19,7 +19,9 @@ trait PLL_Container_Compat_Trait {
 	 * @return bool
 	 */
 	public function __isset( $id ) {
-		return ( empty( $this->container_identifiers ) || in_array( $id, $this->container_identifiers ) ) && $this->container->has( $id );
+		$container_id = $this->get_container_identifier( $id );
+
+		return ! empty( $container_id ) && PLL()->has( $container_id );
 	}
 
 	/**
@@ -31,9 +33,11 @@ trait PLL_Container_Compat_Trait {
 	 * @return mixed
 	 */
 	public function &__get( $id ) {
-		if ( ( empty( $this->container_identifiers ) || in_array( $id, $this->container_identifiers ) ) && $this->container->has( $id ) ) {
+		$container_id = $this->get_container_identifier( $id );
+
+		if ( ! empty( $container_id ) && PLL()->has( $container_id ) ) {
 			/**
-			 * Filters whether to trigger an error for deprecated class property.
+			 * Filters whether to trigger an error for deprecated class properties.
 			 *
 			 * @since 3.3
 			 *
@@ -44,15 +48,16 @@ trait PLL_Container_Compat_Trait {
 			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', true, get_class( $this ), $id ) ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					sprintf(
-						'Class property %1$s->%2$s is <strong>deprecated</strong>, %1$s->get( \'%2$s\' ) must be used instead.',
+						'Class property %1$s->%2$s is <strong>deprecated</strong>, PLL()->get( \'%3$s\' ) must be used instead.',
 						esc_html( get_class( $this ) ),
-						esc_html( $id )
+						esc_html( $id ),
+						esc_html( $container_id )
 					),
 					E_USER_DEPRECATED
 				);
 			}
 
-			$value = $this->container->get( $id );
+			$value = PLL()->get( $container_id );
 			return $value;
 		}
 
@@ -70,7 +75,7 @@ trait PLL_Container_Compat_Trait {
 	}
 
 	/**
-	 * Adds an item to the container.
+	 * Adds an item to the container, or as an undeclared class property.
 	 *
 	 * @since 3.3
 	 *
@@ -79,7 +84,33 @@ trait PLL_Container_Compat_Trait {
 	 * @return void
 	 */
 	public function __set( $id, $value ) {
-		$this->container->addShared( $id, $value );
+		$container_id = $this->get_container_identifier( $id );
+
+		if ( ! empty( $container_id ) ) {
+			PLL()->add_shared( $container_id, $value );
+		} else {
+			$this->$id = $value;
+		}
+	}
+
+	/**
+	 * Returns a container identifier, given a property name.
+	 *
+	 * @since 3.3
+	 *
+	 * @param  string $id  A property name or a container identifier.
+	 * @return string|null The identifier. Null if a list exists and the identifier is not in it.
+	 */
+	protected function get_container_identifier( $id ) {
+		if ( empty( $this->container_identifiers ) ) {
+			// Everything is allowed.
+			return $id;
+		}
+
+		if ( ! empty( $this->container_identifiers[ $id ] ) ) {
+			// Only the properties listed here are allowed.
+			return $this->container_identifiers[ $id ];
+		}
 	}
 }
 
