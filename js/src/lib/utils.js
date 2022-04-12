@@ -4,7 +4,7 @@
 
 
 // Translations autocomplete input box.
-export function init_translations() {
+export function initTranslations() {
 	jQuery('.tr_lang').each(
 		function () {
 			var tr_lang = jQuery(this).attr('id').substring(8);

@@ -8,7 +8,7 @@ import {
 } from './lib/confirmation-modal';
 
 import {
-	init_translations,
+	initTranslations,
 } from './lib/utils';
 
 /**
@@ -194,6 +194,6 @@ jQuery(
 			}
 		);
 
-		init_translations();
+		initTranslations();
 	}
 );
