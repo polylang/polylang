@@ -9,29 +9,30 @@ jQuery(
 	function( $ ) {
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
-				const form = $( mutation.addedNodes[0] );
-				if ( mutation.type === 'childList' && 0 < mutation.addedNodes.length && 'hidden' !== form.attr( 'class' ) ) {
+				const form = mutation.addedNodes[0];
+				if ( 0 < mutation.addedNodes.length && form.classList.contains( 'inline-edit-row' ) ) {
 					// WordPress has inserted the quick edit form.
-					const term_id = form.attr( 'id' ).replace( "edit-", "" );
+					const term_id = Number( form.id.substring( 5 ) );
 
 					if ( term_id > 0 ) {
-						// language dropdown
-						const select = form.find( ':input[name="inline_lang_choice"]' );
-						const lang = $( '#lang_' + term_id ).html();
-						select.val( lang ); // populates the dropdown
+						// Get the language dropdown.
+						const select = form.querySelector( 'select[name="inline_lang_choice"]' );
+						const lang = document.querySelector( '#lang_' + String( term_id ) ).innerHTML;
+						select.value = lang; // Populates the dropdown with the post language.
 
 						// disable the language dropdown for default categories
-						const default_cat = $( '#default_cat_' + term_id ).html();
+						// TODO find a way to get the default category ID to disable the language dropdown on it.
+						const default_cat = document.querySelector( `#default_cat_${term_id}` )?.innerHTML;
 						if ( term_id == default_cat ) {
-							select.prop( 'disabled', true );
+							select.disabled = true;
 						}
 					}
 				}
 			}
 		}
+		const table = document.getElementById( 'the-list' );
 		if ( null !== table ) {
 			// Ensure the table is displayed before listening to any change.
-			const table = document.getElementById( 'the-list' );
 			const config = { childList: true, subtree: true };
 			const observer = new MutationObserver( handleQuickEditInsertion );
 
