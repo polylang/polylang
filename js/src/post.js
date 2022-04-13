@@ -24,26 +24,27 @@ jQuery(
 	function( $ ) {
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
-				const form = $( mutation.addedNodes[0] );
-				if ( mutation.type === 'childList' && 0 < mutation.addedNodes.length && 'TR' === form.get( 0 ).nodeName && 'hidden' !== form.attr( 'class' ) ) {
+				const form = mutation.addedNodes[0];
+				if ( 0 < mutation.addedNodes.length && form.classList.contains( 'inline-edit-post' ) ) {
 					// WordPress has inserted the quick edit form.
-					const post_id = form.attr( 'id' ).replace( "edit-", "" );
+					const post_id = Number( form.id.substring( 5 ) );
 
 					if ( post_id > 0 ) {
-						// language dropdown
-						const select = form.find( ':input[name="inline_lang_choice"]' );
-						const lang = $( '#lang_' + post_id ).html();
-						select.val( lang ); // populates the dropdown
+						// Get the language dropdown.
+						const select = form.querySelector( 'select[name="inline_lang_choice"]' );
+						const lang = document.querySelector( '#lang_' + String( post_id ) ).innerHTML;
+						select.value = lang; // Populates the dropdown with the post language.
 
-						filter_terms( lang ); // initial filter for category checklist
-						filter_pages( lang ); // initial filter for parent dropdown
+						filter_terms( lang ); // Initial filter for category checklist.
+						filter_pages( lang ); // Initial filter for parent dropdown.
 
-						// modify category checklist an parent dropdown on language change
-						select.on(
+						// Modify category checklist and parent dropdown on language change.
+						select.addEventListener(
 							'change',
-							function() {
-								filter_terms( $( this ).val() );
-								filter_pages( $( this ).val() );
+							function( event ) {
+								const newLang = event.target.value;
+								filter_terms( newLang );
+								filter_pages( newLang );
 							}
 							);
 						}
