@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.6
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 3.2
+Stable tag: 3.2.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -96,6 +96,13 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.2.1 (2022-02-14) =
+
+* Pro: Fix with users withh editor role not able to save or publish posts
+* Pro: Fix FSE compatibility not loaded when the plugin Gütenberg is active
+* Pro: Fix a fatal error occuring with Yoast SEO Premium
+* Pro: Fix a fatal error with ACF when no language is defined
 
 = 3.2 (2022-04-12) =
 
