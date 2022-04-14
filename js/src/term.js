@@ -21,8 +21,7 @@ jQuery(
 						select.value = lang; // Populates the dropdown with the post language.
 
 						// Disable the language dropdown for default categories.
-						// TODO find a way to get the default category ID to disable the language dropdown on it.
-						const default_cat = document.querySelector( `#default_cat_${term_id}` )?.innerHTML;
+						const default_cat = document.querySelector( `#default_cat_${term_id}` ).innerHTML;
 						if ( term_id == default_cat ) {
 							select.disabled = true;
 						}
