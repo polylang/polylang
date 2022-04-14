@@ -97,7 +97,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
-= 3.2.1 (2022-02-14) =
+= 3.2.1 (2022-04-14) =
 
 * Pro: Fix with users withh editor role not able to save or publish posts
 * Pro: Fix FSE compatibility not loaded when the plugin Gütenberg is active
