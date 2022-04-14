@@ -137,7 +137,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		set_current_screen();
 
 		if ( class_exists( 'PLL_Lingotek' ) ) {
-			$this->pll_admin->add_shared( 'lingotek', 'PLL_Lingotek' );
+			$this->pll_admin->add_shared( 'lingotek', PLL_Lingotek::class );
 			$this->pll_admin->get( 'lingotek' )->init();
 		}
 
