@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.6
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 3.2
+Stable tag: 3.2.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -97,6 +97,13 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
+= 3.2.1 (2022-04-14) =
+
+* Pro: Fix users with editor role not able to save or publish posts
+* Pro: Fix FSE compatibility not loaded when the plugin Gütenberg is active
+* Pro: Fix a fatal error occuring with Yoast SEO Premium
+* Pro: Fix a fatal error with ACF when no language is defined
+
 = 3.2 (2022-04-12) =
 
 * Requires WP 5.6 as minimum version
@@ -104,7 +111,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Add a language switcher block for the navigation block introduced in WP 5.9
 * Pro: Add compatibility with the new gallery block introduced in WP 5.9
 * Pro: Make the language switcher block available in the widget section of the customizer
-* Pro: Fix wrong category when translating the latest block
+* Pro: Fix wrong category when translating the latest posts block
 * Pro: Fix the language switcher block when using the dropdown option
 * Pro: Fix some edge cases with locale fallback
 * Pro: Fix post template replacing the post content when duplicating a post
