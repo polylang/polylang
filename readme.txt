@@ -99,7 +99,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 = 3.2.1 (2022-04-14) =
 
-* Pro: Fix with users withh editor role not able to save or publish posts
+* Pro: Fix users with editor role not able to save or publish posts
 * Pro: Fix FSE compatibility not loaded when the plugin Gütenberg is active
 * Pro: Fix a fatal error occuring with Yoast SEO Premium
 * Pro: Fix a fatal error with ACF when no language is defined
@@ -111,7 +111,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Add a language switcher block for the navigation block introduced in WP 5.9
 * Pro: Add compatibility with the new gallery block introduced in WP 5.9
 * Pro: Make the language switcher block available in the widget section of the customizer
-* Pro: Fix wrong category when translating the latest block
+* Pro: Fix wrong category when translating the latest posts block
 * Pro: Fix the language switcher block when using the dropdown option
 * Pro: Fix some edge cases with locale fallback
 * Pro: Fix post template replacing the post content when duplicating a post
