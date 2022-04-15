@@ -324,13 +324,13 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		foreach ( $traces as $trace ) {
 			// Black list first
 			foreach ( $this->black_list as $v ) {
-				if ( ( isset( $trace['file'], $v['file'] ) && false !== strpos( $trace['file'], $v['file'] ) ) || ( isset( $trace['function'], $v['function'] ) && $trace['function'] == $v['function'] ) ) {
+				if ( ( isset( $trace['file'], $v['file'] ) && false !== strpos( $trace['file'], $v['file'] ) ) || ( ! empty( $v['function'] ) && $trace['function'] === $v['function'] ) ) {
 					return $url;
 				}
 			}
 
 			foreach ( $this->white_list as $v ) {
-				if ( ( isset( $trace['function'], $v['function'] ) && $trace['function'] == $v['function'] ) ||
+				if ( ( ! empty( $v['function'] ) && $trace['function'] === $v['function'] ) ||
 					( isset( $trace['file'], $v['file'] ) && false !== strpos( $trace['file'], $v['file'] ) && in_array( $trace['function'], array( 'home_url', 'get_home_url', 'bloginfo', 'get_bloginfo' ) ) ) ) {
 					$ok = true;
 				}

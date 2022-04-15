@@ -217,9 +217,9 @@ class PLL_Model {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string[]     $clauses The list of sql clauses in terms query.
-	 * @param PLL_Language $lang    PLL_Language object.
-	 * @return string[] Modified list of clauses.
+	 * @param string[]           $clauses The list of sql clauses in terms query.
+	 * @param PLL_Language|false $lang    PLL_Language object.
+	 * @return string[]                   Modified list of clauses.
 	 */
 	public function terms_clauses( $clauses, $lang ) {
 		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {

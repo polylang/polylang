@@ -62,3 +62,21 @@ parameters:
 			message: "#^Parameter \\#1 \\$args of function wp_tag_cloud expects (.+) given\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
+
+		# Ignored because WP_Query->tax_query can be falsy: it is set in WP_Query->parse_tax_query(), which is not called in the constructor.
+		- "#^Property WP_Query::\\$tax_query \\(WP_Tax_Query\\) in empty\\(\\) is not falsy\\.$#"
+
+		# Ignored because WP_Query->queried_object_id can be null.
+		- "#^Property WP_Query::\\$queried_object_id \\(int\\) in isset\\(\\) is not nullable\\.$#"
+
+		# Ignored because get_settings_errors() can be falsy (can return an empty array).
+		-
+			message: "#^Expression in empty\\(\\) is not falsy\\.$#"
+			count: 1
+			path: settings/settings-module.php
+
+		# Ignored because get_settings_errors() can be falsy (can return an empty array).
+		-
+			message: "#^Variable \\$errors in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: settings/settings.php

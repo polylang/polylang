@@ -12,7 +12,7 @@ class PLL_Frontend_Links extends PLL_Links {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
 
@@ -166,6 +166,8 @@ class PLL_Frontend_Links extends PLL_Links {
 			}
 		}
 
+		$url = ! empty( $url ) && ! is_wp_error( $url ) ? $url : null;
+
 		/**
 		 * Filter the translation url of the current page before Polylang caches it
 		 *
@@ -174,7 +176,7 @@ class PLL_Frontend_Links extends PLL_Links {
 		 * @param null|string $url      The translation url, null if none was found
 		 * @param string      $language The language code of the translation
 		 */
-		$translation_url = apply_filters( 'pll_translation_url', ( isset( $url ) && ! is_wp_error( $url ) ? $url : null ), $language->slug );
+		$translation_url = apply_filters( 'pll_translation_url', $url, $language->slug );
 
 		// Don't cache before template_redirect to avoid a conflict with Barrel + WP Bakery Page Builder
 		if ( did_action( 'template_redirect' ) ) {

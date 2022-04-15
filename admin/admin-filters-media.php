@@ -11,7 +11,7 @@
  */
 class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	/**
-	 * @var PLL_CRUD_Posts
+	 * @var PLL_CRUD_Posts|null
 	 */
 	public $posts;
 

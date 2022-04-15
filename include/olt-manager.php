@@ -16,7 +16,7 @@ class PLL_OLT_Manager {
 	/**
 	 * Singleton instance
 	 *
-	 * @var PLL_OLT_Manager
+	 * @var PLL_OLT_Manager|null
 	 */
 	protected static $instance;
 

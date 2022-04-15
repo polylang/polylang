@@ -18,14 +18,14 @@ class PLL_CRUD_Posts {
 	/**
 	 * Preferred language to assign to a new post.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $pref_lang;
 
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $curlang;
 

@@ -92,7 +92,7 @@ class PLL_Query {
 	 * @return array queried taxonomies
 	 */
 	public function get_queried_taxonomies() {
-		return isset( $this->query->tax_query->queried_terms ) ? array_keys( wp_list_filter( $this->query->tax_query->queried_terms, array( 'operator' => 'NOT IN' ), 'NOT' ) ) : array();
+		return ! empty( $this->query->tax_query->queried_terms ) ? array_keys( wp_list_filter( $this->query->tax_query->queried_terms, array( 'operator' => 'NOT IN' ), 'NOT' ) ) : array();
 	}
 
 	/**
@@ -137,7 +137,7 @@ class PLL_Query {
 	 *
 	 * @since 2.2
 	 *
-	 * @param PLL_Language $lang Language.
+	 * @param PLL_Language|false $lang Language.
 	 * @return void
 	 */
 	public function filter_query( $lang ) {

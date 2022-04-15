@@ -31,15 +31,17 @@ abstract class PLL_Choose_Lang {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
+
 	/**
-	 * @var PLL_Accept_Language
+	 * @var PLL_Accept_Language|null
 	 */
 	private $lang_parse;
+
 	/**
-	 * @var PLL_Accept_Languages_Collection
+	 * @var PLL_Accept_Languages_Collection|null
 	 */
 	private $accept_langs;
 

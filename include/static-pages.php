@@ -12,14 +12,14 @@ class PLL_Static_Pages {
 	/**
 	 * Id of the page on front.
 	 *
-	 * @var int
+	 * @var int|null
 	 */
 	public $page_on_front;
 
 	/**
 	 * Id of the page for posts.
 	 *
-	 * @var int
+	 * @var int|null
 	 */
 	public $page_for_posts;
 
@@ -38,7 +38,7 @@ class PLL_Static_Pages {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $curlang;
 

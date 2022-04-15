@@ -61,9 +61,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string       $url  The url to modify.
-	 * @param PLL_Language $lang The language object.
-	 * @return string Modified url.
+	 * @param string             $url  The url to modify.
+	 * @param PLL_Language|false $lang The language object.
+	 * @return string                  Modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
 		if ( ! empty( $lang ) ) {
