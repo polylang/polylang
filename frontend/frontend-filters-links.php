@@ -395,7 +395,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		elseif ( is_category() || is_tag() || is_tax() ) {
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
-				if ( $this->links_model->using_permalinks && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] ) ) ) {
+				if ( $this->links_model->using_permalinks && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] ) || ! empty( $this->wp_query()->query['category_name'] ) ) ) {
 					// When we receive a plain permalink with a cat or tag query var, we need to redirect to the pretty permalink.
 					$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
 					if ( is_feed() ) {
@@ -518,6 +518,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 		$field = $queried_terms[ $taxonomy ]['field'];
 		$term  = reset( $queried_terms[ $taxonomy ]['terms'] );
+		$lang  = isset( $queried_terms['language']['terms'] ) ? reset( $queried_terms['language']['terms'] ) : '';
 
 		// We can get a term_id when requesting a plain permalink, eg /?cat=1.
 		if ( 'term_id' === $field ) {
@@ -526,13 +527,21 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		// We get a slug when requesting a pretty permalink with the wrong language.
 		$args = array(
-			'lang' => '',
+			'lang' => $lang,
 			'taxonomy' => $taxonomy,
 			$field => $term,
 			'hide_empty' => false,
 			'fields' => 'ids',
 		);
 		$terms = get_terms( $args );
+
+		if ( empty( $terms ) ) {
+			// The queried language does not correspond to the queried term.
+			// So let's get only the querried term.
+			$args['lang'] = '';
+			$terms = get_terms( $args );
+		}
+
 		return reset( $terms );
 	}
 
