@@ -288,7 +288,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $column, 'The generated language column should not be empty.' );
 
 		$doc = new DomDocument();
-		$doc->loadHTML( $column, LIBXML_NOERROR );
+		$doc->loadHTML( $column );
 		$xpath = new DOMXpath( $doc );
 
 		$def_cat = $xpath->query( "//div[@id=\"default_cat_{$default_cat_id}\"]" );
