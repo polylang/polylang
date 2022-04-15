@@ -273,4 +273,27 @@ class Columns_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $options->item( 1 )->getAttribute( 'value' ) );
 		$this->assertEquals( 'fr', $options->item( 2 )->getAttribute( 'value' ) );
 	}
+
+	public function test_custom_term_column_for_default_category() {
+		$GLOBALS['taxonomy']     = 'category';
+		$GLOBALS['post_type']    = 'post';
+		$out                     = '';
+		$column                  = 'language_en';
+		$default_cat_id          = get_option( 'default_category' );
+		self::$model->term->set_language( $default_cat_id, 'en' );
+		$admin_default_term = new PLL_Admin_Default_Term( $this->pll_admin );
+		$admin_default_term->add_hooks();
+		$column = apply_filters( 'manage_category_custom_column', $out, $column, $default_cat_id );
+
+		$this->assertNotEmpty( $column, 'The generated language column should not be empty.' );
+
+		$doc = new DomDocument();
+		$doc->loadHTML( $column, LIBXML_NOERROR );
+		$xpath = new DOMXpath( $doc );
+
+		$def_cat = $xpath->query( "//div[@id=\"default_cat_{$default_cat_id}\"]" );
+		$this->assertSame( 1, $def_cat->length, 'Only one element with the default category ID should be rendered.' );
+		$def_cat_class_attr = $def_cat->item( 0 )->getAttribute( 'class' );
+		$this->assertSame( 'hidden', $def_cat_class_attr, 'The element of the default category should be hidden.' );
+	}
 }
