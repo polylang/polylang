@@ -10,13 +10,13 @@ class Settings_Browser_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_active_true() {
-		$this->pll_env->options['browser'] = 1;
+		self::$model->options['browser'] = 1;
 		$module = new PLL_Settings_Browser( $this->pll_env );
 		$this->assertTrue( $module->is_active() );
 	}
 
 	public function test_active_false() {
-		$this->pll_env->options['browser'] = 0;
+		self::$model->options['browser'] = 0;
 		$module = new PLL_Settings_Browser( $this->pll_env );
 		$this->assertFalse( $module->is_active() );
 	}
