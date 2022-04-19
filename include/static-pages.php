@@ -56,6 +56,8 @@ class PLL_Static_Pages {
 
 		$this->init();
 
+		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
+
 		// Modifies the page link in case the front page is not in the default language
 		add_filter( 'page_link', array( $this, 'page_link' ), 20, 2 );
 
@@ -86,6 +88,19 @@ class PLL_Static_Pages {
 			$this->page_on_front = 0;
 			$this->page_for_posts = 0;
 		}
+	}
+
+	/**
+	 * Init the hooks that filter the "page on front" and "page for posts" options.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	public function pll_language_defined() {
+		// Translates page for posts and page on front.
+		add_filter( 'option_page_on_front', array( $this, 'translate_page_on_front' ) );
+		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
 	}
 
 	/**
@@ -127,16 +142,30 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Translates page for posts
+	 * Translates the page on front option.
+	 *
+	 * @since 1.8
+	 * @since 3.3 Was previously defined in PLL_Frontend_Static_Pages.
+	 *
+	 * @param  int $page_id ID of the page on front.
+	 * @return int
+	 */
+	public function translate_page_on_front( $page_id ) {
+		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
+		return ! empty( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $page_id;
+	}
+
+	/**
+	 * Translates the page for posts option.
 	 *
 	 * @since 1.8
 	 *
-	 * @param int $v page for posts page id
+	 * @param  int $page_id ID of the page for posts.
 	 * @return int
 	 */
-	public function translate_page_for_posts( $v ) {
-		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache
-		return isset( $this->curlang->page_for_posts ) && ( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $v;
+	public function translate_page_for_posts( $page_id ) {
+		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
+		return ! empty( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $page_id;
 	}
 
 	/**

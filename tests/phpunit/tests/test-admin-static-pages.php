@@ -42,6 +42,8 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		self::$model->clean_languages_cache();
 
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
+		do_action( 'pll_language_defined', $this->pll_admin->curlang->slug, $this->pll_admin->curlang );
+
 		do_action( 'add_meta_boxes', 'page', get_post( $fr ) );
 		$this->assertFalse( post_type_supports( 'page', 'editor' ) );
 
@@ -92,9 +94,13 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		self::$model->clean_languages_cache();
 
 		$this->pll_admin->curlang = self::$model->get_language( 'en' );
+		do_action( 'pll_language_defined', $this->pll_admin->curlang->slug, $this->pll_admin->curlang );
+
 		$this->assertFalse( use_block_editor_for_post( $en ) );
 
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
+		do_action( 'pll_language_defined', $this->pll_admin->curlang->slug, $this->pll_admin->curlang );
+
 		$this->assertFalse( use_block_editor_for_post( $fr ) );
 
 		$page_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
