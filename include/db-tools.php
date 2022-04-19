@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-defined( 'ABSPATH' ) || exit; // @phpstan-ignore-line
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Small set of tools to work with the database.
