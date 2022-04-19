@@ -74,7 +74,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 	public function test_allowed_redirect_hosts() {
 		$hosts = str_replace( 'http://', '', array_values( $this->hosts ) );
-		$this->assertEquals( $hosts, $this->links_model->allowed_redirect_hosts( array() ) );
+		$this->assertSameSets( $hosts, $this->links_model->allowed_redirect_hosts( array() ) );
 		$this->assertEquals( $this->hosts['fr'], wp_validate_redirect( $this->hosts['fr'] ) );
 	}
 
