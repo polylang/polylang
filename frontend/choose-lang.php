@@ -36,16 +36,6 @@ abstract class PLL_Choose_Lang {
 	public $curlang;
 
 	/**
-	 * @var PLL_Accept_Language|null
-	 */
-	private $lang_parse;
-
-	/**
-	 * @var PLL_Accept_Languages_Collection|null
-	 */
-	private $accept_langs;
-
-	/**
 	 * Constructor
 	 *
 	 * @since 1.2
