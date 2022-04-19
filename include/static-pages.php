@@ -98,10 +98,7 @@ class PLL_Static_Pages {
 	 * @return void
 	 */
 	public function pll_language_defined() {
-		// Translates our page on front and page for posts properties
-		$this->init();
-
-		// Translates page for posts and page on front
+		// Translates page for posts and page on front.
 		add_filter( 'option_page_on_front', array( $this, 'translate_page_on_front' ) );
 		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
 	}
