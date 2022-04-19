@@ -256,8 +256,10 @@ class Columns_Test extends PLL_UnitTestCase {
 		ob_start();
 		$list_table->inline_edit();
 		$form = ob_get_clean();
-		$doc = new DomDocument();
-		$doc->loadHTML( $form, LIBXML_NOERROR );
+		// Temporarily fix issue https://core.trac.wordpress.org/ticket/55575.
+		$form = preg_replace( '@ (aria-labelledby|id)="inline-edit-legend"@', '', $form );
+		$doc  = new DomDocument();
+		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );
 
 		// Quick Edit
