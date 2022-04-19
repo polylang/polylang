@@ -688,7 +688,7 @@ class PLL_Model {
 				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
 			)
 			%s",
-			implode( "','", array_map( 'esc_sql', $taxonomies ) ),
+			implode( "','", esc_sql( $taxonomies ) ),
 			implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
 			$limit > 0 ? sprintf( 'LIMIT %d', intval( $limit ) ) : ''
 		);
