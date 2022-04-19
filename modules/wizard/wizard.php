@@ -39,7 +39,7 @@ class PLL_Wizard {
 	/**
 	 * The current step.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $step;
 

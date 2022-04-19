@@ -27,7 +27,7 @@ class PLL_Switcher {
 	);
 
 	/**
-	 * @var PLL_Links
+	 * @var PLL_Links|null
 	 */
 	protected $links;
 

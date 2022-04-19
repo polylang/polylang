@@ -29,14 +29,14 @@ class PLL_Filters_Links {
 	public $links_model;
 
 	/**
-	 * @var PLL_Links
+	 * @var PLL_Links|null
 	 */
 	public $links;
 
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
 

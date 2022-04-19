@@ -19,7 +19,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	/**
 	 * The page id of the static front page.
 	 *
-	 * @var int
+	 * @var int|null
 	 */
 	protected $page_on_front;
 

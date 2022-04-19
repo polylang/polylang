@@ -22,35 +22,35 @@ class PLL_Admin_Filters_Term {
 	public $model;
 
 	/**
-	 * @var PLL_Admin_Links
+	 * @var PLL_Admin_Links|null
 	 */
 	public $links;
 
 	/**
 	 * Language selected in the admin language filter.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $filter_lang;
 
 	/**
 	 * Preferred language to assign to the new terms.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $pref_lang;
 
 	/**
 	 * Stores the term name before creating a slug if needed.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $pre_term_name;
 
 	/**
 	 * Stores the current post_id when bulk editing posts.
 	 *
-	 * @var int
+	 * @var int|null
 	 */
 	protected $post_id;
 
@@ -59,7 +59,7 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @since 2.8
 	 *
-	 * @var PLL_Admin_Default_Term
+	 * @var PLL_Admin_Default_Term|null
 	 */
 	protected $default_term;
 

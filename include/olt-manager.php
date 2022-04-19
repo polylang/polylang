@@ -23,7 +23,7 @@ class PLL_OLT_Manager {
 	/**
 	 * Stores the default site locale before it is modified.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $default_locale;
 

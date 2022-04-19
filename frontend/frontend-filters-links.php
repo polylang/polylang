@@ -11,7 +11,7 @@
 class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 	/**
-	 * @var PLL_Frontend_Links
+	 * @var PLL_Frontend_Links|null
 	 */
 	public $links;
 

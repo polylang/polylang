@@ -35,14 +35,14 @@ class PLL_T15S {
 	/**
 	 * Installed translations.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	private static $installed_translations;
 
 	/**
 	 * Available languages.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	private static $available_languages;
 

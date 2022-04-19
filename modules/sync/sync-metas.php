@@ -26,14 +26,14 @@ abstract class PLL_Sync_Metas {
 	 *
 	 * @var array
 	 */
-	protected $prev_value;
+	protected $prev_value = array();
 
 	/**
 	 * Stores the metas to synchronize before deleting them.
 	 *
 	 * @var array
 	 */
-	protected $to_copy;
+	protected $to_copy = array();
 
 	/**
 	 * Constructor

@@ -24,7 +24,6 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 	 * @param object $polylang polylang object
 	 */
 	public function __construct( &$polylang ) {
-		$this->options = &$polylang->options;
 		parent::__construct(
 			$polylang,
 			array(

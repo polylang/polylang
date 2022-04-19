@@ -15,21 +15,21 @@ class PLL_Admin_Classic_Editor {
 	public $model;
 
 	/**
-	 * @var PLL_Admin_Links
+	 * @var PLL_Admin_Links|null
 	 */
 	public $links;
 
 	/**
 	 * Current language (used to filter the content).
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
 
 	/**
 	 * Preferred language to assign to new contents.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $pref_lang;
 
