@@ -12,105 +12,163 @@ trait PLL_Container_Compat_Trait {
 
 	/**
 	 * Checks for an existing identifier in the container.
+	 * Is triggered by calling `isset()` or `empty()` on inaccessible (protected or private) or non-existing properties.
 	 *
 	 * @since 3.3
 	 *
-	 * @param string $id A property name or a container identifier.
+	 * @param string $id A property name.
 	 * @return bool
 	 */
 	public function __isset( $id ) {
-		$container_id = $this->get_container_identifier( $id );
+		if ( empty( $this->container_identifiers[ $id ] ) ) {
+			return false;
+		}
 
-		return ! empty( $container_id ) && PLL()->has( $container_id );
+		return PLL()->has( $this->container_identifiers[ $id ] ) && null !== PLL()->get( $this->container_identifiers[ $id ] );
 	}
 
 	/**
 	 * Returns an existing identifier from the container.
+	 * Is utilized for reading data from inaccessible (protected or private) or non-existing properties.
 	 *
 	 * @since 3.3
 	 *
-	 * @param  string $id A property name or a container identifier.
+	 * @param  string $id A property name.
 	 * @return mixed
 	 */
 	public function &__get( $id ) {
-		$container_id = $this->get_container_identifier( $id );
-
-		if ( ! empty( $container_id ) && PLL()->has( $container_id ) ) {
+		if ( ! empty( $this->container_identifiers[ $id ] ) ) {
+			// In the container.
 			/**
 			 * Filters whether to trigger an error for deprecated class properties.
 			 *
 			 * @since 3.3
 			 *
-			 * @param bool   $trigger    Whether to trigger the error for deprecated class properties. Default true.
-			 * @param string $class_name Name of the class.
-			 * @param string $id         Name of the property.
+			 * @param bool   $trigger      Whether to trigger the error for deprecated class properties. Default true.
+			 * @param string $class_name   Name of the class.
+			 * @param string $id           Name of the property.
+			 * @param string $container_id Corresponding identifier used in the container.
 			 */
-			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', true, get_class( $this ), $id ) ) {
+			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', true, get_class( $this ), $id, $this->container_identifiers[ $id ] ) ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					sprintf(
-						'Class property %1$s->%2$s is <strong>deprecated</strong>, PLL()->get( \'%3$s\' ) must be used instead.',
+						'Class property %s::$%s is deprecated, PLL()->get( \'%s\' ) must be used instead.',
 						esc_html( get_class( $this ) ),
 						esc_html( $id ),
-						esc_html( $container_id )
+						esc_html( $this->container_identifiers[ $id ] )
 					),
 					E_USER_DEPRECATED
 				);
 			}
 
-			$value = PLL()->get( $container_id );
+			if ( PLL()->has( $this->container_identifiers[ $id ] ) ) {
+				$value = PLL()->get( $this->container_identifiers[ $id ] );
+			} else {
+				$value = null;
+			}
+
 			return $value;
 		}
 
+		// Not in the container.
 		$trace = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+
+		if ( ! property_exists( $this, $id ) ) {
+			// Undefined property.
+			// Always return something, to prevent a "Only variable references should be returned by reference" notice.
+			$value = null;
+			return $value;
+		}
+
+		// Protected or private property.
+		$visibility = ( new ReflectionProperty( $this, $id ) )->isPrivate() ? 'private' : 'protected';
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-			sprintf(
-				'Undefined property: %s::$%s in %s on line %d',
-				esc_html( get_class( $this ) ),
-				esc_html( $id ),
-				esc_html( $trace[0]['file'] ),
-				esc_html( $trace[0]['line'] )
+			esc_html(
+				sprintf(
+					'Cannot access %s property %s::$%s in %s on line %d',
+					$visibility,
+					get_class( $this ),
+					$id,
+					$trace[0]['file'],
+					$trace[0]['line']
+				)
 			),
-			E_USER_NOTICE
+			E_USER_ERROR
 		);
 	}
 
 	/**
 	 * Adds an item to the container, or as an undeclared class property.
+	 * Is run when writing data to inaccessible (protected or private) or non-existing properties.
 	 *
 	 * @since 3.3
 	 *
-	 * @param  string $id    A property name or a container identifier.
+	 * @param  string $id    A property name.
 	 * @param  mixed  $value The value to add.
 	 * @return void
 	 */
 	public function __set( $id, $value ) {
-		$container_id = $this->get_container_identifier( $id );
-
-		if ( ! empty( $container_id ) ) {
-			PLL()->add_shared( $container_id, $value );
-		} else {
-			$this->$id = $value;
+		if ( ! empty( $this->container_identifiers[ $id ] ) ) {
+			// Back-compat: add to the container.
+			PLL()->add_shared( $this->container_identifiers[ $id ], $value );
+			return;
 		}
+
+		if ( ! property_exists( $this, $id ) ) {
+			// Undefined property.
+			$this->{$id} = $value;
+			return;
+		}
+
+		// Protected or private property.
+		$trace = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+			esc_html(
+				sprintf(
+					'Cannot access non-public member %s::$%s in %s on line %d',
+					get_class( $this ),
+					$id,
+					$trace[0]['file'],
+					$trace[0]['line']
+				)
+			),
+			E_USER_ERROR
+		);
 	}
 
 	/**
-	 * Returns a container identifier, given a property name.
+	 * Unsets an item in the container (sets its value to `null`).
+	 * Is invoked when `unset()` is used on inaccessible (protected or private) or non-existing properties.
 	 *
 	 * @since 3.3
 	 *
-	 * @param  string $id  A property name or a container identifier.
-	 * @return string|null The identifier. Null if a list exists and the identifier is not in it.
+	 * @param  string $id A property name.
+	 * @return void
 	 */
-	protected function get_container_identifier( $id ) {
-		if ( empty( $this->container_identifiers ) ) {
-			// Everything is allowed.
-			return $id;
+	public function __unset( $id ) {
+		if ( ! empty( $this->container_identifiers[ $id ] ) ) {
+			PLL()->add_shared( $this->container_identifiers[ $id ], null );
+			return;
 		}
 
-		if ( ! empty( $this->container_identifiers[ $id ] ) ) {
-			// Only the properties listed here are allowed.
-			return $this->container_identifiers[ $id ];
+		if ( ! property_exists( $this, $id ) ) {
+			// Undefined property.
+			return;
 		}
+
+		// Protected or private property.
+		$trace = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+			esc_html(
+				sprintf(
+					'Cannot access non-public member %s::$%s in %s on line %d',
+					get_class( $this ),
+					$id,
+					$trace[0]['file'],
+					$trace[0]['line']
+				)
+			),
+			E_USER_ERROR
+		);
 	}
 }
-
