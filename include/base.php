@@ -15,6 +15,8 @@ use WP_Syntex\Polylang_DI\Exception\NotFoundException;
  * @since 1.2
  */
 abstract class PLL_Base {
+	use PLL_Container_Compat_Trait;
+
 	/**
 	 * Stores the plugin options.
 	 *
@@ -56,6 +58,16 @@ abstract class PLL_Base {
 	 * @var ContainerInterface
 	 */
 	protected $container;
+
+	/**
+	 * List of class properties that are not available anymore, but are in the container instead.
+	 *
+	 * @since 3.3
+	 * @see   PLL_Container_Compat_Trait
+	 *
+	 * @var array<string> Property names as array keys, container identifiers as array values.
+	 */
+	protected $container_identifiers = array();
 
 	/**
 	 * Constructor.
