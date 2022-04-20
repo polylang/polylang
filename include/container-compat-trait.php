@@ -91,8 +91,16 @@ trait PLL_Container_Compat_Trait {
 			return $value;
 		}
 
+		// The property is defined.
+		$ref = new ReflectionProperty( $this, $id );
+
+		if ( $ref->isPublic() ) {
+			// Why tf are we entering `__get()` if the property exists and is public?!
+			return $this->$id;
+		}
+
 		// Protected or private property.
-		$visibility = ( new ReflectionProperty( $this, $id ) )->isPrivate() ? 'private' : 'protected';
+		$visibility = $ref->isPrivate() ? 'private' : 'protected';
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
