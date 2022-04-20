@@ -395,7 +395,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		elseif ( is_category() || is_tag() || is_tax() ) {
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
-				if ( $this->links_model->using_permalinks && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] ) ) ) {
+				if ( $this->links_model->using_permalinks && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] ) || ! empty( $this->wp_query()->query['category_name'] ) ) ) {
 					// When we receive a plain permalink with a cat or tag query var, we need to redirect to the pretty permalink.
 					$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
 					if ( is_feed() ) {
@@ -518,13 +518,14 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		}
 		$field = $queried_terms[ $taxonomy ]['field'];
 		$term  = reset( $queried_terms[ $taxonomy ]['terms'] );
+		$lang  = isset( $queried_terms['language']['terms'] ) ? reset( $queried_terms['language']['terms'] ) : '';
 
 		// We can get a term_id when requesting a plain permalink, eg /?cat=1.
 		if ( 'term_id' === $field ) {
 			return $term;
 		}
 
-		// We get a slug when requesting a pretty permalink with the wrong language.
+		// We get a slug when requesting a pretty permalink. Let's query all corresponding terms.
 		$args = array(
 			'lang' => '',
 			'taxonomy' => $taxonomy,
@@ -533,6 +534,24 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			'fields' => 'ids',
 		);
 		$terms = get_terms( $args );
+
+		$filtered_terms_by_lang = array_filter(
+			$terms,
+			function ( $term ) use ( $lang ) {
+				$term_lang = $this->model->term->get_language( $term );
+
+				return ! empty( $term_lang ) && $term_lang->slug === $lang;
+			}
+		);
+
+		$tr_term = reset( $filtered_terms_by_lang );
+
+		if ( ! empty( $tr_term ) ) {
+			// The queried term exists in the desired language.
+			return $tr_term;
+		}
+
+		// The queried term doesn't exist in the desired language, let's return the first one retrieved.
 		return reset( $terms );
 	}
 
