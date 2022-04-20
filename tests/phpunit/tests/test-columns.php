@@ -21,10 +21,12 @@ class Columns_Test extends PLL_UnitTestCase {
 		// set a user to pass current_user_can tests
 		wp_set_current_user( self::$editor );
 
-		$links_model = self::$model->get_links_model();
+		$links_model     = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 
-		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
+		$this->pll_admin->links        = new PLL_Admin_Links( $this->pll_admin );
+		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
+		$this->pll_admin->default_term->add_hooks();
 		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
 	}
 
