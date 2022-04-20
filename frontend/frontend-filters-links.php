@@ -537,7 +537,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 
 		$filtered_terms_by_lang = array_filter(
 			$terms,
-			function( $term ) use( $lang ) {
+			function ( $term ) use ( $lang ) {
 				$term_lang = $this->model->term->get_language( $term );
 
 				return $term_lang->slug === $lang;
