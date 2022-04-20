@@ -39,6 +39,8 @@ trait PLL_Container_Compat_Trait {
 	public function &__get( $id ) {
 		if ( ! empty( $this->container_identifiers[ $id ] ) ) {
 			// In the container.
+			$trigger = ! defined( 'PLL_TRIGGER_DEPRECATED_ERROR' ) || PLL_TRIGGER_DEPRECATED_ERROR;
+
 			/**
 			 * Filters whether to trigger an error for deprecated class properties.
 			 *
@@ -49,7 +51,7 @@ trait PLL_Container_Compat_Trait {
 			 * @param string $id           Name of the property.
 			 * @param string $container_id Corresponding identifier used in the container.
 			 */
-			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', true, get_class( $this ), $id, $this->container_identifiers[ $id ] ) ) {
+			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', $trigger, get_class( $this ), $id, $this->container_identifiers[ $id ] ) ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					sprintf(
 						'Class property %s::$%s is deprecated, PLL()->get( \'%s\' ) must be used instead.',
