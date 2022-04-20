@@ -10,54 +10,54 @@
  */
 class PLL_Admin extends PLL_Admin_Base {
 	/**
-	 * @var PLL_Admin_Filters
+	 * @var PLL_Admin_Filters|null
 	 */
 	public $filters;
 
 	/**
-	 * @var PLL_Admin_Filters_Columns
+	 * @var PLL_Admin_Filters_Columns|null
 	 */
 	public $filters_columns;
 
 	/**
-	 * @var PLL_Admin_Filters_Post
+	 * @var PLL_Admin_Filters_Post|null
 	 */
 	public $filters_post;
 
 	/**
-	 * @var PLL_Admin_Filters_Term
+	 * @var PLL_Admin_Filters_Term|null
 	 */
 	public $filters_term;
 
 	/**
-	 * @var PLL_Admin_Filters_Media
+	 * @var PLL_Admin_Filters_Media|null
 	 */
 	public $filters_media;
 
 	/**
 	 * @since 2.9
 	 *
-	 * @var PLL_Filters_Sanitization
+	 * @var PLL_Filters_Sanitization|null
 	 */
 	public $filters_sanitization;
 
 	/**
-	 * @var PLL_Admin_Block_Editor
+	 * @var PLL_Admin_Block_Editor|null
 	 */
 	public $block_editor;
 
 	/**
-	 * @var PLL_Admin_Classic_Editor
+	 * @var PLL_Admin_Classic_Editor|null
 	 */
 	public $classic_editor;
 
 	/**
-	 * @var PLL_Admin_Nav_Menu
+	 * @var PLL_Admin_Nav_Menu|null
 	 */
 	public $nav_menu;
 
 	/**
-	 * @var PLL_Admin_Filters_Widgets_Options
+	 * @var PLL_Admin_Filters_Widgets_Options|null
 	 */
 	public $filters_widgets_options;
 

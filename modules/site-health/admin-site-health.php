@@ -25,7 +25,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 2.8
 	 *
-	 * @var PLL_Admin_Static_Pages
+	 * @var PLL_Admin_Static_Pages|null
 	 */
 	protected $static_pages;
 

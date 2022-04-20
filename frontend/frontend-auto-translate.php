@@ -18,7 +18,7 @@ class PLL_Frontend_Auto_Translate {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
 

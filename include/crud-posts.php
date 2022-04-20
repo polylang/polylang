@@ -18,14 +18,14 @@ class PLL_CRUD_Posts {
 	/**
 	 * Preferred language to assign to a new post.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $pref_lang;
 
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $curlang;
 
@@ -123,10 +123,10 @@ class PLL_CRUD_Posts {
 	 *
 	 * @since 2.3
 	 *
-	 * @param int       $object_id Object ID.
-	 * @param WP_Term[] $terms     An array of object terms.
-	 * @param int[]     $tt_ids    An array of term taxonomy IDs.
-	 * @param string    $taxonomy  Taxonomy slug.
+	 * @param int            $object_id Object ID.
+	 * @param int[]|string[] $terms     An array of object term IDs or slugs.
+	 * @param int[]          $tt_ids    An array of term taxonomy IDs.
+	 * @param string         $taxonomy  Taxonomy slug.
 	 * @return void
 	 */
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy ) {

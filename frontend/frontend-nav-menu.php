@@ -12,7 +12,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
 

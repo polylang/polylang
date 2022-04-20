@@ -12,46 +12,46 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	/**
 	 * Current language (used to filter the content).
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
 
 	/**
 	 * Language selected in the admin language filter.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $filter_lang;
 
 	/**
 	 * Preferred language to assign to new contents.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $pref_lang;
 
 	/**
-	 * @var PLL_Filters_Links
+	 * @var PLL_Filters_Links|null
 	 */
 	public $filters_links;
 
 	/**
-	 * @var PLL_Admin_Links
+	 * @var PLL_Admin_Links|null
 	 */
 	public $links;
 
 	/**
-	 * @var PLL_Admin_Notices
+	 * @var PLL_Admin_Notices|null
 	 */
 	public $notices;
 
 	/**
-	 * @var PLL_Admin_Static_Pages
+	 * @var PLL_Admin_Static_Pages|null
 	 */
 	public $static_pages;
 
 	/**
-	 * @var PLL_Admin_Default_Term
+	 * @var PLL_Admin_Default_Term|null
 	 */
 	public $default_term;
 

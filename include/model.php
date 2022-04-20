@@ -217,9 +217,9 @@ class PLL_Model {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string[]     $clauses The list of sql clauses in terms query.
-	 * @param PLL_Language $lang    PLL_Language object.
-	 * @return string[] Modified list of clauses.
+	 * @param string[]           $clauses The list of sql clauses in terms query.
+	 * @param PLL_Language|false $lang    PLL_Language object.
+	 * @return string[]                   Modified list of clauses.
 	 */
 	public function terms_clauses( $clauses, $lang ) {
 		if ( ! empty( $lang ) && false === strpos( $clauses['join'], 'pll_tr' ) ) {
@@ -688,7 +688,7 @@ class PLL_Model {
 				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
 			)
 			%s",
-			implode( "','", array_map( 'esc_sql', $taxonomies ) ),
+			implode( "','", esc_sql( $taxonomies ) ),
 			implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
 			$limit > 0 ? sprintf( 'LIMIT %d', intval( $limit ) ) : ''
 		);

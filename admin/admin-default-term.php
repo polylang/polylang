@@ -20,7 +20,7 @@ class PLL_Admin_Default_Term {
 	/**
 	 * Preferred language to assign to new contents.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $pref_lang;
 

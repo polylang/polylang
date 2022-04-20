@@ -18,14 +18,14 @@ class PLL_Settings extends PLL_Admin_Base {
 	/**
 	 * Name of the active module.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $active_tab;
 
 	/**
 	 * Array of modules classes.
 	 *
-	 * @var PLL_Settings_Module[]
+	 * @var PLL_Settings_Module[]|null
 	 */
 	protected $modules;
 

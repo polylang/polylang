@@ -14,7 +14,7 @@ class PLL_Integrations {
 	/**
 	 * Singleton instance.
 	 *
-	 * @var PLL_Integrations
+	 * @var PLL_Integrations|null
 	 */
 	protected static $instance;
 

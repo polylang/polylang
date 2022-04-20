@@ -10,7 +10,7 @@
  */
 class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	/**
-	 * @var PLL_Admin_Links
+	 * @var PLL_Admin_Links|null
 	 */
 	protected $links;
 

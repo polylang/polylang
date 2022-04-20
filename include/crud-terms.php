@@ -18,28 +18,28 @@ class PLL_CRUD_Terms {
 	/**
 	 * Current language (used to filter the content).
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
 
 	/**
 	 * Language selected in the admin language filter.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $filter_lang;
 
 	/**
 	 * Preferred language to assign to new contents.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $pref_lang;
 
 	/**
 	 * Stores the 'lang' query var from WP_Query.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	private $tax_query_lang;
 

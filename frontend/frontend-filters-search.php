@@ -19,7 +19,7 @@ class PLL_Frontend_Filters_Search {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	public $curlang;
 

@@ -14,21 +14,21 @@ class PLL_WPML_Config {
 	/**
 	 * Singleton instance
 	 *
-	 * @var PLL_WPML_Config
+	 * @var PLL_WPML_Config|null
 	 */
 	protected static $instance;
 
 	/**
 	 * The content of all read xml files.
 	 *
-	 * @var SimpleXMLElement[]
+	 * @var SimpleXMLElement[]|null
 	 */
 	protected $xmls;
 
 	/**
 	 * The list of xml files.
 	 *
-	 * @var string[]
+	 * @var string[]|null
 	 */
 	protected $files;
 

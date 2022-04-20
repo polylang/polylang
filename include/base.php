@@ -31,14 +31,14 @@ abstract class PLL_Base {
 	/**
 	 * Registers hooks on insert / update post related actions and filters.
 	 *
-	 * @var PLL_CRUD_Posts
+	 * @var PLL_CRUD_Posts|null
 	 */
 	public $posts;
 
 	/**
 	 * Registers hooks on insert / update term related action and filters.
 	 *
-	 * @var PLL_CRUD_Terms
+	 * @var PLL_CRUD_Terms|null
 	 */
 	public $terms;
 

@@ -46,7 +46,7 @@ class PLL_Settings_Module {
 	 * Stores the module name.
 	 * It must be unique.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	public $module;
 

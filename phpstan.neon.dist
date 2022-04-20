@@ -10,7 +10,7 @@ parameters:
 		- install/
 		- modules/
 		- settings/
-	excludes_analyse:
+	excludePaths:
 		- **/load.php
 		- **/view*.php
 		- include/widget-calendar.php
@@ -18,7 +18,6 @@ parameters:
 	checkMissingIterableValueType: false
 	ignoreErrors:
 		- '#^Function apply_filters invoked with [34567] parameters, 2 required\.$#'
-		- '#^Function vip_safe_wp_remote_get not found\.$#'
 		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
 
 		# Temporarily ignored
@@ -39,26 +38,26 @@ parameters:
 			count: 1
 			path: include/api.php
 
-		# False positive?
-		-
-			message: "#^Function wpcom_vip_get_page_by_path\\(\\) never returns array so it can be removed from the return typehint\\.$#"
-			count: 1
-			path: include/functions.php
-
 		# Ignored because of https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
 		-
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
 			count: 1
 			path: frontend/choose-lang.php
 
-		# Temporarily ignored
-		-
-			message: "#^Parameter \\#2 \\$input1 of function array_map expects array, string given\\.$#"
-			count: 1
-			path: settings/table-string.php
+		# Ignored because WP_Query->tax_query can be falsy: it is set in WP_Query->parse_tax_query(), which is not called in the constructor.
+		- "#^Property WP_Query::\\$tax_query \\(WP_Tax_Query\\) in empty\\(\\) is not falsy\\.$#"
 
-		# Ignored due to a wrong doc of wp_tag_cloud()
+		# Ignored because WP_Query->queried_object_id can be null.
+		- "#^Property WP_Query::\\$queried_object_id \\(int\\) in isset\\(\\) is not nullable\\.$#"
+
+		# Ignored because get_settings_errors() can be falsy (can return an empty array).
 		-
-			message: "#^Parameter \\#1 \\$args of function wp_tag_cloud expects (.+) given\\.$#"
+			message: "#^Expression in empty\\(\\) is not falsy\\.$#"
 			count: 1
-			path: admin/admin-filters-term.php
+			path: settings/settings-module.php
+
+		# Ignored because get_settings_errors() can be falsy (can return an empty array).
+		-
+			message: "#^Variable \\$errors in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: settings/settings.php

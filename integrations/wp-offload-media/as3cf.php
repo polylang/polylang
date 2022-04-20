@@ -15,7 +15,7 @@ class PLL_AS3CF {
 	 *
 	 * @var bool[]
 	 */
-	private $is_media_translated;
+	private $is_media_translated = array();
 
 	/**
 	 * Initializes filters and actions.

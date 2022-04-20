@@ -17,7 +17,7 @@ class PLL_Admin_Block_Editor {
 	/**
 	 * Preferred language to assign to a new post.
 	 *
-	 * @var PLL_Language
+	 * @var PLL_Language|null
 	 */
 	protected $pref_lang;
 

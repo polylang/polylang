@@ -33,7 +33,7 @@ class PLL_License {
 	/**
 	 * License data, obtained from the API request.
 	 *
-	 * @var stdClass
+	 * @var stdClass|null
 	 */
 	public $license_data;
 

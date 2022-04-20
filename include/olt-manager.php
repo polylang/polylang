@@ -16,14 +16,14 @@ class PLL_OLT_Manager {
 	/**
 	 * Singleton instance
 	 *
-	 * @var PLL_OLT_Manager
+	 * @var PLL_OLT_Manager|null
 	 */
 	protected static $instance;
 
 	/**
 	 * Stores the default site locale before it is modified.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $default_locale;
 
