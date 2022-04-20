@@ -1,0 +1,1326 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Cannot call method get_locale\\(\\) on PLL_Language\\|stdClass\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_type of method PLL_Model\\:\\:is_translated_post_type\\(\\) expects array\\<string\\>\\|string, string\\|false given\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of function add_action expects callable\\(\\)\\: mixed, array\\(mixed, 'admin_bar_menu'\\) given\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of function add_action expects callable\\(\\)\\: mixed, array\\(mixed, 'init_user'\\) given\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of function add_filter expects callable\\(\\)\\: mixed, array\\(mixed, 'request'\\) given\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Parameter \\#6 \\$function of function add_submenu_page expects callable\\(\\)\\: mixed, array\\(\\$this\\(PLL_Admin_Base\\), 'languages_page'\\) given\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Property PLL_Admin_Base\\:\\:\\$curlang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\.$#"
+			count: 2
+			path: admin/admin-base.php
+
+		-
+			message: "#^Property PLL_Admin_Base\\:\\:\\$curlang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\|null\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Property PLL_Admin_Base\\:\\:\\$filter_lang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Property PLL_Admin_Base\\:\\:\\$pref_lang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
+			count: 1
+			path: admin/admin-block-editor.php
+
+		-
+			message: "#^Cannot call method edit_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
+			count: 2
+			path: admin/admin-classic-editor.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get_translation\\(\\) expects PLL_Language\\|string, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: admin/admin-classic-editor.php
+
+		-
+			message: "#^Parameter \\#2 \\$untranslated_in of method PLL_Translated_Post\\:\\:get_untranslated\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: admin/admin-classic-editor.php
+
+		-
+			message: "#^Parameter \\#3 \\$lang of method PLL_Translated_Post\\:\\:get_untranslated\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: admin/admin-classic-editor.php
+
+		-
+			message: "#^Cannot access offset 'term_id' on array\\('term_id' \\=\\> int, 'term_taxonomy_id' \\=\\> int\\|string\\)\\|WP_Error\\.$#"
+			count: 1
+			path: admin/admin-default-term.php
+
+		-
+			message: "#^Cannot access property \\$error_data on array\\<string, int\\|string\\>\\|WP_Error\\.$#"
+			count: 1
+			path: admin/admin-default-term.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
+			count: 2
+			path: admin/admin-default-term.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
+			count: 2
+			path: admin/admin-default-term.php
+
+		-
+			message: "#^Cannot access property \\$name on array\\|WP_Error\\|WP_Term\\.$#"
+			count: 1
+			path: admin/admin-filters-columns.php
+
+		-
+			message: "#^Cannot call method new_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-columns.php
+
+		-
+			message: "#^Cannot call method new_term_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-columns.php
+
+		-
+			message: "#^Parameter \\#1 \\$args of method WP_Ajax_Response\\:\\:add\\(\\) expects array\\(\\?'what' \\=\\> string, \\?'action' \\=\\> string\\|false, \\?'id' \\=\\> int\\|WP_Error, \\?'old_id' \\=\\> int\\|false, \\?'position' \\=\\> string, \\?'data' \\=\\> string\\|WP_Error, \\?'supplemental' \\=\\> array\\), array\\('what' \\=\\> 'row', 'data' \\=\\> string\\|false, 'supplemental' \\=\\> array\\('post_id' \\=\\> int\\)\\) given\\.$#"
+			count: 1
+			path: admin/admin-filters-columns.php
+
+		-
+			message: "#^Parameter \\#1 \\$args of method WP_Ajax_Response\\:\\:add\\(\\) expects array\\(\\?'what' \\=\\> string, \\?'action' \\=\\> string\\|false, \\?'id' \\=\\> int\\|WP_Error, \\?'old_id' \\=\\> int\\|false, \\?'position' \\=\\> string, \\?'data' \\=\\> string\\|WP_Error, \\?'supplemental' \\=\\> array\\), array\\('what' \\=\\> 'row', 'data' \\=\\> string\\|false, 'supplemental' \\=\\> array\\('term_id' \\=\\> int\\)\\) given\\.$#"
+			count: 1
+			path: admin/admin-filters-columns.php
+
+		-
+			message: "#^Parameter \\#1 \\$tag of method WP_Terms_List_Table\\:\\:single_row\\(\\) expects WP_Term, array\\|WP_Error\\|WP_Term given\\.$#"
+			count: 1
+			path: admin/admin-filters-columns.php
+
+		-
+			message: "#^Cannot call method create_media_translation\\(\\) on PLL_CRUD_Posts\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-media.php
+
+		-
+			message: "#^Parameter \\#1 \\$location of function wp_safe_redirect expects string, string\\|false given\\.$#"
+			count: 1
+			path: admin/admin-filters-media.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:update_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: admin/admin-filters-media.php
+
+		-
+			message: "#^Cannot access property \\$hierarchical on string\\|WP_Taxonomy\\.$#"
+			count: 1
+			path: admin/admin-filters-post.php
+
+		-
+			message: "#^Cannot access property \\$name on string\\|WP_Taxonomy\\.$#"
+			count: 2
+			path: admin/admin-filters-post.php
+
+		-
+			message: "#^Cannot access property \\$show_in_quick_edit on string\\|WP_Taxonomy\\.$#"
+			count: 1
+			path: admin/admin-filters-post.php
+
+		-
+			message: "#^Cannot access property \\$taxonomy on int\\|string\\|WP_Term\\.$#"
+			count: 1
+			path: admin/admin-filters-post.php
+
+		-
+			message: "#^Cannot access property \\$term_id on int\\|string\\|WP_Term\\.$#"
+			count: 2
+			path: admin/admin-filters-post.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_Query\\:\\:filter_query\\(\\) expects PLL_Language\\|false, PLL_Language\\|null given\\.$#"
+			count: 1
+			path: admin/admin-filters-post.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Post\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: admin/admin-filters-post.php
+
+		-
+			message: "#^Cannot access property \\$name on array\\|WP_Error\\|WP_Term\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
+			count: 2
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Cannot access property \\$term_id on PLL_Language\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Cannot access property \\$term_id on int\\|string\\|WP_Term\\.$#"
+			count: 2
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Cannot access property \\$term_taxonomy_id on array\\|WP_Error\\|WP_Term\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Cannot call method edit_term_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Cannot call method is_default_term\\(\\) on PLL_Admin_Default_Term\\|null\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#1 \\$args of function wp_tag_cloud expects array\\(\\?'number' \\=\\> int, \\?'link' \\=\\> string, \\?'post_type' \\=\\> string, \\?'echo' \\=\\> bool\\), array\\<literal\\-string&non\\-empty\\-string, string\\|false\\> given\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
+			count: 2
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function rtrim expects string, string\\|WP_Error given\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#1 \\$term_id of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int, int\\|WP_Error given\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#1 \\$title of function sanitize_title expects string, string\\|null given\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get_translation\\(\\) expects PLL_Language\\|string, PLL_Language\\|false given\\.$#"
+			count: 3
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:update_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
+			count: 4
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#2 \\$translations of method PLL_Translated_Object\\:\\:save_translations\\(\\) expects array\\<int\\>, array\\<int\\|WP_Error\\> given\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|void given\\.$#"
+			count: 1
+			path: admin/admin-filters-term.php
+
+		-
+			message: "#^Parameter \\#1 \\$link of method PLL_Admin_Links\\:\\:edit_translation_link\\(\\) expects string, string\\|null given\\.$#"
+			count: 2
+			path: admin/admin-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_type of function get_post_type_object expects string, string\\|false given\\.$#"
+			count: 1
+			path: admin/admin-links.php
+
+		-
+			message: "#^Parameter \\#2 \\$language of method PLL_Admin_Links\\:\\:edit_translation_link\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 2
+			path: admin/admin-links.php
+
+		-
+			message: "#^Cannot access property \\$description on int\\|string\\|WP_Term\\.$#"
+			count: 2
+			path: admin/admin-model.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
+			count: 1
+			path: admin/admin-model.php
+
+		-
+			message: "#^Cannot access property \\$taxonomy on int\\|string\\|WP_Term\\.$#"
+			count: 1
+			path: admin/admin-model.php
+
+		-
+			message: "#^Cannot access property \\$term_id on PLL_Language\\|false\\.$#"
+			count: 1
+			path: admin/admin-model.php
+
+		-
+			message: "#^Cannot access property \\$term_id on int\\|string\\|WP_Term\\.$#"
+			count: 4
+			path: admin/admin-model.php
+
+		-
+			message: "#^Cannot access property \\$term_taxonomy_id on int\\|string\\|WP_Term\\.$#"
+			count: 3
+			path: admin/admin-model.php
+
+		-
+			message: "#^Function vip_safe_wp_remote_get not found\\.$#"
+			count: 1
+			path: admin/admin-model.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:export_to_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: admin/admin-model.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Admin_Model\\:\\:validate_lang\\(\\) expects PLL_Language\\|null, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: admin/admin-model.php
+
+		-
+			message: "#^Cannot call method get_new_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
+			count: 1
+			path: admin/admin-static-pages.php
+
+		-
+			message: "#^Offset 'widget_text' does not exist on array\\<string\\>\\|null\\.$#"
+			count: 1
+			path: admin/admin-strings.php
+
+		-
+			message: "#^Offset 'widget_title' does not exist on array\\<string\\>\\|null\\.$#"
+			count: 1
+			path: admin/admin-strings.php
+
+		-
+			message: "#^Parameter \\#1 \\$subtags of class PLL_Accept_Language constructor expects array\\<string\\>, array\\<string, string\\>\\|false given\\.$#"
+			count: 1
+			path: frontend/accept-language.php
+
+		-
+			message: "#^Method PLL_Choose_Lang_Content\\:\\:pll_get_current_language\\(\\) should return PLL_Language but returns object\\.$#"
+			count: 1
+			path: frontend/choose-lang-content.php
+
+		-
+			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, object\\|true given\\.$#"
+			count: 1
+			path: frontend/choose-lang-content.php
+
+		-
+			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang_Content\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: frontend/choose-lang-content.php
+
+		-
+			message: "#^Parameter \\#1 \\$var of function get_query_var expects string, string\\|false given\\.$#"
+			count: 1
+			path: frontend/choose-lang-content.php
+
+		-
+			message: "#^Method PLL_Choose_Lang_Domain\\:\\:get_preferred_language\\(\\) should return PLL_Language but returns PLL_Language\\|false\\.$#"
+			count: 1
+			path: frontend/choose-lang-domain.php
+
+		-
+			message: "#^Cannot access property \\$home_url on PLL_Language\\|null\\.$#"
+			count: 1
+			path: frontend/choose-lang.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
+			count: 1
+			path: frontend/choose-lang.php
+
+		-
+			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 2
+			path: frontend/choose-lang.php
+
+		-
+			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, object\\|false given\\.$#"
+			count: 2
+			path: frontend/choose-lang.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_Query\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|null given\\.$#"
+			count: 1
+			path: frontend/choose-lang.php
+
+		-
+			message: "#^Method PLL_Frontend_Auto_Translate\\:\\:get_post\\(\\) should return int but returns int\\|false\\.$#"
+			count: 1
+			path: frontend/frontend-auto-translate.php
+
+		-
+			message: "#^Method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) should return int but returns int\\|false\\.$#"
+			count: 1
+			path: frontend/frontend-auto-translate.php
+
+		-
+			message: "#^Parameter \\#1 \\$array of function reset expects array\\|object, array\\<int\\|string\\|WP_Term\\>\\|string given\\.$#"
+			count: 1
+			path: frontend/frontend-auto-translate.php
+
+		-
+			message: "#^Parameter \\#1 \\$tax of method PLL_Model\\:\\:is_translated_taxonomy\\(\\) expects array\\<string\\>\\|string, array given\\.$#"
+			count: 1
+			path: frontend/frontend-auto-translate.php
+
+		-
+			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, float\\|int\\<0, max\\> given\\.$#"
+			count: 1
+			path: frontend/frontend-auto-translate.php
+
+		-
+			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, int\\|string given\\.$#"
+			count: 1
+			path: frontend/frontend-auto-translate.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
+			count: 2
+			path: frontend/frontend-auto-translate.php
+
+		-
+			message: "#^Access to an undefined property WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User\\:\\:\\$taxonomy\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Access to an undefined property WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User\\:\\:\\$term_id\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Cannot call method get_home_url\\(\\) on PLL_Frontend_Links\\|null\\.$#"
+			count: 2
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Cannot call method get_translation_url\\(\\) on PLL_Frontend_Links\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Method PLL_Frontend_Filters_Links\\:\\:get_queried_taxonomy\\(\\) should return string but returns int\\|string\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$array of function reset expects array\\|object, array\\<int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$input of function array_filter expects array, array\\<int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$location of function wp_safe_redirect expects string, string\\|void given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$location of function wp_validate_redirect expects string, string\\|void given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_type of method PLL_Model\\:\\:is_translated_post_type\\(\\) expects array\\<string\\>\\|string, string\\|false given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$redirect_url of method PLL_Frontend_Filters_Links\\:\\:maybe_add_page_to_redirect_url\\(\\) expects string, string\\|WP_Error given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$redirect_url of method PLL_Frontend_Filters_Links\\:\\:maybe_add_page_to_redirect_url\\(\\) expects string, string\\|false given\\.$#"
+			count: 2
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$term of function get_term_feed_link expects int\\|object, int\\|false given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$term of function get_term_link expects int\\|string\\|WP_Term, int\\|false given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method PLL_Translated_Term\\:\\:get_language\\(\\) expects int\\|string, int\\|false given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Links_Model\\:\\:switch_language_in_link\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Links_Model\\:\\:switch_language_in_link\\(\\) expects PLL_Language, PLL_Language\\|null given\\.$#"
+			count: 3
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Parameter \\#2 \\$str of function explode expects string, int\\|string given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-links.php
+
+		-
+			message: "#^Cannot access property \\$search_url on PLL_Language\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-filters-search.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
+			count: 2
+			path: frontend/frontend-filters-search.php
+
+		-
+			message: "#^Parameter \\#1 \\$url of function esc_url expects string, string\\|null given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-search.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-filters-widgets.php
+
+		-
+			message: "#^Parameter \\#3 \\$sidebar of method PLL_Frontend_Filters_Widgets\\:\\:handle_widget_in_sidebar_callback\\(\\) expects string, int\\|string given\\.$#"
+			count: 1
+			path: frontend/frontend-filters-widgets.php
+
+		-
+			message: "#^Cannot access property \\$locale on PLL_Language\\|null\\.$#"
+			count: 2
+			path: frontend/frontend-filters.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
+			count: 3
+			path: frontend/frontend-filters.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_Translated_Object\\:\\:where_clause\\(\\) expects array\\<string\\>\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
+			count: 1
+			path: frontend/frontend-filters.php
+
+		-
+			message: "#^Access to an undefined property WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User\\:\\:\\$taxonomy\\.$#"
+			count: 7
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Access to an undefined property WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User\\:\\:\\$term_id\\.$#"
+			count: 2
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Cannot access property \\$count on array\\|WP_Error\\|WP_Term\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Cannot access property \\$name on WP_Taxonomy\\|false\\.$#"
+			count: 2
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Cannot access property \\$slug on array\\|WP_Error\\|WP_Term\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Cannot access property \\$term_id on array\\|WP_Error\\|WP_Term\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$language of method PLL_Links\\:\\:get_home_url\\(\\) expects PLL_Language\\|string, PLL_Language\\|string\\|null given\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$term of function get_term_link expects int\\|string\\|WP_Term, WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User given\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Parameter \\#1 \\$term of function get_term_link expects int\\|string\\|WP_Term, array\\|WP_Error\\|WP_Term given\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Parameter \\#2 \\$haystack of function array_search expects array, array\\<int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Links_Model\\:\\:switch_language_in_link\\(\\) expects PLL_Language, object given\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
+			message: "#^Cannot access property \\$name on PLL_Language\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-nav-menu.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-nav-menu.php
+
+		-
+			message: "#^Cannot call method get_display_flag\\(\\) on PLL_Language\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-nav-menu.php
+
+		-
+			message: "#^Parameter \\#1 \\$links of method PLL_Switcher\\:\\:the_languages\\(\\) expects PLL_Links, PLL_Admin_Links\\|PLL_Frontend_Links\\|null given\\.$#"
+			count: 1
+			path: frontend/frontend-nav-menu.php
+
+		-
+			message: "#^Cannot access property \\$page_on_front on PLL_Language\\|false\\.$#"
+			count: 2
+			path: frontend/frontend-static-pages.php
+
+		-
+			message: "#^Cannot access property \\$page_on_front on PLL_Language\\|null\\.$#"
+			count: 2
+			path: frontend/frontend-static-pages.php
+
+		-
+			message: "#^Cannot call method get_home_url\\(\\) on PLL_Frontend_Links\\|null\\.$#"
+			count: 2
+			path: frontend/frontend-static-pages.php
+
+		-
+			message: "#^Method PLL_Frontend_Static_Pages\\:\\:pll_pre_translation_url\\(\\) should return string but returns string\\|false\\|null\\.$#"
+			count: 1
+			path: frontend/frontend-static-pages.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
+			count: 1
+			path: frontend/frontend.php
+
+		-
+			message: "#^Property PLL_Frontend\\:\\:\\$curlang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\.$#"
+			count: 1
+			path: frontend/frontend.php
+
+		-
+			message: "#^Cannot call method get_home_url\\(\\) on PLL_Admin_Links\\|PLL_Frontend_Links\\|null\\.$#"
+			count: 1
+			path: include/api.php
+
+		-
+			message: "#^Function pll_current_language\\(\\) should return PLL_Language\\|string\\|false but returns PLL_Language\\|false\\|null\\.$#"
+			count: 1
+			path: include/api.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:save_translations\\(\\) expects int, int\\|false given\\.$#"
+			count: 2
+			path: include/api.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:import_from_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: include/api.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_Model\\:\\:count_posts\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: include/api.php
+
+		-
+			message: "#^Parameter \\#1 \\$links of method PLL_Switcher\\:\\:the_languages\\(\\) expects PLL_Links, PLL_Admin_Links\\|PLL_Frontend_Links\\|null given\\.$#"
+			count: 1
+			path: include/api.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|null given\\.$#"
+			count: 1
+			path: include/class-polylang.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$options\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Method PLL_CRUD_Posts\\:\\:create_media_translation\\(\\) should return int but returns int\\|WP_Error\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Method PLL_CRUD_Posts\\:\\:wp_insert_post_parent\\(\\) should return int but returns int\\|false\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Parameter \\#1 \\$attachment_id of function update_attached_file expects int, int\\|WP_Error given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Parameter \\#1 \\$attachment_id of function wp_update_attachment_metadata expects int, int\\|WP_Error given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:save_translations\\(\\) expects int, int\\|WP_Error given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_id of function add_post_meta expects int, int\\|WP_Error given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:set_language\\(\\) expects int, int\\|WP_Error given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Post\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Parameter \\#2 \\$translations of method PLL_Translated_Object\\:\\:save_translations\\(\\) expects array\\<int\\>, array\\<int\\|WP_Error\\> given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\<int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
+			count: 1
+			path: include/crud-posts.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
+			count: 1
+			path: include/crud-terms.php
+
+		-
+			message: "#^Method PLL_CRUD_Terms\\:\\:get_queried_language\\(\\) should return PLL_Language\\|string\\|false but returns PLL_Language\\|null\\.$#"
+			count: 2
+			path: include/crud-terms.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Model\\:\\:terms_clauses\\(\\) expects PLL_Language\\|false, PLL_Language\\|string\\|false given\\.$#"
+			count: 1
+			path: include/crud-terms.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
+			count: 1
+			path: include/crud-terms.php
+
+		-
+			message: "#^Right side of \\|\\| is always false\\.$#"
+			count: 1
+			path: include/db-tools.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Links_Model\\:\\:switch_language_in_link\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 4
+			path: include/filters-links.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Links_Model\\:\\:switch_language_in_link\\(\\) expects PLL_Language, PLL_Language\\|null given\\.$#"
+			count: 1
+			path: include/filters-links.php
+
+		-
+			message: "#^Argument of an invalid type array\\<int\\|WP_Post\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: include/filters.php
+
+		-
+			message: "#^Cannot access offset mixed on \\(array\\<int\\|WP_Post\\>&nonEmpty\\)\\|false\\.$#"
+			count: 1
+			path: include/filters.php
+
+		-
+			message: "#^Method PLL_Filters\\:\\:get_pages\\(\\) should return array\\<WP_Post\\> but returns array\\|false\\.$#"
+			count: 1
+			path: include/filters.php
+
+		-
+			message: "#^Method PLL_Filters\\:\\:translate_page_for_privacy_policy\\(\\) should return int but returns int\\|false\\.$#"
+			count: 1
+			path: include/filters.php
+
+		-
+			message: "#^Parameter \\#1 \\$input of function array_values expects array, array\\<int\\|WP_Post\\>\\|false given\\.$#"
+			count: 1
+			path: include/filters.php
+
+		-
+			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int\\|WP_Post\\>\\|false given\\.$#"
+			count: 1
+			path: include/filters.php
+
+		-
+			message: "#^Function wpcom_vip_get_page_by_path\\(\\) never returns array so it can be removed from the return typehint\\.$#"
+			count: 1
+			path: include/functions.php
+
+		-
+			message: "#^Argument of an invalid type array\\|WP_Term supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Cannot access property \\$count on array\\|WP_Term\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Cannot access property \\$description on array\\|WP_Term\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Cannot access property \\$name on array\\|WP_Term\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Cannot access property \\$slug on array\\|WP_Term\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Cannot access property \\$term_group on array\\|WP_Term\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Cannot access property \\$term_id on array\\|WP_Term\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Cannot access property \\$term_taxonomy_id on array\\|WP_Term\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Method PLL_Language\\:\\:get_display_flag\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Method PLL_Language\\:\\:get_display_flag_url\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function base64_encode expects string, string\\|false given\\.$#"
+			count: 1
+			path: include/language.php
+
+		-
+			message: "#^Parameter \\#1 \\$url of function set_url_scheme expects string, string\\|null given\\.$#"
+			count: 3
+			path: include/language.php
+
+		-
+			message: "#^Method PLL_Links_Directory\\:\\:add_language_to_link\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/links-directory.php
+
+		-
+			message: "#^Method PLL_Links_Directory\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/links-directory.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function preg_quote expects string, string\\|null given\\.$#"
+			count: 2
+			path: include/links-directory.php
+
+		-
+			message: "#^Parameter \\#2 \\$replace of function preg_replace expects array\\|string, string\\|null given\\.$#"
+			count: 1
+			path: include/links-directory.php
+
+		-
+			message: "#^Method PLL_Links_Domain\\:\\:add_language_to_link\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/links-domain.php
+
+		-
+			message: "#^Method PLL_Links_Domain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int\\|string, string\\|false\\>\\.$#"
+			count: 1
+			path: include/links-domain.php
+
+		-
+			message: "#^Method PLL_Links_Domain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/links-domain.php
+
+		-
+			message: "#^Parameter \\#1 \\$page of function get_page_uri expects int\\|object, int\\|null given\\.$#"
+			count: 1
+			path: include/links-permalinks.php
+
+		-
+			message: "#^Method PLL_Links_Subdomain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/links-subdomain.php
+
+		-
+			message: "#^Cannot access property \\$home_url on PLL_Language\\|false\\.$#"
+			count: 1
+			path: include/links.php
+
+		-
+			message: "#^Cannot access property \\$search_url on PLL_Language\\|false\\.$#"
+			count: 1
+			path: include/links.php
+
+		-
+			message: "#^Method PLL_Links\\:\\:get_home_url\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/links.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_id of function update_post_meta expects int, int\\|WP_Error given\\.$#"
+			count: 1
+			path: include/mo.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$term_id\\.$#"
+			count: 1
+			path: include/model.php
+
+		-
+			message: "#^Argument of an invalid type array\\<int\\|string\\|WP_Term\\>\\|string supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: include/model.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_Translated_Object\\:\\:where_clause\\(\\) expects array\\<string\\>\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
+			count: 2
+			path: include/model.php
+
+		-
+			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int\\|string\\|WP_Term\\>\\|string given\\.$#"
+			count: 1
+			path: include/model.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of function add_action expects callable\\(\\)\\: mixed, array\\(mixed, 'clean_languages…'\\) given\\.$#"
+			count: 4
+			path: include/model.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of function add_filter expects callable\\(\\)\\: mixed, array\\(mixed, 'get_terms_args'\\) given\\.$#"
+			count: 1
+			path: include/model.php
+
+		-
+			message: "#^Parameter \\#2 \\$values of function array_combine expects array, array\\<int\\|string\\|WP_Term\\>\\|string given\\.$#"
+			count: 1
+			path: include/model.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			count: 2
+			path: include/model.php
+
+		-
+			message: "#^Method PLL_Nav_Menu\\:\\:explode_location\\(\\) should return array\\<string\\> but returns array\\<string, mixed\\>\\|false\\.$#"
+			count: 1
+			path: include/nav-menu.php
+
+		-
+			message: "#^Parameter \\#1 \\$input of function array_flip expects array\\<int\\|string\\>, array\\<string\\|WP_Post_Type\\> given\\.$#"
+			count: 1
+			path: include/olt-manager.php
+
+		-
+			message: "#^Method PLL_Static_Pages\\:\\:page_link\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: include/static-pages.php
+
+		-
+			message: "#^Property PLL_Language\\:\\:\\$page_for_posts \\(int\\|null\\) does not accept int\\|false\\.$#"
+			count: 1
+			path: include/static-pages.php
+
+		-
+			message: "#^Property PLL_Language\\:\\:\\$page_on_front \\(int\\|null\\) does not accept int\\|false\\.$#"
+			count: 1
+			path: include/static-pages.php
+
+		-
+			message: "#^Cannot access property \\$model on PLL_Links\\|null\\.$#"
+			count: 5
+			path: include/switcher.php
+
+		-
+			message: "#^Cannot access property \\$options on PLL_Links\\|null\\.$#"
+			count: 1
+			path: include/switcher.php
+
+		-
+			message: "#^Cannot call method get_home_url\\(\\) on PLL_Links\\|null\\.$#"
+			count: 1
+			path: include/switcher.php
+
+		-
+			message: "#^Method PLL_Switcher\\:\\:get_link\\(\\) should return string\\|null but returns string\\|false\\.$#"
+			count: 2
+			path: include/switcher.php
+
+		-
+			message: "#^Parameter \\#1 \\$language of method PLL_Switcher\\:\\:get_link\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: include/switcher.php
+
+		-
+			message: "#^Argument of an invalid type array\\|object supplied for foreach, only iterables are supported\\.$#"
+			count: 4
+			path: include/translate-option.php
+
+		-
+			message: "#^Method PLL_Translate_Option\\:\\:translate_string_recursive\\(\\) should return array\\|string but returns array\\|object\\|string\\.$#"
+			count: 1
+			path: include/translate-option.php
+
+		-
+			message: "#^Parameter \\#1 \\$haystack of function strpos expects string, int\\|string given\\.$#"
+			count: 3
+			path: include/translate-option.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:export_to_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: include/translate-option.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:import_from_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: include/translate-option.php
+
+		-
+			message: "#^Parameter \\#1 \\$locale of method PLL_Base\\:\\:load_strings_translations\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: include/translate-option.php
+
+		-
+			message: "#^Parameter \\#2 \\$object_type of function register_taxonomy expects array\\|string, string\\|null given\\.$#"
+			count: 2
+			path: include/translated-object.php
+
+		-
+			message:
+				"""
+					#^Binary operation "\\." between '\\<ul\\>
+					' and \\(array&nonEmpty\\)\\|non\\-empty\\-string results in an error\\.$#
+				"""
+			count: 1
+			path: include/widget-languages.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
+			count: 1
+			path: include/widget-languages.php
+
+		-
+			message: "#^Parameter \\#1 \\(\\(array&nonEmpty\\)\\|non\\-empty\\-string\\) of echo cannot be converted to string\\.$#"
+			count: 1
+			path: include/widget-languages.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$_last_checked\\.$#"
+			count: 1
+			path: install/t15s.php
+
+		-
+			message: "#^Cannot access offset 'slug' on object\\.$#"
+			count: 2
+			path: install/t15s.php
+
+		-
+			message: "#^Cannot access property \\$translations on array\\|stdClass\\|true\\.$#"
+			count: 2
+			path: install/t15s.php
+
+		-
+			message: "#^Method PLL_T15S\\:\\:site_transient_update_plugins\\(\\) should return array\\|bool but returns array\\|stdClass\\|true\\.$#"
+			count: 2
+			path: install/t15s.php
+
+		-
+			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\(\\$this\\(PLL_Upgrade\\), non\\-empty\\-string\\) given\\.$#"
+			count: 1
+			path: install/upgrade.php
+
+		-
+			message: "#^Cannot call method get_must_translate_message\\(\\) on PLL_Admin_Static_Pages\\|null\\.$#"
+			count: 1
+			path: modules/site-health/admin-site-health.php
+
+		-
+			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\(PLL_Model, 'is_translated_post…'\\|'is_translated…'\\) given\\.$#"
+			count: 1
+			path: modules/sitemaps/multilingual-sitemaps-provider.php
+
+		-
+			message: "#^Parameter \\#1 \\$name of method WP_Sitemaps_Provider\\:\\:get_sitemap_url\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: modules/sitemaps/multilingual-sitemaps-provider.php
+
+		-
+			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error given\\.$#"
+			count: 1
+			path: modules/sync/sync-tax.php
+
+		-
+			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error\\|false given\\.$#"
+			count: 1
+			path: modules/sync/sync-tax.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get_translation\\(\\) expects PLL_Language\\|string, PLL_Language\\|false given\\.$#"
+			count: 2
+			path: modules/sync/sync-tax.php
+
+		-
+			message: "#^Parameter \\#2 \\$object_type of function update_object_term_cache expects array\\<string\\>\\|string, string\\|false given\\.$#"
+			count: 1
+			path: modules/sync/sync-tax.php
+
+		-
+			message: "#^Parameter \\#3 \\$lang of method PLL_Sync_Tax\\:\\:copy_object_terms\\(\\) expects string, int\\|string\\|false given\\.$#"
+			count: 1
+			path: modules/sync/sync-tax.php
+
+		-
+			message: "#^Parameter \\#2 \\$post of method PLL_Sync\\:\\:pll_save_post\\(\\) expects WP_Post, WP_Post\\|null given\\.$#"
+			count: 1
+			path: modules/sync/sync.php
+
+		-
+			message: "#^Cannot access property \\$name on PLL_Language\\|false\\.$#"
+			count: 1
+			path: modules/wizard/wizard.php
+
+		-
+			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
+			count: 2
+			path: modules/wizard/wizard.php
+
+		-
+			message: "#^Method PLL_Wizard\\:\\:wizard_notice\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: modules/wizard/wizard.php
+
+		-
+			message: "#^Parameter \\#1 \\$arr of function pll_save_post_translations expects array\\<int\\>, array\\<int\\|WP_Error\\> given\\.$#"
+			count: 1
+			path: modules/wizard/wizard.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of function pll_set_post_language expects int, int\\|WP_Error given\\.$#"
+			count: 1
+			path: modules/wizard/wizard.php
+
+		-
+			message: "#^Property PLL_Wizard\\:\\:\\$step \\(string\\|null\\) does not accept int\\|string\\|false\\.$#"
+			count: 1
+			path: modules/wizard/wizard.php
+
+		-
+			message: "#^Method PLL_WPML_API\\:\\:wpml_element_language_code\\(\\) should return string but returns string\\|false\\.$#"
+			count: 2
+			path: modules/wpml/wpml-api.php
+
+		-
+			message: "#^Method PLL_WPML_API\\:\\:wpml_is_rtl\\(\\) should return bool but returns string\\|false\\.$#"
+			count: 1
+			path: modules/wpml/wpml-api.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|false given\\.$#"
+			count: 1
+			path: modules/wpml/wpml-api.php
+
+		-
+			message: "#^Static property PLL_WPML_API\\:\\:\\$original_language \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\|null\\.$#"
+			count: 1
+			path: modules/wpml/wpml-api.php
+
+		-
+			message: "#^Parameter \\#1 \\$singular of method Translations\\:\\:translate\\(\\) expects string, string\\|true given\\.$#"
+			count: 1
+			path: modules/wpml/wpml-compat.php
+
+		-
+			message: "#^Argument of an invalid type array\\<SimpleXMLElement\\>\\|null supplied for foreach, only iterables are supported\\.$#"
+			count: 4
+			path: modules/wpml/wpml-config.php
+
+		-
+			message: "#^Offset 'name' does not exist on SimpleXMLElement\\|null\\.$#"
+			count: 1
+			path: modules/wpml/wpml-config.php
+
+		-
+			message: "#^Cannot call method get_home_url\\(\\) on PLL_Admin_Links\\|PLL_Frontend_Links\\|null\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Function icl_get_current_language\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Function icl_get_default_language\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Function wpml_get_default_language\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Parameter \\#1 \\$object of function method_exists expects object\\|string, PLL_Admin_Links\\|PLL_Frontend_Links\\|null given\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function pll__ expects string, bool\\|string given\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function pll_translate_string expects string, bool\\|string given\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get_translation\\(\\) expects PLL_Language\\|string, string\\|false given\\.$#"
+			count: 2
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Parameter \\#1 \\$args of method WP_Ajax_Response\\:\\:add\\(\\) expects array\\(\\?'what' \\=\\> string, \\?'action' \\=\\> string\\|false, \\?'id' \\=\\> int\\|WP_Error, \\?'old_id' \\=\\> int\\|false, \\?'position' \\=\\> string, \\?'data' \\=\\> string\\|WP_Error, \\?'supplemental' \\=\\> array\\), array\\('what' \\=\\> 'success', 'data' \\=\\> string\\|false\\) given\\.$#"
+			count: 1
+			path: settings/settings-licenses.php
+
+		-
+			message: "#^Method PLL_Settings_Module\\:\\:get_form\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: settings/settings-module.php
+
+		-
+			message: "#^Cannot access property \\$name on PLL_Language\\|false\\.$#"
+			count: 1
+			path: settings/settings-url.php
+
+		-
+			message: "#^Function vip_safe_wp_remote_get not found\\.$#"
+			count: 1
+			path: settings/settings-url.php
+
+		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_Links_Model\\:\\:home_url\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
+			count: 1
+			path: settings/settings-url.php
+
+		-
+			message: "#^Parameter \\#1 \\$post of function _get_page_link expects int\\|WP_Post, int\\|null given\\.$#"
+			count: 1
+			path: settings/settings-url.php
+
+		-
+			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
+			count: 1
+			path: settings/settings-url.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|null given\\.$#"
+			count: 2
+			path: settings/table-settings.php
+
+		-
+			message: "#^Parameter \\#2 \\$column_name of method PLL_Table_Settings\\:\\:column_default\\(\\) expects string, int\\|string given\\.$#"
+			count: 1
+			path: settings/table-settings.php
+
+		-
+			message: "#^Cannot access offset mixed on array\\|false\\.$#"
+			count: 1
+			path: settings/table-string.php
+
