@@ -60,16 +60,6 @@ abstract class PLL_Base {
 	protected $container;
 
 	/**
-	 * List of class properties that are not available anymore, but are in the container instead.
-	 *
-	 * @since 3.3
-	 * @see   PLL_Container_Compat_Trait
-	 *
-	 * @var array<string> Property names as array keys, container identifiers as array values.
-	 */
-	protected $container_identifiers = array();
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.2

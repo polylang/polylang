@@ -11,6 +11,15 @@
 trait PLL_Container_Compat_Trait {
 
 	/**
+	 * List of class properties that are not available anymore, but are in the container instead.
+	 *
+	 * @since 3.3
+	 *
+	 * @var array<string> Property names as array keys, container identifiers as array values.
+	 */
+	protected $container_identifiers = array();
+
+	/**
 	 * Checks for an existing identifier in the container.
 	 * Is triggered by calling `isset()` or `empty()` on inaccessible (protected or private) or non-existing properties.
 	 *

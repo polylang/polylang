@@ -56,18 +56,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public $default_term;
 
 	/**
-	 * List of class properties that are not available anymore, but are in the container instead.
-	 *
-	 * @since 3.3
-	 * @see   PLL_Container_Compat_Trait
-	 *
-	 * @var array<string> Property names as array keys, container identifiers as array values.
-	 */
-	protected $container_identifiers = array(
-		'site_health' => 'site_health',
-	);
-
-	/**
 	 * Setups actions needed on all admin pages.
 	 *
 	 * @since 1.8
@@ -76,6 +64,13 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 */
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
+
+		$this->container_identifiers = array_merge(
+			$this->container_identifiers,
+			array(
+				'site_health' => 'site_health',
+			)
+		);
 
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
