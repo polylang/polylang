@@ -525,9 +525,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			return $term;
 		}
 
-		// We get a slug when requesting a pretty permalink with the wrong language.
+		// We get a slug when requesting a pretty permalink. Let's query all corresponding terms.
 		$args = array(
-			'lang' => $lang,
+			'lang' => '',
 			'taxonomy' => $taxonomy,
 			$field => $term,
 			'hide_empty' => false,
@@ -535,13 +535,14 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		);
 		$terms = get_terms( $args );
 
-		if ( empty( $terms ) ) {
-			// The queried language does not correspond to the queried term.
-			// So let's get only the querried term.
-			$args['lang'] = '';
-			$terms = get_terms( $args );
+		$tr_term = $this->model->term->get_translation( reset( $terms ), $lang );
+
+		if ( $tr_term ) {
+			// The queried term exists in the desired language.
+			return $tr_term;
 		}
 
+		// The queried term doesn't exist in the desired language, let's return the first one retrieved.
 		return reset( $terms );
 	}
 
