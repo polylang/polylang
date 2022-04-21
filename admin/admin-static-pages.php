@@ -44,6 +44,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 
 	/**
 	 * Don't use the block editor for the translations of the pages for posts with WP < 5.8.
+	 * The block editor was disabled for the page for posts in WP 5.0, then enabled again in WP 5.8.
 	 *
 	 * @since 2.5
 	 * @since 3.3 Don't disable the block editor for the page for posts in WP >= 5.8.
@@ -53,11 +54,20 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @return bool
 	 */
 	public function use_block_editor_for_post( $use_block_editor, $post ) {
-		if ( $this->should_disable_block_editor( $post ) ) {
-			return false;
+		global $wp_version;
+
+		if ( version_compare( $wp_version, '5.8' ) >= 0 ) {
+			// WP >= 5.8: keep the block editor as it is.
+			return $use_block_editor;
 		}
 
-		return $use_block_editor;
+		if ( 'page' !== $post->post_type || ! empty( $post->post_content ) || (int) get_option( 'page_for_posts' ) !== $post->ID ) {
+			// Not the page for posts: keep the block editor as it is.
+			return $use_block_editor;
+		}
+
+		// Page for posts, WP < 5.8: disable the block editor.
+		return false;
 	}
 
 	/**
@@ -71,10 +81,6 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @return void
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
-		if ( ! $this->should_disable_block_editor( $post ) ) {
-			return;
-		}
-
 		if ( ! use_block_editor_for_post( $post ) ) {
 			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
 			remove_post_type_support( $post_type, 'editor' );
@@ -191,31 +197,5 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		}
 
 		return $message;
-	}
-
-	/**
-	 * Tells if we should disable the block editor.
-	 * The block editor was disabled for the page for posts in WP 5.0, then enabled again in WP 5.8.
-	 *
-	 * @since 3.3
-	 *
-	 * @param WP_Post $post Current post.
-	 * @return bool
-	 */
-	private function should_disable_block_editor( $post ) {
-		global $wp_version;
-
-		if ( version_compare( $wp_version, '5.8' ) >= 0 ) {
-			// WP >= 5.8: keep the block editor as it is.
-			return false;
-		}
-
-		if ( 'page' !== $post->post_type || ! empty( $post->post_content ) || (int) get_option( 'page_for_posts' ) !== $post->ID ) {
-			// Not the page for posts: keep the block editor as it is.
-			return false;
-		}
-
-		// Page for posts, WP < 5.8: disable the block editor.
-		return true;
 	}
 }
