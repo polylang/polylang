@@ -72,13 +72,11 @@ trait PLL_Container_Compat_Trait {
 				);
 			}
 
-			if ( PLL()->has( $this->container_identifiers[ $id ] ) ) {
-				$value = PLL()->get( $this->container_identifiers[ $id ] );
-			} else {
-				$value = null;
+			if ( ! PLL()->has( $this->container_identifiers[ $id ] ) ) {
+				PLL()->add_shared( $this->container_identifiers[ $id ], null );
 			}
 
-			return $value;
+			return PLL()->get( $this->container_identifiers[ $id ] );
 		}
 
 		// Not in the container.
@@ -87,8 +85,8 @@ trait PLL_Container_Compat_Trait {
 		if ( ! property_exists( $this, $id ) ) {
 			// Undefined property.
 			// Always return something, to prevent a "Only variable references should be returned by reference" notice.
-			$value = null;
-			return $value;
+			$this->{$id} = null;
+			return $this->{$id};
 		}
 
 		// The property is defined.
@@ -96,7 +94,7 @@ trait PLL_Container_Compat_Trait {
 
 		if ( $ref->isPublic() ) {
 			// Why tf are we entering `__get()` if the property exists and is public?!
-			return $this->$id;
+			return $this->{$id};
 		}
 
 		// Protected or private property.
