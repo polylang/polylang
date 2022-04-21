@@ -15,6 +15,8 @@ use WP_Syntex\Polylang_DI\Exception\NotFoundException;
  * @since 1.2
  */
 abstract class PLL_Base {
+	use PLL_Container_Compat_Trait;
+
 	/**
 	 * Stores the plugin options.
 	 *
@@ -69,6 +71,10 @@ abstract class PLL_Base {
 		$this->model       = &$links_model->model;
 		$this->options     = &$this->model->options;
 		$this->container   = new Container();
+
+		$this->container_identifiers = array(
+			'sitemaps' => 'sitemaps',
+		);
 
 		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
 
