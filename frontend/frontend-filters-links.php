@@ -386,6 +386,25 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$requested_url = pll_get_requested_url();
 		}
 
+		/*
+		 * If the queried object is defined not to use rewriting feature, we shouldn't redirect.
+		 */
+		$obj = get_queried_object();
+		if ( ! empty( $obj  ) ) {
+			if ( $obj instanceof WP_Post ) {
+				$post_type = get_post_type_object( $obj->post_type );
+				if ( ! empty( $post_type ) && false === $post_type->rewrite  ) {
+					return;
+				}
+			}
+			if ( $obj instanceof WP_Term ) {
+				$taxonomy = get_taxonomy( $obj->taxonomy );
+				if ( ! empty( $taxonomy ) && false === $taxonomy->rewrite  ) {
+					return;
+				}
+			}
+		}
+
 		if ( is_single() || is_page() ) {
 			$post = get_post();
 			if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
