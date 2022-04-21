@@ -9,8 +9,8 @@ dist: "xenial"
 
 jobs:
   include:
-    - name: "PHPCS + PHPStan - PHP 7.4"
-      php: "7.4"
+    - name: "PHPCS + PHPStan - PHP 7.2"
+      php: "7.2"
       env: "WP_VERSION=latest WP_MULTISITE=0"
       install:
         - "composer update"
