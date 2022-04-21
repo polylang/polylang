@@ -211,11 +211,6 @@ parameters:
 			path: admin/admin-filters-term.php
 
 		-
-			message: "#^Parameter \\#1 \\$args of function wp_tag_cloud expects array\\{number\\?\\: int, link\\?\\: string, post_type\\?\\: string, echo\\?\\: bool\\}, array\\<literal\\-string&non\\-empty\\-string, string\\|false\\> given\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
 			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
 			count: 2
 			path: admin/admin-filters-term.php
@@ -511,11 +506,6 @@ parameters:
 			path: frontend/frontend-auto-translate.php
 
 		-
-			message: "#^Parameter \\#1 \\$tax of method PLL_Model\\:\\:is_translated_taxonomy\\(\\) expects array\\<string\\>\\|string, array given\\.$#"
-			count: 1
-			path: frontend/frontend-auto-translate.php
-
-		-
 			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, float\\|int\\<0, max\\> given\\.$#"
 			count: 1
 			path: frontend/frontend-auto-translate.php
@@ -528,6 +518,11 @@ parameters:
 		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
 			count: 2
+			path: frontend/frontend-auto-translate.php
+
+		-
+			message: "#^Parameter \\#2 \\$pieces of function implode expects array, string given\\.$#"
+			count: 1
 			path: frontend/frontend-auto-translate.php
 
 		-
@@ -849,11 +844,6 @@ parameters:
 			message: "#^Property WP_Query\\:\\:\\$queried_object_id \\(int\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
 			path: frontend/frontend-static-pages.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:init\\(\\)\\.$#"
-			count: 1
-			path: frontend/frontend.php
 
 		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
@@ -1361,6 +1351,11 @@ parameters:
 			path: include/model.php
 
 		-
+			message: "#^Parameter \\#2 \\$pieces of function implode expects array, string given\\.$#"
+			count: 1
+			path: include/model.php
+
+		-
 			message: "#^Parameter \\#2 \\$values of function array_combine expects array, array\\<int, int\\|string\\|WP_Term\\>\\|string given\\.$#"
 			count: 1
 			path: include/model.php
@@ -1579,12 +1574,12 @@ parameters:
 			path: modules/sitemaps/multilingual-sitemaps-provider.php
 
 		-
-			message: "#^Offset 'file' does not exist on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: string, args\\?\\: array, object\\?\\: object\\}\\.$#"
+			message: "#^Offset 'file' does not exist on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: '\\-\\>'\\|'\\:\\:', args\\?\\: array, object\\?\\: object\\}\\.$#"
 			count: 2
 			path: modules/sync/admin-sync.php
 
 		-
-			message: "#^Offset 'line' does not exist on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: string, args\\?\\: array, object\\?\\: object\\}\\.$#"
+			message: "#^Offset 'line' does not exist on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: '\\-\\>'\\|'\\:\\:', args\\?\\: array, object\\?\\: object\\}\\.$#"
 			count: 2
 			path: modules/sync/admin-sync.php
 
