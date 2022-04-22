@@ -361,7 +361,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @param string $requested_url Optional, defaults to requested url.
 	 * @param bool   $do_redirect   Optional, whether to perform the redirect or not.
-	 * @return string|void Returns if redirect is not performed.
+	 * @return string|bool|void Returns if redirect is not performed.
 	 */
 	public function check_canonical_url( $requested_url = '', $do_redirect = true ) {
 		// Don't redirect in same cases as WP.
