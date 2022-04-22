@@ -97,6 +97,7 @@ class PLL_Model {
 					foreach ( $post_languages as $k => $v ) {
 						if ( isset( $term_languages[ 'pll_' . $v->slug ] ) ) {
 							$languages[ $k ] = new PLL_Language( $v, $term_languages[ 'pll_' . $v->slug ] );
+							$languages[ $k ]->set_flag();
 						}
 					}
 
