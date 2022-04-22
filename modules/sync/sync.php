@@ -9,20 +9,7 @@
  * @since 2.4
  */
 class PLL_Sync {
-	/**
-	 * @var PLL_Sync_Tax
-	 */
-	public $taxonomies;
-
-	/**
-	 * @var PLL_Sync_Post_Metas
-	 */
-	public $post_metas;
-
-	/**
-	 * @var PLL_Sync_Term_Metas
-	 */
-	public $term_metas;
+	use PLL_Container_Compat_Trait;
 
 	/**
 	 * Stores the plugin options.
@@ -37,19 +24,50 @@ class PLL_Sync {
 	protected $model;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.2
+	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param object $polylang
+	 * @param  PLL_Model           $model           Instance of PLL_Model.
+	 * @param  array<mixed>        $options         Options, passed by reference.
+	 * @param  PLL_Sync_Tax        $sync_tax        Instance of PLL_Sync_Tax.
+	 * @param  PLL_Sync_Post_Metas $sync_post_metas Instance of PLL_Sync_Post_Metas.
+	 * @param  PLL_Sync_Term_Metas $sync_term_metas Instance of PLL_Sync_Term_Metas.
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		$this->model   = &$polylang->model;
-		$this->options = &$polylang->options;
+	public function __construct(
+			PLL_Model $model,
+			array &$options,
+			PLL_Sync_Tax $sync_tax,
+			PLL_Sync_Post_Metas $sync_post_metas,
+			PLL_Sync_Term_Metas $sync_term_metas
+		) {
+		$this->model                 = $model;
+		$this->options               = &$options;
+		$this->taxonomies            = $sync_tax;
+		$this->post_metas            = $sync_post_metas;
+		$this->term_metas            = $sync_term_metas;
+		$this->container_identifiers = array(
+			'taxonomies' => 'sync_tax',
+			'post_metas' => 'sync_post_metas',
+			'term_metas' => 'sync_term_metas',
+		);
+	}
 
-		$this->taxonomies = new PLL_Sync_Tax( $polylang );
-		$this->post_metas = new PLL_Sync_Post_Metas( $polylang );
-		$this->term_metas = new PLL_Sync_Term_Metas( $polylang );
+	/**
+	 * Launches hooks.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	public function init() {
+		$this->taxonomies->init();
+		$this->post_metas->init();
+		$this->term_metas->init();
+
+		add_filter( 'pll_settings_modules', array( $this, 'add_setting' ) );
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'can_sync_post_parent' ), 10, 3 );
 		add_filter( 'wp_insert_post_data', array( $this, 'can_sync_post_data' ), 10, 2 );
@@ -67,6 +85,19 @@ class PLL_Sync {
 		}
 
 		add_filter( 'pre_update_option_sticky_posts', array( $this, 'sync_sticky_posts' ), 10, 2 );
+	}
+
+	/**
+	 * Adds the Sync module to the list of setting modules.
+	 *
+	 * @since 3.3
+	 *
+	 * @param  array<string> $modules The list of module classes.
+	 * @return array<string>
+	 */
+	public function add_setting( $modules ) {
+		$modules[] = PLL_Settings_Sync::class;
+		return $modules;
 	}
 
 	/**
