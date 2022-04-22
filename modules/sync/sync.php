@@ -12,6 +12,11 @@ class PLL_Sync {
 	use PLL_Container_Compat_Trait;
 
 	/**
+	 * @var PLL_Model
+	 */
+	protected $model;
+
+	/**
 	 * Stores the plugin options.
 	 *
 	 * @var array
@@ -19,9 +24,19 @@ class PLL_Sync {
 	protected $options;
 
 	/**
-	 * @var PLL_Model
+	 * @var PLL_Sync_Tax
 	 */
-	protected $model;
+	protected $sync_tax;
+
+	/**
+	 * @var PLL_Sync_Post_Metas
+	 */
+	protected $sync_post_metas;
+
+	/**
+	 * @var PLL_Sync_Term_Metas
+	 */
+	protected $sync_term_metas;
 
 	/**
 	 * Constructor.
@@ -45,9 +60,9 @@ class PLL_Sync {
 		) {
 		$this->model                 = $model;
 		$this->options               = &$options;
-		$this->taxonomies            = $sync_tax;
-		$this->post_metas            = $sync_post_metas;
-		$this->term_metas            = $sync_term_metas;
+		$this->sync_tax              = $sync_tax;
+		$this->sync_post_metas       = $sync_post_metas;
+		$this->sync_term_metas       = $sync_term_metas;
 		$this->container_identifiers = array(
 			'taxonomies' => 'sync_tax',
 			'post_metas' => 'sync_post_metas',
@@ -63,9 +78,9 @@ class PLL_Sync {
 	 * @return void
 	 */
 	public function init() {
-		$this->taxonomies->init();
-		$this->post_metas->init();
-		$this->term_metas->init();
+		$this->sync_tax->init();
+		$this->sync_post_metas->init();
+		$this->sync_term_metas->init();
 
 		add_filter( 'pll_settings_modules', array( $this, 'add_setting' ) );
 
@@ -76,11 +91,11 @@ class PLL_Sync {
 		add_action( 'created_term', array( $this, 'sync_term_parent' ), 10, 3 );
 		add_action( 'edited_term', array( $this, 'sync_term_parent' ), 10, 3 );
 
-		add_action( 'pll_duplicate_term', array( $this->term_metas, 'copy' ), 10, 3 );
+		add_action( 'pll_duplicate_term', array( $this->sync_term_metas, 'copy' ), 10, 3 );
 
 		if ( $this->options['media_support'] ) {
-			add_action( 'pll_translate_media', array( $this->taxonomies, 'copy' ), 10, 3 );
-			add_action( 'pll_translate_media', array( $this->post_metas, 'copy' ), 10, 3 );
+			add_action( 'pll_translate_media', array( $this->sync_tax, 'copy' ), 10, 3 );
+			add_action( 'pll_translate_media', array( $this->sync_post_metas, 'copy' ), 10, 3 );
 			add_action( 'edit_attachment', array( $this, 'edit_attachment' ) );
 		}
 

@@ -103,8 +103,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 			$done[ $from_post_id ] = true; // Avoid a second duplication in the block editor. Using an array only to allow multiple phpunit tests.
 
-			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
-			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
+			$this->sync_tax->copy( $from_post_id, $post->ID, $lang->slug );
+			$this->sync_post_metas->copy( $from_post_id, $post->ID, $lang->slug );
 
 			if ( is_sticky( $from_post_id ) ) {
 				stick_post( $post->ID );
