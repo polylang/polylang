@@ -386,25 +386,6 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$requested_url = pll_get_requested_url();
 		}
 
-		/*
-		 * If the queried object is defined not to use rewriting feature, we shouldn't redirect.
-		 */
-		$obj = get_queried_object();
-		if ( ! empty( $obj ) && $do_redirect ) {
-			if ( $obj instanceof WP_Post ) {
-				$post_type = get_post_type_object( $obj->post_type );
-				if ( ! empty( $post_type ) && false === $post_type->rewrite ) {
-					return;
-				}
-			}
-			if ( $obj instanceof WP_Term ) {
-				$taxonomy = get_taxonomy( $obj->taxonomy );
-				if ( ! empty( $taxonomy ) && false === $taxonomy->rewrite ) {
-					return;
-				}
-			}
-		}
-
 		if ( is_single() || is_page() ) {
 			$post = get_post();
 			if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
@@ -490,6 +471,25 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		 * @param PLL_Language $language The language detected.
 		 */
 		$redirect_url = apply_filters( 'pll_check_canonical_url', $redirect_url, $language );
+
+		/*
+		 * If the queried object is defined not to use rewriting feature, we shouldn't redirect.
+		 */
+		$obj = get_queried_object();
+		if ( ! empty( $obj ) ) {
+			if ( $obj instanceof WP_Post ) {
+				$post_type = get_post_type_object( $obj->post_type );
+				if ( ! empty( $post_type ) && false === $post_type->rewrite ) {
+					return $redirect_url;
+				}
+			}
+			if ( $obj instanceof WP_Term ) {
+				$taxonomy = get_taxonomy( $obj->taxonomy );
+				if ( ! empty( $taxonomy ) && false === $taxonomy->rewrite ) {
+					return $redirect_url;
+				}
+			}
+		}
 
 		// The language is not correctly set so let's redirect to the correct url for this object
 		if ( $do_redirect ) {
