@@ -22,10 +22,14 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
-		$links_model = self::$model->get_links_model();
-		$this->pll_admin = new PLL_Admin( $links_model );
+		$links_model         = self::$model->get_links_model();
+		$this->pll_admin     = new PLL_Admin( $links_model );
+		$GLOBALS['polylang'] = $this->pll_admin;
 	}
 
+	/**
+	 * @group jytfjhtfd1
+	 */
 	public function test_copy_taxonomies() {
 		$tag_en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_en' ) );
 		self::$model->term->set_language( $tag_en, 'en' );
@@ -44,7 +48,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
-		self::$model->term->save_translations( $en, compact( 'fr' ) );
+		self::$model->term->save_translations( $en, compact( 'fr', 'en' ) );
 
 		$from = $this->factory->post->create();
 		self::$model->post->set_language( $from, 'en' );
@@ -55,11 +59,20 @@ class Sync_Test extends PLL_UnitTestCase {
 		$to = $this->factory->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
-		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
+		self::$model->post->save_translations( $from, array( 'fr' => $to, 'en' => $from ) );
 
 		// copy
-		$sync = new PLL_Admin_Sync( $this->pll_admin );
-		$sync->taxonomies->copy( $from, $to, 'fr' ); // copy
+		$sync_tax = new PLL_Sync_Tax( $this->pll_admin->model, $this->pll_admin->options );
+		$sync     = new PLL_Admin_Sync(
+			$this->pll_admin->model,
+			$this->pll_admin->options,
+			$sync_tax,
+			new PLL_Sync_Post_Metas( $this->pll_admin->model, $this->pll_admin->options ),
+			new PLL_Sync_Term_Metas( $this->pll_admin->model )
+		);
+
+		$sync->init();
+		$sync_tax->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( array( $tag_fr ), wp_get_post_terms( $to, 'post_tag', array( 'fields' => 'ids' ) ) );
 		$this->assertEquals( array( $fr ), wp_get_post_terms( $to, 'category', array( 'fields' => 'ids' ) ) );
@@ -89,6 +102,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertFalse( get_post_format( $from ) );
 	}
 
+	/**
+	 * @group jytfjhtfd2
+	 */
 	public function test_copy_custom_fields() {
 		$from = $this->factory->post->create();
 		self::$model->post->set_language( $from, 'en' );
@@ -100,8 +116,17 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
 
 		// copy
-		$sync = new PLL_Admin_Sync( $this->pll_admin );
-		$sync->post_metas->copy( $from, $to, 'fr' ); // copy
+		$sync_metas = new PLL_Sync_Post_Metas( $this->pll_admin->model, $this->pll_admin->options );
+		$sync       = new PLL_Admin_Sync(
+			$this->pll_admin->model,
+			$this->pll_admin->options,
+			new PLL_Sync_Tax( $this->pll_admin->model, $this->pll_admin->options ),
+			$sync_metas,
+			new PLL_Sync_Term_Metas( $this->pll_admin->model )
+		);
+
+		$sync->init();
+		$sync_metas->copy( $from, $to, 'fr' ); // copy
 		$this->assertEquals( 'value', get_post_meta( $to, 'key', true ) );
 
 		// sync
@@ -116,7 +141,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 	public function test_sync_multiple_custom_fields() {
 		self::$model->options['sync'] = array( 'post_meta' );
-		$sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 
 		$from = $this->factory->post->create();
 		self::$model->post->set_language( $from, 'en' );
@@ -129,7 +154,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		add_post_meta( $from, 'key', 'value2' );
 		add_post_meta( $from, 'key', 'value3' );
 
-		$sync->post_metas->copy( $from, $to, 'fr', true );
+		$this->pll_admin->get( 'sync_post_metas' )->copy( $from, $to, 'fr', true );
 		$this->assertEqualSets( array( 'value1', 'value2', 'value3' ), get_post_meta( $to, 'key' ) );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -175,7 +200,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin );
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 
 		$_REQUEST = $_GET = array(
 			'from_post' => $from,
@@ -214,7 +239,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		add_post_meta( $from, '_wp_page_template', 'full-width.php' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 
 		$_REQUEST = $_GET = array(
 			'from_post' => $from,
@@ -265,7 +290,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$metas[ $key ] = array( 'key' => 'key', 'value' => 'value' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 		$_REQUEST['sticky'] = 'sticky'; // sticky posts not managed by wp_insert_post
 		add_post_meta( $from, '_thumbnail_id', $thumbnail_id );
@@ -320,7 +345,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		edit_post(
@@ -356,7 +381,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		$_REQUEST = $_POST = array(
@@ -391,7 +416,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		$_REQUEST = $_POST = array(
@@ -435,7 +460,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->term->save_translations( $parent_en, array( 'fr' => $parent_fr ) );
 
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_update_term( $child_fr, 'category', array( 'parent' => $parent_fr ) );
 
 		wp_update_term( $child_fr, 'category', array( 'parent' => 0 ) );
@@ -448,9 +473,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $from, 'en' );
 
-		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
 		self::$model->options['sync'] = array( 'post_date' ); // Sync publish date
+		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+		$this->init_sync();
 
 		$GLOBALS['pagenow'] = 'post-new.php';
 		$_REQUEST = $_GET = array(
@@ -493,7 +518,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		wp_update_post( array( 'ID' => $from ) ); // fires the sync
@@ -510,7 +535,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $from, 'en' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 
 		$_REQUEST = $_GET = array(
 			'from_post' => $from,
@@ -546,8 +571,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		add_filter( 'pll_copy_term_metas', array( $this, '_add_term_meta_to_copy' ) );
 
 		// copy
-		$sync = new PLL_Admin_Sync( $this->pll_admin );
-		$sync->term_metas->copy( $from, $to, 'fr' ); // copy
+		$this->init_sync();
+		$this->pll_admin->get( 'sync_term_metas' )->copy( $from, $to, 'fr' ); // copy
 		$this->assertEquals( 'value', get_term_meta( $to, 'key', true ) );
 
 		// sync
@@ -560,7 +585,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_sync_multiple_term_metas() {
-		$sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 
 		$from = $this->factory->term->create();
 		self::$model->term->set_language( $from, 'en' );
@@ -606,7 +631,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$metas[ $key ] = array( 'key' => 'key2', 'value' => 'value1' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		edit_post(
@@ -637,7 +662,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		stick_post( $from );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		$_REQUEST['sticky'] = 'sticky'; // sticky posts not managed by wp_insert_post
@@ -666,7 +691,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		stick_post( $to );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		edit_post( array( 'post_ID' => $from ) ); // Fires the sync
@@ -698,7 +723,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		self::$model->post->save_translations( $post_en, array( 'fr' => $post_fr ) );
 
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 
 		wp_delete_category( $fr );
 
@@ -729,7 +754,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_update_term( $child_fr, 'category', array( 'parent' => $parent_fr ) );
 
 		$term = get_term( $child_fr );
@@ -772,7 +797,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 		wp_update_term( $child_fr, 'category', array( 'parent' => $p2fr ) );
 
 		$term = get_term( $child_fr );
@@ -804,7 +829,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 
 		// Posts
 		wp_set_current_user( self::$editor );
@@ -849,7 +874,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 	public function test_slashes() {
 		self::$model->options['sync'] = array( 'post_meta' );
-		$sync = new PLL_Admin_Sync( $this->pll_admin );
+		$this->init_sync();
 
 		$key = '\_key';
 		$slash_key = wp_slash( $key );
@@ -866,11 +891,11 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		// Test copy().
 		add_post_meta( $from, $slash_key, $slash_2 );
-		$sync->post_metas->copy( $from, $to, 'fr' );
+		$this->pll_admin->get( 'sync_post_metas' )->copy( $from, $to, 'fr' );
 		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $to, $key, true ) );
 
 		update_post_meta( $from, $slash_key, $slash_4 );
-		$sync->post_metas->copy( $from, $to, 'fr' );
+		$this->pll_admin->get( 'sync_post_metas' )->copy( $from, $to, 'fr' );
 		$this->assertEquals( wp_unslash( $slash_4 ), get_post_meta( $to, $key, true ) );
 
 		delete_post_meta( $from, $slash_key );
@@ -887,5 +912,29 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		delete_post_meta( $from, $slash_key, $slash_4 );
 		$this->assertEmpty( get_post_meta( $to, $key, true ) );
+	}
+
+	private function init_sync() {
+		$this->pll_admin->add_shared( 'sync_tax', PLL_Sync_Tax::class )
+			->withArgument( $this->pll_admin->model )
+			->withArgument( $this->pll_admin->options );
+		$this->pll_admin->add_shared( 'sync_post_metas', PLL_Sync_Post_Metas::class )
+			->withArgument( $this->pll_admin->model )
+			->withArgument( $this->pll_admin->options );
+		$this->pll_admin->add_shared( 'sync_term_metas', PLL_Sync_Term_Metas::class )
+			->withArgument( $this->pll_admin->model );
+
+		$this->pll_admin->add_shared( 'sync', $this->pll_admin instanceof PLL_Admin_Base ? PLL_Admin_Sync::class : PLL_Sync::class )
+			->withArguments(
+				array(
+					$this->pll_admin->model,
+					$this->pll_admin->options,
+					'sync_tax',
+					'sync_post_metas',
+					'sync_term_metas',
+				)
+			);
+
+		$this->pll_admin->get( 'sync' )->init();
 	}
 }

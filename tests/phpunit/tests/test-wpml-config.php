@@ -121,8 +121,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// copy
-		$sync = new PLL_Admin_Sync( $pll_admin );
-		$sync->post_metas->copy( $from, $to, 'fr' ); // copy
+		$this->init_sync( $pll_admin );
+		$pll_admin->get( 'sync_post_metas' )->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( 1, get_post_meta( $to, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $to, 'custom-title', true ) );
@@ -168,8 +168,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// Copy
-		$sync = new PLL_Admin_Sync( $pll_admin );
-		$sync->term_metas->copy( $from, $to, 'fr' ); // copy
+		$this->init_sync( $pll_admin );
+		$pll_admin->get( 'sync_term_metas' )->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( 'A', get_term_meta( $to, 'term_meta_A', true ) );
 		$this->assertEquals( 'B', get_term_meta( $to, 'term_meta_B', true ) );
@@ -335,5 +335,29 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	public function test_register_string_object() {
 		$this->prepare_options( 'OBJECT' );
 		$this->_test_register_string();
+	}
+
+	private function init_sync( $polylang ) {
+		$polylang->add_shared( 'sync_tax', PLL_Sync_Tax::class )
+			->withArgument( $polylang->model )
+			->withArgument( $polylang->options );
+		$polylang->add_shared( 'sync_post_metas', PLL_Sync_Post_Metas::class )
+			->withArgument( $polylang->model )
+			->withArgument( $polylang->options );
+		$polylang->add_shared( 'sync_term_metas', PLL_Sync_Term_Metas::class )
+			->withArgument( $polylang->model );
+
+		$polylang->add_shared( 'sync', $polylang instanceof PLL_Admin_Base ? PLL_Admin_Sync::class : PLL_Sync::class )
+			->withArguments(
+				array(
+					$polylang->model,
+					$polylang->options,
+					'sync_tax',
+					'sync_post_metas',
+					'sync_term_metas',
+				)
+			);
+
+		$polylang->get( 'sync' )->init();
 	}
 }
