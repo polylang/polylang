@@ -561,11 +561,6 @@ parameters:
 			path: frontend/frontend-filters-links.php
 
 		-
-			message: "#^Method PLL_Frontend_Filters_Links\\:\\:check_canonical_url\\(\\) should return string\\|void but returns string\\|false\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
 			message: "#^Method PLL_Frontend_Filters_Links\\:\\:get_queried_taxonomy\\(\\) should return string but returns int\\|string\\|null\\.$#"
 			count: 1
 			path: frontend/frontend-filters-links.php
