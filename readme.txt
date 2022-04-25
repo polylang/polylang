@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.6
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -96,6 +96,11 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.2.2 (2022-04-25) =
+
+* Pro: Fix redirect occuring for tags sharing the same slug as their translations
+* Fix quick edit allowing to modify the language of the default category when it should not #1018
 
 = 3.2.1 (2022-04-14) =
 
