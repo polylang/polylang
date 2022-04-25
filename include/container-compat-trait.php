@@ -63,7 +63,7 @@ trait PLL_Container_Compat_Trait {
 			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', $trigger, get_class( $this ), $id, $this->container_identifiers[ $id ] ) ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					sprintf(
-						'Class property %s::$%s is deprecated, PLL()->get( \'%s\' ) must be used instead.',
+						"Class property %s::$%s is deprecated, PLL()->get( \'%s\' ) must be used instead.\nError handler",
 						esc_html( get_class( $this ) ),
 						esc_html( $id ),
 						esc_html( $this->container_identifiers[ $id ] )
@@ -102,7 +102,7 @@ trait PLL_Container_Compat_Trait {
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
-					'Cannot access %s property %s::$%s in %s on line %d',
+					"Cannot access %s property %s::$%s in %s on line %d\nError handler",
 					$visibility,
 					get_class( $this ),
 					$id,
@@ -142,7 +142,7 @@ trait PLL_Container_Compat_Trait {
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
-					'Cannot access non-public member %s::$%s in %s on line %d',
+					"Cannot access non-public member %s::$%s in %s on line %d\nError handler",
 					get_class( $this ),
 					$id,
 					$trace[0]['file'],
@@ -178,7 +178,7 @@ trait PLL_Container_Compat_Trait {
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
-					'Cannot access non-public member %s::$%s in %s on line %d',
+					"Cannot access non-public member %s::$%s in %s on line %d\nError handler",
 					get_class( $this ),
 					$id,
 					$trace[0]['file'],
