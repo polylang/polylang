@@ -99,7 +99,23 @@ jQuery(
 
 				dialogResult.then(
 					() => {
-						blockEditorSavePostAndReloadPage();
+						let data = { // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
+							action:     'post_lang_choice',
+							lang:       selectedOption.value,
+							post_type:  $( '#post_type' ).val(),
+							post_id:    $( '#post_ID' ).val(),
+							_pll_nonce: $( '#_pll_nonce' ).val()
+						}
+
+						// Update post language in database as soon as possible.
+						// Because, in addition of the block editor save process, the legacy metabox uses a post.php process to update the language and is too late compared to the page reload.
+						$.post(
+							ajaxurl,
+							data,
+							function() {
+								blockEditorSavePostAndReloadPage();
+							}
+						);
 					},
 					() => {} // Do nothing when promise is rejected by clicking the Cancel dialog button.
 				);
