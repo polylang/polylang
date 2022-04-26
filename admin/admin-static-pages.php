@@ -27,7 +27,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		$this->links = &$polylang->links;
 
 		// Removes the editor and the template select dropdown for pages for posts
-		add_filter( 'use_block_editor_for_post', array( $this, 'use_block_editor_for_post' ), 10, 2 ); // Since WP 5.0
+		add_filter( 'use_block_editor_for_post', array( $this, 'use_block_editor_for_post' ), 10, 2 ); // Since WP 5.0, backward compatibility with WP < 5.8.
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
 
 		// Add post state for translations of the front page and posts page
@@ -43,20 +43,31 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Don't use the block editor for the translations of the pages for posts
+	 * Don't use the block editor for the translations of the pages for posts with WP < 5.8.
+	 * The block editor was disabled for the page for posts in WP 5.0, then enabled again in WP 5.8.
 	 *
 	 * @since 2.5
+	 * @since 3.3 Don't disable the block editor for the page for posts in WP >= 5.8.
 	 *
 	 * @param bool    $use_block_editor Whether the post can be edited or not.
 	 * @param WP_Post $post             The post being checked.
 	 * @return bool
 	 */
 	public function use_block_editor_for_post( $use_block_editor, $post ) {
-		if ( 'page' === $post->post_type && empty( $post->post_content ) && (int) get_option( 'page_for_posts' ) === $post->ID ) {
-			return false;
+		global $wp_version;
+
+		if ( version_compare( $wp_version, '5.8' ) >= 0 ) {
+			// WP >= 5.8: keep the block editor as it is.
+			return $use_block_editor;
 		}
 
-		return $use_block_editor;
+		if ( 'page' !== $post->post_type || ! empty( $post->post_content ) || (int) get_option( 'page_for_posts' ) !== $post->ID ) {
+			// Not the page for posts: keep the block editor as it is.
+			return $use_block_editor;
+		}
+
+		// Page for posts, WP < 5.8: disable the block editor.
+		return false;
 	}
 
 	/**
@@ -70,7 +81,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	 * @return void
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
-		if ( 'page' === $post_type && empty( $post->post_content ) && (int) get_option( 'page_for_posts' ) === $post->ID ) {
+		if ( ! use_block_editor_for_post( $post ) ) {
 			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
 			remove_post_type_support( $post_type, 'editor' );
 		}
