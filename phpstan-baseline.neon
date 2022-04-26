@@ -891,7 +891,7 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:get_languages_list\\(\\)\\.$#"
+			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
 			count: 2
 			path: include/class-polylang.php
 

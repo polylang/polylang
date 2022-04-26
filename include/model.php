@@ -66,6 +66,26 @@ class PLL_Model {
 	}
 
 	/**
+	 * Checks if there are languages or not.
+	 *
+	 * @since 3.3
+	 *
+	 * @return bool True if there are, false otherwise.
+	 */
+	public function has_languages() {
+		if ( false !== $this->cache->get( 'languages' ) ) {
+			return true;
+		}
+
+		if ( false !== get_transient( 'pll_languages_list' ) ) {
+			return true;
+		}
+
+		$post_languages = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_group' ) );
+		return ! empty( $post_languages ) && ! is_wp_error( $post_languages );
+	}
+
+	/**
 	 * Returns the list of available languages.
 	 * - Stores the list in a db transient ( except flags ), unless PLL_CACHE_LANGUAGES is set to false.
 	 * - Caches the list ( with flags ) in a PLL_Cache object.
