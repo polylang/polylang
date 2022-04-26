@@ -107,13 +107,7 @@ jQuery(
 							_pll_nonce: $( '#_pll_nonce' ).val()
 						}
 
-						$.post(
-							ajaxurl,
-							data,
-							function() {
-								blockEditorSavePostAndReloadPage();
-							}
-						);
+						blockEditorSavePostAndReloadPage();
 					},
 					() => {} // Do nothing when promise is rejected by clicking the Cancel dialog button.
 				);
