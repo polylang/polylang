@@ -10,11 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 };
 
 if ( $polylang->model->get_languages_list() ) {
-	add_filter(
-		'pll_settings_modules',
-		function( $modules ) {
-			$modules[] = 'PLL_Settings_Preview_Translate_Slugs';
-			return $modules;
-		}
-	);
+	$polylang->add_shared( 'translate_slugs', PLL_Translate_Slugs::class );
+	add_action( 'wp_loaded', array( $polylang->get( 'translate_slugs' ), 'init' ) );
 }
