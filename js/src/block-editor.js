@@ -99,14 +99,6 @@ jQuery(
 
 				dialogResult.then(
 					() => {
-						var data = { // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
-							action:     'post_lang_choice',
-							lang:       selectedOption.value,
-							post_type:  $( '#post_type' ).val(),
-							post_id:    $( '#post_ID' ).val(),
-							_pll_nonce: $( '#_pll_nonce' ).val()
-						}
-
 						blockEditorSavePostAndReloadPage();
 					},
 					() => {} // Do nothing when promise is rejected by clicking the Cancel dialog button.
