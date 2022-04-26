@@ -82,11 +82,7 @@ class PLL_Model {
 		}
 
 		$post_languages = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_group' ) );
-		if ( empty( $post_languages ) || is_wp_error( $post_languages ) ) {
-			return false;
-		} else {
-			return true;
-		}
+		return ! empty( $post_languages ) && ! is_wp_error( $post_languages );
 	}
 
 	/**
