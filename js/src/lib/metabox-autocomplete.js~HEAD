@@ -3,7 +3,7 @@
  */
 
 // Translations autocomplete input box.
-export function initTranslations() {
+export function initMetaboxAutoComplete() {
 	jQuery('.tr_lang').each(
 		function () {
 			var tr_lang = jQuery(this).attr('id').substring(8);
