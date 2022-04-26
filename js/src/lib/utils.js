@@ -2,7 +2,6 @@
  * @package Polylang
  */
 
-
 // Translations autocomplete input box.
 export function initTranslations() {
 	jQuery('.tr_lang').each(
@@ -30,7 +29,7 @@ export function initTranslations() {
 			jQuery(this).on(
 				'blur',
 				function () {
-					if (!jQuery(this).val()) {
+					if ( ! jQuery(this).val()  ) {
 						jQuery('#htr_lang_' + tr_lang).val(0);
 						// Value is retrieved from HTML already generated server side
 						td.html(td.siblings('.hidden').children().clone()); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
