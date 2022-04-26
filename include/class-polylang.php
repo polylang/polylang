@@ -165,10 +165,11 @@ class Polylang {
 		global $polylang;
 
 		self::define_constants();
-		$options = get_option( 'polylang' );
+		$options = get_option( 'polylang', array() );
+		$options = is_array( $options ) ? $options : array();
 
 		// Plugin upgrade
-		if ( $options && version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
+		if ( ! empty( $options['version'] ) && version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
 			$upgrade = new PLL_Upgrade( $options );
 			if ( ! $upgrade->upgrade() ) { // If the version is too old
 				return;
@@ -176,7 +177,7 @@ class Polylang {
 		}
 
 		// In some edge cases, it's possible that no options were found in the database. Load default options as we need some.
-		if ( ! $options ) {
+		if ( empty( $options ) ) {
 			$options = PLL_Install::get_default_options();
 		}
 
