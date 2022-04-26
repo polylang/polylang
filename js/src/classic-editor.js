@@ -8,8 +8,8 @@ import {
 } from './lib/confirmation-modal';
 
 import {
-	initTranslations,
-} from './lib/utils';
+	initMetaboxAutoComplete,
+} from './lib/metabox-autocomplete';
 
 // tag suggest in metabox
 jQuery(
@@ -149,7 +149,7 @@ jQuery(
 											case 'translations': // translations fields
 												// Data is built and come from server side and is well escaped when necessary
 												$( '.translations' ).html( this.data ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-												initTranslations();
+												initMetaboxAutoComplete();
 											break;
 											case 'taxonomy': // categories metabox for posts
 												var tax = this.data;
@@ -216,7 +216,7 @@ jQuery(
 			}
 		);
 
-		initTranslations();
+		initMetaboxAutoComplete();
 	}
 );
 

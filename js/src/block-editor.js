@@ -8,8 +8,8 @@ import {
 } from './lib/confirmation-modal';
 
 import {
-	initTranslations,
-} from './lib/utils';
+	initMetaboxAutoComplete,
+} from './lib/metabox-autocomplete';
 
 /**
  * Filter REST API requests to add the language in the request
@@ -180,6 +180,6 @@ jQuery(
 			}
 		);
 
-		initTranslations();
+		initMetaboxAutoComplete();
 	}
 );
