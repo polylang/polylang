@@ -80,8 +80,6 @@ trait PLL_Container_Compat_Trait {
 		}
 
 		// Not in the container.
-		$trace = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-
 		if ( ! property_exists( $this, $id ) ) {
 			// Undefined property.
 			// Always return something, to prevent a "Only variable references should be returned by reference" notice.
@@ -99,6 +97,9 @@ trait PLL_Container_Compat_Trait {
 
 		// Protected or private property.
 		$visibility = $ref->isPrivate() ? 'private' : 'protected';
+		$trace      = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		$file       = isset( $trace[0]['file'] ) ? $trace[0]['file'] : '';
+		$line       = isset( $trace[0]['line'] ) ? $trace[0]['line'] : 0;
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
@@ -106,8 +107,8 @@ trait PLL_Container_Compat_Trait {
 					$visibility,
 					get_class( $this ),
 					$id,
-					$trace[0]['file'],
-					$trace[0]['line']
+					$file,
+					$line
 				)
 			),
 			E_USER_ERROR
@@ -139,14 +140,16 @@ trait PLL_Container_Compat_Trait {
 
 		// Protected or private property.
 		$trace = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		$file  = isset( $trace[0]['file'] ) ? $trace[0]['file'] : '';
+		$line  = isset( $trace[0]['line'] ) ? $trace[0]['line'] : 0;
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
 					"Cannot access non-public member %s::$%s in %s on line %d\nError handler",
 					get_class( $this ),
 					$id,
-					$trace[0]['file'],
-					$trace[0]['line']
+					$file,
+					$line
 				)
 			),
 			E_USER_ERROR
@@ -175,14 +178,16 @@ trait PLL_Container_Compat_Trait {
 
 		// Protected or private property.
 		$trace = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		$file  = isset( $trace[0]['file'] ) ? $trace[0]['file'] : '';
+		$line  = isset( $trace[0]['line'] ) ? $trace[0]['line'] : 0;
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
 					"Cannot access non-public member %s::$%s in %s on line %d\nError handler",
 					get_class( $this ),
 					$id,
-					$trace[0]['file'],
-					$trace[0]['line']
+					$file,
+					$line
 				)
 			),
 			E_USER_ERROR
