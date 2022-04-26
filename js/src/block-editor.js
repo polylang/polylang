@@ -107,7 +107,8 @@ jQuery(
 							_pll_nonce: $( '#_pll_nonce' ).val()
 						}
 
-						// Update database as soon as possible.
+						// Update post language in database as soon as possible.
+						// Because, in addition of the block editor save process, the legacy metabox uses a post.php process to update the language and is too late compared to the page reload.
 						$.post(
 							ajaxurl,
 							data,
