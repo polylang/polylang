@@ -15,6 +15,8 @@ use WP_Syntex\Polylang_DI\Exception\NotFoundException;
  * @since 1.2
  */
 abstract class PLL_Base {
+	use PLL_Container_Compat_Trait;
+
 	/**
 	 * Stores the plugin options.
 	 *

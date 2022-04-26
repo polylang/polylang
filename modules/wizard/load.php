@@ -10,5 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 };
 
 if ( $polylang instanceof PLL_Admin_Base ) {
-	$polylang->wizard = new PLL_Wizard( $polylang );
+	$polylang->add_shared( 'wizard', PLL_Wizard::class )
+		->withArgument( $polylang->model )
+		->withArgument( $polylang->options );
+
+	$polylang->get( 'wizard' )->init();
 }

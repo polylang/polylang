@@ -53,13 +53,26 @@ class PLL_Wizard {
 	/**
 	 * Constructor
 	 *
-	 * @param object $polylang Reference to Polylang global object.
 	 * @since 2.7
+	 * @since 3.3 Changed method's signature.
+	 *
+	 * @param  PLL_Admin_Model $model   Instance of PLL_Admin_Model.
+	 * @param  array<mixed>    $options Options, passed by reference.
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		$this->options = &$polylang->options;
-		$this->model   = &$polylang->model;
+	public function __construct( PLL_Admin_Model $model, array &$options ) {
+		$this->model   = $model;
+		$this->options = &$options;
+	}
 
+	/**
+	 * Launches hooks.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	public function init() {
 		// Display Wizard page before any other action to ensure displaying it outside the WordPress admin context.
 		// Hooked on admin_init with priority 40 to ensure PLL_Wizard_Pro is corretly initialized.
 		add_action( 'admin_init', array( $this, 'setup_wizard_page' ), 40 );
