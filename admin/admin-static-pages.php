@@ -27,7 +27,7 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 		$this->links = &$polylang->links;
 
 		// Removes the editor and the template select dropdown for pages for posts
-		add_filter( 'use_block_editor_for_post', array( $this, 'use_block_editor_for_post' ), 10, 2 ); // Since WP 5.0
+		add_filter( 'use_block_editor_for_post', array( $this, 'use_block_editor_for_post' ), 10, 2 ); // Since WP 5.0, backward compatibility with WP < 5.8.
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
 
 		// Add post state for translations of the front page and posts page
