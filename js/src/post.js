@@ -22,81 +22,84 @@ jQuery(
  */
 jQuery(
 	function( $ ) {
-		$( document ).on(
-			'DOMNodeInserted',
-			function( e ) {
-				var t = $( e.target );
-
-				// WP inserts the quick edit from
-				if ( 'inline-edit' == t.attr( 'id' ) ) {
-					var post_id = t.prev().attr( 'id' ).replace( "post-", "" );
+		const handleQuickEditInsertion = ( mutationsList ) => {
+			for ( const mutation of mutationsList ) {
+				const form = mutation.addedNodes[0];
+				if ( 0 < mutation.addedNodes.length && form.classList.contains( 'inline-edit-post' ) ) {
+					// WordPress has inserted the quick edit form.
+					const post_id = Number( form.id.substring( 5 ) );
 
 					if ( post_id > 0 ) {
-						// language dropdown
-						var select = t.find( ':input[name="inline_lang_choice"]' );
-						var lang = $( '#lang_' + post_id ).html();
-						select.val( lang ); // populates the dropdown
+						// Get the language dropdown.
+						const select = form.querySelector( 'select[name="inline_lang_choice"]' );
+						const lang = document.querySelector( '#lang_' + String( post_id ) ).innerHTML;
+						select.value = lang; // Populates the dropdown with the post language.
 
-						filter_terms( lang ); // initial filter for category checklist
-						filter_pages( lang ); // initial filter for parent dropdown
+						filter_terms( lang ); // Initial filter for category checklist.
+						filter_pages( lang ); // Initial filter for parent dropdown.
 
-						// modify category checklist an parent dropdown on language change
-						select.on(
+						// Modify category checklist and parent dropdown on language change.
+						select.addEventListener(
 							'change',
-							function() {
-								filter_terms( $( this ).val() );
-								filter_pages( $( this ).val() );
+							function( event ) {
+								const newLang = event.target.value;
+								filter_terms( newLang );
+								filter_pages( newLang );
 							}
-						);
+							);
+						}
 					}
-				}
+					/**
+					 * Filters the category checklist.
+					 */
+					function filter_terms( lang ) {
+						if ( "undefined" != typeof( pll_term_languages ) ) {
+							$.each(
+								pll_term_languages,
+								function( lg, term_tax ) {
+									$.each(
+										term_tax,
+										function( tax, terms ) {
+											$.each(
+												terms,
+												function( i ) {
+													id = '#' + tax + '-' + pll_term_languages[ lg ][ tax ][ i ];
+													lang == lg ? $( id ).show() : $( id ).hide();
+												}
+											);
+										}
+									);
+								}
+							);
+						}
+					}
 
-				/**
-				 * Filters the category checklist.
-				 */
-				function filter_terms( lang ) {
-					if ( "undefined" != typeof( pll_term_languages ) ) {
-						$.each(
-							pll_term_languages,
-							function( lg, term_tax ) {
-								$.each(
-									term_tax,
-									function( tax, terms ) {
-										$.each(
-											terms,
-											function( i ) {
-												id = '#' + tax + '-' + pll_term_languages[ lg ][ tax ][ i ];
-												lang == lg ? $( id ).show() : $( id ).hide();
-											}
-										);
-									}
-								);
-							}
-						);
+					/**
+					 * Filters the parent page dropdown list.
+					 */
+					function filter_pages( lang ) {
+						if ( "undefined" != typeof( pll_page_languages ) ) {
+							$.each(
+								pll_page_languages,
+								function( lg, pages ) {
+									$.each(
+										pages,
+										function( i ) {
+											v = $( '#post_parent option[value="' + pll_page_languages[ lg ][ i ] + '"]' );
+											lang == lg ? v.show() : v.hide();
+										}
+									);
+								}
+							);
+						}
 					}
 				}
+		}
+		const table = document.getElementById( 'the-list' );
+		const config = { childList: true, subtree: true };
+		const observer = new MutationObserver( handleQuickEditInsertion );
 
-				/**
-				 * Filters the parent page dropdown list.
-				 */
-				function filter_pages( lang ) {
-					if ( "undefined" != typeof( pll_page_languages ) ) {
-						$.each(
-							pll_page_languages,
-							function( lg, pages ) {
-								$.each(
-									pages,
-									function( i ) {
-										v = $( '#post_parent option[value="' + pll_page_languages[ lg ][ i ] + '"]' );
-										lang == lg ? v.show() : v.hide();
-									}
-								);
-							}
-						);
-					}
-				}
-			}
-		);
+		observer.observe( table, config);
 	}
 );
 
