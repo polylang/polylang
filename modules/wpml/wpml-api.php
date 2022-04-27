@@ -20,11 +20,13 @@ class PLL_WPML_API {
 	private static $original_language = null;
 
 	/**
-	 * Constructor
+	 * Launches hooks.
 	 *
-	 * @since 2.0
+	 * @since 3.3
+	 *
+	 * @return void
 	 */
-	public function __construct() {
+	public function init() {
 		// Site Wide Language informations
 
 		add_filter( 'wpml_active_languages', array( $this, 'wpml_active_languages' ), 10, 2 );

@@ -313,14 +313,17 @@ class PLL_Admin_Site_Health {
 		}
 
 		// Add WPML files.
-		$wpml_files = PLL_WPML_Config::instance()->get_files();
-		if ( ! empty( $wpml_files ) ) {
-			$fields['wpml']['label'] = 'wpml-config.xml files';
-			$fields['wpml']['value'] = $wpml_files;
+		if ( PLL()->has( 'wpml_config' ) ) {
+			$wpml_files = PLL()->get( 'wpml_config' )->get_files();
 
-			if ( ! extension_loaded( 'simplexml' ) ) {
-				$fields['simplexml']['label'] = __( 'PHP SimpleXML extension', 'polylang' );
-				$fields['simplexml']['value'] = __( 'Not loaded. Contact your host provider.', 'polylang' );
+			if ( ! empty( $wpml_files ) ) {
+				$fields['wpml']['label'] = 'wpml-config.xml files';
+				$fields['wpml']['value'] = $wpml_files;
+
+				if ( ! extension_loaded( 'simplexml' ) ) {
+					$fields['simplexml']['label'] = __( 'PHP SimpleXML extension', 'polylang' );
+					$fields['simplexml']['value'] = __( 'Not loaded. Contact your host provider.', 'polylang' );
+				}
 			}
 		}
 
@@ -394,13 +397,19 @@ class PLL_Admin_Site_Health {
 	 * @return array
 	 */
 	public function site_status_test_php_modules( $modules ) {
-		$files = PLL_WPML_Config::instance()->get_files();
+		if ( ! PLL()->has( 'wpml_config' ) ) {
+			return $modules;
+		}
+
+		$files = PLL()->get( 'wpml_config' )->get_files();
+
 		if ( ! empty( $files ) ) {
 			$modules['simplexml'] = array(
 				'extension' => 'simplexml',
 				'required'  => true,
 			);
 		}
+
 		return $modules;
 	}
 }

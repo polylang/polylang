@@ -891,22 +891,17 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
-			count: 2
-			path: include/class-polylang.php
-
-		-
 			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
 			count: 1
 			path: include/class-polylang.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:init\\(\\)\\.$#"
-			count: 1
+			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
+			count: 2
 			path: include/class-polylang.php
 
 		-
-			message: "#^Cannot access offset 'version' on mixed\\.$#"
+			message: "#^Call to an undefined method object\\:\\:init\\(\\)\\.$#"
 			count: 1
 			path: include/class-polylang.php
 
@@ -917,11 +912,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|null given\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Parameter \\#1 \\$version1 of function version_compare expects string, mixed given\\.$#"
 			count: 1
 			path: include/class-polylang.php
 
@@ -1554,6 +1544,11 @@ parameters:
 			path: modules/lingotek/lingotek.php
 
 		-
+			message: "#^Cannot call method get_files\\(\\) on mixed\\.$#"
+			count: 2
+			path: modules/site-health/admin-site-health.php
+
+		-
 			message: "#^Cannot call method get_must_translate_message\\(\\) on PLL_Admin_Static_Pages\\|null\\.$#"
 			count: 1
 			path: modules/site-health/admin-site-health.php
@@ -1724,23 +1719,33 @@ parameters:
 			path: modules/wpml/wpml-api.php
 
 		-
+			message: "#^Method PLL_WPML_Compat\\:\\:instance\\(\\) should return PLL_WPML_Compat but returns mixed\\.$#"
+			count: 1
+			path: modules/wpml/wpml-compat.php
+
+		-
 			message: "#^Parameter \\#1 \\$singular of method Translations\\:\\:translate\\(\\) expects string, string\\|true given\\.$#"
 			count: 1
 			path: modules/wpml/wpml-compat.php
 
 		-
-			message: "#^Static property PLL_WPML_Compat\\:\\:\\$strings \\(array\\) does not accept mixed\\.$#"
+			message: "#^Method PLL_WPML_Config\\:\\:instance\\(\\) should return PLL_WPML_Config but returns mixed\\.$#"
 			count: 1
-			path: modules/wpml/wpml-compat.php
+			path: modules/wpml/wpml-config.php
 
 		-
-			message: "#^Argument of an invalid type array\\<SimpleXMLElement\\>\\|null supplied for foreach, only iterables are supported\\.$#"
+			message: "#^Offset 'action' does not exist on SimpleXMLElement\\|null\\.$#"
 			count: 4
 			path: modules/wpml/wpml-config.php
 
 		-
 			message: "#^Offset 'name' does not exist on SimpleXMLElement\\|null\\.$#"
-			count: 1
+			count: 2
+			path: modules/wpml/wpml-config.php
+
+		-
+			message: "#^Offset 'translate' does not exist on SimpleXMLElement\\|null\\.$#"
+			count: 2
 			path: modules/wpml/wpml-config.php
 
 		-
@@ -1755,6 +1760,21 @@ parameters:
 
 		-
 			message: "#^Cannot call method get_home_url\\(\\) on PLL_Admin_Links\\|PLL_Frontend_Links\\|null\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Cannot call method get_string_by_context_and_name\\(\\) on mixed\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Cannot call method register_string\\(\\) on mixed\\.$#"
+			count: 1
+			path: modules/wpml/wpml-legacy-api.php
+
+		-
+			message: "#^Cannot call method unregister_string\\(\\) on mixed\\.$#"
 			count: 1
 			path: modules/wpml/wpml-legacy-api.php
 
@@ -1780,16 +1800,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|false given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function pll__ expects string, bool\\|string given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function pll_translate_string expects string, bool\\|string given\\.$#"
 			count: 1
 			path: modules/wpml/wpml-legacy-api.php
 

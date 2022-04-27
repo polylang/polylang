@@ -276,7 +276,9 @@ if ( ! function_exists( 'icl_register_string' ) ) {
 	 * @return void
 	 */
 	function icl_register_string( $context, $name, $string ) {
-		PLL_WPML_Compat::instance()->register_string( $context, $name, $string );
+		if ( PLL()->has( 'wpml_compat' ) ) {
+			PLL()->get( 'wpml_compat' )->register_string( $context, $name, $string );
+		}
 	}
 }
 
@@ -291,7 +293,9 @@ if ( ! function_exists( 'icl_unregister_string' ) ) {
 	 * @return void
 	 */
 	function icl_unregister_string( $context, $name ) {
-		PLL_WPML_Compat::instance()->unregister_string( $context, $name );
+		if ( PLL()->has( 'wpml_compat' ) ) {
+			PLL()->get( 'wpml_compat' )->unregister_string( $context, $name );
+		}
 	}
 }
 
@@ -334,8 +338,8 @@ if ( ! function_exists( 'icl_translate' ) ) {
 	 */
 	function icl_translate( $context, $name, $string = '', $bool = false, &$has_translation = null, $lang = null ) {
 		// FIXME WPML can automatically registers the string based on an option
-		if ( empty( $string ) ) {
-			$string = PLL_WPML_Compat::instance()->get_string_by_context_and_name( $context, $name );
+		if ( empty( $string ) && PLL()->has( 'wpml_compat' ) ) {
+			$string = PLL()->get( 'wpml_compat' )->get_string_by_context_and_name( $context, $name );
 		}
 		return empty( $lang ) ? pll__( $string ) : pll_translate_string( $string, $lang );
 	}
