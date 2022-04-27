@@ -11,50 +11,38 @@
  * @since 1.0
  */
 class PLL_WPML_Config {
-	/**
-	 * Singleton instance
-	 *
-	 * @var PLL_WPML_Config|null
-	 */
-	protected static $instance;
 
 	/**
 	 * The content of all read xml files.
 	 *
-	 * @var SimpleXMLElement[]|null
+	 * @var SimpleXMLElement[]
 	 */
-	protected $xmls;
+	protected $xmls = array();
 
 	/**
 	 * The list of xml files.
 	 *
-	 * @var string[]|null
+	 * @var string[]
 	 */
-	protected $files;
+	protected $files = array();
 
 	/**
-	 * Constructor
-	 *
-	 * @since 1.0
-	 */
-	public function __construct() {
-		if ( extension_loaded( 'simplexml' ) ) {
-			$this->init();
-		}
-	}
-
-	/**
-	 * Access to the single instance of the class
+	 * Access to the single instance of the class.
 	 *
 	 * @since 1.7
+	 * @since 3.3 Deprecated.
+	 * @deprecated
 	 *
 	 * @return PLL_WPML_Config
 	 */
 	public static function instance() {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new self();
+		_deprecated_function( __FUNCTION__, '3.3', "PLL()->get( 'wpml_config' )" );
+
+		if ( ! PLL()->has( 'wpml_config' ) ) {
+			PLL()->add_shared( 'wpml_config', self::class );
 		}
-		return self::$instance;
+
+		return PLL()->get( 'wpml_config' );
 	}
 
 	/**
@@ -65,48 +53,54 @@ class PLL_WPML_Config {
 	 * @return void
 	 */
 	public function init() {
-		$this->xmls = array();
+		if ( ! extension_loaded( 'simplexml' ) ) {
+			return;
+		}
+
 		$files = $this->get_files();
 
 		if ( ! empty( $files ) ) {
-
 			// Read all files.
-			if ( extension_loaded( 'simplexml' ) ) {
-				foreach ( $files as $context => $file ) {
-					$xml = simplexml_load_file( $file );
-					if ( false !== $xml ) {
-						$this->xmls[ $context ] = $xml;
-					}
+			foreach ( $files as $context => $file ) {
+				$xml = simplexml_load_file( $file );
+
+				if ( false !== $xml ) {
+					$this->xmls[ $context ] = $xml;
 				}
 			}
 		}
 
-		if ( ! empty( $this->xmls ) ) {
-			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
-			add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
-			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
-			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
+		if ( empty( $this->xmls ) ) {
+			return;
+		}
 
-			foreach ( $this->xmls as $context => $xml ) {
-				$keys = $xml->xpath( 'admin-texts/key' );
-				if ( is_array( $keys ) ) {
-					foreach ( $keys as $key ) {
-						$attributes = $key->attributes();
-						$name = (string) $attributes['name'];
+		add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
+		add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
+		add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
+		add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
 
-						if ( false !== strpos( $name, '*' ) ) {
-							$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-							$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
+		foreach ( $this->xmls as $context => $xml ) {
+			$keys = $xml->xpath( 'admin-texts/key' );
 
-							if ( is_array( $names ) ) {
-								foreach ( $names as $_name ) {
-									$this->register_or_translate_option( $context, $_name, $key );
-								}
-							}
-						} else {
-							$this->register_or_translate_option( $context, $name, $key );
+			if ( ! is_array( $keys ) ) {
+				continue;
+			}
+
+			foreach ( $keys as $key ) {
+				$attributes = $key->attributes();
+				$name = (string) $attributes['name'];
+
+				if ( false !== strpos( $name, '*' ) ) {
+					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
+					$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
+
+					if ( is_array( $names ) ) {
+						foreach ( $names as $_name ) {
+							$this->register_or_translate_option( $context, $_name, $key );
 						}
 					}
+				} else {
+					$this->register_or_translate_option( $context, $name, $key );
 				}
 			}
 		}
@@ -120,7 +114,6 @@ class PLL_WPML_Config {
 	 * @return array
 	 */
 	public function get_files() {
-
 		if ( ! empty( $this->files ) ) {
 			return $this->files;
 		}

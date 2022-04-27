@@ -11,54 +11,61 @@
  * @since 1.0.2
  */
 class PLL_WPML_Compat {
-	/**
-	 * Singleton instance
-	 *
-	 * @var PLL_WPML_Compat|null
-	 */
-	protected static $instance;
+	use PLL_Container_Compat_Trait;
 
 	/**
 	 * Stores the strings registered with the WPML API.
 	 *
 	 * @var array
 	 */
-	protected static $strings;
+	protected $strings;
 
 	/**
-	 * @var PLL_WPML_API
-	 */
-	public $api;
-
-	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.0.2
+	 * @since 3.3 Changed visibility from protected to public.
+	 *
+	 * @return void
 	 */
-	protected function __construct() {
-		// Load the WPML API
-		require_once __DIR__ . '/wpml-legacy-api.php';
-		$this->api = new PLL_WPML_API();
+	public function __construct() {
+		$this->container_identifiers = array(
+			'api' => 'wpml_api',
+		);
 
-		self::$strings = get_option( 'polylang_wpml_strings', array() );
+		$this->strings = (array) get_option( 'polylang_wpml_strings', array() );
+	}
 
+	/**
+	 * Launches hooks.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	public function init() {
 		add_action( 'pll_language_defined', array( $this, 'define_constants' ) );
 		add_action( 'pll_no_language_defined', array( $this, 'define_constants' ) );
 		add_filter( 'pll_get_strings', array( $this, 'get_strings' ) );
 	}
 
 	/**
-	 * Access to the single instance of the class
+	 * Access to the single instance of the class.
 	 *
 	 * @since 1.7
+	 * @since 3.3 Deprecated.
+	 * @deprecated
 	 *
 	 * @return PLL_WPML_Compat
 	 */
 	public static function instance() {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new self();
+		_deprecated_function( __FUNCTION__, '3.3', "PLL()->get( 'wpml_compat' )" );
+
+		if ( ! PLL()->has( 'wpml_compat' ) ) {
+			PLL()->add_shared( 'wpml_compat', self::class );
 		}
-		return self::$instance;
+
+		return PLL()->get( 'wpml_compat' );
 	}
 
 	/**
@@ -126,10 +133,10 @@ class PLL_WPML_Compat {
 
 		// Registers the string if it does not exist yet (multiline as in WPML).
 		$to_register = array( 'context' => $context, 'name' => $name, 'string' => $string, 'multiline' => true, 'icl' => true );
-		if ( ! in_array( $to_register, self::$strings ) ) {
+		if ( ! in_array( $to_register, $this->strings ) ) {
 			$key = md5( "$context | $name" );
-			self::$strings[ $key ] = $to_register;
-			update_option( 'polylang_wpml_strings', self::$strings );
+			$this->strings[ $key ] = $to_register;
+			update_option( 'polylang_wpml_strings', $this->strings );
 		}
 	}
 
@@ -144,9 +151,9 @@ class PLL_WPML_Compat {
 	 */
 	public function unregister_string( $context, $name ) {
 		$key = md5( "$context | $name" );
-		if ( isset( self::$strings[ $key ] ) ) {
-			unset( self::$strings[ $key ] );
-			update_option( 'polylang_wpml_strings', self::$strings );
+		if ( isset( $this->strings[ $key ] ) ) {
+			unset( $this->strings[ $key ] );
+			update_option( 'polylang_wpml_strings', $this->strings );
 		}
 	}
 
@@ -159,7 +166,7 @@ class PLL_WPML_Compat {
 	 * @return array registered strings with added strings through WPML API
 	 */
 	public function get_strings( $strings ) {
-		return empty( self::$strings ) ? $strings : array_merge( $strings, self::$strings );
+		return empty( $this->strings ) ? $strings : array_merge( $strings, $this->strings );
 	}
 
 	/**
@@ -173,6 +180,6 @@ class PLL_WPML_Compat {
 	 */
 	public function get_string_by_context_and_name( $context, $name ) {
 		$key = md5( "$context | $name" );
-		return isset( self::$strings[ $key ] ) ? self::$strings[ $key ]['string'] : false;
+		return isset( $this->strings[ $key ] ) ? $this->strings[ $key ]['string'] : false;
 	}
 }
