@@ -43,12 +43,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined', $this->pll_admin->curlang->slug, $this->pll_admin->curlang );
 
-		$post = get_post( $fr );
-
-		if ( (int) get_option( 'page_for_posts' ) === $post->ID && empty( $post->post_content ) ) {
-			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
-			remove_post_type_support( $post->post_type, 'editor' );
-		}
+		$post = $this->maybe_remove_editor( $fr );
 
 		ob_start();
 		do_action( 'edit_form_after_title', $post );
@@ -82,12 +77,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined', $this->pll_admin->curlang->slug, $this->pll_admin->curlang );
 
-		$post = get_post( $fr_not_page_for_posts );
-
-		if ( (int) get_option( 'page_for_posts' ) === $post->ID && empty( $post->post_content ) ) {
-			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
-			remove_post_type_support( $post->post_type, 'editor' );
-		}
+		$post = $this->maybe_remove_editor( $fr_not_page_for_posts );
 
 		ob_start();
 		do_action( 'edit_form_after_title', $post );
@@ -118,12 +108,7 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
 
-		$post = get_post( $fr );
-
-		if ( (int) get_option( 'page_for_posts' ) === $post->ID && empty( $post->post_content ) ) {
-			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
-			remove_post_type_support( $post->post_type, 'editor' );
-		}
+		$post = $this->maybe_remove_editor( $fr );
 
 		ob_start();
 		do_action( 'edit_form_after_title', $post );
@@ -162,6 +147,21 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'post_content' => '' ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 		$this->assertTrue( use_block_editor_for_post( $post_id ) );
+	}
+
+	private function maybe_remove_editor( $post_id ) {
+		$post = get_post( $post_id );
+
+		if ( use_block_editor_for_post( $post ) ) {
+			return $post;
+		}
+
+		if ( (int) get_option( 'page_for_posts' ) === $post->ID && empty( $post->post_content ) ) {
+			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
+			remove_post_type_support( $post->post_type, 'editor' );
+		}
+
+		return $post;
 	}
 
 	private function is_wp_58() {
