@@ -1,7 +1,6 @@
 <?php
 
 class Admin_Static_Pages_Test extends PLL_UnitTestCase {
-
 	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
@@ -44,10 +43,15 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
 		do_action( 'pll_language_defined', $this->pll_admin->curlang->slug, $this->pll_admin->curlang );
 
-		do_action( 'add_meta_boxes', 'page', get_post( $fr ) );
+		$post = get_post( $fr );
+
+		if ( (int) get_option( 'page_for_posts' ) === $post->ID && empty( $post->post_content ) ) {
+			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
+			remove_post_type_support( $post->post_type, 'editor' );
+		}
 
 		ob_start();
-		do_action( 'edit_form_after_title', get_post( $fr ) );
+		do_action( 'edit_form_after_title', $post );
 		$after_title = ob_get_clean();
 
 		if ( $this->is_wp_58() ) {
@@ -57,6 +61,40 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 			$this->assertFalse( post_type_supports( 'page', 'editor' ) );
 			$this->assertStringContainsString( 'You are currently editing the page that shows your latest posts.', $after_title );
 		}
+	}
+
+	public function test_do_not_deactivate_editor_for_page_not_for_posts() {
+		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) );
+		self::$model->post->set_language( $en, 'en' );
+
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', $en );
+
+		$fr = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) ); // Content must be empty to deactivate editor.
+		self::$model->post->set_language( $fr, 'fr' );
+		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
+
+		$fr_not_page_for_posts = $this->factory->post->create( array( 'post_type' => 'page', 'post_content' => '' ) ); // Content must be empty to deactivate editor.
+		self::$model->post->set_language( $fr_not_page_for_posts, 'fr' );
+
+		self::$model->clean_languages_cache();
+
+		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
+		do_action( 'pll_language_defined', $this->pll_admin->curlang->slug, $this->pll_admin->curlang );
+
+		$post = get_post( $fr_not_page_for_posts );
+
+		if ( (int) get_option( 'page_for_posts' ) === $post->ID && empty( $post->post_content ) ) {
+			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
+			remove_post_type_support( $post->post_type, 'editor' );
+		}
+
+		ob_start();
+		do_action( 'edit_form_after_title', $post );
+		$after_title = ob_get_clean();
+
+		$this->assertTrue( post_type_supports( 'page', 'editor' ) );
+		$this->assertStringNotContainsString( 'You are currently editing the page that shows your latest posts.', $after_title );
 	}
 
 	/**
@@ -79,10 +117,16 @@ class Admin_Static_Pages_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
-		do_action( 'add_meta_boxes', 'page', get_post( $fr ) );
+
+		$post = get_post( $fr );
+
+		if ( (int) get_option( 'page_for_posts' ) === $post->ID && empty( $post->post_content ) ) {
+			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
+			remove_post_type_support( $post->post_type, 'editor' );
+		}
 
 		ob_start();
-		do_action( 'edit_form_after_title', get_post( $fr ) );
+		do_action( 'edit_form_after_title', $post );
 
 		$this->assertTrue( post_type_supports( 'page', 'editor' ) );
 		$this->assertStringNotContainsString( 'You are currently editing the page that shows your latest posts.', ob_get_clean() );
