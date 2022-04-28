@@ -391,11 +391,6 @@ parameters:
 			path: admin/admin-static-pages.php
 
 		-
-			message: "#^Cannot cast mixed to int\\.$#"
-			count: 1
-			path: admin/admin-static-pages.php
-
-		-
 			message: "#^Offset 'widget_text' does not exist on array\\<string\\>\\|null\\.$#"
 			count: 1
 			path: admin/admin-strings.php
