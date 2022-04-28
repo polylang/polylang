@@ -39,64 +39,6 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Don't use the block editor for the translations of the pages for posts.
-	 *
-	 * @since 2.5
-	 * @since 3.3 Deprecated.
-	 * @deprecated
-	 *
-	 * @param bool    $use_block_editor Whether the post can be edited or not.
-	 * @param WP_Post $post             The post being checked.
-	 * @return bool
-	 */
-	public function use_block_editor_for_post( $use_block_editor, $post ) {
-		if ( WP_DEBUG ) {
-			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-				sprintf(
-					'Method %1$s is deprecated since Polylang version 3.3 with no alternative available.',
-					esc_html( __FUNCTION__ )
-				),
-				E_USER_DEPRECATED
-			);
-		}
-
-		if ( 'page' === $post->post_type && empty( $post->post_content ) && absint( get_option( 'page_for_posts' ) ) === $post->ID ) {
-			return false;
-		}
-
-		return $use_block_editor;
-	}
-
-	/**
-	 * Removes the editor for the translations of the pages for posts.
-	 * Removes the page template select dropdown in page attributes metabox too.
-	 *
-	 * @since 2.2.2
-	 * @since 3.3 Deprecated.
-	 * @deprecated
-	 *
-	 * @param string  $post_type Current post type.
-	 * @param WP_Post $post      Current post.
-	 * @return void
-	 */
-	public function add_meta_boxes( $post_type, $post ) {
-		if ( WP_DEBUG ) {
-			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-				sprintf(
-					'Method %1$s is deprecated since Polylang version 3.3 with no alternative available.',
-					esc_html( __FUNCTION__ )
-				),
-				E_USER_DEPRECATED
-			);
-		}
-
-		if ( 'page' === $post_type && empty( $post->post_content ) && absint( get_option( 'page_for_posts' ) ) === $post->ID ) {
-			add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
-			remove_post_type_support( $post_type, 'editor' );
-		}
-	}
-
-	/**
 	 * Adds post state for translations of the front page and posts page.
 	 *
 	 * @since 1.8
