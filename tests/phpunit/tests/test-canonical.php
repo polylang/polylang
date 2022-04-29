@@ -486,4 +486,25 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public function test_custom_post_type_feed_without_language() {
 		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
 	}
+
+	public function test_cyrillic_category_base() {
+		// Let's create Russian with a category and post.
+		self::create_language( 'ru_RU' );
+		$term_ru = $this->factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'привет' ) );
+		self::$model->term->set_language( $term_ru, 'en' );
+		$post_ru = $this->factory()->post->create(
+			array(
+				'post_title' => 'Russia Today',
+				'post_category' => array( $`` )
+			)
+		);
+		self::$model->post->set_language( $post_ru, 'en' );
+
+		// Let's change the category base.
+		$category = get_taxonomy( 'category' );
+		$category->rewrite['slug'] = 'категория';
+		register_taxonomy( 'category', 'category', (array) $category );
+
+		$this->assertCanonical( '/ru/категория/привет', '/ru/категория/привет' );
+	}
 }
