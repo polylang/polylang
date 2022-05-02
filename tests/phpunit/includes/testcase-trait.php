@@ -69,7 +69,6 @@ trait PLL_UnitTestCase_Trait {
 
 		$values['slug'] = $values['code'];
 		$values['rtl'] = (int) ( 'rtl' === $values['dir'] );
-		$values['term_group'] = count( self::$model->get_languages_list() );
 
 		$args = array_merge( $values, $args );
 
