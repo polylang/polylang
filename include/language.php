@@ -481,4 +481,27 @@ class PLL_Language {
 	public function get_locale( $filter = 'raw' ) {
 		return 'display' === $filter ? $this->w3c : $this->locale;
 	}
+
+	/**
+	 * Returns the highest value for the "order" (`term_group`) currently in the database for the `language` terms.
+	 *
+	 * @since  3.2.3
+	 * @global wpdb $wpdb
+	 *
+	 * @return int|null The higher order as an interger. Null if no languages have been found.
+	 */
+	public static function get_highest_order() {
+		global $wpdb;
+
+		$order = $wpdb->get_var(
+			"
+			SELECT MAX(term_group)
+			FROM $wpdb->terms AS t
+			LEFT JOIN $wpdb->term_taxonomy AS tt
+			ON t.term_id = tt.term_id
+			WHERE tt.taxonomy = 'language'"
+		);
+
+		return null === $order ? $order : (int) $order;
+	}
 }
