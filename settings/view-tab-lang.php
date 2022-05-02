@@ -146,9 +146,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<div class="form-field">
 						<label for="lang_order"><?php esc_html_e( 'Order', 'polylang' ); ?></label>
 						<?php
+						if ( ! empty( $edit_lang ) ) {
+							$lang_order = $edit_lang->term_group;
+						} else {
+							$lang_order = PLL_Language::get_highest_order();
+							$lang_order = null === $lang_order ? 0 : ++$lang_order;
+						}
 						printf(
 							'<input name="term_group" id="lang_order" type="text" value="%d" />',
-							! empty( $edit_lang ) ? esc_attr( $edit_lang->term_group ) : ''
+							(int) $lang_order
 						);
 						?>
 						<p><?php esc_html_e( 'Position of the language in the language switcher', 'polylang' ); ?></p>
