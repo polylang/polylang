@@ -103,7 +103,7 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	public function _upgrade() {
-		foreach ( array( '2.0.8', '2.1', '2.7', '2.8.1' ) as $version ) {
+		foreach ( array( '2.0.8', '2.1', '2.7', '2.8.1', '3.2.3' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				call_user_func( array( $this, 'upgrade_' . str_replace( '.', '_', $version ) ) );
 			}
@@ -201,5 +201,65 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_2_8_1() {
 		delete_transient( 'pll_languages_list' );
+	}
+
+	/**
+	 * Upgrades if the previous version is < 3.2.3.
+	 *
+	 * Increments the value of `term_group` for each language. Since WP 6.0 the order of the languages is unreliable if
+	 * they all have the same `term_group` (most probably `0`).
+	 *
+	 * @since  3.2.3
+	 * @global wpdb $wpdb
+	 *
+	 * @return void
+	 */
+	protected function upgrade_3_2_3() {
+		global $wpdb;
+
+		$languages   = PLL()->model->get_languages_list();
+		$count_langs = count( $languages );
+
+		if ( $count_langs <= 1 ) {
+			// One language or less, nothing to do.
+			return;
+		}
+
+		$term_groups = wp_list_pluck( $languages, 'term_group' );
+
+		if ( count( array_unique( $term_groups ) ) === $count_langs ) {
+			// They all have a different `term_group`.
+			return;
+		}
+
+		// Sort languages by creation date (term ID).
+		usort(
+			$languages,
+			function ( $lang_1, $lang_2 ) {
+				return $lang_1->term_id < $lang_2->term_id ? -1 : 1;
+			}
+		);
+
+		// Set the `term_group` in 1 query.
+		$first_language  = array_shift( $languages );
+		$term_group_incr = $first_language->term_group;
+		$term_ids        = array();
+		$query           = array(
+			"UPDATE {$wpdb->terms} SET term_group = (",
+			'CASE term_id',
+		);
+
+		foreach ( $languages as $language ) {
+			$query   [] = $wpdb->prepare( 'WHEN %d THEN %d', $language->term_id, ++$term_group_incr );
+			$term_ids[] = $language->term_id;
+		}
+
+		$query[] = 'END';
+		$query[] = ')';
+		$query[] = 'WHERE ID IN (' . PLL_Db_Tools::prepare_values_list( $term_ids ) . ')';
+
+		$wpdb->query( implode( "\n", $query ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		PLL()->model->clean_languages_cache();
 	}
 }
