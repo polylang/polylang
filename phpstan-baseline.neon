@@ -341,7 +341,7 @@ parameters:
 			path: admin/admin-model.php
 
 		-
-			message: "#^Parameter \\#3 \\$args of function wp_insert_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{slug\\: mixed, description\\: mixed, term_group\\: int\\} given\\.$#"
+			message: "#^Parameter \\#3 \\$args of function wp_insert_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{slug\\: mixed, description\\: mixed\\} given\\.$#"
 			count: 1
 			path: admin/admin-model.php
 

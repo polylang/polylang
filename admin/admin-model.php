@@ -93,39 +93,19 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @return WP_Error|true true if success / WP_Error if failed.
 	 */
 	public function add_language( $args ) {
-		$args   = wp_parse_args(
-			$args,
-			array(
-				'name'       => '',
-				'slug'       => '',
-				'locale'     => '',
-				'rtl'        => 0,
-				'term_group' => 0,
-				'flag'       => '',
-			)
-		);
 		$errors = $this->validate_lang( $args );
-
-		if ( $errors->has_errors() ) {
+		if ( $errors->get_error_code() ) { // Using has_errors() would be more meaningful but is available only since WP 5.0
 			return $errors;
 		}
 
 		// First the language taxonomy
-		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => $args['flag'] ) );
-		$r           = wp_insert_term(
-			$args['name'],
-			'language',
-			array(
-				'slug'        => $args['slug'],
-				'description' => $description,
-				'term_group'  => (int) $args['term_group'],
-			)
-		);
-
+		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
+		$r = wp_insert_term( $args['name'], 'language', array( 'slug' => $args['slug'], 'description' => $description ) );
 		if ( is_wp_error( $r ) ) {
-			// Avoid an ugly fatal error if something went wrong (reported once in the forum).
+			// Avoid an ugly fatal error if something went wrong ( reported once in the forum )
 			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language.', 'polylang' ) );
 		}
+		wp_update_term( (int) $r['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // can't set the term group directly in wp_insert_term
 
 		// The term_language taxonomy
 		// Don't want shared terms so use a different slug
