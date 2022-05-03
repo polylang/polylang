@@ -11,57 +11,6 @@
 class PLL_Admin_Model extends PLL_Model {
 
 	/**
-	 * Constructor.
-	 * Setups filters and actions.
-	 *
-	 * @since 3.2.3
-	 *
-	 * @param array $options Polylang options.
-	 */
-	public function __construct( &$options ) {
-		parent::__construct( $options );
-
-		add_filter( 'wp_insert_term_data', array( $this, 'add_language_term_order' ), 10, 3 );
-	}
-
-	/**
-	 * Set the 'term_group' when a language is created to force the languages to keep a consistent order.
-	 * - If 'term_group' is provided to `wp_insert_term()`, use this value (that's something that `wp_insert_term()`
-	 *   doesn't do by itself eh).
-	 * - If not provided, fetch the highest value of 'term_group' among the existing language terms and increment it.
-	 *
-	 * @since 3.2.3
-	 *
-	 * @param  array  $data     {
-	 *     Term data to be inserted.
-	 *
-	 *     @type string $name       Term name.
-	 *     @type string $slug       Term slug.
-	 *     @type int    $term_group Used as term order.
-	 * }
-	 * @param  string $taxonomy Taxonomy slug.
-	 * @param  array  $args     Arguments passed to wp_insert_term().
-	 * @return array            Arguments passed to wp_insert_term().
-	 */
-	public function add_language_term_order( $data, $taxonomy, $args ) {
-		if ( 'language' !== $taxonomy ) {
-			return $data;
-		}
-
-		if ( ! empty( $args['term_group'] ) ) {
-			$data['term_group'] = (int) $args['term_group'];
-		} else {
-			$term_group = PLL_Language::get_highest_order();
-
-			if ( null !== $term_group ) {
-				$data['term_group'] = ++$term_group;
-			}
-		}
-
-		return $data;
-	}
-
-	/**
 	 * Adds a new language
 	 * and creates a default category for this language.
 	 *
