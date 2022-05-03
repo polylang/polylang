@@ -95,4 +95,40 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 		return redirect_canonical( $pll_redirected_url, false );
 	}
+
+	/**
+	 * Tests that PLL_Frontend_Filters_Links::check_canonical_url() do not perform a redirection for the given URL path.
+	 *
+	 * @param string $test_path The path to test.
+	 * @return void
+	 */
+	public function assertDoNotRedirectCanonical( $test_path ) {
+		global $wp_rewrite;
+
+		// Sets the environment like in self::assertCanonical().
+		$_SERVER['REQUEST_URI'] = home_url( $test_path );
+		$model = new PLL_Model( $this->options );
+		$model->post->register_taxonomy();
+		create_initial_taxonomies();
+		$links_model = $model->get_links_model();
+		$pll_env     = new PLL_Frontend( $links_model );
+		$pll_env->init();
+		do_action_ref_array( 'pll_init', array( &$this->pll_env ) );
+		$wp_rewrite->flush_rules();
+		$this->go_to( home_url( $test_path ) );
+
+		// Checks that a redirection occured.
+		$redirect = false;
+		add_filter(
+			'wp_redirect',
+			function( $location ) use ( &$redirect ) {
+				$redirect = true;
+				return false;
+			}
+		);
+
+		$pll_env->filters_links->check_canonical_url( home_url( $test_path ), true );
+
+		$this->assertFalse( $redirect, 'A redirection occured for the path ' . urldecode( $test_path ) . '.' );
+	}
 }

@@ -476,8 +476,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		if ( $do_redirect ) {
 			// Protect against chained redirects.
 			if ( $redirect_url && urldecode( $requested_url ) !== urldecode( $redirect_url ) && $redirect_url === $this->check_canonical_url( $redirect_url, false ) && wp_validate_redirect( $redirect_url ) ) {
-				wp_safe_redirect( $redirect_url, 301, POLYLANG );
-				exit;
+				if ( wp_safe_redirect( $redirect_url, 301, POLYLANG ) ) {
+					exit;
+				}
 			} else {
 				return;
 			}
