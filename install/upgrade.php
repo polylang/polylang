@@ -236,12 +236,6 @@ class PLL_Upgrade {
 		usort(
 			$languages,
 			function ( $lang_1, $lang_2 ) {
-				if ( $lang_1->term_group !== $lang_2->term_group ) {
-					// First, order by `term_group`.
-					return $lang_1->term_group < $lang_2->term_group ? -1 : 1;
-				}
-
-				// Then by `term_id`.
 				return $lang_1->term_id < $lang_2->term_id ? -1 : 1;
 			}
 		);
@@ -262,14 +256,10 @@ class PLL_Upgrade {
 
 		$query[] = 'END';
 		$query[] = ')';
-		$query[] = 'WHERE term_id IN (' . PLL_Db_Tools::prepare_values_list( $term_ids ) . ')';
+		$query[] = 'WHERE ID IN (' . PLL_Db_Tools::prepare_values_list( $term_ids ) . ')';
 
 		$wpdb->query( implode( "\n", $query ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		PLL()->model->clean_languages_cache();
-
-		foreach ( $term_ids as $term_id ) {
-			clean_term_cache( $term_id, 'language' );
-		}
 	}
 }
