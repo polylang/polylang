@@ -14,9 +14,6 @@ class Model_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
-	/**
-	 * @group ktygsdkuygdfkjg
-	 */
 	public function test_languages_list() {
 		self::$model->post->register_taxonomy(); // needed otherwise posts are not counted
 
@@ -30,9 +27,6 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertSame( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
 	}
 
-	/**
-	 * @group ktygsdkuygdfkjg
-	 */
 	public function test_languages_list_order() {
 		$languages = array(
 			'it_IT' => array(
