@@ -14,17 +14,43 @@ class Model_Test extends PLL_UnitTestCase {
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
 
+	/**
+	 * @group ktygsdkuygdfkjg
+	 */
 	public function test_languages_list() {
 		self::$model->post->register_taxonomy(); // needed otherwise posts are not counted
 
-		$this->assertSameSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
-		$this->assertSameSets( array( 'English', 'Français' ), self::$model->get_languages_list( array( 'fields' => 'name' ) ) );
-		$this->assertSameSets( array(), self::$model->get_languages_list( array( 'hide_empty' => true ) ) );
+		$this->assertSame( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
+		$this->assertSame( array( 'English', 'Français' ), self::$model->get_languages_list( array( 'fields' => 'name' ) ) );
+		$this->assertSame( array(), self::$model->get_languages_list( array( 'hide_empty' => true ) ) );
 
 		$post_id = $this->factory->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 
-		$this->assertSameSets( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
+		$this->assertSame( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
+	}
+
+	/**
+	 * @group ktygsdkuygdfkjg
+	 */
+	public function test_languages_list_order() {
+		$languages = array(
+			'it_IT' => array(
+				'term_group' => 17,
+			),
+			'es_ES' => array(
+				'term_group' => 6,
+			),
+		);
+
+		foreach ( $languages as $locale => $data ) {
+			self::create_language( $locale, $data );
+		}
+
+		$languages = self::$model->get_languages_list( array( 'fields' => 'slug' ) );
+		$expected  = array( 'en', 'fr', 'es', 'it' );
+
+		$this->assertSame( $expected, $languages, 'Expected the languages to be ordered by term_group and term_id.' );
 	}
 
 	public function test_term_exists() {
