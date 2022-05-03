@@ -496,21 +496,16 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$post_ru = $this->factory()->post->create(
 			array(
 				'post_title' => 'Russia Today',
-				'post_category' => array( $term_ru ),
+				'post_category' => array( $term_ru )
 			)
 		);
 		self::$model->post->set_language( $post_ru, 'en' );
 
 		update_option( 'category_base', 'категория' );
-		$test_path = '/en/%D0%BA%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82/';
 
 		// Send encoded name much like a browser would do.
-		// Note привет = %d0%bf%d1%80%d0%b8%d0%b2%d0%b5%d1%82 and категория = %d0%ba%d0%b0%d1%82%d0%b5%d0%b3%d0%be%d1%80%d0%b8%d1%8f
+		// i.e. привет = %d0%bf%d1%80%d0%b8%d0%b2%d0%b5%d1%82 and категория = %d0%ba%d0%b0%d1%82%d0%b5%d0%b3%d0%be%d1%80%d0%b8%d1%8f
+		$test_path = '/en/%D0%BA%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82/';
 		$this->assertDoNotRedirectCanonical( $test_path );
-		// $this->assertSame( urldecode( home_url( $test_path ) ), urldecode( $redirect_url ) );
-		// $this->assertCanonical(
-		// '/en/%D0%BA%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82/',
-		// '/en/категория/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82/'
-		// );
 	}
 }
