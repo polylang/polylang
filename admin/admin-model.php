@@ -32,30 +32,16 @@ class PLL_Admin_Model extends PLL_Model {
 	 *
 	 * @since 3.2.3
 	 *
-	 * @param  array<string|int> $data     {
+	 * @param  array  $data     {
 	 *     Term data to be inserted.
 	 *
 	 *     @type string $name       Term name.
 	 *     @type string $slug       Term slug.
 	 *     @type int    $term_group Used as term order.
 	 * }
-	 * @param  string            $taxonomy Taxonomy slug.
-	 * @param  array<string|int> $args     {
-	 *     Arguments passed to wp_insert_term(), with, among other things:
-	 *
-	 *     @type int $term_group Used as term order.
-	 * }
-	 * @return array<string|int>           {
-	 *     Arguments passed to wp_insert_term().
-	 *
-	 *     @type string $name       Term name.
-	 *     @type string $slug       Term slug.
-	 *     @type int    $term_group Used as term order.
-	 * }
-	 *
-	 * @phpstan-param array{name:string,slug:string,term_group:int} $data
-	 * @phpstan-param array{term_group?:int} $args
-	 * @phpstan-return array{name:string,slug:string,term_group:int}
+	 * @param  string $taxonomy Taxonomy slug.
+	 * @param  array  $args     Arguments passed to wp_insert_term().
+	 * @return array            Arguments passed to wp_insert_term().
 	 */
 	public function add_language_term_order( $data, $taxonomy, $args ) {
 		if ( 'language' !== $taxonomy ) {
