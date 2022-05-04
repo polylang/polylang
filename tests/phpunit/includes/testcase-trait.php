@@ -67,9 +67,9 @@ trait PLL_UnitTestCase_Trait {
 		$languages = include POLYLANG_DIR . '/settings/languages.php';
 		$values    = $languages[ $locale ];
 
-		$values['slug'] = $values['code'];
-		$values['rtl'] = (int) ( 'rtl' === $values['dir'] );
-		$values['term_group'] = 0; // Default term_group.
+		$values['slug']       = $values['code'];
+		$values['rtl']        = (int) ( 'rtl' === $values['dir'] );
+		$values['term_group'] = 0;
 
 		$args = array_merge( $values, $args );
 
