@@ -60,6 +60,7 @@ class PLL_Model {
 		add_action( 'update_option_home', array( $this, 'clean_languages_cache' ) );
 
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ) );
+		add_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ), 10, 3 );
 
 		// Just in case someone would like to display the language description ;).
 		add_filter( 'language_description', '__return_empty_string' );
@@ -203,6 +204,37 @@ class PLL_Model {
 			$args['update_term_meta_cache'] = false;
 		}
 		return $args;
+	}
+
+	/**
+	 * Filters the ORDERBY clause of the languages query.
+	 * This allows to order languages by `term_group` and `term_id`.
+	 *
+	 * @since 3.2.3
+	 *
+	 * @param  string   $orderby    `ORDERBY` clause of the terms query.
+	 * @param  array    $args       An array of term query arguments.
+	 * @param  string[] $taxonomies An array of taxonomy names.
+	 * @return string
+	 */
+	public function filter_language_terms_orderby( $orderby, $args, $taxonomies ) {
+		if ( ! is_array( $taxonomies ) || count( $taxonomies ) > 1 ) {
+			return $orderby;
+		}
+
+		if ( 'language' !== reset( $taxonomies ) ) {
+			return $orderby;
+		}
+
+		if ( empty( $orderby ) || ! is_string( $orderby ) ) {
+			return $orderby;
+		}
+
+		if ( ! preg_match( '@^(?<alias>[^.]+)\.term_group$@', $orderby, $matches ) ) {
+			return $orderby;
+		}
+
+		return sprintf( '%1$s.term_group, %1$s.term_id', $matches['alias'] );
 	}
 
 	/**
