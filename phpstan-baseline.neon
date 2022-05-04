@@ -1236,11 +1236,6 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Argument of an invalid type array\\<int, int\\|string\\|WP_Term\\>\\|string supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
 			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: include/model.php
