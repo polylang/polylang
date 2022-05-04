@@ -33,6 +33,7 @@ parameters:
 			count: 1
 			path: admin/admin-base.php
 
+		# Ignored because PHPStan doesn't understand what $this is. Don't you dare laughing, JavaScript!
 		-
 			message: "#^Parameter \\#2 \\$callback of function add_filter expects callable\\(\\)\\: mixed, array\\{mixed, 'filter_language…'\\} given\\.$#"
 			count: 1
