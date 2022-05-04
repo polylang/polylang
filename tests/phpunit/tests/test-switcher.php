@@ -185,6 +185,9 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'selected', $option->item( 0 )->getAttribute( 'selected' ) );
 		$this->assertNotEmpty( $xpath->query( '//select/option[.="Français"]' )->length );
 		$this->assertNotEmpty( $xpath->query( '//script' )->length );
+		$lang_attributes = $xpath->query( '//select/option/@lang' );
+		$this->assertEquals( 'en-US', $lang_attributes->item( 0 )->value );
+		$this->assertEquals( 'fr-FR', $lang_attributes->item( 1 )->value );
 	}
 
 	public function test_with_hide_if_no_translation_option_in_admin_context() {
