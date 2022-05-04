@@ -511,6 +511,11 @@ parameters:
 			path: frontend/frontend-auto-translate.php
 
 		-
+			message: "#^Parameter \\#2 \\$pieces of function implode expects array, string given\\.$#"
+			count: 1
+			path: frontend/frontend-auto-translate.php
+
+		-
 			message: "#^@param PLL_Language \\$language does not accept actual type of parameter\\: PLL_Language\\|null\\.$#"
 			count: 1
 			path: frontend/frontend-filters-links.php
@@ -881,13 +886,13 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
-			count: 1
+			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
+			count: 2
 			path: include/class-polylang.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
-			count: 2
+			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
+			count: 1
 			path: include/class-polylang.php
 
 		-
@@ -1331,12 +1336,12 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Parameter \\#2 \\$callback of function add_filter expects callable\\(\\)\\: mixed, array\\{mixed, 'filter_language…'\\} given\\.$#"
+			message: "#^Parameter \\#2 \\$callback of function add_filter expects callable\\(\\)\\: mixed, array\\{mixed, 'get_terms_args'\\} given\\.$#"
 			count: 1
 			path: include/model.php
 
 		-
-			message: "#^Parameter \\#2 \\$callback of function add_filter expects callable\\(\\)\\: mixed, array\\{mixed, 'get_terms_args'\\} given\\.$#"
+			message: "#^Parameter \\#2 \\$pieces of function implode expects array, string given\\.$#"
 			count: 1
 			path: include/model.php
 
