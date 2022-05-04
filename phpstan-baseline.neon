@@ -881,13 +881,13 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
-			count: 2
+			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
+			count: 1
 			path: include/class-polylang.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
-			count: 1
+			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
+			count: 2
 			path: include/class-polylang.php
 
 		-
