@@ -72,7 +72,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
 			$parsed_url = wp_parse_url( $url );
-			if ( is_array( $parsed_url) && array_key_exists( 'path', $parsed_url ) && empty( trim( $parsed_url['path'], '/' ) ) && ! empty( $slug ) ) {
+			if ( is_array( $parsed_url ) && array_key_exists( 'path', $parsed_url ) && empty( trim( $parsed_url['path'], '/' ) ) && ! empty( $slug ) ) {
 				$slug = user_trailingslashit( $slug );
 			}
 
