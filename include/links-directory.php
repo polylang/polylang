@@ -102,7 +102,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
 			$pattern = preg_quote( $root, '#' );
-			$pattern = '#(?<root>' . $pattern . ")" . ( $this->options['rewrite'] ? '' : 'language/' ) . '(?:' . implode( '|', $languages ) . ')((?<query>\?)|/|$)#';
+			$pattern = '#(?<root>' . $pattern . ')' . ( $this->options['rewrite'] ? '' : 'language/' ) . '(?:' . implode( '|', $languages ) . ')((?<query>\?)|/|$)#';
 			// $1 backreference corresponds on root part of URL.
 			// $2 backreference corresponds on the query string separator or slash or end of URL.
 			// $3 backreference corresponds on the query string separator only; returns nothing if there is something between the language code and the separator.
