@@ -218,7 +218,7 @@ class Strings_Test extends PLL_UnitTestCase {
 		$_mo->export_to_db( self::$model->get_language( 'en' ) );
 
 		reset_phpmailer_instance();
-		$user_id = self::factory()->user->create(
+		self::factory()->user->create(
 			array(
 				'user_login' => 'janeDoe',
 				'user_email' => 'jane.doe@example.com',
@@ -226,13 +226,15 @@ class Strings_Test extends PLL_UnitTestCase {
 			)
 		);
 
+		$_POST['user_login'] = 'janeDoe'; // Backward compatibility with WordPress < 5.7
+
 		// Set Polylang environment.
 		$admin = new PLL_Admin( $this->links_model );
 		$admin->init();
 
 		// Let's send the mail.
 		$mailer = tests_retrieve_phpmailer_instance();
-		$result = retrieve_password( 'janeDoe' );
+		$result = retrieve_password();
 		$this->assertTrue( $result, 'No mail has been sent to retrieve password.' );
 		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'My Site' ), 'Blogname string has not been translated in mail subject.' );
 		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'My Site' ), 'Blogname string has not been translated in mail body.' );
@@ -253,6 +255,8 @@ class Strings_Test extends PLL_UnitTestCase {
 				'locale'     => 'es_ES',
 			)
 		);
+
+		$_POST['user_login'] = 'Picasso'; // Backward compatibility with WordPress < 5.7
 
 		// Set Polylang environment.
 		$admin = new PLL_Admin( $this->links_model );
