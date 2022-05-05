@@ -62,7 +62,7 @@ abstract class PLL_Base {
 		add_action( 'pll_language_defined', array( $this, 'load_strings_translations' ), 5 );
 		add_action( 'change_locale', array( $this, 'load_strings_translations' ) ); // Since WP 4.7
 		add_action( 'personal_options_update', array( $this, 'load_strings_translations' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
-		add_action( 'lostpassword_post', array( $this, 'load_strings_translations' ), 1, 0 ); // Before WordPress switch the locale in retrieve_password().
+		add_action( 'lostpassword_post', array( $this, 'load_strings_translations' ), 10, 0 ); // Password reset email.
 		// Switch_to_blog
 		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 2 );
 	}
