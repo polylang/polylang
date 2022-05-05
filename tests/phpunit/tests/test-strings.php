@@ -10,6 +10,7 @@ class Strings_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+		self::create_language( 'es_ES' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
@@ -208,5 +209,61 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'test en', pll__( 'test' ) );
 
 		$GLOBALS['wp_locale_switcher'] = $old_locale_switcher; // Reset the original global var
+	}
+
+	public function test_retrieve_password_default_language() {
+		// Create string translations.
+		$_mo = new PLL_MO();
+		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'My Site' ) );
+		$_mo->export_to_db( self::$model->get_language( 'en' ) );
+
+		reset_phpmailer_instance();
+		$user_id = self::factory()->user->create(
+			array(
+				'user_login' => 'janeDoe',
+				'user_email' => 'jane.doe@example.com',
+				'locale'     => 'en_US',
+			)
+		);
+
+		// Set Polylang environment.
+		$admin = new PLL_Admin( $this->links_model );
+		$admin->init();
+
+		// Let's send the mail.
+		$mailer = tests_retrieve_phpmailer_instance();
+		$result = retrieve_password( 'janeDoe' );
+		$this->assertTrue( $result, 'No mail has been sent to retrieve password.' );
+		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'My Site' ), 'Blogname string has not been translated in mail subject.' );
+		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'My Site' ), 'Blogname string has not been translated in mail body.' );
+		reset_phpmailer_instance();
+	}
+
+	public function test_retrieve_password_secondary_language() {
+		// Create string translations.
+		$_mo = new PLL_MO();
+		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mi Sitio' ) );
+		$_mo->export_to_db( self::$model->get_language( 'es' ) );
+
+		reset_phpmailer_instance();
+		$user_id = self::factory()->user->create(
+			array(
+				'user_login' => 'Picasso',
+				'user_email' => 'picasso@example.com',
+				'locale'     => 'es_ES',
+			)
+		);
+
+		// Set Polylang environment.
+		$admin = new PLL_Admin( $this->links_model );
+		$admin->init();
+
+		// Let's send the mail.
+		$mailer = tests_retrieve_phpmailer_instance();
+		$result = retrieve_password( 'Picasso' );
+		$this->assertTrue( $result, 'No mail has been sent to retrieve password.' );
+		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'Mi Sitio' ), 'Blogname string has not been translated in mail subject.' );
+		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'Mi Sitio' ), 'Blogname string has not been translated in mail body.' );
+		reset_phpmailer_instance();
 	}
 }
