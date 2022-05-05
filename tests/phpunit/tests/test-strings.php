@@ -212,6 +212,10 @@ class Strings_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_retrieve_password_default_language() {
+		if ( is_multisite() ) {
+			$this->markTestSkipped( 'The blog name string is not translatable in retrieve password email for multisite.' );
+		}
+
 		// Create string translations.
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'My Site' ) );
@@ -242,6 +246,10 @@ class Strings_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_retrieve_password_secondary_language() {
+		if ( is_multisite() ) {
+			$this->markTestSkipped( 'The blog name string is not translatable in retrieve password email for multisite.' );
+		}
+
 		// Create string translations.
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( get_bloginfo( 'name' ), 'Mi Sitio' ) );
