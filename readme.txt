@@ -9,7 +9,7 @@ Stable tag: 3.2.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Go multilingual in a simple and efficient way. Keep writing posts, creating categories and post tags as usual while defining the language all at once.
+Go multilingual in a simple and efficient way. Keep writing posts, creating categories and post tags as usual while defining the languages all at once.
 
 == Description ==
 
@@ -17,43 +17,49 @@ With Polylang fully integrated to WordPress and using only its built-in core fea
 
 = Features =
 
-Depending on the type of site you have built or are planning to build, a combination of plugins from the list below might be of interest:
+Depending on the type of site you have built or are planning to build, a combination of plugins from the list below might be of interest.
+All plugins include a wizard allowing to install them in just a few clicks.
 
 ### Polylang
 
 Polylang and [Polylang Pro](https://polylang.pro) share the same core providing features such as:
+
 * Translating posts, pages, media, categories, post tags, custom post types and taxonomies, RSS feeds; RTL scripts are supported.
 * The language is either set by the language code in URL, or you can use a different sub-domain or domain per language.
 * Automatic copy of categories, post tags and other metas when creating a new post or page translation.
 * Translating menus and widgets.
 * Customizable language switcher available as a widget or a navigation menu item.
+* Compatibility with Yoast SEO
 
 ### Polylang Pro
 
 Helps optimizing the time spent translating your site with some very useful extra features such as:
+
 * Better integration in the new Block Editor.
 * Language switcher available as a block.
-* Widget block editor and full Site Editing (FSE) compatibility.
+* Language options available in the widget block editor.
+* Template parts translatable in the Full Site Editing (FSE).
 * Duplicate and/or synchronize content across post translations.
 * Improved compatibilities with other plugins such as [ACF Pro](https://polylang.pro/doc/working-with-acf-pro/).
 * Share the same URL slug for posts or terms across languages.
-* [Translate the slugs](https://polylang.pro/doc/translating-urls-slugs/) in the URL for category and author bases, custom post types and more...
-* **Access to a Premium Support for personalized assistance**
+* [Translate URLs slugs](https://polylang.pro/doc/translating-urls-slugs/) for categories, author bases, custom post types and more...
+* **Access to a Premium Support for personalized assistance.**
 
 ### Polylang for WooCommerce
 
-[Add-on](https://polylang.pro/downloads/polylang-for-woocommerce/) for the compatibility with WooCommerce will provide features such as:
+[Add-on](https://polylang.pro/downloads/polylang-for-woocommerce/) for the compatibility with WooCommerce which provides features such as:
+
 * Translating WooCommerce pages (shop, check-out, cart, my account), product categories and global attribute terms directly in the WooCommerce interface.
 * Translating WooCommerce e-mails and sending them to customers in their language.
 * Products metadata synchronization.
-* Compatibility with the native WooCommerce CSV import & export tool.
+* Compatibility with the native WooCommerce CSV import & export tool.
 * Compatibility with popular plugins such as WooCommerce Subscriptions, Product Bundles, WooCommerce Bookings, Shipment tracking and more.
 * Ability to use the WooCommerce REST API (available with Polylang Pro).
 * **Access to a Premium Support for personalized assistance**
 
-Neither of them will allow you to do automated translation. Nevertheless, you can install, alongside Polylang Pro or Polylang, a third party plugin such as [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/) which offers a complete translation management system and provides services such as a translation memory or semi-automated translation processes (e.g., machine translation => human translation => legal review).
+Neither of them will allow to do automated translation. Nevertheless, can be isntalled alongside Polylang Pro or Polylang, a third party plugin such as [Lingotek Translation](https://wordpress.org/plugins/lingotek-translation/) which offers a complete translation management system and provides services such as a translation memory or semi-automated translation processes (e.g., machine translation => human translation => legal review).
 
-If you wish to migrate from WPML, you can use the plugin [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/).
+Migrating from WPML is possible using the plugin [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/).
 
 = Credits =
 
@@ -73,16 +79,16 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 = Where to find help ? =
 
-* First time users should read [Polylang - Getting started](https://polylang.pro/doc-category/getting-started/), which explains the basics with a lot of screenshots.
+* First time users should read [Polylang - Getting started](https://polylang.pro/doc-category/getting-started/), which explains the basics and includes a lot of screenshots.
 * Read the [documentation](https://polylang.pro/doc/). It includes a [FAQ](https://polylang.pro/doc-category/faq/) and the [documentation for developers](https://polylang.pro/doc-category/developers/).
-* Search the [community support forum](https://wordpress.org/search/). You will probably find your answer here.
+* Search the [community support forum](https://wordpress.org/search/). You will probably find your answers here.
 * Read the sticky posts in the [community support forum](http://wordpress.org/support/plugin/polylang).
 * If you still have a problem, open a new thread in the [community support forum](http://wordpress.org/support/plugin/polylang).
-* [Polylang Pro and Polylang for WooCommerce](https://polylang.pro) users have access to our helpdesk.
+* [Polylang Pro and Polylang for WooCommerce](https://polylang.pro) users have access to our premium support through helpdesk.
 
 = Is Polylang compatible with WooCommerce? =
 
-* You need [Polylang for WooCommerce](https://polylang.pro/downloads/polylang-for-woocommerce/), a premium addon, to make both plugins work together.
+* You need [Polylang for WooCommerce](https://polylang.pro/downloads/polylang-for-woocommerce/), premium addon described above, which will make both plugins work together.
 
 = Do you need translation services? =
 
