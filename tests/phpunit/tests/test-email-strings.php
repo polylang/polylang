@@ -28,6 +28,11 @@ class Email_Strings_Test extends PLL_UnitTestCase {
 
 
 	public function test_retrieve_password_default_language() {
+		global $wp_version;
+		if ( version_compare( $wp_version, '5.7', '>' ) ) {
+			$this->markTestSkipped( 'This test requires WordPress version 5.7 or higher.' );
+		}
+
 		if ( is_multisite() ) {
 			$this->markTestSkipped( 'The blog name string is not translatable in retrieve password email for multisite.' );
 		}
@@ -46,15 +51,13 @@ class Email_Strings_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$_POST['user_login'] = 'janeDoe'; // Backward compatibility with WordPress < 5.7
-
 		// Set PLL environment.
 		$admin = new PLL_Admin( $this->links_model );
 		$admin->init();
 
 		// Let's send the mail.
 		$mailer = tests_retrieve_phpmailer_instance();
-		$result = retrieve_password();
+		$result = retrieve_password( 'janeDoe' );
 		$this->assertTrue( $result, 'No mail has been sent to retrieve password.' );
 		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'My Site' ), 'Blogname string has not been translated in mail subject.' );
 		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'My Site' ), 'Blogname string has not been translated in mail body.' );
@@ -62,6 +65,11 @@ class Email_Strings_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_retrieve_password_secondary_language() {
+		global $wp_version;
+		if ( version_compare( $wp_version, '5.7', '>' ) ) {
+			$this->markTestSkipped( 'This test requires WordPress version 5.7 or higher.' );
+		}
+
 		if ( is_multisite() ) {
 			$this->markTestSkipped( 'The blog name string is not translatable in retrieve password email for multisite.' );
 		}
@@ -80,15 +88,13 @@ class Email_Strings_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$_POST['user_login'] = 'Picasso'; // Backward compatibility with WordPress < 5.7
-
 		// Set PLL environment.
 		$admin = new PLL_Admin( $this->links_model );
 		$admin->init();
 
 		// Let's send the mail.
 		$mailer = tests_retrieve_phpmailer_instance();
-		$result = retrieve_password();
+		$result = retrieve_password( 'Picasso' );
 		$this->assertTrue( $result, 'No mail has been sent to retrieve password.' );
 		$this->assertNotFalse( strpos( $mailer->get_sent()->subject, 'Mi Sitio' ), 'Blogname string has not been translated in mail subject.' );
 		$this->assertNotFalse( strpos( $mailer->get_sent()->body, 'Mi Sitio' ), 'Blogname string has not been translated in mail body.' );
