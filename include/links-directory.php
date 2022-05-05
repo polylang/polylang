@@ -68,7 +68,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	public function add_language_to_link( $url, $lang ) {
 		if ( ! empty( $lang ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
-			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug . '/';
+			$slug = user_trailingslashit( $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug );
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
 			if ( false === strpos( $url, $new = $root . $slug ) ) {
@@ -102,8 +102,12 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
 			$pattern = preg_quote( $root, '#' );
-			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $languages ) . ')(/|$)#';
-			$url = preg_replace( $pattern, $root, $url );
+			$pattern = '#(?<root>' . $pattern . ")" . ( $this->options['rewrite'] ? '' : 'language/' ) . '(?:' . implode( '|', $languages ) . ')((?<query>\?)|/|$)#';
+			// $1 backreference corresponds on root part of URL.
+			// $2 backreference corresponds on the query string separator or slash or end of URL.
+			// $3 backreference corresponds on the query string separator only; returns nothing if there is something between the language code and the separator.
+			// Language part in the URL isn't captured.
+			$url = preg_replace( $pattern, '$1$3', $url );
 		}
 		return $url;
 	}
