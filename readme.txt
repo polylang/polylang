@@ -17,7 +17,8 @@ With Polylang fully integrated to WordPress and using only its built-in core fea
 
 = Features =
 
-Depending on the type of site you have built or are planning to build, a combination of plugins from the list below might be of interest:
+Depending on the type of site you have built or are planning to build, a combination of plugins from the list below might be of interest.
+All plugins include a wizard allowing to install them in just a few clicks.
 
 ### Polylang
 
