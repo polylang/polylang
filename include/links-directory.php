@@ -68,7 +68,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	public function add_language_to_link( $url, $lang ) {
 		if ( ! empty( $lang ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
-			$slug = user_trailingslashit( $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug );
+			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : user_trailingslashit( $base . $lang->slug );
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
 			if ( false === strpos( $url, $new = $root . $slug ) ) {
