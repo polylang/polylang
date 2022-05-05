@@ -1151,11 +1151,6 @@ parameters:
 			path: include/links-directory.php
 
 		-
-			message: "#^Parameter \\#2 \\$replace of function preg_replace expects array\\|string, string\\|null given\\.$#"
-			count: 1
-			path: include/links-directory.php
-
-		-
 			message: "#^Method PLL_Links_Domain\\:\\:add_language_to_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: include/links-domain.php
