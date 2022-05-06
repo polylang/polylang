@@ -59,13 +59,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		$unrewriting_cpt_id = $factory->post->create( array( 'post_type' => 'pll-unrewriting-cpt', 'post_title' => 'custom-post' ) );
 		self::$model->post->set_language( $unrewriting_cpt_id, 'en' );
-		add_filter(
-			'pll_get_post_types',
-			function( $post_types ) {
-				$post_types[] = 'pll-unrewriting-cpt';
-				return $post_types;
-			}
-		);
 
 		self::$custom_post_id = $factory->post->create(
 			array(
@@ -126,24 +119,32 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			)
 		);
+		add_filter(
+			'pll_get_post_types',
+			function( $post_types ) {
+				$post_types[] = 'pll-unrewriting-cpt';
+				return $post_types;
+			}
+		);
 	}
 
 	public function test_custom_post_type_without_rewriting_with_correct_language_and_permalink_structure_without_trailing_slash() {
 		$this->set_permalink_structure( '/%category%/%postname%' );
-		$this->assertCanonical( '/en/?pll-unrewriting-cpt=custom-post', '/en?pll-unrewriting-cpt=custom-post' );
+		$this->assertCanonical( '/en?pll-unrewriting-cpt=custom-post', '/en?pll-unrewriting-cpt=custom-post' );
 	}
 	public function test_custom_post_type_without_rewriting_with_correct_language_and_permalink_structure_with_trailing_slash() {
 		$this->set_permalink_structure( '/%category%/%postname%/' );
-		$this->assertCanonical( '/en?pll-unrewriting-cpt=custom-post', '/en/?pll-unrewriting-cpt=custom-post' );
+		$this->assertCanonical( '/en/?pll-unrewriting-cpt=custom-post', '/en/?pll-unrewriting-cpt=custom-post' );
 	}
 
 	public function test_custom_post_type_without_rewriting_with_incorrect_language_and_permalink_structure_without_trailing_slash() {
 		$this->set_permalink_structure( '/%category%/%postname%' );
-		$this->assertCanonical( '/fr/?pll-unrewriting-cpt=custom-post', '/en?pll-unrewriting-cpt=custom-post' );
+		$this->assertCanonical( '/fr?pll-unrewriting-cpt=custom-post', '/en?pll-unrewriting-cpt=custom-post' );
 	}
+
 	public function test_custom_post_type_without_rewriting_with_incorrect_language_and_permalink_structure_with_trailing_slash() {
 		$this->set_permalink_structure( '/%category%/%postname%/' );
-		$this->assertCanonical( '/fr?pll-unrewriting-cpt=custom-post', '/en/?pll-unrewriting-cpt=custom-post' );
+		$this->assertCanonical( '/fr/?pll-unrewriting-cpt=custom-post', '/en/?pll-unrewriting-cpt=custom-post' );
 	}
 
 	public function test_post_with_name_and_language() {
