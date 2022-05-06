@@ -36,7 +36,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 		$wp_rewrite->init();
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
-		$wp_rewrite->set_permalink_structure( $this->structure );
+		$wp_rewrite->set_permalink_structure( $structure );
 
 		// $wp_rewrite->flush_rules() is called in self::assertCanonical()
 	}
