@@ -196,8 +196,10 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 		}
 
 		// If no language is present in $name, we may attempt to get the current sitemap url (e.g. in redirect_canonical() ).
-		if ( get_query_var( 'lang' ) ) {
-			$lang = $this->model->get_language( get_query_var( 'lang' ) );
+		$query_var = get_query_var( 'lang' );
+
+		if ( ! empty( $query_var ) && is_string( $query_var ) ) {
+			$lang = $this->model->get_language( $query_var );
 			$url = $this->provider->get_sitemap_url( $name, $page );
 			return $this->links_model->add_language_to_link( $url, $lang );
 		}

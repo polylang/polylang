@@ -267,13 +267,15 @@ class PLL_WPML_API {
 	 * @return string
 	 */
 	public function wpml_permalink( $url, $lang = '' ) {
-		$lang = PLL()->model->get_language( $lang );
+		if ( ! empty( $lang ) ) {
+			$lang = PLL()->model->get_language( $lang );
+		}
 
 		if ( empty( $lang ) && ! empty( PLL()->curlang ) ) {
 			$lang = PLL()->curlang;
 		}
 
-		return empty( $lang ) ? $url : PLL()->links_model->switch_language_in_link( $url, $lang );
+		return $lang instanceof PLL_Language ? PLL()->links_model->switch_language_in_link( $url, $lang ) : $url;
 	}
 
 	/**

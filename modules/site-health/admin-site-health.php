@@ -343,6 +343,8 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @param int $limit Max number of posts to show per post type.
 	 * @return int[][] Array containing an array of post ids.
+	 *
+	 * @phpstan-param int<0,max> $limit
 	 */
 	public function get_post_ids_without_lang( $limit = 5 ) {
 		$posts = array();
@@ -367,6 +369,8 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @param int $limit Max number of terms to show per post type.
 	 * @return int[][] Array containing an array of term ids.
+	 *
+	 * @phpstan-param int<0,max> $limit
 	 */
 	public function get_term_ids_without_lang( $limit = 5 ) {
 		$terms = array();

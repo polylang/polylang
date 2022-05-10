@@ -404,7 +404,9 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			update_user_meta( $user_id, 'pll_filter_content', ( $lang = $this->model->get_language( sanitize_key( $_GET['lang'] ) ) ) ? $lang->slug : '' ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
-		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
+		$lang = get_user_meta( get_current_user_id(), 'pll_filter_content', true );
+
+		$this->filter_lang = is_string( $lang ) && ! empty( $lang ) ? $this->model->get_language( $lang ) : $this->filter_lang;
 
 		// Set preferred language for use when saving posts and terms: must not be empty
 		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_language( $this->options['default_lang'] ) : $this->filter_lang;
