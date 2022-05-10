@@ -132,6 +132,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->set_permalink_structure( '/%category%/%postname%' );
 		$this->assertCanonical( '/en?pll-unrewriting-cpt=custom-post', '/en?pll-unrewriting-cpt=custom-post' );
 	}
+
 	public function test_custom_post_type_without_rewriting_with_correct_language_and_permalink_structure_with_trailing_slash() {
 		$this->set_permalink_structure( '/%category%/%postname%/' );
 		$this->assertCanonical( '/en/?pll-unrewriting-cpt=custom-post', '/en/?pll-unrewriting-cpt=custom-post' );
