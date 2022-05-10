@@ -46,7 +46,7 @@ parameters:
 			path: admin/admin-base.php
 
 		-
-			message: "#^Property PLL_Admin_Base\\:\\:\\$filter_lang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\.$#"
+			message: "#^Property PLL_Admin_Base\\:\\:\\$filter_lang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\|null\\.$#"
 			count: 1
 			path: admin/admin-base.php
 
@@ -466,6 +466,11 @@ parameters:
 			path: frontend/choose-lang.php
 
 		-
+			message: "#^Method PLL_Choose_Lang\\:\\:get_preferred_language\\(\\) should return object but returns PLL_Language\\|false\\.$#"
+			count: 1
+			path: frontend/choose-lang.php
+
+		-
 			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
 			count: 2
 			path: frontend/choose-lang.php
@@ -626,11 +631,6 @@ parameters:
 			path: frontend/frontend-filters-links.php
 
 		-
-			message: "#^Parameter \\#2 \\$str of function explode expects string, int\\|string given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
 			message: "#^Property WP_Query\\:\\:\\$tax_query \\(WP_Tax_Query\\) in empty\\(\\) is not falsy\\.$#"
 			count: 1
 			path: frontend/frontend-filters-links.php
@@ -687,11 +687,6 @@ parameters:
 
 		-
 			message: "#^Method PLL_Frontend_Filters\\:\\:option_sticky_posts\\(\\) should return array\\<int\\> but returns mixed\\.$#"
-			count: 1
-			path: frontend/frontend-filters.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Translated_Object\\:\\:where_clause\\(\\) expects array\\<string\\>\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
 			count: 1
 			path: frontend/frontend-filters.php
 
@@ -847,6 +842,11 @@ parameters:
 
 		-
 			message: "#^Function pll_current_language\\(\\) should return PLL_Language\\|string\\|false but returns PLL_Language\\|false\\|null\\.$#"
+			count: 1
+			path: include/api.php
+
+		-
+			message: "#^Function pll_languages_list\\(\\) should return array\\<string\\> but returns array\\<int, PLL_Language\\>\\.$#"
 			count: 1
 			path: include/api.php
 
@@ -1201,11 +1201,6 @@ parameters:
 			path: include/links-permalinks.php
 
 		-
-			message: "#^Method PLL_Links_Subdomain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int\\|string, mixed\\>\\.$#"
-			count: 1
-			path: include/links-subdomain.php
-
-		-
 			message: "#^Method PLL_Links_Subdomain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: include/links-subdomain.php
@@ -1241,17 +1236,7 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Cannot access offset int on mixed\\.$#"
-			count: 2
-			path: include/model.php
-
-		-
 			message: "#^Cannot access offset mixed on mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Method PLL_Model\\:\\:count_posts\\(\\) should return int but returns mixed\\.$#"
 			count: 1
 			path: include/model.php
 
@@ -1261,17 +1246,7 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Method PLL_Model\\:\\:get_languages_list\\(\\) should return array but returns mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
 			message: "#^Method PLL_Model\\:\\:get_links_model\\(\\) should return PLL_Links_Model but returns object\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Method PLL_Model\\:\\:get_objects_with_no_lang\\(\\) should return array but returns array\\|false\\.$#"
 			count: 1
 			path: include/model.php
 
@@ -1287,11 +1262,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$arr1 of function array_intersect expects array, mixed given\\.$#"
-			count: 2
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Translated_Object\\:\\:where_clause\\(\\) expects array\\<string\\>\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 2
 			path: include/model.php
 
@@ -1532,6 +1502,11 @@ parameters:
 			message: "#^Parameter \\#2 \\$str of function explode expects string, mixed given\\.$#"
 			count: 1
 			path: modules/lingotek/lingotek.php
+
+		-
+			message: "#^Argument of an invalid type PLL_Language supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: modules/site-health/admin-site-health.php
 
 		-
 			message: "#^Cannot call method get_must_translate_message\\(\\) on PLL_Admin_Static_Pages\\|null\\.$#"

@@ -157,11 +157,11 @@ abstract class PLL_Choose_Lang {
 	 * Returns the preferred language
 	 * either from the cookie if it's a returning visit
 	 * or according to browser preference
-	 * or the default language
+	 * or the default language.
 	 *
 	 * @since 0.1
 	 *
-	 * @return object browser preferred language or default language
+	 * @return object Browser preferred language or default language.
 	 */
 	public function get_preferred_language() {
 		$language = false;
@@ -189,8 +189,19 @@ abstract class PLL_Choose_Lang {
 		 */
 		$slug = apply_filters( 'pll_preferred_language', $language, $cookie );
 
-		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
-		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_language( $this->options['default_lang'] );
+		if ( ! empty( $slug ) && is_string( $slug ) ) {
+			$lang = $this->model->get_language( $slug );
+
+			if ( ! empty( $lang ) ) {
+				return $lang;
+			}
+		}
+
+		/**
+		 * Return default if there is no preferences in the browser or preferences does not match our languages or it is
+		 * requested not to use the browser preference.
+		 */
+		return $this->model->get_language( $this->options['default_lang'] );
 	}
 
 	/**
@@ -299,7 +310,7 @@ abstract class PLL_Choose_Lang {
 			$this->set_curlang_in_query( $query );
 		} elseif ( ( count( $query->query ) == 1 || ( is_paged() && count( $query->query ) == 2 ) ) && $lang = get_query_var( 'lang' ) ) {
 			// Set is_home on translated home page when it displays posts. It must be true on page 2, 3... too.
-			$lang = $this->model->get_language( $lang );
+			$lang = is_string( $lang ) ? $this->model->get_language( $lang ) : false;
 			$this->set_language( $lang ); // Set the language now otherwise it will be too late to filter sticky posts!
 			$query->is_home = true;
 			$query->is_tax = false;

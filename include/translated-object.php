@@ -410,7 +410,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 1.2
 	 *
-	 * @param PLL_Language|string|string[] $lang PLL_Language object or a comma separated list of language slug or an array of language slugs.
+	 * @param array<PLL_Language|string>|PLL_Language|string $lang PLL_Language object or a comma separated list of language slug or an array of language slugs.
 	 * @return string Where clause.
 	 */
 	public function where_clause( $lang ) {
@@ -490,8 +490,11 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param  mixed $id A supposedly numeric ID.
 	 * @return int       A positive integer. `0` for non numeric values and negative integers.
+	 *
+	 * @phpstan-return int<0,max>
 	 */
 	public function sanitize_int_id( $id ) {
+		/** @var int<0,max> */
 		return is_numeric( $id ) && $id >= 1 ? (int) $id : 0;
 	}
 
@@ -503,6 +506,8 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param  mixed $ids An associative array of translations with language code as key and translation ID as value.
 	 * @return array<int> An associative array of translations with language code as key and translation ID as value.
+	 *
+	 * @phpstan-return array<int<1,max>>
 	 */
 	public function sanitize_int_ids_list( $ids ) {
 		if ( empty( $ids ) || ! is_array( $ids ) ) {

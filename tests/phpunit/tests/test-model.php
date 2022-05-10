@@ -53,9 +53,9 @@ class Model_Test extends PLL_UnitTestCase {
 		$child = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'child', 'parent' => $parent ) );
 		self::$model->term->set_language( $child, 'en' );
 
-		$this->assertEquals( $parent, self::$model->term_exists( 'parent', 'category', 0, 'en' ) );
-		$this->assertEquals( $child, self::$model->term_exists( 'child', 'category', 0, 'en' ) );
-		$this->assertEquals( $child, self::$model->term_exists( 'child', 'category', $parent, 'en' ) );
+		$this->assertSame( $parent, self::$model->term_exists( 'parent', 'category', 0, 'en' ) );
+		$this->assertSame( $child, self::$model->term_exists( 'child', 'category', 0, 'en' ) );
+		$this->assertSame( $child, self::$model->term_exists( 'child', 'category', $parent, 'en' ) );
 		$this->assertEmpty( self::$model->term_exists( 'parent', 'category', 0, 'fr' ) );
 		$this->assertEmpty( self::$model->term_exists( 'child', 'category', 0, 'fr' ) );
 		$this->assertEmpty( self::$model->term_exists( 'child', 'category', $parent, 'fr' ) );
@@ -67,7 +67,7 @@ class Model_Test extends PLL_UnitTestCase {
 	public function test_term_exists_with_special_character() {
 		$term = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'Cook & eat' ) );
 		self::$model->term->set_language( $term, 'en' );
-		$this->assertEquals( $term, self::$model->term_exists( 'Cook & eat', 'category', 0, 'en' ) );
+		$this->assertSame( $term, self::$model->term_exists( 'Cook & eat', 'category', 0, 'en' ) );
 	}
 
 	public function test_count_posts() {
@@ -89,19 +89,19 @@ class Model_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$language = self::$model->get_language( 'fr' );
-		$this->assertEquals( 2, self::$model->count_posts( $language ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'post_format' => 'post-format-aside' ) ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'year' => 2007 ) ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'year' => 2007, 'monthnum' => 9 ) ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'year' => 2007, 'monthnum' => 9, 'day' => 4 ) ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'm' => 2007 ) ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'm' => 200709 ) ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'm' => 20070904 ) ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'author' => 1 ) ) );
-		$this->assertEquals( 1, self::$model->count_posts( $language, array( 'author_name' => 'admin' ) ) );
+		$this->assertSame( 2, self::$model->count_posts( $language ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'post_format' => 'post-format-aside' ) ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'year' => 2007 ) ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'year' => 2007, 'monthnum' => 9 ) ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'year' => 2007, 'monthnum' => 9, 'day' => 4 ) ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'm' => 2007 ) ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'm' => 200709 ) ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'm' => 20070904 ) ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'author' => 1 ) ) );
+		$this->assertSame( 1, self::$model->count_posts( $language, array( 'author_name' => 'admin' ) ) );
 
 		// Bug fixed in version 2.2.6
-		$this->assertEquals( 2, self::$model->count_posts( $language, array( 'post_type' => array( 'post', 'page' ) ) ) );
+		$this->assertSame( 2, self::$model->count_posts( $language, array( 'post_type' => array( 'post', 'page' ) ) ) );
 	}
 
 	public function test_translated_post_types() {
