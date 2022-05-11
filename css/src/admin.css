@@ -373,6 +373,12 @@
 	background: #fff;
 }
 
+/* Override WordPress styles */
+.languages_page_mlang_strings .metabox-holder > #normal-sortables .postbox .submit {
+	float: none;
+	padding: 0;
+}
+
 @media screen and ( max-width: 782px ) {
 	/* settings */
 	#wpbody-content .pll-settings .pll-configure > td {
