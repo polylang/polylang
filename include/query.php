@@ -105,6 +105,10 @@ class PLL_Query {
 	 * @return void
 	 */
 	public function set_language( $lang ) {
+		if ( ! $this->can_filter_query() ) {
+			return;
+		}
+
 		// Defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
 		$lang_query = array(
 			'taxonomy' => 'language',
@@ -174,8 +178,8 @@ class PLL_Query {
 				}
 			}
 		} else {
-			// Do not filter untranslatable post types such as nav_menu_item
-			if ( isset( $qvars['post_type'] ) && ! $this->model->is_translated_post_type( $qvars['post_type'] ) && ( empty( $qvars['tax_query'] ) || ! $this->have_translated_taxonomy( $qvars['tax_query'] ) ) ) {
+			// Do not filter untranslatable post types such as nav_menu_item.
+			if ( ! $this->can_filter_query() ) {
 				unset( $qvars['lang'] );
 			}
 
@@ -184,5 +188,17 @@ class PLL_Query {
 				unset( $qvars['lang'] );
 			}
 		}
+	}
+
+	/**
+	 * Checks if we can filter the query.
+	 *
+	 * @since 3.1
+	 *
+	 * @return bool
+	 */
+	protected function can_filter_query() {
+		$qvars = &$this->query->query_vars;
+		return ! isset( $qvars['post_type'] ) || $this->model->is_translated_post_type( $qvars['post_type'] ) || ( ! empty( $qvars['tax_query'] ) && $this->have_translated_taxonomy( $qvars['tax_query'] ) );
 	}
 }
