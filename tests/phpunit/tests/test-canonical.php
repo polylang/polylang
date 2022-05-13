@@ -50,7 +50,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				}
 			}
 		);
-		$test = register_post_type(
+		register_post_type(
 			'pll-unrewriting-cpt',
 			array(
 				'public'  => true,
