@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone,
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 5.6
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 3.2.2
+Stable tag: 3.2.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,16 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
+= 3.2.3 (2022-05-17) =
+
+* Pro: Fix a fatal error when inserting a term
+* Pro: Fix translation of the block cover when duplicating a post
+* Pro: Fix a CSS issue in bulk tranlate form introduced by WP 6.0
+* Pro: Fix a CSS issue in string import/export metaboxes.
+* Prevent random languages order in WP 6.0 #1041
+* Translate site title in retrieve password email #1042
+* Fix 'lang' attribute in language widget dropdown #1039
+
 = 3.2.2 (2022-04-25) =
 
 * Pro: Fix redirect occuring for tags sharing the same slug as their translations
@@ -146,56 +156,5 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Fix the Yoast SEO breadcrumb when it includes a non-synchronized taxonomy #1005
 * Fix a PHP Notice when adding a new language and Yoast SEO is active #979
 * Fix a PHP warning in Yoast SEO compatibility #954
-
-= 3.1.4 (2022-01-31) =
-
-* Pro: Adapt duplication and synchronization of the gallery block refactored in WP 5.9
-* Fix UI glitch in the classic editor custom fields form when changing a post language in WP 5.9 #970
-
-= 3.1.3 (2021-12-14) =
-
-* Fix user description escaping #934
-* Fix dismissable notice when creating a term in WP 5.9 #936
-* Fix empty search not handled correctly. Props Dominik Schilling #937
-* Fix warning occurring when a 3rd party plugin attempts to register anything else than a string using the WPML API #942
-* Fix Yoast SEO columns not corectly drawn when quick editing a post #943
-
-= 3.1.2 (2021-10-11) =
-
-* Pro: Fix parent page not filtered by language in the block editor since WP 5.6
-* Pro: Fix XLIFF mime type for PHP 7.0 and PHP 7.1
-* Fix settings page displaying the media modules whne no language are defined
-* Enforce Yoast SEO to use dynamic permalinks #882
-* Yoast SEO: Fix static front page and blog page breadcrumb
-
-= 3.1.1 (2021-08-16) =
-
-* Pro: Fix a fatal error with The Events Calendar
-* Allow to remove the cookie with the pll_cookie_expiration filter #905
-
-= 3.1 (2021-07-27) =
-
-* Add compatibility with WordPress 5.8
-* Raise Minimum WordPress version to 5.4
-* Pro: Allow to filter blocks by language in the widget block editor
-* Pro: Allow to export and import XLIFF files for string translations
-* Pro: Add the language switcher in the navigation block (experimental)
-* Pro: Replace dashicons by svg icons in the block editor
-* Pro: The Events Calendar: Add compatibility with Views V2 (only for sites using only one domain)
-* Pro: Fix + icon displayed in the block editor sidebar when the user cannot create a translation
-* Add a warning section to the site health for posts and terms without languages #825
-* Require the simplexml extension in the site health if a wpml-config.xml is found #827
-* Remove the information about the WPML compabitility mode in settings #843
-* The browser preferred language detection is now deactivated by default
-* The media are now untranslated by default
-* Highlight the language filter in the admin toolbar when it's active #821
-* Allow to query comments in multiple languages (just as posts and terms) #840
-* Don't disable the translation input field in the classic metabox #841 Props Onatcer
-* Optimize all images including flags #848 Props lowwebtech
-* Don't redirect if WordPress doesn't validate the redirect url to avoid redirects to /wp-admin/ #879
-* Fix media appearing to have a language after the language is changed in the media library grid view  #807
-* Fix media not all deleted when bulk deleting from the grid view of the media library #830
-* Fix when more than one language switcher are added to the same menu #853
-* Fix PHP notice when adding a CPT archive link to a menu #868 Props davidwebca
 
 See [changelog.txt](https://plugins.svn.wordpress.org/polylang/trunk/changelog.txt) for older changelog
