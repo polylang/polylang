@@ -68,12 +68,15 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	public function add_language_to_link( $url, $lang ) {
 		if ( ! empty( $lang ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
-			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : trailingslashit( $base . $lang->slug );
+			$slug = '';
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
-			$parsed_url = wp_parse_url( $url );
-			if ( is_array( $parsed_url ) && array_key_exists( 'path', $parsed_url ) && empty( trim( $parsed_url['path'], '/' ) ) && ! empty( $slug ) ) {
-				$slug = user_trailingslashit( $slug );
+			if ( $this->options['default_lang'] !== $lang->slug || ! $this->options['hide_default'] ) {
+				$slug = trailingslashit( $base . $lang->slug );
+				$parsed_url = wp_parse_url( $url );
+				if ( is_array( $parsed_url ) && array_key_exists( 'path', $parsed_url ) && empty( trim( $parsed_url['path'], '/' ) ) && ! empty( $slug ) ) {
+					$slug = user_trailingslashit( $slug );
+				}
 			}
 
 			if ( false === strpos( $url, $new = $root . $slug ) ) {
