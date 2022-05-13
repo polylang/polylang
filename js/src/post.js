@@ -25,9 +25,10 @@ jQuery(
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
 				const form = mutation.addedNodes[0];
-				if ( 0 < mutation.addedNodes.length && form.classList.contains( 'inline-edit-post' ) ) {
+				if ( 0 < mutation.addedNodes.length && ( form.classList.contains( 'inline-edit-post' ) || form.classList.contains( 'inline-edit-product' ) ) ) {
 					// WordPress has inserted the quick edit form.
 					const post_id = Number( form.id.substring( 5 ) );
+					console.log(post_id);
 
 					if ( post_id > 0 ) {
 						// Get the language dropdown.
