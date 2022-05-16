@@ -25,7 +25,7 @@ jQuery(
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
 				const form = mutation.addedNodes[0];
-				if ( 0 < mutation.addedNodes.length && ( form.classList.contains( 'inline-edit-post' ) || form.classList.contains( 'inline-edit-product' ) ) ) {
+				if ( 0 < mutation.addedNodes.length && form.classList.contains( 'inline-editor' ) ) {
 					// WordPress has inserted the quick edit form.
 					const post_id = Number( form.id.substring( 5 ) );
 
