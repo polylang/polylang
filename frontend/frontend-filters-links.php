@@ -403,6 +403,11 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					} else {
 						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
 					}
+					// Keep query string from the requested URL if any.
+					$parsed_requested_url = wp_parse_url( $requested_url );
+					if ( $parsed_requested_url && isset( $parsed_requested_url['query'] ) && ! empty( $parsed_requested_url['query'] ) ) {
+						$redirect_url = $redirect_url . '?' . $parsed_requested_url['query'];
+					}
 					$language = $this->get_queried_term_language();
 				} else {
 					// We need to switch the language when there is no language provided in a pretty permalink.
