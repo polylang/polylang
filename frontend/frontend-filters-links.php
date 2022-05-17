@@ -403,10 +403,18 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					} else {
 						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
 					}
-					// Keep query string from the requested URL if any.
-					$parsed_requested_url = wp_parse_url( $requested_url );
-					if ( $parsed_requested_url && isset( $parsed_requested_url['query'] ) && ! empty( $parsed_requested_url['query'] ) ) {
-						$redirect_url = $redirect_url . '?' . $parsed_requested_url['query'];
+					// Keeps query string from the requested URL if any.
+					$query_string = wp_parse_url( $requested_url, PHP_URL_QUERY );
+
+					if ( is_string( $query_string ) && ! empty( $query_string ) ) {
+						// Removes query string parameters which can be used for rewriting.
+						parse_str( $query_string, $parameters );
+						foreach ( $parameters as $parameter_name => $value ) {
+							if ( in_array( $parameter_name, array( 'cat', 'tag', 'category_name', 'feed', 'paged' ), true ) ) {
+								unset( $parameters[ $parameter_name ] );
+							}
+						}
+						$redirect_url = $redirect_url . ( empty( $parameters ) ? '' : '?' . http_build_query( $parameters ) );
 					}
 					$language = $this->get_queried_term_language();
 				} else {
