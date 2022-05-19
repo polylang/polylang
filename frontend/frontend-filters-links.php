@@ -403,19 +403,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					} else {
 						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
 					}
-					// Keeps query string from the requested URL if any.
-					$query_string = wp_parse_url( $requested_url, PHP_URL_QUERY );
-
-					if ( is_string( $query_string ) && ! empty( $query_string ) ) {
-						// Removes query string parameters which can be used for rewriting.
-						parse_str( $query_string, $parameters );
-						foreach ( $parameters as $parameter_name => $value ) {
-							if ( in_array( $parameter_name, array( 'cat', 'tag', 'category_name', 'feed', 'paged' ), true ) ) {
-								unset( $parameters[ $parameter_name ] );
-							}
-						}
-						$redirect_url = $redirect_url . ( empty( $parameters ) ? '' : '?' . http_build_query( $parameters ) );
-					}
+					$redirect_url = $this->maybe_keep_query_string_in_redirect_url( $requested_url, $redirect_url);
 					$language = $this->get_queried_term_language();
 				} else {
 					// We need to switch the language when there is no language provided in a pretty permalink.
@@ -511,6 +499,33 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		if ( ! empty( $this->wp_query()->query['paged'] ) && $page = get_query_var( 'paged' ) ) {
 			$redirect_url = $this->links_model->add_paged_to_link( $redirect_url, $page );
 		}
+		return $redirect_url;
+	}
+
+	/**
+	 * Returns the link by keeping the query string if necessary.
+	 *
+	 * @since 3.2
+	 *
+	 * @param string $requested_url The original requested URL.
+	 * @param string $redirect_url  The url to redirect to.
+	 * @return string The modified url to redirect to.
+	 */
+	protected function maybe_keep_query_string_in_redirect_url( $requested_url, $redirect_url ) {
+		// Keeps query string from the requested URL if any.
+		$query_string = wp_parse_url( $requested_url, PHP_URL_QUERY );
+
+		if ( is_string( $query_string ) && ! empty( $query_string ) ) {
+			// Removes query string parameters which can be used for rewriting.
+			parse_str( $query_string, $parameters );
+			foreach ( $parameters as $parameter_name => $value ) {
+				if ( in_array( $parameter_name, array( 'cat', 'tag', 'category_name', 'feed', 'paged' ), true ) ) {
+					unset( $parameters[ $parameter_name ] );
+				}
+			}
+			$redirect_url = $redirect_url . ( empty( $parameters ) ? '' : '?' . http_build_query( $parameters ) );
+		}
+
 		return $redirect_url;
 	}
 
