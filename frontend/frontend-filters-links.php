@@ -403,7 +403,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					} else {
 						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
 					}
-					$redirect_url = $this->maybe_keep_query_string_in_redirect_url( $requested_url, $redirect_url);
+					$redirect_url = $this->maybe_keep_query_string_in_redirect_url( $requested_url, $redirect_url );
 					$language = $this->get_queried_term_language();
 				} else {
 					// We need to switch the language when there is no language provided in a pretty permalink.
