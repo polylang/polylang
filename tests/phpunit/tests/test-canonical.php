@@ -132,6 +132,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?p=' . self::$post_en, '/en/post-format-test-audio/' );
 	}
 
+	public function test_should_not_remove_query_string_parameter_from_post_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&p=' . self::$post_en, '/en/post-format-test-audio/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_post_rewritten_url() {
+		$this->assertCanonical( '/en/post-format-test-audio/?foo=bar&p=' . self::$post_en, '/en/post-format-test-audio/?foo=bar' );
+	}
+
 	public function test_post_feed_with_incorrect_language() {
 		$this->assertCanonical( '/fr/post-format-test-audio/feed/', '/en/post-format-test-audio/feed/' );
 	}
