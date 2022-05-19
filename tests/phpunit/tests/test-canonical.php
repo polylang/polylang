@@ -166,6 +166,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
 	}
 
+	public function test_should_not_remove_query_string_parameter_from_page_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&page_id=' . self::$page_id, '/en/parent-page/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_page_rewritten_url() {
+		$this->assertCanonical( '/en/parent-page/?foo=bar&page_id=' . self::$page_id, '/en/parent-page/?foo=bar' );
+	}
+
 	public function test_page_feed_with_incorrect_language() {
 		$this->assertCanonical( '/fr/parent-page/feed/', '/en/parent-page/feed/' );
 	}
