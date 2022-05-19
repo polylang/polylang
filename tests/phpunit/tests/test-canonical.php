@@ -233,11 +233,19 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
-		$this->assertCanonical( '?sort=asc&cat=' . self::$term_en, '/en/category/parent/?sort=asc' );
+		$this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_category_rewritten_url() {
-		$this->assertCanonical( '/en/category/parent/?sort=asc', '/en/category/parent/?sort=asc' );
+		$this->assertCanonical( '/en/category/parent/?foo=bar', '/en/category/parent/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_tag_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&tag=test-tag', '/en/tag/test-tag/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_tag_rewritten_url() {
+		$this->assertCanonical( '/en/tag/test-tag/?foo=bar', '/en/tag/test-tag/?foo=bar' );
 	}
 
 	public function test_paged_category_from_plain_permalink() {
