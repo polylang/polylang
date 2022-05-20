@@ -108,6 +108,31 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			)
 		);
+
+		register_taxonomy(
+			'custom_tax',
+			null,
+			array(
+				'public'    => true,
+				'rewrite'   => true,
+			)
+		);
+
+		$custom_term_en = $this->factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
+		self::$model->term->set_language( $custom_term_en, 'en' );
+
+		add_filter(
+			'pll_get_taxonomies',
+			function( $taxonomies ) {
+				$taxonomies['custom_tax'] = 'custom_tax';
+				return $taxonomies;
+			}
+		);
+	}
+
+	public function tear_down() {
+		unregister_taxonomy( 'custom_tax' );
+		parent::tear_down();
 	}
 
 	public function test_post_with_name_and_language() {
@@ -262,6 +287,31 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_should_not_remove_query_string_parameter_from_tag_rewritten_url() {
 		$this->assertCanonical( '/en/tag/test-tag/?foo=bar', '/en/tag/test-tag/?foo=bar' );
+	}
+
+	public function test_custom_taxonomy_with_incorrect_language() {
+		$this->assertCanonical( '/fr/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_custom_taxonomy_without_language() {
+		$this->assertCanonical( '/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_custom_taxonomy_with_correct_language() {
+		$this->assertCanonical( '/en/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_custom_taxonomy_from_plain_permalink() {
+		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom taxonomies.
+		$this->assertCanonical( '?custom_tax=custom-term', '/en/?custom_tax=custom-term' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/?foo=bar&custom_tax=custom-term' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_rewritten_url() {
+		$this->assertCanonical( '/en/custom_tax/custom-term/?foo=bar', '/en/custom_tax/custom-term/?foo=bar' );
 	}
 
 	public function test_paged_category_from_plain_permalink() {
