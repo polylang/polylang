@@ -113,8 +113,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			'custom_tax',
 			null,
 			array(
-				'public'    => true,
-				'rewrite'   => true,
+				'public'  => true,
+				'rewrite' => true,
 			)
 		);
 
