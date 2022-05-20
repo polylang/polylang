@@ -39,6 +39,20 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		add_action(
 			'registered_taxonomy',
 			function( $taxonomy ) {
+
+				if ( ! taxonomy_exists( 'custom_tax' ) ) {
+					register_taxonomy(
+						'custom_tax',
+						'post',
+						array(
+							'public'  => true,
+							'rewrite' => true,
+						)
+					);
+					$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
+					self::$model->term->set_language( $custom_term_en, 'en' );
+
+				}
 				if ( 'post_format' === $taxonomy && ! post_type_exists( 'pllcanonical' ) ) { // Last taxonomy registered in {@see https://github.com/WordPress/wordpress-develop/blob/36ef9cbca96fca46e7daf1ee687bb6a20788385c/src/wp-includes/taxonomy.php#L158-L174 create_initial_taxonomies()}
 					register_post_type(
 						'pllcanonical',
@@ -108,18 +122,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			)
 		);
-
-		register_taxonomy(
-			'custom_tax',
-			null,
-			array(
-				'public'  => true,
-				'rewrite' => true,
-			)
-		);
-
-		$custom_term_en = $this->factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
-		self::$model->term->set_language( $custom_term_en, 'en' );
 
 		add_filter(
 			'pll_get_taxonomies',
