@@ -49,10 +49,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 							'rewrite' => true,
 						)
 					);
-					$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
-					self::$model->term->set_language( $custom_term_en, 'en' );
-
 				}
+
 				if ( 'post_format' === $taxonomy && ! post_type_exists( 'pllcanonical' ) ) { // Last taxonomy registered in {@see https://github.com/WordPress/wordpress-develop/blob/36ef9cbca96fca46e7daf1ee687bb6a20788385c/src/wp-includes/taxonomy.php#L158-L174 create_initial_taxonomies()}
 					register_post_type(
 						'pllcanonical',
@@ -103,6 +101,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public static function wpTearDownAfterClass() {
 		_unregister_post_type( 'pllcanonical' );
+		_unregister_taxonomy( 'custom_tax' );
 
 		parent::wpTearDownAfterClass();
 	}
@@ -132,10 +131,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
-	public function tear_down() {
-		unregister_taxonomy( 'custom_tax' );
-		parent::tear_down();
-	}
+/**
+ * Creates a new custom taxonomy term for each test where it's required.
+ *
+ * @return void
+ */
+protected function create_custom_term() {
+	$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
+	self::$model->term->set_language( $custom_term_en, 'en' );
+}
 
 	public function test_post_with_name_and_language() {
 		$this->assertCanonical(
@@ -292,27 +296,33 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_custom_taxonomy_with_incorrect_language() {
+		$this->create_custom_term();
 		$this->assertCanonical( '/fr/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
 	}
 
 	public function test_custom_taxonomy_without_language() {
+		$this->create_custom_term();
 		$this->assertCanonical( '/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
 	}
 
 	public function test_custom_taxonomy_with_correct_language() {
+		$this->create_custom_term();
 		$this->assertCanonical( '/en/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
 	}
 
 	public function test_custom_taxonomy_from_plain_permalink() {
 		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom taxonomies.
+		$this->create_custom_term();
 		$this->assertCanonical( '?custom_tax=custom-term', '/en/?custom_tax=custom-term' );
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
+		$this->create_custom_term();
 		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/?foo=bar&custom_tax=custom-term' );
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_rewritten_url() {
+		$this->create_custom_term();
 		$this->assertCanonical( '/en/custom_tax/custom-term/?foo=bar', '/en/custom_tax/custom-term/?foo=bar' );
 	}
 
