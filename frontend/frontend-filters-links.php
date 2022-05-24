@@ -393,7 +393,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		elseif ( is_category() || is_tag() || is_tax() ) {
+		elseif ( ( is_category() || is_tag() || is_tax() ) && $this->is_single_term_queried( $this->wp_query()->tax_query ) ) {
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
 				if ( $this->links_model->using_permalinks && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] ) || ! empty( $this->wp_query()->query['category_name'] ) ) ) {
 					// When we receive a plain permalink with a cat or tag query var, we need to redirect to the pretty permalink.
@@ -594,5 +594,20 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			return $this->model->term->get_language( $term_id );
 		}
 		return false;
+	}
+
+	/**
+	 * Asserts the given taxonomy query is for only one term.
+	 *
+	 * @since 3.2
+	 *
+	 * @param WP_Tax_Query $tax_query The taxonomy query to look into.
+	 * @return boolean Wether it is for a single term or not.
+	 */
+	public function is_single_term_queried( $tax_query ) {
+		$queried_terms = $tax_query->queried_terms;
+		$taxonomy = $this->get_queried_taxonomy( $tax_query );
+
+		return isset( $queried_terms[ $taxonomy ]['terms'] ) && 1 === count( $queried_terms[ $taxonomy ]['terms'] );
 	}
 }
