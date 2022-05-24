@@ -243,6 +243,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' );
 	}
 
+	public function test_should_not_remove_query_string_parameter_from_custom_post_type_plain_permalink_url() {
+		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom post types.
+		$this->assertCanonical( '?foo=bar&pllcanonical=custom-post', '/en/?foo=bar&pllcanonical=custom-post' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_post_type_rewritten_url() {
+		$this->assertCanonical( '/en/pllcanonical/custom-post/?foo=bar', '/en/pllcanonical/custom-post/?foo=bar' );
+	}
+
 	public function test_category_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/category/parent/',
