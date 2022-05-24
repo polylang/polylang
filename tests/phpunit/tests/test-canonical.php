@@ -131,15 +131,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
-/**
- * Creates a new custom taxonomy term for each test where it's required.
- *
- * @return void
- */
-protected function create_custom_term() {
-	$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
-	self::$model->term->set_language( $custom_term_en, 'en' );
-}
+	/**
+	 * Creates a new custom taxonomy term for each test where it's required.
+	 *
+	 * @return void
+	 */
+	protected function create_custom_term() {
+		$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
+		self::$model->term->set_language( $custom_term_en, 'en' );
+	}
 
 	public function test_post_with_name_and_language() {
 		$this->assertCanonical(
