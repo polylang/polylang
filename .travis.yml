@@ -73,15 +73,15 @@ before_install:
 
 install:
   - |
-    if [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
-      composer remove --no-interaction --no-update --dev "phpstan/phpstan"
-      composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
-    elif [[ $WP_VERSION != 'nightly' ]]; then
+    if [[ $WP_VERSION == "5.7" || $WP_VERSION == "5.8" ]]; then
       composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^7.5"
     fi
+  - composer remove --no-interaction --no-update --dev "phpstan/phpstan"
+  - composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
   - "composer update"
   - "bash tests/bin/install-wp-tests.sh wordpress_test root \"\" localhost \"${WP_VERSION}\""
   - "bash tests/bin/install-plugins.sh"
+
 
 script:
   - "vendor/bin/phpunit --verbose"
