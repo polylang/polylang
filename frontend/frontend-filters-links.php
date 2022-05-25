@@ -364,6 +364,8 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 * @return string|void Returns if redirect is not performed.
 	 */
 	public function check_canonical_url( $requested_url = '', $do_redirect = true ) {
+		global $wp_query;
+
 		// Don't redirect in same cases as WP.
 		if ( is_trackback() || is_search() || is_admin() || is_preview() || is_robots() || ( $GLOBALS['is_IIS'] && ! iis7_supports_permalinks() ) ) {
 			return;
@@ -401,7 +403,17 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 					if ( is_feed() ) {
 						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term_id, '' ) );
 					} else {
-						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
+						$wp_query_backup = $wp_query;
+						$wp_query->tax_query->queries = array_filter(
+							$wp_query->tax_query->queries,
+							function( $query ) {
+								return 'language' !== $query['taxonomy'];
+							}
+						);
+						unset( $wp_query->tax_query->queried_terms['language'] );
+						$redirect_url = redirect_canonical( $requested_url, false );
+
+						$wp_query = $wp_query_backup;
 					}
 					$language = $this->get_queried_term_language();
 				} else {

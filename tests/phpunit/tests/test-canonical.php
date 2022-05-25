@@ -39,6 +39,18 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		add_action(
 			'registered_taxonomy',
 			function( $taxonomy ) {
+
+				if ( ! taxonomy_exists( 'custom_tax' ) ) {
+					register_taxonomy(
+						'custom_tax',
+						'post',
+						array(
+							'public'  => true,
+							'rewrite' => true,
+						)
+					);
+				}
+
 				if ( 'post_format' === $taxonomy && ! post_type_exists( 'pllcanonical' ) ) { // Last taxonomy registered in {@see https://github.com/WordPress/wordpress-develop/blob/36ef9cbca96fca46e7daf1ee687bb6a20788385c/src/wp-includes/taxonomy.php#L158-L174 create_initial_taxonomies()}
 					register_post_type(
 						'pllcanonical',
@@ -89,6 +101,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public static function wpTearDownAfterClass() {
 		_unregister_post_type( 'pllcanonical' );
+		_unregister_taxonomy( 'custom_tax' );
 
 		parent::wpTearDownAfterClass();
 	}
@@ -108,6 +121,24 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				),
 			)
 		);
+
+		add_filter(
+			'pll_get_taxonomies',
+			function( $taxonomies ) {
+				$taxonomies['custom_tax'] = 'custom_tax';
+				return $taxonomies;
+			}
+		);
+	}
+
+	/**
+	 * Creates a new custom taxonomy term for each test where it's required.
+	 *
+	 * @return void
+	 */
+	protected function create_custom_term() {
+		$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
+		self::$model->term->set_language( $custom_term_en, 'en' );
 	}
 
 	public function test_post_with_name_and_language() {
@@ -130,6 +161,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_post_from_plain_permalink() {
 		$this->assertCanonical( '?p=' . self::$post_en, '/en/post-format-test-audio/' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_post_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&p=' . self::$post_en, '/en/post-format-test-audio/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_post_rewritten_url() {
+		$this->assertCanonical( '/en/post-format-test-audio/?foo=bar&p=' . self::$post_en, '/en/post-format-test-audio/?foo=bar' );
 	}
 
 	public function test_post_feed_with_incorrect_language() {
@@ -166,6 +205,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
 	}
 
+	public function test_should_not_remove_query_string_parameter_from_page_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&page_id=' . self::$page_id, '/en/parent-page/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_page_rewritten_url() {
+		$this->assertCanonical( '/en/parent-page/?foo=bar&page_id=' . self::$page_id, '/en/parent-page/?foo=bar' );
+	}
+
 	public function test_page_feed_with_incorrect_language() {
 		$this->assertCanonical( '/fr/parent-page/feed/', '/en/parent-page/feed/' );
 	}
@@ -194,6 +241,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_custom_post_type_without_language() {
 		$this->assertCanonical( '/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_post_type_plain_permalink_url() {
+		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom post types.
+		$this->assertCanonical( '?foo=bar&pllcanonical=custom-post', '/en/?foo=bar&pllcanonical=custom-post' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_post_type_rewritten_url() {
+		$this->assertCanonical( '/en/pllcanonical/custom-post/?foo=bar', '/en/pllcanonical/custom-post/?foo=bar' );
 	}
 
 	public function test_category_with_name_and_language() {
@@ -230,6 +286,53 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_category_from_plain_permalink() {
 		$this->assertCanonical( '?cat=' . self::$term_en, '/en/category/parent/' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_category_rewritten_url() {
+		$this->assertCanonical( '/en/category/parent/?foo=bar', '/en/category/parent/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_tag_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&tag=test-tag', '/en/tag/test-tag/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_tag_rewritten_url() {
+		$this->assertCanonical( '/en/tag/test-tag/?foo=bar', '/en/tag/test-tag/?foo=bar' );
+	}
+
+	public function test_custom_taxonomy_with_incorrect_language() {
+		$this->create_custom_term();
+		$this->assertCanonical( '/fr/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_custom_taxonomy_without_language() {
+		$this->create_custom_term();
+		$this->assertCanonical( '/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_custom_taxonomy_with_correct_language() {
+		$this->create_custom_term();
+		$this->assertCanonical( '/en/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_custom_taxonomy_from_plain_permalink() {
+		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom taxonomies.
+		$this->create_custom_term();
+		$this->assertCanonical( '?custom_tax=custom-term', '/en/?custom_tax=custom-term' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
+		$this->create_custom_term();
+		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/?foo=bar&custom_tax=custom-term' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_rewritten_url() {
+		$this->create_custom_term();
+		$this->assertCanonical( '/en/custom_tax/custom-term/?foo=bar', '/en/custom_tax/custom-term/?foo=bar' );
 	}
 
 	public function test_paged_category_from_plain_permalink() {
