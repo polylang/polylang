@@ -18,24 +18,24 @@ jobs:
         - "vendor/bin/phpcs -s --extensions=php,js ./"
         - "vendor/bin/phpstan analyze --memory-limit=512M"
 
-    - name: "WP 5.6 - PHP 7.2"
+    - name: "WP 5.7 - PHP 7.2"
       php: "7.2"
-      env: "WP_VERSION=5.6 WP_MULTISITE=0"
+      env: "WP_VERSION=5.7 WP_MULTISITE=0"
       script:
         - "vendor/bin/phpunit --verbose"
 
-    - name: "WP 5.9 - PHP 5.6"
+    - name: "WP 6.0 - PHP 5.6"
       php: "5.6"
-      env: "WP_VERSION=5.9 WP_MULTISITE=0"
+      env: "WP_VERSION=6.0 WP_MULTISITE=0"
 
-    - name: "WP 5.9 - PHP 7.4"
+    - name: "WP 6.0 - PHP 8.0"
       dist: "bionic"
-      php: "7.4"
-      env: "WP_VERSION=5.9 WP_MULTISITE=0"
+      php: "8.0"
+      env: "WP_VERSION=6.0 WP_MULTISITE=0"
 
-    - name: "WP 5.9 multisite - PHP 7.2"
+    - name: "WP 6.0 multisite - PHP 7.2"
       php: "7.2"
-      env: "WP_VERSION=5.9 WP_MULTISITE=1"
+      env: "WP_VERSION=6.0 WP_MULTISITE=1"
 
     - name: "WP nightly - PHP 5.6"
       php: "5.6"
@@ -73,15 +73,15 @@ before_install:
 
 install:
   - |
-    if [[ "${TRAVIS_PHP_VERSION:0:3}" == "5.6" ]]; then
-      composer remove --no-interaction --no-update --dev "phpstan/phpstan"
-      composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
-    elif [[ $WP_VERSION != 'nightly' ]]; then
+    if [[ $WP_VERSION == "5.7" || $WP_VERSION == "5.8" ]]; then
       composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^7.5"
     fi
+  - composer remove --no-interaction --no-update --dev "phpstan/phpstan"
+  - composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
   - "composer update"
   - "bash tests/bin/install-wp-tests.sh wordpress_test root \"\" localhost \"${WP_VERSION}\""
   - "bash tests/bin/install-plugins.sh"
+
 
 script:
   - "vendor/bin/phpunit --verbose"
