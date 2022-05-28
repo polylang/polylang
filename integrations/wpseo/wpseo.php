@@ -450,9 +450,10 @@ class PLL_WPSEO {
 			)
 		);
 
-		$sync_taxonomies = PLL()->sync->taxonomies->get_taxonomies_to_copy( $sync, $from, $to );
-
-		$taxonomies = array_intersect( $taxonomies, $sync_taxonomies );
+		if ( PLL()->has( 'sync_tax' ) ) {
+			$sync_taxonomies = PLL()->get( 'sync_tax' )->get_taxonomies_to_copy( $sync, $from, $to );
+			$taxonomies      = array_intersect( $taxonomies, $sync_taxonomies );
+		}
 
 		foreach ( $taxonomies as $taxonomy ) {
 			$keys[] = '_yoast_wpseo_primary_' . $taxonomy;

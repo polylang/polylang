@@ -23,16 +23,28 @@ class PLL_Sync_Tax {
 	protected $model;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 2.3
+	 * @since 3.3 Changed method's signature.
 	 *
-	 * @param object $polylang
+	 * @param  PLL_Model    $model   Instance of PLL_Model.
+	 * @param  array<mixed> $options Options, passed by reference.
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		$this->model   = &$polylang->model;
-		$this->options = &$polylang->options;
+	public function __construct( PLL_Model $model, array &$options ) {
+		$this->model   = $model;
+		$this->options = &$options;
+	}
 
+	/**
+	 * Launches hooks.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	public function init() {
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
 		add_action( 'pll_save_term', array( $this, 'create_term' ), 10, 3 );
 		add_action( 'pre_delete_term', array( $this, 'pre_delete_term' ) );

@@ -11,14 +11,14 @@
 class PLL_Admin_Sync extends PLL_Sync {
 
 	/**
-	 * Constructor
+	 * Launches hooks.
 	 *
-	 * @since 1.2
+	 * @since 3.3
 	 *
-	 * @param object $polylang
+	 * @return void
 	 */
-	public function __construct( &$polylang ) {
-		parent::__construct( $polylang );
+	public function init() {
+		parent::init();
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
 		add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ) );
@@ -103,8 +103,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 			$done[ $from_post_id ] = true; // Avoid a second duplication in the block editor. Using an array only to allow multiple phpunit tests.
 
-			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
-			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
+			$this->sync_tax->copy( $from_post_id, $post->ID, $lang->slug );
+			$this->sync_post_metas->copy( $from_post_id, $post->ID, $lang->slug );
 
 			if ( is_sticky( $from_post_id ) ) {
 				stick_post( $post->ID );
@@ -176,12 +176,15 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		// Sticky posts
 		if ( in_array( 'sticky_posts', $this->options['sync'] ) ) {
-			$stickies = get_option( 'sticky_posts' );
+			$stickies = get_option( 'sticky_posts', array() );
+			$stickies = is_array( $stickies ) ? $stickies : array();
+
 			if ( isset( $_REQUEST['sticky'] ) && 'sticky' === $_REQUEST['sticky'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$stickies = array_merge( $stickies, array_values( $translations ) );
 			} else {
 				$stickies = array_diff( $stickies, array_values( $translations ) );
 			}
+
 			update_option( 'sticky_posts', array_unique( $stickies ) );
 		}
 	}
@@ -200,32 +203,39 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 */
 	public function __call( $func, $args ) {
 		$obj = substr( $func, 5 );
+		$obj = isset( $this->container_identifiers[ $obj ] ) ? $this->container_identifiers[ $obj ] : $obj;
+		$obj = "sync_$obj";
 
-		if ( is_object( $this->$obj ) && method_exists( $this->$obj, 'copy' ) ) {
+		if ( PLL()->has( $obj ) && is_object( PLL()->get( $obj ) ) && method_exists( PLL()->get( $obj ), 'copy' ) ) {
 			if ( WP_DEBUG ) {
 				$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-				$i = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func
+				$i     = 1 + empty( $debug[1]['line'] ); // The file and line are in $debug[2] if the function was called using call_user_func.
+				$file  = isset( $debug[ $i ]['file'] ) ? $debug[ $i ]['file'] : '';
+				$line  = isset( $debug[ $i ]['line'] ) ? $debug[ $i ]['line'] : 0;
 
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 					sprintf(
-						'%1$s was called incorrectly in %3$s on line %4$s: the call to PLL()->sync->%1$s() has been deprecated in Polylang 2.3, use PLL()->sync->%2$s->copy() instead.' . "\nError handler",
+						'%1$s was called incorrectly in %3$s on line %4$s: the call to PLL()->sync->%1$s() has been deprecated in Polylang 2.3, use PLL()->get( \'%2$s\' )->copy() instead.' . "\nError handler",
 						esc_html( $func ),
 						esc_html( $obj ),
-						esc_html( $debug[ $i ]['file'] ),
-						absint( $debug[ $i ]['line'] )
+						esc_html( $file ),
+						absint( $line )
 					)
 				);
 			}
-			return call_user_func_array( array( $this->$obj, 'copy' ), $args );
+			return call_user_func_array( array( PLL()->get( $obj ), 'copy' ), $args );
 		}
 
 		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		$file  = isset( $debug[0]['file'] ) ? $debug[0]['file'] : '';
+		$line  = isset( $debug[0]['line'] ) ? $debug[0]['line'] : 0;
+
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			sprintf(
 				'Call to undefined function PLL()->sync->%1$s() in %2$s on line %3$s' . "\nError handler",
 				esc_html( $func ),
-				esc_html( $debug[0]['file'] ),
-				absint( $debug[0]['line'] )
+				esc_html( $file ),
+				absint( $line )
 			),
 			E_USER_ERROR
 		);
