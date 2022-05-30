@@ -8,6 +8,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $custom_post_id;
 	private static $unrewriting_cpt_id;
 	private static $term_en;
+	private static $second_term_en;
 	private static $tag_en;
 	private static $page_for_posts_en;
 	private static $page_for_posts_fr;
@@ -87,6 +88,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$model->term->set_language( self::$term_en, 'en' );
+
+		self::$second_term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'second' ) );
+		self::$model->term->set_language( self::$second_term_en, 'en' );
 
 		self::$tag_en = $factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test-tag' ) );
 		self::$model->term->set_language( self::$tag_en, 'en' );
@@ -583,6 +587,18 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_custom_post_type_feed_without_language() {
 		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	}
+
+	public function test_multiple_category() {
+		$this->assertCanonical( '/en/category/parent,second/', '/en/category/parent,second/' );
+	}
+
+	public function test_multiple_category_without_language() {
+		$this->assertCanonical( '/category/parent,second/', '/en/category/parent,second/' );
+	}
+
+	public function test_multiple_category_with_wrong_language() {
+		$this->assertCanonical( '/fr/category/parent,second/', '/en/category/parent,second/' );
 	}
 
 	// public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
