@@ -144,13 +144,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				return $taxonomies;
 			}
 		);
-		add_filter(
-			'pll_get_post_types',
-			function( $post_types ) {
-				$post_types[] = 'pll-unrewriting-cpt';
-				return $post_types;
-			}
-		);
 	}
 
 	/**
@@ -161,16 +154,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	protected function create_custom_term() {
 		$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
 		self::$model->term->set_language( $custom_term_en, 'en' );
-	}
-
-	public function test_custom_post_type_without_rewriting_with_correct_language_and_permalink_structure_with_trailing_slash() {
-		$this->set_permalink_structure( '/%category%/%postname%/' );
-		$this->assertCanonical( '/en/?pll-unrewriting-cpt=custom-post', '/en/?pll-unrewriting-cpt=custom-post' );
-	}
-
-	public function test_custom_post_type_without_rewriting_with_incorrect_language_and_permalink_structure_with_trailing_slash() {
-		$this->set_permalink_structure( '/%category%/%postname%/' );
-		$this->assertCanonical( '/fr/?pll-unrewriting-cpt=custom-post', '/en/?pll-unrewriting-cpt=custom-post' );
 	}
 
 	public function test_post_with_name_and_language() {
@@ -601,16 +584,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public function test_custom_post_type_feed_without_language() {
 		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
 	}
-
-	// public function test_custom_post_type_without_rewriting_with_correct_language_and_permalink_structure_without_trailing_slash() {
-	// $this->set_permalink_structure( '/%category%/%postname%' );
-	// $this->assertCanonical( '/en?pll-unrewriting-cpt=custom-post', '/en?pll-unrewriting-cpt=custom-post' );
-	// }
-
-	// public function test_custom_post_type_without_rewriting_with_incorrect_language_and_permalink_structure_without_trailing_slash() {
-	// $this->set_permalink_structure( '/%category%/%postname%' );
-	// $this->assertCanonical( '/fr?pll-unrewriting-cpt=custom-post', '/en?pll-unrewriting-cpt=custom-post' );
-	// }
 
 	// public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
 	// $this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
