@@ -36,6 +36,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::register_custom_tax();
 		self::register_custom_post_type();
 
+
+
 		self::$post_en = $factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$model->post->set_language( self::$post_en, 'en' );
 
@@ -93,6 +95,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function set_up() {
+		// Register custom taxonomy and post type once again to ensure the corresponding rewrite rules are set.
+		self::register_custom_tax();
+		self::register_custom_post_type();
+
 		parent::set_up();
 
 		$GLOBALS['polylang'] = &$this->pll_env;
@@ -117,14 +123,26 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
-	/**
-	 * Creates a new custom taxonomy term for each test where it's required.
-	 *
-	 * @return void
-	 */
-	protected function create_custom_term() {
-		$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
-		self::$model->term->set_language( $custom_term_en, 'en' );
+
+	public static function register_custom_tax() {
+		register_taxonomy(
+			'custom_tax',
+			'post',
+			array(
+				'public'  => true,
+				'rewrite' => true,
+			)
+		);
+	}
+
+	public static function register_custom_post_type() {
+		register_post_type(
+			'pllcanonical',
+			array(
+				'public' => true,
+				'has_archive' => true, // Implies to build the feed permastruct by default.
+			)
+		);
 	}
 
 	public function test_post_with_name_and_language() {
@@ -233,7 +251,20 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 * Undocumented function
 	 */
 	public function test_should_not_remove_query_string_parameter_from_custom_post_type_rewritten_url() {
-		$this->assertCanonical( '/en/pllcanonical/custom-post/?foo=bar', '/en/pllcanonical/custom-post/?foo=bar' );
+		$this->assertCanonical(
+			'/en/pllcanonical/custom-post/?foo=bar',
+			array(
+				'url' => '/en/pllcanonical/custom-post/?foo=bar',
+				'qv'  => array(
+					'lang'         => 'en',
+					'pllcanonical' => 'custom-post',
+					'foo'          => 'bar',
+					'page'         => '',
+					'post_type'    => 'pllcanonical',
+					'name'         => 'custom-post',
+				),
+			)
+		);
 	}
 
 	public function test_category_with_name_and_language() {
@@ -273,11 +304,31 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_category_rewritten_url() {
-		$this->assertCanonical( '/en/category/parent/?foo=bar', '/en/category/parent/?foo=bar' );
+		$this->assertCanonical(
+			'/en/category/parent/?foo=bar',
+			array(
+				'url' => '/en/category/parent/?foo=bar',
+				'qv'  => array(
+					'lang'          => 'en',
+					'category_name' => 'parent',
+					'foo'           => 'bar',
+				),
+			)
+		);
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_tag_rewritten_url() {
-		$this->assertCanonical( '/en/tag/test-tag/?foo=bar', '/en/tag/test-tag/?foo=bar' );
+		$this->assertCanonical(
+			'/en/tag/test-tag/?foo=bar',
+			array(
+				'url' => '/en/tag/test-tag/?foo=bar',
+				'qv'  => array(
+					'lang' => 'en',
+					'tag'  => 'test-tag',
+					'foo'  => 'bar',
+				),
+			)
+		);
 	}
 
 	public function test_custom_taxonomy_with_incorrect_language() {
@@ -285,12 +336,20 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_custom_taxonomy_without_language() {
-		$this->create_custom_term();
 		$this->assertCanonical( '/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
 	}
 
 	public function test_custom_taxonomy_with_correct_language() {
-		$this->assertCanonical( '/en/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+		$this->assertCanonical(
+			'/en/custom_tax/custom-term/',
+			array(
+				'url' => '/en/custom_tax/custom-term/',
+				'qv'  => array(
+					'lang'       => 'en',
+					'custom_tax' => 'custom-term',
+				),
+			)
+		);
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
