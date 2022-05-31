@@ -36,8 +36,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::register_custom_tax();
 		self::register_custom_post_type();
 
-
-
 		self::$post_en = $factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$model->post->set_language( self::$post_en, 'en' );
 
@@ -252,9 +250,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' );
 	}
 
-	/**
-	 * Undocumented function
-	 */
 	public function test_should_not_remove_query_string_parameter_from_custom_post_type_rewritten_url() {
 		$this->assertCanonical(
 			'/en/pllcanonical/custom-post/?foo=bar',
