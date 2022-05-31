@@ -18,6 +18,8 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	protected $options;
 
 	public function set_up() {
+		self::register_custom_tax();
+		self::register_custom_post_type();
 		parent::set_up();
 
 		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default.
@@ -94,5 +96,27 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		}
 
 		return redirect_canonical( $pll_redirected_url, false );
+	}
+
+	public static function register_custom_tax() {
+		register_taxonomy(
+			'custom_tax',
+			'post',
+			array(
+				'public'  => true,
+				'rewrite' => true,
+			)
+		);
+		flush_rewrite_rules();
+	}
+
+	public static function register_custom_post_type() {
+		register_post_type(
+			'pllcanonical',
+			array(
+				'public' => true,
+				'has_archive' => true, // Implies to build the feed permastruct by default.
+			)
+		);
 	}
 }

@@ -6,9 +6,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $post_en;
 	private static $page_id;
 	private static $custom_post_id;
-	private static $unrewriting_cpt_id;
 	private static $term_en;
 	private static $second_term_en;
+	private static $custom_term_en;
 	private static $tag_en;
 	private static $page_for_posts_en;
 	private static $page_for_posts_fr;
@@ -32,48 +32,16 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function generate_shared_fixtures( WP_UnitTest_Factory $factory ) {
+		// Register CPT and custom taxonomy before creating their items later.
+		self::register_custom_tax();
+		self::register_custom_post_type();
+
 		self::$post_en = $factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$model->post->set_language( self::$post_en, 'en' );
 
 		self::$page_id = $factory->post->create( array( 'post_type' => 'page', 'post_title' => 'parent-page' ) );
 		self::$model->post->set_language( self::$page_id, 'en' );
 
-		add_action(
-			'registered_taxonomy',
-			function( $taxonomy ) {
-
-				if ( ! taxonomy_exists( 'custom_tax' ) ) {
-					register_taxonomy(
-						'custom_tax',
-						'post',
-						array(
-							'public'  => true,
-							'rewrite' => true,
-						)
-					);
-				}
-
-				if ( 'post_format' === $taxonomy && ! post_type_exists( 'pllcanonical' ) ) { // Last taxonomy registered in {@see https://github.com/WordPress/wordpress-develop/blob/36ef9cbca96fca46e7daf1ee687bb6a20788385c/src/wp-includes/taxonomy.php#L158-L174 create_initial_taxonomies()}
-					register_post_type(
-						'pllcanonical',
-						array(
-							'public' => true,
-							'has_archive' => true, // Implies to build the feed permastruct by default.
-						)
-					);
-				}
-
-				if ( ! post_type_exists( 'pll-unrewriting-cpt' ) ) {
-					register_post_type(
-						'pll-unrewriting-cpt',
-						array(
-							'public'  => true,
-							'rewrite' => false,
-						)
-					);
-				}
-			}
-		);
 		self::$custom_post_id = $factory->post->create(
 			array(
 				'import_id'  => 416,
@@ -83,9 +51,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		self::$model->post->set_language( self::$custom_post_id, 'en' );
 
-		self::$unrewriting_cpt_id = $factory->post->create( array( 'post_type' => 'pll-unrewriting-cpt', 'post_title' => 'custom-post' ) );
-		self::$model->post->set_language( self::$unrewriting_cpt_id, 'en' );
-
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$model->term->set_language( self::$term_en, 'en' );
 
@@ -94,6 +59,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		self::$tag_en = $factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test-tag' ) );
 		self::$model->term->set_language( self::$tag_en, 'en' );
+
+		self::$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
+		self::$model->term->set_language( self::$custom_term_en, 'en' );
 
 		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$model->post->set_language( self::$page_for_posts_en, 'en' );
@@ -119,7 +87,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public static function wpTearDownAfterClass() {
 		_unregister_post_type( 'pllcanonical' );
-		_unregister_post_type( 'pll-unrewriting-cpt' );
 		_unregister_taxonomy( 'custom_tax' );
 
 		parent::wpTearDownAfterClass();
@@ -262,11 +229,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' );
 	}
 
-	public function test_should_not_remove_query_string_parameter_from_custom_post_type_plain_permalink_url() {
-		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom post types.
-		$this->assertCanonical( '?foo=bar&pllcanonical=custom-post', '/en/?foo=bar&pllcanonical=custom-post' );
-	}
-
+	/**
+	 * Undocumented function
+	 */
 	public function test_should_not_remove_query_string_parameter_from_custom_post_type_rewritten_url() {
 		$this->assertCanonical( '/en/pllcanonical/custom-post/?foo=bar', '/en/pllcanonical/custom-post/?foo=bar' );
 	}
@@ -316,7 +281,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_custom_taxonomy_with_incorrect_language() {
-		$this->create_custom_term();
 		$this->assertCanonical( '/fr/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
 	}
 
@@ -326,23 +290,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_custom_taxonomy_with_correct_language() {
-		$this->create_custom_term();
 		$this->assertCanonical( '/en/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
 	}
 
-	public function test_custom_taxonomy_from_plain_permalink() {
-		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom taxonomies.
-		$this->create_custom_term();
-		$this->assertCanonical( '?custom_tax=custom-term', '/en/?custom_tax=custom-term' );
-	}
-
 	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
-		$this->create_custom_term();
 		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/?foo=bar&custom_tax=custom-term' );
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_rewritten_url() {
-		$this->create_custom_term();
 		$this->assertCanonical( '/en/custom_tax/custom-term/?foo=bar', '/en/custom_tax/custom-term/?foo=bar' );
 	}
 
@@ -590,7 +545,16 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_multiple_category() {
-		$this->assertCanonical( '/en/category/parent,second/', '/en/category/parent,second/' );
+		$this->assertCanonical(
+			'/en/category/parent,second/',
+			array(
+				'url' => '/en/category/parent,second/',
+				'qv'  => array(
+					'lang'          => 'en',
+					'category_name' => 'parent,second',
+				),
+			)
+		);
 	}
 
 	public function test_multiple_category_without_language() {
@@ -601,6 +565,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/fr/category/parent,second/', '/en/category/parent,second/' );
 	}
 
+	// phpcs:disable
 	// public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
 	// $this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
 	// }
@@ -620,4 +585,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	// public function test_untranslated_category_feed() {
 	// $this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
 	// }
+
+	// public function test_should_not_remove_query_string_parameter_from_custom_post_type_plain_permalink_url() {
+	// 	// WordPress redirect_canonical() doesn't rewrite plain permalink for custom post types.
+	// 	$this->assertCanonical( '?foo=bar&pllcanonical=custom-post', '/en/pllcanonical/custom-post/?foo=bar' );
+	// }
+
+	// public function test_custom_taxonomy_from_plain_permalink() {
+	// 	// WordPress does redirect for custom category plain permalink.
+	// 	$this->assertCanonical( '?custom_tax=custom-term', '/en/custom_tax/custom-term/' );
+	// }
+	// phpcs:enable
 }
