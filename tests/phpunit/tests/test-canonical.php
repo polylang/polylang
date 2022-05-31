@@ -123,7 +123,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
-
 	public static function register_custom_tax() {
 		register_taxonomy(
 			'custom_tax',
@@ -143,6 +142,12 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'has_archive' => true, // Implies to build the feed permastruct by default.
 			)
 		);
+	}
+
+	protected function register_post_types_and_taxonomies() {
+		parent::register_post_types_and_taxonomies();
+		self::register_custom_tax();
+		self::register_custom_post_type();
 	}
 
 	public function test_post_with_name_and_language() {
