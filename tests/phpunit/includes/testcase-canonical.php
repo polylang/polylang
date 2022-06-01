@@ -17,6 +17,10 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	 */
 	protected $options;
 
+	protected static function register_post_types_and_taxonomies() {
+		create_initial_taxonomies();
+	}
+
 	public function set_up() {
 		parent::set_up();
 
@@ -36,7 +40,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 		$wp_rewrite->init();
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
-		$wp_rewrite->set_permalink_structure( $this->structure );
+		$wp_rewrite->set_permalink_structure( $structure );
 
 		// $wp_rewrite->flush_rules() is called in self::assertCanonical()
 	}
@@ -60,10 +64,9 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		$_SERVER['REQUEST_URI'] = $test_url;
 
 		$model = new PLL_Model( $this->options );
-
-		// register post types and taxonomies
 		$model->post->register_taxonomy(); // needs this for 'lang' query var
-		create_initial_taxonomies();
+
+		static::register_post_types_and_taxonomies();
 
 		// reset the links model according to the permalink structure
 		$links_model    = $model->get_links_model();

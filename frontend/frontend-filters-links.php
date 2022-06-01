@@ -393,35 +393,33 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			}
 		}
 
-		elseif ( is_category() || is_tag() || is_tax() ) {
+		elseif ( $this->links_model->using_permalinks && is_category() && ! empty( $this->wp_query()->query['cat'] ) ) {
+			// When we receive a plain permaling with a cat query var, we need to redirect to the pretty permalink.
 			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
-				if ( $this->links_model->using_permalinks && ( ! empty( $this->wp_query()->query['cat'] ) || ! empty( $this->wp_query()->query['tag'] ) || ! empty( $this->wp_query()->query['category_name'] ) ) ) {
-					// When we receive a plain permalink with a cat or tag query var, we need to redirect to the pretty permalink.
-					$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
-					if ( is_feed() ) {
-						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_feed_link( $term_id, '' ) );
-					} else {
-						$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
-					}
-					$language = $this->get_queried_term_language();
-				} else {
-					// We need to switch the language when there is no language provided in a pretty permalink.
-					$obj = get_queried_object();
-					if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
-						$language = $this->model->term->get_language( (int) $obj->term_id );
-					}
+				$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
+				if ( $term_id ) {
+					$language = $this->model->term->get_language( $term_id );
+					$redirect_url = $this->maybe_add_page_to_redirect_url( get_term_link( $term_id ) );
 				}
 			}
+		}
 
-			if ( is_feed() && empty( $obj ) ) {
-				// Allows to replace the language correctly in a category feed query.
-				$language = $this->get_queried_term_language();
+		elseif ( is_category() || is_tag() || is_tax() ) {
+			// We need to switch the language when there is no language provided in a pretty permalink.
+			$obj = get_queried_object();
+			if ( ! empty( $obj ) && $this->model->is_translated_taxonomy( $obj->taxonomy ) ) {
+				$language = $this->model->term->get_language( (int) $obj->term_id );
 			}
 		}
 
 		elseif ( is_404() && ! empty( $this->wp_query()->tax_query ) ) {
 			// When a wrong language is passed through a pretty permalink, we just need to switch the language.
-			$language = $this->get_queried_term_language();
+			if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
+				$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
+				if ( $term_id ) {
+					$language = $this->model->term->get_language( $term_id );
+				}
+			}
 		}
 
 		elseif ( $this->links_model->using_permalinks && $this->wp_query()->is_posts_page && ! empty( $this->wp_query()->query['page_id'] ) && $id = get_query_var( 'page_id' ) ) {
@@ -579,20 +577,5 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 */
 	protected function wp_query() {
 		return $GLOBALS['wp_query'];
-	}
-
-	/**
-	 * Get the language corresponding to the queried term.
-	 *
-	 * @since 3.2
-	 *
-	 * @return PLL_Language|false The language object or false.
-	 */
-	public function get_queried_term_language() {
-		if ( $this->model->is_translated_taxonomy( $this->get_queried_taxonomy( $this->wp_query()->tax_query ) ) ) {
-			$term_id = $this->get_queried_term_id( $this->wp_query()->tax_query );
-			return $this->model->term->get_language( $term_id );
-		}
-		return false;
 	}
 }
