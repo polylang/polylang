@@ -7,6 +7,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $page_id;
 	private static $custom_post_id;
 	private static $term_en;
+	private static $second_term_en;
+	private static $custom_term_en;
 	private static $tag_en;
 	private static $page_for_posts_en;
 	private static $page_for_posts_fr;
@@ -30,26 +32,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function generate_shared_fixtures( WP_UnitTest_Factory $factory ) {
+		// Register CPT and custom taxonomy before creating their items later.
+		self::register_post_types_and_taxonomies();
+
 		self::$post_en = $factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$model->post->set_language( self::$post_en, 'en' );
 
 		self::$page_id = $factory->post->create( array( 'post_type' => 'page', 'post_title' => 'parent-page' ) );
 		self::$model->post->set_language( self::$page_id, 'en' );
 
-		add_action(
-			'registered_taxonomy',
-			function( $taxonomy ) {
-				if ( 'post_format' === $taxonomy && ! post_type_exists( 'pllcanonical' ) ) { // Last taxonomy registered in {@see https://github.com/WordPress/wordpress-develop/blob/36ef9cbca96fca46e7daf1ee687bb6a20788385c/src/wp-includes/taxonomy.php#L158-L174 create_initial_taxonomies()}
-					register_post_type(
-						'pllcanonical',
-						array(
-							'public' => true,
-							'has_archive' => true, // Implies to build the feed permastruct by default.
-						)
-					);
-				}
-			}
-		);
 		self::$custom_post_id = $factory->post->create(
 			array(
 				'import_id'  => 416,
@@ -62,8 +53,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$model->term->set_language( self::$term_en, 'en' );
 
+		self::$second_term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'second' ) );
+		self::$model->term->set_language( self::$second_term_en, 'en' );
+
 		self::$tag_en = $factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test-tag' ) );
 		self::$model->term->set_language( self::$tag_en, 'en' );
+
+		self::$custom_term_en = self::factory()->term->create( array( 'taxonomy' => 'custom_tax', 'name' => 'custom-term' ) );
+		self::$model->term->set_language( self::$custom_term_en, 'en' );
 
 		$en = self::$page_for_posts_en = $factory->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
 		self::$model->post->set_language( self::$page_for_posts_en, 'en' );
@@ -89,8 +86,30 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public static function wpTearDownAfterClass() {
 		_unregister_post_type( 'pllcanonical' );
+		_unregister_taxonomy( 'custom_tax' );
 
 		parent::wpTearDownAfterClass();
+	}
+
+	protected static function register_post_types_and_taxonomies() {
+		parent::register_post_types_and_taxonomies();
+
+		register_post_type(
+			'pllcanonical',
+			array(
+				'public' => true,
+				'has_archive' => true, // Implies to build the feed permastruct by default.
+			)
+		);
+
+		register_taxonomy(
+			'custom_tax',
+			'post',
+			array(
+				'public'  => true,
+				'rewrite' => true,
+			)
+		);
 	}
 
 	public function set_up() {
@@ -104,7 +123,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'default_lang' => 'en',
 				'hide_default' => 0,
 				'post_types'   => array(
-					'cpt' => 'pllcanonical',
+					'pllcanonical' => 'pllcanonical',
+				),
+				'taxonomies'   => array(
+					'custom_tax' => 'custom_tax',
 				),
 			)
 		);
@@ -130,6 +152,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_post_from_plain_permalink() {
 		$this->assertCanonical( '?p=' . self::$post_en, '/en/post-format-test-audio/' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_post_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&p=' . self::$post_en, '/en/post-format-test-audio/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_post_rewritten_url() {
+		$this->assertCanonical( '/en/post-format-test-audio/?foo=bar&p=' . self::$post_en, '/en/post-format-test-audio/?foo=bar' );
 	}
 
 	public function test_post_feed_with_incorrect_language() {
@@ -166,6 +196,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
 	}
 
+	public function test_should_not_remove_query_string_parameter_from_page_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&page_id=' . self::$page_id, '/en/parent-page/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_page_rewritten_url() {
+		$this->assertCanonical( '/en/parent-page/?foo=bar&page_id=' . self::$page_id, '/en/parent-page/?foo=bar' );
+	}
+
 	public function test_page_feed_with_incorrect_language() {
 		$this->assertCanonical( '/fr/parent-page/feed/', '/en/parent-page/feed/' );
 	}
@@ -194,6 +232,23 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_custom_post_type_without_language() {
 		$this->assertCanonical( '/pllcanonical/custom-post/', '/en/pllcanonical/custom-post/' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_post_type_rewritten_url() {
+		$this->assertCanonical(
+			'/en/pllcanonical/custom-post/?foo=bar',
+			array(
+				'url' => '/en/pllcanonical/custom-post/?foo=bar',
+				'qv'  => array(
+					'lang'         => 'en',
+					'pllcanonical' => 'custom-post',
+					'foo'          => 'bar',
+					'page'         => '',
+					'post_type'    => 'pllcanonical',
+					'name'         => 'custom-post',
+				),
+			)
+		);
 	}
 
 	public function test_category_with_name_and_language() {
@@ -230,6 +285,69 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_category_from_plain_permalink() {
 		$this->assertCanonical( '?cat=' . self::$term_en, '/en/category/parent/' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_category_rewritten_url() {
+		$this->assertCanonical(
+			'/en/category/parent/?foo=bar',
+			array(
+				'url' => '/en/category/parent/?foo=bar',
+				'qv'  => array(
+					'lang'          => 'en',
+					'category_name' => 'parent',
+					'foo'           => 'bar',
+				),
+			)
+		);
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_tag_rewritten_url() {
+		$this->assertCanonical(
+			'/en/tag/test-tag/?foo=bar',
+			array(
+				'url' => '/en/tag/test-tag/?foo=bar',
+				'qv'  => array(
+					'lang' => 'en',
+					'tag'  => 'test-tag',
+					'foo'  => 'bar',
+				),
+			)
+		);
+	}
+
+	public function test_custom_taxonomy_with_incorrect_language() {
+		$this->assertCanonical( '/fr/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_custom_taxonomy_without_language() {
+		$this->assertCanonical( '/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_custom_taxonomy_with_correct_language() {
+		$this->assertCanonical(
+			'/en/custom_tax/custom-term/',
+			array(
+				'url' => '/en/custom_tax/custom-term/',
+				'qv'  => array(
+					'lang'       => 'en',
+					'custom_tax' => 'custom-term',
+				),
+			)
+		);
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_rewritten_url() {
+		$this->assertCanonical(
+			'/en/custom_tax/custom-term/?foo=bar',
+			array(
+				'url' => '/en/custom_tax/custom-term/?foo=bar',
+				'qv'  => array(
+					'lang'       => 'en',
+					'custom_tax' => 'custom-term',
+					'foo'        => 'bar',
+				),
+			)
+		);
 	}
 
 	public function test_paged_category_from_plain_permalink() {
@@ -467,6 +585,45 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
+	public function test_custom_post_type_feed_with_incorrect_language() {
+		$this->assertCanonical( '/fr/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	}
+
+	public function test_custom_post_type_feed_without_language() {
+		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	}
+
+	public function test_multiple_category() {
+		$this->assertCanonical(
+			'/en/category/parent,second/',
+			array(
+				'url' => '/en/category/parent,second/',
+				'qv'  => array(
+					'lang'          => 'en',
+					'category_name' => 'parent,second',
+				),
+			)
+		);
+	}
+
+	public function test_multiple_category_without_language() {
+		$this->assertCanonical( '/category/parent,second/', '/en/category/parent,second/' );
+	}
+
+	public function test_multiple_category_with_wrong_language() {
+		$this->assertCanonical( '/fr/category/parent,second/', '/en/category/parent,second/' );
+	}
+
+	// phpcs:disable
+	/*
+	public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_tag_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&tag=test-tag', '/en/tag/test-tag/?foo=bar' );
+	}
+
 	public function test_plain_cat_feed() {
 		$this->assertCanonical( '/?cat=' . self::$term_en . '&feed=rss2', '/en/category/parent/feed/' );
 	}
@@ -479,11 +636,19 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
 	}
 
-	public function test_custom_post_type_feed_with_incorrect_language() {
-		$this->assertCanonical( '/fr/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	public function test_should_not_remove_query_string_parameter_from_custom_post_type_plain_permalink_url() {
+		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom post types.
+		$this->assertCanonical( '?foo=bar&pllcanonical=custom-post', '/en/pllcanonical/custom-post/?foo=bar' );
 	}
 
-	public function test_custom_post_type_feed_without_language() {
-		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	public function test_custom_taxonomy_from_plain_permalink() {
+		// WordPress does redirect for custom category plain permalink.
+		$this->assertCanonical( '?custom_tax=custom-term', '/en/custom_tax/custom-term/' );
 	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/custom_tax/custom-term/?foo=bar' );
+	}
+	*/
+	// phpcs:enable
 }

@@ -592,21 +592,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$redirect_url of method PLL_Frontend_Filters_Links\\:\\:maybe_add_page_to_redirect_url\\(\\) expects string, string\\|false given\\.$#"
-			count: 2
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Parameter \\#1 \\$term of function get_term_feed_link expects int\\|object, int\\|false given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Parameter \\#1 \\$term of function get_term_link expects int\\|string\\|WP_Term, int\\|false given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method PLL_Translated_Term\\:\\:get_language\\(\\) expects int\\|string, int\\|false given\\.$#"
 			count: 1
 			path: frontend/frontend-filters-links.php
 
