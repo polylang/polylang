@@ -336,10 +336,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
-	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
-		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/?foo=bar&custom_tax=custom-term' );
-	}
-
 	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_rewritten_url() {
 		$this->assertCanonical(
 			'/en/custom_tax/custom-term/?foo=bar',
@@ -648,6 +644,10 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	public function test_custom_taxonomy_from_plain_permalink() {
 		// WordPress does redirect for custom category plain permalink.
 		$this->assertCanonical( '?custom_tax=custom-term', '/en/custom_tax/custom-term/' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/custom_tax/custom-term/?foo=bar' );
 	}
 	*/
 	// phpcs:enable
