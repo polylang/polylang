@@ -33,8 +33,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	 */
 	public static function generate_shared_fixtures( WP_UnitTest_Factory $factory ) {
 		// Register CPT and custom taxonomy before creating their items later.
-		self::register_custom_tax();
-		self::register_custom_post_type();
+		self::register_post_types_and_taxonomies();
 
 		self::$post_en = $factory->post->create( array( 'post_title' => 'post-format-test-audio' ) );
 		self::$model->post->set_language( self::$post_en, 'en' );
@@ -92,11 +91,28 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		parent::wpTearDownAfterClass();
 	}
 
-	public function set_up() {
-		// Register custom taxonomy and post type once again to ensure the corresponding rewrite rules are set.
-		self::register_custom_tax();
-		self::register_custom_post_type();
+	protected static function register_post_types_and_taxonomies() {
+		parent::register_post_types_and_taxonomies();
 
+		register_post_type(
+			'pllcanonical',
+			array(
+				'public' => true,
+				'has_archive' => true, // Implies to build the feed permastruct by default.
+			)
+		);
+
+		register_taxonomy(
+			'custom_tax',
+			'post',
+			array(
+				'public'  => true,
+				'rewrite' => true,
+			)
+		);
+	}
+
+	public function set_up() {
 		parent::set_up();
 
 		$GLOBALS['polylang'] = &$this->pll_env;
@@ -119,33 +135,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				return $taxonomies;
 			}
 		);
-	}
-
-	public static function register_custom_tax() {
-		register_taxonomy(
-			'custom_tax',
-			'post',
-			array(
-				'public'  => true,
-				'rewrite' => true,
-			)
-		);
-	}
-
-	public static function register_custom_post_type() {
-		register_post_type(
-			'pllcanonical',
-			array(
-				'public' => true,
-				'has_archive' => true, // Implies to build the feed permastruct by default.
-			)
-		);
-	}
-
-	protected function register_post_types_and_taxonomies() {
-		parent::register_post_types_and_taxonomies();
-		self::register_custom_tax();
-		self::register_custom_post_type();
 	}
 
 	public function test_post_with_name_and_language() {

@@ -17,6 +17,10 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 	 */
 	protected $options;
 
+	protected static function register_post_types_and_taxonomies() {
+		create_initial_taxonomies();
+	}
+
 	public function set_up() {
 		parent::set_up();
 
@@ -62,7 +66,7 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		$model = new PLL_Model( $this->options );
 		$model->post->register_taxonomy(); // needs this for 'lang' query var
 
-		$this->register_post_types_and_taxonomies();
+		static::register_post_types_and_taxonomies();
 
 		// reset the links model according to the permalink structure
 		$links_model    = $model->get_links_model();
@@ -74,10 +78,6 @@ class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		$wp_rewrite->flush_rules();
 
 		return parent::assertCanonical( $test_url, $expected, $ticket, $expected_doing_it_wrong );
-	}
-
-	protected function register_post_types_and_taxonomies() {
-		create_initial_taxonomies();
 	}
 
 	/**
