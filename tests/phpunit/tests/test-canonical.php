@@ -123,17 +123,12 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'default_lang' => 'en',
 				'hide_default' => 0,
 				'post_types'   => array(
-					'cpt' => 'pllcanonical',
+					'pllcanonical' => 'pllcanonical',
+				),
+				'taxonomies'   => array(
+					'custom_tax' => 'custom_tax',
 				),
 			)
-		);
-
-		add_filter(
-			'pll_get_taxonomies',
-			function( $taxonomies ) {
-				$taxonomies['custom_tax'] = 'custom_tax';
-				return $taxonomies;
-			}
 		);
 	}
 
