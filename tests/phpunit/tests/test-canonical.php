@@ -341,7 +341,17 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_rewritten_url() {
-		$this->assertCanonical( '/en/custom_tax/custom-term/?foo=bar', '/en/custom_tax/custom-term/?foo=bar' );
+		$this->assertCanonical(
+			'/en/custom_tax/custom-term/?foo=bar',
+			array(
+				'url' => '/en/custom_tax/custom-term/?foo=bar',
+				'qv'  => array(
+					'lang'       => 'en',
+					'custom_tax' => 'custom-term',
+					'foo'        => 'bar',
+				),
+			)
+		);
 	}
 
 	public function test_paged_category_from_plain_permalink() {
