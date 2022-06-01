@@ -619,34 +619,36 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	// phpcs:disable
-	// public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
-	// $this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
-	// }
+	/*
+	public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
+	}
 
-	// public function test_should_not_remove_query_string_parameter_from_tag_plain_permalink_url() {
-	// $this->assertCanonical( '?foo=bar&tag=test-tag', '/en/tag/test-tag/?foo=bar' );
-	// }
+	public function test_should_not_remove_query_string_parameter_from_tag_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&tag=test-tag', '/en/tag/test-tag/?foo=bar' );
+	}
 
-	// public function test_plain_cat_feed() {
-	// $this->assertCanonical( '/?cat=' . self::$term_en . '&feed=rss2', '/en/category/parent/feed/' );
-	// }
+	public function test_plain_cat_feed() {
+		$this->assertCanonical( '/?cat=' . self::$term_en . '&feed=rss2', '/en/category/parent/feed/' );
+	}
 
-	// public function test_plain_tag_feed() {
-	// $this->assertCanonical( '/?tag=test-tag&feed=rss2', '/en/tag/test-tag/feed/' );
-	// }
+	public function test_plain_tag_feed() {
+		$this->assertCanonical( '/?tag=test-tag&feed=rss2', '/en/tag/test-tag/feed/' );
+	}
 
-	// public function test_untranslated_category_feed() {
-	// $this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
-	// }
+	public function test_untranslated_category_feed() {
+		$this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
+	}
 
-	// public function test_should_not_remove_query_string_parameter_from_custom_post_type_plain_permalink_url() {
-	// 	// WordPress redirect_canonical() doesn't rewrite plain permalink for custom post types.
-	// 	$this->assertCanonical( '?foo=bar&pllcanonical=custom-post', '/en/pllcanonical/custom-post/?foo=bar' );
-	// }
+	public function test_should_not_remove_query_string_parameter_from_custom_post_type_plain_permalink_url() {
+		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom post types.
+		$this->assertCanonical( '?foo=bar&pllcanonical=custom-post', '/en/pllcanonical/custom-post/?foo=bar' );
+	}
 
-	// public function test_custom_taxonomy_from_plain_permalink() {
-	// 	// WordPress does redirect for custom category plain permalink.
-	// 	$this->assertCanonical( '?custom_tax=custom-term', '/en/custom_tax/custom-term/' );
-	// }
+	public function test_custom_taxonomy_from_plain_permalink() {
+		// WordPress does redirect for custom category plain permalink.
+		$this->assertCanonical( '?custom_tax=custom-term', '/en/custom_tax/custom-term/' );
+	}
+	*/
 	// phpcs:enable
 }
