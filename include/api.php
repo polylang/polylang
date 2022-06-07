@@ -146,7 +146,11 @@ function pll_register_string( $name, $string, $context = 'Polylang', $multiline 
  * @return string The string translated in the current language.
  */
 function pll__( $string ) {
-	return is_scalar( $string ) ? __( $string, 'pll_string' ) : $string; // PHPCS:ignore WordPress.WP.I18n
+	if ( ! is_scalar( $string ) || '' === $string ) {
+		return $string;
+	}
+
+	return __( $string, 'pll_string' ); // PHPCS:ignore WordPress.WP.I18n
 }
 
 /**
@@ -230,7 +234,7 @@ function pll_translate_string( $string, $lang ) {
 		return pll__( $string );
 	}
 
-	if ( ! is_scalar( $string ) ) {
+	if ( ! is_scalar( $string ) || '' === $string ) {
 		return $string;
 	}
 

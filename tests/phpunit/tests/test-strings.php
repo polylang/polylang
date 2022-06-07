@@ -137,6 +137,7 @@ class Strings_Test extends PLL_UnitTestCase {
 	public function test_html_string() {
 		update_option( 'use_balanceTags', 1 ); // To break malformed html in versions < 2.1
 		$language = self::$model->get_language( 'fr' );
+
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( '<p>test</p>', '<p>test fr</p>' ) );
 		$_mo->add_entry( $_mo->make_entry( '<p>malformed<p>', '<p>malformed fr<p>' ) );
@@ -160,6 +161,7 @@ class Strings_Test extends PLL_UnitTestCase {
 	 */
 	public function test_slashed_string() {
 		$language = self::$model->get_language( 'fr' );
+
 		$_mo = new PLL_MO();
 		$_mo->add_entry( $_mo->make_entry( '\slashed', '\slashed fr' ) );
 		$_mo->add_entry( $_mo->make_entry( '\\slashed', '\\slashed fr' ) );
@@ -177,6 +179,28 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '\slashed fr', pll__( '\slashed' ) );
 		$this->assertEquals( '\\slashed fr', pll__( '\\slashed' ) );
 		$this->assertEquals( '\\\slashed fr', pll__( '\\\slashed' ) );
+	}
+
+	/**
+	 * Tests workaround of https://core.trac.wordpress.org/ticket/55941
+	 */
+	public function test_empty_string() {
+		$language = self::$model->get_language( 'fr' );
+
+		$_mo = new PLL_MO();
+		$_mo->add_entry( $_mo->make_entry( '0', '0' ) );
+		$_mo->export_to_db( $language );
+
+		$mo = new PLL_MO();
+		$mo->import_from_db( $language );
+		$GLOBALS['l10n']['pll_string'] = &$mo;
+
+		$frontend = new PLL_Frontend( $this->links_model );
+		$frontend->curlang = $language;
+		do_action( 'pll_language_defined' );
+
+		$this->assertEquals( '0', pll__( '0' ) );
+		$this->assertEquals( '', pll__( '' ) );
 	}
 
 	public function test_switch_to_locale() {
