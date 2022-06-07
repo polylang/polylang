@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.7
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 3.2.3
+Stable tag: 3.2.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -102,6 +102,15 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.2.4 (2022-06-07) =
+
+* Pro: Remove "Navigation menus" from the post type settings list
+* Pro: Fix block editor languages panel missing in WordPress 5.6
+* Pro: Fix wrongly indexed languages list returned by REST API when the first language is deactivated.
+* Revert fix for category feed not redirected when the language code is wrong #1054
+* Fix wrong redirect of category when the url includes a query string #1048
+* Fix querying multiple categories failing
 
 = 3.2.3 (2022-05-17) =
 
