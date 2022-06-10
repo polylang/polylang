@@ -145,7 +145,6 @@ class Strings_Test extends PLL_UnitTestCase {
 
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
-		$GLOBALS['l10n']['pll_string'] = &$mo;
 
 		$frontend = new PLL_Frontend( $this->links_model );
 		$frontend->curlang = $language;
@@ -170,7 +169,6 @@ class Strings_Test extends PLL_UnitTestCase {
 
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
-		$GLOBALS['l10n']['pll_string'] = &$mo;
 
 		$frontend = new PLL_Frontend( $this->links_model );
 		$frontend->curlang = $language;
@@ -193,7 +191,6 @@ class Strings_Test extends PLL_UnitTestCase {
 
 		$mo = new PLL_MO();
 		$mo->import_from_db( $language );
-		$GLOBALS['l10n']['pll_string'] = &$mo;
 
 		$frontend = new PLL_Frontend( $this->links_model );
 		$frontend->curlang = $language;
