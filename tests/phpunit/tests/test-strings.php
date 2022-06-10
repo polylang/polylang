@@ -10,6 +10,7 @@ class Strings_Test extends PLL_UnitTestCase {
 
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
+		self::create_language( 'de_DE' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
 	}
@@ -201,7 +202,7 @@ class Strings_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translate_string_with_empty_string() {
-		foreach ( array( 'en', 'fr' ) as $lang ) {
+		foreach ( array( 'de', 'fr' ) as $lang ) {
 			$language = self::$model->get_language( $lang );
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
@@ -219,8 +220,8 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '', pll_translate_string( '', 'fr' ) );
 
 		// Secondary language.
-		$this->assertEquals( '0 - en', pll_translate_string( '0', 'en' ) );
-		$this->assertEquals( '', pll_translate_string( '', 'en' ) );
+		$this->assertEquals( '0 - de', pll_translate_string( '0', 'de' ) );
+		$this->assertEquals( '', pll_translate_string( '', 'de' ) );
 	}
 
 	public function test_switch_to_locale() {
