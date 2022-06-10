@@ -200,6 +200,29 @@ class Strings_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '', pll__( '' ) );
 	}
 
+	public function test_translate_string_with_empty_string() {
+		foreach ( array( 'en', 'fr' ) as $lang ) {
+			$language = self::$model->get_language( $lang );
+			$mo = new PLL_MO();
+			$mo->import_from_db( $language );
+			$mo->add_entry( $mo->make_entry( '0', "0 - {$lang}" ) );
+			$mo->export_to_db( $language );
+		}
+
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+		$frontend->curlang = self::$model->get_language( 'fr' );
+		do_action( 'pll_language_defined' );
+
+		// Current language.
+		$this->assertEquals( '0 - fr', pll_translate_string( '0', 'fr' ) );
+		$this->assertEquals( '', pll_translate_string( '', 'fr' ) );
+
+		// Secondary language.
+		$this->assertEquals( '0 - en', pll_translate_string( '0', 'en' ) );
+		$this->assertEquals( '', pll_translate_string( '', 'en' ) );
+	}
+
 	public function test_switch_to_locale() {
 		// Strings translations
 		$mo = new PLL_MO();
