@@ -35,18 +35,6 @@ parameters:
 			count: 1
 			path: admin/admin-base.php
 
-		# Ignored because of https://github.com/polylang/polylang/commit/fedd9b62354ae4179e39e1fd822cfee1a12643d5
-		-
-			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
-			count: 1
-			path: include/api.php
-
-		# False positive?
-		-
-			message: "#^Function wpcom_vip_get_page_by_path\\(\\) never returns array so it can be removed from the return typehint\\.$#"
-			count: 1
-			path: include/functions.php
-
 		# Ignored because of https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
 		-
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"

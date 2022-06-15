@@ -34,8 +34,6 @@ class PLL_MO extends MO {
 	 * @return void
 	 */
 	public function export_to_db( $lang ) {
-		$this->add_entry( $this->make_entry( '', '' ) ); // Empty string translation, just in case
-
 		/*
 		 * It would be convenient to store the whole object but it would take a huge space in DB.
 		 * So let's keep only the strings in an array.
