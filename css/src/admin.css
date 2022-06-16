@@ -30,10 +30,11 @@
 	width : 10%;
 }
 
-.icon-default-lang:before {
+td.column-default_lang .icon-default-lang:before {
 	font-family: 'dashicons';
 	content: "\f155";
 }
+
 .pll-icon:before{
 	display: inline-block;
 	text-align: left;
