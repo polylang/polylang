@@ -881,22 +881,12 @@ parameters:
 			path: include/class-polylang.php
 
 		-
-			message: "#^Cannot access offset 'version' on mixed\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
 			message: "#^Cannot cast mixed to string\\.$#"
 			count: 3
 			path: include/class-polylang.php
 
 		-
 			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|null given\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Parameter \\#1 \\$version1 of function version_compare expects string, mixed given\\.$#"
 			count: 1
 			path: include/class-polylang.php
 
