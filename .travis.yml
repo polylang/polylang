@@ -5,7 +5,7 @@ if: "branch = master"
 language: "php"
 os:
   - "linux"
-dist: "xenial"
+dist: "bionic"
 
 jobs:
   include:
@@ -29,7 +29,6 @@ jobs:
       env: "WP_VERSION=6.0 WP_MULTISITE=0"
 
     - name: "WP 6.0 - PHP 8.0"
-      dist: "bionic"
       php: "8.0"
       env: "WP_VERSION=6.0 WP_MULTISITE=0"
 
