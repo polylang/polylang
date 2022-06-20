@@ -25,6 +25,7 @@ jobs:
         - "vendor/bin/phpunit --verbose"
 
     - name: "WP 6.0 - PHP 5.6"
+      dist: "xenial"
       php: "5.6"
       env: "WP_VERSION=6.0 WP_MULTISITE=0"
 
@@ -37,6 +38,7 @@ jobs:
       env: "WP_VERSION=6.0 WP_MULTISITE=1"
 
     - name: "WP nightly - PHP 5.6"
+      dist: "xenial"
       php: "5.6"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
@@ -49,7 +51,8 @@ jobs:
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
   allow_failures:
-    - php: "5.6"
+    - dist: "xenial"
+      php: "5.6"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
     - php: "8.0"
