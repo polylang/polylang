@@ -5,7 +5,7 @@ if: "branch = master"
 language: "php"
 os:
   - "linux"
-dist: "xenial"
+dist: "bionic"
 
 jobs:
   include:
@@ -25,11 +25,11 @@ jobs:
         - "vendor/bin/phpunit --verbose"
 
     - name: "WP 6.0 - PHP 5.6"
+      dist: "xenial"
       php: "5.6"
       env: "WP_VERSION=6.0 WP_MULTISITE=0"
 
     - name: "WP 6.0 - PHP 8.0"
-      dist: "bionic"
       php: "8.0"
       env: "WP_VERSION=6.0 WP_MULTISITE=0"
 
@@ -38,6 +38,7 @@ jobs:
       env: "WP_VERSION=6.0 WP_MULTISITE=1"
 
     - name: "WP nightly - PHP 5.6"
+      dist: "xenial"
       php: "5.6"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
@@ -50,7 +51,8 @@ jobs:
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
   allow_failures:
-    - php: "5.6"
+    - dist: "xenial"
+      php: "5.6"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
     - php: "8.0"
