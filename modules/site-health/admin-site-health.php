@@ -115,7 +115,6 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @param string                $key option name.
 	 * @param string|array|bool|int $value option value.
-	 *
 	 * @return string|array $value option value.
 	 */
 	public function format_value( $key, $value ) {
@@ -124,70 +123,70 @@ class PLL_Admin_Site_Health {
 			case 'browser':
 				if ( ! $value ) {
 					// translators: the placeholder is the option stored in database.
-					$value = __( 'Browser prefered language deactivated (%s)', 'polylang' );
+					$value = esc_html__( 'Browser prefered language deactivated (0)', 'polylang' );
 					break;
 				}
 				// translators: the placeholder is the option stored in database.
-				$value = __( 'Browser prefered language activated (%s)', 'polylang' );
+				$value = esc_html__( 'Browser prefered language activated (%s)', 'polylang' );
 				break;
 			case 'rewrite':
 				if ( 1 === $value ) {
 					// translators: the placeholder is the option stored in database.
-					$value = __( 'Remove /language/ in pretty permalinks (%s)', 'polylang' );
+					$value = esc_html__( 'Remove /language/ in pretty permalinks (%s)', 'polylang' );
 				} else {
 					// translators: the placeholder is the option stored in database.
-					$value = __( 'Keep /language/ in pretty permalinks (%s)', 'polylang' );
+					$value = esc_html__( 'Keep /language/ in pretty permalinks (%s)', 'polylang' );
 				}
 				break;
 			case 'hide_default':
 				if ( 1 === $value ) {
 					// translators: the placeholder is the option stored in database.
-					$value = __( 'Hide URL language information for default language (%s)', 'polylang' );
+					$value = esc_html__( 'Hide URL language information for default language (%s)', 'polylang' );
 				} else {
 					// translators: the placeholder is the option stored in database.
-					$value = __( 'Display URL language information for default language (%s)', 'polylang' );
+					$value = esc_html__( 'Display URL language information for default language (%s)', 'polylang' );
 				}
 				break;
 			case 'force_lang':
 				switch ( $value ) {
 					case '0':
 						// translators: the placeholder is the option stored in database.
-						$value = __( 'The language is set from content (%s)', 'polylang' );
+						$value = esc_html__( 'The language is set from content (%s)', 'polylang' );
 						break;
 					case '1':
 						// translators: the placeholder is the option stored in database.
-						$value = __( 'The language is set from the directory name in pretty permalinks (%s)', 'polylang' );
+						$value = esc_html__( 'The language is set from the directory name in pretty permalinks (%s)', 'polylang' );
 						break;
 					case '2':
 						// translators: the placeholder is the option stored in database.
-						$value = __( 'The language is set from the subdomain name in pretty permalinks (%s)', 'polylang' );
+						$value = esc_html__( 'The language is set from the subdomain name in pretty permalinks (%s)', 'polylang' );
 						break;
 					case '3':
 						// translators: the placeholder is the option stored in database.
-						$value = __( 'The language is set from different domains (%s)', 'polylang' );
+						$value = esc_html__( 'The language is set from different domains (%s)', 'polylang' );
 						break;
 				}
 				break;
 			case 'redirect_lang':
 				if ( 1 === $value ) {
 					// translators: the placeholder is the option stored in database.
-					$value = __( 'The front page URL contains the language code instead of the page name or page id (%s)', 'polylang' );
+					$value = esc_html__( 'The front page URL contains the language code instead of the page name or page id (%s)', 'polylang' );
 				} else {
 					// translators: the placeholder is the option stored in database.
-					$value = __( 'The front page URL contains the page name or page id instead of the language code (%s)', 'polylang' );
+					$value = esc_html__( 'The front page URL contains the page name or page id instead of the language code (%s)', 'polylang' );
 				}
 				break;
 			case 'media_support':
 				if ( ! $value ) {
-					$value = __( 'The media are not translated (0)', 'polylang' );
+					$value = esc_html__( 'The media are not translated (0)', 'polylang' );
 				}
 				// translators: the placeholder is the option stored in database.
-				$value = __( 'The media are translated (%s)', 'polylang' );
+				$value = esc_html__( 'The media are translated (%s)', 'polylang' );
 				break;
 
 			case 'sync':
 				if ( is_array( $value ) && empty( $value ) ) {
-					$value = __( 'Synchronization disabled (0)', 'polylang' );
+					$value = esc_html__( 'Synchronization disabled (0)', 'polylang' );
 				}
 				break;
 		}
