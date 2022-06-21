@@ -122,13 +122,13 @@ class PLL_Admin_Site_Health {
 		$db_value = $value;
 		switch ( $key ) {
 			case 'browser':
-				if ( true === $value ) {
-					// translators: the placeholder is the option stored in database.
-					$value = __( 'Browser prefered language activated (%s)', 'polylang' );
-				} else {
+				if ( ! $value ) {
 					// translators: the placeholder is the option stored in database.
 					$value = __( 'Browser prefered language deactivated (%s)', 'polylang' );
+					break;
 				}
+				// translators: the placeholder is the option stored in database.
+				$value = __( 'Browser prefered language activated (%s)', 'polylang' );
 				break;
 			case 'rewrite':
 				if ( 1 === $value ) {
