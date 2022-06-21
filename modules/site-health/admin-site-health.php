@@ -109,7 +109,7 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Transform the option value to readable human sentence.
+	 * Transforms the option value to readable human sentence.
 	 *
 	 * @since 3.3
 	 *
