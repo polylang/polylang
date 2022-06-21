@@ -178,12 +178,11 @@ class PLL_Admin_Site_Health {
 				}
 				break;
 			case 'media_support':
-				if ( true === $value ) {
-					// translators: the placeholder is the option stored in database.
-					$value = __( 'The media are translated (%s)', 'polylang' );
-				} else {
+				if ( ! $value ) {
 					$value = __( 'The media are not translated (0)', 'polylang' );
 				}
+				// translators: the placeholder is the option stored in database.
+				$value = __( 'The media are translated (%s)', 'polylang' );
 				break;
 
 			case 'sync':
