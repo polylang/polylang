@@ -179,6 +179,7 @@ class PLL_Admin_Site_Health {
 			case 'media_support':
 				if ( ! $value ) {
 					$value = esc_html__( 'The media are not translated (0)', 'polylang' );
+					break;
 				}
 				// translators: the placeholder is the option stored in database.
 				$value = esc_html__( 'The media are translated (%s)', 'polylang' );
