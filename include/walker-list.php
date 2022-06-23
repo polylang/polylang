@@ -14,7 +14,7 @@ class PLL_Walker_List extends Walker {
 	 *
 	 * @see https://developer.wordpress.org/reference/classes/walker/#properties Walker::$db_fields.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
 

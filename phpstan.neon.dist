@@ -18,7 +18,6 @@ parameters:
 		- install/plugin-updater.php
 	checkMissingIterableValueType: false
 	ignoreErrors:
-		- '#^Function apply_filters invoked with [34567] parameters, 2 required\.$#'
 		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
 
 		# Temporarily ignored
