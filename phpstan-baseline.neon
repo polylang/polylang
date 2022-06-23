@@ -31,7 +31,7 @@ parameters:
 			path: admin/admin-base.php
 
 		-
-			message: "#^Parameter \\#6 \\$function of function add_submenu_page expects callable\\(\\)\\: mixed, array\\{\\$this\\(PLL_Admin_Base\\), 'languages_page'\\} given\\.$#"
+			message: "#^Parameter \\#6 \\$callback of function add_submenu_page expects callable\\(\\)\\: mixed, array\\{\\$this\\(PLL_Admin_Base\\), 'languages_page'\\} given\\.$#"
 			count: 1
 			path: admin/admin-base.php
 
@@ -446,12 +446,7 @@ parameters:
 			path: frontend/choose-lang-domain.php
 
 		-
-			message: "#^Cannot cast mixed to string\\.$#"
-			count: 2
-			path: frontend/choose-lang-url.php
-
-		-
-			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, mixed given\\.$#"
+			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|false\\|null given\\.$#"
 			count: 2
 			path: frontend/choose-lang-url.php
 
@@ -801,11 +796,6 @@ parameters:
 			path: frontend/frontend-static-pages.php
 
 		-
-			message: "#^Parameter \\#1 \\$encoded_string of function parse_str expects string, mixed given\\.$#"
-			count: 1
-			path: frontend/frontend-static-pages.php
-
-		-
 			message: "#^Parameter \\#2 \\$page of method PLL_Links_Model\\:\\:add_paged_to_link\\(\\) expects int, mixed given\\.$#"
 			count: 1
 			path: frontend/frontend-static-pages.php
@@ -866,13 +856,13 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
-			count: 2
+			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
+			count: 1
 			path: include/class-polylang.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
-			count: 1
+			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
+			count: 2
 			path: include/class-polylang.php
 
 		-
@@ -883,11 +873,6 @@ parameters:
 		-
 			message: "#^Cannot access offset 'version' on mixed\\.$#"
 			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Cannot cast mixed to string\\.$#"
-			count: 3
 			path: include/class-polylang.php
 
 		-
@@ -1111,11 +1096,6 @@ parameters:
 			path: include/license.php
 
 		-
-			message: "#^Cannot cast mixed to string\\.$#"
-			count: 2
-			path: include/links-directory.php
-
-		-
 			message: "#^Method PLL_Links_Directory\\:\\:add_language_to_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: include/links-directory.php
@@ -1151,17 +1131,17 @@ parameters:
 			path: include/links-domain.php
 
 		-
-			message: "#^Parameter \\#1 \\$domain of function idn_to_ascii expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$domain of function idn_to_ascii expects string, string\\|false\\|null given\\.$#"
 			count: 2
 			path: include/links-domain.php
 
 		-
-			message: "#^Parameter \\#1 \\$string of static method Requests_IDNAEncoder\\:\\:encode\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$string of static method Requests_IDNAEncoder\\:\\:encode\\(\\) expects string, string\\|false\\|null given\\.$#"
 			count: 1
 			path: include/links-domain.php
 
 		-
-			message: "#^Method PLL_Links_Model\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int, mixed\\>\\.$#"
+			message: "#^Method PLL_Links_Model\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int, string\\|false\\|null\\>\\.$#"
 			count: 1
 			path: include/links-model.php
 
@@ -1186,7 +1166,7 @@ parameters:
 			path: include/links-permalinks.php
 
 		-
-			message: "#^Method PLL_Links_Subdomain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int\\|string, mixed\\>\\.$#"
+			message: "#^Method PLL_Links_Subdomain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int\\|string, string\\|false\\|null\\>\\.$#"
 			count: 1
 			path: include/links-subdomain.php
 
