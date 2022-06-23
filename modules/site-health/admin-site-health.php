@@ -115,7 +115,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @param string                $key option name.
 	 * @param string|array|bool|int $value option value.
-	 * @return string|array $value option value.
+	 * @return array|bool|int|string $value option value.
 	 */
 	public function format_value( $key, $value ) {
 		$db_value = $value;
@@ -130,16 +130,16 @@ class PLL_Admin_Site_Health {
 			case 'rewrite':
 				if ( 1 === $value ) {
 					$value = esc_html__( 'Remove /language/ in pretty permalinks (1)', 'polylang' );
-				} else {
-					$value = esc_html__( 'Keep /language/ in pretty permalinks (0)', 'polylang' );
+					break;
 				}
+				$value = esc_html__( 'Keep /language/ in pretty permalinks (0)', 'polylang' );
 				break;
 			case 'hide_default':
 				if ( 1 === $value ) {
 					$value = esc_html__( 'Hide URL language information for default language (1)', 'polylang' );
-				} else {
-					$value = esc_html__( 'Display URL language information for default language (0)', 'polylang' );
+					break;
 				}
+				$value = esc_html__( 'Display URL language information for default language (0)', 'polylang' );
 				break;
 			case 'force_lang':
 				switch ( $value ) {
@@ -160,9 +160,10 @@ class PLL_Admin_Site_Health {
 			case 'redirect_lang':
 				if ( 1 === $value ) {
 					$value = esc_html__( 'The front page URL contains the language code instead of the page name or page id (1)', 'polylang' );
-				} else {
-					$value = esc_html__( 'The front page URL contains the page name or page id instead of the language code (0)', 'polylang' );
+					break;
 				}
+				$value = esc_html__( 'The front page URL contains the page name or page id instead of the language code (0)', 'polylang' );
+
 				break;
 			case 'media_support':
 				if ( ! $value ) {
