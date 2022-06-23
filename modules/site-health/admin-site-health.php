@@ -127,14 +127,14 @@ class PLL_Admin_Site_Health {
 				$value = '1: ' . esc_html__( 'Browser prefered language activated', 'polylang' );
 				break;
 			case 'rewrite':
-				if ( 1 === $value ) {
+				if ( $value ) {
 					$value = '1: ' . esc_html__( 'Remove /language/ in pretty permalinks', 'polylang' );
 					break;
 				}
 				$value = '0: ' . esc_html__( 'Keep /language/ in pretty permalinks', 'polylang' );
 				break;
 			case 'hide_default':
-				if ( 1 === $value ) {
+				if ( $value ) {
 					$value = '1: ' . esc_html__( 'Hide URL language information for default language', 'polylang' );
 					break;
 				}
@@ -157,7 +157,7 @@ class PLL_Admin_Site_Health {
 				}
 				break;
 			case 'redirect_lang':
-				if ( 1 === $value ) {
+				if ( $value ) {
 					$value = '1: ' . esc_html__( 'The front page URL contains the language code instead of the page name or page id', 'polylang' );
 					break;
 				}
