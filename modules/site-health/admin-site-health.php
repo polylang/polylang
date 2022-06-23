@@ -118,7 +118,6 @@ class PLL_Admin_Site_Health {
 	 * @return mixed Option value.
 	 */
 	public function format_value( $key, $value ) {
-		$db_value = $value;
 		switch ( $key ) {
 			case 'browser':
 				if ( ! $value ) {
