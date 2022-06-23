@@ -115,7 +115,7 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @param string                $key option name.
 	 * @param string|array|bool|int $value option value.
-	 * @return array|bool|int|string $value option value.
+	 * @return mixed Option value.
 	 */
 	public function format_value( $key, $value ) {
 		$db_value = $value;
