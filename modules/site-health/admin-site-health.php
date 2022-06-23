@@ -127,53 +127,53 @@ class PLL_Admin_Site_Health {
 					break;
 				}
 				// translators: the placeholder is the option stored in database.
-				$value = esc_html__( 'Browser prefered language activated (%s)', 'polylang' );
+				$value = esc_html__( 'Browser prefered language activated (1)', 'polylang' );
 				break;
 			case 'rewrite':
 				if ( 1 === $value ) {
 					// translators: the placeholder is the option stored in database.
-					$value = esc_html__( 'Remove /language/ in pretty permalinks (%s)', 'polylang' );
+					$value = esc_html__( 'Remove /language/ in pretty permalinks (1)', 'polylang' );
 				} else {
 					// translators: the placeholder is the option stored in database.
-					$value = esc_html__( 'Keep /language/ in pretty permalinks (%s)', 'polylang' );
+					$value = esc_html__( 'Keep /language/ in pretty permalinks (0)', 'polylang' );
 				}
 				break;
 			case 'hide_default':
 				if ( 1 === $value ) {
 					// translators: the placeholder is the option stored in database.
-					$value = esc_html__( 'Hide URL language information for default language (%s)', 'polylang' );
+					$value = esc_html__( 'Hide URL language information for default language (1)', 'polylang' );
 				} else {
 					// translators: the placeholder is the option stored in database.
-					$value = esc_html__( 'Display URL language information for default language (%s)', 'polylang' );
+					$value = esc_html__( 'Display URL language information for default language (0)', 'polylang' );
 				}
 				break;
 			case 'force_lang':
 				switch ( $value ) {
 					case '0':
 						// translators: the placeholder is the option stored in database.
-						$value = esc_html__( 'The language is set from content (%s)', 'polylang' );
+						$value = esc_html__( 'The language is set from content (0)', 'polylang' );
 						break;
 					case '1':
 						// translators: the placeholder is the option stored in database.
-						$value = esc_html__( 'The language is set from the directory name in pretty permalinks (%s)', 'polylang' );
+						$value = esc_html__( 'The language is set from the directory name in pretty permalinks (1)', 'polylang' );
 						break;
 					case '2':
 						// translators: the placeholder is the option stored in database.
-						$value = esc_html__( 'The language is set from the subdomain name in pretty permalinks (%s)', 'polylang' );
+						$value = esc_html__( 'The language is set from the subdomain name in pretty permalinks (2)', 'polylang' );
 						break;
 					case '3':
 						// translators: the placeholder is the option stored in database.
-						$value = esc_html__( 'The language is set from different domains (%s)', 'polylang' );
+						$value = esc_html__( 'The language is set from different domains (3)', 'polylang' );
 						break;
 				}
 				break;
 			case 'redirect_lang':
 				if ( 1 === $value ) {
 					// translators: the placeholder is the option stored in database.
-					$value = esc_html__( 'The front page URL contains the language code instead of the page name or page id (%s)', 'polylang' );
+					$value = esc_html__( 'The front page URL contains the language code instead of the page name or page id (1)', 'polylang' );
 				} else {
 					// translators: the placeholder is the option stored in database.
-					$value = esc_html__( 'The front page URL contains the page name or page id instead of the language code (%s)', 'polylang' );
+					$value = esc_html__( 'The front page URL contains the page name or page id instead of the language code (0)', 'polylang' );
 				}
 				break;
 			case 'media_support':
@@ -182,7 +182,7 @@ class PLL_Admin_Site_Health {
 					break;
 				}
 				// translators: the placeholder is the option stored in database.
-				$value = esc_html__( 'The media are translated (%s)', 'polylang' );
+				$value = esc_html__( 'The media are translated (1)', 'polylang' );
 				break;
 
 			case 'sync':
@@ -191,9 +191,7 @@ class PLL_Admin_Site_Health {
 				}
 				break;
 		}
-		if ( ! is_array( $value ) ) {
-			$value = sprintf( $value, $db_value );
-		}
+
 		return $value;
 	}
 
