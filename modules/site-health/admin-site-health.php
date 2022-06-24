@@ -173,7 +173,7 @@ class PLL_Admin_Site_Health {
 				break;
 
 			case 'sync':
-				if ( is_array( $value ) && empty( $value ) ) {
+				if ( empty( $value ) ) {
 					$value = '0: ' . esc_html__( 'Synchronization disabled', 'polylang' );
 				}
 				break;
