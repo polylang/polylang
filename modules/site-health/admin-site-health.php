@@ -121,10 +121,10 @@ class PLL_Admin_Site_Health {
 		switch ( $key ) {
 			case 'browser':
 				if ( ! $value ) {
-					$value = '0: ' . esc_html__( 'Browser prefered language deactivated', 'polylang' );
+					$value = '0: ' . esc_html__( 'Detect browser language deactivated', 'polylang' );
 					break;
 				}
-				$value = '1: ' . esc_html__( 'Browser prefered language activated', 'polylang' );
+				$value = '1: ' . esc_html__( 'Detect browser language activated', 'polylang' );
 				break;
 			case 'rewrite':
 				if ( $value ) {
