@@ -113,8 +113,8 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 3.3
 	 *
-	 * @param string                $key option name.
-	 * @param string|array|bool|int $value option value.
+	 * @param string $key   Option name.
+	 * @param mixed  $value Option value.
 	 * @return mixed Option value.
 	 */
 	public function format_value( $key, $value ) {
