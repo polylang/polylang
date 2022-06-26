@@ -270,49 +270,47 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 			$theme_root = get_theme_root();
 			$theme_root = ( false === strpos( $theme_root, '\\' ) ) ? $theme_root : str_replace( '/', '\\', $theme_root );
 
+			$white_list = array(
+				array( 'file' => $theme_root ),
+				array( 'function' => 'wp_nav_menu' ),
+				array( 'function' => 'login_footer' ),
+				array( 'function' => 'get_custom_logo' ),
+				array( 'function' => 'render_block_core_site_title' ),
+			);
+
+			if ( 3 === $this->options['force_lang'] ) {
+				$white_list[] = array( 'function' => 'redirect_canonical' );
+			}
+
 			/**
-			 * Filter the white list of the Polylang 'home_url' filter
-			 * The $args contains an array of arrays each of them having
-			 * a 'file' key and/or a 'function' key to decide which functions in
-			 * which files using home_url() calls must be filtered
+			 * Filters the white list of the Polylang 'home_url' filter.
 			 *
 			 * @since 1.1.2
 			 *
-			 * @param array $args
+			 * @param string[][] $white_list An array of arrays each of them having a 'file' key
+			 *                               and/or a 'function' key to decide which functions in
+			 *                               which files using home_url() calls must be filtered.
 			 */
-			$this->white_list = apply_filters(
-				'pll_home_url_white_list',
-				array(
-					array( 'file' => $theme_root ),
-					array( 'function' => 'wp_nav_menu' ),
-					array( 'function' => 'login_footer' ),
-					array( 'function' => 'get_custom_logo' ),
-					array( 'function' => 'render_block_core_site_title' ),
-					array( 'function' => 'redirect_canonical' ),
-				)
-			);
+			$this->white_list = apply_filters( 'pll_home_url_white_list', $white_list );
 		}
 
-		// We don't want to filter the home url in these cases
+		// We don't want to filter the home url in these cases.
 		if ( empty( $this->black_list ) ) {
+			$black_list = array(
+				array( 'file' => 'searchform.php' ), // Since WP 3.6 searchform.php is passed through get_search_form.
+				array( 'function' => 'get_search_form' ),
+			);
 
 			/**
-			 * Filter the black list of the Polylang 'home_url' filter
-			 * The $args contains an array of arrays each of them having
-			 * a 'file' key and/or a 'function' key to decide which functions in
-			 * which files using home_url() calls must be filtered
+			 * Filters the black list of the Polylang 'home_url' filter.
 			 *
 			 * @since 1.1.2
 			 *
-			 * @param array $args
+			 * @param string[][] $black_list An array of arrays each of them having a 'file' key
+			 *                               and/or a 'function' key to decide which functions in
+			 *                               which files using home_url() calls must be filtered.
 			 */
-			$this->black_list = apply_filters(
-				'pll_home_url_black_list',
-				array(
-					array( 'file' => 'searchform.php' ), // Since WP 3.6 searchform.php is passed through get_search_form
-					array( 'function' => 'get_search_form' ),
-				)
-			);
+			$this->black_list = apply_filters( 'pll_home_url_black_list', $black_list );
 		}
 
 		$traces = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
