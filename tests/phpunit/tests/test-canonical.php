@@ -132,6 +132,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
+	/**
+	 * Posts.
+	 */
 	public function test_post_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/post-format-test-audio/',
@@ -174,6 +177,9 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?feed=rss&p=' . self::$post_en, '/en/post-format-test-audio/feed/' );
 	}
 
+	/**
+	 * Pages.
+	 */
 	public function test_page_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/parent-page/',
@@ -216,6 +222,46 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?feed=rss&page_id=' . self::$page_id, '/en/parent-page/feed/' );
 	}
 
+	/**
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
+	public function test_page_with_name_and_language_when_front_page_displays_posts() {
+		update_option( 'show_on_front', 'posts' );
+
+		$this->assertCanonical(
+			'/en/parent-page/',
+			array(
+				'url' => '/en/parent-page/',
+				'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
+			)
+		);
+	}
+
+	/**
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
+	public function test_page_with_incorrect_language_when_front_page_displays_posts() {
+		update_option( 'show_on_front', 'posts' );
+		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
+	}
+
+	/**
+	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 */
+	public function test_page_without_language_when_front_page_displays_posts() {
+		update_option( 'show_on_front', 'posts' );
+		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
+	}
+
+	public function test_page_from_plain_permalink_when_front_page_displays_posts() {
+		update_option( 'show_on_front', 'posts' );
+		self::$model->clean_languages_cache(); // Clean the languages transient.
+		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
+	}
+
+	/**
+	 * Custom posts.
+	 */
 	public function test_custom_post_type_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/pllcanonical/custom-post/',
@@ -251,6 +297,17 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
+	public function test_custom_post_type_feed_with_incorrect_language() {
+		$this->assertCanonical( '/fr/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	}
+
+	public function test_custom_post_type_feed_without_language() {
+		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	}
+
+	/**
+	 * Categories.
+	 */
 	public function test_category_with_name_and_language() {
 		$this->assertCanonical(
 			'/en/category/parent/',
@@ -301,6 +358,56 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
+	public function test_paged_category_from_plain_permalink() {
+		update_option( 'posts_per_page', 1 );
+
+		// Create 1 additional English post to have a paged category.
+		$en = $this->factory->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		// Set category to the posts.
+		wp_set_post_terms( self::$post_en, array( self::$term_en ), 'category' );
+		wp_set_post_terms( $en, array( self::$term_en ), 'category' );
+
+		$this->assertCanonical( '?paged=2&cat=' . self::$term_en, '/en/category/parent/page/2/' );
+	}
+
+	public function test_multiple_category() {
+		$this->assertCanonical(
+			'/en/category/parent,second/',
+			array(
+				'url' => '/en/category/parent,second/',
+				'qv'  => array(
+					'lang'          => 'en',
+					'category_name' => 'parent,second',
+				),
+			)
+		);
+	}
+
+	public function test_multiple_category_without_language() {
+		$this->assertCanonical( '/category/parent,second/', '/en/category/parent,second/' );
+	}
+
+	public function test_multiple_category_with_wrong_language() {
+		$this->assertCanonical( '/fr/category/parent,second/', '/en/category/parent,second/' );
+	}
+
+	public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
+	}
+
+	public function test_untranslated_category_feed() {
+		$this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
+	}
+
+	public function test_plain_cat_feed() {
+		$this->assertCanonical( '/?cat=' . self::$term_en . '&feed=rss2', '/en/category/parent/feed/' );
+	}
+
+	/**
+	 * Tags.
+	 */
 	public function test_should_not_remove_query_string_parameter_from_tag_rewritten_url() {
 		$this->assertCanonical(
 			'/en/tag/test-tag/?foo=bar',
@@ -315,6 +422,17 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
+	public function test_should_not_remove_query_string_parameter_from_tag_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&tag=test-tag', '/en/tag/test-tag/?foo=bar' );
+	}
+
+	public function test_plain_tag_feed() {
+		$this->assertCanonical( '/?tag=test-tag&feed=rss2', '/en/tag/test-tag/feed/' );
+	}
+
+	/**
+	 * Custom taxonomy terms.
+	 */
 	public function test_custom_taxonomy_with_incorrect_language() {
 		$this->assertCanonical( '/fr/custom_tax/custom-term/', '/en/custom_tax/custom-term/' );
 	}
@@ -350,20 +468,18 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
-	public function test_paged_category_from_plain_permalink() {
-		update_option( 'posts_per_page', 1 );
-
-		// Create 1 additional English post to have a paged category.
-		$en = $this->factory->post->create();
-		self::$model->post->set_language( $en, 'en' );
-
-		// Set category to the posts.
-		wp_set_post_terms( self::$post_en, array( self::$term_en ), 'category' );
-		wp_set_post_terms( $en, array( self::$term_en ), 'category' );
-
-		$this->assertCanonical( '?paged=2&cat=' . self::$term_en, '/en/category/parent/page/2/' );
+	public function test_custom_taxonomy_from_plain_permalink() {
+		// WordPress does redirect for custom category plain permalink.
+		$this->assertCanonical( '?custom_tax=custom-term', '/en/custom_tax/custom-term/' );
 	}
 
+	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
+		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/custom_tax/custom-term/?foo=bar' );
+	}
+
+	/**
+	 * Page for posts.
+	 */
 	public function test_page_for_posts_with_name_and_language() {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
@@ -398,22 +514,6 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '?page_id=' . self::$page_for_posts_en, '/en/posts/' );
 	}
 
-/*
- * See #55993
- *
-	public function test_paged_page_for_posts_should_match_page_for_post_option_posts_from_plain_permalink() {
-		update_option( 'posts_per_page', 1 );
-		update_option( 'show_on_front', 'page' );
-		update_option( 'page_for_posts', self::$page_for_posts_fr );
-
-		// Create 1 additional English post to have a paged page for posts.
-		$en = $this->factory->post->create();
-		self::$model->post->set_language( $en, 'en' );
-
-		self::$model->clean_languages_cache(); // Clean the languages transient.
-		$this->assertCanonical( '?paged=2&page_id=' . self::$page_for_posts_en, '/en/posts/page/2/' );
-	}
-*/
 	public function test_page_for_post_option_should_be_translated_when_language_is_incorrect() {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_for_posts', self::$page_for_posts_fr );
@@ -436,42 +536,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	}
 
 	/**
-	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
+	 * Sitemaps.
 	 */
-	public function test_page_with_name_and_language_when_front_page_displays_posts() {
-		update_option( 'show_on_front', 'posts' );
-
-		$this->assertCanonical(
-			'/en/parent-page/',
-			array(
-				'url' => '/en/parent-page/',
-				'qv'  => array( 'lang' => 'en', 'pagename' => 'parent-page', 'page' => '' ),
-			)
-		);
-	}
-
-	/**
-	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
-	 */
-	public function test_page_with_incorrect_language_when_front_page_displays_posts() {
-		update_option( 'show_on_front', 'posts' );
-		$this->assertCanonical( '/fr/parent-page/', '/en/parent-page/' );
-	}
-
-	/**
-	 *  Bug introduced in 1.8.2 and fixed in 1.8.3.
-	 */
-	public function test_page_without_language_when_front_page_displays_posts() {
-		update_option( 'show_on_front', 'posts' );
-		$this->assertCanonical( '/parent-page/', '/en/parent-page/' );
-	}
-
-	public function test_page_from_plain_permalink_when_front_page_displays_posts() {
-		update_option( 'show_on_front', 'posts' );
-		self::$model->clean_languages_cache(); // Clean the languages transient.
-		$this->assertCanonical( '?page_id=' . self::$page_id, '/en/parent-page/' );
-	}
-
 	public function test_sitemap_with_translated_post() {
 		$this->init_for_sitemaps();
 
@@ -587,74 +653,4 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			)
 		);
 	}
-
-	public function test_custom_post_type_feed_with_incorrect_language() {
-		$this->assertCanonical( '/fr/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
-	}
-
-	public function test_custom_post_type_feed_without_language() {
-		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
-	}
-
-	public function test_multiple_category() {
-		$this->assertCanonical(
-			'/en/category/parent,second/',
-			array(
-				'url' => '/en/category/parent,second/',
-				'qv'  => array(
-					'lang'          => 'en',
-					'category_name' => 'parent,second',
-				),
-			)
-		);
-	}
-
-	public function test_multiple_category_without_language() {
-		$this->assertCanonical( '/category/parent,second/', '/en/category/parent,second/' );
-	}
-
-	public function test_multiple_category_with_wrong_language() {
-		$this->assertCanonical( '/fr/category/parent,second/', '/en/category/parent,second/' );
-	}
-
-	// phpcs:disable
-
-	public function test_should_not_remove_query_string_parameter_from_category_plain_permalink_url() {
-		$this->assertCanonical( '?foo=bar&cat=' . self::$term_en, '/en/category/parent/?foo=bar' );
-	}
-
-	public function test_should_not_remove_query_string_parameter_from_tag_plain_permalink_url() {
-		$this->assertCanonical( '?foo=bar&tag=test-tag', '/en/tag/test-tag/?foo=bar' );
-	}
-
-	public function test_plain_cat_feed() {
-		$this->assertCanonical( '/?cat=' . self::$term_en . '&feed=rss2', '/en/category/parent/feed/' );
-	}
-
-	public function test_plain_tag_feed() {
-		$this->assertCanonical( '/?tag=test-tag&feed=rss2', '/en/tag/test-tag/feed/' );
-	}
-
-	public function test_untranslated_category_feed() {
-		$this->assertCanonical( '/fr/category/parent/feed/', '/en/category/parent/feed/' );
-	}
-
-	/**
-	 * See #55880
-	public function test_should_not_remove_query_string_parameter_from_custom_post_type_plain_permalink_url() {
-		// WordPress redirect_canonical() doesn't rewrite plain permalink for custom post types.
-		$this->assertCanonical( '?foo=bar&pllcanonical=custom-post', '/en/pllcanonical/custom-post/?foo=bar' );
-	}
-	*/
-
-	public function test_custom_taxonomy_from_plain_permalink() {
-		// WordPress does redirect for custom category plain permalink.
-		$this->assertCanonical( '?custom_tax=custom-term', '/en/custom_tax/custom-term/' );
-	}
-
-	public function test_should_not_remove_query_string_parameter_from_custom_taxonomy_plain_permalink_url() {
-		$this->assertCanonical( '?foo=bar&custom_tax=custom-term', '/en/custom_tax/custom-term/?foo=bar' );
-	}
-
-	// phpcs:enable
 }
