@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 3.2.4
+Stable tag: 3.2.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -102,6 +102,13 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.2.5 (2022-06-28) =
+
+* Pro: Fix creation of WC product categories with shared slug via REST API
+* Pro: Fix conflict with WooBuilder when editing a WC product
+* Fix: Force empty string translation to empty string #1058
+* Fix CSS conflict with Dynamic content for Elementor #1060
 
 = 3.2.4 (2022-06-07) =
 
