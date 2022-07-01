@@ -704,4 +704,76 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->go_to( home_url( '/fr/' ) );
 		$this->assertEquals( 1, $GLOBALS['wp_query']->post_count );
 	}
+
+	public function test_or_operator() {
+		// Categories.
+		$first_cat_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test1' ) );
+		self::$model->term->set_language( $first_cat_en, 'en' );
+
+		$first_cat_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai1' ) );
+		self::$model->term->set_language( $first_cat_fr, 'fr' );
+
+		$second_cat_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test2' ) );
+		self::$model->term->set_language( $second_cat_en, 'en' );
+
+		$second_cat_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai2' ) );
+		self::$model->term->set_language( $second_cat_fr, 'fr' );
+
+		// English Posts.
+		$eng_posts_cat_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_cat_1 as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+			wp_set_post_terms( $post, array( $first_cat_en ), 'category' );
+		}
+		$eng_posts_cat_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_cat_2 as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+			wp_set_post_terms( $post, array( $second_cat_en ), 'category' );
+		}
+		$eng_posts_no_cat = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+
+		// French Posts.
+		$french_posts_cat_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_cat_1 as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			wp_set_post_terms( $post, array( $first_cat_fr ), 'category' );
+		}
+		$french_posts_cat_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_cat_2 as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			wp_set_post_terms( $post, array( $second_cat_fr ), 'category' );
+		}
+		$french_posts_no_cat = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_no_cat as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+		}
+
+		$this->frontend->curlang = 'fr';
+
+		$args = array(
+			'post_type' => 'post',
+			'lang' => 'fr',
+			'posts_per_page' => 10,
+			'tax_query' => array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => 'category',
+					'field' => 'name',
+					'terms' => array( 'essai1' ),
+				),
+				array(
+					'taxonomy' => 'category',
+					'field' => 'name',
+					'terms' => array( 'essai2' ),
+				),
+			),
+		);
+		$query             = new WP_Query( $args );
+		$queried_posts     = $query->posts;
+		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
+		$expected_posts    = array_merge( $french_posts_cat_1, $french_posts_cat_2 );
+
+		$this->assertNotEmpty( $queried_posts );
+		$this->assertSameSets( $expected_posts, $queried_posts_ids );
+	}
 }
