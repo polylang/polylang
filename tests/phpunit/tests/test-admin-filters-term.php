@@ -532,4 +532,19 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertIsArray( $term, 'The list of translation terms should be an array.' );
 		$this->assertEmpty( $term, 'The list of translation terms should be empty.' );
 	}
+
+	public function test_current_language_when_saving_term() {
+		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		$GLOBALS['pagenow'] = 'term.php';
+
+		$_REQUEST = $_POST = array(
+			'taxonomy' => 'category',
+			'tag_ID'   => $en,
+		);
+		$this->pll_admin->set_current_language();
+
+		$this->assertEquals( 'en', $this->pll_admin->curlang->slug );
+	}
 }
