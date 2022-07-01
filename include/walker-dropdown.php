@@ -104,7 +104,13 @@ class PLL_Walker_Dropdown extends Walker {
 
 		if ( ! empty( $args['flag'] ) ) {
 			$current = wp_list_filter( $elements, array( $args['value'] => $args['selected'] ) );
-			$lang = reset( $current );
+			
+			if (empty($current)) {
+				$lang = reset($elements);
+		    	} else {
+				$lang = reset( $current );
+		    	}
+			
 			$output = sprintf(
 				'<span class="pll-select-flag">%s</span>',
 				empty( $lang->flag ) ? esc_html( $lang->slug ) : $lang->flag
