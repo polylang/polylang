@@ -475,4 +475,18 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $footer, 'var pll_page_languages = ' . wp_json_encode( $pages ) ) );
 	}
+
+	public function test_current_language_when_saving_post() {
+		$en = $this->factory->post->create();
+		self::$model->post->set_language( $en, 'en' );
+
+		$GLOBALS['pagenow'] = 'post.php';
+
+		$_POST = array(
+			'post_ID' => $en,
+		);
+		$this->pll_admin->set_current_language();
+
+		$this->assertEquals( 'en', $this->pll_admin->curlang->slug );
+	}
 }

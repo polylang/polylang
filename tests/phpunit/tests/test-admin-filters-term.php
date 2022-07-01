@@ -200,8 +200,8 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		// Prepare all needed info before loading the entire form
 		$GLOBALS['post_type'] = 'post';
 		$tax = get_taxonomy( $taxonomy );
-		$_GET['taxonomy'] = $taxonomy;
-		$_REQUEST['tag_ID'] = $_GET['tag_ID'] = $tag_ID;
+		$_REQUEST['taxonomy'] = $taxonomy;
+		$_REQUEST['tag_ID'] = $tag_ID;
 		$tag = get_term( $tag_ID, $taxonomy, OBJECT, 'edit' );
 		$wp_http_referer = home_url( '/wp-admin/edit-tags.php?taxonomy=category' );
 		$message = '';
@@ -302,7 +302,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 	public function test_parent_dropdown_in_new_tag() {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
-		$_GET['taxonomy'] = 'category';
+		$_REQUEST['taxonomy'] = 'category';
 
 		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
@@ -531,5 +531,20 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertIsArray( $term, 'The list of translation terms should be an array.' );
 		$this->assertEmpty( $term, 'The list of translation terms should be empty.' );
+	}
+
+	public function test_current_language_when_saving_term() {
+		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		$GLOBALS['pagenow'] = 'term.php';
+
+		$_REQUEST = $_POST = array(
+			'taxonomy' => 'category',
+			'tag_ID'   => $en,
+		);
+		$this->pll_admin->set_current_language();
+
+		$this->assertEquals( 'en', $this->pll_admin->curlang->slug );
 	}
 }
