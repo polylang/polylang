@@ -157,36 +157,6 @@ class PLL_Frontend extends PLL_Base {
 		if ( ! empty( $queried_taxonomies ) && 'language' == reset( $queried_taxonomies ) ) {
 			$query->tax_query->queried_terms['language'] = array_shift( $query->tax_query->queried_terms );
 		}
-
-		// If the OR operator is used, the language is not the queried object.
-		/** @var WP_Tax_Query $tax_query */
-		$tax_query = $query->tax_query;
-		if ( ! empty( $tax_query->queried_terms ) && 'OR' === $tax_query->relation && array_key_exists( 'language', $tax_query->queried_terms ) ) {
-			// First remove the language from the queried terms.
-			$tax_query->queries = array_filter(
-				$tax_query->queries,
-				function( $query ) {
-					return ! isset( $query['taxonomy'] ) || 'language' !== $query['taxonomy'];
-				}
-			);
-
-			// Then add the language to the queried terms with the AND operator between it and the orther terms.
-			$lang = $this->curlang;
-			$lang_query = array(
-				'taxonomy' => 'language',
-				'field'    => 'slug',
-				'terms'    => $lang,
-				'operator' => 'IN',
-			);
-			$tax_query = array(
-				$lang_query,
-				get_object_vars( $query->tax_query ),
-				'relation' => 'AND',
-			);
-			$tax_query        = new WP_Tax_Query( $tax_query );
-			$query->tax_query = $tax_query;
-		}
-
 	}
 
 	/**

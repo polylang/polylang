@@ -772,7 +772,7 @@ class Query_Test extends PLL_UnitTestCase {
 			);
 		}
 
-		$this->frontend->curlang = 'fr';
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
 
 		$args = array(
 			'post_type' => 'post',
