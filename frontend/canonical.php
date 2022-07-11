@@ -105,7 +105,7 @@ class PLL_Canonical {
 			if ( ! $page_id ) {
 				$page_id = get_queried_object_id();
 			}
-			if ( $page_id ) {
+			if ( $page_id && is_numeric( $page_id ) ) {
 				$language = $this->model->post->get_language( (int) $page_id );
 			}
 		}
@@ -162,14 +162,14 @@ class PLL_Canonical {
 	 * @since 2.9
 	 *
 	 * @param WP_Tax_Query $tax_query An instance of WP_Tax_Query.
-	 * @return int|false
+	 * @return int
 	 */
 	protected function get_queried_term_id( $tax_query ) {
 		$queried_terms = $tax_query->queried_terms;
 		$taxonomy = $this->get_queried_taxonomy( $tax_query );
 
 		if ( ! is_array( $queried_terms[ $taxonomy ]['terms'] ) ) {
-			return false;
+			return 0;
 		}
 		$field = $queried_terms[ $taxonomy ]['field'];
 		$term  = reset( $queried_terms[ $taxonomy ]['terms'] );
@@ -182,24 +182,30 @@ class PLL_Canonical {
 
 		// We get a slug when requesting a pretty permalink. Let's query all corresponding terms.
 		$args = array(
-			'lang' => '',
-			'taxonomy' => $taxonomy,
-			$field => $term,
+			'lang'       => '',
+			'taxonomy'   => $taxonomy,
+			$field       => $term,
 			'hide_empty' => false,
-			'fields' => 'ids',
+			'fields'     => 'ids',
 		);
-		$terms = get_terms( $args );
+		$term_ids = get_terms( $args );
+
+		if ( ! is_array( $term_ids ) || empty( $term_ids ) ) {
+			return 0;
+		}
+
+		$term_ids = array_filter( $term_ids, 'is_numeric' );
 
 		$filtered_terms_by_lang = array_filter(
-			$terms,
-			function ( $term ) use ( $lang ) {
-				$term_lang = $this->model->term->get_language( $term );
+			$term_ids,
+			function ( $term_id ) use ( $lang ) {
+				$term_lang = $this->model->term->get_language( (int) $term_id );
 
 				return ! empty( $term_lang ) && $term_lang->slug === $lang;
 			}
 		);
 
-		$tr_term = reset( $filtered_terms_by_lang );
+		$tr_term = (int) reset( $filtered_terms_by_lang );
 
 		if ( ! empty( $tr_term ) ) {
 			// The queried term exists in the desired language.
@@ -207,7 +213,7 @@ class PLL_Canonical {
 		}
 
 		// The queried term doesn't exist in the desired language, let's return the first one retrieved.
-		return reset( $terms );
+		return (int) reset( $term_ids );
 	}
 
 	/**
@@ -222,7 +228,7 @@ class PLL_Canonical {
 		$queried_terms = $tax_query->queried_terms;
 		unset( $queried_terms['language'] );
 
-		return key( $queried_terms );
+		return (string) key( $queried_terms );
 	}
 
 	/**
