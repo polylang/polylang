@@ -62,18 +62,18 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 	 */
 	public function test_redirect_www() {
 		$frontend = new PLL_Frontend( $this->links_model );
-		$filters_links = new PLL_Frontend_Filters_Links( $frontend );
+		$canonical = new PLL_Canonical( $frontend );
 
 		// www. to non www.
 		$_SERVER['HTTP_HOST'] = 'www.example.fr';
-		$this->assertEquals( 'http://example.fr', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'], false ) );
-		$this->assertEquals( 'http://example.fr/test/', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
+		$this->assertEquals( 'http://example.fr', $canonical->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'], false ) );
+		$this->assertEquals( 'http://example.fr/test/', $canonical->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
 
 		// non www. to www.
 		self::$model->options['domains']['fr'] = 'http://www.example.fr';
 		$_SERVER['HTTP_HOST'] = 'example.fr';
-		$this->assertEquals( 'http://www.example.fr', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'], false ) );
-		$this->assertEquals( 'http://www.example.fr/test/', $filters_links->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
+		$this->assertEquals( 'http://www.example.fr', $canonical->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'], false ) );
+		$this->assertEquals( 'http://www.example.fr/test/', $canonical->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
 	}
 
 	public function test_permalink_and_shortlink() {
