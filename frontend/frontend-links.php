@@ -161,7 +161,7 @@ class PLL_Frontend_Links extends PLL_Links {
 			}
 
 			// Front page when it is the list of posts
-			elseif ( is_front_page() ) {
+			elseif ( is_front_page() && $language->page_on_front ) {
 				$url = $this->get_home_url( $language );
 			}
 		}
