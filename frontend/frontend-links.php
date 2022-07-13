@@ -63,7 +63,7 @@ class PLL_Frontend_Links extends PLL_Links {
 		 *
 		 * @since 1.8
 		 *
-		 * @param string       $url               Empty or the url of the translation of teh current page.
+		 * @param string       $url               Empty or the url of the translation of the current page.
 		 * @param PLL_Language $language          Language of the translation.
 		 * @param int          $queried_object_id Queried object id.
 		 */
