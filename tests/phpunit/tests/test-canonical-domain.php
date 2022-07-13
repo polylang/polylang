@@ -1,6 +1,6 @@
 <?php
 
-class Canonical_Domain_Test extends PLL_Canonical_UnitTestCase {
+class Canonical_Domain_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
@@ -22,7 +22,7 @@ class Canonical_Domain_Test extends PLL_Canonical_UnitTestCase {
 
 		// Switch to pretty permalinks.
 		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $this->structure );
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		$this->links_model = self::$model->get_links_model();
 		$frontend          = new PLL_Frontend( $this->links_model );
@@ -48,7 +48,6 @@ class Canonical_Domain_Test extends PLL_Canonical_UnitTestCase {
 	 */
 	public function test_redirect_to_non_www() {
 		$this->init( 'http://example.fr' );
-		// www. to non www.
 		$_SERVER['HTTP_HOST'] = 'www.example.fr';
 		$this->assertEquals( 'http://example.fr/test/', $this->canonical->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
 	}
