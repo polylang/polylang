@@ -209,14 +209,6 @@ class PLL_Admin_Site_Health {
 				$fields[ $key ]['value'] = '0';
 			} else {
 				switch ( $key ) {
-					case 'post_types':
-						$fields[ $key ]['label'] = $key;
-						$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_post_types() );
-						break;
-					case 'taxonomies':
-						$fields[ $key ]['label'] = $key;
-						$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
-						break;
 					case 'domains':
 						$fields[ $key ]['label'] = $key;
 						$fields[ $key ]['value'] = $this->format_array( $value );
@@ -237,6 +229,8 @@ class PLL_Admin_Site_Health {
 							$fields[ "$key-$sub_key" ]['value'] = $sub_value;
 						}
 						break;
+					case 'post_types':
+					case 'taxonomies':
 					default:
 						$fields[ $key ]['label'] = $key;
 						$fields[ $key ]['value'] = implode( ', ', $value );
