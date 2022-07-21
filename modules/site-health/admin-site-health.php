@@ -104,8 +104,11 @@ class PLL_Admin_Site_Health {
 				}
 			}
 		);
-
-		return implode( ' | ', $array );
+		if ( empty( $value ) ) {
+			return '0';
+		} else {
+			return implode( ' | ', $array );
+		}
 	}
 
 	/**
@@ -185,10 +188,10 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Add Polylang Options to Site Health Informations tab.
 	 *
-	 * @since 2.8
-	 *
 	 * @param array $debug_info The debug information to be added to the core information page.
+	 *
 	 * @return array
+	 * @since 2.8
 	 */
 	public function info_options( $debug_info ) {
 		$fields = array();
@@ -197,45 +200,42 @@ class PLL_Admin_Site_Health {
 				continue;
 			}
 			$value = $this->format_value( $key, $value );
-			if ( ! is_array( $value ) ) {
-				if ( empty( $value ) ) {
-					$value = '0';
-				}
-
-				$fields[ $key ]['label'] = $key;
-				$fields[ $key ]['value'] = $value;
-			} elseif ( empty( $value ) ) {
-				$fields[ $key ]['label'] = $key;
-				$fields[ $key ]['value'] = '0';
-			} else {
-				switch ( $key ) {
-					case 'domains':
-						$fields[ $key ]['label'] = $key;
-						$fields[ $key ]['value'] = $this->format_array( $value );
-						break;
-					case 'nav_menus':
-						$current_theme = get_stylesheet();
-						if ( isset( $value[ $current_theme ] ) ) {
-							foreach ( $value[ $current_theme ] as $location => $lang ) {
-								/* translators: placeholder is the menu location name */
-								$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-								$fields[ $location ]['value'] = $this->format_array( $lang );
-							}
+			switch ( $key ) {
+				case 'domains':
+					$fields[ $key ]['label'] = $key;
+					$fields[ $key ]['value'] = $this->format_array( $value );
+					break;
+				case 'nav_menus':
+					$current_theme = get_stylesheet();
+					if ( isset( $value[ $current_theme ] ) ) {
+						foreach ( $value[ $current_theme ] as $location => $lang ) {
+							/* translators: placeholder is the menu location name */
+							$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
+							$fields[ $location ]['value'] = $this->format_array( $lang );
 						}
-						break;
-					case 'media':
-						foreach ( $value as $sub_key => $sub_value ) {
-							$fields[ "$key-$sub_key" ]['label'] = "$key $sub_key";
-							$fields[ "$key-$sub_key" ]['value'] = $sub_value;
-						}
-						break;
-					case 'post_types':
-					case 'taxonomies':
-					default:
-						$fields[ $key ]['label'] = $key;
-						$fields[ $key ]['value'] = implode( ', ', $value );
-						break;
-				}
+					}
+					break;
+				case 'media':
+					foreach ( $value as $sub_key => $sub_value ) {
+						$fields[ "$key-$sub_key" ]['label'] = "$key $sub_key";
+						$fields[ "$key-$sub_key" ]['value'] = $sub_value;
+					}
+					break;
+				case 'post_types':
+					$fields[ $key ]['label'] = $key;
+					$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_post_types() );
+					break;
+				case 'taxonomies':
+					$fields[ $key ]['label'] = $key;
+					$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
+					break;
+				default:
+					if ( empty( $value ) ) {
+						$value = '0';
+					}
+					$fields[ $key ]['label'] = $key;
+					$fields[ $key ]['value'] = $value;
+					break;
 			}
 		}
 
