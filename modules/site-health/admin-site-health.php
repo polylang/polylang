@@ -104,11 +104,7 @@ class PLL_Admin_Site_Health {
 				}
 			}
 		);
-		if ( empty( $value ) ) {
-			return '0';
-		} else {
-			return implode( ' | ', $array );
-		}
+		return implode( ' | ', $array );
 	}
 
 	/**
@@ -203,7 +199,12 @@ class PLL_Admin_Site_Health {
 			switch ( $key ) {
 				case 'domains':
 					$fields[ $key ]['label'] = $key;
-					$fields[ $key ]['value'] = $this->format_array( $value );
+					$value = is_array( $value ) ? $value : array();
+					$value = $this->format_array( $value );
+					if ( empty( $value ) ) {
+						$value = '0';
+					}
+					$fields[ $key ]['value'] = $value;
 					break;
 				case 'nav_menus':
 					$current_theme = get_stylesheet();
