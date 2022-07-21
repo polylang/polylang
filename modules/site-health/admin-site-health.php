@@ -209,15 +209,18 @@ class PLL_Admin_Site_Health {
 					break;
 				case 'nav_menus':
 					$current_theme = get_stylesheet();
+					$value         = is_array( $value ) ? $value : array();
 					if ( isset( $value[ $current_theme ] ) ) {
 						foreach ( $value[ $current_theme ] as $location => $lang ) {
 							/* translators: placeholder is the menu location name */
 							$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
+							$lang                         = is_array( $lang ) ? $lang : array();
 							$fields[ $location ]['value'] = $this->format_array( $lang );
 						}
 					}
 					break;
 				case 'media':
+					$value = is_array( $value ) ? $value : array();
 					foreach ( $value as $sub_key => $sub_value ) {
 						$fields[ "$key-$sub_key" ]['label'] = "$key $sub_key";
 						$fields[ "$key-$sub_key" ]['value'] = $sub_value;
