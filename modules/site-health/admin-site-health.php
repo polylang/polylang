@@ -205,8 +205,7 @@ class PLL_Admin_Site_Health {
 						$value                   = is_array( $value ) ? $value : array();
 						$value                   = $this->format_array( $value );
 						$fields[ $key ]['value'] = $value;
-					}
-					break;
+					}break;
 				case 'nav_menus':
 					$current_theme = get_stylesheet();
 					$value         = is_array( $value ) ? $value : array();
