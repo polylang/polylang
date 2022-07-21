@@ -191,7 +191,8 @@ class PLL_Admin_Site_Health {
 	 */
 	public function info_options( $debug_info ) {
 		$fields = array();
-		foreach ( $this->model->options as $key => $value ) {
+		$options = $this->model->options;
+		foreach ( $options as $key => $value ) {
 			if ( in_array( $key, $this->exclude_options_keys() ) ) {
 				continue;
 			}
@@ -199,12 +200,12 @@ class PLL_Admin_Site_Health {
 			switch ( $key ) {
 				case 'domains':
 					$fields[ $key ]['label'] = $key;
-					$value = is_array( $value ) ? $value : array();
-					$value = $this->format_array( $value );
-					if ( empty( $value ) ) {
-						$value = '0';
+					$fields[ $key ]['value'] = '0';
+					if ( 3 === $options['force_lang'] ) {
+						$value                   = is_array( $value ) ? $value : array();
+						$value                   = $this->format_array( $value );
+						$fields[ $key ]['value'] = $value;
 					}
-					$fields[ $key ]['value'] = $value;
 					break;
 				case 'nav_menus':
 					$current_theme = get_stylesheet();
