@@ -184,40 +184,44 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Add Polylang Options to Site Health Informations tab.
 	 *
-	 * @param array $debug_info The debug information to be added to the core information page.
-	 *
-	 * @return array
 	 * @since 2.8
+	 *
+	 * @param array $debug_info The debug information to be added to the core information page.
+	 * @return array
 	 */
 	public function info_options( $debug_info ) {
 		$fields = array();
-		$options = $this->model->options;
-		foreach ( $options as $key => $value ) {
+
+		foreach ( $this->model->options as $key => $value ) {
 			if ( in_array( $key, $this->exclude_options_keys() ) ) {
 				continue;
 			}
+
 			$value = $this->format_value( $key, $value );
+
 			switch ( $key ) {
 				case 'domains':
-					$fields[ $key ]['label'] = $key;
-					$fields[ $key ]['value'] = '0';
-					if ( 3 === $options['force_lang'] ) {
-						$value                   = is_array( $value ) ? $value : array();
-						$value                   = $this->format_array( $value );
+					if ( 3 === $this->model->options['force_lang'] ) {
+						$value = is_array( $value ) ? $value : array();
+						$value = $this->format_array( $value );
+
+						$fields[ $key ]['label'] = $key;
 						$fields[ $key ]['value'] = $value;
-					}break;
+					}
+					break;
+
 				case 'nav_menus':
 					$current_theme = get_stylesheet();
-					$value         = is_array( $value ) ? $value : array();
-					if ( isset( $value[ $current_theme ] ) ) {
+					if ( is_array( $value ) && isset( $value[ $current_theme ] ) ) {
 						foreach ( $value[ $current_theme ] as $location => $lang ) {
-							/* translators: placeholder is the menu location name */
+							$lang = is_array( $lang ) ? $lang : array();
+
 							$fields[ $location ]['label'] = sprintf( 'menu: %s', $location );
-							$lang                         = is_array( $lang ) ? $lang : array();
 							$fields[ $location ]['value'] = $this->format_array( $lang );
 						}
 					}
 					break;
+
 				case 'media':
 					$value = is_array( $value ) ? $value : array();
 					foreach ( $value as $sub_key => $sub_value ) {
@@ -225,20 +229,20 @@ class PLL_Admin_Site_Health {
 						$fields[ "$key-$sub_key" ]['value'] = $sub_value;
 					}
 					break;
+
 				case 'post_types':
 					$fields[ $key ]['label'] = $key;
 					$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_post_types() );
 					break;
+
 				case 'taxonomies':
 					$fields[ $key ]['label'] = $key;
 					$fields[ $key ]['value'] = implode( ', ', $this->model->get_translated_taxonomies() );
 					break;
+
 				default:
-					if ( empty( $value ) ) {
-						$value = '0';
-					}
 					$fields[ $key ]['label'] = $key;
-					$fields[ $key ]['value'] = $value;
+					$fields[ $key ]['value'] = empty( $value ) ? '0' : $value;
 					break;
 			}
 		}
