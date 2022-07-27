@@ -55,6 +55,9 @@ class PLL_Canonical {
 	 *
 	 * @since 0.9.6
 	 *
+	 * @global WP_Query $wp_query WordPress Query object.
+	 * @global bool     $is_IIS
+	 *
 	 * @param string $requested_url Optional, defaults to requested url.
 	 * @param bool   $do_redirect   Optional, whether to perform the redirect or not.
 	 * @return string|void Returns if redirect is not performed.
@@ -235,6 +238,8 @@ class PLL_Canonical {
 	 * Evaluates the canonical redirect url through the deidcated WP function.
 	 *
 	 * @since 3.3
+	 *
+	 * @global WP_Query $wp_query WordPress Query object.
 	 *
 	 * @param string       $url      Requested url.
 	 * @param PLL_Language $language Language of the queried object.
