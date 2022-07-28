@@ -501,32 +501,12 @@ parameters:
 			path: frontend/frontend-auto-translate.php
 
 		-
-			message: "#^@param PLL_Language \\$language does not accept actual type of parameter\\: PLL_Language\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Access to an undefined property WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User\\:\\:\\$taxonomy\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Access to an undefined property WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User\\:\\:\\$term_id\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
 			message: "#^Cannot call method get_home_url\\(\\) on PLL_Frontend_Links\\|null\\.$#"
 			count: 2
 			path: frontend/frontend-filters-links.php
 
 		-
 			message: "#^Cannot call method get_translation_url\\(\\) on PLL_Frontend_Links\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Cannot cast mixed to int\\.$#"
 			count: 1
 			path: frontend/frontend-filters-links.php
 
@@ -541,47 +521,12 @@ parameters:
 			path: frontend/frontend-filters-links.php
 
 		-
-			message: "#^Method PLL_Frontend_Filters_Links\\:\\:check_canonical_url\\(\\) should return string\\|void but returns string\\|false\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Method PLL_Frontend_Filters_Links\\:\\:get_queried_taxonomy\\(\\) should return string but returns int\\|string\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
 			message: "#^Method PLL_Frontend_Filters_Links\\:\\:post_type_link\\(\\) should return string but returns mixed\\.$#"
 			count: 1
 			path: frontend/frontend-filters-links.php
 
 		-
-			message: "#^Parameter \\#1 \\$array of function reset expects array\\|object, array\\<int, int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Parameter \\#1 \\$input of function array_filter expects array, array\\<int, int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Parameter \\#1 \\$post of function get_permalink expects int\\|WP_Post, mixed given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
 			message: "#^Parameter \\#1 \\$post_type of method PLL_Model\\:\\:is_translated_post_type\\(\\) expects array\\<string\\>\\|string, string\\|false given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Parameter \\#1 \\$redirect_url of method PLL_Frontend_Filters_Links\\:\\:maybe_add_page_to_redirect_url\\(\\) expects string, string\\|WP_Error given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Parameter \\#1 \\$redirect_url of method PLL_Frontend_Filters_Links\\:\\:maybe_add_page_to_redirect_url\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: frontend/frontend-filters-links.php
 
@@ -596,17 +541,7 @@ parameters:
 			path: frontend/frontend-filters-links.php
 
 		-
-			message: "#^Parameter \\#2 \\$page of method PLL_Links_Model\\:\\:add_paged_to_link\\(\\) expects int, mixed given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
 			message: "#^Parameter \\#2 \\$str of function explode expects string, int\\|string given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
-			message: "#^Property WP_Query\\:\\:\\$tax_query \\(WP_Tax_Query\\) in empty\\(\\) is not falsy\\.$#"
 			count: 1
 			path: frontend/frontend-filters-links.php
 

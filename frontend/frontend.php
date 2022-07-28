@@ -128,6 +128,14 @@ class PLL_Frontend extends PLL_Base {
 		$this->filters_search = new PLL_Frontend_Filters_Search( $this );
 		$this->filters_widgets = new PLL_Frontend_Filters_Widgets( $this );
 
+		/*
+		 * Redirects to canonical url before WordPress redirect_canonical
+		 * but after Nextgen Gallery which hacks $_SERVER['REQUEST_URI'] !!!
+		 * and restores it in 'template_redirect' with priority 1.
+		 */
+		$this->canonical = new PLL_Canonical( $this );
+		add_action( 'template_redirect', array( $this->canonical, 'check_canonical_url' ), 4 );
+
 		// Auto translate for Ajax
 		if ( ( ! defined( 'PLL_AUTO_TRANSLATE' ) || PLL_AUTO_TRANSLATE ) && wp_doing_ajax() ) {
 			$this->auto_translate();
