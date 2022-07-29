@@ -101,9 +101,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( ! empty( $languages ) ) {
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
-			$pattern = preg_quote( $root, '#' );
-			$pattern = '#' . $pattern . ( $this->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $languages ) . ')(/|$)#';
-			$url = preg_replace( $pattern, $root, $url );
+			$pattern = preg_quote( $root, '@' );
+			$pattern = '@' . $pattern . ( $this->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $languages ) . ')(([?#])|(/|$))@';
+			$url = preg_replace( $pattern, $root . '$3', $url );
 		}
 		return $url;
 	}
