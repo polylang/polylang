@@ -330,7 +330,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical(
 			'/en/?cptnotrewrited=custom-post',
 			array(
-				'url' => 	'/en/?cptnotrewrited=custom-post',
+				'url' => '/en/?cptnotrewrited=custom-post',
 				'qv'  => array(
 					'lang'           => 'en',
 					'cptnotrewrited' => 'custom-post',
