@@ -38,8 +38,12 @@ class PLL_Frontend_Filters_Search {
 		// Low priority in case the search form is created using the same filter as described in http://codex.wordpress.org/Function_Reference/get_search_form
 		add_filter( 'get_search_form', array( $this, 'get_search_form' ), 99 );
 
+		// Adds the language information in the search block.
+		add_filter( 'render_block_core/search', array( $this, 'get_search_form' ) );
+
 		// Adds the language information in admin bar search form
 		add_action( 'add_admin_bar_menus', array( $this, 'add_admin_bar_menus' ) );
+
 
 		// Adds javascript at the end of the document
 		// Was used for WP < 3.6. kept just in case

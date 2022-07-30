@@ -66,6 +66,21 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		$this->assertStringContainsString( '<input type="hidden" name="lang" value="fr" />', $form );
 	}
 
+	public function test_search_block() {
+		global $wp_rewrite;
+
+		$this->frontend->curlang = self::$model->get_language( 'fr' );
+		$form = do_blocks( '<!-- wp:search /-->' );
+
+		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form );
+
+		$wp_rewrite->set_permalink_structure( '' );
+		$this->frontend->links_model = self::$model->get_links_model();
+
+		$form = do_blocks( '<!-- wp:search /-->' );
+		$this->assertStringContainsString( '<input type="hidden" name="lang" value="fr" />', $form );
+	}
+
 	/**
 	 * Issue #829
 	 */
