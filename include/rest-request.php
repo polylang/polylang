@@ -88,6 +88,6 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		$this->links    = new PLL_Admin_Links( $this );
-		$this->nav_menu = new PLL_Nav_Menu( $this ); // For auto added pages to menu.
+		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this ); // For auto added pages to menu.
 	}
 }

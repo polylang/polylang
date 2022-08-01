@@ -42,6 +42,8 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 			add_filter( 'wp_nav_menu_args', array( $this, 'filter_args_before_customizer' ) );
 			add_filter( 'wp_nav_menu_args', array( $this, 'filter_args_after_customizer' ), 2000 );
 		}
+
+		add_filter( 'rest_pre_dispatch', array( $this, 'maybe_set_curlang' ), 10, 3 );
 	}
 
 	/**
@@ -90,6 +92,10 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 * @return stdClass[] Modified menu items.
 	 */
 	public function wp_get_nav_menu_items( $items ) {
+		if ( ! $this->curlang ) {
+			return $items;
+		}
+
 		if ( doing_action( 'customize_register' ) ) { // needed since WP 4.3, doing_action available since WP 3.9
 			return $items;
 		}
@@ -331,5 +337,13 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		$infos = $this->explode_location( $args['theme_location'] );
 		$args['theme_location'] = $infos['location'];
 		return $args;
+	}
+
+	public function maybe_set_curlang( $result, $server, $request ) {
+		if ( '/wp/v2/widget-types/nav_menu/render' === $request->get_route() ) {
+			$this->curlang = $this->model->get_language( $this->options['default_lang'] );
+		}
+
+		return $result;
 	}
 }
