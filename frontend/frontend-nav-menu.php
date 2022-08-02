@@ -12,7 +12,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language|null
+	 * @var PLL_Language|null|false
 	 */
 	public $curlang;
 
@@ -339,8 +339,21 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		return $args;
 	}
 
+	/**
+	 * Sets the current language during a REST request to the default language,
+	 * only for the navigation menu widget rendering. Used to display the language switcher
+	 * menu item in a block editor page.
+	 *
+	 * @since 3.3
+	 *
+	 * @param mixed           $result  Response to replace the requested version with. Remains untouched.
+	 * @param WP_REST_Server  $server  Server instance.
+	 * @param WP_REST_Request $request Request used to generate the response.
+	 *
+	 * @return mixed Untouched $result.
+	 */
 	public function maybe_set_curlang( $result, $server, $request ) {
-		if ( '/wp/v2/widget-types/nav_menu/render' === $request->get_route() ) {
+		if ( '/wp/v2/widget-types/nav_menu/render' === $request->get_route() && is_null( $this->curlang ) ) { // Note that $this->curlang might be false if no language is defined.
 			$this->curlang = $this->model->get_language( $this->options['default_lang'] );
 		}
 

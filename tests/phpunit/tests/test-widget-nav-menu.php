@@ -1,14 +1,17 @@
 <?php
 
-class Rest_Request_Test extends PLL_UnitTestCase {
+class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 	/**
 	 * @var string
 	 */
 	public $structure = '/%postname%/';
 
 	/**
-	 * Initialization before all tests run.
-	 *
+	 * @var PLL_REST_Request
+	 */
+	private $pll_rest;
+
+	/**
 	 * @param  WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
 	 * @return void
 	 */
@@ -26,8 +29,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		parent::set_up();
 
 		$links_model         = self::$model->get_links_model();
-		$this->frontend      = new PLL_REST_Request( $links_model );
-		$GLOBALS['polylang'] = &$this->frontend;
+		$this->pll_rest      = new PLL_REST_Request( $links_model );
+		$GLOBALS['polylang'] = &$this->pll_rest;
 	}
 
 	/**
@@ -39,47 +42,6 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	public function test_should_define_language_when_language_is_valid() {
-		self::$model->options['default_lang'] = 'en';
-
-		$_REQUEST['lang'] = 'fr';
-
-		$this->frontend->init();
-
-		$this->assertInstanceOf( 'PLL_Language', $this->frontend->curlang );
-		$this->assertSame( 'fr', $this->frontend->curlang->slug );
-	}
-
-	public function test_should_define_default_language_when_language_is_invalid() {
-		self::$model->options['default_lang'] = 'en';
-
-		$_REQUEST['lang'] = 'it';
-
-		$this->frontend->init();
-
-		$this->assertInstanceOf( 'PLL_Language', $this->frontend->curlang );
-		$this->assertSame( 'en', $this->frontend->curlang->slug );
-	}
-
-	public function test_should_not_define_default_language_when_default_language_is_invalid() {
-		self::$model->options['default_lang'] = 'es';
-
-		$_REQUEST['lang'] = 'it';
-
-		$this->frontend->init();
-
-		$this->assertFalse( $this->frontend->curlang );
-	}
-
-	public function test_should_not_define_language_when_not_sent() {
-		self::$model->options['default_lang'] = 'en';
-
-		unset( $_REQUEST['lang'] );
-
-		$this->frontend->init();
-
-		$this->assertNull( $this->frontend->curlang );
-	}
 	public function test_widget_nav_menu_rest_render() {
 		// Let's create a menu.
 		register_widget( 'WP_Nav_Menu_Widget' );
@@ -109,7 +71,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		unset( $_REQUEST['lang'] );
 		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $admin );
-		$this->frontend->init();
+		$this->pll_rest->init();
 		$request = new WP_REST_Request( 'POST', '/wp/v2/widget-types/nav_menu/render' );
 		$params = array(
 			'nav_menu' => $menu_id,
@@ -125,8 +87,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		$request->set_body_params( $body );
 		$response = rest_do_request( $request );
 
-		$this->assertInstanceOf( 'PLL_Language', $this->frontend->curlang, 'The current language property should be set.' );
-		$this->assertSame( 'en', $this->frontend->curlang->slug, 'The current language should be English.' );
+		$this->assertInstanceOf( 'PLL_Language', $this->pll_rest->curlang, 'The current language property should be set.' );
+		$this->assertSame( 'en', $this->pll_rest->curlang->slug, 'The current language should be English.' );
 
 		$data     = $response->get_data();
 		$document = new DOMDocument();
