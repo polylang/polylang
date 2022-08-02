@@ -26,7 +26,14 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	public function set_up() {
+		global $wp_widget_factory;
+
 		parent::set_up();
+
+		// We need to register the nav menu ourselves since widget globals are cleaned up in test-strings.php.
+		// @see https://github.com/polylang/polylang/blob/3.2.5/tests/phpunit/tests/test-strings.php#L24-L37.
+		register_widget( new WP_Nav_Menu_Widget() );
+		$wp_widget_factory->_register_widgets(); // This will populate the $wp_registered_widgets global used in WP_REST_Widget_Types_Controller::get_widgets().
 
 		$links_model         = self::$model->get_links_model();
 		$this->pll_rest      = new PLL_REST_Request( $links_model );
