@@ -55,6 +55,16 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $this->root . '/en/test/', $this->links_model->remove_language_from_link( $this->root . '/en/test/' ) );
 		$this->assertEquals( $this->root . '/test/', $this->links_model->remove_language_from_link( $this->root . '/fr/test/' ) );
 
+		$this->assertEquals( $this->root . '/frtest/', $this->links_model->remove_language_from_link( $this->root . '/fr/frtest/' ) );
+
+		// Tests with language code at the end of the path.
+		$this->assertEquals( $this->root . '/', $this->links_model->remove_language_from_link( $this->root . '/fr/' ) );
+		$this->assertEquals( $this->root . '/', $this->links_model->remove_language_from_link( $this->root . '/fr' ) );
+		$this->assertEquals( $this->root . '/?query=string', $this->links_model->remove_language_from_link( $this->root . '/fr/?query=string' ) );
+		$this->assertEquals( $this->root . '/?query=string', $this->links_model->remove_language_from_link( $this->root . '/fr?query=string' ) );
+		$this->assertEquals( $this->root . '/#fragment', $this->links_model->remove_language_from_link( $this->root . '/fr/#fragment' ) );
+		$this->assertEquals( $this->root . '/#fragment', $this->links_model->remove_language_from_link( $this->root . '/fr#fragment' ) );
+
 		self::$model->options['rewrite'] = 0;
 		$this->assertEquals( $this->root . '/language/en/test/', $this->links_model->remove_language_from_link( $this->root . '/language/en/test/' ) );
 		$this->assertEquals( $this->root . '/test/', $this->links_model->remove_language_from_link( $this->root . '/language/fr/test/' ) );
@@ -65,6 +75,16 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $this->root . '/test/', $this->links_model->switch_language_in_link( $this->root . '/fr/test/', self::$model->get_language( 'en' ) ) );
 		$this->assertEquals( $this->root . '/de/test/', $this->links_model->switch_language_in_link( $this->root . '/fr/test/', self::$model->get_language( 'de' ) ) );
 		$this->assertEquals( $this->root . '/fr/test/', $this->links_model->switch_language_in_link( $this->root . '/test/', self::$model->get_language( 'fr' ) ) );
+
+		$this->assertEquals( $this->root . '/de/frtest/', $this->links_model->switch_language_in_link( $this->root . '/fr/frtest/', self::$model->get_language( 'de' ) ) );
+
+		// Tests with language code at the end of the path.
+		$this->assertEquals( $this->root . '/fr/', $this->links_model->switch_language_in_link( $this->root . '/de/', self::$model->get_language( 'fr' ) ) );
+		$this->assertEquals( $this->root . '/fr/', $this->links_model->switch_language_in_link( $this->root . '/de', self::$model->get_language( 'fr' ) ) );
+		$this->assertEquals( $this->root . '/fr/?query=string', $this->links_model->switch_language_in_link( $this->root . '/de/?query=string', self::$model->get_language( 'fr' ) ) );
+		$this->assertEquals( $this->root . '/fr/?query=string', $this->links_model->switch_language_in_link( $this->root . '/de?query=string', self::$model->get_language( 'fr' ) ) );
+		$this->assertEquals( $this->root . '/fr/#fragment', $this->links_model->switch_language_in_link( $this->root . '/de/#fragment', self::$model->get_language( 'fr' ) ) );
+		$this->assertEquals( $this->root . '/fr/#fragment', $this->links_model->switch_language_in_link( $this->root . '/de#fragment', self::$model->get_language( 'fr' ) ) );
 	}
 
 	protected function _test_add_paged_to_link() {

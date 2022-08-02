@@ -6,6 +6,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $post_en;
 	private static $page_id;
 	private static $custom_post_id;
+	private static $not_rewrited_cpt_id;
 	private static $term_en;
 	private static $second_term_en;
 	private static $custom_term_en;
@@ -50,6 +51,15 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		self::$model->post->set_language( self::$custom_post_id, 'en' );
 
+		self::$not_rewrited_cpt_id = $factory->post->create(
+			array(
+				'post_type'  => 'cptnotrewrited',
+				'post_title' => 'custom-post',
+			)
+		);
+		self::$model->post->set_language( self::$not_rewrited_cpt_id, 'en' );
+
+
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$model->term->set_language( self::$term_en, 'en' );
 
@@ -86,6 +96,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public static function wpTearDownAfterClass() {
 		_unregister_post_type( 'pllcanonical' );
+		_unregister_post_type( 'cptnotrewrited' );
 		_unregister_taxonomy( 'custom_tax' );
 
 		parent::wpTearDownAfterClass();
@@ -99,6 +110,14 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			array(
 				'public' => true,
 				'has_archive' => true, // Implies to build the feed permastruct by default.
+			)
+		);
+
+		register_post_type(
+			'cptnotrewrited',
+			array(
+				'public' => true,
+				'rewrite' => false,
 			)
 		);
 
@@ -123,7 +142,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 				'default_lang' => 'en',
 				'hide_default' => 0,
 				'post_types'   => array(
-					'pllcanonical' => 'pllcanonical',
+					'pllcanonical'   => 'pllcanonical',
+					'cptnotrewrited' => 'cptnotrewrited',
 				),
 				'taxonomies'   => array(
 					'custom_tax' => 'custom_tax',
@@ -303,6 +323,26 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 	public function test_custom_post_type_feed_without_language() {
 		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
+	}
+
+	public function test_cpt_not_rewrited_and_permalinks_without_trailing_slash() {
+		$this->set_permalink_structure( '/%postname%' );
+		$this->assertCanonical(
+			'/en/?cptnotrewrited=custom-post',
+			array(
+				'url' => '/en/?cptnotrewrited=custom-post',
+				'qv'  => array(
+					'lang'           => 'en',
+					'cptnotrewrited' => 'custom-post',
+					'post_type'      => 'cptnotrewrited',
+				),
+			)
+		);
+	}
+
+	public function test_incorrect_language_for_cpt_not_rewrited_and_permalinks_without_trailing_slash() {
+		$this->set_permalink_structure( '/%postname%' );
+		$this->assertCanonical( '/fr/?cptnotrewrited=custom-post', '/en/?cptnotrewrited=custom-post' );
 	}
 
 	/**
