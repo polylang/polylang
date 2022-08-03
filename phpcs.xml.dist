@@ -57,14 +57,12 @@
 		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_meta_key"/>
 		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_tax_query"/>
 		<exclude name="WordPress.Files.FileName"/>
-		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
 		<exclude name="WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode" />
 		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
 		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
 		<exclude name="WordPress.WP.EnqueuedResources.NonEnqueuedScript" />
 		<exclude name="WordPress.WP.EnqueuedResourceParameters.NotInFooter" />
 		<exclude name="WordPress.WP.GlobalVariablesOverride.Prohibited" />
-		<exclude name="WordPress.WP.PostsPerPage.posts_per_page_posts_per_page" />
 	</rule>
 
 	<rule ref="WordPress.WP.I18n">
@@ -111,6 +109,10 @@
 	</rule>
 
 	<rule ref="Squiz.PHP.CommentedOutCode.Found" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.ValidHookName.UseUnderscores" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
