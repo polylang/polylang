@@ -88,7 +88,7 @@ class PLL_REST_Request extends PLL_Base {
 	public function maybe_set_curlang( $result, $server, $request ) {
 		$lang = $request->get_param( 'lang' );
 
-		if ( ! empty( $lang ) ) {
+		if ( ! empty( $lang ) && is_string( $lang ) ) {
 			$this->curlang = $this->model->get_language( sanitize_key( $lang ) );
 		}
 		if ( empty( $this->curlang ) && ! empty( $this->options['default_lang'] ) && is_string( $this->options['default_lang'] ) ) {

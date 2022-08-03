@@ -135,8 +135,9 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 * Yields HTTP requests methods and routes.
 	 *
 	 * @return array $data {
-	 *    @type string   $methods HTTP method.
-	 *    @type string[] $route   REST route.
+	 *    @type string   $method   HTTP method.
+	 *    @type string   $resource Resource of the route.
+	 *    @type string   $route    REST route.
 	 * }
 	 */
 	public function routes_provider() {
@@ -157,8 +158,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 			'PATCH',
 		);
 
-		foreach( $methods as $method ) {
-			foreach( $routes as $resource => $route ) {
+		foreach ( $methods as $method ) {
+			foreach ( $routes as $resource => $route ) {
 				yield array(
 					"{$method} request on '{$route}' route." => array(
 						'method'   => $method,
@@ -173,8 +174,10 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	/**
 	 * Sets the language parameter in the given request.
 	 *
-	 * @param  WP_REST_Request $request Request to set the language parameter.
-	 * @param  string          $lang    Language slug.
+	 * @param WP_REST_Request $request Request to set the language parameter.
+	 * @param string          $lang    Language slug.
+	 *
+	 * @return WP_REST_Request Request with the language parameter set.
 	 */
 	private function set_lang_param( $request, $lang ) {
 		if ( 'GET' === $request->get_method() ) {
