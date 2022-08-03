@@ -7,6 +7,11 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	public $structure = '/%postname%/';
 
 	/**
+	 * @var PLL_REST_Request
+	 */
+	private $pll_rest;
+
+	/**
 	 * Initialization before all tests run.
 	 *
 	 * @param  WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
@@ -26,8 +31,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		parent::set_up();
 
 		$links_model         = self::$model->get_links_model();
-		$this->frontend      = new PLL_REST_Request( $links_model );
-		$GLOBALS['polylang'] = &$this->frontend;
+		$this->pll_rest      = new PLL_REST_Request( $links_model );
+		$GLOBALS['polylang'] = &$this->pll_rest;
 	}
 
 	/**
@@ -39,45 +44,145 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
-	public function test_should_define_language_when_language_is_valid() {
+	/**
+	 * @dataProvider routes_provider
+	 *
+	 * @param array $data {
+	 *    @type string $method   HTTP method.
+	 *    @type string $route    Route.
+	 *    @type string $resource Resource name.
+	 * }
+	 */
+	public function test_should_define_language_when_language_is_valid( $data ) {
 		self::$model->options['default_lang'] = 'en';
+		$this->pll_rest->init();
 
-		$_REQUEST['lang'] = 'fr';
+		$request = new WP_REST_Request( $data['method'], $data['route'] );
+		$request = $this->set_lang_param( $request, 'fr' );
+		$response = rest_do_request( $request );
 
-		$this->frontend->init();
-
-		$this->assertInstanceOf( 'PLL_Language', $this->frontend->curlang );
-		$this->assertSame( 'fr', $this->frontend->curlang->slug );
+		$this->assertNotEmpty( $response );
+		$this->assertInstanceOf( 'PLL_Language', $this->pll_rest->curlang );
+		$this->assertSame( 'fr', $this->pll_rest->curlang->slug );
 	}
 
-	public function test_should_define_default_language_when_language_is_invalid() {
+	/**
+	 * @dataProvider routes_provider
+	 *
+	 * @param array $data {
+	 *    @type string $method   HTTP method.
+	 *    @type string $route    Route.
+	 *    @type string $resource Resource name.
+	 * }
+	 */
+	public function test_should_define_default_language_when_language_is_invalid( $data ) {
 		self::$model->options['default_lang'] = 'en';
+		$this->pll_rest->init();
 
-		$_REQUEST['lang'] = 'it';
+		$request = new WP_REST_Request( $data['method'], $data['route'] );
+		$request = $this->set_lang_param( $request, 'it' );
+		$response = rest_do_request( $request );
 
-		$this->frontend->init();
-
-		$this->assertInstanceOf( 'PLL_Language', $this->frontend->curlang );
-		$this->assertSame( 'en', $this->frontend->curlang->slug );
+		$this->assertNotEmpty( $response );
+		$this->assertInstanceOf( 'PLL_Language', $this->pll_rest->curlang );
+		$this->assertSame( 'en', $this->pll_rest->curlang->slug );
 	}
 
-	public function test_should_not_define_default_language_when_default_language_is_invalid() {
+	/**
+	 * @dataProvider routes_provider
+	 *
+	 * @param array $data {
+	 *    @type string $method   HTTP method.
+	 *    @type string $route    Route.
+	 *    @type string $resource Resource name.
+	 * }
+	 */
+	public function test_should_not_define_default_language_when_default_language_is_invalid( $data ) {
 		self::$model->options['default_lang'] = 'es';
+		$this->pll_rest->init();
 
-		$_REQUEST['lang'] = 'it';
+		$request = new WP_REST_Request( $data['method'], $data['route'] );
+		$request = $this->set_lang_param( $request, 'it' );
+		$response = rest_do_request( $request );
 
-		$this->frontend->init();
-
-		$this->assertFalse( $this->frontend->curlang );
+		$this->assertNotEmpty( $response );
+		$this->assertFalse( $this->pll_rest->curlang );
 	}
 
-	public function test_should_not_define_language_when_not_sent() {
+	/**
+	 * @dataProvider routes_provider
+	 *
+	 * @FIXME Should we avoid set the current language when not sent really ?
+	 *
+	 * @param array $data {
+	 *    @type string $method   HTTP method.
+	 *    @type string $route    Route.
+	 *    @type string $resource Resource name.
+	 * }
+	 */
+	public function test_should_not_define_language_when_not_sent( $data ) {
 		self::$model->options['default_lang'] = 'en';
+		$this->pll_rest->init();
 
-		unset( $_REQUEST['lang'] );
+		$request = new WP_REST_Request( $data['method'], $data['route'] );
+		$response = rest_do_request( $request );
 
-		$this->frontend->init();
+		$this->assertNotEmpty( $response );
+		$this->assertNull( $this->pll_rest->curlang );
+	}
 
-		$this->assertNull( $this->frontend->curlang );
+	/**
+	 * Yields HTTP requests methods and routes.
+	 *
+	 * @return array $data {
+	 *    @type string   $methods HTTP method.
+	 *    @type string[] $route   REST route.
+	 * }
+	 */
+	public function routes_provider() {
+		$routes = array(
+			'post'     => '/wp/v2/posts',
+			'category' => '/wp/v2/categories',
+			'tag'      => '/wp/v2/tags',
+			'page'     => '/wp/v2/pages',
+			'comment'  => '/wp/v2/comments',
+			'taxonomy' => '/wp/v2/taxonomies',
+			'media'    => '/wp/v2/media',
+			'user'     => '/wp/v2/users',
+		);
+		$methods = array(
+			'GET',
+			'POST',
+			'PUT',
+			'PATCH',
+		);
+
+		foreach( $methods as $method ) {
+			foreach( $routes as $resource => $route ) {
+				yield array(
+					"{$method} request on '{$route}' route." => array(
+						'method'   => $method,
+						'resource' => $resource,
+						'route'    => $route,
+					),
+				);
+			}
+		}
+	}
+
+	/**
+	 * Sets the language parameter in the given request.
+	 *
+	 * @param  WP_REST_Request $request Request to set the language parameter.
+	 * @param  string          $lang    Language slug.
+	 */
+	private function set_lang_param( $request, $lang ) {
+		if ( 'GET' === $request->get_method() ) {
+			$request->set_query_params( array( 'lang' => $lang ) );
+		} else {
+			$request->set_body_params( array( 'lang' => $lang ) );
+		}
+
+		return $request;
 	}
 }
