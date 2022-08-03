@@ -746,36 +746,6 @@ parameters:
 			path: frontend/frontend.php
 
 		-
-			message: "#^Cannot call method get_home_url\\(\\) on PLL_Admin_Links\\|PLL_Frontend_Links\\|null\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
-			message: "#^Function pll_current_language\\(\\) should return PLL_Language\\|string\\|false but returns PLL_Language\\|false\\|null\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:save_translations\\(\\) expects int, int\\|false given\\.$#"
-			count: 2
-			path: include/api.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:import_from_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Model\\:\\:count_posts\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
-			message: "#^Parameter \\#1 \\$links of method PLL_Switcher\\:\\:the_languages\\(\\) expects PLL_Links, PLL_Admin_Links\\|PLL_Frontend_Links\\|null given\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
 			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, mixed given\\.$#"
 			count: 1
 			path: include/base.php
