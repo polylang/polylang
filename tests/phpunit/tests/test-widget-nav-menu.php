@@ -23,6 +23,8 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * @global $wp_widget_factory
+	 *
 	 * @return void
 	 */
 	public function set_up() {
@@ -49,7 +51,18 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
+	/**
+	 * @global $wp_version
+	 */
 	public function test_widget_nav_menu_rest_render() {
+		global $wp_version;
+
+		// Widgets routes are available since WordPress 5.8.
+		// @see https://github.com/WordPress/wordpress-develop/blob/6.0.1/src/wp-includes/rest-api/endpoints/class-wp-rest-widget-types-controller.php#L10-L16.
+		if ( version_compare( $wp_version, '5.8.0', '<' ) ) {
+			$this->markTestSkipped( 'This test requires WordPress 5.8 or higher.' );
+		}
+
 		// Let's create a menu.
 		register_widget( 'WP_Nav_Menu_Widget' );
 		$menu_id = wp_create_nav_menu( 'menu_test' );
