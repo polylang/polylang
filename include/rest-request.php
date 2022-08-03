@@ -59,24 +59,7 @@ class PLL_REST_Request extends PLL_Base {
 			return;
 		}
 
-		if ( ! empty( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			if ( is_string( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$this->curlang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
-
-			if ( empty( $this->curlang ) && ! empty( $this->options['default_lang'] ) && is_string( $this->options['default_lang'] ) ) {
-				// A lang has been requested but it is invalid, let's fall back to the default one.
-				$this->curlang = $this->model->get_language( sanitize_key( $this->options['default_lang'] ) );
-			}
-		}
-
-		if ( ! empty( $this->curlang ) ) {
-			/** This action is documented in frontend/choose-lang.php */
-			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
-		} else {
-			/** This action is documented in include/class-polylang.php */
-			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
-		}
+		add_filter( 'rest_pre_dispatch', array( $this, 'maybe_set_curlang' ), 10, 3 );
 
 		$this->filters_links           = new PLL_Filters_Links( $this );
 		$this->filters                 = new PLL_Filters( $this );
@@ -89,5 +72,38 @@ class PLL_REST_Request extends PLL_Base {
 
 		$this->links    = new PLL_Admin_Links( $this );
 		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this ); // For auto added pages to menu.
+	}
+
+	/**
+	 * Sets the current language during a REST request if sent, fallback to the default one otherwise.
+	 *
+	 * @since 3.3
+	 *
+	 * @param mixed           $result  Response to replace the requested version with. Remains untouched.
+	 * @param WP_REST_Server  $server  Server instance.
+	 * @param WP_REST_Request $request Request used to generate the response.
+	 *
+	 * @return mixed Untouched $result.
+	 */
+	public function maybe_set_curlang( $result, $server, $request ) {
+		$lang = $request->get_param( 'lang' );
+
+		if ( ! empty( $lang ) ) {
+			$this->curlang = $this->model->get_language( sanitize_key( $lang ) );
+		}
+		if ( empty( $this->curlang ) && ! empty( $this->options['default_lang'] ) && is_string( $this->options['default_lang'] ) ) {
+			// A lang has been requested but it is invalid, let's fall back to the default one.
+			$this->curlang = $this->model->get_language( sanitize_key( $this->options['default_lang'] ) );
+		}
+
+		if ( ! empty( $this->curlang ) ) {
+			/** This action is documented in frontend/choose-lang.php */
+			do_action( 'pll_language_defined', $this->curlang->slug, $this->curlang );
+		} else {
+			/** This action is documented in include/class-polylang.php */
+			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
+		}
+
+		return $result;
 	}
 }
