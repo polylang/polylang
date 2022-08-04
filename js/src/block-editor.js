@@ -33,7 +33,7 @@ wp.apiFetch.use(
 );
 
 /**
- * Get the language from the HTML form
+ * Gets the language of the currently edited post, fallback to default language if none is found.
  *
  * @since 2.5
  *
