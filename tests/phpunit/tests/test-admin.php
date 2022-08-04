@@ -58,11 +58,36 @@ class Admin_Test extends PLL_UnitTestCase {
 		$this->assertEquals( '/wp-admin/edit.php?lang=fr', $fr->href );
 	}
 
+	/**
+	 * Tests that given scripts or stylesheets are well enqueued.
+	 *
+	 * @param array $scripts {
+	 * 		@type string   $key   Whether the assets is enqueued in the header or in the footer. Accepts 'header' or 'footer'.
+	 * 		@type string[] $value The assets names to test against the given position.
+	 * }
+	 *
+	 * @return void
+	 */
 	protected function _test_scripts( $scripts ) {
-		$links_model = self::$model->get_links_model();
-		$pll_admin = new PLL_Admin( $links_model );
-		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
+		/**
+		 * Array keys contains the scripts and stylesheets enqueued,
+		 * Array values tells if the assets should be search with source, false if with script name.
+		 */
+		$not_included_head_scripts   = array(
+			'user' => false,
+		);
+		$not_included_footer_scripts = array(
+			'pll_ajax_backend'   => true,
+			'polylang_admin-css' => true,
+			'post'               => false,
+			'term'               => false,
+			'classic-editor'     => false,
+			'block-editor'       => false,
+		);
 
+		$links_model      = self::$model->get_links_model();
+		$pll_admin        = new PLL_Admin( $links_model );
+		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
 		$GLOBALS['wp_styles'] = new WP_Styles();
 		$GLOBALS['wp_scripts'] = new WP_Scripts();
 		wp_default_scripts( $GLOBALS['wp_scripts'] );
@@ -77,26 +102,68 @@ class Admin_Test extends PLL_UnitTestCase {
 		do_action( 'admin_print_footer_scripts' );
 		$footer = ob_get_clean();
 
-		$test = strpos( $footer, 'pll_ajax_backend' );
-		in_array( 'pll_ajax_backend', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
-
-		foreach ( array( 'post', 'term' ) as $key ) {
-			$test = strpos( $footer, plugins_url( "/js/build/$key.min.js", POLYLANG_FILE ) );
-			in_array( $key, $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
+		if ( isset( $scripts['header'] ) ) {
+			foreach ( $scripts['header'] as $script ) {
+				if ( isset( $not_included_head_scripts[ $script ] ) && $not_included_head_scripts[ $script ] ) {
+					// The current script is a name.
+					$test = strpos( $head, $script );
+				} else {
+					// The current script is a source.
+					$test = strpos( $head, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
+				}
+				$this->assertIsInt( $test, $script . ' script is not enqueued in the header as it should.' );
+				unset( $not_included_head_scripts[ $script ] );
+			}
 		}
 
-		$test = strpos( $head, plugins_url( '/js/build/user.min.js', POLYLANG_FILE ) );
-		in_array( 'user', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
+		foreach( $not_included_head_scripts as $script => $is_inlined ) {
+			if ( $is_inlined ) {
+				// The current script is a name.
+				$test = strpos( $head, $script );
+			} else {
+				// The current script is a source.
+				$test = strpos( $head, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
+			}
+			$this->assertFalse( $test, $script . ' script is enqueued in the header but it should not.' );
+		}
 
-		$test = strpos( $footer, 'polylang_admin-css' );
-		in_array( 'css', $scripts ) ? $this->assertNotFalse( $test ) : $this->assertFalse( $test );
+		if ( isset( $scripts['footer'] ) ) {
+			foreach ( $scripts['footer'] as $script ) {
+				if ( isset( $not_included_footer_scripts[ $script ] ) && $not_included_footer_scripts[ $script ] ) {
+					// The current script is a name.
+					$test = strpos( $footer, $script );
+				} else {
+					// The current script is a source.
+					$test = strpos( $footer, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
+				}
+				$this->assertIsInt( $test, $script . ' script is not enqueued in the footer as it should.' );
+				unset( $not_included_footer_scripts[ $script ] );
+			}
+		}
+
+		foreach( $not_included_footer_scripts as $script => $is_inlined ) {
+			if ( $is_inlined ) {
+				// The current script is a name.
+				$test = strpos( $footer, $script );
+			} else {
+				// The current script is a source.
+				$test = strpos( $footer, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
+			}
+			$this->assertFalse( $test, $script . ' script is enqueued in the footer but it should not.' );
+		}
 	}
 
 	public function test_scripts_in_post_list_table() {
 		$GLOBALS['hook_suffix'] = 'edit.php';
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'post', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'post',
+				'polylang_admin-css',
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
@@ -106,15 +173,43 @@ class Admin_Test extends PLL_UnitTestCase {
 		register_post_type( 'cpt' );
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'polylang_admin-css',
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
-	public function test_scripts_in_edit_post() {
+	public function test_scripts_in_edit_post_classic_editor() {
 		$GLOBALS['hook_suffix'] = 'post.php';
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'classic-editor', 'metabox', 'css' );
+		global $current_screen;
+		$current_screen->is_block_editor = false;
+
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'classic-editor',
+				'polylang_admin-css',
+			),
+		);
+		$this->_test_scripts( $scripts );
+	}
+
+	public function test_scripts_in_edit_post_block_editor() {
+		$GLOBALS['hook_suffix'] = 'post.php';
+		set_current_screen();
+
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'block-editor',
+				'polylang_admin-css',
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
@@ -124,7 +219,12 @@ class Admin_Test extends PLL_UnitTestCase {
 		register_post_type( 'cpt' );
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'polylang_admin-css'
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
@@ -133,7 +233,13 @@ class Admin_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'upload.php';
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'post', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'post',
+				'polylang_admin-css',
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
@@ -141,7 +247,13 @@ class Admin_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'edit-tags.php';
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'term', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'term',
+				'polylang_admin-css'
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
@@ -151,7 +263,12 @@ class Admin_Test extends PLL_UnitTestCase {
 		register_taxonomy( 'tax', 'post' );
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'polylang_admin-css',
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
@@ -159,7 +276,13 @@ class Admin_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'term.php';
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'term', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'term',
+				'polylang_admin-css',
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
@@ -169,7 +292,12 @@ class Admin_Test extends PLL_UnitTestCase {
 		register_taxonomy( 'tax', 'post' );
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'polylang_admin-css',
+			),
+		);
 		$this->_test_scripts( $scripts );
 	}
 
@@ -178,7 +306,31 @@ class Admin_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'profile.php';
 		set_current_screen();
 
-		$scripts = array( 'pll_ajax_backend', 'user', 'css' );
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'polylang_admin-css',
+			),
+			'header' => array(
+				'user',
+			)
+		);
+		$this->_test_scripts( $scripts );
+	}
+
+	public function test_scripts_in_edit_widgets() {
+		$GLOBALS['hook_suffix'] = 'widgets.php';
+		set_current_screen();
+
+		$scripts = array(
+			'footer' => array(
+				'pll_ajax_backend',
+				'polylang_admin-css',
+			),
+			'header' => array(
+				'widgets',
+			)
+		);
 		$this->_test_scripts( $scripts );
 	}
 
