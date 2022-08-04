@@ -62,8 +62,8 @@ class Admin_Test extends PLL_UnitTestCase {
 	 * Tests that given scripts or stylesheets are well enqueued.
 	 *
 	 * @param array $scripts {
-	 * 		@type string   $key   Whether the assets is enqueued in the header or in the footer. Accepts 'header' or 'footer'.
-	 * 		@type string[] $value The assets names to test against the given position.
+	 *      @type string   $key   Whether the assets is enqueued in the header or in the footer. Accepts 'header' or 'footer'.
+	 *      @type string[] $value The assets names to test against the given position.
 	 * }
 	 *
 	 * @return void
@@ -110,7 +110,7 @@ class Admin_Test extends PLL_UnitTestCase {
 			}
 		}
 
-		foreach( $not_included_head_scripts as $script => $is_name ) {
+		foreach ( $not_included_head_scripts as $script => $is_name ) {
 			$this->assert_script_is_not_enqueued( $script, $head, $is_name, 'header' );
 		}
 
@@ -122,7 +122,7 @@ class Admin_Test extends PLL_UnitTestCase {
 			}
 		}
 
-		foreach( $not_included_footer_scripts as $script => $is_name ) {
+		foreach ( $not_included_footer_scripts as $script => $is_name ) {
 			$this->assert_script_is_not_enqueued( $script, $footer, $is_name, 'footer' );
 		}
 	}
@@ -238,7 +238,7 @@ class Admin_Test extends PLL_UnitTestCase {
 		$scripts = array(
 			'footer' => array(
 				'pll_ajax_backend',
-				'polylang_admin-css'
+				'polylang_admin-css',
 			),
 		);
 		$this->_test_scripts( $scripts );
@@ -267,7 +267,7 @@ class Admin_Test extends PLL_UnitTestCase {
 			'footer' => array(
 				'pll_ajax_backend',
 				'term',
-				'polylang_admin-css'
+				'polylang_admin-css',
 			),
 		);
 		$this->_test_scripts( $scripts );
@@ -329,7 +329,7 @@ class Admin_Test extends PLL_UnitTestCase {
 			),
 			'header' => array(
 				'user',
-			)
+			),
 		);
 		$this->_test_scripts( $scripts );
 	}
@@ -345,7 +345,7 @@ class Admin_Test extends PLL_UnitTestCase {
 			),
 			'header' => array(
 				'widgets',
-			)
+			),
 		);
 		$this->_test_scripts( $scripts );
 	}
