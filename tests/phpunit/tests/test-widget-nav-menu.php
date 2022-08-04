@@ -87,8 +87,6 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 		update_post_meta( $item_id, '_pll_menu_item', $options );
 
 		// Let's set the environment for the REST request.
-		self::$model->options['default_lang'] = 'en';
-		unset( $_REQUEST['lang'] );
 		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $admin );
 		$this->pll_rest->init();
@@ -103,6 +101,7 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 				'hash'    => wp_hash( serialize( $params ) ),
 				'raw'     => $params,
 			),
+			'lang'     => 'en',
 		);
 		$request->set_body_params( $body );
 		$response = rest_do_request( $request );

@@ -75,7 +75,7 @@ class PLL_REST_Request extends PLL_Base {
 	}
 
 	/**
-	 * Sets the current language during a REST request if sent, fallback to the default one otherwise.
+	 * Sets the current language during a REST request if sent.
 	 *
 	 * @since 3.3
 	 *
@@ -90,10 +90,11 @@ class PLL_REST_Request extends PLL_Base {
 
 		if ( ! empty( $lang ) && is_string( $lang ) ) {
 			$this->curlang = $this->model->get_language( sanitize_key( $lang ) );
-		}
-		if ( empty( $this->curlang ) && ! empty( $this->options['default_lang'] ) && is_string( $this->options['default_lang'] ) ) {
-			// A lang has been requested but it is invalid, let's fall back to the default one.
-			$this->curlang = $this->model->get_language( sanitize_key( $this->options['default_lang'] ) );
+
+			if ( empty( $this->curlang ) && ! empty( $this->options['default_lang'] ) && is_string( $this->options['default_lang'] ) ) {
+				// A lang has been requested but it is invalid, let's fall back to the default one.
+				$this->curlang = $this->model->get_language( sanitize_key( $this->options['default_lang'] ) );
+			}
 		}
 
 		if ( ! empty( $this->curlang ) ) {

@@ -40,7 +40,13 @@ wp.apiFetch.use(
  * @return {Element.value}
  */
 function getCurrentLanguage() {
-	return document.querySelector( '[name=post_lang_choice]' ).value;
+	const lang = document.querySelector( '[name=post_lang_choice]' );
+
+	if ( null === lang ) {
+		return pllDefaultLanguage;
+	}
+
+	return lang.value;
 }
 
 /**

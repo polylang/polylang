@@ -192,6 +192,10 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			}
 		}
 
+		if ( ! empty( $screen->base ) && in_array( $screen->base, array( 'widget', 'site-editor' ), true ) ) {
+			$scripts['block-editor'] = array( array( 'widget', 'site-editor' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
+		}
+
 		if ( ! empty( $screen->taxonomy ) && $this->model->is_translated_taxonomy( $screen->taxonomy ) ) {
 			$scripts['term'] = array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 );
 		}
@@ -209,6 +213,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
 		$this->localize_scripts();
+		$this->add_inline_scripts();
 	}
 
 	/**
@@ -223,6 +228,24 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
 			$this->localize_scripts();
+		}
+	}
+
+	/**
+	 * Adds inline scripts to set the default language in JS.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	private function add_inline_scripts() {
+		if ( wp_script_is( 'pll_block-editor', 'enqueued' ) ) {
+			$default_lang_script = 'const pllDefaultLanguage = "' . $this->options['default_lang'] . '";';
+			wp_add_inline_script(
+				'pll_block-editor',
+				$default_lang_script,
+				'before'
+			);
 		}
 	}
 
