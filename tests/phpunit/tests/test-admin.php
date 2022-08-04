@@ -60,6 +60,7 @@ class Admin_Test extends PLL_UnitTestCase {
 
 	/**
 	 * Tests that given scripts or stylesheets are well enqueued.
+	 * And tests that remaining Polylang files are not enqueued.
 	 *
 	 * @param array $scripts {
 	 *      @type string   $key   Whether the assets is enqueued in the header or in the footer. Accepts 'header' or 'footer'.
