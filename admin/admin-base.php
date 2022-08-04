@@ -192,8 +192,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			}
 		}
 
-		if ( ! empty( $screen->base ) && in_array( $screen->base, array( 'widget', 'site-editor' ), true ) && ! pll_use_block_editor_plugin() ) {
-			$scripts['block-editor'] = array( array( 'widget', 'site-editor' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
+		if ( ! empty( $screen->base ) && in_array( $screen->base, array( 'widgets', 'site-editor' ), true ) && ! pll_use_block_editor_plugin() ) {
+			$scripts['block-editor'] = array( array( 'widgets', 'site-editor' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
 		}
 
 		if ( ! empty( $screen->taxonomy ) && $this->model->is_translated_taxonomy( $screen->taxonomy ) ) {
