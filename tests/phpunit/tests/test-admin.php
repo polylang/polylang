@@ -104,53 +104,69 @@ class Admin_Test extends PLL_UnitTestCase {
 
 		if ( isset( $scripts['header'] ) ) {
 			foreach ( $scripts['header'] as $script ) {
-				if ( isset( $not_included_head_scripts[ $script ] ) && $not_included_head_scripts[ $script ] ) {
-					// The current script is a name.
-					$test = strpos( $head, $script );
-				} else {
-					// The current script is a source.
-					$test = strpos( $head, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
-				}
-				$this->assertIsInt( $test, $script . ' script is not enqueued in the header as it should.' );
+				$is_name = isset( $not_included_head_scripts[ $script ] ) && $not_included_head_scripts[ $script ];
+				$this->assert_script_is_enqueued( $script, $head, $is_name, 'header' );
 				unset( $not_included_head_scripts[ $script ] );
 			}
 		}
 
-		foreach( $not_included_head_scripts as $script => $is_inlined ) {
-			if ( $is_inlined ) {
-				// The current script is a name.
-				$test = strpos( $head, $script );
-			} else {
-				// The current script is a source.
-				$test = strpos( $head, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
-			}
-			$this->assertFalse( $test, $script . ' script is enqueued in the header but it should not.' );
+		foreach( $not_included_head_scripts as $script => $is_name ) {
+			$this->assert_script_is_not_enqueued( $script, $head, $is_name, 'header' );
 		}
 
 		if ( isset( $scripts['footer'] ) ) {
 			foreach ( $scripts['footer'] as $script ) {
-				if ( isset( $not_included_footer_scripts[ $script ] ) && $not_included_footer_scripts[ $script ] ) {
-					// The current script is a name.
-					$test = strpos( $footer, $script );
-				} else {
-					// The current script is a source.
-					$test = strpos( $footer, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
-				}
-				$this->assertIsInt( $test, $script . ' script is not enqueued in the footer as it should.' );
+				$is_name = isset( $not_included_footer_scripts[ $script ] ) && $not_included_footer_scripts[ $script ];
+				$this->assert_script_is_enqueued( $script, $footer, $is_name, 'footer' );
 				unset( $not_included_footer_scripts[ $script ] );
 			}
 		}
 
-		foreach( $not_included_footer_scripts as $script => $is_inlined ) {
-			if ( $is_inlined ) {
-				// The current script is a name.
-				$test = strpos( $footer, $script );
-			} else {
-				// The current script is a source.
-				$test = strpos( $footer, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
-			}
-			$this->assertFalse( $test, $script . ' script is enqueued in the footer but it should not.' );
+		foreach( $not_included_footer_scripts as $script => $is_name ) {
+			$this->assert_script_is_not_enqueued( $script, $footer, $is_name, 'footer' );
 		}
+	}
+
+	/**
+	 * Asserts a script is not enqueued.
+	 *
+	 * @param string $script   The script name or source.
+	 * @param string $content  The content to look into.
+	 * @param bool   $is_name  Whether the script is given with name or source. True for name.
+	 * @param string $position The position of the script. Used for more accurate error message.
+	 *
+	 * @return void
+	 */
+	protected function assert_script_is_not_enqueued( $script, $content, $is_name, $position ) {
+		if ( $is_name ) {
+			// The current script is a name.
+			$test = strpos( $content, $script );
+		} else {
+			// The current script is a source.
+			$test = strpos( $content, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
+		}
+		$this->assertFalse( $test, "$script script is enqueued in the $position but it should not." );
+	}
+
+	/**
+	 * Asserts a script is enqueued.
+	 *
+	 * @param string $script   The script name or source.
+	 * @param string $content  The content to look into.
+	 * @param bool   $is_name  Whether the script is given with name or source. True for name.
+	 * @param string $position The position of the script. Used for more accurate error message.
+	 *
+	 * @return void
+	 */
+	protected function assert_script_is_enqueued( $script, $content, $is_name, $position ) {
+		if ( $is_name ) {
+			// The current script is a name.
+			$test = strpos( $content, $script );
+		} else {
+			// The current script is a source.
+			$test = strpos( $content, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
+		}
+		$this->assertIsInt( $test, "$script script is not enqueued in the $position as it should." );
 	}
 
 	public function test_scripts_in_post_list_table() {
