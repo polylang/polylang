@@ -30,7 +30,6 @@ class PLL_Query {
 	public function __construct( &$query, &$model ) {
 		$this->query = &$query;
 		$this->model = &$model;
-		add_action( 'parse_tax_query', array( $this, 'parse_tax_query' ) );
 	}
 
 	/**
@@ -175,6 +174,14 @@ class PLL_Query {
 				}
 			}
 		} else {
+			// Set the language correctly in the query, since WordPress merges the language with the other query vars when the operator is OR.
+			if ( isset( $qvars['lang'] ) ) {
+				$lang = $this->model->get_language( $qvars['lang'] );
+				unset( $qvars['lang'] );
+				if ( $lang instanceof PLL_Language ) {
+					$this->set_language( $lang );
+				}
+			}
 			// Do not filter untranslatable post types such as nav_menu_item
 			if ( isset( $qvars['post_type'] ) && ! $this->model->is_translated_post_type( $qvars['post_type'] ) && ( empty( $qvars['tax_query'] ) || ! $this->have_translated_taxonomy( $qvars['tax_query'] ) ) ) {
 				unset( $qvars['lang'] );
@@ -184,51 +191,6 @@ class PLL_Query {
 			if ( isset( $qvars['lang'] ) && 'all' === $qvars['lang'] ) {
 				unset( $qvars['lang'] );
 			}
-		}
-	}
-
-	/**
-	 * Filters the taxonomy query to add the language properly when the 'OR' operator is used.
-	 *
-	 * @since 3.3
-	 *
-	 * @param WP_Query $query The current query object to filter.
-	 * @return void
-	 */
-	public function parse_tax_query( $query ) {
-		// If the OR operator is used, the language is not the queried object.
-		/** @var WP_Tax_Query $tax_query */
-		$tax_query = $query->tax_query;
-		if ( ! empty( $tax_query->queried_terms ) && 'OR' === $tax_query->relation && array_key_exists( 'language', $tax_query->queried_terms ) ) {
-			// First get the queried language.
-			if ( ! isset( $tax_query->queried_terms['language']['terms'][0] ) ) {
-				// No language is queried.
-				return;
-			}
-			$lang = $this->model->get_language( $tax_query->queried_terms['language']['terms'][0] );
-
-			// Then remove the language from the queried terms.
-			$tax_query->queries = array_filter(
-				$tax_query->queries,
-				function( $query ) {
-					return ! isset( $query['taxonomy'] ) || 'language' !== $query['taxonomy'];
-				}
-			);
-
-			// Finally add the language to the queried terms with the AND operator between it and the orther terms.
-			$lang_query = array(
-				'taxonomy' => 'language',
-				'field'    => 'slug',
-				'terms'    => $lang,
-				'operator' => 'IN',
-			);
-			$tax_query = array(
-				$lang_query,
-				get_object_vars( $query->tax_query ),
-				'relation' => 'AND',
-			);
-			$tax_query        = new WP_Tax_Query( $tax_query );
-			$query->tax_query = $tax_query;
 		}
 	}
 }
