@@ -705,7 +705,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 1, $GLOBALS['wp_query']->post_count );
 	}
 
-	public function test_or_operator() {
+	public function test_or_operator_on_category() {
 		// Categories.
 		$first_cat_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test1' ) );
 		self::$model->term->set_language( $first_cat_en, 'en' );
@@ -772,23 +772,21 @@ class Query_Test extends PLL_UnitTestCase {
 			);
 		}
 
-		$this->frontend->curlang = self::$model->get_language( 'fr' );
-
 		$args = array(
-			'post_type' => 'post',
-			'lang' => 'fr',
-			'posts_per_page' => 10,
-			'tax_query' => array(
+			'post_type'      => 'post',
+			'lang'           => 'fr',
+			'posts_per_page' => 100,
+			'tax_query'      => array(
 				'relation' => 'OR',
 				array(
 					'taxonomy' => 'category',
-					'field' => 'name',
-					'terms' => array( 'essai1' ),
+					'field'    => 'name',
+					'terms'    => array( 'essai1' ),
 				),
 				array(
 					'taxonomy' => 'category',
-					'field' => 'name',
-					'terms' => array( 'essai2' ),
+					'field'    => 'name',
+					'terms'    => array( 'essai2' ),
 				),
 			),
 		);
@@ -799,5 +797,118 @@ class Query_Test extends PLL_UnitTestCase {
 
 		$this->assertNotEmpty( $queried_posts );
 		$this->assertSameSets( $expected_posts, $queried_posts_ids );
+	}
+
+	public function test_or_operator_on_untranslated_tax() {
+		// Taxonomies.
+		$first_tax  = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test1' ) );
+		$second_tax = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test2' ) );
+
+		// English Posts.
+		$eng_posts_tax_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_tax_1 as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+			wp_set_post_terms( $post, array( $first_tax ), 'tax' );
+		}
+		$eng_posts_tax_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_tax_2 as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+			wp_set_post_terms( $post, array( $second_tax ), 'tax' );
+		}
+		$eng_posts_no_tax = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_no_tax as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+		}
+
+		// French Posts.
+		$french_posts_tax_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_tax_1 as $index => $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			self::$model->post->save_translations(
+				$post,
+				array(
+					'en' => $eng_posts_tax_1[ $index ],
+					'fr' => $post,
+				)
+			);
+			wp_set_post_terms( $post, array( $first_tax ), 'tax' );
+		}
+		$french_posts_tax_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_tax_2 as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			self::$model->post->save_translations(
+				$post,
+				array(
+					'en' => $eng_posts_tax_2[ $index ],
+					'fr' => $post,
+				)
+			);
+			wp_set_post_terms( $post, array( $second_tax ), 'tax' );
+		}
+		$french_posts_no_tax = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_no_tax as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			self::$model->post->save_translations(
+				$post,
+				array(
+					'en' => $eng_posts_no_tax[ $index ],
+					'fr' => $post,
+				)
+			);
+		}
+
+		// Query with language parameter set.
+		$args = array(
+			'post_type'      => 'post',
+			'lang'           => 'fr',
+			'posts_per_page' => 100,
+			'tax_query'      => array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => 'tax',
+					'field'    => 'name',
+					'terms'    => array( 'test1' ),
+				),
+				array(
+					'taxonomy' => 'tax',
+					'field'    => 'name',
+					'terms'    => array( 'test2' ),
+				),
+			),
+		);
+		$query             = new WP_Query( $args );
+		$queried_posts     = $query->posts;
+		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
+		$expected_posts    = array_merge( $french_posts_tax_1, $french_posts_tax_2 );
+
+		$this->assertNotEmpty( $queried_posts );
+		$this->assertEqualSets( $expected_posts, $queried_posts_ids );
+
+		// Query with language parameter not set.
+		$args = array(
+			'post_type'      => 'post',
+			'posts_per_page' => 100,
+			'tax_query'      => array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => 'tax',
+					'field'    => 'name',
+					'terms'    => array( 'test1' ),
+				),
+				array(
+					'taxonomy' => 'tax',
+					'field'    => 'name',
+					'terms'    => array( 'test2' ),
+				),
+			),
+		);
+		$this->frontend->curlang = null; // Remove current language.
+		$query                   = new WP_Query( $args );
+		$queried_posts           = $query->posts;
+		$queried_posts_ids       = wp_list_pluck( $queried_posts, 'ID' );
+		$expected_posts          = array_merge( $french_posts_tax_1, $french_posts_tax_2, $eng_posts_tax_1, $eng_posts_tax_2 );
+
+		$this->assertNotEmpty( $queried_posts );
+		$this->assertEqualSets( $expected_posts, $queried_posts_ids );
 	}
 }
