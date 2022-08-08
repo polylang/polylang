@@ -175,8 +175,8 @@ class PLL_Query {
 			}
 		} else {
 			// Set the language correctly in the query, since WordPress merges the language with the other query vars when the operator is OR.
-			if ( isset( $qvars['lang'] ) ) {
-				$lang = $this->model->get_language( $qvars['lang'] );
+			if ( isset( $this->query->tax_query->queried_terms['language'] ) && 1 === count( $this->query->tax_query->queried_terms['language']['terms'] ) ) {
+				$lang = $this->model->get_language( reset( $this->query->tax_query->queried_terms['language']['terms'] ) );
 				unset( $qvars['lang'] );
 				if ( $lang instanceof PLL_Language ) {
 					$this->set_language( $lang );
