@@ -12,6 +12,11 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	private $pll_rest;
 
 	/**
+	 * @var Spy_REST_Server
+	 */
+	private $server;
+
+	/**
 	 * Initialization before all tests run.
 	 *
 	 * @param  WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
@@ -25,10 +30,15 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * @global $wp_rest_server
+	 *
 	 * @return void
 	 */
 	public function set_up() {
 		parent::set_up();
+
+		global $wp_rest_server;
+		$this->server = $wp_rest_server = new Spy_REST_Server();
 
 		$links_model         = self::$model->get_links_model();
 		$this->pll_rest      = new PLL_REST_Request( $links_model );
@@ -57,9 +67,9 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		self::$model->options['default_lang'] = 'en';
 		$this->pll_rest->init();
 
-		$request = new WP_REST_Request( $data['method'], $data['route'] );
-		$request = $this->set_lang_param( $request, 'fr' );
-		$response = rest_do_request( $request );
+		$request  = new WP_REST_Request( $data['method'], $data['route'] );
+		$request  = $this->set_lang_param( $request, 'fr' );
+		$response = $this->server->dispatch( $request );
 
 		$this->assertNotEmpty( $response );
 		$this->assertInstanceOf( 'PLL_Language', $this->pll_rest->curlang );
@@ -79,9 +89,9 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		self::$model->options['default_lang'] = 'en';
 		$this->pll_rest->init();
 
-		$request = new WP_REST_Request( $data['method'], $data['route'] );
-		$request = $this->set_lang_param( $request, 'it' );
-		$response = rest_do_request( $request );
+		$request  = new WP_REST_Request( $data['method'], $data['route'] );
+		$request  = $this->set_lang_param( $request, 'it' );
+		$response = $this->server->dispatch( $request );
 
 		$this->assertNotEmpty( $response );
 		$this->assertInstanceOf( 'PLL_Language', $this->pll_rest->curlang );
@@ -101,9 +111,9 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		self::$model->options['default_lang'] = 'es';
 		$this->pll_rest->init();
 
-		$request = new WP_REST_Request( $data['method'], $data['route'] );
-		$request = $this->set_lang_param( $request, 'it' );
-		$response = rest_do_request( $request );
+		$request  = new WP_REST_Request( $data['method'], $data['route'] );
+		$request  = $this->set_lang_param( $request, 'it' );
+		$response = $this->server->dispatch( $request );
 
 		$this->assertNotEmpty( $response );
 		$this->assertFalse( $this->pll_rest->curlang );
@@ -124,8 +134,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		self::$model->options['default_lang'] = 'en';
 		$this->pll_rest->init();
 
-		$request = new WP_REST_Request( $data['method'], $data['route'] );
-		$response = rest_do_request( $request );
+		$request  = new WP_REST_Request( $data['method'], $data['route'] );
+		$response = $this->server->dispatch( $request );
 
 		$this->assertNotEmpty( $response );
 		$this->assertNull( $this->pll_rest->curlang );
@@ -154,8 +164,6 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		$methods = array(
 			'GET',
 			'POST',
-			'PUT',
-			'PATCH',
 		);
 
 		foreach ( $methods as $method ) {
