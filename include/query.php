@@ -100,16 +100,27 @@ class PLL_Query {
 	 * Optimized for (and requires) WP 3.5+.
 	 *
 	 * @since 2.2
+	 * @since 3.3 Accepts now an array of languages.
 	 *
-	 * @param PLL_Language $lang Language object.
+	 * @param PLL_Language|PLL_Language[] $langs Language object(s).
 	 * @return void
 	 */
-	public function set_language( $lang ) {
+	public function set_language( $langs ) {
+		if ( $langs instanceof PLL_Language ) {
+			$langs = array( $langs );
+		}
+		$tt_ids = array_map(
+			function( $lang ) {
+				return $lang->term_taxonomy_id;
+			},
+			$langs
+		);
+
 		// Defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
 		$lang_query = array(
 			'taxonomy' => 'language',
 			'field'    => 'term_taxonomy_id', // Since WP 3.5
-			'terms'    => $lang->term_taxonomy_id,
+			'terms'    => $tt_ids,
 			'operator' => 'IN',
 		);
 
@@ -175,11 +186,17 @@ class PLL_Query {
 			}
 		} else {
 			// Set the language correctly in the query, since WordPress merges the language with the other query vars when the operator is OR.
-			if ( isset( $this->query->tax_query->queried_terms['language'] ) && 1 === count( $this->query->tax_query->queried_terms['language']['terms'] ) ) {
-				$lang = $this->model->get_language( reset( $this->query->tax_query->queried_terms['language']['terms'] ) );
+			if ( isset( $this->query->tax_query->queried_terms['language'] ) && 'all' !== $this->query->tax_query->queried_terms['language']['terms'] ) {
+				$langs = $this->query->tax_query->queried_terms['language']['terms'];
+				if ( is_string( $langs ) ) {
+					$langs = explode( ',', $langs );
+				}
+				$langs = array_map( array( $this->model, 'get_language' ), $langs );
+				$langs = array_filter( $langs );
 				unset( $qvars['lang'] );
-				if ( $lang instanceof PLL_Language ) {
-					$this->set_language( $lang );
+
+				if ( ! empty( $langs ) ) {
+					$this->set_language( $langs );
 				}
 			}
 			// Do not filter untranslatable post types such as nav_menu_item
