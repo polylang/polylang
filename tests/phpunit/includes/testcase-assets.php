@@ -6,15 +6,15 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	protected static $stylesheet;
 	protected $polylang_assets = array(
 		'header' => array(
-			'user' => false,
+			'user' => 'source',
 		),
 		'footer' => array(
-			'pll_ajax_backend'   => true,
-			'polylang_admin-css' => true,
-			'post'               => false,
-			'term'               => false,
-			'classic-editor'     => false,
-			'block-editor'       => false,
+			'pll_ajax_backend'   => 'name',
+			'polylang_admin-css' => 'name',
+			'post'               => 'source',
+			'term'               => 'source',
+			'classic-editor'     => 'source',
+			'block-editor'       => 'source',
 		),
 	);
 
@@ -79,25 +79,27 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 
 		if ( isset( $scripts['header'] ) ) {
 			foreach ( $scripts['header'] as $script ) {
-				$is_name = isset( $polylang_assets['header'][ $script ] ) && $polylang_assets['header'][ $script ];
+				$is_name = isset( $polylang_assets['header'][ $script ] ) && 'name' === $polylang_assets['header'][ $script ];
 				$this->assert_script_is_enqueued( $script, $head, $is_name, 'header' );
 				unset( $polylang_assets['header'][ $script ] );
 			}
 		}
 
-		foreach ( $polylang_assets['header'] as $script => $is_name ) {
+		foreach ( $polylang_assets['header'] as $script => $type ) {
+			$is_name = 'name' === $type;
 			$this->assert_script_is_not_enqueued( $script, $head, $is_name, 'header' );
 		}
 
 		if ( isset( $scripts['footer'] ) ) {
 			foreach ( $scripts['footer'] as $script ) {
-				$is_name = isset( $polylang_assets['footer'][ $script ] ) && $polylang_assets['footer'][ $script ];
+				$is_name = isset( $polylang_assets['footer'][ $script ] ) && 'name' === $polylang_assets['footer'][ $script ];
 				$this->assert_script_is_enqueued( $script, $footer, $is_name, 'footer' );
 				unset( $polylang_assets['footer'][ $script ] );
 			}
 		}
 
-		foreach ( $polylang_assets['footer'] as $script => $is_name ) {
+		foreach ( $polylang_assets['footer'] as $script => $type ) {
+			$is_name = 'name' === $type;
 			$this->assert_script_is_not_enqueued( $script, $footer, $is_name, 'footer' );
 		}
 	}
@@ -112,7 +114,7 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	protected function assert_script_is_not_enqueued( $script, $content, $is_name, $position ) {
+	private function assert_script_is_not_enqueued( $script, $content, $is_name, $position ) {
 		if ( $is_name ) {
 			// The current script is a name.
 			$test = strpos( $content, $script );
@@ -133,7 +135,7 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	protected function assert_script_is_enqueued( $script, $content, $is_name, $position ) {
+	private function assert_script_is_enqueued( $script, $content, $is_name, $position ) {
 		if ( $is_name ) {
 			// The current script is a name.
 			$test = strpos( $content, $script );
