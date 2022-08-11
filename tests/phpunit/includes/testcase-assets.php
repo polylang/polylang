@@ -4,6 +4,19 @@ require POLYLANG_DIR . '/include/api.php';
 class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	protected static $editor;
 	protected static $stylesheet;
+	protected $polylang_assets = array(
+		'header' => array(
+			'user' => false,
+		),
+		'footer' => array(
+			'pll_ajax_backend'   => true,
+			'polylang_admin-css' => true,
+			'post'               => false,
+			'term'               => false,
+			'classic-editor'     => false,
+			'block-editor'       => false,
+		),
+	);
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -45,22 +58,6 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	protected function _test_scripts( $scripts ) {
-		/**
-		 * Array keys contains the scripts and stylesheets enqueued,
-		 * Array values tells if the assets should be search with source, false if with script name.
-		 */
-		$not_included_head_scripts   = array(
-			'user' => false,
-		);
-		$not_included_footer_scripts = array(
-			'pll_ajax_backend'   => true,
-			'polylang_admin-css' => true,
-			'post'               => false,
-			'term'               => false,
-			'classic-editor'     => false,
-			'block-editor'       => false,
-		);
-
 		$links_model      = self::$model->get_links_model();
 		$pll_admin        = new PLL_Admin( $links_model );
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
@@ -78,27 +75,29 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 		do_action( 'admin_print_footer_scripts' );
 		$footer = ob_get_clean();
 
+		$polylang_assets = $this->get_polylang_assets();
+
 		if ( isset( $scripts['header'] ) ) {
 			foreach ( $scripts['header'] as $script ) {
-				$is_name = isset( $not_included_head_scripts[ $script ] ) && $not_included_head_scripts[ $script ];
+				$is_name = isset( $polylang_assets['header'][ $script ] ) && $polylang_assets['header'][ $script ];
 				$this->assert_script_is_enqueued( $script, $head, $is_name, 'header' );
-				unset( $not_included_head_scripts[ $script ] );
+				unset( $polylang_assets['header'][ $script ] );
 			}
 		}
 
-		foreach ( $not_included_head_scripts as $script => $is_name ) {
+		foreach ( $polylang_assets['header'] as $script => $is_name ) {
 			$this->assert_script_is_not_enqueued( $script, $head, $is_name, 'header' );
 		}
 
 		if ( isset( $scripts['footer'] ) ) {
 			foreach ( $scripts['footer'] as $script ) {
-				$is_name = isset( $not_included_footer_scripts[ $script ] ) && $not_included_footer_scripts[ $script ];
+				$is_name = isset( $polylang_assets['footer'][ $script ] ) && $polylang_assets['footer'][ $script ];
 				$this->assert_script_is_enqueued( $script, $footer, $is_name, 'footer' );
-				unset( $not_included_footer_scripts[ $script ] );
+				unset( $polylang_assets['footer'][ $script ] );
 			}
 		}
 
-		foreach ( $not_included_footer_scripts as $script => $is_name ) {
+		foreach ( $polylang_assets['footer'] as $script => $is_name ) {
 			$this->assert_script_is_not_enqueued( $script, $footer, $is_name, 'footer' );
 		}
 	}
@@ -143,5 +142,15 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 			$test = strpos( $content, plugins_url( "/js/build/$script.min.js", POLYLANG_FILE ) );
 		}
 		$this->assertIsInt( $test, "$script script is not enqueued in the $position as it should." );
+	}
+
+	/**
+	 * Getter for the Polylang scripts and stylesheets.
+	 * Mainly here to be overloaded with other assets if needed.
+	 *
+	 * @return array
+	 */
+	protected function get_polylang_assets() {
+		return $this->polylang_assets;
 	}
 }
