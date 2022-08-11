@@ -59,7 +59,7 @@ class PLL_REST_Request extends PLL_Base {
 			return;
 		}
 
-		add_filter( 'rest_pre_dispatch', array( $this, 'maybe_set_curlang' ), 10, 3 );
+		add_filter( 'rest_pre_dispatch', array( $this, 'set_language' ), 10, 3 );
 
 		$this->filters_links           = new PLL_Filters_Links( $this );
 		$this->filters                 = new PLL_Filters( $this );

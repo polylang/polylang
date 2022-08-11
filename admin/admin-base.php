@@ -212,7 +212,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		wp_register_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
 		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
-		$this->localize_scripts();
 		$this->add_inline_scripts();
 	}
 
@@ -227,12 +226,13 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		if ( $this->model->get_languages_list() ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
-			$this->localize_scripts();
+			$this->add_inline_scripts();
 		}
 	}
 
 	/**
-	 * Adds inline scripts to set the default language in JS.
+	 * Adds inline scripts to set the default language in JS
+	 * and localizes scripts.
 	 *
 	 * @since 3.3
 	 *
@@ -247,16 +247,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				'before'
 			);
 		}
-	}
-
-	/**
-	 * Localize scripts.
-	 *
-	 * @since 2.4.0
-	 *
-	 * @return void
-	 */
-	public function localize_scripts() {
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
 			wp_localize_script(
 				'pll_widgets',
