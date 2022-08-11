@@ -187,12 +187,12 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			}
 
 			// Block editor with legacy metabox in WP 5.0+.
-			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin() ) {
+			if ( $this->is_block_editor( $screen ) ) {
 				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
 			}
 		}
 
-		if ( ! empty( $screen->base ) && in_array( $screen->base, array( 'widgets', 'site-editor' ), true ) && ! pll_use_block_editor_plugin() ) {
+		if ( $this->is_block_editor( $screen ) ) {
 			$scripts['block-editor'] = array( array( 'widgets', 'site-editor' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
 		}
 
@@ -213,6 +213,20 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
 		$this->add_inline_scripts();
+	}
+
+	/**
+	 * Tells whether or not the given screen is block editor kind.
+	 * e.g. widget, site or post editor.
+	 *
+	 * @since 3.3
+	 *
+	 * @param WP_Screen $screen Screen object.
+	 *
+	 * @retrun bool True if the screen is a block editor, false otherwise.
+	 */
+	private function is_block_editor( $screen ) {
+		return method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin();
 	}
 
 	/**
