@@ -28,14 +28,13 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	public function set_up() {
-		global $wp_widget_factory;
+		// global $wp_widget_factory;
 
 		parent::set_up();
 
 		// We need to register the nav menu ourselves since widget globals are cleaned up in test-strings.php.
 		// @see https://github.com/polylang/polylang/blob/3.2.5/tests/phpunit/tests/test-strings.php#L24-L37.
-		register_widget( new WP_Nav_Menu_Widget() );
-		$wp_widget_factory->_register_widgets(); // This will populate the $wp_registered_widgets global used in WP_REST_Widget_Types_Controller::get_widgets().
+		wp_widgets_init();
 
 		$links_model         = self::$model->get_links_model();
 		$this->pll_rest      = new PLL_REST_Request( $links_model );
@@ -51,6 +50,19 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['polylang'] );
 	}
 
+	public function clean_up_global_scope() {
+		global $_wp_sidebars_widgets, $wp_widget_factory, $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
+
+		$_wp_sidebars_widgets = array();
+		$wp_registered_sidebars = array();
+		$wp_registered_widgets = array();
+		$wp_registered_widget_controls = array();
+		$wp_registered_widget_updates = array();
+		$wp_widget_factory->widgets = array();
+
+		parent::clean_up_global_scope();
+	}
+
 	/**
 	 * @global $wp_version
 	 */
@@ -64,7 +76,6 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 		}
 
 		// Let's create a menu.
-		register_widget( 'WP_Nav_Menu_Widget' );
 		$menu_id = wp_create_nav_menu( 'menu_test' );
 		$item_id = wp_update_nav_menu_item(
 			$menu_id,
