@@ -317,6 +317,9 @@ abstract class PLL_Choose_Lang {
 	 */
 	protected function set_curlang_in_query( &$query ) {
 		$pll_query = new PLL_Query( $query, $this->model );
-		$pll_query->set_language( $this->curlang );
+
+		if ( $this->curlang instanceof PLL_Language ) {
+			$pll_query->set_language( $this->curlang );
+		}
 	}
 }
