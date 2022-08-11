@@ -90,7 +90,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 * @return stdClass[] Modified menu items.
 	 */
 	public function wp_get_nav_menu_items( $items ) {
-		if ( ! $this->curlang ) {
+		if ( empty( $this->curlang ) ) {
 			return $items;
 		}
 

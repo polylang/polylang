@@ -85,7 +85,7 @@ class PLL_REST_Request extends PLL_Base {
 	 *
 	 * @return mixed Untouched $result.
 	 */
-	public function maybe_set_curlang( $result, $server, $request ) {
+	public function set_language( $result, $server, $request ) {
 		$lang = $request->get_param( 'lang' );
 
 		if ( ! empty( $lang ) && is_string( $lang ) ) {
