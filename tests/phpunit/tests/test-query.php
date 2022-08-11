@@ -795,8 +795,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
 		$expected_posts    = array_merge( $french_posts_cat_1, $french_posts_cat_2 );
 
-		$this->assertNotEmpty( $queried_posts );
-		$this->assertSameSets( $expected_posts, $queried_posts_ids );
+		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
+		$this->assertEmpty( array_intersect( $french_posts_no_cat, $queried_posts_ids ), 'The query should not return french posts without the category.' );
+		$this->assertSameSets( $expected_posts, $queried_posts_ids, 'The query should return french posts with the category.' );
 	}
 
 	public function test_or_operator_on_untranslated_tax() {
@@ -824,37 +825,16 @@ class Query_Test extends PLL_UnitTestCase {
 		$french_posts_tax_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_tax_1 as $index => $post ) {
 			self::$model->post->set_language( $post, 'fr' );
-			self::$model->post->save_translations(
-				$post,
-				array(
-					'en' => $eng_posts_tax_1[ $index ],
-					'fr' => $post,
-				)
-			);
 			wp_set_post_terms( $post, array( $first_tax ), 'tax' );
 		}
 		$french_posts_tax_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_tax_2 as $post ) {
 			self::$model->post->set_language( $post, 'fr' );
-			self::$model->post->save_translations(
-				$post,
-				array(
-					'en' => $eng_posts_tax_2[ $index ],
-					'fr' => $post,
-				)
-			);
 			wp_set_post_terms( $post, array( $second_tax ), 'tax' );
 		}
 		$french_posts_no_tax = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_no_tax as $post ) {
 			self::$model->post->set_language( $post, 'fr' );
-			self::$model->post->save_translations(
-				$post,
-				array(
-					'en' => $eng_posts_no_tax[ $index ],
-					'fr' => $post,
-				)
-			);
 		}
 
 		// Query with language parameter set.
@@ -881,8 +861,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
 		$expected_posts    = array_merge( $french_posts_tax_1, $french_posts_tax_2 );
 
-		$this->assertNotEmpty( $queried_posts );
-		$this->assertEqualSets( $expected_posts, $queried_posts_ids );
+		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
+		$this->assertEmpty( array_intersect( $french_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
+		$this->assertEqualSets( $expected_posts, $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
 
 		// Query with language parameter not set.
 		$args = array(
@@ -908,7 +889,9 @@ class Query_Test extends PLL_UnitTestCase {
 		$queried_posts_ids       = wp_list_pluck( $queried_posts, 'ID' );
 		$expected_posts          = array_merge( $french_posts_tax_1, $french_posts_tax_2, $eng_posts_tax_1, $eng_posts_tax_2 );
 
-		$this->assertNotEmpty( $queried_posts );
-		$this->assertEqualSets( $expected_posts, $queried_posts_ids );
+		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
+		$this->assertEmpty( array_intersect( $french_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
+		$this->assertEmpty( array_intersect( $eng_posts_no_tax, $queried_posts_ids ), 'The query should not return english posts without the taxonomy.' );
+		$this->assertEqualSets( $expected_posts, $queried_posts_ids, 'The query should return french and english posts with the taxonomy.' );
 	}
 }
