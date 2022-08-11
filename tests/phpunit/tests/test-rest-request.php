@@ -39,6 +39,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 
 		global $wp_rest_server;
 		$this->server = $wp_rest_server = new Spy_REST_Server();
+		do_action( 'rest_api_init', $wp_rest_server );
 
 		$links_model         = self::$model->get_links_model();
 		$this->pll_rest      = new PLL_REST_Request( $links_model );
@@ -67,8 +68,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		self::$model->options['default_lang'] = 'en';
 		$this->pll_rest->init();
 
-		$request  = new WP_REST_Request( $data['method'], $data['route'] );
-		$request  = $this->set_lang_param( $request, 'fr' );
+		$request = new WP_REST_Request( $data['method'], $data['route'] );
+		$request->set_param( 'lang', 'fr' );
 		$response = $this->server->dispatch( $request );
 
 		$this->assertNotEmpty( $response );
@@ -89,8 +90,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		self::$model->options['default_lang'] = 'en';
 		$this->pll_rest->init();
 
-		$request  = new WP_REST_Request( $data['method'], $data['route'] );
-		$request  = $this->set_lang_param( $request, 'it' );
+		$request = new WP_REST_Request( $data['method'], $data['route'] );
+		$request->set_param( 'lang', 'it' );
 		$response = $this->server->dispatch( $request );
 
 		$this->assertNotEmpty( $response );
@@ -111,8 +112,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 		self::$model->options['default_lang'] = 'es';
 		$this->pll_rest->init();
 
-		$request  = new WP_REST_Request( $data['method'], $data['route'] );
-		$request  = $this->set_lang_param( $request, 'it' );
+		$request = new WP_REST_Request( $data['method'], $data['route'] );
+		$request->set_param( 'lang', 'it' );
 		$response = $this->server->dispatch( $request );
 
 		$this->assertNotEmpty( $response );
@@ -177,23 +178,5 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 				);
 			}
 		}
-	}
-
-	/**
-	 * Sets the language parameter in the given request.
-	 *
-	 * @param WP_REST_Request $request Request to set the language parameter.
-	 * @param string          $lang    Language slug.
-	 *
-	 * @return WP_REST_Request Request with the language parameter set.
-	 */
-	private function set_lang_param( $request, $lang ) {
-		if ( 'GET' === $request->get_method() ) {
-			$request->set_query_params( array( 'lang' => $lang ) );
-		} else {
-			$request->set_body_params( array( 'lang' => $lang ) );
-		}
-
-		return $request;
 	}
 }
