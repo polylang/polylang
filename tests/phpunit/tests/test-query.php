@@ -739,37 +739,16 @@ class Query_Test extends PLL_UnitTestCase {
 		$french_posts_cat_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_cat_1 as $index => $post ) {
 			self::$model->post->set_language( $post, 'fr' );
-			self::$model->post->save_translations(
-				$post,
-				array(
-					'en' => $eng_posts_cat_1[ $index ],
-					'fr' => $post,
-				)
-			);
 			wp_set_post_terms( $post, array( $first_cat_fr ), 'category' );
 		}
 		$french_posts_cat_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_cat_2 as $post ) {
 			self::$model->post->set_language( $post, 'fr' );
-			self::$model->post->save_translations(
-				$post,
-				array(
-					'en' => $eng_posts_cat_2[ $index ],
-					'fr' => $post,
-				)
-			);
 			wp_set_post_terms( $post, array( $second_cat_fr ), 'category' );
 		}
 		$french_posts_no_cat = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_no_cat as $post ) {
 			self::$model->post->set_language( $post, 'fr' );
-			self::$model->post->save_translations(
-				$post,
-				array(
-					'en' => $eng_posts_no_cat[ $index ],
-					'fr' => $post,
-				)
-			);
 		}
 
 		$args = array(
