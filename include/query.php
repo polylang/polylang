@@ -188,7 +188,6 @@ class PLL_Query {
 				}
 				$langs = array_map( array( $this->model, 'get_language' ), $langs );
 				$langs = array_filter( $langs );
-				unset( $qvars['lang'] );
 
 				if ( ! empty( $langs ) ) {
 					$this->set_language( $langs );
