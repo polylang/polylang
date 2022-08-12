@@ -33,6 +33,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 			'footer' => array(
 				'pll_ajax_backend',
 				'post',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -48,6 +50,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 		$scripts = array(
 			'footer' => array(
 				'pll_ajax_backend',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -65,6 +69,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 			'footer' => array(
 				'pll_ajax_backend',
 				'classic-editor',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -79,6 +85,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 			'footer' => array(
 				'pll_ajax_backend',
 				'block-editor',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -94,6 +102,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 		$scripts = array(
 			'footer' => array(
 				'pll_ajax_backend',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -109,6 +119,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 			'footer' => array(
 				'pll_ajax_backend',
 				'post',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -123,6 +135,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 			'footer' => array(
 				'pll_ajax_backend',
 				'term',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -138,6 +152,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 		$scripts = array(
 			'footer' => array(
 				'pll_ajax_backend',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -152,6 +168,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 			'footer' => array(
 				'pll_ajax_backend',
 				'term',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -167,6 +185,8 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 		$scripts = array(
 			'footer' => array(
 				'pll_ajax_backend',
+			),
+			'header' => array(
 				'polylang_admin-css',
 			),
 		);
@@ -181,10 +201,10 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 		$scripts = array(
 			'footer' => array(
 				'pll_ajax_backend',
-				'polylang_admin-css',
 			),
 			'header' => array(
 				'user',
+				'polylang_admin-css',
 			),
 		);
 		$this->_test_scripts( $scripts );
@@ -197,10 +217,10 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 		$scripts = array(
 			'footer' => array(
 				'pll_ajax_backend',
-				'polylang_admin-css',
 			),
 			'header' => array(
 				'widgets',
+				'polylang_admin-css',
 			),
 		);
 		$this->_test_scripts( $scripts );

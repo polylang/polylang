@@ -7,10 +7,10 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	protected $polylang_assets = array(
 		'header' => array(
 			'user' => 'source',
+			'polylang_admin-css' => 'name',
 		),
 		'footer' => array(
 			'pll_ajax_backend'   => 'name',
-			'polylang_admin-css' => 'name',
 			'post'               => 'source',
 			'term'               => 'source',
 			'classic-editor'     => 'source',
@@ -61,17 +61,21 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 		$links_model      = self::$model->get_links_model();
 		$pll_admin        = new PLL_Admin( $links_model );
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
-		$GLOBALS['wp_styles'] = new WP_Styles();
+		$pll_admin->init();
+		$GLOBALS['wp_styles']  = new WP_Styles();
 		$GLOBALS['wp_scripts'] = new WP_Scripts();
 		wp_default_scripts( $GLOBALS['wp_scripts'] );
 
 		do_action( 'admin_enqueue_scripts' );
 
 		ob_start();
+		// Based on what's done in wp-admin/admin-header.php
+		do_action( 'admin_print_styles' );
 		do_action( 'admin_print_scripts' );
 		$head = ob_get_clean();
 
 		ob_start();
+		// Based on what's done in wp-admin/admin-footer.php
 		do_action( 'admin_print_footer_scripts' );
 		$footer = ob_get_clean();
 
