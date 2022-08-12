@@ -222,10 +222,9 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @since 3.3
 	 *
 	 * @param WP_Screen $screen Screen object.
-	 *
 	 * @return bool True if the screen is a block editor, false otherwise.
 	 */
-	private function is_block_editor( $screen ) {
+	protected function is_block_editor( $screen ) {
 		return method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin();
 	}
 
