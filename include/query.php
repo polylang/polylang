@@ -102,19 +102,14 @@ class PLL_Query {
 	 * @since 2.2
 	 * @since 3.3 Accepts now an array of languages.
 	 *
-	 * @param PLL_Language|PLL_Language[] $langs Language object(s).
+	 * @param PLL_Language|PLL_Language[] $languages Language object(s).
 	 * @return void
 	 */
-	public function set_language( $langs ) {
-		if ( $langs instanceof PLL_Language ) {
-			$langs = array( $langs );
+	public function set_language( $languages ) {
+		if ( ! is_array( $languages ) ) {
+			$languages = array( $languages );
 		}
-		$tt_ids = array_map(
-			function( $lang ) {
-				return $lang->term_taxonomy_id;
-			},
-			$langs
-		);
+		$tt_ids = wp_list_pluck( $languages, 'term_taxonomy_id' );
 
 		// Defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
 		$lang_query = array(
