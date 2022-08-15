@@ -62,13 +62,13 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 
 		if ( isset( $scripts[ $position ] ) ) {
 			foreach ( $scripts[ $position ] as $script ) {
-				$this->assertStringContainsString( $script , $content, "$script script is not enqueued in the $position as it should." );
+				$this->assertStringContainsString( $script, $content, "$script script is not enqueued in the $position as it should." );
 				$polylang_assets[ $position ] = array_diff( $polylang_assets[ $position ], array( $script ) );
 			}
 		}
 
 		foreach ( $polylang_assets[ $position ] as $script ) {
-			$this->assertStringNotContainsString( $script , $content, "$script script is enqueued in the $position but it should not." );
+			$this->assertStringNotContainsString( $script, $content, "$script script is enqueued in the $position but it should not." );
 		}
 	}
 
