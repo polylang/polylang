@@ -1,8 +1,36 @@
 <?php
-class Admin_Test extends PLL_Assets_UnitTestCase {
+class Admin_Test extends PLL_UnitTestCase {
+	protected static $stylesheet;
+
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
+
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+
+		self::$stylesheet = get_option( 'stylesheet' ); // save default theme
+	}
+
+	public function set_up() {
+		parent::set_up();
+
+		wp_set_current_user( 1 ); // Set a user to pass current_user_can tests
+	}
+
+	public function tear_down() {
+		parent::tear_down();
+
+		remove_action( 'customize_register', array( $this, 'whatever' ) );
+
+		switch_theme( self::$stylesheet );
+	}
+
 	public function test_admin_bar_menu() {
 		global $wp_admin_bar;
-		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar
+		add_filter( 'show_admin_bar', '__return_true' ); // Make sure to show admin bar.
 
 		$this->go_to( home_url( '/wp-admin/edit.php' ) );
 		$links_model = self::$model->get_links_model();
@@ -23,207 +51,6 @@ class Admin_Test extends PLL_Assets_UnitTestCase {
 		$fr = $wp_admin_bar->get_node( 'fr' );
 		$this->assertEquals( 'languages', $fr->parent );
 		$this->assertEquals( '/wp-admin/edit.php?lang=fr', $fr->href );
-	}
-
-	public function test_scripts_in_post_list_table() {
-		$GLOBALS['hook_suffix'] = 'edit.php';
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-				'post',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_untranslated_cpt_list_table() {
-		$GLOBALS['hook_suffix'] = 'edit.php';
-		$_REQUEST['post_type'] = 'cpt';
-		register_post_type( 'cpt' );
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_edit_post_classic_editor() {
-		$GLOBALS['hook_suffix'] = 'post.php';
-		set_current_screen();
-
-		global $current_screen;
-		$current_screen->is_block_editor = false;
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-				'classic-editor',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_edit_post_block_editor() {
-		$GLOBALS['hook_suffix'] = 'post.php';
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-				'block-editor',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_edit_untranslated_cpt() {
-		$GLOBALS['hook_suffix'] = 'post.php';
-		$_REQUEST['post_type'] = 'cpt';
-		register_post_type( 'cpt' );
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-
-	public function test_scripts_in_media_list_table() {
-		$GLOBALS['hook_suffix'] = 'upload.php';
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-				'post',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_terms_list_table() {
-		$GLOBALS['hook_suffix'] = 'edit-tags.php';
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-				'term',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_untranslated_custom_tax_list_table() {
-		$GLOBALS['hook_suffix'] = 'edit-tags.php';
-		$_REQUEST['taxonomy'] = 'tax';
-		register_taxonomy( 'tax', 'post' );
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_edit_term() {
-		$GLOBALS['hook_suffix'] = 'term.php';
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-				'term',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_edit_unstranslated_custom_tax() {
-		$GLOBALS['hook_suffix'] = 'term.php';
-		$_REQUEST['taxonomy'] = 'tax';
-		register_taxonomy( 'tax', 'post' );
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-			),
-			'header' => array(
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-
-	public function test_scripts_in_user_profile() {
-		$GLOBALS['hook_suffix'] = 'profile.php';
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-			),
-			'header' => array(
-				'user',
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
-	}
-
-	public function test_scripts_in_edit_widgets() {
-		$GLOBALS['hook_suffix'] = 'widgets.php';
-		set_current_screen();
-
-		$scripts = array(
-			'footer' => array(
-				'pll_ajax_backend',
-			),
-			'header' => array(
-				'widgets',
-				'polylang_admin-css',
-			),
-		);
-		$this->_test_scripts( $scripts );
 	}
 
 	public function test_remove_customize_submenu_with_block_base_theme() {
