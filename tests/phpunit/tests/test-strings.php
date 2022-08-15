@@ -59,7 +59,9 @@ class Strings_Test extends PLL_UnitTestCase {
 		return array( 'fr_FR' );
 	}
 
-	public function test_base_strings() {
+	public function test_core_strings() {
+		update_option( 'blogdescription', 'Just another WordPress site' ); // Since WP 6.1, the option is empty by default.
+
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$pll_admin->init();
 		$strings = PLL_Admin_Strings::get_strings();
