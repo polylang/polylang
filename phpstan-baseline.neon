@@ -466,6 +466,11 @@ parameters:
 			path: frontend/choose-lang.php
 
 		-
+			message: "#^Parameter \\#1 \\$lang of method PLL_Query\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|null given\\.$#"
+			count: 1
+			path: frontend/choose-lang.php
+
+		-
 			message: "#^Method PLL_Frontend_Auto_Translate\\:\\:get_post\\(\\) should return int but returns int\\|false\\.$#"
 			count: 1
 			path: frontend/frontend-auto-translate.php
