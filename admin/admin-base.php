@@ -178,6 +178,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			'widgets' => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
+		$block_screens = array( 'widgets', 'site-editor' );
+
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
 			$scripts['post'] = array( array( 'edit', 'upload' ), array( 'jquery', 'wp-ajax-response' ), 0, 1 );
 
@@ -187,13 +189,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			}
 
 			// Block editor with legacy metabox in WP 5.0+.
-			if ( $this->is_block_editor( $screen ) ) {
-				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
-			}
+			$block_screens[] = 'post';
 		}
 
 		if ( $this->is_block_editor( $screen ) ) {
-			$scripts['block-editor'] = array( array( 'widgets', 'site-editor' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
+			$scripts['block-editor'] = array( $block_screens, array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
 		}
 
 		if ( ! empty( $screen->taxonomy ) && $this->model->is_translated_taxonomy( $screen->taxonomy ) ) {
