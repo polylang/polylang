@@ -12,7 +12,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	/**
 	 * Current language.
 	 *
-	 * @var PLL_Language|null
+	 * @var PLL_Language|null|false
 	 */
 	public $curlang;
 
@@ -90,6 +90,10 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 * @return stdClass[] Modified menu items.
 	 */
 	public function wp_get_nav_menu_items( $items ) {
+		if ( empty( $this->curlang ) ) {
+			return $items;
+		}
+
 		if ( doing_action( 'customize_register' ) ) { // needed since WP 4.3, doing_action available since WP 3.9
 			return $items;
 		}

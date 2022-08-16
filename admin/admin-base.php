@@ -178,6 +178,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			'widgets' => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
 		);
 
+		$block_screens = array( 'widgets', 'site-editor' );
+
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
 			$scripts['post'] = array( array( 'edit', 'upload' ), array( 'jquery', 'wp-ajax-response' ), 0, 1 );
 
@@ -187,9 +189,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			}
 
 			// Block editor with legacy metabox in WP 5.0+.
-			if ( method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin() ) {
-				$scripts['block-editor'] = array( array( 'post' ), array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
-			}
+			$block_screens[] = 'post';
+		}
+
+		if ( $this->is_block_editor( $screen ) ) {
+			$scripts['block-editor'] = array( $block_screens, array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
 		}
 
 		if ( ! empty( $screen->taxonomy ) && $this->model->is_translated_taxonomy( $screen->taxonomy ) ) {
@@ -208,7 +212,20 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		wp_register_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
 		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
-		$this->localize_scripts();
+		$this->add_inline_scripts();
+	}
+
+	/**
+	 * Tells whether or not the given screen is block editor kind.
+	 * e.g. widget, site or post editor.
+	 *
+	 * @since 3.3
+	 *
+	 * @param WP_Screen $screen Screen object.
+	 * @return bool True if the screen is a block editor, false otherwise.
+	 */
+	protected function is_block_editor( $screen ) {
+		return method_exists( $screen, 'is_block_editor' ) && $screen->is_block_editor() && ! pll_use_block_editor_plugin();
 	}
 
 	/**
@@ -222,18 +239,27 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		if ( $this->model->get_languages_list() ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
-			$this->localize_scripts();
+			$this->add_inline_scripts();
 		}
 	}
 
 	/**
-	 * Localize scripts.
+	 * Adds inline scripts to set the default language in JS
+	 * and localizes scripts.
 	 *
-	 * @since 2.4.0
+	 * @since 3.3
 	 *
 	 * @return void
 	 */
-	public function localize_scripts() {
+	private function add_inline_scripts() {
+		if ( wp_script_is( 'pll_block-editor', 'enqueued' ) ) {
+			$default_lang_script = 'const pllDefaultLanguage = "' . $this->options['default_lang'] . '";';
+			wp_add_inline_script(
+				'pll_block-editor',
+				$default_lang_script,
+				'before'
+			);
+		}
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
 			wp_localize_script(
 				'pll_widgets',

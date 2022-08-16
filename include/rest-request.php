@@ -59,10 +59,37 @@ class PLL_REST_Request extends PLL_Base {
 			return;
 		}
 
-		if ( ! empty( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			if ( is_string( $_REQUEST['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$this->curlang = $this->model->get_language( sanitize_key( $_REQUEST['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
+		add_filter( 'rest_pre_dispatch', array( $this, 'set_language' ), 10, 3 );
+
+		$this->filters_links           = new PLL_Filters_Links( $this );
+		$this->filters                 = new PLL_Filters( $this );
+		$this->filters_widgets_options = new PLL_Filters_Widgets_Options( $this );
+
+		// Static front page and page for posts.
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->static_pages = new PLL_Static_Pages( $this );
+		}
+
+		$this->links    = new PLL_Admin_Links( $this );
+		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this ); // For auto added pages to menu.
+	}
+
+	/**
+	 * Sets the current language during a REST request if sent.
+	 *
+	 * @since 3.3
+	 *
+	 * @param mixed           $result  Response to replace the requested version with. Remains untouched.
+	 * @param WP_REST_Server  $server  Server instance.
+	 * @param WP_REST_Request $request Request used to generate the response.
+	 *
+	 * @return mixed Untouched $result.
+	 */
+	public function set_language( $result, $server, $request ) {
+		$lang = $request->get_param( 'lang' );
+
+		if ( ! empty( $lang ) && is_string( $lang ) ) {
+			$this->curlang = $this->model->get_language( sanitize_key( $lang ) );
 
 			if ( empty( $this->curlang ) && ! empty( $this->options['default_lang'] ) && is_string( $this->options['default_lang'] ) ) {
 				// A lang has been requested but it is invalid, let's fall back to the default one.
@@ -78,16 +105,6 @@ class PLL_REST_Request extends PLL_Base {
 			do_action( 'pll_no_language_defined' ); // To load overridden textdomains.
 		}
 
-		$this->filters_links           = new PLL_Filters_Links( $this );
-		$this->filters                 = new PLL_Filters( $this );
-		$this->filters_widgets_options = new PLL_Filters_Widgets_Options( $this );
-
-		// Static front page and page for posts.
-		if ( 'page' === get_option( 'show_on_front' ) ) {
-			$this->static_pages = new PLL_Static_Pages( $this );
-		}
-
-		$this->links    = new PLL_Admin_Links( $this );
-		$this->nav_menu = new PLL_Nav_Menu( $this ); // For auto added pages to menu.
+		return $result;
 	}
 }

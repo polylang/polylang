@@ -33,14 +33,20 @@ wp.apiFetch.use(
 );
 
 /**
- * Get the language from the HTML form
+ * Gets the language of the currently edited post, fallback to default language if none is found.
  *
  * @since 2.5
  *
  * @return {Element.value}
  */
 function getCurrentLanguage() {
-	return document.querySelector( '[name=post_lang_choice]' ).value;
+	const lang = document.querySelector( '[name=post_lang_choice]' );
+
+	if ( null === lang ) {
+		return pllDefaultLanguage;
+	}
+
+	return lang.value;
 }
 
 /**

@@ -676,21 +676,6 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Cannot access property \\$name on PLL_Language\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-nav-menu.php
-
-		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-nav-menu.php
-
-		-
-			message: "#^Cannot call method get_display_flag\\(\\) on PLL_Language\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-nav-menu.php
-
-		-
 			message: "#^Method PLL_Frontend_Nav_Menu\\:\\:get_ancestors\\(\\) should return array\\<int\\> but returns array\\<int, mixed\\>\\.$#"
 			count: 1
 			path: frontend/frontend-nav-menu.php
