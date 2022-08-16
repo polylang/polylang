@@ -492,7 +492,7 @@ abstract class PLL_Translated_Object {
 	 * @return int<0,max> A positive integer. `0` for non numeric values and negative integers.
 	 */
 	public function sanitize_int_id( $id ) {
-		return is_numeric( $id ) && $id >= 1 ? (int) $id : 0;
+		return is_numeric( $id ) && $id >= 1 ? abs( (int) $id ) : 0;
 	}
 
 	/**
