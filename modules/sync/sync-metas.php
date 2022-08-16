@@ -255,6 +255,7 @@ abstract class PLL_Sync_Metas {
 	 */
 	public function update_meta( $mid, $id, $meta_key, $meta_value ) {
 		static $avoid_recursion = false;
+		$id = (int) $id;
 
 		if ( ! $avoid_recursion ) {
 			$avoid_recursion = true;
