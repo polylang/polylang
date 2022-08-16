@@ -2,6 +2,11 @@
 require POLYLANG_DIR . '/include/api.php';
 
 class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
+	/**
+	 * The Polylang assets identifiers (those rendered by WordPress in HTML tags).
+	 *
+	 * @var array<string, array<int, string>>
+	 */
 	private $polylang_assets = array(
 		'header' => array(
 			'pll_user-js',
@@ -50,7 +55,7 @@ class PLL_Assets_UnitTestCase extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * Asserts a scripts are enqueued or not.
+	 * Asserts scripts are enqueued or not.
 	 *
 	 * @param string[] $scripts  The script names.
 	 * @param string   $content  The content to look into.
