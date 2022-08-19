@@ -32,7 +32,7 @@
 	},
 	"scripts": {
 		"test":"vendor/bin/phpunit",
-		"cs":"vendor/bin/phpcs",
+		"cs":"bin/git-cs.sh",
 		"stan": "vendor/bin/phpstan analyze --memory-limit=400M",
 		"lint": [
 			"@cs",
