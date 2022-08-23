@@ -76,7 +76,7 @@ class Query_Test extends PLL_UnitTestCase {
 	public function assert_no_lang_query_by_slug( $tax_query ) {
 		foreach ( $tax_query->queries as $query ) {
 			if ( isset( $query['taxonomy'] ) && 'language' === $query['taxonomy'] && isset( $query['field'] ) && 'slug' === $query['field'] ) {
-				$this->fail( 'Language is found in taxonomy query' . PHP_EOL );
+				$this->fail( 'Language query by slug is found in taxonomy query' . PHP_EOL );
 			}
 		}
 	}
@@ -861,6 +861,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
 		$this->assertEmpty( array_intersect( $french_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
 		$this->assertEqualSets( $expected_posts, $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
+		$this->assert_no_lang_query_by_slug( $query->tax_query );
 
 		// Query with language parameter not set.
 		$args = array(
@@ -890,5 +891,81 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( array_intersect( $french_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
 		$this->assertEmpty( array_intersect( $eng_posts_no_tax, $queried_posts_ids ), 'The query should not return english posts without the taxonomy.' );
 		$this->assertEqualSets( $expected_posts, $queried_posts_ids, 'The query should return french and english posts with the taxonomy.' );
+		$this->assert_no_lang_query_by_slug( $query->tax_query );
+	}
+
+	public function test_or_operator_on_translated_tax() {
+			// Terms.
+			$first_tax_en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test1' ) );
+			self::$model->term->set_language( $first_tax_en, 'en' );
+
+			$first_tax_fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai1' ) );
+			self::$model->term->set_language( $first_tax_fr, 'fr' );
+
+			$second_tax_en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test2' ) );
+			self::$model->term->set_language( $second_tax_en, 'en' );
+
+			$second_tax_fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai2' ) );
+			self::$model->term->set_language( $second_tax_fr, 'fr' );
+
+			// English Posts.
+			$eng_posts_tax_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_tax_1 as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+			wp_set_post_terms( $post, array( $first_tax_en ), 'trtax' );
+		}
+			$eng_posts_tax_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_tax_2 as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+			wp_set_post_terms( $post, array( $second_tax_en ), 'trtax' );
+		}
+			$eng_posts_no_tax = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_no_tax as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+		}
+
+			// French Posts.
+			$french_posts_tax_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_tax_1 as $index => $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			wp_set_post_terms( $post, array( $first_tax_fr ), 'trtax' );
+		}
+			$french_posts_tax_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_tax_2 as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			wp_set_post_terms( $post, array( $second_tax_fr ), 'trtax' );
+		}
+			$french_posts_no_tax = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_no_tax as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+		}
+
+			$args = array(
+				'post_type'      => 'post',
+				'lang'           => 'fr',
+				'posts_per_page' => 100,
+				'tax_query'      => array(
+					'relation' => 'OR',
+					array(
+						'taxonomy' => 'trtax',
+						'field'    => 'name',
+						'terms'    => array( 'essai1' ),
+					),
+					array(
+						'taxonomy' => 'trtax',
+						'field'    => 'name',
+						'terms'    => array( 'essai2' ),
+					),
+				),
+			);
+			$query             = new WP_Query( $args );
+			$queried_posts     = $query->posts;
+			$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
+			$expected_posts    = array_merge( $french_posts_tax_1, $french_posts_tax_2 );
+
+			$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
+			$this->assertEmpty( array_intersect( $french_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
+			$this->assertSameSets( $expected_posts, $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
+			$this->assert_no_lang_query_by_slug( $query->tax_query );
 	}
 }

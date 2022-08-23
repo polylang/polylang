@@ -111,7 +111,7 @@ class PLL_Query {
 		}
 		$tt_ids = wp_list_pluck( $languages, 'term_taxonomy_id' );
 
-		// Defining directly the tax_query ( rather than setting 'lang' avoids transforming the query by WP )
+		// Defining directly the tax_query (rather than setting 'lang' avoids transforming the query by WP).
 		$lang_query = array(
 			'taxonomy' => 'language',
 			'field'    => 'term_taxonomy_id', // Since WP 3.5
@@ -180,20 +180,8 @@ class PLL_Query {
 				}
 			}
 		} else {
-			// Set the language correctly in the query, since WordPress merges the language with the other query vars when the operator is OR.
-			if ( isset( $this->query->tax_query->queried_terms['language'] ) && 'all' !== $this->query->tax_query->queried_terms['language']['terms'] ) {
-				$langs = $this->query->tax_query->queried_terms['language']['terms'];
-				if ( is_string( $langs ) ) {
-					$langs = explode( ',', $langs );
-				}
-				$langs = array_map( array( $this->model, 'get_language' ), $langs );
-				$langs = array_filter( $langs );
+			$this->set_language_for_or_relation();
 
-				if ( ! empty( $langs ) ) {
-					$this->set_language( $langs );
-					$this->query->tax_query->queries = $this->clean_language_in_tax_query_recursively( $this->query->tax_query->queries );
-				}
-			}
 			// Do not filter untranslatable post types such as nav_menu_item
 			if ( isset( $qvars['post_type'] ) && ! $this->model->is_translated_post_type( $qvars['post_type'] ) && ( empty( $qvars['tax_query'] ) || ! $this->have_translated_taxonomy( $qvars['tax_query'] ) ) ) {
 				unset( $qvars['lang'] );
@@ -207,30 +195,29 @@ class PLL_Query {
 	}
 
 	/**
-	 * Removes the language queried terms from taxonomy queries.
+	 * Sets the language correctly if the current query is a 'OR' relation,
+	 * since WordPress merges the language with the other query vars when the relation is OR.
 	 *
 	 * @since 3.3
 	 *
-	 * @param array $queries Array of taxonomy queries.
-	 *
-	 * @return array Filtered taxonomy queries.
+	 * @return void
 	 */
-	protected function clean_language_in_tax_query_recursively( $queries ) {
-		if ( ! is_array( $queries ) ) {
-			return;
-		}
-
-		foreach ( $queries as $i => $query ) {
-			if ( ! is_array( $query ) ) {
-				continue;
+	protected function set_language_for_or_relation() {
+		if ( $this->query->tax_query instanceof WP_Tax_Query
+			&& 'OR' === $this->query->tax_query->relation
+			&& isset( $this->query->tax_query->queried_terms['language'] )
+			&& 'all' !== $this->query->tax_query->queried_terms['language']['terms'] ) {
+			$langs = $this->query->tax_query->queried_terms['language']['terms'];
+			if ( is_string( $langs ) ) {
+				$langs = explode( ',', $langs );
 			}
-			if ( isset( $query['taxonomy'] ) && 'language' === $query['taxonomy'] && isset( $query['field'] ) && 'slug' === $query['field'] ) {
-				unset( $queries[ $i ] );
-				continue;
-			}
-			$this->clean_language_in_tax_query_recursively( $query );
-		}
+			$langs = array_map( array( $this->model, 'get_language' ), $langs );
+			$langs = array_filter( $langs );
 
-		return $queries;
+			if ( ! empty( $langs ) ) {
+				$this->set_language( $langs );
+				unset( $this->query->query_vars['lang'] ); // Unset the language query var otherwise WordPress would add the language query by slug in WP_Query::parse_tax_query().
+			}
+		}
 	}
 }
