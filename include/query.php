@@ -180,7 +180,7 @@ class PLL_Query {
 				}
 			}
 		} else {
-			$this->set_language_for_or_relation();
+			$this->maybe_set_language_for_or_relation();
 
 			// Do not filter untranslatable post types such as nav_menu_item
 			if ( isset( $qvars['post_type'] ) && ! $this->model->is_translated_post_type( $qvars['post_type'] ) && ( empty( $qvars['tax_query'] ) || ! $this->have_translated_taxonomy( $qvars['tax_query'] ) ) ) {
@@ -202,7 +202,7 @@ class PLL_Query {
 	 *
 	 * @return void
 	 */
-	protected function set_language_for_or_relation() {
+	protected function maybe_set_language_for_or_relation() {
 		if ( $this->query->tax_query instanceof WP_Tax_Query
 			&& 'OR' === $this->query->tax_query->relation
 			&& isset( $this->query->tax_query->queried_terms['language'] )
