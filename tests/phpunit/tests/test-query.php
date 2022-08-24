@@ -65,11 +65,11 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * Asserts language in taxonomy query is removed.
+	 * Asserts language in taxonomy query by slug is removed.
 	 *
 	 * @param WP_Tax_Query $tax_query Taxonomy query.
 	 *
-	 * @throws AssertionFailedError
+	 * @throws AssertionFailedError Thrown when language slug query is not removed.
 	 *
 	 * @return void
 	 */
@@ -967,5 +967,110 @@ class Query_Test extends PLL_UnitTestCase {
 			$this->assertEmpty( array_intersect( $french_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
 			$this->assertSameSets( $expected_posts, $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
 			$this->assert_no_lang_query_by_slug( $query->tax_query );
+	}
+
+	public function test_query_several_languages() {
+		$eng_post = $this->factory->post->create( array( 'post_type' => 'post' ) );
+		$fr_post  = $this->factory->post->create( array( 'post_type' => 'post' ) );
+		self::$model->post->set_language( $eng_post, 'en' );
+		self::$model->post->set_language( $fr_post, 'fr' );
+
+		// Query with language parameter set.
+		$args = array(
+			'post_type'      => 'post',
+			'lang'           => 'en,fr',
+		);
+		$query             = new WP_Query( $args );
+		$queried_posts     = $query->posts;
+		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
+		$expected_posts    = array( $eng_post, $fr_post );
+
+		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
+		$this->assertEqualSets( $expected_posts, $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
+	}
+
+	public function test_or_operator_on_category_with_several_languages() {
+		// Categories.
+		$first_cat_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test1' ) );
+		self::$model->term->set_language( $first_cat_en, 'en' );
+
+		$first_cat_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai1' ) );
+		self::$model->term->set_language( $first_cat_fr, 'fr' );
+
+		$second_cat_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test2' ) );
+		self::$model->term->set_language( $second_cat_en, 'en' );
+
+		$second_cat_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai2' ) );
+		self::$model->term->set_language( $second_cat_fr, 'fr' );
+
+		// English Posts.
+		$eng_posts_cat_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_cat_1 as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+			wp_set_post_terms( $post, array( $first_cat_en ), 'category' );
+		}
+		$eng_posts_cat_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_cat_2 as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+			wp_set_post_terms( $post, array( $second_cat_en ), 'category' );
+		}
+		$eng_posts_no_cat = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $eng_posts_no_cat as $post ) {
+			self::$model->post->set_language( $post, 'en' );
+		}
+
+		// French Posts.
+		$french_posts_cat_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_cat_1 as $index => $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			wp_set_post_terms( $post, array( $first_cat_fr ), 'category' );
+		}
+		$french_posts_cat_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_cat_2 as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+			wp_set_post_terms( $post, array( $second_cat_fr ), 'category' );
+		}
+		$french_posts_no_cat = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		foreach ( $french_posts_no_cat as $post ) {
+			self::$model->post->set_language( $post, 'fr' );
+		}
+
+		$args = array(
+			'post_type'      => 'post',
+			'lang'           => 'en,fr',
+			'posts_per_page' => 100,
+			'tax_query'      => array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => 'category',
+					'field'    => 'name',
+					'terms'    => array( 'essai1' ),
+				),
+				array(
+					'taxonomy' => 'category',
+					'field'    => 'name',
+					'terms'    => array( 'essai2' ),
+				),
+				array(
+					'taxonomy' => 'category',
+					'field'    => 'name',
+					'terms'    => array( 'test1' ),
+				),
+				array(
+					'taxonomy' => 'category',
+					'field'    => 'name',
+					'terms'    => array( 'test2' ),
+				),
+			),
+		);
+		$query             = new WP_Query( $args );
+		$queried_posts     = $query->posts;
+		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
+		$expected_posts    = array_merge( $eng_posts_cat_1, $eng_posts_cat_2, $french_posts_cat_1, $french_posts_cat_2 );
+
+		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
+		$this->assertEmpty( array_intersect( array_merge( $french_posts_no_cat, $eng_posts_no_cat ), $queried_posts_ids ), 'The query should not return posts without the categories.' );
+		$this->assertSameSets( $expected_posts, $queried_posts_ids, 'The query should return french and english posts with the corresponding categories.' );
+		$this->assert_no_lang_query_by_slug( $query->tax_query );
 	}
 }
