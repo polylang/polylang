@@ -203,21 +203,28 @@ class PLL_Query {
 	 * @return void
 	 */
 	protected function maybe_set_language_for_or_relation() {
-		if ( $this->query->tax_query instanceof WP_Tax_Query
-			&& 'OR' === $this->query->tax_query->relation
-			&& isset( $this->query->tax_query->queried_terms['language'] )
-			&& 'all' !== $this->query->tax_query->queried_terms['language']['terms'] ) {
-			$langs = $this->query->tax_query->queried_terms['language']['terms'];
-			if ( is_string( $langs ) ) {
-				$langs = explode( ',', $langs );
-			}
-			$langs = array_map( array( $this->model, 'get_language' ), $langs );
-			$langs = array_filter( $langs );
+		if ( ! $this->query->tax_query instanceof WP_Tax_Query ) {
+			return;
+		}
 
-			if ( ! empty( $langs ) ) {
-				$this->set_language( $langs );
-				unset( $this->query->query_vars['lang'] ); // Unset the language query var otherwise WordPress would add the language query by slug in WP_Query::parse_tax_query().
-			}
+		if ( 'OR' !== $this->query->tax_query->relation ) {
+			return;
+		}
+
+		if ( ! isset( $this->query->tax_query->queried_terms['language'] ) ) {
+			return;
+		}
+
+		$langs = $this->query->tax_query->queried_terms['language']['terms'];
+		if ( is_string( $langs ) ) {
+			$langs = explode( ',', $langs );
+		}
+		$langs = array_map( array( $this->model, 'get_language' ), $langs );
+		$langs = array_filter( $langs );
+
+		if ( ! empty( $langs ) ) {
+			$this->set_language( $langs );
+			unset( $this->query->query_vars['lang'] ); // Unset the language query var otherwise WordPress would add the language query by slug in WP_Query::parse_tax_query().
 		}
 	}
 }
