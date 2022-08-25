@@ -73,7 +73,7 @@ class Query_Test extends PLL_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	public function assert_no_lang_query_by_slug( $tax_query ) {
+	protected function assert_no_lang_query_by_slug( $tax_query ) {
 		foreach ( $tax_query->queries as $query ) {
 			if ( isset( $query['taxonomy'] ) && 'language' === $query['taxonomy'] && isset( $query['field'] ) && 'slug' === $query['field'] ) {
 				$this->fail( 'Language query by slug is found in taxonomy query' . PHP_EOL );
@@ -95,7 +95,7 @@ class Query_Test extends PLL_UnitTestCase {
 	 *     @type int[] $fr_posts_no_tax    French post IDs without the taxonomy.
 	 * }
 	 */
-	public function create_posts_with_tax( $taxonomy ) {
+	protected function create_posts_with_tax( $taxonomy ) {
 		// Taxonomies.
 		$is_translated_tax = 'tax' !== $taxonomy; // See self::set_up().
 
