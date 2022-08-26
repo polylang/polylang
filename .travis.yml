@@ -15,8 +15,7 @@ jobs:
       install:
         - "composer update"
       script:
-        - "vendor/bin/phpcs -s --extensions=php,js ./"
-        - "vendor/bin/phpstan analyze --memory-limit=512M"
+        - "composer lint"
 
     - name: "WP 5.7 - PHP 7.2"
       php: "7.2"
