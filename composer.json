@@ -8,7 +8,6 @@
 		"php": ">=5.6"
 	},
 	"require-dev": {
-		"phpstan/phpstan": "<1.7",
 		"wpsyntex/polylang-phpstan": "^1.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
 		"wp-coding-standards/wpcs": "*",
@@ -33,7 +32,7 @@
 	"scripts": {
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
-		"stan": "vendor/bin/phpstan analyze --memory-limit=400M",
+		"stan": "vendor/bin/phpstan analyze --memory-limit=1200M",
 		"lint": [
 			"@cs",
 			"@stan"
