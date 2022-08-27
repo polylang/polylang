@@ -221,4 +221,144 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 		$this->assertTrue( self::$model->add_language( $args ) );
 	}
+
+	public function test_delete_languages() {
+		global $wpdb;
+
+		// Let's create some languages.
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+		self::create_language( 'es_ES' );
+
+		$languages = self::$model->get_languages_list();
+
+		$en = self::$model->get_language( 'en' );
+		$fr = self::$model->get_language( 'fr' );
+		$es = self::$model->get_language( 'es' );
+
+		$this->assertCount( 3, $languages, 'There should be three languages created.' );
+		$this->assertInstanceOf( PLL_Language::class, $en, 'English should have been created.' );
+		$this->assertInstanceOf( PLL_Language::class, $fr, 'French should have been created.' );
+		$this->assertInstanceOf( PLL_Language::class, $es, 'Spanish should have been created.' );
+
+		// Let's create some posts and terms.
+		$this->factory->post->create(); // Trick to ensure later created post won't have the same ids as terms.
+
+		$en_post = $this->factory->post->create();
+		self::$model->post->set_language( $en_post, 'en' );
+		$fr_post = $this->factory->post->create();
+		self::$model->post->set_language( $fr_post, 'fr' );
+		$es_post = $this->factory->post->create();
+		self::$model->post->set_language( $es_post, 'es' );
+		$post_translations = array(
+			'en' => $en_post,
+			'fr' => $fr_post,
+			'es' => $es_post,
+		);
+		self::$model->post->save_translations( $en_post, $post_translations );
+
+		$this->assertSame( $post_translations, self::$model->post->get_translations( $en_post ) );
+
+		$en_term = $this->factory->term->create();
+		self::$model->term->set_language( $en_term, 'en' );
+		$fr_term = $this->factory->term->create();
+		self::$model->term->set_language( $fr_term, 'fr' );
+		$es_term = $this->factory->term->create();
+		self::$model->term->set_language( $es_term, 'es' );
+		$term_translations = array(
+			'en' => $en_term,
+			'fr' => $fr_term,
+			'es' => $es_term,
+		);
+		self::$model->term->save_translations( $en_term, $term_translations );
+		
+		$this->assertSameSets( $term_translations, self::$model->term->get_translations( $en_term ) );
+
+		// Let's delete one language.
+		self::$model->delete_language( $es->term_id );
+
+		$this->assertFalse( self::$model->get_language( 'es' ), 'Spanish shoud have been deleted.' );
+		$this->assertEmpty(
+			$wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $es->term_taxonomy_id ) ), 
+			'Spanish deletion shoud clean the corresponding term relationships.' 
+		);
+		$post_translations_from_db = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT description
+					FROM {$wpdb->term_relationships}
+					INNER JOIN {$wpdb->term_taxonomy} 
+					ON {$wpdb->term_relationships}.term_taxonomy_id={$wpdb->term_taxonomy}.term_taxonomy_id
+					AND {$wpdb->term_relationships}.object_id=%d
+					AND {$wpdb->term_taxonomy}.taxonomy='post_translations'",
+				$en_post
+			),
+			ARRAY_A
+		);
+		$this->assertCount( 1, $post_translations_from_db, 'One translation group should still exist.' );
+		$post_translations = maybe_unserialize( reset( $post_translations_from_db )['description'] );
+		$this->assertArrayNotHasKey( 'es', $post_translations, 'Spanish cannot be part of the post translation group.' );
+		$this->assertArrayHasKey( 'en', $post_translations, 'English should be part of the post translation group.' );
+		$this->assertArrayHasKey( 'fr', $post_translations, 'French should be part of the post translation group.' );
+		$term_translations_from_db = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT description
+					FROM {$wpdb->term_relationships}
+					INNER JOIN {$wpdb->term_taxonomy} 
+					ON {$wpdb->term_relationships}.term_taxonomy_id={$wpdb->term_taxonomy}.term_taxonomy_id
+					AND {$wpdb->term_relationships}.object_id=%d
+					AND {$wpdb->term_taxonomy}.taxonomy='term_translations'",
+				$en_term
+			),
+			ARRAY_A
+		);
+		$this->assertCount( 1, $term_translations_from_db, 'One translation group should still exist.' );
+		$term_translations = maybe_unserialize( reset( $term_translations_from_db )['description'] );
+		$this->assertArrayNotHasKey( 'es', $term_translations, 'Spanish cannot be part of the term translation group.' );
+		$this->assertArrayHasKey( 'en', $term_translations, 'English should be part of the term translation group.' );
+		$this->assertArrayHasKey( 'fr', $term_translations, 'French should be part of the term translation group.' );
+		
+		// Before any process, get the 'post_translations' and 'term_translations' term ids.
+		$post_translations_id = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT term_id
+					FROM {$wpdb->term_relationships}
+					INNER JOIN {$wpdb->term_taxonomy} 
+					ON {$wpdb->term_relationships}.term_taxonomy_id={$wpdb->term_taxonomy}.term_taxonomy_id
+					AND {$wpdb->term_relationships}.object_id=%d
+					AND {$wpdb->term_taxonomy}.taxonomy='post_translations'",
+				$en_post
+			),
+			ARRAY_A
+		);
+		$this->assertCount( 1, $post_translations_id, 'It should exist only one post_translations.' );
+		$post_translations_id = reset( $post_translations_id )['term_id'];
+
+		$term_translations_id = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT term_id
+					FROM {$wpdb->term_relationships}
+					INNER JOIN {$wpdb->term_taxonomy} 
+					ON {$wpdb->term_relationships}.term_taxonomy_id={$wpdb->term_taxonomy}.term_taxonomy_id
+					AND {$wpdb->term_relationships}.object_id=%d
+					AND {$wpdb->term_taxonomy}.taxonomy='term_translations'",
+				$en_term
+			),
+			ARRAY_A
+		);
+		$this->assertCount( 1, $term_translations_id, 'It should exist only one term_translations.' );
+		$term_translations_id = reset( $term_translations_id )['term_id'];
+
+		// Let's delete a second language.
+		self::$model->delete_language( $fr->term_id );
+		
+		$this->assertFalse( self::$model->get_language( 'fr' ), 'French shoud have been deleted.' );
+		$this->assertEmpty(
+			$wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $fr->term_taxonomy_id ) ), 
+			'French deletion shoud clean the corresponding term relationships.' 
+		);
+		$post_and_term_translations_in_wp_term_relationships = $wpdb->get_results( 
+			$wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN ('%1d', '%2d')", $post_translations_id, $term_translations_id ) 
+		);
+		$this->assertEmpty( $post_and_term_translations_in_wp_term_relationships, 'It should not remain any term_translations or post_translations term relationships after deleting the last secondary language.' );
+	}
 }
