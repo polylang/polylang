@@ -143,7 +143,6 @@ class Model_Test extends PLL_UnitTestCase {
 			'trcpt' => 'trcpt',
 		);
 
-
 		register_post_type( 'trcpt' ); // translated custom post type
 		register_post_type( 'cpt' ); // *untranslated* custom post type
 
@@ -191,6 +190,19 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertTrue( self::$model->is_filtered_taxonomy( array( 'post_format' ) ) );
 		$this->assertFalse( self::$model->is_filtered_taxonomy( array( 'category' ) ) );
 		$this->assertTrue( self::$model->is_filtered_taxonomy( array( 'post_format', 'category' ) ) );
+	}
+
+	/**
+	 * Bug fixed in 3.2.6
+	 */
+	public function test_untranslated_media_when_post_type_wrongly_stored_in_option() {
+		self::$model->options['post_types'] = array(
+			'attachment' => 'attachment',
+		);
+
+		self::$model->options['media_support'] = 0;
+
+		$this->assertFalse( self::$model->is_translated_post_type( 'attachment' ) );
 	}
 }
 
