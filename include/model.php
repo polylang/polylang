@@ -243,12 +243,14 @@ class PLL_Model {
 		if ( false === $post_types = $this->cache->get( 'post_types' ) ) {
 			$post_types = array( 'post' => 'post', 'page' => 'page', 'wp_block' => 'wp_block' );
 
-			if ( ! empty( $this->options['media_support'] ) ) {
-				$post_types['attachment'] = 'attachment';
-			}
-
 			if ( ! empty( $this->options['post_types'] ) && is_array( $this->options['post_types'] ) ) {
 				$post_types = array_merge( $post_types, array_combine( $this->options['post_types'], $this->options['post_types'] ) );
+			}
+
+			if ( empty( $this->options['media_support'] ) ) {
+				unset( $post_types['attachment'] ); // In case the post type attachment is stored in the option.
+			} else {
+				$post_types['attachment'] = 'attachment';
 			}
 
 			/**
