@@ -11,7 +11,7 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 
-		// Copy language file
+		// Copy the language file.
 		@mkdir( DIR_TESTDATA );
 		@mkdir( WP_LANG_DIR );
 		copy( dirname( __FILE__ ) . '/../data/fr_FR.mo', WP_LANG_DIR . '/fr_FR.mo' );
@@ -20,6 +20,8 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
+		$_REQUEST = array();
+		$_COOKIE  = array();
 		unload_textdomain( 'default' );
 	}
 
@@ -28,26 +30,81 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 		wp_die( wp_json_encode( __( 'Dashboard' ) ) ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
 	}
 
-	public function test_locale_for_logged_in_user() {
-		wp_set_current_user( 1 );
+	/**
+	 * @dataProvider ajax_on_front_provider
+	 *
+	 * @param string $language    Language code of the ajax request.
+	 * @param string $translation "Dashboard" translated in the current language.
+	 * @param int    $user_id     1 of logged in user, 0 for anonymous user.
+	 * @param string $source      Source to set the language: 'param' or 'cookie'.
+	 */
+	public function test_ajax_on_front( $language, $translation, $user_id, $source ) {
 		update_user_meta( 1, 'locale', 'en_US' );
+
+		wp_set_current_user( $user_id );
+
+		$_REQUEST = array( 'action' => 'test' );
+
+		if ( 'cookie' === $source ) {
+			$_COOKIE['pll_language'] = $language;
+		} else {
+			$_REQUEST['lang'] = $language;
+		}
+
+		add_action( 'wp_ajax_test', array( $this, '_ajax_test_locale' ) );
 
 		$links_model = self::$model->get_links_model();
 		$frontend = new PLL_Frontend( $links_model );
-		$frontend->curlang = self::$model->get_language( 'fr' );
-		new PLL_Frontend_Filters( $frontend );
-
-		add_action( 'wp_ajax_test_locale', array( $this, '_ajax_test_locale' ) );
-
-		$_REQUEST['action'] = 'test_locale';
+		$frontend->init();
 
 		try {
-			$this->_handleAjax( 'test_locale' );
+			$this->_handleAjax( 'test' );
 		} catch ( WPAjaxDieStopException $e ) {
 			$response = json_decode( $e->getMessage(), true );
 			unset( $e );
 		}
 
-		$this->assertEquals( 'Tableau de bord', $response );
+		$this->assertEquals( $language, $frontend->curlang->slug );
+		$this->assertEquals( $translation, $response );
+	}
+
+	public function ajax_on_front_provider() {
+		$users = array(
+			'anonymous' => 0,
+			'logged in' => 1,
+		);
+
+		$sources = array(
+			'cookie',
+			'param',
+		);
+
+		$languages = array(
+			'en' => 'default',
+			'fr' => 'secondary',
+		);
+
+		$translations = array(
+			'en' => 'Dashboard',
+			'fr' => 'Tableau de bord',
+		);
+
+		$provider = array();
+
+		foreach ( $users as $user => $user_id ) {
+			foreach ( $sources as $source ) {
+				foreach ( $languages as $code => $language ) {
+					$test = "Request in $language language by $source and $user user";
+					$provider[ $test ] = array(
+						'language'    => $code,
+						'translation' => $translations[ $code ],
+						'user'        => $user_id,
+						'source'      => $source,
+					);
+				}
+			}
+		}
+
+		return $provider;
 	}
 }
