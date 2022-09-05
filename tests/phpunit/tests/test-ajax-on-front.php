@@ -27,7 +27,7 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 
 	public function _ajax_test_locale() {
 		load_default_textdomain();
-		wp_die( wp_json_encode( __( 'Dashboard' ) ) ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
+		wp_send_json( __( 'Dashboard' ) ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
 	}
 
 	/**
@@ -59,13 +59,12 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 
 		try {
 			$this->_handleAjax( 'test' );
-		} catch ( WPAjaxDieStopException $e ) {
-			$response = json_decode( $e->getMessage(), true );
+		} catch ( WPAjaxDieContinueException $e ) {
 			unset( $e );
 		}
 
 		$this->assertEquals( $language, $frontend->curlang->slug );
-		$this->assertEquals( $translation, $response );
+		$this->assertEquals( $translation, json_decode( $this->_last_response, true ) );
 	}
 
 	public function ajax_on_front_provider() {
