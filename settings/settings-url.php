@@ -273,7 +273,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 					);
 				}
 				else {
-					$newoptions['domains'][ $key ] = esc_url_raw( trim( $domain ) );
+					$domain = array( $key => esc_url_raw( trim( $domain ) ) );
+					$newoptions['domains'] = $domain;
 				}
 			}
 		}

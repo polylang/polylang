@@ -1381,20 +1381,7 @@ parameters:
 			path: include/walker-dropdown.php
 
 		-
-			message: """
-				#^Binary operation "\\." between '\\<ul\\>
-				' and non\\-empty\\-array\\|non\\-empty\\-string results in an error\\.$#
-			"""
-			count: 1
-			path: include/widget-languages.php
-
-		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
-			count: 1
-			path: include/widget-languages.php
-
-		-
-			message: "#^Parameter \\#1 \\(non\\-empty\\-array\\|non\\-empty\\-string\\) of echo cannot be converted to string\\.$#"
 			count: 1
 			path: include/widget-languages.php
 
@@ -1429,11 +1416,6 @@ parameters:
 			path: install/t15s.php
 
 		-
-			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\{\\$this\\(PLL_Upgrade\\), non\\-empty\\-string\\} given\\.$#"
-			count: 1
-			path: install/upgrade.php
-
-		-
 			message: "#^Parameter \\#2 \\$str of function explode expects string, mixed given\\.$#"
 			count: 1
 			path: modules/lingotek/lingotek.php
@@ -1442,11 +1424,6 @@ parameters:
 			message: "#^Cannot call method get_must_translate_message\\(\\) on PLL_Admin_Static_Pages\\|null\\.$#"
 			count: 1
 			path: modules/site-health/admin-site-health.php
-
-		-
-			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\{PLL_Model, 'is_translated_post…'\\|'is_translated…'\\} given\\.$#"
-			count: 1
-			path: modules/sitemaps/multilingual-sitemaps-provider.php
 
 		-
 			message: "#^Parameter \\#1 \\$name of method WP_Sitemaps_Provider\\:\\:get_sitemap_url\\(\\) expects string, string\\|null given\\.$#"
