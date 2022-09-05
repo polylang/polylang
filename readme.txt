@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.6
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 3.2.5
+Stable tag: 3.2.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -102,6 +102,12 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.2.6 (2022-09-06) =
+
+* Pro: Fix a conflict with Kadence blocks
+* Pro: Fix a conflict with Flatsome builder
+* Fix media translation setting having no effect
 
 = 3.2.5 (2022-06-28) =
 
