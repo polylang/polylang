@@ -212,7 +212,7 @@ class PLL_Sync {
 						$tr_parent = $this->model->term->get_translation( $term->parent, $lang );
 						$tr_term   = get_term( (int) $tr_id, $taxonomy );
 
-						if ( $tr_term instanceof WP_Term ) {
+						if ( $tr_term instanceof WP_Term && ! ( $term->parent && empty( $tr_parent ) ) ) {
 							$wpdb->update(
 								$wpdb->term_taxonomy,
 								array( 'parent' => $tr_parent ? $tr_parent : 0 ),

@@ -448,6 +448,33 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->assertEquals( get_term( $child_en )->parent, 0 );
 	}
 
+	public function test_assign_parents_when_parents_are_not_translated() {
+		// Children.
+		$child_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$model->term->set_language( $child_en, 'en' );
+
+		$child_fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$model->term->set_language( $child_fr, 'fr' );
+
+		self::$model->term->save_translations( $child_en, array( 'fr' => $child_fr ) );
+
+		// Parents.
+		$parent_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$model->term->set_language( $parent_en, 'en' );
+
+		$parent_fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		self::$model->term->set_language( $parent_fr, 'fr' );
+
+		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
+		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
+
+		wp_update_term( $child_en, 'category', array( 'parent' => $parent_en ) );
+		wp_update_term( $child_fr, 'category', array( 'parent' => $parent_fr ) );
+
+		$this->assertEquals( get_term( $child_en )->parent, $parent_en );
+		$this->assertEquals( get_term( $child_fr )->parent, $parent_fr );
+	}
+
 	public function test_create_post_translation_with_sync_post_date() {
 		// source post
 		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
