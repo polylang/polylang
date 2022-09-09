@@ -250,13 +250,12 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @return array
 	 */
 	protected function update( $options ) {
-		$newoptions = array();
-
 		foreach ( array( 'force_lang', 'rewrite' ) as $key ) {
 			$newoptions[ $key ] = isset( $options[ $key ] ) ? (int) $options[ $key ] : 0;
 		}
 
 		if ( 3 == $options['force_lang'] && isset( $options['domains'] ) && is_array( $options['domains'] ) ) {
+			$newoptions['domains'] = array();
 			foreach ( $options['domains'] as $key => $domain ) {
 				if ( empty( $domain ) ) {
 					$lang = $this->model->get_language( $key );
@@ -273,8 +272,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 					);
 				}
 				else {
-					$domain = array( $key => esc_url_raw( trim( $domain ) ) );
-					$newoptions['domains'] = $domain;
+					$newoptions['domains'][ $key ] = esc_url_raw( trim( $domain ) );
 				}
 			}
 		}
