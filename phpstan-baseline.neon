@@ -1336,13 +1336,13 @@ parameters:
 			path: include/translate-option.php
 
 		-
-			message: "#^Parameter \\#1 \\$locale of method PLL_Base\\:\\:load_strings_translations\\(\\) expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$singular of method Translations\\:\\:translate\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: include/translate-option.php
 
 		-
 			message: "#^Parameter \\#1 \\$string of function pll__ expects string, mixed given\\.$#"
-			count: 2
+			count: 1
 			path: include/translate-option.php
 
 		-

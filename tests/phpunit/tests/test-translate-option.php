@@ -321,4 +321,76 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->register_option_multiple_with_wildcard();
 		$this->_test_update_option_with_translated_val( 'OBJECT' );
 	}
+
+	public function test_update_same_option_with_two_objects() {
+		add_option( 'my_option', 'val' );
+		new PLL_Translate_Option( 'my_option' );
+		new PLL_Translate_Option( 'my_option' );
+
+		$this->add_string_translations( 'en', array( 'val' => 'val_en' ) );
+		$this->add_string_translations( 'fr', array( 'val' => 'val_fr' ) );
+
+		update_option( 'my_option', 'new_val' );
+
+		$this->pll_admin->load_strings_translations( 'en' );
+		$this->assertEquals( 'val_en', get_option( 'my_option' ) );
+
+		$this->pll_admin->load_strings_translations( 'fr' );
+		$this->assertEquals( 'val_fr', get_option( 'my_option' ) );
+	}
+
+	public function test_update_same_option_with_two_objects_when_filtered() {
+		add_option( 'my_option', 'val' );
+		new PLL_Translate_Option( 'my_option' );
+		new PLL_Translate_Option( 'my_option' );
+
+		$this->add_string_translations( 'en', array( 'val' => 'val_en' ) );
+		$this->add_string_translations( 'fr', array( 'val' => 'val_fr' ) );
+
+		PLL()->curlang = self::$model->get_language( 'en' );
+		update_option( 'my_option', 'new_val' );
+
+		$this->pll_admin->load_strings_translations( 'en' );
+		$this->assertEquals( 'new_val', get_option( 'my_option' ) );
+
+		$this->pll_admin->load_strings_translations( 'fr' );
+		$this->assertEquals( 'val_fr', get_option( 'my_option' ) );
+	}
+
+	public function test_update_option_with_two_strings_in_two_objects() {
+		$options = array(
+			'key1' => 'val1',
+			'key2' => 'val2',
+		);
+		add_option( 'my_options', $options );
+
+		new PLL_Translate_Option( 'my_options', array( 'key1' => 1 ) );
+		new PLL_Translate_Option( 'my_options', array( 'key2' => 2 ) );
+
+		$this->add_string_translations( 'fr', array( 'val1' => 'val1_fr' ) );
+		$this->add_string_translations( 'fr', array( 'val2' => 'val2_fr' ) );
+
+		$options['key2'] = 'new_val2';
+		update_option( 'my_options', $options );
+
+		$this->pll_admin->load_strings_translations( 'fr' );
+		$options = get_option( 'my_options' );
+		$this->assertEquals( 'val1_fr', $options['key1'] );
+		$this->assertEquals( 'val2_fr', $options['key2'] );
+	}
+
+	public function test_update_option_with_same_string_in_different_options() {
+		add_option( 'my_option1', 'val' );
+		add_option( 'my_option2', 'val' );
+		new PLL_Translate_Option( 'my_option1' );
+		new PLL_Translate_Option( 'my_option2' );
+
+		$this->add_string_translations( 'fr', array( 'val' => 'val_fr' ) );
+
+		update_option( 'my_option1', 'new_val' );
+
+		$this->pll_admin->load_strings_translations( 'fr' );
+		$this->assertEquals( 'val_fr', get_option( 'my_option1' ) );
+		$this->assertEquals( 'val_fr', get_option( 'my_option2' ) );
+	}
 }

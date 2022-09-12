@@ -26,6 +26,11 @@ class PLL_Translate_Option {
 	private $updated_strings = array();
 
 	/**
+	 * @var PLL_MO[]
+	 */
+	private $translations;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.9
@@ -59,7 +64,9 @@ class PLL_Translate_Option {
 		add_filter( 'option_' . $name, array( $this, 'translate' ) ); // Make sure to add this filter after options are registered.
 
 		// Filters updated values.
+		add_filter( 'pre_update_option_' . $name, array( $this, 'remove_option_filter' ), 5, 3 );
 		add_filter( 'pre_update_option_' . $name, array( $this, 'pre_update_option' ), 10, 3 );
+		add_filter( 'pre_update_option_' . $name, array( $this, 'add_option_filter' ), 15, 3 );
 		add_action( 'update_option_' . $name, array( $this, 'update_option' ) );
 
 		// Sanitizes translated strings.
@@ -177,6 +184,24 @@ class PLL_Translate_Option {
 	}
 
 	/**
+	 * Removes the option filter.
+	 *
+	 * This must be done before `pre_update_option` in case several objects are
+	 * dealing with the same option.
+	 *
+	 * @since 3.3
+	 *
+	 * @param mixed  $value     The new, unserialized option value.
+	 * @param mixed  $old_value The old (filtered) option value.
+	 * @param string $name      Option name.
+	 * @return mixed
+	 */
+	public function remove_option_filter( $value, $old_value, $name ) {
+		remove_filter( 'option_' . $name, array( $this, 'translate' ) );
+		return $value;
+	}
+
+	/**
 	 * Filters an option before it is updated.
 	 *
 	 * This is the step 1 in the update process, in which we prevent the update of
@@ -192,20 +217,36 @@ class PLL_Translate_Option {
 	 */
 	public function pre_update_option( $value, $old_value, $name ) {
 		// Stores the unfiltered old option value before it is updated in DB.
-		remove_filter( 'option_' . $name, array( $this, 'translate' ) );
 		$unfiltered_old_value = get_option( $name );
-		add_filter( 'option_' . $name, array( $this, 'translate' ), 20, 2 );
 
-		// Load strings translations according to the admin language filter
-		$locale = pll_current_language( 'locale' );
-		if ( empty( $locale ) ) {
-			$locale = pll_default_language( 'locale' );
+		// Load translations in all languages.
+		foreach ( pll_languages_list() as $lang ) {
+			$language = PLL()->model->get_language( $lang );
+			$this->translations[ $lang ] = new PLL_MO();
+			$this->translations[ $lang ]->import_from_db( $language );
 		}
-		PLL()->load_strings_translations( $locale );
 
 		// Filters out the strings which would be updated to their translations and stores the updated strings.
 		$value = $this->check_value_recursive( $unfiltered_old_value, $value, $this->keys );
 
+		return $value;
+	}
+
+	/**
+	 * Re-introduces the option filter.
+	 *
+	 * This must be done before `pre_update_option` in case several objects are
+	 * dealing with the same option.
+	 *
+	 * @since 3.3
+	 *
+	 * @param mixed  $value     The new, unserialized option value.
+	 * @param mixed  $old_value The old (filtered) option value.
+	 * @param string $name      Option name.
+	 * @return mixed
+	 */
+	public function add_option_filter( $value, $old_value, $name ) {
+		add_filter( 'option_' . $name, array( $this, 'translate' ), 20, 2 );
 		return $value;
 	}
 
@@ -226,9 +267,7 @@ class PLL_Translate_Option {
 		if ( ! empty( $this->updated_strings ) ) {
 			foreach ( pll_languages_list() as $lang ) {
 
-				$language = PLL()->model->get_language( $lang );
-				$mo = new PLL_MO();
-				$mo->import_from_db( $language );
+				$mo = &$this->translations[ $lang ];
 
 				foreach ( $this->updated_strings as $old_string => $string ) {
 					$translation = $mo->translate( $old_string );
@@ -236,11 +275,10 @@ class PLL_Translate_Option {
 						$translation = $string;
 					}
 
-					// Removes the old entry and replace it by the new one, with the same translation.
-					$mo->delete_entry( $old_string );
+					// Add new entry with new string and old translation.
 					$mo->add_entry( $mo->make_entry( $string, $translation ) );
 				}
-
+				$language = PLL()->model->get_language( $lang );
 				$mo->export_to_db( $language );
 			}
 		}
@@ -264,6 +302,13 @@ class PLL_Translate_Option {
 	 */
 	protected function check_value_recursive( $old_values, $values, $key ) {
 		$children = is_array( $key ) ? $key : array();
+
+		$lang = pll_current_language();
+		if ( empty( $lang ) ) {
+			$lang = pll_default_language();
+		}
+
+		$mo = &$this->translations[ $lang ];
 
 		if ( is_array( $values ) || is_object( $values ) ) {
 			if ( count( $children ) ) {
@@ -306,7 +351,7 @@ class PLL_Translate_Option {
 				}
 			}
 		} elseif ( $old_values !== $values ) {
-			if ( pll__( $old_values ) === $values ) {
+			if ( $mo->translate( $old_values ) === $values ) {
 				$values = $old_values; // Prevents updating the value to its translation.
 			} else {
 				$this->updated_strings[ $old_values ] = $values; // Stores the updated strings.
