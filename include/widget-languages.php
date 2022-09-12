@@ -40,7 +40,7 @@ class PLL_Widget_Languages extends WP_Widget {
 		$instance['dropdown'] = empty( $instance['dropdown'] ) ? 0 : $this->id;
 		$instance['echo']     = 0;
 		$instance['raw']      = 0;
-		$list                 = pll_the_languages( $instance);
+		$list                 = pll_the_languages( $instance );
 
 		if ( $list ) {
 			$title = empty( $instance['title'] ) ? '' : $instance['title'];

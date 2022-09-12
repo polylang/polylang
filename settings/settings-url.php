@@ -250,6 +250,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @return array
 	 */
 	protected function update( $options ) {
+		$newoptions = array();
+
 		foreach ( array( 'force_lang', 'rewrite' ) as $key ) {
 			$newoptions[ $key ] = isset( $options[ $key ] ) ? (int) $options[ $key ] : 0;
 		}

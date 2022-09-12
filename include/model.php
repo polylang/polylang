@@ -442,7 +442,7 @@ class PLL_Model {
 		$join = " INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id";
 		$join .= $this->term->join_clause();
 		$where = $wpdb->prepare( ' WHERE tt.taxonomy = %s AND t.name = %s', $taxonomy, $term_name );
-		$where .= $this->term->where_clause( $this->get_language( $language ) );
+		$where .= $this->term->where_clause( $language );
 
 		if ( $parent > 0 ) {
 			$where .= $wpdb->prepare( ' AND tt.parent = %d', $parent );
@@ -471,7 +471,7 @@ class PLL_Model {
 		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
 		$join  .= $this->term->join_clause();
 		$where  = $wpdb->prepare( ' WHERE t.slug = %s', $slug );
-		$where .= $this->term->where_clause( $this->get_language( $language ) );
+		$where .= $this->term->where_clause( $language );
 
 		if ( ! empty( $taxonomy ) ) {
 			$where .= $wpdb->prepare( ' AND tt.taxonomy = %s', $taxonomy );

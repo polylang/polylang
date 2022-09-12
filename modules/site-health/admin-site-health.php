@@ -268,7 +268,7 @@ class PLL_Admin_Site_Health {
 		foreach ( $this->model->get_languages_list() as $language ) {
 			$fields = array();
 
-			foreach ( $language as $key => $value ) {
+			foreach ( get_object_vars( $language ) as $key => $value ) {
 				if ( in_array( $key, $this->exclude_language_keys(), true ) ) {
 					continue;
 				}

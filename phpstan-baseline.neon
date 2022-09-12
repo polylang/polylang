@@ -631,11 +631,6 @@ parameters:
 			path: frontend/frontend-filters.php
 
 		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Translated_Object\\:\\:where_clause\\(\\) expects array\\<string\\>\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
-			count: 1
-			path: frontend/frontend-filters.php
-
-		-
 			message: "#^Access to an undefined property WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User\\:\\:\\$taxonomy\\.$#"
 			count: 7
 			path: frontend/frontend-links.php
@@ -1182,11 +1177,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$arr1 of function array_intersect expects array, mixed given\\.$#"
-			count: 2
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Translated_Object\\:\\:where_clause\\(\\) expects array\\<string\\>\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 2
 			path: include/model.php
 
