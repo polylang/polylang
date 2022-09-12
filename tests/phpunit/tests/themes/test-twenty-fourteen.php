@@ -52,11 +52,11 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 			global $content_width; // The widget accesses this global, no matter what it contains.
 			$GLOBALS['wp_rewrite']->set_permalink_structure( '' );
 
-			$en = $this->factory->post->create( array( 'post_content' => 'Test', 'post_author' => 1 ) );
+			$en = self::factory()->post->create( array( 'post_content' => 'Test', 'post_author' => 1 ) );
 			set_post_format( $en, 'aside' );
 			self::$model->post->set_language( $en, 'en' );
 
-			$fr = $this->factory->post->create( array( 'post_content' => 'Essai', 'post_author' => 1 ) );
+			$fr = self::factory()->post->create( array( 'post_content' => 'Essai', 'post_author' => 1 ) );
 			set_post_format( $fr, 'aside' );
 			self::$model->post->set_language( $fr, 'fr' );
 
@@ -78,10 +78,10 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 		}
 
 		protected function setup_featured_tags() {
-			self::$tag_en = $en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'featured' ) );
+			self::$tag_en = $en = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'featured' ) );
 			self::$model->term->set_language( $en, 'en' );
 
-			self::$tag_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'en avant' ) );
+			self::$tag_fr = $fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'en avant' ) );
 			self::$model->term->set_language( $fr, 'fr' );
 			self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
@@ -109,10 +109,10 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress/wp-content/themes/twentyfourteen
 		public function test_featured_content_ids() {
 			$this->setup_featured_tags();
 
-			$en = $this->factory->post->create( array( 'tags_input' => array( 'featured' ) ) );
+			$en = self::factory()->post->create( array( 'tags_input' => array( 'featured' ) ) );
 			self::$model->post->set_language( $en, 'en' );
 
-			$fr = $this->factory->post->create( array( 'tags_input' => array( 'en avant' ) ) );
+			$fr = self::factory()->post->create( array( 'tags_input' => array( 'en avant' ) ) );
 			self::$model->post->set_language( $fr, 'fr' );
 
 			do_action_ref_array( 'pll_init', array( &$this->frontend ) ); // to pass the test in PLL_Plugins_Compat::twenty_fourteen_featured_content_ids

@@ -29,10 +29,10 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_change_language_slug() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -54,34 +54,34 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		register_taxonomy( 'tax', 'cpt' ); // add untranslated taxonomy
 
 		// 2 posts with language
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'fr' );
 
 		// 2 posts in non translated post types
-		$this->factory->post->create( array( 'post_type' => 'nav_menu_item' ) );
-		$this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		self::factory()->post->create( array( 'post_type' => 'nav_menu_item' ) );
+		self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 
 		// 2 posts without language
-		$expected['posts'][] = $this->factory->post->create();
-		$expected['posts'][] = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$expected['posts'][] = self::factory()->post->create();
+		$expected['posts'][] = self::factory()->post->create( array( 'post_type' => 'page' ) );
 
 		// 2 terms with language
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $term_id, 'en' );
 
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $term_id, 'fr' );
 
 		// 2 terms in non translated taxonomies
-		$this->factory->term->create( array( 'taxonomy' => 'nav_menu' ) );
-		$this->factory->term->create( array( 'taxonomy' => 'tax' ) );
+		self::factory()->term->create( array( 'taxonomy' => 'nav_menu' ) );
+		self::factory()->term->create( array( 'taxonomy' => 'tax' ) );
 
 		// 2 terms without language
-		$expected['terms'][] = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		$expected['terms'][] = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		$expected['terms'][] = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
+		$expected['terms'][] = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 
 		$nolang = self::$model->get_objects_with_no_lang();
 
@@ -94,15 +94,15 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_set_language_in_mass_for_posts() {
-		foreach ( $this->factory->post->create_many( 2, array() ) as $p ) {
+		foreach ( self::factory()->post->create_many( 2, array() ) as $p ) {
 			self::$model->post->set_language( $p, 'en' );
 		}
 
-		foreach ( $this->factory->post->create_many( 2, array() ) as $p ) {
+		foreach ( self::factory()->post->create_many( 2, array() ) as $p ) {
 			self::$model->post->set_language( $p, 'fr' );
 		}
 
-		$posts = $this->factory->post->create_many( 2 );
+		$posts = self::factory()->post->create_many( 2 );
 		self::$model->set_language_in_mass( 'post', $posts, 'fr' );
 
 		$posts = get_posts( array( 'fields' => 'ids', 'posts_per_page' => -1 ) );
@@ -112,15 +112,15 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_set_language_in_mass_for_terms() {
-		foreach ( $this->factory->tag->create_many( 2 ) as $t ) {
+		foreach ( self::factory()->tag->create_many( 2 ) as $t ) {
 			self::$model->term->set_language( $t, 'en' );
 		}
 
-		foreach ( $this->factory->tag->create_many( 2 ) as $t ) {
+		foreach ( self::factory()->tag->create_many( 2 ) as $t ) {
 			self::$model->term->set_language( $t, 'fr' );
 		}
 
-		$tags = $this->factory->tag->create_many( 2 );
+		$tags = self::factory()->tag->create_many( 2 );
 		self::$model->set_language_in_mass( 'term', $tags, 'fr' );
 
 		$terms = get_terms( 'post_tag', array( 'hide_empty' => false, 'fields' => 'ids' ) );

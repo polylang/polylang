@@ -28,16 +28,16 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_pages() {
-		foreach ( $this->factory->post->create_many( 3, array( 'post_type' => 'page' ) ) as $page ) {
+		foreach ( self::factory()->post->create_many( 3, array( 'post_type' => 'page' ) ) as $page ) {
 			self::$model->post->set_language( $page, 'en' );
 		}
 
-		foreach ( $this->factory->post->create_many( 3, array( 'post_type' => 'page' ) ) as $page ) {
+		foreach ( self::factory()->post->create_many( 3, array( 'post_type' => 'page' ) ) as $page ) {
 			self::$model->post->set_language( $page, 'fr' );
 		}
 
 		// one post for good measure
-		$p = $this->factory->post->create();
+		$p = self::factory()->post->create();
 		self::$model->post->set_language( $p, 'fr' );
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
@@ -74,15 +74,15 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_posts() {
-		foreach ( $this->factory->post->create_many( 3, array() ) as $p ) {
+		foreach ( self::factory()->post->create_many( 3, array() ) as $p ) {
 			self::$model->post->set_language( $p, 'en' );
 		}
 
-		foreach ( $this->factory->post->create_many( 3, array() ) as $p ) {
+		foreach ( self::factory()->post->create_many( 3, array() ) as $p ) {
 			self::$model->post->set_language( $p, 'fr' );
 		}
 
-		$de = $this->factory->post->create();
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
 
 		$this->frontend->init();
@@ -119,11 +119,11 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_sticky_posts() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 		stick_post( $en );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 		stick_post( $fr );
 
@@ -135,17 +135,17 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_comments() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
-		$en = $this->factory->comment->create( array( 'comment_post_ID' => $en, 'comment_approved' => '1' ) );
+		$en = self::factory()->comment->create( array( 'comment_post_ID' => $en, 'comment_approved' => '1' ) );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
-		$fr = $this->factory->comment->create( array( 'comment_post_ID' => $fr, 'comment_approved' => '1' ) );
+		$fr = self::factory()->comment->create( array( 'comment_post_ID' => $fr, 'comment_approved' => '1' ) );
 
-		$de = $this->factory->post->create();
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
-		$de = $this->factory->comment->create( array( 'comment_post_ID' => $de, 'comment_approved' => '1' ) );
+		$de = self::factory()->comment->create( array( 'comment_post_ID' => $de, 'comment_approved' => '1' ) );
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		new PLL_Frontend_Filters( $this->frontend );
@@ -164,13 +164,13 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_terms() {
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
-		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$de = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		$de = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $de, 'de' );
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
@@ -194,11 +194,11 @@ class Filters_Test extends PLL_UnitTestCase {
 	public function test_adjacent_post_and_archives() {
 		for ( $i = 1; $i <= 3; $i++ ) {
 			$m = 2 * $i - 1;
-			$en[ $i ] = $this->factory->post->create( array( 'post_date' => "2012-0$m-01 12:00:00" ) );
+			$en[ $i ] = self::factory()->post->create( array( 'post_date' => "2012-0$m-01 12:00:00" ) );
 			self::$model->post->set_language( $en[ $i ], 'en' );
 
 			$m = 2 * $i;
-			$fr[ $i ] = $this->factory->post->create( array( 'post_date' => "2012-0$m-01 12:00:00" ) );
+			$fr[ $i ] = self::factory()->post->create( array( 'post_date' => "2012-0$m-01 12:00:00" ) );
 			self::$model->post->set_language( $fr[ $i ], 'fr' );
 		}
 
@@ -224,7 +224,7 @@ class Filters_Test extends PLL_UnitTestCase {
 		register_post_type( 'cpt', array( 'public' => true, 'has_archive' => true ) ); // *untranslated* custom post type with archives
 
 		for ( $m = 1; $m <= 3; $m++ ) {
-			$p[ $m ] = $this->factory->post->create( array( 'post_type' => 'cpt', 'post_date' => "2012-0$m-01 12:00:00" ) );
+			$p[ $m ] = self::factory()->post->create( array( 'post_type' => 'cpt', 'post_date' => "2012-0$m-01 12:00:00" ) );
 		}
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
@@ -262,11 +262,11 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->frontend->posts = new PLL_CRUD_Posts( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$this->assertEquals( 'en', self::$model->post->get_language( $post_id )->slug );
 
 		$_REQUEST['lang'] = 'fr';
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
@@ -274,9 +274,9 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->frontend->posts = new PLL_CRUD_Posts( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
-		$parent = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$parent = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $parent, 'fr' );
-		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_parent' => $parent ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $parent ) );
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $parent )->slug );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
@@ -286,11 +286,11 @@ class Filters_Test extends PLL_UnitTestCase {
 		new PLL_CRUD_Terms( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
-		$term_id = $this->factory->category->create();
+		$term_id = self::factory()->category->create();
 		$this->assertEquals( 'en', self::$model->term->get_language( $term_id )->slug );
 
 		$_REQUEST['lang'] = 'fr';
-		$term_id = $this->factory->category->create();
+		$term_id = self::factory()->category->create();
 		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
 	}
 
@@ -298,19 +298,19 @@ class Filters_Test extends PLL_UnitTestCase {
 		new PLL_CRUD_Terms( $this->frontend );
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
-		$parent = $this->factory->category->create();
+		$parent = self::factory()->category->create();
 		self::$model->term->set_language( $parent, 'fr' );
-		$term_id = $this->factory->category->create( array( 'parent' => $parent ) );
+		$term_id = self::factory()->category->create( array( 'parent' => $parent ) );
 
 		$this->assertEquals( 'fr', self::$model->term->get_language( $parent )->slug );
 		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
 	}
 
 	public function test_get_pages_language_filter() {
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->frontend->filters = new PLL_Filters( $this->frontend );
@@ -349,10 +349,10 @@ class Filters_Test extends PLL_UnitTestCase {
 	 * Bug fixed in 2.3.5.
 	 */
 	public function test_get_terms_inside_query() {
-		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		$this->frontend->init();

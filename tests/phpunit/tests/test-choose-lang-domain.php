@@ -104,10 +104,10 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_home_latest_posts() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( $this->hosts['fr'] );
@@ -124,10 +124,10 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_single_post() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( $this->hosts['fr'] . '/essai/' );

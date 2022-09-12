@@ -21,7 +21,7 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertSame( array( 'English', 'Français' ), self::$model->get_languages_list( array( 'fields' => 'name' ) ) );
 		$this->assertSame( array(), self::$model->get_languages_list( array( 'hide_empty' => true ) ) );
 
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 
 		$this->assertSame( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
@@ -48,9 +48,9 @@ class Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_term_exists() {
-		$parent = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
+		$parent = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
 		self::$model->term->set_language( $parent, 'en' );
-		$child = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'child', 'parent' => $parent ) );
+		$child = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'child', 'parent' => $parent ) );
 		self::$model->term->set_language( $child, 'en' );
 
 		$this->assertEquals( $parent, self::$model->term_exists( 'parent', 'category', 0, 'en' ) );
@@ -65,26 +65,26 @@ class Model_Test extends PLL_UnitTestCase {
 	 * Bug fixed in 2.7
 	 */
 	public function test_term_exists_with_special_character() {
-		$term = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'Cook & eat' ) );
+		$term = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Cook & eat' ) );
 		self::$model->term->set_language( $term, 'en' );
 		$this->assertEquals( $term, self::$model->term_exists( 'Cook & eat', 'category', 0, 'en' ) );
 	}
 
 	public function test_count_posts() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		$en = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		set_post_format( $en, 'aside' );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$fr = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1, 'post_status' => 'draft' ) );
+		$fr = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1, 'post_status' => 'draft' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$fr = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		$fr = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		set_post_format( $fr, 'aside' );
 		self::$model->post->set_language( $fr, 'fr' );
 

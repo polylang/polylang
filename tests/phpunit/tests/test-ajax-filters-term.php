@@ -30,14 +30,14 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 
 	public function test_term_lang_choice_in_edit_category() {
 		// Possible parents.
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		// The category.
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 
 		$_POST = array(
 			'action'     => 'term_lang_choice',
@@ -78,18 +78,18 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 
 	public function test_term_lang_choice_in_new_tag() {
 		// Possible parents.
-		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		// We need posts for the tag cloud.
-		$this->factory->post->create( array( 'tags_input' => 'test' ) );
-		$this->factory->post->create( array( 'tags_input' => 'essai' ) );
+		self::factory()->post->create( array( 'tags_input' => 'test' ) );
+		self::factory()->post->create( array( 'tags_input' => 'essai' ) );
 
 		// The post_tag.
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'post_tag' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 
 		$_POST = array(
 			'action'     => 'term_lang_choice',
@@ -129,18 +129,18 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	public function test_terms_not_translated() {
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$searched = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test searched' ) );
+		$searched = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test searched' ) );
 		self::$model->term->set_language( $searched, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		$_GET = array(
@@ -167,7 +167,7 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEquals( $searched, $response[0]['id'] );
 
 		// Translate the current term.
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
@@ -185,10 +185,10 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	public function test_format_not_translated_term() {
-		$parent = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'Parent' ) );
+		$parent = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Parent' ) );
 		self::$model->term->set_language( $parent, 'en' );
 
-		$child = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'Child', 'parent' => $parent ) );
+		$child = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Child', 'parent' => $parent ) );
 		self::$model->term->set_language( $child, 'en' );
 
 		$this->pll_admin->set_current_language();

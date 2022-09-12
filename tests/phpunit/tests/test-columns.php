@@ -45,7 +45,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_post_with_no_language() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 
 		ob_start();
 		$this->pll_admin->filters_columns->post_column( 'language_en', $post_id );
@@ -54,7 +54,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_post_language() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
 		// with capability
@@ -73,7 +73,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_untranslated_post() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
 		// with capability
@@ -93,7 +93,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	 * Special case for media.
 	 */
 	public function test_untranslated_media() {
-		$en = $this->factory->attachment->create_object( 'image.jpg' );
+		$en = self::factory()->attachment->create_object( 'image.jpg' );
 		self::$model->post->set_language( $en, 'en' );
 
 		// with capability
@@ -110,10 +110,10 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_post() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -134,7 +134,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
-		$term_id = $this->factory->category->create();
+		$term_id = self::factory()->category->create();
 
 		$column_en = $this->pll_admin->filters_columns->term_column( '', 'language_en', $term_id );
 		$column_fr = $this->pll_admin->filters_columns->term_column( '', 'language_fr', $term_id );
@@ -146,7 +146,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
-		$en = $this->factory->category->create();
+		$en = self::factory()->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
 		// with capability
@@ -164,7 +164,7 @@ class Columns_Test extends PLL_UnitTestCase {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
-		$en = $this->factory->category->create();
+		$en = self::factory()->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
 		// with capability
@@ -182,10 +182,10 @@ class Columns_Test extends PLL_UnitTestCase {
 		$GLOBALS['post_type'] = 'post';
 		$GLOBALS['taxonomy'] = 'category';
 
-		$en = $this->factory->category->create();
+		$en = self::factory()->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->category->create();
+		$fr = self::factory()->category->create();
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
@@ -248,7 +248,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_post_inline_edit() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
 		$list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => 'edit.php' ) );

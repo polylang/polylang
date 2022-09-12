@@ -22,10 +22,10 @@ if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 		}
 
 		public function test_exclude_post_translations() {
-			$en = $this->factory->post->create();
+			$en = self::factory()->post->create();
 			self::$model->post->set_language( $en, 'en' );
 
-			$fr = $this->factory->post->create();
+			$fr = self::factory()->post->create();
 			self::$model->post->set_language( $fr, 'fr' );
 
 			self::$model->post->save_translations( $en, compact( 'fr' ) );

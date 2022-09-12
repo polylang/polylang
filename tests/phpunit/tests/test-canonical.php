@@ -402,7 +402,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		update_option( 'posts_per_page', 1 );
 
 		// Create 1 additional English post to have a paged category.
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
 		// Set category to the posts.

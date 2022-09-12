@@ -57,42 +57,42 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_permalink_for_posts() {
-		$post_id = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		$this->assertEquals( home_url( '/test/' ), get_permalink( $post_id ) );
 
-		$post_id = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 		$this->assertEquals( home_url( '/fr/essai/' ), get_permalink( $post_id ) );
 	}
 
 	public function test_get_permalink_for_pages() {
-		$post_id = $this->factory->post->create( array( 'post_title' => 'page-test', 'post_type' => 'page' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'page-test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		$this->assertEquals( home_url( '/page-test/' ), get_permalink( $post_id ) );
 
-		$post_id = $this->factory->post->create( array( 'post_title' => 'page-essai', 'post_type' => 'page' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'page-essai', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 		$this->assertEquals( home_url( '/fr/page-essai/' ), get_permalink( $post_id ) );
 	}
 
 	public function test_get_permalink_for_cpt() {
-		$post_id = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'trcpt' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		$this->assertEquals( home_url( '/trcpt/test/' ), get_permalink( $post_id ) );
 
-		$post_id = $this->factory->post->create( array( 'post_title' => 'essai', 'post_type' => 'trcpt' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'essai', 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 		$this->assertEquals( home_url( '/fr/trcpt/essai/' ), get_permalink( $post_id ) );
 	}
 
 	public function test_get_permalink_for_untranslated_cpt() {
-		$post_id = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'cpt' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'cpt' ) );
 		$this->assertEquals( home_url( '/cpt/test/' ), get_permalink( $post_id ) );
 	}
 
 	public function test_attached_attachment() {
-		$post_id = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 
 		$args = array(
@@ -104,11 +104,11 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 			'file'           => 'image.jpg',
 		);
 
-		$attachment_id = $this->factory->attachment->create_object( $args );
+		$attachment_id = self::factory()->attachment->create_object( $args );
 		self::$model->post->set_language( $attachment_id, 'en' );
 		$this->assertEquals( home_url( '/test/image-en/' ), get_permalink( $attachment_id ) );
 
-		$post_id = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 
 		$args = array(
@@ -120,13 +120,13 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 			'file'           => 'image.jpg',
 		);
 
-		$attachment_id = $this->factory->attachment->create_object( $args );
+		$attachment_id = self::factory()->attachment->create_object( $args );
 		self::$model->post->set_language( $attachment_id, 'fr' );
 		$this->assertEquals( home_url( '/fr/essai/image-fr/' ), get_permalink( $attachment_id ) );
 	}
 
 	public function test_unattached_attachment() {
-		$attachment_id = $this->factory->attachment->create_object(
+		$attachment_id = self::factory()->attachment->create_object(
 			'image.jpg',
 			0,
 			array(
@@ -139,7 +139,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $attachment_id, 'en' );
 		$this->assertEquals( home_url( '/image-en/' ), get_permalink( $attachment_id ) );
 
-		$attachment_id = $this->factory->attachment->create_object(
+		$attachment_id = self::factory()->attachment->create_object(
 			'image.jpg',
 			0,
 			array(
@@ -154,17 +154,17 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_term_link() {
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'cats' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'cats' ) );
 		self::$model->term->set_language( $term_id, 'en' );
 		$this->assertEquals( home_url( '/category/cats/' ), get_term_link( $term_id, 'category' ) );
 
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'chats' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'chats' ) );
 		self::$model->term->set_language( $term_id, 'fr' );
 		$this->assertEquals( home_url( '/fr/category/chats/' ), get_term_link( $term_id, 'category' ) );
 	}
 
 	public function test_untranslated_term_link() {
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'cats' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'cats' ) );
 		$this->assertEquals( home_url( '/tax/cats/' ), get_term_link( $term_id, 'tax' ) );
 	}
 
@@ -176,7 +176,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_post_format_link() {
-		$this->factory->term->create( array( 'taxonomy' => 'post_format', 'name' => 'post-format-aside' ) ); // shouldn't WP do that ?
+		self::factory()->term->create( array( 'taxonomy' => 'post_format', 'name' => 'post-format-aside' ) ); // shouldn't WP do that ?
 
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 		$this->assertEquals( home_url( '/type/aside/' ), get_post_format_link( 'aside' ) );

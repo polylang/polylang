@@ -90,7 +90,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_home_latest_posts() {
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/fr/' ) );
@@ -98,7 +98,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_home_latest_posts_with_hide_default() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
 		$this->go_to( home_url( '/' ) );
@@ -106,10 +106,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_single_post() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/essai/' ) );
@@ -120,10 +120,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_page() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/essai/' ) );
@@ -134,7 +134,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_category_default_lang() {
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
 		$this->go_to( home_url( '/category/test/' ) );
@@ -142,7 +142,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_category_non_default_lang() {
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/category/essai/' ) );
@@ -150,7 +150,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_post_tag_default_lang() {
-		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
 		$this->go_to( home_url( '/tag/test/' ) );
@@ -158,7 +158,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_post_tag_non_default_lang() {
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/tag/essai/' ) );
@@ -166,10 +166,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_archive() {
-		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		$en = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		$fr = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/fr/2007/' ) );
@@ -182,10 +182,10 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 	public function test_archive_with_default_permalinks() {
 		$GLOBALS['wp_rewrite']->set_permalink_structure( '' );
 
-		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		$en = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		$fr = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '?year=2007&lang=fr' ) );

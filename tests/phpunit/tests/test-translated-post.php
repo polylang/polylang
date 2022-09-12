@@ -14,20 +14,20 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_post_language() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'fr' );
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
 	public function test_post_translation() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$de = $this->factory->post->create();
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
@@ -40,13 +40,13 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_delete_post_translation() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$de = $this->factory->post->create();
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
@@ -70,10 +70,10 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		wp_set_current_user( $author );
 
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -86,7 +86,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertTrue( self::$model->post->current_user_can_synchronize( $en ) );
 		$this->assertTrue( self::$model->post->current_user_can_synchronize( $fr ) );
 
-		$de = $this->factory->post->create();
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
@@ -105,7 +105,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_current_user_can_read() {
-		$post_id = $this->factory->post->create( array( 'post_status' => 'draft' ) );
+		$post_id = self::factory()->post->create( array( 'post_status' => 'draft' ) );
 
 		wp_set_current_user( 0 );
 		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
@@ -115,7 +115,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
 		$this->assertTrue( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 
-		$post_id = $this->factory->post->create(
+		$post_id = self::factory()->post->create(
 			array(
 				'post_status' => 'future',
 				'post_date'   => gmdate( 'Y-m-d H:i:s', time() + 100 ),
@@ -130,7 +130,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );
 		$this->assertTrue( self::$model->post->current_user_can_read( $post_id, 'edit' ) );
 
-		$post_id = $this->factory->post->create( array( 'post_status' => 'private' ) );
+		$post_id = self::factory()->post->create( array( 'post_status' => 'private' ) );
 
 		wp_set_current_user( 0 );
 		$this->assertFalse( self::$model->post->current_user_can_read( $post_id ) );

@@ -27,10 +27,10 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	public function test_post_translations() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -87,10 +87,10 @@ class Ajax_Columns_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	public function test_term_translations() {
-		$en = $this->factory->category->create();
+		$en = self::factory()->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->category->create();
+		$fr = self::factory()->category->create();
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );

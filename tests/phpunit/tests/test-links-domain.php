@@ -64,12 +64,12 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		$filters_links->cache->method( 'get' )->willReturn( false );
 
-		$post_id = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		$this->assertEquals( 'http://example.org/test/', get_permalink( $post_id ) );
 		$this->assertEquals( 'http://example.org/?p=' . $post_id, wp_get_shortlink( $post_id ) );
 
-		$post_id = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 		$this->assertEquals( 'http://example.fr/essai/', get_permalink( $post_id ) );
 		$this->assertEquals( 'http://example.fr/?p=' . $post_id, wp_get_shortlink( $post_id ) );

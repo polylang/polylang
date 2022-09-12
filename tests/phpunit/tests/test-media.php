@@ -29,7 +29,7 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
 
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
-		$fr = $this->factory->attachment->create_upload_object( $filename );
+		$fr = self::factory()->attachment->create_upload_object( $filename );
 		$this->assertEquals( $this->pll_admin->pref_lang->slug, self::$model->post->get_language( $fr )->slug );
 
 		// cleanup
@@ -40,7 +40,7 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
 
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
-		$en = $this->factory->attachment->create_upload_object( $filename );
+		$en = self::factory()->attachment->create_upload_object( $filename );
 		$fr = $this->pll_admin->posts->create_media_translation( $en, 'fr' );
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $fr )->slug );
@@ -61,7 +61,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 	public function test_attachment_fields_to_edit() {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
-		$fr = $this->factory->attachment->create_upload_object( $filename );
+		$fr = self::factory()->attachment->create_upload_object( $filename );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$fields = get_attachment_fields_to_edit( $fr );
@@ -85,7 +85,7 @@ class Media_Test extends PLL_UnitTestCase {
 	 */
 	public function test_attachment_fields_to_save() {
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
-		$en = $this->factory->attachment->create_upload_object( $filename );
+		$en = self::factory()->attachment->create_upload_object( $filename );
 		self::$model->post->set_language( $en, 'en' );
 
 		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
@@ -114,7 +114,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 	public function test_create_media_translation_with_slashes() {
 		$slash_2 = '\\\\';
-		$en = $this->factory->attachment->create(
+		$en = self::factory()->attachment->create(
 			array(
 				'post_title'   => $slash_2,
 				'post_content' => $slash_2,

@@ -324,10 +324,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	public function test_page_for_posts() {
 		$this->init_test();
 
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->pll_env->curlang = self::$model->get_language( 'fr' ); // brute force
@@ -350,12 +350,12 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		update_option( 'posts_per_page', 2 ); // to avoid creating too much posts
 
-		$en = $this->factory->post->create_many( 3 );
+		$en = self::factory()->post->create_many( 3 );
 		foreach ( $en as $post_id ) {
 			self::$model->post->set_language( $post_id, 'en' );
 		}
 
-		$fr = $this->factory->post->create_many( 3 );
+		$fr = self::factory()->post->create_many( 3 );
 		foreach ( $fr as $post_id ) {
 			self::$model->post->set_language( $post_id, 'fr' );
 		}
@@ -381,10 +381,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	public function test_untranslated_page_for_posts() {
 		$this->init_test();
 
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->pll_env->curlang = self::$model->get_language( 'fr' ); // brute force
@@ -460,10 +460,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( ob_get_clean(), "<span class='post-state'>Posts Page</span>" ) );
 
 		// test for standard pages too
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		ob_start();
@@ -500,7 +500,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		$this->init_test();
 
-		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		self::$model->options['redirect_lang'] = 1;
@@ -540,7 +540,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // translated custom post type with archives
 
-		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		self::$model->options['redirect_lang'] = 1;

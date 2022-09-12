@@ -109,7 +109,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 
 	public function test_new_default_category() {
 
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'new-default' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'new-default' ) );
 		update_option( 'default_category', $term_id );
 
 		$this->assertEquals( $term_id, get_option( 'default_category' ) );
@@ -122,7 +122,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	 */
 	public function test_default_category_in_list_table() {
 
-		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) ); // a non default category
+		$id = self::factory()->term->create( array( 'taxonomy' => 'category' ) ); // a non default category
 		$default = get_option( 'default_category' );
 		$en = self::$model->term->get( $default, 'en' );
 		$fr = self::$model->term->get( $default, 'fr' );

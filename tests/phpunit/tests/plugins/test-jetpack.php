@@ -37,10 +37,10 @@ if ( version_compare( $GLOBALS['wp_version'], '5.9', '>=' ) && file_exists( DIR_
 
 		public function test_opengraph() {
 			// create posts to get something  on home page
-			$en = $this->factory->post->create();
+			$en = self::factory()->post->create();
 			self::$model->post->set_language( $en, 'en' );
 
-			$fr = $this->factory->post->create();
+			$fr = self::factory()->post->create();
 			self::$model->post->set_language( $fr, 'fr' );
 
 			$this->go_to( home_url( '/?lang=fr' ) );

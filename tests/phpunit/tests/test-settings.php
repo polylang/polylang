@@ -79,7 +79,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		do_action( 'load-toplevel_page_mlang' );
 
 		ob_start();
-		$id = $this->factory->post->create();
+		$id = self::factory()->post->create();
 		do_action( 'admin_notices' );
 		$out = ob_get_clean();
 
@@ -93,7 +93,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $out );
 
 		ob_start();
-		$id = $this->factory->term->create();
+		$id = self::factory()->term->create();
 		do_action( 'admin_notices' );
 		$out = ob_get_clean();
 

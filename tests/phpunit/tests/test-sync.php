@@ -32,32 +32,32 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_copy_taxonomies() {
-		$tag_en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_en' ) );
+		$tag_en = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_en' ) );
 		self::$model->term->set_language( $tag_en, 'en' );
 
-		$tag_fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_fr' ) );
+		$tag_fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'slug' => 'tag_fr' ) );
 		self::$model->term->set_language( $tag_fr, 'fr' );
 
 		self::$model->term->save_translations( $tag_en, array( 'en' => $tag_en, 'fr' => $tag_fr ) );
 
-		$untranslated = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$untranslated = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $untranslated, 'en' );
 
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
-		$from = $this->factory->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 		wp_set_post_terms( $from, array( 'tag_en' ), 'post_tag' ); // Assigned by slug
 		wp_set_post_terms( $from, array( $untranslated, $en ), 'category' ); // Assigned by term_id
 		set_post_format( $from, 'aside' );
 
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -95,11 +95,11 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_copy_custom_fields() {
-		$from = $this->factory->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'key', 'value' );
 
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -123,10 +123,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array( 'post_meta' );
 		$sync = new PLL_Admin_Sync( $this->pll_admin );
 
-		$from = $this->factory->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
 		// Add
@@ -162,16 +162,16 @@ class Sync_Test extends PLL_UnitTestCase {
 
 	public function test_create_post_translation() {
 		// categories
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		// source post
-		$from = $this->factory->post->create( array( 'post_category' => array( $en ) ) );
+		$from = self::factory()->post->create( array( 'post_category' => array( $en ) ) );
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, 'key', 'value' );
 		add_post_meta( $from, '_thumbnail_id', 1234 );
@@ -188,7 +188,7 @@ class Sync_Test extends PLL_UnitTestCase {
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 
 		$GLOBALS['pagenow'] = 'post-new.php';
 		$GLOBALS['post'] = get_post( $to );
@@ -205,16 +205,16 @@ class Sync_Test extends PLL_UnitTestCase {
 
 	public function test_create_page_translation() {
 		// parent pages
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
 		// source page
-		$from = $this->factory->post->create( array( 'post_type' => 'page', 'menu_order' => 12, 'post_parent' => $en ) );
+		$from = self::factory()->post->create( array( 'post_type' => 'page', 'menu_order' => 12, 'post_parent' => $en ) );
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, '_wp_page_template', 'full-width.php' );
 
@@ -228,7 +228,7 @@ class Sync_Test extends PLL_UnitTestCase {
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
-		$to = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$to = self::factory()->post->create( array( 'post_type' => 'page' ) );
 
 		$GLOBALS['pagenow'] = 'post-new.php';
 		$GLOBALS['post'] = get_post( $to );
@@ -246,22 +246,22 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		// Attachment for thumbnail
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
-		$thumbnail_id = $this->factory->attachment->create_upload_object( $filename );
+		$thumbnail_id = self::factory()->attachment->create_upload_object( $filename );
 
 		// categories
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		// posts
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
-		$from = $this->factory->post->create( array( 'post_category' => array( $en ), 'post_date' => '2007-09-04 00:00:00' ) );
+		$from = self::factory()->post->create( array( 'post_category' => array( $en ), 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $from, 'en' );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -307,19 +307,19 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// parent pages
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
 		// pages page
-		$to = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$to = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $to, 'fr' );
 
-		$from = $this->factory->post->create( array( 'post_type' => 'page', 'menu_order' => 12, 'post_parent' => $en ) );
+		$from = self::factory()->post->create( array( 'post_type' => 'page', 'menu_order' => 12, 'post_parent' => $en ) );
 		self::$model->post->set_language( $from, 'en' );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -347,14 +347,14 @@ class Sync_Test extends PLL_UnitTestCase {
 	public function test_save_term_with_sync_in_post() {
 		self::$model->options['sync'] = array( 'taxonomies' );
 
-		$from = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$from = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $from, 'en' );
 
 		// posts
-		$en = $this->factory->post->create( array( 'post_category' => array( $from ) ) );
+		$en = self::factory()->post->create( array( 'post_category' => array( $from ) ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -373,7 +373,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->curlang = self::$model->get_language( 'fr' );
 
-		$to = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$to = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 
 		$this->assertEquals( 'fr', self::$model->term->get_language( $to )->slug );
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$model->term->get_translations( $from ) );
@@ -382,16 +382,16 @@ class Sync_Test extends PLL_UnitTestCase {
 
 	public function test_save_term_with_parent_sync() {
 		// Parents
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		// child
-		$from = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$from = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $from, 'en' );
 
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
@@ -407,7 +407,7 @@ class Sync_Test extends PLL_UnitTestCase {
 			'parent'           => $fr,
 		);
 
-		$to = $this->factory->term->create( array( 'taxonomy' => 'category', 'parent' => $fr ) );
+		$to = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $fr ) );
 		$this->assertEquals( 'fr', self::$model->term->get_language( $to )->slug );
 		$this->assertEqualSetsWithIndex( array( 'en' => $from, 'fr' => $to ), self::$model->term->get_translations( $from ) );
 		$this->assertEquals( $fr, get_category( $to )->parent );
@@ -420,21 +420,21 @@ class Sync_Test extends PLL_UnitTestCase {
 	 */
 	public function test_child_sync_if_delete_translated_term_parent() {
 		// Children.
-		$child_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$child_en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $child_en, 'en' );
 
-		$child_fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$child_fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $child_fr, 'fr' );
 
 		self::$model->term->save_translations( $child_en, array( 'fr' => $child_fr ) );
 
 		// Parents.
-		$parent_en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$parent_en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $parent_en, 'en' );
 
 		wp_update_term( $child_en, 'category', array( 'parent' => $parent_en ) );
 
-		$parent_fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$parent_fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $parent_fr, 'fr' );
 
 		self::$model->term->save_translations( $parent_en, array( 'fr' => $parent_fr ) );
@@ -450,7 +450,7 @@ class Sync_Test extends PLL_UnitTestCase {
 
 	public function test_create_post_translation_with_sync_post_date() {
 		// source post
-		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		$from = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $from, 'en' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
@@ -464,7 +464,7 @@ class Sync_Test extends PLL_UnitTestCase {
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		clean_post_cache( $to ); // Necessary before calling get_post() below otherwise we don't get the synchronized date
 
 		$this->assertEquals( get_post( $from )->post_date, get_post( $to )->post_date );
@@ -480,19 +480,19 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// parent pages
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
 		// pages page
-		$to = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$to = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $to, 'fr' );
 
-		$from = $this->factory->post->create( array( 'post_type' => 'page', 'post_parent' => $en ) );
+		$from = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $en ) );
 		self::$model->post->set_language( $from, 'en' );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -511,7 +511,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// source post
-		$from = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		$from = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $from, 'en' );
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
@@ -523,7 +523,7 @@ class Sync_Test extends PLL_UnitTestCase {
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 
 		$GLOBALS['pagenow'] = 'post-new.php';
 		$GLOBALS['post'] = get_post( $to );
@@ -540,11 +540,11 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_copy_term_metas() {
-		$from = $this->factory->term->create();
+		$from = self::factory()->term->create();
 		self::$model->term->set_language( $from, 'en' );
 		add_term_meta( $from, 'key', 'value' );
 
-		$to = $this->factory->term->create();
+		$to = self::factory()->term->create();
 		self::$model->term->set_language( $to, 'fr' );
 		self::$model->term->save_translations( $from, array( 'fr' => $to ) );
 
@@ -567,10 +567,10 @@ class Sync_Test extends PLL_UnitTestCase {
 	public function test_sync_multiple_term_metas() {
 		$sync = new PLL_Admin_Sync( $this->pll_admin );
 
-		$from = $this->factory->term->create();
+		$from = self::factory()->term->create();
 		self::$model->term->set_language( $from, 'en' );
 
-		$to = $this->factory->term->create();
+		$to = self::factory()->term->create();
 		self::$model->term->set_language( $to, 'fr' );
 
 		self::$model->term->save_translations( $from, array( 'fr' => $to ) );
@@ -596,10 +596,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Posts
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
-		$from = $this->factory->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -631,10 +631,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Posts
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
-		$from = $this->factory->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -660,10 +660,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Posts
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
-		$from = $this->factory->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
@@ -686,19 +686,19 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Categories
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		// Posts
-		$post_fr = $this->factory->post->create( array( 'post_category' => array( $fr ) ) );
+		$post_fr = self::factory()->post->create( array( 'post_category' => array( $fr ) ) );
 		self::$model->post->set_language( $post_fr, 'fr' );
 
-		$post_en = $this->factory->post->create( array( 'post_category' => array( $en ) ) );
+		$post_en = self::factory()->post->create( array( 'post_category' => array( $en ) ) );
 		self::$model->post->set_language( $post_en, 'en' );
 
 		self::$model->post->save_translations( $post_en, array( 'fr' => $post_fr ) );
@@ -715,20 +715,20 @@ class Sync_Test extends PLL_UnitTestCase {
 	 */
 	public function test_category_hierarchy() {
 		// Categories
-		$child_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$child_en = $en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$child_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$child_fr = $fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
-		$parent_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$parent_en = $en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
 		wp_update_term( $child_en, 'category', array( 'parent' => $parent_en ) );
 
-		$parent_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$parent_fr = $fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
@@ -750,28 +750,28 @@ class Sync_Test extends PLL_UnitTestCase {
 	 */
 	public function test_sync_category_parent_modification() {
 		// Parent 1
-		$p1en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$p1en = $en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$p1fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$p1fr = $fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		// Parent 2
-		$p2en = $en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$p2en = $en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$p2fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$p2fr = $fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
 		// Child
-		$child_en = $en = $this->factory->term->create( array( 'taxonomy' => 'category', 'parent' => $p1en ) );
+		$child_en = $en = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $p1en ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$child_fr = $fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'parent' => $p1fr ) );
+		$child_fr = $fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'parent' => $p1fr ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
@@ -793,17 +793,17 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Post format
-		$this->factory->term->create( array( 'taxonomy' => 'post_format', 'name' => 'post-format-aside' ) ); // shouldn't WP do that ?
+		self::factory()->term->create( array( 'taxonomy' => 'post_format', 'name' => 'post-format-aside' ) ); // shouldn't WP do that ?
 
 		// Attachment for thumbnail
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
-		$thumbnail_id = $this->factory->attachment->create_upload_object( $filename );
+		$thumbnail_id = self::factory()->attachment->create_upload_object( $filename );
 
 		// Categories
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
@@ -813,11 +813,11 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		// Posts
 		wp_set_current_user( self::$editor );
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
 		wp_set_current_user( self::$author );
-		$from = $this->factory->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
 
@@ -863,10 +863,10 @@ class Sync_Test extends PLL_UnitTestCase {
 		$slash_4 = '\\\\\\\\';
 
 		// Create posts.
-		$to = $this->factory->post->create();
+		$to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 
-		$from = $this->factory->post->create();
+		$from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
 
 		// Test copy().

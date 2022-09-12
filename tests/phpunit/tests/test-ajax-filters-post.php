@@ -33,14 +33,14 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin ); // We need this for categories and tags
 
 		// categories
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test cat' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai cat' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		// the post
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 
 		$_POST = array(
@@ -87,14 +87,14 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // we need this for the pages dropdown
 
 		// possible parents
-		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		// the post
-		$post_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 
 		$_POST = array(
@@ -137,18 +137,18 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	public function test_posts_not_translated() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test english' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test english' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'test français' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'test français' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$searched = $this->factory->post->create( array( 'post_title' => 'test searched' ) );
+		$searched = self::factory()->post->create( array( 'post_title' => 'test searched' ) );
 		self::$model->post->set_language( $searched, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$_GET = array(
@@ -174,7 +174,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEquals( $searched, $response[0]['id'] );
 
 		// translate the current post
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -192,10 +192,10 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 	}
 
 	public function test_save_post_from_quick_edit() {
-		$post_id = $en = $this->factory->post->create();
+		$post_id = $en = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 
-		$es = $this->factory->post->create();
+		$es = self::factory()->post->create();
 		self::$model->post->set_language( $es, 'es' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'es' ) );

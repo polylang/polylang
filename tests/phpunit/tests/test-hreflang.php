@@ -37,13 +37,13 @@ class Hreflang_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_hreflang() {
-		$uk = $this->factory->post->create();
+		$uk = self::factory()->post->create();
 		self::$model->post->set_language( $uk, 'uk' );
 
-		$us = $this->factory->post->create();
+		$us = self::factory()->post->create();
 		self::$model->post->set_language( $us, 'us' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $fr, compact( 'uk', 'us', 'fr' ) );
@@ -74,10 +74,10 @@ class Hreflang_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_paginated_post() {
-		$uk = $this->factory->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
+		$uk = self::factory()->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
 		self::$model->post->set_language( $uk, 'uk' );
 
-		$us = $this->factory->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
+		$us = self::factory()->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
 		self::$model->post->set_language( $us, 'us' );
 
 		self::$model->post->save_translations( $uk, compact( 'uk', 'us' ) );
@@ -104,8 +104,8 @@ class Hreflang_Test extends PLL_UnitTestCase {
 	public function test_paged_archive() {
 		update_option( 'posts_per_page', 2 ); // to avoid creating too much posts
 
-		$posts_us = $this->factory->post->create_many( 3 );
-		$posts_uk = $this->factory->post->create_many( 3 );
+		$posts_us = self::factory()->post->create_many( 3 );
+		$posts_uk = self::factory()->post->create_many( 3 );
 
 		for ( $i = 0; $i < 3; $i++ ) {
 			self::$model->post->set_language( $us = $posts_us[ $i ], 'us' );
