@@ -31,7 +31,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_do_not_set_language_parameter_to_root_URL() {
-		$post = $this->factory()->post->create_and_get();
+		$post = self::factory()->post->create_and_get();
 		$this->pll_admin->model->post->set_language( $post->ID, 'en' );
 
 		$preload_paths = $this->preload_paths( $post );
@@ -41,7 +41,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
 
 	public function test_do_not_set_language_to_preload_paths_for_untranslated_post_type() {
 		register_post_type( 'custom' );
-		$post = $this->factory()->post->create_and_get(
+		$post = self::factory()->post->create_and_get(
 			array(
 				'post_type' => 'custom',
 			)
@@ -60,7 +60,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
 
 	public function test_set_preferred_language_as_parameter_to_preload_paths_for_a_post_without_language() {
 		$this->pll_admin->pref_lang = $this->pll_admin->model->get_language( 'en' );
-		$post = $this->factory()->post->create_and_get();
+		$post = self::factory()->post->create_and_get();
 
 		$preload_paths = $this->preload_paths( $post );
 
@@ -75,7 +75,7 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_set_post_language_as_parameter_to_preload_paths_for_a_post_with_a_language() {
-		$post = $this->factory()->post->create_and_get();
+		$post = self::factory()->post->create_and_get();
 		$this->pll_admin->model->post->set_language( $post->ID, 'fr' );
 
 		$preload_paths = $this->preload_paths( $post );

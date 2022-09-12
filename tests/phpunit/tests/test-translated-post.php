@@ -154,7 +154,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$translations = array();
 		foreach ( $original_group as $language ) {
-			$new_post = $this->factory()->attachment->create();
+			$new_post = self::factory()->attachment->create();
 			self::$model->post->set_language( $new_post, $language );
 			$translations[ $language ] = $new_post;
 		}
