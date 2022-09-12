@@ -576,11 +576,6 @@ parameters:
 			path: frontend/frontend-filters-links.php
 
 		-
-			message: "#^Parameter \\#2 \\$str of function explode expects string, int\\|string given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
 			message: "#^Cannot access property \\$search_url on PLL_Language\\|null\\.$#"
 			count: 1
 			path: frontend/frontend-filters-search.php
@@ -1104,11 +1099,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$subject of function preg_match expects string, mixed given\\.$#"
 			count: 1
 			path: include/links-permalinks.php
-
-		-
-			message: "#^Method PLL_Links_Subdomain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int\\|string, string\\|false\\|null\\>\\.$#"
-			count: 1
-			path: include/links-subdomain.php
 
 		-
 			message: "#^Method PLL_Links_Subdomain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
