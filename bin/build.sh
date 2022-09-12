@@ -12,6 +12,3 @@ echo "Running Polylang build..."
 npm update && npm run build
 
 echo "Build done!"
-
-echo "Cleanup" # Discard composer.lock and package-lock.json changings to ensure they'll never be pushed on repository.
-git checkout -- composer.lock package-lock.json
