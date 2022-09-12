@@ -9,7 +9,7 @@ echo "Installing PHP packages..."
 composer $COMPOSER_COMMAND # Need update to ensure to have the latest version of Polylang dependencies.
 
 echo "Running Polylang build..."
-npm install && npm run build
+npm update && npm run build
 
 echo "Build done!"
 
