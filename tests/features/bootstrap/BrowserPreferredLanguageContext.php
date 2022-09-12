@@ -38,6 +38,17 @@ class BrowserPreferredLanguageContext implements Context {
 	}
 
 	/**
+	 * Copy of WP_UnitTestCase::factory().
+	 */
+	protected static function factory() {
+		static $factory = null;
+		if ( ! $factory ) {
+			$factory = new WP_UnitTest_Factory();
+		}
+		return $factory;
+	}
+
+	/**
 	 * Initializes context and test framework.
 	 */
 	public function __construct() {
@@ -68,7 +79,7 @@ class BrowserPreferredLanguageContext implements Context {
 		$args = empty( $language_slug ) ? array() : array( 'slug' => $language_slug );
 		PLL_UnitTestCase::create_language( Locale::canonicalize( $language_code ), $args );
 
-		$post_id = $this->test_case->factory->post->create();
+		$post_id = self::factory()->post->create();
 
 		$default_slug = explode( '-', $language_code )[0];
 		PLL_UnitTestCase::$model->post->set_language( $post_id, empty( $language_slug ) ? $default_slug : $language_slug );
