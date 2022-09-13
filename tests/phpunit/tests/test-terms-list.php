@@ -27,16 +27,16 @@ class Terms_List_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_term_list_with_admin_language_filter() {
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'enfant', 'parent' => $fr ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'enfant', 'parent' => $fr ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'child', 'parent' => $en ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'child', 'parent' => $en ) );
 		self::$model->term->set_language( $en, 'en' );
 
 		$GLOBALS['taxnow'] = $_REQUEST['taxonomy'] = $_GET['taxonomy'] = 'category'; // WP_Screen tests $_REQUEST, Polylang tests $_GET

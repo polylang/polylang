@@ -49,15 +49,15 @@ class Install_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		// Posts and terms
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
 		$post_translations_groups = get_terms( 'post_translations' );

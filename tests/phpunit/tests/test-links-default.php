@@ -80,28 +80,28 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$frontend = new PLL_Frontend( $this->links_model );
 		new PLL_Filters_Links( $frontend );
 
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertStringNotContainsString( 'lang=en', get_permalink( $en ) );
 		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertStringNotContainsString( 'lang=en', get_permalink( $en ) );
 		$this->assertStringContainsString( 'lang=fr', get_permalink( $fr ) );
 
-		$en = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertStringNotContainsString( 'lang=en', get_permalink( $en ) );
@@ -113,17 +113,17 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		$frontend = new PLL_Frontend( $this->links_model );
 		new PLL_Filters_Links( $frontend );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertStringNotContainsString( 'lang=fr', get_permalink( $fr ) );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertStringNotContainsString( 'lang=fr', get_permalink( $fr ) );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->assertStringNotContainsString( 'lang=fr', get_permalink( $fr ) );

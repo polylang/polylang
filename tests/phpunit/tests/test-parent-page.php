@@ -25,15 +25,15 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 
 	public function test_parent_page_with_existing_translation_when_changing_post_language() {
 		// Language set from parent
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$child_page_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_parent' => $en ) );
+		$child_page_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $en ) );
 		$this->assertEquals( 'en', self::$model->post->get_language( $child_page_id )->slug );
 
 		// Change the child post language.
@@ -57,10 +57,10 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 
 	public function test_parent_page_with_no_translation_when_changing_post_language() {
 		// Language set from parent
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$child_page_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_parent' => $en ) );
+		$child_page_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_parent' => $en ) );
 		$this->assertEquals( 'en', self::$model->post->get_language( $child_page_id )->slug );
 
 		// Change the child post language.
@@ -85,9 +85,9 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 	public function test_should_not_modify_parent_when_its_post_type_is_untranslatable() {
 		register_post_type( 'unstranslatable_cpt' );
 
-		$parent_id = $this->factory->post->create( array( 'post_title' => 'untranslated parent cpt', 'post_type' => 'unstranslatable_cpt' ) );
+		$parent_id = self::factory()->post->create( array( 'post_title' => 'untranslated parent cpt', 'post_type' => 'unstranslatable_cpt' ) );
 
-		$child_page_id = $this->factory->post->create( array( 'post_title' => 'post with a untranslated parent', 'post_type' => 'page' ) );
+		$child_page_id = self::factory()->post->create( array( 'post_title' => 'post with a untranslated parent', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $child_page_id, 'en' );
 
 		wp_update_post( array( 'ID' => $child_page_id, 'post_parent' => $parent_id ) );

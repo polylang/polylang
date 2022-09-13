@@ -19,7 +19,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_term_language() {
-		$term_id = $this->factory->term->create();
+		$term_id = self::factory()->term->create();
 		self::$model->term->set_language( $term_id, 'fr' );
 
 		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
@@ -27,13 +27,13 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_term_translation() {
-		$en = $this->factory->term->create();
+		$en = self::factory()->term->create();
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create();
+		$fr = self::factory()->term->create();
 		self::$model->term->set_language( $fr, 'fr' );
 
-		$de = $this->factory->term->create();
+		$de = self::factory()->term->create();
 		self::$model->term->set_language( $de, 'de' );
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr', 'de' ) );
@@ -46,13 +46,13 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_delete_term_translation() {
-		$en = $this->factory->term->create();
+		$en = self::factory()->term->create();
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create();
+		$fr = self::factory()->term->create();
 		self::$model->term->set_language( $fr, 'fr' );
 
-		$de = $this->factory->term->create();
+		$de = self::factory()->term->create();
 		self::$model->term->set_language( $de, 'de' );
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr', 'de' ) );

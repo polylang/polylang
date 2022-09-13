@@ -33,13 +33,13 @@ class Switcher_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_the_languages_raw() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$de = $this->factory->post->create();
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
@@ -95,10 +95,10 @@ class Switcher_Test extends PLL_UnitTestCase {
 	 *  Very basic tests for the switcher as list
 	 */
 	public function test_list() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
@@ -158,10 +158,10 @@ class Switcher_Test extends PLL_UnitTestCase {
 	 * Very basic tests for the switcher as dropdown
 	 */
 	public function test_dropdown() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
@@ -195,10 +195,10 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->admin = new PLL_Admin( $links_model );
 		$this->admin->init();
 
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->clean_languages_cache(); // FIXME for some reason, I need to clear the cache to get an exact count

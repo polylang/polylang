@@ -53,9 +53,9 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		// Only languages with posts will be accepted
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'de' );
 
 		self::$model->clean_languages_cache();
@@ -88,9 +88,9 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US', array( 'slug' => 'us', 'term_group' => 1 ) );
 
 		// only languages with posts will be accepted
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'us' );
 
 		self::$model->clean_languages_cache(); // FIXME foor some reason the cache is not clean before (resulting in wrong count)

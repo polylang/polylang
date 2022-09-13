@@ -26,10 +26,10 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_calendar() {
-		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
+		$en = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_date' => '2007-09-05 00:00:00' ) );
+		$fr = self::factory()->post->create( array( 'post_date' => '2007-09-05 00:00:00' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$frontend = new PLL_Frontend( $this->links_model );

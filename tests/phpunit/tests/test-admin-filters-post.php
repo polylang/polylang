@@ -41,18 +41,18 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	public function test_default_language() {
 		// User preferred language
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 
 		// Language set from parent
-		$parent = $this->factory->post->create();
+		$parent = self::factory()->post->create();
 		self::$model->post->set_language( $parent, 'de' );
-		$post_id = $this->factory->post->create( array( 'post_parent' => $parent ) );
+		$post_id = self::factory()->post->create( array( 'post_parent' => $parent ) );
 		$this->assertEquals( 'de', self::$model->post->get_language( $post_id )->slug );
 
 		// Language set when adding a new translation
 		$_GET['new_lang'] = 'es';
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$this->assertEquals( 'es', self::$model->post->get_language( $post_id )->slug );
 	}
 
@@ -62,7 +62,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$_REQUEST = $_POST = array(
 			'post_lang_choice' => 'en',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
-			'post_ID'          => $en = $this->factory->post->create(),
+			'post_ID'          => $en = self::factory()->post->create(),
 		);
 		do_action( 'load-post.php' );
 		edit_post();
@@ -74,7 +74,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_tr_lang'     => array( 'en' => $en ),
-			'post_ID'          => $fr = $this->factory->post->create(),
+			'post_ID'          => $fr = self::factory()->post->create(),
 		);
 		do_action( 'load-post.php' );
 		edit_post();
@@ -84,7 +84,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_save_post_from_bulk_edit() {
-		$posts = $this->factory->post->create_many( 2 );
+		$posts = self::factory()->post->create_many( 2 );
 		self::$model->post->set_language( $posts[0], 'en' );
 		self::$model->post->set_language( $posts[1], 'fr' );
 
@@ -117,30 +117,30 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		);
 
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
 	}
 
 	public function test_save_post_with_categories() {
-		$en = $this->factory->category->create();
+		$en = self::factory()->category->create();
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->category->create();
+		$fr = self::factory()->category->create();
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$en2 = $this->factory->category->create();
+		$en2 = self::factory()->category->create();
 		self::$model->term->set_language( $en2, 'en' );
 
-		$fr2 = $this->factory->category->create();
+		$fr2 = self::factory()->category->create();
 		self::$model->term->set_language( $fr2, 'fr' );
 
 		$_REQUEST = $_POST = array(
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'post_category'    => array( $en, $en2, $fr2 ),
-			'post_ID'          => $post_id = $this->factory->post->create(),
+			'post_ID'          => $post_id = self::factory()->post->create(),
 		);
 		do_action( 'load-post.php' );
 		edit_post();
@@ -154,17 +154,17 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	public function test_save_post_with_tags() {
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
 
-		$en = $this->factory->tag->create( array( 'name' => 'test' ) );
+		$en = self::factory()->tag->create( array( 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->tag->create( array( 'name' => 'test', 'slug' => 'test-fr' ) );
+		$fr = self::factory()->tag->create( array( 'name' => 'test', 'slug' => 'test-fr' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		$_REQUEST = $_POST = array(
 			'post_lang_choice' => 'fr',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 			'tax_input'        => array( 'post_tag' => array( 'test', 'new' ) ),
-			'post_ID'          => $post_id = $this->factory->post->create(),
+			'post_ID'          => $post_id = self::factory()->post->create(),
 		);
 		do_action( 'load-post.php' );
 		edit_post();
@@ -178,13 +178,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_delete_post() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$de = $this->factory->post->create();
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
@@ -198,13 +198,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_page_attributes_meta_box() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$page = $this->factory->post->create_and_get( array( 'post_type' => 'page' ) );
+		$page = self::factory()->post->create_and_get( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $page->ID, 'fr' );
 
 		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // We need the get_pages filter
@@ -233,7 +233,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$lang = $this->pll_admin->pref_lang = self::$model->get_language( 'en' );
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-		$post_ID = $this->factory->post->create();
+		$post_ID = self::factory()->post->create();
 		wp_set_object_terms( $post_ID, array(), 'language' ); // Intentionally remove the language
 
 		ob_start();
@@ -251,10 +251,10 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		global $post_ID;
 
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
-		$post_ID = $this->factory->post->create();
+		$post_ID = self::factory()->post->create();
 		wp_set_object_terms( $post_ID, array(), 'language' ); // Intentionally remove the language
 
-		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 		$lang = self::$model->get_language( 'fr' );
 		$_GET['from_post'] = $en;
@@ -283,10 +283,10 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 
-		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$post_ID = $fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$post_ID = $fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -329,7 +329,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->options['media_support'] = 1;
 
-		$en = $this->factory->attachment->create_object( 'image0.jpg' );
+		$en = self::factory()->attachment->create_object( 'image0.jpg' );
 		self::$model->post->set_language( $en, 'en' );
 
 		$post_ID = $this->pll_admin->posts->create_media_translation( $en, 'fr' );
@@ -361,13 +361,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_posts_language_filter() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$de = $this->factory->post->create();
+		$de = self::factory()->post->create();
 		self::$model->post->set_language( $de, 'de' );
 
 		$posts = get_posts( array( 'fields' => 'ids', 'lang' => 'fr' ) );
@@ -393,17 +393,17 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 
 		register_taxonomy( 'trtax', 'post' ); // Translated custom tax
 
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$tag = $this->factory->tag->create();
+		$tag = self::factory()->tag->create();
 		self::$model->term->set_language( $tag, 'fr' );
 		wp_set_post_terms( $fr, array( $tag ), 'post_tag' );
 
-		$tax = $this->factory->term->create( array( 'taxonomy' => 'trtax' ) );
+		$tax = self::factory()->term->create( array( 'taxonomy' => 'trtax' ) );
 		self::$model->term->set_language( $tax, 'fr' );
 		wp_set_post_terms( $fr, array( $tax ), 'trtax' );
 
@@ -443,7 +443,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$GLOBALS['wp_scripts'] = new WP_Scripts();
 		wp_default_scripts( $GLOBALS['wp_scripts'] );
 
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $term_id, 'fr' );
 
 		do_action( 'admin_enqueue_scripts' );
@@ -459,10 +459,10 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_parent_pages_script_data_in_footer() {
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$hook_suffix = $GLOBALS['hook_suffix'] = 'edit.php';
@@ -482,7 +482,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_current_language_when_saving_post() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
 		$GLOBALS['pagenow'] = 'post.php';

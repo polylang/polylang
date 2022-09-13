@@ -131,7 +131,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$pll_admin->pref_lang = self::$model->get_language( 'en' );
 		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
 
-		$en = $this->factory->attachment->create_upload_object( $filename );
+		$en = self::factory()->attachment->create_upload_object( $filename );
 		wp_update_post(
 			array(
 				'ID'           => $en,

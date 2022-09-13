@@ -90,12 +90,12 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 
 	public function test_privacy_page_post_states() {
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		update_option( 'wp_page_for_privacy_policy', $en );
 
-		$de = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$de = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $de, 'de' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'de' ) );

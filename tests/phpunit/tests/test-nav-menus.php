@@ -32,7 +32,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		// create 3 menus
 		$menu_en = wp_create_nav_menu( 'menu_en' );
-		$post_id = $this->factory->post->create( array( 'post_title' => 'Hello World' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'Hello World' ) );
 		$item_id = wp_update_nav_menu_item(
 			$menu_en,
 			0,
@@ -46,7 +46,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		);
 
 		$menu_fr = wp_create_nav_menu( 'menu_fr' );
-		$post_id = $this->factory->post->create( array( 'post_title' => 'Bonjour' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'Bonjour' ) );
 		$item_id = wp_update_nav_menu_item(
 			$menu_fr,
 			0,
@@ -60,7 +60,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		);
 
 		$menu_0 = wp_create_nav_menu( 'menu_0' );
-		$post_id = $this->factory->post->create( array( 'post_title' => 'No language' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'No language' ) );
 		$item_id = wp_update_nav_menu_item(
 			$menu_0,
 			0,
@@ -182,7 +182,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		add_action( 'transition_post_status', array( &$nav_menu, 'auto_add_pages_to_menu' ), 5, 3 ); // before _wp_auto_add_pages_to_menu
 
 		// create a draft as we want to set the language *before* publication
-		$post_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_status' => 'draft' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_status' => 'draft' ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 		wp_publish_post( $post_id );
 
@@ -211,10 +211,10 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 	protected function setup_nav_menus( $options ) {
 		// create posts
-		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );

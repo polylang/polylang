@@ -100,54 +100,54 @@ class Query_Test extends PLL_UnitTestCase {
 		$is_translated_tax = 'tax' !== $taxonomy; // See self::set_up().
 
 		if ( $is_translated_tax ) {
-			$first_cat_en = $this->factory->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'test1' ) );
+			$first_cat_en = self::factory()->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'test1' ) );
 			self::$model->term->set_language( $first_cat_en, 'en' );
 
-			$second_cat_en = $this->factory->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'test2' ) );
+			$second_cat_en = self::factory()->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'test2' ) );
 			self::$model->term->set_language( $second_cat_en, 'en' );
 
-			$first_cat_fr = $this->factory->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'essai1' ) );
+			$first_cat_fr = self::factory()->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'essai1' ) );
 			self::$model->term->set_language( $first_cat_fr, 'fr' );
 
-			$second_cat_fr = $this->factory->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'essai2' ) );
+			$second_cat_fr = self::factory()->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'essai2' ) );
 			self::$model->term->set_language( $second_cat_fr, 'fr' );
 		} else {
-			$first_cat = $this->factory->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'test1' ) );
-			$second_cat = $this->factory->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'test2' ) );
+			$first_cat = self::factory()->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'test1' ) );
+			$second_cat = self::factory()->term->create( array( 'taxonomy' => $taxonomy, 'name' => 'test2' ) );
 		}
 
 		// English Posts.
-		$eng_posts_cat_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		$eng_posts_cat_1 = self::factory()->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $eng_posts_cat_1 as $post ) {
 			$term = $is_translated_tax ? $first_cat_en : $first_cat;
 			self::$model->post->set_language( $post, 'en' );
 			wp_set_post_terms( $post, array( $term ), $taxonomy );
 		}
-		$eng_posts_cat_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		$eng_posts_cat_2 = self::factory()->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $eng_posts_cat_2 as $post ) {
 			$term = $is_translated_tax ? $second_cat_en : $second_cat;
 			self::$model->post->set_language( $post, 'en' );
 			wp_set_post_terms( $post, array( $term ), $taxonomy );
 		}
-		$eng_posts_no_cat = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		$eng_posts_no_cat = self::factory()->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $eng_posts_no_cat as $post ) {
 			self::$model->post->set_language( $post, 'en' );
 		}
 
 		// French Posts.
-		$french_posts_cat_1 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		$french_posts_cat_1 = self::factory()->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_cat_1 as $index => $post ) {
 			$term = $is_translated_tax ? $first_cat_fr : $first_cat;
 			self::$model->post->set_language( $post, 'fr' );
 			wp_set_post_terms( $post, array( $term ), $taxonomy );
 		}
-		$french_posts_cat_2 = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		$french_posts_cat_2 = self::factory()->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_cat_2 as $post ) {
 			$term = $is_translated_tax ? $second_cat_fr : $second_cat;
 			self::$model->post->set_language( $post, 'fr' );
 			wp_set_post_terms( $post, array( $term ), $taxonomy );
 		}
-		$french_posts_no_cat = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		$french_posts_no_cat = self::factory()->post->create_many( 3, array( 'post_type' => 'post' ) );
 		foreach ( $french_posts_no_cat as $post ) {
 			self::$model->post->set_language( $post, 'fr' );
 		}
@@ -161,10 +161,10 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_home_latest_posts() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/' ) );
@@ -180,10 +180,10 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_single_post() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -197,12 +197,12 @@ class Query_Test extends PLL_UnitTestCase {
 
 	public function test_single_post_private_translation() {
 		// the 'get_user_metadata' filter in frontend-filters breaks this user_description gets '' instead of an array ?
-		$author_en = $this->factory->user->create( array( 'role' => 'author' ) );
+		$author_en = self::factory()->user->create( array( 'role' => 'author' ) );
 
-		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_author' => $author_en, 'post_status' => 'private' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_author' => $author_en, 'post_status' => 'private' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -224,10 +224,10 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_page() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -240,14 +240,14 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_category() {
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'fr' );
 		wp_set_post_terms( $post_id, array( $fr ), 'category' );
 
@@ -258,7 +258,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/category/essai/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) ); // Link to self
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // no content in translation
 
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
 		wp_set_post_terms( $post_id, array( $en ), 'category' );
 
@@ -266,14 +266,14 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_post_tag() {
-		$en = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$post_id = $this->factory->post->create( array( 'tags_input' => array( 'essai' ) ) );
+		$post_id = self::factory()->post->create( array( 'tags_input' => array( 'essai' ) ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 
 		$this->go_to( home_url( '/fr/tag/essai/' ) );
@@ -283,14 +283,14 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/tag/essai/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) );
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // no content in translation
 
-		$post_id = $this->factory->post->create( array( 'tags_input' => array( 'test' ) ) );
+		$post_id = self::factory()->post->create( array( 'tags_input' => array( 'test' ) ) );
 		self::$model->post->set_language( $post_id, 'en' );
 
 		$this->assertEquals( home_url( '/tag/test/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 	}
 
 	public function test_post_format() {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		set_post_format( $post_id, 'aside' );
 		self::$model->post->set_language( $post_id, 'fr' );
 
@@ -301,7 +301,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/type/aside/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) );
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // no content in translation
 
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		set_post_format( $post_id, 'aside' );
 		self::$model->post->set_language( $post_id, 'en' );
 		wp_cache_flush(); // otherwise count_posts has only posts in fr
@@ -310,14 +310,14 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_custom_tax() {
-		$en = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$post_id = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 		wp_set_post_terms( $post_id, 'essai', 'trtax' ); // don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post
 
@@ -332,7 +332,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/trtax/essai/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) );
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // no content in translation
 
-		$post_id = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		wp_set_post_terms( $post_id, 'test', 'trtax' );
 
@@ -340,8 +340,8 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_untranslated_custom_tax() {
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
-		$post_id = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 		wp_set_post_terms( $post_id, 'test', 'tax' );
 
 		$this->go_to( home_url( '/tax/test/' ) );
@@ -353,7 +353,7 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_post_type_archive() {
-		$fr = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/fr/trcpt/' ) );
@@ -362,7 +362,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/trcpt/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) );
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // no content in translation
 
-		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		$this->go_to( home_url( '/fr/trcpt/' ) );
@@ -372,7 +372,7 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_untranslated_post_type_archive() {
-		$post_id = $this->factory->post->create( array( 'post_type' => 'cpt' ) );
+		$post_id = self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 
 		$this->go_to( home_url( '/cpt/' ) );
 
@@ -386,7 +386,7 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_archives() {
-		$fr = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		$fr = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		// author
@@ -417,7 +417,7 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( home_url( '/fr/2007/09/04/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) );
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) ); // no content in translation
 
-		$en = $this->factory->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		$en = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		self::$model->post->set_language( $en, 'en' );
 
 		// author
@@ -446,10 +446,10 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_search() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'test fr' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'test fr' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/fr/?s=test' ) );
@@ -477,18 +477,18 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_search_in_category() {
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
-		$post_id = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_id, 'en' );
 		wp_set_post_terms( $post_id, array( $en ), 'category' );
 
-		$searched = $this->factory->post->create( array( 'post_title' => 'test fr' ) );
+		$searched = self::factory()->post->create( array( 'post_title' => 'test fr' ) );
 		self::$model->post->set_language( $searched, 'fr' );
 		wp_set_post_terms( $searched, array( $fr ), 'category' );
 
@@ -505,16 +505,16 @@ class Query_Test extends PLL_UnitTestCase {
 	 * Bug fixed in v1.9.1: language switcher does not link to media translation for anonymous user.
 	 */
 	public function test_attachment() {
-		$post_en = $this->factory->post->create( array( 'post_title' => 'test' ) );
+		$post_en = self::factory()->post->create( array( 'post_title' => 'test' ) );
 		self::$model->post->set_language( $post_en, 'en' );
 
-		$post_fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$post_fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $post_fr, 'fr' );
 
-		$en = $this->factory->post->create( array( 'post_title' => 'img_en', 'post_type' => 'attachment', 'post_parent' => $post_en ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'img_en', 'post_type' => 'attachment', 'post_parent' => $post_en ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'img_fr', 'post_type' => 'attachment', 'post_parent' => $post_fr ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'img_fr', 'post_type' => 'attachment', 'post_parent' => $post_fr ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -530,10 +530,10 @@ class Query_Test extends PLL_UnitTestCase {
 	 * Bug fixed in 2.1: language switcher does not link to media translation for unattached media.
 	 */
 	public function test_unattached_attachment() {
-		$en = $this->factory->post->create( array( 'post_title' => 'img_en', 'post_type' => 'attachment' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'img_en', 'post_type' => 'attachment' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'img_fr', 'post_type' => 'attachment' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'img_fr', 'post_type' => 'attachment' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -549,10 +549,10 @@ class Query_Test extends PLL_UnitTestCase {
 	 * Bug fixed in v1.8: is_tax set on main feeds.
 	 */
 	public function test_main_feed() {
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$this->go_to( home_url( '/fr/feed/' ) );
@@ -570,13 +570,13 @@ class Query_Test extends PLL_UnitTestCase {
 	 */
 	public function test_untranslated_custom_tax_with_translated_cpt() {
 		register_taxonomy( 'tax', 'trcpt' );
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+		$term_id = self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
 
-		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $en, 'en' );
 		wp_set_post_terms( $en, 'test', 'tax' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 		wp_set_post_terms( $fr, 'test', 'tax' );
 
@@ -595,10 +595,10 @@ class Query_Test extends PLL_UnitTestCase {
 	 * "Issue" fixed in 2.0.10: Drafts should not appear in language switcher.
 	 */
 	public function test_draft() {
-		$en = $this->factory->post->create( array( 'post_title' => 'test', 'post_status' => 'draft' ) );
+		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_status' => 'draft' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_title' => 'essai' ) );
+		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
@@ -610,18 +610,18 @@ class Query_Test extends PLL_UnitTestCase {
 
 	public function test_cat() {
 		// Categories
-		$cat_en = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$cat_en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $cat_en, 'en' );
 
-		$cat_fr = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
+		$cat_fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
 		self::$model->term->set_language( $cat_fr, 'fr' );
 
 		// Posts
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 		wp_set_post_terms( $en, array( $cat_en ), 'category' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 		wp_set_post_terms( $fr, array( $cat_fr ), 'category' );
 
@@ -649,10 +649,10 @@ class Query_Test extends PLL_UnitTestCase {
 	 */
 	public function test_any() {
 		// Posts
-		$en = $this->factory->post->create();
+		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 
 		$query = new WP_Query( array( 'post_type' => 'any', 'lang' => 'en' ) );
@@ -674,14 +674,14 @@ class Query_Test extends PLL_UnitTestCase {
 		register_taxonomy_for_object_type( 'tax', 'trcpt' ); // *untranslated* custom tax
 
 		// Taxonomy
-		$tag = $this->factory->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+		$tag = self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
 
 		// Posts
-		$en = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $en, 'en' );
 		wp_set_post_terms( $en, array( $tag ), 'tax' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 		wp_set_post_terms( $fr, array( $tag ), 'tax' );
 
@@ -707,10 +707,10 @@ class Query_Test extends PLL_UnitTestCase {
 	 * Tests cases with 'lang' and no post type in query.
 	 */
 	public function test_language_and_no_post_type_in_query() {
-		$post_id = $this->factory->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		$post_id = self::factory()->post->create( array( 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		self::$model->post->set_language( $post_id, 'fr' );
 
-		$page_id = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test' ) );
+		$page_id = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'test' ) );
 		self::$model->post->set_language( $page_id, 'fr' );
 
 		$query = new WP_Query( array( 'lang' => 'fr' ) );
@@ -725,16 +725,16 @@ class Query_Test extends PLL_UnitTestCase {
 		$query = new WP_Query( array( 'lang' => 'fr', 'pagename' => 'test' ) );
 		$this->assertEquals( array( get_post( $page_id ) ), $query->posts );
 
-		$media_id = $this->factory->post->create( array( 'post_type' => 'attachment', 'post_title' => 'attached' ) );
+		$media_id = self::factory()->post->create( array( 'post_type' => 'attachment', 'post_title' => 'attached' ) );
 		self::$model->post->set_language( $media_id, 'fr' );
 
 		$query = new WP_Query( array( 'lang' => 'fr', 'attachment' => 'attached' ) );
 		$this->assertEquals( array( get_post( $media_id ) ), $query->posts );
 
-		$cpt_id = $this->factory->post->create( array( 'post_type' => 'trcpt', 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
+		$cpt_id = self::factory()->post->create( array( 'post_type' => 'trcpt', 'post_title' => 'test', 'post_date' => '2007-09-04 00:00:00', 'post_author' => 1 ) );
 		self::$model->post->set_language( $cpt_id, 'fr' );
 
-		$tax_id = $this->factory->term->create( array( 'taxonomy' => 'trtax' ) );
+		$tax_id = self::factory()->term->create( array( 'taxonomy' => 'trtax' ) );
 		self::$model->term->set_language( $tax_id, 'fr' );
 		wp_set_post_terms( $cpt_id, array( $tax_id ), 'trtax' );
 
@@ -765,10 +765,10 @@ class Query_Test extends PLL_UnitTestCase {
 	public function test_category_with_post_type_added_late_in_query() {
 		register_taxonomy_for_object_type( 'category', array( 'post', 'trcpt' ) );
 
-		$cpt_id = $this->factory->post->create( array( 'post_type' => 'trcpt' ) );
+		$cpt_id = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $cpt_id, 'fr' );
 
-		$cat_id = $this->factory->category->create();
+		$cat_id = self::factory()->category->create();
 		self::$model->term->set_language( $cat_id, 'fr' );
 		wp_set_post_terms( $cpt_id, array( $cat_id ), 'category' );
 
@@ -791,7 +791,7 @@ class Query_Test extends PLL_UnitTestCase {
 	 * The sticky posts should appear only once.
 	 */
 	public function test_sticky_posts() {
-		$fr = $this->factory->post->create();
+		$fr = self::factory()->post->create();
 		self::$model->post->set_language( $fr, 'fr' );
 		stick_post( $fr );
 
@@ -929,8 +929,8 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_query_several_languages() {
-		$eng_post = $this->factory->post->create( array( 'post_type' => 'post' ) );
-		$fr_post  = $this->factory->post->create( array( 'post_type' => 'post' ) );
+		$eng_post = self::factory()->post->create( array( 'post_type' => 'post' ) );
+		$fr_post  = self::factory()->post->create( array( 'post_type' => 'post' ) );
 		self::$model->post->set_language( $eng_post, 'en' );
 		self::$model->post->set_language( $fr_post, 'fr' );
 

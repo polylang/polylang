@@ -46,7 +46,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		register_post_type( 'acf' );
 
-		$id = $this->factory->post->create( array( 'post_type' => 'acf' ) );
+		$id = self::factory()->post->create( array( 'post_type' => 'acf' ) );
 		$this->assertEquals( icl_object_id( $id, 'acf', true, 'en' ), $id );
 
 		_unregister_post_type( 'acf' );
@@ -55,10 +55,10 @@ class WPML_Test extends PLL_UnitTestCase {
 	public function test_wpml_active_languages() {
 		self::$model->post->register_taxonomy(); // Needed otherwise posts are not counted
 
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->clean_languages_cache(); // For some reason (global state?) we need to reset the posts count
@@ -135,7 +135,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
-		$id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$id = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $id, 'en' );
 
 		$frontend->curlang = self::$model->get_language( 'fr' );
@@ -159,12 +159,12 @@ class WPML_Test extends PLL_UnitTestCase {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
-		$id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$id = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $id, 'en' );
 
 		$this->assertEquals( 'en', apply_filters( 'wpml_element_language_code', null, array( 'element_id' => $id, 'element_type' => 'page' ) ) );
 
-		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $id, 'en' );
 
 		$this->assertEquals( 'en', apply_filters( 'wpml_element_language_code', null, array( 'element_id' => $id, 'element_type' => 'category' ) ) );
@@ -204,10 +204,10 @@ class WPML_Test extends PLL_UnitTestCase {
 		$frontend->filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
 		$frontend->filters_links->cache->method( 'get' )->willReturn( false );
 
-		$en = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'test' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$tag = $this->factory->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
+		$tag = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
 		self::$model->term->set_language( $tag, 'en' );
 
 		ob_start();
@@ -244,7 +244,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$link = apply_filters( 'wpml_element_link', $en, 'page', '', '', '', false, false );
 		$this->assertEquals( '', $link ); // return_original_if_missing false
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'test fr' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page', 'post_title' => 'test fr' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
@@ -259,10 +259,10 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		$frontend->curlang = self::$model->get_language( 'fr' );
 
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
@@ -271,7 +271,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( $fr, apply_filters( 'wpml_object_id', $en, 'page' ) );
 		$this->assertEquals( $en, apply_filters( 'wpml_object_id', $fr, 'page', false, 'en' ) );
 
-		$cat = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$cat = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $cat, 'en' );
 
 		$this->assertNull( apply_filters( 'wpml_object_id', $cat, 'category' ) );
@@ -322,30 +322,30 @@ class WPML_Test extends PLL_UnitTestCase {
 		$frontend = new PLL_Frontend( $this->links_model );
 		$GLOBALS['polylang'] = $frontend;
 
-		$en = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
-		$id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+		$id = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $id, 'en' );
 
 		$this->assertTrue( apply_filters( 'wpml_element_has_translations', null, $en, 'page' ) );
 		$this->assertTrue( apply_filters( 'wpml_element_has_translations', null, $fr, 'page' ) );
 		$this->assertFalse( apply_filters( 'wpml_element_has_translations', null, $id, 'page' ) );
 
-		$en = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
 
-		$id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
 		self::$model->term->set_language( $id, 'en' );
 
 		$this->assertTrue( apply_filters( 'wpml_element_has_translations', null, $en, 'category' ) );

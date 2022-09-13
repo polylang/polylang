@@ -19,7 +19,7 @@ class PLL_Translated_Object_UnitTestCase extends PLL_UnitTestCase {
 		$property->setAccessible( true );
 		$object_type = $property->getValue( $translated_object );
 
-		$id = $this->factory()->$object_type->create();
+		$id = self::factory()->$object_type->create();
 		$translated_object->set_language( $id, 'en' );
 
 		$translated_object->save_translations( $id, array( 'fr' => $id ) );
