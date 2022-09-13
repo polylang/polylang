@@ -105,11 +105,12 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 					if ( ! empty( $pt ) ) {
 						$disabled = in_array( $post_type, $this->disabled_post_types );
 						printf(
-							'<li><label><input name="post_types[%s]" type="checkbox" value="1" %s %s/> %s</label></li>',
+							'<li><label><input name="post_types[%s]" type="checkbox" value="1" %s %s/> %s %s</label></li>',
 							esc_attr( $post_type ),
 							checked( in_array( $post_type, $this->options['post_types'] ) || $disabled, true, false ),
 							disabled( $disabled, true, false ),
-							esc_html( $pt->labels->name )
+							esc_html( $pt->labels->name ),
+							'(' . esc_html( $pt->name ) . ')'
 						);
 					}
 				}
