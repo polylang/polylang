@@ -447,23 +447,7 @@ class PLL_Admin_Filters_Term {
 
 		// If the term already exists in another language
 		if ( ! $slug && $this->model->is_translated_taxonomy( $taxonomy ) && term_exists( $name, $taxonomy ) ) {
-			if ( isset( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$lang = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
-
-			elseif ( isset( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
-
-			// *Post* bulk edit, in case a new term is created
-			elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				// Bulk edit does not modify the language
-				if ( -1 == $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
-					$lang = $this->model->post->get_language( $this->post_id );
-				} else {
-					$lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-				}
-			}
+			$lang = $this->get_subsequently_inserted_term_language( $slug, $taxonomy );
 
 			if ( ! empty( $lang ) && ! $this->model->term_exists_by_slug( $name, $lang, $taxonomy ) ) {
 				$slug = $name . '-' . $lang->slug;
@@ -660,5 +644,51 @@ class PLL_Admin_Filters_Term {
 
 		$this->model->term->save_translations( $new_term_id, $translations );
 		$avoid_recursion = false;
+	}
+
+	public function get_subsequently_inserted_term_language( $slug, $taxonomy ) {
+		$lang = null;
+
+		if ( isset( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+
+		elseif ( isset( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+
+		// *Post* bulk edit, in case a new term is created
+		elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// Bulk edit does not modify the language
+			if ( -1 == $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
+				$lang = $this->model->post->get_language( $this->post_id );
+			} else {
+				$lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+			}
+		}
+		if ( isset( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+
+			if ( isset( $_POST['parent'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				$parent = intval( $_POST['parent'] ); // phpcs:ignore WordPress.Security.NonceVerification
+			} elseif ( isset( $_POST[ "new{$taxonomy}_parent" ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
+			}
+		}
+
+		elseif ( isset( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+
+		// Special cases for default categories as the select is disabled.
+		elseif ( ! empty( $_POST['tag_ID'] ) && in_array( get_option( 'default_category' ), $this->model->term->get_translations( (int) $_POST['tag_ID'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = $this->model->term->get_language( (int) $_POST['tag_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+
+		elseif ( ! empty( $_POST['tax_ID'] ) && in_array( get_option( 'default_category' ), $this->model->term->get_translations( (int) $_POST['tax_ID'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = $this->model->term->get_language( (int) $_POST['tax_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+
+		return apply_filters( 'pll_subsequently_inserted_term_language', $lang, $slug, $taxonomy );
 	}
 }
