@@ -5,69 +5,41 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 
+require_once __DIR__ . '/../../phpunit/includes/bootstrap.php';
+
 /**
  * Defines application features from the specific context.
  */
-class BrowserPreferredLanguageContext implements Context {
-
-	/**
-	 * @var PLL_UnitTestCase
-	 */
-	private $test_case;
-
-	/**
-	 * @BeforeSuite
-	 */
-	public static function prepare_for_suite() {
-		require_once __DIR__ . '/../../phpunit/includes/bootstrap.php';
-	}
+class BrowserPreferredLanguageContext extends PLL_UnitTestCase implements Context {
 
 	/**
 	 * @BeforeFeature
 	 */
 	public static function prepare_for_feature() {
-		PLL_UnitTestCase::setUpBeforeClass();
-		PLL_UnitTestCase::$model->post->register_taxonomy();
+		self::setUpBeforeClass();
+		self::$model->post->register_taxonomy();
 	}
 
 	/**
 	 * @AfterFeature
 	 */
 	public static function clean_after_feature() {
-		PLL_UnitTestCase::tearDownAfterClass();
-	}
-
-	/**
-	 * Copy of WP_UnitTestCase::factory().
-	 */
-	protected static function factory() {
-		static $factory = null;
-		if ( ! $factory ) {
-			$factory = new WP_UnitTest_Factory();
-		}
-		return $factory;
-	}
-
-	/**
-	 * Initializes context and test framework.
-	 */
-	public function __construct() {
-		$this->test_case = new PLL_UnitTestCase();
+		self::tearDownAfterClass();
 	}
 
 	/**
 	 * @BeforeScenario
 	 */
 	public function prepare_for_scenario() {
-		$this->test_case->set_up();
+		$this->set_up();
 	}
 
 	/**
 	 * @AfterScenario
 	 */
 	public function clean_after_scenario() {
-		PLL_UnitTestCase::delete_all_languages();
-		$this->test_case->tear_down();
+		self::delete_all_languages();
+		$this->tear_down();
 	}
 
 	/**
@@ -77,12 +49,12 @@ class BrowserPreferredLanguageContext implements Context {
 	 */
 	public function my_website_has_content_in( $language_code, $language_slug = '' ) {
 		$args = empty( $language_slug ) ? array() : array( 'slug' => $language_slug );
-		PLL_UnitTestCase::create_language( Locale::canonicalize( $language_code ), $args );
+		self::create_language( Locale::canonicalize( $language_code ), $args );
 
 		$post_id = self::factory()->post->create();
 
 		$default_slug = explode( '-', $language_code )[0];
-		PLL_UnitTestCase::$model->post->set_language( $post_id, empty( $language_slug ) ? $default_slug : $language_slug );
+		self::$model->post->set_language( $post_id, empty( $language_slug ) ? $default_slug : $language_slug );
 	}
 
 	/**
@@ -114,15 +86,15 @@ class BrowserPreferredLanguageContext implements Context {
 	 * @param string $language_code Language codes as defined by IETF's BCP 47 {@see https://tools.ietf.org/html/bcp47#section-2.1}
 	 */
 	public function polylang_will_remember( $language_code ) {
-		PLL_UnitTestCase::$model->clean_languages_cache();
+		self::$model->clean_languages_cache();
 
 		$polylang = new stdClass();
-		$polylang->model = PLL_UnitTestCase::$model;
+		$polylang->model = self::$model;
 		$choose_lang = new PLL_Choose_Lang_Url( $polylang );
 
 		$preferred_browser_language = $choose_lang->get_preferred_browser_language();
-		$preferred_locale = PLL_UnitTestCase::$model->get_language( $preferred_browser_language )->locale;
+		$preferred_locale = self::$model->get_language( $preferred_browser_language )->locale;
 		$expected_locale = Locale::canonicalize( $language_code );
-		PLL_UnitTestCase::assertEquals( $expected_locale, $preferred_locale, "{$preferred_locale} does not match {$expected_locale}" );
+		self::assertEquals( $expected_locale, $preferred_locale, "{$preferred_locale} does not match {$expected_locale}" );
 	}
 }
