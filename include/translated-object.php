@@ -425,13 +425,21 @@ abstract class PLL_Translated_Object {
 		}
 
 		/*
-		 * $lang is a comma separated list of slugs ( or an array of slugs ).
-		 * This is generally the case is the query is coming from outside with a 'lang' parameter.
+		 * $lang is an array of objects, an array of slugs, or a comma separated list of slugs.
+		 * The comma separated list of slugs can happen if the query is coming from outside with a 'lang' parameter.
 		 */
 		$languages        = is_array( $lang ) ? $lang : explode( ',', $lang );
 		$languages_tt_ids = array();
 		foreach ( $languages as $language ) {
-			$languages_tt_ids[] = absint( $this->model->get_language( $language )->$tt_id );
+			$language = $this->model->get_language( $language );
+
+			if ( ! empty( $language ) ) {
+				$languages_tt_ids[] = absint( $language->$tt_id );
+			}
+		}
+
+		if ( empty( $languages_tt_ids ) ) {
+			return '';
 		}
 
 		return ' AND pll_tr.term_taxonomy_id IN ( ' . implode( ',', $languages_tt_ids ) . ' )';
