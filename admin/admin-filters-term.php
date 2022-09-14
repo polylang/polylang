@@ -646,8 +646,17 @@ class PLL_Admin_Filters_Term {
 		$avoid_recursion = false;
 	}
 
+	/**
+	 * Returns the language for subsequently inserted term.
+	 *
+	 * @since 3.3
+	 *
+	 * @param string $slug     Term slug.
+	 * @param string $taxonomy Term taxonomy.
+	 * @return PLL_Language|false Language object, false if none found.
+	 */
 	public function get_subsequently_inserted_term_language( $slug, $taxonomy ) {
-		$lang = null;
+		$lang = false;
 
 		if ( isset( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$lang = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
@@ -683,6 +692,15 @@ class PLL_Admin_Filters_Term {
 			$lang = $this->model->term->get_language( (int) $_POST['tax_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
+		/**
+		 * Filters the subsequently inserted term language.
+		 *
+		 * @since 3.3
+		 *
+		 * @param PLL_Language|false $lang     Found language object, false otherwise.
+		 * @param string             $slug     Term slug.
+		 * @param string             $taxonomy Term taxonomy.
+		 */
 		return apply_filters( 'pll_subsequently_inserted_term_language', $lang, $slug, $taxonomy );
 	}
 }
