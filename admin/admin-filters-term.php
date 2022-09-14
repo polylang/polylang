@@ -668,12 +668,6 @@ class PLL_Admin_Filters_Term {
 		}
 		if ( isset( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$lang = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-
-			if ( isset( $_POST['parent'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$parent = intval( $_POST['parent'] ); // phpcs:ignore WordPress.Security.NonceVerification
-			} elseif ( isset( $_POST[ "new{$taxonomy}_parent" ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
 		}
 
 		elseif ( isset( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
