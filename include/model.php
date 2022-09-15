@@ -430,10 +430,15 @@ class PLL_Model {
 	 * @param string              $taxonomy  Taxonomy name.
 	 * @param int                 $parent    Parent term id.
 	 * @param string|PLL_Language $language  The language slug or object.
-	 * @return null|int The term_id of the found term.
+	 * @return int|null The `term_id` of the found term. Null otherwise.
 	 */
 	public function term_exists( $term_name, $taxonomy, $parent, $language ) {
 		global $wpdb;
+
+		$language = $this->get_language( $language );
+ 		if ( empty( $language ) ) {
+ 			return null;
+ 		}
 
 		$term_name = trim( wp_unslash( $term_name ) );
 		$term_name = _wp_specialchars( $term_name );
@@ -462,10 +467,15 @@ class PLL_Model {
 	 * @param string|PLL_Language $language The language slug or object.
 	 * @param string              $taxonomy Optional taxonomy name.
 	 * @param int                 $parent   Optional parent term id.
-	 * @return null|int The term_id of the found term.
+	 * @return int|null The `term_id` of the found term. Null otherwise.
 	 */
 	public function term_exists_by_slug( $slug, $language, $taxonomy = '', $parent = 0 ) {
 		global $wpdb;
+
+		$language = $this->get_language( $language );
+ 		if ( empty( $language ) ) {
+ 			return null;
+ 		}
 
 		$select = "SELECT t.term_id FROM {$wpdb->terms} AS t";
 		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
