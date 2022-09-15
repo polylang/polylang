@@ -436,9 +436,9 @@ class PLL_Model {
 		global $wpdb;
 
 		$language = $this->get_language( $language );
- 		if ( empty( $language ) ) {
- 			return null;
- 		}
+		if ( empty( $language ) ) {
+			return null;
+		}
 
 		$term_name = trim( wp_unslash( $term_name ) );
 		$term_name = _wp_specialchars( $term_name );
@@ -473,9 +473,9 @@ class PLL_Model {
 		global $wpdb;
 
 		$language = $this->get_language( $language );
- 		if ( empty( $language ) ) {
- 			return null;
- 		}
+		if ( empty( $language ) ) {
+			return null;
+		}
 
 		$select = "SELECT t.term_id FROM {$wpdb->terms} AS t";
 		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
