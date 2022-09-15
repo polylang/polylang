@@ -108,7 +108,7 @@ class PLL_Upgrade {
 				$method_to_call = array( $this, 'upgrade_' . str_replace( '.', '_', $version ) );
 				if ( is_callable( $method_to_call ) ) {
 					call_user_func( $method_to_call );
-				}				
+				}               
 			}
 		}
 
