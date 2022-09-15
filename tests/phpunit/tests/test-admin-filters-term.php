@@ -547,4 +547,35 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertEquals( 'en', $this->pll_admin->curlang->slug );
 	}
+
+	public function test_filter_language_for_terms_with_same_slug() {
+		$fr_lang = self::$model->get_language( 'fr' );
+
+		// Filter the language. Do not set any globals!
+		add_filter(
+			'pll_subsequently_inserted_term_language',
+			function () use ( $fr_lang ) {
+				return $fr_lang;
+			}
+		);
+
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$this->assertEquals( 'en', self::$model->term->get_language( $en )->slug );
+
+		// Second category in English with the same name.
+		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+
+		$this->assertWPError( $error );
+
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+
+		$term = get_term( $fr, 'category' );
+		$this->assertEquals( 'test-fr', $term->slug );
+		$this->assertEquals( 'fr', self::$model->term->get_language( $fr )->slug );
+
+		// Second category in French with the same name.
+		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+
+		$this->assertWPError( $error );
+	}
 }
