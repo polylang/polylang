@@ -410,7 +410,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 1.2
 	 *
-	 * @param PLL_Language|string|string[] $lang PLL_Language object or a comma separated list of language slug or an array of language slugs.
+	 * @param PLL_Language|PLL_Language[]|string|string[] $lang PLL_Language object or a comma separated list of language slug or an array of language slugs or objects.
 	 * @return string Where clause.
 	 */
 	public function where_clause( $lang ) {
@@ -425,16 +425,24 @@ abstract class PLL_Translated_Object {
 		}
 
 		/*
-		 * $lang is a comma separated list of slugs ( or an array of slugs ).
-		 * This is generally the case is the query is coming from outside with a 'lang' parameter.
+		 * $lang is an array of objects, an array of slugs, or a comma separated list of slugs.
+		 * The comma separated list of slugs can happen if the query is coming from outside with a 'lang' parameter.
 		 */
-		$slugs     = is_array( $lang ) ? $lang : explode( ',', $lang );
-		$languages = array();
-		foreach ( $slugs as $slug ) {
-			$languages[] = absint( $this->model->get_language( $slug )->$tt_id );
+		$languages        = is_array( $lang ) ? $lang : explode( ',', $lang );
+		$languages_tt_ids = array();
+		foreach ( $languages as $language ) {
+			$language = $this->model->get_language( $language );
+
+			if ( ! empty( $language ) ) {
+				$languages_tt_ids[] = absint( $language->$tt_id );
+			}
 		}
 
-		return ' AND pll_tr.term_taxonomy_id IN ( ' . implode( ',', $languages ) . ' )';
+		if ( empty( $languages_tt_ids ) ) {
+			return '';
+		}
+
+		return ' AND pll_tr.term_taxonomy_id IN ( ' . implode( ',', $languages_tt_ids ) . ' )';
 	}
 
 	/**

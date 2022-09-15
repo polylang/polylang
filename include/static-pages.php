@@ -180,10 +180,11 @@ class PLL_Static_Pages {
 	 */
 	public function oembed_request_post_id( $post_id, $url ) {
 		foreach ( $this->model->get_languages_list() as $lang ) {
-			if ( trailingslashit( $url ) === trailingslashit( $lang->home_url ) ) {
-				$post_id = $lang->page_on_front;
+			if ( is_string( $lang->home_url ) && trailingslashit( $url ) === trailingslashit( $lang->home_url ) ) {
+				return (int) $lang->page_on_front;
 			}
 		}
+
 		return $post_id;
 	}
 }

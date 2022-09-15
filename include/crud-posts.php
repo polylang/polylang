@@ -283,7 +283,9 @@ class PLL_CRUD_Posts {
 		// Create a new attachment ( translate attachment parent if exists ).
 		add_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Avoid a conflict with automatic duplicate at upload.
 		unset( $post['ID'] ); // Will force the creation.
-		$post['post_parent'] = ( $post['post_parent'] && $tr_parent = $this->model->post->get_translation( $post['post_parent'], $lang->slug ) ) ? $tr_parent : 0;
+		if ( ! empty( $post['post_parent'] ) ) {
+			$post['post_parent'] = (int) $this->model->post->get_translation( $post['post_parent'], $lang->slug );
+		}
 		$post['tax_input'] = array( 'language' => array( $lang->slug ) ); // Assigns the language.
 		$tr_id = wp_insert_attachment( wp_slash( $post ) );
 		remove_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Restore automatic duplicate at upload.

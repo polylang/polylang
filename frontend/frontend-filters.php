@@ -121,7 +121,15 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @return string modified WHERE clause
 	 */
 	public function getarchives_where( $sql, $r ) {
-		return ! empty( $r['post_type'] ) && $this->model->is_translated_post_type( $r['post_type'] ) ? $sql . $this->model->post->where_clause( $this->curlang ) : $sql;
+		if ( ! $this->curlang instanceof PLL_Language ) {
+			return $sql;
+		}
+
+		if ( empty( $r['post_type'] ) || ! $this->model->is_translated_post_type( $r['post_type'] ) ) {
+			return $sql;
+		}
+
+		return $sql . $this->model->post->where_clause( $this->curlang );
 	}
 
 	/**

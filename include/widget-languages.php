@@ -38,8 +38,11 @@ class PLL_Widget_Languages extends WP_Widget {
 	public function widget( $args, $instance ) {
 		// Sets a unique id for dropdown.
 		$instance['dropdown'] = empty( $instance['dropdown'] ) ? 0 : $this->id;
+		$instance['echo']     = 0;
+		$instance['raw']      = 0;
+		$list                 = pll_the_languages( $instance );
 
-		if ( $list = pll_the_languages( array_merge( $instance, array( 'echo' => 0 ) ) ) ) {
+		if ( $list ) {
 			$title = empty( $instance['title'] ) ? '' : $instance['title'];
 
 			/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */

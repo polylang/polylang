@@ -576,11 +576,6 @@ parameters:
 			path: frontend/frontend-filters-links.php
 
 		-
-			message: "#^Parameter \\#2 \\$str of function explode expects string, int\\|string given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-links.php
-
-		-
 			message: "#^Cannot access property \\$search_url on PLL_Language\\|null\\.$#"
 			count: 1
 			path: frontend/frontend-filters-search.php
@@ -632,11 +627,6 @@ parameters:
 
 		-
 			message: "#^Method PLL_Frontend_Filters\\:\\:option_sticky_posts\\(\\) should return array\\<int\\> but returns mixed\\.$#"
-			count: 1
-			path: frontend/frontend-filters.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Translated_Object\\:\\:where_clause\\(\\) expects array\\<string\\>\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
 			count: 1
 			path: frontend/frontend-filters.php
 
@@ -1106,11 +1096,6 @@ parameters:
 			path: include/links-permalinks.php
 
 		-
-			message: "#^Method PLL_Links_Subdomain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int\\|string, string\\|false\\|null\\>\\.$#"
-			count: 1
-			path: include/links-subdomain.php
-
-		-
 			message: "#^Method PLL_Links_Subdomain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: include/links-subdomain.php
@@ -1192,11 +1177,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$arr1 of function array_intersect expects array, mixed given\\.$#"
-			count: 2
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Translated_Object\\:\\:where_clause\\(\\) expects array\\<string\\>\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 2
 			path: include/model.php
 
@@ -1381,20 +1361,7 @@ parameters:
 			path: include/walker-dropdown.php
 
 		-
-			message: """
-				#^Binary operation "\\." between '\\<ul\\>
-				' and non\\-empty\\-array\\|non\\-empty\\-string results in an error\\.$#
-			"""
-			count: 1
-			path: include/widget-languages.php
-
-		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
-			count: 1
-			path: include/widget-languages.php
-
-		-
-			message: "#^Parameter \\#1 \\(non\\-empty\\-array\\|non\\-empty\\-string\\) of echo cannot be converted to string\\.$#"
 			count: 1
 			path: include/widget-languages.php
 
@@ -1429,11 +1396,6 @@ parameters:
 			path: install/t15s.php
 
 		-
-			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\{\\$this\\(PLL_Upgrade\\), non\\-empty\\-string\\} given\\.$#"
-			count: 1
-			path: install/upgrade.php
-
-		-
 			message: "#^Parameter \\#2 \\$str of function explode expects string, mixed given\\.$#"
 			count: 1
 			path: modules/lingotek/lingotek.php
@@ -1442,11 +1404,6 @@ parameters:
 			message: "#^Cannot call method get_must_translate_message\\(\\) on PLL_Admin_Static_Pages\\|null\\.$#"
 			count: 1
 			path: modules/site-health/admin-site-health.php
-
-		-
-			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\{PLL_Model, 'is_translated_post…'\\|'is_translated…'\\} given\\.$#"
-			count: 1
-			path: modules/sitemaps/multilingual-sitemaps-provider.php
 
 		-
 			message: "#^Parameter \\#1 \\$name of method WP_Sitemaps_Provider\\:\\:get_sitemap_url\\(\\) expects string, string\\|null given\\.$#"

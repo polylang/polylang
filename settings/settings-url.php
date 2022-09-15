@@ -257,6 +257,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 		}
 
 		if ( 3 == $options['force_lang'] && isset( $options['domains'] ) && is_array( $options['domains'] ) ) {
+			$newoptions['domains'] = array();
 			foreach ( $options['domains'] as $key => $domain ) {
 				if ( empty( $domain ) ) {
 					$lang = $this->model->get_language( $key );

@@ -105,7 +105,10 @@ class PLL_Upgrade {
 	public function _upgrade() {
 		foreach ( array( '2.0.8', '2.1', '2.7', '2.8.1' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
-				call_user_func( array( $this, 'upgrade_' . str_replace( '.', '_', $version ) ) );
+				$method_to_call = array( $this, 'upgrade_' . str_replace( '.', '_', $version ) );
+				if ( is_callable( $method_to_call ) ) {
+					call_user_func( $method_to_call );
+				}               
 			}
 		}
 

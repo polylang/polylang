@@ -430,10 +430,15 @@ class PLL_Model {
 	 * @param string              $taxonomy  Taxonomy name.
 	 * @param int                 $parent    Parent term id.
 	 * @param string|PLL_Language $language  The language slug or object.
-	 * @return null|int The term_id of the found term.
+	 * @return int The `term_id` of the found term. 0 otherwise.
 	 */
 	public function term_exists( $term_name, $taxonomy, $parent, $language ) {
 		global $wpdb;
+
+		$language = $this->get_language( $language );
+		if ( empty( $language ) ) {
+			return 0;
+		}
 
 		$term_name = trim( wp_unslash( $term_name ) );
 		$term_name = _wp_specialchars( $term_name );
@@ -442,7 +447,7 @@ class PLL_Model {
 		$join = " INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id";
 		$join .= $this->term->join_clause();
 		$where = $wpdb->prepare( ' WHERE tt.taxonomy = %s AND t.name = %s', $taxonomy, $term_name );
-		$where .= $this->term->where_clause( $this->get_language( $language ) );
+		$where .= $this->term->where_clause( $language );
 
 		if ( $parent > 0 ) {
 			$where .= $wpdb->prepare( ' AND tt.parent = %d', $parent );
@@ -462,16 +467,21 @@ class PLL_Model {
 	 * @param string|PLL_Language $language The language slug or object.
 	 * @param string              $taxonomy Optional taxonomy name.
 	 * @param int                 $parent   Optional parent term id.
-	 * @return null|int The term_id of the found term.
+	 * @return int The `term_id` of the found term. 0 otherwise.
 	 */
 	public function term_exists_by_slug( $slug, $language, $taxonomy = '', $parent = 0 ) {
 		global $wpdb;
+
+		$language = $this->get_language( $language );
+		if ( empty( $language ) ) {
+			return 0;
+		}
 
 		$select = "SELECT t.term_id FROM {$wpdb->terms} AS t";
 		$join   = " INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
 		$join  .= $this->term->join_clause();
 		$where  = $wpdb->prepare( ' WHERE t.slug = %s', $slug );
-		$where .= $this->term->where_clause( $this->get_language( $language ) );
+		$where .= $this->term->where_clause( $language );
 
 		if ( ! empty( $taxonomy ) ) {
 			$where .= $wpdb->prepare( ' AND tt.taxonomy = %s', $taxonomy );
