@@ -554,20 +554,23 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		// Filter the language. Do not set any globals!
 		add_filter(
 			'pll_subsequently_inserted_term_language',
-			function () use ( $fr_lang ) {
+			function ( $found_language ) use ( $fr_lang ) {
+				if ( $found_language instanceof PLL_Language ) {
+					return $found_language;
+				}
+
 				return $fr_lang;
 			}
 		);
 
 		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		self::$model->term->set_language( $en, 'en' );
+
 		$this->assertEquals( 'en', self::$model->term->get_language( $en )->slug );
 
-		// Second category in English with the same name.
-		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-
-		$this->assertWPError( $error );
-
+		// Let's create a translated term with the same name.
 		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		self::$model->term->set_language( $fr, 'fr' );
 
 		$term = get_term( $fr, 'category' );
 		$this->assertEquals( 'test-fr', $term->slug );
