@@ -566,19 +566,20 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$this->assertEquals( 'en', self::$model->term->get_language( $en )->slug );
+		$this->assertEquals( 'en', self::$model->term->get_language( $en )->slug, 'English term has not its language set.' );
 
 		// Let's create a translated term with the same name.
 		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		$term = get_term( $fr, 'category' );
-		$this->assertEquals( 'test-fr', $term->slug );
-		$this->assertEquals( 'fr', self::$model->term->get_language( $fr )->slug );
+
+		$this->assertEquals( 'test-fr', $term->slug, 'French term slug is not suffixed with language.' );
+		$this->assertEquals( 'fr', self::$model->term->get_language( $fr )->slug, 'French term has not its language set.' );
 
 		// Second category in French with the same name.
 		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 
-		$this->assertWPError( $error );
+		$this->assertWPError( $error, 'Third term with the same slug shouldn\'t be created.' );
 	}
 }
