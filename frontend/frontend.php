@@ -87,6 +87,7 @@ class PLL_Frontend extends PLL_Base {
 		}
 
 		add_action( 'admin_bar_menu', array( $this, 'remove_customize_admin_bar' ), 41 ); // After WP_Admin_Bar::add_menus
+		add_action( 'wp_footer', array( $this, 'footer_print' ) );
 	}
 
 	/**
@@ -264,5 +265,23 @@ class PLL_Frontend extends PLL_Base {
 
 		remove_action( 'wp_before_admin_bar_render', 'wp_customize_support_script' ); // To avoid the script launch.
 		$wp_admin_bar->remove_menu( 'customize' );
+	}
+
+	/**
+	 * Add a comment in the WordPress footer with information about Polylang version used.
+	 *
+	 * Useful information for Support team.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	public function footer_print(){
+		/* translators: %1$s and %2$s are Polylang version. */
+		printf(
+			__( '<!-- Mulitlingual website powered by %1$s %2$s -->', 'polylang'),
+			POLYLANG,
+			POLYLANG_VERSION
+		);
 	}
 }
