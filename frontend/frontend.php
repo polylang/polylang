@@ -276,12 +276,12 @@ class PLL_Frontend extends PLL_Base {
 	 *
 	 * @return void
 	 */
-	public function footer_print(){
-		/* translators: %1$s and %2$s are Polylang version. */
+	public function footer_print() {
 		printf(
-			__( '<!-- Mulitlingual website powered by %1$s %2$s -->', 'polylang'),
-			POLYLANG,
-			POLYLANG_VERSION
+		/* translators: %1$s and %2$s are Polylang version. */
+			esc_html__( '<!-- Mulitlingual website powered by %1$s %2$s -->', 'polylang' ),
+			esc_html( POLYLANG ),
+			esc_html( POLYLANG_VERSION )
 		);
 	}
 }
