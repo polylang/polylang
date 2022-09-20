@@ -138,7 +138,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 						printf(
 							'<li><label><input name="taxonomies[%s]" type="checkbox" value="1" %s %s/> %s</label></li>',
 							esc_attr( $taxonomy ),
-							checked( $disabled || in_array( $taxonomy, $this->options['taxonomies'] ), true, false ),
+							checked( $disabled || in_array( $taxonomy, $this->options['taxonomies'], true ), true, false ),
 							disabled( $disabled, true, false ),
 							esc_html(
 								sprintf(
