@@ -143,7 +143,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 							esc_html(
 								sprintf(
 									/* translators: 1 is a post type or taxonomy label, 2 is a post type or taxonomy key. */
-									_x( '%1$s (%2$s)', 'taxonomy setting choice', 'polylang' ),
+									_x( '%1$s (%2$s)', 'content type setting choice', 'polylang' ),
 									$tax->labels->name,
 									$tax->name
 								)
