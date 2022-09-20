@@ -658,12 +658,18 @@ class PLL_Admin_Filters_Term {
 	public function get_subsequently_inserted_term_language( $slug, $taxonomy ) {
 		$lang = false;
 
-		if ( isset( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$lang = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! empty( $_POST['term_lang_choice'] ) && is_string( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang_slug = sanitize_key( $_POST['term_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
+			if ( ! empty( $lang_slug ) ) {
+				$lang = $this->model->get_language( $lang_slug );
+			}
 		}
 
-		elseif ( isset( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		elseif ( ! empty( $_POST['inline_lang_choice'] ) && is_string( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang_slug = sanitize_key( $_POST['inline_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
+			if ( ! empty( $lang_slug ) ) {
+				$lang = $this->model->get_language( $lang_slug );
+			}
 		}
 
 		// *Post* bulk edit, in case a new term is created
@@ -672,15 +678,11 @@ class PLL_Admin_Filters_Term {
 			if ( -1 === (int) $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$lang = $this->model->post->get_language( $this->post_id );
 			} else {
-				$lang = $this->model->get_language( sanitize_key( $_GET['inline_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+				$lang_slug = sanitize_key( $_POST['inline_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
+				if ( ! empty( $lang_slug ) ) {
+					$lang = $this->model->get_language( $lang_slug );
+				}
 			}
-		}
-		if ( isset( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$lang = $this->model->get_language( sanitize_key( $_POST['term_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-		}
-
-		elseif ( isset( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		// Special cases for default categories as the select is disabled.
