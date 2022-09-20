@@ -147,7 +147,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 									$tax->labels->name,
 									$tax->name
 								)
-							)							
+							)
 						);
 					}
 				}
