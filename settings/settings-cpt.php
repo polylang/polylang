@@ -107,7 +107,7 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 						printf(
 							'<li><label><input name="post_types[%s]" type="checkbox" value="1" %s %s/> %s</label></li>',
 							esc_attr( $post_type ),
-							checked( $disabled || in_array( $post_type, $this->options['post_types'] ), true, false ),
+							checked( $disabled || in_array( $post_type, $this->options['post_types'], true ), true, false ),
 							disabled( $disabled, true, false ),
 							esc_html(
 								sprintf(
