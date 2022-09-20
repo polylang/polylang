@@ -566,19 +566,22 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$this->assertEquals( 'en', self::$model->term->get_language( $en )->slug, 'English term has not its language set.' );
+		$en_lang = self::$model->term->get_language( $en );
+
+		$this->assertInstanceOf( PLL_Language::class, $en_lang, 'Expected the English term to have a language.' );
+		$this->assertSame( 'en', $en_lang->slug, 'English term has not the right language set.' );
 
 		// Let's create a translated term with the same name.
 		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
-		$term = get_term( $fr, 'category' );
+		$term    = get_term( $fr, 'category' );
+		$fr_lang = self::$model->term->get_language( $fr );
 
-		$this->assertEquals( 'test-fr', $term->slug, 'French term slug is not suffixed with language.' );
-		$this->assertEquals( 'fr', self::$model->term->get_language( $fr )->slug, 'French term has not its language set.' );
-
-		// Second category in French with the same name.
-		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		$this->assertInstanceOf( WP_Term::class, $term, 'Expected the French term to have a category.' );
+		$this->assertSame( 'test-fr', $term->slug, 'French term slug is not suffixed with language.' );
+		$this->assertInstanceOf( PLL_Language::class, $fr_lang, 'Expected the French term to have a language.' );
+		$this->assertSame( 'fr', $fr_lang->slug, 'French term has not the right language set.' );
 
 		$this->assertWPError( $error, 'Third term with the same slug shouldn\'t be created.' );
 	}
