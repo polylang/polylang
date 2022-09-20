@@ -583,6 +583,9 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertInstanceOf( PLL_Language::class, $fr_lang, 'Expected the French term to have a language.' );
 		$this->assertSame( 'fr', $fr_lang->slug, 'French term has not the right language set.' );
 
+		// Let's create a third term with the same name.
+		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+
 		$this->assertWPError( $error, 'Third term with the same slug shouldn\'t be created.' );
 	}
 }
