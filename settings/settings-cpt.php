@@ -107,9 +107,16 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 						printf(
 							'<li><label><input name="post_types[%s]" type="checkbox" value="1" %s %s/> %s</label></li>',
 							esc_attr( $post_type ),
-							checked( in_array( $post_type, $this->options['post_types'] ) || $disabled, true, false ),
+							checked( $disabled || in_array( $post_type, $this->options['post_types'], true ), true, false ),
 							disabled( $disabled, true, false ),
-							esc_html( $pt->labels->name )
+							esc_html(
+								sprintf(
+									/* translators: 1 is a post type or taxonomy label, 2 is a post type or taxonomy key. */
+									_x( '%1$s (%2$s)', 'content type setting choice', 'polylang' ),
+									$pt->labels->name,
+									$pt->name
+								)
+							)
 						);
 					}
 				}
@@ -131,9 +138,16 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 						printf(
 							'<li><label><input name="taxonomies[%s]" type="checkbox" value="1" %s %s/> %s</label></li>',
 							esc_attr( $taxonomy ),
-							checked( in_array( $taxonomy, $this->options['taxonomies'] ) || $disabled, true, false ),
+							checked( $disabled || in_array( $taxonomy, $this->options['taxonomies'], true ), true, false ),
 							disabled( $disabled, true, false ),
-							esc_html( $tax->labels->name )
+							esc_html(
+								sprintf(
+									/* translators: 1 is a post type or taxonomy label, 2 is a post type or taxonomy key. */
+									_x( '%1$s (%2$s)', 'content type setting choice', 'polylang' ),
+									$tax->labels->name,
+									$tax->name
+								)
+							)
 						);
 					}
 				}
