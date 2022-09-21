@@ -677,7 +677,7 @@ class PLL_Admin_Filters_Term {
 			// Bulk edit does not modify the language
 			if ( -1 === (int) $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$lang = $this->model->post->get_language( $this->post_id );
-			} elseif ( is_string( $_POST['inline_lang_choice'] ) ) {
+			} elseif ( is_string( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$lang_slug = sanitize_key( $_POST['inline_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
 				if ( ! empty( $lang_slug ) ) {
 					$lang = $this->model->get_language( $lang_slug );
