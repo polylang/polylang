@@ -437,11 +437,11 @@ class PLL_WPSEO {
 			// Copy the image urls.
 			$keys[] = '_yoast_wpseo_opengraph-image';
 			$keys[] = '_yoast_wpseo_twitter-image';
-		}
 
-		$keys[] = '_yoast_wpseo_meta-robots-noindex';
-		$keys[] = '_yoast_wpseo_meta-robots-nofollow';
-		$keys[] = '_yoast_wpseo_meta-robots-adv';
+			$keys[] = '_yoast_wpseo_meta-robots-noindex';
+			$keys[] = '_yoast_wpseo_meta-robots-nofollow';
+			$keys[] = '_yoast_wpseo_meta-robots-adv';
+		}
 
 		$taxonomies = get_taxonomies(
 			array(
