@@ -551,7 +551,15 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	public function test_filter_language_for_terms_with_same_slug() {
 		$fr_lang = self::$model->get_language( 'fr' );
 
-		// Filter the language. Do not set any globals!
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		$en_lang = self::$model->term->get_language( $en );
+
+		$this->assertInstanceOf( PLL_Language::class, $en_lang, 'Expected the English term to have a language.' );
+		$this->assertSame( 'en', $en_lang->slug, 'English term has not the right language set.' );
+
+		// Filter the language for the newt inserted term. Do not set any globals!
 		add_filter(
 			'pll_subsequently_inserted_term_language',
 			function ( $found_language ) use ( $fr_lang ) {
@@ -562,14 +570,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 				return $fr_lang;
 			}
 		);
-
-		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$model->term->set_language( $en, 'en' );
-
-		$en_lang = self::$model->term->get_language( $en );
-
-		$this->assertInstanceOf( PLL_Language::class, $en_lang, 'Expected the English term to have a language.' );
-		$this->assertSame( 'en', $en_lang->slug, 'English term has not the right language set.' );
 
 		// Let's create a translated term with the same name.
 		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );

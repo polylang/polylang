@@ -15,7 +15,8 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public function test_term_slugs() {
 		$links_model = self::$model->get_links_model();
 		$pll_admin = new PLL_Admin( $links_model );
-		new PLL_Admin_Filters_Term( $pll_admin ); // activate our filters
+		$pll_admin->term = new PLL_CRUD_Terms( $pll_admin );
+		$pll_admin->filters_term = new PLL_Admin_Filters_Term( $pll_admin ); // activate our filters
 
 		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $term_id, 'en' );
