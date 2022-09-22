@@ -70,15 +70,6 @@ class PLL_CRUD_Terms {
 		$this->filter_lang = &$polylang->filter_lang;
 		$this->pref_lang   = &$polylang->pref_lang;
 
-		/**
-		 * Filters the separator to use to append language to term slugs.
-		 *
-		 * @since 3.3
-		 *
-		 * @param string $separator Default separator, '-'.
-		 */
-		$this->term_slugs_suffix_separator = apply_filters( 'pll_term_slugs_suffix_separator', $this->term_slugs_suffix_separator );
-
 		// Saving terms
 		add_action( 'create_term', array( $this, 'save_term' ), 999, 3 );
 		add_action( 'edit_term', array( $this, 'save_term' ), 999, 3 ); // After PLL_Admin_Filters_Term
