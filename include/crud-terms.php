@@ -46,9 +46,9 @@ class PLL_CRUD_Terms {
 	/**
 	 * Stores the term name before creating a slug if needed.
 	 *
-	 * @var string|null
+	 * @var string
 	 */
-	private $pre_term_name;
+	private $pre_term_name = '';
 
 	/**
 	 * Used to append language to term slugs.
