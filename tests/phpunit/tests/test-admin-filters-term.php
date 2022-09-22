@@ -548,6 +548,32 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->pll_admin->curlang->slug );
 	}
 
+	public function test_change_language_bulk_edit_with_same_name() {
+		$term_id = $en = self::factory()->category->create();
+		self::$model->term->set_language( $en, 'en' );
+
+		$de = self::factory()->category->create();
+		self::$model->term->set_language( $de, 'de' );
+
+		$es = self::factory()->category->create();
+		self::$model->term->set_language( $es, 'es' );
+
+		self::$model->term->save_translations( $en, compact( 'en', 'de', 'es' ) );
+
+		$_POST['inline_lang_choice'] = 'fr';
+		$_GET = array(
+			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
+			'bulk_edit'          => 'Update',
+			'post'               => $term_id,
+			'_status'            => 'publish',
+		);
+		wp_update_term( $term_id, 'category' );
+		$fr = $term_id;
+
+		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
+		$this->assertEqualSetsWithIndex( compact( 'fr', 'de', 'es' ), self::$model->term->get_translations( $es ) );
+	}
+
 	public function test_filter_language_for_terms_with_same_slug() {
 		$fr_lang = self::$model->get_language( 'fr' );
 
