@@ -53,9 +53,9 @@ class PLL_CRUD_Terms {
 	/**
 	 * Used to append language to term slugs.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	private $term_slugs_suffix_separator = '-';
+	private $term_slugs_suffix_separator;
 
 	/**
 	 * Constructor
@@ -69,15 +69,6 @@ class PLL_CRUD_Terms {
 		$this->curlang     = &$polylang->curlang;
 		$this->filter_lang = &$polylang->filter_lang;
 		$this->pref_lang   = &$polylang->pref_lang;
-
-		/**
-		 * Filters the separator to use to append language to term slugs.
-		 *
-		 * @since 3.3
-		 *
-		 * @param string $separator Default separator, '-'.
-		 */
-		$this->term_slugs_suffix_separator = apply_filters( 'pll_term_slugs_suffix_separator', $this->term_slugs_suffix_separator );
 
 		// Saving terms
 		add_action( 'create_term', array( $this, 'save_term' ), 999, 3 );
@@ -283,6 +274,30 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
+	 * Returns the separator to append language to term slugs.
+	 *
+	 * @since 3.3
+	 *
+	 * @return string The separator.
+	 */
+	private function get_slug_separator() {
+		if ( is_string( $this->term_slugs_suffix_separator ) ) {
+			return $this->term_slugs_suffix_separator;
+		}
+
+		/**
+		 * Filters the separator to use to append language to term slugs.
+		 *
+		 * @since 3.3
+		 *
+		 * @param string $separator Default separator, '-'.
+		 */
+		$this->term_slugs_suffix_separator = apply_filters( 'pll_term_slugs_suffix_separator', '-' );
+
+		return $this->term_slugs_suffix_separator;
+	}
+
+	/**
 	 * Appends language slug to the term slug if needed.
 	 *
 	 * @since 3.3
@@ -308,7 +323,7 @@ class PLL_CRUD_Terms {
 		$lang = apply_filters( 'pll_subsequently_inserted_term_language', false, $slug, $taxonomy );
 
 		if ( $lang instanceof PLL_Language ) {
-			$slug .= $this->term_slugs_suffix_separator . $lang->slug;
+			$slug .= $this->get_slug_separator() . $lang->slug;
 		}
 
 		return $slug;
