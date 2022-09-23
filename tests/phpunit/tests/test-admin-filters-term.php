@@ -602,9 +602,9 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			'es' => $es_cat,
 		);
 
-		$this->assertSame( 'test-fr', $fr_object->slug );
-		$this->assertSame( 'fr', self::$model->term->get_language( $en_cat )->slug );
-		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ) );
+		$this->assertSame( 'test-fr', $fr_object->slug, 'The slug should be suffixed with the french language.' );
+		$this->assertSame( 'fr', self::$model->term->get_language( $en_cat )->slug, 'The category language has not been change into French.' );
+		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The translation group has not been updated.' );
 
 		// Clean Up.
 		unset( $_REQUEST, $_GET );
@@ -634,12 +634,15 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			'parent'           => $de_parent,
 			'term_lang_choice' => 'de',
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+			'term_tr_lang'     => array( 'en' => $en_child ),
 		);
 		$de_child     = wp_insert_term( 'child', 'category', array( 'parent' => $de_parent ) );
 		$de_child_obj = get_term( $de_child['term_id'], 'category' );
 
-		$this->assertIsInt( $de_child['term_id'] );
-		$this->assertSame( 'child-de', $de_child_obj->slug );
+		$this->assertIsInt( $de_child['term_id'], 'German category should be created.' );
+		$this->assertSame( 'de', self::$model->term->get_language( $de_child['term_id'] )->slug, 'German child category should has its language set.' );
+		$this->assertSameSetsWithIndex( array( 'en' => $en_child, 'de' => $de_child['term_id'] ), self::$model->term->get_translations( $de_child['term_id'], 'German category has no translations group.' ) );
+		$this->assertSame( 'child-de', $de_child_obj->slug, 'German category slug should be suffixed with the language.' );
 
 		// Clean Up.
 		unset( $_REQUEST, $_POST );
