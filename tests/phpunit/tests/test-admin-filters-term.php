@@ -24,9 +24,9 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 
-		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // To activate the fix_delete_default_category() filter
+		$this->pll_admin->filters      = new PLL_Admin_Filters( $this->pll_admin );       // To activate the fix_delete_default_category() filter
+		$this->pll_admin->terms        = new PLL_CRUD_Terms( $this->pll_admin );
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
-		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
 	}
 
 	public function test_default_language() {
@@ -549,29 +549,33 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_change_language_bulk_edit_with_same_name() {
-		$term_id = $en = self::factory()->category->create();
+		// Create a category and its translations.
+		$term_id = $en = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$de = self::factory()->category->create();
+		$de = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-de' ) );
 		self::$model->term->set_language( $de, 'de' );
 
-		$es = self::factory()->category->create();
+		$es = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-es' ) );
 		self::$model->term->set_language( $es, 'es' );
 
 		self::$model->term->save_translations( $en, compact( 'en', 'de', 'es' ) );
 
-		$_POST['inline_lang_choice'] = 'fr';
-		$_GET = array(
+		// Set globals like a language change in bluk edit and update a category.
+		$_REQUEST = $_POST = $_GET = array(
+			'inline_lang_choice' => 'fr',
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
 			'bulk_edit'          => 'Update',
 			'post'               => $term_id,
-			'_status'            => 'publish',
 		);
 		wp_update_term( $term_id, 'category' );
 		$fr = $term_id;
 
 		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
 		$this->assertEqualSetsWithIndex( compact( 'fr', 'de', 'es' ), self::$model->term->get_translations( $es ) );
+
+		// Clean Up.
+		unset( $_REQUEST, $_POST, $_GET );
 	}
 
 	public function test_filter_language_for_terms_with_same_slug() {
