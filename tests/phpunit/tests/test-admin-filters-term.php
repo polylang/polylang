@@ -610,6 +610,41 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		unset( $_REQUEST, $_GET );
 	}
 
+	public function test_child_categories_with_same_name() {
+		// Create parent categories.
+		$en_parent = self::factory()->category->create( array( 'name' => 'parent', 'slug' => 'parent' ) );
+		self::$model->term->set_language( $en_parent, 'en' );
+
+		$de_parent = self::factory()->category->create( array( 'name' => 'parent', 'slug' => 'parent-de' ) );
+		self::$model->term->set_language( $de_parent, 'de' );
+
+		self::$model->term->save_translations(
+			$en_parent,
+			array(
+				'en' => $en_parent,
+				'de' => $de_parent,
+			)
+		);
+
+		// Create only english child category for the moment.
+		$en_child = self::factory()->category->create( array( 'name' => 'child', 'slug' => 'child', 'parent' => $en_parent ) );
+		self::$model->term->set_language( $en_child, 'en' );
+
+		$_REQUEST = $_POST = array(
+			'parent'           => $de_parent,
+			'term_lang_choice' => 'de',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+		);
+		$de_child     = wp_insert_term( 'child', 'category', array( 'parent' => $de_parent ) );
+		$de_child_obj = get_term( $de_child['term_id'], 'category' );
+
+		$this->assertIsInt( $de_child['term_id'] );
+		$this->assertSame( 'child-de', $de_child_obj->slug );
+
+		// Clean Up.
+		unset( $_REQUEST, $_POST );
+	}
+
 	public function test_filter_language_for_terms_with_same_slug() {
 		$fr_lang = self::$model->get_language( 'fr' );
 
