@@ -548,34 +548,66 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en', $this->pll_admin->curlang->slug );
 	}
 
-	public function test_change_language_bulk_edit_with_same_name() {
+	public function test_change_language_bulk_edit_translated_post_with_same_named_categories() {
 		// Create a category and its translations.
-		$term_id = $en = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test' ) );
-		self::$model->term->set_language( $en, 'en' );
+		$en_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test' ) );
+		self::$model->term->set_language( $en_cat, 'en' );
 
-		$de = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-de' ) );
-		self::$model->term->set_language( $de, 'de' );
+		$de_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-de' ) );
+		self::$model->term->set_language( $de_cat, 'de' );
 
-		$es = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-es' ) );
-		self::$model->term->set_language( $es, 'es' );
+		$es_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-es' ) );
+		self::$model->term->set_language( $es_cat, 'es' );
 
-		self::$model->term->save_translations( $en, compact( 'en', 'de', 'es' ) );
+		self::$model->term->save_translations(
+			$en_cat,
+			array(
+				'en' => $en_cat,
+				'de' => $de_cat,
+				'es' => $es_cat,
+			)
+		);
+
+		// Create some posts.
+		$en_post = self::factory()->post->create( array( 'post_category' => array( $en_cat ) ) );
+		self::$model->post->set_language( $en_post, 'en' );
+
+		$de_post = self::factory()->post->create( array( 'post_category' => array( $de_cat ) ) );
+		self::$model->post->set_language( $de_post, 'de' );
+
+		$es_post = self::factory()->post->create( array( 'post_category' => array( $es_cat ) ) );
+		self::$model->post->set_language( $es_post, 'es' );
+
+		self::$model->post->save_translations(
+			$en_post,
+			array(
+				'en' => $en_post,
+				'de' => $de_post,
+				'es' => $es_post,
+			)
+		);
 
 		// Set globals like a language change in bluk edit and update a category.
-		$_REQUEST = $_POST = $_GET = array(
+		$_REQUEST = $_GET = array(
 			'inline_lang_choice' => 'fr',
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
 			'bulk_edit'          => 'Update',
-			'post'               => $term_id,
+			'post'               => $en_post,
 		);
-		wp_update_term( $term_id, 'category' );
-		$fr = $term_id;
+		wp_update_term( $en_cat, 'category' );
+		$fr_object = get_term( $en_cat );
+		$expected_cats_translations = array(
+			'fr' => $en_cat,
+			'de' => $de_cat,
+			'es' => $es_cat,
+		);
 
-		$this->assertEquals( 'fr', self::$model->term->get_language( $term_id )->slug );
-		$this->assertEqualSetsWithIndex( compact( 'fr', 'de', 'es' ), self::$model->term->get_translations( $es ) );
+		$this->assertSame( 'test-fr', $fr_object->slug );
+		$this->assertSame( 'fr', self::$model->term->get_language( $en_cat )->slug );
+		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ) );
 
 		// Clean Up.
-		unset( $_REQUEST, $_POST, $_GET );
+		unset( $_REQUEST, $_GET );
 	}
 
 	public function test_filter_language_for_terms_with_same_slug() {
