@@ -594,50 +594,8 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			'bulk_edit'          => 'Update',
 			'post'               => $en_post,
 		);
-		wp_update_term( $en_cat, 'category' );
-		$fr_object = get_term( $en_cat );
-		$expected_cats_translations = array(
-			'fr' => $en_cat,
-			'de' => $de_cat,
-			'es' => $es_cat,
-		);
-
-		$this->assertSame( 'test-fr', $fr_object->slug, 'The slug should be suffixed with the french language.' );
-		$this->assertSame( 'fr', self::$model->term->get_language( $en_cat )->slug, 'The category language has not been change into French.' );
-		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The translation group has not been updated.' );
-
-		// Clean Up.
-		unset( $_REQUEST, $_GET );
-	}
-
-	public function test_child_categories_with_same_name() {
-		// Create parent categories.
-		$en_parent = self::factory()->category->create( array( 'name' => 'parent', 'slug' => 'parent' ) );
-		self::$model->term->set_language( $en_parent, 'en' );
-
-		$de_parent = self::factory()->category->create( array( 'name' => 'parent', 'slug' => 'parent-de' ) );
-		self::$model->term->set_language( $de_parent, 'de' );
-
-		self::$model->term->save_translations(
-			$en_parent,
-			array(
-				'en' => $en_parent,
-				'de' => $de_parent,
-			)
-		);
-
-		// Create only english child category for the moment.
-		$en_child = self::factory()->category->create( array( 'name' => 'child', 'slug' => 'child', 'parent' => $en_parent ) );
-		self::$model->term->set_language( $en_child, 'en' );
-
-		$_REQUEST = $_POST = array(
-			'parent'           => $de_parent,
-			'term_lang_choice' => 'de',
-			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
-			'term_tr_lang'     => array( 'en' => $en_child ),
-		);
-		$de_child     = wp_insert_term( 'child', 'category', array( 'parent' => $de_parent ) );
-		$de_child_obj = get_term( $de_child['term_id'], 'category' );
+		wp_update_term( $term_id, 'category' );
+		$fr = $term_id;
 
 		$this->assertIsInt( $de_child['term_id'], 'German category should be created.' );
 		$this->assertSame( 'de', self::$model->term->get_language( $de_child['term_id'] )->slug, 'German child category should has its language set.' );
