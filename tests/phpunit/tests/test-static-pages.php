@@ -20,6 +20,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
+		self::create_language( 'es_ES' );
 
 		// page on front
 		self::$home_en = $en = self::factory()->post->create(
@@ -638,5 +639,27 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 
 		$this->pll_env->curlang = self::$model->get_language( 'en' );
 		$this->assertSame( self::$posts_en, get_option( 'page_for_posts' ), 'Expected the page for posts on EN admin to be ' . self::$posts_en );
+	}
+
+	public function test_untranslated_front_page() {
+		global $wp_rewrite;
+
+		$this->init_test();
+		self::$model->clean_languages_cache();
+
+		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+		$wp_rewrite->flush_rules();
+
+		$es = self::factory()->post->create();
+		self::$model->post->set_language( $es, 'es' );
+
+		$this->pll_env->curlang = self::$model->get_language( 'es' ); // brute force
+		$this->go_to( home_url( '/es/' ) );
+
+		$this->assertTrue( is_front_page() );
+		$this->assertQueryTrue( 'is_home', 'is_front_page' );
+		$this->assertEquals( home_url( '/en/home/' ), $this->pll_env->links->get_translation_url( self::$model->get_language( 'en' ) ) );
+		$this->assertEquals( array( get_post( $es ) ), $GLOBALS['wp_query']->posts );
 	}
 }
