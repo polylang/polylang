@@ -292,7 +292,7 @@ class PLL_CRUD_Terms {
 		 *
 		 * @param string $separator Default separator, '-'.
 		 */
-		$this->term_slugs_suffix_separator = apply_filters( 'pll_term_slugs_suffix_separator', '-' );
+		$this->term_slugs_suffix_separator = apply_filters( 'pll_term_slug_suffix_separator', '-' );
 
 		return $this->term_slugs_suffix_separator;
 	}
@@ -320,7 +320,7 @@ class PLL_CRUD_Terms {
 		 * @param string             $slug     Term slug.
 		 * @param string             $taxonomy Term taxonomy.
 		 */
-		$lang = apply_filters( 'pll_subsequently_inserted_term_language', false, $slug, $taxonomy );
+		$lang = apply_filters( 'pll_inserted_term_language', null, $slug, $taxonomy );
 
 		if ( $lang instanceof PLL_Language ) {
 			$slug .= $this->get_slug_separator() . $lang->slug;

@@ -612,7 +612,7 @@ class PLL_Admin_Filters_Term {
 	 * @param string             $taxonomy Term taxonomy.
 	 * @return PLL_Language|false Language object, false if none found.
 	 */
-	public function get_subsequently_inserted_term_language( $lang, $slug, $taxonomy ) {
+	public function get_inserted_term_language( $lang, $slug, $taxonomy ) {
 		if ( $lang instanceof PLL_Language || ! $this->model->is_translated_taxonomy( $taxonomy ) || ! term_exists( $slug, $taxonomy ) ) {
 			return $lang;
 		}
