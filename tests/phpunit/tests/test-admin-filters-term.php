@@ -684,4 +684,37 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertWPError( $error, 'Third term with the same slug shouldn\'t be created.' );
 	}
+
+	public function test_update_term_from_admin() {
+		$original_name = 'Test Me';
+
+		$cat_en = $this->factory()->category->create_and_get(
+			array(
+				'name' => $original_name,
+			)
+		);
+		self::$model->term->set_language( $cat_en->term_id, 'en' );
+
+		$this->assertSame( sanitize_title( $original_name ), $cat_en->slug, 'The category slug is well created.' );
+
+		// Add globals like an admin request.
+		$_REQUEST = $_POST = array(
+			'term_lang_choice' => 'en',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+		);
+
+		// Now update the category with a new name.
+		$updated_cat = wp_update_term(
+			$cat_en->term_id,
+			'category',
+			array(
+				'name' => 'Well Tested',
+			)
+		);
+		$updated_cat_obj = get_term( $updated_cat['term_id'] );
+
+		$this->assertSame( sanitize_title( $original_name ), $updated_cat_obj->slug, 'The category slug should remain the same.' );
+
+		unset( $_REQUEST, $_POST );
+	}
 }
