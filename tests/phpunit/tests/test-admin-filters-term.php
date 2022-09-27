@@ -24,9 +24,9 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 
-		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // To activate the fix_delete_default_category() filter
+		$this->pll_admin->filters      = new PLL_Admin_Filters( $this->pll_admin );       // To activate the fix_delete_default_category() filter
+		$this->pll_admin->terms        = new PLL_CRUD_Terms( $this->pll_admin );
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
-		$this->pll_admin->terms = new PLL_CRUD_Terms( $this->pll_admin );
 	}
 
 	public function test_default_language() {
@@ -546,5 +546,146 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->pll_admin->set_current_language();
 
 		$this->assertEquals( 'en', $this->pll_admin->curlang->slug );
+	}
+
+	public function test_change_language_bulk_edit_translated_post_with_same_named_categories() {
+		// Create a category and its translations.
+		$en_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test' ) );
+		self::$model->term->set_language( $en_cat, 'en' );
+
+		$de_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-de' ) );
+		self::$model->term->set_language( $de_cat, 'de' );
+
+		$es_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-es' ) );
+		self::$model->term->set_language( $es_cat, 'es' );
+
+		self::$model->term->save_translations(
+			$en_cat,
+			array(
+				'en' => $en_cat,
+				'de' => $de_cat,
+				'es' => $es_cat,
+			)
+		);
+
+		// Create some posts.
+		$en_post = self::factory()->post->create( array( 'post_category' => array( $en_cat ) ) );
+		self::$model->post->set_language( $en_post, 'en' );
+
+		$de_post = self::factory()->post->create( array( 'post_category' => array( $de_cat ) ) );
+		self::$model->post->set_language( $de_post, 'de' );
+
+		$es_post = self::factory()->post->create( array( 'post_category' => array( $es_cat ) ) );
+		self::$model->post->set_language( $es_post, 'es' );
+
+		self::$model->post->save_translations(
+			$en_post,
+			array(
+				'en' => $en_post,
+				'de' => $de_post,
+				'es' => $es_post,
+			)
+		);
+
+		// Set globals like a language change in bluk edit and update a category.
+		$_REQUEST = $_GET = array(
+			'inline_lang_choice' => 'fr',
+			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
+			'bulk_edit'          => 'Update',
+			'post'               => $en_post,
+		);
+		wp_update_term( $en_cat, 'category' );
+		$fr_object = get_term( $en_cat );
+		$expected_cats_translations = array(
+			'fr' => $en_cat,
+			'de' => $de_cat,
+			'es' => $es_cat,
+		);
+
+		$this->assertSame( 'test-fr', $fr_object->slug, 'The slug should be suffixed with the french language.' );
+		$this->assertSame( 'fr', self::$model->term->get_language( $en_cat )->slug, 'The category language has not been change into French.' );
+		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The translation group has not been updated.' );
+
+		// Clean Up.
+		unset( $_REQUEST, $_GET );
+	}
+
+	public function test_child_categories_with_same_name() {
+		// Create parent categories.
+		$en_parent = self::factory()->category->create( array( 'name' => 'parent', 'slug' => 'parent' ) );
+		self::$model->term->set_language( $en_parent, 'en' );
+
+		$de_parent = self::factory()->category->create( array( 'name' => 'parent', 'slug' => 'parent-de' ) );
+		self::$model->term->set_language( $de_parent, 'de' );
+
+		self::$model->term->save_translations(
+			$en_parent,
+			array(
+				'en' => $en_parent,
+				'de' => $de_parent,
+			)
+		);
+
+		// Create only english child category for the moment.
+		$en_child = self::factory()->category->create( array( 'name' => 'child', 'slug' => 'child', 'parent' => $en_parent ) );
+		self::$model->term->set_language( $en_child, 'en' );
+
+		$_REQUEST = $_POST = array(
+			'parent'           => $de_parent,
+			'term_lang_choice' => 'de',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+			'term_tr_lang'     => array( 'en' => $en_child ),
+		);
+		$de_child     = wp_insert_term( 'child', 'category', array( 'parent' => $de_parent ) );
+		$de_child_obj = get_term( $de_child['term_id'], 'category' );
+
+		$this->assertIsInt( $de_child['term_id'], 'German category should be created.' );
+		$this->assertSame( 'de', self::$model->term->get_language( $de_child['term_id'] )->slug, 'German child category should has its language set.' );
+		$this->assertSameSetsWithIndex( array( 'en' => $en_child, 'de' => $de_child['term_id'] ), self::$model->term->get_translations( $de_child['term_id'], 'German category has no translations group.' ) );
+		$this->assertSame( 'child-de', $de_child_obj->slug, 'German category slug should be suffixed with the language.' );
+
+		// Clean Up.
+		unset( $_REQUEST, $_POST );
+	}
+
+	public function test_filter_language_for_terms_with_same_slug() {
+		$fr_lang = self::$model->get_language( 'fr' );
+
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		$en_lang = self::$model->term->get_language( $en );
+
+		$this->assertInstanceOf( PLL_Language::class, $en_lang, 'Expected the English term to have a language.' );
+		$this->assertSame( 'en', $en_lang->slug, 'English term has not the right language set.' );
+
+		// Filter the language for the newt inserted term. Do not set any globals!
+		add_filter(
+			'pll_inserted_term_language',
+			function ( $found_language ) use ( $fr_lang ) {
+				if ( $found_language instanceof PLL_Language ) {
+					return $found_language;
+				}
+
+				return $fr_lang;
+			}
+		);
+
+		// Let's create a translated term with the same name.
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+		self::$model->term->set_language( $fr, 'fr' );
+
+		$term    = get_term( $fr, 'category' );
+		$fr_lang = self::$model->term->get_language( $fr );
+
+		$this->assertInstanceOf( WP_Term::class, $term, 'Expected the French term to have a category.' );
+		$this->assertSame( 'test-fr', $term->slug, 'French term slug is not suffixed with language.' );
+		$this->assertInstanceOf( PLL_Language::class, $fr_lang, 'Expected the French term to have a language.' );
+		$this->assertSame( 'fr', $fr_lang->slug, 'French term has not the right language set.' );
+
+		// Let's create a third term with the same name.
+		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
+
+		$this->assertWPError( $error, 'Third term with the same slug shouldn\'t be created.' );
 	}
 }

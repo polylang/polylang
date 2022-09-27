@@ -44,6 +44,20 @@ class PLL_CRUD_Terms {
 	private $tax_query_lang;
 
 	/**
+	 * Stores the term name before creating a slug if needed.
+	 *
+	 * @var string
+	 */
+	private $pre_term_name = '';
+
+	/**
+	 * Used to append language to term slugs.
+	 *
+	 * @var string|null
+	 */
+	private $term_slugs_suffix_separator;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.4
@@ -51,14 +65,16 @@ class PLL_CRUD_Terms {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
-		$this->model = &$polylang->model;
-		$this->curlang = &$polylang->curlang;
+		$this->model       = &$polylang->model;
+		$this->curlang     = &$polylang->curlang;
 		$this->filter_lang = &$polylang->filter_lang;
-		$this->pref_lang = &$polylang->pref_lang;
+		$this->pref_lang   = &$polylang->pref_lang;
 
 		// Saving terms
 		add_action( 'create_term', array( $this, 'save_term' ), 999, 3 );
 		add_action( 'edit_term', array( $this, 'save_term' ), 999, 3 ); // After PLL_Admin_Filters_Term
+		add_filter( 'pre_term_name', array( $this, 'set_pre_term_name' ) );
+		add_filter( 'pre_term_slug', array( $this, 'set_pre_term_slug' ), 10, 2 );
 
 		// Adds cache domain when querying terms
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 10, 2 );
@@ -243,5 +259,73 @@ class PLL_CRUD_Terms {
 	public function delete_term( $term_id ) {
 		$this->model->term->delete_translation( $term_id );
 		$this->model->term->delete_language( $term_id );
+	}
+
+	/**
+	 * Stores the term name for use in pre_term_slug
+	 *
+	 * @since 0.9.5
+	 *
+	 * @param string $name term name
+	 * @return string unmodified term name
+	 */
+	public function set_pre_term_name( $name ) {
+		return $this->pre_term_name = $name;
+	}
+
+	/**
+	 * Returns the separator to append language to term slugs.
+	 *
+	 * @since 3.3
+	 *
+	 * @return string The separator.
+	 */
+	private function get_slug_separator() {
+		if ( is_string( $this->term_slugs_suffix_separator ) ) {
+			return $this->term_slugs_suffix_separator;
+		}
+
+		/**
+		 * Filters the separator to use to append language to term slugs.
+		 *
+		 * @since 3.3
+		 *
+		 * @param string $separator Default separator, '-'.
+		 */
+		$this->term_slugs_suffix_separator = apply_filters( 'pll_term_slug_suffix_separator', '-' );
+
+		return $this->term_slugs_suffix_separator;
+	}
+
+	/**
+	 * Appends language slug to the term slug if needed.
+	 *
+	 * @since 3.3
+	 *
+	 * @param string $slug     Term slug.
+	 * @param string $taxonomy Term taxonomy.
+	 * @return string Slug with a language suffix if found.
+	 */
+	public function set_pre_term_slug( $slug, $taxonomy ) {
+		if ( ! $slug ) {
+			$slug = sanitize_title( $this->pre_term_name );
+		}
+
+		/**
+		 * Filters the subsequently inserted term language.
+		 *
+		 * @since 3.3
+		 *
+		 * @param PLL_Language|null $lang     Found language object, null otherwise.
+		 * @param string            $slug     Term slug
+		 * @param string            $taxonomy Term taonomy.
+		 */
+		$lang = apply_filters( 'pll_inserted_term_language', null, $slug, $taxonomy );
+
+		if ( $lang instanceof PLL_Language ) {
+			$slug .= $this->get_slug_separator() . $lang->slug;
+		}
+
+		return $slug;
 	}
 }
