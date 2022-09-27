@@ -81,7 +81,7 @@ class PLL_Admin_Filters_Term {
 		add_action( 'create_term', array( $this, 'save_term' ), 900, 3 );
 		add_action( 'edit_term', array( $this, 'save_term' ), 900, 3 ); // Late as it may conflict with other plugins, see http://wordpress.org/support/topic/polylang-and-wordpress-seo-by-yoast
 		add_action( 'pre_post_update', array( $this, 'pre_post_update' ) );
-		add_filter( 'pll_subsequently_inserted_term_language', array( $this, 'get_subsequently_inserted_term_language' ), 10, 3 );
+		add_filter( 'pll_inserted_term_language', array( $this, 'get_inserted_term_language' ), 10, 3 );
 
 		// Ajax response for edit term form
 		add_action( 'wp_ajax_term_lang_choice', array( $this, 'term_lang_choice' ) );
@@ -607,10 +607,10 @@ class PLL_Admin_Filters_Term {
 	 *
 	 * @since 3.3
 	 *
-	 * @param PLL_Language|false $lang     Term language object if found, false otherwise.
-	 * @param string             $slug     Term slug.
-	 * @param string             $taxonomy Term taxonomy.
-	 * @return PLL_Language|false Language object, false if none found.
+	 * @param PLL_Language|null $lang     Term language object if found, null otherwise.
+	 * @param string            $slug     Term slug.
+	 * @param string            $taxonomy Term taxonomy.
+	 * @return PLL_Language|null Language object, null if none found.
 	 */
 	public function get_inserted_term_language( $lang, $slug, $taxonomy ) {
 		if ( $lang instanceof PLL_Language || ! $this->model->is_translated_taxonomy( $taxonomy ) || ! term_exists( $slug, $taxonomy ) ) {
@@ -667,6 +667,6 @@ class PLL_Admin_Filters_Term {
 			}
 		}
 
-		return false;
+		return null;
 	}
 }

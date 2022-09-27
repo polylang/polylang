@@ -661,7 +661,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		// Filter the language for the newt inserted term. Do not set any globals!
 		add_filter(
-			'pll_subsequently_inserted_term_language',
+			'pll_inserted_term_language',
 			function ( $found_language ) use ( $fr_lang ) {
 				if ( $found_language instanceof PLL_Language ) {
 					return $found_language;
