@@ -587,6 +587,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			)
 		);
 
+		// Set globals like a language change in bluk edit and update a category
 		$_REQUEST = $_GET = array(
 			'inline_lang_choice' => 'fr',
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
