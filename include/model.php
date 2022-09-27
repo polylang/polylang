@@ -406,13 +406,13 @@ class PLL_Model {
 	 *
 	 * @since 1.7
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function get_filtered_taxonomies_query_vars() {
 		$query_vars = array();
 		foreach ( $this->get_filtered_taxonomies() as $filtered_tax ) {
 			$tax = get_taxonomy( $filtered_tax );
-			if ( ! empty( $tax ) ) {
+			if ( ! empty( $tax ) && is_string( $tax->query_var ) ) {
 				$query_vars[] = $tax->query_var;
 			}
 		}
