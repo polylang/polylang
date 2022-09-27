@@ -552,10 +552,13 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		// Create a category and its translations.
 		$en_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test' ) );
 		self::$model->term->set_language( $en_cat, 'en' );
+
 		$de_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-de' ) );
 		self::$model->term->set_language( $de_cat, 'de' );
+
 		$es_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-es' ) );
 		self::$model->term->set_language( $es_cat, 'es' );
+
 		self::$model->term->save_translations(
 			$en_cat,
 			array(
@@ -564,13 +567,17 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 				'es' => $es_cat,
 			)
 		);
+
 		// Create some posts.
 		$en_post = self::factory()->post->create( array( 'post_category' => array( $en_cat ) ) );
 		self::$model->post->set_language( $en_post, 'en' );
+
 		$de_post = self::factory()->post->create( array( 'post_category' => array( $de_cat ) ) );
 		self::$model->post->set_language( $de_post, 'de' );
+
 		$es_post = self::factory()->post->create( array( 'post_category' => array( $es_cat ) ) );
 		self::$model->post->set_language( $es_post, 'es' );
+
 		self::$model->post->save_translations(
 			$en_post,
 			array(
@@ -579,28 +586,28 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 				'es' => $es_post,
 			)
 		);
-		// Set globals like a language change in bluk edit and update a category.
+
 		$_REQUEST = $_GET = array(
 			'inline_lang_choice' => 'fr',
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
- 			'bulk_edit'          => 'Update',
- 			'post'               => $en_post,
- 		);
- 		wp_update_term( $en_cat, 'category' );
- 		$fr_object = get_term( $en_cat );
- 		$expected_cats_translations = array(
- 			'fr' => $en_cat,
- 			'de' => $de_cat,
- 			'es' => $es_cat,
- 		);
+			'bulk_edit'          => 'Update',
+			'post'               => $en_post,
+		);
+		wp_update_term( $en_cat, 'category' );
+		$fr_object = get_term( $en_cat );
+		$expected_cats_translations = array(
+			'fr' => $en_cat,
+			'de' => $de_cat,
+			'es' => $es_cat,
+		);
 
- 		$this->assertSame( 'test-fr', $fr_object->slug, 'The slug should be suffixed with the french language.' );
- 		$this->assertSame( 'fr', self::$model->term->get_language( $en_cat )->slug, 'The category language has not been change into French.' );
- 		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The translation group has not been updated.' );
+		$this->assertSame( 'test-fr', $fr_object->slug, 'The slug should be suffixed with the french language.' );
+		$this->assertSame( 'fr', self::$model->term->get_language( $en_cat )->slug, 'The category language has not been change into French.' );
+		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The translation group has not been updated.' );
 
- 		// Clean Up.
- 		unset( $_REQUEST, $_GET );
- 	}
+		// Clean Up.
+		unset( $_REQUEST, $_GET );
+	}
 
 	public function test_child_categories_with_same_name() {
 		// Create parent categories.
