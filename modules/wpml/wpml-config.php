@@ -86,6 +86,8 @@ class PLL_WPML_Config {
 			add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
 			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
 			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
+			add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
+			add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
 			foreach ( $this->xmls as $context => $xml ) {
 				$keys = $xml->xpath( 'admin-texts/key' );
@@ -260,6 +262,75 @@ class PLL_WPML_Config {
 			}
 		}
 		return $taxonomies;
+	}
+
+	/**
+	 * Translation management for strings in blocks content.
+	 *
+	 * @since 3.3
+	 *
+	 * @param array[] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
+	 * @return array[] Rules completed with ones from wpml-config file.
+	 *
+	 * @phpstan-param array<string,array<string>> $parsing_rules
+	 * @phpstan-return array<string,array<string>> $parsing_rules
+	 */
+	public function translate_blocks( $parsing_rules ) {
+		return $this->extract_blocks_parsing_rules( $parsing_rules, 'xpath' );
+	}
+
+	/**
+	 * Translation management for blocks attributes.
+	 *
+	 * @since 3.3
+	 *
+	 * @param array[] $parsing_rules Rules for block attributes to translate.
+	 * @return array[] Rules completed with ones from wpml-config file.
+	 *
+	 * @phpstan-param array<string,array<string>> $parsing_rules
+	 * @phpstan-return array<string,array<string>>
+	 */
+	public function translate_blocks_attributes( $parsing_rules ) {
+		return $this->extract_blocks_parsing_rules( $parsing_rules, 'key', true );
+	}
+
+	/**
+	 * Extract what kind of string to translate for blocks from WPML config file.
+	 *
+	 * @since 3.3
+	 *
+	 * @param array[] $parsing_rules         Rules to complete with ones from wpml-config file..
+	 * @param string  $child_tag             Tag name to extract.
+	 * @param boolean $is_in_child_attribute Extract tag value in attribute or not. Default false.
+	 * @param string  $child_attribute_name  Attribute name where to extract the value. Default 'name'. Used if $is_in_child_attribute is set to true.
+	 * @return array[] Rules completed with ones from wpml-config file.
+	 */
+	protected function extract_blocks_parsing_rules( $parsing_rules, $child_tag, $is_in_child_attribute = false, $child_attribute_name = 'name' ) {
+		foreach ( $this->xmls as $xml ) {
+			$blocks = $xml->xpath( 'gutenberg-blocks/gutenberg-block' );
+			if ( is_array( $blocks ) ) {
+				foreach ( $blocks as $block ) {
+					$attributes = $block->attributes();
+					if ( 1 == $attributes['translate'] ) {
+						$block_name = (string) $attributes['type'];
+						foreach ( $block->children() as $child ) {
+							if ( $child_tag === $child->getName() ) {
+								if ( $is_in_child_attribute ) {
+									$child_attributes = $child->attributes();
+									$rules            = (string) $child_attributes[ $child_attribute_name ];
+								} else {
+									$rules = (string) $child;
+								}
+								if ( ! isset( $parsing_rules[ $block_name ] ) || ! in_array( $rules, $parsing_rules[ $block_name ] ) ) {
+									$parsing_rules[ $block_name ][] = $rules;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return $parsing_rules;
 	}
 
 	/**
