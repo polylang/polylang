@@ -26,10 +26,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 		parent::__construct( $model );
 
-		// Filters to prime terms cache
 		add_filter( 'get_terms', array( $this, '_prime_terms_cache' ), 10, 2 );
-		add_filter( 'get_object_terms', array( $this, 'wp_get_object_terms' ), 10, 3 );
-
 		add_action( 'clean_term_cache', array( $this, 'clean_term_cache' ) );
 	}
 
@@ -201,23 +198,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 		if ( ! empty( $term_ids ) ) {
 			update_object_term_cache( array_unique( $term_ids ), 'term' ); // Adds language and translation of terms to cache
-		}
-		return $terms;
-	}
-
-	/**
-	 * When terms are found for posts, add their language and translations to cache.
-	 *
-	 * @since 1.2
-	 *
-	 * @param WP_Term[] $terms      Array of terms for the given object or objects.
-	 * @param int[]     $object_ids Array of object IDs for which terms were retrieved.
-	 * @param string[]  $taxonomies Array of taxonomy names from which terms were retrieved.
-	 * @return WP_Term[] Unmodified $terms.
-	 */
-	public function wp_get_object_terms( $terms, $object_ids, $taxonomies ) {
-		if ( ! in_array( $this->tax_translations, $taxonomies ) ) {
-			$this->_prime_terms_cache( $terms, $taxonomies );
 		}
 		return $terms;
 	}
