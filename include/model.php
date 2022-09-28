@@ -650,6 +650,11 @@ class PLL_Model {
 	 * @return int[]
 	 */
 	public function get_posts_with_no_lang( $post_types, $limit ) {
+		$languages = $this->get_languages_list( array( 'fields' => 'term_id' ) );
+		if ( empty( $languages ) ) {
+			return array(); // Don't report if no languages have been defined yet.
+		}
+
 		return get_posts(
 			array(
 				'numberposts' => $limit,
@@ -660,7 +665,7 @@ class PLL_Model {
 				'tax_query'   => array(
 					array(
 						'taxonomy' => 'language',
-						'terms'    => $this->get_languages_list( array( 'fields' => 'term_id' ) ),
+						'terms'    => $languages,
 						'operator' => 'NOT IN',
 					),
 				),
@@ -680,6 +685,11 @@ class PLL_Model {
 	public function get_terms_with_no_lang( $taxonomies, $limit ) {
 		global $wpdb;
 
+		$languages = $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) );
+		if ( empty( $languages ) ) {
+			return array(); // Don't report if no languages have been defined yet.
+		}
+
 		$taxonomies = (array) $taxonomies;
 
 		$sql = sprintf(
@@ -690,7 +700,7 @@ class PLL_Model {
 			)
 			%s",
 			implode( "','", array_map( 'esc_sql', $taxonomies ) ),
-			implode( ',', array_map( 'intval', $this->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) ) ) ),
+			implode( ',', array_map( 'intval', $languages ) ),
 			$limit > 0 ? sprintf( 'LIMIT %d', intval( $limit ) ) : ''
 		);
 
