@@ -316,7 +316,7 @@ class PLL_WPML_Config {
 	 *
 	 * @param array[] $parsing_rules         Rules to complete with ones from wpml-config file..
 	 * @param string  $child_tag             Tag name to extract.
-	 * @param bool $is_in_child_attribute Extract tag value in attribute or not. Default false.
+	 * @param bool    $is_in_child_attribute Extract tag value in attribute or not. Default false.
 	 * @param string  $child_attribute_name  Attribute name where to extract the value. Default 'name'. Used if $is_in_child_attribute is set to true.
 	 * @return array[] Rules completed with ones from wpml-config file.
 	 */
