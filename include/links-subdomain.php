@@ -4,9 +4,8 @@
  */
 
 /**
- * Links model for use when the language code is added in url as a subdomain
- * for example en.mysite.com/something
- * implements the "links_model interface"
+ * Links model for use when the language code is added in the url as a subdomain
+ * for example en.mysite.com/something.
  *
  * @since 1.2
  */
@@ -33,13 +32,12 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 
 	/**
 	 * Adds the language code in a url.
-	 * links_model interface.
 	 *
 	 * @since 1.2
 	 *
 	 * @param string             $url  The url to modify.
 	 * @param PLL_Language|false $lang The language object.
-	 * @return string                  Modified url.
+	 * @return string The modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
 		if ( ! empty( $lang ) && false === strpos( $url, '://' . $lang->slug . '.' ) ) {
@@ -49,13 +47,12 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	}
 
 	/**
-	 * Returns the url without language code
-	 * links_model interface
+	 * Returns the url without the language code.
 	 *
 	 * @since 1.2
 	 *
-	 * @param string $url url to modify
-	 * @return string modified url
+	 * @param string $url The url to modify.
+	 * @return string The modified url.
 	 */
 	public function remove_language_from_link( $url ) {
 		$languages = array();
@@ -74,7 +71,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	}
 
 	/**
-	 * Get hosts managed on the website.
+	 * Get the hosts managed on the website.
 	 *
 	 * @since 1.5
 	 *
