@@ -295,7 +295,7 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Translation management for blocks attributes.
+	 * Translation management for block attributes.
 	 *
 	 * @since 3.3
 	 *
