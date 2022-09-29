@@ -4,9 +4,8 @@
  */
 
 /**
- * Links model for default permalinks
- * for example mysite.com/?somevar=something&lang=en
- * implements the "links_model interface"
+ * Links model for the default permalinks
+ * for example mysite.com/?somevar=something&lang=en.
  *
  * @since 1.2
  */
@@ -20,66 +19,62 @@ class PLL_Links_Default extends PLL_Links_Model {
 
 	/**
 	 * Adds the language code in a url.
-	 * links_model interface.
 	 *
 	 * @since 1.2
 	 *
 	 * @param string             $url  The url to modify.
 	 * @param PLL_Language|false $lang The language object.
-	 * @return string                  Modified url.
+	 * @return string The modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
 		return empty( $lang ) || ( $this->options['hide_default'] && $this->options['default_lang'] == $lang->slug ) ? $url : add_query_arg( 'lang', $lang->slug, $url );
 	}
 
 	/**
-	 * Removes the language information from an url
-	 * links_model interface
+	 * Removes the language information from an url.
 	 *
 	 * @since 1.2
 	 *
-	 * @param string $url url to modify
-	 * @return string modified url
+	 * @param string $url The url to modify.
+	 * @return string The modified url.
 	 */
 	public function remove_language_from_link( $url ) {
 		return remove_query_arg( 'lang', $url );
 	}
 
 	/**
-	 * Returns the link to the first page
-	 * links_model interface
+	 * Returns the link to the first page.
 	 *
 	 * @since 1.2
 	 *
-	 * @param string $url url to modify
-	 * @return string modified url
+	 * @param string $url The url to modify.
+	 * @return string The modified url.
 	 */
 	public function remove_paged_from_link( $url ) {
 		return remove_query_arg( 'paged', $url );
 	}
 
 	/**
-	 * Returns the link to the paged page when using pretty permalinks
+	 * Returns the link to the paged page.
 	 *
 	 * @since 1.5
 	 *
-	 * @param string $url  url to modify
-	 * @param int    $page
-	 * @return string modified url
+	 * @param string $url  The url to modify.
+	 * @param int    $page The page number.
+	 * @return string The modified url.
 	 */
 	public function add_paged_to_link( $url, $page ) {
 		return add_query_arg( array( 'paged' => $page ), $url );
 	}
 
 	/**
-	 * Gets the language slug from the url if present
-	 * links_model interface
+	 * Gets the language slug from the url if present.
 	 *
 	 * @since 1.2
-	 * @since 2.0 add $url argument
+	 * @since 2.0 Add the $url argument.
 	 *
-	 * @param string $url optional, defaults to current url
-	 * @return string language slug
+	 * @param string $url Optional, defaults to the current url.
+	 * @return string Language slug.
 	 */
 	public function get_language_from_url( $url = '' ) {
 		if ( empty( $url ) ) {
@@ -91,7 +86,7 @@ class PLL_Links_Default extends PLL_Links_Model {
 	}
 
 	/**
-	 * Returns the static front page url.
+	 * Returns the static front page url in the given language.
 	 *
 	 * @since 1.8
 	 *

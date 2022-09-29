@@ -62,7 +62,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @param string             $url  The url to modify.
 	 * @param PLL_Language|false $lang The language object.
-	 * @return string                  Modified url.
+	 * @return string The modified url.
 	 */
 	abstract public function add_language_to_link( $url, $lang );
 
@@ -72,7 +72,7 @@ abstract class PLL_Links_Model {
 	 * @since 1.2
 	 *
 	 * @param string $url The url to modify.
-	 * @return string Modified url.
+	 * @return string The modified url.
 	 */
 	abstract public function remove_language_from_link( $url );
 
@@ -82,7 +82,7 @@ abstract class PLL_Links_Model {
 	 * @since 1.2
 	 *
 	 * @param string $url The url to modify.
-	 * @return string Modified url.
+	 * @return string The modified url.
 	 */
 	abstract public function remove_paged_from_link( $url );
 
@@ -93,23 +93,23 @@ abstract class PLL_Links_Model {
 	 *
 	 * @param string $url  The url to modify.
 	 * @param int    $page The page number.
-	 * @return string Modified url.
+	 * @return string The modified url.
 	 */
 	abstract public function add_paged_to_link( $url, $page );
 
 	/**
-	 * Returns the language based on language code in url.
+	 * Returns the language based on the language code in the url.
 	 *
 	 * @since 1.2
-	 * @since 2.0 add $url argument.
+	 * @since 2.0 Add the $url argument.
 	 *
-	 * @param string $url Optional, defaults to thej current url.
-	 * @return string Language slug.
+	 * @param string $url Optional, defaults to the current url.
+	 * @return string The language slug.
 	 */
 	abstract public function get_language_from_url( $url = '' );
 
 	/**
-	 * Returns the static front page url.
+	 * Returns the static front page url in a given language.
 	 *
 	 * @since 1.8
 	 *
@@ -125,7 +125,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @param string       $url  The url to modify.
 	 * @param PLL_Language $lang The language object.
-	 * @return string Modified url.
+	 * @return string The modified url.
 	 */
 	public function switch_language_in_link( $url, $lang ) {
 		$url = $this->remove_language_from_link( $url );
@@ -133,7 +133,7 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Get hosts managed on the website.
+	 * Get the hosts managed on the website.
 	 *
 	 * @since 1.5
 	 *
@@ -148,7 +148,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.3.1
 	 *
-	 * @param PLL_Language $lang PLL_Language object.
+	 * @param PLL_Language $lang The language object.
 	 * @return string
 	 */
 	public function home_url( $lang ) {
@@ -161,7 +161,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.8
 	 *
-	 * @param PLL_Language $language PLL_Language object.
+	 * @param PLL_Language $language The language object.
 	 * @return void
 	 */
 	protected function set_home_url( $language ) {
@@ -202,7 +202,7 @@ abstract class PLL_Links_Model {
 				$this->set_home_url( $language );
 			}
 
-			// Ensures that the ( possibly cached ) home and flag urls use the right scheme http or https.
+			// Ensures that the (possibly cached) home and flag urls use the right scheme http or https.
 			$language->set_url_scheme();
 		}
 		return $languages;
