@@ -323,29 +323,31 @@ class PLL_WPML_Config {
 	protected function extract_blocks_parsing_rules( $parsing_rules, $child_tag, $is_in_child_attribute = false, $child_attribute_name = 'name' ) {
 		foreach ( $this->xmls as $xml ) {
 			$blocks = $xml->xpath( 'gutenberg-blocks/gutenberg-block' );
-			if ( is_array( $blocks ) ) {
-				foreach ( $blocks as $block ) {
-					$attributes = $block->attributes();
-					if ( empty( $attributes ) ) {
-						continue;
-					}
-					if ( '1' === (string) $attributes['translate'] ) {
-						$block_name = (string) $attributes['type'];
-						foreach ( $block->children() as $child ) {
-							if ( $child_tag === $child->getName() ) {
-								if ( $is_in_child_attribute ) {
-									$child_attributes = $child->attributes();
-									if ( empty( $child_attributes ) ) {
-										continue;
-									}
-									$rules = (string) $child_attributes[ $child_attribute_name ];
-								} else {
-									$rules = (string) $child;
-								}
-								if ( ! isset( $parsing_rules[ $block_name ] ) || ! in_array( $rules, $parsing_rules[ $block_name ] ) ) {
-									$parsing_rules[ $block_name ][] = $rules;
-								}
+			if ( ! is_array( $blocks ) ) {
+				continue;
+			}
+			foreach ( $blocks as $block ) {
+				$attributes = $block->attributes();
+				if ( empty( $attributes ) ) {
+					continue;
+				}
+				if ( '1' === (string) $attributes['translate'] ) {
+					$block_name = (string) $attributes['type'];
+					foreach ( $block->children() as $child ) {
+						if ( $child_tag !== $child->getName() ) {
+							continue;
+						}
+						if ( $is_in_child_attribute ) {
+							$child_attributes = $child->attributes();
+							if ( empty( $child_attributes ) ) {
+								continue;
 							}
+							$rules = (string) $child_attributes[ $child_attribute_name ];
+						} else {
+							$rules = (string) $child;
+						}
+						if ( ! isset( $parsing_rules[ $block_name ] ) || ! in_array( $rules, $parsing_rules[ $block_name ] ) ) {
+							$parsing_rules[ $block_name ][] = $rules;
 						}
 					}
 				}
