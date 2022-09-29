@@ -21,9 +21,9 @@ class PLL_WPML_Config {
 	/**
 	 * The content of all read xml files.
 	 *
-	 * @var SimpleXMLElement[]|null
+	 * @var SimpleXMLElement[]
 	 */
-	protected $xmls;
+	protected $xmls = array();
 
 	/**
 	 * The list of xml files.
@@ -94,6 +94,9 @@ class PLL_WPML_Config {
 				if ( is_array( $keys ) ) {
 					foreach ( $keys as $key ) {
 						$attributes = $key->attributes();
+						if ( empty( $attributes ) ) {
+							continue;
+						}
 						$name = (string) $attributes['name'];
 
 						if ( false !== strpos( $name, '*' ) ) {
@@ -175,6 +178,9 @@ class PLL_WPML_Config {
 			if ( is_array( $cfs ) ) {
 				foreach ( $cfs as $cf ) {
 					$attributes = $cf->attributes();
+					if ( empty( $attributes ) ) {
+						continue;
+					}
 					if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
 						$metas[] = (string) $cf;
 					} else {
@@ -201,6 +207,9 @@ class PLL_WPML_Config {
 			if ( is_array( $cfs ) ) {
 				foreach ( $cfs as $cf ) {
 					$attributes = $cf->attributes();
+					if ( empty( $attributes ) ) {
+						continue;
+					}
 					if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
 						$metas[] = (string) $cf;
 					} else {
@@ -227,7 +236,10 @@ class PLL_WPML_Config {
 			if ( is_array( $pts ) ) {
 				foreach ( $pts as $pt ) {
 					$attributes = $pt->attributes();
-					if ( 1 == $attributes['translate'] && ! $hide ) {
+					if ( empty( $attributes ) ) {
+						continue;
+					}
+					if ( '1' === (string) $attributes['translate'] && ! $hide ) {
 						$types[ (string) $pt ] = (string) $pt;
 					} else {
 						unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
@@ -253,7 +265,10 @@ class PLL_WPML_Config {
 			if ( is_array( $taxos ) ) {
 				foreach ( $taxos as $tax ) {
 					$attributes = $tax->attributes();
-					if ( 1 == $attributes['translate'] && ! $hide ) {
+					if ( empty( $attributes ) ) {
+						continue;
+					}
+					if ( '1' === (string) $attributes['translate'] && ! $hide ) {
 						$taxonomies[ (string) $tax ] = (string) $tax;
 					} else {
 						unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
@@ -311,13 +326,19 @@ class PLL_WPML_Config {
 			if ( is_array( $blocks ) ) {
 				foreach ( $blocks as $block ) {
 					$attributes = $block->attributes();
-					if ( 1 == $attributes['translate'] ) {
+					if ( empty( $attributes ) ) {
+						continue;
+					}
+					if ( '1' === (string) $attributes['translate'] ) {
 						$block_name = (string) $attributes['type'];
 						foreach ( $block->children() as $child ) {
 							if ( $child_tag === $child->getName() ) {
 								if ( $is_in_child_attribute ) {
 									$child_attributes = $child->attributes();
-									$rules            = (string) $child_attributes[ $child_attribute_name ];
+									if ( empty( $child_attributes ) ) {
+										continue;
+									}
+									$rules = (string) $child_attributes[ $child_attribute_name ];
 								} else {
 									$rules = (string) $child;
 								}
@@ -359,6 +380,9 @@ class PLL_WPML_Config {
 	 */
 	protected function xml_to_array( $key, &$arr = array() ) {
 		$attributes = $key->attributes();
+		if ( empty( $attributes ) ) {
+			return $arr;
+		}
 		$name = (string) $attributes['name'];
 		$children = $key->children();
 
