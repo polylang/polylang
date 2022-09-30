@@ -239,7 +239,7 @@ class PLL_WPML_Config {
 					if ( empty( $attributes ) ) {
 						continue;
 					}
-					if ( '1' === (string) $attributes['translate'] && ! $hide ) {
+					if ( 1 === (int) $attributes['translate'] && ! $hide ) {
 						$types[ (string) $pt ] = (string) $pt;
 					} else {
 						unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
@@ -268,7 +268,7 @@ class PLL_WPML_Config {
 					if ( empty( $attributes ) ) {
 						continue;
 					}
-					if ( '1' === (string) $attributes['translate'] && ! $hide ) {
+					if ( 1 === (int) $attributes['translate'] && ! $hide ) {
 						$taxonomies[ (string) $tax ] = (string) $tax;
 					} else {
 						unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
@@ -331,7 +331,7 @@ class PLL_WPML_Config {
 				if ( empty( $attributes ) ) {
 					continue;
 				}
-				if ( '1' === (string) $attributes['translate'] ) {
+				if ( 1 === (int) $attributes['translate'] ) {
 					$block_name = (string) $attributes['type'];
 					foreach ( $block->children() as $child ) {
 						if ( $child_tag !== $child->getName() ) {
