@@ -112,14 +112,8 @@ class PLL_Frontend_Auto_Translate {
 		}
 
 		// Tag
-		$arr = array();
 		if ( ! empty( $qv['tag'] ) ) {
-			$sep = strpos( $qv['tag'], ',' ) !== false ? ',' : '+'; // Two possible separators for tag slugs
-			foreach ( explode( $sep, $qv['tag'] ) as $slug ) {
-				$arr[] = $this->get_translated_term_by( 'slug', $slug, 'post_tag' );
-			}
-
-			$qv['tag'] = implode( $sep, $arr );
+			$qv['tag'] = $this->translate_terms_list( $qv['tag'], 'post_tag' );
 		}
 
 		// tag_id can only take one id
@@ -143,20 +137,8 @@ class PLL_Frontend_Auto_Translate {
 		// According to the codex, this type of query is deprecated as of WP 3.1 but it does not appear in WP 3.5 source code
 		foreach ( array_intersect( $this->model->get_translated_taxonomies(), get_taxonomies( array( '_builtin' => false ) ) ) as $taxonomy ) {
 			$tax = get_taxonomy( $taxonomy );
-			$arr = array();
 			if ( ! empty( $tax ) && ! empty( $qv[ $tax->query_var ] ) ) {
-				$slugs = array();
-				if ( is_array( $qv[ $tax->query_var ] ) ) {
-					$slugs = $qv[ $tax->query_var ];
-				} elseif ( is_string( $qv[ $tax->query_var ] ) ) {
-					$sep   = strpos( $qv[ $tax->query_var ], ',' ) !== false ? ',' : '+'; // Two possible separators.
-					$slugs = explode( $sep, $qv[ $tax->query_var ] );
-				}
-				foreach ( $slugs as $slug ) {
-					$arr[] = $this->get_translated_term_by( 'slug', $slug, $taxonomy );
-				}
-
-				$qv[ $tax->query_var ] = implode( $sep, $arr );
+				$qv[ $tax->query_var ] = $this->translate_terms_list( $qv[ $tax->query_var ], $taxonomy );
 			}
 		}
 
@@ -305,5 +287,36 @@ class PLL_Frontend_Auto_Translate {
 			}
 		}
 		return $term;
+	}
+
+	/**
+	 * Translates a list of term slugs provided either as an array or a string
+	 * with slugs separated by a comma or a '+'.
+	 *
+	 * @since 3.2.8
+	 *
+	 * @param string|string[] $query_var The list of term slugs.
+	 * @param string          $taxonomy  The taxonomy for terms.
+	 * @return string|string[] The translated list.
+	 */
+	protected function translate_terms_list( $query_var, $taxonomy ) {
+		$slugs = array();
+
+		if ( is_array( $query_var ) ) {
+			$slugs = &$query_var;
+		} elseif ( is_string( $query_var ) ) {
+			$sep   = strpos( $query_var, ',' ) !== false ? ',' : '+'; // Two possible separators.
+			$slugs = explode( $sep, $query_var );
+		}
+
+		foreach ( $slugs as &$slug ) {
+			$slug = $this->get_translated_term_by( 'slug', $slug, $taxonomy );
+		}
+
+		if ( ! empty( $sep ) ) {
+			$query_var = implode( $sep, $slugs );
+		}
+
+		return $query_var;
 	}
 }
