@@ -482,7 +482,7 @@ class PLL_WPSEO {
 	 * Adds the yoast translatable metas to export.
 	 *
 	 * @param  array $metas An array of post metas (keyed with meta keys) to export.
-	 * @return array  The modified array of post metas to export.
+	 * @return array The modified array of post metas to export.
 	 */
 	public function export_post_metas( $metas ) {
 		$metas_to_export = array_fill_keys( $this->get_translatable_meta_keys(), 1 );
