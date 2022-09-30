@@ -284,11 +284,11 @@ class PLL_WPML_Config {
 	 *
 	 * @since 3.3
 	 *
-	 * @param array[] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
-	 * @return array[] Rules completed with ones from wpml-config file.
+	 * @param string[][] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
+	 * @return string[][] Rules completed with ones from wpml-config file.
 	 *
 	 * @phpstan-param array<string,array<string>> $parsing_rules
-	 * @phpstan-return array<string,array<string>> $parsing_rules
+	 * @phpstan-return array<string,array<string>>
 	 */
 	public function translate_blocks( $parsing_rules ) {
 		return $this->extract_blocks_parsing_rules( $parsing_rules, 'xpath' );
@@ -299,8 +299,8 @@ class PLL_WPML_Config {
 	 *
 	 * @since 3.3
 	 *
-	 * @param array[] $parsing_rules Rules for block attributes to translate.
-	 * @return array[] Rules completed with ones from wpml-config file.
+	 * @param string[][] $parsing_rules Rules for block attributes to translate.
+	 * @return string[][] Rules completed with ones from wpml-config file.
 	 *
 	 * @phpstan-param array<string,array<string>> $parsing_rules
 	 * @phpstan-return array<string,array<string>>
