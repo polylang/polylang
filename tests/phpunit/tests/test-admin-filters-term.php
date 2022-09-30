@@ -604,6 +604,8 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		bulk_edit_posts( $_REQUEST );
 
 		$fr_object = wp_get_object_terms( $en_post, 'category' );
+		$this->assertIsArray( $fr_object, 'Expected wp_get_object_terms() to return an array of categories.' );
+		$this->assertCount( 1, $fr_object, 'Expected the post to have one category, and only one.' );
 		$fr_object = reset( $fr_object );
 
 		$this->assertSame( 'test-fr', $fr_object->slug, 'The slug should be suffixed with the french language.' );
