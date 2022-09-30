@@ -320,7 +320,7 @@ class PLL_CRUD_Terms {
 		 *
 		 * @param PLL_Language|null $lang     Found language object, null otherwise.
 		 * @param string            $slug     Term slug
-		 * @param string            $taxonomy Term taonomy.
+		 * @param string            $taxonomy Term taxonomy.
 		 */
 		$lang = apply_filters( 'pll_inserted_term_language', null, $name, $taxonomy );
 
