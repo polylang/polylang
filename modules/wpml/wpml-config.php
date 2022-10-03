@@ -329,26 +329,24 @@ class PLL_WPML_Config {
 			}
 			foreach ( $blocks as $block ) {
 				$attributes = $block->attributes();
-				if ( empty( $attributes ) ) {
+				if ( empty( $attributes ) || 1 !== (int) $attributes['translate'] ) {
 					continue;
 				}
-				if ( 1 === (int) $attributes['translate'] ) {
-					$block_name = (string) $attributes['type'];
-					foreach ( $block->children() as $child ) {
-						if ( $child_tag !== $child->getName() ) {
+				$block_name = (string) $attributes['type'];
+				foreach ( $block->children() as $child ) {
+					if ( $child_tag !== $child->getName() ) {
+						continue;
+					}
+					if ( $is_in_child_attribute ) {
+						$child_attributes = $child->attributes();
+						if ( empty( $child_attributes ) ) {
 							continue;
 						}
-						if ( $is_in_child_attribute ) {
-							$child_attributes = $child->attributes();
-							if ( empty( $child_attributes ) ) {
-								continue;
-							}
-							$rules = (string) $child_attributes[ $child_attribute_name ];
-						} else {
-							$rules = (string) $child;
-						}
-						$parsing_rules[ $block_name ][] = $rules;
+						$rules = (string) $child_attributes[ $child_attribute_name ];
+					} else {
+						$rules = (string) $child;
 					}
+					$parsing_rules[ $block_name ][] = $rules;
 				}
 			}
 		}
