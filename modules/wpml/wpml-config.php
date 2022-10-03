@@ -291,7 +291,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string,array<string>>
 	 */
 	public function translate_blocks( $parsing_rules ) {
-		return $this->extract_blocks_parsing_rules( $parsing_rules, 'xpath' );
+		return array_merge( $parsing_rules, $this->extract_blocks_parsing_rules( 'xpath' ) );
 	}
 
 	/**
@@ -306,7 +306,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string,array<string>>
 	 */
 	public function translate_blocks_attributes( $parsing_rules ) {
-		return $this->extract_blocks_parsing_rules( $parsing_rules, 'key', true );
+		return array_merge( $parsing_rules, $this->extract_blocks_parsing_rules( 'key', true ) );
 	}
 
 	/**
@@ -314,13 +314,14 @@ class PLL_WPML_Config {
 	 *
 	 * @since 3.3
 	 *
-	 * @param array[] $parsing_rules         Rules to complete with ones from wpml-config file..
 	 * @param string  $child_tag             Tag name to extract.
 	 * @param bool    $is_in_child_attribute Extract tag value in attribute or not. Default false.
 	 * @param string  $child_attribute_name  Attribute name where to extract the value. Default 'name'. Used if $is_in_child_attribute is set to true.
 	 * @return array[] Rules completed with ones from wpml-config file.
 	 */
-	protected function extract_blocks_parsing_rules( $parsing_rules, $child_tag, $is_in_child_attribute = false, $child_attribute_name = 'name' ) {
+	protected function extract_blocks_parsing_rules( $child_tag, $is_in_child_attribute = false, $child_attribute_name = 'name' ) {
+		$parsing_rules = array();
+
 		foreach ( $this->xmls as $xml ) {
 			$blocks = $xml->xpath( 'gutenberg-blocks/gutenberg-block' );
 			if ( ! is_array( $blocks ) ) {
@@ -346,9 +347,7 @@ class PLL_WPML_Config {
 						} else {
 							$rules = (string) $child;
 						}
-						if ( ! isset( $parsing_rules[ $block_name ] ) || ! in_array( $rules, $parsing_rules[ $block_name ] ) ) {
-							$parsing_rules[ $block_name ][] = $rules;
-						}
+						$parsing_rules[ $block_name ][] = $rules;
 					}
 				}
 			}
