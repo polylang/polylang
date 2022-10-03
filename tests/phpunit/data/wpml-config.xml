@@ -52,14 +52,15 @@
 				<key name="generic_option_*" />
 		</admin-texts>
 		<gutenberg-blocks>
-			<gutenberg-block type="core/image" translate="1">
+			<gutenberg-block type="my-plugin/my-block" translate="1">
 				<xpath>//figure/figcaption</xpath>
 				<xpath>//figure/img/@alt</xpath>
+				<key name="headingTitle" />
+				<key name="text" />
 			</gutenberg-block>
-		</gutenberg-blocks>
-		<gutenberg-blocks>
-			<gutenberg-block type="core/navigation-link" translate="1">
-				<key name="description" />
+			<gutenberg-block type="my-plugin/my-block-2" translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
 			</gutenberg-block>
 		</gutenberg-blocks>
 		<language-switcher-settings>
