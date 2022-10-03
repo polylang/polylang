@@ -307,9 +307,11 @@ class PLL_CRUD_Terms {
 	 * @return string Slug with a language suffix if found.
 	 */
 	public function set_pre_term_slug( $slug, $taxonomy ) {
-		if ( ! $slug ) {
-			$slug = sanitize_title( $this->pre_term_name );
+		if ( ! empty( $slug ) ) {
+			return $slug;
 		}
+
+		$name = sanitize_title( $this->pre_term_name );
 
 		/**
 		 * Filters the subsequently inserted term language.
@@ -318,12 +320,12 @@ class PLL_CRUD_Terms {
 		 *
 		 * @param PLL_Language|null $lang     Found language object, null otherwise.
 		 * @param string            $slug     Term slug
-		 * @param string            $taxonomy Term taonomy.
+		 * @param string            $taxonomy Term taxonomy.
 		 */
-		$lang = apply_filters( 'pll_inserted_term_language', null, $slug, $taxonomy );
+		$lang = apply_filters( 'pll_inserted_term_language', null, $name, $taxonomy );
 
-		if ( $lang instanceof PLL_Language ) {
-			$slug .= $this->get_slug_separator() . $lang->slug;
+		if ( $lang instanceof PLL_Language && ! $this->model->term_exists_by_slug( $name, $lang, $taxonomy ) ) {
+			$slug = $name . $this->get_slug_separator() . $lang->slug;
 		}
 
 		return $slug;

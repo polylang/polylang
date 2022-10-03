@@ -21,12 +21,15 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		parent::set_up();
 
 		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests
-		$links_model = self::$model->get_links_model();
+
+		$links_model     = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 
-		$this->pll_admin->filters      = new PLL_Admin_Filters( $this->pll_admin );       // To activate the fix_delete_default_category() filter
+		$this->pll_admin->filters      = new PLL_Admin_Filters( $this->pll_admin ); // To activate the fix_delete_default_category() filter
 		$this->pll_admin->terms        = new PLL_CRUD_Terms( $this->pll_admin );
 		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );
+		$this->pll_admin->posts        = new PLL_CRUD_Posts( $this->pll_admin );
+		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin );
 	}
 
 	public function test_default_language() {
@@ -559,13 +562,14 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$es_cat = self::factory()->category->create( array( 'name' => 'test', 'slug' => 'test-es' ) );
 		self::$model->term->set_language( $es_cat, 'es' );
 
+		$expected_cats_translations = array(
+			'en' => $en_cat,
+			'de' => $de_cat,
+			'es' => $es_cat,
+		);
 		self::$model->term->save_translations(
 			$en_cat,
-			array(
-				'en' => $en_cat,
-				'de' => $de_cat,
-				'es' => $es_cat,
-			)
+			$expected_cats_translations
 		);
 
 		// Create some posts.
@@ -593,18 +597,21 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			'_wpnonce'           => wp_create_nonce( 'bulk-posts' ),
 			'bulk_edit'          => 'Update',
 			'post'               => $en_post,
-		);
-		wp_update_term( $en_cat, 'category' );
-		$fr_object = get_term( $en_cat );
-		$expected_cats_translations = array(
-			'fr' => $en_cat,
-			'de' => $de_cat,
-			'es' => $es_cat,
+			'_status'            => 'publish',
 		);
 
+		do_action( 'load-edit.php' );
+		bulk_edit_posts( $_REQUEST );
+
+		$fr_object = wp_get_object_terms( $en_post, 'category' );
+		$this->assertIsArray( $fr_object, 'Expected wp_get_object_terms() to return an array of categories.' );
+		$this->assertCount( 1, $fr_object, 'Expected the post to have one category, and only one.' );
+		$fr_object = reset( $fr_object );
+
 		$this->assertSame( 'test-fr', $fr_object->slug, 'The slug should be suffixed with the french language.' );
-		$this->assertSame( 'fr', self::$model->term->get_language( $en_cat )->slug, 'The category language has not been change into French.' );
-		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The translation group has not been updated.' );
+		$this->assertSame( 'fr', self::$model->term->get_language( $fr_object->term_id )->slug, 'The category language should be French.' );
+		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The original translation group should not have been updated.' );
+		$this->assertSameSetsWithIndex( array( 'fr' => $fr_object->term_id ), self::$model->term->get_translations( $fr_object->term_id ), 'The translation group of the new term should contain only this term.' );
 
 		// Clean Up.
 		unset( $_REQUEST, $_GET );
@@ -687,5 +694,40 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 
 		$this->assertWPError( $error, 'Third term with the same slug shouldn\'t be created.' );
+	}
+
+	public function test_update_term_from_admin() {
+		$original_name = 'Test Me';
+		$new_name      = 'Well Tested';
+
+		$cat_en = $this->factory()->category->create_and_get(
+			array(
+				'name' => $original_name,
+			)
+		);
+		self::$model->term->set_language( $cat_en->term_id, 'en' );
+
+		$this->assertSame( sanitize_title( $original_name ), $cat_en->slug, 'The category slug is well created.' );
+
+		// Add globals like an admin request.
+		$_REQUEST = $_POST = array(
+			'term_lang_choice' => 'en',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+		);
+
+		// Now update the category with a new name.
+		$updated_cat = wp_update_term(
+			$cat_en->term_id,
+			'category',
+			array(
+				'name' => $new_name,
+			)
+		);
+		$updated_cat_obj = get_term( $updated_cat['term_id'] );
+
+		$this->assertSame( $new_name, $updated_cat_obj->name, 'The category name should have been modified.' );
+		$this->assertSame( $cat_en->slug, $updated_cat_obj->slug, 'The category slug should remain the same.' );
+
+		unset( $_REQUEST, $_POST );
 	}
 }
