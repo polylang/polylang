@@ -86,6 +86,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => 'test' ) ) );
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => 'test,test2' ) ) );
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => 'test+test2' ) ) );
+		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => array( 'test', 'test2' ) ) ) );
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag_slug__in' => array( 'test' ) ) ) );
 	}
 
@@ -123,6 +124,7 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test' ) ) );
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test,test2' ) ) );
 		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test+test2' ) ) );
+		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => array( 'test', 'test2' ) ) ) );
 
 		// tax query
 		$args = array(
