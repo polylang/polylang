@@ -33,6 +33,13 @@ class PLL_WPML_Config {
 	protected $files;
 
 	/**
+	 * List of rules to extract strings to translate from blocks.
+	 *
+	 * @var string[][][]
+	 */
+	protected $parsing_rules;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0
@@ -291,7 +298,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string,array<string>>
 	 */
 	public function translate_blocks( $parsing_rules ) {
-		return array_merge( $parsing_rules, $this->extract_blocks_parsing_rules( 'xpath' ) );
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'xpath' ) );
 	}
 
 	/**
@@ -306,20 +313,34 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string,array<string>>
 	 */
 	public function translate_blocks_attributes( $parsing_rules ) {
-		return array_merge( $parsing_rules, $this->extract_blocks_parsing_rules( 'key', true ) );
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'key' ) );
 	}
 
 	/**
-	 * Extract what kind of string to translate for blocks from WPML config file.
+	 * Returns rules to extract a kind of string for blocks.
 	 *
 	 * @since 3.3
 	 *
-	 * @param string $child_tag             Tag name to extract.
-	 * @param bool   $is_in_child_attribute Extract tag value in attribute or not. Default false.
-	 * @param string $child_attribute_name  Attribute name where to extract the value. Default 'name'. Used if $is_in_child_attribute is set to true.
-	 * @return array[] Rules completed with ones from wpml-config file.
+	 * @param string $rule_tag Tag name to extract.
+	 * @return string[][] Rules completed with ones from wpml-config file.
 	 */
-	protected function extract_blocks_parsing_rules( $child_tag, $is_in_child_attribute = false, $child_attribute_name = 'name' ) {
+	protected function get_blocks_parsing_rules( $rule_tag ) {
+
+		if ( isset( $this->parsing_rules[ $rule_tag ] ) ) {
+			return $this->parsing_rules[ $rule_tag ];
+		}
+		$this->parsing_rules = $this->extract_blocks_parsing_rules();
+		return $this->parsing_rules[ $rule_tag ];
+	}
+
+	/**
+	 * Extract all rules from WPML config file to translate strings for blocks.
+	 *
+	 * @since 3.3
+	 *
+	 * @return string[][][] Rules completed with ones from wpml-config file.
+	 */
+	protected function extract_blocks_parsing_rules() {
 		$parsing_rules = array();
 
 		foreach ( $this->xmls as $xml ) {
@@ -334,19 +355,23 @@ class PLL_WPML_Config {
 				}
 				$block_name = (string) $attributes['type'];
 				foreach ( $block->children() as $child ) {
-					if ( $child_tag !== $child->getName() ) {
-						continue;
+					$rule = '';
+					$child_tag = $child->getName();
+					switch ( $child_tag ) {
+						case 'xpath':
+							$rule = (string) $child;
+							break;
+						case 'key':
+							$child_attributes = $child->attributes();
+							if ( empty( $child_attributes ) ) {
+								break;
+							}
+							$rule = (string) $child_attributes['name'];
+							break;
 					}
-					if ( $is_in_child_attribute ) {
-						$child_attributes = $child->attributes();
-						if ( empty( $child_attributes ) ) {
-							continue;
-						}
-						$rules = (string) $child_attributes[ $child_attribute_name ];
-					} else {
-						$rules = (string) $child;
+					if ( ! empty( $rule ) ) {
+						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
 					}
-					$parsing_rules[ $block_name ][] = $rules;
 				}
 			}
 		}
