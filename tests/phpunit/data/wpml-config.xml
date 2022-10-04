@@ -2,11 +2,28 @@
 		<custom-fields>
 				<custom-field action="copy">quantity</custom-field>
 				<custom-field action="translate">custom-title</custom-field>
+				<custom-field action="translate">custom|nested</custom-field>
 				<custom-field action="copy">weight</custom-field>
 				<custom-field action="copy-once">bg-color</custom-field>
 				<custom-field action="translate">custom-description</custom-field>
 				<custom-field action="ignore">date-added</custom-field>
 		</custom-fields>
+		<custom-fields-texts>
+			<key name="custom|nested">
+				<key name="sub-1" />
+				<key name="sub-2">
+					<key name="sub|21">
+						<key name="sub-211" />
+						<key name=" " />
+						<key name="" />
+						<key />
+					</key>
+				</key>
+			</key>
+			<key name="custom-nested-2">
+				<key name="sub-1" />
+			</key>
+		</custom-fields-texts>
 		<custom-term-fields>
 			<custom-term-field action="copy">term_meta_A</custom-term-field>
 			<custom-term-field action="translate">term_meta_B</custom-term-field>
@@ -45,7 +62,7 @@
 				</key>
 				<key name="empty_option">
 					<key name="*">
-		            	<key name="label"/>
+						<key name="label"/>
 					</key>
 				</key>
 				<key name="simple_string_option" />
