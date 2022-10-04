@@ -1567,12 +1567,7 @@ parameters:
 
 		-
 			message: "#^Argument of an invalid type array\\<SimpleXMLElement\\>\\|null supplied for foreach, only iterables are supported\\.$#"
-			count: 4
-			path: modules/wpml/wpml-config.php
-
-		-
-			message: "#^Offset 'name' does not exist on SimpleXMLElement\\|null\\.$#"
-			count: 1
+			count: 7
 			path: modules/wpml/wpml-config.php
 
 		-
