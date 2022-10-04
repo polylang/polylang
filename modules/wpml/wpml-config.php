@@ -302,11 +302,11 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Translation management for block attributes.
+	 * Translation management for blocks attributes.
 	 *
 	 * @since 3.3
 	 *
-	 * @param string[][] $parsing_rules Rules for block attributes to translate.
+	 * @param string[][] $parsing_rules Rules for blocks attributes to translate.
 	 * @return string[][] Rules completed with ones from wpml-config file.
 	 *
 	 * @phpstan-param array<string,array<string>> $parsing_rules
