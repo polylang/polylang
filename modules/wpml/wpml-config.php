@@ -87,6 +87,10 @@ class PLL_WPML_Config {
 			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
 			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
 
+			// Export.
+			add_filter( 'pll_post_metas_to_export', array( $this, 'post_metas_to_export' ) );
+			add_filter( 'pll_term_metas_to_export', array( $this, 'term_metas_to_export' ) );
+
 			foreach ( $this->xmls as $context => $xml ) {
 				$keys = $xml->xpath( 'admin-texts/key' );
 				if ( is_array( $keys ) ) {
@@ -211,6 +215,124 @@ class PLL_WPML_Config {
 	}
 
 	/**
+	 * Adds post meta keys to export.
+	 *
+	 * @since 3.3
+	 * @see   PLL_Export_Metas
+	 *
+	 * @param  array $keys {
+	 *     A recursive array containing nested meta sub-keys to translate.
+	 *     Ex: array(
+	 *      'meta_to_translate_1' => 1,
+	 *      'meta_to_translate_2' => 1,
+	 *      'meta_to_translate_3' => array(
+	 *        'sub_key_to_translate_1' => 1,
+	 *        'sub_key_to_translate_2' => array(
+	 *             'sub_sub_key_to_translate_1' => 1,
+	 *         ),
+	 *      ),
+	 *    )
+	 * }
+	 * @return array
+	 *
+	 * @phpstan-param array<string, int|array> $keys
+	 * @phpstan-return array<string, int|array>
+	 */
+	public function post_metas_to_export( $keys ) {
+		// Add keys that have the `action` attribute set to `translate`.
+		foreach ( $this->xmls as $xml ) {
+			$fields = $xml->xpath( 'custom-fields/custom-field' );
+
+			if ( ! is_array( $fields ) ) {
+				// No custom fields.
+				continue;
+			}
+
+			foreach ( $fields as $field ) {
+				$action = $this->get_field_attribute( $field, 'action' );
+
+				if ( 'translate' !== $action ) {
+					continue;
+				}
+
+				$keys[ (string) $field ] = 1;
+			}
+		}
+
+		// Deal with sub-field translations.
+		foreach ( $this->xmls as $xml ) {
+			$fields = $xml->xpath( 'custom-fields-texts/key' );
+
+			if ( ! is_array( $fields ) ) {
+				// Wrong configuration: no `<key>` nodes.
+				continue;
+			}
+
+			foreach ( $fields as $field ) {
+				$name = $this->get_field_attribute( $field, 'name' );
+
+				if ( '' === $name ) {
+					// Wrong configuration: empty `name` attribute (meta name).
+					continue;
+				}
+
+				if ( ! isset( $keys[ $name ] ) ) {
+					// Wrong configuration: the field is not in `custom-fields/custom-field`.
+					continue;
+				}
+
+				$this->xml_to_array( $field, $keys, 1 );
+			}
+		}
+
+		return $keys;
+	}
+
+	/**
+	 * Adds term meta keys to export.
+	 * Note: sub-key translations are not currently supported by WPML.
+	 *
+	 * @since 3.3
+	 * @see   PLL_Export_Metas
+	 *
+	 * @param  array $keys {
+	 *     An array containing meta keys to translate.
+	 *     Ex: array(
+	 *      'meta_to_translate_1' => 1,
+	 *      'meta_to_translate_2' => 1,
+	 *      'meta_to_translate_3' => 1,
+	 *    )
+	 * }
+	 * @return array
+	 *
+	 * @phpstan-param array<string, int> $keys
+	 * @phpstan-return array<string, int>
+	 */
+	public function term_metas_to_export( $keys ) {
+		// Add keys that have the `action` attribute set to `translate`.
+		foreach ( $this->xmls as $xml ) {
+			$fields = $xml->xpath( 'custom-term-fields/custom-term-field' );
+
+			if ( ! is_array( $fields ) ) {
+				// No custom fields.
+				continue;
+			}
+
+			foreach ( $fields as $field ) {
+				$action = $this->get_field_attribute( $field, 'action' );
+
+				if ( 'translate' !== $action ) {
+					continue;
+				}
+
+				$keys[ (string) $field ] = 1;
+			}
+		}
+
+		return $keys;
+	}
+
+	/**
 	 * Language and translation management for custom post types.
 	 *
 	 * @since 1.0
@@ -281,23 +403,60 @@ class PLL_WPML_Config {
 	 * Recursively transforms xml nodes to an array, ready for PLL_Translate_Option.
 	 *
 	 * @since 2.9
+	 * @since 3.3 Type-hinted the parameters `$key` and `$arr`.
+	 * @since 3.3 Added the parameter `$fill_value`.
 	 *
-	 * @param SimpleXMLElement $key XML node.
-	 * @param array            $arr Array of option keys to translate.
+	 * @param SimpleXMLElement $key        XML node.
+	 * @param array            $arr        Array of option keys to translate.
+	 * @param mixed            $fill_value Value to use when filling entries. Default is true.
 	 * @return array
 	 */
-	protected function xml_to_array( $key, &$arr = array() ) {
+	protected function xml_to_array( SimpleXMLElement $key, array &$arr = array(), $fill_value = true ) {
 		$attributes = $key->attributes();
-		$name = (string) $attributes['name'];
+
+		if ( empty( $attributes ) ) {
+			return $arr;
+		}
+
+		$name = trim( (string) $attributes['name'] );
+
+		if ( '' === $name ) {
+			return $arr;
+		}
+
 		$children = $key->children();
 
 		if ( count( $children ) ) {
 			foreach ( $children as $child ) {
-				$arr[ $name ] = $this->xml_to_array( $child, $arr[ $name ] );
+				if ( ! isset( $arr[ $name ] ) || ! is_array( $arr[ $name ] ) ) {
+					$arr[ $name ] = array();
+				}
+
+				$arr[ $name ] = $this->xml_to_array( $child, $arr[ $name ], $fill_value );
 			}
 		} else {
-			$arr[ $name ] = true; // Multiline as in WPML.
+			$arr[ $name ] = $fill_value; // Multiline as in WPML.
 		}
+
 		return $arr;
+	}
+
+	/**
+	 * Get the value of an attribute.
+	 *
+	 * @since 3.3
+	 *
+	 * @param  SimpleXMLElement $field          A XML node.
+	 * @param  string           $attribute_name Node of the attribute.
+	 * @return string
+	 */
+	private function get_field_attribute( SimpleXMLElement $field, $attribute_name ) {
+		$attributes = $field->attributes();
+
+		if ( empty( $attributes ) || ! isset( $attributes[ $attribute_name ] ) ) {
+			return '';
+		}
+
+		return trim( (string) $attributes[ $attribute_name ] );
 	}
 }
