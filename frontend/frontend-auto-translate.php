@@ -275,7 +275,7 @@ class PLL_Frontend_Auto_Translate {
 				return $tr_id;
 			}
 		} else {
-			$terms = get_terms( $taxonomy, array( $field => $term, 'lang' => '' ) );
+			$terms = get_terms( array( 'taxonomy' => $taxonomy ), array( $field => $term, 'lang' => '' ) );
 
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 				$t = reset( $terms );

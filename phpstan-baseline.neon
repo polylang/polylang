@@ -181,11 +181,6 @@ parameters:
 			path: admin/admin-filters-term.php
 
 		-
-			message: "#^Cannot access property \\$term_id on int\\|string\\|WP_Term\\.$#"
-			count: 2
-			path: admin/admin-filters-term.php
-
-		-
 			message: "#^Cannot access property \\$term_taxonomy_id on array\\|WP_Error\\|WP_Term\\|null\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
@@ -292,7 +287,7 @@ parameters:
 
 		-
 			message: "#^Cannot access property \\$description on int\\|string\\|WP_Term\\.$#"
-			count: 2
+			count: 1
 			path: admin/admin-model.php
 
 		-
@@ -317,7 +312,7 @@ parameters:
 
 		-
 			message: "#^Cannot access property \\$term_taxonomy_id on int\\|string\\|WP_Term\\.$#"
-			count: 3
+			count: 2
 			path: admin/admin-model.php
 
 		-
@@ -511,11 +506,6 @@ parameters:
 			path: frontend/frontend-auto-translate.php
 
 		-
-			message: "#^Parameter \\#1 \\$array of function reset expects array\\|object, array\\<int, int\\|string\\|WP_Term\\>\\|string given\\.$#"
-			count: 1
-			path: frontend/frontend-auto-translate.php
-
-		-
 			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, float\\|int\\<0, max\\> given\\.$#"
 			count: 1
 			path: frontend/frontend-auto-translate.php
@@ -671,7 +661,7 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int, int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int, WP_Term\\>\\|WP_Error given\\.$#"
 			count: 1
 			path: frontend/frontend-links.php
 
@@ -686,7 +676,7 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Parameter \\#2 \\$haystack of function array_search expects array, array\\<int, int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#2 \\$haystack of function array_search expects array, array\\<int, WP_Term\\>\\|WP_Error given\\.$#"
 			count: 1
 			path: frontend/frontend-links.php
 
@@ -836,7 +826,7 @@ parameters:
 			path: include/crud-posts.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\<int, int\\|string\\|WP_Term\\>\\|string\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\<int, WP_Term>\\|WP_Error given\\.$#"
 			count: 1
 			path: include/crud-posts.php
 
@@ -1186,11 +1176,6 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int, int\\|string\\|WP_Term\\>\\|string given\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
 			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, mixed given\\.$#"
 			count: 1
 			path: include/model.php
@@ -1207,11 +1192,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#2 \\$callback of function add_filter expects callable\\(\\)\\: mixed, array\\{mixed, 'get_terms_args'\\} given\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#2 \\$values of function array_combine expects array, array\\<int, int\\|string\\|WP_Term\\>\\|string given\\.$#"
 			count: 1
 			path: include/model.php
 

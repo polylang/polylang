@@ -107,7 +107,7 @@ class PLL_Model {
 
 				$post_languages = $this->get_language_terms();
 
-				$term_languages = get_terms( 'term_language', array( 'hide_empty' => false ) );
+				$term_languages = get_terms( array( 'taxonomy' => 'term_language' ), array( 'hide_empty' => false ) );
 				$term_languages = empty( $term_languages ) || is_wp_error( $term_languages ) ?
 					array() : array_combine( wp_list_pluck( $term_languages, 'slug' ), $term_languages );
 
