@@ -146,16 +146,6 @@ parameters:
 			path: admin/admin-filters-media.php
 
 		-
-			message: "#^Cannot access property \\$taxonomy on int\\|string\\|WP_Term\\.$#"
-			count: 1
-			path: admin/admin-filters-post.php
-
-		-
-			message: "#^Cannot access property \\$term_id on int\\|string\\|WP_Term\\.$#"
-			count: 2
-			path: admin/admin-filters-post.php
-
-		-
 			message: "#^Parameter \\#1 \\$lang of method PLL_Query\\:\\:filter_query\\(\\) expects PLL_Language\\|false, PLL_Language\\|null given\\.$#"
 			count: 1
 			path: admin/admin-filters-post.php
@@ -271,11 +261,6 @@ parameters:
 			path: admin/admin-model.php
 
 		-
-			message: "#^@param WP_Term \\$term does not accept actual type of parameter\\: int\\|string\\|WP_Term\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
 			message: "#^@param array\\<array\\<string\\>\\|int\\> \\$tr does not accept actual type of parameter\\: mixed\\.$#"
 			count: 1
 			path: admin/admin-model.php
@@ -286,33 +271,13 @@ parameters:
 			path: admin/admin-model.php
 
 		-
-			message: "#^Cannot access property \\$description on int\\|string\\|WP_Term\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Cannot access property \\$taxonomy on int\\|string\\|WP_Term\\.$#"
 			count: 1
 			path: admin/admin-model.php
 
 		-
 			message: "#^Cannot access property \\$term_id on PLL_Language\\|false\\.$#"
 			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Cannot access property \\$term_id on int\\|string\\|WP_Term\\.$#"
-			count: 4
-			path: admin/admin-model.php
-
-		-
-			message: "#^Cannot access property \\$term_taxonomy_id on int\\|string\\|WP_Term\\.$#"
-			count: 2
 			path: admin/admin-model.php
 
 		-
@@ -676,7 +641,7 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Parameter \\#2 \\$haystack of function array_search expects array, array\\<int, WP_Term\\>\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#2 \\$haystack of function array_search expects array, array\\<int, string\\>\\|WP_Error given\\.$#"
 			count: 1
 			path: frontend/frontend-links.php
 
@@ -826,7 +791,7 @@ parameters:
 			path: include/crud-posts.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\<int, WP_Term>\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\<int, int>\\|WP_Error given\\.$#"
 			count: 1
 			path: include/crud-posts.php
 

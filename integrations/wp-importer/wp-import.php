@@ -41,7 +41,7 @@ class PLL_WP_Import extends WP_Import {
 
 		// Assign the default language in case the importer created the first language.
 		if ( empty( PLL()->options['default_lang'] ) ) {
-			$languages = get_terms( 'language', array( 'hide_empty' => false, 'orderby' => 'term_id' ) );
+			$languages = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id' ) );
 			$default_lang = reset( $languages );
 			PLL()->options['default_lang'] = $default_lang->slug;
 			update_option( 'polylang', PLL()->options );

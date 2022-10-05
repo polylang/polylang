@@ -123,7 +123,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		$tags = self::factory()->tag->create_many( 2 );
 		self::$model->set_language_in_mass( 'term', $tags, 'fr' );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'hide_empty' => false, 'fields' => 'ids' ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'hide_empty' => false, 'fields' => 'ids' ) );
 		$languages = wp_list_pluck( array_map( array( self::$model->term, 'get_language' ), $terms ), 'slug' );
 		$this->assertEquals( array( 'fr' => 4, 'en' => 2 ), array_count_values( $languages ) );
 		$this->assertCount( 7, get_terms( array( 'taxonomy' => 'term_translations' ) ) ); // one translation group per tag + 1 for default categories

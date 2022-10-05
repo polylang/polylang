@@ -456,16 +456,16 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$es = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
 		self::$model->term->set_language( $es, 'es' );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en' ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en' ) );
 		$this->assertEqualSets( array( $en ), $terms );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => array( 'en', 'fr' ) ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false, 'lang' => array( 'en', 'fr' ) ) );
 		$this->assertEqualSets( array( $fr, $en ), $terms );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 0 ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false, 'lang' => 0 ) );
 		$this->assertEqualSets( array( $en, $fr, $es ), $terms );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
 		$this->assertEqualSets( array( $en, $fr ), $terms );
 	}
 

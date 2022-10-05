@@ -175,19 +175,19 @@ class Filters_Test extends PLL_UnitTestCase {
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		new PLL_CRUD_Terms( $this->frontend );
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false ) );
 		$this->assertEqualSets( array( $fr ), $terms );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en' ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en' ) );
 		$this->assertEqualSets( array( $en ), $terms );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false, 'lang' => 'en,fr' ) );
 		$this->assertEqualSets( array( $en, $fr ), $terms );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => array( 'fr', 'de' ) ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false, 'lang' => array( 'fr', 'de' ) ) );
 		$this->assertEqualSets( array( $de, $fr ), $terms );
 
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'fields' => 'ids', 'hide_empty' => false, 'lang' => '' ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'ids', 'hide_empty' => false, 'lang' => '' ) );
 		$this->assertEqualSets( array( $en, $fr, $de ), $terms );
 	}
 
@@ -338,7 +338,7 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function _action_pre_get_posts() {
-		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'hide_empty' => false ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'hide_empty' => false ) );
 		$language = self::$model->term->get_language( $terms[0]->term_id );
 
 		$this->assertCount( 1, $terms );

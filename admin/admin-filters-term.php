@@ -516,7 +516,7 @@ class PLL_Admin_Filters_Term {
 		}
 
 		// It is more efficient to use one common query for all languages as soon as there are more than 2.
-		$all_terms = get_terms( array( 'taxonomy' => $taxonomy ), 'hide_empty=0&lang=0&name__like=' . $s );
+		$all_terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'lang' => '', 'name__like' => $s ) );
 		if ( is_array( $all_terms ) ) {
 			foreach ( $all_terms as $term ) {
 				$lang = $this->model->term->get_language( $term->term_id );

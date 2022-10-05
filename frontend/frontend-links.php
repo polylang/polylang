@@ -89,7 +89,7 @@ class PLL_Frontend_Links extends PLL_Links {
 						if ( ! empty( $tax_query['taxonomy'] ) && $this->model->is_translated_taxonomy( $tax_query['taxonomy'] ) ) {
 
 							$tax = get_taxonomy( $tax_query['taxonomy'] );
-							$terms = get_terms( array( 'taxonomy' => $tax->name ), array( 'fields' => 'id=>slug' ) ); // Filtered by current language
+							$terms = get_terms( array( 'taxonomy' => $tax->name, 'fields' => 'id=>slug' ) ); // Filtered by current language
 
 							foreach ( $tax_query['terms'] as $slug ) {
 								$term_id = array_search( $slug, $terms ); // What is the term_id corresponding to taxonomy term?
@@ -115,7 +115,7 @@ class PLL_Frontend_Links extends PLL_Links {
 				elseif ( $tr_id = $this->model->term->get_translation( $term->term_id, $language ) ) {
 					if ( $tr_term = get_term( $tr_id, $term->taxonomy ) ) {
 						// Check if translated term ( or children ) have posts
-						$count = $tr_term->count || ( is_taxonomy_hierarchical( $term->taxonomy ) && array_sum( wp_list_pluck( get_terms( array( 'taxonomy' => $term->taxonomy ), array( 'child_of' => $tr_term->term_id, 'lang' => $language->slug ) ), 'count' ) ) );
+						$count = $tr_term->count || ( is_taxonomy_hierarchical( $term->taxonomy ) && array_sum( wp_list_pluck( get_terms( array( 'taxonomy' => $term->taxonomy, 'child_of' => $tr_term->term_id, 'lang' => $language->slug ) ), 'count' ) ) );
 
 						/**
 						 * Filter whether to hide an archive translation url
