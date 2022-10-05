@@ -46,6 +46,6 @@ parameters:
 
 		# Ignored because the WordPress stubs doesn't know a dynamic key in the associative array passed to the get_terms() parameter
 		-
-			message: "#^Parameter \\#1 \\$args of function get_terms expects array(.+), non\\-empty\\-array\\<string, int\\|string\\>given.$#"
+			message: "#^Parameter \\#1 \\$args of function get_terms expects array(.+), non\\-empty\\-array\\<string, int\\|string\\> given\\.$#"
 			count: 1
 			path: frontend/frontend-auto-translate.php
