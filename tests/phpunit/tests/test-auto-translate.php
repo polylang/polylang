@@ -244,14 +244,14 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		$expected = get_term( $fr, 'category' );
-		$terms = get_terms( 'category', array( 'hide_empty' => 0, 'include' => array( $en ) ) );
+		$terms = get_terms( array( 'taxonomy' => 'category' ), array( 'hide_empty' => 0, 'include' => array( $en ) ) );
 		$this->assertEquals( array( $expected->term_id ), wp_list_pluck( $terms, 'term_id' ) );
 
 		$terms = get_terms( array( 'hide_empty' => 0, 'include' => array( $en ) ) );
 		$this->assertEquals( array( $expected->term_id ), wp_list_pluck( $terms, 'term_id' ) );
 
 		$expected = get_term( $en, 'category' );
-		$terms = get_terms( 'category', array( 'hide_empty' => 0, 'include' => array( $en ), 'lang' => '' ) );
+		$terms = get_terms( array( 'taxonomy' => 'category' ), array( 'hide_empty' => 0, 'include' => array( $en ), 'lang' => '' ) );
 		$this->assertEquals( array( $expected->term_id ), wp_list_pluck( $terms, 'term_id' ) );
 	}
 }

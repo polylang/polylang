@@ -108,7 +108,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		$posts = get_posts( array( 'fields' => 'ids', 'posts_per_page' => -1 ) );
 		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $posts ), 'slug' );
 		$this->assertEquals( array( 'fr' => 4, 'en' => 2 ), array_count_values( $languages ) );
-		$this->assertEmpty( get_terms( 'post_translations' ) ); // no translation group for posts
+		$this->assertEmpty( get_terms( array( 'taxonomy' => 'post_translations' ) ) ); // no translation group for posts
 	}
 
 	public function test_set_language_in_mass_for_terms() {
@@ -123,9 +123,9 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		$tags = self::factory()->tag->create_many( 2 );
 		self::$model->set_language_in_mass( 'term', $tags, 'fr' );
 
-		$terms = get_terms( 'post_tag', array( 'hide_empty' => false, 'fields' => 'ids' ) );
+		$terms = get_terms( array( 'taxonomy' => 'post_tag' ), array( 'hide_empty' => false, 'fields' => 'ids' ) );
 		$languages = wp_list_pluck( array_map( array( self::$model->term, 'get_language' ), $terms ), 'slug' );
 		$this->assertEquals( array( 'fr' => 4, 'en' => 2 ), array_count_values( $languages ) );
-		$this->assertCount( 7, get_terms( 'term_translations' ) ); // one translation group per tag + 1 for default categories
+		$this->assertCount( 7, get_terms( array( 'taxonomy' => 'term_translations' ) ) ); // one translation group per tag + 1 for default categories
 	}
 }

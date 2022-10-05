@@ -60,10 +60,10 @@ class Install_Test extends PLL_UnitTestCase {
 		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$post_translations_groups = get_terms( 'post_translations' );
+		$post_translations_groups = get_terms( array( 'taxonomy' => 'post_translations' ) );
 		$post_group = reset( $post_translations_groups );
 
-		$term_translations_groups = get_terms( 'term_translations' );
+		$term_translations_groups = get_terms( array( 'taxonomy' => 'term_translations' ) );
 		$term_group = reset( $term_translations_groups );
 
 		// User metas
@@ -100,16 +100,16 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_option( 'polylang' ) );
 
 		// No languages
-		$this->assertEmpty( get_terms( 'language', array( 'hide_empty' => false ) ) );
-		$this->assertEmpty( get_terms( 'term_language' ) );
+		$this->assertEmpty( get_terms( array( 'taxonomy' => 'language' ), array( 'hide_empty' => false ) ) );
+		$this->assertEmpty( get_terms( array( 'taxonomy' => 'term_language' ) ) );
 
 		// No languages for posts and terms
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $english->term_taxonomy_id ) ) );
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $english->tl_term_taxonomy_id ) ) );
 
 		// No translations for posts and terms
-		$this->assertEmpty( get_terms( 'post_translations' ) );
-		$this->assertEmpty( get_terms( 'term_translations' ) );
+		$this->assertEmpty( get_terms( array( 'taxonomy' => 'post_translations' ) ) );
+		$this->assertEmpty( get_terms( array( 'taxonomy' => 'term_translations' ) ) );
 
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $post_group->term_taxonomy_id ) ) );
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $term_group->term_taxonomy_id ) ) );
