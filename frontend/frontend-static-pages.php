@@ -165,13 +165,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 			return $lang;
 		}
 
-		// The home page is requested
-		if ( did_action( 'home_requested' ) ) {
-			$query->set( 'page_id', $lang->page_on_front );
-		}
-
 		// Redirect the language page to the homepage when using a static front page
-		elseif ( ( $this->options['redirect_lang'] || $this->options['hide_default'] ) && $this->is_front_page( $query ) && $lang = $this->model->get_language( get_query_var( 'lang' ) ) ) {
+		if ( ( $this->options['redirect_lang'] || $this->options['hide_default'] ) && $this->is_front_page( $query ) && $lang = $this->model->get_language( get_query_var( 'lang' ) ) ) {
 			$query->is_archive = $query->is_tax = false;
 			if ( ! empty( $lang->page_on_front ) ) {
 				$query->set( 'page_id', $lang->page_on_front );
@@ -186,6 +181,9 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		// Fix paged static front page in plain permalinks when Settings > Reading doesn't match the default language
 		elseif ( ! $this->links_model->using_permalinks && count( $query->query ) === 1 && ! empty( $query->query['page'] ) ) {
 			$lang = $this->model->get_language( $this->options['default_lang'] );
+			if ( empty( $lang ) ) {
+				return $lang;
+			}
 			$query->set( 'page_id', $lang->page_on_front );
 			$query->is_singular = $query->is_page = true;
 			$query->is_archive = $query->is_tax = false;
