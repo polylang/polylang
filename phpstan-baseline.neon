@@ -666,11 +666,6 @@ parameters:
 			path: frontend/frontend-nav-menu.php
 
 		-
-			message: "#^Cannot access property \\$page_on_front on PLL_Language\\|false\\.$#"
-			count: 2
-			path: frontend/frontend-static-pages.php
-
-		-
 			message: "#^Cannot access property \\$page_on_front on PLL_Language\\|null\\.$#"
 			count: 2
 			path: frontend/frontend-static-pages.php
