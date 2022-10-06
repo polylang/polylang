@@ -95,8 +95,7 @@ class PLL_WPML_Config {
 				$keys = $xml->xpath( 'admin-texts/key' );
 				if ( is_array( $keys ) ) {
 					foreach ( $keys as $key ) {
-						$attributes = $key->attributes();
-						$name = (string) $attributes['name'];
+						$name = $this->get_field_attribute( $key, 'name' );
 
 						if ( false !== strpos( $name, '*' ) ) {
 							$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
@@ -174,17 +173,22 @@ class PLL_WPML_Config {
 	public function copy_post_metas( $metas, $sync ) {
 		foreach ( $this->xmls as $xml ) {
 			$cfs = $xml->xpath( 'custom-fields/custom-field' );
-			if ( is_array( $cfs ) ) {
-				foreach ( $cfs as $cf ) {
-					$attributes = $cf->attributes();
-					if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
-						$metas[] = (string) $cf;
-					} else {
-						$metas = array_diff( $metas, array( (string) $cf ) );
-					}
+
+			if ( ! is_array( $cfs ) ) {
+				continue;
+			}
+
+			foreach ( $cfs as $cf ) {
+				$action = $this->get_field_attribute( $cf, 'action' );
+
+				if ( 'copy' === $action || ( ! $sync && in_array( $action, array( 'translate', 'copy-once' ), true ) ) ) {
+					$metas[] = (string) $cf;
+				} else {
+					$metas = array_diff( $metas, array( (string) $cf ) );
 				}
 			}
 		}
+
 		return $metas;
 	}
 
@@ -200,17 +204,22 @@ class PLL_WPML_Config {
 	public function copy_term_metas( $metas, $sync ) {
 		foreach ( $this->xmls as $xml ) {
 			$cfs = $xml->xpath( 'custom-term-fields/custom-term-field' );
-			if ( is_array( $cfs ) ) {
-				foreach ( $cfs as $cf ) {
-					$attributes = $cf->attributes();
-					if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
-						$metas[] = (string) $cf;
-					} else {
-						$metas = array_diff( $metas, array( (string) $cf ) );
-					}
+
+			if ( ! is_array( $cfs ) ) {
+				continue;
+			}
+
+			foreach ( $cfs as $cf ) {
+				$action = $this->get_field_attribute( $cf, 'action' );
+
+				if ( 'copy' === $action || ( ! $sync && in_array( $action, array( 'translate', 'copy-once' ), true ) ) ) {
+					$metas[] = (string) $cf;
+				} else {
+					$metas = array_diff( $metas, array( (string) $cf ) );
 				}
 			}
 		}
+
 		return $metas;
 	}
 
@@ -344,17 +353,22 @@ class PLL_WPML_Config {
 	public function translate_types( $types, $hide ) {
 		foreach ( $this->xmls as $xml ) {
 			$pts = $xml->xpath( 'custom-types/custom-type' );
-			if ( is_array( $pts ) ) {
-				foreach ( $pts as $pt ) {
-					$attributes = $pt->attributes();
-					if ( 1 == $attributes['translate'] && ! $hide ) {
-						$types[ (string) $pt ] = (string) $pt;
-					} else {
-						unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
-					}
+
+			if ( ! is_array( $pts ) ) {
+				continue;
+			}
+
+			foreach ( $pts as $pt ) {
+				$translate = $this->get_field_attribute( $pt, 'translate' );
+
+				if ( '1' === $translate && ! $hide ) {
+					$types[ (string) $pt ] = (string) $pt;
+				} else {
+					unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
 				}
 			}
 		}
+
 		return $types;
 	}
 
@@ -370,17 +384,22 @@ class PLL_WPML_Config {
 	public function translate_taxonomies( $taxonomies, $hide ) {
 		foreach ( $this->xmls as $xml ) {
 			$taxos = $xml->xpath( 'taxonomies/taxonomy' );
-			if ( is_array( $taxos ) ) {
-				foreach ( $taxos as $tax ) {
-					$attributes = $tax->attributes();
-					if ( 1 == $attributes['translate'] && ! $hide ) {
-						$taxonomies[ (string) $tax ] = (string) $tax;
-					} else {
-						unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
-					}
+
+			if ( ! is_array( $taxos ) ) {
+				continue;
+			}
+
+			foreach ( $taxos as $tax ) {
+				$translate = $this->get_field_attribute( $tax, 'translate' );
+
+				if ( '1' === $translate && ! $hide ) {
+					$taxonomies[ (string) $tax ] = (string) $tax;
+				} else {
+					unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
 				}
 			}
 		}
+
 		return $taxonomies;
 	}
 
@@ -412,13 +431,7 @@ class PLL_WPML_Config {
 	 * @return array
 	 */
 	protected function xml_to_array( SimpleXMLElement $key, array &$arr = array(), $fill_value = true ) {
-		$attributes = $key->attributes();
-
-		if ( empty( $attributes ) ) {
-			return $arr;
-		}
-
-		$name = trim( (string) $attributes['name'] );
+		$name = $this->get_field_attribute( $key, 'name' );
 
 		if ( '' === $name ) {
 			return $arr;
