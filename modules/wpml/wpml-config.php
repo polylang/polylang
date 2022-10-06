@@ -290,7 +290,7 @@ class PLL_WPML_Config {
 					continue;
 				}
 
-				$this->xml_to_array( $field, $keys, 1 );
+				$keys = $this->xml_to_array( $field, $keys, 1 );
 			}
 		}
 
@@ -423,6 +423,7 @@ class PLL_WPML_Config {
 	 *
 	 * @since 2.9
 	 * @since 3.3 Type-hinted the parameters `$key` and `$arr`.
+	 * @since 3.3 `$arr` is not passed by reference anymore.
 	 * @since 3.3 Added the parameter `$fill_value`.
 	 *
 	 * @param SimpleXMLElement $key        XML node.
@@ -430,7 +431,7 @@ class PLL_WPML_Config {
 	 * @param mixed            $fill_value Value to use when filling entries. Default is true.
 	 * @return array
 	 */
-	protected function xml_to_array( SimpleXMLElement $key, array &$arr = array(), $fill_value = true ) {
+	protected function xml_to_array( SimpleXMLElement $key, array $arr = array(), $fill_value = true ) {
 		$name = $this->get_field_attribute( $key, 'name' );
 
 		if ( '' === $name ) {
