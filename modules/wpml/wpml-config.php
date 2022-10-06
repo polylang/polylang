@@ -244,8 +244,8 @@ class PLL_WPML_Config {
 	 * }
 	 * @return array
 	 *
-	 * @phpstan-param array<string, int|array> $keys
-	 * @phpstan-return array<string, int|array>
+	 * @phpstan-param array<string, mixed> $keys
+	 * @phpstan-return array<string, mixed>
 	 */
 	public function post_metas_to_export( $keys ) {
 		// Add keys that have the `action` attribute set to `translate`.
@@ -285,7 +285,7 @@ class PLL_WPML_Config {
 					continue;
 				}
 
-				if ( ! isset( $keys[ $name ] ) ) {
+				if ( ! array_key_exists( $name, $keys ) ) {
 					// Wrong configuration: the field is not in `custom-fields/custom-field`.
 					continue;
 				}
@@ -314,8 +314,8 @@ class PLL_WPML_Config {
 	 * }
 	 * @return array
 	 *
-	 * @phpstan-param array<string, int> $keys
-	 * @phpstan-return array<string, int>
+	 * @phpstan-param array<string, mixed> $keys
+	 * @phpstan-return array<string, mixed>
 	 */
 	public function term_metas_to_export( $keys ) {
 		// Add keys that have the `action` attribute set to `translate`.
