@@ -39,13 +39,7 @@ parameters:
 			path: frontend/choose-lang.php
 
 		# Ignored because the WordPress stubs doesn't know our added 'lang' parameter in get_posts() and PLL_Model::get_languages_list() seems not to always return int[] as expected by 'post__in' parameter
-		-
-			message: "#^Parameter \\#1 \\$args of function get_posts expects array(.+)\\|null, array\\{posts_per_page: 99, post_type: 'page', post__in: array\\<int, int\\|null\\>, lang: ''\\} given\\.$#"
-			count: 1
-			path: frontend/frontend-static-pages.php
+		- "#^Parameter \\#1 \\$args of function get_posts expects array(.+)\\|null, array\\{posts_per_page: 99, post_type: 'page', post__in: array\\<int, int\\|null\\>, lang: ''\\} given\\.$#"
 
 		# Ignored because the WordPress stubs doesn't know a dynamic key in the associative array passed to the get_terms() parameter
-		-
-			message: "#^Parameter \\#1 \\$args of function get_terms expects array(.+), non\\-empty\\-array\\<string, int\\|string\\> given\\.$#"
-			count: 1
-			path: frontend/frontend-auto-translate.php
+		- "#^Parameter \\#1 \\$args of function get_terms expects array(.+), non\\-empty\\-array\\<string, int\\|string\\> given\\.$#"
