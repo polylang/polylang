@@ -661,8 +661,22 @@ class PLL_Admin_Filters_Term {
 				$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
 			}
 			$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
-			// If no term exists or if we are editing the existing term, trick WP to allow shared slugs.
+			// If no term exists.
 			if ( ! $term_id ) { // phpcs:ignore WordPress.Security.NonceVerification
+				return $lang;
+			}
+
+			$term = get_term( $term_id );
+			if ( is_wp_error( $term ) ) {
+				// Something bad happened...
+				return null;
+			}
+			if ( $term->slug === $slug ) {
+				// The slug is not modified, do nothing.
+				return null;
+			}
+			if ( ( ! empty( $_POST['tag_ID'] ) && (int) $_POST['tag_ID'] === $term_id ) || ( ! empty( $_POST['tax_ID'] ) && (int) $_POST['tax_ID'] === $term_id ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				// If we are editing the existing term.
 				return $lang;
 			}
 		}
