@@ -359,6 +359,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			'my-plugin/my-block-2' => array(
 				'//div/p/a',
 			),
+			'my-plugin/my-block-6' => array(
+				'//div/p/a',
+			),
 		);
 		$expected_parsing_rules_for_attributes = array(
 			'my-plugin/my-block' => array(
@@ -368,12 +371,15 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			'my-plugin/my-block-2' => array(
 				'iconLabel',
 			),
+			'my-plugin/my-block-5' => array(
+				'iconLabel',
+			),
 		);
 
 		$parsing_rules                = apply_filters( 'pll_blocks_xpath_rules', $parsing_rules );
 		$parsing_rules_for_attributes = apply_filters( 'pll_blocks_rules_for_attributes', $parsing_rules_for_attributes );
 
 		$this->assertSameSets( $expected_parsing_rules, $parsing_rules, 'Rules from WPML config should be added and override the existing ones for each block.' );
-		$this->assertSameSets( $expected_parsing_rules_for_attributes, $parsing_rules_for_attributes, 'Rules from WPML config should be added and override the existing ones for each block.' );
+		$this->assertSameSets( $expected_parsing_rules_for_attributes, $parsing_rules_for_attributes, 'Rules for blocks attributes from WPML config should be added and override the existing ones for each block.' );
 	}
 }
