@@ -665,20 +665,6 @@ class PLL_Admin_Filters_Term {
 			if ( ! $term_id ) { // phpcs:ignore WordPress.Security.NonceVerification
 				return $lang;
 			}
-
-			$term = get_term( $term_id );
-			if ( is_wp_error( $term ) ) {
-				// Something bad happened...
-				return null;
-			}
-			if ( $term->slug === $slug ) {
-				// The slug is not modified, do nothing.
-				return null;
-			}
-			if ( ( ! empty( $_POST['tag_ID'] ) && (int) $_POST['tag_ID'] === $term_id ) || ( ! empty( $_POST['tax_ID'] ) && (int) $_POST['tax_ID'] === $term_id ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				// If we are editing the existing term.
-				return $lang;
-			}
 		}
 
 		return null;
