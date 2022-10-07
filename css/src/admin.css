@@ -30,7 +30,8 @@
 	width : 10%;
 }
 
-td.column-default_lang .icon-default-lang:before {
+td.column-default_lang .icon-default-lang:before,
+.pll-wizard-content .icon-default-lang:before {
 	font-family: 'dashicons';
 	content: "\f155";
 }
