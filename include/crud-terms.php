@@ -325,7 +325,7 @@ class PLL_CRUD_Terms {
 		if ( $lang instanceof PLL_Language ) {
 			$slug .= $this->get_slug_separator() . $lang->slug;
 		}
-		
+
 		return $slug;
 	}
 }
