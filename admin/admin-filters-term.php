@@ -662,7 +662,7 @@ class PLL_Admin_Filters_Term {
 			}
 			$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
 			// If no term exists or if we are editing the existing term, trick WP to allow shared slugs.
-			if ( ! $term_id || ( ! empty( $_POST['tag_ID'] ) && (int) $_POST['tag_ID'] === $term_id ) || ( ! empty( $_POST['tax_ID'] ) && (int) $_POST['tax_ID'] === $term_id ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( ! $term_id ) { // phpcs:ignore WordPress.Security.NonceVerification
 				return $lang;
 			}
 		}
