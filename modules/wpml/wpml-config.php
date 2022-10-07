@@ -353,23 +353,26 @@ class PLL_WPML_Config {
 				if ( empty( $attributes ) || 1 !== (int) $attributes['translate'] ) {
 					continue;
 				}
-				$block_name = (string) $attributes['type'];
+				$block_name = trim( (string) $attributes['type'] );
+				if ( '' === $block_name ) {
+					continue;
+				}
 				foreach ( $block->children() as $child ) {
 					$rule = '';
 					$child_tag = $child->getName();
 					switch ( $child_tag ) {
 						case 'xpath':
-							$rule = (string) $child;
+							$rule = trim( (string) $child );
 							break;
 						case 'key':
 							$child_attributes = $child->attributes();
 							if ( empty( $child_attributes ) ) {
 								break;
 							}
-							$rule = (string) $child_attributes['name'];
+							$rule = trim( (string) $child_attributes['name'] );
 							break;
 					}
-					if ( ! empty( $rule ) ) {
+					if ( '' !== $rule ) {
 						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
 					}
 				}

@@ -62,6 +62,22 @@
 				<xpath>//div/p/a</xpath>
 				<key name="iconLabel" />
 			</gutenberg-block>
+			<gutenberg-block type=" " translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-4">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-5" translate="1">
+				<xpath> </xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-6" translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name=" " />
+			</gutenberg-block>
 		</gutenberg-blocks>
 		<language-switcher-settings>
 				<key name="icl_lang_sel_config">
