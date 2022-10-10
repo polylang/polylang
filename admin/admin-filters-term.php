@@ -654,17 +654,7 @@ class PLL_Admin_Filters_Term {
 		}
 
 		if ( $lang instanceof PLL_Language ) {
-			$parent = 0;
-			if ( isset( $_POST['parent'], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$parent = intval( $_POST['parent'] ); // phpcs:ignore WordPress.Security.NonceVerification
-			} elseif ( isset( $_POST[ "new{$taxonomy}_parent" ], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
-			$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
-			// If no term exists.
-			if ( ! $term_id ) { // phpcs:ignore WordPress.Security.NonceVerification
-				return $lang;
-			}
+			return $lang;
 		}
 
 		return null;
