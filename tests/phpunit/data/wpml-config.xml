@@ -45,12 +45,40 @@
 				</key>
 				<key name="empty_option">
 					<key name="*">
-		            	<key name="label"/>
+						<key name="label"/>
 					</key>
 				</key>
 				<key name="simple_string_option" />
 				<key name="generic_option_*" />
 		</admin-texts>
+		<gutenberg-blocks>
+			<gutenberg-block type="my-plugin/my-block" translate="1">
+				<xpath>//figure/figcaption</xpath>
+				<xpath>//figure/img/@alt</xpath>
+				<key name="headingTitle" />
+				<key name="text" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-2" translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type=" " translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-4">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-5" translate="1">
+				<xpath> </xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-6" translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name=" " />
+			</gutenberg-block>
+		</gutenberg-blocks>
 		<language-switcher-settings>
 				<key name="icl_lang_sel_config">
 						<key name="font-current-normal">#444444</key>

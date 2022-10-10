@@ -21,9 +21,9 @@ class PLL_WPML_Config {
 	/**
 	 * The content of all read xml files.
 	 *
-	 * @var SimpleXMLElement[]|null
+	 * @var SimpleXMLElement[]
 	 */
-	protected $xmls;
+	protected $xmls = array();
 
 	/**
 	 * The list of xml files.
@@ -31,6 +31,13 @@ class PLL_WPML_Config {
 	 * @var string[]|null
 	 */
 	protected $files;
+
+	/**
+	 * List of rules to extract strings to translate from blocks.
+	 *
+	 * @var string[][][]|null
+	 */
+	protected $parsing_rules = null;
 
 	/**
 	 * Constructor
@@ -86,12 +93,17 @@ class PLL_WPML_Config {
 			add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
 			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
 			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
+			add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
+			add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
 			foreach ( $this->xmls as $context => $xml ) {
 				$keys = $xml->xpath( 'admin-texts/key' );
 				if ( is_array( $keys ) ) {
 					foreach ( $keys as $key ) {
 						$attributes = $key->attributes();
+						if ( empty( $attributes ) ) {
+							continue;
+						}
 						$name = (string) $attributes['name'];
 
 						if ( false !== strpos( $name, '*' ) ) {
@@ -173,6 +185,9 @@ class PLL_WPML_Config {
 			if ( is_array( $cfs ) ) {
 				foreach ( $cfs as $cf ) {
 					$attributes = $cf->attributes();
+					if ( empty( $attributes ) ) {
+						continue;
+					}
 					if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
 						$metas[] = (string) $cf;
 					} else {
@@ -199,6 +214,9 @@ class PLL_WPML_Config {
 			if ( is_array( $cfs ) ) {
 				foreach ( $cfs as $cf ) {
 					$attributes = $cf->attributes();
+					if ( empty( $attributes ) ) {
+						continue;
+					}
 					if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
 						$metas[] = (string) $cf;
 					} else {
@@ -225,7 +243,10 @@ class PLL_WPML_Config {
 			if ( is_array( $pts ) ) {
 				foreach ( $pts as $pt ) {
 					$attributes = $pt->attributes();
-					if ( 1 == $attributes['translate'] && ! $hide ) {
+					if ( empty( $attributes ) ) {
+						continue;
+					}
+					if ( 1 === (int) $attributes['translate'] && ! $hide ) {
 						$types[ (string) $pt ] = (string) $pt;
 					} else {
 						unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
@@ -251,7 +272,10 @@ class PLL_WPML_Config {
 			if ( is_array( $taxos ) ) {
 				foreach ( $taxos as $tax ) {
 					$attributes = $tax->attributes();
-					if ( 1 == $attributes['translate'] && ! $hide ) {
+					if ( empty( $attributes ) ) {
+						continue;
+					}
+					if ( 1 === (int) $attributes['translate'] && ! $hide ) {
 						$taxonomies[ (string) $tax ] = (string) $tax;
 					} else {
 						unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
@@ -260,6 +284,101 @@ class PLL_WPML_Config {
 			}
 		}
 		return $taxonomies;
+	}
+
+	/**
+	 * Translation management for strings in blocks content.
+	 *
+	 * @since 3.3
+	 *
+	 * @param string[][] $parsing_rules Rules as Xpath expressions to evaluate in the blocks content.
+	 * @return string[][] Rules completed with ones from wpml-config file.
+	 *
+	 * @phpstan-param array<string,array<string>> $parsing_rules
+	 * @phpstan-return array<string,array<string>>
+	 */
+	public function translate_blocks( $parsing_rules ) {
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'xpath' ) );
+	}
+
+	/**
+	 * Translation management for blocks attributes.
+	 *
+	 * @since 3.3
+	 *
+	 * @param string[][] $parsing_rules Rules for blocks attributes to translate.
+	 * @return string[][] Rules completed with ones from wpml-config file.
+	 *
+	 * @phpstan-param array<string,array<string>> $parsing_rules
+	 * @phpstan-return array<string,array<string>>
+	 */
+	public function translate_blocks_attributes( $parsing_rules ) {
+		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'key' ) );
+	}
+
+	/**
+	 * Returns rules to extract translatable strings from blocks.
+	 *
+	 * @since 3.3
+	 *
+	 * @param string $rule_tag Tag name to extract.
+	 * @return string[][] The rules.
+	 */
+	protected function get_blocks_parsing_rules( $rule_tag ) {
+
+		if ( null === $this->parsing_rules ) {
+			$this->parsing_rules = $this->extract_blocks_parsing_rules();
+		}
+
+		return isset( $this->parsing_rules[ $rule_tag ] ) ? $this->parsing_rules[ $rule_tag ] : array();
+	}
+
+	/**
+	 * Extract all rules from WPML config file to translate strings for blocks.
+	 *
+	 * @since 3.3
+	 *
+	 * @return string[][][] Rules completed with ones from wpml-config file.
+	 */
+	protected function extract_blocks_parsing_rules() {
+		$parsing_rules = array();
+
+		foreach ( $this->xmls as $xml ) {
+			$blocks = $xml->xpath( 'gutenberg-blocks/gutenberg-block' );
+			if ( ! is_array( $blocks ) ) {
+				continue;
+			}
+			foreach ( $blocks as $block ) {
+				$attributes = $block->attributes();
+				if ( empty( $attributes ) || 1 !== (int) $attributes['translate'] ) {
+					continue;
+				}
+				$block_name = trim( (string) $attributes['type'] );
+				if ( '' === $block_name ) {
+					continue;
+				}
+				foreach ( $block->children() as $child ) {
+					$rule = '';
+					$child_tag = $child->getName();
+					switch ( $child_tag ) {
+						case 'xpath':
+							$rule = trim( (string) $child );
+							break;
+						case 'key':
+							$child_attributes = $child->attributes();
+							if ( empty( $child_attributes ) ) {
+								break;
+							}
+							$rule = trim( (string) $child_attributes['name'] );
+							break;
+					}
+					if ( '' !== $rule ) {
+						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
+					}
+				}
+			}
+		}
+		return $parsing_rules;
 	}
 
 	/**
@@ -288,6 +407,9 @@ class PLL_WPML_Config {
 	 */
 	protected function xml_to_array( $key, &$arr = array() ) {
 		$attributes = $key->attributes();
+		if ( empty( $attributes ) ) {
+			return $arr;
+		}
 		$name = (string) $attributes['name'];
 		$children = $key->children();
 
