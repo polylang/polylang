@@ -326,10 +326,10 @@ class PLL_WPML_Config {
 	 */
 	protected function get_blocks_parsing_rules( $rule_tag ) {
 
-		if ( null === $this->parsing_rules  ) {
+		if ( null === $this->parsing_rules ) {
 			$this->parsing_rules = $this->extract_blocks_parsing_rules();
 		}
-		
+
 		return isset( $this->parsing_rules[ $rule_tag ] ) ? $this->parsing_rules[ $rule_tag ] : array();
 	}
 
