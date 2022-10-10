@@ -35,9 +35,9 @@ class PLL_WPML_Config {
 	/**
 	 * List of rules to extract strings to translate from blocks.
 	 *
-	 * @var string[][][]
+	 * @var string[][][]|null
 	 */
-	protected $parsing_rules;
+	protected $parsing_rules = null;
 
 	/**
 	 * Constructor
@@ -317,20 +317,20 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Returns rules to extract a kind of string for blocks.
+	 * Returns rules to extract translatable strings from blocks.
 	 *
 	 * @since 3.3
 	 *
 	 * @param string $rule_tag Tag name to extract.
-	 * @return string[][] Rules completed with ones from wpml-config file.
+	 * @return string[][] The rules.
 	 */
 	protected function get_blocks_parsing_rules( $rule_tag ) {
 
-		if ( isset( $this->parsing_rules[ $rule_tag ] ) ) {
-			return $this->parsing_rules[ $rule_tag ];
+		if ( null === $this->parsing_rules  ) {
+			$this->parsing_rules = $this->extract_blocks_parsing_rules();
 		}
-		$this->parsing_rules = $this->extract_blocks_parsing_rules();
-		return $this->parsing_rules[ $rule_tag ];
+		
+		return isset( $this->parsing_rules[ $rule_tag ] ) ? $this->parsing_rules[ $rule_tag ] : array();
 	}
 
 	/**
