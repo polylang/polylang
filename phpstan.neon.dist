@@ -37,3 +37,9 @@ parameters:
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
 			count: 1
 			path: frontend/choose-lang.php
+
+		# Ignored because the WordPress stubs doesn't know our added 'lang' parameter in get_posts() and PLL_Model::get_languages_list() seems not to always return int[] as expected by 'post__in' parameter
+		- "#^Parameter \\#1 \\$args of function get_posts expects array(.+)\\|null, array\\{posts_per_page: 99, post_type: 'page', post__in: array\\<int, int\\|null\\>, lang: ''\\} given\\.$#"
+
+		# Ignored because the WordPress stubs doesn't know a dynamic key in the associative array passed to the get_terms() parameter
+		- "#^Parameter \\#1 \\$args of function get_terms expects array(.+), non\\-empty\\-array\\<string, int\\|string\\> given\\.$#"

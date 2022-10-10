@@ -416,7 +416,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Get all terms with term_taxonomy_id
-		$terms = get_terms( $taxonomy, array( 'hide_empty' => false ) );
+		$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
 		$trs   = array();
 
 		// Prepare objects relationships.
@@ -456,7 +456,7 @@ class PLL_Admin_Model extends PLL_Model {
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
 
-		$terms    = get_terms( array( 'post_translations', 'term_translations' ) );
+		$terms    = get_terms( array( 'taxonomy' => array( 'post_translations', 'term_translations' ) ) );
 		$term_ids = array();
 		$dr       = array();
 		$dt       = array();
