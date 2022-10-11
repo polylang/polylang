@@ -471,39 +471,45 @@ class PLL_WPML_Config {
 
 		foreach ( $this->xmls as $xml ) {
 			$blocks = $xml->xpath( 'gutenberg-blocks/gutenberg-block' );
+
 			if ( ! is_array( $blocks ) ) {
 				continue;
 			}
+
 			foreach ( $blocks as $block ) {
-				$attributes = $block->attributes();
-				if ( empty( $attributes ) || 1 !== (int) $attributes['translate'] ) {
+				$translate = $this->get_field_attribute( $block, 'translate' );
+
+				if ( '1' !== $translate ) {
 					continue;
 				}
-				$block_name = trim( (string) $attributes['type'] );
+
+				$block_name = $this->get_field_attribute( $block, 'type' );
+
 				if ( '' === $block_name ) {
 					continue;
 				}
+
 				foreach ( $block->children() as $child ) {
-					$rule = '';
+					$rule      = '';
 					$child_tag = $child->getName();
+
 					switch ( $child_tag ) {
 						case 'xpath':
 							$rule = trim( (string) $child );
 							break;
+
 						case 'key':
-							$child_attributes = $child->attributes();
-							if ( empty( $child_attributes ) ) {
-								break;
-							}
-							$rule = trim( (string) $child_attributes['name'] );
+							$rule = $this->get_field_attribute( $child, 'name' );
 							break;
 					}
+
 					if ( '' !== $rule ) {
 						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
 					}
 				}
 			}
 		}
+
 		return $parsing_rules;
 	}
 
