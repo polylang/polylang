@@ -293,7 +293,7 @@ class PLL_WPML_Config {
 			$fields = $xml->xpath( 'custom-fields-texts/key' );
 
 			if ( ! is_array( $fields ) ) {
-				// Wrong configuration: no `<key>` nodes.
+				// No 'custom-fields-texts' nodes.
 				continue;
 			}
 
