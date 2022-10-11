@@ -297,19 +297,12 @@ class PLL_CRUD_Terms {
 			 *
 			 * @since 3.3
 			 *
-			 * @param int    $parent   Parent term ID, 0 if none.
-			 * @param string $slug     Term slug
-			 * @param string $taxonomy Term taxonomy.
+			 * @param int          $parent   Parent term ID, 0 if none.
+			 * @param string       $slug     Term slug
+			 * @param string       $taxonomy Term taxonomy.
+			 * @param PLL_Language $lang     Inserted term language object.
 			 */
-			$parent = apply_filters( 'pll_inserted_term_parent', 0, $slug, $taxonomy );
-
-			if ( ! $parent ) {
-				if ( isset( $_POST['parent'], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-					$parent = intval( $_POST['parent'] ); // phpcs:ignore WordPress.Security.NonceVerification
-				} elseif ( isset( $_POST[ "new{$taxonomy}_parent" ], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-					$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
-				}
-			}
+			$parent = apply_filters( 'pll_inserted_term_parent', 0, $slug, $taxonomy, $lang );
 
 			$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
 
