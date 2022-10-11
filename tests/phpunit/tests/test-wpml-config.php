@@ -199,6 +199,37 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'D', get_term_meta( $from, 'term_meta_D', true ) );
 	}
 
+	public function test_export_custom_fiels() {
+		$wpml_config = PLL_WPML_Config::instance();
+		$wpml_config->init();
+
+		// `custom-nested-2` is not expected because it is not in the `<custom-fields>` list.
+		$expected = array(
+			'previous-value'     => 1,
+			'custom-title'       => 1,
+			'custom|nested'      => array(
+				'sub-1' => 1,
+				'sub-2' => array(
+					'sub|21' => array(
+						'sub-211' => 1,
+					),
+				),
+			),
+			'custom-description' => 1,
+		);
+		$result   = $wpml_config->post_metas_to_export( array( 'previous-value' => 1 ) );
+
+		$this->assertSame( $expected, $result );
+
+		$expected = array(
+			'previous-value' => 1,
+			'term_meta_B'    => 1,
+		);
+		$result   = $wpml_config->term_metas_to_export( array( 'previous-value' => 1 ) );
+
+		$this->assertSame( $expected, $result );
+	}
+
 	public function test_cpt() {
 		$frontend = new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();

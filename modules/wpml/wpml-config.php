@@ -73,52 +73,63 @@ class PLL_WPML_Config {
 	 */
 	public function init() {
 		$this->xmls = array();
-		$files = $this->get_files();
+		$files      = $this->get_files();
 
-		if ( ! empty( $files ) ) {
+		if ( empty( $files ) ) {
+			return;
+		}
 
-			// Read all files.
-			if ( extension_loaded( 'simplexml' ) ) {
-				foreach ( $files as $context => $file ) {
-					$xml = simplexml_load_file( $file );
-					if ( false !== $xml ) {
-						$this->xmls[ $context ] = $xml;
-					}
-				}
+		if ( ! extension_loaded( 'simplexml' ) ) {
+			return;
+		}
+
+		// Read all files.
+		foreach ( $files as $context => $file ) {
+			$xml = simplexml_load_file( $file );
+			if ( false !== $xml ) {
+				$this->xmls[ $context ] = $xml;
 			}
 		}
 
-		if ( ! empty( $this->xmls ) ) {
-			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
-			add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
-			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
-			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
-			add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
-			add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
+		if ( empty( $this->xmls ) ) {
+			return;
+		}
 
-			foreach ( $this->xmls as $context => $xml ) {
-				$keys = $xml->xpath( 'admin-texts/key' );
-				if ( is_array( $keys ) ) {
-					foreach ( $keys as $key ) {
-						$attributes = $key->attributes();
-						if ( empty( $attributes ) ) {
-							continue;
-						}
-						$name = (string) $attributes['name'];
+		add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
+		add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
+		add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
+		add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
+		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
+		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
-						if ( false !== strpos( $name, '*' ) ) {
-							$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-							$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
+		// Export.
+		add_filter( 'pll_post_metas_to_export', array( $this, 'post_metas_to_export' ) );
+		add_filter( 'pll_term_metas_to_export', array( $this, 'term_metas_to_export' ) );
 
-							if ( is_array( $names ) ) {
-								foreach ( $names as $_name ) {
-									$this->register_or_translate_option( $context, $_name, $key );
-								}
-							}
-						} else {
-							$this->register_or_translate_option( $context, $name, $key );
-						}
-					}
+		foreach ( $this->xmls as $context => $xml ) {
+			$keys = $xml->xpath( 'admin-texts/key' );
+
+			if ( ! is_array( $keys ) ) {
+				continue;
+			}
+
+			foreach ( $keys as $key ) {
+				$name = $this->get_field_attribute( $key, 'name' );
+
+				if ( false === strpos( $name, '*' ) ) {
+					$this->register_or_translate_option( $context, $name, $key );
+					continue;
+				}
+
+				$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
+				$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
+
+				if ( ! is_array( $names ) ) {
+					continue;
+				}
+
+				foreach ( $names as $_name ) {
+					$this->register_or_translate_option( $context, $_name, $key );
 				}
 			}
 		}
@@ -182,20 +193,22 @@ class PLL_WPML_Config {
 	public function copy_post_metas( $metas, $sync ) {
 		foreach ( $this->xmls as $xml ) {
 			$cfs = $xml->xpath( 'custom-fields/custom-field' );
-			if ( is_array( $cfs ) ) {
-				foreach ( $cfs as $cf ) {
-					$attributes = $cf->attributes();
-					if ( empty( $attributes ) ) {
-						continue;
-					}
-					if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
-						$metas[] = (string) $cf;
-					} else {
-						$metas = array_diff( $metas, array( (string) $cf ) );
-					}
+
+			if ( ! is_array( $cfs ) ) {
+				continue;
+			}
+
+			foreach ( $cfs as $cf ) {
+				$action = $this->get_field_attribute( $cf, 'action' );
+
+				if ( 'copy' === $action || ( ! $sync && in_array( $action, array( 'translate', 'copy-once' ), true ) ) ) {
+					$metas[] = (string) $cf;
+				} else {
+					$metas = array_diff( $metas, array( (string) $cf ) );
 				}
 			}
 		}
+
 		return $metas;
 	}
 
@@ -211,21 +224,141 @@ class PLL_WPML_Config {
 	public function copy_term_metas( $metas, $sync ) {
 		foreach ( $this->xmls as $xml ) {
 			$cfs = $xml->xpath( 'custom-term-fields/custom-term-field' );
-			if ( is_array( $cfs ) ) {
-				foreach ( $cfs as $cf ) {
-					$attributes = $cf->attributes();
-					if ( empty( $attributes ) ) {
-						continue;
-					}
-					if ( 'copy' == $attributes['action'] || ( ! $sync && in_array( $attributes['action'], array( 'translate', 'copy-once' ) ) ) ) {
-						$metas[] = (string) $cf;
-					} else {
-						$metas = array_diff( $metas, array( (string) $cf ) );
-					}
+
+			if ( ! is_array( $cfs ) ) {
+				continue;
+			}
+
+			foreach ( $cfs as $cf ) {
+				$action = $this->get_field_attribute( $cf, 'action' );
+
+				if ( 'copy' === $action || ( ! $sync && in_array( $action, array( 'translate', 'copy-once' ), true ) ) ) {
+					$metas[] = (string) $cf;
+				} else {
+					$metas = array_diff( $metas, array( (string) $cf ) );
 				}
 			}
 		}
+
 		return $metas;
+	}
+
+	/**
+	 * Adds post meta keys to export.
+	 *
+	 * @since 3.3
+	 * @see   PLL_Export_Metas
+	 *
+	 * @param  array $keys {
+	 *     A recursive array containing nested meta sub-keys to translate.
+	 *     Ex: array(
+	 *      'meta_to_translate_1' => 1,
+	 *      'meta_to_translate_2' => 1,
+	 *      'meta_to_translate_3' => array(
+	 *        'sub_key_to_translate_1' => 1,
+	 *        'sub_key_to_translate_2' => array(
+	 *             'sub_sub_key_to_translate_1' => 1,
+	 *         ),
+	 *      ),
+	 *    )
+	 * }
+	 * @return array
+	 *
+	 * @phpstan-param array<string, mixed> $keys
+	 * @phpstan-return array<string, mixed>
+	 */
+	public function post_metas_to_export( $keys ) {
+		// Add keys that have the `action` attribute set to `translate`.
+		foreach ( $this->xmls as $xml ) {
+			$fields = $xml->xpath( 'custom-fields/custom-field' );
+
+			if ( ! is_array( $fields ) ) {
+				// No custom fields.
+				continue;
+			}
+
+			foreach ( $fields as $field ) {
+				$action = $this->get_field_attribute( $field, 'action' );
+
+				if ( 'translate' !== $action ) {
+					continue;
+				}
+
+				$keys[ (string) $field ] = 1;
+			}
+		}
+
+		// Deal with sub-field translations.
+		foreach ( $this->xmls as $xml ) {
+			$fields = $xml->xpath( 'custom-fields-texts/key' );
+
+			if ( ! is_array( $fields ) ) {
+				// No 'custom-fields-texts' nodes.
+				continue;
+			}
+
+			foreach ( $fields as $field ) {
+				$name = $this->get_field_attribute( $field, 'name' );
+
+				if ( '' === $name ) {
+					// Wrong configuration: empty `name` attribute (meta name).
+					continue;
+				}
+
+				if ( ! array_key_exists( $name, $keys ) ) {
+					// Wrong configuration: the field is not in `custom-fields/custom-field`.
+					continue;
+				}
+
+				$keys = $this->xml_to_array( $field, $keys, 1 );
+			}
+		}
+
+		return $keys;
+	}
+
+	/**
+	 * Adds term meta keys to export.
+	 * Note: sub-key translations are not currently supported by WPML.
+	 *
+	 * @since 3.3
+	 * @see   PLL_Export_Metas
+	 *
+	 * @param  array $keys {
+	 *     An array containing meta keys to translate.
+	 *     Ex: array(
+	 *      'meta_to_translate_1' => 1,
+	 *      'meta_to_translate_2' => 1,
+	 *      'meta_to_translate_3' => 1,
+	 *    )
+	 * }
+	 * @return array
+	 *
+	 * @phpstan-param array<string, mixed> $keys
+	 * @phpstan-return array<string, mixed>
+	 */
+	public function term_metas_to_export( $keys ) {
+		// Add keys that have the `action` attribute set to `translate`.
+		foreach ( $this->xmls as $xml ) {
+			$fields = $xml->xpath( 'custom-term-fields/custom-term-field' );
+
+			if ( ! is_array( $fields ) ) {
+				// No custom fields.
+				continue;
+			}
+
+			foreach ( $fields as $field ) {
+				$action = $this->get_field_attribute( $field, 'action' );
+
+				if ( 'translate' !== $action ) {
+					continue;
+				}
+
+				$keys[ (string) $field ] = 1;
+			}
+		}
+
+		return $keys;
 	}
 
 	/**
@@ -240,20 +373,22 @@ class PLL_WPML_Config {
 	public function translate_types( $types, $hide ) {
 		foreach ( $this->xmls as $xml ) {
 			$pts = $xml->xpath( 'custom-types/custom-type' );
-			if ( is_array( $pts ) ) {
-				foreach ( $pts as $pt ) {
-					$attributes = $pt->attributes();
-					if ( empty( $attributes ) ) {
-						continue;
-					}
-					if ( 1 === (int) $attributes['translate'] && ! $hide ) {
-						$types[ (string) $pt ] = (string) $pt;
-					} else {
-						unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
-					}
+
+			if ( ! is_array( $pts ) ) {
+				continue;
+			}
+
+			foreach ( $pts as $pt ) {
+				$translate = $this->get_field_attribute( $pt, 'translate' );
+
+				if ( '1' === $translate && ! $hide ) {
+					$types[ (string) $pt ] = (string) $pt;
+				} else {
+					unset( $types[ (string) $pt ] ); // The theme/plugin author decided what to do with the post type so don't allow the user to change this
 				}
 			}
 		}
+
 		return $types;
 	}
 
@@ -269,20 +404,22 @@ class PLL_WPML_Config {
 	public function translate_taxonomies( $taxonomies, $hide ) {
 		foreach ( $this->xmls as $xml ) {
 			$taxos = $xml->xpath( 'taxonomies/taxonomy' );
-			if ( is_array( $taxos ) ) {
-				foreach ( $taxos as $tax ) {
-					$attributes = $tax->attributes();
-					if ( empty( $attributes ) ) {
-						continue;
-					}
-					if ( 1 === (int) $attributes['translate'] && ! $hide ) {
-						$taxonomies[ (string) $tax ] = (string) $tax;
-					} else {
-						unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
-					}
+
+			if ( ! is_array( $taxos ) ) {
+				continue;
+			}
+
+			foreach ( $taxos as $tax ) {
+				$translate = $this->get_field_attribute( $tax, 'translate' );
+
+				if ( '1' === $translate && ! $hide ) {
+					$taxonomies[ (string) $tax ] = (string) $tax;
+				} else {
+					unset( $taxonomies[ (string) $tax ] ); // the theme/plugin author decided what to do with the taxonomy so don't allow the user to change this
 				}
 			}
 		}
+
 		return $taxonomies;
 	}
 
@@ -345,39 +482,45 @@ class PLL_WPML_Config {
 
 		foreach ( $this->xmls as $xml ) {
 			$blocks = $xml->xpath( 'gutenberg-blocks/gutenberg-block' );
+
 			if ( ! is_array( $blocks ) ) {
 				continue;
 			}
+
 			foreach ( $blocks as $block ) {
-				$attributes = $block->attributes();
-				if ( empty( $attributes ) || 1 !== (int) $attributes['translate'] ) {
+				$translate = $this->get_field_attribute( $block, 'translate' );
+
+				if ( '1' !== $translate ) {
 					continue;
 				}
-				$block_name = trim( (string) $attributes['type'] );
+
+				$block_name = $this->get_field_attribute( $block, 'type' );
+
 				if ( '' === $block_name ) {
 					continue;
 				}
+
 				foreach ( $block->children() as $child ) {
-					$rule = '';
+					$rule      = '';
 					$child_tag = $child->getName();
+
 					switch ( $child_tag ) {
 						case 'xpath':
 							$rule = trim( (string) $child );
 							break;
+
 						case 'key':
-							$child_attributes = $child->attributes();
-							if ( empty( $child_attributes ) ) {
-								break;
-							}
-							$rule = trim( (string) $child_attributes['name'] );
+							$rule = $this->get_field_attribute( $child, 'name' );
 							break;
 					}
+
 					if ( '' !== $rule ) {
 						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
 					}
 				}
 			}
 		}
+
 		return $parsing_rules;
 	}
 
@@ -400,26 +543,55 @@ class PLL_WPML_Config {
 	 * Recursively transforms xml nodes to an array, ready for PLL_Translate_Option.
 	 *
 	 * @since 2.9
+	 * @since 3.3 Type-hinted the parameters `$key` and `$arr`.
+	 * @since 3.3 `$arr` is not passed by reference anymore.
+	 * @since 3.3 Added the parameter `$fill_value`.
 	 *
-	 * @param SimpleXMLElement $key XML node.
-	 * @param array            $arr Array of option keys to translate.
+	 * @param SimpleXMLElement $key        XML node.
+	 * @param array            $arr        Array of option keys to translate.
+	 * @param mixed            $fill_value Value to use when filling entries. Default is true.
 	 * @return array
 	 */
-	protected function xml_to_array( $key, &$arr = array() ) {
-		$attributes = $key->attributes();
-		if ( empty( $attributes ) ) {
+	protected function xml_to_array( SimpleXMLElement $key, array $arr = array(), $fill_value = true ) {
+		$name = $this->get_field_attribute( $key, 'name' );
+
+		if ( '' === $name ) {
 			return $arr;
 		}
-		$name = (string) $attributes['name'];
+
 		$children = $key->children();
 
 		if ( count( $children ) ) {
 			foreach ( $children as $child ) {
-				$arr[ $name ] = $this->xml_to_array( $child, $arr[ $name ] );
+				if ( ! isset( $arr[ $name ] ) || ! is_array( $arr[ $name ] ) ) {
+					$arr[ $name ] = array();
+				}
+
+				$arr[ $name ] = $this->xml_to_array( $child, $arr[ $name ], $fill_value );
 			}
 		} else {
-			$arr[ $name ] = true; // Multiline as in WPML.
+			$arr[ $name ] = $fill_value; // Multiline as in WPML.
 		}
+
 		return $arr;
+	}
+
+	/**
+	 * Get the value of an attribute.
+	 *
+	 * @since 3.3
+	 *
+	 * @param  SimpleXMLElement $field          A XML node.
+	 * @param  string           $attribute_name Node of the attribute.
+	 * @return string
+	 */
+	private function get_field_attribute( SimpleXMLElement $field, $attribute_name ) {
+		$attributes = $field->attributes();
+
+		if ( empty( $attributes ) || ! isset( $attributes[ $attribute_name ] ) ) {
+			return '';
+		}
+
+		return trim( (string) $attributes[ $attribute_name ] );
 	}
 }
