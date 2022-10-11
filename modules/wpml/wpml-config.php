@@ -73,52 +73,63 @@ class PLL_WPML_Config {
 	 */
 	public function init() {
 		$this->xmls = array();
-		$files = $this->get_files();
+		$files      = $this->get_files();
 
-		if ( ! empty( $files ) ) {
+		if ( empty( $files ) ) {
+			return;
+		}
 
-			// Read all files.
-			if ( extension_loaded( 'simplexml' ) ) {
-				foreach ( $files as $context => $file ) {
-					$xml = simplexml_load_file( $file );
-					if ( false !== $xml ) {
-						$this->xmls[ $context ] = $xml;
-					}
-				}
+		if ( ! extension_loaded( 'simplexml' ) ) {
+			return;
+		}
+
+		// Read all files.
+		foreach ( $files as $context => $file ) {
+			$xml = simplexml_load_file( $file );
+			if ( false !== $xml ) {
+				$this->xmls[ $context ] = $xml;
 			}
 		}
 
-		if ( ! empty( $this->xmls ) ) {
-			add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
-			add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
-			add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
-			add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
-			add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
-			add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
+		if ( empty( $this->xmls ) ) {
+			return;
+		}
 
-			// Export.
-			add_filter( 'pll_post_metas_to_export', array( $this, 'post_metas_to_export' ) );
-			add_filter( 'pll_term_metas_to_export', array( $this, 'term_metas_to_export' ) );
+		add_filter( 'pll_copy_post_metas', array( $this, 'copy_post_metas' ), 20, 2 );
+		add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
+		add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
+		add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
+		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
+		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
-			foreach ( $this->xmls as $context => $xml ) {
-				$keys = $xml->xpath( 'admin-texts/key' );
-				if ( is_array( $keys ) ) {
-					foreach ( $keys as $key ) {
-						$name = $this->get_field_attribute( $key, 'name' );
+		// Export.
+		add_filter( 'pll_post_metas_to_export', array( $this, 'post_metas_to_export' ) );
+		add_filter( 'pll_term_metas_to_export', array( $this, 'term_metas_to_export' ) );
 
-						if ( false !== strpos( $name, '*' ) ) {
-							$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-							$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
+		foreach ( $this->xmls as $context => $xml ) {
+			$keys = $xml->xpath( 'admin-texts/key' );
 
-							if ( is_array( $names ) ) {
-								foreach ( $names as $_name ) {
-									$this->register_or_translate_option( $context, $_name, $key );
-								}
-							}
-						} else {
-							$this->register_or_translate_option( $context, $name, $key );
-						}
-					}
+			if ( ! is_array( $keys ) ) {
+				continue;
+			}
+
+			foreach ( $keys as $key ) {
+				$name = $this->get_field_attribute( $key, 'name' );
+
+				if ( false === strpos( $name, '*' ) ) {
+					$this->register_or_translate_option( $context, $name, $key );
+					continue;
+				}
+
+				$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
+				$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
+
+				if ( ! is_array( $names ) ) {
+					continue;
+				}
+
+				foreach ( $names as $_name ) {
+					$this->register_or_translate_option( $context, $_name, $key );
 				}
 			}
 		}
