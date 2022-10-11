@@ -280,16 +280,20 @@ class PLL_CRUD_Terms {
 			$slug = sanitize_title( $this->pre_term_name );
 		}
 
+		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) || ! term_exists( $slug, $taxonomy ) ) {
+			return $slug;
+		}
+
 		/**
 		 * Filters the subsequently inserted term language.
 		 *
 		 * @since 3.3
 		 *
 		 * @param PLL_Language|null $lang     Found language object, null otherwise.
-		 * @param string            $slug     Term slug
 		 * @param string            $taxonomy Term taonomy.
+		 * @param string            $slug     Term slug
 		 */
-		$lang = apply_filters( 'pll_inserted_term_language', null, $slug, $taxonomy );
+		$lang = apply_filters( 'pll_inserted_term_language', null, $taxonomy, $slug );
 
 		if ( $lang instanceof PLL_Language ) {
 			/**
@@ -298,11 +302,19 @@ class PLL_CRUD_Terms {
 			 * @since 3.3
 			 *
 			 * @param int          $parent   Parent term ID, 0 if none.
-			 * @param string       $slug     Term slug
 			 * @param string       $taxonomy Term taxonomy.
-			 * @param PLL_Language $lang     Inserted term language object.
+			 * @param string       $slug     Term slug
 			 */
-			$parent = apply_filters( 'pll_inserted_term_parent', 0, $slug, $taxonomy, $lang );
+			$parent = apply_filters( 'pll_inserted_term_parent', 0, $taxonomy, $slug );
+
+			/**
+			 * Special case if the parent has the same slug.
+			 * WordPress prepends the slug to itself, so let's do it.
+			 */
+			$parent_obj = get_term( $parent, $taxonomy );
+			if ( $parent_obj instanceof WP_Term && $parent_obj->slug === $slug ) {
+				return $slug .= '-' . $slug;
+			}
 
 			$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
 
