@@ -320,15 +320,11 @@ class PLL_CRUD_Terms {
 			$parent_suffix = '';
 			while ( ! empty( $the_parent ) ) {
 				$parent_term = get_term( $the_parent, $taxonomy );
-				if ( ! $parent_obj instanceof WP_Term ) {
+				if ( ! $parent_term instanceof WP_Term ) {
 					break;
 				}
 				$parent_suffix .= '-' . $parent_term->slug;
 				if ( ! term_exists( $slug . $parent_suffix ) ) {
-					break;
-				}
-
-				if ( empty( $parent_term->parent ) ) {
 					break;
 				}
 				$the_parent = $parent_term->parent;
