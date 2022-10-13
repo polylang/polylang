@@ -295,33 +295,55 @@ class PLL_CRUD_Terms {
 		 */
 		$lang = apply_filters( 'pll_inserted_term_language', null, $taxonomy, $slug );
 
-		if ( $lang instanceof PLL_Language ) {
-			/**
-			 * Filters the subsequently inserted term parent.
-			 *
-			 * @since 3.3
-			 *
-			 * @param int          $parent   Parent term ID, 0 if none.
-			 * @param string       $taxonomy Term taxonomy.
-			 * @param string       $slug     Term slug
-			 */
-			$parent = apply_filters( 'pll_inserted_term_parent', 0, $taxonomy, $slug );
+		if ( ! $lang instanceof PLL_Language ) {
+			return $slug;
+		}
 
-			/**
-			 * Special case if the parent has the same slug.
-			 * WordPress prepends the slug to itself, so let's do it.
-			 */
-			$parent_obj = get_term( $parent, $taxonomy );
-			if ( $parent_obj instanceof WP_Term && $parent_obj->slug === $slug ) {
-				return $slug .= '-' . $slug;
+		/**
+		 * Filters the subsequently inserted term parent.
+		 *
+		 * @since 3.3
+		 *
+		 * @param int          $parent   Parent term ID, 0 if none.
+		 * @param string       $taxonomy Term taxonomy.
+		 * @param string       $slug     Term slug
+		 */
+		$parent = apply_filters( 'pll_inserted_term_parent', 0, $taxonomy, $slug );
+
+		/**
+		 * Special case if the parent has the same slug.
+		 * Recursively append parent slug like WordPress do.
+		 */
+		$parent_obj = get_term( $parent, $taxonomy );
+		if ( $parent_obj instanceof WP_Term && $parent_obj->slug === $slug && is_taxonomy_hierarchical( $taxonomy ) ) {
+			$the_parent = $parent_obj;
+			$parent_suffix = '';
+			while ( ! empty( $the_parent ) ) {
+				$parent_term = get_term( $the_parent, $taxonomy );
+				if ( ! $parent_obj instanceof WP_Term ) {
+					break;
+				}
+				$parent_suffix .= '-' . $parent_term->slug;
+				if ( ! term_exists( $slug . $parent_suffix ) ) {
+					break;
+				}
+
+				if ( empty( $parent_term->parent ) ) {
+					break;
+				}
+				$the_parent = $parent_term->parent;
 			}
 
-			$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
-
-			// If no term exists in the given language with that slug, it can be created.
-			if ( ! $term_id ) {
-				$slug .= '-' . $lang->slug;
+			if ( $parent_suffix ) {
+				return $slug .= $parent_suffix;
 			}
+		}
+
+		$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
+
+		// If no term exists in the given language with that slug, it can be created.
+		if ( ! $term_id ) {
+			$slug .= '-' . $lang->slug;
 		}
 
 		return $slug;
