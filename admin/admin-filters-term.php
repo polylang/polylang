@@ -669,12 +669,14 @@ class PLL_Admin_Filters_Term {
 	 * @return int Parent term ID if found, 0 otherwise.
 	 */
 	public function get_inserted_term_parent( $parent, $taxonomy ) {
-		if ( ! $parent ) {
-			if ( isset( $_POST['parent'], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$parent = intval( $_POST['parent'] ); // phpcs:ignore WordPress.Security.NonceVerification
-			} elseif ( isset( $_POST[ "new{$taxonomy}_parent" ], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
+		if ( $parent ) {
+			return $parent;
+		}
+
+		if ( isset( $_POST['parent'], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$parent = intval( $_POST['parent'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		} elseif ( isset( $_POST[ "new{$taxonomy}_parent" ], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
 		}
 
 		return $parent;
