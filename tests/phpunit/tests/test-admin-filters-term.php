@@ -742,7 +742,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		);
 		self::$model->term->set_language( $cat_en->term_id, 'en' );
 
-		$this->assertSame( sanitize_title( $original_name ), $cat_en->slug, 'The category slug is well created.' );
+		$this->assertSame( sanitize_title( $original_name ), $cat_en->slug, 'The category slug is not well created.' );
 
 		// Add globals like an admin request.
 		$_REQUEST = $_POST = array(
