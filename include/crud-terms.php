@@ -349,6 +349,9 @@ class PLL_CRUD_Terms {
 			return $parent_suffix;
 		}
 
+		/**
+		 * Mostly copied from {@see wp_unique_term_slug()}.
+		 */
 		while ( ! empty( $the_parent ) ) {
 			$parent_term = get_term( $the_parent, $taxonomy );
 			if ( ! $parent_term instanceof WP_Term ) {

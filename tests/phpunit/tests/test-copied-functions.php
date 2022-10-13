@@ -14,4 +14,8 @@ class Copied_Functions_Test extends PHPUnit_Framework_TestCase {
 	public function test_wp_admin_bar() {
 		$this->check_method( 'ab8f67e85e5623c4c211f67ecd57093a', '5.8', 'wp_admin_bar_search_menu' );
 	}
+
+	public function test_wp_unique_term_slug() {
+		$this->check_method( 'a6a6f8eb31efd91cf6eada6f089391f4', '2.3', 'wp_unique_term_slug' );
+	}
 }
