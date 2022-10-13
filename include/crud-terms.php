@@ -312,7 +312,7 @@ class PLL_CRUD_Terms {
 
 		/**
 		 * Special case if the parent has the same slug.
-		 * Recursively append parent slug like WordPress do.
+		 * Recursively appends the parent slug like WordPress does.
 		 */
 		$parent_obj = get_term( $parent, $taxonomy );
 		if ( $parent_obj instanceof WP_Term && $parent_obj->slug === $slug && is_taxonomy_hierarchical( $taxonomy ) ) {
@@ -335,7 +335,7 @@ class PLL_CRUD_Terms {
 
 		$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
 
-		// If no term exists in the given language with that slug, it can be created.
+		// If no term exist in the given language with that slug, it can be created.
 		if ( ! $term_id ) {
 			$slug .= '-' . $lang->slug;
 		}
