@@ -334,9 +334,7 @@ class PLL_CRUD_Terms {
 				$the_parent = $parent_term->parent;
 			}
 
-			if ( $parent_suffix ) {
-				return $slug .= $parent_suffix;
-			}
+			return $slug .= $parent_suffix;
 		}
 
 		$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );

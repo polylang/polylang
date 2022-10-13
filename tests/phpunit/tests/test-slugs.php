@@ -43,22 +43,6 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'test-fr', $term->slug );
 	}
 
-	public function test_term_with_parents_sharing_same_name() {
-		$en_parent = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
-
-		$this->assertInstanceOf( WP_Term::class, $en_parent );
-		$this->assertSame( 'test', $en_parent->slug );
-
-		$_POST['term_lang_choice'] = 'en';
-		$_POST['parent']           = $en_parent->term_id;
-		$en                        = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $en_parent->term_id ) );
-		$this->pll_admin->model->term->set_language( $en, 'en' );
-
-		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertSame( 'test-test', $en->slug );
-	}
-
 	public function test_translated_terms_with_parents_sharing_same_name() {
 		$en_parent = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test' ) );
 		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
