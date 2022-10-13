@@ -40,7 +40,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $term_id, 'fr' );
 
 		$term = get_term( $term_id, 'category' );
-		$this->assertEquals( 'test-fr', $term->slug );
+		$this->assertSame( 'test-fr', $term->slug );
 	}
 
 	public function test_term_with_parents_sharing_same_name() {
@@ -48,7 +48,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en_parent );
-		$this->assertEquals( 'test', $en_parent->slug );
+		$this->assertSame( 'test', $en_parent->slug );
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
@@ -56,7 +56,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertEquals( 'test-test', $en->slug );
+		$this->assertSame( 'test-test', $en->slug );
 	}
 
 	public function test_translated_terms_with_parents_sharing_same_name() {
@@ -64,7 +64,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en_parent );
-		$this->assertEquals( 'test', $en_parent->slug );
+		$this->assertSame( 'test', $en_parent->slug );
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
@@ -72,7 +72,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertEquals( 'test-test', $en->slug );
+		$this->assertSame( 'test-test', $en->slug );
 
 		// Clean up before creating term in secondary language.
 		unset( $_POST );
@@ -82,14 +82,14 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $fr_parent->term_id, 'fr' );
 
 		$this->assertInstanceOf( WP_Term::class, $fr_parent );
-		$this->assertEquals( 'test-fr', $fr_parent->slug );
+		$this->assertSame( 'test-fr', $fr_parent->slug );
 
 		$_POST['parent'] = $fr_parent->term_id;
 		$fr              = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $fr_parent->term_id ) );
 		$this->pll_admin->model->term->set_language( $fr->term_id, 'fr' );
 
 		$this->assertInstanceOf( WP_Term::class, $fr );
-		$this->assertEquals( 'test-fr-test-fr', $fr->slug );
+		$this->assertSame( 'test-fr-test-fr', $fr->slug );
 	}
 
 	public function test_already_existing_term_slugs_with_parent() {
@@ -97,7 +97,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en_parent );
-		$this->assertEquals( 'test', $en_parent->slug );
+		$this->assertSame( 'test', $en_parent->slug );
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
@@ -105,7 +105,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertEquals( 'test-test', $en->slug );
+		$this->assertSame( 'test-test', $en->slug );
 
 		// Let's create another child term with the same parent and the same name.
 		$en_new = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $en_parent->term_id ) );
@@ -119,7 +119,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en_parent );
-		$this->assertEquals( 'test', $en_parent->slug );
+		$this->assertSame( 'test', $en_parent->slug );
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
@@ -127,14 +127,14 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertEquals( 'test-test', $en->slug );
+		$this->assertSame( 'test-test', $en->slug );
 
 		// Let's update the term.
 		wp_update_term( $en->term_id, $en->taxonomy, array( 'name' => 'New Test' ) );
 		$en_new = get_term( $en->term_id );
 
 		$this->assertInstanceOf( WP_Term::class, $en_new );
-		$this->assertEquals( 'New Test', $en_new->name );
-		$this->assertEquals( 'test-test', $en_new->slug );
+		$this->assertSame( 'New Test', $en_new->name );
+		$this->assertSame( 'test-test', $en_new->slug );
 	}
 }
