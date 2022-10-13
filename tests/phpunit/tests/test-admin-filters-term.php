@@ -750,7 +750,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
 		);
 
-		// Now update the category with a new term.
+		// Now update the category with a new slug.
 		$updated_cat = wp_update_term(
 			$cat_en->term_id,
 			'category',
@@ -758,6 +758,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 				'slug' => $new_slug,
 			)
 		);
+		$this->assertIsArray( $updated_cat );
 		$updated_cat_obj = get_term( $updated_cat['term_id'] );
 
 		$this->assertSame( $new_slug, $updated_cat_obj->slug, 'The category slug should have been modified.' );
