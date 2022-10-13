@@ -26,9 +26,11 @@ class PLL_WPML_Config {
 	protected $xmls = array();
 
 	/**
-	 * The list of xml files.
+	 * The list of xml file paths.
 	 *
 	 * @var string[]|null
+	 *
+	 * @phpstan-var array<string, string>|null
 	 */
 	protected $files;
 
@@ -136,49 +138,31 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Get all wpml-config.xml files in plugins, theme, child theme and Polylang custom directory.
+	 * Returns all wpml-config.xml files in MU plugins, plugins, theme, child theme, and Polylang custom directory.
 	 *
 	 * @since 3.1
 	 *
-	 * @return array
+	 * @return string[] A context identifier as array key, a file path as array value.
+	 *
+	 * @phpstan-return array<string, string>
 	 */
 	public function get_files() {
-
-		if ( ! empty( $this->files ) ) {
+		if ( is_array( $this->files ) ) {
 			return $this->files;
 		}
 
-		$files = array();
+		$this->files = array_merge(
+			// MU Plugins.
+			$this->get_mu_plugin_files(),
+			// Plugins.
+			$this->get_plugin_files(),
+			// Theme and child theme.
+			$this->get_theme_files(),
+			// Custom.
+			$this->get_custom_files()
+		);
 
-		// Plugins
-		// Don't forget sitewide active plugins thanks to Reactorshop http://wordpress.org/support/topic/polylang-and-yoast-seo-plugin/page/2?replies=38#post-4801829
-		$plugins = ( is_multisite() && $sitewide_plugins = get_site_option( 'active_sitewide_plugins' ) ) && is_array( $sitewide_plugins ) ? array_keys( $sitewide_plugins ) : array();
-		$plugins = array_merge( $plugins, get_option( 'active_plugins', array() ) );
-
-		foreach ( $plugins as $plugin ) {
-			if ( file_exists( $file = WP_PLUGIN_DIR . '/' . dirname( $plugin ) . '/wpml-config.xml' ) ) {
-				$files[ dirname( $plugin ) ] = $file;
-			}
-		}
-
-		// Theme
-		if ( file_exists( $file = ( $template = get_template_directory() ) . '/wpml-config.xml' ) ) {
-			$files[ get_template() ] = $file;
-		}
-
-		// Child theme
-		if ( ( $stylesheet = get_stylesheet_directory() ) !== $template && file_exists( $file = $stylesheet . '/wpml-config.xml' ) ) {
-			$files[ get_stylesheet() ] = $file;
-		}
-
-		// Custom
-		if ( file_exists( $file = PLL_LOCAL_DIR . '/wpml-config.xml' ) ) {
-			$files['Polylang'] = $file;
-		}
-
-		$this->files = $files;
-
-		return $files;
+		return $this->files;
 	}
 
 	/**
@@ -593,5 +577,141 @@ class PLL_WPML_Config {
 		}
 
 		return trim( (string) $attributes[ $attribute_name ] );
+	}
+
+	/**
+	 * Returns all wpml-config.xml files in MU plugins.
+	 *
+	 * @since 3.3
+	 *
+	 * @return string[] A context identifier as array key, a file path as array value.
+	 *
+	 * @phpstan-return array<string, string>
+	 */
+	private function get_mu_plugin_files() {
+		if ( ! file_exists( WPMU_PLUGIN_DIR ) || ! is_dir( WPMU_PLUGIN_DIR ) ) {
+			return array();
+		}
+
+		$files = array();
+
+		// Search for top level wpml-config.xml file.
+		$file_path = WPMU_PLUGIN_DIR . '/wpml-config.xml';
+
+		if ( file_exists( $file_path ) ) {
+			$files['mu-plugins'] = $file_path;
+		}
+
+		// Search in proxy loaded MU plugins.
+		try {
+			foreach ( new DirectoryIterator( WPMU_PLUGIN_DIR ) as $file_info ) {
+				if ( $file_info->isDot() || ! $file_info->isDir() ) {
+					continue;
+				}
+
+				$file_path = $file_info->getPathname() . '/wpml-config.xml';
+
+				if ( file_exists( $file_path ) ) {
+					$files[ 'mu-plugins/' . $file_info->getFilename() ] = $file_path;
+				}
+			}
+		} catch ( Exception $e ) {
+			unset( $e );
+		}
+
+		return $files;
+	}
+
+	/**
+	 * Returns all wpml-config.xml files in plugins.
+	 *
+	 * @since 3.3
+	 *
+	 * @return string[] A context identifier as array key, a file path as array value.
+	 *
+	 * @phpstan-return array<string, string>
+	 */
+	private function get_plugin_files() {
+		$files   = array();
+		$plugins = get_option( 'active_plugins', array() );
+		$plugins = is_array( $plugins ) ? $plugins : array();
+
+		if ( is_multisite() ) {
+			// Don't forget sitewide active plugins thanks to Reactorshop http://wordpress.org/support/topic/polylang-and-yoast-seo-plugin/page/2?replies=38#post-4801829.
+			$sitewide_plugins = get_site_option( 'active_sitewide_plugins', array() );
+
+			if ( ! empty( $sitewide_plugins ) && is_array( $sitewide_plugins ) ) {
+				$plugins = array_merge( $plugins, array_keys( $sitewide_plugins ) );
+			}
+		}
+
+		$plugin_path = trailingslashit( WP_PLUGIN_DIR ) . '%s/wpml-config.xml';
+
+		foreach ( $plugins as $plugin ) {
+			if ( ! is_string( $plugin ) || '' === $plugin ) {
+				continue;
+			}
+
+			$file_dir  = dirname( $plugin );
+			$file_path = sprintf( $plugin_path, $file_dir );
+
+			if ( file_exists( $file_path ) ) {
+				$files[ "plugins/{$file_dir}" ] = $file_path;
+			}
+		}
+
+		return $files;
+	}
+
+	/**
+	 * Returns all wpml-config.xml files in theme and child theme.
+	 *
+	 * @since 3.3
+	 *
+	 * @return string[] A context identifier as array key, a file path as array value.
+	 *
+	 * @phpstan-return array<string, string>
+	 */
+	private function get_theme_files() {
+		$files = array();
+
+		// Theme.
+		$template_path = get_template_directory();
+		$file_path     = "{$template_path}/wpml-config.xml";
+
+		if ( file_exists( $file_path ) ) {
+			$files[ 'themes/' . get_template() ] = $file_path;
+		}
+
+		// Child theme.
+		$stylesheet_path = get_stylesheet_directory();
+		$file_path       = "{$stylesheet_path}/wpml-config.xml";
+
+		if ( $stylesheet_path !== $template_path && file_exists( $file_path ) ) {
+			$files[ 'themes/' . get_stylesheet() ] = $file_path;
+		}
+
+		return $files;
+	}
+
+	/**
+	 * Returns the wpml-config.xml file in Polylang custom directory.
+	 *
+	 * @since 3.3
+	 *
+	 * @return string[] A context identifier as array key, a file path as array value.
+	 *
+	 * @phpstan-return array<string, string>
+	 */
+	private function get_custom_files() {
+		$file_path = PLL_LOCAL_DIR . '/wpml-config.xml';
+
+		if ( ! file_exists( $file_path ) ) {
+			return array();
+		}
+
+		return array(
+			'Polylang' => $file_path,
+		);
 	}
 }
