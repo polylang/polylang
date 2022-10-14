@@ -228,4 +228,108 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertCount( 1, $response );
 		$this->assertEquals( 'Parent', $response[0]['value'] );
 	}
+
+	public function test_inline_save_tax_with_same_slugs() {
+		// Load WP ajax response action.
+		require_once ABSPATH . 'wp-admin/includes/ajax-actions.php';
+		add_action( 'wp_ajax_inline-save-tax', 'wp_ajax_inline_save_tax', 1 );
+
+		wp_set_current_user( self::$editor ); // Set a user to pass check_ajax_referer test.
+
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Test' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		// Create a category translation with the same name (i.e. the same slug).
+		$_REQUEST = $_POST = array(
+			'action'           => 'add-tag',
+			'term_lang_choice' => 'fr',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+		);
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Test' ) );
+		self::$model->term->set_language( $fr, 'fr' );
+
+		$term = get_term( $fr );
+		$this->assertInstanceOf( WP_Term::class, $term, 'Expected the category to be an instance of WP_Term.' );
+		$this->assertSame( 'Test', $term->name, 'Expected the title of the category in secondary language to match the one sent via POST.' );
+		$this->assertSame( 'test-fr', $term->slug, 'Expected the slug of the category in secondary language to be suffixed.' );
+		$this->assertSame( 'fr', self::$model->term->get_language( $fr )->slug, 'The langue is not set correctly for the category.' );
+
+
+		$_REQUEST = $_POST = array(
+			'name'               => 'More test',
+			'slug'               => 'test-fr',
+			'inline_lang_choice' => 'fr',
+			'_inline_edit'       => wp_create_nonce( 'taxinlineeditnonce', '_inline_edit' ),
+			'taxonomy'           => 'category',
+			'post_type'          => 'post',
+			'action'             => 'inline-save-tax',
+			'tax_type'           => 'tag',
+			'tax_ID'             => $fr,
+			'pll_ajax_backend'   => '1',
+			'description'        => '',
+		);
+
+		try {
+			$this->_handleAjax( 'inline-save-tax' );
+		} catch ( WPAjaxDieContinueException $e ) {
+			unset( $e );
+		}
+
+		$term = get_term( $fr );
+		$this->assertInstanceOf( WP_Term::class, $term, 'Expected the category to be an instance of WP_Term.' );
+		$this->assertSame( 'More test', $term->name, 'Expected the title of the category in secondary language to match the one sent via POST.' );
+		$this->assertSame( 'test-fr', $term->slug, 'Expected the slug of the category in secondary language to be suffixed.' );
+	}
+
+	public function test_inline_save_tax_with_new_slugs() {
+		// Load WP ajax response action.
+		require_once ABSPATH . 'wp-admin/includes/ajax-actions.php';
+		add_action( 'wp_ajax_inline-save-tax', 'wp_ajax_inline_save_tax', 1 );
+
+		wp_set_current_user( self::$editor ); // Set a user to pass check_ajax_referer test.
+
+		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Test' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		// Create a category translation with the same name (i.e. the same slug).
+		$_REQUEST = $_POST = array(
+			'action'           => 'add-tag',
+			'term_lang_choice' => 'fr',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+		);
+		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Test' ) );
+		self::$model->term->set_language( $fr, 'fr' );
+
+		$term = get_term( $fr );
+		$this->assertInstanceOf( WP_Term::class, $term, 'Expected the category to be an instance of WP_Term.' );
+		$this->assertSame( 'Test', $term->name, 'Expected the title of the category in secondary language to match the one sent via POST.' );
+		$this->assertSame( 'test-fr', $term->slug, 'Expected the slug of the category in secondary language to be suffixed.' );
+		$this->assertSame( 'fr', self::$model->term->get_language( $fr )->slug, 'The langue is not set correctly for the category.' );
+
+
+		$_REQUEST = $_POST = array(
+			'name'               => 'Test',
+			'slug'               => 'test-new-fr',
+			'inline_lang_choice' => 'fr',
+			'_inline_edit'       => wp_create_nonce( 'taxinlineeditnonce', '_inline_edit' ),
+			'taxonomy'           => 'category',
+			'post_type'          => 'post',
+			'action'             => 'inline-save-tax',
+			'tax_type'           => 'tag',
+			'tax_ID'             => $fr,
+			'pll_ajax_backend'   => '1',
+			'description'        => '',
+		);
+
+		try {
+			$this->_handleAjax( 'inline-save-tax' );
+		} catch ( WPAjaxDieContinueException $e ) {
+			unset( $e );
+		}
+
+		$term = get_term( $fr );
+		$this->assertInstanceOf( WP_Term::class, $term, 'Expected the category to be an instance of WP_Term.' );
+		$this->assertSame( 'Test', $term->name, 'Expected the title of the category in secondary language to remain the same.' );
+		$this->assertSame( 'test-new-fr', $term->slug, 'Expected the slug of the category in secondary language to be updated.' );
+	}
 }

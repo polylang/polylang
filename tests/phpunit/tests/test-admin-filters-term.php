@@ -696,7 +696,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->assertWPError( $error, 'Third term with the same slug shouldn\'t be created.' );
 	}
 
-	public function test_update_term_from_admin() {
+	public function test_update_term_name() {
 		$original_name = 'Test Me';
 		$new_name      = 'Well Tested';
 
@@ -727,6 +727,41 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( $new_name, $updated_cat_obj->name, 'The category name should have been modified.' );
 		$this->assertSame( $cat_en->slug, $updated_cat_obj->slug, 'The category slug should remain the same.' );
+
+		unset( $_REQUEST, $_POST );
+	}
+
+	public function test_update_term_slug() {
+		$original_name = 'Test Me';
+		$new_slug      = 'well-tested';
+
+		$cat_en = $this->factory()->category->create_and_get(
+			array(
+				'name' => $original_name,
+			)
+		);
+		self::$model->term->set_language( $cat_en->term_id, 'en' );
+
+		$this->assertSame( sanitize_title( $original_name ), $cat_en->slug, 'The category slug is not well created.' );
+
+		// Add globals like an admin request.
+		$_REQUEST = $_POST = array(
+			'term_lang_choice' => 'en',
+			'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
+		);
+
+		// Now update the category with a new slug.
+		$updated_cat = wp_update_term(
+			$cat_en->term_id,
+			'category',
+			array(
+				'slug' => $new_slug,
+			)
+		);
+		$this->assertIsArray( $updated_cat );
+		$updated_cat_obj = get_term( $updated_cat['term_id'] );
+
+		$this->assertSame( $new_slug, $updated_cat_obj->slug, 'The category slug should have been modified.' );
 
 		unset( $_REQUEST, $_POST );
 	}

@@ -81,7 +81,8 @@ class PLL_Admin_Filters_Term {
 		add_action( 'create_term', array( $this, 'save_term' ), 900, 3 );
 		add_action( 'edit_term', array( $this, 'save_term' ), 900, 3 ); // Late as it may conflict with other plugins, see http://wordpress.org/support/topic/polylang-and-wordpress-seo-by-yoast
 		add_action( 'pre_post_update', array( $this, 'pre_post_update' ) );
-		add_filter( 'pll_inserted_term_language', array( $this, 'get_inserted_term_language' ), 10, 3 );
+		add_filter( 'pll_inserted_term_language', array( $this, 'get_inserted_term_language' ) );
+		add_filter( 'pll_inserted_term_parent', array( $this, 'get_inserted_term_parent' ), 10, 2 );
 
 		// Ajax response for edit term form
 		add_action( 'wp_ajax_term_lang_choice', array( $this, 'term_lang_choice' ) );
@@ -608,12 +609,10 @@ class PLL_Admin_Filters_Term {
 	 * @since 3.3
 	 *
 	 * @param PLL_Language|null $lang     Term language object if found, null otherwise.
-	 * @param string            $slug     Term slug.
-	 * @param string            $taxonomy Term taxonomy.
 	 * @return PLL_Language|null Language object, null if none found.
 	 */
-	public function get_inserted_term_language( $lang, $slug, $taxonomy ) {
-		if ( $lang instanceof PLL_Language || ! $this->model->is_translated_taxonomy( $taxonomy ) || ! term_exists( $slug, $taxonomy ) ) {
+	public function get_inserted_term_language( $lang ) {
+		if ( $lang instanceof PLL_Language ) {
 			return $lang;
 		}
 
@@ -654,19 +653,32 @@ class PLL_Admin_Filters_Term {
 		}
 
 		if ( $lang instanceof PLL_Language ) {
-			$parent = 0;
-			if ( isset( $_POST['parent'], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$parent = intval( $_POST['parent'] ); // phpcs:ignore WordPress.Security.NonceVerification
-			} elseif ( isset( $_POST[ "new{$taxonomy}_parent" ], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
-			$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
-			// If no term exists or if we are editing the existing term, trick WP to allow shared slugs.
-			if ( ! $term_id || ( ! empty( $_POST['tag_ID'] ) && (int) $_POST['tag_ID'] === $term_id ) || ( ! empty( $_POST['tax_ID'] ) && (int) $_POST['tax_ID'] === $term_id ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				return $lang;
-			}
+			return $lang;
 		}
 
 		return null;
+	}
+
+	/**
+	 * Filters the subsequently inserted term parent in admin.
+	 *
+	 * @since 3.3
+	 *
+	 * @param int    $parent   Parent term ID, 0 if none found.
+	 * @param string $taxonomy Term taxonomy.
+	 * @return int Parent term ID if found, 0 otherwise.
+	 */
+	public function get_inserted_term_parent( $parent, $taxonomy ) {
+		if ( $parent ) {
+			return $parent;
+		}
+
+		if ( isset( $_POST['parent'], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$parent = intval( $_POST['parent'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		} elseif ( isset( $_POST[ "new{$taxonomy}_parent" ], $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$parent = intval( $_POST[ "new{$taxonomy}_parent" ] ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+
+		return $parent;
 	}
 }
