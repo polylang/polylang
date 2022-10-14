@@ -56,7 +56,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertSame( 'test-test', $en->slug );
+		$this->assertSame( 'test-en', $en->slug );
 
 		// Clean up before creating term in secondary language.
 		unset( $_POST );
@@ -89,7 +89,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertSame( 'test-test', $en->slug );
+		$this->assertSame( 'test-en', $en->slug );
 
 		// Let's create another child term with the same parent and the same name.
 		$en_new = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $en_parent->term_id ) );
@@ -111,7 +111,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->pll_admin->model->term->set_language( $en, 'en' );
 
 		$this->assertInstanceOf( WP_Term::class, $en );
-		$this->assertSame( 'test-test', $en->slug );
+		$this->assertSame( 'test-en', $en->slug );
 
 		// Let's update the term.
 		wp_update_term( $en->term_id, $en->taxonomy, array( 'name' => 'New Test' ) );
@@ -119,6 +119,6 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		$this->assertInstanceOf( WP_Term::class, $en_new );
 		$this->assertSame( 'New Test', $en_new->name );
-		$this->assertSame( 'test-test', $en_new->slug );
+		$this->assertSame( 'test-en', $en_new->slug );
 	}
 }

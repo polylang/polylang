@@ -300,7 +300,6 @@ class PLL_CRUD_Terms {
 		}
 
 		$parent = 0;
-
 		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
 			/**
 			 * Filters the subsequently inserted term parent.
@@ -312,12 +311,6 @@ class PLL_CRUD_Terms {
 			 * @param string       $slug     Term slug
 			 */
 			$parent = apply_filters( 'pll_inserted_term_parent', 0, $taxonomy, $slug );
-
-			$parent_suffix = $this->maybe_get_parent_suffix( $parent, $taxonomy, $slug );
-
-			if ( ! empty( $parent_suffix ) ) {
-				return $slug .= $parent_suffix;
-			}
 		}
 
 		$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
@@ -328,42 +321,5 @@ class PLL_CRUD_Terms {
 		}
 
 		return $slug;
-	}
-
-	/**
-	 * Returns the parent suffix for the slug only if parent slug is the same as the given one.
-	 * Recursively appends the parent slug like WordPress does.
-	 *
-	 * @since 3.3
-	 *
-	 * @param int    $parent   Parent term ID.
-	 * @param string $taxonomy Parent taxonomy.
-	 * @param string $slug     Child term slug.
-	 * @return string Parents slugs if they are the same as the child slug.
-	 */
-	private function maybe_get_parent_suffix( $parent, $taxonomy, $slug ) {
-		$parent_suffix = '';
-		$the_parent    = get_term( $parent, $taxonomy );
-
-		if ( ! $the_parent instanceof WP_Term || $the_parent->slug !== $slug ) {
-			return $parent_suffix;
-		}
-
-		/**
-		 * Mostly copied from {@see wp_unique_term_slug()}.
-		 */
-		while ( ! empty( $the_parent ) ) {
-			$parent_term = get_term( $the_parent, $taxonomy );
-			if ( ! $parent_term instanceof WP_Term ) {
-				break;
-			}
-			$parent_suffix .= '-' . $parent_term->slug;
-			if ( ! term_exists( $slug . $parent_suffix ) ) {
-				break;
-			}
-			$the_parent = $parent_term->parent;
-		}
-
-		return $parent_suffix;
 	}
 }
