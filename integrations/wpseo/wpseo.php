@@ -153,7 +153,7 @@ class PLL_WPSEO {
 			return $sql;
 		}
 
-		if ( PLL()->options['force_lang'] > 1 ) {
+		if ( PLL()->options['force_lang'] > 1 && PLL()->curlang instanceof PLL_Language ) {
 			return $sql . PLL()->model->post->where_clause( PLL()->curlang );
 		}
 
