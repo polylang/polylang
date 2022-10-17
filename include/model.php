@@ -785,7 +785,7 @@ class PLL_Model {
 	 *
 	 * @since 3.2.3
 	 *
-	 * @return array<WP_Term>
+	 * @return WP_Term[]
 	 */
 	protected function get_language_terms() {
 		add_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ), 10, 3 );
