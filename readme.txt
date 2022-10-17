@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone,
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 5.6
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 3.2.7
+Stable tag: 3.2.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,7 +103,14 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
-= 3.2.7 (2022-0-20) =
+= 3.2.8 (2022-10-17) =
+
+* Fix PHP warning when a filtered taxonomy has no query var #1124
+* Fix SQL error when attempting to get objects without languages and no language exist #1126
+* Fix error when term slugs are provided as array in WP_Query #1119, #1132 Props Susanna Häggblom
+* Fix a CSS regression in the wizard causing the default language icon to be removed #1137
+
+= 3.2.7 (2022-09-20) =
 
 * Work around a WooCommerce 6.9.x bug causing a fatal error in the wizard. #1116
 
