@@ -128,40 +128,43 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Modifies the sql request for posts sitemaps
-	 * Only when using multiple domains or subdomains or if some languages are not active
+	 * Modifies the sql request for posts sitemaps.
 	 *
 	 * @since 1.6.4
 	 *
-	 * @param string $sql       JOIN clause
-	 * @param string $post_type
+	 * @param string $sql       JOIN clause.
+	 * @param string $post_type Post type.
 	 * @return string
 	 */
 	public function wpseo_posts_join( $sql, $post_type ) {
-		return pll_is_translated_post_type( $post_type ) && ( PLL()->options['force_lang'] > 1 || $this->wpseo_get_active_languages() ) ? $sql . PLL()->model->post->join_clause() : $sql;
+		return pll_is_translated_post_type( $post_type ) ? $sql . PLL()->model->post->join_clause() : $sql;
 	}
 
 	/**
-	 * Modifies the sql request for posts sitemaps
-	 * Only when using multiple domains or subdomains or if some languages are not active
+	 * Modifies the sql request for posts sitemaps.
 	 *
 	 * @since 1.6.4
 	 *
-	 * @param string $sql       WHERE clause
-	 * @param string $post_type
+	 * @param string $sql       WHERE clause.
+	 * @param string $post_type Post type.
 	 * @return string
 	 */
 	public function wpseo_posts_where( $sql, $post_type ) {
-		if ( pll_is_translated_post_type( $post_type ) ) {
-			if ( PLL()->options['force_lang'] > 1 ) {
-				return $sql . PLL()->model->post->where_clause( PLL()->curlang );
-			}
-
-			if ( $languages = $this->wpseo_get_active_languages() ) {
-				return $sql . PLL()->model->post->where_clause( $languages );
-			}
+		if ( ! pll_is_translated_post_type( $post_type ) ) {
+			return $sql;
 		}
-		return $sql;
+
+		if ( PLL()->options['force_lang'] > 1 && PLL()->curlang instanceof PLL_Language ) {
+			return $sql . PLL()->model->post->where_clause( PLL()->curlang );
+		}
+
+		$languages = $this->wpseo_get_active_languages();
+
+		if ( empty( $languages ) ) { // Empty when all languages are active.
+			$languages = pll_languages_list();
+		}
+
+		return $sql . PLL()->model->post->where_clause( $languages );
 	}
 
 	/**
