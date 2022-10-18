@@ -498,6 +498,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @param mixed $id A supposedly numeric ID.
 	 * @return int A positive integer. `0` for non numeric values and negative integers.
+	 *
 	 * @phpstan-return int<0,max>
 	 */
 	public function sanitize_int_id( $id ) {
