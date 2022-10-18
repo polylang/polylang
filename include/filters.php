@@ -425,10 +425,10 @@ class PLL_Filters {
 	 *
 	 * @since 3.2
 	 *
-	 * @param  array<mixed> $defaults An array of arguments passed to get_terms().
-	 * @param  int|string   $term     The term to check. Accepts term ID, slug, or name.
-	 * @param  string       $taxonomy The taxonomy name to use. An empty string indicates the search is against all taxonomies.
-	 * @return array<mixed>
+	 * @param  array      $defaults An array of arguments passed to get_terms().
+	 * @param  int|string $term     The term to check. Accepts term ID, slug, or name.
+	 * @param  string     $taxonomy The taxonomy name to use. An empty string indicates the search is against all taxonomies.
+	 * @return array
 	 */
 	public function term_exists_default_query_args( $defaults, $term, $taxonomy ) {
 		if ( ! empty( $taxonomy ) && ! $this->model->is_translated_taxonomy( $taxonomy ) ) {

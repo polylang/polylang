@@ -18,8 +18,8 @@ class PLL_Db_Tools {
 	 *
 	 * @since 3.2
 	 *
-	 * @param  array<int|string> $values An array of values.
-	 * @return string                    A comma separated list of values.
+	 * @param (int|string)[] $values An array of values.
+	 * @return string A comma separated list of values.
 	 */
 	public static function prepare_values_list( $values ) {
 		$values = array_map( array( __CLASS__, 'prepare_value' ), (array) $values );
@@ -31,10 +31,11 @@ class PLL_Db_Tools {
 	 * Wraps a value in escaped double quotes or casts as an integer.
 	 * Only string and integers and supported for now.
 	 *
-	 * @since  3.2
+	 * @since 3.2
+	 *
 	 * @global wpdb $wpdb
 	 *
-	 * @param  int|string $value A value.
+	 * @param int|string $value A value.
 	 * @return int|string
 	 */
 	public static function prepare_value( $value ) {
