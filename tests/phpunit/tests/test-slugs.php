@@ -1,13 +1,6 @@
 <?php
 
 class Slugs_Test extends PLL_UnitTestCase {
-	/**
-	 * Used to set our filters and to
-	 * manage languages or save translations.
-	 *
-	 * @var PLL_Admin
-	 */
-	private $pll_admin;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
