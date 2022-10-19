@@ -109,7 +109,7 @@ class PLL_Model {
 
 				$term_languages = get_terms( array( 'taxonomy' => 'term_language', 'hide_empty' => false ) );
 				$term_languages = empty( $term_languages ) || is_wp_error( $term_languages ) ?
-					array() : array_combine( wp_list_pluck( $term_languages, 'slug' ), $term_languages );
+					array() : pll_array_combine( wp_list_pluck( $term_languages, 'slug' ), $term_languages );
 
 				if ( ! empty( $post_languages ) && ! empty( $term_languages ) ) {
 					foreach ( $post_languages as $k => $v ) {
@@ -263,7 +263,7 @@ class PLL_Model {
 			$post_types = array( 'post' => 'post', 'page' => 'page', 'wp_block' => 'wp_block' );
 
 			if ( ! empty( $this->options['post_types'] ) && is_array( $this->options['post_types'] ) ) {
-				$post_types = array_merge( $post_types, array_combine( $this->options['post_types'], $this->options['post_types'] ) );
+				$post_types = array_merge( $post_types, pll_array_combine( $this->options['post_types'], $this->options['post_types'] ) );
 			}
 
 			if ( empty( $this->options['media_support'] ) ) {
@@ -319,7 +319,7 @@ class PLL_Model {
 			$taxonomies = array( 'category' => 'category', 'post_tag' => 'post_tag' );
 
 			if ( ! empty( $this->options['taxonomies'] ) && is_array( $this->options['taxonomies'] ) ) {
-				$taxonomies = array_merge( $taxonomies, array_combine( $this->options['taxonomies'], $this->options['taxonomies'] ) );
+				$taxonomies = array_merge( $taxonomies, pll_array_combine( $this->options['taxonomies'], $this->options['taxonomies'] ) );
 			}
 
 			/**

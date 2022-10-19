@@ -129,7 +129,7 @@ class PLL_Nav_Menu {
 		if ( 1 == count( $infos ) ) {
 			$infos[] = $this->options['default_lang'];
 		}
-		return array_combine( array( 'location', 'lang' ), $infos );
+		return pll_array_combine( array( 'location', 'lang' ), $infos );
 	}
 
 	/**

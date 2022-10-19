@@ -125,7 +125,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_translations( $item ) {
-		$languages = array_combine( wp_list_pluck( $this->languages, 'slug' ), wp_list_pluck( $this->languages, 'name' ) );
+		$languages = pll_array_combine( wp_list_pluck( $this->languages, 'slug' ), wp_list_pluck( $this->languages, 'name' ) );
 		$out = '';
 
 		foreach ( $item['translations'] as $key => $translation ) {
