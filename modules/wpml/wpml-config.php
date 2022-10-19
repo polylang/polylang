@@ -603,20 +603,16 @@ class PLL_WPML_Config {
 		}
 
 		// Search in proxy loaded MU plugins.
-		try {
-			foreach ( new DirectoryIterator( WPMU_PLUGIN_DIR ) as $file_info ) {
-				if ( $file_info->isDot() || ! $file_info->isDir() ) {
-					continue;
-				}
-
-				$file_path = $file_info->getPathname() . '/wpml-config.xml';
-
-				if ( file_exists( $file_path ) ) {
-					$files[ 'mu-plugins/' . $file_info->getFilename() ] = $file_path;
-				}
+		foreach ( new DirectoryIterator( WPMU_PLUGIN_DIR ) as $file_info ) {
+			if ( $file_info->isDot() || ! $file_info->isDir() ) {
+				continue;
 			}
-		} catch ( Exception $e ) {
-			unset( $e );
+
+			$file_path = $file_info->getPathname() . '/wpml-config.xml';
+
+			if ( file_exists( $file_path ) ) {
+				$files[ 'mu-plugins/' . $file_info->getFilename() ] = $file_path;
+			}
 		}
 
 		return $files;
