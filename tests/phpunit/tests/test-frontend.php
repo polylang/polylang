@@ -2,8 +2,10 @@
 
 
 class Frontend_Test extends PLL_UnitTestCase {
+
 	protected static $editor;
 	protected static $stylesheet;
+	protected $nav_menu;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory

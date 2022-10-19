@@ -1,7 +1,10 @@
 <?php
 
 class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
+
 	public $structure = '/%postname%/';
+	protected $hosts;
+	protected $server;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory

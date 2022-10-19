@@ -2,6 +2,8 @@
 
 class License_Test extends PLL_UnitTestCase {
 
+	protected $license;
+
 	public function set_up() {
 		parent::set_up();
 

@@ -1,5 +1,7 @@
 <?php
 class Admin_Test extends PLL_UnitTestCase {
+
+	protected $nav_menu;
 	protected static $stylesheet;
 
 	/**
