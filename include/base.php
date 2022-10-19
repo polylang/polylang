@@ -8,6 +8,7 @@
  *
  * @since 1.2
  */
+#[AllowDynamicProperties]
 abstract class PLL_Base {
 	/**
 	 * Stores the plugin options.

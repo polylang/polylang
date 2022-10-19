@@ -9,6 +9,7 @@
  *
  * @since 1.2
  */
+#[AllowDynamicProperties]
 class PLL_Language {
 	/**
 	 * Id of the term in 'language' taxonomy.
