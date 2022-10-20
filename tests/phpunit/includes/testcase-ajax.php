@@ -7,11 +7,6 @@ class PLL_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
 
 	use PLL_UnitTestCase_Trait;
 
-	/**
-	 * @var PLL_Admin|null
-	 */
-	protected $pll_admin;
-
 	public function set_up() {
 		parent::set_up();
 

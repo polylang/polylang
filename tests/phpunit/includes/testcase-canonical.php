@@ -1,21 +1,8 @@
 <?php
 
 class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
+
 	use PLL_UnitTestCase_Trait;
-
-	/**
-	 * Set in [@see PLL_Canonical_UnitTestCase::assertCanonical()}.
-	 *
-	 * @var PLL_Frontend
-	 */
-	protected $pll_env = null;
-
-	/**
-	 * Default to {@see PLL_Install::get_default_options()}.
-	 *
-	 * @var array
-	 */
-	protected $options;
 
 	protected static function register_post_types_and_taxonomies() {
 		create_initial_taxonomies();
