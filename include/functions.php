@@ -107,27 +107,3 @@ function pll_use_block_editor_plugin() {
 	 */
 	return class_exists( 'PLL_Block_Editor_Plugin' ) && apply_filters( 'pll_use_block_editor_plugin', ! defined( 'PLL_USE_BLOCK_EDITOR_PLUGIN' ) || PLL_USE_BLOCK_EDITOR_PLUGIN );
 }
-
-/**
- * Creates an array by using one array for keys and another for its values.
- * This is a `array_combine()` that keeps a similar behavior cross versions: starting from php 8.0.0, `array_combine()`
- * will now throw a ValueError if the number of elements for each array is not equal; previously this function returned
- * false instead.
- *
- * @since 3.3
- * @throws InvalidArgumentException When $matches doesn't have the right number of values and php < 8.0.0.
- *         ValueError               When $matches doesn't have the right number of values and php >= 8.0.0.
- *
- * @param array $keys   Array of keys to be used. Illegal values for key will be converted to string.
- * @param array $values Array of values to be used.
- * @return array Returns the combined array.
- */
-function pll_array_combine( array $keys, array $values ) {
-	$combined = array_combine( $keys, $values );
-
-	if ( ! is_array( $combined ) ) {
-		throw new InvalidArgumentException( 'array_combine(): Argument #1 ($keys) and argument #2 ($values) must have the same number of elements' );
-	}
-
-	return $combined;
-}
