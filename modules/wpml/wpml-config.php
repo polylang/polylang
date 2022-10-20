@@ -152,12 +152,12 @@ class PLL_WPML_Config {
 		}
 
 		$this->files = array_merge(
-			// MU Plugins.
-			$this->get_mu_plugin_files(),
 			// Plugins.
 			$this->get_plugin_files(),
 			// Theme and child theme.
 			$this->get_theme_files(),
+			// MU Plugins.
+			$this->get_mu_plugin_files(),
 			// Custom.
 			$this->get_custom_files()
 		);
