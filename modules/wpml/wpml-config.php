@@ -629,16 +629,22 @@ class PLL_WPML_Config {
 	 */
 	private function get_plugin_files() {
 		$files   = array();
-		$plugins = get_option( 'active_plugins', array() );
-		$plugins = is_array( $plugins ) ? $plugins : array();
+		$plugins = array();
 
 		if ( is_multisite() ) {
 			// Don't forget sitewide active plugins thanks to Reactorshop http://wordpress.org/support/topic/polylang-and-yoast-seo-plugin/page/2?replies=38#post-4801829.
 			$sitewide_plugins = get_site_option( 'active_sitewide_plugins', array() );
 
 			if ( ! empty( $sitewide_plugins ) && is_array( $sitewide_plugins ) ) {
-				$plugins = array_merge( $plugins, array_keys( $sitewide_plugins ) );
+				$plugins = array_keys( $sitewide_plugins );
 			}
+		}
+
+		// By-site plugins.
+		$active_plugins = get_option( 'active_plugins', array() );
+
+		if ( ! empty( $active_plugins ) && is_array( $active_plugins ) ) {
+			$plugins = array_merge( $plugins, $active_plugins );
 		}
 
 		$plugin_path = trailingslashit( WP_PLUGIN_DIR ) . '%s/wpml-config.xml';
