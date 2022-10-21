@@ -36,9 +36,7 @@ trait PLL_UnitTestCase_Trait {
 	protected $pll_env;
 
 	/**
-	 * A container for Polylang classes instances.
-	 *
-	 * @var object|null
+	 * @var PLL_Admin_Model|null
 	 */
 	public static $model;
 
