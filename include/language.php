@@ -460,11 +460,19 @@ class PLL_Language {
 	 * @return void
 	 */
 	public function set_url_scheme() {
-		$this->home_url = set_url_scheme( $this->home_url );
-		$this->search_url = set_url_scheme( $this->search_url );
+		if ( ! empty( $this->home_url ) ) {
+			$this->home_url = set_url_scheme( $this->home_url );
+		}
+
+		if ( ! empty( $this->search_url ) ) {
+			$this->search_url = set_url_scheme( $this->search_url );
+		}
 
 		// Set url scheme, also for the flags.
-		$this->flag_url = set_url_scheme( $this->flag_url );
+		if ( ! empty( $this->flag_url ) ) {
+			$this->flag_url = set_url_scheme( $this->flag_url );
+		}
+
 		if ( ! empty( $this->custom_flag_url ) ) {
 			$this->custom_flag_url = set_url_scheme( $this->custom_flag_url );
 		}
