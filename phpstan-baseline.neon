@@ -1506,16 +1506,6 @@ parameters:
 			path: modules/wpml/wpml-compat.php
 
 		-
-			message: "#^Parameter \\#1 \\$path of function dirname expects string, mixed given\\.$#"
-			count: 2
-			path: modules/wpml/wpml-config.php
-
-		-
-			message: "#^Parameter \\#2 .+ of function array_merge expects array, mixed given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-config.php
-
-		-
 			message: "#^Cannot call method get_home_url\\(\\) on PLL_Admin_Links\\|PLL_Frontend_Links\\|null\\.$#"
 			count: 1
 			path: modules/wpml/wpml-legacy-api.php
