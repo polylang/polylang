@@ -103,6 +103,31 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
+= 3.3 =
+
+* Requires WP 5.7 as minimum version
+* Pro: Allow to export and import XLIFF files for posts
+* Pro: Honor the provided context for the navigation language switcher block.
+* Pro: Remove the parent hyperlink in the navigation language switcher block.
+* Pro: Add spacing between flag and name in the navigation language switcher block.
+* Pro: Disallow some special characters in translated slugs to avoid 404 errors.
+* Pro: Fix string translation not imported when the original is registered but has never been saved in database.
+* Pro: Fix string translation not imported when it includes an html entity.
+* Translate the post pages in get_post_type_archive_link() on admin side too. #1000
+* Enable the block editor in page for posts translations to match the WordPress behavior since version 5.8 #1002
+* Improve the site health report #1062 #1076
+* Set the current language when saving a post #1065
+* The search block is now filtered by language #1081
+* Display slug of CPT and taxonomies in Custom post types and Taxonomies settings. Props @nicomollet #1112
+* Fix some deprecated notices fired by PHP 8.1 #975
+* Fix some missing canonical redirect taxonomies #1074
+* Fix redirect when permalink structure has no trailing slash #1080
+* Fix language switcher in legacy navigation menu widget not rendered in widgets block editor #1083
+* Fix language in tax query when an OR relation is used #1098
+* Fix parent of translated category removed when assigning an untranslated parent #1105
+* Yoast SEO: Fix posts without language displayed in the sitemap #1103
+* Yoast SEO: Avoid syncing robots meta. #1118
+
 = 3.2.8 (2022-10-17) =
 
 * Fix PHP warning when a filtered taxonomy has no query var #1124
