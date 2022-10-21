@@ -931,11 +931,6 @@ parameters:
 			path: include/language.php
 
 		-
-			message: "#^Parameter \\#1 \\$url of function set_url_scheme expects string, string\\|null given\\.$#"
-			count: 3
-			path: include/language.php
-
-		-
 			message: "#^Property PLL_Language\\:\\:\\$is_rtl \\(int\\) does not accept mixed\\.$#"
 			count: 1
 			path: include/language.php
