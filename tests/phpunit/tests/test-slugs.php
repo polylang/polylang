@@ -166,7 +166,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		);
 		$term_updated = get_term( $term_updated['term_id'], $term->taxonomy );
 
-		$this->assertInstanceOf( WP_Term::class, $term_updated, 'The term should be created.' );
+		$this->assertInstanceOf( WP_Term::class, $term_updated, 'The term should still exist.' );
 		$this->assertSame( 'new name', $term_updated->name, 'The name should be modified.' );
 		$this->assertSame( 'test', $term_updated->slug, 'The slug should remain untouched.' );
 	}
