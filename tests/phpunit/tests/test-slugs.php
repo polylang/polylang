@@ -123,13 +123,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_untranslatable_taxonomy() {
-		register_taxonomy(
-			'test-tax',
-			'post',
-			array(
-				'public' => false, // Not translatable by default.
-			)
-		);
+		register_taxonomy( 'test-tax', 'post' ); // Not translatable by default.
 
 		// Filter the language to try to reproduce an error.
 		$fr_lang = self::$model->get_language( 'fr' );
