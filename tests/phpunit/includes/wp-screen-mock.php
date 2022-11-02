@@ -9,7 +9,7 @@
  *
  * Inspired by @see https://gist.github.com/DragonBe/24761f350984c35b73966809dd439135
  */
-class Wp_Screen_Mock {
+class WP_Screen_Mock {
 
 	/**
 	 * The base type of the screen.
@@ -46,7 +46,7 @@ class Wp_Screen_Mock {
 	private $screen;
 
 	/**
-	 * Wp_Screen_Mock constructor.
+	 * WP_Screen_Mock constructor.
 	 */
 	public function __construct() {
 		$this->screen = new ReflectionClass( WP_Screen::class );
