@@ -121,4 +121,47 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'New Test', $en_new->name );
 		$this->assertSame( 'test-en', $en_new->slug );
 	}
+
+	public function test_untranslatable_taxonomy() {
+		register_taxonomy( 'test-tax', 'post' ); // Not translatable by default.
+
+		// Filter the language to try to reproduce an error.
+		$fr_lang = self::$model->get_language( 'fr' );
+		add_filter(
+			'pll_inserted_term_language',
+			function ( $found_language ) use ( $fr_lang ) {
+				if ( $found_language instanceof PLL_Language ) {
+					return $found_language;
+				}
+
+				return $fr_lang;
+			}
+		);
+
+		// Let's create a term.
+		$term = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'test-tax',
+				'name'     => 'test',
+			)
+		);
+
+		$this->assertInstanceOf( WP_Term::class, $term, 'The term should be created.' );
+		$this->assertSame( 'test', $term->name, 'The name is not well created.' );
+		$this->assertSame( 'test', $term->slug, 'The slug is not well created.' );
+
+		// Now let's update the term.
+		$term_updated = wp_update_term(
+			$term->term_id,
+			$term->taxonomy,
+			array(
+				'name' => 'new name',
+			)
+		);
+		$term_updated = get_term( $term_updated['term_id'], $term->taxonomy );
+
+		$this->assertInstanceOf( WP_Term::class, $term_updated, 'The term should still exist.' );
+		$this->assertSame( 'new name', $term_updated->name, 'The name should be modified.' );
+		$this->assertSame( 'test', $term_updated->slug, 'The slug should remain untouched.' );
+	}
 }
