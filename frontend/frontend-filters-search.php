@@ -63,17 +63,25 @@ class PLL_Frontend_Filters_Search {
 	 * @return string Modified search form.
 	 */
 	public function get_search_form( $form ) {
-		if ( $form ) {
-			if ( $this->links_model->using_permalinks ) {
-				// Take care to modify only the url in the <form> tag.
-				preg_match( '#<form.+?>#', $form, $matches );
-				$old = reset( $matches );
-				// Replace action attribute (a text with no space and no closing tag within double quotes or simple quotes or without quotes).
-				$new = preg_replace( '#\saction=("[^"\r\n]+"|\'[^\'\r\n]+\'|[^\'"][^>\s]+)#', ' action="' . esc_url( $this->curlang->search_url ) . '"', $old );
-				$form = str_replace( $old, $new, $form );
-			} else {
-				$form = str_replace( '</form>', '<input type="hidden" name="lang" value="' . esc_attr( $this->curlang->slug ) . '" /></form>', $form );
+		if ( empty( $form ) ) {
+			return $form;
+		}
+
+		if ( $this->links_model->using_permalinks ) {
+			// Take care to modify only the url in the <form> tag.
+			preg_match( '#<form.+?>#', $form, $matches );
+			$old = reset( $matches );
+			if ( empty( $old ) ) {
+				return $form;
 			}
+			// Replace action attribute (a text with no space and no closing tag within double quotes or simple quotes or without quotes).
+			$new = preg_replace( '#\saction=("[^"\r\n]+"|\'[^\'\r\n]+\'|[^\'"][^>\s]+)#', ' action="' . esc_url( $this->curlang->search_url ) . '"', $old );
+			if ( empty( $new ) ) {
+				return $form;
+			}
+			$form = str_replace( $old, $new, $form );
+		} else {
+			$form = str_replace( '</form>', '<input type="hidden" name="lang" value="' . esc_attr( $this->curlang->slug ) . '" /></form>', $form );
 		}
 
 		return $form;
