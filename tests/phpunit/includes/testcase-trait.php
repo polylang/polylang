@@ -2,6 +2,9 @@
 
 /**
  * A trait to share code between several test case classes.
+ *
+ * TODO: create a common way to instantiate PLL_Base, PLL_Model, and PLL_Links_Model; so we don't need to define those
+ * class properties here.
  */
 trait PLL_UnitTestCase_Trait {
 
