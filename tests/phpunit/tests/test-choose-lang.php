@@ -1,10 +1,6 @@
 <?php
 
 class Choose_Lang_Test extends PLL_UnitTestCase {
-	/**
-	 * @var PLL_Frontend
-	 */
-	private $frontend;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory

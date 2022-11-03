@@ -37,7 +37,6 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 				'module'      => 'url',
 				'title'       => __( 'URL modifications', 'polylang' ),
 				'description' => __( 'Decide how your URLs will look like.', 'polylang' ),
-				'configure'   => true,
 			)
 		);
 

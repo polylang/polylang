@@ -29,6 +29,13 @@ class PLL_Links {
 	public $links_model;
 
 	/**
+	 * Current language (used to filter the content).
+	 *
+	 * @var PLL_Language|null
+	 */
+	public $curlang;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.2

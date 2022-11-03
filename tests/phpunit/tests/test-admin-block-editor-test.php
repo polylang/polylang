@@ -8,11 +8,6 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
 	 */
 	private $admin_block_editor;
 
-	/**
-	 * @var PLL_Admin
-	 */
-	private $pll_admin;
-
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 

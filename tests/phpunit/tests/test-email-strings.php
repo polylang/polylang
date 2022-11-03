@@ -3,11 +3,6 @@
 class Email_Strings_Test extends PLL_UnitTestCase {
 
 	/**
-	 * @var PLL_Links_Model
-	 */
-	protected $links_model;
-
-	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {

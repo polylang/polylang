@@ -1,8 +1,8 @@
 <?php
 
 class Static_Pages_Test extends PLL_UnitTestCase {
+
 	public $structure = '/%postname%/';
-	private $pll_env;
 	protected static $home_en;
 	protected static $home_fr;
 	protected static $home_de;

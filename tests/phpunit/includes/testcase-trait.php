@@ -2,19 +2,51 @@
 
 /**
  * A trait to share code between several test case classes.
+ *
+ * TODO: create a common way to instantiate PLL_Base, PLL_Model, and PLL_Links_Model; so we don't need to define those
+ * class properties here.
  */
 trait PLL_UnitTestCase_Trait {
+
 	/**
-	 * A container for Polylang classes instances.
-	 *
-	 * @var object
+	 * @var array|null
+	 */
+	protected $options;
+
+	/**
+	 * @var PLL_Links_Model|null
+	 */
+	protected $links_model;
+
+	/**
+	 * @var PLL_Model|null
+	 */
+	protected $pll_model;
+
+	/**
+	 * @var PLL_Frontend|null
+	 */
+	protected $frontend;
+
+	/**
+	 * @var PLL_Admin|null
+	 */
+	protected $pll_admin;
+
+	/**
+	 * @var PLL_Base|null
+	 */
+	protected $pll_env;
+
+	/**
+	 * @var PLL_Admin_Model|null
 	 */
 	public static $model;
 
 	/**
 	 * The admin submenu.
 	 *
-	 * @var array $submenu
+	 * @var array|null
 	 */
 	protected static $submenu;
 

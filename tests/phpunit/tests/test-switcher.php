@@ -1,7 +1,9 @@
 <?php
 
 class Switcher_Test extends PLL_UnitTestCase {
+
 	private $structure = '/%postname%/';
+	protected $switcher;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -192,8 +194,8 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 	public function test_with_hide_if_no_translation_option_in_admin_context() {
 		$links_model = self::$model->get_links_model();
-		$this->admin = new PLL_Admin( $links_model );
-		$this->admin->init();
+		$this->pll_admin = new PLL_Admin( $links_model );
+		$this->pll_admin->init();
 
 		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );
@@ -205,7 +207,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 		$args['hide_if_no_translation'] = 1;
 		$args['echo'] = 0;
-		$switcher = $this->switcher->the_languages( $this->admin->links, $args );
+		$switcher = $this->switcher->the_languages( $this->pll_admin->links, $args );
 
 		$this->assertNotEmpty( $switcher );
 
@@ -214,9 +216,9 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$xpath = new DOMXpath( $doc );
 
 		$a = $xpath->query( '//li/a[@lang="en-US"]' );
-		$this->assertEquals( $this->admin->links->get_home_url( self::$model->get_language( 'en' ) ), $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertEquals( $this->pll_admin->links->get_home_url( self::$model->get_language( 'en' ) ), $a->item( 0 )->getAttribute( 'href' ) );
 
 		$a = $xpath->query( '//li/a[@lang="fr-FR"]' );
-		$this->assertEquals( $this->admin->links->get_home_url( self::$model->get_language( 'fr' ) ), $a->item( 0 )->getAttribute( 'href' ) );
+		$this->assertEquals( $this->pll_admin->links->get_home_url( self::$model->get_language( 'fr' ) ), $a->item( 0 )->getAttribute( 'href' ) );
 	}
 }

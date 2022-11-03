@@ -1,6 +1,9 @@
 <?php
 
 class Canonical_Domain_Test extends PLL_UnitTestCase {
+
+	protected $canonical;
+
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 

@@ -191,7 +191,7 @@ parameters:
 			path: admin/admin-filters-term.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function rtrim expects string, string\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function rtrim expects string, string\\|WP_Error given\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
 
@@ -316,7 +316,7 @@ parameters:
 			path: admin/admin-notices.php
 
 		-
-			message: "#^Parameter \\#1 \\$arr1 of function array_merge expects array, mixed given\\.$#"
+			message: "#^Parameter \\#1 .+ of function array_merge expects array, mixed given\\.$#"
 			count: 1
 			path: admin/admin-notices.php
 
@@ -326,7 +326,7 @@ parameters:
 			path: admin/admin-notices.php
 
 		-
-			message: "#^Parameter \\#2 \\$arr2 of function array_diff expects array, mixed given\\.$#"
+			message: "#^Parameter \\#2 .+ of function array_diff expects array, mixed given\\.$#"
 			count: 1
 			path: admin/admin-notices.php
 
@@ -426,7 +426,7 @@ parameters:
 			path: frontend/choose-lang-content.php
 
 		-
-			message: "#^Parameter \\#2 \\$str of function explode expects string, mixed given\\.$#"
+			message: "#^Parameter \\#2 \\$.+ of function explode expects string, mixed given\\.$#"
 			count: 1
 			path: frontend/choose-lang-content.php
 
@@ -551,7 +551,7 @@ parameters:
 			path: frontend/frontend-filters-widgets.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function md5 expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function md5 expects string, mixed given\\.$#"
 			count: 1
 			path: frontend/frontend-filters-widgets.php
 
@@ -731,7 +731,7 @@ parameters:
 			path: include/api.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, mixed given\\.$#"
+			message: "#^Parameter \\#2 .+ of function array_merge expects array, mixed given\\.$#"
 			count: 1
 			path: include/base.php
 
@@ -761,7 +761,7 @@ parameters:
 			path: include/class-polylang.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function trim expects string, string\\|null given\\.$#"
 			count: 1
 			path: include/class-polylang.php
 
@@ -786,7 +786,7 @@ parameters:
 			path: include/crud-posts.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\<int, int>\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#2 .+ of function array_merge expects array, array\\<int, int>\\|WP_Error given\\.$#"
 			count: 1
 			path: include/crud-posts.php
 
@@ -926,13 +926,8 @@ parameters:
 			path: include/language.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function base64_encode expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function base64_encode expects string, string\\|false given\\.$#"
 			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Parameter \\#1 \\$url of function set_url_scheme expects string, string\\|null given\\.$#"
-			count: 3
 			path: include/language.php
 
 		-
@@ -1121,7 +1116,7 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Parameter \\#1 \\$arr1 of function array_intersect expects array, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function array_intersect expects array, mixed given\\.$#"
 			count: 2
 			path: include/model.php
 
@@ -1141,7 +1136,7 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function md5 expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function md5 expects string, mixed given\\.$#"
 			count: 1
 			path: include/model.php
 
@@ -1171,7 +1166,7 @@ parameters:
 			path: include/nav-menu.php
 
 		-
-			message: "#^Parameter \\#1 \\$input of function array_flip expects array\\<int\\|string\\>, array\\<string\\|WP_Post_Type\\> given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function array_flip expects array\\<int\\|string\\>, array\\<string\\|WP_Post_Type\\> given\\.$#"
 			count: 1
 			path: include/olt-manager.php
 
@@ -1331,7 +1326,7 @@ parameters:
 			path: install/t15s.php
 
 		-
-			message: "#^Parameter \\#2 \\$str of function explode expects string, mixed given\\.$#"
+			message: "#^Parameter \\#2 \\$.+ of function explode expects string, mixed given\\.$#"
 			count: 1
 			path: modules/lingotek/lingotek.php
 
@@ -1356,12 +1351,12 @@ parameters:
 			path: modules/sync/admin-sync.php
 
 		-
-			message: "#^Parameter \\#1 \\$arr1 of function array_diff expects array, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function array_diff expects array, mixed given\\.$#"
 			count: 1
 			path: modules/sync/admin-sync.php
 
 		-
-			message: "#^Parameter \\#1 \\$arr1 of function array_merge expects array, mixed given\\.$#"
+			message: "#^Parameter \\#1 .+ of function array_merge expects array, mixed given\\.$#"
 			count: 1
 			path: modules/sync/admin-sync.php
 
@@ -1391,7 +1386,7 @@ parameters:
 			path: modules/sync/sync-metas.php
 
 		-
-			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function count expects array\\|Countable, mixed given\\.$#"
 			count: 2
 			path: modules/sync/sync-metas.php
 
@@ -1526,7 +1521,7 @@ parameters:
 			path: modules/wpml/wpml-legacy-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$object of function method_exists expects object\\|string, PLL_Admin_Links\\|PLL_Frontend_Links\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function method_exists expects object\\|string, PLL_Admin_Links\\|PLL_Frontend_Links\\|null given\\.$#"
 			count: 1
 			path: modules/wpml/wpml-legacy-api.php
 
@@ -1614,9 +1609,4 @@ parameters:
 			message: "#^Parameter \\#2 \\$column_name of method PLL_Table_Settings\\:\\:column_default\\(\\) expects string, int\\|string given\\.$#"
 			count: 1
 			path: settings/table-settings.php
-
-		-
-			message: "#^Cannot access offset mixed on array\\|false\\.$#"
-			count: 1
-			path: settings/table-string.php
 

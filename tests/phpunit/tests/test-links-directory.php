@@ -1,8 +1,10 @@
 <?php
 
 class Links_Directory_Test extends PLL_UnitTestCase {
+
 	protected $structure = '/%postname%/';
 	protected $host = 'http://example.org';
+	protected $root;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
