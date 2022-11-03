@@ -9,12 +9,6 @@
  * @since 1.2
  */
 class PLL_Frontend_Links extends PLL_Links {
-	/**
-	 * Current language.
-	 *
-	 * @var PLL_Language|null
-	 */
-	public $curlang;
 
 	/**
 	 * Internal non persistent cache object.
