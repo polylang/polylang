@@ -552,7 +552,7 @@ class PLL_Model {
 			if ( ! empty( $q['m'] ) ) {
 				$date_query = preg_replace( '|[^0-9]|', '', $q['m'] );
 				if ( is_string( $date_query ) ) {
-					$q['m'] = '' . $date_query;
+					$q['m'] = $date_query;
 				}
 				$where .= $wpdb->prepare( " AND YEAR( {$wpdb->posts}.post_date ) = %d", substr( $q['m'], 0, 4 ) );
 				if ( strlen( $q['m'] ) > 5 ) {
