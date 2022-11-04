@@ -588,8 +588,12 @@ class PLL_Admin_Filters_Term {
 				$translations[ $key ] = $new_term_id;
 			}
 			else {
-				$tr_term = get_term( $tr_id, $taxonomy );
-				$translations[ $key ] = _split_shared_term( $tr_id, $tr_term->term_taxonomy_id );
+				$tr_term   = get_term( $tr_id, $taxonomy );
+				$new_tr_id = _split_shared_term( $tr_id, $tr_term->term_taxonomy_id );
+
+				if ( is_int( $new_tr_id ) ) {
+					$translations[ $key ] = $new_tr_id;
+				}
 
 				// Hack translation ids sent by the form to avoid overwrite in PLL_Admin_Filters_Term::save_translations
 				if ( isset( $_POST['term_tr_lang'][ $key ] ) && $_POST['term_tr_lang'][ $key ] == $tr_id ) { // phpcs:ignore WordPress.Security.NonceVerification

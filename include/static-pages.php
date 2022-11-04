@@ -133,8 +133,8 @@ class PLL_Static_Pages {
 	public static function pll_languages_list( $languages, $model ) {
 		if ( 'page' === get_option( 'show_on_front' ) ) {
 			foreach ( $languages as $k => $language ) {
-				$languages[ $k ]->page_on_front = $model->post->get( get_option( 'page_on_front' ), $language );
-				$languages[ $k ]->page_for_posts = $model->post->get( get_option( 'page_for_posts' ), $language );
+				$languages[ $k ]->page_on_front  = (int) $model->post->get( get_option( 'page_on_front' ), $language );
+				$languages[ $k ]->page_for_posts = (int) $model->post->get( get_option( 'page_for_posts' ), $language );
 			}
 		}
 
