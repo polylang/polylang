@@ -4,91 +4,113 @@
  */
 
 /**
- * Setups the posts languages and translations model
+ * Setups the posts languages and translations model.
  *
  * @since 1.8
  */
 class PLL_Translated_Post extends PLL_Translated_Object {
 
 	/**
+	 * Taxonomy name for the languages.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $tax_language = 'language';
+
+	/**
+	 * Name of the `PLL_Language` property that stores the term_taxonomy ID.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $tax_tt_prop_name = 'term_taxonomy_id';
+
+	/**
+	 * Taxonomy name for the translation groups.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $tax_translations = 'post_translations';
+
+	/**
+	 * Object type to use when checking capabilities.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $type = 'post';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
 	 *
-	 * @param PLL_Model $model PLL_Model instance.
+	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
-	public function __construct( &$model ) {
-		// init properties
-		$this->object_type = null; // For taxonomies
-		$this->type = 'post'; // For capabilities
-		$this->tax_language = 'language';
-		$this->tax_translations = 'post_translations';
-		$this->tax_tt = 'term_taxonomy_id';
-
+	public function __construct( PLL_Model &$model ) {
 		parent::__construct( $model );
 
-		// registers completely the language taxonomy
+		$this->init();
+	}
+
+	/**
+	 * Adds hooks.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	public function init() {
+		// Registers completely the language taxonomy.
 		add_action( 'setup_theme', array( $this, 'register_taxonomy' ), 1 );
 
-		// setups post types to translate
+		// Setups post types to translate.
 		add_action( 'registered_post_type', array( $this, 'registered_post_type' ) );
 
-		// forces updating posts cache
+		// Forces updating posts cache.
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 	}
 
 	/**
-	 * Store the post language in the database.
+	 * Stores the post's language in the database.
 	 *
 	 * @since 0.6
+	 * @since 3.3 Renamed the parameter $post_id into $id.
 	 *
-	 * @param int                     $post_id Post id.
-	 * @param int|string|PLL_Language $lang    Language (term_id or slug or object).
+	 * @param int                     $id   Post ID.
+	 * @param int|string|PLL_Language $lang Language (term_id or slug or object).
 	 * @return void
 	 */
-	public function set_language( $post_id, $lang ) {
-		$post_id = $this->sanitize_int_id( $post_id );
+	public function set_language( $id, $lang ) {
+		$id = $this->sanitize_int_id( $id );
 
-		if ( empty( $post_id ) ) {
+		if ( empty( $id ) ) {
 			return;
 		}
 
-		$old_lang = $this->get_language( $post_id );
+		$old_lang = $this->get_language( $id );
 		$old_lang = $old_lang ? $old_lang->slug : '';
 
 		$lang = $this->model->get_language( $lang );
 		$lang = $lang ? $lang->slug : '';
 
 		if ( $old_lang !== $lang ) {
-			wp_set_post_terms( $post_id, $lang, $this->tax_language );
+			wp_set_post_terms( $id, $lang, $this->tax_language );
 		}
 	}
 
 	/**
-	 * Returns the language of a post
-	 *
-	 * @since 0.1
-	 *
-	 * @param int $post_id post id
-	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that post
-	 */
-	public function get_language( $post_id ) {
-		$post_id = $this->sanitize_int_id( $post_id );
-
-		if ( empty( $post_id ) ) {
-			return false;
-		}
-
-		$lang = $this->get_object_term( $post_id, $this->tax_language );
-		return ! empty( $lang ) ? $this->model->get_language( $lang ) : false;
-	}
-
-	/**
-	 * Deletes a translation.
+	 * Deletes a translation of a post.
 	 *
 	 * @since 0.5
 	 *
-	 * @param int $id Post id.
+	 * @param int $id Post ID.
 	 * @return void
 	 */
 	public function delete_translation( $id ) {
@@ -103,12 +125,14 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * A join clause to add to sql queries when filtering by language is needed directly in query
+	 * A JOIN clause to add to sql queries when filtering by language is needed directly in query.
 	 *
 	 * @since 1.2
 	 *
-	 * @param string $alias Alias for $wpdb->posts table
-	 * @return string join clause
+	 * @param string $alias Optional alias for object table.
+	 * @return string The JOIN clause.
+	 *
+	 * @phpstan-return non-empty-string
 	 */
 	public function join_clause( $alias = '' ) {
 		global $wpdb;
@@ -181,19 +205,20 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * Checks if the current user can read the post
 	 *
 	 * @since 1.5
+	 * @since 3.3 Renamed the parameter $post_id into $id.
 	 *
-	 * @param int    $post_id Post ID
+	 * @param int    $id Post ID
 	 * @param string $context Optional, 'edit' or 'view', defaults to 'view'.
 	 * @return bool
 	 */
-	public function current_user_can_read( $post_id, $context = 'view' ) {
-		$post_id = $this->sanitize_int_id( $post_id );
+	public function current_user_can_read( $id, $context = 'view' ) {
+		$id = $this->sanitize_int_id( $id );
 
-		if ( empty( $post_id ) ) {
+		if ( empty( $id ) ) {
 			return false;
 		}
 
-		$post = get_post( $post_id );
+		$post = get_post( $id );
 
 		if ( empty( $post ) ) {
 			return false;
