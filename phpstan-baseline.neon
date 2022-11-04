@@ -186,17 +186,12 @@ parameters:
 			path: admin/admin-filters-term.php
 
 		-
-			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method PLL_Object_With_Language\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
 			count: 2
 			path: admin/admin-filters-term.php
 
 		-
 			message: "#^Parameter \\#1 \\$.+ of function rtrim expects string, string\\|WP_Error given\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
-			message: "#^Parameter \\#1 \\$term_id of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int, int\\|WP_Error given\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
 
@@ -213,11 +208,6 @@ parameters:
 		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 4
-			path: admin/admin-filters-term.php
-
-		-
-			message: "#^Parameter \\#2 \\$translations of method PLL_Translated_Object\\:\\:save_translations\\(\\) expects array\\<int\\>, array\\<int\\|WP_Error\\> given\\.$#"
-			count: 1
 			path: admin/admin-filters-term.php
 
 		-
@@ -411,12 +401,7 @@ parameters:
 			path: frontend/choose-lang-content.php
 
 		-
-			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, mixed given\\.$#"
-			count: 1
-			path: frontend/choose-lang-content.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method PLL_Translated_Term\\:\\:get_language\\(\\) expects int\\|string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method PLL_Object_With_Language\\:\\:get_language\\(\\) expects int, mixed given\\.$#"
 			count: 1
 			path: frontend/choose-lang-content.php
 
@@ -459,16 +444,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, object\\|false given\\.$#"
 			count: 2
 			path: frontend/choose-lang.php
-
-		-
-			message: "#^Method PLL_Frontend_Auto_Translate\\:\\:get_post\\(\\) should return int but returns int\\|false\\.$#"
-			count: 1
-			path: frontend/frontend-auto-translate.php
-
-		-
-			message: "#^Method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) should return int but returns int\\|false\\.$#"
-			count: 1
-			path: frontend/frontend-auto-translate.php
 
 		-
 			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, float\\|int\\<0, max\\> given\\.$#"
@@ -1181,16 +1156,6 @@ parameters:
 			path: include/static-pages.php
 
 		-
-			message: "#^Property PLL_Language\\:\\:\\$page_for_posts \\(int\\|null\\) does not accept int\\|false\\.$#"
-			count: 1
-			path: include/static-pages.php
-
-		-
-			message: "#^Property PLL_Language\\:\\:\\$page_on_front \\(int\\|null\\) does not accept int\\|false\\.$#"
-			count: 1
-			path: include/static-pages.php
-
-		-
 			message: "#^Property PLL_Static_Pages\\:\\:\\$page_for_posts \\(int\\|null\\) does not accept mixed\\.$#"
 			count: 1
 			path: include/static-pages.php
@@ -1262,11 +1227,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$translations of method PLL_Translated_Object\\:\\:validate_translations\\(\\) expects array\\<int\\>, mixed given\\.$#"
-			count: 2
-			path: include/translated-object.php
-
-		-
-			message: "#^Parameter \\#2 \\$object_type of function register_taxonomy expects array\\|string, string\\|null given\\.$#"
 			count: 2
 			path: include/translated-object.php
 
@@ -1401,11 +1361,6 @@ parameters:
 			path: modules/sync/sync-tax.php
 
 		-
-			message: "#^@param int \\$tr_term does not accept actual type of parameter\\: int\\|false\\.$#"
-			count: 1
-			path: modules/sync/sync-tax.php
-
-		-
 			message: "#^@param string \\$lang does not accept actual type of parameter\\: string\\|null\\.$#"
 			count: 1
 			path: modules/sync/sync-tax.php
@@ -1431,7 +1386,7 @@ parameters:
 			path: modules/sync/sync-tax.php
 
 		-
-			message: "#^Parameter \\#3 \\$lang of method PLL_Sync_Tax\\:\\:copy_object_terms\\(\\) expects string, int\\|string\\|false given\\.$#"
+			message: "#^Parameter \\#3 \\$lang of method PLL_Sync_Tax\\:\\:copy_object_terms\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: modules/sync/sync-tax.php
 
@@ -1526,7 +1481,7 @@ parameters:
 			path: modules/wpml/wpml-legacy-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method PLL_Object_With_Language\\:\\:get_language\\(\\) expects int, int\\|false given\\.$#"
 			count: 1
 			path: modules/wpml/wpml-legacy-api.php
 
@@ -1576,7 +1531,7 @@ parameters:
 			path: settings/settings-url.php
 
 		-
-			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method PLL_Object_With_Language\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
 			count: 1
 			path: settings/settings-url.php
 
