@@ -78,13 +78,17 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language implements
 	 *
 	 * @param int          $id   Object ID.
 	 * @param PLL_Language $lang New language to assign to the object.
-	 * @return void
+	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
 	 */
 	public function update_language( $id, PLL_Language $lang ) {
 		$id = $this->sanitize_int_id( $id );
 
-		if ( empty( $id ) || $this->get_language( $id ) === $lang ) {
-			return;
+		if ( empty( $id ) ) {
+			return false;
+		}
+
+		if ( $this->get_language( $id ) === $lang ) {
+			return true;
 		}
 
 		$this->set_language( $id, $lang );
@@ -92,12 +96,14 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language implements
 		$translations = $this->get_translations( $id );
 
 		if ( empty( $translations ) ) {
-			return;
+			return true;
 		}
 
 		// Remove the object's former language from the new translations group.
 		$translations = array_diff( $translations, array( $id ) );
 		$this->save_translations( $id, $translations );
+
+		return true;
 	}
 
 	/**

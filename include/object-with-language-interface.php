@@ -37,7 +37,7 @@ interface PLL_Object_With_Language_Interface {
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param int|string|PLL_Language $lang Language (term_id, slug, or object).
-	 * @return void
+	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
 	 */
 	public function set_language( $id, $lang );
 
@@ -58,7 +58,7 @@ interface PLL_Object_With_Language_Interface {
 	 *
 	 * @param int          $id   Object ID.
 	 * @param PLL_Language $lang New language to assign to the object.
-	 * @return void
+	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
 	 */
 	public function update_language( $id, PLL_Language $lang );
 

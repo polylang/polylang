@@ -90,13 +90,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @param int                     $id   Term ID.
 	 * @param int|string|PLL_Language $lang Language (term_id, slug, or object).
-	 * @return void
+	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
 	 */
 	public function set_language( $id, $lang ) {
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {
-			return;
+			return false;
 		}
 
 		$old_lang = $this->get_language( $id );
@@ -106,20 +106,25 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		$lang = $lang ? $lang->tl_term_id : '';
 
 		if ( $old_lang === $lang ) {
-			return;
+			return true;
 		}
 
-		wp_set_object_terms( $id, $lang, $this->tax_language );
+		$assigned = is_array( wp_set_object_terms( $id, $lang, $this->tax_language ) );
+
+		if ( ! $assigned ) {
+			return false;
+		}
 
 		// Add translation group for correct WXR export.
 		$translations = $this->get_translations( $id );
-		$slug         = array_search( $id, $translations );
 
-		if ( ! empty( $slug ) ) {
-			unset( $translations[ $slug ] );
+		if ( ! empty( $translations ) ) {
+			$translations = array_diff( $translations, array( $id ) );
 		}
 
 		$this->save_translations( $id, $translations );
+
+		return true;
 	}
 
 	/**

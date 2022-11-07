@@ -87,13 +87,13 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @param int                     $id   Post ID.
 	 * @param int|string|PLL_Language $lang Language (term_id or slug or object).
-	 * @return void
+	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
 	 */
 	public function set_language( $id, $lang ) {
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {
-			return;
+			return false;
 		}
 
 		$old_lang = $this->get_language( $id );
@@ -102,9 +102,11 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		$lang = $this->model->get_language( $lang );
 		$lang = $lang ? $lang->slug : '';
 
-		if ( $old_lang !== $lang ) {
-			wp_set_post_terms( $id, $lang, $this->tax_language );
+		if ( $old_lang === $lang ) {
+			return true;
 		}
+
+		return is_array( wp_set_post_terms( $id, $lang, $this->tax_language ) );
 	}
 
 	/**

@@ -123,16 +123,10 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	 *
 	 * @param int          $id   Object ID.
 	 * @param PLL_Language $lang New language to assign to the object.
-	 * @return void
+	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
 	 */
 	public function update_language( $id, PLL_Language $lang ) {
-		$id = $this->sanitize_int_id( $id );
-
-		if ( empty( $id ) || $this->get_language( $id ) === $lang ) {
-			return;
-		}
-
-		$this->set_language( $id, $lang );
+		return $this->set_language( $id, $lang );
 	}
 
 	/**
