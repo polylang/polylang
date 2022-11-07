@@ -550,10 +550,7 @@ class PLL_Model {
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
 
 			if ( ! empty( $q['m'] ) ) {
-				$date_query = preg_replace( '|[^0-9]|', '', $q['m'] );
-				if ( is_string( $date_query ) ) {
-					$q['m'] = $date_query;
-				}
+				$q['m'] = '' . preg_replace( '|[^0-9]|', '', $q['m'] );
 				$where .= $wpdb->prepare( " AND YEAR( {$wpdb->posts}.post_date ) = %d", substr( $q['m'], 0, 4 ) );
 				if ( strlen( $q['m'] ) > 5 ) {
 					$where .= $wpdb->prepare( " AND MONTH( {$wpdb->posts}.post_date ) = %d", substr( $q['m'], 4, 2 ) );
