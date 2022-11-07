@@ -73,31 +73,49 @@ function pll_default_language( $field = 'slug' ) {
 }
 
 /**
- * Among the post and its translations, returns the id of the post which is in the language represented by $lang.
+ * Among the post and its translations, returns the ID of the post which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
+ * @since 3.3 Returns 0 instead of false.
  *
- * @param int    $post_id Post id.
+ * @param int    $post_id Post ID.
  * @param string $lang    Optional language code, defaults to the current language.
- * @return int|false|null Post id of the translation if it exists, false otherwise, null if the current language is not defined yet.
+ * @return int|null Post ID of the translation if it exists, `0` otherwise, `null` if the current language is not defined yet.
+ *
+ * @phpstan-return int<0, max>|null
  */
 function pll_get_post( $post_id, $lang = '' ) {
-	return ( $lang = $lang ? $lang : pll_current_language() ) ? PLL()->model->post->get( $post_id, $lang ) : null;
+	$lang = $lang ? $lang : pll_current_language();
+
+	if ( empty( $lang ) ) {
+		return null;
+	}
+
+	return PLL()->model->post->get( $post_id, $lang );
 }
 
 /**
- * Among the term and its translations, returns the id of the term which is in the language represented by $lang.
+ * Among the term and its translations, returns the ID of the term which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
+ * @since 3.3 Returns 0 instead of false.
  *
- * @param int    $term_id Term id.
+ * @param int    $term_id Term ID.
  * @param string $lang    Optional language code, defaults to the current language.
- * @return int|false|null Term id of the translation if it exists, false otherwise, null if the current language is not defined yet.
+ * @return int|null Term ID of the translation if it exists, `0` otherwise, `null` if the current language is not defined yet.
+ *
+ * @phpstan-return int<0, max>|null
  */
 function pll_get_term( $term_id, $lang = '' ) {
-	return ( $lang = $lang ? $lang : pll_current_language() ) ? PLL()->model->term->get( $term_id, $lang ) : null;
+	$lang = $lang ? $lang : pll_current_language();
+
+	if ( empty( $lang ) ) {
+		return null;
+	}
+
+	return PLL()->model->term->get( $term_id, $lang );
 }
 
 /**

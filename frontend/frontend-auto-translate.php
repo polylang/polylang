@@ -48,7 +48,7 @@ class PLL_Frontend_Auto_Translate {
 	 * @phpstan-return int<0, max>
 	 */
 	protected function get_post( $post_id ) {
-		return (int) $this->model->post->get( $post_id, $this->curlang );
+		return $this->model->post->get( $post_id, $this->curlang );
 	}
 
 	/**
@@ -62,7 +62,7 @@ class PLL_Frontend_Auto_Translate {
 	 * @phpstan-return int<0, max>
 	 */
 	protected function get_term( $term_id ) {
-		return (int) $this->model->term->get( $term_id, $this->curlang );
+		return $this->model->term->get( $term_id, $this->curlang );
 	}
 
 	/**

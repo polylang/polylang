@@ -98,9 +98,9 @@ interface PLL_Translated_Object_Interface {
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param int|string|PLL_Language $lang Language (term_id or slug or object).
-	 * @return int|false The translation object ID if exists, otherwise the passed ID, false if the passed object has no language.
+	 * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
 	 *
-	 * @phpstan-return positive-int|false
+	 * @phpstan-return int<0, max>
 	 */
 	public function get( $id, $lang );
 

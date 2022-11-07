@@ -300,33 +300,34 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language implements
 	 * Among the object and its translations, returns the ID of the object which is in `$lang`.
 	 *
 	 * @since 0.1
+	 * @since 3.3 Returns 0 instead of false.
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param int|string|PLL_Language $lang Language (term_id or slug or object).
-	 * @return int|false The translation object ID if exists, otherwise the passed ID, false if the passed object has no language.
+	 * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
 	 *
-	 * @phpstan-return positive-int|false
+	 * @phpstan-return int<0, max>
 	 */
 	public function get( $id, $lang ) {
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {
-			return false;
+			return 0;
 		}
 
 		$lang = $this->model->get_language( $lang );
 
 		if ( empty( $lang ) ) {
-			return false;
+			return 0;
 		}
 
 		$obj_lang = $this->get_language( $id );
 
 		if ( empty( $obj_lang ) ) {
-			return false;
+			return 0;
 		}
 
-		return $obj_lang->term_id === $lang->term_id ? $id : $this->get_translation( $id, $lang );
+		return $obj_lang->term_id === $lang->term_id ? $id : (int) $this->get_translation( $id, $lang );
 	}
 
 	/**
