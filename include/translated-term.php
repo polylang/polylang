@@ -73,11 +73,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @since 3.3
 	 *
-	 * @return void
+	 * @return self
 	 */
 	public function init() {
 		add_filter( 'get_terms', array( $this, '_prime_terms_cache' ), 10, 2 );
 		add_action( 'clean_term_cache', array( $this, 'clean_term_cache' ) );
+
+		return $this;
 	}
 
 	/**

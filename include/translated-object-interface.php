@@ -26,7 +26,7 @@ interface PLL_Translated_Object_Interface {
 	 *
 	 * @since 3.3
 	 *
-	 * @return void
+	 * @return self
 	 */
 	public function init();
 

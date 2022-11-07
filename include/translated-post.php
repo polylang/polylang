@@ -64,7 +64,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @since 3.3
 	 *
-	 * @return void
+	 * @return self
 	 */
 	public function init() {
 		// Registers completely the language taxonomy.
@@ -75,6 +75,8 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		// Forces updating posts cache.
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+
+		return $this;
 	}
 
 	/**
