@@ -4,7 +4,7 @@
  */
 
 /**
- * Setups the objects languages and translations model.
+ * Abstract class to use for object types that support at least one language.
  *
  * @since 3.3
  */
