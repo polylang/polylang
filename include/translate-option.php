@@ -18,6 +18,13 @@ class PLL_Translate_Option {
 	 */
 	private $keys;
 
+  /**
+	 * Used to prevent filtering when retrieving the raw value of the option.
+	 *
+	 * @var bool
+	 */
+	private static $raw = false;
+
 	/**
 	 * Array of updated strings.
 	 *
@@ -64,9 +71,7 @@ class PLL_Translate_Option {
 		add_filter( 'option_' . $name, array( $this, 'translate' ) ); // Make sure to add this filter after options are registered.
 
 		// Filters updated values.
-		add_filter( 'pre_update_option_' . $name, array( $this, 'remove_option_filter' ), 5, 3 );
 		add_filter( 'pre_update_option_' . $name, array( $this, 'pre_update_option' ), 10, 3 );
-		add_filter( 'pre_update_option_' . $name, array( $this, 'add_option_filter' ), 15, 3 );
 		add_action( 'update_option_' . $name, array( $this, 'update_option' ) );
 
 		// Sanitizes translated strings.
@@ -86,7 +91,11 @@ class PLL_Translate_Option {
 	 * @return mixed Translated string(s).
 	 */
 	public function translate( $value ) {
-		return $this->translate_string_recursive( $value, $this->keys );
+		if ( self::$raw ) {
+				return $value;
+		}
+
+ 		return $this->translate_string_recursive( $value, $this->keys );
 	}
 
 	/**
@@ -184,21 +193,22 @@ class PLL_Translate_Option {
 	}
 
 	/**
-	 * Removes the option filter.
+	 * Returns the raw value of an option (without this class' filter).
 	 *
-	 * This must be done before `pre_update_option` in case several objects are
-	 * dealing with the same option.
+	 * A static property is used to make sure that the option is not filtered
+	 * whatever the number of instances of this class filtering the option.
 	 *
 	 * @since 3.3
 	 *
-	 * @param mixed  $value     The new, unserialized option value.
-	 * @param mixed  $old_value The old (filtered) option value.
-	 * @param string $name      Option name.
+	 * @param string $option_name Option name.
 	 * @return mixed
 	 */
-	public function remove_option_filter( $value, $old_value, $name ) {
-		remove_filter( 'option_' . $name, array( $this, 'translate' ) );
-		return $value;
+	protected function get_raw_option( $option_name ) {
+		self::$raw    = true;
+		$option_value = get_option( $option_name );
+		self::$raw    = false;
+
+		return $option_value;
 	}
 
 	/**
@@ -217,7 +227,7 @@ class PLL_Translate_Option {
 	 */
 	public function pre_update_option( $value, $old_value, $name ) {
 		// Stores the unfiltered old option value before it is updated in DB.
-		$unfiltered_old_value = get_option( $name );
+		$unfiltered_old_value = $this->get_raw_option( $name );
 
 		// Load translations in all languages.
 		foreach ( pll_languages_list() as $lang ) {
@@ -229,24 +239,6 @@ class PLL_Translate_Option {
 		// Filters out the strings which would be updated to their translations and stores the updated strings.
 		$value = $this->check_value_recursive( $unfiltered_old_value, $value, $this->keys );
 
-		return $value;
-	}
-
-	/**
-	 * Re-introduces the option filter.
-	 *
-	 * This must be done before `pre_update_option` in case several objects are
-	 * dealing with the same option.
-	 *
-	 * @since 3.3
-	 *
-	 * @param mixed  $value     The new, unserialized option value.
-	 * @param mixed  $old_value The old (filtered) option value.
-	 * @param string $name      Option name.
-	 * @return mixed
-	 */
-	public function add_option_filter( $value, $old_value, $name ) {
-		add_filter( 'option_' . $name, array( $this, 'translate' ), 20, 2 );
 		return $value;
 	}
 
