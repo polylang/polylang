@@ -56,6 +56,26 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	protected $type = 'term';
 
 	/**
+	 * Default alias corresponding to the term's DB table.
+	 *
+	 * @var string
+	 * @see PLL_Object_With_Language::join_clause()
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $db_default_alias = 't';
+
+	/**
+	 * Name of the DB column containing the term's ID.
+	 *
+	 * @var string
+	 * @see PLL_Object_With_Language::join_clause()
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $db_id_column = 'term_id';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
@@ -78,7 +98,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	public function init() {
 		add_filter( 'get_terms', array( $this, '_prime_terms_cache' ), 10, 2 );
 		add_action( 'clean_term_cache', array( $this, 'clean_term_cache' ) );
-
 		return $this;
 	}
 
@@ -242,27 +261,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		$translations = array( $slug => $id );
 		wp_insert_term( $group, $this->tax_translations, array( 'description' => maybe_serialize( $translations ) ) );
 		wp_set_object_terms( $id, $group, $this->tax_translations );
-	}
-
-	/**
-	 * A JOIN clause to add to sql queries when filtering by language is needed directly in query.
-	 *
-	 * @since 1.2
-	 * @since 2.6 The `$alias` parameter was added.
-	 *
-	 * @param string $alias Optional alias for object table.
-	 * @return string The JOIN clause.
-	 *
-	 * @phpstan-return non-empty-string
-	 */
-	public function join_clause( $alias = '' ) {
-		global $wpdb;
-
-		if ( empty( $alias ) ) {
-			$alias = 't';
-		}
-
-		return " INNER JOIN $wpdb->term_relationships AS pll_tr ON pll_tr.object_id = $alias.term_id";
 	}
 
 	/**

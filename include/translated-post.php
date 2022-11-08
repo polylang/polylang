@@ -47,6 +47,16 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	protected $type = 'post';
 
 	/**
+	 * Name of the DB column containing the post's ID.
+	 *
+	 * @var string
+	 * @see PLL_Object_With_Language::join_clause()
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $db_id_column = 'ID';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
@@ -54,6 +64,8 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
 	public function __construct( PLL_Model &$model ) {
+		$this->db_default_alias = $GLOBALS['wpdb']->posts;
+
 		parent::__construct( $model );
 
 		$this->init();
@@ -75,7 +87,6 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		// Forces updating posts cache.
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
-
 		return $this;
 	}
 
@@ -126,24 +137,6 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		parent::delete_translation( $id );
 		wp_set_object_terms( $id, array(), $this->tax_translations );
-	}
-
-	/**
-	 * A JOIN clause to add to sql queries when filtering by language is needed directly in query.
-	 *
-	 * @since 1.2
-	 *
-	 * @param string $alias Optional alias for object table.
-	 * @return string The JOIN clause.
-	 *
-	 * @phpstan-return non-empty-string
-	 */
-	public function join_clause( $alias = '' ) {
-		global $wpdb;
-		if ( empty( $alias ) ) {
-			$alias = $wpdb->posts;
-		}
-		return " INNER JOIN $wpdb->term_relationships AS pll_tr ON pll_tr.object_id = $alias.ID";
 	}
 
 	/**

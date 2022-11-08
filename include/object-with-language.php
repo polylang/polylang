@@ -47,8 +47,29 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	 * List of taxonomies to cache in get_object_term().
 	 *
 	 * @var string[]
+	 * @see PLL_Object_With_Language::get_object_term()
 	 */
 	protected $tax_to_cache = array();
+
+	/**
+	 * Default alias corresponding to the object's DB table.
+	 *
+	 * @var string
+	 * @see PLL_Object_With_Language::join_clause()
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $db_default_alias;
+
+	/**
+	 * Name of the DB column containing the object's ID.
+	 *
+	 * @var string
+	 * @see PLL_Object_With_Language::join_clause()
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $db_id_column;
 
 	/**
 	 * Constructor.
@@ -89,6 +110,46 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	 */
 	public function get_tax_language() {
 		return $this->tax_language;
+	}
+
+	/**
+	 * Add hooks.
+	 *
+	 * @since 3.3
+	 *
+	 * @return self
+	 */
+	public function init() {
+		return $this;
+	}
+
+	/**
+	 * Stores the object's language in the database.
+	 *
+	 * @since 3.3
+	 *
+	 * @param int                     $id   Object ID.
+	 * @param int|string|PLL_Language $lang Language (term_id, slug, or object).
+	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
+	 */
+	public function set_language( $id, $lang ) {
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
+			return false;
+		}
+
+		$old_lang = $this->get_language( $id );
+		$old_lang = $old_lang ? $old_lang->tl_term_id : '';
+
+		$lang = $this->model->get_language( $lang );
+		$lang = $lang ? $lang->tl_term_id : '';
+
+		if ( $old_lang === $lang ) {
+			return true;
+		}
+
+		return is_array( wp_set_object_terms( $id, $lang, $this->tax_language ) );
 	}
 
 	/**
@@ -173,6 +234,26 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 		}
 
 		return $term;
+	}
+
+	/**
+	 * A JOIN clause to add to sql queries when filtering by language is needed directly in query.
+	 *
+	 * @since 3.3
+	 *
+	 * @param string $alias Optional alias for object table.
+	 * @return string The JOIN clause.
+	 *
+	 * @phpstan-return non-empty-string
+	 */
+	public function join_clause( $alias = '' ) {
+		global $wpdb;
+
+		if ( empty( $alias ) ) {
+			$alias = $this->db_default_alias;
+		}
+
+		return " INNER JOIN {$wpdb->term_relationships} AS pll_tr ON pll_tr.object_id = {$alias}.{$this->db_id_column}";
 	}
 
 	/**
