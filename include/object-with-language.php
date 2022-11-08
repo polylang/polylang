@@ -84,6 +84,10 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 		$this->model          = &$model;
 		$this->tax_to_cache[] = $this->tax_language;
 
+		if ( taxonomy_exists( $this->tax_language ) ) {
+			return;
+		}
+
 		/*
 		 * Register our taxonomy as soon as possible.
 		 * This is early registration, not ready for rewrite rules as $wp_rewrite will be setup later.
