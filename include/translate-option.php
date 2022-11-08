@@ -18,7 +18,7 @@ class PLL_Translate_Option {
 	 */
 	private $keys;
 
-  /**
+	/**
 	 * Used to prevent filtering when retrieving the raw value of the option.
 	 *
 	 * @var bool
@@ -95,7 +95,7 @@ class PLL_Translate_Option {
 				return $value;
 		}
 
- 		return $this->translate_string_recursive( $value, $this->keys );
+		return $this->translate_string_recursive( $value, $this->keys );
 	}
 
 	/**
