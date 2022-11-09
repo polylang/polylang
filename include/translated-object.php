@@ -148,7 +148,7 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language implements
 	 *
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
-	public function save_translations( $id, $translations ) {
+	public function save_translations( $id, array $translations ) {
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {
