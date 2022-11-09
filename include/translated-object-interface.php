@@ -43,7 +43,7 @@ interface PLL_Translated_Object_Interface {
 	public function get_translations_from_term_id( $term_id );
 
 	/**
-	 * Saves translations for objects.
+	 * Saves the object's translations.
 	 *
 	 * @since 3.3
 	 *

@@ -138,7 +138,7 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language implements
 	}
 
 	/**
-	 * Saves translations for objects.
+	 * Saves the object's translations.
 	 *
 	 * @since 0.5
 	 *
