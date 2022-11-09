@@ -97,7 +97,7 @@ interface PLL_Translated_Object_Interface {
 	 * @since 3.3
 	 *
 	 * @param int                     $id   Object ID.
-	 * @param int|string|PLL_Language $lang Language (term_id or slug or object).
+	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
 	 * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
 	 *
 	 * @phpstan-return int<0, max>

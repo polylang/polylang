@@ -99,7 +99,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @since 3.3 Renamed the parameter $post_id into $id.
 	 *
 	 * @param int                     $id   Post ID.
-	 * @param int|string|PLL_Language $lang Language (term_id or slug or object).
+	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
 	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
 	 */
 	public function set_language( $id, $lang ) {
