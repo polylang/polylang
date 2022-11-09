@@ -142,10 +142,10 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 		}
 
 		$old_lang = $this->get_language( $id );
-		$old_lang = $old_lang ? $old_lang->tl_term_id : '';
+		$old_lang = $old_lang ? $old_lang->tl_term_id : 0;
 
 		$lang = $this->model->get_language( $lang );
-		$lang = $lang ? $lang->tl_term_id : '';
+		$lang = $lang ? $lang->tl_term_id : 0;
 
 		if ( $old_lang === $lang ) {
 			return true;
