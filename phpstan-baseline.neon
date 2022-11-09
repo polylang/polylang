@@ -151,7 +151,7 @@ parameters:
 			path: admin/admin-filters-post.php
 
 		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Object_With_Language\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Post\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 1
 			path: admin/admin-filters-post.php
 
@@ -756,7 +756,7 @@ parameters:
 			path: include/crud-posts.php
 
 		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Object_With_Language\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
+			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Post\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
 			count: 1
 			path: include/crud-posts.php
 
