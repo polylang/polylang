@@ -54,7 +54,7 @@ interface PLL_Translated_Object_Interface {
 	 * @phpstan-param array<non-empty-string, positive-int> $translations
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
-	public function save_translations( $id, array $translations );
+	public function save_translations( $id, array $translations = array() );
 
 	/**
 	 * Deletes a translation of an object.
