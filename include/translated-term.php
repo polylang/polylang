@@ -182,10 +182,10 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 			// Backward compatibility.
 			_deprecated_argument(
 				__METHOD__ . '()',
-				'3.4',
+				'3.3',
 				esc_html(
 					sprintf(
-						/* translators: s is a function name. */
+						/* translators: %s is a function name. */
 						__( 'Please use %s instead.', 'polylang' ),
 						get_class( $this ) . '::get_language_by_term_slug( $slug, $taxonomy )'
 					)
