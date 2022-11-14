@@ -6,14 +6,14 @@
 /**
  * Interface to use for object types that support translations.
  *
- * @since 3.3
+ * @since 3.4
  */
 interface PLL_Translated_Object_Interface {
 
 	/**
 	 * Returns the translations group taxonomy name.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return string
 	 *
@@ -24,7 +24,7 @@ interface PLL_Translated_Object_Interface {
 	/**
 	 * Adds hooks.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return self
 	 */
@@ -33,7 +33,7 @@ interface PLL_Translated_Object_Interface {
 	/**
 	 * Returns a list of object translations, given a `tax_translations` term ID.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int $term_id Term ID.
 	 * @return int[] An associative array of translations with language code as key and translation ID as value.
@@ -45,7 +45,7 @@ interface PLL_Translated_Object_Interface {
 	/**
 	 * Saves the object's translations.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int   $id           Object ID.
 	 * @param int[] $translations An associative array of translations with language code as key and translation ID as value.
@@ -59,7 +59,7 @@ interface PLL_Translated_Object_Interface {
 	/**
 	 * Deletes a translation of an object.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int $id Object ID.
 	 * @return void
@@ -69,7 +69,7 @@ interface PLL_Translated_Object_Interface {
 	/**
 	 * Returns an array of translations of an object.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int $id Object ID.
 	 * @return int[] An associative array of translations with language code as key and translation ID as value.
@@ -81,7 +81,7 @@ interface PLL_Translated_Object_Interface {
 	/**
 	 * Returns the ID of the translation of an object.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int                 $id   Object ID.
 	 * @param PLL_Language|string $lang Language (slug or object).
@@ -94,7 +94,7 @@ interface PLL_Translated_Object_Interface {
 	/**
 	 * Among the object and its translations, returns the ID of the object which is in `$lang`.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
@@ -107,7 +107,7 @@ interface PLL_Translated_Object_Interface {
 	/**
 	 * Checks if a user can synchronize translations.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int $id Object ID.
 	 * @return bool

@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Abstract class to use for object types that support at least one language.
  *
- * @since 3.3
+ * @since 3.4
  */
 abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Interface {
 
@@ -76,7 +76,7 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	/**
 	 * Constructor.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
@@ -104,7 +104,7 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	/**
 	 * Returns the language taxonomy name.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return string
 	 *
@@ -117,7 +117,7 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	/**
 	 * Add hooks.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return self
 	 */
@@ -128,7 +128,7 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	/**
 	 * Stores the object's language in the database.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
@@ -158,7 +158,7 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	 * Returns the language of an object.
 	 *
 	 * @since 0.1
-	 * @since 3.3 Renamed the parameter $post_id into $id.
+	 * @since 3.4 Renamed the parameter $post_id into $id.
 	 *
 	 * @param int $id Object ID.
 	 * @return PLL_Language|false A `PLL_Language` object, `false` if no language is associated to that object.
@@ -241,7 +241,7 @@ abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Inte
 	/**
 	 * A JOIN clause to add to sql queries when filtering by language is needed directly in query.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param string $alias Optional alias for object table.
 	 * @return string The JOIN clause.

@@ -93,7 +93,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	/**
 	 * Adds hooks.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return self
 	 */
@@ -107,7 +107,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * Stores the term's language in the database.
 	 *
 	 * @since 0.6
-	 * @since 3.3 Renamed the parameter $term_id into $id.
+	 * @since 3.4 Renamed the parameter $term_id into $id.
 	 *
 	 * @param int                     $id   Term ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
@@ -152,7 +152,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * Removes the term language from the database.
 	 *
 	 * @since 0.5
-	 * @since 3.3 Renamed the parameter $term_id into $id.
+	 * @since 3.4 Renamed the parameter $term_id into $id.
 	 *
 	 * @param int $id Term ID.
 	 * @return void
@@ -171,8 +171,8 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * Returns the language of a term.
 	 *
 	 * @since 0.1
-	 * @since 3.3 Renamed the parameter $value into $id.
-	 * @since 3.3 Deprecated to retrieve the language by term slug + taxonomy anymore.
+	 * @since 3.4 Renamed the parameter $value into $id.
+	 * @since 3.4 Deprecated to retrieve the language by term slug + taxonomy anymore.
 	 *
 	 * @param int $id Term ID.
 	 * @return PLL_Language|false A `PLL_Language` object, `false` if no language is associated to that object.
@@ -182,7 +182,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 			// Backward compatibility.
 			_deprecated_argument(
 				__METHOD__ . '()',
-				'3.3',
+				'3.4',
 				esc_html(
 					sprintf(
 						/* translators: %s is a function name. */
@@ -200,7 +200,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	/**
 	 * Returns the language of a term by slug and taxonomy.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param string $slug     Term slug.
 	 * @param string $taxonomy Taxonomy.

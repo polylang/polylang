@@ -76,7 +76,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	/**
 	 * Adds hooks.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return self
 	 */
@@ -96,7 +96,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * Stores the post's language in the database.
 	 *
 	 * @since 0.6
-	 * @since 3.3 Renamed the parameter $post_id into $id.
+	 * @since 3.4 Renamed the parameter $post_id into $id.
 	 *
 	 * @param int                     $id   Post ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
@@ -204,7 +204,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * Checks if the current user can read the post
 	 *
 	 * @since 1.5
-	 * @since 3.3 Renamed the parameter $post_id into $id.
+	 * @since 3.4 Renamed the parameter $post_id into $id.
 	 *
 	 * @param int    $id Post ID
 	 * @param string $context Optional, 'edit' or 'view', defaults to 'view'.

@@ -63,7 +63,7 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language implements
 	/**
 	 * Returns the translations group taxonomy name.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return string
 	 *
@@ -302,7 +302,7 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language implements
 	 * Among the object and its translations, returns the ID of the object which is in `$lang`.
 	 *
 	 * @since 0.1
-	 * @since 3.3 Returns 0 instead of false.
+	 * @since 3.4 Returns 0 instead of false.
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).

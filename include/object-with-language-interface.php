@@ -6,14 +6,14 @@
 /**
  * Interface to use for object types that support at least one language.
  *
- * @since 3.3
+ * @since 3.4
  */
 interface PLL_Object_With_Language_Interface {
 
 	/**
 	 * Returns the language taxonomy name.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return string
 	 *
@@ -24,7 +24,7 @@ interface PLL_Object_With_Language_Interface {
 	/**
 	 * Adds hooks.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @return self
 	 */
@@ -33,7 +33,7 @@ interface PLL_Object_With_Language_Interface {
 	/**
 	 * Stores the object's language in the database.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
@@ -44,7 +44,7 @@ interface PLL_Object_With_Language_Interface {
 	/**
 	 * Returns the language of an object.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int $id Object ID.
 	 * @return PLL_Language|false A `PLL_Language` object, `false` if no language is associated to that object.
@@ -54,7 +54,7 @@ interface PLL_Object_With_Language_Interface {
 	/**
 	 * Assigns a new language to an object.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int          $id   Object ID.
 	 * @param PLL_Language $lang New language to assign to the object.
@@ -66,7 +66,7 @@ interface PLL_Object_With_Language_Interface {
 	 * Wraps `wp_get_object_terms()` to cache it and return only one object.
 	 * Inspired by the WordPress function `get_the_terms()`.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param int    $id       Object ID.
 	 * @param string $taxonomy Polylang taxonomy depending if we are looking for a post (or term, or else) language.
@@ -77,7 +77,7 @@ interface PLL_Object_With_Language_Interface {
 	/**
 	 * A JOIN clause to add to sql queries when filtering by language is needed directly in query.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param string $alias Optional alias for object table.
 	 * @return string The JOIN clause.
@@ -89,7 +89,7 @@ interface PLL_Object_With_Language_Interface {
 	/**
 	 * A WHERE clause to add to sql queries when filtering by language is needed directly in query.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param PLL_Language|PLL_Language[]|string|string[] $lang A `PLL_Language` object, or a comma separated list of language slugs, or an array of language slugs or objects.
 	 * @return string The WHERE clause.
