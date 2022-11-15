@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.8
  */
-abstract class PLL_Translated_Object extends PLL_Object_With_Language implements PLL_Translated_Object_Interface {
+abstract class PLL_Translated_Object extends PLL_Object_With_Language {
 
 	/**
 	 * Taxonomy name for the translation groups.

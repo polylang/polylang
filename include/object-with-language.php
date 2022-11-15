@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.4
  */
-abstract class PLL_Object_With_Language implements PLL_Object_With_Language_Interface {
+abstract class PLL_Object_With_Language {
 
 	/**
 	 * @var PLL_Model
