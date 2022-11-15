@@ -100,7 +100,8 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @param int                     $id   Post ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
-	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
+	 * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+	 *              the object).
 	 */
 	public function set_language( $id, $lang ) {
 		$id = $this->sanitize_int_id( $id );
@@ -116,7 +117,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 		$lang = $lang ? $lang->slug : '';
 
 		if ( $old_lang === $lang ) {
-			return true;
+			return false;
 		}
 
 		return is_array( wp_set_post_terms( $id, $lang, $this->tax_language ) );

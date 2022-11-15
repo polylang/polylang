@@ -157,7 +157,8 @@ abstract class PLL_Object_With_Language {
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
-	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
+	 * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+	 *              the object).
 	 */
 	public function set_language( $id, $lang ) {
 		$id = $this->sanitize_int_id( $id );
@@ -173,7 +174,7 @@ abstract class PLL_Object_With_Language {
 		$lang = $lang ? $lang->tl_term_id : 0;
 
 		if ( $old_lang === $lang ) {
-			return true;
+			return false;
 		}
 
 		return is_array( wp_set_object_terms( $id, $lang, $this->tax_language ) );
@@ -186,7 +187,8 @@ abstract class PLL_Object_With_Language {
 	 *
 	 * @param int          $id   Object ID.
 	 * @param PLL_Language $lang New language to assign to the object.
-	 * @return bool True on success (or if the given language is already assigned to the object). False otherwise.
+	 * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+	 *              the object).
 	 */
 	public function update_language( $id, PLL_Language $lang ) {
 		return $this->set_language( $id, $lang );
