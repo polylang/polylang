@@ -126,6 +126,31 @@ abstract class PLL_Object_With_Language {
 	}
 
 	/**
+	 * Returns the language of an object.
+	 *
+	 * @since 0.1
+	 * @since 3.4 Renamed the parameter $post_id into $id.
+	 *
+	 * @param int $id Object ID.
+	 * @return PLL_Language|false A `PLL_Language` object, `false` if no language is associated to that object.
+	 */
+	public function get_language( $id ) {
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
+			return false;
+		}
+
+		$lang = $this->get_object_term( $id, $this->tax_language );
+
+		if ( empty( $lang ) ) {
+			return false;
+		}
+
+		return $this->model->get_language( $lang );
+	}
+
+	/**
 	 * Stores the object's language in the database.
 	 *
 	 * @since 3.4
@@ -155,31 +180,6 @@ abstract class PLL_Object_With_Language {
 	}
 
 	/**
-	 * Returns the language of an object.
-	 *
-	 * @since 0.1
-	 * @since 3.4 Renamed the parameter $post_id into $id.
-	 *
-	 * @param int $id Object ID.
-	 * @return PLL_Language|false A `PLL_Language` object, `false` if no language is associated to that object.
-	 */
-	public function get_language( $id ) {
-		$id = $this->sanitize_int_id( $id );
-
-		if ( empty( $id ) ) {
-			return false;
-		}
-
-		$lang = $this->get_object_term( $id, $this->tax_language );
-
-		if ( empty( $lang ) ) {
-			return false;
-		}
-
-		return $this->model->get_language( $lang );
-	}
-
-	/**
 	 * Assigns a new language to an object.
 	 *
 	 * @since 3.1
@@ -190,6 +190,24 @@ abstract class PLL_Object_With_Language {
 	 */
 	public function update_language( $id, PLL_Language $lang ) {
 		return $this->set_language( $id, $lang );
+	}
+
+	/**
+	 * Removes the term language from the database.
+	 *
+	 * @since 3.4
+	 *
+	 * @param int $id Term ID.
+	 * @return void
+	 */
+	public function delete_language( $id ) {
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
+			return;
+		}
+
+		wp_delete_object_term_relationships( $id, $this->tax_language );
 	}
 
 	/**

@@ -149,25 +149,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Removes the term language from the database.
-	 *
-	 * @since 0.5
-	 * @since 3.4 Renamed the parameter $term_id into $id.
-	 *
-	 * @param int $id Term ID.
-	 * @return void
-	 */
-	public function delete_language( $id ) {
-		$id = $this->sanitize_int_id( $id );
-
-		if ( empty( $id ) ) {
-			return;
-		}
-
-		wp_delete_object_term_relationships( $id, $this->tax_language );
-	}
-
-	/**
 	 * Returns the language of a term.
 	 *
 	 * @since 0.1
