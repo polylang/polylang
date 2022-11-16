@@ -78,10 +78,10 @@ function pll_default_language( $field = 'slug' ) {
  * @api
  * @since 0.5
  * @since 3.4 Returns 0 instead of false.
- * @since 3.4 $lang accepts PLL_Language, string, or int.
+ * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int                     $post_id Post ID.
- * @param PLL_Language|string|int $lang    Optional language (object, slug, or term ID), defaults to the current language.
+ * @param int                      $post_id Post ID.
+ * @param PLL_Language|string|null $lang    Optional language (object or slug), defaults to the current language.
  * @return int|null Post ID of the translation if it exists, `0` otherwise, `null` if the language is not defined yet.
  *
  * @phpstan-return int<0, max>|null
@@ -102,10 +102,10 @@ function pll_get_post( $post_id, $lang = null ) {
  * @api
  * @since 0.5
  * @since 3.4 Returns 0 instead of false.
- * @since 3.4 $lang accepts PLL_Language, string, or int.
+ * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int                     $term_id Term ID.
- * @param PLL_Language|string|int $lang    Optional language (object, slug, or term ID), defaults to the current language.
+ * @param int                      $term_id Term ID.
+ * @param PLL_Language|string|null $lang    Optional language (object or slug), defaults to the current language.
  * @return int|null Term ID of the translation if it exists, `0` otherwise, `null` if the language is not defined yet.
  *
  * @phpstan-return int<0, max>|null
@@ -323,10 +323,10 @@ function pll_languages_list( $args = array() ) {
  *
  * @api
  * @since 1.5
- * @since 3.4 $lang accepts PLL_Language, string, or int.
+ * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int                     $id   Post id.
- * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
+ * @param int                 $id   Post id.
+ * @param PLL_Language|string $lang Language (object or slug).
  * @return void
  */
 function pll_set_post_language( $id, $lang ) {
@@ -338,10 +338,10 @@ function pll_set_post_language( $id, $lang ) {
  *
  * @api
  * @since 1.5
- * @since 3.4 $lang accepts PLL_Language, string, or int.
+ * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int                     $id   Term id.
- * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
+ * @param int                 $id   Term id.
+ * @param PLL_Language|string $lang Language (object or slug).
  * @return void
  */
 function pll_set_term_language( $id, $lang ) {
