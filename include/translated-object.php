@@ -44,7 +44,6 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language {
 
 		/*
 		 * Register our taxonomy as soon as possible.
-		 * This is early registration, not ready for rewrite rules as $wp_rewrite will be setup later.
 		 */
 		register_taxonomy(
 			$this->tax_translations,
