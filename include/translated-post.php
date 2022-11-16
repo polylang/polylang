@@ -93,37 +93,6 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Stores the post's language in the database.
-	 *
-	 * @since 0.6
-	 * @since 3.4 Renamed the parameter $post_id into $id.
-	 *
-	 * @param int                     $id   Post ID.
-	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
-	 * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
-	 *              the object).
-	 */
-	public function set_language( $id, $lang ) {
-		$id = $this->sanitize_int_id( $id );
-
-		if ( empty( $id ) ) {
-			return false;
-		}
-
-		$old_lang = $this->get_language( $id );
-		$old_lang = $old_lang ? $old_lang->slug : '';
-
-		$lang = $this->model->get_language( $lang );
-		$lang = $lang ? $lang->slug : '';
-
-		if ( $old_lang === $lang ) {
-			return false;
-		}
-
-		return is_array( wp_set_post_terms( $id, $lang, $this->tax_language ) );
-	}
-
-	/**
 	 * Deletes a translation of a post.
 	 *
 	 * @since 0.5
