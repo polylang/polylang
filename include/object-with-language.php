@@ -141,6 +141,7 @@ abstract class PLL_Object_With_Language {
 			return false;
 		}
 
+		// Get the language and make sure it is a PLL_Language object.
 		$lang = $this->get_object_term( $id, $this->tax_language );
 
 		if ( empty( $lang ) ) {

@@ -184,14 +184,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 			return false;
 		}
 
-		// Get the language and make sure it is a PLL_Language object.
-		$term = $this->get_object_term( $term->term_id, $this->tax_language );
-
-		if ( empty( $term ) ) {
-			return false;
-		}
-
-		return $this->model->get_language( $term->term_id );
+		return parent::get_language( $term->term_id );
 	}
 
 	/**
