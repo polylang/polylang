@@ -28,7 +28,7 @@ class PLL_WPML_API {
 		// Site Wide Language informations
 
 		add_filter( 'wpml_active_languages', array( $this, 'wpml_active_languages' ), 10, 2 );
-		add_filter( 'wpml_display_language_names', array( $this, 'wpml_display_language_names' ), 10, 2 );
+		add_filter( 'wpml_display_language_names', array( $this, 'wpml_display_language_names' ), 10, 2 ); // Because we don't translate language names, 3rd to 5th parameters are not supported.
 		// wpml_translated_language_name           => not applicable
 		add_filter( 'wpml_current_language', 'pll_current_language', 10, 0 );
 		add_filter( 'wpml_default_language', 'pll_default_language', 10, 0 );
