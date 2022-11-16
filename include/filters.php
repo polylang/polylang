@@ -209,13 +209,13 @@ class PLL_Filters {
 
 			// Take care that 'exclude' argument accepts integer or strings too.
 			$args['exclude'] = array_merge( wp_parse_id_list( $args['exclude'] ), $this->get_related_page_ids( $language, 'NOT IN', $args ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
-			$pages = get_pages( $args );
-			$pages = ! $pages ? array() : $pages;
+			$numbered_pages  = get_pages( $args );
+			$pages           = ! $numbered_pages ? $pages : $numbered_pages;
 		}
 
 		$ids = wp_list_pluck( $pages, 'ID' );
 
-		if ( ! $once && is_array( $pages ) ) {
+		if ( ! $once ) {
 			// Filters the queried list of pages by language.
 			$ids = array_intersect( $ids, $this->get_related_page_ids( $language, 'IN', $args ) );
 
