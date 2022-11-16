@@ -335,7 +335,12 @@ class PLL_Admin_Model extends PLL_Model {
 			return;
 		}
 
-		$tt_id  = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
+		$tt_id = $lang->get_term_prop( "{$type}_term_taxonomy_id" );
+
+		if ( empty( $tt_id ) ) {
+			return;
+		}
+
 		$values = array();
 		$ids    = array_map( 'intval', $ids );
 

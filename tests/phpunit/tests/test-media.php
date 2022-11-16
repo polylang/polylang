@@ -109,7 +109,8 @@ class Media_Test extends PLL_UnitTestCase {
 		edit_post();
 
 		$this->assertEquals( 0, $save_translations_spy->getInvocationCount() );
-		$this->assertEquals( 0, $set_language_spy->getInvocationCount() );
+		// `1` because PLL_Admin_Filters_Media::save_media() calls PLL_Translated_Post::update_language(), which calls PLL_Translated_Post::set_language().
+		$this->assertEquals( 1, $set_language_spy->getInvocationCount() );
 	}
 
 	public function test_create_media_translation_with_slashes() {

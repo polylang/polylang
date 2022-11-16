@@ -180,6 +180,26 @@ class PLL_Language {
 	public $custom_flag;
 
 	/**
+	 * Stores language term properties (like term IDs and counts) for each type of content (post, term, etc).
+	 * This stores the values of `$term_id`, `$term_taxonomy_id`, `$count`, `$tl_term_id`, `$tl_term_taxonomy_id`,
+	 * and `$tl_count`.
+	 *
+	 * @var int[] Array keys are property names.
+	 *
+	 * @phpstan-var array<non-empty-string, positive-int>
+	 */
+	protected $term_props = array();
+
+	/**
+	 * Stores language term IDs for each type of content (post, term, etc).
+	 *
+	 * @var int[] Array keys are property names.
+	 *
+	 * @phpstan-var array<non-empty-string, positive-int>
+	 */
+	protected $term_ids = array();
+
+	/**
 	 * Constructor: builds a language object given its two corresponding terms in 'language' and 'term_language' taxonomies.
 	 *
 	 * @since 1.2
@@ -190,21 +210,34 @@ class PLL_Language {
 	public function __construct( $language, $term_language = null ) {
 		if ( empty( $term_language ) ) {
 			// Build the object from all properties stored as an array.
+			$term_props = array(
+				'term_id'             => 'post_term_id',
+				'term_taxonomy_id'    => 'post_term_taxonomy_id',
+				'count'               => 'post_term_count',
+				'tl_term_id'          => 'term_term_id',
+				'tl_term_taxonomy_id' => 'term_term_taxonomy_id',
+				'tl_count'            => 'term_term_count',
+			);
+
 			foreach ( $language as $prop => $value ) {
 				$this->$prop = $value;
+
+				if ( isset( $term_props[ $prop ] ) ) {
+					$this->$prop = $this->set_term_prop( $term_props[ $prop ], $value );
+				}
 			}
 		} else {
 			// Build the object from taxonomy terms.
-			$this->term_id = (int) $language->term_id;
-			$this->name = $language->name;
-			$this->slug = $language->slug;
-			$this->term_group = (int) $language->term_group;
-			$this->term_taxonomy_id = (int) $language->term_taxonomy_id;
-			$this->count = (int) $language->count;
+			$this->name             = $language->name;
+			$this->slug             = $language->slug;
+			$this->term_group       = (int) $language->term_group;
+			$this->term_id          = $this->set_term_prop( 'post_term_id', $language->term_id );
+			$this->term_taxonomy_id = $this->set_term_prop( 'post_term_taxonomy_id', $language->term_taxonomy_id );
+			$this->count            = $this->set_term_prop( 'post_term_count', $language->count );
 
-			$this->tl_term_id = (int) $term_language->term_id;
-			$this->tl_term_taxonomy_id = (int) $term_language->term_taxonomy_id;
-			$this->tl_count = (int) $term_language->count;
+			$this->tl_term_id          = $this->set_term_prop( 'term_term_id', $term_language->term_id );
+			$this->tl_term_taxonomy_id = $this->set_term_prop( 'term_term_taxonomy_id', $term_language->term_taxonomy_id );
+			$this->tl_count            = $this->set_term_prop( 'term_term_count', $term_language->count );
 
 			// The description field can contain any property.
 			$description = maybe_unserialize( $language->description );
@@ -220,6 +253,77 @@ class PLL_Language {
 				$this->facebook = $languages[ $this->locale ]['facebook'];
 			}
 		}
+
+		/**
+		 * Fires when a language is instanciated.
+		 *
+		 * @since 3.4
+		 *
+		 * @param PLL_Language $language The language object.
+		 */
+		do_action( 'pll_defined_language', $this );
+	}
+
+	/**
+	 * Returns a language term property value (like term ID, term taxonomy ID, or count).
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $name Name of the property. Ex: "{$type}_term_taxonomy_id".
+	 * @return int
+	 *
+	 * @phpstan-param non-empty-string $name
+	 * @phpstan-return int<0, max>
+	 */
+	public function get_term_prop( $name ) {
+		return isset( $this->term_props[ $name ] ) ? $this->term_props[ $name ] : 0;
+	}
+
+	/**
+	 * Stores a language term property value (like term ID, term taxonomy ID, or count).
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $name  Name of the property. Ex: "{$type}_term_taxonomy_id".
+	 *                      Term IDs MUST use the format "{$type}_term_id".
+	 *                      Term taxonomy IDs MUST use the format "{$type}_term_taxonomy_id".
+	 * @param int    $value Property value.
+	 * @return int
+	 *
+	 * @phpstan-param non-empty-string $name
+	 * @phpstan-return int<0, max>
+	 */
+	public function set_term_prop( $name, $value ) {
+		if ( ! is_numeric( $value ) ) {
+			return 0;
+		}
+
+		$value = $value >= 1 ? abs( (int) $value ) : 0;
+
+		if ( $value >= 1 ) {
+			$this->term_props[ $name ] = $value;
+
+			if ( preg_match( '/_term_id$/', $name ) ) {
+				$this->term_ids[ $name ] = $value;
+			}
+		} else {
+			unset( $this->term_props[ $name ], $this->term_ids[ $name ] );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Returns the language term IDs for all content types.
+	 *
+	 * @since 3.4
+	 *
+	 * @return int[] Array keys are property names, array values are term IDs.
+	 *
+	 * @phpstan-return array<non-empty-string, positive-int>
+	 */
+	public function get_term_ids() {
+		return array_filter( $this->term_ids );
 	}
 
 	/**
@@ -432,8 +536,17 @@ class PLL_Language {
 	 * @return void
 	 */
 	public function update_count() {
-		wp_update_term_count( $this->term_taxonomy_id, 'language' ); // Posts count.
-		wp_update_term_count( $this->tl_term_taxonomy_id, 'term_language' ); // Terms count.
+		wp_update_term_count( $this->get_term_prop( 'post_term_taxonomy_id' ), 'language' ); // Posts count.
+		wp_update_term_count( $this->get_term_prop( 'term_term_taxonomy_id' ), 'term_language' ); // Terms count.
+
+		/**
+		 * Fires when updating language term counts.
+		 *
+		 * @since 3.4
+		 *
+		 * @param PLL_Language $language The language object.
+		 */
+		do_action( 'pll_updated_language_term_counts', $this );
 	}
 
 	/**

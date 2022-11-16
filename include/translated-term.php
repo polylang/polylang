@@ -31,13 +31,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	protected $object_type = 'term';
 
 	/**
-	 * Name of the `PLL_Language` property that stores the term_taxonomy ID.
+	 * Object type used to set or retrieve properties from PLL_Language.
 	 *
 	 * @var string
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	protected $tax_tt_prop_name = 'tl_term_taxonomy_id';
+	protected $type = 'term';
 
 	/**
 	 * Taxonomy name for the translation groups.
@@ -55,7 +55,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	protected $type = 'term';
+	protected $cap_type = 'term';
 
 	/**
 	 * Default alias corresponding to the term's DB table.
@@ -185,13 +185,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 		}
 
 		// Get the language and make sure it is a PLL_Language object.
-		$lang = $this->get_object_term( $term->term_id, $this->tax_language );
+		$term = $this->get_object_term( $term->term_id, $this->tax_language );
 
-		if ( empty( $lang ) ) {
+		if ( empty( $term ) ) {
 			return false;
 		}
 
-		return $this->model->get_language( $lang->term_id );
+		return $this->model->get_language( $term->term_id );
 	}
 
 	/**

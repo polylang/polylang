@@ -218,8 +218,9 @@ class PLL_Model {
 
 		if ( false === $return = $this->cache->get( 'language:' . $value ) ) {
 			foreach ( $this->get_languages_list() as $lang ) {
-				$this->cache->set( 'language:' . $lang->term_id, $lang );
-				$this->cache->set( 'language:' . $lang->tl_term_id, $lang );
+				foreach ( $lang->get_term_ids() as $term_id ) {
+					$this->cache->set( 'language:' . $term_id, $lang );
+				}
 				$this->cache->set( 'language:' . $lang->slug, $lang );
 				$this->cache->set( 'language:' . $lang->locale, $lang );
 				$this->cache->set( 'language:' . $lang->w3c, $lang );

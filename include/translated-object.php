@@ -28,7 +28,7 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	protected $type;
+	protected $cap_type;
 
 	/**
 	 * Constructor.
@@ -323,7 +323,7 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language {
 			return 0;
 		}
 
-		return $obj_lang->term_id === $lang->term_id ? $id : (int) $this->get_translation( $id, $lang );
+		return $obj_lang->get_term_prop( 'post_term_id' ) === $lang->get_term_prop( 'post_term_id' ) ? $id : (int) $this->get_translation( $id, $lang );
 	}
 
 	/**
@@ -352,18 +352,18 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language {
 		 *                         Defaults to true.
 		 * @param int       $id    The synchronization source object ID.
 		 */
-		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
+		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->cap_type}", true, $id );
 
 		if ( null !== $check ) {
 			return (bool) $check;
 		}
 
-		if ( ! current_user_can( "edit_{$this->type}", $id ) ) {
+		if ( ! current_user_can( "edit_{$this->cap_type}", $id ) ) {
 			return false;
 		}
 
 		foreach ( $this->get_translations( $id ) as $tr_id ) {
-			if ( $tr_id !== $id && ! current_user_can( "edit_{$this->type}", $tr_id ) ) {
+			if ( $tr_id !== $id && ! current_user_can( "edit_{$this->cap_type}", $tr_id ) ) {
 				return false;
 			}
 		}

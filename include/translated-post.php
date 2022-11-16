@@ -22,13 +22,13 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	protected $tax_language = 'language';
 
 	/**
-	 * Name of the `PLL_Language` property that stores the term_taxonomy ID.
+	 * Object type used to set or retrieve properties from PLL_Language.
 	 *
 	 * @var string
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	protected $tax_tt_prop_name = 'term_taxonomy_id';
+	protected $type = 'post';
 
 	/**
 	 * Taxonomy name for the translation groups.
@@ -46,7 +46,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	protected $type = 'post';
+	protected $cap_type = 'post';
 
 	/**
 	 * Name of the DB column containing the post's ID.
@@ -298,7 +298,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 				array(
 					'taxonomy' => $this->tax_language,
 					'field'    => 'term_taxonomy_id', // WP 3.5+
-					'terms'    => $lang->term_taxonomy_id,
+					'terms'    => $lang->get_term_prop( "{$this->type}_term_taxonomy_id" ),
 				),
 			),
 		);
