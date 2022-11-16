@@ -268,7 +268,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Tells whether a translation term must updated.
+	 * Tells whether a translation term must be updated.
 	 *
 	 * @since 2.3
 	 *
