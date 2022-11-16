@@ -194,7 +194,7 @@ class PLL_Translate_Option {
 		// Stores the unfiltered old option value before it is updated in DB.
 		remove_filter( 'option_' . $name, array( $this, 'translate' ) );
 		$unfiltered_old_value = get_option( $name );
-		add_filter( 'option_' . $name, array( $this, 'translate' ), 20 );
+		add_filter( 'option_' . $name, array( $this, 'translate' ), 20, 2 );
 
 		// Load strings translations according to the admin language filter
 		$locale = pll_current_language( 'locale' );
