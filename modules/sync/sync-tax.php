@@ -231,7 +231,7 @@ class PLL_Sync_Tax {
 			}
 		}
 
-		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 6 );
+		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 5 );
 	}
 
 	/**

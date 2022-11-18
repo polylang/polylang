@@ -43,3 +43,15 @@ parameters:
 
 		# Ignored because the WordPress stubs doesn't know a dynamic key in the associative array passed to the get_terms() parameter
 		- "#^Parameter \\#1 \\$args of function get_terms expects array(.+), non\\-empty\\-array\\<string, int\\|string\\> given\\.$#"
+
+		# Ignored PLL_Canonical::check_canonical_url() is used both as action callback and classic method.
+		-
+			message: "#^Action callback returns string\\|void but should not return anything\\.$#"
+			count: 1
+			path: frontend/frontend.php
+
+		# Ignored temporarily while https://github.com/polylang/polylang/pull/1111 is merged.
+		-
+			message: "#^Callback expects 1 parameter, \\$accepted_args is set to 2\\.$#"
+			count: 1
+			path: include/translate-option.php

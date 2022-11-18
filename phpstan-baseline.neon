@@ -826,27 +826,12 @@ parameters:
 			path: include/filters-links.php
 
 		-
-			message: "#^Argument of an invalid type array\\<int\\|WP_Post\\>\\|false supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/filters.php
-
-		-
-			message: "#^Method PLL_Filters\\:\\:get_pages\\(\\) should return array\\<WP_Post\\> but returns array\\|false\\.$#"
-			count: 1
-			path: include/filters.php
-
-		-
 			message: "#^Method PLL_Filters\\:\\:translate_page_for_privacy_policy\\(\\) should return int but returns int\\|false\\.$#"
 			count: 1
 			path: include/filters.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:get_translations\\(\\) expects int, mixed given\\.$#"
-			count: 1
-			path: include/filters.php
-
-		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int\\|WP_Post\\>\\|false given\\.$#"
 			count: 1
 			path: include/filters.php
 

@@ -34,7 +34,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 			$this->set_language_from_url();
 		}
 
-		add_action( 'request', array( $this, 'request' ) );
+		add_filter( 'request', array( $this, 'request' ) );
 	}
 
 	/**
