@@ -129,6 +129,8 @@ abstract class PLL_Translated_Object {
 	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, false otherwise.
 	 */
 	public function get_object_term( $object_id, $taxonomy ) {
+		global $wp_version;
+
 		$object_id = $this->sanitize_int_id( $object_id );
 
 		if ( empty( $object_id ) ) {
@@ -159,8 +161,17 @@ abstract class PLL_Translated_Object {
 		}
 
 		// Stores it the way WP expects it. Set an empty cache if no term was found in the taxonomy.
+		$store_only_term_ids = version_compare( $wp_version, '6.0', '>=' );
 		foreach ( $taxonomies as $tax ) {
-			wp_cache_add( $object_id, empty( $terms[ $tax ] ) ? array() : array( $terms[ $tax ] ), $tax . '_relationships' );
+			if ( empty( $terms[ $tax ] ) ) {
+				$to_cache = array();
+			} elseif ( $store_only_term_ids ) {
+				$to_cache = wp_list_pluck( $terms[ $tax ], 'term_id' );
+			} else {
+				$to_cache = $terms[ $tax ];
+			}
+
+			wp_cache_add( $object_id, $to_cache, $tax . '_relationships' );
 		}
 
 		return $term;
