@@ -166,9 +166,9 @@ abstract class PLL_Translated_Object {
 			if ( empty( $terms[ $tax ] ) ) {
 				$to_cache = array();
 			} elseif ( $store_only_term_ids ) {
-				$to_cache = wp_list_pluck( $terms[ $tax ], 'term_id' );
+				$to_cache = array( $terms[ $tax ]->term_id );
 			} else {
-				$to_cache = $terms[ $tax ];
+				$to_cache = array( $terms[ $tax ] );
 			}
 
 			wp_cache_add( $object_id, $to_cache, $tax . '_relationships' );
