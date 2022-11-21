@@ -62,7 +62,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$default = self::$model->term->get( get_option( 'default_category' ), 'de' );
 		$de      = self::$model->get_language( 'de' );
 		$form    = $this->get_edit_term_form( $default, 'category' );
-		$form    = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$form    = htmlspecialchars_decode( htmlentities( $form ) ); // Due to "Français".
 		$doc     = new DomDocument();
 		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );
