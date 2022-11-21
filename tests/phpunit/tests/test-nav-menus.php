@@ -292,7 +292,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$doc = new DomDocument();
 		$menu = wp_nav_menu( $args );
 		$menu = preg_replace( '#<svg(.+)</svg>#', '', $menu ); // Remove SVG Added by Twenty Seventeen to avoid an error in loadHTML()
-		$menu = mb_convert_encoding( $menu, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$menu = htmlspecialchars_decode( htmlentities( $menu ) ); // Due to "Français".
 		$doc->loadHTML( $menu );
 		$xpath = new DOMXpath( $doc );
 

@@ -48,7 +48,7 @@ class Settings_Test extends PLL_UnitTestCase {
 		$pll_env = new PLL_Settings( $links_model );
 		$pll_env->languages_page();
 		$out = ob_get_clean();
-		$out = mb_convert_encoding( $out, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$out = htmlspecialchars_decode( htmlentities( $out ) ); // Due to "Français".
 		$doc = new DomDocument();
 		$doc->loadHTML( $out );
 		$xpath = new DOMXpath( $doc );

@@ -264,7 +264,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$lang = self::$model->get_language( 'fr' );
 		$form = $this->get_edit_term_form( $fr, 'category' );
-		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$form = htmlspecialchars_decode( htmlentities( $form ) ); // Due to "Français".
 		$doc = new DomDocument();
 		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );
@@ -355,7 +355,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		ob_start();
 		do_action( 'category_add_form_fields' );
 		$form = ob_get_clean();
-		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$form = htmlspecialchars_decode( htmlentities( $form ) ); // Due to "Français".
 		$doc = new DomDocument();
 		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );
@@ -376,7 +376,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		ob_start();
 		do_action( 'category_add_form_fields' );
 		$form = ob_get_clean();
-		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$form = htmlspecialchars_decode( htmlentities( $form ) ); // Due to "Français".
 		$doc = new DomDocument();
 		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );

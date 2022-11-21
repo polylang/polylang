@@ -263,7 +263,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		$this->pll_admin->classic_editor->post_language();
 		$form = ob_get_clean();
-		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$form = htmlspecialchars_decode( htmlentities( $form ) ); // Due to "Français".
 		$doc = new DomDocument();
 		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );
@@ -296,7 +296,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		$this->pll_admin->classic_editor->post_language();
 		$form = ob_get_clean();
-		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$form = htmlspecialchars_decode( htmlentities( $form ) ); // Due to "Français".
 		$doc = new DomDocument();
 		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );
@@ -339,7 +339,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		$this->pll_admin->classic_editor->post_language();
 		$form = ob_get_clean();
-		$form = mb_convert_encoding( $form, 'HTML-ENTITIES', 'UTF-8' ); // Due to "Français"
+		$form = htmlspecialchars_decode( htmlentities( $form ) ); // Due to "Français".
 		$doc = new DomDocument();
 		$doc->loadHTML( $form );
 		$xpath = new DOMXpath( $doc );
