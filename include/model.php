@@ -24,6 +24,15 @@ class PLL_Model {
 	public $options;
 
 	/**
+	 * Translatable objects registry.
+	 *
+	 * @since 3.4
+	 *
+	 * @var PLL_Translatable_Objects_Registry
+	 */
+	public $translatable_objects;
+
+	/**
 	 * Translated post model.
 	 *
 	 * @var PLL_Translated_Post
@@ -50,8 +59,9 @@ class PLL_Model {
 		$this->options = &$options;
 
 		$this->cache = new PLL_Cache();
-		$this->post = new PLL_Translated_Post( $this ); // Translated post sub model.
-		$this->term = new PLL_Translated_Term( $this ); // Translated term sub model.
+		$this->translatable_objects = new PLL_Translatable_Objects_Registry();
+		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this ) ); // Translated post sub model.
+		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this ) ); // Translated term sub model.
 
 		// We need to clean languages cache when editing a language and when modifying the permalink structure.
 		add_action( 'edited_term_taxonomy', array( $this, 'clean_languages_cache' ), 10, 2 );
@@ -86,8 +96,8 @@ class PLL_Model {
 
 	/**
 	 * Returns the list of available languages.
-	 * - Stores the list in a db transient ( except flags ), unless PLL_CACHE_LANGUAGES is set to false.
-	 * - Caches the list ( with flags ) in a PLL_Cache object.
+	 * - Stores the list in a db transient (except flags), unless `PLL_CACHE_LANGUAGES` is set to false.
+	 * - Caches the list (with flags) in a `PLL_Cache` object.
 	 *
 	 * @since 0.1
 	 *
@@ -98,53 +108,27 @@ class PLL_Model {
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
 	public function get_languages_list( $args = array() ) {
-		if ( false === $languages = $this->cache->get( 'languages' ) ) {
-			$languages = array();
+		$languages = $this->cache->get( 'languages' );
 
-			// Create the languages from taxonomies.
-			if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || false === ( $languages = get_transient( 'pll_languages_list' ) ) ) {
-				$languages = array();
+		if ( ! is_array( $languages ) ) {
+			if ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) {
+				// Create the languages from taxonomies.
+				$languages = $this->get_languages_from_taxonomies();
+			} else {
+				$languages = get_transient( 'pll_languages_list' );
 
-				$post_languages = $this->get_language_terms();
+				if ( ! is_array( $languages ) ) {
+					// Create the languages from taxonomies.
+					$languages = $this->get_languages_from_taxonomies();
+				} else {
+					// Create the languages directly from arrays stored in the transient.
+					foreach ( $languages as $k => $v ) {
+						$v = PLL_Language::validate_data( $v );
 
-				$term_languages = get_terms( array( 'taxonomy' => 'term_language', 'hide_empty' => false ) );
-				$term_languages = empty( $term_languages ) || is_wp_error( $term_languages ) ?
-					array() : array_combine( wp_list_pluck( $term_languages, 'slug' ), $term_languages );
-
-				if ( ! empty( $post_languages ) && ! empty( $term_languages ) ) {
-					foreach ( $post_languages as $k => $v ) {
-						if ( isset( $term_languages[ 'pll_' . $v->slug ] ) ) {
-							$languages[ $k ] = new PLL_Language( $v, $term_languages[ 'pll_' . $v->slug ] );
+						if ( ! empty( $v ) ) {
+							$languages[ $k ] = new PLL_Language( $v );
 						}
 					}
-
-					// We will need the languages list to allow its access in the filter below.
-					$this->cache->set( 'languages', $languages );
-
-					/**
-					 * Filters the list of languages *before* it is stored in the persistent cache.
-					 * /!\ This filter is fired *before* the $polylang object is available.
-					 *
-					 * @since 1.7.5
-					 *
-					 * @param PLL_Language[] $languages The list of language objects.
-					 * @param PLL_Model      $model     PLL_Model object.
-					 */
-					$languages = apply_filters( 'pll_languages_list', $languages, $this );
-
-					/*
-					 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
-					 * Thanks to captin411 for catching this!
-					 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
-					 */
-					set_transient( 'pll_languages_list', array_map( 'get_object_vars', $languages ) );
-				}
-			}
-
-			// Create the languages directly from arrays stored in transients.
-			else {
-				foreach ( $languages as $k => $v ) {
-					$languages[ $k ] = new PLL_Language( $v );
 				}
 			}
 
@@ -160,14 +144,110 @@ class PLL_Model {
 			$this->cache->set( 'languages', $languages );
 		}
 
-		$args = wp_parse_args( $args, array( 'hide_empty' => false ) );
-
 		// Remove empty languages if requested.
-		if ( $args['hide_empty'] ) {
+		if ( ! empty( $args['hide_empty'] ) ) {
 			$languages = wp_list_filter( $languages, array( 'count' => 0 ), 'NOT' );
 		}
 
 		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
+	}
+
+	/**
+	 * Prepares the data to be ready for `PLL_Language`'s constructor.
+	 *
+	 * @since 3.4
+	 *
+	 * @param WP_Term[] $terms List of language terms, with the type as array keys.
+	 *                         `post` and `term` are mandatory keys.
+	 * @return array {
+	 *     @type array[]     $term_props An array of language term properties. Array keys are language taxonomy names
+	 *                                   (`language` and `term_language` are mandatory), array values are arrays of
+	 *                                   language term properties (`term_id`, `term_taxonomy_id`, and `count`).
+	 *     @type string      $name       Language name. Ex: English.
+	 *     @type string      $slug       Language code used in URL. Ex: en.
+	 *     @type string      $locale     WordPress language locale. Ex: en_US.
+	 *     @type string      $w3c        W3C locale.
+	 *     @type string      $flag_code  Code of the flag.
+	 *     @type int         $term_group Order of the language when displayed in a list of languages.
+	 *     @type int         $is_rtl     `1` if the language is rtl, `0` otherwise.
+	 *     @type int|null    $mo_id      Optional. ID of the post storing strings translations.
+	 *     @type string|null $facebook   Optional. Facebook locale.
+	 * }
+	 *
+	 * @phpstan-param array{post:WP_Term, term:WP_Term} $terms
+	 * @phpstan-return array{
+	 *     term_props: array{
+	 *         language: array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
+	 *         },
+	 *         term_language: array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
+	 *         }
+	 *     },
+	 *     name: non-empty-string,
+	 *     slug: non-empty-string,
+	 *     locale: non-empty-string,
+	 *     w3c: non-empty-string,
+	 *     flag_code: non-empty-string,
+	 *     term_group: int,
+	 *     is_rtl: int<0, 1>,
+	 *     mo_id?: positive-int,
+	 *     facebook?: non-empty-string
+	 * }|null
+	 */
+	public function prepare_data_for_language( array $terms ) {
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
+		$data      = array(
+			'name'       => $terms['post']->name,
+			'slug'       => $terms['post']->slug,
+			'term_group' => $terms['post']->term_group,
+			'term_props' => array(),
+			'mo_id'      => PLL_MO::get_id_from_term_id( $terms['post']->term_id ),
+		);
+
+		foreach ( $terms as $term ) {
+			$data['term_props'][ $term->taxonomy ] = array(
+				'term_id'          => $term->term_id,
+				'term_taxonomy_id' => $term->term_taxonomy_id,
+				'count'            => $term->count,
+			);
+		}
+
+		// The description field can contain any property.
+		$description = maybe_unserialize( $terms['post']->description );
+
+		if ( is_array( $description ) ) {
+			$description = array_intersect_key(
+				$description,
+				array( 'locale' => null, 'rtl' => null, 'flag_code' => null )
+			);
+
+			foreach ( $description as $prop => $value ) {
+				if ( 'rtl' === $prop ) {
+					$data['is_rtl'] = $value;
+				} else {
+					$data[ $prop ] = $value;
+				}
+			}
+		}
+
+		if ( ! empty( $data['locale'] ) ) {
+			if ( isset( $languages[ $data['locale'] ]['w3c'] ) ) {
+				$data['w3c'] = $languages[ $data['locale'] ]['w3c'];
+			} else {
+				$data['w3c'] = str_replace( '_', '-', $data['locale'] );
+			}
+
+			if ( isset( $languages[ $data['locale'] ]['facebook'] ) ) {
+				$data['facebook'] = $languages[ $data['locale'] ]['facebook'];
+			}
+		}
+
+		return PLL_Language::validate_data( $data );
 	}
 
 	/**
@@ -197,7 +277,17 @@ class PLL_Model {
 	 * @return array
 	 */
 	public function get_terms_args( $args ) {
-		if ( isset( $args['taxonomy'] ) && ! array_diff( (array) $args['taxonomy'], array( 'language', 'term_language', 'post_translations', 'term_translations' ) ) ) {
+		$taxonomies = array();
+
+		foreach ( $this->translatable_objects->get_all() as $object ) {
+			$taxonomies[] = $object->get_tax_language();
+
+			if ( $object instanceof PLL_Translated_Object ) {
+				$taxonomies[] = $object->get_tax_translations();
+			}
+		}
+
+		if ( isset( $args['taxonomy'] ) && ! array_diff( (array) $args['taxonomy'], $taxonomies ) ) {
 			$args['update_term_meta_cache'] = false;
 		}
 		return $args;
@@ -777,6 +867,136 @@ class PLL_Model {
 		}
 
 		return sprintf( '%1$s.term_group, %1$s.term_id', $matches['alias'] );
+	}
+
+	/**
+	 * Returns the list of available languages, basec of the language taxonomy terms.
+	 * Stores the list in a db transient and in a `PLL_Cache` object.
+	 *
+	 * @since 3.4
+	 *
+	 * @return PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
+	 *
+	 * @phpstan-return array<int<0, max>, PLL_Language>
+	 */
+	protected function get_languages_from_taxonomies() {
+		$terms_by_type = $this->get_language_terms_by_type();
+
+		if ( empty( $terms_by_type['post'] ) || empty( $terms_by_type['term'] ) ) {
+			// `post` and `term` languages are mandatory.
+			return array();
+		}
+
+		$languages = array();
+
+		foreach ( $terms_by_type['post'] as $term_slug => $lang_term ) {
+			if ( ! isset( $terms_by_type['term'][ "pll_{$term_slug}" ] ) ) {
+				// A corresponding `term` language is mandatory.
+				continue;
+			}
+
+			$lang_terms = array();
+
+			foreach ( $terms_by_type as $type => $terms ) {
+				$key = 'post' === $type ? $term_slug : "pll_{$term_slug}";
+
+				if ( isset( $terms[ $key ] ) ) {
+					$lang_terms[ $type ] = $terms[ $key ];
+				}
+			}
+
+			if ( ! isset( $lang_terms['post'], $lang_terms['term'] ) ) {
+				continue;
+			}
+
+			$lang_data = $this->prepare_data_for_language( $lang_terms );
+
+			if ( empty( $lang_data ) ) {
+				continue;
+			}
+
+			$languages[] = new PLL_Language( $lang_data );
+		}
+
+		// We will need the languages list to allow its access in the filter below.
+		$this->cache->set( 'languages', $languages );
+
+		/**
+		 * Filters the list of languages *before* it is stored in the persistent cache.
+		 * /!\ This filter is fired *before* the $polylang object is available.
+		 *
+		 * @since 1.7.5
+		 *
+		 * @param PLL_Language[] $languages The list of language objects.
+		 * @param PLL_Model      $model     PLL_Model object.
+		 */
+		$languages = apply_filters( 'pll_languages_list', $languages, $this );
+
+		/*
+		 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
+		 * Thanks to captin411 for catching this!
+		 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
+		 */
+		$languages_data = array_map(
+			function ( $language ) {
+				return $language->get_object_vars();
+			},
+			$languages
+		);
+		set_transient( 'pll_languages_list', $languages_data );
+
+		/** @var array<int<0, max>, PLL_Language> $languages */
+		return $languages;
+	}
+
+	/**
+	 * Returns the list of all language terms, by type (post, term, etc).
+	 *
+	 * @since 3.4
+	 *
+	 * @return array[] An array (type as array keys) of arrays (term slug as array keys) of terms.
+	 *
+	 * @phpstan-return array<non-empty-string, non-empty-array<non-empty-string, WP_Term>>
+	 */
+	protected function get_language_terms_by_type() {
+		$terms = $this->get_language_terms();
+
+		if ( empty( $terms ) ) {
+			return array();
+		}
+
+		$terms_by_type = array();
+
+		foreach ( $terms as $term ) {
+			$terms_by_type['post'][ $term->slug ] = $term;
+		}
+
+		$translatable_objects = array_diff_key(
+			$this->translatable_objects->get_all(),
+			$terms_by_type
+		);
+
+		foreach ( $translatable_objects as $type => $sub_model ) {
+			$terms = get_terms(
+				array(
+					'taxonomy'   => $sub_model->get_tax_language(),
+					'hide_empty' => false,
+				)
+			);
+
+			if ( empty( $terms ) || ! is_array( $terms ) ) {
+				continue;
+			}
+
+			foreach ( $terms as $term ) {
+				if ( $term instanceof WP_Term ) {
+					$terms_by_type[ $type ][ $term->slug ] = $term;
+				}
+			}
+		}
+
+		/** @var array<non-empty-string, non-empty-array<non-empty-string, WP_Term>> */
+		return $terms_by_type;
 	}
 
 	/**

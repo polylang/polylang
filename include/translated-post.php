@@ -78,7 +78,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @return self
+	 * @return static
 	 */
 	public function init() {
 		// Registers completely the language taxonomy.
@@ -89,7 +89,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		// Forces updating posts cache.
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
-		return $this;
+		return parent::init();
 	}
 
 	/**
@@ -267,7 +267,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 				array(
 					'taxonomy' => $this->tax_language,
 					'field'    => 'term_taxonomy_id', // WP 3.5+
-					'terms'    => $lang->get_term_prop( "{$this->type}_term_taxonomy_id" ),
+					'terms'    => $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ),
 				),
 			),
 		);

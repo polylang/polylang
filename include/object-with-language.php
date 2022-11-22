@@ -115,11 +115,24 @@ abstract class PLL_Object_With_Language {
 	}
 
 	/**
+	 * Returns the type of object.
+	 *
+	 * @since 3.4
+	 *
+	 * @return string
+	 *
+	 * @phpstan-return non-empty-string
+	 */
+	public function get_type() {
+		return $this->type;
+	}
+
+	/**
 	 * Add hooks.
 	 *
 	 * @since 3.4
 	 *
-	 * @return self
+	 * @return static
 	 */
 	public function init() {
 		return $this;
@@ -168,13 +181,11 @@ abstract class PLL_Object_With_Language {
 			return false;
 		}
 
-		$prop_name = "{$this->type}_term_id";
-
 		$old_lang = $this->get_language( $id );
-		$old_lang = $old_lang ? $old_lang->get_term_prop( $prop_name ) : 0;
+		$old_lang = $old_lang ? $old_lang->get_tax_prop( $this->tax_language, 'term_id' ) : 0;
 
 		$lang = $this->model->get_language( $lang );
-		$lang = $lang ? $lang->get_term_prop( $prop_name ) : 0;
+		$lang = $lang ? $lang->get_tax_prop( $this->tax_language, 'term_id' ) : 0;
 
 		if ( $old_lang === $lang ) {
 			return false;
@@ -290,14 +301,12 @@ abstract class PLL_Object_With_Language {
 	 * @return string The WHERE clause.
 	 */
 	public function where_clause( $lang ) {
-		$tax_tt_prop_name = "{$this->type}_term_taxonomy_id";
-
 		/*
 		 * $lang is an object.
 		 * This is generally the case if the query is coming from Polylang.
 		 */
 		if ( $lang instanceof PLL_Language ) {
-			return ' AND pll_tr.term_taxonomy_id = ' . $lang->get_term_prop( $tax_tt_prop_name );
+			return ' AND pll_tr.term_taxonomy_id = ' . $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' );
 		}
 
 		/*
@@ -311,7 +320,7 @@ abstract class PLL_Object_With_Language {
 			$language = $this->model->get_language( $language );
 
 			if ( ! empty( $language ) ) {
-				$languages_tt_ids[] = $language->get_term_prop( $tax_tt_prop_name );
+				$languages_tt_ids[] = $language->get_tax_prop( $this->tax_language, 'term_taxonomy_id' );
 			}
 		}
 

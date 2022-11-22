@@ -329,13 +329,18 @@ class PLL_Admin_Model extends PLL_Model {
 	public function set_language_in_mass( $type, $ids, $lang ) {
 		global $wpdb;
 
+		if ( ! $this->translatable_objects->has( $type ) ) {
+			return;
+		}
+
 		$lang = $this->get_language( $lang );
 
 		if ( empty( $lang ) ) {
 			return;
 		}
 
-		$tt_id = $lang->get_term_prop( "{$type}_term_taxonomy_id" );
+		$tax_language = $this->translatable_objects->get( $type )->get_tax_language();
+		$tt_id        = $lang->get_tax_prop( $tax_language, 'term_taxonomy_id' );
 
 		if ( empty( $tt_id ) ) {
 			return;
@@ -354,19 +359,20 @@ class PLL_Admin_Model extends PLL_Model {
 			$lang->update_count(); // Updating term count is mandatory ( thanks to AndyDeGroo )
 		}
 
-		if ( 'term' === $type ) {
-			clean_term_cache( $ids, 'term_language' );
-			$translations = array();
+		clean_term_cache( $ids, $tax_language );
 
-			foreach ( $ids as $id ) {
-				$translations[] = array( $lang->slug => $id );
-			}
+		if ( 'post' === $type ) {
+			return;
+		}
 
-			if ( ! empty( $translations ) ) {
-				$this->set_translation_in_mass( 'term', $translations );
-			}
-		} else {
-			clean_term_cache( $ids, 'language' );
+		$translations = array();
+
+		foreach ( $ids as $id ) {
+			$translations[] = array( $lang->slug => $id );
+		}
+
+		if ( ! empty( $translations ) ) {
+			$this->set_translation_in_mass( $type, $translations );
 		}
 	}
 
