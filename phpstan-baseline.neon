@@ -1311,11 +1311,6 @@ parameters:
 			path: install/t15s.php
 
 		-
-			message: "#^Parameter \\#2 \\$.+ of function explode expects string, mixed given\\.$#"
-			count: 1
-			path: modules/lingotek/lingotek.php
-
-		-
 			message: "#^Cannot call method get_must_translate_message\\(\\) on PLL_Admin_Static_Pages\\|null\\.$#"
 			count: 1
 			path: modules/site-health/admin-site-health.php
