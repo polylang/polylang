@@ -168,6 +168,7 @@ abstract class PLL_Translated_Object {
 			} elseif ( $store_only_term_ids ) {
 				$to_cache = array( $terms[ $tax ]->term_id );
 			} else {
+				// Backward compatibility with WP < 6.0.
 				$to_cache = array( $terms[ $tax ] );
 			}
 
