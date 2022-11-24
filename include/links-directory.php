@@ -194,6 +194,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return string[] Modified rewrite rules.
 	 */
 	public function rewrite_rules( $rules ) {
+		if ( ! is_array( $rules ) ) {
+			// Someone broke the rules...
+			return $rules;
+		}
+
 		$filter = str_replace( '_rewrite_rules', '', current_filter() );
 
 		global $wp_rewrite;
@@ -213,6 +218,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		$cpts = $cpts ? '#post_type=(' . implode( '|', $cpts ) . ')#' : '';
 
 		foreach ( $rules as $key => $rule ) {
+			if ( ! is_string( $rule ) || ! is_string( $key ) ) {
+				// Someone broke a rule...
+				continue;
+			}
+
 			// Special case for translated post types and taxonomies to allow canonical redirection.
 			if ( $this->options['force_lang'] && in_array( $filter, array_merge( $this->model->get_translated_post_types(), $this->model->get_translated_taxonomies() ) ) ) {
 
