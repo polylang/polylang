@@ -56,7 +56,7 @@ class Filter_Rewrite_Rules_Test extends PLL_UnitTestCase {
 
 				return $rules;
 			},
-			1, // Before Polylang.
+			1 // Before Polylang.
 		);
 
 		// Switch to pretty permalinks.
