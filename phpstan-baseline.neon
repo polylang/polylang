@@ -801,7 +801,7 @@ parameters:
 			path: include/filters-links.php
 
 		-
-			message: "#^Argument of an invalid type array\\<int\\|WP_Post\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			message: "#^Argument of an invalid type array\\<WP_Post\\>\\|false supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: include/filters.php
 
@@ -816,7 +816,7 @@ parameters:
 			path: include/filters.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int\\|WP_Post\\>\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<WP_Post\\>\\|false given\\.$#"
 			count: 1
 			path: include/filters.php
 
