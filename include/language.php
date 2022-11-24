@@ -233,6 +233,24 @@ class PLL_Language {
 	 *
 	 * @var array[] Array keys are language term names.
 	 *
+	 * @exemple array(
+	 *     'language'       => array(
+	 *         'term_id'          => 7,
+	 *         'term_taxonomy_id' => 8,
+	 *         'count'            => 11,
+	 *     ),
+	 *     'term_language' => array(
+	 *         'term_id'          => 11,
+	 *         'term_taxonomy_id' => 12,
+	 *         'count'            => 6,
+	 *     ),
+	 *     'foo_language'  => array(
+	 *         'term_id'          => 33,
+	 *         'term_taxonomy_id' => 34,
+	 *         'count'            => 0,
+	 *     ),
+	 * )
+	 *
 	 * @phpstan-var array<
 	 *     non-empty-string,
 	 *     array{
