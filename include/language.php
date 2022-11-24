@@ -41,6 +41,7 @@ class PLL_Language {
 	 * ID of the term in 'language' taxonomy.
 	 *
 	 * @var int
+	 * @deprecated
 	 *
 	 * @phpstan-var int<0, max>
 	 */
@@ -50,6 +51,7 @@ class PLL_Language {
 	 * Term taxonomy id in 'language' taxonomy.
 	 *
 	 * @var int
+	 * @deprecated
 	 *
 	 * @phpstan-var int<0, max>
 	 */
@@ -59,6 +61,7 @@ class PLL_Language {
 	 * Number of posts and pages in that language.
 	 *
 	 * @var int
+	 * @deprecated
 	 *
 	 * @phpstan-var int<0, max>
 	 */
@@ -68,6 +71,7 @@ class PLL_Language {
 	 * ID of the term in 'term_language' taxonomy.
 	 *
 	 * @var int
+	 * @deprecated
 	 *
 	 * @phpstan-var int<0, max>
 	 */
@@ -77,6 +81,7 @@ class PLL_Language {
 	 * Term taxonomy ID in 'term_language' taxonomy.
 	 *
 	 * @var int
+	 * @deprecated
 	 *
 	 * @phpstan-var int<0, max>
 	 */
@@ -86,6 +91,7 @@ class PLL_Language {
 	 * Number of terms in that language.
 	 *
 	 * @var int
+	 * @deprecated
 	 *
 	 * @phpstan-var int<0, max>
 	 */
