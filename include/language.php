@@ -689,15 +689,6 @@ class PLL_Language {
 		foreach ( $this->term_props as $taxonomy => $props ) {
 			wp_update_term_count( $props['term_taxonomy_id'], $taxonomy );
 		}
-
-		/**
-		 * Fires when updating language term counts.
-		 *
-		 * @since 3.4
-		 *
-		 * @param PLL_Language $language The language object.
-		 */
-		do_action( 'pll_updated_language_term_counts', $this );
 	}
 
 	/**
