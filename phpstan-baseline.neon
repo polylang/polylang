@@ -391,11 +391,6 @@ parameters:
 			path: admin/admin.php
 
 		-
-			message: "#^Parameter \\#1 \\$subtags of class PLL_Accept_Language constructor expects array\\<string\\>, array\\<string, string\\>\\|false given\\.$#"
-			count: 1
-			path: frontend/accept-language.php
-
-		-
 			message: "#^Method PLL_Choose_Lang_Content\\:\\:pll_get_current_language\\(\\) should return PLL_Language but returns object\\.$#"
 			count: 1
 			path: frontend/choose-lang-content.php
@@ -1134,16 +1129,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$callback of function add_filter expects callable\\(\\)\\: mixed, array\\{mixed, 'get_terms_args'\\} given\\.$#"
 			count: 1
 			path: include/model.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
-			count: 2
-			path: include/model.php
-
-		-
-			message: "#^Method PLL_Nav_Menu\\:\\:explode_location\\(\\) should return array\\<string\\> but returns array\\<string, mixed\\>\\|false\\.$#"
-			count: 1
-			path: include/nav-menu.php
 
 		-
 			message: "#^Property PLL_Nav_Menu\\:\\:\\$theme \\(string\\) does not accept mixed\\.$#"
