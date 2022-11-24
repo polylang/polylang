@@ -8,6 +8,7 @@
  * Manipulating only one object per language instead of two terms should make things easier.
  *
  * @since 1.2
+ * @immutable
  */
 #[AllowDynamicProperties]
 class PLL_Language {
@@ -220,12 +221,20 @@ class PLL_Language {
 	/**
 	 * Stores language term properties (like term IDs and counts) for each language taxonomy (`language`,
 	 * `term_language`, etc).
-	 * This stores the values of the properties `$term_id`, `$term_taxonomy_id`, `$count`, `$tl_term_id`,
-	 * `$tl_term_taxonomy_id`, and `$tl_count`.
+	 * This stores the values of the properties `$term_id` + `$term_taxonomy_id` + `$count` (`language`), `$tl_term_id`
+	 * + `$tl_term_taxonomy_id` + `$tl_count` (`term_language`), and the `term_id` + `term_taxonomy_id` + `count` for
+	 * other language taxonomies.
 	 *
-	 * @var array[] Array keys are property names.
+	 * @var array[] Array keys are language term names.
 	 *
-	 * @phpstan-var array<non-empty-string, array<non-empty-string, positive-int>>
+	 * @phpstan-var array<
+	 *     non-empty-string,
+	 *     array{
+	 *         term_id: positive-int,
+	 *         term_taxonomy_id: positive-int,
+	 *         count: int<0, max>
+	 *     }
+	 * >
 	 */
 	protected $term_props = array();
 
@@ -268,16 +277,16 @@ class PLL_Language {
 	 *     tl_term_id?: positive-int,
 	 *     tl_term_taxonomy_id?: positive-int,
 	 *     tl_count?: int<0, max>,
-	 *     term_props?: array{
-	 *         language?: array{
-	 *             term_id?: positive-int,
-	 *             term_taxonomy_id?: positive-int,
-	 *             count?: int<0, max>
+	 *     term_props: array{
+	 *         language: array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
 	 *         },
-	 *         term_language?: array{
-	 *             term_id?: positive-int,
-	 *             term_taxonomy_id?: positive-int,
-	 *             count?: int<0, max>
+	 *         term_language: array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
 	 *         }
 	 *     },
 	 *     name: non-empty-string,
@@ -301,6 +310,7 @@ class PLL_Language {
 	 * } $language_data
 	 */
 	public function __construct( array $language_data ) {
+		// Deal with duplicated data for backward compatibility: priority to the ones in `$this->term_props`.
 		$term_props = array(
 			'term_id'             => array( 'language', 'term_id' ),
 			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
@@ -310,7 +320,6 @@ class PLL_Language {
 			'tl_count'            => array( 'term_language', 'count' ),
 		);
 
-		// Deal with duplicated data: priority to the ones in `$this->term_props`.
 		foreach ( $term_props as $prop => $value ) {
 			if ( isset( $language_data['term_props'][ $value[0] ][ $value[1] ] ) ) {
 				$this->$prop = $this->set_tax_prop( $value[0], $value[1], $language_data['term_props'][ $value[0] ][ $value[1] ] );
@@ -319,6 +328,10 @@ class PLL_Language {
 			}
 
 			unset( $language_data['term_props'][ $value[0] ][ $value[1] ], $language_data[ $prop ] );
+
+			if ( empty( $language_data['term_props'][ $value[0] ] ) ) {
+				unset( $language_data['term_props'][ $value[0] ] );
+			}
 		}
 
 		// Other values in `term_props` that are not `language` nor `term_language`.
@@ -332,6 +345,19 @@ class PLL_Language {
 
 		unset( $language_data['term_props'] );
 
+		// Make sure everything is fine in term props.
+		foreach ( $this->term_props as $taxonomy_name => $prop_values ) {
+			if ( ! isset( $prop_values['term_id'], $prop_values['term_taxonomy_id'] ) ) {
+				// This must not happen for `language` and `term_language`.
+				unset( $this->term_props[ $taxonomy_name ] );
+				continue;
+			}
+
+			if ( ! isset( $prop_values['count'] ) ) {
+				$this->term_props[ $taxonomy_name ]['count'] = 0;
+			}
+		}
+
 		// Add all the other values.
 		foreach ( $language_data as $prop => $value ) {
 			$this->$prop = $value;
@@ -339,7 +365,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * Returns a language term property value (like term ID, term taxonomy ID, or count).
+	 * Returns a language term property value (term ID, term taxonomy ID, or count).
 	 *
 	 * @since 3.4
 	 *
@@ -348,7 +374,7 @@ class PLL_Language {
 	 * @return int
 	 *
 	 * @phpstan-param non-empty-string $taxonomy_name
-	 * @phpstan-param non-empty-string $prop_name
+	 * @phpstan-param 'term_taxonomy_id'|'term_id'|'count' $prop_name
 	 * @phpstan-return int<0, max>
 	 */
 	public function get_tax_prop( $taxonomy_name, $prop_name ) {
@@ -356,7 +382,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * Stores a language term property value (like term ID, term taxonomy ID, or count).
+	 * Stores a language term property value (term ID, term taxonomy ID, or count).
 	 *
 	 * @since 3.4
 	 *
@@ -366,7 +392,7 @@ class PLL_Language {
 	 * @return int
 	 *
 	 * @phpstan-param non-empty-string $taxonomy_name
-	 * @phpstan-param non-empty-string $prop_name
+	 * @phpstan-param 'term_taxonomy_id'|'term_id'|'count' $prop_name
 	 * @phpstan-return int<0, max>
 	 */
 	public function set_tax_prop( $taxonomy_name, $prop_name, $prop_value ) {
@@ -376,12 +402,12 @@ class PLL_Language {
 
 		$prop_value = $prop_value >= 1 ? abs( (int) $prop_value ) : 0;
 
-		if ( $prop_value >= 1 ) {
+		if ( 'count' === $prop_name || $prop_value >= 1 ) {
 			if ( ! isset( $this->term_props[ $taxonomy_name ] ) ) {
-				$this->term_props[ $taxonomy_name ] = array();
+				$this->term_props[ $taxonomy_name ] = array(); // @phpstan-ignore-line
 			}
 
-			$this->term_props[ $taxonomy_name ][ $prop_name ] = $prop_value;
+			$this->term_props[ $taxonomy_name ][ $prop_name ] = $prop_value; // @phpstan-ignore-line
 		} else {
 			unset( $this->term_props[ $taxonomy_name ][ $prop_name ] );
 		}
@@ -390,24 +416,40 @@ class PLL_Language {
 	}
 
 	/**
-	 * Returns the language term IDs for all content types.
+	 * Returns the language term props for all content types.
 	 *
 	 * @since 3.4
 	 *
-	 * @return int[] Array keys are taxonomy names, array values are term IDs.
+	 * @param string|null $field Name of the field to return. `null` to return them all.
+	 * @return (int[]|int)[] Array keys are taxonomy names, array values depend of `$field`.
 	 *
-	 * @phpstan-return array<non-empty-string, positive-int>
+	 * @phpstan-param 'term_taxonomy_id'|'term_id'|'count'|null $field
+	 * @phpstan-return array<non-empty-string, (
+	 *     $field is non-empty-string ?
+	 *     (
+	 *         $field is 'count' ?
+	 *         int<0, max> :
+	 *         positive-int
+	 *     ) :
+	 *     array{
+	 *         term_id: positive-int,
+	 *         term_taxonomy_id: positive-int,
+	 *         count: int<0, max>
+	 *     }
+	 * )>
 	 */
-	public function get_term_ids() {
-		$term_ids = array();
-
-		foreach ( $this->term_props as $taxonomy_name => $props ) {
-			if ( ! empty( $props['term_id'] ) ) {
-				$term_ids[ $taxonomy_name ] = $props['term_id'];
-			}
+	public function get_tax_props( $field = null ) {
+		if ( empty( $field ) ) {
+			return $this->term_props;
 		}
 
-		return $term_ids;
+		$term_props = array();
+
+		foreach ( $this->term_props as $taxonomy_name => $props ) {
+			$term_props[ $taxonomy_name ] = $props[ $field ];
+		}
+
+		return $term_props;
 	}
 
 	/**

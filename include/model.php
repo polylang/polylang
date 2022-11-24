@@ -308,7 +308,7 @@ class PLL_Model {
 
 		if ( false === $return = $this->cache->get( 'language:' . $value ) ) {
 			foreach ( $this->get_languages_list() as $lang ) {
-				foreach ( $lang->get_term_ids() as $term_id ) {
+				foreach ( $lang->get_tax_props( 'term_id' ) as $term_id ) {
 					$this->cache->set( 'language:' . $term_id, $lang );
 				}
 				$this->cache->set( 'language:' . $lang->slug, $lang );
@@ -877,7 +877,7 @@ class PLL_Model {
 	 *
 	 * @return PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
 	 *
-	 * @phpstan-return array<int<0, max>, PLL_Language>
+	 * @phpstan-return list<PLL_Language>
 	 */
 	protected function get_languages_from_taxonomies() {
 		$terms_by_type = $this->get_language_terms_by_type();
@@ -945,7 +945,7 @@ class PLL_Model {
 		);
 		set_transient( 'pll_languages_list', $languages_data );
 
-		/** @var array<int<0, max>, PLL_Language> $languages */
+		/** @var list<PLL_Language> $languages */
 		return $languages;
 	}
 
