@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Setups the posts languages and translations model.
+ * Sets the posts languages and translations model up.
  *
  * @since 1.8
  */
