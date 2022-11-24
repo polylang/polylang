@@ -49,10 +49,10 @@ class Filter_Rewrite_Rules_Test extends PLL_UnitTestCase {
 		add_filter(
 			'rewrite_rules_array',
 			function( $rules ) {
-				$rules[ 'dumb' ] = array(
+				$rules['dumb'] = array(
 					'do not' => 'do this!',
 				);
-				$rules[ 1 ]      = 'even dumber';
+				$rules[1]      = 'even dumber';
 
 				return $rules;
 			},
