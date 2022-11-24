@@ -77,7 +77,7 @@ class PLL_Featured_Content {
 			$args = array(
 				'lang'        => 0, // Avoid language filters.
 				'fields'      => 'ids',
-				'numberposts' => Featured_Content::$max_posts,
+				'numberposts' => Featured_Content::$max_posts, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_numberposts
 				'tax_query'   => array(
 					array(
 						'taxonomy' => 'post_tag',
