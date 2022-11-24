@@ -324,6 +324,7 @@ function pll_languages_list( $args = array() ) {
  * @api
  * @since 1.5
  * @since 3.4 $lang accepts PLL_Language or string.
+ * @since 3.4 Returns a boolean.
  *
  * @param int                 $id   Post id.
  * @param PLL_Language|string $lang Language (object or slug).
@@ -340,6 +341,7 @@ function pll_set_post_language( $id, $lang ) {
  * @api
  * @since 1.5
  * @since 3.4 $lang accepts PLL_Language or string.
+ * @since 3.4 Returns a boolean.
  *
  * @param int                 $id   Term id.
  * @param PLL_Language|string $lang Language (object or slug).
