@@ -870,7 +870,7 @@ class PLL_Model {
 	}
 
 	/**
-	 * Returns the list of available languages, basec of the language taxonomy terms.
+	 * Returns the list of available languages, based on the language taxonomy terms.
 	 * Stores the list in a db transient and in a `PLL_Cache` object.
 	 *
 	 * @since 3.4
