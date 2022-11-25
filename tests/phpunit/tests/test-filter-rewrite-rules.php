@@ -75,6 +75,10 @@ class Filter_Rewrite_Rules_Test extends PLL_UnitTestCase {
 			$this->fail( 'An error occurs while filtering bad rewrite rules with the following message:' . PHP_EOL . "$message." );
 		}
 
-		$this->expectNotToPerformAssertions();
+		/**
+		 * expectNotToPerformAssertions() being available only since PHPUnit 7.2,
+		 * We have to use this trick...
+		 */
+		$this->assertTrue( true );
 	}
 }
