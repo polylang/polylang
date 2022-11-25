@@ -225,6 +225,115 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	}
 
 	/**
+	 * Returns object types (taxonomy names) that need to be translated.
+	 * The taxonomies list is cached for better better performance.
+	 * The method waits for 'after_setup_theme' to apply the cache to allow themes adding the filter in functions.php.
+	 *
+	 * @since 3.4
+	 *
+	 * @param bool $filter True if we should return only valid registered object types.
+	 * @return string[] Object type names for which Polylang manages languages.
+	 *
+	 * @phpstan-return array<non-empty-string, non-empty-string>
+	 */
+	public function get_translated_object_types( $filter = true ) {
+		$taxonomies = $this->model->cache->get( 'taxonomies' );
+
+		if ( false === $taxonomies ) {
+			$taxonomies = array( 'category' => 'category', 'post_tag' => 'post_tag' );
+
+			if ( ! empty( $this->model->options['taxonomies'] ) && is_array( $this->model->options['taxonomies'] ) ) {
+				$taxonomies = array_merge( $taxonomies, array_combine( $this->model->options['taxonomies'], $this->model->options['taxonomies'] ) );
+			}
+
+			/**
+			 * Filters the list of taxonomies available for translation.
+			 * The default are taxonomies which have the parameter ‘public’ set to true.
+			 * The filter must be added soon in the WordPress loading process:
+			 * in a function hooked to ‘plugins_loaded’ or directly in functions.php for themes.
+			 *
+			 * @since 0.8
+			 *
+			 * @param string[] $taxonomies  List of taxonomy names (as array keys and values).
+			 * @param bool     $is_settings True when displaying the list of custom taxonomies in Polylang settings.
+			 */
+			$taxonomies = apply_filters( 'pll_get_taxonomies', $taxonomies, false );
+
+			if ( did_action( 'after_setup_theme' ) ) {
+				$this->model->cache->set( 'taxonomies', $taxonomies );
+			}
+		}
+
+		/** @var array<non-empty-string, non-empty-string> $taxonomies */
+		return $filter ? array_intersect( $taxonomies, get_taxonomies() ) : $taxonomies;
+	}
+
+	/**
+	 * Returns true if Polylang manages languages for this object type.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string|string[] $object_type Object type (taxonomy name) name or array of object type names.
+	 * @return bool
+	 */
+	public function is_translated_object_type( $object_type ) {
+		$taxonomies = $this->get_translated_object_types( false );
+		return ( is_array( $object_type ) && array_intersect( $object_type, $taxonomies ) || in_array( $object_type, $taxonomies ) );
+	}
+
+	/**
+	 * Returns the IDs of the objects without language.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string[] $object_types An array of object types (toxonomies).
+	 * @param int      $limit        Max number of objects to return. `-1` to return all of them.
+	 * @return int[] Array of object IDs.
+	 *
+	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-return list<positive-int>
+	 */
+	public function get_objects_with_no_lang( array $object_types, $limit ) {
+		global $wpdb;
+
+		if ( empty( $object_types ) ) {
+			return array();
+		}
+
+		$languages = $this->model->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) );
+
+		if ( empty( $languages ) ) {
+			return array();
+		}
+
+		$sql = sprintf(
+			"SELECT {$wpdb->term_taxonomy}.term_id FROM {$wpdb->term_taxonomy}
+			WHERE taxonomy IN ('%s')
+			AND {$wpdb->term_taxonomy}.term_id NOT IN (
+				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+			)
+			%s",
+			implode( "','", esc_sql( $object_types ) ),
+			implode( ',', array_map( 'intval', $languages ) ),
+			$limit > 0 ? sprintf( 'LIMIT %d', intval( $limit ) ) : ''
+		);
+
+		$key          = md5( $sql );
+		$last_changed = wp_cache_get_last_changed( 'terms' );
+		$cache_key    = "terms_no_lang:{$key}:{$last_changed}";
+
+		$term_ids = wp_cache_get( $cache_key, 'terms' );
+
+		if ( false === $term_ids ) {
+			$term_ids = $this->sanitize_int_ids_list( $wpdb->get_col( $sql ) ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			wp_cache_set( $cache_key, $term_ids, 'terms' );
+		}
+
+		/** @var list<positive-int> */
+		return $term_ids;
+	}
+
+	/**
 	 * Caches the language and translations when terms are queried by get_terms().
 	 *
 	 * @since 1.2

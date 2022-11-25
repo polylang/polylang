@@ -78,10 +78,10 @@ abstract class PLL_Object_With_Language {
 	 *
 	 * @since 3.4
 	 *
-	 * @param PLL_Model $model Instance of `PLL_Model`.
+	 * @param PLL_Model $model Instance of `PLL_Model`, passed by reference.
 	 */
 	public function __construct( PLL_Model &$model ) {
-		$this->model          = &$model;
+		$this->model          = $model;
 		$this->tax_to_cache[] = $this->tax_language;
 
 		/*
@@ -341,6 +341,42 @@ abstract class PLL_Object_With_Language {
 
 		return ' AND pll_tr.term_taxonomy_id IN ( ' . implode( ',', $languages_tt_ids ) . ' )';
 	}
+
+	/**
+	 * Returns object types that need to be translated.
+	 *
+	 * @since 3.4
+	 *
+	 * @param bool $filter True if we should return only valid registered object types.
+	 * @return string[] Object type names for which Polylang manages languages.
+	 *
+	 * @phpstan-return array<non-empty-string, non-empty-string>
+	 */
+	abstract public function get_translated_object_types( $filter = true );
+
+	/**
+	 * Returns true if Polylang manages languages for this object type.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string|string[] $object_type Object type name or array of object type names.
+	 * @return bool
+	 */
+	abstract public function is_translated_object_type( $object_type );
+
+	/**
+	 * Returns the IDs of the objects without language.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string[] $object_types An array of object types.
+	 * @param int      $limit        Max number of objects to return. `-1` to return all of them.
+	 * @return int[] Array of object IDs.
+	 *
+	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-return list<positive-int>
+	 */
+	abstract public function get_objects_with_no_lang( array $object_types, $limit );
 
 	/**
 	 * Sanitizes an ID as positive integer.

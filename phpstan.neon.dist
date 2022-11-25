@@ -49,3 +49,33 @@ parameters:
 			message: "#^Cannot call method get_tax_language\\(\\) on PLL_Object_With_Language\\|null\\.$#"
 			count: 1
 			path: admin/admin-model.php
+
+		# Ignored because PLL_Translatable_Objects_Registry::get() cannot return null after PLL_Translatable_Objects_Registry::has().
+		-
+			message: "#^Cannot call method get_translated_object_types\\(\\) on PLL_Object_With_Language\\|null\\.$#"
+			count: 2
+			path: include/model.php
+
+		# Ignored because PLL_Translatable_Objects_Registry::get() cannot return null after PLL_Translatable_Objects_Registry::has().
+		-
+			message: "#^Cannot call method is_translated_object_type\\(\\) on PLL_Object_With_Language\\|null\\.$#"
+			count: 2
+			path: include/model.php
+
+		# Ignored because PLL_Translatable_Objects_Registry::get() cannot return null after PLL_Translatable_Objects_Registry::has().
+		-
+			message: "#^Cannot call method get_objects_with_no_lang\\(\\) on PLL_Object_With_Language\\|null\\.$#"
+			count: 2
+			path: include/model.php
+
+		# Ignored because array_combine() cannot return false when feeded with 2 identical arrays.
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			count: 1
+			path: include/translated-post.php
+
+		# Ignored because array_combine() cannot return false when feeded with 2 identical arrays.
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			count: 1
+			path: include/translated-term.php
