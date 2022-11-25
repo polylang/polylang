@@ -377,13 +377,13 @@ class PLL_Language {
 
 		// Make sure everything is fine in term props.
 		foreach ( $this->term_props as $taxonomy_name => $prop_values ) {
-			if ( ! isset( $prop_values['term_id'], $prop_values['term_taxonomy_id'] ) ) {
+			if ( ! isset( $prop_values['term_id'], $prop_values['term_taxonomy_id'] ) ) { // @phpstan-ignore-line
 				// This must not happen for `language` and `term_language`.
 				unset( $this->term_props[ $taxonomy_name ] );
 				continue;
 			}
 
-			if ( ! isset( $prop_values['count'] ) ) {
+			if ( ! isset( $prop_values['count'] ) ) { // @phpstan-ignore-line
 				$this->term_props[ $taxonomy_name ]['count'] = 0;
 			}
 		}

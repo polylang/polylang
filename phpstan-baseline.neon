@@ -246,11 +246,6 @@ parameters:
 			path: admin/admin-links.php
 
 		-
-			message: "#^@param PLL_Language \\$lang does not accept actual type of parameter\\: PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
 			message: "#^@param array\\<array\\<string\\>\\|int\\> \\$tr does not accept actual type of parameter\\: mixed\\.$#"
 			count: 1
 			path: admin/admin-model.php
@@ -261,22 +256,7 @@ parameters:
 			path: admin/admin-model.php
 
 		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Cannot access property \\$term_id on PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
 			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:export_to_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Admin_Model\\:\\:validate_lang\\(\\) expects PLL_Language\\|null, PLL_Language\\|false given\\.$#"
 			count: 1
 			path: admin/admin-model.php
 
@@ -836,51 +816,6 @@ parameters:
 			path: include/language.php
 
 		-
-			message: "#^Argument of an invalid type array\\|WP_Term supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$count on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$description on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$name on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$slug on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_group on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_id on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_taxonomy_id on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
 			message: "#^Cannot use array destructuring on array\\|false\\.$#"
 			count: 1
 			path: include/language.php
@@ -897,11 +832,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$.+ of function base64_encode expects string, string\\|false given\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Property PLL_Language\\:\\:\\$is_rtl \\(int\\) does not accept mixed\\.$#"
 			count: 1
 			path: include/language.php
 
