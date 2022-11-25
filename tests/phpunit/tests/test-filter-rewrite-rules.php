@@ -76,7 +76,7 @@ class Filter_Rewrite_Rules_Test extends PLL_UnitTestCase {
 		}
 
 		/**
-		 * expectNotToPerformAssertions() being available only since PHPUnit 7.2,
+		 * Function expectNotToPerformAssertions() being available only since PHPUnit 7.2,
 		 * We have to use this trick...
 		 */
 		$this->assertTrue( true );
