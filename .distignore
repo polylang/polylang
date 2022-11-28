@@ -13,6 +13,7 @@ issue_template.md
 package.json
 package-lock.json
 phpcs.xml.dist
+phpstan-baseline.neon
 phpstan.neon.dist
 phpunit.xml
 readme.md

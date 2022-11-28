@@ -791,6 +791,11 @@ parameters:
 			path: include/filters.php
 
 		-
+			message: "#^Method PLL_Filters\\:\\:translate_page_for_privacy_policy\\(\\) should return int but returns int\\|false\\.$#"
+			count: 1
+			path: include/filters.php
+
+		-
 			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:get_translations\\(\\) expects int, mixed given\\.$#"
 			count: 1
 			path: include/filters.php
@@ -801,6 +806,7 @@ parameters:
 			path: include/filters.php
 
 		-
+
 			message: "#^Parameter \\#1 \\$string of function pll__ expects string, mixed given\\.$#"
 			count: 1
 			path: include/filters.php
