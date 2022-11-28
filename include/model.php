@@ -127,8 +127,13 @@ class PLL_Model {
 
 						if ( ! empty( $v ) ) {
 							$languages[ $k ] = new PLL_Language( $v );
+						} else {
+							unset( $languages[ $k ] );
 						}
 					}
+
+					// Re-index.
+					$languages = array_values( $languages );
 				}
 			}
 
