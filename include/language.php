@@ -802,6 +802,12 @@ class PLL_Language {
 	 * }
 	 *
 	 * @phpstan-return array{
+	 *     term_id?: positive-int,
+	 *     term_taxonomy_id?: positive-int,
+	 *     count?: int<0, max>,
+	 *     tl_term_id?: positive-int,
+	 *     tl_term_taxonomy_id?: positive-int,
+	 *     tl_count?: int<0, max>,
 	 *     term_props: array{
 	 *         language: array{
 	 *             term_id: positive-int,
@@ -835,6 +841,22 @@ class PLL_Language {
 	 * }|null
 	 */
 	public static function validate_data( array $data ) {
+		// Backward compatibility.
+		$term_props = array(
+			'term_id'             => array( 'language', 'term_id' ),
+			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
+			'count'               => array( 'language', 'count' ),
+			'tl_term_id'          => array( 'term_language', 'term_id' ),
+			'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
+			'tl_count'            => array( 'term_language', 'count' ),
+		);
+
+		foreach ( $term_props as $prop => $value ) {
+			if ( ! empty( $data[ $prop ] ) && empty( $data['term_props'][ $value[0] ][ $value[1] ] ) ) {
+				$data['term_props'][ $value[0] ][ $value[1] ] = $data[ $prop ];
+			}
+		}
+
 		// Sanitize and validate mandatory types.
 		foreach ( array( 'language', 'term_language' ) as $taxo ) {
 			if ( ! isset( $data['term_props'][ $taxo ] ) || ! is_array( $data['term_props'][ $taxo ] ) ) {
