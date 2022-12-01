@@ -44,7 +44,6 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// The other language taxonomies.
 		foreach ( array_diff_key( $this->translatable_objects->get_all(), array( 'language' => null ) ) as $object ) {
-			// Don't want shared terms so use a different slug.
 			wp_insert_term( $args['name'], $object->get_tax_language(), array( 'slug' => 'pll_' . $args['slug'] ) );
 		}
 
@@ -374,7 +373,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		clean_term_cache( $ids, $tax_language );
 
-		if ( 'post' === $type ) {
+		if ( 'term' !== $type ) {
 			return;
 		}
 
