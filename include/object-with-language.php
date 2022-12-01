@@ -274,6 +274,7 @@ abstract class PLL_Object_With_Language {
 			} elseif ( $store_only_term_ids ) {
 				$to_cache = array( $terms[ $tax ]->term_id );
 			} else {
+				// Backward compatibility with WP < 6.0.
 				$to_cache = array( $terms[ $tax ] );
 			}
 
@@ -317,7 +318,7 @@ abstract class PLL_Object_With_Language {
 		 * This is generally the case if the query is coming from Polylang.
 		 */
 		if ( $lang instanceof PLL_Language ) {
-			return ' AND pll_tr.term_taxonomy_id = ' . $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' );
+			return ' AND pll_tr.term_taxonomy_id = ' . absint( $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ) );
 		}
 
 		/*
@@ -331,7 +332,7 @@ abstract class PLL_Object_With_Language {
 			$language = $this->model->get_language( $language );
 
 			if ( ! empty( $language ) ) {
-				$languages_tt_ids[] = $language->get_tax_prop( $this->tax_language, 'term_taxonomy_id' );
+				$languages_tt_ids[] = absint( $language->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ) );
 			}
 		}
 
