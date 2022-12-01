@@ -54,16 +54,16 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 		// Quick check.
 		$this->pll_admin->load_strings_translations( 'en' );
-		$this->assertEquals( 'val_en', get_option( 'my_option' ) );
+		$this->assertSame( 'val_en', get_option( 'my_option' ) );
 		$this->pll_admin->load_strings_translations( 'fr' );
-		$this->assertEquals( 'val_fr', get_option( 'my_option' ) );
+		$this->assertSame( 'val_fr', get_option( 'my_option' ) );
 
 		update_option( 'my_option', 'new_val' );
 
 		$this->pll_admin->load_strings_translations( 'en' );
-		$this->assertEquals( 'val_en', get_option( 'my_option' ) );
+		$this->assertSame( 'val_en', get_option( 'my_option' ) );
 		$this->pll_admin->load_strings_translations( 'fr' );
-		$this->assertEquals( 'val_fr', get_option( 'my_option' ) );
+		$this->assertSame( 'val_fr', get_option( 'my_option' ) );
 	}
 
 	public function test_update_option_simple_with_no_translation() {
@@ -72,12 +72,12 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 		// Quick check.
 		$this->pll_admin->load_strings_translations( 'en' );
-		$this->assertEquals( 'val', get_option( 'my_option' ) );
+		$this->assertSame( 'val', get_option( 'my_option' ) );
 
 		update_option( 'my_option', 'new_val' );
 
 		$this->pll_admin->load_strings_translations( 'en' );
-		$this->assertEquals( 'new_val', get_option( 'my_option' ) );
+		$this->assertSame( 'new_val', get_option( 'my_option' ) );
 	}
 
 	public function test_update_option_simple_when_filtered() {
@@ -166,8 +166,8 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		foreach ( $languages as $lang ) {
 			$this->pll_admin->load_strings_translations( $lang );
 			$options = get_option( 'my_options' );
-			$this->assertEquals( 'val1_' . $lang, $options['option_name_1'] );
-			$this->assertEquals( 'val11_' . $lang, $options['options_group_1']['sub_option_name_11'] );
+			$this->assertSame( 'val1_' . $lang, $options['option_name_1'] );
+			$this->assertSame( 'val11_' . $lang, $options['options_group_1']['sub_option_name_11'] );
 		}
 
 		$this->update_option_with_new_val( 'ARRAY' );
@@ -175,8 +175,8 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		foreach ( $languages as $lang ) {
 			$this->pll_admin->load_strings_translations( $lang );
 			$options = get_option( 'my_options' );
-			$this->assertEquals( 'val1_' . $lang, $options['option_name_1'] );
-			$this->assertEquals( 'val11_' . $lang, $options['options_group_1']['sub_option_name_11'] );
+			$this->assertSame( 'val1_' . $lang, $options['option_name_1'] );
+			$this->assertSame( 'val11_' . $lang, $options['options_group_1']['sub_option_name_11'] );
 		}
 	}
 
@@ -201,8 +201,8 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		foreach ( $languages as $lang ) {
 			$this->pll_admin->load_strings_translations( $lang );
 			$options = get_option( 'my_options' );
-			$this->assertEquals( 'val1_' . $lang, $options->option_name_1 );
-			$this->assertEquals( 'val11_' . $lang, $options->options_group_1->sub_option_name_11 );
+			$this->assertSame( 'val1_' . $lang, $options->option_name_1 );
+			$this->assertSame( 'val11_' . $lang, $options->options_group_1->sub_option_name_11 );
 		}
 	}
 
@@ -233,8 +233,8 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->load_strings_translations( 'en' );
 		$options = get_option( 'my_options' );
-		$this->assertEquals( 'new_val1', $options['option_name_1'] );
-		$this->assertEquals( 'new_val11', $options['options_group_1']['sub_option_name_11'] );
+		$this->assertSame( 'new_val1', $options['option_name_1'] );
+		$this->assertSame( 'new_val11', $options['options_group_1']['sub_option_name_11'] );
 	}
 
 	public function test_update_option_multiple_with_no_translation() {
@@ -256,8 +256,8 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->load_strings_translations( 'en' );
 		$options = get_option( 'my_options' );
-		$this->assertEquals( 'new_val1', $options->option_name_1 );
-		$this->assertEquals( 'new_val11', $options->options_group_1->sub_option_name_11 );
+		$this->assertSame( 'new_val1', $options->option_name_1 );
+		$this->assertSame( 'new_val11', $options->options_group_1->sub_option_name_11 );
 	}
 
 	public function test_update_object_option_multiple_with_no_translation() {
@@ -320,5 +320,77 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		$this->prepare_option_multiple( 'OBJECT' );
 		$this->register_option_multiple_with_wildcard();
 		$this->_test_update_option_with_translated_val( 'OBJECT' );
+	}
+
+	public function test_update_same_option_with_two_objects() {
+		add_option( 'my_option', 'val' );
+		new PLL_Translate_Option( 'my_option' );
+		new PLL_Translate_Option( 'my_option' );
+
+		$this->add_string_translations( 'en', array( 'val' => 'val_en' ) );
+		$this->add_string_translations( 'fr', array( 'val' => 'val_fr' ) );
+
+		update_option( 'my_option', 'new_val' );
+
+		$this->pll_admin->load_strings_translations( 'en' );
+		$this->assertSame( 'val_en', get_option( 'my_option' ), 'Translations should be kept after option update' );
+
+		$this->pll_admin->load_strings_translations( 'fr' );
+		$this->assertSame( 'val_fr', get_option( 'my_option' ), 'Translations should be kept after option update' );
+	}
+
+	public function test_update_same_option_with_two_objects_when_filtered() {
+		add_option( 'my_option', 'val' );
+		new PLL_Translate_Option( 'my_option' );
+		new PLL_Translate_Option( 'my_option' );
+
+		$this->add_string_translations( 'en', array( 'val' => 'val_en' ) );
+		$this->add_string_translations( 'fr', array( 'val' => 'val_fr' ) );
+
+		PLL()->curlang = self::$model->get_language( 'en' );
+		update_option( 'my_option', 'new_val' );
+
+		$this->pll_admin->load_strings_translations( 'en' );
+		$this->assertSame( 'new_val', get_option( 'my_option' ), 'Translation should be updated together with the option when the admin language filter is used' );
+
+		$this->pll_admin->load_strings_translations( 'fr' );
+		$this->assertSame( 'val_fr', get_option( 'my_option' ), 'Translations should be kept after option update' );
+	}
+
+	public function test_update_option_with_two_strings_in_two_objects() {
+		$options = array(
+			'key1' => 'val1',
+			'key2' => 'val2',
+		);
+		add_option( 'my_options', $options );
+
+		new PLL_Translate_Option( 'my_options', array( 'key1' => 1 ) );
+		new PLL_Translate_Option( 'my_options', array( 'key2' => 1 ) );
+
+		$this->add_string_translations( 'fr', array( 'val1' => 'val1_fr' ) );
+		$this->add_string_translations( 'fr', array( 'val2' => 'val2_fr' ) );
+
+		$options['key2'] = 'new_val2';
+		update_option( 'my_options', $options );
+
+		$this->pll_admin->load_strings_translations( 'fr' );
+		$options = get_option( 'my_options' );
+		$this->assertSame( 'val1_fr', $options['key1'], 'Translations should be kept after option update' );
+		$this->assertSame( 'val2_fr', $options['key2'], 'Translations should be kept after option update' );
+	}
+
+	public function test_update_option_with_same_string_in_different_options() {
+		add_option( 'my_option1', 'val' );
+		add_option( 'my_option2', 'val' );
+		new PLL_Translate_Option( 'my_option1' );
+		new PLL_Translate_Option( 'my_option2' );
+
+		$this->add_string_translations( 'fr', array( 'val' => 'val_fr' ) );
+
+		update_option( 'my_option1', 'new_val' );
+
+		$this->pll_admin->load_strings_translations( 'fr' );
+		$this->assertSame( 'val_fr', get_option( 'my_option1' ), 'Translations should be kept after option update' );
+		$this->assertSame( 'val_fr', get_option( 'my_option2' ), 'Translations should be kept after option update' );
 	}
 }

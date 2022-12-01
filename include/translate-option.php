@@ -19,11 +19,23 @@ class PLL_Translate_Option {
 	private $keys;
 
 	/**
+	 * Used to prevent filtering when retrieving the raw value of the option.
+	 *
+	 * @var bool
+	 */
+	private static $raw = false;
+
+	/**
 	 * Array of updated strings.
 	 *
 	 * @var array
 	 */
 	private $updated_strings = array();
+
+	/**
+	 * @var PLL_MO[]
+	 */
+	private $translations;
 
 	/**
 	 * Constructor
@@ -79,6 +91,10 @@ class PLL_Translate_Option {
 	 * @return mixed Translated string(s).
 	 */
 	public function translate( $value ) {
+		if ( self::$raw ) {
+				return $value;
+		}
+
 		return $this->translate_string_recursive( $value, $this->keys );
 	}
 
@@ -177,6 +193,25 @@ class PLL_Translate_Option {
 	}
 
 	/**
+	 * Returns the raw value of an option (without this class' filter).
+	 *
+	 * A static property is used to make sure that the option is not filtered
+	 * whatever the number of instances of this class filtering the option.
+	 *
+	 * @since 3.3
+	 *
+	 * @param string $option_name Option name.
+	 * @return mixed
+	 */
+	protected function get_raw_option( $option_name ) {
+		self::$raw    = true;
+		$option_value = get_option( $option_name );
+		self::$raw    = false;
+
+		return $option_value;
+	}
+
+	/**
 	 * Filters an option before it is updated.
 	 *
 	 * This is the step 1 in the update process, in which we prevent the update of
@@ -192,16 +227,14 @@ class PLL_Translate_Option {
 	 */
 	public function pre_update_option( $value, $old_value, $name ) {
 		// Stores the unfiltered old option value before it is updated in DB.
-		remove_filter( 'option_' . $name, array( $this, 'translate' ) );
-		$unfiltered_old_value = get_option( $name );
-		add_filter( 'option_' . $name, array( $this, 'translate' ), 20, 2 );
+		$unfiltered_old_value = $this->get_raw_option( $name );
 
-		// Load strings translations according to the admin language filter
-		$locale = pll_current_language( 'locale' );
-		if ( empty( $locale ) ) {
-			$locale = pll_default_language( 'locale' );
+		// Load translations in all languages.
+		foreach ( pll_languages_list() as $lang ) {
+			$language = PLL()->model->get_language( $lang );
+			$this->translations[ $lang ] = new PLL_MO();
+			$this->translations[ $lang ]->import_from_db( $language );
 		}
-		PLL()->load_strings_translations( $locale );
 
 		// Filters out the strings which would be updated to their translations and stores the updated strings.
 		$value = $this->check_value_recursive( $unfiltered_old_value, $value, $this->keys );
@@ -226,9 +259,7 @@ class PLL_Translate_Option {
 		if ( ! empty( $this->updated_strings ) ) {
 			foreach ( pll_languages_list() as $lang ) {
 
-				$language = PLL()->model->get_language( $lang );
-				$mo = new PLL_MO();
-				$mo->import_from_db( $language );
+				$mo = &$this->translations[ $lang ];
 
 				foreach ( $this->updated_strings as $old_string => $string ) {
 					$translation = $mo->translate( $old_string );
@@ -236,11 +267,10 @@ class PLL_Translate_Option {
 						$translation = $string;
 					}
 
-					// Removes the old entry and replace it by the new one, with the same translation.
-					$mo->delete_entry( $old_string );
+					// Add new entry with new string and old translation.
 					$mo->add_entry( $mo->make_entry( $string, $translation ) );
 				}
-
+				$language = PLL()->model->get_language( $lang );
 				$mo->export_to_db( $language );
 			}
 		}
@@ -264,6 +294,13 @@ class PLL_Translate_Option {
 	 */
 	protected function check_value_recursive( $old_values, $values, $key ) {
 		$children = is_array( $key ) ? $key : array();
+
+		$lang = pll_current_language();
+		if ( empty( $lang ) ) {
+			$lang = pll_default_language();
+		}
+
+		$mo = &$this->translations[ $lang ];
 
 		if ( is_array( $values ) || is_object( $values ) ) {
 			if ( count( $children ) ) {
@@ -306,7 +343,7 @@ class PLL_Translate_Option {
 				}
 			}
 		} elseif ( $old_values !== $values ) {
-			if ( pll__( $old_values ) === $values ) {
+			if ( $mo->translate( $old_values ) === $values ) {
 				$values = $old_values; // Prevents updating the value to its translation.
 			} else {
 				$this->updated_strings[ $old_values ] = $values; // Stores the updated strings.
