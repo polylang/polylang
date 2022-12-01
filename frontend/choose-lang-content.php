@@ -68,9 +68,17 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 		else {
 			foreach ( $this->model->get_translated_taxonomies() as $taxonomy ) {
 				$tax_object = get_taxonomy( $taxonomy );
-				if ( ! empty( $tax_object ) && $var = get_query_var( $tax_object->query_var ) ) {
-					$lang = $this->model->term->get_language( $var, $taxonomy );
+				if ( empty( $tax_object ) ) {
+					continue;
 				}
+
+				$var = get_query_var( $tax_object->query_var );
+
+				if ( ! is_string( $var ) || empty( $var ) ) {
+					continue;
+				}
+
+				$lang = $this->model->term->get_language_by_term_slug( $var, $taxonomy );
 			}
 		}
 

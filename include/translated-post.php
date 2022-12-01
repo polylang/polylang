@@ -3,92 +3,102 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * Setups the posts languages and translations model
+ * Sets the posts languages and translations model up.
  *
  * @since 1.8
  */
 class PLL_Translated_Post extends PLL_Translated_Object {
 
 	/**
+	 * Taxonomy name for the languages.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $tax_language = 'language';
+
+	/**
+	 * Identifier that must be unique for each type of content.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $type = 'post';
+
+	/**
+	 * Taxonomy name for the translation groups.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $tax_translations = 'post_translations';
+
+	/**
+	 * Object type to use when checking capabilities.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $cap_type = 'post';
+
+	/**
+	 * Name of the DB column containing the post's ID.
+	 *
+	 * @var string
+	 * @see PLL_Object_With_Language::join_clause()
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $db_id_column = 'ID';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
 	 *
-	 * @param PLL_Model $model PLL_Model instance.
+	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
-	public function __construct( &$model ) {
-		// init properties
-		$this->object_type = null; // For taxonomies
-		$this->type = 'post'; // For capabilities
-		$this->tax_language = 'language';
-		$this->tax_translations = 'post_translations';
-		$this->tax_tt = 'term_taxonomy_id';
+	public function __construct( PLL_Model &$model ) {
+		$this->db_default_alias = $GLOBALS['wpdb']->posts;
 
 		parent::__construct( $model );
 
-		// registers completely the language taxonomy
+		// Keep hooks in constructor for backward compatibility.
+		$this->init();
+	}
+
+	/**
+	 * Adds hooks.
+	 *
+	 * @since 3.4
+	 *
+	 * @return static
+	 */
+	public function init() {
+		// Registers completely the language taxonomy.
 		add_action( 'setup_theme', array( $this, 'register_taxonomy' ), 1 );
 
-		// setups post types to translate
+		// Setups post types to translate.
 		add_action( 'registered_post_type', array( $this, 'registered_post_type' ) );
 
-		// forces updating posts cache
+		// Forces updating posts cache.
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+		return parent::init();
 	}
 
 	/**
-	 * Store the post language in the database.
-	 *
-	 * @since 0.6
-	 *
-	 * @param int                     $post_id Post id.
-	 * @param int|string|PLL_Language $lang    Language (term_id or slug or object).
-	 * @return void
-	 */
-	public function set_language( $post_id, $lang ) {
-		$post_id = $this->sanitize_int_id( $post_id );
-
-		if ( empty( $post_id ) ) {
-			return;
-		}
-
-		$old_lang = $this->get_language( $post_id );
-		$old_lang = $old_lang ? $old_lang->slug : '';
-
-		$lang = $this->model->get_language( $lang );
-		$lang = $lang ? $lang->slug : '';
-
-		if ( $old_lang !== $lang ) {
-			wp_set_post_terms( $post_id, $lang, $this->tax_language );
-		}
-	}
-
-	/**
-	 * Returns the language of a post
-	 *
-	 * @since 0.1
-	 *
-	 * @param int $post_id post id
-	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that post
-	 */
-	public function get_language( $post_id ) {
-		$post_id = $this->sanitize_int_id( $post_id );
-
-		if ( empty( $post_id ) ) {
-			return false;
-		}
-
-		$lang = $this->get_object_term( $post_id, $this->tax_language );
-		return ! empty( $lang ) ? $this->model->get_language( $lang ) : false;
-	}
-
-	/**
-	 * Deletes a translation.
+	 * Deletes a translation of a post.
 	 *
 	 * @since 0.5
 	 *
-	 * @param int $id Post id.
+	 * @param int $id Post ID.
 	 * @return void
 	 */
 	public function delete_translation( $id ) {
@@ -103,23 +113,116 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * A join clause to add to sql queries when filtering by language is needed directly in query
+	 * Returns object types (post types) that need to be translated.
+	 * The post types list is cached for better better performance.
+	 * The method waits for 'after_setup_theme' to apply the cache to allow themes adding the filter in functions.php.
 	 *
-	 * @since 1.2
+	 * @since 3.4
 	 *
-	 * @param string $alias Alias for $wpdb->posts table
-	 * @return string join clause
+	 * @param bool $filter True if we should return only valid registered object types.
+	 * @return string[] Object type names for which Polylang manages languages.
+	 *
+	 * @phpstan-return array<non-empty-string, non-empty-string>
 	 */
-	public function join_clause( $alias = '' ) {
-		global $wpdb;
-		if ( empty( $alias ) ) {
-			$alias = $wpdb->posts;
+	public function get_translated_object_types( $filter = true ) {
+		$post_types = $this->model->cache->get( 'post_types' );
+
+		if ( false === $post_types ) {
+			$post_types = array( 'post' => 'post', 'page' => 'page', 'wp_block' => 'wp_block' );
+
+			if ( ! empty( $this->model->options['post_types'] ) && is_array( $this->model->options['post_types'] ) ) {
+				$post_types = array_merge( $post_types, array_combine( $this->model->options['post_types'], $this->model->options['post_types'] ) );
+			}
+
+			if ( empty( $this->model->options['media_support'] ) ) {
+				// In case the post type attachment is stored in the option.
+				unset( $post_types['attachment'] );
+			} else {
+				$post_types['attachment'] = 'attachment';
+			}
+
+			/**
+			 * Filters the list of post types available for translation.
+			 * The default are post types which have the parameter ‘public’ set to true.
+			 * The filter must be added soon in the WordPress loading process:
+			 * in a function hooked to ‘plugins_loaded’ or directly in functions.php for themes.
+			 *
+			 * @since 0.8
+			 *
+			 * @param string[] $post_types  List of post type names (as array keys and values).
+			 * @param bool     $is_settings True when displaying the list of custom post types in Polylang settings.
+			 */
+			$post_types = apply_filters( 'pll_get_post_types', $post_types, false );
+
+			if ( did_action( 'after_setup_theme' ) ) {
+				$this->model->cache->set( 'post_types', $post_types );
+			}
 		}
-		return " INNER JOIN $wpdb->term_relationships AS pll_tr ON pll_tr.object_id = $alias.ID";
+
+		/** @var array<non-empty-string, non-empty-string> $post_types */
+		return $filter ? array_intersect( $post_types, get_post_types() ) : $post_types;
 	}
 
 	/**
-	 * Register the language taxonomy
+	 * Returns true if Polylang manages languages for this object type.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string|string[] $object_type Object type (post type) name or array of object type names.
+	 * @return bool
+	 *
+	 * @phpstan-param non-empty-string|non-empty-string[] $object_type
+	 */
+	public function is_translated_object_type( $object_type ) {
+		$post_types = $this->get_translated_object_types( false );
+		return ( is_array( $object_type ) && array_intersect( $object_type, $post_types ) || in_array( $object_type, $post_types ) || 'any' === $object_type && ! empty( $post_types ) );
+	}
+
+	/**
+	 * Returns the IDs of the objects without language.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string[] $object_types An array of object types (post types).
+	 * @param int      $limit        Max number of objects to return. `-1` to return all of them.
+	 * @return int[] Array of object IDs.
+	 *
+	 * @phpstan-param non-empty-string[] $object_types
+	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-return list<positive-int>
+	 */
+	public function get_objects_with_no_lang( array $object_types, $limit ) {
+		if ( empty( $object_types ) ) {
+			return array();
+		}
+
+		$languages = $this->model->get_languages_list( array( 'fields' => 'term_id' ) );
+
+		if ( empty( $languages ) ) {
+			return array();
+		}
+
+		/** @var list<positive-int> */
+		return get_posts(
+			array(
+				'numberposts' => $limit,
+				'nopaging'    => $limit <= 0,
+				'post_type'   => $object_types,
+				'post_status' => 'any',
+				'fields'      => 'ids',
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'language',
+						'terms'    => $languages,
+						'operator' => 'NOT IN',
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Registers the language taxonomy.
 	 *
 	 * @since 1.2
 	 *
@@ -136,23 +239,25 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 					'all_items'     => __( 'All languages', 'polylang' ),
 				),
 				'public'             => false,
-				'show_ui'            => false, // hide the taxonomy on admin side, needed for WP 4.4.x
-				'show_in_nav_menus'  => false, // no metabox for nav menus, needed for WP 4.4.x
-				'publicly_queryable' => true, // since WP 4.5
+				'show_ui'            => false, // Hide the taxonomy on admin side, needed for WP 4.4.x.
+				'show_in_nav_menus'  => false, // No metabox for nav menus, needed for WP 4.4.x.
+				'publicly_queryable' => true, // Since WP 4.5.
 				'query_var'          => 'lang',
-				'rewrite'            => $this->model->options['force_lang'] < 2, // no rewrite for domains and sub-domains
-				'_pll'               => true, // polylang taxonomy
+				'rewrite'            => $this->model->options['force_lang'] < 2, // No rewrite for domains and sub-domains.
+				'_pll'               => true, // Polylang taxonomy.
 			)
 		);
 	}
 
 	/**
-	 * Check if registered post type must be translated
+	 * Checks if registered post type must be translated.
 	 *
 	 * @since 1.2
 	 *
-	 * @param string $post_type post type name
+	 * @param string $post_type Post type name.
 	 * @return void
+	 *
+	 * @phpstan-param non-empty-string $post_type
 	 */
 	public function registered_post_type( $post_type ) {
 		if ( $this->model->is_translated_post_type( $post_type ) ) {
@@ -178,22 +283,25 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Checks if the current user can read the post
+	 * Checks if the current user can read the post.
 	 *
 	 * @since 1.5
+	 * @since 3.4 Renamed the parameter $post_id into $id.
 	 *
-	 * @param int    $post_id Post ID
-	 * @param string $context Optional, 'edit' or 'view', defaults to 'view'.
+	 * @param int    $id Post ID
+	 * @param string $context Optional, 'edit' or 'view'. Defaults to 'view'.
 	 * @return bool
+	 *
+	 * @phpstan-param non-empty-string $context
 	 */
-	public function current_user_can_read( $post_id, $context = 'view' ) {
-		$post_id = $this->sanitize_int_id( $post_id );
+	public function current_user_can_read( $id, $context = 'view' ) {
+		$id = $this->sanitize_int_id( $id );
 
-		if ( empty( $post_id ) ) {
+		if ( empty( $id ) ) {
 			return false;
 		}
 
-		$post = get_post( $post_id );
+		$post = get_post( $id );
 
 		if ( empty( $post ) ) {
 			return false;
@@ -239,7 +347,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 			if ( in_array( $post->post_status, $states ) ) {
 				$user = wp_get_current_user();
-				return is_user_logged_in() && ( current_user_can( 'edit_posts' ) || $user->ID == $post->post_author ); // Comparison must not be strict!
+				return is_user_logged_in() && ( current_user_can( 'edit_posts' ) || (int) $user->ID === (int) $post->post_author );
 			}
 		}
 
@@ -247,8 +355,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	}
 
 	/**
-	 * Returns a list of posts in a language ( $lang )
-	 * not translated in another language ( $untranslated_in ).
+	 * Returns a list of posts in a language ($lang) not translated in another language ($untranslated_in).
 	 *
 	 * @since 2.6
 	 *
@@ -258,29 +365,29 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @param string       $search          Limit the results to the posts matching this string.
 	 * @return WP_Post[] Array of posts.
 	 */
-	public function get_untranslated( $type, $untranslated_in, $lang, $search = '' ) {
+	public function get_untranslated( $type, PLL_Language $untranslated_in, PLL_Language $lang, $search = '' ) {
 		$return = array();
 
-		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
+		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough.
 		$args = array(
 			's'                => $search,
-			'suppress_filters' => 0, // To make the post_fields filter work
-			'lang'             => 0, // Avoid admin language filter
-			'numberposts'      => 20, // Limit to 20 posts
+			'suppress_filters' => 0, // To make the post_fields filter work.
+			'lang'             => 0, // Avoid admin language filter.
+			'numberposts'      => 20, // Limit to 20 posts.
 			'post_status'      => 'any',
 			'post_type'        => $type,
 			'tax_query'        => array(
 				array(
 					'taxonomy' => $this->tax_language,
-					'field'    => 'term_taxonomy_id', // WP 3.5+
-					'terms'    => $lang->term_taxonomy_id,
+					'field'    => 'term_taxonomy_id', // WP 3.5+.
+					'terms'    => $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ),
 				),
 			),
 		);
 
 		/**
-		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox
-		 * This should help plugins to fix some edge cases
+		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox.
+		 * This should help plugins to fix some edge cases.
 		 *
 		 * @see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
 		 *
@@ -299,5 +406,4 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 
 		return $return;
 	}
-
 }
