@@ -76,12 +76,7 @@ abstract class PLL_Object_With_Language {
 	 *     default_alias: non-empty-string,
 	 * }
 	 */
-	protected $db = array(
-		'table'         => null,
-		'id_column'     => null,
-		'type_column'   => null,
-		'default_alias' => null,
-	);
+	protected $db;
 
 	/**
 	 * Constructor.
