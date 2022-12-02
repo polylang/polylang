@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.4
  */
-abstract class PLL_Object_With_Language {
+abstract class PLL_Translatable_Object {
 
 	/**
 	 * @var PLL_Model
@@ -21,7 +21,7 @@ abstract class PLL_Object_With_Language {
 	 * List of taxonomies to cache.
 	 *
 	 * @var string[]
-	 * @see PLL_Object_With_Language::get_object_term()
+	 * @see PLL_Translatable_Object::get_object_term()
 	 *
 	 * @phpstan-var list<non-empty-string>
 	 */
@@ -66,8 +66,8 @@ abstract class PLL_Object_With_Language {
 	 *     @type string $type_column   Name of the column containing the object's type.
 	 *     @type string $default_alias Default alias corresponding to the object's table.
 	 * }
-	 * @see PLL_Object_With_Language::join_clause()
-	 * @see PLL_Object_With_Language::get_objects_with_no_lang()
+	 * @see PLL_Translatable_Object::join_clause()
+	 * @see PLL_Translatable_Object::get_objects_with_no_lang()
 	 *
 	 * @phpstan-var array{
 	 *     table: non-empty-string,
