@@ -38,6 +38,7 @@ abstract class PLL_Object_With_Language {
 
 	/**
 	 * Identifier that must be unique for each type of content.
+	 * Also used when checking capabilities.
 	 *
 	 * @var string
 	 *

@@ -22,15 +22,6 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language {
 	protected $tax_translations;
 
 	/**
-	 * Object type to use when checking capabilities.
-	 *
-	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
-	 */
-	protected $cap_type;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
@@ -351,18 +342,18 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language {
 		 *                         Defaults to true.
 		 * @param int       $id    The synchronization source object ID.
 		 */
-		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->cap_type}", true, $id );
+		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
 
 		if ( null !== $check ) {
 			return (bool) $check;
 		}
 
-		if ( ! current_user_can( "edit_{$this->cap_type}", $id ) ) {
+		if ( ! current_user_can( "edit_{$this->type}", $id ) ) {
 			return false;
 		}
 
 		foreach ( $this->get_translations( $id ) as $tr_id ) {
-			if ( $tr_id !== $id && ! current_user_can( "edit_{$this->cap_type}", $tr_id ) ) {
+			if ( $tr_id !== $id && ! current_user_can( "edit_{$this->type}", $tr_id ) ) {
 				return false;
 			}
 		}

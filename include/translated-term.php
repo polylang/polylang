@@ -32,6 +32,7 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 
 	/**
 	 * Identifier that must be unique for each type of content.
+	 * Also used when checking capabilities.
 	 *
 	 * @var string
 	 *
@@ -47,15 +48,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @phpstan-var non-empty-string
 	 */
 	protected $tax_translations = 'term_translations';
-
-	/**
-	 * Object type to use when checking capabilities.
-	 *
-	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
-	 */
-	protected $cap_type = 'term';
 
 	/**
 	 * Constructor.
