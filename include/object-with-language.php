@@ -130,7 +130,7 @@ abstract class PLL_Object_With_Language {
 	}
 
 	/**
-	 * Add hooks.
+	 * Adds hooks.
 	 *
 	 * @since 3.4
 	 *
