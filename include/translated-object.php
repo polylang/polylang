@@ -313,7 +313,10 @@ abstract class PLL_Translated_Object extends PLL_Object_With_Language {
 			return 0;
 		}
 
-		return $obj_lang->get_tax_prop( 'language', 'term_id' ) === $lang->get_tax_prop( 'language', 'term_id' ) ? $id : (int) $this->get_translation( $id, $lang );
+		$lang_term_id     = $lang->get_tax_prop( $this->get_tax_language(), 'term_id' );
+		$obj_lang_term_id = $obj_lang->get_tax_prop( $this->get_tax_language(), 'term_id' );
+
+		return $lang_term_id === $obj_lang_term_id ? $id : (int) $this->get_translation( $id, $lang );
 	}
 
 	/**

@@ -205,7 +205,7 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 				'fields'      => 'ids',
 				'tax_query'   => array(
 					array(
-						'taxonomy' => 'language',
+						'taxonomy' => $this->get_tax_language(),
 						'terms'    => $languages,
 						'operator' => 'NOT IN',
 					),
