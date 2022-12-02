@@ -305,7 +305,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 			return array();
 		}
 
-		$languages = $this->model->get_languages_list( array( 'fields' => 'tl_term_taxonomy_id' ) );
+		$languages = $this->model->get_languages_list();
+
+		foreach ( $languages as $i => $language ) {
+			$languages[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
+		}
+
+		$languages = array_filter( $languages );
 
 		if ( empty( $languages ) ) {
 			return array();
