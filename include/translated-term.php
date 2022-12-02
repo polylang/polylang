@@ -58,26 +58,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	protected $cap_type = 'term';
 
 	/**
-	 * Default alias corresponding to the term's DB table.
-	 *
-	 * @var string
-	 * @see PLL_Object_With_Language::join_clause()
-	 *
-	 * @phpstan-var non-empty-string
-	 */
-	protected $db_default_alias = 't';
-
-	/**
-	 * Name of the DB column containing the term's ID.
-	 *
-	 * @var string
-	 * @see PLL_Object_With_Language::join_clause()
-	 *
-	 * @phpstan-var non-empty-string
-	 */
-	protected $db_id_column = 'term_id';
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
@@ -85,6 +65,13 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
 	public function __construct( PLL_Model &$model ) {
+		$this->db = array(
+			'table'         => $GLOBALS['wpdb']->term_taxonomy,
+			'id_column'     => 'term_id',
+			'type_column'   => 'taxonomy',
+			'default_alias' => 't',
+		);
+
 		parent::__construct( $model );
 
 		// Keep hooks in constructor for backward compatibility.
@@ -283,64 +270,6 @@ class PLL_Translated_Term extends PLL_Translated_Object {
 	public function is_translated_object_type( $object_type ) {
 		$taxonomies = $this->get_translated_object_types( false );
 		return ( is_array( $object_type ) && array_intersect( $object_type, $taxonomies ) || in_array( $object_type, $taxonomies ) );
-	}
-
-	/**
-	 * Returns the IDs of the objects without language.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string[] $object_types An array of object types (toxonomies).
-	 * @param int      $limit        Max number of objects to return. `-1` to return all of them.
-	 * @return int[] Array of object IDs.
-	 *
-	 * @phpstan-param non-empty-string[] $object_types
-	 * @phpstan-param -1|positive-int $limit
-	 * @phpstan-return list<positive-int>
-	 */
-	public function get_objects_with_no_lang( array $object_types, $limit ) {
-		global $wpdb;
-
-		if ( empty( $object_types ) ) {
-			return array();
-		}
-
-		$languages = $this->model->get_languages_list();
-
-		foreach ( $languages as $i => $language ) {
-			$languages[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
-		}
-
-		$languages = array_filter( $languages );
-
-		if ( empty( $languages ) ) {
-			return array();
-		}
-
-		$sql = sprintf(
-			"SELECT {$wpdb->term_taxonomy}.{$this->db_id_column} FROM {$wpdb->term_taxonomy}
-			WHERE taxonomy IN (%s)
-			AND {$wpdb->term_taxonomy}.{$this->db_id_column} NOT IN (
-				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
-			)
-			%s",
-			PLL_Db_Tools::prepare_values_list( $object_types ),
-			PLL_Db_Tools::prepare_values_list( $languages ),
-			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
-		);
-
-		$key          = md5( $sql );
-		$last_changed = wp_cache_get_last_changed( 'terms' );
-		$cache_key    = "terms_no_lang:{$key}:{$last_changed}";
-
-		$term_ids = wp_cache_get( $cache_key, 'terms' );
-
-		if ( ! is_array( $term_ids ) ) {
-			$term_ids = array_values( $this->sanitize_int_ids_list( $wpdb->get_col( $sql ) ) ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			wp_cache_set( $cache_key, $term_ids, 'terms' );
-		}
-
-		return $term_ids;
 	}
 
 	/**

@@ -56,24 +56,31 @@ abstract class PLL_Object_With_Language {
 	protected $object_type = null;
 
 	/**
-	 * Default alias corresponding to the object's DB table.
+	 * Contains database-related informations that can be used in some of this class methods.
+	 * These are specific to the table containing the objects.
 	 *
-	 * @var string
+	 * @var string[] {
+	 *     @type string $table         Name of the table.
+	 *     @type string $id_column     Name of the column containing the object's ID.
+	 *     @type string $type_column   Name of the column containing the object's type.
+	 *     @type string $default_alias Default alias corresponding to the object's table.
+	 * }
 	 * @see PLL_Object_With_Language::join_clause()
+	 * @see PLL_Object_With_Language::get_objects_with_no_lang()
 	 *
-	 * @phpstan-var non-empty-string
+	 * @phpstan-var array{
+	 *     table: non-empty-string,
+	 *     id_column: non-empty-string,
+	 *     type_column: non-empty-string,
+	 *     default_alias: non-empty-string,
+	 * }
 	 */
-	protected $db_default_alias;
-
-	/**
-	 * Name of the DB column containing the object's ID.
-	 *
-	 * @var string
-	 * @see PLL_Object_With_Language::join_clause()
-	 *
-	 * @phpstan-var non-empty-string
-	 */
-	protected $db_id_column;
+	protected $db = array(
+		'table'         => null,
+		'id_column'     => null,
+		'type_column'   => null,
+		'default_alias' => null,
+	);
 
 	/**
 	 * Constructor.
@@ -301,10 +308,10 @@ abstract class PLL_Object_With_Language {
 		global $wpdb;
 
 		if ( empty( $alias ) ) {
-			$alias = $this->db_default_alias;
+			$alias = $this->db['default_alias'];
 		}
 
-		return " INNER JOIN {$wpdb->term_relationships} AS pll_tr ON pll_tr.object_id = {$alias}.{$this->db_id_column}";
+		return " INNER JOIN {$wpdb->term_relationships} AS pll_tr ON pll_tr.object_id = {$alias}.{$this->db['id_column']}";
 	}
 
 	/**
@@ -385,7 +392,50 @@ abstract class PLL_Object_With_Language {
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-return list<positive-int>
 	 */
-	abstract public function get_objects_with_no_lang( array $object_types, $limit );
+	public function get_objects_with_no_lang( array $object_types, $limit ) {
+		global $wpdb;
+
+		if ( empty( $object_types ) ) {
+			return array();
+		}
+
+		$languages = $this->model->get_languages_list();
+
+		foreach ( $languages as $i => $language ) {
+			$languages[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
+		}
+
+		$languages = array_filter( $languages );
+
+		if ( empty( $languages ) ) {
+			return array();
+		}
+
+		$sql = sprintf(
+			"SELECT {$this->db['table']}.{$this->db['id_column']} FROM {$this->db['table']}
+			WHERE {$this->db['type_column']} IN (%s)
+			AND {$this->db['table']}.{$this->db['id_column']} NOT IN (
+				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+			)
+			%s",
+			PLL_Db_Tools::prepare_values_list( $object_types ),
+			PLL_Db_Tools::prepare_values_list( $languages ),
+			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
+		);
+
+		$key          = md5( $sql );
+		$cache_type   = "{$this->type}s";
+		$last_changed = wp_cache_get_last_changed( $cache_type );
+		$cache_key    = "{$cache_type}_no_lang:{$key}:{$last_changed}";
+		$object_ids   = wp_cache_get( $cache_key, $cache_type );
+
+		if ( ! is_array( $object_ids ) ) {
+			$object_ids = $wpdb->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			wp_cache_set( $cache_key, $object_ids, $cache_type );
+		}
+
+		return array_values( $this->sanitize_int_ids_list( $object_ids ) );
+	}
 
 	/**
 	 * Sanitizes an ID as positive integer.

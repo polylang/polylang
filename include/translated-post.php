@@ -49,16 +49,6 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	protected $cap_type = 'post';
 
 	/**
-	 * Name of the DB column containing the post's ID.
-	 *
-	 * @var string
-	 * @see PLL_Object_With_Language::join_clause()
-	 *
-	 * @phpstan-var non-empty-string
-	 */
-	protected $db_id_column = 'ID';
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
@@ -66,7 +56,12 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
 	public function __construct( PLL_Model &$model ) {
-		$this->db_default_alias = $GLOBALS['wpdb']->posts;
+		$this->db = array(
+			'table'         => $GLOBALS['wpdb']->posts,
+			'id_column'     => 'ID',
+			'type_column'   => 'post_type',
+			'default_alias' => $GLOBALS['wpdb']->posts,
+		);
 
 		parent::__construct( $model );
 
