@@ -477,17 +477,11 @@ class PLL_Admin_Model extends PLL_Model {
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
 
-		$taxonomies = array();
+		$taxonomies = $this->get_taxonomy_names( false );
 		$term_ids   = array();
 		$dr         = array();
 		$dt         = array();
 		$ut         = array();
-
-		foreach ( $this->translatable_objects->get_all() as $object ) {
-			if ( $object instanceof PLL_Translated_Object ) {
-				$taxonomies[] = $object->get_tax_translations();
-			}
-		}
 
 		$terms = get_terms( array( 'taxonomy' => $taxonomies ) );
 

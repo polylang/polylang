@@ -184,15 +184,7 @@ class PLL_Model {
 	 * @return array
 	 */
 	public function get_terms_args( $args ) {
-		$taxonomies = array();
-
-		foreach ( $this->translatable_objects->get_all() as $object ) {
-			$taxonomies[] = $object->get_tax_language();
-
-			if ( $object instanceof PLL_Translated_Object ) {
-				$taxonomies[] = $object->get_tax_translations();
-			}
-		}
+		$taxonomies = $this->get_taxonomy_names();
 
 		if ( isset( $args['taxonomy'] ) && ! array_diff( (array) $args['taxonomy'], $taxonomies ) ) {
 			$args['update_term_meta_cache'] = false;
@@ -850,5 +842,28 @@ class PLL_Model {
 		remove_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ) );
 
 		return empty( $post_languages ) || is_wp_error( $post_languages ) ? array() : $post_languages;
+	}
+
+	/**
+	 * Returns taxonomy names to manage language and translations.
+	 *
+	 * @param boolean $language     True to return taxonomy which manages language.
+	 * @param boolean $translations True to return taxonomy which manages translation.
+	 * @return string[] Taxonomy names.
+	 */
+	public function get_taxonomy_names( $language = true, $translations = true ) {
+		$taxonomies = array();
+
+		foreach ( $this->translatable_objects->get_all() as $object ) {
+			if ( $language ) {
+				$taxonomies[] = $object->get_tax_language();
+			}
+
+			if ( $translations && $object instanceof PLL_Translated_Object ) {
+				$taxonomies[] = $object->get_tax_translations();
+			}
+		}
+
+		return $taxonomies;
 	}
 }
