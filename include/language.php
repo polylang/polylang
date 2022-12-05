@@ -342,38 +342,6 @@ class PLL_Language {
 	}
 
 	/**
-	 * Throws a depreciation notice if someone tries to set one of the following properties:
-	 * `term_taxonomy_id`, `count`, `tl_term_id`, `tl_term_taxonomy_id` or `tl_count`.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $property Property to get.
-	 * @return void
-	 */
-	public function __set( $property, $value ) {
-		$deprecated_properties = array(
-			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
-			'count'               => array( 'language', 'count' ),
-			'tl_term_id'          => array( 'term_language', 'term_id' ),
-			'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
-			'tl_count'            => array( 'term_language', 'count' ),
-		);
-
-		if ( array_key_exists( $property, $deprecated_properties ) ) {
-			trigger_error(
-				'Property' . __CLASS__ . '::$' . $property . ' is deprecated, use ' . __CLASS__ . '::$term_props instead.',
-				E_USER_DEPRECATED
-			);
-			$term_prop_type = $deprecated_properties[ $property ][0];
-			$term_prop      = $deprecated_properties[ $property ][1];
-
-			$this->term_props[ $term_prop_type ][ $term_prop ] = $value;
-		}
-
-		$this->$property = $value;
-	}
-
-	/**
 	 * Returns a language term property value (term ID, term taxonomy ID, or count).
 	 *
 	 * @since 3.4
