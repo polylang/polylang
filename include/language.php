@@ -328,10 +328,16 @@ class PLL_Language {
 		);
 
 		if ( array_key_exists( $property, $deprecated_properties ) ) {
-			trigger_error(
-				'Property' . __CLASS__ . '::$' . $property . ' is deprecated, use ' . __CLASS__ . '::$term_props instead.',
-				E_USER_DEPRECATED
-			);
+			if ( WP_DEBUG ) {
+				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+					sprintf(
+						'Property %1$s::$%2$s is deprecated, use %1$s::$term_props instead.',
+						__CLASS__,
+						esc_html( $property )
+					),
+					E_USER_DEPRECATED
+				);
+			}
 			$term_prop_type = $deprecated_properties[ $property ][0];
 			$term_prop      = $deprecated_properties[ $property ][1];
 

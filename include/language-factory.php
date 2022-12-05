@@ -452,7 +452,7 @@ class PLL_Language_Factory {
 		}
 
 		/** @var array $languages */
-		foreach( $languages as $i => $cached_language ) {
+		foreach ( $languages as $i => $cached_language ) {
 			if ( $cached_language['slug'] !== $slug ) {
 				continue;
 			}
@@ -470,7 +470,7 @@ class PLL_Language_Factory {
 			foreach ( $term_props as $prop => $value ) {
 				if ( ! empty( $cached_language[ $prop ] ) && empty( $cached_language['term_props'][ $value[0] ][ $value[1] ] ) ) {
 					$cached_language['term_props'][ $value[0] ][ $value[1] ] = $cached_language[ $prop ];
-					unset( $cached_language[$prop] );
+					unset( $cached_language[ $prop ] );
 					$languages[ $i ]['term_props'][ $value[0] ][ $value[1] ] = $cached_language[ $prop ];
 				}
 			}
