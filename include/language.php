@@ -279,7 +279,7 @@ class PLL_Language {
 	 * } $language_data
 	 */
 	public function __construct( array $language_data ) {
-		// Set term properties. Don't check if they're set as they're mandatory.
+		// Set term properties. Don't check if they exist as they're mandatory.
 		foreach ( $language_data['term_props'] as $taxonomy_name => $prop_values ) {
 			foreach ( $prop_values as $prop_name => $prop_value ) {
 				$this->term_props[ $taxonomy_name ][ $prop_name ] = $prop_value; // @phpstan-ignore-line
@@ -297,7 +297,7 @@ class PLL_Language {
 			}
 
 			if ( ! isset( $prop_values['count'] ) ) { // @phpstan-ignore-line
-				$this->term_props[ $taxonomy_name ]['count'] = 0;
+				$this->term_props[ $taxonomy_name ]['count'] = 0; // @phpstan-ignore-line
 			}
 		}
 

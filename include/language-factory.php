@@ -419,7 +419,7 @@ class PLL_Language_Factory {
 	 * } $language_data
 	 */
 	public static function create( $language_data ) {
-		if ( isset( $language_data['slug'] ) && ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) ) {
+		if ( isset( $language_data['slug'] ) && ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) ) { // @phpstan-ignore-line
 			$language = self::create_from_transient( $language_data['slug'] );
 			if ( ! empty( $language ) ) {
 				return $language;
@@ -442,40 +442,7 @@ class PLL_Language_Factory {
 	 * @since 3.4
 	 *
 	 * @param string $slug Slug of the required language.
-	 * @return array|null Array of language properties if found, null otherwise.
-	 *
-	 * @phpstan-return array{
-	 *     term_props: array{
-	 *         language: array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         },
-	 *         term_language: array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         }
-	 *     },
-	 *     name: non-empty-string,
-	 *     slug: non-empty-string,
-	 *     locale: non-empty-string,
-	 *     w3c: non-empty-string,
-	 *     flag_code: non-empty-string,
-	 *     term_group: int,
-	 *     is_rtl: int<0, 1>,
-	 *     mo_id?: positive-int,
-	 *     facebook?: non-empty-string,
-	 *     home_url?: non-empty-string,
-	 *     search_url?: non-empty-string,
-	 *     host?: non-empty-string,
-	 *     flag_url?: non-empty-string,
-	 *     flag?: non-empty-string,
-	 *     custom_flag_url?: non-empty-string,
-	 *     custom_flag?: non-empty-string,
-	 *     page_on_front?:positive-int,
-	 *     page_for_posts?:positive-int
-	 * }|null
+	 * @return PLL_Language|null Language object if found, null otherwise.
 	 */
 	private static function create_from_transient( $slug ) {
 		$languages = get_transient( 'pll_languages_list' );
@@ -484,6 +451,7 @@ class PLL_Language_Factory {
 			return null;
 		}
 
+		/** @var array $languages */
 		foreach( $languages as $i => $cached_language ) {
 			if ( $cached_language['slug'] !== $slug ) {
 				continue;
