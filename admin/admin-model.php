@@ -135,10 +135,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Delete the string translations
-		$post = wpcom_vip_get_page_by_title( 'polylang_mo_' . $lang->get_tax_prop( 'language', 'term_id' ), OBJECT, 'polylang_mo' );
-		if ( $post instanceof WP_Post ) {
-			wp_delete_post( $post->ID );
-		}
+		wp_delete_post( PLL_MO::get_id( $lang ) );
 
 		// Delete domain
 		unset( $this->options['domains'][ $lang->slug ] );
