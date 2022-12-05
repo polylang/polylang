@@ -75,34 +75,4 @@ class PLL_Translatable_Objects_Registry {
 
 		return $this->objects[ $object_type ];
 	}
-
-	/**
-	 * Tells if a translatable object is registered, given a language taxonomy name.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $tax_name The language taxonomy name.
-	 * @return bool
-	 */
-	public function has_from_tax( $tax_name ) {
-		return ! empty( $this->get_from_tax( $tax_name ) );
-	}
-
-	/**
-	 * Returns a translatable object, given a language taxonomy name.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $tax_name The language taxonomy name.
-	 * @return PLL_Object_With_Language|null
-	 */
-	public function get_from_tax( $tax_name ) {
-		foreach ( $this->objects as $object ) {
-			if ( $object->get_tax_language() === $tax_name ) {
-				return $object;
-			}
-		}
-
-		return null;
-	}
 }
