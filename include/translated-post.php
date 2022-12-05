@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.8
  */
-class PLL_Translated_Post extends PLL_Translated_Object {
+class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translatable_Object_With_Types_Interface {
 
 	/**
 	 * Taxonomy name for the languages.
@@ -170,15 +170,15 @@ class PLL_Translated_Post extends PLL_Translated_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param string[] $object_types An array of object types (post types).
-	 * @param int      $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param int $limit Max number of objects to return. `-1` to return all of them.
 	 * @return int[] Array of object IDs.
 	 *
-	 * @phpstan-param non-empty-string[] $object_types
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-return list<positive-int>
 	 */
-	public function get_objects_with_no_lang( array $object_types, $limit ) {
+	public function get_objects_with_no_lang( $limit ) {
+		$object_types = $this->get_translated_object_types();
+
 		if ( empty( $object_types ) ) {
 			return array();
 		}

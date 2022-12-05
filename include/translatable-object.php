@@ -63,7 +63,8 @@ abstract class PLL_Translatable_Object {
 	 * @var string[] {
 	 *     @type string $table         Name of the table.
 	 *     @type string $id_column     Name of the column containing the object's ID.
-	 *     @type string $type_column   Name of the column containing the object's type.
+	 *     @type string $type_column   Optional. Name of the column containing the object's type.
+	 *                                 Required when `PLL_Translatable_Object_With_Types_Interface` is used.
 	 *     @type string $default_alias Default alias corresponding to the object's table.
 	 * }
 	 * @see PLL_Translatable_Object::join_clause()
@@ -72,7 +73,7 @@ abstract class PLL_Translatable_Object {
 	 * @phpstan-var array{
 	 *     table: non-empty-string,
 	 *     id_column: non-empty-string,
-	 *     type_column: non-empty-string,
+	 *     type_column?: non-empty-string,
 	 *     default_alias: non-empty-string,
 	 * }
 	 */
@@ -352,70 +353,61 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Returns object types that need to be translated.
-	 *
-	 * @since 3.4
-	 *
-	 * @param bool $filter True if we should return only valid registered object types.
-	 * @return string[] Object type names for which Polylang manages languages.
-	 *
-	 * @phpstan-return array<non-empty-string, non-empty-string>
-	 */
-	abstract public function get_translated_object_types( $filter = true );
-
-	/**
-	 * Returns true if Polylang manages languages for this object type.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string|string[] $object_type Object type name or array of object type names.
-	 * @return bool
-	 *
-	 * @phpstan-param non-empty-string|non-empty-string[] $object_type
-	 */
-	abstract public function is_translated_object_type( $object_type );
-
-	/**
 	 * Returns the IDs of the objects without language.
 	 *
 	 * @since 3.4
+	 * @throws Exception When implementing PLL_Translatable_Object_With_Types_Interface without providing the field
+	 *                   'type_column' in the class property `$db`.
 	 *
-	 * @param string[] $object_types An array of object types.
-	 * @param int      $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param int $limit Max number of objects to return. `-1` to return all of them.
 	 * @return int[] Array of object IDs.
 	 *
-	 * @phpstan-param non-empty-string[] $object_types
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-return list<positive-int>
 	 */
-	public function get_objects_with_no_lang( array $object_types, $limit ) {
+	public function get_objects_with_no_lang( $limit ) {
 		global $wpdb;
 
-		if ( empty( $object_types ) ) {
-			return array();
+		$object_types_sql = '';
+
+		if ( $this instanceof PLL_Translatable_Object_With_Types_Interface ) {
+			// This object has types (like posts with post_types).
+			if ( empty( $this->db['type_column'] ) ) {
+				throw new Exception( sprintf( "Required field 'type_column' in class property %s::\$db.", get_class() ) );
+			}
+
+			$object_types = $this->get_translated_object_types();
+
+			if ( empty( $object_types ) ) {
+				return array();
+			}
+
+			$object_types_sql = sprintf(
+				"AND {$this->db['type_column']} IN (%s)",
+				PLL_Db_Tools::prepare_values_list( $object_types )
+			);
 		}
 
-		$languages = $this->model->get_languages_list();
+		$language_ids = $this->model->get_languages_list();
 
-		foreach ( $languages as $i => $language ) {
-			$languages[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
+		foreach ( $language_ids as $i => $language ) {
+			$language_ids[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 
-		$languages = array_filter( $languages );
+		$language_ids = array_filter( $language_ids );
 
-		if ( empty( $languages ) ) {
+		if ( empty( $language_ids ) ) {
 			return array();
 		}
 
 		$sql = sprintf(
 			"SELECT {$this->db['table']}.{$this->db['id_column']} FROM {$this->db['table']}
-			WHERE {$this->db['type_column']} IN (%s)
-			AND {$this->db['table']}.{$this->db['id_column']} NOT IN (
+			WHERE {$this->db['table']}.{$this->db['id_column']} NOT IN (
 				SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
 			)
+			$object_types_sql
 			%s",
-			PLL_Db_Tools::prepare_values_list( $object_types ),
-			PLL_Db_Tools::prepare_values_list( $languages ),
+			PLL_Db_Tools::prepare_values_list( $language_ids ),
 			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
 		);
 
