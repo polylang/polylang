@@ -45,12 +45,6 @@ class PLL_Language_Factory {
 	 * }
 	 *
 	 * @phpstan-return array{
-	 *     term_id?: positive-int,
-	 *     term_taxonomy_id?: positive-int,
-	 *     count?: int<0, max>,
-	 *     tl_term_id?: positive-int,
-	 *     tl_term_taxonomy_id?: positive-int,
-	 *     tl_count?: int<0, max>,
 	 *     term_props: array{
 	 *         language: array{
 	 *             term_id: positive-int,
@@ -83,23 +77,7 @@ class PLL_Language_Factory {
 	 *     page_for_posts?:positive-int
 	 * }|null
 	 */
-	public static function validate_data( array $data ) {
-		// Backward compatibility.
-		$term_props = array(
-			'term_id'             => array( 'language', 'term_id' ),
-			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
-			'count'               => array( 'language', 'count' ),
-			'tl_term_id'          => array( 'term_language', 'term_id' ),
-			'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
-			'tl_count'            => array( 'term_language', 'count' ),
-		);
-
-		foreach ( $term_props as $prop => $value ) {
-			if ( ! empty( $data[ $prop ] ) && empty( $data['term_props'][ $value[0] ][ $value[1] ] ) ) {
-				$data['term_props'][ $value[0] ][ $value[1] ] = $data[ $prop ];
-			}
-		}
-
+	private static function validate_data( array $data ) {
 		// Sanitize and validate mandatory types.
 		foreach ( array( 'language', 'term_language' ) as $taxo ) {
 			if ( ! isset( $data['term_props'][ $taxo ] ) || ! is_array( $data['term_props'][ $taxo ] ) ) {
@@ -313,47 +291,11 @@ class PLL_Language_Factory {
 	 *
 	 * @param WP_Term[] $terms List of language terms, with the type as array keys.
 	 *                         `post` and `term` are mandatory keys.
-	 * @return array {
-	 *     @type array[]     $term_props An array of language term properties. Array keys are language taxonomy names
-	 *                                   (`language` and `term_language` are mandatory), array values are arrays of
-	 *                                   language term properties (`term_id`, `term_taxonomy_id`, and `count`).
-	 *     @type string      $name       Language name. Ex: English.
-	 *     @type string      $slug       Language code used in URL. Ex: en.
-	 *     @type string      $locale     WordPress language locale. Ex: en_US.
-	 *     @type string      $w3c        W3C locale.
-	 *     @type string      $flag_code  Code of the flag.
-	 *     @type int         $term_group Order of the language when displayed in a list of languages.
-	 *     @type int         $is_rtl     `1` if the language is rtl, `0` otherwise.
-	 *     @type int|null    $mo_id      Optional. ID of the post storing strings translations.
-	 *     @type string|null $facebook   Optional. Facebook locale.
-	 * }
+	 * @return PLL_Language|null
 	 *
 	 * @phpstan-param array{post:WP_Term, term:WP_Term} $terms
-	 * @phpstan-return array{
-	 *     term_props: array{
-	 *         language: array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         },
-	 *         term_language: array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         }
-	 *     },
-	 *     name: non-empty-string,
-	 *     slug: non-empty-string,
-	 *     locale: non-empty-string,
-	 *     w3c: non-empty-string,
-	 *     flag_code: non-empty-string,
-	 *     term_group: int,
-	 *     is_rtl: int<0, 1>,
-	 *     mo_id?: positive-int,
-	 *     facebook?: non-empty-string
-	 * }|null
 	 */
-	public static function prepare_data_for_language( array $terms ) {
+	public static function create_from_terms( array $terms ) {
 		$languages = include POLYLANG_DIR . '/settings/languages.php';
 		$data      = array(
 			'name'       => $terms['post']->name,
@@ -401,11 +343,17 @@ class PLL_Language_Factory {
 			}
 		}
 
-		return self::validate_data( $data );
+		$data = self::validate_data( $data );
+
+		if ( empty( $data ) ) {
+			return null;
+		}
+
+		return new PLL_Language( $data );
 	}
 
 	/**
-	 * Returns a language object matching the given data.
+	 * Returns a language object matching the given data, looking up in cached transient.
 	 *
 	 * @since 3.4
 	 *
@@ -435,15 +383,9 @@ class PLL_Language_Factory {
 	 *     @type int     $page_for_posts  Optional. ID of the page for posts in this language.
 	 * }
 	 *
-	 * @return PLL_Language A language object.
+	 * @return PLL_Language|null A language object if given data pass sanitization, null otherwise.
 	 *
 	 * @phpstan-param array{
-	 *     term_id?: positive-int,
-	 *     term_taxonomy_id?: positive-int,
-	 *     count?: int<0, max>,
-	 *     tl_term_id?: positive-int,
-	 *     tl_term_taxonomy_id?: positive-int,
-	 *     tl_count?: int<0, max>,
 	 *     term_props: array{
 	 *         language: array{
 	 *             term_id: positive-int,
@@ -477,6 +419,102 @@ class PLL_Language_Factory {
 	 * } $language_data
 	 */
 	public static function create( $language_data ) {
+		if ( isset( $language_data['slug'] ) && ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) ) {
+			$language = self::create_from_transient( $language_data['slug'] );
+			if ( ! empty( $language ) ) {
+				return $language;
+			}
+		}
+
+		$language_data = self::validate_data( $language_data );
+
+		if ( empty( $language_data ) ) {
+			return null;
+		}
+
 		return new PLL_Language( $language_data );
+	}
+
+
+	/**
+	 * Returns a language object from `pll_language_list` transient based on a given slug.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $slug Slug of the required language.
+	 * @return array|null Array of language properties if found, null otherwise.
+	 *
+	 * @phpstan-return array{
+	 *     term_props: array{
+	 *         language: array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
+	 *         },
+	 *         term_language: array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
+	 *         }
+	 *     },
+	 *     name: non-empty-string,
+	 *     slug: non-empty-string,
+	 *     locale: non-empty-string,
+	 *     w3c: non-empty-string,
+	 *     flag_code: non-empty-string,
+	 *     term_group: int,
+	 *     is_rtl: int<0, 1>,
+	 *     mo_id?: positive-int,
+	 *     facebook?: non-empty-string,
+	 *     home_url?: non-empty-string,
+	 *     search_url?: non-empty-string,
+	 *     host?: non-empty-string,
+	 *     flag_url?: non-empty-string,
+	 *     flag?: non-empty-string,
+	 *     custom_flag_url?: non-empty-string,
+	 *     custom_flag?: non-empty-string,
+	 *     page_on_front?:positive-int,
+	 *     page_for_posts?:positive-int
+	 * }|null
+	 */
+	private static function create_from_transient( $slug ) {
+		$languages = get_transient( 'pll_languages_list' );
+
+		if ( empty( $languages ) ) {
+			return null;
+		}
+
+		foreach( $languages as $i => $cached_language ) {
+			if ( $cached_language['slug'] !== $slug ) {
+				continue;
+			}
+
+			// Backward compatibility.
+			$term_props = array(
+				'term_id'             => array( 'language', 'term_id' ),
+				'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
+				'count'               => array( 'language', 'count' ),
+				'tl_term_id'          => array( 'term_language', 'term_id' ),
+				'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
+				'tl_count'            => array( 'term_language', 'count' ),
+			);
+
+			foreach ( $term_props as $prop => $value ) {
+				if ( ! empty( $cached_language[ $prop ] ) && empty( $cached_language['term_props'][ $value[0] ][ $value[1] ] ) ) {
+					$cached_language['term_props'][ $value[0] ][ $value[1] ] = $cached_language[ $prop ];
+					unset( $cached_language[$prop] );
+					$languages[ $i ]['term_props'][ $value[0] ][ $value[1] ] = $cached_language[ $prop ];
+				}
+			}
+
+			/** This filter is documented in include/model.php */
+			$languages = apply_filters( 'pll_languages_list', $languages, null );
+
+			set_transient( 'pll_languages_list', $languages );
+
+			return new PLL_Language( $cached_language );
+		}
+
+		return null;
 	}
 }

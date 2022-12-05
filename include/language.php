@@ -39,69 +39,14 @@ class PLL_Language {
 
 	/**
 	 * ID of the term in 'language' taxonomy.
+	 * Duplicated from `$this->term_props['language']['term_id'],
+	 * but kept to facilitate the use of it.
 	 *
 	 * @var int
-	 * @since 3.4 Deprecated.
-	 * @deprecated
 	 *
 	 * @phpstan-var int<0, max>
 	 */
 	public $term_id;
-
-	/**
-	 * Term taxonomy id in 'language' taxonomy.
-	 *
-	 * @var int
-	 * @since 3.4 Deprecated.
-	 * @deprecated
-	 *
-	 * @phpstan-var int<0, max>
-	 */
-	public $term_taxonomy_id;
-
-	/**
-	 * Number of posts and pages in that language.
-	 *
-	 * @var int
-	 * @since 3.4 Deprecated.
-	 * @deprecated
-	 *
-	 * @phpstan-var int<0, max>
-	 */
-	public $count;
-
-	/**
-	 * ID of the term in 'term_language' taxonomy.
-	 *
-	 * @var int
-	 * @since 3.4 Deprecated.
-	 * @deprecated
-	 *
-	 * @phpstan-var int<0, max>
-	 */
-	public $tl_term_id;
-
-	/**
-	 * Term taxonomy ID in 'term_language' taxonomy.
-	 *
-	 * @var int
-	 * @since 3.4 Deprecated.
-	 * @deprecated
-	 *
-	 * @phpstan-var int<0, max>
-	 */
-	public $tl_term_taxonomy_id;
-
-	/**
-	 * Number of terms in that language.
-	 *
-	 * @var int
-	 * @since 3.4 Deprecated.
-	 * @deprecated
-	 *
-	 * @phpstan-var int<0, max>
-	 */
-	public $tl_count;
 
 	/**
 	 * WordPress language locale. Ex: en_US.
@@ -301,12 +246,6 @@ class PLL_Language {
 	 * }
 	 *
 	 * @phpstan-param array{
-	 *     term_id?: positive-int,
-	 *     term_taxonomy_id?: positive-int,
-	 *     count?: int<0, max>,
-	 *     tl_term_id?: positive-int,
-	 *     tl_term_taxonomy_id?: positive-int,
-	 *     tl_count?: int<0, max>,
 	 *     term_props: array{
 	 *         language: array{
 	 *             term_id: positive-int,
@@ -340,36 +279,10 @@ class PLL_Language {
 	 * } $language_data
 	 */
 	public function __construct( array $language_data ) {
-		// Deal with duplicated data for backward compatibility: priority to the ones in `$this->term_props`.
-		$term_props = array(
-			'term_id'             => array( 'language', 'term_id' ),
-			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
-			'count'               => array( 'language', 'count' ),
-			'tl_term_id'          => array( 'term_language', 'term_id' ),
-			'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
-			'tl_count'            => array( 'term_language', 'count' ),
-		);
-
-		foreach ( $term_props as $prop => $value ) {
-			if ( isset( $language_data['term_props'][ $value[0] ][ $value[1] ] ) ) {
-				$this->$prop = $this->set_tax_prop( $value[0], $value[1], $language_data['term_props'][ $value[0] ][ $value[1] ] );
-			} elseif ( isset( $language_data[ $prop ] ) ) {
-				$this->$prop = $this->set_tax_prop( $value[0], $value[1], $language_data[ $prop ] );
-			}
-
-			unset( $language_data['term_props'][ $value[0] ][ $value[1] ], $language_data[ $prop ] );
-
-			if ( empty( $language_data['term_props'][ $value[0] ] ) ) {
-				unset( $language_data['term_props'][ $value[0] ] );
-			}
-		}
-
-		// Other values in `term_props` that are not `language` nor `term_language`.
-		if ( ! empty( $language_data['term_props'] ) ) {
-			foreach ( $language_data['term_props'] as $taxonomy_name => $prop_values ) {
-				foreach ( $prop_values as $prop_name => $prop_value ) {
-					$this->set_tax_prop( $taxonomy_name, $prop_name, $prop_value );
-				}
+		// Set term properties. Don't check if they're set as they're mandatory.
+		foreach ( $language_data['term_props'] as $taxonomy_name => $prop_values ) {
+			foreach ( $prop_values as $prop_name => $prop_value ) {
+				$this->term_props[ $taxonomy_name ][ $prop_name ] = $prop_value; // @phpstan-ignore-line
 			}
 		}
 
@@ -392,6 +305,72 @@ class PLL_Language {
 		foreach ( $language_data as $prop => $value ) {
 			$this->$prop = $value;
 		}
+
+		$this->term_id = $this->term_props['language']['term_id'];
+	}
+
+	/**
+	 * Throws a depreciation notice if someone tries to get one of the following properties:
+	 * `term_taxonomy_id`, `count`, `tl_term_id`, `tl_term_taxonomy_id` or `tl_count`.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $property Property to get.
+	 * @return mixed Required property value.
+	 */
+	public function __get( $property ) {
+		$deprecated_properties = array(
+			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
+			'count'               => array( 'language', 'count' ),
+			'tl_term_id'          => array( 'term_language', 'term_id' ),
+			'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
+			'tl_count'            => array( 'term_language', 'count' ),
+		);
+
+		if ( array_key_exists( $property, $deprecated_properties ) ) {
+			trigger_error(
+				'Property' . __CLASS__ . '::$' . $property . ' is deprecated, use ' . __CLASS__ . '::$term_props instead.',
+				E_USER_DEPRECATED
+			);
+			$term_prop_type = $deprecated_properties[ $property ][0];
+			$term_prop      = $deprecated_properties[ $property ][1];
+
+			return $this->term_props[ $term_prop_type ][ $term_prop ];
+		}
+
+		return $this->$property;
+	}
+
+	/**
+	 * Throws a depreciation notice if someone tries to set one of the following properties:
+	 * `term_taxonomy_id`, `count`, `tl_term_id`, `tl_term_taxonomy_id` or `tl_count`.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $property Property to get.
+	 * @return void
+	 */
+	public function __set( $property, $value ) {
+		$deprecated_properties = array(
+			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
+			'count'               => array( 'language', 'count' ),
+			'tl_term_id'          => array( 'term_language', 'term_id' ),
+			'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
+			'tl_count'            => array( 'term_language', 'count' ),
+		);
+
+		if ( array_key_exists( $property, $deprecated_properties ) ) {
+			trigger_error(
+				'Property' . __CLASS__ . '::$' . $property . ' is deprecated, use ' . __CLASS__ . '::$term_props instead.',
+				E_USER_DEPRECATED
+			);
+			$term_prop_type = $deprecated_properties[ $property ][0];
+			$term_prop      = $deprecated_properties[ $property ][1];
+
+			$this->term_props[ $term_prop_type ][ $term_prop ] = $value;
+		}
+
+		$this->$property = $value;
 	}
 
 	/**
@@ -409,40 +388,6 @@ class PLL_Language {
 	 */
 	public function get_tax_prop( $taxonomy_name, $prop_name ) {
 		return isset( $this->term_props[ $taxonomy_name ][ $prop_name ] ) ? $this->term_props[ $taxonomy_name ][ $prop_name ] : 0;
-	}
-
-	/**
-	 * Stores a language term property value (term ID, term taxonomy ID, or count).
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $taxonomy_name Name of the taxonomy.
-	 * @param string $prop_name     Name of the property: 'term_taxonomy_id', 'term_id', 'count'.
-	 * @param int    $prop_value    Property value.
-	 * @return int
-	 *
-	 * @phpstan-param non-empty-string $taxonomy_name
-	 * @phpstan-param 'term_taxonomy_id'|'term_id'|'count' $prop_name
-	 * @phpstan-return int<0, max>
-	 */
-	public function set_tax_prop( $taxonomy_name, $prop_name, $prop_value ) {
-		if ( ! is_numeric( $prop_value ) ) {
-			return 0;
-		}
-
-		$prop_value = $prop_value >= 1 ? abs( (int) $prop_value ) : 0;
-
-		if ( 'count' === $prop_name || $prop_value >= 1 ) {
-			if ( ! isset( $this->term_props[ $taxonomy_name ] ) ) {
-				$this->term_props[ $taxonomy_name ] = array(); // @phpstan-ignore-line
-			}
-
-			$this->term_props[ $taxonomy_name ][ $prop_name ] = $prop_value; // @phpstan-ignore-line
-		} else {
-			unset( $this->term_props[ $taxonomy_name ][ $prop_name ] );
-		}
-
-		return $prop_value;
 	}
 
 	/**
