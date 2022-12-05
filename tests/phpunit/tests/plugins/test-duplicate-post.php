@@ -39,8 +39,8 @@ if ( file_exists( DIR_TESTROOT . '/../duplicate-post/' ) ) {
 			$this->assertContains( 'post_translations', get_option( 'duplicate_post_taxonomies_blacklist' ) );
 
 			// Check the integration.
-			$this->assertEquals( $fr, self::$model->post->get( $en, 'fr' ) );
-			$this->assertFalse( self::$model->post->get( $new_id, 'fr' ) );
+			$this->assertSame( $fr, self::$model->post->get( $en, 'fr' ) );
+			$this->assertSame( 0, self::$model->post->get( $new_id, 'fr' ) );
 		}
 	}
 }

@@ -161,7 +161,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$post_id = array_shift( $translations );
 		self::$model->post->save_translations( $post_id, $translations );
 
-		self::$model->post->update_language( $post_id, $to, 'post' );
+		self::$model->post->update_language( $post_id, self::$model->get_language( $to ) );
 
 		$updated_language_translations_group = array_keys( self::$model->post->get_translations( $post_id ) );
 		$updated_language_old_translations_group = array_keys( self::$model->post->get_translations( array_values( $translations )[0] ) );

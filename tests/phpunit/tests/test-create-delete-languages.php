@@ -147,6 +147,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'slug',
 			'term_group',
 			'term_taxonomy_id',
+			'term_props',
 			'count',
 			'tl_term_id',
 			'tl_term_taxonomy_id',
