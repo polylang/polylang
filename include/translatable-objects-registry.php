@@ -49,18 +49,6 @@ class PLL_Translatable_Objects_Registry {
 	}
 
 	/**
-	 * Tells if a translatable object is registered, given an object type.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $object_type The object type.
-	 * @return bool
-	 */
-	public function has( $object_type ) {
-		return isset( $this->objects[ $object_type ] );
-	}
-
-	/**
 	 * Returns a translatable object, given an object type.
 	 *
 	 * @since 3.4

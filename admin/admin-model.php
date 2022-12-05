@@ -338,7 +338,8 @@ class PLL_Admin_Model extends PLL_Model {
 	public function set_language_in_mass( $type, $ids, $lang ) {
 		global $wpdb;
 
-		if ( ! $this->translatable_objects->has( $type ) ) {
+		$object = $this->translatable_objects->get( $type );
+		if ( empty( $object ) ) {
 			return;
 		}
 

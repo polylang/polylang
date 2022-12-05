@@ -257,11 +257,13 @@ class PLL_Model {
 	 * @return string[] Post type names for which Polylang manages languages and translations.
 	 */
 	public function get_translated_post_types( $filter = true ) {
-		if ( ! $this->translatable_objects->has( 'post' ) ) {
+		$object = $this->translatable_objects->get( 'post' );
+
+		if ( empty( $object ) ) {
 			return array();
 		}
 
-		return $this->translatable_objects->get( 'post' )->get_translated_object_types( $filter );
+		return $object->get_translated_object_types( $filter );
 	}
 
 	/**
@@ -273,7 +275,9 @@ class PLL_Model {
 	 * @return bool
 	 */
 	public function is_translated_post_type( $post_type ) {
-		return $this->translatable_objects->has( 'post' ) && $this->translatable_objects->get( 'post' )->is_translated_object_type( $post_type );
+		$object = $this->translatable_objects->get( 'post' );
+
+		return ! empty( $object ) && $object->is_translated_object_type( $post_type );
 	}
 
 	/**
@@ -288,11 +292,13 @@ class PLL_Model {
 	 * @return string[] Array of registered taxonomy names for which Polylang manages languages and translations.
 	 */
 	public function get_translated_taxonomies( $filter = true ) {
-		if ( ! $this->translatable_objects->has( 'term' ) ) {
+		$object = $this->translatable_objects->get( 'term' );
+
+		if ( empty( $object ) ) {
 			return array();
 		}
 
-		return $this->translatable_objects->get( 'term' )->get_translated_object_types( $filter );
+		return $object->get_translated_object_types( $filter );
 	}
 
 	/**
@@ -304,7 +310,9 @@ class PLL_Model {
 	 * @return bool
 	 */
 	public function is_translated_taxonomy( $tax ) {
-		return $this->translatable_objects->has( 'term' ) && $this->translatable_objects->get( 'term' )->is_translated_object_type( $tax );
+		$object = $this->translatable_objects->get( 'term' );
+
+		return ! empty( $object ) && $object->is_translated_object_type( $tax );
 	}
 
 	/**
@@ -638,11 +646,13 @@ class PLL_Model {
 	 * @return int[]
 	 */
 	public function get_posts_with_no_lang( $post_types, $limit ) {
-		if ( ! $this->translatable_objects->has( 'post' ) ) {
+		$object = $this->translatable_objects->get( 'post' );
+
+		if ( empty( $object ) ) {
 			return array();
 		}
 
-		return $this->translatable_objects->get( 'post' )->get_objects_with_no_lang( (array) $post_types, $limit );
+		return $object->get_objects_with_no_lang( (array) $post_types, $limit );
 	}
 
 	/**
@@ -655,11 +665,13 @@ class PLL_Model {
 	 * @return int[]
 	 */
 	public function get_terms_with_no_lang( $taxonomies, $limit ) {
-		if ( ! $this->translatable_objects->has( 'term' ) ) {
+		$object = $this->translatable_objects->get( 'term' );
+
+		if ( empty( $object ) ) {
 			return array();
 		}
 
-		return $this->translatable_objects->get( 'term' )->get_objects_with_no_lang( (array) $taxonomies, $limit );
+		return $object->get_objects_with_no_lang( (array) $taxonomies, $limit );
 	}
 
 	/**
