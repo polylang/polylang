@@ -73,7 +73,7 @@ function pll_default_language( $field = 'slug' ) {
 }
 
 /**
- * Among the post and its translations, returns the id of the post which is in the language represented by $lang.
+ * Among the post and its translations, returns the ID of the post which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
@@ -82,7 +82,7 @@ function pll_default_language( $field = 'slug' ) {
  *
  * @param int                      $post_id Post ID.
  * @param PLL_Language|string|null $lang    Optional language (object or slug), defaults to the current language.
- * @return int|null Post ID of the translation if it exists, `0` otherwise, `null` if the language is not defined yet.
+ * @return int The translation post ID if exists, otherwise the passed ID. `0` if the passed object has no language.
  *
  * @phpstan-return int<0, max>|null
  */
@@ -106,7 +106,7 @@ function pll_get_post( $post_id, $lang = '' ) {
  *
  * @param int                      $term_id Term ID.
  * @param PLL_Language|string|null $lang    Optional language (object or slug), defaults to the current language.
- * @return int|null Term ID of the translation if it exists, `0` otherwise, `null` if the language is not defined yet.
+ * @return int The translation term ID if exists, otherwise the passed ID. `0` if the passed object has no language.
  *
  * @phpstan-return int<0, max>|null
  */
@@ -326,7 +326,7 @@ function pll_languages_list( $args = array() ) {
  * @since 3.4 $lang accepts PLL_Language or string.
  * @since 3.4 Returns a boolean.
  *
- * @param int                 $id   Post id.
+ * @param int                 $id   Post ID.
  * @param PLL_Language|string $lang Language (object or slug).
  * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
  *              the object).
@@ -343,7 +343,7 @@ function pll_set_post_language( $id, $lang ) {
  * @since 3.4 $lang accepts PLL_Language or string.
  * @since 3.4 Returns a boolean.
  *
- * @param int                 $id   Term id.
+ * @param int                 $id   Term ID.
  * @param PLL_Language|string $lang Language (object or slug).
  * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
  *              the object).
@@ -359,7 +359,7 @@ function pll_set_term_language( $id, $lang ) {
  * @since 1.5
  * @since 3.4 Returns an associative array of translations.
  *
- * @param int[] $arr An associative array of translations with language code as key and post id as value.
+ * @param int[] $arr An associative array of translations with language code as key and post ID as value.
  * @return int[] An associative array with language codes as key and post IDs as values.
  *
  * @phpstan-return array<non-empty-string, positive-int>
@@ -375,7 +375,7 @@ function pll_save_post_translations( $arr ) {
  * @since 1.5
  * @since 3.4 Returns an associative array of translations.
  *
- * @param int[] $arr An associative array of translations with language code as key and term id as value.
+ * @param int[] $arr An associative array of translations with language code as key and term ID as value.
  * @return int[] An associative array with language codes as key and term IDs as values.
  *
  * @phpstan-return array<non-empty-string, positive-int>
@@ -390,7 +390,7 @@ function pll_save_term_translations( $arr ) {
  * @api
  * @since 1.5.4
  *
- * @param int    $post_id Post id.
+ * @param int    $post_id Post ID.
  * @param string $field   Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'.
  * @return string|false The requested field for the post language, false if no language is associated to that post.
  */
@@ -404,7 +404,7 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  * @api
  * @since 1.5.4
  *
- * @param int    $term_id Term id.
+ * @param int    $term_id Term ID.
  * @param string $field   Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'.
  * @return string|false The requested field for the term language, false if no language is associated to that term.
  */
@@ -418,8 +418,8 @@ function pll_get_term_language( $term_id, $field = 'slug' ) {
  * @api
  * @since 1.8
  *
- * @param int $post_id Post id.
- * @return int[] An associative array of translations with language code as key and translation post id as value.
+ * @param int $post_id Post ID.
+ * @return int[] An associative array of translations with language code as key and translation post ID as value.
  *
  * @phpstan-return array<non-empty-string, positive-int>
  */
@@ -433,8 +433,8 @@ function pll_get_post_translations( $post_id ) {
  * @api
  * @since 1.8
  *
- * @param int $term_id Term id.
- * @return int[] An associative array of translations with language code as key and translation term id as value.
+ * @param int $term_id Term ID.
+ * @return int[] An associative array of translations with language code as key and translation term ID as value.
  *
  * @phpstan-return array<non-empty-string, positive-int>
  */
