@@ -123,13 +123,7 @@ class PLL_Model {
 				} else {
 					// Create the languages directly from arrays stored in the transient.
 					foreach ( $languages as $k => $v ) {
-						$v = PLL_Language_Factory::validate_data( $v );
-
-						if ( ! empty( $v ) ) {
-							$languages[ $k ] = new PLL_Language( $v );
-						} else {
-							unset( $languages[ $k ] );
-						}
+						$languages[ $k ] = PLL_Language_Factory::create( $v );
 					}
 
 					// Re-index.
@@ -615,7 +609,7 @@ class PLL_Model {
 
 		foreach ( $this->translatable_objects->get_all() as $type => $object ) {
 			// The trailing 's' in the array key is for backward compatibility.
-			$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $object->get_translated_object_types(), $limit );
+			$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $limit );
 		}
 
 		/**
@@ -644,7 +638,7 @@ class PLL_Model {
 			return array();
 		}
 
-		return $object->get_objects_with_no_lang( (array) $post_types, $limit );
+		return $object->get_objects_with_no_lang( $limit );
 	}
 
 	/**
@@ -663,7 +657,7 @@ class PLL_Model {
 			return array();
 		}
 
-		return $object->get_objects_with_no_lang( (array) $taxonomies, $limit );
+		return $object->get_objects_with_no_lang( $limit );
 	}
 
 	/**
@@ -737,13 +731,13 @@ class PLL_Model {
 				continue;
 			}
 
-			$lang_data = PLL_Language_Factory::prepare_data_for_language( $lang_terms );
+			$language = PLL_Language_Factory::create_from_terms( $lang_terms );
 
-			if ( empty( $lang_data ) ) {
+			if ( empty( $language ) ) {
 				continue;
 			}
 
-			$languages[] = new PLL_Language( $lang_data );
+			$languages[] = $language;
 		}
 
 		// We will need the languages list to allow its access in the filter below.
@@ -799,12 +793,7 @@ class PLL_Model {
 			$terms_by_type['post'][ $term->slug ] = $term;
 		}
 
-		$translatable_objects = array_diff_key(
-			$this->translatable_objects->get_all(),
-			$terms_by_type
-		);
-
-		foreach ( $translatable_objects as $type => $sub_model ) {
+		foreach ( $this->get_secondary_translatable_objects() as $type => $sub_model ) {
 			$terms = get_terms(
 				array(
 					'taxonomy'   => $sub_model->get_tax_language(),
@@ -847,9 +836,13 @@ class PLL_Model {
 	/**
 	 * Returns taxonomy names to manage language and translations.
 	 *
-	 * @param boolean $language     True to return taxonomy which manages language.
-	 * @param boolean $translations True to return taxonomy which manages translation.
+	 * @since 3.4
+	 *
+	 * @param bool $language     True to return taxonomy which manages language.
+	 * @param bool $translations True to return taxonomy which manages translation.
 	 * @return string[] Taxonomy names.
+	 *
+	 * @phpstan-return list<non-empty-string>
 	 */
 	public function get_taxonomy_names( $language = true, $translations = true ) {
 		$taxonomies = array();

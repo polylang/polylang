@@ -606,7 +606,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @return PLL_Translatable_Object[] An array of secondary translatable objects.
+	 * @return PLL_Translatable_Object[] An array of secondary translatable objects. Array keys are the type of translated content (post, term, etc).
 	 */
 	protected function get_secondary_translatable_objects() {
 		return array_diff_key( $this->translatable_objects->get_all(), array( 'post' => null ) );
