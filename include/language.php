@@ -44,7 +44,7 @@ class PLL_Language {
 	 *
 	 * @var int
 	 *
-	 * @phpstan-var int<0, max>
+	 * @phpstan-var int<1, max>
 	 */
 	public $term_id;
 
@@ -316,7 +316,9 @@ class PLL_Language {
 	 * @since 3.4
 	 *
 	 * @param string $property Property to get.
-	 * @return mixed Required property value.
+	 * @return int|string|array|null Required property value.
+	 *
+	 * @phpstan-return int|non-empty-string|array|null
 	 */
 	public function __get( $property ) {
 		$deprecated_properties = array(
