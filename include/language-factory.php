@@ -285,7 +285,7 @@ class PLL_Language_Factory {
 	}
 
 	/**
-	 * Prepares the data to be ready for `PLL_Language`'s constructor.
+	 * Returns a language object based on terms.
 	 *
 	 * @since 3.4
 	 *
