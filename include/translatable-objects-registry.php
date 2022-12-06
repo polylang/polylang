@@ -57,7 +57,7 @@ class PLL_Translatable_Objects_Registry {
 	 * @return PLL_Object_With_Language|null
 	 */
 	public function get( $object_type ) {
-		if ( ! $this->has( $object_type ) ) {
+		if ( ! isset( $this->objects[ $object_type ] ) ) {
 			return null;
 		}
 
