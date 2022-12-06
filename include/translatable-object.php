@@ -212,7 +212,7 @@ abstract class PLL_Translatable_Object {
 			return false;
 		}
 
-		return $this->model->get_language( $lang );
+		return $this->model->get_language( $lang->term_id );
 	}
 
 	/**
