@@ -43,7 +43,7 @@ class PLL_Admin_Model extends PLL_Model {
 		wp_update_term( (int) $r['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // can't set the term group directly in wp_insert_term
 
 		// The other language taxonomies.
-		foreach ( array_diff_key( $this->translatable_objects->get_all(), array( 'language' => null ) ) as $object ) {
+		foreach ( $this->get_secondary_translatable_objects() as $object ) {
 			wp_insert_term( $args['name'], $object->get_tax_language(), array( 'slug' => 'pll_' . $args['slug'] ) );
 		}
 
@@ -231,7 +231,7 @@ class PLL_Admin_Model extends PLL_Model {
 		update_option( 'polylang', $this->options );
 
 		// And finally update the language itself.
-		foreach ( array_diff_key( $this->translatable_objects->get_all(), array( 'language' => null ) ) as $object ) {
+		foreach ( $this->get_secondary_translatable_objects() as $object ) {
 			$taxonomy = $object->get_tax_language();
 			$term_id  = $lang->get_tax_prop( $taxonomy, 'term_id' );
 
@@ -599,5 +599,16 @@ class PLL_Admin_Model extends PLL_Model {
 
 		$this->clean_languages_cache();
 		flush_rewrite_rules();
+	}
+
+	/**
+	 * Returns all translatable objects except post one.
+	 *
+	 * @since 3.4
+	 *
+	 * @return PLL_Translatable_Object[] An array of secondary translatable objects.
+	 */
+	protected function get_secondary_translatable_objects() {
+		return array_diff_key( $this->translatable_objects->get_all(), array( 'post' => null ) );
 	}
 }
