@@ -13,9 +13,9 @@ class PLL_Translatable_Objects_Registry {
 	/**
 	 * List of registered objects.
 	 *
-	 * @var PLL_Object_With_Language[] Array keys are the type of translated content (post, term, etc).
+	 * @var PLL_Translatable_Object[] Array keys are the type of translated content (post, term, etc).
 	 *
-	 * @phpstan-var array<non-empty-string, PLL_Object_With_Language>
+	 * @phpstan-var array<non-empty-string, PLL_Translatable_Object>
 	 */
 	private $objects = array();
 
@@ -24,10 +24,10 @@ class PLL_Translatable_Objects_Registry {
 	 *
 	 * @since 3.4
 	 *
-	 * @param PLL_Object_With_Language $object The translatable object to register.
-	 * @return PLL_Object_With_Language
+	 * @param PLL_Translatable_Object $object The translatable object to register.
+	 * @return PLL_Translatable_Object
 	 */
-	public function register( PLL_Object_With_Language $object ) {
+	public function register( PLL_Translatable_Object $object ) {
 		if ( ! isset( $this->objects[ $object->get_type() ] ) ) {
 			$this->objects[ $object->get_type() ] = $object;
 		}
@@ -40,9 +40,9 @@ class PLL_Translatable_Objects_Registry {
 	 *
 	 * @since 3.4
 	 *
-	 * @return PLL_Object_With_Language[] Array keys are the type of translated content (post, term, etc).
+	 * @return PLL_Translatable_Object[] Array keys are the type of translated content (post, term, etc).
 	 *
-	 * @phpstan-return array<non-empty-string, PLL_Object_With_Language>
+	 * @phpstan-return array<non-empty-string, PLL_Translatable_Object>
 	 */
 	public function get_all() {
 		return $this->objects;
@@ -54,7 +54,7 @@ class PLL_Translatable_Objects_Registry {
 	 * @since 3.4
 	 *
 	 * @param string $object_type The object type.
-	 * @return PLL_Object_With_Language|null
+	 * @return PLL_Translatable_Object|null
 	 */
 	public function get( $object_type ) {
 		if ( ! isset( $this->objects[ $object_type ] ) ) {
