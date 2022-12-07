@@ -394,6 +394,20 @@ class PLL_Language {
 	}
 
 	/**
+	 * Checks for a deprecated property.
+	 * Is triggered by calling `isset()` or `empty()` on inaccessible (protected or private) or non-existing properties.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $property A property name.
+	 * @return bool
+	 */
+	public function __isset( $property ) {
+		$deprecated_properties = array( 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count' );
+		return in_array( $property, $deprecated_properties, true );
+	}
+
+	/**
 	 * Returns a language term property value (term ID, term taxonomy ID, or count).
 	 *
 	 * @since 3.4
