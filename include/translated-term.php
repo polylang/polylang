@@ -158,7 +158,6 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return false;
 		}
 
-		// `get_term_by()` still not cached in WP 3.5.1 but internally, the function is always called by term_id.
 		$term = get_term_by( 'slug', $slug, $taxonomy );
 
 		if ( ! $term instanceof WP_Term ) {

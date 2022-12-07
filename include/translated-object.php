@@ -45,7 +45,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 				'query_var'             => false,
 				'rewrite'               => false,
 				'_pll'                  => true,
-				'update_count_callback' => '_update_generic_term_count', // Count *all* objects to avoid deleting in clean_translations_terms.
+				'update_count_callback' => '_update_generic_term_count', // Count *all* objects to correctly detect unused terms.
 			)
 		);
 	}
