@@ -43,7 +43,7 @@ class PLL_Language_Factory {
 	 * @return PLL_Language|null A language object if given data pass sanitization, null otherwise.
 	 *
 	 * @phpstan-param array{
-	 *     term_props: array{
+	 *     term_props?: array{
 	 *         language: array{
 	 *             term_id: positive-int,
 	 *             term_taxonomy_id: positive-int,
@@ -55,6 +55,12 @@ class PLL_Language_Factory {
 	 *             count: int<0, max>
 	 *         }
 	 *     },
+	 *     term_id?: positive-int,
+	 *     term_taxonomy_id?: positive-int,
+	 *     count?: int,
+	 *     tl_term_id?: positive-int,
+	 *     tl_term_taxonomy_id?: positive-int,
+	 *     tl_count?: int,
 	 *     name: non-empty-string,
 	 *     slug: non-empty-string,
 	 *     locale: non-empty-string,
@@ -444,11 +450,10 @@ class PLL_Language_Factory {
 	private static function create_from_transient( $slug ) {
 		$languages = get_transient( 'pll_languages_list' );
 
-		if ( empty( $languages ) ) {
+		if ( empty( $languages ) || ! is_array( $languages ) ) {
 			return null;
 		}
 
-		/** @var array $languages */
 		foreach ( $languages as $i => $cached_language ) {
 			if ( $cached_language['slug'] !== $slug ) {
 				continue;
@@ -468,14 +473,8 @@ class PLL_Language_Factory {
 				if ( ! empty( $cached_language[ $prop ] ) && empty( $cached_language['term_props'][ $value[0] ][ $value[1] ] ) ) {
 					$cached_language['term_props'][ $value[0] ][ $value[1] ] = $cached_language[ $prop ];
 					unset( $cached_language[ $prop ] );
-					$languages[ $i ]['term_props'][ $value[0] ][ $value[1] ] = $cached_language[ $prop ];
 				}
 			}
-
-			/** This filter is documented in include/model.php */
-			$languages = apply_filters( 'pll_languages_list', $languages, null );
-
-			set_transient( 'pll_languages_list', $languages );
 
 			return new PLL_Language( $cached_language );
 		}
