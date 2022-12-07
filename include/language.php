@@ -626,18 +626,13 @@ class PLL_Language {
 	 * @param string $search_url Home url to use in search forms.
 	 * @param string $home_url   Home url.
 	 * @return void
+	 *
+	 * @phpstan-param non-emtpy-string $search_url
+	 * @phpstan-param non-emtpy-string $home_url
 	 */
 	public function set_home_url( $search_url, $home_url ) {
-		if ( empty( $search_url ) ) {
-			$this->search_url = null;
-		} else {
-			$this->search_url = $search_url;
-		}
-		if ( empty( $home_url ) ) {
-			$this->home_url = null;
-		} else {
-			$this->home_url = $home_url;
-		}
+		$this->search_url = $search_url;
+		$this->home_url   = $home_url;
 	}
 
 	/**
