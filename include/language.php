@@ -329,7 +329,9 @@ class PLL_Language {
 
 		// Deprecated property.
 		if ( array_key_exists( $property, $deprecated_properties ) ) {
-			$trigger = ! defined( 'PLL_TRIGGER_DEPRECATED_ERROR' ) || PLL_TRIGGER_DEPRECATED_ERROR;
+			$trigger        = ! defined( 'PLL_TRIGGER_DEPRECATED_ERROR' ) || PLL_TRIGGER_DEPRECATED_ERROR;
+			$term_prop_type = $deprecated_properties[ $property ][0];
+			$term_prop      = $deprecated_properties[ $property ][1];
 
 			/**
 			 * Filters whether to trigger an error for deprecated class properties.
@@ -344,16 +346,16 @@ class PLL_Language {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					esc_html(
 						sprintf(
-							'Class property %1$s::$%2$s is deprecated, use %1$s::$term_props instead.',
+							"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_tax_prop( '%3\$s', '%4\$s' ) instead.\nError handler",
 							get_class( $this ),
-							$property
+							$property,
+							$term_prop_type,
+							$term_prop
 						)
 					),
 					E_USER_DEPRECATED
 				);
 			}
-			$term_prop_type = $deprecated_properties[ $property ][0];
-			$term_prop      = $deprecated_properties[ $property ][1];
 
 			return $this->term_props[ $term_prop_type ][ $term_prop ];
 		}
