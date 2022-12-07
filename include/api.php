@@ -80,9 +80,10 @@ function pll_default_language( $field = 'slug' ) {
  * @since 3.4 Returns 0 instead of false.
  * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int                      $post_id Post ID.
- * @param PLL_Language|string|null $lang    Optional language (object or slug), defaults to the current language.
- * @return int The translation post ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+ * @param int                 $post_id Post ID.
+ * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
+ * @return int|null The translation post ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+ *                  `null` if the language is not defined yet.
  *
  * @phpstan-return int<0, max>|null
  */
@@ -104,9 +105,10 @@ function pll_get_post( $post_id, $lang = '' ) {
  * @since 3.4 Returns 0 instead of false.
  * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int                      $term_id Term ID.
- * @param PLL_Language|string|null $lang    Optional language (object or slug), defaults to the current language.
- * @return int The translation term ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+ * @param int                 $term_id Term ID.
+ * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
+ * @return int|null The translation term ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+ *                  `null` if the language is not defined yet.
  *
  * @phpstan-return int<0, max>|null
  */
@@ -329,7 +331,7 @@ function pll_languages_list( $args = array() ) {
  * @param int                 $id   Post ID.
  * @param PLL_Language|string $lang Language (object or slug).
  * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
- *              the object).
+ *              the post).
  */
 function pll_set_post_language( $id, $lang ) {
 	return PLL()->model->post->set_language( $id, $lang );
@@ -346,7 +348,7 @@ function pll_set_post_language( $id, $lang ) {
  * @param int                 $id   Term ID.
  * @param PLL_Language|string $lang Language (object or slug).
  * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
- *              the object).
+ *              the term).
  */
 function pll_set_term_language( $id, $lang ) {
 	return PLL()->model->term->set_language( $id, $lang );
