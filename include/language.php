@@ -329,7 +329,18 @@ class PLL_Language {
 
 		// Deprecated property.
 		if ( array_key_exists( $property, $deprecated_properties ) ) {
-			if ( WP_DEBUG ) {
+			$trigger = ! defined( 'PLL_TRIGGER_DEPRECATED_ERROR' ) || PLL_TRIGGER_DEPRECATED_ERROR;
+
+			/**
+			 * Filters whether to trigger an error for deprecated class properties.
+			 *
+			 * @since 3.4
+			 *
+			 * @param bool   $trigger      Whether to trigger the error for deprecated class properties. Default true.
+			 * @param string $class_name   Name of the class.
+			 * @param string $id           Name of the property.
+			 */
+			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', $trigger, get_class( $this ), $property ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					esc_html(
 						sprintf(
