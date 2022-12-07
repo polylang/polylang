@@ -395,9 +395,9 @@ function pll_set_term_language( $id, $lang ) {
  */
 function pll_save_post_translations( $arr ) {
 	$id = reset( $arr );
- 	if ( $id ) {
- 		return PLL()->model->post->save_translations( $id, $arr );
- 	}
+	if ( $id ) {
+		return PLL()->model->post->save_translations( $id, $arr );
+	}
 
 	return array();
 }
@@ -416,9 +416,9 @@ function pll_save_post_translations( $arr ) {
  */
 function pll_save_term_translations( $arr ) {
 	$id = reset( $arr );
- 	if ( $id ) {
- 		return PLL()->model->term->save_translations( $id, $arr );
- 	}
+	if ( $id ) {
+		return PLL()->model->term->save_translations( $id, $arr );
+	}
 
 	return array();
 }
@@ -436,11 +436,11 @@ function pll_save_term_translations( $arr ) {
 function pll_get_post_language( $post_id, $field = 'slug' ) {
 	$lang = PLL()->model->post->get_language( $post_id );
 
- 	if ( empty( $lang ) || ! isset( $lang->$field ) ) {
- 		return false;
- 	}
+	if ( empty( $lang ) || ! isset( $lang->$field ) ) {
+		return false;
+	}
 
- 	return $lang->$field;
+	return $lang->$field;
 }
 
 /**
@@ -456,11 +456,11 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
 function pll_get_term_language( $term_id, $field = 'slug' ) {
 	$lang = PLL()->model->term->get_language( $term_id );
 
- 	if ( empty( $lang ) || ! isset( $lang->$field ) ) {
- 		return false;
- 	}
+	if ( empty( $lang ) || ! isset( $lang->$field ) ) {
+		return false;
+	}
 
- 	return $lang->$field;
+	return $lang->$field;
 }
 
 /**
