@@ -316,9 +316,7 @@ class PLL_Language {
 	 * @since 3.4
 	 *
 	 * @param string $property Property to get.
-	 * @return int|string|array|null Required property value.
-	 *
-	 * @phpstan-return int|non-empty-string|array|null
+	 * @return mixed Required property value.
 	 */
 	public function __get( $property ) {
 		$deprecated_properties = array(
@@ -329,13 +327,16 @@ class PLL_Language {
 			'tl_count'            => array( 'term_language', 'count' ),
 		);
 
+		// Deprecated property.
 		if ( array_key_exists( $property, $deprecated_properties ) ) {
 			if ( WP_DEBUG ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-					sprintf(
-						'Property %1$s::$%2$s is deprecated, use %1$s::$term_props instead.',
-						__CLASS__,
-						esc_html( $property )
+					esc_html(
+						sprintf(
+							'Class property %1$s::$%2$s is deprecated, use %1$s::$term_props instead.',
+							get_class( $this ),
+							$property
+						)
 					),
 					E_USER_DEPRECATED
 				);
@@ -346,7 +347,37 @@ class PLL_Language {
 			return $this->term_props[ $term_prop_type ][ $term_prop ];
 		}
 
-		return $this->$property;
+		// Undefined property.
+		if ( ! property_exists( $this, $property ) ) {
+			return null;
+		}
+
+		// The property is defined.
+		$ref = new ReflectionProperty( $this, $property );
+
+		// Public property.
+		if ( $ref->isPublic() ) {
+			return $this->{$property};
+		}
+
+		// Protected or private property.
+		$visibility = $ref->isPrivate() ? 'private' : 'protected';
+		$trace      = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		$file       = isset( $trace[0]['file'] ) ? $trace[0]['file'] : '';
+		$line       = isset( $trace[0]['line'] ) ? $trace[0]['line'] : 0;
+		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+			esc_html(
+				sprintf(
+					"Cannot access %s property %s::$%s in %s on line %d\nError handler",
+					$visibility,
+					get_class( $this ),
+					$property,
+					$file,
+					$line
+				)
+			),
+			E_USER_ERROR
+		);
 	}
 
 	/**
