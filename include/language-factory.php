@@ -82,11 +82,21 @@ class PLL_Language_Factory {
 	 * } $language_data
 	 */
 	public static function create( $language_data ) {
-		if ( isset( $language_data['slug'] ) && ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) ) { // @phpstan-ignore-line
-			$language = self::create_from_transient( $language_data['slug'] );
-			if ( ! empty( $language ) ) {
-				return $language;
+		// Backward compatibility with deprecated properties.
+		$term_props = array(
+			'term_id'             => array( 'language', 'term_id' ),
+			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
+			'count'               => array( 'language', 'count' ),
+			'tl_term_id'          => array( 'term_language', 'term_id' ),
+			'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
+			'tl_count'            => array( 'term_language', 'count' ),
+		);
+
+		foreach ( $term_props as $prop => $value ) {
+			if ( ! empty( $language_data[ $prop ] ) && empty( $language_data['term_props'][ $value[0] ][ $value[1] ] ) ) {
+				$language_data['term_props'][ $value[0] ][ $value[1] ] = $language_data[ $prop ];
 			}
+			unset( $language_data[ $prop ] );
 		}
 
 		$language_data = self::validate_data( $language_data );
@@ -437,48 +447,5 @@ class PLL_Language_Factory {
 				'count'            => null,
 			)
 		);
-	}
-
-	/**
-	 * Returns a language object from `pll_language_list` transient based on a given slug.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $slug Slug of the required language.
-	 * @return PLL_Language|null Language object if found, null otherwise.
-	 */
-	private static function create_from_transient( $slug ) {
-		$languages = get_transient( 'pll_languages_list' );
-
-		if ( empty( $languages ) || ! is_array( $languages ) ) {
-			return null;
-		}
-
-		foreach ( $languages as $i => $cached_language ) {
-			if ( $cached_language['slug'] !== $slug ) {
-				continue;
-			}
-
-			// Backward compatibility.
-			$term_props = array(
-				'term_id'             => array( 'language', 'term_id' ),
-				'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
-				'count'               => array( 'language', 'count' ),
-				'tl_term_id'          => array( 'term_language', 'term_id' ),
-				'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
-				'tl_count'            => array( 'term_language', 'count' ),
-			);
-
-			foreach ( $term_props as $prop => $value ) {
-				if ( ! empty( $cached_language[ $prop ] ) && empty( $cached_language['term_props'][ $value[0] ][ $value[1] ] ) ) {
-					$cached_language['term_props'][ $value[0] ][ $value[1] ] = $cached_language[ $prop ];
-					unset( $cached_language[ $prop ] );
-				}
-			}
-
-			return new PLL_Language( $cached_language );
-		}
-
-		return null;
 	}
 }
