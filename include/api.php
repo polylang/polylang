@@ -1,5 +1,7 @@
 <?php
 /**
+ * The Polylang public API.
+ *
  * @package Polylang
  */
 
@@ -29,6 +31,10 @@
  * @return string|array Either the html markup of the switcher or the raw elements to build a custom language switcher.
  */
 function pll_the_languages( $args = array() ) {
+	if ( empty( PLL()->links ) ) {
+		return empty( $args['raw'] ) ? '' : array();
+	}
+
 	$switcher = new PLL_Switcher();
 	return $switcher->the_languages( PLL()->links, $args );
 }
@@ -41,9 +47,13 @@ function pll_the_languages( $args = array() ) {
  * @since 0.8.1
  *
  * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field for the current language.
+ * @return string|PLL_Language|false The requested field for the current language, false if none.
  */
 function pll_current_language( $field = 'slug' ) {
+	if ( empty( PLL()->curlang ) ) {
+		return false;
+	}
+
 	if ( OBJECT === $field ) {
 		return PLL()->curlang;
 	}
@@ -60,16 +70,21 @@ function pll_current_language( $field = 'slug' ) {
  * @return string|PLL_Language|false The requested field for the default language.
  */
 function pll_default_language( $field = 'slug' ) {
-	if ( isset( PLL()->options['default_lang'] ) ) {
-		$lang = PLL()->model->get_language( PLL()->options['default_lang'] );
-		if ( $lang ) {
-			if ( OBJECT === $field ) {
-				return $lang;
-			}
-			return isset( $lang->$field ) ? $lang->$field : false;
-		}
+	if ( empty( PLL()->options['default_lang'] ) ) {
+		return false;
 	}
-	return false;
+
+	$lang = PLL()->model->get_language( PLL()->options['default_lang'] );
+
+	if ( empty( $lang ) ) {
+		return false;
+	}
+
+	if ( OBJECT === $field ) {
+		return $lang;
+	}
+
+	return isset( $lang->$field ) ? $lang->$field : false;
 }
 
 /**
@@ -136,7 +151,11 @@ function pll_home_url( $lang = '' ) {
 		$lang = pll_current_language();
 	}
 
-	return empty( $lang ) ? home_url( '/' ) : PLL()->links->get_home_url( $lang );
+	if ( empty( $lang ) || empty( PLL()->links ) ) {
+		return home_url( '/' );
+	}
+
+	return PLL()->links->get_home_url( $lang );
 }
 
 /**
@@ -252,11 +271,17 @@ function pll_esc_attr_e( $string ) {
  * @return string The string translated in the requested language.
  */
 function pll_translate_string( $string, $lang ) {
-	if ( PLL() instanceof PLL_Frontend && pll_current_language() == $lang ) {
+	if ( PLL() instanceof PLL_Frontend && pll_current_language() === $lang ) {
 		return pll__( $string );
 	}
 
 	if ( ! is_scalar( $string ) || '' === $string ) {
+		return $string;
+	}
+
+	$language = PLL()->model->get_language( $lang );
+
+	if ( empty( $language ) ) {
 		return $string;
 	}
 
@@ -266,9 +291,11 @@ function pll_translate_string( $string, $lang ) {
 		$cache = new PLL_Cache();
 	}
 
-	if ( false === $mo = $cache->get( $lang ) ) {
+	$mo = $cache->get( $lang );
+
+	if ( false === $mo ) {
 		$mo = new PLL_MO();
-		$mo->import_from_db( PLL()->model->get_language( $lang ) );
+		$mo->import_from_db( $language );
 		$cache->set( $lang, $mo );
 	}
 
@@ -367,7 +394,12 @@ function pll_set_term_language( $id, $lang ) {
  * @phpstan-return array<non-empty-string, positive-int>
  */
 function pll_save_post_translations( $arr ) {
-	return PLL()->model->post->save_translations( reset( $arr ), $arr );
+	$id = reset( $arr );
+ 	if ( $id ) {
+ 		return PLL()->model->post->save_translations( $id, $arr );
+ 	}
+
+	return array();
 }
 
 /**
@@ -383,7 +415,12 @@ function pll_save_post_translations( $arr ) {
  * @phpstan-return array<non-empty-string, positive-int>
  */
 function pll_save_term_translations( $arr ) {
-	return PLL()->model->term->save_translations( reset( $arr ), $arr );
+	$id = reset( $arr );
+ 	if ( $id ) {
+ 		return PLL()->model->term->save_translations( $id, $arr );
+ 	}
+
+	return array();
 }
 
 /**
@@ -397,7 +434,13 @@ function pll_save_term_translations( $arr ) {
  * @return string|false The requested field for the post language, false if no language is associated to that post.
  */
 function pll_get_post_language( $post_id, $field = 'slug' ) {
-	return ( $lang = PLL()->model->post->get_language( $post_id ) ) ? $lang->$field : false;
+	$lang = PLL()->model->post->get_language( $post_id );
+
+ 	if ( empty( $lang ) || ! isset( $lang->$field ) ) {
+ 		return false;
+ 	}
+
+ 	return $lang->$field;
 }
 
 /**
@@ -411,7 +454,13 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  * @return string|false The requested field for the term language, false if no language is associated to that term.
  */
 function pll_get_term_language( $term_id, $field = 'slug' ) {
-	return ( $lang = PLL()->model->term->get_language( $term_id ) ) ? $lang->$field : false;
+	$lang = PLL()->model->term->get_language( $term_id );
+
+ 	if ( empty( $lang ) || ! isset( $lang->$field ) ) {
+ 		return false;
+ 	}
+
+ 	return $lang->$field;
 }
 
 /**
@@ -452,8 +501,7 @@ function pll_get_term_translations( $term_id ) {
  *
  * @param string $lang Language code.
  * @param array  $args {
- *   Optional arguments.
- *   Accepted keys:
+ *   Optional array of arguments.
  *
  *   @type string $post_type   Post type.
  *   @type int    $m           YearMonth ( ex: 201307 ).
@@ -468,7 +516,13 @@ function pll_get_term_translations( $term_id ) {
  * @return int Posts count.
  */
 function pll_count_posts( $lang, $args = array() ) {
-	return PLL()->model->count_posts( PLL()->model->get_language( $lang ), $args );
+	$language = PLL()->model->get_language( $lang );
+
+	if ( empty( $language ) ) {
+		return 0;
+	}
+
+	return PLL()->model->count_posts( $language, $args );
 }
 
 /**
