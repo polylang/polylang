@@ -59,6 +59,9 @@ class PLL_Links {
 	 */
 	public function get_home_url( $language, $is_search = false ) {
 		$language = is_object( $language ) ? $language : $this->model->get_language( $language );
+		if (!$language) {
+            		return null;
+        	}
 		return $is_search ? $language->search_url : $language->home_url;
 	}
 }
