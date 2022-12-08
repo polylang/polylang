@@ -168,55 +168,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
-	 * Returns the IDs of the objects without language.
-	 *
-	 * @since 3.4
-	 *
-	 * @param int $limit Max number of objects to return. `-1` to return all of them.
-	 * @return int[] Array of object IDs.
-	 *
-	 * @phpstan-param -1|positive-int $limit
-	 * @phpstan-return list<positive-int>
-	 */
-	public function get_objects_with_no_lang( $limit ) {
-		$object_types = $this->get_translated_object_types();
-
-		if ( empty( $object_types ) ) {
-			return array();
-		}
-
-		$languages = $this->model->get_languages_list();
-
-		foreach ( $languages as $i => $language ) {
-			$languages[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_id' );
-		}
-
-		$languages = array_filter( $languages );
-
-		if ( empty( $languages ) ) {
-			return array();
-		}
-
-		/** @var list<positive-int> */
-		return get_posts(
-			array(
-				'numberposts' => $limit,
-				'nopaging'    => $limit <= 0,
-				'post_type'   => $object_types,
-				'post_status' => 'any',
-				'fields'      => 'ids',
-				'tax_query'   => array(
-					array(
-						'taxonomy' => $this->get_tax_language(),
-						'terms'    => $languages,
-						'operator' => 'NOT IN',
-					),
-				),
-			)
-		);
-	}
-
-	/**
 	 * Registers the language taxonomy.
 	 *
 	 * @since 1.2
