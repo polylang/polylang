@@ -67,7 +67,7 @@ function pll_current_language( $field = 'slug' ) {
  * @since 1.0
  *
  * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field for the default language.
+ * @return string|PLL_Language|false The requested field or object for the default language. False if none.
  */
 function pll_default_language( $field = 'slug' ) {
 	if ( empty( PLL()->options['default_lang'] ) ) {
@@ -279,9 +279,9 @@ function pll_translate_string( $string, $lang ) {
 		return $string;
 	}
 
-	$language = PLL()->model->get_language( $lang );
+	$lang = PLL()->model->get_language( $lang );
 
-	if ( empty( $language ) ) {
+	if ( empty( $lang ) ) {
 		return $string;
 	}
 
@@ -295,7 +295,7 @@ function pll_translate_string( $string, $lang ) {
 
 	if ( false === $mo ) {
 		$mo = new PLL_MO();
-		$mo->import_from_db( $language );
+		$mo->import_from_db( $lang );
 		$cache->set( $lang, $mo );
 	}
 
@@ -516,13 +516,13 @@ function pll_get_term_translations( $term_id ) {
  * @return int Posts count.
  */
 function pll_count_posts( $lang, $args = array() ) {
-	$language = PLL()->model->get_language( $lang );
+	$lang = PLL()->model->get_language( $lang );
 
-	if ( empty( $language ) ) {
+	if ( empty( $lang ) ) {
 		return 0;
 	}
 
-	return PLL()->model->count_posts( $language, $args );
+	return PLL()->model->count_posts( $lang, $args );
 }
 
 /**
