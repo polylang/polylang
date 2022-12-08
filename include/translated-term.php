@@ -119,7 +119,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @since 0.1
 	 * @since 3.4 Renamed the parameter $value into $id.
 	 * @since 3.4 Deprecated to retrieve the language by term slug + taxonomy anymore.
-	 *
+	 * @custom-param int $id
 	 * @param int $id Term ID.
 	 * @return PLL_Language|false A `PLL_Language` object. `false` if no language is associated to that term or if the
 	 *                            ID is invalid.
@@ -127,44 +127,13 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	public function get_language( $id ) {
 		if ( func_num_args() > 1 ) {
 			// Backward compatibility.
-			_deprecated_argument(
-				__METHOD__ . '()',
-				'3.4',
-				esc_html(
-					sprintf(
-						/* translators: %s is a function name. */
-						__( 'Please use %s instead.', 'polylang' ),
-						get_class( $this ) . '::get_language_by_term_slug( $slug, $taxonomy )'
-					)
-				)
-			);
-			return $this->get_language_by_term_slug( $id, func_get_arg( 1 ) ); // @phpstan-ignore-line
+			_deprecated_argument( __METHOD__ . '()', '3.4' );
+
+			$term = get_term_by( 'slug', $id, func_get_arg( 1 ) ); // @phpstan-ignore-line
+			$id   = $term instanceof WP_Term ? $term->term_id : 0;
 		}
 
 		return parent::get_language( $id );
-	}
-
-	/**
-	 * Returns the language of a term by slug and taxonomy.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $slug     Term slug.
-	 * @param string $taxonomy Taxonomy.
-	 * @return PLL_Language|false A `PLL_Language` object. `false` if no language is associated to that term.
-	 */
-	public function get_language_by_term_slug( $slug, $taxonomy ) {
-		if ( empty( $slug ) || empty( $taxonomy ) ) {
-			return false;
-		}
-
-		$term = get_term_by( 'slug', $slug, $taxonomy );
-
-		if ( ! $term instanceof WP_Term ) {
-			return false;
-		}
-
-		return parent::get_language( $term->term_id );
 	}
 
 	/**

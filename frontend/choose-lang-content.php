@@ -68,6 +68,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 		else {
 			foreach ( $this->model->get_translated_taxonomies() as $taxonomy ) {
 				$tax_object = get_taxonomy( $taxonomy );
+
 				if ( empty( $tax_object ) ) {
 					continue;
 				}
@@ -78,7 +79,13 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 					continue;
 				}
 
-				$lang = $this->model->term->get_language_by_term_slug( $var, $taxonomy );
+				$term = get_term_by( 'slug', $var, $taxonomy );
+
+				if ( ! $term instanceof WP_Term ) {
+					continue;
+				}
+
+				$lang = $this->model->term->get_language( $term->term_id );
 			}
 		}
 
