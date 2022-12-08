@@ -12,6 +12,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translatable_Object_With_Types_Interface {
 
+	use PLL_Translatable_Object_With_Types_Trait;
+
 	/**
 	 * Taxonomy name for the languages.
 	 *
