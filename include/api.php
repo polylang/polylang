@@ -47,11 +47,11 @@ function pll_the_languages( $args = array() ) {
  * @since 0.8.1
  *
  * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field for the current language, false if none.
+ * @return string|PLL_Language|null|false The requested field or object for the current language, false if none field not set or null if current language doesn't exist yet.
  */
 function pll_current_language( $field = 'slug' ) {
 	if ( empty( PLL()->curlang ) ) {
-		return false;
+		return null;
 	}
 
 	if ( OBJECT === $field ) {
