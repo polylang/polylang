@@ -78,59 +78,57 @@ class PLL_Language {
 	/**
 	 * Facebook locale.
 	 *
-	 * @var string|null
-	 *
-	 * @phpstan-var non-empty-string|null
+	 * @var string
 	 */
 	public $facebook;
 
 	/**
 	 * Home URL in this language.
 	 *
-	 * @var string|null
+	 * @var string
 	 *
-	 * @phpstan-var non-empty-string|null
+	 * @phpstan-var non-empty-string
 	 */
 	public $home_url;
 
 	/**
 	 * Home URL to use in search forms.
 	 *
-	 * @var string|null
+	 * @var string
 	 *
-	 * @phpstan-var non-empty-string|null
+	 * @phpstan-var non-empty-string
 	 */
 	public $search_url;
 
 	/**
 	 * Host corresponding to this language.
 	 *
-	 * @var string|null
+	 * @var string
 	 *
-	 * @phpstan-var non-empty-string|null
+	 * @phpstan-var non-empty-string
 	 */
 	public $host;
 
 	/**
 	 * ID of the post storing strings translations.
 	 *
-	 * @var int|null
+	 * @var int
 	 *
-	 * @phpstan-var positive-int|null
+	 * @phpstan-var positive-int
 	 */
 	public $mo_id;
 
 	/**
 	 * ID of the page on front in this language (set from pll_languages_list filter).
 	 *
-	 * @var int|null
+	 * @var int
 	 */
 	public $page_on_front;
 
 	/**
 	 * ID of the page for posts in this language (set from pll_languages_list filter).
 	 *
-	 * @var int|null
+	 * @var int
 	 */
 	public $page_for_posts;
 
@@ -146,7 +144,7 @@ class PLL_Language {
 	/**
 	 * URL of the flag.
 	 *
-	 * @var string|null
+	 * @var string
 	 *
 	 * @phpstan-var non-empty-string|null
 	 */
@@ -155,23 +153,21 @@ class PLL_Language {
 	/**
 	 * HTML markup of the flag.
 	 *
-	 * @var string|null
+	 * @var string
 	 */
 	public $flag;
 
 	/**
 	 * URL of the custom flag if it exists.
 	 *
-	 * @var string|null
-	 *
-	 * @phpstan-var non-empty-string|null
+	 * @var string
 	 */
 	public $custom_flag_url;
 
 	/**
 	 * HTML markup of the custom flag if it exists.
 	 *
-	 * @var string|null
+	 * @var string
 	 */
 	public $custom_flag;
 
@@ -232,17 +228,17 @@ class PLL_Language {
 	 *     @type string  $flag_code       Code of the flag.
 	 *     @type int     $term_group      Order of the language when displayed in a list of languages.
 	 *     @type int     $is_rtl          `1` if the language is rtl, `0` otherwise.
-	 *     @type int     $mo_id           Optional. ID of the post storing strings translations.
+	 *     @type int     $mo_id           ID of the post storing strings translations.
 	 *     @type string  $facebook        Optional. Facebook locale.
-	 *     @type string  $home_url        Optional. Home URL in this language.
-	 *     @type string  $search_url      Optional. Home URL to use in search forms.
-	 *     @type string  $host            Optional. Host corresponding to this language.
-	 *     @type string  $flag_url        Optional. URL of the flag.
-	 *     @type string  $flag            Optional. HTML markup of the flag.
+	 *     @type string  $home_url        Home URL in this language.
+	 *     @type string  $search_url      Home URL to use in search forms.
+	 *     @type string  $host            Host corresponding to this language.
+	 *     @type string  $flag_url        URL of the flag.
+	 *     @type string  $flag            HTML markup of the flag.
 	 *     @type string  $custom_flag_url Optional. URL of the custom flag if it exists.
 	 *     @type string  $custom_flag     Optional. HTML markup of the custom flag if it exists.
-	 *     @type int     $page_on_front   Optional. ID of the page on front in this language.
-	 *     @type int     $page_for_posts  Optional. ID of the page for posts in this language.
+	 *     @type int     $page_on_front   ID of the page on front in this language.
+	 *     @type int     $page_for_posts  ID of the page for posts in this language.
 	 * }
 	 *
 	 * @phpstan-param array{
@@ -265,17 +261,17 @@ class PLL_Language {
 	 *     flag_code: non-empty-string,
 	 *     term_group: int,
 	 *     is_rtl: int<0, 1>,
-	 *     mo_id?: positive-int,
+	 *     mo_id: positive-int,
 	 *     facebook?: non-empty-string,
-	 *     home_url?: non-empty-string,
-	 *     search_url?: non-empty-string,
-	 *     host?: non-empty-string,
-	 *     flag_url?: non-empty-string,
-	 *     flag?: non-empty-string,
+	 *     home_url: non-empty-string,
+	 *     search_url: non-empty-string,
+	 *     host: non-empty-string,
+	 *     flag_url: non-empty-string,
+	 *     flag: non-empty-string,
 	 *     custom_flag_url?: non-empty-string,
 	 *     custom_flag?: non-empty-string,
-	 *     page_on_front?:positive-int,
-	 *     page_for_posts?:positive-int
+	 *     page_on_front:positive-int,
+	 *     page_for_posts:positive-int
 	 * } $language_data
 	 */
 	public function __construct( array $language_data ) {
