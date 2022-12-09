@@ -293,7 +293,7 @@ function pll_translate_string( $string, $lang ) {
 
 	$mo = $cache->get( $lang );
 
-	if ( false === $mo ) {
+	if ( ! $mo instanceof PLL_MO ) {
 		$mo = new PLL_MO();
 		$mo->import_from_db( $lang );
 		$cache->set( $lang, $mo );
