@@ -262,14 +262,14 @@ class PLL_Language {
 	 *     term_group: int,
 	 *     is_rtl: int<0, 1>,
 	 *     mo_id: positive-int,
-	 *     facebook?: non-empty-string,
+	 *     facebook?: string,
 	 *     home_url: non-empty-string,
 	 *     search_url: non-empty-string,
 	 *     host: non-empty-string,
 	 *     flag_url: non-empty-string,
 	 *     flag: non-empty-string,
-	 *     custom_flag_url?: non-empty-string,
-	 *     custom_flag?: non-empty-string,
+	 *     custom_flag_url?: string,
+	 *     custom_flag?: string,
 	 *     page_on_front:positive-int,
 	 *     page_for_posts:positive-int
 	 * } $language_data
@@ -277,25 +277,12 @@ class PLL_Language {
 	public function __construct( array $language_data ) {
 		// Set term properties. Don't check if they exist as they're mandatory.
 		foreach ( $language_data['term_props'] as $taxonomy_name => $prop_values ) {
-			foreach ( $prop_values as $prop_name => $prop_value ) {
-				$this->term_props[ $taxonomy_name ][ $prop_name ] = $prop_value; // @phpstan-ignore-line
-			}
+			$this->term_props[ $taxonomy_name ]['term_id']          = $prop_values['term_id'];
+			$this->term_props[ $taxonomy_name ]['term_taxonomy_id'] = $prop_values['term_taxonomy_id'];
+			$this->term_props[ $taxonomy_name ]['count']            = $prop_values['count'];
 		}
 
 		unset( $language_data['term_props'] );
-
-		// Make sure everything is fine in term props.
-		foreach ( $this->term_props as $taxonomy_name => $prop_values ) {
-			if ( ! isset( $prop_values['term_id'], $prop_values['term_taxonomy_id'] ) ) { // @phpstan-ignore-line
-				// This must not happen for `language` and `term_language`.
-				unset( $this->term_props[ $taxonomy_name ] );
-				continue;
-			}
-
-			if ( ! isset( $prop_values['count'] ) ) { // @phpstan-ignore-line
-				$this->term_props[ $taxonomy_name ]['count'] = 0; // @phpstan-ignore-line
-			}
-		}
 
 		// Add all the other values.
 		foreach ( $language_data as $prop => $value ) {
@@ -338,7 +325,7 @@ class PLL_Language {
 			 * @param string $class_name   Name of the class.
 			 * @param string $id           Name of the property.
 			 */
-			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', $trigger, get_class( $this ), $property ) {
+			if ( WP_DEBUG && apply_filters( 'pll_deprecated_property_trigger_error', $trigger, get_class( $this ), $property ) ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					esc_html(
 						sprintf(
@@ -681,8 +668,8 @@ class PLL_Language {
 	 * @param string $home_url   Home url.
 	 * @return void
 	 *
-	 * @phpstan-param non-emtpy-string $search_url
-	 * @phpstan-param non-emtpy-string $home_url
+	 * @phpstan-param non-empty-string $search_url
+	 * @phpstan-param non-empty-string $home_url
 	 */
 	public function set_home_url( $search_url, $home_url ) {
 		$this->search_url = $search_url;

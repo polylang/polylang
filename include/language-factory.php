@@ -55,12 +55,6 @@ class PLL_Language_Factory {
 	 *             count: int<0, max>
 	 *         }
 	 *     },
-	 *     term_id?: positive-int,
-	 *     term_taxonomy_id?: positive-int,
-	 *     count?: int<0, max>,
-	 *     tl_term_id?: positive-int,
-	 *     tl_term_taxonomy_id?: positive-int,
-	 *     tl_count?: int<0, max>,
 	 *     name: non-empty-string,
 	 *     slug: non-empty-string,
 	 *     locale: non-empty-string,
@@ -68,17 +62,17 @@ class PLL_Language_Factory {
 	 *     flag_code: non-empty-string,
 	 *     term_group: int,
 	 *     is_rtl: int<0, 1>,
-	 *     mo_id?: positive-int,
+	 *     mo_id: positive-int,
 	 *     facebook?: non-empty-string,
-	 *     home_url?: non-empty-string,
-	 *     search_url?: non-empty-string,
-	 *     host?: non-empty-string,
-	 *     flag_url?: non-empty-string,
-	 *     flag?: non-empty-string,
+	 *     home_url: non-empty-string,
+	 *     search_url: non-empty-string,
+	 *     host: non-empty-string,
+	 *     flag_url: non-empty-string,
+	 *     flag: non-empty-string,
 	 *     custom_flag_url?: non-empty-string,
 	 *     custom_flag?: non-empty-string,
-	 *     page_on_front?:positive-int,
-	 *     page_for_posts?:positive-int
+	 *     page_on_front:positive-int,
+	 *     page_for_posts:positive-int
 	 * } $language_data
 	 */
 	public static function create( $language_data ) {
@@ -245,6 +239,40 @@ class PLL_Language_Factory {
 			$data[ $field ] = (int) $data[ $field ];
 		}
 
+		/**
+		 * @var array{
+		 *     term_props: array{
+		 *         language: array{
+		 *             term_id: positive-int,
+		 *             term_taxonomy_id: positive-int,
+		 *             count: int<0, max>
+		 *         },
+		 *         term_language: array{
+		 *             term_id: positive-int,
+		 *             term_taxonomy_id: positive-int,
+		 *             count: int<0, max>
+		 *         }
+		 *     },
+		 *     name: non-empty-string,
+		 *     slug: non-empty-string,
+		 *     locale: non-empty-string,
+		 *     w3c: non-empty-string,
+		 *     flag_code: non-empty-string,
+		 *     term_group: int,
+		 *     is_rtl: int<0, 1>,
+		 *     mo_id: positive-int,
+		 *     facebook?: string,
+		 *     home_url: non-empty-string,
+		 *     search_url: non-empty-string,
+		 *     host: non-empty-string,
+		 *     flag_url: non-empty-string,
+		 *     flag: non-empty-string,
+		 *     custom_flag_url?: string,
+		 *     custom_flag?: string,
+		 *     page_on_front:positive-int,
+		 *     page_for_posts:positive-int
+		 * } $data
+		 */
 		return $data;
 	}
 }

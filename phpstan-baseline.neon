@@ -856,11 +856,6 @@ parameters:
 			path: include/language.php
 
 		-
-			message: "#^Method PLL_Language\\:\\:get_display_flag\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
 			message: "#^Method PLL_Language\\:\\:get_display_flag_url\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: include/language.php
