@@ -47,16 +47,17 @@ function pll_the_languages( $args = array() ) {
  * @since 0.8.1
  *
  * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|null|false The requested field or object for the current language, false if field isn't set or null if current language doesn't exist yet.
+ * @return string|PLL_Language|false The requested field or object for the current language, false if field isn't set or if current language doesn't exist yet.
  */
 function pll_current_language( $field = 'slug' ) {
 	if ( empty( PLL()->curlang ) ) {
-		return null;
+		return false;
 	}
 
 	if ( OBJECT === $field ) {
 		return PLL()->curlang;
 	}
+
 	return isset( PLL()->curlang->$field ) ? PLL()->curlang->$field : false;
 }
 
@@ -97,16 +98,15 @@ function pll_default_language( $field = 'slug' ) {
  *
  * @param int                 $post_id Post ID.
  * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
- * @return int|null The translation post ID if exists, otherwise the passed ID. `0` if the passed object has no language.
- *                  `null` if the language is not defined yet.
+ * @return int|false The translation post ID if exists, otherwise the passed ID. False if the passed object has no language or if the language doesn't exist.
  *
- * @phpstan-return int<0, max>|null
+ * @phpstan-return int<0, max>|false
  */
 function pll_get_post( $post_id, $lang = '' ) {
 	$lang = $lang ? $lang : pll_current_language();
 
 	if ( empty( $lang ) ) {
-		return null;
+		return false;
 	}
 
 	return PLL()->model->post->get( $post_id, $lang );
@@ -122,16 +122,15 @@ function pll_get_post( $post_id, $lang = '' ) {
  *
  * @param int                 $term_id Term ID.
  * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
- * @return int|null The translation term ID if exists, otherwise the passed ID. `0` if the passed object has no language.
- *                  `null` if the language is not defined yet.
+ * @return int|false The translation term ID if exists, otherwise the passed ID. False if the passed object has no language or if the language doesn't exist.
  *
- * @phpstan-return int<0, max>|null
+ * @phpstan-return int<0, max>|false
  */
 function pll_get_term( $term_id, $lang = null ) {
 	$lang = $lang ? $lang : pll_current_language();
 
 	if ( empty( $lang ) ) {
-		return null;
+		return false;
 	}
 
 	return PLL()->model->term->get( $term_id, $lang );
