@@ -436,7 +436,15 @@ function pll_save_term_translations( $arr ) {
 function pll_get_post_language( $post_id, $field = 'slug' ) {
 	$lang = PLL()->model->post->get_language( $post_id );
 
-	if ( empty( $lang ) || ! isset( $lang->$field ) ) {
+	if ( empty( $lang ) ) {
+		return false;
+	}
+
+	if ( OBJECT === $field ) {
+		return $lang;
+	}
+
+	if ( ! isset( $lang->$field ) ) {
 		return false;
 	}
 
@@ -456,7 +464,15 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
 function pll_get_term_language( $term_id, $field = 'slug' ) {
 	$lang = PLL()->model->term->get_language( $term_id );
 
-	if ( empty( $lang ) || ! isset( $lang->$field ) ) {
+	if ( empty( $lang ) ) {
+		return false;
+	}
+
+	if ( OBJECT === $field ) {
+		return $lang;
+	}
+
+	if ( ! isset( $lang->$field ) ) {
 		return false;
 	}
 
