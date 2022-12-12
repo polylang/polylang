@@ -9,6 +9,39 @@
  *
  * @since 1.2
  * @immutable
+ *
+ * @phpstan-type LanguageData array{
+ *     term_props: array{
+ *         language: array{
+ *             term_id: positive-int,
+ *             term_taxonomy_id: positive-int,
+ *             count: int<0, max>
+ *         },
+ *         term_language: array{
+ *             term_id: positive-int,
+ *             term_taxonomy_id: positive-int,
+ *             count: int<0, max>
+ *         }
+ *     },
+ *     name: non-empty-string,
+ *     slug: non-empty-string,
+ *     locale: non-empty-string,
+ *     w3c: non-empty-string,
+ *     flag_code: non-empty-string,
+ *     term_group: int,
+ *     is_rtl: int<0, 1>,
+ *     mo_id: positive-int,
+ *     facebook?: string,
+ *     home_url: non-empty-string,
+ *     search_url: non-empty-string,
+ *     host: non-empty-string,
+ *     flag_url: non-empty-string,
+ *     flag: non-empty-string,
+ *     custom_flag_url?: string,
+ *     custom_flag?: string,
+ *     page_on_front:positive-int,
+ *     page_for_posts:positive-int
+ * }
  */
 #[AllowDynamicProperties]
 class PLL_Language {
@@ -241,38 +274,7 @@ class PLL_Language {
 	 *     @type int     $page_for_posts  ID of the page for posts in this language.
 	 * }
 	 *
-	 * @phpstan-param array{
-	 *     term_props: array{
-	 *         language: array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         },
-	 *         term_language: array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         }
-	 *     },
-	 *     name: non-empty-string,
-	 *     slug: non-empty-string,
-	 *     locale: non-empty-string,
-	 *     w3c: non-empty-string,
-	 *     flag_code: non-empty-string,
-	 *     term_group: int,
-	 *     is_rtl: int<0, 1>,
-	 *     mo_id: positive-int,
-	 *     facebook?: string,
-	 *     home_url: non-empty-string,
-	 *     search_url: non-empty-string,
-	 *     host: non-empty-string,
-	 *     flag_url: non-empty-string,
-	 *     flag: non-empty-string,
-	 *     custom_flag_url?: string,
-	 *     custom_flag?: string,
-	 *     page_on_front:positive-int,
-	 *     page_for_posts:positive-int
-	 * } $language_data
+	 * @phpstan-param LanguageData $language_data
 	 */
 	public function __construct( array $language_data ) {
 		foreach ( $language_data as $prop => $value ) {
