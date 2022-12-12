@@ -3,188 +3,104 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * Setups the objects languages and translations model.
+ * Abstract class to use for object types that support translations.
  *
  * @since 1.8
  */
-abstract class PLL_Translated_Object {
-	/**
-	 * @var PLL_Model
-	 */
-	public $model;
-
-	/**
-	 * Object type to use when registering the taxonomies.
-	 * Left empty for posts.
-	 *
-	 * @var string|null
-	 */
-	protected $object_type;
-
-	/**
-	 * Object type to use when checking capabilities.
-	 *
-	 * @var string
-	 */
-	protected $type;
-
-	/**
-	 * Taxonomy name for the languages.
-	 *
-	 * @var string
-	 */
-	protected $tax_language;
+abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 	/**
 	 * Taxonomy name for the translation groups.
 	 *
 	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
 	 */
 	protected $tax_translations;
-
-	/**
-	 * PLL_Language property name for the term_taxonomy id.
-	 *
-	 * @var string
-	 */
-	protected $tax_tt;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
 	 *
-	 * @param PLL_Model $model Instance of PLL_Model.
+	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
-	public function __construct( &$model ) {
-		$this->model = &$model;
+	public function __construct( PLL_Model &$model ) {
+		parent::__construct( $model );
+
+		$this->tax_to_cache[] = $this->tax_translations;
 
 		/*
-		 * Register our taxonomies as soon as possible.
-		 * This is early registration, not ready for rewrite rules as $wp_rewrite will be setup later.
+		 * Register our taxonomy as soon as possible.
 		 */
-		$args = array( 'label' => false, 'public' => false, 'query_var' => false, 'rewrite' => false, '_pll' => true );
-		register_taxonomy( $this->tax_language, $this->object_type, $args );
-		$args['update_count_callback'] = '_update_generic_term_count'; // Count *all* objects to avoid deleting in clean_translations_terms.
-		register_taxonomy( $this->tax_translations, $this->object_type, $args );
+		register_taxonomy(
+			$this->tax_translations,
+			(array) $this->object_type,
+			array(
+				'label'                 => false,
+				'public'                => false,
+				'query_var'             => false,
+				'rewrite'               => false,
+				'_pll'                  => true,
+				'update_count_callback' => '_update_generic_term_count', // Count *all* objects to correctly detect unused terms.
+			)
+		);
 	}
 
 	/**
-	 * Stores the language in the database.
+	 * Returns the translations group taxonomy name.
 	 *
-	 * @since 0.6
+	 * @since 3.4
 	 *
-	 * @param int                     $id   Object id.
-	 * @param int|string|PLL_Language $lang Language (term_id or slug or object).
-	 * @return void
+	 * @return string
+	 *
+	 * @phpstan-return non-empty-string
 	 */
-	abstract public function set_language( $id, $lang );
-
-	/**
-	 * Returns the language of an object.
-	 *
-	 * @since 0.1
-	 *
-	 * @param int $id Object id.
-	 * @return PLL_Language|false PLL_Language object, false if no language is associated to that object.
-	 */
-	abstract public function get_language( $id );
+	public function get_tax_translations() {
+		return $this->tax_translations;
+	}
 
 	/**
 	 * Assigns a new language to an object, taking care of the translations group.
 	 *
 	 * @since 3.1
 	 *
-	 * @param int          $id   Object id.
+	 * @param int          $id   Object ID.
 	 * @param PLL_Language $lang New language to assign to the object.
-	 * @return void
+	 * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+	 *              the object).
 	 */
-	public function update_language( $id, $lang ) {
-		$id = $this->sanitize_int_id( $id );
-
-		if ( empty( $id ) || $this->get_language( $id ) === $lang ) {
-			return;
-		}
-
-		$this->set_language( $id, $lang );
-
-		$translations = $this->get_translations( $id );
-
-		if ( $translations ) {
-			// Remove the post's former language from the new translations group.
-			$translations = array_diff( $translations, array( $id ) );
-			$this->save_translations( $id, $translations );
-		}
-	}
-
-	/**
-	 * Wraps wp_get_object_terms() to cache it and return only one object.
-	 * Inspired by the WordPress function get_the_terms().
-	 *
-	 * @since 1.2
-	 *
-	 * @param int    $object_id Object id ( typically a post_id or term_id ).
-	 * @param string $taxonomy  Polylang taxonomy depending if we are looking for a post ( or term ) language ( or translation ).
-	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, false otherwise.
-	 */
-	public function get_object_term( $object_id, $taxonomy ) {
-		global $wp_version;
-
-		$object_id = $this->sanitize_int_id( $object_id );
-
-		if ( empty( $object_id ) ) {
+	public function update_language( $id, PLL_Language $lang ) {
+		if ( ! $this->set_language( $id, $lang ) ) {
 			return false;
 		}
 
-		$term = get_object_term_cache( $object_id, $taxonomy );
+		$id = $this->sanitize_int_id( $id );
 
-		if ( is_array( $term ) ) {
-			return ! empty( $term ) ? reset( $term ) : false;
+		$translations = $this->get_translations( $id );
+
+		// Don't create translation groups with only 1 value.
+		if ( ! empty( $translations ) ) {
+			// Remove the object's former language from the new translations group before adding the new value.
+			$translations = array_diff( $translations, array( $id ) );
+			$this->save_translations( $id, $translations );
 		}
 
-		// Query language and translations at the same time.
-		$taxonomies = array( $this->tax_language, $this->tax_translations );
-
-		// Query terms.
-		$terms        = array();
-		$term         = false;
-		$object_terms = wp_get_object_terms( $object_id, $taxonomies, array( 'update_term_meta_cache' => false ) );
-
-		if ( is_array( $object_terms ) ) {
-			foreach ( $object_terms as $t ) {
-				$terms[ $t->taxonomy ] = $t;
-				if ( $t->taxonomy === $taxonomy ) {
-					$term = $t;
-				}
-			}
-		}
-
-		// Stores it the way WP expects it. Set an empty cache if no term was found in the taxonomy.
-		$store_only_term_ids = version_compare( $wp_version, '6.0', '>=' );
-		foreach ( $taxonomies as $tax ) {
-			if ( empty( $terms[ $tax ] ) ) {
-				$to_cache = array();
-			} elseif ( $store_only_term_ids ) {
-				$to_cache = array( $terms[ $tax ]->term_id );
-			} else {
-				// Backward compatibility with WP < 6.0.
-				$to_cache = array( $terms[ $tax ] );
-			}
-
-			wp_cache_add( $object_id, $to_cache, $tax . '_relationships' );
-		}
-
-		return $term;
+		return true;
 	}
 
 	/**
-	 * Returns a list of post translations, given a `tax_translations` term ID.
+	 * Returns a list of object translations, given a `tax_translations` term ID.
 	 *
 	 * @since 3.2
 	 *
-	 * @param int $term_id Term ID.
-	 * @return int[] An associative array of translations with language code as key and translation id as value.
+	 * @param int $term_id A `tax_translations` term ID.
+	 * @return int[] An associative array of translations with language code as key and translation ID as value.
+	 *
+	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
 	public function get_translations_from_term_id( $term_id ) {
 		$term_id = $this->sanitize_int_id( $term_id );
@@ -199,38 +115,24 @@ abstract class PLL_Translated_Object {
 			return array();
 		}
 
-		// Lang slugs as array keys, template IDs as array values.
+		// Lang slugs as array keys, translation IDs as array values.
 		$translations = maybe_unserialize( $translations_term->description );
 
 		return $this->validate_translations( $translations, 0, 'display' );
 	}
 
 	/**
-	 * Tells whether a translation term must be updated.
-	 *
-	 * @since 2.3
-	 *
-	 * @param int   $id           Object id ( typically a post_id or term_id ).
-	 * @param int[] $translations An associative array of translations with language code as key and translation id as
-	 *                            value. Make sure to sanitize this.
-	 * @return bool
-	 */
-	protected function should_update_translation_group( $id, $translations ) {
-		// Don't do anything if no translations have been added to the group.
-		$old_translations = $this->get_translations( $id ); // Includes at least $id itself.
-		return ! empty( array_diff_assoc( $translations, $old_translations ) );
-	}
-
-	/**
-	 * Saves translations for posts or terms.
+	 * Saves the object's translations.
 	 *
 	 * @since 0.5
 	 *
-	 * @param int   $id           Object id ( typically a post_id or term_id ).
-	 * @param int[] $translations An associative array of translations with language code as key and translation id as value.
-	 * @return int[] An associative array with language codes as key and post ids as values.
+	 * @param int   $id           Object ID.
+	 * @param int[] $translations An associative array of translations with language code as key and translation ID as value.
+	 * @return int[] An associative array with language codes as key and object IDs as values.
+	 *
+	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
-	public function save_translations( $id, $translations ) {
+	public function save_translations( $id, array $translations = array() ) {
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {
@@ -249,11 +151,11 @@ abstract class PLL_Translated_Object {
 		// Unlink removed translations.
 		$old_translations = $this->get_translations( $id );
 
-		foreach ( array_diff_assoc( $old_translations, $translations ) as $object_id ) {
-			$this->delete_translation( $object_id );
+		foreach ( array_diff_assoc( $old_translations, $translations ) as $id ) {
+			$this->delete_translation( $id );
 		}
 
-		// Check id we need to create or update the translation group.
+		// Check ID we need to create or update the translation group.
 		if ( ! $this->should_update_translation_group( $id, $translations ) ) {
 			return $translations;
 		}
@@ -297,11 +199,11 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Deletes a translation of a post or term.
+	 * Deletes a translation of an object.
 	 *
 	 * @since 0.5
 	 *
-	 * @param int $id Object id ( typically a post_id or term_id ).
+	 * @param int $id Object ID.
 	 * @return void
 	 */
 	public function delete_translation( $id ) {
@@ -335,12 +237,14 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Returns an array of translations of a post or term.
+	 * Returns an array of translations of an object.
 	 *
 	 * @since 0.5
 	 *
-	 * @param int $id Object id ( typically a post_id or term_id ).
-	 * @return int[] An associative array of translations with language code as key and translation id as value.
+	 * @param int $id Object ID.
+	 * @return int[] An associative array of translations with language code as key and translation ID as value.
+	 *
+	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
 	public function get_translations( $id ) {
 		$id = $this->sanitize_int_id( $id );
@@ -356,13 +260,15 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Returns the id of the translation of a post or term.
+	 * Returns the ID of the translation of an object.
 	 *
 	 * @since 0.5
 	 *
-	 * @param int                 $id   Object id ( typically a post_id or term_id ).
-	 * @param PLL_Language|string $lang Language ( slug or object ).
-	 * @return int|false Object id of the translation, false if there is none.
+	 * @param int                 $id   Object ID.
+	 * @param PLL_Language|string $lang Language (slug or object).
+	 * @return int|false Object ID of the translation, `false` if there is none.
+	 *
+	 * @phpstan-return positive-int|false
 	 */
 	public function get_translation( $id, $lang ) {
 		$lang = $this->model->get_language( $lang );
@@ -377,84 +283,37 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Among the object and its translations, returns the id of the object which is in $lang
+	 * Among the object and its translations, returns the ID of the object which is in `$lang`.
 	 *
 	 * @since 0.1
+	 * @since 3.4 Returns 0 instead of false.
 	 *
-	 * @param int                     $id   Object id ( typically a post_id or term_id ).
-	 * @param int|string|PLL_Language $lang Language ( term_id or slug or object ).
-	 * @return int|false The translation object id if exists, otherwise the passed id, false if the passed object has no language.
+	 * @param int                     $id   Object ID.
+	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
+	 * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+	 *
+	 * @phpstan-return int<0, max>
 	 */
 	public function get( $id, $lang ) {
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {
-			return false;
+			return 0;
 		}
 
 		$lang = $this->model->get_language( $lang );
 
 		if ( empty( $lang ) ) {
-			return false;
+			return 0;
 		}
 
 		$obj_lang = $this->get_language( $id );
 
 		if ( empty( $obj_lang ) ) {
-			return false;
+			return 0;
 		}
 
-		return $obj_lang->term_id === $lang->term_id ? $id : $this->get_translation( $id, $lang );
-	}
-
-	/**
-	 * A join clause to add to sql queries when filtering by language is needed directly in query.
-	 *
-	 * @since 1.2
-	 *
-	 * @param string $alias Optional alias for object table.
-	 * @return string Join clause.
-	 */
-	abstract public function join_clause( $alias = '' );
-
-	/**
-	 * A where clause to add to sql queries when filtering by language is needed directly in query.
-	 *
-	 * @since 1.2
-	 *
-	 * @param PLL_Language|PLL_Language[]|string|string[] $lang PLL_Language object or a comma separated list of language slug or an array of language slugs or objects.
-	 * @return string Where clause.
-	 */
-	public function where_clause( $lang ) {
-		$tt_id = $this->tax_tt;
-
-		/*
-		 * $lang is an object.
-		 * This is generally the case if the query is coming from Polylang.
-		 */
-		if ( is_object( $lang ) ) {
-			return ' AND pll_tr.term_taxonomy_id = ' . absint( $lang->$tt_id );
-		}
-
-		/*
-		 * $lang is an array of objects, an array of slugs, or a comma separated list of slugs.
-		 * The comma separated list of slugs can happen if the query is coming from outside with a 'lang' parameter.
-		 */
-		$languages        = is_array( $lang ) ? $lang : explode( ',', $lang );
-		$languages_tt_ids = array();
-		foreach ( $languages as $language ) {
-			$language = $this->model->get_language( $language );
-
-			if ( ! empty( $language ) ) {
-				$languages_tt_ids[] = absint( $language->$tt_id );
-			}
-		}
-
-		if ( empty( $languages_tt_ids ) ) {
-			return '';
-		}
-
-		return ' AND pll_tr.term_taxonomy_id IN ( ' . implode( ',', $languages_tt_ids ) . ' )';
+		return $obj_lang->term_id === $lang->term_id ? $id : (int) $this->get_translation( $id, $lang );
 	}
 
 	/**
@@ -462,7 +321,7 @@ abstract class PLL_Translated_Object {
 	 *
 	 * @since 2.6
 	 *
-	 * @param int $id Object id.
+	 * @param int $id Object ID.
 	 * @return bool
 	 */
 	public function current_user_can_synchronize( $id ) {
@@ -481,7 +340,7 @@ abstract class PLL_Translated_Object {
 		 *                         true to always allow the synchronization,
 		 *                         false to always disallow the synchronization.
 		 *                         Defaults to true.
-		 * @param int       $id    The synchronization source object id.
+		 * @param int       $id    The synchronization source object ID.
 		 */
 		$check = apply_filters( "pll_pre_current_user_can_synchronize_{$this->type}", true, $id );
 
@@ -503,37 +362,21 @@ abstract class PLL_Translated_Object {
 	}
 
 	/**
-	 * Sanitizes an ID as positive integer.
-	 * Kind of similar to `absint()`, but rejects negetive integers instead of making them positive.
+	 * Tells whether a translation term must be updated.
 	 *
-	 * @since 3.2
+	 * @since 2.3
 	 *
-	 * @param mixed $id A supposedly numeric ID.
-	 * @return int A positive integer. `0` for non numeric values and negative integers.
+	 * @param int   $id           Object ID.
+	 * @param int[] $translations An associative array of translations with language code as key and translation ID as
+	 *                            value. Make sure to sanitize this.
+	 * @return bool
 	 *
-	 * @phpstan-return int<0,max>
+	 * @phpstan-param array<non-empty-string, positive-int> $translations
 	 */
-	public function sanitize_int_id( $id ) {
-		return is_numeric( $id ) && $id >= 1 ? abs( (int) $id ) : 0;
-	}
-
-	/**
-	 * Sanitizes an array of IDs as positive integers.
-	 * `0` values are removed.
-	 *
-	 * @since 3.2
-	 *
-	 * @param mixed $ids An associative array of translations with language code as key and translation ID as value.
-	 * @return int[] An associative array of translations with language code as key and translation ID as value.
-	 */
-	public function sanitize_int_ids_list( $ids ) {
-		if ( empty( $ids ) || ! is_array( $ids ) ) {
-			return array();
-		}
-
-		$ids = array_map( array( $this, 'sanitize_int_id' ), $ids );
-
-		return array_filter( $ids );
+	protected function should_update_translation_group( $id, $translations ) {
+		// Don't do anything if no translations have been added to the group.
+		$old_translations = $this->get_translations( $id ); // Includes at least $id itself.
+		return ! empty( array_diff_assoc( $translations, $old_translations ) );
 	}
 
 	/**
@@ -556,6 +399,9 @@ abstract class PLL_Translated_Object {
 	 *                             'save', a check is done to verify that the IDs and langs correspond.
 	 *                             'display' should be used otherwise. Default 'save'.
 	 * @return int[]
+	 *
+	 * @phpstan-param non-empty-string $context
+	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
 	protected function validate_translations( $translations, $id = 0, $context = 'save' ) {
 		if ( ! is_array( $translations ) ) {
@@ -572,6 +418,7 @@ abstract class PLL_Translated_Object {
 		);
 
 		// Make sure values are clean before working with them.
+		/** @phpstan-var array<non-empty-string, positive-int> $translations */
 		$translations = $this->sanitize_int_ids_list( $translations );
 
 		if ( 'save' === $context ) {
@@ -606,6 +453,7 @@ abstract class PLL_Translated_Object {
 			return $translations;
 		}
 
+		/** @phpstan-var array<non-empty-string, positive-int> */
 		return array_merge( array( $lang->slug => $id ), $translations );
 	}
 }
