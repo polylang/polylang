@@ -32,7 +32,7 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-param LanguageData $language_data
 	 */
-	public static function create( $language_data ) {
+	public static function get( $language_data ) {
 		return new PLL_Language( self::sanitize_data( $language_data ) );
 	}
 
@@ -47,7 +47,7 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-param array{post:WP_Term, term:WP_Term} $terms
 	 */
-	public static function create_from_terms( array $terms ) {
+	public static function get_from_terms( array $terms ) {
 		$languages = self::get_languages();
 		$data      = array(
 			'name'       => $terms['post']->name,
