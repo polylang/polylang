@@ -178,7 +178,7 @@ class PLL_Model {
 	 * @return array
 	 */
 	public function get_terms_args( $args ) {
-		$taxonomies = $this->get_taxonomy_names();
+		$taxonomies = $this->translatable_objects->get_taxonomy_names();
 
 		if ( isset( $args['taxonomy'] ) && ! array_diff( (array) $args['taxonomy'], $taxonomies ) ) {
 			$args['update_term_meta_cache'] = false;
@@ -831,32 +831,5 @@ class PLL_Model {
 		remove_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ) );
 
 		return empty( $post_languages ) || is_wp_error( $post_languages ) ? array() : $post_languages;
-	}
-
-	/**
-	 * Returns taxonomy names to manage language and translations.
-	 *
-	 * @since 3.4
-	 *
-	 * @param bool $language     True to return taxonomy which manages language.
-	 * @param bool $translations True to return taxonomy which manages translation.
-	 * @return string[] Taxonomy names.
-	 *
-	 * @phpstan-return list<non-empty-string>
-	 */
-	public function get_taxonomy_names( $language = true, $translations = true ) {
-		$taxonomies = array();
-
-		foreach ( $this->translatable_objects as $object ) {
-			if ( $language ) {
-				$taxonomies[] = $object->get_tax_language();
-			}
-
-			if ( $translations && $object instanceof PLL_Translated_Object ) {
-				$taxonomies[] = $object->get_tax_translations();
-			}
-		}
-
-		return $taxonomies;
 	}
 }
