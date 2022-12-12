@@ -236,7 +236,7 @@ class PLL_Admin_Model extends PLL_Model {
 			$term_id  = $lang->get_tax_prop( $taxonomy, 'term_id' );
 
 			if ( empty( $term_id ) ) {
-				// Attempt to repair the term_language if it has been deleted by a database cleaning tool.
+				// Attempt to repair the language if a term has been deleted by a database cleaning tool.
 				wp_insert_term( $args['name'], $taxonomy, array( 'slug' => "pll_{$slug}" ) );
 			} else {
 				wp_update_term( $term_id, $taxonomy, array( 'slug' => "pll_{$slug}", 'name' => $args['name'] ) );
