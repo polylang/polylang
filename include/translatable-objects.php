@@ -8,7 +8,7 @@
  *
  * @since 3.4
  */
-class PLL_Translatable_Objects_Registry {
+class PLL_Translatable_Objects {
 
 	/**
 	 * List of registered objects.
