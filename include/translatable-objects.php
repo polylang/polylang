@@ -65,6 +65,19 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	}
 
 	/**
+	 * Returns all translatable objects except post one.
+	 *
+	 * @since 3.4
+	 *
+	 * @return PLL_Translatable_Object[] An array of secondary translatable objects. Array keys are the type of translated content (post, term, etc).
+	 *
+	 * @phpstan-return array<non-empty-string, PLL_Translatable_Object>
+	 */
+	protected function get_secondary_translatable_objects() {
+		return array_diff_key( $this->objects, array( 'post' => null ) );
+	}
+
+	/**
 	 * Returns taxonomy names to manage language and translations.
 	 *
 	 * @since 3.4
