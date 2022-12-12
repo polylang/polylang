@@ -8,7 +8,7 @@
  *
  * @since 3.4
  *
- * @phpstan-implements IteratorAggregate<non-empty-string, mixed>
+ * @phpstan-implements IteratorAggregate<non-empty-string, PLL_Translatable_Object>
  */
 class PLL_Translatable_Objects implements IteratorAggregate {
 
@@ -43,6 +43,8 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @since 3.4
 	 *
 	 * @return ArrayIterator Iterator on $objects array property. Keys are the type of translated content (post, term, etc).
+	 *
+	 * @phpstan-return ArrayIterator<string, PLL_Translatable_Object>
 	 */
 	public function getIterator() {
 		return new ArrayIterator( $this->objects );
@@ -85,17 +87,18 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @param string[] $filter An array on value to filter taxonomy names to return.
 	 * @return string[] Taxonomy names.
 	 *
+	 * @phpstan-param array<'language'|'translations'> $filter
 	 * @phpstan-return list<non-empty-string>
 	 */
 	public function get_taxonomy_names( $filter = array( 'language', 'translations' ) ) {
 		$taxonomies = array();
 
 		foreach ( $this->translatable_objects as $object ) {
-			if ( isset( $filter['language'] ) ) {
+			if ( in_array( 'language', $filter ) ) {
 				$taxonomies[] = $object->get_tax_language();
 			}
 
-			if ( isset( $filter['translations'] ) && $object instanceof PLL_Translated_Object ) {
+			if ( in_array( 'translations', $filter ) && $object instanceof PLL_Translated_Object ) {
 				$taxonomies[] = $object->get_tax_translations();
 			}
 		}
