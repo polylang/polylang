@@ -88,7 +88,7 @@ class PLL_MO extends MO {
 	 * @phpstan-return positive-int|null
 	 */
 	public static function get_id( $lang ) {
-		return self::get_id_from_term_id( $lang->get_tax_prop( 'language', 'term_id' ) );
+		return self::get_id_from_term_id( $lang->term_id );
 	}
 
 	/**
