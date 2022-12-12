@@ -12,6 +12,15 @@
  */
 class PLL_Language_Factory {
 	/**
+	 * Predefined languages.
+	 *
+	 * @var array[]
+	 *
+	 * @phpstan-var array<string, array<string, string>>
+	 */
+	private static $languages;
+
+	/**
 	 * Returns a language object matching the given data, looking up in cached transient.
 	 *
 	 * @since 3.4
@@ -39,7 +48,7 @@ class PLL_Language_Factory {
 	 * @phpstan-param array{post:WP_Term, term:WP_Term} $terms
 	 */
 	public static function create_from_terms( array $terms ) {
-		$languages = include POLYLANG_DIR . '/settings/languages.php';
+		$languages = self::get_languages();
 		$data      = array(
 			'name'       => $terms['post']->name,
 			'slug'       => $terms['post']->slug,
@@ -136,5 +145,22 @@ class PLL_Language_Factory {
 		 * @var LanguageData
 		 */
 		return $data;
+	}
+
+	/**
+	 * Returns predefined languages data.
+	 *
+	 * @since 3.4
+	 *
+	 * @return array[]
+	 *
+	 * @phpstan-return array<string, array<string, string>>
+	 */
+	private static function get_languages() {
+		if ( empty( self::$languages ) ) {
+			self::$languages = include POLYLANG_DIR . '/settings/languages.php';
+		}
+
+		return self::$languages;
 	}
 }
