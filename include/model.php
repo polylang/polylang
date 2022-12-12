@@ -607,7 +607,7 @@ class PLL_Model {
 		$limit   = $limit < 1 ? -1 : max( (int) $limit, 1 );
 		$objects = array();
 
-		foreach ( $this->translatable_objects->get_all() as $type => $object ) {
+		foreach ( $this->translatable_objects as $type => $object ) {
 			// The trailing 's' in the array key is for backward compatibility.
 			$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $limit );
 		}
@@ -847,7 +847,7 @@ class PLL_Model {
 	public function get_taxonomy_names( $language = true, $translations = true ) {
 		$taxonomies = array();
 
-		foreach ( $this->translatable_objects->get_all() as $object ) {
+		foreach ( $this->translatable_objects as $object ) {
 			if ( $language ) {
 				$taxonomies[] = $object->get_tax_language();
 			}

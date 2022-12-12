@@ -611,6 +611,6 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @phpstan-return array<non-empty-string, PLL_Translatable_Object>
 	 */
 	protected function get_secondary_translatable_objects() {
-		return array_diff_key( $this->translatable_objects->get_all(), array( 'post' => null ) );
+		return array_diff_key( $this->translatable_objects, array( 'post' => null ) );
 	}
 }
