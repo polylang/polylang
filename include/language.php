@@ -672,14 +672,8 @@ class PLL_Language {
 		$props = array( 'home_url', 'search_url', 'flag_url', 'custom_flag_url' );
 
 		foreach ( $props as $prop ) {
-			if ( empty( $this->$prop ) ) {
-				continue;
-			}
-
-			$url = set_url_scheme( $this->$prop );
-
-			if ( ! empty( $url ) ) {
-				$this->$prop = $url;
+			if ( ! empty( $this->$prop ) ) {
+				$this->$prop = set_url_scheme( $this->$prop );
 			}
 		}
 	}
