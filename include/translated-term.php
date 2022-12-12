@@ -121,7 +121,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @since 0.1
 	 * @since 3.4 Renamed the parameter $value into $id.
 	 * @since 3.4 Deprecated to retrieve the language by term slug + taxonomy anymore.
-	 * @custom-param int $id
+	 *
 	 * @param int $id Term ID.
 	 * @return PLL_Language|false A `PLL_Language` object. `false` if no language is associated to that term or if the
 	 *                            ID is invalid.
