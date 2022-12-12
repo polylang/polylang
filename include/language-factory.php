@@ -110,12 +110,7 @@ class PLL_Language_Factory {
 	 * @phpstan-return LanguageData
 	 */
 	private static function sanitize_data( array $data ) {
-		foreach ( $data['term_props'] as $taxo => $values ) {
-			$values['term_id']             = (int) $values['term_id'];
-			$values['term_taxonomy_id']    = (int) $values['term_taxonomy_id'];
-			$values['count']               = ! empty( $values['count'] ) ? (int) $values['count'] : 0;
-			$data  ['term_props'][ $taxo ] = $values;
-		}
+		$data['term_props'] = array_map( $data['term_props'], 'absint' );
 
 		$string_fields = array( 'name', 'slug', 'locale', 'w3c', 'flag_code', 'facebook', 'home_url', 'search_url', 'host', 'flag_url', 'flag', 'custom_flag_url', 'custom_flag' );
 
