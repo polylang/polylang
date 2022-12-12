@@ -275,16 +275,6 @@ class PLL_Language {
 	 * } $language_data
 	 */
 	public function __construct( array $language_data ) {
-		// Set term properties. Don't check if they exist as they're mandatory.
-		foreach ( $language_data['term_props'] as $taxonomy_name => $prop_values ) {
-			$this->term_props[ $taxonomy_name ]['term_id']          = $prop_values['term_id'];
-			$this->term_props[ $taxonomy_name ]['term_taxonomy_id'] = $prop_values['term_taxonomy_id'];
-			$this->term_props[ $taxonomy_name ]['count']            = $prop_values['count'];
-		}
-
-		unset( $language_data['term_props'] );
-
-		// Add all the other values.
 		foreach ( $language_data as $prop => $value ) {
 			$this->$prop = $value;
 		}
