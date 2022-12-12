@@ -7,8 +7,10 @@
  * Registry for all translatable objects.
  *
  * @since 3.4
+ *
+ * @phpstan-implements IteratorAggregate<non-empty-string, mixed>
  */
-class PLL_Translatable_Objects {
+class PLL_Translatable_Objects implements IteratorAggregate {
 
 	/**
 	 * List of registered objects.
@@ -40,12 +42,10 @@ class PLL_Translatable_Objects {
 	 *
 	 * @since 3.4
 	 *
-	 * @return PLL_Translatable_Object[] Array keys are the type of translated content (post, term, etc).
-	 *
-	 * @phpstan-return array<non-empty-string, PLL_Translatable_Object>
+	 * @return ArrayIterator Iterator on $objects array property. Keys are the type of translated content (post, term, etc).
 	 */
-	public function get_all() {
-		return $this->objects;
+	public function getIterator() {
+		return new ArrayIterator( $this->objects );
 	}
 
 	/**
