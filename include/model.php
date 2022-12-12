@@ -28,7 +28,7 @@ class PLL_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @var PLL_Translatable_Objects_Registry
+	 * @var PLL_Translatable_Objects
 	 */
 	public $translatable_objects;
 
@@ -59,7 +59,7 @@ class PLL_Model {
 		$this->options = &$options;
 
 		$this->cache = new PLL_Cache();
-		$this->translatable_objects = new PLL_Translatable_Objects_Registry();
+		$this->translatable_objects = new PLL_Translatable_Objects();
 		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this ) ); // Translated post sub model.
 		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this ) ); // Translated term sub model.
 
