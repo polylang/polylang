@@ -147,10 +147,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'slug',
 			'term_group',
 			'term_taxonomy_id',
-			'count',
-			'tl_term_id',
-			'tl_term_taxonomy_id',
-			'tl_count',
+			'term_props',
 			'locale',
 			'is_rtl',
 			'w3c',
@@ -169,7 +166,18 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 
 		$languages = get_transient( 'pll_languages_list' );
-		$this->assertEqualSets( $properties, array_keys( reset( $languages ) ) );
+		$language  = reset( $languages );
+		$this->assertEqualSets( $properties, array_keys( $language ) );
+
+		// Let's check PLL_Language::$term_props.
+		$this->assertArrayHasKey( 'language', $language['term_props'] );
+		$this->assertArrayHasKey( 'term_id', $language['term_props']['language'] );
+		$this->assertArrayHasKey( 'term_taxonomy_id', $language['term_props']['language'] );
+		$this->assertArrayHasKey( 'count', $language['term_props']['language'] );
+		$this->assertArrayHasKey( 'term_language', $language['term_props'] );
+		$this->assertArrayHasKey( 'term_id', $language['term_props']['term_language'] );
+		$this->assertArrayHasKey( 'term_taxonomy_id', $language['term_props']['term_language'] );
+		$this->assertArrayHasKey( 'count', $language['term_props']['term_language'] );
 	}
 
 	/**
