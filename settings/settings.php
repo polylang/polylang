@@ -242,10 +242,10 @@ class PLL_Settings extends PLL_Admin_Base {
 
 				if ( $nolang = $this->model->get_objects_with_no_lang() ) {
 					if ( ! empty( $nolang['posts'] ) ) {
-						$this->model->set_language_in_mass( 'post', $nolang['posts'], $this->options['default_lang'] );
+						$this->model->post->set_language_in_mass( 'post', $nolang['posts'], $this->options['default_lang'] );
 					}
 					if ( ! empty( $nolang['terms'] ) ) {
-						$this->model->set_language_in_mass( 'term', $nolang['terms'], $this->options['default_lang'] );
+						$this->model->term->set_language_in_mass( 'term', $nolang['terms'], $this->options['default_lang'] );
 					}
 				}
 
