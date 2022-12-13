@@ -296,6 +296,7 @@ class PLL_Language {
 	 * @return mixed Required property value.
 	 */
 	public function __get( $property ) {
+		// Backward compatibility with Polylang < 3.4.
 		$deprecated_properties = array(
 			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
 			'count'               => array( 'language', 'count' ),
