@@ -90,7 +90,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @phpstan-param array<'language'|'translations'> $filter
 	 * @phpstan-return list<non-empty-string>
 	 */
-	public function get_taxonomy_names( $filter = array( 'language', 'translations' ) ) {
+	protected function get_taxonomy_names( $filter = array( 'language', 'translations' ) ) {
 		$taxonomies = array();
 
 		foreach ( $this->objects as $object ) {
