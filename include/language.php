@@ -113,7 +113,7 @@ class PLL_Language {
 	 *
 	 * @var string
 	 */
-	public $facebook;
+	public $facebook = '';
 
 	/**
 	 * Home URL in this language.
@@ -179,7 +179,7 @@ class PLL_Language {
 	 *
 	 * @var string
 	 *
-	 * @phpstan-var non-empty-string|null
+	 * @phpstan-var non-empty-string
 	 */
 	public $flag_url;
 
@@ -187,6 +187,8 @@ class PLL_Language {
 	 * HTML markup of the flag.
 	 *
 	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
 	 */
 	public $flag;
 
@@ -195,14 +197,14 @@ class PLL_Language {
 	 *
 	 * @var string
 	 */
-	public $custom_flag_url;
+	public $custom_flag_url = '';
 
 	/**
 	 * HTML markup of the custom flag if it exists.
 	 *
 	 * @var string
 	 */
-	public $custom_flag;
+	public $custom_flag = '';
 
 	/**
 	 * Stores language term properties (like term IDs and counts) for each language taxonomy (`language`,

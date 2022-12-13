@@ -110,22 +110,8 @@ class PLL_Language_Factory {
 	 * @phpstan-return LanguageData
 	 */
 	private static function sanitize_data( array $data ) {
-		$data['term_props'] = array_map( $data['term_props'], 'absint' );
-
-		$string_fields = array( 'name', 'slug', 'locale', 'w3c', 'flag_code', 'facebook', 'home_url', 'search_url', 'host', 'flag_url', 'flag', 'custom_flag_url', 'custom_flag' );
-
-		foreach ( $string_fields as $field ) {
-			if ( empty( $data[ $field ] ) || ! is_string( $data[ $field ] ) ) {
-				$data[ $field ] = '';
-			}
-
-			$data[ $field ] = trim( $data[ $field ] );
-		}
-
-		if ( ! empty( $data['term_group'] ) && is_numeric( $data['term_group'] ) ) {
-			$data['term_group'] = (int) $data['term_group'];
-		} else {
-			$data['term_group'] = 0;
+		foreach ( $data['term_props'] as $tax => $props ) {
+			$data['term_props'][ $tax ] = array_map( 'absint', $props );
 		}
 
 		$data['is_rtl'] = ! empty( $data['is_rtl'] ) ? 1 : 0;
