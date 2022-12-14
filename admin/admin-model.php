@@ -338,13 +338,13 @@ class PLL_Admin_Model extends PLL_Model {
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
 
-		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'translations' ) );
 		$term_ids   = array();
 		$dr         = array();
 		$dt         = array();
 		$ut         = array();
 
-		$terms = get_terms( array( 'taxonomy' => $taxonomies ) );
+		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'translations' ) );
+		$terms      = get_terms( array( 'taxonomy' => $taxonomies ) );
 
 		if ( is_array( $terms ) ) {
 			foreach ( $terms as $term ) {
