@@ -172,20 +172,6 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Assigns a new language to an object.
-	 *
-	 * @since 3.1
-	 *
-	 * @param int          $id   Object ID.
-	 * @param PLL_Language $lang New language to assign to the object.
-	 * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
-	 *              the object).
-	 */
-	public function update_language( $id, PLL_Language $lang ) {
-		return $this->set_language( $id, $lang );
-	}
-
-	/**
 	 * Returns the language of an object.
 	 *
 	 * @since 0.1
