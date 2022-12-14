@@ -78,6 +78,8 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return false;
 		}
 
+		$id = $this->sanitize_int_id( $id );
+
 		$translations = $this->get_translations( $id );
 
 		// Don't create translation groups with only 1 value.
