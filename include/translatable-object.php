@@ -478,7 +478,7 @@ abstract class PLL_Translatable_Object {
 			return;
 		}
 
-		$tax_language = $this->translatable_objects->get( $type )->get_tax_language();
+		$tax_language = $object->get( $type )->get_tax_language();
 		$tt_id        = $lang->get_tax_prop( $tax_language, 'term_taxonomy_id' );
 
 		if ( empty( $tt_id ) ) {
