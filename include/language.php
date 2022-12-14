@@ -416,7 +416,7 @@ class PLL_Language {
 	 *     }
 	 * )>
 	 */
-	public function get_tax_props( $field = null ) {
+	public function get_tax_props( $field = '' ) {
 		if ( empty( $field ) ) {
 			return $this->term_props;
 		}
