@@ -123,7 +123,7 @@ class PLL_Model {
 				} else {
 					// Create the languages directly from arrays stored in the transient.
 					foreach ( $languages as $k => $v ) {
-						$languages[ $k ] = PLL_Language_Factory::create( $v );
+						$languages[ $k ] = PLL_Language_Factory::get( $v );
 					}
 
 					// Re-index.
