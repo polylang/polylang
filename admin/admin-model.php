@@ -298,7 +298,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Validate slug is unique
 		foreach ( $this->get_languages_list() as $language ) {
-			if ( $language->slug === $args['slug'] && ( null === $lang || $lang->get_tax_prop( 'language', 'term_id' ) !== $language->get_tax_prop( 'language', 'term_id' ) ) ) {
+			if ( $language->slug === $args['slug'] && ( null === $lang || $lang->term_id !== $language->term_id ) ) {
 				$errors->add( 'pll_non_unique_slug', __( 'The language code must be unique', 'polylang' ) );
 			}
 		}
