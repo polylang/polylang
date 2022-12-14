@@ -94,11 +94,11 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 		$taxonomies = array();
 
 		foreach ( $this->objects as $object ) {
-			if ( in_array( 'language', $filter ) ) {
+			if ( in_array( 'language', $filter, true ) ) {
 				$taxonomies[] = $object->get_tax_language();
 			}
 
-			if ( in_array( 'translations', $filter ) && $object instanceof PLL_Translated_Object ) {
+			if ( in_array( 'translations', $filter, true ) && $object instanceof PLL_Translated_Object ) {
 				$taxonomies[] = $object->get_tax_translations();
 			}
 		}
