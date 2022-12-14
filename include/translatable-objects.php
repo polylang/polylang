@@ -13,6 +13,15 @@
 class PLL_Translatable_Objects implements IteratorAggregate {
 
 	/**
+	 * Type of the main translatable object.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	private $main_type;
+
+	/**
 	 * List of registered objects.
 	 *
 	 * @var PLL_Translatable_Object[] Array keys are the type of translated content (post, term, etc).
@@ -30,6 +39,10 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @return PLL_Translatable_Object
 	 */
 	public function register( PLL_Translatable_Object $object ) {
+		if ( empty( $this->main_type ) ) {
+			$this->main_type = $object->get_type();
+		}
+
 		if ( ! isset( $this->objects[ $object->get_type() ] ) ) {
 			$this->objects[ $object->get_type() ] = $object;
 		}
@@ -76,7 +89,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @phpstan-return array<non-empty-string, PLL_Translatable_Object>
 	 */
 	public function get_secondary_translatable_objects() {
-		return array_diff_key( $this->objects, array( 'post' => null ) );
+		return array_diff_key( $this->objects, array( $this->main_type => null ) );
 	}
 
 	/**
