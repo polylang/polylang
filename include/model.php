@@ -793,7 +793,7 @@ class PLL_Model {
 			$terms_by_type['post'][ $term->slug ] = $term;
 		}
 
-		foreach ( $this->get_secondary_translatable_objects() as $type => $sub_model ) {
+		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $type => $sub_model ) {
 			$terms = get_terms(
 				array(
 					'taxonomy'   => $sub_model->get_tax_language(),
