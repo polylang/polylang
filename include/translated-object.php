@@ -69,16 +69,14 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @since 3.1
 	 *
 	 * @param int          $id   Object ID.
-	 * @param PLL_Language $lang New language to assign to the object.
+	 * @param PLL_Language $lang Language to assign to the object.
 	 * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
 	 *              the object).
 	 */
-	public function update_language( $id, PLL_Language $lang ) {
-		if ( ! $this->set_language( $id, $lang ) ) {
+	public function set_language( $id, $lang ) {
+		if ( ! parent::set_language( $id, $lang ) ) {
 			return false;
 		}
-
-		$id = $this->sanitize_int_id( $id );
 
 		$translations = $this->get_translations( $id );
 
