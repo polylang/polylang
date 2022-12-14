@@ -75,7 +75,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 *
 	 * @phpstan-return array<non-empty-string, PLL_Translatable_Object>
 	 */
-	protected function get_secondary_translatable_objects() {
+	public function get_secondary_translatable_objects() {
 		return array_diff_key( $this->objects, array( 'post' => null ) );
 	}
 
@@ -90,7 +90,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @phpstan-param array<'language'|'translations'> $filter
 	 * @phpstan-return list<non-empty-string>
 	 */
-	protected function get_taxonomy_names( $filter = array( 'language', 'translations' ) ) {
+	public function get_taxonomy_names( $filter = array( 'language', 'translations' ) ) {
 		$taxonomies = array();
 
 		foreach ( $this->objects as $object ) {
