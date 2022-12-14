@@ -454,23 +454,17 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Assigns a language to posts or terms in mass.
+	 * Assigns a language to object in mass.
 	 *
 	 * @since 1.2
 	 * @since 3.4 Moved from PLL_Admin_Model class.
 	 *
-	 * @param string              $type Either 'post' or 'term'.
 	 * @param int[]               $ids  Array of post ids or term ids.
 	 * @param PLL_Language|string $lang Language to assign to the posts or terms.
 	 * @return void
 	 */
-	public function set_language_in_mass( $type, $ids, $lang ) {
+	public function set_language_in_mass( $ids, $lang ) {
 		global $wpdb;
-
-		$object = $this->translatable_objects->get( $type );
-		if ( empty( $object ) ) {
-			return;
-		}
 
 		$lang = $this->get_language( $lang );
 
@@ -478,7 +472,7 @@ abstract class PLL_Translatable_Object {
 			return;
 		}
 
-		$tax_language = $object->get( $type )->get_tax_language();
+		$tax_language = $this->get_tax_language();
 		$tt_id        = $lang->get_tax_prop( $tax_language, 'term_taxonomy_id' );
 
 		if ( empty( $tt_id ) ) {
@@ -499,98 +493,5 @@ abstract class PLL_Translatable_Object {
 		}
 
 		clean_term_cache( $ids, $tax_language );
-
-		if ( 'term' !== $type ) {
-			return;
-		}
-
-		$translations = array();
-
-		foreach ( $ids as $id ) {
-			$translations[] = array( $lang->slug => $id );
-		}
-
-		if ( ! empty( $translations ) ) {
-			$this->set_translation_in_mass( $type, $translations );
-		}
-	}
-
-	/**
-	 * Creates translations groups in mass.
-	 *
-	 * @since 1.6.3
-	 * @since 3.4 Moved from PLL_Admin_Model class.
-	 *
-	 * @param string $type         Either 'post' or 'term'
-	 * @param array  $translations Array of translations arrays.
-	 * @return void
-	 */
-	public function set_translation_in_mass( $type, $translations ) {
-		global $wpdb;
-
-		$taxonomy    = "{$type}_translations";
-		$terms       = array();
-		$slugs       = array();
-		$description = array();
-		$count       = array();
-
-		foreach ( $translations as $t ) {
-			$term = uniqid( 'pll_' ); // the term name
-			$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
-			$slugs[] = $wpdb->prepare( '%s', $term );
-			$description[ $term ] = maybe_serialize( $t );
-			$count[ $term ] = count( $t );
-		}
-
-		// Insert terms
-		if ( ! empty( $terms ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->terms} ( slug, name ) VALUES " . implode( ',', array_unique( $terms ) ) );
-		}
-
-		// Get all terms with their term_id
-		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$terms    = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
-		$term_ids = array();
-		$tts      = array();
-
-		// Prepare terms taxonomy relationship
-		foreach ( $terms as $term ) {
-			$term_ids[] = $term->term_id;
-			$tts[] = $wpdb->prepare( '( %d, %s, %s, %d )', $term->term_id, $taxonomy, $description[ $term->slug ], $count[ $term->slug ] );
-		}
-
-		// Insert term_taxonomy
-		if ( ! empty( $tts ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->term_taxonomy} ( term_id, taxonomy, description, count ) VALUES " . implode( ',', array_unique( $tts ) ) );
-		}
-
-		// Get all terms with term_taxonomy_id
-		$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
-		$trs   = array();
-
-		// Prepare objects relationships.
-		if ( is_array( $terms ) ) {
-			foreach ( $terms as $term ) {
-				$t = maybe_unserialize( $term->description );
-				if ( in_array( $t, $translations ) ) {
-					foreach ( $t as $object_id ) {
-						if ( ! empty( $object_id ) ) {
-							$trs[] = $wpdb->prepare( '( %d, %d )', $object_id, $term->term_taxonomy_id );
-						}
-					}
-				}
-			}
-		}
-
-		// Insert term_relationships
-		if ( ! empty( $trs ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
-			$trs = array_unique( $trs );
-		}
-
-		clean_term_cache( $term_ids, $taxonomy );
 	}
 }

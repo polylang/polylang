@@ -299,4 +299,28 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$term = $this->get_object_term( $id, $this->tax_translations );
 		return empty( $term ) || ! empty( array_diff_assoc( $translations, $old_translations ) );
 	}
+
+	/**
+	 * Assigns a language to terms in mass.
+	 *
+	 * @since 1.2
+	 * @since 3.4 Moved from PLL_Admin_Model class.
+	 *
+	 * @param int[]               $ids  Array of post ids or term ids.
+	 * @param PLL_Language|string $lang Language to assign to the posts or terms.
+	 * @return void
+	 */
+	public function set_language_in_mass( $ids, $lang ) {
+		parent::set_language_in_mass( $ids, $lang );
+
+		$translations = array();
+
+		foreach ( $ids as $id ) {
+			$translations[] = array( $lang->slug => $id );
+		}
+
+		if ( ! empty( $translations ) ) {
+			$this->set_translation_in_mass( $translations );
+		}
+	}
 }
