@@ -290,13 +290,14 @@ class PLL_Language {
 	 * Throws a depreciation notice if someone tries to get one of the following properties:
 	 * `term_taxonomy_id`, `count`, `tl_term_id`, `tl_term_taxonomy_id` or `tl_count`.
 	 *
+	 * Backward compatibility with Polylang < 3.4.
+	 *
 	 * @since 3.4
 	 *
 	 * @param string $property Property to get.
 	 * @return mixed Required property value.
 	 */
 	public function __get( $property ) {
-		// Backward compatibility with Polylang < 3.4.
 		$deprecated_properties = array(
 			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
 			'count'               => array( 'language', 'count' ),
@@ -365,6 +366,8 @@ class PLL_Language {
 	/**
 	 * Checks for a deprecated property.
 	 * Is triggered by calling `isset()` or `empty()` on inaccessible (protected or private) or non-existing properties.
+	 *
+	 * Backward compatibility with Polylang < 3.4.
 	 *
 	 * @since 3.4
 	 *
