@@ -468,8 +468,6 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	public function set_translation_in_mass( $translations ) {
 		global $wpdb;
 
-		$type        = $this->get_type();
-		$taxonomy    = "{$type}_translations";
 		$terms       = array();
 		$slugs       = array();
 		$description = array();
@@ -498,7 +496,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		// Prepare terms taxonomy relationship
 		foreach ( $terms as $term ) {
 			$term_ids[] = $term->term_id;
-			$tts[] = $wpdb->prepare( '( %d, %s, %s, %d )', $term->term_id, $taxonomy, $description[ $term->slug ], $count[ $term->slug ] );
+			$tts[] = $wpdb->prepare( '( %d, %s, %s, %d )', $term->term_id, $$this->tax_translations, $description[ $term->slug ], $count[ $term->slug ] );
 		}
 
 		// Insert term_taxonomy
@@ -508,7 +506,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		}
 
 		// Get all terms with term_taxonomy_id
-		$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
+		$terms = get_terms( array( 'taxonomy' => $this->tax_translations, 'hide_empty' => false ) );
 		$trs   = array();
 
 		// Prepare objects relationships.
@@ -532,6 +530,6 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			$trs = array_unique( $trs );
 		}
 
-		clean_term_cache( $term_ids, $taxonomy );
+		clean_term_cache( $term_ids, $this->tax_translations );
 	}
 }
