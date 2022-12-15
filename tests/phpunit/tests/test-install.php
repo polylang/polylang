@@ -104,7 +104,7 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( get_terms( array( 'taxonomy' => 'term_language' ) ) );
 
 		// No languages for posts and terms
-		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $english->term_taxonomy_id ) ) );
+		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $english->get_tax_prop( 'language', 'term_taxonomy_id' ) ) ) );
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $english->tl_term_taxonomy_id ) ) );
 
 		// No translations for posts and terms
