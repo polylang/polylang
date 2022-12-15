@@ -821,72 +821,12 @@ parameters:
 			path: include/language.php
 
 		-
-			message: "#^Argument of an invalid type array\\|WP_Term supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$count on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$description on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$name on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$slug on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_group on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_id on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_taxonomy_id on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
 			message: "#^Cannot use array destructuring on array\\|false\\.$#"
 			count: 1
 			path: include/language.php
 
 		-
-			message: "#^Method PLL_Language\\:\\:get_display_flag\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Method PLL_Language\\:\\:get_display_flag_url\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
 			message: "#^Parameter \\#1 \\$.+ of function base64_encode expects string, string\\|false given\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Property PLL_Language\\:\\:\\$is_rtl \\(int\\) does not accept mixed\\.$#"
 			count: 1
 			path: include/language.php
 

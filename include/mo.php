@@ -78,14 +78,30 @@ class PLL_MO extends MO {
 	}
 
 	/**
-	 * Returns the post id of the post storing the strings translations.
+	 * Returns the post ID of the post storing the strings translations.
 	 *
 	 * @since 1.4
 	 *
 	 * @param PLL_Language $lang The language object.
-	 * @return int
+	 * @return int|null
+	 *
+	 * @phpstan-return positive-int|null
 	 */
 	public static function get_id( $lang ) {
+		return self::get_id_from_term_id( $lang->term_id );
+	}
+
+	/**
+	 * Returns the post ID of the post storing the strings translations.
+	 *
+	 * @since 3.4
+	 *
+	 * @param int $term_id The language term ID.
+	 * @return int|null
+	 *
+	 * @phpstan-return positive-int|null
+	 */
+	public static function get_id_from_term_id( $term_id ) {
 		global $wpdb;
 
 		$ids = wp_cache_get( 'polylang_mo_ids' );
@@ -95,8 +111,8 @@ class PLL_MO extends MO {
 			wp_cache_add( 'polylang_mo_ids', $ids );
 		}
 
-		// The mo id for a language can be transiently empty
-		return isset( $ids[ 'polylang_mo_' . $lang->term_id ] ) ? $ids[ 'polylang_mo_' . $lang->term_id ]->ID : null;
+		// The mo id for a language can be transiently empty.
+		return isset( $ids[ 'polylang_mo_' . $term_id ] ) ? $ids[ 'polylang_mo_' . $term_id ]->ID : null;
 	}
 
 	/**
