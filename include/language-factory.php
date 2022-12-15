@@ -118,7 +118,7 @@ class PLL_Language_Factory {
 
 		$positive_fields = array( 'term_group', 'mo_id', 'page_on_front', 'page_for_posts' );
 
-		foreach( $positive_fields as $field ) {
+		foreach ( $positive_fields as $field ) {
 			$data[ $field ] = absint( $data[ $field ] );
 		}
 
