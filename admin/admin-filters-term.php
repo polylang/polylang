@@ -342,7 +342,7 @@ class PLL_Admin_Filters_Term {
 			);
 
 			$lang = $this->model->get_language( sanitize_key( $_POST['inline_lang_choice'] ) );
-			$this->model->term->update_language( $term_id, $lang );
+			$this->model->term->set_language( $term_id, $lang );
 		}
 
 		// Edit post
