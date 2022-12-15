@@ -75,7 +75,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 		if ( ! defined( 'REST_REQUEST' ) && ! empty( $this->curlang ) && ! empty( $posts ) ) {
 			$_posts = wp_cache_get( 'sticky_posts', 'options' ); // This option is usually cached in 'all_options' by WP
 
-			if ( empty( $_posts ) || ! is_array( $_posts[ $this->curlang->term_taxonomy_id ] ) ) {
+			if ( empty( $_posts ) || ! is_array( $_posts[ $this->curlang->get_tax_prop( 'language', 'term_taxonomy_id' ) ] ) ) {
 				$posts = array_map( 'intval', $posts );
 				$posts = implode( ',', $posts );
 
@@ -92,7 +92,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				wp_cache_add( 'sticky_posts', $_posts, 'options' );
 			}
 
-			$posts = $_posts[ $this->curlang->term_taxonomy_id ];
+			$posts = $_posts[ $this->curlang->get_tax_prop( 'language', 'term_taxonomy_id' ) ];
 		}
 
 		return $posts;
