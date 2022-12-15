@@ -472,8 +472,7 @@ abstract class PLL_Translatable_Object {
 			return;
 		}
 
-		$tax_language = $this->get_tax_language();
-		$tt_id        = $lang->get_tax_prop( $tax_language, 'term_taxonomy_id' );
+		$tt_id = $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' );
 
 		if ( empty( $tt_id ) ) {
 			return;
@@ -492,6 +491,6 @@ abstract class PLL_Translatable_Object {
 			$lang->update_count(); // Updating term count is mandatory ( thanks to AndyDeGroo )
 		}
 
-		clean_term_cache( $ids, $tax_language );
+		clean_term_cache( $ids, $this->tax_language );
 	}
 }
