@@ -182,7 +182,7 @@ class PLL_Admin_Classic_Editor {
 			wp_die( 'You are not allowed to edit this post.' );
 		}
 
-		$this->model->post->update_language( $post_ID, $lang );
+		$this->model->post->set_language( $post_ID, $lang );
 
 		ob_start();
 		if ( 'attachment' === $post_type ) {
