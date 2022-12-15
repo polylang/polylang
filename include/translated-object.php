@@ -462,8 +462,10 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @since 1.6.3
 	 * @since 3.4 Moved from PLL_Admin_Model class.
 	 *
-	 * @param array  $translations Array of translations arrays.
+	 * @param int[][] $translations Array of translations arrays.
 	 * @return void
+	 *
+	 * @phpstan-param array<array<string,int>>
 	 */
 	public function set_translation_in_mass( $translations ) {
 		global $wpdb;
