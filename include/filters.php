@@ -257,7 +257,7 @@ class PLL_Filters {
 				array(
 					'taxonomy' => 'language',
 					'field'    => 'term_taxonomy_id', // Since WP 3.5.
-					'terms'    => $language->term_taxonomy_id,
+					'terms'    => $language->get_tax_prop( 'language', 'term_taxonomy_id' ),
 					'operator' => $relation,
 				),
 			),
