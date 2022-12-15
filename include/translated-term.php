@@ -306,8 +306,8 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @since 1.2
 	 * @since 3.4 Moved from PLL_Admin_Model class.
 	 *
-	 * @param int[]               $ids  Array of post ids or term ids.
-	 * @param PLL_Language|string $lang Language to assign to the posts or terms.
+	 * @param int[]        $ids  Array of post ids or term ids.
+	 * @param PLL_Language $lang Language to assign to the posts or terms.
 	 * @return void
 	 */
 	public function set_language_in_mass( $ids, $lang ) {

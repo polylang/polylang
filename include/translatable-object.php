@@ -459,18 +459,12 @@ abstract class PLL_Translatable_Object {
 	 * @since 1.2
 	 * @since 3.4 Moved from PLL_Admin_Model class.
 	 *
-	 * @param int[]               $ids  Array of post ids or term ids.
-	 * @param PLL_Language|string $lang Language to assign to the posts or terms.
+	 * @param int[]        $ids  Array of post ids or term ids.
+	 * @param PLL_Language $lang Language to assign to the posts or terms.
 	 * @return void
 	 */
 	public function set_language_in_mass( $ids, $lang ) {
 		global $wpdb;
-
-		$lang = $this->get_language( $lang );
-
-		if ( empty( $lang ) ) {
-			return;
-		}
 
 		$tt_id = $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' );
 
