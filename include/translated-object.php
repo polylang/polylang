@@ -68,8 +68,8 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param int          $id   Object ID.
-	 * @param PLL_Language $lang Language to assign to the object.
+	 * @param int                     $id   Object ID.
+	 * @param PLL_Language|string|int $lang Language to assign to the object.
 	 * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
 	 *              the object).
 	 */
