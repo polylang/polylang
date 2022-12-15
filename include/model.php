@@ -731,7 +731,7 @@ class PLL_Model {
 				continue;
 			}
 
-			$language = PLL_Language_Factory::create_from_terms( $lang_terms );
+			$language = PLL_Language_Factory::get_from_terms( $lang_terms );
 
 			if ( empty( $language ) ) {
 				continue;
