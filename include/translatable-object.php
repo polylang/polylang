@@ -452,4 +452,39 @@ abstract class PLL_Translatable_Object {
 			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
 		);
 	}
+
+	/**
+	 * Assigns a language to object in mass.
+	 *
+	 * @since 1.2
+	 * @since 3.4 Moved from PLL_Admin_Model class.
+	 *
+	 * @param int[]        $ids  Array of post ids or term ids.
+	 * @param PLL_Language $lang Language to assign to the posts or terms.
+	 * @return void
+	 */
+	public function set_language_in_mass( $ids, $lang ) {
+		global $wpdb;
+
+		$tt_id = $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' );
+
+		if ( empty( $tt_id ) ) {
+			return;
+		}
+
+		$values = array();
+		$ids    = array_map( 'intval', $ids );
+
+		foreach ( $ids as $id ) {
+			$values[] = $wpdb->prepare( '( %d, %d )', $id, $tt_id );
+		}
+
+		if ( ! empty( $values ) ) {
+			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', array_unique( $values ) ) );
+			$lang->update_count(); // Updating term count is mandatory ( thanks to AndyDeGroo )
+		}
+
+		clean_term_cache( $ids, $this->tax_language );
+	}
 }
