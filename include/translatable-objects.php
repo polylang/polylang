@@ -16,10 +16,8 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * Type of the main translatable object.
 	 *
 	 * @var string
-	 *
-	 * @phpstan-var non-empty-string|null
 	 */
-	private $main_type;
+	private $main_type = '';
 
 	/**
 	 * List of registered objects.
