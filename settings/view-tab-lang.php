@@ -57,6 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							foreach ( $this->get_predefined_languages() as $lg ) {
 								$lg['flag_code'] = $lg['flag'];
 								$language = new PLL_Language( $lg );
+								// TODO: Maybe we should find an other way to get the flag, not sure creating language objects is the right solution here.
 								$language->set_flag();
 								printf(
 									'<option value="%1$s:%2$s:%3$s:%4$s" data-flag-html="%6$s">%5$s - %2$s</option>' . "\n",
