@@ -314,14 +314,12 @@ class PLL_Language {
 			/** This filter is documented in wordpress/wp-includes/functions.php */
 			if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-					esc_html(
-						sprintf(
-							"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_tax_prop( '%3\$s', '%4\$s' ) instead.\nError handler",
-							get_class( $this ),
-							$property,
-							$term_prop_type,
-							$term_prop
-						)
+					sprintf(
+						"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_tax_prop( '%3\$s', '%4\$s' ) instead.\nError handler",
+						esc_html( get_class( $this ) ),
+						esc_html( $property ),
+						esc_html( $term_prop_type ),
+						esc_html( $term_prop )
 					),
 					E_USER_DEPRECATED
 				);
@@ -351,7 +349,7 @@ class PLL_Language {
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(
-					"Cannot access %s property %s::$%s in %s on line %d\nError handler",
+					"Cannot access %s property %s::$%s in %s on line %d.\nError handler",
 					$visibility,
 					get_class( $this ),
 					$property,
