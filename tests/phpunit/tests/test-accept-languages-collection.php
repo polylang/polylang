@@ -36,7 +36,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 		$language['locale']     = $locale;
 		$language['slug']       = $language['code'];
 		$language['w3c']        = isset( $language['w3c'] ) ? $language['w3c'] : str_replace( '_', '-', $language['locale'] );
-		$language['rtl']        = $language['dir'] === 'rtl' ? 1 : 0;
+		$language['rtl']        = 'rtl' === $language['dir'] ? 1 : 0;
 		$language['term_group'] = 0;
 		$result = self::$model->add_language( $language );
 
@@ -147,15 +147,15 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 	public function test_pick_matching_language_and_region_with_custom_slug() {
 		$accept_languages    = PLL_Accept_Languages_Collection::from_accept_language_header( 'zh-HK' );
-		$zh_cn               = self::$known_languages[ 'zh_CN' ];
+		$zh_cn               = self::$known_languages['zh_CN'];
 		$zh_cn['locale']     = 'zh_CN';
 		$zh_cn['slug']       = 'zh-cn'; // Custom slug.
 		$zh_cn['w3c']        = 'zh-CN';
-		$zh_cn['rtl']        = $zh_cn['dir'] === 'rtl' ? 1 : 0;
+		$zh_cn['rtl']        = 'rtl' === $zh_cn['dir'] ? 1 : 0;
 		$zh_cn['term_group'] = 0;
 		$result              = self::$model->add_language( $zh_cn );
 
-		$this->assertNotInstanceOf( WP_Error::class, $result, "zh_CN language is not created." );
+		$this->assertNotInstanceOf( WP_Error::class, $result, 'zh_CN language is not created.' );
 
 		self::$model->clean_languages_cache();
 
