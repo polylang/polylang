@@ -290,12 +290,12 @@ function pll_translate_string( $string, $lang ) {
 		$cache = new PLL_Cache();
 	}
 
-	$mo = $cache->get( $lang );
+	$mo = $cache->get( $lang->slug );
 
 	if ( ! $mo instanceof PLL_MO ) {
 		$mo = new PLL_MO();
 		$mo->import_from_db( $lang );
-		$cache->set( $lang, $mo );
+		$cache->set( $lang->slug, $mo );
 	}
 
 	return $mo->translate( $string );
