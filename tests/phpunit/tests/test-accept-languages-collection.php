@@ -9,9 +9,20 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 	 */
 	protected static $known_languages;
 
-	public static function set_up_before_class() {
-		parent::set_up_before_class();
+	/**
+	 * Polylang Admin Model, used to handle languages.
+	 *
+	 * @var PLL_Admin_Model
+	 */
+	protected static $model;
+
+	/**
+	 * @param WP_UnitTest_Factory $factory
+	 */
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		self::$known_languages = include POLYLANG_DIR . '/settings/languages.php';
+		$options               = PLL_Install::get_default_options();
+		self::$model           = new PLL_Admin_Model( $options );
 	}
 
 	/**
@@ -21,10 +32,19 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 	 * @return PLL_Language
 	 */
 	protected function get_known_language( $locale ) {
-		$language = self::$known_languages[ $locale ];
-		$language['slug'] = $language['code'];
-		$language['w3c']  = isset( $language['w3c'] ) ? $language['w3c'] : str_replace( '_', '-', $language['locale'] );
-		return new PLL_Language( $language );
+		$language               = self::$known_languages[ $locale ];
+		$language['locale']     = $locale;
+		$language['slug']       = $language['code'];
+		$language['w3c']        = isset( $language['w3c'] ) ? $language['w3c'] : str_replace( '_', '-', $language['locale'] );
+		$language['rtl']        = $language['dir'] === 'rtl' ? 1 : 0;
+		$language['term_group'] = 0;
+		$result = self::$model->add_language( $language );
+
+		$this->assertNotInstanceOf( WP_Error::class, $result, "{$locale} language is not created." );
+
+		self::$model->clean_languages_cache();
+
+		return self::$model->get_language( $language['slug'] );
 	}
 
 	/**
@@ -44,7 +64,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( $http_header );
 
-		$this->assertEquals( 3, count( $this->get_accept_languages_array( $accept_languages ) ) );
+		$this->assertSame( 3, count( $this->get_accept_languages_array( $accept_languages ) ) );
 	}
 
 	public function test_parse_simple_language_subtag() {
@@ -52,7 +72,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( $http_header );
 
-		$this->assertEquals( 'en', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'language' ) );
+		$this->assertSame( 'en', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'language' ) );
 	}
 
 	public function test_parse_language_subtag_when_region_provided() {
@@ -60,7 +80,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( $http_header );
 
-		$this->assertEquals( 'en', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'language' ) );
+		$this->assertSame( 'en', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'language' ) );
 	}
 
 	public function test_parse_region_subtag() {
@@ -68,7 +88,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( $http_header );
 
-		$this->assertEquals( 'HK', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'region' ) );
+		$this->assertSame( 'HK', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'region' ) );
 	}
 
 	public function test_parse_region_subtag_when_script_provided() {
@@ -76,7 +96,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( $http_header );
 
-		$this->assertEquals( 'HK', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'region' ) );
+		$this->assertSame( 'HK', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'region' ) );
 	}
 
 	public function test_parse_variant_subtag() {
@@ -84,7 +104,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( $http_header );
 
-		$this->assertEquals( 'formal', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'variant' ) );
+		$this->assertSame( 'formal', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'variant' ) );
 	}
 
 	public function test_parse_variant_subtag_when_region_provided() {
@@ -92,7 +112,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( $http_header );
 
-		$this->assertEquals( 'formal', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'variant' ) );
+		$this->assertSame( 'formal', $this->get_accept_languages_array( $accept_languages )[0]->get_subtag( 'variant' ) );
 	}
 
 	public function test_pick_matching_language_with_different_region() {
@@ -102,7 +122,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$best_match = $accept_languages->find_best_match( $languages );
 
-		$this->assertEquals( $en->slug, $best_match );
+		$this->assertSame( $en->slug, $best_match );
 	}
 
 	public function test_pick_matching_language_and_region_when_script_is_missing() {
@@ -112,7 +132,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$best_match = $accept_languages->find_best_match( $languages );
 
-		$this->assertEquals( $zh_hk->slug, $best_match );
+		$this->assertSame( $zh_hk->slug, $best_match );
 	}
 
 	public function test_pick_matching_language_and_variant_when_region_is_missing() {
@@ -122,25 +142,29 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$best_match = $accept_languages->find_best_match( $languages );
 
-		$this->assertEquals( $de_de_formal->slug, $best_match );
+		$this->assertSame( $de_de_formal->slug, $best_match );
 	}
 
 	public function test_pick_matching_language_and_region_with_custom_slug() {
-		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( 'zh-HK' );
-		$zh_cn = new PLL_Language(
-			array_merge(
-				self::$known_languages['zh_CN'],
-				array(
-					'slug' => 'zh-cn',
-					'w3c'  => 'zh-CN', // Is computed from locale when language is set from term. {@see PLL_Language::__construct()}.
-				)
-			)
-		);
-		$languages = array( $zh_cn );
+		$accept_languages    = PLL_Accept_Languages_Collection::from_accept_language_header( 'zh-HK' );
+		$zh_cn               = self::$known_languages[ 'zh_CN' ];
+		$zh_cn['locale']     = 'zh_CN';
+		$zh_cn['slug']       = 'zh-cn'; // Custom slug.
+		$zh_cn['w3c']        = 'zh-CN';
+		$zh_cn['rtl']        = $zh_cn['dir'] === 'rtl' ? 1 : 0;
+		$zh_cn['term_group'] = 0;
+		$result              = self::$model->add_language( $zh_cn );
 
+		$this->assertNotInstanceOf( WP_Error::class, $result, "zh_CN language is not created." );
+
+		self::$model->clean_languages_cache();
+
+		$zh_cn = self::$model->get_language( $zh_cn['slug'] );
+
+		$languages = array( $zh_cn );
 		$best_match = $accept_languages->find_best_match( $languages );
 
-		$this->assertEquals( $zh_cn->slug, $best_match );
+		$this->assertSame( $zh_cn->slug, $best_match );
 	}
 
 }
