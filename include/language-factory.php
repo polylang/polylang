@@ -116,10 +116,12 @@ class PLL_Language_Factory {
 
 		$data['is_rtl'] = ! empty( $data['is_rtl'] ) ? 1 : 0;
 
-		$positive_fields = array( 'term_group', 'mo_id', 'page_on_front', 'page_for_posts' );
+		$data['mo_id'] = absint( $data['mo_id'] );
+
+		$positive_fields = array( 'term_group', 'page_on_front', 'page_for_posts' );
 
 		foreach ( $positive_fields as $field ) {
-			$data[ $field ] = absint( $data[ $field ] );
+			$data[ $field ] = ! empty( $data[ $field ] ) ? absint( $data[ $field ] ) : 0;
 		}
 
 		/**
