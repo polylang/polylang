@@ -103,7 +103,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		}
 
 		$posts = self::factory()->post->create_many( 2 );
-		self::$model->set_language_in_mass( 'post', $posts, 'fr' );
+		self::$model->post->set_language_in_mass( $posts, self::$model->get_language( 'fr' ) );
 
 		$posts = get_posts( array( 'fields' => 'ids', 'posts_per_page' => -1 ) );
 		$languages = wp_list_pluck( array_map( array( self::$model->post, 'get_language' ), $posts ), 'slug' );
@@ -121,7 +121,7 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		}
 
 		$tags = self::factory()->tag->create_many( 2 );
-		self::$model->set_language_in_mass( 'term', $tags, 'fr' );
+		self::$model->term->set_language_in_mass( $tags, self::$model->get_language( 'fr' ) );
 
 		$terms = get_terms( array( 'taxonomy' => 'post_tag', 'hide_empty' => false, 'fields' => 'ids' ) );
 		$languages = wp_list_pluck( array_map( array( self::$model->term, 'get_language' ), $terms ), 'slug' );
