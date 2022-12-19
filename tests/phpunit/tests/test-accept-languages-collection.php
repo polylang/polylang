@@ -64,7 +64,7 @@ class Accept_Languages_Collection_Test extends WP_UnitTestCase {
 
 		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( $http_header );
 
-		$this->assertSame( 3, count( $this->get_accept_languages_array( $accept_languages ) ) );
+		$this->assertCount( 3, $this->get_accept_languages_array( $accept_languages ) );
 	}
 
 	public function test_parse_simple_language_subtag() {
