@@ -703,12 +703,6 @@ class PLL_Model {
 	 */
 	protected function get_languages_from_taxonomies() {
 
-		$taxonomies = array();
-
-		foreach ( $this->translatable_objects as $type => $sub_model ) {
-			$taxonomies[ $sub_model->get_tax_language() ] = $type;
-		}
-
 		// To get language taxonomies first.
 		$reversed_terms = array_reverse( $this->get_language_terms() );
 
@@ -717,7 +711,7 @@ class PLL_Model {
 		foreach ( $reversed_terms as $term ) {
 			if ( $term instanceof WP_Term ) {
 				$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
-				$terms_by_slug[ $key ][ $taxonomies[ $term->taxonomy ] ] = $term;
+				$terms_by_slug[ $key ][ $term->taxonomy ] = $term;
 			}
 		}
 
