@@ -702,34 +702,31 @@ class PLL_Model {
 	 * @phpstan-return list<PLL_Language>
 	 */
 	protected function get_languages_from_taxonomies() {
-		$terms_by_type = $this->get_language_terms_by_type();
 
-		if ( empty( $terms_by_type['post'] ) || empty( $terms_by_type['term'] ) ) {
-			// `post` and `term` languages are mandatory.
-			return array();
+		$taxonomies = array();
+
+		foreach ( $this->translatable_objects as $type => $sub_model ) {
+			$taxonomies[ $sub_model->get_tax_language() ] = $type;
 		}
+
+		// To get language taxonomies first.
+		$reversed_terms = array_reverse( $this->get_language_terms() );
+
+		$terms_by_slug = array();
+
+		foreach ( $reversed_terms as $term ) {
+			if ( $term instanceof WP_Term ) {
+				$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
+				$terms_by_slug[ $key ][ $taxonomies[ $term->taxonomy ] ] = $term;
+			}
+		}
+
+		// To put the language in the right order.
+		$terms_by_slug = array_reverse( $terms_by_slug );
 
 		$languages = array();
 
-		foreach ( $terms_by_type['post'] as $term_slug => $lang_term ) {
-			if ( ! isset( $terms_by_type['term'][ "pll_{$term_slug}" ] ) ) {
-				// A corresponding `term` language is mandatory.
-				continue;
-			}
-
-			$lang_terms = array();
-
-			foreach ( $terms_by_type as $type => $terms ) {
-				$key = 'post' === $type ? $term_slug : "pll_{$term_slug}";
-
-				if ( isset( $terms[ $key ] ) ) {
-					$lang_terms[ $type ] = $terms[ $key ];
-				}
-			}
-
-			if ( ! isset( $lang_terms['post'], $lang_terms['term'] ) ) {
-				continue;
-			}
+		foreach ( $terms_by_slug as $lang_terms ) {
 
 			$language = PLL_Language_Factory::get_from_terms( $lang_terms );
 
@@ -738,6 +735,7 @@ class PLL_Model {
 			}
 
 			$languages[] = $language;
+
 		}
 
 		// We will need the languages list to allow its access in the filter below.
@@ -772,51 +770,6 @@ class PLL_Model {
 	}
 
 	/**
-	 * Returns the list of all language terms, by type (post, term, etc).
-	 *
-	 * @since 3.4
-	 *
-	 * @return array[] An array (type as array keys) of arrays (term slug as array keys) of terms.
-	 *
-	 * @phpstan-return array<non-empty-string, non-empty-array<non-empty-string, WP_Term>>
-	 */
-	protected function get_language_terms_by_type() {
-		$terms = $this->get_language_terms();
-
-		if ( empty( $terms ) ) {
-			return array();
-		}
-
-		$terms_by_type = array();
-
-		foreach ( $terms as $term ) {
-			$terms_by_type['post'][ $term->slug ] = $term;
-		}
-
-		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $type => $sub_model ) {
-			$terms = get_terms(
-				array(
-					'taxonomy'   => $sub_model->get_tax_language(),
-					'hide_empty' => false,
-				)
-			);
-
-			if ( empty( $terms ) || ! is_array( $terms ) ) {
-				continue;
-			}
-
-			foreach ( $terms as $term ) {
-				if ( $term instanceof WP_Term ) {
-					$terms_by_type[ $type ][ $term->slug ] = $term;
-				}
-			}
-		}
-
-		/** @var array<non-empty-string, non-empty-array<non-empty-string, WP_Term>> */
-		return $terms_by_type;
-	}
-
-	/**
 	 * Returns the list of existing language terms.
 	 * - Returns all terms, that are or not assigned to posts.
 	 * - Terms are ordered by `term_group` and `term_id` (see `PLL_Model->filter_language_terms_orderby()`).
@@ -827,7 +780,13 @@ class PLL_Model {
 	 */
 	protected function get_language_terms() {
 		add_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ), 10, 3 );
-		$post_languages = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_group' ) );
+		$post_languages = get_terms(
+			array(
+				'taxonomy'   => $this->translatable_objects->get_taxonomy_names( array( 'language' ) ),
+				'orderby' => 'term_group',
+				'hide_empty' => false,
+			)
+		);
 		remove_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ) );
 
 		return empty( $post_languages ) || is_wp_error( $post_languages ) ? array() : $post_languages;
