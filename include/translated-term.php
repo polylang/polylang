@@ -220,21 +220,6 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
-	 * Returns true if Polylang manages languages for this object type.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string|string[] $object_type Object type (taxonomy name) name or array of object type names.
-	 * @return bool
-	 *
-	 * @phpstan-param non-empty-string|non-empty-string[] $object_type
-	 */
-	public function is_translated_object_type( $object_type ) {
-		$taxonomies = $this->get_translated_object_types( false );
-		return ( is_array( $object_type ) && array_intersect( $object_type, $taxonomies ) || in_array( $object_type, $taxonomies ) );
-	}
-
-	/**
 	 * Caches the language and translations when terms are queried by get_terms().
 	 *
 	 * @since 1.2
