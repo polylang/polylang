@@ -44,7 +44,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// The other language taxonomies.
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
-			wp_insert_term( $args['name'], $object->get_tax_language(), array( 'slug' => 'pll_' . $args['slug'] ) );
+			$this->add_secondary_language_term( $object->get_tax_language(), $args['slug'], $args );
 		}
 
 		$this->clean_languages_cache(); // Update the languages list now !
@@ -237,7 +237,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 			if ( empty( $term_id ) ) {
 				// Attempt to repair the language if a term has been deleted by a database cleaning tool.
-				wp_insert_term( $args['name'], $taxonomy, array( 'slug' => "pll_{$slug}" ) );
+				$this->add_secondary_language_term( $taxonomy, $slug, $args );
 			} else {
 				wp_update_term( $term_id, $taxonomy, array( 'slug' => "pll_{$slug}", 'name' => $args['name'] ) );
 			}
@@ -460,5 +460,146 @@ class PLL_Admin_Model extends PLL_Model {
 
 		$this->clean_languages_cache();
 		flush_rewrite_rules();
+	}
+
+	/**
+	 * Adds the missing language terms for the given language taxonomies.
+	 *
+	 * @since 3.4
+	 *
+	 * @param array $taxonomies List of language taxonomies.
+	 * @return void
+	 *
+	 * @phpstan-param array<non-empty-string> $taxonomies
+	 */
+	public function add_missing_secondary_language_terms( array $taxonomies ) {
+		$terms = $this->get_language_terms();
+
+		if ( empty( $terms ) ) {
+			return;
+		}
+
+		$language_args = array();
+
+		foreach ( $terms as $term ) {
+			$language_args[ $term->slug ] = array( 'name' => $term->name );
+		}
+
+		$terms_by_tax = $this->get_terms_for_language_taxonomies( $taxonomies, array_keys( $language_args ) );
+
+		foreach ( $terms_by_tax as $taxonomy => $terms_by_slug ) {
+			foreach ( $terms_by_slug as $slug => $term ) {
+				if ( ! $term instanceof WP_Term ) {
+					$this->add_secondary_language_term( $taxonomy, $slug, $language_args[ $slug ] );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns a list of language terms, by taxonomy.
+	 * Taxonomies are limited to secondary translatable objects.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string[] $taxonomies List of taxonomies.
+	 * @param string[] $term_slugs List of the main language terms' slugs.
+	 * @return (WP_Term|null)[][] {
+	 *     List of terms by taxonomy and slug. Null means that the term is missing for the taxonomy/slug pair.
+	 *     Ex: array(
+	 *         'term_language' => array(
+	 *             'en' => WP_Term,
+	 *             'fr' => null,
+	 *         ),
+	 *     )
+	 * }
+	 *
+	 * @phpstan-param array<non-empty-string> $taxonomies
+	 * @phpstan-param array<non-empty-string> $term_slugs
+	 * @phpstan-return array<non-empty-string, array<non-empty-string, WP_Term|null>>
+	 */
+	protected function get_terms_for_language_taxonomies( array $taxonomies, array $term_slugs ) {
+		/**
+		 * Allow only taxonomies for secondary translatable objects.
+		 * Also prevent get_terms() to return WP_Error.
+		 */
+		$taxonomies = array_intersect(
+			$this->translatable_objects->get_taxonomy_names( array( 'language', 'secondary' ) ),
+			$taxonomies
+		);
+
+		if ( empty( $taxonomies ) ) {
+			return array();
+		}
+
+		$terms = get_terms(
+			array(
+				'taxonomy'   => $taxonomies,
+				'hide_empty' => false,
+			)
+		);
+
+		if ( empty( $terms ) || ! is_array( $terms ) ) {
+			return array();
+		}
+
+		$term_slugs   = array_fill_keys( $term_slugs, null );
+		$terms_by_tax = array_fill_keys( $taxonomies, $term_slugs );
+
+		foreach ( $terms as $term ) {
+			if ( $term instanceof WP_Term && array_key_exists( $term->slug, $terms_by_tax[ $term->taxonomy ] ) ) { // Allow only slugs of existing languages.
+				$terms_by_tax[ $term->taxonomy ][ $term->slug ] = $term;
+			}
+		}
+
+		return $terms_by_tax;
+	}
+
+	/**
+	 * Adds a new term for a secondary language taxonomy (aka not 'language').
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $taxonomy Language taxonomy name.
+	 * @param string $slug     Language term slug.
+	 * @param array  $args     {
+	 *     Additional arguments.
+	 *
+	 *     @type string $name Optional. Language name (label). Defaults to the name of the main language taxonomy.
+	 * }
+	 * @return int[]|null
+	 *
+	 * @phpstan-param non-empty-string $taxonomy
+	 * @phpstan-param non-empty-string $slug
+	 * @phpstan-param array{name?:non-empty-string} $args
+	 * @phpstan-return array{
+	 *     term_id: positive-int,
+	 *     term_taxonomy_id: positive-int
+	 * }|null
+	 */
+	protected function add_secondary_language_term( $taxonomy, $slug, array $args = array() ) {
+		if ( empty( $args['name'] ) || ! is_string( $args['name'] ) ) {
+			$language = $this->get_language( $slug );
+
+			if ( empty( $language ) ) {
+				return null;
+			}
+
+			$args['name'] = $language->name;
+		}
+
+		$result = wp_insert_term( $args['name'], $taxonomy, array( 'slug' => "pll_{$slug}" ) );
+
+		if ( ! is_array( $result ) ) {
+			return null;
+		}
+
+		/**
+		 * @phpstan-var array{
+		 *     term_id: positive-int,
+		 *     term_taxonomy_id: positive-int
+		 * }
+		 */
+		return array_map( 'absint', $result );
 	}
 }
