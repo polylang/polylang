@@ -79,9 +79,8 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				$posts = array_map( 'intval', $posts );
 				$posts = implode( ',', $posts );
 
-				$language_objects = $this->model->get_languages_list();
 				$languages = array();
-				foreach ( $language_objects as $language ) {
+				foreach ( $this->model->get_languages_list() as $language ) {
 					$languages[] = $language->get_tax_prop( 'language', 'term_taxonomy_id' );
 				}
 
