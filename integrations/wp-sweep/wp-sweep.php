@@ -49,11 +49,19 @@ class PLL_WP_Sweep {
 
 		$excluded_term_ids = array_merge( $excluded_term_ids, $_term_ids );
 
+		$language_taxonomies = PLL()->model->translatable_objects->getIterator();
+		$languages           = PLL()->model->get_languages_list();
+		$lt_term_ids         = array();
+		foreach ( $language_taxonomies as $language_taxonomy ) {
+			foreach ( $languages as $language ) {
+				$lt_term_ids[] = $language->get_tax_prop( $language_taxonomy->get_tax_language(), 'term_id' );
+			}
+		}
+
 		// Add the terms of our languages.
 		$excluded_term_ids = array_merge(
 			$excluded_term_ids,
-			pll_languages_list( array( 'fields' => 'term_id' ) ),
-			pll_languages_list( array( 'fields' => 'tl_term_id' ) )
+			$lt_term_ids
 		);
 
 		return array_unique( $excluded_term_ids );
