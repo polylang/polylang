@@ -145,7 +145,11 @@ class PLL_Model {
 
 		// Remove empty languages if requested.
 		if ( ! empty( $args['hide_empty'] ) ) {
-			$languages = wp_list_filter( $languages, array( 'count' => 0 ), 'NOT' );
+			foreach ( $languages as $key => $language ) {
+				if ( empty( $language->get_tax_prop( 'language', 'count' ) ) ) {
+					unset( $languages[ $key ] );
+				}
+			}
 		}
 
 		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
