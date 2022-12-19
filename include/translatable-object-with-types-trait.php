@@ -70,7 +70,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 * @phpstan-param non-empty-string|non-empty-string[] $object_type
 	 */
 	public function is_translated_object_type( $object_type ) {
-		$order_types = $this->get_translated_object_types( false );
-		return ! empty( array_intersect( (array) $object_type, $order_types ) );
+		$object_types = $this->get_translated_object_types( false );
+		return ! empty( array_intersect( (array) $object_type, $object_types ) );
 	}
 }
