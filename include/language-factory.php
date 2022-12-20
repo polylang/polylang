@@ -45,7 +45,7 @@ class PLL_Language_Factory {
 	 *                         `language` and `term_language` are mandatory keys.
 	 * @return PLL_Language
 	 *
-	 * @phpstan-param array{post:WP_Term, term:WP_Term}&array<string, WP_Term> $terms
+	 * @phpstan-param array{language:WP_Term, term_language:WP_Term}&array<string, WP_Term> $terms
 	 */
 	public static function get_from_terms( array $terms ) {
 		$languages = self::get_languages();
