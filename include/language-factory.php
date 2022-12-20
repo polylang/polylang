@@ -54,7 +54,7 @@ class PLL_Language_Factory {
 			'slug'       => $terms['language']->slug,
 			'term_group' => $terms['language']->term_group,
 			'term_props' => array(),
-			'mo_id'      => PLL_MO::get_id_from_term_id( $terms['post']->term_id ),
+			'mo_id'      => PLL_MO::get_id_from_term_id( $terms['language']->term_id ),
 		);
 
 		foreach ( $terms as $term ) {
