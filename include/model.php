@@ -710,6 +710,7 @@ class PLL_Model {
 
 		foreach ( $reversed_terms as $term ) {
 			if ( $term instanceof WP_Term ) {
+				// Except for language taxonomy term slugs, remove 'pll_' prefix from the other language taxonomy term slugs.
 				$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
 				$terms_by_slug[ $key ][ $term->taxonomy ] = $term;
 			}
