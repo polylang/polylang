@@ -41,18 +41,18 @@ class PLL_Language_Factory {
 	 *
 	 * @since 3.4
 	 *
-	 * @param WP_Term[] $terms List of language terms, with the type as array keys.
-	 *                         `post` and `term` are mandatory keys.
+	 * @param WP_Term[] $terms List of language terms, with the language taxonomy names as array keys.
+	 *                         `language` and `term_language` are mandatory keys.
 	 * @return PLL_Language
 	 *
-	 * @phpstan-param array{post:WP_Term, term:WP_Term}&array<string, WP_Term> $terms
+	 * @phpstan-param array{language:WP_Term, term_language:WP_Term}&array<string, WP_Term> $terms
 	 */
 	public static function get_from_terms( array $terms ) {
 		$languages = self::get_languages();
 		$data      = array(
-			'name'       => $terms['post']->name,
-			'slug'       => $terms['post']->slug,
-			'term_group' => $terms['post']->term_group,
+			'name'       => $terms['language']->name,
+			'slug'       => $terms['language']->slug,
+			'term_group' => $terms['language']->term_group,
 			'term_props' => array(),
 			'mo_id'      => PLL_MO::get_id_from_term_id( $terms['post']->term_id ),
 		);
@@ -66,7 +66,7 @@ class PLL_Language_Factory {
 		}
 
 		// The description field can contain any property.
-		$description = maybe_unserialize( $terms['post']->description );
+		$description = maybe_unserialize( $terms['language']->description );
 
 		if ( is_array( $description ) ) {
 			$description = array_intersect_key(
