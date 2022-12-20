@@ -127,7 +127,7 @@ class PLL_WP_Import extends WP_Import {
 			foreach ( $translations as $slug => $old_id ) {
 				if ( $old_id && ! empty( $this->processed_terms[ $old_id ] ) && $lang = PLL()->model->get_language( $slug ) ) {
 					// Language relationship
-					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], $lang->tl_term_taxonomy_id );
+					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], $lang->get_tax_prop( 'term_language', 'term_taxonomy_id' ) );
 
 					// Translation relationship
 					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], get_term( $this->processed_terms[ $term['term_id'] ], 'term_translations' )->term_taxonomy_id );
