@@ -41,7 +41,7 @@ class PLL_Language_Factory {
 	 *
 	 * @since 3.4
 	 *
-	 * @param WP_Term[] $terms List of language terms, with the language taxonomies language as array keys.
+	 * @param WP_Term[] $terms List of language terms, with the language taxonomy names as array keys.
 	 *                         `language` and `term_language` are mandatory keys.
 	 * @return PLL_Language
 	 *
