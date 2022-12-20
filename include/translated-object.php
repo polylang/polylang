@@ -498,7 +498,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		// Prepare terms taxonomy relationship
 		foreach ( $terms as $term ) {
 			$term_ids[] = $term->term_id;
-			$tts[] = $wpdb->prepare( '( %d, %s, %s, %d )', $term->term_id, $$this->tax_translations, $description[ $term->slug ], $count[ $term->slug ] );
+			$tts[] = $wpdb->prepare( '( %d, %s, %s, %d )', $term->term_id, $this->tax_translations, $description[ $term->slug ], $count[ $term->slug ] );
 		}
 
 		// Insert term_taxonomy
