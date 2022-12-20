@@ -50,11 +50,12 @@ class PLL_WP_Sweep {
 		$excluded_term_ids = array_merge( $excluded_term_ids, $_term_ids );
 
 		// Add the terms of our languages.
-		$excluded_term_ids = array_merge(
-			$excluded_term_ids,
-			pll_languages_list( array( 'fields' => 'term_id' ) ),
-			pll_languages_list( array( 'fields' => 'tl_term_id' ) )
-		);
+		foreach ( PLL()->model->get_languages_list() as $language ) {
+			$excluded_term_ids = array_merge(
+				$excluded_term_ids,
+				array_values( $language->get_tax_props( 'term_id' ) )
+			);
+		}
 
 		return array_unique( $excluded_term_ids );
 	}
