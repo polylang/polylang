@@ -29,7 +29,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 */
 	public function add_language( $args ) {
 		$errors = $this->validate_lang( $args );
-		if ( $errors->get_error_code() ) { // Using has_errors() would be more meaningful but is available only since WP 5.0
+		if ( $errors->has_errors() ) {
 			return $errors;
 		}
 

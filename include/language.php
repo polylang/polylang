@@ -30,7 +30,7 @@
  *     flag_code: non-empty-string,
  *     term_group: int,
  *     is_rtl: int<0, 1>,
- *     mo_id: positive-int,
+ *     mo_id: int,
  *     facebook?: string,
  *     home_url: non-empty-string,
  *     search_url: non-empty-string,
@@ -146,8 +146,6 @@ class PLL_Language {
 	 * ID of the post storing strings translations.
 	 *
 	 * @var int
-	 *
-	 * @phpstan-var positive-int
 	 */
 	public $mo_id;
 
