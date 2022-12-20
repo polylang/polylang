@@ -703,7 +703,11 @@ class PLL_Model {
 	 */
 	protected function get_languages_from_taxonomies() {
 
-		// To get language taxonomies first.
+		/*
+		 * Only terms of the taxonomy 'language' include a 'term_group' for the order.
+		 * `array_reverse()` allows to make sure that the next loop fills the array
+		 *  with these terms first, allowing to keep the languages order.
+		 */
 		$reversed_terms = array_reverse( $this->get_language_terms() );
 
 		$terms_by_slug = array();
@@ -716,21 +720,13 @@ class PLL_Model {
 			}
 		}
 
-		// To put the language in the right order.
+		// Restore the right order after the first `array_reverse()`.
 		$terms_by_slug = array_reverse( $terms_by_slug );
 
 		$languages = array();
 
 		foreach ( $terms_by_slug as $lang_terms ) {
-
-			$language = PLL_Language_Factory::get_from_terms( $lang_terms );
-
-			if ( empty( $language ) ) {
-				continue;
-			}
-
-			$languages[] = $language;
-
+			$languages[] = PLL_Language_Factory::get_from_terms( $lang_terms );
 		}
 
 		// We will need the languages list to allow its access in the filter below.
@@ -775,15 +771,15 @@ class PLL_Model {
 	 */
 	protected function get_language_terms() {
 		add_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ), 10, 3 );
-		$post_languages = get_terms(
+		$terms = get_terms(
 			array(
 				'taxonomy'   => $this->translatable_objects->get_taxonomy_names( array( 'language' ) ),
-				'orderby' => 'term_group',
+				'orderby'    => 'term_group',
 				'hide_empty' => false,
 			)
 		);
 		remove_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ) );
 
-		return empty( $post_languages ) || is_wp_error( $post_languages ) ? array() : $post_languages;
+		return empty( $terms ) || is_wp_error( $terms ) ? array() : $terms;
 	}
 }
