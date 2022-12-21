@@ -35,11 +35,15 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string             $url  The url to modify.
-	 * @param PLL_Language|false $lang The language object.
+	 * @param string                  $url  The url to modify.
+	 * @param PLL_Language|slug|false $lang The language slug or object.
 	 * @return string The modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
+		if ( $lang instanceof PLL_Language ) {
+			$lang = $lang->slug;
+		}
+
 		if ( ! empty( $lang ) && false === strpos( $url, '://' . $lang->slug . '.' ) ) {
 			$url = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? $url : str_replace( $this->www, '://' . $lang->slug . '.', $url );
 		}

@@ -22,12 +22,16 @@ class PLL_Links_Default extends PLL_Links_Model {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string             $url  The url to modify.
-	 * @param PLL_Language|false $lang The language object.
+	 * @param string                    $url  The url to modify.
+	 * @param PLL_Language|string|false $lang The language slug or object.
 	 * @return string The modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
-		return empty( $lang ) || ( $this->options['hide_default'] && $this->options['default_lang'] == $lang->slug ) ? $url : add_query_arg( 'lang', $lang->slug, $url );
+		if ( $lang instanceof PLL_Language ) {
+			$lang = $lang->slug;
+		}
+
+		return empty( $lang ) || ( $this->options['hide_default'] && $this->options['default_lang'] == $lang ) ? $url : add_query_arg( 'lang', $lang, $url );
 	}
 
 	/**

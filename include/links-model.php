@@ -60,8 +60,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string             $url  The url to modify.
-	 * @param PLL_Language|false $lang The language object.
+	 * @param string                  $url  The url to modify.
+	 * @param PLL_Language|slug|false $lang The language slug or object.
 	 * @return string The modified url.
 	 */
 	abstract public function add_language_to_link( $url, $lang );
