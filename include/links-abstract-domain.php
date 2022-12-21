@@ -68,7 +68,11 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 	 */
 	public function site_url( $url ) {
 		$lang = $this->get_language_from_url();
-		$lang = $this->model->get_language( $lang );
+
+		if ( $this->model->are_languages_created() ) {
+			// Language objects are not available until they are created.
+			$lang = $this->model->get_language( $lang );
+		}
 		return $this->add_language_to_link( $url, $lang );
 	}
 
