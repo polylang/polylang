@@ -109,12 +109,6 @@ class Accept_Languages_Collection_Test extends PLL_UnitTestCase {
 		$zh_cn = self::$model->get_language( 'zh_CN' );
 		$languages = array( $zh_cn );
 
-		self::$model->clean_languages_cache();
-
-		$zh_cn = self::$model->get_language( $zh_cn['slug'] );
-
-		$languages = array( $zh_cn );
-
 		$best_match = $accept_languages->find_best_match( $languages );
 
 		$this->assertSame( $zh_cn->slug, $best_match );
