@@ -214,7 +214,7 @@ class PLL_Language_Factory {
 
 			$flags['custom_flag']['url'] = esc_url_raw( $flags['custom_flag']['url'] );
 		} else {
-			unset( $flags['custom_flag'] );
+			$flags['custom_flag'] = '';
 		}
 
 		/**
