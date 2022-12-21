@@ -15,13 +15,12 @@ class Media_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$options = array_merge( PLL_Install::get_default_options(), array( 'media_support' => 1, 'default_lang' => 'en' ) );
-		$model = new PLL_Admin_Model( $options );
-		$links_model = new PLL_Links_Default( $model );
-		$this->pll_admin = new PLL_Admin( $links_model );
-
+		$options                        = array_merge( PLL_Install::get_default_options(), array( 'media_support' => 1, 'default_lang' => 'en' ) );
+		$model                          = new PLL_Admin_Model( $options );
+		$links_model                    = new PLL_Links_Default( $model );
+		$this->pll_admin                = new PLL_Admin( $links_model );
 		$this->pll_admin->filters_media = new PLL_Admin_Filters_Media( $this->pll_admin );
-		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+		$this->pll_admin->posts         = new PLL_CRUD_Posts( $this->pll_admin );
 		add_filter( 'intermediate_image_sizes', '__return_empty_array' );  // don't create intermediate sizes to save time
 	}
 
