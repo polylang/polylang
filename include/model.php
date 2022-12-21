@@ -47,6 +47,13 @@ class PLL_Model {
 	public $term;
 
 	/**
+	 * Whether or not the languages objects have been created.
+	 *
+	 * @var bool
+	 */
+	private $are_languages_created = false;
+
+	/**
 	 * Constructor.
 	 * Setups translated objects sub models.
 	 * Setups filters and actions.
@@ -142,6 +149,8 @@ class PLL_Model {
 			$languages = apply_filters( 'pll_after_languages_cache', $languages );
 			$this->cache->set( 'languages', $languages );
 		}
+
+		$this->are_languages_created = true;
 
 		// Remove empty languages if requested.
 		if ( ! empty( $args['hide_empty'] ) ) {
@@ -785,5 +794,16 @@ class PLL_Model {
 		remove_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ) );
 
 		return empty( $terms ) || is_wp_error( $terms ) ? array() : $terms;
+	}
+
+	/**
+	 * Returns whether or not languages are already created.
+	 *
+	 * @since 3.4
+	 *
+	 * @return bool Whether languages are created or not.
+	 */
+	public function are_languages_created() {
+		return $this->are_languages_created();
 	}
 }
