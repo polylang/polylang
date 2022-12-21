@@ -118,6 +118,7 @@ class PLL_Model {
 		$languages = $this->cache->get( 'languages' );
 
 		if ( ! is_array( $languages ) ) {
+			$this->are_languages_created = false;
 			if ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) {
 				// Create the languages from taxonomies.
 				$languages = $this->get_languages_from_taxonomies();
@@ -148,9 +149,9 @@ class PLL_Model {
 			 */
 			$languages = apply_filters( 'pll_after_languages_cache', $languages );
 			$this->cache->set( 'languages', $languages );
+			$this->are_languages_created = true;
 		}
 
-		$this->are_languages_created = true;
 
 		// Remove empty languages if requested.
 		if ( ! empty( $args['hide_empty'] ) ) {
