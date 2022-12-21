@@ -11,9 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
 };
 
-$existing_languages = $this->model->get_languages_list();
-$default_language = count( $existing_languages ) > 0 ? $this->options['default_lang'] : null;
-
+$existing_languages  = $this->model->get_languages_list();
+$default_language    = count( $existing_languages ) > 0 ? $this->options['default_lang'] : null;
 $languages_list = array_diff_key(
 	PLL_Settings::get_predefined_languages(),
 	wp_list_pluck( $existing_languages, 'locale', 'locale' )
@@ -35,16 +34,12 @@ $languages_list = array_diff_key(
 		<select name="lang_list" id="lang_list">
 			<option value=""></option>
 			<?php
-			foreach ( $languages_list as $lg ) {
-				// To set flag base64 encoded for predefined languages as user defined languages.
-				$lg['flag_code'] = $lg['flag'];
-				$language = new PLL_Language( $lg );
-				$language->set_flag();
+			foreach ( $languages_list as $language ) {
 				printf(
 					'<option value="%1$s" data-flag-html="%3$s" data-language-name="%2$s" >%2$s - %1$s</option>' . "\n",
-					esc_attr( $language->locale ),
-					esc_html( $language->name ),
-					esc_html( $language->flag )
+					esc_attr( $language['locale'] ),
+					esc_attr( $language['name'] ),
+					esc_attr( PLL_Language::get_predefined_flag( $language['flag'] ) )
 				);
 			}
 			?>

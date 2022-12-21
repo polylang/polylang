@@ -54,18 +54,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<select name="lang_list" id="lang_list">
 							<option value=""></option>
 							<?php
-							foreach ( $this->get_predefined_languages() as $lg ) {
-								$lg['flag_code'] = $lg['flag'];
-								$language = new PLL_Language( $lg );
-								$language->set_flag();
+							foreach ( PLL_Settings::get_predefined_languages() as $language ) {
 								printf(
 									'<option value="%1$s:%2$s:%3$s:%4$s" data-flag-html="%6$s">%5$s - %2$s</option>' . "\n",
-									esc_attr( $lg['code'] ),
-									esc_attr( $lg['locale'] ),
-									'rtl' == $lg['dir'] ? '1' : '0',
-									esc_attr( $lg['flag'] ),
-									esc_html( $lg['name'] ),
-									esc_html( $language->flag )
+									esc_attr( $language['code'] ),
+									esc_attr( $language['locale'] ),
+									'rtl' == $language['dir'] ? '1' : '0',
+									esc_attr( $language['flag'] ),
+									esc_html( $language['name'] ),
+									esc_attr( PLL_Language::get_predefined_flag( $language['flag'] ) )
 								);
 							}
 							?>
