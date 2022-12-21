@@ -804,6 +804,6 @@ class PLL_Model {
 	 * @return bool Whether languages are created or not.
 	 */
 	public function are_languages_created() {
-		return $this->are_languages_created();
+		return $this->are_languages_created;
 	}
 }
