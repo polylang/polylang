@@ -473,6 +473,19 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
 	public function add_missing_secondary_language_terms( array $taxonomies ) {
+		/**
+		 * Allow only taxonomies for secondary translatable objects.
+		 * Also prevent get_terms() to return WP_Error.
+		 */
+		$taxonomies = array_intersect(
+			$this->translatable_objects->get_taxonomy_names( array( 'language', 'secondary' ) ),
+			$taxonomies
+		);
+
+		if ( empty( $taxonomies ) ) {
+			return;
+		}
+
 		$terms = get_terms(
 			array(
 				'taxonomy'   => 'language',
@@ -492,10 +505,10 @@ class PLL_Admin_Model extends PLL_Model {
 
 		$terms_by_tax = $this->get_terms_for_language_taxonomies( $taxonomies, array_keys( $language_args ) );
 
-		foreach ( $terms_by_tax as $taxonomy => $terms_by_slug ) {
-			foreach ( $terms_by_slug as $slug => $term ) {
-				if ( ! $term instanceof WP_Term ) {
-					$this->add_secondary_language_term( $taxonomy, $slug, $language_args[ $slug ] );
+		foreach ( $taxonomies as $taxonomy ) {
+			foreach ( $language_args as $slug => $args ) {
+				if ( empty( $terms_by_tax[ $taxonomy ][ $slug ] ) ) {
+					$this->add_secondary_language_term( $taxonomy, $slug, $args );
 				}
 			}
 		}
@@ -524,19 +537,6 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @phpstan-return array<non-empty-string, array<non-empty-string, WP_Term|null>>
 	 */
 	protected function get_terms_for_language_taxonomies( array $taxonomies, array $term_slugs ) {
-		/**
-		 * Allow only taxonomies for secondary translatable objects.
-		 * Also prevent get_terms() to return WP_Error.
-		 */
-		$taxonomies = array_intersect(
-			$this->translatable_objects->get_taxonomy_names( array( 'language', 'secondary' ) ),
-			$taxonomies
-		);
-
-		if ( empty( $taxonomies ) ) {
-			return array();
-		}
-
 		$terms = get_terms(
 			array(
 				'taxonomy'   => $taxonomies,
