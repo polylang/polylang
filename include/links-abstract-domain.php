@@ -70,7 +70,7 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 		$lang = $this->get_language_from_url();
 
 		if ( $this->model->are_languages_created() ) {
-			// Language objects are not available until they are created.
+			// Language objects are not available until they are fully created.
 			$lang = $this->model->get_language( $lang );
 		}
 
