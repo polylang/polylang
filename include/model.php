@@ -118,7 +118,6 @@ class PLL_Model {
 		$languages = $this->cache->get( 'languages' );
 
 		if ( ! is_array( $languages ) ) {
-			$this->are_languages_created = false;
 			if ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) {
 				// Create the languages from taxonomies.
 				$languages = $this->get_languages_from_taxonomies();
@@ -149,7 +148,6 @@ class PLL_Model {
 			 */
 			$languages = apply_filters( 'pll_after_languages_cache', $languages );
 			$this->cache->set( 'languages', $languages );
-			$this->are_languages_created = true;
 		}
 
 
@@ -716,6 +714,8 @@ class PLL_Model {
 	 * @phpstan-return list<PLL_Language>
 	 */
 	protected function get_languages_from_taxonomies() {
+		$this->are_languages_created = false;
+
 		/*
 		 * Only terms of the taxonomy 'language' include a 'term_group' for the order.
 		 * `array_reverse()` allows to make sure that the next loop fills the array
@@ -768,6 +768,8 @@ class PLL_Model {
 			$languages
 		);
 		set_transient( 'pll_languages_list', $languages_data );
+
+		$this->are_languages_created = true;
 
 		/** @var list<PLL_Language> $languages */
 		return $languages;
