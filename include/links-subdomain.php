@@ -85,6 +85,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 		$hosts = array();
 
 		if ( ! $this->model->are_languages_created() ) {
+			// TODO: I wonder if returning empty `$hosts` could lead to side effects?
 			return $hosts;
 		}
 
