@@ -473,7 +473,12 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
 	public function add_missing_secondary_language_terms( array $taxonomies ) {
-		$terms = $this->get_language_terms();
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+			)
+		);
 
 		if ( empty( $terms ) ) {
 			return;
