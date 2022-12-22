@@ -36,7 +36,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 
 	/**
-	 * Adds the language code in a url.
+	 * Switches the primary domain to a secondary domain in the url.
 	 *
 	 * @since 1.2
 	 *
