@@ -173,7 +173,7 @@ class PLL_Language {
 	public $flag_code;
 
 	/**
-	 * URL of the flag.
+	 * URL of the flag. Always set to the main domain.
 	 *
 	 * @var string
 	 *
@@ -191,7 +191,7 @@ class PLL_Language {
 	public $flag;
 
 	/**
-	 * URL of the custom flag if it exists.
+	 * URL of the custom flag if it exists. Always set to the main domain.
 	 *
 	 * @var string
 	 */
@@ -546,6 +546,7 @@ class PLL_Language {
 	 * @return string
 	 */
 	public function get_display_flag_url() {
+		// Add filter with site_url().
 		return empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 	}
 
