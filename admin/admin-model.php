@@ -71,6 +71,7 @@ class PLL_Admin_Model extends PLL_Model {
 		$this->clean_languages_cache(); // Again to set add mo_id in the cached languages list
 		flush_rewrite_rules(); // Refresh rewrite rules
 		$this->get_languages_list(); // Refresh languages.
+
 		return true;
 	}
 
