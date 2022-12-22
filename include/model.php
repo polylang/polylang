@@ -716,7 +716,6 @@ class PLL_Model {
 	 * @phpstan-return list<PLL_Language>
 	 */
 	protected function get_languages_from_taxonomies() {
-
 		/*
 		 * Only terms of the taxonomy 'language' include a 'term_group' for the order.
 		 * `array_reverse()` allows to make sure that the next loop fills the array
