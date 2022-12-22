@@ -48,7 +48,6 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 		if ( ! empty( $lang ) && ! empty( $this->hosts[ $lang->slug ] ) ) {
 			$url = preg_replace( '#://(' . wp_parse_url( $this->home, PHP_URL_HOST ) . ')($|/.*)#', '://' . $this->hosts[ $lang->slug ] . '$2', $url );
 		}
-
 		return $url;
 	}
 
