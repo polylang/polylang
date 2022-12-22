@@ -547,7 +547,10 @@ class PLL_Language {
 	 */
 	public function get_display_flag_url() {
 		// Add filter with site_url().
-		return empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
+		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
+
+
+		return apply_filters( 'pll_get_display_flag_url', $flag_url, $this );
 	}
 
 	/**
