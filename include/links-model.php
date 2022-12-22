@@ -56,7 +56,7 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Adds the language code in a url.
+	 * Adds the language code in url.
 	 *
 	 * @since 1.2
 	 *
