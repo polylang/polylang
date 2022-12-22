@@ -552,8 +552,10 @@ class PLL_Admin_Model extends PLL_Model {
 		$terms_by_tax = array_fill_keys( $taxonomies, $term_slugs );
 
 		foreach ( $terms as $term ) {
-			if ( $term instanceof WP_Term && array_key_exists( $term->slug, $terms_by_tax[ $term->taxonomy ] ) ) { // Allow only slugs of existing languages.
-				$terms_by_tax[ $term->taxonomy ][ $term->slug ] = $term;
+			// Except for language taxonomy term slugs, remove 'pll_' prefix from the other language taxonomy term slugs.
+			$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
+			if ( $term instanceof WP_Term && array_key_exists( $key, $terms_by_tax[ $term->taxonomy ] ) ) { // Allow only slugs of existing languages.
+				$terms_by_tax[ $term->taxonomy ][ $key ] = $term;
 			}
 		}
 
