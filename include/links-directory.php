@@ -58,6 +58,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * Adds the language code in a url.
 	 *
 	 * @since 1.2
+	 * @since 3.4 Accepts also a language slug.
 	 *
 	 * @param string                    $url  The url to modify.
 	 * @param PLL_Language|string|false $lang The language slug or object.

@@ -39,6 +39,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	 * Switches the primary domain to a secondary domain in the url.
 	 *
 	 * @since 1.2
+	 * @since 3.4 Accepts also a language slug.
 	 *
 	 * @param string                    $url  The url to modify.
 	 * @param PLL_Language|string|false $lang The language slug or object.
