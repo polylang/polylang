@@ -171,7 +171,7 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Sets the home urlsbefore the languages are persistently cached.
+	 * Sets the home urls before the languages are persistently cached.
 	 *
 	 * @since 1.8
 	 *
