@@ -58,20 +58,15 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * Adds the language code in a url.
 	 *
 	 * @since 1.2
-	 * @since 3.4 Accepts also a language slug.
 	 *
-	 * @param string                    $url  The url to modify.
-	 * @param PLL_Language|string|false $lang The language slug or object.
+	 * @param string             $url  The url to modify.
+	 * @param PLL_Language|false $lang The language object.
 	 * @return string The modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
-		if ( $lang instanceof PLL_Language ) {
-			$lang = $lang->slug;
-		}
-
 		if ( ! empty( $lang ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
-			$slug = $this->options['default_lang'] == $lang && $this->options['hide_default'] ? '' : $base . $lang . '/';
+			$slug = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? '' : $base . $lang->slug . '/';
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
 			if ( false === strpos( $url, $new = $root . $slug ) ) {

@@ -21,18 +21,13 @@ class PLL_Links_Default extends PLL_Links_Model {
 	 * Adds the language code in a url.
 	 *
 	 * @since 1.2
-	 * @since 3.4 Accepts also a language slug.
 	 *
-	 * @param string                    $url  The url to modify.
-	 * @param PLL_Language|string|false $lang The language slug or object.
+	 * @param string             $url  The url to modify.
+	 * @param PLL_Language|false $lang The language object.
 	 * @return string The modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
-		if ( $lang instanceof PLL_Language ) {
-			$lang = $lang->slug;
-		}
-
-		return empty( $lang ) || ( $this->options['hide_default'] && $this->options['default_lang'] == $lang ) ? $url : add_query_arg( 'lang', $lang, $url );
+		return empty( $lang ) || ( $this->options['hide_default'] && $this->options['default_lang'] == $lang->slug ) ? $url : add_query_arg( 'lang', $lang->slug, $url );
 	}
 
 	/**

@@ -36,22 +36,17 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 
 	/**
-	 * Switches the primary domain to a secondary domain in the url.
+	 * Adds the language code in a url.
 	 *
 	 * @since 1.2
-	 * @since 3.4 Accepts also a language slug.
 	 *
-	 * @param string                    $url  The url to modify.
-	 * @param PLL_Language|string|false $lang The language slug or object.
+	 * @param string             $url  The url to modify.
+	 * @param PLL_Language|false $lang The language object.
 	 * @return string The modified url.
 	 */
 	public function add_language_to_link( $url, $lang ) {
-		if ( $lang instanceof PLL_Language ) {
-			$lang = $lang->slug;
-		}
-
-		if ( ! empty( $lang ) && ! empty( $this->hosts[ $lang ] ) ) {
-			$url = preg_replace( '#://(' . wp_parse_url( $this->home, PHP_URL_HOST ) . ')($|/.*)#', '://' . $this->hosts[ $lang ] . '$2', $url );
+		if ( ! empty( $lang ) && ! empty( $this->hosts[ $lang->slug ] ) ) {
+			$url = preg_replace( '#://(' . wp_parse_url( $this->home, PHP_URL_HOST ) . ')($|/.*)#', '://' . $this->hosts[ $lang->slug ] . '$2', $url );
 		}
 
 		return $url;
