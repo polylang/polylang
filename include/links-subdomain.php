@@ -44,8 +44,8 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 			$lang = $lang->slug;
 		}
 
-		if ( ! empty( $lang ) && false === strpos( $url, '://' . $lang->slug . '.' ) ) {
-			$url = $this->options['default_lang'] == $lang->slug && $this->options['hide_default'] ? $url : str_replace( $this->www, '://' . $lang->slug . '.', $url );
+		if ( ! empty( $lang ) && false === strpos( $url, '://' . $lang . '.' ) ) {
+			$url = $this->options['default_lang'] == $lang && $this->options['hide_default'] ? $url : str_replace( $this->www, '://' . $lang . '.', $url );
 		}
 		return $url;
 	}
@@ -83,6 +83,11 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 	 */
 	public function get_hosts() {
 		$hosts = array();
+
+		if ( ! $this->model->are_languages_created() ) {
+			return $hosts;
+		}
+
 		foreach ( $this->model->get_languages_list() as $lang ) {
 			$host = wp_parse_url( $this->home_url( $lang ), PHP_URL_HOST );
 			$hosts[ $lang->slug ] = $host ? $host : '';
