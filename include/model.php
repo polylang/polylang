@@ -613,7 +613,7 @@ class PLL_Model {
 
 		foreach ( $this->translatable_objects as $type => $object ) {
 			// The trailing 's' in the array key is for backward compatibility.
-			$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $limit );
+			$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $type, $limit );
 		}
 
 		/**
