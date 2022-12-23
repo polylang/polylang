@@ -1,6 +1,13 @@
 <?php
 
 class YARPP_Test extends PLL_UnitTestCase {
+
+	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
+		parent::wpSetUpBeforeClass( $factory );
+
+		self::create_language( 'en_US' );
+	}
+
 	/**
 	 * Bug introduced in 1.8 and fixed in 1.8.2.
 	 */
