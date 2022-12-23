@@ -341,7 +341,7 @@ abstract class PLL_Translatable_Object {
 	 * @since 3.4
 	 *
 	 * @param string|string[] $object_types A translated object type or an array of translated object types.
-	 * @param int             $limit      Max number of objects to return. `-1` to return all of them.
+	 * @param int             $limit        Max number of objects to return. `-1` to return all of them.
 	 * @return int[] Array of object IDs.
 	 *
 	 * @phpstan-param -1|positive-int $limit
