@@ -340,16 +340,18 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param int $limit Max number of objects to return. `-1` to return all of them.
+	 * @param string|string[] $object_types A translated object type or an array of translated object types.
+	 * @param int             $limit      Max number of objects to return. `-1` to return all of them.
 	 * @return int[] Array of object IDs.
 	 *
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-return list<positive-int>
 	 */
-	public function get_objects_with_no_lang( $limit ) {
-		$language_ids = $this->model->get_languages_list();
+	public function get_objects_with_no_lang( $object_types, $limit ) {
+		$languages = $this->model->get_languages_list();
 
-		foreach ( $language_ids as $i => $language ) {
+		$language_ids = array();
+		foreach ( $languages as $i => $language ) {
 			$language_ids[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 
@@ -359,7 +361,7 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
-		$sql = $this->get_objects_with_no_lang_sql( $language_ids, $limit );
+		$sql = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $object_types );
 
 		if ( empty( $sql ) ) {
 			return array();
@@ -420,14 +422,15 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param int[] $language_ids List of language `term_taxonomy_id`.
-	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param int[]           $language_ids List of language `term_taxonomy_id`.
+	 * @param int             $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param string|string[] $object_types A translated object type or an array of translated object types.
 	 * @return string
 	 *
 	 * @phpstan-param array<positive-int> $language_ids
 	 * @phpstan-param -1|positive-int $limit
 	 */
-	protected function get_objects_with_no_lang_sql( $language_ids, $limit ) {
+	protected function get_objects_with_no_lang_sql( $language_ids, $limit, $object_types ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return sprintf(
 			"SELECT {$this->db['table']}.{$this->db['id_column']} FROM {$this->db['table']}
 			WHERE {$this->db['table']}.{$this->db['id_column']} NOT IN (

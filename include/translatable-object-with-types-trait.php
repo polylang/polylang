@@ -32,16 +32,15 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 *
 	 * @since 3.4
 	 *
-	 * @param int[] $language_ids List of language `term_taxonomy_id`.
-	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param int[]           $language_ids List of language `term_taxonomy_id`.
+	 * @param int             $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param string|string[] $object_types A translated object type or an array of translated object types.
 	 * @return string
 	 *
 	 * @phpstan-param array<positive-int> $language_ids
 	 * @phpstan-param -1|positive-int $limit
 	 */
-	protected function get_objects_with_no_lang_sql( $language_ids, $limit ) {
-		$object_types = $this->get_translated_object_types();
-
+	protected function get_objects_with_no_lang_sql( $language_ids, $limit, $object_types ) {
 		if ( empty( $object_types ) ) {
 			return '';
 		}
