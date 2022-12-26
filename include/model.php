@@ -153,7 +153,6 @@ class PLL_Model {
 			$this->are_languages_created = true;
 		}
 
-
 		// Remove empty languages if requested.
 		if ( ! empty( $args['hide_empty'] ) ) {
 			foreach ( $languages as $key => $language ) {
