@@ -7,6 +7,12 @@ os:
   - "linux"
 dist: "bionic"
 
+addons:
+  apt:
+    update: true
+    packages:
+    - libonig-dev
+
 jobs:
   include:
     - name: "PHPCS + PHPStan - PHP 7.4"
