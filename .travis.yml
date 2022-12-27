@@ -45,8 +45,8 @@ jobs:
       php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
-    - name: "WP nightly - PHP 8.1.0"
-      php: "8.1"
+    - name: "WP nightly - PHP 8.2.0"
+      php: "8.2"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
   allow_failures:
@@ -57,12 +57,18 @@ jobs:
     - php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
-    - php: "8.1"
+    - php: "8.2"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
 
 services:
   - "mysql"
+
+addons:
+  apt:
+    update: true
+    packages:
+    - libonig-dev
 
 cache:
   directories:
