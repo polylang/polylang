@@ -73,7 +73,7 @@ class PLL_Model {
 	 * @return bool True if there are, false otherwise.
 	 */
 	public function has_languages() {
-		if ( false !== $this->cache->get( 'languages' ) ) {
+		if ( ! empty( $this->cache->get( 'languages' ) ) ) {
 			return true;
 		}
 
