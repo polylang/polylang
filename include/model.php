@@ -77,7 +77,7 @@ class PLL_Model {
 			return true;
 		}
 
-		if ( false !== get_transient( 'pll_languages_list' ) ) {
+		if ( ! empty( get_transient( 'pll_languages_list' ) ) ) {
 			return true;
 		}
 
