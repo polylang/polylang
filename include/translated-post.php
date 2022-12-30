@@ -321,44 +321,65 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @return WP_Post[] Array of posts.
 	 */
 	public function get_untranslated( $type, PLL_Language $untranslated_in, PLL_Language $lang, $search = '' ) {
-		$return = array();
-
-		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough.
-		$args = array(
-			's'                => $search,
-			'suppress_filters' => 0, // To make the post_fields filter work.
-			'lang'             => 0, // Avoid admin language filter.
-			'numberposts'      => 20, // Limit to 20 posts.
-			'post_status'      => 'any',
-			'post_type'        => $type,
-			'tax_query'        => array(
-				array(
-					'taxonomy' => $this->tax_language,
-					'field'    => 'term_taxonomy_id', // WP 3.5+.
-					'terms'    => $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ),
-				),
-			),
-		);
+		global $wpdb;
 
 		/**
 		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox.
 		 * This should help plugins to fix some edge cases.
 		 *
-		 * @see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
+		 * @since 3.4
 		 *
-		 * @since 1.7
-		 *
-		 * @param array $args WP_Query arguments
+		 * @param int $limit Limit to searched posts, default 20.
 		 */
-		$args  = apply_filters( 'pll_ajax_posts_not_translated_args', $args );
-		$posts = get_posts( $args );
+		$limit = apply_filters( 'pll_ajax_posts_not_translated_limit', 20 );
 
-		foreach ( $posts as $post ) {
-			if ( $post instanceof WP_Post && ! $this->get_translation( $post->ID, $untranslated_in ) && $this->current_user_can_read( $post->ID, 'edit' ) ) {
-				$return[] = $post;
-			}
-		}
+		$not_translated_query = $wpdb->prepare(
+			"LEFT JOIN {$wpdb->term_relationships} AS tr1 ON ({$wpdb->posts}.ID = tr1.object_id)
+			INNER JOIN {$wpdb->term_taxonomy} AS tt ON (tt.term_taxonomy_id = tr1.term_taxonomy_id)
+				AND (tt.taxonomy = 'post_translations')
+				AND tt.description NOT LIKE '%%%s%%'",
+			$untranslated_in->slug
+		);
 
-		return $return;
+		$search_query = $wpdb->prepare(
+			"INNER JOIN {$wpdb->term_relationships} AS tr2 ON ({$wpdb->posts}.ID = tr2.object_id)
+			AND tr2.term_taxonomy_id IN (%d)
+			AND (({$wpdb->posts}.post_title LIKE '%%%s%%')
+				OR ({$wpdb->posts}.post_excerpt LIKE '%%%s%%')
+				OR ({$wpdb->posts}.post_content LIKE '%%%s%%'))
+			AND {$wpdb->posts}.post_type = %s
+			AND (({$wpdb->posts}.post_status <> 'trash'
+			AND {$wpdb->posts}.post_status <> 'auto-draft'))",
+			$lang->term_taxonomy_id,
+			$search,
+			$search,
+			$search,
+			$type
+		);
+
+		$limit_query = $wpdb->prepare(
+			"LIMIT 0, %d",
+			$limit
+		);
+
+        $sql = "SELECT * FROM {$wpdb->posts}
+                {$not_translated_query}
+				{$search_query}
+                GROUP BY {$wpdb->posts}.ID
+                ORDER BY {$wpdb->posts}.post_date DESC
+                {$limit_query}";
+
+        $posts = $wpdb->get_results( $sql );
+
+        foreach ( $posts as $i => $post ) {
+            if ( ! $this->current_user_can_read( $post->ID, 'edit' ) ) {
+                unset( $posts[ $i ] );
+                continue;
+            }
+
+            $posts[ $i ] = new WP_Post( $post );
+        }
+
+        return $posts;
 	}
 }
