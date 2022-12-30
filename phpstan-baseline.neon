@@ -11,6 +11,11 @@ parameters:
 			path: admin/admin-base.php
 
 		-
+			message: "#^Parameter \\#1 \\$post_type of method PLL_Model\\:\\:is_translated_post_type\\(\\) expects array\\<string\\>\\|string, string\\|false given\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
 			message: "#^Parameter \\#2 \\$callback of function add_action expects callable\\(\\)\\: mixed, array\\{mixed, 'admin_bar_menu'\\} given\\.$#"
 			count: 1
 			path: admin/admin-base.php
