@@ -333,53 +333,63 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		 */
 		$limit = apply_filters( 'pll_ajax_posts_not_translated_limit', 20 );
 
-		$not_translated_query = $wpdb->prepare(
-			"LEFT JOIN {$wpdb->term_relationships} AS tr1 ON ({$wpdb->posts}.ID = tr1.object_id)
-			INNER JOIN {$wpdb->term_taxonomy} AS tt ON (tt.term_taxonomy_id = tr1.term_taxonomy_id)
-				AND (tt.taxonomy = 'post_translations')
-				AND tt.description NOT LIKE '%%%s%%'",
-			$untranslated_in->slug
-		);
+		$search_like = '%' . $wpdb->esc_like( $search ) . '%';
 
 		$search_query = $wpdb->prepare(
-			"INNER JOIN {$wpdb->term_relationships} AS tr2 ON ({$wpdb->posts}.ID = tr2.object_id)
-			AND tr2.term_taxonomy_id IN (%d)
-			AND (({$wpdb->posts}.post_title LIKE '%%%s%%')
-				OR ({$wpdb->posts}.post_excerpt LIKE '%%%s%%')
-				OR ({$wpdb->posts}.post_content LIKE '%%%s%%'))
+			"INNER JOIN {$wpdb->term_relationships} AS tr1 ON ({$wpdb->posts}.ID = tr1.object_id)
+			AND tr1.term_taxonomy_id IN (%d)
+			AND (({$wpdb->posts}.post_title LIKE %s)
+				OR ({$wpdb->posts}.post_excerpt LIKE %s)
+				OR ({$wpdb->posts}.post_content LIKE %s))
 			AND {$wpdb->posts}.post_type = %s
 			AND (({$wpdb->posts}.post_status <> 'trash'
 			AND {$wpdb->posts}.post_status <> 'auto-draft'))",
 			$lang->term_taxonomy_id,
-			$search,
-			$search,
-			$search,
+			$search_like,
+			$search_like,
+			$search_like,
 			$type
 		);
 
+		$untranslated_like = '%' . $wpdb->esc_like( $untranslated_in->slug ) . '%';
+
+		$not_translated_query = $wpdb->prepare(
+			"WHERE {$wpdb->posts}.ID NOT IN (
+				SELECT {$wpdb->posts}.ID FROM {$wpdb->posts}
+					LEFT JOIN {$wpdb->term_relationships} AS tr2 ON ({$wpdb->posts}.ID = tr2.object_id)
+					INNER JOIN {$wpdb->term_taxonomy} AS tt ON (tt.term_taxonomy_id = tr2.term_taxonomy_id)
+						AND (tt.taxonomy = 'post_translations')
+						AND tt.description LIKE %s
+			)",
+			$untranslated_like
+		);
+
 		$limit_query = $wpdb->prepare(
-			"LIMIT 0, %d",
+			'LIMIT 0, %d',
 			$limit
 		);
 
-        $sql = "SELECT * FROM {$wpdb->posts}
-                {$not_translated_query}
+		$sql = "SELECT * FROM {$wpdb->posts}
 				{$search_query}
+                {$not_translated_query}
                 GROUP BY {$wpdb->posts}.ID
                 ORDER BY {$wpdb->posts}.post_date DESC
                 {$limit_query}";
 
-        $posts = $wpdb->get_results( $sql );
+		/**
+		 * Already prepared above.
+		 */
+		$posts = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
-        foreach ( $posts as $i => $post ) {
-            if ( ! $this->current_user_can_read( $post->ID, 'edit' ) ) {
-                unset( $posts[ $i ] );
-                continue;
-            }
+		foreach ( $posts as $i => $post ) {
+			if ( ! $this->current_user_can_read( $post->ID, 'edit' ) ) {
+				unset( $posts[ $i ] );
+				continue;
+			}
 
-            $posts[ $i ] = new WP_Post( $post );
-        }
+			$posts[ $i ] = new WP_Post( $post );
+		}
 
-        return $posts;
+		return $posts;
 	}
 }
