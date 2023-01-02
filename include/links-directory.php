@@ -213,6 +213,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		$cpts = $cpts ? '#post_type=(' . implode( '|', $cpts ) . ')#' : '';
 
 		foreach ( $rules as $key => $rule ) {
+			if ( ! is_string( $rule ) || ! is_string( $key ) ) {
+				// Protection against a bug in Sendinblue for WooCommerce. See: https://wordpress.org/support/topic/bug-introduced-in-rewrite-rules/
+				continue;
+			}
+
 			// Special case for translated post types and taxonomies to allow canonical redirection.
 			if ( $this->options['force_lang'] && in_array( $filter, array_merge( $this->model->get_translated_post_types(), $this->model->get_translated_taxonomies() ) ) ) {
 
