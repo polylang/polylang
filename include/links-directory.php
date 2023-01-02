@@ -214,7 +214,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 		foreach ( $rules as $key => $rule ) {
 			if ( ! is_string( $rule ) || ! is_string( $key ) ) {
-				// Someone broke a rule...
+				/**
+				 * Protection agains Sendinblue for WooCommerce. See: https://wordpress.org/support/topic/bug-introduced-in-rewrite-rules/
+				 */
 				continue;
 			}
 
