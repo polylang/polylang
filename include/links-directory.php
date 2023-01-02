@@ -194,11 +194,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return string[] Modified rewrite rules.
 	 */
 	public function rewrite_rules( $rules ) {
-		if ( ! is_array( $rules ) ) {
-			// Someone broke the rules...
-			return $rules;
-		}
-
 		$filter = str_replace( '_rewrite_rules', '', current_filter() );
 
 		global $wp_rewrite;
