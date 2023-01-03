@@ -468,104 +468,44 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Adds the missing language terms for the given language taxonomies.
+	 * Adds the missing language terms for the secondary language taxonomies.
 	 *
 	 * @since 3.4
 	 *
 	 * @return void
 	 */
 	public function add_missing_secondary_language_terms() {
-		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'language', 'secondary' ) );
+		$objects = $this->translatable_objects->get_secondary_translatable_objects();
+		$updated = false;
 
-		if ( empty( $taxonomies ) ) {
-			return;
-		}
+		foreach ( $this->get_languages_list() as $language ) {
+			foreach ( $objects as $object ) {
+				$term_id = $language->get_tax_prop( $object->get_tax_language(), 'term_id' );
 
-		$terms = get_terms(
-			array(
-				'taxonomy'   => 'language',
-				'hide_empty' => false,
-			)
-		);
+				if ( ! empty( $term_id ) ) {
+					// The term exists.
+					continue;
+				}
 
-		if ( empty( $terms ) || ! is_array( $terms ) ) {
-			return;
-		}
+				// Create a new term.
+				$result = $this->update_secondary_language_term(
+					array(
+						'taxonomy' => $object->get_tax_language(),
+						'slug'     => $language->slug,
+						'name'     => $language->name,
+					)
+				);
 
-		$language_names = array();
-
-		foreach ( $terms as $term ) {
-			$language_names[ $term->slug ] = $term->name;
-		}
-
-		/** @var array<non-empty-string, non-empty-string> $language_names */
-		$terms_by_tax = $this->get_terms_for_language_taxonomies( $taxonomies, array_keys( $language_names ) );
-
-		foreach ( $taxonomies as $taxonomy ) {
-			foreach ( $language_names as $slug => $name ) {
-				if ( empty( $terms_by_tax[ $taxonomy ][ $slug ] ) ) {
-					$this->update_secondary_language_term(
-						array(
-							'taxonomy' => $taxonomy,
-							'slug'     => $slug,
-							'name'     => $name,
-						)
-					);
+				if ( ! empty( $result ) ) {
+					$updated = true;
 				}
 			}
 		}
-	}
 
-	/**
-	 * Returns a list of language terms, by taxonomy.
-	 * Taxonomies are limited to secondary translatable objects.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string[] $taxonomies List of taxonomies.
-	 * @param string[] $term_slugs List of the main language terms' slugs.
-	 * @return (WP_Term|null)[][] {
-	 *     List of terms by taxonomy and slug. Null means that the term is missing for the taxonomy/slug pair.
-	 *     Ex: array(
-	 *         'term_language' => array(
-	 *             'en' => WP_Term,
-	 *             'fr' => null,
-	 *         ),
-	 *     )
-	 * }
-	 *
-	 * @phpstan-param array<non-empty-string> $taxonomies
-	 * @phpstan-param array<non-empty-string> $term_slugs
-	 * @phpstan-return array<non-empty-string, array<non-empty-string, WP_Term|null>>
-	 */
-	protected function get_terms_for_language_taxonomies( array $taxonomies, array $term_slugs ) {
-		$terms = get_terms(
-			array(
-				'taxonomy'   => $taxonomies,
-				'hide_empty' => false,
-			)
-		);
-
-		if ( empty( $terms ) || ! is_array( $terms ) ) {
-			return array();
+		if ( $updated ) {
+			// Clear the cache, so the new `term_id` and `term_taxonomy_id` appear in the languages list.
+			$this->clean_languages_cache();
 		}
-
-		$term_slugs   = array_fill_keys( $term_slugs, null );
-		$terms_by_tax = array_fill_keys( $taxonomies, $term_slugs );
-
-		foreach ( $terms as $term ) {
-			// Except for language taxonomy term slugs, remove 'pll_' prefix from the other language taxonomy term slugs.
-			/** @var non-empty-string $key */
-			$key = 0 === strpos( $term->slug, 'pll_' ) ? substr( $term->slug, 4 ) : $term->slug;
-			/** @var non-empty-string $tax */
-			$tax = $term->taxonomy;
-
-			if ( array_key_exists( $key, $terms_by_tax[ $tax ] ) ) { // Allow only slugs of existing languages.
-				$terms_by_tax[ $tax ][ $key ] = $term;
-			}
-		}
-
-		return $terms_by_tax;
 	}
 
 	/**
