@@ -191,7 +191,7 @@ class PLL_Language_Factory {
 		}
 
 		/**
-		 * Filters the custom flag informations.
+		 * Filters the custom flag information.
 		 *
 		 * @param array  $flag {
 		 *   Information about the custom flag.
