@@ -472,20 +472,10 @@ class PLL_Admin_Model extends PLL_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @param array $taxonomies List of language taxonomies.
 	 * @return void
-	 *
-	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
-	public function add_missing_secondary_language_terms( array $taxonomies ) {
-		/**
-		 * Allow only taxonomies for secondary translatable objects.
-		 * Also prevent get_terms() to return WP_Error.
-		 */
-		$taxonomies = array_intersect(
-			$this->translatable_objects->get_taxonomy_names( array( 'language', 'secondary' ) ),
-			$taxonomies
-		);
+	public function add_missing_secondary_language_terms() {
+		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'language', 'secondary' ) );
 
 		if ( empty( $taxonomies ) ) {
 			return;
@@ -498,7 +488,7 @@ class PLL_Admin_Model extends PLL_Model {
 			)
 		);
 
-		if ( empty( $terms ) ) {
+		if ( empty( $terms ) || ! is_array( $terms ) ) {
 			return;
 		}
 
@@ -565,9 +555,13 @@ class PLL_Admin_Model extends PLL_Model {
 
 		foreach ( $terms as $term ) {
 			// Except for language taxonomy term slugs, remove 'pll_' prefix from the other language taxonomy term slugs.
-			$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
-			if ( $term instanceof WP_Term && array_key_exists( $key, $terms_by_tax[ $term->taxonomy ] ) ) { // Allow only slugs of existing languages.
-				$terms_by_tax[ $term->taxonomy ][ $key ] = $term;
+			/** @var non-empty-string $key */
+			$key = 0 === strpos( $term->slug, 'pll_' ) ? substr( $term->slug, 4 ) : $term->slug;
+			/** @var non-empty-string $tax */
+			$tax = $term->taxonomy;
+
+			if ( array_key_exists( $key, $terms_by_tax[ $tax ] ) ) { // Allow only slugs of existing languages.
+				$terms_by_tax[ $tax ][ $key ] = $term;
 			}
 		}
 
