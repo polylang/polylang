@@ -7,6 +7,12 @@ os:
   - "linux"
 dist: "bionic"
 
+addons:
+  apt:
+    update: true
+    packages:
+    - libonig-dev
+
 jobs:
   include:
     - name: "PHPCS + PHPStan - PHP 7.4"
@@ -23,18 +29,18 @@ jobs:
       script:
         - "vendor/bin/phpunit --verbose"
 
-    - name: "WP 6.0 - PHP 5.6"
+    - name: "WP 6.1 - PHP 5.6"
       dist: "xenial"
       php: "5.6"
-      env: "WP_VERSION=6.0 WP_MULTISITE=0"
+      env: "WP_VERSION=6.1 WP_MULTISITE=0"
 
-    - name: "WP 6.0 - PHP 8.0"
+    - name: "WP 6.1 - PHP 8.0"
       php: "8.0"
-      env: "WP_VERSION=6.0 WP_MULTISITE=0"
+      env: "WP_VERSION=6.1 WP_MULTISITE=0"
 
-    - name: "WP 6.0 multisite - PHP 7.2"
+    - name: "WP 6.1 multisite - PHP 7.2"
       php: "7.2"
-      env: "WP_VERSION=6.0 WP_MULTISITE=1"
+      env: "WP_VERSION=6.1 WP_MULTISITE=1"
 
     - name: "WP nightly - PHP 5.6"
       dist: "xenial"
@@ -45,8 +51,8 @@ jobs:
       php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
-    - name: "WP nightly - PHP 8.1.0"
-      php: "8.1"
+    - name: "WP nightly - PHP 8.2.0"
+      php: "8.2"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
   allow_failures:
@@ -57,12 +63,18 @@ jobs:
     - php: "8.0"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
-    - php: "8.1"
+    - php: "8.2"
       env: "WP_VERSION=nightly WP_MULTISITE=0"
 
 
 services:
   - "mysql"
+
+addons:
+  apt:
+    update: true
+    packages:
+    - libonig-dev
 
 cache:
   directories:

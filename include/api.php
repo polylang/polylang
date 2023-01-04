@@ -429,8 +429,8 @@ function pll_save_term_translations( $arr ) {
  * @since 1.5.4
  *
  * @param int    $post_id Post ID.
- * @param string $field   Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'.
- * @return string|false The requested field for the post language, false if no language is associated to that post.
+ * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
+ * @return string|PLL_Language|false The requested field or object for the post language, false if no language is associated to that post.
  */
 function pll_get_post_language( $post_id, $field = 'slug' ) {
 	$lang = PLL()->model->post->get_language( $post_id );
@@ -457,8 +457,8 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  * @since 1.5.4
  *
  * @param int    $term_id Term ID.
- * @param string $field   Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'.
- * @return string|false The requested field for the term language, false if no language is associated to that term.
+ * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
+ * @return string|PLL_Language|false The requested field or object for the term language, false if no language is associated to that term.
  */
 function pll_get_term_language( $term_id, $field = 'slug' ) {
 	$lang = PLL()->model->term->get_language( $term_id );

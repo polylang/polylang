@@ -703,4 +703,18 @@ class PLL_Language {
 	public function get_object_vars() {
 		return get_object_vars( $this );
 	}
+
+	/**
+	 * Returns a predefined HTML flag.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $flag_code Flag code to render.
+	 * @return string HTML code for the flag.
+	 */
+	public static function get_predefined_flag( $flag_code ) {
+		$flag = self::get_flag_informations( $flag_code );
+
+		return self::get_flag_html( $flag );
+	}
 }

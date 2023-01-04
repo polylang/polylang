@@ -11,6 +11,11 @@ parameters:
 			path: admin/admin-base.php
 
 		-
+			message: "#^Parameter \\#1 \\$post_type of method PLL_Model\\:\\:is_translated_post_type\\(\\) expects array\\<string\\>\\|string, string\\|false given\\.$#"
+			count: 1
+			path: admin/admin-base.php
+
+		-
 			message: "#^Parameter \\#2 \\$callback of function add_action expects callable\\(\\)\\: mixed, array\\{mixed, 'admin_bar_menu'\\} given\\.$#"
 			count: 1
 			path: admin/admin-base.php
@@ -1189,11 +1194,6 @@ parameters:
 			message: "#^Method PLL_T15S\\:\\:site_transient_update_plugins\\(\\) should return array\\|bool but returns array\\|stdClass\\|true\\.$#"
 			count: 2
 			path: install/t15s.php
-
-		-
-			message: "#^Parameter \\#2 \\$.+ of function explode expects string, mixed given\\.$#"
-			count: 1
-			path: modules/lingotek/lingotek.php
 
 		-
 			message: "#^Cannot call method get_must_translate_message\\(\\) on PLL_Admin_Static_Pages\\|null\\.$#"
