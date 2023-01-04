@@ -38,7 +38,7 @@ Helps optimizing the time spent translating your site with some very useful extr
 * Better integration in the new Block Editor.
 * Language switcher available as a block.
 * Language options available in the widget block editor.
-* Template parts translatable in the Full Site Editing (FSE).
+* Template parts translatable in the site editor (FSE).
 * Duplicate and/or synchronize content across post translations.
 * Improved compatibilities with other plugins such as [ACF Pro](https://polylang.pro/doc/working-with-acf-pro/).
 * Share the same URL slug for posts or terms across languages.
@@ -59,7 +59,11 @@ Helps optimizing the time spent translating your site with some very useful extr
 
 Neither of them will allow to do automated translation.
 
-Migrating from WPML is possible using the plugin [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/).
+= Our other free plugins =
+
+* [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/) allows migrating from WPML to Polylang.
+* [DynaMo](https://wordpress.org/plugins/dynamo/) speeds up the translation of WordPress for all non-English sites.
+* [Site Editor Classic Features](https://wordpress.org/plugins/fse-classic/) allows to use legacy widgets (including the Polylang language switcher) and menus in the site editor (FSE).
 
 = Credits =
 
