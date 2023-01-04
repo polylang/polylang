@@ -549,14 +549,9 @@ class PLL_Language {
 		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 
 		/**
-		 * Filters flag URL. The custom one is passed if exists.
-		 *
-		 * @since 3.4
-		 *
-		 * @param string       $flag_url Flag URL.
-		 * @param PLL_Language $language Current language object.
+		 * Let's use `site_url()` so the returned URL will be filtered properly according to permalink structure.
 		 */
-		return apply_filters( 'pll_get_display_flag_url', $flag_url, $this );
+		return site_url( set_url_scheme( $flag_url, 'relative' ) );
 	}
 
 	/**
