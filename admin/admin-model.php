@@ -43,17 +43,9 @@ class PLL_Admin_Model extends PLL_Model {
 		wp_update_term( (int) $r['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // can't set the term group directly in wp_insert_term
 
 		// The other language taxonomies.
-		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
-			$this->update_secondary_language_term(
-				array(
-					'taxonomy' => $object->get_tax_language(),
-					'slug'     => $args['slug'],
-					'name'     => $args['name'],
-				)
-			);
-		}
+		$this->update_secondary_language_terms( $args['slug'], $args['name'] );
 
-		$this->clean_languages_cache(); // Update the languages list now !
+		$this->clean_languages_cache(); // Update the languages list now!
 
 		if ( ! isset( $this->options['default_lang'] ) ) {
 			// If this is the first language created, set it as default language
@@ -237,16 +229,7 @@ class PLL_Admin_Model extends PLL_Model {
 		update_option( 'polylang', $this->options );
 
 		// And finally update the language itself.
-		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
-			$this->update_secondary_language_term(
-				array(
-					'taxonomy' => $object->get_tax_language(),
-					'slug'     => $args['slug'],
-					'name'     => $args['name'],
-					'term_id'  => $lang->get_tax_prop( $object->get_tax_language(), 'term_id' ),
-				)
-			);
-		}
+		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
 
 		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
 		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
@@ -475,85 +458,43 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @return void
 	 */
 	public function add_missing_secondary_language_terms() {
-		$objects = $this->translatable_objects->get_secondary_translatable_objects();
-		$updated = false;
-
 		foreach ( $this->get_languages_list() as $language ) {
-			foreach ( $objects as $object ) {
-				$term_id = $language->get_tax_prop( $object->get_tax_language(), 'term_id' );
-
-				if ( ! empty( $term_id ) ) {
-					// The term exists.
-					continue;
-				}
-
-				// Create a new term.
-				$result = $this->update_secondary_language_term(
-					array(
-						'taxonomy' => $object->get_tax_language(),
-						'slug'     => $language->slug,
-						'name'     => $language->name,
-					)
-				);
-
-				if ( ! empty( $result ) ) {
-					$updated = true;
-				}
-			}
+			$this->update_secondary_language_terms( $language->slug, $language->name, $language );
 		}
 
-		if ( $updated ) {
-			// Clear the cache, so the new `term_id` and `term_taxonomy_id` appear in the languages list.
-			$this->clean_languages_cache();
-		}
+		// Clear the cache, so the new `term_id` and `term_taxonomy_id` appear in the languages list.
+		$this->clean_languages_cache();
 	}
 
 	/**
-	 * Updates or adds a new term for a secondary language taxonomy (aka not 'language').
+	 * Updates or adds new terms for a secondary language taxonomy (aka not 'language').
 	 *
 	 * @since 3.4
 	 *
-	 * @param array $args {
-	 *     Additional arguments.
+	 * @param string            $slug     Language term slug (with or without the `pll_` prefix).
+	 * @param string            $name     Language name (label).
+	 * @param PLL_Language|null $language Optional. A language object. Required to update the existing terms.
+	 * @return void
 	 *
-	 *     @type string $taxonomy Language taxonomy name.
-	 *     @type string $slug     Language term slug (with or without the `pll_` prefix).
-	 *     @type string $name     Language name (label).
-	 *     @type int    $term_id  Optional. Language term_id. If provided, the term is updated instead of being created.
-	 * }
-	 * @return int[]|null Array of `term_id` and `term_taxonomy_id` on success. `null` on failure.
-	 *
-	 * @phpstan-param array{
-	 *     taxonomy: non-empty-string,
-	 *     slug: non-empty-string,
-	 *     name: non-empty-string,
-	 *     term_id?: int<0, max>
-	 * } $args
-	 * @phpstan-return array{
-	 *     term_id: positive-int,
-	 *     term_taxonomy_id: positive-int
-	 * }|null
+	 * @phpstan-param non-empty-string $slug
+	 * @phpstan-param non-empty-string $name
 	 */
-	protected function update_secondary_language_term( array $args ) {
-		$slug = 0 === strpos( $args['slug'], 'pll_' ) ? 'pll_%s' : sprintf( 'pll_%s', $args['slug'] );
+	protected function update_secondary_language_terms( $slug, $name, PLL_Language $language = null ) {
+		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
 
-		if ( empty( $args['term_id'] ) ) {
-			// Attempt to repair the language if a term has been deleted by a database cleaning tool.
-			$result = wp_insert_term( $args['name'], $args['taxonomy'], array( 'slug' => $slug ) );
-		} else {
-			$result = wp_update_term( $args['term_id'], $args['taxonomy'], array( 'slug' => $slug, 'name' => $args['name'] ) );
+		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
+			if ( ! empty( $language ) ) {
+				$term_id = $language->get_tax_prop( $object->get_tax_language(), 'term_id' );
+			} else {
+				$term_id = 0;
+			}
+
+			if ( ! empty( $term_id ) ) {
+				wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
+			} else {
+				// Attempt to repair the language if a term has been deleted by a database cleaning tool.
+				wp_insert_term( $name, $object->get_tax_language(), array( 'slug' => $slug ) );
+			}
 		}
-
-		if ( ! is_array( $result ) ) {
-			return null;
-		}
-
-		/**
-		 * @phpstan-var array{
-		 *     term_id: positive-int,
-		 *     term_taxonomy_id: positive-int
-		 * }
-		 */
-		return array_map( 'absint', $result );
 	}
 }
