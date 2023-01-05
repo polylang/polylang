@@ -38,6 +38,13 @@ class PLL_Translate_Option {
 	private $translations;
 
 	/**
+	 * Cache for the translated value.
+	 *
+	 * @var mixed
+	 */
+	private $translated_value;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.9
@@ -70,6 +77,12 @@ class PLL_Translate_Option {
 		$this->keys = $keys;
 		add_filter( 'option_' . $name, array( $this, 'translate' ) ); // Make sure to add this filter after options are registered.
 
+		// Resets the cache on the same actions we load the strings translations.
+		add_action( 'pll_language_defined', array( $this, 'reset_translated_value' ), 5 );
+		add_action( 'change_locale', array( $this, 'reset_translated_value' ) ); // Since WP 4.7
+		add_action( 'personal_options_update', array( $this, 'reset_translated_value' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
+		add_action( 'lostpassword_post', array( $this, 'reset_translated_value' ), 10, 0 ); // Password reset email.
+
 		// Filters updated values.
 		add_filter( 'pre_update_option_' . $name, array( $this, 'pre_update_option' ), 10, 3 );
 		add_action( 'update_option_' . $name, array( $this, 'update_option' ) );
@@ -92,10 +105,23 @@ class PLL_Translate_Option {
 	 */
 	public function translate( $value ) {
 		if ( self::$raw ) {
-				return $value;
+			return $value;
 		}
 
-		return $this->translate_string_recursive( $value, $this->keys );
+		if ( ! isset( $this->translated_value ) ) {
+			$this->translated_value = $this->translate_string_recursive( $value, $this->keys );
+		}
+
+		return $this->translated_value;
+	}
+
+	/**
+	 * Resets the translated value cache.
+	 *
+	 * @since 3.4
+	 */
+	public function reset_translated_value() {
+		unset( $this->translated_value );
 	}
 
 	/**
