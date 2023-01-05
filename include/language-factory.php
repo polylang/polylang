@@ -122,6 +122,8 @@ class PLL_Language_Factory {
 			$data[ $field ] = ! empty( $data[ $field ] ) ? absint( $data[ $field ] ) : 0;
 		}
 
+		$data['active'] = isset( $data['active'] ) ? $data['active'] : true;
+
 		/**
 		 * @var LanguageData
 		 */
