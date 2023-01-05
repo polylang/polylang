@@ -74,7 +74,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->curlang = self::$model->get_language( 'en' );
 		$this->pll_admin->add_filters();
-		$this->assertEquals( ' pll-dir-ltr pll-dir-rtl pll-language-en', apply_filters( 'admin_body_class', '' ) );
+		$this->assertEquals( ' pll-dir-ltr pll-lang-en', apply_filters( 'admin_body_class', '' ) );
 	}
 
 	public function test_admin_body_class_rtl() {
@@ -85,7 +85,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->curlang = self::$model->get_language( 'ar' );
 		$this->pll_admin->add_filters();
-		$this->assertEquals( ' pll-dir-rtl pll-language-ar', apply_filters( 'admin_body_class', '' ) );
+		$this->assertEquals( ' pll-dir-rtl pll-lang-ar', apply_filters( 'admin_body_class', '' ) );
 	}
 
 
