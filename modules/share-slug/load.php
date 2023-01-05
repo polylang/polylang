@@ -10,11 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 };
 
 if ( $polylang->model->get_languages_list() ) {
-	add_filter(
-		'pll_settings_modules',
-		function( $modules ) {
-			$modules[] = 'PLL_Settings_Preview_Share_Slug';
-			return $modules;
-		}
-	);
+	$polylang->add_shared( 'share_slug', PLL_Share_Slug::class );
+	add_action( 'wp_loaded', array( $polylang->get( 'share_slug' ), 'init' ) );
 }
