@@ -797,13 +797,13 @@ class PLL_Model {
 	}
 
 	/**
-	 * Returns whether or not languages are already created.
+	 * Tells if language objects are currently created.
 	 *
 	 * @since 3.4
 	 *
-	 * @return bool Whether languages are created or not.
+	 * @return bool Whether language objects are created or not.
 	 */
-	public function are_language_objects_created() {
-		return $this->are_language_objects_created;
+	public function is_creating_language_objects() {
+		return ! $this->are_language_objects_created;
 	}
 }
