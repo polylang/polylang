@@ -33,8 +33,14 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		}
 
 		$this->pll_env = new PLL_Frontend( $links_model );
-		$this->pll_env->sitemaps = new $sitemap_class( $this->pll_env );
-		$this->pll_env->sitemaps->init();
+
+		if ( PLL_Sitemaps_Domain::class === $sitemap_class ) {
+			$this->pll_env->add_shared( 'sitemaps', new PLL_Sitemaps_Domain( $this->pll_env->links_model ) );
+		} else {
+			$this->pll_env->add_shared( 'sitemaps', new PLL_Sitemaps( $this->pll_env->links_model, $this->pll_env->model, $this->pll_env->options ) );
+		}
+
+		$this->pll_env->get( 'sitemaps' )->init();
 
 		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
 

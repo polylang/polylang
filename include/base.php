@@ -3,6 +3,12 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang_DI\Container;
+use WP_Syntex\Polylang_DI\ContainerInterface;
+use WP_Syntex\Polylang_DI\Definition\DefinitionInterface;
+use WP_Syntex\Polylang_DI\Exception\InvalidArgumentException;
+use WP_Syntex\Polylang_DI\Exception\NotFoundException;
+
 /**
  * Base class for both admin and frontend
  *
@@ -10,6 +16,8 @@
  */
 #[AllowDynamicProperties]
 abstract class PLL_Base {
+	use PLL_Container_Compat_Trait;
+
 	/**
 	 * Stores the plugin options.
 	 *
@@ -44,6 +52,15 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
+	 * Instance of ContainerInterface.
+	 *
+	 * @since 3.3
+	 *
+	 * @var ContainerInterface
+	 */
+	protected $container;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -52,8 +69,13 @@ abstract class PLL_Base {
 	 */
 	public function __construct( &$links_model ) {
 		$this->links_model = &$links_model;
-		$this->model = &$links_model->model;
-		$this->options = &$this->model->options;
+		$this->model       = &$links_model->model;
+		$this->options     = &$this->model->options;
+		$this->container   = new Container();
+
+		$this->container_identifiers = array(
+			'sitemaps' => 'sitemaps',
+		);
 
 		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
 
@@ -193,5 +215,48 @@ abstract class PLL_Base {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Finds an entry of the container by its identifier and returns it.
+	 *
+	 * @since  3.3
+	 * @throws NotFoundException No entry was found for this identifier.
+	 * @throws InvalidArgumentException The identifier is not a string.
+	 *
+	 * @param  string $id Identifier of the entry to look for.
+	 * @return mixed      Entry.
+	 */
+	public function get( $id ) {
+		return $this->container->get( $id );
+	}
+
+	/**
+	 * Returns true if the container can return an entry for the given identifier.
+	 * Returns false otherwise.
+	 *
+	 * @since  3.3
+	 * @throws InvalidArgumentException The identifier is not a string.
+	 *
+	 * @param  string $id Identifier of the entry to look for.
+	 * @return bool
+	 */
+	public function has( $id ) {
+		return $this->container->has( $id );
+	}
+
+	/**
+	 * Adds a shared item to the container.
+	 *
+	 * @since  3.3
+	 * @throws InvalidArgumentException The identifier is not a string.
+	 *
+	 * @param  string $id               Alias used to store the item.
+	 * @param  mixed  $concrete         The item to store.
+	 * @return DefinitionInterface|null A `DefinitionInterface` object when matching one of the definitions.
+	 *                                  Null otherwise.
+	 */
+	public function add_shared( $id, $concrete ) {
+		return $this->container->addShared( $id, $concrete );
 	}
 }
