@@ -65,6 +65,13 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public function __construct( &$links_model ) {
 		parent::__construct( $links_model );
 
+		$this->container_identifiers = array_merge(
+			$this->container_identifiers,
+			array(
+				'site_health' => 'site_health',
+			)
+		);
+
 		// Adds the link to the languages panel in the WordPress admin menu
 		add_action( 'admin_menu', array( $this, 'add_menus' ) );
 
