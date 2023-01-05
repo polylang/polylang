@@ -549,7 +549,7 @@ class PLL_Language {
 		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 
 		/**
-		 * Let's use `site_url()` so the returned URL will be filtered properly according to permalink structure.
+		 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
 		 */
 		return site_url( set_url_scheme( $flag_url, 'relative' ) );
 	}
