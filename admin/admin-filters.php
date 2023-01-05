@@ -90,9 +90,10 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Adds a text direction dependent class to the body
+	 * Adds custom classes to the body
 	 *
-	 * @since 2.2
+	 * @since 2.2 Adds a text direction dependent class to the body.
+	 * @since 3.4 Adds a language dependent class to the body.
 	 *
 	 * @param string $classes Space-separated list of CSS classes.
 	 * @return string
@@ -100,6 +101,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	public function admin_body_class( $classes ) {
 		if ( ! empty( $this->curlang ) ) {
 			$classes .= ' pll-dir-' . ( $this->curlang->is_rtl ? 'rtl' : 'ltr' );
+			$classes .= ' post-language-' . ( $this->curlang->slug );
 		}
 		return $classes;
 	}
