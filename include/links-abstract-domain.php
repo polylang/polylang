@@ -25,7 +25,6 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 		add_filter( 'theme_root_uri', array( $this, 'site_url' ) ); // The above filter is not sufficient with WPMU Domain Mapping.
 		add_filter( 'plugins_url', array( $this, 'site_url' ) );
 		add_filter( 'rest_url', array( $this, 'site_url' ) );
-		add_filter( 'pll_get_display_flag_url', array( $this, 'site_url' ) );
 		add_filter( 'upload_dir', array( $this, 'upload_dir' ) );
 	}
 
