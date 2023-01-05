@@ -147,7 +147,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'slug',
 			'term_group',
 			'term_props',
-			'locale',
+			'locales',
 			'is_rtl',
 			'w3c',
 			'facebook',
