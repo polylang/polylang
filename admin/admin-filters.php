@@ -101,7 +101,7 @@ class PLL_Admin_Filters extends PLL_Filters {
 	public function admin_body_class( $classes ) {
 		if ( ! empty( $this->curlang ) ) {
 			$classes .= ' pll-dir-' . ( $this->curlang->is_rtl ? 'rtl' : 'ltr' );
-			$classes .= ' post-language-' . ( $this->curlang->slug );
+			$classes .= ' pll-lang-' . $this->curlang->slug;
 		}
 		return $classes;
 	}
