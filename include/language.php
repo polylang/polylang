@@ -280,7 +280,7 @@ class PLL_Language {
 	 *     @type string  $custom_flag     Optional. HTML markup of the custom flag if it exists.
 	 *     @type int     $page_on_front   ID of the page on front in this language.
 	 *     @type int     $page_for_posts  ID of the page for posts in this language.
-	 *     @type bool    $active          Whether or not the language is active. Default `true`.
+	 *     @type bool    $active          Optional. Whether or not the language is active. Default `true`.
 	 * }
 	 *
 	 * @phpstan-param LanguageData $language_data
