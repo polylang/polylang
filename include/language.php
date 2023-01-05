@@ -713,7 +713,10 @@ class PLL_Language {
 	 * @return array
 	 */
 	public function get_object_vars() {
-		return get_object_vars( $this );
+		$vars = get_object_vars( $this );
+		// Backward compatibility.
+		$vars['locale'] = reset( $vars['locales'] );
+		return $vars;
 	}
 
 	/**
