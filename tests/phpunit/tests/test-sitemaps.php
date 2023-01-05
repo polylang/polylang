@@ -38,6 +38,10 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 
 		wp_sitemaps_get_server(); // Allows to register sitemaps rewrite rules.
 
+		// Refresh languages.
+		self::$model->clean_languages_cache();
+		self::$model->get_languages_list();
+
 		// Flush rules.
 		$wp_rewrite->flush_rules();
 
