@@ -71,7 +71,7 @@ class PLL_Language_Factory {
 		if ( is_array( $description ) ) {
 			$description = array_intersect_key(
 				$description,
-				array( 'locale' => null, 'rtl' => null, 'flag_code' => null )
+				array( 'locale' => null, 'rtl' => null, 'flag_code' => null, 'active' => null )
 			);
 
 			foreach ( $description as $prop => $value ) {
