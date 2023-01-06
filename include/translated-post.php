@@ -103,7 +103,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 
 	/**
 	 * Returns object types (post types) that need to be translated.
-	 * The post types list is cached for better better performance.
+	 * The post types list is cached for better performance.
 	 * The method waits for 'after_setup_theme' to apply the cache to allow themes adding the filter in functions.php.
 	 *
 	 * @since 3.4

@@ -476,4 +476,16 @@ abstract class PLL_Translatable_Object {
 
 		clean_term_cache( $ids, $this->tax_language );
 	}
+
+	/**
+	 * Returns object types that need to be translated.
+	 *
+	 * @since 3.4
+	 *
+	 * @param bool $filter True if we should return only valid registered object types.
+	 * @return string[] Object type names for which Polylang manages languages.
+	 *
+	 * @phpstan-return array<non-empty-string, non-empty-string>
+	 */
+	abstract public function get_translated_object_types( $filter = true );
 }

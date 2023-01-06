@@ -177,7 +177,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 
 	/**
 	 * Returns object types (taxonomy names) that need to be translated.
-	 * The taxonomies list is cached for better better performance.
+	 * The taxonomies list is cached for better performance.
 	 * The method waits for 'after_setup_theme' to apply the cache to allow themes adding the filter in functions.php.
 	 *
 	 * @since 3.4
