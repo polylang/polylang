@@ -147,13 +147,19 @@ abstract class PLL_Links_Model {
 	 * Returns the home url in a given language.
 	 *
 	 * @since 1.3.1
+	 * @since 3.4 Accepts now a language slug.
 	 *
-	 * @param PLL_Language $lang The language object.
+	 * @param PLL_Language|string $language language object or slug.
 	 * @return string
 	 */
-	public function home_url( $lang ) {
+	public function home_url( $language ) {
+		if ( $language instanceof PLL_Language ) {
+			$language = $language->slug;
+		}
+
 		$url = trailingslashit( $this->home );
-		return $this->options['hide_default'] && $lang->slug == $this->options['default_lang'] ? $url : $this->add_language_to_link( $url, $lang );
+
+		return $this->options['hide_default'] && $language == $this->options['default_lang'] ? $url : $this->add_language_to_link( $url, $language );
 	}
 
 	/**
