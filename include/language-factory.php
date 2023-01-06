@@ -71,7 +71,7 @@ class PLL_Language_Factory {
 		if ( is_array( $description ) ) {
 			$description = array_intersect_key(
 				$description,
-				array( 'locale' => null, 'rtl' => null, 'flag_code' => null, 'fallbacks' => null )
+				array( 'locale' => null, 'rtl' => null, 'flag_code' => null, 'active' => null, 'fallbacks' => null )
 			);
 
 			foreach ( $description as $prop => $value ) {
@@ -121,6 +121,8 @@ class PLL_Language_Factory {
 		foreach ( $positive_fields as $field ) {
 			$data[ $field ] = ! empty( $data[ $field ] ) ? absint( $data[ $field ] ) : 0;
 		}
+
+		$data['active'] = isset( $data['active'] ) ? (bool) $data['active'] : true;
 
 		if ( array_key_exists( 'fallbacks', $data ) && ! is_array( $data['fallbacks'] ) ) {
 			unset( $data['fallbacks'] );

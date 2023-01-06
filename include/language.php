@@ -41,7 +41,8 @@
  *     custom_flag?: string,
  *     page_on_front:positive-int,
  *     page_for_posts:positive-int,
- *     fallbacks?: array<non-empty-string>,
+ *     active: bool,
+ *     fallbacks?: array<non-empty-string>
  * }
  */
 class PLL_Language {
@@ -205,6 +206,13 @@ class PLL_Language {
 	public $custom_flag = '';
 
 	/**
+	 * Whether or not the language is active. Default `true`.
+	 *
+	 * @var boolean
+	 */
+	public $active = true;
+
+	/**
 	 * List of WordPress language locales. Ex: array( 'en_GB' ).
 	 *
 	 * @var string[]
@@ -281,6 +289,7 @@ class PLL_Language {
 	 *     @type string   $custom_flag     Optional. HTML markup of the custom flag if it exists.
 	 *     @type int      $page_on_front   ID of the page on front in this language.
 	 *     @type int      $page_for_posts  ID of the page for posts in this language.
+	 *     @type bool     $active          Whether or not the language is active. Default `true`.
 	 *     @type string[] $fallbacks       List of WordPress language locales. Ex: array( 'en_GB' ).
 	 * }
 	 *
