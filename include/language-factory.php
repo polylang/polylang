@@ -98,6 +98,26 @@ class PLL_Language_Factory {
 		$flag_props = self::get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
 		$data       = array_merge( $data, $flag_props );
 
+		$urls = array(
+			'home_url'   => '',
+			'search_url' => '',
+		);
+
+		/**
+		 * Filters the home URL and the search URL before the language is created.
+		 *
+		 * @since 3.4
+		 *
+		 * @param array  $urls {
+		 *     Array of language URLs.
+		 *
+		 *     @type string $home_url   Language home URL.
+		 *     @type string $search_url Language search URL.
+		 * }
+		 * @param string $slug Language slug
+		 */
+		$data = array_merge( $data, apply_filters( 'pll_language_urls', $urls, $data['slug'] ) );
+
 		return new PLL_Language( self::sanitize_data( $data ) );
 	}
 
