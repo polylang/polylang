@@ -85,6 +85,7 @@ class Settings_Test extends PLL_UnitTestCase {
 
 		$this->assertNotEmpty( $out );
 
+		wp_cache_flush();
 		ob_start();
 		self::$model->post->set_language( $id, 'en' );
 		do_action( 'admin_notices' );
@@ -92,6 +93,7 @@ class Settings_Test extends PLL_UnitTestCase {
 
 		$this->assertEmpty( $out );
 
+		wp_cache_flush();
 		ob_start();
 		$id = self::factory()->term->create();
 		do_action( 'admin_notices' );
@@ -99,6 +101,7 @@ class Settings_Test extends PLL_UnitTestCase {
 
 		$this->assertNotEmpty( $out );
 
+		wp_cache_flush();
 		ob_start();
 		self::$model->term->set_language( $id, 'en' );
 		do_action( 'admin_notices' );
