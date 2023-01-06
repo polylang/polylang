@@ -40,7 +40,8 @@
  *     custom_flag_url?: string,
  *     custom_flag?: string,
  *     page_on_front:positive-int,
- *     page_for_posts:positive-int
+ *     page_for_posts:positive-int,
+ *     active: bool
  * }
  */
 #[AllowDynamicProperties]
@@ -205,6 +206,13 @@ class PLL_Language {
 	public $custom_flag = '';
 
 	/**
+	 * Whether or not the language is active. Default `true`.
+	 *
+	 * @var boolean
+	 */
+	public $active = true;
+
+	/**
 	 * Stores language term properties (like term IDs and counts) for each language taxonomy (`language`,
 	 * `term_language`, etc).
 	 * This stores the values of the properties `$term_id` + `$term_taxonomy_id` + `$count` (`language`), `$tl_term_id`
@@ -272,6 +280,7 @@ class PLL_Language {
 	 *     @type string  $custom_flag     Optional. HTML markup of the custom flag if it exists.
 	 *     @type int     $page_on_front   ID of the page on front in this language.
 	 *     @type int     $page_for_posts  ID of the page for posts in this language.
+	 *     @type bool    $active          Whether or not the language is active. Default `true`.
 	 * }
 	 *
 	 * @phpstan-param LanguageData $language_data
