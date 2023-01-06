@@ -753,7 +753,7 @@ class PLL_Model {
 		 */
 		$languages_data = array_map(
 			function ( $language ) {
-				return array_diff_key( $language->get_object_vars(), array( 'locale' => null ) );
+				return $language->get_object_vars();
 			},
 			$languages
 		);

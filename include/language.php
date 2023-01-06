@@ -10,9 +10,6 @@
  * @since 1.2
  * @immutable
  *
- * @property-read string $locale
- *
- * @phpstan-property-read non-empty-string $locale
  * @phpstan-type LanguageData array{
  *     term_props: array{
  *         language: array{
@@ -28,7 +25,7 @@
  *     },
  *     name: non-empty-string,
  *     slug: non-empty-string,
- *     locales: non-empty-array<non-empty-string>,
+ *     locale: non-empty-string,
  *     w3c: non-empty-string,
  *     flag_code: non-empty-string,
  *     term_group: int,
@@ -84,14 +81,13 @@ class PLL_Language {
 	public $term_id;
 
 	/**
-	 * List of WordPress language locales. Ex: en_US.
-	 * The first one is this language's locale.
+	 * WordPress language locale. Ex: en_US.
 	 *
-	 * @var string[]
+	 * @var string
 	 *
-	 * @phpstan-var non-empty-array<non-empty-string>
+	 * @phpstan-var non-empty-string
 	 */
-	public $locales;
+	public $locale;
 
 	/**
 	 * 1 if the language is rtl, 0 otherwise.
@@ -259,8 +255,7 @@ class PLL_Language {
 	 *                                     language term properties (`term_id`, `term_taxonomy_id`, and `count`).
 	 *     @type string   $name            Language name. Ex: English.
 	 *     @type string   $slug            Language code used in URL. Ex: en.
-	 *     @type string[] $locales         List of WordPress language locales. Ex: en_US. The first one is this
-	 *                                     language's locale.
+	 *     @type string   $locale          WordPress language locale. Ex: en_US.
 	 *     @type string   $w3c             W3C locale.
 	 *     @type string   $flag_code       Code of the flag.
 	 *     @type int      $term_group      Order of the language when displayed in a list of languages.
@@ -300,10 +295,6 @@ class PLL_Language {
 	 * @return mixed Required property value.
 	 */
 	public function __get( $property ) {
-		if ( 'locale' === $property ) {
-			return reset( $this->locales );
-		}
-
 		$deprecated_properties = array(
 			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
 			'count'               => array( 'language', 'count' ),
@@ -379,7 +370,7 @@ class PLL_Language {
 	 * @return bool
 	 */
 	public function __isset( $property ) {
-		$deprecated_properties = array( 'locale', 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count' );
+		$deprecated_properties = array( 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count' );
 		return in_array( $property, $deprecated_properties, true );
 	}
 
@@ -504,7 +495,6 @@ class PLL_Language {
 		$flags = array( 'flag' => self::get_flag_informations( $this->flag_code ) );
 
 		// Custom flags?
-		$locale      = reset( $this->locales );
 		$directories = array(
 			PLL_LOCAL_DIR,
 			get_stylesheet_directory() . '/polylang',
@@ -512,7 +502,7 @@ class PLL_Language {
 		);
 
 		foreach ( $directories as $dir ) {
-			if ( file_exists( $file = "{$dir}/{$locale}.png" ) || file_exists( $file = "{$dir}/{$locale}.jpg" ) || file_exists( $file = "{$dir}/{$locale}.svg" ) ) {
+			if ( file_exists( $file = "{$dir}/{$this->locale}.png" ) || file_exists( $file = "{$dir}/{$this->locale}.jpg" ) || file_exists( $file = "{$dir}/{$this->locale}.svg" ) ) {
 				$flags['custom_flag']['url'] = content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) );
 				break;
 			}
@@ -555,7 +545,7 @@ class PLL_Language {
 		 * @param string $slug   The language code.
 		 * @param string $locale The language locale.
 		 */
-		$title = apply_filters( 'pll_flag_title', $this->name, $this->slug, reset( $this->locales ) );
+		$title = apply_filters( 'pll_flag_title', $this->name, $this->slug, $this->locale );
 
 		foreach ( $flags as $key => $flag ) {
 			$this->{$key . '_url'} = empty( $flag['url'] ) ? '' : $flag['url'];
@@ -702,7 +692,7 @@ class PLL_Language {
 	 * @phpstan-return non-empty-string
 	 */
 	public function get_locale( $filter = 'raw' ) {
-		return 'display' === $filter ? $this->w3c : reset( $this->locales );
+		return 'display' === $filter ? $this->w3c : $this->locale;
 	}
 
 	/**
@@ -713,10 +703,7 @@ class PLL_Language {
 	 * @return array
 	 */
 	public function get_object_vars() {
-		$vars = get_object_vars( $this );
-		// Backward compatibility.
-		$vars['locale'] = reset( $vars['locales'] );
-		return $vars;
+		return get_object_vars( $this );
 	}
 
 	/**

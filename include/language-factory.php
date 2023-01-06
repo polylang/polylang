@@ -93,24 +93,7 @@ class PLL_Language_Factory {
 			if ( isset( $languages[ $data['locale'] ]['facebook'] ) ) {
 				$data['facebook'] = $languages[ $data['locale'] ]['facebook'];
 			}
-
-			$data['locales'] = array( $data['locale'] );
-		} else {
-			// Should not happen.
-			$data['locales'] = array();
 		}
-
-		unset( $data['locale'] );
-
-		/**
-		 * Filters the data used to build a `PLL_Language` object.
-		 *
-		 * @since 3.4
-		 *
-		 * @param array     $data  The data.
-		 * @param WP_Term[] $terms The language terms for this language.
-		 */
-		$data = apply_filters( 'pll_language_data', $data, $terms );
 
 		return new PLL_Language( self::sanitize_data( $data ) );
 	}
