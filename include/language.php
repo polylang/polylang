@@ -40,7 +40,8 @@
  *     custom_flag_url?: string,
  *     custom_flag?: string,
  *     page_on_front:positive-int,
- *     page_for_posts:positive-int
+ *     page_for_posts:positive-int,
+ *     fallbacks?: array<non-empty-string>,
  * }
  */
 class PLL_Language {
@@ -204,6 +205,15 @@ class PLL_Language {
 	public $custom_flag = '';
 
 	/**
+	 * List of WordPress language locales. Ex: array( 'en_GB' ).
+	 *
+	 * @var string[]
+	 *
+	 * @phpstan-var array<non-empty-string>
+	 */
+	public $fallbacks = array();
+
+	/**
 	 * Stores language term properties (like term IDs and counts) for each language taxonomy (`language`,
 	 * `term_language`, etc).
 	 * This stores the values of the properties `$term_id` + `$term_taxonomy_id` + `$count` (`language`), `$tl_term_id`
@@ -271,6 +281,7 @@ class PLL_Language {
 	 *     @type string   $custom_flag     Optional. HTML markup of the custom flag if it exists.
 	 *     @type int      $page_on_front   ID of the page on front in this language.
 	 *     @type int      $page_for_posts  ID of the page for posts in this language.
+	 *     @type string[] $fallbacks       List of WordPress language locales. Ex: array( 'en_GB' ).
 	 * }
 	 *
 	 * @phpstan-param LanguageData $language_data
