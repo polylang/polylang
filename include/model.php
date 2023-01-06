@@ -47,11 +47,11 @@ class PLL_Model {
 	public $term;
 
 	/**
-	 * Whether or not the languages objects have been created.
+	 * Flag set to true during the language objects creation.
 	 *
 	 * @var bool
 	 */
-	private $are_language_objects_created = false;
+	private $is_creating_language_objects = false;
 
 	/**
 	 * Constructor.
@@ -118,7 +118,7 @@ class PLL_Model {
 		$languages = $this->cache->get( 'languages' );
 
 		if ( ! is_array( $languages ) ) {
-			$this->are_language_objects_created = false;
+			$this->is_creating_language_objects = true;
 
 			if ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) {
 				// Create the languages from taxonomies.
@@ -150,7 +150,7 @@ class PLL_Model {
 			 */
 			$languages = apply_filters( 'pll_after_languages_cache', $languages );
 			$this->cache->set( 'languages', $languages );
-			$this->are_language_objects_created = true;
+			$this->is_creating_language_objects = false;
 		}
 
 		// Remove empty languages if requested.
