@@ -118,6 +118,11 @@ class PLL_Model {
 		$languages = $this->cache->get( 'languages' );
 
 		if ( ! is_array( $languages ) ) {
+			// Bail out early if languages are currently created to avoid an infinite loop.
+			if ( $this->is_creating_language_objects ) {
+				return array();
+			}
+
 			$this->is_creating_language_objects = true;
 
 			if ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) {
@@ -794,16 +799,5 @@ class PLL_Model {
 		remove_filter( 'get_terms_orderby', array( $this, 'filter_language_terms_orderby' ) );
 
 		return empty( $terms ) || is_wp_error( $terms ) ? array() : $terms;
-	}
-
-	/**
-	 * Tells if language objects are currently created.
-	 *
-	 * @since 3.4
-	 *
-	 * @return bool Whether language objects are created or not.
-	 */
-	public function is_creating_language_objects() {
-		return ! $this->are_language_objects_created;
 	}
 }
