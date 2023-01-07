@@ -114,9 +114,9 @@ class PLL_Language_Factory {
 		 *     @type string $home_url   Language home URL.
 		 *     @type string $search_url Language search URL.
 		 * }
-		 * @param string $slug Language slug
+		 * @param array $data Language data.
 		 */
-		$data = array_merge( $data, apply_filters( 'pll_language_urls', $urls, $data['slug'] ) );
+		$data = array_merge( $data, apply_filters( 'pll_language_urls', $urls, $data ) );
 
 		return new PLL_Language( self::sanitize_data( $data ) );
 	}

@@ -50,6 +50,7 @@ abstract class PLL_Links_Model {
 
 		add_filter( 'pll_languages_list', array( $this, 'pll_languages_list' ), 4 ); // After PLL_Static_Pages.
 		add_filter( 'pll_after_languages_cache', array( $this, 'pll_after_languages_cache' ) );
+		add_filter( 'pll_language_urls', array( $this, 'set_language_urls' ), 10, 2 );
 
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
 		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
@@ -59,9 +60,10 @@ abstract class PLL_Links_Model {
 	 * Adds the language code in url.
 	 *
 	 * @since 1.2
+	 * @since 3.4 Accepts now a language slug.
 	 *
-	 * @param string             $url  The url to modify.
-	 * @param PLL_Language|false $lang The language object.
+	 * @param string                    $url  The url to modify.
+	 * @param PLL_Language|string|false $lang Language object or slug.
 	 * @return string The modified url.
 	 */
 	abstract public function add_language_to_link( $url, $lang );
@@ -112,11 +114,12 @@ abstract class PLL_Links_Model {
 	 * Returns the static front page url in a given language.
 	 *
 	 * @since 1.8
+	 * @since 3.4 Accepts now an array of language properties.
 	 *
-	 * @param PLL_Language $lang The language object.
+	 * @param PLL_Language|array $language Language object or array of language properties.
 	 * @return string The static front page url.
 	 */
-	abstract public function front_page_url( $lang );
+	abstract public function front_page_url( $language );
 
 	/**
 	 * Changes the language code in url.
@@ -149,7 +152,7 @@ abstract class PLL_Links_Model {
 	 * @since 1.3.1
 	 * @since 3.4 Accepts now a language slug.
 	 *
-	 * @param PLL_Language|string $language language object or slug.
+	 * @param PLL_Language|string $language Language object or slug.
 	 * @return string
 	 */
 	public function home_url( $language ) {
@@ -177,18 +180,19 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Sets the home urls before the languages are persistently cached.
+	 * Adds home and search URLs to language data before the object is created.
 	 *
-	 * @since 1.8
+	 * @since 3.4
 	 *
-	 * @param PLL_Language[] $languages Array of PLL_Language objects.
-	 * @return PLL_Language[] Array of PLL_Language objects with home url.
+	 * @param array $urls Array of language home and search URLs.
+	 * @param array $language Language data.
+	 * @return array Language data with URLs.
 	 */
-	public function pll_languages_list( $languages ) {
-		foreach ( $languages as $language ) {
-			$this->set_home_url( $language );
-		}
-		return $languages;
+	public function set_language_urls( $urls, $language ) {
+		$urls['search_url']  = $this->home_url( $language['slug'] );
+		$urls['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $urls['search_url'] : $this->front_page_url( $language );
+
+		return $urls;
 	}
 
 	/**
