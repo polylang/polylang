@@ -49,7 +49,6 @@ abstract class PLL_Links_Model {
 		$this->home = home_url();
 
 		add_filter( 'pll_languages_list', array( $this, 'pll_languages_list' ), 4 ); // After PLL_Static_Pages.
-		add_filter( 'pll_after_languages_cache', array( $this, 'pll_after_languages_cache' ) );
 		add_filter( 'pll_language_urls', array( $this, 'set_language_urls' ), 10, 2 );
 
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
@@ -193,28 +192,6 @@ abstract class PLL_Links_Model {
 		$urls['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $urls['search_url'] : $this->front_page_url( $language );
 
 		return $urls;
-	}
-
-	/**
-	 * Sets the home urls when not cached.
-	 * Sets the home urls scheme.
-	 *
-	 * @since 1.8
-	 *
-	 * @param PLL_Language[] $languages Array of PLL_Language objects.
-	 * @return PLL_Language[] Array of PLL_Language objects.
-	 */
-	public function pll_after_languages_cache( $languages ) {
-		foreach ( $languages as $language ) {
-			// Get the home urls when not cached.
-			if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
-				$this->set_home_url( $language );
-			}
-
-			// Ensures that the (possibly cached) home and flag urls use the right scheme http or https.
-			$language->set_url_scheme();
-		}
-		return $languages;
 	}
 
 	/**

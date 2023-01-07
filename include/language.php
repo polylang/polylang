@@ -587,23 +587,6 @@ class PLL_Language {
 	}
 
 	/**
-	 * Set home_url and search_url properties.
-	 *
-	 * @since 1.3
-	 *
-	 * @param string $search_url Home url to use in search forms.
-	 * @param string $home_url   Home url.
-	 * @return void
-	 *
-	 * @phpstan-param non-empty-string $search_url
-	 * @phpstan-param non-empty-string $home_url
-	 */
-	public function set_home_url( $search_url, $home_url ) {
-		$this->search_url = $search_url;
-		$this->home_url   = $home_url;
-	}
-
-	/**
 	 * Sets the scheme of the home url and the flag urls.
 	 *
 	 * This can't be cached across pages.
@@ -661,5 +644,41 @@ class PLL_Language {
 		$flag = self::get_flag_informations( $flag_code );
 
 		return self::get_flag_html( $flag );
+	}
+
+	/**
+	 * Returns language's home URL. Takes care to render it dynamically if no cache is allowed.
+	 *
+	 * @since 3.4
+	 *
+	 * @return string Language home URL.
+	 */
+	public function get_home_url() {
+		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
+			/**
+			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			*/
+			return site_url( set_url_scheme( $this->home_url, 'relative' ) );
+		}
+
+		return $this->home_url;
+	}
+
+	/**
+	 * Returns language's search URL. Takes care to render it dynamically if no cache is allowed.
+	 *
+	 * @since 3.4
+	 *
+	 * @return string Language search URL.
+	 */
+	public function get_search_url() {
+		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
+			/**
+			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			*/
+			return site_url( set_url_scheme( $this->search_url, 'relative' ) );
+		}
+
+		return $this->search_url;
 	}
 }
