@@ -32,8 +32,8 @@
  *     is_rtl: int<0, 1>,
  *     mo_id: int,
  *     facebook?: string,
- *     home_url: non-empty-string,
- *     search_url: non-empty-string,
+ *     _home_url: non-empty-string,
+ *     _search_url: non-empty-string,
  *     host: non-empty-string,
  *     flag_url: non-empty-string,
  *     flag: non-empty-string,
@@ -123,7 +123,7 @@ class PLL_Language {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	public $home_url;
+	private $_home_url;
 
 	/**
 	 * Home URL to use in search forms.
@@ -132,7 +132,7 @@ class PLL_Language {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	public $search_url;
+	private $_search_url;
 
 	/**
 	 * Host corresponding to this language.
@@ -315,7 +315,7 @@ class PLL_Language {
 	 * @return mixed Required property value.
 	 */
 	public function __get( $property ) {
-		$deprecated_properties = array(
+		$deprecated_term_properties = array(
 			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
 			'count'               => array( 'language', 'count' ),
 			'tl_term_id'          => array( 'term_language', 'term_id' ),
@@ -324,9 +324,9 @@ class PLL_Language {
 		);
 
 		// Deprecated property.
-		if ( array_key_exists( $property, $deprecated_properties ) ) {
-			$term_prop_type = $deprecated_properties[ $property ][0];
-			$term_prop      = $deprecated_properties[ $property ][1];
+		if ( array_key_exists( $property, $deprecated_term_properties ) ) {
+			$term_prop_type = $deprecated_term_properties[ $property ][0];
+			$term_prop      = $deprecated_term_properties[ $property ][1];
 
 			/** This filter is documented in wordpress/wp-includes/functions.php */
 			if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
@@ -343,6 +343,24 @@ class PLL_Language {
 			}
 
 			return $this->term_props[ $term_prop_type ][ $term_prop ];
+		}
+
+		if ( 'search_url' === $property || 'home_url' === $property ) {
+			/** This filter is documented in wordpress/wp-includes/functions.php */
+			if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
+				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+					sprintf(
+						"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_%2\$s() instead.\nError handler",
+						esc_html( get_class( $this ) ),
+						esc_html( $property ),
+					),
+					E_USER_DEPRECATED
+				);
+			}
+
+			$property_name = '_' . $property;
+
+			return $this->$property_name;
 		}
 
 		// Undefined property.
@@ -658,10 +676,10 @@ class PLL_Language {
 			/**
 			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
 			*/
-			return site_url( set_url_scheme( $this->home_url, 'relative' ) );
+			return site_url( set_url_scheme( $this->_home_url, 'relative' ) );
 		}
 
-		return $this->home_url;
+		return $this->_home_url;
 	}
 
 	/**
@@ -676,9 +694,9 @@ class PLL_Language {
 			/**
 			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
 			*/
-			return site_url( set_url_scheme( $this->search_url, 'relative' ) );
+			return site_url( set_url_scheme( $this->_search_url, 'relative' ) );
 		}
 
-		return $this->search_url;
+		return $this->_search_url;
 	}
 }

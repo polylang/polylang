@@ -99,8 +99,8 @@ class PLL_Language_Factory {
 		$data       = array_merge( $data, $flag_props );
 
 		$urls = array(
-			'home_url'   => '',
-			'search_url' => '',
+			'_home_url'   => '',
+			'_search_url' => '',
 		);
 
 		/**
@@ -111,8 +111,8 @@ class PLL_Language_Factory {
 		 * @param array  $urls {
 		 *     Array of language URLs.
 		 *
-		 *     @type string $home_url   Language home URL.
-		 *     @type string $search_url Language search URL.
+		 *     @type string $_home_url   Language home URL.
+		 *     @type string $_search_url Language search URL.
 		 * }
 		 * @param array $data Language data.
 		 */

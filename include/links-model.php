@@ -188,8 +188,8 @@ abstract class PLL_Links_Model {
 	 * @return array Language data with URLs.
 	 */
 	public function set_language_urls( $urls, $language ) {
-		$urls['search_url']  = $this->home_url( $language['slug'] );
-		$urls['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $urls['search_url'] : $this->front_page_url( $language );
+		$urls['_search_url']  = $this->home_url( $language['slug'] );
+		$urls['_home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $urls['_search_url'] : $this->front_page_url( $language );
 
 		return $urls;
 	}
