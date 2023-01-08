@@ -111,8 +111,8 @@ class PLL_Language_Factory {
 		 * @param array  $default {
 		 *     Array of filterable language data.
 		 *
-		 *     @type string $home_url   Language home URL.
-		 *     @type string $search_url Language search URL.
+		 *     @type string $_home_url   Language home URL.
+		 *     @type string $_search_url Language search URL.
 		 * }
 		 * @param array $data Language data.
 		 *
