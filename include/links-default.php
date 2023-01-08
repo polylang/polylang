@@ -108,6 +108,6 @@ class PLL_Links_Default extends PLL_Links_Model {
 			return trailingslashit( $this->home );
 		}
 		$url = home_url( '/?page_id=' . $language['page_on_front'] );
-		return $this->options['force_lang'] ? $this->add_language_to_link( $url, $language ) : $url;
+		return $this->options['force_lang'] ? $this->add_language_to_link( $url, $language['slug'] ) : $url;
 	}
 }
