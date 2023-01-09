@@ -642,7 +642,7 @@ class PLL_Model {
 			return array();
 		}
 
-		return $object->get_objects_with_no_lang( $object->get_translated_object_types(), $limit );
+		return $object->get_objects_with_no_lang( $post_types, $limit );
 	}
 
 	/**
@@ -661,7 +661,7 @@ class PLL_Model {
 			return array();
 		}
 
-		return $object->get_objects_with_no_lang( $object->get_translated_object_types(), $limit );
+		return $object->get_objects_with_no_lang( $taxonomies, $limit );
 	}
 
 	/**
