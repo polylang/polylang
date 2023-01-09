@@ -48,7 +48,6 @@ abstract class PLL_Links_Model {
 
 		$this->home = home_url();
 
-		add_filter( 'pll_languages_list', array( $this, 'pll_languages_list' ), 4 ); // After PLL_Static_Pages.
 		add_filter( 'pll_language_urls', array( $this, 'set_language_urls' ), 10, 2 );
 
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
