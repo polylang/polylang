@@ -61,3 +61,9 @@ parameters:
 			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
 			count: 1
 			path: include/translated-term.php
+
+		# Ignored because maybe_serialize() cannot return anything else than a string when feeded with an array.
+		-
+			message: "#^Parameter \\#3 \\$args of function wp_update_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{description\\: mixed\\} given\\.$#"
+			count: 1
+			path: install/upgrade.php
