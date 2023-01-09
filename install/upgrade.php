@@ -204,6 +204,65 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	protected function upgrade_3_4() {
+		global $wpdb;
+
 		delete_transient( 'pll_languages_list' );
+
+		if ( ! defined( 'POLYLANG_PRO' ) || ! POLYLANG_PRO ) {
+			return;
+		}
+
+		// Migrate locale fallbacks from term metas to language term description.
+		$metas = $wpdb->get_results(
+			"
+			SELECT m.meta_id, m.term_id, m.meta_value, tt.description
+			FROM {$wpdb->termmeta} AS m
+			LEFT JOIN {$wpdb->term_taxonomy} AS tt
+				ON tt.term_id = m.term_id
+			WHERE
+				tt.taxonomy = 'language'
+				AND m.meta_key = 'fallback'
+			"
+		);
+
+		if ( empty( $metas ) ) {
+			// Nothing to migrate.
+			return;
+		}
+
+		$meta_ids = array();
+		$migrated = array();
+
+		foreach ( $metas as $meta ) {
+			$meta_ids[] = (int) $meta->meta_id;
+
+			if ( isset( $migrated[ $meta->term_id ] ) ) {
+				// Duplicate? Should not happen.
+				continue;
+			}
+
+			$fallbacks = maybe_unserialize( $meta->meta_value );
+
+			if ( empty( $fallbacks ) || ! is_array( $fallbacks ) ) {
+				// No fallbacks to migrate. Should not happen.
+				continue;
+			}
+
+			$description = maybe_unserialize( $meta->description );
+			$description = is_array( $description ) ? $description : array();
+
+			$description['fallbacks']   = $fallbacks;
+			$migrated[ $meta->term_id ] = 1;
+
+			wp_update_term( (int) $meta->term_id, 'language', array( 'description' => maybe_serialize( $description ) ) );
+		}
+
+		// Delete term metas.
+		$wpdb->query(
+			sprintf(
+				"DELETE FROM {$wpdb->termmeta} WHERE meta_id IN (%s)",
+				PLL_Db_Tools::prepare_values_list( $meta_ids ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			)
+		);
 	}
 }
