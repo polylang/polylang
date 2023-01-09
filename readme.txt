@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.7
 Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 3.3
+Stable tag: 3.3.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -102,6 +102,16 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.3.1 (2023-01-09) =
+
+* Pro: Allow to translate Oembed, URL and Email ACF fields
+* Pro: Fix ACF REST API mixing fields
+* Pro: Fix ACF compatibility loaded when no language exist
+* Pro: Fix headers of exported PO files.
+* Pro: Fix spacing in language switcher navigation block preview
+* Work around a bug in Sendinblue for WooCommerce causing a fatal error. #1156
+* Fix a regression with WooCommerce Product Add-Ons Ultimate. #1186
 
 = 3.3 (2022-11-28) =
 
