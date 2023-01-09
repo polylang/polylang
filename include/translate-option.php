@@ -102,11 +102,11 @@ class PLL_Translate_Option {
 			return $value;
 		}
 
-		$lang = pll_current_language();
-
-		if ( empty( $lang ) ) {
+		if ( empty( $GLOBALS['l10n']['pll_string'] ) || ! $GLOBALS['l10n']['pll_string'] instanceof PLL_MO ) {
 			return $value;
 		}
+
+		$lang = $GLOBALS['l10n']['pll_string']->get_header( 'Language' );
 
 		if ( ! isset( $this->translated_values[ $lang ] ) ) {
 			$this->translated_values[ $lang ] = $this->translate_string_recursive( $value, $this->keys );
