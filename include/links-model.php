@@ -171,6 +171,8 @@ abstract class PLL_Links_Model {
 	 * @param array $urls Array of language home and search URLs.
 	 * @param array $language Language data.
 	 * @return array Language data with URLs.
+	 *
+	 * @phpstan-return array{_home_url: non-empty-string, _search_url: non-empty-string}
 	 */
 	public function set_language_urls( $urls, $language ) {
 		$urls['_search_url']  = $this->home_url( $language['slug'] );

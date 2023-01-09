@@ -123,7 +123,7 @@ class PLL_Language {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	private $_home_url;
+	private $_home_url; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
 
 	/**
 	 * Home URL to use in search forms.
@@ -132,7 +132,7 @@ class PLL_Language {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	private $_search_url;
+	private $_search_url; // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
 
 	/**
 	 * Host corresponding to this language.
@@ -670,6 +670,8 @@ class PLL_Language {
 	 * @since 3.4
 	 *
 	 * @return string Language home URL.
+	 *
+	 * @phpstan-return non-empty-string
 	 */
 	public function get_home_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
@@ -688,6 +690,8 @@ class PLL_Language {
 	 * @since 3.4
 	 *
 	 * @return string Language search URL.
+	 *
+	 * @phpstan-return non-empty-string
 	 */
 	public function get_search_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {

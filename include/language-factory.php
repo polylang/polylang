@@ -115,6 +115,9 @@ class PLL_Language_Factory {
 		 *     @type string $_search_url Language search URL.
 		 * }
 		 * @param array $data Language data.
+		 *
+		 * @phpstan-param array{_home_url: string, _search_url: string} $urls
+		 * @phpstan-param non-empty-array<string, mixed> $data
 		 */
 		$data = array_merge( $data, apply_filters( 'pll_language_urls', $urls, $data ) );
 
