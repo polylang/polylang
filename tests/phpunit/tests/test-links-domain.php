@@ -17,6 +17,10 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		self::$model->options['force_lang'] = 3;
 		self::$model->options['domains'] = $this->hosts;
 
+		// Refresh languages.
+		self::$model->clean_languages_cache();
+		self::$model->get_languages_list();
+
 		// switch to pretty permalinks
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $this->structure );

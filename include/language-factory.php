@@ -95,6 +95,9 @@ class PLL_Language_Factory {
 			}
 		}
 
+		$flag_props = self::get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
+		$data       = array_merge( $data, $flag_props );
+
 		return new PLL_Language( self::sanitize_data( $data ) );
 	}
 
@@ -145,5 +148,109 @@ class PLL_Language_Factory {
 		}
 
 		return self::$languages;
+	}
+
+
+	/**
+	 * Creates flag_url and flag language properties. Also takes care of custom flag.
+	 *
+	 * @since 1.2
+	 * @since 3.4 Moved from `PLL_Language`to `PLL_Language_Factory` and renamed
+	 *            in favor of `get_flag()` (formerly `set_flag()`).
+	 *
+	 * @param string $flag_code Flag code.
+	 * @param string $name      Language name.
+	 * @param string $slug      Language slug.
+	 * @param string $locale    Language locale.
+	 * @return array {
+	 *     Array of the flag properties.
+	 *     @type string  $flag_url        URL of the flag.
+	 *     @type string  $flag            HTML markup of the flag.
+	 *     @type string  $custom_flag_url Optional. URL of the custom flag if it exists.
+	 *     @type string  $custom_flag     Optional. HTML markup of the custom flag if it exists.
+	 * }
+	 *
+	 * @phpstan-return array{
+	 *     flag_url: non-empty-string
+	 *     flag: non-empty-string
+	 *     custom_flag_url?: non-empty-string
+	 *     custom_flag?: non-empty-string
+	 * }
+	 */
+	private static function get_flag( $flag_code, $name, $slug, $locale ) {
+		$flags = array( 'flag' => PLL_Language::get_flag_informations( $flag_code ) );
+
+		// Custom flags?
+		$directories = array(
+			PLL_LOCAL_DIR,
+			get_stylesheet_directory() . '/polylang',
+			get_template_directory() . '/polylang',
+		);
+
+		foreach ( $directories as $dir ) {
+			if ( file_exists( $file = "{$dir}/{$locale}.png" ) || file_exists( $file = "{$dir}/{$locale}.jpg" ) || file_exists( $file = "{$dir}/{$locale}.svg" ) ) {
+				$flags['custom_flag']['url'] = content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) );
+				break;
+			}
+		}
+
+		/**
+		 * Filters the custom flag information.
+		 *
+		 * @param array  $flag {
+		 *   Information about the custom flag.
+		 *
+		 *   @type string $url    Flag url.
+		 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
+		 *   @type int    $width  Optional, flag width in pixels.
+		 *   @type int    $height Optional, flag height in pixels.
+		 * }
+		 * @param string $code Flag code.
+		 *
+		 * @since 2.4
+		 */
+		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $flag_code );
+
+		if ( ! empty( $flags['custom_flag']['url'] ) ) {
+			if ( empty( $flags['custom_flag']['src'] ) ) {
+				$flags['custom_flag']['src'] = esc_url( set_url_scheme( $flags['custom_flag']['url'], 'relative' ) );
+			}
+
+			$flags['custom_flag']['url'] = esc_url_raw( $flags['custom_flag']['url'] );
+		} else {
+			$flags['custom_flag'] = '';
+		}
+
+		/**
+		 * Filters the flag title attribute.
+		 * Defaults to the language name.
+		 *
+		 * @since 0.7
+		 *
+		 * @param string $title  The flag title attribute.
+		 * @param string $slug   The language code.
+		 * @param string $locale The language locale.
+		 */
+		$title = apply_filters( 'pll_flag_title', $name, $slug, $locale );
+
+		foreach ( $flags as $key => $flag ) {
+			$flags[ $key . '_url' ] = empty( $flag['url'] ) ? '' : $flag['url'];
+
+			/**
+			 * Filters the html markup of a flag.
+			 *
+			 * @since 1.0.2
+			 *
+			 * @param string $flag Html markup of the flag or empty string.
+			 * @param string $slug Language code.
+			 */
+			$flags[ $key ] = apply_filters(
+				'pll_get_flag',
+				PLL_Language::get_flag_html( $flag, $title, $name ),
+				$slug
+			);
+		}
+
+		return $flags;
 	}
 }

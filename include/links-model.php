@@ -171,17 +171,16 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Sets the home urls and flags before the languages are persistently cached.
+	 * Sets the home urls before the languages are persistently cached.
 	 *
 	 * @since 1.8
 	 *
 	 * @param PLL_Language[] $languages Array of PLL_Language objects.
-	 * @return PLL_Language[] Array of PLL_Language objects with home url and flag.
+	 * @return PLL_Language[] Array of PLL_Language objects with home url.
 	 */
 	public function pll_languages_list( $languages ) {
 		foreach ( $languages as $language ) {
 			$this->set_home_url( $language );
-			$language->set_flag();
 		}
 		return $languages;
 	}

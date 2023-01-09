@@ -174,7 +174,7 @@ class PLL_Language {
 	public $flag_code;
 
 	/**
-	 * URL of the flag.
+	 * URL of the flag. Always set to the main domain.
 	 *
 	 * @var string
 	 *
@@ -192,7 +192,7 @@ class PLL_Language {
 	public $flag;
 
 	/**
-	 * URL of the custom flag if it exists.
+	 * URL of the custom flag if it exists. Always set to the main domain.
 	 *
 	 * @var string
 	 */
@@ -495,88 +495,6 @@ class PLL_Language {
 	}
 
 	/**
-	 * Sets flag_url and flag properties.
-	 *
-	 * @since 1.2
-	 *
-	 * @return void
-	 */
-	public function set_flag() {
-		$flags = array( 'flag' => self::get_flag_informations( $this->flag_code ) );
-
-		// Custom flags?
-		$directories = array(
-			PLL_LOCAL_DIR,
-			get_stylesheet_directory() . '/polylang',
-			get_template_directory() . '/polylang',
-		);
-
-		foreach ( $directories as $dir ) {
-			if ( file_exists( $file = "{$dir}/{$this->locale}.png" ) || file_exists( $file = "{$dir}/{$this->locale}.jpg" ) || file_exists( $file = "{$dir}/{$this->locale}.svg" ) ) {
-				$flags['custom_flag']['url'] = content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) );
-				break;
-			}
-		}
-
-		/**
-		 * Filters the custom flag informations.
-		 *
-		 * @param array  $flag {
-		 *   Information about the custom flag.
-		 *
-		 *   @type string $url    Flag url.
-		 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
-		 *   @type int    $width  Optional, flag width in pixels.
-		 *   @type int    $height Optional, flag height in pixels.
-		 * }
-		 * @param string $code Flag code.
-		 *
-		 * @since 2.4
-		 */
-		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $this->flag_code );
-
-		if ( ! empty( $flags['custom_flag']['url'] ) ) {
-			if ( empty( $flags['custom_flag']['src'] ) ) {
-				$flags['custom_flag']['src'] = esc_url( set_url_scheme( $flags['custom_flag']['url'], 'relative' ) );
-			}
-
-			$flags['custom_flag']['url'] = esc_url_raw( $flags['custom_flag']['url'] );
-		} else {
-			unset( $flags['custom_flag'] );
-		}
-
-		/**
-		 * Filters the flag title attribute.
-		 * Defaults to the language name.
-		 *
-		 * @since 0.7
-		 *
-		 * @param string $title  The flag title attribute.
-		 * @param string $slug   The language code.
-		 * @param string $locale The language locale.
-		 */
-		$title = apply_filters( 'pll_flag_title', $this->name, $this->slug, $this->locale );
-
-		foreach ( $flags as $key => $flag ) {
-			$this->{$key . '_url'} = empty( $flag['url'] ) ? '' : $flag['url'];
-
-			/**
-			 * Filters the html markup of a flag.
-			 *
-			 * @since 1.0.2
-			 *
-			 * @param string $flag Html markup of the flag or empty string.
-			 * @param string $slug Language code.
-			 */
-			$this->{$key} = apply_filters(
-				'pll_get_flag',
-				self::get_flag_html( $flag, $title, $this->name ),
-				$this->slug
-			);
-		}
-	}
-
-	/**
 	 * Get HTML code for flag.
 	 *
 	 * @since 2.7
@@ -637,7 +555,12 @@ class PLL_Language {
 	 * @return string
 	 */
 	public function get_display_flag_url() {
-		return empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
+		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
+
+		/**
+		 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+		 */
+		return site_url( set_url_scheme( $flag_url, 'relative' ) );
 	}
 
 	/**

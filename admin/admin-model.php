@@ -68,8 +68,12 @@ class PLL_Admin_Model extends PLL_Model {
 		 */
 		do_action( 'pll_add_language', $args );
 
-		$this->clean_languages_cache(); // Again to set add mo_id in the cached languages list
-		flush_rewrite_rules(); // Refresh rewrite rules
+		// Refresh languages.
+		$this->clean_languages_cache();
+		$this->get_languages_list();
+
+		flush_rewrite_rules(); // Refresh rewrite rules.
+
 		return true;
 	}
 
@@ -145,8 +149,9 @@ class PLL_Admin_Model extends PLL_Model {
 			wp_delete_term( $term_id, $taxonomy_name );
 		}
 
-		// Update languages list
+		// Refresh languages.
 		$this->clean_languages_cache();
+		$this->get_languages_list();
 
 		update_option( 'polylang', $this->options );
 		flush_rewrite_rules(); // refresh rewrite rules
@@ -267,8 +272,13 @@ class PLL_Admin_Model extends PLL_Model {
 		 */
 		do_action( 'pll_update_language', $args, $lang );
 
+		// Refresh languages.
 		$this->clean_languages_cache();
-		flush_rewrite_rules(); // Refresh rewrite rules
+		$this->get_languages_list();
+
+		// Refresh rewrite rules.
+		flush_rewrite_rules();
+
 		return true;
 	}
 
