@@ -291,6 +291,8 @@ class PLL_Translate_Option {
 				$mo->export_to_db( $language );
 			}
 		}
+
+		unset( $this->translated_values );
 	}
 
 	/**
