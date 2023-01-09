@@ -164,20 +164,6 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Sets the home urls in PLL_Language.
-	 *
-	 * @since 1.8
-	 *
-	 * @param PLL_Language $language The language object.
-	 * @return void
-	 */
-	protected function set_home_url( $language ) {
-		$search_url = $this->home_url( $language );
-		$home_url = empty( $language->page_on_front ) || $this->options['redirect_lang'] ? $search_url : $this->front_page_url( $language );
-		$language->set_home_url( $search_url, $home_url );
-	}
-
-	/**
 	 * Adds home and search URLs to language data before the object is created.
 	 *
 	 * @since 3.4
