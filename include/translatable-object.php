@@ -344,19 +344,21 @@ abstract class PLL_Translatable_Object {
 	 * @param array $args {
 	 * 		The object args.
 	 *
-	 * 		@type string|string[] $object_types A translated object type or an array of translated object types.
+	 * 		@type string|string[] $type A translated object type or an array of translated object types.
 	 * }
 	 * @return int[] Array of object IDs.
 	 *
 	 * @phpstan-param -1|positive-int $limit
-	 * @phpstan-param array<array<string, string>> $args
+	 * @phpstan-param array{
+	 *     type?: string|array<string>
+	 * } $args
 	 * @phpstan-return list<positive-int>
 	 */
-	public function get_objects_with_no_lang( $limit, $args = array() ) {
+	public function get_objects_with_no_lang( $limit, array $args = array() ) {
 		$languages = $this->model->get_languages_list();
 
 		$language_ids = array();
-		foreach ( $languages as  $language ) {
+		foreach ( $languages as $language ) {
 			$language_ids[] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 
