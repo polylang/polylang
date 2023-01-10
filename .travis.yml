@@ -30,10 +30,9 @@ jobs:
         - "vendor/bin/phpunit --verbose"
 
     - name: "WP 5.7 - PHP 5.6"
+      dist: "xenial"
       php: "5.6"
       env: "WP_VERSION=5.7 WP_MULTISITE=0"
-      script:
-        - "vendor/bin/phpunit --verbose"
 
     - name: "WP 6.1 - PHP 5.6"
       dist: "xenial"
