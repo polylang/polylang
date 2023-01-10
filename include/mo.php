@@ -67,13 +67,19 @@ class PLL_MO extends MO {
 	 * @return void
 	 */
 	public function import_from_db( $lang ) {
-		if ( ! empty( $lang->mo_id ) ) {
-			$strings = get_post_meta( $lang->mo_id, '_pll_strings_translations', true );
-			if ( is_array( $strings ) ) {
-				foreach ( $strings as $msg ) {
-					$this->add_entry( $this->make_entry( $msg[0], $msg[1] ) );
-				}
-			}
+		if ( empty( $lang->mo_id ) ) {
+			return;
+		}
+
+		$this->set_header( 'Language', $lang->slug );
+
+		$strings = get_post_meta( $lang->mo_id, '_pll_strings_translations', true );
+		if ( ! is_array( $strings ) ) {
+			return;
+		}
+
+		foreach ( $strings as $msg ) {
+			$this->add_entry( $this->make_entry( $msg[0], $msg[1] ) );
 		}
 	}
 

@@ -38,6 +38,13 @@ class PLL_Translate_Option {
 	private $translations;
 
 	/**
+	 * Cache for the translated values.
+	 *
+	 * @var array
+	 */
+	private $translated_values;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.9
@@ -92,10 +99,20 @@ class PLL_Translate_Option {
 	 */
 	public function translate( $value ) {
 		if ( self::$raw ) {
-				return $value;
+			return $value;
 		}
 
-		return $this->translate_string_recursive( $value, $this->keys );
+		if ( empty( $GLOBALS['l10n']['pll_string'] ) || ! $GLOBALS['l10n']['pll_string'] instanceof PLL_MO ) {
+			return $value;
+		}
+
+		$lang = $GLOBALS['l10n']['pll_string']->get_header( 'Language' );
+
+		if ( ! isset( $this->translated_values[ $lang ] ) ) {
+			$this->translated_values[ $lang ] = $this->translate_string_recursive( $value, $this->keys );
+		}
+
+		return $this->translated_values[ $lang ];
 	}
 
 	/**
@@ -274,6 +291,8 @@ class PLL_Translate_Option {
 				$mo->export_to_db( $language );
 			}
 		}
+
+		unset( $this->translated_values );
 	}
 
 	/**
