@@ -227,14 +227,10 @@ class PLL_Upgrade {
 		foreach ( $terms as $term ) {
 			$fallbacks = get_term_meta( $term->term_id, 'fallback', true );
 
-			if ( false === $fallbacks || '' === $fallbacks ) {
-				// No metas, should not happen.
-				continue;
-			}
-
+			delete_term_meta( $term->term_id, 'fallback' );
+			
 			if ( empty( $fallbacks ) || ! is_array( $fallbacks ) ) {
 				// Empty or invalid value, should not happen.
-				delete_term_meta( $term->term_id, 'fallback' );
 				continue;
 			}
 
@@ -246,7 +242,6 @@ class PLL_Upgrade {
 			$description = maybe_serialize( $description );
 
 			wp_update_term( $term->term_id, 'language', array( 'description' => $description ) );
-			delete_term_meta( $term->term_id, 'fallback' );
 		}
 	}
 }
