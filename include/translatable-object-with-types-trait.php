@@ -37,7 +37,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 * @param array $args {
 	 * 		The object args.
 	 *
-	 * 		@type string|string[] $type A translated object type or an array of translated object types.
+	 * 		@type string|string[] $types A translated object type or an array of translated object types.
 	 * }
 	 * @return string
 	 *
@@ -46,7 +46,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 * @phpstan-param array<array<string, string>> $args
 	 */
 	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array()  ) {
-		if ( empty( $args['type'] ) ) {
+		if ( empty( $args['types'] ) ) {
 			return '';
 		}
 
@@ -58,7 +58,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 			AND {$this->db['type_column']} IN (%s)
 			%s",
 			PLL_Db_Tools::prepare_values_list( $language_ids ),
-			PLL_Db_Tools::prepare_values_list( $args['type'] ),
+			PLL_Db_Tools::prepare_values_list( $args['types'] ),
 			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
 		);
 	}
