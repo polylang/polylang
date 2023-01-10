@@ -344,13 +344,13 @@ abstract class PLL_Translatable_Object {
 	 * @param array $args {
 	 * 		The object args.
 	 *
-	 * 		@type string|string[] $type A translated object type or an array of translated object types.
+	 * 		@type string|string[] $types A translated object type or an array of translated object types.
 	 * }
 	 * @return int[] Array of object IDs.
 	 *
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-param array{
-	 *     type?: string|array<string>
+	 *     types?: string|array<string>
 	 * } $args
 	 * @phpstan-return list<positive-int>
 	 */
