@@ -341,17 +341,10 @@ abstract class PLL_Translatable_Object {
 	 * @since 3.4
 	 *
 	 * @param int   $limit  Max number of objects to return. `-1` to return all of them.
-	 * @param array $args {
-	 * 		The object args.
-	 *
-	 * 		@type string|string[] $types A translated object type or an array of translated object types.
-	 * }
+	 * @param array $args The object args.
 	 * @return int[] Array of object IDs.
 	 *
 	 * @phpstan-param -1|positive-int $limit
-	 * @phpstan-param array{
-	 *     types?: string|array<string>
-	 * } $args
 	 * @phpstan-return list<positive-int>
 	 */
 	public function get_objects_with_no_lang( $limit, array $args = array() ) {
