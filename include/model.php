@@ -615,6 +615,8 @@ class PLL_Model {
 			// The trailing 's' in the array key is for backward compatibility.
 			if ( $object instanceof PLL_Translatable_Object_With_Types_Interface ) {
 				$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $limit, array( 'type' => $object->get_translated_object_types() ) );
+			} else {
+				$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $limit );
 			}
 		}
 
