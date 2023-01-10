@@ -340,19 +340,24 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param string|string[] $object_types A translated object type or an array of translated object types.
-	 * @param int             $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param int   $limit  Max number of objects to return. `-1` to return all of them.
+	 * @param array $args {
+	 * 		The object args.
+	 *
+	 * 		@type string|string[] $object_types A translated object type or an array of translated object types.
+	 * }
 	 * @return int[] Array of object IDs.
 	 *
 	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-param array<array<string, string>> $args
 	 * @phpstan-return list<positive-int>
 	 */
-	public function get_objects_with_no_lang( $object_types, $limit ) {
+	public function get_objects_with_no_lang( $limit, $args = array() ) {
 		$languages = $this->model->get_languages_list();
 
 		$language_ids = array();
-		foreach ( $languages as $i => $language ) {
-			$language_ids[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
+		foreach ( $languages as  $language ) {
+			$language_ids[] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 
 		$language_ids = array_filter( $language_ids );
@@ -361,7 +366,7 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
-		$sql = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $object_types );
+		$sql = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $args );
 
 		if ( empty( $sql ) ) {
 			return array();
@@ -422,15 +427,16 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param int[]           $language_ids List of language `term_taxonomy_id`.
-	 * @param int             $limit        Max number of objects to return. `-1` to return all of them.
-	 * @param string|string[] $object_types A translated object type or an array of translated object types.
+	 * @param int[] $language_ids List of language `term_taxonomy_id`.
+	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param array $args         The object args.
 	 * @return string
 	 *
 	 * @phpstan-param array<positive-int> $language_ids
 	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-param array<empty> $args
 	 */
-	protected function get_objects_with_no_lang_sql( $language_ids, $limit, $object_types ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	protected function get_objects_with_no_lang_sql( $language_ids, $limit, $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return sprintf(
 			"SELECT {$this->db['table']}.{$this->db['id_column']} FROM {$this->db['table']}
 			WHERE {$this->db['table']}.{$this->db['id_column']} NOT IN (
@@ -476,16 +482,4 @@ abstract class PLL_Translatable_Object {
 
 		clean_term_cache( $ids, $this->tax_language );
 	}
-
-	/**
-	 * Returns object types that need to be translated.
-	 *
-	 * @since 3.4
-	 *
-	 * @param bool $filter True if we should return only valid registered object types.
-	 * @return string[] Object type names for which Polylang manages languages.
-	 *
-	 * @phpstan-return array<non-empty-string, non-empty-string>
-	 */
-	abstract public function get_translated_object_types( $filter = true );
 }

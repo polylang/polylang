@@ -613,7 +613,9 @@ class PLL_Model {
 
 		foreach ( $this->translatable_objects as $type => $object ) {
 			// The trailing 's' in the array key is for backward compatibility.
-			$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $object->get_translated_object_types(), $limit );
+			if ( $object instanceof PLL_Translatable_Object_With_Types_Interface ) {
+				$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $limit, array( 'type' => $object->get_translated_object_types() ) );
+			}
 		}
 
 		/**
@@ -642,7 +644,7 @@ class PLL_Model {
 			return array();
 		}
 
-		return $object->get_objects_with_no_lang( $post_types, $limit );
+		return $object->get_objects_with_no_lang( $limit, $post_types );
 	}
 
 	/**
@@ -661,7 +663,7 @@ class PLL_Model {
 			return array();
 		}
 
-		return $object->get_objects_with_no_lang( $taxonomies, $limit );
+		return $object->get_objects_with_no_lang( $limit, $taxonomies );
 	}
 
 	/**

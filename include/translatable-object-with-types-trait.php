@@ -32,16 +32,21 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 *
 	 * @since 3.4
 	 *
-	 * @param int[]           $language_ids List of language `term_taxonomy_id`.
-	 * @param int             $limit        Max number of objects to return. `-1` to return all of them.
-	 * @param string|string[] $object_types A translated object type or an array of translated object types.
+	 * @param int[] $language_ids List of language `term_taxonomy_id`.
+	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param array $args {
+	 * 		The object args.
+	 *
+	 * 		@type string|string[] $object_types A translated object type or an array of translated object types.
+	 * }
 	 * @return string
 	 *
 	 * @phpstan-param array<positive-int> $language_ids
 	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-param array<array<string, string>> $args
 	 */
-	protected function get_objects_with_no_lang_sql( $language_ids, $limit, $object_types ) {
-		if ( empty( $object_types ) ) {
+	protected function get_objects_with_no_lang_sql( $language_ids, $limit, $args = array() ) {
+		if ( empty( $args ) || ! isset( $args['type'] ) ) {
 			return '';
 		}
 
@@ -53,7 +58,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 			AND {$this->db['type_column']} IN (%s)
 			%s",
 			PLL_Db_Tools::prepare_values_list( $language_ids ),
-			PLL_Db_Tools::prepare_values_list( $object_types ),
+			PLL_Db_Tools::prepare_values_list( $args['type'] ),
 			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
 		);
 	}
