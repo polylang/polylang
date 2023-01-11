@@ -248,7 +248,7 @@ class PLL_Admin_Model extends PLL_Model {
 			}
 		}
 
-		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
+		$description = $this->update_language_description( $args );
 		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
 
 		/**
@@ -280,6 +280,40 @@ class PLL_Admin_Model extends PLL_Model {
 		flush_rewrite_rules();
 
 		return true;
+	}
+
+	/**
+	 * Update language description where some of language properties are stored.
+	 *
+	 * @param array $args {
+	 *   @type int    $lang_id        Id of the language to modify.
+	 *   @type string $name           Language name ( used only for display ).
+	 *   @type string $slug           Language code ( ideally 2-letters ISO 639-1 language code ).
+	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
+	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
+	 *   @type int    $term_group     Language order when displayed.
+	 *   @type string $flag           Optional, country code, @see flags.php.
+	 * }
+	 * @return mixed The serialized description array updated.
+	 */
+	protected function update_language_description( $args ) {
+		$language_term = get_term( (int) $args['lang_id'] );
+
+		$old_description = array();
+
+		if ( $language_term instanceof WP_Term ) {
+			$description = maybe_unserialize( $language_term->description );
+			if ( is_array( $description ) ) {
+				$old_description = $description;
+			}
+		}
+
+		return maybe_serialize(
+			array_merge(
+				$old_description,
+				array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] )
+			)
+		);
 	}
 
 	/**
