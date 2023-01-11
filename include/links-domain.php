@@ -41,8 +41,8 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	 * @since 1.2
 	 * @since 3.4 Accepts now a language slug.
 	 *
-	 * @param string                    $url  The url to modify.
-	 * @param PLL_Language|string|false $lang Language object or slug.
+	 * @param string                    $url      The url to modify.
+	 * @param PLL_Language|string|false $language Language object or slug.
 	 * @return string The modified url.
 	 */
 	public function add_language_to_link( $url, $language ) {
