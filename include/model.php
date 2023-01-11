@@ -646,7 +646,7 @@ class PLL_Model {
 			return array();
 		}
 
-		return $object->get_objects_with_no_lang( $limit, is_array( $post_types ) ? $post_types : array( $post_types ) );
+		return $object->get_objects_with_no_lang( $limit, (array) $post_types );
 	}
 
 	/**
