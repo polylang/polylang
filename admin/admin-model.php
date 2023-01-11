@@ -299,13 +299,12 @@ class PLL_Admin_Model extends PLL_Model {
 	protected function update_language_description( $args ) {
 		$language_term = get_term( (int) $args['lang_id'] );
 
-		$old_description = array();
-
 		if ( $language_term instanceof WP_Term ) {
-			$description = maybe_unserialize( $language_term->description );
-			if ( is_array( $description ) ) {
-				$old_description = $description;
-			}
+			$old_description = maybe_unserialize( $language_term->description );
+		}
+
+		if ( empty( $old_description ) || ! is_array( $old_description ) ) {
+			$old_description = array();
 		}
 
 		return maybe_serialize(
