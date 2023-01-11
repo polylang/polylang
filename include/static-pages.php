@@ -56,6 +56,8 @@ class PLL_Static_Pages {
 
 		$this->init();
 
+		add_filter( 'pll_static_pages', array( $this, 'set_static_pages' ), 10, 2 );
+
 		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
 
 		// Modifies the page link in case the front page is not in the default language
@@ -119,6 +121,28 @@ class PLL_Static_Pages {
 			return $lang->get_home_url();
 		}
 		return $link;
+	}
+
+	/**
+	 * Adds page_on_front and page_for_posts properties to language data before the object is created.
+	 *
+	 * @since 3.4
+	 *
+	 * @param array $static_pages Array of language page_on_front and page_for_posts properties.
+	 * @param array $language Language data.
+	 * @return array Language data with static pages ids.
+	 *
+	 * @phpstan-return array{page_on_front: int<0, max>, page_for_posts: int<0, max>}
+	 */
+	public function set_static_pages( $static_pages, $language ) {
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+				$page_on_front_translations     = $this->model->post->get_translations_from_term( get_option( 'page_on_front' ) );
+				$page_for_posts_translations    = $this->model->post->get_translations_from_term( get_option( 'page_for_posts' ) );
+				$static_pages['page_on_front']  = $page_on_front_translations[ $language['slug'] ];
+				$static_pages['page_for_posts'] = $page_for_posts_translations[ $language['slug'] ];
+		}
+
+		return $static_pages;
 	}
 
 	/**
