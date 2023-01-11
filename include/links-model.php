@@ -160,7 +160,7 @@ abstract class PLL_Links_Model {
 
 		$url = trailingslashit( $this->home );
 
-		return $this->options['hide_default'] && $language == $this->options['default_lang'] ? $url : $this->add_language_to_link( $url, $language );
+		return $this->options['hide_default'] && $language === $this->options['default_lang'] ? $url : $this->add_language_to_link( $url, $language );
 	}
 
 	/**

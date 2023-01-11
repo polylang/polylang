@@ -32,7 +32,7 @@ class PLL_Links_Default extends PLL_Links_Model {
 			$language = $language->slug;
 		}
 
-		return empty( $language ) || ( $this->options['hide_default'] && $this->options['default_lang'] == $language ) ? $url : add_query_arg( 'lang', $language, $url );
+		return empty( $language ) || ( $this->options['hide_default'] && $this->options['default_lang'] === $language ) ? $url : add_query_arg( 'lang', $language, $url );
 	}
 
 	/**

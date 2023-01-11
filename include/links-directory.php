@@ -71,7 +71,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 		if ( ! empty( $language ) ) {
 			$base = $this->options['rewrite'] ? '' : 'language/';
-			$slug = $this->options['default_lang'] == $language && $this->options['hide_default'] ? '' : $base . $language . '/';
+			$slug = $this->options['default_lang'] === $language && $this->options['hide_default'] ? '' : $base . $language . '/';
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
 
 			if ( false === strpos( $url, $new = $root . $slug ) ) {
@@ -148,7 +148,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		$base = $this->options['rewrite'] ? '' : 'language/';
-		$slug = $this->options['default_lang'] == $language && $this->options['hide_default'] ? '' : '/' . $this->root . $base . $language;
+		$slug = $this->options['default_lang'] === $language && $this->options['hide_default'] ? '' : '/' . $this->root . $base . $language;
 		return trailingslashit( $this->home . $slug );
 	}
 

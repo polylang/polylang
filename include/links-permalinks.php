@@ -135,7 +135,7 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 			$language = $language->get_object_vars();
 		}
 
-		if ( $this->options['hide_default'] && $language['slug'] == $this->options['default_lang'] ) {
+		if ( $this->options['hide_default'] && $language['slug'] === $this->options['default_lang'] ) {
 			return trailingslashit( $this->home );
 		}
 		$url = home_url( $this->root . get_page_uri( $language['page_on_front'] ) );
