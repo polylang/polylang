@@ -665,7 +665,7 @@ class PLL_Model {
 			return array();
 		}
 
-		return $object->get_objects_with_no_lang( $limit, is_array( $taxonomies ) ? $taxonomies : array( $taxonomies ) );
+		return $object->get_objects_with_no_lang( $limit, (array) $taxonomies );
 	}
 
 	/**
