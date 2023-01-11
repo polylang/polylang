@@ -41,10 +41,10 @@
  *     custom_flag?: string,
  *     page_on_front:positive-int,
  *     page_for_posts:positive-int,
- *     active: bool
+ *     active: bool,
+ *     fallbacks?: array<non-empty-string>
  * }
  */
-#[AllowDynamicProperties]
 class PLL_Language {
 	/**
 	 * Language name. Ex: English.
@@ -213,6 +213,15 @@ class PLL_Language {
 	public $active = true;
 
 	/**
+	 * List of WordPress language locales. Ex: array( 'en_GB' ).
+	 *
+	 * @var string[]
+	 *
+	 * @phpstan-var array<non-empty-string>
+	 */
+	public $fallbacks = array();
+
+	/**
 	 * Stores language term properties (like term IDs and counts) for each language taxonomy (`language`,
 	 * `term_language`, etc).
 	 * This stores the values of the properties `$term_id` + `$term_taxonomy_id` + `$count` (`language`), `$tl_term_id`
@@ -259,28 +268,29 @@ class PLL_Language {
 	 * @param array $language_data {
 	 *     Language object properties stored as an array.
 	 *
-	 *     @type array[] $term_props      An array of language term properties. Array keys are language taxonomy names
-	 *                                    (`language` and `term_language` are mandatory), array values are arrays of
-	 *                                    language term properties (`term_id`, `term_taxonomy_id`, and `count`).
-	 *     @type string  $name            Language name. Ex: English.
-	 *     @type string  $slug            Language code used in URL. Ex: en.
-	 *     @type string  $locale          WordPress language locale. Ex: en_US.
-	 *     @type string  $w3c             W3C locale.
-	 *     @type string  $flag_code       Code of the flag.
-	 *     @type int     $term_group      Order of the language when displayed in a list of languages.
-	 *     @type int     $is_rtl          `1` if the language is rtl, `0` otherwise.
-	 *     @type int     $mo_id           ID of the post storing strings translations.
-	 *     @type string  $facebook        Optional. Facebook locale.
-	 *     @type string  $home_url        Home URL in this language.
-	 *     @type string  $search_url      Home URL to use in search forms.
-	 *     @type string  $host            Host corresponding to this language.
-	 *     @type string  $flag_url        URL of the flag.
-	 *     @type string  $flag            HTML markup of the flag.
-	 *     @type string  $custom_flag_url Optional. URL of the custom flag if it exists.
-	 *     @type string  $custom_flag     Optional. HTML markup of the custom flag if it exists.
-	 *     @type int     $page_on_front   ID of the page on front in this language.
-	 *     @type int     $page_for_posts  ID of the page for posts in this language.
-	 *     @type bool    $active          Whether or not the language is active. Default `true`.
+	 *     @type array[]  $term_props      An array of language term properties. Array keys are language taxonomy names
+	 *                                     (`language` and `term_language` are mandatory), array values are arrays of
+	 *                                     language term properties (`term_id`, `term_taxonomy_id`, and `count`).
+	 *     @type string   $name            Language name. Ex: English.
+	 *     @type string   $slug            Language code used in URL. Ex: en.
+	 *     @type string   $locale          WordPress language locale. Ex: en_US.
+	 *     @type string   $w3c             W3C locale.
+	 *     @type string   $flag_code       Code of the flag.
+	 *     @type int      $term_group      Order of the language when displayed in a list of languages.
+	 *     @type int      $is_rtl          `1` if the language is rtl, `0` otherwise.
+	 *     @type int      $mo_id           ID of the post storing strings translations.
+	 *     @type string   $facebook        Optional. Facebook locale.
+	 *     @type string   $home_url        Home URL in this language.
+	 *     @type string   $search_url      Home URL to use in search forms.
+	 *     @type string   $host            Host corresponding to this language.
+	 *     @type string   $flag_url        URL of the flag.
+	 *     @type string   $flag            HTML markup of the flag.
+	 *     @type string   $custom_flag_url Optional. URL of the custom flag if it exists.
+	 *     @type string   $custom_flag     Optional. HTML markup of the custom flag if it exists.
+	 *     @type int      $page_on_front   ID of the page on front in this language.
+	 *     @type int      $page_for_posts  ID of the page for posts in this language.
+	 *     @type bool     $active          Whether or not the language is active. Default `true`.
+	 *     @type string[] $fallbacks       List of WordPress language locales. Ex: array( 'en_GB' ).
 	 * }
 	 *
 	 * @phpstan-param LanguageData $language_data
@@ -620,6 +630,9 @@ class PLL_Language {
 	 *
 	 * @param string $filter Either 'display' or 'raw', defaults to raw.
 	 * @return string
+	 *
+	 * @phpstan-param 'display'|'raw' $filter
+	 * @phpstan-return non-empty-string
 	 */
 	public function get_locale( $filter = 'raw' ) {
 		return 'display' === $filter ? $this->w3c : $this->locale;

@@ -205,5 +205,43 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_3_4() {
 		delete_transient( 'pll_languages_list' );
+
+		// Migrate locale fallbacks from term metas to language term description.
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+				'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					array(
+						'key'         => 'fallback',
+						'compare_key' => 'EXISTS',
+					),
+				),
+			)
+		);
+
+		if ( ! is_array( $terms ) ) {
+			return;
+		}
+
+		foreach ( $terms as $term ) {
+			$fallbacks = get_term_meta( $term->term_id, 'fallback', true );
+
+			delete_term_meta( $term->term_id, 'fallback' );
+			
+			if ( empty( $fallbacks ) || ! is_array( $fallbacks ) ) {
+				// Empty or invalid value, should not happen.
+				continue;
+			}
+
+			$description = maybe_unserialize( $term->description );
+			$description = is_array( $description ) ? $description : array();
+
+			$description['fallbacks'] = $fallbacks;
+			/** @var string */
+			$description = maybe_serialize( $description );
+
+			wp_update_term( $term->term_id, 'language', array( 'description' => $description ) );
+		}
 	}
 }
