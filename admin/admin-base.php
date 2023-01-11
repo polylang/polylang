@@ -91,7 +91,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$this->default_term = new PLL_Admin_Default_Term( $this );
 		$this->default_term->add_hooks();
 
-		if ( ! $this->model->get_languages_list() ) {
+		if ( ! $this->model->has_languages() ) {
 			return;
 		}
 
