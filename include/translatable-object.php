@@ -168,7 +168,11 @@ abstract class PLL_Translatable_Object {
 			return false;
 		}
 
-		return is_array( wp_set_object_terms( $id, $lang, $this->tax_language ) );
+		$term_taxonomy_ids = wp_set_object_terms( $id, $lang, $this->tax_language );
+
+		wp_cache_set( 'last_changed', microtime(), "{$this->type}s" );
+
+		return is_array( $term_taxonomy_ids );
 	}
 
 	/**
