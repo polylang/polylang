@@ -285,6 +285,8 @@ class PLL_Admin_Model extends PLL_Model {
 	/**
 	 * Update language description where some of language properties are stored.
 	 *
+	 * @since 3.4
+	 *
 	 * @param array $args {
 	 *   @type int    $lang_id        Id of the language to modify.
 	 *   @type string $name           Language name ( used only for display ).
