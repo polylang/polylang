@@ -431,7 +431,7 @@ abstract class PLL_Translatable_Object {
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-param array<empty> $args
 	 */
-	protected function get_objects_with_no_lang_sql( $language_ids, $limit, $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return sprintf(
 			"SELECT {$this->db['table']}.{$this->db['id_column']} FROM {$this->db['table']}
 			WHERE {$this->db['table']}.{$this->db['id_column']} NOT IN (
