@@ -47,6 +47,9 @@ class PLL_WP_Import extends WP_Import {
 			update_option( 'polylang', PLL()->options );
 		}
 
+		// Clean languages cache in case some of them were created during import.
+		PLL()->model->clean_languages_cache();
+
 		$this->remap_terms_relations( $term_translations );
 		$this->remap_translations( $term_translations, $this->processed_terms );
 	}
