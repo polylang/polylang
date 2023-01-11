@@ -237,7 +237,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	}
 
 	/**
-	 * Returns an array of translations of an object.
+	 * Returns an array of valid translations of an object.
 	 *
 	 * @since 0.5
 	 *
@@ -253,10 +253,32 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return array();
 		}
 
+		$translations = $this->get_translations_from_term( $id );
+
+		return $this->validate_translations( $translations, $id, 'display' );
+	}
+
+	/**
+	 * Returns an array of translations of an object.
+	 *
+	 * @since 3.4
+	 *
+	 * @param int $id Object ID.
+	 * @return int[] An associative array of translations with language code as key and translation ID as value.
+	 *
+	 * @phpstan-return array<non-empty-string, positive-int>
+	 */
+	public function get_translations_from_term( $id ) {
+		$id = $this->sanitize_int_id( $id );
+
+		if ( empty( $id ) ) {
+			return array();
+		}
+
 		$term         = $this->get_object_term( $id, $this->tax_translations );
 		$translations = empty( $term->description ) ? array() : maybe_unserialize( $term->description );
 
-		return $this->validate_translations( $translations, $id, 'display' );
+		return $translations;
 	}
 
 	/**
