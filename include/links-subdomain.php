@@ -46,7 +46,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 		}
 
 		if ( ! empty( $language ) && false === strpos( $url, '://' . $language . '.' ) ) {
-			$url = $this->options['default_lang'] == $language && $this->options['hide_default'] ? $url : str_replace( $this->www, '://' . $language . '.', $url );
+			$url = $this->options['default_lang'] === $language && $this->options['hide_default'] ? $url : str_replace( $this->www, '://' . $language . '.', $url );
 		}
 		return $url;
 	}
