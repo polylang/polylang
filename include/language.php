@@ -603,25 +603,6 @@ class PLL_Language {
 	}
 
 	/**
-	 * Sets the scheme of the home url and the flag urls.
-	 *
-	 * This can't be cached across pages.
-	 *
-	 * @since 2.8
-	 *
-	 * @return void
-	 */
-	public function set_url_scheme() {
-		$props = array( 'home_url', 'search_url', 'flag_url', 'custom_flag_url' );
-
-		foreach ( $props as $prop ) {
-			if ( ! empty( $this->$prop ) ) {
-				$this->$prop = set_url_scheme( $this->$prop );
-			}
-		}
-	}
-
-	/**
 	 * Returns the language locale.
 	 * Converts WP locales to W3C valid locales for display.
 	 *
