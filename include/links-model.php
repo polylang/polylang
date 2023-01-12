@@ -172,11 +172,11 @@ abstract class PLL_Links_Model {
 	 * @param array $language Language data.
 	 * @return array Language data with URLs.
 	 *
-	 * @phpstan-return array{_home_url: non-empty-string, _search_url: non-empty-string}
+	 * @phpstan-return array{home_url: non-empty-string, search_url: non-empty-string}
 	 */
 	public function set_language_urls( $urls, $language ) {
-		$urls['_search_url']  = $this->home_url( $language['slug'] );
-		$urls['_home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $urls['_search_url'] : $this->front_page_url( $language );
+		$urls['search_url']  = $this->home_url( $language['slug'] );
+		$urls['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $urls['search_url'] : $this->front_page_url( $language );
 
 		return $urls;
 	}
