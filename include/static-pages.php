@@ -130,7 +130,7 @@ class PLL_Static_Pages {
 	 *
 	 * @param array $static_pages Array of language page_on_front and page_for_posts properties.
 	 * @param array $language Language data.
-	 * @return array Language data with static pages ids.
+	 * @return array Static pages properties if exist.
 	 *
 	 * @phpstan-return array{page_on_front: int<0, max>, page_for_posts: int<0, max>}
 	 */
