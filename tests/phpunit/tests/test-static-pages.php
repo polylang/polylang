@@ -15,8 +15,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
-		add_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 );
-
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
@@ -117,7 +115,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		wp_delete_post( self::$posts_fr );
 
 		parent::wpTearDownAfterClass();
-		remove_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 ); // Avoid breaking next tests
 	}
 
 	public function test_front_page_with_default_options() {
