@@ -155,14 +155,14 @@ class PLL_Language {
 	 *
 	 * @var int
 	 */
-	public $page_on_front;
+	public $page_on_front = 0;
 
 	/**
 	 * ID of the page for posts in this language (set from pll_static_pages filter).
 	 *
 	 * @var int
 	 */
-	public $page_for_posts;
+	public $page_for_posts = 0;
 
 	/**
 	 * Code of the flag.
@@ -287,8 +287,8 @@ class PLL_Language {
 	 *     @type string   $flag            HTML markup of the flag.
 	 *     @type string   $custom_flag_url Optional. URL of the custom flag if it exists.
 	 *     @type string   $custom_flag     Optional. HTML markup of the custom flag if it exists.
-	 *     @type int      $page_on_front   ID of the page on front in this language.
-	 *     @type int      $page_for_posts  ID of the page for posts in this language.
+	 *     @type int      $page_on_front   Optional. ID of the page on front in this language.
+	 *     @type int      $page_for_posts  Optional. ID of the page for posts in this language.
 	 *     @type bool     $active          Whether or not the language is active. Default `true`.
 	 *     @type string[] $fallbacks       List of WordPress language locales. Ex: array( 'en_GB' ).
 	 * }
