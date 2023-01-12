@@ -12,16 +12,16 @@ class PLL_Static_Pages {
 	/**
 	 * Id of the page on front.
 	 *
-	 * @var int|null
+	 * @var int
 	 */
-	public $page_on_front;
+	public $page_on_front = 0;
 
 	/**
 	 * Id of the page for posts.
 	 *
-	 * @var int|null
+	 * @var int
 	 */
-	public $page_for_posts;
+	public $page_for_posts = 0;
 
 	/**
 	 * Stores the plugin options.
@@ -56,8 +56,6 @@ class PLL_Static_Pages {
 
 		$this->init();
 
-		add_filter( 'pll_static_pages', array( $this, 'set_static_pages' ), 10, 2 );
-
 		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
 
 		// Modifies the page link in case the front page is not in the default language
@@ -84,11 +82,17 @@ class PLL_Static_Pages {
 	 */
 	public function init() {
 		if ( 'page' == get_option( 'show_on_front' ) ) {
-			$this->page_on_front = get_option( 'page_on_front' );
-			$this->page_for_posts = get_option( 'page_for_posts' );
-		} else {
-			$this->page_on_front = 0;
-			$this->page_for_posts = 0;
+			$page_on_front = get_option( 'page_on_front' );
+			if ( ! empty( $page_on_front ) ) {
+				$this->page_on_front = intval( $page_on_front );
+			}
+
+			$page_for_posts = get_option( 'page_for_posts' );
+			if ( ! empty( $page_for_posts ) ) {
+				$this->page_for_posts = intval( $page_for_posts );
+			}
+
+			add_filter( 'pll_static_pages', array( $this, 'set_static_pages' ), 10, 2 );
 		}
 	}
 
@@ -130,16 +134,23 @@ class PLL_Static_Pages {
 	 *
 	 * @param array $static_pages Array of language page_on_front and page_for_posts properties.
 	 * @param array $language Language data.
-	 * @return array Static pages properties if exist.
+	 * @return array {
+	 *     Static pages properties if exist.
 	 *
-	 * @phpstan-return array{page_on_front: int<0, max>, page_for_posts: int<0, max>}
+	 *     @type int $page_on_front  ID of the page on front in this language
+	 *     @type int $page_for_posts Id of the page for posts in this language
+	 * }
 	 */
 	public function set_static_pages( $static_pages, $language ) {
 		if ( 'page' === get_option( 'show_on_front' ) ) {
-				$page_on_front_translations     = $this->model->post->get_translations_from_term( get_option( 'page_on_front' ) );
-				$page_for_posts_translations    = $this->model->post->get_translations_from_term( get_option( 'page_for_posts' ) );
-				$static_pages['page_on_front']  = isset( $page_on_front_translations[ $language['slug'] ] ) ? $page_on_front_translations[ $language['slug'] ] : 0;
-				$static_pages['page_for_posts'] = isset( $page_for_posts_translations[ $language['slug'] ] ) ? $page_for_posts_translations[ $language['slug'] ] : 0;
+			$page_on_front_translations  = $this->model->post->get_translations_from_term( $this->page_on_front );
+			$page_for_posts_translations = $this->model->post->get_translations_from_term( $this->page_for_posts );
+			if ( isset( $page_on_front_translations[ $language['slug'] ] ) ) {
+				$static_pages['page_on_front'] = $page_on_front_translations[ $language['slug'] ];
+			}
+			if ( isset( $page_for_posts_translations[ $language['slug'] ] ) ) {
+				$static_pages['page_for_posts'] = $page_for_posts_translations[ $language['slug'] ];
+			}
 		}
 
 		return $static_pages;
