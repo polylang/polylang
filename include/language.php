@@ -638,14 +638,25 @@ class PLL_Language {
 	}
 
 	/**
-	 * Returns the values of this instance's properties.
+	 * Returns the values of this instance's properties, which can be filtered if required.
 	 *
 	 * @since 3.4
 	 *
-	 * @return array
+	 * @param bool $raw Whether or not properties should be raw. Default to `true`.
+	 *
+	 * @return array Array of language object properties.
+	 *
+	 * @phpstan-return LanguageData
 	 */
-	public function get_object_vars() {
-		return get_object_vars( $this );
+	public function get_object_vars( $raw = true ) {
+		$language = get_object_vars( $this );
+
+		if ( ! $raw ) {
+			$language['home_url']   = $this->get_home_url();
+			$language['search_url'] = $this->get_search_url();
+		}
+
+		return $language;
 	}
 
 	/**
