@@ -138,8 +138,8 @@ class PLL_Static_Pages {
 		if ( 'page' === get_option( 'show_on_front' ) ) {
 				$page_on_front_translations     = $this->model->post->get_translations_from_term( get_option( 'page_on_front' ) );
 				$page_for_posts_translations    = $this->model->post->get_translations_from_term( get_option( 'page_for_posts' ) );
-				$static_pages['page_on_front']  = $page_on_front_translations[ $language['slug'] ];
-				$static_pages['page_for_posts'] = $page_for_posts_translations[ $language['slug'] ];
+				$static_pages['page_on_front']  = isset( $page_on_front_translations[ $language['slug'] ] ) ? $page_on_front_translations[ $language['slug'] ] : 0;
+				$static_pages['page_for_posts'] = isset( $page_for_posts_translations[ $language['slug'] ] ) ? $page_for_posts_translations[ $language['slug'] ] : 0;
 		}
 
 		return $static_pages;
