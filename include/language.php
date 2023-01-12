@@ -39,8 +39,8 @@
  *     flag: non-empty-string,
  *     custom_flag_url?: string,
  *     custom_flag?: string,
- *     page_on_front:positive-int,
- *     page_for_posts:positive-int,
+ *     page_on_front?:positive-int,
+ *     page_for_posts?:positive-int,
  *     active: bool,
  *     fallbacks?: array<non-empty-string>
  * }
@@ -151,14 +151,14 @@ class PLL_Language {
 	public $mo_id;
 
 	/**
-	 * ID of the page on front in this language (set from pll_languages_list filter).
+	 * ID of the page on front in this language (set from pll_static_pages filter).
 	 *
 	 * @var int
 	 */
 	public $page_on_front;
 
 	/**
-	 * ID of the page for posts in this language (set from pll_languages_list filter).
+	 * ID of the page for posts in this language (set from pll_static_pages filter).
 	 *
 	 * @var int
 	 */
