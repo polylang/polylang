@@ -180,9 +180,6 @@ class Polylang {
 			$options = PLL_Install::get_default_options();
 		}
 
-		// Make sure that this filter is *always* added before PLL_Model::get_languages_list() is called for the first time
-		add_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 ); // Before PLL_Links_Model
-
 		/**
 		 * Filter the model class to use
 		 * /!\ this filter is fired *before* the $polylang object is available

@@ -146,26 +146,6 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Adds page_on_front and page_for_posts properties to the language objects.
-	 *
-	 * @since 1.8
-	 *
-	 * @param PLL_Language[] $languages The list of languages.
-	 * @param PLL_Model      $model     The instance of PLL_Model.
-	 * @return PLL_Language[]
-	 */
-	public static function pll_languages_list( $languages, $model ) {
-		if ( 'page' === get_option( 'show_on_front' ) ) {
-			foreach ( $languages as $k => $language ) {
-				$languages[ $k ]->page_on_front = $model->post->get( get_option( 'page_on_front' ), $language );
-				$languages[ $k ]->page_for_posts = $model->post->get( get_option( 'page_for_posts' ), $language );
-			}
-		}
-
-		return $languages;
-	}
-
-	/**
 	 * Translates the page on front option.
 	 *
 	 * @since 1.8
