@@ -168,7 +168,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @param array $urls Array of language home and search URLs.
+	 * @param array $urls     Array of language home and search URLs.
 	 * @param array $language Language data.
 	 * @return array Language data with URLs.
 	 *
