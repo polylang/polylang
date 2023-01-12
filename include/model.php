@@ -695,11 +695,9 @@ class PLL_Model {
 	 * @return string
 	 */
 	public function filter_language_terms_orderby( $orderby, $args, $taxonomies ) {
-		if ( ! is_array( $taxonomies ) || count( $taxonomies ) > 1 ) {
-			return $orderby;
-		}
+		$allowed_taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'language' ) );
 
-		if ( 'language' !== reset( $taxonomies ) ) {
+		if ( ! is_array( $taxonomies ) || ! empty( array_diff( $taxonomies, $allowed_taxonomies ) ) ) {
 			return $orderby;
 		}
 
