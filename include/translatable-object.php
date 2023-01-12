@@ -168,7 +168,11 @@ abstract class PLL_Translatable_Object {
 			return false;
 		}
 
-		return is_array( wp_set_object_terms( $id, $lang, $this->tax_language ) );
+		$term_taxonomy_ids = wp_set_object_terms( $id, $lang, $this->tax_language );
+
+		wp_cache_set( 'last_changed', microtime(), "{$this->type}s" );
+
+		return is_array( $term_taxonomy_ids );
 	}
 
 	/**
@@ -340,17 +344,19 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param int $limit Max number of objects to return. `-1` to return all of them.
+	 * @param int   $limit  Max number of objects to return. `-1` to return all of them.
+	 * @param array $args   The object args.
 	 * @return int[] Array of object IDs.
 	 *
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-return list<positive-int>
 	 */
-	public function get_objects_with_no_lang( $limit ) {
-		$language_ids = $this->model->get_languages_list();
+	public function get_objects_with_no_lang( $limit, array $args = array() ) {
+		$languages = $this->model->get_languages_list();
 
-		foreach ( $language_ids as $i => $language ) {
-			$language_ids[ $i ] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
+		$language_ids = array();
+		foreach ( $languages as $language ) {
+			$language_ids[] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 
 		$language_ids = array_filter( $language_ids );
@@ -359,7 +365,7 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
-		$sql = $this->get_objects_with_no_lang_sql( $language_ids, $limit );
+		$sql = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $args );
 
 		if ( empty( $sql ) ) {
 			return array();
@@ -422,12 +428,14 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @param int[] $language_ids List of language `term_taxonomy_id`.
 	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
+	 * @param array $args         The object args.
 	 * @return string
 	 *
 	 * @phpstan-param array<positive-int> $language_ids
 	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-param array<empty> $args
 	 */
-	protected function get_objects_with_no_lang_sql( $language_ids, $limit ) {
+	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return sprintf(
 			"SELECT {$this->db['table']}.{$this->db['id_column']} FROM {$this->db['table']}
 			WHERE {$this->db['table']}.{$this->db['id_column']} NOT IN (
