@@ -230,4 +230,20 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 		$this->assertTrue( self::$model->add_language( $args ) );
 	}
+
+	public function test_default_language_order() {
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+		self::create_language( 'de_DE' );
+		self::create_language( 'es_ES' );
+
+		$expected = array(
+			'en',
+			'fr',
+			'de',
+			'es',
+		);
+
+		$this->assertSameSetsWithIndex( $expected, self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
+	}
 }
