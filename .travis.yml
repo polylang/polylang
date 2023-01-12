@@ -1,6 +1,6 @@
 # TravisCI configuration for polylang/polylang
 
-if: "branch = test-languages-list-order"
+if: "branch = master"
 
 language: "php"
 os:
