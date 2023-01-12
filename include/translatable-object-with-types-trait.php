@@ -41,7 +41,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-param array<string> $args
 	 */
-	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array()  ) {
+	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) {
 		if ( empty( $args ) ) {
 			return '';
 		}
