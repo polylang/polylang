@@ -51,6 +51,8 @@ class PLL_Admin_Model extends PLL_Model {
 			update_option( 'polylang', $this->options );
 		}
 
+		$this->clean_languages_cache(); // Update the languages list now !
+
 		// Init a mo_id for this language
 		$mo = new PLL_MO();
 		$mo->export_to_db( $this->get_language( $args['slug'] ) );
