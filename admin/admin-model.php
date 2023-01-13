@@ -320,18 +320,22 @@ class PLL_Admin_Model extends PLL_Model {
 			$old_description = array();
 		}
 
-		$new_data      = array(
+		$_new_data     = array(
 			'locale'    => $args['locale'],
 			'rtl'       => ! empty( $args['rtl'] ) ? 1 : 0,
 			'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'],
 		);
-		$language_data = array_merge( $old_description, $new_data );
+		$language_data = array_merge( $old_description, $_new_data );
 
 		/**
 		 * Allow to add data to store for a language.
+		 * `$locale`, `$rtl`, and `$flag_code` cannot be overwriten.
 		 *
+		 * @since 3.4
+		 *
+		 * @param mixed[] $new_data      Data to add.
 		 * @param mixed[] $language_data {
-		 *     Data that will be stored.
+		 *     Original data being stored.
 		 *
 		 *     @type string $locale    WordPress locale.
 		 *     @type int    $rtl       1 if rtl language, 0 otherwise.
@@ -351,9 +355,9 @@ class PLL_Admin_Model extends PLL_Model {
 		 *     @type string $flag       Optional, country code, {@see settings/flags.php}.
 		 * }
 		 */
-		$language_data = apply_filters( 'pll_language_metas', $language_data, $args );
+		$new_data = apply_filters( 'pll_language_metas', array(), $language_data, $args );
 		// Don't allow to overwrite `$locale`, `$rtl`, and `$flag_code`.
-		$language_data = array_merge( $language_data, $new_data );
+		$language_data = array_merge( $language_data, $new_data, $_new_data );
 
 		/** @var non-empty-string $serialized maybe_serialize() cannot return anything else than a string when feeded by an array. */
 		$serialized = maybe_serialize( $language_data );
