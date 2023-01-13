@@ -323,13 +323,15 @@ class PLL_Language {
 			'tl_count'            => array( 'term_language', 'count' ),
 		);
 
+		/** This filter is documented in wordpress/wp-includes/functions.php */
+		$trigger_error = WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true );
+
 		// Deprecated property.
 		if ( array_key_exists( $property, $deprecated_term_properties ) ) {
 			$term_prop_type = $deprecated_term_properties[ $property ][0];
 			$term_prop      = $deprecated_term_properties[ $property ][1];
 
-			/** This filter is documented in wordpress/wp-includes/functions.php */
-			if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
+			if ( $trigger_error ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					sprintf(
 						"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_tax_prop( '%3\$s', '%4\$s' ) instead.\nError handler",
@@ -346,8 +348,7 @@ class PLL_Language {
 		}
 
 		if ( 'search_url' === $property || 'home_url' === $property ) {
-			/** This filter is documented in wordpress/wp-includes/functions.php */
-			if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
+			if ( $trigger_error ) {
 				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 					sprintf(
 						"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_%2\$s() instead.\nError handler",
