@@ -623,13 +623,13 @@ class PLL_Language {
 	 *
 	 * @since 3.4
 	 *
-	 * @param bool $raw Whether or not properties should be raw. Default to `true`.
+	 * @param bool $raw Whether or not properties should be raw. Default to `false`.
 	 *
 	 * @return array Array of language object properties.
 	 *
 	 * @phpstan-return LanguageData
 	 */
-	public function get_object_vars( $raw = true ) {
+	public function get_object_vars( $raw = false ) {
 		$language = get_object_vars( $this );
 
 		if ( ! $raw ) {
