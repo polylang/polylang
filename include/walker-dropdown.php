@@ -24,7 +24,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 * @since 1.2
 	 *
 	 * @param string   $output            Passed by reference. Used to append additional content.
-	 * @param stdClass $element           The data object.
+	 * @param object   $element           The data object.
 	 * @param int      $depth             Depth of the item.
 	 * @param array    $args              An array of additional arguments.
 	 * @param int      $current_object_id ID of the current item.
@@ -42,11 +42,11 @@ class PLL_Walker_Dropdown extends Walker {
 	}
 
 	/**
-	 * Overrides Walker::display_element as expects an object with a parent property
+	 * Overrides Walker::display_element as expects an object with a parent property.
 	 *
 	 * @since 1.2
 	 *
-	 * @param stdClass $element           Data object.
+	 * @param object   $element           Data object.
 	 * @param array    $children_elements List of elements to continue traversing.
 	 * @param int      $max_depth         Max depth to traverse.
 	 * @param int      $depth             Depth of current element.
@@ -55,6 +55,11 @@ class PLL_Walker_Dropdown extends Walker {
 	 * @return void
 	 */
 	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
+		if ( $element instanceof PLL_Language ) {
+			// Let's create a stdClass from the language object to allow dynamic properties.
+			$element = $element->get_object_vars();
+			$element = (object) $element;
+		}
 		$element = (object) $element; // Make sure we have an object
 		$element->parent = $element->id = 0; // Don't care about this
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
