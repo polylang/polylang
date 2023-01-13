@@ -261,37 +261,12 @@ parameters:
 			path: admin/admin-links.php
 
 		-
-			message: "#^@param PLL_Language \\$lang does not accept actual type of parameter\\: PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
 			message: "#^@param array\\<array\\<string\\>\\|int\\> \\$tr does not accept actual type of parameter\\: mixed\\.$#"
 			count: 1
 			path: admin/admin-model.php
 
 		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Cannot access property \\$term_id on PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
 			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:export_to_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Admin_Model\\:\\:validate_lang\\(\\) expects PLL_Language\\|null, PLL_Language\\|false given\\.$#"
 			count: 1
 			path: admin/admin-model.php
 

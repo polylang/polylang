@@ -43,11 +43,7 @@ class PLL_Admin_Model extends PLL_Model {
 		wp_update_term( (int) $r['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // can't set the term group directly in wp_insert_term
 
 		// The other language taxonomies.
-		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
-			wp_insert_term( $args['name'], $object->get_tax_language(), array( 'slug' => 'pll_' . $args['slug'] ) );
-		}
-
-		$this->clean_languages_cache(); // Update the languages list now !
+		$this->update_secondary_language_terms( $args['slug'], $args['name'] );
 
 		if ( ! isset( $this->options['default_lang'] ) ) {
 			// If this is the first language created, set it as default language
@@ -236,17 +232,7 @@ class PLL_Admin_Model extends PLL_Model {
 		update_option( 'polylang', $this->options );
 
 		// And finally update the language itself.
-		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
-			$taxonomy = $object->get_tax_language();
-			$term_id  = $lang->get_tax_prop( $taxonomy, 'term_id' );
-
-			if ( empty( $term_id ) ) {
-				// Attempt to repair the language if a term has been deleted by a database cleaning tool.
-				wp_insert_term( $args['name'], $taxonomy, array( 'slug' => "pll_{$slug}" ) );
-			} else {
-				wp_update_term( $term_id, $taxonomy, array( 'slug' => "pll_{$slug}", 'name' => $args['name'] ) );
-			}
-		}
+		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
 
 		$description = $this->update_language_description( $args );
 		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );

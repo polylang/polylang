@@ -204,5 +204,62 @@ class Model_Test extends PLL_UnitTestCase {
 
 		$this->assertFalse( self::$model->is_translated_post_type( 'attachment' ) );
 	}
+
+	public function test_create_missing_language_terms() {
+		// Languages we'll work with.
+		self::create_language( 'es_ES' );
+		self::create_language( 'de_DE' );
+
+		// Get the term_ids to delete.
+		$term_ids = array();
+		foreach( self::$model->get_languages_list() as $language ) {
+			if ( 'es' === $language->slug || 'de' === $language->slug ) {
+				$term_ids[] = $language->get_tax_prop( 'term_language', 'term_id' );
+			}
+		}
+		$term_ids = array_filter( $term_ids );
+		$this->assertCount( 2, $term_ids, "Expected to have 1 'term_language' term_id per new language." );
+
+		// Delete terms.
+		foreach ( $term_ids as $term_id ) {
+			wp_delete_term( $term_id, 'term_language' );
+		}
+
+		self::$model->clean_languages_cache();
+
+		// Make sure the terms are deleted.
+		foreach( self::$model->get_languages_list() as $language ) {
+			if ( 'es' === $language->slug || 'de' === $language->slug ) {
+				$this->assertSame( 0, $language->get_tax_prop( 'term_language', 'term_id' ), "Expected to have no 'term_language' term_ids for the new languages." );
+				$this->assertSame( 0, $language->get_tax_prop( 'term_language', 'term_taxonomy_id' ), "Expected to have no 'term_language' term_taxonomy_ids for the new languages." );
+			}
+		}
+
+		// Re-create missing terms.
+		self::$model->add_missing_secondary_language_terms();
+
+		// Make sure the terms are re-created.
+		$tt_ids = array();
+		$slugs  = array();
+		foreach( self::$model->get_languages_list() as $language ) {
+			if ( 'es' === $language->slug || 'de' === $language->slug ) {
+				$tt_id             = $language->get_tax_prop( 'term_language', 'term_taxonomy_id' );
+				$term_id           = $language->get_tax_prop( 'term_language', 'term_id' );
+				$tt_ids[]          = $tt_id;
+				$slugs[ $term_id ] = "pll_{$language->slug}";
+				$this->assertNotSame( 0, $term_id, "Expected to have new 'term_language' term_ids for the new languages." );
+				$this->assertNotSame( 0, $tt_id, "Expected to have new 'term_language' term_taxonomy_ids for the new languages." );
+			}
+		}
+		$terms = get_terms(
+			array(
+				'taxonomy'         => 'term_language',
+				'hide_empty'       => false,
+				'fields'           => 'id=>slug',
+				'term_taxonomy_id' => $tt_ids,
+			)
+		);
+		$this->assertSameSetsWithIndex( $slugs, $terms );
+	}
 }
 
