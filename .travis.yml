@@ -70,12 +70,6 @@ jobs:
 services:
   - "mysql"
 
-addons:
-  apt:
-    update: true
-    packages:
-    - libonig-dev
-
 cache:
   directories:
     - "${HOME}/.composer/cache"
