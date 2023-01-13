@@ -1,6 +1,6 @@
 # TravisCI configuration for polylang/polylang
 
-if: "branch = master"
+if: "branch = 3.4-dev"
 
 language: "php"
 os:
