@@ -312,20 +312,19 @@ class PLL_Admin_Model extends PLL_Model {
 			$language_term = get_term( (int) $args['lang_id'] );
 
 			if ( $language_term instanceof WP_Term ) {
-				$old_description = maybe_unserialize( $language_term->description );
+				$old_data = maybe_unserialize( $language_term->description );
 			}
 		}
 
-		if ( empty( $old_description ) || ! is_array( $old_description ) ) {
-			$old_description = array();
+		if ( empty( $old_data ) || ! is_array( $old_data ) ) {
+			$old_data = array();
 		}
 
-		$_new_data     = array(
+		$new_data = array(
 			'locale'    => $args['locale'],
 			'rtl'       => ! empty( $args['rtl'] ) ? 1 : 0,
 			'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'],
 		);
-		$language_data = array_merge( $old_description, $_new_data );
 
 		/**
 		 * Allow to add data to store for a language.
@@ -333,15 +332,16 @@ class PLL_Admin_Model extends PLL_Model {
 		 *
 		 * @since 3.4
 		 *
-		 * @param mixed[] $new_data      Data to add.
-		 * @param mixed[] $language_data {
-		 *     Original data being stored.
+		 * @param mixed[] $add_data Data to add.
+		 * @param mixed[] $new_data New data.
+		 * @param mixed[] $old_data {
+		 *     Original data. Contains at least the following:
 		 *
 		 *     @type string $locale    WordPress locale.
 		 *     @type int    $rtl       1 if rtl language, 0 otherwise.
 		 *     @type string $flag_code Country code.
 		 * }
-		 * @param mixed[] $args          {
+		 * @param mixed[] $args     {
 		 *     Arguments used to create the language.
 		 *
 		 *     @type string $name       Language name (used only for display).
@@ -355,12 +355,12 @@ class PLL_Admin_Model extends PLL_Model {
 		 *     @type string $flag       Optional, country code, {@see settings/flags.php}.
 		 * }
 		 */
-		$new_data = apply_filters( 'pll_language_metas', array(), $language_data, $args );
+		$add_data = apply_filters( 'pll_language_metas', array(), $new_data, $old_data, $args );
 		// Don't allow to overwrite `$locale`, `$rtl`, and `$flag_code`.
-		$language_data = array_merge( $language_data, $new_data, $_new_data );
+		$new_data = array_merge( $old_data, $add_data, $new_data );
 
 		/** @var non-empty-string $serialized maybe_serialize() cannot return anything else than a string when feeded by an array. */
-		$serialized = maybe_serialize( $language_data );
+		$serialized = maybe_serialize( $new_data );
 		return $serialized;
 	}
 
