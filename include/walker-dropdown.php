@@ -19,7 +19,7 @@ class PLL_Walker_Dropdown extends Walker {
 	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
 
 	/**
-	 * Outputs one element
+	 * Outputs one element.
 	 *
 	 * @since 1.2
 	 *
