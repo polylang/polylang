@@ -40,7 +40,7 @@ class PLL_Admin_Model extends PLL_Model {
 			'language',
 			array(
 				'slug'        => $args['slug'],
-				'description' => $this->update_language_description( $args ),
+				'description' => $this->build_language_metas( $args ),
 			)
 		);
 		if ( is_wp_error( $r ) ) {
@@ -255,7 +255,7 @@ class PLL_Admin_Model extends PLL_Model {
 			}
 		}
 
-		$description = $this->update_language_description( $args );
+		$description = $this->build_language_metas( $args );
 		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
 
 		/**
@@ -290,7 +290,7 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Update language description where some of language properties are stored.
+	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *
 	 * @since 3.4
 	 *
@@ -307,7 +307,7 @@ class PLL_Admin_Model extends PLL_Model {
 	 * }
 	 * @return string The serialized description array updated.
 	 */
-	protected function update_language_description( array $args ) {
+	protected function build_language_metas( array $args ) {
 		if ( ! empty( $args['lang_id'] ) ) {
 			$language_term = get_term( (int) $args['lang_id'] );
 
