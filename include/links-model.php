@@ -48,7 +48,7 @@ abstract class PLL_Links_Model {
 
 		$this->home = home_url();
 
-		add_filter( 'pll_language_urls', array( $this, 'set_language_urls' ), 10, 2 );
+		add_filter( 'pll_filterable_language_data', array( $this, 'set_language_urls' ), 10, 2 );
 
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
 		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
@@ -168,17 +168,15 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @param array $urls     Array of language home and search URLs.
+	 * @param array $default  Array of language default data values containing home and search URLs.
 	 * @param array $language Language data.
-	 * @return array Language data with URLs.
-	 *
-	 * @phpstan-return array{home_url: non-empty-string, search_url: non-empty-string}
+	 * @return array Language data with URLs addeddefault.
 	 */
-	public function set_language_urls( $urls, $language ) {
-		$urls['search_url']  = $this->home_url( $language['slug'] );
-		$urls['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $urls['search_url'] : $this->front_page_url( $language );
+	public function set_language_urls( $default, $language ) {
+		$default['search_url']  = $this->home_url( $language['slug'] );
+		$default['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $default['search_url'] : $this->front_page_url( $language );
 
-		return $urls;
+		return $default;
 	}
 
 	/**
