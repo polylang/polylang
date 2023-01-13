@@ -352,7 +352,7 @@ class PLL_Language {
 					sprintf(
 						"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_%2\$s() instead.\nError handler",
 						esc_html( get_class( $this ) ),
-						esc_html( $property ),
+						esc_html( $property )
 					),
 					E_USER_DEPRECATED
 				);
