@@ -734,11 +734,15 @@ class PLL_Model {
 				$term_id = 0;
 			}
 
-			if ( ! empty( $term_id ) ) {
-				wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
-			} else {
+			if ( empty( $term_id ) ) {
 				// Attempt to repair the language if a term has been deleted by a database cleaning tool.
 				wp_insert_term( $name, $object->get_tax_language(), array( 'slug' => $slug ) );
+				continue;
+			}
+
+			if ( $language->slug !== $slug || $language->name !== $name ) {
+				// Something has changed.
+				wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
 			}
 		}
 	}
