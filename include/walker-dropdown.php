@@ -23,15 +23,16 @@ class PLL_Walker_Dropdown extends Walker {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string   $output            Passed by reference. Used to append additional content.
-	 * @param object   $element           The data object.
-	 * @param int      $depth             Depth of the item.
-	 * @param array    $args              An array of additional arguments.
-	 * @param int      $current_object_id ID of the current item.
+	 * @param string $output            Passed by reference. Used to append additional content.
+	 * @param object $element           The data object.
+	 * @param int    $depth             Depth of the item.
+	 * @param array  $args              An array of additional arguments.
+	 * @param int    $current_object_id ID of the current item.
 	 * @return void
 	 */
 	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$value_type = $args['value'];
+		$element = $this->convert_to_standard_class( $element );
 		$output .= sprintf(
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
 			'url' === $value_type ? esc_url( $element->$value_type ) : esc_attr( $element->$value_type ),
@@ -46,22 +47,19 @@ class PLL_Walker_Dropdown extends Walker {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object   $element           Data object.
-	 * @param array    $children_elements List of elements to continue traversing.
-	 * @param int      $max_depth         Max depth to traverse.
-	 * @param int      $depth             Depth of current element.
-	 * @param array    $args              An array of arguments.
-	 * @param string   $output            Passed by reference. Used to append additional content.
+	 * @param object $element           Data object.
+	 * @param array  $children_elements List of elements to continue traversing.
+	 * @param int    $max_depth         Max depth to traverse.
+	 * @param int    $depth             Depth of current element.
+	 * @param array  $args              An array of arguments.
+	 * @param string $output            Passed by reference. Used to append additional content.
 	 * @return void
 	 */
 	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-		if ( $element instanceof PLL_Language ) {
-			// Let's create a stdClass from the language object to allow dynamic properties.
-			$element = $element->get_object_vars();
-			$element = (object) $element;
-		}
-		$element = (object) $element; // Make sure we have an object
-		$element->parent = $element->id = 0; // Don't care about this
+		$element = $this->convert_to_standard_class( $element );
+
+		$element->parent = $element->id = 0; // Don't care about this.
+
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
 
@@ -126,5 +124,27 @@ class PLL_Walker_Dropdown extends Walker {
 		);
 
 		return $output;
+	}
+
+	/**
+	 * Converts a given value into a stdClass object. Mostly used to transform
+	 * a `PLL_Language` object and allow dynamic properties.
+	 *
+	 * @since 3.4
+	 *
+	 * @param mixed $element Element to cast into stdClass.
+	 * @return stdClass Converted element.
+	 */
+	private function convert_to_standard_class( $element ) {
+		if ( $element instanceof PLL_Language ) {
+			// PLL_Language doesn't allow dynamic properties.
+			$element = $element->get_object_vars();
+		} elseif ( is_object( $element ) ) {
+			$element = get_object_vars( $element );
+		}
+
+		$element = (object) $element; // Make sure we have a stdCLass object.
+
+		return $element;
 	}
 }
