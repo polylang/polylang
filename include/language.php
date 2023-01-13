@@ -406,7 +406,7 @@ class PLL_Language {
 	 * @return bool
 	 */
 	public function __isset( $property ) {
-		$deprecated_properties = array( 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count' );
+		$deprecated_properties = array( 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count', 'home_url', 'search_url' );
 		return in_array( $property, $deprecated_properties, true );
 	}
 
