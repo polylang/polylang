@@ -358,7 +358,7 @@ class PLL_Language {
 				);
 			}
 
-			return $this->{'get_' . $property};
+			return $this->{"get_{$property}"}();
 		}
 
 		// Undefined property.
