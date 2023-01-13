@@ -65,7 +65,7 @@ class PLL_Language_Factory {
 			);
 		}
 
-		// The description field can contain any property.
+		// The description fields can contain any property.
 		$description = maybe_unserialize( $terms['language']->description );
 
 		if ( is_array( $description ) ) {
