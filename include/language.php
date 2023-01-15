@@ -323,43 +323,23 @@ class PLL_Language {
 			'tl_count'            => array( 'term_language', 'count' ),
 		);
 
-		/** This filter is documented in wordpress/wp-includes/functions.php */
-		$trigger_error = WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true );
-
 		// Deprecated property.
 		if ( array_key_exists( $property, $deprecated_term_properties ) ) {
 			$term_prop_type = $deprecated_term_properties[ $property ][0];
 			$term_prop      = $deprecated_term_properties[ $property ][1];
+			$prop_getter    = "get_tax_prop( '{$term_prop_type}', '{$term_prop}' )";
 
-			if ( $trigger_error ) {
-				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-					sprintf(
-						"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_tax_prop( '%3\$s', '%4\$s' ) instead.\nError handler",
-						esc_html( get_class( $this ) ),
-						esc_html( $property ),
-						esc_html( $term_prop_type ),
-						esc_html( $term_prop )
-					),
-					E_USER_DEPRECATED
-				);
-			}
+			$this->deprecated_property( $property, $prop_getter );
 
 			return $this->term_props[ $term_prop_type ][ $term_prop ];
 		}
 
 		if ( 'search_url' === $property || 'home_url' === $property ) {
-			if ( $trigger_error ) {
-				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-					sprintf(
-						"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_%2\$s() instead.\nError handler",
-						esc_html( get_class( $this ) ),
-						esc_html( $property )
-					),
-					E_USER_DEPRECATED
-				);
-			}
+			$url_getter = "get_{$property}()";
 
-			return $this->{"get_{$property}"}();
+			$this->deprecated_property( $property, $url_getter );
+
+			return $this->{$url_getter}();
 		}
 
 		// Undefined property.
@@ -409,6 +389,30 @@ class PLL_Language {
 	public function __isset( $property ) {
 		$deprecated_properties = array( 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count', 'home_url', 'search_url' );
 		return in_array( $property, $deprecated_properties, true );
+	}
+
+	/**
+	 * Triggers a deprecated an error for a deprecated property.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $property    Deprecated property name.
+	 * @param string $replacement Method or property name to use instead.
+	 * @return void
+	 */
+	private function deprecated_property( $property, $replacement ) {
+		/** This filter is documented in wordpress/wp-includes/functions.php */
+		if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
+			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+				sprintf(
+					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s instead.\nError handler",
+					esc_html( get_class( $this ) ),
+					esc_html( $property ),
+					esc_html( $replacement )
+				),
+				E_USER_DEPRECATED
+			);
+		}
 	}
 
 	/**
