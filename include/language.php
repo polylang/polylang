@@ -32,8 +32,8 @@
  *     is_rtl: int<0, 1>,
  *     mo_id: int,
  *     facebook?: string,
- *     _home_url: non-empty-string,
- *     _search_url: non-empty-string,
+ *     home_url: non-empty-string,
+ *     search_url: non-empty-string,
  *     host: non-empty-string,
  *     flag_url: non-empty-string,
  *     flag: non-empty-string,
@@ -673,10 +673,10 @@ class PLL_Language {
 			/**
 			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
 			*/
-			return site_url( set_url_scheme( $this->_home_url, 'relative' ) );
+			return site_url( set_url_scheme( $this->home_url, 'relative' ) );
 		}
 
-		return $this->_home_url;
+		return $this->home_url;
 	}
 
 	/**
@@ -693,9 +693,9 @@ class PLL_Language {
 			/**
 			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
 			*/
-			return site_url( set_url_scheme( $this->_search_url, 'relative' ) );
+			return site_url( set_url_scheme( $this->search_url, 'relative' ) );
 		}
 
-		return $this->_search_url;
+		return $this->search_url;
 	}
 }
