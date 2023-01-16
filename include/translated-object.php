@@ -253,7 +253,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return array();
 		}
 
-		$translations = $this->get_translations_from_term( $id );
+		$translations = $this->get_raw_translations( $id );
 
 		return $this->validate_translations( $translations, $id, 'display' );
 	}
@@ -268,7 +268,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @phpstan-return array<non-empty-string, positive-int>
 	 */
-	public function get_translations_from_term( $id ) {
+	public function get_raw_translations( $id ) {
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {

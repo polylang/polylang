@@ -84,7 +84,7 @@ class PLL_Static_Pages {
 		if ( 'page' !== get_option( 'show_on_front' ) ) {
 			return;
 		}
-		
+
 		$this->page_on_front = intval( get_option( 'page_on_front' ) );
 		$this->page_for_posts = intval( get_option( '$page_for_posts' ) );
 
@@ -140,8 +140,8 @@ class PLL_Static_Pages {
 		$this->page_on_front  = intval( get_option( 'page_on_front' ) );
 		$this->page_for_posts = intval( get_option( 'page_for_posts' ) );
 
-		$page_on_front_translations  = $this->model->post->get_translations_from_term( $this->page_on_front );
-		$page_for_posts_translations = $this->model->post->get_translations_from_term( $this->page_for_posts );
+		$page_on_front_translations  = $this->model->post->get_raw_translations( $this->page_on_front );
+		$page_for_posts_translations = $this->model->post->get_raw_translations( $this->page_for_posts );
 		if ( isset( $page_on_front_translations[ $language['slug'] ] ) ) {
 			$static_pages['page_on_front'] = $page_on_front_translations[ $language['slug'] ];
 		}
