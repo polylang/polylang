@@ -17,13 +17,14 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @since 1.2
 	 *
 	 * @param array $args {
-	 *   @type string $name           Language name ( used only for display ).
-	 *   @type string $slug           Language code ( ideally 2-letters ISO 639-1 language code ).
-	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
+	 *   @type string $name           Language name (used only for display).
+	 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
+	 *                                not be loaded...
 	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
 	 *   @type int    $term_group     Language order when displayed.
 	 *   @type string $no_default_cat Optional, if set, no default category will be created for this language.
-	 *   @type string $flag           Optional, country code, @see flags.php.
+	 *   @type string $flag           Optional, country code, {@see settings/flags.php}.
 	 * }
 	 * @return WP_Error|true true if success / WP_Error if failed.
 	 */
@@ -34,8 +35,14 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// First the language taxonomy
-		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
-		$r = wp_insert_term( $args['name'], 'language', array( 'slug' => $args['slug'], 'description' => $description ) );
+		$r = wp_insert_term(
+			$args['name'],
+			'language',
+			array(
+				'slug'        => $args['slug'],
+				'description' => $this->build_language_metas( $args ),
+			)
+		);
 		if ( is_wp_error( $r ) ) {
 			// Avoid an ugly fatal error if something went wrong ( reported once in the forum )
 			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language.', 'polylang' ) );
@@ -236,7 +243,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// And finally update the language itself.
 		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
 
-		$description = $this->update_language_description( $args );
+		$description = $this->build_language_metas( $args );
 		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
 
 		/**
@@ -271,38 +278,78 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Update language description where some of language properties are stored.
+	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *
 	 * @since 3.4
 	 *
 	 * @param array $args {
-	 *   @type int    $lang_id        Id of the language to modify.
-	 *   @type string $name           Language name ( used only for display ).
-	 *   @type string $slug           Language code ( ideally 2-letters ISO 639-1 language code ).
-	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
-	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
-	 *   @type int    $term_group     Language order when displayed.
-	 *   @type string $flag           Optional, country code, @see flags.php.
+	 *   @type string $name       Language name (used only for display).
+	 *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will not be
+	 *                            loaded...
+	 *   @type int    $rtl        1 if rtl language, 0 otherwise.
+	 *   @type int    $term_group Language order when displayed.
+	 *   @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is being
+	 *                            created.
+	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
 	 * }
-	 * @return mixed The serialized description array updated.
+	 * @return string The serialized description array updated.
 	 */
-	protected function update_language_description( $args ) {
-		$language_term = get_term( (int) $args['lang_id'] );
+	protected function build_language_metas( array $args ) {
+		if ( ! empty( $args['lang_id'] ) ) {
+			$language_term = get_term( (int) $args['lang_id'] );
 
-		if ( $language_term instanceof WP_Term ) {
-			$old_description = maybe_unserialize( $language_term->description );
+			if ( $language_term instanceof WP_Term ) {
+				$old_data = maybe_unserialize( $language_term->description );
+			}
 		}
 
-		if ( empty( $old_description ) || ! is_array( $old_description ) ) {
-			$old_description = array();
+		if ( empty( $old_data ) || ! is_array( $old_data ) ) {
+			$old_data = array();
 		}
 
-		return maybe_serialize(
-			array_merge(
-				$old_description,
-				array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] )
-			)
+		$new_data = array(
+			'locale'    => $args['locale'],
+			'rtl'       => ! empty( $args['rtl'] ) ? 1 : 0,
+			'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'],
 		);
+
+		/**
+		 * Allow to add data to store for a language.
+		 * `$locale`, `$rtl`, and `$flag_code` cannot be overwriten.
+		 *
+		 * @since 3.4
+		 *
+		 * @param mixed[] $add_data Data to add.
+		 * @param mixed[] $new_data New data.
+		 * @param mixed[] $old_data {
+		 *     Original data. Contains at least the following:
+		 *
+		 *     @type string $locale    WordPress locale.
+		 *     @type int    $rtl       1 if rtl language, 0 otherwise.
+		 *     @type string $flag_code Country code.
+		 * }
+		 * @param mixed[] $args     {
+		 *     Arguments used to create the language.
+		 *
+		 *     @type string $name       Language name (used only for display).
+		 *     @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+		 *     @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+		 *                              not be loaded...
+		 *     @type int    $rtl        1 if rtl language, 0 otherwise.
+		 *     @type int    $term_group Language order when displayed.
+		 *     @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is
+		 *                              being created.
+		 *     @type string $flag       Optional, country code, {@see settings/flags.php}.
+		 * }
+		 */
+		$add_data = apply_filters( 'pll_language_metas', array(), $new_data, $old_data, $args );
+		// Don't allow to overwrite `$locale`, `$rtl`, and `$flag_code`.
+		$new_data = array_merge( $old_data, $add_data, $new_data );
+
+		/** @var non-empty-string $serialized maybe_serialize() cannot return anything else than a string when feeded by an array. */
+		$serialized = maybe_serialize( $new_data );
+		return $serialized;
 	}
 
 	/**
