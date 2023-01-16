@@ -88,7 +88,7 @@ class PLL_Static_Pages {
 		$this->page_on_front = intval( get_option( 'page_on_front' ) );
 		$this->page_for_posts = intval( get_option( '$page_for_posts' ) );
 
-		add_filter( 'pll_static_pages', array( $this, 'set_static_pages' ), 10, 2 );
+		add_filter( 'pll_additional_language_data', array( $this, 'set_static_pages' ), 5, 2 );
 	}
 
 	/**

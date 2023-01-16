@@ -99,8 +99,11 @@ class PLL_Language_Factory {
 		$data       = array_merge( $data, $flag_props );
 
 		$default = array(
-			'home_url'   => '',
-			'search_url' => '',
+			'home_url'       => '',
+			'search_url'     => '',
+			'page_on_front'  => 0,
+			'page_for_posts' => 0,
+
 		);
 
 		/**
@@ -119,7 +122,7 @@ class PLL_Language_Factory {
 		 * @phpstan-param array{home_url: string, search_url: string} $default
 		 * @phpstan-param non-empty-array<string, mixed> $data
 		 */
-		$_default = apply_filters( 'pll_additional_language_data', $default, $data );
+		$_default = apply_filters( 'pll_additional_language_data', array(), $data );
 		$data  = array_merge( $data, array_intersect_key( $_default, $default ) );
 
 		return new PLL_Language( self::sanitize_data( $data ) );
