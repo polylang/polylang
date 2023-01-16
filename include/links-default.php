@@ -21,13 +21,18 @@ class PLL_Links_Default extends PLL_Links_Model {
 	 * Adds the language code in a url.
 	 *
 	 * @since 1.2
+	 * @since 3.4 Accepts now a language slug.
 	 *
-	 * @param string             $url  The url to modify.
-	 * @param PLL_Language|false $lang The language object.
+	 * @param string                    $url      The url to modify.
+	 * @param PLL_Language|string|false $language Language object or slug.
 	 * @return string The modified url.
 	 */
-	public function add_language_to_link( $url, $lang ) {
-		return empty( $lang ) || ( $this->options['hide_default'] && $this->options['default_lang'] == $lang->slug ) ? $url : add_query_arg( 'lang', $lang->slug, $url );
+	public function add_language_to_link( $url, $language ) {
+		if ( $language instanceof PLL_Language ) {
+			$language = $language->slug;
+		}
+
+		return empty( $language ) || ( $this->options['hide_default'] && $this->options['default_lang'] === $language ) ? $url : add_query_arg( 'lang', $language, $url );
 	}
 
 	/**
@@ -89,15 +94,20 @@ class PLL_Links_Default extends PLL_Links_Model {
 	 * Returns the static front page url in the given language.
 	 *
 	 * @since 1.8
+	 * @since 3.4 Accepts now an array of language properties.
 	 *
-	 * @param PLL_Language $lang The language object.
+	 * @param PLL_Language|array $language Language object or array of language properties.
 	 * @return string The static front page url.
 	 */
-	public function front_page_url( $lang ) {
-		if ( $this->options['hide_default'] && $lang->slug == $this->options['default_lang'] ) {
+	public function front_page_url( $language ) {
+		if ( $language instanceof PLL_Language ) {
+			$language = $language->get_object_vars( true );
+		}
+
+		if ( $this->options['hide_default'] && $language['slug'] == $this->options['default_lang'] ) {
 			return trailingslashit( $this->home );
 		}
-		$url = home_url( '/?page_id=' . $lang->page_on_front );
-		return $this->options['force_lang'] ? $this->add_language_to_link( $url, $lang ) : $url;
+		$url = home_url( '/?page_id=' . $language['page_on_front'] );
+		return $this->options['force_lang'] ? $this->add_language_to_link( $url, $language['slug'] ) : $url;
 	}
 }

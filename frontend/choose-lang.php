@@ -234,7 +234,7 @@ abstract class PLL_Choose_Lang {
 		// Test to avoid crash if get_home_url returns something wrong
 		// FIXME why this happens? http://wordpress.org/support/topic/polylang-crashes-1
 		// Don't redirect if $_POST is not empty as it could break other plugins
-		elseif ( is_string( $redirect = $this->curlang->home_url ) && empty( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		elseif ( is_string( $redirect = $this->curlang->get_home_url() ) && empty( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// Don't forget the query string which may be added by plugins
 			$query_string = wp_parse_url( pll_get_requested_url(), PHP_URL_QUERY );
 			if ( ! empty( $query_string ) ) {

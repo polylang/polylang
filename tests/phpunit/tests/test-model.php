@@ -212,7 +212,7 @@ class Model_Test extends PLL_UnitTestCase {
 
 		// Get the term_ids to delete.
 		$term_ids = array();
-		foreach( self::$model->get_languages_list() as $language ) {
+		foreach ( self::$model->get_languages_list() as $language ) {
 			if ( 'es' === $language->slug || 'de' === $language->slug ) {
 				$term_ids[] = $language->get_tax_prop( 'term_language', 'term_id' );
 			}
@@ -228,7 +228,7 @@ class Model_Test extends PLL_UnitTestCase {
 		self::$model->clean_languages_cache();
 
 		// Make sure the terms are deleted.
-		foreach( self::$model->get_languages_list() as $language ) {
+		foreach ( self::$model->get_languages_list() as $language ) {
 			if ( 'es' === $language->slug || 'de' === $language->slug ) {
 				$this->assertSame( 0, $language->get_tax_prop( 'term_language', 'term_id' ), "Expected to have no 'term_language' term_ids for the new languages." );
 				$this->assertSame( 0, $language->get_tax_prop( 'term_language', 'term_taxonomy_id' ), "Expected to have no 'term_language' term_taxonomy_ids for the new languages." );
@@ -241,7 +241,7 @@ class Model_Test extends PLL_UnitTestCase {
 		// Make sure the terms are re-created.
 		$tt_ids = array();
 		$slugs  = array();
-		foreach( self::$model->get_languages_list() as $language ) {
+		foreach ( self::$model->get_languages_list() as $language ) {
 			if ( 'es' === $language->slug || 'de' === $language->slug ) {
 				$tt_id             = $language->get_tax_prop( 'term_language', 'term_taxonomy_id' );
 				$term_id           = $language->get_tax_prop( 'term_language', 'term_id' );

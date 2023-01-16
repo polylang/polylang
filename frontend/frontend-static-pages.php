@@ -119,7 +119,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 
 			// Page on front
 			elseif ( is_front_page() && $language->page_on_front && ( $language->page_on_front == $this->model->post->get( $queried_object_id, $language ) ) ) {
-				$url = $language->home_url;
+				$url = $language->get_home_url();
 			}
 		}
 

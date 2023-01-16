@@ -65,7 +65,7 @@ class PLL_Language_Factory {
 			);
 		}
 
-		// The description field can contain any property.
+		// The description fields can contain any property.
 		$description = maybe_unserialize( $terms['language']->description );
 
 		if ( is_array( $description ) ) {
@@ -97,6 +97,30 @@ class PLL_Language_Factory {
 
 		$flag_props = self::get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
 		$data       = array_merge( $data, $flag_props );
+
+		$default = array(
+			'home_url'   => '',
+			'search_url' => '',
+		);
+
+		/**
+		 * Filters the home URL and the search URL before the language is created.
+		 *
+		 * @since 3.4
+		 *
+		 * @param array  $default {
+		 *     Array of filterable language data.
+		 *
+		 *     @type string $home_url   Language home URL.
+		 *     @type string $search_url Language search URL.
+		 * }
+		 * @param array $data Language data.
+		 *
+		 * @phpstan-param array{home_url: string, search_url: string} $default
+		 * @phpstan-param non-empty-array<string, mixed> $data
+		 */
+		$_default = apply_filters( 'pll_additional_language_data', $default, $data );
+		$data  = array_merge( $data, array_intersect_key( $_default, $default ) );
 
 		return new PLL_Language( self::sanitize_data( $data ) );
 	}

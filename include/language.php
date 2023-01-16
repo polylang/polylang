@@ -123,7 +123,7 @@ class PLL_Language {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	public $home_url;
+	private $home_url;
 
 	/**
 	 * Home URL to use in search forms.
@@ -132,7 +132,7 @@ class PLL_Language {
 	 *
 	 * @phpstan-var non-empty-string
 	 */
-	public $search_url;
+	private $search_url;
 
 	/**
 	 * Host corresponding to this language.
@@ -315,7 +315,7 @@ class PLL_Language {
 	 * @return mixed Required property value.
 	 */
 	public function __get( $property ) {
-		$deprecated_properties = array(
+		$deprecated_term_properties = array(
 			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
 			'count'               => array( 'language', 'count' ),
 			'tl_term_id'          => array( 'term_language', 'term_id' ),
@@ -324,25 +324,22 @@ class PLL_Language {
 		);
 
 		// Deprecated property.
-		if ( array_key_exists( $property, $deprecated_properties ) ) {
-			$term_prop_type = $deprecated_properties[ $property ][0];
-			$term_prop      = $deprecated_properties[ $property ][1];
+		if ( array_key_exists( $property, $deprecated_term_properties ) ) {
+			$term_prop_type = $deprecated_term_properties[ $property ][0];
+			$term_prop      = $deprecated_term_properties[ $property ][1];
+			$prop_getter    = "get_tax_prop( '{$term_prop_type}', '{$term_prop}' )";
 
-			/** This filter is documented in wordpress/wp-includes/functions.php */
-			if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
-				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-					sprintf(
-						"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::get_tax_prop( '%3\$s', '%4\$s' ) instead.\nError handler",
-						esc_html( get_class( $this ) ),
-						esc_html( $property ),
-						esc_html( $term_prop_type ),
-						esc_html( $term_prop )
-					),
-					E_USER_DEPRECATED
-				);
-			}
+			$this->deprecated_property( $property, $prop_getter );
 
 			return $this->term_props[ $term_prop_type ][ $term_prop ];
+		}
+
+		if ( 'search_url' === $property || 'home_url' === $property ) {
+			$url_getter = "get_{$property}()";
+
+			$this->deprecated_property( $property, $url_getter );
+
+			return $this->{$url_getter}();
 		}
 
 		// Undefined property.
@@ -390,8 +387,32 @@ class PLL_Language {
 	 * @return bool
 	 */
 	public function __isset( $property ) {
-		$deprecated_properties = array( 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count' );
+		$deprecated_properties = array( 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count', 'home_url', 'search_url' );
 		return in_array( $property, $deprecated_properties, true );
+	}
+
+	/**
+	 * Triggers a deprecated an error for a deprecated property.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $property    Deprecated property name.
+	 * @param string $replacement Method or property name to use instead.
+	 * @return void
+	 */
+	private function deprecated_property( $property, $replacement ) {
+		/** This filter is documented in wordpress/wp-includes/functions.php */
+		if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
+			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+				sprintf(
+					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s instead.\nError handler",
+					esc_html( get_class( $this ) ),
+					esc_html( $property ),
+					esc_html( $replacement )
+				),
+				E_USER_DEPRECATED
+			);
+		}
 	}
 
 	/**
@@ -587,42 +608,6 @@ class PLL_Language {
 	}
 
 	/**
-	 * Set home_url and search_url properties.
-	 *
-	 * @since 1.3
-	 *
-	 * @param string $search_url Home url to use in search forms.
-	 * @param string $home_url   Home url.
-	 * @return void
-	 *
-	 * @phpstan-param non-empty-string $search_url
-	 * @phpstan-param non-empty-string $home_url
-	 */
-	public function set_home_url( $search_url, $home_url ) {
-		$this->search_url = $search_url;
-		$this->home_url   = $home_url;
-	}
-
-	/**
-	 * Sets the scheme of the home url and the flag urls.
-	 *
-	 * This can't be cached across pages.
-	 *
-	 * @since 2.8
-	 *
-	 * @return void
-	 */
-	public function set_url_scheme() {
-		$props = array( 'home_url', 'search_url', 'flag_url', 'custom_flag_url' );
-
-		foreach ( $props as $prop ) {
-			if ( ! empty( $this->$prop ) ) {
-				$this->$prop = set_url_scheme( $this->$prop );
-			}
-		}
-	}
-
-	/**
 	 * Returns the language locale.
 	 * Converts WP locales to W3C valid locales for display.
 	 *
@@ -639,14 +624,25 @@ class PLL_Language {
 	}
 
 	/**
-	 * Returns the values of this instance's properties.
+	 * Returns the values of this instance's properties, which can be filtered if required.
 	 *
 	 * @since 3.4
 	 *
-	 * @return array
+	 * @param bool $raw Whether or not properties should be raw. Default to `false`.
+	 *
+	 * @return array Array of language object properties.
+	 *
+	 * @phpstan-return LanguageData
 	 */
-	public function get_object_vars() {
-		return get_object_vars( $this );
+	public function get_object_vars( $raw = false ) {
+		$language = get_object_vars( $this );
+
+		if ( ! $raw ) {
+			$language['home_url']   = $this->get_home_url();
+			$language['search_url'] = $this->get_search_url();
+		}
+
+		return $language;
 	}
 
 	/**
@@ -661,5 +657,45 @@ class PLL_Language {
 		$flag = self::get_flag_informations( $flag_code );
 
 		return self::get_flag_html( $flag );
+	}
+
+	/**
+	 * Returns language's home URL. Takes care to render it dynamically if no cache is allowed.
+	 *
+	 * @since 3.4
+	 *
+	 * @return string Language home URL.
+	 *
+	 * @phpstan-return non-empty-string
+	 */
+	public function get_home_url() {
+		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
+			/**
+			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			*/
+			return site_url( set_url_scheme( $this->home_url, 'relative' ) );
+		}
+
+		return $this->home_url;
+	}
+
+	/**
+	 * Returns language's search URL. Takes care to render it dynamically if no cache is allowed.
+	 *
+	 * @since 3.4
+	 *
+	 * @return string Language search URL.
+	 *
+	 * @phpstan-return non-empty-string
+	 */
+	public function get_search_url() {
+		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
+			/**
+			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			*/
+			return site_url( set_url_scheme( $this->search_url, 'relative' ) );
+		}
+
+		return $this->search_url;
 	}
 }

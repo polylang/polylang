@@ -47,18 +47,6 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 	}
 
 	/**
-	 * Sets the home urls.
-	 *
-	 * @since 2.2
-	 *
-	 * @param PLL_Language $language Language object.
-	 */
-	protected function set_home_url( $language ) {
-		$home_url = $this->home_url( $language );
-		$language->set_home_url( $home_url, $home_url ); // Search url and home url are the same.
-	}
-
-	/**
 	 * Modifies an url to use the domain associated to the current language.
 	 *
 	 * @since 1.8
