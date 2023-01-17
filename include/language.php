@@ -401,8 +401,10 @@ class PLL_Language {
 	 * @return void
 	 */
 	private function deprecated_property( $property, $replacement ) {
-		/** This filter is documented in wordpress/wp-includes/functions.php */
-		if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
+		/**
+		 * This filter doesn't exist in WordPress core yet, but let's use a similar system as `deprecated_function_trigger_error`.
+		 */
+		if ( WP_DEBUG && apply_filters( 'deprecated_property_trigger_error', true ) ) {
 			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 				sprintf(
 					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s instead.\nError handler",
