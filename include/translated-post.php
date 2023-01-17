@@ -34,6 +34,15 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	protected $type = 'post';
 
 	/**
+	 * Identifier for each type of content to used for cache type.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $cache_type = 'posts';
+
+	/**
 	 * Taxonomy name for the translation groups.
 	 *
 	 * @var string
