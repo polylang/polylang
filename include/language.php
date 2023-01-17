@@ -669,6 +669,17 @@ class PLL_Language {
 	}
 
 	/**
+	 * Converts current `PLL_language` into a stdClass object. Mostly used to allow dynamic properties.
+	 *
+	 * @since 3.4
+	 *
+	 * @return stdClass Converted `PLL_Language` object.
+	 */
+	public function to_standard_class() {
+		return (object) $this->get_object_vars();
+	}
+
+	/**
 	 * Returns a predefined HTML flag.
 	 *
 	 * @since 3.4

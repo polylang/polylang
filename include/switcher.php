@@ -241,6 +241,11 @@ class PLL_Switcher {
 			return $elements;
 		}
 
+		// Cast each elements to stdClass.
+		foreach ( $elements as $i => $element ) {
+			$elements[ $i ] = (object) $element;
+		}
+
 		if ( $args['dropdown'] ) {
 			$args['name'] = 'lang_choice_' . $args['dropdown'];
 			$args['class'] = 'pll-switcher-select';
