@@ -241,11 +241,6 @@ class PLL_Switcher {
 			return $elements;
 		}
 
-		// Cast each elements to stdClass.
-		foreach ( $elements as $i => $element ) {
-			$elements[ $i ] = (object) $element;
-		}
-
 		if ( $args['dropdown'] ) {
 			$args['name'] = 'lang_choice_' . $args['dropdown'];
 			$args['class'] = 'pll-switcher-select';
@@ -255,6 +250,14 @@ class PLL_Switcher {
 		} else {
 			$walker = new PLL_Walker_List();
 		}
+
+		// Cast each elements to stdClass because $walker::walk() expects an array of objects.
+		$elements = array_map(
+			function( $element ) {
+				return (object) $element;
+			},
+			$elements
+		);
 
 		/**
 		 * Filter the whole html markup returned by the 'pll_the_languages' template tag
