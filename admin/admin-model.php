@@ -321,14 +321,6 @@ class PLL_Admin_Model extends PLL_Model {
 		 * @since 3.4
 		 *
 		 * @param mixed[] $add_data Data to add.
-		 * @param mixed[] $new_data New data.
-		 * @param mixed[] $old_data {
-		 *     Original data. Contains at least the following:
-		 *
-		 *     @type string $locale    WordPress locale.
-		 *     @type int    $rtl       1 if rtl language, 0 otherwise.
-		 *     @type string $flag_code Country code.
-		 * }
 		 * @param mixed[] $args     {
 		 *     Arguments used to create the language.
 		 *
@@ -342,8 +334,16 @@ class PLL_Admin_Model extends PLL_Model {
 		 *                              being created.
 		 *     @type string $flag       Optional, country code, {@see settings/flags.php}.
 		 * }
+		 * @param mixed[] $new_data New data.
+		 * @param mixed[] $old_data {
+		 *     Original data. Contains at least the following:
+		 *
+		 *     @type string $locale    WordPress locale.
+		 *     @type int    $rtl       1 if rtl language, 0 otherwise.
+		 *     @type string $flag_code Country code.
+		 * }
 		 */
-		$add_data = apply_filters( 'pll_language_metas', array(), $new_data, $old_data, $args );
+		$add_data = apply_filters( 'pll_language_metas', array(), $args, $new_data, $old_data );
 		// Don't allow to overwrite `$locale`, `$rtl`, and `$flag_code`.
 		$new_data = array_merge( $old_data, $add_data, $new_data );
 
