@@ -630,16 +630,17 @@ class PLL_Language {
 	 *
 	 * @since 3.4
 	 *
-	 * @param bool $raw Whether or not properties should be raw. Default to `false`.
+	 * @param string $context Whether or not properties should be filtered. Accepts `raw` or `display`.
+	 *                        Default to `display` which filters some properties.
 	 *
 	 * @return array Array of language object properties.
 	 *
 	 * @phpstan-return LanguageData
 	 */
-	public function get_object_vars( $raw = false ) {
+	public function get_object_vars( $context = 'display' ) {
 		$language = get_object_vars( $this );
 
-		if ( ! $raw ) {
+		if ( 'display' === $context ) {
 			$language['home_url']   = $this->get_home_url();
 			$language['search_url'] = $this->get_search_url();
 		}
