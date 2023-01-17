@@ -339,7 +339,7 @@ class PLL_Language {
 
 			$this->deprecated_property( $property, $url_getter );
 
-			return $this->{$url_getter}();
+			return $this->{$url_getter};
 		}
 
 		// Undefined property.
