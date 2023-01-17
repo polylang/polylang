@@ -170,7 +170,9 @@ abstract class PLL_Translatable_Object {
 
 		$term_taxonomy_ids = wp_set_object_terms( $id, $lang, $this->tax_language );
 
-		wp_cache_set( 'last_changed', microtime(), "{$this->type}s" );
+		if ( $this instanceof PLL_Translated_Object ) {
+			wp_cache_set( 'last_changed', microtime(), $this->cache_type );
+		}
 
 		return is_array( $term_taxonomy_ids );
 	}
@@ -371,15 +373,18 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
+		if ( ! $this instanceof PLL_Translated_Object ) {
+			return array();
+		}
+
 		$key          = md5( $sql );
-		$cache_type   = "{$this->type}s";
-		$last_changed = wp_cache_get_last_changed( $cache_type );
-		$cache_key    = "{$cache_type}_no_lang:{$key}:{$last_changed}";
-		$object_ids   = wp_cache_get( $cache_key, $cache_type );
+		$last_changed = wp_cache_get_last_changed( $this->cache_type );
+		$cache_key    = "{$this->cache_type}_no_lang:{$key}:{$last_changed}";
+		$object_ids   = wp_cache_get( $cache_key, $this->cache_type );
 
 		if ( ! is_array( $object_ids ) ) {
 			$object_ids = $GLOBALS['wpdb']->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			wp_cache_set( $cache_key, $object_ids, $cache_type );
+			wp_cache_set( $cache_key, $object_ids, $this->cache_type );
 		}
 
 		return array_values( $this->sanitize_int_ids_list( $object_ids ) );
