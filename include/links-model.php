@@ -170,9 +170,10 @@ abstract class PLL_Links_Model {
 	 *
 	 * @param array $default  Array of language default data values containing home and search URLs.
 	 * @param array $language Language data.
-	 * @return array Language data with URLs addeddefault.
+	 * @return array Language data with URLs added default.
 	 */
 	public function set_language_home_urls( $default, $language ) {
+		$language['page_on_front'] = ! empty( $default['page_on_front'] ) ? $default['page_on_front'] : 0;
 		$default['search_url']  = $this->home_url( $language['slug'] );
 		$default['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $default['search_url'] : $this->front_page_url( $language );
 
