@@ -55,7 +55,6 @@ abstract class PLL_Translatable_Object {
 	 */
 	protected $cache_type;
 
-
 	/**
 	 * Object type to use when registering the taxonomy.
 	 * Left empty for posts.
@@ -138,6 +137,21 @@ abstract class PLL_Translatable_Object {
 	 */
 	public function get_type() {
 		return $this->type;
+	}
+
+	/**
+	 * Returns the cache key.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $key          The md5 hash of the SQL request.
+	 * @param string $last_changed The last changed date for the specified cache group.
+	 * @return string
+	 *
+	 * @phpstan-return non-empty-string
+	 */
+	public function get_cache_key( $key, $last_changed ) {
+		return "{$this->cache_type}_no_lang:{$key}:{$last_changed}";
 	}
 
 	/**
@@ -383,7 +397,7 @@ abstract class PLL_Translatable_Object {
 
 		$key          = md5( $sql );
 		$last_changed = wp_cache_get_last_changed( $this->cache_type );
-		$cache_key    = "{$this->cache_type}_no_lang:{$key}:{$last_changed}";
+		$cache_key    = $this->get_cache_key( $key, $last_changed );
 		$object_ids   = wp_cache_get( $cache_key, $this->cache_type );
 
 		if ( ! is_array( $object_ids ) ) {
