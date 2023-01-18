@@ -75,6 +75,9 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 0 ); // High priority in case an ajax request is sent by an immediately invoked function
 
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
+
+		// Early instantiated to be able to correctly initialize language properties.
+		$this->static_pages = new PLL_Admin_Static_Pages( $this );
 	}
 
 	/**
@@ -96,7 +99,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		$this->links = new PLL_Admin_Links( $this ); // FIXME needed here ?
-		$this->static_pages = new PLL_Admin_Static_Pages( $this ); // FIXME needed here ?
 		$this->filters_links = new PLL_Filters_Links( $this ); // FIXME needed here ?
 
 		// Filter admin language for users
