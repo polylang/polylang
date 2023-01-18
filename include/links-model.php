@@ -174,7 +174,7 @@ abstract class PLL_Links_Model {
 	 * @return array Language data with URLs added default.
 	 */
 	public function set_language_home_urls( $default, $language ) {
-		$language['page_on_front'] = ! empty( $default['page_on_front'] ) ? $default['page_on_front'] : 0;
+		$language = array_merge( $language, $default );
 		$default['search_url']  = $this->home_url( $language['slug'] );
 		$default['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $default['search_url'] : $this->front_page_url( $language );
 
