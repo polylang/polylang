@@ -168,7 +168,8 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @param array $default  Array of language default data values containing home and search URLs.
+	 * @param array $default  Array of language default data values containing home and search URLs,
+	 *                        `page_on_front` and `page_for_posts` options.
 	 * @param array $language Language data.
 	 * @return array Language data with URLs added default.
 	 */
