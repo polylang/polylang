@@ -13,15 +13,6 @@ defined( 'ABSPATH' ) || exit;
 abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 	/**
-	 * Identifier for each type of content to used for cache type.
-	 *
-	 * @var string
-	 *
-	 * @phpstan-var non-empty-string
-	 */
-	protected $cache_type;
-
-	/**
 	 * Taxonomy name for the translation groups.
 	 *
 	 * @var string

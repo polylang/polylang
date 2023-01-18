@@ -47,6 +47,16 @@ abstract class PLL_Translatable_Object {
 	protected $type;
 
 	/**
+	 * Identifier for each type of content to used for cache type.
+	 *
+	 * @var string
+	 *
+	 * @phpstan-var non-empty-string
+	 */
+	protected $cache_type;
+
+
+	/**
 	 * Object type to use when registering the taxonomy.
 	 * Left empty for posts.
 	 *
@@ -170,9 +180,7 @@ abstract class PLL_Translatable_Object {
 
 		$term_taxonomy_ids = wp_set_object_terms( $id, $lang, $this->tax_language );
 
-		if ( $this instanceof PLL_Translated_Object ) {
-			wp_cache_set( 'last_changed', microtime(), $this->cache_type );
-		}
+		wp_cache_set( 'last_changed', microtime(), $this->cache_type );
 
 		return is_array( $term_taxonomy_ids );
 	}
@@ -370,10 +378,6 @@ abstract class PLL_Translatable_Object {
 		$sql = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $args );
 
 		if ( empty( $sql ) ) {
-			return array();
-		}
-
-		if ( ! $this instanceof PLL_Translated_Object ) {
 			return array();
 		}
 
