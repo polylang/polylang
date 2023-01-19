@@ -48,6 +48,7 @@ abstract class PLL_Links_Model {
 
 		$this->home = home_url();
 
+		// Hooked with normal priority because it needs to be run after static pages is set in language data.
 		add_filter( 'pll_additional_language_data', array( $this, 'set_language_home_urls' ), 10, 2 );
 
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
@@ -168,17 +169,16 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @param array $default  Array of language default data values containing home and search URLs,
-	 *                        `page_on_front` and `page_for_posts` options.
-	 * @param array $language Language data.
-	 * @return array Language data with URLs added default.
+	 * @param array $additional_data Array of language additional data.
+	 * @param array $language        Language data.
+	 * @return array Language data with additional home and search URLs added.
 	 */
-	public function set_language_home_urls( $default, $language ) {
-		$language = array_merge( $language, $default );
-		$default['search_url']  = $this->home_url( $language['slug'] );
-		$default['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $default['search_url'] : $this->front_page_url( $language );
+	public function set_language_home_urls( $additional_data, $language ) {
+		$language = array_merge( $language, $additional_data );
+		$additional_data['search_url']  = $this->home_url( $language['slug'] );
+		$additional_data['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $additional_data['search_url'] : $this->front_page_url( $language );
 
-		return $default;
+		return $additional_data;
 	}
 
 	/**
