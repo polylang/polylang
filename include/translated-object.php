@@ -259,7 +259,8 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	}
 
 	/**
-	 * Returns an array of translations of an object.
+	 * Returns an unvalidated array of translations of an object.
+	 * It is generally preferable to use `get_translations()`.
 	 *
 	 * @since 3.4
 	 *
