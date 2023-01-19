@@ -151,14 +151,14 @@ class PLL_Language {
 	public $mo_id;
 
 	/**
-	 * ID of the page on front in this language (set from pll_static_pages filter).
+	 * ID of the page on front in this language (set from pll_additional_language_data filter).
 	 *
 	 * @var int
 	 */
 	public $page_on_front = 0;
 
 	/**
-	 * ID of the page for posts in this language (set from pll_static_pages filter).
+	 * ID of the page for posts in this language (set from pll_additional_language_data filter).
 	 *
 	 * @var int
 	 */
