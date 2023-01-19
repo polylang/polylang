@@ -98,7 +98,23 @@ class PLL_Language_Factory {
 		$flag_props = self::get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
 		$data       = array_merge( $data, $flag_props );
 
-		$default = array(
+		$additional_data = array();
+		/**
+		 * Filters additional data to add to the langage before it will be created.
+		 *
+		 * `home_url`, `search_url`, `page_on_front` and `page_for_posts` are only allowed.
+		 *
+		 * @since 3.4
+		 *
+		 * @param array $additional_data.
+		 * @param array $data Language data.
+		 *
+		 * @phpstan-param array $additional_data
+		 * @phpstan-param non-empty-array<string, mixed> $data
+		 */
+		$additional_data = apply_filters( 'pll_additional_language_data', $additional_data, $data );
+
+		$allowed_additional_data = array(
 			'home_url'       => '',
 			'search_url'     => '',
 			'page_on_front'  => 0,
@@ -106,24 +122,7 @@ class PLL_Language_Factory {
 
 		);
 
-		/**
-		 * Filters the home URL and the search URL before the language is created.
-		 *
-		 * @since 3.4
-		 *
-		 * @param array  $default {
-		 *     Array of filterable language data.
-		 *
-		 *     @type string $home_url   Language home URL.
-		 *     @type string $search_url Language search URL.
-		 * }
-		 * @param array $data Language data.
-		 *
-		 * @phpstan-param array{home_url: string, search_url: string} $default
-		 * @phpstan-param non-empty-array<string, mixed> $data
-		 */
-		$_default = apply_filters( 'pll_additional_language_data', array(), $data );
-		$data  = array_merge( $data, array_intersect_key( $_default, $default ) );
+		$data = array_merge( $data, array_intersect_key( $additional_data, $allowed_additional_data ) );
 
 		return new PLL_Language( self::sanitize_data( $data ) );
 	}
