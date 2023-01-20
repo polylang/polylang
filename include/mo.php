@@ -34,6 +34,20 @@ class PLL_MO extends MO {
 	 * @return void
 	 */
 	public function export_to_db( $lang ) {
+		$this->export_to_db_from_id( $lang->term_id, $lang->mo_id );
+	}
+
+
+	/**
+	 * Writes a PLL_MO object into a custom post meta.
+	 *
+	 * @since 3.4
+	 *
+	 * @param int $term_id  The language term id.
+	 * @param int $mo_id The language mo id.
+	 * @return void
+	 */
+	public function export_to_db_from_id( $term_id, $mo_id = 0 ) {
 		/*
 		 * It would be convenient to store the whole object but it would take a huge space in DB.
 		 * So let's keep only the strings in an array.
@@ -45,17 +59,15 @@ class PLL_MO extends MO {
 			$strings[] = wp_slash( array( $entry->singular, $this->translate( $entry->singular ) ) );
 		}
 
-		if ( empty( $lang->mo_id ) ) {
+		if ( empty( $mo_id ) ) {
 			$post = array(
-				'post_title'  => 'polylang_mo_' . $lang->term_id,
+				'post_title'  => 'polylang_mo_' . $term_id,
 				'post_status' => 'private', // To avoid a conflict with WP Super Cache. See https://wordpress.org/support/topic/polylang_mo-and-404s-take-2
 				'post_type'   => 'polylang_mo',
 			);
 			$mo_id = wp_insert_post( $post );
-			update_post_meta( $mo_id, '_pll_strings_translations', $strings );
-		} else {
-			update_post_meta( $lang->mo_id, '_pll_strings_translations', $strings );
 		}
+		update_post_meta( $mo_id, '_pll_strings_translations', $strings );
 	}
 
 	/**
