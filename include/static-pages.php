@@ -88,6 +88,7 @@ class PLL_Static_Pages {
 		$this->page_on_front = intval( get_option( 'page_on_front' ) );
 		$this->page_for_posts = intval( get_option( 'page_for_posts' ) );
 
+		// Hooked with lower priority than the one hooked in PLL_Links_Model to make `page_on_front` property set before.
 		add_filter( 'pll_additional_language_data', array( $this, 'set_static_pages' ), 5, 2 );
 	}
 
@@ -123,50 +124,37 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Adds page_on_front and page_for_posts properties to language data before the object is created.
+	 * Adds `page_on_front` and `page_for_posts` properties to language data before the object is created.
 	 *
 	 * @since 3.4
 	 *
-	 * @param array $static_pages Array of language page_on_front and page_for_posts properties.
-	 * @param array $language Language data.
-	 * @return array {
-	 *     Static pages properties if exist.
-	 *
-	 *     @type int $page_on_front  ID of the page on front in this language
-	 *     @type int $page_for_posts Id of the page for posts in this language
-	 * }
+	 * @param array $additional_data Array of language additional data.
+	 * @param array $language        Language data.
+	 * @return array Language data with additional `page_on_front` and `page_for_posts` options added.
 	 */
-	public function set_static_pages( $static_pages, $language ) {
-		$static_pages = $this->set_static_page( 'page_on_front', $static_pages, $language );
-		$static_pages = $this->set_static_page( 'page_for_posts', $static_pages, $language );
+	public function set_static_pages( $additional_data, $language ) {
+		$additional_data['page_on_front']  = $this->get_static_page_translation( 'page_on_front', $language );
+		$additional_data['page_for_posts'] = $this->get_static_page_translation( 'page_for_posts', $language );
 
-		return $static_pages;
+		return $additional_data;
 	}
 
 	/**
-	 * Adds one of the page_on_front or page_for_posts properties to language data before the object is created.
+	 * Returns id of the static page translation.
 	 *
 	 * @since 3.4
 	 *
-	 * @param string $static_page  Static page option name; page_on_front or page_for_posts.
-	 * @param array  $static_pages Array of language page_on_front and page_for_posts properties.
-	 * @param array  $language Language data.
-	 * @return array {
-	 *     Static pages properties if exist.
-	 *
-	 *     @type int $page_on_front  ID of the page on front in this language
-	 *     @type int $page_for_posts Id of the page for posts in this language
-	 * }
+	 * @param string $static_page  Static page option name; `page_on_front` or `page_for_posts`.
+	 * @param array  $language     Language data.
+	 * @return int Id of the static page translation.
 	 */
-	public function set_static_page( $static_page, $static_pages, $language ) {
-		$this->$static_page = intval( get_option( $static_page ) );
-
-		$static_page_translations = $this->model->post->get_raw_translations( $this->$static_page );
-		if ( isset( $static_page_translations[ $language['slug'] ] ) ) {
-			$static_pages[ $static_page ] = $static_page_translations[ $language['slug'] ];
+	public function get_static_page_translation( $static_page, $language ) {
+		$translations = $this->model->post->get_raw_translations( $this->$static_page );
+		if ( ! isset( $translations[ $language['slug'] ] ) ) {
+			return 0;
 		}
 
-		return $static_pages;
+		return $translations[ $language['slug'] ];
 	}
 
 	/**
