@@ -339,7 +339,7 @@ class PLL_Language {
 
 			$this->deprecated_property( $property, $url_getter );
 
-			return $this->{$url_getter}();
+			return $this->{$url_getter};
 		}
 
 		// Undefined property.
@@ -401,8 +401,17 @@ class PLL_Language {
 	 * @return void
 	 */
 	private function deprecated_property( $property, $replacement ) {
-		/** This filter is documented in wordpress/wp-includes/functions.php */
-		if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
+		/**
+		 * Filters whether to trigger an error for deprecated properties.
+		 *
+		 * The filter name is intentionnaly not prefixed to use the same as WordPress
+		 * in case it is added in the future. 
+		 *
+		 * @since 3.4
+		 *
+		 * @param bool $trigger Whether to trigger the error for deprecated properties. Default true.
+		 */
+		if ( WP_DEBUG && apply_filters( 'deprecated_property_trigger_error', true ) ) {
 			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 				sprintf(
 					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s instead.\nError handler",
@@ -628,16 +637,17 @@ class PLL_Language {
 	 *
 	 * @since 3.4
 	 *
-	 * @param bool $raw Whether or not properties should be raw. Default to `false`.
+	 * @param string $context Whether or not properties should be filtered. Accepts `db` or `display`.
+	 *                        Default to `display` which filters some properties.
 	 *
 	 * @return array Array of language object properties.
 	 *
 	 * @phpstan-return LanguageData
 	 */
-	public function get_object_vars( $raw = false ) {
+	public function get_object_vars( $context = 'display' ) {
 		$language = get_object_vars( $this );
 
-		if ( ! $raw ) {
+		if ( 'db' !== $context ) {
 			$language['home_url']   = $this->get_home_url();
 			$language['search_url'] = $this->get_search_url();
 		}

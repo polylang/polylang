@@ -822,7 +822,7 @@ class PLL_Model {
 		 */
 		$languages_data = array_map(
 			function ( $language ) {
-				return $language->get_object_vars( true );
+				return $language->get_object_vars( 'db' );
 			},
 			$languages
 		);
