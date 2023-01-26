@@ -133,8 +133,8 @@ class PLL_Static_Pages {
 	 * @return array Language data with additional `page_on_front` and `page_for_posts` options added.
 	 */
 	public function set_static_pages( $additional_data, $language ) {
-		$additional_data['page_on_front']  = $this->get_static_page_translation( 'page_on_front', $language );
-		$additional_data['page_for_posts'] = $this->get_static_page_translation( 'page_for_posts', $language );
+		$additional_data['page_on_front']  = $this->get_translation( 'page_on_front', $language );
+		$additional_data['page_for_posts'] = $this->get_translation( 'page_for_posts', $language );
 
 		return $additional_data;
 	}
@@ -148,7 +148,7 @@ class PLL_Static_Pages {
 	 * @param array  $language     Language data.
 	 * @return int Id of the static page translation.
 	 */
-	public function get_static_page_translation( $static_page, $language ) {
+	public function get_translation( $static_page, $language ) {
 		$translations = $this->model->post->get_raw_translations( $this->$static_page );
 		if ( ! isset( $translations[ $language['slug'] ] ) ) {
 			return 0;

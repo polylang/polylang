@@ -119,7 +119,6 @@ class PLL_Language_Factory {
 			'search_url'     => '',
 			'page_on_front'  => 0,
 			'page_for_posts' => 0,
-
 		);
 
 		$data = array_merge( $data, array_intersect_key( $additional_data, $allowed_additional_data ) );
