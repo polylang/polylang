@@ -100,7 +100,7 @@ class PLL_Language_Factory {
 
 		$additional_data = array();
 		/**
-		 * Filters additional data to add to the langage before it will be created.
+		 * Filters additional data to add to the language before it is created.
 		 *
 		 * `home_url`, `search_url`, `page_on_front` and `page_for_posts` are only allowed.
 		 *
@@ -109,8 +109,8 @@ class PLL_Language_Factory {
 		 * @param array $additional_data.
 		 * @param array $data Language data.
 		 *
-		 * @phpstan-param array $additional_data
-		 * @phpstan-param non-empty-array<string, mixed> $data
+		 * @phpstan-param array<non-empty-string, mixed> $additional_data
+		 * @phpstan-param non-empty-array<non-empty-string, mixed> $data
 		 */
 		$additional_data = apply_filters( 'pll_additional_language_data', $additional_data, $data );
 

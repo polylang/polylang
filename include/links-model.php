@@ -171,7 +171,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @param array $additional_data Array of language additional data.
 	 * @param array $language        Language data.
-	 * @return array Language data with additional home and search URLs added.
+	 * @return array Language data with home and search URLs added.
 	 */
 	public function set_language_home_urls( $additional_data, $language ) {
 		$language = array_merge( $language, $additional_data );
