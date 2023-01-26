@@ -630,7 +630,7 @@ class PLL_Language {
 	 *
 	 * @since 3.4
 	 *
-	 * @param string $context Whether or not properties should be filtered. Accepts `raw` or `display`.
+	 * @param string $context Whether or not properties should be filtered. Accepts `db` or `display`.
 	 *                        Default to `display` which filters some properties.
 	 *
 	 * @return array Array of language object properties.
@@ -640,7 +640,7 @@ class PLL_Language {
 	public function get_object_vars( $context = 'display' ) {
 		$language = get_object_vars( $this );
 
-		if ( 'display' === $context ) {
+		if ( 'db' !== $context ) {
 			$language['home_url']   = $this->get_home_url();
 			$language['search_url'] = $this->get_search_url();
 		}
