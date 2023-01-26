@@ -402,7 +402,14 @@ class PLL_Language {
 	 */
 	private function deprecated_property( $property, $replacement ) {
 		/**
-		 * This filter doesn't exist in WordPress core yet, but let's use a similar system as `deprecated_function_trigger_error`.
+		 * Filters whether to trigger an error for deprecated properties.
+		 *
+		 * The filter name is intentionnaly not prefixed to use the same as WordPress
+		 * in case it is added in the future. 
+		 *
+		 * @since 3.4
+		 *
+		 * @param bool $trigger Whether to trigger the error for deprecated properties. Default true.
 		 */
 		if ( WP_DEBUG && apply_filters( 'deprecated_property_trigger_error', true ) ) {
 			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
