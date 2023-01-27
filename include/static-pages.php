@@ -58,11 +58,6 @@ class PLL_Static_Pages {
 
 		add_filter( 'pll_additional_language_data', array( $this, 'set_static_pages' ), 5, 2 ); // Before PLL_Links_Model.
 
-		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
-
-		// Modifies the page link in case the front page is not in the default language.
-		add_filter( 'page_link', array( $this, 'page_link' ), 20, 2 );
-
 		// Clean the languages cache when editing page of front, page for posts.
 		add_action( 'update_option_show_on_front', array( $this, 'clean_cache' ) );
 		add_action( 'update_option_page_on_front', array( $this, 'clean_cache' ) );
@@ -70,6 +65,12 @@ class PLL_Static_Pages {
 
 		// Refresh rewrite rules when the page on front is modified.
 		add_action( 'update_option_page_on_front', 'flush_rewrite_rules' );
+
+		// Add option filters when the current language is defined
+		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
+
+		// Modifies the page link in case the front page is not in the default language.
+		add_filter( 'page_link', array( $this, 'page_link' ), 20, 2 );
 
 		// OEmbed.
 		add_filter( 'oembed_request_post_id', array( $this, 'oembed_request_post_id' ), 10, 2 );
@@ -93,46 +94,21 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Init the hooks that filter the "page on front" and "page for posts" options.
-	 *
-	 * @since 3.3
-	 *
-	 * @return void
-	 */
-	public function pll_language_defined() {
-		// Translates page for posts and page on front.
-		add_filter( 'option_page_on_front', array( $this, 'translate_page_on_front' ) );
-		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
-	}
-
-	/**
-	 * Modifies the page link in case the front page is not in the default language.
-	 *
-	 * @since 0.7.2
-	 *
-	 * @param string $link The link to the page.
-	 * @param int    $id   The post ID of the page.
-	 * @return string Modified link.
-	 */
-	public function page_link( $link, $id ) {
-		$lang = $this->model->post->get_language( $id );
-
-		if ( $lang && $id == $lang->page_on_front ) {
-			return $lang->get_home_url();
-		}
-		return $link;
-	}
-
-	/**
-	 * Cleans the language cache and resets the internal properties when options are updated.
+	 * Returns the ID of the static page translation.
 	 *
 	 * @since 3.4
 	 *
-	 * @return void
+	 * @param string $static_page Static page option name; `page_on_front` or `page_for_posts`.
+	 * @param array  $language    Language data.
+	 * @return int
 	 */
-	public function clean_cache() {
-		$this->model->clean_languages_cache();
-		$this->init();
+	protected function get_translation( $static_page, $language ) {
+		$translations = $this->model->post->get_raw_translations( $this->$static_page );
+		if ( ! isset( $translations[ $language['slug'] ] ) ) {
+			return 0;
+		}
+
+		return $translations[ $language['slug'] ];
 	}
 
 	/**
@@ -152,21 +128,28 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Returns the ID of the static page translation.
+	 * Cleans the language cache and resets the internal properties when options are updated.
 	 *
 	 * @since 3.4
 	 *
-	 * @param string $static_page Static page option name; `page_on_front` or `page_for_posts`.
-	 * @param array  $language    Language data.
-	 * @return int
+	 * @return void
 	 */
-	protected function get_translation( $static_page, $language ) {
-		$translations = $this->model->post->get_raw_translations( $this->$static_page );
-		if ( ! isset( $translations[ $language['slug'] ] ) ) {
-			return 0;
-		}
+	public function clean_cache() {
+		$this->model->clean_languages_cache();
+		$this->init();
+	}
 
-		return $translations[ $language['slug'] ];
+	/**
+	 * Init the hooks that filter the "page on front" and "page for posts" options.
+	 *
+	 * @since 3.3
+	 *
+	 * @return void
+	 */
+	public function pll_language_defined() {
+		// Translates page for posts and page on front.
+		add_filter( 'option_page_on_front', array( $this, 'translate_page_on_front' ) );
+		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
 	}
 
 	/**
@@ -194,6 +177,24 @@ class PLL_Static_Pages {
 	public function translate_page_for_posts( $page_id ) {
 		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
 		return ! empty( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $page_id;
+	}
+
+	/**
+	 * Modifies the page link in case the front page is not in the default language.
+	 *
+	 * @since 0.7.2
+	 *
+	 * @param string $link The link to the page.
+	 * @param int    $id   The post ID of the page.
+	 * @return string Modified link.
+	 */
+	public function page_link( $link, $id ) {
+		$lang = $this->model->post->get_language( $id );
+
+		if ( $lang && $id == $lang->page_on_front ) {
+			return $lang->get_home_url();
+		}
+		return $link;
 	}
 
 	/**
