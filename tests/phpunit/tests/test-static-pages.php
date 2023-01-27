@@ -84,13 +84,12 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	}
 
 	private function init_test( $env = 'frontend' ) {
+		$pll_admin = new PLL_Admin( $this->links_model );
+		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
+
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', self::$home_fr );
 		update_option( 'page_for_posts', self::$posts_fr );
-
-		self::$model->clean_languages_cache();
-		$pll_admin = new PLL_Admin( $this->links_model );
-		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
 
 		if ( 'frontend' === $env ) {
 			// Go to frontend.

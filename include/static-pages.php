@@ -4,7 +4,7 @@
  */
 
 /**
- * Base class to manage the static front page and the page for posts
+ * Base class to manage the static front page and the page for posts.
  *
  * @since 1.8
  */
@@ -43,7 +43,7 @@ class PLL_Static_Pages {
 	protected $curlang;
 
 	/**
-	 * Constructor: setups filters and actions
+	 * Constructor: setups filters and actions.
 	 *
 	 * @since 1.8
 	 *
@@ -56,40 +56,40 @@ class PLL_Static_Pages {
 
 		$this->init();
 
+		add_filter( 'pll_additional_language_data', array( $this, 'set_static_pages' ), 5, 2 ); // Before PLL_Links_Model.
+
 		add_action( 'pll_language_defined', array( $this, 'pll_language_defined' ) );
 
-		// Modifies the page link in case the front page is not in the default language
+		// Modifies the page link in case the front page is not in the default language.
 		add_filter( 'page_link', array( $this, 'page_link' ), 20, 2 );
 
-		// Clean the languages cache when editing page of front, page for posts
-		add_action( 'update_option_show_on_front', array( $this->model, 'clean_languages_cache' ) );
-		add_action( 'update_option_page_on_front', array( $this->model, 'clean_languages_cache' ) );
-		add_action( 'update_option_page_for_posts', array( $this->model, 'clean_languages_cache' ) );
+		// Clean the languages cache when editing page of front, page for posts.
+		add_action( 'update_option_show_on_front', array( $this, 'clean_cache' ) );
+		add_action( 'update_option_page_on_front', array( $this, 'clean_cache' ) );
+		add_action( 'update_option_page_for_posts', array( $this, 'clean_cache' ) );
 
-		// Refresh rewrite rules when the page on front is modified
+		// Refresh rewrite rules when the page on front is modified.
 		add_action( 'update_option_page_on_front', 'flush_rewrite_rules' );
 
-		// OEmbed
+		// OEmbed.
 		add_filter( 'oembed_request_post_id', array( $this, 'oembed_request_post_id' ), 10, 2 );
 	}
 
 	/**
-	 * Stores the page on front and page for posts ids
+	 * Stores the page on front and page for posts ids.
 	 *
 	 * @since 1.8
 	 *
 	 * @return void
 	 */
-	public function init() {
-		if ( 'page' !== get_option( 'show_on_front' ) ) {
-			return;
+	protected function init() {
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->page_on_front  = intval( get_option( 'page_on_front' ) );
+			$this->page_for_posts = intval( get_option( 'page_for_posts' ) );
+		} else {
+			$this->page_on_front  = 0;
+			$this->page_for_posts = 0;
 		}
-
-		$this->page_on_front = intval( get_option( 'page_on_front' ) );
-		$this->page_for_posts = intval( get_option( 'page_for_posts' ) );
-
-		// Hooked with lower priority than the one hooked in PLL_Links_Model to make `page_on_front` property set before.
-		add_filter( 'pll_additional_language_data', array( $this, 'set_static_pages' ), 5, 2 );
 	}
 
 	/**
@@ -106,13 +106,13 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Modifies the page link in case the front page is not in the default language
+	 * Modifies the page link in case the front page is not in the default language.
 	 *
 	 * @since 0.7.2
 	 *
-	 * @param string $link link to the page
-	 * @param int    $id   post id of the page
-	 * @return string modified link
+	 * @param string $link The link to the page.
+	 * @param int    $id   The post ID of the page.
+	 * @return string Modified link.
 	 */
 	public function page_link( $link, $id ) {
 		$lang = $this->model->post->get_language( $id );
@@ -121,6 +121,18 @@ class PLL_Static_Pages {
 			return $lang->get_home_url();
 		}
 		return $link;
+	}
+
+	/**
+	 * Cleans the language cache and resets the internal properties when options are updated.
+	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	public function clean_cache() {
+		$this->model->clean_languages_cache();
+		$this->init();
 	}
 
 	/**
@@ -140,15 +152,15 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Returns id of the static page translation.
+	 * Returns the ID of the static page translation.
 	 *
 	 * @since 3.4
 	 *
-	 * @param string $static_page  Static page option name; `page_on_front` or `page_for_posts`.
-	 * @param array  $language     Language data.
-	 * @return int Id of the static page translation.
+	 * @param string $static_page Static page option name; `page_on_front` or `page_for_posts`.
+	 * @param array  $language    Language data.
+	 * @return int
 	 */
-	public function get_translation( $static_page, $language ) {
+	protected function get_translation( $static_page, $language ) {
 		$translations = $this->model->post->get_raw_translations( $this->$static_page );
 		if ( ! isset( $translations[ $language['slug'] ] ) ) {
 			return 0;
@@ -186,7 +198,7 @@ class PLL_Static_Pages {
 
 	/**
 	 * Fixes the oembed for the translated static front page
-	 * when the language page is redirected to the front page
+	 * when the language page is redirected to the front page.
 	 *
 	 * @since 2.6
 	 *
