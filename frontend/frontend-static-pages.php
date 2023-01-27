@@ -114,7 +114,10 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		if ( ! empty( $queried_object_id ) ) {
 			// Page for posts
 			if ( $GLOBALS['wp_query']->is_posts_page && ( $id = $this->model->post->get( $queried_object_id, $language ) ) ) {
-				$url = get_permalink( $id );
+				$_url = get_permalink( $id );
+				if ( ! empty( $_url ) ) {
+					$url = $_url;
+				}
 			}
 
 			// Page on front

@@ -73,9 +73,10 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		// Do not filter sticky posts on REST requests as $this->curlang is *not* the 'lang' parameter set in the request
 		if ( ! defined( 'REST_REQUEST' ) && ! empty( $this->curlang ) && ! empty( $posts ) ) {
-			$_posts = wp_cache_get( 'sticky_posts', 'options' ); // This option is usually cached in 'all_options' by WP
+			$_posts = wp_cache_get( 'sticky_posts', 'options' ); // This option is usually cached in 'all_options' by WP.
+			$tt_id  = $this->curlang->get_tax_prop( 'language', 'term_taxonomy_id' );
 
-			if ( empty( $_posts ) || ! is_array( $_posts[ $this->curlang->get_tax_prop( 'language', 'term_taxonomy_id' ) ] ) ) {
+			if ( empty( $_posts ) || ! is_array( $_posts ) || empty( $_posts[ $tt_id ] ) || ! is_array( $_posts[ $tt_id ] ) ) {
 				$posts = array_map( 'intval', $posts );
 				$posts = implode( ',', $posts );
 
@@ -96,7 +97,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				wp_cache_add( 'sticky_posts', $_posts, 'options' );
 			}
 
-			$posts = $_posts[ $this->curlang->get_tax_prop( 'language', 'term_taxonomy_id' ) ];
+			$posts = $_posts[ $tt_id ];
 		}
 
 		return $posts;

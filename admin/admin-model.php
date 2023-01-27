@@ -144,7 +144,10 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Delete the string translations
-		wp_delete_post( PLL_MO::get_id( $lang ) );
+		$mo_id = PLL_MO::get_id( $lang );
+		if ( ! empty( $mo_id ) ) {
+			wp_delete_post( $mo_id );
+		}
 
 		// Delete domain
 		unset( $this->options['domains'][ $lang->slug ] );

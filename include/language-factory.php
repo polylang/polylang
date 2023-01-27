@@ -200,14 +200,16 @@ class PLL_Language_Factory {
 	 * }
 	 *
 	 * @phpstan-return array{
-	 *     flag_url: non-empty-string
-	 *     flag: non-empty-string
-	 *     custom_flag_url?: non-empty-string
+	 *     flag_url: string,
+	 *     flag: string,
+	 *     custom_flag_url?: non-empty-string,
 	 *     custom_flag?: non-empty-string
 	 * }
 	 */
 	private static function get_flag( $flag_code, $name, $slug, $locale ) {
-		$flags = array( 'flag' => PLL_Language::get_flag_informations( $flag_code ) );
+		$flags = array(
+			'flag' => PLL_Language::get_flag_informations( $flag_code ),
+		);
 
 		// Custom flags?
 		$directories = array(
@@ -218,7 +220,9 @@ class PLL_Language_Factory {
 
 		foreach ( $directories as $dir ) {
 			if ( file_exists( $file = "{$dir}/{$locale}.png" ) || file_exists( $file = "{$dir}/{$locale}.jpg" ) || file_exists( $file = "{$dir}/{$locale}.svg" ) ) {
-				$flags['custom_flag']['url'] = content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) );
+				$flags['custom_flag'] = array(
+					'url' => content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) ),
+				);
 				break;
 			}
 		}
@@ -226,7 +230,9 @@ class PLL_Language_Factory {
 		/**
 		 * Filters the custom flag information.
 		 *
-		 * @param array  $flag {
+		 * @since 2.4
+		 *
+		 * @param array|null $flag {
 		 *   Information about the custom flag.
 		 *
 		 *   @type string $url    Flag url.
@@ -234,9 +240,7 @@ class PLL_Language_Factory {
 		 *   @type int    $width  Optional, flag width in pixels.
 		 *   @type int    $height Optional, flag height in pixels.
 		 * }
-		 * @param string $code Flag code.
-		 *
-		 * @since 2.4
+		 * @param string     $code Flag code.
 		 */
 		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $flag_code );
 
@@ -247,7 +251,7 @@ class PLL_Language_Factory {
 
 			$flags['custom_flag']['url'] = esc_url_raw( $flags['custom_flag']['url'] );
 		} else {
-			$flags['custom_flag'] = '';
+			unset( $flags['custom_flag'] );
 		}
 
 		/**
@@ -260,10 +264,27 @@ class PLL_Language_Factory {
 		 * @param string $slug   The language code.
 		 * @param string $locale The language locale.
 		 */
-		$title = apply_filters( 'pll_flag_title', $name, $slug, $locale );
+		$title  = apply_filters( 'pll_flag_title', $name, $slug, $locale );
+		$return = array();
 
+		/**
+		 * @var array{
+		 *     flag: array{
+		 *         url: string,
+		 *         src: string,
+		 *         width?: positive-int,
+		 *         height?: positive-int
+		 *     },
+		 *     custom_flag?: array{
+		 *         url: non-empty-string,
+		 *         src: non-empty-string,
+		 *         width?: positive-int,
+		 *         height?: positive-int
+		 *     }
+		 * } $flags
+		 */
 		foreach ( $flags as $key => $flag ) {
-			$flags[ $key . '_url' ] = empty( $flag['url'] ) ? '' : $flag['url'];
+			$return[ "{$key}_url" ] = $flag['url'];
 
 			/**
 			 * Filters the html markup of a flag.
@@ -273,13 +294,21 @@ class PLL_Language_Factory {
 			 * @param string $flag Html markup of the flag or empty string.
 			 * @param string $slug Language code.
 			 */
-			$flags[ $key ] = apply_filters(
+			$return[ $key ] = apply_filters(
 				'pll_get_flag',
 				PLL_Language::get_flag_html( $flag, $title, $name ),
 				$slug
 			);
 		}
 
-		return $flags;
+		/**
+		 * @var array{
+		 *     flag_url: string,
+		 *     flag: string,
+		 *     custom_flag_url?: non-empty-string,
+		 *     custom_flag?: non-empty-string
+		 * } $return
+		 */
+		return $return;
 	}
 }

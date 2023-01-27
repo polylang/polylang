@@ -68,6 +68,13 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 *
 	 * @param string $object_type The object type.
 	 * @return PLL_Translatable_Object|null
+	 *
+	 * @phpstan-return (
+	 *     $object_type is 'post' ? PLL_Translated_Post :
+	 *     (
+	 *         $object_type is 'term' ? PLL_Translated_Term : PLL_Translatable_Object|null
+	 *     )
+	 * )
 	 */
 	public function get( $object_type ) {
 		if ( ! isset( $this->objects[ $object_type ] ) ) {

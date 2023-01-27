@@ -30,7 +30,7 @@
  *     flag_code: non-empty-string,
  *     term_group: int,
  *     is_rtl: int<0, 1>,
- *     mo_id: int,
+ *     mo_id: int<0, max>,
  *     facebook?: string,
  *     home_url: non-empty-string,
  *     search_url: non-empty-string,
@@ -39,8 +39,8 @@
  *     flag: non-empty-string,
  *     custom_flag_url?: string,
  *     custom_flag?: string,
- *     page_on_front?:positive-int,
- *     page_for_posts?:positive-int,
+ *     page_on_front: int<0, max>,
+ *     page_for_posts: int<0, max>,
  *     active: bool,
  *     fallbacks?: array<non-empty-string>
  * }
@@ -147,6 +147,8 @@ class PLL_Language {
 	 * ID of the post storing strings translations.
 	 *
 	 * @var int
+	 *
+	 * @phpstan-var int<0, max>
 	 */
 	public $mo_id;
 
@@ -154,6 +156,8 @@ class PLL_Language {
 	 * ID of the page on front in this language (set from pll_additional_language_data filter).
 	 *
 	 * @var int
+	 *
+	 * @phpstan-var int<0, max>
 	 */
 	public $page_on_front = 0;
 
@@ -161,6 +165,8 @@ class PLL_Language {
 	 * ID of the page for posts in this language (set from pll_additional_language_data filter).
 	 *
 	 * @var int
+	 *
+	 * @phpstan-var int<0, max>
 	 */
 	public $page_for_posts = 0;
 
@@ -248,16 +254,28 @@ class PLL_Language {
 	 *     ),
 	 * )
 	 *
-	 * @phpstan-var array<
-	 *     non-empty-string,
-	 *     array{
-	 *         term_id: positive-int,
-	 *         term_taxonomy_id: positive-int,
-	 *         count: int<0, max>
+	 * @phpstan-var array{
+	 *         language: array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
+	 *         },
+	 *         term_language: array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
+	 *         }
 	 *     }
-	 * >
+	 *     &array<
+	 *         non-empty-string,
+	 *         array{
+	 *             term_id: positive-int,
+	 *             term_taxonomy_id: positive-int,
+	 *             count: int<0, max>
+	 *         }
+	 *     >
 	 */
-	protected $term_props = array();
+	protected $term_props;
 
 	/**
 	 * Constructor: builds a language object given the corresponding data.
@@ -335,11 +353,11 @@ class PLL_Language {
 		}
 
 		if ( 'search_url' === $property || 'home_url' === $property ) {
-			$url_getter = "get_{$property}()";
+			$url_getter = "get_{$property}";
 
 			$this->deprecated_property( $property, $url_getter );
 
-			return $this->{$url_getter};
+			return $this->{$url_getter}();
 		}
 
 		// Undefined property.
@@ -405,7 +423,7 @@ class PLL_Language {
 		 * Filters whether to trigger an error for deprecated properties.
 		 *
 		 * The filter name is intentionnaly not prefixed to use the same as WordPress
-		 * in case it is added in the future. 
+		 * in case it is added in the future.
 		 *
 		 * @since 3.4
 		 *
@@ -414,7 +432,7 @@ class PLL_Language {
 		if ( WP_DEBUG && apply_filters( 'deprecated_property_trigger_error', true ) ) {
 			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 				sprintf(
-					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s instead.\nError handler",
+					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s() instead.\nError handler",
 					esc_html( get_class( $this ) ),
 					esc_html( $property ),
 					esc_html( $replacement )
@@ -446,10 +464,10 @@ class PLL_Language {
 	 *
 	 * @since 3.4
 	 *
-	 * @param string|null $field Name of the field to return. `null` to return them all.
+	 * @param string $field Name of the field to return. An empty string to return them all.
 	 * @return (int[]|int)[] Array keys are taxonomy names, array values depend of `$field`.
 	 *
-	 * @phpstan-param 'term_taxonomy_id'|'term_id'|'count'|null $field
+	 * @phpstan-param 'term_taxonomy_id'|'term_id'|'count'|'' $field
 	 * @phpstan-return array<non-empty-string, (
 	 *     $field is non-empty-string ?
 	 *     (
@@ -479,7 +497,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * Get the flag informations:
+	 * Returns the flag informations.
 	 *
 	 * @since 2.6
 	 *
@@ -492,6 +510,13 @@ class PLL_Language {
 	 *   @type int    $width  Optional, flag width in pixels.
 	 *   @type int    $height Optional, flag height in pixels.
 	 * }
+	 *
+	 * @phpstan-return array{
+	 *     url: string,
+	 *     src: string,
+	 *     width?: positive-int,
+	 *     height?: positive-int
+	 * }
 	 */
 	public static function get_flag_informations( $code ) {
 		$flag = array( 'url' => '' );
@@ -502,7 +527,10 @@ class PLL_Language {
 
 			// If base64 encoded flags are preferred.
 			if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
-				list( $flag['width'], $flag['height'] ) = getimagesize( POLYLANG_DIR . $file );
+				$imagesize = getimagesize( POLYLANG_DIR . $file );
+				if ( is_array( $imagesize ) ) {
+					list( $flag['width'], $flag['height'] ) = $imagesize;
+				}
 				$file_contents = file_get_contents( POLYLANG_DIR . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 				$flag['src'] = 'data:image/png;base64,' . base64_encode( $file_contents ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			}
@@ -535,7 +563,7 @@ class PLL_Language {
 	}
 
 	/**
-	 * Get HTML code for flag.
+	 * Returns HTML code for flag.
 	 *
 	 * @since 2.7
 	 *
@@ -543,6 +571,12 @@ class PLL_Language {
 	 * @param string $title Optional title attribute.
 	 * @param string $alt   Optional alt attribute.
 	 * @return string
+	 *
+	 * @phpstan-param array{
+	 *     src: string,
+	 *     width?: int|numeric-string,
+	 *     height?: int|numeric-string
+	 * } $flag
 	 */
 	public static function get_flag_html( $flag, $title = '', $alt = '' ) {
 		if ( empty( $flag['src'] ) ) {
@@ -652,6 +686,7 @@ class PLL_Language {
 			$language['search_url'] = $this->get_search_url();
 		}
 
+		/** @phpstan-var LanguageData $language */
 		return $language;
 	}
 
@@ -682,8 +717,11 @@ class PLL_Language {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
 			/**
 			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
-			*/
-			return site_url( set_url_scheme( $this->home_url, 'relative' ) );
+			 *
+			 * @phpstan-var non-empty-string $home_url
+			 */
+			$home_url = site_url( set_url_scheme( $this->home_url, 'relative' ) );
+			return $home_url;
 		}
 
 		return $this->home_url;
@@ -702,8 +740,11 @@ class PLL_Language {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
 			/**
 			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			 *
+			 * @phpstan-var non-empty-string $search_url
 			*/
-			return site_url( set_url_scheme( $this->search_url, 'relative' ) );
+			$search_url = site_url( set_url_scheme( $this->search_url, 'relative' ) );
+			return $search_url;
 		}
 
 		return $this->search_url;

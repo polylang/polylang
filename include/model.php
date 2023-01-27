@@ -262,13 +262,7 @@ class PLL_Model {
 	 * @return string[] Post type names for which Polylang manages languages and translations.
 	 */
 	public function get_translated_post_types( $filter = true ) {
-		$object = $this->translatable_objects->get( 'post' );
-
-		if ( empty( $object ) ) {
-			return array();
-		}
-
-		return $object->get_translated_object_types( $filter );
+		return $this->translatable_objects->get( 'post' )->get_translated_object_types( $filter );
 	}
 
 	/**
@@ -280,9 +274,12 @@ class PLL_Model {
 	 * @return bool
 	 */
 	public function is_translated_post_type( $post_type ) {
-		$object = $this->translatable_objects->get( 'post' );
+		if ( empty( array_filter( (array) $post_type ) ) ) {
+			return false;
+		}
 
-		return ! empty( $object ) && $object->is_translated_object_type( $post_type );
+		/** @var non-empty-array<non-empty-string>|non-empty-string $post_type */
+		return $this->translatable_objects->get( 'post' )->is_translated_object_type( $post_type );
 	}
 
 	/**
@@ -297,13 +294,7 @@ class PLL_Model {
 	 * @return string[] Array of registered taxonomy names for which Polylang manages languages and translations.
 	 */
 	public function get_translated_taxonomies( $filter = true ) {
-		$object = $this->translatable_objects->get( 'term' );
-
-		if ( empty( $object ) ) {
-			return array();
-		}
-
-		return $object->get_translated_object_types( $filter );
+		return $this->translatable_objects->get( 'term' )->get_translated_object_types( $filter );
 	}
 
 	/**
@@ -315,9 +306,12 @@ class PLL_Model {
 	 * @return bool
 	 */
 	public function is_translated_taxonomy( $tax ) {
-		$object = $this->translatable_objects->get( 'term' );
+		if ( empty( array_filter( (array) $tax ) ) ) {
+			return false;
+		}
 
-		return ! empty( $object ) && $object->is_translated_object_type( $tax );
+		/** @var non-empty-array<non-empty-string>|non-empty-string $tax */
+		return $this->translatable_objects->get( 'term' )->is_translated_object_type( $tax );
 	}
 
 	/**
@@ -504,7 +498,7 @@ class PLL_Model {
 		$cache_key = 'pll_count_posts_' . md5( maybe_serialize( $q ) );
 		$counts = wp_cache_get( $cache_key, 'counts' );
 
-		if ( false === $counts ) {
+		if ( ! is_array( $counts ) ) {
 			$counts = array();
 
 			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
@@ -610,7 +604,7 @@ class PLL_Model {
 	 *     @type int[] $terms Array of term ids.
 	 * }
 	 *
-	 * @phpstan-param -1|int<1, max> $limit
+	 * @phpstan-param -1|positive-int $limit
 	 */
 	public function get_objects_with_no_lang( $limit = -1 ) {
 		/**
@@ -651,17 +645,14 @@ class PLL_Model {
 	 * @since 3.1
 	 *
 	 * @param string|string[] $post_types A translated post type or an array of translated post types.
-	 * @param int             $limit      Max number of posts to return.
+	 * @param int             $limit      Max number of objects to return. `-1` to return all of them.
 	 * @return int[]
+	 *
+	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-return list<positive-int>
 	 */
 	public function get_posts_with_no_lang( $post_types, $limit ) {
-		$object = $this->translatable_objects->get( 'post' );
-
-		if ( empty( $object ) ) {
-			return array();
-		}
-
-		return $object->get_objects_with_no_lang( $limit, (array) $post_types );
+		return $this->translatable_objects->get( 'post' )->get_objects_with_no_lang( $limit, (array) $post_types );
 	}
 
 	/**
@@ -670,17 +661,14 @@ class PLL_Model {
 	 * @since 3.1
 	 *
 	 * @param string|string[] $taxonomies A translated taxonomy or an array of taxonomies post types.
-	 * @param int             $limit      Max number of terms to return.
+	 * @param int             $limit      Max number of objects to return. `-1` to return all of them.
 	 * @return int[]
+	 *
+	 * @phpstan-param -1|positive-int $limit
+	 * @phpstan-return list<positive-int>
 	 */
 	public function get_terms_with_no_lang( $taxonomies, $limit ) {
-		$object = $this->translatable_objects->get( 'term' );
-
-		if ( empty( $object ) ) {
-			return array();
-		}
-
-		return $object->get_objects_with_no_lang( $limit, (array) $taxonomies );
+		return $this->translatable_objects->get( 'term' )->get_objects_with_no_lang( $limit, (array) $taxonomies );
 	}
 
 	/**
@@ -757,6 +745,7 @@ class PLL_Model {
 				continue;
 			}
 
+			/** @var PLL_Language $language */
 			if ( $language->slug !== $slug || $language->name !== $name ) {
 				// Something has changed.
 				wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
@@ -778,18 +767,16 @@ class PLL_Model {
 		/*
 		 * Only terms of the taxonomy 'language' include a 'term_group' for the order.
 		 * `array_reverse()` allows to make sure that the next loop fills the array
-		 *  with these terms first, allowing to keep the languages order.
+		 * with these terms first, allowing to keep the languages order.
 		 */
 		$reversed_terms = array_reverse( $this->get_language_terms() );
 
 		$terms_by_slug = array();
 
 		foreach ( $reversed_terms as $term ) {
-			if ( $term instanceof WP_Term ) {
-				// Except for language taxonomy term slugs, remove 'pll_' prefix from the other language taxonomy term slugs.
-				$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
-				$terms_by_slug[ $key ][ $term->taxonomy ] = $term;
-			}
+			// Except for language taxonomy term slugs, remove 'pll_' prefix from the other language taxonomy term slugs.
+			$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
+			$terms_by_slug[ $key ][ $term->taxonomy ] = $term;
 		}
 
 		// Restore the right order after the first `array_reverse()`.
@@ -798,6 +785,15 @@ class PLL_Model {
 		$languages = array();
 
 		foreach ( $terms_by_slug as $lang_terms ) {
+			/**
+			 * @var (
+			 *     array{
+			 *         language: WP_Term,
+			 *         term_language: WP_Term
+			 *     }&
+			 *     array<non-empty-string, WP_Term>
+			 * ) $lang_terms
+			 */
 			$languages[] = PLL_Language_Factory::get_from_terms( $lang_terms );
 		}
 

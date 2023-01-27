@@ -83,7 +83,7 @@ class PLL_Static_Pages {
 	 *
 	 * @return void
 	 */
-	protected function init() {
+	public function init() {
 		if ( 'page' === get_option( 'show_on_front' ) ) {
 			$this->page_on_front  = intval( get_option( 'page_on_front' ) );
 			$this->page_for_posts = intval( get_option( 'page_for_posts' ) );
