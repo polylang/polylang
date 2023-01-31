@@ -87,7 +87,7 @@ class PLL_Admin extends PLL_Admin_Base {
 
 		// Setup filters for admin pages
 		// Priority 5 to make sure filters are there before customize_register is fired
-		if ( $this->model->get_languages_list() ) {
+		if ( $this->model->has_languages() ) {
 			add_action( 'wp_loaded', array( $this, 'add_filters' ), 5 );
 		}
 	}

@@ -124,7 +124,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$tabs = array( 'lang' => __( 'Languages', 'polylang' ) );
 
 		// Only if at least one language has been created
-		if ( $this->model->get_languages_list() ) {
+		if ( $this->model->has_languages() ) {
 			$tabs['strings'] = __( 'Translations', 'polylang' );
 		}
 
@@ -203,7 +203,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		foreach ( $scripts as $script => $v ) {
-			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->get_languages_list() ) ) {
+			if ( in_array( $screen->base, $v[0] ) && ( $v[2] || $this->model->has_languages() ) ) {
 				wp_enqueue_script( 'pll_' . $script, plugins_url( '/js/build/' . $script . $suffix . '.js', POLYLANG_ROOT_FILE ), $v[1], POLYLANG_VERSION, $v[3] );
 				if ( 'classic-editor' === $script || 'block-editor' === $script ) {
 					wp_set_script_translations( 'pll_' . $script, 'polylang' );
@@ -238,7 +238,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @return void
 	 */
 	public function customize_controls_enqueue_scripts() {
-		if ( $this->model->get_languages_list() ) {
+		if ( $this->model->has_languages() ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			wp_enqueue_script( 'pll_widgets', plugins_url( '/js/build/widgets' . $suffix . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
 			$this->add_inline_scripts();

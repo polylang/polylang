@@ -203,14 +203,14 @@ class PLL_Wizard {
 
 		$this->step = $step && array_key_exists( $step, $this->steps ) ? $step : current( array_keys( $this->steps ) );
 
-		$languages = $this->model->get_languages_list();
+		$has_languages = $this->model->has_languages();
 
-		if ( count( $languages ) === 0 && ! in_array( $this->step, array( 'licenses', 'languages' ) ) ) {
+		if ( ! $has_languages && ! in_array( $this->step, array( 'licenses', 'languages' ) ) ) {
 			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'languages' ) ) );
 			exit;
 		}
 
-		if ( count( $languages ) > 0 && $this->model->get_objects_with_no_lang( 1 ) && ! in_array( $this->step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
+		if ( $has_languages && $this->model->get_objects_with_no_lang( 1 ) && ! in_array( $this->step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
 			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'untranslated-contents' ) ) );
 			exit;
 		}
@@ -525,14 +525,12 @@ class PLL_Wizard {
 	public function save_step_languages() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$existing_languages = $this->model->get_languages_list();
-
 		$all_languages = include POLYLANG_DIR . '/settings/languages.php';
 		$languages = isset( $_POST['languages'] ) && is_array( $_POST['languages'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['languages'] ) ) : false;
 		$saved_languages = array();
 
 		// If there is no language added or defined.
-		if ( empty( $languages ) && empty( $existing_languages ) ) {
+		if ( empty( $languages ) && ! $this->model->has_languages() ) {
 			// Stay on this step with an error.
 			wp_safe_redirect(
 				esc_url_raw(
@@ -656,7 +654,7 @@ class PLL_Wizard {
 	 * @return array List of steps updated.
 	 */
 	public function add_step_untranslated_contents( $steps ) {
-		if ( ! $this->model->get_languages_list() || $this->model->get_objects_with_no_lang( 1 ) ) {
+		if ( ! $this->model->has_languages() || $this->model->get_objects_with_no_lang( 1 ) ) {
 			// Even if pll_admin is already enqueued with the same dependencies by the languages step, it is interesting to keep that it's also useful for the untranslated-contents step.
 			// To be really loaded the script need to be passed to the $steps['untranslated-contents']['scripts'] array below with the same handle than in wp_enqueue_script().
 			wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
@@ -762,9 +760,7 @@ class PLL_Wizard {
 	public function save_step_home_page() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$languages = $this->model->get_languages_list();
-
-		$default_language = count( $languages ) > 0 ? $this->options['default_lang'] : null;
+		$default_language = $this->model->has_languages() ? $this->options['default_lang'] : null;
 		$home_page = isset( $_POST['home_page'] ) ? sanitize_key( $_POST['home_page'] ) : false;
 		$home_page_title = isset( $_POST['home_page_title'] ) ? sanitize_text_field( wp_unslash( $_POST['home_page_title'] ) ) : esc_html__( 'Homepage', 'polylang' );
 		$home_page_language = isset( $_POST['home_page_language'] ) ? sanitize_key( $_POST['home_page_language'] ) : false;

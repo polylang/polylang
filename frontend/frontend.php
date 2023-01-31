@@ -228,7 +228,7 @@ class PLL_Frontend extends PLL_Base {
 		parent::switch_blog( $new_blog_id, $prev_blog_id );
 
 		// Need to check that some languages are defined when user is logged in, has several blogs, some without any languages.
-		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) && did_action( 'pll_language_defined' ) && $this->model->get_languages_list() ) {
+		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) && did_action( 'pll_language_defined' ) && $this->model->has_languages() ) {
 			static $restore_curlang;
 			if ( empty( $restore_curlang ) ) {
 				$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs.
