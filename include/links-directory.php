@@ -161,7 +161,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 */
 	public function add_permastruct() {
 		// Language information always in front of the uri ( 'with_front' => false ).
-		if ( $this->model->get_languages_list() ) {
+		if ( $this->model->has_languages() ) {
 			add_permastruct( 'language', $this->options['rewrite'] ? '%language%' : 'language/%language%', array( 'with_front' => false ) );
 		}
 	}
@@ -180,7 +180,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		 * to add the filters only once and if all custom post types and taxonomies
 		 * have been registered.
 		 */
-		if ( $this->model->get_languages_list() && did_action( 'wp_loaded' ) && ! has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
+		if ( $this->model->has_languages() && did_action( 'wp_loaded' ) && ! has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
 			add_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
 
 			foreach ( $this->get_rewrite_rules_filters() as $type ) {

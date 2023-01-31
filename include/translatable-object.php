@@ -361,10 +361,9 @@ abstract class PLL_Translatable_Object {
 	 * @phpstan-return list<positive-int>
 	 */
 	public function get_objects_with_no_lang( $limit, array $args = array() ) {
-		$languages = $this->model->get_languages_list();
-
 		$language_ids = array();
-		foreach ( $languages as $language ) {
+
+		foreach ( $this->model->get_languages_list() as $language ) {
 			$language_ids[] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 

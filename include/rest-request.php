@@ -72,7 +72,7 @@ class PLL_REST_Request extends PLL_Base {
 	public function init() {
 		parent::init();
 
-		if ( ! $this->model->get_languages_list() ) {
+		if ( ! $this->model->has_languages() ) {
 			return;
 		}
 
