@@ -10,18 +10,15 @@
  * @since 1.2
  * @immutable
  *
+ * @phpstan-type LanguagePropData array{
+ *     term_id: positive-int,
+ *     term_taxonomy_id: positive-int,
+ *     count: int<0, max>
+ * }
  * @phpstan-type LanguageData array{
  *     term_props: array{
- *         language: array{
- *             term_id: positive-int,
- *             term_taxonomy_id: positive-int,
- *             count: int<0, max>
- *         },
- *         term_language: array{
- *             term_id: positive-int,
- *             term_taxonomy_id: positive-int,
- *             count: int<0, max>
- *         }
+ *         language: LanguagePropData,
+ *         term_language: LanguagePropData
  *     },
  *     name: non-empty-string,
  *     slug: non-empty-string,
@@ -255,25 +252,10 @@ class PLL_Language {
 	 * )
 	 *
 	 * @phpstan-var array{
-	 *         language: array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         },
-	 *         term_language: array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         }
+	 *         language: LanguagePropData,
+	 *         term_language: LanguagePropData
 	 *     }
-	 *     &array<
-	 *         non-empty-string,
-	 *         array{
-	 *             term_id: positive-int,
-	 *             term_taxonomy_id: positive-int,
-	 *             count: int<0, max>
-	 *         }
-	 *     >
+	 *     &array<non-empty-string, LanguagePropData>
 	 */
 	protected $term_props;
 
@@ -475,11 +457,7 @@ class PLL_Language {
 	 *         int<0, max> :
 	 *         positive-int
 	 *     ) :
-	 *     array{
-	 *         term_id: positive-int,
-	 *         term_taxonomy_id: positive-int,
-	 *         count: int<0, max>
-	 *     }
+	 *     LanguagePropData
 	 * )>
 	 */
 	public function get_tax_props( $field = '' ) {
