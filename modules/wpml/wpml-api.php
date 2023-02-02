@@ -218,9 +218,9 @@ class PLL_WPML_API {
 	 *
 	 * @since 2.0
 	 *
-	 * @param string $language_code A 2-letter language code.
-	 * @param array  $args          An array with two keys element_id => post_id or term_taxonomy_id, element_type => post type or taxonomy
-	 * @return string
+	 * @param string|null $language_code A 2-letter language code.
+	 * @param array       $args          An array with two keys element_id => post_id or term_taxonomy_id, element_type => post type or taxonomy
+	 * @return string|null
 	 */
 	public function wpml_element_language_code( $language_code, $args ) {
 		$type = $args['element_type'];
@@ -228,7 +228,7 @@ class PLL_WPML_API {
 
 		if ( 'post' === $type || pll_is_translated_post_type( $type ) ) {
 			$language = pll_get_post_language( $id );
-			return is_string( $language ) ? $language : $language_code;
+			return is_string( $language ) ? $language : null;
 		}
 
 		if ( 'term' === $type || pll_is_translated_taxonomy( $type ) ) {
@@ -237,7 +237,7 @@ class PLL_WPML_API {
 				$id = $term->term_id;
 			}
 			$language = pll_get_term_language( $id );
-			return is_string( $language ) ? $language : $language_code;
+			return is_string( $language ) ? $language : null;
 		}
 
 		return $language_code;
