@@ -718,10 +718,9 @@ class PLL_Language {
 			/**
 			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
 			 *
-			 * @phpstan-var non-empty-string $home_url
+			 * @phpstan-var non-empty-string
 			 */
-			$home_url = site_url( set_url_scheme( $this->home_url, 'relative' ) );
-			return $home_url;
+			return site_url( set_url_scheme( $this->home_url, 'relative' ) );
 		}
 
 		return $this->home_url;
@@ -741,10 +740,9 @@ class PLL_Language {
 			/**
 			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
 			 *
-			 * @phpstan-var non-empty-string $search_url
+			 * @phpstan-var non-empty-string
 			*/
-			$search_url = site_url( set_url_scheme( $this->search_url, 'relative' ) );
-			return $search_url;
+			return site_url( set_url_scheme( $this->search_url, 'relative' ) );
 		}
 
 		return $this->search_url;
