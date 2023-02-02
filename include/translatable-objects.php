@@ -70,10 +70,13 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @return PLL_Translatable_Object|null
 	 *
 	 * @phpstan-return (
-	 *     $object_type is 'post' ? PLL_Translated_Post :
-	 *     (
-	 *         $object_type is 'term' ? PLL_Translated_Term : PLL_Translatable_Object|null
-	 *     )
+	 *     $object_type is 'post' ?
+	 *         PLL_Translated_Object&PLL_Translatable_Object_With_Types_Interface :
+	 *         (
+	 *             $object_type is 'term' ?
+	 *                 PLL_Translated_Object&PLL_Translatable_Object_With_Types_Interface :
+	 *                 (PLL_Translated_Object&PLL_Translatable_Object_With_Types_Interface)|PLL_Translated_Object|PLL_Translatable_Object|null
+	 *         )
 	 * )
 	 */
 	public function get( $object_type ) {
