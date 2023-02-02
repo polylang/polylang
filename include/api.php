@@ -146,11 +146,19 @@ function pll_get_term( $term_id, $lang = null ) {
  * @return string
  */
 function pll_home_url( $lang = '' ) {
-	if ( empty( $lang ) ) {
-		$lang = pll_current_language();
+	if ( empty( PLL()->links ) ) {
+		return home_url( '/' );
 	}
 
-	if ( empty( $lang ) || empty( PLL()->links ) ) {
+	if ( ! empty( $lang ) ) {
+		$lang = PLL()->model->get_language( $lang );
+	}
+
+	if ( empty( $lang ) ) {
+		$lang = pll_current_language( \OBJECT );
+	}
+
+	if ( ! $lang instanceof PLL_Language ) {
 		return home_url( '/' );
 	}
 
