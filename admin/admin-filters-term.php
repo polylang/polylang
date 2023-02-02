@@ -43,9 +43,9 @@ class PLL_Admin_Filters_Term {
 	/**
 	 * Stores the current post_id when bulk editing posts.
 	 *
-	 * @var int|null
+	 * @var int
 	 */
-	protected $post_id;
+	protected $post_id = 0;
 
 	/**
 	 * A reference to the PLL_Admin_Default_Term instance.
@@ -301,10 +301,6 @@ class PLL_Admin_Filters_Term {
 			// So we possibly create a tag in several languages
 			if ( -1 === (int) $_GET['inline_lang_choice'] ) {
 				// The language of the current term is set a according to the language of the current post.
-				if ( empty( $this->post_id ) ) {
-					return;
-				}
-
 				$language = $this->model->post->get_language( $this->post_id );
 
 				if ( empty( $language ) ) {
@@ -660,9 +656,7 @@ class PLL_Admin_Filters_Term {
 		elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// Bulk edit does not modify the language
 			if ( -1 === (int) $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
-				if ( ! empty( $this->post_id ) ) {
-					$lang = $this->model->post->get_language( $this->post_id );
-				}
+				$lang = $this->model->post->get_language( $this->post_id );
 			} elseif ( is_string( $_GET['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$lang_slug = sanitize_key( $_GET['inline_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
 				if ( ! empty( $lang_slug ) ) {
