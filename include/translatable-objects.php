@@ -9,6 +9,8 @@
  * @since 3.4
  *
  * @phpstan-implements IteratorAggregate<non-empty-string, PLL_Translatable_Object>
+ * @phpstan-type TranslatedObjectWithTypes PLL_Translated_Object&PLL_Translatable_Object_With_Types_Interface
+ * @phpstan-type TranslatableObjectWithTypes PLL_Translatable_Object&PLL_Translatable_Object_With_Types_Interface
  */
 class PLL_Translatable_Objects implements IteratorAggregate {
 
@@ -70,13 +72,11 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 * @return PLL_Translatable_Object|null
 	 *
 	 * @phpstan-return (
-	 *     $object_type is 'post' ?
-	 *         PLL_Translated_Object&PLL_Translatable_Object_With_Types_Interface :
-	 *         (
-	 *             $object_type is 'term' ?
-	 *                 PLL_Translated_Object&PLL_Translatable_Object_With_Types_Interface :
-	 *                 (PLL_Translated_Object&PLL_Translatable_Object_With_Types_Interface)|PLL_Translated_Object|PLL_Translatable_Object|null
+	 *     $object_type is 'post' ? TranslatedObjectWithTypes : (
+	 *         $object_type is 'term' ? TranslatedObjectWithTypes : (
+	 *             TranslatedObjectWithTypes|TranslatableObjectWithTypes|PLL_Translated_Object|PLL_Translatable_Object|null
 	 *         )
+	 *     )
 	 * )
 	 */
 	public function get( $object_type ) {
