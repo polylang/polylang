@@ -61,8 +61,8 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 			$lang = $this->model->get_language( reset( $lang ) ); // Choose the first queried language
 		}
 
-		elseif ( ( is_single() || is_page() || ( is_attachment() && $this->options['media_support'] ) ) && ( ( $var = get_queried_object_id() ) || ( $var = get_query_var( 'p' ) ) || ( $var = get_query_var( 'page_id' ) ) || ( $var = get_query_var( 'attachment_id' ) ) ) ) {
-			$lang = $this->model->post->get_language( $var );
+		elseif ( ( is_single() || is_page() || ( is_attachment() && $this->options['media_support'] ) ) && ( ( $var = get_queried_object_id() ) || ( $var = get_query_var( 'p' ) ) || ( $var = get_query_var( 'page_id' ) ) || ( $var = get_query_var( 'attachment_id' ) ) ) && is_numeric( $var ) ) {
+			$lang = $this->model->post->get_language( (int) $var );
 		}
 
 		else {

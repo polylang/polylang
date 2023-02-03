@@ -187,7 +187,7 @@ class PLL_Sync_Tax {
 							$tr_terms = array();
 						}
 
-						if ( is_array( $tr_terms ) ) {
+						if ( is_string( $orig_lang ) && is_array( $tr_terms ) ) {
 							$tr_terms = wp_list_pluck( $tr_terms, 'term_id' );
 							$this->copy_object_terms( $tr_id, $object_id, $orig_lang, $tr_terms, $taxonomy, $append );
 						}

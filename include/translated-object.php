@@ -117,6 +117,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 		// Lang slugs as array keys, translation IDs as array values.
 		$translations = maybe_unserialize( $translations_term->description );
+		$translations = is_array( $translations ) ? $translations : array();
 
 		return $this->validate_translations( $translations, 0, 'display' );
 	}
@@ -276,8 +277,14 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return array();
 		}
 
-		$term         = $this->get_object_term( $id, $this->tax_translations );
-		$translations = empty( $term->description ) ? array() : maybe_unserialize( $term->description );
+		$term = $this->get_object_term( $id, $this->tax_translations );
+
+		if ( empty( $term->description ) ) {
+			return array();
+		}
+
+		$translations = maybe_unserialize( $term->description );
+		$translations = is_array( $translations ) ? $translations : array();
 
 		return $translations;
 	}
@@ -476,7 +483,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return $translations;
 		}
 
-		/** @phpstan-var array<non-empty-string, positive-int> */
+		/** @phpstan-var array<non-empty-string, positive-int> $translations */
 		return array_merge( array( $lang->slug => $id ), $translations );
 	}
 	/**
@@ -488,7 +495,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @param int[][] $translations Array of translations arrays.
 	 * @return void
 	 *
-	 * @phpstan-param array<array<string,int>>
+	 * @phpstan-param array<array<string,int>> $translations
 	 */
 	public function set_translation_in_mass( $translations ) {
 		global $wpdb;
@@ -538,7 +545,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		if ( is_array( $terms ) ) {
 			foreach ( $terms as $term ) {
 				$t = maybe_unserialize( $term->description );
-				if ( in_array( $t, $translations ) ) {
+				if ( is_array( $t ) && in_array( $t, $translations ) ) {
 					foreach ( $t as $object_id ) {
 						if ( ! empty( $object_id ) ) {
 							$trs[] = $wpdb->prepare( '( %d, %d )', $object_id, $term->term_taxonomy_id );

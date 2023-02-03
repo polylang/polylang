@@ -75,7 +75,7 @@ class PLL_CRUD_Posts {
 			} elseif ( isset( $this->pref_lang ) ) {
 				// Always defined on admin, never defined on frontend
 				$this->model->post->set_language( $post_id, $this->pref_lang );
-			} else {
+			} elseif ( ! empty( $this->curlang ) ) {
 				// Only on frontend due to the previous test always true on admin
 				$this->model->post->set_language( $post_id, $this->curlang );
 			}

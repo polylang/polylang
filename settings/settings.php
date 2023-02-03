@@ -241,7 +241,9 @@ class PLL_Settings extends PLL_Admin_Base {
 				check_admin_referer( 'content-default-lang' );
 
 				if ( $nolang = $this->model->get_objects_with_no_lang() ) {
+					/** @var PLL_Language $lang */
 					$lang = $this->model->get_language( $this->options['default_lang'] );
+
 					if ( ! empty( $nolang['posts'] ) ) {
 						$this->model->post->set_language_in_mass( $nolang['posts'], $lang );
 					}
