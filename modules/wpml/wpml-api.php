@@ -218,8 +218,8 @@ class PLL_WPML_API {
 	 *
 	 * @since 2.0
 	 *
-	 * @param string|null $language_code A 2-letter language code.
-	 * @param array       $args          An array with two keys element_id => post_id or term_taxonomy_id, element_type => post type or taxonomy
+	 * @param mixed $language_code A 2-letter language code.
+	 * @param array $args          An array with two keys element_id => post_id or term_taxonomy_id, element_type => post type or taxonomy
 	 * @return string|null
 	 */
 	public function wpml_element_language_code( $language_code, $args ) {
@@ -240,7 +240,7 @@ class PLL_WPML_API {
 			return is_string( $language ) ? $language : null;
 		}
 
-		return $language_code;
+		return null;
 	}
 
 	/**
