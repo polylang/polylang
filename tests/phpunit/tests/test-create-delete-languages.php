@@ -139,6 +139,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 
 		self::$model->add_language( $args );
+		self::$model->set_languages_ready();
 		self::$model->get_languages_list(); // Saves the transient.
 
 		$properties = array(
