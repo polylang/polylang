@@ -54,6 +54,13 @@ class PLL_Model {
 	private $is_creating_language_objects = false;
 
 	/**
+	 * Tells if {@see PLL_Model::get_languages_list()} can be used.
+	 *
+	 * @var bool
+	 */
+	private $languages_ready = false;
+
+	/**
 	 * Constructor.
 	 * Setups translated objects sub models.
 	 * Setups filters and actions.
@@ -154,7 +161,11 @@ class PLL_Model {
 			 * @param PLL_Language[] $languages The list of language objects.
 			 */
 			$languages = apply_filters( 'pll_after_languages_cache', $languages );
-			$this->cache->set( 'languages', $languages );
+
+			if ( $this->are_languages_ready() ) {
+				$this->cache->set( 'languages', $languages );
+			}
+
 			$this->is_creating_language_objects = false;
 		}
 
@@ -168,6 +179,28 @@ class PLL_Model {
 		}
 
 		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
+	}
+
+	/**
+	 * Tells if {@see PLL_Model::get_languages_list()} can be used.
+	 *
+	 * @since 3.4
+	 *
+	 * @return bool
+	 */
+	public function are_languages_ready() {
+		return $this->languages_ready;
+	}
+
+	/**
+	 * Sets the internal property `$languages_ready` to `true`, telling that {@see PLL_Model::get_languages_list()} can be used.
+	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	public function set_languages_ready() {
+		$this->languages_ready = true;
 	}
 
 	/**
@@ -797,9 +830,6 @@ class PLL_Model {
 			$languages[] = PLL_Language_Factory::get_from_terms( $lang_terms );
 		}
 
-		// We will need the languages list to allow its access in the filter below.
-		$this->cache->set( 'languages', $languages );
-
 		/**
 		 * Filters the list of languages *before* it is stored in the persistent cache.
 		 * /!\ This filter is fired *before* the $polylang object is available.
@@ -811,18 +841,22 @@ class PLL_Model {
 		 */
 		$languages = apply_filters( 'pll_languages_list', $languages, $this );
 
-		/*
-		 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
-		 * Thanks to captin411 for catching this!
-		 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
-		 */
-		$languages_data = array_map(
-			function ( $language ) {
-				return $language->get_object_vars( 'db' );
-			},
-			$languages
-		);
-		set_transient( 'pll_languages_list', $languages_data );
+		if ( $this->are_languages_ready() ) {
+			/**
+			 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
+			 * Thanks to captin411 for catching this!
+			 *
+			 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
+			 */
+			$languages_data = array_map(
+				function ( $language ) {
+					return $language->get_object_vars( 'db' );
+				},
+				$languages
+			);
+
+			set_transient( 'pll_languages_list', $languages_data );
+		}
 
 		/** @var list<PLL_Language> $languages */
 		return $languages;
