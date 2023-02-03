@@ -150,10 +150,12 @@ class PLL_Model {
 			 * /!\ This filter is fired *before* the $polylang object is available.
 			 *
 			 * @since 1.8
+			 * @since 3.4 Deprecated.
+			 * @deprecated
 			 *
 			 * @param PLL_Language[] $languages The list of language objects.
 			 */
-			$languages = apply_filters( 'pll_after_languages_cache', $languages );
+			$languages = apply_filters_deprecated( 'pll_after_languages_cache', array( $languages ), '3.4', 'pll_additional_language_data' );
 			$this->cache->set( 'languages', $languages );
 			$this->is_creating_language_objects = false;
 		}
@@ -809,11 +811,13 @@ class PLL_Model {
 		 * /!\ This filter is fired *before* the $polylang object is available.
 		 *
 		 * @since 1.7.5
+		 * @since 3.4 Deprecated.
+		 * @deprecated
 		 *
 		 * @param PLL_Language[] $languages The list of language objects.
 		 * @param PLL_Model      $model     PLL_Model object.
 		 */
-		$languages = apply_filters( 'pll_languages_list', $languages, $this );
+		$languages = apply_filters_deprecated( 'pll_languages_list', array( $languages, $this ), '3.4', 'pll_additional_language_data' );
 
 		/*
 		 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
