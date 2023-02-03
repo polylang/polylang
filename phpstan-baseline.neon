@@ -511,6 +511,11 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
+			message: "#^Parameter \\#1 \\$language of method PLL_Links\\:\\:get_home_url\\(\\) expects PLL_Language\\|string, PLL_Language\\|string\\|null given\\.$#"
+			count: 1
+			path: frontend/frontend-links.php
+
+		-
 			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int, WP_Term\\>\\|WP_Error given\\.$#"
 			count: 1
 			path: frontend/frontend-links.php
