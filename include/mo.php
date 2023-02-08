@@ -78,14 +78,21 @@ class PLL_MO extends MO {
 	public static function get_strings( $term_id ) {
 		global $wpdb;
 
-		return $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT meta_value FROM $wpdb->termmeta
+		$strings = wp_cache_get( 'polylang_strings_translations' );
+
+		if ( empty( $strings ) ) {
+			$strings =  $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT meta_value FROM $wpdb->termmeta
 				WHERE term_id=%s AND META_KEY='_pll_strings_translations'",
-				$term_id
-			),
-			ARRAY_A
-		);
+					$term_id
+				),
+				ARRAY_A
+			);
+			wp_cache_add( 'polylang_strings_translations', $strings );
+		}
+
+		return $strings;
 	}
 
 	/**
