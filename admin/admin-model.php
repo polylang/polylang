@@ -58,7 +58,7 @@ class PLL_Admin_Model extends PLL_Model {
 			update_option( 'polylang', $this->options );
 		}
 
-		// Init a mo_id for this language
+		// Init a PLL_MO for this language
 		$mo = new PLL_MO();
 		$mo->export_to_db_from_id( $r['term_id'] );
 
@@ -139,12 +139,6 @@ class PLL_Admin_Model extends PLL_Model {
 		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
 			delete_user_meta( $user_id, 'pll_filter_content', $lang->slug );
 			delete_user_meta( $user_id, 'description_' . $lang->slug );
-		}
-
-		// Delete the string translations
-		$mo_id = PLL_MO::get_id( $lang );
-		if ( ! empty( $mo_id ) ) {
-			wp_delete_post( $mo_id );
 		}
 
 		// Delete domain
