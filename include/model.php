@@ -150,12 +150,12 @@ class PLL_Model {
 			 * /!\ This filter is fired *before* the $polylang object is available.
 			 *
 			 * @since 1.8
-			 * @since 3.4 Deprecated.
+			 * @since 3.4 Deprecated. If you used this hook to filter URLs, you may hook `'site_url'` instead.
 			 * @deprecated
 			 *
 			 * @param PLL_Language[] $languages The list of language objects.
 			 */
-			$languages = apply_filters_deprecated( 'pll_after_languages_cache', array( $languages ), '3.4', 'pll_additional_language_data' );
+			$languages = apply_filters_deprecated( 'pll_after_languages_cache', array( $languages ), '3.4' );
 			$this->cache->set( 'languages', $languages );
 			$this->is_creating_language_objects = false;
 		}
