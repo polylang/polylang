@@ -115,7 +115,7 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $term_group->term_taxonomy_id ) ) );
 
 		// No strings translations, bug fixed in 2.2.1
-		$this->assertEmpty( get_post( $english->mo_id ) );
+		$this->assertEmpty( get_term_meta( $english->term_id, '_pll_strings_translations', true ) );
 
 		// Users metas
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='pll_filter_content'" ) );
