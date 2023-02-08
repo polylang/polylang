@@ -405,7 +405,7 @@ class PLL_Language {
 		 * Filters whether to trigger an error for deprecated properties.
 		 *
 		 * The filter name is intentionnaly not prefixed to use the same as WordPress
-		 * in case it is added in the future.
+		 * in case it is added in the future. 
 		 *
 		 * @since 3.4
 		 *
@@ -597,14 +597,10 @@ class PLL_Language {
 	public function get_display_flag_url() {
 		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 
-		if ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) {
-			/**
-			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
-			 */
-			return site_url( set_url_scheme( $flag_url, 'relative' ) );
-		}
-
-		return $flag_url;
+		/**
+		 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+		 */
+		return site_url( set_url_scheme( $flag_url, 'relative' ) );
 	}
 
 	/**
