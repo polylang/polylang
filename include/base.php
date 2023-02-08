@@ -77,7 +77,7 @@ abstract class PLL_Base {
 	 * @return void
 	 */
 	public function init() {
-		if ( $this->model->get_languages_list() ) {
+		if ( $this->model->has_languages() ) {
 			$this->posts = new PLL_CRUD_Posts( $this );
 			$this->terms = new PLL_CRUD_Terms( $this );
 

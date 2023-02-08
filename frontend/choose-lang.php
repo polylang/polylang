@@ -219,6 +219,10 @@ abstract class PLL_Choose_Lang {
 	 * @return void
 	 */
 	public function home_requested() {
+		if ( empty( $this->curlang ) ) {
+			return;
+		}
+
 		// We are already on the right page
 		if ( $this->options['default_lang'] == $this->curlang->slug && $this->options['hide_default'] ) {
 			$this->set_curlang_in_query( $GLOBALS['wp_query'] );
