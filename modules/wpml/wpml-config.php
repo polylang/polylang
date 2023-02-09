@@ -598,7 +598,7 @@ class PLL_WPML_Config {
 		// Search for top level wpml-config.xml file.
 		$file_path = WPMU_PLUGIN_DIR . '/wpml-config.xml';
 
-		if ( file_exists( $file_path ) ) {
+		if ( is_readable( $file_path ) ) {
 			$files['mu-plugins'] = $file_path;
 		}
 
@@ -610,7 +610,7 @@ class PLL_WPML_Config {
 
 			$file_path = $file_info->getPathname() . '/wpml-config.xml';
 
-			if ( file_exists( $file_path ) ) {
+			if ( is_readable( $file_path ) ) {
 				$files[ 'mu-plugins/' . $file_info->getFilename() ] = $file_path;
 			}
 		}
