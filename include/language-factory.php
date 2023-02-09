@@ -56,8 +56,6 @@ class PLL_Language_Factory {
 			'term_props' => array(),
 		);
 
-		update_term_meta( $terms['language']->term_id, '_pll_strings_translations', PLL_MO::get_strings( $terms['language']->term_id ), true );
-
 		foreach ( $terms as $term ) {
 			$data['term_props'][ $term->taxonomy ] = array(
 				'term_id'          => $term->term_id,
