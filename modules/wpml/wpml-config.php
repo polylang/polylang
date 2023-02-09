@@ -589,7 +589,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string, string>
 	 */
 	private function get_mu_plugin_files() {
-		if ( ! is_dir( WPMU_PLUGIN_DIR ) ) {
+		if ( ! is_dir( WPMU_PLUGIN_DIR ) || ! is_readable( WPMU_PLUGIN_DIR ) ) {
 			return array();
 		}
 
