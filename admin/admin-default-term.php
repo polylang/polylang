@@ -132,14 +132,12 @@ class PLL_Admin_Default_Term {
 	 * @return void
 	 */
 	public function create_default_term( $lang, $taxonomy ) {
-		if ( $lang instanceof PLL_Language ) {
-			$lang = $lang->slug;
-		}
+		$lang = $this->model->get_language( $lang );
 
 		// create a new term
 		// FIXME this is translated in admin language when we would like it in $lang
 		$cat_name = __( 'Uncategorized', 'polylang' );
-		$cat_slug = sanitize_title( $cat_name . '-' . $lang );
+		$cat_slug = sanitize_title( $cat_name . '-' . $lang->slug );
 		$cat = wp_insert_term( $cat_name, $taxonomy, array( 'slug' => $cat_slug ) );
 
 		// check that the term was not previously created ( in case the language was deleted and recreated )
