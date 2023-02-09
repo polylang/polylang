@@ -21,18 +21,6 @@ class PLL_MO extends MO {
 	 * @return void
 	 */
 	public function export_to_db( $lang ) {
-		$this->export_to_db_from_id( $lang->term_id );
-	}
-
-	/**
-	 * Writes the strings into a term meta.
-	 *
-	 * @since 3.4
-	 *
-	 * @param int $term_id The language term id.
-	 * @return void
-	 */
-	public function export_to_db_from_id( $term_id ) {
 		/*
 		 * It would be convenient to store the whole object, but it would take a huge space in DB.
 		 * So let's keep only the strings in an array.
@@ -44,7 +32,7 @@ class PLL_MO extends MO {
 			$strings[] = wp_slash( array( $entry->singular, $this->translate( $entry->singular ) ) );
 		}
 
-		update_term_meta( $term_id, '_pll_strings_translations', $strings );
+		update_term_meta( $lang->term_id, '_pll_strings_translations', $strings );
 	}
 
 	/**
@@ -65,34 +53,6 @@ class PLL_MO extends MO {
 		foreach ( $strings as $msg ) {
 			$this->add_entry( $this->make_entry( $msg[0], $msg[1] ) );
 		}
-	}
-
-	/**
-	 * Returns the strings translations.
-	 *
-	 * @since 3.4
-	 *
-	 * @param int $term_id The language term ID.
-	 * @return array
-	 */
-	public static function get_strings( $term_id ) {
-		global $wpdb;
-
-		$strings = wp_cache_get( 'polylang_strings_translations' );
-
-		if ( empty( $strings ) ) {
-			$strings =  $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT meta_value FROM $wpdb->termmeta
-				WHERE term_id=%s AND META_KEY='_pll_strings_translations'",
-					$term_id
-				),
-				ARRAY_A
-			);
-			wp_cache_add( 'polylang_strings_translations', $strings );
-		}
-
-		return $strings;
 	}
 
 	/**
