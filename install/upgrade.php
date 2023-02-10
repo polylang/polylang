@@ -191,7 +191,41 @@ class PLL_Upgrade {
 
 	/**
 	 * Upgrades if the previous version is < 3.4.0.
+	 * Moves strings translations from post meta to term meta _pll_strings_translations.
 	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	protected function upgrade_3_4() {
+
+		$this->migrate_locale_fallback_to_language_description();
+
+		$posts = get_posts(
+			array(
+				'post_type' => 'polylang_mo',
+				'post_status' => 'any',
+				'numberposts' => -1,
+				'nopaging' => true,
+			)
+		);
+		if ( ! is_array( $posts ) ) {
+			return;
+		}
+
+		foreach ( $posts as $post ) {
+			$meta = get_post_meta( $post->ID, '_pll_strings_translations', true );
+			if ( empty( $meta ) || ! is_array( $meta ) ) {
+				continue;
+			}
+
+			$term_id = (int) substr( $post->post_title, 12 );
+			update_term_meta( $term_id, '_pll_strings_translations', $meta );
+			wp_delete_post( $post->ID );
+		}
+	}
+
+	/**
 	 * Deletes language cache due to:
 	 * - 'redirect_lang' option removed for subdomains and multiple domains in 2.2,
 	 * - W3C and Facebook locales added to PLL_Language objects in 2.3,
@@ -203,7 +237,7 @@ class PLL_Upgrade {
 	 *
 	 * @return void
 	 */
-	protected function upgrade_3_4() {
+	protected function migrate_locale_fallback_to_language_description() {
 		delete_transient( 'pll_languages_list' );
 
 		// Migrate locale fallbacks from term metas to language term description.
@@ -228,7 +262,7 @@ class PLL_Upgrade {
 			$fallbacks = get_term_meta( $term->term_id, 'fallback', true );
 
 			delete_term_meta( $term->term_id, 'fallback' );
-			
+
 			if ( empty( $fallbacks ) || ! is_array( $fallbacks ) ) {
 				// Empty or invalid value, should not happen.
 				continue;
