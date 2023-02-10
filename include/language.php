@@ -241,7 +241,7 @@ class PLL_Language {
 		$flag = array( 'url' => '' );
 
 		// Polylang builtin flags.
-		if ( ! empty( $code ) && file_exists( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
+		if ( ! empty( $code ) && is_readable( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
 			$flag['url'] = plugins_url( $file, POLYLANG_FILE );
 
 			// If base64 encoded flags are preferred.
@@ -296,7 +296,7 @@ class PLL_Language {
 		);
 
 		foreach ( $directories as $dir ) {
-			if ( file_exists( $file = "{$dir}/{$this->locale}.png" ) || file_exists( $file = "{$dir}/{$this->locale}.jpg" ) || file_exists( $file = "{$dir}/{$this->locale}.svg" ) ) {
+			if ( is_readable( $file = "{$dir}/{$this->locale}.png" ) || is_readable( $file = "{$dir}/{$this->locale}.jpg" ) || is_readable( $file = "{$dir}/{$this->locale}.svg" ) ) {
 				$flags['custom_flag']['url'] = content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) );
 				break;
 			}

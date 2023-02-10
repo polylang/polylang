@@ -657,7 +657,7 @@ class PLL_WPML_Config {
 			$file_dir  = dirname( $plugin );
 			$file_path = sprintf( $plugin_path, $file_dir );
 
-			if ( file_exists( $file_path ) ) {
+			if ( is_readable( $file_path ) ) {
 				$files[ "plugins/{$file_dir}" ] = $file_path;
 			}
 		}
@@ -681,7 +681,7 @@ class PLL_WPML_Config {
 		$template_path = get_template_directory();
 		$file_path     = "{$template_path}/wpml-config.xml";
 
-		if ( file_exists( $file_path ) ) {
+		if ( is_readable( $file_path ) ) {
 			$files[ 'themes/' . get_template() ] = $file_path;
 		}
 
@@ -689,7 +689,7 @@ class PLL_WPML_Config {
 		$stylesheet_path = get_stylesheet_directory();
 		$file_path       = "{$stylesheet_path}/wpml-config.xml";
 
-		if ( $stylesheet_path !== $template_path && file_exists( $file_path ) ) {
+		if ( $stylesheet_path !== $template_path && is_readable( $file_path ) ) {
 			$files[ 'themes/' . get_stylesheet() ] = $file_path;
 		}
 
@@ -708,7 +708,7 @@ class PLL_WPML_Config {
 	private function get_custom_files() {
 		$file_path = PLL_LOCAL_DIR . '/wpml-config.xml';
 
-		if ( ! file_exists( $file_path ) ) {
+		if ( ! is_readable( $file_path ) ) {
 			return array();
 		}
 
