@@ -58,6 +58,12 @@ class PLL_Admin_Model extends PLL_Model {
 			update_option( 'polylang', $this->options );
 		}
 
+		// Refresh languages.
+		$this->clean_languages_cache();
+		$this->get_languages_list();
+
+		flush_rewrite_rules(); // Refresh rewrite rules.
+
 		/**
 		 * Fires when a language is added.
 		 *
@@ -66,12 +72,6 @@ class PLL_Admin_Model extends PLL_Model {
 		 * @param array $args Arguments used to create the language. @see PLL_Admin_Model::add_language().
 		 */
 		do_action( 'pll_add_language', $args );
-
-		// Refresh languages.
-		$this->clean_languages_cache();
-		$this->get_languages_list();
-
-		flush_rewrite_rules(); // Refresh rewrite rules.
 
 		return true;
 	}
