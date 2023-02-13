@@ -335,7 +335,7 @@ class PLL_Language {
 		}
 
 		if ( 'search_url' === $property || 'home_url' === $property ) {
-			$url_getter = "get_{$property}";
+			$url_getter = "get_{$property}()";
 
 			$this->deprecated_property( $property, $url_getter );
 
@@ -414,7 +414,7 @@ class PLL_Language {
 		if ( WP_DEBUG && apply_filters( 'deprecated_property_trigger_error', true ) ) {
 			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 				sprintf(
-					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s() instead.\nError handler",
+					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s instead.\nError handler",
 					esc_html( get_class( $this ) ),
 					esc_html( $property ),
 					esc_html( $replacement )
