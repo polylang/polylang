@@ -335,9 +335,9 @@ class PLL_Language {
 		}
 
 		if ( 'search_url' === $property || 'home_url' === $property ) {
-			$url_getter = "get_{$property}()";
+			$url_getter = "get_{$property}";
 
-			$this->deprecated_property( $property, $url_getter );
+			$this->deprecated_property( $property, "{$url_getter}()" );
 
 			return $this->{$url_getter}();
 		}
