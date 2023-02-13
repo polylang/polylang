@@ -237,6 +237,13 @@ class PLL_Admin_Model extends PLL_Model {
 		$description = $this->build_language_metas( $args );
 		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
 
+		// Refresh languages.
+		$this->clean_languages_cache();
+		$this->get_languages_list();
+
+		// Refresh rewrite rules.
+		flush_rewrite_rules();
+
 		/**
 		 * Fires after a language is updated.
 		 *
@@ -257,13 +264,6 @@ class PLL_Admin_Model extends PLL_Model {
 		 * @param PLL_Language $lang Previous value of the language beeing edited.
 		 */
 		do_action( 'pll_update_language', $args, $lang );
-
-		// Refresh languages.
-		$this->clean_languages_cache();
-		$this->get_languages_list();
-
-		// Refresh rewrite rules.
-		flush_rewrite_rules();
 
 		return true;
 	}

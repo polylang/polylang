@@ -191,16 +191,33 @@ class PLL_Upgrade {
 
 	/**
 	 * Upgrades if the previous version is < 3.4.0.
-	 * Moves strings translations from post meta to term meta _pll_strings_translations.
+	 * Deletes language cache due to:
+	 * - 'redirect_lang' option removed for subdomains and multiple domains in 2.2,
+	 * - W3C and Facebook locales added to PLL_Language objects in 2.3,
+	 * - flags moved to a different directory in Polylang Pro 2.8,
+	 * - bug of flags url returning html fixed in 2.8.1,
+	 * - important changes in `PLL_Model` and `PLL_Language` in 3.4.
 	 *
 	 * @since 3.4
 	 *
 	 * @return void
 	 */
 	protected function upgrade_3_4() {
+		delete_transient( 'pll_languages_list' );
 
 		$this->migrate_locale_fallback_to_language_description();
 
+		$this->migrate_strings_translations();
+	}
+
+	/**
+	 * Moves strings translations from post meta to term meta _pll_strings_translations.
+	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	protected function migrate_strings_translations() {
 		$posts = get_posts(
 			array(
 				'post_type' => 'polylang_mo',
@@ -214,32 +231,26 @@ class PLL_Upgrade {
 		}
 
 		foreach ( $posts as $post ) {
+			wp_delete_post( $post->ID );
+
 			$meta = get_post_meta( $post->ID, '_pll_strings_translations', true );
 			if ( empty( $meta ) || ! is_array( $meta ) ) {
 				continue;
 			}
 
 			$term_id = (int) substr( $post->post_title, 12 );
-			update_term_meta( $term_id, '_pll_strings_translations', $meta );
-			wp_delete_post( $post->ID );
+			update_term_meta( $term_id, '_pll_strings_translations', wp_slash( $meta ) );
 		}
 	}
 
 	/**
-	 * Deletes language cache due to:
-	 * - 'redirect_lang' option removed for subdomains and multiple domains in 2.2,
-	 * - W3C and Facebook locales added to PLL_Language objects in 2.3,
-	 * - flags moved to a different directory in Polylang Pro 2.8,
-	 * - bug of flags url returning html fixed in 2.8.1,
-	 * - important changes in `PLL_Model` and `PLL_Language` in 3.4.
+	 * Migrate locale fallback to language term description.
 	 *
 	 * @since 3.4
 	 *
 	 * @return void
 	 */
 	protected function migrate_locale_fallback_to_language_description() {
-		delete_transient( 'pll_languages_list' );
-
 		// Migrate locale fallbacks from term metas to language term description.
 		$terms = get_terms(
 			array(
