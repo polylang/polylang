@@ -331,6 +331,21 @@ class PLL_Language {
 			return $this->{$url_getter}();
 		}
 
+		if ( 'mo_id' === $property ) {
+			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+				esc_html(
+					sprintf(
+						"Class property %s::%s is deprecated, use get_term_meta() instead to get the strings translations.\nError handler",
+						esc_html( get_class( $this ) ),
+						esc_html( $property )
+					)
+				),
+				E_USER_DEPRECATED
+			);
+
+			return null;
+		}
+
 		// Undefined property.
 		if ( ! property_exists( $this, $property ) ) {
 			return null;
@@ -393,7 +408,7 @@ class PLL_Language {
 		/**
 		 * Filters whether to trigger an error for deprecated properties.
 		 *
-		 * The filter name is intentionnaly not prefixed to use the same as WordPress
+		 * The filter name is intentionally not prefixed to use the same as WordPress
 		 * in case it is added in the future.
 		 *
 		 * @since 3.4
