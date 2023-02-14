@@ -252,12 +252,9 @@ class PLL_Switcher {
 		}
 
 		// Cast each elements to stdClass because $walker::walk() expects an array of objects.
-		$elements = array_map(
-			function( $element ) {
-				return (object) $element;
-			},
-			$elements
-		);
+		foreach ( $elements as $i => $element ) {
+			$elements[ $i ] = (object) $element;
+		}
 
 		/**
 		 * Filter the whole html markup returned by the 'pll_the_languages' template tag
