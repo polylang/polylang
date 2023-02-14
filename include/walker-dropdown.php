@@ -23,19 +23,15 @@ class PLL_Walker_Dropdown extends Walker {
 	 *
 	 * @since 1.2
 	 *
-	 * @param string                $output            Passed by reference. Used to append additional content.
-	 * @param PLL_Language|stdClass $element           The data object. `PLL_Language` or `stdClass` in our case.
-	 * @param int                   $depth             Depth of the item.
-	 * @param array                 $args              An array of additional arguments.
-	 * @param int                   $current_object_id ID of the current item.
+	 * @param string   $output            Passed by reference. Used to append additional content.
+	 * @param stdClass $element           The data object. `PLL_Language` or `stdClass` in our case.
+	 * @param int      $depth             Depth of the item.
+	 * @param array    $args              An array of additional arguments.
+	 * @param int      $current_object_id ID of the current item.
 	 * @return void
 	 */
 	public function start_el( &$output, $element, $depth = 0, $args = array(), $current_object_id = 0 ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$value_type = $args['value'];
-
-		if ( $element instanceof PLL_Language ) {
-			$element = $element->to_standard_class();
-		}
 
 		$output .= sprintf(
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
