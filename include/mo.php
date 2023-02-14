@@ -8,7 +8,7 @@
  *
  * @since 1.2
  * @since 2.1 Stores the strings in a post meta instead of post content to avoid unserialize issues (See #63)
- * @since 3.4 Stores the strings in a term meta instead of post meta.
+ * @since 3.4 Stores the strings into language taxonomy term meta instead of a post meta.
  */
 class PLL_MO extends MO {
 
