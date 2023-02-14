@@ -43,29 +43,6 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 	}
 
 	/**
-	 * Overrides Walker::display_element as expects an object with a parent property.
-	 *
-	 * @since 1.2
-	 *
-	 * @param PLL_Language|stdClass $element           Data object. `PLL_language` in our case.
-	 * @param array                 $children_elements List of elements to continue traversing.
-	 * @param int                   $max_depth         Max depth to traverse.
-	 * @param int                   $depth             Depth of current element.
-	 * @param array                 $args              An array of arguments.
-	 * @param string                $output            Passed by reference. Used to append additional content.
-	 * @return void
-	 */
-	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-		if ( $element instanceof PLL_Language ) {
-			$element = $element->to_std_class();
-		}
-
-		$element->parent = $element->id = 0; // Don't care about this.
-
-		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
-	}
-
-	/**
 	 * Starts the output of the dropdown list
 	 *
 	 * @since 1.2
