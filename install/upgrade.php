@@ -231,14 +231,15 @@ class PLL_Upgrade {
 		}
 
 		foreach ( $posts as $post ) {
+			$meta = get_post_meta( $post->ID, '_pll_strings_translations', true );
+
+			$term_id = (int) substr( $post->post_title, 12 );
 			wp_delete_post( $post->ID );
 
-			$meta = get_post_meta( $post->ID, '_pll_strings_translations', true );
 			if ( empty( $meta ) || ! is_array( $meta ) ) {
 				continue;
 			}
 
-			$term_id = (int) substr( $post->post_title, 12 );
 			update_term_meta( $term_id, '_pll_strings_translations', wp_slash( $meta ) );
 		}
 	}
