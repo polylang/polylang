@@ -69,6 +69,7 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 		$output = '';
 
 		if ( is_array( $max_depth ) ) { // @phpstan-ignore-line
+			// Backward compatibility with Polylang < 2.6.7
 			$this->trigger_walk_error();
 			$args = $max_depth;
 			$max_depth = -1;

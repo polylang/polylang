@@ -54,13 +54,10 @@ class PLL_Walker extends Walker {
 	 */
 	protected function trigger_walk_error() {
 		// Backward compatibility with Polylang < 2.6.7
-		if ( WP_DEBUG ) {
-			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-				sprintf(
-					'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.6.7',
-					__METHOD__
-				)
-			);
-		}
+		_doing_it_wrong(
+			__CLASS__ . '::walk()',
+			'The method expects an integer as second parameter.',
+			'2.6.7'
+		);
 	}
 }

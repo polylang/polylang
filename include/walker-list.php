@@ -58,6 +58,7 @@ class PLL_Walker_List extends PLL_Walker {
 	 */
 	public function walk( $elements, $max_depth, ...$args ) { // phpcs:ignore WordPressVIPMinimum.Classes.DeclarationCompatibility.DeclarationCompatibility
 		if ( is_array( $max_depth ) ) { // @phpstan-ignore-line
+			// Backward compatibility with Polylang < 2.6.7
 			$this->trigger_walk_error();
 			$args = $max_depth;
 			$max_depth = -1;
