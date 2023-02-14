@@ -656,7 +656,7 @@ class PLL_Language {
 	 *
 	 * @phpstan-return LanguageData
 	 */
-	public function get_object_vars( $context = 'display' ) {
+	public function to_array( $context = 'display' ) {
 		$language = get_object_vars( $this );
 
 		if ( 'db' !== $context ) {
@@ -669,14 +669,14 @@ class PLL_Language {
 	}
 
 	/**
-	 * Converts current `PLL_language` into a stdClass object. Mostly used to allow dynamic properties.
+	 * Converts current `PLL_language` into a `stdClass` object. Mostly used to allow dynamic properties.
 	 *
 	 * @since 3.4
 	 *
 	 * @return stdClass Converted `PLL_Language` object.
 	 */
-	public function to_standard_class() {
-		return (object) $this->get_object_vars();
+	public function to_std_class() {
+		return (object) $this->to_array();
 	}
 
 	/**

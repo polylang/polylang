@@ -56,7 +56,7 @@ class PLL_Walker_Dropdown extends Walker {
 	 */
 	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
 		if ( $element instanceof PLL_Language ) {
-			$element = $element->to_standard_class();
+			$element = $element->to_std_class();
 		}
 
 		$element->parent = $element->id = 0; // Don't care about this.
