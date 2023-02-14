@@ -7,8 +7,9 @@
  * Displays languages in a dropdown list
  *
  * @since 1.2
+ * @since 3.4 Extends `PLL_Walker` now.
  */
-class PLL_Walker_Dropdown extends Walker {
+class PLL_Walker_Dropdown extends PLL_Walker {
 	/**
 	 * Database fields to use.
 	 *
@@ -91,15 +92,7 @@ class PLL_Walker_Dropdown extends Walker {
 		$output = '';
 
 		if ( is_array( $max_depth ) ) { // @phpstan-ignore-line
-			// Backward compatibility with Polylang < 2.6.7
-			if ( WP_DEBUG ) {
-				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-					sprintf(
-						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.6.7',
-						__METHOD__
-					)
-				);
-			}
+			$this->trigger_walk_error();
 			$args = $max_depth;
 			$max_depth = -1;
 		} else {

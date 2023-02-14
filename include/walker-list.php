@@ -7,8 +7,9 @@
  * Displays a language list
  *
  * @since 1.2
+ * @since 3.4 Extends `PLL_Walker` now.
  */
-class PLL_Walker_List extends Walker {
+class PLL_Walker_List extends PLL_Walker {
 	/**
 	 * Database fields to use.
 	 *
@@ -49,17 +50,21 @@ class PLL_Walker_List extends Walker {
 	 *
 	 * @since 1.2
 	 *
-	 * @param stdClass $element           Data object.
-	 * @param array    $children_elements List of elements to continue traversing.
-	 * @param int      $max_depth         Max depth to traverse.
-	 * @param int      $depth             Depth of current element.
-	 * @param array    $args              An array of arguments.
-	 * @param string   $output            Passed by reference. Used to append additional content.
+	 * @param PLL_Language|stdClass $element           Data object. `PLL_language` in our case.
+	 * @param array                 $children_elements List of elements to continue traversing.
+	 * @param int                   $max_depth         Max depth to traverse.
+	 * @param int                   $depth             Depth of current element.
+	 * @param array                 $args              An array of arguments.
+	 * @param string                $output            Passed by reference. Used to append additional content.
 	 * @return void
 	 */
 	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-		$element = (object) $element; // Make sure we have an object
-		$element->parent = $element->id = 0; // Don't care about this
+		if ( $element instanceof PLL_Language ) {
+			$element = $element->to_std_class();
+		}
+
+		$element->parent = $element->id = 0; // Don't care about this.
+
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
 
@@ -76,15 +81,7 @@ class PLL_Walker_List extends Walker {
 	 */
 	public function walk( $elements, $max_depth, ...$args ) { // phpcs:ignore WordPressVIPMinimum.Classes.DeclarationCompatibility.DeclarationCompatibility
 		if ( is_array( $max_depth ) ) { // @phpstan-ignore-line
-			// Backward compatibility with Polylang < 2.6.7
-			if ( WP_DEBUG ) {
-				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-					sprintf(
-						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.6.7',
-						__METHOD__
-					)
-				);
-			}
+			$this->trigger_walk_error();
 			$args = $max_depth;
 			$max_depth = -1;
 		} else {
