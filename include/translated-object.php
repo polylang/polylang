@@ -26,10 +26,11 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @since 1.8
 	 *
-	 * @param PLL_Model $model Instance of `PLL_Model`.
+	 * @param PLL_Model                              $model        Instance of `PLL_Model`.
+	 * @param PLL_Translatable_Abstract_Object_Cache $object_cache Instance of `PLL_Translatable_Abstract_Object_Cache`.
 	 */
-	public function __construct( PLL_Model &$model ) {
-		parent::__construct( $model );
+	public function __construct( PLL_Model &$model, PLL_Translatable_Abstract_Object_Cache $object_cache ) {
+		parent::__construct( $model, $object_cache );
 
 		$this->tax_to_cache[] = $this->tax_translations;
 

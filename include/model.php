@@ -63,12 +63,14 @@ class PLL_Model {
 	 * @param array $options Polylang options.
 	 */
 	public function __construct( &$options ) {
-		$this->options = &$options;
+		global $wp_object_cache;
 
-		$this->cache = new PLL_Cache();
+		$this->options              = &$options;
+		$this->cache                = new PLL_Cache();
 		$this->translatable_objects = new PLL_Translatable_Objects();
-		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this ) ); // Translated post sub model.
-		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this ) ); // Translated term sub model.
+		$translatable_object_cache  = new PLL_Translatable_WP_Object_Cache( $wp_object_cache );
+		$this->post                 = $this->translatable_objects->register( new PLL_Translated_Post( $this, $translatable_object_cache ) );  // Translated post sub model.
+		$this->term                 = $this->translatable_objects->register( new PLL_Translated_Term( $this, $translatable_object_cache ) );  // Translated term sub model.
 
 		// We need to clean languages cache when editing a language and when modifying the permalink structure.
 		add_action( 'edited_term_taxonomy', array( $this, 'clean_languages_cache' ), 10, 2 );

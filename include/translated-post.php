@@ -56,9 +56,10 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @since 1.8
 	 *
-	 * @param PLL_Model $model Instance of `PLL_Model`.
+	 * @param PLL_Model                              $model        Instance of `PLL_Model`.
+	 * @param PLL_Translatable_Abstract_Object_Cache $object_cache Instance of `PLL_Translatable_Abstract_Object_Cache`.
 	 */
-	public function __construct( PLL_Model &$model ) {
+	public function __construct( PLL_Model &$model, PLL_Translatable_Abstract_Object_Cache $object_cache ) {
 		$this->db = array(
 			'table'         => $GLOBALS['wpdb']->posts,
 			'id_column'     => 'ID',
@@ -66,7 +67,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			'default_alias' => $GLOBALS['wpdb']->posts,
 		);
 
-		parent::__construct( $model );
+		parent::__construct( $model, $object_cache );
 
 		// Keep hooks in constructor for backward compatibility.
 		$this->init();

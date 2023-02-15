@@ -66,6 +66,13 @@ abstract class PLL_Translatable_Object {
 	protected $object_type = null;
 
 	/**
+	 * Used to handle cache for the current object.
+	 *
+	 * @var PLL_Translatable_Abstract_Object_Cache
+	 */
+	protected $object_cache;
+
+	/**
 	 * Contains database-related informations that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
@@ -90,11 +97,13 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param PLL_Model $model Instance of `PLL_Model`, passed by reference.
+	 * @param PLL_Model                              $model                     Instance of `PLL_Model`, passed by reference.
+	 * @param PLL_Translatable_Abstract_Object_Cache $object_cache Instance of `PLL_Translatable_Abstract_Object_Cache`.
 	 */
-	public function __construct( PLL_Model &$model ) {
+	public function __construct( PLL_Model &$model, PLL_Translatable_Abstract_Object_Cache $object_cache ) {
 		$this->model          = $model;
 		$this->tax_to_cache[] = $this->tax_language;
+		$this->$object_cache  = $object_cache->register_type( $this->cache_type );
 
 		/*
 		 * Register our taxonomy as soon as possible.
