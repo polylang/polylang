@@ -196,12 +196,8 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	 * @covers PLL_Translated_Object::save_translations()
 	 */
 	public function test_dont_save_translations_with_incorrect_language() {
-		global $wp_object_cache;
-
-		$options                   = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
-		$model                     = new PLL_Model( $options );
-		$translatable_object_cache = new PLL_Translatable_WP_Object_Cache( $wp_object_cache );
-		$model->post               = new PLL_Translated_Post( $model, $translatable_object_cache );
+		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
+		$model   = new PLL_Model( $options );
 
 		$this->dont_save_translations_with_incorrect_language( $model->post );
 	}
