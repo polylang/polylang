@@ -14,7 +14,7 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	/**
 	 * Cache type of the current object.
 	 *
-	 * @var string
+	 * @var string|null
 	 *
 	 * @phpstan-var non-empty-string
 	 */
@@ -40,6 +40,7 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 
 	/**
 	 * Registers the type of cache the current object will handle.
+	 * If on other type has already been registered, returns a new object with the new type registered.
 	 *
 	 * @since 3.4
 	 *
@@ -49,6 +50,10 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	 * @phpstan-param non-empty-string $cache_type
 	 */
 	public function register_type( $cache_type ) {
+		if ( ! empty( $this->cache_type ) && $cache_type !== $this->cache_type ) {
+			return ( new $this( $this->cache_object ) )->register_type( $cache_type );
+		}
+
 		$this->cache_type = $cache_type;
 
 		return $this;
@@ -98,7 +103,7 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	 *
 	 * @since 3.4
 	 *
-	 * @return string UNIX timestamp indicating the last change .
+	 * @return string UNIX timestamp indicating the last change.
 	 */
 	abstract public function get_last_changed();
 
