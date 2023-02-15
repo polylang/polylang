@@ -13,7 +13,7 @@ if ( ! defined( 'PLL_LOCAL_DIR' ) ) {
 }
 
 // Includes local config file if exists
-if ( file_exists( PLL_LOCAL_DIR . '/pll-config.php' ) ) {
+if ( is_readable( PLL_LOCAL_DIR . '/pll-config.php' ) ) {
 	include_once PLL_LOCAL_DIR . '/pll-config.php';
 }
 
