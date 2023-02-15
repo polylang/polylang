@@ -40,7 +40,7 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 
 	/**
 	 * Registers the type of cache the current object will handle.
-	 * If on other type has already been registered, returns a new object with the new type registered.
+	 * If an other type has already been registered, returns a new object with the new type registered.
 	 *
 	 * @since 3.4
 	 *
