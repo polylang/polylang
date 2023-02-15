@@ -298,7 +298,7 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Validate flag
-		if ( ! empty( $args['flag'] ) && ! file_exists( POLYLANG_DIR . '/flags/' . $args['flag'] . '.png' ) ) {
+		if ( ! empty( $args['flag'] ) && ! is_readable( POLYLANG_DIR . '/flags/' . $args['flag'] . '.png' ) ) {
 			$flag = PLL_Language::get_flag_informations( $args['flag'] );
 
 			if ( ! empty( $flag['url'] ) ) {
