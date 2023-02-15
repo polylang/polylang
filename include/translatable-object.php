@@ -103,7 +103,7 @@ abstract class PLL_Translatable_Object {
 	public function __construct( PLL_Model &$model, PLL_Translatable_Abstract_Object_Cache $object_cache ) {
 		$this->model          = $model;
 		$this->tax_to_cache[] = $this->tax_language;
-		$this->$object_cache  = $object_cache->register_type( $this->cache_type );
+		$this->object_cache   = $object_cache->register_type( $this->cache_type );
 
 		/*
 		 * Register our taxonomy as soon as possible.
@@ -188,7 +188,7 @@ abstract class PLL_Translatable_Object {
 
 		$term_taxonomy_ids = wp_set_object_terms( $id, $lang, $this->tax_language );
 
-		wp_cache_set( 'last_changed', microtime(), $this->cache_type );
+		$this->object_cache->set_last_changed();
 
 		return is_array( $term_taxonomy_ids );
 	}
@@ -290,7 +290,20 @@ abstract class PLL_Translatable_Object {
 				$to_cache = array( $terms[ $tax ] );
 			}
 
-			wp_cache_add( $id, $to_cache, "{$tax}_relationships" );
+			$cache_args = array(
+				'key'   => $id,
+				'data'  => $to_cache,
+				'group' => "{$tax}_relationships",
+			);
+			$this->object_cache->add(
+				$this->object_cache->filter_add_args(
+					$cache_args,
+					array( $id ),
+					$this->type,
+					$this->tax_language,
+					$this->tax_to_cache
+				)
+			);
 		}
 
 		return $term;
@@ -389,13 +402,38 @@ abstract class PLL_Translatable_Object {
 		}
 
 		$key          = md5( $sql );
-		$last_changed = wp_cache_get_last_changed( $this->cache_type );
+		$last_changed = $this->object_cache->get_last_changed();
 		$cache_key    = "{$this->cache_type}_no_lang:{$key}:{$last_changed}";
-		$object_ids   = wp_cache_get( $cache_key, $this->cache_type );
+		$cache_args   = array(
+			'key'   => $cache_key,
+			'group' => $this->cache_type,
+		);
+		$object_ids   = $this->object_cache->get(
+			$this->object_cache->filter_get_args(
+				$cache_args,
+				array(),
+				$this->type,
+				$this->tax_language,
+				$this->tax_to_cache
+			)
+		);
 
 		if ( ! is_array( $object_ids ) ) {
 			$object_ids = $GLOBALS['wpdb']->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			wp_cache_set( $cache_key, $object_ids, $this->cache_type );
+			$cache_args = array(
+				'key'   => $cache_key,
+				'data'  => $object_ids,
+				'group' => $this->cache_type,
+			);
+			$this->object_cache->set(
+				$this->object_cache->filter_set_args(
+					$cache_args,
+					array(),
+					$this->type,
+					$this->tax_language,
+					$this->tax_to_cache
+				)
+			);
 		}
 
 		return array_values( $this->sanitize_int_ids_list( $object_ids ) );

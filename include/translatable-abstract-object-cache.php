@@ -46,7 +46,7 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	 * @param string $cache_type Cache type to use.
 	 * @return self
 	 *
-	 * @phpstan-var non-empty-string $cache_type
+	 * @phpstan-param non-empty-string $cache_type
 	 */
 	public function register_type( $cache_type ) {
 		$this->cache_type = $cache_type;
@@ -80,7 +80,7 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	 * @since 3.4
 	 *
 	 * @param array $args Array of arguments to get data from the cache.
-	 * @return int[] Array of object IDs (could be anything, like post or term for instance).
+	 * @return mixed Array of object IDs (could be anything, like post or term for instance) if data has been cached.
 	 */
 	abstract public function get( $args );
 
@@ -98,7 +98,7 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	 *
 	 * @since 3.4
 	 *
-	 * @return mixed Anything indicating the last change (e.g UNIX timestamp, DateTime...).
+	 * @return string UNIX timestamp indicating the last change .
 	 */
 	abstract public function get_last_changed();
 
@@ -114,12 +114,23 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	 * @param string[] $tax_to_cache List of taxonomies to cache.
 	 * @return array Filtered array of arguments to add data to the cache.
 	 *
-	 * @phpstan-var non-empty-string $type
-	 * @phpstan-var non-empty-string $tax_language
-	 * @phpstan-var list<non-empty-string> $tax_to_cache
+	 * @phpstan-param non-empty-string $type
+	 * @phpstan-param non-empty-string $tax_language
+	 * @phpstan-param list<non-empty-string> $tax_to_cache
 	 */
 	public function filter_add_args( $args, $object_ids, $type, $tax_language, $tax_to_cache ) {
-		// TODO: implement here.
+		/**
+		 * Filters the arguments passed to `PLL_Translatable_Abstract_Object_Cache::add()`.
+		 *
+		 * @since 3.4
+		 *
+		 * @param array    $args         Array of arguments to add data to the cache.
+		 * @param int[]    $object_ids   List of object IDs.
+		 * @param string   $type         Identifier that must be unique for each type of content.
+		 * @param string   $tax_language Taxonomy name for the languages.
+		 * @param string[] $tax_to_cache List of taxonomies to cache.
+		 */
+		return apply_filters( 'pll_pre_add_to_object_cache', $args, $object_ids, $type, $tax_language, $tax_to_cache );
 	}
 
 	/**
@@ -134,12 +145,23 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	 * @param string[] $tax_to_cache List of taxonomies to cache.
 	 * @return array Filtered array of arguments to save data to the cache.
 	 *
-	 * @phpstan-var non-empty-string $type
-	 * @phpstan-var non-empty-string $tax_language
-	 * @phpstan-var list<non-empty-string> $tax_to_cache
+	 * @phpstan-param non-empty-string $type
+	 * @phpstan-param non-empty-string $tax_language
+	 * @phpstan-param list<non-empty-string> $tax_to_cache
 	 */
 	public function filter_set_args( $args, $object_ids, $type, $tax_language, $tax_to_cache ) {
-		// TODO: implement here.
+		/**
+		 * Filters the arguments passed to `PLL_Translatable_Abstract_Object_Cache::set()`.
+		 *
+		 * @since 3.4
+		 *
+		 * @param array    $args         Array of arguments to save data to the cache.
+		 * @param int[]    $object_ids   List of object IDs.
+		 * @param string   $type         Identifier that must be unique for each type of content.
+		 * @param string   $tax_language Taxonomy name for the languages.
+		 * @param string[] $tax_to_cache List of taxonomies to cache.
+		 */
+		return apply_filters( 'pll_pre_set_to_object_cache', $args, $object_ids, $type, $tax_language, $tax_to_cache );
 	}
 
 	/**
@@ -154,11 +176,22 @@ abstract class PLL_Translatable_Abstract_Object_Cache {
 	 * @param string[] $tax_to_cache List of taxonomies to cache.
 	 * @return array Filtered array of arguments to get data from the cache.
 	 *
-	 * @phpstan-var non-empty-string $type
-	 * @phpstan-var non-empty-string $tax_language
-	 * @phpstan-var list<non-empty-string> $tax_to_cache
+	 * @phpstan-param non-empty-string $type
+	 * @phpstan-param non-empty-string $tax_language
+	 * @phpstan-param list<non-empty-string> $tax_to_cache
 	 */
 	public function filter_get_args( $args, $object_ids, $type, $tax_language, $tax_to_cache ) {
-		// TODO: implement here.
+		/**
+		 * Filters the arguments passed to `PLL_Translatable_Abstract_Object_Cache::get()`.
+		 *
+		 * @since 3.4
+		 *
+		 * @param array    $args         Array of arguments to get data from the cache.
+		 * @param int[]    $object_ids   List of object IDs.
+		 * @param string   $type         Identifier that must be unique for each type of content.
+		 * @param string   $tax_language Taxonomy name for the languages.
+		 * @param string[] $tax_to_cache List of taxonomies to cache.
+		 */
+		return apply_filters( 'pll_pre_set_to_object_cache', $args, $object_ids, $type, $tax_language, $tax_to_cache );
 	}
 }
