@@ -58,11 +58,11 @@ class PLL_Admin_Model extends PLL_Model {
 			update_option( 'polylang', $this->options );
 		}
 
-		$this->clean_languages_cache(); // Update the languages list now !
+		// Refresh languages.
+		$this->clean_languages_cache();
+		$this->get_languages_list();
 
-		// Init a mo_id for this language
-		$mo = new PLL_MO();
-		$mo->export_to_db( $this->get_language( $args['slug'] ) );
+		flush_rewrite_rules(); // Refresh rewrite rules.
 
 		/**
 		 * Fires when a language is added.
@@ -72,12 +72,6 @@ class PLL_Admin_Model extends PLL_Model {
 		 * @param array $args Arguments used to create the language. @see PLL_Admin_Model::add_language().
 		 */
 		do_action( 'pll_add_language', $args );
-
-		// Refresh languages.
-		$this->clean_languages_cache();
-		$this->get_languages_list();
-
-		flush_rewrite_rules(); // Refresh rewrite rules.
 
 		return true;
 	}
@@ -141,12 +135,6 @@ class PLL_Admin_Model extends PLL_Model {
 		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
 			delete_user_meta( $user_id, 'pll_filter_content', $lang->slug );
 			delete_user_meta( $user_id, 'description_' . $lang->slug );
-		}
-
-		// Delete the string translations
-		$mo_id = PLL_MO::get_id( $lang );
-		if ( ! empty( $mo_id ) ) {
-			wp_delete_post( $mo_id );
 		}
 
 		// Delete domain
@@ -249,6 +237,13 @@ class PLL_Admin_Model extends PLL_Model {
 		$description = $this->build_language_metas( $args );
 		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
 
+		// Refresh languages.
+		$this->clean_languages_cache();
+		$this->get_languages_list();
+
+		// Refresh rewrite rules.
+		flush_rewrite_rules();
+
 		/**
 		 * Fires after a language is updated.
 		 *
@@ -269,13 +264,6 @@ class PLL_Admin_Model extends PLL_Model {
 		 * @param PLL_Language $lang Previous value of the language beeing edited.
 		 */
 		do_action( 'pll_update_language', $args, $lang );
-
-		// Refresh languages.
-		$this->clean_languages_cache();
-		$this->get_languages_list();
-
-		// Refresh rewrite rules.
-		flush_rewrite_rules();
 
 		return true;
 	}

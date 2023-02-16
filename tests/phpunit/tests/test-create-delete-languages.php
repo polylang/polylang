@@ -154,7 +154,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'home_url',
 			'search_url',
 			'host',
-			'mo_id',
 			'page_on_front',
 			'page_for_posts',
 			'flag_code',

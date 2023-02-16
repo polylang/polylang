@@ -8,25 +8,12 @@
  *
  * @since 1.2
  * @since 2.1 Stores the strings in a post meta instead of post content to avoid unserialize issues (See #63)
+ * @since 3.4 Stores the strings into language taxonomy term meta instead of a post meta.
  */
 class PLL_MO extends MO {
 
 	/**
-	 * Registers the polylang_mo custom post type, only at first object creation
-	 *
-	 * @since 1.2
-	 */
-	public function __construct() {
-		if ( ! post_type_exists( 'polylang_mo' ) ) {
-			$labels = array( 'name' => __( 'Strings translations', 'polylang' ) );
-			register_post_type( 'polylang_mo', array( 'labels' => $labels, 'rewrite' => false, 'query_var' => false, '_pll' => true ) );
-
-			add_action( 'pll_add_language', array( $this, 'clean_cache' ) );
-		}
-	}
-
-	/**
-	 * Writes a PLL_MO object into a custom post meta.
+	 * Writes the strings into a term meta.
 	 *
 	 * @since 1.2
 	 *
@@ -35,9 +22,9 @@ class PLL_MO extends MO {
 	 */
 	public function export_to_db( $lang ) {
 		/*
-		 * It would be convenient to store the whole object but it would take a huge space in DB.
+		 * It would be convenient to store the whole object, but it would take a huge space in DB.
 		 * So let's keep only the strings in an array.
-		 * The strings are slashed to avoid breaking slashed strings in update_post_meta.
+		 * The strings are slashed to avoid breaking slashed strings in update_term_meta.
 		 * @see https://codex.wordpress.org/Function_Reference/update_post_meta#Character_Escaping.
 		 */
 		$strings = array();
@@ -45,85 +32,27 @@ class PLL_MO extends MO {
 			$strings[] = wp_slash( array( $entry->singular, $this->translate( $entry->singular ) ) );
 		}
 
-		if ( empty( $lang->mo_id ) ) {
-			$post = array(
-				'post_title'  => 'polylang_mo_' . $lang->term_id,
-				'post_status' => 'private', // To avoid a conflict with WP Super Cache. See https://wordpress.org/support/topic/polylang_mo-and-404s-take-2
-				'post_type'   => 'polylang_mo',
-			);
-			$mo_id = wp_insert_post( $post );
-			update_post_meta( $mo_id, '_pll_strings_translations', $strings );
-		} else {
-			update_post_meta( $lang->mo_id, '_pll_strings_translations', $strings );
-		}
+		update_term_meta( $lang->term_id, '_pll_strings_translations', $strings );
 	}
 
 	/**
-	 * Reads a PLL_MO object from a custom post meta.
+	 * Reads a PLL_MO object from the term meta.
 	 *
 	 * @since 1.2
+	 * @since 3.4 Reads a PLL_MO from the term meta.
 	 *
 	 * @param PLL_Language $lang The language in which we want to get strings.
 	 * @return void
 	 */
 	public function import_from_db( $lang ) {
-		if ( ! empty( $lang->mo_id ) ) {
-			$strings = get_post_meta( $lang->mo_id, '_pll_strings_translations', true );
-			if ( is_array( $strings ) ) {
-				foreach ( $strings as $msg ) {
-					$this->add_entry( $this->make_entry( $msg[0], $msg[1] ) );
-				}
-			}
-		}
-	}
-
-	/**
-	 * Returns the post ID of the post storing the strings translations.
-	 *
-	 * @since 1.4
-	 *
-	 * @param PLL_Language $lang The language object.
-	 * @return int|null
-	 *
-	 * @phpstan-return positive-int|null
-	 */
-	public static function get_id( $lang ) {
-		return self::get_id_from_term_id( $lang->term_id );
-	}
-
-	/**
-	 * Returns the post ID of the post storing the strings translations.
-	 *
-	 * @since 3.4
-	 *
-	 * @param int $term_id The language term ID.
-	 * @return int|null
-	 *
-	 * @phpstan-return positive-int|null
-	 */
-	public static function get_id_from_term_id( $term_id ) {
-		global $wpdb;
-
-		$ids = wp_cache_get( 'polylang_mo_ids' );
-
-		if ( empty( $ids ) ) {
-			$ids = $wpdb->get_results( "SELECT post_title, ID FROM $wpdb->posts WHERE post_type='polylang_mo'", OBJECT_K );
-			wp_cache_add( 'polylang_mo_ids', $ids );
+		$strings = get_term_meta( $lang->term_id, '_pll_strings_translations', true );
+		if ( empty( $strings ) || ! is_array( $strings ) ) {
+			return;
 		}
 
-		// The mo id for a language can be transiently empty.
-		return isset( $ids[ 'polylang_mo_' . $term_id ] ) ? $ids[ 'polylang_mo_' . $term_id ]->ID : null;
-	}
-
-	/**
-	 * Invalidate the cache when adding a new language
-	 *
-	 * @since 2.0.5
-	 *
-	 * @return void
-	 */
-	public function clean_cache() {
-		wp_cache_delete( 'polylang_mo_ids' );
+		foreach ( $strings as $msg ) {
+			$this->add_entry( $this->make_entry( $msg[0], $msg[1] ) );
+		}
 	}
 
 	/**

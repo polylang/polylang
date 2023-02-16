@@ -54,7 +54,6 @@ class PLL_Language_Factory {
 			'slug'       => $terms['language']->slug,
 			'term_group' => $terms['language']->term_group,
 			'term_props' => array(),
-			'mo_id'      => PLL_MO::get_id_from_term_id( $terms['language']->term_id ),
 		);
 
 		foreach ( $terms as $term ) {
@@ -144,7 +143,7 @@ class PLL_Language_Factory {
 
 		$data['is_rtl'] = ! empty( $data['is_rtl'] ) ? 1 : 0;
 
-		$positive_fields = array( 'mo_id', 'term_group', 'page_on_front', 'page_for_posts' );
+		$positive_fields = array( 'term_group', 'page_on_front', 'page_for_posts' );
 
 		foreach ( $positive_fields as $field ) {
 			$data[ $field ] = ! empty( $data[ $field ] ) ? absint( $data[ $field ] ) : 0;

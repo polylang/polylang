@@ -27,7 +27,6 @@
  *     flag_code: non-empty-string,
  *     term_group: int,
  *     is_rtl: int<0, 1>,
- *     mo_id: int<0, max>,
  *     facebook?: string,
  *     home_url: non-empty-string,
  *     search_url: non-empty-string,
@@ -139,15 +138,6 @@ class PLL_Language {
 	 * @phpstan-var non-empty-string
 	 */
 	public $host;
-
-	/**
-	 * ID of the post storing strings translations.
-	 *
-	 * @var int
-	 *
-	 * @phpstan-var int<0, max>
-	 */
-	public $mo_id;
 
 	/**
 	 * ID of the page on front in this language (set from pll_additional_language_data filter).
@@ -278,7 +268,6 @@ class PLL_Language {
 	 *     @type string   $flag_code       Code of the flag.
 	 *     @type int      $term_group      Order of the language when displayed in a list of languages.
 	 *     @type int      $is_rtl          `1` if the language is rtl, `0` otherwise.
-	 *     @type int      $mo_id           ID of the post storing strings translations.
 	 *     @type string   $facebook        Optional. Facebook locale.
 	 *     @type string   $home_url        Home URL in this language.
 	 *     @type string   $search_url      Home URL to use in search forms.
@@ -404,7 +393,7 @@ class PLL_Language {
 		/**
 		 * Filters whether to trigger an error for deprecated properties.
 		 *
-		 * The filter name is intentionnaly not prefixed to use the same as WordPress
+		 * The filter name is intentionally not prefixed to use the same as WordPress
 		 * in case it is added in the future.
 		 *
 		 * @since 3.4
