@@ -68,14 +68,7 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 	public function walk( $elements, $max_depth, ...$args ) { // // phpcs:ignore WordPressVIPMinimum.Classes.DeclarationCompatibility.DeclarationCompatibility
 		$output = '';
 
-		if ( is_array( $max_depth ) ) { // @phpstan-ignore-line
-			// Backward compatibility with Polylang < 2.6.7
-			$this->trigger_walk_error();
-			$args = $max_depth;
-			$max_depth = -1;
-		} else {
-			$args = isset( $args[0] ) ? $args[0] : array();
-		}
+		$this->maybe_fix_walk_args( $max_depth, $args );
 
 		$args = wp_parse_args( $args, array( 'value' => 'slug', 'name' => 'lang_choice' ) );
 

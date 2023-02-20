@@ -46,18 +46,28 @@ class PLL_Walker extends Walker {
 	}
 
 	/**
-	 * Triggers an error for misuse of `PLL_Walker::walk()`.
+	 * Sets `PLL_Walker::walk()` arguments as it should
+	 * and triggers an error in case of misuse of them.
 	 *
 	 * @since 3.4
 	 *
+	 * @param array|int $max_depth The maximum hierarchical depth. Passed by reference.
+	 * @param array     $args      Additional arguments. Passed by reference.
 	 * @return void
 	 */
-	protected function trigger_walk_error() {
+	protected function maybe_fix_walk_args( &$max_depth, &$args ) {
+		if ( ! is_array( $max_depth ) ) {
+			$args = isset( $args[0] ) ? $args[0] : array();
+			return;
+		}
+
 		// Backward compatibility with Polylang < 2.6.7
 		_doing_it_wrong(
 			__CLASS__ . '::walk()',
 			'The method expects an integer as second parameter.',
 			'2.6.7'
 		);
+		$args      = $max_depth;
+		$max_depth = -1;
 	}
 }
