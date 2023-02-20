@@ -251,7 +251,7 @@ class PLL_Switcher {
 			$walker = new PLL_Walker_List();
 		}
 
-		// Cast each elements to stdClass because $walker::walk() expects an array of objects.
+		// Cast each element to stdClass because $walker::walk() expects an array of objects.
 		foreach ( $elements as $i => $element ) {
 			$elements[ $i ] = (object) $element;
 		}
