@@ -419,12 +419,8 @@ abstract class PLL_Translatable_Object {
 		);
 
 		if ( ! is_array( $object_ids ) ) {
-			$object_ids = $GLOBALS['wpdb']->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$cache_args = array(
-				'key'   => $cache_key,
-				'data'  => $object_ids,
-				'group' => $this->cache_type,
-			);
+			$object_ids         = $GLOBALS['wpdb']->get_col( $sql );  // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$cache_args['data'] = $object_ids;
 			$this->object_cache->set(
 				$this->object_cache->filter_set_args(
 					$cache_args,
