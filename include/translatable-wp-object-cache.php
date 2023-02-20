@@ -84,11 +84,13 @@ class PLL_Translatable_WP_Object_Cache extends PLL_Translatable_Abstract_Object_
 	 * @since 3.4
 	 *
 	 * @return string UNIX timestamp indicating the last change.
+	 *
+	 * @phpstan-return non-empty-string
 	 */
 	public function get_last_changed() {
 		/**
 		 * @phpstan-var non-empty-string
 		 */
-		return wp_cache_get( 'last_changed', $this->cache_type );
+		return wp_cache_get_last_changed( $this->cache_type );
 	}
 }
