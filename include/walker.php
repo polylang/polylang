@@ -56,7 +56,7 @@ class PLL_Walker extends Walker {
 	 * @return void
 	 */
 	protected function maybe_fix_walk_args( &$max_depth, &$args ) {
-		if ( is_int( $max_depth ) ) {
+		if ( ! is_array( $max_depth ) ) {
 			$args = isset( $args[0] ) ? $args[0] : array();
 			return;
 		}
