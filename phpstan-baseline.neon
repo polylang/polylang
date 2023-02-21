@@ -916,11 +916,6 @@ parameters:
 			path: include/translated-term.php
 
 		-
-			message: "#^Parameter \\#1 \\$args of function wp_parse_args expects array\\|object\\|string, mixed given\\.$#"
-			count: 1
-			path: include/walker-dropdown.php
-
-		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
 			count: 1
 			path: include/widget-languages.php
