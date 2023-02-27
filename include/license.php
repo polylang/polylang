@@ -149,8 +149,8 @@ class PLL_License {
 		$this->license_key = $license_key;
 		$this->api_request( 'activate_license' );
 
-		// Tell WordPress to look for updates
-		set_site_transient( 'update_plugins', null );
+		// Tell WordPress to look for updates.
+		delete_site_transient( 'update_plugins' );
 		return $this;
 	}
 
