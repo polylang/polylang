@@ -841,22 +841,26 @@ class PLL_Model {
 		 */
 		$languages = apply_filters( 'pll_languages_list', $languages, $this );
 
-		if ( $this->are_languages_ready() ) {
-			/**
-			 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
-			 * Thanks to captin411 for catching this!
-			 *
-			 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
-			 */
-			$languages_data = array_map(
-				function ( $language ) {
-				return $language->to_array( 'db' );
-				},
-				$languages
-			);
-
-			set_transient( 'pll_languages_list', $languages_data );
+		if ( ! $this->are_languages_ready() ) {
+			// Do not cache an incomplete list.
+			/** @var list<PLL_Language> $languages */
+			return $languages;
 		}
+
+		/**
+		 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
+		 * Thanks to captin411 for catching this!
+		 *
+		 * @see https://wordpress.org/support/topic/fatal-error-pll_model_languages_list?replies=8#post-6782255
+		 */
+		$languages_data = array_map(
+			function ( $language ) {
+			return $language->to_array( 'db' );
+			},
+			$languages
+		);
+
+		set_transient( 'pll_languages_list', $languages_data );
 
 		/** @var list<PLL_Language> $languages */
 		return $languages;
