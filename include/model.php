@@ -855,7 +855,7 @@ class PLL_Model {
 		 */
 		$languages_data = array_map(
 			function ( $language ) {
-			return $language->to_array( 'db' );
+				return $language->to_array( 'db' );
 			},
 			$languages
 		);
