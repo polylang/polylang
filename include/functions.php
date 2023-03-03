@@ -9,22 +9,6 @@
  * and miscellaneous utility functions
  */
 
-if ( ! function_exists( 'wpcom_vip_get_page_by_title' ) ) {
-	/**
-	 * Retrieve a page given its title.
-	 *
-	 * @since 2.0
-	 *
-	 * @param string       $page_title Page title
-	 * @param string       $output     Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N. Default OBJECT
-	 * @param string|array $post_type  Optional. Post type or array of post types. Default 'page'.
-	 * @return WP_Post|array|null WP_Post (or array) on success, or null on failure.
-	 */
-	function wpcom_vip_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'page' ) {
-		return get_page_by_title( $page_title, $output, $post_type ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_page_by_title_get_page_by_title
-	}
-}
-
 if ( ! function_exists( 'wpcom_vip_get_page_by_path' ) ) {
 	/**
 	 * Retrieves a page given its path.
