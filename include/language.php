@@ -38,7 +38,8 @@
  *     page_on_front: int<0, max>,
  *     page_for_posts: int<0, max>,
  *     active: bool,
- *     fallbacks?: array<non-empty-string>
+ *     fallbacks?: array<non-empty-string>,
+ *     is_default?: bool
  * }
  */
 class PLL_Language {
@@ -215,6 +216,13 @@ class PLL_Language {
 	public $fallbacks = array();
 
 	/**
+	 * Whether the language is the default one.
+	 *
+	 * @var boolean
+	 */
+	public $is_default = false;
+
+	/**
 	 * Stores language term properties (like term IDs and counts) for each language taxonomy (`language`,
 	 * `term_language`, etc).
 	 * This stores the values of the properties `$term_id` + `$term_taxonomy_id` + `$count` (`language`), `$tl_term_id`
@@ -280,6 +288,7 @@ class PLL_Language {
 	 *     @type int      $page_for_posts  Optional. ID of the page for posts in this language.
 	 *     @type bool     $active          Whether or not the language is active. Default `true`.
 	 *     @type string[] $fallbacks       List of WordPress language locales. Ex: array( 'en_GB' ).
+	 *     @type bool     $is_default      Optional. Whether or not the language is the default one.
 	 * }
 	 *
 	 * @phpstan-param LanguageData $language_data
