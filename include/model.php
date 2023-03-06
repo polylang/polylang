@@ -794,7 +794,7 @@ class PLL_Model {
 			 *     array<non-empty-string, WP_Term>
 			 * ) $lang_terms
 			 */
-			$languages[] = PLL_Language_Factory::get_from_terms( $lang_terms );
+			$languages[] = PLL_Language_Factory::get_from_terms( $lang_terms, $this->options );
 		}
 
 		// We will need the languages list to allow its access in the filter below.
