@@ -379,17 +379,35 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
+		$object_ids = $this->query_objects_with_no_lang( $sql );
+
+		return array_values( $this->sanitize_int_ids_list( $object_ids ) );
+	}
+
+	/**
+	 * Returns object IDs without language given a specific SQL query.
+	 * Can be overriden by child classes in case queried object doesn't use
+	 * `wp_cache_set_last_changed()` or another cache system.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $sql A prepared SQL query for object IDs with no language.
+	 * @return mixed An array of numeric object IDs.
+	 */
+	protected function query_objects_with_no_lang( $sql ) {
 		$key          = md5( $sql );
 		$last_changed = wp_cache_get_last_changed( $this->cache_type );
 		$cache_key    = "{$this->cache_type}_no_lang:{$key}:{$last_changed}";
 		$object_ids   = wp_cache_get( $cache_key, $this->cache_type );
 
-		if ( ! is_array( $object_ids ) ) {
-			$object_ids = $GLOBALS['wpdb']->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			wp_cache_set( $cache_key, $object_ids, $this->cache_type );
+		if ( is_array( $object_ids ) ) {
+			return $object_ids;
 		}
 
-		return array_values( $this->sanitize_int_ids_list( $object_ids ) );
+		$object_ids = $GLOBALS['wpdb']->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+		wp_cache_set( $cache_key, $object_ids, $this->cache_type );
+
+		return $object_ids;
 	}
 
 	/**
