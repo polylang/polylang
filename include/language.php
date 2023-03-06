@@ -605,4 +605,56 @@ class PLL_Language extends PLL_Language_Deprecation {
 
 		return $this->search_url;
 	}
+
+	/**
+	 * Returns the value of a language property.
+	 * This is handy to get a property's value without worrying about triggering a deprecation warning or anything.
+	 *
+	 * @since 3.4
+	 *
+	 * @param string $property A property name.
+	 * @return string|int|bool|string[] The requested property for the language, false if the property doesn't exist.
+	 *
+	 * @phpstan-param 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks' $property
+	 * @phpstan-return (
+	 *     $property is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
+	 *         $property is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
+	 *             $property is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+	 *                 $property is 'term_group' ? int : (
+	 *                     $property is 'is_rtl' ? int<0, 1> : (
+	 *                         $property is 'active' ? bool : (
+	 *                             $property is 'fallbacks' ? array<non-empty-string> : false
+	 *                         )
+	 *                     )
+	 *                 )
+	 *             )
+	 *         )
+	 *     )
+	 * )
+	 */
+	public function get_prop( $property ) {
+		// Deprecated property.
+		if ( $this->is_deprecated_term_property( $property ) ) {
+			return $this->get_deprecated_term_property( $property );
+		}
+
+		if ( $this->is_deprecated_url_property( $property ) ) {
+			return $this->get_deprecated_url_property( $property );
+		}
+
+		// Composite property like 'term_language:term_taxonomy_id'.
+		if ( preg_match( '/^(.{1,32}):(term_id|term_taxonomy_id|count)$/', $property, $matches ) ) {
+			/**
+			 * @var array{0:non-empty-string, 1:'term_id'|'term_taxonomy_id'|'count'} $matches
+			 */
+			return $this->get_tax_prop( $matches[0], $matches[1] );
+		}
+
+		// Any other public property.
+		if ( isset( $this->$property ) ) {
+			return $this->$property;
+		}
+
+		return false;
+	}
 }

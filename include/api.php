@@ -41,24 +41,43 @@ function pll_the_languages( $args = array() ) {
 
 /**
  * Returns the current language on frontend.
- * Returns the language set in admin language filter on backend ( false if set to all languages ).
+ * Returns the language set in admin language filter on backend (false if set to all languages).
  *
  * @api
  * @since 0.8.1
  *
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field or object for the current language, false if field isn't set or if current language doesn't exist yet.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to 'slug'. Pass OBJECT constant to get the language object.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the current language, false if the field isn't set or if current language doesn't exist yet.
+ *
+ * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks' $field
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
+ *             $field is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
+ *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+ *                     $field is 'term_group' ? int : (
+ *                         $field is 'is_rtl' ? int<0, 1> : (
+ *                             $field is 'active' ? bool : (
+ *                                 $field is 'fallbacks' ? array<non-empty-string> : false
+ *                             )
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )|false
  */
 function pll_current_language( $field = 'slug' ) {
 	if ( empty( PLL()->curlang ) ) {
 		return false;
 	}
 
-	if ( OBJECT === $field ) {
+	if ( \OBJECT === $field ) {
 		return PLL()->curlang;
 	}
 
-	return isset( PLL()->curlang->$field ) ? PLL()->curlang->$field : false;
+	return PLL()->curlang->get_prop( $field );
 }
 
 /**
@@ -67,8 +86,27 @@ function pll_current_language( $field = 'slug' ) {
  * @api
  * @since 1.0
  *
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field or object for the default language. False if none.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to 'slug'. Pass OBJECT constant to get the language object.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the default language. False if none.
+ *
+ * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks' $field
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
+ *             $field is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
+ *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+ *                     $field is 'term_group' ? int : (
+ *                         $field is 'is_rtl' ? int<0, 1> : (
+ *                             $field is 'active' ? bool : (
+ *                                 $field is 'fallbacks' ? array<non-empty-string> : false
+ *                             )
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )|false
  */
 function pll_default_language( $field = 'slug' ) {
 	if ( empty( PLL()->options['default_lang'] ) ) {
@@ -81,11 +119,11 @@ function pll_default_language( $field = 'slug' ) {
 		return false;
 	}
 
-	if ( OBJECT === $field ) {
+	if ( \OBJECT === $field ) {
 		return $lang;
 	}
 
-	return isset( $lang->$field ) ? $lang->$field : false;
+	return $lang->get_prop( $field );
 }
 
 /**
@@ -429,25 +467,36 @@ function pll_save_term_translations( $arr ) {
  * @since 1.5.4
  *
  * @param int    $post_id Post ID.
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field or object for the post language, false if no language is associated to that post.
+ * @param string $field   Optional, the language field to return (@see PLL_Language), defaults to 'slug'. Pass OBJECT constant to get the language object.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, false if no language is associated to that post.
+ *
+ * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks' $field
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
+ *             $field is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
+ *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+ *                     $field is 'term_group' ? int : (
+ *                         $field is 'is_rtl' ? int<0, 1> : (
+ *                             $field is 'active' ? bool : (
+ *                                 $field is 'fallbacks' ? array<non-empty-string> : false
+ *                             )
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )|false
  */
 function pll_get_post_language( $post_id, $field = 'slug' ) {
 	$lang = PLL()->model->post->get_language( $post_id );
 
-	if ( empty( $lang ) ) {
-		return false;
-	}
-
-	if ( OBJECT === $field ) {
+	if ( empty( $lang ) || \OBJECT === $field ) {
 		return $lang;
 	}
 
-	if ( ! isset( $lang->$field ) ) {
-		return false;
-	}
-
-	return $lang->$field;
+	return $lang->get_prop( $field );
 }
 
 /**
@@ -457,25 +506,36 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  * @since 1.5.4
  *
  * @param int    $term_id Term ID.
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field or object for the term language, false if no language is associated to that term.
+ * @param string $field   Optional, the language field to return (@see PLL_Language), defaults to 'slug'. Pass OBJECT constant to get the language object.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, false if no language is associated to that term.
+ *
+ * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks' $field
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
+ *             $field is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
+ *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+ *                     $field is 'term_group' ? int : (
+ *                         $field is 'is_rtl' ? int<0, 1> : (
+ *                             $field is 'active' ? bool : (
+ *                                 $field is 'fallbacks' ? array<non-empty-string> : false
+ *                             )
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )|false
  */
 function pll_get_term_language( $term_id, $field = 'slug' ) {
 	$lang = PLL()->model->term->get_language( $term_id );
 
-	if ( empty( $lang ) ) {
-		return false;
-	}
-
-	if ( OBJECT === $field ) {
+	if ( empty( $lang ) || \OBJECT === $field ) {
 		return $lang;
 	}
 
-	if ( ! isset( $lang->$field ) ) {
-		return false;
-	}
-
-	return $lang->$field;
+	return $lang->get_prop( $field );
 }
 
 /**
