@@ -63,6 +63,20 @@ trait PLL_UnitTestCase_Trait {
 
 		remove_action( 'current_screen', '_load_remote_block_patterns' );
 		remove_action( 'current_screen', '_load_remote_featured_patterns' );
+
+		/**
+		 * Don't trigger an error if `PLL_Model::get_languages_list()` is called too early.
+		 *
+		 * @see PLL_UnitTestCase_Trait::doing_it_wrong_run()
+		 */
+		add_filter(
+			'doing_it_wrong_trigger_error',
+			function ( $trigger_error, $function_name ) {
+				return $trigger_error && 'PLL_Model::get_languages_list()' !== $function_name;
+			},
+			10,
+			2
+		);
 	}
 
 	/**
@@ -165,5 +179,25 @@ trait PLL_UnitTestCase_Trait {
 		}
 
 		return static::$submenu;
+	}
+
+	/**
+	 * Don't trigger an error if `PLL_Model::get_languages_list()` is called too early.
+	 *
+	 * @since 3.4
+	 * @see WP_UnitTestCase_Base::doing_it_wrong_run()
+	 * @see PLL_UnitTestCase_Trait::wpSetUpBeforeClass()
+	 *
+	 * @param string $function The function to add.
+	 * @param string $message  A message explaining what has been done incorrectly.
+	 * @param string $version  The version of WordPress where the message was added.
+	 * @return void
+	 */
+	public function doing_it_wrong_run( $function, $message, $version ) {
+		if ( 'PLL_Model::get_languages_list()' === $function ) {
+			return;
+		}
+
+		parent::doing_it_wrong_run( $function, $message, $version );
 	}
 }
