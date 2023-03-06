@@ -83,7 +83,7 @@ $languages_list = array_diff_key(
 			esc_attr( $lg->locale ),
 			esc_html( $lg->name ),
 			$lg->flag,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			$default_language === $lg->slug ? ' <span class="icon-default-lang"><span class="screen-reader-text">' . esc_html__( 'Default language', 'polylang' ) . '</span></span>' : ''
+			$lg->is_default ? ' <span class="icon-default-lang"><span class="screen-reader-text">' . esc_html__( 'Default language', 'polylang' ) . '</span></span>' : ''
 		);
 	}
 	?>

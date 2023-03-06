@@ -95,7 +95,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		$languages = array();
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( ! $this->options['hide_default'] || $this->options['default_lang'] != $language->slug ) {
+			if ( ! $this->options['hide_default'] || ! $language->is_default ) {
 				$languages[] = $language->slug;
 			}
 		}
