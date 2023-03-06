@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone,
 Donate link: https://polylang.pro
 Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
 Requires at least: 5.7
-Tested up to: 6.1
+Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -102,6 +102,15 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.3.2 (2023-03-06) =
+
+* Pro: Add compatibility with FSE changes introduced by WP 6.2
+* Pro: Adapt the navigation language switcher block for consistency with WP 6.2
+* Only store term ids in taxonomy relationships cache for WP 6.0+. Props @ocean90 #1154
+* Remove usage of `get_page_by_title()` deprecated in WP 6.2 #1213
+* Fix fatal error if the mu-plugins folder is not readable #1217
+* Fix a compatibility issue with plugins not expecting a null 'update_plugins' transient #1224
 
 = 3.3.1 (2023-01-09) =
 
