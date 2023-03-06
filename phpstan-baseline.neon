@@ -457,7 +457,7 @@ parameters:
 
 		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
-			count: 3
+			count: 1
 			path: frontend/frontend-filters.php
 
 		-
@@ -1184,11 +1184,6 @@ parameters:
 			message: "#^Variable \\$errors in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: settings/settings.php
-
-		-
-			message: "#^Cannot access offset 'default_lang' on mixed\\.$#"
-			count: 1
-			path: settings/table-languages.php
 
 		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|null given\\.$#"
