@@ -41,7 +41,8 @@
  *     fallbacks?: array<non-empty-string>
  * }
  */
-class PLL_Language {
+class PLL_Language extends PLL_Language_Deprecation {
+
 	/**
 	 * Language name. Ex: English.
 	 *
@@ -293,127 +294,6 @@ class PLL_Language {
 	}
 
 	/**
-	 * Throws a depreciation notice if someone tries to get one of the following properties:
-	 * `term_taxonomy_id`, `count`, `tl_term_id`, `tl_term_taxonomy_id` or `tl_count`.
-	 *
-	 * Backward compatibility with Polylang < 3.4.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $property Property to get.
-	 * @return mixed Required property value.
-	 */
-	public function __get( $property ) {
-		$deprecated_term_properties = array(
-			'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
-			'count'               => array( 'language', 'count' ),
-			'tl_term_id'          => array( 'term_language', 'term_id' ),
-			'tl_term_taxonomy_id' => array( 'term_language', 'term_taxonomy_id' ),
-			'tl_count'            => array( 'term_language', 'count' ),
-		);
-
-		// Deprecated property.
-		if ( array_key_exists( $property, $deprecated_term_properties ) ) {
-			$term_prop_type = $deprecated_term_properties[ $property ][0];
-			$term_prop      = $deprecated_term_properties[ $property ][1];
-			$prop_getter    = "get_tax_prop( '{$term_prop_type}', '{$term_prop}' )";
-
-			$this->deprecated_property( $property, $prop_getter );
-
-			return $this->term_props[ $term_prop_type ][ $term_prop ];
-		}
-
-		if ( 'search_url' === $property || 'home_url' === $property ) {
-			$url_getter = "get_{$property}";
-
-			$this->deprecated_property( $property, "{$url_getter}()" );
-
-			return $this->{$url_getter}();
-		}
-
-		// Undefined property.
-		if ( ! property_exists( $this, $property ) ) {
-			return null;
-		}
-
-		// The property is defined.
-		$ref = new ReflectionProperty( $this, $property );
-
-		// Public property.
-		if ( $ref->isPublic() ) {
-			return $this->{$property};
-		}
-
-		// Protected or private property.
-		$visibility = $ref->isPrivate() ? 'private' : 'protected';
-		$trace      = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-		$file       = isset( $trace[0]['file'] ) ? $trace[0]['file'] : '';
-		$line       = isset( $trace[0]['line'] ) ? $trace[0]['line'] : 0;
-		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-			esc_html(
-				sprintf(
-					"Cannot access %s property %s::$%s in %s on line %d.\nError handler",
-					$visibility,
-					get_class( $this ),
-					$property,
-					$file,
-					$line
-				)
-			),
-			E_USER_ERROR
-		);
-	}
-
-	/**
-	 * Checks for a deprecated property.
-	 * Is triggered by calling `isset()` or `empty()` on inaccessible (protected or private) or non-existing properties.
-	 *
-	 * Backward compatibility with Polylang < 3.4.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $property A property name.
-	 * @return bool
-	 */
-	public function __isset( $property ) {
-		$deprecated_properties = array( 'term_taxonomy_id', 'count', 'tl_term_id', 'tl_term_taxonomy_id', 'tl_count', 'home_url', 'search_url' );
-		return in_array( $property, $deprecated_properties, true );
-	}
-
-	/**
-	 * Triggers a deprecated an error for a deprecated property.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string $property    Deprecated property name.
-	 * @param string $replacement Method or property name to use instead.
-	 * @return void
-	 */
-	private function deprecated_property( $property, $replacement ) {
-		/**
-		 * Filters whether to trigger an error for deprecated properties.
-		 *
-		 * The filter name is intentionally not prefixed to use the same as WordPress
-		 * in case it is added in the future.
-		 *
-		 * @since 3.4
-		 *
-		 * @param bool $trigger Whether to trigger the error for deprecated properties. Default true.
-		 */
-		if ( WP_DEBUG && apply_filters( 'deprecated_property_trigger_error', true ) ) {
-			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-				sprintf(
-					"Class property %1\$s::\$%2\$s is deprecated, use %1\$s::%3\$s instead.\nError handler",
-					esc_html( get_class( $this ) ),
-					esc_html( $property ),
-					esc_html( $replacement )
-				),
-				E_USER_DEPRECATED
-			);
-		}
-	}
-
-	/**
 	 * Returns a language term property value (term ID, term taxonomy ID, or count).
 	 *
 	 * @since 3.4
@@ -435,29 +315,29 @@ class PLL_Language {
 	 *
 	 * @since 3.4
 	 *
-	 * @param string $field Name of the field to return. An empty string to return them all.
-	 * @return (int[]|int)[] Array keys are taxonomy names, array values depend of `$field`.
+	 * @param string $property Name of the field to return. An empty string to return them all.
+	 * @return (int[]|int)[] Array keys are taxonomy names, array values depend of `$property`.
 	 *
-	 * @phpstan-param 'term_taxonomy_id'|'term_id'|'count'|'' $field
+	 * @phpstan-param 'term_taxonomy_id'|'term_id'|'count'|'' $property
 	 * @phpstan-return array<non-empty-string, (
-	 *     $field is non-empty-string ?
+	 *     $property is non-empty-string ?
 	 *     (
-	 *         $field is 'count' ?
+	 *         $property is 'count' ?
 	 *         int<0, max> :
 	 *         positive-int
 	 *     ) :
 	 *     LanguagePropData
 	 * )>
 	 */
-	public function get_tax_props( $field = '' ) {
-		if ( empty( $field ) ) {
+	public function get_tax_props( $property = '' ) {
+		if ( empty( $property ) ) {
 			return $this->term_props;
 		}
 
 		$term_props = array();
 
 		foreach ( $this->term_props as $taxonomy_name => $props ) {
-			$term_props[ $taxonomy_name ] = $props[ $field ];
+			$term_props[ $taxonomy_name ] = $props[ $property ];
 		}
 
 		return $term_props;
