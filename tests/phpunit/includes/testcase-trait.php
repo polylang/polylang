@@ -183,6 +183,7 @@ trait PLL_UnitTestCase_Trait {
 
 	/**
 	 * Don't trigger an error if `PLL_Model::get_languages_list()` is called too early.
+	 * Note: the paramaters `$message` and `$version` are available since WP 6.1.
 	 *
 	 * @since 3.4
 	 * @see WP_UnitTestCase_Base::doing_it_wrong_run()
@@ -193,7 +194,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @param string $version  The version of WordPress where the message was added.
 	 * @return void
 	 */
-	public function doing_it_wrong_run( $function, $message, $version ) {
+	public function doing_it_wrong_run( $function, $message = '', $version = '' ) {
 		if ( 'PLL_Model::get_languages_list()' === $function ) {
 			return;
 		}
