@@ -123,11 +123,9 @@ class PLL_Model {
 	 */
 	public function get_languages_list( $args = array() ) {
 		if ( ! $this->are_languages_ready() ) {
-			/* translators: %s is the name of a hook. */
-			$message = function_exists( '__' ) ? __( 'This function must not be called before the hook %s.', 'polylang' ) : 'This function must not be called before the hook %s.';
 			_doing_it_wrong(
 				__METHOD__ . '()',
-				sprintf( esc_html( $message ), "'pll_pre_init'" ),
+				"This function must not be called before the hook 'pll_pre_init'.",
 				'3.4'
 			);
 		}
