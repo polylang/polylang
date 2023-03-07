@@ -163,7 +163,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'custom_flag',
 			'active',
 			'fallbacks',
-			'is_default'
+			'is_default',
 		);
 
 		$languages = get_transient( 'pll_languages_list' );
