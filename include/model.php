@@ -125,7 +125,7 @@ class PLL_Model {
 		if ( ! $this->are_languages_ready() ) {
 			_doing_it_wrong(
 				__METHOD__ . '()',
-				"This function must not be called before the hook 'pll_pre_init'.",
+				"It must not be called before the hook 'pll_pre_init'.",
 				'3.4'
 			);
 		}
