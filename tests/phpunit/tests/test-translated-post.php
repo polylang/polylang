@@ -202,4 +202,11 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$this->dont_save_translations_with_incorrect_language( $model->post );
 	}
+
+	public function test_post_language_not_updated_if_already_set() {
+		$post_id = self::factory()->post->create();
+		self::$model->post->set_language( $post_id, 'fr' );
+
+		$this->assertFalse( self::$model->post->set_language( $post_id, 'fr' ) );
+	}
 }
