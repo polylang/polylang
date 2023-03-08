@@ -66,17 +66,13 @@ trait PLL_UnitTestCase_Trait {
 
 		/**
 		 * Don't trigger an error if `PLL_Model::get_languages_list()` is called too early.
+		 * WP's test suite already does this in `WP_UnitTestCase_Base::set_up()`, but it happens too late because
+		 * we create our languages in `wpSetUpBeforeClass()` with `PLL_UnitTestCase::create_language()`, which calls
+		 * `PLL_Admin_Model::add_language()` => `PLL_Admin_Model::validate_lang()` => `PLL_Model::get_languages_list()`.
 		 *
 		 * @see PLL_UnitTestCase_Trait::doing_it_wrong_run()
 		 */
-		add_filter(
-			'doing_it_wrong_trigger_error',
-			function ( $trigger_error, $function_name ) {
-				return $trigger_error && 'PLL_Model::get_languages_list()' !== $function_name;
-			},
-			10,
-			2
-		);
+		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 	}
 
 	/**
