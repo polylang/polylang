@@ -98,4 +98,33 @@ class Media_Test extends PLL_UnitTestCase {
 		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_excerpt );
 		$this->assertEquals( wp_unslash( $slash_2 ), get_post_meta( $fr, '_wp_attachment_image_alt', true ) );
 	}
+
+	/**
+	 * @since 3.1 Since the language and translations are updated through a previous AJAX call, we'd rather not perform an unnecessary update now.
+	 */
+	public function test_attachment_fields_to_save() {
+		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$en = self::factory()->attachment->create_upload_object( $filename );
+		self::$model->post->set_language( $en, 'en' );
+
+		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $editor ); // Set a user to pass current_user_can test.
+
+		$this->pll_admin->model->post = $this->getMockBuilder( PLL_Translated_Post::class )
+			->setConstructorArgs( array( &$this->pll_admin->model ) )
+			->setMethods( array( 'save_translations' ) )
+			->getMock();
+		$this->pll_admin->model->post->expects( $save_translations_spy = $this->any() )
+			->method( 'save_translations' );
+
+		$_REQUEST = $_POST = array(
+			'post_ID'       => $en,
+			'post_title'    => 'Test image',
+			'attachments'   => array( $en => array( 'language' => 'en' ) ),
+			'_pll_nonce'    => wp_create_nonce( 'pll_language' ),
+		);
+		edit_post();
+
+		$this->assertEquals( 0, $save_translations_spy->getInvocationCount() );
+	}
 }
