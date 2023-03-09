@@ -91,11 +91,7 @@ function pll_current_language( $field = 'slug' ) {
  * )|false
  */
 function pll_default_language( $field = 'slug' ) {
-	if ( empty( PLL()->options['default_lang'] ) ) {
-		return false;
-	}
-
-	$lang = PLL()->model->get_language( PLL()->options['default_lang'] );
+	$lang = PLL()->model->get_default_language();
 
 	if ( empty( $lang ) ) {
 		return false;

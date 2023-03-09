@@ -190,7 +190,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 
 		// Fix paged static front page in plain permalinks when Settings > Reading doesn't match the default language
 		elseif ( ! $this->links_model->using_permalinks && count( $query->query ) === 1 && ! empty( $query->query['page'] ) ) {
-			$lang = $this->model->get_language( $this->options['default_lang'] );
+			$lang = $this->model->get_default_language();
 			if ( empty( $lang ) ) {
 				return $lang;
 			}

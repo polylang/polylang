@@ -189,7 +189,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			// That's nice to display the right home urls but don't forget that the page on front may have no language yet
 			$lang = $this->model->post->get_language( $this->page_on_front );
 			/** @var PLL_Language $lang */
-			$lang = $lang ? $lang : $this->model->get_language( $this->options['default_lang'] );
+			$lang = $lang ? $lang : $this->model->get_default_language();
 			printf(
 				/* translators: %1$s example url when the option is active. %2$s example url when the option is not active */
 				esc_html__( 'Example: %1$s instead of %2$s', 'polylang' ),

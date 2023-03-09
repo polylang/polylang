@@ -436,7 +436,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$this->filter_lang = $this->model->get_language( get_user_meta( get_current_user_id(), 'pll_filter_content', true ) );
 
 		// Set preferred language for use when saving posts and terms: must not be empty
-		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_language( $this->options['default_lang'] ) : $this->filter_lang;
+		$this->pref_lang = empty( $this->filter_lang ) ? $this->model->get_default_language() : $this->filter_lang;
 
 		/**
 		 * Filters the preferred language on admin side.
