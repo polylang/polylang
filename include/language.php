@@ -38,7 +38,7 @@
  *     page_on_front: int<0, max>,
  *     page_for_posts: int<0, max>,
  *     active: bool,
- *     fallbacks?: array<non-empty-string>
+ *     fallbacks?: list<non-empty-string>
  * }
  */
 class PLL_Language extends PLL_Language_Deprecation {
@@ -211,7 +211,7 @@ class PLL_Language extends PLL_Language_Deprecation {
 	 *
 	 * @var string[]
 	 *
-	 * @phpstan-var array<non-empty-string>
+	 * @phpstan-var list<non-empty-string>
 	 */
 	public $fallbacks = array();
 
@@ -623,7 +623,7 @@ class PLL_Language extends PLL_Language_Deprecation {
 	 *                 $property is 'term_group' ? int : (
 	 *                     $property is 'is_rtl' ? int<0, 1> : (
 	 *                         $property is 'active' ? bool : (
-	 *                             $property is 'fallbacks' ? array<non-empty-string> : false
+	 *                             $property is 'fallbacks' ? list<non-empty-string> : false
 	 *                         )
 	 *                     )
 	 *                 )

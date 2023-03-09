@@ -58,7 +58,7 @@ function pll_the_languages( $args = array() ) {
  *                     $field is 'term_group' ? int : (
  *                         $field is 'is_rtl' ? int<0, 1> : (
  *                             $field is 'active' ? bool : (
- *                                 $field is 'fallbacks' ? array<non-empty-string> : false
+ *                                 $field is 'fallbacks' ? list<non-empty-string> : false
  *                             )
  *                         )
  *                     )
@@ -98,7 +98,7 @@ function pll_current_language( $field = 'slug' ) {
  *                     $field is 'term_group' ? int : (
  *                         $field is 'is_rtl' ? int<0, 1> : (
  *                             $field is 'active' ? bool : (
- *                                 $field is 'fallbacks' ? array<non-empty-string> : false
+ *                                 $field is 'fallbacks' ? list<non-empty-string> : false
  *                             )
  *                         )
  *                     )
@@ -479,7 +479,7 @@ function pll_save_term_translations( $arr ) {
  *                     $field is 'term_group' ? int : (
  *                         $field is 'is_rtl' ? int<0, 1> : (
  *                             $field is 'active' ? bool : (
- *                                 $field is 'fallbacks' ? array<non-empty-string> : false
+ *                                 $field is 'fallbacks' ? list<non-empty-string> : false
  *                             )
  *                         )
  *                     )
@@ -518,7 +518,7 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  *                     $field is 'term_group' ? int : (
  *                         $field is 'is_rtl' ? int<0, 1> : (
  *                             $field is 'active' ? bool : (
- *                                 $field is 'fallbacks' ? array<non-empty-string> : false
+ *                                 $field is 'fallbacks' ? list<non-empty-string> : false
  *                             )
  *                         )
  *                     )
