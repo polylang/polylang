@@ -10,13 +10,6 @@
  */
 class PLL_Admin_Filters_Term {
 	/**
-	 * Stores the plugin options.
-	 *
-	 * @var array
-	 */
-	public $options;
-
-	/**
 	 * @var PLL_Model
 	 */
 	public $model;
@@ -64,7 +57,6 @@ class PLL_Admin_Filters_Term {
 	public function __construct( &$polylang ) {
 		$this->links        = &$polylang->links;
 		$this->model        = &$polylang->model;
-		$this->options      = &$polylang->options;
 		$this->pref_lang    = &$polylang->pref_lang;
 		$this->default_term = &$polylang->default_term;
 

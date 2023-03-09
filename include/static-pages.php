@@ -24,13 +24,6 @@ class PLL_Static_Pages {
 	public $page_for_posts = 0;
 
 	/**
-	 * Stores the plugin options.
-	 *
-	 * @var array
-	 */
-	protected $options;
-
-	/**
 	 * @var PLL_Model
 	 */
 	protected $model;
@@ -51,7 +44,6 @@ class PLL_Static_Pages {
 	 */
 	public function __construct( &$polylang ) {
 		$this->model   = &$polylang->model;
-		$this->options = &$polylang->options;
 		$this->curlang = &$polylang->curlang;
 
 		$this->init();

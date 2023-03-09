@@ -25,13 +25,6 @@ class PLL_Admin_Default_Term {
 	protected $pref_lang;
 
 	/**
-	 * Reference to Polylang options array
-	 *
-	 * @var array
-	 */
-	protected $options;
-
-	/**
 	 * Array of registered taxonomy names for which Polylang manages languages and translations.
 	 *
 	 * @var string[]
@@ -46,9 +39,8 @@ class PLL_Admin_Default_Term {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
-		$this->model = &$polylang->model;
-		$this->pref_lang = &$polylang->pref_lang;
-		$this->options = &$polylang->options;
+		$this->model      = &$polylang->model;
+		$this->pref_lang  = &$polylang->pref_lang;
 		$this->taxonomies = $this->model->get_translated_taxonomies();
 	}
 

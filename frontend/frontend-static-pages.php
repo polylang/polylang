@@ -22,6 +22,13 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	protected $links;
 
 	/**
+	 * Stores plugin's options.
+	 *
+	 * @var array
+	 */
+	protected $options;
+
+	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.8
@@ -32,7 +39,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		parent::__construct( $polylang );
 
 		$this->links_model = &$polylang->links_model;
-		$this->links = &$polylang->links;
+		$this->links       = &$polylang->links;
+		$this->options     = &$polylang->options;
 
 		add_action( 'pll_home_requested', array( $this, 'pll_home_requested' ) );
 
