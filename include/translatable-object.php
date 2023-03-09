@@ -392,7 +392,7 @@ abstract class PLL_Translatable_Object {
 	 * @since 3.4
 	 *
 	 * @param string $sql A prepared SQL query for object IDs with no language.
-	 * @return mixed An array of numeric object IDs.
+	 * @return string[] An array of numeric object IDs.
 	 */
 	protected function query_objects_with_no_lang( $sql ) {
 		$key          = md5( $sql );
