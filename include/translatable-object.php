@@ -373,12 +373,7 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
-		$sql = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $args );
-
-		if ( empty( $sql ) ) {
-			return array();
-		}
-
+		$sql        = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $args );
 		$object_ids = $this->query_objects_with_no_lang( $sql );
 
 		return array_values( $this->sanitize_int_ids_list( $object_ids ) );
