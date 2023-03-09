@@ -758,6 +758,21 @@ class PLL_Model {
 	}
 
 	/**
+	 * Returns the default language.
+	 *
+	 * @since 3.4
+	 *
+	 * @return PLL_Language|false Default language object, false if no language found.
+	 */
+	public function get_default_language() {
+		if ( empty( $this->options['default_lang'] ) ) {
+			return false;
+		}
+
+		return $this->get_language( $this->options['default_lang'] );
+	}
+
+	/**
 	 * Updates or adds new terms for a secondary language taxonomy (aka not 'language').
 	 *
 	 * @since 3.4
