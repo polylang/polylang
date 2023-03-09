@@ -49,12 +49,12 @@ function pll_the_languages( $args = array() ) {
  * @param string $field Optional, the language field to return (@see PLL_Language), defaults to 'slug'. Pass OBJECT constant to get the language object.
  * @return string|int|bool|string[]|PLL_Language The requested field or object for the current language, false if the field isn't set or if current language doesn't exist yet.
  *
- * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $field
+ * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $field
  * @phpstan-return (
  *     $field is \OBJECT ? PLL_Language : (
  *         $field is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
  *             $field is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
- *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+ *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
  *                     $field is 'term_group' ? int : (
  *                         $field is 'is_rtl' ? int<0, 1> : (
  *                             $field is 'active' ? bool : (
@@ -91,12 +91,12 @@ function pll_current_language( $field = 'slug' ) {
  * @param string $field Optional, the language field to return (@see PLL_Language), defaults to 'slug'. Pass OBJECT constant to get the language object.
  * @return string|int|bool|string[]|PLL_Language The requested field or object for the default language. False if none.
  *
- * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $field
+ * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $field
  * @phpstan-return (
  *     $field is \OBJECT ? PLL_Language : (
  *         $field is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
  *             $field is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
- *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+ *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
  *                     $field is 'term_group' ? int : (
  *                         $field is 'is_rtl' ? int<0, 1> : (
  *                             $field is 'active' ? bool : (
@@ -474,12 +474,12 @@ function pll_save_term_translations( $arr ) {
  * @param string $field   Optional, the language field to return (@see PLL_Language), defaults to 'slug'. Pass OBJECT constant to get the language object.
  * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, false if no language is associated to that post.
  *
- * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $field
+ * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $field
  * @phpstan-return (
  *     $field is \OBJECT ? PLL_Language : (
  *         $field is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
  *             $field is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
- *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+ *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
  *                     $field is 'term_group' ? int : (
  *                         $field is 'is_rtl' ? int<0, 1> : (
  *                             $field is 'active' ? bool : (
@@ -515,12 +515,12 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  * @param string $field   Optional, the language field to return (@see PLL_Language), defaults to 'slug'. Pass OBJECT constant to get the language object.
  * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, false if no language is associated to that term.
  *
- * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $field
+ * @phpstan-param \OBJECT|'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $field
  * @phpstan-return (
  *     $field is \OBJECT ? PLL_Language : (
  *         $field is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
  *             $field is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
- *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+ *                 $field is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
  *                     $field is 'term_group' ? int : (
  *                         $field is 'is_rtl' ? int<0, 1> : (
  *                             $field is 'active' ? bool : (

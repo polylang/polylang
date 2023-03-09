@@ -615,11 +615,11 @@ class PLL_Language extends PLL_Language_Deprecation {
 	 * @param string $property A property name.
 	 * @return string|int|bool|string[] The requested property for the language, false if the property doesn't exist.
 	 *
-	 * @phpstan-param 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $property
+	 * @phpstan-param 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url'|'facebook'|'custom_flag_url'|'custom_flag'|'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count'|'term_group'|'is_rtl'|'active'|'fallbacks'|'is_default' $property
 	 * @phpstan-return (
 	 *     $property is 'name'|'slug'|'locale'|'w3c'|'flag_code'|'host'|'flag_url'|'flag'|'home_url'|'search_url' ? non-empty-string : (
 	 *         $property is 'facebook'|'custom_flag_url'|'custom_flag' ? string : (
-	 *             $property is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
+	 *             $property is 'mo_id'|'page_on_front'|'page_for_posts'|'term_id'|'term_taxonomy_id'|'count'|'language:term_id'|'language:term_taxonomy_id'|'language:count'|'term_language:term_id'|'term_language:term_taxonomy_id'|'term_language:count' ? int<0, max> : (
 	 *                 $property is 'term_group' ? int : (
 	 *                     $property is 'is_rtl' ? int<0, 1> : (
 	 *                         $property is 'active' ? bool : (
