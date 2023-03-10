@@ -55,6 +55,7 @@ class PLL_Language_Factory {
 			'slug'       => $terms['language']->slug,
 			'term_group' => $terms['language']->term_group,
 			'term_props' => array(),
+			'is_default' => $options['default_lang'] === $terms['language']->slug,
 		);
 
 		foreach ( $terms as $term ) {
@@ -94,8 +95,6 @@ class PLL_Language_Factory {
 				$data['facebook'] = $languages[ $data['locale'] ]['facebook'];
 			}
 		}
-
-		$data['is_default'] = $options['default_lang'] === $data['slug'];
 
 		$flag_props = self::get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
 		$data       = array_merge( $data, $flag_props );
