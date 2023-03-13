@@ -68,6 +68,34 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertFalse( self::$model->term->get_translation( $de, 'fr' ) );
 	}
 
+	public function test_translation_group_after_term_translation_deletion() {
+		$en = self::factory()->term->create();
+		self::$model->term->set_language( $en, 'en' );
+
+		$fr = self::factory()->term->create();
+		self::$model->term->set_language( $fr, 'fr' );
+
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+
+		$this->assertEquals( self::$model->term->get_translation( $en, 'fr' ), $fr );
+		$this->assertEquals( self::$model->term->get_translation( $fr, 'en' ), $en );
+
+		self::$model->term->save_translations( $en, compact( 'en' ) );
+
+		$this->assertFalse( self::$model->term->get_translation( $en, 'fr' ), $fr );
+		$this->assertFalse( self::$model->term->get_translation( $fr, 'en' ), $en );
+
+		$translations_fr = self::$model->term->get_translations( $fr );
+		$translation_group_fr = wp_get_object_terms( $translations_fr, 'term_translations' );
+		$this->assertNotEmpty( $translation_group_fr );
+
+		$translations_en = self::$model->term->get_translations( $en );
+		$translation_group_en = wp_get_object_terms( $translations_en, 'term_translations' );
+		$this->assertNotEmpty( $translation_group_en );
+
+		$this->assertNotSame( $translation_group_fr, $translation_group_en );
+	}
+
 	public function test_dont_save_translations_with_incorrect_language() {
 		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
 		$model = new PLL_Model( $options );

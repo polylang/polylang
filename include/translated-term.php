@@ -174,7 +174,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return;
 		}
 
-		if ( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( * ) FROM $wpdb->terms WHERE term_id = %d;", $id ) ) ) {
+		if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( * ) FROM $wpdb->terms WHERE term_id = %d;", $id ) ) ) {
 			return;
 		}
 
