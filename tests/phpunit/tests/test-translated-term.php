@@ -68,6 +68,22 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertFalse( self::$model->term->get_translation( $de, 'fr' ) );
 	}
 
+	public function test_translation_group_after_term_translation_deletion() {
+		$en = self::factory()->term->create();
+		self::$model->term->set_language( $en, 'en' );
+
+		$fr = self::factory()->term->create();
+		self::$model->term->set_language( $fr, 'fr' );
+
+		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::$model->term->delete_translation( $fr );
+
+		$translations = self::$model->term->get_translations( $fr );
+		$translation_group = wp_get_object_terms( $translations, 'term_translations' );
+
+		$this->assertNotEmpty( $translation_group );
+	}
+
 	public function test_dont_save_translations_with_incorrect_language() {
 		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
 		$model = new PLL_Model( $options );
