@@ -15,9 +15,31 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 	public function test_post_language() {
 		$post_id = self::factory()->post->create();
+		$language_set = self::$model->post->set_language( $post_id, 'fr' );
+
+		$this->assertTrue( $language_set );
+		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
+	}
+
+	public function test_post_language_updated_if_another_language_is_set() {
+		$post_id = self::factory()->post->create();
+
+		$this->assertNotEmpty( $post_id );
+
 		self::$model->post->set_language( $post_id, 'fr' );
 
-		$this->assertEquals( 'fr', self::$model->post->get_language( $post_id )->slug );
+		$this->assertTrue( self::$model->post->set_language( $post_id, 'en' ) );
+		$this->assertEquals( 'en', self::$model->post->get_language( $post_id )->slug );
+	}
+
+	public function test_post_language_not_updated_if_already_set() {
+		$post_id = self::factory()->post->create();
+
+		$this->assertNotEmpty( $post_id );
+
+		self::$model->post->set_language( $post_id, 'fr' );
+
+		$this->assertFalse( self::$model->post->set_language( $post_id, 'fr' ) );
 	}
 
 	public function test_post_translation() {
@@ -201,15 +223,5 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$model->post = new PLL_Translated_Post( $model );
 
 		$this->dont_save_translations_with_incorrect_language( $model->post );
-	}
-
-	public function test_post_language_not_updated_if_already_set() {
-		$post_id = self::factory()->post->create();
-
-		$this->assertNotEmpty( $post_id );
-
-		self::$model->post->set_language( $post_id, 'fr' );
-
-		$this->assertFalse( self::$model->post->set_language( $post_id, 'fr' ) );
 	}
 }
