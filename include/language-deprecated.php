@@ -26,15 +26,15 @@ abstract class PLL_Language_Deprecated {
 	);
 
 	/**
-	 * List of deprecated URL properties.
+	 * List of deprecated URL properties and related getter to use.
 	 *
 	 * @private
 	 *
-	 * @var int[]
+	 * @var string[]
 	 */
 	const DEPRECATED_URL_PROPERTIES = array(
-		'home_url'   => 1,
-		'search_url' => 1,
+		'home_url'   => 'get_home_url',
+		'search_url' => 'get_seach_url',
 	);
 
 	/**
@@ -216,8 +216,7 @@ abstract class PLL_Language_Deprecated {
 	 * @phpstan-return non-empty-string
 	 */
 	protected function get_deprecated_url_property( $property ) {
-		$url_getter = "get_{$property}";
-		return $this->{$url_getter}();
+		return $this->{self::DEPRECATED_URL_PROPERTIES[ $property ]}();
 	}
 
 	/**
