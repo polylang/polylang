@@ -633,9 +633,7 @@ class PLL_Language extends PLL_Language_Deprecation {
 
 		// Composite property like 'term_language:term_taxonomy_id'.
 		if ( preg_match( '/^(.{1,32}):(term_id|term_taxonomy_id|count)$/', $property, $matches ) ) {
-			/**
-			 * @var array{0:non-empty-string, 1:'term_id'|'term_taxonomy_id'|'count'} $matches
-			 */
+			/** @var array{0:non-empty-string, 1:'term_id'|'term_taxonomy_id'|'count'} $matches */
 			return $this->get_tax_prop( $matches[0], $matches[1] );
 		}
 
