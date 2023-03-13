@@ -18,7 +18,26 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-var array<string, array<string, string>>
 	 */
-	private static $languages;
+	private $languages;
+
+	/**
+	 * Polylang's options.
+	 *
+	 * @var array
+	 */
+	private $options;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.4
+	 *
+	 * @param array $options Array of Poylang's options passed by reference.
+	 * @return void
+	 */
+	public function __construct( &$options ) {
+		$this->options = &$options;
+	}
 
 	/**
 	 * Returns a language object matching the given data, looking up in cached transient.
@@ -32,8 +51,8 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-param LanguageData $language_data
 	 */
-	public static function get( $language_data ) {
-		return new PLL_Language( self::sanitize_data( $language_data ) );
+	public function get( $language_data ) {
+		return new PLL_Language( $this->sanitize_data( $language_data ) );
 	}
 
 	/**
@@ -41,21 +60,20 @@ class PLL_Language_Factory {
 	 *
 	 * @since 3.4
 	 *
-	 * @param WP_Term[] $terms   List of language terms, with the language taxonomy names as array keys.
-	 *                           `language` and `term_language` are mandatory keys.
-	 * @param array     $options Array of Polylang's options.
+	 * @param WP_Term[] $terms List of language terms, with the language taxonomy names as array keys.
+	 *                         `language` and `term_language` are mandatory keys.
 	 * @return PLL_Language
 	 *
 	 * @phpstan-param array{language:WP_Term, term_language:WP_Term}&array<string, WP_Term> $terms
 	 */
-	public static function get_from_terms( array $terms, array $options ) {
-		$languages = self::get_languages();
+	public function get_from_terms( array $terms ) {
+		$languages = $this->get_languages();
 		$data      = array(
 			'name'       => $terms['language']->name,
 			'slug'       => $terms['language']->slug,
 			'term_group' => $terms['language']->term_group,
 			'term_props' => array(),
-			'is_default' => $options['default_lang'] === $terms['language']->slug,
+			'is_default' => $this->options['default_lang'] === $terms['language']->slug,
 		);
 
 		foreach ( $terms as $term ) {
@@ -96,7 +114,7 @@ class PLL_Language_Factory {
 			}
 		}
 
-		$flag_props = self::get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
+		$flag_props = $this->get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
 		$data       = array_merge( $data, $flag_props );
 
 		$additional_data = array();
@@ -124,7 +142,7 @@ class PLL_Language_Factory {
 
 		$data = array_merge( $data, array_intersect_key( $additional_data, $allowed_additional_data ) );
 
-		return new PLL_Language( self::sanitize_data( $data ) );
+		return new PLL_Language( $this->sanitize_data( $data ) );
 	}
 
 	/**
@@ -138,7 +156,7 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-return LanguageData
 	 */
-	private static function sanitize_data( array $data ) {
+	private function sanitize_data( array $data ) {
 		foreach ( $data['term_props'] as $tax => $props ) {
 			$data['term_props'][ $tax ] = array_map( 'absint', $props );
 		}
@@ -172,12 +190,12 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-return array<string, array<string, string>>
 	 */
-	private static function get_languages() {
-		if ( empty( self::$languages ) ) {
-			self::$languages = include POLYLANG_DIR . '/settings/languages.php';
+	private function get_languages() {
+		if ( empty( $this->languages ) ) {
+			$this->languages = include POLYLANG_DIR . '/settings/languages.php';
 		}
 
-		return self::$languages;
+		return $this->languages;
 	}
 
 
@@ -207,7 +225,7 @@ class PLL_Language_Factory {
 	 *     custom_flag?: non-empty-string
 	 * }
 	 */
-	private static function get_flag( $flag_code, $name, $slug, $locale ) {
+	private function get_flag( $flag_code, $name, $slug, $locale ) {
 		$flags = array(
 			'flag' => PLL_Language::get_flag_informations( $flag_code ),
 		);
