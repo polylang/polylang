@@ -41,7 +41,7 @@
  *     fallbacks?: list<non-empty-string>
  * }
  */
-class PLL_Language extends PLL_Language_Deprecation {
+class PLL_Language extends PLL_Language_Deprecated {
 
 	/**
 	 * Language name. Ex: English.

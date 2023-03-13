@@ -8,7 +8,7 @@
  *
  * @since 3.4
  */
-abstract class PLL_Language_Deprecation {
+abstract class PLL_Language_Deprecated {
 
 	/**
 	 * List of deprecated term properties and related arguments to use with `get_tax_prop()`.
