@@ -224,7 +224,7 @@ class PLL_Admin_Model extends PLL_Model {
 			}
 
 			// Update the default language option if necessary
-			if ( $this->options['default_lang'] === $old_slug ) {
+			if ( $lang->is_default ) {
 				$this->options['default_lang'] = $slug;
 			}
 		}
