@@ -612,7 +612,9 @@ class PLL_Language extends PLL_Language_Deprecation {
 	 *
 	 * @since 3.4
 	 *
-	 * @param string $property A property name.
+	 * @param string $property A property name. A composite value can be used for language term property values, in the
+	 *                         form of `{language_taxonomy_name}:{property_name}` (see {@see PLL_Language::get_tax_prop()}
+	 *                         for the possible values). Ex: `term_language:term_taxonomy_id`.
 	 * @return string|int|bool|string[] The requested property for the language, `false` if the property doesn't exist.
 	 *
 	 * @phpstan-return (
