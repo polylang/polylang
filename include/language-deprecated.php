@@ -15,7 +15,7 @@ abstract class PLL_Language_Deprecated {
 	 *
 	 * @private
 	 *
-	 * @var array[]
+	 * @var string[][]
 	 */
 	const DEPRECATED_TERM_PROPERTIES = array(
 		'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
