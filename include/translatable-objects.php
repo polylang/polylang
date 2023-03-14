@@ -59,6 +59,7 @@ class PLL_Translatable_Objects implements IteratorAggregate {
 	 *
 	 * @phpstan-return ArrayIterator<string, PLL_Translatable_Object>
 	 */
+	#[\ReturnTypeWillChange]
 	public function getIterator() {
 		return new ArrayIterator( $this->objects );
 	}
