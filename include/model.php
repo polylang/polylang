@@ -182,19 +182,14 @@ class PLL_Model {
 			$this->is_creating_language_objects = false;
 		}
 
-		// Remove empty languages if requested.
-		if ( ! empty( $args['hide_empty'] ) ) {
-			foreach ( $languages as $key => $language ) {
-				if ( empty( $language->get_tax_prop( 'language', 'count' ) ) ) {
-					unset( $languages[ $key ] );
-				}
+		$languages = array_filter(
+			$languages,
+			function( $lang ) use ( $args ) {
+				$empty_to_hide   = isset( $args['hide_empty'] ) && $args['hide_empty'] && empty( $lang->get_tax_prop( 'language', 'count' ) );
+				$default_to_hide = isset( $args['hide_default'] ) && $args['hide_default'] && $lang->is_default;
+				return ! ( $empty_to_hide || $default_to_hide );
 			}
-		}
-
-		// Remove default language if requested.
-		if ( ! empty( $args['hide_default'] ) ) {
-			$languages = wp_list_filter( $languages, array( 'is_default', true ) );
-		}
+		);
 
 		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
 	}
