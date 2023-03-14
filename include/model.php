@@ -116,9 +116,9 @@ class PLL_Model {
 	 * @since 0.1
 	 *
 	 * @param array $args {
-	 *   @type bool  $hide_empty   Hides languages with no posts if set to true (defaults to `false`).
-	 *   @type bool  $hide_default Hides default language from the list (default to `false`).
-	 *   @type string $fields      Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
+	 *   @type bool   $hide_default Hides default language from the list (default to `false`).
+	 *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
