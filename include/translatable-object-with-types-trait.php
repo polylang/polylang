@@ -43,7 +43,7 @@ trait PLL_Translatable_Object_With_Types_Trait {
 	 */
 	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) {
 		if ( empty( $args ) ) {
-			return '';
+			$args = $this->get_translated_object_types();
 		}
 
 		return sprintf(
