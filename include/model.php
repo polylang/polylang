@@ -116,8 +116,9 @@ class PLL_Model {
 	 * @since 0.1
 	 *
 	 * @param array $args {
-	 *   @type bool  $hide_empty Hides languages with no posts if set to true ( defaults to false ).
-	 *   @type string $fields    Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 *   @type bool  $hide_empty   Hides languages with no posts if set to true (defaults to `false`).
+	 *   @type bool  $hide_default Hides default language from the list (default to `false`).
+	 *   @type string $fields      Returns only that field if set; {@see PLL_Language} for a list of fields.
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
@@ -188,6 +189,11 @@ class PLL_Model {
 					unset( $languages[ $key ] );
 				}
 			}
+		}
+
+		// Remove default language if requested.
+		if ( ! empty( $args['hide_default'] ) ) {
+			$languages = wp_list_filter( $languages, array( 'is_default', true ) );
 		}
 
 		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
