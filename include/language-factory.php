@@ -18,7 +18,7 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-var array<string, array<string, string>>
 	 */
-	private $languages;
+	private static $languages;
 
 	/**
 	 * Polylang's options.
@@ -191,11 +191,11 @@ class PLL_Language_Factory {
 	 * @phpstan-return array<string, array<string, string>>
 	 */
 	private function get_languages() {
-		if ( empty( $this->languages ) ) {
-			$this->languages = include POLYLANG_DIR . '/settings/languages.php';
+		if ( empty( self::$languages ) ) {
+			self::$languages = include POLYLANG_DIR . '/settings/languages.php';
 		}
 
-		return $this->languages;
+		return self::$languages;
 	}
 
 
