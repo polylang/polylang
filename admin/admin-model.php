@@ -93,7 +93,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Oops ! we are deleting the default language...
 		// Need to do this before loosing the information for default category translations
-		if ( $this->options['default_lang'] == $lang->slug ) {
+		if ( $lang->is_default ) {
 			$slugs = $this->get_languages_list( array( 'fields' => 'slug' ) );
 			$slugs = array_diff( $slugs, array( $lang->slug ) );
 
@@ -224,7 +224,7 @@ class PLL_Admin_Model extends PLL_Model {
 			}
 
 			// Update the default language option if necessary
-			if ( $this->options['default_lang'] == $old_slug ) {
+			if ( $lang->is_default ) {
 				$this->options['default_lang'] = $slug;
 			}
 		}

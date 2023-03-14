@@ -106,9 +106,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_default_lang( $item ) {
-		$options = get_option( 'polylang' );
-
-		if ( $options['default_lang'] != $item->slug ) {
+		if ( ! $item->is_default ) {
 			$s = sprintf(
 				'<div class="row-actions"><span class="default-lang">
 				<a class="icon-default-lang" title="%1$s" href="%2$s"><span class="screen-reader-text">%3$s</span></a>

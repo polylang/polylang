@@ -151,9 +151,13 @@ class PLL_Model {
 					$languages = $this->get_languages_from_taxonomies();
 				} else {
 					// Create the languages directly from arrays stored in the transient.
-					foreach ( $languages as $k => $v ) {
-						$languages[ $k ] = PLL_Language_Factory::get( $v );
-					}
+					$languages = array_map(
+						array( new PLL_Language_Factory( $this->options ), 'get' ),
+						$languages
+					);
+
+					// Remove potential empty language.
+					$languages = array_filter( $languages );
 
 					// Re-index.
 					$languages = array_values( $languages );
@@ -819,20 +823,20 @@ class PLL_Model {
 		// Restore the right order after the first `array_reverse()`.
 		$terms_by_slug = array_reverse( $terms_by_slug );
 
-		$languages = array();
-
-		foreach ( $terms_by_slug as $lang_terms ) {
-			/**
-			 * @var (
-			 *     array{
-			 *         language: WP_Term,
-			 *         term_language: WP_Term
-			 *     }&
-			 *     array<non-empty-string, WP_Term>
-			 * ) $lang_terms
-			 */
-			$languages[] = PLL_Language_Factory::get_from_terms( $lang_terms );
-		}
+		/**
+		 * @var (
+		 *     array{
+		 *         string: array{
+		 *             language: WP_Term,
+		 *             term_language: WP_Term
+		 *         }&array<non-empty-string, WP_Term>
+		 *     }
+		 * ) $terms_by_slug
+		 */
+		$languages = array_map(
+			array( new PLL_Language_Factory( $this->options ), 'get_from_terms' ),
+			array_values( $terms_by_slug )
+		);
 
 		/**
 		 * Filters the list of languages *before* it is stored in the persistent cache.

@@ -63,7 +63,7 @@ class PLL_Links_Subdomain extends PLL_Links_Abstract_Domain {
 		$languages = array();
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( ! $this->options['hide_default'] || $this->options['default_lang'] != $language->slug ) {
+			if ( ! $this->options['hide_default'] || ! $language->is_default ) {
 				$languages[] = $language->slug;
 			}
 		}

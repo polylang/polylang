@@ -104,7 +104,7 @@ class PLL_Links_Default extends PLL_Links_Model {
 			$language = $language->to_array();
 		}
 
-		if ( $this->options['hide_default'] && $language['slug'] == $this->options['default_lang'] ) {
+		if ( $this->options['hide_default'] && $language['is_default'] ) {
 			return trailingslashit( $this->home );
 		}
 		$url = home_url( '/?page_id=' . $language['page_on_front'] );

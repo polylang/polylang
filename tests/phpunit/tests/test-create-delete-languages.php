@@ -164,11 +164,12 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'custom_flag',
 			'active',
 			'fallbacks',
+			'is_default',
 		);
 
 		$languages = get_transient( 'pll_languages_list' );
 		$language  = reset( $languages );
-		$this->assertEqualSets( $properties, array_keys( $language ) );
+		$this->assertSameSets( $properties, array_keys( $language ) );
 
 		// Let's check PLL_Language::$term_props.
 		$this->assertArrayHasKey( 'language', $language['term_props'] );
