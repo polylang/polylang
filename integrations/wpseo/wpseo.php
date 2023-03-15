@@ -249,17 +249,14 @@ class PLL_WPSEO {
 	public function add_post_type_archive( $str ) {
 		$post_type     = substr( substr( current_filter(), 14 ), 0, -8 );
 		$post_type_obj = get_post_type_object( $post_type );
-		$languages     = wp_list_filter(
-			PLL()->model->get_languages_list(
-				array(
-					'hide_default' => PLL()->options['hide_default'],
-				),
-			),
-			array( 'active' => false ),
-			'NOT'
-		);
+		$languages     = wp_list_filter( PLL()->model->get_languages_list(), array( 'active' => false ), 'NOT' );
 
 		if ( 'post' === $post_type ) {
+			if ( ! empty( PLL()->options['hide_default'] ) ) {
+				// The home url is of course already added by WPSEO.
+				$languages = wp_list_filter( $languages, array( 'slug' => pll_default_language() ), 'NOT' );
+			}
+
 			foreach ( $languages as $lang ) {
 				$str .= $this->format_sitemap_url( pll_home_url( $lang->slug ), $post_type );
 			}
@@ -268,6 +265,9 @@ class PLL_WPSEO {
 			$slug = ( true === $post_type_obj->has_archive ) ? $post_type_obj->rewrite['slug'] : $post_type_obj->has_archive;
 
 			if ( ! wpcom_vip_get_page_by_path( $slug ) ) {
+				// The post type archive in the current language is already added by WPSEO.
+				$languages = wp_list_filter( $languages, array( 'slug' => pll_current_language() ), 'NOT' );
+
 				foreach ( $languages as $lang ) {
 					PLL()->curlang = $lang; // Switch the language to get the correct archive link.
 					$link = get_post_type_archive_link( $post_type );
