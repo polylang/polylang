@@ -76,8 +76,7 @@ class PLL_Jetpack {
 	 */
 	public function grunion_contact_form_field_html_filter( $r, $field_label ) {
 		if ( function_exists( 'icl_translate' ) ) {
-			$curlang = pll_current_language();
-			if ( empty( $curlang ) || ! $curlang->is_default ) {
+			if ( pll_current_language() !== pll_default_language() ) {
 				$label_translation = icl_translate( 'jetpack ', $field_label . '_label', $field_label );
 				$r = str_replace( $field_label, $label_translation, $r );
 			}
