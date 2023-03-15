@@ -185,9 +185,10 @@ class PLL_Model {
 		$languages = array_filter(
 			$languages,
 			function( $lang ) use ( $args ) {
-				$empty_to_hide   = isset( $args['hide_empty'] ) && $args['hide_empty'] && empty( $lang->get_tax_prop( 'language', 'count' ) );
-				$default_to_hide = isset( $args['hide_default'] ) && $args['hide_default'] && $lang->is_default;
-				return ! ( $empty_to_hide || $default_to_hide );
+				$keep_empty   = empty( $args['hide_empty'] ) || $lang->get_tax_prop( 'language', 'count' );
+				$keep_default = empty( $args['hide_default'] ) || ! $lang->is_default;
+				return $keep_empty && $keep_default;
+
 			}
 		);
 
