@@ -25,6 +25,8 @@ class Model_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $post_id, 'en' );
 
 		$this->assertSame( array( 'en' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_empty' => true ) ) );
+		$this->assertSame( array( 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_default' => true ) ) );
+		$this->assertSame( array(), self::$model->get_languages_list( array( 'fields' => 'slug', 'hide_default' => true, 'hide_empty' => true ) ) );
 	}
 
 	public function test_languages_list_order() {

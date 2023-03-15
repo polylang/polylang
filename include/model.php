@@ -192,6 +192,8 @@ class PLL_Model {
 			}
 		);
 
+		$languages = array_values( $languages ); // Re-index.
+
 		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
 	}
 
