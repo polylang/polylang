@@ -101,13 +101,14 @@ class PLL_Admin_Default_Term {
 
 		// Assign a default language to default term
 		if ( ! $default_cat_lang ) {
-			$this->model->term->set_language( (int) $value, $this->model->get_default_language() );
+			$default_cat_lang = $this->model->get_default_language();
+			$this->model->term->set_language( (int) $value, $default_cat_lang );
 		}
 
 		$taxonomy = substr( current_filter(), 22 );
 
 		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( ! $language->is_default && ! $this->model->term->get_translation( $value, $language ) ) {
+			if ( $language->slug != $default_cat_lang->slug && ! $this->model->term->get_translation( $value, $language ) ) {
 				$this->create_default_term( $language, $taxonomy );
 			}
 		}
