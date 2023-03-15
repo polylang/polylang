@@ -60,8 +60,8 @@ class PLL_Language_Factory {
 	 *
 	 * @since 3.4
 	 *
-	 * @param WP_Term[] $terms   List of language terms, with the language taxonomy names as array keys.
-	 *                           `language` and `term_language` are mandatory keys.
+	 * @param WP_Term[] $terms List of language terms, with the language taxonomy names as array keys.
+	 *                         `language` and `term_language` are mandatory keys.
 	 * @return PLL_Language
 	 *
 	 * @phpstan-param array{language:WP_Term, term_language:WP_Term}&array<string, WP_Term> $terms
