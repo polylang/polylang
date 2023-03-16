@@ -105,6 +105,10 @@ class PLL_Admin_Default_Term {
 			$this->model->term->set_language( (int) $value, $default_cat_lang );
 		}
 
+		if ( empty( $default_cat_lang ) ) {
+			return;
+		}
+
 		$taxonomy = substr( current_filter(), 22 );
 
 		foreach ( $this->model->get_languages_list() as $language ) {
