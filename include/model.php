@@ -762,7 +762,7 @@ class PLL_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @return PLL_Language|false Default language object, false if no language found.
+	 * @return PLL_Language|false Default language object, `false` if no language found.
 	 */
 	public function get_default_language() {
 		if ( empty( $this->options['default_lang'] ) ) {
