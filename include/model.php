@@ -116,8 +116,9 @@ class PLL_Model {
 	 * @since 0.1
 	 *
 	 * @param array $args {
-	 *   @type bool  $hide_empty Hides languages with no posts if set to true ( defaults to false ).
-	 *   @type string $fields    Returns only that field if set; {@see PLL_Language} for a list of fields.
+	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
+	 *   @type bool   $hide_default Hides default language from the list (default to `false`).
+	 *   @type string $fields       Returns only that field if set; {@see PLL_Language} for a list of fields.
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
@@ -181,14 +182,17 @@ class PLL_Model {
 			$this->is_creating_language_objects = false;
 		}
 
-		// Remove empty languages if requested.
-		if ( ! empty( $args['hide_empty'] ) ) {
-			foreach ( $languages as $key => $language ) {
-				if ( empty( $language->get_tax_prop( 'language', 'count' ) ) ) {
-					unset( $languages[ $key ] );
-				}
+		$languages = array_filter(
+			$languages,
+			function( $lang ) use ( $args ) {
+				$keep_empty   = empty( $args['hide_empty'] ) || $lang->get_tax_prop( 'language', 'count' );
+				$keep_default = empty( $args['hide_default'] ) || ! $lang->is_default;
+				return $keep_empty && $keep_default;
+
 			}
-		}
+		);
+
+		$languages = array_values( $languages ); // Re-index.
 
 		return empty( $args['fields'] ) ? $languages : wp_list_pluck( $languages, $args['fields'] );
 	}
