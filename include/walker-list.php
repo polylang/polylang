@@ -7,8 +7,9 @@
  * Displays a language list
  *
  * @since 1.2
+ * @since 3.4 Extends `PLL_Walker` now.
  */
-class PLL_Walker_List extends Walker {
+class PLL_Walker_List extends PLL_Walker {
 	/**
 	 * Database fields to use.
 	 *
@@ -45,25 +46,6 @@ class PLL_Walker_List extends Walker {
 	}
 
 	/**
-	 * Overrides Walker::display_element as it expects an object with a parent property
-	 *
-	 * @since 1.2
-	 *
-	 * @param stdClass $element           Data object.
-	 * @param array    $children_elements List of elements to continue traversing.
-	 * @param int      $max_depth         Max depth to traverse.
-	 * @param int      $depth             Depth of current element.
-	 * @param array    $args              An array of arguments.
-	 * @param string   $output            Passed by reference. Used to append additional content.
-	 * @return void
-	 */
-	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-		$element = (object) $element; // Make sure we have an object
-		$element->parent = $element->id = 0; // Don't care about this
-		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
-	}
-
-	/**
 	 * Overrides Walker:walk to set depth argument
 	 *
 	 * @since 1.2
@@ -75,21 +57,7 @@ class PLL_Walker_List extends Walker {
 	 * @return string The hierarchical item output.
 	 */
 	public function walk( $elements, $max_depth, ...$args ) { // phpcs:ignore WordPressVIPMinimum.Classes.DeclarationCompatibility.DeclarationCompatibility
-		if ( is_array( $max_depth ) ) { // @phpstan-ignore-line
-			// Backward compatibility with Polylang < 2.6.7
-			if ( WP_DEBUG ) {
-				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-					sprintf(
-						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.6.7',
-						__METHOD__
-					)
-				);
-			}
-			$args = $max_depth;
-			$max_depth = -1;
-		} else {
-			$args = isset( $args[0] ) ? $args[0] : array();
-		}
+		$this->maybe_fix_walk_args( $max_depth, $args );
 
 		return parent::walk( $elements, $max_depth, $args );
 	}

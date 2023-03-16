@@ -78,6 +78,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		// Early instantiated to be able to correctly initialize language properties.
 		$this->static_pages = new PLL_Admin_Static_Pages( $this );
+		$this->model->set_languages_ready();
 	}
 
 	/**

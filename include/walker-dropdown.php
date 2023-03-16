@@ -7,8 +7,9 @@
  * Displays languages in a dropdown list
  *
  * @since 1.2
+ * @since 3.4 Extends `PLL_Walker` now.
  */
-class PLL_Walker_Dropdown extends Walker {
+class PLL_Walker_Dropdown extends PLL_Walker {
 	/**
 	 * Database fields to use.
 	 *
@@ -19,7 +20,7 @@ class PLL_Walker_Dropdown extends Walker {
 	public $db_fields = array( 'parent' => 'parent', 'id' => 'id' );
 
 	/**
-	 * Outputs one element
+	 * Outputs one element.
 	 *
 	 * @since 1.2
 	 *
@@ -42,25 +43,6 @@ class PLL_Walker_Dropdown extends Walker {
 	}
 
 	/**
-	 * Overrides Walker::display_element as expects an object with a parent property
-	 *
-	 * @since 1.2
-	 *
-	 * @param stdClass $element           Data object.
-	 * @param array    $children_elements List of elements to continue traversing.
-	 * @param int      $max_depth         Max depth to traverse.
-	 * @param int      $depth             Depth of current element.
-	 * @param array    $args              An array of arguments.
-	 * @param string   $output            Passed by reference. Used to append additional content.
-	 * @return void
-	 */
-	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-		$element = (object) $element; // Make sure we have an object
-		$element->parent = $element->id = 0; // Don't care about this
-		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
-	}
-
-	/**
 	 * Starts the output of the dropdown list
 	 *
 	 * @since 1.2
@@ -76,29 +58,17 @@ class PLL_Walker_Dropdown extends Walker {
 	 * class    => the class attribute
 	 * disabled => disables the dropdown if set to 1
 	 *
-	 * @param array $elements  An array of elements.
+	 * @param array $elements  An array of `PLL_language` or `stdClass` elements.
 	 * @param int   $max_depth The maximum hierarchical depth.
 	 * @param mixed ...$args   Additional arguments.
 	 * @return string The hierarchical item output.
+	 *
+	 * @phpstan-param array<PLL_Language|stdClass> $elements
 	 */
 	public function walk( $elements, $max_depth, ...$args ) { // // phpcs:ignore WordPressVIPMinimum.Classes.DeclarationCompatibility.DeclarationCompatibility
 		$output = '';
 
-		if ( is_array( $max_depth ) ) { // @phpstan-ignore-line
-			// Backward compatibility with Polylang < 2.6.7
-			if ( WP_DEBUG ) {
-				trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-					sprintf(
-						'%s was called incorrectly. The method expects an integer as second parameter since Polylang 2.6.7',
-						__METHOD__
-					)
-				);
-			}
-			$args = $max_depth;
-			$max_depth = -1;
-		} else {
-			$args = isset( $args[0] ) ? $args[0] : array();
-		}
+		$this->maybe_fix_walk_args( $max_depth, $args );
 
 		$args = wp_parse_args( $args, array( 'value' => 'slug', 'name' => 'lang_choice' ) );
 

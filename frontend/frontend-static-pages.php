@@ -105,21 +105,31 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param string       $url               Not used.
-	 * @param PLL_Language $language          Language in which we want the translation.
-	 * @param int          $queried_object_id Id of the queried object.
+	 * @param string       $url               Empty string or the url of the translation of the current page.
+	 * @param PLL_Language $language          Language of the translation.
+	 * @param int          $queried_object_id Queried object ID.
 	 * @return string The translation url.
 	 */
 	public function pll_pre_translation_url( $url, $language, $queried_object_id ) {
-		if ( ! empty( $queried_object_id ) ) {
-			// Page for posts
-			if ( $GLOBALS['wp_query']->is_posts_page && ( $id = $this->model->post->get( $queried_object_id, $language ) ) ) {
-				$url = get_permalink( $id );
-			}
+		if ( empty( $queried_object_id ) ) {
+			return $url;
+		}
 
-			// Page on front
-			elseif ( is_front_page() && $language->page_on_front && ( $language->page_on_front == $this->model->post->get( $queried_object_id, $language ) ) ) {
-				$url = $language->get_home_url();
+		// Page for posts.
+		if ( $GLOBALS['wp_query']->is_posts_page ) {
+			$id = $this->model->post->get( $queried_object_id, $language );
+
+			if ( ! empty( $id ) ) {
+				return (string) get_permalink( $id );
+			}
+		}
+
+		// Page on front.
+		if ( is_front_page() && ! empty( $language->page_on_front ) ) {
+			$id = $this->model->post->get( $queried_object_id, $language );
+
+			if ( $language->page_on_front === $id ) {
+				return $language->get_home_url();
 			}
 		}
 

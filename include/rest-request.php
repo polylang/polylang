@@ -60,6 +60,8 @@ class PLL_REST_Request extends PLL_Base {
 		if ( 'page' === get_option( 'show_on_front' ) ) {
 			$this->static_pages = new PLL_Static_Pages( $this );
 		}
+
+		$this->model->set_languages_ready();
 	}
 
 	/**

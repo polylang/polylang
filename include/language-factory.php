@@ -21,6 +21,25 @@ class PLL_Language_Factory {
 	private static $languages;
 
 	/**
+	 * Polylang's options.
+	 *
+	 * @var array
+	 */
+	private $options;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.4
+	 *
+	 * @param array $options Array of Poylang's options passed by reference.
+	 * @return void
+	 */
+	public function __construct( &$options ) {
+		$this->options = &$options;
+	}
+
+	/**
 	 * Returns a language object matching the given data, looking up in cached transient.
 	 *
 	 * @since 3.4
@@ -32,8 +51,8 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-param LanguageData $language_data
 	 */
-	public static function get( $language_data ) {
-		return new PLL_Language( self::sanitize_data( $language_data ) );
+	public function get( $language_data ) {
+		return new PLL_Language( $this->sanitize_data( $language_data ) );
 	}
 
 	/**
@@ -47,14 +66,14 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-param array{language:WP_Term, term_language:WP_Term}&array<string, WP_Term> $terms
 	 */
-	public static function get_from_terms( array $terms ) {
-		$languages = self::get_languages();
+	public function get_from_terms( array $terms ) {
+		$languages = $this->get_languages();
 		$data      = array(
 			'name'       => $terms['language']->name,
 			'slug'       => $terms['language']->slug,
 			'term_group' => $terms['language']->term_group,
 			'term_props' => array(),
-			'mo_id'      => PLL_MO::get_id_from_term_id( $terms['language']->term_id ),
+			'is_default' => $this->options['default_lang'] === $terms['language']->slug,
 		);
 
 		foreach ( $terms as $term ) {
@@ -95,7 +114,7 @@ class PLL_Language_Factory {
 			}
 		}
 
-		$flag_props = self::get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
+		$flag_props = $this->get_flag( $data['flag_code'], $data['name'], $data['slug'], $data['locale'] );
 		$data       = array_merge( $data, $flag_props );
 
 		$additional_data = array();
@@ -123,7 +142,7 @@ class PLL_Language_Factory {
 
 		$data = array_merge( $data, array_intersect_key( $additional_data, $allowed_additional_data ) );
 
-		return new PLL_Language( self::sanitize_data( $data ) );
+		return new PLL_Language( $this->sanitize_data( $data ) );
 	}
 
 	/**
@@ -137,14 +156,14 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-return LanguageData
 	 */
-	private static function sanitize_data( array $data ) {
+	private function sanitize_data( array $data ) {
 		foreach ( $data['term_props'] as $tax => $props ) {
 			$data['term_props'][ $tax ] = array_map( 'absint', $props );
 		}
 
 		$data['is_rtl'] = ! empty( $data['is_rtl'] ) ? 1 : 0;
 
-		$positive_fields = array( 'mo_id', 'term_group', 'page_on_front', 'page_for_posts' );
+		$positive_fields = array( 'term_group', 'page_on_front', 'page_for_posts' );
 
 		foreach ( $positive_fields as $field ) {
 			$data[ $field ] = ! empty( $data[ $field ] ) ? absint( $data[ $field ] ) : 0;
@@ -171,7 +190,7 @@ class PLL_Language_Factory {
 	 *
 	 * @phpstan-return array<string, array<string, string>>
 	 */
-	private static function get_languages() {
+	private function get_languages() {
 		if ( empty( self::$languages ) ) {
 			self::$languages = include POLYLANG_DIR . '/settings/languages.php';
 		}
@@ -200,14 +219,16 @@ class PLL_Language_Factory {
 	 * }
 	 *
 	 * @phpstan-return array{
-	 *     flag_url: non-empty-string
-	 *     flag: non-empty-string
-	 *     custom_flag_url?: non-empty-string
+	 *     flag_url: string,
+	 *     flag: string,
+	 *     custom_flag_url?: non-empty-string,
 	 *     custom_flag?: non-empty-string
 	 * }
 	 */
-	private static function get_flag( $flag_code, $name, $slug, $locale ) {
-		$flags = array( 'flag' => PLL_Language::get_flag_informations( $flag_code ) );
+	private function get_flag( $flag_code, $name, $slug, $locale ) {
+		$flags = array(
+			'flag' => PLL_Language::get_flag_informations( $flag_code ),
+		);
 
 		// Custom flags?
 		$directories = array(
@@ -218,7 +239,9 @@ class PLL_Language_Factory {
 
 		foreach ( $directories as $dir ) {
 			if ( file_exists( $file = "{$dir}/{$locale}.png" ) || file_exists( $file = "{$dir}/{$locale}.jpg" ) || file_exists( $file = "{$dir}/{$locale}.svg" ) ) {
-				$flags['custom_flag']['url'] = content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) );
+				$flags['custom_flag'] = array(
+					'url' => content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) ),
+				);
 				break;
 			}
 		}
@@ -226,7 +249,9 @@ class PLL_Language_Factory {
 		/**
 		 * Filters the custom flag information.
 		 *
-		 * @param array  $flag {
+		 * @since 2.4
+		 *
+		 * @param array|null $flag {
 		 *   Information about the custom flag.
 		 *
 		 *   @type string $url    Flag url.
@@ -234,9 +259,7 @@ class PLL_Language_Factory {
 		 *   @type int    $width  Optional, flag width in pixels.
 		 *   @type int    $height Optional, flag height in pixels.
 		 * }
-		 * @param string $code Flag code.
-		 *
-		 * @since 2.4
+		 * @param string     $code Flag code.
 		 */
 		$flags['custom_flag'] = apply_filters( 'pll_custom_flag', empty( $flags['custom_flag'] ) ? null : $flags['custom_flag'], $flag_code );
 
@@ -247,7 +270,7 @@ class PLL_Language_Factory {
 
 			$flags['custom_flag']['url'] = esc_url_raw( $flags['custom_flag']['url'] );
 		} else {
-			$flags['custom_flag'] = '';
+			unset( $flags['custom_flag'] );
 		}
 
 		/**
@@ -260,10 +283,27 @@ class PLL_Language_Factory {
 		 * @param string $slug   The language code.
 		 * @param string $locale The language locale.
 		 */
-		$title = apply_filters( 'pll_flag_title', $name, $slug, $locale );
+		$title  = apply_filters( 'pll_flag_title', $name, $slug, $locale );
+		$return = array();
 
+		/**
+		 * @var array{
+		 *     flag: array{
+		 *         url: string,
+		 *         src: string,
+		 *         width?: positive-int,
+		 *         height?: positive-int
+		 *     },
+		 *     custom_flag?: array{
+		 *         url: non-empty-string,
+		 *         src: non-empty-string,
+		 *         width?: positive-int,
+		 *         height?: positive-int
+		 *     }
+		 * } $flags
+		 */
 		foreach ( $flags as $key => $flag ) {
-			$flags[ $key . '_url' ] = empty( $flag['url'] ) ? '' : $flag['url'];
+			$return[ "{$key}_url" ] = $flag['url'];
 
 			/**
 			 * Filters the html markup of a flag.
@@ -273,13 +313,21 @@ class PLL_Language_Factory {
 			 * @param string $flag Html markup of the flag or empty string.
 			 * @param string $slug Language code.
 			 */
-			$flags[ $key ] = apply_filters(
+			$return[ $key ] = apply_filters(
 				'pll_get_flag',
 				PLL_Language::get_flag_html( $flag, $title, $name ),
 				$slug
 			);
 		}
 
-		return $flags;
+		/**
+		 * @var array{
+		 *     flag_url: string,
+		 *     flag: string,
+		 *     custom_flag_url?: non-empty-string,
+		 *     custom_flag?: non-empty-string
+		 * } $return
+		 */
+		return $return;
 	}
 }

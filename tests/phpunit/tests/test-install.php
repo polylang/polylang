@@ -47,6 +47,7 @@ class Install_Test extends PLL_UnitTestCase {
 		$english = self::$model->get_language( 'en' );
 
 		self::create_language( 'fr_FR' );
+		$french = self::$model->get_language( 'fr' );
 
 		// Posts and terms
 		$en = self::factory()->post->create();
@@ -85,6 +86,11 @@ class Install_Test extends PLL_UnitTestCase {
 
 		update_post_meta( $item_id, '_pll_menu_item', array() );
 
+		// Strings translations
+		$_mo = new PLL_MO();
+		$_mo->add_entry( $_mo->make_entry( 'test', 'test fr' ) );
+		$_mo->export_to_db( self::$model->get_language( 'fr' ) );
+
 		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
@@ -114,14 +120,14 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $post_group->term_taxonomy_id ) ) );
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->term_relationships} WHERE term_taxonomy_id=%d", $term_group->term_taxonomy_id ) ) );
 
-		// No strings translations, bug fixed in 2.2.1
-		$this->assertEmpty( get_post( $english->mo_id ) );
-
 		// Users metas
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='pll_filter_content'" ) );
 		$this->assertEmpty( $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key='description_fr'" ) );
 
 		// Language switcher menu items
 		$this->assertEmpty( get_post( $item_id ) );
+
+		// Strings translations
+		$this->assertEmpty( get_term_meta( $french->term_id ) );
 	}
 }

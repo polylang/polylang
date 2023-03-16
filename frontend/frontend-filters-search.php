@@ -63,7 +63,7 @@ class PLL_Frontend_Filters_Search {
 	 * @return string Modified search form.
 	 */
 	public function get_search_form( $form ) {
-		if ( empty( $form ) ) {
+		if ( empty( $form ) || empty( $this->curlang ) ) {
 			return $form;
 		}
 

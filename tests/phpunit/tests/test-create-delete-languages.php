@@ -139,6 +139,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 
 		self::$model->add_language( $args );
+		self::$model->set_languages_ready();
 		self::$model->get_languages_list(); // Saves the transient.
 
 		$properties = array(
@@ -154,7 +155,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'home_url',
 			'search_url',
 			'host',
-			'mo_id',
 			'page_on_front',
 			'page_for_posts',
 			'flag_code',
@@ -164,11 +164,12 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'custom_flag',
 			'active',
 			'fallbacks',
+			'is_default',
 		);
 
 		$languages = get_transient( 'pll_languages_list' );
 		$language  = reset( $languages );
-		$this->assertEqualSets( $properties, array_keys( $language ) );
+		$this->assertSameSets( $properties, array_keys( $language ) );
 
 		// Let's check PLL_Language::$term_props.
 		$this->assertArrayHasKey( 'language', $language['term_props'] );

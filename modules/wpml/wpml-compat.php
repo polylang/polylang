@@ -114,12 +114,13 @@ class PLL_WPML_Compat {
 
 			// Assign translations of the old string to the new string, except for the default language.
 			foreach ( $languages as $language ) {
-				if ( pll_default_language() !== $language->slug ) {
-					$mo = new PLL_MO();
-					$mo->import_from_db( $language );
-					$mo->add_entry( $mo->make_entry( $string, $mo->translate( $exist_string ) ) );
-					$mo->export_to_db( $language );
+				if ( $language->is_default ) {
+					continue;
 				}
+				$mo = new PLL_MO();
+				$mo->import_from_db( $language );
+				$mo->add_entry( $mo->make_entry( $string, $mo->translate( $exist_string ) ) );
+				$mo->export_to_db( $language );
 			}
 			$this->unregister_string( $context, $name );
 		}

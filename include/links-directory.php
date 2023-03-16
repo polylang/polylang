@@ -92,13 +92,12 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return string The modified url.
 	 */
 	public function remove_language_from_link( $url ) {
-		$languages = array();
-
-		foreach ( $this->model->get_languages_list() as $language ) {
-			if ( ! $this->options['hide_default'] || $this->options['default_lang'] != $language->slug ) {
-				$languages[] = $language->slug;
-			}
-		}
+		$languages = $this->model->get_languages_list(
+			array(
+				'hide_default' => $this->options['hide_default'],
+				'fields'       => 'slug',
+			)
+		);
 
 		if ( ! empty( $languages ) ) {
 			$root = ( false === strpos( $url, '://' ) ) ? $this->home_relative . $this->root : preg_replace( '#^https?://#', '://', $this->home . '/' . $this->root );
