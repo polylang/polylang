@@ -136,11 +136,11 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 
 		$GLOBALS['polylang'] = &$this->pll_env;
 
-		$this->options = array_merge(
-			PLL_Install::get_default_options(),
+		$this->options->merge(
+			PLL_Options::get_reset_options(),
 			array(
 				'default_lang' => 'en',
-				'hide_default' => 0,
+				'hide_default' => false,
 				'post_types'   => array(
 					'pllcanonical'   => 'pllcanonical',
 					'cptnotrewrited' => 'cptnotrewrited',

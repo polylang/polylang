@@ -10,7 +10,7 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 			require_once POLYLANG_DIR . '/include/api.php';
 
 			self::$model->options['hide_default'] = 0;
-			update_option( 'polylang', self::$model->options ); // make sure we have options in DB ( needed by PLL_WP_Import )
+			self::$model->options->save(); // Make sure we have options in DB (needed by PLL_WP_Import).
 
 			if ( ! defined( 'WP_IMPORTING' ) ) {
 				define( 'WP_IMPORTING', true );
@@ -79,7 +79,6 @@ if ( file_exists( DIR_TESTROOT . '/../wordpress-importer/wordpress-importer.php'
 			$importer->import( $file );
 			ob_end_clean();
 
-			self::$model->options = get_option( 'polylang' );
 			$_POST = array();
 		}
 

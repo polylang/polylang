@@ -15,7 +15,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$options                       = PLL_Install::get_default_options();
+		$options                       = ( new PLL_Options() )->merge( PLL_Options::get_reset_options() );
 		$options['default_lang']       = 'en'; // Default language is the first one created, see self::wpSetUpBeforeClass().
 		$model                         = new PLL_Admin_Model( $options );
 		$links_model                   = new PLL_Links_Default( $model );

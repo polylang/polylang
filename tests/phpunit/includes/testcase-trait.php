@@ -10,7 +10,7 @@ trait PLL_UnitTestCase_Trait {
 	use PLL_Doing_It_Wrong_Trait;
 
 	/**
-	 * @var array|null
+	 * @var PLL_Options|null
 	 */
 	protected $options;
 
@@ -57,9 +57,13 @@ trait PLL_UnitTestCase_Trait {
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
-		$options = PLL_Install::get_default_options();
-		$options['hide_default'] = 0; // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis.
-		$options['media_support'] = 1; // Force option to pre 3.1 value otherwise phpunit tests break on Travis.
+		$options = ( new PLL_Options() )->merge(
+			PLL_Options::get_reset_options(),
+			array(
+				'hide_default'  => false, // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis.
+				'media_support' => true,  // Force option to pre 3.1 value otherwise phpunit tests break on Travis.
+			)
+		);
 		self::$model = new PLL_Admin_Model( $options );
 
 		remove_action( 'current_screen', '_load_remote_block_patterns' );
