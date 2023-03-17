@@ -166,7 +166,6 @@ class PLL_Settings_Module {
 	public function activate() {
 		if ( ! empty( $this->active_option ) ) {
 			$this->options[ $this->active_option ] = true;
-			update_option( 'polylang', $this->options );
 		}
 	}
 
@@ -180,7 +179,6 @@ class PLL_Settings_Module {
 	public function deactivate() {
 		if ( ! empty( $this->active_option ) ) {
 			$this->options[ $this->active_option ] = false;
-			update_option( 'polylang', $this->options );
 		}
 	}
 

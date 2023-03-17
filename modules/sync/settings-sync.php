@@ -41,7 +41,6 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 	 */
 	public function deactivate() {
 		$this->options['sync'] = array();
-		update_option( 'polylang', $this->options );
 	}
 
 	/**
