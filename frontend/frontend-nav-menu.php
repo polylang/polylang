@@ -294,6 +294,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 		if ( ! $menu && ! $args['theme_location'] ) {
 			$menus = wp_get_nav_menus();
 			foreach ( $menus as $menu_maybe ) {
+				/** @var WP_Term $menu_maybe */
 				if ( wp_get_nav_menu_items( $menu_maybe->term_id, array( 'update_post_term_cache' => false ) ) ) {
 					foreach ( $this->options['nav_menus'][ $theme ] as $menus ) {
 						if ( in_array( $menu_maybe->term_id, $menus ) && ! empty( $menus[ $this->curlang->slug ] ) ) {
