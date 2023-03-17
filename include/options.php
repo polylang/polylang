@@ -177,7 +177,8 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 		$this->option_keys = array_keys( self::DEFAULTS );
 		$this->init_options_for_blog( $this->blog_id );
 
-		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), PHP_INT_MIN );
+		$min = defined( 'PHP_INT_MIN' ) ? PHP_INT_MIN : -PHP_INT_MAX;
+		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), $min );
 		add_action( 'shutdown', array( $this, 'save_all' ) );
 	}
 
@@ -227,7 +228,8 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 			return;
 		}
 
-		remove_action( 'switch_blog', array( $this, 'init_options_for_blog' ), PHP_INT_MIN );
+		$min = defined( 'PHP_INT_MIN' ) ? PHP_INT_MIN : -PHP_INT_MAX;
+		remove_action( 'switch_blog', array( $this, 'init_options_for_blog' ), $min );
 
 		// Handle the original blog first, maybe this will prevent the use of `switch_to_blog()`.
 		if ( isset( $modified[ $this->blog_id ] ) && $this->current_blog_id === $this->blog_id ) {
@@ -398,7 +400,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
-		if ( ! isset( self::DEFAULTS[ $offset ] ) ) {
+		if ( ! array_key_exists( $offset, self::DEFAULTS ) ) {
 			return;
 		}
 
@@ -420,7 +422,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
-		if ( ! isset( self::DEFAULTS[ $offset ] ) || self::DEFAULTS[ $offset ] === $this->options[ $this->current_blog_id ][ $offset ] ) {
+		if ( ! array_key_exists( $offset, self::DEFAULTS ) || self::DEFAULTS[ $offset ] === $this->options[ $this->current_blog_id ][ $offset ] ) {
 			return;
 		}
 
