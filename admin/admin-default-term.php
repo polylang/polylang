@@ -25,6 +25,13 @@ class PLL_Admin_Default_Term {
 	protected $pref_lang;
 
 	/**
+	 * Reference to Polylang options array
+	 *
+	 * @var PLL_Options
+	 */
+	protected $options;
+
+	/**
 	 * Array of registered taxonomy names for which Polylang manages languages and translations.
 	 *
 	 * @var string[]

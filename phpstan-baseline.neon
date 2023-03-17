@@ -551,9 +551,14 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Property PLL_Base\\:\\:\\$options \\(array\\) does not accept mixed\\.$#"
+			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
 			count: 1
-			path: include/base.php
+			path: include/class-polylang.php
+
+		-
+			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
+			count: 2
+			path: include/class-polylang.php
 
 		-
 			message: "#^Call to an undefined method object\\:\\:init\\(\\)\\.$#"
@@ -561,12 +566,7 @@ parameters:
 			path: include/class-polylang.php
 
 		-
-			message: "#^Cannot access offset 'version' on mixed\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Parameter \\#1 \\$version1 of function version_compare expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function trim expects string, string\\|null given\\.$#"
 			count: 1
 			path: include/class-polylang.php
 
@@ -696,6 +696,11 @@ parameters:
 			path: include/links-domain.php
 
 		-
+			message: "#^Method PLL_Links_Domain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<string, string\\|false\\>\\.$#"
+			count: 1
+			path: include/links-domain.php
+
+		-
 			message: "#^Method PLL_Links_Domain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
 			count: 1
 			path: include/links-domain.php
@@ -751,7 +756,7 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Method PLL_Nav_Menu\\:\\:explode_location\\(\\) should return array\\<string\\> but returns array\\<string, mixed\\>\\|false\\.$#"
+			message: "#^Method PLL_Nav_Menu\\:\\:explode_location\\(\\) should return array\\<string\\> but returns array\\<string, string\\>\\|false\\.$#"
 			count: 1
 			path: include/nav-menu.php
 
@@ -839,16 +844,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
 			count: 1
 			path: include/widget-languages.php
-
-		-
-			message: "#^Cannot access offset 'version' on mixed\\.$#"
-			count: 1
-			path: install/install.php
-
-		-
-			message: "#^Parameter \\#1 \\$version1 of function version_compare expects string, mixed given\\.$#"
-			count: 1
-			path: install/install.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$_last_checked\\.$#"

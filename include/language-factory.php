@@ -23,7 +23,7 @@ class PLL_Language_Factory {
 	/**
 	 * Polylang's options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	private $options;
 
@@ -32,10 +32,10 @@ class PLL_Language_Factory {
 	 *
 	 * @since 3.4
 	 *
-	 * @param array $options Array of Poylang's options passed by reference.
+	 * @param PLL_Options $options Array of Poylang's options passed by reference.
 	 * @return void
 	 */
-	public function __construct( &$options ) {
+	public function __construct( PLL_Options &$options ) {
 		$this->options = &$options;
 	}
 

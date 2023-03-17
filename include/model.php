@@ -19,7 +19,7 @@ class PLL_Model {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	public $options;
 
@@ -67,9 +67,9 @@ class PLL_Model {
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $options Polylang options.
+	 * @param PLL_Options $options Polylang options.
 	 */
-	public function __construct( &$options ) {
+	public function __construct( PLL_Options &$options ) {
 		$this->options = &$options;
 
 		$this->cache = new PLL_Cache();

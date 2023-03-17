@@ -7,6 +7,8 @@
  * Polylang activation / de-activation class
  *
  * @since 1.7
+ *
+ * @phpstan-import-type ResetOptionsData from PLL_Options
  */
 class PLL_Install extends PLL_Install_Base {
 
@@ -85,23 +87,11 @@ class PLL_Install extends PLL_Install_Base {
 	 * @since 1.8
 	 *
 	 * @return array
+	 *
+	 * @phpstan-return ResetOptionsData
 	 */
 	public static function get_default_options() {
-		return array(
-			'browser'          => 0, // Default language for the front page is not set by browser preference (was the opposite before 3.1).
-			'rewrite'          => 1, // Remove /language/ in permalinks (was the opposite before 0.7.2).
-			'hide_default'     => 1, // Remove URL language information for default language (was the opposite before 2.1.5).
-			'force_lang'       => 1, // Add URL language information (was 0 before 1.7).
-			'redirect_lang'    => 0, // Do not redirect the language page to the homepage.
-			'media_support'    => 0, // Do not support languages and translation for media by default (was the opposite before 3.1).
-			'uninstall'        => 0, // Do not remove data when uninstalling Polylang.
-			'sync'             => array(), // Synchronisation is disabled by default (was the opposite before 1.2).
-			'post_types'       => array(),
-			'taxonomies'       => array(),
-			'domains'          => array(),
-			'version'          => POLYLANG_VERSION,
-			'first_activation' => time(),
-		);
+		return PLL_Options::get_reset_options();
 	}
 
 	/**
@@ -112,16 +102,16 @@ class PLL_Install extends PLL_Install_Base {
 	 * @return void
 	 */
 	protected function _activate() {
-		if ( $options = get_option( 'polylang' ) ) {
-			// Check if we will be able to upgrade
-			if ( version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
+		$options = $this->get_options();
+
+		if ( empty( $options['version'] ) ) {
+			// Defines default values for options in case this is the first installation.
+			$this->update_options( PLL_Options::get_reset_options() );
+		}
+		elseif ( version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
+			// Check if we will be able to upgrade.
 				$upgrade = new PLL_Upgrade( $options );
 				$upgrade->can_activate();
-			}
-		}
-		// Defines default values for options in case this is the first installation
-		else {
-			update_option( 'polylang', self::get_default_options() );
 		}
 
 		// Avoid 1 query on every pages if no wpml strings is registered

@@ -22,7 +22,7 @@ class PLL_Sitemaps extends PLL_Abstract_Sitemaps {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	protected $options;
 

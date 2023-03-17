@@ -13,7 +13,7 @@ abstract class PLL_Base {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	public $options;
 
@@ -143,7 +143,6 @@ abstract class PLL_Base {
 	 */
 	public function switch_blog( $new_blog_id, $prev_blog_id ) {
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
-			$this->options = get_option( 'polylang' ); // Needed for menus.
 			remove_action( 'pre_option_rewrite_rules', array( $this->links_model, 'prepare_rewrite_rules' ) );
 			$this->links_model = $this->model->get_links_model();
 		}
@@ -166,7 +165,7 @@ abstract class PLL_Base {
 		 * The 2nd test is needed when Polylang is not networked activated.
 		 * The 3rd test is needed when Polylang is networked activated and a new site is created.
 		 */
-		return $new_blog_id !== $prev_blog_id && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' );
+		return $new_blog_id !== $prev_blog_id && in_array( POLYLANG_BASENAME, $plugins ) && ! empty( $this->options['version'] );
 	}
 
 	/**

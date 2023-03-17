@@ -52,7 +52,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// The other language taxonomies.
 		$this->update_secondary_language_terms( $args['slug'], $args['name'] );
 
-		if ( ! isset( $this->options['default_lang'] ) ) {
+		if ( empty( $this->options['default_lang'] ) ) {
 			// If this is the first language created, set it as default language
 			$this->options['default_lang'] = $args['slug'];
 			update_option( 'polylang', $this->options );

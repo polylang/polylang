@@ -15,7 +15,7 @@ class PLL_Admin_Notices {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	protected $options;
 

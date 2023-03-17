@@ -46,13 +46,13 @@ parameters:
 
 		# Ignored because array_combine() cannot return false when feeded with 2 identical arrays.
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array<string, string\\>\\|false given\\.$#"
 			count: 1
 			path: include/translated-post.php
 
 		# Ignored because array_combine() cannot return false when feeded with 2 identical arrays.
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array<string, string\\>\\|false given\\.$#"
 			count: 1
 			path: include/translated-term.php
 
