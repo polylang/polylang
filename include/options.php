@@ -6,7 +6,7 @@
 /**
  * Class that manages Polylang's options:
  * - Automatically stores the options into the database on `shutdown` if they have been modified.
- * - Behaves almost like an array (implements `ArrayAccess`, `Countable, `Iterator`, and `JsonSerializable`).
+ * - Behaves almost like an array (implements `ArrayAccess`, `Countable`, `Iterator`, and `JsonSerializable`).
  * - Handles `switch_to_blog()`.
  * - Whitelists options: it is not possible to add unknown options (not listed in PLL_Options::DEFAULTS).
  * - Options are always defined: it is not possible to unset them from the list, they are set to their default value instead.
