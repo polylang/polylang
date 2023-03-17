@@ -203,7 +203,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	/**
 	 * Whether or not the language is active. Default `true`.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $active = true;
 
@@ -219,7 +219,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	/**
 	 * Whether the language is the default one.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	public $is_default;
 

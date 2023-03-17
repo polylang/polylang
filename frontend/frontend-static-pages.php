@@ -22,6 +22,13 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	protected $links;
 
 	/**
+	 * Stores plugin's options.
+	 *
+	 * @var array
+	 */
+	protected $options;
+
+	/**
 	 * Constructor: setups filters and actions
 	 *
 	 * @since 1.8
@@ -32,7 +39,8 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		parent::__construct( $polylang );
 
 		$this->links_model = &$polylang->links_model;
-		$this->links = &$polylang->links;
+		$this->links       = &$polylang->links;
+		$this->options     = &$polylang->options;
 
 		add_action( 'pll_home_requested', array( $this, 'pll_home_requested' ) );
 
@@ -190,7 +198,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 
 		// Fix paged static front page in plain permalinks when Settings > Reading doesn't match the default language
 		elseif ( ! $this->links_model->using_permalinks && count( $query->query ) === 1 && ! empty( $query->query['page'] ) ) {
-			$lang = $this->model->get_language( $this->options['default_lang'] );
+			$lang = $this->model->get_default_language();
 			if ( empty( $lang ) ) {
 				return $lang;
 			}

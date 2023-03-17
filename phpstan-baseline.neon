@@ -87,7 +87,7 @@ parameters:
 
 		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
-			count: 2
+			count: 1
 			path: admin/admin-default-term.php
 
 		-
