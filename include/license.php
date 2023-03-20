@@ -92,7 +92,6 @@ class PLL_License {
 
 		// Updater
 		add_action( 'plugins_loaded', array( $this, 'auto_updater' ), 10 );
-		add_action( 'cli_init', array( $this, 'auto_updater' ), 0 ); // For WP CLI.
 
 		// Register settings
 		add_filter( 'pll_settings_licenses', array( $this, 'settings' ) );
@@ -114,7 +113,7 @@ class PLL_License {
 	 */
 	public function auto_updater() {
 
-		if ( ! is_admin() ) {
+		if ( ! defined( 'PLL_ADMIN' ) || ! PLL_ADMIN ) {
 			return;
 		}
 
