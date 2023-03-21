@@ -216,7 +216,7 @@ abstract class PLL_Language_Deprecated {
 	 * @phpstan-return non-empty-string
 	 */
 	protected function get_deprecated_url_property( $property ) {
-		return $this->{self::DEPRECATED_URL_PROPERTIES[ $property ]}();
+		return $this->{self::DEPRECATED_URL_PROPERTIES[ $property ]};
 	}
 
 	/**
