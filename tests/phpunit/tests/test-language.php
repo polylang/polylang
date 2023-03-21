@@ -71,8 +71,10 @@ class Language_Test extends PLL_UnitTestCase {
 	 */
 	public function test___get() {
 		// Test deprecated properties.
-		$did_filter = function_exists( 'did_filter' ) ? 'did_filter' : 'did_action';
-		$count      = $did_filter( 'deprecated_property_trigger_error' );
+		$did_filter = function_exists( 'did_filter' );
+		if ( $did_filter ) {
+			$count = did_filter( 'deprecated_property_trigger_error' );
+		}
 
 		foreach ( $this->language::DEPRECATED_TERM_PROPERTIES as $prop => $args ) {
 			$this->assertArrayHasKey( $args[0], $this->data['term_props'] );
@@ -83,8 +85,10 @@ class Language_Test extends PLL_UnitTestCase {
 			$this->assertSame( $this->data[ $prop ], $this->language->$prop );
 		}
 
-		$expected_count = $count + count( $this->language::DEPRECATED_TERM_PROPERTIES ) + count( $this->language::DEPRECATED_URL_PROPERTIES );
-		$this->assertSame( $expected_count, $did_filter( 'deprecated_property_trigger_error' ) );
+		if ( $did_filter ) {
+			$expected_count = $count + count( $this->language::DEPRECATED_TERM_PROPERTIES ) + count( $this->language::DEPRECATED_URL_PROPERTIES );
+			$this->assertSame( $expected_count, did_filter( 'deprecated_property_trigger_error' ) );
+		}
 
 		// Test unknown property.
 		$this->assertNull( $this->language->foobar );
