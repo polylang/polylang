@@ -41,13 +41,12 @@ class Language_Test extends PLL_UnitTestCase {
 	 */
 	public function test_get_prop() {
 		// Test deprecated properties.
-		$language = $this->language; // php 5.6 ¯\_(ツ)_/¯
-		foreach ( $language::DEPRECATED_TERM_PROPERTIES as $prop => $args ) {
+		foreach ( PLL_Language::DEPRECATED_TERM_PROPERTIES as $prop => $args ) {
 			$this->assertArrayHasKey( $args[0], $this->data['term_props'] );
 			$this->assertArrayHasKey( $args[1], $this->data['term_props'][ $args[0] ] );
 			$this->assertSame( $this->data['term_props'][ $args[0] ][ $args[1] ], $this->language->get_prop( $prop ) );
 		}
-		foreach ( $language::DEPRECATED_URL_PROPERTIES as $prop => $callback ) {
+		foreach ( PLL_Language::DEPRECATED_URL_PROPERTIES as $prop => $callback ) {
 			$this->assertSame( $this->data[ $prop ], $this->language->get_prop( $prop ) );
 		}
 
@@ -77,18 +76,17 @@ class Language_Test extends PLL_UnitTestCase {
 			$count = did_filter( 'deprecated_property_trigger_error' );
 		}
 
-		$language = $this->language; // php 5.6 ¯\_(ツ)_/¯
-		foreach ( $language::DEPRECATED_TERM_PROPERTIES as $prop => $args ) {
+		foreach ( PLL_Language::DEPRECATED_TERM_PROPERTIES as $prop => $args ) {
 			$this->assertArrayHasKey( $args[0], $this->data['term_props'] );
 			$this->assertArrayHasKey( $args[1], $this->data['term_props'][ $args[0] ] );
 			$this->assertSame( $this->data['term_props'][ $args[0] ][ $args[1] ], $this->language->$prop );
 		}
-		foreach ( $language::DEPRECATED_URL_PROPERTIES as $prop => $callback ) {
+		foreach ( PLL_Language::DEPRECATED_URL_PROPERTIES as $prop => $callback ) {
 			$this->assertSame( $this->data[ $prop ], $this->language->$prop );
 		}
 
 		if ( $did_filter ) {
-			$expected_count = $count + count( $this->language::DEPRECATED_TERM_PROPERTIES ) + count( $this->language::DEPRECATED_URL_PROPERTIES );
+			$expected_count = $count + count( PLL_Language::DEPRECATED_TERM_PROPERTIES ) + count( PLL_Language::DEPRECATED_URL_PROPERTIES );
 			$this->assertSame( $expected_count, did_filter( 'deprecated_property_trigger_error' ) );
 		}
 
@@ -104,11 +102,10 @@ class Language_Test extends PLL_UnitTestCase {
 	 */
 	public function test___isset() {
 		// Test deprecated properties.
-		$language = $this->language; // php 5.6 ¯\_(ツ)_/¯
-		foreach ( $language::DEPRECATED_TERM_PROPERTIES as $prop => $args ) {
+		foreach ( PLL_Language::DEPRECATED_TERM_PROPERTIES as $prop => $args ) {
 			$this->assertTrue( isset( $this->language->$prop ) );
 		}
-		foreach ( $language::DEPRECATED_URL_PROPERTIES as $prop => $callback ) {
+		foreach ( PLL_Language::DEPRECATED_URL_PROPERTIES as $prop => $callback ) {
 			$this->assertTrue( isset( $this->language->$prop ) );
 		}
 
