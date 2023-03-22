@@ -22,10 +22,6 @@ class Language_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 	}
 
-	public static function wpTearDownAfterClass() {
-		remove_action( 'deprecated_property_trigger_error', '__return_false', 581698 );
-	}
-
 	public function set_up() {
 		parent::set_up();
 
@@ -33,7 +29,7 @@ class Language_Test extends PLL_UnitTestCase {
 		$this->assertInstanceOf( PLL_Language::class, $this->language );
 		$this->data = $this->language->to_array();
 
-		add_action( 'deprecated_property_trigger_error', '__return_false', 581698 );
+		add_action( 'deprecated_property_trigger_error', '__return_false' );
 	}
 
 	/**
