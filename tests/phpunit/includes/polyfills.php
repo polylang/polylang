@@ -1,6 +1,6 @@
 <?php
 /**
- * Polyfills `did_filter()` for backward compatibilit with WP < 6.1.
+ * Polyfills `did_filter()` for backward compatibility with WP < 6.1.
  */
 if ( ! function_exists( 'did_filter' ) ) {
 	// Mimic apply_filters()'s counter.
