@@ -23,6 +23,7 @@ if ( ! defined( 'PLL_TEST_DATA_DIR' ) ) {
 	define( 'PLL_TEST_DATA_DIR', dirname( __DIR__ ) . '/data/' );
 }
 
+require_once __DIR__ . '/polyfills.php';
 require_once __DIR__ . '/doing-it-wrong-trait.php';
 require_once __DIR__ . '/testcase-trait.php';
 require_once __DIR__ . '/testcase.php';

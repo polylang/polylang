@@ -34,7 +34,7 @@ abstract class PLL_Language_Deprecated {
 	 */
 	const DEPRECATED_URL_PROPERTIES = array(
 		'home_url'   => 'get_home_url',
-		'search_url' => 'get_seach_url',
+		'search_url' => 'get_search_url',
 	);
 
 	/**
