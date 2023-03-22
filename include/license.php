@@ -112,11 +112,6 @@ class PLL_License {
 	 * @return void
 	 */
 	public function auto_updater() {
-
-		if ( ! defined( 'PLL_ADMIN' ) || ! PLL_ADMIN ) {
-			return;
-		}
-
 		$args = array(
 			'version'   => $this->version,
 			'license'   => $this->license_key,
