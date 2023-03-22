@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Polyfills `did_filter()` for backward compatibilit with WP < 6.1.
+ */
 if ( ! function_exists( 'did_filter' ) ) {
 	// Mimic apply_filters()'s counter.
 	global $wp_filters;
@@ -25,7 +27,6 @@ if ( ! function_exists( 'did_filter' ) ) {
 	 * Retrieves the number of times a filter has been applied during the current request.
 	 *
 	 * @since 3.4
-	 * @since WP 6.1.0
 	 *
 	 * @global int[] $wp_filters Stores the number of times each filter was triggered.
 	 *
