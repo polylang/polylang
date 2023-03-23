@@ -87,7 +87,7 @@ parameters:
 
 		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
-			count: 2
+			count: 1
 			path: admin/admin-default-term.php
 
 		-
@@ -146,17 +146,7 @@ parameters:
 			path: admin/admin-filters-media.php
 
 		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:update_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: admin/admin-filters-media.php
-
-		-
 			message: "#^Parameter \\#1 \\$lang of method PLL_Query\\:\\:filter_query\\(\\) expects PLL_Language\\|false, PLL_Language\\|null given\\.$#"
-			count: 1
-			path: admin/admin-filters-post.php
-
-		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Post\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 1
 			path: admin/admin-filters-post.php
 
@@ -191,17 +181,7 @@ parameters:
 			path: admin/admin-filters-term.php
 
 		-
-			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
-			count: 2
-			path: admin/admin-filters-term.php
-
-		-
 			message: "#^Parameter \\#1 \\$.+ of function rtrim expects string, string\\|WP_Error given\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
-			message: "#^Parameter \\#1 \\$term_id of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int, int\\|WP_Error given\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
 
@@ -211,18 +191,8 @@ parameters:
 			path: admin/admin-filters-term.php
 
 		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:update_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|false given\\.$#"
-			count: 4
-			path: admin/admin-filters-term.php
-
-		-
-			message: "#^Parameter \\#2 \\$translations of method PLL_Translated_Object\\:\\:save_translations\\(\\) expects array\\<int\\>, array\\<int\\|WP_Error\\> given\\.$#"
-			count: 1
+			count: 2
 			path: admin/admin-filters-term.php
 
 		-
@@ -261,47 +231,7 @@ parameters:
 			path: admin/admin-links.php
 
 		-
-			message: "#^@param PLL_Language \\$lang does not accept actual type of parameter\\: PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
 			message: "#^@param array\\<array\\<string\\>\\|int\\> \\$tr does not accept actual type of parameter\\: mixed\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Cannot access property \\$term_id on PLL_Language\\|false\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:export_to_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Admin_Model\\:\\:validate_lang\\(\\) expects PLL_Language\\|null, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Parameter \\#3 \\$args of function wp_insert_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{slug\\: mixed, description\\: mixed\\} given\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
-			message: "#^Parameter \\#3 \\$args of function wp_update_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{slug\\: mixed, name\\: mixed, description\\: mixed, term_group\\: int\\} given\\.$#"
 			count: 1
 			path: admin/admin-model.php
 
@@ -416,16 +346,6 @@ parameters:
 			path: frontend/choose-lang-content.php
 
 		-
-			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, mixed given\\.$#"
-			count: 1
-			path: frontend/choose-lang-content.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method PLL_Translated_Term\\:\\:get_language\\(\\) expects int\\|string, mixed given\\.$#"
-			count: 1
-			path: frontend/choose-lang-content.php
-
-		-
 			message: "#^Parameter \\#1 \\$var of function get_query_var expects string, string\\|false given\\.$#"
 			count: 1
 			path: frontend/choose-lang-content.php
@@ -446,16 +366,6 @@ parameters:
 			path: frontend/choose-lang-url.php
 
 		-
-			message: "#^Cannot access property \\$home_url on PLL_Language\\|null\\.$#"
-			count: 1
-			path: frontend/choose-lang.php
-
-		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
-			count: 1
-			path: frontend/choose-lang.php
-
-		-
 			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
 			count: 2
 			path: frontend/choose-lang.php
@@ -464,16 +374,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, object\\|false given\\.$#"
 			count: 2
 			path: frontend/choose-lang.php
-
-		-
-			message: "#^Method PLL_Frontend_Auto_Translate\\:\\:get_post\\(\\) should return int but returns int\\|false\\.$#"
-			count: 1
-			path: frontend/frontend-auto-translate.php
-
-		-
-			message: "#^Method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) should return int but returns int\\|false\\.$#"
-			count: 1
-			path: frontend/frontend-auto-translate.php
 
 		-
 			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, float\\|int\\<0, max\\> given\\.$#"
@@ -531,17 +431,7 @@ parameters:
 			path: frontend/frontend-filters-links.php
 
 		-
-			message: "#^Cannot access property \\$search_url on PLL_Language\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-filters-search.php
-
-		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
-			count: 2
-			path: frontend/frontend-filters-search.php
-
-		-
-			message: "#^Parameter \\#1 \\$url of function esc_url expects string, string\\|null given\\.$#"
 			count: 1
 			path: frontend/frontend-filters-search.php
 
@@ -561,27 +451,17 @@ parameters:
 			path: frontend/frontend-filters-widgets.php
 
 		-
-			message: "#^Cannot access offset int on mixed\\.$#"
-			count: 2
-			path: frontend/frontend-filters.php
-
-		-
 			message: "#^Cannot access property \\$locale on PLL_Language\\|null\\.$#"
 			count: 2
 			path: frontend/frontend-filters.php
 
 		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
-			count: 3
-			path: frontend/frontend-filters.php
-
-		-
-			message: "#^Method PLL_Frontend_Filters\\:\\:get_user_metadata\\(\\) should return string\\|null but returns mixed\\.$#"
 			count: 1
 			path: frontend/frontend-filters.php
 
 		-
-			message: "#^Method PLL_Frontend_Filters\\:\\:option_sticky_posts\\(\\) should return array\\<int\\> but returns mixed\\.$#"
+			message: "#^Method PLL_Frontend_Filters\\:\\:get_user_metadata\\(\\) should return string\\|null but returns mixed\\.$#"
 			count: 1
 			path: frontend/frontend-filters.php
 
@@ -681,11 +561,6 @@ parameters:
 			path: frontend/frontend-static-pages.php
 
 		-
-			message: "#^Method PLL_Frontend_Static_Pages\\:\\:pll_pre_translation_url\\(\\) should return string but returns string\\|false\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-static-pages.php
-
-		-
 			message: "#^Parameter \\#2 \\$page of method PLL_Links_Model\\:\\:add_paged_to_link\\(\\) expects int, mixed given\\.$#"
 			count: 1
 			path: frontend/frontend-static-pages.php
@@ -704,36 +579,6 @@ parameters:
 			message: "#^Property PLL_Frontend\\:\\:\\$curlang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\.$#"
 			count: 1
 			path: frontend/frontend.php
-
-		-
-			message: "#^Cannot call method get_home_url\\(\\) on PLL_Admin_Links\\|PLL_Frontend_Links\\|null\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
-			message: "#^Function pll_current_language\\(\\) should return PLL_Language\\|string\\|false but returns PLL_Language\\|false\\|null\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:save_translations\\(\\) expects int, int\\|false given\\.$#"
-			count: 2
-			path: include/api.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:import_from_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Model\\:\\:count_posts\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: include/api.php
-
-		-
-			message: "#^Parameter \\#1 \\$links of method PLL_Switcher\\:\\:the_languages\\(\\) expects PLL_Links, PLL_Admin_Links\\|PLL_Frontend_Links\\|null given\\.$#"
-			count: 1
-			path: include/api.php
 
 		-
 			message: "#^Parameter \\#2 .+ of function array_merge expects array, mixed given\\.$#"
@@ -786,11 +631,6 @@ parameters:
 			path: include/crud-posts.php
 
 		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Post\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
-			count: 1
-			path: include/crud-posts.php
-
-		-
 			message: "#^Parameter \\#2 .+ of function array_merge expects array, array\\<int, int>\\|WP_Error given\\.$#"
 			count: 1
 			path: include/crud-posts.php
@@ -831,11 +671,6 @@ parameters:
 			path: include/filters-links.php
 
 		-
-			message: "#^Method PLL_Filters\\:\\:translate_page_for_privacy_policy\\(\\) should return int but returns int\\|false\\.$#"
-			count: 1
-			path: include/filters.php
-
-		-
 			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:get_translations\\(\\) expects int, mixed given\\.$#"
 			count: 1
 			path: include/filters.php
@@ -851,77 +686,7 @@ parameters:
 			path: include/functions.php
 
 		-
-			message: "#^@param array \\$flag does not accept actual type of parameter\\: array\\{url\\: string\\}\\|null\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Argument of an invalid type array\\|WP_Term supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$count on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$description on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$name on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$slug on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_group on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_id on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot access property \\$term_taxonomy_id on array\\|WP_Term\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Cannot use array destructuring on array\\|false\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Method PLL_Language\\:\\:get_display_flag\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Method PLL_Language\\:\\:get_display_flag_url\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
 			message: "#^Parameter \\#1 \\$.+ of function base64_encode expects string, string\\|false given\\.$#"
-			count: 1
-			path: include/language.php
-
-		-
-			message: "#^Property PLL_Language\\:\\:\\$is_rtl \\(int\\) does not accept mixed\\.$#"
 			count: 1
 			path: include/language.php
 
@@ -1011,11 +776,6 @@ parameters:
 			path: include/links-permalinks.php
 
 		-
-			message: "#^Parameter \\#1 \\$page of function get_page_uri expects int\\|object, int\\|null given\\.$#"
-			count: 1
-			path: include/links-permalinks.php
-
-		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, mixed given\\.$#"
 			count: 1
 			path: include/links-permalinks.php
@@ -1031,57 +791,12 @@ parameters:
 			path: include/links-subdomain.php
 
 		-
-			message: "#^Cannot access property \\$home_url on PLL_Language\\|false\\.$#"
-			count: 1
-			path: include/links.php
-
-		-
-			message: "#^Cannot access property \\$search_url on PLL_Language\\|false\\.$#"
-			count: 1
-			path: include/links.php
-
-		-
-			message: "#^Method PLL_Links\\:\\:get_home_url\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/links.php
-
-		-
-			message: "#^@param array\\<PLL_Language\\> \\$languages does not accept actual type of parameter\\: mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$term_id\\.$#"
 			count: 1
 			path: include/model.php
 
 		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Cannot access offset int on mixed\\.$#"
-			count: 2
-			path: include/model.php
-
-		-
-			message: "#^Cannot access offset mixed on mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Method PLL_Model\\:\\:count_posts\\(\\) should return int but returns mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
 			message: "#^Method PLL_Model\\:\\:get_language\\(\\) should return PLL_Language\\|false but returns mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Method PLL_Model\\:\\:get_languages_list\\(\\) should return array but returns mixed\\.$#"
 			count: 1
 			path: include/model.php
 
@@ -1092,36 +807,6 @@ parameters:
 
 		-
 			message: "#^Method PLL_Model\\:\\:get_objects_with_no_lang\\(\\) should return array but returns array\\|false\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Method PLL_Model\\:\\:get_translated_post_types\\(\\) should return array\\<string\\> but returns mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Method PLL_Model\\:\\:get_translated_taxonomies\\(\\) should return array\\<string\\> but returns mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#1 \\$.+ of function array_intersect expects array, mixed given\\.$#"
-			count: 2
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#1 \\$language of class PLL_Language constructor expects array\\|WP_Term, mixed given\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_filter expects array, mixed given\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, mixed given\\.$#"
 			count: 1
 			path: include/model.php
 
@@ -1141,11 +826,6 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
-			count: 2
-			path: include/model.php
-
-		-
 			message: "#^Method PLL_Nav_Menu\\:\\:explode_location\\(\\) should return array\\<string\\> but returns array\\<string, mixed\\>\\|false\\.$#"
 			count: 1
 			path: include/nav-menu.php
@@ -1159,36 +839,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$.+ of function array_flip expects array\\<int\\|string\\>, array\\<string\\|WP_Post_Type\\> given\\.$#"
 			count: 1
 			path: include/olt-manager.php
-
-		-
-			message: "#^Method PLL_Static_Pages\\:\\:page_link\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/static-pages.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method PLL_Translated_Object\\:\\:get\\(\\) expects int, mixed given\\.$#"
-			count: 2
-			path: include/static-pages.php
-
-		-
-			message: "#^Property PLL_Language\\:\\:\\$page_for_posts \\(int\\|null\\) does not accept int\\|false\\.$#"
-			count: 1
-			path: include/static-pages.php
-
-		-
-			message: "#^Property PLL_Language\\:\\:\\$page_on_front \\(int\\|null\\) does not accept int\\|false\\.$#"
-			count: 1
-			path: include/static-pages.php
-
-		-
-			message: "#^Property PLL_Static_Pages\\:\\:\\$page_for_posts \\(int\\|null\\) does not accept mixed\\.$#"
-			count: 1
-			path: include/static-pages.php
-
-		-
-			message: "#^Property PLL_Static_Pages\\:\\:\\$page_on_front \\(int\\|null\\) does not accept mixed\\.$#"
-			count: 1
-			path: include/static-pages.php
 
 		-
 			message: "#^Cannot access property \\$model on PLL_Links\\|null\\.$#"
@@ -1251,16 +901,6 @@ parameters:
 			path: include/translate-option.php
 
 		-
-			message: "#^Parameter \\#1 \\$translations of method PLL_Translated_Object\\:\\:validate_translations\\(\\) expects array\\<int\\>, mixed given\\.$#"
-			count: 2
-			path: include/translated-object.php
-
-		-
-			message: "#^Parameter \\#2 \\$object_type of function register_taxonomy expects array\\|string, string\\|null given\\.$#"
-			count: 2
-			path: include/translated-object.php
-
-		-
 			message: "#^Parameter \\#3 \\$args of function wp_insert_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{description\\: mixed\\} given\\.$#"
 			count: 1
 			path: include/translated-object.php
@@ -1274,11 +914,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$args of function wp_insert_term expects array\\{alias_of\\?\\: string, description\\?\\: string, parent\\?\\: int, slug\\?\\: string\\}, array\\{description\\: mixed\\} given\\.$#"
 			count: 1
 			path: include/translated-term.php
-
-		-
-			message: "#^Parameter \\#1 \\$args of function wp_parse_args expects array\\|object\\|string, mixed given\\.$#"
-			count: 1
-			path: include/walker-dropdown.php
 
 		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
@@ -1386,11 +1021,6 @@ parameters:
 			path: modules/sync/sync-tax.php
 
 		-
-			message: "#^@param int \\$tr_term does not accept actual type of parameter\\: int\\|false\\.$#"
-			count: 1
-			path: modules/sync/sync-tax.php
-
-		-
 			message: "#^@param string \\$lang does not accept actual type of parameter\\: string\\|null\\.$#"
 			count: 1
 			path: modules/sync/sync-tax.php
@@ -1416,11 +1046,6 @@ parameters:
 			path: modules/sync/sync-tax.php
 
 		-
-			message: "#^Parameter \\#3 \\$lang of method PLL_Sync_Tax\\:\\:copy_object_terms\\(\\) expects string, int\\|string\\|false given\\.$#"
-			count: 1
-			path: modules/sync/sync-tax.php
-
-		-
 			message: "#^Parameter \\#2 \\$post of method PLL_Sync\\:\\:pll_save_post\\(\\) expects WP_Post, WP_Post\\|null given\\.$#"
 			count: 1
 			path: modules/sync/sync.php
@@ -1428,11 +1053,6 @@ parameters:
 		-
 			message: "#^Cannot access property \\$name on PLL_Language\\|false\\.$#"
 			count: 1
-			path: modules/wizard/wizard.php
-
-		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
-			count: 2
 			path: modules/wizard/wizard.php
 
 		-
@@ -1449,16 +1069,6 @@ parameters:
 			message: "#^Property PLL_Wizard\\:\\:\\$step \\(string\\|null\\) does not accept int\\|string\\|false\\.$#"
 			count: 1
 			path: modules/wizard/wizard.php
-
-		-
-			message: "#^Method PLL_WPML_API\\:\\:wpml_element_language_code\\(\\) should return string but returns mixed\\.$#"
-			count: 1
-			path: modules/wpml/wpml-api.php
-
-		-
-			message: "#^Method PLL_WPML_API\\:\\:wpml_element_language_code\\(\\) should return string but returns string\\|false\\.$#"
-			count: 2
-			path: modules/wpml/wpml-api.php
 
 		-
 			message: "#^Method PLL_WPML_API\\:\\:wpml_is_rtl\\(\\) should return bool but returns string\\|false\\.$#"
@@ -1511,7 +1121,7 @@ parameters:
 			path: modules/wpml/wpml-legacy-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method PLL_Translatable_Object\\:\\:get_language\\(\\) expects int, int\\|false given\\.$#"
 			count: 1
 			path: modules/wpml/wpml-legacy-api.php
 
@@ -1551,17 +1161,12 @@ parameters:
 			path: settings/settings-url.php
 
 		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_Links_Model\\:\\:home_url\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: settings/settings-url.php
-
-		-
 			message: "#^Parameter \\#1 \\$post of function _get_page_link expects int\\|WP_Post, int\\|null given\\.$#"
 			count: 1
 			path: settings/settings-url.php
 
 		-
-			message: "#^Parameter \\#1 \\$post_id of method PLL_Translated_Post\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method PLL_Translatable_Object\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
 			count: 1
 			path: settings/settings-url.php
 
@@ -1579,11 +1184,6 @@ parameters:
 			message: "#^Variable \\$errors in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: settings/settings.php
-
-		-
-			message: "#^Cannot access offset 'default_lang' on mixed\\.$#"
-			count: 1
-			path: settings/table-languages.php
 
 		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|null given\\.$#"

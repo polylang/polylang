@@ -68,8 +68,10 @@ class PLL_Table_Languages extends WP_List_Table {
 				return esc_html( $item->$column_name );
 
 			case 'term_group':
-			case 'count':
 				return (int) $item->$column_name;
+
+			case 'count':
+				return $item->get_tax_prop( 'language', $column_name );
 
 			default:
 				return $item->$column_name; // Flag.
@@ -104,9 +106,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_default_lang( $item ) {
-		$options = get_option( 'polylang' );
-
-		if ( $options['default_lang'] != $item->slug ) {
+		if ( ! $item->is_default ) {
 			$s = sprintf(
 				'<div class="row-actions"><span class="default-lang">
 				<a class="icon-default-lang" title="%1$s" href="%2$s"><span class="screen-reader-text">%3$s</span></a>

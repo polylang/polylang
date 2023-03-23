@@ -7,6 +7,7 @@
  * class properties here.
  */
 trait PLL_UnitTestCase_Trait {
+	use PLL_Doing_It_Wrong_Trait;
 
 	/**
 	 * @var array|null
@@ -63,6 +64,8 @@ trait PLL_UnitTestCase_Trait {
 
 		remove_action( 'current_screen', '_load_remote_block_patterns' );
 		remove_action( 'current_screen', '_load_remote_featured_patterns' );
+
+		self::filter_doing_it_wrong_trigger_error();
 	}
 
 	/**

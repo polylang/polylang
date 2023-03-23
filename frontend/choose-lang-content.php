@@ -61,16 +61,31 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 			$lang = $this->model->get_language( reset( $lang ) ); // Choose the first queried language
 		}
 
-		elseif ( ( is_single() || is_page() || ( is_attachment() && $this->options['media_support'] ) ) && ( ( $var = get_queried_object_id() ) || ( $var = get_query_var( 'p' ) ) || ( $var = get_query_var( 'page_id' ) ) || ( $var = get_query_var( 'attachment_id' ) ) ) ) {
-			$lang = $this->model->post->get_language( $var );
+		elseif ( ( is_single() || is_page() || ( is_attachment() && $this->options['media_support'] ) ) && ( ( $var = get_queried_object_id() ) || ( $var = get_query_var( 'p' ) ) || ( $var = get_query_var( 'page_id' ) ) || ( $var = get_query_var( 'attachment_id' ) ) ) && is_numeric( $var ) ) {
+			$lang = $this->model->post->get_language( (int) $var );
 		}
 
 		else {
 			foreach ( $this->model->get_translated_taxonomies() as $taxonomy ) {
 				$tax_object = get_taxonomy( $taxonomy );
-				if ( ! empty( $tax_object ) && $var = get_query_var( $tax_object->query_var ) ) {
-					$lang = $this->model->term->get_language( $var, $taxonomy );
+
+				if ( empty( $tax_object ) ) {
+					continue;
 				}
+
+				$var = get_query_var( $tax_object->query_var );
+
+				if ( ! is_string( $var ) || empty( $var ) ) {
+					continue;
+				}
+
+				$term = get_term_by( 'slug', $var, $taxonomy );
+
+				if ( ! $term instanceof WP_Term ) {
+					continue;
+				}
+
+				$lang = $this->model->term->get_language( $term->term_id );
 			}
 		}
 
@@ -118,7 +133,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 		// Use $query->query['s'] as is_search is not set when search is empty
 		// http://wordpress.org/support/topic/search-for-empty-string-in-default-language
 		if ( $this->options['hide_default'] && ! isset( $qv['lang'] ) && ( $is_archive || isset( $query->query['s'] ) || ( count( $query->query ) == 1 && ! empty( $qv['feed'] ) ) ) ) {
-			$this->set_language( $this->model->get_language( $this->options['default_lang'] ) );
+			$this->set_language( $this->model->get_default_language() );
 			$this->set_curlang_in_query( $query );
 		}
 	}

@@ -17,7 +17,6 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 		$links_model = self::$model->get_links_model();
 		$this->frontend = new PLL_Frontend( $links_model );
 		$this->frontend->init();
-		$this->frontend->static_pages = new PLL_Static_Pages( $this->frontend );
 	}
 
 	public function test_translate_page_for_posts_on_default_language() {
@@ -31,7 +30,7 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		update_option( 'page_for_posts', $en );
-
+		$this->frontend->static_pages = new PLL_Frontend_Static_Pages( $this->frontend );
 
 		$this->frontend->curlang = self::$model->get_language( 'en' );
 
@@ -51,6 +50,7 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		update_option( 'page_for_posts', $en );
+		$this->frontend->static_pages = new PLL_Frontend_Static_Pages( $this->frontend );
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 
@@ -66,6 +66,7 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $en, 'en' );
 
 		update_option( 'page_for_posts', $en );
+		$this->frontend->static_pages = new PLL_Frontend_Static_Pages( $this->frontend );
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 

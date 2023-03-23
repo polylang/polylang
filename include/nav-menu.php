@@ -110,7 +110,7 @@ class PLL_Nav_Menu {
 	 * @return string
 	 */
 	public function combine_location( $loc, $lang ) {
-		return $loc . ( strpos( $loc, '___' ) || $this->options['default_lang'] === $lang->slug ? '' : '___' . $lang->slug );
+		return $loc . ( strpos( $loc, '___' ) || $lang->is_default ? '' : '___' . $lang->slug );
 	}
 
 	/**

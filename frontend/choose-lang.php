@@ -86,7 +86,7 @@ abstract class PLL_Choose_Lang {
 
 		// Final check in case $curlang has an unexpected value
 		// See https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
-		$this->curlang = ( $curlang instanceof PLL_Language ) ? $curlang : $this->model->get_language( $this->options['default_lang'] );
+		$this->curlang = ( $curlang instanceof PLL_Language ) ? $curlang : $this->model->get_default_language();
 
 		$GLOBALS['text_direction'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
 		if ( did_action( 'wp_default_styles' ) ) {
@@ -190,7 +190,7 @@ abstract class PLL_Choose_Lang {
 		$slug = apply_filters( 'pll_preferred_language', $language, $cookie );
 
 		// Return default if there is no preferences in the browser or preferences does not match our languages or it is requested not to use the browser preference
-		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_language( $this->options['default_lang'] );
+		return ( $lang = $this->model->get_language( $slug ) ) ? $lang : $this->model->get_default_language();
 	}
 
 	/**
@@ -204,7 +204,7 @@ abstract class PLL_Choose_Lang {
 		// Test referer in case PLL_COOKIE is set to false. Since WP 3.6.1, wp_get_referer() validates the host which is exactly what we want
 		// Thanks to Ov3rfly http://wordpress.org/support/topic/enhance-feature-when-front-page-is-visited-set-language-according-to-browser
 		$language = $this->options['hide_default'] && ( wp_get_referer() || ! $this->options['browser'] ) ?
-			$this->model->get_language( $this->options['default_lang'] ) :
+			$this->model->get_default_language() :
 			$this->get_preferred_language(); // Sets the language according to browser preference or default language
 		$this->set_language( $language );
 	}
@@ -219,8 +219,12 @@ abstract class PLL_Choose_Lang {
 	 * @return void
 	 */
 	public function home_requested() {
+		if ( empty( $this->curlang ) ) {
+			return;
+		}
+
 		// We are already on the right page
-		if ( $this->options['default_lang'] == $this->curlang->slug && $this->options['hide_default'] ) {
+		if ( $this->curlang->is_default && $this->options['hide_default'] ) {
 			$this->set_curlang_in_query( $GLOBALS['wp_query'] );
 
 			/**
@@ -234,7 +238,7 @@ abstract class PLL_Choose_Lang {
 		// Test to avoid crash if get_home_url returns something wrong
 		// FIXME why this happens? http://wordpress.org/support/topic/polylang-crashes-1
 		// Don't redirect if $_POST is not empty as it could break other plugins
-		elseif ( is_string( $redirect = $this->curlang->home_url ) && empty( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		elseif ( is_string( $redirect = $this->curlang->get_home_url() ) && empty( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// Don't forget the query string which may be added by plugins
 			$query_string = wp_parse_url( pll_get_requested_url(), PHP_URL_QUERY );
 			if ( ! empty( $query_string ) ) {

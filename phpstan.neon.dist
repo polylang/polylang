@@ -49,3 +49,15 @@ parameters:
 			message: "#^Action callback returns string\\|void but should not return anything\\.$#"
 			count: 1
 			path: frontend/frontend.php
+
+		# Ignored because array_combine() cannot return false when feeded with 2 identical arrays.
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			count: 1
+			path: include/translated-post.php
+
+		# Ignored because array_combine() cannot return false when feeded with 2 identical arrays.
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			count: 1
+			path: include/translated-term.php

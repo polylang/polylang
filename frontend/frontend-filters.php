@@ -73,13 +73,18 @@ class PLL_Frontend_Filters extends PLL_Filters {
 
 		// Do not filter sticky posts on REST requests as $this->curlang is *not* the 'lang' parameter set in the request
 		if ( ! defined( 'REST_REQUEST' ) && ! empty( $this->curlang ) && ! empty( $posts ) ) {
-			$_posts = wp_cache_get( 'sticky_posts', 'options' ); // This option is usually cached in 'all_options' by WP
+			$_posts = wp_cache_get( 'sticky_posts', 'options' ); // This option is usually cached in 'all_options' by WP.
+			$tt_id  = $this->curlang->get_tax_prop( 'language', 'term_taxonomy_id' );
 
-			if ( empty( $_posts ) || ! is_array( $_posts[ $this->curlang->term_taxonomy_id ] ) ) {
+			if ( empty( $_posts ) || ! is_array( $_posts ) || empty( $_posts[ $tt_id ] ) || ! is_array( $_posts[ $tt_id ] ) ) {
 				$posts = array_map( 'intval', $posts );
 				$posts = implode( ',', $posts );
 
-				$languages = $this->model->get_languages_list( array( 'fields' => 'term_taxonomy_id' ) );
+				$languages = array();
+				foreach ( $this->model->get_languages_list() as $language ) {
+					$languages[] = $language->get_tax_prop( 'language', 'term_taxonomy_id' );
+				}
+
 				$_posts = array_fill_keys( $languages, array() ); // Init with empty arrays
 				$languages = implode( ',', $languages );
 
@@ -92,7 +97,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 				wp_cache_add( 'sticky_posts', $_posts, 'options' );
 			}
 
-			$posts = $_posts[ $this->curlang->term_taxonomy_id ];
+			$posts = $_posts[ $tt_id ];
 		}
 
 		return $posts;
@@ -186,7 +191,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 * @return null|string
 	 */
 	public function get_user_metadata( $null, $id, $meta_key, $single ) {
-		return 'description' === $meta_key && $this->curlang->slug !== $this->options['default_lang'] ? get_user_meta( $id, 'description_' . $this->curlang->slug, $single ) : $null;
+		return 'description' === $meta_key && ! empty( $this->curlang ) && ! $this->curlang->is_default ? get_user_meta( $id, 'description_' . $this->curlang->slug, $single ) : $null;
 	}
 
 	/**

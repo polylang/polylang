@@ -46,6 +46,25 @@ class PLL_REST_Request extends PLL_Base {
 	public $filters_widgets_options;
 
 	/**
+	 * Constructor.
+	 *
+	 * @since 3.4
+	 *
+	 * @param PLL_Links_Model $links_model Reference to the links model.
+	 */
+	public function __construct( &$links_model ) {
+		parent::__construct( $links_model );
+
+		// Static front page and page for posts.
+		// Early instantiated to be able to correctly initialize language properties.
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->static_pages = new PLL_Static_Pages( $this );
+		}
+
+		$this->model->set_languages_ready();
+	}
+
+	/**
 	 * Setup filters.
 	 *
 	 * @since 2.6
@@ -55,7 +74,7 @@ class PLL_REST_Request extends PLL_Base {
 	public function init() {
 		parent::init();
 
-		if ( ! $this->model->get_languages_list() ) {
+		if ( ! $this->model->has_languages() ) {
 			return;
 		}
 
@@ -64,11 +83,6 @@ class PLL_REST_Request extends PLL_Base {
 		$this->filters_links           = new PLL_Filters_Links( $this );
 		$this->filters                 = new PLL_Filters( $this );
 		$this->filters_widgets_options = new PLL_Filters_Widgets_Options( $this );
-
-		// Static front page and page for posts.
-		if ( 'page' === get_option( 'show_on_front' ) ) {
-			$this->static_pages = new PLL_Static_Pages( $this );
-		}
 
 		$this->links    = new PLL_Admin_Links( $this );
 		$this->nav_menu = new PLL_Frontend_Nav_Menu( $this ); // For auto added pages to menu.

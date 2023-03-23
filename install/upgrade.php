@@ -103,12 +103,12 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	public function _upgrade() {
-		foreach ( array( '2.0.8', '2.1', '2.7', '2.8.1' ) as $version ) {
+		foreach ( array( '2.0.8', '2.1', '2.7', '3.4' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				$method_to_call = array( $this, 'upgrade_' . str_replace( '.', '_', $version ) );
 				if ( is_callable( $method_to_call ) ) {
 					call_user_func( $method_to_call );
-				}               
+				}
 			}
 		}
 
@@ -190,19 +190,104 @@ class PLL_Upgrade {
 	}
 
 	/**
-	 * Upgrades if the previous version is < 2.8.1
-	 *
+	 * Upgrades if the previous version is < 3.4.0.
 	 * Deletes language cache due to:
-	 * - 'redirect_lang' option removed for subdomains and multiple domains in 2.2
-	 * - W3C and Facebook locales added to PLL_Language objects in 2.3
-	 * - flags moved to a different directory in Polylang Pro 2.8
-	 * - bug of flags url returning html fixed in 2.8.1
+	 * - 'redirect_lang' option removed for subdomains and multiple domains in 2.2,
+	 * - W3C and Facebook locales added to PLL_Language objects in 2.3,
+	 * - flags moved to a different directory in Polylang Pro 2.8,
+	 * - bug of flags url returning html fixed in 2.8.1,
+	 * - important changes in `PLL_Model` and `PLL_Language` in 3.4.
 	 *
-	 * @since 2.8.1
+	 * @since 3.4
 	 *
 	 * @return void
 	 */
-	protected function upgrade_2_8_1() {
+	protected function upgrade_3_4() {
 		delete_transient( 'pll_languages_list' );
+
+		$this->migrate_locale_fallback_to_language_description();
+
+		$this->migrate_strings_translations();
+	}
+
+	/**
+	 * Moves strings translations from post meta to term meta _pll_strings_translations.
+	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	protected function migrate_strings_translations() {
+		$posts = get_posts(
+			array(
+				'post_type' => 'polylang_mo',
+				'post_status' => 'any',
+				'numberposts' => -1,
+				'nopaging' => true,
+			)
+		);
+		if ( ! is_array( $posts ) ) {
+			return;
+		}
+
+		foreach ( $posts as $post ) {
+			$meta = get_post_meta( $post->ID, '_pll_strings_translations', true );
+
+			$term_id = (int) substr( $post->post_title, 12 );
+			wp_delete_post( $post->ID );
+
+			if ( empty( $meta ) || ! is_array( $meta ) ) {
+				continue;
+			}
+
+			update_term_meta( $term_id, '_pll_strings_translations', wp_slash( $meta ) );
+		}
+	}
+
+	/**
+	 * Migrate locale fallback to language term description.
+	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	protected function migrate_locale_fallback_to_language_description() {
+		// Migrate locale fallbacks from term metas to language term description.
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'language',
+				'hide_empty' => false,
+				'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					array(
+						'key'         => 'fallback',
+						'compare_key' => 'EXISTS',
+					),
+				),
+			)
+		);
+
+		if ( ! is_array( $terms ) ) {
+			return;
+		}
+
+		foreach ( $terms as $term ) {
+			$fallbacks = get_term_meta( $term->term_id, 'fallback', true );
+
+			delete_term_meta( $term->term_id, 'fallback' );
+
+			if ( empty( $fallbacks ) || ! is_array( $fallbacks ) ) {
+				// Empty or invalid value, should not happen.
+				continue;
+			}
+
+			$description = maybe_unserialize( $term->description );
+			$description = is_array( $description ) ? $description : array();
+
+			$description['fallbacks'] = $fallbacks;
+			/** @var string */
+			$description = maybe_serialize( $description );
+
+			wp_update_term( $term->term_id, 'language', array( 'description' => $description ) );
+		}
 	}
 }

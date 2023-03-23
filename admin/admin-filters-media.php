@@ -115,9 +115,17 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	public function save_media( $post, $attachment ) {
 		// Language is filled in attachment by the function applying the filter 'attachment_fields_to_save'
 		// All security checks have been done by functions applying this filter
-		if ( ! empty( $attachment['language'] ) && current_user_can( 'edit_post', $post['ID'] ) ) {
-			$this->model->post->update_language( $post['ID'], $this->model->get_language( $attachment['language'] ) );
+		if ( empty( $attachment['language'] ) || ! current_user_can( 'edit_post', $post['ID'] ) ) {
+			return $post;
 		}
+
+		$language = $this->model->get_language( $attachment['language'] );
+
+		if ( empty( $language ) ) {
+			return $post;
+		}
+
+		$this->model->post->set_language( $post['ID'], $language );
 
 		return $post;
 	}

@@ -268,7 +268,7 @@ class PLL_Admin_Site_Health {
 		foreach ( $this->model->get_languages_list() as $language ) {
 			$fields = array();
 
-			foreach ( get_object_vars( $language ) as $key => $value ) {
+			foreach ( $language->to_array() as $key => $value ) {
 				if ( in_array( $key, $this->exclude_language_keys(), true ) ) {
 					continue;
 				}
@@ -417,8 +417,10 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 3.1
 	 *
-	 * @param int $limit Max number of posts to show per post type.
+	 * @param int $limit Max number of posts to show per post type. `-1` to return all of them. Default is 5.
 	 * @return int[][] Array containing an array of post ids.
+	 *
+	 * @phpstan-param -1|positive-int $limit
 	 */
 	public function get_post_ids_without_lang( $limit = 5 ) {
 		$posts = array();
@@ -441,8 +443,10 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 3.1
 	 *
-	 * @param int $limit Max number of terms to show per post type.
+	 * @param int $limit Max number of terms to show per post type. `-1` to return all of them. Default is 5.
 	 * @return int[][] Array containing an array of term ids.
+	 *
+	 * @phpstan-param -1|positive-int $limit
 	 */
 	public function get_term_ids_without_lang( $limit = 5 ) {
 		$terms = array();

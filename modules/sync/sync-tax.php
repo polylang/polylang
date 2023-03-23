@@ -105,7 +105,7 @@ class PLL_Sync_Tax {
 				 * @param int    $term    Source term id
 				 * @param string $lang    Language slug
 				 */
-				if ( $term_id = apply_filters( 'pll_maybe_translate_term', $this->model->term->get_translation( $term, $lang ), $term, $lang ) ) {
+				if ( $term_id = apply_filters( 'pll_maybe_translate_term', (int) $this->model->term->get_translation( $term, $lang ), $term, $lang ) ) {
 					$newterms[] = (int) $term_id; // Cast is important otherwise we get 'numeric' tags
 				}
 			}
@@ -187,7 +187,7 @@ class PLL_Sync_Tax {
 							$tr_terms = array();
 						}
 
-						if ( is_array( $tr_terms ) ) {
+						if ( is_string( $orig_lang ) && is_array( $tr_terms ) ) {
 							$tr_terms = wp_list_pluck( $tr_terms, 'term_id' );
 							$this->copy_object_terms( $tr_id, $object_id, $orig_lang, $tr_terms, $taxonomy, $append );
 						}

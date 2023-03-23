@@ -17,36 +17,40 @@ class PLL_Admin_Model extends PLL_Model {
 	 * @since 1.2
 	 *
 	 * @param array $args {
-	 *   @type string $name           Language name ( used only for display ).
-	 *   @type string $slug           Language code ( ideally 2-letters ISO 639-1 language code ).
-	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will not be loaded...
+	 *   @type string $name           Language name (used only for display).
+	 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
+	 *                                not be loaded...
 	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
 	 *   @type int    $term_group     Language order when displayed.
 	 *   @type string $no_default_cat Optional, if set, no default category will be created for this language.
-	 *   @type string $flag           Optional, country code, @see flags.php.
+	 *   @type string $flag           Optional, country code, {@see settings/flags.php}.
 	 * }
 	 * @return WP_Error|true true if success / WP_Error if failed.
 	 */
 	public function add_language( $args ) {
 		$errors = $this->validate_lang( $args );
-		if ( $errors->get_error_code() ) { // Using has_errors() would be more meaningful but is available only since WP 5.0
+		if ( $errors->has_errors() ) {
 			return $errors;
 		}
 
 		// First the language taxonomy
-		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
-		$r = wp_insert_term( $args['name'], 'language', array( 'slug' => $args['slug'], 'description' => $description ) );
+		$r = wp_insert_term(
+			$args['name'],
+			'language',
+			array(
+				'slug'        => $args['slug'],
+				'description' => $this->build_language_metas( $args ),
+			)
+		);
 		if ( is_wp_error( $r ) ) {
 			// Avoid an ugly fatal error if something went wrong ( reported once in the forum )
 			return new WP_Error( 'pll_add_language', __( 'Impossible to add the language.', 'polylang' ) );
 		}
 		wp_update_term( (int) $r['term_id'], 'language', array( 'term_group' => (int) $args['term_group'] ) ); // can't set the term group directly in wp_insert_term
 
-		// The term_language taxonomy
-		// Don't want shared terms so use a different slug
-		wp_insert_term( $args['name'], 'term_language', array( 'slug' => 'pll_' . $args['slug'] ) );
-
-		$this->clean_languages_cache(); // Update the languages list now !
+		// The other language taxonomies.
+		$this->update_secondary_language_terms( $args['slug'], $args['name'] );
 
 		if ( ! isset( $this->options['default_lang'] ) ) {
 			// If this is the first language created, set it as default language
@@ -54,9 +58,11 @@ class PLL_Admin_Model extends PLL_Model {
 			update_option( 'polylang', $this->options );
 		}
 
-		// Init a mo_id for this language
-		$mo = new PLL_MO();
-		$mo->export_to_db( $this->get_language( $args['slug'] ) );
+		// Refresh languages.
+		$this->clean_languages_cache();
+		$this->get_languages_list();
+
+		flush_rewrite_rules(); // Refresh rewrite rules.
 
 		/**
 		 * Fires when a language is added.
@@ -67,8 +73,6 @@ class PLL_Admin_Model extends PLL_Model {
 		 */
 		do_action( 'pll_add_language', $args );
 
-		$this->clean_languages_cache(); // Again to set add mo_id in the cached languages list
-		flush_rewrite_rules(); // Refresh rewrite rules
 		return true;
 	}
 
@@ -89,7 +93,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Oops ! we are deleting the default language...
 		// Need to do this before loosing the information for default category translations
-		if ( $this->options['default_lang'] == $lang->slug ) {
+		if ( $lang->is_default ) {
 			$slugs = $this->get_languages_list( array( 'fields' => 'slug' ) );
 			$slugs = array_diff( $slugs, array( $lang->slug ) );
 
@@ -133,18 +137,17 @@ class PLL_Admin_Model extends PLL_Model {
 			delete_user_meta( $user_id, 'description_' . $lang->slug );
 		}
 
-		// Delete the string translations
-		wp_delete_post( PLL_MO::get_id( $lang ) );
-
 		// Delete domain
 		unset( $this->options['domains'][ $lang->slug ] );
 
-		// Delete the language itself
-		wp_delete_term( $lang->term_id, 'language' );
-		wp_delete_term( $lang->tl_term_id, 'term_language' );
+		// Delete the language itself.
+		foreach ( $lang->get_tax_props( 'term_id' ) as $taxonomy_name => $term_id ) {
+			wp_delete_term( $term_id, $taxonomy_name );
+		}
 
-		// Update languages list
+		// Refresh languages.
 		$this->clean_languages_cache();
+		$this->get_languages_list();
 
 		update_option( 'polylang', $this->options );
 		flush_rewrite_rules(); // refresh rewrite rules
@@ -169,6 +172,10 @@ class PLL_Admin_Model extends PLL_Model {
 	 */
 	public function update_language( $args ) {
 		$lang = $this->get_language( (int) $args['lang_id'] );
+
+		if ( empty( $lang ) ) {
+			return new WP_Error( 'pll_invalid_language_id', __( 'The language does not seem to exist.', 'polylang' ) );
+		}
 
 		$errors = $this->validate_lang( $args, $lang );
 		if ( $errors->get_error_code() ) { // Using has_errors() would be more meaningful but is available only since WP 5.0
@@ -217,22 +224,25 @@ class PLL_Admin_Model extends PLL_Model {
 			}
 
 			// Update the default language option if necessary
-			if ( $this->options['default_lang'] == $old_slug ) {
+			if ( $lang->is_default ) {
 				$this->options['default_lang'] = $slug;
 			}
 		}
 
 		update_option( 'polylang', $this->options );
 
-		// And finally update the language itself
-		$description = maybe_serialize( array( 'locale' => $args['locale'], 'rtl' => (int) $args['rtl'], 'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'] ) );
-		wp_update_term( (int) $lang->term_id, 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
-		if ( empty( $lang->tl_term_id ) ) {
-			// Attempt to repair the term_language if it has been deleted by a database cleaning tool.
-			wp_insert_term( $args['name'], 'term_language', array( 'slug' => 'pll_' . $slug ) );
-		} else {
-			wp_update_term( (int) $lang->tl_term_id, 'term_language', array( 'slug' => 'pll_' . $slug, 'name' => $args['name'] ) );
-		}
+		// And finally update the language itself.
+		$this->update_secondary_language_terms( $args['slug'], $args['name'], $lang );
+
+		$description = $this->build_language_metas( $args );
+		wp_update_term( $lang->get_tax_prop( 'language', 'term_id' ), 'language', array( 'slug' => $slug, 'name' => $args['name'], 'description' => $description, 'term_group' => (int) $args['term_group'] ) );
+
+		// Refresh languages.
+		$this->clean_languages_cache();
+		$this->get_languages_list();
+
+		// Refresh rewrite rules.
+		flush_rewrite_rules();
 
 		/**
 		 * Fires after a language is updated.
@@ -255,9 +265,82 @@ class PLL_Admin_Model extends PLL_Model {
 		 */
 		do_action( 'pll_update_language', $args, $lang );
 
-		$this->clean_languages_cache();
-		flush_rewrite_rules(); // Refresh rewrite rules
 		return true;
+	}
+
+	/**
+	 * Builds the language metas into an array and serializes it, to be stored in the term description.
+	 *
+	 * @since 3.4
+	 *
+	 * @param array $args {
+	 *   @type string $name       Language name (used only for display).
+	 *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will not be
+	 *                            loaded...
+	 *   @type int    $rtl        1 if rtl language, 0 otherwise.
+	 *   @type int    $term_group Language order when displayed.
+	 *   @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is being
+	 *                            created.
+	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
+	 * }
+	 * @return string The serialized description array updated.
+	 */
+	protected function build_language_metas( array $args ) {
+		if ( ! empty( $args['lang_id'] ) ) {
+			$language_term = get_term( (int) $args['lang_id'] );
+
+			if ( $language_term instanceof WP_Term ) {
+				$old_data = maybe_unserialize( $language_term->description );
+			}
+		}
+
+		if ( empty( $old_data ) || ! is_array( $old_data ) ) {
+			$old_data = array();
+		}
+
+		$new_data = array(
+			'locale'    => $args['locale'],
+			'rtl'       => ! empty( $args['rtl'] ) ? 1 : 0,
+			'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'],
+		);
+
+		/**
+		 * Allow to add data to store for a language.
+		 * `$locale`, `$rtl`, and `$flag_code` cannot be overwriten.
+		 *
+		 * @since 3.4
+		 *
+		 * @param mixed[] $add_data Data to add.
+		 * @param mixed[] $args     {
+		 *     Arguments used to create the language.
+		 *
+		 *     @type string $name       Language name (used only for display).
+		 *     @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+		 *     @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+		 *                              not be loaded...
+		 *     @type int    $rtl        1 if rtl language, 0 otherwise.
+		 *     @type int    $term_group Language order when displayed.
+		 *     @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is
+		 *                              being created.
+		 *     @type string $flag       Optional, country code, {@see settings/flags.php}.
+		 * }
+		 * @param mixed[] $new_data New data.
+		 * @param mixed[] $old_data {
+		 *     Original data. Contains at least the following:
+		 *
+		 *     @type string $locale    WordPress locale.
+		 *     @type int    $rtl       1 if rtl language, 0 otherwise.
+		 *     @type string $flag_code Country code.
+		 * }
+		 */
+		$add_data = apply_filters( 'pll_language_metas', array(), $args, $new_data, $old_data );
+		// Don't allow to overwrite `$locale`, `$rtl`, and `$flag_code`.
+		$new_data = array_merge( $old_data, $add_data, $new_data );
+
+		/** @var non-empty-string $serialized maybe_serialize() cannot return anything else than a string when feeded by an array. */
+		$serialized = maybe_serialize( $new_data );
+		return $serialized;
 	}
 
 	/**
@@ -267,8 +350,8 @@ class PLL_Admin_Model extends PLL_Model {
 	 *
 	 * @since 0.4
 	 *
-	 * @param array        $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
-	 * @param PLL_Language $lang Optional the language currently updated, the language is created if not set.
+	 * @param array             $args Parameters of {@see PLL_Admin_Model::add_language() or @see PLL_Admin_Model::update_language()}.
+	 * @param PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
 	 * @return WP_Error
 	 */
 	protected function validate_lang( $args, $lang = null ) {
@@ -314,133 +397,6 @@ class PLL_Admin_Model extends PLL_Model {
 	}
 
 	/**
-	 * Assigns a language to posts or terms in mass.
-	 *
-	 * @since 1.2
-	 *
-	 * @param string              $type Either 'post' or 'term'.
-	 * @param int[]               $ids  Array of post ids or term ids.
-	 * @param PLL_Language|string $lang Language to assign to the posts or terms.
-	 * @return void
-	 */
-	public function set_language_in_mass( $type, $ids, $lang ) {
-		global $wpdb;
-
-		$lang = $this->get_language( $lang );
-
-		if ( empty( $lang ) ) {
-			return;
-		}
-
-		$tt_id  = 'term' === $type ? $lang->tl_term_taxonomy_id : $lang->term_taxonomy_id;
-		$values = array();
-		$ids    = array_map( 'intval', $ids );
-
-		foreach ( $ids as $id ) {
-			$values[] = $wpdb->prepare( '( %d, %d )', $id, $tt_id );
-		}
-
-		if ( ! empty( $values ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', array_unique( $values ) ) );
-			$lang->update_count(); // Updating term count is mandatory ( thanks to AndyDeGroo )
-		}
-
-		if ( 'term' === $type ) {
-			clean_term_cache( $ids, 'term_language' );
-			$translations = array();
-
-			foreach ( $ids as $id ) {
-				$translations[] = array( $lang->slug => $id );
-			}
-
-			if ( ! empty( $translations ) ) {
-				$this->set_translation_in_mass( 'term', $translations );
-			}
-		} else {
-			clean_term_cache( $ids, 'language' );
-		}
-	}
-
-	/**
-	 * Creates translations groups in mass.
-	 *
-	 * @since 1.6.3
-	 *
-	 * @param string $type         Either 'post' or 'term'
-	 * @param array  $translations Array of translations arrays.
-	 * @return void
-	 */
-	public function set_translation_in_mass( $type, $translations ) {
-		global $wpdb;
-
-		$taxonomy    = $type . '_translations';
-		$terms       = array();
-		$slugs       = array();
-		$description = array();
-		$count       = array();
-
-		foreach ( $translations as $t ) {
-			$term = uniqid( 'pll_' ); // the term name
-			$terms[] = $wpdb->prepare( '( %s, %s )', $term, $term );
-			$slugs[] = $wpdb->prepare( '%s', $term );
-			$description[ $term ] = maybe_serialize( $t );
-			$count[ $term ] = count( $t );
-		}
-
-		// Insert terms
-		if ( ! empty( $terms ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->terms} ( slug, name ) VALUES " . implode( ',', array_unique( $terms ) ) );
-		}
-
-		// Get all terms with their term_id
-		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$terms    = $wpdb->get_results( "SELECT term_id, slug FROM {$wpdb->terms} WHERE slug IN ( " . implode( ',', $slugs ) . ' )' );
-		$term_ids = array();
-		$tts      = array();
-
-		// Prepare terms taxonomy relationship
-		foreach ( $terms as $term ) {
-			$term_ids[] = $term->term_id;
-			$tts[] = $wpdb->prepare( '( %d, %s, %s, %d )', $term->term_id, $taxonomy, $description[ $term->slug ], $count[ $term->slug ] );
-		}
-
-		// Insert term_taxonomy
-		if ( ! empty( $tts ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->term_taxonomy} ( term_id, taxonomy, description, count ) VALUES " . implode( ',', array_unique( $tts ) ) );
-		}
-
-		// Get all terms with term_taxonomy_id
-		$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
-		$trs   = array();
-
-		// Prepare objects relationships.
-		if ( is_array( $terms ) ) {
-			foreach ( $terms as $term ) {
-				$t = maybe_unserialize( $term->description );
-				if ( in_array( $t, $translations ) ) {
-					foreach ( $t as $object_id ) {
-						if ( ! empty( $object_id ) ) {
-							$trs[] = $wpdb->prepare( '( %d, %d )', $object_id, $term->term_taxonomy_id );
-						}
-					}
-				}
-			}
-		}
-
-		// Insert term_relationships
-		if ( ! empty( $trs ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
-			$trs = array_unique( $trs );
-		}
-
-		clean_term_cache( $term_ids, $taxonomy );
-	}
-
-	/**
 	 * Updates the translations when a language slug has been modified in settings
 	 * or deletes them when a language is removed.
 	 *
@@ -453,11 +409,13 @@ class PLL_Admin_Model extends PLL_Model {
 	public function update_translations( $old_slug, $new_slug = '' ) {
 		global $wpdb;
 
-		$terms    = get_terms( array( 'taxonomy' => array( 'post_translations', 'term_translations' ) ) );
 		$term_ids = array();
 		$dr       = array();
 		$dt       = array();
 		$ut       = array();
+
+		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'translations' ) );
+		$terms      = get_terms( array( 'taxonomy' => $taxonomies ) );
 
 		if ( is_array( $terms ) ) {
 			foreach ( $terms as $term ) {

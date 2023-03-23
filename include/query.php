@@ -109,7 +109,11 @@ class PLL_Query {
 		if ( ! is_array( $languages ) ) {
 			$languages = array( $languages );
 		}
-		$tt_ids = wp_list_pluck( $languages, 'term_taxonomy_id' );
+
+		$tt_ids = array();
+		foreach ( $languages as $language ) {
+			$tt_ids[] = $language->get_tax_prop( 'language', 'term_taxonomy_id' );
+		}
 
 		// Defining directly the tax_query (rather than setting 'lang' avoids transforming the query by WP).
 		$lang_query = array(

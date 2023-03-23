@@ -48,8 +48,8 @@ abstract class PLL_Links_Model {
 
 		$this->home = home_url();
 
-		add_filter( 'pll_languages_list', array( $this, 'pll_languages_list' ), 4 ); // After PLL_Static_Pages.
-		add_filter( 'pll_after_languages_cache', array( $this, 'pll_after_languages_cache' ) );
+		// Hooked with normal priority because it needs to be run after static pages is set in language data.
+		add_filter( 'pll_additional_language_data', array( $this, 'set_language_home_urls' ), 10, 2 );
 
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
 		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
@@ -59,9 +59,10 @@ abstract class PLL_Links_Model {
 	 * Adds the language code in url.
 	 *
 	 * @since 1.2
+	 * @since 3.4 Accepts now a language slug.
 	 *
-	 * @param string             $url  The url to modify.
-	 * @param PLL_Language|false $lang The language object.
+	 * @param string                    $url  The url to modify.
+	 * @param PLL_Language|string|false $lang Language object or slug.
 	 * @return string The modified url.
 	 */
 	abstract public function add_language_to_link( $url, $lang );
@@ -112,11 +113,12 @@ abstract class PLL_Links_Model {
 	 * Returns the static front page url in a given language.
 	 *
 	 * @since 1.8
+	 * @since 3.4 Accepts now an array of language properties.
 	 *
-	 * @param PLL_Language $lang The language object.
+	 * @param PLL_Language|array $language Language object or array of language properties.
 	 * @return string The static front page url.
 	 */
-	abstract public function front_page_url( $lang );
+	abstract public function front_page_url( $language );
 
 	/**
 	 * Changes the language code in url.
@@ -147,65 +149,36 @@ abstract class PLL_Links_Model {
 	 * Returns the home url in a given language.
 	 *
 	 * @since 1.3.1
+	 * @since 3.4 Accepts now a language slug.
 	 *
-	 * @param PLL_Language $lang The language object.
+	 * @param PLL_Language|string $language Language object or slug.
 	 * @return string
 	 */
-	public function home_url( $lang ) {
+	public function home_url( $language ) {
+		if ( $language instanceof PLL_Language ) {
+			$language = $language->slug;
+		}
+
 		$url = trailingslashit( $this->home );
-		return $this->options['hide_default'] && $lang->slug == $this->options['default_lang'] ? $url : $this->add_language_to_link( $url, $lang );
+
+		return $this->options['hide_default'] && $language === $this->options['default_lang'] ? $url : $this->add_language_to_link( $url, $language );
 	}
 
 	/**
-	 * Sets the home urls in PLL_Language.
+	 * Adds home and search URLs to language data before the object is created.
 	 *
-	 * @since 1.8
+	 * @since 3.4
 	 *
-	 * @param PLL_Language $language The language object.
-	 * @return void
+	 * @param array $additional_data Array of language additional data.
+	 * @param array $language        Language data.
+	 * @return array Language data with home and search URLs added.
 	 */
-	protected function set_home_url( $language ) {
-		$search_url = $this->home_url( $language );
-		$home_url = empty( $language->page_on_front ) || $this->options['redirect_lang'] ? $search_url : $this->front_page_url( $language );
-		$language->set_home_url( $search_url, $home_url );
-	}
+	public function set_language_home_urls( $additional_data, $language ) {
+		$language = array_merge( $language, $additional_data );
+		$additional_data['search_url']  = $this->home_url( $language['slug'] );
+		$additional_data['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $additional_data['search_url'] : $this->front_page_url( $language );
 
-	/**
-	 * Sets the home urls and flags before the languages are persistently cached.
-	 *
-	 * @since 1.8
-	 *
-	 * @param PLL_Language[] $languages Array of PLL_Language objects.
-	 * @return PLL_Language[] Array of PLL_Language objects with home url and flag.
-	 */
-	public function pll_languages_list( $languages ) {
-		foreach ( $languages as $language ) {
-			$this->set_home_url( $language );
-			$language->set_flag();
-		}
-		return $languages;
-	}
-
-	/**
-	 * Sets the home urls when not cached.
-	 * Sets the home urls scheme.
-	 *
-	 * @since 1.8
-	 *
-	 * @param PLL_Language[] $languages Array of PLL_Language objects.
-	 * @return PLL_Language[] Array of PLL_Language objects.
-	 */
-	public function pll_after_languages_cache( $languages ) {
-		foreach ( $languages as $language ) {
-			// Get the home urls when not cached.
-			if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
-				$this->set_home_url( $language );
-			}
-
-			// Ensures that the (possibly cached) home and flag urls use the right scheme http or https.
-			$language->set_url_scheme();
-		}
-		return $languages;
+		return $additional_data;
 	}
 
 	/**

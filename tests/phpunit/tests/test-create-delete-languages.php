@@ -139,6 +139,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 
 		self::$model->add_language( $args );
+		self::$model->set_languages_ready();
 		self::$model->get_languages_list(); // Saves the transient.
 
 		$properties = array(
@@ -146,11 +147,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'name',
 			'slug',
 			'term_group',
-			'term_taxonomy_id',
-			'count',
-			'tl_term_id',
-			'tl_term_taxonomy_id',
-			'tl_count',
+			'term_props',
 			'locale',
 			'is_rtl',
 			'w3c',
@@ -158,7 +155,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'home_url',
 			'search_url',
 			'host',
-			'mo_id',
 			'page_on_front',
 			'page_for_posts',
 			'flag_code',
@@ -166,10 +162,24 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'flag',
 			'custom_flag_url',
 			'custom_flag',
+			'active',
+			'fallbacks',
+			'is_default',
 		);
 
 		$languages = get_transient( 'pll_languages_list' );
-		$this->assertEqualSets( $properties, array_keys( reset( $languages ) ) );
+		$language  = reset( $languages );
+		$this->assertSameSets( $properties, array_keys( $language ) );
+
+		// Let's check PLL_Language::$term_props.
+		$this->assertArrayHasKey( 'language', $language['term_props'] );
+		$this->assertArrayHasKey( 'term_id', $language['term_props']['language'] );
+		$this->assertArrayHasKey( 'term_taxonomy_id', $language['term_props']['language'] );
+		$this->assertArrayHasKey( 'count', $language['term_props']['language'] );
+		$this->assertArrayHasKey( 'term_language', $language['term_props'] );
+		$this->assertArrayHasKey( 'term_id', $language['term_props']['term_language'] );
+		$this->assertArrayHasKey( 'term_taxonomy_id', $language['term_props']['term_language'] );
+		$this->assertArrayHasKey( 'count', $language['term_props']['term_language'] );
 	}
 
 	/**
@@ -220,5 +230,21 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			'term_group' => 2,
 		);
 		$this->assertTrue( self::$model->add_language( $args ) );
+	}
+
+	public function test_default_language_order() {
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+		self::create_language( 'de_DE' );
+		self::create_language( 'es_ES' );
+
+		$expected = array(
+			'en',
+			'fr',
+			'de',
+			'es',
+		);
+
+		$this->assertSameSetsWithIndex( $expected, self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
 	}
 }

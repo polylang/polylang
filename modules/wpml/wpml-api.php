@@ -169,7 +169,7 @@ class PLL_WPML_API {
 	 */
 	public function wpml_language_is_active( $null, $slug ) {
 		$language = PLL()->model->get_language( $slug );
-		return empty( $language->active ) || true === $language->active;
+		return ! empty( $language ) && $language->active;
 	}
 
 	/**
@@ -218,16 +218,17 @@ class PLL_WPML_API {
 	 *
 	 * @since 2.0
 	 *
-	 * @param mixed $language_code
+	 * @param mixed $language_code A 2-letter language code.
 	 * @param array $args          An array with two keys element_id => post_id or term_taxonomy_id, element_type => post type or taxonomy
-	 * @return string
+	 * @return string|null
 	 */
 	public function wpml_element_language_code( $language_code, $args ) {
 		$type = $args['element_type'];
 		$id   = $args['element_id'];
 
 		if ( 'post' === $type || pll_is_translated_post_type( $type ) ) {
-			return pll_get_post_language( $id );
+			$language = pll_get_post_language( $id );
+			return is_string( $language ) ? $language : null;
 		}
 
 		if ( 'term' === $type || pll_is_translated_taxonomy( $type ) ) {
@@ -235,10 +236,11 @@ class PLL_WPML_API {
 			if ( $term instanceof WP_Term ) {
 				$id = $term->term_id;
 			}
-			return pll_get_term_language( $id );
+			$language = pll_get_term_language( $id );
+			return is_string( $language ) ? $language : null;
 		}
 
-		return $language_code;
+		return null;
 	}
 
 	/**

@@ -15,8 +15,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
-		add_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 );
-
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
@@ -88,7 +86,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	private function init_test( $env = 'frontend' ) {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
-		$pll_admin->static_pages = new PLL_Admin_Static_Pages( $pll_admin );
 
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', self::$home_fr );
@@ -99,7 +96,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 			$this->pll_env = new PLL_Frontend( $this->links_model );
 			$this->pll_env->init();
 
-			$this->pll_env->static_pages = new PLL_Frontend_Static_Pages( $this->pll_env );
 			$this->pll_env->static_pages->pll_language_defined();
 		} else {
 			// Go to admin.
@@ -117,7 +113,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		wp_delete_post( self::$posts_fr );
 
 		parent::wpTearDownAfterClass();
-		remove_filter( 'pll_languages_list', array( 'PLL_Static_Pages', 'pll_languages_list' ), 2, 2 ); // Avoid breaking next tests
 	}
 
 	public function test_front_page_with_default_options() {

@@ -61,7 +61,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 
 		// Take care to post & page preview http://wordpress.org/support/topic/static-frontpage-url-parameter-url-language-information
 		elseif ( isset( $_GET['preview'] ) && ( ( isset( $_GET['p'] ) && $id = (int) $_GET['p'] ) || ( isset( $_GET['page_id'] ) && $id = (int) $_GET['page_id'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$curlang = ( $lg = $this->model->post->get_language( $id ) ) ? $lg : $this->model->get_language( $this->options['default_lang'] );
+			$curlang = ( $lg = $this->model->post->get_language( $id ) ) ? $lg : $this->model->get_default_language();
 		}
 
 		// Take care to ( unattached ) attachments
@@ -74,7 +74,7 @@ class PLL_Choose_Lang_Url extends PLL_Choose_Lang {
 		}
 
 		elseif ( $this->options['hide_default'] ) {
-			$curlang = $this->model->get_language( $this->options['default_lang'] );
+			$curlang = $this->model->get_default_language();
 		}
 
 		// If no language found, check_language_code_in_url() will attempt to find one and redirect to the correct url

@@ -87,6 +87,14 @@ class PLL_Frontend extends PLL_Base {
 		}
 
 		add_action( 'admin_bar_menu', array( $this, 'remove_customize_admin_bar' ), 41 ); // After WP_Admin_Bar::add_menus
+
+		// Static front page and page for posts.
+		// Early instantiated to be able to correctly initialize language properties.
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$this->static_pages = new PLL_Frontend_Static_Pages( $this );
+		}
+
+		$this->model->set_languages_ready();
 	}
 
 	/**
@@ -98,11 +106,6 @@ class PLL_Frontend extends PLL_Base {
 		parent::init();
 
 		$this->links = new PLL_Frontend_Links( $this );
-
-		// Static front page and page for posts
-		if ( 'page' === get_option( 'show_on_front' ) ) {
-			$this->static_pages = new PLL_Frontend_Static_Pages( $this );
-		}
 
 		// Setup the language chooser
 		$c = array( 'Content', 'Url', 'Url', 'Domain' );
@@ -227,14 +230,14 @@ class PLL_Frontend extends PLL_Base {
 		parent::switch_blog( $new_blog_id, $prev_blog_id );
 
 		// Need to check that some languages are defined when user is logged in, has several blogs, some without any languages.
-		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) && did_action( 'pll_language_defined' ) && $this->model->get_languages_list() ) {
+		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) && did_action( 'pll_language_defined' ) && $this->model->has_languages() ) {
 			static $restore_curlang;
 			if ( empty( $restore_curlang ) ) {
 				$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs.
 			}
 
 			$lang = $this->model->get_language( $restore_curlang );
-			$this->curlang = $lang ? $lang : $this->model->get_language( $this->options['default_lang'] );
+			$this->curlang = $lang ? $lang : $this->model->get_default_language();
 
 			if ( isset( $this->static_pages ) ) {
 				$this->static_pages->init();

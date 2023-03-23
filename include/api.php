@@ -1,5 +1,7 @@
 <?php
 /**
+ * The Polylang public API.
+ *
  * @package Polylang
  */
 
@@ -29,25 +31,44 @@
  * @return string|array Either the html markup of the switcher or the raw elements to build a custom language switcher.
  */
 function pll_the_languages( $args = array() ) {
+	if ( empty( PLL()->links ) ) {
+		return empty( $args['raw'] ) ? '' : array();
+	}
+
 	$switcher = new PLL_Switcher();
 	return $switcher->the_languages( PLL()->links, $args );
 }
 
 /**
  * Returns the current language on frontend.
- * Returns the language set in admin language filter on backend ( false if set to all languages ).
+ * Returns the language set in admin language filter on backend (false if set to all languages).
  *
  * @api
  * @since 0.8.1
+ * @since 3.4 Accepts composite values.
  *
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field for the current language.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to `'slug'`.
+ *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
+ *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
+ *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the current language, `false` if the field isn't set or if current language doesn't exist yet.
+ *
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+ *     )
+ * )|false
  */
 function pll_current_language( $field = 'slug' ) {
-	if ( OBJECT === $field ) {
+	if ( empty( PLL()->curlang ) ) {
+		return false;
+	}
+
+	if ( \OBJECT === $field ) {
 		return PLL()->curlang;
 	}
-	return isset( PLL()->curlang->$field ) ? PLL()->curlang->$field : false;
+
+	return PLL()->curlang->get_prop( $field );
 }
 
 /**
@@ -55,49 +76,80 @@ function pll_current_language( $field = 'slug' ) {
  *
  * @api
  * @since 1.0
+ * @since 3.4 Accepts composite values.
  *
- * @param string $field Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'. Pass OBJECT constant to get the language object.
- * @return string|PLL_Language|false The requested field for the default language.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to `'slug'`.
+ *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
+ *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
+ *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the default language, `false` if the field isn't set or if default language doesn't exist yet.
+ *
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+ *     )
+ * )|false
  */
 function pll_default_language( $field = 'slug' ) {
-	if ( isset( PLL()->options['default_lang'] ) ) {
-		$lang = PLL()->model->get_language( PLL()->options['default_lang'] );
-		if ( $lang ) {
-			if ( OBJECT === $field ) {
-				return $lang;
-			}
-			return isset( $lang->$field ) ? $lang->$field : false;
-		}
+	$lang = PLL()->model->get_default_language();
+
+	if ( empty( $lang ) ) {
+		return false;
 	}
-	return false;
+
+	if ( \OBJECT === $field ) {
+		return $lang;
+	}
+
+	return $lang->get_prop( $field );
 }
 
 /**
- * Among the post and its translations, returns the id of the post which is in the language represented by $lang.
+ * Among the post and its translations, returns the ID of the post which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
+ * @since 3.4 Returns 0 instead of false.
+ * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int    $post_id Post id.
- * @param string $lang    Optional language code, defaults to the current language.
- * @return int|false|null Post id of the translation if it exists, false otherwise, null if the current language is not defined yet.
+ * @param int                 $post_id Post ID.
+ * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
+ * @return int|false The translation post ID if exists, otherwise the passed ID. False if the passed object has no language or if the language doesn't exist.
+ *
+ * @phpstan-return int<0, max>|false
  */
 function pll_get_post( $post_id, $lang = '' ) {
-	return ( $lang = $lang ? $lang : pll_current_language() ) ? PLL()->model->post->get( $post_id, $lang ) : null;
+	$lang = $lang ? $lang : pll_current_language();
+
+	if ( empty( $lang ) ) {
+		return false;
+	}
+
+	return PLL()->model->post->get( $post_id, $lang );
 }
 
 /**
- * Among the term and its translations, returns the id of the term which is in the language represented by $lang.
+ * Among the term and its translations, returns the ID of the term which is in the language represented by $lang.
  *
  * @api
  * @since 0.5
+ * @since 3.4 Returns 0 instead of false.
+ * @since 3.4 $lang accepts PLL_Language or string.
  *
- * @param int    $term_id Term id.
- * @param string $lang    Optional language code, defaults to the current language.
- * @return int|false|null Term id of the translation if it exists, false otherwise, null if the current language is not defined yet.
+ * @param int                 $term_id Term ID.
+ * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
+ * @return int|false The translation term ID if exists, otherwise the passed ID. False if the passed object has no language or if the language doesn't exist.
+ *
+ * @phpstan-return int<0, max>|false
  */
-function pll_get_term( $term_id, $lang = '' ) {
-	return ( $lang = $lang ? $lang : pll_current_language() ) ? PLL()->model->term->get( $term_id, $lang ) : null;
+function pll_get_term( $term_id, $lang = null ) {
+	$lang = $lang ? $lang : pll_current_language();
+
+	if ( empty( $lang ) ) {
+		return false;
+	}
+
+	return PLL()->model->term->get( $term_id, $lang );
 }
 
 /**
@@ -114,7 +166,11 @@ function pll_home_url( $lang = '' ) {
 		$lang = pll_current_language();
 	}
 
-	return empty( $lang ) ? home_url( '/' ) : PLL()->links->get_home_url( $lang );
+	if ( empty( $lang ) || empty( PLL()->links ) ) {
+		return home_url( '/' );
+	}
+
+	return PLL()->links->get_home_url( $lang );
 }
 
 /**
@@ -230,11 +286,17 @@ function pll_esc_attr_e( $string ) {
  * @return string The string translated in the requested language.
  */
 function pll_translate_string( $string, $lang ) {
-	if ( PLL() instanceof PLL_Frontend && pll_current_language() == $lang ) {
+	if ( PLL() instanceof PLL_Frontend && pll_current_language() === $lang ) {
 		return pll__( $string );
 	}
 
 	if ( ! is_scalar( $string ) || '' === $string ) {
+		return $string;
+	}
+
+	$lang = PLL()->model->get_language( $lang );
+
+	if ( empty( $lang ) ) {
 		return $string;
 	}
 
@@ -244,10 +306,12 @@ function pll_translate_string( $string, $lang ) {
 		$cache = new PLL_Cache();
 	}
 
-	if ( false === $mo = $cache->get( $lang ) ) {
+	$mo = $cache->get( $lang->slug );
+
+	if ( ! $mo instanceof PLL_MO ) {
 		$mo = new PLL_MO();
-		$mo->import_from_db( PLL()->model->get_language( $lang ) );
-		$cache->set( $lang, $mo );
+		$mo->import_from_db( $lang );
+		$cache->set( $lang->slug, $mo );
 	}
 
 	return $mo->translate( $string );
@@ -303,13 +367,16 @@ function pll_languages_list( $args = array() ) {
  *
  * @api
  * @since 1.5
+ * @since 3.4 $lang accepts PLL_Language or string.
+ * @since 3.4 Returns a boolean.
  *
- * @param int    $id   Post id.
- * @param string $lang Language code.
- * @return void
+ * @param int                 $id   Post ID.
+ * @param PLL_Language|string $lang Language (object or slug).
+ * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+ *              the post).
  */
 function pll_set_post_language( $id, $lang ) {
-	PLL()->model->post->set_language( $id, $lang );
+	return PLL()->model->post->set_language( $id, $lang );
 }
 
 /**
@@ -317,13 +384,16 @@ function pll_set_post_language( $id, $lang ) {
  *
  * @api
  * @since 1.5
+ * @since 3.4 $lang accepts PLL_Language or string.
+ * @since 3.4 Returns a boolean.
  *
- * @param int    $id   Term id.
- * @param string $lang Language code.
- * @return void
+ * @param int                 $id   Term ID.
+ * @param PLL_Language|string $lang Language (object or slug).
+ * @return bool True when successfully assigned. False otherwise (or if the given language is already assigned to
+ *              the term).
  */
 function pll_set_term_language( $id, $lang ) {
-	PLL()->model->term->set_language( $id, $lang );
+	return PLL()->model->term->set_language( $id, $lang );
 }
 
 /**
@@ -331,12 +401,20 @@ function pll_set_term_language( $id, $lang ) {
  *
  * @api
  * @since 1.5
+ * @since 3.4 Returns an associative array of translations.
  *
- * @param int[] $arr An associative array of translations with language code as key and post id as value.
- * @return void
+ * @param int[] $arr An associative array of translations with language code as key and post ID as value.
+ * @return int[] An associative array with language codes as key and post IDs as values.
+ *
+ * @phpstan-return array<non-empty-string, positive-int>
  */
 function pll_save_post_translations( $arr ) {
-	PLL()->model->post->save_translations( reset( $arr ), $arr );
+	$id = reset( $arr );
+	if ( $id ) {
+		return PLL()->model->post->save_translations( $id, $arr );
+	}
+
+	return array();
 }
 
 /**
@@ -344,12 +422,20 @@ function pll_save_post_translations( $arr ) {
  *
  * @api
  * @since 1.5
+ * @since 3.4 Returns an associative array of translations.
  *
- * @param int[] $arr An associative array of translations with language code as key and term id as value.
- * @return void
+ * @param int[] $arr An associative array of translations with language code as key and term ID as value.
+ * @return int[] An associative array with language codes as key and term IDs as values.
+ *
+ * @phpstan-return array<non-empty-string, positive-int>
  */
 function pll_save_term_translations( $arr ) {
-	PLL()->model->term->save_translations( reset( $arr ), $arr );
+	$id = reset( $arr );
+	if ( $id ) {
+		return PLL()->model->term->save_translations( $id, $arr );
+	}
+
+	return array();
 }
 
 /**
@@ -357,13 +443,29 @@ function pll_save_term_translations( $arr ) {
  *
  * @api
  * @since 1.5.4
+ * @since 3.4 Accepts composite values for `$field`.
  *
- * @param int    $post_id Post id.
- * @param string $field   Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'.
- * @return string|false The requested field for the post language, false if no language is associated to that post.
+ * @param int    $post_id Post ID.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to `'slug'`.
+ *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
+ *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
+ *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, `false` if no language is associated to that post.
+ *
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+ *     )
+ * )|false
  */
 function pll_get_post_language( $post_id, $field = 'slug' ) {
-	return ( $lang = PLL()->model->post->get_language( $post_id ) ) ? $lang->$field : false;
+	$lang = PLL()->model->post->get_language( $post_id );
+
+	if ( empty( $lang ) || \OBJECT === $field ) {
+		return $lang;
+	}
+
+	return $lang->get_prop( $field );
 }
 
 /**
@@ -371,13 +473,29 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  *
  * @api
  * @since 1.5.4
+ * @since 3.4 Accepts composite values for `$field`.
  *
- * @param int    $term_id Term id.
- * @param string $field   Optional, the language field to return ( @see PLL_Language ), defaults to 'slug'.
- * @return string|false The requested field for the term language, false if no language is associated to that term.
+ * @param int    $term_id Term ID.
+ * @param string $field Optional, the language field to return (@see PLL_Language), defaults to `'slug'`.
+ *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
+ *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
+ *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, `false` if no language is associated to that term.
+ *
+ * @phpstan-return (
+ *     $field is \OBJECT ? PLL_Language : (
+ *         $field is 'slug' ? non-empty-string : string|int|bool|list<non-empty-string>
+ *     )
+ * )|false
  */
 function pll_get_term_language( $term_id, $field = 'slug' ) {
-	return ( $lang = PLL()->model->term->get_language( $term_id ) ) ? $lang->$field : false;
+	$lang = PLL()->model->term->get_language( $term_id );
+
+	if ( empty( $lang ) || \OBJECT === $field ) {
+		return $lang;
+	}
+
+	return $lang->get_prop( $field );
 }
 
 /**
@@ -386,8 +504,10 @@ function pll_get_term_language( $term_id, $field = 'slug' ) {
  * @api
  * @since 1.8
  *
- * @param int $post_id Post id.
- * @return int[] An associative array of translations with language code as key and translation post id as value.
+ * @param int $post_id Post ID.
+ * @return int[] An associative array of translations with language code as key and translation post ID as value.
+ *
+ * @phpstan-return array<non-empty-string, positive-int>
  */
 function pll_get_post_translations( $post_id ) {
 	return PLL()->model->post->get_translations( $post_id );
@@ -399,8 +519,10 @@ function pll_get_post_translations( $post_id ) {
  * @api
  * @since 1.8
  *
- * @param int $term_id Term id.
- * @return int[] An associative array of translations with language code as key and translation term id as value.
+ * @param int $term_id Term ID.
+ * @return int[] An associative array of translations with language code as key and translation term ID as value.
+ *
+ * @phpstan-return array<non-empty-string, positive-int>
  */
 function pll_get_term_translations( $term_id ) {
 	return PLL()->model->term->get_translations( $term_id );
@@ -414,8 +536,7 @@ function pll_get_term_translations( $term_id ) {
  *
  * @param string $lang Language code.
  * @param array  $args {
- *   Optional arguments.
- *   Accepted keys:
+ *   Optional array of arguments.
  *
  *   @type string $post_type   Post type.
  *   @type int    $m           YearMonth ( ex: 201307 ).
@@ -430,7 +551,13 @@ function pll_get_term_translations( $term_id ) {
  * @return int Posts count.
  */
 function pll_count_posts( $lang, $args = array() ) {
-	return PLL()->model->count_posts( PLL()->model->get_language( $lang ), $args );
+	$lang = PLL()->model->get_language( $lang );
+
+	if ( empty( $lang ) ) {
+		return 0;
+	}
+
+	return PLL()->model->count_posts( $lang, $args );
 }
 
 /**

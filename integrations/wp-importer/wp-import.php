@@ -47,6 +47,9 @@ class PLL_WP_Import extends WP_Import {
 			update_option( 'polylang', PLL()->options );
 		}
 
+		// Clean languages cache in case some of them were created during import.
+		PLL()->model->clean_languages_cache();
+
 		$this->remap_terms_relations( $term_translations );
 		$this->remap_translations( $term_translations, $this->processed_terms );
 	}
@@ -127,7 +130,7 @@ class PLL_WP_Import extends WP_Import {
 			foreach ( $translations as $slug => $old_id ) {
 				if ( $old_id && ! empty( $this->processed_terms[ $old_id ] ) && $lang = PLL()->model->get_language( $slug ) ) {
 					// Language relationship
-					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], $lang->tl_term_taxonomy_id );
+					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], $lang->get_tax_prop( 'term_language', 'term_taxonomy_id' ) );
 
 					// Translation relationship
 					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], get_term( $this->processed_terms[ $term['term_id'] ], 'term_translations' )->term_taxonomy_id );
