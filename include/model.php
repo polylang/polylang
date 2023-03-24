@@ -285,6 +285,21 @@ class PLL_Model {
 	}
 
 	/**
+	 * Returns the default language.
+	 *
+	 * @since 3.4
+	 *
+	 * @return PLL_Language|false Default language object, `false` if no language found.
+	 */
+	public function get_default_language() {
+		if ( empty( $this->options['default_lang'] ) ) {
+			return false;
+		}
+
+		return $this->get_language( $this->options['default_lang'] );
+	}
+
+	/**
 	 * Adds terms clauses to the term query to filter them by languages.
 	 *
 	 * @since 1.2
@@ -798,21 +813,6 @@ class PLL_Model {
 
 		// Clear the cache, so the new `term_id` and `term_taxonomy_id` appear in the languages list.
 		$this->clean_languages_cache();
-	}
-
-	/**
-	 * Returns the default language.
-	 *
-	 * @since 3.4
-	 *
-	 * @return PLL_Language|false Default language object, `false` if no language found.
-	 */
-	public function get_default_language() {
-		if ( empty( $this->options['default_lang'] ) ) {
-			return false;
-		}
-
-		return $this->get_language( $this->options['default_lang'] );
 	}
 
 	/**
