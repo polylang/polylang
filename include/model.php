@@ -853,7 +853,7 @@ class PLL_Model {
 			}
 
 			/** @var PLL_Language $language */
-			if ( $language->slug !== $slug || $language->name !== $name ) {
+			if ( "pll_{$language->slug}" !== $slug || $language->name !== $name ) {
 				// Something has changed.
 				wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
 			}
