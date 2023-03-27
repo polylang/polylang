@@ -770,29 +770,32 @@ class PLL_Model {
 	 * @return void
 	 */
 	public function maybe_add_missing_3rd_party_language_terms() {
-		$cur_taxonomies = array_diff(
+		$registered_taxonomies = array_diff(
 			$this->translatable_objects->get_taxonomy_names( array( 'language' ) ),
 			// Exclude the post and term language taxonomies from the list.
 			array( $this->post->get_tax_language(), $this->term->get_tax_language() )
 		);
 
-		if ( empty( $cur_taxonomies ) ) {
+		if ( empty( $registered_taxonomies ) ) {
 			// No 3rd party language taxonomies.
 			return;
 		}
 
 		// We have at least one 3rd party language taxonomy.
-		$prev_taxonomies = (array) get_option( 'pll_3rd_party_languages', array() );
-		$diff_taxonomies = array_diff( $cur_taxonomies, $prev_taxonomies );
+		$known_taxonomies = ! empty( $this->options['3rd_party_taxonomies'] ) && is_array( $this->options['3rd_party_taxonomies'] ) ? $this->options['3rd_party_taxonomies'] : array();
+		$new_taxonomies   = array_diff( $registered_taxonomies, $known_taxonomies );
 
-		if ( empty( $diff_taxonomies ) ) {
+		if ( empty( $new_taxonomies ) ) {
 			// No new 3rd party language taxonomies.
 			return;
 		}
 
-		$this->add_missing_secondary_language_terms( $diff_taxonomies );
+		// We have at least one unknown 3rd party language taxonomy.
+		$this->add_missing_secondary_language_terms( $new_taxonomies );
 
-		update_option( 'pll_3rd_party_languages', $diff_taxonomies );
+		// Keep the previous values, so this is triggered only once per taxonomy.
+		$this->options['3rd_party_taxonomies'] = array_merge( $known_taxonomies, $new_taxonomies );
+		update_option( 'polylang', $this->options );
 	}
 
 	/**
