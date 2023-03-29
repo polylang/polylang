@@ -92,6 +92,7 @@ class PLL_License {
 
 		// Updater
 		add_action( 'plugins_loaded', array( $this, 'auto_updater' ), 10 );
+		do_action( 'qm/debug', 'auto_updater() hooked.' );
 
 		// Register settings
 		add_filter( 'pll_settings_licenses', array( $this, 'settings' ) );
@@ -114,8 +115,8 @@ class PLL_License {
 	public function auto_updater() {
 		$action = current_action();
 		$polylang = PLL();
-		do_action( 'qm/debug', "Current action: {$action}" );
-		do_action( 'qm/debug', "Polylang context: {$polylang::class}" );
+		do_action( 'qm/debug', "auto_updater() called with the current action: {$action}" );
+		do_action( 'qm/debug', get_class( $polylang ) );
 
 		$args = array(
 			'version'   => $this->version,
