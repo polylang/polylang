@@ -112,6 +112,11 @@ class PLL_License {
 	 * @return void
 	 */
 	public function auto_updater() {
+		$action = current_action();
+		$polylang = PLL();
+		do_action( 'qm/debug', "Current action: {$action}" );
+		do_action( 'qm/debug', "Polylang context: {$polylang::class}" );
+
 		$args = array(
 			'version'   => $this->version,
 			'license'   => $this->license_key,
