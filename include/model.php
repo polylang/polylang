@@ -734,6 +734,35 @@ class PLL_Model {
 	}
 
 	/**
+	 * Assigns the default language to objects in mass.
+	 *
+	 * @since 1.2
+	 * @since 3.4 Moved from PLL_Admin_Model class.
+	 * @since 3.4 Change method signature.
+	 *
+	 * @param int $limit Max number of posts or terms to return. Defaults to -1 (no limit).
+	 * @return void
+	 *
+	 * @phpstan-param -1|positive-int $limit
+	 */
+	public function set_language_in_mass( $limit = -1 ) {
+		$nolang = $this->get_objects_with_no_lang( $limit );
+
+		if ( empty( $nolang ) ) {
+			return;
+		}
+
+		/** @var PLL_Language $lang */
+		$lang = $this->get_default_language();
+
+		foreach ( $this->translatable_objects as $type => $object ) {
+			if ( ! empty( $nolang[ "{$type}s" ] ) ) {
+				$object->set_language_in_mass( $nolang[ "{$type}s" ], $lang );
+			}
+		}
+	}
+
+	/**
 	 * Filters the ORDERBY clause of the languages query.
 	 * This allows to order languages by `term_group` and `term_id`.
 	 *

@@ -240,17 +240,7 @@ class PLL_Settings extends PLL_Admin_Base {
 			case 'content-default-lang':
 				check_admin_referer( 'content-default-lang' );
 
-				if ( $nolang = $this->model->get_objects_with_no_lang() ) {
-					/** @var PLL_Language $lang */
-					$lang = $this->model->get_default_language();
-
-					if ( ! empty( $nolang['posts'] ) ) {
-						$this->model->post->set_language_in_mass( $nolang['posts'], $lang );
-					}
-					if ( ! empty( $nolang['terms'] ) ) {
-						$this->model->term->set_language_in_mass( $nolang['terms'], $lang );
-					}
-				}
+				$this->model->set_language_in_mass();
 
 				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
 				break;
