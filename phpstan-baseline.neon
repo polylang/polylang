@@ -736,22 +736,7 @@ parameters:
 			path: include/links-domain.php
 
 		-
-			message: "#^Method PLL_Links_Domain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int\\|string, string\\|false\\>\\.$#"
-			count: 1
-			path: include/links-domain.php
-
-		-
 			message: "#^Method PLL_Links_Domain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/links-domain.php
-
-		-
-			message: "#^Parameter \\#1 \\$domain of function idn_to_ascii expects string, string\\|false\\|null given\\.$#"
-			count: 2
-			path: include/links-domain.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of static method Requests_IDNAEncoder\\:\\:encode\\(\\) expects string, string\\|false\\|null given\\.$#"
 			count: 1
 			path: include/links-domain.php
 
