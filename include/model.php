@@ -820,31 +820,16 @@ class PLL_Model {
 		}
 
 		// We have at least one unknown 3rd party language taxonomy.
-		$this->add_missing_secondary_language_terms( $new_taxonomies );
-
-		// Keep the previous values, so this is triggered only once per taxonomy.
-		$this->options['language_taxonomies'] = array_merge( $known_taxonomies, $new_taxonomies );
-		update_option( 'polylang', $this->options );
-	}
-
-	/**
-	 * Adds the missing language terms for the secondary language taxonomies.
-	 *
-	 * @since 3.4
-	 *
-	 * @param string[]|null $taxonomies Optional. List of language taxonomies to deal with. An empty value means all of
-	 *                                  them. Defauls to all taxonomies.
-	 * @return void
-	 *
-	 * @phpstan-param array<non-empty-string>|null $taxonomies
-	 */
-	public function add_missing_secondary_language_terms( array $taxonomies = null ) {
 		foreach ( $this->get_languages_list() as $language ) {
-			$this->update_secondary_language_terms( $language->slug, $language->name, $language, $taxonomies );
+			$this->update_secondary_language_terms( $language->slug, $language->name, $language, $new_taxonomies );
 		}
 
 		// Clear the cache, so the new `term_id` and `term_taxonomy_id` appear in the languages list.
 		$this->clean_languages_cache();
+
+		// Keep the previous values, so this is triggered only once per taxonomy.
+		$this->options['language_taxonomies'] = array_merge( $known_taxonomies, $new_taxonomies );
+		update_option( 'polylang', $this->options );
 	}
 
 	/**
