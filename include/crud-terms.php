@@ -250,6 +250,17 @@ class PLL_CRUD_Terms {
 	 * @return void
 	 */
 	public function delete_term( $term_id ) {
+		$term = get_term( $term_id );
+
+		if ( ! $term instanceof WP_Term ) {
+			return;
+		}
+
+		if ( ! $this->model->is_translated_taxonomy( $term->taxonomy ) ) {
+			return;
+		}
+
+		// Delete translation and relationships only if the term is translatable.
 		$this->model->term->delete_translation( $term_id );
 		$this->model->term->delete_language( $term_id );
 	}
