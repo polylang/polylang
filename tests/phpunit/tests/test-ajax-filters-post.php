@@ -165,7 +165,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		try {
 			$this->_handleAjax( 'pll_posts_not_translated' );
-		} catch ( WPAjaxDieContinueException $e ) {
+		} catch ( WPAjaxDieStopException $e ) {
 			$response = json_decode( $e->getMessage(), true );
 			unset( $e );
 		}
@@ -182,7 +182,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		// the search must contain the current translation
 		try {
 			$this->_handleAjax( 'pll_posts_not_translated' );
-		} catch ( WPAjaxDieContinueException $e ) {
+		} catch ( WPAjaxDieStopException $e ) {
 			$response = json_decode( $e->getMessage(), true );
 			unset( $e );
 		}
@@ -223,9 +223,10 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		self::$model->post->set_language( $fr, 'fr' );
 
 		add_filter(
-			'pll_ajax_posts_not_translated_limit',
-			function( $limit ) {
-				return 4;
+			'pll_ajax_posts_not_translated_args',
+			function( $args ) {
+				$args['numberposts'] = 4;
+				return $args;
 			}
 		);
 
@@ -243,7 +244,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		try {
 			$this->_handleAjax( 'pll_posts_not_translated' );
-		} catch ( WPAjaxDieContinueException $e ) {
+		} catch ( WPAjaxDieStopException $e ) {
 			$response = json_decode( $e->getMessage(), true );
 			unset( $e );
 		}
