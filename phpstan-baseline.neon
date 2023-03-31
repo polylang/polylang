@@ -346,7 +346,7 @@ parameters:
 			path: frontend/choose-lang-content.php
 
 		-
-			message: "#^Parameter \\#1 \\$var of function get_query_var expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function get_query_var expects string, string\\|false given\\.$#"
 			count: 1
 			path: frontend/choose-lang-content.php
 
@@ -511,7 +511,7 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int, WP_Term\\>\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_pluck expects array, array\\<int, WP_Term\\>\\|WP_Error given\\.$#"
 			count: 1
 			path: frontend/frontend-links.php
 
@@ -1001,12 +1001,12 @@ parameters:
 			path: modules/sync/sync-tax.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error given\\.$#"
 			count: 1
 			path: modules/sync/sync-tax.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error\\|false given\\.$#"
 			count: 1
 			path: modules/sync/sync-tax.php
 
