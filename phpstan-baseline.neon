@@ -1121,11 +1121,6 @@ parameters:
 			path: settings/settings-licenses.php
 
 		-
-			message: "#^Expression in empty\\(\\) is not falsy\\.$#"
-			count: 1
-			path: settings/settings-module.php
-
-		-
 			message: "#^Method PLL_Settings_Module\\:\\:get_form\\(\\) should return string but returns string\\|false\\.$#"
 			count: 1
 			path: settings/settings-module.php
@@ -1152,11 +1147,6 @@ parameters:
 
 		-
 			message: "#^Property PLL_Settings\\:\\:\\$modules \\(array\\<PLL_Settings_Module\\>\\|null\\) does not accept array\\<object\\>\\.$#"
-			count: 1
-			path: settings/settings.php
-
-		-
-			message: "#^Variable \\$errors in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: settings/settings.php
 
