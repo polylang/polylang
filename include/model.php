@@ -840,7 +840,7 @@ class PLL_Model {
 	 * @param string            $slug       Language term slug (with or without the `pll_` prefix).
 	 * @param string            $name       Language name (label).
 	 * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
-	 * @param string[]|null     $taxonomies Optional. List of language taxonomies to deal with. An empty value means
+	 * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
 	 *                                      all of them. Defauls to all taxonomies.
 	 * @return void
 	 *
@@ -848,7 +848,7 @@ class PLL_Model {
 	 * @phpstan-param non-empty-string $name
 	 * @phpstan-param array<non-empty-string>|null $taxonomies
 	 */
-	protected function update_secondary_language_terms( $slug, $name, PLL_Language $language = null, array $taxonomies = null ) {
+	protected function update_secondary_language_terms( $slug, $name, PLL_Language $language = null, array $taxonomies = array() ) {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
 
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
