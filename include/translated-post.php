@@ -340,14 +340,11 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			),
 		);
 		/**
-		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox
-		 * This should help plugins to fix some edge cases
-		 *
-		 * @see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
+		 * Filters the query args when auto suggesting untranslated posts in the Languages metabox.
 		 *
 		 * @since 1.7
 		 * @since 3.4 Handled arguments restricted to `numberposts` to limit queried posts.
-		 * @since 3.4 No `WP_Query` is made anymore, a custom one is used instead.
+		 *            No `WP_Query` is made anymore, a custom one is used instead.
 		 *
 		 * @param array $args WP_Query arguments
 		 */
