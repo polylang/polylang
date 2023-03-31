@@ -111,6 +111,8 @@ class PLL_Admin_Block_Editor_Test extends PLL_UnitTestCase {
 			9 => "/wp/v2/posts/{$post->ID}/autosaves?context=edit",
 		);
 
-		return $this->admin_block_editor->preload_paths( $preload_paths, $post );
+		$context = new WP_Block_Editor_Context( array( 'post' => $post ) ); // Block editor for posts context.
+
+		return $this->admin_block_editor->preload_paths( $preload_paths, $context );
 	}
 }
