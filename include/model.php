@@ -798,7 +798,7 @@ class PLL_Model {
 	 *
 	 * @return void
 	 */
-	public function maybe_add_missing_3rd_party_language_terms() {
+	public function maybe_create_language_terms() {
 		$registered_taxonomies = array_diff(
 			$this->translatable_objects->get_taxonomy_names( array( 'language' ) ),
 			// Exclude the post and term language taxonomies from the list.
@@ -811,7 +811,7 @@ class PLL_Model {
 		}
 
 		// We have at least one 3rd party language taxonomy.
-		$known_taxonomies = ! empty( $this->options['3rd_party_taxonomies'] ) && is_array( $this->options['3rd_party_taxonomies'] ) ? $this->options['3rd_party_taxonomies'] : array();
+		$known_taxonomies = ! empty( $this->options['language_taxonomies'] ) && is_array( $this->options['language_taxonomies'] ) ? $this->options['language_taxonomies'] : array();
 		$new_taxonomies   = array_diff( $registered_taxonomies, $known_taxonomies );
 
 		if ( empty( $new_taxonomies ) ) {
@@ -823,7 +823,7 @@ class PLL_Model {
 		$this->add_missing_secondary_language_terms( $new_taxonomies );
 
 		// Keep the previous values, so this is triggered only once per taxonomy.
-		$this->options['3rd_party_taxonomies'] = array_merge( $known_taxonomies, $new_taxonomies );
+		$this->options['language_taxonomies'] = array_merge( $known_taxonomies, $new_taxonomies );
 		update_option( 'polylang', $this->options );
 	}
 

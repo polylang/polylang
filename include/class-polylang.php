@@ -239,7 +239,7 @@ class Polylang {
 			 */
 			do_action( 'pll_model_init', $model );
 
-			$model->maybe_add_missing_3rd_party_language_terms();
+			$model->maybe_create_language_terms();
 
 			/**
 			 * Fires after the $polylang object is created and before the API is loaded
