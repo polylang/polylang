@@ -323,15 +323,36 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	public function get_untranslated( $type, PLL_Language $untranslated_in, PLL_Language $lang, $search = '' ) {
 		global $wpdb;
 
+		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
+		$args = array(
+			's'                => $search,
+			'suppress_filters' => 0, // To make the post_fields filter work
+			'lang'             => 0, // Avoid admin language filter
+			'numberposts'      => 20, // Limit to 20 posts
+			'post_status'      => 'any',
+			'post_type'        => $type,
+			'tax_query'        => array(
+				array(
+					'taxonomy' => $this->tax_language,
+					'field'    => 'term_taxonomy_id', // WP 3.5+
+					'terms'    => $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ),
+				),
+			),
+		);
 		/**
-		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox.
-		 * This should help plugins to fix some edge cases.
+		 * Filter the query args when auto suggesting untranslated posts in the Languages metabox
+		 * This should help plugins to fix some edge cases
 		 *
-		 * @since 3.4
+		 * @see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough
 		 *
-		 * @param int $limit Limit to searched posts, default 20.
+		 * @since 1.7
+		 * @since 3.4 Handled arguments restricted to `numberposts` to limit queried posts.
+		 * @since 3.4 No `WP_Query` is made anymore, a custom one is used instead.
+		 *
+		 * @param array $args WP_Query arguments
 		 */
-		$limit = apply_filters( 'pll_ajax_posts_not_translated_limit', 20 );
+		$args  = apply_filters( 'pll_ajax_posts_not_translated_args', $args );
+		$limit = $args['numberposts'];
 
 		$search_like = '%' . $wpdb->esc_like( $search ) . '%';
 
@@ -343,7 +364,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 				OR ({$wpdb->posts}.post_content LIKE %s))
 			AND {$wpdb->posts}.post_type = %s
 			AND {$wpdb->posts}.post_status NOT IN ('trash', 'auto-draft')",
-			$lang->term_taxonomy_id,
+			$lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ),
 			$search_like,
 			$search_like,
 			$search_like,
