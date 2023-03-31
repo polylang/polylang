@@ -112,7 +112,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 				// Since WP 6.2.
 				$hosts[ $lang ] = \WpOrg\Requests\IdnaEncoder::encode( $host );
 			} else {
-				// Compat WP < 6.2.
+				// Backward compatibility with WP < 6.2.
 				$hosts[ $lang ] = Requests_IDNAEncoder::encode( $host );
 			}
 		}
