@@ -165,7 +165,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		try {
 			$this->_handleAjax( 'pll_posts_not_translated' );
-		} catch ( WPAjaxDieStopException $e ) {
+		} catch ( WPAjaxDieContinueException $e ) {
 			$response = json_decode( $e->getMessage(), true );
 			unset( $e );
 		}
@@ -182,7 +182,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		// the search must contain the current translation
 		try {
 			$this->_handleAjax( 'pll_posts_not_translated' );
-		} catch ( WPAjaxDieStopException $e ) {
+		} catch ( WPAjaxDieContinueException $e ) {
 			$response = json_decode( $e->getMessage(), true );
 			unset( $e );
 		}
@@ -243,7 +243,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		try {
 			$this->_handleAjax( 'pll_posts_not_translated' );
-		} catch ( WPAjaxDieStopException $e ) {
+		} catch ( WPAjaxDieContinueException $e ) {
 			$response = json_decode( $e->getMessage(), true );
 			unset( $e );
 		}
