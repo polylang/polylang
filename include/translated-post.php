@@ -342,8 +342,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 				OR ({$wpdb->posts}.post_excerpt LIKE %s)
 				OR ({$wpdb->posts}.post_content LIKE %s))
 			AND {$wpdb->posts}.post_type = %s
-			AND (({$wpdb->posts}.post_status <> 'trash'
-			AND {$wpdb->posts}.post_status <> 'auto-draft'))",
+			AND {$wpdb->posts}.post_status NOT IN ('trash', 'auto-draft')",
 			$lang->term_taxonomy_id,
 			$search_like,
 			$search_like,
