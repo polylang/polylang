@@ -98,7 +98,7 @@ class PLL_REST_Request extends PLL_Base {
 	 * @param WP_REST_Request $request Request used to generate the response.
 	 * @return mixed Untouched $result.
 	 *
-	 * @phpstan-param WP_REST_Request<array<non-falsy-string, mixed>> $request
+	 * @phpstan-param WP_REST_Request<array{lang?: string}> $request
 	 */
 	public function set_language( $result, $server, $request ) {
 		$lang = $request->get_param( 'lang' );
