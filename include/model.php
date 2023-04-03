@@ -285,6 +285,21 @@ class PLL_Model {
 	}
 
 	/**
+	 * Returns the default language.
+	 *
+	 * @since 3.4
+	 *
+	 * @return PLL_Language|false Default language object, `false` if no language found.
+	 */
+	public function get_default_language() {
+		if ( empty( $this->options['default_lang'] ) ) {
+			return false;
+		}
+
+		return $this->get_language( $this->options['default_lang'] );
+	}
+
+	/**
 	 * Adds terms clauses to the term query to filter them by languages.
 	 *
 	 * @since 1.2
@@ -719,6 +734,35 @@ class PLL_Model {
 	}
 
 	/**
+	 * Assigns the default language to objects in mass.
+	 *
+	 * @since 1.2
+	 * @since 3.4 Moved from PLL_Admin_Model class.
+	 * @since 3.4 Change method signature.
+	 *
+	 * @param int $limit Max number of posts or terms to return. Defaults to -1 (no limit).
+	 * @return void
+	 *
+	 * @phpstan-param -1|positive-int $limit
+	 */
+	public function set_language_in_mass( $limit = -1 ) {
+		$nolang = $this->get_objects_with_no_lang( $limit );
+
+		if ( empty( $nolang ) ) {
+			return;
+		}
+
+		/** @var PLL_Language $lang */
+		$lang = $this->get_default_language();
+
+		foreach ( $this->translatable_objects as $type => $object ) {
+			if ( ! empty( $nolang[ "{$type}s" ] ) ) {
+				$object->set_language_in_mass( $nolang[ "{$type}s" ], $lang );
+			}
+		}
+	}
+
+	/**
 	 * Filters the ORDERBY clause of the languages query.
 	 * This allows to order languages by `term_group` and `term_id`.
 	 *
@@ -748,34 +792,44 @@ class PLL_Model {
 	}
 
 	/**
-	 * Adds the missing language terms for the secondary language taxonomies.
+	 * Maybe adds the missing language terms for 3rd party language taxonomies.
 	 *
 	 * @since 3.4
 	 *
 	 * @return void
 	 */
-	public function add_missing_secondary_language_terms() {
+	public function maybe_create_language_terms() {
+		$registered_taxonomies = array_diff(
+			$this->translatable_objects->get_taxonomy_names( array( 'language' ) ),
+			// Exclude the post and term language taxonomies from the list.
+			array( $this->post->get_tax_language(), $this->term->get_tax_language() )
+		);
+
+		if ( empty( $registered_taxonomies ) ) {
+			// No 3rd party language taxonomies.
+			return;
+		}
+
+		// We have at least one 3rd party language taxonomy.
+		$known_taxonomies = ! empty( $this->options['language_taxonomies'] ) && is_array( $this->options['language_taxonomies'] ) ? $this->options['language_taxonomies'] : array();
+		$new_taxonomies   = array_diff( $registered_taxonomies, $known_taxonomies );
+
+		if ( empty( $new_taxonomies ) ) {
+			// No new 3rd party language taxonomies.
+			return;
+		}
+
+		// We have at least one unknown 3rd party language taxonomy.
 		foreach ( $this->get_languages_list() as $language ) {
-			$this->update_secondary_language_terms( $language->slug, $language->name, $language );
+			$this->update_secondary_language_terms( $language->slug, $language->name, $language, $new_taxonomies );
 		}
 
 		// Clear the cache, so the new `term_id` and `term_taxonomy_id` appear in the languages list.
 		$this->clean_languages_cache();
-	}
 
-	/**
-	 * Returns the default language.
-	 *
-	 * @since 3.4
-	 *
-	 * @return PLL_Language|false Default language object, `false` if no language found.
-	 */
-	public function get_default_language() {
-		if ( empty( $this->options['default_lang'] ) ) {
-			return false;
-		}
-
-		return $this->get_language( $this->options['default_lang'] );
+		// Keep the previous values, so this is triggered only once per taxonomy.
+		$this->options['language_taxonomies'] = array_merge( $known_taxonomies, $new_taxonomies );
+		update_option( 'polylang', $this->options );
 	}
 
 	/**
@@ -783,18 +837,26 @@ class PLL_Model {
 	 *
 	 * @since 3.4
 	 *
-	 * @param string            $slug     Language term slug (with or without the `pll_` prefix).
-	 * @param string            $name     Language name (label).
-	 * @param PLL_Language|null $language Optional. A language object. Required to update the existing terms.
+	 * @param string            $slug       Language term slug (with or without the `pll_` prefix).
+	 * @param string            $name       Language name (label).
+	 * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
+	 * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
+	 *                                      all of them. Defauls to all taxonomies.
 	 * @return void
 	 *
 	 * @phpstan-param non-empty-string $slug
 	 * @phpstan-param non-empty-string $name
+	 * @phpstan-param array<non-empty-string>|null $taxonomies
 	 */
-	protected function update_secondary_language_terms( $slug, $name, PLL_Language $language = null ) {
+	protected function update_secondary_language_terms( $slug, $name, PLL_Language $language = null, array $taxonomies = array() ) {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
 
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
+			if ( ! empty( $taxonomies ) && ! in_array( $object->get_tax_language(), $taxonomies, true ) ) {
+				// Not in the list.
+				continue;
+			}
+
 			if ( ! empty( $language ) ) {
 				$term_id = $language->get_tax_prop( $object->get_tax_language(), 'term_id' );
 			} else {
@@ -808,7 +870,7 @@ class PLL_Model {
 			}
 
 			/** @var PLL_Language $language */
-			if ( $language->slug !== $slug || $language->name !== $name ) {
+			if ( "pll_{$language->slug}" !== $slug || $language->name !== $name ) {
 				// Something has changed.
 				wp_update_term( $term_id, $object->get_tax_language(), array( 'slug' => $slug, 'name' => $name ) );
 			}

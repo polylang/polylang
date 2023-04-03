@@ -189,6 +189,7 @@ class Polylang {
 		 * @param string $class either PLL_Model or PLL_Admin_Model
 		 */
 		$class = apply_filters( 'pll_model', PLL_SETTINGS || self::is_wizard() ? 'PLL_Admin_Model' : 'PLL_Model' );
+		/** @var PLL_Model $model */
 		$model = new $class( $options );
 
 		if ( ! $model->has_languages() ) {
@@ -225,6 +226,20 @@ class Polylang {
 		if ( ! empty( $class ) ) {
 			$links_model = $model->get_links_model();
 			$polylang    = new $class( $links_model );
+
+			/**
+			 * Fires after Polylang's model init.
+			 * This is the best place to register a custom table (see `PLL_Model`'s constructor).
+			 * /!\ This hook is fired *before* the $polylang object is available.
+			 * /!\ The languages are also not available yet.
+			 *
+			 * @since 3.4
+			 *
+			 * @param PLL_Model $model Polylang model.
+			 */
+			do_action( 'pll_model_init', $model );
+
+			$model->maybe_create_language_terms();
 
 			/**
 			 * Fires after the $polylang object is created and before the API is loaded
