@@ -275,7 +275,7 @@ class PLL_Model {
 
 		$return = $this->cache->get( 'language:' . $value );
 
-		if ( false !== $return ) {
+		if ( $return instanceof PLL_Language ) {
 			return $return;
 		}
 
@@ -289,6 +289,7 @@ class PLL_Model {
 			$this->cache->set( 'language:' . $lang->w3c, $lang );
 		}
 
+		/** @var PLL_Language|false */
 		return $this->cache->get( 'language:' . $value );
 	}
 

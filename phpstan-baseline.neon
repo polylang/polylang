@@ -786,11 +786,6 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Method PLL_Model\\:\\:get_language\\(\\) should return PLL_Language\\|false but returns mixed\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
 			message: "#^Method PLL_Model\\:\\:get_links_model\\(\\) should return PLL_Links_Model but returns object\\.$#"
 			count: 1
 			path: include/model.php
