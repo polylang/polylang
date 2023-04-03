@@ -260,8 +260,11 @@ class PLL_Model {
 	 * Returns the language by its term_id, tl_term_id, slug or locale.
 	 *
 	 * @since 0.1
+	 * @since 3.4 Allow to get a language by `term_taxonomy_id`.
 	 *
-	 * @param mixed $value term_id, tl_term_id, slug or locale of the queried language.
+	 * @param mixed $value `term_id`, `tl_term_id`, `term_taxonomy_id`, `slug`, `locale`, or `w3c` of the queried language.
+	 *                     /!\ For the `term_taxonomy_id`, prefix the ID by `tt:` (ex: `"tt:{$tt_id}"`),
+	 *                     this is to prevent confusion between `term_id` and `term_taxonomy_id`.
 	 * @return PLL_Language|false Language object, false if no language found.
 	 */
 	public function get_language( $value ) {
@@ -274,6 +277,7 @@ class PLL_Model {
 				foreach ( $lang->get_tax_props( 'term_id' ) as $term_id ) {
 					$this->cache->set( 'language:' . $term_id, $lang );
 				}
+				$this->cache->set( 'language:tt:' . $lang->get_tax_prop( 'language', 'term_taxonomy_id' ), $lang );
 				$this->cache->set( 'language:' . $lang->slug, $lang );
 				$this->cache->set( 'language:' . $lang->locale, $lang );
 				$this->cache->set( 'language:' . $lang->w3c, $lang );
