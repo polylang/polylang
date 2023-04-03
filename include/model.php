@@ -281,8 +281,8 @@ class PLL_Model {
 
 		foreach ( $this->get_languages_list() as $lang ) {
 			foreach ( $lang->get_tax_props() as $props ) {
-				$this->cache->set( 'language:' . $props->term_id, $lang );
-				$this->cache->set( 'language:tt:' . $props->term_taxonomy_id, $lang );
+				$this->cache->set( 'language:' . $props['term_id'], $lang );
+				$this->cache->set( 'language:tt:' . $props['term_taxonomy_id'], $lang );
 			}
 			$this->cache->set( 'language:' . $lang->slug, $lang );
 			$this->cache->set( 'language:' . $lang->locale, $lang );
