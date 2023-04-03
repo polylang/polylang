@@ -18,7 +18,7 @@
  * @phpstan-type LanguageData array{
  *     term_props: array{
  *         language: LanguagePropData,
- *         term_language: LanguagePropData
+ *         term_language?: LanguagePropData
  *     },
  *     name: non-empty-string,
  *     slug: non-empty-string,
@@ -252,7 +252,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *
 	 * @phpstan-var array{
 	 *         language: LanguagePropData,
-	 *         term_language: LanguagePropData
+	 *         term_language?: LanguagePropData
 	 *     }
 	 *     &array<non-empty-string, LanguagePropData>
 	 */
