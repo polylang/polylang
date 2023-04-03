@@ -53,7 +53,7 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	}
 } else {
 	// Go on loading the plugin
-	define( 'POLYLANG_VERSION', '3.2' );
+	define( 'POLYLANG_VERSION', '3.4-dev' );
 	define( 'PLL_MIN_WP_VERSION', '5.7' );
 	define( 'PLL_MIN_PHP_VERSION', '5.6' );
 
