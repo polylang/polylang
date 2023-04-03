@@ -262,30 +262,34 @@ class PLL_Model {
 	 * @since 0.1
 	 * @since 3.4 Allow to get a language by `term_taxonomy_id`.
 	 *
-	 * @param mixed $value `term_id`, `tl_term_id`, `term_taxonomy_id`, `slug`, `locale`, or `w3c` of the queried language.
+	 * @param mixed $value `term_id`, `term_taxonomy_id`, `slug`, `locale`, or `w3c` of the queried language.
+	 *                     `term_id` and `term_taxonomy_id` can be fetched for any language taxonomy.
 	 *                     /!\ For the `term_taxonomy_id`, prefix the ID by `tt:` (ex: `"tt:{$tt_id}"`),
 	 *                     this is to prevent confusion between `term_id` and `term_taxonomy_id`.
 	 * @return PLL_Language|false Language object, false if no language found.
 	 */
 	public function get_language( $value ) {
 		if ( is_object( $value ) ) {
-			return $value instanceof PLL_Language ? $value : $this->get_language( $value->term_id ); // will force cast to PLL_Language
+			return $value instanceof PLL_Language ? $value : $this->get_language( $value->term_id ); // Will force cast to PLL_Language.
 		}
 
-		if ( false === $return = $this->cache->get( 'language:' . $value ) ) {
-			foreach ( $this->get_languages_list() as $lang ) {
-				foreach ( $lang->get_tax_props( 'term_id' ) as $term_id ) {
-					$this->cache->set( 'language:' . $term_id, $lang );
-				}
-				$this->cache->set( 'language:tt:' . $lang->get_tax_prop( 'language', 'term_taxonomy_id' ), $lang );
-				$this->cache->set( 'language:' . $lang->slug, $lang );
-				$this->cache->set( 'language:' . $lang->locale, $lang );
-				$this->cache->set( 'language:' . $lang->w3c, $lang );
+		$return = $this->cache->get( 'language:' . $value );
+
+		if ( false !== $return ) {
+			return $return;
+		}
+
+		foreach ( $this->get_languages_list() as $lang ) {
+			foreach ( $lang->get_tax_props() as $props ) {
+				$this->cache->set( 'language:' . $props->term_id, $lang );
+				$this->cache->set( 'language:tt:' . $props->term_taxonomy_id, $lang );
 			}
-			$return = $this->cache->get( 'language:' . $value );
+			$this->cache->set( 'language:' . $lang->slug, $lang );
+			$this->cache->set( 'language:' . $lang->locale, $lang );
+			$this->cache->set( 'language:' . $lang->w3c, $lang );
 		}
 
-		return $return;
+		return $this->cache->get( 'language:' . $value );
 	}
 
 	/**
