@@ -66,6 +66,11 @@ return array(
 		'facebook' => 'ak_GH',
 	),
 	'am' => array(
+		'code'     => 'am',
+		'locale'   => 'am',
+		'name'     => 'አማርኛ',
+		'dir'      => 'ltr',
+		'flag'     => 'et',
 		'facebook' => 'am_ET',
 	),
 	'ar' => array(
@@ -75,6 +80,13 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'arab',
 		'facebook' => 'ar_AR',
+	),
+	'arg' => array(
+		'code'     => 'an',
+		'locale'   => 'arg',
+		'name'     => 'Aragonés',
+		'dir'      => 'ltr',
+		'flag'     => 'es',
 	),
 	'arq' => array(
 		'facebook' => 'ar_AR',
@@ -356,6 +368,14 @@ return array(
 		'name'     => 'Español',
 		'dir'      => 'ltr',
 		'flag'     => 'cr',
+		'facebook' => 'es_LA',
+	),
+	'es_DO' => array(
+		'code'     => 'es',
+		'locale'   => 'es_DO',
+		'name'     => 'Español',
+		'dir'      => 'ltr',
+		'flag'     => 'do',
 		'facebook' => 'es_LA',
 	),
 	'es_EC' => array(
