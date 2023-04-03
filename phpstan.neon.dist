@@ -43,3 +43,9 @@ parameters:
 
 		# Ignored because the WordPress stubs doesn't know a dynamic key in the associative array passed to the get_terms() parameter
 		- "#^Parameter \\#1 \\$args of function get_terms expects array(.+), non\\-empty\\-array\\<string, int\\|string\\> given\\.$#"
+
+		# Ignored because the class Requests_IDNAEncoder exists in WP < 6.2.
+		-
+			message: "#^Call to static method encode\\(\\) on an unknown class Requests_IDNAEncoder\\.$#"
+			count: 1
+			path: include/links-domain.php

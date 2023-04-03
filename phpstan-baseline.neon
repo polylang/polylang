@@ -426,7 +426,7 @@ parameters:
 			path: frontend/choose-lang-content.php
 
 		-
-			message: "#^Parameter \\#1 \\$var of function get_query_var expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function get_query_var expects string, string\\|false given\\.$#"
 			count: 1
 			path: frontend/choose-lang-content.php
 
@@ -631,7 +631,7 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int, WP_Term\\>\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_pluck expects array, array\\<int, WP_Term\\>\\|WP_Error given\\.$#"
 			count: 1
 			path: frontend/frontend-links.php
 
@@ -831,7 +831,7 @@ parameters:
 			path: include/filters-links.php
 
 		-
-			message: "#^Argument of an invalid type array\\<int\\|WP_Post\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			message: "#^Argument of an invalid type array\\<WP_Post\\>\\|false supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: include/filters.php
 
@@ -851,7 +851,7 @@ parameters:
 			path: include/filters.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<int\\|WP_Post\\>\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_pluck expects array, array\\<WP_Post\\>\\|false given\\.$#"
 			count: 1
 			path: include/filters.php
 
@@ -996,22 +996,7 @@ parameters:
 			path: include/links-domain.php
 
 		-
-			message: "#^Method PLL_Links_Domain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<int\\|string, string\\|false\\>\\.$#"
-			count: 1
-			path: include/links-domain.php
-
-		-
 			message: "#^Method PLL_Links_Domain\\:\\:remove_language_from_link\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/links-domain.php
-
-		-
-			message: "#^Parameter \\#1 \\$domain of function idn_to_ascii expects string, string\\|false\\|null given\\.$#"
-			count: 2
-			path: include/links-domain.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of static method Requests_IDNAEncoder\\:\\:encode\\(\\) expects string, string\\|false\\|null given\\.$#"
 			count: 1
 			path: include/links-domain.php
 
@@ -1131,12 +1116,12 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_filter expects array, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_filter expects array, mixed given\\.$#"
 			count: 1
 			path: include/model.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_pluck expects array, mixed given\\.$#"
 			count: 1
 			path: include/model.php
 
@@ -1411,12 +1396,12 @@ parameters:
 			path: modules/sync/sync-tax.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error given\\.$#"
 			count: 1
 			path: modules/sync/sync-tax.php
 
 		-
-			message: "#^Parameter \\#1 \\$list of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$.+ of function wp_list_pluck expects array, array\\<WP_Term\\>\\|WP_Error\\|false given\\.$#"
 			count: 1
 			path: modules/sync/sync-tax.php
 
@@ -1551,11 +1536,6 @@ parameters:
 			path: settings/settings-licenses.php
 
 		-
-			message: "#^Expression in empty\\(\\) is not falsy\\.$#"
-			count: 1
-			path: settings/settings-module.php
-
-		-
 			message: "#^Method PLL_Settings_Module\\:\\:get_form\\(\\) should return string but returns string\\|false\\.$#"
 			count: 1
 			path: settings/settings-module.php
@@ -1587,11 +1567,6 @@ parameters:
 
 		-
 			message: "#^Property PLL_Settings\\:\\:\\$modules \\(array\\<PLL_Settings_Module\\>\\|null\\) does not accept array\\<object\\>\\.$#"
-			count: 1
-			path: settings/settings.php
-
-		-
-			message: "#^Variable \\$errors in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: settings/settings.php
 
