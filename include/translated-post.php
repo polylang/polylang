@@ -323,22 +323,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	public function get_untranslated( $type, PLL_Language $untranslated_in, PLL_Language $lang, $search = '' ) {
 		global $wpdb;
 
-		// Don't order by title: see https://wordpress.org/support/topic/find-translated-post-when-10-is-not-enough.
-		$args = array(
-			's'                => $search,
-			'suppress_filters' => 0, // To make the post_fields filter work.
-			'lang'             => 0, // Avoid admin language filter.
-			'numberposts'      => 20, // Limit to 20 posts.
-			'post_status'      => 'any',
-			'post_type'        => $type,
-			'tax_query'        => array(
-				array(
-					'taxonomy' => $this->tax_language,
-					'field'    => 'term_taxonomy_id', // WP 3.5+.
-					'terms'    => $lang->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ),
-				),
-			),
-		);
+		$args = array( 'numberposts' => 20 ); // Limit to 20 posts by default.
 		/**
 		 * Filters the query args when auto suggesting untranslated posts in the Languages metabox.
 		 *
