@@ -324,7 +324,7 @@ class PLL_Admin_Site_Health {
 				$language_taxonomy_array
 			);
 
-			$value = array_combine( array_values( $keys_with_language_taxonomy ), array_values( $item ) );
+			$value = array_combine( $keys_with_language_taxonomy, $item );
 			if ( is_array( $value ) ) {
 				$return_value = array_merge( $return_value, $value );
 			}
