@@ -213,7 +213,8 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		wp_register_style( 'polylang_admin', plugins_url( '/css/build/admin' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'wp-jquery-ui-dialog' ), POLYLANG_VERSION );
-		wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
+		wp_enqueue_style( 'polylang_admin' );
+		// wp_enqueue_style( 'polylang_dialog', plugins_url( '/css/build/dialog' . $suffix . '.css', POLYLANG_ROOT_FILE ), array( 'polylang_admin' ), POLYLANG_VERSION );
 
 		$this->add_inline_scripts();
 	}
