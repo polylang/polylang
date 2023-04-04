@@ -23,9 +23,9 @@ jobs:
       script:
         - "composer lint"
 
-    - name: "WP 5.7 - PHP 7.2"
+    - name: "WP 5.8 - PHP 7.2"
       php: "7.2"
-      env: "WP_VERSION=5.7 WP_MULTISITE=0"
+      env: "WP_VERSION=5.8 WP_MULTISITE=0"
       script:
         - "vendor/bin/phpunit --verbose"
 
@@ -80,7 +80,7 @@ before_install:
 
 install:
   - |
-    if [[ $WP_VERSION == "5.7" || $WP_VERSION == "5.8" ]]; then
+    if [[ $WP_VERSION == "5.8" ]]; then
       composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^7.5"
     fi
   - composer remove --no-interaction --no-update --dev "phpstan/phpstan"
