@@ -279,7 +279,7 @@ class PLL_Admin_Site_Health {
 
 				$fields[ $key ]['label'] = $key;
 
-				if ( 'term_props' === $key ) {
+				if ( 'term_props' === $key && is_array( $value ) ) {
 					$fields[ $key ]['value'] = $this->get_info_term_props( $value );
 				} else {
 					$fields[ $key ]['value'] = $value;
