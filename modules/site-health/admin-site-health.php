@@ -325,8 +325,9 @@ class PLL_Admin_Site_Health {
 			);
 
 			$value = array_combine( array_values( $keys_with_language_taxonomy ), array_values( $item ) );
-
-			$return_value = array_merge( $return_value, $value );
+			if ( is_array( $value ) ) {
+				$return_value = array_merge( $return_value, $value );
+			}
 		}
 		return $return_value;
 	}
