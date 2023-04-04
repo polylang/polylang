@@ -911,7 +911,6 @@ class PLL_Model {
 		 *     array{
 		 *         string: array{
 		 *             language: WP_Term,
-		 *             term_language?: WP_Term
 		 *         }&array<non-empty-string, WP_Term>
 		 *     }
 		 * ) $terms_by_slug
