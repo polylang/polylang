@@ -318,7 +318,7 @@ class PLL_Admin_Site_Health {
 
 			$keys_with_language_taxonomy = array_map(
 				function ( $key, $language_taxonomy ) {
-					return $language_taxonomy . '/' . $key;
+					return "{$language_taxonomy}/{$key}";
 				},
 				array_keys( $item ),
 				$language_taxonomy_array
