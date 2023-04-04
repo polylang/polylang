@@ -25,8 +25,6 @@ class Admin_Site_Health_Test extends PLL_UnitTestCase {
 
 	/**
 	 * Performs setup tasks for every test.
-	 *
-	 * @since 3.3
 	 */
 	public function set_up() {
 		parent::set_up();

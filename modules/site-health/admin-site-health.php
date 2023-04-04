@@ -305,7 +305,7 @@ class PLL_Admin_Site_Health {
 	/**
 	 * Adds term props data to the info languages array.
 	 *
-	 * @since 3.3
+	 * @since 3.4
 	 *
 	 * @param array $value The term props data.
 	 * @return array The term props data formatted for the info languages tab.
