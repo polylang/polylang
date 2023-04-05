@@ -67,10 +67,10 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 	public function test_widget_nav_menu_rest_render() {
 		global $wp_version;
 
-		// Widgets routes are available since WordPress 5.8.
-		// @see https://github.com/WordPress/wordpress-develop/blob/6.0.1/src/wp-includes/rest-api/endpoints/class-wp-rest-widget-types-controller.php#L10-L16.
-		if ( version_compare( $wp_version, '5.8.0', '<' ) ) {
-			$this->markTestSkipped( 'This test requires WordPress 5.8 or higher.' );
+		// Widgets render routes are available since WordPress 5.9.
+		// @see {https://github.com/WordPress/wordpress-develop/blob/5.9/src/wp-includes/rest-api/endpoints/class-wp-rest-widget-types-controller.php#L71-L101}.
+		if ( version_compare( $wp_version, '5.9.0', '<' ) ) {
+			$this->markTestSkipped( 'This test requires WordPress 5.9 or higher.' );
 		}
 
 		// Let's create a menu.
