@@ -266,5 +266,26 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$language = self::$model->get_language( 'en' );
 
 		$this->assertInstanceOf( PLL_Language::class, $language );
+		
+	/**
+	 * Test a second language deletion with 'term_group' > 0
+	 * and the language is assigned to a content.
+	 *
+	 * Polylang Pro #1626
+	 */
+	function test_delete_language_with_content_which_has_this_language() {
+		$links_model  = self::$model->get_links_model();
+		$admin        = new PLL_Admin( $links_model );
+		$admin->terms = new PLL_CRUD_Terms( $admin );
+
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR', array( 'term_group' => 1 ) );
+
+		$fr = self::factory()->post->create();
+		self::$model->post->set_language( $fr, 'fr' );
+
+		$lang = self::$model->get_language( 'fr' );
+		self::$model->delete_language( $lang->term_id );
+		$this->assertCount( 1, self::$model->get_languages_list() );
 	}
 }
