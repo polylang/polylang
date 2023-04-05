@@ -247,4 +247,24 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
 		$this->assertSameSetsWithIndex( $expected, self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
 	}
+
+	public function test_create_language_object_without_term_language_tax() {
+		self::create_language( 'en_US' );
+		self::$model->clean_languages_cache();
+		$term_language_args = array(
+			'taxonomy' => 'term_language',
+			'hide_empty' => false,
+		);
+		$terms_to_delete = get_terms( $term_language_args );
+
+		foreach ( $terms_to_delete as $term ) {
+			wp_delete_term( $term->term_id, 'term_language' );
+		}
+
+		$this->assertEmpty( get_terms( $term_language_args ) );
+
+		$language = self::$model->get_language( 'en' );
+
+		$this->assertInstanceOf( PLL_Language::class, $language );
+	}
 }

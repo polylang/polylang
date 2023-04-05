@@ -61,10 +61,11 @@ class PLL_Language_Factory {
 	 * @since 3.4
 	 *
 	 * @param WP_Term[] $terms List of language terms, with the language taxonomy names as array keys.
-	 *                         `language` and `term_language` are mandatory keys.
+	 *                         `language` is a mandatory key, `term_language` should be too in a
+	 *                         fully operational environment.
 	 * @return PLL_Language
 	 *
-	 * @phpstan-param array{language:WP_Term, term_language:WP_Term}&array<string, WP_Term> $terms
+	 * @phpstan-param array{language:WP_Term}&array<string, WP_Term> $terms
 	 */
 	public function get_from_terms( array $terms ) {
 		$languages = $this->get_languages();
