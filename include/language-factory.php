@@ -65,7 +65,7 @@ class PLL_Language_Factory {
 	 *                         fully operational environment.
 	 * @return PLL_Language
 	 *
-	 * @phpstan-param array{language:WP_Term, term_language?:WP_Term}&array<string, WP_Term> $terms
+	 * @phpstan-param array{language:WP_Term}&array<string, WP_Term> $terms
 	 */
 	public function get_from_terms( array $terms ) {
 		$languages = $this->get_languages();
