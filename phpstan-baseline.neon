@@ -536,7 +536,7 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Method PLL_Frontend_Nav_Menu\\:\\:get_ancestors\\(\\) should return array\\<int\\> but returns array\\<int, mixed\\>\\.$#"
+			message: "#^Method PLL_Frontend_Nav_Menu\\:\\:get_ancestors\\(\\) should return array\\<int\\> but returns array\\<int\\<0, max\\>, mixed\\>\\.$#"
 			count: 1
 			path: frontend/frontend-nav-menu.php
 
