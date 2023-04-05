@@ -913,13 +913,10 @@ class PLL_Model {
 		}
 
 		// Restore the right order after the first `array_reverse()`.
-		// Also keep the terms order with the 'language' taxonomy first.
+		// Also keep the terms order with the 'term_language' taxonomy first.
 		$terms_by_slug = array_reverse(
 			array_map(
 				function( $term_by_slug ) {
-					if ( 0 === $term_by_slug['language']->term_group ) {
-						return $term_by_slug;
-					}
 					return array_reverse( $term_by_slug );
 				},
 				$terms_by_slug
