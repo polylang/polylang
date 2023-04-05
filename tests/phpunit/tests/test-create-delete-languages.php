@@ -266,7 +266,8 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$language = self::$model->get_language( 'en' );
 
 		$this->assertInstanceOf( PLL_Language::class, $language );
-		
+	}
+
 	/**
 	 * Test a second language deletion with 'term_group' > 0
 	 * and the language is assigned to a content.
