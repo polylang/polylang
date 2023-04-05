@@ -700,15 +700,8 @@ class PLL_Wizard {
 
 		$language = $this->model->get_language( $lang );
 
-		if ( ! empty( $language ) ) {
-			while ( $nolang = $this->model->get_objects_with_no_lang( 1000 ) ) {
-				if ( ! empty( $nolang['posts'] ) ) {
-					$this->model->post->set_language_in_mass( $nolang['posts'], $language );
-				}
-				if ( ! empty( $nolang['terms'] ) ) {
-					$this->model->term->set_language_in_mass( $nolang['terms'], $language );
-				}
-			}
+		if ( $language instanceof PLL_Language ) {
+			$this->model->set_language_in_mass( $language );
 		}
 
 		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );

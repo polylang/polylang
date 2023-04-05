@@ -776,11 +776,6 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Method PLL_Model\\:\\:get_objects_with_no_lang\\(\\) should return array but returns array\\|false\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
 			message: "#^Parameter \\#1 \\$.+ of function md5 expects string, mixed given\\.$#"
 			count: 1
 			path: include/model.php
