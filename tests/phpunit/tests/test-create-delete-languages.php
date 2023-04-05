@@ -273,7 +273,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	 *
 	 * Polylang Pro #1626
 	 */
-	function test_delete_language_with_content_which_has_this_language() {
+	public function test_delete_language_with_content_which_has_this_language() {
 		$links_model  = self::$model->get_links_model();
 		$admin        = new PLL_Admin( $links_model );
 		$admin->terms = new PLL_CRUD_Terms( $admin );
