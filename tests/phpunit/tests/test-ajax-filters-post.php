@@ -191,6 +191,68 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 		$this->assertEqualSets( array( $searched, $en ), wp_list_pluck( $response, 'id' ) );
 	}
 
+	public function test_tricky_posts_not_translated() {
+		for ( $i = 0; $i < 5; $i++ ) {
+			$en = self::factory()->post->create( array( 'post_title' => "test {$i} english" ) );
+			self::$model->post->set_language( $en, 'en' );
+
+			$fr = self::factory()->post->create( array( 'post_title' => "test {$i} français" ) );
+			self::$model->post->set_language( $fr, 'fr' );
+
+			$es = self::factory()->post->create( array( 'post_title' => "test {$i} espagnol" ) );
+			self::$model->post->set_language( $es, 'es' );
+
+			self::$model->post->save_translations( $en, compact( 'en', 'fr', 'es' ) );
+		}
+
+		$searched_en = self::factory()->post->create( array( 'post_title' => 'test searched en' ) );
+		self::$model->post->set_language( $searched_en, 'en' );
+
+		$searched_es = self::factory()->post->create( array( 'post_title' => 'test searched es' ) );
+		self::$model->post->set_language( $searched_es, 'es' );
+
+		self::$model->post->save_translations(
+			$searched_en,
+			array(
+				'en' => $searched_en,
+				'es' => $searched_es,
+			)
+		);
+
+		$fr = self::factory()->post->create();
+		self::$model->post->set_language( $fr, 'fr' );
+
+		add_filter(
+			'pll_ajax_posts_not_translated_args',
+			function( $args ) {
+				$args['numberposts'] = 4;
+				return $args;
+			}
+		);
+
+		$_GET = array(
+			'action'               => 'pll_posts_not_translated',
+			'_pll_nonce'           => wp_create_nonce( 'pll_language' ),
+			'term'                 => 'tes',
+			'post_language'        => 'fr',
+			'translation_language' => 'en',
+			'post_type'            => 'post',
+			'pll_post_id'          => $fr,
+		);
+
+		$this->pll_admin->set_current_language();
+
+		try {
+			$this->_handleAjax( 'pll_posts_not_translated' );
+		} catch ( WPAjaxDieStopException $e ) {
+			$response = json_decode( $e->getMessage(), true );
+			unset( $e );
+		}
+
+		$this->assertCount( 1, $response );
+		$this->assertEquals( $searched_en, $response[0]['id'] );
+	}
+
 	public function test_save_post_from_quick_edit() {
 		$post_id = $en = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'en' );
