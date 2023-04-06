@@ -32,7 +32,7 @@ class PLL_Admin_Block_Editor {
 		$this->model     = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
 
-		new PLL_Block_Editor_Filter_Preload_Paths( array( $this, 'preload_paths' ), 10, 2 );
+		add_filter( 'block_editor_rest_api_preload_paths', array( $this, 'preload_paths' ), 10, 2 );
 	}
 
 	/**
@@ -42,13 +42,18 @@ class PLL_Admin_Block_Editor {
 	 *
 	 * @since 2.5
 	 *
-	 * @param (string|string[])[] $preload_paths Array of paths to preload.
-	 * @param WP_Post             $post          The post resource data.
+	 * @param (string|string[])[]     $preload_paths Array of paths to preload.
+	 * @param WP_Block_Editor_Context $context       Block editor context.
 	 * @return (string|string[])[]
 	 */
-	public function preload_paths( $preload_paths, $post ) {
-		if ( $post instanceof WP_Post && $this->model->is_translated_post_type( $post->post_type ) ) {
-			$lang = $this->model->post->get_language( $post->ID );
+	public function preload_paths( $preload_paths, $context ) {
+		if (
+			$context instanceof WP_Block_Editor_Context
+			&& 'core/edit-post' === $context->name
+			&& $context->post instanceof WP_Post
+			&& $this->model->is_translated_post_type( $context->post->post_type )
+		) {
+			$lang = $this->model->post->get_language( $context->post->ID );
 
 			if ( ! $lang ) {
 				$lang = $this->pref_lang;
