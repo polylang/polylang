@@ -2,6 +2,15 @@
 
 class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
+
+	public function tear_down() {
+		foreach ( self::$model->get_languages_list() as $lang ) {
+			self::$model->delete_language( $lang->term_id );
+		}
+
+		parent::tear_down();
+	}
+
 	public function test_add_and_delete_language() {
 		// first language
 		$args = array(
