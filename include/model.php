@@ -770,7 +770,6 @@ class PLL_Model {
 	 * @since 1.2
 	 * @since 3.4 Moved from PLL_Admin_Model class.
 	 *            Removed `$limit` parameter, added `$lang` and `$types` parameters.
-	 *            Returns the types that may still have non-translated objects.
 	 *
 	 * @param PLL_Language|null $lang  Optional. The language to assign to objects. Defaults to `null` (default language).
 	 * @param string[]          $types Optional. Types to handle (@see PLL_Translatable_Object::get_type()). Defaults
