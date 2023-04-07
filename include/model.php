@@ -797,6 +797,10 @@ class PLL_Model {
 			return $orderby;
 		}
 
+		/**
+		 * Makes the all terms in 'language' taxonomy first in the returned result by respecting the 'term_group' order.
+		 * The goal is not to mix terms between all language taxomonomies.
+		 */
 		return sprintf( 'tt.taxonomy = "language" DESC, %1$s.term_group, %1$s.term_id', $matches['alias'] );
 	}
 
