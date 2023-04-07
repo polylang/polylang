@@ -485,20 +485,27 @@ abstract class PLL_Translatable_Object {
 		if ( empty( $tt_id ) ) {
 			return;
 		}
+		$ids = array_map( 'intval', $ids );
+		$ids = array_filter( $ids );
+
+		if ( empty( $ids ) ) {
+			return;
+		}
 
 		$values = array();
-		$ids    = array_map( 'intval', $ids );
 
 		foreach ( $ids as $id ) {
 			$values[] = $wpdb->prepare( '( %d, %d )', $id, $tt_id );
 		}
 
-		if ( ! empty( $values ) ) {
-			// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', array_unique( $values ) ) );
-			$lang->update_count(); // Updating term count is mandatory ( thanks to AndyDeGroo )
-		}
+		// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', array_unique( $values ) ) );
 
+		// Updating term count is mandatory (thanks to AndyDeGroo).
+		$lang->update_count();
 		clean_term_cache( $ids, $this->tax_language );
+
+		// Invalidate our cache.
+		wp_cache_set( 'last_changed', microtime(), $this->cache_type );
 	}
 }

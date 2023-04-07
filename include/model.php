@@ -666,14 +666,17 @@ class PLL_Model {
 	}
 
 	/**
-	 * Returns posts and terms ids without language ( used in settings ).
+	 * Returns a list of object IDs without language (used in settings and wizard).
 	 *
 	 * @since 0.9
-	 * @since 2.2.6 Add the $limit argument.
+	 * @since 2.2.6 Added the `$limit` parameter.
+	 * @since 3.4 Added the `$types` parameter.
 	 *
-	 * @param int $limit Max number of posts or terms to return. Defaults to -1 (no limit).
-	 * @return array {
-	 *     Objects without language.
+	 * @param int      $limit Optional. Max number of IDs to return. Defaults to -1 (no limit).
+	 * @param string[] $types Optional. Types to handle (@see PLL_Translatable_Object::get_type()). Defaults to
+	 *                        an empty array (all types).
+	 * @return int[][]|false {
+	 *     IDs of objects without language.
 	 *
 	 *     @type int[] $posts Array of post ids.
 	 *     @type int[] $terms Array of term ids.
@@ -681,33 +684,52 @@ class PLL_Model {
 	 *
 	 * @phpstan-param -1|positive-int $limit
 	 */
-	public function get_objects_with_no_lang( $limit = -1 ) {
+	public function get_objects_with_no_lang( $limit = -1, array $types = array() ) {
 		/**
-		 * Filters the max number of posts or terms to return when searching objects with no language.
+		 * Filters the max number of IDs to return when searching objects with no language.
 		 * This filter can be used to decrease the memory usage in case the number of objects
 		 * without language is too big. Using a negative value is equivalent to have no limit.
 		 *
 		 * @since 2.2.6
+		 * @since 3.4 Added the `$types` parameter.
 		 *
-		 * @param int $limit Max number of posts or terms to retrieve from the database.
+		 * @param int      $limit Max number of IDs to retrieve from the database.
+		 * @param string[] $types Types to handle (@see PLL_Translatable_Object::get_type()). An empty array means all
+		 *                        types.
 		 */
-		$limit   = apply_filters( 'get_objects_with_no_lang_limit', $limit );
+		$limit   = apply_filters( 'get_objects_with_no_lang_limit', $limit, $types );
 		$limit   = $limit < 1 ? -1 : max( (int) $limit, 1 );
 		$objects = array();
 
 		foreach ( $this->translatable_objects as $type => $object ) {
+			if ( ! empty( $types ) && ! in_array( $type, $types, true ) ) {
+				continue;
+			}
+
+			$ids = $object->get_objects_with_no_lang( $limit );
+
+			if ( empty( $ids ) ) {
+				continue;
+			}
+
 			// The trailing 's' in the array key is for backward compatibility.
-			$objects[ "{$type}s" ] = $object->get_objects_with_no_lang( $limit );
+			$objects[ "{$type}s" ] = $ids;
 		}
 
+		$objects = ! empty( $objects ) ? $objects : false;
+
 		/**
-		 * Filters the list of untranslated posts ids and terms ids
+		 * Filters the list of IDs of untranslated objects.
 		 *
 		 * @since 0.9
+		 * @since 3.4 Added the `$limit` and `$types` parameters.
 		 *
-		 * @param array|false $objects false if no ids found, list of post and/or term ids otherwise.
+		 * @param int[][]|false $objects List of lists of object IDs, `false` if no IDs found.
+		 * @param int           $limit   Max number of IDs to retrieve from the database.
+		 * @param string[]      $types   Types to handle (@see PLL_Translatable_Object::get_type()). An empty array
+		 *                               means all types.
 		 */
-		return apply_filters( 'pll_get_objects_with_no_lang', empty( array_filter( $objects ) ) ? false : $objects );
+		return apply_filters( 'pll_get_objects_with_no_lang', $objects, $limit, $types );
 	}
 
 	/**
@@ -747,28 +769,55 @@ class PLL_Model {
 	 *
 	 * @since 1.2
 	 * @since 3.4 Moved from PLL_Admin_Model class.
-	 * @since 3.4 Change method signature.
+	 *            Removed `$limit` parameter, added `$lang` and `$types` parameters.
 	 *
-	 * @param int $limit Max number of posts or terms to return. Defaults to -1 (no limit).
+	 * @param PLL_Language|null $lang  Optional. The language to assign to objects. Defaults to `null` (default language).
+	 * @param string[]          $types Optional. Types to handle (@see PLL_Translatable_Object::get_type()). Defaults
+	 *                                 to an empty array (all types).
 	 * @return void
-	 *
-	 * @phpstan-param -1|positive-int $limit
 	 */
-	public function set_language_in_mass( $limit = -1 ) {
-		$nolang = $this->get_objects_with_no_lang( $limit );
+	public function set_language_in_mass( $lang = null, array $types = array() ) {
+		if ( ! $lang instanceof PLL_Language ) {
+			$lang = $this->get_default_language();
+
+			if ( empty( $lang ) ) {
+				return;
+			}
+		}
+
+		// 1000 is an arbitrary value that will be filtered by `get_objects_with_no_lang_limit`.
+		$nolang = $this->get_objects_with_no_lang( 1000, $types );
 
 		if ( empty( $nolang ) ) {
 			return;
 		}
 
-		/** @var PLL_Language $lang */
-		$lang = $this->get_default_language();
+		/**
+		 * Keep track of types where we set the language:
+		 * those are types where we may have more items to process if we have more than 1000 items in total.
+		 * This will prevent unecessary SQL queries in the next recursion: if we have 0 items in this recursion for
+		 * a type, we'll still have 0 in the next one, no need for a new query.
+		 */
+		$types_with_objects = array();
 
 		foreach ( $this->translatable_objects as $type => $object ) {
-			if ( ! empty( $nolang[ "{$type}s" ] ) ) {
-				$object->set_language_in_mass( $nolang[ "{$type}s" ], $lang );
+			if ( empty( $nolang[ "{$type}s" ] ) ) {
+				continue;
 			}
+
+			if ( ! empty( $types ) && ! in_array( $type, $types, true ) ) {
+				continue;
+			}
+
+			$object->set_language_in_mass( $nolang[ "{$type}s" ], $lang );
+			$types_with_objects[] = $type;
 		}
+
+		if ( empty( $types_with_objects ) ) {
+			return;
+		}
+
+		$this->set_language_in_mass( $lang, $types_with_objects );
 	}
 
 	/**
