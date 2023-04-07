@@ -49,7 +49,6 @@ class PLL_Admin_Block_Editor {
 	public function preload_paths( $preload_paths, $context ) {
 		if (
 			$context instanceof WP_Block_Editor_Context
-			&& 'core/edit-post' === $context->name
 			&& $context->post instanceof WP_Post
 			&& $this->model->is_translated_post_type( $context->post->post_type )
 		) {
