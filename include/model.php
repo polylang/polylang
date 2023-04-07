@@ -666,7 +666,7 @@ class PLL_Model {
 	}
 
 	/**
-	 * Returns a list of IDs of objects without language (used in settings and wizard).
+	 * Returns a list of object IDs without language (used in settings and wizard).
 	 *
 	 * @since 0.9
 	 * @since 2.2.6 Added the `$limit` parameter.
