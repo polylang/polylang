@@ -775,14 +775,14 @@ class PLL_Model {
 	 * @param PLL_Language|null $lang  Optional. The language to assign to objects. Defaults to `null` (default language).
 	 * @param string[]          $types Optional. Types to handle (@see PLL_Translatable_Object::get_type()). Defaults
 	 *                                 to an empty array (all types).
-	 * @return string[] The types that may still have non-translated objects.
+	 * @return void
 	 */
 	public function set_language_in_mass( PLL_Language $lang = null, array $types = array() ) {
 		if ( empty( $lang ) ) {
 			$lang = $this->get_default_language();
 
 			if ( empty( $lang ) ) {
-				return array();
+				return;
 			}
 		}
 
@@ -790,7 +790,7 @@ class PLL_Model {
 		$nolang = $this->get_objects_with_no_lang( 1000, $types );
 
 		if ( empty( $nolang ) ) {
-			return array();
+			return;
 		}
 
 		/**
@@ -815,10 +815,10 @@ class PLL_Model {
 		}
 
 		if ( empty( $types_with_objects ) ) {
-			return array();
+			return;
 		}
 
-		return $this->set_language_in_mass( $lang, $types_with_objects );
+		$this->set_language_in_mass( $lang, $types_with_objects );
 	}
 
 	/**
