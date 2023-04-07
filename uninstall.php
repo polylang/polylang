@@ -84,6 +84,24 @@ class PLL_Uninstall {
 			wp_delete_post( $id, true );
 		}
 
+		/*
+		 * Backward compatibility with Polylang < 3.4.
+		 * Delete the legacy strings translations.
+		 */
+		register_post_type( 'polylang_mo', array( 'rewrite' => false, 'query_var' => false ) );
+		$ids = get_posts(
+			array(
+				'post_type'   => 'polylang_mo',
+				'post_status' => 'any',
+				'numberposts' => -1,
+				'nopaging'    => true,
+				'fields'      => 'ids',
+			)
+		);
+		foreach ( $ids as $id ) {
+			wp_delete_post( $id, true );
+		}
+
 		// Delete all what is related to languages and translations
 		$term_ids = array();
 		$tt_ids   = array();
