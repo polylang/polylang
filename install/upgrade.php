@@ -226,6 +226,7 @@ class PLL_Upgrade {
 				'nopaging' => true,
 			)
 		);
+
 		if ( ! is_array( $posts ) ) {
 			return;
 		}
@@ -234,7 +235,8 @@ class PLL_Upgrade {
 			$meta = get_post_meta( $post->ID, '_pll_strings_translations', true );
 
 			$term_id = (int) substr( $post->post_title, 12 );
-			wp_delete_post( $post->ID );
+
+			// Do not delete post metas in case a user needs to rollback to Polylang < 3.4.
 
 			if ( empty( $meta ) || ! is_array( $meta ) ) {
 				continue;
