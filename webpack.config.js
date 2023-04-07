@@ -1,60 +1,18 @@
-/**
- * @package Polylang
- */
-
- /**
- * External dependencies
- */
-
-const path = require( 'path' );
-const glob = require( 'glob' ).sync;
+const path                                    = require( 'path' );
+const glob                                    = require( 'glob' ).sync;
+const defaultConfig                           = require( '@wordpress/scripts/config/webpack.config' );
 const { transformJsEntry, transformCssEntry } = require( '@wpsyntex/polylang-build-scripts' );
 
-function configureWebpack( options ){
-	const mode = options.mode;
-	const isProduction = mode === 'production' || false;
-	console.log('Webpack mode:', mode);
-	console.log('isProduction:', isProduction);
-	console.log('dirname:', __dirname);
+const jsFiles = glob( './public/js/*.js' );
+console.log( 'Javascript files to minify:', jsFiles );
 
-	const commonFoldersToIgnore = [
-		'node_modules/**',
-		'vendor/**',
-		'tmp/**',
-		'webpack/**',
-		'**/build/**',
-	];
+const cssFiles = glob( './public/css/*.css' );
+console.log( 'CSS files to minify:', cssFiles );
 
-	const jsFileNamesToIgnore = [
-		'js/src/lib/**',
-		'**/*.config.js',
-		'**/*.min.js',
-	];
+const config = [
+	...jsFiles.map( transformJsEntry( path.resolve( __dirname ) + '/build/js', true ) ),
+	...jsFiles.map( transformJsEntry( path.resolve( __dirname ) + '/build/js', false ) ),
+	...cssFiles.map( transformCssEntry( path.resolve( __dirname ) + '/build/css', true ) ),
+]
 
-	const jsFileNames = glob( '**/*.js', { 'ignore': [ ...commonFoldersToIgnore, ...jsFileNamesToIgnore ] } ).map( filename => `./${ filename }`);
-	console.log( 'js files to minify:', jsFileNames );
-
-	const jsFileNamesEntries = [
-		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/js/build', true ) ),
-		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/js/build', false ) )
-	]
-
-	const cssFileNames = glob( '**/*.css', { 'ignore': [ ...commonFoldersToIgnore, '**/*.min.css' ] } ).map( filename => `./${ filename }`);
-	console.log( 'css files to minify:', cssFileNames );
-
-	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
-	const cssFileNamesEntries = cssFileNames.map( transformCssEntry( path.resolve( __dirname ) + '/css/build', isProduction ) );
-
-	// Make webpack configuration.
-	const config = [
-		...jsFileNamesEntries, // Add config for js files.
-		...cssFileNamesEntries, // Add config for css files.
-	];
-
-	return config;
-}
-
-module.exports = ( env, options ) => {
-	return configureWebpack( options );
-}
-
+module.exports = config;
