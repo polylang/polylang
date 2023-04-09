@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.7
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 3.3.2
+Stable tag: 3.3.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,13 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
+= 3.3.3 (2023-04-11) =
+
+* Pro: Adapt the submenu colors of the navigation language switcher block to WP 6.2
+* Pro: Fix the dropdown setting in the navigation language switcher block
+* Add Amharic, Aragonese and Spanish from Dominican Republic to the list of predefined languages #1248
+* Fix a deprecated notice in WP 6.2 when using multiple domains without the Internationalization PHP extension (intl) #1245
+
 = 3.3.2 (2023-03-06) =
 
 * Pro: Add compatibility with FSE changes introduced by WP 6.2
@@ -150,92 +157,5 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Fix is_front_page() when a static front page is not translated #1123
 * Yoast SEO: Fix posts without language displayed in the sitemap #1103
 * Yoast SEO: Avoid syncing robots meta. #1118
-
-= 3.2.8 (2022-10-17) =
-
-* Fix PHP warning when a filtered taxonomy has no query var #1124
-* Fix SQL error when attempting to get objects without languages and no language exist #1126
-* Fix error when term slugs are provided as array in WP_Query #1119, #1132 Props Susanna Häggblom
-* Fix a CSS regression in the wizard causing the default language icon to be removed #1137
-
-= 3.2.7 (2022-09-20) =
-
-* Work around a WooCommerce 6.9.x bug causing a fatal error in the wizard. #1116
-
-= 3.2.6 (2022-09-06) =
-
-* Pro: Fix a conflict with Kadence blocks
-* Pro: Fix a conflict with Flatsome builder
-* Fix media translation setting having no effect
-
-= 3.2.5 (2022-06-28) =
-
-* Pro: Fix creation of WC product categories with shared slug via REST API
-* Pro: Fix conflict with WooBuilder when editing a WC product
-* Fix: Force empty string translation to empty string #1058
-* Fix CSS conflict with Dynamic content for Elementor #1060
-
-= 3.2.4 (2022-06-07) =
-
-* Pro: Remove "Navigation menus" from the post type settings list
-* Pro: Fix block editor languages panel missing in WordPress 5.6
-* Pro: Fix wrongly indexed languages list returned by REST API when the first language is deactivated.
-* Revert fix for category feed not redirected when the language code is wrong #1054
-* Fix wrong redirect of category when the url includes a query string #1048
-* Fix querying multiple categories failing
-
-= 3.2.3 (2022-05-17) =
-
-* Pro: Fix a fatal error when inserting a term
-* Pro: Fix translation of the block cover when duplicating a post
-* Pro: Fix a CSS issue in bulk tranlate form introduced by WP 6.0
-* Pro: Fix a CSS issue in string import/export metaboxes.
-* Prevent random languages order in WP 6.0 #1041
-* Translate site title in retrieve password email #1042
-* Fix 'lang' attribute in language widget dropdown #1039
-
-= 3.2.2 (2022-04-25) =
-
-* Pro: Fix redirect occuring for tags sharing the same slug as their translations
-* Fix quick edit allowing to modify the language of the default category when it should not #1018
-
-= 3.2.1 (2022-04-14) =
-
-* Pro: Fix users with editor role not able to save or publish posts
-* Pro: Fix FSE compatibility not loaded when the plugin Gütenberg is active
-* Pro: Fix a fatal error occuring with Yoast SEO Premium
-* Pro: Fix a fatal error with ACF when no language is defined
-
-= 3.2 (2022-04-12) =
-
-* Requires WP 5.6 as minimum version
-* Pro: Add compatibility with the full site editing introduced in WP 5.9
-* Pro: Add a language switcher block for the navigation block introduced in WP 5.9
-* Pro: Add compatibility with the new gallery block introduced in WP 5.9
-* Pro: Make the language switcher block available in the widget section of the customizer
-* Pro: Fix wrong category when translating the latest posts block
-* Pro: Fix the language switcher block when using the dropdown option
-* Pro: Fix some edge cases with locale fallback
-* Pro: Fix post template replacing the post content when duplicating a post
-* Pro: Fix synchronization groups not correctly cleaned up when a language is deleted
-* Pro: Fix incorrect sticky property when duplicating / synchronizing posts
-* Pro: Fix "Page for posts" label after the page has been bulk translated
-* Pro: Fix translated slug when the url includes a query string
-* Pro: Synchronize ACF layout fields if a child field is synchronized or translatable
-* Pro: Fix wrong field group translation displayed when using object cache with ACF
-* Update plugin updater to 1.9.1
-* Add compatibility with the block site title introduced in WP 5.9
-* Add the list of wpml-config.xml files in the site health information
-* Improve the performance of the get_pages() filter #980
-* Improve the compatibility of 'wpml_object_id' with the original filter #972
-* Prevent term_exists to be filtered by language in WP 6.0
-* Fix some PHP 8.1 deprecations #949 #985
-* Fix a fatal error in PHP 8.1 #987
-* Fix category feed not redirected when the langage code is wrong #887
-* Fix default category not created for secondary languages (introduced in 3.1) #997
-* Fix parent page when the parent post type is not translatable #1001
-* Fix the Yoast SEO breadcrumb when it includes a non-synchronized taxonomy #1005
-* Fix a PHP Notice when adding a new language and Yoast SEO is active #979
-* Fix a PHP warning in Yoast SEO compatibility #954
 
 See [changelog.txt](https://plugins.svn.wordpress.org/polylang/trunk/changelog.txt) for older changelog
