@@ -531,7 +531,7 @@ class PLL_Model {
 
 
 	/**
-	 * Gets the number of posts per language in a date, author or post type archive.
+	 * Returns the number of posts per language in a date, author or post type archive.
 	 *
 	 * @since 1.2
 	 *
@@ -550,11 +550,24 @@ class PLL_Model {
 	 *   @type string          $post_status Post status.
 	 * }
 	 * @return int
+	 *
+	 * @phpstan-param array{
+	 *     post_type?: non-falsy-string|array<non-falsy-string>,
+	 *     post_status?: non-falsy-string,
+	 *     m?: numeric-string,
+	 *     year?: positive-int,
+	 *     monthnum?: int<1, 12>,
+	 *     day?: int<1, 31>,
+	 *     author?: int<1, max>,
+	 *     author_name?: non-falsy-string,
+	 *     post_format?: non-falsy-string
+	 * } $q
+	 * @phpstan-return int<0, max>
 	 */
 	public function count_posts( $lang, $q = array() ) {
 		global $wpdb;
 
-		$q = wp_parse_args( $q, array( 'post_type' => 'post', 'post_status' => 'publish' ) );
+		$q = array_merge( array( 'post_type' => 'post', 'post_status' => 'publish' ), $q );
 
 		if ( ! is_array( $q['post_type'] ) ) {
 			$q['post_type'] = array( $q['post_type'] );
@@ -574,13 +587,12 @@ class PLL_Model {
 		$counts = wp_cache_get( $cache_key, 'counts' );
 
 		if ( ! is_array( $counts ) ) {
-			$counts = array();
-
-			$select = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
-			$join = $this->post->join_clause();
-			$where = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
-			$where .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
-			$where .= $this->post->where_clause( $this->get_languages_list() );
+			$counts  = array();
+			$select  = "SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM {$wpdb->posts}";
+			$join    = $this->post->join_clause();
+			$where   = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
+			$where  .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
+			$where  .= $this->post->where_clause( $this->get_languages_list() );
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
 
 			if ( ! empty( $q['m'] ) ) {
