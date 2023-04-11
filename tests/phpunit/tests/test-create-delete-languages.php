@@ -22,7 +22,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_add_and_delete_language() {
-		// first language
+		// First language.
 		$args = array(
 			'name'       => 'English',
 			'slug'       => 'en',
@@ -42,7 +42,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 0, $lang->is_rtl );
 		$this->assertEquals( 2, $lang->term_group );
 
-		// second language (rtl)
+		// Second language (rtl).
 		$args = array(
 			'name'       => 'العربية',
 			'slug'       => 'ar',
@@ -62,25 +62,25 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 1, $lang->is_rtl );
 		$this->assertEquals( 1, $lang->term_group );
 
-		// check default language
+		// Check default language.
 		$this->assertEquals( 'en', $this->pll_env->model->options['default_lang'] );
 
-		// check language order
+		// Check language order.
 		$this->assertEqualSetsWithIndex( array( 'ar', 'en' ), $this->pll_env->model->get_languages_list( array( 'fields' => 'slug' ) ) );
 
-		// attempt to create a language with the same slug as an existing one
+		// Attempt to create a language with the same slug as an existing one.
 		$this->pll_env->model->add_language( array( 'slug' => 'en-gb', 'locale' => 'en_GB' ) );
 		$lang = $this->pll_env->model->get_language( 'en' );
 		$this->assertEquals( 'en_US', $lang->locale );
 		$this->assertFalse( $this->pll_env->model->get_language( 'en_GB' ) );
 		$this->assertEquals( 2, count( $this->pll_env->model->get_languages_list() ) );
 
-		// delete 1 language
+		// Delete 1 language.
 		$lang = $this->pll_env->model->get_language( 'en_US' );
 		$this->pll_env->model->delete_language( $lang->term_id );
 		$this->assertEquals( 'ar', $this->pll_env->model->options['default_lang'] );
 
-		// delete the last language
+		// Delete the last language.
 		$lang = $this->pll_env->model->get_language( 'ar' );
 		$this->pll_env->model->delete_language( $lang->term_id );
 		$this->assertEquals( array(), $this->pll_env->model->get_languages_list() );
@@ -90,10 +90,10 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	 * Bug fixed in 2.3.
 	 */
 	public function test_unique_language_code_if_same_as_locale() {
-		// First language
+		// First language.
 		$args = array(
 			'name'       => 'العربية',
-			'slug'       => 'a', // Intentional mistake
+			'slug'       => 'a', // Intentional mistake.
 			'locale'     => 'ar',
 			'rtl'        => 1,
 			'flag'       => 'arab',
@@ -202,10 +202,10 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * This test a conflict with Yoast SEO.
+	 * This tests a conflict with Yoast SEO.
 	 */
 	public function test_create_language_when_term_link_requested_on_created_term() {
-		// first language
+		// First language.
 		$args = array(
 			'name'       => 'English',
 			'slug'       => 'en',
@@ -239,7 +239,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 			3
 		);
 
-		// second language
+		// Second language.
 		$args = array(
 			'name'       => 'Francais',
 			'slug'       => 'fr',
@@ -313,7 +313,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		);
 		$this->assertTrue( $this->pll_env->model->add_language( $args ) );
 
-		// $this->pll_env->model->clean_languages_cache();
 		$term_language_args = array(
 			'taxonomy' => 'term_language',
 			'hide_empty' => false,
@@ -391,7 +390,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	public function test_delete_language_with_content_which_has_this_language_and_with_clean_languages_cache() {
 		add_action( 'pre_delete_term', array( $this, 'clean_languages_cache_and_build_languages_list' ) );
 
-		// first language
+		// First language.
 		$args = array(
 			'name'       => 'English',
 			'slug'       => 'en',
