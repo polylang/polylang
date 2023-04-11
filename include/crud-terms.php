@@ -78,7 +78,7 @@ class PLL_CRUD_Terms {
 		add_action( 'posts_selection', array( $this, 'unset_tax_query_lang' ), 0 );
 
 		// Deleting terms
-		add_action( 'pre_delete_term', array( $this, 'delete_term' ) );
+		add_action( 'pre_delete_term', array( $this, 'delete_term' ), 10, 2 );
 	}
 
 	/**
@@ -246,10 +246,16 @@ class PLL_CRUD_Terms {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $term_id
+	 * @param int    $term_id  Id of the term to delete.
+	 * @param string $taxonomy Name of the taxonomy.
 	 * @return void
 	 */
-	public function delete_term( $term_id ) {
+	public function delete_term( $term_id, $taxonomy ) {
+		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+			return;
+		}
+
+		// Delete translation and relationships only if the term is translatable.
 		$this->model->term->delete_translation( $term_id );
 		$this->model->term->delete_language( $term_id );
 	}

@@ -822,7 +822,10 @@ class PLL_Model {
 
 	/**
 	 * Filters the ORDERBY clause of the languages query.
-	 * This allows to order languages by `term_group` and `term_id`.
+	 *
+	 * This allows to order languages terms by `taxonomy` first then by `term_group` and `term_id`.
+	 * Ordering terms by taxonomy allows not to mix terms between all language taxomonomies.
+	 * Having the "language' taxonomy first is important for {@see PLL_Admin_Model:delete_language()}.
 	 *
 	 * @since 3.2.3
 	 *
@@ -846,7 +849,7 @@ class PLL_Model {
 			return $orderby;
 		}
 
-		return sprintf( '%1$s.term_group, %1$s.term_id', $matches['alias'] );
+		return sprintf( 'tt.taxonomy = "language" DESC, %1$s.term_group, %1$s.term_id', $matches['alias'] );
 	}
 
 	/**
@@ -946,23 +949,13 @@ class PLL_Model {
 	 * @phpstan-return list<PLL_Language>
 	 */
 	protected function get_languages_from_taxonomies() {
-		/*
-		 * Only terms of the taxonomy 'language' include a 'term_group' for the order.
-		 * `array_reverse()` allows to make sure that the next loop fills the array
-		 * with these terms first, allowing to keep the languages order.
-		 */
-		$reversed_terms = array_reverse( $this->get_language_terms() );
-
 		$terms_by_slug = array();
 
-		foreach ( $reversed_terms as $term ) {
+		foreach ( $this->get_language_terms() as $term ) {
 			// Except for language taxonomy term slugs, remove 'pll_' prefix from the other language taxonomy term slugs.
 			$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
 			$terms_by_slug[ $key ][ $term->taxonomy ] = $term;
 		}
-
-		// Restore the right order after the first `array_reverse()`.
-		$terms_by_slug = array_reverse( $terms_by_slug );
 
 		/**
 		 * @var (
