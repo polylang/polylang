@@ -26,14 +26,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	 *
 	 * By default English language is added.
 	 *
-	 * @param array $args {
-	 *   @type string $name       Language name.
-	 *   @type string $slug       Language code.
-	 *   @type string $locale     WordPress locale.
-	 *   @type int    $rtl        1 if rtl language, 0 otherwise.
-	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
-	 *   @type int    $term_group Language order when displayed.
-	 * }
 	 * @return void
 	 */
 	private function add_language( $args = array() ) {
@@ -48,7 +40,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$this->assertTrue( $this->pll_env->model->add_language( $args ), "{$args['name']} language wasn't added." );
+		$this->assertTrue( $this->pll_env->model->add_language( $args ),"{$args['name']} language wasn't added." );
 	}
 
 	public function test_add_and_delete_language() {
