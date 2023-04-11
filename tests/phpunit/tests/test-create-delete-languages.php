@@ -12,6 +12,8 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
+		remove_action( 'pre_delete_term', array( $this, 'clean_languages_cache_and_build_languages_list' ) );
+
 		foreach ( $this->pll_env->model->get_languages_list() as $lang ) {
 			$this->pll_env->model->delete_language( $lang->term_id );
 		}
@@ -368,6 +370,17 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * Simulate cleaning the languages cache and building the langugages list
+	 * during the language deletion process by hooking to pre_delete_term.
+	 *
+	 * @return void
+	 */
+	public function clean_languages_cache_and_build_languages_list() {
+		$this->pll_env->model->clean_languages_cache();
+		$this->pll_env->model->get_languages_list();
+	}
+
+	/**
 	 * Test a second language deletion with 'term_group' > 0
 	 * and the language is assigned to a content.
 	 *
@@ -376,13 +389,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	 * Polylang Pro #1626
 	 */
 	public function test_delete_language_with_content_which_has_this_language_and_with_clean_languages_cache() {
-		add_action(
-			'pre_delete_term',
-			function( $term_id ) {
-				$this->pll_env->model->clean_languages_cache();
-				$this->pll_env->model->get_languages_list();
-			}
-		);
+		add_action( 'pre_delete_term', array( $this, 'clean_languages_cache_and_build_languages_list' ) );
 
 		// first language
 		$args = array(
@@ -432,6 +439,5 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$lang = $this->pll_env->model->get_language( 'fr' );
 		$this->pll_env->model->delete_language( $lang->term_id );
 		$this->assertCount( 3, $this->pll_env->model->get_languages_list() );
-		remove_all_actions( 'pre_delete_term' );
 	}
 }
