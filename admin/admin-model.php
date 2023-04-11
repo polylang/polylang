@@ -140,13 +140,13 @@ class PLL_Admin_Model extends PLL_Model {
 		// Delete domain
 		unset( $this->options['domains'][ $lang->slug ] );
 
-		/**
+		/*
 		 * Delete the language itself.
 		 *
 		 * Reverses the language taxonomies order is required to make sure 'language' is deleted in last.
 		 *
 		 * The initial order with the 'language' taxonomy at the beginning of 'PLL_Language::term_props' property
-		 * is done by PLL_Model::filter_language_terms_orderby()
+		 * is done by {@see PLL_Model::filter_language_terms_orderby()}
 		 */
 		foreach ( array_reverse( $lang->get_tax_props( 'term_id' ) ) as $taxonomy_name => $term_id ) {
 			wp_delete_term( $term_id, $taxonomy_name );
