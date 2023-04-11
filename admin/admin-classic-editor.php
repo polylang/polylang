@@ -246,9 +246,13 @@ class PLL_Admin_Classic_Editor {
 				);
 
 				/** This filter is documented in wp-admin/includes/meta-boxes.php */
-				$dropdown_args = apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3
+				$dropdown_args = (array) apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post ); // Since WP 3.3.
+				$dropdown_args['echo'] = 0; // Make sure to not print it.
 
-				$x->Add( array( 'what' => 'pages', 'data' => wp_dropdown_pages( $dropdown_args ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+				/** @var string $data */
+				$data = wp_dropdown_pages( $dropdown_args ); // phpcs:ignore WordPress.Security.EscapeOutput
+
+				$x->Add( array( 'what' => 'pages', 'data' => $data ) );
 			}
 		}
 

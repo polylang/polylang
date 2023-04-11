@@ -159,7 +159,7 @@ class PLL_Frontend_Auto_Translate {
 		}
 
 		// name, can only take one slug
-		if ( ! empty( $qv['name'] ) ) {
+		if ( ! empty( $qv['name'] ) && is_string( $qv['name'] ) ) {
 			if ( empty( $qv['post_type'] ) ) {
 				$post_types = array( 'post' );
 			} elseif ( 'any' === $qv['post_type'] ) {
