@@ -773,11 +773,11 @@ class PLL_Model {
 
 	/**
 	 * Filters the ORDERBY clause of the languages query.
-	 * This allows to order languages by `term_group` and `term_id`.
 	 *
-	 * Makes the all terms in 'language' taxonomy first in the returned result by respecting the 'term_group' order.
-	 * The goal is not to mix terms between all language taxomonomies.
-	 * 
+	 * This allows to order languages terms by `taxonomy` first then by `term_group` and `term_id`.
+	 * Ordering terms by taxonomy allows not to mix terms between all language taxomonomies.
+	 * Having the "language' taxonomy first is important for {@see PLL_Admin_Model:delete_language()}.
+	 *
 	 * @since 3.2.3
 	 *
 	 * @param  string   $orderby    `ORDERBY` clause of the terms query.
