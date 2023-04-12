@@ -321,9 +321,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	public function admin_enqueue_scripts() {
 		parent::admin_enqueue_scripts();
 
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
-		wp_enqueue_style( 'pll_selectmenu', plugins_url( '/css/build/selectmenu' . $suffix . '.css', POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION );
 	}
 
 	/**
