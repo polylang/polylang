@@ -50,8 +50,10 @@ function getConfig () {
 		expandedEntries[ path.parse( filename ).name ] = [ filename ];
 	} );
 
+	console.log(defaultConfig.mode)
 
 	const optimizedConfig = {
+		...defaultConfig,
 		name: 'optimized',
 		entry: OptimizedEentries,
 		output: {
@@ -91,7 +93,7 @@ function getConfig () {
 			minimize: true,
 			minimizer: [
 				new TerserPlugin( {
-					test: /\.min\.js/i,
+					test: /\.min\.js$/i,
 				} ),
 
 			],
@@ -100,6 +102,7 @@ function getConfig () {
 
 	const expandedConfig = {
 		name: 'expanded',
+		mode: defaultConfig.mode,
 		entry:expandedEntries,
 		output: {
 			...defaultConfig.output,
