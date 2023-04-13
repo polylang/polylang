@@ -39,7 +39,7 @@ class PLL_WPML_API {
 		add_filter( 'wpml_is_rtl', array( $this, 'wpml_is_rtl' ) );
 		// wpml_language_form_input_field          => See wpml_add_language_form_field
 		// wpml_language_has_switched              => See wpml_switch_language
-		// wpml_element_trid                       => not implemented
+		add_filter( 'wpml_element_trid', array( $this, 'wpml_element_trid' ) );
 		// wpml_get_element_translations           => not implemented
 		// wpml_language_switcher                  => not implemented
 		// wpml_browser_redirect_language_params   => not implemented
@@ -181,6 +181,35 @@ class PLL_WPML_API {
 	 */
 	public function wpml_is_rtl() {
 		return pll_current_language( 'is_rtl' );
+	}
+
+	/**
+	 * Returns the id of the translation group of a translated element.
+	 *
+	 * @since 3.4
+	 *
+	 * @param mixed  $empty_value  Not used.
+	 * @param int    $element_id   The id of the item, post id for posts, term_taxonomy_id for terms.
+	 * @param string $element_type Optional. The type of an element.
+	 * @return int
+	 */
+	public function wpml_element_trid( $empty_value, $element_id, $element_type = 'post_post' ) {
+		if ( 0 === strpos( $element_type, 'tax_' ) ) {
+			$element = get_term_by( $element_id, 'term_taxonomy_id' );
+			if ( $element instanceof WP_Term ) {
+				$tr_term = PLL()->model->term->get_object_term( $element->term_id, 'term_translations' );
+			}
+		}
+
+		if ( 0 === strpos( $element_type, 'post_' ) ) {
+			$tr_term = PLL()->model->post->get_object_term( $element_id, 'post_translations' );
+		}
+
+		if ( isset( $tr_term ) && $tr_term instanceof WP_Term ) {
+			return $tr_term->term_id;
+		}
+
+		return 0;
 	}
 
 	/**
