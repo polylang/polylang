@@ -492,7 +492,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		$title = sprintf(
 			'<span class="ab-label"%1$s><span class="screen-reader-text">%2$s</span>%3$s</span>',
-			'all' === $selected->slug ? '' : sprintf( ' lang="%s"', esc_attr( $selected->get_locale( 'display' ) ) ),
+			$selected instanceof PLL_Language ? sprintf( ' lang="%s"', esc_attr( $selected->get_locale( 'display' ) ) ) : '',
 			__( 'Filters content by language', 'polylang' ),
 			esc_html( $selected->name )
 		);
