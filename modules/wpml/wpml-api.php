@@ -39,8 +39,8 @@ class PLL_WPML_API {
 		add_filter( 'wpml_is_rtl', array( $this, 'wpml_is_rtl' ) );
 		// wpml_language_form_input_field          => See wpml_add_language_form_field
 		// wpml_language_has_switched              => See wpml_switch_language
-		add_filter( 'wpml_element_trid', array( $this, 'wpml_element_trid' ) );
-		// wpml_get_element_translations           => not implemented
+		add_filter( 'wpml_element_trid', array( $this, 'wpml_element_trid' ), 10, 3 );
+		add_filter( 'wpml_get_element_translations', array( $this, 'wpml_get_element_translations' ), 10, 3 );
 		// wpml_language_switcher                  => not implemented
 		// wpml_browser_redirect_language_params   => not implemented
 		// wpml_enqueue_browser_redirect_language  => not applicable
@@ -210,6 +210,99 @@ class PLL_WPML_API {
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Returns thhe element translations info using the ID of the translation group.
+	 *
+	 * @since 3.4
+	 *
+	 * @param mixed  $empty_value  Not used.
+	 * @param int    $trid         The ID of the translation group..
+	 * @param string $element_type Optional. The type of an element.
+	 * @return stdClass[]
+	 */
+	public function wpml_get_element_translations( $empty_value, $trid, $element_type = 'post_post' ) {
+		$return = array();
+
+		if ( 0 === strpos( $element_type, 'tax_' ) ) {
+			$translations = PLL()->model->term->get_translations_from_term_id( $trid );
+			if ( empty( $translations ) ) {
+				return $return;
+			}
+
+			$original    = min( $translations ); // We suppose that the original is the first term created.
+			$source_lang = array_search( $original, $translations );
+
+			$_terms = get_terms( array( 'include' => $translations ) );
+
+			$terms = array();
+			foreach ( $_terms as $term ) {
+				$terms[ $term->term_id ] = $term;
+			}
+
+			foreach ( $translations as $lang => $term_id ) {
+				if ( empty( $terms[ $term_id ] ) ) {
+					continue;
+				}
+
+				$return[ $lang ] = (object) array(
+					'translation_id'       => 0, // We don't have something equivalent.
+					'language_code'        => $lang,
+					'element_id'           => $terms[ $term_id ]->term_taxonomy_id,
+					'source_language_code' => $source_lang === $lang ? null : $source_lang,
+					'element_type'         => $element_type,
+					'original'             => $original,
+					'name'                 => $terms[ $term_id ]->name,
+					'term_id'              => $term_id,
+					'instances'            => $terms[ $term_id ]->count,
+				);
+			}
+		}
+
+		if ( 0 === strpos( $element_type, 'post_' ) ) {
+			$translations = PLL()->model->post->get_translations_from_term_id( $trid );
+			if ( empty( $translations ) ) {
+				return $return;
+			}
+
+			$original    = min( $translations ); // We suppose that the original is the first post created.
+			$source_lang = array_search( $original, $translations );
+
+			$args  = array(
+				'post__in'               => $translations,
+				'no_paging'              => true,
+				'posts_per_page'         => -1,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'lang'                   => '',
+			);
+			$_posts = get_posts( $args );
+
+			$posts = array();
+			foreach ( $_posts as $post ) {
+				$posts[ $post->ID ] = $post;
+			}
+
+			foreach ( $translations as $lang => $post_id ) {
+				if ( empty( $posts[ $post_id ] ) ) {
+					continue;
+				}
+
+				$return[ $lang ] = (object) array(
+					'translation_id'       => 0, // We don't have something equivalent.
+					'language_code'        => $lang,
+					'element_id'           => $post_id,
+					'source_language_code' => $source_lang === $lang ? null : $source_lang,
+					'element_type'         => $element_type,
+					'original'             => $original,
+					'post_title'           => $posts[ $post_id ]->post_title,
+					'post_status'          => $posts[ $post_id ]->post_status,
+				);
+			}
+		}
+
+		return $return;
 	}
 
 	/**
