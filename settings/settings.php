@@ -291,6 +291,12 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	public function display_languages_form() {
+		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
+		}
+
 		$list_table = new PLL_Table_Languages();
 		$list_table->prepare_items( $this->model->get_languages_list() );
 		include __DIR__ . '/view-tab-lang.php';
@@ -304,8 +310,8 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	public function display_strings_form() {
-				$string_table = new PLL_Table_String( $this->model->get_languages_list() );
-				$string_table->prepare_items();
+		$string_table = new PLL_Table_String( $this->model->get_languages_list() );
+		$string_table->prepare_items();
 		include __DIR__ . '/view-tab-strings.php';
 	}
 
@@ -330,12 +336,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	public function languages_page() {
 		// Handle user input.
 		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
-		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
-		} else {
-			$this->handle_actions( $action );
-		}
+		$this->handle_actions( $action );
 
 		// Displays the page.
 		include __DIR__ . '/view-languages.php';
