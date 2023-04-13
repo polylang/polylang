@@ -6,11 +6,6 @@ parameters:
 			path: admin/admin-base.php
 
 		-
-			message: "#^Cannot call method get_locale\\(\\) on PLL_Language\\|stdClass\\.$#"
-			count: 1
-			path: admin/admin-base.php
-
-		-
 			message: "#^Parameter \\#1 \\$post_type of method PLL_Model\\:\\:is_translated_post_type\\(\\) expects array\\<string\\>\\|string, string\\|false given\\.$#"
 			count: 1
 			path: admin/admin-base.php
