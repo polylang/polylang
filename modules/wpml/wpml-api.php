@@ -234,7 +234,11 @@ class PLL_WPML_API {
 			$original    = min( $translations ); // We suppose that the original is the first term created.
 			$source_lang = array_search( $original, $translations );
 
-			$_terms = get_terms( array( 'include' => $translations ) );
+			$args = array(
+				'include'    => $translations,
+				'hide_empty' => false,
+			);
+			$_terms = get_terms( $args );
 
 			$terms = array();
 			foreach ( $_terms as $term ) {
