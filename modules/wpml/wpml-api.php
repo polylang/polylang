@@ -251,15 +251,15 @@ class PLL_WPML_API {
 				}
 
 				$return[ $lang ] = (object) array(
-					'translation_id'       => 0, // We don't have something equivalent.
+					'translation_id'       => '0', // We don't have something equivalent.
 					'language_code'        => $lang,
-					'element_id'           => $terms[ $term_id ]->term_taxonomy_id,
+					'element_id'           => (string) $terms[ $term_id ]->term_taxonomy_id,
 					'source_language_code' => $source_lang === $lang ? null : $source_lang,
 					'element_type'         => $element_type,
-					'original'             => $original,
+					'original'             => $original === $term_id ? '1' : '0',
 					'name'                 => $terms[ $term_id ]->name,
-					'term_id'              => $term_id,
-					'instances'            => $terms[ $term_id ]->count,
+					'term_id'              => (string) $term_id,
+					'instances'            => (string) $terms[ $term_id ]->count,
 				);
 			}
 		}
@@ -294,12 +294,12 @@ class PLL_WPML_API {
 				}
 
 				$return[ $lang ] = (object) array(
-					'translation_id'       => 0, // We don't have something equivalent.
+					'translation_id'       => '0', // We don't have something equivalent.
 					'language_code'        => $lang,
-					'element_id'           => $post_id,
+					'element_id'           => (string) $post_id,
 					'source_language_code' => $source_lang === $lang ? null : $source_lang,
 					'element_type'         => $element_type,
-					'original'             => $original,
+					'original'             => $original === $post_id ? '1' : '0',
 					'post_title'           => $posts[ $post_id ]->post_title,
 					'post_status'          => $posts[ $post_id ]->post_status,
 				);
