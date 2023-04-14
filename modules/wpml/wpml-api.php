@@ -114,6 +114,11 @@ class PLL_WPML_API {
 		// Updating Content
 
 		// wpml_set_translation_mode_for_post_type => not implemented
+
+		// Undocumented
+
+		add_filter( 'wpml_is_translated_post_type', array( $this, 'wpml_is_translated_post_type' ), 10, 2 );
+		add_filter( 'wpml_is_translated_taxonomy', array( $this, 'wpml_is_translated_taxonomy' ), 10, 2 );
 	}
 
 	/**
@@ -213,7 +218,7 @@ class PLL_WPML_API {
 	}
 
 	/**
-	 * Returns thhe element translations info using the ID of the translation group.
+	 * Returns the element translations info using the ID of the translation group.
 	 *
 	 * @since 3.4
 	 *
@@ -443,5 +448,31 @@ class PLL_WPML_API {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns true if languages and translations are managed for this post type.
+	 *
+	 * @since 3.4
+	 *
+	 * @param mixed  $value     Not used.
+	 * @param string $post_type The post type name.
+	 * @return bool
+	 */
+	public function wpml_is_translated_post_type( $value, $post_type ) {
+		return pll_is_translated_post_type( $post_type );
+	}
+
+	/**
+	 * Returns true if languages and translations are managed for this taxonomy.
+	 *
+	 * @since 3.4
+	 *
+	 * @param mixed  $value    Not used.
+	 * @param string $taxonomy The taxonomy name.
+	 * @return bool
+	 */
+	public function wpml_is_translated_taxonomy( $value, $taxonomy ) {
+		return pll_is_translated_taxonomy( $taxonomy );
 	}
 }
