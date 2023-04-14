@@ -233,7 +233,7 @@ class PLL_WPML_API {
 		if ( 0 === strpos( $element_type, 'tax_' ) ) {
 			$translations = PLL()->model->term->get_translations_from_term_id( $trid );
 			if ( empty( $translations ) ) {
-				return $return;
+				return array();
 			}
 
 			$original    = min( $translations ); // We suppose that the original is the first term created.
@@ -244,6 +244,10 @@ class PLL_WPML_API {
 				'hide_empty' => false,
 			);
 			$_terms = get_terms( $args );
+
+			if ( ! is_array( $_terms ) ) {
+				return array();
+			}
 
 			$terms = array();
 			foreach ( $_terms as $term ) {
@@ -272,7 +276,7 @@ class PLL_WPML_API {
 		if ( 0 === strpos( $element_type, 'post_' ) ) {
 			$translations = PLL()->model->post->get_translations_from_term_id( $trid );
 			if ( empty( $translations ) ) {
-				return $return;
+				return array();
 			}
 
 			$original    = min( $translations ); // We suppose that the original is the first post created.
