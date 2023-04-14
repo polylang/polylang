@@ -195,7 +195,7 @@ class PLL_WPML_API {
 	 */
 	public function wpml_element_trid( $empty_value, $element_id, $element_type = 'post_post' ) {
 		if ( 0 === strpos( $element_type, 'tax_' ) ) {
-			$element = get_term_by( $element_id, 'term_taxonomy_id' );
+			$element = get_term_by( 'term_taxonomy_id', $element_id );
 			if ( $element instanceof WP_Term ) {
 				$tr_term = PLL()->model->term->get_object_term( $element->term_id, 'term_translations' );
 			}
