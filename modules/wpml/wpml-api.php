@@ -231,7 +231,7 @@ class PLL_WPML_API {
 	 * @since 3.4
 	 *
 	 * @param mixed  $empty_value  Not used.
-	 * @param int    $trid         The ID of the translation group..
+	 * @param int    $trid         The ID of the translation group.
 	 * @param string $element_type Optional. The type of an element.
 	 * @return stdClass[]
 	 */
@@ -268,7 +268,7 @@ class PLL_WPML_API {
 				}
 
 				$return[ $lang ] = (object) array(
-					'translation_id'       => '0', // We don't have something equivalent.
+					'translation_id'       => '0', // We have nothing equivalent.
 					'language_code'        => $lang,
 					'element_id'           => (string) $terms[ $term_id ]->term_taxonomy_id,
 					'source_language_code' => $source_lang === $lang ? null : $source_lang,
@@ -311,7 +311,7 @@ class PLL_WPML_API {
 				}
 
 				$return[ $lang ] = (object) array(
-					'translation_id'       => '0', // We don't have something equivalent.
+					'translation_id'       => '0', // We have nothing equivalent.
 					'language_code'        => $lang,
 					'element_id'           => (string) $post_id,
 					'source_language_code' => $source_lang === $lang ? null : $source_lang,
