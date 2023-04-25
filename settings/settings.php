@@ -47,12 +47,17 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
-		// Adds screen options and the about box in the languages admin panel
+		// Adds screen options and the about box in the languages admin panel.
 		add_action( 'load-toplevel_page_mlang', array( $this, 'load_page' ) );
 		add_action( 'load-languages_page_mlang_strings', array( $this, 'load_page_strings' ) );
 
-		// Saves per-page value in screen option
+		// Saves per-page value in screen option.
 		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
+
+		// Displays the page content.
+		add_action( 'pll_settings_active_tab_lang', array( $this, 'display_languages_form' ) );
+		add_action( 'pll_settings_active_tab_strings', array( $this, 'display_strings_form' ) );
+		add_action( 'pll_settings_active_tab_settings', array( $this, 'display_settings_form' ) );
 	}
 
 	/**
@@ -279,37 +284,61 @@ class PLL_Settings extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Displays the 3 tabs pages: languages, strings translations, settings
-	 * Also manages user input for these pages
+	 * Displays the languages form and table.
+	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	public function display_languages_form() {
+		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
+		}
+
+		$list_table = new PLL_Table_Languages();
+		$list_table->prepare_items( $this->model->get_languages_list() );
+		include __DIR__ . '/view-tab-lang.php';
+	}
+
+	/**
+	 * Displays the strings translations table.
+	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	public function display_strings_form() {
+		$string_table = new PLL_Table_String( $this->model->get_languages_list() );
+		$string_table->prepare_items();
+		include __DIR__ . '/view-tab-strings.php';
+	}
+
+	/**
+	 * Displays the settings form.
+	 *
+	 * @since 3.4
+	 *
+	 * @return void
+	 */
+	public function display_settings_form() {
+		include __DIR__ . '/view-tab-settings.php';
+	}
+
+	/**
+	 * Displays the wrapper and manages user input for the languages, translations and settings pages.
 	 *
 	 * @since 0.1
 	 *
 	 * @return void
 	 */
 	public function languages_page() {
-		switch ( $this->active_tab ) {
-			case 'lang':
-				// Prepare the list table of languages
-				$list_table = new PLL_Table_Languages();
-				$list_table->prepare_items( $this->model->get_languages_list() );
-				break;
-
-			case 'strings':
-				$string_table = new PLL_Table_String( $this->model->get_languages_list() );
-				$string_table->prepare_items();
-				break;
-		}
-
-		// Handle user input
+		// Handle user input.
 		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
-		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
-		} else {
-			$this->handle_actions( $action );
-		}
+		$this->handle_actions( $action );
 
-		// Displays the page
+		// Displays the page.
 		include __DIR__ . '/view-languages.php';
 	}
 
