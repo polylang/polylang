@@ -467,4 +467,84 @@ class WPML_Test extends PLL_UnitTestCase {
 		do_action( 'wpml_switch_language' );
 		$this->assertEquals( 'en', PLL()->curlang->slug );
 	}
+
+	public function test_wpml_get_element_translations_for_posts() {
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
+		$en = self::factory()->post->create( array( 'post_title' => 'My post' ) );
+		self::$model->post->set_language( $en, 'en' );
+
+		$fr = self::factory()->post->create( array( 'post_title' => 'Mon article' ) );
+		self::$model->post->set_language( $fr, 'fr' );
+
+		self::$model->post->save_translations( $en, compact( 'fr' ) );
+
+		$expected = array(
+			'en' => (object) array(
+				'translation_id'       => '0',
+				'language_code'        => 'en',
+				'element_id'           => "$en",
+				'source_language_code' => null,
+				'element_type'         => 'post_post',
+				'original'             => '1',
+				'post_title'           => 'My post',
+				'post_status'          => 'publish',
+			),
+			'fr' => (object) array(
+				'translation_id'       => '0',
+				'language_code'        => 'fr',
+				'element_id'           => "$fr",
+				'source_language_code' => 'en',
+				'element_type'         => 'post_post',
+				'original'             => '0',
+				'post_title'           => 'Mon article',
+				'post_status'          => 'publish',
+			),
+		);
+
+		$trid = apply_filters( 'wpml_element_trid', null, $en );
+		$this->assertEqualSets( $expected, apply_filters( 'wpml_get_element_translations', null, $trid ) );
+	}
+
+	public function test_wpml_get_element_translations_for_terms() {
+		$frontend = new PLL_Frontend( $this->links_model );
+		$GLOBALS['polylang'] = $frontend;
+
+		$en = self::factory()->term->create( array( 'name' => 'Sample tag' ) );
+		self::$model->term->set_language( $en, 'en' );
+
+		$fr = self::factory()->term->create( array( 'name' => 'Etiquette exemple' ) );
+		self::$model->term->set_language( $fr, 'fr' );
+
+		self::$model->term->save_translations( $en, compact( 'fr' ) );
+
+		$expected = array(
+			'en' => (object) array(
+				'translation_id'       => '0',
+				'language_code'        => 'en',
+				'element_id'           => (string) get_term( $en )->term_taxonomy_id,
+				'source_language_code' => null,
+				'element_type'         => 'tax_post_tag',
+				'original'             => '1',
+				'name'                 => 'Sample tag',
+				'term_id'              => "$en",
+				'instances'            => '0',
+			),
+			'fr' => (object) array(
+				'translation_id'       => '0',
+				'language_code'        => 'fr',
+				'element_id'           => (string) get_term( $fr )->term_taxonomy_id,
+				'source_language_code' => 'en',
+				'element_type'         => 'tax_post_tag',
+				'original'             => '0',
+				'name'                 => 'Etiquette exemple',
+				'term_id'              => "$fr",
+				'instances'            => '0',
+			),
+		);
+
+		$trid = apply_filters( 'wpml_element_trid', null, get_term( $en )->term_taxonomy_id, 'tax_post_tag' );
+		$this->assertEqualSets( $expected, apply_filters( 'wpml_get_element_translations', null, $trid, 'tax_post_tag' ) );
+	}
 }
