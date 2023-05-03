@@ -103,6 +103,33 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
+= 3.4 =
+
+* Requires WP 5.8 as minimum version
+* Pro: Language fallbacks are now stored in language description instead of a term meta.
+* Pro: Add more error messages when doing wrong when importing or exporting translations
+* Pro: Avoid to check for translations files existence if no language fallbacks are defined.
+* Pro: Reduce the number of DB queries when exporting posts for translation
+* Pro: Fix a performance issue with the autocomplete field in the block editor languages panel
+* Pro: Fix a performance issue in Site editor
+* Pro: Fix a possible bug in Site editor when language term_id and term_taxonomy_id are different
+* Pro: Fix deactivated language re-activated when it is edited.
+* Pro: Fix language switcher in legacy widget menu not correctly rendered in widget block editor
+* Pro: Fix a deprecated notice in ACF integration
+* Refactor core to allow to easily translate contents stored in custom tables
+* Strings translations are now stored in a language term meta instead of post meta of specific post type #1209
+* Deprecate the filters `pll_languages_list` and `pll_after_languages_cache` #1210
+* Add a new property `PLL_Language::$is_default` #1228
+* Add a custom admin body class `pll-lang-{$language_code}` #1190
+* Load settings views in an action #1263
+* Add support for new WPML API filters #1266
+* Fix languages metabox autocomplete field not always returning expected results #1187
+* Fix language not displayed if the transient has been saved with an empty array #1247
+* Fix a PHP warning `Attempt to read property "home_url" on bool` #1206
+* Fix a conflict leading to a performance issue when translating the theme Astra options #1196
+* Fix related translations resetted when updating Yoast SEO titles settings #1111
+* Fix a fatal error in case the registered strings option is corrupted #1264
+
 = 3.3.3 (2023-04-11) =
 
 * Pro: Adapt the submenu colors of the navigation language switcher block to WP 6.2
