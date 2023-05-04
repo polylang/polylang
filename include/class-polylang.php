@@ -164,11 +164,16 @@ class Polylang {
 	public function init() {
 		global $polylang;
 
+		$transient = get_transient('pll_languages_list');
+		$transient ? error_log('Transient Here.') : error_log('No transient.');
+		error_log('Polylang main class init.');
+
 		self::define_constants();
 		$options = get_option( 'polylang' );
 
 		// Plugin upgrade
 		if ( $options && version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
+			delete_transient( 'pll_languages_list' );
 			$upgrade = new PLL_Upgrade( $options );
 			if ( ! $upgrade->upgrade() ) { // If the version is too old
 				return;

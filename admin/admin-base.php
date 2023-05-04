@@ -426,6 +426,9 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 * @return void
 	 */
 	public function init_user() {
+		$transient = get_transient('pll_languages_list');
+		$transient ? error_log('Transient Here.') : error_log('No transient.');
+		error_log('Polylang init user.');
 		// Language for admin language filter: may be empty
 		// $_GET['lang'] is numeric when editing a language, not when selecting a new language in the filter
 		// We intentionally don't use a nonce to update the language filter
