@@ -59,9 +59,13 @@ class Links_Default_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_language_from_url() {
-		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->host, PHP_URL_HOST );
+		$_SERVER['HTTP_HOST']   = wp_parse_url( $this->host, PHP_URL_HOST );
 		$_SERVER['REQUEST_URI'] = '/?p=test&lang=fr';
-		$this->assertEquals( 'fr', $this->links_model->get_language_from_url() );
+		$this->assertSame( 'fr', $this->links_model->get_language_from_url() );
+		$_SERVER['REQUEST_URI'] = '/?p=test&lang=fra';
+		$this->assertSame( '', $this->links_model->get_language_from_url() );
+		$_SERVER['REQUEST_URI'] = '/?p=test&lang=fr%2F';
+		$this->assertSame( '', $this->links_model->get_language_from_url() );
 	}
 
 	/**
