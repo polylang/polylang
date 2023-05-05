@@ -94,7 +94,7 @@ class PLL_Links_Default extends PLL_Links_Model {
 			'#[?&]lang=(?<lang>%s)(?:$|&)#',
 			implode( '|', $this->model->get_languages_list( array( 'fields' => 'slug' ) ) )
 		);
-		return preg_match( $pattern, trailingslashit( $url ), $matches ) ? $matches['lang'] : ''; // $matches['lang'] is the slug of the requested language.
+		return preg_match( $pattern, $url, $matches ) ? $matches['lang'] : ''; // $matches['lang'] is the slug of the requested language.
 	}
 
 	/**
