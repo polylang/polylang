@@ -84,10 +84,6 @@ class PLL_Links_Default extends PLL_Links_Model {
 	public function get_language_from_url( $url = '' ) {
 		if ( empty( $url ) ) {
 			$url = pll_get_requested_url();
-
-			if ( empty( $url ) ) {
-				return '';
-			}
 		}
 
 		$pattern = sprintf(
