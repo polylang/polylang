@@ -91,7 +91,7 @@ class PLL_License {
 		}
 
 		// Updater
-		add_action( 'plugins_loaded', array( $this, 'auto_updater' ), 10 );
+		$this->auto_updater();
 
 		// Register settings
 		add_filter( 'pll_settings_licenses', array( $this, 'settings' ) );
