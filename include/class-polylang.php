@@ -169,7 +169,6 @@ class Polylang {
 
 		// Plugin upgrade
 		if ( $options && version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
-			delete_transient( 'pll_languages_list' );
 			$upgrade = new PLL_Upgrade( $options );
 			if ( ! $upgrade->upgrade() ) { // If the version is too old
 				return;
