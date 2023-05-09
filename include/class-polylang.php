@@ -164,10 +164,6 @@ class Polylang {
 	public function init() {
 		global $polylang;
 
-		$transient = get_transient('pll_languages_list');
-		$transient ? error_log('Transient Here.') : error_log('No transient.');
-		error_log('Polylang main class init.');
-
 		self::define_constants();
 		$options = get_option( 'polylang' );
 
