@@ -25,6 +25,7 @@ class PLL_Upgrade {
 	 */
 	public function __construct( &$options ) {
 		$this->options = &$options;
+		delete_transient( 'pll_languages_list' );
 	}
 
 	/**
@@ -191,20 +192,12 @@ class PLL_Upgrade {
 
 	/**
 	 * Upgrades if the previous version is < 3.4.0.
-	 * Deletes language cache due to:
-	 * - 'redirect_lang' option removed for subdomains and multiple domains in 2.2,
-	 * - W3C and Facebook locales added to PLL_Language objects in 2.3,
-	 * - flags moved to a different directory in Polylang Pro 2.8,
-	 * - bug of flags url returning html fixed in 2.8.1,
-	 * - important changes in `PLL_Model` and `PLL_Language` in 3.4.
 	 *
 	 * @since 3.4
 	 *
 	 * @return void
 	 */
 	protected function upgrade_3_4() {
-		delete_transient( 'pll_languages_list' );
-
 		$this->migrate_locale_fallback_to_language_description();
 
 		$this->migrate_strings_translations();
