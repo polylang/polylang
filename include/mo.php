@@ -29,7 +29,9 @@ class PLL_MO extends MO {
 		 */
 		$strings = array();
 		foreach ( $this->entries as $entry ) {
-			$strings[] = wp_slash( array( $entry->singular, $this->translate( $entry->singular ) ) );
+			if ( '' !== $entry->singular ) {
+				$strings[] = wp_slash( array( $entry->singular, $this->translate( $entry->singular ) ) );
+			}
 		}
 
 		update_term_meta( $lang->term_id, '_pll_strings_translations', $strings );
@@ -53,7 +55,11 @@ class PLL_MO extends MO {
 		}
 
 		foreach ( $strings as $msg ) {
-			$this->add_entry( $this->make_entry( $msg[0], $msg[1] ) );
+			$entry = $this->make_entry( $msg[0], $msg[1] );
+
+			if ( '' !== $entry->singular ) {
+				$this->add_entry( $entry );
+			}
 		}
 	}
 
