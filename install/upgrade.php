@@ -25,7 +25,6 @@ class PLL_Upgrade {
 	 */
 	public function __construct( &$options ) {
 		$this->options = &$options;
-		delete_transient( 'pll_languages_list' );
 	}
 
 	/**
@@ -56,6 +55,7 @@ class PLL_Upgrade {
 			return false;
 		}
 
+		delete_transient( 'pll_languages_list' );
 		add_action( 'admin_init', array( $this, '_upgrade' ) );
 		return true;
 	}
