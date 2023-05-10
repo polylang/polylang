@@ -334,12 +334,13 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	public function languages_page() {
+		// Displays the page.
+		include __DIR__ . '/view-languages.php';
+
 		// Handle user input.
 		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		$this->handle_actions( $action );
 
-		// Displays the page.
-		include __DIR__ . '/view-languages.php';
 	}
 
 	/**
