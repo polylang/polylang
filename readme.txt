@@ -121,7 +121,6 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Deprecate the filters `pll_languages_list` and `pll_after_languages_cache` #1210
 * Add a new property `PLL_Language::$is_default` #1228
 * Add a custom admin body class `pll-lang-{$language_code}` #1190
-* Load settings views in an action #1263
 * Add support for new WPML API filters #1266
 * Fix languages metabox autocomplete field not always returning expected results #1187
 * Fix language not displayed if the transient has been saved with an empty array #1247
