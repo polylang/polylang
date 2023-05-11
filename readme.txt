@@ -18,7 +18,7 @@ With Polylang fully integrated to WordPress and using only its built-in core fea
 = Features =
 
 Depending on the type of site you have built or are planning to build, a combination of plugins from the list below might be of interest.
-All plugins include a wizard allowing to install them in just a few clicks.
+All plugins include a wizard allowing to setup them in just a few clicks.
 
 ### Polylang
 
@@ -29,7 +29,7 @@ Polylang and [Polylang Pro](https://polylang.pro) share the same core providing 
 * Automatic copy of categories, post tags and other metas when creating a new post or page translation.
 * Translating menus and widgets.
 * Customizable language switcher available as a widget or a navigation menu item.
-* Compatibility with Yoast SEO
+* Compatibility with Yoast SEO.
 
 ### Polylang Pro
 
@@ -40,9 +40,9 @@ Helps optimizing the time spent translating your site with some very useful extr
 * Language options available in the widget block editor.
 * Template parts translatable in the site editor (FSE).
 * Duplicate and/or synchronize content across post translations.
-* Improved compatibilities with other plugins such as [ACF Pro](https://polylang.pro/doc/working-with-acf-pro/).
+* Improved compatibility with other plugins such as [ACF Pro](https://polylang.pro/doc/working-with-acf-pro/).
 * Share the same URL slug for posts or terms across languages.
-* [Translate URLs slugs](https://polylang.pro/doc/translating-urls-slugs/) for categories, author bases, custom post types and more...
+* [Translate URL slugs](https://polylang.pro/doc/translating-urls-slugs/) for categories, author bases, custom post types and more...
 * Export and import of content in XLIFF format for outsourced professional translation.
 * **Access to a Premium Support for personalized assistance.**
 
@@ -56,7 +56,7 @@ Helps optimizing the time spent translating your site with some very useful extr
 * Compatibility with the native WooCommerce CSV import & export tool.
 * Compatibility with popular plugins such as WooCommerce Subscriptions, Product Bundles, WooCommerce Bookings, Shipment tracking and more.
 * Ability to use the WooCommerce REST API (available with Polylang Pro).
-* **Access to a Premium Support for personalized assistance**
+* **Access to a Premium Support for personalized assistance.**
 
 Neither of them will allow to do automated translation.
 
