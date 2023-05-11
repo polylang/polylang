@@ -15,16 +15,20 @@ class Upgrade_Test extends PLL_UnitTestCase {
 	public function test_delete_transient_at_upgrade_to_3_4() {
 		wp_set_current_user( 1 );
 		update_user_meta( get_current_user_id(), 'pll_filter_content', 'en' );
+		remove_all_actions( 'admin_init' ); // Avoid to send WP headers when calling `do_action( 'admin_init' )`.
 
 		$options                 = PLL_Install::get_default_options();
+		$options['version']      = '3.3';
 		$options['default_lang'] = 'en';
-		$model                   = new PLL_Admin_Model( $options );
-		$links_model             = new PLL_Links_Default( $model );
-		$admin                   = new PLL_Admin( $links_model );
+		update_option( 'polylang', $options );
+		$model       = new PLL_Admin_Model( $options );
+		$links_model = new PLL_Links_Default( $model );
+		$admin       = new PLL_Admin( $links_model );
 
 		// Old transient from 3.3.
 		$en = $admin->model->get_language( 'en' );
-		$transient_3_3 = array(
+		$expected_transient = get_transient( 'pll_languages_list' );
+		$transient_3_3      = array(
 			array(
 				'term_id'             => $en->term_id,
 				'name'                => 'English',
@@ -59,8 +63,14 @@ class Upgrade_Test extends PLL_UnitTestCase {
 		$upgrade->upgrade();
 		$admin->init();
 
-		$this->assertFalse( get_transient( 'pll_languages_list' ), 'Languages lsit transient should have been deleted during upgrade.' );
+		try {
+			do_action( 'setup_theme' ); // See the issue, `PLL_Admin_Base::init_user()` being hooked to `setup_theme`.
+			do_action( 'admin_init' ); // `PLL_Upgrade::upgrade()` is hooked to this action.
+		} catch ( \Throwable $th ) {
+			$this->assertTrue( false, "Polylang admin failed with error: {$th}" );
+		}
 
-		do_action( 'setup_theme' ); // See the issue, `PLL_Admin_Base::init_user()` being hooked to `setup_theme`.
+		$this->assertSameSets( $expected_transient, get_transient( 'pll_languages_list' ), 'Old pll_languages_list transient should have been deleted during upgrade.' );
+		$this->assertSame( POLYLANG_VERSION, get_option( 'polylang' )['version'], 'Polylang version should have been updated.' );
 	}
 }
