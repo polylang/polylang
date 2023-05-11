@@ -30,6 +30,16 @@ class PLL_Settings extends PLL_Admin_Base {
 	protected $modules;
 
 	/**
+	 * @var PLL_Table_Languages|null
+	 */
+	protected $list_table;
+
+	/**
+	 * @var PLL_Table_String|null
+	 */
+	protected $string_table;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.2
@@ -291,13 +301,16 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	public function display_languages_form() {
+		if ( empty( $this->list_table ) ) {
+			return;
+		}
 		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( 'edit' === $action && ! empty( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// phpcs:ignore WordPress.Security.NonceVerification, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			$edit_lang = $this->model->get_language( (int) $_GET['lang'] );
 		}
 
-		$list_table = new PLL_Table_Languages();
+		$list_table = $this->list_table;
 		$list_table->prepare_items( $this->model->get_languages_list() );
 		include __DIR__ . '/view-tab-lang.php';
 	}
@@ -310,7 +323,10 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	public function display_strings_form() {
-		$string_table = new PLL_Table_String( $this->model->get_languages_list() );
+		if ( empty( $this->string_table ) ) {
+			return;
+		}
+		$string_table = $this->string_table;
 		$string_table->prepare_items();
 		include __DIR__ . '/view-tab-strings.php';
 	}
@@ -334,12 +350,15 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	public function languages_page() {
-		// Displays the page.
-		include __DIR__ . '/view-languages.php';
+		$this->list_table = new PLL_Table_Languages();
+		$this->string_table = new PLL_Table_String( $this->model->get_languages_list() );
 
 		// Handle user input.
 		$action = isset( $_REQUEST['pll_action'] ) ? sanitize_key( $_REQUEST['pll_action'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		$this->handle_actions( $action );
+
+		// Displays the page.
+		include __DIR__ . '/view-languages.php';
 
 	}
 
