@@ -256,4 +256,37 @@ class Strings_Test extends PLL_UnitTestCase {
 
 		$GLOBALS['wp_locale_switcher'] = $old_locale_switcher; // Reset the original global var
 	}
+
+	public function test_export_empty_string() {
+		$lang = self::$model->get_language( 'fr' );
+		$mo   = new PLL_MO();
+
+		$mo->add_entry( $mo->make_entry( 'test', 'test fr' ) );
+		$mo->add_entry( $mo->make_entry( '', 'empty string fr' ) );
+		$mo->add_entry( $mo->make_entry( 'test 2', 'test 2 fr' ) );
+		$mo->export_to_db( $lang );
+
+		$strings  = get_term_meta( $lang->term_id, '_pll_strings_translations', true );
+		$expected = array(
+			array( 'test', 'test fr' ),
+			array( 'test 2', 'test 2 fr' ),
+		);
+
+		$this->assertSame( $expected, $strings );
+	}
+
+	public function test_import_empty_string() {
+		$lang = self::$model->get_language( 'fr' );
+		$mo   = new PLL_MO();
+
+		$strings = array(
+			array( 'test', 'test fr' ),
+			array( '', 'empty string fr' ),
+			array( 'test 2', 'test 2 fr' ),
+		);
+		update_term_meta( $lang->term_id, '_pll_strings_translations', $strings );
+
+		$mo->import_from_db( $lang );
+		$this->assertSame( array( 'test', 'test 2' ), array_keys( $mo->entries ) );
+	}
 }
