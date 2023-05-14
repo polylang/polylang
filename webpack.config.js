@@ -1,60 +1,142 @@
 /**
- * @package Polylang
+ * WordPress dependencies.
  */
+const defaultConfig                     = require( '@wordpress/scripts/config/webpack.config' );
+const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
 
- /**
- * External dependencies
+/**
+ * External dependencies.
  */
+const glob                              = require( 'glob' ).sync;
+const path                              = require( 'path' );
+const TerserPlugin                      = require("terser-webpack-plugin");
+const MiniCssExtractPlugin              = require( 'mini-css-extract-plugin' );
 
-const path = require( 'path' );
-const glob = require( 'glob' ).sync;
-const { transformJsEntry, transformCssEntry } = require( '@wpsyntex/polylang-build-scripts' );
+/**
+ * Returns configurations objects for both optimized and expended bundles.
+ *
+ * @returns {Object}
+ */
+function getConfig () {
+	const jsFiles = glob( './public/js/*.js' );
+	console.log( 'Scripts to bundle:', jsFiles );
 
-function configureWebpack( options ){
-	const mode = options.mode;
-	const isProduction = mode === 'production' || false;
-	console.log('Webpack mode:', mode);
-	console.log('isProduction:', isProduction);
-	console.log('dirname:', __dirname);
+	const cssFiles = glob( './public/css/*.scss' );
+	console.log( 'Stylesheets to bundle:', cssFiles );
 
-	const commonFoldersToIgnore = [
-		'node_modules/**',
-		'vendor/**',
-		'tmp/**',
-		'webpack/**',
-		'**/build/**',
-	];
+	const OptimizedEentries = {};
 
-	const jsFileNamesToIgnore = [
-		'js/src/lib/**',
-		'**/*.config.js',
-		'**/*.min.js',
-	];
+	jsFiles.map( ( filename ) => {
+		if ( undefined === OptimizedEentries[ path.parse( filename ).name ] && undefined === OptimizedEentries[ path.parse( filename ).name + '.min' ] ) {
+			OptimizedEentries[ path.parse( filename ).name ] = [ filename ];
+			OptimizedEentries[ path.parse( filename ).name + '.min' ] = [ filename ];
+			return;
+		}
+		OptimizedEentries[ path.parse( filename ).name ].push( filename );
+		OptimizedEentries[ path.parse( filename ).name + '.min' ].push( filename );
+	} );
 
-	const jsFileNames = glob( '**/*.js', { 'ignore': [ ...commonFoldersToIgnore, ...jsFileNamesToIgnore ] } ).map( filename => `./${ filename }`);
-	console.log( 'js files to minify:', jsFileNames );
+	cssFiles.map( ( filename ) => {
+		if ( undefined === OptimizedEentries[ path.parse( filename ).name ] && undefined === OptimizedEentries[ path.parse( filename ).name + '.min' ] ) {
+			OptimizedEentries[ path.parse( filename ).name + '.min' ] = [ filename ];
+			return;
+		}
+		OptimizedEentries[ path.parse( filename ).name + '.min' ].push( filename );
+	} );
 
-	const jsFileNamesEntries = [
-		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/js/build', true ) ),
-		...jsFileNames.map( transformJsEntry( path.resolve( __dirname ) + '/js/build', false ) )
-	]
+	const expandedEntries = {};
 
-	const cssFileNames = glob( '**/*.css', { 'ignore': [ ...commonFoldersToIgnore, '**/*.min.css' ] } ).map( filename => `./${ filename }`);
-	console.log( 'css files to minify:', cssFileNames );
+	cssFiles.map( ( filename ) => {
+		expandedEntries[ path.parse( filename ).name ] = [ filename ];
+	} );
 
-	// Prepare webpack configuration to minify css files to source folder as target folder and suffix file name with .min.js extension.
-	const cssFileNamesEntries = cssFileNames.map( transformCssEntry( path.resolve( __dirname ) + '/css/build', isProduction ) );
+	console.log(defaultConfig.mode)
 
-	// Make webpack configuration.
-	const config = [
-		...jsFileNamesEntries, // Add config for js files.
-		...cssFileNamesEntries, // Add config for css files.
-	];
+	const optimizedConfig = {
+		...defaultConfig,
+		name: 'optimized',
+		entry: OptimizedEentries,
+		output: {
+			...defaultConfig.output,
+		},
+		module: {
+			rules: [
+				{
+					test: /\.s?css$/,
+					use: [
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						{
+							loader: 'sass-loader',
+							options:{
+								sassOptions: {
+									includePaths: [
+										path.resolve(__dirname, './public/css')
+									],
+									outputStyle: 'compressed',
+									sourceMap: true,
+								},
+							},
+						}
+					]
+				},
+			]
+		},
+		plugins: [
+			new DependencyExtractionWebpackPlugin( {
+				combineAssets: true,
+			} ),
+			new MiniCssExtractPlugin(),
+		],
+		optimization: {
+			...defaultConfig.optimization,
+			minimize: true,
+			minimizer: [
+				new TerserPlugin( {
+					test: /\.min\.js$/i,
+				} ),
 
-	return config;
+			],
+		},
+	};
+
+	const expandedConfig = {
+		name: 'expanded',
+		mode: defaultConfig.mode,
+		entry:expandedEntries,
+		output: {
+			...defaultConfig.output,
+			clean: true,
+		},
+		module: {
+			rules: [
+				{
+					test: /\.s?css$/,
+					use: [
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						{
+							loader: 'sass-loader',
+							options:{
+								sassOptions: {
+									includePaths: [
+										path.resolve(__dirname, './public/css')
+									],
+									outputStyle: 'expanded',
+									sourceMap: true,
+								},
+							},
+						}
+					]
+				},
+			]
+		},
+		plugins: [ new MiniCssExtractPlugin() ],
+	}
+
+	return [ optimizedConfig, expandedConfig ];
 }
 
-module.exports = ( env, options ) => {
-	return configureWebpack( options );
-}
-
+module.exports = () => {
+	return getConfig();
+};

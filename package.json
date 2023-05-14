@@ -7,10 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "npm run clean && webpack --mode production",
-    "build:dev": "npm run clean && webpack --mode development",
-    "dev": "npm run clean && webpack --mode development --watch",
-    "clean": "rimraf js/build css/build",
+    "build": "npm run clean && wp-scripts build",
+    "start": "npm run clean && wp-scripts start",
+    "clean": "rimraf build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -34,16 +33,7 @@
   },
   "homepage": "https://github.com/polylang/polylang#readme",
   "devDependencies": {
-    "@wpsyntex/polylang-build-scripts": "^2.0.3",
-    "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^9.0.1",
-    "css-loader": "^6.2.0",
-    "css-minimizer-webpack-plugin": "^3.0.2",
-    "mini-css-extract-plugin": "^2.3.0",
-    "postcss": "^8.3.6",
-    "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^5.2.4",
-    "webpack": "^5.52.1",
-    "webpack-cli": "^4.8.0"
+    "@wordpress/scripts": "^26.1.0",
+    "@wpsyntex/polylang-build-scripts": "^2.0.3"
   }
 }
