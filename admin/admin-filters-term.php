@@ -634,46 +634,48 @@ class PLL_Admin_Filters_Term {
 			$lang_slug = sanitize_key( $_POST['term_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
 			if ( ! empty( $lang_slug ) ) {
 				$lang = $this->model->get_language( $lang_slug );
+				return $lang instanceof PLL_Language ? $lang : null;
 			}
 		}
 
-		elseif ( ! empty( $_POST['inline_lang_choice'] ) && is_string( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! empty( $_POST['inline_lang_choice'] ) && is_string( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$lang_slug = sanitize_key( $_POST['inline_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
 			if ( ! empty( $lang_slug ) ) {
 				$lang = $this->model->get_language( $lang_slug );
+				return $lang instanceof PLL_Language ? $lang : null;
 			}
 		}
 
 		// *Post* bulk edit, in case a new term is created
-		elseif ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( isset( $_GET['bulk_edit'], $_GET['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// Bulk edit does not modify the language
 			if ( -1 === (int) $_GET['inline_lang_choice'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$lang = $this->model->post->get_language( $this->post_id );
+				return $lang instanceof PLL_Language ? $lang : null;
 			} elseif ( is_string( $_GET['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$lang_slug = sanitize_key( $_GET['inline_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
 				if ( ! empty( $lang_slug ) ) {
 					$lang = $this->model->get_language( $lang_slug );
+					return $lang instanceof PLL_Language ? $lang : null;
 				}
 			}
 		}
 
 		// Special cases for default categories as the select is disabled.
-		elseif ( ! empty( $_POST['tag_ID'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$default_term = get_option( 'default_category' );
-			if ( is_int( $default_term ) && in_array( $default_term, $this->model->term->get_translations( (int) $_POST['tag_ID'] ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$lang = $this->model->term->get_language( (int) $_POST['tag_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
+		$default_term = get_option( 'default_category' );
+
+		if ( ! is_numeric( $default_term ) ) {
+			return null;
 		}
 
-		elseif ( ! empty( $_POST['tax_ID'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$default_term = get_option( 'default_category' );
-			if ( is_int( $default_term ) && in_array( $default_term, $this->model->term->get_translations( (int) $_POST['tax_ID'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-				$lang = $this->model->term->get_language( (int) $_POST['tax_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
-			}
+		if ( ! empty( $_POST['tag_ID'] ) && in_array( (int) $default_term, $this->model->term->get_translations( (int) $_POST['tag_ID'] ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = $this->model->term->get_language( (int) $_POST['tag_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
+			return $lang instanceof PLL_Language ? $lang : null;
 		}
 
-		if ( $lang instanceof PLL_Language ) {
-			return $lang;
+		if ( ! empty( $_POST['tax_ID'] ) && in_array( (int) $default_term, $this->model->term->get_translations( (int) $_POST['tax_ID'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$lang = $this->model->term->get_language( (int) $_POST['tax_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
+			return $lang instanceof PLL_Language ? $lang : null;
 		}
 
 		return null;
