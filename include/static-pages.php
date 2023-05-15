@@ -84,13 +84,13 @@ class PLL_Static_Pages {
 		}
 
 		$page_on_front = get_option( 'page_on_front' );
-		if ( is_int( $page_on_front ) ) {
-			$this->page_on_front = $page_on_front;
+		if ( is_numeric( $page_on_front ) ) {
+			$this->page_on_front = (int) $page_on_front;
 		}
 
 		$page_for_posts = get_option( 'page_for_posts' );
-		if ( is_int( $page_for_posts ) ) {
-			$this->page_for_posts = $page_for_posts;
+		if ( is_numeric( $page_for_posts ) ) {
+			$this->page_for_posts = (int) $page_for_posts;
 		}
 	}
 
