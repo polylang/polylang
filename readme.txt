@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.8
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 3.3.3
+Stable tag: 3.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -104,7 +104,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
-= 3.4 =
+= 3.4 (2023-05-23) =
 
 * Requires WP 5.8 as minimum version
 * Pro: Language fallbacks are now stored in language description instead of a term meta.
@@ -118,6 +118,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Fix a possible bug in Site editor when language term_id and term_taxonomy_id are different
 * Pro: Fix deactivated language re-activated when it is edited.
 * Pro: Fix language switcher in legacy widget menu not correctly rendered in widget block editor
+* Pro: Fix error 404 for untranslated attached attachement
 * Pro: Fix a deprecated notice in ACF integration
 * Pro: Fix update compatibility with WP Umbrella
 * Refactor core to allow to easily translate contents stored in custom tables
@@ -133,6 +134,8 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Fix related translations resetted when updating Yoast SEO titles settings #1111
 * Fix a fatal error in case the registered strings option is corrupted #1264
 * Fix the language extraction from the URL in plain permalinks #1270
+* Fix content cleared when switching the language of a new post in the block editor #1272
+* Fix: Prevent saving strings translations with an empty source #1273
 
 = 3.3.3 (2023-04-11) =
 
