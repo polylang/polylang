@@ -632,18 +632,14 @@ class PLL_Admin_Filters_Term {
 
 		if ( ! empty( $_POST['term_lang_choice'] ) && is_string( $_POST['term_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$lang_slug = sanitize_key( $_POST['term_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
-			if ( ! empty( $lang_slug ) ) {
-				$lang = $this->model->get_language( $lang_slug );
-				return $lang instanceof PLL_Language ? $lang : null;
-			}
+			$lang = $this->model->get_language( $lang_slug );
+			return $lang instanceof PLL_Language ? $lang : null;
 		}
 
 		if ( ! empty( $_POST['inline_lang_choice'] ) && is_string( $_POST['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$lang_slug = sanitize_key( $_POST['inline_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
-			if ( ! empty( $lang_slug ) ) {
-				$lang = $this->model->get_language( $lang_slug );
-				return $lang instanceof PLL_Language ? $lang : null;
-			}
+			$lang = $this->model->get_language( $lang_slug );
+			return $lang instanceof PLL_Language ? $lang : null;
 		}
 
 		// *Post* bulk edit, in case a new term is created
@@ -654,10 +650,8 @@ class PLL_Admin_Filters_Term {
 				return $lang instanceof PLL_Language ? $lang : null;
 			} elseif ( is_string( $_GET['inline_lang_choice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$lang_slug = sanitize_key( $_GET['inline_lang_choice'] ); // phpcs:ignore WordPress.Security.NonceVerification
-				if ( ! empty( $lang_slug ) ) {
-					$lang = $this->model->get_language( $lang_slug );
-					return $lang instanceof PLL_Language ? $lang : null;
-				}
+				$lang = $this->model->get_language( $lang_slug );
+				return $lang instanceof PLL_Language ? $lang : null;
 			}
 		}
 
