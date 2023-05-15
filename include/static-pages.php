@@ -76,12 +76,21 @@ class PLL_Static_Pages {
 	 * @return void
 	 */
 	public function init() {
-		if ( 'page' === get_option( 'show_on_front' ) ) {
-			$this->page_on_front  = intval( get_option( 'page_on_front' ) );
-			$this->page_for_posts = intval( get_option( 'page_for_posts' ) );
-		} else {
-			$this->page_on_front  = 0;
-			$this->page_for_posts = 0;
+		$this->page_on_front  = 0;
+		$this->page_for_posts = 0;
+
+		if ( 'page' !== get_option( 'show_on_front' ) ) {
+			return;
+		}
+
+		$page_on_front = get_option( 'page_on_front' );
+		if ( is_int( $page_on_front ) ) {
+			$this->page_on_front = $page_on_front;
+		}
+
+		$page_for_posts = get_option( 'page_for_posts' );
+		if ( is_int( $page_for_posts ) ) {
+			$this->page_for_posts = $page_for_posts;
 		}
 	}
 

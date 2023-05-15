@@ -658,12 +658,18 @@ class PLL_Admin_Filters_Term {
 		}
 
 		// Special cases for default categories as the select is disabled.
-		elseif ( ! empty( $_POST['tag_ID'] ) && in_array( intval( get_option( 'default_category' ) ), $this->model->term->get_translations( (int) $_POST['tag_ID'] ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$lang = $this->model->term->get_language( (int) $_POST['tag_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		elseif ( ! empty( $_POST['tag_ID'] ) ) {
+			$default_term = get_option( 'default_category' );
+			if ( is_int( $default_term ) && in_array( $default_term, $this->model->term->get_translations( (int) $_POST['tag_ID'] ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				$lang = $this->model->term->get_language( (int) $_POST['tag_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
+			}
 		}
 
-		elseif ( ! empty( $_POST['tax_ID'] ) && in_array( intval( get_option( 'default_category' ) ), $this->model->term->get_translations( (int) $_POST['tax_ID'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			$lang = $this->model->term->get_language( (int) $_POST['tax_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
+		elseif ( ! empty( $_POST['tax_ID'] ) ) {
+			$default_term = get_option( 'default_category' );
+			if ( is_int( $default_term ) && in_array( $default_term, $this->model->term->get_translations( (int) $_POST['tax_ID'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+				$lang = $this->model->term->get_language( (int) $_POST['tax_ID'] ); // phpcs:ignore WordPress.Security.NonceVerification
+			}
 		}
 
 		if ( $lang instanceof PLL_Language ) {
