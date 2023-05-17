@@ -91,3 +91,20 @@ function pll_use_block_editor_plugin() {
 	 */
 	return class_exists( 'PLL_Block_Editor_Plugin' ) && apply_filters( 'pll_use_block_editor_plugin', ! defined( 'PLL_USE_BLOCK_EDITOR_PLUGIN' ) || PLL_USE_BLOCK_EDITOR_PLUGIN );
 }
+
+/**
+ * Strips out all characters not allowed in a locale code.
+ *
+ * @since 3.5
+ *
+ * @param string $locale_code The locale code to be sanitized.
+ * @return string The sanitized value.
+ */
+function pll_sanitize_locale_code( $locale_code ) {
+	if ( function_exists( 'sanitize_locale_name' ) ) {
+		return (string) sanitize_locale_name( $locale_code );
+	}
+
+	// Limit to A-Z, a-z, 0-9, '_', '-'.
+	return (string) preg_replace( '/[^A-Za-z0-9_-]/', '', $locale_code );
+}
