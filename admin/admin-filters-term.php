@@ -489,7 +489,7 @@ class PLL_Admin_Filters_Term {
 	}
 
 	/**
-	 * Ajax response for input in translation autocomplete input box
+	 * Ajax response for input in translation autocomplete input box.
 	 *
 	 * @since 1.5
 	 *
@@ -537,23 +537,28 @@ class PLL_Admin_Filters_Term {
 
 		// Format the ajax response.
 		foreach ( $terms as $term ) {
-			if ( $term instanceof WP_Term ) {
-				$return[] = array(
-					'id'    => $term->term_id,
-					'value' => rtrim( // Trim the seperator added at the end by WP.
-						get_term_parents_list(
-							$term->term_id,
-							$term->taxonomy,
-							array(
-								'separator' => ' > ',
-								'link' => false,
-							)
-						),
-						' >'
-					),
-					'link'  => $this->links->edit_term_translation_link( $term->term_id, $term->taxonomy, $post_type ),
-				);
+			if ( ! $term instanceof WP_Term ) {
+				continue;
 			}
+
+			$parents_list = get_term_parents_list(
+				$term->term_id,
+				$term->taxonomy,
+				array(
+					'separator' => ' > ',
+					'link' => false,
+				)
+			);
+
+			if ( ! is_string( $parents_list ) ) {
+				continue;
+			}
+
+			$return[] = array(
+				'id'    => $term->term_id,
+				'value' => rtrim( $parents_list, ' >' ), // Trim the seperator added at the end by WP.
+				'link'  => $this->links->edit_term_translation_link( $term->term_id, $term->taxonomy, $post_type ),
+			);
 		}
 
 		wp_die( wp_json_encode( $return ) );
