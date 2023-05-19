@@ -356,11 +356,6 @@ parameters:
 			path: frontend/choose-lang-domain.php
 
 		-
-			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|false\\|null given\\.$#"
-			count: 2
-			path: frontend/choose-lang-url.php
-
-		-
 			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
 			count: 2
 			path: frontend/choose-lang.php
