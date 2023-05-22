@@ -54,7 +54,7 @@ Helps optimizing the time spent translating your site with some very useful extr
 * Translating WooCommerce e-mails and sending them to customers in their language.
 * Products metadata synchronization.
 * Compatibility with the native WooCommerce CSV import & export tool.
-* Compatibility with popular plugins such as WooCommerce Subscriptions, Product Bundles, WooCommerce Bookings, Shipment tracking and more.
+* Compatibility with popular plugins such as WooCommerce Subscriptions, Product Bundles, WooCommerce Bookings, Shipment Tracking and more.
 * Ability to use the WooCommerce REST API (available with Polylang Pro).
 * **Access to a Premium Support for personalized assistance.**
 
