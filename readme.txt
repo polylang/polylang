@@ -54,7 +54,7 @@ Helps optimizing the time spent translating your site with some very useful extr
 * Translating WooCommerce e-mails and sending them to customers in their language.
 * Products metadata synchronization.
 * Compatibility with the native WooCommerce CSV import & export tool.
-* Compatibility with popular plugins such as WooCommerce Subscriptions, Product Bundles, WooCommerce Bookings, Shipment tracking and more.
+* Compatibility with popular plugins such as WooCommerce Subscriptions, Product Bundles, WooCommerce Bookings, Shipment Tracking and more.
 * Ability to use the WooCommerce REST API (available with Polylang Pro).
 * **Access to a Premium Support for personalized assistance.**
 
@@ -103,6 +103,26 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.5 =
+
+* Requires WordPress 5.9 as minimum version
+* Pro: Manage navigation blocks translations in the site editor (requires WP 6.3)
+* Pro: Manage pages translations in the site editor (requires WP 6.3)
+* Pro: Manage patterns translations in the site editor (requires WP 6.3)
+* Pro: Remove compatibility with the navigation screen removed from Gütenberg 15.1
+* Pro: Add filter 'pll_export_post_fields' to control post fields exported to XLIFF files
+* Pro: Do not set default translation option to "translate" for ACF fields created before Polylang Pro is activated
+* Pro: Fix Polylang not set as recently active when automatically deactivated by Polylang Pro
+* Don't output javascript type for themes supporting html5 #1332
+* Hook WP_Query automatic translation to 'parse_query' instead of 'pre_get_posts' #1339
+* Improve preload paths management for the block editor #1341
+* Fix rewrite rules in WP 6.4 #1345
+* Fix: always assign the default language to new posts and terms if no language is specified #1351
+* Fix 'polylang' option not correctly created when a new site is created on a multisite #1319
+* Fix front page display switched to "Your latest posts" when deleting a static home page translation #1311
+* Fix wrong language assigned to terms #1336
+* Fix error when updating a translated option while the blog is switched on a multisite #1342
 
 = 3.4.6 (2023-09-13) =
 
