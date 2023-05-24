@@ -526,7 +526,7 @@ class PLL_Wizard {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
 		$all_languages   = include POLYLANG_DIR . '/settings/languages.php';
-		$languages       = isset( $_POST['languages'] ) && is_array( $_POST['languages'] ) ? array_map( 'pll_sanitize_locale_code', $_POST['languages'] ) : false;
+		$languages       = isset( $_POST['languages'] ) && is_array( $_POST['languages'] ) ? array_map( 'sanitize_locale_name', $_POST['languages'] ) : false;
 		$saved_languages = array();
 
 		// If there is no language added or defined.
@@ -692,7 +692,7 @@ class PLL_Wizard {
 	public function save_step_untranslated_contents() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$lang = ! empty( $_POST['language'] ) && is_string( $_POST['language'] ) ? pll_sanitize_locale_code( $_POST['language'] ) : false;
+		$lang = ! empty( $_POST['language'] ) && is_string( $_POST['language'] ) ? sanitize_locale_name( $_POST['language'] ) : false;
 
 		if ( empty( $lang ) ) {
 			$lang = $this->options['default_lang'];

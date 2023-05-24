@@ -87,10 +87,10 @@
 	<rule ref="WordPress.Security.ValidatedSanitizedInput">
 		<properties>
 			<property name="customSanitizingFunctions" type="array">
-				<element value="pll_sanitize_locale_code"/>
+				<element value="sanitize_locale_name"/>
 			</property>
 			<property name="customUnslashingSanitizingFunctions" type="array">
-				<element value="pll_sanitize_locale_code"/>
+				<element value="sanitize_locale_name"/>
 			</property>
 		</properties>
 	</rule>
