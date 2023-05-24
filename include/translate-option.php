@@ -40,9 +40,9 @@ class PLL_Translate_Option {
 	/**
 	 * Cache for the translated values.
 	 *
-	 * @var array
+	 * @var PLL_Cache
 	 */
-	private $translated_values;
+	private $cache;
 
 	/**
 	 * Constructor
@@ -69,6 +69,8 @@ class PLL_Translate_Option {
 	 * }
 	 */
 	public function __construct( $name, $keys = array(), $args = array() ) {
+		$this->cache = new PLL_Cache();
+
 		// Registers the strings.
 		$context = isset( $args['context'] ) ? $args['context'] : 'Polylang';
 		$this->register_string_recursive( $context, $name, get_option( $name ), $keys );
@@ -108,11 +110,13 @@ class PLL_Translate_Option {
 
 		$lang = $GLOBALS['l10n']['pll_string']->get_header( 'Language' );
 
-		if ( ! isset( $this->translated_values[ $lang ] ) ) {
-			$this->translated_values[ $lang ] = $this->translate_string_recursive( $value, $this->keys );
+		$cache = $this->cache->get( $lang );
+		if ( empty( $cache ) ) {
+			$cache = $this->translate_string_recursive( $value, $this->keys );
+			$this->cache->set( $lang, $cache );
 		}
 
-		return $this->translated_values[ $lang ];
+		return $cache;
 	}
 
 	/**
@@ -292,7 +296,7 @@ class PLL_Translate_Option {
 			}
 		}
 
-		unset( $this->translated_values );
+		$this->cache->clean();
 	}
 
 	/**
