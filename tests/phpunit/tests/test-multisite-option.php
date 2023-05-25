@@ -29,16 +29,12 @@ if ( is_multisite() ) :
 		 * @ticket #1685
 		 * @see https://github.com/polylang/polylang-pro/issues/1685
 		 */
-		public function test_translate_blogname() {
+		public function test_blogname() {
 			$blog_id = self::factory()->blog->create( array( 'title' => 'The new blog to test' ) );
 
-			$language = self::$model->get_language( 'en' );
+			$GLOBALS['l10n']['pll_string'] = new PLL_MO(); // Required to pass an internal test of PLL_Translate_Option::translate().
 
-			$mo = new PLL_MO();
-			$mo->add_entry( $mo->make_entry( 'Some string', 'Some translation' ) );
-			$GLOBALS['l10n']['pll_string'] = &$mo;
-
-			PLL()->curlang = $language;
+			PLL()->curlang = self::$model->get_language( 'en' );
 
 			new PLL_Translate_Option( 'blogname', array(), array( 'context' => 'WordPress' ) );
 
