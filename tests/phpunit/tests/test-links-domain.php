@@ -123,7 +123,10 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		update_option( 'page_on_front', $home_en );
 
 		$this->assertSame( 'http://example.org/', get_permalink( $home_en ) );
+		$this->assertSame( 'http://example.org/', $pll_admin->links_model->home_url( 'en' ) );
 		$this->assertSame( 'http://example.fr/', get_permalink( $home_fr ) );
+		$this->assertSame( 'http://example.fr/', $pll_admin->links_model->home_url( 'fr' ) );
 		$this->assertSame( 'http://example.de/', get_permalink( $home_de ) );
+		$this->assertSame( 'http://example.de/', $pll_admin->links_model->home_url( 'de' ) );
 	}
 }
