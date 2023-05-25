@@ -546,7 +546,7 @@ class PLL_Admin_Filters_Term {
 				$term->taxonomy,
 				array(
 					'separator' => ' > ',
-					'link' => false,
+					'link'      => false,
 				)
 			);
 
