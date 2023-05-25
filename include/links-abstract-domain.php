@@ -77,4 +77,20 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 		$uploads['baseurl'] = $this->add_language_to_link( $uploads['baseurl'], $lang );
 		return $uploads;
 	}
+
+	/**
+	 * Adds home and search URLs to language data before the object is created.
+	 *
+	 * @since 3.4.1
+	 *
+	 * @param array $additional_data Array of language additional data.
+	 * @param array $language        Language data.
+	 * @return array Language data with home and search URLs added.
+	 */
+	public function set_language_home_urls( $additional_data, $language ) {
+		$language = array_merge( $language, $additional_data );
+		$additional_data['search_url'] = $this->home_url( $language['slug'] );
+		$additional_data['home_url']   = $additional_data['search_url'];
+		return $additional_data;
+	}
 }
