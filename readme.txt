@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.8
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 3.4
+Stable tag: 3.4.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,11 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.4.1 (2023-05-25) =
+
+* Fix incorrect site titles in My Site admin bar menu on multisites #1284
+* Fix incorrect home url when using multiple domains or subdomain and a static front page #1285
 
 = 3.4 (2023-05-23) =
 
