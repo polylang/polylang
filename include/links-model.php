@@ -175,8 +175,8 @@ abstract class PLL_Links_Model {
 	 */
 	public function set_language_home_urls( $additional_data, $language ) {
 		$language = array_merge( $language, $additional_data );
-		$additional_data['search_url']  = $this->home_url( $language['slug'] );
-		$additional_data['home_url']    = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $additional_data['search_url'] : $this->front_page_url( $language );
+		$additional_data['search_url'] = $this->home_url( $language['slug'] );
+		$additional_data['home_url']   = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $additional_data['search_url'] : $this->front_page_url( $language );
 
 		return $additional_data;
 	}
