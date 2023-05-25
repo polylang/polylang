@@ -78,4 +78,52 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertEquals( 'http://example.fr/essai/', get_permalink( $post_id ) );
 		$this->assertEquals( 'http://example.fr/?p=' . $post_id, wp_get_shortlink( $post_id ) );
 	}
+
+	public function test_home_url_static_page() {
+		// Create static pages.
+		$home_en = self::factory()->post->create(
+			array(
+				'post_title'   => 'home',
+				'post_type'    => 'page',
+				'post_content' => 'en1<!--nextpage-->en2',
+			)
+		);
+		self::$model->post->set_language( $home_en, 'en' );
+
+		$home_fr = self::factory()->post->create(
+			array(
+				'post_title'   => 'accueil',
+				'post_type'    => 'page',
+				'post_content' => 'fr1<!--nextpage-->fr2',
+			)
+		);
+		self::$model->post->set_language( $home_fr, 'fr' );
+
+		$home_de = self::factory()->post->create(
+			array(
+				'post_title'   => 'willkommen',
+				'post_type'    => 'page',
+				'post_content' => 'fr1<!--nextpage-->fr2',
+			)
+		);
+		self::$model->post->set_language( $home_de, 'de' );
+		self::$model->post->save_translations(
+			$home_en,
+			array(
+				'en' => $home_en,
+				'fr' => $home_fr,
+				'de' => $home_de,
+			)
+		);
+
+		$pll_admin        = new PLL_Admin( $this->links_model );
+		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
+
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $home_en );
+
+		$this->assertSame( 'http://example.org/', get_permalink( $home_en ) );
+		$this->assertSame( 'http://example.fr/', get_permalink( $home_fr ) );
+		$this->assertSame( 'http://example.de/', get_permalink( $home_de ) );
+	}
 }
