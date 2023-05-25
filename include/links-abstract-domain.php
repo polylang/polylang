@@ -81,7 +81,7 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 	/**
 	 * Adds home and search URLs to language data before the object is created.
 	 *
-	 * @since 3.4
+	 * @since 3.4.1
 	 *
 	 * @param array $additional_data Array of language additional data.
 	 * @param array $language        Language data.
