@@ -111,7 +111,7 @@ class PLL_Translate_Option {
 		$lang = $GLOBALS['l10n']['pll_string']->get_header( 'Language' );
 
 		$cache = $this->cache->get( $lang );
-		if ( empty( $cache ) ) {
+		if ( false === $cache ) {
 			$cache = $this->translate_string_recursive( $value, $this->keys );
 			$this->cache->set( $lang, $cache );
 		}
