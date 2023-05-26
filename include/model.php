@@ -978,9 +978,11 @@ class PLL_Model {
 		 *     }
 		 * ) $terms_by_slug
 		 */
-		$languages = array_map(
-			array( new PLL_Language_Factory( $this->options ), 'get_from_terms' ),
-			array_values( $terms_by_slug )
+		$languages = array_filter(
+			array_map(
+				array( new PLL_Language_Factory( $this->options ), 'get_from_terms' ),
+				array_values( $terms_by_slug )
+			)
 		);
 
 		/**

@@ -47,7 +47,7 @@ class PLL_Language_Factory {
 	 * @param array $language_data Language object properties stored as an array. See `PLL_Language::__construct()`
 	 *                             for information on accepted properties.
 	 *
-	 * @return PLL_Language|null A language object if given data pass sanitization, null otherwise.
+	 * @return PLL_Language A language object if given data pass sanitization.
 	 *
 	 * @phpstan-param LanguageData $language_data
 	 */
@@ -61,13 +61,17 @@ class PLL_Language_Factory {
 	 * @since 3.4
 	 *
 	 * @param WP_Term[] $terms List of language terms, with the language taxonomy names as array keys.
-	 *                         `language` is a mandatory key, `term_language` should be too in a
-	 *                         fully operational environment.
-	 * @return PLL_Language
+	 *                         `language` is a mandatory key for the object to be created,
+	 *                         `term_language` should be too in a fully operational environment.
+	 * @return PLL_Language|null Language object on success, `null` on failure.
 	 *
-	 * @phpstan-param array{language:WP_Term}&array<string, WP_Term> $terms
+	 * @phpstan-param array{language?:WP_Term}&array<string, WP_Term> $terms
 	 */
 	public function get_from_terms( array $terms ) {
+		if ( ! isset( $terms['language'] ) ) {
+			return null;
+		}
+
 		$languages = $this->get_languages();
 		$data      = array(
 			'name'       => $terms['language']->name,
