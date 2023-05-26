@@ -791,11 +791,6 @@ parameters:
 			path: include/nav-menu.php
 
 		-
-			message: "#^Parameter \\#1 \\$.+ of function array_flip expects array\\<int\\|string\\>, array\\<string\\|WP_Post_Type\\> given\\.$#"
-			count: 1
-			path: include/olt-manager.php
-
-		-
 			message: "#^Cannot access property \\$model on PLL_Links\\|null\\.$#"
 			count: 5
 			path: include/switcher.php
