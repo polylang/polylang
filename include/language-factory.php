@@ -47,7 +47,7 @@ class PLL_Language_Factory {
 	 * @param array $language_data Language object properties stored as an array. See `PLL_Language::__construct()`
 	 *                             for information on accepted properties.
 	 *
-	 * @return PLL_Language A language object if given data pass sanitization, null otherwise.
+	 * @return PLL_Language A language object if given data pass sanitization.
 	 *
 	 * @phpstan-param LanguageData $language_data
 	 */
