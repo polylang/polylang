@@ -147,7 +147,7 @@ class PLL_Model {
 			} else {
 				$languages = get_transient( 'pll_languages_list' );
 
-				if ( empty( $languages ) || ! is_array( $languages ) ) {
+				if ( empty( $languages ) || ! is_array( $languages ) || empty( reset( $languages )['term_props'] ) ) {
 					// Create the languages from taxonomies.
 					$languages = $this->get_languages_from_taxonomies();
 				} else {
