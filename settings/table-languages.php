@@ -270,7 +270,7 @@ class PLL_Table_Languages extends WP_List_Table {
 			array(
 				'total_items' => $total_items,
 				'per_page'    => $per_page,
-				'total_pages' => ceil( $total_items / $per_page ),
+				'total_pages' => (int) ceil( $total_items / $per_page ),
 			)
 		);
 	}
