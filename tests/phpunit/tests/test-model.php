@@ -271,7 +271,11 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertSameSetsWithIndex( $slugs, $terms );
 	}
 
-	public function test_dont_use_old_format_languages_list() {
+	/**
+	 * @ticket #1689
+	 * @see https://github.com/polylang/polylang-pro/issues/1689
+	 */
+	public function test_dont_use_languages_list_format_older_than_3_4() {
 		// Build cache.
 		self::$model->set_languages_ready();
 		self::$model->get_languages_list();
