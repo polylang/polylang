@@ -40,12 +40,12 @@ class Languages_List_Test extends PLL_UnitTestCase {
 		wp_delete_term( $en->get_tax_prop( 'term_language', 'term_id' ), 'term_language' );
 
 		$this->pll_model->clean_languages_cache();
-		$list = $this->pll_model->get_languages_list(); // Supress notices to let the assertion do its job.
+		$list = $this->pll_model->get_languages_list();
 
-		$this->assertCount( 1, $list, 'There should be only one language.' );
+		$this->assertCount( 1, $list, 'There should still be one language.' );
 
 		$list = wp_list_pluck( $list, 'slug' );
 
-		$this->assertSameSets( array( 'en' ), $list, 'The language should be English.' );
+		$this->assertSameSets( array( 'en' ), $list, 'The remaining language should be English.' );
 	}
 }
