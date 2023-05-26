@@ -1,19 +1,15 @@
 <?php
 
 class Languages_List_Test extends PLL_UnitTestCase {
-	/**
-	 * @param WP_UnitTest_Factory $factory
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
-
-		self::create_language( 'en_US' );
-	}
-
 	public function set_up() {
+		self::create_language( 'en_US' );
 		$options                 = PLL_Install::get_default_options();
 		$options['default_lang'] = 'en';
 		$this->pll_model         = new PLL_Admin_Model( $options );
+	}
+
+	public function tear_down() {
+		self::delete_all_languages();
 	}
 
 	/**
