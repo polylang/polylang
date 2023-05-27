@@ -162,7 +162,7 @@ class PLL_Static_Pages {
 	 */
 	public function translate_page_on_front( $page_id ) {
 		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
-		return ! empty( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $page_id;
+		return ! empty( $this->curlang ) && ! empty( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $page_id;
 	}
 
 	/**
@@ -175,7 +175,7 @@ class PLL_Static_Pages {
 	 */
 	public function translate_page_for_posts( $page_id ) {
 		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
-		return ! empty( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $page_id;
+		return ! empty( $this->curlang ) && ! empty( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $page_id;
 	}
 
 	/**
