@@ -275,10 +275,12 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	public function filter_customizer() {
 		add_filter( 'pre_option_page_on_front', array( $this, 'customize_page' ), 20 ); // After the customizer.
 		add_filter( 'pre_option_page_for_post', array( $this, 'customize_page' ), 20 );
+
+		add_filter( 'pll_pre_translation_url', array( $this, 'customize_translation_url' ), 20, 2 ); // After the generic hook in this class.
 	}
 
 	/**
-	 * Translate the page id when customized
+	 * Translate the page id when customized.
 	 *
 	 * @since 3.4.2
 	 *
@@ -287,5 +289,22 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 */
 	public function customize_page( $pre ) {
 		return is_numeric( $pre ) ? pll_get_post( (int) $pre ) : $pre;
+	}
+
+	/**
+	 * Fix the translation url the option 'show_on_front' is customized.
+	 *
+	 * @since 3.4.2
+	 *
+	 * @param string       $url      An empty string or the url of the translation of the current page.
+	 * @param PLL_Language $language The language of the translation.
+	 * @return string
+	 */
+	public function customize_translation_url( $url, $language ) {
+		if ( 'posts' === get_option( 'show_on_front' ) && is_front_page() ) {
+			// When the page on front displays posts, the home url is the same as the search url.
+			$url = $language->get_search_url();
+		}
+		return $url;
 	}
 }
