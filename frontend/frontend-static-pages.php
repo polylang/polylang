@@ -172,7 +172,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 		// Redirect the language page to the homepage when using a static front page
 		if ( ( $this->options['redirect_lang'] || $this->options['hide_default'] ) && $this->is_front_page( $query ) && $lang = $this->model->get_language( get_query_var( 'lang' ) ) ) {
 			$query->is_archive = $query->is_tax = false;
-			if ( ! empty( $lang->page_on_front ) ) {
+			if ( 'page' === get_option( 'show_on_front' ) && ! empty( $lang->page_on_front ) ) {
 				$query->set( 'page_id', $lang->page_on_front );
 				$query->is_singular = $query->is_page = true;
 				unset( $query->query_vars['lang'], $query->queried_object ); // Reset queried object
