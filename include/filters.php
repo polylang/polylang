@@ -252,6 +252,9 @@ class PLL_Filters {
 	 */
 	public function get_pages_query_args( $query_args, $parsed_args ) {
 		if ( isset( $parsed_args['lang'] ) ) {
+			if ( $parsed_args['lang'] instanceof PLL_Language ) {
+				$parsed_args['lang'] = $parsed_args['lang']->slug;
+			}
 			$query_args['lang'] = $parsed_args['lang'];
 		}
 		return $query_args;
