@@ -188,6 +188,7 @@ abstract class PLL_Base {
 		}
 
 		$customize_register_hooks = count( array_merge( ...array_values( $wp_filter['customize_register']->callbacks ) ) );
+
 		/*
 		 * 'customize_register' is hooked by:
 		 * @see PLL_Nav_Menu::create_nav_menu_locations()
