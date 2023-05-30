@@ -188,7 +188,13 @@ abstract class PLL_Base {
 		}
 
 		$customize_register_hooks = count( array_merge( ...array_values( $wp_filter['customize_register']->callbacks ) ) );
-		if ( $customize_register_hooks > 1 ) {
+
+		/*
+		 * 'customize_register' is hooked by:
+		 * @see PLL_Nav_Menu::create_nav_menu_locations()
+		 * @see PLL_Frontend_Static_Pages::filter_customizer()
+		 */
+		if ( $customize_register_hooks > 1 + (int) ( 'page' === get_option( 'show_on_front' ) ) ) { // Are there other hooks than our own?
 			return false;
 		}
 
