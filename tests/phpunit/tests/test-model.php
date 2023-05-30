@@ -276,15 +276,17 @@ class Model_Test extends PLL_UnitTestCase {
 	 * @see https://github.com/polylang/polylang-pro/issues/1689
 	 */
 	public function test_dont_use_languages_list_format_older_than_3_4() {
-		// Build cache.
+		// Build the cache, so `get_transient()` will contain a valid value.
 		self::$model->set_languages_ready();
 		self::$model->get_languages_list();
-		// Modify the transient.
+
+		// Get the transient and break it.
 		$languages = get_transient( 'pll_languages_list' );
 		foreach ( $languages as &$language ) {
 			unset( $language['term_props'] );
 		}
-		// Inject our transient.
+
+		// Clear the cache then insert the broken transient.
 		self::$model->clean_languages_cache();
 		set_transient( 'pll_languages_list', $languages );
 
@@ -296,7 +298,7 @@ class Model_Test extends PLL_UnitTestCase {
 		foreach ( $languages as $language ) {
 			$this->assertIsInt( $language->term_id, 'The language term_id should be an integer.' );
 			$this->assertGreaterThan( 0, $language->term_id, 'The language term_id should be a positive integer.' );
-			$this->assertSame( $language->term_id, $language->get_tax_prop( 'language', 'term_id' ), 'The tax prop term_id should contain the language term_id' );
+			$this->assertSame( $language->term_id, $language->get_tax_prop( 'language', 'term_id' ), 'The tax prop term_id should contain the language term_id.' );
 		}
 	}
 }
