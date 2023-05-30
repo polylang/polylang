@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.8
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 3.4.1
+Stable tag: 3.4.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,12 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.4.2 (2023-05-30) =
+
+* Fix empty languages displayed when Falang data are remaining in the database #1286
+* Fix PHP warning on term_props #1288
+* Fix blog page displayed in the customizer instead of the static front page when changing a setting #1289
 
 = 3.4.1 (2023-05-25) =
 
