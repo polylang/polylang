@@ -61,7 +61,6 @@ class Single_Language_Test extends PLL_UnitTestCase {
 		$pll->init();
 		$pll->model->clean_languages_cache();
 
-		// $this->go_to( home_url() );
 		$this->go_to( home_url( '/en' ) );
 
 		$this->assertTrue( is_front_page() );

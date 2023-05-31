@@ -105,6 +105,21 @@ class PLL_Static_Pages {
 	 */
 	protected function get_translation( $static_page, $language ) {
 		$translations = $this->model->post->get_raw_translations( $this->$static_page );
+
+		if ( empty( $translations ) ) {
+			$page_lang = $this->model->post->get_object_term( $this->$static_page, $this->model->post->get_tax_language() );
+
+			if ( empty( $page_lang ) || $page_lang->slug !== $language['slug'] ) {
+				return 0;
+			}
+
+			/*
+			 * Current page doesn't have any translation,
+			 * but has a language defined corresponding to the current one.
+			 */
+			return $this->$static_page;
+		}
+
 		if ( ! isset( $translations[ $language['slug'] ] ) ) {
 			return 0;
 		}
