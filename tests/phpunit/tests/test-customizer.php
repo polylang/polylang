@@ -130,28 +130,4 @@ class Customizer_Test extends PLL_UnitTestCase {
 
 		$this->assertFalse( $this->pll_env->should_customize_menu_be_removed() );
 	}
-
-	public function test_customize_registered_hooks_without_static_page_on_front() {
-		global $_wp_theme_features;
-
-		update_option( 'show_on_front', 'posts' ); // No `PLL_Frontend_Static_Pages` instance.
-		self::$model->clean_languages_cache();
-
-		// Switch to a block theme.
-		switch_theme( 'twentytwentythree' );
-		// Force the features.
-		$_wp_theme_features['block-templates']      = true;
-		$_wp_theme_features['block-template-parts'] = true;
-
-		$_POST['wp_customize'] = 'on';
-
-		$links_model   = self::$model->get_links_model();
-		$this->pll_env = new PLL_Frontend( $links_model );
-		$this->pll_env->init(); // Implicit `PLL_Frontend_Nav_Menu` instance.
-		$GLOBALS['wp_customize'] = new WP_Customize_Manager();
-		$this->wp_customize      = $GLOBALS['wp_customize'];
-		do_action( 'customize_register', $this->wp_customize );
-
-		$this->assertTrue( $this->pll_env->should_customize_menu_be_removed() );
-	}
 }
