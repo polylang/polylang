@@ -215,10 +215,7 @@ abstract class PLL_Base {
 			$floor++;
 		}
 
-		$count = 0;
-		foreach ( $wp_filter['customize_register']->callbacks as $callbacks ) { // Several callbacks can be keyed by priorities.
-			$count += count( $callbacks );
-		}
+		$count = array_sum( array_map( 'count', $wp_filter['customize_register']->callbacks ) );
 
 		return $count > $floor;
 	}
