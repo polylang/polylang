@@ -1,7 +1,5 @@
 <?php
 class Admin_Test extends PLL_UnitTestCase {
-
-	protected $nav_menu;
 	protected static $stylesheet;
 
 	/**
@@ -67,10 +65,9 @@ class Admin_Test extends PLL_UnitTestCase {
 		global $_wp_theme_features;
 		unset( $_wp_theme_features['widgets'] );
 
-
-		$links_model = self::$model->get_links_model();
-		$pll_admin = new PLL_Admin( $links_model );
-		$this->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
+		$links_model         = self::$model->get_links_model();
+		$pll_admin           = new PLL_Admin( $links_model );
+		$pll_admin->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
 
 		self::require_wp_menus();
 
@@ -83,9 +80,9 @@ class Admin_Test extends PLL_UnitTestCase {
 		global $_wp_theme_features;
 		unset( $_wp_theme_features['widgets'] );
 
-		$links_model = self::$model->get_links_model();
-		$pll_admin = new PLL_Admin( $links_model );
-		$this->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
+		$links_model         = self::$model->get_links_model();
+		$pll_admin           = new PLL_Admin( $links_model );
+		$pll_admin->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
 
 		self::require_wp_menus();
 
@@ -104,9 +101,9 @@ class Admin_Test extends PLL_UnitTestCase {
 		global $_wp_theme_features;
 		unset( $_wp_theme_features['widgets'] );
 
-		$links_model = self::$model->get_links_model();
-		$pll_admin = new PLL_Admin( $links_model );
-		$this->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
+		$links_model         = self::$model->get_links_model();
+		$pll_admin           = new PLL_Admin( $links_model );
+		$pll_admin->nav_menu = new PLL_Nav_Menu( $pll_admin ); // For auto added pages to menu.
 
 		add_action( 'customize_register', array( $this, 'whatever' ) );
 
