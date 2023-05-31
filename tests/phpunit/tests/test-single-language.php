@@ -11,7 +11,7 @@ class Single_Language_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 	}
 
-	public function FunctionName() {
+	public function set_up() {
 		parent::set_up();
 
 		$this->home_en = $this->factory()->post->create(
