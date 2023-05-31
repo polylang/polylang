@@ -20,12 +20,14 @@ class Single_Language_Test extends PLL_UnitTestCase {
 				'post_title' => 'Front Page EN',
 			)
 		);
+		self::$model->post->set_language( $this->home_en, 'en' );
 		$this->posts_en = $this->factory()->post->create(
 			array(
 				'post_type'  => 'page',
 				'post_title' => 'Blog Page EN',
 			)
 		);
+		self::$model->post->set_language( $this->posts_en, 'en' );
 	}
 
 	/**
@@ -36,7 +38,7 @@ class Single_Language_Test extends PLL_UnitTestCase {
 		global $wp_rewrite;
 
 		$options                  = PLL_Install::get_default_options();
-		$options['redirect_lang'] = 0;
+		$options['redirect_lang'] = 1;
 		$options['hide_default']  = 0;
 		$options['force_lang']    = 1;
 		$options['rewrite']       = 1;
@@ -57,8 +59,10 @@ class Single_Language_Test extends PLL_UnitTestCase {
 		$links_model->init();
 		$pll = new PLL_Frontend( $links_model );
 		$pll->init();
+		$pll->model->clean_languages_cache();
 
-		$this->go_to( home_url() );
+		// $this->go_to( home_url() );
+		$this->go_to( home_url( '/en' ) );
 
 		$this->assertTrue( is_front_page() );
 		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_front_page' );
