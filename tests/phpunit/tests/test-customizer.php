@@ -124,9 +124,7 @@ class Customizer_Test extends PLL_UnitTestCase {
 		$links_model   = self::$model->get_links_model();
 		$this->pll_env = new PLL_Frontend( $links_model );
 		$this->pll_env->init(); // Implicit `PLL_Frontend_Nav_Menu` instance.
-		$GLOBALS['wp_customize'] = new WP_Customize_Manager();
-		$this->wp_customize      = $GLOBALS['wp_customize'];
-		do_action( 'customize_register', $this->wp_customize );
+		add_action( 'customize_register', '__return_false' );
 
 		$this->assertFalse( $this->pll_env->should_customize_menu_be_removed() );
 	}
