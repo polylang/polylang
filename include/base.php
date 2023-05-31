@@ -186,8 +186,7 @@ abstract class PLL_Base {
 	}
 
 	/**
-	 * Tells whether or not Polylang's callbacks are hooked to `customize_register`.
-	 * Overridden by child classes.
+	 * Tells whether or not Polylang or third party callbacks are hooked to `customize_register`.
 	 *
 	 * @since 3.4.3
 	 *
