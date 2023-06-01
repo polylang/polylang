@@ -259,6 +259,7 @@ class PLL_Filters {
 		$language = empty( $parsed_args['lang'] ) ? $this->curlang : $this->model->get_language( $parsed_args['lang'] );
 
 		if ( empty( $language ) || ! $this->model->is_translated_post_type( $parsed_args['post_type'] ) ) {
+			$query_args['lang'] = '';
 			return $query_args;
 		}
 
