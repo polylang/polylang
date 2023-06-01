@@ -861,7 +861,7 @@ class PLL_Model {
 			return $orderby;
 		}
 
-		return sprintf( 'tt.taxonomy = "language" DESC, %1$s.term_group, %1$s.term_id', $matches['alias'] );
+		return sprintf( 'tt.taxonomy = \'language\' DESC, %1$s.term_group, %1$s.term_id', $matches['alias'] );
 	}
 
 	/**
