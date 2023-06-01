@@ -192,7 +192,7 @@ abstract class PLL_Base {
 	 *
 	 * @global $wp_filter
 	 *
-	 * @return boolean True if Polylang's callbacks are hooked, false otherwise.
+	 * @return bool True if Polylang's callbacks are hooked, false otherwise.
 	 */
 	protected function is_customize_register_hooked() {
 		global $wp_filter;
