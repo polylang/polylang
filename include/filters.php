@@ -251,12 +251,19 @@ class PLL_Filters {
 	 * @return array Array of arguments passed to WP_Query with the language.
 	 */
 	public function get_pages_query_args( $query_args, $parsed_args ) {
-		if ( isset( $parsed_args['lang'] ) ) {
-			if ( $parsed_args['lang'] instanceof PLL_Language ) {
-				$parsed_args['lang'] = $parsed_args['lang']->slug;
-			}
-			$query_args['lang'] = $parsed_args['lang'];
+		if ( isset( $parsed_args['lang'] ) && '' === $parsed_args['lang'] ) {
+			$query_args['lang'] = '';
+			return $query_args;
 		}
+
+		$language = empty( $parsed_args['lang'] ) ? $this->curlang : $this->model->get_language( $parsed_args['lang'] );
+
+		if ( empty( $language ) || ! $this->model->is_translated_post_type( $parsed_args['post_type'] ) ) {
+			return $query_args;
+		}
+
+		$query_args['lang'] = $language->slug;
+
 		return $query_args;
 	}
 
