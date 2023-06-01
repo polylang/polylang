@@ -60,7 +60,7 @@ class PLL_Filters {
 		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 10, 2 );
 
 		// Filters the get_pages function according to the current language
-		if ( version_compare( $wp_version, '6.3.alpha', '<' ) ) {
+		if ( version_compare( $wp_version, '6.3-alpha', '<' ) ) {
 			// Backward compatibility with WP < 6.3.
 			add_filter( 'get_pages', array( $this, 'get_pages' ), 10, 2 );
 		}
