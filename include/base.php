@@ -182,22 +182,41 @@ abstract class PLL_Base {
 			return false;
 		}
 
+		return ! $this->is_customize_register_hooked();
+	}
+
+	/**
+	 * Tells whether or not Polylang or third party callbacks are hooked to `customize_register`.
+	 *
+	 * @since 3.4.3
+	 *
+	 * @global $wp_filter
+	 *
+	 * @return bool True if Polylang's callbacks are hooked, false otherwise.
+	 */
+	protected function is_customize_register_hooked() {
 		global $wp_filter;
-		if ( empty( $wp_filter['customize_register'] ) ) {
+
+		if ( empty( $wp_filter['customize_register'] ) || ! $wp_filter['customize_register'] instanceof WP_Hook ) {
 			return false;
 		}
-
-		$customize_register_hooks = count( array_merge( ...array_values( $wp_filter['customize_register']->callbacks ) ) );
 
 		/*
 		 * 'customize_register' is hooked by:
 		 * @see PLL_Nav_Menu::create_nav_menu_locations()
 		 * @see PLL_Frontend_Static_Pages::filter_customizer()
 		 */
-		if ( $customize_register_hooks > 1 + (int) ( 'page' === get_option( 'show_on_front' ) ) ) { // Are there other hooks than our own?
-			return false;
+		$floor = 0;
+		if ( ! empty( $this->nav_menu ) && (bool) $wp_filter['customize_register']->has_filter( 'customize_register', array( $this->nav_menu, 'create_nav_menu_locations' ) ) ) {
+			$floor++;
 		}
 
-		return true;
+		if ( ! empty( $this->static_pages ) && (bool) $wp_filter['customize_register']->has_filter( 'customize_register', array( $this->static_pages, 'filter_customizer' ) ) ) {
+			$floor++;
+		}
+
+		$count = array_sum( array_map( 'count', $wp_filter['customize_register']->callbacks ) );
+
+		return $count > $floor;
 	}
 }

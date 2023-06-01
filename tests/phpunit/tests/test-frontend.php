@@ -5,7 +5,6 @@ class Frontend_Test extends PLL_UnitTestCase {
 
 	protected static $editor;
 	protected static $stylesheet;
-	protected $nav_menu;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -43,7 +42,7 @@ class Frontend_Test extends PLL_UnitTestCase {
 
 		$links_model = self::$model->get_links_model();
 		$frontend = new PLL_Frontend( $links_model );
-		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
+		$frontend->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
 
 		_wp_admin_bar_init();
 		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
@@ -58,7 +57,7 @@ class Frontend_Test extends PLL_UnitTestCase {
 
 		$links_model = self::$model->get_links_model();
 		$frontend = new PLL_Frontend( $links_model );
-		$this->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
+		$frontend->nav_menu = new PLL_Nav_Menu( $frontend ); // For auto added pages to menu.
 
 		_wp_admin_bar_init();
 		do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
