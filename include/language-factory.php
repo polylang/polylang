@@ -243,7 +243,7 @@ class PLL_Language_Factory {
 		);
 
 		foreach ( $directories as $dir ) {
-			if ( is_readable( $file = "{$dir}/{$locale}.png" ) || is_readable( $file = "{$dir}/{$locale}.jpg" ) || is_readable( $file = "{$dir}/{$locale}.svg" ) ) {
+			if ( is_readable( $file = "{$dir}/{$locale}.png" ) || is_readable( $file = "{$dir}/{$locale}.jpg" ) || is_readable( $file = "{$dir}/{$locale}.jpeg" ) || is_readable( $file = "{$dir}/{$locale}.svg" ) ) {
 				$flags['custom_flag'] = array(
 					'url' => content_url( '/' . str_replace( WP_CONTENT_DIR, '', $file ) ),
 				);
