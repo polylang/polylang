@@ -133,16 +133,16 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 			FROM $wpdb->posts $join_clause
 			WHERE post_date < '$thisyear-$thismonth-01'
 			AND post_type = 'post' AND post_status = 'publish' $where_clause
-				ORDER BY post_date DESC
-				LIMIT 1"
+			ORDER BY post_date DESC
+			LIMIT 1"
 		);  #modified#
 		$next     = $wpdb->get_row(
 			"SELECT MONTH(post_date) AS month, YEAR(post_date) AS year
 			FROM $wpdb->posts $join_clause
 			WHERE post_date > '$thisyear-$thismonth-{$last_day} 23:59:59'
 			AND post_type = 'post' AND post_status = 'publish' $where_clause
-				ORDER BY post_date ASC
-				LIMIT 1"
+			ORDER BY post_date ASC
+			LIMIT 1"
 		);  #modified#
 
 		/* translators: Calendar caption: 1: Month name, 2: 4-digit year. */
