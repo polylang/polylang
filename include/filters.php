@@ -244,7 +244,7 @@ class PLL_Filters {
 	/**
 	 * Filters the WP_Query in get_pages() per language.
 	 *
-	 * @since 3.4
+	 * @since 3.4.3
 	 *
 	 * @param array $query_args  Array of arguments passed to WP_Query.
 	 * @param array $parsed_args Array of get_pages() arguments.
