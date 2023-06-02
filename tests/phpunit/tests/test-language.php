@@ -134,4 +134,31 @@ class Language_Test extends PLL_UnitTestCase {
 		$this->assertSame( $expected, $this->language->get_tax_props( 'term_taxonomy_id' ) );
 		$this->assertSame( $this->data['term_props'], $this->language->get_tax_props() );
 	}
+
+	/**
+	 * @ticket #1296
+	 * @see https://github.com/polylang/polylang/issues/1296.
+	 *
+	 * @return void
+	 */
+	public function test_flag_url_subdirectory() {
+		// Fake WP install in subdir.
+		update_option( 'siteurl', 'http://example.org/sub/' );
+		update_option( 'home', 'http://example.org' );
+
+		// Add a custom flag to tweak the URL otherwise we get the full path to the file in the test environment.
+		add_filter(
+			'pll_custom_flag',
+			function( $flag ) {
+				$custom_flag['url'] = 'http://example.org/sub/wp-content/plugins/polylang/flags/us.png';
+
+				return $custom_flag;
+			}
+		);
+
+		self::$model->clean_languages_cache();
+		$en = self::$model->get_language( 'en' );
+
+		$this->assertSame( 'http://example.org/sub/wp-content/plugins/polylang/flags/us.png', $en->get_display_flag_url() );
+	}
 }
