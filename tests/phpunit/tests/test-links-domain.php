@@ -129,4 +129,44 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertSame( 'http://example.de/', get_permalink( $home_de ) );
 		$this->assertSame( 'http://example.de/', $pll_admin->links_model->home_url( 'de' ) );
 	}
+
+	public function test_flags_urls_sub_dir() {
+		// Fake WP install in subdir.
+		update_option( 'siteurl', 'http://example.org/sub/' );
+		update_option( 'home', 'http://example.org' );
+
+		// Add a custom flag to tweak the URL otherwise we get the full path to the file in the test environment.
+		add_filter(
+			'pll_custom_flag',
+			function( $flag, $code ) {
+				$base_url = 'http://example.org';
+
+				if ( 'us' !== $code ) {
+					$base_url = "http://example.{$code}";
+				}
+
+				$custom_flag['url'] = "{$base_url}/sub/wp-content/plugins/polylang/flags/{$code}.png";
+
+				return $custom_flag;
+			},
+			10,
+			2
+		);
+
+		self::$model->clean_languages_cache();
+		$en = self::$model->get_language( 'en' );
+
+		$this->assertSame( 'http://example.org/sub/wp-content/plugins/polylang/flags/us.png', $en->get_display_flag_url() );
+		$this->assertSame( 'http://example.org/', home_url( set_url_scheme( $en->get_home_url(), 'relative' ) ) );
+
+		$fr = self::$model->get_language( 'fr' );
+
+		$this->assertSame( 'http://example.fr/sub/wp-content/plugins/polylang/flags/fr.png', $fr->get_display_flag_url() );
+		$this->assertSame( 'http://example.fr/', home_url( set_url_scheme( $fr->get_home_url(), 'relative' ) ) );
+
+		$de = self::$model->get_language( 'de' );
+
+		$this->assertSame( 'http://example.de/sub/wp-content/plugins/polylang/flags/de.png', $de->get_display_flag_url() );
+		$this->assertSame( 'http://example.de/', home_url( set_url_scheme( $de->get_home_url(), 'relative' ) ) );
+	}
 }
