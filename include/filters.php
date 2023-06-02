@@ -43,6 +43,8 @@ class PLL_Filters {
 	 * @param object $polylang
 	 */
 	public function __construct( &$polylang ) {
+		global $wp_version;
+
 		$this->links_model = &$polylang->links_model;
 		$this->model = &$polylang->model;
 		$this->options = &$polylang->options;
@@ -58,7 +60,11 @@ class PLL_Filters {
 		add_filter( 'comments_clauses', array( $this, 'comments_clauses' ), 10, 2 );
 
 		// Filters the get_pages function according to the current language
-		add_filter( 'get_pages', array( $this, 'get_pages' ), 10, 2 );
+		if ( version_compare( $wp_version, '6.3-alpha', '<' ) ) {
+			// Backward compatibility with WP < 6.3.
+			add_filter( 'get_pages', array( $this, 'get_pages' ), 10, 2 );
+		}
+		add_filter( 'get_pages_query_args', array( $this, 'get_pages_query_args' ), 10, 2 );
 
 		// Rewrites next and previous post links to filter them by language
 		add_filter( 'get_previous_post_join', array( $this, 'posts_join' ), 10, 5 );
@@ -233,6 +239,23 @@ class PLL_Filters {
 
 		$once = false; // In case get_pages() is called another time.
 		return $pages;
+	}
+
+	/**
+	 * Filters the WP_Query in get_pages() per language.
+	 *
+	 * @since 3.4.3
+	 *
+	 * @param array $query_args  Array of arguments passed to WP_Query.
+	 * @param array $parsed_args Array of get_pages() arguments.
+	 * @return array Array of arguments passed to WP_Query with the language.
+	 */
+	public function get_pages_query_args( $query_args, $parsed_args ) {
+		if ( isset( $parsed_args['lang'] ) ) {
+			$query_args['lang'] = $parsed_args['lang'];
+		}
+
+		return $query_args;
 	}
 
 	/**
