@@ -486,9 +486,9 @@ class PLL_Language extends PLL_Language_Deprecated {
 		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 
 		/**
-		 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+		 * Let's use `home_url()` so the returned URL will be filtered properly according to the current domain.
 		 */
-		return site_url( set_url_scheme( $flag_url, 'relative' ) );
+		return home_url( set_url_scheme( $flag_url, 'relative' ) );
 	}
 
 	/**
@@ -581,11 +581,11 @@ class PLL_Language extends PLL_Language_Deprecated {
 	public function get_home_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
 			/**
-			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			 * Let's use `home_url()` so the returned URL will be filtered properly according to the current domain.
 			 *
 			 * @phpstan-var non-empty-string
 			 */
-			return site_url( set_url_scheme( $this->home_url, 'relative' ) );
+			return home_url( set_url_scheme( $this->home_url, 'relative' ) );
 		}
 
 		return $this->home_url;
@@ -603,11 +603,11 @@ class PLL_Language extends PLL_Language_Deprecated {
 	public function get_search_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
 			/**
-			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			 * Let's use `home_url()` so the returned URL will be filtered properly according to the current domain.
 			 *
 			 * @phpstan-var non-empty-string
 			*/
-			return site_url( set_url_scheme( $this->search_url, 'relative' ) );
+			return home_url( set_url_scheme( $this->search_url, 'relative' ) );
 		}
 
 		return $this->search_url;
