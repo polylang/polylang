@@ -335,13 +335,10 @@ class PLL_Admin_Classic_Editor {
 		$language = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // phpcs:ignore WordPress.Security.NonceVerification
 
 		if ( empty( $language ) ) {
+			$language = $this->pref_lang;
+		}
 
-			if ( empty( $this->pref_lang ) ) {
-				return $dropdown_args;
-			}
-
-			$dropdown_args['lang'] = $this->pref_lang->slug;
-		} else {
+		if ( ! empty( $language ) ) {
 			$dropdown_args['lang'] = $language->slug;
 		}
 
