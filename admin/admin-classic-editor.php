@@ -334,11 +334,7 @@ class PLL_Admin_Classic_Editor {
 	public function page_attributes_dropdown_pages_args( $dropdown_args, $post ) {
 		$language = isset( $_POST['lang'] ) ? $this->model->get_language( sanitize_key( $_POST['lang'] ) ) : $this->model->post->get_language( $post->ID ); // phpcs:ignore WordPress.Security.NonceVerification
 
-		if ( empty( $language ) ) {
-			$dropdown_args['lang'] = $this->pref_lang->slug;
-		} else {
-			$dropdown_args['lang'] = $language->slug;
-		}
+		$dropdown_args['lang'] = empty( $language ) ? $this->pref_lang->slug : $language->slug;
 
 		return $dropdown_args;
 	}
