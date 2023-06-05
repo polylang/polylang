@@ -5,8 +5,6 @@ class Links_Subdomain_Test extends PLL_Domain_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		global $wp_rewrite;
-
 		$this->hosts = array(
 			'en' => 'http://example.org',
 			'fr' => 'http://fr.example.org',
@@ -16,10 +14,7 @@ class Links_Subdomain_Test extends PLL_Domain_UnitTestCase {
 		self::$model->options['hide_default'] = 1;
 		self::$model->options['force_lang'] = 2;
 
-		// switch to pretty permalinks
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $this->structure );
-		$this->links_model = self::$model->get_links_model();
+		$this->init_links_model();
 	}
 
 	public function test_get_language_from_url() {

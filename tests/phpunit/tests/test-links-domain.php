@@ -5,8 +5,6 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		global $wp_rewrite;
-
 		$this->hosts = array(
 			'en' => 'http://example.org',
 			'fr' => 'http://example.fr',
@@ -17,14 +15,81 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		self::$model->options['force_lang'] = 3;
 		self::$model->options['domains'] = $this->hosts;
 
-		// Refresh languages.
-		self::$model->clean_languages_cache();
-		self::$model->get_languages_list();
+		$this->init_links_model();
+	}
 
-		// switch to pretty permalinks
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $this->structure );
-		$this->links_model = self::$model->get_links_model();
+	public function test_add_language_to_link() {
+		$url = $this->hosts['en'] . '/test/';
+
+		$this->assertEquals( $this->hosts['en'] . '/test/', $this->links_model->add_language_to_link( $url, self::$model->get_language( 'en' ) ) );
+		$this->assertEquals( $this->hosts['fr'] . '/test/', $this->links_model->add_language_to_link( $url, self::$model->get_language( 'fr' ) ) );
+	}
+
+	public function test_double_add_language_to_link() {
+		$this->assertEquals( $this->hosts['fr'] . '/test/', $this->links_model->add_language_to_link( $this->hosts['fr'] . '/test/', self::$model->get_language( 'fr' ) ) );
+	}
+
+	public function test_remove_language_from_link() {
+		$this->assertEquals( $this->hosts['en'] . '/test/', $this->links_model->remove_language_from_link( $this->hosts['en'] . '/test/' ) );
+		$this->assertEquals( $this->hosts['en'] . '/test/', $this->links_model->remove_language_from_link( $this->hosts['fr'] . '/test/' ) );
+	}
+
+	public function test_switch_language_in_link() {
+		$this->assertEquals( $this->hosts['en'] . '/test/', $this->links_model->switch_language_in_link( $this->hosts['fr'] . '/test/', self::$model->get_language( 'en' ) ) );
+		$this->assertEquals( $this->hosts['de'] . '/test/', $this->links_model->switch_language_in_link( $this->hosts['fr'] . '/test/', self::$model->get_language( 'de' ) ) );
+		$this->assertEquals( $this->hosts['fr'] . '/test/', $this->links_model->switch_language_in_link( $this->hosts['en'] . '/test/', self::$model->get_language( 'fr' ) ) );
+	}
+
+	public function test_add_paged_to_link() {
+		$this->assertEquals( $this->hosts['en'] . '/test/page/2/', $this->links_model->add_paged_to_link( $this->hosts['en'] . '/test/', 2 ) );
+		$this->assertEquals( $this->hosts['fr'] . '/test/page/2/', $this->links_model->add_paged_to_link( $this->hosts['fr'] . '/test/', 2 ) );
+	}
+
+	public function test_remove_paged_from_link() {
+		$this->assertEquals( $this->hosts['en'] . '/test/', $this->links_model->remove_paged_from_link( $this->hosts['en'] . '/test/page/2/' ) );
+		$this->assertEquals( $this->hosts['fr'] . '/test/', $this->links_model->remove_paged_from_link( $this->hosts['fr'] . '/test/page/2/' ) );
+	}
+
+	public function test_get_language_from_url() {
+		// hack $_SERVER
+		$server = $_SERVER;
+		$_SERVER['REQUEST_URI'] = '/test/';
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['fr'], PHP_URL_HOST );
+		$this->assertEquals( 'fr', $this->links_model->get_language_from_url() );
+
+		// clean up
+		$_SERVER = $server;
+	}
+
+	public function test_home_url() {
+		$this->assertEquals( $this->hosts['en'] . '/', $this->links_model->home_url( self::$model->get_language( 'en' ) ) );
+		$this->assertEquals( $this->hosts['fr'] . '/', $this->links_model->home_url( self::$model->get_language( 'fr' ) ) );
+	}
+
+	public function test_allowed_redirect_hosts() {
+		$hosts = str_replace( 'http://', '', array_values( $this->hosts ) );
+		$this->assertSameSets( $hosts, $this->links_model->allowed_redirect_hosts( array() ) );
+		$this->assertEquals( $this->hosts['fr'], wp_validate_redirect( $this->hosts['fr'] ) );
+	}
+
+	public function test_upload_dir() {
+		// Hack $_SERVER.
+		$server = $_SERVER;
+		$_SERVER['REQUEST_URI'] = '/test/';
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['fr'], PHP_URL_HOST );
+		$uploads = wp_get_upload_dir(); // Since WP 4.5.
+
+		$this->assertStringContainsString( $this->hosts['fr'], $uploads['url'] );
+		$this->assertStringContainsString( $this->hosts['fr'], $uploads['baseurl'] );
+
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts['en'], PHP_URL_HOST );
+		$uploads = wp_get_upload_dir(); // Since WP 4.5.
+
+		$this->assertStringContainsString( $this->hosts['en'], $uploads['url'] );
+		$this->assertStringContainsString( $this->hosts['en'], $uploads['baseurl'] );
+
+		// Clean up.
+		$_SERVER = $server;
 	}
 
 	public function test_wrong_get_language_from_url() {
@@ -128,45 +193,5 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$this->assertSame( 'http://example.fr/', $pll_admin->links_model->home_url( 'fr' ) );
 		$this->assertSame( 'http://example.de/', get_permalink( $home_de ) );
 		$this->assertSame( 'http://example.de/', $pll_admin->links_model->home_url( 'de' ) );
-	}
-
-	public function test_flags_urls_sub_dir() {
-		// Fake WP install in subdir.
-		update_option( 'siteurl', 'http://example.org/sub/' );
-		update_option( 'home', 'http://example.org' );
-
-		// Add a custom flag to tweak the URL otherwise we get the full path to the file in the test environment.
-		add_filter(
-			'pll_custom_flag',
-			function( $flag, $code ) {
-				$base_url = 'http://example.org';
-
-				if ( 'us' !== $code ) {
-					$base_url = "http://example.{$code}";
-				}
-
-				$custom_flag['url'] = "{$base_url}/sub/wp-content/plugins/polylang/flags/{$code}.png";
-
-				return $custom_flag;
-			},
-			10,
-			2
-		);
-
-		self::$model->clean_languages_cache();
-		$en = self::$model->get_language( 'en' );
-
-		$this->assertSame( 'http://example.org/sub/wp-content/plugins/polylang/flags/us.png', $en->get_display_flag_url() );
-		$this->assertSame( 'http://example.org/', home_url( set_url_scheme( $en->get_home_url(), 'relative' ) ) );
-
-		$fr = self::$model->get_language( 'fr' );
-
-		$this->assertSame( 'http://example.fr/sub/wp-content/plugins/polylang/flags/fr.png', $fr->get_display_flag_url() );
-		$this->assertSame( 'http://example.fr/', home_url( set_url_scheme( $fr->get_home_url(), 'relative' ) ) );
-
-		$de = self::$model->get_language( 'de' );
-
-		$this->assertSame( 'http://example.de/sub/wp-content/plugins/polylang/flags/de.png', $de->get_display_flag_url() );
-		$this->assertSame( 'http://example.de/', home_url( set_url_scheme( $de->get_home_url(), 'relative' ) ) );
 	}
 }

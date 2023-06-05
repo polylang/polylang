@@ -32,6 +32,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 
 		// Filters the site url (mainly to get the correct login form).
 		add_filter( 'site_url', array( $this, 'site_url' ) );
+		add_filter( 'pll_language_url', array( $this, 'site_url' ) );
 	}
 
 
