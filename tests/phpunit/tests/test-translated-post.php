@@ -245,7 +245,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		}
 
 		$sites = get_sites( array( 'fields' => 'ids' ) );
-		$sites = array_diff( $sites, array( get_current_blog_id() ), true );
+		$sites = array_diff( $sites, array( get_current_blog_id() ) );
 
 		$this->assertNotEmpty( $sites, 'The network should have more than one site.' );
 
