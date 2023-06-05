@@ -224,4 +224,38 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 
 		$this->dont_save_translations_with_incorrect_language( $model->post );
 	}
+
+	/**
+	 * @ticket #1698 see {https://github.com/polylang/polylang-pro/issues/1698}.
+	 * @covers PLL_Translated_Post::get_db_infos()
+	 */
+	public function test_get_db_infos() {
+		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
+		$model = new PLL_Model( $options );
+
+		$ref = new ReflectionMethod( $model->post, 'get_db_infos' );
+		$ref->setAccessible( true );
+		$db_infos = $ref->invoke( $model->post );
+
+		$this->assertSame( $GLOBALS['wpdb']->posts, $db_infos['table'], 'get_db_infos() does not return the right table name.' );
+		$this->assertSame( $GLOBALS['wpdb']->posts, $db_infos['default_alias'], 'get_db_infos() does not return the right field alias.' );
+
+		if ( ! is_multisite() ) {
+			return;
+		}
+
+		$sites = get_sites( array( 'fields' => 'ids' ) );
+		$sites = array_diff( $sites, array( get_current_blog_id() ), true );
+
+		$this->assertNotEmpty( $sites, 'The network should have more than one site.' );
+
+		switch_to_blog( reset( $sites ) );
+		$multi_db_infos = $ref->invoke( $model->post );
+		restore_current_blog();
+
+		$this->assertSame( $GLOBALS['wpdb']->posts, $multi_db_infos['table'], 'get_db_infos() does not return the right table name.' );
+		$this->assertSame( $GLOBALS['wpdb']->posts, $multi_db_infos['default_alias'], 'get_db_infos() does not return the right field alias.' );
+		$this->assertNotSame( $db_infos['table'], $multi_db_infos['table'], 'The table name should be different between blogs.' );
+		$this->assertNotSame( $db_infos['default_alias'], $multi_db_infos['default_alias'], 'The field alias should be different between blogs.' );
+	}
 }
