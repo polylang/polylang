@@ -485,10 +485,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	public function get_display_flag_url() {
 		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 
-		/**
-		 * Let's use `home_url()` so the returned URL will be filtered properly according to the current domain.
-		 */
-		return home_url( set_url_scheme( $flag_url, 'relative' ) );
+		return $this->filter_url( $flag_url );
 	}
 
 	/**
@@ -580,12 +577,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function get_home_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
-			/**
-			 * Let's use `home_url()` so the returned URL will be filtered properly according to the current domain.
-			 *
-			 * @phpstan-var non-empty-string
-			 */
-			return home_url( set_url_scheme( $this->home_url, 'relative' ) );
+			return $this->filter_url( $this->home_url );
 		}
 
 		return $this->home_url;
@@ -602,12 +594,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function get_search_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
-			/**
-			 * Let's use `home_url()` so the returned URL will be filtered properly according to the current domain.
-			 *
-			 * @phpstan-var non-empty-string
-			*/
-			return home_url( set_url_scheme( $this->search_url, 'relative' ) );
+			return $this->filter_url( $this->search_url );
 		}
 
 		return $this->search_url;
@@ -650,5 +637,20 @@ class PLL_Language extends PLL_Language_Deprecated {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Filters a `PLL_Language` URL property.
+	 * Mostly used to set the correct domain.
+	 *
+	 * @since 3.4.3
+	 *
+	 * @param string $url URL to filter.
+	 * @return string Filtered URL.
+	 *
+	 * @phpstan-param non-empty-string $url
+	 */
+	private function filter_url( $url ) {
+		return apply_filters( 'pll_language_url', $url, $this );
 	}
 }
