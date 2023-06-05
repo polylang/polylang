@@ -126,9 +126,10 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		switch_to_blog( $site_id );
 		$multi_db_infos = $ref->invoke( $model->term );
-		restore_current_blog();
 
 		$this->assertSame( $GLOBALS['wpdb']->term_taxonomy, $multi_db_infos['table'], 'get_db_infos() does not return the right table name.' );
 		$this->assertNotSame( $db_infos['table'], $multi_db_infos['table'], 'The table name should be different between blogs.' );
+
+		restore_current_blog();
 	}
 }
