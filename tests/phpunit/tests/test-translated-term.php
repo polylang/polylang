@@ -122,12 +122,9 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 			return;
 		}
 
-		$sites = get_sites( array( 'fields' => 'ids' ) );
-		$sites = array_diff( $sites, array( get_current_blog_id() ) );
+		$site_id = self::factory()->blog->create();
 
-		$this->assertNotEmpty( $sites, 'The network should have more than one site.' );
-
-		switch_to_blog( reset( $sites ) );
+		switch_to_blog( $site_id );
 		$multi_db_infos = $ref->invoke( $model->term );
 		restore_current_blog();
 
