@@ -13,6 +13,14 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 	}
 
+	public function tear_down() {
+		parent::tear_down();
+
+		if ( is_multisite() ) {
+			restore_current_blog();
+		}
+	}
+
 	public function test_post_language() {
 		$post_id = self::factory()->post->create();
 		$language_set = self::$model->post->set_language( $post_id, 'fr' );
@@ -253,7 +261,5 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertSame( $GLOBALS['wpdb']->posts, $multi_db_infos['default_alias'], 'get_db_infos() does not return the right field alias.' );
 		$this->assertNotSame( $db_infos['table'], $multi_db_infos['table'], 'The table name should be different between blogs.' );
 		$this->assertNotSame( $db_infos['default_alias'], $multi_db_infos['default_alias'], 'The field alias should be different between blogs.' );
-
-		restore_current_blog();
 	}
 }
