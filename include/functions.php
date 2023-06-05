@@ -29,9 +29,9 @@ if ( ! function_exists( 'wpcom_vip_get_page_by_path' ) ) {
 if ( ! function_exists( 'sanitize_locale_name' ) ) {
 	/**
 	 * Strips out all characters not allowed in a locale code.
+	 * Backward compatibility with WP < 6.2.1.
 	 *
 	 * @since 3.5
-	 * @since WP 6.2.1
 	 *
 	 * @param string $locale_name The locale name to be sanitized.
 	 * @return string The sanitized value.
@@ -42,9 +42,9 @@ if ( ! function_exists( 'sanitize_locale_name' ) ) {
 
 		/**
 		 * Filters a sanitized locale name string.
+		 * Backward compatibility with WP < 6.2.1.
 		 *
 		 * @since 3.5
-		 * @since WP 6.2.1
 		 *
 		 * @param string $sanitized   The sanitized locale name.
 		 * @param string $locale_name The locale name before sanitization.
