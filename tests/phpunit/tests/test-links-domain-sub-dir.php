@@ -19,7 +19,7 @@ class Links_Domain_Sub_Dir_Test extends PLL_Domain_UnitTestCase {
 
 	public function test_flags_urls_sub_dir() {
 		// Fake WP install in subdir.
-		update_option( 'siteurl', 'http://example.org/sub/' );
+		update_option( 'siteurl', 'http://example.org/sub' );
 		update_option( 'home', 'http://example.org' );
 
 		$this->init_links_model();

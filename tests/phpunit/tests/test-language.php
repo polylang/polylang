@@ -143,7 +143,7 @@ class Language_Test extends PLL_UnitTestCase {
 	 */
 	public function test_flag_url_subdirectory() {
 		// Fake WP install in subdir.
-		update_option( 'siteurl', 'http://example.org/sub/' );
+		update_option( 'siteurl', 'http://example.org/sub' );
 		update_option( 'home', 'http://example.org' );
 
 		// Add a custom flag to tweak the URL otherwise we get the full path to the file in the test environment.
