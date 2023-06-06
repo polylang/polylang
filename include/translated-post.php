@@ -378,9 +378,10 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * Returns database-related informations that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
-	 * @since 3.4.3
 	 * @see PLL_Translatable_Object::join_clause()
 	 * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+	 *
+	 * @since 3.4.3
 	 *
 	 * @return string[] {
 	 *     @type string $table         Name of the table.
