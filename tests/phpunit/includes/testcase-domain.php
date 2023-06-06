@@ -27,11 +27,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	public function init_links_model() {
 		global $wp_rewrite;
 
-		// Refresh languages.
-		self::$model->clean_languages_cache();
-		self::$model->get_languages_list();
-
-		// switch to pretty permalinks
+		// Switch to pretty permalinks.
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $this->structure );
 		$this->links_model = self::$model->get_links_model();
