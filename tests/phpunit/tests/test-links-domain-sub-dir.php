@@ -22,43 +22,36 @@ class Links_Domain_Sub_Dir_Test extends PLL_Domain_UnitTestCase {
 		update_option( 'siteurl', 'http://example.org/sub' );
 		update_option( 'home', 'http://example.org' );
 
-		$this->init_links_model();
-
-		// Add a custom flag to tweak the URL otherwise we get the full path to the file in the test environment.
+		// Filter `plugins_url` because `WP_CONTENT_URL` is already defined...
 		add_filter(
-			'pll_custom_flag',
-			function( $flag, $code ) {
-				$base_url = 'http://example.org';
+			'plugins_url',
+			function( $url ) {
+				$url = str_replace( POLYLANG_DIR . '/', '/polylang/', $url );
 
-				if ( 'us' !== $code ) {
-					$base_url = "http://example.{$code}";
-				}
-
-				$custom_flag['url'] = "{$base_url}/sub/wp-content/plugins/polylang/flags/{$code}.png";
-
-				return $custom_flag;
+				return str_replace( 'wp-content', 'sub/wp-content', $url );
 			},
-			10,
-			2
+			-1
 		);
+
+		$this->init_links_model();
 
 		self::$model->clean_languages_cache();
 		$en = self::$model->get_language( 'en' );
 
 		$this->assertSame( $this->hosts['en'] . '/sub/wp-content/plugins/polylang/flags/us.png', $en->get_display_flag_url() );
-		$this->assertSame( $this->hosts['en'] . '/', apply_filters( 'pll_language_url', $en->get_home_url() ) );
-		$this->assertSame( $this->hosts['en'] . '/', apply_filters( 'pll_language_url', $en->get_search_url() ) );
+		$this->assertSame( $this->hosts['en'] . '/', apply_filters( 'pll_language_url', $en->get_home_url(), $en ) );
+		$this->assertSame( $this->hosts['en'] . '/', apply_filters( 'pll_language_url', $en->get_search_url(), $en ) );
 
 		$fr = self::$model->get_language( 'fr' );
 
 		$this->assertSame( $this->hosts['fr'] . '/sub/wp-content/plugins/polylang/flags/fr.png', $fr->get_display_flag_url() );
-		$this->assertSame( $this->hosts['fr'] . '/', apply_filters( 'pll_language_url', $fr->get_home_url() ) );
-		$this->assertSame( $this->hosts['fr'] . '/', apply_filters( 'pll_language_url', $fr->get_search_url() ) );
+		$this->assertSame( $this->hosts['fr'] . '/', apply_filters( 'pll_language_url', $fr->get_home_url(), $fr ) );
+		$this->assertSame( $this->hosts['fr'] . '/', apply_filters( 'pll_language_url', $fr->get_search_url(), $fr ) );
 
 		$de = self::$model->get_language( 'de' );
 
 		$this->assertSame( $this->hosts['de'] . '/sub/wp-content/plugins/polylang/flags/de.png', $de->get_display_flag_url() );
-		$this->assertSame( $this->hosts['de'] . '/', apply_filters( 'pll_language_url', $de->get_home_url() ) );
-		$this->assertSame( $this->hosts['de'] . '/', apply_filters( 'pll_language_url', $de->get_search_url() ) );
+		$this->assertSame( $this->hosts['de'] . '/', apply_filters( 'pll_language_url', $de->get_home_url(), $de ) );
+		$this->assertSame( $this->hosts['de'] . '/', apply_filters( 'pll_language_url', $de->get_search_url(), $de ) );
 	}
 }
