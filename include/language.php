@@ -651,6 +651,14 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @phpstan-param non-empty-string $url
 	 */
 	private function filter_url( $url ) {
+		/**
+		 * Filters `PLL_Language` URL property (e.g. `home_url`, `search_url` or `flag_url`).
+		 *
+		 * @since 3.4.3
+		 *
+		 * @param string $url  URL prop to filter.
+		 * @param self   $this Corresponding language object.
+		 */
 		return apply_filters( 'pll_language_url', $url, $this );
 	}
 }
