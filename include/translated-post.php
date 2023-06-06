@@ -9,6 +9,8 @@ defined( 'ABSPATH' ) || exit;
  * Sets the posts languages and translations model up.
  *
  * @since 1.8
+ *
+ * @phpstan-import-type DBInfoWithType from PLL_Translatable_Object_With_Types_Interface
  */
 class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translatable_Object_With_Types_Interface {
 
@@ -59,13 +61,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
 	public function __construct( PLL_Model &$model ) {
-		$this->db = array(
-			'table'         => $GLOBALS['wpdb']->posts,
-			'id_column'     => 'ID',
-			'type_column'   => 'post_type',
-			'default_alias' => $GLOBALS['wpdb']->posts,
-		);
-
 		parent::__construct( $model );
 
 		// Keep hooks in constructor for backward compatibility.
@@ -377,5 +372,31 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		}
 
 		return $posts;
+	}
+
+	/**
+	 * Returns database-related informations that can be used in some of this class methods.
+	 * These are specific to the table containing the objects.
+	 *
+	 * @see PLL_Translatable_Object::join_clause()
+	 * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+	 *
+	 * @since 3.4.3
+	 *
+	 * @return string[] {
+	 *     @type string $table         Name of the table.
+	 *     @type string $id_column     Name of the column containing the object's ID.
+	 *     @type string $type_column   Name of the column containing the object's type.
+	 *     @type string $default_alias Default alias corresponding to the object's table.
+	 * }
+	 * @phpstan-return DBInfoWithType
+	 */
+	protected function get_db_infos() {
+		return array(
+			'table'         => $GLOBALS['wpdb']->posts,
+			'id_column'     => 'ID',
+			'type_column'   => 'post_type',
+			'default_alias' => $GLOBALS['wpdb']->posts,
+		);
 	}
 }

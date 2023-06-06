@@ -18,6 +18,14 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		self::create_language( 'de_DE_formal' );
 	}
 
+	public function tear_down() {
+		parent::tear_down();
+
+		if ( is_multisite() ) {
+			restore_current_blog();
+		}
+	}
+
 	public function test_term_language() {
 		$term_id = self::factory()->term->create();
 		self::$model->term->set_language( $term_id, 'fr' );
@@ -102,5 +110,32 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$model->term = new PLL_Translated_Term( $model );
 
 		$this->dont_save_translations_with_incorrect_language( $model->term );
+	}
+
+	/**
+	 * @ticket #1698 see {https://github.com/polylang/polylang-pro/issues/1698}.
+	 * @covers PLL_Translated_Term::get_db_infos()
+	 */
+	public function test_get_db_infos() {
+		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
+		$model = new PLL_Model( $options );
+
+		$ref = new ReflectionMethod( $model->term, 'get_db_infos' );
+		$ref->setAccessible( true );
+		$db_infos = $ref->invoke( $model->term );
+
+		$this->assertSame( $GLOBALS['wpdb']->term_taxonomy, $db_infos['table'], 'get_db_infos() does not return the right table name.' );
+
+		if ( ! is_multisite() ) {
+			return;
+		}
+
+		$site_id = self::factory()->blog->create();
+
+		switch_to_blog( $site_id );
+		$multi_db_infos = $ref->invoke( $model->term );
+
+		$this->assertSame( $GLOBALS['wpdb']->term_taxonomy, $multi_db_infos['table'], 'get_db_infos() does not return the right table name.' );
+		$this->assertNotSame( $db_infos['table'], $multi_db_infos['table'], 'The table name should be different between blogs.' );
 	}
 }

@@ -9,6 +9,12 @@ defined( 'ABSPATH' ) || exit;
  * Abstract class to use for object types that support at least one language.
  *
  * @since 3.4
+ *
+ * @phpstan-type DBInfo array{
+ *     table: non-empty-string,
+ *     id_column: non-empty-string,
+ *     default_alias: non-empty-string
+ * }
  */
 abstract class PLL_Translatable_Object {
 
@@ -64,26 +70,6 @@ abstract class PLL_Translatable_Object {
 	 * @phpstan-var non-empty-string|null
 	 */
 	protected $object_type = null;
-
-	/**
-	 * Contains database-related informations that can be used in some of this class methods.
-	 * These are specific to the table containing the objects.
-	 *
-	 * @var string[] {
-	 *     @type string $table         Name of the table.
-	 *     @type string $id_column     Name of the column containing the object's ID.
-	 *     @type string $default_alias Default alias corresponding to the object's table.
-	 * }
-	 * @see PLL_Translatable_Object::join_clause()
-	 * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
-	 *
-	 * @phpstan-var array{
-	 *     table: non-empty-string,
-	 *     id_column: non-empty-string,
-	 *     default_alias: non-empty-string
-	 * }
-	 */
-	protected $db;
 
 	/**
 	 * Constructor.
@@ -300,11 +286,13 @@ abstract class PLL_Translatable_Object {
 	public function join_clause( $alias = '' ) {
 		global $wpdb;
 
+		$db = $this->get_db_infos();
+
 		if ( empty( $alias ) ) {
-			$alias = $this->db['default_alias'];
+			$alias = $db['default_alias'];
 		}
 
-		return " INNER JOIN {$wpdb->term_relationships} AS pll_tr ON pll_tr.object_id = {$alias}.{$this->db['id_column']}";
+		return " INNER JOIN {$wpdb->term_relationships} AS pll_tr ON pll_tr.object_id = {$alias}.{$db['id_column']}";
 	}
 
 	/**
@@ -456,9 +444,11 @@ abstract class PLL_Translatable_Object {
 	 * @phpstan-param array<empty> $args
 	 */
 	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		$db = $this->get_db_infos();
+
 		return sprintf(
-			"SELECT {$this->db['table']}.{$this->db['id_column']} FROM {$this->db['table']}
-			WHERE {$this->db['table']}.{$this->db['id_column']} NOT IN (
+			"SELECT {$db['table']}.{$db['id_column']} FROM {$db['table']}
+			WHERE {$db['table']}.{$db['id_column']} NOT IN (
 				SELECT object_id FROM {$GLOBALS['wpdb']->term_relationships} WHERE term_taxonomy_id IN (%s)
 			)
 			%s",
@@ -508,4 +498,22 @@ abstract class PLL_Translatable_Object {
 		// Invalidate our cache.
 		wp_cache_set( 'last_changed', microtime(), $this->cache_type );
 	}
+
+	/**
+	 * Returns database-related informations that can be used in some of this class methods.
+	 * These are specific to the table containing the objects.
+	 *
+	 * @see PLL_Translatable_Object::join_clause()
+	 * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
+	 *
+	 * @since 3.4.3
+	 *
+	 * @return string[] {
+	 *     @type string $table         Name of the table.
+	 *     @type string $id_column     Name of the column containing the object's ID.
+	 *     @type string $default_alias Default alias corresponding to the object's table.
+	 * }
+	 * @phpstan-return DBInfo
+	 */
+	abstract protected function get_db_infos();
 }

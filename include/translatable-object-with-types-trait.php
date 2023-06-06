@@ -10,20 +10,6 @@ defined( 'ABSPATH' ) || exit;
  * This must be used with {@see PLL_Translatable_Object_With_Types_Interface}.
  *
  * @since 3.4
- *
- * @property string[] $db {
- *     @type string $table         Name of the table.
- *     @type string $id_column     Name of the column containing the object's ID.
- *     @type string $type_column   Name of the column containing the object's type.
- *     @type string $default_alias Default alias corresponding to the object's table.
- * }
- *
- * @phpstan-property array{
- *     table: non-empty-string,
- *     id_column: non-empty-string,
- *     type_column: non-empty-string,
- *     default_alias: non-empty-string
- * } $db
  */
 trait PLL_Translatable_Object_With_Types_Trait {
 
@@ -46,12 +32,14 @@ trait PLL_Translatable_Object_With_Types_Trait {
 			$args = $this->get_translated_object_types();
 		}
 
+		$db = $this->get_db_infos();
+
 		return sprintf(
-			"SELECT {$this->db['table']}.{$this->db['id_column']} FROM {$this->db['table']}
-			WHERE {$this->db['table']}.{$this->db['id_column']} NOT IN (
+			"SELECT {$db['table']}.{$db['id_column']} FROM {$db['table']}
+			WHERE {$db['table']}.{$db['id_column']} NOT IN (
 				SELECT object_id FROM {$GLOBALS['wpdb']->term_relationships} WHERE term_taxonomy_id IN (%s)
 			)
-			AND {$this->db['type_column']} IN (%s)
+			AND {$db['type_column']} IN (%s)
 			%s",
 			PLL_Db_Tools::prepare_values_list( $language_ids ),
 			PLL_Db_Tools::prepare_values_list( $args ),

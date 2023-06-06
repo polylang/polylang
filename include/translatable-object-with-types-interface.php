@@ -9,6 +9,13 @@ defined( 'ABSPATH' ) || exit;
  * Interface to use for objects that can have one or more types.
  *
  * @since 3.4
+ *
+ * @phpstan-type DBInfoWithType array{
+ *     table: non-empty-string,
+ *     id_column: non-empty-string,
+ *     type_column: non-empty-string,
+ *     default_alias: non-empty-string
+ * }
  */
 interface PLL_Translatable_Object_With_Types_Interface {
 
