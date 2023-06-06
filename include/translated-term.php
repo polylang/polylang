@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.8
  *
- * @phpstan-import-type DBInfo from PLL_Translatable_Object_With_Types_Interface
+ * @phpstan-import-type DBInfoWithType from PLL_Translatable_Object_With_Types_Interface
  */
 class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translatable_Object_With_Types_Interface {
 
@@ -328,7 +328,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *     @type string $type_column   Name of the column containing the object's type.
 	 *     @type string $default_alias Default alias corresponding to the object's table.
 	 * }
-	 * @phpstan-return DBInfo
+	 * @phpstan-return DBInfoWithType
 	 */
 	protected function get_db_infos() {
 		return array(

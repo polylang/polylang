@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.4
  *
- * @phpstan-type DBInfo array{
+ * @phpstan-type DBInfoWithType array{
  *     table: non-empty-string,
  *     id_column: non-empty-string,
  *     type_column: non-empty-string,
