@@ -572,8 +572,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @since 3.4
 	 *
 	 * @return string Language home URL.
-	 *
-	 * @phpstan-return non-empty-string
 	 */
 	public function get_home_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
@@ -589,8 +587,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @since 3.4
 	 *
 	 * @return string Language search URL.
-	 *
-	 * @phpstan-return non-empty-string
 	 */
 	public function get_search_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
@@ -656,8 +652,8 @@ class PLL_Language extends PLL_Language_Deprecated {
 		 *
 		 * @since 3.4.3
 		 *
-		 * @param string $url  URL prop to filter.
-		 * @param self   $this Corresponding language object.
+		 * @param string $url      URL prop to filter.
+		 * @param self   $language Corresponding language object.
 		 */
 		return apply_filters( 'pll_language_url', $url, $this );
 	}
