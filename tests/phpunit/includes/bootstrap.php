@@ -34,6 +34,7 @@ require_once __DIR__ . '/testcase-domain.php';
 require_once __DIR__ . '/testcase-translated-object.php';
 require_once __DIR__ . '/wp-screen-mock.php';
 require_once __DIR__ . '/check-wp-functions-trait.php';
+require_once __DIR__ . '/directory-trait.php';
 
 printf(
 	'Testing Polylang%1$s %2$s with WordPress %3$s...' . PHP_EOL,
