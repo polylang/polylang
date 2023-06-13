@@ -22,7 +22,7 @@ class Links_Domain_Sub_Dir_Test extends PLL_Domain_UnitTestCase {
 		update_option( 'siteurl', 'http://example.org/sub' );
 		update_option( 'home', 'http://example.org' );
 
-		// Filter `plugins_url` because `WP_CONTENT_URL` is already defined...
+		// Filter `plugins_url` because `WP_CONTENT_URL` is already defined before we change the option `siteurl`.
 		add_filter(
 			'plugins_url',
 			function( $url ) {
