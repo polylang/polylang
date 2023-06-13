@@ -26,7 +26,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		self::$model->options['hide_default'] = 1;
 		self::$model->options['rewrite'] = 1;
 
-		$this->filter_plugin_url();
+		$this->filter_plugins_url();
 
 		// switch to pretty permalinks
 		$wp_rewrite->init();

@@ -16,7 +16,7 @@ class Links_Subomain_Sub_Dir_Test extends PLL_Domain_UnitTestCase {
 		self::$model->options['force_lang'] = 2;
 		self::$model->options['domains'] = $this->hosts;
 
-		$this->filter_plugin_url();
+		$this->filter_plugins_url();
 		$this->init_links_model();
 	}
 
@@ -32,7 +32,7 @@ class Links_Subomain_Sub_Dir_Test extends PLL_Domain_UnitTestCase {
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();
 
-		$this->assertCount( 3, $languages );
+		$this->assertCount( 3, $languages ); // @see `self::wpSetUpBeforeClass()`.
 
 		foreach ( $languages as $language ) {
 			$code = 'en' === $language->slug ? 'us' : $language->slug;

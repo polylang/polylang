@@ -16,7 +16,7 @@ class Links_Domain_Sub_Dir_Test extends PLL_Domain_UnitTestCase {
 		self::$model->options['force_lang'] = 3;
 		self::$model->options['domains'] = $this->hosts;
 
-		$this->filter_plugin_url();
+		$this->filter_plugins_url();
 		$this->init_links_model();
 	}
 

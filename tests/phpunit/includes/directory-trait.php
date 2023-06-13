@@ -16,7 +16,7 @@ trait PLL_Directory_Trait {
 	 *
 	 * @return void
 	 */
-	protected function filter_plugin_url() {
+	protected function filter_plugins_url() {
 		$this->orig_siteurl = get_option( 'siteurl' );
 
 		add_filter(
