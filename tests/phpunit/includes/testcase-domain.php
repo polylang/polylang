@@ -1,9 +1,13 @@
 <?php
 
 class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
+	use PLL_Links_Trait;
+
 	protected $structure = '/%postname%/';
 	protected $hosts;
 	protected static $server;
+	protected $is_directory = false;
+	protected $backup;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -24,13 +28,108 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		$_SERVER = self::$server;
 	}
 
-	public function init_links_model() {
+	public function set_up() {
+		parent::set_up();
+
+		$this->filter_plugins_url();
+
+		$this->backup = array(
+			'REQUEST_URI' => $_SERVER['REQUEST_URI'],
+			'HTTP_HOST'   => $_SERVER['HTTP_HOST'],
+		);
+	}
+
+	public function tear_down() {
+		parent::tear_down();
+
+		$_SERVER['REQUEST_URI'] = $this->backup['REQUEST_URI'];
+		$_SERVER['HTTP_HOST']   = $this->backup['HTTP_HOST'];
+	}
+
+	protected function init_links_model() {
 		global $wp_rewrite;
 
 		// Switch to pretty permalinks.
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $this->structure );
 		$this->links_model = self::$model->get_links_model();
+	}
+
+	protected function base_test_flags_urls( $curlang ) {
+		// Needed by {@see pll_requested_url()}.
+		$_SERVER['REQUEST_URI'] = '/test/';
+		$_SERVER['HTTP_HOST']   = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
+
+		$frontend          = new PLL_Frontend( $this->links_model );
+		$frontend->curlang = $curlang;
+		$frontend->init();
+		$languages = $frontend->model->get_languages_list();
+
+		$this->assertCount( 3, $languages ); // @see `self::wpSetUpBeforeClass()`.
+
+		foreach ( $languages as $flag_language ) {
+			$code = 'en' === $flag_language->slug ? 'us' : $flag_language->slug;
+			$dir  = $this->is_directory ? '/sub' : '';
+			$this->assertSame(
+				$this->hosts[ $curlang->slug ] . "{$dir}/wp-content/plugins/polylang/flags/{$code}.png",
+				$flag_language->get_display_flag_url(),
+				"{$flag_language->name} flag URL with current language set to {$curlang->name} is wrong."
+			);
+		}
+	}
+
+	protected function set_directory() {
+		// Fake WP install in subdir.
+		update_option( 'siteurl', 'http://example.org/sub' );
+		update_option( 'home', 'http://example.org' );
+	}
+
+	/**
+	 * @ticket #1296
+	 * @see https://github.com/polylang/polylang/issues/1296.
+	 */
+	public function test_flags_urls_curlang_default() {
+		if ( $this->is_directory ) {
+			$this->set_directory();
+		}
+
+		$en = self::$model->get_language( 'en' );
+
+		$this->base_test_flags_urls( $en );
+	}
+
+	/**
+	 * @ticket #1296
+	 * @see https://github.com/polylang/polylang/issues/1296.
+	 */
+	public function test_flags_urls_curlang_secondary() {
+		if ( $this->is_directory ) {
+			$this->set_directory();
+		}
+
+		$fr = self::$model->get_language( 'fr' );
+
+		$this->base_test_flags_urls( $fr );
+	}
+
+	/**
+	 * @ticket #1296
+	 * @see https://github.com/polylang/polylang/issues/1296.
+	 */
+	public function test_page_url_sub_dir() {
+		if ( $this->is_directory ) {
+			$this->set_directory();
+		}
+
+		self::$model->clean_languages_cache();
+		$languages = self::$model->get_languages_list();
+
+		$this->assertCount( 3, $languages ); // @see `self::wpSetUpBeforeClass()`.
+
+		foreach ( $languages as $language ) {
+			$this->assertSame( $this->hosts[ $language->slug ] . '/', apply_filters( 'pll_language_url', $language->get_home_url(), $language ) );
+			$this->assertSame( $this->hosts[ $language->slug ] . '/', apply_filters( 'pll_language_url', $language->get_search_url(), $language ) );
+		}
 	}
 
 	public function test_add_language_to_link() {

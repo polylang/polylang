@@ -1,7 +1,11 @@
 <?php
 
+/**
+ * @group links
+ * @group directory
+ */
 class Links_Directory_Test extends PLL_UnitTestCase {
-	use PLL_Directory_Trait;
+	use PLL_Links_Trait;
 
 	protected $structure = '/%postname%/';
 	protected $host = 'http://example.org';
@@ -23,8 +27,9 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 
 		global $wp_rewrite;
 
+		self::$model->options['default_lang'] = 'en';
 		self::$model->options['hide_default'] = 1;
-		self::$model->options['rewrite'] = 1;
+		self::$model->options['rewrite']      = 1;
 
 		$this->filter_plugins_url();
 

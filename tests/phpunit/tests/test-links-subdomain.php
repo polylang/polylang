@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group links
+ * @group domain
+ */
 class Links_Subdomain_Test extends PLL_Domain_UnitTestCase {
 
 	public function set_up() {
@@ -11,8 +15,9 @@ class Links_Subdomain_Test extends PLL_Domain_UnitTestCase {
 			'de' => 'http://de.example.org',
 		);
 
+		self::$model->options['default_lang'] = 'en';
 		self::$model->options['hide_default'] = 1;
-		self::$model->options['force_lang'] = 2;
+		self::$model->options['force_lang']   = 2;
 
 		$this->init_links_model();
 	}

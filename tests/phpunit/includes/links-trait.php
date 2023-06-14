@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Trait to ease tests made in directory.
+ * Trait to ease tests made in directory as well as removing path from flag URL.
  */
-trait PLL_Directory_Trait {
+trait PLL_Links_Trait {
 	/**
 	 * Original `siteurl` option value.
 	 *
@@ -12,7 +12,8 @@ trait PLL_Directory_Trait {
 	protected $orig_siteurl = '';
 
 	/**
-	 * Filters `plugins_url` because `WP_CONTENT_URL` is already defined before the option `siteurl` is changed during tests.
+	 * Filters `plugins_url` because `WP_CONTENT_URL` is already defined before the option `siteurl` is changed during tests for directory.
+	 * Also remove full path `POLYLANG_DIR` added to flag URL.
 	 *
 	 * @return void
 	 */

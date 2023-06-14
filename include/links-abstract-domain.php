@@ -28,7 +28,8 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 		add_filter( 'upload_dir', array( $this, 'upload_dir' ) );
 
 		// Set the correct domain for each language.
-		add_filter( 'pll_language_url', array( $this, 'add_language_to_link' ), 10, 2 );
+		add_filter( 'pll_language_flag_url', array( $this, 'site_url' ) );
+		// add_filter( 'pll_language_url', array( $this, 'add_language_to_link' ), 10, 2 );
 	}
 
 	/**

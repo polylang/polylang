@@ -485,7 +485,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	public function get_display_flag_url() {
 		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 
-		return $this->filter_url( $flag_url );
+		return apply_filters( 'pll_language_flag_url', $flag_url, $this );
 	}
 
 	/**
