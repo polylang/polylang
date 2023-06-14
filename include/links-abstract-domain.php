@@ -29,7 +29,6 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 
 		// Set the correct domain for each language.
 		add_filter( 'pll_language_flag_url', array( $this, 'site_url' ) );
-		// add_filter( 'pll_language_url', array( $this, 'add_language_to_link' ), 10, 2 );
 	}
 
 	/**
@@ -96,5 +95,18 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 		$additional_data['search_url'] = $this->home_url( $language['slug'] );
 		$additional_data['home_url']   = $additional_data['search_url'];
 		return $additional_data;
+	}
+
+	/**
+	 * Returns language home URL property according to the current domain.
+	 *
+	 * @since 3.4.4
+	 *
+	 * @param string       $url      Home URL.
+	 * @param PLL_Language $language Language object.
+	 * @return string Filtered home URL.
+	 */
+	public function set_language_home_url( $url, $language ) {
+		return $this->home_url( $language );
 	}
 }

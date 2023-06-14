@@ -3,7 +3,6 @@
 class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	use PLL_Links_Trait;
 
-	protected $structure = '/%postname%/';
 	protected $hosts;
 	protected static $server;
 	protected $is_directory = false;
@@ -44,15 +43,6 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 		$_SERVER['REQUEST_URI'] = $this->backup['REQUEST_URI'];
 		$_SERVER['HTTP_HOST']   = $this->backup['HTTP_HOST'];
-	}
-
-	protected function init_links_model() {
-		global $wp_rewrite;
-
-		// Switch to pretty permalinks.
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $this->structure );
-		$this->links_model = self::$model->get_links_model();
 	}
 
 	protected function base_test_flags_urls( $curlang ) {
@@ -116,7 +106,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 */
-	public function test_page_url_sub_dir() {
+	public function test_home_and_search_urls() {
 		if ( $this->is_directory ) {
 			$this->set_directory();
 		}
@@ -127,8 +117,8 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		$this->assertCount( 3, $languages ); // @see `self::wpSetUpBeforeClass()`.
 
 		foreach ( $languages as $language ) {
-			$this->assertSame( $this->hosts[ $language->slug ] . '/', apply_filters( 'pll_language_url', $language->get_home_url(), $language ) );
-			$this->assertSame( $this->hosts[ $language->slug ] . '/', apply_filters( 'pll_language_url', $language->get_search_url(), $language ) );
+			$this->assertSame( $this->hosts[ $language->slug ] . '/', $language->get_home_url() );
+			$this->assertSame( $this->hosts[ $language->slug ] . '/', $language->get_search_url() );
 		}
 	}
 

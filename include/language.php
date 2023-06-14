@@ -485,6 +485,14 @@ class PLL_Language extends PLL_Language_Deprecated {
 	public function get_display_flag_url() {
 		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 
+		/**
+		 * Filters `flag_url` property.
+		 *
+		 * @since 3.4.4
+		 *
+		 * @param string       $flag_url Flag URL.
+		 * @param PLL_Language $language Current `PLL_language` instance.
+		 */
 		return apply_filters( 'pll_language_flag_url', $flag_url, $this );
 	}
 
@@ -575,7 +583,15 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function get_home_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
-			return $this->filter_url( $this->home_url );
+			/**
+			 * Filters current `PLL_Language` instance `home_url` property.
+			 *
+			 * @since 3.4.4
+			 *
+			 * @param string       $home_url         The `home_url` prop.
+			 * @param PLL_Language $language Current `PLL_Language` instance.
+			 */
+			return apply_filters( 'pll_home_url', $this->home_url, $this );
 		}
 
 		return $this->home_url;
@@ -590,7 +606,15 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 */
 	public function get_search_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
-			return $this->filter_url( $this->search_url );
+			/**
+			 * Filters current `PLL_Language` instance `search_url` property.
+			 *
+			 * @since 3.4.4
+			 *
+			 * @param string       $search_url        The `search_url` prop.
+			 * @param PLL_Language $language Current `PLL_Language` instance.
+			 */
+			return apply_filters( 'pll_search_url', $this->search_url, $this );
 		}
 
 		return $this->search_url;
@@ -633,28 +657,5 @@ class PLL_Language extends PLL_Language_Deprecated {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Filters a `PLL_Language` URL property.
-	 * Mostly used to set the correct domain.
-	 *
-	 * @since 3.4.3
-	 *
-	 * @param string $url URL to filter.
-	 * @return string Filtered URL.
-	 *
-	 * @phpstan-param non-empty-string $url
-	 */
-	private function filter_url( $url ) {
-		/**
-		 * Filters `PLL_Language` URL property (e.g. `home_url`, `search_url` or `flag_url`).
-		 *
-		 * @since 3.4.3
-		 *
-		 * @param string $url      URL prop to filter.
-		 * @param self   $language Corresponding language object.
-		 */
-		return apply_filters( 'pll_language_url', $url, $this );
 	}
 }

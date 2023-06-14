@@ -53,6 +53,10 @@ abstract class PLL_Links_Model {
 
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
 		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
+
+		// Allows secondary domains for home and search URLs in `PLL_Language`.
+		add_filter( 'pll_home_url', array( $this, 'set_language_home_url' ), 10, 2 );
+		add_filter( 'pll_search_url', array( $this, 'set_language_search_url' ), 10, 2 );
 	}
 
 	/**
@@ -191,5 +195,35 @@ abstract class PLL_Links_Model {
 	 */
 	public function allowed_redirect_hosts( $hosts ) {
 		return array_unique( array_merge( $hosts, array_values( $this->get_hosts() ) ) );
+	}
+
+	/**
+	 * Returns language home URL property according to the current domain.
+	 *
+	 * @since 3.4.4
+	 *
+	 * @param string       $url      Home URL.
+	 * @param PLL_Language $language Language object.
+	 * @return string Filtered home URL.
+	 */
+	public function set_language_home_url( $url, $language ) {
+		if ( empty( $language->page_on_front ) || $this->options['redirect_lang'] ) {
+			return $this->home_url( $language );
+		}
+
+		return $this->front_page_url( $language );
+	}
+
+	/**
+	 * Returns language search URL property according to the current domain.
+	 *
+	 * @since 3.4.4
+	 *
+	 * @param string       $url      Search URL.
+	 * @param PLL_Language $language Language object.
+	 * @return string Filtered search URL.
+	 */
+	public function set_language_search_url( $url, $language ) {
+		return $this->home_url( $language );
 	}
 }

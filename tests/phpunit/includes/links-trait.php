@@ -5,6 +5,13 @@
  */
 trait PLL_Links_Trait {
 	/**
+	 * Permalink structure.
+	 *
+	 * @var string
+	 */
+	protected $structure = '/%postname%/';
+
+	/**
 	 * Original `siteurl` option value.
 	 *
 	 * @var string
@@ -32,5 +39,21 @@ trait PLL_Links_Trait {
 			},
 			-1
 		);
+	}
+
+	/**
+	 * Initializes `PLL_Links_Domain` according to permalink structure.
+	 *
+	 * @global $wp_rewrite
+	 *
+	 * @return void
+	 */
+	protected function init_links_model() {
+		global $wp_rewrite;
+
+		// Switch to pretty permalinks.
+		$wp_rewrite->init();
+		$wp_rewrite->set_permalink_structure( $this->structure );
+		$this->links_model = self::$model->get_links_model();
 	}
 }

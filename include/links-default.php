@@ -104,7 +104,7 @@ class PLL_Links_Default extends PLL_Links_Model {
 	 */
 	public function front_page_url( $language ) {
 		if ( $language instanceof PLL_Language ) {
-			$language = $language->to_array();
+			$language = $language->to_array( 'db' );
 		}
 
 		if ( $this->options['hide_default'] && $language['is_default'] ) {
