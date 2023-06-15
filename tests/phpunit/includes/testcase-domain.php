@@ -47,8 +47,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 	protected function base_test_flags_urls( $curlang ) {
 		// Needed by {@see pll_requested_url()}.
-		$_SERVER['REQUEST_URI'] = '/test/';
-		$_SERVER['HTTP_HOST']   = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
+		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
 
 		$frontend          = new PLL_Frontend( $this->links_model );
 		$frontend->curlang = $curlang;
