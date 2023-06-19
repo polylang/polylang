@@ -15,6 +15,8 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE' );
+
+		self::$model->options['default_lang'] = 'en';
 	}
 
 	public function set_up() {
