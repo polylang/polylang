@@ -4,9 +4,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	use PLL_Links_Trait;
 
 	protected $hosts;
-	protected static $server;
 	protected $is_directory = false;
-	protected $backup;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -14,35 +12,21 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
-		self::$server = $_SERVER; // backup
-
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE' );
-	}
-
-	public static function wpTearDownAfterClass() {
-		parent::wpTearDownAfterClass();
-
-		$_SERVER = self::$server;
 	}
 
 	public function set_up() {
 		parent::set_up();
 
 		$this->filter_plugins_url();
-
-		$this->backup = array(
-			'REQUEST_URI' => $_SERVER['REQUEST_URI'],
-			'HTTP_HOST'   => $_SERVER['HTTP_HOST'],
-		);
 	}
 
 	public function tear_down() {
 		parent::tear_down();
 
-		$_SERVER['REQUEST_URI'] = $this->backup['REQUEST_URI'];
-		$_SERVER['HTTP_HOST']   = $this->backup['HTTP_HOST'];
+		$this->reset__SERVER();
 	}
 
 	protected function base_test_flags_urls( $curlang ) {

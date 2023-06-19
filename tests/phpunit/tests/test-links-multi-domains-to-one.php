@@ -7,7 +7,6 @@
 class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	use PLL_Links_Trait;
 
-	protected $backup;
 	protected $main_domain;
 	protected $secondary_domain;
 
@@ -27,11 +26,6 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 		self::$model->options['hide_default'] = 1;
 		self::$model->options['force_lang']   = 3;
 
-		$this->backup = array(
-			'REQUEST_URI' => $_SERVER['REQUEST_URI'],
-			'HTTP_HOST'   => $_SERVER['HTTP_HOST'],
-		);
-
 		$this->main_domain      = get_option( 'siteurl' );
 		$this->secondary_domain = 'https://choiceof.dev/';
 		$_SERVER['HTTP_HOST']   = wp_parse_url( $this->secondary_domain, PHP_URL_HOST );
@@ -42,8 +36,7 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
-		$_SERVER['REQUEST_URI'] = $this->backup['REQUEST_URI'];
-		$_SERVER['HTTP_HOST']   = $this->backup['HTTP_HOST'];
+		$this->reset__SERVER();
 	}
 
 	/**
