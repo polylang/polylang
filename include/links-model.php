@@ -179,8 +179,8 @@ abstract class PLL_Links_Model {
 	 */
 	public function set_language_home_urls( $additional_data, $language ) {
 		$language = array_merge( $language, $additional_data );
-		$additional_data['search_url'] = $this->home_url( $language['slug'] );
-		$additional_data['home_url']   = empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ? $additional_data['search_url'] : $this->front_page_url( $language );
+		$additional_data['search_url'] = $this->set_language_search_url( '', $language );
+		$additional_data['home_url']   = $this->set_language_home_url( '', $language );
 
 		return $additional_data;
 	}
@@ -202,13 +202,17 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 3.4.4
 	 *
-	 * @param string       $url      Home URL.
-	 * @param PLL_Language $language Language object.
+	 * @param string             $url      Home URL.
+	 * @param PLL_Language|array $language Language object or array of language props.
 	 * @return string Filtered home URL.
 	 */
 	public function set_language_home_url( $url, $language ) {
-		if ( empty( $language->page_on_front ) || $this->options['redirect_lang'] ) {
-			return $this->home_url( $language );
+		if ( $language instanceof PLL_Language ) {
+			$language = $language->to_array( 'db' );
+		}
+
+		if ( empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ) {
+			return $this->home_url( $language['slug'] );
 		}
 
 		return $this->front_page_url( $language );
@@ -219,11 +223,15 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 3.4.4
 	 *
-	 * @param string       $url      Search URL.
-	 * @param PLL_Language $language Language object.
+	 * @param string             $url      Search URL.
+	 * @param PLL_Language|array $language Language object or array of language props.
 	 * @return string Filtered search URL.
 	 */
 	public function set_language_search_url( $url, $language ) {
-		return $this->home_url( $language );
+		if ( $language instanceof PLL_Language ) {
+			$language = $language->to_array( 'db' );
+		}
+
+		return $this->home_url( $language['slug'] );
 	}
 }

@@ -102,11 +102,15 @@ abstract class PLL_Links_Abstract_Domain extends PLL_Links_Permalinks {
 	 *
 	 * @since 3.4.4
 	 *
-	 * @param string       $url      Home URL.
-	 * @param PLL_Language $language Language object.
+	 * @param string             $url      Home URL.
+	 * @param PLL_Language|array $language Language object or array of language props.
 	 * @return string Filtered home URL.
 	 */
 	public function set_language_home_url( $url, $language ) {
-		return $this->home_url( $language );
+		if ( $language instanceof PLL_Language ) {
+			$language = $language->to_array( 'db' );
+		}
+
+		return $this->home_url( $language['slug'] );
 	}
 }
