@@ -19,7 +19,6 @@ class Links_Subomain_Sub_Dir_Test extends PLL_Domain_UnitTestCase {
 			'de' => 'http://de.example.org',
 		);
 
-		self::$model->options['default_lang'] = 'en';
 		self::$model->options['hide_default'] = 1;
 		self::$model->options['force_lang']   = 2;
 		self::$model->options['domains']      = $this->hosts;
