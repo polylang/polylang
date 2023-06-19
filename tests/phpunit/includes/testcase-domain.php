@@ -67,7 +67,16 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		}
 	}
 
-	protected function set_directory() {
+	/**
+	 * Enables a WordPress installation in directory.
+	 *
+	 * @return void
+	 */
+	protected function maybe_set_directory() {
+		if ( ! $this->is_directory ) {
+			return;
+		}
+
 		// Fake WP install in subdir.
 		update_option( 'siteurl', 'http://example.org/sub' );
 		update_option( 'home', 'http://example.org' );
@@ -78,9 +87,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 */
 	public function test_flags_urls_curlang_default() {
-		if ( $this->is_directory ) {
-			$this->set_directory();
-		}
+		$this->maybe_set_directory();
 
 		$en = self::$model->get_language( 'en' );
 
@@ -92,9 +99,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 */
 	public function test_flags_urls_curlang_secondary() {
-		if ( $this->is_directory ) {
-			$this->set_directory();
-		}
+		$this->maybe_set_directory();
 
 		$fr = self::$model->get_language( 'fr' );
 
@@ -106,9 +111,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 */
 	public function test_home_and_search_urls() {
-		if ( $this->is_directory ) {
-			$this->set_directory();
-		}
+		$this->maybe_set_directory();
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();
