@@ -588,10 +588,10 @@ class PLL_Language extends PLL_Language_Deprecated {
 			 *
 			 * @since 3.4.4
 			 *
-			 * @param string       $home_url         The `home_url` prop.
-			 * @param PLL_Language $language Current `PLL_Language` instance.
+			 * @param string $home_url         The `home_url` prop.
+			 * @param array  $language Current Array of `PLL_Language` properties.
 			 */
-			return apply_filters( 'pll_home_url', $this->home_url, $this );
+			return apply_filters( 'pll_language_home_url', $this->home_url, $this->to_array( 'db' ) );
 		}
 
 		return $this->home_url;
@@ -611,10 +611,10 @@ class PLL_Language extends PLL_Language_Deprecated {
 			 *
 			 * @since 3.4.4
 			 *
-			 * @param string       $search_url        The `search_url` prop.
-			 * @param PLL_Language $language Current `PLL_Language` instance.
+			 * @param string $search_url        The `search_url` prop.
+			 * @param array  $language Current Array of `PLL_Language` properties.
 			 */
-			return apply_filters( 'pll_search_url', $this->search_url, $this );
+			return apply_filters( 'pll_language_search_url', $this->search_url, $this->to_array( 'db' ) );
 		}
 
 		return $this->search_url;

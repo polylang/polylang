@@ -132,7 +132,7 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 */
 	public function front_page_url( $language ) {
 		if ( $language instanceof PLL_Language ) {
-			$language = $language->to_array( 'db' );
+			$language = $language->to_array();
 		}
 
 		if ( $this->options['hide_default'] && $language['is_default'] ) {

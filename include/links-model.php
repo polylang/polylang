@@ -55,8 +55,8 @@ abstract class PLL_Links_Model {
 		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
 
 		// Allows secondary domains for home and search URLs in `PLL_Language`.
-		add_filter( 'pll_home_url', array( $this, 'set_language_home_url' ), 10, 2 );
-		add_filter( 'pll_search_url', array( $this, 'set_language_search_url' ), 10, 2 );
+		add_filter( 'pll_language_home_url', array( $this, 'set_language_home_url' ), 10, 2 );
+		add_filter( 'pll_language_search_url', array( $this, 'set_language_search_url' ), 10, 2 );
 	}
 
 	/**
@@ -202,15 +202,11 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 3.4.4
 	 *
-	 * @param string             $url      Home URL.
-	 * @param PLL_Language|array $language Language object or array of language props.
+	 * @param string $url      Home URL.
+	 * @param array  $language Array of language props.
 	 * @return string Filtered home URL.
 	 */
 	public function set_language_home_url( $url, $language ) {
-		if ( $language instanceof PLL_Language ) {
-			$language = $language->to_array( 'db' );
-		}
-
 		if ( empty( $language['page_on_front'] ) || $this->options['redirect_lang'] ) {
 			return $this->home_url( $language['slug'] );
 		}
@@ -223,15 +219,11 @@ abstract class PLL_Links_Model {
 	 *
 	 * @since 3.4.4
 	 *
-	 * @param string             $url      Search URL.
-	 * @param PLL_Language|array $language Language object or array of language props.
+	 * @param string $url      Search URL.
+	 * @param array  $language Array of language props.
 	 * @return string Filtered search URL.
 	 */
 	public function set_language_search_url( $url, $language ) {
-		if ( $language instanceof PLL_Language ) {
-			$language = $language->to_array( 'db' );
-		}
-
 		return $this->home_url( $language['slug'] );
 	}
 }
