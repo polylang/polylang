@@ -4,7 +4,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	use PLL_Links_Trait;
 
 	protected $hosts;
-	protected $is_directory = false;
+	protected $is_subfolder_install = false;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -15,14 +15,17 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE' );
-
-		self::$model->options['default_lang'] = 'en';
 	}
 
 	public function set_up() {
 		parent::set_up();
 
 		$this->filter_plugins_url();
+
+		self::$model->options['default_lang'] = 'en';
+		self::$model->options['hide_default'] = 1;
+		self::$model->options['force_lang']   = 2;
+		self::$model->options['domains']      = $this->hosts;
 	}
 
 	public function tear_down() {
@@ -31,7 +34,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		$this->reset__SERVER();
 	}
 
-	protected function base_test_flags_urls( $curlang ) {
+	protected function _test_flags_urls( $curlang ) {
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
 
@@ -44,7 +47,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 		foreach ( $languages as $flag_language ) {
 			$code = 'en' === $flag_language->slug ? 'us' : $flag_language->slug;
-			$dir  = $this->is_directory ? '/sub' : '';
+			$dir  = $this->is_subfolder_install ? '/sub' : '';
 			$this->assertSame(
 				$this->hosts[ $curlang->slug ] . "{$dir}/wp-content/plugins/polylang/flags/{$code}.png",
 				$flag_language->get_display_flag_url(),
@@ -59,7 +62,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 * @return void
 	 */
 	protected function maybe_set_directory() {
-		if ( ! $this->is_directory ) {
+		if ( ! $this->is_subfolder_install ) {
 			return;
 		}
 
@@ -71,32 +74,50 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
+	 *
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 *
+	 * @testWith [true]
+	 *           [false]
 	 */
-	public function test_flags_urls_curlang_default() {
+	public function test_flags_urls_curlang_default( $is_subfolder_install ) {
+		$this->is_subfolder_install = $is_subfolder_install;
 		$this->maybe_set_directory();
 
 		$en = self::$model->get_language( 'en' );
 
-		$this->base_test_flags_urls( $en );
+		$this->_test_flags_urls( $en );
 	}
 
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
+	 *
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 *
+	 * @testWith [true]
+	 *           [false]
 	 */
-	public function test_flags_urls_curlang_secondary() {
+	public function test_flags_urls_curlang_secondary( $is_subfolder_install ) {
+		$this->is_subfolder_install = $is_subfolder_install;
 		$this->maybe_set_directory();
 
 		$fr = self::$model->get_language( 'fr' );
 
-		$this->base_test_flags_urls( $fr );
+		$this->_test_flags_urls( $fr );
 	}
 
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
+	 *
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 *
+	 * @testWith [true]
+	 *           [false]
 	 */
-	public function test_home_and_search_urls() {
+	public function test_home_and_search_urls( $is_subfolder_install ) {
+		$this->is_subfolder_install = $is_subfolder_install;
 		$this->maybe_set_directory();
 
 		self::$model->clean_languages_cache();
