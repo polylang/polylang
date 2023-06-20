@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Trait to ease tests made in directory as well as removing path from flag URL.
+ * Trait to ease tests made with WP installed in a subfolder.
  */
 trait PLL_Links_Trait {
 	/**
