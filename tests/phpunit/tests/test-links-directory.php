@@ -2,7 +2,6 @@
 
 /**
  * @group links
- * @group directory
  */
 class Links_Directory_Test extends PLL_UnitTestCase {
 	use PLL_Test_Links_Trait;
