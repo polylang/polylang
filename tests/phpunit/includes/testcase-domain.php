@@ -1,7 +1,7 @@
 <?php
 
 class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
-	use PLL_Links_Trait;
+	use PLL_Test_Links_Trait;
 
 	protected $hosts;
 	protected $is_subfolder_install = false;

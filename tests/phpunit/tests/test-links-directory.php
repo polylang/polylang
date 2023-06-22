@@ -5,7 +5,7 @@
  * @group directory
  */
 class Links_Directory_Test extends PLL_UnitTestCase {
-	use PLL_Links_Trait;
+	use PLL_Test_Links_Trait;
 
 	protected $structure = '/%postname%/';
 	protected $host = 'http://example.org';

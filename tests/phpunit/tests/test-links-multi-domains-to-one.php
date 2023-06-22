@@ -5,7 +5,7 @@
  * @group domain
  */
 class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
-	use PLL_Links_Trait;
+	use PLL_Test_Links_Trait;
 
 	protected $main_domain;
 	protected $secondary_domain;

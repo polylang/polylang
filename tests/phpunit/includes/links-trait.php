@@ -3,7 +3,7 @@
 /**
  * Trait to ease tests made with WP installed in a subfolder.
  */
-trait PLL_Links_Trait {
+trait PLL_Test_Links_Trait {
 	/**
 	 * Permalink structure.
 	 *
