@@ -2,7 +2,6 @@
 
 /**
  * @group links
- * @group domain
  */
 class Links_Subdomain_Test extends PLL_Domain_UnitTestCase {
 
