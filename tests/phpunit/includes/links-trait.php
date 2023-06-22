@@ -60,6 +60,8 @@ trait PLL_Test_Links_Trait {
 	/**
 	 * Enables a WordPress installation in directory.
 	 *
+	 * @param bool $is_subfolder_install Whether or not the current test is in subfolder install.
+	 *
 	 * @return void
 	 */
 	protected function maybe_set_subfolder_install( $is_subfolder_install ) {
