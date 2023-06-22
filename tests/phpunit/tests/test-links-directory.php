@@ -203,10 +203,8 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 */
-	public function test_flag_url_subdirectory() {
-		// Fake WP install in subdir.
-		update_option( 'siteurl', 'http://example.org/sub' );
-		update_option( 'home', 'http://example.org' );
+	public function test_flag_url_with_subfolder_install() {
+		$this->maybe_set_subfolder_install( true );
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();
@@ -215,7 +213,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 
 		foreach ( $languages as $language ) {
 			$code = 'en' === $language->slug ? 'us' : $language->slug;
-			$this->assertSame( "http://example.org/sub/wp-content/plugins/polylang/flags/{$code}.png", $language->get_display_flag_url() );
+			$this->assertSame( "http://example.org/{$this->subfolder_name}/wp-content/plugins/polylang/flags/{$code}.png", $language->get_display_flag_url() );
 		}
 	}
 }
