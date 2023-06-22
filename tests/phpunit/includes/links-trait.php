@@ -12,6 +12,13 @@ trait PLL_Test_Links_Trait {
 	protected $structure = '/%postname%/';
 
 	/**
+	 * Subfolder name used in tests.
+	 *
+	 * @var string
+	 */
+	protected $subfolder_name = 'subfolder';
+
+	/**
 	 * Filters `plugins_url` because `WP_CONTENT_URL` is already defined before the option `siteurl` is changed during tests for directory.
 	 * Also remove full path `POLYLANG_DIR` added to flag URL.
 	 *
@@ -48,5 +55,20 @@ trait PLL_Test_Links_Trait {
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $this->structure );
 		$this->links_model = self::$model->get_links_model();
+	}
+
+	/**
+	 * Enables a WordPress installation in directory.
+	 *
+	 * @return void
+	 */
+	protected function maybe_set_subfolder_install( $is_subfolder_install ) {
+		if ( ! $is_subfolder_install ) {
+			return;
+		}
+
+		// Fake WP install in subdir.
+		update_option( 'siteurl', 'http://example.org/' . $this->subfolder_name );
+		update_option( 'home', 'http://example.org' );
 	}
 }

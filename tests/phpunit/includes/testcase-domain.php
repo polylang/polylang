@@ -4,7 +4,6 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	use PLL_Test_Links_Trait;
 
 	protected $hosts;
-	protected $is_subfolder_install = false;
 
 	/**
 	 * @param WP_UnitTest_Factory $factory
@@ -34,7 +33,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		$this->reset__SERVER();
 	}
 
-	protected function _test_flags_urls( $curlang ) {
+	protected function _test_flags_urls( $curlang, $is_subfolder_install = false ) {
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
 
@@ -47,28 +46,13 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 		foreach ( $languages as $flag_language ) {
 			$code = 'en' === $flag_language->slug ? 'us' : $flag_language->slug;
-			$dir  = $this->is_subfolder_install ? '/sub' : '';
+			$dir  = $is_subfolder_install ? "/{$this->subfolder_name}" : '';
 			$this->assertSame(
 				$this->hosts[ $curlang->slug ] . "{$dir}/wp-content/plugins/polylang/flags/{$code}.png",
 				$flag_language->get_display_flag_url(),
 				"{$flag_language->name} flag URL with current language set to {$curlang->name} is wrong."
 			);
 		}
-	}
-
-	/**
-	 * Enables a WordPress installation in directory.
-	 *
-	 * @return void
-	 */
-	protected function maybe_set_directory() {
-		if ( ! $this->is_subfolder_install ) {
-			return;
-		}
-
-		// Fake WP install in subdir.
-		update_option( 'siteurl', 'http://example.org/sub' );
-		update_option( 'home', 'http://example.org' );
 	}
 
 	/**
@@ -81,12 +65,11 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 *           [false]
 	 */
 	public function test_flags_urls_curlang_default( $is_subfolder_install ) {
-		$this->is_subfolder_install = $is_subfolder_install;
-		$this->maybe_set_directory();
+		$this->maybe_set_subfolder_install( $is_subfolder_install );
 
 		$en = self::$model->get_language( 'en' );
 
-		$this->_test_flags_urls( $en );
+		$this->_test_flags_urls( $en, $is_subfolder_install );
 	}
 
 	/**
@@ -99,12 +82,11 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 *           [false]
 	 */
 	public function test_flags_urls_curlang_secondary( $is_subfolder_install ) {
-		$this->is_subfolder_install = $is_subfolder_install;
-		$this->maybe_set_directory();
+		$this->maybe_set_subfolder_install( $is_subfolder_install );
 
 		$fr = self::$model->get_language( 'fr' );
 
-		$this->_test_flags_urls( $fr );
+		$this->_test_flags_urls( $fr, $is_subfolder_install );
 	}
 
 	/**
@@ -117,8 +99,7 @@ class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 *           [false]
 	 */
 	public function test_home_and_search_urls( $is_subfolder_install ) {
-		$this->is_subfolder_install = $is_subfolder_install;
-		$this->maybe_set_directory();
+		$this->maybe_set_subfolder_install( $is_subfolder_install );
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();
