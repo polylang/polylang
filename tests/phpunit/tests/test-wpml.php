@@ -359,7 +359,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		// Register
 		do_action( 'wpml_register_single_string', 'wpml_string_context', 'wpml_string_name', 'wpml_string_test' );
 
-		$str = wp_list_filter( PLL_Admin_Strings::get_strings(), array( 'icl' => 1 ) );
+		$str = wp_list_filter( PLL_Admin_Strings::get_strings(), array( 'icl' => true ) );
 		$str = reset( $str );
 
 		$this->assertEquals( 'wpml_string_context', $str['context'] );
