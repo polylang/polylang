@@ -170,8 +170,6 @@ class PLL_Table_Settings extends WP_List_Table {
 	 * @return void
 	 */
 	public function prepare_items( $items = array() ) {
-		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns(), $this->get_primary_column_name() );
-
 		// Sort rows, lowest priority on top.
 		usort(
 			$items,
