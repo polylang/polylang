@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group links
+ */
 class Links_Default_Test extends PLL_UnitTestCase {
 	protected $host = 'http://example.org';
 

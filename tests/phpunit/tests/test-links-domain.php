@@ -1,11 +1,13 @@
 <?php
 
+/**
+ * @group links
+ * @group domain
+ */
 class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();
-
-		global $wp_rewrite;
 
 		$this->hosts = array(
 			'en' => 'http://example.org',
@@ -14,17 +16,10 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		);
 
 		self::$model->options['hide_default'] = 1;
-		self::$model->options['force_lang'] = 3;
-		self::$model->options['domains'] = $this->hosts;
+		self::$model->options['force_lang']   = 3;
+		self::$model->options['domains']      = $this->hosts;
 
-		// Refresh languages.
-		self::$model->clean_languages_cache();
-		self::$model->get_languages_list();
-
-		// switch to pretty permalinks
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $this->structure );
-		$this->links_model = self::$model->get_links_model();
+		$this->init_links_model();
 	}
 
 	public function test_wrong_get_language_from_url() {

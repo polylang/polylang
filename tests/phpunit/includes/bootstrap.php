@@ -15,6 +15,10 @@ tests_add_filter(
 define( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH', $_root_dir . '/vendor/yoast/phpunit-polyfills/' );
 require_once $_tests_dir . '/includes/bootstrap.php';
 
+if ( ! defined( 'PLL_CACHE_HOME_URL' ) ) {
+	define( 'PLL_CACHE_HOME_URL', false );
+}
+
 if ( ! defined( 'DIR_TESTROOT' ) ) {
 	define( 'DIR_TESTROOT', $_tests_dir );
 }
@@ -25,6 +29,7 @@ if ( ! defined( 'PLL_TEST_DATA_DIR' ) ) {
 
 require_once __DIR__ . '/polyfills.php';
 require_once __DIR__ . '/doing-it-wrong-trait.php';
+require_once __DIR__ . '/links-trait.php';
 require_once __DIR__ . '/testcase-trait.php';
 require_once __DIR__ . '/testcase.php';
 require_once __DIR__ . '/testcase-ajax.php';

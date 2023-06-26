@@ -486,9 +486,14 @@ class PLL_Language extends PLL_Language_Deprecated {
 		$flag_url = empty( $this->custom_flag_url ) ? $this->flag_url : $this->custom_flag_url;
 
 		/**
-		 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+		 * Filters `flag_url` property.
+		 *
+		 * @since 3.4.4
+		 *
+		 * @param string       $flag_url Flag URL.
+		 * @param PLL_Language $language Current `PLL_language` instance.
 		 */
-		return site_url( set_url_scheme( $flag_url, 'relative' ) );
+		return apply_filters( 'pll_language_flag_url', $flag_url, $this );
 	}
 
 	/**
@@ -575,17 +580,18 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @since 3.4
 	 *
 	 * @return string Language home URL.
-	 *
-	 * @phpstan-return non-empty-string
 	 */
 	public function get_home_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
 			/**
-			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			 * Filters current `PLL_Language` instance `home_url` property.
 			 *
-			 * @phpstan-var non-empty-string
+			 * @since 3.4.4
+			 *
+			 * @param string $home_url         The `home_url` prop.
+			 * @param array  $language Current Array of `PLL_Language` properties.
 			 */
-			return site_url( set_url_scheme( $this->home_url, 'relative' ) );
+			return apply_filters( 'pll_language_home_url', $this->home_url, $this->to_array( 'db' ) );
 		}
 
 		return $this->home_url;
@@ -597,17 +603,18 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @since 3.4
 	 *
 	 * @return string Language search URL.
-	 *
-	 * @phpstan-return non-empty-string
 	 */
 	public function get_search_url() {
 		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
 			/**
-			 * Let's use `site_url()` so the returned URL will be filtered properly according to the current domain.
+			 * Filters current `PLL_Language` instance `search_url` property.
 			 *
-			 * @phpstan-var non-empty-string
-			*/
-			return site_url( set_url_scheme( $this->search_url, 'relative' ) );
+			 * @since 3.4.4
+			 *
+			 * @param string $search_url        The `search_url` prop.
+			 * @param array  $language Current Array of `PLL_Language` properties.
+			 */
+			return apply_filters( 'pll_language_search_url', $this->search_url, $this->to_array( 'db' ) );
 		}
 
 		return $this->search_url;
