@@ -686,6 +686,13 @@ return array(
 		'w3c'      => 'rw',
 		'facebook' => 'rw_RW',
 	),
+	'kir' => array(
+		'code'     => 'ky',
+		'locale'   => 'kir',
+		'name'     => 'Кыргызча',
+		'dir'      => 'ltr',
+		'flag'     => 'kg',
+	),
 	'kk' => array(
 		'code'     => 'kk',
 		'locale'   => 'kk',
