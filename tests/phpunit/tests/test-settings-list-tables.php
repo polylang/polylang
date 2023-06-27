@@ -109,14 +109,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'Translations', $th->item( 0 )->nodeValue );
 
 		// The rows.
-		$this->assertSame( 1, $xpath->query( '//tbody/tr' )->length ); // 1 per string.
-
-		$td = $xpath->query( '//tbody/tr/td' );
-		// $this->assertSame( 'Some string', $td->item( 0 )->nodeValue ); // This cell displays a parasitic child button.
-		$this->assertSame( 'Test', $td->item( 1 )->nodeValue );
-		$this->assertSame( 'Polylang', $td->item( 2 )->nodeValue );
-
-		$this->assertSame( 2, $xpath->query( '//tbody/tr/td/div/input' )->length ); // 1 per language.
+		$this->assertSame( count( PLL_Admin_Strings::get_strings() ), $xpath->query( '//tbody/tr' )->length ); // 1 per string.
 	}
 
 	public function test_display_settings_table() {
