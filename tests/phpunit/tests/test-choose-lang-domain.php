@@ -95,13 +95,14 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['wp_actions']['pll_language_defined'] );
 		unset( $this->frontend->curlang );
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $url, PHP_URL_HOST );
-		$this->frontend->init();
 
 		// restart copy paste of WP_UnitTestCase::go_to
 		$GLOBALS['wp_the_query'] = new WP_Query();
 		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 		$GLOBALS['wp'] = new WP();
 		_cleanup_query_vars();
+
+		$this->frontend->init();
 
 		$GLOBALS['wp']->main( $parts['query'] );
 	}
