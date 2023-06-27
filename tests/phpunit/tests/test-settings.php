@@ -20,8 +20,8 @@ class Settings_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		// Avoid http call
-		add_filter( 'pre_transient_available_translations', '__return_empty_array' );
+		// Avoid an API request triggered by wp_get_available_translations() called in languages_page().
+		add_filter( 'pre_site_transient_available_translations', '__return_empty_array' );
 	}
 
 	/**
@@ -38,10 +38,6 @@ class Settings_Test extends PLL_UnitTestCase {
 		$GLOBALS['plugin_page'] = 'mlang';
 		get_admin_page_title();
 		set_current_screen();
-
-		// languages_pages() calls wp_get_available_translations() which triggers a wp.org api request
-		// if the transient 'available_translations' is empty, so let's fill it with a dummy value.
-		set_site_transient( 'available_translations', array( 'fr_FR' => '' ) );
 
 		ob_start();
 		$links_model = self::$model->get_links_model();

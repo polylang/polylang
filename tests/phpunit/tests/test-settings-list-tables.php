@@ -19,6 +19,9 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_display_languages_table() {
+		// Avoid an API request triggered by wp_get_available_translations() called in languages_page().
+		add_filter( 'pre_site_transient_available_translations', '__return_empty_array' );
+
 		$_GET['page'] = 'mlang';
 
 		$links_model = self::$model->get_links_model();
