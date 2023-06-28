@@ -12,20 +12,20 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 	}
 
-	public function set_up() {
-		parent::set_up();
-
+	public function init( $pagename ) {
 		wp_set_current_user( 1 );
+
+		$_GET['page'] = $pagename;
+
+		$links_model = self::$model->get_links_model();
+		return new PLL_Settings( $links_model );
 	}
 
 	public function test_display_languages_table() {
 		// Avoid an API request triggered by wp_get_available_translations() called in languages_page().
 		add_filter( 'pre_site_transient_available_translations', '__return_empty_array' );
 
-		$_GET['page'] = 'mlang';
-
-		$links_model = self::$model->get_links_model();
-		$pll_env = new PLL_Settings( $links_model );
+		$this->init( 'mlang' );
 
 		ob_start();
 		do_action( 'admin_menu' );
@@ -73,10 +73,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_display_strings_table() {
-		$_GET['page'] = 'mlang_strings';
-
-		$links_model = self::$model->get_links_model();
-		$pll_env = new PLL_Settings( $links_model );
+		$this->init( 'mlang_strings' );
 
 		PLL_Admin_Strings::register_string( 'Test', 'Some string' );
 
@@ -116,10 +113,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_display_settings_table() {
-		$_GET['page'] = 'mlang_settings';
-
-		$links_model = self::$model->get_links_model();
-		$pll_env = new PLL_Settings( $links_model );
+		$pll_env = $this->init( 'mlang_settings' );
 		$pll_env->register_settings_modules(); // Manually register modules to avoid firing the 'admin_init' action.
 
 		ob_start();
