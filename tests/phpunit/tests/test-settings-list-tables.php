@@ -15,7 +15,7 @@ class Settings_List_Tables_Test extends PLL_UnitTestCase {
 	public function init( $pagename ) {
 		wp_set_current_user( 1 );
 
-		$_GET['page'] = $pagename;
+		$GLOBALS['plugin_page'] = $_GET['page'] = $pagename;
 
 		$links_model = self::$model->get_links_model();
 		return new PLL_Settings( $links_model );
