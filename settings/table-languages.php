@@ -259,6 +259,7 @@ class PLL_Table_Languages extends WP_List_Table {
 	 */
 	public function prepare_items( $data = array() ) {
 		$per_page = $this->get_items_per_page( 'pll_lang_per_page' );
+		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
 		usort( $data, array( $this, 'usort_reorder' ) );
 
