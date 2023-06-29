@@ -36,6 +36,13 @@ class PLL_Static_Pages {
 	protected $curlang;
 
 	/**
+	 * Used to temporarilly disable the static page translation.
+	 *
+	 * @var bool
+	 */
+	protected $page_translation_disabled = false;
+
+	/**
 	 * Constructor: setups filters and actions.
 	 *
 	 * @since 1.8
@@ -161,6 +168,16 @@ class PLL_Static_Pages {
 		// Translates page for posts and page on front.
 		add_filter( 'option_page_on_front', array( $this, 'translate_page_on_front' ) );
 		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
+
+		/*
+		 * Disables the page translation when deleting the page for posts, page on front, or one of their translations.
+		 * The idea is to disable the translation when `_reset_front_page_settings_for_post()` is used, which is hooked
+		 * to `before_delete_post` and `wp_trash_post` at priority 10.
+		 */
+		add_action( 'before_delete_post', array( $this, 'maybe_disable_page_on_front_and_page_for_posts_translation' ), -10000 );
+		add_action( 'before_delete_post', array( $this, 'enable_page_on_front_and_page_for_posts_translation' ), 10000 );
+		add_action( 'wp_trash_post', array( $this, 'maybe_disable_page_on_front_and_page_for_posts_translation' ), -10000 );
+		add_action( 'wp_trash_post', array( $this, 'enable_page_on_front_and_page_for_posts_translation' ), 10000 );
 	}
 
 	/**
@@ -173,8 +190,16 @@ class PLL_Static_Pages {
 	 * @return int
 	 */
 	public function translate_page_on_front( $page_id ) {
-		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
-		return ! empty( $this->curlang->page_on_front ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_on_front : $page_id;
+		if ( $this->page_translation_disabled || empty( $this->curlang->page_on_front ) ) {
+			return $page_id;
+		}
+
+		if ( doing_action( 'switch_blog' ) ) {
+			// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
+			return $page_id;
+		}
+
+		return $this->curlang->page_on_front;
 	}
 
 	/**
@@ -186,8 +211,62 @@ class PLL_Static_Pages {
 	 * @return int
 	 */
 	public function translate_page_for_posts( $page_id ) {
-		// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
-		return ! empty( $this->curlang->page_for_posts ) && ! doing_action( 'switch_blog' ) ? $this->curlang->page_for_posts : $page_id;
+		if ( $this->page_translation_disabled || empty( $this->curlang->page_for_posts ) ) {
+			return $page_id;
+		}
+
+		if ( doing_action( 'switch_blog' ) ) {
+			// Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
+			return $page_id;
+		}
+
+		return $this->curlang->page_for_posts;
+	}
+
+	/**
+	 * Disables the translation of the "page on front" and "page for posts" if the given post is one of them and their
+	 * translations.
+	 * Hooked to `before_delete_post` at priority -10000.
+	 * Hooked to `wp_trash_post` at priority -10000.
+	 *
+	 * @see _reset_front_page_settings_for_post()
+	 *
+	 * @since 3.4.4
+	 *
+	 * @param int $post_id Post ID.
+	 * @return void
+	 */
+	public function maybe_disable_page_on_front_and_page_for_posts_translation( $post_id ) {
+		foreach ( $this->model->get_languages_list() as $language ) {
+			if ( $post_id === $language->page_on_front || $post_id === $language->page_for_posts ) {
+				$this->disable_page_on_front_and_page_for_posts_translation();
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Disables the translation of the "page on front" and "page for posts".
+	 *
+	 * @since 3.4.4
+	 *
+	 * @return void
+	 */
+	public function disable_page_on_front_and_page_for_posts_translation() {
+		$this->page_translation_disabled = true;
+	}
+
+	/**
+	 * Enables the translation of the "page on front" and "page for posts".
+	 * Hooked to `before_delete_post` at priority -10000.
+	 * Hooked to `wp_trash_post` at priority -10000.
+	 *
+	 * @since 3.4.4
+	 *
+	 * @return void
+	 */
+	public function enable_page_on_front_and_page_for_posts_translation() {
+		$this->page_translation_disabled = false;
 	}
 
 	/**
