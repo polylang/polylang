@@ -75,7 +75,7 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 1.2
 	 *
-	 * @param PLL_Language $curlang Current language.
+	 * @param PLL_Language|false $curlang Current language.
 	 * @return void
 	 */
 	protected function set_language( $curlang ) {
@@ -86,7 +86,15 @@ abstract class PLL_Choose_Lang {
 
 		// Final check in case $curlang has an unexpected value
 		// See https://wordpress.org/support/topic/detect-browser-language-sometimes-setting-null-language
-		$this->curlang = ( $curlang instanceof PLL_Language ) ? $curlang : $this->model->get_default_language();
+		if ( ! $curlang instanceof PLL_Language ) {
+			$default = $this->model->get_default_language();
+			$curlang = $default instanceof PLL_Language ? $default : null;
+		}
+		$this->curlang = $curlang;
+
+		if ( empty( $this->curlang ) ) {
+			return;
+		}
 
 		$GLOBALS['text_direction'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
 		if ( did_action( 'wp_default_styles' ) ) {
@@ -161,7 +169,7 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 0.1
 	 *
-	 * @return object browser preferred language or default language
+	 * @return PLL_Language|false browser preferred language or default language
 	 */
 	public function get_preferred_language() {
 		$language = false;

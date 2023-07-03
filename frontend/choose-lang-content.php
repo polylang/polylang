@@ -48,7 +48,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 *
 	 * @since 1.2
 	 *
-	 * @return object|bool detected language, false if none was found
+	 * @return PLL_Language|false detected language, false if none was found
 	 */
 	protected function get_language_from_content() {
 		// No language set for 404
@@ -158,7 +158,7 @@ class PLL_Choose_Lang_Content extends PLL_Choose_Lang {
 	 * @since 0.9
 	 *
 	 * @param PLL_Language|false $lang Language found by {@see PLL_Choose_Lang_Content::get_language_from_content()}.
-	 * @return PLL_Language
+	 * @return PLL_Language|false
 	 */
 	public function pll_get_current_language( $lang ) {
 		return ! $lang ? $this->get_preferred_language() : $lang;
