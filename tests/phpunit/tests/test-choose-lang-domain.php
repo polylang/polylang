@@ -21,9 +21,7 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		global $wp_rewrite, $wp_styles;
-
-		$wp_styles = null;
+		global $wp_rewrite;
 
 		$this->server = $_SERVER; // save this
 
@@ -55,10 +53,6 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 
 	public function tear_down() {
 		parent::tear_down();
-
-		global $wp_styles;
-
-		$wp_styles = null;
 
 		$_SERVER = $this->server;
 	}
