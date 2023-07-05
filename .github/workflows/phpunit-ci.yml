@@ -16,7 +16,7 @@ on:
 
 jobs:
   testing:
-    name: Run PHPUnit tests with PHP ${{ matrix.php-version }}, WordPress ${{ matrix.wordpress-version }} and WP_MULTISIE=${{ matrix.is-multisite }}
+    name: PHP ${{ matrix.php-version }}, WordPress ${{ matrix.wordpress-version }} and WP_MULTISIE=${{ matrix.is-multisite }}
 
     runs-on: ubuntu-latest
 
