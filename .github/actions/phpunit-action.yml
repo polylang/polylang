@@ -1,0 +1,72 @@
+name: 'Run PHPUnit tests'
+
+description: 'Set up PHP and its dependencies, install WordPress test library along plugins and themes and run PHPUnit tests.'
+
+inputs:
+    php-version:
+        description: 'PHP version to use.'
+        required: true
+        type: string
+    wordpress-version:
+        description: 'WordPress version to use. Accept a numeric string of the version, "nightly" or "latest".'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+runs:
+  name: Run PHPUnit tests
+
+  services:
+    mysql:
+      image: mariadb:latest
+      ports:
+        - '3306:3306'
+      env:
+        MYSQL_ROOT_PASSWORD: wordpress
+        MARIADB_INITDB_SKIP_TZINFO: 1
+        MYSQL_USER: wordpress
+        MYSQL_PASSWORD: wordpress
+        MYSQL_DATABASE: wordpress_test
+
+  steps:
+    - name: Check out the source code
+      uses: actions/checkout@v3
+
+    - name: Set up PHP ${{ inputs.php-version }}
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: none
+        php-version: ${{ inputs.php-version }}
+
+    - name: Clean PHP Dependencies
+      run: |
+          if [[ ${{ inputs.wordpress-version }} == "5.8" ]]; then
+            composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^7.5"
+          fi
+          composer remove --no-interaction --no-update --dev "phpstan/phpstan"
+          composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
+
+    - name: Install PHP Dependencies
+      uses: ramsey/composer-install@v2
+      with:
+       dependency-versions: 'highest'
+
+    - name: Set up WordPress ${{ inputs.wordpress-version }} and WordPress Test Library
+      uses: sjinks/setup-wordpress-test-library@master
+      with:
+        version: ${{ inputs.wordpress-version }}
+
+    - name: Set up plugins and themes dependencies
+      run: "bash tests/bin/install-plugins.sh"
+
+    - name: Verify MariaDB connection
+      run: |
+        while ! mysqladmin ping -h 127.0.0.1 -P ${{ job.services.mysql.ports[3306] }} --silent; do
+          sleep 1
+        done
+      timeout-minutes: 1
+
+    - name: Run tests
+      run: vendor/bin/phpunit

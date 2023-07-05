@@ -1,0 +1,54 @@
+name: PHPUnit CI
+
+on:
+  push:
+    branches: main
+    paths:
+        - '**.php'
+        - 'phpunit.xml'
+        - 'composer.json'
+  pull_request:
+    branches: main
+    paths:
+        - '**.php'
+        - 'phpunit.xml'
+        - 'composer.json'
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - php-version: '7.2'
+            wordpress-version: '5.8'
+            is-multisite: 0
+          - php-version: '5.6'
+            wordpress-version: 'latest'
+            is-multisite: 0
+          - php-version: '8.0'
+            wordpress-version: 'latest'
+            is-multisite: 0
+          - php-version: '7.2'
+            wordpress-version: 'latest'
+            is-multisite: 1
+          - php-version: '5.6'
+            wordpress-version: 'nightly'
+            is-multisite: 0
+          - php-version: '8.0'
+            wordpress-version: 'nightly'
+            is-multisite: 0
+          - php-version: '8.2'
+            wordpress-version: 'nightly'
+            is-multisite: 0
+
+    env:
+      WP_MULTISITE: ${{ matrix.is-multisite }}
+
+    steps:
+      - name: 'Run PHPUnit tests with ${{ matrix.php-version }}, WordPress ${{ matrix.wordpress-version }} and WP_MULTISIE=${{ matrix.is-multisite }}'
+        uses: ./.github/actions/phpunit-action.yml
+        with:
+          php-version: ${{ matrix.php-version }}
+          wordpress-version: ${{ matrix.wordpress-version }}
