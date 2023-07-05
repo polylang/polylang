@@ -11,29 +11,19 @@ inputs:
         description: 'WordPress version to use. Accept a numeric string of the version, "nightly" or "latest".'
         required: true
         type: string
+    allow-failure:
+        description: 'Whether or not the job is allowed to fail. Default to false.'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 runs:
-  name: Run PHPUnit tests
-
-  services:
-    mysql:
-      image: mariadb:latest
-      ports:
-        - '3306:3306'
-      env:
-        MYSQL_ROOT_PASSWORD: wordpress
-        MARIADB_INITDB_SKIP_TZINFO: 1
-        MYSQL_USER: wordpress
-        MYSQL_PASSWORD: wordpress
-        MYSQL_DATABASE: wordpress_test
+  using: 'composite'
 
   steps:
-    - name: Check out the source code
-      uses: actions/checkout@v3
-
     - name: Set up PHP ${{ inputs.php-version }}
       uses: shivammathur/setup-php@v2
       with:
@@ -42,11 +32,12 @@ runs:
 
     - name: Clean PHP Dependencies
       run: |
-          if [[ ${{ inputs.wordpress-version }} == "5.8" ]]; then
+          if [[ ${{ inputs.wordpress-version }} == "5.8.x" ]]; then
             composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^7.5"
           fi
           composer remove --no-interaction --no-update --dev "phpstan/phpstan"
           composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
+      shell: bash
 
     - name: Install PHP Dependencies
       uses: ramsey/composer-install@v2
@@ -60,13 +51,8 @@ runs:
 
     - name: Set up plugins and themes dependencies
       run: "bash tests/bin/install-plugins.sh"
-
-    - name: Verify MariaDB connection
-      run: |
-        while ! mysqladmin ping -h 127.0.0.1 -P ${{ job.services.mysql.ports[3306] }} --silent; do
-          sleep 1
-        done
-      timeout-minutes: 1
+      shell: bash
 
     - name: Run tests
       run: vendor/bin/phpunit
+      shell: bash

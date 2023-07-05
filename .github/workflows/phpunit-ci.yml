@@ -2,13 +2,8 @@ name: PHPUnit CI
 
 on:
   push:
-    branches: main
-    paths:
-        - '**.php'
-        - 'phpunit.xml'
-        - 'composer.json'
   pull_request:
-    branches: main
+    branches: master
     paths:
         - '**.php'
         - 'phpunit.xml'
@@ -18,37 +13,61 @@ jobs:
   testing:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mariadb:latest
+        ports:
+          - '3306:3306'
+        env:
+          MYSQL_ROOT_PASSWORD: wordpress
+          MARIADB_INITDB_SKIP_TZINFO: 1
+          MYSQL_USER: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_DATABASE: wordpress_test
+
     strategy:
+      fail-fast: false
       matrix:
         include:
           - php-version: '7.2'
-            wordpress-version: '5.8'
+            wordpress-version: '5.8.x'
+            allow-failure: false
             is-multisite: 0
           - php-version: '5.6'
             wordpress-version: 'latest'
+            allow-failure: false
             is-multisite: 0
           - php-version: '8.0'
             wordpress-version: 'latest'
+            allow-failure: false
             is-multisite: 0
           - php-version: '7.2'
             wordpress-version: 'latest'
+            allow-failure: false
             is-multisite: 1
           - php-version: '5.6'
             wordpress-version: 'nightly'
+            allow-failure: true
             is-multisite: 0
           - php-version: '8.0'
             wordpress-version: 'nightly'
+            allow-failure: true
             is-multisite: 0
           - php-version: '8.2'
             wordpress-version: 'nightly'
+            allow-failure: true
             is-multisite: 0
 
     env:
       WP_MULTISITE: ${{ matrix.is-multisite }}
 
     steps:
+      - name: Check out the source code
+        uses: actions/checkout@v3
+
       - name: 'Run PHPUnit tests with ${{ matrix.php-version }}, WordPress ${{ matrix.wordpress-version }} and WP_MULTISIE=${{ matrix.is-multisite }}'
-        uses: ./.github/actions/phpunit-action.yml
+        uses: ./.github/actions/phpunit
         with:
           php-version: ${{ matrix.php-version }}
           wordpress-version: ${{ matrix.wordpress-version }}
+        continue-on-error: ${{ matrix.allow-failure }}
