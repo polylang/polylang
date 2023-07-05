@@ -22,6 +22,8 @@ on:
 
 jobs:
   testing:
+    name: Run PHPCS and PHPStan with PHP 7.4
+
     runs-on: ubuntu-latest
 
     steps:

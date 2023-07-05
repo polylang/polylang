@@ -16,6 +16,8 @@ on:
 
 jobs:
   testing:
+    name: Run PHPUnit tests with PHP ${{ matrix.php-version }}, WordPress ${{ matrix.wordpress-version }} and WP_MULTISIE=${{ matrix.is-multisite }}
+
     runs-on: ubuntu-latest
 
     services:
@@ -70,7 +72,7 @@ jobs:
       - name: Check out the source code
         uses: actions/checkout@v3
 
-      - name: 'Run PHPUnit tests with ${{ matrix.php-version }}, WordPress ${{ matrix.wordpress-version }} and WP_MULTISIE=${{ matrix.is-multisite }}'
+      - name: 'Run PHPUnit tests'
         uses: ./.github/actions/phpunit
         with:
           php-version: ${{ matrix.php-version }}
