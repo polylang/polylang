@@ -2,6 +2,11 @@ name: PHPUnit CI
 
 on:
   push:
+    branches: master
+    paths:
+        - '**.php'
+        - 'phpunit.xml'
+        - 'composer.json'
   pull_request:
     branches: master
     paths:

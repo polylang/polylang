@@ -1,0 +1,43 @@
+name: PHPUnit CI
+
+on:
+  push:
+    branches: master
+    paths:
+        - '**.php'
+        - '**.js'
+        - 'phpcs.xml.dist'
+        - 'phpstan.neon.dist'
+        - 'phpstan-baseline.neon'
+        - 'composer.json'
+  pull_request:
+    branches: master
+    paths:
+        - '**.php'
+        - '**.js'
+        - 'phpcs.xml.dist'
+        - 'phpstan.neon.dist'
+        - 'phpstan-baseline.neon'
+        - 'composer.json'
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: none
+        php-version: '7.4'
+
+    - name: Install PHP Dependencies
+      uses: ramsey/composer-install@v2
+      with:
+       dependency-versions: 'highest'
+
+    - name: Run PHPCS
+      run: vendor/bin/phpcs
+
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyze --memory-limit=1500M
