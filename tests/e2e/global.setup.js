@@ -10,6 +10,7 @@ import { RequestUtils } from '@wordpress/e2e-test-utils-playwright';
 
 /**
  * Copied from Gutenberg and converted from Typescript.
+ *
  * @see https://github.com/WordPress/gutenberg/blob/v16.1.1/test/e2e/config/global-setup.ts.
  */
 async function globalSetup( config ) {

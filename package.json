@@ -13,8 +13,8 @@
     "clean": "rimraf js/build css/build",
     "env:start": "wp-env start",
 		"env:stop": "wp-env stop",
-		"wp-env": "wp-env",
-		"test:e2e": "playwright test --config tests/e2e/playwright.config.js"
+    "wp-env": "wp-env",
+    "test:e2e": "playwright test --config tests/e2e/playwright.config.js"
   },
   "repository": {
     "type": "git",
@@ -48,7 +48,7 @@
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0",
-		"@wordpress/e2e-test-utils-playwright": "^0.4.0",
-		"@wordpress/env": "^8.1.0"
+    "@wordpress/e2e-test-utils-playwright": "^0.4.0",
+    "@wordpress/env": "^8.1.0"
   }
 }
