@@ -1,0 +1,23 @@
+{
+	"phpVersion": "7.4",
+	"core": "WordPress/WordPress",
+	"config": {
+		"WP_DEBUG": true,
+		"WP_DEBUG_LOG": true,
+		"SCRIPT_DEBUG": true,
+		"WP_DEBUG_DISPLAY": true
+	},
+	"plugins": [ "." ],
+	"env": {
+        "development": {},
+        "tests": {
+            "plugins": [
+                ".",
+                "./tests/e2e/gutenberg-test-plugin-disables-the-css-animations"
+            ],
+            "config": {
+                "WP_TESTS_DOMAIN": "localhost"
+            }
+        }
+    }
+}
