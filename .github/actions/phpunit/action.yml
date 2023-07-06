@@ -1,6 +1,6 @@
-name: 'Run PHPUnit tests'
+name: 'Run PHPUnit and Behat tests'
 
-description: 'Set up PHP and its dependencies, install WordPress test library along plugins and themes and run PHPUnit tests.'
+description: 'Set up PHP and its dependencies, install WordPress test library along plugins and themes then run PHPUnit and Behat tests.'
 
 inputs:
     php-version:
@@ -54,5 +54,7 @@ runs:
       shell: bash
 
     - name: Run tests
-      run: vendor/bin/phpunit
+      run: |
+          vendor/bin/phpunit
+          vendor/bin/behat
       shell: bash
