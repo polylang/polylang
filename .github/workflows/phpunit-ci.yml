@@ -52,7 +52,7 @@ jobs:
             wordpress-version: 'latest'
             allow-failure: false
             is-multisite: 1
-          - php-version: '5.6'
+          - php-version: '7.0'
             wordpress-version: 'nightly'
             allow-failure: true
             is-multisite: 0
