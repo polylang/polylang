@@ -12,7 +12,7 @@
     "dev": "npm run clean && webpack --mode development --watch",
     "clean": "rimraf js/build css/build",
     "env:start": "wp-env start",
-		"env:stop": "wp-env stop",
+    "env:stop": "wp-env stop",
     "wp-env": "wp-env",
     "test:e2e": "playwright test --config tests/e2e/playwright.config.js"
   },
