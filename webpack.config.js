@@ -23,6 +23,10 @@ function configureWebpack( options ){
 		'tmp/**',
 		'webpack/**',
 		'**/build/**',
+		'playwright-report/**',
+		'artifacts/**',
+		'tests/**',
+		'test-results/**',
 	];
 
 	const jsFileNamesToIgnore = [
