@@ -4,21 +4,21 @@ on:
   push:
     branches: master
     paths:
-        - '**.php'
-        - '**.js'
-        - 'phpcs.xml.dist'
-        - 'phpstan.neon.dist'
-        - 'phpstan-baseline.neon'
-        - 'composer.json'
+      - '**.php'
+      - '**.js'
+      - 'phpcs.xml.dist'
+      - 'phpstan.neon.dist'
+      - 'phpstan-baseline.neon'
+      - 'composer.json'
   pull_request:
     branches: master
     paths:
-        - '**.php'
-        - '**.js'
-        - 'phpcs.xml.dist'
-        - 'phpstan.neon.dist'
-        - 'phpstan-baseline.neon'
-        - 'composer.json'
+      - '**.php'
+      - '**.js'
+      - 'phpcs.xml.dist'
+      - 'phpstan.neon.dist'
+      - 'phpstan-baseline.neon'
+      - 'composer.json'
 
 jobs:
   testing:
@@ -39,7 +39,7 @@ jobs:
     - name: Install PHP Dependencies
       uses: ramsey/composer-install@v2
       with:
-       dependency-versions: 'highest'
+        dependency-versions: 'highest'
 
     - name: Run PHPCS
       run: vendor/bin/phpcs

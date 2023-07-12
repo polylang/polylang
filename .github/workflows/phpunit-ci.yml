@@ -4,15 +4,15 @@ on:
   push:
     branches: master
     paths:
-        - '**.php'
-        - 'phpunit.xml'
-        - 'composer.json'
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
   pull_request:
     branches: master
     paths:
-        - '**.php'
-        - 'phpunit.xml'
-        - 'composer.json'
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
 
 jobs:
   testing:

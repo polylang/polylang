@@ -4,18 +4,18 @@ description: 'Sets up PHP and its dependencies, installs WordPress test library 
 
 inputs:
     php-version:
-        description: 'PHP version to use.'
-        required: true
-        type: string
+      description: 'PHP version to use.'
+      required: true
+      type: string
     wordpress-version:
-        description: 'WordPress version to use. Accepts a numeric string of the version, "nightly", or "latest".'
-        required: true
-        type: string
+      description: 'WordPress version to use. Accepts a numeric string of the version, "nightly", or "latest".'
+      required: true
+      type: string
     allow-failure:
-        description: 'Whether or not the job is allowed to fail. Defaults to false.'
-        required: false
-        type: boolean
-        default: false
+      description: 'Whether or not the job is allowed to fail. Defaults to false.'
+      required: false
+      type: boolean
+      default: false
 
 permissions:
   contents: read
@@ -32,17 +32,17 @@ runs:
 
     - name: Clean PHP Dependencies
       run: |
-          if [[ ${{ inputs.wordpress-version }} == "5.8.x" ]]; then
-            composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^7.5"
-          fi
-          composer remove --no-interaction --no-update --dev "phpstan/phpstan"
-          composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
+        if [[ ${{ inputs.wordpress-version }} == "5.8.x" ]]; then
+          composer require --no-interaction --no-update --ignore-platform-reqs --dev "phpunit/phpunit ^7.5"
+        fi
+        composer remove --no-interaction --no-update --dev "phpstan/phpstan"
+        composer remove --no-interaction --no-update --dev "wpsyntex/polylang-phpstan"
       shell: bash
 
     - name: Install PHP Dependencies
       uses: ramsey/composer-install@v2
       with:
-       dependency-versions: 'highest'
+        dependency-versions: 'highest'
 
     - name: Set up WordPress ${{ inputs.wordpress-version }} and WordPress Test Library
       uses: sjinks/setup-wordpress-test-library@master
@@ -55,6 +55,6 @@ runs:
 
     - name: Run tests
       run: |
-          vendor/bin/phpunit
-          vendor/bin/behat
+        vendor/bin/phpunit
+        vendor/bin/behat
       shell: bash
