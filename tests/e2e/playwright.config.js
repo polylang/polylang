@@ -9,7 +9,7 @@ export default defineConfig( {
 
 	globalSetup: require.resolve('./global.setup.js'),
 
-	fullyParallel: true,
+	fullyParallel: false,
 
 	// Fail the build on CI if you accidentally left test.only in the source code.
 	forbidOnly: ! ! process.env.CI,
@@ -18,7 +18,7 @@ export default defineConfig( {
 	retries: process.env.CI ? 2 : 0,
 
 	// Opt out of parallel tests on CI.
-	workers: process.env.CI ? 1 : undefined,
+	workers: 1,
 
 	reporter: 'html',
 
@@ -26,7 +26,7 @@ export default defineConfig( {
 		baseURL: 'http://localhost:8889',
 		ignoreHTTPSErrors: true,
 		trace: 'on-first-retry',
-		headless: true,
+		headless: false,
 		storageState: STORAGE_STATE_PATH,
 	},
 
@@ -42,6 +42,7 @@ export default defineConfig( {
 	webServer: {
 		command: 'npm run env:start',
 		url: 'http://localhost:8889',
-		reuseExistingServer: ! process.env.CI,
-	},
+		reuseExistingServer: true,
+		timeout: 120 * 1000,
+	}
 } );
