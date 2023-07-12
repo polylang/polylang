@@ -13,8 +13,10 @@
     "clean": "rimraf js/build css/build",
     "env:start": "wp-env start",
     "env:stop": "wp-env stop",
+    "env:clean": "wp-env clean",
+    "env:start:fresh": "wp-env start && wp-env clean",
     "wp-env": "wp-env",
-    "test:e2e": "playwright test --config tests/e2e/playwright.config.js"
+    "test:e2e": "npm run env:start:fresh && playwright test --config tests/e2e/playwright.config.js"
   },
   "repository": {
     "type": "git",
