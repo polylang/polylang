@@ -8,7 +8,7 @@ let page;
 
 test.beforeAll(async ({ browser }) => {
 	page = await browser.newPage();
-	await page.goto('http://localhost:8889/wp-login.php');
+	await page.goto('/wp-login.php');
 	await page.getByLabel('Username or Email Address').click();
 	await page.getByLabel('Username or Email Address').fill('admin');
 	await page.getByLabel('Username or Email Address').press('Tab');
@@ -26,7 +26,7 @@ test.afterAll(async () => {
 
 test.describe( 'Launch Polylang', () => {
 	test('Test add language through Wizard', async ({ page }) => {
-		await page.goto('http://localhost:8889/wp-admin/admin.php?page=mlang_wizard');
+		await page.goto('/wp-admin/admin.php?page=mlang_wizard');
 		await page.locator('#lang_list-button span').nth(1).click();
 		await page.getByRole('option', { name: 'English - en_US' }).click();
 		await page.getByRole('button', { name: ' Add new language' }).click();
@@ -43,7 +43,7 @@ test.describe( 'Launch Polylang', () => {
 	});
 
 	test('Test add language through settings', async ({ page }) => {
-		await page.goto('http://localhost:8889/wp-admin');
+		await page.goto('/wp-admin');
 		await page.getByRole('link', { name: 'Languages' }).first().click();
 		await page.locator('#lang_list-button span').nth(1).click();
 		await page.getByRole('option', { name: 'Français - fr_FR' }).click();
