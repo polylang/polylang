@@ -1,6 +1,6 @@
 name: 'Run PHPUnit and Behat tests'
 
-description: 'Set up PHP and its dependencies, install WordPress test library along plugins and themes then run PHPUnit and Behat tests.'
+description: 'Sets up PHP and its dependencies, installs WordPress test library along with plugins and themes then runs PHPUnit and Behat tests.'
 
 inputs:
     php-version:
@@ -8,11 +8,11 @@ inputs:
         required: true
         type: string
     wordpress-version:
-        description: 'WordPress version to use. Accept a numeric string of the version, "nightly" or "latest".'
+        description: 'WordPress version to use. Accepts a numeric string of the version, "nightly", or "latest".'
         required: true
         type: string
     allow-failure:
-        description: 'Whether or not the job is allowed to fail. Default to false.'
+        description: 'Whether or not the job is allowed to fail. Defaults to false.'
         required: false
         type: boolean
         default: false
