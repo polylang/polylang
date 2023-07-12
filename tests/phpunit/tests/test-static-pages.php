@@ -689,6 +689,38 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_env->static_pages->enable_page_on_front_and_page_for_posts_translation();
 	}
 
+	/**
+	 * @ticket 1701
+	 * @see https://github.com/polylang/polylang-pro/issues/1701
+	 *
+	 * @return void
+	 */
+	public function test_page_deletion_without_translations() {
+		// Delete translations.
+		self::$model->post->delete_translation( self::$home_en );
+		self::$model->post->delete_translation( self::$home_de, true );
+		self::$model->post->delete_translation( self::$posts_en, true );
+
+		$this->init_test( 'admin' );
+
+		$this->pll_env->curlang = self::$model->get_language( 'fr' );
+		wp_delete_post( self::$home_fr, true );
+
+		$this->pll_env->static_pages->disable_page_on_front_and_page_for_posts_translation();
+		$this->assertSame( 'posts', get_option( 'show_on_front' ) );
+		$this->assertSame( 0, get_option( 'page_on_front' ) );
+		$this->assertSame( self::$posts_fr, get_option( 'page_for_posts' ) );
+		$this->pll_env->static_pages->enable_page_on_front_and_page_for_posts_translation();
+
+		wp_delete_post( self::$posts_fr, true );
+
+		$this->pll_env->static_pages->disable_page_on_front_and_page_for_posts_translation();
+		$this->assertSame( 'posts', get_option( 'show_on_front' ) );
+		$this->assertSame( 0, get_option( 'page_on_front' ) );
+		$this->assertSame( 0, get_option( 'page_for_posts' ) );
+		$this->pll_env->static_pages->enable_page_on_front_and_page_for_posts_translation();
+	}
+
 	public function page_deletion_provider() {
 		return array(
 			'Delete page on front not in option'  => array(
