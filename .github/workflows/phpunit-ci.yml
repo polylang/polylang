@@ -16,7 +16,7 @@ on:
 
 jobs:
   testing:
-    name: PHP ${{ matrix.php-version }}, WordPress ${{ matrix.wordpress-version }} and WP_MULTISIE=${{ matrix.is-multisite }}
+    name: WP ${{ matrix.wordpress-version }} + PHP ${{ matrix.php-version }} + MS ${{ matrix.is-multisite }}
 
     runs-on: ubuntu-latest
 
@@ -36,34 +36,34 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php-version: '7.2'
-            wordpress-version: '5.8.x'
-            allow-failure: false
+          - wordpress-version: '5.8.x'
+            php-version: '7.2'
             is-multisite: 0
-          - php-version: '5.6'
-            wordpress-version: 'latest'
             allow-failure: false
+          - wordpress-version: 'latest'
+            php-version: '5.6'
             is-multisite: 0
-          - php-version: '8.0'
-            wordpress-version: 'latest'
             allow-failure: false
+          -  wordpress-version: 'latest'
+            php-version: '8.0'
             is-multisite: 0
-          - php-version: '7.2'
-            wordpress-version: 'latest'
             allow-failure: false
+          - wordpress-version: 'latest'
+            php-version: '7.2'
             is-multisite: 1
-          - php-version: '7.0'
-            wordpress-version: 'nightly'
-            allow-failure: true
+            allow-failure: false
+          - wordpress-version: 'nightly'
+            php-version: '7.0'
             is-multisite: 0
-          - php-version: '8.0'
-            wordpress-version: 'nightly'
             allow-failure: true
+          - wordpress-version: 'nightly'
+            php-version: '8.0'
             is-multisite: 0
-          - php-version: '8.2'
-            wordpress-version: 'nightly'
             allow-failure: true
+          - wordpress-version: 'nightly'
+            php-version: '8.2'
             is-multisite: 0
+            allow-failure: true
 
     env:
       WP_MULTISITE: ${{ matrix.is-multisite }}
