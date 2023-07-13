@@ -24,13 +24,6 @@ class PLL_Static_Pages {
 	public $page_for_posts = 0;
 
 	/**
-	 * Stores the plugin options.
-	 *
-	 * @var PLL_Options
-	 */
-	protected $options;
-
-	/**
 	 * @var PLL_Model
 	 */
 	protected $model;

@@ -551,16 +551,6 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:get_links_model\\(\\)\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:has_languages\\(\\)\\.$#"
-			count: 2
-			path: include/class-polylang.php
-
-		-
 			message: "#^Call to an undefined method object\\:\\:init\\(\\)\\.$#"
 			count: 1
 			path: include/class-polylang.php
@@ -692,11 +682,6 @@ parameters:
 
 		-
 			message: "#^Method PLL_Links_Domain\\:\\:add_language_to_link\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: include/links-domain.php
-
-		-
-			message: "#^Method PLL_Links_Domain\\:\\:get_hosts\\(\\) should return array\\<string\\> but returns array\\<string, string\\|false\\>\\.$#"
 			count: 1
 			path: include/links-domain.php
 

@@ -22,9 +22,9 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	protected $links;
 
 	/**
-	 * Stores plugin's options.
+	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	protected $options;
 
