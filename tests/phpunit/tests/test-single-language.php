@@ -37,13 +37,16 @@ class Single_Language_Test extends PLL_UnitTestCase {
 	public function test_front_page() {
 		global $wp_rewrite;
 
-		$options                  = PLL_Install::get_default_options();
-		$options['redirect_lang'] = 1;
-		$options['hide_default']  = 0;
-		$options['force_lang']    = 1;
-		$options['rewrite']       = 1;
-		$options['default_lang']  = 'en';
-		$model                    = new PLL_Model( $options );
+		$options = ( new PLL_Options() )->merge(
+			PLL_Options::get_reset_options(),
+			array(
+				'default_lang'  => 'en',
+				'hide_default'  => false,
+				'redirect_lang' => true,
+				'version'       => '3.3',
+			)
+		);
+		$model   = new PLL_Model( $options );
 
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $this->home_en );

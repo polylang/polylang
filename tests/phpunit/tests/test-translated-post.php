@@ -238,8 +238,8 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	 * @covers PLL_Translated_Post::get_db_infos()
 	 */
 	public function test_get_db_infos() {
-		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
-		$model = new PLL_Model( $options );
+		$options = ( new PLL_Options() )->merge( PLL_Options::get_reset_options(), array( 'default_lang' => 'en' ) );
+		$model   = new PLL_Model( $options );
 
 		$ref = new ReflectionMethod( $model->post, 'get_db_infos' );
 		$ref->setAccessible( true );

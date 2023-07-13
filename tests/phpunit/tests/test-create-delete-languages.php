@@ -4,8 +4,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();
-
-		$options       = PLL_Install::get_default_options();
+		$options       = ( new PLL_Options() )->merge( PLL_Options::get_reset_options() );
 		$model         = new PLL_Admin_Model( $options );
 		$links_model   = $model->get_links_model();
 		$this->pll_env = new PLL_Admin( $links_model );
