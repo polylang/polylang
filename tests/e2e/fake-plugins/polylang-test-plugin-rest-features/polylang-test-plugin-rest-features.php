@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Polylang
+ * Polylang test plugin for E2E.
  *
  * @package           Polylang
  * @author            WP SYNTEX
@@ -169,20 +169,19 @@ function pll_test_get_languages( $request ) {
  */
 function pll_test_create_languages( $request ) {
 	$locale               = $request->get_param( 'locale' );
-	$languages            = include POLYLANG_DIR . '/settings/languages.php';
+	$languages            = require POLYLANG_DIR . '/settings/languages.php';
 	$values               = $languages[ $locale ];
 	$values['slug']       = $values['code'];
 	$values['rtl']        = (int) ( 'rtl' === $values['dir'] );
 	$values['term_group'] = 0;
-	$args                 = array_merge( $values, $args );
 	$admin_model          = new PLL_Admin_Model( PLL()->options );
-	$errors               = $admin_model->add_language( $args );
+	$errors               = $admin_model->add_language( $values );
 
 	if ( is_wp_error( $errors ) ) {
 		return $errors;
 	}
 
-	self::$model->clean_languages_cache();
+	$admin_model->clean_languages_cache();
 
 	return PLL()->model->get_language( $locale );
 }
@@ -195,13 +194,13 @@ function pll_test_create_languages( $request ) {
  * @return WP_Error|true `WP_Error` on failure, `true` on success.
  */
 function pll_test_delete_languages() {
-	$languages = self::$model->get_languages_list();
+	$languages = PLL()->model->get_languages_list();
 	if ( ! is_array( $languages ) ) {
 		return new WP_Error( 'bad_request', 'No languages exist.' );
 	}
 	// Delete the default categories first.
 	$tt = wp_get_object_terms( get_option( 'default_category' ), 'term_translations' );
-	$terms = self::$model->term->get_translations( get_option( 'default_category' ) );
+	$terms = PLL()->model->term->get_translations( get_option( 'default_category' ) );
 
 	wp_delete_term( $tt, 'term_translations' );
 
@@ -210,7 +209,8 @@ function pll_test_delete_languages() {
 	}
 
 	foreach ( $languages as $lang ) {
-		self::$model->delete_language( $lang->term_id );
+		$admin_model = new PLL_Admin_Model( PLL()->options );
+		$admin_model->delete_language( $lang->term_id );
 	}
 
 	return true;
