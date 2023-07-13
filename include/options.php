@@ -18,7 +18,7 @@
  * @implements Iterator<non-falsy-string, mixed>
  *
  * @phpstan-type BoolDataKeys 'browser'|'hide_default'|'media_support'|'redirect_lang'|'rewrite'|'uninstall'
- * @phpstan-type ListDataKeys 'post_types'|'sync'|'taxonomies'
+ * @phpstan-type ListDataKeys 'language_taxonomies'|'post_types'|'sync'|'taxonomies'
  * @phpstan-type StringDataKeys 'default_lang'|'previous_version'|'version'
  * @phpstan-type NavMenuType array<
  *     non-falsy-string,
@@ -37,6 +37,7 @@
  *     first_activation: int<0, max>,
  *     force_lang: int-mask<0, 1, 2, 3>,
  *     hide_default: bool,
+ *     language_taxonomies: list<non-falsy-string>,
  *     media: array<non-falsy-string, 1>,
  *     media_support: bool,
  *     nav_menus: NavMenuType,
@@ -56,6 +57,7 @@
  *     first_activation: 0,
  *     force_lang: 0,
  *     hide_default: false,
+ *     language_taxonomies: list<non-falsy-string>,
  *     media: array<non-falsy-string, 1>,
  *     media_support: false,
  *     nav_menus: NavMenuType,
@@ -97,23 +99,24 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * @phpstan-var DefaultOptionsData
 	 */
 	const DEFAULTS = array(
-		'browser'          => false,
-		'default_lang'     => '',
-		'domains'          => array(),
-		'first_activation' => 0,
-		'force_lang'       => 0,
-		'hide_default'     => false,
-		'media'            => array(),
-		'media_support'    => false,
-		'nav_menus'        => array(),
-		'post_types'       => array(),
-		'previous_version' => '',
-		'redirect_lang'    => false,
-		'rewrite'          => false,
-		'sync'             => array(),
-		'taxonomies'       => array(),
-		'uninstall'        => false,
-		'version'          => '',
+		'browser'             => false,
+		'default_lang'        => '',
+		'domains'             => array(),
+		'first_activation'    => 0,
+		'force_lang'          => 0,
+		'hide_default'        => false,
+		'language_taxonomies' => array(),
+		'media'               => array(),
+		'media_support'       => false,
+		'nav_menus'           => array(),
+		'post_types'          => array(),
+		'previous_version'    => '',
+		'redirect_lang'       => false,
+		'rewrite'             => false,
+		'sync'                => array(),
+		'taxonomies'          => array(),
+		'uninstall'           => false,
+		'version'             => '',
 	);
 
 	/**
@@ -604,6 +607,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 				break;
 
 			// List with non falsy strings as array values.
+			case 'language_taxonomies':
 			case 'post_types':
 			case 'sync':
 			case 'taxonomies':
