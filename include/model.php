@@ -902,7 +902,6 @@ class PLL_Model {
 
 		// Keep the previous values, so this is triggered only once per taxonomy.
 		$this->options['language_taxonomies'] = array_merge( $known_taxonomies, $new_taxonomies );
-		update_option( 'polylang', $this->options );
 	}
 
 	/**
