@@ -233,19 +233,19 @@ function pll_test_get_options() {
  * @since 1.0
  *
  * @param WP_REST_Request $request Current REST request.
- * @return WP_Error|true `WP_Error` on failure, `true` on success.
+ * @return WP_Error|bool `WP_Error` or `false` on failure, `true` on success.
  */
 function pll_test_edit_options( $request ) {
 	$key   = $request->get_param( 'key' );
 	$value = $request->get_param( 'value' );
 
-	if ( empty( PLL()->options[ $key ] ) ) {
-		return new WP_Error( 'bad_request', 'GIven option key does not exist.' );
+	if ( ! isset( PLL()->options[ $key ] ) ) {
+		return new WP_Error( 'bad_request', 'Given option key does not exist.' );
 	}
 
 	PLL()->options[ $key ] = $value;
 
-	return true;
+	return update_option( 'polylang', PLL()->options );
 }
 
 /**
@@ -253,9 +253,11 @@ function pll_test_edit_options( $request ) {
  *
  * @since 1.0
  *
- * @return void
+ * @return bool Whether or not options are updated.
  */
 function pll_test_delete_options() {
-	$default = PLL_Install::get_default_options();
+	$default       = PLL_Install::get_default_options();
 	PLL()->options = $default;
+
+	return update_option( 'polylang', PLL()->options );
 }
