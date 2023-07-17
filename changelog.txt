@@ -2,6 +2,61 @@
 
 This file contains only old changelog. See readme.txt for newer versions.
 
+= 3.3.3 (2023-04-11) =
+
+* Pro: Adapt the submenu colors of the navigation language switcher block to WP 6.2
+* Pro: Fix the dropdown setting in the navigation language switcher block
+* Add Amharic, Aragonese and Spanish from Dominican Republic to the list of predefined languages #1248
+* Fix a deprecated notice in WP 6.2 when using multiple domains without the Internationalization PHP extension (intl) #1245
+
+= 3.3.2 (2023-03-06) =
+
+* Pro: Add compatibility with FSE changes introduced by WP 6.2
+* Pro: Adapt the navigation language switcher block for consistency with WP 6.2
+* Only store term ids in taxonomy relationships cache for WP 6.0+. Props @ocean90 #1154
+* Remove usage of `get_page_by_title()` deprecated in WP 6.2 #1213
+* Fix fatal error if the mu-plugins folder is not readable #1217
+* Fix a compatibility issue with plugins not expecting a null 'update_plugins' transient #1224
+
+= 3.3.1 (2023-01-09) =
+
+* Pro: Allow to translate Oembed, URL and Email ACF fields
+* Pro: Fix ACF REST API mixing fields
+* Pro: Fix ACF compatibility loaded when no language exist
+* Pro: Fix headers of exported PO files.
+* Pro: Fix spacing in language switcher navigation block preview
+* Work around a bug in Sendinblue for WooCommerce causing a fatal error. #1156
+* Fix a regression with WooCommerce Product Add-Ons Ultimate. #1186
+
+= 3.3 (2022-11-28) =
+
+* Requires WP 5.7 as minimum version
+* Pro: Allow to export and import XLIFF files for posts
+* Pro: Honor the provided context for the navigation language switcher block.
+* Pro: Remove the parent hyperlink in the navigation language switcher block.
+* Pro: Add spacing between flag and name in the navigation language switcher block.
+* Pro: Disallow some special characters in translated slugs to avoid 404 errors.
+* Pro: Fix string translation not imported when the original is registered but has never been saved in database.
+* Pro: Fix string translation not imported when it includes an html entity.
+* Pro: Fix navigation language switcher block rendering in block editor.
+* Pro: Fix navigation language switcher may be displayed wrong color.
+* Translate the post pages in get_post_type_archive_link() on admin side too. #1000
+* Enable the block editor in page for posts translations to match the WordPress behavior since version 5.8 #1002
+* Improve the site health report #1062 #1076
+* Set the current language when saving a post #1065
+* The search block is now filtered by language #1081
+* Display slug of CPT and taxonomies in Custom post types and Taxonomies settings. Props @nicomollet #1112
+* Add support for wpml-config.xml to MU plugins #1140 Props Jeremy Simkins
+* Fix some deprecated notices fired by PHP 8.1 #975
+* Fix some missing canonical redirect taxonomies #1074
+* Fix redirect when permalink structure has no trailing slash #1080
+* Fix language switcher in legacy navigation menu widget not rendered in widgets block editor #1083
+* Fix language in tax query when an OR relation is used #1098
+* Fix parent of translated category removed when assigning an untranslated parent #1105
+* Fix is_front_page() when a static front page is not translated #1123
+* Yoast SEO: Fix posts without language displayed in the sitemap #1103
+* Yoast SEO: Avoid syncing robots meta. #1118
+
 = 3.2.8 (2022-10-17) =
 
 * Fix PHP warning when a filtered taxonomy has no query var #1124
