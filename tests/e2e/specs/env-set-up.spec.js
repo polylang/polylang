@@ -5,7 +5,14 @@ import { test, expect } from '@wordpress/e2e-test-utils-playwright';
 /**
  * Internal dependencies.
  */
-import { deleteAllLanguages, createLanguage, getAllLanguages } from '../tools';
+import {
+	deleteAllLanguages,
+	createLanguage,
+	getAllLanguages,
+	getOptions,
+	setOption,
+	deleteOptions
+} from '../tools';
 
 test.describe( 'Environment Setup Test', () => {
 	test( 'Should load properly', async ( { page } ) => {
@@ -35,5 +42,28 @@ test.describe( 'Environment Setup Test', () => {
 
 		const isAllLanguagesDeleted = await deleteAllLanguages( requestUtils );
 		expect( isAllLanguagesDeleted ).toBeTruthy();
+	} );
+
+	test( 'Polylang test plugin manages options properly', async ( { requestUtils } ) => {
+		const supportMedia = await setOption( requestUtils, 'media_support', '1' );
+		expect( supportMedia ).toBeTruthy();
+
+		const resetOptions = await deleteOptions( requestUtils );
+		expect( resetOptions ).toBeTruthy();
+
+		const options = await getOptions( requestUtils );
+		expect( options.browser ).toStrictEqual( 0 );
+		expect( options.domains ).toStrictEqual( [] );
+		expect( options.force_lang ).toStrictEqual( 1 );
+		expect( options.hide_default ).toStrictEqual( 1 );
+		expect( options.media_support ).toStrictEqual( 0 );
+		expect( options.post_types ).toStrictEqual( [] );
+		expect( options.redirect_lang ).toStrictEqual( 0 );
+		expect( options.rewrite ).toStrictEqual( 1 );
+		expect( options.sync ).toStrictEqual( [] );
+		expect( options.taxonomies ).toStrictEqual( [] );
+		expect( options.uninstall ).toStrictEqual( 0 );
+		expect( options.first_activation ).toBeDefined();
+		expect( options.version ).toBeDefined();
 	} );
 });
