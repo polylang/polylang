@@ -176,11 +176,6 @@ parameters:
 			path: admin/admin-filters-term.php
 
 		-
-			message: "#^Parameter \\#1 \\$.+ of function rtrim expects string, string\\|WP_Error given\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get_translation\\(\\) expects PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 3
 			path: admin/admin-filters-term.php
@@ -587,11 +582,6 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'version' on mixed\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Parameter \\#1 \\$.+ of function trim expects string, string\\|null given\\.$#"
 			count: 1
 			path: include/class-polylang.php
 
