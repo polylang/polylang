@@ -4,7 +4,19 @@ on:
     types: [completed]
 
 jobs:
-  notify:
+  on-success:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_USERNAME: GitHub
+          SLACK_ICON_EMOJI: ':rocket:'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_FOOTER: ''
+
+  on-failure:
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
