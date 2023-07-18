@@ -23,6 +23,8 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 
 		global $wp_rewrite;
 
+		remove_all_actions( 'wp_default_styles' ); // So `PLL_Choose_Lang::set_language()` doesn't calls `wp_styles()`, same behavior as production environment.
+
 		$this->server = $_SERVER; // save this
 
 		$this->hosts = array(
