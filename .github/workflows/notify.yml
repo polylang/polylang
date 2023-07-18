@@ -19,4 +19,4 @@ jobs:
           SLACK_USERNAME: GitHub
           SLACK_ICON_EMOJI: ':rocket:'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_FOOTER: ''
+          SLACK_FOOTER: 'WPSyntex CI'
