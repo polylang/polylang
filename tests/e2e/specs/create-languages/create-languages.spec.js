@@ -1,7 +1,6 @@
 // @ts-check
 
 import { test, expect } from '@wordpress/e2e-test-utils-playwright';
-// import { test, expect } from '@playwright/test';
 
 /**
  * Internal dependencies.
