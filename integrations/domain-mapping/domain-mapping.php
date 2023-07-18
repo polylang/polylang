@@ -17,7 +17,7 @@ class PLL_Domain_Mapping {
 	 */
 	public function __construct() {
 		if ( function_exists( 'redirect_to_mapped_domain' ) ) {
-			if ( ! defined( 'PLL_CACHE_HOME_URL' ) && ( $options = get_option( 'polylang' ) ) && $options['force_lang'] < 2 ) {
+			if ( ! pll_has_constant( 'PLL_CACHE_HOME_URL' ) && ( $options = get_option( 'polylang' ) ) && $options['force_lang'] < 2 ) {
 				define( 'PLL_CACHE_HOME_URL', false );
 			}
 

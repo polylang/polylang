@@ -60,7 +60,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 		add_action( 'wp_head', array( $this, 'wp_head' ), 1 );
 
 		// Modifies the home url
-		if ( ! defined( 'PLL_FILTER_HOME_URL' ) || PLL_FILTER_HOME_URL ) {
+		if ( pll_get_constant( 'PLL_FILTER_HOME_URL', true ) ) {
 			add_filter( 'home_url', array( $this, 'home_url' ), 10, 2 );
 		}
 

@@ -582,7 +582,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @return string Language home URL.
 	 */
 	public function get_home_url() {
-		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
+		if ( pll_has_falsy_constant( 'PLL_CACHE_LANGUAGES' ) || pll_has_falsy_constant( 'PLL_CACHE_HOME_URL' ) ) {
 			/**
 			 * Filters current `PLL_Language` instance `home_url` property.
 			 *
@@ -605,7 +605,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @return string Language search URL.
 	 */
 	public function get_search_url() {
-		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
+		if ( pll_has_falsy_constant( 'PLL_CACHE_LANGUAGES' ) || pll_has_falsy_constant( 'PLL_CACHE_HOME_URL' ) ) {
 			/**
 			 * Filters current `PLL_Language` instance `search_url` property.
 			 *
