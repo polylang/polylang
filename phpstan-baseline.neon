@@ -321,16 +321,6 @@ parameters:
 			path: frontend/accept-language.php
 
 		-
-			message: "#^Method PLL_Choose_Lang_Content\\:\\:pll_get_current_language\\(\\) should return PLL_Language but returns object\\.$#"
-			count: 1
-			path: frontend/choose-lang-content.php
-
-		-
-			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, object\\|true given\\.$#"
-			count: 1
-			path: frontend/choose-lang-content.php
-
-		-
 			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang_Content\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
 			count: 1
 			path: frontend/choose-lang-content.php
@@ -349,16 +339,6 @@ parameters:
 			message: "#^Method PLL_Choose_Lang_Domain\\:\\:get_preferred_language\\(\\) should return PLL_Language but returns PLL_Language\\|false\\.$#"
 			count: 1
 			path: frontend/choose-lang-domain.php
-
-		-
-			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 2
-			path: frontend/choose-lang.php
-
-		-
-			message: "#^Parameter \\#1 \\$curlang of method PLL_Choose_Lang\\:\\:set_language\\(\\) expects PLL_Language, object\\|false given\\.$#"
-			count: 2
-			path: frontend/choose-lang.php
 
 		-
 			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, float\\|int\\<0, max\\> given\\.$#"
