@@ -525,8 +525,8 @@ class PLL_Wizard {
 	public function save_step_languages() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$all_languages = include POLYLANG_DIR . '/settings/languages.php';
-		$languages = isset( $_POST['languages'] ) && is_array( $_POST['languages'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['languages'] ) ) : false;
+		$all_languages   = include POLYLANG_DIR . '/settings/languages.php';
+		$languages       = isset( $_POST['languages'] ) && is_array( $_POST['languages'] ) ? array_map( 'sanitize_locale_name', $_POST['languages'] ) : false;
 		$saved_languages = array();
 
 		// If there is no language added or defined.
@@ -692,7 +692,7 @@ class PLL_Wizard {
 	public function save_step_untranslated_contents() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		$lang = isset( $_POST['language'] ) ? sanitize_text_field( wp_unslash( $_POST['language'] ) ) : false;
+		$lang = ! empty( $_POST['language'] ) && is_string( $_POST['language'] ) ? sanitize_locale_name( $_POST['language'] ) : false;
 
 		if ( empty( $lang ) ) {
 			$lang = $this->options['default_lang'];

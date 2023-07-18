@@ -84,6 +84,17 @@
 		</properties>
 	</rule>
 
+	<rule ref="WordPress.Security.ValidatedSanitizedInput">
+		<properties>
+			<property name="customSanitizingFunctions" type="array">
+				<element value="sanitize_locale_name"/>
+			</property>
+			<property name="customUnslashingSanitizingFunctions" type="array">
+				<element value="sanitize_locale_name"/>
+			</property>
+		</properties>
+	</rule>
+
 	<rule ref="Generic.Commenting.Fixme.CommentFound" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
