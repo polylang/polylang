@@ -1,6 +1,6 @@
 on:
   workflow_run:
-    workflows: [Coding Standards CI, PHPUnit CI]
+    workflows: ['Coding Standards CI', 'PHPUnit CI']
     types: [completed]
 
 jobs:
