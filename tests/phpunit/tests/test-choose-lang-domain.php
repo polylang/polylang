@@ -23,6 +23,8 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 
 		global $wp_rewrite;
 
+		remove_all_actions( 'wp_default_styles' ); // So `PLL_Choose_Lang::set_language()` doesn't calls `wp_styles()`, same behavior as production environment.
+
 		$this->server = $_SERVER; // save this
 
 		$this->hosts = array(
@@ -92,7 +94,6 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );
 
 		// insert Polylang specificity
-		unset( $GLOBALS['wp_actions']['wp_default_styles'] ); // So `PLL_Choose_Lang::set_language()` doesn't calls `wp_styles()`, same behavior as production environment.
 		unset( $GLOBALS['wp_actions']['pll_language_defined'] );
 		unset( $this->frontend->curlang );
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $url, PHP_URL_HOST );
