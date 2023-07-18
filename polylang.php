@@ -41,6 +41,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
 };
 
+require __DIR__ . '/include/constants.php';
+
 if ( defined( 'POLYLANG_VERSION' ) ) {
 	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro.
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
