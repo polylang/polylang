@@ -38,17 +38,3 @@ function pll_get_constant( string $constant_name, $default = null ) {
 
 	return constant( $constant_name );
 }
-
-/**
- * Tells if a constant is defined and has a falsy value.
- *
- * @since 3.5
- *
- * @param string $constant_name Name of the constant.
- * @return bool True if the constant is defined and falsy, false otherwise.
- *
- * @phpstan-param non-falsy-string $constant_name
- */
-function pll_has_falsy_constant( string $constant_name ): bool {
-	return pll_has_constant( $constant_name ) && ! pll_get_constant( $constant_name );
-}
