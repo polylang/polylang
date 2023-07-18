@@ -46,3 +46,12 @@ jobs:
 
     - name: Run PHPStan
       run: vendor/bin/phpstan analyze --memory-limit=1500M
+
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack Notification
+        uses: ./.github/actions/notify
+        with:
+          is-success: ${{ job.status }}

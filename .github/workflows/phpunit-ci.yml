@@ -72,9 +72,18 @@ jobs:
       - name: Check out the source code
         uses: actions/checkout@v3
 
-      - name: 'Run PHPUnit tests'
+      - name: Run PHPUnit tests
         uses: ./.github/actions/phpunit
         with:
           php-version: ${{ matrix.php-version }}
           wordpress-version: ${{ matrix.wordpress-version }}
         continue-on-error: ${{ matrix.allow-failure }}
+
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack Notification
+        uses: ./.github/actions/notify
+        with:
+          is-success: ${{ job.status }}
