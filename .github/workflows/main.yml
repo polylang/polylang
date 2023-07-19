@@ -93,5 +93,8 @@ jobs:
     needs: [phpunit, coding-standards]
 
     steps:
+    - name: Check out the source code
+      uses: actions/checkout@v3
+
     - name: Send Slack notification
       uses: polylang/actions/notify@main
