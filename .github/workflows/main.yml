@@ -96,6 +96,10 @@ jobs:
     - name: Check out the source code
       uses: actions/checkout@v3
 
+    - run: |
+        echo ${{ needs.phpunit.outputs.job_status }}
+        echo ${{ needs.coding-standards.outputs.job_status == 'success' }}
+
     - name: Send Slack notification
       uses: polylang/actions/notify@main
       with:
