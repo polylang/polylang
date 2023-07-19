@@ -13,6 +13,7 @@ on:
       - '**.php'
       - 'phpunit.xml'
       - 'composer.json'
+  workflow_dispatch:
 
 jobs:
   testing:
