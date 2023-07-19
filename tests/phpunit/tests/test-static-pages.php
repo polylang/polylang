@@ -94,23 +94,21 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		if ( 'frontend' === $env ) {
 			// Go to frontend.
 			$this->pll_env = new PLL_Frontend( $this->links_model );
-			$this->pll_env->init();
-
-			$this->pll_env->static_pages->pll_language_defined();
 		} else {
 			// Go to admin.
 			$this->pll_env = $pll_admin;
-			$this->pll_env->init();
-			$this->pll_env->static_pages->pll_language_defined();
 		}
+
+		$this->pll_env->init();
+		$this->pll_env->static_pages->pll_language_defined();
 	}
 
 	public static function wpTearDownAfterClass() {
-		wp_delete_post( self::$home_en );
-		wp_delete_post( self::$home_fr );
-		wp_delete_post( self::$home_de );
-		wp_delete_post( self::$posts_en );
-		wp_delete_post( self::$posts_fr );
+		wp_delete_post( self::$home_en, true );
+		wp_delete_post( self::$home_fr, true );
+		wp_delete_post( self::$home_de, true );
+		wp_delete_post( self::$posts_en, true );
+		wp_delete_post( self::$posts_fr, true );
 
 		parent::wpTearDownAfterClass();
 	}
@@ -656,5 +654,128 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
 		$this->assertEquals( home_url( '/en/home/' ), $this->pll_env->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 		$this->assertEquals( array( get_post( $es ) ), $GLOBALS['wp_query']->posts );
+	}
+
+	/**
+	 * @dataProvider page_deletion_provider
+	 * @ticket 1701
+	 * @see https://github.com/polylang/polylang-pro/issues/1701
+	 *
+	 * @param string $delete   Name of the class property that stores the ID of the page to delete.
+	 * @param bool   $trash    Either the page should be deleted or trashed.
+	 * @param string $lang     Code of the current language.
+	 * @param array  $expected {
+	 *     Values to expect.
+	 *
+	 *     @var string     $show_on_front  Value of the option `show_on_front`.
+	 *     @var string|int $page_on_front  Name of the class property holding the value of the option `page_on_front`. Can also be `0`.
+	 *     @var string|int $page_for_posts Name of the class property holding the value of the option `page_for_posts`. Can also be `0`.
+	 * }
+	 * @return void
+	 */
+	public function test_page_deletion( $delete, $trash, $lang, $expected ) {
+		$this->init_test( 'admin' );
+
+		$this->pll_env->curlang = self::$model->get_language( $lang );
+		wp_delete_post( self::$$delete, ! $trash );
+
+		$expected_page_on_front  = is_string( $expected['page_on_front'] ) ? self::${$expected['page_on_front']} : $expected['page_on_front'];
+		$expected_page_for_posts = is_string( $expected['page_for_posts'] ) ? self::${$expected['page_for_posts']} : $expected['page_for_posts'];
+
+		// Assert the real values by shunting `translate_page_for_posts()` and `translate_page_on_front()`.
+		$GLOBALS['wp_current_filter']['test'] = 'before_delete_post';
+		$this->assertSame( $expected['show_on_front'], get_option( 'show_on_front' ) );
+		$this->assertSame( $expected_page_on_front, get_option( 'page_on_front' ) );
+		$this->assertSame( $expected_page_for_posts, get_option( 'page_for_posts' ) );
+		unset( $GLOBALS['wp_current_filter']['test'] );
+	}
+
+	/**
+	 * @ticket 1701
+	 * @see https://github.com/polylang/polylang-pro/issues/1701
+	 *
+	 * @return void
+	 */
+	public function test_page_deletion_without_translations() {
+		// Delete translations.
+		self::$model->post->delete_translation( self::$home_en );
+		self::$model->post->delete_translation( self::$home_de, true );
+		self::$model->post->delete_translation( self::$posts_en, true );
+
+		$this->init_test( 'admin' );
+
+		$this->pll_env->curlang = self::$model->get_language( 'fr' );
+		wp_delete_post( self::$home_fr, true );
+
+		// Assert the real values by shunting `translate_page_for_posts()` and `translate_page_on_front()`.
+		$GLOBALS['wp_current_filter']['test'] = 'before_delete_post';
+		$this->assertSame( 'posts', get_option( 'show_on_front' ) );
+		$this->assertSame( 0, get_option( 'page_on_front' ) );
+		$this->assertSame( self::$posts_fr, get_option( 'page_for_posts' ) );
+		unset( $GLOBALS['wp_current_filter']['test'] );
+
+		wp_delete_post( self::$posts_fr, true );
+
+		// Assert the real values by shunting `translate_page_for_posts()` and `translate_page_on_front()`.
+		$GLOBALS['wp_current_filter']['test'] = 'before_delete_post';
+		$this->assertSame( 'posts', get_option( 'show_on_front' ) );
+		$this->assertSame( 0, get_option( 'page_on_front' ) );
+		$this->assertSame( 0, get_option( 'page_for_posts' ) );
+		unset( $GLOBALS['wp_current_filter']['test'] );
+	}
+
+	public function page_deletion_provider() {
+		return array(
+			'Delete page on front not in option'  => array(
+				'delete'   => 'home_de',
+				'trash'    => false,
+				'lang'     => 'de',
+				'expected' => array(
+					'show_on_front'  => 'page',
+					'page_on_front'  => 'home_fr',
+					'page_for_posts' => 'posts_fr',
+				),
+			),
+			'Trash page on front not in option'   => array(
+				'delete'   => 'home_en',
+				'trash'    => true,
+				'lang'     => 'en',
+				'expected' => array(
+					'show_on_front'  => 'page',
+					'page_on_front'  => 'home_fr',
+					'page_for_posts' => 'posts_fr',
+				),
+			),
+			'Delete page on front in option'      => array(
+				'delete'   => 'home_fr',
+				'trash'    => false,
+				'lang'     => 'fr',
+				'expected' => array(
+					'show_on_front'  => 'posts',
+					'page_on_front'  => 0,
+					'page_for_posts' => 'posts_fr',
+				),
+			),
+			'Delete page for posts not in option' => array(
+				'delete'   => 'posts_en',
+				'trash'    => false,
+				'lang'     => 'en',
+				'expected' => array(
+					'show_on_front'  => 'page',
+					'page_on_front'  => 'home_fr',
+					'page_for_posts' => 'posts_fr',
+				),
+			),
+			'Delete page for posts in option'     => array(
+				'delete'   => 'posts_fr',
+				'trash'    => false,
+				'lang'     => 'fr',
+				'expected' => array(
+					'show_on_front'  => 'page',
+					'page_on_front'  => 'home_fr',
+					'page_for_posts' => 0,
+				),
+			),
+		);
 	}
 }
