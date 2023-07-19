@@ -667,9 +667,9 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	 * @param array  $expected {
 	 *     Values to expect.
 	 *
-	 *     @var string $show_on_front  Value of the option `show_on_front`.
-	 *     @var int    $page_on_front  Value of the option `page_on_front`.
-	 *     @var string $page_for_posts Value of the option `page_for_posts`.
+	 *     @var string     $show_on_front  Value of the option `show_on_front`.
+	 *     @var string|int $page_on_front  Name of the class property holding the value of the option `page_on_front`. Can also be `0`.
+	 *     @var string|int $page_for_posts Name of the class property holding the value of the option `page_for_posts`. Can also be `0`.
 	 * }
 	 * @return void
 	 */
@@ -682,11 +682,12 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$expected_page_on_front  = is_string( $expected['page_on_front'] ) ? self::${$expected['page_on_front']} : $expected['page_on_front'];
 		$expected_page_for_posts = is_string( $expected['page_for_posts'] ) ? self::${$expected['page_for_posts']} : $expected['page_for_posts'];
 
-		$this->pll_env->static_pages->disable_page_on_front_and_page_for_posts_translation();
+		// Assert the real values by shunting `translate_page_for_posts()` and `translate_page_on_front()`.
+		$GLOBALS['wp_current_filter']['test'] = 'before_delete_post';
 		$this->assertSame( $expected['show_on_front'], get_option( 'show_on_front' ) );
 		$this->assertSame( $expected_page_on_front, get_option( 'page_on_front' ) );
 		$this->assertSame( $expected_page_for_posts, get_option( 'page_for_posts' ) );
-		$this->pll_env->static_pages->enable_page_on_front_and_page_for_posts_translation();
+		unset( $GLOBALS['wp_current_filter']['test'] );
 	}
 
 	/**
@@ -706,19 +707,21 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->pll_env->curlang = self::$model->get_language( 'fr' );
 		wp_delete_post( self::$home_fr, true );
 
-		$this->pll_env->static_pages->disable_page_on_front_and_page_for_posts_translation();
+		// Assert the real values by shunting `translate_page_for_posts()` and `translate_page_on_front()`.
+		$GLOBALS['wp_current_filter']['test'] = 'before_delete_post';
 		$this->assertSame( 'posts', get_option( 'show_on_front' ) );
 		$this->assertSame( 0, get_option( 'page_on_front' ) );
 		$this->assertSame( self::$posts_fr, get_option( 'page_for_posts' ) );
-		$this->pll_env->static_pages->enable_page_on_front_and_page_for_posts_translation();
+		unset( $GLOBALS['wp_current_filter']['test'] );
 
 		wp_delete_post( self::$posts_fr, true );
 
-		$this->pll_env->static_pages->disable_page_on_front_and_page_for_posts_translation();
+		// Assert the real values by shunting `translate_page_for_posts()` and `translate_page_on_front()`.
+		$GLOBALS['wp_current_filter']['test'] = 'before_delete_post';
 		$this->assertSame( 'posts', get_option( 'show_on_front' ) );
 		$this->assertSame( 0, get_option( 'page_on_front' ) );
 		$this->assertSame( 0, get_option( 'page_for_posts' ) );
-		$this->pll_env->static_pages->enable_page_on_front_and_page_for_posts_translation();
+		unset( $GLOBALS['wp_current_filter']['test'] );
 	}
 
 	public function page_deletion_provider() {
