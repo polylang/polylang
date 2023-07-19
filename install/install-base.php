@@ -31,7 +31,7 @@ class PLL_Install_Base {
 		register_deactivation_hook( $plugin_basename, array( $this, 'deactivate' ) );
 
 		// Site creation on multisite.
-		add_action( 'wp_insert_site', array( $this, 'new_site' ) );
+		add_action( 'wp_initialize_site', array( $this, 'new_site' ), 50 ); // After WP (prio 10).
 	}
 
 	/**
