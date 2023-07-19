@@ -86,7 +86,7 @@ jobs:
   notify:
     name: Notify Slack
 
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
 
     if: ${{ always() }}
 
