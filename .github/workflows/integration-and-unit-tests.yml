@@ -1,0 +1,86 @@
+name: Integration and Unit Tests
+
+on:
+  push:
+    branches: master
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
+  pull_request:
+    branches: master
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
+  workflow_dispatch:
+
+jobs:
+  testing:
+    name: WP ${{ matrix.wordpress-version }} + PHP ${{ matrix.php-version }} + MS ${{ matrix.is-multisite }}
+
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mariadb:latest
+        ports:
+          - '3306:3306'
+        env:
+          MYSQL_ROOT_PASSWORD: wordpress
+          MARIADB_INITDB_SKIP_TZINFO: 1
+          MYSQL_USER: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_DATABASE: wordpress_test
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - wordpress-version: '5.8.x'
+            php-version: '7.2'
+            is-multisite: 0
+            allow-failure: false
+          - wordpress-version: 'latest'
+            php-version: '7.0'
+            is-multisite: 0
+            allow-failure: false
+          - wordpress-version: 'latest'
+            php-version: '8.0'
+            is-multisite: 0
+            allow-failure: false
+          - wordpress-version: 'latest'
+            php-version: '7.2'
+            is-multisite: 1
+            allow-failure: false
+          - wordpress-version: 'nightly'
+            php-version: '7.0'
+            is-multisite: 0
+            allow-failure: true
+          - wordpress-version: 'nightly'
+            php-version: '8.0'
+            is-multisite: 0
+            allow-failure: true
+          - wordpress-version: 'nightly'
+            php-version: '8.2'
+            is-multisite: 0
+            allow-failure: true
+
+    env:
+      WP_MULTISITE: ${{ matrix.is-multisite }}
+
+    steps:
+      - name: Check out the source code
+        uses: actions/checkout@v3
+
+      - name: Run PHPUnit tests
+        uses: polylang/actions/phpunit@main
+        with:
+          php-version: ${{ matrix.php-version }}
+          wordpress-version: ${{ matrix.wordpress-version }}
+        continue-on-error: ${{ matrix.allow-failure }}
+
+      - name: Run Behat tests
+        run: |
+          vendor/bin/behat
+        continue-on-error: ${{ matrix.allow-failure }}

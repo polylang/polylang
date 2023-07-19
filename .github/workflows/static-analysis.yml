@@ -1,0 +1,21 @@
+name: Static Analysis
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+  workflow_dispatch:
+
+jobs:
+  testing:
+    name: PHPCS and PHPStan
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the source code
+      uses: actions/checkout@v3
+
+    - name: Run PHPCS and PHPStan tests
+      uses: polylang/actions/static-analysis@main
