@@ -98,3 +98,5 @@ jobs:
 
     - name: Send Slack notification
       uses: polylang/actions/notify@main
+      with:
+        is-success: ${{ needs.phpunit.outputs.job_status == 'success' && needs.coding-standards.outputs.job_status == 'success' }}
