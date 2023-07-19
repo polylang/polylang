@@ -100,3 +100,4 @@ jobs:
       uses: polylang/actions/notify@main
       with:
         is-success: ${{ needs.phpunit.outputs.job_status == 'success' && needs.coding-standards.outputs.job_status == 'success' }}
+        webhook: ${{ secrets.SLACK_WEBHOOK }}
