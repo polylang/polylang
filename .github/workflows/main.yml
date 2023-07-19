@@ -1,21 +1,13 @@
-name: PHPUnit CI
+name: Polylang CI
 
 on:
   push:
     branches: master
-    paths:
-      - '**.php'
-      - 'phpunit.xml'
-      - 'composer.json'
   pull_request:
     branches: master
-    paths:
-      - '**.php'
-      - 'phpunit.xml'
-      - 'composer.json'
 
 jobs:
-  testing:
+  phpunit:
     name: WP ${{ matrix.wordpress-version }} + PHP ${{ matrix.php-version }} + MS ${{ matrix.is-multisite }}
 
     runs-on: ubuntu-latest
@@ -73,20 +65,33 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run PHPUnit tests
-        uses: ./.github/actions/phpunit
+        uses: polylang/actions/phpunit@main
         with:
           php-version: ${{ matrix.php-version }}
           wordpress-version: ${{ matrix.wordpress-version }}
         continue-on-error: ${{ matrix.allow-failure }}
 
-  notify:
+  coding-standards:
+    name: PHPCS + PHPStan
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out the source code
-        uses: actions/checkout@v3
+    - name: Check out the source code
+      uses: actions/checkout@v3
 
-      - name: Send Slack Notification
-        uses: ./.github/actions/notify
-        with:
-          is-success: ${{ job.status }}
+    - name: Run PHPCS and PHPStan
+      uses: polylang/actions/coding-standards@main
+
+  notify:
+    name: Notify Slack
+
+    runs-on: unbuntu-latest
+
+    if: ${{ always() }}
+
+    needs: [phpunit, coding-standards]
+
+    steps:
+    - name: Send Slack notification
+      uses: polylang/actions/notify@main
