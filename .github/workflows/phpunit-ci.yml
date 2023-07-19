@@ -1,13 +1,21 @@
-name: Polylang CI
+name: PHPUnit CI
 
 on:
   push:
     branches: master
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
   pull_request:
     branches: master
+    paths:
+      - '**.php'
+      - 'phpunit.xml'
+      - 'composer.json'
 
 jobs:
-  phpunit:
+  testing:
     name: WP ${{ matrix.wordpress-version }} + PHP ${{ matrix.php-version }} + MS ${{ matrix.is-multisite }}
 
     runs-on: ubuntu-latest
@@ -33,7 +41,7 @@ jobs:
             is-multisite: 0
             allow-failure: false
           - wordpress-version: 'latest'
-            php-version: '5.6'
+            php-version: '7.0'
             is-multisite: 0
             allow-failure: false
           - wordpress-version: 'latest'
@@ -71,37 +79,7 @@ jobs:
           wordpress-version: ${{ matrix.wordpress-version }}
         continue-on-error: ${{ matrix.allow-failure }}
 
-  coding-standards:
-    name: PHPCS + PHPStan
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Check out the source code
-      uses: actions/checkout@v3
-
-    - name: Run PHPCS and PHPStan
-      uses: polylang/actions/coding-standards@main
-
-  notify:
-    name: Notify Slack
-
-    runs-on: ubuntu-latest
-
-    if: ${{ always() }}
-
-    needs: [phpunit, coding-standards]
-
-    steps:
-    - name: Check out the source code
-      uses: actions/checkout@v3
-
-    - run: |
-        echo ${{ needs.phpunit.outputs.job_status }}
-        echo ${{ needs.coding-standards.outputs.job_status == 'success' }}
-
-    - name: Send Slack notification
-      uses: polylang/actions/notify@main
-      with:
-        is-success: ${{ needs.phpunit.outputs.job_status == 'success' && needs.coding-standards.outputs.job_status == 'success' }}
-        webhook: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Run Behat tests
+        run: |
+          vendor/bin/behat
+        continue-on-error: ${{ matrix.allow-failure }}
