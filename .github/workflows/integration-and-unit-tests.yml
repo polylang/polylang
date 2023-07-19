@@ -1,4 +1,4 @@
-name: PHPUnit CI
+name: Integration and Unit Tests
 
 on:
   push:
