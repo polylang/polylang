@@ -143,6 +143,7 @@ function pll_has_constant( string $constant_name ): bool {
  * @return mixed The value of the constant.
  *
  * @phpstan-param non-falsy-string $constant_name
+ * @phpstan-param int|float|string|bool|array|null $default
  */
 function pll_get_constant( string $constant_name, $default = null ) {
 	if ( ! pll_has_constant( $constant_name ) ) {
@@ -150,4 +151,24 @@ function pll_get_constant( string $constant_name, $default = null ) {
 	}
 
 	return constant( $constant_name );
+}
+
+/**
+ * Defines a constant if it is not already defined.
+ *
+ * @since 3.5
+ *
+ * @param string $constant_name Name of the constant.
+ * @param mixed  $value         Value to set.
+ * @return bool True on success, false on failure or already defined.
+ *
+ * @phpstan-param non-falsy-string $constant_name
+ * @phpstan-param int|float|string|bool|array|null $value
+ */
+function pll_set_constant( string $constant_name, $value ) {
+	if ( pll_has_constant( $constant_name ) ) {
+		return false;
+	}
+
+	return define( $constant_name, $value ); // phpcs:ignore WordPressVIPMinimum.Constants.ConstantString.NotCheckingConstantName
 }
