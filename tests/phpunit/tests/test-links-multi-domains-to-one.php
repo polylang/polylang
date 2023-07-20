@@ -1,5 +1,8 @@
 <?php
 
+use Brain\Monkey;
+use Brain\Monkey\Functions;
+
 /**
  * @group links
  * @group domain
@@ -31,9 +34,11 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 		$_SERVER['HTTP_HOST']   = wp_parse_url( $this->secondary_domain, PHP_URL_HOST );
 
 		parent::set_up();
+		Monkey\setUp();
 	}
 
 	public function tear_down() {
+		Monkey\tearDown();
 		parent::tear_down();
 
 		$this->reset__SERVER();
@@ -42,8 +47,28 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
+	 *
+	 * @param bool $cache_languages Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url  Value of the constant `PLL_CACHE_HOME_URL`.
+	 *
+	 * @testWith [true, false]
+	 *           [false, true]
+	 *           [false, false]
 	 */
-	public function test_home_and_search_urls() {
+	public function test_home_and_search_urls( $cache_languages, $cache_home_url ) {
+		Functions\when( 'pll_get_constant' )->alias(
+			function ( $constant_name ) use ( $cache_languages, $cache_home_url ) {
+				switch ( $constant_name ) {
+					case 'PLL_CACHE_LANGUAGES':
+						return $cache_languages;
+					case 'PLL_CACHE_HOME_URL':
+						return $cache_home_url;
+					default:
+						return null;
+				}
+			}
+		);
+
 		// First let's create the languages list and the transient with the main domain.
 		$this->init_links_model();
 		$frontend = new PLL_Frontend( $this->links_model );
