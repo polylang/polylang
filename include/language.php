@@ -380,7 +380,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 			$flag['url'] = plugins_url( $file, POLYLANG_FILE );
 
 			// If base64 encoded flags are preferred.
-			if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
+			if ( pll_get_constant( 'PLL_ENCODED_FLAGS', true ) ) {
 				$imagesize = getimagesize( POLYLANG_DIR . $file );
 				if ( is_array( $imagesize ) ) {
 					list( $flag['width'], $flag['height'] ) = $imagesize;
