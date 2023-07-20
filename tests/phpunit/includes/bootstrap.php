@@ -13,6 +13,7 @@ tests_add_filter(
 );
 
 define( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH', $_root_dir . '/vendor/yoast/phpunit-polyfills/' );
+require_once $_root_dir . '/vendor/antecedent/patchwork/Patchwork.php';
 require_once $_tests_dir . '/includes/bootstrap.php';
 
 if ( ! defined( 'PLL_CACHE_HOME_URL' ) ) {
