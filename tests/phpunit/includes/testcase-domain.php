@@ -1,5 +1,8 @@
 <?php
 
+use Brain\Monkey;
+use Brain\Monkey\Functions;
+
 abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	use PLL_Test_Links_Trait;
 
@@ -18,6 +21,7 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();
+		Monkey\setUp();
 
 		$this->filter_plugins_url();
 
@@ -28,12 +32,15 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
+		Monkey\tearDown();
 		parent::tear_down();
 
 		$this->reset__SERVER();
 	}
 
-	protected function _test_flags_urls( $curlang, $is_subfolder_install = false ) {
+	protected function _test_flags_urls( $curlang, $is_subfolder_install, $cache_languages, $cache_home_url ) {
+		$this->mock_constants( $cache_languages, $cache_home_url );
+
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
 
@@ -59,47 +66,51 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 *
-	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @dataProvider url_context_provider
 	 *
-	 * @testWith [true]
-	 *           [false]
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @param bool $cache_languages      Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url       Value of the constant `PLL_CACHE_HOME_URL`.
 	 */
-	public function test_flags_urls_curlang_default( $is_subfolder_install ) {
+	public function test_flags_urls_curlang_default( $is_subfolder_install, $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( $is_subfolder_install );
 
 		$en = self::$model->get_language( 'en' );
 
-		$this->_test_flags_urls( $en, $is_subfolder_install );
+		$this->_test_flags_urls( $en, $is_subfolder_install, $cache_languages, $cache_home_url );
 	}
 
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 *
-	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @dataProvider url_context_provider
 	 *
-	 * @testWith [true]
-	 *           [false]
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @param bool $cache_languages      Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url       Value of the constant `PLL_CACHE_HOME_URL`.
 	 */
-	public function test_flags_urls_curlang_secondary( $is_subfolder_install ) {
+	public function test_flags_urls_curlang_secondary( $is_subfolder_install, $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( $is_subfolder_install );
 
 		$fr = self::$model->get_language( 'fr' );
 
-		$this->_test_flags_urls( $fr, $is_subfolder_install );
+		$this->_test_flags_urls( $fr, $is_subfolder_install, $cache_languages, $cache_home_url );
 	}
 
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 *
-	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @dataProvider url_context_provider
 	 *
-	 * @testWith [true]
-	 *           [false]
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @param bool $cache_languages      Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url       Value of the constant `PLL_CACHE_HOME_URL`.
 	 */
-	public function test_home_and_search_urls( $is_subfolder_install ) {
+	public function test_home_and_search_urls( $is_subfolder_install, $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( $is_subfolder_install );
+		$this->mock_constants( $cache_languages, $cache_home_url );
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();
@@ -184,5 +195,61 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 		// Clean up.
 		$_SERVER = $server;
+	}
+
+	public function url_context_provider() {
+		return array(
+			'is subfolder + cache languages' => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => true,
+				'cache_home_url'       => false,
+			),
+			'is subfolder + cache home url'  => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => false,
+				'cache_home_url'       => true,
+			),
+			'is subfolder + no cache'        => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => false,
+				'cache_home_url'       => false,
+			),
+			'no subfolder + cache languages' => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => true,
+				'cache_home_url'       => false,
+			),
+			'no subfolder + cache home url'  => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => false,
+				'cache_home_url'       => true,
+			),
+			'no subfolder + no cache'        => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => false,
+				'cache_home_url'       => false,
+			),
+		);
+	}
+
+	/**
+	 * Mocks `PLL_CACHE_LANGUAGES` and `PLL_CACHE_HOME_URL` constants.
+	 *
+	 * @param bool $cache_languages Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url  Value of the constant `PLL_CACHE_HOME_URL`.
+	 */
+	private function mock_constants( $cache_languages, $cache_home_url ) {
+		Functions\when( 'pll_get_constant' )->alias(
+			function ( $constant_name ) use ( $cache_languages, $cache_home_url ) {
+				switch ( $constant_name ) {
+					case 'PLL_CACHE_LANGUAGES':
+						return $cache_languages;
+					case 'PLL_CACHE_HOME_URL':
+						return $cache_home_url;
+					default:
+						return null;
+				}
+			}
+		);
 	}
 }
