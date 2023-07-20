@@ -337,12 +337,18 @@ class PLL_CRUD_Posts {
 	 * @return void
 	 */
 	public function force_tags_translation( $post_id, $post_after, $post_before ) {
-		remove_action( 'post_updated', array( $this, 'force_tags_translation' ) );
+		static $avoid_recursion = false;
+
+		if ( $avoid_recursion ) {
+			return;
+		}
+
+		$avoid_recursion = true;
 
 		$post_before = $post_before->to_array();
 
 		if ( empty( $post_before['tags_input'] ) ) {
-			add_action( 'post_updated', array( $this, 'force_tags_translation' ), 10, 3 );
+			$avoid_recursion = false;
 			return;
 		}
 
@@ -351,6 +357,6 @@ class PLL_CRUD_Posts {
 
 		wp_insert_post( $post_after );
 
-		add_action( 'post_updated', array( $this, 'force_tags_translation' ), 10, 3 );
+		$avoid_recursion = false;
 	}
 }
