@@ -337,26 +337,11 @@ class PLL_CRUD_Posts {
 	 * @return void
 	 */
 	public function force_tags_translation( $post_id, $post_after, $post_before ) {
-		static $avoid_recursion = false;
-
-		if ( $avoid_recursion ) {
-			return;
-		}
-
-		$avoid_recursion = true;
-
 		$post_before = $post_before->to_array();
 
-		if ( empty( $post_before['tags_input'] ) ) {
-			$avoid_recursion = false;
-			return;
+		if ( ! empty( $post_before['tags_input'] ) ) {
+			// Let's ensure that  `PLL_CRUD_Posts::set_object_terms()` will do its job.
+			wp_set_post_tags( $post_id, $post_before['tags_input'] );
 		}
-
-		$post_after               = $post_after->to_array();
-		$post_after['tags_input'] = $post_before['tags_input'];  // Will force `PLL_CRUD_Posts::set_object_terms()` to do its job.
-
-		wp_insert_post( $post_after );
-
-		$avoid_recursion = false;
 	}
 }
