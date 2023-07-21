@@ -48,10 +48,6 @@ jobs:
       env:
         WP_ENV_PHP_VERSION: '8.0'
 
-    - name: Install PHP dependencies
+    - name: Run Playwright tests
       run: |
-        npm run wp-env run cli -- --env-cwd=wp-content/plugins/polylang composer install
-
-    - name: Run the tests
-      run: |
-        npm run test:e2e
+        npx playwright test --config tests/e2e/playwright.config.js
