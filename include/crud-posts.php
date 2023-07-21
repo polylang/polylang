@@ -45,6 +45,7 @@ class PLL_CRUD_Posts {
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 4 );
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, 'delete_post' ) );
+		add_action( 'post_updated', array( $this, 'force_tags_translation' ), 10, 3 );
 
 		// Specific for media
 		if ( $polylang->options['media_support'] ) {
@@ -323,5 +324,24 @@ class PLL_CRUD_Posts {
 		 */
 		do_action( 'pll_translate_media', $post_id, $tr_id, $lang->slug );
 		return $tr_id;
+	}
+
+	/**
+	 * Ensure that tags are in the correct language when a post is updated, due to `tags_input` parameter being removed in `wp_update_post()`.
+	 *
+	 * @since 3.4.5
+	 *
+	 * @param int     $post_id      Post ID, unused.
+	 * @param WP_Post $post_after   Post object following the update.
+	 * @param WP_Post $post_before  Post object before the update.
+	 * @return void
+	 */
+	public function force_tags_translation( $post_id, $post_after, $post_before ) {
+		$post_before = $post_before->to_array();
+
+		if ( ! empty( $post_before['tags_input'] ) ) {
+			// Let's ensure that  `PLL_CRUD_Posts::set_object_terms()` will do its job.
+			wp_set_post_tags( $post_id, $post_before['tags_input'] );
+		}
 	}
 }
