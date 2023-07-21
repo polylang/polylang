@@ -26,7 +26,7 @@ export default defineConfig( {
 		baseURL: 'http://localhost:8889',
 		ignoreHTTPSErrors: true,
 		trace: 'on-first-retry',
-		headless: false,
+		headless: true,
 		storageState: STORAGE_STATE_PATH,
 	},
 

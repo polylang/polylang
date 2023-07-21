@@ -1,0 +1,42 @@
+name: End To End Tests
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+  workflow_dispatch:
+
+jobs:
+  testing:
+    name: Playwright Tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the source code
+      uses: actions/checkout@v3
+
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - run: npm ci
+    - run: npm run build --if-present
+
+    - name: Install Playwright dependencies
+        # Only Chromium for the moment.
+      run: |
+        npx playwright install chromium --with-deps
+
+    - name: Install WordPress and start the server
+      run: |
+        npm run wp-env start
+
+    - name: Install PHP dependencies
+      run: |
+        npm run wp-env run cli --env-cwd=wp-content/plugins/polylang composer install
+
+    - name: Run the tests
+      run: |
+        npm run test:e2e
