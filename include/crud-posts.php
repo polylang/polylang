@@ -327,9 +327,9 @@ class PLL_CRUD_Posts {
 	}
 
 	/**
-	 * Forces tags translation when a post is updated, due to `tags_input` paramter being removed in `wp_update_post()`.
+	 * Ensure that tags are in the correct language when a post is updated, due to `tags_input` parameter being removed in `wp_update_post()`.
 	 *
-	 * @since 3.4.4
+	 * @since 3.4.5
 	 *
 	 * @param int     $post_id      Post ID, unused.
 	 * @param WP_Post $post_after   Post object following the update.
