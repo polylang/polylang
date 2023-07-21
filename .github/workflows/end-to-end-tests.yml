@@ -43,10 +43,10 @@ jobs:
         composer-options: '--no-dev'
 
     - name: Install WordPress and start the server
-      env:
-        WP_ENV_PHP_VERSION: 8.0
       run: |
         npm run wp-env start
+      env:
+        WP_ENV_PHP_VERSION: 8.0
 
     - name: Install PHP dependencies
       run: |
