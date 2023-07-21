@@ -165,7 +165,7 @@ function pll_get_constant( string $constant_name, $default = null ) {
  * @phpstan-param non-falsy-string $constant_name
  * @phpstan-param int|float|string|bool|array|null $value
  */
-function pll_set_constant( string $constant_name, $value ) {
+function pll_set_constant( string $constant_name, $value ): bool {
 	if ( pll_has_constant( $constant_name ) ) {
 		return false;
 	}
