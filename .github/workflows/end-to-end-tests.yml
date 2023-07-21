@@ -35,7 +35,7 @@ jobs:
 
     - name: Install PHP dependencies
       run: |
-        npm run wp-env run cli --env-cwd=wp-content/plugins/polylang composer install
+        npm run wp-env run cli -- --env-cwd=wp-content/plugins/polylang composer install
 
     - name: Run the tests
       run: |
