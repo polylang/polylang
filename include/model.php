@@ -141,7 +141,7 @@ class PLL_Model {
 
 			$this->is_creating_language_objects = true;
 
-			if ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) {
+			if ( ! pll_get_constant( 'PLL_CACHE_LANGUAGES', true ) ) {
 				// Create the languages from taxonomies.
 				$languages = $this->get_languages_from_taxonomies();
 			} else {

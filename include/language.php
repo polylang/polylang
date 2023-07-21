@@ -380,7 +380,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 			$flag['url'] = plugins_url( $file, POLYLANG_FILE );
 
 			// If base64 encoded flags are preferred.
-			if ( ! defined( 'PLL_ENCODED_FLAGS' ) || PLL_ENCODED_FLAGS ) {
+			if ( pll_get_constant( 'PLL_ENCODED_FLAGS', true ) ) {
 				$imagesize = getimagesize( POLYLANG_DIR . $file );
 				if ( is_array( $imagesize ) ) {
 					list( $flag['width'], $flag['height'] ) = $imagesize;
@@ -582,7 +582,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @return string Language home URL.
 	 */
 	public function get_home_url() {
-		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
+		if ( ! pll_get_constant( 'PLL_CACHE_LANGUAGES', true ) || ! pll_get_constant( 'PLL_CACHE_HOME_URL', true ) ) {
 			/**
 			 * Filters current `PLL_Language` instance `home_url` property.
 			 *
@@ -605,7 +605,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @return string Language search URL.
 	 */
 	public function get_search_url() {
-		if ( ( defined( 'PLL_CACHE_LANGUAGES' ) && ! PLL_CACHE_LANGUAGES ) || ( defined( 'PLL_CACHE_HOME_URL' ) && ! PLL_CACHE_HOME_URL ) ) {
+		if ( ! pll_get_constant( 'PLL_CACHE_LANGUAGES', true ) || ! pll_get_constant( 'PLL_CACHE_HOME_URL', true ) ) {
 			/**
 			 * Filters current `PLL_Language` instance `search_url` property.
 			 *
