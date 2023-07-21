@@ -67,7 +67,10 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 
 	if ( ! defined( 'POLYLANG_BASENAME' ) ) {
 		define( 'POLYLANG_BASENAME', plugin_basename( __FILE__ ) ); // Plugin name as known by WP.
-		require __DIR__ . '/vendor/autoload.php';
+
+		if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
+			require_once __DIR__ . '/vendor/autoload.php';
+		}
 	}
 
 	define( 'POLYLANG', ucwords( str_replace( '-', ' ', dirname( POLYLANG_BASENAME ) ) ) );
