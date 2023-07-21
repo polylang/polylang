@@ -145,7 +145,7 @@ function pll_test_get_languages( $request ) {
 	if ( ! empty( $slug ) ) {
 		$language = PLL()->model->get_language( $slug );
 
-		return $language->to_array();
+		return ! empty( $language ) ? $language->to_array() : new WP_Error( 'not_found', "Language with {$slug} slug doesn't exist." );
 	}
 
 	$languages = PLL()->model->get_languages_list();
