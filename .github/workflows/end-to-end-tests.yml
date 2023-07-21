@@ -34,7 +34,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         coverage: none
-        php-version: 8.0
+        php-version: '8.0'
 
     - name: Install PHP Dependencies
       uses: ramsey/composer-install@v2
@@ -46,7 +46,7 @@ jobs:
       run: |
         npm run wp-env start
       env:
-        WP_ENV_PHP_VERSION: 8.0
+        WP_ENV_PHP_VERSION: '8.0'
 
     - name: Install PHP dependencies
       run: |
