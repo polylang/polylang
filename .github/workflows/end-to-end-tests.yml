@@ -29,7 +29,22 @@ jobs:
       run: |
         npx playwright install chromium --with-deps
 
+    # Must install PHP deps before wp-env is running to prevent errors.
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: none
+        php-version: 8.0
+
+    - name: Install PHP Dependencies
+      uses: ramsey/composer-install@v2
+      with:
+        dependency-versions: 'highest'
+        composer-options: '--no-dev'
+
     - name: Install WordPress and start the server
+      env:
+        WP_ENV_PHP_VERSION: 8.0
       run: |
         npm run wp-env start
 

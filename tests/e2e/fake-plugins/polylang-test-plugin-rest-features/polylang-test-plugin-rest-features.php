@@ -40,7 +40,7 @@
  * This plugin is for end-to-end test purpose only.
  */
 
-if ( ! defined( PLL_TEST_NAMESPACE ) ) {
+if ( ! defined( 'PLL_TEST_NAMESPACE' ) ) {
 	define( 'PLL_TEST_NAMESPACE', 'pll-test/v1' );
 }
 

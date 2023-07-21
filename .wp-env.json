@@ -1,6 +1,6 @@
 {
 	"phpVersion": "7.4",
-	"core": "WordPress/WordPress",
+	"core": null,
 	"config": {
 		"WP_DEBUG": true,
 		"WP_DEBUG_LOG": true,
@@ -9,16 +9,12 @@
 	},
 	"plugins": [ "." ],
 	"env": {
-        "development": {},
         "tests": {
             "plugins": [
                 ".",
                 "./tests/e2e/fake-plugins/gutenberg-test-plugin-disables-the-css-animations",
                 "./tests/e2e/fake-plugins/polylang-test-plugin-rest-features"
-            ],
-            "config": {
-                "WP_TESTS_DOMAIN": "localhost"
-            }
+            ]
         }
     }
 }
