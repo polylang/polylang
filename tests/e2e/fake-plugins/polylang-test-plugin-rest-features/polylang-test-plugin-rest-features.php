@@ -191,25 +191,41 @@ function pll_test_create_languages( $request ) {
  *
  * @since 1.0
  *
+ * @param WP_REST_Request $request Current REST request.
  * @return WP_Error|true `WP_Error` on failure, `true` on success.
  */
-function pll_test_delete_languages() {
+function pll_test_delete_languages( $request ) {
 	$languages = PLL()->model->get_languages_list();
 	if ( ! is_array( $languages ) ) {
 		return new WP_Error( 'bad_request', 'No languages exist.' );
 	}
-	// Delete the default categories first.
-	$tt = wp_get_object_terms( get_option( 'default_category' ), 'term_translations' );
-	$terms = PLL()->model->term->get_translations( get_option( 'default_category' ) );
 
-	wp_delete_term( $tt, 'term_translations' );
+	$admin_model = new PLL_Admin_Model( PLL()->options );
+	$terms       = PLL()->model->term->get_translations( get_option( 'default_category' ) );
+	$slug        = $request->get_param( 'slug' );
+
+	if ( ! empty( $slug ) ) {
+		// Delete one language.
+		$languages = wp_list_filter( $languages, array( 'slug' => $slug ) );
+
+		if ( empty( $languages ) ) {
+			return new WP_Error( 'not_found', "Language with {$slug} slug doesn't exist." );
+		}
+
+		$terms = (array) $terms[ $slug ];
+	}
+
+	if ( 1 < $languages ) {
+		// Delete all languages.
+		$tt = wp_get_object_terms( get_option( 'default_category' ), 'term_translations' ); // Delete the default categories first.
+		wp_delete_term( $tt, 'term_translations' );
+	}
 
 	foreach ( $terms as $t ) {
 		wp_delete_term( $t, 'category' );
 	}
 
 	foreach ( $languages as $lang ) {
-		$admin_model = new PLL_Admin_Model( PLL()->options );
 		$admin_model->delete_language( $lang->term_id );
 	}
 

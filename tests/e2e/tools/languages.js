@@ -1,5 +1,5 @@
 /**
- * Creates a language.
+ * Deletes all languages.
  *
  * @param {RequestUtils} requestUtils Gutenberg request utils object.
  * @returns {Promise} Request promise.
@@ -14,7 +14,7 @@ export function deleteAllLanguages ( requestUtils ) {
 }
 
 /**
- * Deletes all languages.
+ * Creates a language.
  *
  * @param {RequestUtils} requestUtils Gutenberg request utils object.
  * @param {string} locale Language locale to create.
@@ -27,6 +27,25 @@ export function createLanguage( requestUtils, locale ) {
 			method: 'POST',
 			params: {
 				locale: locale,
+			}
+		}
+	);
+}
+
+/**
+ * Deletes a language.
+ *
+ * @param {RequestUtils} requestUtils Gutenberg request utils object.
+ * @param {string} slug Language slug to create.
+ * @returns {Promise} Request promise.
+ */
+export function deleteLanguage( requestUtils, slug ) {
+	return requestUtils.rest(
+		{
+			path: '/pll-test/v1/languages',
+			method: 'DELETE',
+			params: {
+				slug: slug,
 			}
 		}
 	);
