@@ -272,8 +272,7 @@ function pll_test_edit_options( $request ) {
  * @return bool Whether or not options are updated.
  */
 function pll_test_delete_options() {
-	$default       = PLL_Install::get_default_options();
-	PLL()->options = $default;
+	PLL()->options = PLL_Install::get_default_options();
 
 	return update_option( 'polylang', PLL()->options );
 }
