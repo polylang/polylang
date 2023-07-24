@@ -41,9 +41,7 @@ test.describe( 'Launch Polylang', () => {
 		await page.getByRole('button', { name: 'Continue ' }).click();
 		await page.getByRole('link', { name: 'Return to the Dashboard' }).click();
 		await page.getByRole('link', { name: 'Languages' }).first().click();
-		await page.getByRole('link', { name: 'Languages' }).first().click();
 		await expect( page.getByRole('cell', { name: 'English Edit | Delete' }) ).toBeVisible();
-		await page.getByRole('link', { name: 'Languages' }).first().click();
 		await expect(page.locator('table.languages > tbody > tr > td').nth(3)).toContainText('Default language');
 	});
 
