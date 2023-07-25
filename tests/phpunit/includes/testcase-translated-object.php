@@ -8,7 +8,7 @@
  *
  * Testes PLL_Translated_Object methods tha are common to PLL_Translated_Post and PLL_Translated_Term.
  */
-class PLL_Translated_Object_UnitTestCase extends PLL_UnitTestCase {
+abstract class PLL_Translated_Object_UnitTestCase extends PLL_UnitTestCase {
 	/**
 	 * @covers PLL_Translated_Object::save_translations()
 	 *

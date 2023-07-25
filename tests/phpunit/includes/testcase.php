@@ -3,7 +3,7 @@
 /**
  * A test case class for Polylang standard tests
  */
-class PLL_UnitTestCase extends WP_UnitTestCase {
+abstract class PLL_UnitTestCase extends WP_UnitTestCase {
 
 	use PLL_UnitTestCase_Trait;
 
