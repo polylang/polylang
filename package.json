@@ -50,7 +50,7 @@
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0",
-    "@wordpress/e2e-test-utils-playwright": "^0.5.0",
+    "@wordpress/e2e-test-utils-playwright": "latest",
     "@wordpress/env": "^8.1.0"
   }
 }

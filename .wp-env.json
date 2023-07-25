@@ -12,8 +12,7 @@
         "tests": {
             "plugins": [
                 ".",
-                "./tests/e2e/fake-plugins/gutenberg-test-plugin-disables-the-css-animations",
-                "./tests/e2e/fake-plugins/polylang-test-plugin-rest-features"
+                "./tests/e2e/tools/lib/polylang-test-plugin-rest-features"
             ]
         }
     }
