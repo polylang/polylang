@@ -31,7 +31,7 @@
 	},
 	"autoload-dev": {
 		"classmap": [
-			"tests/phpunit/includes/"
+			"tests/phpunit/"
 		]
 	},
 	"scripts": {
