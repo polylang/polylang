@@ -29,6 +29,11 @@
 			"settings/"
 		]
 	},
+	"autoload-dev": {
+		"classmap": [
+			"tests/phpunit/includes/"
+		]
+	},
 	"scripts": {
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
