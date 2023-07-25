@@ -1,6 +1,6 @@
 <?php
 
-class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
+abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	use PLL_Test_Links_Trait;
 
 	protected $hosts;

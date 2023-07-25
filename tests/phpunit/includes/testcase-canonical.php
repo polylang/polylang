@@ -1,6 +1,6 @@
 <?php
 
-class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
+abstract class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 
 	use PLL_UnitTestCase_Trait;
 
