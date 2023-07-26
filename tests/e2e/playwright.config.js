@@ -33,8 +33,14 @@ export default defineConfig( {
 	// Configure projects only for Chrome for the moment.
 	projects: [
 		{
+			name: 'env-setup',
+			testMatch: 'env-set-up.spec.js',
+		},
+		{
 			name: 'chromium',
 			use: { ...devices['Desktop Chrome'] },
+			dependencies: ['env-setup'],
+			testIgnore: 'env-set-up.spec.js',
 		},
 	],
 
