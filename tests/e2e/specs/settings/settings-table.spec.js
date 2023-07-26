@@ -24,7 +24,7 @@ test.describe( 'Plugin Settings UI Test', () => {
 	} );
 
 	test( 'URL modification module', async ( { page } ) => {
-		// Open URL modifications settings panel and test default options are visible.
+		// Open URL modifications settings panel and test default options are visible (i.e. when plain permalink is enabled).
 		await page.getByRole('cell', { name: 'URL modifications Settings' }).getByTitle('Configure this module').click();
 		await expect( page.getByText('The language is set from content') ).toBeVisible();
 		await expect( page.getByText('The language is set from the code in the URL') ).toBeVisible();

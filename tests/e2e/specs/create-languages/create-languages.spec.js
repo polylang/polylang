@@ -44,5 +44,6 @@ test.describe( 'Launch Polylang', () => {
 		await page.getByRole('option', { name: 'Français - fr_FR' }).click();
 		await page.getByRole('button', { name: 'Add new language' }).click();
 		await expect( page.getByRole('cell', { name: 'Français Edit | Delete' }), 'French should be visible in the table.').toBeVisible();
+		await expect(page.locator('table.languages > tbody > tr > td').nth(3), 'English should still be visible in the list table and be set to default language.').toContainText('Default language');
 	});
 });
