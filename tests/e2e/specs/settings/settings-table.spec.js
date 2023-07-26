@@ -19,12 +19,12 @@ test.describe( 'Plugin Settings UI Test', () => {
 	});
 
 	test.beforeEach( async ( { page } ) => {
-		// Each tests are made by navigating to Polylang settings.
+		// Go to settings.
 		await page.goto('/wp-admin/admin.php?page=mlang_settings');
 	} );
 
 	test( 'URL modification module', async ( { page } ) => {
-		// Open URL modifications options panel and test each ones are accessible.
+		// Open URL modifications settings panel and test default options are visible.
 		await page.getByRole('cell', { name: 'URL modifications Settings' }).getByTitle('Configure this module').click();
 		await expect( page.getByText('The language is set from content') ).toBeVisible();
 		await expect( page.getByText('The language is set from the code in the URL') ).toBeVisible();
@@ -34,19 +34,19 @@ test.describe( 'Plugin Settings UI Test', () => {
 	});
 
 	test( 'Detect browser language module', async ( { page } ) => {
-		// Active "Detect browser language" module then test it can be deactivated.
+		// Activate "Detect browser language" module then test it can be deactivated.
 		await page.getByRole('cell', { name: 'Detect browser language Activate' }).getByTitle('Activate this module').click();
 		await expect( page.locator('#pll-module-browser').getByText('Deactivate') ).toBeVisible();
 	});
 
 	test( 'Media module', async ( { page } ) => {
-		// Active "Media translation" module then test it can be deactivated.
+		// Activate "Media translation" module then test it can be deactivated.
 		await page.getByRole('cell', { name: 'Media Activate' }).getByTitle('Activate this module').click();
 		await expect( page.locator('#pll-module-media').getByText('Deactivate') ).toBeVisible();
 	});
 
 	test( 'Custom post types and Taxonomies module', async ( { page } ) => {
-		// Test "Custom post types and Taxonomies" module is display and can be deactivated.
+		// Test "Custom post types and Taxonomies" module is displayed and can be deactivated.
 		await expect( page.getByText('Custom post types and Taxonomies', { exact: true }) ).toBeVisible();
 		await expect( page.locator('#pll-module-cpt').getByText('Deactivated') ).toBeVisible();
 	});

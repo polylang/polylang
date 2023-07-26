@@ -28,18 +28,18 @@ test.describe( 'Launch Polylang', () => {
 		await page.getByRole('button', { name: 'Continue ' }).click();
 		await page.getByRole('link', { name: 'Return to the Dashboard' }).click();
 
-		// Go to languages panel.
+		// Go to languages panel and check that English is in the list.
 		await page.getByRole('link', { name: 'Languages' }).first().click();
 		await expect( page.getByRole('cell', { name: 'English Edit | Delete' }) ).toBeVisible();
-		await expect(page.locator('table.languages > tbody > tr > td').nth(3), 'English sould be visible in the table and be set to default language.').toContainText('Default language');
+		await expect(page.locator('table.languages > tbody > tr > td').nth(3), 'English should be visible in the list table and be set to default language.').toContainText('Default language');
 	});
 
-	test('Test add language through settings', async ({ page }) => {
+	test('Test add language through languages panel', async ({ page }) => {
 		// Navigate to the dashboard and click on "Languages" to go to the languages panel.
 		await page.goto('/wp-admin');
 		await page.getByRole('link', { name: 'Languages' }).first().click();
 
-		// Select French and add it.
+		// Select French, add it and check it is added to the list table.
 		await page.locator('#lang_list-button span').nth(1).click();
 		await page.getByRole('option', { name: 'Français - fr_FR' }).click();
 		await page.getByRole('button', { name: 'Add new language' }).click();
