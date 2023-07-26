@@ -137,7 +137,7 @@ add_action( 'rest_api_init', 'pll_test_register_rest_routes' );
  * @since 1.0
  *
  * @param WP_REST_Request $request Current REST request.
- * @return array Language object as array, or array of languages.
+ * @return array|WP_Error Language object as array, or array of languages. A `WP_Error` for a unfound language.
  */
 function pll_test_get_languages( $request ) {
 	$slug = $request->get_param( 'slug' );
