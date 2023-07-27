@@ -125,12 +125,9 @@ jQuery(
 				);
 
 				function isEmptyPost() {
-					const editor  = select( 'core/editor' );
-					const title   = editor.getEditedPostAttribute( 'title' ).trim();
-					const content = editor.getEditedPostAttribute( 'content' ).trim();
-					const excerpt = editor.getEditedPostAttribute( 'excerpt' ).trim();
+					const editor = select( 'core/editor' );
 
-					return ! title && ! content && ! excerpt;
+					return ! editor.getEditedPostAttribute( 'title' )?.trim() && ! editor.getEditedPostContent() && ! editor.getEditedPostAttribute( 'excerpt' )?.trim();
 				}
 
 				/**
