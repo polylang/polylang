@@ -180,8 +180,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 		$this->option_keys = array_keys( self::DEFAULTS );
 		$this->init_options_for_blog( $this->blog_id );
 
-		$min = defined( 'PHP_INT_MIN' ) ? PHP_INT_MIN : -PHP_INT_MAX;
-		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), $min );
+		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), PHP_INT_MIN );
 		add_action( 'shutdown', array( $this, 'save_all' ) );
 	}
 
@@ -231,8 +230,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 			return;
 		}
 
-		$min = defined( 'PHP_INT_MIN' ) ? PHP_INT_MIN : -PHP_INT_MAX;
-		remove_action( 'switch_blog', array( $this, 'init_options_for_blog' ), $min );
+		remove_action( 'switch_blog', array( $this, 'init_options_for_blog' ), PHP_INT_MIN );
 
 		// Handle the original blog first, maybe this will prevent the use of `switch_to_blog()`.
 		if ( isset( $modified[ $this->blog_id ] ) && $this->current_blog_id === $this->blog_id ) {
@@ -261,7 +259,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * @param array ...$arrays Lists of new options.
 	 * @return self
 	 */
-	public function merge( array ...$arrays ) {
+	public function merge( array ...$arrays ): self {
 		$options = array_merge( ...$arrays );
 
 		// Whitelist options.
@@ -282,7 +280,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 *
 	 * @return bool True if the options were updated, false otherwise.
 	 */
-	public function save() {
+	public function save(): bool {
 		if ( ! $this->modified[ $this->current_blog_id ] ) {
 			return false;
 		}
@@ -300,7 +298,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 *
 	 * @phpstan-return OptionsData
 	 */
-	public function get_all() {
+	public function get_all(): array {
 		return $this->options[ $this->current_blog_id ];
 	}
 
@@ -313,7 +311,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 *
 	 * @phpstan-return ResetOptionsData
 	 */
-	public static function get_reset_options() {
+	public static function get_reset_options(): array {
 		/** @var ResetOptionsData */
 		return array_merge(
 			self::DEFAULTS,
@@ -347,7 +345,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * @phpstan-param key-of<self::DEFAULTS> $offset
 	 */
 	#[\ReturnTypeWillChange]
-	public function offsetExists( $offset ) {
+	public function offsetExists( $offset ): bool {
 		return isset( $this->options[ $this->current_blog_id ][ $offset ] );
 	}
 
@@ -441,8 +439,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 *
 	 * @return int
 	 */
-	#[\ReturnTypeWillChange]
-	public function count() {
+	public function count(): int {
 		return count( $this->options[ $this->current_blog_id ] );
 	}
 
@@ -510,8 +507,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 *
 	 * @return bool
 	 */
-	#[\ReturnTypeWillChange]
-	public function valid() {
+	public function valid(): bool {
 		return isset( $this->option_keys[ $this->position ] );
 	}
 
@@ -542,7 +538,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 *
 	 * @phpstan-param key-of<self::DEFAULTS> $offset
 	 */
-	private function sanitize_and_set( $offset, $value ) {
+	private function sanitize_and_set( string $offset, $value ) {
 		$prev = $this->options[ $this->current_blog_id ][ $offset ];
 
 		switch ( $offset ) {
