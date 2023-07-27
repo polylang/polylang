@@ -13,8 +13,8 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 
 		register_taxonomy( 'custom_tax', 'post' );
 
-		$options                = array_merge(
-			PLL_Install::get_default_options(),
+		$options                = ( new PLL_Options() )->merge(
+			PLL_Options::get_reset_options(),
 			array(
 				'default_lang' => 'en',
 				'taxonomies'   => array( 'custom_tax' => 'custom_tax' ),
