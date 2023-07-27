@@ -223,14 +223,14 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$this->maybe_set_subfolder_install( true );
 
 		Functions\when( 'pll_get_constant' )->alias(
-			function ( $constant_name ) use ( $cache_languages, $cache_home_url ) {
+			function ( $constant_name, $default = null ) use ( $cache_languages, $cache_home_url ) {
 				switch ( $constant_name ) {
 					case 'PLL_CACHE_LANGUAGES':
 						return $cache_languages;
 					case 'PLL_CACHE_HOME_URL':
 						return $cache_home_url;
 					default:
-						return null;
+						return defined( $constant_name ) ? constant( $constant_name ) : $default;
 				}
 			}
 		);
