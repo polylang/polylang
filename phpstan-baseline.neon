@@ -556,11 +556,6 @@ parameters:
 			path: include/class-polylang.php
 
 		-
-			message: "#^Parameter \\#1 \\$.+ of function trim expects string, string\\|null given\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$options\\.$#"
 			count: 1
 			path: include/crud-posts.php
