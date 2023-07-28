@@ -47,6 +47,7 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	/**
 	 * This tests `PLL_Language::get_home_url()` and `PLL_Language::get_search_url()` when the `apply_filters()` are
 	 * used.
+	 *
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 *
@@ -100,6 +101,7 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	/**
 	 * This tests `PLL_Language::get_home_url()` and `PLL_Language::get_search_url()` when the `apply_filters()` are NOT
 	 * used (the unfiltered raw values are returned).
+	 *
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 *
