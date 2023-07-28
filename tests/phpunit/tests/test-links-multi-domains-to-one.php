@@ -55,6 +55,7 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	 *           [true, false]
 	 *           [false, true]
 	 *           [false, false]
+	 *           [null, null]
 	 */
 	public function test_home_and_search_urls( $cache_languages, $cache_home_url ) {
 		$this->mock_constants(

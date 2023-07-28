@@ -229,6 +229,11 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 				'cache_languages'      => false,
 				'cache_home_url'       => false,
 			),
+			'is subfolder + cache not set'   => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => null,
+				'cache_home_url'       => null,
+			),
 			'no subfolder + all caches'      => array(
 				'is_subfolder_install' => false,
 				'cache_languages'      => true,
@@ -248,6 +253,11 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 				'is_subfolder_install' => false,
 				'cache_languages'      => false,
 				'cache_home_url'       => false,
+			),
+			'no subfolder + cache not set'   => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => null,
+				'cache_home_url'       => null,
 			),
 		);
 	}

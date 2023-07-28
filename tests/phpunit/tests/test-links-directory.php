@@ -219,6 +219,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 	 *           [true, false]
 	 *           [false, true]
 	 *           [false, false]
+	 *           [null, null]
 	 */
 	public function test_flag_url_with_subfolder_install( $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( true );
