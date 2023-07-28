@@ -302,6 +302,15 @@ abstract class PLL_Admin_Base extends PLL_Base {
 			$params = array_merge( $params, array( 'pll_term_id' => (int) $tag_ID ) );
 		}
 
+		/**
+		 * Filters the list of parameters to add to the admin ajax request.
+		 *
+		 * @since 3.4.5
+		 *
+		 * @param array $params List of parameters to add to the admin ajax request.
+		 */
+		$params = apply_filters( 'pll_admin_ajax_params', $params );
+
 		$str = http_build_query( $params );
 		$arr = wp_json_encode( $params );
 		?>
