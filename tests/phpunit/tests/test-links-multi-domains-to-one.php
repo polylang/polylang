@@ -56,7 +56,12 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	 *           [false, false]
 	 */
 	public function test_home_and_search_urls( $cache_languages, $cache_home_url ) {
-		$this->mock_cache_url_constants( $cache_languages, $cache_home_url );
+		$this->mock_constants(
+			array(
+				'PLL_CACHE_LANGUAGES' => $cache_languages,
+				'PLL_CACHE_HOME_URL'  => $cache_home_url,
+			)
+		);
 
 		// First let's create the languages list and the transient with the main domain.
 		$this->init_links_model();

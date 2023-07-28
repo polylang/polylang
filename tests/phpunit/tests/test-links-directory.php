@@ -221,7 +221,12 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 	 */
 	public function test_flag_url_with_subfolder_install( $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( true );
-		$this->mock_cache_url_constants( $cache_languages, $cache_home_url );
+		$this->mock_constants(
+			array(
+				'PLL_CACHE_LANGUAGES' => $cache_languages,
+				'PLL_CACHE_HOME_URL'  => $cache_home_url,
+			)
+		);
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();

@@ -39,7 +39,12 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	}
 
 	protected function _test_flags_urls( $curlang, $is_subfolder_install, $cache_languages, $cache_home_url ) {
-		$this->mock_cache_url_constants( $cache_languages, $cache_home_url );
+		$this->mock_constants(
+			array(
+				'PLL_CACHE_LANGUAGES' => $cache_languages,
+				'PLL_CACHE_HOME_URL'  => $cache_home_url,
+			)
+		);
 
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
@@ -110,7 +115,12 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 */
 	public function test_home_and_search_urls( $is_subfolder_install, $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( $is_subfolder_install );
-		$this->mock_cache_url_constants( $cache_languages, $cache_home_url );
+		$this->mock_constants(
+			array(
+				'PLL_CACHE_LANGUAGES' => $cache_languages,
+				'PLL_CACHE_HOME_URL'  => $cache_home_url,
+			)
+		);
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();
