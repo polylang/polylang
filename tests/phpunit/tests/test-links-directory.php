@@ -215,7 +215,8 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 	 * @param bool $cache_languages Value of the constant `PLL_CACHE_LANGUAGES`.
 	 * @param bool $cache_home_url  Value of the constant `PLL_CACHE_HOME_URL`.
 	 *
-	 * @testWith [true, false]
+	 * @testWith [true, true]
+	 *           [true, false]
 	 *           [false, true]
 	 *           [false, false]
 	 */

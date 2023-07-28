@@ -209,6 +209,11 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 	public function url_context_provider() {
 		return array(
+			'is subfolder + all caches'      => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => true,
+				'cache_home_url'       => true,
+			),
 			'is subfolder + cache languages' => array(
 				'is_subfolder_install' => true,
 				'cache_languages'      => true,
@@ -223,6 +228,11 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 				'is_subfolder_install' => true,
 				'cache_languages'      => false,
 				'cache_home_url'       => false,
+			),
+			'no subfolder + all caches'      => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => true,
+				'cache_home_url'       => true,
 			),
 			'no subfolder + cache languages' => array(
 				'is_subfolder_install' => false,
