@@ -1,13 +1,13 @@
 <?php
 
 use Brain\Monkey;
-use Brain\Monkey\Functions;
 
 /**
  * @group links
  * @group domain
  */
 class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
 	use PLL_Test_Links_Trait;
 
 	protected $main_domain;
@@ -56,18 +56,7 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	 *           [false, false]
 	 */
 	public function test_home_and_search_urls( $cache_languages, $cache_home_url ) {
-		Functions\when( 'pll_get_constant' )->alias(
-			function ( $constant_name, $default = null ) use ( $cache_languages, $cache_home_url ) {
-				switch ( $constant_name ) {
-					case 'PLL_CACHE_LANGUAGES':
-						return $cache_languages;
-					case 'PLL_CACHE_HOME_URL':
-						return $cache_home_url;
-					default:
-						return defined( $constant_name ) ? constant( $constant_name ) : $default;
-				}
-			}
-		);
+		$this->mock_cache_url_constants( $cache_languages, $cache_home_url );
 
 		// First let's create the languages list and the transient with the main domain.
 		$this->init_links_model();

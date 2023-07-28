@@ -1,12 +1,12 @@
 <?php
 
 use Brain\Monkey;
-use Brain\Monkey\Functions;
 
 /**
  * @group links
  */
 class Links_Directory_Test extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
 	use PLL_Test_Links_Trait;
 
 	protected $structure = '/%postname%/';
@@ -221,19 +221,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 	 */
 	public function test_flag_url_with_subfolder_install( $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( true );
-
-		Functions\when( 'pll_get_constant' )->alias(
-			function ( $constant_name, $default = null ) use ( $cache_languages, $cache_home_url ) {
-				switch ( $constant_name ) {
-					case 'PLL_CACHE_LANGUAGES':
-						return $cache_languages;
-					case 'PLL_CACHE_HOME_URL':
-						return $cache_home_url;
-					default:
-						return defined( $constant_name ) ? constant( $constant_name ) : $default;
-				}
-			}
-		);
+		$this->mock_cache_url_constants( $cache_languages, $cache_home_url );
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();

@@ -1,9 +1,9 @@
 <?php
 
 use Brain\Monkey;
-use Brain\Monkey\Functions;
 
 abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
 	use PLL_Test_Links_Trait;
 
 	protected $hosts;
@@ -39,7 +39,7 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	}
 
 	protected function _test_flags_urls( $curlang, $is_subfolder_install, $cache_languages, $cache_home_url ) {
-		$this->mock_constants( $cache_languages, $cache_home_url );
+		$this->mock_cache_url_constants( $cache_languages, $cache_home_url );
 
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
@@ -110,7 +110,7 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 */
 	public function test_home_and_search_urls( $is_subfolder_install, $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( $is_subfolder_install );
-		$this->mock_constants( $cache_languages, $cache_home_url );
+		$this->mock_cache_url_constants( $cache_languages, $cache_home_url );
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();
@@ -229,27 +229,6 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 				'cache_languages'      => false,
 				'cache_home_url'       => false,
 			),
-		);
-	}
-
-	/**
-	 * Mocks `PLL_CACHE_LANGUAGES` and `PLL_CACHE_HOME_URL` constants.
-	 *
-	 * @param bool $cache_languages Value of the constant `PLL_CACHE_LANGUAGES`.
-	 * @param bool $cache_home_url  Value of the constant `PLL_CACHE_HOME_URL`.
-	 */
-	private function mock_constants( $cache_languages, $cache_home_url ) {
-		Functions\when( 'pll_get_constant' )->alias(
-			function ( $constant_name ) use ( $cache_languages, $cache_home_url ) {
-				switch ( $constant_name ) {
-					case 'PLL_CACHE_LANGUAGES':
-						return $cache_languages;
-					case 'PLL_CACHE_HOME_URL':
-						return $cache_home_url;
-					default:
-						return null;
-				}
-			}
 		);
 	}
 }
