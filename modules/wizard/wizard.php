@@ -19,7 +19,7 @@ class PLL_Wizard {
 	/**
 	 * Reference to the Polylang options array.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	protected $options;
 
@@ -86,9 +86,9 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public static function start_wizard( $network_wide ) {
-		$options = get_option( 'polylang' );
+		$options = (array) get_option( PLL_Options::OPTION_NAME, array() );
 
-		if ( wp_doing_ajax() || $network_wide || ! empty( $options ) ) {
+		if ( wp_doing_ajax() || $network_wide || ! empty( $options['version'] ) ) {
 			return;
 		}
 		set_transient( 'pll_activation_redirect', 1, 30 );
@@ -638,8 +638,6 @@ class PLL_Wizard {
 		$media_support = isset( $_POST['media_support'] ) ? sanitize_key( $_POST['media_support'] ) === 'yes' : false;
 
 		$this->options['media_support'] = $media_support;
-
-		update_option( 'polylang', $this->options );
 
 		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
 		exit;

@@ -181,7 +181,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			}
 		}
 
-		update_option( 'polylang', $this->options );
 		return $locations;
 	}
 
@@ -273,8 +272,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 					}
 				}
 			}
-
-			update_option( 'polylang', $this->options );
 		}
 	}
 }

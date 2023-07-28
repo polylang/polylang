@@ -12,7 +12,7 @@ class PLL_Settings_Module {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	public $options;
 
@@ -31,7 +31,8 @@ class PLL_Settings_Module {
 	/**
 	 * Stores if the module is active.
 	 *
-	 * @var bool
+	 * @var string|false
+	 * @phpstan-var key-of<PLL_Options::DEFAULTS>|false
 	 */
 	public $active_option;
 
@@ -165,7 +166,6 @@ class PLL_Settings_Module {
 	public function activate() {
 		if ( ! empty( $this->active_option ) ) {
 			$this->options[ $this->active_option ] = true;
-			update_option( 'polylang', $this->options );
 		}
 	}
 
@@ -179,7 +179,6 @@ class PLL_Settings_Module {
 	public function deactivate() {
 		if ( ! empty( $this->active_option ) ) {
 			$this->options[ $this->active_option ] = false;
-			update_option( 'polylang', $this->options );
 		}
 	}
 
@@ -240,9 +239,7 @@ class PLL_Settings_Module {
 		if ( isset( $_POST['module'] ) && $this->module === $_POST['module'] ) {
 			// It's up to the child class to decide which options are saved, whether there are errors or not
 			$post = array_diff_key( $_POST, array_flip( array( 'action', 'module', 'pll_ajax_backend', '_pll_nonce' ) ) );
-			$options = $this->update( $post );
-			$this->options = array_merge( $this->options, $options );
-			update_option( 'polylang', $this->options );
+			$this->options->merge( $this->update( $post ) );
 
 			// Refresh language cache in case home urls have been modified
 			$this->model->clean_languages_cache();

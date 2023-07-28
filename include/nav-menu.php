@@ -13,7 +13,7 @@ class PLL_Nav_Menu {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	public $options;
 

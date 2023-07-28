@@ -12,7 +12,7 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	public $options;
 

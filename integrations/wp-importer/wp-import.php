@@ -44,7 +44,6 @@ class PLL_WP_Import extends WP_Import {
 			$languages = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id' ) );
 			$default_lang = reset( $languages );
 			PLL()->options['default_lang'] = $default_lang->slug;
-			update_option( 'polylang', PLL()->options );
 		}
 
 		// Clean languages cache in case some of them were created during import.

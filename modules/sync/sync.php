@@ -27,7 +27,7 @@ class PLL_Sync {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	protected $options;
 

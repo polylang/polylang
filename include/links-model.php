@@ -19,7 +19,7 @@ abstract class PLL_Links_Model {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	public $options;
 

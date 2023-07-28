@@ -124,7 +124,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="hide_default" type="checkbox" value="1" %s /> %s',
-				checked( $this->options['hide_default'], 1, false ),
+				checked( $this->options['hide_default'], true, false ),
 				esc_html__( 'Hide URL language information for default language', 'polylang' )
 			);
 			?>
@@ -146,7 +146,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			printf(
 				'<input name="rewrite" type="radio" value="1" %s %s/> %s',
 				disabled( $this->links_model->using_permalinks, false, false ),
-				checked( $this->options['rewrite'], 1, false ),
+				checked( $this->options['rewrite'], true, false ),
 				esc_html__( 'Remove /language/ in pretty permalinks', 'polylang' )
 			);
 			?>
@@ -157,7 +157,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			printf(
 				'<input name="rewrite" type="radio" value="0" %s %s/> %s',
 				disabled( $this->links_model->using_permalinks, false, false ),
-				checked( $this->options['rewrite'], 0, false ),
+				checked( $this->options['rewrite'], false, false ),
 				esc_html__( 'Keep /language/ in pretty permalinks', 'polylang' )
 			);
 			?>
@@ -179,7 +179,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			<?php
 			printf(
 				'<input name="redirect_lang" type="checkbox" value="1" %s/> %s',
-				checked( $this->options['redirect_lang'], 1, false ),
+				checked( $this->options['redirect_lang'], true, false ),
 				esc_html__( 'The front page URL contains the language code instead of the page name or page id', 'polylang' )
 			);
 			?>
@@ -307,8 +307,8 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @return void
 	 */
 	protected function check_domains( $options ) {
-		$options = array_merge( $this->options, $options );
-		$model = new PLL_Model( $options );
+		$this->options->merge( $options );
+		$model = new PLL_Model( $this->options );
 		$links_model = $model->get_links_model();
 		foreach ( $this->model->get_languages_list() as $lang ) {
 			$url = add_query_arg( 'deactivate-polylang', 1, $links_model->home_url( $lang ) );

@@ -12,7 +12,7 @@ abstract class PLL_Choose_Lang {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	public $options;
 

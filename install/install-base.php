@@ -131,4 +131,40 @@ class PLL_Install_Base {
 		$this->_activate();
 		restore_current_blog();
 	}
+
+	/**
+	 * Returns the plugin's options.
+	 *
+	 * @since 3.5
+	 *
+	 * @return PLL_Options|array
+	 */
+	protected function get_options() {
+		if ( isset( $GLOBALS['polylang'], $GLOBALS['polylang']->model, $GLOBALS['polylang']->model->options ) ) {
+			return $GLOBALS['polylang']->model->options;
+		}
+
+		return (array) get_option( PLL_Options::OPTION_NAME, array() );
+	}
+
+	/**
+	 * Updates the plugin's options.
+	 *
+	 * @since 3.4
+	 *
+	 * @param array $options The options.
+	 * @return void
+	 */
+	protected function update_options( array $options ) {
+		if ( isset( $GLOBALS['polylang'], $GLOBALS['polylang']->model, $GLOBALS['polylang']->model->options ) ) {
+			/**
+			 * The call to `save()` is necessary when in `switch_to_blog()` (see `PLL_Install_Base::do_for_all_blogs()`
+			 * and `PLL_Install_Base::new_site()`) because it avoids `PLL_Options::save_all()` to do another
+			 * `switch_to_blog()` loop.
+			 */
+			$GLOBALS['polylang']->model->options->merge( $options )->save();
+		} else {
+			update_option( PLL_Options::OPTION_NAME, $options );
+		}
+	}
 }

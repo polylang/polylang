@@ -46,13 +46,13 @@ parameters:
 
 		# Ignored because array_combine() cannot return false when feeded with 2 identical arrays.
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array<string, string\\>\\|false given\\.$#"
 			count: 1
 			path: include/translated-post.php
 
 		# Ignored because array_combine() cannot return false when feeded with 2 identical arrays.
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array\\|false given\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, array<string, string\\>\\|false given\\.$#"
 			count: 1
 			path: include/translated-term.php
 
@@ -61,3 +61,9 @@ parameters:
 			message: "#^Call to static method encode\\(\\) on an unknown class Requests_IDNAEncoder\\.$#"
 			count: 1
 			path: include/links-domain.php
+
+		# Ignored because PHPStan doesn't understand what happens with union types here: `$this->options[ $this->current_blog_id ][ $offset ] = self::DEFAULTS[ $offset ];`.
+		-
+			message: "#^Property PLL_Options::\\$options \\(array.+\\) does not accept non-empty-array<.+>\\.$#"
+			count: 1
+			path: include/options.php

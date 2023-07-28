@@ -3,16 +3,25 @@
 class Install_Test extends PLL_UnitTestCase {
 
 	public function test_activate() {
-		delete_option( 'polylang' );
+		$links_model         = self::$model->get_links_model();
+		$GLOBALS['polylang'] = new PLL_Settings( $links_model );
+		self::$model->options->merge(
+			array(
+				'hide_default' => false,
+				'force_lang'   => 0,
+				'uninstall'    => true,
+				'sync'         => array( 'foo', 'bar' ),
+				'version'      => '',
+			)
+		);
 		do_action( 'activate_' . POLYLANG_BASENAME );
 
 		// Check a few options
-		$options = get_option( 'polylang' );
-		$this->assertEquals( 1, $options['hide_default'] );
-		$this->assertEquals( 1, $options['force_lang'] );
-		$this->assertEquals( 0, $options['uninstall'] );
-		$this->assertEmpty( $options['sync'] );
-		$this->assertEquals( POLYLANG_VERSION, $options['version'] );
+		$this->assertTrue( self::$model->options['hide_default'] );
+		$this->assertSame( 1, self::$model->options['force_lang'] );
+		$this->assertFalse( self::$model->options['uninstall'] );
+		$this->assertEmpty( self::$model->options['sync'] );
+		$this->assertSame( POLYLANG_VERSION, self::$model->options['version'] );
 	}
 
 	/**
@@ -25,7 +34,7 @@ class Install_Test extends PLL_UnitTestCase {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 		}
 
-		do_action( 'activate_' . POLYLANG_BASENAME );
+		update_option( 'polylang', PLL_Options::get_reset_options() );
 
 		include_once dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php';
 		new PLL_Uninstall();
@@ -41,7 +50,7 @@ class Install_Test extends PLL_UnitTestCase {
 	public function test_uninstall_removing_data() {
 		global $wpdb;
 
-		do_action( 'activate_' . POLYLANG_BASENAME );
+		update_option( 'polylang', PLL_Options::get_reset_options() );
 
 		self::create_language( 'en_US' );
 		$english = self::$model->get_language( 'en' );

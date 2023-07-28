@@ -12,7 +12,7 @@ class PLL_Canonical {
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	protected $options;
 

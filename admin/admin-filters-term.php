@@ -10,6 +10,13 @@
  */
 class PLL_Admin_Filters_Term {
 	/**
+	 * Stores the plugin options.
+	 *
+	 * @var PLL_Options
+	 */
+	public $options;
+
+	/**
 	 * @var PLL_Model
 	 */
 	public $model;

@@ -9,10 +9,11 @@
  * @since 1.2
  */
 class PLL_Upgrade {
+
 	/**
 	 * Stores the plugin options.
 	 *
-	 * @var array
+	 * @var PLL_Options
 	 */
 	public $options;
 
@@ -21,9 +22,9 @@ class PLL_Upgrade {
 	 *
 	 * @since 1.2
 	 *
-	 * @param array $options Polylang options
+	 * @param PLL_Options $options Polylang options
 	 */
-	public function __construct( &$options ) {
+	public function __construct( PLL_Options &$options ) {
 		$this->options = &$options;
 	}
 
@@ -115,7 +116,6 @@ class PLL_Upgrade {
 
 		$this->options['previous_version'] = $this->options['version']; // Remember the previous version of Polylang since v1.7.7
 		$this->options['version'] = POLYLANG_VERSION;
-		update_option( 'polylang', $this->options );
 	}
 
 	/**

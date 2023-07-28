@@ -551,22 +551,7 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Property PLL_Base\\:\\:\\$options \\(array\\) does not accept mixed\\.$#"
-			count: 1
-			path: include/base.php
-
-		-
 			message: "#^Call to an undefined method object\\:\\:init\\(\\)\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Cannot access offset 'version' on mixed\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Parameter \\#1 \\$version1 of function version_compare expects string, mixed given\\.$#"
 			count: 1
 			path: include/class-polylang.php
 
@@ -751,7 +736,7 @@ parameters:
 			path: include/model.php
 
 		-
-			message: "#^Method PLL_Nav_Menu\\:\\:explode_location\\(\\) should return array\\<string\\> but returns array\\<string, mixed\\>\\|false\\.$#"
+			message: "#^Method PLL_Nav_Menu\\:\\:explode_location\\(\\) should return array\\<string\\> but returns array\\<string, string\\>\\|false\\.$#"
 			count: 1
 			path: include/nav-menu.php
 
@@ -839,16 +824,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
 			count: 1
 			path: include/widget-languages.php
-
-		-
-			message: "#^Cannot access offset 'version' on mixed\\.$#"
-			count: 1
-			path: install/install.php
-
-		-
-			message: "#^Parameter \\#1 \\$version1 of function version_compare expects string, mixed given\\.$#"
-			count: 1
-			path: install/install.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$_last_checked\\.$#"
