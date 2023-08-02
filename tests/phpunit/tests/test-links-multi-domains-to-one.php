@@ -14,10 +14,6 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	protected $secondary_domain;
 
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		if ( ! defined( 'PLL_CACHE_HOME_URL' ) || PLL_CACHE_HOME_URL ) {
-			self::markTestSkipped( 'This test requires not to cache home URL.' );
-		}
-
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::create_language( 'en_US' );
