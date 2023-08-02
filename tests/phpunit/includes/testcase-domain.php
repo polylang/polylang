@@ -26,9 +26,6 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 		$this->filter_plugins_url();
 
 		self::$model->options['default_lang'] = 'en';
-		self::$model->options['hide_default'] = 1;
-		self::$model->options['force_lang']   = 2;
-		self::$model->options['domains']      = $this->hosts;
 	}
 
 	public function tear_down() {
