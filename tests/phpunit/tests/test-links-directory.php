@@ -1,9 +1,12 @@
 <?php
 
+use Brain\Monkey;
+
 /**
  * @group links
  */
 class Links_Directory_Test extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
 	use PLL_Test_Links_Trait;
 
 	protected $structure = '/%postname%/';
@@ -23,6 +26,7 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();
+		Monkey\setUp();
 
 		global $wp_rewrite;
 
@@ -37,6 +41,11 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$wp_rewrite->set_permalink_structure( $this->structure );
 		$this->links_model = self::$model->get_links_model();
 		$this->links_model->init();
+	}
+
+	public function tear_down() {
+		Monkey\tearDown();
+		parent::tear_down();
 	}
 
 	protected function _test_add_language_to_link() {
@@ -202,9 +211,24 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
+	 *
+	 * @param bool $cache_languages Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url  Value of the constant `PLL_CACHE_HOME_URL`.
+	 *
+	 * @testWith [true, true]
+	 *           [true, false]
+	 *           [false, true]
+	 *           [false, false]
+	 *           [null, null]
 	 */
-	public function test_flag_url_with_subfolder_install() {
+	public function test_flag_url_with_subfolder_install( $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( true );
+		$this->mock_constants(
+			array(
+				'PLL_CACHE_LANGUAGES' => $cache_languages,
+				'PLL_CACHE_HOME_URL'  => $cache_home_url,
+			)
+		);
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();

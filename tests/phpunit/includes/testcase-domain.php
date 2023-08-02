@@ -1,6 +1,9 @@
 <?php
 
+use Brain\Monkey;
+
 abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
 	use PLL_Test_Links_Trait;
 
 	protected $hosts;
@@ -18,22 +21,28 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();
+		Monkey\setUp();
 
 		$this->filter_plugins_url();
 
 		self::$model->options['default_lang'] = 'en';
-		self::$model->options['hide_default'] = 1;
-		self::$model->options['force_lang']   = 2;
-		self::$model->options['domains']      = $this->hosts;
 	}
 
 	public function tear_down() {
+		Monkey\tearDown();
 		parent::tear_down();
 
 		$this->reset__SERVER();
 	}
 
-	protected function _test_flags_urls( $curlang, $is_subfolder_install = false ) {
+	protected function _test_flags_urls( $curlang, $is_subfolder_install, $cache_languages, $cache_home_url ) {
+		$this->mock_constants(
+			array(
+				'PLL_CACHE_LANGUAGES' => $cache_languages,
+				'PLL_CACHE_HOME_URL'  => $cache_home_url,
+			)
+		);
+
 		// Needed by {@see pll_requested_url()}.
 		$_SERVER['HTTP_HOST'] = wp_parse_url( $this->hosts[ $curlang->slug ], PHP_URL_HOST );
 
@@ -59,47 +68,56 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 *
-	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @dataProvider url_context_provider
 	 *
-	 * @testWith [true]
-	 *           [false]
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @param bool $cache_languages      Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url       Value of the constant `PLL_CACHE_HOME_URL`.
 	 */
-	public function test_flags_urls_curlang_default( $is_subfolder_install ) {
+	public function test_flags_urls_curlang_default( $is_subfolder_install, $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( $is_subfolder_install );
 
 		$en = self::$model->get_language( 'en' );
 
-		$this->_test_flags_urls( $en, $is_subfolder_install );
+		$this->_test_flags_urls( $en, $is_subfolder_install, $cache_languages, $cache_home_url );
 	}
 
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 *
-	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @dataProvider url_context_provider
 	 *
-	 * @testWith [true]
-	 *           [false]
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @param bool $cache_languages      Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url       Value of the constant `PLL_CACHE_HOME_URL`.
 	 */
-	public function test_flags_urls_curlang_secondary( $is_subfolder_install ) {
+	public function test_flags_urls_curlang_secondary( $is_subfolder_install, $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( $is_subfolder_install );
 
 		$fr = self::$model->get_language( 'fr' );
 
-		$this->_test_flags_urls( $fr, $is_subfolder_install );
+		$this->_test_flags_urls( $fr, $is_subfolder_install, $cache_languages, $cache_home_url );
 	}
 
 	/**
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
 	 *
-	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @dataProvider url_context_provider
 	 *
-	 * @testWith [true]
-	 *           [false]
+	 * @param bool $is_subfolder_install Whether or not the test should be run in a subfolder install.
+	 * @param bool $cache_languages      Value of the constant `PLL_CACHE_LANGUAGES`.
+	 * @param bool $cache_home_url       Value of the constant `PLL_CACHE_HOME_URL`.
 	 */
-	public function test_home_and_search_urls( $is_subfolder_install ) {
+	public function test_home_and_search_urls( $is_subfolder_install, $cache_languages, $cache_home_url ) {
 		$this->maybe_set_subfolder_install( $is_subfolder_install );
+		$this->mock_constants(
+			array(
+				'PLL_CACHE_LANGUAGES' => $cache_languages,
+				'PLL_CACHE_HOME_URL'  => $cache_home_url,
+			)
+		);
 
 		self::$model->clean_languages_cache();
 		$languages = self::$model->get_languages_list();
@@ -184,5 +202,60 @@ abstract class PLL_Domain_UnitTestCase extends PLL_UnitTestCase {
 
 		// Clean up.
 		$_SERVER = $server;
+	}
+
+	public function url_context_provider() {
+		return array(
+			'is subfolder + all caches'      => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => true,
+				'cache_home_url'       => true,
+			),
+			'is subfolder + cache languages' => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => true,
+				'cache_home_url'       => false,
+			),
+			'is subfolder + cache home url'  => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => false,
+				'cache_home_url'       => true,
+			),
+			'is subfolder + no cache'        => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => false,
+				'cache_home_url'       => false,
+			),
+			'is subfolder + cache not set'   => array(
+				'is_subfolder_install' => true,
+				'cache_languages'      => null,
+				'cache_home_url'       => null,
+			),
+			'no subfolder + all caches'      => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => true,
+				'cache_home_url'       => true,
+			),
+			'no subfolder + cache languages' => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => true,
+				'cache_home_url'       => false,
+			),
+			'no subfolder + cache home url'  => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => false,
+				'cache_home_url'       => true,
+			),
+			'no subfolder + no cache'        => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => false,
+				'cache_home_url'       => false,
+			),
+			'no subfolder + cache not set'   => array(
+				'is_subfolder_install' => false,
+				'cache_languages'      => null,
+				'cache_home_url'       => null,
+			),
+		);
 	}
 }
