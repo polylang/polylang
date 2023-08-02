@@ -27,10 +27,10 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		self::$model->options['default_lang'] = 'en';
 		self::$model->options['hide_default'] = 1;
-		self::$model->options['force_lang']   = 3;
+		self::$model->options['force_lang']   = 1;
 
 		$this->main_domain      = get_option( 'siteurl' );
-		$this->secondary_domain = 'https://choiceof.dev/';
+		$this->secondary_domain = 'https://choiceof.dev';
 		$_SERVER['HTTP_HOST']   = wp_parse_url( $this->secondary_domain, PHP_URL_HOST );
 
 		parent::set_up();
@@ -45,8 +45,10 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * This tests `PLL_Language::get_home_url()` and `PLL_Language::get_search_url()` when the `apply_filters()` are
-	 * used.
+	 * This tests `PLL_Language::get_home_url()` and `PLL_Language::get_search_url()`
+	 * on the secondary domain when 2 domains are used for a same site.
+	 *
+	 * For this to work, the home and search urls MUST NOT be cached.
 	 *
 	 * @ticket #1296
 	 * @see https://github.com/polylang/polylang/issues/1296.
@@ -58,7 +60,7 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 	 *           [false, true]
 	 *           [false, false]
 	 */
-	public function test_filtered_home_and_search_urls( $cache_languages, $cache_home_url ) {
+	public function test_home_and_search_urls( $cache_languages, $cache_home_url ) {
 		$this->mock_constants(
 			array(
 				'PLL_CACHE_LANGUAGES' => $cache_languages,
@@ -90,11 +92,12 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 		$this->init_links_model();
 		$frontend->init();
 
-		$this->assertCount( 2, $languages ); // @see `self::wpSetUpBeforeClass()`.
+		$language = self::$model->get_language( 'en' );
+		$this->assertSame( $this->secondary_domain . '/', $language->get_home_url() );
+		$this->assertSame( $this->secondary_domain . '/', $language->get_search_url() );
 
-		foreach ( $languages as $language ) {
-			$this->assertSame( $this->secondary_domain, $language->get_home_url() );
-			$this->assertSame( $this->secondary_domain, $language->get_search_url() );
-		}
+		$language = self::$model->get_language( 'fr' );
+		$this->assertSame( $this->secondary_domain . '/fr/', $language->get_home_url() );
+		$this->assertSame( $this->secondary_domain . '/fr/', $language->get_search_url() );
 	}
 }
