@@ -13,6 +13,7 @@
 		"wp-coding-standards/wpcs": "^2.0",
 		"automattic/vipwpcs": "^2.3",
 		"phpcompatibility/phpcompatibility-wp": "*",
+		"phpcsstandards/phpcsextra": "^1.1.0",
 		"behat/behat": "^3.7|^3.8",
 		"yoast/wp-test-utils": "^1.0.0"
 	},

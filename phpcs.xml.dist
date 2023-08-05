@@ -93,6 +93,72 @@
 		</properties>
 	</rule>
 
+	<!-- The following individual rules are planned for WPCS 3.0 -->
+	<rule ref="Generic.CodeAnalysis.EmptyPHPStatement" />
+	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter">
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClass"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassAfterLastUsed"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInImplementedInterface"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInImplementedInterfaceBeforeLastUsed"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInImplementedInterfaceAfterLastUsed"/>
+	</rule>
+	<rule ref="Generic.VersionControl.GitMergeConflict" />
+	<rule ref="Generic.WhiteSpace.IncrementDecrementSpacing" />
+	<rule ref="Generic.WhiteSpace.LanguageConstructSpacing" />
+	<rule ref="Generic.WhiteSpace.SpreadOperatorSpacingAfter" />
+	<rule ref="Modernize.FunctionCalls.Dirname" />
+	<rule ref="NormalizedArrays.Arrays.ArrayBraceSpacing">
+		<properties>
+			<property name="spacesWhenEmpty" value="0"/>
+			<property name="spacesSingleLine" value="1"/>
+			<property name="spacesMultiLine" value="newline"/>
+		</properties>
+	</rule>
+	<rule ref="NormalizedArrays.Arrays.CommaAfterLast" />
+	<rule ref="PSR12.Classes.ClassInstantiation" />
+	<rule ref="PSR12.Files.FileHeader.IncorrectOrder" />
+	<rule ref="PSR12.Files.FileHeader.IncorrectGrouping" />
+	<rule ref="PSR12.Functions.NullableTypeDeclaration" />
+	<rule ref="PSR12.Functions.ReturnTypeDeclaration" />
+	<rule ref="PSR12.Traits.UseDeclaration" />
+	<rule ref="PSR2.Classes.ClassDeclaration" >
+		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine" />
+		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceWrongLine" />
+	</rule>
+	<rule ref="PSR2.Methods.FunctionClosingBrace" />
+	<rule ref="Universal.Arrays.DisallowShortArraySyntax" />
+	<rule ref="Universal.Arrays.DuplicateArrayKey" />
+	<rule ref="Universal.Classes.ModifierKeywordOrder" />
+	<rule ref="Universal.Classes.RequireAnonClassParentheses" />
+	<rule ref="Universal.CodeAnalysis.ConstructorDestructorReturn" />
+	<rule ref="Universal.CodeAnalysis.ForeachUniqueAssignment" />
+	<rule ref="Universal.CodeAnalysis.NoEchoSprintf" />
+	<rule ref="Universal.CodeAnalysis.StaticInFinalClass" />
+	<rule ref="Universal.Constants.LowercaseClassResolutionKeyword" />
+	<rule ref="Universal.Constants.ModifierKeywordOrder" />
+	<rule ref="Universal.Constants.UppercaseMagicConstants" />
+	<rule ref="Universal.ControlStructures.DisallowLonelyIf" />
+	<rule ref="Universal.Files.SeparateFunctionsFromOO" />
+	<rule ref="Universal.Namespaces.DisallowCurlyBraceSyntax" />
+	<rule ref="Universal.Namespaces.DisallowDeclarationWithoutName" />
+	<rule ref="Universal.Namespaces.OneDeclarationPerFile" />
+	<!-- <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames" /> -->
+	<rule ref="Universal.Operators.DisallowShortTernary" />
+	<rule ref="Universal.Operators.DisallowStandalonePostIncrementDecrement" />
+	<!--  <rule ref="Universal.Operators.StrictComparisons" /> -->
+	<rule ref="Universal.Operators.TypeSeparatorSpacing" />
+	<rule ref="Universal.UseStatements.DisallowMixedGroupUse" />
+	<rule ref="Universal.UseStatements.KeywordSpacing" />
+	<rule ref="Universal.UseStatements.LowercaseFunctionConst" />
+	<rule ref="Universal.UseStatements.NoLeadingBackslash" />
+	<rule ref="Universal.UseStatements.NoUselessAliases" />
+	<rule ref="Universal.WhiteSpace.AnonClassKeywordSpacing" />
+	<rule ref="Universal.WhiteSpace.CommaSpacing" />
+	<rule ref="Universal.WhiteSpace.DisallowInlineTabs" />
+	<rule ref="Universal.WhiteSpace.PrecisionAlignment" />
+
 	<rule ref="Generic.Commenting.Fixme.CommentFound" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
