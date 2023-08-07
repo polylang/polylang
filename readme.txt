@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.8
 Tested up to: 6.2
 Requires PHP: 7.0
-Stable tag: 3.4.4
+Stable tag: 3.4.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,15 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.4.5 (2023-08-07) =
+
+* Requires PHP 7.0 as minimum version
+* Pro: Fix error in site editor with WP 6.3
+* Pro: Remove usage of block_core_navigation_submenu_build_css_colors() deprecated in WP 6.3
+* Pro: Fix categories and tags kept in old language after the language of a post has been changed
+* Add 'pll_admin_ajax_params' filter #1326
+* Fix error when changing the language of a post and the post type doesn't support excerpts #1323
 
 = 3.4.4 (2023-07-18) =
 
