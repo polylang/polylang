@@ -19,17 +19,16 @@ class PLL_Duplicate_Post {
 	}
 
 	/**
-	 * Duplicate Post
-	 * Avoid duplicating the 'post_translations' taxonomy
+	 * Avoid duplicating the 'post_translations' taxonomy.
 	 *
 	 * @since 1.8
 	 *
-	 * @param array|string $taxonomies
+	 * @param array|string $taxonomies The list of taxonomies not to duplicate.
 	 * @return array
 	 */
 	public function taxonomies_blacklist( $taxonomies ) {
 		if ( empty( $taxonomies ) ) {
-			$taxonomies = array(); // As we get an empty string when there is no taxonomy
+			$taxonomies = array(); // As we get an empty string when there is no taxonomy.
 		}
 
 		$taxonomies[] = 'post_translations';
