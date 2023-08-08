@@ -43,7 +43,7 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
@@ -76,12 +76,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * Modifies the author and date links to add the language parameter ( as well as feed link )
+	 * Modifies the author and date links to add the language parameter (as well as feed link).
 	 *
 	 * @since 0.4
 	 *
-	 * @param string $link
-	 * @return string modified link
+	 * @param string $link The permalink to the archive.
+	 * @return string The modified link.
 	 */
 	public function archive_link( $link ) {
 		return $this->links_model->switch_language_in_link( $link, $this->curlang );
@@ -93,9 +93,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @since 1.7
 	 *
-	 * @param string $link    post link
-	 * @param int    $post_id post ID
-	 * @return string modified post link
+	 * @param string $link    The page link.
+	 * @param int    $post_id The post ID.
+	 * @return string The modified page link.
 	 */
 	public function _get_page_link( $link, $post_id ) {
 		$cache_key = "post:{$post_id}:{$link}";
@@ -112,9 +112,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @since 1.6.2
 	 *
-	 * @param string $link    attachment link
-	 * @param int    $post_id attachment link
-	 * @return string modified attachment link
+	 * @param string $link    The attachment link.
+	 * @param int    $post_id The attachment post ID.
+	 * @return string The modified attachment link.
 	 */
 	public function attachment_link( $link, $post_id ) {
 		$cache_key = "post:{$post_id}:{$link}";
@@ -131,9 +131,9 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @since 1.6
 	 *
-	 * @param string  $link Post link.
-	 * @param WP_Post $post Post object.
-	 * @return string Modified post link.
+	 * @param string  $link The post link.
+	 * @param WP_Post $post The post object.
+	 * @return string The modified post link.
 	 */
 	public function post_type_link( $link, $post ) {
 		$cache_key = "post:{$post->ID}:{$link}";
@@ -150,10 +150,10 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	 *
 	 * @since 0.7
 	 *
-	 * @param string  $link Term link.
-	 * @param WP_Term $term Term object.
-	 * @param string  $tax  Taxonomy name.
-	 * @return string Modified link.
+	 * @param string  $link The term link.
+	 * @param WP_Term $term The term object.
+	 * @param string  $tax  The taxonomy name.
+	 * @return string The modified link.
 	 */
 	public function term_link( $link, $term, $tax ) {
 		$cache_key = "term:{$term->term_id}:{$link}";
@@ -250,12 +250,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * Filters the home url to get the right language
+	 * Filters the home url to get the right language.
 	 *
 	 * @since 0.4
 	 *
-	 * @param string $url
-	 * @param string $path
+	 * @param string $url  The home URL including scheme and path.
+	 * @param string $path Path relative to the home URL.
 	 * @return string
 	 */
 	public function home_url( $url, $path ) {
@@ -336,12 +336,12 @@ class PLL_Frontend_Filters_Links extends PLL_Filters_Links {
 	}
 
 	/**
-	 * Rewrites ajax url when using domains or subdomains
+	 * Rewrites the ajax url when using domains or subdomains.
 	 *
 	 * @since 1.5
 	 *
-	 * @param string $url  admin url with path evaluated by WordPress
-	 * @param string $path admin path
+	 * @param string $url  The admin url with path evaluated by WordPress.
+	 * @param string $path Path relative to the admin URL.
 	 * @return string
 	 */
 	public function admin_url( $url, $path ) {

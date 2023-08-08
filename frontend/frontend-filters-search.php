@@ -24,11 +24,11 @@ class PLL_Frontend_Filters_Search {
 	public $curlang;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->links_model = &$polylang->links_model;
@@ -105,7 +105,7 @@ class PLL_Frontend_Filters_Search {
 	 *
 	 * @since 0.9
 	 *
-	 * @param WP_Admin_Bar $wp_admin_bar
+	 * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance, passed by reference.
 	 * @return void
 	 */
 	public function admin_bar_search_menu( $wp_admin_bar ) {

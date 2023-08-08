@@ -496,11 +496,6 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Links_Model\\:\\:switch_language_in_link\\(\\) expects PLL_Language, object given\\.$#"
-			count: 1
-			path: frontend/frontend-links.php
-
-		-
 			message: "#^Method PLL_Frontend_Nav_Menu\\:\\:get_ancestors\\(\\) should return array\\<int\\> but returns array\\<int\\<0, max\\>, mixed\\>\\.$#"
 			count: 1
 			path: frontend/frontend-nav-menu.php

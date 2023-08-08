@@ -51,14 +51,14 @@ class PLL_Accept_Languages_Collection {
 	 *
 	 * @since 3.0
 	 *
-	 * @param PLL_Accept_Language[] $accept_languages
+	 * @param PLL_Accept_Language[] $accept_languages Objects representing Accept-Language HTTP headers.
 	 */
 	public function __construct( $accept_languages = array() ) {
 		$this->accept_languages = $accept_languages;
 	}
 
 	/**
-	 * Bubble sort ( need a stable sort for Android, so can't use a PHP sort function ).
+	 * Bubble sort (need a stable sort for Android, so can't use a PHP sort function).
 	 *
 	 * @since 3.0
 	 *
@@ -105,7 +105,7 @@ class PLL_Accept_Languages_Collection {
 	 *
 	 * @since 3.0
 	 *
-	 * @param PLL_Language[] $languages
+	 * @param PLL_Language[] $languages The language list.
 	 * @return string|false A language slug if there's a match, false otherwise.
 	 */
 	public function find_best_match( $languages = array() ) {

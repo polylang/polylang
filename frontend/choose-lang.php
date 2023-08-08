@@ -40,7 +40,7 @@ abstract class PLL_Choose_Lang {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->links_model = &$polylang->links_model;
@@ -93,7 +93,7 @@ abstract class PLL_Choose_Lang {
 				return;
 			}
 		}
-		
+
 		$this->curlang = $curlang;
 
 		$GLOBALS['text_direction'] = $this->curlang->is_rtl ? 'rtl' : 'ltr';
