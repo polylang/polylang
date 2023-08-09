@@ -40,7 +40,7 @@ class PLL_Static_Pages {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model   = &$polylang->model;

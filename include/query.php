@@ -64,7 +64,7 @@ class PLL_Query {
 	 *
 	 * @since 1.7
 	 *
-	 * @param array $tax_queries
+	 * @param array $tax_queries An array of tax queries.
 	 * @return bool
 	 */
 	protected function have_translated_taxonomy( $tax_queries ) {

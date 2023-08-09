@@ -40,7 +40,7 @@ class PLL_Links {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->links_model = &$polylang->links_model;

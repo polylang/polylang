@@ -37,11 +37,11 @@ class PLL_Nav_Menu {
 	protected $auto_add_menus = array();
 
 	/**
-	 * Constructor: setups filters and actions
+	 * Constructor: setups filters and actions.
 	 *
 	 * @since 1.7.7
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
@@ -133,12 +133,12 @@ class PLL_Nav_Menu {
 	}
 
 	/**
-	 * Filters the option nav_menu_options for auto added pages to menu
+	 * Filters the option nav_menu_options for auto added pages to menu.
 	 *
 	 * @since 0.9.4
 	 *
-	 * @param array $options
-	 * @return array Modified options
+	 * @param array $options Options stored in the option nav_menu_options.
+	 * @return array Modified options.
 	 */
 	public function nav_menu_options( $options ) {
 		$options['auto_add'] = array_intersect( $options['auto_add'], $this->auto_add_menus );

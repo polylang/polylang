@@ -70,11 +70,11 @@ class PLL_License {
 	 *
 	 * @since 1.9
 	 *
-	 * @param string $file
-	 * @param string $item_name
-	 * @param string $version
-	 * @param string $author
-	 * @param string $api_url optional
+	 * @param string $file      The plugin file.
+	 * @param string $item_name The plugin name.
+	 * @param string $version   The plugin version.
+	 * @param string $author    Author name.
+	 * @param string $api_url   Optional url of the site managing the license.
 	 */
 	public function __construct( $file, $item_name, $version, $author, $api_url = null ) {
 		$this->id      = sanitize_title( $item_name );
@@ -124,12 +124,12 @@ class PLL_License {
 	}
 
 	/**
-	 * Registers the licence in the Settings
+	 * Registers the licence in the Settings.
 	 *
 	 * @since 1.9
 	 *
-	 * @param array $items
-	 * @return  array
+	 * @param PLL_License[] $items Array of objects allowing to manage a license.
+	 * @return PLL_License[]
 	 */
 	public function settings( $items ) {
 		$items[ $this->id ] = $this;

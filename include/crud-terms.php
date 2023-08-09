@@ -55,7 +55,7 @@ class PLL_CRUD_Terms {
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model       = &$polylang->model;
@@ -82,12 +82,12 @@ class PLL_CRUD_Terms {
 	}
 
 	/**
-	 * Allows to set a language by default for terms if it has no language yet
+	 * Allows to set a language by default for terms if it has no language yet.
 	 *
 	 * @since 1.5.4
 	 *
-	 * @param int    $term_id
-	 * @param string $taxonomy
+	 * @param int    $term_id  Term ID.
+	 * @param string $taxonomy Taxonomy name.
 	 * @return void
 	 */
 	protected function set_default_language( $term_id, $taxonomy ) {
