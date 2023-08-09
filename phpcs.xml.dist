@@ -40,10 +40,8 @@
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
-		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
 		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
 		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
-		<exclude name="Squiz.Commenting.InlineComment.SpacingAfter"/>
 		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure"/>
@@ -112,6 +110,10 @@
 	</rule>
 
 	<rule ref="Squiz.Commenting.FunctionComment.Missing" >
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamComment" >
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
