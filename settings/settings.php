@@ -166,11 +166,11 @@ class PLL_Settings extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Manages the user input for the languages pages
+	 * Manages the user input for the languages pages.
 	 *
 	 * @since 1.9
 	 *
-	 * @param string $action
+	 * @param string $action The action name.
 	 * @return void
 	 */
 	public function handle_actions( $action ) {

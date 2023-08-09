@@ -31,7 +31,7 @@ class PLL_Settings_Module {
 	/**
 	 * Stores if the module is active.
 	 *
-	 * @var bool
+	 * @var string|false
 	 */
 	public $active_option;
 
@@ -90,8 +90,13 @@ class PLL_Settings_Module {
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang Polylang object
-	 * @param array  $args
+	 * @param object $polylang The Polylang object.
+	 * @param array  $args {
+	 *   @type string       $module        Unique module name.
+	 *   @type string       $title         The title of the settings module.
+	 *   @type string       $description   The description of the settings module.
+	 *   @type string|false $active_option Optional option name storing if the module is active, false if not used.
+	 * }
 	 */
 	public function __construct( &$polylang, $args ) {
 		$this->options = &$polylang->options;
@@ -213,15 +218,15 @@ class PLL_Settings_Module {
 	}
 
 	/**
-	 * Allows child classes to validate their options before saving
+	 * Allows child classes to validate their options before saving.
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $options Raw options
+	 * @param array $options Unsanitized options to save.
 	 * @return array Options
 	 */
 	protected function update( $options ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return array(); // It's responsibility of the child class to decide what is saved
+		return array(); // It's responsibility of the child class to decide what is saved.
 	}
 
 	/**
