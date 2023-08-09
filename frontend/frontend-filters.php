@@ -14,7 +14,7 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
@@ -180,15 +180,15 @@ class PLL_Frontend_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Translates biography
+	 * Translates the biography.
 	 *
 	 * @since 0.9
 	 *
-	 * @param null   $null
-	 * @param int    $id       User id
-	 * @param string $meta_key
-	 * @param bool   $single   Whether to return only the first value of the specified $meta_key
-	 * @return null|string
+	 * @param null   $null     Expecting the default null value.
+	 * @param int    $id       The user id.
+	 * @param string $meta_key The metadata key.
+	 * @param bool   $single   Whether to return only the first value of the specified $meta_key.
+	 * @return string|null
 	 */
 	public function get_user_metadata( $null, $id, $meta_key, $single ) {
 		return 'description' === $meta_key && ! empty( $this->curlang ) && ! $this->curlang->is_default ? get_user_meta( $id, 'description_' . $this->curlang->slug, $single ) : $null;

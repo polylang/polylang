@@ -24,11 +24,11 @@ class PLL_Frontend_Filters_Widgets {
 	public $curlang;
 
 	/**
-	 * Constructor: setups filters and actions
+	 * Constructor: setups filters and actions.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->curlang = &$polylang->curlang;

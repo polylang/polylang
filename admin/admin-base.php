@@ -471,7 +471,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	 *
 	 * @since 1.6.5
 	 *
-	 * @param array $qvars
+	 * @param array $qvars The array of requested query variables.
 	 * @return array
 	 */
 	public function request( $qvars ) {

@@ -34,7 +34,7 @@ class PLL_CRUD_Posts {
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;
@@ -56,11 +56,11 @@ class PLL_CRUD_Posts {
 	}
 
 	/**
-	 * Allows to set a language by default for posts if it has no language yet
+	 * Allows to set a language by default for posts if it has no language yet.
 	 *
 	 * @since 1.5
 	 *
-	 * @param int $post_id
+	 * @param int $post_id Post ID.
 	 * @return void
 	 */
 	public function set_default_language( $post_id ) {
@@ -214,7 +214,7 @@ class PLL_CRUD_Posts {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $post_id
+	 * @param int $post_id Post ID.
 	 * @return void
 	 */
 	public function delete_post( $post_id ) {

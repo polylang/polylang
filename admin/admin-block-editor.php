@@ -26,7 +26,7 @@ class PLL_Admin_Block_Editor {
 	 *
 	 * @since 2.5
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model     = &$polylang->model;

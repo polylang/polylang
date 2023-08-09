@@ -15,7 +15,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
@@ -130,12 +130,12 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Save our menu item options
+	 * Save our menu item options.
 	 *
 	 * @since 1.1
 	 *
-	 * @param int $menu_id not used
-	 * @param int $menu_item_db_id
+	 * @param int $menu_id         ID of the updated menu.
+	 * @param int $menu_item_db_id ID of the updated menu item.
 	 * @return void
 	 */
 	public function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0 ) {
@@ -230,8 +230,8 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 *
 	 * @since 1.2
 	 *
-	 * @param bool|array $menus
-	 * @return bool|array modified list of menu locations
+	 * @param bool|array $menus Associative array of registered navigation menu IDs keyed by their location name.
+	 * @return bool|array
 	 */
 	public function theme_mod_nav_menu_locations( $menus ) {
 		// Prefill locations with 0 value in case a location does not exist in $menus

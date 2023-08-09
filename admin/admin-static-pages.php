@@ -15,11 +15,11 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	protected $links;
 
 	/**
-	 * Constructor: setups filters and actions
+	 * Constructor: setups filters and actions.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang
+	 * @param object $polylang An array of attachment metadata.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
@@ -76,12 +76,12 @@ class PLL_Admin_Static_Pages extends PLL_Static_Pages {
 	}
 
 	/**
-	 * Prevents WP resetting the option if the admin language filter is active for a language with no pages
+	 * Prevents WP resetting the option if the admin language filter is active for a language with no pages.
 	 *
 	 * @since 1.9.3
 	 *
-	 * @param string $value
-	 * @param string $old_value
+	 * @param string $value     The new, unserialized option value.
+	 * @param string $old_value The old option value.
 	 * @return string
 	 */
 	public function update_show_on_front( $value, $old_value ) {

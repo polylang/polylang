@@ -36,11 +36,11 @@ abstract class PLL_Sync_Metas {
 	protected $to_copy = array();
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 2.3
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;

@@ -91,13 +91,13 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Fixes the home url as well as the stylesheet url
-	 * Only when using multiple domains or subdomains
+	 * Fixes the home url as well as the stylesheet url,
+	 * only when using multiple domains or subdomains.
 	 *
 	 * @since 1.6.4
 	 *
-	 * @param string $url
-	 * @param string $path
+	 * @param string $url  The complete URL including scheme and path.
+	 * @param string $path Path relative to the home URL.
 	 * @return $url
 	 */
 	public function wpseo_home_url( $url, $path ) {
@@ -280,11 +280,11 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Filters home url
+	 * Filters the home url.
 	 *
 	 * @since 1.1.2
 	 *
-	 * @param array $arr
+	 * @param array $arr The list of files or functions for which `home_url()` must be filtered.
 	 * @return array
 	 */
 	public function wpseo_home_url_white_list( $arr ) {
@@ -334,11 +334,11 @@ class PLL_WPSEO {
 	}
 
 	/**
-	 * Fixes the canonical front page url as unlike WP, WPSEO does not add a trailing slash to the canonical front page url
+	 * Fixes the canonical front page url as unlike WP, WPSEO does not add a trailing slash to the canonical front page url.
 	 *
 	 * @since 1.7.10
 	 *
-	 * @param string $url
+	 * @param string $url The canonical URL evaluated by Yoast SEO.
 	 * @return $url
 	 */
 	public function wpseo_canonical( $url ) {

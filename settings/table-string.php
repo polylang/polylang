@@ -74,12 +74,12 @@ class PLL_Table_String extends WP_List_Table {
 	}
 
 	/**
-	 * Displays the item information in a column ( default case )
+	 * Displays the item information in a column (default case).
 	 *
 	 * @since 0.6
 	 *
-	 * @param array  $item
-	 * @param string $column_name
+	 * @param array  $item        Data related to the current string.
+	 * @param string $column_name The curent column name.
 	 * @return string
 	 */
 	public function column_default( $item, $column_name ) {
@@ -87,11 +87,11 @@ class PLL_Table_String extends WP_List_Table {
 	}
 
 	/**
-	 * Displays the checkbox in first column
+	 * Displays the checkbox in first column.
 	 *
 	 * @since 1.1
 	 *
-	 * @param array $item
+	 * @param array $item Data related to the current string.
 	 * @return string
 	 */
 	public function column_cb( $item ) {
@@ -100,28 +100,28 @@ class PLL_Table_String extends WP_List_Table {
 			esc_attr( $item['row'] ),
 			/* translators:  accessibility text, %s is a string potentially in any language */
 			sprintf( __( 'Select %s', 'polylang' ), format_to_edit( $item['string'] ) ),
-			empty( $item['icl'] ) ? 'disabled' : '' // Only strings registered with WPML API can be removed
+			empty( $item['icl'] ) ? 'disabled' : '' // Only strings registered with WPML API can be removed.
 		);
 	}
 
 	/**
-	 * Displays the string to translate
+	 * Displays the string to translate.
 	 *
 	 * @since 1.0
 	 *
-	 * @param array $item
+	 * @param array $item Data related to the current string.
 	 * @return string
 	 */
 	public function column_string( $item ) {
-		return format_to_edit( $item['string'] ); // Don't interpret special chars for the string column
+		return format_to_edit( $item['string'] ); // Don't interpret special chars for the string column.
 	}
 
 	/**
-	 * Displays the translations to edit
+	 * Displays the translations to edit.
 	 *
 	 * @since 0.6
 	 *
-	 * @param array $item
+	 * @param array $item Data related to the current string.
 	 * @return string
 	 */
 	public function column_translations( $item ) {
@@ -141,7 +141,7 @@ class PLL_Table_String extends WP_List_Table {
 				esc_attr( $key ),
 				esc_attr( $item['row'] ),
 				esc_html( $languages[ $key ] ),
-				format_to_edit( $translation ) // Don't interpret special chars
+				format_to_edit( $translation ) // Don't interpret special chars.
 			);
 		}
 

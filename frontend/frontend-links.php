@@ -22,7 +22,7 @@ class PLL_Frontend_Links extends PLL_Links {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
@@ -186,7 +186,7 @@ class PLL_Frontend_Links extends PLL_Links {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $language
+	 * @param PLL_Language $language An object representing a language.
 	 * @return string
 	 */
 	public function get_archive_url( $language ) {

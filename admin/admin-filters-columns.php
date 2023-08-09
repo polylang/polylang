@@ -32,7 +32,7 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->links = &$polylang->links;
@@ -137,8 +137,8 @@ class PLL_Admin_Filters_Columns {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $column  Column name
-	 * @param int    $post_id
+	 * @param string $column  Column name.
+	 * @param int    $post_id Post ID.
 	 * @return void
 	 */
 	public function post_column( $column, $post_id ) {
@@ -258,13 +258,13 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Fills the language column in the 'Categories' or 'Post Tags' table
+	 * Fills the language column in the taxonomy terms list table.
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $out
-	 * @param string $column  Column name
-	 * @param int    $term_id
+	 * @param string $out     Column output.
+	 * @param string $column  Column name.
+	 * @param int    $term_id Term ID.
 	 * @return string
 	 */
 	public function term_column( $out, $column, $term_id ) {

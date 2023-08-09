@@ -24,11 +24,11 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	protected $page_on_front;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct(
@@ -242,11 +242,11 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	}
 
 	/**
-	 * Sanitizes the settings before saving
+	 * Sanitizes the settings before saving.
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $options
+	 * @param array $options Unsanitized options to save.
 	 * @return array
 	 */
 	protected function update( $options ) {

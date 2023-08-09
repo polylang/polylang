@@ -41,11 +41,11 @@ class PLL_Filters_Links {
 	public $curlang;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.8
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->links = &$polylang->links;
@@ -172,12 +172,12 @@ class PLL_Filters_Links {
 	}
 
 	/**
-	 * Keeps the preview post link on default domain when using multiple domains
+	 * Keeps the preview post link on default domain when using multiple domains.
 	 *
 	 * @since 1.6.1
 	 *
-	 * @param string $url
-	 * @return string modified url
+	 * @param string $url URL used for the post preview.
+	 * @return string The modified url.
 	 */
 	public function preview_post_link( $url ) {
 		return $this->links_model->remove_language_from_link( $url );

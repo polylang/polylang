@@ -32,7 +32,7 @@ class PLL_Admin_Notices {
 	 *
 	 * @since 2.3.9
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( $polylang ) {
 		$this->options = &$polylang->options;
@@ -134,11 +134,11 @@ class PLL_Admin_Notices {
 	}
 
 	/**
-	 * Stores a dismissed notice in database
+	 * Stores a dismissed notice in the database.
 	 *
 	 * @since 2.3.9
 	 *
-	 * @param string $notice
+	 * @param string $notice Notice name.
 	 * @return void
 	 */
 	public static function dismiss( $notice ) {

@@ -20,7 +20,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
@@ -108,9 +108,9 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 	 *
 	 * @since 0.9
 	 *
-	 * @param array $post
-	 * @param array $attachment
-	 * @return array unmodified $post
+	 * @param array $post       An array of post data.
+	 * @param array $attachment An array of attachment metadata.
+	 * @return array Unmodified $post
 	 */
 	public function save_media( $post, $attachment ) {
 		// Language is filled in attachment by the function applying the filter 'attachment_fields_to_save'

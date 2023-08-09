@@ -4,8 +4,7 @@
  */
 
 /**
- * An extremely simple non persistent cache system
- * not as fast as using directly an array but more readable
+ * An extremely simple non persistent cache system.
  *
  * @since 1.7
  */
@@ -25,7 +24,7 @@ class PLL_Cache {
 	protected $cache = array();
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.7
 	 */
@@ -35,24 +34,24 @@ class PLL_Cache {
 	}
 
 	/**
-	 * Called when switching blog
+	 * Called when switching blog.
 	 *
 	 * @since 1.7
 	 *
-	 * @param int $new_blog
+	 * @param int $new_blog_id New blog ID.
 	 * @return void
 	 */
-	public function switch_blog( $new_blog ) {
-		$this->blog_id = $new_blog;
+	public function switch_blog( $new_blog_id ) {
+		$this->blog_id = $new_blog_id;
 	}
 
 	/**
-	 * Add a value in cache
+	 * Add a value in cache.
 	 *
 	 * @since 1.7
 	 *
-	 * @param string $key
-	 * @param mixed  $data
+	 * @param string $key  Cache key.
+	 * @param mixed  $data The value to add to the cache.
 	 * @return void
 	 */
 	public function set( $key, $data ) {
@@ -60,30 +59,29 @@ class PLL_Cache {
 	}
 
 	/**
-	 * Get value from cache
+	 * Get value from cache.
 	 *
 	 * @since 1.7
 	 *
-	 * @param string $key
-	 * @return mixed $data
+	 * @param string $key Cache key.
+	 * @return mixed
 	 */
 	public function get( $key ) {
 		return isset( $this->cache[ $this->blog_id ][ $key ] ) ? $this->cache[ $this->blog_id ][ $key ] : false;
 	}
 
 	/**
-	 * Clean the cache (for this blog only)
+	 * Clean the cache (for this blog only).
 	 *
 	 * @since 1.7
 	 *
-	 * @param string $key
+	 * @param string $key Cache key.
 	 * @return void
 	 */
 	public function clean( $key = '' ) {
 		if ( empty( $key ) ) {
 			unset( $this->cache[ $this->blog_id ] );
-		}
-		else {
+		} else {
 			unset( $this->cache[ $this->blog_id ][ $key ] );
 		}
 	}
