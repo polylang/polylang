@@ -38,7 +38,7 @@ abstract class PLL_Admin_Filters_Post_Base {
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->links = &$polylang->links;

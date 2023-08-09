@@ -11,11 +11,11 @@
 class PLL_Admin_Filters extends PLL_Filters {
 
 	/**
-	 * Constructor: setups filters and actions
+	 * Constructor: setups filters and actions.
 	 *
 	 * @since 1.2
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
@@ -36,11 +36,11 @@ class PLL_Admin_Filters extends PLL_Filters {
 	}
 
 	/**
-	 * Updates language user preference set in user profile
+	 * Updates the user biographies.
 	 *
 	 * @since 0.4
 	 *
-	 * @param int $user_id
+	 * @param int $user_id User ID.
 	 * @return void
 	 */
 	public function personal_options_update( $user_id ) {

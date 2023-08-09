@@ -34,11 +34,11 @@ class PLL_Admin_Classic_Editor {
 	public $pref_lang;
 
 	/**
-	 * Constructor: setups filters and actions
+	 * Constructor: setups filters and actions.
 	 *
 	 * @since 2.4
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model = &$polylang->model;

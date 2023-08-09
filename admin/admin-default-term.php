@@ -36,7 +36,7 @@ class PLL_Admin_Default_Term {
 	 *
 	 * @since 3.1
 	 *
-	 * @param object $polylang
+	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model      = &$polylang->model;
