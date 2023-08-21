@@ -10,8 +10,8 @@
 	"require-dev": {
 		"wpsyntex/polylang-phpstan": "^1.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
-		"wp-coding-standards/wpcs": "*",
-		"automattic/vipwpcs": "*",
+		"wp-coding-standards/wpcs": "^2.0",
+		"automattic/vipwpcs": "^2.3",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"behat/behat": "^3.7|^3.8",
 		"yoast/wp-test-utils": "^1.0.0"
