@@ -29,7 +29,7 @@ if ( is_rtl() ) {
 		);
 		?>
 		</title>
-		<script type="text/javascript">
+		<script>
 			var ajaxurl = '<?php echo esc_url( admin_url( 'admin-ajax.php', 'relative' ) ); ?>';
 		</script>
 		<?php do_action( 'admin_enqueue_scripts' ); ?>
