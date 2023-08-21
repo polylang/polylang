@@ -270,7 +270,7 @@ class PLL_Switcher {
 		if ( $args['dropdown'] && 0 === $args['admin_render'] ) {
 			// Accept only few valid characters for the urls_x variable name (as the widget id includes '-' which is invalid).
 			$out .= sprintf(
-				'<script type="%1$s">
+				'<script%1$s>
 					document.getElementById( "%2$s" ).addEventListener( "change", function ( event ) { location.href = event.currentTarget.value; } )
 				</script>',
 				current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"',
