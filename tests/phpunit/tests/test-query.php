@@ -86,13 +86,13 @@ class Query_Test extends PLL_UnitTestCase {
 	 * Also creates posts without terms.
 	 *
 	 * @param string $taxonomy Taxonomy name.
-	 * @return array {
+	 * @return int[][] {
 	 *     Arrays of post IDs, grouped by language.
 	 *
-	 *     @type int[] $eng_posts_with_tax English post IDs linked to the taxonomy.
-	 *     @type int[] $eng_posts_no_tax   English post IDs without the taxonomy.
-	 *     @type int[] $fr_posts_with_tax  French post IDs linked to the taxonomy.
-	 *     @type int[] $fr_posts_no_tax    French post IDs without the taxonomy.
+	 *     @type int[] $en_with_tax English post IDs linked to the taxonomy.
+	 *     @type int[] $en_no_tax   English post IDs without the taxonomy.
+	 *     @type int[] $fr_with_tax French post IDs linked to the taxonomy.
+	 *     @type int[] $fr_no_tax   French post IDs without the taxonomy.
 	 * }
 	 */
 	protected function create_posts_with_tax( $taxonomy ) {
@@ -153,10 +153,10 @@ class Query_Test extends PLL_UnitTestCase {
 		}
 
 		return array(
-			'eng_posts_with_tax' => array_merge( $eng_posts_cat_1, $eng_posts_cat_2 ),
-			'eng_posts_no_tax'   => $eng_posts_no_cat,
-			'fr_posts_with_tax'  => array_merge( $french_posts_cat_1, $french_posts_cat_2 ),
-			'fr_posts_no_tax'    => $french_posts_no_cat,
+			'en_with_tax' => array_merge( $eng_posts_cat_1, $eng_posts_cat_2 ),
+			'en_no_tax'   => $eng_posts_no_cat,
+			'fr_with_tax' => array_merge( $french_posts_cat_1, $french_posts_cat_2 ),
+			'fr_no_tax'   => $french_posts_no_cat,
 		);
 	}
 
@@ -803,7 +803,6 @@ class Query_Test extends PLL_UnitTestCase {
 
 	public function test_or_operator_on_category() {
 		$posts = $this->create_posts_with_tax( 'category' );
-		extract( $posts );
 
 		$args = array(
 			'post_type'      => 'post',
@@ -828,14 +827,13 @@ class Query_Test extends PLL_UnitTestCase {
 		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
 
 		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
-		$this->assertEmpty( array_intersect( $fr_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the category.' );
-		$this->assertSameSets( $fr_posts_with_tax, $queried_posts_ids, 'The query should return french posts with the category.' );
+		$this->assertEmpty( array_intersect( $posts['fr_no_tax'], $queried_posts_ids ), 'The query should not return french posts without the category.' );
+		$this->assertSameSets( $posts['fr_with_tax'], $queried_posts_ids, 'The query should return french posts with the category.' );
 		$this->assert_no_lang_query_by_slug( $query->tax_query );
 	}
 
 	public function test_or_operator_on_untranslated_tax() {
 		$posts = $this->create_posts_with_tax( 'tax' );
-		extract( $posts );
 
 		// Query with language parameter set.
 		$args = array(
@@ -861,8 +859,8 @@ class Query_Test extends PLL_UnitTestCase {
 		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
 
 		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
-		$this->assertEmpty( array_intersect( $fr_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
-		$this->assertEqualSets( $fr_posts_with_tax, $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
+		$this->assertEmpty( array_intersect( $posts['fr_no_tax'], $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
+		$this->assertEqualSets( $posts['fr_with_tax'], $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
 		$this->assert_no_lang_query_by_slug( $query->tax_query );
 
 		// Query with language parameter not set.
@@ -887,18 +885,17 @@ class Query_Test extends PLL_UnitTestCase {
 		$query                   = new WP_Query( $args );
 		$queried_posts           = $query->posts;
 		$queried_posts_ids       = wp_list_pluck( $queried_posts, 'ID' );
-		$expected_posts          = array_merge( $fr_posts_with_tax, $eng_posts_with_tax );
+		$expected_posts          = array_merge( $posts['fr_with_tax'], $posts['en_with_tax'] );
 
 		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
-		$this->assertEmpty( array_intersect( $fr_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
-		$this->assertEmpty( array_intersect( $eng_posts_no_tax, $queried_posts_ids ), 'The query should not return english posts without the taxonomy.' );
+		$this->assertEmpty( array_intersect( $posts['fr_no_tax'], $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
+		$this->assertEmpty( array_intersect( $posts['en_no_tax'], $queried_posts_ids ), 'The query should not return english posts without the taxonomy.' );
 		$this->assertEqualSets( $expected_posts, $queried_posts_ids, 'The query should return french and english posts with the taxonomy.' );
 		$this->assert_no_lang_query_by_slug( $query->tax_query );
 	}
 
 	public function test_or_operator_on_translated_tax() {
 		$posts = $this->create_posts_with_tax( 'trtax' );
-		extract( $posts );
 
 		$args = array(
 			'post_type'      => 'post',
@@ -923,8 +920,8 @@ class Query_Test extends PLL_UnitTestCase {
 		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
 
 		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
-		$this->assertEmpty( array_intersect( $fr_posts_no_tax, $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
-		$this->assertSameSets( $fr_posts_with_tax, $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
+		$this->assertEmpty( array_intersect( $posts['fr_no_tax'], $queried_posts_ids ), 'The query should not return french posts without the taxonomy.' );
+		$this->assertSameSets( $posts['fr_with_tax'], $queried_posts_ids, 'The query should return french posts with the taxonomy.' );
 		$this->assert_no_lang_query_by_slug( $query->tax_query );
 	}
 
@@ -950,7 +947,6 @@ class Query_Test extends PLL_UnitTestCase {
 
 	public function test_or_operator_on_category_with_several_languages() {
 		$posts = $this->create_posts_with_tax( 'category' );
-		extract( $posts );
 
 		$args = array(
 			'post_type'      => 'post',
@@ -983,10 +979,10 @@ class Query_Test extends PLL_UnitTestCase {
 		$query             = new WP_Query( $args );
 		$queried_posts     = $query->posts;
 		$queried_posts_ids = wp_list_pluck( $queried_posts, 'ID' );
-		$expected_posts    = array_merge( $eng_posts_with_tax, $fr_posts_with_tax );
+		$expected_posts    = array_merge( $posts['en_with_tax'], $posts['fr_with_tax'] );
 
 		$this->assertNotEmpty( $queried_posts, 'The query should return posts.' );
-		$this->assertEmpty( array_intersect( array_merge( $fr_posts_no_tax, $eng_posts_no_tax ), $queried_posts_ids ), 'The query should not return posts without the categories.' );
+		$this->assertEmpty( array_intersect( array_merge( $posts['fr_no_tax'], $posts['en_no_tax'] ), $queried_posts_ids ), 'The query should not return posts without the categories.' );
 		$this->assertSameSets( $expected_posts, $queried_posts_ids, 'The query should return french and english posts with the corresponding categories.' );
 		$this->assert_no_lang_query_by_slug( $query->tax_query );
 	}
