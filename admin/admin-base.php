@@ -173,22 +173,22 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		 * For each script:
 		 * 0 => the pages on which to load the script
 		 * 1 => the scripts it needs to work
-		 * 2 => 1 if loaded even if languages have not been defined yet, 0 otherwise
-		 * 3 => 1 if loaded in footer
+		 * 2 => true if loaded even if languages have not been defined yet, false otherwise
+		 * 3 => true if loaded in footer
 		 */
 		$scripts = array(
-			'user'    => array( array( 'profile', 'user-edit' ), array( 'jquery' ), 0, 0 ),
-			'widgets' => array( array( 'widgets' ), array( 'jquery' ), 0, 0 ),
+			'user'    => array( array( 'profile', 'user-edit' ), array( 'jquery' ), false, false ),
+			'widgets' => array( array( 'widgets' ), array( 'jquery' ), false, false ),
 		);
 
 		$block_screens = array( 'widgets', 'site-editor' );
 
 		if ( ! empty( $screen->post_type ) && $this->model->is_translated_post_type( $screen->post_type ) ) {
-			$scripts['post'] = array( array( 'edit', 'upload' ), array( 'jquery', 'wp-ajax-response' ), 0, 1 );
+			$scripts['post'] = array( array( 'edit', 'upload' ), array( 'jquery', 'wp-ajax-response' ), false, true );
 
 			// Classic editor.
 			if ( ! method_exists( $screen, 'is_block_editor' ) || ! $screen->is_block_editor() ) {
-				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
+				$scripts['classic-editor'] = array( array( 'post', 'media', 'async-upload' ), array( 'jquery', 'wp-ajax-response', 'post', 'jquery-ui-dialog', 'wp-i18n' ), false, true );
 			}
 
 			// Block editor with legacy metabox in WP 5.0+.
@@ -196,11 +196,11 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		}
 
 		if ( $this->is_block_editor( $screen ) ) {
-			$scripts['block-editor'] = array( $block_screens, array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), 0, 1 );
+			$scripts['block-editor'] = array( $block_screens, array( 'jquery', 'wp-ajax-response', 'wp-api-fetch', 'jquery-ui-dialog', 'wp-i18n' ), false, true );
 		}
 
 		if ( ! empty( $screen->taxonomy ) && $this->model->is_translated_taxonomy( $screen->taxonomy ) ) {
-			$scripts['term'] = array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), 0, 1 );
+			$scripts['term'] = array( array( 'edit-tags', 'term' ), array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), false, true );
 		}
 
 		foreach ( $scripts as $script => $v ) {
