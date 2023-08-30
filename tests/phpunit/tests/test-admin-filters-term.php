@@ -127,8 +127,6 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin ); // We need this too
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
 
-		//self::$model->term->set_language( 1, 'en' );
-
 		$posts = self::factory()->post->create_many( 2 );
 		self::$model->post->set_language( $posts[0], 'en' );
 		self::$model->post->set_language( $posts[1], 'fr' );
