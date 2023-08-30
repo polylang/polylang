@@ -120,7 +120,7 @@ class PLL_CRUD_Posts {
 	}
 
 	/**
-	 * Makes sure that saved terms are in the right language (especially tags with same name in different languages).
+	 * Makes sure that saved terms are in the right language.
 	 *
 	 * @since 2.3
 	 *
@@ -133,57 +133,64 @@ class PLL_CRUD_Posts {
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy ) {
 		static $avoid_recursion;
 
-		if ( ! $avoid_recursion && $this->model->is_translated_taxonomy( $taxonomy ) && ! empty( $terms ) ) {
-			$lang = $this->model->post->get_language( $object_id );
+		if ( $avoid_recursion || empty( $terms ) || ! is_array( $terms ) || ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
+			return;
+		}
 
-			if ( ! empty( $lang ) && is_array( $terms ) ) {
-				// Convert to term ids if we got tag names
-				$strings = array_filter( $terms, 'is_string' );
-				if ( ! empty( $strings ) ) {
-					$_terms = get_terms( array( 'taxonomy' => $taxonomy, 'name' => $strings, 'object_ids' => $object_id, 'fields' => 'ids' ) );
-					$terms = array_merge( array_diff( $terms, $strings ), $_terms );
-				}
+		$lang = $this->model->post->get_language( $object_id );
 
-				$term_ids = array_combine( $terms, $terms );
-				$languages = array_map( array( $this->model->term, 'get_language' ), $term_ids );
-				$languages = array_filter( $languages ); // Remove terms without language.
-				$languages = wp_list_pluck( $languages, 'slug' );
-				$wrong_terms = array_diff( $languages, array( $lang->slug ) );
+		if ( empty( $lang ) ) {
+			return;
+		}
 
-				if ( ! empty( $wrong_terms ) ) {
-					// We got terms in a wrong language
-					$wrong_term_ids = array_keys( $wrong_terms );
-					$terms = get_the_terms( $object_id, $taxonomy );
-					wp_remove_object_terms( $object_id, $wrong_term_ids, $taxonomy );
+		// Use the term_taxonomy_ids to get all the requested terms in 1 query.
+		$new_terms = get_terms(
+			array(
+				'taxonomy'         => $taxonomy,
+				'term_taxonomy_id' => array_map( 'intval', $tt_ids ),
+				'lang'             => '',
+			)
+		);
 
-					if ( is_array( $terms ) ) {
-						$newterms = array();
+		if ( empty( $new_terms ) || ! is_array( $new_terms ) ) {
+			// Terms not found.
+			return;
+		}
 
-						foreach ( $terms as $term ) {
-							if ( in_array( $term->term_id, $wrong_term_ids ) ) {
-								// Check if the term is in the correct language or if a translation exist ( mainly for default category )
-								if ( $newterm = $this->model->term->get( $term->term_id, $lang ) ) {
-									$newterms[] = (int) $newterm;
-								}
+		$new_term_ids_translated = $this->translate_terms( $new_terms, $taxonomy, $lang );
 
-								// Or choose the correct language for tags ( initially defined by name )
-								elseif ( $newterm = $this->model->term_exists( $term->name, $taxonomy, $term->parent, $lang ) ) {
-									$newterms[] = (int) $newterm; // Cast is important otherwise we get 'numeric' tags
-								}
+		// Query the object's term.
+		$orig_terms = get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'object_ids' => $object_id,
+				'lang'       => '',
+			)
+		);
 
-								// Or create the term in the correct language
-								elseif ( ! is_wp_error( $term_info = wp_insert_term( $term->name, $taxonomy ) ) ) {
-									$newterms[] = (int) $term_info['term_id'];
-								}
-							}
-						}
+		if ( is_array( $orig_terms ) ) {
+			$orig_term_ids            = wp_list_pluck( $orig_terms, 'term_id' );
+			$orig_term_ids_translated = $this->translate_terms( $orig_terms, $taxonomy, $lang );
 
-						$avoid_recursion = true;
-						wp_set_object_terms( $object_id, array_unique( $newterms ), $taxonomy, true ); // Append
-						$avoid_recursion = false;
-					}
-				}
+			// Terms that are not in the translated list.
+			$remove_term_ids = array_diff( $orig_term_ids, $orig_term_ids_translated );
+
+			if ( ! empty( $remove_term_ids ) ) {
+				wp_remove_object_terms( $object_id, $remove_term_ids, $taxonomy );
 			}
+		} else {
+			$orig_term_ids            = array();
+			$orig_term_ids_translated = array();
+		}
+
+		// Terms to add.
+		$add_term_ids = array_unique( array_merge( $orig_term_ids_translated, $new_term_ids_translated ) );
+		$add_term_ids = array_diff( $add_term_ids, $orig_term_ids );
+
+		if ( ! empty( $add_term_ids ) ) {
+			$avoid_recursion = true;
+			wp_set_object_terms( $object_id, $add_term_ids, $taxonomy, true ); // Append.
+			$avoid_recursion = false;
 		}
 	}
 
@@ -340,8 +347,111 @@ class PLL_CRUD_Posts {
 		$post_before = $post_before->to_array();
 
 		if ( ! empty( $post_before['tags_input'] ) ) {
-			// Let's ensure that  `PLL_CRUD_Posts::set_object_terms()` will do its job.
+			// Let's ensure that `PLL_CRUD_Posts::set_object_terms()` will do its job.
 			wp_set_post_tags( $post_id, $post_before['tags_input'] );
 		}
+	}
+
+	/**
+	 * Makes sure that all terms in the given list are in the given language.
+	 * If not the case, the terms are translated or created (for a hierarchical taxonomy, terms are created recursively).
+	 *
+	 * @since 3.5
+	 *
+	 * @param WP_Term[]    $terms    List of terms to translate.
+	 * @param string       $taxonomy The terms' taxonomy.
+	 * @param PLL_Language $language The language to translate the terms into.
+	 * @return int[] List of `term_id`s.
+	 *
+	 * @phpstan-return array<positive-int>
+	 */
+	private function translate_terms( array $terms, string $taxonomy, PLL_Language $language ): array {
+		$term_ids_translated = array();
+
+		foreach ( $terms as $term ) {
+			$term_ids_translated[] = $this->translate_term( $term, $taxonomy, $language );
+		}
+
+		return array_filter( $term_ids_translated );
+	}
+
+	/**
+	 * Translates the given term into the given language.
+	 * If the translation doesn't exist, it is created (for a hierarchical taxonomy, terms are created recursively).
+	 *
+	 * @since 3.5
+	 *
+	 * @param WP_Term      $term     The term to translate.
+	 * @param string       $taxonomy The term's taxonomy.
+	 * @param PLL_Language $language The language to translate the term into.
+	 * @return int
+	 *
+	 * @phpstan-return int<0, max>
+	 */
+	private function translate_term( WP_Term $term, string $taxonomy, PLL_Language $language ): int {
+		// Check if the term is in the correct language or if a translation exists.
+		$tr_term_id = $this->model->term->get( $term->term_id, $language );
+
+		if ( ! empty( $tr_term_id ) ) {
+			// Already in the correct language.
+			return $tr_term_id;
+		}
+
+		// Or choose the correct language for tags (initially defined by name).
+		$tr_term_id = $this->model->term_exists( $term->name, $taxonomy, $term->parent, $language );
+
+		if ( ! empty( $tr_term_id ) ) {
+			return $tr_term_id;
+		}
+
+		// Or create the term in the correct language.
+		$tr_parent_term_id = 0;
+
+		if ( $term->parent > 0 && is_taxonomy_hierarchical( $taxonomy ) ) {
+			$parent = get_term( $term->parent, $taxonomy );
+
+			if ( $parent instanceof WP_Term ) {
+				// Translate the parent recursively.
+				$tr_parent_term_id = $this->translate_term( $parent, $taxonomy, $language );
+			}
+		}
+
+		$callback = function ( $lang, $tax, $slug ) use ( $language, $term, $taxonomy ) {
+			if ( ! $lang instanceof PLL_Language && $tax === $taxonomy && $slug === $term->slug ) {
+				return $language;
+			}
+			return $lang;
+		};
+		add_filter( 'pll_inserted_term_language', $callback, 10, 3 );
+		$new_term_info = wp_insert_term(
+			$term->name,
+			$taxonomy,
+			array(
+				'parent' => $tr_parent_term_id,
+				'slug'   => $term->slug, // Useless but prevents the use of `sanitize_title()` and for consistency with `$callback`.
+			)
+		);
+		remove_filter( 'pll_inserted_term_language', $callback );
+
+		if ( is_wp_error( $new_term_info ) ) {
+			// Term creation failed.
+			return 0;
+		}
+
+		$tr_term_id = max( 0, (int) $new_term_info['term_id'] );
+
+		if ( empty( $tr_term_id ) ) {
+			return 0;
+		}
+
+		$this->model->term->set_language( $tr_term_id, $language );
+
+		$trs = $this->model->term->get_translations( $term->term_id );
+
+		$trs[ $language->slug ] = $tr_term_id;
+
+		$this->model->term->save_translations( $term->term_id, $trs );
+
+		return $tr_term_id;
 	}
 }
