@@ -9,6 +9,11 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
+		$links_model     = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
+		$admin_default_term->add_hooks();
+
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
@@ -21,6 +26,8 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		parent::set_up();
 
 		wp_set_current_user( self::$editor ); // Set a user to pass current_user_can tests
+
+		self::$model->options['default_lang'] = 'en';
 
 		$links_model     = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
@@ -119,6 +126,8 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	public function test_create_term_from_post_bulk_edit() {
 		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin ); // We need this too
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
+
+		//self::$model->term->set_language( 1, 'en' );
 
 		$posts = self::factory()->post->create_many( 2 );
 		self::$model->post->set_language( $posts[0], 'en' );
