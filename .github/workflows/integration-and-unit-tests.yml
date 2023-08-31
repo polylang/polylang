@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - wordpress-version: '5.8.x'
+          - wordpress-version: '5.9.x'
             php-version: '7.2'
             is-multisite: 0
             allow-failure: false
