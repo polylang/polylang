@@ -1,6 +1,6 @@
 {
   "name": "@wpsyntex/polylang",
-  "version": "3.1.0",
+  "version": "3.4.x",
   "description": "Adds multilingual capability to WordPress",
   "main": "index.js",
   "directories": {
@@ -11,7 +11,12 @@
     "build:dev": "npm run clean && webpack --mode development",
     "dev": "npm run clean && webpack --mode development --watch",
     "clean": "rimraf js/build css/build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "env:start": "wp-env start",
+    "env:stop": "wp-env stop",
+    "env:clean": "wp-env clean",
+    "env:start:fresh": "wp-env start && wp-env clean",
+    "wp-env": "wp-env",
+    "test:e2e": "npm run env:start:fresh && playwright test --config tests/e2e/playwright.config.js"
   },
   "repository": {
     "type": "git",
@@ -44,6 +49,8 @@
     "rimraf": "^3.0.2",
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.52.1",
-    "webpack-cli": "^4.8.0"
+    "webpack-cli": "^4.8.0",
+    "@wordpress/e2e-test-utils-playwright": "latest",
+    "@wordpress/env": "^8.1.0"
   }
 }

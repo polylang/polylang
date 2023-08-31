@@ -1,0 +1,19 @@
+{
+	"phpVersion": "8.0",
+	"core": null,
+	"config": {
+		"WP_DEBUG": true,
+		"WP_DEBUG_LOG": true,
+		"SCRIPT_DEBUG": true,
+		"WP_DEBUG_DISPLAY": true
+	},
+	"plugins": [ "." ],
+	"env": {
+        "tests": {
+            "plugins": [
+                ".",
+                "./tests/e2e/tools/lib/polylang-test-plugin-rest-features"
+            ]
+        }
+    }
+}

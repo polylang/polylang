@@ -10,3 +10,8 @@ js/build/
 composer.lock
 package-lock.json
 .phpunit.result.cache
+
+# Playwright
+playwright-report/
+artifacts/
+test-results/
