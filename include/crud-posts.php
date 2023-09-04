@@ -384,7 +384,7 @@ class PLL_CRUD_Posts {
 	 * @param WP_Term      $term     The term to translate.
 	 * @param string       $taxonomy The term's taxonomy.
 	 * @param PLL_Language $language The language to translate the term into.
-	 * @return int
+	 * @return int A `term_id` on success, `0` on failure.
 	 *
 	 * @phpstan-return int<0, max>
 	 */
