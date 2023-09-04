@@ -416,22 +416,30 @@ class PLL_CRUD_Posts {
 			}
 		}
 
-		$callback = function ( $lang, $tax, $slug ) use ( $language, $term, $taxonomy ) {
+		$lang_callback   = function ( $lang, $tax, $slug ) use ( $language, $term, $taxonomy ) {
 			if ( ! $lang instanceof PLL_Language && $tax === $taxonomy && $slug === $term->slug ) {
 				return $language;
 			}
 			return $lang;
 		};
-		add_filter( 'pll_inserted_term_language', $callback, 10, 3 );
+		$parent_callback = function ( $parent_id, $tax, $slug ) use ( $tr_parent_term_id, $term, $taxonomy ) {
+			if ( empty( $parent_id ) && $tax === $taxonomy && $slug === $term->slug ) {
+				return $tr_parent_term_id;
+			}
+			return $parent_id;
+		};
+		add_filter( 'pll_inserted_term_language', $lang_callback, 10, 3 );
+		add_filter( 'pll_inserted_term_parent', $parent_callback, 10, 3 );
 		$new_term_info = wp_insert_term(
 			$term->name,
 			$taxonomy,
 			array(
 				'parent' => $tr_parent_term_id,
-				'slug'   => $term->slug, // Useless but prevents the use of `sanitize_title()` and for consistency with `$callback`.
+				'slug'   => $term->slug, // Useless but prevents the use of `sanitize_title()` and for consistency with `$lang_callback`.
 			)
 		);
-		remove_filter( 'pll_inserted_term_language', $callback );
+		remove_filter( 'pll_inserted_term_language', $lang_callback );
+		remove_filter( 'pll_inserted_term_parent', $parent_callback );
 
 		if ( is_wp_error( $new_term_info ) ) {
 			// Term creation failed.
