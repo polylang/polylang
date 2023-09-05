@@ -1,12 +1,19 @@
-node_modules/
-vendor/
-tmp/
+# Folders, allowing symbolic links for tmp/
+.idea/
+coverage/
 css/build/
 js/build/
-.idea/
+node_modules/
+tmp
+vendor/
+
+# Files
+.phpunit.result.cache
 *.map
 *.min.js
 *.min.css
+.DS_Store
 composer.lock
+DB-CONFIG
 package-lock.json
-.phpunit.result.cache
+Thumbs.db
