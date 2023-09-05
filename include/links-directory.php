@@ -50,8 +50,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			add_action( 'setup_theme', array( $this, 'add_permastruct' ), 2 );
 		}
 
-		// Make sure to prepare rewrite rules when flushing.
-		add_filter( 'pre_option_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) );
+		if ( did_action( 'wp_loaded' ) ) {
+			$this->prepare_rewrite_rules( null );
+		} else {
+			add_filter( 'wp_loaded', array( $this, 'prepare_rewrite_rules' ), 9 );
+		}
 	}
 
 	/**
