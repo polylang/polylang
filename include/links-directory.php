@@ -190,6 +190,15 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			}
 
 			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // Needed for post type archives.
+
+			/**
+			 * Tells when Polylang has prepared rewrite rules filters.
+			 *
+			 * @since 3.6
+			 *
+			 * @param PLL_Links_Directory $this Current object.
+			 */
+			do_action( 'pll_prepare_rewrite_rules', $this );
 		}
 		return $pre;
 	}
