@@ -33,7 +33,7 @@ class PLL_Frontend_Auto_Translate {
 		$this->model = &$polylang->model;
 		$this->curlang = &$polylang->curlang;
 
-		add_action( 'parse_query', array( $this, 'pre_get_posts' ), 100 ); // After all Polylang filters.
+		add_action( 'parse_query', array( $this, 'translate_included_ids_in_query' ), 100 ); // After all Polylang filters.
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ), 20, 2 );
 	}
 
@@ -73,7 +73,7 @@ class PLL_Frontend_Auto_Translate {
 	 * @param WP_Query $query WP_Query object
 	 * @return void
 	 */
-	public function pre_get_posts( $query ) {
+	public function translate_included_ids_in_query( $query ) {
 		global $wpdb;
 		$qv = &$query->query_vars;
 
