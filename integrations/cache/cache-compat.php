@@ -70,7 +70,7 @@ class PLL_Cache_Compat {
 
 		$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
 
-		echo "<script{$type_attr}>\n{$js}</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+		echo "<script{$type_attr}>\n{$js}\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
 	/**
