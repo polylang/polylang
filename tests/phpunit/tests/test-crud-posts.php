@@ -103,90 +103,98 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 
 	/**
 	 * @ticket #1766 see {https://github.com/polylang/polylang-pro/issues/1766}.
+	 *
+	 * @testWith ["post_tag", "tax_input"]
+	 *           ["category", "post_category"]
+	 *
+	 * @param string $taxonomy     Taxonomy to test.
+	 * @param string $post_tax_arg Post argument key used regarding the taxonomy in `wp_update_post()`.
 	 */
-	public function test_terms_translation_on_post_save() {
+	public function test_terms_translation_on_post_save( $taxonomy, $post_tax_arg ) {
 		/**
 		 * EN: default language.
 		 * FR: language that will be assigned to the post.
 		 * DE: language the post will be switched to.
 		 */
-		$cats = $tags = array_fill_keys( array( 'en', 'fr', 'de' ), array() );
+		$terms    = array_fill_keys( array( 'en', 'fr', 'de' ), array() );
+		$taxonomy = get_taxonomy( $taxonomy );
+		$prefix   = ! empty( $taxonomy->rewrite['slug'] ) ? $taxonomy->rewrite['slug'] : $taxonomy->query_var;
 
-		// Create a category with parents in default language only.
-		$translations = array();
-		$parent       = 0;
+		if ( $taxonomy->hierarchical ) {
+			// Create a term with parents in default language only.
+			$translations = array();
+			$parent       = 0;
 
-		for ( $i = 1; $i <= 3; $i++ ) {
-			$parent = self::factory()->category->create( array( 'name' => "Cat $i EN", 'parent' => $parent ) );
-			self::$model->term->set_language( $parent, 'en' );
-			$translations[ $i ]['en'] = $parent;
-		}
-		foreach ( $translations as $translation_group ) {
-			self::$model->term->save_translations(
-				reset( $translation_group ),
-				$translation_group
+			for ( $i = 1; $i <= 3; $i++ ) {
+				$parent = self::factory()->term->create(
+					array(
+						'taxonomy' => $taxonomy->name,
+						'name'     => "{$taxonomy->labels->singular_name} $i EN with no trad",
+						'parent'   => $parent,
+					)
+				);
+				self::$model->term->set_language( $parent, 'en' );
+				$translations[ $i ]['en'] = $parent;
+			}
+			foreach ( $translations as $translation_group ) {
+				self::$model->term->save_translations(
+					reset( $translation_group ),
+					$translation_group
+				);
+			}
+
+			$terms['en']['create'] = end( $translations )['en'];
+		} else {
+			// Create a term in default language only.
+			$translations = array();
+			$term_id      = self::factory()->term->create(
+				array(
+					'taxonomy' => $taxonomy->name,
+					'name'     => "{$taxonomy->labels->singular_name} EN with no trad",
+				)
 			);
-		}
-		$cats['en']['create'] = end( $translations )['en'];
+			self::$model->term->set_language( $term_id, 'en' );
+			$translations['en'] = $term_id;
 
-		// Create categories with same name but different slug in all 3 languages.
+			self::$model->term->save_translations(
+				reset( $translations ),
+				$translations
+			);
+			$terms['en']['create'] = $translations['en'];
+		}
+
+		// Create terms with same name but different slug in all 3 languages.
 		$translations = array();
 		foreach ( array( 'en', 'fr', 'de' ) as $lang_slug ) {
-			$term_id = self::factory()->category->create( array( 'name' => 'Cat same name', 'slug' => 'cat-same-name-' . $lang_slug ) );
+			$term_id = self::factory()->term->create(
+				array(
+					'taxonomy' => $taxonomy->name,
+					'name'     => "{$taxonomy->labels->singular_name} same name",
+					'slug'     => "{$prefix}-same-name-{$lang_slug}",
+				)
+			);
 			self::$model->term->set_language( $term_id, $lang_slug );
 			$translations[ $lang_slug ] = $term_id;
-			$cats[ $lang_slug ][]       = $term_id;
-		}
-		self::$model->term->save_translations(
-			reset( $translations ),
-			$translations
-		);
-
-		// Create categories with their slug equals sanitize_title( name ) in all 3 languages.
-		$translations = array();
-		foreach ( array( 'en', 'fr', 'de' ) as $lang_slug ) {
-			$term_id = self::factory()->category->create( array( 'name' => 'Cat slug from name ' . $lang_slug, 'slug' => 'cat-slug-from-name-' . $lang_slug ) );
-			self::$model->term->set_language( $term_id, $lang_slug );
-			$translations[ $lang_slug ] = $term_id;
-			$cats[ $lang_slug ][]       = $term_id;
-		}
-		self::$model->term->save_translations(
-			reset( $translations ),
-			$translations
-		);
-
-		// Create a tag in default language only.
-		$translations = array();
-		$term_id      = self::factory()->tag->create( array( 'name' => 'Tag with no trad' ) );
-		self::$model->term->set_language( $term_id, 'en' );
-		$translations['en'] = $term_id;
-
-		self::$model->term->save_translations(
-			reset( $translations ),
-			$translations
-		);
-		$tags['en']['create'] = $translations['en'];
-
-		// Create tags with same name but different slug in all 3 languages.
-		$translations = array();
-		foreach ( array( 'en', 'fr', 'de' ) as $lang_slug ) {
-			$term_id = self::factory()->tag->create( array( 'name' => 'Tag same name', 'slug' => 'tag-same-name-' . $lang_slug ) );
-			self::$model->term->set_language( $term_id, $lang_slug );
-			$translations[ $lang_slug ] = $term_id;
-			$tags[ $lang_slug ][]       = $term_id;
+			$terms[ $lang_slug ][]      = $term_id;
 		}
 		self::$model->term->save_translations(
 			reset( $translations ),
 			$translations
 		);
 
-		// Create tags with their slug equals sanitize_title( name ) in all 3 languages.
+		// Create terms with their slug equals sanitize_title( name ) in all 3 languages.
 		$translations = array();
 		foreach ( array( 'en', 'fr', 'de' ) as $lang_slug ) {
-			$term_id = self::factory()->tag->create( array( 'name' => 'Tag slug from name ' . $lang_slug, 'slug' => 'tag-slug-from-name-' . $lang_slug ) );
+			$term_id = self::factory()->term->create(
+				array(
+					'taxonomy' => $taxonomy->name,
+					'name'     => "{$taxonomy->labels->singular_name} slug from name $lang_slug",
+					'slug'     => "{$prefix}-slug-from-name-{$lang_slug}",
+				)
+			);
 			self::$model->term->set_language( $term_id, $lang_slug );
 			$translations[ $lang_slug ] = $term_id;
-			$tags[ $lang_slug ][]       = $term_id;
+			$terms[ $lang_slug ][]      = $term_id;
 		}
 		self::$model->term->save_translations(
 			reset( $translations ),
@@ -202,26 +210,31 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 			'fr' => 'de', // The post has terms assigned from previous loop.
 		);
 		foreach ( $langs as $from => $to ) {
-			$tags_names = get_terms(
-				array(
-					'taxonomy'   => 'post_tag',
-					'include'    => $tags[ $from ], // Provide tags in previous language.
-					'fields'     => 'names',
-					'hide_empty' => false,
-					'lang'       => '',
-				)
-			);
-			$this->assertCount( count( $tags['en'] ), $tags_names, 'Failed to retrieve the tag names.' ); // Make sure the test is not screwed before starting.
-
-			$_REQUEST = $_POST = array(
+			$data = array(
 				'post_lang_choice' => $to, // Switch to new language.
 				'_pll_nonce'       => wp_create_nonce( 'pll_language' ),
-				'post_category'    => $cats[ $from ], // Provide categories in previous language.
-				'tax_input'        => array(
-					'post_tag' => implode( ', ', $tags_names ),
-				),
 				'post_ID'          => $post_id,
 			);
+
+			if ( $taxonomy->hierarchical ) {
+				$data[ $post_tax_arg ] = $terms[ $from ]; // Provide terms in previous language.
+			} else {
+				$terms_names = get_terms(
+					array(
+						'taxonomy'   => $taxonomy->name,
+						'include'    => $terms[ $from ], // Provide terms in previous language.
+						'fields'     => 'names',
+						'hide_empty' => false,
+						'lang'       => '',
+					)
+				);
+				$this->assertCount( count( $terms['en'] ), $terms_names, "Failed to retrieve the {$taxonomy->labels->singular_name} names." ); // Make sure the test is not screwed before starting.
+				$data[ $post_tax_arg ] = array(
+					$taxonomy->name => implode( ', ', $terms_names ),
+				);
+			}
+
+			$_REQUEST = $_POST = $data;
 			do_action( 'load-post.php' );
 			edit_post();
 
@@ -231,35 +244,21 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 			$this->assertInstanceOf( PLL_Language::class, $post_lang, 'No language has been assigned to the post.' );
 			$this->assertSame( $to, $post_lang->slug, 'The post doesn\'t have the correct language.' );
 
-			// Assert missing categories and tags in FR.
-			$cats[ $to ]['create'] = self::$model->term->get( $cats['en']['create'], $to );
-			$this->assertGreaterThan( 0, $cats[ $to ]['create'], sprintf( 'The category that was missing in %s has not been created.', strtoupper( $to ) ) );
-			$this->assertNotSame( $cats[ $from ]['create'], $cats[ $to ]['create'], sprintf( 'The category that was missing in %s has not been translated.', strtoupper( $to ) ) );
+			// Assert missing terms in FR.
+			$terms[ $to ]['create'] = self::$model->term->get( $terms['en']['create'], $to );
+			$this->assertGreaterThan( 0, $terms[ $to ]['create'], sprintf( "The {$taxonomy->labels->singular_name} that was missing in %s has not been created.", strtoupper( $to ) ) );
+			$this->assertNotSame( $terms[ $from ]['create'], $terms[ $to ]['create'], sprintf( "The {$taxonomy->labels->singular_name} that was missing in %s has not been translated.", strtoupper( $to ) ) );
 
-			$tags[ $to ]['create'] = self::$model->term->get( $tags['en']['create'], $to );
-			$this->assertGreaterThan( 0, $tags[ $to ]['create'], sprintf( 'The tag that was missing in %s has not been created.', strtoupper( $to ) ) );
-			$this->assertNotSame( $tags['en']['create'], $tags[ $to ]['create'], sprintf( 'The tag that was missing in %s has not been translated.', strtoupper( $to ) ) );
-
-			// Assert categories and tags assigned to the post in new language.
-			$assigned_post_cats_ids = get_terms(
+			// Assert terms assigned to the post in new language.
+			$assigned_post_terms_ids = get_terms(
 				array(
-					'taxonomy'   => 'category',
+					'taxonomy'   => $taxonomy->name,
 					'object_ids' => $post_id,
 					'fields'     => 'ids',
 					'lang'       => '',
 				)
 			);
-			$this->assertSameSets( $cats[ $to ], $assigned_post_cats_ids, 'The post doesn\'t have the correct categories.' );
-
-			$assigned_post_tags_ids = get_terms(
-				array(
-					'taxonomy'   => 'post_tag',
-					'object_ids' => $post_id,
-					'fields'     => 'ids',
-					'lang'       => '',
-				)
-			);
-			$this->assertSameSets( $tags[ $to ], $assigned_post_tags_ids, 'The post doesn\'t have the correct tags.' );
+			$this->assertSameSets( $terms[ $to ], $assigned_post_terms_ids, "The post doesn\'t have the correct {$taxonomy->labels->name}." );
 		}
 	}
 }
