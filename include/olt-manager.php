@@ -101,15 +101,6 @@ class PLL_OLT_Manager {
 		// Don't try to save time for en_US as some users have theme written in another language
 		// Now we can load all overridden text domains with the right language
 		if ( ! empty( $this->list_textdomains ) ) {
-			/*
-			 * FIXME: Backward compatibility with WP < 5.6
-			 * From WP 4.7 to 5.5, we need to reset the internal cache of _get_path_to_translation when switching from any locale to en_US.
-			 * See WP_Locale_Switcher::change_locale()
-			 */
-			if ( ! class_exists( 'WP_Textdomain_Registry' ) && function_exists( '_get_path_to_translation' ) ) {
-				_get_path_to_translation( '', true );
-			}
-
 			foreach ( $this->list_textdomains as $textdomain ) {
 				// Since WP 4.6, plugins translations are first loaded from wp-content/languages
 				if ( ! load_textdomain( $textdomain['domain'], str_replace( "{$this->default_locale}.mo", "$new_locale.mo", $textdomain['mo'] ) ) ) {

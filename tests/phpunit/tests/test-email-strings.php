@@ -23,11 +23,6 @@ class Email_Strings_Test extends PLL_UnitTestCase {
 
 
 	public function test_retrieve_password_default_language() {
-		global $wp_version;
-		if ( version_compare( $wp_version, '5.7', '<' ) ) {
-			$this->markTestSkipped( 'This test requires WordPress version 5.7 or higher.' );
-		}
-
 		if ( is_multisite() ) {
 			$this->markTestSkipped( 'The blog name string is not translatable in retrieve password email for multisite.' );
 		}
@@ -60,11 +55,6 @@ class Email_Strings_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_retrieve_password_secondary_language() {
-		global $wp_version;
-		if ( version_compare( $wp_version, '5.7', '<' ) ) {
-			$this->markTestSkipped( 'This test requires WordPress version 5.7 or higher.' );
-		}
-
 		if ( is_multisite() ) {
 			$this->markTestSkipped( 'The blog name string is not translatable in retrieve password email for multisite.' );
 		}
