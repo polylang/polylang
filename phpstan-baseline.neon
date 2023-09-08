@@ -576,11 +576,6 @@ parameters:
 			path: include/crud-posts.php
 
 		-
-			message: "#^Parameter \\#2 .+ of function array_merge expects array, array\\<int, int>\\|WP_Error given\\.$#"
-			count: 1
-			path: include/crud-posts.php
-
-		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
 			count: 1
 			path: include/crud-terms.php

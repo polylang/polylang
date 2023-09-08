@@ -9,6 +9,11 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
+		$links_model     = self::$model->get_links_model();
+		$pll_admin = new PLL_Admin( $links_model );
+		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
+		$admin_default_term->add_hooks();
+
 		self::create_language( 'en_US' );
 		self::create_language( 'fr_FR' );
 		self::create_language( 'de_DE_formal' );
@@ -595,8 +600,11 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( 'test-fr', $fr_object->slug, 'The slug should be suffixed with the french language.' );
 		$this->assertSame( 'fr', self::$model->term->get_language( $fr_object->term_id )->slug, 'The category language should be French.' );
-		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The original translation group should not have been updated.' );
-		$this->assertSameSetsWithIndex( array( 'fr' => $fr_object->term_id ), self::$model->term->get_translations( $fr_object->term_id ), 'The translation group of the new term should contain only this term.' );
+
+		// The new term in French should have been added to the translation group.
+		$expected_cats_translations['fr'] = $fr_object->term_id;
+		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $en_cat ), 'The original translation group should have been updated to include the new translated term.' );
+		$this->assertSameSetsWithIndex( $expected_cats_translations, self::$model->term->get_translations( $fr_object->term_id ), 'The translation group of the new term should be the same than the one from the other terms.' );
 
 		// Clean Up.
 		unset( $_REQUEST, $_GET );
