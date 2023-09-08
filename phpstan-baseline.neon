@@ -51,7 +51,7 @@ parameters:
 			path: admin/admin-base.php
 
 		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
+			message: "#^Property PLL_Admin_Block_Editor\\:\\:\\$posts \\(PLL_CRUD_Posts\\) does not accept PLL_CRUD_Posts\\|null.$#"
 			count: 1
 			path: admin/admin-block-editor.php
 

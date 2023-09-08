@@ -15,56 +15,77 @@ class PLL_Admin_Block_Editor {
 	protected $model;
 
 	/**
-	 * Preferred language to assign to a new post.
-	 *
-	 * @var PLL_Language|null
+	 * @var PLL_CRUD_Posts
 	 */
-	protected $pref_lang;
+	protected $posts;
 
 	/**
-	 * Constructor: setups filters and actions
+	 * @var PLL_Language|null
+	 */
+	protected $curlang;
+
+	/**
+	 * @var PLL_Filter_REST_Routes
+	 */
+	protected $filter_rest_routes;
+
+	/**
+	 * Constructor: setups filters and actions.
 	 *
 	 * @since 2.5
 	 *
-	 * @param object $polylang The Polylang object.
+	 * @param PLL_Admin $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
 		$this->model     = &$polylang->model;
-		$this->pref_lang = &$polylang->pref_lang;
+		$this->posts     = &$polylang->posts;
+		$this->curlang   = &$polylang->curlang;
 
-		add_filter( 'block_editor_rest_api_preload_paths', array( $this, 'preload_paths' ), 10, 2 );
+		$this->filter_rest_routes = &$polylang->filter_rest_routes;
+
+		add_filter( 'block_editor_rest_api_preload_paths', array( $this, 'filter_preload_paths' ), 50, 2 );
 	}
 
 	/**
-	 * Filters the preload REST requests by the current language of the post.
-	 * Necessary otherwise subsequent REST requests, all filtered by the language,
-	 * would not hit the preloaded requests.
+	 * Filters preload paths based on the context (block editor for posts, site editor or widget editor for instance).
 	 *
-	 * @since 2.5
+	 * @since 3.5
 	 *
-	 * @param (string|string[])[]     $preload_paths Array of paths to preload.
-	 * @param WP_Block_Editor_Context $context       Block editor context.
-	 * @return (string|string[])[]
+	 * @param array                   $preload_paths Preload paths.
+	 * @param WP_Block_Editor_Context $context       Editor context.
+	 * @return array Filtered preload paths.
 	 */
-	public function preload_paths( $preload_paths, $context ) {
-		if (
-			$context instanceof WP_Block_Editor_Context
-			&& $context->post instanceof WP_Post
-			&& $this->model->is_translated_post_type( $context->post->post_type )
-		) {
-			$lang = $this->model->post->get_language( $context->post->ID );
-
-			if ( ! $lang ) {
-				$lang = $this->pref_lang;
-			}
-
-			foreach ( $preload_paths as $k => $path ) {
-				if ( is_string( $path ) && '/' !== $path ) {
-					$preload_paths[ $k ] = $path . "&lang={$lang->slug}";
-				}
-			}
+	public function filter_preload_paths( $preload_paths, $context ) {
+		if ( ! $context instanceof WP_Block_Editor_Context ) {
+			return $preload_paths;
 		}
 
-		return $preload_paths;
+		// Backward compatibility with WP < 6.0 where `WP_Block_Editor_Context::$name` doesn't exist yet.
+		if (
+			( property_exists( $context, 'name' ) && 'core/edit-post' !== $context->name )
+			|| ! $context->post instanceof WP_Post
+		) {
+			// Do nothing if not post editor.
+			return $preload_paths;
+		}
+
+		if ( ! $this->model->is_translated_post_type( $context->post->post_type ) ) {
+			return $preload_paths;
+		}
+
+		// Set default language according to the context if no language is defined yet.
+		$this->posts->set_default_language( $context->post->ID );
+		$language = $this->model->post->get_language( $context->post->ID );
+
+		if ( empty( $language ) ) {
+			return $preload_paths;
+		}
+
+		return $this->filter_rest_routes->add_query_parameters(
+			$preload_paths,
+			array(
+				'lang' => $language->slug,
+			)
+		);
 	}
 }
