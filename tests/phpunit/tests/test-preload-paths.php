@@ -39,47 +39,4 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	protected function assert_path_added( $path, $filtered_path, $is_filterable, $context ) {
 		$this->assertCount( count( array( $path ) ), $filtered_path, 'There should be any path added.' );
 	}
-
-	/**
-	 * Provides preload paths with different dataset combination such as:
-	 *     - Standard, translatable or unstranslatable custom post type.
-	 *     - Default, secondary or undefined language for a translatable post.
-	 *
-	 * @return array $data {
-	 *    @type string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
-	 *    @type bool         $is_filtered     Whether the pass should be filtered or not.
-	 *    @type WP_Post      $post            The post provided for the context.
-	 *    @type string       $lang            The post's language slug, empty if none.
-	 *    @type bool         $is_translatable Whether or not the post type is translatable.
-	 * }
-	 */
-	public function preload_paths_provider() {
-		$languages = array(
-			'en',
-			'fr',
-			'',
-		);
-
-		foreach ( $languages as $language ) {
-			$posts = array(
-				'translatable'     => $this->factory()->post->create_and_get(),
-				'translatable_cpt' => $this->factory()->post->create_and_get( array( 'post_type' => 'trcpt' ) ),
-				'untranslatable'   => $this->factory()->post->create_and_get( array( 'post_type' => 'custom' ) ),
-			);
-
-			foreach ( $posts as $is_translatable => $post ) {
-				foreach ( $this->get_paths_dataset( $post ) as $is_filtered => $_paths ) {
-					foreach ( $_paths as $path ) {
-						yield array(
-							'path'            => $path,
-							'is_filtered'     => 'filtered' === $is_filtered,
-							'post'            => $post,
-							'lang'            => $language,
-							'is_translatable' => 'untranslatable' !== $is_translatable,
-						);
-					}
-				}
-			}
-		}
-	}
 }
