@@ -1,54 +1,17 @@
 <?php
 
-class Preload_Paths_Test extends PLL_UnitTestCase {
+class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	/**
-	 * @var PLL_Admin_Block_Editor
+	 * @dataProvider preload_paths_provider
+	 *
+	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
+	 * @param bool         $is_filtered     Whether the pass should be filtered or not.
+	 * @param WP_Post      $post            The post provided for the context.
+	 * @param string       $language        The post's language slug, empty if none.
+	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
-	private $admin_block_editor;
-
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
-
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-	}
-
-	public function set_up() {
-		parent::set_up();
-
-		register_post_type( 'custom', array( 'public' => true, 'show_in_rest' => true ) ); // Untranslatable CPT.
-		register_post_type( 'trcpt', array( 'public' => true, 'show_in_rest' => true ) ); // Translated CPT.
-		register_taxonomy( 'trtax', 'post', array( 'show_in_rest' => true ) ); // Translated custom taxonomy.
-
-		$options = array_merge(
-			PLL_Install::get_default_options(),
-			array(
-				'default_lang' => 'en',
-			),
-			array(
-				'post_types' => array(
-					'trcpt' => 'trcpt',
-				),
-			),
-			array(
-				'taxonomies' => array(
-					'trtax' => 'trtax',
-				),
-			)
-		);
-		$model           = new PLL_Admin_Model( $options );
-		$links_model     = new PLL_Links_Default( $model );
-		$this->pll_admin = new PLL_Admin( $links_model );
-		$this->pll_admin->init();
-		$this->admin_block_editor = new PLL_Admin_Block_Editor( $this->pll_admin );
-	}
-
-	public function tear_down() {
-		parent::tear_down();
-
-		_unregister_post_type( 'custom' );
-		_unregister_post_type( 'trcpt' );
-		_unregister_taxonomy( 'trtax' );
+	public function test_preaload_paths_in_site_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
+		$this->assert_unfiltered_path_for_context( $path, 'core/edit-site' );
 	}
 
 	/**
@@ -60,105 +23,21 @@ class Preload_Paths_Test extends PLL_UnitTestCase {
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
-	public function test_preload_paths_with_post_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
-		if ( $is_translatable ) {
-			if ( empty( $language ) ) {
-				// Preferred language should be used in case the post doesn't have one yet.
-				$language = 'fr';
-				$this->pll_admin->pref_lang = $this->pll_admin->model->get_language( $language );
-			} else {
-				// Otherwise the post already have a language set.
-				$this->pll_admin->model->post->set_language( $post->ID, $language );
-			}
-		}
+	public function test_preaload_paths_in_widget_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
+		$this->assert_unfiltered_path_for_context( $path, 'core/edit-widgets' );
+	}
 
-		$filtered_path = $this->admin_block_editor->filter_preload_paths( array( $path ), $this->get_context( 'core/edit-post', $post ) );
-
-		if ( $is_translatable ) {
-			$this->assertSame( $language, $this->pll_admin->model->post->get_language( $post->ID )->slug, "Post language should be set to {$language}." );
-		} else {
-			$this->assertFalse( $this->pll_admin->model->post->get_language( $post->ID ), 'Post is untranslatable and shouldn\'t have a language set.' );
-		}
-
+	/**
+	 * Asserts the output path has no added route in any context.
+	 *
+	 * @param array                   $input_path    Input path.
+	 * @param array                   $output_path   Output path to test.
+	 * @param bool                    $is_filterable Whether or not the input path is filterable in the first place.
+	 * @param WP_Block_Editor_Context $context       The context of the preload path.
+	 * @return void
+	 */
+	protected function assert_path_added( $path, $filtered_path, $is_filterable, $context ) {
 		$this->assertCount( count( array( $path ) ), $filtered_path, 'There should be any path added.' );
-
-		// A path could be an array containing the proper path and the method.
-		$filtered_path = reset( $filtered_path );
-		$filtered_path = is_array( $filtered_path ) ? reset( $filtered_path ) : $filtered_path;
-		$expected_path = is_array( $path ) ? reset( $path ) : $path;
-
-		if ( $is_filtered && $is_translatable ) {
-			$this->assertStringContainsString( "lang={$language}", $filtered_path, "{$expected_path} should have the language parameter added." );
-		} else {
-			$this->assertStringNotContainsString( "lang={$language}", $filtered_path, "{$expected_path} should not have the language parameter added." );
-		}
-	}
-
-	public function test_preload_path_for_translatable_media() {
-		$this->pll_admin->options['media_support'] = 1;
-		$post = $this->factory()->post->create_and_get();
-		$this->pll_admin->model->post->set_language( $post->ID, 'en' );
-		$media_path = array(
-			'raw' => array(
-				array(
-					0 => '/wp/v2/media',
-					1 => 'OPTIONS',
-				),
-			),
-			'expected' => array(
-				array(
-					0 => '/wp/v2/media?lang=en',
-					1 => 'OPTIONS',
-				),
-			),
-		);
-
-		$this->assertSameSets(
-			$media_path['expected'],
-			$this->admin_block_editor->filter_preload_paths( $media_path['raw'], $this->get_context( 'core/edit-post', $post ) ),
-			'Media path should be filtered by language when option is activated.'
-		);
-	}
-
-	/**
-	 * @dataProvider preload_paths_provider
-	 *
-	 * @param string|array $path The preload path under test. Could be an array if provided along a HTTP method.
-	 */
-	public function test_preaload_paths_in_site_editor_context( $path ) {
-		$this->_test_unfiltered_context( $path, 'core/edit-site' );
-	}
-
-	/**
-	 * @dataProvider preload_paths_provider
-	 *
-	 * @param string|array $path The preload path under test. Could be an array if provided along a HTTP method.
-	 */
-	public function test_preaload_paths_in_widget_editor_context( $path ) {
-		$this->_test_unfiltered_context( $path, 'core/edit-widgets' );
-	}
-
-	private function _test_unfiltered_context( $path, $context_name ) {
-		$this->assertSameSets(
-			array( $path ),
-			$this->admin_block_editor->filter_preload_paths( array( $path ), $this->get_context( $context_name ) ),
-			"Path should not be filtered in {$context_name} context."
-		);
-	}
-
-	private function get_context( $context_name, $post = null ) {
-		$context_settings = array();
-
-		if ( property_exists( WP_Block_Editor_Context::class, 'name' ) ) {
-			// Backward compatibility with WordPress < 6.0 where `WP_Block_Editor_Context::$name` didn't exist yet.
-			$context_settings['name'] = $context_name;
-		}
-
-		if ( ! is_null( $post ) ) {
-			$context_settings['post'] = $post;
-		}
-
-		return new WP_Block_Editor_Context( $context_settings );
 	}
 
 	/**
@@ -202,41 +81,5 @@ class Preload_Paths_Test extends PLL_UnitTestCase {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Returns a paths dataset generated with a given post, defined here to be easily overridden.
-	 *
-	 * @param WP_Porst $post
-	 * @return array $data {
-	 *    @type array $filtered   List of filterable paths.
-	 *    @type array $unfiltered List of unfilterable paths.
-	 * }
-	 */
-	protected function get_paths_dataset( $post ) {
-		return array(
-			'filtered' => array(
-				array(
-					0 => '/wp/v2/blocks',
-					1 => 'OPTIONS',
-				),
-				'/wp/v2/categories',
-				'/wp/v2/posts/',
-			),
-			'unfiltered' => array(
-				'/',
-				'/wp/v2/types?context=edit',
-				'/wp/v2/taxonomies?per_page=-1&context=edit',
-				'/wp/v2/themes?status=active',
-				"/wp/v2/types/{$post->post_type}?context=edit",
-				"/wp/v2/users/me?post_type={$post->post_type}&context=edit",
-				"/wp/v2/{$post->post_type}s/{$post->ID}?context=edit",
-				"/wp/v2/{$post->post_type}s/{$post->ID}/autosaves?context=edit",
-				array(
-					0 => '/wp/v2/media',
-					1 => 'OPTIONS',
-				),
-			),
-		);
 	}
 }
