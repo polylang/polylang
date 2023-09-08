@@ -1,8 +1,6 @@
 <?php
 
-
-class PLL_Preload_Paths extends PLL_UnitTestCase {
-
+class Preload_Paths_Test extends PLL_UnitTestCase {
 	/**
 	 * @var PLL_Admin_Block_Editor
 	 */
@@ -191,33 +189,7 @@ class PLL_Preload_Paths extends PLL_UnitTestCase {
 			);
 
 			foreach ( $posts as $is_translatable => $post ) {
-				$paths = array(
-					'filtered' => array(
-						array(
-							0 => '/wp/v2/blocks',
-							1 => 'OPTIONS',
-						),
-						'/wp/v2/categories',
-						'/wp/v2/posts/',
-					),
-					'unfiltered' => array(
-						'/',
-						'/wp/v2/types?context=edit',
-						'/wp/v2/taxonomies?per_page=-1&context=edit',
-						'/wp/v2/themes?status=active',
-						"/wp/v2/types/{$post->post_type}?context=edit",
-						"/wp/v2/users/me?post_type={$post->post_type}&context=edit",
-						"/wp/v2/{$post->post_type}s/{$post->ID}?context=edit",
-						"/wp/v2/{$post->post_type}s/{$post->ID}/autosaves?context=edit",
-						array(
-							0 => '/wp/v2/media',
-							1 => 'OPTIONS',
-						),
-					),
-				);
-
-				foreach ( $paths as $is_filtered => $_paths ) {
-
+				foreach ( $this->get_paths_dataset( $post ) as $is_filtered => $_paths ) {
 					foreach ( $_paths as $path ) {
 						yield array(
 							'path'            => $path,
@@ -230,5 +202,41 @@ class PLL_Preload_Paths extends PLL_UnitTestCase {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns a paths dataset generated with a given post, defined here to be easily overridden.
+	 *
+	 * @param WP_Porst $post
+	 * @return array $data {
+	 *    @type array $filtered   List of filterable paths.
+	 *    @type array $unfiltered List of unfilterable paths.
+	 * }
+	 */
+	protected function get_paths_dataset( $post ) {
+		return array(
+			'filtered' => array(
+				array(
+					0 => '/wp/v2/blocks',
+					1 => 'OPTIONS',
+				),
+				'/wp/v2/categories',
+				'/wp/v2/posts/',
+			),
+			'unfiltered' => array(
+				'/',
+				'/wp/v2/types?context=edit',
+				'/wp/v2/taxonomies?per_page=-1&context=edit',
+				'/wp/v2/themes?status=active',
+				"/wp/v2/types/{$post->post_type}?context=edit",
+				"/wp/v2/users/me?post_type={$post->post_type}&context=edit",
+				"/wp/v2/{$post->post_type}s/{$post->ID}?context=edit",
+				"/wp/v2/{$post->post_type}s/{$post->ID}/autosaves?context=edit",
+				array(
+					0 => '/wp/v2/media',
+					1 => 'OPTIONS',
+				),
+			),
+		);
 	}
 }
