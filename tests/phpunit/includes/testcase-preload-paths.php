@@ -49,7 +49,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	/**
 	 * Calls the system under test and returns its output.
 	 *
-	 * @param array $paths                     List of preload paths.
+	 * @param array                   $paths   List of preload paths.
 	 * @param WP_Block_Editor_Context $context Context of preload paths.
 	 * @return mixed
 	 */
@@ -66,66 +66,9 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
-	public function test_preload_paths_with_post_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
-		if ( $is_translatable ) {
-			if ( empty( $language ) ) {
-				// Preferred language should be used in case the post doesn't have one yet.
-				$language = 'fr';
-				$this->pll_admin->pref_lang = $this->pll_admin->model->get_language( $language );
-			} else {
-				// Otherwise the post already have a language set.
-				$this->pll_admin->model->post->set_language( $post->ID, $language );
-			}
-		}
+	abstract public function test_preload_paths_with_post_editor_context( $path, $is_filtered, $post, $language, $is_translatable );
 
-		$context       = $this->get_context( 'core/edit-post', $post );
-		$filtered_path = $this->call_sut( array( $path ), $context );
-
-		if ( $is_translatable ) {
-			$this->assertSame( $language, $this->pll_admin->model->post->get_language( $post->ID )->slug, "Post language should be set to {$language}." );
-		} else {
-			$this->assertFalse( $this->pll_admin->model->post->get_language( $post->ID ), 'Post is untranslatable and shouldn\'t have a language set.' );
-		}
-
-		$this->assert_path_added( $path, $filtered_path, $is_filtered && $is_translatable, $context );
-
-		// A path could be an array containing the proper path and the method.
-		$filtered_path = reset( $filtered_path );
-		$filtered_path = is_array( $filtered_path ) ? reset( $filtered_path ) : $filtered_path;
-		$expected_path = is_array( $path ) ? reset( $path ) : $path;
-
-		if ( $is_filtered && $is_translatable ) {
-			$this->assertStringContainsString( "lang={$language}", $filtered_path, "{$expected_path} should have the language parameter added." );
-		} else {
-			$this->assertStringNotContainsString( "lang={$language}", $filtered_path, "{$expected_path} should not have the language parameter added." );
-		}
-	}
-
-	public function test_preload_path_for_translatable_media() {
-		$this->pll_admin->options['media_support'] = 1;
-		$post = $this->factory()->post->create_and_get();
-		$this->pll_admin->model->post->set_language( $post->ID, 'en' );
-		$media_path = array(
-			'raw' => array(
-				array(
-					0 => '/wp/v2/media',
-					1 => 'OPTIONS',
-				),
-			),
-			'expected' => array(
-				array(
-					0 => '/wp/v2/media?lang=en',
-					1 => 'OPTIONS',
-				),
-			),
-		);
-
-		$this->assertSameSets(
-			$media_path['expected'],
-			$this->call_sut( $media_path['raw'], $this->get_context( 'core/edit-post', $post ) ),
-			'Media path should be filtered by language when option is activated.'
-		);
-	}
+	abstract public function test_preload_path_for_translatable_media();
 
 	/**
 	 * @dataProvider preload_paths_provider
@@ -152,13 +95,19 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	/**
 	 * Asserts the output path has the expected added routes.
 	 *
-	 * @param array                   $input_path    Input path.
-	 * @param array                   $output_path   Output path to test.
-	 * @param bool                    $is_filterable Whether or not the input path is filterable in the first place.
-	 * @param WP_Block_Editor_Context $context       The context of the preload path.
+	 * @param array  $input_path  Input path.
+	 * @param array  $output_path Output path to test.
+	 * @param array  $added_paths Expected added paths. Pass empty array for no added path expected.
+	 * @param string $message     Error message. Default empty string.
 	 * @return void
 	 */
-	abstract protected function assert_path_added( $input_path, $output_path, $is_filterable, $context );
+	protected function assert_path_added( $input_path, $output_path, $added_paths, $message = '' ) {
+		$this->assertCount( count( $input_path ) + count( $added_paths ), $output_path, $message );
+
+		foreach ( $added_paths as $added_path ) {
+			$this->assertContains( $added_path, $output_path, "{$added_path} path should be added." );
+		}
+	}
 
 	protected function assert_unfiltered_path_for_context( $path, $context_name ) {
 		$this->assertSameSets(
