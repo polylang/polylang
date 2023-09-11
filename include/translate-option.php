@@ -250,6 +250,12 @@ class PLL_Translate_Option {
 		// Stores the unfiltered old option value before it is updated in DB.
 		$unfiltered_old_value = $this->get_raw_option( $name );
 
+		$languages = PLL()->model->get_languages_list();
+
+		if ( empty( $languages ) ) {
+			return $value;
+		}
+
 		// Load translations in all languages.
 		foreach ( pll_languages_list() as $lang ) {
 			$language = PLL()->model->get_language( $lang );
