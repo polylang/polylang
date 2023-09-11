@@ -257,10 +257,9 @@ class PLL_Translate_Option {
 		}
 
 		// Load translations in all languages.
-		foreach ( pll_languages_list() as $lang ) {
-			$language = PLL()->model->get_language( $lang );
-			$this->translations[ $lang ] = new PLL_MO();
-			$this->translations[ $lang ]->import_from_db( $language );
+		foreach ( $languages as $language ) {
+			$this->translations[ $language->slug ] = new PLL_MO();
+			$this->translations[ $language->slug ]->import_from_db( $language );
 		}
 
 		// Filters out the strings which would be updated to their translations and stores the updated strings.
@@ -284,20 +283,20 @@ class PLL_Translate_Option {
 		$curlang = pll_current_language();
 
 		if ( ! empty( $this->updated_strings ) ) {
-			foreach ( pll_languages_list() as $lang ) {
+			foreach ( PLL()->model->get_languages_list() as $language ) {
 
-				$mo = &$this->translations[ $lang ];
+				$mo = &$this->translations[ $language->slug ];
 
 				foreach ( $this->updated_strings as $old_string => $string ) {
 					$translation = $mo->translate( $old_string );
-					if ( ( empty( $curlang ) && $translation === $old_string ) || $lang === $curlang ) {
+					if ( ( empty( $curlang ) && $translation === $old_string ) || $language->slug === $curlang ) {
 						$translation = $string;
 					}
 
 					// Add new entry with new string and old translation.
 					$mo->add_entry( $mo->make_entry( $string, $translation ) );
 				}
-				$language = PLL()->model->get_language( $lang );
+
 				$mo->export_to_db( $language );
 			}
 		}
