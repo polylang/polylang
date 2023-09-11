@@ -47,12 +47,13 @@ class PLL_Settings extends PLL_Admin_Base {
 
 		add_action( 'admin_init', array( $this, 'register_settings_modules' ) );
 
-		// Adds screen options and the about box in the languages admin panel
+		// Adds screen options and the about box in the languages admin panel.
 		add_action( 'load-toplevel_page_mlang', array( $this, 'load_page' ) );
 		add_action( 'load-languages_page_mlang_strings', array( $this, 'load_page_strings' ) );
 
-		// Saves per-page value in screen option
-		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
+		// Saves the per-page value in screen options.
+		add_filter( 'set_screen_option_pll_lang_per_page', array( $this, 'set_screen_option' ), 10, 3 );
+		add_filter( 'set_screen_option_pll_strings_per_page', array( $this, 'set_screen_option' ), 10, 3 );
 	}
 
 	/**
@@ -151,18 +152,17 @@ class PLL_Settings extends PLL_Admin_Base {
 	}
 
 	/**
-	 * Save the "Views/Uploads per page" option set by this user
+	 * Saves the number of rows in the languages or strings table set by this user.
 	 *
 	 * @since 0.9.5
 	 *
-	 * @param mixed  $status false or value returned by previous filter
-	 * @param string $option Name of the option being changed
-	 * @param string $value  Value of the option
-	 *
-	 * @return string New value if this is our option, otherwise nothing
+	 * @param mixed  $screen_option False or value returned by a previous filter, not used.
+	 * @param string $option        The name of the option, not used.
+	 * @param int    $value         The new value of the option to save.
+	 * @return int The new value of the option.
 	 */
-	public function set_screen_option( $status, $option, $value ) {
-		return 'pll_lang_per_page' === $option || 'pll_strings_per_page' === $option ? $value : $status;
+	public function set_screen_option( $screen_option, $option, $value ) {
+		return (int) $value;
 	}
 
 	/**

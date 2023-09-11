@@ -1011,11 +1011,6 @@ parameters:
 			path: settings/settings-url.php
 
 		-
-			message: "#^Method PLL_Settings\\:\\:set_screen_option\\(\\) should return string but returns mixed\\.$#"
-			count: 1
-			path: settings/settings.php
-
-		-
 			message: "#^Property PLL_Settings\\:\\:\\$modules \\(array\\<PLL_Settings_Module\\>\\|null\\) does not accept array\\<object\\>\\.$#"
 			count: 1
 			path: settings/settings.php
