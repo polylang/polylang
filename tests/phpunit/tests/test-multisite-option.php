@@ -48,7 +48,7 @@ if ( is_multisite() ) :
 		 * @ticket #1727
 		 * @see https://github.com/polylang/polylang-pro/issues/1685
 		 */
-		 public function test_update_option_when_blog_is_switched() {
+		public function test_update_option_when_blog_is_switched() {
 			$blog_id = self::factory()->blog->create( array( 'title' => 'Another blog' ) );
 
 			$GLOBALS['l10n']['pll_string'] = new PLL_MO(); // Required to pass an internal test of PLL_Translate_Option::translate().
