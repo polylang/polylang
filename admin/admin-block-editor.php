@@ -20,11 +20,6 @@ class PLL_Admin_Block_Editor {
 	protected $posts;
 
 	/**
-	 * @var PLL_Language|null
-	 */
-	protected $curlang;
-
-	/**
 	 * @var PLL_Filter_REST_Routes
 	 */
 	protected $filter_rest_routes;
@@ -37,9 +32,8 @@ class PLL_Admin_Block_Editor {
 	 * @param PLL_Admin $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
-		$this->model     = &$polylang->model;
-		$this->posts     = &$polylang->posts;
-		$this->curlang   = &$polylang->curlang;
+		$this->model = &$polylang->model;
+		$this->posts = &$polylang->posts;
 
 		$this->filter_rest_routes = &$polylang->filter_rest_routes;
 
