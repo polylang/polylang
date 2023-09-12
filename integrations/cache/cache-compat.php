@@ -67,7 +67,10 @@ class PLL_Cache_Compat {
 			'; SameSite=' . $samesite,
 			esc_js( $expiration )
 		);
-		echo "<script type='text/javascript'>\n" . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+
+		$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
+
+		echo "<script{$type_attr}>\n{$js}\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
 	/**

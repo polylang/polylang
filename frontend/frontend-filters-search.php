@@ -132,20 +132,21 @@ class PLL_Frontend_Filters_Search {
 	}
 
 	/**
-	 * Allows modifying the search form if it does not pass get_search_form
+	 * Allows modifying the search form if it does not pass get_search_form.
 	 *
 	 * @since 0.1
 	 *
 	 * @return void
 	 */
 	public function wp_print_footer_scripts() {
-		// Don't use directly e[0] just in case there is somewhere else an element named 's'
-		// Check before if the hidden input has not already been introduced by get_search_form ( FIXME: is there a way to improve this ) ?
-		// Thanks to AndyDeGroo for improving the code for compatibility with old browsers
-		// http://wordpress.org/support/topic/development-of-polylang-version-08?replies=6#post-2645559
+		/*
+		 * Don't use directly e[0] just in case there is somewhere else an element named 's'
+		 * Check before if the hidden input has not already been introduced by get_search_form ( FIXME: is there a way to improve this ) ?
+		 * Thanks to AndyDeGroo for improving the code for compatibility with old browsers
+		 * http://wordpress.org/support/topic/development-of-polylang-version-08?replies=6#post-2645559
+		 */
 		$lang = esc_js( $this->curlang->slug );
-		$js = "//<![CDATA[
-		e = document.getElementsByName( 's' );
+		$js = "e = document.getElementsByName( 's' );
 		for ( i = 0; i < e.length; i++ ) {
 			if ( e[i].tagName.toUpperCase() == 'INPUT' ) {
 				s = e[i].parentNode.parentNode.children;
@@ -159,12 +160,18 @@ class PLL_Frontend_Filters_Search {
 					var ih = document.createElement( 'input' );
 					ih.type = 'hidden';
 					ih.name = 'lang';
-					ih.value = '$lang';
+					ih.value = '{$lang}';
 					e[i].parentNode.appendChild( ih );
 				}
 			}
+		}";
+
+		$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
+
+		if ( $type_attr ) {
+			$js = "/* <![CDATA[ */\n{$js}\n/* ]]> */";
 		}
-		//]]>";
-		echo '<script type="text/javascript">' . $js . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
+
+		echo "<script{$type_attr}>\n{$js}\n</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }

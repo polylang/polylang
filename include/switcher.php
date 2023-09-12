@@ -266,15 +266,14 @@ class PLL_Switcher {
 		 */
 		$out = apply_filters( 'pll_the_languages', $walker->walk( $elements, -1, $args ), $args );
 
-		// Javascript to switch the language when using a dropdown list
+		// Javascript to switch the language when using a dropdown list.
 		if ( $args['dropdown'] && 0 === $args['admin_render'] ) {
-			// Accept only few valid characters for the urls_x variable name ( as the widget id includes '-' which is invalid )
+			// Accept only few valid characters for the urls_x variable name (as the widget id includes '-' which is invalid).
 			$out .= sprintf(
-				'<script type="text/javascript">
-					//<![CDATA[
-					document.getElementById( "%1$s" ).addEventListener( "change", function ( event ) { location.href = event.currentTarget.value; } )
-					//]]>
+				'<script%1$s>
+					document.getElementById( "%2$s" ).addEventListener( "change", function ( event ) { location.href = event.currentTarget.value; } )
 				</script>',
+				current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"',
 				esc_js( $args['name'] )
 			);
 		}
