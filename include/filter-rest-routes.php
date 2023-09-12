@@ -1,6 +1,6 @@
 <?php
 /**
- * @package Polylang-Pro
+ * @package Polylang
  */
 
 /**
