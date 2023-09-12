@@ -15,7 +15,7 @@ class PLL_Admin_Block_Editor {
 	protected $model;
 
 	/**
-	 * @var PLL_CRUD_Posts
+	 * @var PLL_CRUD_Posts|null
 	 */
 	protected $posts;
 
@@ -68,7 +68,11 @@ class PLL_Admin_Block_Editor {
 		}
 
 		// Set default language according to the context if no language is defined yet.
-		$this->posts->set_default_language( $context->post->ID );
+		if ( ! empty( $this->posts ) ) {
+			$this->posts->set_default_language( $context->post->ID );
+		}
+
+
 		$language = $this->model->post->get_language( $context->post->ID );
 
 		if ( empty( $language ) ) {
