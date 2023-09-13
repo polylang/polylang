@@ -54,7 +54,7 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
-	public function test_preaload_paths_in_site_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
+	public function test_preload_paths_in_site_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
 		$this->assert_unfiltered_path_for_context( $path, 'core/edit-site' );
 	}
 
@@ -67,7 +67,7 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
-	public function test_preaload_paths_in_widget_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
+	public function test_preload_paths_in_widget_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
 		$this->assert_unfiltered_path_for_context( $path, 'core/edit-widgets' );
 	}
 

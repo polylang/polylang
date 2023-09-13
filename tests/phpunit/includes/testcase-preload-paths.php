@@ -61,7 +61,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 * @dataProvider preload_paths_provider
 	 *
 	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
-	 * @param bool         $is_filtered     Whether the pass should be filtered or not.
+	 * @param bool         $is_filtered     Whether the path should be filtered or not.
 	 * @param WP_Post      $post            The post provided for the context.
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
@@ -79,7 +79,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
-	abstract public function test_preaload_paths_in_site_editor_context( $path, $is_filtered, $post, $language, $is_translatable );
+	abstract public function test_preload_paths_in_site_editor_context( $path, $is_filtered, $post, $language, $is_translatable );
 
 	/**
 	 * @dataProvider preload_paths_provider
@@ -90,7 +90,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
-	abstract public function test_preaload_paths_in_widget_editor_context( $path, $is_filtered, $post, $language, $is_translatable );
+	abstract public function test_preload_paths_in_widget_editor_context( $path, $is_filtered, $post, $language, $is_translatable );
 
 	/**
 	 * Asserts the output path has the expected added routes.
@@ -178,7 +178,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	/**
 	 * Returns a paths dataset generated with a given post, defined here to be easily overridden.
 	 *
-	 * @param WP_Porst $post
+	 * @param WP_Post $post
 	 * @return array $data {
 	 *    @type array $filtered   List of filterable paths.
 	 *    @type array $unfiltered List of unfilterable paths.
