@@ -196,7 +196,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			 *
 			 * @since 3.6
 			 *
-			 * @param PLL_Links_Directory $this Current object.
+			 * @param PLL_Links_Directory $links Current object.
 			 */
 			do_action( 'pll_prepare_rewrite_rules', $this );
 		}
