@@ -74,7 +74,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 * @dataProvider preload_paths_provider
 	 *
 	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
-	 * @param bool         $is_filtered     Whether the pass should be filtered or not.
+	 * @param bool         $is_filtered     Whether the path should be filtered or not.
 	 * @param WP_Post      $post            The post provided for the context.
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
@@ -85,7 +85,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 * @dataProvider preload_paths_provider
 	 *
 	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
-	 * @param bool         $is_filtered     Whether the pass should be filtered or not.
+	 * @param bool         $is_filtered     Whether the path should be filtered or not.
 	 * @param WP_Post      $post            The post provided for the context.
 	 * @param string       $language        The post's language slug, empty if none.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
@@ -139,7 +139,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 *
 	 * @return array $data {
 	 *    @type string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
-	 *    @type bool         $is_filtered     Whether the pass should be filtered or not.
+	 *    @type bool         $is_filtered     Whether the path should be filtered or not.
 	 *    @type WP_Post      $post            The post provided for the context.
 	 *    @type string       $lang            The post's language slug, empty if none.
 	 *    @type bool         $is_translatable Whether or not the post type is translatable.
