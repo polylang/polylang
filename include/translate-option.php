@@ -250,15 +250,29 @@ class PLL_Translate_Option {
 		// Stores the unfiltered old option value before it is updated in DB.
 		$unfiltered_old_value = $this->get_raw_option( $name );
 
+		$languages = PLL()->model->get_languages_list();
+
+		if ( empty( $languages ) ) {
+			return $value;
+		}
+
 		// Load translations in all languages.
-		foreach ( pll_languages_list() as $lang ) {
-			$language = PLL()->model->get_language( $lang );
-			$this->translations[ $lang ] = new PLL_MO();
-			$this->translations[ $lang ]->import_from_db( $language );
+		foreach ( $languages as $language ) {
+			$this->translations[ $language->slug ] = new PLL_MO();
+			$this->translations[ $language->slug ]->import_from_db( $language );
+		}
+
+		$lang = pll_current_language();
+		if ( empty( $lang ) ) {
+			$lang = pll_default_language();
+		}
+
+		if ( empty( $lang ) ) {
+			return $value; // Something's wrong.
 		}
 
 		// Filters out the strings which would be updated to their translations and stores the updated strings.
-		$value = $this->check_value_recursive( $unfiltered_old_value, $value, $this->keys );
+		$value = $this->check_value_recursive( $unfiltered_old_value, $value, $this->keys, $this->translations[ $lang ] );
 
 		return $value;
 	}
@@ -278,20 +292,20 @@ class PLL_Translate_Option {
 		$curlang = pll_current_language();
 
 		if ( ! empty( $this->updated_strings ) ) {
-			foreach ( pll_languages_list() as $lang ) {
+			foreach ( PLL()->model->get_languages_list() as $language ) {
 
-				$mo = &$this->translations[ $lang ];
+				$mo = &$this->translations[ $language->slug ];
 
 				foreach ( $this->updated_strings as $old_string => $string ) {
 					$translation = $mo->translate( $old_string );
-					if ( ( empty( $curlang ) && $translation === $old_string ) || $lang === $curlang ) {
+					if ( ( empty( $curlang ) && $translation === $old_string ) || $language->slug === $curlang ) {
 						$translation = $string;
 					}
 
 					// Add new entry with new string and old translation.
 					$mo->add_entry( $mo->make_entry( $string, $translation ) );
 				}
-				$language = PLL()->model->get_language( $lang );
+
 				$mo->export_to_db( $language );
 			}
 		}
@@ -309,32 +323,27 @@ class PLL_Translate_Option {
 	 * later assign the translations to the new value in {@see PLL_Translate_Option::update_option()}.
 	 *
 	 * @since 2.9
+	 * @since 3.5 Added $mo parameter.
 	 *
 	 * @param mixed      $old_values The old option value.
-	 * @param mixed      $values     The new option value..
+	 * @param mixed      $values     The new option value.
 	 * @param array|bool $key        Array of option keys to translate.
+	 * @param PLL_MO     $mo         Translations used to compare the updated string to the translated old string.
 	 * @return mixed
 	 */
-	protected function check_value_recursive( $old_values, $values, $key ) {
+	protected function check_value_recursive( $old_values, $values, $key, $mo ) {
 		$children = is_array( $key ) ? $key : array();
-
-		$lang = pll_current_language();
-		if ( empty( $lang ) ) {
-			$lang = pll_default_language();
-		}
-
-		$mo = &$this->translations[ $lang ];
 
 		if ( is_array( $values ) || is_object( $values ) ) {
 			if ( count( $children ) ) {
 				foreach ( $children as $name => $child ) {
 					if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $name ], $values[ $name ] ) ) {
-						$values[ $name ] = $this->check_value_recursive( $old_values[ $name ], $values[ $name ], $child );
+						$values[ $name ] = $this->check_value_recursive( $old_values[ $name ], $values[ $name ], $child, $mo );
 						continue;
 					}
 
 					if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$name, $values->$name ) ) {
-						$values->$name = $this->check_value_recursive( $old_values->$name, $values->$name, $child );
+						$values->$name = $this->check_value_recursive( $old_values->$name, $values->$name, $child, $mo );
 						continue;
 					}
 
@@ -344,11 +353,11 @@ class PLL_Translate_Option {
 						// The first case could be handled by the next one, but we avoid calls to preg_match here.
 						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
 							if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $n ] ) ) {
-								$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $value, $child );
+								$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $value, $child, $mo );
 							}
 
 							if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$n ) ) {
-								$values->$n = $this->check_value_recursive( $old_values->$n, $value, $child );
+								$values->$n = $this->check_value_recursive( $old_values->$n, $value, $child, $mo );
 							}
 						}
 					}
@@ -357,11 +366,11 @@ class PLL_Translate_Option {
 				// Parent key is a wildcard and no sub-key has been whitelisted.
 				foreach ( $values as $n => $value ) {
 					if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $n ] ) ) {
-						$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $value, $key );
+						$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $value, $key, $mo );
 					}
 
 					if ( is_object( $values ) && is_object( $old_values ) && isset( $old_values->$n ) ) {
-						$values->$n = $this->check_value_recursive( $old_values->$n, $value, $key );
+						$values->$n = $this->check_value_recursive( $old_values->$n, $value, $key, $mo );
 					}
 				}
 			}

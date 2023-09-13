@@ -786,16 +786,6 @@ parameters:
 			path: include/translate-option.php
 
 		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:export_to_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: include/translate-option.php
-
-		-
-			message: "#^Parameter \\#1 \\$lang of method PLL_MO\\:\\:import_from_db\\(\\) expects PLL_Language, PLL_Language\\|false given\\.$#"
-			count: 1
-			path: include/translate-option.php
-
-		-
 			message: "#^Parameter \\#1 \\$singular of method Translations\\:\\:translate\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: include/translate-option.php
