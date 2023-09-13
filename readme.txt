@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.8
 Tested up to: 6.2
 Requires PHP: 7.0
-Stable tag: 3.4.5
+Stable tag: 3.4.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,10 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.4.6 (2023-09-13) =
+
+* Pro: Security: Fix unsafe custom style injection in navigation language switcher block
 
 = 3.4.5 (2023-08-07) =
 
