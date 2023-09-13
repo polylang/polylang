@@ -51,10 +51,12 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		if ( did_action( 'wp_loaded' ) ) {
-			$this->prepare_rewrite_rules( null );
+			$this->prepare_rewrite_rules();
 		} else {
-			add_filter( 'wp_loaded', array( $this, 'prepare_rewrite_rules' ), 9 );
+			add_action( 'wp_loaded', array( $this, 'init_rewrite_rules' ), 9 ); // Juste before WordPress callback `flush_rules`.
 		}
+
+		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) );
 	}
 
 	/**
@@ -169,14 +171,33 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	}
 
 	/**
+	 * Fires our own action telling Polylang plugins are able to prepare rewrite rules.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function init_rewrite_rules() {
+		/**
+		 * Tells when Polylang is able to prepare rewrite rules filters.
+		 * Action fired right after `wp_loaded` and juste before WordPress `flush_rules` callback.
+		 *
+		 * @since 3.5
+		 *
+		 * @param PLL_Links_Directory $links Current object.
+		 */
+		do_action( 'pll_prepare_rewrite_rules', $this );
+	}
+
+	/**
 	 * Prepares the rewrite rules filters.
 	 *
 	 * @since 0.8.1
+	 * @since 3.5 Hooked to `pll_prepare_rewrite_rules` and remove `$pre` parameter.
 	 *
-	 * @param mixed $pre Not used as the filter is used as an action.
-	 * @return mixed
+	 * @return void
 	 */
-	public function prepare_rewrite_rules( $pre ) {
+	public function prepare_rewrite_rules() {
 		/*
 		 * Don't modify the rules if there is no languages created yet and make sure
 		 * to add the filters only once and if all custom post types and taxonomies
@@ -190,17 +211,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			}
 
 			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // Needed for post type archives.
-
-			/**
-			 * Tells when Polylang has prepared rewrite rules filters.
-			 *
-			 * @since 3.6
-			 *
-			 * @param PLL_Links_Directory $links Current object.
-			 */
-			do_action( 'pll_prepare_rewrite_rules', $this );
 		}
-		return $pre;
 	}
 
 	/**
