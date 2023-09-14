@@ -35,7 +35,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 		$links_model     = new PLL_Links_Default( $model );
 		$this->pll_admin = new PLL_Admin( $links_model );
 		$this->pll_admin->init();
-		$this->pll_admin->admin_block_editor = new PLL_Admin_Block_Editor( $this->pll_admin );
+		$this->pll_admin->block_editor = new PLL_Admin_Block_Editor( $this->pll_admin );
 	}
 
 	public function tear_down() {
