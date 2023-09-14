@@ -49,7 +49,7 @@ class PLL_Widget_Calendar extends WP_Widget_Calendar {
 		echo '</div>';
 		echo $args['after_widget'];
 
-		self::$pll_instance++; #modified#
+		++self::$pll_instance; #modified#
 	}
 
 	/**
