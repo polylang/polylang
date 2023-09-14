@@ -15,11 +15,6 @@ class PLL_Admin_Block_Editor {
 	protected $model;
 
 	/**
-	 * @var PLL_CRUD_Posts|null
-	 */
-	protected $posts;
-
-	/**
 	 * @var PLL_Filter_REST_Routes
 	 */
 	protected $filter_rest_routes;
@@ -32,12 +27,11 @@ class PLL_Admin_Block_Editor {
 	 * @param PLL_Admin $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
-		$this->model = &$polylang->model;
-		$this->posts = &$polylang->posts;
-
-		$this->filter_rest_routes = &$polylang->filter_rest_routes;
+		$this->model              = &$polylang->model;
+		$this->filter_rest_routes = new PLL_Filter_REST_Routes( $polylang->model );
 
 		add_filter( 'block_editor_rest_api_preload_paths', array( $this, 'filter_preload_paths' ), 50, 2 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_block_editor_inline_script' ), 15 ); // After `PLL_Admin_Base::admin_enqueue_scripts()` to ensure `pll_block-editor`script is enqueued.
 	}
 
 	/**
@@ -67,12 +61,6 @@ class PLL_Admin_Block_Editor {
 			return $preload_paths;
 		}
 
-		// Set default language according to the context if no language is defined yet.
-		if ( ! empty( $this->posts ) ) {
-			$this->posts->set_default_language( $context->post->ID );
-		}
-
-
 		$language = $this->model->post->get_language( $context->post->ID );
 
 		if ( empty( $language ) ) {
@@ -85,5 +73,20 @@ class PLL_Admin_Block_Editor {
 				'lang' => $language->slug,
 			)
 		);
+	}
+
+	/**
+	 * Adds inline block editor script for filterable REST routes.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function add_block_editor_inline_script() {
+		$handle = 'pll_block-editor';
+
+		if ( wp_script_is( $handle, 'enqueued' ) ) {
+			$this->filter_rest_routes->add_inline_script( $handle );
+		}
 	}
 }

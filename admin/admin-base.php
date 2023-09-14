@@ -56,11 +56,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	public $default_term;
 
 	/**
-	 * @var PLL_Filter_REST_Routes
-	 */
-	public $filter_rest_routes;
-
-	/**
 	 * Setups actions needed on all admin pages.
 	 *
 	 * @since 1.8
@@ -84,8 +79,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		// Early instantiated to be able to correctly initialize language properties.
 		$this->static_pages = new PLL_Admin_Static_Pages( $this );
 		$this->model->set_languages_ready();
-
-		$this->filter_rest_routes = new PLL_Filter_REST_Routes( $this->model );
 	}
 
 	/**
@@ -269,8 +262,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 				$default_lang_script,
 				'before'
 			);
-
-			$this->filter_rest_routes->add_inline_script( 'pll_block-editor' );
 		}
 		if ( wp_script_is( 'pll_widgets', 'enqueued' ) ) {
 			wp_localize_script(

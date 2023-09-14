@@ -7,23 +7,16 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
 	 * @param bool         $is_filtered     Whether the path should be filtered or not.
 	 * @param WP_Post      $post            The post provided for the context.
-	 * @param string       $language        The post's language slug, empty if none.
+	 * @param string       $language        The post's language slug.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
 	public function test_preload_paths_with_post_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
 		if ( $is_translatable ) {
-			if ( empty( $language ) ) {
-				// Preferred language should be used in case the post doesn't have one yet.
-				$language = 'fr';
-				$this->pll_admin->pref_lang = $this->pll_admin->model->get_language( $language );
-			} else {
-				// Otherwise the post already have a language set.
-				$this->pll_admin->model->post->set_language( $post->ID, $language );
-			}
+			$this->pll_admin->model->post->set_language( $post->ID, $language );
 		}
 
 		$context       = $this->get_context( 'core/edit-post', $post );
-		$filtered_path = $this->call_sut( array( $path ), $context );
+		$filtered_path = $this->get_preload_paths( array( $path ), $context );
 
 		if ( $is_translatable ) {
 			$this->assertSame( $language, $this->pll_admin->model->post->get_language( $post->ID )->slug, "Post language should be set to {$language}." );
@@ -51,7 +44,7 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
 	 * @param bool         $is_filtered     Whether the path should be filtered or not.
 	 * @param WP_Post      $post            The post provided for the context.
-	 * @param string       $language        The post's language slug, empty if none.
+	 * @param string       $language        The post's language slug.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
 	public function test_preload_paths_in_site_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
@@ -64,7 +57,7 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
 	 * @param bool         $is_filtered     Whether the path should be filtered or not.
 	 * @param WP_Post      $post            The post provided for the context.
-	 * @param string       $language        The post's language slug, empty if none.
+	 * @param string       $language        The post's language slug.
 	 * @param bool         $is_translatable Whether or not the post type is translatable.
 	 */
 	public function test_preload_paths_in_widget_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
@@ -92,7 +85,7 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 
 		$this->assertSameSets(
 			$media_path['expected'],
-			$this->call_sut( $media_path['raw'], $this->get_context( 'core/edit-post', $post ) ),
+			$this->get_preload_paths( $media_path['raw'], $this->get_context( 'core/edit-post', $post ) ),
 			'Media path should be filtered by language when option is activated.'
 		);
 	}
