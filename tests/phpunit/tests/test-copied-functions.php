@@ -4,7 +4,7 @@ class Copied_Functions_Test extends PHPUnit_Framework_TestCase {
 	use PLL_Check_WP_Functions_Trait;
 
 	public function test_calendar_widget() {
-		$this->check_method( 'f75a2c70d28b1d2c4e3e8fd86a8bb7d3', '5.4', 'WP_Widget_Calendar', 'widget' );
+		$this->check_method( 'f0e00bf7ecb32405972b53fe9bc32acd', '6.4', 'WP_Widget_Calendar', 'widget' );
 	}
 
 	public function test_get_calendar() {
