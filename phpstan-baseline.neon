@@ -51,11 +51,6 @@ parameters:
 			path: admin/admin-base.php
 
 		-
-			message: "#^Cannot access property \\$slug on PLL_Language\\|null\\.$#"
-			count: 1
-			path: admin/admin-block-editor.php
-
-		-
 			message: "#^Cannot call method edit_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
 			count: 2
 			path: admin/admin-classic-editor.php

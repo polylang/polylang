@@ -11,6 +11,8 @@ import {
 	initMetaboxAutoComplete,
 } from './lib/metabox-autocomplete';
 
+import filterPathMiddleware from './lib/filter-path-middleware';
+
 /**
  * Filter REST API requests to add the language in the request
  *
@@ -18,17 +20,15 @@ import {
  */
 wp.apiFetch.use(
 	function( options, next ) {
-		// If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
-		if ( 'undefined' === typeof options.url ) {
-			if ( 'undefined' === typeof options.data || null === options.data ) {
-				// GET
-				options.path += ( ( options.path.indexOf( '?' ) >= 0 ) ? '&lang=' : '?lang=' ) + getCurrentLanguage();
-			} else {
-				// PUT, POST
-				options.data.lang = getCurrentLanguage();
-			}
+		/*
+		 * If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
+		 * If `filteredRoutes` is not defined, return early.
+		 */
+		if ( 'undefined' !== typeof options.url || 'undefined' === typeof pllFilteredRoutes ) {
+			return next( options );
 		}
-		return next( options );
+
+		return next( filterPathMiddleware( options, pllFilteredRoutes, addLanguageParameter ) );
 	}
 );
 
@@ -47,6 +47,26 @@ function getCurrentLanguage() {
 	}
 
 	return lang.value;
+}
+
+/**
+ * Adds language parameter according to the current one (query string for GET, body for PUT and POST).
+ *
+ * @since 3.5
+ *
+ * @param {APIFetchOptions} options
+ * @returns {APIFetchOptions}
+ */
+function addLanguageParameter ( options ) {
+	if ( 'undefined' === typeof options.data || null === options.data ) {
+		// GET
+		options.path += ( ( options.path.indexOf( '?' ) >= 0 ) ? '&lang=' : '?lang=' ) + getCurrentLanguage();
+	} else {
+		// PUT, POST
+		options.data.lang = getCurrentLanguage();
+	}
+
+	return options;
 }
 
 /**
