@@ -29,13 +29,13 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 
 		$this->home_relative = home_url( '/', 'relative' );
 
+		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) );
+
 		if ( did_action( 'pll_init' ) ) {
 			$this->init();
 		} else {
 			add_action( 'pll_init', array( $this, 'init' ) );
 		}
-
-		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) );
 	}
 
 	/**
@@ -55,7 +55,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( did_action( 'wp_loaded' ) ) {
 			$this->init_rewrite_rules();
 		} else {
-			add_action( 'wp_loaded', array( $this, 'init_rewrite_rules' ), 9 ); // Just before WordPress callback `flush_rules`.
+			add_action( 'wp_loaded', array( $this, 'init_rewrite_rules' ), 9 ); // Just before WordPress callback `WP_Rewrite::flush_rules()`.
 		}
 	}
 
