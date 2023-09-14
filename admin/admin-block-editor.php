@@ -17,7 +17,7 @@ class PLL_Admin_Block_Editor {
 	/**
 	 * @var PLL_Filter_REST_Routes
 	 */
-	protected $filter_rest_routes;
+	public $filter_rest_routes;
 
 	/**
 	 * Constructor: setups filters and actions.
