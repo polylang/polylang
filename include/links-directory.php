@@ -55,7 +55,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( did_action( 'wp_loaded' ) ) {
 			$this->init_rewrite_rules();
 		} else {
-			add_action( 'wp_loaded', array( $this, 'init_rewrite_rules' ), 9 ); // Juste before WordPress callback `flush_rules`.
+			add_action( 'wp_loaded', array( $this, 'init_rewrite_rules' ), 9 ); // Just before WordPress callback `flush_rules`.
 		}
 	}
 
@@ -180,7 +180,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	public function init_rewrite_rules() {
 		/**
 		 * Tells when Polylang is able to prepare rewrite rules filters.
-		 * Action fired right after `wp_loaded` and juste before WordPress `flush_rules` callback.
+		 * Action fired right after `wp_loaded` and just before WordPress `WP_Rewrite::flush_rules()` callback.
 		 *
 		 * @since 3.5
 		 *
