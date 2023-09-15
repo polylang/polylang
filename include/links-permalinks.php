@@ -60,6 +60,47 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 		$permalink_structure = get_option( 'permalink_structure' );
 		$this->root = preg_match( '#^/*' . $this->index . '#', $permalink_structure ) ? $this->index . '/' : '';
 		$this->use_trailing_slashes = ( '/' == substr( $permalink_structure, -1, 1 ) );
+
+		if ( did_action( 'pll_init' ) ) {
+			$this->init();
+		} else {
+			add_action( 'pll_init', array( $this, 'init' ) );
+		}
+	}
+
+	/**
+	 * Initializes permalinks hooks.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function init() {
+		if ( did_action( 'wp_loaded' ) ) {
+			$this->can_prepare_rewrite_rules();
+		} else {
+			add_action( 'wp_loaded', array( $this, 'can_prepare_rewrite_rules' ), 9 ); // Just before WordPress callback `WP_Rewrite::flush_rules()`.
+		}
+	}
+
+	/**
+	 * Fires our own action telling Polylang plugins
+	 * and third parties are able to prepare rewrite rules.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function can_prepare_rewrite_rules() {
+		/**
+		 * Tells when Polylang is able to prepare rewrite rules filters.
+		 * Action fired right after `wp_loaded` and just before WordPress `WP_Rewrite::flush_rules()` callback.
+		 *
+		 * @since 3.5
+		 *
+		 * @param PLL_Links_Permalinks $links Current links object.
+		 */
+		do_action( 'pll_prepare_rewrite_rules', $this );
 	}
 
 	/**

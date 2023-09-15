@@ -44,6 +44,14 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
+	 * Stores hooks callbacks ordered by hook names.
+	 *
+	 * @var WP_Hook[]
+	 * @phpstan-var array<string, WP_Hook>
+	 */
+	protected $hooks_backup;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -65,7 +73,7 @@ abstract class PLL_Base {
 		add_action( 'personal_options_update', array( $this, 'load_strings_translations' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
 		add_action( 'lostpassword_post', array( $this, 'load_strings_translations' ), 10, 0 ); // Password reset email.
 		// Switch_to_blog
-		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 2 );
+		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 3 );
 	}
 
 	/**
@@ -136,17 +144,60 @@ abstract class PLL_Base {
 	 * Applied only if Polylang is active on the new blog.
 	 *
 	 * @since 1.5.1
+	 * @since 3.5 Accept now `$context` parameter.
 	 *
-	 * @param int $new_blog_id  New blog ID.
-	 * @param int $prev_blog_id Previous blog ID.
+	 * @param int    $new_blog_id  New blog ID.
+	 * @param int    $prev_blog_id Previous blog ID.
+	 * @param string $context      Additional context.
 	 * @return void
 	 */
-	public function switch_blog( $new_blog_id, $prev_blog_id ) {
+	public function switch_blog( $new_blog_id, $prev_blog_id, $context ) {
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
 			$this->options = get_option( 'polylang' ); // Needed for menus.
-			remove_action( 'pll_prepare_rewrite_rules', array( $this->links_model, 'prepare_rewrite_rules' ) );
+			$this->remove_prepare_rewrite_rules_actions();
 			$this->links_model = $this->model->get_links_model();
 		}
+
+		if ( 'restore' === $context ) {
+			$this->restore_prepare_rewrite_rules_actions();
+		}
+	}
+
+	/**
+	 * Remove *all* `pll_prepare_rewrite_rules` actions and store them as backup.
+	 *
+	 * @global $wp_filter
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	protected function remove_prepare_rewrite_rules_actions() {
+		global $wp_filter;
+
+		$this->hooks_backup['pll_prepare_rewrite_rules'] = $wp_filter['pll_prepare_rewrite_rules'];
+		unset( $wp_filter['pll_prepare_rewrite_rules'] );
+	}
+
+	/**
+	 * Restores *all* `pll_prepare_rewrite_rules` actions from backup.
+	 *
+	 * @global $wp_filter
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	protected function restore_prepare_rewrite_rules_actions() {
+		global $wp_filter;
+
+		if ( ! isset( $this->hooks_backup['pll_prepare_rewrite_rules'] ) ) {
+			// Nothing to do.
+			return;
+		}
+
+		$wp_filter['pll_prepare_rewrite_rules'] = $this->hooks_backup['pll_prepare_rewrite_rules'];
+		unset( $this->hooks_backup['pll_prepare_rewrite_rules'] );
 	}
 
 	/**

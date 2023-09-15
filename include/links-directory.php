@@ -25,17 +25,11 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
+		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::init()` is called.
+
 		parent::__construct( $model );
 
 		$this->home_relative = home_url( '/', 'relative' );
-
-		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) );
-
-		if ( did_action( 'pll_init' ) ) {
-			$this->init();
-		} else {
-			add_action( 'pll_init', array( $this, 'init' ) );
-		}
 	}
 
 	/**
@@ -46,16 +40,12 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return void
 	 */
 	public function init() {
+		parent::init();
+
 		if ( did_action( 'setup_theme' ) ) {
 			$this->add_permastruct();
 		} else {
 			add_action( 'setup_theme', array( $this, 'add_permastruct' ), 2 );
-		}
-
-		if ( did_action( 'wp_loaded' ) ) {
-			$this->init_rewrite_rules();
-		} else {
-			add_action( 'wp_loaded', array( $this, 'init_rewrite_rules' ), 9 ); // Just before WordPress callback `WP_Rewrite::flush_rules()`.
 		}
 	}
 
@@ -168,25 +158,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( $this->model->has_languages() ) {
 			add_permastruct( 'language', $this->options['rewrite'] ? '%language%' : 'language/%language%', array( 'with_front' => false ) );
 		}
-	}
-
-	/**
-	 * Fires our own action telling Polylang plugins are able to prepare rewrite rules.
-	 *
-	 * @since 3.5
-	 *
-	 * @return void
-	 */
-	public function init_rewrite_rules() {
-		/**
-		 * Tells when Polylang is able to prepare rewrite rules filters.
-		 * Action fired right after `wp_loaded` and just before WordPress `WP_Rewrite::flush_rules()` callback.
-		 *
-		 * @since 3.5
-		 *
-		 * @param PLL_Links_Directory $links Current object.
-		 */
-		do_action( 'pll_prepare_rewrite_rules', $this );
 	}
 
 	/**
