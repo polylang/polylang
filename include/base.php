@@ -154,12 +154,13 @@ abstract class PLL_Base {
 	public function switch_blog( $new_blog_id, $prev_blog_id, $context ) {
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
 			$this->options = get_option( 'polylang' ); // Needed for menus.
-			$this->remove_prepare_rewrite_rules_actions();
 			$this->links_model = $this->model->get_links_model();
 		}
 
 		if ( 'restore' === $context ) {
 			$this->restore_prepare_rewrite_rules_actions();
+		} else {
+			$this->remove_prepare_rewrite_rules_actions();
 		}
 	}
 
@@ -174,6 +175,11 @@ abstract class PLL_Base {
 	 */
 	protected function remove_prepare_rewrite_rules_actions() {
 		global $wp_filter;
+
+		if ( empty( $wp_filter['pll_prepare_rewrite_rules'] ) ) {
+			// Nothing to do.
+			return;
+		}
 
 		$this->hooks_backup['pll_prepare_rewrite_rules'] = $wp_filter['pll_prepare_rewrite_rules'];
 		unset( $wp_filter['pll_prepare_rewrite_rules'] );
