@@ -103,9 +103,8 @@ class Accept_Languages_Collection_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_pick_matching_language_and_region_with_custom_slug() {
-		$accept_languages    = PLL_Accept_Languages_Collection::from_accept_language_header( 'zh-HK' );
-		$zh_cn['slug']       = 'zh-cn'; // Custom slug.
-		self::create_language( 'zh_CN', $zh_cn );
+		$accept_languages = PLL_Accept_Languages_Collection::from_accept_language_header( 'zh-HK' );
+		self::create_language( 'zh_CN', array( 'slug' => 'zh-cn' ) ); // Custom slug.
 		$zh_cn = self::$model->get_language( 'zh_CN' );
 		$languages = array( $zh_cn );
 

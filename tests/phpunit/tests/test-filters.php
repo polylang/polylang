@@ -192,6 +192,9 @@ class Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_adjacent_post_and_archives() {
+		$en = array();
+		$fr = array();
+
 		for ( $i = 1; $i <= 3; $i++ ) {
 			$m = 2 * $i - 1;
 			$en[ $i ] = self::factory()->post->create( array( 'post_date' => "2012-0$m-01 12:00:00" ) );
@@ -223,16 +226,18 @@ class Filters_Test extends PLL_UnitTestCase {
 	public function test_adjacent_post_and_archives_for_untranslated_post_type() {
 		register_post_type( 'cpt', array( 'public' => true, 'has_archive' => true ) ); // *untranslated* custom post type with archives
 
+		$posts = array();
+
 		for ( $m = 1; $m <= 3; $m++ ) {
-			$p[ $m ] = self::factory()->post->create( array( 'post_type' => 'cpt', 'post_date' => "2012-0$m-01 12:00:00" ) );
+			$posts[ $m ] = self::factory()->post->create( array( 'post_type' => 'cpt', 'post_date' => "2012-0$m-01 12:00:00" ) );
 		}
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		new PLL_Frontend_Filters( $this->frontend );
-		$this->go_to( get_permalink( $p[2] ) );
+		$this->go_to( get_permalink( $posts[2] ) );
 
-		$this->assertEquals( get_post( $p[1] ), get_previous_post() );
-		$this->assertEquals( get_post( $p[3] ), get_next_post() );
+		$this->assertEquals( get_post( $posts[1] ), get_previous_post() );
+		$this->assertEquals( get_post( $posts[3] ), get_next_post() );
 
 		ob_start();
 		wp_get_archives( array( 'post_type' => 'cpt' ) );

@@ -18,13 +18,19 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 	}
 
 	protected function update_language( $lang, $args ) {
-		foreach ( array( 'name', 'slug', 'locale', 'term_group' ) as $key ) {
-			$defaults[ $key ] = $lang->$key;
-		}
-		$args['rtl'] = $lang->is_rtl;
-		$args['flag'] = $lang->flag_code;
+		$defaults = array(
+			'name'       => $lang->name,
+			'slug'       => $lang->slug,
+			'locale'     => $lang->locale,
+			'term_group' => $lang->term_group,
+		);
+
+		$args['rtl']     = $lang->is_rtl;
+		$args['flag']    = $lang->flag_code;
 		$args['lang_id'] = $lang->term_id;
+
 		$args = wp_parse_args( $args, $defaults );
+
 		self::$model->update_language( $args );
 	}
 
@@ -64,9 +70,11 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		self::factory()->post->create( array( 'post_type' => 'nav_menu_item' ) );
 		self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 
-		// 2 posts without language
-		$expected['posts'][] = self::factory()->post->create();
-		$expected['posts'][] = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		// 2 posts without language.
+		$expected_posts = array(
+			self::factory()->post->create(),
+			self::factory()->post->create( array( 'post_type' => 'page' ) ),
+		);
 
 		// 2 terms with language
 		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
@@ -79,15 +87,17 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 		self::factory()->term->create( array( 'taxonomy' => 'nav_menu' ) );
 		self::factory()->term->create( array( 'taxonomy' => 'tax' ) );
 
-		// 2 terms without language
-		$expected['terms'][] = self::factory()->term->create( array( 'taxonomy' => 'category' ) );
-		$expected['terms'][] = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
+		// 2 terms without language.
+		$expected_terms = array(
+			self::factory()->term->create( array( 'taxonomy' => 'category' ) ),
+			self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) ),
+		);
 
 		$nolang = self::$model->get_objects_with_no_lang();
 
-		// sort arrays as values don't have necessarily the same keys and order
-		$this->assertTrue( sort( $expected['posts'] ), sort( $nolang['posts'] ) );
-		$this->assertTrue( sort( $expected['terms'] ), sort( $nolang['terms'] ) );
+		// Sort arrays as values don't have necessarily the same keys and order.
+		$this->assertTrue( sort( $expected_posts ), sort( $nolang['posts'] ) );
+		$this->assertTrue( sort( $expected_terms ), sort( $nolang['terms'] ) );
 
 		_unregister_post_type( 'cpt' );
 		_unregister_taxonomy( 'tax' );
