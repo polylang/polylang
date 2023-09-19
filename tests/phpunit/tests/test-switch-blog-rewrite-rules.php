@@ -186,7 +186,7 @@ if ( is_multisite() ) :
 
 			$this->assertArrayNotHasKey( '(en)/?$', $rules );
 			// @todo Find why the following assertion doesn't work...
-			// $this->assertArrayNotHasKey( '(de)/?$', $rules );
+			$this->assertArrayNotHasKey( '(de)/?$', $rules );
 
 			$this->assertNotEmpty( $rules );
 

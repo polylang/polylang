@@ -61,21 +61,6 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 		$this->root = preg_match( '#^/*' . $this->index . '#', $permalink_structure ) ? $this->index . '/' : '';
 		$this->use_trailing_slashes = ( '/' == substr( $permalink_structure, -1, 1 ) );
 
-		if ( did_action( 'pll_init' ) ) {
-			$this->init();
-		} else {
-			add_action( 'pll_init', array( $this, 'init' ) );
-		}
-	}
-
-	/**
-	 * Initializes permalinks hooks.
-	 *
-	 * @since 3.5
-	 *
-	 * @return void
-	 */
-	public function init() {
 		if ( did_action( 'wp_loaded' ) ) {
 			$this->can_prepare_rewrite_rules();
 		} else {

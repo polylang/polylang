@@ -152,23 +152,12 @@ abstract class PLL_Base {
 	 * @return void
 	 */
 	public function switch_blog( $new_blog_id, $prev_blog_id, $context ) {
-		$this->remove_prepare_rewrite_rules_actions();
+		remove_all_actions( 'pll_prepare_rewrite_rules' );
 
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
 			$this->options = get_option( 'polylang' ); // Needed for menus.
 			$this->links_model = $this->model->get_links_model();
 		}
-	}
-
-	/**
-	 * Remove *all* `pll_prepare_rewrite_rules` actions and store them as backup.
-	 *
-	 * @since 3.5
-	 *
-	 * @return void
-	 */
-	protected function remove_prepare_rewrite_rules_actions() {
-		remove_all_actions( 'pll_prepare_rewrite_rules' );
 	}
 
 	/**

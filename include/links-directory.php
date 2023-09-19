@@ -30,17 +30,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		parent::__construct( $model );
 
 		$this->home_relative = home_url( '/', 'relative' );
-	}
-
-	/**
-	 * Called only at first object creation to avoid duplicating filters when switching blog.
-	 *
-	 * @since 1.6
-	 *
-	 * @return void
-	 */
-	public function init() {
-		parent::init();
 
 		if ( did_action( 'setup_theme' ) ) {
 			$this->add_permastruct();
