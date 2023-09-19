@@ -9,20 +9,23 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
-	public static function wp_redirect() {
-		throw new Exception( 'Call to wp_redirect' );
+	/**
+	 * Allows to continue the execution after wp_redirect + exit.
+	 */
+	protected function filter_wp_redirect() {
+		add_filter(
+			'wp_redirect',
+			function() {
+				throw new Exception( 'Call to wp_redirect' );
+			}
+		);
+
+		$this->expectException( 'Exception' );
+		$this->expectExceptionMessage( 'Call to wp_redirect' );
 	}
 
 	public function test_hide_notice() {
-		// Allows to continue the execution after wp_redirect + exit.
-		add_filter( 'wp_redirect', array( __CLASS__, 'wp_redirect' ) );
-		if ( method_exists( $this, 'setExpectedException' ) ) {
-			// setExpectedException has been deprecated in recent versions of phpunit
-			$this->setExpectedException( 'Exception', 'Call to wp_redirect' );
-		} else {
-			$this->expectException( 'Exception' );
-			$this->expectExceptionMessage( 'Call to wp_redirect' );
-		}
+		$this->filter_wp_redirect();
 
 		wp_set_current_user( 1 );
 
