@@ -29,7 +29,6 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		create_initial_taxonomies();
 
 		$this->links_model = self::$model->get_links_model();
-		$this->links_model->init();
 
 		// flush rules
 		$wp_rewrite->flush_rules();

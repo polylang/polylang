@@ -151,7 +151,10 @@ if ( is_multisite() ) :
 		}
 
 		public function test_rewrites_rule_when_switching_blog() {
-			global $wp_rewrite;
+			global $wp_rewrite, $wp_filter;
+
+			// Remove our `switch_blog` hooks.
+			unset( $wp_filter['switch_blog'] );
 
 			$options     = PLL_Install::get_default_options();
 			$model       = new PLL_Admin_Model( $options );
@@ -184,11 +187,11 @@ if ( is_multisite() ) :
 			$wp_rewrite->flush_rules();
 			$rules = $wp_rewrite->wp_rewrite_rules();
 
+			$this->assertNotEmpty( $rules );
 			$this->assertArrayNotHasKey( '(en)/?$', $rules );
 			// @todo Find why the following assertion doesn't work...
 			$this->assertArrayNotHasKey( '(de)/?$', $rules );
 
-			$this->assertNotEmpty( $rules );
 
 			$languages = $pll_admin->model->get_languages_list();
 

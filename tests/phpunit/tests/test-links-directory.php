@@ -40,7 +40,6 @@ class Links_Directory_Test extends PLL_UnitTestCase {
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $this->structure );
 		$this->links_model = self::$model->get_links_model();
-		$this->links_model->init();
 	}
 
 	public function tear_down() {

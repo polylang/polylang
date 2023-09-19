@@ -36,7 +36,6 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		register_post_type( 'cpt', array( 'public' => true, 'has_archive' => true ) ); // *untranslated* custom post type with archives
 		register_taxonomy( 'tax', 'cpt' ); // *untranslated* custom tax
 		$links_model = self::$model->get_links_model();
-		$links_model->init();
 
 		$wp_rewrite->flush_rules();
 
