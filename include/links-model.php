@@ -226,4 +226,14 @@ abstract class PLL_Links_Model {
 	public function set_language_search_url( $url, $language ) {
 		return $this->home_url( $language['slug'] );
 	}
+
+	/**
+	 * Removes hooks, called when switching blog @see {PLL_Base::switch_blog()}.
+	 * Does nothing by default.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function remove_hooks() {}
 }

@@ -109,7 +109,7 @@ if ( is_multisite() ) :
 					'domains' => array(
 						'en' => 'polylang-domains.org',
 						'de' => 'polylang-domains.de',
-					)
+					),
 				)
 			);
 
@@ -143,7 +143,7 @@ if ( is_multisite() ) :
 			$pll_admin   = new PLL_Admin( $links_model );
 			$pll_admin->init();
 
-			foreach( $languages as $language ) {
+			foreach ( $languages as $language ) {
 				$pll_admin->model->add_language( $language );
 			}
 
@@ -153,15 +153,12 @@ if ( is_multisite() ) :
 		public function test_rewrites_rule_when_switching_blog() {
 			global $wp_rewrite, $wp_filter;
 
-			// Remove our `switch_blog` hooks.
-			unset( $wp_filter['switch_blog'] );
-
 			$options     = PLL_Install::get_default_options();
 			$model       = new PLL_Admin_Model( $options );
 			$links_model = $model->get_links_model();
 			$pll_admin   = new PLL_Admin( $links_model );
 			$pll_admin->init();
-			do_action( 'pll_init', $pll_admin );
+			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
 
 			switch_to_blog( self::$blog_with_pll_directory->blog_id );
 
@@ -189,7 +186,6 @@ if ( is_multisite() ) :
 
 			$this->assertNotEmpty( $rules );
 			$this->assertArrayNotHasKey( '(en)/?$', $rules );
-			// @todo Find why the following assertion doesn't work...
 			$this->assertArrayNotHasKey( '(de)/?$', $rules );
 
 
@@ -218,6 +214,19 @@ if ( is_multisite() ) :
 			$this->assertCount( 0, $languages );
 
 			restore_current_blog();
+
+			$wp_rewrite->flush_rules();
+			$rules = $wp_rewrite->wp_rewrite_rules();
+
+			$this->assertNotEmpty( $rules );
+			$this->assertArrayNotHasKey( '(fr)/?$', $rules );
+			$this->assertArrayNotHasKey( '(en)/?$', $rules );
+			$this->assertArrayNotHasKey( '(de)/?$', $rules );
+
+			$languages = $pll_admin->model->get_languages_list();
+
+			$this->assertCount( 0, $languages );
+			$this->assertArrayNotHasKey( POLYLANG_BASENAME, get_option( 'active_plugins', array() ) );
 		}
 	}
 

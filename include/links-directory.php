@@ -25,7 +25,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
-		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::init()` is called.
+		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::can_prepare_rewrite_rules()` is called.
 
 		parent::__construct( $model );
 
@@ -267,5 +267,22 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		return $newrules;
+	}
+
+	/**
+	 * Removes hooks, called when switching blog @see {PLL_Base::switch_blog()}.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function remove_hooks() {
+		remove_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
+
+		foreach ( $this->get_rewrite_rules_filters() as $type ) {
+			remove_filter( $type . '_rewrite_rules', array( $this, 'rewrite_rules' ) );
+		}
+
+		remove_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // Needed for post type archives.
 	}
 }

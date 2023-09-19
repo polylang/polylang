@@ -225,15 +225,13 @@ class PLL_Frontend extends PLL_Base {
 	 * Overrides the parent method.
 	 *
 	 * @since 1.5.1
-	 * @since 3.5 Accept now `$context` parameter.
 	 *
-	 * @param int    $new_blog_id  New blog ID.
-	 * @param int    $prev_blog_id Previous blog ID.
-	 * @param string $context      Additional context.
+	 * @param int $new_blog_id  New blog ID.
+	 * @param int $prev_blog_id Previous blog ID.
 	 * @return void
 	 */
-	public function switch_blog( $new_blog_id, $prev_blog_id, $context ) {
-		parent::switch_blog( $new_blog_id, $prev_blog_id, $context );
+	public function switch_blog( $new_blog_id, $prev_blog_id ) {
+		parent::switch_blog( $new_blog_id, $prev_blog_id );
 
 		// Need to check that some languages are defined when user is logged in, has several blogs, some without any languages.
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) && did_action( 'pll_language_defined' ) && $this->model->has_languages() ) {

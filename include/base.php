@@ -44,14 +44,6 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
-	 * Stores hooks callbacks ordered by hook names.
-	 *
-	 * @var WP_Hook[]
-	 * @phpstan-var array<string, WP_Hook>
-	 */
-	protected $hooks_backup;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -73,7 +65,7 @@ abstract class PLL_Base {
 		add_action( 'personal_options_update', array( $this, 'load_strings_translations' ), 1, 0 ); // Before WP, for confirmation request when changing the user email.
 		add_action( 'lostpassword_post', array( $this, 'load_strings_translations' ), 10, 0 ); // Password reset email.
 		// Switch_to_blog
-		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 3 );
+		add_action( 'switch_blog', array( $this, 'switch_blog' ), 10, 2 );
 	}
 
 	/**
@@ -144,18 +136,17 @@ abstract class PLL_Base {
 	 * Applied only if Polylang is active on the new blog.
 	 *
 	 * @since 1.5.1
-	 * @since 3.5 Accept now `$context` parameter.
 	 *
-	 * @param int    $new_blog_id  New blog ID.
-	 * @param int    $prev_blog_id Previous blog ID.
-	 * @param string $context      Additional context.
+	 * @param int $new_blog_id  New blog ID.
+	 * @param int $prev_blog_id Previous blog ID.
 	 * @return void
 	 */
-	public function switch_blog( $new_blog_id, $prev_blog_id, $context ) {
+	public function switch_blog( $new_blog_id, $prev_blog_id ) {
 		remove_all_actions( 'pll_prepare_rewrite_rules' );
 
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
 			$this->options = get_option( 'polylang' ); // Needed for menus.
+			$this->links_model->remove_hooks();
 			$this->links_model = $this->model->get_links_model();
 		}
 	}
