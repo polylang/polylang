@@ -18,13 +18,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	protected $home_relative;
 
 	/**
-	 * The name of the rewrite rules to always modify.
-	 *
-	 * @var string[]
-	 */
-	protected $always_rewrite = array( 'date', 'root', 'comments', 'search', 'author' );
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -157,55 +150,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	}
 
 	/**
-	 * Removes hooks, called when switching blog @see {PLL_Base::switch_blog()}.
-	 *
-	 * @since 3.5
-	 *
-	 * @return void
-	 */
-	public function remove_hooks() {
-		foreach ( $this->get_rewrite_rules_filters() as $rule => $callback ) {
-			remove_filter( $rule, $callback );
-		}
-	}
-
-	/**
-	 * Returns rewrite rules filters.
-	 *
-	 * @since 1.6
-	 * @since 3.5 Moved from `PLL_Links_Permalinks` to `PLL_Links_Directory`,
-	 *            returns now an array of hook name as key and callback as value.
-	 *
-	 * @return callable[]
-	 * @phpstan-return array<string, callable>
-	 */
-	public function get_rewrite_rules_filters() {
-		// Make sure that we have the right post types and taxonomies.
-		$types = array_values( array_merge( $this->model->get_translated_post_types(), $this->model->get_translated_taxonomies(), $this->model->get_filtered_taxonomies() ) );
-		$types = array_merge( $this->always_rewrite, $types );
-
-		/**
-		 * Filters the list of rewrite rules filters to be used by Polylang.
-		 *
-		 * @since 0.8.1
-		 *
-		 * @param array $types The list of filters (without '_rewrite_rules' at the end).
-		 */
-		$types = apply_filters( 'pll_rewrite_rules', $types );
-
-		$filters = array(
-			'language_rewrite_rules' => '__return_empty_array', // Suppress the rules created by WordPress for our taxonomy.
-			'rewrite_rules_array'    => array( $this, 'rewrite_rules' ),
-		);
-
-		foreach ( $types as $type ) {
-			$filters[ $type . '_rewrite_rules' ] = array( $this, 'rewrite_rules' );
-		}
-
-		return $filters;
-	}
-
-	/**
 	 * Prepares the rewrite rules filters.
 	 *
 	 * @since 0.8.1
@@ -219,12 +163,14 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		 * to add the filters only once and if all custom post types and taxonomies
 		 * have been registered.
 		 */
-		if ( ! $this->model->has_languages() || ! did_action( 'wp_loaded' ) || has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
-			return;
-		}
+		if ( $this->model->has_languages() && did_action( 'wp_loaded' ) && ! has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
+			add_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
 
-		foreach ( $this->get_rewrite_rules_filters() as $rule => $callback ) {
-			add_filter( $rule, $callback );
+			foreach ( $this->get_rewrite_rules_filters() as $type ) {
+				add_filter( $type . '_rewrite_rules', array( $this, 'rewrite_rules' ) );
+			}
+
+			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // Needed for post type archives.
 		}
 	}
 
@@ -321,5 +267,22 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		return $newrules;
+	}
+
+	/**
+	 * Removes hooks, called when switching blog @see {PLL_Base::switch_blog()}.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function remove_hooks() {
+		remove_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
+
+		foreach ( $this->get_rewrite_rules_filters() as $type ) {
+			remove_filter( $type . '_rewrite_rules', array( $this, 'rewrite_rules' ) );
+		}
+
+		remove_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // Needed for post type archives.
 	}
 }
