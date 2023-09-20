@@ -143,10 +143,10 @@ abstract class PLL_Base {
 	 */
 	public function switch_blog( $new_blog_id, $prev_blog_id ) {
 		remove_all_actions( 'pll_prepare_rewrite_rules' );
+		$this->links_model->remove_hooks();
 
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
 			$this->options = get_option( 'polylang' ); // Needed for menus.
-			$this->links_model->remove_hooks();
 			$this->links_model = $this->model->get_links_model();
 			$this->links_model->init();
 		}
