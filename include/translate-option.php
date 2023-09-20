@@ -69,10 +69,16 @@ class PLL_Translate_Option {
 	 * }
 	 */
 	public function __construct( $name, $keys = array(), $args = array() ) {
+		$context = isset( $args['context'] ) ? $args['context'] : 'Polylang';
+
+		$is_allowed = apply_filters( 'pll_allow_translate_option', true, $name, $context, $keys, $args );
+		if ( ! $is_allowed ) {
+			return;
+		}
+
 		$this->cache = new PLL_Cache();
 
 		// Registers the strings.
-		$context = isset( $args['context'] ) ? $args['context'] : 'Polylang';
 		$this->register_string_recursive( $context, $name, get_option( $name ), $keys );
 
 		// Translates the strings.
