@@ -519,6 +519,11 @@ class PLL_WPML_Config {
 	 * @return void
 	 */
 	protected function register_or_translate_option( $context, $name, $key ) {
+		$is_allowed = apply_filters( 'pll_allow_register_or_translate_option', true, $name, $context, $key );
+		if ( ! $is_allowed ) {
+			return;
+		}
+
 		$option_keys = $this->xml_to_array( $key );
 		new PLL_Translate_Option( $name, reset( $option_keys ), array( 'context' => $context ) );
 	}
