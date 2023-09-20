@@ -40,13 +40,6 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	protected $use_trailing_slashes;
 
 	/**
-	 * The name of the rewrite rules to always modify.
-	 *
-	 * @var string[]
-	 */
-	protected $always_rewrite = array( 'date', 'root', 'comments', 'search', 'author' );
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
@@ -176,27 +169,5 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 		$url = home_url( $this->root . get_page_uri( $language['page_on_front'] ) );
 		$url = $this->use_trailing_slashes ? trailingslashit( $url ) : untrailingslashit( $url );
 		return $this->options['force_lang'] ? $this->add_language_to_link( $url, $language['slug'] ) : $url;
-	}
-
-	/**
-	 * Prepares rewrite rules filters.
-	 *
-	 * @since 1.6
-	 *
-	 * @return string[]
-	 */
-	public function get_rewrite_rules_filters() {
-		// Make sure that we have the right post types and taxonomies.
-		$types = array_values( array_merge( $this->model->get_translated_post_types(), $this->model->get_translated_taxonomies(), $this->model->get_filtered_taxonomies() ) );
-		$types = array_merge( $this->always_rewrite, $types );
-
-		/**
-		 * Filters the list of rewrite rules filters to be used by Polylang.
-		 *
-		 * @since 0.8.1
-		 *
-		 * @param array $types The list of filters (without '_rewrite_rules' at the end).
-		 */
-		return apply_filters( 'pll_rewrite_rules', $types );
 	}
 }
