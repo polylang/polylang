@@ -163,14 +163,12 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		 * to add the filters only once and if all custom post types and taxonomies
 		 * have been registered.
 		 */
-		if ( $this->model->has_languages() && did_action( 'wp_loaded' ) && ! has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
-			add_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
+		if ( ! $this->model->has_languages() || ! did_action( 'wp_loaded' ) || has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
+			return;
+		}
 
-			foreach ( $this->get_rewrite_rules_filters() as $type ) {
-				add_filter( $type . '_rewrite_rules', array( $this, 'rewrite_rules' ) );
-			}
-
-			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // Needed for post type archives.
+		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
+			add_filter( $rule, $callback );
 		}
 	}
 
@@ -277,12 +275,28 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @return void
 	 */
 	public function remove_hooks() {
-		remove_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
+		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
+			remove_filter( $rule, $callback );
+		}
+	}
+
+	/**
+	 * Returns *all* rewrite rules filters with their associated callbacks.
+	 *
+	 * @since 3.5
+	 *
+	 * @return callable[] Array of hook names as key and callbacks as values.
+	 */
+	protected function get_rewrite_rules_filters_with_callbacks() {
+		$filters = array(
+			'language_rewrite_rules' => '__return_empty_array', // Suppress the rules created by WordPress for our taxonomy.
+			'rewrite_rules_array'    => array( $this, 'rewrite_rules' ), // Needed for post type archives.
+		);
 
 		foreach ( $this->get_rewrite_rules_filters() as $type ) {
-			remove_filter( $type . '_rewrite_rules', array( $this, 'rewrite_rules' ) );
+			$filters[ $type . '_rewrite_rules' ] = array( $this, 'rewrite_rules' );
 		}
 
-		remove_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // Needed for post type archives.
+		return $filters;
 	}
 }
