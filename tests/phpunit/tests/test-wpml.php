@@ -191,6 +191,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		self::$model->options['force_lang'] = 1;
 		$links_model = self::$model->get_links_model();
+		$links_model->init();
 
 		$frontend = new PLL_Frontend( $links_model );
 		$GLOBALS['polylang'] = $frontend;
@@ -399,6 +400,7 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		self::$model->options['force_lang'] = 1;
 		$links_model = self::$model->get_links_model();
+		$links_model->init();
 
 		$frontend = new PLL_Frontend( $links_model );
 		$GLOBALS['polylang'] = $frontend; // The WPML API uses PLL().

@@ -57,7 +57,18 @@ abstract class PLL_Links_Model {
 		// Allows secondary domains for home and search URLs in `PLL_Language`.
 		add_filter( 'pll_language_home_url', array( $this, 'set_language_home_url' ), 10, 2 );
 		add_filter( 'pll_language_search_url', array( $this, 'set_language_search_url' ), 10, 2 );
+
+		add_action( 'pll_init', array( $this, 'init' ) );
 	}
+
+	/**
+	 * Initializes links.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function init() {}
 
 	/**
 	 * Adds the language code in url.

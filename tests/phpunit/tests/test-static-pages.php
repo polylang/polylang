@@ -80,6 +80,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
 
 		$this->links_model = self::$model->get_links_model();
+		$this->links_model->init();
 	}
 
 	private function init_test( $env = 'frontend' ) {

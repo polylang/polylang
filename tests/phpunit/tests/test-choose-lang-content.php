@@ -33,6 +33,7 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		create_initial_taxonomies();
 
 		$links_model = self::$model->get_links_model();
+		$links_model->init();
 
 		// flush rules
 		$wp_rewrite->flush_rules();

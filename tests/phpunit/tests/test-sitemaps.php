@@ -28,6 +28,9 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		register_taxonomy( 'tax', 'cpt' ); // *Untranslated* custom tax.
 
 		$links_model = self::$model->get_links_model();
+		if ( method_exists( $links_model, 'init' ) ) {
+			$links_model->init();
+		}
 
 		$this->pll_env = new PLL_Frontend( $links_model );
 		$this->pll_env->sitemaps = new $sitemap_class( $this->pll_env );

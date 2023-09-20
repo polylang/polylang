@@ -56,6 +56,7 @@ class Single_Language_Test extends PLL_UnitTestCase {
 
 		$model->post->register_taxonomy(); // needs this for 'lang' query var
 		$links_model = $model->get_links_model();
+		$links_model->init();
 		$pll = new PLL_Frontend( $links_model );
 		$pll->init();
 		$pll->model->clean_languages_cache();

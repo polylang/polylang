@@ -148,6 +148,7 @@ abstract class PLL_Base {
 			$this->options = get_option( 'polylang' ); // Needed for menus.
 			$this->links_model->remove_hooks();
 			$this->links_model = $this->model->get_links_model();
+			$this->links_model->init();
 		}
 	}
 
