@@ -52,9 +52,16 @@ class PLL_Admin_Strings {
 	 * @return void
 	 */
 	public static function register_string( $name, $string, $context = 'Polylang', $multiline = false ) {
-		if ( $string && is_scalar( $string ) ) {
-			self::$strings[ md5( $string ) ] = compact( 'name', 'string', 'context', 'multiline' );
+		if ( ! $string || ! is_scalar( $string ) ) {
+			return;
 		}
+
+		$is_allowed = apply_filters( 'pll_allow_register_string', true, $name, $string, $context, $multiline );
+		if ( ! $is_allowed ) {
+			return;
+		}
+
+		self::$strings[ md5( $string ) ] = compact( 'name', 'string', 'context', 'multiline' );
 	}
 
 	/**
