@@ -59,13 +59,14 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Initializes links.
+	 * Initializes the links model.
+	 * Does nothing by default.
 	 *
 	 * @since 3.5
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init() {}
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
 		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
 
@@ -243,7 +244,7 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Removes hooks to filter rewrite rules, called when switching blog @see {PLL_Base::switch_blog()}.
+	 * Used to remove hooks in child classes, called when switching blog @see {PLL_Base::switch_blog()}.
 	 * Does nothing by default.
 	 *
 	 * @since 3.5

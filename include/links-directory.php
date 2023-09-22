@@ -31,9 +31,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	}
 
 	/**
-	 * Initializes links.
+	 * Adds hooks for rewrite rules.
 	 *
-	 * @since 3.5
+	 * @since 1.6
 	 *
 	 * @return void
 	 */
