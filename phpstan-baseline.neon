@@ -536,11 +536,6 @@ parameters:
 			path: frontend/frontend.php
 
 		-
-			message: "#^Parameter \\#2 .+ of function array_merge expects array, mixed given\\.$#"
-			count: 1
-			path: include/base.php
-
-		-
 			message: "#^Property PLL_Base\\:\\:\\$options \\(array\\) does not accept mixed\\.$#"
 			count: 1
 			path: include/base.php

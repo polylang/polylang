@@ -142,7 +142,6 @@ abstract class PLL_Base {
 	 * @return void
 	 */
 	public function switch_blog( $new_blog_id, $prev_blog_id ) {
-		remove_all_actions( 'pll_prepare_rewrite_rules' );
 		$this->links_model->remove_filters();
 
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
@@ -162,14 +161,11 @@ abstract class PLL_Base {
 	 * @return bool
 	 */
 	protected function is_active_on_new_blog( $new_blog_id, $prev_blog_id ) {
-		$plugins = ( $sitewide_plugins = get_site_option( 'active_sitewide_plugins' ) ) && is_array( $sitewide_plugins ) ? array_keys( $sitewide_plugins ) : array();
-		$plugins = array_merge( $plugins, get_option( 'active_plugins', array() ) );
-
 		/*
 		 * The 2nd test is needed when Polylang is not networked activated.
 		 * The 3rd test is needed when Polylang is networked activated and a new site is created.
 		 */
-		return $new_blog_id !== $prev_blog_id && in_array( POLYLANG_BASENAME, $plugins ) && get_option( 'polylang' );
+		return $new_blog_id !== $prev_blog_id && is_plugin_active( POLYLANG_BASENAME ) && get_option( 'polylang' );
 	}
 
 	/**
