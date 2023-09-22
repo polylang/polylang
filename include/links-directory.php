@@ -25,11 +25,22 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
-		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::do_prepare_rewrite_rules()` is called.
-
 		parent::__construct( $model );
 
 		$this->home_relative = home_url( '/', 'relative' );
+	}
+
+	/**
+	 * Initializes links.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function init() {
+		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::do_prepare_rewrite_rules()` is called.
+
+		parent::init();
 
 		if ( did_action( 'setup_theme' ) ) {
 			$this->add_permastruct();

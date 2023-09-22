@@ -70,6 +70,8 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 * @return void
 	 */
 	public function init() {
+		parent::init();
+
 		if ( did_action( 'wp_loaded' ) ) {
 			$this->do_prepare_rewrite_rules();
 		} else {
@@ -202,7 +204,6 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 
 	/**
 	 * Removes hooks to filter rewrite rules, called when switching blog @see {PLL_Base::switch_blog()}.
-	 * See `self::prepare_rewrite_rules()` for added hooks.
 	 *
 	 * @since 3.5
 	 *
@@ -211,8 +212,6 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	public function remove_filters() {
 		parent::remove_filters();
 
-		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
-			remove_filter( $rule, $callback );
-		}
+		remove_all_actions( 'pll_prepare_rewrite_rules' );
 	}
 }
