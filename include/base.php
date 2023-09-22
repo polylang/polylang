@@ -146,7 +146,7 @@ abstract class PLL_Base {
 		$this->links_model->remove_hooks();
 
 		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) ) {
-			$this->options = get_option( 'polylang' ); // Needed for menus.
+			$this->options     = get_option( 'polylang' ); // Needed for menus.
 			$this->links_model = $this->model->get_links_model();
 			$this->links_model->init();
 		}
