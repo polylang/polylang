@@ -71,9 +71,9 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 */
 	public function init() {
 		if ( did_action( 'wp_loaded' ) ) {
-			$this->fire_prepare_rewrite_rules();
+			$this->do_prepare_rewrite_rules();
 		} else {
-			add_action( 'wp_loaded', array( $this, 'fire_prepare_rewrite_rules' ), 9 ); // Just before WordPress callback `WP_Rewrite::flush_rules()`.
+			add_action( 'wp_loaded', array( $this, 'do_prepare_rewrite_rules' ), 9 ); // Just before WordPress callback `WP_Rewrite::flush_rules()`.
 		}
 	}
 
@@ -85,7 +85,7 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 *
 	 * @return void
 	 */
-	public function fire_prepare_rewrite_rules() {
+	public function do_prepare_rewrite_rules() {
 		/**
 		 * Tells when Polylang is able to prepare rewrite rules filters.
 		 * Action fired right after `wp_loaded` and just before WordPress `WP_Rewrite::flush_rules()` callback.
@@ -198,5 +198,21 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 		 * @param array $types The list of filters (without '_rewrite_rules' at the end).
 		 */
 		return apply_filters( 'pll_rewrite_rules', $types );
+	}
+
+	/**
+	 * Removes hooks to filter rewrite rules, called when switching blog @see {PLL_Base::switch_blog()}.
+	 * See `self::prepare_rewrite_rules()` for added hooks.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function remove_filters() {
+		parent::remove_filters();
+
+		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
+			remove_filter( $rule, $callback );
+		}
 	}
 }

@@ -25,7 +25,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
-		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::fire_prepare_rewrite_rules()` is called.
+		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::do_prepare_rewrite_rules()` is called.
 
 		parent::__construct( $model );
 
@@ -275,10 +275,10 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 *
 	 * @return void
 	 */
-	public function unprepare_rewrite_rules() {
-		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
-			remove_filter( $rule, $callback );
-		}
+	public function remove_filters() {
+		parent::remove_filters();
+
+		remove_all_actions( 'pll_prepare_rewrite_rules' );
 	}
 
 	/**

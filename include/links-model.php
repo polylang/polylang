@@ -246,5 +246,5 @@ abstract class PLL_Links_Model {
 	 *
 	 * @return void
 	 */
-	public function unprepare_rewrite_rules() {}
+	public function remove_filters() {}
 }
