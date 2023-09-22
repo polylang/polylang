@@ -586,11 +586,6 @@ parameters:
 			path: include/crud-terms.php
 
 		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Term\\:\\:set_language\\(\\) expects int\\|PLL_Language\\|string, PLL_Language\\|null given\\.$#"
-			count: 1
-			path: include/crud-terms.php
-
-		-
 			message: "#^@param PLL_Language \\$lang does not accept actual type of parameter\\: PLL_Language\\|false\\.$#"
 			count: 2
 			path: include/filters-links.php
