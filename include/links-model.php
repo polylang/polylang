@@ -51,6 +51,13 @@ abstract class PLL_Links_Model {
 		// Hooked with normal priority because it needs to be run after static pages is set in language data. Must be done early (before languages objects are created).
 		add_filter( 'pll_additional_language_data', array( $this, 'set_language_home_urls' ), 10, 2 );
 
+		// Adds our domains or subdomains to allowed hosts for safe redirection.
+		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
+
+		// Allows secondary domains for home and search URLs in `PLL_Language`.
+		add_filter( 'pll_language_home_url', array( $this, 'set_language_home_url' ), 10, 2 );
+		add_filter( 'pll_language_search_url', array( $this, 'set_language_search_url' ), 10, 2 );
+
 		if ( did_action( 'pll_init' ) ) {
 			$this->init();
 		} else {
@@ -67,13 +74,6 @@ abstract class PLL_Links_Model {
 	 * @return void
 	 */
 	public function init() {}
-		// Adds our domains or subdomains to allowed hosts for safe redirection.
-		add_filter( 'allowed_redirect_hosts', array( $this, 'allowed_redirect_hosts' ) );
-
-		// Allows secondary domains for home and search URLs in `PLL_Language`.
-		add_filter( 'pll_language_home_url', array( $this, 'set_language_home_url' ), 10, 2 );
-		add_filter( 'pll_language_search_url', array( $this, 'set_language_search_url' ), 10, 2 );
-	}
 
 	/**
 	 * Adds the language code in url.

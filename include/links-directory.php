@@ -289,7 +289,9 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	public function remove_filters() {
 		parent::remove_filters();
 
-		remove_all_actions( 'pll_prepare_rewrite_rules' );
+		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
+			remove_filter( $rule, $callback );
+		}
 	}
 
 	/**

@@ -55,7 +55,6 @@ trait PLL_Test_Links_Trait {
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $this->structure );
 		$this->links_model = self::$model->get_links_model();
-		$this->links_model->init();
 	}
 
 	/**
