@@ -71,9 +71,9 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 */
 	public function init() {
 		if ( did_action( 'wp_loaded' ) ) {
-			$this->can_prepare_rewrite_rules();
+			$this->fire_prepare_rewrite_rules();
 		} else {
-			add_action( 'wp_loaded', array( $this, 'can_prepare_rewrite_rules' ), 9 ); // Just before WordPress callback `WP_Rewrite::flush_rules()`.
+			add_action( 'wp_loaded', array( $this, 'fire_prepare_rewrite_rules' ), 9 ); // Just before WordPress callback `WP_Rewrite::flush_rules()`.
 		}
 	}
 
@@ -85,7 +85,7 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 *
 	 * @return void
 	 */
-	public function can_prepare_rewrite_rules() {
+	public function fire_prepare_rewrite_rules() {
 		/**
 		 * Tells when Polylang is able to prepare rewrite rules filters.
 		 * Action fired right after `wp_loaded` and just before WordPress `WP_Rewrite::flush_rules()` callback.

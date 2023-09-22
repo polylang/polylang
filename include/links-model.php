@@ -239,12 +239,12 @@ abstract class PLL_Links_Model {
 	}
 
 	/**
-	 * Removes hooks, called when switching blog @see {PLL_Base::switch_blog()}.
+	 * Removes hooks to filter rewrite rules, called when switching blog @see {PLL_Base::switch_blog()}.
 	 * Does nothing by default.
 	 *
 	 * @since 3.5
 	 *
 	 * @return void
 	 */
-	public function remove_hooks() {}
+	public function unprepare_rewrite_rules() {}
 }

@@ -25,7 +25,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * @param PLL_Model $model PLL_Model instance.
 	 */
 	public function __construct( &$model ) {
-		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::can_prepare_rewrite_rules()` is called.
+		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::fire_prepare_rewrite_rules()` is called.
 
 		parent::__construct( $model );
 
@@ -268,13 +268,14 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	}
 
 	/**
-	 * Removes hooks, called when switching blog @see {PLL_Base::switch_blog()}.
+	 * Removes hooks to filter rewrite rules, called when switching blog @see {PLL_Base::switch_blog()}.
+	 * See `self::prepare_rewrite_rules()` for added hooks.
 	 *
 	 * @since 3.5
 	 *
 	 * @return void
 	 */
-	public function remove_hooks() {
+	public function unprepare_rewrite_rules() {
 		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
 			remove_filter( $rule, $callback );
 		}
