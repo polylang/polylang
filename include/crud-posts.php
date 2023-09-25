@@ -30,6 +30,13 @@ class PLL_CRUD_Posts {
 	protected $curlang;
 
 	/**
+	 * Reference to the Polylang options array.
+	 *
+	 * @var array
+	 */
+	protected $options;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 2.4
@@ -37,9 +44,10 @@ class PLL_CRUD_Posts {
 	 * @param object $polylang The Polylang object.
 	 */
 	public function __construct( &$polylang ) {
-		$this->model = &$polylang->model;
+		$this->options   = &$polylang->options;
+		$this->model     = &$polylang->model;
 		$this->pref_lang = &$polylang->pref_lang;
-		$this->curlang = &$polylang->curlang;
+		$this->curlang   = &$polylang->curlang;
 
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 4 );
@@ -74,11 +82,14 @@ class PLL_CRUD_Posts {
 			} elseif ( ( $parent_id = wp_get_post_parent_id( $post_id ) ) && $parent_lang = $this->model->post->get_language( $parent_id ) ) {
 				$this->model->post->set_language( $post_id, $parent_lang );
 			} elseif ( isset( $this->pref_lang ) ) {
-				// Always defined on admin, never defined on frontend
+				// Always defined on admin, never defined on frontend.
 				$this->model->post->set_language( $post_id, $this->pref_lang );
 			} elseif ( ! empty( $this->curlang ) ) {
-				// Only on frontend due to the previous test always true on admin
+				// Only on frontend due to the previous test always true on admin.
 				$this->model->post->set_language( $post_id, $this->curlang );
+			} else {
+				// In all other cases set to default language.
+				$this->model->post->set_language( $post_id, $this->options['default_lang'] );
 			}
 		}
 	}
