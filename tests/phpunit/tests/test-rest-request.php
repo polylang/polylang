@@ -147,31 +147,29 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith [{"type": "post", "route": "/wp/v2/posts", "requiredField": "title", "fieldValue": "Post"}]
-	 *           [{"type": "term", "route": "/wp/v2/categories", "requiredField": "name", "fieldValue": "Category term"}]
+	 * @testWith ["post", "/wp/v2/posts", "title", "Post"]
+	 *           ["term", "/wp/v2/categories", "name", "Category term"]
 	 *
-	 * @param array $data {
-	 *    @type string $type          Type of content.
-	 *    @type string $route         Route.
-	 *    @type string $requiredField Required field to create the content.
-	 *    @type string $fieldValue    Value of the required field.
-	 * }
+	 * @param string $type  Type of content.
+	 * @param string $route REST route.
+	 * @param string $field Required field to create the content.
+	 * @param string $value Value of the required field.
 	 */
-	public function test_should_assign_default_language_when_no_language_sent( $data ) {
+	public function test_should_assign_default_language_when_no_language_sent( $type, $route, $field, $value ) {
 		wp_set_current_user( self::$administrator );
 		self::$model->options['default_lang'] = 'en';
 		$this->pll_rest->init();
 
-		$request = new WP_REST_Request( 'POST', $data['route'] );
-		$request->set_param( $data['requiredField'], $data['fieldValue'] );
+		$request = new WP_REST_Request( 'POST', $route );
+		$request->set_param( $field, $value );
 
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 201, $response->get_status() );
 
-		$response_data = $response->get_data();
-		$language      = $this->pll_rest->model->{$data['type']}->get_language( $response_data['id'] );
-		$this->assertInstanceOf( PLL_Language::class, $language, "A language should be assigned by default to the {$data['type']}." );
-		$this->assertEquals( $this->pll_rest->options['default_lang'], $language->slug, "When no language is sent, the default one should be assigned to the {$data['type']}." );
+		$data     = $response->get_data();
+		$language = $this->pll_rest->model->{$type}->get_language( $data['id'] );
+		$this->assertInstanceOf( PLL_Language::class, $language, "A language should be assigned by default to the {$type}." );
+		$this->assertEquals( $this->pll_rest->options['default_lang'], $language->slug, "When no language is sent, the default one should be assigned to the {$type}." );
 	}
 
 	/**
