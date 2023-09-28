@@ -66,7 +66,7 @@ trait PLL_UnitTestCase_Trait {
 		remove_action( 'current_screen', '_load_remote_featured_patterns' );
 
 		/*
-		 * `print_emoji_styles()` deprecated since WP 6.4, still hooked for backaward compatibility for other plugins @see {https://github.com/WordPress/wordpress-develop/commit/54c4de13edfaf3b9fbc1b67d6ba384618614d59e}.
+		 * `print_emoji_styles()` is deprecated since WP 6.4, but still hooked for backward compatibility {@see https://core.trac.wordpress.org/ticket/58775}.
 		 */
 		remove_action( 'wp_print_styles', 'print_emoji_styles' );
 		remove_action( 'admin_print_styles', 'print_emoji_styles' );
