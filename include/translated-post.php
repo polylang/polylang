@@ -192,7 +192,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 				'show_in_nav_menus'  => false, // No metabox for nav menus, needed for WP 4.4.x.
 				'publicly_queryable' => true, // Since WP 4.5.
 				'query_var'          => 'lang',
-				'rewrite'            => $this->model->options['force_lang'] < 2, // No rewrite for domains and sub-domains.
+				'rewrite'            => false, // Rewrite rules are added through filters when needed.
 				'_pll'               => true, // Polylang taxonomy.
 			)
 		);
