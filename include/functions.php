@@ -176,6 +176,8 @@ function pll_set_constant( string $constant_name, $value ): bool {
 /**
  * Determines whether a plugin is active.
  *
+ * We define our own function because `is_plugin_active()` is available only in the backend.
+ *
  * @since 3.5
  *
  * @param string $plugin_name Plugin basename.
