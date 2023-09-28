@@ -178,6 +178,8 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 			return;
 		}
 
+		add_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
+
 		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
 			add_filter( $rule, $callback );
 		}
@@ -303,7 +305,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 */
 	protected function get_rewrite_rules_filters_with_callbacks() {
 		$filters = array(
-			'language_rewrite_rules' => '__return_empty_array', // Suppress the rules created by WordPress for our taxonomy.
 			'rewrite_rules_array'    => array( $this, 'rewrite_rules' ), // Needed for post type archives.
 		);
 
