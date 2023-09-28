@@ -11,16 +11,6 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		parent::wpSetUpBeforeClass( $factory );
 
 		self::$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
-
-		$links_model     = self::$model->get_links_model();
-		$pll_admin = new PLL_Admin( $links_model );
-		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
-		$admin_default_term->add_hooks();
-
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-		self::create_language( 'de_DE_formal' );
-		self::create_language( 'es_ES' );
 	}
 
 	public function set_up() {
@@ -35,6 +25,11 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$this->pll_admin->default_term = new PLL_Admin_Default_Term( $this->pll_admin );
 		$this->pll_admin->default_term->add_hooks();
 		$this->pll_admin->filters_columns = new PLL_Admin_Filters_Columns( $this->pll_admin );
+
+		self::create_language( 'en_US' );
+		self::create_language( 'fr_FR' );
+		self::create_language( 'de_DE_formal' );
+		self::create_language( 'es_ES' );
 	}
 
 	protected function get_edit_term_form( $tag_ID, $taxonomy ) {
@@ -185,6 +180,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		$column                  = 'language_en';
 		$default_cat_id          = get_option( 'default_category' );
 		self::$model->term->set_language( $default_cat_id, 'en' );
+
 		$column = apply_filters( 'manage_category_custom_column', $out, $column, $default_cat_id );
 
 		$this->assertNotEmpty( $column, 'The generated language column should not be empty.' );
