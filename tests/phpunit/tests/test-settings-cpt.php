@@ -5,10 +5,6 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		// De-activate cache for translated post types and taxonomies
-		self::$model->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		self::$model->cache->method( 'get' )->willReturn( false );
-
 		self::$model->options['post_types'] = array();
 		self::$model->options['taxonomies'] = array();
 
