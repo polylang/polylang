@@ -69,6 +69,7 @@ trait PLL_UnitTestCase_Trait {
 			* `print_emoji_styles()` deprecated since WP 6.4, still hooked for backaward compatibility for other plugins @see {https://github.com/WordPress/wordpress-develop/commit/54c4de13edfaf3b9fbc1b67d6ba384618614d59e}.
 			*/
 		remove_action( 'wp_print_styles', 'print_emoji_styles' );
+		remove_action( 'admin_print_styles', 'print_emoji_styles' );
 
 		self::filter_doing_it_wrong_trigger_error();
 	}
