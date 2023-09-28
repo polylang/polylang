@@ -164,7 +164,7 @@ abstract class PLL_Base {
 		 * The 2nd test is needed when Polylang is not networked activated.
 		 * The 3rd test is needed when Polylang is networked activated and a new site is created.
 		 */
-		return $new_blog_id !== $prev_blog_id && is_plugin_active( POLYLANG_BASENAME ) && get_option( 'polylang' );
+		return $new_blog_id !== $prev_blog_id && pll_is_plugin_active( POLYLANG_BASENAME ) && get_option( 'polylang' );
 	}
 
 	/**
