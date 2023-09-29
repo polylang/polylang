@@ -48,7 +48,7 @@ abstract class PLL_Links_Model {
 
 		$this->home = home_url();
 
-		// Hooked with normal priority because it needs to be run after static pages is set in language data.
+		// Hooked with normal priority because it needs to be run after static pages is set in language data. Must be done early (before languages objects are created).
 		add_filter( 'pll_additional_language_data', array( $this, 'set_language_home_urls' ), 10, 2 );
 
 		// Adds our domains or subdomains to allowed hosts for safe redirection.
@@ -57,7 +57,23 @@ abstract class PLL_Links_Model {
 		// Allows secondary domains for home and search URLs in `PLL_Language`.
 		add_filter( 'pll_language_home_url', array( $this, 'set_language_home_url' ), 10, 2 );
 		add_filter( 'pll_language_search_url', array( $this, 'set_language_search_url' ), 10, 2 );
+
+		if ( did_action( 'pll_init' ) ) {
+			$this->init();
+		} else {
+			add_action( 'pll_init', array( $this, 'init' ) );
+		}
 	}
+
+	/**
+	 * Initializes the links model.
+	 * Does nothing by default.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function init() {}
 
 	/**
 	 * Adds the language code in url.
@@ -226,4 +242,14 @@ abstract class PLL_Links_Model {
 	public function set_language_search_url( $url, $language ) {
 		return $this->home_url( $language['slug'] );
 	}
+
+	/**
+	 * Used to remove hooks in child classes, called when switching blog @see {PLL_Base::switch_blog()}.
+	 * Does nothing by default.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function remove_filters() {}
 }

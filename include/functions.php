@@ -172,3 +172,22 @@ function pll_set_constant( string $constant_name, $value ): bool {
 
 	return define( $constant_name, $value ); // phpcs:ignore WordPressVIPMinimum.Constants.ConstantString.NotCheckingConstantName
 }
+
+/**
+ * Determines whether a plugin is active.
+ *
+ * We define our own function because `is_plugin_active()` is available only in the backend.
+ *
+ * @since 3.5
+ *
+ * @param string $plugin_name Plugin basename.
+ * @return bool True if activated, false otherwise.
+ */
+function pll_is_plugin_active( string $plugin_name ) {
+	$sitewide_plugins     = get_site_option( 'active_sitewide_plugins' );
+	$sitewide_plugins     = ! empty( $sitewide_plugins ) && is_array( $sitewide_plugins ) ? array_keys( $sitewide_plugins ) : array();
+	$current_site_plugins = (array) get_option( 'active_plugins', array() );
+	$plugins              = array_merge( $sitewide_plugins, $current_site_plugins );
+
+	return in_array( $plugin_name, $plugins );
+}

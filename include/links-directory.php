@@ -28,30 +28,25 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		parent::__construct( $model );
 
 		$this->home_relative = home_url( '/', 'relative' );
-
-		if ( did_action( 'pll_init' ) ) {
-			$this->init();
-		} else {
-			add_action( 'pll_init', array( $this, 'init' ) );
-		}
 	}
 
 	/**
-	 * Called only at first object creation to avoid duplicating filters when switching blog.
+	 * Adds hooks for rewrite rules.
 	 *
 	 * @since 1.6
 	 *
 	 * @return void
 	 */
 	public function init() {
+		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::do_prepare_rewrite_rules()` is called.
+
+		parent::init();
+
 		if ( did_action( 'setup_theme' ) ) {
 			$this->add_permastruct();
 		} else {
 			add_action( 'setup_theme', array( $this, 'add_permastruct' ), 2 );
 		}
-
-		// Make sure to prepare rewrite rules when flushing.
-		add_filter( 'pre_option_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) );
 	}
 
 	/**
@@ -169,26 +164,25 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	 * Prepares the rewrite rules filters.
 	 *
 	 * @since 0.8.1
+	 * @since 3.5 Hooked to `pll_prepare_rewrite_rules` and remove `$pre` parameter.
 	 *
-	 * @param mixed $pre Not used as the filter is used as an action.
-	 * @return mixed
+	 * @return void
 	 */
-	public function prepare_rewrite_rules( $pre ) {
+	public function prepare_rewrite_rules() {
 		/*
 		 * Don't modify the rules if there is no languages created yet and make sure
 		 * to add the filters only once and if all custom post types and taxonomies
 		 * have been registered.
 		 */
-		if ( $this->model->has_languages() && did_action( 'wp_loaded' ) && ! has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
-			add_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
-
-			foreach ( $this->get_rewrite_rules_filters() as $type ) {
-				add_filter( $type . '_rewrite_rules', array( $this, 'rewrite_rules' ) );
-			}
-
-			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) ); // Needed for post type archives.
+		if ( ! $this->model->has_languages() || ! did_action( 'wp_loaded' ) || has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
+			return;
 		}
-		return $pre;
+
+		add_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
+
+		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
+			add_filter( $rule, $callback );
+		}
 	}
 
 	/**
@@ -284,5 +278,40 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		}
 
 		return $newrules;
+	}
+
+	/**
+	 * Removes hooks to filter rewrite rules, called when switching blog @see {PLL_Base::switch_blog()}.
+	 * See `self::prepare_rewrite_rules()` for added hooks.
+	 *
+	 * @since 3.5
+	 *
+	 * @return void
+	 */
+	public function remove_filters() {
+		parent::remove_filters();
+
+		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
+			remove_filter( $rule, $callback );
+		}
+	}
+
+	/**
+	 * Returns *all* rewrite rules filters with their associated callbacks.
+	 *
+	 * @since 3.5
+	 *
+	 * @return callable[] Array of hook names as key and callbacks as values.
+	 */
+	protected function get_rewrite_rules_filters_with_callbacks() {
+		$filters = array(
+			'rewrite_rules_array'    => array( $this, 'rewrite_rules' ), // Needed for post type archives.
+		);
+
+		foreach ( $this->get_rewrite_rules_filters() as $type ) {
+			$filters[ $type . '_rewrite_rules' ] = array( $this, 'rewrite_rules' );
+		}
+
+		return $filters;
 	}
 }
