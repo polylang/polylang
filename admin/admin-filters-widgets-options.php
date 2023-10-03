@@ -31,5 +31,4 @@ class PLL_Admin_Filters_Widgets_Options extends PLL_Filters_Widgets_Options {
 			parent::in_widget_form( $widget, $return, $instance );
 		}
 	}
-
 }

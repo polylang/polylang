@@ -8,7 +8,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly
-};
+}
 ?>
 <p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>
 <table>

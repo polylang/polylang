@@ -13,7 +13,6 @@ defined( 'ABSPATH' ) || exit;
  * @phpstan-import-type DBInfoWithType from PLL_Translatable_Object_With_Types_Interface
  */
 class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translatable_Object_With_Types_Interface {
-
 	use PLL_Translatable_Object_With_Types_Trait;
 
 	/**

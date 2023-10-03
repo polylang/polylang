@@ -206,11 +206,11 @@ abstract class PLL_Base {
 		 */
 		$floor = 0;
 		if ( ! empty( $this->nav_menu ) && (bool) $wp_filter['customize_register']->has_filter( 'customize_register', array( $this->nav_menu, 'create_nav_menu_locations' ) ) ) {
-			$floor++;
+			++$floor;
 		}
 
 		if ( ! empty( $this->static_pages ) && (bool) $wp_filter['customize_register']->has_filter( 'customize_register', array( $this->static_pages, 'filter_customizer' ) ) ) {
-			$floor++;
+			++$floor;
 		}
 
 		$count = array_sum( array_map( 'count', $wp_filter['customize_register']->callbacks ) );

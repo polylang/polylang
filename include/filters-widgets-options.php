@@ -48,7 +48,7 @@ class PLL_Filters_Widgets_Options {
 
 		$dropdown_html = $dropdown->walk(
 			array_merge(
-				array( (object) array('slug' => 0, 'name' => __( 'All languages', 'polylang' )) ),
+				array( (object) array( 'slug' => 0, 'name' => __( 'All languages', 'polylang' ) ) ),
 				$this->model->get_languages_list()
 			),
 			-1,
@@ -89,5 +89,4 @@ class PLL_Filters_Widgets_Options {
 
 		return $instance;
 	}
-
 }

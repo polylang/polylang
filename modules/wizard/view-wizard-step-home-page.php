@@ -9,7 +9,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 
 $languages = $this->model->get_languages_list();
 $default_language = count( $languages ) > 0 ? $this->options['default_lang'] : null;

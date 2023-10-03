@@ -4,7 +4,6 @@
  * A test case class for Polylang standard tests
  */
 abstract class PLL_UnitTestCase extends WP_UnitTestCase {
-
 	use PLL_UnitTestCase_Trait;
 
 	public function set_up() {

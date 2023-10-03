@@ -9,7 +9,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 
 ?>
 <h2><?php esc_html_e( "You're ready to translate your contents!", 'polylang' ); ?></h2>

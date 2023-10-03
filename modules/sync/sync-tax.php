@@ -149,7 +149,6 @@ class PLL_Sync_Tax {
 
 			wp_set_object_terms( $tr_id, $newterms, $taxonomy, $append );
 		}
-
 	}
 
 	/**

@@ -9,7 +9,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 
 $default_options = PLL_Install::get_default_options();
 $options = wp_parse_args( get_option( 'polylang' ), $default_options );

@@ -54,5 +54,4 @@ class Canonical_Domain_Test extends PLL_UnitTestCase {
 		$_SERVER['HTTP_HOST'] = 'www.example.fr';
 		$this->assertEquals( 'http://example.fr/test/', $this->canonical->check_canonical_url( 'http://' . $_SERVER['HTTP_HOST'] . '/test/', false ) );
 	}
-
 }

@@ -252,5 +252,4 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'checked', $input->item( 0 )->getAttribute( 'checked' ) );
 		$this->assertEmpty( $input->item( 0 )->getAttribute( 'disabled' ) );
 	}
-
 }

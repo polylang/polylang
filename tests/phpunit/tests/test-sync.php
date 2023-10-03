@@ -245,7 +245,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array_keys( PLL_Settings_Sync::list_metas_to_sync() ); // sync everything
 
 		// Attachment for thumbnail
-		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$filename = __DIR__ . '/../data/image.jpg';
 		$thumbnail_id = self::factory()->attachment->create_upload_object( $filename );
 
 		// categories
@@ -823,7 +823,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::factory()->term->create( array( 'taxonomy' => 'post_format', 'name' => 'post-format-aside' ) ); // shouldn't WP do that ?
 
 		// Attachment for thumbnail
-		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$filename = __DIR__ . '/../data/image.jpg';
 		$thumbnail_id = self::factory()->attachment->create_upload_object( $filename );
 
 		// Categories

@@ -27,7 +27,7 @@ class Media_Test extends PLL_UnitTestCase {
 	public function test_upload() {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'fr' );
 
-		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$filename = __DIR__ . '/../data/image.jpg';
 		$fr = self::factory()->attachment->create_upload_object( $filename );
 		$this->assertEquals( $this->pll_admin->pref_lang->slug, self::$model->post->get_language( $fr )->slug );
 
@@ -38,7 +38,7 @@ class Media_Test extends PLL_UnitTestCase {
 	public function test_media_translation_and_delete_attachment() {
 		$this->pll_admin->pref_lang = self::$model->get_language( 'en' );
 
-		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$filename = __DIR__ . '/../data/image.jpg';
 		$en = self::factory()->attachment->create_upload_object( $filename );
 		$fr = $this->pll_admin->posts->create_media_translation( $en, 'fr' );
 
@@ -59,7 +59,7 @@ class Media_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_attachment_fields_to_edit() {
-		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$filename = __DIR__ . '/../data/image.jpg';
 		$fr = self::factory()->attachment->create_upload_object( $filename );
 		self::$model->post->set_language( $fr, 'fr' );
 

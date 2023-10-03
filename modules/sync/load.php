@@ -7,7 +7,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly
-};
+}
 
 if ( $polylang->model->has_languages() ) {
 	if ( $polylang instanceof PLL_Admin_Base ) {

@@ -57,7 +57,6 @@ class Translate_Page_For_Posts_Test extends PLL_UnitTestCase {
 		$return = $this->frontend->static_pages->translate_page_for_posts( get_option( 'page_for_posts' ) );
 
 		$this->assertEquals( $fr, $return );
-
 	}
 
 	public function test_translate_page_for_posts_when_page_for_posts_has_no_translations() {

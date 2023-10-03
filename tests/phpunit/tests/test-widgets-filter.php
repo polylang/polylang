@@ -129,7 +129,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		$pll_admin->posts = new PLL_CRUD_Posts( $pll_admin );
 
 		$pll_admin->pref_lang = self::$model->get_language( 'en' );
-		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$filename = __DIR__ . '/../data/image.jpg';
 
 		$en = self::factory()->attachment->create_upload_object( $filename );
 		wp_update_post(

@@ -9,7 +9,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 $admin_body_class = array( 'pll-wizard', 'wp-core-ui' );
 if ( is_rtl() ) {
 	$admin_body_class[] = 'rtl';

@@ -12,7 +12,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		@mkdir( WP_CONTENT_DIR . '/polylang' );
-		copy( dirname( __FILE__ ) . '/../data/wpml-config.xml', WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
+		copy( __DIR__ . '/../data/wpml-config.xml', WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 
 		require_once POLYLANG_DIR . '/include/api.php';
 	}

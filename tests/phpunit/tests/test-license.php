@@ -123,6 +123,5 @@ class License_Test extends PLL_UnitTestCase {
 		$this->assertArrayHasKey( 'key', $licenses['polylang-pro'] );
 		$this->assertEquals( $this->license->license_key, $licenses['polylang-pro']['key'] );
 		$this->assertArrayHasKey( 'data', $licenses['polylang-pro'] );
-
 	}
 }

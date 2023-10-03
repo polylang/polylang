@@ -20,7 +20,6 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		$links_model = self::$model->get_links_model();
 		$this->pll_admin = new PLL_Admin( $links_model );
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
-
 	}
 
 	public function test_parent_page_with_existing_translation_when_changing_post_language() {
@@ -52,7 +51,6 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		$child_page = get_post( $child_page_id );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $child_page_id )->slug );
 		$this->assertEquals( get_post( $child_page_id )->post_parent, $fr );
-
 	}
 
 	public function test_parent_page_with_no_translation_when_changing_post_language() {
@@ -79,7 +77,6 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		$child_page = get_post( $child_page_id );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $child_page_id )->slug );
 		$this->assertEquals( get_post( $child_page_id )->post_parent, 0 );
-
 	}
 
 	public function test_should_not_modify_parent_when_its_post_type_is_untranslatable() {

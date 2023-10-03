@@ -124,12 +124,12 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 					$item->classes = array( 'pll-parent-menu-item' );
 					$item->menu_order += $offset;
 					$new_items[] = $item;
-					$offset++;
+					++$offset;
 				}
 
 				$i = 0; // for incrementation of menu order only in case of dropdown
 				foreach ( $the_languages as $lang ) {
-					$i++;
+					++$i;
 					$lang_item = clone $item;
 					$lang_item->ID = $lang_item->ID . '-' . $lang['slug']; // A unique ID
 					$lang_item->title = $this->get_item_title( $lang['flag'], $lang['name'], $options );
@@ -145,9 +145,9 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 						$lang_item->menu_order += $offset;
 					}
 					$new_items[] = $lang_item;
-					$offset++;
+					++$offset;
 				}
-				$offset--;
+				--$offset;
 			} else {
 				$item->menu_order += $offset;
 				$new_items[] = $item;

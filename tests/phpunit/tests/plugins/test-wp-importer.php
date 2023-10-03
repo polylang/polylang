@@ -72,7 +72,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 				$new[ $i ] = $map;
 			}
 
-			$i++;
+			++$i;
 		}
 
 		$_POST = array( 'imported_authors' => $authors, 'user_map' => $mapping, 'user_new' => $new );
@@ -87,7 +87,7 @@ class WP_Importer_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_simple_import() {
-		$this->_import_wp( dirname( __FILE__ ) . '/../../data/test-import.xml' );
+		$this->_import_wp( __DIR__ . '/../../data/test-import.xml' );
 
 		// languages
 		$this->assertEqualSets( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
