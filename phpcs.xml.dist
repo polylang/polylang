@@ -95,6 +95,15 @@
 
 	<!-- The following individual rules are planned for WPCS 3.0 -->
 	<rule ref="Generic.CodeAnalysis.EmptyPHPStatement" />
+	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter">
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClass"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassBeforeLastUsed"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassAfterLastUsed"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInImplementedInterface"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInImplementedInterfaceBeforeLastUsed"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInImplementedInterfaceAfterLastUsed"/>
+	</rule>
 	<rule ref="Generic.VersionControl.GitMergeConflict" />
 	<rule ref="Generic.WhiteSpace.IncrementDecrementSpacing" />
 	<rule ref="Generic.WhiteSpace.LanguageConstructSpacing" />
@@ -135,8 +144,10 @@
 	<rule ref="Universal.Namespaces.DisallowCurlyBraceSyntax" />
 	<rule ref="Universal.Namespaces.DisallowDeclarationWithoutName" />
 	<rule ref="Universal.Namespaces.OneDeclarationPerFile" />
+	<!-- <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames" /> -->
 	<rule ref="Universal.Operators.DisallowShortTernary" />
 	<rule ref="Universal.Operators.DisallowStandalonePostIncrementDecrement" />
+	<!--  <rule ref="Universal.Operators.StrictComparisons" /> -->
 	<rule ref="Universal.Operators.TypeSeparatorSpacing" />
 	<rule ref="Universal.UseStatements.DisallowMixedGroupUse" />
 	<rule ref="Universal.UseStatements.KeywordSpacing" />
