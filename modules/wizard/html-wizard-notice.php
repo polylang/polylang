@@ -9,7 +9,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 
 $wizard_url = add_query_arg(
 	array(

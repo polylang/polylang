@@ -359,25 +359,23 @@ abstract class PLL_Sync_Metas {
 					// If the meta key is not present in the source object, delete all values
 					delete_metadata( $this->meta_type, $to, wp_slash( $key ) );
 				}
+			} elseif ( ! empty( $tr_metas[ $key ] ) && 1 === count( $metas[ $key ] ) && 1 === count( $tr_metas[ $key ] ) ) {
+				// One custom field to update
+				$value = reset( $metas[ $key ] );
+				$value = maybe_unserialize( $value );
+				$to_value = $this->maybe_translate_value( $value, $key, $from, $to, $lang );
+				update_metadata( $this->meta_type, $to, wp_slash( $key ), is_object( $to_value ) ? $to_value : wp_slash( $to_value ) );
 			} else {
-				if ( ! empty( $tr_metas[ $key ] ) && 1 === count( $metas[ $key ] ) && 1 === count( $tr_metas[ $key ] ) ) {
-					// One custom field to update
-					$value = reset( $metas[ $key ] );
+				// Multiple custom fields, either in the source or the target
+				if ( ! empty( $tr_metas[ $key ] ) ) {
+					// The synchronization of multiple values custom fields is easier if we delete all metas first
+					delete_metadata( $this->meta_type, $to, wp_slash( $key ) );
+				}
+
+				foreach ( $metas[ $key ] as $value ) {
 					$value = maybe_unserialize( $value );
 					$to_value = $this->maybe_translate_value( $value, $key, $from, $to, $lang );
-					update_metadata( $this->meta_type, $to, wp_slash( $key ), is_object( $to_value ) ? $to_value : wp_slash( $to_value ) );
-				} else {
-					// Multiple custom fields, either in the source or the target
-					if ( ! empty( $tr_metas[ $key ] ) ) {
-						// The synchronization of multiple values custom fields is easier if we delete all metas first
-						delete_metadata( $this->meta_type, $to, wp_slash( $key ) );
-					}
-
-					foreach ( $metas[ $key ] as $value ) {
-						$value = maybe_unserialize( $value );
-						$to_value = $this->maybe_translate_value( $value, $key, $from, $to, $lang );
-						add_metadata( $this->meta_type, $to, wp_slash( $key ), is_object( $to_value ) ? $to_value : wp_slash( $to_value ) );
-					}
+					add_metadata( $this->meta_type, $to, wp_slash( $key ), is_object( $to_value ) ? $to_value : wp_slash( $to_value ) );
 				}
 			}
 		}

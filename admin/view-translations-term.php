@@ -7,7 +7,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly
-};
+}
 
 if ( isset( $term_id ) ) {
 	// Edit term form ?>

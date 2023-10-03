@@ -48,7 +48,6 @@ class PLL_Admin_Site_Health {
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
 		add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
-
 	}
 
 	/**

@@ -14,7 +14,7 @@ class Ajax_On_Front_Test extends PLL_Ajax_UnitTestCase {
 		// Copy the language file.
 		@mkdir( DIR_TESTDATA );
 		@mkdir( WP_LANG_DIR );
-		copy( dirname( __FILE__ ) . '/../data/fr_FR.mo', WP_LANG_DIR . '/fr_FR.mo' );
+		copy( __DIR__ . '/../data/fr_FR.mo', WP_LANG_DIR . '/fr_FR.mo' );
 	}
 
 	public function tear_down() {

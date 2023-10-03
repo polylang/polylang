@@ -5,7 +5,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly
-};
+}
 
 // Default directory to store user data such as custom flags
 if ( ! defined( 'PLL_LOCAL_DIR' ) ) {

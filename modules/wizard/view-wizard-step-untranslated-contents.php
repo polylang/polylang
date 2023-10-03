@@ -9,7 +9,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 
 $languages_list = $this->model->get_languages_list();
 ?>

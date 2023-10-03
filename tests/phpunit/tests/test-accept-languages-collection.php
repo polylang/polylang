@@ -113,5 +113,4 @@ class Accept_Languages_Collection_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( $zh_cn->slug, $best_match );
 	}
-
 }

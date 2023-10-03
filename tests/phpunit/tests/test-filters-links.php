@@ -207,7 +207,7 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 
 	public function test_get_custom_logo() {
 		// Setup logo
-		$filename = dirname( __FILE__ ) . '/../data/image.jpg';
+		$filename = __DIR__ . '/../data/image.jpg';
 		$contents = file_get_contents( $filename ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$upload   = wp_upload_bits( basename( $filename ), null, $contents );
 		$custom_logo_url = $upload['url'];

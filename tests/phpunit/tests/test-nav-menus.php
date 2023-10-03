@@ -329,7 +329,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 			$options['hide_if_empty'] = 0; // FIXME for some reason the languages counts are 0 even if I manually call clean_languages_cache()
 			update_post_meta( $item_id, '_pll_menu_item', $options );
-		};
+		}
 
 		// Frontend to test the displayed menu.
 		$frontend = new PLL_Frontend( $this->links_model );

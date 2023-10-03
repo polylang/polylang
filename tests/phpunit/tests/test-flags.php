@@ -12,7 +12,7 @@ class Flags_Test extends PLL_UnitTestCase {
 		self::create_language( 'fr_FR' );
 
 		@mkdir( WP_CONTENT_DIR . '/polylang' );
-		copy( dirname( __FILE__ ) . '/../data/fr_FR.png', WP_CONTENT_DIR . '/polylang/fr_FR.png' );
+		copy( __DIR__ . '/../data/fr_FR.png', WP_CONTENT_DIR . '/polylang/fr_FR.png' );
 	}
 
 	public static function wpTearDownAfterClass() {

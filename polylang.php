@@ -39,7 +39,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 
 if ( defined( 'POLYLANG_VERSION' ) ) {
 	// The user is attempting to activate a second plugin instance, typically Polylang and Polylang Pro.

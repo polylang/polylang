@@ -7,7 +7,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 
 if ( $polylang->model->has_languages() ) {
 	if ( ! defined( 'PLL_WPML_COMPAT' ) || PLL_WPML_COMPAT ) {

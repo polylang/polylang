@@ -7,6 +7,6 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
-};
+}
 
 PLL_Integrations::instance()->dm = new PLL_Domain_Mapping();

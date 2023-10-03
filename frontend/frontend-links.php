@@ -29,7 +29,6 @@ class PLL_Frontend_Links extends PLL_Links {
 
 		$this->curlang = &$polylang->curlang;
 		$this->cache = new PLL_Cache();
-
 	}
 
 	/**

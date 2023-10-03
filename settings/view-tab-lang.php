@@ -7,7 +7,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly
-};
+}
 ?>
 <div id="col-container">
 	<div id="col-right">

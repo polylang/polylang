@@ -1,7 +1,6 @@
 <?php
 
 abstract class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
-
 	use PLL_UnitTestCase_Trait;
 
 	protected static function register_post_types_and_taxonomies() {

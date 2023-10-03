@@ -27,7 +27,7 @@ class Install_Test extends PLL_UnitTestCase {
 
 		do_action( 'activate_' . POLYLANG_BASENAME );
 
-		include_once dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/uninstall.php';
+		include_once dirname( __DIR__, 3 ) . '/uninstall.php';
 		new PLL_Uninstall();
 
 		// Constant PLL_REMOVE_ALL_DATA undefined => nothing deleted
