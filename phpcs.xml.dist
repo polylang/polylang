@@ -39,6 +39,7 @@
 	<rule ref="WordPress">
 		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.Found"/>
 		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter" /><!-- Included in WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -->
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
