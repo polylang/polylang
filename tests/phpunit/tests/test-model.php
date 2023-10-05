@@ -302,4 +302,3 @@ class Model_Test extends PLL_UnitTestCase {
 		}
 	}
 }
-

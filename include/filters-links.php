@@ -200,4 +200,3 @@ class PLL_Filters_Links {
 		return $this->model->is_translated_post_type( $post_type ) && 'post' !== $post_type ? $this->links_model->switch_language_in_link( $link, $this->curlang ) : $link;
 	}
 }
-

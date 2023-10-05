@@ -52,4 +52,3 @@ final class PLL_WPSEO_OGP extends Abstract_Indexable_Presenter {
 		return $this->locale;
 	}
 }
-
