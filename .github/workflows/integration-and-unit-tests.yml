@@ -17,7 +17,7 @@ on:
 
 jobs:
   testing:
-    name: WP ${{ matrix.wordpress-version }} + PHP ${{ matrix.php-version }} + MS ${{ matrix.is-multisite }} + Allowed to fail ${{ matrix.allow-failure }} 
+    name: WP ${{ matrix.wordpress-version }} + PHP ${{ matrix.php-version }} + MS ${{ matrix.is-multisite }} + Allowed to fail ${{ matrix.allow-failure }}
 
     runs-on: ubuntu-latest
 
@@ -62,7 +62,7 @@ jobs:
             is-multisite: 0
             allow-failure: true
           - wordpress-version: 'nightly'
-            php-version: '8.2'
+            php-version: '8.3'
             is-multisite: 0
             allow-failure: true
 
