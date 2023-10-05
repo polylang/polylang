@@ -73,14 +73,14 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 		// Then relaunch the context to filter home and site URLs with the secondary domain.
 		add_filter(
 			'site_url',
-			function( $url ) {
+			function ( $url ) {
 				return str_replace( $this->main_domain, $this->secondary_domain, $url );
 			},
 			1
 		);
 		add_filter(
 			'home_url',
-			function( $url ) {
+			function ( $url ) {
 				return str_replace( $this->main_domain, $this->secondary_domain, $url );
 			},
 			1

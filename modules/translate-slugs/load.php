@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( $polylang->model->has_languages() ) {
 	add_filter(
 		'pll_settings_modules',
-		function( $modules ) {
+		function ( $modules ) {
 			$modules[] = 'PLL_Settings_Preview_Translate_Slugs';
 			return $modules;
 		}

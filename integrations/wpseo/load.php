@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action(
 	'plugins_loaded',
-	function() {
+	function () {
 		if ( defined( 'WPSEO_VERSION' ) ) {
 			add_action( 'pll_init', array( PLL_Integrations::instance()->wpseo = new PLL_WPSEO(), 'init' ) );
 		}

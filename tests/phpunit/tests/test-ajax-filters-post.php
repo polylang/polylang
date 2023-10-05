@@ -226,7 +226,7 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 
 		add_filter(
 			'pll_ajax_posts_not_translated_args',
-			function( $args ) {
+			function ( $args ) {
 				$args['numberposts'] = 4;
 				return $args;
 			}

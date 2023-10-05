@@ -6,9 +6,9 @@
  * Tag suggest in quick edit
  */
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 		$.ajaxPrefilter(
-			function( options, originalOptions, jqXHR ) {
+			function ( options, originalOptions, jqXHR ) {
 				if ( 'string' === typeof options.data && -1 !== options.data.indexOf( 'action=ajax-tag-search' ) && ( lang = $( ':input[name="inline_lang_choice"]' ).val() ) ) {
 					options.data = 'lang=' + lang + '&' + options.data;
 				}
@@ -21,7 +21,7 @@ jQuery(
  * Quick edit
  */
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
 				const form = mutation.addedNodes[0];
@@ -41,7 +41,7 @@ jQuery(
 						// Modify category checklist and parent dropdown on language change.
 						select.addEventListener(
 							'change',
-							function( event ) {
+							function ( event ) {
 								const newLang = event.target.value;
 								filter_terms( newLang );
 								filter_pages( newLang );
@@ -56,13 +56,13 @@ jQuery(
 						if ( "undefined" != typeof( pll_term_languages ) ) {
 							$.each(
 								pll_term_languages,
-								function( lg, term_tax ) {
+								function ( lg, term_tax ) {
 									$.each(
 										term_tax,
-										function( tax, terms ) {
+										function ( tax, terms ) {
 											$.each(
 												terms,
-												function( i ) {
+												function ( i ) {
 													id = '#' + tax + '-' + pll_term_languages[ lg ][ tax ][ i ];
 													lang == lg ? $( id ).show() : $( id ).hide();
 												}
@@ -81,10 +81,10 @@ jQuery(
 						if ( "undefined" != typeof( pll_page_languages ) ) {
 							$.each(
 								pll_page_languages,
-								function( lg, pages ) {
+								function ( lg, pages ) {
 									$.each(
 										pages,
-										function( i ) {
+										function ( i ) {
 											v = $( '#post_parent option[value="' + pll_page_languages[ lg ][ i ] + '"]' );
 											lang == lg ? v.show() : v.hide();
 										}
@@ -108,14 +108,14 @@ jQuery(
  * Acts on ajaxSuccess event
  */
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 		$( document ).ajaxSuccess(
-			function( event, xhr, settings ) {
+			function ( event, xhr, settings ) {
 				function update_rows( post_id ) {
 					// collect old translations
 					var translations = new Array();
 					$( '.translation_' + post_id ).each(
-						function() {
+						function () {
 							translations.push( $( this ).parent().parent().attr( 'id' ).substring( 5 ) );
 						}
 					);
@@ -133,14 +133,14 @@ jQuery(
 					$.post(
 						ajaxurl,
 						data,
-						function( response ) {
+						function ( response ) {
 							if ( response ) {
 								// Since WP changeset #52710 parseAjaxReponse() return content to notice the user in a HTML tag with ajax-response id.
 								// Not to disturb this behaviour by executing another ajax request in the ajaxSuccess event, we need to target another unexisting id.
 								var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
 								$.each(
 									res.responses,
-									function() {
+									function () {
 										if ( 'row' == this.what ) {
 											// data is built with a call to WP_Posts_List_Table::single_row method
 											// which uses internally other WordPress methods which escape correctly values.
@@ -170,7 +170,7 @@ jQuery(
  * When clicking on attach link, filters find post list per media language
  */
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 		$.ajaxPrefilter(
 			function ( options, originalOptions, jqXHR ) {
 				if ( 'string' === typeof options.data && -1 !== options.data.indexOf( 'action=find_posts' ) ) {

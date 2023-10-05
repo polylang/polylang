@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action(
 	'plugins_loaded',
-	function() {
+	function () {
 		if ( class_exists( 'custom_field_template' ) ) {
 			PLL_Integrations::instance()->cft = new PLL_Cft();
 			PLL_Integrations::instance()->cft->init();

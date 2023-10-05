@@ -5,7 +5,7 @@
  */
 
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 		// biography
 		// FIXME there is probably a more efficient way to do this
 		var td = $( '#description' ).parent();
@@ -14,7 +14,7 @@ jQuery(
 		td.children().remove();
 
 		$( '.biography' ).each(
-			function(){
+			function () {
 				lang = $( this ).attr( 'name' ).split( '___' );
 				desc = d.clone();
 				desc.attr( 'name', 'description_' + lang[0] );
