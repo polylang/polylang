@@ -95,9 +95,8 @@ class Admin_Model_Test extends PLL_UnitTestCase {
 
 		$nolang = self::$model->get_objects_with_no_lang();
 
-		// Sort arrays as values don't have necessarily the same keys and order.
-		$this->assertTrue( sort( $expected_posts ), sort( $nolang['posts'] ) );
-		$this->assertTrue( sort( $expected_terms ), sort( $nolang['terms'] ) );
+		$this->assertSameSets( $expected_posts, $nolang['posts'] );
+		$this->assertSameSets( $expected_terms, $nolang['terms'] );
 
 		_unregister_post_type( 'cpt' );
 		_unregister_taxonomy( 'tax' );
