@@ -47,4 +47,3 @@ class Duplicate_Post_Test extends PLL_UnitTestCase {
 		$this->assertSame( 0, self::$model->post->get( $new_id, 'fr' ) );
 	}
 }
-

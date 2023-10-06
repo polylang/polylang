@@ -50,7 +50,7 @@ export const initializeConfimationModal = () => {
 				title: __( 'Change language', 'polylang' ),
 				minWidth: 600,
 				maxWidth: '100%',
-				open: function( event, ui ) {
+				open: function ( event, ui ) {
 					// Change dialog box position for rtl language
 					if ( jQuery( 'body' ).hasClass( 'rtl' ) ) {
 						jQuery( this ).parent().css(
@@ -61,20 +61,20 @@ export const initializeConfimationModal = () => {
 						);
 					}
 				},
-				close: function( event, ui ) {
+				close: function ( event, ui ) {
 					// When we're closing the dialog box we need to cancel the language change as we click on Cancel button.
 					confirmDialog( 'no' );
 				},
 				buttons: [
 					{
 						text: __( 'OK', 'polylang' ),
-						click: function( event ) {
+						click: function ( event ) {
 							confirmDialog( 'yes' );
 						}
 					},
 					{
 						text: __( 'Cancel', 'polylang' ),
-						click: function( event ) {
+						click: function ( event ) {
 							confirmDialog( 'no' );
 						}
 					}

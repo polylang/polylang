@@ -37,6 +37,9 @@
 	</rule>
 
 	<rule ref="WordPress">
+		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.Found"/>
+		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition"/>
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter" /><!-- Included in WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -->
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
@@ -45,11 +48,11 @@
 		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure"/>
+		<exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames" />
+		<exclude name="Universal.Operators.StrictComparisons" />
 		<exclude name="WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound"/>
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned"/>
-		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.Found"/>
-		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.FoundInTernaryCondition"/>
-		<exclude name="WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition"/>
+		<exclude name="WordPress.CodeAnalysis.AssignmentInTernaryCondition.FoundInTernaryCondition"/>
 		<exclude name="WordPress.DB.DirectDatabaseQuery.DirectQuery"/>
 		<exclude name="WordPress.DB.DirectDatabaseQuery.NoCaching"/>
 		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_meta_key"/>
@@ -57,7 +60,6 @@
 		<exclude name="WordPress.Files.FileName"/>
 		<exclude name="WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode" />
 		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
-		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
 		<exclude name="WordPress.WP.EnqueuedResources.NonEnqueuedScript" />
 		<exclude name="WordPress.WP.EnqueuedResourceParameters.NotInFooter" />
 		<exclude name="WordPress.WP.GlobalVariablesOverride.Prohibited" />

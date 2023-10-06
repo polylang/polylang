@@ -3,7 +3,7 @@
  */
 
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 		var addLanguageForm = $( '.languages-step' ); // Form element.
 		var languageFields = $( '#language-fields' ); // Element where to append hidden fields for creating language.
 		var languagesTable = $( '#languages' ); // Table element contains languages list to create.
@@ -55,7 +55,7 @@ jQuery(
 			languagesListTable.on(
 				'click',
 				'span[data-language=' + language.locale + ']',
-				function( event ) {
+				function ( event ) {
 					event.preventDefault();
 					// Remove line in languages table.
 					$( this ).parents( 'tr' ).remove();
@@ -139,7 +139,7 @@ jQuery(
 		 */
 		languagesList.on(
 			'selectmenuchange',
-			function() {
+			function () {
 				hideError();;
 			}
 		);
@@ -148,7 +148,7 @@ jQuery(
 		 */
 		$( '#add-language' ).on(
 			'click',
-			function( event ) {
+			function ( event ) {
 				hideError();
 				var selectedOption = event.currentTarget.form.lang_list.options[event.currentTarget.form.lang_list.selectedIndex];
 				if ( '' !== selectedOption.value && ! languagesMap.has( selectedOption.value ) ) {
@@ -182,7 +182,7 @@ jQuery(
 		 */
 		addLanguageForm.on(
 			'submit',
-			function( event ) {
+			function ( event ) {
 				// Verify if there is at least one language.
 				var isLanguagesAlreadyDefined = definedLanguagesListTable.children().length > 0;
 				var selectedLanguage = $( '#lang_list' ).val();
@@ -260,7 +260,7 @@ jQuery(
 				title: pll_wizard_params.i18n_dialog_title,
 				minWidth: 600,
 				maxWidth: '100%',
-				open: function( event, ui ) {
+				open: function ( event, ui ) {
 					// Change dialog box position for rtl language
 					if ( $( 'body' ).hasClass( 'rtl' ) ) {
 						$( this ).parent().css(
@@ -279,19 +279,19 @@ jQuery(
 				buttons: [
 				{
 					text: pll_wizard_params.i18n_dialog_yes_button,
-					click: function( event ) {
+					click: function ( event ) {
 						confirmDialog( 'yes' );
 					}
 				},
 				{
 					text: pll_wizard_params.i18n_dialog_no_button,
-					click: function( event ) {
+					click: function ( event ) {
 						confirmDialog( 'no' );
 					}
 				},
 				{
 					text: pll_wizard_params.i18n_dialog_ignore_button,
-					click: function( event ) {
+					click: function ( event ) {
 						confirmDialog( 'ignore' );
 					}
 				}

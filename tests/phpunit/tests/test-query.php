@@ -775,7 +775,7 @@ class Query_Test extends PLL_UnitTestCase {
 		// Assign the post type in a hook after our pare_query action
 		add_action(
 			'pre_get_posts',
-			function( $query ) {
+			function ( $query ) {
 				if ( empty( $query->query_vars['post_type'] ) ) {
 					$query->set( 'post_type', 'trcpt' );
 				}

@@ -19,7 +19,7 @@ import filterPathMiddleware from './lib/filter-path-middleware';
  * @since 2.5
  */
 wp.apiFetch.use(
-	function( options, next ) {
+	function ( options, next ) {
 		/*
 		 * If options.url is defined, this is not a REST request but a direct call to post.php for legacy metaboxes.
 		 * If `filteredRoutes` is not defined, return early.
@@ -57,7 +57,7 @@ function getCurrentLanguage() {
  * @param {APIFetchOptions} options
  * @returns {APIFetchOptions}
  */
-function addLanguageParameter ( options ) {
+function addLanguageParameter( options ) {
 	if ( 'undefined' === typeof options.data || null === options.data ) {
 		// GET
 		options.path += ( ( options.path.indexOf( '?' ) >= 0 ) ? '&lang=' : '?lang=' ) + getCurrentLanguage();
@@ -84,7 +84,7 @@ function addLanguageParameter ( options ) {
  * @since 3.0
  */
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 		// Initialize current language to be able to compare if it changes.
 		initializeLanguageOldValue();
 
@@ -92,7 +92,7 @@ jQuery(
 		// Ajax for changing the post's language in the languages metabox
 		$( '.post_lang_choice' ).on(
 			'change',
-			function( event ) {
+			function ( event ) {
 				const { select, dispatch, subscribe } = wp.data;
 				const emptyPost                       = isEmptyPost();
 				const { addQueryArgs }                = wp.url;
@@ -136,7 +136,7 @@ jQuery(
 						$.post(
 							ajaxurl,
 							data,
-							function() {
+							function () {
 								blockEditorSavePostAndReloadPage();
 							}
 						);
@@ -178,9 +178,9 @@ jQuery(
 
 					// Listen if the savePost is completely done by subscribing to its events.
 					const savePostIsDone = new Promise(
-						function( resolve, reject ) {
+						function ( resolve, reject ) {
 							unsubscribe = subscribe(
-								function() {
+								function () {
 									const post                 = select( 'core/editor').getCurrentPost();
 									const { id, status, type } = post;
 									const error                = select( 'core' )
@@ -215,16 +215,16 @@ jQuery(
 
 					// Process
 					savePostIsDone.then(
-						function() {
+						function () {
 							// If the post is well saved, we can reload the page
 							window.location.reload();
 						},
-						function() {
+						function () {
 							// If the post save failed
 							unsubscribe();
 						}
 					).catch(
-						function() {
+						function () {
 							// If an exception is thrown
 							unsubscribe();
 						}

@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action(
 	'plugins_loaded',
-	function() {
+	function () {
 		if ( defined( 'YARPP_VERSION' ) ) {
 			add_action( 'init', array( PLL_Integrations::instance()->yarpp = new PLL_Yarpp(), 'init' ) );
 		}

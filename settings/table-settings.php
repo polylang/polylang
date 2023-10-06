@@ -175,7 +175,7 @@ class PLL_Table_Settings extends WP_List_Table {
 		// Sort rows, lowest priority on top.
 		usort(
 			$items,
-			function( $a, $b ) {
+			function ( $a, $b ) {
 				return $a->priority > $b->priority ? 1 : -1;
 			}
 		);

@@ -12,7 +12,7 @@ if ( ! function_exists( 'did_filter' ) ) {
 
 	add_filter(
 		'all',
-		function( $hook_name ) {
+		function ( $hook_name ) {
 			global $wp_filters;
 
 			if ( ! isset( $wp_filters[ $hook_name ] ) ) {

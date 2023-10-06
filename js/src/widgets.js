@@ -5,7 +5,7 @@
  */
 
 jQuery(
-	function( $ ) {
+	function ( $ ) {
 		var widgets_container,
 			widgets_selector,
 			flags,
@@ -55,7 +55,7 @@ jQuery(
 			widgets_container.on(
 				'click',
 				'.wp-block-legacy-widget',
-				function() {
+				function () {
 					add_flag( $( this ).find( '.widget' ) );
 				}
 			);
@@ -100,7 +100,7 @@ jQuery(
 
 			// Add flags on load.
 			$( widgets_selector, widgets_container ).each(
-				function() {
+				function () {
 					add_flag( this );
 				}
 			);
@@ -110,7 +110,7 @@ jQuery(
 		widgets_container.on(
 			'change',
 			'.pll-lang-choice',
-			function() {
+			function () {
 				add_flag( $( this ).parents( '.widget' ) );
 			}
 		);
@@ -123,7 +123,7 @@ jQuery(
 		$( '.widgets-sortables,.control-section-sidebar,.edit-widgets-main-block-list' ).on(
 			'change',
 			'.pll-dropdown',
-			function() {
+			function () {
 				var this_id = $( this ).parent().parent().parent().children( '.widget-id' ).attr( 'value' );
 				pll_toggle( $( '.no-dropdown-' + this_id ), true != $( this ).prop( 'checked' ) );
 			}
@@ -133,11 +133,11 @@ jQuery(
 		var options = ['-show_flags', '-show_names'];
 		$.each(
 			options,
-			function( i, v ) {
+			function ( i, v ) {
 				$( '.widgets-sortables,.control-section-sidebar,.edit-widgets-main-block-list' ).on(
 					'change',
 					'.pll' + v,
-					function() {
+					function () {
 						var this_id = $( this ).parent().parent().parent().children( '.widget-id' ).attr( 'value' );
 						if ( true != $( this ).prop( 'checked' ) ) {
 							$( '#widget-' + this_id + options[ 1 - i ] ).prop( 'checked', true );

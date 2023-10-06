@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action(
 	'plugins_loaded',
-	function() {
+	function () {
 		if ( defined( 'WP_SWEEP_VERSION' ) ) {
 			PLL_Integrations::instance()->wp_sweep = new PLL_WP_Sweep();
 			PLL_Integrations::instance()->wp_sweep->init();
