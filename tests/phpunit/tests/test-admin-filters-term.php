@@ -429,11 +429,11 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		self::$model->term->set_language( $en, 'en' );
 
 		require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
-		$taxonomy['args'] = get_taxonomy( 'category' );
+		$box = array( 'args' => get_taxonomy( 'category' ) );
 		$this->pll_admin->set_current_language();
 
 		ob_start();
-		wp_nav_menu_item_taxonomy_meta_box( null, $taxonomy );
+		wp_nav_menu_item_taxonomy_meta_box( null, $box );
 		$out = ob_get_clean();
 
 		$this->assertNotFalse( strpos( $out, 'test' ) );
@@ -444,7 +444,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$this->pll_admin->set_current_language();
 
 		ob_start();
-		wp_nav_menu_item_taxonomy_meta_box( null, $taxonomy );
+		wp_nav_menu_item_taxonomy_meta_box( null, $box );
 		$out = ob_get_clean();
 
 		$this->assertNotFalse( strpos( $out, 'test' ) );

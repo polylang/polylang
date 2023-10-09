@@ -267,7 +267,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $from, array( 'fr' => $to ) );
 
 		$key = add_post_meta( $from, 'key', 'value' );
-		$metas[ $key ] = array( 'key' => 'key', 'value' => 'value' );
+		$metas = array(
+			$key => array( 'key' => 'key', 'value' => 'value' ),
+		);
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
@@ -635,7 +637,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		add_post_meta( $to, 'key2', 'value1' );
 		add_post_meta( $to, 'key2', 'value2' );
 		$key = add_post_meta( $from, 'key2', 'value1' );
-		$metas[ $key ] = array( 'key' => 'key2', 'value' => 'value1' );
+		$metas = array(
+			$key => array( 'key' => 'key2', 'value' => 'value1' ),
+		);
 
 		$this->pll_admin->posts = new PLL_CRUD_Posts( $this->pll_admin );
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );

@@ -421,11 +421,13 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$posts = get_posts( array( 'fields' => 'ids', 'tag__in' => array( $tag ) ) );
 		$this->assertEmpty( $posts );
 
-		$tax_query[] = array(
-			'taxonomy' => 'post_tag',
-			'field'    => 'term_id',
-			'terms'    => $tag,
-			'operator' => 'IN',
+		$tax_query = array(
+			array(
+				'taxonomy' => 'post_tag',
+				'field'    => 'term_id',
+				'terms'    => $tag,
+				'operator' => 'IN',
+			),
 		);
 
 		$posts = get_posts( array( 'fields' => 'ids', 'tax_query' => $tax_query ) );
@@ -451,8 +453,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		ob_start();
 		do_action( 'admin_print_footer_scripts' );
 		$footer = ob_get_clean();
-
-		$terms['fr'] = array( 'category' => array( self::$model->term->get( $term_id, 'fr' ) ) );
 
 		$this->assertEquals( 1, preg_match( '/var pll_term_languages = {"fr":{"category":\[(\d+),\d+\]}/', $footer, $matches ) );
 		$this->assertEquals( $term_id, $matches[1] );
