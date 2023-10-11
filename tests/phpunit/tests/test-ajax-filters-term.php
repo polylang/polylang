@@ -88,9 +88,6 @@ class Ajax_Filters_Term_Test extends PLL_Ajax_UnitTestCase {
 		self::factory()->post->create( array( 'tags_input' => 'test' ) );
 		self::factory()->post->create( array( 'tags_input' => 'essai' ) );
 
-		// The post_tag.
-		$term_id = self::factory()->term->create( array( 'taxonomy' => 'post_tag' ) );
-
 		$_POST = array(
 			'action'     => 'term_lang_choice',
 			'_pll_nonce' => wp_create_nonce( 'pll_language' ),

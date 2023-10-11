@@ -363,6 +363,6 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->frontend->init();
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		add_action( 'pre_get_posts', array( $this, '_action_pre_get_posts' ) );
-		$posts = get_posts();
+		get_posts(); // fires the action and performs the assertions.
 	}
 }

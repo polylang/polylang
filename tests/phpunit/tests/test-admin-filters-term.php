@@ -142,7 +142,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 			'tax_input'          => array( 'post_tag' => 'new_tag,test_tag' ),
 		);
 		do_action( 'load-edit.php' );
-		$done = bulk_edit_posts( $_REQUEST );
+		bulk_edit_posts( $_REQUEST );
 
 		$tags_en = wp_get_post_tags( $posts[0] );
 		$new_en = wp_filter_object_list( $tags_en, array( 'name' => 'new_tag' ), 'AND', 'term_id' );
@@ -168,7 +168,7 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 		$_GET['inline_lang_choice'] = $_REQUEST['inline_lang_choice'] = 'fr';
 		$_GET['tax_input']  = $_REQUEST['tax_input'] = array( 'post_tag' => 'third_tag' );
 		do_action( 'load-edit.php' );
-		$done = bulk_edit_posts( $_REQUEST );
+		bulk_edit_posts( $_REQUEST );
 
 		$tags = wp_get_post_tags( $posts[0] );
 		$third = wp_filter_object_list( $tags, array( 'name' => 'third_tag' ), 'AND', 'term_id' );

@@ -27,12 +27,12 @@ class Canonical_Domain_Test extends PLL_UnitTestCase {
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
-		$this->links_model = self::$model->get_links_model();
-		$frontend          = new PLL_Frontend( $this->links_model );
-		$frontend->links   = new PLL_Frontend_Links( $frontend );
-		$frontend->curlang = self::$model->get_language( 'fr' );
-		$filters_links     = new PLL_Frontend_Filters_Links( $frontend );
-		$this->canonical   = new PLL_Canonical( $frontend );
+		$this->links_model       = self::$model->get_links_model();
+		$frontend                = new PLL_Frontend( $this->links_model );
+		$frontend->links         = new PLL_Frontend_Links( $frontend );
+		$frontend->curlang       = self::$model->get_language( 'fr' );
+		$frontend->filters_links = new PLL_Frontend_Filters_Links( $frontend );
+		$this->canonical         = new PLL_Canonical( $frontend );
 
 		$GLOBALS['wp_actions']['template_redirect'] = 1; // For the home_url filter.
 	}

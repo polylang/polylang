@@ -68,7 +68,7 @@ class Links_Multi_Domains_To_One_Test extends PLL_UnitTestCase {
 		$this->init_links_model();
 		$frontend = new PLL_Frontend( $this->links_model );
 		$frontend->init();
-		$languages = $frontend->model->get_languages_list(); // Create the transient with main domain.
+		$frontend->model->get_languages_list(); // Create the transient with main domain.
 
 		// Then relaunch the context to filter home and site URLs with the secondary domain.
 		add_filter(

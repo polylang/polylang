@@ -231,7 +231,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_cpt() {
-		$frontend = new PLL_Frontend( $this->links_model );
+		new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		register_post_type( 'book' ); // translated
@@ -253,7 +253,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_tax() {
-		$frontend = new PLL_Frontend( $this->links_model );
+		new PLL_Frontend( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		register_post_type( 'book' ); // translated

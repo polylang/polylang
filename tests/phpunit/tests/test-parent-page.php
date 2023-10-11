@@ -48,7 +48,6 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		do_action( 'load-post.php' );
 		edit_post();
 
-		$child_page = get_post( $child_page_id );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $child_page_id )->slug );
 		$this->assertEquals( get_post( $child_page_id )->post_parent, $fr );
 	}
@@ -74,7 +73,6 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 		do_action( 'load-post.php' );
 		edit_post();
 
-		$child_page = get_post( $child_page_id );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $child_page_id )->slug );
 		$this->assertEquals( get_post( $child_page_id )->post_parent, 0 );
 	}
@@ -89,7 +87,6 @@ class Parent_Page_Test extends PLL_UnitTestCase {
 
 		wp_update_post( array( 'ID' => $child_page_id, 'post_parent' => $parent_id ) );
 
-		$child_page = get_post( $child_page_id );
 		$this->assertEquals( get_post( $child_page_id )->post_parent, $parent_id, "The unstranlated parent post id should be {$parent_id}" );
 	}
 }
