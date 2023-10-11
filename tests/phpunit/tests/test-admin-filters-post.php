@@ -98,14 +98,14 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		);
 
 		do_action( 'load-edit.php' );
-		$done = bulk_edit_posts( $_REQUEST );
+		bulk_edit_posts( $_REQUEST );
 		$this->assertEquals( 'en', self::$model->post->get_language( $posts[0] )->slug );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $posts[1] )->slug );
 
 		// Second modify all languages
 		$_REQUEST['inline_lang_choice'] = $_GET['inline_lang_choice'] = 'fr';
 		do_action( 'load-edit.php' );
-		$done = bulk_edit_posts( $_REQUEST );
+		bulk_edit_posts( $_REQUEST );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $posts[0] )->slug );
 		$this->assertEquals( 'fr', self::$model->post->get_language( $posts[1] )->slug );
 	}
@@ -440,7 +440,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_categories_script_data_in_footer() {
-		$hook_suffix = $GLOBALS['hook_suffix'] = 'edit.php';
+		$GLOBALS['hook_suffix'] = 'edit.php';
 		set_current_screen( 'edit' );
 		$GLOBALS['wp_scripts'] = new WP_Scripts();
 		wp_default_scripts( $GLOBALS['wp_scripts'] );
@@ -465,8 +465,8 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$fr = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $fr, 'fr' );
 
-		$hook_suffix = $GLOBALS['hook_suffix'] = 'edit.php';
-		$_REQUEST['post_type'] = 'page';
+		$GLOBALS['hook_suffix'] = 'edit.php';
+		$_REQUEST['post_type']  = 'page';
 		set_current_screen();
 		$GLOBALS['wp_scripts'] = new WP_Scripts();
 		wp_default_scripts( $GLOBALS['wp_scripts'] );

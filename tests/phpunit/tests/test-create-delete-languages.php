@@ -111,8 +111,6 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_invalid_languages() {
-		global $wp_settings_errors;
-
 		$args = array(
 			'name'       => '',
 			'slug'       => 'en',

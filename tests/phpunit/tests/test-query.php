@@ -136,7 +136,7 @@ class Query_Test extends PLL_UnitTestCase {
 
 		// French Posts.
 		$french_posts_cat_1 = self::factory()->post->create_many( 3, array( 'post_type' => 'post' ) );
-		foreach ( $french_posts_cat_1 as $index => $post ) {
+		foreach ( $french_posts_cat_1 as $post ) {
 			$term = $is_translated_tax ? $first_cat_fr : $first_cat;
 			self::$model->post->set_language( $post, 'fr' );
 			wp_set_post_terms( $post, array( $term ), $taxonomy );
@@ -340,7 +340,7 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_untranslated_custom_tax() {
-		$term_id = self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+		self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
 		$post_id = self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 		wp_set_post_terms( $post_id, 'test', 'tax' );
 
@@ -380,8 +380,8 @@ class Query_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 		$this->assertEmpty( $this->frontend->links->get_translation_url( self::$model->get_language( 'fr' ) ) );
 
-		// Secondary query which would erroneously forces the language
-		$query = new WP_Query( array( 'post_type' => 'cpt', 'lang' => 'fr' ) );
+		// Secondary query which would erroneously forces the language.
+		new WP_Query( array( 'post_type' => 'cpt', 'lang' => 'fr' ) );
 		$this->assertEquals( array( get_post( $post_id ) ), $GLOBALS['wp_query']->posts );
 	}
 
@@ -570,7 +570,7 @@ class Query_Test extends PLL_UnitTestCase {
 	 */
 	public function test_untranslated_custom_tax_with_translated_cpt() {
 		register_taxonomy( 'tax', 'trcpt' );
-		$term_id = self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+		self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
 
 		$en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $en, 'en' );

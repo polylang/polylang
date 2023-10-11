@@ -23,7 +23,7 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 		_unregister_taxonomy( 'tax' );
 	}
 
-	public function filter_translated_post_type_in_settings( $post_types, $is_settings ) {
+	public function filter_translated_post_type_in_settings( $post_types ) {
 		$post_types[] = 'cpt';
 		return $post_types;
 	}
@@ -45,7 +45,7 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 		return $post_types;
 	}
 
-	public function filter_translated_taxonomy_in_settings( $taxonomies, $is_settings ) {
+	public function filter_translated_taxonomy_in_settings( $taxonomies ) {
 		$taxonomies[] = 'tax';
 		return $taxonomies;
 	}
@@ -100,7 +100,7 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_programmatically_translated_public_post_type() {
-		add_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ), 10, 2 );
+		add_filter( 'pll_get_post_types', array( $this, 'filter_translated_post_type_in_settings' ) );
 		register_post_type( 'cpt', array( 'public' => true, 'label' => 'CPT' ) );
 		$module = new PLL_Settings_CPT( $this->pll_env );
 
@@ -190,7 +190,7 @@ class Settings_CPT_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_programmatically_translated_public_taxonomy() {
-		add_filter( 'pll_get_taxonomies', array( $this, 'filter_translated_taxonomy_in_settings' ), 10, 2 );
+		add_filter( 'pll_get_taxonomies', array( $this, 'filter_translated_taxonomy_in_settings' ) );
 		register_taxonomy( 'tax', array( 'post' ), array( 'public' => true ) );
 		$module = new PLL_Settings_CPT( $this->pll_env );
 

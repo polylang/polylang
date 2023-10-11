@@ -33,7 +33,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		// create 3 menus
 		$menu_en = wp_create_nav_menu( 'menu_en' );
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Hello World' ) );
-		$item_id = wp_update_nav_menu_item(
+		wp_update_nav_menu_item(
 			$menu_en,
 			0,
 			array(
@@ -47,7 +47,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		$menu_fr = wp_create_nav_menu( 'menu_fr' );
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Bonjour' ) );
-		$item_id = wp_update_nav_menu_item(
+		wp_update_nav_menu_item(
 			$menu_fr,
 			0,
 			array(
@@ -61,7 +61,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 
 		$menu_0 = wp_create_nav_menu( 'menu_0' );
 		$post_id = self::factory()->post->create( array( 'post_title' => 'No language' ) );
-		$item_id = wp_update_nav_menu_item(
+		wp_update_nav_menu_item(
 			$menu_0,
 			0,
 			array(
@@ -424,7 +424,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 			'update-nav-menu-nonce' => wp_create_nonce( 'update-nav_menu' ),
 		);
 
-		$mods = set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
+		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$options = get_option( 'polylang' );
 		$this->assertEqualSets( array( 'en' => 2, 'fr' => 3 ), $options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
 		$options = get_option( 'theme_mods_' . get_stylesheet() );
@@ -454,7 +454,7 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 		$_GET['action'] = 'locations';
 		$_REQUEST['_wpnonce'] = wp_create_nonce( 'save-menu-locations' );
 
-		$mods = set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
+		set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
 		$options = get_option( 'polylang' );
 		$this->assertEqualSets( array( 'en' => 4, 'fr' => 5 ), $options['nav_menus'][ get_stylesheet() ][ $primary_location ] );
 		$options = get_option( 'theme_mods_' . get_stylesheet() );

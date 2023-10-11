@@ -100,7 +100,7 @@ class Email_Strings_Test extends PLL_UnitTestCase {
 		// Set PLL environment.
 		$admin = new PLL_Admin( $this->links_model );
 		$admin->init();
-		$frontend_filters = new PLL_Admin_Filters( $admin );
+		$admin->filters = new PLL_Admin_Filters( $admin );
 
 		$userdata = array(
 			'ID'        => $user_id,

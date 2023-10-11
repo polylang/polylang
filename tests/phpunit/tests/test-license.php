@@ -12,7 +12,7 @@ class License_Test extends PLL_UnitTestCase {
 		// Fake the http call to not connect to the Internet for doing tests.
 		add_filter(
 			'pre_http_request',
-			function ( $preempt, $parsed_args, $url ) {
+			function () {
 				return array(
 					'headers' => null,
 					'body'    => '{"success": true,"license": "valid","item_id": false,"item_name": "Polylang+Pro","license_limit": 1,"site_count": 1,"expires": "2020-05-28 23: 59: 59","activations_left": 0,"checksum": "11112222333344445555666677778888","payment_id": 9999,"customer_name": "","customer_email": "john@doe.com","price_id": "3"}',

@@ -118,7 +118,7 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 	public function test_sitemaps_untranslated_cpt_and_tax() {
 		$this->init();
 
-		$term_id = self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
+		self::factory()->term->create( array( 'taxonomy' => 'tax', 'name' => 'test' ) );
 		$post_id = self::factory()->post->create( array( 'post_type' => 'cpt' ) );
 		wp_set_post_terms( $post_id, 'test', 'tax' );
 

@@ -531,7 +531,6 @@ class Sync_Test extends PLL_UnitTestCase {
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		wp_update_post( array( 'ID' => $from ) ); // fires the sync
-		$page = get_post( $to );
 
 		$this->assertEquals( $fr, wp_get_post_parent_id( $to ) );
 	}
@@ -594,7 +593,7 @@ class Sync_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_sync_multiple_term_metas() {
-		$sync = new PLL_Admin_Sync( $this->pll_admin );
+		new PLL_Admin_Sync( $this->pll_admin );
 
 		$from = self::factory()->term->create();
 		self::$model->term->set_language( $from, 'en' );
