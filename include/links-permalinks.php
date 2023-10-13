@@ -88,6 +88,8 @@ abstract class PLL_Links_Permalinks extends PLL_Links_Model {
 	 * @return void
 	 */
 	public function do_prepare_rewrite_rules() {
+		self::$can_filter_rewrite_rules = true;
+
 		/**
 		 * Tells when Polylang is able to prepare rewrite rules filters.
 		 * Action fired right after `wp_loaded` and just before WordPress `WP_Rewrite::flush_rules()` callback.
