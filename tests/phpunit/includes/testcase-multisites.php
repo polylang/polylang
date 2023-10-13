@@ -166,7 +166,6 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 			array(),
 			$this->plain_structure
 		);
-
 	}
 
 	public function tear_down() {
