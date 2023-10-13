@@ -174,7 +174,7 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		 * to add the filters only once and if all custom post types and taxonomies
 		 * have been registered.
 		 */
-		if ( ! $this->model->has_languages() || ! did_action( 'wp_loaded' ) || has_filter( 'language_rewrite_rules', '__return_empty_array' ) ) {
+		if ( ! $this->model->has_languages() || ! did_action( 'wp_loaded' ) || ! self::$can_filter_rewrite_rules ) {
 			return;
 		}
 

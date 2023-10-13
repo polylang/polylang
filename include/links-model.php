@@ -36,6 +36,13 @@ abstract class PLL_Links_Model {
 	public $home;
 
 	/**
+	 * Whether rewrite rules can be filtered or not. Default to `false`.
+	 *
+	 * @var boolean
+	 */
+	protected static $can_filter_rewrite_rules = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.5
@@ -251,5 +258,7 @@ abstract class PLL_Links_Model {
 	 *
 	 * @return void
 	 */
-	public function remove_filters() {}
+	public function remove_filters() {
+		self::$can_filter_rewrite_rules = false;
+	}
 }
