@@ -2,13 +2,17 @@ name: Integration and Unit Tests
 
 on:
   push:
-    branches: master
+    branches:
+      - master
+      - fix-rewrite-rules-multi
     paths:
       - '**.php'
       - 'phpunit.xml'
       - 'composer.json'
   pull_request:
-    branches: master
+    branches:
+      - master
+      - fix-rewrite-rules-multi
     paths:
       - '**.php'
       - 'phpunit.xml'
