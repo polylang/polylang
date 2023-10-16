@@ -157,7 +157,8 @@ class PLL_Filter_REST_Routes {
 		$this->filtered_entities = array();
 		foreach ( $rest_entities as $rest_entity ) {
 			if ( in_array( $rest_entity->name, $translatable_entities, true ) ) {
-				$this->filtered_entities[ $rest_entity->name ] = "{$rest_entity->rest_namespace}/{$rest_entity->rest_base}";
+				$rest_base = empty( $rest_entity->rest_base ) ? $rest_entity->name : $rest_entity->rest_base;
+				$this->filtered_entities[ $rest_entity->name ] = "{$rest_entity->rest_namespace}/{$rest_base}";
 			}
 		}
 	}
