@@ -42,6 +42,13 @@ class PLL_WPML_Config {
 	protected $parsing_rules = null;
 
 	/**
+	 * Contains the list of path in `open_basedir`.
+	 *
+	 * @var string[]|null
+	 */
+	private $open_basedir;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0
@@ -589,7 +596,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string, string>
 	 */
 	private function get_mu_plugin_files() {
-		if ( ! is_dir( WPMU_PLUGIN_DIR ) || ! is_readable( WPMU_PLUGIN_DIR ) ) {
+		if ( ! $this->is_allowed_dir( WPMU_PLUGIN_DIR ) || ! is_readable( WPMU_PLUGIN_DIR ) || ! is_dir( WPMU_PLUGIN_DIR ) ) {
 			return array();
 		}
 
@@ -604,7 +611,16 @@ class PLL_WPML_Config {
 
 		// Search in proxy loaded MU plugins.
 		foreach ( new DirectoryIterator( WPMU_PLUGIN_DIR ) as $file_info ) {
-			if ( $file_info->isDot() || ! $file_info->isDir() ) {
+			/*
+			 * - `$file_info->isDir()` must be kept AFTER `$this->is_allowed_dir()`, otherwise `$file_info->isDir()`
+			 * will trigger an error with MU plugins that are not in `open_basedir`.
+			 * - `$this->is_allowed_dir()` must use `$file_info->getRealPath()` instead of `$file_info->getPathname()`,
+			 * otherwise `$file_info->isDir()` will trigger an error with symlinked MU plugins that are not in
+			 * `open_basedir`.
+			 *
+			 * @see https://wordpress.org/support/topic/fatal-error-open_basedir-restricton/
+			 */
+			if ( $file_info->isDot() || ! $this->is_allowed_dir( $file_info->getRealPath() ) || ! $file_info->isDir() ) {
 				continue;
 			}
 
@@ -715,5 +731,101 @@ class PLL_WPML_Config {
 		return array(
 			'Polylang' => $file_path,
 		);
+	}
+
+	/**
+	 * Checks whether access to a given directory is allowed.
+	 * This takes into account the PHP `open_basedir` restrictions, so that Polylang does not try to access directories
+	 * it is not allowed to.
+	 *
+	 * Inspired by `WP_Automatic_Updater::is_allowed_dir()` and `wp-includes/ID3/getid3.php`.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string $dir The directory to check.
+	 * @return bool True if access to the directory is allowed, false otherwise.
+	 */
+	private function is_allowed_dir( string $dir ): bool {
+		$dir = trim( $dir );
+
+		if ( '' === $dir ) {
+			return false;
+		}
+
+		$open_basedir = $this->get_open_basedir();
+
+		if ( empty( $open_basedir ) ) {
+			return true;
+		}
+
+		$dir = $this->format_path( $dir );
+
+		foreach ( $open_basedir as $basedir ) {
+			if ( str_starts_with( $dir, $basedir ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the list of paths in `open_basedir`. The purpose is to compare a formatted path to this list.
+	 * Note: all paths are suffixed by `DIRECTORY_SEPARATOR`, even paths to files.
+	 *
+	 * @since 3.6
+	 *
+	 * @return string[] An array of formatted paths.
+	 */
+	private function get_open_basedir(): array {
+		if ( is_array( $this->open_basedir ) ) {
+			return $this->open_basedir;
+		}
+
+		$this->open_basedir = array();
+		$open_basedir       = ini_get( 'open_basedir' ); // Can be `false` or an empty string.
+
+		if ( empty( $open_basedir ) ) {
+			return $this->open_basedir;
+		}
+
+		$open_basedir_list = explode( PATH_SEPARATOR, $open_basedir );
+
+		foreach ( $open_basedir_list as $basedir ) {
+			$basedir = trim( $basedir );
+
+			if ( '' === $basedir ) {
+				continue;
+			}
+
+			$this->open_basedir[] = $this->format_path( $basedir );
+		}
+
+		$this->open_basedir = array_unique( $this->open_basedir );
+
+		return $this->open_basedir;
+	}
+
+	/**
+	 * Formats a path for string comparison.
+	 * 1. Slashes and back-slashes are replaced by `DIRECTORY_SEPARATOR`.
+	 * 2. The path is suffixed by `DIRECTORY_SEPARATOR` (even non-directory elements).
+	 *
+	 * @since 3.6
+	 *
+	 * @param string $path A dir path.
+	 * @return string
+	 *
+	 * @phpstan-param non-empty-string $path
+	 * @phpstan-return non-empty-string
+	 */
+	private function format_path( string $path ): string {
+		$path = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $path );
+
+		if ( substr( $path, -1, 1 ) !== DIRECTORY_SEPARATOR ) {
+			$path .= DIRECTORY_SEPARATOR;
+		}
+
+		return $path;
 	}
 }
