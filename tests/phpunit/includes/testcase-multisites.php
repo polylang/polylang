@@ -88,10 +88,11 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		),
 	);
 
-	/**
-	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
-	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public function set_up() {
+		parent::set_up();
+
+		// Create all sites.
+		$factory = $this->factory();
 		self::$blog_without_pll_plain_links = get_blog_details();
 
 		self::$blog_without_pll_pretty_links = $factory->blog->create_and_get(
@@ -117,19 +118,6 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 				'domain' => 'polylang-plain.org',
 			)
 		);
-	}
-
-	public static function wpTearDownAfterClass() {
-		wp_delete_site( self::$blog_without_pll_pretty_links->blog_id );
-		wp_delete_site( self::$blog_with_pll_directory->blog_id );
-		wp_delete_site( self::$blog_with_pll_domains->blog_id );
-		wp_delete_site( self::$blog_with_pll_default_links->blog_id );
-
-		wp_update_network_site_counts();
-	}
-
-	public function set_up() {
-		parent::set_up();
 
 		// Set up blog with Polylang not activated and plain permalinks.
 		$this->set_up_blog_without_pll( self::$blog_without_pll_plain_links, $this->plain_structure );
@@ -169,14 +157,12 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	}
 
 	public function tear_down() {
-		$options     = array_merge( PLL_Install::get_default_options() );
-		$model       = new PLL_Admin_Model( $options );
-		$links_model = $model->get_links_model();
-		$pll_admin   = new PLL_Admin( $links_model );
+		wp_delete_site( self::$blog_without_pll_pretty_links->blog_id );
+		wp_delete_site( self::$blog_with_pll_directory->blog_id );
+		wp_delete_site( self::$blog_with_pll_domains->blog_id );
+		wp_delete_site( self::$blog_with_pll_default_links->blog_id );
 
-		foreach ( $pll_admin->model->get_languages_list() as $lang ) {
-			$pll_admin->model->delete_language( $lang->term_id );
-		}
+		wp_update_network_site_counts();
 
 		parent::tear_down();
 	}
