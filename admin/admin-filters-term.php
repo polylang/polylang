@@ -603,12 +603,12 @@ class PLL_Admin_Filters_Term {
 				$translations[ $key ] = $new_term_id;
 			}
 			else {
-				$tr_term       = get_term( $tr_id, $taxonomy );
+				$tr_term = get_term( $tr_id, $taxonomy );
 
 				if ( ! $tr_term instanceof WP_Term ) {
 					continue;
 				}
-				
+
 				$split_term_id = _split_shared_term( $tr_id, $tr_term->term_taxonomy_id );
 
 				if ( is_int( $split_term_id ) ) {
