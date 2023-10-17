@@ -725,7 +725,7 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Tells if the given `SplFileInfo` object represents a directory.
+	 * Tells if the given "file info" object represents a directory.
 	 * This takes care of not triggering a `open_basedir` restriction error when the file symlinks a file that is not in
 	 * `open_basedir`.
 	 *
@@ -733,11 +733,11 @@ class PLL_WPML_Config {
 	 *
 	 * @since 3.5.1
 	 *
-	 * @param SplFileInfo $file_info A `SplFileInfo` object that we know its path (but maybe not its real path) is in
-	 *                               `open_basedir`.
+	 * @param DirectoryIterator $file_info A "file info" object that we know its path (but maybe not its real path) is
+	 *                                     in `open_basedir`.
 	 * @return bool
 	 */
-	private function is_dir( SplFileInfo $file_info ): bool {
+	private function is_dir( DirectoryIterator $file_info ): bool {
 		if ( $file_info->isDot() ) {
 			return false;
 		}
