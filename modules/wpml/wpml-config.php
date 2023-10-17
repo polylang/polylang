@@ -42,6 +42,13 @@ class PLL_WPML_Config {
 	protected $parsing_rules = null;
 
 	/**
+	 * Contains the list of path in `open_basedir`.
+	 *
+	 * @var string[]|null
+	 */
+	private $open_basedir_paths;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0
@@ -589,7 +596,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string, string>
 	 */
 	private function get_mu_plugin_files() {
-		if ( ! is_dir( WPMU_PLUGIN_DIR ) || ! is_readable( WPMU_PLUGIN_DIR ) ) {
+		if ( ! is_readable( WPMU_PLUGIN_DIR ) || ! is_dir( WPMU_PLUGIN_DIR ) ) {
 			return array();
 		}
 
@@ -604,7 +611,7 @@ class PLL_WPML_Config {
 
 		// Search in proxy loaded MU plugins.
 		foreach ( new DirectoryIterator( WPMU_PLUGIN_DIR ) as $file_info ) {
-			if ( $file_info->isDot() || ! $file_info->isDir() ) {
+			if ( ! $this->is_dir( $file_info ) ) {
 				continue;
 			}
 
@@ -715,5 +722,131 @@ class PLL_WPML_Config {
 		return array(
 			'Polylang' => $file_path,
 		);
+	}
+
+	/**
+	 * Tells if the given `SplFileInfo` object represents a directory.
+	 * This takes care of not triggering a `open_basedir` restriction error when the file symlinks a file that is not in
+	 * `open_basedir`.
+	 *
+	 * @see https://wordpress.org/support/topic/fatal-error-open_basedir-restricton/
+	 *
+	 * @since 3.5.1
+	 *
+	 * @param SplFileInfo $file_info A `SplFileInfo` object that we know its path (but maybe not its real path) is in
+	 *                               `open_basedir`.
+	 * @return bool
+	 */
+	private function is_dir( SplFileInfo $file_info ): bool {
+		if ( $file_info->isDot() ) {
+			return false;
+		}
+
+		if ( $file_info->getPathname() === $file_info->getRealPath() ) {
+			// Not a symlink: not going to trigger a `open_basedir` restriction error.
+			return $file_info->isDir();
+		}
+
+		/*
+		 * Symlink: make sure the file's real path is in `open_basedir` before checking it is a dir.
+		 * Which means that the `open_basedir` check is done only for symlinked files.
+		 */
+		return $this->is_allowed_dir( $file_info->getRealPath() ) && $file_info->isDir();
+	}
+
+	/**
+	 * Checks whether access to a given directory is allowed.
+	 * This takes into account the PHP `open_basedir` restrictions, so that Polylang does not try to access directories
+	 * it is not allowed to.
+	 *
+	 * Inspired by `WP_Automatic_Updater::is_allowed_dir()` and `wp-includes/ID3/getid3.php`.
+	 *
+	 * @since 3.5.1
+	 *
+	 * @param string $dir The directory to check.
+	 * @return bool True if access to the directory is allowed, false otherwise.
+	 */
+	private function is_allowed_dir( string $dir ): bool {
+		$dir = trim( $dir );
+
+		if ( '' === $dir ) {
+			return false;
+		}
+
+		$open_basedir_paths = $this->get_open_basedir_paths();
+
+		if ( empty( $open_basedir_paths ) ) {
+			return true;
+		}
+
+		$dir = $this->normalize_path( $dir );
+
+		foreach ( $open_basedir_paths as $path ) {
+			if ( str_starts_with( $dir, $path ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the list of paths in `open_basedir`. The purpose is to compare a formatted path to this list.
+	 * Note: all paths are suffixed by `DIRECTORY_SEPARATOR`, even paths to files.
+	 *
+	 * @since 3.5.1
+	 *
+	 * @return string[] An array of formatted paths.
+	 */
+	private function get_open_basedir_paths(): array {
+		if ( is_array( $this->open_basedir_paths ) ) {
+			return $this->open_basedir_paths;
+		}
+
+		$this->open_basedir_paths = array();
+		$open_basedir             = ini_get( 'open_basedir' ); // Can be `false` or an empty string.
+
+		if ( empty( $open_basedir ) ) {
+			return $this->open_basedir_paths;
+		}
+
+		$open_basedir_list = explode( PATH_SEPARATOR, $open_basedir );
+
+		foreach ( $open_basedir_list as $basedir ) {
+			$basedir = trim( $basedir );
+
+			if ( '' === $basedir ) {
+				continue;
+			}
+
+			$this->open_basedir_paths[] = $this->normalize_path( $basedir );
+		}
+
+		$this->open_basedir_paths = array_unique( $this->open_basedir_paths );
+
+		return $this->open_basedir_paths;
+	}
+
+	/**
+	 * Formats a path for string comparison.
+	 * 1. Slashes and back-slashes are replaced by `DIRECTORY_SEPARATOR`.
+	 * 2. The path is suffixed by `DIRECTORY_SEPARATOR` (even non-directory elements).
+	 *
+	 * @since 3.5.1
+	 *
+	 * @param string $path A file path.
+	 * @return string
+	 *
+	 * @phpstan-param non-empty-string $path
+	 * @phpstan-return non-empty-string
+	 */
+	private function normalize_path( string $path ): string {
+		$path = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $path );
+
+		if ( substr( $path, -1, 1 ) !== DIRECTORY_SEPARATOR ) {
+			$path .= DIRECTORY_SEPARATOR;
+		}
+
+		return $path;
 	}
 }
