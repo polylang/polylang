@@ -306,7 +306,7 @@ class PLL_Admin_Filters_Columns {
 
 		// Link to edit term ( or a translation )
 		if ( ( $id = $this->model->term->get( $term_id, $language ) ) && $term = get_term( $id, $taxonomy ) ) {
-			if ( $link = get_edit_term_link( $id, $taxonomy, $post_type ) ) {
+			if ( ! is_wp_error( $term ) && $link = get_edit_term_link( $id, $taxonomy, $post_type ) ) {
 				$flag = '';
 				if ( $id === $term_id ) {
 					$flag = $this->get_flag_html( $language );
@@ -423,6 +423,9 @@ class PLL_Admin_Filters_Columns {
 		foreach ( $translations as $term_id ) {
 			$level = is_taxonomy_hierarchical( $taxonomy ) ? count( get_ancestors( $term_id, $taxonomy ) ) : 0;
 			if ( $tag = get_term( $term_id, $taxonomy ) ) {
+				if ( is_wp_error( $tag ) ) {
+					continue;
+				}
 				ob_start();
 				$wp_list_table->single_row( $tag, $level );
 				$data = ob_get_clean();

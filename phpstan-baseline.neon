@@ -96,11 +96,6 @@ parameters:
 			path: admin/admin-default-term.php
 
 		-
-			message: "#^Cannot access property \\$name on array\\|WP_Error\\|WP_Term\\.$#"
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
 			message: "#^Cannot call method new_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
 			count: 1
 			path: admin/admin-filters-columns.php
@@ -117,11 +112,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$args of method WP_Ajax_Response\\:\\:add\\(\\) expects array\\{what\\?\\: string, action\\?\\: string\\|false, id\\?\\: int\\|WP_Error, old_id\\?\\: int\\|false, position\\?\\: string, data\\?\\: string\\|WP_Error, supplemental\\?\\: array\\}, array\\{what\\: 'row', data\\: string\\|false, supplemental\\: array\\{term_id\\: int\\}\\} given\\.$#"
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
-			message: "#^Parameter \\#1 \\$tag of method WP_Terms_List_Table\\:\\:single_row\\(\\) expects WP_Term, array\\|WP_Error\\|WP_Term given\\.$#"
 			count: 1
 			path: admin/admin-filters-columns.php
 
