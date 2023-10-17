@@ -130,11 +130,6 @@ parameters:
 			count: 1
 			path: admin/admin-filters-post.php
 
-#		-
-#			message: "#^Cannot access property \\$name on array\\|WP_Error\\|WP_Term\\|null\\.$#"
-#			count: 1
-#			path: admin/admin-filters-term.php
-
 		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
 			count: 2
@@ -144,11 +139,6 @@ parameters:
 			message: "#^Cannot access property \\$term_id on PLL_Language\\|null\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
-
-#		-
-#			message: "#^Cannot access property \\$term_taxonomy_id on array\\|WP_Error\\|WP_Term\\|null\\.$#"
-#			count: 1
-#			path: admin/admin-filters-term.php
 
 		-
 			message: "#^Cannot call method edit_term_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
