@@ -88,6 +88,11 @@ class PLL_Frontend_Links extends PLL_Links {
 								$term_id = array_search( $slug, $terms ); // What is the term_id corresponding to taxonomy term?
 								if ( $term_id && $term_id = $this->model->term->get_translation( $term_id, $language ) ) { // Get the translated term_id
 									$term = get_term( $term_id, $tax->name );
+
+									if ( ! $term instanceof WP_Term ) {
+										continue;
+									}
+
 									$url = str_replace( $slug, $term->slug, $url );
 								}
 							}
@@ -106,7 +111,8 @@ class PLL_Frontend_Links extends PLL_Links {
 				}
 
 				elseif ( $tr_id = $this->model->term->get_translation( $term->term_id, $language ) ) {
-					if ( $tr_term = get_term( $tr_id, $term->taxonomy ) ) {
+					$tr_term = get_term( $tr_id, $term->taxonomy );
+					if ( $tr_term instanceof WP_Term ) {
 						// Check if translated term ( or children ) have posts
 						$count = $tr_term->count || ( is_taxonomy_hierarchical( $term->taxonomy ) && array_sum( wp_list_pluck( get_terms( array( 'taxonomy' => $term->taxonomy, 'child_of' => $tr_term->term_id, 'lang' => $language->slug ) ), 'count' ) ) );
 

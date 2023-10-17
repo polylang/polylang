@@ -96,11 +96,6 @@ parameters:
 			path: admin/admin-default-term.php
 
 		-
-			message: "#^Cannot access property \\$name on array\\|WP_Error\\|WP_Term\\.$#"
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
 			message: "#^Cannot call method new_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
 			count: 1
 			path: admin/admin-filters-columns.php
@@ -121,11 +116,6 @@ parameters:
 			path: admin/admin-filters-columns.php
 
 		-
-			message: "#^Parameter \\#1 \\$tag of method WP_Terms_List_Table\\:\\:single_row\\(\\) expects WP_Term, array\\|WP_Error\\|WP_Term given\\.$#"
-			count: 1
-			path: admin/admin-filters-columns.php
-
-		-
 			message: "#^Cannot call method create_media_translation\\(\\) on PLL_CRUD_Posts\\|null\\.$#"
 			count: 1
 			path: admin/admin-filters-media.php
@@ -141,22 +131,12 @@ parameters:
 			path: admin/admin-filters-post.php
 
 		-
-			message: "#^Cannot access property \\$name on array\\|WP_Error\\|WP_Term\\|null\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
 			count: 2
 			path: admin/admin-filters-term.php
 
 		-
 			message: "#^Cannot access property \\$term_id on PLL_Language\\|null\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
-			message: "#^Cannot access property \\$term_taxonomy_id on array\\|WP_Error\\|WP_Term\\|null\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
 
@@ -436,23 +416,8 @@ parameters:
 			path: frontend/frontend-links.php
 
 		-
-			message: "#^Cannot access property \\$count on array\\|WP_Error\\|WP_Term\\.$#"
-			count: 1
-			path: frontend/frontend-links.php
-
-		-
 			message: "#^Cannot access property \\$name on WP_Taxonomy\\|false\\.$#"
 			count: 2
-			path: frontend/frontend-links.php
-
-		-
-			message: "#^Cannot access property \\$slug on array\\|WP_Error\\|WP_Term\\|null\\.$#"
-			count: 1
-			path: frontend/frontend-links.php
-
-		-
-			message: "#^Cannot access property \\$term_id on array\\|WP_Error\\|WP_Term\\.$#"
-			count: 1
 			path: frontend/frontend-links.php
 
 		-
@@ -477,11 +442,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$term of function get_term_link expects int\\|string\\|WP_Term, WP_Post\\|WP_Post_Type\\|WP_Term\\|WP_User given\\.$#"
-			count: 1
-			path: frontend/frontend-links.php
-
-		-
-			message: "#^Parameter \\#1 \\$term of function get_term_link expects int\\|string\\|WP_Term, array\\|WP_Error\\|WP_Term given\\.$#"
 			count: 1
 			path: frontend/frontend-links.php
 

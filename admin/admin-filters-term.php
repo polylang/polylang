@@ -302,22 +302,25 @@ class PLL_Admin_Filters_Term {
 				}
 
 				$this->model->term->set_language( $term_id, $language );
-				$term = get_term( $term_id, $taxonomy );
+				$term  = get_term( $term_id, $taxonomy );
+				$terms = array();
 
 				// Get all terms with the same name
 				// FIXME backward compatibility WP < 4.2
 				// No WP function to get all terms with the exact same name so let's use a custom query
 				// $terms = get_terms( $taxonomy, array( 'name' => $term->name, 'hide_empty' => false, 'fields' => 'ids' ) ); should be OK in 4.2
 				// I may need to rework the loop below
-				$terms = $wpdb->get_results(
-					$wpdb->prepare(
-						"SELECT t.term_id FROM $wpdb->terms AS t
-						INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id
-						WHERE tt.taxonomy = %s AND t.name = %s",
-						$taxonomy,
-						$term->name
-					)
-				);
+				if ( $term instanceof WP_Term ) {
+					$terms = $wpdb->get_results(
+						$wpdb->prepare(
+							"SELECT t.term_id FROM $wpdb->terms AS t
+							INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id
+							WHERE tt.taxonomy = %s AND t.name = %s",
+							$taxonomy,
+							$term->name
+						)
+					);
+				}
 
 				// If we have several terms with the same name, they are translations of each other
 				if ( count( $terms ) > 1 ) {
@@ -600,7 +603,12 @@ class PLL_Admin_Filters_Term {
 				$translations[ $key ] = $new_term_id;
 			}
 			else {
-				$tr_term       = get_term( $tr_id, $taxonomy );
+				$tr_term = get_term( $tr_id, $taxonomy );
+
+				if ( ! $tr_term instanceof WP_Term ) {
+					continue;
+				}
+
 				$split_term_id = _split_shared_term( $tr_id, $tr_term->term_taxonomy_id );
 
 				if ( is_int( $split_term_id ) ) {
