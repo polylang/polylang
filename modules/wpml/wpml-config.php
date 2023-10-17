@@ -773,16 +773,16 @@ class PLL_WPML_Config {
 			return false;
 		}
 
-		$open_basedir = $this->get_open_basedir();
+		$open_basedir_paths = $this->get_open_basedir_paths();
 
-		if ( empty( $open_basedir ) ) {
+		if ( empty( $open_basedir_paths ) ) {
 			return true;
 		}
 
 		$dir = $this->normalize_path( $dir );
 
-		foreach ( $open_basedir as $basedir ) {
-			if ( str_starts_with( $dir, $basedir ) ) {
+		foreach ( $open_basedir_paths as $path ) {
+			if ( str_starts_with( $dir, $path ) ) {
 				return true;
 			}
 		}
@@ -798,13 +798,13 @@ class PLL_WPML_Config {
 	 *
 	 * @return string[] An array of formatted paths.
 	 */
-	private function get_open_basedir(): array {
+	private function get_open_basedir_paths(): array {
 		if ( is_array( $this->open_basedir_paths ) ) {
 			return $this->open_basedir_paths;
 		}
 
 		$this->open_basedir_paths = array();
-		$open_basedir       = ini_get( 'open_basedir' ); // Can be `false` or an empty string.
+		$open_basedir             = ini_get( 'open_basedir' ); // Can be `false` or an empty string.
 
 		if ( empty( $open_basedir ) ) {
 			return $this->open_basedir_paths;
