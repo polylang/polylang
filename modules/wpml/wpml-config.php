@@ -46,7 +46,7 @@ class PLL_WPML_Config {
 	 *
 	 * @var string[]|null
 	 */
-	private $open_basedir;
+	private $open_basedir_paths;
 
 	/**
 	 * Constructor
@@ -596,7 +596,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string, string>
 	 */
 	private function get_mu_plugin_files() {
-		if ( ! $this->is_allowed_dir( WPMU_PLUGIN_DIR ) || ! is_readable( WPMU_PLUGIN_DIR ) || ! is_dir( WPMU_PLUGIN_DIR ) ) {
+		if ( ! is_readable( WPMU_PLUGIN_DIR ) || ! is_dir( WPMU_PLUGIN_DIR ) ) {
 			return array();
 		}
 
@@ -611,16 +611,7 @@ class PLL_WPML_Config {
 
 		// Search in proxy loaded MU plugins.
 		foreach ( new DirectoryIterator( WPMU_PLUGIN_DIR ) as $file_info ) {
-			/*
-			 * - `$file_info->isDir()` must be kept AFTER `$this->is_allowed_dir()`, otherwise `$file_info->isDir()`
-			 * will trigger an error with MU plugins that are not in `open_basedir`.
-			 * - `$this->is_allowed_dir()` must use `$file_info->getRealPath()` instead of `$file_info->getPathname()`,
-			 * otherwise `$file_info->isDir()` will trigger an error with symlinked MU plugins that are not in
-			 * `open_basedir`.
-			 *
-			 * @see https://wordpress.org/support/topic/fatal-error-open_basedir-restricton/
-			 */
-			if ( $file_info->isDot() || ! $this->is_allowed_dir( $file_info->getRealPath() ) || ! $file_info->isDir() ) {
+			if ( ! $this->is_dir( $file_info ) ) {
 				continue;
 			}
 
@@ -734,13 +725,43 @@ class PLL_WPML_Config {
 	}
 
 	/**
+	 * Tells if the given `SplFileInfo` object represents a directory.
+	 * This takes care of not triggering a `open_basedir` restriction error when the file symlinks a file that is not in
+	 * `open_basedir`.
+	 *
+	 * @see https://wordpress.org/support/topic/fatal-error-open_basedir-restricton/
+	 *
+	 * @since 3.5.1
+	 *
+	 * @param SplFileInfo $file_info A `SplFileInfo` object that we know its path (but maybe not its real path) is in
+	 *                               `open_basedir`.
+	 * @return bool
+	 */
+	private function is_dir( SplFileInfo $file_info ): bool {
+		if ( $file_info->isDot() ) {
+			return false;
+		}
+
+		if ( $file_info->getPathname() === $file_info->getRealPath() ) {
+			// Not a symlink: not going to trigger a `open_basedir` restriction error.
+			return $file_info->isDir();
+		}
+
+		/*
+		 * Symlink: make sure the file's real path is in `open_basedir` before checking it is a dir.
+		 * Which means that the `open_basedir` check is done only for symlinked files.
+		 */
+		return $this->is_allowed_dir( $file_info->getRealPath() ) && $file_info->isDir();
+	}
+
+	/**
 	 * Checks whether access to a given directory is allowed.
 	 * This takes into account the PHP `open_basedir` restrictions, so that Polylang does not try to access directories
 	 * it is not allowed to.
 	 *
 	 * Inspired by `WP_Automatic_Updater::is_allowed_dir()` and `wp-includes/ID3/getid3.php`.
 	 *
-	 * @since 3.6
+	 * @since 3.5.1
 	 *
 	 * @param string $dir The directory to check.
 	 * @return bool True if access to the directory is allowed, false otherwise.
@@ -758,7 +779,7 @@ class PLL_WPML_Config {
 			return true;
 		}
 
-		$dir = $this->format_path( $dir );
+		$dir = $this->normalize_path( $dir );
 
 		foreach ( $open_basedir as $basedir ) {
 			if ( str_starts_with( $dir, $basedir ) ) {
@@ -773,20 +794,20 @@ class PLL_WPML_Config {
 	 * Returns the list of paths in `open_basedir`. The purpose is to compare a formatted path to this list.
 	 * Note: all paths are suffixed by `DIRECTORY_SEPARATOR`, even paths to files.
 	 *
-	 * @since 3.6
+	 * @since 3.5.1
 	 *
 	 * @return string[] An array of formatted paths.
 	 */
 	private function get_open_basedir(): array {
-		if ( is_array( $this->open_basedir ) ) {
-			return $this->open_basedir;
+		if ( is_array( $this->open_basedir_paths ) ) {
+			return $this->open_basedir_paths;
 		}
 
-		$this->open_basedir = array();
+		$this->open_basedir_paths = array();
 		$open_basedir       = ini_get( 'open_basedir' ); // Can be `false` or an empty string.
 
 		if ( empty( $open_basedir ) ) {
-			return $this->open_basedir;
+			return $this->open_basedir_paths;
 		}
 
 		$open_basedir_list = explode( PATH_SEPARATOR, $open_basedir );
@@ -798,12 +819,12 @@ class PLL_WPML_Config {
 				continue;
 			}
 
-			$this->open_basedir[] = $this->format_path( $basedir );
+			$this->open_basedir_paths[] = $this->normalize_path( $basedir );
 		}
 
-		$this->open_basedir = array_unique( $this->open_basedir );
+		$this->open_basedir_paths = array_unique( $this->open_basedir_paths );
 
-		return $this->open_basedir;
+		return $this->open_basedir_paths;
 	}
 
 	/**
@@ -811,15 +832,15 @@ class PLL_WPML_Config {
 	 * 1. Slashes and back-slashes are replaced by `DIRECTORY_SEPARATOR`.
 	 * 2. The path is suffixed by `DIRECTORY_SEPARATOR` (even non-directory elements).
 	 *
-	 * @since 3.6
+	 * @since 3.5.1
 	 *
-	 * @param string $path A dir path.
+	 * @param string $path A file path.
 	 * @return string
 	 *
 	 * @phpstan-param non-empty-string $path
 	 * @phpstan-return non-empty-string
 	 */
-	private function format_path( string $path ): string {
+	private function normalize_path( string $path ): string {
 		$path = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $path );
 
 		if ( substr( $path, -1, 1 ) !== DIRECTORY_SEPARATOR ) {
