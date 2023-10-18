@@ -130,7 +130,6 @@ if ( is_multisite() ) :
 
 			$wp_rewrite->init();
 			flush_rewrite_rules();
-			$rules = get_option('rewrite_rules');
 
 			$admin->curlang = $admin->model->get_language( 'fr' ); // Force current language.
 
