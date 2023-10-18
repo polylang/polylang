@@ -15,12 +15,15 @@ if ( is_multisite() ) :
 		}
 
 		/**
-		 * @testWith ["polylang-dir.org"]
-		 *           ["polylang-dir.org/fr"]
+		 * @testWith ["http://polylang-dir.org", "en"]
+		 *           ["http://polylang-dir.org", "fr"]
 		 *
-		 * @param string $url URL to test.
+		 * @param string $url  URL to test.
+		 * @param string $lang Current language slug.
 		 */
-		public function test_queries_blog_pll_dir( $url ) {
+		public function test_queries_blog_pll_dir( $url, $lang ) {
+			global $wp_rewrite;
+
 			switch_to_blog( self::$blog_with_pll_directory->blog_id );
 
 			$options = array_merge(
@@ -36,18 +39,35 @@ if ( is_multisite() ) :
 			$frontend = new PLL_Frontend( $links_model );
 			$frontend->init();
 
+			$post = $this->factory()->post->create();
+			$frontend->model->post->set_language( $post, $lang );
+
+			$wp_rewrite->init();
+			$wp_rewrite->extra_rules_top = array();
+			$frontend->model->post->register_taxonomy(); // needs this for 'lang' query var
+			create_initial_taxonomies();
+
+			flush_rewrite_rules();
+
+			$url .= 'en' === $lang ? '' : $lang;
+
+			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
+
 			$this->go_to( $url );
 
 			$this->assertQueryTrue( 'is_home', 'is_front_page' );
 		}
 
 		/**
-		 * @testWith ["polylang-domains.en"]
-		 *           ["polylang-domains.de"]
+		 * @testWith ["http://polylang-domains.en", "en"]
+		 *           ["http://polylang-domains.de", "de"]
 		 *
 		 * @param string $url URL to test.
+		 * @param string $lang Current language slug.
 		 */
-		public function test_queries_blog_pll_domains( $url ) {
+		public function test_queries_blog_pll_domains( $url, $lang ) {
+			global $wp_rewrite;
+
 			switch_to_blog( self::$blog_with_pll_domains->blog_id );
 
 			$options = array_merge(
@@ -66,6 +86,15 @@ if ( is_multisite() ) :
 			$links_model->init();
 			$frontend = new PLL_Frontend( $links_model );
 			$frontend->init();
+
+			$wp_rewrite->init();
+			$wp_rewrite->extra_rules_top = array();
+			$frontend->model->post->register_taxonomy(); // needs this for 'lang' query var
+			create_initial_taxonomies();
+
+			flush_rewrite_rules();
+
+			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
 
 			$this->go_to( $url );
 

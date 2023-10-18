@@ -157,6 +157,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	}
 
 	public function tear_down() {
+		restore_current_blog();
+
 		wp_delete_site( self::$blog_without_pll_pretty_links->blog_id );
 		wp_delete_site( self::$blog_with_pll_directory->blog_id );
 		wp_delete_site( self::$blog_with_pll_domains->blog_id );
@@ -219,13 +221,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 
 		switch_to_blog( $blog->blog_id );
 
-		if ( empty( $structure ) ) {
-			delete_option( 'permalink_structure' );
-			$wp_rewrite->init();
-		} else {
-			$wp_rewrite->init();
-			$wp_rewrite->set_permalink_structure( $structure );
-		}
+		$wp_rewrite->init();
+		$wp_rewrite->set_permalink_structure( $structure );
 
 		$plugins = get_option( 'active_plugins', array() );
 		update_option( 'active_plugins', array_diff( $plugins, $this->get_plugin_names() ) ); // Ensure Polylang plugins are deactivated.
