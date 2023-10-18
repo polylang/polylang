@@ -201,16 +201,6 @@ parameters:
 			path: admin/admin-model.php
 
 		-
-			message: "#^Cannot access offset 'nav_menu_locations' on mixed\\.$#"
-			count: 3
-			path: admin/admin-nav-menu.php
-
-		-
-			message: "#^Parameter \\#1 \\$locations of method PLL_Admin_Nav_Menu\\:\\:update_nav_menu_locations\\(\\) expects array, mixed given\\.$#"
-			count: 1
-			path: admin/admin-nav-menu.php
-
-		-
 			message: "#^Cannot access an offset on mixed\\.$#"
 			count: 1
 			path: admin/admin-notices.php
@@ -576,38 +566,8 @@ parameters:
 			path: include/language.php
 
 		-
-			message: "#^Cannot access offset 'data' on mixed\\.$#"
-			count: 2
-			path: include/license.php
-
-		-
-			message: "#^Cannot access offset 'key' on mixed\\.$#"
-			count: 2
-			path: include/license.php
-
-		-
-			message: "#^Cannot access offset string on mixed\\.$#"
-			count: 4
-			path: include/license.php
-
-		-
-			message: "#^Cannot access property \\$license on mixed\\.$#"
-			count: 1
-			path: include/license.php
-
-		-
 			message: "#^Parameter \\#1 \\$format of function date_i18n expects string, mixed given\\.$#"
 			count: 3
-			path: include/license.php
-
-		-
-			message: "#^Property PLL_License\\:\\:\\$license_data \\(stdClass\\|null\\) does not accept mixed\\.$#"
-			count: 2
-			path: include/license.php
-
-		-
-			message: "#^Property PLL_License\\:\\:\\$license_key \\(string\\) does not accept mixed\\.$#"
-			count: 1
 			path: include/license.php
 
 		-
@@ -782,7 +742,7 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'slug' on object\\.$#"
-			count: 2
+			count: 1
 			path: install/t15s.php
 
 		-
@@ -826,33 +786,13 @@ parameters:
 			path: modules/sync/admin-sync.php
 
 		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: modules/sync/sync-metas.php
-
-		-
-			message: "#^Cannot access offset string on mixed\\.$#"
-			count: 8
-			path: modules/sync/sync-metas.php
-
-		-
-			message: "#^Parameter \\#1 \\$array of function reset expects array\\|object, mixed given\\.$#"
-			count: 1
-			path: modules/sync/sync-metas.php
-
-		-
 			message: "#^Parameter \\#1 \\$data of function maybe_serialize expects array\\|object\\|string, mixed given\\.$#"
 			count: 2
 			path: modules/sync/sync-metas.php
 
 		-
 			message: "#^Parameter \\#1 \\$data of function maybe_unserialize expects string, mixed given\\.$#"
-			count: 3
-			path: modules/sync/sync-metas.php
-
-		-
-			message: "#^Parameter \\#1 \\$.+ of function count expects array\\|Countable, mixed given\\.$#"
-			count: 2
+			count: 1
 			path: modules/sync/sync-metas.php
 
 		-
