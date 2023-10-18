@@ -121,8 +121,7 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 			}
 		);
 
-		$filter_route  = new PLL_Filter_REST_Routes( $this->pll_admin->model );
-		$preload_paths = $filter_route->add_query_parameters( array( '/wp/v2/genre' ), array( 'test' => 'something' ) );
+		$preload_paths = $this->pll_admin->block_editor->filter_rest_routes->add_query_parameters( array( '/wp/v2/genre' ), array( 'test' => 'something' ) );
 
 		// If the parameter is added to the route, this means that the route is one of the filterable routes.
 		$this->assertNotEmpty( $preload_paths );
