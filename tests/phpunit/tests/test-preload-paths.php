@@ -125,7 +125,7 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 		$get_method   = $filter_route->getMethod( 'get' );
 		$get_method->setAccessible( true );
 
-		$routes = $get_method->invokeArgs( new PLL_Filter_REST_Routes( $this->pll_admin->model ), array( ) );
+		$routes = $get_method->invokeArgs( new PLL_Filter_REST_Routes( $this->pll_admin->model ), array() );
 
 		$this->assertArrayHasKey( 'genre', $routes );
 		$this->assertSame( 'wp/v2/genre', $routes['genre'] );
