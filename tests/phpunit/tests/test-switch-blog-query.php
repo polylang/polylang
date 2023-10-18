@@ -43,9 +43,6 @@ if ( is_multisite() ) :
 			$frontend->model->post->set_language( $post, $lang );
 
 			$wp_rewrite->init();
-			$wp_rewrite->extra_rules_top = array();
-			$frontend->model->post->register_taxonomy(); // needs this for 'lang' query var
-			create_initial_taxonomies();
 
 			flush_rewrite_rules();
 
@@ -88,15 +85,56 @@ if ( is_multisite() ) :
 			$frontend->init();
 
 			$wp_rewrite->init();
-			$wp_rewrite->extra_rules_top = array();
-			$frontend->model->post->register_taxonomy(); // needs this for 'lang' query var
-			create_initial_taxonomies();
 
 			flush_rewrite_rules();
 
 			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
 
 			$this->go_to( $url );
+
+			$this->assertQueryTrue( 'is_home', 'is_front_page' );
+		}
+
+		/**
+		 * @ticket #1855
+		 * @see https://github.com/polylang/polylang-pro/issues/1855.
+		 */
+		public function test_queries_blog_pll_dir_switched_twice() {
+			global $wp_rewrite;
+
+			switch_to_blog( self::$blog_with_pll_directory->blog_id );
+
+			$options = array_merge(
+				PLL_Install::get_default_options(),
+				array(
+					'force_lang'   => 1,
+					'default_lang' => 'en',
+				)
+			);
+			$model       = new PLL_Admin_Model( $options );
+			$links_model = $model->get_links_model();
+			$links_model->init();
+			$admin = new PLL_Admin( $links_model );
+			$admin->init();
+			do_action_ref_array( 'pll_init', array( &$admin ) );
+
+			$post = $this->factory()->post->create();
+			$admin->model->post->set_language( $post, 'fr' );
+
+			$wp_rewrite->init();
+			flush_rewrite_rules();
+
+			restore_current_blog(); // Restore to switch back, to ensure rewrite rules filters are set back correctly.
+
+			switch_to_blog( self::$blog_with_pll_directory->blog_id );
+
+			$wp_rewrite->init();
+			flush_rewrite_rules();
+			$rules = get_option('rewrite_rules');
+
+			$admin->curlang = $admin->model->get_language( 'fr' ); // Force current language.
+
+			$this->go_to( 'http://polylang-dir.org/fr' );
 
 			$this->assertQueryTrue( 'is_home', 'is_front_page' );
 		}
