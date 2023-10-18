@@ -129,8 +129,5 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 
 		$this->assertArrayHasKey( 'genre', $routes );
 		$this->assertSame( 'wp/v2/genre', $routes['genre'] );
-
-		_unregister_post_type( 'book' );
-		_unregister_taxonomy( 'genre' );
 	}
 }

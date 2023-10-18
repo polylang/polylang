@@ -44,6 +44,8 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 		_unregister_post_type( 'custom' );
 		_unregister_post_type( 'trcpt' );
 		_unregister_taxonomy( 'trtax' );
+		_unregister_post_type( 'book' );
+		_unregister_taxonomy( 'genre' );
 	}
 
 	/**
