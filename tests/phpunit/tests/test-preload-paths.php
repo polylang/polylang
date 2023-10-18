@@ -89,4 +89,45 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 			'Media path should be filtered by language when option is activated.'
 		);
 	}
+
+	/**
+	 * @ticket #1861 {@see https://github.com/polylang/polylang-pro/issues/1861}
+	 */
+	public function test_rest_routes_for_custom_taxonomies() {
+		register_post_type( 'book' );
+
+		register_taxonomy(
+			'genre',
+			'book',
+			array(
+				'show_in_rest' => true,
+			)
+		);
+
+		$this->pll_admin->model->cache->clean( 'post_types' );
+		$this->pll_admin->model->cache->clean( 'taxonomies' );
+
+		add_filter(
+			'pll_get_post_types',
+			function ( $post_types ) {
+				return array_merge( $post_types, array( 'book' => 'book' ) );
+			}
+		);
+
+		add_filter(
+			'pll_get_taxonomies',
+			function ( $taxonomies ) {
+				return array_merge( $taxonomies, array( 'genre' => 'genre' ) );
+			}
+		);
+
+		$filter_route = new ReflectionClass( PLL_Filter_REST_Routes::class );
+		$get_method   = $filter_route->getMethod( 'get' );
+		$get_method->setAccessible( true );
+
+		$routes = $get_method->invokeArgs( new PLL_Filter_REST_Routes( $this->pll_admin->model ), array( ) );
+
+		$this->assertArrayHasKey( 'genre', $routes );
+		$this->assertSame( 'wp/v2/genre', $routes['genre'] );
+	}
 }
