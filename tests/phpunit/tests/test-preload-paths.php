@@ -121,13 +121,10 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 			}
 		);
 
-		$filter_route = new ReflectionClass( PLL_Filter_REST_Routes::class );
-		$get_method   = $filter_route->getMethod( 'get' );
-		$get_method->setAccessible( true );
+		$filter_route  = new PLL_Filter_REST_Routes( $this->pll_admin->model );
+		$preload_paths = $filter_route->add_query_parameters( array( '/wp/v2/genre' ), array( 'test' => 'something' ) );
 
-		$routes = $get_method->invokeArgs( new PLL_Filter_REST_Routes( $this->pll_admin->model ), array() );
-
-		$this->assertArrayHasKey( 'genre', $routes );
-		$this->assertSame( 'wp/v2/genre', $routes['genre'] );
+		$this->assertNotEmpty( $preload_paths );
+		$this->assertSame( '/wp/v2/genre?test=something', reset( $preload_paths ) );
 	}
 }
