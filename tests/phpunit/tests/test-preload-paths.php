@@ -94,38 +94,11 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	 * @ticket #1861 {@see https://github.com/polylang/polylang-pro/issues/1861}
 	 */
 	public function test_rest_routes_for_custom_taxonomies() {
-		register_post_type( 'book' );
-
-		register_taxonomy(
-			'genre',
-			'book',
-			array(
-				'show_in_rest' => true,
-			)
-		);
-
-		$this->pll_admin->model->cache->clean( 'post_types' );
-		$this->pll_admin->model->cache->clean( 'taxonomies' );
-
-		add_filter(
-			'pll_get_post_types',
-			function ( $post_types ) {
-				return array_merge( $post_types, array( 'book' => 'book' ) );
-			}
-		);
-
-		add_filter(
-			'pll_get_taxonomies',
-			function ( $taxonomies ) {
-				return array_merge( $taxonomies, array( 'genre' => 'genre' ) );
-			}
-		);
-
-		$preload_paths = $this->pll_admin->block_editor->filter_rest_routes->add_query_parameters( array( '/wp/v2/genre' ), array( 'test' => 'something' ) );
+		$preload_paths = $this->pll_admin->block_editor->filter_rest_routes->add_query_parameters( array( '/wp/v2/trtax' ), array( 'test' => 'something' ) );
 
 		// If the parameter is added to the route, this means that the route is one of the filterable routes.
 		$this->assertNotEmpty( $preload_paths );
 		$this->assertCount( 1, $preload_paths );
-		$this->assertSame( '/wp/v2/genre?test=something', reset( $preload_paths ) );
+		$this->assertSame( '/wp/v2/trtax?test=something', reset( $preload_paths ) );
 	}
 }
