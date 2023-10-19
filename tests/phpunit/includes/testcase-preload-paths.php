@@ -13,10 +13,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 
 		register_post_type( 'custom', array( 'public' => true, 'show_in_rest' => true ) ); // Untranslatable CPT.
 		register_post_type( 'trcpt', array( 'public' => true, 'show_in_rest' => true ) ); // Translated CPT.
-		register_taxonomy( 'trtax', 'post', array( 'show_in_rest' => true ) ); // Translated custom taxonomy.
-
-		register_taxonomy_for_object_type( 'trtax', 'trcpt' );
-
+		register_taxonomy( 'trtax', 'trcpt', array( 'show_in_rest' => true ) ); // Translated custom 
 		$options = array_merge(
 			PLL_Install::get_default_options(),
 			array(
