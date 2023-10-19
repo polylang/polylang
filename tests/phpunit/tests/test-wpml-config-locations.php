@@ -90,29 +90,28 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 
 	public function test_in_mu_plugin() {
 		@mkdir( WPMU_PLUGIN_DIR );
-		$filename = WPMU_PLUGIN_DIR . '/wpml-config.xml';
-		copy( dirname( __DIR__ ) . '/data/wpml-config.xml', $filename );
+		$filename_1 = WPMU_PLUGIN_DIR . '/wpml-config.xml';
+		copy( dirname( __DIR__ ) . '/data/wpml-config.xml', $filename_1 );
 
-		$files    = ( new PLL_WPML_Config() )->get_files();
-		$expected = array( 'mu-plugins' => $filename );
-
-		unlink( $filename );
-		rmdir( WPMU_PLUGIN_DIR );
-
-		$this->assertSameSetsWithIndex( $expected, $files );
-	}
-
-	public function test_in_mu_plugin_sub_dir() {
-		@mkdir( WPMU_PLUGIN_DIR );
 		@mkdir( WPMU_PLUGIN_DIR . '/must-use' );
-		$filename = WPMU_PLUGIN_DIR . '/must-use/wpml-config.xml';
-		copy( dirname( __DIR__ ) . '/data/wpml-config.xml', $filename );
+		$filename_2 = WPMU_PLUGIN_DIR . '/must-use/wpml-config.xml';
+		copy( dirname( __DIR__ ) . '/data/wpml-config.xml', $filename_2 );
+
+		symlink( dirname( __DIR__ ) . '/data/plugins/best-plugin', WPMU_PLUGIN_DIR . '/best-plugin' );
 
 		$files    = ( new PLL_WPML_Config() )->get_files();
-		$expected = array( 'mu-plugins/must-use' => $filename );
+		$expected = array(
+			'mu-plugins'             => $filename_1,
+			'mu-plugins/must-use'    => $filename_2,
+			'mu-plugins/best-plugin' => WPMU_PLUGIN_DIR . '/best-plugin/wpml-config.xml',
+		);
 
-		unlink( $filename );
+		unlink( WPMU_PLUGIN_DIR . '/best-plugin' );
+
+		unlink( $filename_2 );
 		rmdir( WPMU_PLUGIN_DIR . '/must-use' );
+
+		unlink( $filename_1 );
 		rmdir( WPMU_PLUGIN_DIR );
 
 		$this->assertSameSetsWithIndex( $expected, $files );
