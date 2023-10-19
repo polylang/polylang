@@ -97,7 +97,7 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 		$filename_2 = WPMU_PLUGIN_DIR . '/must-use/wpml-config.xml';
 		copy( dirname( __DIR__ ) . '/data/wpml-config.xml', $filename_2 );
 
-		symlink( dirname( __DIR__ ) . '/data/plugins/best-plugin', WPMU_PLUGIN_DIR . '/best-plugin' );
+		@symlink( dirname( __DIR__ ) . '/data/plugins/best-plugin', WPMU_PLUGIN_DIR . '/best-plugin' );
 
 		$files    = ( new PLL_WPML_Config() )->get_files();
 		$expected = array(
