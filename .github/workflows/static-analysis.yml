@@ -2,13 +2,9 @@ name: Static Analysis
 
 on:
   push:
-    branches:
-      - master
-      - fix-rewrite-rules-multi
+    branches: master
   pull_request:
-    branches:
-      - master
-      - fix-rewrite-rules-multi
+    branches: master
   workflow_dispatch:
 
 jobs:
