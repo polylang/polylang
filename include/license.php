@@ -86,10 +86,10 @@ class PLL_License {
 
 		$licenses          = (array) get_option( 'polylang_licenses', array() );
 		$license           = isset( $licenses[ $this->id ] ) && is_array( $licenses[ $this->id ] ) ? $licenses[ $this->id ] : array();
-		$this->license_key = ! empty( $license['key'] ) && is_string( $license['key'] ) ? $license['key'] : '';
+		$this->license_key = ! empty( $license['key'] ) ? (string) $license['key'] : '';
 
-		if ( ! empty( $license['data'] ) && $license['data'] instanceof stdClass ) {
-			$this->license_data = $license['data'];
+		if ( ! empty( $license['data'] ) ) {
+			$this->license_data = (object) $license['data'];
 		}
 
 		// Updater
