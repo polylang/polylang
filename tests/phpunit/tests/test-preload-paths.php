@@ -89,4 +89,16 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 			'Media path should be filtered by language when option is activated.'
 		);
 	}
+
+	/**
+	 * @ticket #1861 {@see https://github.com/polylang/polylang-pro/issues/1861}
+	 */
+	public function test_rest_routes_for_custom_taxonomies() {
+		$preload_paths = $this->pll_admin->block_editor->filter_rest_routes->add_query_parameters( array( '/wp/v2/trtax' ), array( 'test' => 'something' ) );
+
+		// If the parameter is added to the route, this means that the route is one of the filterable routes.
+		$this->assertNotEmpty( $preload_paths );
+		$this->assertCount( 1, $preload_paths );
+		$this->assertSame( '/wp/v2/trtax?test=something', reset( $preload_paths ) );
+	}
 }
