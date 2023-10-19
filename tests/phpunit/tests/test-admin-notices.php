@@ -12,7 +12,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 	/**
 	 * Allows to continue the execution after wp_redirect + exit.
 	 */
-	protected function filter_wp_redirect() {
+	protected function expect_wp_redirect() {
 		add_filter(
 			'wp_redirect',
 			function() {
@@ -25,7 +25,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_hide_notice() {
-		$this->filter_wp_redirect();
+		$this->expect_wp_redirect();
 
 		wp_set_current_user( 1 );
 
