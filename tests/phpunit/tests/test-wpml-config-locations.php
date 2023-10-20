@@ -12,8 +12,8 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 		parent::wpSetUpBeforeClass( $factory );
 
 		// Copy themes and plugins from tests/phpunit/data to wp-content.
-		foreach ( self::$dirs as $type => $path ) {
-			$source_dir = PLL_TEST_DATA_DIR . "/{$path}";
+		foreach ( self::$dirs as $path ) {
+			$source_dir = PLL_TEST_DATA_DIR . $path;
 			$dest_dir   = WP_CONTENT_DIR . "/{$path}";
 
 			@mkdir( $dest_dir );
