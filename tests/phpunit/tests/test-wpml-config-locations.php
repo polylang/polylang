@@ -49,7 +49,7 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 
 	public function test_in_polylang() {
 		@mkdir( WP_CONTENT_DIR . '/polylang' );
-		copy( dirname( __DIR__ ) . '/data/wpml-config.xml', WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
+		copy( PLL_TEST_DATA_DIR . 'wpml-config.xml', WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
 
 		$files    = ( new PLL_WPML_Config() )->get_files();
 		$expected = array( 'Polylang' => WP_CONTENT_DIR . '/polylang/wpml-config.xml' );
@@ -91,13 +91,13 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 	public function test_in_mu_plugin() {
 		@mkdir( WPMU_PLUGIN_DIR );
 		$filename_1 = WPMU_PLUGIN_DIR . '/wpml-config.xml';
-		copy( dirname( __DIR__ ) . '/data/wpml-config.xml', $filename_1 );
+		copy( PLL_TEST_DATA_DIR . 'wpml-config.xml', $filename_1 );
 
 		@mkdir( WPMU_PLUGIN_DIR . '/must-use' );
 		$filename_2 = WPMU_PLUGIN_DIR . '/must-use/wpml-config.xml';
-		copy( dirname( __DIR__ ) . '/data/wpml-config.xml', $filename_2 );
+		copy( PLL_TEST_DATA_DIR . 'wpml-config.xml', $filename_2 );
 
-		@symlink( dirname( __DIR__ ) . '/data/plugins/best-plugin', WPMU_PLUGIN_DIR . '/best-plugin' );
+		@symlink( PLL_TEST_DATA_DIR . 'plugins/best-plugin', WPMU_PLUGIN_DIR . '/best-plugin' );
 
 		$files    = ( new PLL_WPML_Config() )->get_files();
 		$expected = array(
