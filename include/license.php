@@ -84,10 +84,12 @@ class PLL_License {
 		$this->author  = $author;
 		$this->api_url = empty( $api_url ) ? $this->api_url : $api_url;
 
-		$licenses = get_option( 'polylang_licenses' );
-		$this->license_key = empty( $licenses[ $this->id ]['key'] ) ? '' : $licenses[ $this->id ]['key'];
-		if ( ! empty( $licenses[ $this->id ]['data'] ) ) {
-			$this->license_data = $licenses[ $this->id ]['data'];
+		$licenses          = (array) get_option( 'polylang_licenses', array() );
+		$license           = isset( $licenses[ $this->id ] ) && is_array( $licenses[ $this->id ] ) ? $licenses[ $this->id ] : array();
+		$this->license_key = ! empty( $license['key'] ) ? (string) $license['key'] : '';
+
+		if ( ! empty( $license['data'] ) ) {
+			$this->license_data = (object) $license['data'];
 		}
 
 		// Updater
@@ -222,9 +224,9 @@ class PLL_License {
 
 			// Save new license info
 			$licenses[ $this->id ] = array( 'key' => $this->license_key );
-			$data = json_decode( wp_remote_retrieve_body( $response ) );
+			$data = (object) json_decode( wp_remote_retrieve_body( $response ) );
 
-			if ( 'deactivated' !== $data->license ) {
+			if ( isset( $data->license ) && 'deactivated' !== $data->license ) {
 				$licenses[ $this->id ]['data'] = $this->license_data = $data;
 			}
 		}

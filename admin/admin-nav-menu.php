@@ -194,7 +194,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return mixed
 	 */
 	public function pre_update_option_theme_mods( $mods ) {
-		if ( current_user_can( 'edit_theme_options' ) && isset( $mods['nav_menu_locations'] ) ) {
+		if ( current_user_can( 'edit_theme_options' ) && is_array( $mods ) && isset( $mods['nav_menu_locations'] ) ) {
 
 			// Manage Locations tab in Appearance -> Menus
 			if ( isset( $_GET['action'] ) && 'locations' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification
