@@ -58,16 +58,21 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 		$files    = ( new PLL_WPML_Config() )->get_files();
 		$expected = array( 'themes/best-theme' => get_theme_root() . '/best-theme/wpml-config.xml' );
 
+		switch_theme( 'default' );
+
 		$this->assertSameSetsWithIndex( $expected, $files );
 	}
 
 	public function test_in_child_theme() {
 		switch_theme( 'best-child' );
+
 		$files    = ( new PLL_WPML_Config() )->get_files();
 		$expected = array(
 			'themes/best-theme' => get_theme_root() . '/best-theme/wpml-config.xml',
 			'themes/best-child' => get_theme_root() . '/best-child/wpml-config.xml',
 		);
+
+		switch_theme( 'default' );
 
 		$this->assertSameSetsWithIndex( $expected, $files );
 	}
