@@ -224,9 +224,9 @@ class PLL_License {
 
 			// Save new license info
 			$licenses[ $this->id ] = array( 'key' => $this->license_key );
-			$data = json_decode( wp_remote_retrieve_body( $response ) );
+			$data = (object) json_decode( wp_remote_retrieve_body( $response ) );
 
-			if ( $data instanceof stdClass && isset( $data->license ) && 'deactivated' !== $data->license ) {
+			if ( isset( $data->license ) && 'deactivated' !== $data->license ) {
 				$licenses[ $this->id ]['data'] = $this->license_data = $data;
 			}
 		}
