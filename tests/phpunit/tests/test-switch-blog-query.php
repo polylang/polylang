@@ -22,33 +22,19 @@ if ( is_multisite() ) :
 		 * @param string $lang Current language slug.
 		 */
 		public function test_queries_blog_pll_dir( $url, $lang ) {
-			global $wp_rewrite;
+			$this->clean_up_filters();
 
-			switch_to_blog( self::$blog_with_pll_directory->blog_id );
+			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
 
-			$options = array_merge(
-				PLL_Install::get_default_options(),
-				array(
-					'force_lang'   => 1,
-					'default_lang' => 'en',
-				)
-			);
+			$options     = get_option( 'polylang' );
 			$model       = new PLL_Model( $options );
 			$links_model = $model->get_links_model();
 			$links_model->init();
 			$frontend = new PLL_Frontend( $links_model );
 			$frontend->init();
-
-			$post = $this->factory()->post->create();
-			$frontend->model->post->set_language( $post, $lang );
-
-			$wp_rewrite->init();
-
-			flush_rewrite_rules();
+			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
 
 			$url .= 'en' === $lang ? '' : $lang;
-
-			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
 
 			$this->go_to( $url );
 
@@ -63,31 +49,16 @@ if ( is_multisite() ) :
 		 * @param string $lang Current language slug.
 		 */
 		public function test_queries_blog_pll_domains( $url, $lang ) {
-			global $wp_rewrite;
+			$this->clean_up_filters();
 
-			switch_to_blog( self::$blog_with_pll_domains->blog_id );
+			switch_to_blog( (int) self::$blog_with_pll_domains->blog_id );
 
-			$options = array_merge(
-				PLL_Install::get_default_options(),
-				array(
-					'force_lang'   => 3,
-					'domains' => array(
-						'en' => 'polylang-domains.en',
-						'de' => 'polylang-domains.de',
-					),
-					'default_lang' => 'en',
-				)
-			);
+			$options = get_option( 'polylang' );
 			$model = new PLL_Model( $options );
 			$links_model = $model->get_links_model();
 			$links_model->init();
 			$frontend = new PLL_Frontend( $links_model );
 			$frontend->init();
-
-			$wp_rewrite->init();
-
-			flush_rewrite_rules();
-
 			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
 
 			$this->go_to( $url );
@@ -102,15 +73,11 @@ if ( is_multisite() ) :
 		public function test_queries_blog_pll_dir_switched_twice() {
 			global $wp_rewrite;
 
-			switch_to_blog( self::$blog_with_pll_directory->blog_id );
+			$this->clean_up_filters();
 
-			$options = array_merge(
-				PLL_Install::get_default_options(),
-				array(
-					'force_lang'   => 1,
-					'default_lang' => 'en',
-				)
-			);
+			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
+
+			$options = get_option( 'polylang' );
 			$model       = new PLL_Admin_Model( $options );
 			$links_model = $model->get_links_model();
 			$links_model->init();
@@ -124,9 +91,8 @@ if ( is_multisite() ) :
 			$wp_rewrite->init();
 			flush_rewrite_rules();
 
+			switch_to_blog( self::$blog_with_pll_domains->blog_id );
 			restore_current_blog(); // Restore to switch back, to ensure rewrite rules filters are set back correctly.
-
-			switch_to_blog( self::$blog_with_pll_directory->blog_id );
 
 			$wp_rewrite->init();
 			flush_rewrite_rules();

@@ -17,7 +17,9 @@ if ( is_multisite() ) :
 		public function test_rewrite_rules_when_switching_blog() {
 			global $wp_rewrite;
 
-			$options     = PLL_Install::get_default_options();
+			$this->clean_up_filters();
+
+			$options     = get_option( 'polylang' );
 			$model       = new PLL_Admin_Model( $options );
 			$links_model = $model->get_links_model();
 			$pll_admin   = new PLL_Admin( $links_model );
@@ -27,7 +29,7 @@ if ( is_multisite() ) :
 			/*
 			 * Test blog with Polylang activated and pretty permalink with language as directory.
 			 */
-			switch_to_blog( self::$blog_with_pll_directory->blog_id );
+			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
@@ -36,6 +38,7 @@ if ( is_multisite() ) :
 			$this->assertNotEmpty( $rules );
 			$this->assertArrayNotHasKey( '(en)/?$', $rules );
 			$this->assertArrayHasKey( '(fr)/?$', $rules );
+			$this->assertArrayNotHasKey( '(fr)/(fr)/?$', $rules );
 
 			$languages = $pll_admin->model->get_languages_list();
 
@@ -45,12 +48,10 @@ if ( is_multisite() ) :
 			$this->assertSame( 'fr', $languages[1]->slug );
 			$this->assertSame( 'http://' . self::$blog_with_pll_directory->domain . self::$blog_with_pll_directory->path . 'fr/', $languages[1]->get_home_url() );
 
-			restore_current_blog();
-
 			/*
 			 * Test blog with Polylang activated and pretty permalink with language as domains.
 			 */
-			switch_to_blog( self::$blog_with_pll_domains->blog_id );
+			switch_to_blog( (int) self::$blog_with_pll_domains->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
@@ -73,7 +74,7 @@ if ( is_multisite() ) :
 			/*
 			 * Test blog with Polylang activated and plain permalink.
 			 */
-			switch_to_blog( self::$blog_with_pll_default_links->blog_id );
+			switch_to_blog( (int) self::$blog_with_pll_default_links->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
@@ -94,7 +95,7 @@ if ( is_multisite() ) :
 			/*
 			 * Test blog with Polylang deactivated and pretty permalink.
 			 */
-			switch_to_blog( self::$blog_without_pll_pretty_links->blog_id );
+			switch_to_blog( (int) self::$blog_without_pll_pretty_links->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
@@ -113,10 +114,9 @@ if ( is_multisite() ) :
 
 			/*
 			 * Test blog with Polylang deactivated and plain permalink.
-			 * No need to cal `switch_to_blog( self::$blog_without_pll_plain_links )` here thanks to previous `restore_current_blog()`.
 			 */
 
-			$this->assertSame( self::$blog_without_pll_plain_links->blog_id, get_blog_details()->blog_id );
+			switch_to_blog( (int) self::$blog_without_pll_plain_links->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();

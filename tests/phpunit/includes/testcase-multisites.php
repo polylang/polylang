@@ -9,7 +9,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 *
 	 * @var WP_Site
 	 */
-	protected static $blog_without_pll_plain_links; // Default test website.
+	protected static $blog_without_pll_plain_links;
 
 	/**
 	 * Blog in pretty permalinks without Polylang.
@@ -32,7 +32,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 *
 	 * @var WP_Site
 	 */
-	protected static $blog_with_pll_directory;
+	protected static $blog_with_pll_directory; // Main blog.
 
 	/**
 	 * Blog in pretty permalinks with Polylang and language as domains.
@@ -93,19 +93,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 
 		// Create all sites.
 		$factory = $this->factory();
-		self::$blog_without_pll_plain_links = get_blog_details();
 
-		self::$blog_without_pll_pretty_links = $factory->blog->create_and_get(
-			array(
-				'domain' => 'wordpress.org',
-			)
-		);
-
-		self::$blog_with_pll_directory = $factory->blog->create_and_get(
-			array(
-				'domain' => 'polylang-dir.org',
-			)
-		);
+		self::$blog_with_pll_directory = get_site( 1 );
 
 		self::$blog_with_pll_domains = $factory->blog->create_and_get(
 			array(
@@ -119,11 +108,17 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 			)
 		);
 
-		// Set up blog with Polylang not activated and plain permalinks.
-		$this->set_up_blog_without_pll( self::$blog_without_pll_plain_links, $this->plain_structure );
+		self::$blog_without_pll_plain_links = $factory->blog->create_and_get(
+			array(
+				'domain' => 'fake.com',
+			)
+		);
 
-		// Set up blog with Polylang not activated and pretty permalinks.
-		$this->set_up_blog_without_pll( self::$blog_without_pll_pretty_links, $this->pretty_structure );
+		self::$blog_without_pll_pretty_links = $factory->blog->create_and_get(
+			array(
+				'domain' => 'wordpress.org',
+			)
+		);
 
 		// Set up blog with Polylang activated, permalinks as directory, English and French created.
 		$this->set_up_blog_with_pll(
@@ -154,6 +149,12 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 			array(),
 			$this->plain_structure
 		);
+
+		// Set up blog with Polylang not activated and plain permalinks.
+		$this->set_up_blog_without_pll( self::$blog_without_pll_plain_links, $this->plain_structure );
+
+		// Set up blog with Polylang not activated and pretty permalinks.
+		$this->set_up_blog_without_pll( self::$blog_without_pll_pretty_links, $this->pretty_structure );
 	}
 
 	public function tear_down() {
@@ -187,6 +188,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		switch_to_blog( $blog->blog_id );
 
 		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array();
 		$wp_rewrite->set_permalink_structure( $structure );
 
 		$plugins = get_option( 'active_plugins', array() );
@@ -203,6 +205,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		foreach ( $languages as $language ) {
 			$pll_admin->model->add_language( $language );
 		}
+
+		$wp_rewrite->flush_rules();
 
 		restore_current_blog();
 	}
@@ -222,12 +226,24 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		switch_to_blog( $blog->blog_id );
 
 		$wp_rewrite->init();
+		$wp_rewrite->extra_rules_top = array();
 		$wp_rewrite->set_permalink_structure( $structure );
+		$wp_rewrite->flush_rules();
 
 		$plugins = get_option( 'active_plugins', array() );
 		update_option( 'active_plugins', array_diff( $plugins, $this->get_plugin_names() ) ); // Ensure Polylang plugins are deactivated.
 
 		restore_current_blog();
+	}
+
+	/**
+	 * Removes *all* filters that could interfere with a test.
+	 * Must be called *before* creating a new Polylang environment in a test.
+	 */
+	protected function clean_up_filters() {
+		remove_all_filters( 'pll_init' );
+		remove_all_actions( 'pll_prepare_rewrite_rules' );
+		remove_all_actions( 'switch_blog' );
 	}
 
 	/**
