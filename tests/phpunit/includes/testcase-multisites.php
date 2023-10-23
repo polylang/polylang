@@ -57,7 +57,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	protected $plain_structure = '';
 
 	/**
-	 * Languages data for their creation keyed by language slug
+	 * Languages data for their creation keyed by language slug.
 	 *
 	 * @var array
 	 */
@@ -142,7 +142,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 			$this->pretty_structure
 		);
 
-		// Set up blog with Polylang activated, plain (i.e. default) permalinks , English and French created.
+		// Set up blog with Polylang activated, plain (i.e. default) permalinks, English and French created.
 		$this->set_up_blog_with_pll(
 			self::$blog_with_pll_default_links,
 			array( $this->languages['en'], $this->languages['fr'] ),
@@ -182,7 +182,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * @param string  $structure Permalink structure to use.
 	 * @return void
 	 */
-	protected function set_up_blog_with_pll( $blog, $languages, $options, $structure ) {
+	protected function set_up_blog_with_pll( WP_Site $blog, array $languages, array $options, string $structure ) {
 		global $wp_rewrite;
 
 		switch_to_blog( $blog->blog_id );
@@ -220,7 +220,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * @param string  $structure Permalinks structure to use.
 	 * @return void
 	 */
-	protected function set_up_blog_without_pll( $blog, $structure ) {
+	protected function set_up_blog_without_pll( WP_Site $blog, string $structure ) {
 		global $wp_rewrite;
 
 		switch_to_blog( $blog->blog_id );
@@ -257,7 +257,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
 	 *
 	 * @param array $options Plugin options.
-	 * @return PLL_Base Polylang main class instance.
+	 * @return PLL_Admin_Base Polylang main class instance.
 	 */
-	abstract protected function get_pll_env( $options );
+	abstract protected function get_pll_env( array $options ): PLL_Admin_Base;
 }
