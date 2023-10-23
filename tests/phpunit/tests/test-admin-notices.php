@@ -15,7 +15,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 	protected function expect_wp_redirect() {
 		add_filter(
 			'wp_redirect',
-			function() {
+			function () {
 				throw new Exception( 'Call to wp_redirect' );
 			}
 		);
