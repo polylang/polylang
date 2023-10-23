@@ -231,24 +231,32 @@ class PLL_Frontend extends PLL_Base {
 	 * @return void
 	 */
 	public function switch_blog( $new_blog_id, $prev_blog_id ) {
+		if ( (int) $new_blog_id === (int) $prev_blog_id ) {
+			// Do nothing if same blog.
+			return;
+		}
+
 		parent::switch_blog( $new_blog_id, $prev_blog_id );
 
 		// Need to check that some languages are defined when user is logged in, has several blogs, some without any languages.
-		if ( $this->is_active_on_new_blog( $new_blog_id, $prev_blog_id ) && did_action( 'pll_language_defined' ) && $this->model->has_languages() ) {
-			static $restore_curlang;
-			if ( empty( $restore_curlang ) ) {
-				$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs.
-			}
-
-			$lang = $this->model->get_language( $restore_curlang );
-			$this->curlang = $lang ? $lang : $this->model->get_default_language();
-
-			if ( isset( $this->static_pages ) ) {
-				$this->static_pages->init();
-			}
-
-			$this->load_strings_translations();
+		if ( ! $this->is_active_on_current_site() || ! $this->model->has_languages() || ! did_action( 'pll_language_defined' ) ) {
+			return;
 		}
+
+		static $restore_curlang;
+
+		if ( empty( $restore_curlang ) ) {
+			$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs.
+		}
+
+		$lang = $this->model->get_language( $restore_curlang );
+		$this->curlang = $lang ? $lang : $this->model->get_default_language();
+
+		if ( isset( $this->static_pages ) ) {
+			$this->static_pages->init();
+		}
+
+		$this->load_strings_translations();
 	}
 
 	/**
