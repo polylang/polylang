@@ -26,8 +26,8 @@ if ( is_multisite() ) :
 		}
 
 		/**
-		 * @testWith ["http://polylang-dir.org", "en"]
-		 *           ["http://polylang-dir.org", "fr"]
+		 * @testWith ["http://example.org", "en"]
+		 *           ["http://example.org", "fr"]
 		 *
 		 * @param string $url  URL to test.
 		 * @param string $lang Current language slug.
@@ -110,7 +110,7 @@ if ( is_multisite() ) :
 
 			$admin->curlang = $admin->model->get_language( 'fr' ); // Force current language.
 
-			$this->go_to( 'http://polylang-dir.org/fr' );
+			$this->go_to( 'http://example.org/fr' );
 
 			$this->assertQueryTrue( 'is_home', 'is_front_page' );
 		}
