@@ -157,8 +157,10 @@ class PLL_Filter_REST_Routes {
 		$this->filtered_entities = array();
 		foreach ( $rest_entities as $rest_entity ) {
 			if ( in_array( $rest_entity->name, $translatable_entities, true ) ) {
-				$rest_base = empty( $rest_entity->rest_base ) ? $rest_entity->name : $rest_entity->rest_base;
-				$this->filtered_entities[ $rest_entity->name ] = "{$rest_entity->rest_namespace}/{$rest_base}";
+				$rest_base      = empty( $rest_entity->rest_base ) ? $rest_entity->name : $rest_entity->rest_base;
+				$rest_namespace = empty( $rest_entity->rest_namespace ) ? 'wp/v2' : $rest_entity->rest_namespace;
+
+				$this->filtered_entities[ $rest_entity->name ] = "{$rest_namespace}/{$rest_base}";
 			}
 		}
 	}
