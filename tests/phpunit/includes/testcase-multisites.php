@@ -251,7 +251,9 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 *
 	 * @return string[]
 	 */
-	abstract protected function get_plugin_names();
+	protected function get_plugin_names(): array {
+		return array( POLYLANG_BASENAME );
+	}
 
 	/**
 	 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
@@ -259,5 +261,10 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * @param array $options Plugin options.
 	 * @return PLL_Admin_Base Polylang main class instance.
 	 */
-	abstract protected function get_pll_env( array $options ): PLL_Admin_Base;
+	protected function get_pll_env( array $options ): PLL_Admin_Base {
+		$model       = new PLL_Admin_Model( $options );
+		$links_model = $model->get_links_model();
+
+		return new PLL_Admin( $links_model );
+	}
 }

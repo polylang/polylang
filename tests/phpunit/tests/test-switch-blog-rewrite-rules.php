@@ -3,28 +3,6 @@
 if ( is_multisite() ) :
 
 	class Switch_Blog_Rewrite_Rules_Test extends PLL_Multisites_TestCase {
-		/**
-		 * Returns Polylang's plugin basenames.
-		 *
-		 * @return string[]
-		 */
-		protected function get_plugin_names(): array {
-			return array( POLYLANG_BASENAME );
-		}
-
-		/**
-		 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
-		 *
-		 * @param array $options Plugin options.
-		 * @return PLL_Admin_Base Polylang main class instance.
-		 */
-		protected function get_pll_env( array $options ): PLL_Admin_Base {
-			$model       = new PLL_Admin_Model( $options );
-			$links_model = $model->get_links_model();
-
-			return new PLL_Admin( $links_model );
-		}
-
 		public function test_rewrite_rules_when_switching_blog() {
 			global $wp_rewrite;
 
