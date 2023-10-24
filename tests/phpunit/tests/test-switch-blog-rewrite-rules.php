@@ -33,6 +33,8 @@ if ( is_multisite() ) :
 			$this->assertSame( 'fr', $languages[1]->slug );
 			$this->assertSame( 'http://' . self::$blog_with_pll_directory->domain . self::$blog_with_pll_directory->path . 'fr/', $languages[1]->get_home_url() );
 
+			restore_current_blog();
+
 			/*
 			 * Test blog with Polylang activated and pretty permalink with language as domains.
 			 */
