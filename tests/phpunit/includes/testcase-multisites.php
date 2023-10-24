@@ -240,6 +240,13 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		remove_all_filters( 'pll_init' );
 		remove_all_actions( 'pll_prepare_rewrite_rules' );
 		remove_all_actions( 'switch_blog' );
+
+		remove_all_filters( 'rewrite_rules_array' );
+		$types = array_merge( array( 'date', 'root', 'comments', 'search', 'author' ), get_post_types(), get_taxonomies() );
+
+		foreach ( $types as $type ) {
+			remove_all_filters( $type . '_rewrite_rules' );
+		}
 	}
 
 	/**
