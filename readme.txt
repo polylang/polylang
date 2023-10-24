@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.9
 Tested up to: 6.3
 Requires PHP: 7.0
-Stable tag: 3.5.1
+Stable tag: 3.5.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,11 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.5.2 (2023-10-25) =
+
+* Pro: Fix terms not filtered by the current language in the block editor custom taxonomy component panel
+* Fix incorrect rewrite rules leading to error 404 for the main site on mutisite #1375
 
 = 3.5.1 (2023-10-17) =
 
