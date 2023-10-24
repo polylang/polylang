@@ -80,6 +80,7 @@ if ( is_multisite() ) :
 			$wp_rewrite->init();
 			flush_rewrite_rules();
 
+			restore_current_blog();
 			switch_to_blog( self::$blog_with_pll_domains->blog_id );
 			restore_current_blog(); // Restore to switch back, to ensure rewrite rules filters are set back correctly.
 
