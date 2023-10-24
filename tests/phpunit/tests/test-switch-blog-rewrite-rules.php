@@ -8,11 +8,7 @@ if ( is_multisite() ) :
 
 			$this->clean_up_filters();
 
-			$options     = get_option( 'polylang' );
-			$model       = new PLL_Admin_Model( $options );
-			$links_model = $model->get_links_model();
-			$pll_admin   = new PLL_Admin( $links_model );
-			$pll_admin->init();
+			$pll_admin = $this->get_pll_admin_env();
 			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
 
 			/*

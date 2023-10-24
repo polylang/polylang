@@ -15,13 +15,8 @@ if ( is_multisite() ) :
 
 			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
 
-			$options     = get_option( 'polylang' );
-			$model       = new PLL_Model( $options );
-			$links_model = $model->get_links_model();
-			$links_model->init();
-			$frontend = new PLL_Frontend( $links_model );
-			$frontend->init();
-			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
+			$pll_frontend = $this->get_pll_frontend_env();
+			$pll_frontend->curlang = $pll_frontend->model->get_language( $lang ); // Force current language.
 
 			$url .= 'en' === $lang ? '' : "/$lang";
 
@@ -42,13 +37,8 @@ if ( is_multisite() ) :
 
 			switch_to_blog( (int) self::$blog_with_pll_domains->blog_id );
 
-			$options = get_option( 'polylang' );
-			$model = new PLL_Model( $options );
-			$links_model = $model->get_links_model();
-			$links_model->init();
-			$frontend = new PLL_Frontend( $links_model );
-			$frontend->init();
-			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
+			$pll_frontend = $this->get_pll_frontend_env();
+			$pll_frontend->curlang = $pll_frontend->model->get_language( $lang ); // Force current language.
 
 			$this->go_to( $url );
 
@@ -66,16 +56,11 @@ if ( is_multisite() ) :
 
 			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
 
-			$options = get_option( 'polylang' );
-			$model       = new PLL_Admin_Model( $options );
-			$links_model = $model->get_links_model();
-			$links_model->init();
-			$admin = new PLL_Admin( $links_model );
-			$admin->init();
-			do_action_ref_array( 'pll_init', array( &$admin ) );
+			$pll_admin = $this->get_pll_admin_env();
+			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
 
 			$post = $this->factory()->post->create();
-			$admin->model->post->set_language( $post, 'fr' );
+			$pll_admin->model->post->set_language( $post, 'fr' );
 
 			$wp_rewrite->init();
 			flush_rewrite_rules();
@@ -87,7 +72,7 @@ if ( is_multisite() ) :
 			$wp_rewrite->init();
 			flush_rewrite_rules();
 
-			$admin->curlang = $admin->model->get_language( 'fr' ); // Force current language.
+			$pll_admin->curlang = $pll_admin->model->get_language( 'fr' ); // Force current language.
 
 			$this->go_to( 'http://example.org/fr' );
 

@@ -194,12 +194,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		$plugins = get_option( 'active_plugins', array() );
 		update_option( 'active_plugins', array_merge( $plugins, $this->get_plugin_names() ) );
 
-		$options = array_merge(
-			PLL_Install::get_default_options(),
-			$options
-		);
-
-		$pll_admin = $this->get_pll_env( $options );
+		$pll_admin = $this->get_pll_admin_env( $options, false );
 
 		foreach ( $languages as $language ) {
 			$added = $pll_admin->model->add_language( $language );
@@ -260,12 +255,51 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
 	 *
 	 * @param array $options Plugin options.
+	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Admin_Base`'s init or not. Default is `true`.
 	 * @return PLL_Admin_Base Polylang main class instance.
 	 */
-	protected function get_pll_env( array $options ): PLL_Admin_Base {
+	protected function get_pll_admin_env( array $options = array(), bool $init = true ): PLL_Admin_Base {
+		if ( empty( $options ) ) {
+			$options = (array) get_option( 'polylang', array() );
+		} else {
+			$options = array_merge( PLL_Install::get_default_options(), $options );
+		}
+
 		$model       = new PLL_Admin_Model( $options );
 		$links_model = $model->get_links_model();
+		$pll_env     = new PLL_Admin( $links_model );
 
-		return new PLL_Admin( $links_model );
+		if ( $init ) {
+			$links_model->init();
+			$pll_env->init();
+		}
+
+		return $pll_env;
+	}
+
+	/**
+	 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
+	 *
+	 * @param array $options Plugin options.
+	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Admin_Base`'s init or not. Default is `true`.
+	 * @return PLL_Frontend Polylang main class instance.
+	 */
+	protected function get_pll_frontend_env( array $options = array(), bool $init = true ): PLL_Frontend {
+		if ( empty( $options ) ) {
+			$options = (array) get_option( 'polylang', array() );
+		} else {
+			$options = array_merge( PLL_Install::get_default_options(), $options );
+		}
+
+		$model       = new PLL_Model( $options );
+		$links_model = $model->get_links_model();
+		$pll_env     = new PLL_Frontend( $links_model );
+
+		if ( $init ) {
+			$links_model->init();
+			$pll_env->init();
+		}
+
+		return $pll_env;
 	}
 }
