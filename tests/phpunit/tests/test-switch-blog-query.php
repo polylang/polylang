@@ -23,7 +23,7 @@ if ( is_multisite() ) :
 			$frontend->init();
 			$frontend->curlang = $frontend->model->get_language( $lang ); // Force current language.
 
-			$url .= 'en' === $lang ? '' : $lang;
+			$url .= 'en' === $lang ? '' : "/$lang";
 
 			$this->go_to( $url );
 
