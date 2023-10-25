@@ -256,7 +256,7 @@ class PLL_Frontend extends PLL_Base {
 			$this->static_pages->init();
 		}
 
-		$this->load_strings_translations();
+		$this->load_strings_translations( $this->curlang );
 	}
 
 	/**
