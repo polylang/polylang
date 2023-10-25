@@ -78,6 +78,36 @@ if ( is_multisite() ) :
 
 			$this->assertQueryTrue( 'is_home', 'is_front_page' );
 		}
+
+		/**
+		 * @ticket #1867
+		 * @see https://github.com/polylang/polylang-pro/issues/1867.
+		 */
+		public function test_queries_blog_pll_dir_switched_same() {
+			global $wp_rewrite;
+
+			$this->clean_up_filters();
+
+			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
+
+			$pll_admin = $this->get_pll_admin_env();
+			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
+
+			$post = $this->factory()->post->create();
+			$pll_admin->model->post->set_language( $post, 'fr' );
+			$url = get_permalink( $post );
+
+			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
+
+			$wp_rewrite->init();
+			flush_rewrite_rules();
+
+			$pll_admin->curlang = $pll_admin->model->get_language( 'fr' ); // Force current language.
+
+			$this->go_to( $url );
+
+			$this->assertQueryTrue( 'is_single', 'is_singular' );
+		}
 	}
 
 endif;
