@@ -2,7 +2,7 @@
 
 if ( is_multisite() ) :
 
-	class Switch_Blog_Urls_Test extends PLL_Multisites_TestCase {
+	class Switch_Blog_Query_Test extends PLL_Multisites_TestCase {
 		/**
 		 * @testWith ["http://example.org", "en"]
 		 *           ["http://example.org", "fr"]
