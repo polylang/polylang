@@ -63,10 +63,15 @@
 
 	<rule ref="WordPress.Security.ValidatedSanitizedInput">
 		<properties>
-			<property name="customSanitizingFunctions" type="array">
+			<property name="customUnslashingSanitizingFunctions" type="array">
 				<element value="sanitize_locale_name"/>
 			</property>
-			<property name="customUnslashingSanitizingFunctions" type="array">
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.Security.EscapeOutput">
+		<properties>
+			<property name="customAutoEscapedFunctions" type="array">
 				<element value="sanitize_locale_name"/>
 			</property>
 		</properties>
