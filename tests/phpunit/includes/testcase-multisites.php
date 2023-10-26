@@ -262,10 +262,10 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
 	 *
 	 * @param array $options Plugin options.
-	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Admin_Base`'s init or not. Default is `true`.
-	 * @return PLL_Admin_Base Polylang main class instance.
+	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Admin`'s init or not. Default is `true`.
+	 * @return PLL_Admin Polylang main class instance.
 	 */
-	protected function get_pll_admin_env( array $options = array(), bool $init = true ): PLL_Admin_Base {
+	protected function get_pll_admin_env( array $options = array(), bool $init = true ): PLL_Admin {
 		if ( empty( $options ) ) {
 			$options = (array) get_option( 'polylang', array() );
 		} else {
@@ -288,7 +288,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
 	 *
 	 * @param array $options Plugin options.
-	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Admin_Base`'s init or not. Default is `true`.
+	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Frontend`'s init or not. Default is `true`.
 	 * @return PLL_Frontend Polylang main class instance.
 	 */
 	protected function get_pll_frontend_env( array $options = array(), bool $init = true ): PLL_Frontend {
