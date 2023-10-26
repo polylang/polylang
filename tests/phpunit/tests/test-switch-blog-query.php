@@ -56,11 +56,11 @@ if ( is_multisite() ) :
 
 			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 
-			$pll_admin = $this->get_pll_admin_env();
-			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
+			$pll_frontend = $this->get_pll_frontend_env();
+			do_action_ref_array( 'pll_init', array( &$pll_frontend ) );
 
 			$post = $this->factory()->post->create();
-			$pll_admin->model->post->set_language( $post, 'fr' );
+			$pll_frontend->model->post->set_language( $post, 'fr' );
 
 			$wp_rewrite->init();
 			flush_rewrite_rules();
@@ -72,7 +72,7 @@ if ( is_multisite() ) :
 			$wp_rewrite->init();
 			flush_rewrite_rules();
 
-			$pll_admin->curlang = $pll_admin->model->get_language( 'fr' ); // Force current language.
+			$pll_frontend->curlang = $pll_frontend->model->get_language( 'fr' ); // Force current language.
 
 			$this->go_to( 'http://example.org/fr' );
 
