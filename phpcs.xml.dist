@@ -61,12 +61,12 @@
 		</properties>
 	</rule>
 
-	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable" >
+	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable">
 		<exclude-pattern>/load.php</exclude-pattern>
 		<exclude-pattern>/view-*</exclude-pattern>
 	</rule>
 
-	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable" >
+	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable">
 		<properties>
 			<property name="allowUnusedVariablesBeforeRequire" value="true"/>
 		</properties>
@@ -83,47 +83,55 @@
 		</properties>
 	</rule>
 
-	<rule ref="Generic.Commenting.Fixme.CommentFound" >
+	<rule ref="Generic.Commenting.Fixme.CommentFound">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Generic.Files.OneObjectStructurePerFile.MultipleFound" >
+	<rule ref="Generic.Files.OneObjectStructurePerFile.MultipleFound">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.ClassComment.Missing" >
+	<rule ref="Generic.PHP.NoSilencedErrors.Forbidden">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.FileComment" >
+	<rule ref="Squiz.Commenting.ClassComment.Missing">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.FunctionComment.Missing" >
+	<rule ref="Squiz.Commenting.FileComment">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.FunctionComment.MissingParamComment" >
+	<rule ref="Squiz.Commenting.FunctionComment.Missing">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.Commenting.VariableComment.Missing" >
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamComment">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="Squiz.PHP.CommentedOutCode.Found" >
+	<rule ref="Squiz.Commenting.VariableComment.Missing">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="WordPress.NamingConventions.ValidHookName.UseUnderscores" >
+	<rule ref="Squiz.PHP.CommentedOutCode.Found">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged" >
+	<rule ref="WordPress.NamingConventions.ValidHookName.UseUnderscores">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<rule ref="WordPress.Security" >
+	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.Security">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPressVIPMinimum.Files.IncludingFile.UsingVariable">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
