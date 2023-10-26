@@ -91,19 +91,24 @@ class Widget_Nav_Menu_Test extends PLL_UnitTestCase {
 		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $admin );
 		$this->pll_rest->init();
-		$request = new WP_REST_Request( 'POST', '/wp/v2/widget-types/nav_menu/render' );
-		$params = array(
+
+		$instance = array(
 			'nav_menu' => $menu_id,
 			'pll_lang' => 'en',
 		);
+
+		$serialized_instance = serialize( $instance ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+
 		$body = array(
 			'instance' => array(
-				'encoded' => base64_encode( serialize( $params ) ),
-				'hash'    => wp_hash( serialize( $params ) ),
-				'raw'     => $params,
+				'encoded' => base64_encode( $serialized_instance ),
+				'hash'    => wp_hash( $serialized_instance ),
+				'raw'     => $instance,
 			),
 			'lang'     => 'en',
 		);
+
+		$request = new WP_REST_Request( 'POST', '/wp/v2/widget-types/nav_menu/render' );
 		$request->set_body_params( $body );
 		$response = rest_do_request( $request );
 
