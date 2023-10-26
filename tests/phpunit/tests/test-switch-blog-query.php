@@ -59,9 +59,6 @@ if ( is_multisite() ) :
 			$pll_frontend = $this->get_pll_frontend_env();
 			do_action_ref_array( 'pll_init', array( &$pll_frontend ) );
 
-			$post = $this->factory()->post->create();
-			$pll_frontend->model->post->set_language( $post, 'fr' );
-
 			$wp_rewrite->init();
 			flush_rewrite_rules();
 
