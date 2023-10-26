@@ -13,7 +13,7 @@ if ( is_multisite() ) :
 		public function test_queries_blog_pll_dir( string $url, string $lang ) {
 			$this->clean_up_filters();
 
-			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 
 			$pll_frontend = $this->get_pll_frontend_env();
 			$pll_frontend->curlang = $pll_frontend->model->get_language( $lang ); // Force current language.
@@ -35,7 +35,7 @@ if ( is_multisite() ) :
 		public function test_queries_blog_pll_domains( string $url, string $lang ) {
 			$this->clean_up_filters();
 
-			switch_to_blog( (int) self::$blog_with_pll_domains->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_domains->blog_id );
 
 			$pll_frontend = $this->get_pll_frontend_env();
 			$pll_frontend->curlang = $pll_frontend->model->get_language( $lang ); // Force current language.
@@ -54,7 +54,7 @@ if ( is_multisite() ) :
 
 			$this->clean_up_filters();
 
-			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 
 			$pll_admin = $this->get_pll_admin_env();
 			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
@@ -66,7 +66,7 @@ if ( is_multisite() ) :
 			flush_rewrite_rules();
 
 			restore_current_blog();
-			switch_to_blog( (int) self::$blog_with_pll_domains->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_domains->blog_id );
 			restore_current_blog(); // Restore to switch back, to ensure rewrite rules filters are set back correctly.
 
 			$wp_rewrite->init();
@@ -88,7 +88,7 @@ if ( is_multisite() ) :
 
 			$this->clean_up_filters();
 
-			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 
 			$pll_admin = $this->get_pll_admin_env();
 			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
@@ -97,7 +97,7 @@ if ( is_multisite() ) :
 			$pll_admin->model->post->set_language( $post, 'fr' );
 			$url = get_permalink( $post );
 
-			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 
 			$wp_rewrite->init();
 			flush_rewrite_rules();

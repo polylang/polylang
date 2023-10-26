@@ -14,7 +14,7 @@ if ( is_multisite() ) :
 			/*
 			 * Test blog with Polylang activated and pretty permalink with language as directory.
 			 */
-			switch_to_blog( (int) self::$blog_with_pll_directory->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
@@ -29,16 +29,16 @@ if ( is_multisite() ) :
 
 			$this->assertCount( 2, $languages );
 			$this->assertSame( 'en', $languages[0]->slug );
-			$this->assertSame( 'http://' . self::$blog_with_pll_directory->domain . self::$blog_with_pll_directory->path, $languages[0]->get_home_url() );
+			$this->assertSame( 'http://' . $this->blog_with_pll_directory->domain . $this->blog_with_pll_directory->path, $languages[0]->get_home_url() );
 			$this->assertSame( 'fr', $languages[1]->slug );
-			$this->assertSame( 'http://' . self::$blog_with_pll_directory->domain . self::$blog_with_pll_directory->path . 'fr/', $languages[1]->get_home_url() );
+			$this->assertSame( 'http://' . $this->blog_with_pll_directory->domain . $this->blog_with_pll_directory->path . 'fr/', $languages[1]->get_home_url() );
 
 			restore_current_blog();
 
 			/*
 			 * Test blog with Polylang activated and pretty permalink with language as domains.
 			 */
-			switch_to_blog( (int) self::$blog_with_pll_domains->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_domains->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
@@ -61,7 +61,7 @@ if ( is_multisite() ) :
 			/*
 			 * Test blog with Polylang activated and plain permalink.
 			 */
-			switch_to_blog( (int) self::$blog_with_pll_plain_links->blog_id );
+			switch_to_blog( (int) $this->blog_with_pll_plain_links->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
@@ -73,16 +73,16 @@ if ( is_multisite() ) :
 
 			$this->assertCount( 2, $languages );
 			$this->assertSame( 'en', $languages[0]->slug );
-			$this->assertSame( 'http://' . self::$blog_with_pll_plain_links->domain . self::$blog_with_pll_plain_links->path, $languages[0]->get_home_url() );
+			$this->assertSame( 'http://' . $this->blog_with_pll_plain_links->domain . $this->blog_with_pll_plain_links->path, $languages[0]->get_home_url() );
 			$this->assertSame( 'fr', $languages[1]->slug );
-			$this->assertSame( 'http://' . self::$blog_with_pll_plain_links->domain . self::$blog_with_pll_plain_links->path . '?lang=fr', $languages[1]->get_home_url() );
+			$this->assertSame( 'http://' . $this->blog_with_pll_plain_links->domain . $this->blog_with_pll_plain_links->path . '?lang=fr', $languages[1]->get_home_url() );
 
 			restore_current_blog();
 
 			/*
 			 * Test blog with Polylang deactivated and pretty permalink.
 			 */
-			switch_to_blog( (int) self::$blog_without_pll_pretty_links->blog_id );
+			switch_to_blog( (int) $this->blog_without_pll_pretty_links->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
@@ -103,7 +103,7 @@ if ( is_multisite() ) :
 			 * Test blog with Polylang deactivated and plain permalink.
 			 */
 
-			switch_to_blog( (int) self::$blog_without_pll_plain_links->blog_id );
+			switch_to_blog( (int) $this->blog_without_pll_plain_links->blog_id );
 
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
