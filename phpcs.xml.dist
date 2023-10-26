@@ -53,10 +53,24 @@
 		<exclude name="WordPress.WP.GlobalVariablesOverride.Prohibited" />
 	</rule>
 
+	<!--
+	#############################################################################
+	Customized properties.
+	#############################################################################
+	-->
+
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
 				<element value="polylang"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.Security.EscapeOutput">
+		<properties>
+			<property name="customAutoEscapedFunctions" type="array">
+				<element value="sanitize_locale_name"/>
 			</property>
 		</properties>
 	</rule>
@@ -69,13 +83,11 @@
 		</properties>
 	</rule>
 
-	<rule ref="WordPress.Security.EscapeOutput">
-		<properties>
-			<property name="customAutoEscapedFunctions" type="array">
-				<element value="sanitize_locale_name"/>
-			</property>
-		</properties>
-	</rule>
+	<!--
+	#############################################################################
+	Global exclusions for tests.
+	#############################################################################
+	-->
 
 	<rule ref="Generic.Commenting.Fixme.CommentFound">
 		<exclude-pattern>*/tests/*</exclude-pattern>
@@ -129,16 +141,12 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
-	<!-- PHPCS cannot correctly parse JavaScript syntax -->
-	<rule ref="PEAR.Functions.FunctionCallSignature">
-		<exclude-pattern>*/*.js</exclude-pattern>
-	</rule>
+	<!--
+	#############################################################################
+	Global exclusions for js files.
+	#############################################################################
+	-->
 
-	<rule ref="Generic.WhiteSpace.ScopeIndent">
-		<exclude-pattern>*/*.js</exclude-pattern>
-	</rule>
-
-	<!-- PHPCS cannot correctly parse JavaScript syntax -->
 	<rule ref="PEAR.Functions.FunctionCallSignature">
 		<exclude-pattern>*/*.js</exclude-pattern>
 	</rule>
@@ -148,12 +156,18 @@
 	</rule>
 
 	<rule ref="WordPress.WhiteSpace.OperatorSpacing">
-		<exclude-pattern>*/*./js</exclude-pattern>
+		<exclude-pattern>*/*.js</exclude-pattern>
 	</rule>
 
 	<rule ref="Generic.Formatting.MultipleStatementAlignment">
 		<exclude-pattern>*/*.js</exclude-pattern>
 	</rule>
+
+	<!--
+	#############################################################################
+	Excluded files.
+	#############################################################################
+	-->
 
 	<exclude-pattern>js/*.min.js</exclude-pattern>
 	<exclude-pattern>js/build</exclude-pattern>
