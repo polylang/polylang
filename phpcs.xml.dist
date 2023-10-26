@@ -8,21 +8,10 @@
 
 	<file>.</file>
 
-	<config name="minimum_supported_wp_version" value="5.9"/>
 	<config name="testVersion" value="7.0-"/><!-- PHPCompatibilityWP -->
+	<config name="minimum_supported_wp_version" value="5.9"/>
 
 	<rule ref="PHPCompatibilityWP"/>
-
-	<rule ref="WordPressVIPMinimum">
-		<exclude name="WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant"/>
-		<exclude name="WordPressVIPMinimum.Functions.CheckReturnValue.NonCheckedVariable"/>
-		<exclude name="WordPressVIPMinimum.Functions.RestrictedFunctions"/>
-		<exclude name="WordPressVIPMinimum.Hooks.PreGetPosts.PreGetPosts"/>
-		<exclude name="WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown"/>
-		<exclude name="WordPressVIPMinimum.Performance.NoPaging.nopaging_nopaging"/>
-		<exclude name="WordPressVIPMinimum.Performance.TaxonomyMetaInOptions.PossibleTermMetaInOptions"/>
-		<exclude name="WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE"/>
-	</rule>
 
 	<rule ref="WordPress">
 		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.Found"/>
@@ -51,6 +40,17 @@
 		<exclude name="WordPress.WP.EnqueuedResources.NonEnqueuedScript" />
 		<exclude name="WordPress.WP.EnqueuedResourceParameters.NotInFooter" />
 		<exclude name="WordPress.WP.GlobalVariablesOverride.Prohibited" />
+	</rule>
+
+	<rule ref="WordPressVIPMinimum">
+		<exclude name="WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant"/>
+		<exclude name="WordPressVIPMinimum.Functions.CheckReturnValue.NonCheckedVariable"/>
+		<exclude name="WordPressVIPMinimum.Functions.RestrictedFunctions"/>
+		<exclude name="WordPressVIPMinimum.Hooks.PreGetPosts.PreGetPosts"/>
+		<exclude name="WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown"/>
+		<exclude name="WordPressVIPMinimum.Performance.NoPaging.nopaging_nopaging"/>
+		<exclude name="WordPressVIPMinimum.Performance.TaxonomyMetaInOptions.PossibleTermMetaInOptions"/>
+		<exclude name="WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE"/>
 	</rule>
 
 	<!--
