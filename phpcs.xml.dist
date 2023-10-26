@@ -61,17 +61,6 @@
 		</properties>
 	</rule>
 
-	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable">
-		<exclude-pattern>/load.php</exclude-pattern>
-		<exclude-pattern>/view-*</exclude-pattern>
-	</rule>
-
-	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable">
-		<properties>
-			<property name="allowUnusedVariablesBeforeRequire" value="true"/>
-		</properties>
-	</rule>
-
 	<rule ref="WordPress.Security.ValidatedSanitizedInput">
 		<properties>
 			<property name="customSanitizingFunctions" type="array">
