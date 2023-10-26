@@ -110,13 +110,13 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 
 		$this->blog_without_pll_plain_links = $factory->blog->create_and_get(
 			array(
-				'domain' => 'fake.com',
+				'domain' => 'plain.org',
 			)
 		);
 
 		$this->blog_without_pll_pretty_links = $factory->blog->create_and_get(
 			array(
-				'domain' => 'wordpress.org',
+				'domain' => 'pretty.org',
 			)
 		);
 
