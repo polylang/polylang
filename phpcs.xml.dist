@@ -9,10 +9,9 @@
 	<file>.</file>
 
 	<config name="minimum_supported_wp_version" value="5.9"/>
+	<config name="testVersion" value="7.0-"/><!-- PHPCompatibilityWP -->
 
-	<rule ref="PHPCompatibilityWP">
-		<config name="testVersion" value="7.0-"/>
-	</rule>
+	<rule ref="PHPCompatibilityWP"/>
 
 	<rule ref="WordPressVIPMinimum">
 		<exclude-pattern>*/tests/*</exclude-pattern>
