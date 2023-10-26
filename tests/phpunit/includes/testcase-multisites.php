@@ -24,7 +24,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 *
 	 * @var WP_Site
 	 */
-	protected static $blog_with_pll_default_links;
+	protected static $blog_with_pll_plain_links;
 
 	/**
 	 * Blog in pretty permalinks with Polylang and language as directory.
@@ -102,7 +102,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 			)
 		);
 
-		self::$blog_with_pll_default_links = $factory->blog->create_and_get(
+		self::$blog_with_pll_plain_links = $factory->blog->create_and_get(
 			array(
 				'domain' => 'polylang-plain.org',
 			)
@@ -144,7 +144,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 
 		// Set up blog with Polylang activated, plain (i.e. default) permalinks, English and French created.
 		$this->set_up_blog_with_pll(
-			self::$blog_with_pll_default_links,
+			self::$blog_with_pll_plain_links,
 			array( $this->languages['en'], $this->languages['fr'] ),
 			array(),
 			$this->plain_structure
@@ -163,7 +163,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		wp_delete_site( self::$blog_without_pll_pretty_links->blog_id );
 		wp_delete_site( self::$blog_with_pll_directory->blog_id );
 		wp_delete_site( self::$blog_with_pll_domains->blog_id );
-		wp_delete_site( self::$blog_with_pll_default_links->blog_id );
+		wp_delete_site( self::$blog_with_pll_plain_links->blog_id );
 
 		wp_update_network_site_counts();
 
