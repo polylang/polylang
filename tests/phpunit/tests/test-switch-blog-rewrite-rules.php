@@ -47,6 +47,7 @@ if ( is_multisite() ) :
 			$this->assertNotEmpty( $rules );
 			$this->assertArrayNotHasKey( '(en)/?$', $rules );
 			$this->assertArrayNotHasKey( '(de)/?$', $rules );
+			$this->assertArrayNotHasKey( '(fr)/?$', $rules );
 
 			$languages = $pll_admin->model->get_languages_list();
 
