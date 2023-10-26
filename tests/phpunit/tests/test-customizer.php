@@ -59,7 +59,7 @@ class Customizer_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_static_front_page_update() {
-		$_POST['customized'] = json_encode(
+		$_POST['customized'] = wp_json_encode(
 			array(
 				'show_on_front' => 'page',
 				'page_on_front' => $this->page_fr,
