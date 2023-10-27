@@ -6,6 +6,9 @@ if ( is_multisite() ) :
 		public function test_rewrite_rules_when_switching_blog() {
 			global $wp_rewrite;
 
+			create_initial_taxonomies();
+			create_initial_post_types();
+
 			$pll_admin = $this->get_pll_admin_env();
 			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
 
@@ -22,6 +25,10 @@ if ( is_multisite() ) :
 			$this->assertArrayNotHasKey( '(en)/?$', $rules );
 			$this->assertArrayHasKey( '(fr)/?$', $rules );
 			$this->assertArrayNotHasKey( '(fr)/(fr)/?$', $rules );
+			$this->assertArrayHasKey( '(fr)/category/(.+?)/?$', $rules );
+			$this->assertArrayNotHasKey( '(fr)/(fr)/category/(.+?)/?$', $rules );
+			$this->assertArrayHasKey( '(fr)/([^/]+)(?:/([0-9]+))?/?$', $rules );
+			$this->assertArrayNotHasKey( '(fr)/(fr)/([^/]+)(?:/([0-9]+))?/?$', $rules );
 
 			$languages = $pll_admin->model->get_languages_list();
 
