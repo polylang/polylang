@@ -94,31 +94,11 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		// Create all sites.
 		$factory = $this->factory();
 
-		$this->blog_with_pll_directory = get_site( 1 );
-
-		$this->blog_with_pll_domains = $factory->blog->create_and_get(
-			array(
-				'domain' => 'polylang-domains.org',
-			)
-		);
-
-		$this->blog_with_pll_plain_links = $factory->blog->create_and_get(
-			array(
-				'domain' => 'polylang-plain.org',
-			)
-		);
-
-		$this->blog_without_pll_plain_links = $factory->blog->create_and_get(
-			array(
-				'domain' => 'plain.org',
-			)
-		);
-
-		$this->blog_without_pll_pretty_links = $factory->blog->create_and_get(
-			array(
-				'domain' => 'pretty.org',
-			)
-		);
+		$this->blog_with_pll_directory       = get_site( 1 );
+		$this->blog_with_pll_domains         = $factory->blog->create_and_get();
+		$this->blog_with_pll_plain_links     = $factory->blog->create_and_get();
+		$this->blog_without_pll_plain_links  = $factory->blog->create_and_get();
+		$this->blog_without_pll_pretty_links = $factory->blog->create_and_get();
 
 		// Set up blog with Polylang activated, permalinks as directory, English and French created.
 		$this->set_up_blog_with_pll(
