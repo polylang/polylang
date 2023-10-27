@@ -12,7 +12,7 @@ if ( ! function_exists( 'did_filter' ) ) {
 
 	add_filter(
 		'all',
-		function ( $hook_name ) { // phpcs:ignore WordPressVIPMinimum.Hooks.AlwaysReturnInFilter.MissingReturnStatement
+		function ( $hook_name ) {
 			global $wp_filters;
 
 			if ( ! isset( $wp_filters[ $hook_name ] ) ) {
@@ -20,6 +20,8 @@ if ( ! function_exists( 'did_filter' ) ) {
 			} else {
 				++$wp_filters[ $hook_name ];
 			}
+
+			return $hook_name;
 		}
 	);
 
