@@ -6,8 +6,6 @@ if ( is_multisite() ) :
 		public function test_rewrite_rules_when_switching_blog() {
 			global $wp_rewrite;
 
-			$this->clean_up_filters();
-
 			$pll_admin = $this->get_pll_admin_env();
 			do_action_ref_array( 'pll_init', array( &$pll_admin ) );
 

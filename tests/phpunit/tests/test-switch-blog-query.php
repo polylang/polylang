@@ -11,8 +11,6 @@ if ( is_multisite() ) :
 		 * @param string $lang Current language slug.
 		 */
 		public function test_queries_blog_pll_dir( string $url, string $lang ) {
-			$this->clean_up_filters();
-
 			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 
 			$pll_frontend = $this->get_pll_frontend_env();
@@ -33,8 +31,6 @@ if ( is_multisite() ) :
 		 * @param string $lang Current language slug.
 		 */
 		public function test_queries_blog_pll_domains( string $url, string $lang ) {
-			$this->clean_up_filters();
-
 			switch_to_blog( (int) $this->blog_with_pll_domains->blog_id );
 
 			$pll_frontend = $this->get_pll_frontend_env();
@@ -51,8 +47,6 @@ if ( is_multisite() ) :
 		 */
 		public function test_queries_blog_pll_dir_switched_twice() {
 			global $wp_rewrite;
-
-			$this->clean_up_filters();
 
 			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 
@@ -82,8 +76,6 @@ if ( is_multisite() ) :
 		 */
 		public function test_queries_blog_pll_dir_switched_same() {
 			global $wp_rewrite;
-
-			$this->clean_up_filters();
 
 			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
 

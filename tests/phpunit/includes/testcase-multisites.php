@@ -155,6 +155,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 
 		// Set up blog with Polylang not activated and pretty permalinks.
 		$this->set_up_blog_without_pll( $this->blog_without_pll_pretty_links, $this->pretty_structure );
+
+		$this->clean_up_filters();
 	}
 
 	public function tear_down() {
