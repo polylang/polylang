@@ -20,6 +20,8 @@ if ( ! function_exists( 'did_filter' ) ) {
 			} else {
 				++$wp_filters[ $hook_name ];
 			}
+
+			return $hook_name;
 		}
 	);
 

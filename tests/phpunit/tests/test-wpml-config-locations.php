@@ -28,7 +28,7 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 		parent::wpTearDownAfterClass();
 
 		// Remove previously copied themes and plugins from wp-content.
-		foreach ( self::$dirs as $type => $path ) {
+		foreach ( self::$dirs as $path ) {
 			$dest_dir = WP_CONTENT_DIR . "/{$path}";
 
 			foreach ( glob( $dest_dir . '/*.*' ) as $file ) {

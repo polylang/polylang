@@ -103,7 +103,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		);
 
 		if ( 'OBJECT' === $method ) {
-			$options = json_decode( json_encode( $options ) ); // Recursively converts the arrays to objects.
+			$options = json_decode( wp_json_encode( $options ) ); // Recursively converts the arrays to objects.
 		}
 
 		add_option( 'my_options', $options );
@@ -151,7 +151,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		);
 
 		if ( 'OBJECT' === $method ) {
-			$options = json_decode( json_encode( $options ) ); // Recursively converts the arrays to objects.
+			$options = json_decode( wp_json_encode( $options ) ); // Recursively converts the arrays to objects.
 		}
 
 		update_option( 'my_options', $options );
@@ -283,7 +283,7 @@ class Translate_Option_Test extends PLL_UnitTestCase {
 		);
 
 		if ( 'OBJECT' === $method ) {
-			$options = json_decode( json_encode( $options ) ); // Recursively converts the arrays to objects.
+			$options = json_decode( wp_json_encode( $options ) ); // Recursively converts the arrays to objects.
 		}
 
 		PLL()->curlang = self::$model->get_language( 'en' );

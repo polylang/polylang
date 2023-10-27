@@ -65,11 +65,11 @@ class Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( array( 'fr' ), array_values( array_unique( $languages ) ) );
 
 		$fr_page_id = reset( $fr_page_ids ); // Just one valid page id
-		$pages = get_pages( array( 'number' => 1, 'exclude' => array( $fr_page_id ) ) );
+		$pages = get_pages( array( 'number' => 1, 'exclude' => array( $fr_page_id ) ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 		$this->assertCount( 1, $pages );
 
 		// Warning fixed in 2.3.2
-		$pages = get_pages( array( 'number' => 1, 'exclude' => $fr_page_id ) );
+		$pages = get_pages( array( 'number' => 1, 'exclude' => $fr_page_id ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 		$this->assertCount( 1, $pages );
 	}
 

@@ -68,7 +68,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		);
 
 		if ( 'OBJECT' === $method ) {
-			$my_plugins_options = json_decode( json_encode( $my_plugins_options ) ); // Recursively converts the arrays to objects.
+			$my_plugins_options = json_decode( wp_json_encode( $my_plugins_options ) ); // Recursively converts the arrays to objects.
 		}
 
 		update_option( 'my_plugins_options', $my_plugins_options );

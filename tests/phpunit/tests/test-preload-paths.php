@@ -41,26 +41,18 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	/**
 	 * @dataProvider preload_paths_provider
 	 *
-	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
-	 * @param bool         $is_filtered     Whether the path should be filtered or not.
-	 * @param WP_Post      $post            The post provided for the context.
-	 * @param string       $language        The post's language slug.
-	 * @param bool         $is_translatable Whether or not the post type is translatable.
+	 * @param string|array $path The preload path under test. Could be an array if provided along a HTTP method.
 	 */
-	public function test_preload_paths_in_site_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
+	public function test_preload_paths_in_site_editor_context( $path ) {
 		$this->assert_unfiltered_path_for_context( $path, 'core/edit-site' );
 	}
 
 	/**
 	 * @dataProvider preload_paths_provider
 	 *
-	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
-	 * @param bool         $is_filtered     Whether the path should be filtered or not.
-	 * @param WP_Post      $post            The post provided for the context.
-	 * @param string       $language        The post's language slug.
-	 * @param bool         $is_translatable Whether or not the post type is translatable.
+	 * @param string|array $path The preload path under test. Could be an array if provided along a HTTP method.
 	 */
-	public function test_preload_paths_in_widget_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
+	public function test_preload_paths_in_widget_editor_context( $path ) {
 		$this->assert_unfiltered_path_for_context( $path, 'core/edit-widgets' );
 	}
 
