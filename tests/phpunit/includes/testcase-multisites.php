@@ -179,7 +179,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		$pll_admin = $this->get_pll_admin_env( $options, false );
 
 		foreach ( $languages as $language ) {
-			$added = $pll_admin->model->add_language( $language );
+			$pll_admin->model->add_language( $language );
 		}
 
 		$pll_admin->model->get_links_model()->init();
