@@ -249,8 +249,11 @@ class PLL_Frontend extends PLL_Base {
 			$restore_curlang = $this->curlang->slug; // To always remember the current language through blogs.
 		}
 
-		$lang = $this->model->get_language( $restore_curlang );
+		$lang          = $this->model->get_language( $restore_curlang );
 		$this->curlang = $lang ? $lang : $this->model->get_default_language();
+		if ( empty( $this->curlang ) ) {
+			return;
+		}
 
 		if ( isset( $this->static_pages ) ) {
 			$this->static_pages->init();
