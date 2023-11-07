@@ -241,7 +241,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
+	 * Returns an instance of the main Polylang object along required instantiated classes for the tests.
 	 *
 	 * @param array $options Plugin options.
 	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Admin`'s init or not. Default is `true`.
@@ -267,7 +267,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Returns an instance of the main Polylang object along required instanciated classes for the tests.
+	 * Returns an instance of the main Polylang object along required instantiated classes for the tests.
 	 *
 	 * @param array $options Plugin options.
 	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Frontend`'s init or not. Default is `true`.
