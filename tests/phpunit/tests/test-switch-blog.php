@@ -4,38 +4,12 @@ if ( is_multisite() ) :
 
 	class Switch_Blog_Test extends PLL_Multisites_TestCase {
 
-		/**
-		 * Languages data for their creation keyed by language slug.
-		 * The French language has the same locale as the English one ('en_US').
-		 *
-		 * @var array
-		 */
-		protected $languages = array(
-			'en' => array(
-				'name'       => 'English',
-				'slug'       => 'en',
-				'locale'     => 'en_US',
-				'rtl'        => 0,
-				'flag'       => 'us',
-				'term_group' => 0,
-			),
-			'fr' => array(
-				'name'       => 'Français',
-				'slug'       => 'fr',
-				'locale'     => 'en_US',
-				'rtl'        => 0,
-				'flag'       => 'fr',
-				'term_group' => 1,
-			),
-			'de' => array(
-				'name'       => 'Deutsch',
-				'slug'       => 'de',
-				'locale'     => 'de_DE',
-				'rtl'        => 0,
-				'flag'       => 'de',
-				'term_group' => 2,
-			),
-		);
+		public function set_up() {
+			// Sets the same locale as English for the French language ('en_US').
+			$this->languages['fr']['locale'] = 'en_US';
+
+			parent::set_up();
+		}
 
 		/**
 		 * Checks that the `pll__` function gets the right string translation when two languages are sharing the same locale, with multisite.
