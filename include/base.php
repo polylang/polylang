@@ -112,7 +112,7 @@ abstract class PLL_Base {
 	 * @since 1.2
 	 * @since 2.1.3 $locale parameter added.
 	 *
-	 * @param string $locale Locale. Defaults to current locale.
+	 * @param string $locale Locale. Defaults to current locale. It can also be a slug in some cases.
 	 * @return void
 	 */
 	public function load_strings_translations( $locale = '' ) {
