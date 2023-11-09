@@ -9,21 +9,6 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
-	/**
-	 * Allows to continue the execution after wp_redirect + exit.
-	 */
-	protected function expect_wp_redirect() {
-		add_filter(
-			'wp_redirect',
-			function () { // phpcs:ignore WordPressVIPMinimum.Hooks.AlwaysReturnInFilter.MissingReturnStatement
-				throw new Exception( 'Call to wp_redirect' );
-			}
-		);
-
-		$this->expectException( 'Exception' );
-		$this->expectExceptionMessage( 'Call to wp_redirect' );
-	}
-
 	public function test_hide_notice() {
 		$this->expect_wp_redirect();
 
