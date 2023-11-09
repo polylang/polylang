@@ -55,3 +55,8 @@ parameters:
 			message: "#^Call to static method encode\\(\\) on an unknown class Requests_IDNAEncoder\\.$#"
 			count: 1
 			path: include/links-domain.php
+
+		# Ignored because those errors are simply wrong. https://github.com/php-stubs/wordpress-stubs/pull/110
+		- "#^Return type \\(void\\) of method PLL_Widget_Languages\\:\\:widget\\(\\) should be compatible with return type \\(never\\) of method WP_Widget\\:\\:widget\\(\\)$#"
+		- "#^Return type \\(array\\<string\\>\\) of method PLL_Table_.+\\:\\:get_columns\\(\\) should be compatible with return type \\(never\\) of method WP_List_Table\\:\\:get_columns\\(\\)$#"
+		- "#^Return type \\(void\\) of method PLL_Table_.+\\:\\:prepare_items\\(\\) should be compatible with return type \\(never\\) of method WP_List_Table\\:\\:prepare_items\\(\\)$#"
