@@ -20,9 +20,17 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		);
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
-		$this->pll_admin->admin_notices->hide_notice();
 
-		$this->assertEquals( array( 'review' ), get_user_meta( 1, 'pll_dismissed_notices', true ) );
+		try {
+			$this->pll_admin->admin_notices->hide_notice();
+		} catch ( Exception $e ) {
+			// Silence.
+		}
+
+		$this->assertSame( array( 'review' ), get_option( 'pll_dismissed_notices' ) );
+
+		// We have to throw the exception made in `expect_wp_redirect()`.
+		throw $e;
 	}
 
 	public function test_no_review_notice_for_old_users() {

@@ -60,7 +60,7 @@ abstract class PLL_UnitTestCase extends WP_UnitTestCase {
 			2
 		);
 
-		$this->expectException( 'Exception' );
+		$this->expectException( 'Exception', 'wp_redirect() was not called as expected.' );
 		$this->expectExceptionMessage( 'Call to wp_redirect', $message );
 	}
 }
