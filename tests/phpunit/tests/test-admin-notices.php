@@ -23,7 +23,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 
 		try {
 			$this->pll_admin->admin_notices->hide_notice();
-		} catch ( Exception $e ) {
+		} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 			// Silence.
 		}
 
