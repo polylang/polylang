@@ -4,13 +4,14 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	/**
 	 * @dataProvider preload_paths_provider
 	 *
-	 * @param string|array $path            The preload path under test. Could be an array if provided along a HTTP method.
-	 * @param bool         $is_filtered     Whether the path should be filtered or not.
-	 * @param WP_Post      $post            The post provided for the context.
-	 * @param string       $language        The post's language slug.
-	 * @param bool         $is_translatable Whether or not the post type is translatable.
+	 * @param string|string[] $path         The preload path under test. Could be an array if provided along a HTTP method.
+	 * @param bool            $is_filtered  Whether the path should be filtered or not.
+	 * @param string          $context_post Says what type of post must be created for the context. Possible values are `translatable`, `translatable_cpt`, `untranslatable`.
+	 * @param string          $language     The post's language slug.
 	 */
-	public function test_preload_paths_with_post_editor_context( $path, $is_filtered, $post, $language, $is_translatable ) {
+	public function test_preload_paths_with_post_editor_context( $path, bool $is_filtered, string $context_post, string $language ) {
+		list( $path, $post, $is_translatable ) = $this->make_data_concrete( $path, $is_filtered, $context_post );
+
 		if ( $is_translatable ) {
 			$this->pll_admin->model->post->set_language( $post->ID, $language );
 		}
@@ -41,18 +42,24 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 	/**
 	 * @dataProvider preload_paths_provider
 	 *
-	 * @param string|array $path The preload path under test. Could be an array if provided along a HTTP method.
+	 * @param string|string[] $path         The preload path under test. Could be an array if provided along a HTTP method.
+	 * @param bool            $is_filtered  Whether the path should be filtered or not.
+	 * @param string          $context_post Says what type of post must be created for the context. Possible values are `translatable`, `translatable_cpt`, `untranslatable`.
 	 */
-	public function test_preload_paths_in_site_editor_context( $path ) {
+	public function test_preload_paths_in_site_editor_context( $path, bool $is_filtered, string $context_post ) {
+		list( $path ) = $this->make_data_concrete( $path, $is_filtered, $context_post );
 		$this->assert_unfiltered_path_for_context( $path, 'core/edit-site' );
 	}
 
 	/**
 	 * @dataProvider preload_paths_provider
 	 *
-	 * @param string|array $path The preload path under test. Could be an array if provided along a HTTP method.
+	 * @param string|string[] $path         The preload path under test. Could be an array if provided along a HTTP method.
+	 * @param bool            $is_filtered  Whether the path should be filtered or not.
+	 * @param string          $context_post Says what type of post must be created for the context. Possible values are `translatable`, `translatable_cpt`, `untranslatable`.
 	 */
-	public function test_preload_paths_in_widget_editor_context( $path ) {
+	public function test_preload_paths_in_widget_editor_context( $path, bool $is_filtered, string $context_post ) {
+		list( $path ) = $this->make_data_concrete( $path, $is_filtered, $context_post );
 		$this->assert_unfiltered_path_for_context( $path, 'core/edit-widgets' );
 	}
 

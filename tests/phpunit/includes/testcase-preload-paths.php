@@ -113,28 +113,26 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 *    @type bool         $is_translatable Whether or not the post type is translatable.
 	 * }
 	 */
-	public function preload_paths_provider() {
+	public function preload_paths_provider(): Generator {
 		$languages = array(
 			'en',
 			'fr',
 		);
+		$posts     = array(
+			'translatable',
+			'translatable_cpt',
+			'untranslatable',
+		);
 
 		foreach ( $languages as $language ) {
-			$posts = array(
-				'translatable'     => $this->factory()->post->create_and_get(),
-				'translatable_cpt' => $this->factory()->post->create_and_get( array( 'post_type' => 'trcpt' ) ),
-				'untranslatable'   => $this->factory()->post->create_and_get( array( 'post_type' => 'custom' ) ),
-			);
-
-			foreach ( $posts as $is_translatable => $post ) {
-				foreach ( $this->get_paths_dataset( $post ) as $is_filtered => $_paths ) {
+			foreach ( $posts as $context_post ) {
+				foreach ( $this->get_paths_dataset() as $is_filtered => $_paths ) {
 					foreach ( $_paths as $path ) {
 						yield array(
 							'path'            => $path,
 							'is_filtered'     => 'filtered' === $is_filtered,
-							'post'            => $post,
+							'context_post'    => $context_post,
 							'lang'            => $language,
-							'is_translatable' => 'untranslatable' !== $is_translatable,
 						);
 					}
 				}
@@ -143,15 +141,14 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * Returns a paths dataset generated with a given post, defined here to be easily overridden.
+	 * Returns a paths dataset, defined here to be easily overridden.
 	 *
-	 * @param WP_Post $post
 	 * @return array $data {
 	 *    @type array $filtered   List of filterable paths.
 	 *    @type array $unfiltered List of unfilterable paths.
 	 * }
 	 */
-	protected function get_paths_dataset( $post ) {
+	protected function get_paths_dataset(): array {
 		return array(
 			'filtered' => array(
 				array(
@@ -166,15 +163,48 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 				'/wp/v2/types?context=edit',
 				'/wp/v2/taxonomies?per_page=-1&context=edit',
 				'/wp/v2/themes?status=active',
-				"/wp/v2/types/{$post->post_type}?context=edit",
-				"/wp/v2/users/me?post_type={$post->post_type}&context=edit",
-				"/wp/v2/{$post->post_type}s/{$post->ID}?context=edit",
-				"/wp/v2/{$post->post_type}s/{$post->ID}/autosaves?context=edit",
+				'/wp/v2/types/{post_type}?context=edit',
+				'/wp/v2/users/me?post_type={post_type}&context=edit',
+				'/wp/v2/{post_type}s/{ID}?context=edit',
+				'/wp/v2/{post_type}s/{ID}/autosaves?context=edit',
 				array(
 					0 => '/wp/v2/media',
 					1 => 'OPTIONS',
 				),
 			),
 		);
+	}
+
+	/**
+	 * Makes the data returned by preload_paths_provider concrete by creating a post and injecting its type and ID into the given path.
+	 *
+	 * @param string|string[] $path         The preload path under test. Could be an array if provided along a HTTP method.
+	 * @param bool            $is_filtered  Whether the path should be filtered or not.
+	 * @param string          $context_post Says what type of post must be created for the context. Possible values are `translatable`, `translatable_cpt`, `untranslatable`.
+	 * @return array                        The filtered path at key 0, the post at key 1, "is the post type translatable" at key 2.
+	 */
+	protected function make_data_concrete( $path, bool $is_filtered, string $context_post ): array {
+		switch ( $context_post ) {
+			case 'translatable':
+				$post            = $this->factory()->post->create_and_get();
+				$is_translatable = true;
+				break;
+
+			case 'translatable_cpt':
+				$post            = $this->factory()->post->create_and_get( array( 'post_type' => 'trcpt' ) );
+				$is_translatable = true;
+				break;
+
+			default:
+				$post            = $this->factory()->post->create_and_get( array( 'post_type' => 'custom' ) );
+				$is_translatable = false;
+				break;
+		}
+
+		if ( ! $is_filtered && is_string( $path ) ) {
+			$path = str_replace( array( '{post_type}', '{ID}' ), array( $post->post_type, $post->ID ), $path );
+		}
+
+		return array( $path, $post, $is_translatable );
 	}
 }
