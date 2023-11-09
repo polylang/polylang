@@ -37,9 +37,9 @@ abstract class PLL_UnitTestCase extends WP_UnitTestCase {
 	/**
 	 * Allows to continue the execution after wp_redirect + exit.
 	 *
-	 * @param string $expected_location
-	 * @param int    $expected_status
-	 * @param string $message
+	 * @param string $expected_location Expected location.
+	 * @param int    $expected_status   Expected Status.
+	 * @param string $message           Error message.
 	 * @return void
 	 */
 	protected function expect_wp_redirect( $expected_location = '', $expected_status = 0, $message = '' ) {
