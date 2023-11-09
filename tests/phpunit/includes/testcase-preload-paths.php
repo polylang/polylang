@@ -113,7 +113,8 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 	 *    @type bool         $is_translatable Whether or not the post type is translatable.
 	 * }
 	 */
-	public function preload_paths_provider(): Generator {
+	public function preload_paths_provider(): array {
+		$return    = array();
 		$languages = array(
 			'en',
 			'fr',
@@ -128,7 +129,7 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 			foreach ( $posts as $context_post ) {
 				foreach ( $this->get_paths_dataset() as $is_filtered => $_paths ) {
 					foreach ( $_paths as $path ) {
-						yield array(
+						$return[] = array(
 							'path'            => $path,
 							'is_filtered'     => 'filtered' === $is_filtered,
 							'context_post'    => $context_post,
@@ -138,6 +139,8 @@ abstract class PLL_Preload_Paths_TestCase extends PLL_UnitTestCase {
 				}
 			}
 		}
+
+		return $return;
 	}
 
 	/**
