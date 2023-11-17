@@ -1,6 +1,7 @@
 <?php
 
 class Admin_Notices_Test extends PLL_UnitTestCase {
+	use PLL_Handle_WP_Redirect_Trait;
 
 	public function set_up() {
 		parent::set_up();
@@ -9,8 +10,14 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
+	public function tear_down() {
+		$this->reset_wp_redirect_handler();
+
+		parent::tear_down();
+	}
+
 	public function test_hide_notice() {
-		$this->expect_wp_redirect();
+		$this->handle_wp_redirect();
 
 		wp_set_current_user( 1 );
 
@@ -24,13 +31,12 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		try {
 			$this->pll_admin->admin_notices->hide_notice();
 		} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
-			// Silence.
+			unset( $e );
 		}
 
+		$this->assert_has_redirected( 'A redirection should have been made.' );
+		$this->assert_redirect_status( 302, 'Redirection status code sould be 302.' );
 		$this->assertSame( array( 'review' ), get_option( 'pll_dismissed_notices' ) );
-
-		// We have to throw the exception made in `expect_wp_redirect()`.
-		throw $e;
 	}
 
 	public function test_no_review_notice_for_old_users() {

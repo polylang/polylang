@@ -33,34 +33,4 @@ abstract class PLL_UnitTestCase extends WP_UnitTestCase {
 		$this->assertNotFalse( $object_language, $message );
 		$this->assertSame( $language, $object_language->slug, $message );
 	}
-
-	/**
-	 * Allows to continue the execution after wp_redirect + exit.
-	 *
-	 * @param string $expected_location Expected location.
-	 * @param int    $expected_status   Expected Status.
-	 * @param string $message           Error message.
-	 * @return void
-	 */
-	protected function expect_wp_redirect( $expected_location = '', $expected_status = 0, $message = '' ) {
-		add_filter(
-			'wp_redirect',
-			function ( $location, $status ) use ( $expected_location, $expected_status ) { // phpcs:ignore WordPressVIPMinimum.Hooks.AlwaysReturnInFilter.MissingReturnStatement
-				if ( ! empty( $expected_location ) ) {
-					$this->assertSame( $expected_location, $location );
-				}
-
-				if ( ! empty( $expected_status ) ) {
-					$this->assertSame( $expected_status, $status );
-				}
-
-				throw new Exception( 'Call to wp_redirect' );
-			},
-			10,
-			2
-		);
-
-		$this->expectException( 'Exception', 'wp_redirect() was not called as expected.' );
-		$this->expectExceptionMessage( 'Call to wp_redirect', $message );
-	}
 }
