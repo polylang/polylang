@@ -125,6 +125,9 @@ class PLL_Filter_REST_Routes {
 			array_merge( $translatable_post_types, $translatable_taxonomies )
 		);
 
+		// Adds search REST endpoint.
+		$this->filtered_entities['search'] = 'wp/v2/search';
+
 		return $this->filtered_entities;
 	}
 
