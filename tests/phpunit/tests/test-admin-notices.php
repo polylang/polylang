@@ -1,6 +1,7 @@
 <?php
 
 class Admin_Notices_Test extends PLL_UnitTestCase {
+	use PLL_Handle_WP_Redirect_Trait;
 
 	public function set_up() {
 		parent::set_up();
@@ -9,24 +10,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
-	/**
-	 * Allows to continue the execution after wp_redirect + exit.
-	 */
-	protected function expect_wp_redirect() {
-		add_filter(
-			'wp_redirect',
-			function () { // phpcs:ignore WordPressVIPMinimum.Hooks.AlwaysReturnInFilter.MissingReturnStatement
-				throw new Exception( 'Call to wp_redirect' );
-			}
-		);
-
-		$this->expectException( 'Exception' );
-		$this->expectExceptionMessage( 'Call to wp_redirect' );
-	}
-
 	public function test_hide_notice() {
-		$this->expect_wp_redirect();
-
 		wp_set_current_user( 1 );
 
 		$_GET = $_REQUEST = array(
@@ -35,9 +19,9 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		);
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
-		$this->pll_admin->admin_notices->hide_notice();
 
-		$this->assertEquals( array( 'review' ), get_user_meta( 1, 'pll_dismissed_notices', true ) );
+		$this->assert_redirect( array( $this->pll_admin->admin_notices, 'hide_notice' ) );
+		$this->assertSame( array( 'review' ), get_option( 'pll_dismissed_notices' ) );
 	}
 
 	public function test_no_review_notice_for_old_users() {
