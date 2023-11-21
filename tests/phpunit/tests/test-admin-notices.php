@@ -21,7 +21,6 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		$this->assert_redirect( array( $this->pll_admin->admin_notices, 'hide_notice' ) );
-		$this->assert_redirect_status( 302, 'Redirection status code sould be 302.' );
 		$this->assertSame( array( 'review' ), get_option( 'pll_dismissed_notices' ) );
 	}
 

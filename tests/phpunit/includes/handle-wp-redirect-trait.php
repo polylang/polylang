@@ -47,7 +47,7 @@ trait PLL_Handle_WP_Redirect_Trait {
 				$this->redirect_location = $location;
 				$this->redirect_status   = $status;
 
-				throw new PLL_WP_Redirect_Exit_Exception( 'wp_redirect' );
+				throw new PLL_WP_Redirect_Exit_Exception();
 			},
 			10,
 			2
