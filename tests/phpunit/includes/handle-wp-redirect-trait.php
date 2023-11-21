@@ -27,11 +27,14 @@ trait PLL_Handle_WP_Redirect_Trait {
 	protected $last_status;
 
 	/**
-	 * Allows to continue the execution after wp_redirect + exit.
+	 * Allows to continue the execution after wp_redirect() + exit.
 	 *
 	 * @return void
 	 */
 	protected function handle_wp_redirect() {
+		$this->redirect_location = '';
+		$this->redirect_status = 0;
+		
 		add_filter(
 			'wp_redirect',
 			function ( $location, $status ) { // phpcs:ignore WordPressVIPMinimum.Hooks.AlwaysReturnInFilter.MissingReturnStatement
@@ -39,7 +42,7 @@ trait PLL_Handle_WP_Redirect_Trait {
 				$this->last_location = $location;
 				$this->last_status   = $status;
 
-				throw new Exception( 'Call to `wp_redirect()`.' );
+				throw new Exception( 'wp_redirect' );
 			},
 			10,
 			2
@@ -53,8 +56,8 @@ trait PLL_Handle_WP_Redirect_Trait {
 	 *
 	 * @return void
 	 */
-	protected function assert_has_redirected( $message = '' ) {
-		$this->assertTrue( $this->has_redirect, $message );
+	protected function assert_redirect( $message = '' ) {
+		$this->assertNotEmpty( $this->redirect_location, $message );
 	}
 
 	/**
