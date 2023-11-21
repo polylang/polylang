@@ -10,15 +10,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$this->pll_admin = new PLL_Admin( $links_model );
 	}
 
-	public function tear_down() {
-		$this->reset_wp_redirect_handler();
-
-		parent::tear_down();
-	}
-
 	public function test_hide_notice() {
-		$this->handle_wp_redirect();
-
 		wp_set_current_user( 1 );
 
 		$_GET = $_REQUEST = array(
@@ -28,13 +20,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
-		try {
-			$this->pll_admin->admin_notices->hide_notice();
-		} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
-			unset( $e );
-		}
-
-		$this->assert_has_redirected( 'A redirection should have been made.' );
+		$this->assert_redirect( array( $this->pll_admin->admin_notices, 'hide_notice' ) );
 		$this->assert_redirect_status( 302, 'Redirection status code sould be 302.' );
 		$this->assertSame( array( 'review' ), get_option( 'pll_dismissed_notices' ) );
 	}

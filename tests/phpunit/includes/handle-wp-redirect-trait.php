@@ -10,54 +10,56 @@ trait PLL_Handle_WP_Redirect_Trait {
 	 *
 	 * @var bool
 	 */
-	protected $has_redirect = false;
+	protected $has_redirect;
 
 	/**
 	 * Stores the last redirection location made with `wp_redirect()`.
 	 *
 	 * @var string
 	 */
-	protected $last_location;
+	protected $redirect_location;
 
 	/**
 	 * Stores the last redirection status made with `wp_redirect()`.
 	 *
 	 * @var int
 	 */
-	protected $last_status;
+	protected $redirect_status;
 
 	/**
-	 * Allows to continue the execution after wp_redirect() + exit.
+	 * Asserts `wp_redirect()` has been called during a callback execution.
+	 *
+	 * @param callable $callback Callback to call.
+	 * @param string   $args     Parameters to pass to the callback, default to empty array.
+	 * @param string   $message  Error message to display, a default one is provided.
 	 *
 	 * @return void
 	 */
-	protected function handle_wp_redirect() {
+	protected function assert_redirect( $callback, $args = array(), $message = 'A redirection should have been made.' ) {
+		$this->has_redirect      = false;
 		$this->redirect_location = '';
-		$this->redirect_status = 0;
-		
+		$this->redirect_status   = 0;
+
 		add_filter(
 			'wp_redirect',
 			function ( $location, $status ) { // phpcs:ignore WordPressVIPMinimum.Hooks.AlwaysReturnInFilter.MissingReturnStatement
-				$this->has_redirect  = true;
-				$this->last_location = $location;
-				$this->last_status   = $status;
+				$this->has_redirect      = true;
+				$this->redirect_location = $location;
+				$this->redirect_status   = $status;
 
-				throw new Exception( 'wp_redirect' );
+				throw new PLL_WP_Redirect_Exit_Exception( 'wp_redirect' );
 			},
 			10,
 			2
 		);
-	}
 
-	/**
-	 * Asserts `wp_redirect()` has been called.
-	 *
-	 * @param string $message Error message to display.
-	 *
-	 * @return void
-	 */
-	protected function assert_redirect( $message = '' ) {
-		$this->assertNotEmpty( $this->redirect_location, $message );
+		try {
+			call_user_func( $callback, ...$args );
+		} catch ( PLL_WP_Redirect_Exit_Exception $e ) {
+			unset( $e );
+		}
+
+		$this->assertTrue( $this->has_redirect, $message );
 	}
 
 	/**
@@ -68,8 +70,8 @@ trait PLL_Handle_WP_Redirect_Trait {
 	 *
 	 * @return void
 	 */
-	protected function assert_redirect_location( $expected_location, $message = '' ) {
-		$this->assertSame( $expected_location, $this->last_location, $message );
+	protected function assert_redirect_location( $expected_location, $message = 'A redirection occured without the expected location.' ) {
+		$this->assertSame( $expected_location, $this->redirect_location, $message );
 	}
 
 	/**
@@ -80,19 +82,7 @@ trait PLL_Handle_WP_Redirect_Trait {
 	 *
 	 * @return void
 	 */
-	protected function assert_redirect_status( $expected_status, $message = '' ) {
-		$this->assertSame( $expected_status, $this->last_status, $message );
-	}
-
-	/**
-	 * Resets the hanbdler so a new call to `wp_redirect()` and new assertions can be made safely.
-	 * Should be called in `tear_down()` as well.
-	 *
-	 * @return void
-	 */
-	protected function reset_wp_redirect_handler() {
-		$this->has_redirect  = false;
-		$this->last_location = null;
-		$this->last_status   = null;
+	protected function assert_redirect_status( $expected_status, $message = 'A redirection occured without the expected status.' ) {
+		$this->assertSame( $expected_status, $this->redirect_status, $message );
 	}
 }
