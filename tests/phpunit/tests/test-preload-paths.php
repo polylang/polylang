@@ -89,4 +89,33 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 			'Media path should be filtered by language when option is activated.'
 		);
 	}
+
+	/**
+	 * @ticket #1861 {@see https://github.com/polylang/polylang-pro/issues/1861}
+	 *
+	 * @testWith [ "trtax" ]
+	 *           [ "trtax_with_no_namespace" ]
+	 *
+	 * @param string $taxonomy Taxonomy name.
+	 */
+	public function test_rest_routes_for_custom_taxonomies( $taxonomy ) {
+		$preload_paths = $this->pll_admin->block_editor->filter_rest_routes->add_query_parameters( array( '/wp/v2/' . $taxonomy ), array( 'test' => 'something' ) );
+
+		// If the parameter is added to the route, this means that the route is one of the filterable routes.
+		$this->assertNotEmpty( $preload_paths );
+		$this->assertCount( 1, $preload_paths );
+		$this->assertSame( '/wp/v2/' . $taxonomy . '?test=something', reset( $preload_paths ) );
+	}
+
+	/**
+	 * @ticket #1905 {@see https://github.com/polylang/polylang-pro/issues/1905}
+	 */
+	public function test_search_rest_route_is_filterable() {
+		$preload_paths = $this->pll_admin->block_editor->filter_rest_routes->add_query_parameters( array( '/wp/v2/search' ), array( 'test' => 'something' ) );
+
+		// If the parameter is added to the route, this means that the route is one of the filterable routes.
+		$this->assertNotEmpty( $preload_paths );
+		$this->assertCount( 1, $preload_paths );
+		$this->assertSame( '/wp/v2/search?test=something', reset( $preload_paths ) );
+	}
 }
