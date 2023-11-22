@@ -18,6 +18,14 @@ class PLL_Filter_REST_Routes {
 	private $filtered_entities = array();
 
 	/**
+	 * Other REST routes filterable by language.
+	 *
+	 * @var string[]
+	 * @phpstan-var array<string, string>
+	 */
+	private $filtered_routes = array();
+
+	/**
 	 * @var PLL_Model
 	 */
 	private $model;
@@ -31,6 +39,9 @@ class PLL_Filter_REST_Routes {
 	 */
 	public function __construct( PLL_Model $model ) {
 		$this->model = $model;
+
+		// Adds search REST endpoint.
+		$this->filtered_routes['search'] = 'wp/v2/search';
 	}
 
 	/**
@@ -111,7 +122,7 @@ class PLL_Filter_REST_Routes {
 	 */
 	private function get(): array {
 		if ( ! empty( $this->filtered_entities ) ) {
-			return $this->filtered_entities;
+			return array_merge( $this->filtered_entities, $this->filtered_routes );
 		}
 
 		$translatable_post_types  = $this->model->get_translated_post_types();
@@ -125,7 +136,7 @@ class PLL_Filter_REST_Routes {
 			array_merge( $translatable_post_types, $translatable_taxonomies )
 		);
 
-		return $this->filtered_entities;
+		return array_merge( $this->filtered_entities, $this->filtered_routes );
 	}
 
 	/**
