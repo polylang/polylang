@@ -52,15 +52,19 @@ trait PLL_UnitTestCase_Trait {
 	protected static $submenu;
 
 	/**
+	 * Polylang Factory.
+	 *
+	 * @var PLL_UnitTest_Factory|null
+	 */
+	protected static $pll_factory = null;
+
+	/**
 	 * Initialization before all tests run.
 	 *
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$options = PLL_Install::get_default_options();
-		$options['hide_default'] = 0; // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis.
-		$options['media_support'] = 1; // Force option to pre 3.1 value otherwise phpunit tests break on Travis.
-		self::$model = new PLL_Admin_Model( $options );
+		self::create_model_legacy();
 
 		remove_action( 'current_screen', '_load_remote_block_patterns' );
 		remove_action( 'current_screen', '_load_remote_featured_patterns' );
@@ -72,6 +76,30 @@ trait PLL_UnitTestCase_Trait {
 		remove_action( 'admin_print_styles', 'print_emoji_styles' );
 
 		self::filter_doing_it_wrong_trigger_error();
+
+		/*
+		 * Even though `$factory` should always be a instance of `PLL_UnitTest_Factory`,
+		 * it allows us to safely type hint `self::pllSetUpBeforeClass()`.
+		 */
+		if ( $factory instanceof PLL_UnitTest_Factory ) {
+			self::pllSetUpBeforeClass( $factory );
+		}
+	}
+
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		// Does nothing, only ensure the factory is correctly type hinted.
+	}
+
+	/**
+	 * Fetches the factory object for generating Polylang and WordPress fixtures.
+	 *
+	 * @return PLL_UnitTest_Factory The fixture factory.
+	 */
+	protected static function factory() {
+		if ( ! self::$pll_factory ) {
+			self::$pll_factory = new PLL_UnitTest_Factory();
+		}
+		return self::$pll_factory;
 	}
 
 	/**
@@ -99,6 +127,8 @@ trait PLL_UnitTestCase_Trait {
 
 	/**
 	 * Helper function to create a language
+	 *
+	 * @deprecated Use `PLL_UnitTest_Factory_For_Language` instead.
 	 *
 	 * @param string $locale Language locale.
 	 * @param array  $args   Allows to optionnally override the default values for the language.
@@ -174,5 +204,19 @@ trait PLL_UnitTestCase_Trait {
 		}
 
 		return static::$submenu;
+	}
+
+	/**
+	 * Creates the static model used to add languages before tests.
+	 *
+	 * @deprecated Use `PLL_UnitTest_Factory_For_Language` instead.
+	 *
+	 * @return void
+	 */
+	protected static function create_model_legacy() {
+		$options                  = PLL_Install::get_default_options();
+		$options['hide_default']  = 0;
+		$options['media_support'] = 1;
+		self::$model              = new PLL_Admin_Model( $options );
 	}
 }
