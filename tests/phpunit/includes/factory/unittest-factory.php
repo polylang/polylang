@@ -11,6 +11,34 @@ class PLL_UnitTest_Factory extends WP_UnitTest_Factory {
 	 */
 	public $pll_model;
 
+	/**
+	 * Generates post fixtures for use in tests with assignated languages and translations.
+	 *
+	 * @var PLL_UnitTest_Factory_For_Post
+	 */
+	public $post;
+
+	/**
+	 * Generates taxonomy term fixtures for use in tests with assignated languages and translations.
+	 *
+	 * @var PLL_UnitTest_Factory_For_Term
+	 */
+	public $term;
+
+	/**
+	 * Generates taxonomy term fixtures for use in tests with assignated languages and translations.
+	 *
+	 * @var PLL_UnitTest_Factory_For_Term
+	 */
+	public $category;
+
+	/**
+	 * Generates taxonomy term fixtures for use in tests with assignated languages and translations.
+	 *
+	 * @var PLL_UnitTest_Factory_For_Term
+	 */
+	public $tag;
+
 	public function __construct() {
 		$options                  = PLL_Install::get_default_options();
 		$options['hide_default']  = 0;

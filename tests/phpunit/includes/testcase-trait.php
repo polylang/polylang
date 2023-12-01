@@ -82,7 +82,7 @@ trait PLL_UnitTestCase_Trait {
 		 * it allows us to safely type hint `self::pllSetUpBeforeClass()`.
 		 */
 		if ( $factory instanceof PLL_UnitTest_Factory ) {
-			self::pllSetUpBeforeClass( $factory );
+			static::pllSetUpBeforeClass( $factory );
 		}
 	}
 

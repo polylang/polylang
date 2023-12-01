@@ -13,6 +13,11 @@ trait Factory_For_Translated_Object_Trait {
 			return $object_id;
 		}
 
+		$existing_language = $this->translatable_object->get_language( $object_id );
+		if ( $existing_language instanceof PLL_Language && $existing_language->slug === $args['lang'] ) {
+			return $object_id;
+		}
+
 		$has_language = $this->translatable_object->set_language( $object_id, $args['lang'] );
 
 		if ( ! $has_language ) {
@@ -34,7 +39,7 @@ trait Factory_For_Translated_Object_Trait {
 			$translations[ $object['lang'] ] = $this->create( $object );
 		}
 
-		return $this->translatable_object->save_translations( $translations );
+		return $this->translatable_object->save_translations( reset( $translations ), $translations );
 	}
 
 	public function create_translated_and_get( array $first, array $second, array $others = array() ) {

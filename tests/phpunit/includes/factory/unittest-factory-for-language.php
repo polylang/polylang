@@ -12,7 +12,7 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 	protected $default_languages = array(
 		'en_US',
 		'fr_FR',
-		'de_DE',
+		'de_DE_formal',
 		'es_ES',
 	);
 
