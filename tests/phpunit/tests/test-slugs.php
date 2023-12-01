@@ -8,8 +8,9 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
+		self::factory()->language->create( array( 'locale' => 'en_US' ) );
+		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
+		self::$model->options['default_lang'] = 'en'; // Otherwise static model isn't aware of the created languages...
 	}
 
 	public function set_up() {
@@ -25,28 +26,49 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_term_slugs() {
-		$term_id = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		$this->pll_admin->model->term->set_language( $term_id, 'en' );
+		$term_id = self::factory()->term->create(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'lang'     => 'en',
+			)
+		);
 
 		$_POST['term_lang_choice'] = 'fr';
-		$term_id                   = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		$this->pll_admin->model->term->set_language( $term_id, 'fr' );
+		$term_id                   = self::factory()->term->create(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'lang'     => 'fr',
+			)
+		);
 
 		$term = get_term( $term_id, 'category' );
 		$this->assertSame( 'test-fr', $term->slug );
 	}
 
 	public function test_translated_terms_with_parents_sharing_same_name() {
-		$en_parent = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
+		$en_parent = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'lang'     => 'en',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Term::class, $en_parent );
 		$this->assertSame( 'test', $en_parent->slug );
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
-		$en                        = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $en_parent->term_id ) );
-		$this->pll_admin->model->term->set_language( $en, 'en' );
+		$en                        = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'parent'   => $en_parent->term_id,
+				'lang'     => 'en',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Term::class, $en );
 		$this->assertSame( 'test-en', $en->slug );
@@ -55,53 +77,92 @@ class Slugs_Test extends PLL_UnitTestCase {
 		unset( $_POST );
 
 		$_POST['term_lang_choice'] = 'fr';
-		$fr_parent                 = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		$this->pll_admin->model->term->set_language( $fr_parent->term_id, 'fr' );
+		$fr_parent                 = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'lang'     => 'fr',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Term::class, $fr_parent );
 		$this->assertSame( 'test-fr', $fr_parent->slug );
 
 		$_POST['parent'] = $fr_parent->term_id;
-		$fr              = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $fr_parent->term_id ) );
-		$this->pll_admin->model->term->set_language( $fr->term_id, 'fr' );
+		$fr              = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'parent'   => $fr_parent->term_id,
+				'lang'     => 'fr',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Term::class, $fr );
 		$this->assertSame( 'test-fr-test-fr', $fr->slug );
 	}
 
 	public function test_already_existing_term_slugs_with_parent() {
-		$en_parent = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
+		$en_parent = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'lang'     => 'en',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Term::class, $en_parent );
 		$this->assertSame( 'test', $en_parent->slug );
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
-		$en                        = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $en_parent->term_id ) );
-		$this->pll_admin->model->term->set_language( $en, 'en' );
+		$en                        = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'parent'   => $en_parent->term_id,
+				'lang'     => 'en',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Term::class, $en );
 		$this->assertSame( 'test-en', $en->slug );
 
 		// Let's create another child term with the same parent and the same name.
-		$en_new = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $en_parent->term_id ) );
-		$this->pll_admin->model->term->set_language( $en_new, 'en' );
+		$en_new = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'parent'   => $en_parent->term_id,
+				'lang'     => 'en',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Error::class, $en_new );
 	}
 
 	public function test_update_existing_term_slugs_with_parent() {
-		$en_parent = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		$this->pll_admin->model->term->set_language( $en_parent->term_id, 'en' );
+		$en_parent = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name'     => 'test',
+				'lang'     => 'en',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Term::class, $en_parent );
 		$this->assertSame( 'test', $en_parent->slug );
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
-		$en                        = self::factory()->term->create_and_get( array( 'taxonomy' => 'category', 'name' => 'test', 'parent' => $en_parent->term_id ) );
-		$this->pll_admin->model->term->set_language( $en, 'en' );
+		$en                        = self::factory()->term->create_and_get(
+			array(
+				'taxonomy' => 'category',
+				'name' => 'test',
+				'parent' => $en_parent->term_id,
+				'lang' => 'en',
+			)
+		);
 
 		$this->assertInstanceOf( WP_Term::class, $en );
 		$this->assertSame( 'test-en', $en->slug );
