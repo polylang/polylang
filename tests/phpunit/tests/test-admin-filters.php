@@ -16,20 +16,18 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$links_model = self::$model->get_links_model();
-		$this->pll_admin = new PLL_Admin( $links_model );
+		$pll_context = new PLL_Admin_Context();
+		$this->pll_admin = $pll_context->get();
 	}
 
 	public function test_sanitize_title_for_current_language_without_character_conversion() {
 		$this->pll_admin->curlang = self::$model->get_language( 'en' );
-		$this->pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
 	public function test_sanitize_title_for_language_from_form_without_character_conversion() {
 			// Bug fixed in 2.4.1
 		$_POST['post_lang_choice'] = 'en';
-		$this->pll_admin->add_filters();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
@@ -48,7 +46,6 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 	public function test_sanitize_user_without_character_conversion() {
 		$this->pll_admin->curlang = self::$model->get_language( 'en' );
-		$this->pll_admin->add_filters();
 		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
 	}
 
@@ -59,7 +56,6 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_personal_options_update() {
-		$this->pll_admin->add_filters();
 		$_POST['description_de'] = 'Biography in German';
 		remove_action( 'personal_options_update', 'send_confirmation_on_profile_email' );
 		do_action( 'personal_options_update', 1 );
@@ -73,7 +69,6 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		}
 
 		$this->pll_admin->curlang = self::$model->get_language( 'en' );
-		$this->pll_admin->add_filters();
 		$this->assertEquals( ' pll-dir-ltr pll-lang-en', apply_filters( 'admin_body_class', '' ) );
 	}
 
@@ -84,7 +79,6 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		}
 
 		$this->pll_admin->curlang = self::$model->get_language( 'ar' );
-		$this->pll_admin->add_filters();
 		$this->assertEquals( ' pll-dir-rtl pll-lang-ar', apply_filters( 'admin_body_class', '' ) );
 	}
 
@@ -99,8 +93,6 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $de, 'de' );
 
 		self::$model->post->save_translations( $en, compact( 'en', 'de' ) );
-
-		$this->pll_admin->add_filters();
 
 		ob_start();
 		_post_states( get_post( $en ) );
