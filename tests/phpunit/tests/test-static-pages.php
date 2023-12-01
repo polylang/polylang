@@ -35,7 +35,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 					'post_type'    => 'page',
 					'post_content' => 'de1<!--nextpage-->de2',
 					'lang'         => 'de',
-				)
+				),
 			)
 		);
 		self::$home_en = $home_pages['en'];
