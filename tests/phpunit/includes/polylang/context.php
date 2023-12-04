@@ -50,7 +50,8 @@ abstract class PLL_Context {
 
 		$tests_dir = dirname( __DIR__ ); // `/polylang-pro/tests/phpunit`.
 		$root_dir  = dirname( $tests_dir, 3 ); // `/polylang`.
-		require_once "{$root_dir}/include/api.php"; // Loads the API
+		// Loads the API.
+		require_once "{$root_dir}/include/api.php"; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
 
 		// Loads the modules.
 		$load_scripts = glob( "{$root_dir}'/modules/*/load.php", GLOB_NOSORT );
@@ -82,12 +83,12 @@ abstract class PLL_Context {
 		if ( ! isset( $wp_filter[ $hook_name ] ) ) {
 			return;
 		}
-		
+
 		// Loops on wp_filter global variable and keep only Polylang callbacks.
 		foreach ( $wp_filter[ $hook_name ]->callbacks as $priority => $callbacks ) {
 			foreach ( $callbacks as $key => $callback ) {
 				if ( ! is_array( $callback['function'] ) || ! isset( $callback['function'][0] ) || ( is_string( $callback['function'] ) && 0 !== strpos( $callback['function'], 'pll_' ) ) ) {
-					unset( $wp_filter[ $hook_name ]->callbacks[$priority][$key] );
+					unset( $wp_filter[ $hook_name ]->callbacks[ $priority ][ $key ] );
 					continue;
 				}
 				if ( is_object( $callback['function'][0] ) ) {
@@ -96,7 +97,7 @@ abstract class PLL_Context {
 					$callback_name = $callback['function'][0];
 				}
 				if ( 0 !== strpos( $callback_name, 'PLL_' ) ) {
-					unset( $wp_filter[ $hook_name ]->callbacks[$priority][$key] );
+					unset( $wp_filter[ $hook_name ]->callbacks[ $priority ][ $key ] );
 				}
 			}
 		}

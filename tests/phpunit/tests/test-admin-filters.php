@@ -13,14 +13,10 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		self::create_language( 'ar' );
 	}
 
-	public function set_up() {
-		parent::set_up();
-	}
-
 	public function test_sanitize_title_for_current_language_without_character_conversion() {
 		add_filter(
 			'pll_admin_current_language',
-			function() {
+			function () {
 				return self::$model->get_language( 'en' );
 			}
 		);
@@ -37,7 +33,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	public function test_sanitize_title_for_current_language_with_character_conversion() {
 		add_filter(
 			'pll_admin_current_language',
-			function() {
+			function () {
 				return self::$model->get_language( 'de' );
 			}
 		);
@@ -55,7 +51,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	public function test_sanitize_user_without_character_conversion() {
 		add_filter(
 			'pll_admin_current_language',
-			function() {
+			function () {
 				return self::$model->get_language( 'en' );
 			}
 		);
@@ -86,7 +82,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		}
 		add_filter(
 			'pll_admin_current_language',
-			function() {
+			function () {
 				return self::$model->get_language( 'en' );
 			}
 		);
@@ -103,7 +99,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		}
 		add_filter(
 			'pll_admin_current_language',
-			function() {
+			function () {
 				return self::$model->get_language( 'ar' );
 			}
 		);
