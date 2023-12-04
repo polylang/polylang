@@ -20,7 +20,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 				return self::$model->get_language( 'en' );
 			}
 		);
-		new PLL_Admin_Context();
+		$pll_context = new PLL_Admin_Context();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
@@ -37,14 +37,14 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 				return self::$model->get_language( 'de' );
 			}
 		);
-		new PLL_Admin_Context();
+		$pll_context = new PLL_Admin_Context();
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
 	public function test_sanitize_title_for_language_from_form_with_character_conversion() {
 		// Bug fixed in 2.4.1
 		$_POST['post_lang_choice'] = 'de';
-		new PLL_Admin_Context();
+		$pll_context = new PLL_Admin_Context();
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
 	}
 
@@ -55,7 +55,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 				return self::$model->get_language( 'en' );
 			}
 		);
-		new PLL_Admin_Context();
+		$pll_context = new PLL_Admin_Context();
 		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
 	}
 
@@ -68,7 +68,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_personal_options_update() {
-		new PLL_Admin_Context();
+		$pll_context = new PLL_Admin_Context();
 		$_POST['description_de'] = 'Biography in German';
 		remove_action( 'personal_options_update', 'send_confirmation_on_profile_email' );
 		do_action( 'personal_options_update', 1 );
@@ -111,7 +111,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 
 	public function test_privacy_page_post_states() {
-		new PLL_Admin_Context();
+		$pll_context = new PLL_Admin_Context();
 		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 
