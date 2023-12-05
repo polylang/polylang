@@ -32,10 +32,11 @@ abstract class PLL_Context {
 		}
 
 		$links_model = $model->get_links_model();
-		// $this->links_model->init();
 
 		// if $static_pages array not empty update WordPress options 'show_on_front', 'page_on_front', 'page_for_posts'.
-		$this->polylang = new ( $this->get_name() )( $links_model );
+
+		$class_name     = $this->get_name();
+		$this->polylang = new $class_name( $links_model );
 
 		$model->maybe_create_language_terms();
 
