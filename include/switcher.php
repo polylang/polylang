@@ -169,7 +169,8 @@ class PLL_Switcher {
 			$url = empty( $url ) || $args['force_home'] ? $this->links->get_home_url( $language ) : $url; // If the page is not translated, link to the home page
 
 			$name = $args['show_names'] || ! $args['show_flags'] || $args['raw'] ? ( 'slug' == $args['display_names_as'] ? $slug : $language->name ) : '';
-			$flag = $args['raw'] && ! $args['show_flags'] ? $language->get_display_flag_url() : ( $args['show_flags'] ? $language->get_display_flag() : '' );
+
+			$flag = $this->get_flag( $args, $language );
 
 			if ( $first ) {
 				$classes[] = 'lang-item-first';
@@ -282,5 +283,24 @@ class PLL_Switcher {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 		return $out;
+	}
+
+	private function get_flag( $args, $language ) {
+		if ( $args['raw'] && ! $args['show_flags'] ) {
+			return $language->get_display_flag_url();
+		}
+
+		if ( $args['show_flags'] ) {
+			$flag = $language->get_display_flag();
+
+			// Strip alternative text out when language name is already displayed.
+			if ( $args['show_names'] ) {
+				$flag = preg_replace( '/alt=\"[^"]+\"/', '', $flag );
+			}
+
+			return $flag;
+		}
+
+		return '';
 	}
 }
