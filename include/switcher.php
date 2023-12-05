@@ -285,6 +285,15 @@ class PLL_Switcher {
 		return $out;
 	}
 
+	/**
+	 * Returns flag for the switcher.
+	 *
+	 * @since 3.5.3
+	 *
+	 * @param array        $args     Switcher arguments. @see {self::the_languages} for possible values.
+	 * @param PLL_Language $language Language object to get flag from.
+	 * @return string Either a link, HTML or empty string.
+	 */
 	private function get_flag( $args, $language ) {
 		if ( $args['raw'] && ! $args['show_flags'] ) {
 			return $language->get_display_flag_url();
@@ -298,7 +307,7 @@ class PLL_Switcher {
 				$flag = preg_replace( '/alt=\"[^"]+\"/', '', $flag );
 			}
 
-			return $flag;
+			return is_string( $flag ) ? $flag : '';
 		}
 
 		return '';
