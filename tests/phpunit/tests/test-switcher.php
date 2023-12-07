@@ -228,7 +228,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 	 * @ticket #1890
 	 * @see https://github.com/polylang/polylang-pro/issues/1890.
 	 */
-	public function test_flags_a11y_without_named_displayed() {
+	public function test_flags_a11y_without_names_displayed() {
 		$args = array(
 			'show_flags'    => 1,
 			'show_names'    => 0, // Don't display names.
