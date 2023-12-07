@@ -468,7 +468,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * Returns the html of the custom flag if any, or the default flag otherwise.
 	 *
 	 * @since 2.8
-	 * @since 3.5.3 Introduce `$alt` parameter.
+	 * @since 3.5.3 Added the `$alt` parameter.
 	 *
 	 * @param string $alt Whether or not the alternative text should be set. Accepts 'alt' and 'no-alt'.
 	 *
