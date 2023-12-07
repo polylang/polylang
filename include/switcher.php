@@ -299,17 +299,17 @@ class PLL_Switcher {
 			return $language->get_display_flag_url();
 		}
 
-		if ( $args['show_flags'] ) {
-			$flag = $language->get_display_flag();
-
-			// Strip alternative text out when language name is already displayed.
-			if ( $args['show_names'] ) {
-				$flag = preg_replace( '/alt=\"[^"]+\"/', '', $flag );
-			}
-
-			return is_string( $flag ) ? $flag : '';
+		if ( ! $args['show_flags'] ) {
+			return '';
 		}
 
-		return '';
+		$flag = $language->get_display_flag();
+
+		// Strip alternative text out when language name is already displayed.
+		if ( $args['show_names'] ) {
+			$flag = (string) preg_replace( '/alt=\"[^"]+\"/', '', $flag );
+		}
+
+		return $flag;
 	}
 }
