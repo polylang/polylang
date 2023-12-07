@@ -483,7 +483,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 			return $flag;
 		}
 
-		return (string) preg_replace( '/(?<=alt=\")([^"]+)(?=\")/', '', $flag );
+		return (string) preg_replace( '/(?<=\salt=\")([^"]+)(?=\")/', '', $flag );
 	}
 
 	/**
