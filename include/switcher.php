@@ -170,7 +170,13 @@ class PLL_Switcher {
 
 			$name = $args['show_names'] || ! $args['show_flags'] || $args['raw'] ? ( 'slug' == $args['display_names_as'] ? $slug : $language->name ) : '';
 
-			$flag = $this->get_flag( $args, $language );
+			$flag = '';
+
+			if ( $args['raw'] && ! $args['show_flags'] ) {
+				$flag = $language->get_display_flag_url();
+			} elseif ( $args['show_flags'] ) {
+				$flag = $language->get_display_flag( empty( $args['show_names'] ) ? 'alt' : 'no-alt' );
+			}
 
 			if ( $first ) {
 				$classes[] = 'lang-item-first';
@@ -283,33 +289,5 @@ class PLL_Switcher {
 			echo $out; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 		return $out;
-	}
-
-	/**
-	 * Returns flag for the switcher.
-	 *
-	 * @since 3.5.3
-	 *
-	 * @param array        $args     Switcher arguments. @see {self::the_languages} for possible values.
-	 * @param PLL_Language $language Language object to get flag from.
-	 * @return string Either a link, HTML or empty string.
-	 */
-	private function get_flag( $args, $language ) {
-		if ( $args['raw'] && ! $args['show_flags'] ) {
-			return $language->get_display_flag_url();
-		}
-
-		if ( ! $args['show_flags'] ) {
-			return '';
-		}
-
-		$flag = $language->get_display_flag();
-
-		// Strip alternative text out when language name is already displayed.
-		if ( $args['show_names'] ) {
-			$flag = (string) preg_replace( '/alt=\"[^"]+\"/', '', $flag );
-		}
-
-		return $flag;
 	}
 }
