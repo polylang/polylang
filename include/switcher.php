@@ -170,12 +170,12 @@ class PLL_Switcher {
 
 			$name = $args['show_names'] || ! $args['show_flags'] || $args['raw'] ? ( 'slug' == $args['display_names_as'] ? $slug : $language->name ) : '';
 
-			$flag = '';
-
 			if ( $args['raw'] && ! $args['show_flags'] ) {
 				$flag = $language->get_display_flag_url();
 			} elseif ( $args['show_flags'] ) {
 				$flag = $language->get_display_flag( empty( $args['show_names'] ) ? 'alt' : 'no-alt' );
+			} else {
+				$flag = '';
 			}
 
 			if ( $first ) {
