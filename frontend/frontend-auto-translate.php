@@ -244,6 +244,10 @@ class PLL_Frontend_Auto_Translate {
 	 */
 	protected function translate_tax_query_recursive( $tax_queries ) {
 		foreach ( $tax_queries as $key => $q ) {
+			if ( ! is_array( $q ) ) {
+				continue;
+			}
+
 			if ( isset( $q['taxonomy'], $q['terms'] ) && $this->model->is_translated_taxonomy( $q['taxonomy'] ) ) {
 				$arr = array();
 				$field = isset( $q['field'] ) && in_array( $q['field'], array( 'slug', 'name' ) ) ? $q['field'] : 'term_id';
@@ -252,10 +256,8 @@ class PLL_Frontend_Auto_Translate {
 				}
 
 				$tax_queries[ $key ]['terms'] = $arr;
-			}
-
-			// Nested queries
-			elseif ( is_array( $q ) ) {
+			} else {
+				// Nested queries.
 				$tax_queries[ $key ] = $this->translate_tax_query_recursive( $q );
 			}
 		}
