@@ -237,8 +237,9 @@ class PLL_Switcher {
 			$args['hide_if_no_translation'] = 0;
 		}
 
-		// Prevents showing empty options in dropdown
-		if ( $args['dropdown'] ) {
+		// Prevents showing empty options in `<select>`.
+		if ( $args['dropdown'] && ! $args['raw'] ) {
+			$args['show_flags'] = 0;
 			$args['show_names'] = 1;
 		}
 
