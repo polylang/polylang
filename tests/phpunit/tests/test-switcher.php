@@ -221,4 +221,64 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$a = $xpath->query( '//li/a[@lang="fr-FR"]' );
 		$this->assertEquals( $this->pll_admin->links->get_home_url( self::$model->get_language( 'fr' ) ), $a->item( 0 )->getAttribute( 'href' ) );
 	}
+
+	/**
+	 * @ticket #1890
+	 * @see https://github.com/polylang/polylang-pro/issues/1890.
+	 */
+	public function test_flags_a11y_without_names_displayed() {
+		$args = array(
+			'show_flags'    => 1,
+			'show_names'    => 0, // Don't display names.
+			'echo'          => 0,
+			'hide_if_empty' => 0,
+		);
+		$this->frontend->links->curlang = self::$model->get_language( 'en' );
+		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
+
+		$this->assertNotEmpty( $switcher );
+
+		$doc  = new DomDocument();
+		$html = '<?xml encoding="UTF-8">' . $switcher; // Ensure encoding is correct.
+		$doc->loadHTML( $html );
+		$xpath = new DOMXpath( $doc );
+
+		$a = $xpath->query( '//li/a[@lang="en-US"]' );
+		$this->assertSame( 1, $a->length, 'There should be only one child node.' );
+		$this->assertSame( 'English', $a->item( 0 )->childNodes->item( 0 )->getAttribute( 'alt' ), 'Alternative text value should be "English".' );
+
+		$a = $xpath->query( '//li/a[@lang="fr-FR"]' );
+		$this->assertSame( 1, $a->length, 'There should be only one child node.' );
+		$this->assertSame( 'Français', $a->item( 0 )->childNodes->item( 0 )->getAttribute( 'alt' ), 'Alternative text value should be "Français".' );
+	}
+
+	/**
+	 * @ticket #1890
+	 * @see https://github.com/polylang/polylang-pro/issues/1890.
+	 */
+	public function test_flags_a11y_with_names_displayed() {
+		$args = array(
+			'show_flags'    => 1,
+			'show_names'    => 1, // Display names.
+			'echo'          => 0,
+			'hide_if_empty' => 0,
+		);
+		$this->frontend->links->curlang = self::$model->get_language( 'en' );
+		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
+
+		$this->assertNotEmpty( $switcher );
+
+		$doc  = new DomDocument();
+		$html = '<?xml encoding="UTF-8">' . $switcher; // Ensure encoding is correct.
+		$doc->loadHTML( $html );
+		$xpath = new DOMXpath( $doc );
+
+		$a = $xpath->query( '//li/a[@lang="en-US"]' );
+		$this->assertSame( 1, $a->length, 'There should be only one child node.' );
+		$this->assertEmpty( $a->item( 0 )->childNodes->item( 0 )->getAttribute( 'alt' ), 'There should be no alternative texts.' );
+
+		$a = $xpath->query( '//li/a[@lang="fr-FR"]' );
+		$this->assertSame( 1, $a->length, 'There should be only one child node.' );
+		$this->assertEmpty( $a->item( 0 )->childNodes->item( 0 )->getAttribute( 'alt' ), 'There should be no alternative texts.' );
+	}
 }

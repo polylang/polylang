@@ -276,28 +276,30 @@ class Nav_Menus_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_nav_menu_language_switcher_as_dropdown() {
-		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 1, 'force_home' => 0, 'show_flags' => 0, 'show_names' => 1, 'dropdown' => 1 );
+		$options = array( 'hide_if_no_translation' => 0, 'hide_current' => 1, 'force_home' => 0, 'show_flags' => 1, 'show_names' => 1, 'dropdown' => 1 );
 		$primary_location = $this->setup_nav_menus( $options );
 
-		// test nav menus on frontend when using theme locations
+		// Test nav menus on frontend when using theme locations.
 		$frontend = new PLL_Frontend( $this->links_model );
 		$frontend->curlang = self::$model->get_language( 'en' );
 		$frontend->links = new PLL_Frontend_Links( $frontend );
 		$frontend->nav_menu = new PLL_Frontend_Nav_Menu( $frontend );
 
-		require_once POLYLANG_DIR . '/include/api.php'; // usually loaded only if an instance of Polylang exists
+		require_once POLYLANG_DIR . '/include/api.php'; // Usually loaded only if an instance of Polylang exists.
 		$GLOBALS['polylang'] = $frontend; // FIXME we still use PLL() in PLL_Frontend_Nav_Menu
 
 		$args = array( 'theme_location' => $primary_location, 'echo' => false );
-		$doc = new DomDocument();
 		$menu = wp_nav_menu( $args );
-		$menu = preg_replace( '#<svg(.+)</svg>#', '', $menu ); // Remove SVG Added by Twenty Seventeen to avoid an error in loadHTML()
-		$menu = htmlspecialchars_decode( htmlentities( $menu ) ); // Due to "Français".
-		$doc->loadHTML( $menu );
+		$menu = preg_replace( '#<svg(.+)</svg>#', '', $menu ); // Remove SVG Added by Twenty Seventeen to avoid an error in loadHTML().
+
+		$this->assertSame( 3, substr_count( $menu, ' alt=""' ) ); // 3 = 3 languages + 1 parent item - 1 current language (hidden).
+
+		$doc = new DomDocument();
+		$doc->loadHTML( '<?xml encoding="UTF-8">' . $menu );
 		$xpath = new DOMXpath( $doc );
 
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/a[.="English"]' )->length );
-		$this->assertEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); // current language is hidden
+		$this->assertEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="English"]' )->length ); // Current language is hidden.
 		$this->assertNotEmpty( $xpath->query( '//div/ul/li/ul/li/a[.="Français"]' )->length );
 
 		unset( $GLOBALS['polylang'] );

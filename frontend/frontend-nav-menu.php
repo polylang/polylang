@@ -119,7 +119,7 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 				// parent item for dropdown
 				if ( ! empty( $options['dropdown'] ) ) {
 					$name = isset( $options['display_names_as'] ) && 'slug' === $options['display_names_as'] ? $this->curlang->slug : $this->curlang->name;
-					$item->title = $this->get_item_title( $this->curlang->get_display_flag(), $name, $options );
+					$item->title = $this->get_item_title( $this->curlang->get_display_flag( empty( $options['show_names'] ) ? 'alt' : 'no-alt' ), $name, $options );
 					$item->attr_title = '';
 					$item->classes = array( 'pll-parent-menu-item' );
 					$item->menu_order += $offset;
