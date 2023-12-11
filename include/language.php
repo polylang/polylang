@@ -468,11 +468,22 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * Returns the html of the custom flag if any, or the default flag otherwise.
 	 *
 	 * @since 2.8
+	 * @since 3.5.3 Added the `$alt` parameter.
+	 *
+	 * @param string $alt Whether or not the alternative text should be set. Accepts 'alt' and 'no-alt'.
 	 *
 	 * @return string
+	 *
+	 * @phpstan-param 'alt'|'no-alt' $alt
 	 */
-	public function get_display_flag() {
-		return empty( $this->custom_flag ) ? $this->flag : $this->custom_flag;
+	public function get_display_flag( $alt = 'alt' ) {
+		$flag = empty( $this->custom_flag ) ? $this->flag : $this->custom_flag;
+
+		if ( 'alt' === $alt ) {
+			return $flag;
+		}
+
+		return (string) preg_replace( '/(?<=\salt=\")([^"]+)(?=\")/', '', $flag );
 	}
 
 	/**
