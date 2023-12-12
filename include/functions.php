@@ -93,6 +93,13 @@ function pll_get_requested_url() {
 		return get_option( 'home' );
 	}
 
+	/*
+	 * When using system CRON instead of WP_CRON, the superglobals are likely undefined.
+	 */
+	if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+		return get_option( 'home' );
+	}
+
 	if ( WP_DEBUG ) {
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		trigger_error( '$_SERVER[\'HTTP_HOST\'] or $_SERVER[\'REQUEST_URI\'] are required but not set.' );
