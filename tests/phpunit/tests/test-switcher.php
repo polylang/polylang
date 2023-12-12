@@ -178,9 +178,8 @@ class Switcher_Test extends PLL_UnitTestCase {
 			'echo'     => 0,
 		);
 		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
-		$switcher = htmlspecialchars_decode( htmlentities( $switcher ) ); // Due to "Français".
 		$doc = new DomDocument();
-		$doc->loadHTML( $switcher );
+		$doc->loadHTML( '<?xml encoding="UTF-8">' . $switcher );
 		$xpath = new DOMXpath( $doc );
 
 		$option = $xpath->query( '//select/option[.="English"]' );
