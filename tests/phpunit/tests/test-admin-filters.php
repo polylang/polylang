@@ -14,12 +14,8 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_sanitize_title_for_current_language_without_character_conversion() {
-		add_filter(
-			'pll_admin_current_language',
-			function () {
-				return self::$model->get_language( 'en' );
-			}
-		);
+		$this->add_filter_pll_admin_current_language( 'en' );
+
 		new PLL_Admin_Context();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
 	}
@@ -32,12 +28,8 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_sanitize_title_for_current_language_with_character_conversion() {
-		add_filter(
-			'pll_admin_current_language',
-			function () {
-				return self::$model->get_language( 'de' );
-			}
-		);
+		$this->add_filter_pll_admin_current_language( 'de' );
+
 		new PLL_Admin_Context();
 		$this->assertEquals( 'fuellmenge', sanitize_title( 'Füllmenge' ) );
 	}
@@ -50,12 +42,8 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_sanitize_user_without_character_conversion() {
-		add_filter(
-			'pll_admin_current_language',
-			function () {
-				return self::$model->get_language( 'en' );
-			}
-		);
+		$this->add_filter_pll_admin_current_language( 'en' );
+
 		new PLL_Admin_Context();
 		$this->assertEquals( 'angstrom', sanitize_user( 'ångström' ) );
 	}
@@ -81,12 +69,9 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		if ( class_exists( 'WP_Site_Health' ) ) {
 			remove_filter( 'admin_body_class', array( WP_Site_Health::get_instance(), 'admin_body_class' ) );
 		}
-		add_filter(
-			'pll_admin_current_language',
-			function () {
-				return self::$model->get_language( 'en' );
-			}
-		);
+
+		$this->add_filter_pll_admin_current_language( 'en' );
+
 		$pll_context = new PLL_Admin_Context();
 		$this->pll_admin = $pll_context->get();
 		$this->pll_admin->add_filters();
@@ -98,12 +83,9 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		if ( class_exists( 'WP_Site_Health' ) ) {
 			remove_filter( 'admin_body_class', array( WP_Site_Health::get_instance(), 'admin_body_class' ) );
 		}
-		add_filter(
-			'pll_admin_current_language',
-			function () {
-				return self::$model->get_language( 'ar' );
-			}
-		);
+
+		$this->add_filter_pll_admin_current_language( 'ar' );
+
 		$pll_context = new PLL_Admin_Context();
 		$this->pll_admin = $pll_context->get();
 		$this->pll_admin->add_filters();
@@ -130,5 +112,14 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		ob_start();
 		_post_states( get_post( $de ) );
 		$this->assertNotFalse( strpos( ob_get_clean(), "<span class='post-state'>Privacy Policy Page</span>" ) );
+	}
+
+	protected function add_filter_pll_admin_current_language( $slug ) {
+		add_filter(
+			'pll_admin_current_language',
+			function () use ( $slug ) {
+				return self::$model->get_language( $slug );
+			}
+		);
 	}
 }
