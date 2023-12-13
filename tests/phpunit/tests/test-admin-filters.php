@@ -21,7 +21,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_sanitize_title_for_language_from_form_without_character_conversion() {
-			// Bug fixed in 2.4.1
+		// Bug fixed in 2.4.1
 		$_POST['post_lang_choice'] = 'en';
 		new PLL_Admin_Context();
 		$this->assertEquals( 'fullmenge', sanitize_title( 'Füllmenge' ) );
@@ -49,10 +49,9 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_sanitize_user_with_character_conversion() {
-		$pll_context = new PLL_Admin_Context();
-		$this->pll_admin = $pll_context->get();
-		$this->pll_admin->curlang = self::$model->get_language( 'de' );
-		$this->pll_admin->add_filters();
+		$this->add_filter_pll_admin_current_language( 'de' );
+
+		new PLL_Admin_Context();
 		$this->assertEquals( 'angstroem', sanitize_user( 'ångström' ) );
 	}
 
@@ -72,9 +71,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 		$this->add_filter_pll_admin_current_language( 'en' );
 
-		$pll_context = new PLL_Admin_Context();
-		$this->pll_admin = $pll_context->get();
-		$this->pll_admin->add_filters();
+		new PLL_Admin_Context();
 		$this->assertEquals( ' pll-dir-ltr pll-lang-en', apply_filters( 'admin_body_class', '' ) );
 	}
 
@@ -86,9 +83,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 
 		$this->add_filter_pll_admin_current_language( 'ar' );
 
-		$pll_context = new PLL_Admin_Context();
-		$this->pll_admin = $pll_context->get();
-		$this->pll_admin->add_filters();
+		new PLL_Admin_Context();
 		$this->assertEquals( ' pll-dir-rtl pll-lang-ar', apply_filters( 'admin_body_class', '' ) );
 	}
 

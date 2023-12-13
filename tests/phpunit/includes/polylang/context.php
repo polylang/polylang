@@ -107,6 +107,13 @@ abstract class PLL_Context {
 
 		do_action( $hook_name, $args );
 
+		foreach ( $wp_filter as $filter_name => $filter ) {
+			if ( empty( $wp_filter_backup[ $filter_name ] ) ) {
+				// Keep filters adding by Polylang after the previous `do_action`.
+				$wp_filter_backup[ $filter_name ] = $filter;
+			}
+		}
+
 		// Restores wp_filter variable.
 		$wp_filter = $wp_filter_backup;
 	}
