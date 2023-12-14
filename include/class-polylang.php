@@ -266,7 +266,8 @@ class Polylang {
 		 */
 		do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
 
-		require_once $dir . '/api.php'; // Loads the API
+		// Loads the API
+		require_once $dir . '/api.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
 		// Loads the modules.
 		$load_scripts = glob( $dir . '/modules/*/load.php', GLOB_NOSORT );
