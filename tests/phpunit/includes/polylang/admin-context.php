@@ -1,10 +1,26 @@
 <?php
+
 class PLL_Admin_Context extends PLL_Context {
 
-	public function get_name() {
+	/**
+	 * Gets the context class name.
+	 *
+	 * @since 3.6
+	 *
+	 * @return string
+	 */
+	public function get_name(): string {
 		return PLL_Admin::class;
 	}
 
+	/**
+	 * Executes Polylang actions on filters that need to be run according to context.
+	 * Also refresh WordPress’ rewrite rule.
+	 *
+	 * @since 3.6
+	 *
+	 * @return void
+	 */
 	protected function do_wordpress_actions() {
 		global $wp_rewrite;
 

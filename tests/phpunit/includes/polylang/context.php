@@ -1,4 +1,5 @@
 <?php
+
 abstract class PLL_Context {
 
 	/**
@@ -24,10 +25,11 @@ abstract class PLL_Context {
 		if ( isset( $settings['options'] ) && is_array( $settings['options'] ) && ! empty( $settings['options'] ) ) {
 			$options = array_merge( $options, $settings['options'] );
 		}
+
 		$model = $this->get_model( $options );
 
-		// switch to pretty permalinks
-		// useless with plain permalinks, check before running
+		// Switch to pretty permalinks.
+		// Useless with plain permalinks, check before running.
 		if ( isset( $settings['permalink_structure'] ) && ! empty( $settings['permalink_structure'] ) ) {
 			$wp_rewrite->init();
 			$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
@@ -42,11 +44,28 @@ abstract class PLL_Context {
 		$this->do_wordpress_actions();
 	}
 
-	protected function get_model( array $options ) {
-		// PLL_Admin_Model for Settings need to be overriden.
+	/**
+	 * Returns the model according to the context.
+	 *
+	 * @since 3.6
+	 *
+	 * @param array $options Polylang options.
+	 * @return PLL_Model
+	 */
+	protected function get_model( array $options ): PLL_Model {
 		return new PLL_Model( $options );
 	}
 
+	/**
+	 * Removes non-polylang callbacks in `wp_filter` before running the `do_action` so that only polylang filters are run.
+	 *
+	 * @since 3.6
+	 *
+	 * @global WP_Hook[] $wp_filter Stores all the filters and actions.
+	 *
+	 * @param string $hook_name The name of the action to be executed.
+	 * @param mixed  ...$args   Additional arguments which are passed on to the functions hooked to the action.
+	 */
 	protected function do_pll_actions( string $hook_name, ...$args ) {
 		global $wp_filter;
 
@@ -90,11 +109,33 @@ abstract class PLL_Context {
 		$wp_filter = $wp_filter_backup;
 	}
 
+	/**
+	 * Executes Polylang actions on filters that need to be run according to context.
+	 * Also refresh WordPress’ rewrite rule.
+	 *
+	 * @since 3.6
+	 *
+	 * @return void
+	 */
 	abstract protected function do_wordpress_actions();
 
-	abstract protected function get_name();
+	/**
+	 * Gets the context class name.
+	 *
+	 * @since 3.6
+	 *
+	 * @return string
+	 */
+	abstract protected function get_name(): string;
 
-	public function get() {
+	/**
+	 * Gets the Polylang instance.
+	 *
+	 * @since 3.6
+	 *
+	 * @return PLL_Base
+	 */
+	public function get(): PLL_Base {
 		return $this->polylang;
 	}
 }
