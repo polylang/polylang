@@ -269,7 +269,7 @@ class Polylang {
 		require_once $dir . '/api.php'; // Loads the API
 
 		// Loads the modules.
-		$load_scripts = glob( POLYLANG_DIR . '/modules/*/load.php', GLOB_NOSORT );
+		$load_scripts = glob( $dir . '/modules/*/load.php', GLOB_NOSORT );
 		if ( is_array( $load_scripts ) ) {
 			foreach ( $load_scripts as $load_script ) {
 				require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
