@@ -253,7 +253,9 @@ class Polylang {
 		global $polylang;
 
 		$links_model = $model->get_links_model();
-		$polylang    = new $class( $links_model );
+
+		/** @var PLL_Base $class */
+		$polylang = new $class( $links_model );
 
 		$model->maybe_create_language_terms();
 
