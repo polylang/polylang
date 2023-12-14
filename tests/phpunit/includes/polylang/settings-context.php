@@ -28,7 +28,7 @@ class PLL_Settings_Context extends PLL_Admin_Context {
 
 	/**
 	 * Executes Polylang actions on filters that need to be run according to context.
-	 * Also refresh WordPress’ rewrite rule.
+	 * Also refresh WordPress’ rewrite rules.
 	 *
 	 * @since 3.6
 	 *
