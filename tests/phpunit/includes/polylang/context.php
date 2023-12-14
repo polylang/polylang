@@ -14,6 +14,9 @@ abstract class PLL_Context {
 	public function __construct( array $settings = array() ) {
 		global $wp_rewrite;
 
+		$tests_dir = dirname( __DIR__ ); // `/polylang-pro/tests/phpunit`.
+		$root_dir  = dirname( $tests_dir, 3 ); // `/polylang`.
+
 		$default_lang = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id', 'fields' => 'slugs' ) );
 
 		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => reset( $default_lang ) ) );
@@ -31,41 +34,10 @@ abstract class PLL_Context {
 			$wp_rewrite->set_permalink_structure( $settings['permalink_structure'] );
 		}
 
-		$links_model = $model->get_links_model();
-
 		// if $static_pages array not empty update WordPress options 'show_on_front', 'page_on_front', 'page_for_posts'.
 
 		$class_name     = $this->get_name();
-		$this->polylang = new $class_name( $links_model );
-
-		$model->maybe_create_language_terms();
-
-		/**
-		 * Fires after the $polylang object is created and before the API is loaded
-		 *
-		 * @since 2.0
-		 *
-		 * @param object $polylang
-		 */
-		do_action_ref_array( 'pll_pre_init', array( &$this->polylang ) );
-
-		$tests_dir = dirname( __DIR__ ); // `/polylang-pro/tests/phpunit`.
-		$root_dir  = dirname( $tests_dir, 3 ); // `/polylang`.
-		// Loads the API.
-		require_once "{$root_dir}/include/api.php"; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
-
-		// Loads the modules.
-		$load_scripts = glob( "{$root_dir}'/modules/*/load.php", GLOB_NOSORT );
-		if ( is_array( $load_scripts ) ) {
-			foreach ( $load_scripts as $load_script ) {
-				require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-			}
-		}
-
-		$this->polylang->init();
-		$GLOBALS['polylang'] = $this->polylang;
-
-		do_action_ref_array( 'pll_init', array( &$this->polylang ) );
+		$this->polylang = Polylang::_init( $class_name, $model, "{$root_dir}/include" );
 
 		$this->do_wordpress_actions();
 	}
