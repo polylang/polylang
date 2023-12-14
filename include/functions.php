@@ -84,13 +84,23 @@ function pll_get_requested_url() {
 		return set_url_scheme( esc_url_raw( wp_unslash( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) ) );
 	}
 
+	/** @var string */
+	$home_url = get_option( 'home' );
+
 	/*
 	 * In WP CLI context, few developers define superglobals in wp-config.php
 	 * as proposed in https://make.wordpress.org/cli/handbook/common-issues/#php-notice-undefined-index-on-_server-superglobal
 	 * So let's return the unfiltered home url to avoid a bunch of notices.
 	 */
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
-		return get_option( 'home' );
+		return $home_url;
+	}
+
+	/*
+	 * When using system CRON instead of WP_CRON, the superglobals are likely undefined.
+	 */
+	if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+		return $home_url;
 	}
 
 	if ( WP_DEBUG ) {

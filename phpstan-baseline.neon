@@ -606,11 +606,6 @@ parameters:
 			path: include/filters.php
 
 		-
-			message: "#^Function pll_get_requested_url\\(\\) should return string but returns mixed\\.$#"
-			count: 1
-			path: include/functions.php
-
-		-
 			message: "#^Parameter \\#1 \\$.+ of function base64_encode expects string, string\\|false given\\.$#"
 			count: 1
 			path: include/language.php
