@@ -76,6 +76,11 @@ abstract class PLL_Context {
 		// Loops on wp_filter global variable and keep only Polylang callbacks.
 		foreach ( $wp_filter[ $hook_name ]->callbacks as $priority => $callbacks ) {
 			foreach ( $callbacks as $key => $callback ) {
+				if ( is_string( $callback['function'] ) && 0 !== strpos( $callback['function'], 'pll_' ) ) {
+					unset( $wp_filter[ $hook_name ]->callbacks[ $priority ][ $key ] );
+					continue;
+				}
+
 				if ( ! is_array( $callback['function'] ) || ! isset( $callback['function'][0] ) ) {
 					unset( $wp_filter[ $hook_name ]->callbacks[ $priority ][ $key ] );
 					continue;
