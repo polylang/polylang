@@ -234,7 +234,7 @@ class Polylang {
 			 */
 			do_action( 'pll_model_init', $model );
 
-			self::_init( $class, $model, __DIR__ );
+			self::_init( $class, $model, dirname( __DIR__ ) );
 		}
 	}
 
@@ -246,10 +246,10 @@ class Polylang {
 	 *
 	 * @param string    $class The class name.
 	 * @param PLL_Model $model Instance of PLL_Model.
-	 * @param string    $dir   The path to the include directory.
+	 * @param string    $polylang_dir   The path to the Polylang directory.
 	 * @return PLL_Base
 	 */
-	public static function _init( string $class, PLL_Model $model, string $dir ): PLL_Base {
+	public static function _init( string $class, PLL_Model $model, string $polylang_dir ): PLL_Base {
 		global $polylang;
 
 		$links_model = $model->get_links_model();
@@ -269,10 +269,10 @@ class Polylang {
 		do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
 
 		// Loads the API
-		require_once $dir . '/api.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+		require_once $polylang_dir . '/include/api.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
 		// Loads the modules.
-		$load_scripts = glob( $dir . '/modules/*/load.php', GLOB_NOSORT );
+		$load_scripts = glob( $polylang_dir . '/modules/*/load.php', GLOB_NOSORT );
 		if ( is_array( $load_scripts ) ) {
 			foreach ( $load_scripts as $load_script ) {
 				require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable

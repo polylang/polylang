@@ -39,7 +39,7 @@ abstract class PLL_Context {
 		// if $static_pages array not empty update WordPress options 'show_on_front', 'page_on_front', 'page_for_posts'.
 
 		$class_name     = $this->get_name();
-		$this->polylang = Polylang::_init( $class_name, $model, "{$root_dir}/include" );
+		$this->polylang = Polylang::_init( $class_name, $model, $root_dir );
 
 		$this->do_wordpress_actions();
 	}
