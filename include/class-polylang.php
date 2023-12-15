@@ -222,18 +222,6 @@ class Polylang {
 		$class = apply_filters( 'pll_context', $class );
 
 		if ( ! empty( $class ) ) {
-			/**
-			 * Fires after Polylang's model init.
-			 * This is the best place to register a custom table (see `PLL_Model`'s constructor).
-			 * /!\ This hook is fired *before* the $polylang object is available.
-			 * /!\ The languages are also not available yet.
-			 *
-			 * @since 3.4
-			 *
-			 * @param PLL_Model $model Polylang model.
-			 */
-			do_action( 'pll_model_init', $model );
-
 			self::_init( $class, $model );
 		}
 	}
@@ -255,6 +243,18 @@ class Polylang {
 
 		/** @var PLL_Base $class */
 		$polylang = new $class( $links_model );
+
+		/**
+		 * Fires after Polylang's model init.
+		 * This is the best place to register a custom table (see `PLL_Model`'s constructor).
+		 * /!\ This hook is fired *before* the $polylang object is available.
+		 * /!\ The languages are also not available yet.
+		 *
+		 * @since 3.4
+		 *
+		 * @param PLL_Model $model Polylang model.
+		 */
+		do_action( 'pll_model_init', $model );
 
 		$model->maybe_create_language_terms();
 
