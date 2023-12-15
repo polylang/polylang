@@ -46,5 +46,6 @@ class PLL_Settings_Context extends PLL_Admin_Context {
 		$wp_rewrite->flush_rules();
 
 		$this->do_pll_actions( 'admin_init' );
+		$this->do_pll_actions( 'current_screen' );
 	}
 }
