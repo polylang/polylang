@@ -15,9 +15,6 @@ abstract class PLL_Context {
 	public function __construct( array $settings = array() ) {
 		global $wp_rewrite;
 
-		$tests_dir = dirname( __DIR__ ); // `/polylang-pro/tests/phpunit`.
-		$root_dir  = dirname( $tests_dir, 3 ); // `/polylang`.
-
 		$default_lang = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id', 'fields' => 'slugs' ) );
 
 		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => reset( $default_lang ) ) );
@@ -39,7 +36,7 @@ abstract class PLL_Context {
 		// if $static_pages array not empty update WordPress options 'show_on_front', 'page_on_front', 'page_for_posts'.
 
 		$class_name     = $this->get_name();
-		$this->polylang = Polylang::_init( $class_name, $model, $root_dir );
+		$this->polylang = Polylang::_init( $class_name, $model );
 
 		$this->do_wordpress_actions();
 	}
