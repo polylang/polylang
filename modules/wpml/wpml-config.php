@@ -154,7 +154,7 @@ class PLL_WPML_Config {
 	 * @phpstan-return array<string, string>
 	 */
 	public function get_files() {
-		if ( is_array( $this->files ) ) {
+		if ( is_array( $this->files ) && ! empty( $this->files ) ) {
 			return $this->files;
 		}
 
