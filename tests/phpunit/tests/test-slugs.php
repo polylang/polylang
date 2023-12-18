@@ -26,20 +26,18 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_term_slugs() {
-		$term_id = self::factory()->term->create(
+		$term_id = self::factory()->category->create(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'lang'     => 'en',
+				'name' => 'test',
+				'lang' => 'en',
 			)
 		);
 
 		$_POST['term_lang_choice'] = 'fr';
-		$term_id                   = self::factory()->term->create(
+		$term_id                   = self::factory()->category->create(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'lang'     => 'fr',
+				'name' => 'test',
+				'lang' => 'fr',
 			)
 		);
 
@@ -48,11 +46,10 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_terms_with_parents_sharing_same_name() {
-		$en_parent = self::factory()->term->create_and_get(
+		$en_parent = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'lang'     => 'en',
+				'name' => 'test',
+				'lang' => 'en',
 			)
 		);
 
@@ -61,12 +58,11 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
-		$en                        = self::factory()->term->create_and_get(
+		$en                        = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'parent'   => $en_parent->term_id,
-				'lang'     => 'en',
+				'name'   => 'test',
+				'parent' => $en_parent->term_id,
+				'lang'   => 'en',
 			)
 		);
 
@@ -77,11 +73,10 @@ class Slugs_Test extends PLL_UnitTestCase {
 		unset( $_POST );
 
 		$_POST['term_lang_choice'] = 'fr';
-		$fr_parent                 = self::factory()->term->create_and_get(
+		$fr_parent                 = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'lang'     => 'fr',
+				'name' => 'test',
+				'lang' => 'fr',
 			)
 		);
 
@@ -89,12 +84,11 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'test-fr', $fr_parent->slug );
 
 		$_POST['parent'] = $fr_parent->term_id;
-		$fr              = self::factory()->term->create_and_get(
+		$fr              = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'parent'   => $fr_parent->term_id,
-				'lang'     => 'fr',
+				'name'   => 'test',
+				'parent' => $fr_parent->term_id,
+				'lang'   => 'fr',
 			)
 		);
 
@@ -103,11 +97,10 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_already_existing_term_slugs_with_parent() {
-		$en_parent = self::factory()->term->create_and_get(
+		$en_parent = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'lang'     => 'en',
+				'name' => 'test',
+				'lang' => 'en',
 			)
 		);
 
@@ -116,12 +109,11 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
-		$en                        = self::factory()->term->create_and_get(
+		$en                        = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'parent'   => $en_parent->term_id,
-				'lang'     => 'en',
+				'name'   => 'test',
+				'parent' => $en_parent->term_id,
+				'lang'   => 'en',
 			)
 		);
 
@@ -129,12 +121,11 @@ class Slugs_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'test-en', $en->slug );
 
 		// Let's create another child term with the same parent and the same name.
-		$en_new = self::factory()->term->create_and_get(
+		$en_new = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'parent'   => $en_parent->term_id,
-				'lang'     => 'en',
+				'name'   => 'test',
+				'parent' => $en_parent->term_id,
+				'lang'   => 'en',
 			)
 		);
 
@@ -142,11 +133,10 @@ class Slugs_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_update_existing_term_slugs_with_parent() {
-		$en_parent = self::factory()->term->create_and_get(
+		$en_parent = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name'     => 'test',
-				'lang'     => 'en',
+				'name' => 'test',
+				'lang' => 'en',
 			)
 		);
 
@@ -155,12 +145,11 @@ class Slugs_Test extends PLL_UnitTestCase {
 
 		$_POST['term_lang_choice'] = 'en';
 		$_POST['parent']           = $en_parent->term_id;
-		$en                        = self::factory()->term->create_and_get(
+		$en                        = self::factory()->category->create_and_get(
 			array(
-				'taxonomy' => 'category',
-				'name' => 'test',
+				'name'   => 'test',
 				'parent' => $en_parent->term_id,
-				'lang' => 'en',
+				'lang'   => 'en',
 			)
 		);
 
