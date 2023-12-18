@@ -478,7 +478,9 @@ class PLL_Admin_Filters_Term {
 					$args = array_merge( $args, array( 'link' => 'edit' ) );
 				}
 
-				if ( $tag_cloud = wp_tag_cloud( $args ) ) {
+				$tag_cloud = wp_tag_cloud( $args );
+
+				if ( ! empty( $tag_cloud ) && is_string( $tag_cloud ) ) {
 					$html = sprintf( '<div class="tagcloud"><h2>%1$s</h2>%2$s</div>', esc_html( $tax->labels->popular_items ), $tag_cloud );
 					$x->Add( array( 'what' => 'tag_cloud', 'data' => $html ) );
 				}
