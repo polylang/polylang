@@ -9,6 +9,10 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	protected static $posts_en;
 	protected static $posts_fr;
 
+	/**
+	 * @param PLL_UnitTest_Factory $factory
+	 * @return void
+	 */
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
 

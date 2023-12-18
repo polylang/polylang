@@ -3,13 +3,14 @@
 class Slugs_Test extends PLL_UnitTestCase {
 
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @param PLL_UnitTest_Factory $factory
+	 * @return void
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::factory()->language->create( array( 'locale' => 'en_US' ) );
-		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
+		$factory->language->create( array( 'locale' => 'en_US' ) );
+		$factory->language->create( array( 'locale' => 'fr_FR' ) );
 		self::$model->options['default_lang'] = 'en'; // Otherwise static model isn't aware of the created languages...
 	}
 
