@@ -20,6 +20,7 @@ abstract class WP_UnitTestCase_Polyfill extends WP_UnitTestCase {
 			return parent::set_up_before_class();
 		}
 
+		// Backward compatibility with WP < 6.5.
 		PHPUnit_Adapter_TestCase::set_up_before_class(); // Call grandpa!
 
 		$wpdb->suppress_errors = false;
@@ -47,6 +48,7 @@ abstract class WP_UnitTestCase_Polyfill extends WP_UnitTestCase {
 			return parent::set_up();
 		}
 
+		// Backward compatibility with WP < 6.5.
 		set_time_limit( 0 );
 
 		$this->factory = static::factory();
