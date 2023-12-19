@@ -1,6 +1,6 @@
 <?php
 
-class PLL_Settings_Context extends PLL_Admin_Context {
+class PLL_Context_Settings extends PLL_Context_Admin {
 
 	/**
 	 * Returns the context class name.

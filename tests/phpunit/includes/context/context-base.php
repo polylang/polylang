@@ -1,6 +1,6 @@
 <?php
 
-abstract class PLL_Context {
+abstract class PLL_Context_Base {
 
 	/**
 	 * @var PLL_Base
