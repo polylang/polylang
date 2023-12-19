@@ -3,7 +3,7 @@
 class PLL_Frontend_Context extends PLL_Context {
 
 	/**
-	 * Gets the context class name.
+	 * Returns the context class name.
 	 *
 	 * @since 3.6
 	 *
