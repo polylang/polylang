@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Settings context.
+ *
+ * @since 3.6
+ */
 class PLL_Context_Settings extends PLL_Context_Admin {
 
 	/**

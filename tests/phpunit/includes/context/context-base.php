@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Base context class for admin, frontend, rest and settings.
+ *
+ * @since 3.6
+ */
 abstract class PLL_Context_Base {
 
 	/**

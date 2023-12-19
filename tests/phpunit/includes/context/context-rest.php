@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Rest context.
+ *
+ * @since 3.6
+ */
 class PLL_Context_Rest extends PLL_Context_Base {
 
 	/**

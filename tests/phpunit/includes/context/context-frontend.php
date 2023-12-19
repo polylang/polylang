@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Frontend context.
+ *
+ * @since 3.6
+ */
 class PLL_Context_Frontend extends PLL_Context_Base {
 
 	/**

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Admin context.
+ *
+ * @since 3.6
+ */
 class PLL_Context_Admin extends PLL_Context_Base {
 
 	/**
