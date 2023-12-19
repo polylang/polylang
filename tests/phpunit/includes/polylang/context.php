@@ -29,7 +29,7 @@ abstract class PLL_Context {
 		// Useless with plain permalinks, check before running.
 		if ( isset( $settings['permalink_structure'] ) && ! empty( $settings['permalink_structure'] ) ) {
 			$wp_rewrite->init();
-			$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
+			$wp_rewrite->extra_rules_top = array(); // Brute force since WP does not do it :(
 			$wp_rewrite->set_permalink_structure( $settings['permalink_structure'] );
 		}
 
