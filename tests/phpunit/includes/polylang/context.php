@@ -62,6 +62,7 @@ abstract class PLL_Context {
 	 *
 	 * @param string $hook_name The name of the action to be executed.
 	 * @param mixed  ...$args   Additional arguments which are passed on to the functions hooked to the action.
+	 * @return void
 	 */
 	protected function do_pll_actions( string $hook_name, ...$args ) {
 		global $wp_filter;
