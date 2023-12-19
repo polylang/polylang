@@ -100,7 +100,7 @@ abstract class PLL_Context_Base {
 			}
 		}
 
-		do_action( $hook_name, $args );
+		do_action_ref_array( $hook_name, $args );
 
 		foreach ( $wp_filter as $filter_name => $filter ) {
 			if ( empty( $wp_filter_backup[ $filter_name ] ) ) {
