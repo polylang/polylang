@@ -8,7 +8,7 @@ abstract class PLL_Context {
 	protected $polylang;
 
 	/**
-	 * Initialize Polylang.
+	 * Initializes Polylang.
 	 *
 	 * @param array $settings Polylang settings.
 	 */
