@@ -478,7 +478,7 @@ class PLL_Admin_Filters_Term {
 					$args = array_merge( $args, array( 'link' => 'edit' ) );
 				}
 
-				/** @var string */
+				/** @var string|void */
 				$tag_cloud = wp_tag_cloud( $args );
 
 				if ( ! empty( $tag_cloud ) ) {
