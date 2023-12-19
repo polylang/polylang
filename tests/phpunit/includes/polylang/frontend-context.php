@@ -15,7 +15,7 @@ class PLL_Frontend_Context extends PLL_Context {
 
 	/**
 	 * Executes Polylang actions on filters that need to be run according to context.
-	 * Also refresh WordPress’ rewrite rules.
+	 * Also refreshes WordPress’ rewrite rules.
 	 *
 	 * @since 3.6
 	 *
