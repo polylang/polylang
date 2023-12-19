@@ -67,12 +67,12 @@ abstract class PLL_Context {
 	protected function do_pll_actions( string $hook_name, ...$args ) {
 		global $wp_filter;
 
-		// Backups wp_filter variable.
-		$wp_filter_backup = $wp_filter;
-
-		if ( ! isset( $wp_filter[ $hook_name ] ) ) {
+		if ( empty( $wp_filter[ $hook_name ] ) ) {
 			return;
 		}
+
+		// Backups wp_filter variable.
+		$wp_filter_backup = $wp_filter;
 
 		// Loops on wp_filter global variable and keep only Polylang callbacks.
 		foreach ( $wp_filter[ $hook_name ]->callbacks as $priority => $callbacks ) {
