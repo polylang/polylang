@@ -21,6 +21,8 @@ if ( is_readable( PLL_LOCAL_DIR . '/pll-config.php' ) ) {
  * Controls the plugin, as well as activation, and deactivation
  *
  * @since 0.1
+ *
+ * @template TPLLClass of PLL_Base
  */
 class Polylang {
 
@@ -222,7 +224,8 @@ class Polylang {
 		$class = apply_filters( 'pll_context', $class );
 
 		if ( ! empty( $class ) ) {
-			self::_init( $class, $model );
+			/** @phpstan-var class-string<TPLLClass> $class */
+			$this->init_context( $class, $model );
 		}
 	}
 
@@ -235,14 +238,15 @@ class Polylang {
 	 * @param string    $class The class name.
 	 * @param PLL_Model $model Instance of PLL_Model.
 	 * @return PLL_Base
+	 *
+	 * @phpstan-param class-string<TPLLClass> $class
+	 * @phpstan-return TPLLClass
 	 */
-	public static function _init( string $class, PLL_Model $model ): PLL_Base {
+	public function init_context( string $class, PLL_Model $model ): PLL_Base {
 		global $polylang;
 
 		$links_model = $model->get_links_model();
-
-		/** @var PLL_Base $class */
-		$polylang = new $class( $links_model );
+		$polylang    = new $class( $links_model );
 
 		/**
 		 * Fires after Polylang's model init.
