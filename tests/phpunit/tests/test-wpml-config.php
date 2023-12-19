@@ -1,10 +1,6 @@
 <?php
 
-use WP_Syntex\Polylang_Phpunit\TestCaseTrait;
-
 class WPML_Config_Test extends PLL_UnitTestCase {
-	use TestCaseTrait;
-
 	/**
 	 * @param WP_UnitTest_Factory $factory
 	 */
@@ -30,7 +26,10 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		self::setPropertyValue( PLL_WPML_Config::instance(), 'files', null );
+		$ref = new ReflectionProperty( PLL_WPML_Config::instance(), 'files' );
+		$ref->setAccessible( true );
+		$ref->setValue( PLL_WPML_Config::instance(), null );
+
 		$this->links_model = self::$model->get_links_model();
 	}
 
