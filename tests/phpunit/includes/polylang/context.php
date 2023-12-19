@@ -33,7 +33,7 @@ abstract class PLL_Context {
 			$wp_rewrite->set_permalink_structure( $settings['permalink_structure'] );
 		}
 
-		// if $static_pages array not empty update WordPress options 'show_on_front', 'page_on_front', 'page_for_posts'.
+		// If `$static_pages` array not empty update WordPress options 'show_on_front', 'page_on_front', 'page_for_posts'.
 
 		$class_name     = $this->get_name();
 		$this->polylang = Polylang::_init( $class_name, $model );
