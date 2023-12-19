@@ -102,7 +102,7 @@ abstract class PLL_Context {
 
 		foreach ( $wp_filter as $filter_name => $filter ) {
 			if ( empty( $wp_filter_backup[ $filter_name ] ) ) {
-				// Keep filters adding by Polylang after the previous `do_action`.
+				// Keep filters added by Polylang during the previous `do_action`.
 				$wp_filter_backup[ $filter_name ] = $filter;
 			}
 		}
@@ -113,7 +113,7 @@ abstract class PLL_Context {
 
 	/**
 	 * Executes Polylang actions on filters that need to be run according to context.
-	 * Also refresh WordPress’ rewrite rules.
+	 * Also refreshes WordPress’ rewrite rules.
 	 *
 	 * @since 3.6
 	 *
@@ -122,7 +122,7 @@ abstract class PLL_Context {
 	abstract protected function do_wordpress_actions();
 
 	/**
-	 * Gets the context class name.
+	 * Returns the context class name.
 	 *
 	 * @since 3.6
 	 *
@@ -131,7 +131,7 @@ abstract class PLL_Context {
 	abstract protected function get_name(): string;
 
 	/**
-	 * Gets the Polylang instance.
+	 * Returns the Polylang instance.
 	 *
 	 * @since 3.6
 	 *

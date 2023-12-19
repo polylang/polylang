@@ -3,7 +3,7 @@
 class PLL_Settings_Context extends PLL_Admin_Context {
 
 	/**
-	 * Gets the context class name.
+	 * Returns the context class name.
 	 *
 	 * @since 3.6
 	 *
@@ -28,7 +28,7 @@ class PLL_Settings_Context extends PLL_Admin_Context {
 
 	/**
 	 * Executes Polylang actions on filters that need to be run according to context.
-	 * Also refresh WordPress’ rewrite rules.
+	 * Also refreshes WordPress’ rewrite rules.
 	 *
 	 * @since 3.6
 	 *
