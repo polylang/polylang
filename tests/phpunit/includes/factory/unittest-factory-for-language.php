@@ -33,7 +33,7 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 	 */
 	public function create( $args = array(), $generation_definitions = null ) {
 		if ( empty( $args['locale'] ) ) {
-			throw new InvalidArgumentException( 'Please pass at least a locale to create a language.' );
+			throw new InvalidArgumentException( 'A locale is required to create a language.' );
 		}
 
 		$languages = include POLYLANG_DIR . '/settings/languages.php';
@@ -93,7 +93,7 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 		$language = $this->pll_model->get_language( $args['slug'] );
 
 		if ( ! $language instanceof PLL_Language ) {
-			return new WP_Error( 'Something went wrong when retrieving the language.' );
+			return new WP_Error( 'Could not get the created language.' );
 		}
 
 		return $language->term_id;
@@ -112,7 +112,7 @@ class PLL_UnitTest_Factory_For_Language extends WP_UnitTest_Factory_For_Thing {
 			return $language;
 		}
 
-		return new WP_Error( 'Cannot find a language for the given term ID.' );
+		return new WP_Error( 'Could not find a language for the given term ID.' );
 	}
 
 	/**

@@ -21,7 +21,7 @@ trait Factory_For_Translated_Object_Trait {
 		$has_language = $this->translatable_object->set_language( $object_id, $args['lang'] );
 
 		if ( ! $has_language ) {
-			return new WP_Error( 'pll-test-error', 'Language cannot be assigned to the given object.' );
+			return new WP_Error( 'pll-test-error', 'Could not assign a language to the created object.' );
 		}
 
 		return $object_id;
@@ -33,7 +33,7 @@ trait Factory_For_Translated_Object_Trait {
 
 		foreach ( $others as $object ) {
 			if ( empty( $object['lang'] ) ) {
-				throw new InvalidArgumentException( 'Please pass a language to assign to the given object.' );
+				throw new InvalidArgumentException( 'A language is required for all translated objects.' );
 			}
 
 			$translations[ $object['lang'] ] = $this->create( $object );

@@ -2,7 +2,7 @@
 
 /**
  * Polyfill class to replace `WP_UnitTest_Factory` with `PLL_UnitTest_Factory`.
- * Backward compatibility for WordPress < 6.5-alpha.
+ * The whole class exists only for backward compatibility with WordPress < 6.5-alpha.
  * Back then, `WP_UnitTestCase::factory()` was called with `self` instead of `static` keyword,
  * preventing us to override it.
  *
@@ -10,8 +10,8 @@
  */
 abstract class WP_UnitTestCase_Polyfill extends WP_UnitTestCase {
 	/**
-	 * Rewrites `WP_UnitTestCase::set_up_before_class()` using `static` keyword.
-	 * If no polfill required, call `WP_UnitTestCase::set_up_before_class()` as usual.
+	 * Rewrites `WP_UnitTestCase::set_up_before_class()` using `static` keyword for `factory()` call.
+	 * If no polyfill is required, call `WP_UnitTestCase::set_up_before_class()` as usual.
 	 */
 	public static function set_up_before_class() {
 		global $wpdb, $wp_version;
@@ -38,8 +38,8 @@ abstract class WP_UnitTestCase_Polyfill extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Rewrites `WP_UnitTestCase::set_up()` using `static` keyword.
-	 * If no polfill required, call `WP_UnitTestCase::set_up()` as usual.
+	 * Rewrites `WP_UnitTestCase::set_up()` using `static` keyword for `factory()` call.
+	 * If no polyfill is required, call `WP_UnitTestCase::set_up()` as usual.
 	 */
 	public function set_up() {
 		global $wp_version;
