@@ -3,6 +3,9 @@
 /**
  * A trait to share code between several test case classes.
  *
+ * Notes:
+ * - Order of the "set up before class" methods: `set_up_before_class()` => `wpSetUpBeforeClass()` => `pllSetUpBeforeClass()`.
+ *
  * TODO: create a common way to instantiate PLL_Base, PLL_Model, and PLL_Links_Model; so we don't need to define those
  * class properties here.
  */
@@ -40,6 +43,8 @@ trait PLL_UnitTestCase_Trait {
 	protected $pll_env;
 
 	/**
+	 * @deprecated Use `PLL_UnitTest_Factory_For_Language` instead.
+	 *
 	 * @var PLL_Admin_Model|null
 	 */
 	public static $model;
@@ -52,15 +57,24 @@ trait PLL_UnitTestCase_Trait {
 	protected static $submenu;
 
 	/**
+	 * Polylang Factory.
+	 *
+	 * @var PLL_UnitTest_Factory|null
+	 */
+	protected static $pll_factory = null;
+
+	/**
 	 * Initialization before all tests run.
+	 * - Creates the deprecated `self::$model`.
+	 * - Removes some hooks.
+	 * - Tweaks `_doing_it_wrong()`.
+	 * - Calls `self::pllSetUpBeforeClass()`.
 	 *
 	 * @param WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
+	 * @return void
 	 */
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$options = PLL_Install::get_default_options();
-		$options['hide_default'] = 0; // Force option to pre 2.1.5 value otherwise phpunit tests break on Travis.
-		$options['media_support'] = 1; // Force option to pre 3.1 value otherwise phpunit tests break on Travis.
-		self::$model = new PLL_Admin_Model( $options );
+		self::create_model_legacy();
 
 		remove_action( 'current_screen', '_load_remote_block_patterns' );
 		remove_action( 'current_screen', '_load_remote_featured_patterns' );
@@ -72,20 +86,55 @@ trait PLL_UnitTestCase_Trait {
 		remove_action( 'admin_print_styles', 'print_emoji_styles' );
 
 		self::filter_doing_it_wrong_trigger_error();
+
+		/*
+		 * Ensure `$factory` is an instance of `PLL_UnitTest_Factory` otherwise testcases directly
+		 * extending WordPress ones intead of our `WP_UnitTestCase_Polyfill` would get a fatal error.
+		 */
+		if ( $factory instanceof PLL_UnitTest_Factory ) {
+			static::pllSetUpBeforeClass( $factory );
+		}
+	}
+
+	/**
+	 * Initialization before all tests run.
+	 *
+	 * @param PLL_UnitTest_Factory $factory PLL_UnitTest_Factory object.
+	 * @return void
+	 */
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		// Does nothing, only ensures the factory is correctly type hinted.
+	}
+
+	/**
+	 * Fetches the factory object for generating Polylang and WordPress fixtures.
+	 *
+	 * @return PLL_UnitTest_Factory The fixture factory.
+	 */
+	protected static function factory() {
+		if ( ! self::$pll_factory ) {
+			self::$pll_factory = new PLL_UnitTest_Factory();
+		}
+		return self::$pll_factory;
 	}
 
 	/**
 	 * Deletes all languages after all tests have run.
+	 *
+	 * @return void
 	 */
 	public static function wpTearDownAfterClass() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		self::delete_all_languages();
 	}
 
 	/**
-	 * Empties the languages cache after all tests
+	 * Empties the languages cache after all tests.
+	 * Resets some globals and superglobals.
+	 *
+	 * @return void
 	 */
-	public function tear_down() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
-		self::$model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient
+	public function tear_down() {
+		self::$model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient.
 
 		$globals = array( 'current_screen', 'hook_suffix', 'wp_settings_errors', 'post_type', 'wp_scripts', 'wp_styles' );
 		foreach ( $globals as $global ) {
@@ -98,11 +147,14 @@ trait PLL_UnitTestCase_Trait {
 	}
 
 	/**
-	 * Helper function to create a language
+	 * Helper function to create a language.
+	 *
+	 * @deprecated Use `PLL_UnitTest_Factory_For_Language` instead.
+	 * @throws InvalidArgumentException If language is not created.
 	 *
 	 * @param string $locale Language locale.
 	 * @param array  $args   Allows to optionnally override the default values for the language.
-	 * @throws InvalidArgumentException If language is not created.
+	 * @return void
 	 */
 	public static function create_language( $locale, $args = array() ) {
 		$languages = include POLYLANG_DIR . '/settings/languages.php';
@@ -123,50 +175,56 @@ trait PLL_UnitTestCase_Trait {
 	}
 
 	/**
-	 * Deletes all languages
+	 * Deletes all languages.
+	 *
+	 * @return void
 	 */
 	public static function delete_all_languages() {
+		self::$model->options['default_lang'] = ''; // Force a dummy value to avoid warnings.
 		$languages = self::$model->get_languages_list();
-		if ( is_array( $languages ) ) {
-			// Delete the default categories first.
-			$tt = wp_get_object_terms( get_option( 'default_category' ), 'term_translations' );
-			$terms = self::$model->term->get_translations( get_option( 'default_category' ) );
 
-			wp_delete_term( $tt, 'term_translations' );
+		if ( ! is_array( $languages ) ) {
+			return;
+		}
 
-			foreach ( $terms as $t ) {
-				wp_delete_term( $t, 'category' );
-			}
+		// Delete the default categories first.
+		$tt    = wp_get_object_terms( get_option( 'default_category' ), 'term_translations' );
+		$terms = self::$model->term->get_translations( get_option( 'default_category' ) );
 
-			foreach ( $languages as $lang ) {
-				self::$model->delete_language( $lang->term_id );
-			}
+		wp_delete_term( $tt, 'term_translations' );
+
+		foreach ( $terms as $t ) {
+			wp_delete_term( $t, 'category' );
+		}
+
+		foreach ( $languages as $lang ) {
+			self::$model->delete_language( $lang->term_id );
 		}
 	}
 
+	/**
+	 * Requires WP's admin menus.
+	 *
+	 * @param bool $trigger_hooks Weither trigger `admin_menu` hook or not.
+	 * @return array
+	 */
 	protected function require_wp_menus( $trigger_hooks = true ) {
 		global $submenu, $wp_filter;
 		global $_wp_submenu_nopriv;
 
 		if ( isset( static::$submenu ) ) {
 			$submenu = static::$submenu;
+		} else {
+			$hooks = $wp_filter['admin_menu'] ?? null;
+			unset( $wp_filter['admin_menu'] );
 
-			if ( $trigger_hooks ) {
-				do_action( 'admin_menu', '' );
+			require_once ABSPATH . 'wp-admin/menu.php';
+
+			static::$submenu = $submenu;
+
+			if ( isset( $hooks ) ) {
+				$wp_filter['admin_menu'] = $hooks;
 			}
-
-			return static::$submenu;
-		}
-
-		$hooks = isset( $wp_filter['admin_menu'] ) ? $wp_filter['admin_menu'] : null;
-		unset( $wp_filter['admin_menu'] );
-
-		require_once ABSPATH . 'wp-admin/menu.php';
-
-		static::$submenu = $submenu;
-
-		if ( isset( $hooks ) ) {
-			$wp_filter['admin_menu'] = $hooks;
 		}
 
 		if ( $trigger_hooks ) {
@@ -174,5 +232,19 @@ trait PLL_UnitTestCase_Trait {
 		}
 
 		return static::$submenu;
+	}
+
+	/**
+	 * Creates the static model used to add languages before tests.
+	 *
+	 * @deprecated Use `PLL_UnitTest_Factory_For_Language` instead.
+	 *
+	 * @return void
+	 */
+	protected static function create_model_legacy() {
+		$options                  = PLL_Install::get_default_options();
+		$options['hide_default']  = 0;
+		$options['media_support'] = 1;
+		self::$model              = new PLL_Admin_Model( $options );
 	}
 }

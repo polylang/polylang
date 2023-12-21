@@ -10,55 +10,57 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	protected static $posts_fr;
 
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @param PLL_UnitTest_Factory $factory
+	 * @return void
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-		self::create_language( 'de_DE_formal' );
-		self::create_language( 'es_ES' );
+		$factory->language->create_many( 4 );
+		self::$model->options['default_lang'] = 'en'; // Otherwise static model isn't aware of the created languages...
 
 		// page on front
-		self::$home_en = $en = self::factory()->post->create(
+		$home_pages = $factory->post->create_translated(
 			array(
 				'post_title'   => 'home',
 				'post_type'    => 'page',
 				'post_content' => 'en1<!--nextpage-->en2',
-			)
-		);
-		self::$model->post->set_language( $en, 'en' );
-
-		self::$home_fr = $fr = self::factory()->post->create(
+				'lang'         => 'en',
+			),
 			array(
 				'post_title'   => 'accueil',
 				'post_type'    => 'page',
 				'post_content' => 'fr1<!--nextpage-->fr2',
-			)
-		);
-		self::$model->post->set_language( $fr, 'fr' );
-
-		self::$home_de = $de = self::factory()->post->create(
+				'lang'         => 'fr',
+			),
 			array(
 				'post_title'   => 'startseite',
 				'post_type'    => 'page',
 				'post_content' => 'de1<!--nextpage-->de2',
+				'lang'         => 'de',
 			)
 		);
-		self::$model->post->set_language( $de, 'de' );
-
-		self::$model->post->save_translations( $en, compact( 'en', 'fr', 'de' ) );
+		self::$home_en = $home_pages['en'];
+		self::$home_fr = $home_pages['fr'];
+		self::$home_de = $home_pages['de'];
 
 		// page for posts
 		// intentionally do not create one in German
-		self::$posts_en = $en = self::factory()->post->create( array( 'post_title' => 'posts', 'post_type' => 'page' ) );
-		self::$model->post->set_language( $en, 'en' );
+		$posts = $factory->post->create_translated(
+			array(
+				'post_title' => 'posts',
+				'post_type'  => 'page',
+				'lang'       => 'en',
+			),
+			array(
+				'post_title' => 'articles',
+				'post_type'  => 'page',
+				'lang'       => 'fr',
+			)
+		);
+		self::$posts_en = $posts['en'];
+		self::$posts_fr = $posts['fr'];
 
-		self::$posts_fr = $fr = self::factory()->post->create( array( 'post_title' => 'articles', 'post_type' => 'page' ) );
-		self::$model->post->set_language( $fr, 'fr' );
-
-		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
 		self::$model->clean_languages_cache();
 	}
