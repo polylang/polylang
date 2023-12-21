@@ -9,6 +9,12 @@
  * The language switcher configuration is not interpreted
  *
  * @since 1.0
+ *
+ * @phpstan-type ParsedMeta array{
+ *     name: non-falsy-string,
+ *     action: string,
+ *     encoding: 'json'|''
+ * }
  */
 class PLL_WPML_Config {
 	/**
@@ -47,6 +53,15 @@ class PLL_WPML_Config {
 	 * @var string[]|null
 	 */
 	private $open_basedir_paths;
+
+	/**
+	 * Cache for parsed metas.
+	 *
+	 * @var array
+	 *
+	 * @phpstan-var array<non-falsy-string, list<ParsedMeta>>
+	 */
+	private $parsed_metas = array();
 
 	/**
 	 * Constructor
@@ -114,6 +129,8 @@ class PLL_WPML_Config {
 		// Export.
 		add_filter( 'pll_post_metas_to_export', array( $this, 'post_metas_to_export' ) );
 		add_filter( 'pll_term_metas_to_export', array( $this, 'term_metas_to_export' ) );
+		add_filter( 'pll_post_meta_encodings', array( $this, 'add_post_meta_encodings' ), 20 );
+		add_filter( 'pll_term_meta_encodings', array( $this, 'add_term_meta_encodings' ), 20 );
 
 		foreach ( $this->xmls as $context => $xml ) {
 			$keys = $xml->xpath( 'admin-texts/key' );
@@ -350,6 +367,34 @@ class PLL_WPML_Config {
 		}
 
 		return $keys;
+	}
+
+	/**
+	 * Specifies the encoding for post metas.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string[] $metas An array containing meta names as array keys, and their encoding as array values.
+	 * @return string[]
+	 *
+	 * @phpstan-param array<non-falsy-string, non-falsy-string> $metas
+	 */
+	public function add_post_meta_encodings( $metas ) {
+		return $this->add_metas_encodings( (array) $metas, 'custom-fields/custom-field' );
+	}
+
+	/**
+	 * Specifies the encoding for term metas.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string[] $metas An array containing meta names as array keys, and their encoding as array values.
+	 * @return string[]
+	 *
+	 * @phpstan-param array<non-falsy-string, non-falsy-string> $metas
+	 */
+	public function add_term_meta_encodings( $metas ) {
+		return $this->add_metas_encodings( (array) $metas, 'custom-term-fields/custom-term-field' );
 	}
 
 	/**
@@ -848,5 +893,78 @@ class PLL_WPML_Config {
 		}
 
 		return $path;
+	}
+
+	/**
+	 * Adds encoding of metas.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string[] $metas The list of encodings for each metas. Meta names are array keys, encodings are array values.
+	 * @param string   $xpath Xpath to the meta fields in the xml files.
+	 * @return string[]
+	 *
+	 * @phpstan-param array<non-falsy-string, non-falsy-string> $metas
+	 * @phpstan-param non-falsy-string $xpath
+	 */
+	private function add_metas_encodings( array $metas, string $xpath ): array {
+		$parsed_metas = $this->parse_xml_metas( $xpath );
+
+		foreach ( $parsed_metas as $parsed_meta ) {
+			if ( ! empty( $parsed_meta['encoding'] ) ) {
+				$metas[ $parsed_meta['name'] ] = $parsed_meta['encoding'];
+			}
+		}
+
+		return $metas;
+	}
+
+
+	/**
+	 * Parses all xml files for metas.
+	 * Results are cached for each `$xpath`.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string $xpath Xpath to the meta fields in the xml files.
+	 * @return array
+	 *
+	 * @phpstan-param non-falsy-string $xpath
+	 * @phpstan-return list<ParsedMeta>
+	 */
+	private function parse_xml_metas( string $xpath ): array {
+		if ( isset( $this->parsed_metas[ $xpath ] ) ) {
+			return $this->parsed_metas[ $xpath ];
+		}
+
+		$this->parsed_metas[ $xpath ] = array();
+
+		foreach ( $this->xmls as $xml ) {
+			$cfs = $xml->xpath( $xpath );
+
+			if ( ! is_array( $cfs ) ) {
+				continue;
+			}
+
+			foreach ( $cfs as $cf ) {
+				$name = (string) $cf;
+
+				if ( empty( $name ) ) {
+					continue;
+				}
+
+				$data = array(
+					'name'     => $name,
+					'action'   => $this->get_field_attribute( $cf, 'action' ),
+					'encoding' => $this->get_field_attribute( $cf, 'encoding' ),
+				);
+
+				$data['encoding'] = 'json' === $data['encoding'] ? 'json' : ''; // Only JSON is supported for now.
+
+				$this->parsed_metas[ $xpath ][] = $data;
+			}
+		}
+
+		return $this->parsed_metas[ $xpath ];
 	}
 }
