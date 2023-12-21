@@ -88,8 +88,8 @@ trait PLL_UnitTestCase_Trait {
 		self::filter_doing_it_wrong_trigger_error();
 
 		/*
-		 * Even though `$factory` should always be an instance of `PLL_UnitTest_Factory`,
-		 * it allows us to safely type hint `self::pllSetUpBeforeClass()`.
+		 * Ensure `$factory` is an instance of `PLL_UnitTest_Factory` otherwise testcases directly
+		 * extending WordPress ones intead of our `WP_UnitTestCase_Polyfill` would get a fatal error.
 		 */
 		if ( $factory instanceof PLL_UnitTest_Factory ) {
 			static::pllSetUpBeforeClass( $factory );
@@ -180,6 +180,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	public static function delete_all_languages() {
+		self::$model->options['default_lang'] = ''; // Force a dummy value to avoid warnings.
 		$languages = self::$model->get_languages_list();
 
 		if ( ! is_array( $languages ) ) {

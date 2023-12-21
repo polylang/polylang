@@ -9,9 +9,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
 		parent::pllSetUpBeforeClass( $factory );
 
-		$factory->language->create( array( 'locale' => 'en_US' ) );
-		$factory->language->create( array( 'locale' => 'fr_FR' ) );
-		self::$model->options['default_lang'] = 'en'; // Otherwise static model isn't aware of the created languages...
+		$factory->language->create_many( 2 );
 	}
 
 	public function set_up() {
@@ -170,7 +168,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		register_taxonomy( 'test-tax', 'post' ); // Not translatable by default.
 
 		// Filter the language to try to reproduce an error.
-		$fr_lang = self::$model->get_language( 'fr' );
+		$fr_lang = $this->pll_admin->model->get_language( 'fr' );
 		add_filter(
 			'pll_inserted_term_language',
 			function ( $found_language ) use ( $fr_lang ) {

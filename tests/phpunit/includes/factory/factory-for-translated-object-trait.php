@@ -27,11 +27,10 @@ trait Factory_For_Translated_Object_Trait {
 		return $object_id;
 	}
 
-	public function create_translated( array $first, array $second, array $others = array() ) {
-		$others       = array_merge( array( $first ), array( $second ), $others );
+	public function create_translated( array ...$objects ) {
 		$translations = array();
 
-		foreach ( $others as $object ) {
+		foreach ( $objects as $object ) {
 			if ( empty( $object['lang'] ) ) {
 				throw new InvalidArgumentException( 'A language is required for all translated objects.' );
 			}
@@ -42,8 +41,8 @@ trait Factory_For_Translated_Object_Trait {
 		return $this->translatable_object->save_translations( reset( $translations ), $translations );
 	}
 
-	public function create_translated_and_get( array $first, array $second, array $others = array() ) {
-		$translations = $this->create_translated( $first, $second, $others );
+	public function create_translated_and_get( array ...$objects ) {
+		$translations = $this->create_translated( ...$objects );
 
 		return array_map(
 			array( $this, 'get_object_by_id' ),
