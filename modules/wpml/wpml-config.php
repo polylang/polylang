@@ -190,34 +190,18 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Adds custom fields to the list of metas to copy when creating a new translation.
+	 * Adds post metas to the list of metas to copy when creating a new translation.
 	 *
 	 * @since 1.0
 	 *
-	 * @param string[] $metas The list of custom fields to copy or synchronize.
+	 * @param string[] $metas The list of post metas to copy or synchronize.
 	 * @param bool     $sync  True for sync, false for copy.
-	 * @return string[] The list of custom fields to copy or synchronize.
+	 * @return string[] The list of post metas to copy or synchronize.
+	 *
+	 * @phpstan-param array<non-falsy-string> $metas
 	 */
 	public function copy_post_metas( $metas, $sync ) {
-		foreach ( $this->xmls as $xml ) {
-			$cfs = $xml->xpath( 'custom-fields/custom-field' );
-
-			if ( ! is_array( $cfs ) ) {
-				continue;
-			}
-
-			foreach ( $cfs as $cf ) {
-				$action = $this->get_field_attribute( $cf, 'action' );
-
-				if ( 'copy' === $action || ( ! $sync && in_array( $action, array( 'translate', 'copy-once' ), true ) ) ) {
-					$metas[] = (string) $cf;
-				} else {
-					$metas = array_diff( $metas, array( (string) $cf ) );
-				}
-			}
-		}
-
-		return $metas;
+		return $this->filter_metas_to_copy( (array) $metas, 'custom-fields/custom-field', (bool) $sync );
 	}
 
 	/**
@@ -228,27 +212,11 @@ class PLL_WPML_Config {
 	 * @param string[] $metas The list of term metas to copy or synchronize.
 	 * @param bool     $sync  True for sync, false for copy.
 	 * @return string[] The list of term metas to copy or synchronize.
+	 *
+	 * @phpstan-param array<non-falsy-string> $metas
 	 */
 	public function copy_term_metas( $metas, $sync ) {
-		foreach ( $this->xmls as $xml ) {
-			$cfs = $xml->xpath( 'custom-term-fields/custom-term-field' );
-
-			if ( ! is_array( $cfs ) ) {
-				continue;
-			}
-
-			foreach ( $cfs as $cf ) {
-				$action = $this->get_field_attribute( $cf, 'action' );
-
-				if ( 'copy' === $action || ( ! $sync && in_array( $action, array( 'translate', 'copy-once' ), true ) ) ) {
-					$metas[] = (string) $cf;
-				} else {
-					$metas = array_diff( $metas, array( (string) $cf ) );
-				}
-			}
-		}
-
-		return $metas;
+		return $this->filter_metas_to_copy( (array) $metas, 'custom-term-fields/custom-term-field', (bool) $sync );
 	}
 
 	/**
@@ -272,29 +240,12 @@ class PLL_WPML_Config {
 	 * }
 	 * @return array
 	 *
-	 * @phpstan-param array<string, mixed> $keys
-	 * @phpstan-return array<string, mixed>
+	 * @phpstan-param array<non-falsy-string, mixed> $keys
+	 * @phpstan-return array<non-falsy-string, mixed>
 	 */
 	public function post_metas_to_export( $keys ) {
 		// Add keys that have the `action` attribute set to `translate`.
-		foreach ( $this->xmls as $xml ) {
-			$fields = $xml->xpath( 'custom-fields/custom-field' );
-
-			if ( ! is_array( $fields ) ) {
-				// No custom fields.
-				continue;
-			}
-
-			foreach ( $fields as $field ) {
-				$action = $this->get_field_attribute( $field, 'action' );
-
-				if ( 'translate' !== $action ) {
-					continue;
-				}
-
-				$keys[ (string) $field ] = 1;
-			}
-		}
+		$keys = $this->add_metas_to_export( (array) $keys, 'custom-fields/custom-field' );
 
 		// Deal with sub-field translations.
 		foreach ( $this->xmls as $xml ) {
@@ -342,31 +293,12 @@ class PLL_WPML_Config {
 	 * }
 	 * @return array
 	 *
-	 * @phpstan-param array<string, mixed> $keys
-	 * @phpstan-return array<string, mixed>
+	 * @phpstan-param array<non-falsy-string, mixed> $keys
+	 * @phpstan-return array<non-falsy-string, mixed>
 	 */
 	public function term_metas_to_export( $keys ) {
 		// Add keys that have the `action` attribute set to `translate`.
-		foreach ( $this->xmls as $xml ) {
-			$fields = $xml->xpath( 'custom-term-fields/custom-term-field' );
-
-			if ( ! is_array( $fields ) ) {
-				// No custom fields.
-				continue;
-			}
-
-			foreach ( $fields as $field ) {
-				$action = $this->get_field_attribute( $field, 'action' );
-
-				if ( 'translate' !== $action ) {
-					continue;
-				}
-
-				$keys[ (string) $field ] = 1;
-			}
-		}
-
-		return $keys;
+		return $this->add_metas_to_export( (array) $keys, 'custom-term-fields/custom-term-field' );
 	}
 
 	/**
@@ -896,6 +828,66 @@ class PLL_WPML_Config {
 	}
 
 	/**
+	 * Adds (or removes) meta names to the list of metas to copy or synchronize.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string[] $metas The list of meta names to copy or synchronize.
+	 * @param string   $xpath Xpath to the meta fields in the xml files.
+	 * @param bool     $sync  Either sync is enabled or not.
+	 * @return string[]
+	 *
+	 * @phpstan-param array<non-falsy-string> $metas
+	 * @phpstan-param non-falsy-string $xpath
+	 */
+	private function filter_metas_to_copy( array $metas, string $xpath, bool $sync ): array {
+		$parsed_metas    = $this->parse_xml_metas( $xpath );
+		$metas_to_remove = array();
+
+		foreach ( $parsed_metas as $parsed_meta ) {
+			if ( 'copy' === $parsed_meta['action'] || ( ! $sync && in_array( $parsed_meta['action'], array( 'translate', 'copy-once' ), true ) ) ) {
+				$metas[] = $parsed_meta['name'];
+			} else {
+				$metas_to_remove[] = $parsed_meta['name'];
+			}
+		}
+
+		return array_diff( $metas, $metas_to_remove );
+	}
+
+	/**
+	 * Adds meta keys to export.
+	 *
+	 * @since 3.6
+	 *
+	 * @param array  $metas {
+	 *     An array containing meta keys to translate.
+	 *     Ex: array(
+	 *      'meta_to_translate_1' => 1,
+	 *      'meta_to_translate_2' => 1,
+	 *      'meta_to_translate_3' => array( ... ),
+	 *    )
+	 * }
+	 * @param string $xpath  Xpath to the meta fields in the xml files.
+	 * @return array
+	 *
+	 * @phpstan-param array<non-falsy-string, mixed> $metas
+	 * @phpstan-param non-falsy-string $xpath
+	 * @phpstan-return array<non-falsy-string, mixed>
+	 */
+	private function add_metas_to_export( array $metas, string $xpath ) {
+		$fields = $this->parse_xml_metas( $xpath );
+
+		foreach ( $fields as $field ) {
+			if ( 'translate' === $field['action'] ) {
+				$metas[ $field['name'] ] = 1;
+			}
+		}
+
+		return $metas;
+	}
+
+	/**
 	 * Adds encoding of metas.
 	 *
 	 * @since 3.6
@@ -918,7 +910,6 @@ class PLL_WPML_Config {
 
 		return $metas;
 	}
-
 
 	/**
 	 * Parses all xml files for metas.
