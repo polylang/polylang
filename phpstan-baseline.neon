@@ -481,11 +481,6 @@ parameters:
 			path: include/base.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:init\\(\\)\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
 			message: "#^Cannot access offset 'version' on mixed\\.$#"
 			count: 1
 			path: include/class-polylang.php

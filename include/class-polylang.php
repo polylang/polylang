@@ -21,6 +21,8 @@ if ( is_readable( PLL_LOCAL_DIR . '/pll-config.php' ) ) {
  * Controls the plugin, as well as activation, and deactivation
  *
  * @since 0.1
+ *
+ * @template TPLLClass of PLL_Base
  */
 class Polylang {
 
@@ -162,8 +164,6 @@ class Polylang {
 	 * @return void
 	 */
 	public function init() {
-		global $polylang;
-
 		self::define_constants();
 		$options = get_option( 'polylang' );
 
@@ -224,52 +224,75 @@ class Polylang {
 		$class = apply_filters( 'pll_context', $class );
 
 		if ( ! empty( $class ) ) {
-			$links_model = $model->get_links_model();
-			$polylang    = new $class( $links_model );
-
-			/**
-			 * Fires after Polylang's model init.
-			 * This is the best place to register a custom table (see `PLL_Model`'s constructor).
-			 * /!\ This hook is fired *before* the $polylang object is available.
-			 * /!\ The languages are also not available yet.
-			 *
-			 * @since 3.4
-			 *
-			 * @param PLL_Model $model Polylang model.
-			 */
-			do_action( 'pll_model_init', $model );
-
-			$model->maybe_create_language_terms();
-
-			/**
-			 * Fires after the $polylang object is created and before the API is loaded
-			 *
-			 * @since 2.0
-			 *
-			 * @param object $polylang
-			 */
-			do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
-
-			require_once __DIR__ . '/api.php'; // Loads the API
-
-			// Loads the modules.
-			$load_scripts = glob( POLYLANG_DIR . '/modules/*/load.php', GLOB_NOSORT );
-			if ( is_array( $load_scripts ) ) {
-				foreach ( $load_scripts as $load_script ) {
-					require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-				}
-			}
-
-			$polylang->init();
-
-			/**
-			 * Fires after the $polylang object and the API is loaded
-			 *
-			 * @since 1.7
-			 *
-			 * @param object $polylang
-			 */
-			do_action_ref_array( 'pll_init', array( &$polylang ) );
+			/** @phpstan-var class-string<TPLLClass> $class */
+			$this->init_context( $class, $model );
 		}
+	}
+
+	/**
+	 * Polylang initialization.
+	 * Setups the Polylang Context, loads the modules and init Polylang.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string    $class The class name.
+	 * @param PLL_Model $model Instance of PLL_Model.
+	 * @return PLL_Base
+	 *
+	 * @phpstan-param class-string<TPLLClass> $class
+	 * @phpstan-return TPLLClass
+	 */
+	public function init_context( string $class, PLL_Model $model ): PLL_Base {
+		global $polylang;
+
+		$links_model = $model->get_links_model();
+		$polylang    = new $class( $links_model );
+
+		/**
+		 * Fires after Polylang's model init.
+		 * This is the best place to register a custom table (see `PLL_Model`'s constructor).
+		 * /!\ This hook is fired *before* the $polylang object is available.
+		 * /!\ The languages are also not available yet.
+		 *
+		 * @since 3.4
+		 *
+		 * @param PLL_Model $model Polylang model.
+		 */
+		do_action( 'pll_model_init', $model );
+
+		$model->maybe_create_language_terms();
+
+		/**
+		 * Fires after the $polylang object is created and before the API is loaded
+		 *
+		 * @since 2.0
+		 *
+		 * @param object $polylang
+		 */
+		do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
+
+		// Loads the API
+		require_once POLYLANG_DIR . '/include/api.php';
+
+		// Loads the modules.
+		$load_scripts = glob( POLYLANG_DIR . '/modules/*/load.php', GLOB_NOSORT );
+		if ( is_array( $load_scripts ) ) {
+			foreach ( $load_scripts as $load_script ) {
+				require_once $load_script; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+			}
+		}
+
+		$polylang->init();
+
+		/**
+		 * Fires after the $polylang object and the API is loaded
+		 *
+		 * @since 1.7
+		 *
+		 * @param object $polylang
+		 */
+		do_action_ref_array( 'pll_init', array( &$polylang ) );
+
+		return $polylang;
 	}
 }
