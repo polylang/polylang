@@ -130,13 +130,16 @@ class PLL_Translate_Option {
 	 *
 	 * @param mixed      $values Either a string to translate or a list of strings to translate.
 	 * @param array|bool $key    Array of option keys to translate.
-	 * @return array|string Translated string(s)
+	 * @return array|string Translated string(s).
 	 */
 	protected function translate_string_recursive( $values, $key ) {
 		$children = is_array( $key ) ? $key : array();
 
 		if ( is_array( $values ) || is_object( $values ) ) {
+			/** @var array|Traversable $values */
 			if ( count( $children ) ) {
+				$matcher = new PLL_Format_Util();
+
 				foreach ( $children as $name => $child ) {
 					if ( is_array( $values ) && isset( $values[ $name ] ) ) {
 						$values[ $name ] = $this->translate_string_recursive( $values[ $name ], $child );
@@ -148,11 +151,9 @@ class PLL_Translate_Option {
 						continue;
 					}
 
-					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-
 					foreach ( $values as $n => &$value ) {
 						// The first case could be handled by the next one, but we avoid calls to preg_match here.
-						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
+						if ( $matcher->matches( $n, $name ) ) {
 							$value = $this->translate_string_recursive( $value, $child );
 						}
 					}
@@ -191,17 +192,17 @@ class PLL_Translate_Option {
 			$children = is_array( $key ) ? $key : array();
 
 			if ( count( $children ) ) {
+				$matcher = new PLL_Format_Util();
+
 				foreach ( $children as $name => $child ) {
 					if ( isset( $values[ $name ] ) ) {
 						$this->register_string_recursive( $context, $name, $values[ $name ], $child );
 						continue;
 					}
 
-					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-
 					foreach ( $values as $n => $value ) {
 						// The first case could be handled by the next one, but we avoid calls to preg_match here.
-						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
+						if ( $matcher->matches( $n, $name ) ) {
 							$this->register_string_recursive( $context, $n, $value, $child );
 						}
 					}
@@ -339,7 +340,10 @@ class PLL_Translate_Option {
 		$children = is_array( $key ) ? $key : array();
 
 		if ( is_array( $values ) || is_object( $values ) ) {
+			/** @var array|Traversable $values */
 			if ( count( $children ) ) {
+				$matcher = new PLL_Format_Util();
+
 				foreach ( $children as $name => $child ) {
 					if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $name ], $values[ $name ] ) ) {
 						$values[ $name ] = $this->check_value_recursive( $old_values[ $name ], $values[ $name ], $child, $mo );
@@ -351,11 +355,9 @@ class PLL_Translate_Option {
 						continue;
 					}
 
-					$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-
 					foreach ( $values as $n => $value ) {
 						// The first case could be handled by the next one, but we avoid calls to preg_match here.
-						if ( '*' === $name || ( false !== strpos( $name, '*' ) && preg_match( $pattern, $n ) ) ) {
+						if ( $matcher->matches( $n, $name ) ) {
 							if ( is_array( $values ) && is_array( $old_values ) && isset( $old_values[ $n ] ) ) {
 								$values[ $n ] = $this->check_value_recursive( $old_values[ $n ], $value, $child, $mo );
 							}
