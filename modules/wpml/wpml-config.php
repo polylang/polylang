@@ -931,14 +931,14 @@ class PLL_WPML_Config {
 		$this->parsed_metas[ $xpath ] = array();
 
 		foreach ( $this->xmls as $xml ) {
-			$cfs = $xml->xpath( $xpath );
+			$custom_fields = $xml->xpath( $xpath );
 
-			if ( ! is_array( $cfs ) ) {
+			if ( ! is_array( $custom_fields ) ) {
 				continue;
 			}
 
-			foreach ( $cfs as $cf ) {
-				$name = (string) $cf;
+			foreach ( $custom_fields as $custom_field ) {
+				$name = (string) $custom_field;
 
 				if ( empty( $name ) ) {
 					continue;
@@ -946,8 +946,8 @@ class PLL_WPML_Config {
 
 				$data = array(
 					'name'     => $name,
-					'action'   => $this->get_field_attribute( $cf, 'action' ),
-					'encoding' => $this->get_field_attribute( $cf, 'encoding' ),
+					'action'   => $this->get_field_attribute( $custom_field, 'action' ),
+					'encoding' => $this->get_field_attribute( $custom_field, 'encoding' ),
 				);
 
 				$data['encoding'] = 'json' === $data['encoding'] ? 'json' : ''; // Only JSON is supported for now.
