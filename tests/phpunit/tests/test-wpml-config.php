@@ -108,9 +108,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 	public function test_cf() {
 		wp_set_current_user( 1 ); // To pass current_user_can_synchronize() test.
-		$json_en         = '{"to_translate":"Value 1","not_to_translate":"Value other"}';
-		$json_fr         = '{"to_translate":"Valeur 1","not_to_translate":"Value other"}';
-		$json_fr_unknown = '{"to_translate":"Valeur inconnue","not_to_translate":"Value other"}';
+		$json = '{"to_translate":"Value 1","not_to_translate":"Value other"}';
 
 		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
@@ -121,43 +119,16 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		add_post_meta( $from, 'custom-title', 'title' ); // `translate`
 		add_post_meta( $from, 'bg-color', '#23282d' ); // `copy-once`
 		add_post_meta( $from, 'date-added', 2007 ); // `ignore`
-		add_post_meta( $from, 'a_json_meta', $json_en ); // `translate` + encoding.
+		add_post_meta( $from, 'a_json_meta', $json ); // `translate` + encoding.
 
 		$fr = $to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
-		// Enable translation for the JSON meta.
-		add_filter(
-			'pll_translate_post_meta',
-			function ( $value, $key, $lang ) {
-				if ( 'a_json_meta' !== $key ) {
-					return $value;
-				}
-
-				$value = json_decode( $value, true );
-
-				// Very sophisticated way of translating a string.
-				$trs = array(
-					'fr' => array(
-						'Value 1' => 'Valeur 1',
-						'Value 2' => 'Valeur 2',
-					),
-					'en' => array(
-						'Valeur 1' => 'Value 1',
-						'Valeur 2' => 'Value 2',
-					),
-				);
-
-				if ( isset( $trs[ $lang ][ $value['to_translate'] ] ) ) {
-					$value['to_translate'] = $trs[ $lang ][ $value['to_translate'] ];
-				}
-
-				return wp_json_encode( $value, JSON_PRESERVE_ZERO_FRACTION );
-			},
-			10,
-			3
-		);
+		// Test encodings.
+		$encodings = apply_filters( 'pll_post_meta_encodings', array(), $from, $to );
+		$this->assertIsArray( $encodings );
+		$this->assertSame( array( 'a_json_meta' => 'json' ), $encodings );
 
 		// Copy.
 		$sync = new PLL_Admin_Sync( $pll_admin );
@@ -167,20 +138,20 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'title', get_post_meta( $to, 'custom-title', true ) );
 		$this->assertEquals( '#23282d', get_post_meta( $to, 'bg-color', true ) );
 		$this->assertEmpty( get_post_meta( $to, 'date-added', true ) );
-		$this->assertSame( $json_fr, get_post_meta( $to, 'a_json_meta', true ) );
+		$this->assertSame( $json, get_post_meta( $to, 'a_json_meta', true ) );
 
 		// Sync.
 		update_post_meta( $to, 'quantity', 2 );
 		update_post_meta( $to, 'custom-title', 'titre' );
 		update_post_meta( $to, 'bg-color', '#ffeedd' );
 		update_post_meta( $to, 'date-added', 2008 );
-		update_post_meta( $to, 'a_json_meta', $json_fr_unknown ); // `translate` + encoding.
+		update_post_meta( $to, 'a_json_meta', $json ); // `translate` + encoding.
 
 		$this->assertEquals( 2, get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
 		$this->assertEquals( '#23282d', get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
-		$this->assertSame( $json_en, get_post_meta( $from, 'a_json_meta', true ) );
+		$this->assertSame( $json, get_post_meta( $from, 'a_json_meta', true ) );
 
 		// Remove custom field and sync.
 		delete_post_meta( $to, 'quantity' );
@@ -193,7 +164,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
 		$this->assertEquals( '#23282d', get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
-		$this->assertSame( $json_en, get_post_meta( $from, 'a_json_meta', true ) );
+		$this->assertSame( $json, get_post_meta( $from, 'a_json_meta', true ) );
 	}
 
 	public function test_custom_term_field() {
