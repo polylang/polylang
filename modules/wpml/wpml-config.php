@@ -10,11 +10,13 @@
  *
  * @since 1.0
  *
- * @phpstan-type ParsedMeta array{
- *     name: non-falsy-string,
- *     action: string,
- *     encoding: 'json'|''
- * }
+ * @phpstan-type ParsedMetas array<
+ *     non-falsy-string,
+ *     array{
+ *         action: string,
+ *         encoding: 'json'|''
+ *     }
+ * >
  */
 class PLL_WPML_Config {
 	/**
@@ -59,7 +61,7 @@ class PLL_WPML_Config {
 	 *
 	 * @var array
 	 *
-	 * @phpstan-var array<non-falsy-string, list<ParsedMeta>>
+	 * @phpstan-var array<non-falsy-string, ParsedMetas>
 	 */
 	private $parsed_metas = array();
 
@@ -844,11 +846,11 @@ class PLL_WPML_Config {
 		$parsed_metas    = $this->parse_xml_metas( $xpath );
 		$metas_to_remove = array();
 
-		foreach ( $parsed_metas as $parsed_meta ) {
+		foreach ( $parsed_metas as $name => $parsed_meta ) {
 			if ( 'copy' === $parsed_meta['action'] || ( ! $sync && in_array( $parsed_meta['action'], array( 'translate', 'copy-once' ), true ) ) ) {
-				$metas[] = $parsed_meta['name'];
+				$metas[] = $name;
 			} else {
-				$metas_to_remove[] = $parsed_meta['name'];
+				$metas_to_remove[] = $name;
 			}
 		}
 
@@ -878,9 +880,9 @@ class PLL_WPML_Config {
 	private function add_metas_to_export( array $metas, string $xpath ) {
 		$fields = $this->parse_xml_metas( $xpath );
 
-		foreach ( $fields as $field ) {
+		foreach ( $fields as $name => $field ) {
 			if ( 'translate' === $field['action'] ) {
-				$metas[ $field['name'] ] = 1;
+				$metas[ $name ] = 1;
 			}
 		}
 
@@ -902,9 +904,9 @@ class PLL_WPML_Config {
 	private function add_metas_encodings( array $metas, string $xpath ): array {
 		$parsed_metas = $this->parse_xml_metas( $xpath );
 
-		foreach ( $parsed_metas as $parsed_meta ) {
+		foreach ( $parsed_metas as $name => $parsed_meta ) {
 			if ( ! empty( $parsed_meta['encoding'] ) ) {
-				$metas[ $parsed_meta['name'] ] = $parsed_meta['encoding'];
+				$metas[ $name ] = $parsed_meta['encoding'];
 			}
 		}
 
@@ -921,7 +923,7 @@ class PLL_WPML_Config {
 	 * @return array
 	 *
 	 * @phpstan-param non-falsy-string $xpath
-	 * @phpstan-return list<ParsedMeta>
+	 * @phpstan-return ParsedMetas
 	 */
 	private function parse_xml_metas( string $xpath ): array {
 		if ( isset( $this->parsed_metas[ $xpath ] ) ) {
@@ -945,14 +947,13 @@ class PLL_WPML_Config {
 				}
 
 				$data = array(
-					'name'     => $name,
 					'action'   => $this->get_field_attribute( $custom_field, 'action' ),
 					'encoding' => $this->get_field_attribute( $custom_field, 'encoding' ),
 				);
 
 				$data['encoding'] = 'json' === $data['encoding'] ? 'json' : ''; // Only JSON is supported for now.
 
-				$this->parsed_metas[ $xpath ][] = $data;
+				$this->parsed_metas[ $xpath ][ $name ] = $data;
 			}
 		}
 
