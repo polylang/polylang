@@ -7,6 +7,8 @@
  * An extremely simple non persistent cache system.
  *
  * @since 1.7
+ *
+ * @template TCacheData
  */
 class PLL_Cache {
 	/**
@@ -20,6 +22,8 @@ class PLL_Cache {
 	 * The cache container.
 	 *
 	 * @var array
+	 *
+	 * @phpstan-var array<int, array<non-empty-string, TCacheData>>
 	 */
 	protected $cache = array();
 
@@ -46,36 +50,42 @@ class PLL_Cache {
 	}
 
 	/**
-	 * Add a value in cache.
+	 * Adds a value in cache.
 	 *
 	 * @since 1.7
 	 *
 	 * @param string $key  Cache key.
 	 * @param mixed  $data The value to add to the cache.
-	 * @return void
+	 * @return mixed
+	 *
+	 * @phpstan-param non-empty-string $key
+	 * @phpstan-param TCacheData $data
 	 */
 	public function set( $key, $data ) {
 		$this->cache[ $this->blog_id ][ $key ] = $data;
 	}
 
 	/**
-	 * Get value from cache.
+	 * Returns value from cache.
 	 *
 	 * @since 1.7
 	 *
 	 * @param string $key Cache key.
 	 * @return mixed
+	 *
+	 * @phpstan-param non-empty-string $key
+	 * @phpstan-return TCacheData|false
 	 */
 	public function get( $key ) {
 		return isset( $this->cache[ $this->blog_id ][ $key ] ) ? $this->cache[ $this->blog_id ][ $key ] : false;
 	}
 
 	/**
-	 * Clean the cache (for this blog only).
+	 * Cleans the cache (for this blog only).
 	 *
 	 * @since 1.7
 	 *
-	 * @param string $key Cache key.
+	 * @param string $key Optional. Cache key. Default is an empty string.
 	 * @return void
 	 */
 	public function clean( $key = '' ) {
