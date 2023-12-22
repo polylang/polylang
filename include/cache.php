@@ -88,11 +88,12 @@ class PLL_Cache {
 	 *
 	 * @since 1.7
 	 *
-	 * @param string $key Optional. Cache key. Default is an empty string.
+	 * @param string $key Optional. Cache key. An empty string to clean the whole cache for the current blog.
+	 *                    Default is an empty string.
 	 * @return void
 	 */
 	public function clean( $key = '' ) {
-		if ( empty( $key ) ) {
+		if ( '' === $key ) {
 			unset( $this->cache[ $this->blog_id ] );
 		} else {
 			unset( $this->cache[ $this->blog_id ][ $key ] );
