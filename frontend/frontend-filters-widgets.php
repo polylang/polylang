@@ -63,9 +63,7 @@ class PLL_Frontend_Filters_Widgets {
 
 		$sidebars_widgets = $this->filter_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets );
 
-		$this->cache->set( "sidebars_widgets_{$cache_key}", $sidebars_widgets );
-
-		return $sidebars_widgets;
+		return $this->cache->set( "sidebars_widgets_{$cache_key}", $sidebars_widgets );
 	}
 
 	/**
