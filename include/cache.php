@@ -53,6 +53,7 @@ class PLL_Cache {
 	 * Adds a value in cache.
 	 *
 	 * @since 1.7
+	 * @since 3.6 Returns the cached value.
 	 *
 	 * @param string $key  Cache key.
 	 * @param mixed  $data The value to add to the cache.
@@ -60,9 +61,11 @@ class PLL_Cache {
 	 *
 	 * @phpstan-param non-empty-string $key
 	 * @phpstan-param TCacheData $data
+	 * @phpstan-return TCacheData
 	 */
 	public function set( $key, $data ) {
 		$this->cache[ $this->blog_id ][ $key ] = $data;
+		return $data;
 	}
 
 	/**
