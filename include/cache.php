@@ -63,7 +63,7 @@ class PLL_Cache {
 	 * @phpstan-param TCacheData $data
 	 * @phpstan-return TCacheData
 	 */
-	public function set( $key, $data ) {
+	public function set( string $key, $data ) {
 		$this->cache[ $this->blog_id ][ $key ] = $data;
 		return $data;
 	}
@@ -79,7 +79,7 @@ class PLL_Cache {
 	 * @phpstan-param non-empty-string $key
 	 * @phpstan-return TCacheData|false
 	 */
-	public function get( $key ) {
+	public function get( string $key ) {
 		return isset( $this->cache[ $this->blog_id ][ $key ] ) ? $this->cache[ $this->blog_id ][ $key ] : false;
 	}
 
@@ -92,7 +92,7 @@ class PLL_Cache {
 	 *                    Default is an empty string.
 	 * @return void
 	 */
-	public function clean( $key = '' ) {
+	public function clean( string $key = '' ) {
 		if ( '' === $key ) {
 			unset( $this->cache[ $this->blog_id ] );
 		} else {
