@@ -12,7 +12,7 @@ class PLL_Frontend_Filters_Widgets {
 	/**
 	 * Internal non persistent cache object.
 	 *
-	 * @var PLL_Cache
+	 * @var PLL_Cache<array>
 	 */
 	public $cache;
 

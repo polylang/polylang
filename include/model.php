@@ -12,7 +12,7 @@ class PLL_Model {
 	/**
 	 * Internal non persistent cache object.
 	 *
-	 * @var PLL_Cache
+	 * @var PLL_Cache<mixed>
 	 */
 	public $cache;
 
