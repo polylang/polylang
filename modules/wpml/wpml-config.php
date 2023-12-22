@@ -123,14 +123,14 @@ class PLL_WPML_Config {
 		add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
 		add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
 		add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
-		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
-		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
 		// Export.
 		add_filter( 'pll_post_metas_to_export', array( $this, 'post_metas_to_export' ) );
 		add_filter( 'pll_term_metas_to_export', array( $this, 'term_metas_to_export' ) );
 		add_filter( 'pll_post_meta_encodings', array( $this, 'add_post_meta_encodings' ), 20 );
 		add_filter( 'pll_term_meta_encodings', array( $this, 'add_term_meta_encodings' ), 20 );
+		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
+		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
 		foreach ( $this->xmls as $context => $xml ) {
 			$keys = $xml->xpath( 'admin-texts/key' );
