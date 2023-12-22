@@ -134,6 +134,8 @@ class PLL_WPML_Config {
 		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
 		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
+		$matcher = new PLL_Format_Util();
+
 		foreach ( $this->xmls as $context => $xml ) {
 			$keys = $xml->xpath( 'admin-texts/key' );
 
@@ -144,19 +146,14 @@ class PLL_WPML_Config {
 			foreach ( $keys as $key ) {
 				$name = $this->get_field_attribute( $key, 'name' );
 
-				if ( false === strpos( $name, '*' ) ) {
+				if ( ! $matcher->is_format( $name ) ) {
 					$this->register_or_translate_option( $context, $name, $key );
 					continue;
 				}
 
-				$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
-				$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
+				$names = $matcher->filter_list( wp_load_alloptions(), $name );
 
-				if ( ! is_array( $names ) ) {
-					continue;
-				}
-
-				foreach ( $names as $_name ) {
+				foreach ( $names as $_name => $_val ) {
 					$this->register_or_translate_option( $context, $_name, $key );
 				}
 			}
