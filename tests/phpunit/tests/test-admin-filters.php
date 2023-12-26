@@ -3,14 +3,22 @@
 class Admin_Filters_Test extends PLL_UnitTestCase {
 
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @var PLL_Language[]
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	protected static $languages;
 
-		self::create_language( 'en_US' );
-		self::create_language( 'de_DE_formal' );
-		self::create_language( 'ar' );
+	/**
+	 * @param PLL_UnitTest_Factory $factory
+	 * @return void
+	 */
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
+
+		self::$languages = array(
+			'en' => $factory->language->create_and_get( array( 'locale' => 'en_US' ) ),
+			'de' => $factory->language->create_and_get( array( 'locale' => 'de_DE_formal' ) ),
+			'ar' => $factory->language->create_and_get( array( 'locale' => 'ar' ) ),
+		);
 	}
 
 	public function test_sanitize_title_for_current_language_without_character_conversion() {
@@ -87,18 +95,23 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		$this->assertEquals( ' pll-dir-rtl pll-lang-ar', apply_filters( 'admin_body_class', '' ) );
 	}
 
-
 	public function test_privacy_page_post_states() {
 		new PLL_Context_Admin();
-		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		self::$model->post->set_language( $en, 'en' );
+
+		list( $en, $de ) = array_values(
+			self::factory()->post->create_translated(
+				array(
+					'post_type' => 'page',
+					'lang'      => 'en',
+				),
+				array(
+					'post_type' => 'page',
+					'lang'      => 'de',
+				)
+			)
+		);
 
 		update_option( 'wp_page_for_privacy_policy', $en );
-
-		$de = self::factory()->post->create( array( 'post_type' => 'page' ) );
-		self::$model->post->set_language( $de, 'de' );
-
-		self::$model->post->save_translations( $en, compact( 'en', 'de' ) );
 
 		ob_start();
 		_post_states( get_post( $en ) );
@@ -113,7 +126,7 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 		add_filter(
 			'pll_admin_current_language',
 			function () use ( $slug ) {
-				return self::$model->get_language( $slug );
+				return self::$languages[ $slug ];
 			}
 		);
 	}
