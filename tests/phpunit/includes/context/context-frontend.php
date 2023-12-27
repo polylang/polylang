@@ -37,5 +37,6 @@ class PLL_Context_Frontend extends PLL_Context_Base {
 
 		$this->do_pll_actions( 'parse_request' );
 		$this->do_pll_actions( 'wp' );
+		$this->do_pll_actions( 'template_redirect' );
 	}
 }
