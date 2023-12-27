@@ -3,6 +3,11 @@
 class Slugs_Test extends PLL_UnitTestCase {
 
 	/**
+	 * @var PLL_Context_Admin
+	 */
+	protected $pll_context;
+
+	/**
 	 * @param PLL_UnitTest_Factory $factory
 	 * @return void
 	 */
@@ -15,13 +20,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$options                       = PLL_Install::get_default_options();
-		$options['default_lang']       = 'en'; // Default language is the first one created, see self::wpSetUpBeforeClass().
-		$model                         = new PLL_Admin_Model( $options );
-		$links_model                   = new PLL_Links_Default( $model );
-		$this->pll_admin               = new PLL_Admin( $links_model );
-		$this->pll_admin->term         = new PLL_CRUD_Terms( $this->pll_admin ); // Activates our generic term filters.
-		$this->pll_admin->filters_term = new PLL_Admin_Filters_Term( $this->pll_admin );  // Activates our filters for admin.
+		$this->pll_context = new PLL_Context_Admin();
 	}
 
 	public function test_term_slugs() {
@@ -168,7 +167,7 @@ class Slugs_Test extends PLL_UnitTestCase {
 		register_taxonomy( 'test-tax', 'post' ); // Not translatable by default.
 
 		// Filter the language to try to reproduce an error.
-		$fr_lang = $this->pll_admin->model->get_language( 'fr' );
+		$fr_lang = $this->pll_context->get()->model->get_language( 'fr' );
 		add_filter(
 			'pll_inserted_term_language',
 			function ( $found_language ) use ( $fr_lang ) {
