@@ -3,53 +3,35 @@
 class Hreflang_Test extends PLL_UnitTestCase {
 
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @param PLL_UnitTest_Factory $factory
+	 * @return void
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_GB', array( 'slug' => 'uk' ) );
-		self::create_language( 'en_US', array( 'slug' => 'us' ) );
-		self::create_language( 'fr_FR' );
-
-		require_once POLYLANG_DIR . '/include/api.php';
-
-		self::$model->options['hide_default'] = 0;
+		$factory->language->create_and_get( array( 'locale' => 'en_US', 'slug' => 'us' ) );
+		$factory->language->create_and_get( array( 'locale' => 'en_GB', 'slug' => 'uk' ) );
+		$factory->language->create_and_get( array( 'locale' => 'fr_FR' ) );
 	}
 
 	public function set_up() {
 		parent::set_up();
 
-		$links_model = self::$model->get_links_model();
-		$this->frontend = new PLL_Frontend( $links_model );
-		$this->frontend->init();
+		$options = array( 'hide_default' => 0 ); // To get a 'x-default' on the homepage.
+		add_filter( 'pll_redirect_home', '__return_false' ); // To avoid a redirect due to the above option during the context setup.
 
-		// add links filter and de-activate the cache
-		$this->frontend->filters_links = new PLL_Frontend_Filters_Links( $this->frontend );
-
-		$this->frontend->links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		$this->frontend->links->cache->method( 'get' )->willReturn( false );
-
-		$this->frontend->filters_links->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		$this->frontend->filters_links->cache->method( 'get' )->willReturn( false );
-
-		$GLOBALS['polylang'] = &$this->frontend;
+		$this->frontend = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
 	}
 
 	public function test_hreflang() {
-		$uk = self::factory()->post->create();
-		self::$model->post->set_language( $uk, 'uk' );
+		$posts = self::factory()->post->create_translated(
+			array( 'lang' => 'us' ),
+			array( 'lang' => 'uk' ),
+			array( 'lang' => 'fr' )
+		);
 
-		$us = self::factory()->post->create();
-		self::$model->post->set_language( $us, 'us' );
-
-		$fr = self::factory()->post->create();
-		self::$model->post->set_language( $fr, 'fr' );
-
-		self::$model->post->save_translations( $fr, compact( 'uk', 'us', 'fr' ) );
-
-		// posts
-		$this->go_to( get_permalink( $fr ) );
+		// A Post.
+		$this->go_to( get_permalink( $posts['fr'] ) );
 
 		ob_start();
 		$this->frontend->filters_links->wp_head();
@@ -60,7 +42,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$this->assertNotFalse( strpos( $out, 'hreflang="fr"' ) );
 		$this->assertFalse( strpos( $out, 'x-default' ) );
 
-		// home page with x-default
+		// The home page with x-default.
 		$this->go_to( home_url( '?lang=fr' ) );
 
 		ob_start();
@@ -74,16 +56,13 @@ class Hreflang_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_paginated_post() {
-		$uk = self::factory()->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
-		self::$model->post->set_language( $uk, 'uk' );
+		$posts = self::factory()->post->create_translated(
+			array( 'post_content' => 'en1<!--nextpage-->en2', 'lang' => 'us' ),
+			array( 'post_content' => 'en1<!--nextpage-->en2', 'lang' => 'uk' )
+		);
 
-		$us = self::factory()->post->create( array( 'post_content' => 'en1<!--nextpage-->en2' ) );
-		self::$model->post->set_language( $us, 'us' );
-
-		self::$model->post->save_translations( $uk, compact( 'uk', 'us' ) );
-
-		// Page 1
-		$this->go_to( get_permalink( $uk ) );
+		// Page 1.
+		$this->go_to( get_permalink( $posts['uk'] ) );
 
 		ob_start();
 		$this->frontend->filters_links->wp_head();
@@ -91,8 +70,8 @@ class Hreflang_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $out, 'hreflang="en-GB"' ) );
 
-		// Page 2
-		$this->go_to( add_query_arg( 'page', 2, get_permalink( $uk ) ) );
+		// Page 2.
+		$this->go_to( add_query_arg( 'page', 2, get_permalink( $posts['uk'] ) ) );
 
 		ob_start();
 		$this->frontend->filters_links->wp_head();
@@ -102,18 +81,16 @@ class Hreflang_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_paged_archive() {
-		update_option( 'posts_per_page', 2 ); // to avoid creating too much posts
-
-		$posts_us = self::factory()->post->create_many( 3 );
-		$posts_uk = self::factory()->post->create_many( 3 );
+		update_option( 'posts_per_page', 2 ); // to avoid creating too many posts.
 
 		for ( $i = 0; $i < 3; $i++ ) {
-			self::$model->post->set_language( $us = $posts_us[ $i ], 'us' );
-			self::$model->post->set_language( $uk = $posts_uk[ $i ], 'uk' );
-			self::$model->post->save_translations( $uk, compact( 'uk', 'us' ) );
+			self::factory()->post->create_translated(
+				array( 'lang' => 'us' ),
+				array( 'lang' => 'uk' )
+			);
 		}
 
-		// Page 1
+		// Page 1.
 		$this->go_to( home_url( '?lang=us' ) );
 
 		ob_start();
@@ -122,7 +99,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 
 		$this->assertNotFalse( strpos( $out, 'hreflang="en-GB"' ) );
 
-		// Page 2
+		// Page 2.
 		$this->go_to( home_url( '?lang=us&paged=2' ) );
 
 		ob_start();
