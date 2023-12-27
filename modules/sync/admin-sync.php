@@ -47,7 +47,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Copy menu order, comment, ping status and optionally the date when creating a new tanslation
+	 * Copy menu order, comment, ping status and optionally the date when creating a new translation
 	 *
 	 * @since 2.5
 	 *
@@ -127,7 +127,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		$postarr = parent::get_fields_to_sync( $post );
 
-		// For new drafts, save the date now otherwise it is overriden by WP. Thanks to JoryHogeveen. See #32.
+		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
 		if ( in_array( 'post_date', $this->options['sync'] ) && isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] ) {
 			check_admin_referer( 'new-post-translation' );
 

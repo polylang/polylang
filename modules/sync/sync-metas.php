@@ -142,8 +142,8 @@ abstract class PLL_Sync_Metas {
 	 *
 	 * @since 2.3
 	 *
-	 * @param int    $from Id of the post from which we copy informations.
-	 * @param int    $to   Id of the post to which we paste informations.
+	 * @param int    $from Id of the post from which we copy information.
+	 * @param int    $to   Id of the post to which we paste information.
 	 * @param string $lang Language slug.
 	 * @param bool   $sync True if it is synchronization, false if it is a copy.
 	 * @return string[] List of meta keys.
@@ -157,8 +157,8 @@ abstract class PLL_Sync_Metas {
 		 *
 		 * @param string[] $keys List of custom fields names.
 		 * @param bool     $sync True if it is synchronization, false if it is a copy.
-		 * @param int      $from Id of the post from which we copy informations.
-		 * @param int      $to   Id of the post to which we paste informations.
+		 * @param int      $from Id of the post from which we copy information.
+		 * @param int      $to   Id of the post to which we paste information.
 		 * @param string   $lang Language slug.
 		 */
 		return array_unique( apply_filters( "pll_copy_{$this->meta_type}_metas", array(), $sync, $from, $to, $lang ) );

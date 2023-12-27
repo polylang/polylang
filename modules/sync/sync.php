@@ -168,7 +168,7 @@ class PLL_Sync {
 					$tr_arr = $postarr;
 					unset( $tr_arr['post_parent'] );
 
-					// Do not udpate the translation parent if the user set a parent with no translation.
+					// Do not update the translation parent if the user set a parent with no translation.
 					if ( isset( $postarr['post_parent'] ) ) {
 						$post_parent = $postarr['post_parent'] ? $this->model->post->get_translation( $postarr['post_parent'], $lang ) : 0;
 						if ( ! ( $postarr['post_parent'] && ! $post_parent ) ) {

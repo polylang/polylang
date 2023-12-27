@@ -21,7 +21,7 @@ class Languages_List_Test extends PLL_UnitTestCase {
 		wp_insert_term( 'Casper', 'term_language', array( 'slug' => 'falang_casp' ) );
 
 		$this->pll_model->clean_languages_cache();
-		$list = @$this->pll_model->get_languages_list(); // Supress notices to let the assertion do its job.
+		$list = @$this->pll_model->get_languages_list(); // Suppress notices to let the assertion do its job.
 
 		$this->assertCount( 1, $list, 'There should be only one language.' );
 

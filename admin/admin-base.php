@@ -328,7 +328,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 									} else {
 										/*
 										 * In some cases data could be a JSON string like in third party plugins.
-										 * So we need not to break their process by adding polylang parameters as valid JSON datas.
+										 * So we need not to break their process by adding polylang parameters as valid JSON data.
 										 */
 										try {
 											options.data = JSON.stringify( Object.assign( JSON.parse( options.data ), <?php echo $arr; // phpcs:ignore WordPress.Security.EscapeOutput ?> ) );

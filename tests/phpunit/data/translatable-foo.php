@@ -12,7 +12,7 @@ class PLLTest_Translatable_Foo extends PLL_Translatable_Object {
 	protected $cache_type = 'foos';
 
 	/**
-	 * Returns database-related informations that can be used in some of this class methods.
+	 * Returns database-related information that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
 	 * @since 3.4.3

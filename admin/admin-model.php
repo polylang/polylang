@@ -268,7 +268,7 @@ class PLL_Admin_Model extends PLL_Model {
 		 *   @type string $no_default_cat Optional, if set, no default category has been created for this language.
 		 *   @type string $flag           Optional, country code, @see flags.php.
 		 * }
-		 * @param PLL_Language $lang Previous value of the language beeing edited.
+		 * @param PLL_Language $lang Previous value of the language being edited.
 		 */
 		do_action( 'pll_update_language', $args, $lang );
 
@@ -314,7 +314,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		/**
 		 * Allow to add data to store for a language.
-		 * `$locale`, `$rtl`, and `$flag_code` cannot be overwriten.
+		 * `$locale`, `$rtl`, and `$flag_code` cannot be overwritten.
 		 *
 		 * @since 3.4
 		 *
@@ -345,7 +345,7 @@ class PLL_Admin_Model extends PLL_Model {
 		// Don't allow to overwrite `$locale`, `$rtl`, and `$flag_code`.
 		$new_data = array_merge( $old_data, $add_data, $new_data );
 
-		/** @var non-empty-string $serialized maybe_serialize() cannot return anything else than a string when feeded by an array. */
+		/** @var non-empty-string $serialized maybe_serialize() cannot return anything else than a string when fed by an array. */
 		$serialized = maybe_serialize( $new_data );
 		return $serialized;
 	}

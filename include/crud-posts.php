@@ -227,7 +227,7 @@ class PLL_CRUD_Posts {
 
 	/**
 	 * Called when a post, page or media is deleted
-	 * Don't delete translations if this is a post revision thanks to AndyDeGroo who catched this bug
+	 * Don't delete translations if this is a post revision thanks to AndyDeGroo who caught this bug
 	 * http://wordpress.org/support/topic/plugin-polylang-quick-edit-still-breaks-translation-linking-of-pages-in-072
 	 *
 	 * @since 0.1

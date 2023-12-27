@@ -84,7 +84,7 @@ class Search_Form_Test extends PLL_UnitTestCase {
 	/**
 	 * Issue #829
 	 */
-	public function test_get_search_form_with_wrong_inital_url() {
+	public function test_get_search_form_with_wrong_initial_url() {
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
 		$form = '<form role="search" method="get" class="search-form" action="http://example.org/fr/accueil/">
 				<label>

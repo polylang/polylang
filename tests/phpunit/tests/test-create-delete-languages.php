@@ -367,7 +367,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * Simulate cleaning the languages cache and building the langugages list
+	 * Simulate cleaning the languages cache and building the languages list
 	 * during the language deletion process by hooking to pre_delete_term.
 	 *
 	 * @return void

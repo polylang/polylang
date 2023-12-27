@@ -4,7 +4,7 @@
 
 import {
 	initializeLanguageOldValue,
-	initializeConfimationModal
+	initializeConfirmationModal
 } from './lib/confirmation-modal';
 
 import {
@@ -59,7 +59,7 @@ jQuery(
 					);
 
 					var tagCloud = $( '#tagcloud-' + tax );
-					// add an if else condition to allow modifying the tags outputed when switching the language
+					// add an if else condition to allow modifying the tags outputted when switching the language
 					var v = tagCloud.css( 'display' );
 					if ( v ) {
 						// See the comment above when r variable is created.
@@ -109,7 +109,7 @@ jQuery(
 			'change',
 			function ( event ) {
 				// Initialize the confirmation dialog box.
-				const confirmationModal = initializeConfimationModal();
+				const confirmationModal = initializeConfirmationModal();
 				const { dialogContainer: dialog } = confirmationModal;
 				let { dialogResult } = confirmationModal;
 				// The selected option in the dropdown list.
@@ -272,7 +272,7 @@ var media = _.extend(
 					 * First reset the { @see wp.media.model.Attachments } collection.
 					 * Then, if it is mirroring a { @see wp.media.model.Query } collection,
 					 * refresh this one too, so it will fetch new data from the server,
-					 * and then the wp.media.model.Attachments collection will syncrhonize with the new data.
+					 * and then the wp.media.model.Attachments collection will synchronize with the new data.
 					 */
 					attachmentsCollection.reset();
 					if (attachmentsCollection.mirroring) {

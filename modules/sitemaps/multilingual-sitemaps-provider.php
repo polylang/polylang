@@ -109,7 +109,7 @@ class PLL_Multilingual_Sitemaps_Provider extends WP_Sitemaps_Provider {
 	 * @since 2.8
 	 *
 	 * @param string $object_subtype_name Object subtype name if any.
-	 * @param string $lang                Optionnal language name.
+	 * @param string $lang                Optional language name.
 	 * @return array
 	 */
 	protected function get_sitemap_data( $object_subtype_name, $lang = '' ) {

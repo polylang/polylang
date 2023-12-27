@@ -314,7 +314,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
-	 * Returns database-related informations that can be used in some of this class methods.
+	 * Returns database-related information that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
 	 * @see PLL_Translatable_Object::join_clause()

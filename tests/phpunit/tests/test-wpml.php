@@ -354,7 +354,7 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_strings_translations() {
-		add_action( 'pll_get_strings', array( PLL_WPML_Compat::instance(), 'get_strings' ) ); // Add filter as it is removed at the end of fisrt test (singleton!)
+		add_action( 'pll_get_strings', array( PLL_WPML_Compat::instance(), 'get_strings' ) ); // Add filter as it is removed at the end of first test (singleton!)
 
 		// Register
 		do_action( 'wpml_register_single_string', 'wpml_string_context', 'wpml_string_name', 'wpml_string_test' );
@@ -514,7 +514,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$en = self::factory()->term->create( array( 'name' => 'Sample tag' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = self::factory()->term->create( array( 'name' => 'Etiquette exemple' ) );
+		$fr = self::factory()->term->create( array( 'name' => 'Etiquette example' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
@@ -538,7 +538,7 @@ class WPML_Test extends PLL_UnitTestCase {
 				'source_language_code' => 'en',
 				'element_type'         => 'tax_post_tag',
 				'original'             => '0',
-				'name'                 => 'Etiquette exemple',
+				'name'                 => 'Etiquette example',
 				'term_id'              => "$fr",
 				'instances'            => '0',
 			),

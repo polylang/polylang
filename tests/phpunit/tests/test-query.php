@@ -209,7 +209,7 @@ class Query_Test extends PLL_UnitTestCase {
 
 		$this->go_to( home_url( '/fr/essai/' ) );
 
-		// administator can read everything
+		// administrator can read everything
 		wp_set_current_user( 1 );
 		$this->assertEquals( home_url( '/test/' ), $this->frontend->links->get_translation_url( self::$model->get_language( 'en' ) ) );
 

@@ -26,7 +26,7 @@ class PLL_WPML_API {
 	 */
 	public function __construct() {
 		/*
-		 * Site Wide Language informations.
+		 * Site Wide Language information.
 		 */
 		add_filter( 'wpml_active_languages', array( $this, 'wpml_active_languages' ), 10, 2 );
 		add_filter( 'wpml_display_language_names', array( $this, 'wpml_display_language_names' ), 10, 2 ); // Because we don't translate language names, 3rd to 5th parameters are not supported.
@@ -413,7 +413,7 @@ class PLL_WPML_API {
 	 * @since 2.2
 	 *
 	 * @param string      $url  The url to filter.
-	 * @param null|string $lang Langage code, optional, defaults to the current language.
+	 * @param null|string $lang Language code, optional, defaults to the current language.
 	 * @return string
 	 */
 	public function wpml_permalink( $url, $lang = '' ) {

@@ -38,8 +38,8 @@ class PLL_Sync_Post_Metas extends PLL_Sync_Metas {
 	 *
 	 * @since 2.3
 	 *
-	 * @param int    $from Id of the post from which we copy informations.
-	 * @param int    $to   Id of the post to which we paste informations.
+	 * @param int    $from Id of the post from which we copy information.
+	 * @param int    $to   Id of the post to which we paste information.
 	 * @param string $lang Language slug.
 	 * @param bool   $sync True if it is synchronization, false if it is a copy.
 	 * @return string[] List of meta keys.

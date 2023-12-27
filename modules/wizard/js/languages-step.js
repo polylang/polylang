@@ -35,7 +35,7 @@ jQuery(
 					.text( pll_wizard_params.i18n_remove_language_icon )
 				)
 			);
-			// see the comment and the harcoded code above. languageTrashIconHtml and languageValueHtml are safe.
+			// see the comment and the hardcoded code above. languageTrashIconHtml and languageValueHtml are safe.
 			var languageLineHtml = $( '<tr />' ).prepend( languageTrashIconHtml ).prepend( languageValueHtml ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 			var languageFieldHtml = $( '<input />' ).attr(
 				{
@@ -84,7 +84,7 @@ jQuery(
 		 */
 		function showError( message ) {
 			messagesContainer.empty();
-			// html is harcoded and use of jQuery text method which is safe to add message value.
+			// html is hardcoded and use of jQuery text method which is safe to add message value.
 			// In addition message is i18n value which is initialized server side in PLL_Wizard::add_step_languages and correctly escaped.
 			messagesContainer.prepend( $( '<p/>' ).addClass( 'error' ).text( message ) ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 		}

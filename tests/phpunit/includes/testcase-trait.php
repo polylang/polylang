@@ -89,7 +89,7 @@ trait PLL_UnitTestCase_Trait {
 
 		/*
 		 * Ensure `$factory` is an instance of `PLL_UnitTest_Factory` otherwise testcases directly
-		 * extending WordPress ones intead of our `WP_UnitTestCase_Polyfill` would get a fatal error.
+		 * extending WordPress ones instead of our `WP_UnitTestCase_Polyfill` would get a fatal error.
 		 */
 		if ( $factory instanceof PLL_UnitTest_Factory ) {
 			static::pllSetUpBeforeClass( $factory );
@@ -134,7 +134,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	public function tear_down() {
-		self::$model->clean_languages_cache(); // We must do it before database ROLLBACK otherwhise it is impossible to delete the transient.
+		self::$model->clean_languages_cache(); // We must do it before database ROLLBACK otherwise it is impossible to delete the transient.
 
 		$globals = array( 'current_screen', 'hook_suffix', 'wp_settings_errors', 'post_type', 'wp_scripts', 'wp_styles' );
 		foreach ( $globals as $global ) {
@@ -153,7 +153,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @throws InvalidArgumentException If language is not created.
 	 *
 	 * @param string $locale Language locale.
-	 * @param array  $args   Allows to optionnally override the default values for the language.
+	 * @param array  $args   Allows to optionally override the default values for the language.
 	 * @return void
 	 */
 	public static function create_language( $locale, $args = array() ) {
@@ -205,7 +205,7 @@ trait PLL_UnitTestCase_Trait {
 	/**
 	 * Requires WP's admin menus.
 	 *
-	 * @param bool $trigger_hooks Weither trigger `admin_menu` hook or not.
+	 * @param bool $trigger_hooks Whether trigger `admin_menu` hook or not.
 	 * @return array
 	 */
 	protected function require_wp_menus( $trigger_hooks = true ) {

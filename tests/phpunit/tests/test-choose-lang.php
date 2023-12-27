@@ -89,7 +89,7 @@ class Choose_Lang_Test extends PLL_UnitTestCase {
 		$post_id = self::factory()->post->create();
 		self::$model->post->set_language( $post_id, 'us' );
 
-		self::$model->clean_languages_cache(); // FIXME foor some reason the cache is not clean before (resulting in wrong count)
+		self::$model->clean_languages_cache(); // FIXME for some reason the cache is not clean before (resulting in wrong count)
 
 		$choose_lang = new PLL_Choose_Lang_Url( $this->frontend );
 

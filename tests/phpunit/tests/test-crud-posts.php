@@ -70,7 +70,7 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 			)
 		);
 
-		$term_input = in_array( $taxonomy, array( 'category', 'post_tag' ), true ) ? array( $term_en ) : array( $taxonomy => array( $term_en ) );  // Special case fo custom taxonomies.
+		$term_input = in_array( $taxonomy, array( 'category', 'post_tag' ), true ) ? array( $term_en ) : array( $taxonomy => array( $term_en ) );  // Special case for custom taxonomies.
 		$post       = self::factory()->post->create_and_get( array( $post_tax_arg => $term_input ) );
 		$this->pll_admin->model->post->set_language( $post->ID, 'en' );
 
@@ -81,7 +81,7 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 		// Pass the term in previous language on purpose.
 		if ( ! in_array( $taxonomy, array( 'category', 'post_tag' ), true ) ) {
 			wp_set_current_user( 1 ); // Current user should have the proper capability to set custom taxonomy terms.
-			$postarr[ $post_tax_arg ] = array( $taxonomy => array( $term_en ) ); // Special case fo custom taxonomies wich expects an array of array.
+			$postarr[ $post_tax_arg ] = array( $taxonomy => array( $term_en ) ); // Special case for custom taxonomies which expects an array of array.
 		} elseif ( 'post_tag' === $taxonomy ) {
 			$postarr[ $post_tax_arg ] = array( get_term( $term_en, $taxonomy )->name ); // Special case for tags where `wp_update_post()` removes existing one by names.
 		} else {

@@ -56,7 +56,7 @@ class PLL_AS3CF {
 	/**
 	 * Deletes the WP Offload Media information from the attachment being deleted.
 	 * That way WP Offload Media won't delete the file stored in the cloud.
-	 * Done after Polylang has deleted the translations informations, to avoid the synchronization of the deletion
+	 * Done after Polylang has deleted the translations information, to avoid the synchronization of the deletion
 	 * and of course before WP Offload Media deletes the file, normally at priority 20.
 	 *
 	 * @since 2.6
