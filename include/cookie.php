@@ -38,7 +38,7 @@ class PLL_Cookie {
 		 *
 		 * @param bool $httponly Is the cookie only available on http protocol ?
 		 */
-		$httponly = ( bool) apply_filters( 'pll_cookie_httponly', false );
+		$httponly = (bool) apply_filters( 'pll_cookie_httponly', false );
 
 		$defaults = array(
 			'expires'  => 0 !== $expiration ? time() + $expiration : 0,
