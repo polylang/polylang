@@ -2,11 +2,6 @@
 
 class Rest_Request_Test extends PLL_UnitTestCase {
 	/**
-	 * @var string
-	 */
-	public $structure = '/%postname%/';
-
-	/**
 	 * @var PLL_REST_Request
 	 */
 	private $pll_rest;
@@ -19,16 +14,13 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	protected static $administrator;
 
 	/**
-	 * Initialization before all tests run.
-	 *
-	 * @param  WP_UnitTest_Factory $factory WP_UnitTest_Factory object.
+	 * @param PLL_UnitTest_Factory $factory
 	 * @return void
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
+		$factory->language->create_many( 2 );
 
 		self::$administrator = self::factory()->user->create( array( 'role' => 'administrator' ) );
 	}
@@ -41,22 +33,8 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		global $wp_rest_server;
-		$this->server = $wp_rest_server = new Spy_REST_Server();
-		do_action( 'rest_api_init', $wp_rest_server );
-
-		$links_model         = self::$model->get_links_model();
-		$this->pll_rest      = new PLL_REST_Request( $links_model );
-		$GLOBALS['polylang'] = &$this->pll_rest;
-	}
-
-	/**
-	 * @return void
-	 */
-	public function tear_down() {
-		parent::tear_down();
-
-		unset( $GLOBALS['polylang'] );
+		$this->pll_rest = ( new PLL_Context_Rest() )->get();
+		$this->server   = $GLOBALS['wp_rest_server'];
 	}
 
 	/**
@@ -69,9 +47,6 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 * }
 	 */
 	public function test_should_define_language_when_language_is_valid( $data ) {
-		self::$model->options['default_lang'] = 'en';
-		$this->pll_rest->init();
-
 		$request = new WP_REST_Request( $data['method'], $data['route'] );
 		$request->set_param( 'lang', 'fr' );
 		$response = $this->server->dispatch( $request );
@@ -91,9 +66,6 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 * }
 	 */
 	public function test_should_define_default_language_when_language_is_invalid( $data ) {
-		self::$model->options['default_lang'] = 'en';
-		$this->pll_rest->init();
-
 		$request = new WP_REST_Request( $data['method'], $data['route'] );
 		$request->set_param( 'lang', 'it' );
 		$response = $this->server->dispatch( $request );
@@ -113,8 +85,7 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 * }
 	 */
 	public function test_should_not_define_default_language_when_default_language_is_invalid( $data ) {
-		self::$model->options['default_lang'] = 'es';
-		$this->pll_rest->init();
+		$this->pll_rest->model->options['default_lang'] = 'es';
 
 		$request = new WP_REST_Request( $data['method'], $data['route'] );
 		$request->set_param( 'lang', 'it' );
@@ -136,9 +107,6 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 * }
 	 */
 	public function test_should_not_define_language_when_not_sent( $data ) {
-		self::$model->options['default_lang'] = 'en';
-		$this->pll_rest->init();
-
 		$request  = new WP_REST_Request( $data['method'], $data['route'] );
 		$response = $this->server->dispatch( $request );
 
@@ -157,8 +125,6 @@ class Rest_Request_Test extends PLL_UnitTestCase {
 	 */
 	public function test_should_assign_default_language_when_no_language_sent( $type, $route, $field, $value ) {
 		wp_set_current_user( self::$administrator );
-		self::$model->options['default_lang'] = 'en';
-		$this->pll_rest->init();
 
 		$request = new WP_REST_Request( 'POST', $route );
 		$request->set_param( $field, $value );
