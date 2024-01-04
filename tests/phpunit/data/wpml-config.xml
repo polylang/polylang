@@ -7,6 +7,7 @@
 				<custom-field action="copy-once">bg-color</custom-field>
 				<custom-field action="translate">custom-description</custom-field>
 				<custom-field action="ignore">date-added</custom-field>
+				<custom-field action="translate" encoding="json">a_json_meta</custom-field>
 		</custom-fields>
 		<custom-fields-texts>
 			<key name="custom|nested">
@@ -19,6 +20,9 @@
 						<key />
 					</key>
 				</key>
+			</key>
+			<key name="a_json_meta">
+				<key name="to_translate" />
 			</key>
 			<key name="custom-nested-2">
 				<key name="sub-1" />
