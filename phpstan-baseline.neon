@@ -346,11 +346,6 @@ parameters:
 			path: frontend/frontend-filters-widgets.php
 
 		-
-			message: "#^Parameter \\#1 \\$.+ of function md5 expects string, mixed given\\.$#"
-			count: 1
-			path: frontend/frontend-filters-widgets.php
-
-		-
 			message: "#^Cannot access property \\$locale on PLL_Language\\|null\\.$#"
 			count: 2
 			path: frontend/frontend-filters.php
@@ -577,11 +572,6 @@ parameters:
 
 		-
 			message: "#^Method PLL_Model\\:\\:get_links_model\\(\\) should return PLL_Links_Model but returns object\\.$#"
-			count: 1
-			path: include/model.php
-
-		-
-			message: "#^Parameter \\#1 \\$.+ of function md5 expects string, mixed given\\.$#"
 			count: 1
 			path: include/model.php
 

@@ -99,4 +99,21 @@ class PLL_Cache {
 			unset( $this->cache[ $this->blog_id ][ $key ] );
 		}
 	}
+
+	/**
+	 * Generates and returns a "unique" cache key, depending on `$data` and prefixed by `$prefix`.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string              $prefix String to prefix the cache key.
+	 * @param string|array|object $data   Data.
+	 * @return string
+	 *
+	 * @phpstan-return ( $prefix is non-empty-string ? non-empty-string : string )
+	 */
+	public function get_unique_key( string $prefix, $data ): string {
+		$data = maybe_serialize( $data );
+		$data = is_scalar( $data ) ? (string) $data : '';
+		return $prefix . md5( $data );
+	}
 }
