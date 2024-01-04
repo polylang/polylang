@@ -40,7 +40,7 @@ class PLL_Translate_Option {
 	/**
 	 * Cache for the translated values.
 	 *
-	 * @var PLL_Cache<mixed>
+	 * @var PLL_Cache<array|string>
 	 */
 	private $cache;
 
