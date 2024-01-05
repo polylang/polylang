@@ -12,7 +12,7 @@ class PLL_Frontend_Filters_Widgets {
 	/**
 	 * Internal non persistent cache object.
 	 *
-	 * @var PLL_Cache
+	 * @var PLL_Cache<array>
 	 */
 	public $cache;
 
@@ -54,8 +54,8 @@ class PLL_Frontend_Filters_Widgets {
 			return $sidebars_widgets;
 		}
 
-		$cache_key         = md5( maybe_serialize( $sidebars_widgets ) );
-		$_sidebars_widgets = $this->cache->get( "sidebars_widgets_{$cache_key}" );
+		$cache_key         = $this->cache->get_unique_key( 'sidebars_widgets_', $sidebars_widgets );
+		$_sidebars_widgets = $this->cache->get( $cache_key );
 
 		if ( false !== $_sidebars_widgets ) {
 			return $_sidebars_widgets;
@@ -63,9 +63,7 @@ class PLL_Frontend_Filters_Widgets {
 
 		$sidebars_widgets = $this->filter_widgets_sidebars( $sidebars_widgets, $wp_registered_widgets );
 
-		$this->cache->set( "sidebars_widgets_{$cache_key}", $sidebars_widgets );
-
-		return $sidebars_widgets;
+		return $this->cache->set( $cache_key, $sidebars_widgets );
 	}
 
 	/**

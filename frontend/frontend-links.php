@@ -13,7 +13,7 @@ class PLL_Frontend_Links extends PLL_Links {
 	/**
 	 * Internal non persistent cache object.
 	 *
-	 * @var PLL_Cache
+	 * @var PLL_Cache<string>
 	 */
 	public $cache;
 
@@ -175,7 +175,7 @@ class PLL_Frontend_Links extends PLL_Links {
 		 * @param null|string $url      The translation url, null if none was found
 		 * @param string      $language The language code of the translation
 		 */
-		$translation_url = apply_filters( 'pll_translation_url', $url, $language->slug );
+		$translation_url = (string) apply_filters( 'pll_translation_url', $url, $language->slug );
 
 		// Don't cache before template_redirect to avoid a conflict with Barrel + WP Bakery Page Builder
 		if ( did_action( 'template_redirect' ) ) {
