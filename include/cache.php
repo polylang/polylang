@@ -113,7 +113,7 @@ class PLL_Cache {
 	 * @phpstan-return non-empty-string
 	 */
 	public function get_unique_key( string $prefix, $data ): string {
-		/** @var scalar **/
+		/** @var scalar */
 		$serialized = maybe_serialize( $data );
 		return $prefix . md5( (string) $serialized );
 	}
