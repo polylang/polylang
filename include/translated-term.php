@@ -212,7 +212,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			 * @param string[] $taxonomies  List of taxonomy names (as array keys and values).
 			 * @param bool     $is_settings True when displaying the list of custom taxonomies in Polylang settings.
 			 */
-			$taxonomies = apply_filters( 'pll_get_taxonomies', $taxonomies, false );
+			$taxonomies = (array) apply_filters( 'pll_get_taxonomies', $taxonomies, false );
 
 			if ( did_action( 'after_setup_theme' ) ) {
 				$this->model->cache->set( 'taxonomies', $taxonomies );
