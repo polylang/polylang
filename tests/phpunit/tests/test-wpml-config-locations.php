@@ -96,14 +96,22 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 
 		@symlink( PLL_TEST_DATA_DIR . 'plugins/best-plugin', WPMU_PLUGIN_DIR . '/best-plugin' );
 
-		$files    = ( new PLL_WPML_Config() )->get_files();
-		$expected = array(
-			'mu-plugins'             => $filename_1,
-			'mu-plugins/must-use'    => $filename_2,
-			'mu-plugins/best-plugin' => WPMU_PLUGIN_DIR . '/best-plugin/wpml-config.xml',
+		$files    = array_map( 'wp_normalize_path', ( new PLL_WPML_Config() )->get_files() );
+		$expected = array_map(
+			'wp_normalize_path',
+			array(
+				'mu-plugins'             => $filename_1,
+				'mu-plugins/must-use'    => $filename_2,
+				'mu-plugins/best-plugin' => WPMU_PLUGIN_DIR . '/best-plugin/wpml-config.xml',
+			)
 		);
 
-		unlink( WPMU_PLUGIN_DIR . '/best-plugin' );
+		if ( stripos( PHP_OS, 'WIN' ) === 0 ) {
+			// Uses rmdir() to remove symbolic link on Windows. See https://www.php.net/manual/fr/function.unlink.php
+			rmdir( WPMU_PLUGIN_DIR . '/best-plugin' );
+		} else {
+			unlink( WPMU_PLUGIN_DIR . '/best-plugin' );
+		}
 
 		unlink( $filename_2 );
 		rmdir( WPMU_PLUGIN_DIR . '/must-use' );
