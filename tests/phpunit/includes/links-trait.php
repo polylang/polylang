@@ -35,7 +35,9 @@ trait PLL_Test_Links_Trait {
 					$url = str_replace( $orig_siteurl, $siteurl, $url );
 				}
 
-				return str_replace( POLYLANG_DIR . '/', '/polylang/', $url );
+				// Paths on Windows never start with a slash.
+				$replacement = ( stripos( PHP_OS, 'WIN' ) !== 0 ? '/' : '' ) . 'polylang/';
+				return str_replace( wp_normalize_path( POLYLANG_DIR ) . '/', $replacement, $url );
 			},
 			-1
 		);
