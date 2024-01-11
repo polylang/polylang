@@ -24,7 +24,7 @@ class Columns_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		// Set a user to pass current_user_can tests.
+		// Sets a user to pass current_user_can tests.
 		wp_set_current_user( self::$editor );
 	}
 

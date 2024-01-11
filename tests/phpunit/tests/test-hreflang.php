@@ -81,7 +81,7 @@ class Hreflang_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_paged_archive() {
-		update_option( 'posts_per_page', 2 ); // to avoid creating too many posts.
+		update_option( 'posts_per_page', 2 ); // To avoid creating too many posts.
 
 		for ( $i = 0; $i < 3; $i++ ) {
 			self::factory()->post->create_translated(
