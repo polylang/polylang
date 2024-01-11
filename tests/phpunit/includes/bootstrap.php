@@ -7,8 +7,14 @@ require_once $_tests_dir . '/includes/functions.php';
 // load the plugin however *no* Polylang instance is created as no languages exist in DB
 tests_add_filter(
 	'muplugins_loaded',
-	function () use ( $_root_dir ) {
-		require_once $_root_dir . '/polylang.php';
+	function () use ( $_root_dir, $_tests_dir ) {
+		// Kind of doing the job of `wp_register_plugin_realpath()` since the plugin is not in the plugins folder (not even as a symlink).
+		$real_file_path   = realpath( $_root_dir . '/polylang.php' );
+		$symlink_dir_path = wp_normalize_path( dirname( $_tests_dir ) . '/wordpress/wp-content/plugins/polylang' );
+
+		$GLOBALS['wp_plugin_paths'][ $symlink_dir_path ] = wp_normalize_path( dirname( $real_file_path ) );
+
+		require_once $real_file_path;
 	}
 );
 
