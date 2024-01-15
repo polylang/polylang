@@ -180,8 +180,8 @@ class PLL_Settings extends PLL_Admin_Base {
 				$errors = $this->model->add_language( $_POST );
 
 				if ( is_wp_error( $errors ) ) {
-					foreach ( $errors->get_error_messages() as $message ) {
-						add_settings_error( 'general', 'pll_add_language', $message );
+					foreach ( $errors->get_error_codes() as $code ) {
+						add_settings_error( 'general', $code, $errors->get_error_message( $code ) );
 					}
 				} else {
 					add_settings_error( 'general', 'pll_languages_created', __( 'Language added.', 'polylang' ), 'updated' );
@@ -217,8 +217,8 @@ class PLL_Settings extends PLL_Admin_Base {
 				$errors = $this->model->update_language( $_POST );
 
 				if ( is_wp_error( $errors ) ) {
-					foreach ( $errors->get_error_messages() as $message ) {
-						add_settings_error( 'general', 'pll_update_language', $message );
+					foreach ( $errors->get_error_codes() as $code ) {
+						add_settings_error( 'general', $code, $errors->get_error_message( $code ) );
 					}
 				} else {
 					add_settings_error( 'general', 'pll_languages_updated', __( 'Language updated.', 'polylang' ), 'updated' );
