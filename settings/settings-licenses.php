@@ -110,7 +110,7 @@ class PLL_Settings_Licenses extends PLL_Settings_Module {
 			}
 
 			// Updated message
-			add_settings_error( 'general', 'settings_updated', __( 'Settings saved.', 'polylang' ), 'updated' );
+			add_settings_error( 'general', 'settings_updated', __( 'Settings saved.', 'polylang' ), 'success' );
 			ob_start();
 			settings_errors();
 			$x->Add( array( 'what' => 'success', 'data' => ob_get_clean() ) );
