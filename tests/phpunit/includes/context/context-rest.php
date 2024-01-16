@@ -27,11 +27,16 @@ class PLL_Context_Rest extends PLL_Context_Base {
 	 * @return void
 	 */
 	protected function do_wordpress_actions() {
+		global $wp_rest_server;
+
 		$this->do_pll_actions( 'setup_theme' );
 		$this->do_pll_actions( 'after_setup_theme' );
 		$this->do_pll_actions( 'init' );
 		$this->do_pll_actions( 'widgets_init' );
-		$this->do_pll_actions( 'rest_api_init' );
+
+		$wp_rest_server = new Spy_REST_Server();
+		do_action( 'rest_api_init', $wp_rest_server );
+
 		$this->do_pll_actions( 'wp_loaded' );
 
 		flush_rewrite_rules();

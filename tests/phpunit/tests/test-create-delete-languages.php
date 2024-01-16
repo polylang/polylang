@@ -5,20 +5,7 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$options       = PLL_Install::get_default_options();
-		$model         = new PLL_Admin_Model( $options );
-		$links_model   = $model->get_links_model();
-		$this->pll_env = new PLL_Admin( $links_model );
-	}
-
-	public function tear_down() {
-		remove_action( 'pre_delete_term', array( $this, 'clean_languages_cache_and_build_languages_list' ) );
-
-		foreach ( $this->pll_env->model->get_languages_list() as $lang ) {
-			$this->pll_env->model->delete_language( $lang->term_id );
-		}
-
-		parent::tear_down();
+		$this->pll_env = ( new PLL_Context_Settings() )->get();
 	}
 
 	public function test_add_and_delete_language() {
@@ -41,6 +28,9 @@ class Create_Delete_Languages_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'en_US', $lang->locale );
 		$this->assertEquals( 0, $lang->is_rtl );
 		$this->assertEquals( 2, $lang->term_group );
+
+		// Check default language.
+		$this->assertEquals( 'en', $this->pll_env->model->options['default_lang'] );
 
 		// Second language (rtl).
 		$args = array(

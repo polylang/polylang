@@ -3,18 +3,14 @@
 class CRUD_Posts_Test extends PLL_UnitTestCase {
 	protected static $editor;
 
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	/**
+	 * @param PLL_UnitTest_Factory $factory
+	 * @return void
+	 */
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		$links_model     = self::$model->get_links_model();
-		$pll_admin = new PLL_Admin( $links_model );
-		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );
-		$admin_default_term->add_hooks();
-
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
-		self::create_language( 'de_DE_formal' );
-		self::create_language( 'es_ES' );
+		$factory->language->create_many( 3 );
 
 		self::$editor = $factory->user->create( array( 'role' => 'editor' ) );
 	}
@@ -26,20 +22,8 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 
 		register_taxonomy( 'custom_tax', 'post' );
 
-		$options = array_merge(
-			PLL_Install::get_default_options(),
-			array(
-				'default_lang' => 'en',
-				'taxonomies'   => array( 'custom_tax' => 'custom_tax' ),
-			)
-		);
-
-		$model                         = new PLL_Admin_Model( $options );
-		$links_model                   = new PLL_Links_Default( $model );
-		$this->pll_admin               = new PLL_Admin( $links_model );
-		$this->pll_admin->posts        = new PLL_CRUD_Posts( $this->pll_admin );
-		$this->pll_admin->terms        = new PLL_CRUD_Terms( $this->pll_admin );
-		$this->pll_admin->filters_post = new PLL_Admin_Filters_Post( $this->pll_admin );
+		$options = array( 'taxonomies' => array( 'custom_tax' => 'custom_tax' ) );
+		$this->pll_admin = ( new PLL_Context_Admin( array( 'options' => $options ) ) )->get();
 	}
 
 	public function tear_down() {
@@ -58,21 +42,13 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 	 */
 	public function test_language_change_with_taxonomy( $taxonomy, $post_tax_arg ) {
 		// Fixtures.
-		$term_en = self::factory()->term->create( array( 'taxonomy' => $taxonomy ) );
-		$this->pll_admin->model->term->set_language( $term_en, 'en' );
-		$term_fr = self::factory()->term->create( array( 'taxonomy' => $taxonomy ) );
-		$this->pll_admin->model->term->set_language( $term_fr, 'fr' );
-		$this->pll_admin->model->term->save_translations(
-			$term_en,
-			array(
-				'en' => $term_en,
-				'fr' => $term_fr,
-			)
+		$terms = self::factory()->term->create_translated(
+			array( 'taxonomy' => $taxonomy, 'lang' => 'en' ),
+			array( 'taxonomy' => $taxonomy, 'lang' => 'fr' )
 		);
 
-		$term_input = in_array( $taxonomy, array( 'category', 'post_tag' ), true ) ? array( $term_en ) : array( $taxonomy => array( $term_en ) );  // Special case fo custom taxonomies.
-		$post       = self::factory()->post->create_and_get( array( $post_tax_arg => $term_input ) );
-		$this->pll_admin->model->post->set_language( $post->ID, 'en' );
+		$term_input = in_array( $taxonomy, array( 'category', 'post_tag' ), true ) ? array( $terms['en'] ) : array( $taxonomy => array( $terms['en'] ) );  // Special case for custom taxonomies.
+		$post       = self::factory()->post->create_and_get( array( $post_tax_arg => $term_input, 'lang' => 'en' ) );
 
 		// Change post language and update it.
 		$this->pll_admin->model->post->set_language( $post->ID, 'fr' );
@@ -81,11 +57,11 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 		// Pass the term in previous language on purpose.
 		if ( ! in_array( $taxonomy, array( 'category', 'post_tag' ), true ) ) {
 			wp_set_current_user( 1 ); // Current user should have the proper capability to set custom taxonomy terms.
-			$postarr[ $post_tax_arg ] = array( $taxonomy => array( $term_en ) ); // Special case fo custom taxonomies wich expects an array of array.
+			$postarr[ $post_tax_arg ] = array( $taxonomy => array( $terms['en'] ) ); // Special case for custom taxonomies wich expects an array of array.
 		} elseif ( 'post_tag' === $taxonomy ) {
-			$postarr[ $post_tax_arg ] = array( get_term( $term_en, $taxonomy )->name ); // Special case for tags where `wp_update_post()` removes existing one by names.
+			$postarr[ $post_tax_arg ] = array( get_term( $terms['en'] )->name ); // Special case for tags where `wp_update_post()` removes existing one by names.
 		} else {
-			$postarr[ $post_tax_arg ] = array( $term_en ); // Pass the term in previous language on purpose.
+			$postarr[ $post_tax_arg ] = array( $terms['en'] );
 		}
 
 		$result = wp_update_post( $postarr );
@@ -93,12 +69,12 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 		$this->assertSame( $post->ID, $result, 'The post should be well updated.' );
 		$this->assert_has_language( $post, 'fr', 'The post language should be French.' );
 
-		$post  = get_post( $post->ID );
-		$terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
+		$post         = get_post( $post->ID );
+		$object_terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
 
-		$this->assertNotWPError( $terms );
-		$this->assertCount( 1, $terms, "The post should have only one {$taxonomy}." );
-		$this->assertSame( $term_fr, reset( $terms ), "The {$taxonomy} should have been translated." );
+		$this->assertNotWPError( $object_terms );
+		$this->assertCount( 1, $object_terms, "The post should have only one {$taxonomy}." );
+		$this->assertSame( $terms['fr'], reset( $object_terms ), "The {$taxonomy} should have been translated." );
 	}
 
 	/**
@@ -121,85 +97,53 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 		$prefix   = ! empty( $taxonomy->rewrite['slug'] ) ? $taxonomy->rewrite['slug'] : $taxonomy->query_var;
 
 		if ( $taxonomy->hierarchical ) {
-			// Create a term with parents in default language only.
-			$translations = array();
-			$parent       = 0;
-
+			$parent = 0;
 			for ( $i = 1; $i <= 3; $i++ ) {
 				$parent = self::factory()->term->create(
 					array(
 						'taxonomy' => $taxonomy->name,
 						'name'     => "{$taxonomy->labels->singular_name} $i EN with no trad",
 						'parent'   => $parent,
+						'lang'     => 'en',
 					)
 				);
-				self::$model->term->set_language( $parent, 'en' );
-				$translations[ $i ]['en'] = $parent;
 			}
-			foreach ( $translations as $translation_group ) {
-				self::$model->term->save_translations(
-					reset( $translation_group ),
-					$translation_group
-				);
-			}
-
-			$terms['en']['create'] = end( $translations )['en'];
+			$terms['en']['create'] = $parent;
 		} else {
 			// Create a term in default language only.
-			$translations = array();
-			$term_id      = self::factory()->term->create(
+			$term_id = self::factory()->term->create(
 				array(
 					'taxonomy' => $taxonomy->name,
 					'name'     => "{$taxonomy->labels->singular_name} EN with no trad",
+					'lang'     => 'en',
 				)
 			);
-			self::$model->term->set_language( $term_id, 'en' );
-			$translations['en'] = $term_id;
-
-			self::$model->term->save_translations(
-				reset( $translations ),
-				$translations
-			);
-			$terms['en']['create'] = $translations['en'];
+			$terms['en']['create'] = $term_id;
 		}
 
 		// Create terms with same name but different slug in all 3 languages.
 		$translations = array();
 		foreach ( array( 'en', 'fr', 'de' ) as $lang_slug ) {
-			$term_id = self::factory()->term->create(
-				array(
-					'taxonomy' => $taxonomy->name,
-					'name'     => "{$taxonomy->labels->singular_name} same name",
-					'slug'     => "{$prefix}-same-name-{$lang_slug}",
-				)
+			$translations[] = array(
+				'taxonomy' => $taxonomy->name,
+				'name'     => "{$taxonomy->labels->singular_name} same name",
+				'slug'     => "{$prefix}-same-name-{$lang_slug}",
+				'lang'     => $lang_slug,
 			);
-			self::$model->term->set_language( $term_id, $lang_slug );
-			$translations[ $lang_slug ] = $term_id;
-			$terms[ $lang_slug ][]      = $term_id;
 		}
-		self::$model->term->save_translations(
-			reset( $translations ),
-			$translations
-		);
+		self::factory()->term->create_translated( ...$translations );
 
 		// Create terms with their slug equals sanitize_title( name ) in all 3 languages.
 		$translations = array();
 		foreach ( array( 'en', 'fr', 'de' ) as $lang_slug ) {
-			$term_id = self::factory()->term->create(
-				array(
-					'taxonomy' => $taxonomy->name,
-					'name'     => "{$taxonomy->labels->singular_name} slug from name $lang_slug",
-					'slug'     => "{$prefix}-slug-from-name-{$lang_slug}",
-				)
+			$translations[] = array(
+				'taxonomy' => $taxonomy->name,
+				'name'     => "{$taxonomy->labels->singular_name} slug from name $lang_slug",
+				'slug'     => "{$prefix}-slug-from-name-{$lang_slug}",
+				'lang'     => $lang_slug,
 			);
-			self::$model->term->set_language( $term_id, $lang_slug );
-			$translations[ $lang_slug ] = $term_id;
-			$terms[ $lang_slug ][]      = $term_id;
 		}
-		self::$model->term->save_translations(
-			reset( $translations ),
-			$translations
-		);
+		self::factory()->term->create_translated( ...$translations );
 
 		// Create a post.
 		$post_id = self::factory()->post->create();
@@ -239,13 +183,13 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 			edit_post();
 
 			// Assert the post's language.
-			$post_lang = self::$model->post->get_language( $post_id );
+			$post_lang = $this->pll_admin->model->post->get_language( $post_id );
 
 			$this->assertInstanceOf( PLL_Language::class, $post_lang, 'No language has been assigned to the post.' );
 			$this->assertSame( $to, $post_lang->slug, 'The post doesn\'t have the correct language.' );
 
 			// Assert missing terms in FR.
-			$terms[ $to ]['create'] = self::$model->term->get( $terms['en']['create'], $to );
+			$terms[ $to ]['create'] = $this->pll_admin->model->term->get( $terms['en']['create'], $to );
 			$this->assertGreaterThan( 0, $terms[ $to ]['create'], sprintf( "The {$taxonomy->labels->singular_name} that was missing in %s has not been created.", strtoupper( $to ) ) );
 			$this->assertNotSame( $terms[ $from ]['create'], $terms[ $to ]['create'], sprintf( "The {$taxonomy->labels->singular_name} that was missing in %s has not been translated.", strtoupper( $to ) ) );
 
