@@ -226,19 +226,27 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 	 * @return PLL_Language|false
 	 */
 	public function page_for_posts_query( $lang, $query ) {
-		if ( empty( $lang ) && $this->page_for_posts ) {
-			$page_id = $this->get_page_id( $query );
-
-			if ( ! empty( $page_id ) && in_array( $page_id, $pages = $this->model->get_languages_list( array( 'fields' => 'page_for_posts' ) ) ) ) {
-				// Fill the cache with all pages for posts to avoid one query per page later
-				// The posts_per_page limit is a trick to avoid splitting the query
-				get_posts( array( 'posts_per_page' => 99, 'post_type' => 'page', 'post__in' => $pages, 'lang' => '' ) );
-
-				$lang = $this->model->post->get_language( $page_id );
-				$query->is_singular = $query->is_page = false;
-				$query->is_home = $query->is_posts_page = true;
-			}
+		if ( ! empty( $lang ) || ! $this->page_for_posts ) {
+			return $lang;
 		}
+
+		$page_id = $this->get_page_id( $query );
+
+		if ( empty( $page_id ) ) {
+			return $lang;
+		}
+
+		$pages = $this->model->get_languages_list( array( 'fields' => 'page_for_posts' ) );
+		$pages = array_filter( $pages );
+
+		if ( in_array( $page_id, $pages ) ) {
+			_prime_post_caches( $pages ); // Fill the cache with all pages for posts to avoid one query per page later.
+
+			$lang = $this->model->post->get_language( $page_id );
+			$query->is_singular = $query->is_page = false;
+			$query->is_home = $query->is_posts_page = true;
+		}
+
 		return $lang;
 	}
 

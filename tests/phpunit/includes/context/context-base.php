@@ -20,9 +20,12 @@ abstract class PLL_Context_Base {
 	public function __construct( array $settings = array() ) {
 		global $wp_rewrite;
 
-		$default_lang = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id', 'fields' => 'slugs' ) );
+		$options = PLL_Install::get_default_options();
 
-		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => reset( $default_lang ) ) );
+		$language_terms = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id', 'fields' => 'slugs' ) );
+		if ( is_array( $language_terms ) && ! empty( $language_terms ) ) {
+			$options = array_merge( $options, array( 'default_lang' => reset( $language_terms ) ) );
+		}
 
 		if ( isset( $settings['options'] ) && is_array( $settings['options'] ) && ! empty( $settings['options'] ) ) {
 			$options = array_merge( $options, $settings['options'] );

@@ -144,7 +144,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			 * @param string[] $post_types  List of post type names (as array keys and values).
 			 * @param bool     $is_settings True when displaying the list of custom post types in Polylang settings.
 			 */
-			$post_types = apply_filters( 'pll_get_post_types', $post_types, false );
+			$post_types = (array) apply_filters( 'pll_get_post_types', $post_types, false );
 
 			if ( did_action( 'after_setup_theme' ) ) {
 				$this->model->cache->set( 'post_types', $post_types );

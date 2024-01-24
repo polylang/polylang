@@ -40,7 +40,7 @@ class PLL_Translate_Option {
 	/**
 	 * Cache for the translated values.
 	 *
-	 * @var PLL_Cache
+	 * @var PLL_Cache<array|string>
 	 */
 	private $cache;
 
@@ -109,6 +109,10 @@ class PLL_Translate_Option {
 		}
 
 		$lang = $GLOBALS['l10n']['pll_string']->get_header( 'Language' );
+
+		if ( ! is_string( $lang ) || '' === $lang ) {
+			return $value;
+		}
 
 		$cache = $this->cache->get( $lang );
 		if ( false === $cache ) {
