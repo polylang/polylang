@@ -67,7 +67,7 @@ class PLL_OLT_Manager {
 	 */
 	public function load_textdomains() {
 		// Our load_textdomain_mofile filter has done its job. let's remove it before calling load_textdomain.
-		remove_filter( 'load_textdomain_mofile', array( $this, 'load_textdomain_mofile' ) );
+		remove_filter( 'load_textdomain_mofile', array( $this, 'bypass_load_textdomain_mofile' ) );
 
 		$GLOBALS['l10n'] = array();
 		$new_locale      = get_locale();
