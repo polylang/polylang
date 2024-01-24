@@ -82,6 +82,8 @@ class PLL_OLT_Manager {
 		}
 
 		do_action( 'change_locale', $new_locale );
+
+		do_action_deprecated( 'pll_translate_labels', array(), '3.6', 'change_locale' );
 	}
 
 	/**
