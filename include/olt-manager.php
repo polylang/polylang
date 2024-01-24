@@ -21,27 +21,6 @@ class PLL_OLT_Manager {
 	protected static $instance;
 
 	/**
-	 * Stores the default site locale before it is modified.
-	 *
-	 * @var string|null
-	 */
-	protected $default_locale;
-
-	/**
-	 * Stores all loaded text domains and mo files.
-	 *
-	 * @var string[][]
-	 */
-	protected $list_textdomains = array();
-
-	/**
-	 * Stores post types an taxonomies labels to translate.
-	 *
-	 * @var string[][]
-	 */
-	public $labels = array();
-
-	/**
 	 * Constructor: setups relevant filters.
 	 *
 	 * @since 1.2
