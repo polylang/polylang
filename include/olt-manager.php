@@ -36,7 +36,7 @@ class PLL_OLT_Manager {
 		}
 
 		// Filters for text domain management.
-		add_filter( 'load_textdomain_mofile', array( $this, 'load_textdomain_mofile' ) );
+		add_filter( 'load_textdomain_mofile', array( $this, 'bypass_load_textdomain_mofile' ) );
 
 		// Loads text domains.
 		add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined.
@@ -88,10 +88,11 @@ class PLL_OLT_Manager {
 	 * Prevents WP loading textdomains before we set the locale ourselves.
 	 *
 	 * @since 2.0.4
+	 * @since 3.6 Renamed from `load_textdomain_mofile()`.
 	 *
 	 * @return string
 	 */
-	public function load_textdomain_mofile() {
+	public function bypass_load_textdomain_mofile() {
 		return '';
 	}
 
