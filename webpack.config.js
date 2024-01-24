@@ -21,6 +21,7 @@ function configureWebpack( options ){
 		'node_modules/**',
 		'vendor/**',
 		'tmp/**',
+		'tests/**',
 		'webpack/**',
 		'**/build/**',
 	];
