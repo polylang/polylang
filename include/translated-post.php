@@ -146,7 +146,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			 */
 			$post_types = (array) apply_filters( 'pll_get_post_types', $post_types, false );
 
-			if ( did_action( 'after_setup_theme' ) ) {
+			if ( did_action( 'after_setup_theme' ) && ! doing_action( 'switch_blog' ) ) {
 				$this->model->cache->set( 'post_types', $post_types );
 			}
 		}

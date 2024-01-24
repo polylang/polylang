@@ -214,7 +214,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			 */
 			$taxonomies = (array) apply_filters( 'pll_get_taxonomies', $taxonomies, false );
 
-			if ( did_action( 'after_setup_theme' ) ) {
+			if ( did_action( 'after_setup_theme' ) && ! doing_action( 'switch_blog' ) ) {
 				$this->model->cache->set( 'taxonomies', $taxonomies );
 			}
 		}
