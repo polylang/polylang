@@ -132,10 +132,8 @@ class PLL_Admin_Model extends PLL_Model {
 		}
 
 		// Delete users options
-		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
-			delete_user_meta( $user_id, 'pll_filter_content', $lang->slug );
-			delete_user_meta( $user_id, 'description_' . $lang->slug );
-		}
+		delete_metadata( 'user', 0, 'pll_filter_content', '', true );
+		delete_metadata( 'user', 0, "description_{$lang->slug}", '', true );
 
 		// Delete domain
 		unset( $this->options['domains'][ $lang->slug ] );
