@@ -61,12 +61,10 @@ class PLL_Uninstall {
 		$languages = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false ) );
 
 		// Delete users options
-		foreach ( get_users( array( 'fields' => 'ID' ) ) as $user_id ) {
-			delete_user_meta( $user_id, 'pll_filter_content' );
-			delete_user_meta( $user_id, 'pll_dismissed_notices' ); // Legacy meta.
-			foreach ( $languages as $lang ) {
-				delete_user_meta( $user_id, 'description_' . $lang->slug );
-			}
+		delete_metadata( 'user', 0, 'pll_filter_content', '', true );
+		delete_metadata( 'user', 0, 'pll_dismissed_notices', '', true ); // Legacy meta.
+		foreach ( $languages as $lang ) {
+			delete_metadata( 'user', 0, "description_{$lang->slug}", '', true );
 		}
 
 		// Delete menu language switchers
