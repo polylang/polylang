@@ -261,7 +261,7 @@ class PLL_Settings_Module {
 
 			if ( empty( get_settings_errors() ) ) {
 				// Send update message
-				add_settings_error( 'general', 'settings_updated', __( 'Settings saved.', 'polylang' ), 'updated' );
+				add_settings_error( 'general', 'settings_updated', __( 'Settings saved.', 'polylang' ), 'success' );
 				settings_errors();
 				$x = new WP_Ajax_Response( array( 'what' => 'success', 'data' => ob_get_clean() ) );
 				$x->send();
