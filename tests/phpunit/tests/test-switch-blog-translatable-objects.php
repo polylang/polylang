@@ -18,8 +18,8 @@ if ( is_multisite() ) :
 		 * @return void
 		 */
 		protected function set_up_blog_with_pll( WP_Site $blog, array $languages, array $options, string $structure ) {
-			$cpt = md5( (string) wp_rand( 1, 20 ) );
-			$tax = md5( (string) wp_rand( 21, 40 ) );
+			$cpt = uniqid( 'cpt_', true );
+			$tax = uniqid( 'tax_', true );
 			$this->translatable_objects[ (int) $blog->blog_id ] = array(
 				'post_types' => array( $cpt => $cpt ),
 				'taxonomies' => array( $tax => $tax ),
