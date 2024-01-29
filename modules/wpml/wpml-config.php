@@ -9,6 +9,14 @@
  * The language switcher configuration is not interpreted
  *
  * @since 1.0
+ *
+ * @phpstan-type ParsedMetas array<
+ *     non-falsy-string,
+ *     array{
+ *         action: string,
+ *         encoding: 'json'|''
+ *     }
+ * >
  */
 class PLL_WPML_Config {
 	/**
@@ -47,6 +55,15 @@ class PLL_WPML_Config {
 	 * @var string[]|null
 	 */
 	private $open_basedir_paths;
+
+	/**
+	 * Cache for parsed metas.
+	 *
+	 * @var array
+	 *
+	 * @phpstan-var array<non-falsy-string, ParsedMetas>
+	 */
+	private $parsed_metas = array();
 
 	/**
 	 * Constructor
@@ -108,12 +125,14 @@ class PLL_WPML_Config {
 		add_filter( 'pll_copy_term_metas', array( $this, 'copy_term_metas' ), 20, 2 );
 		add_filter( 'pll_get_post_types', array( $this, 'translate_types' ), 10, 2 );
 		add_filter( 'pll_get_taxonomies', array( $this, 'translate_taxonomies' ), 10, 2 );
-		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
-		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
 		// Export.
 		add_filter( 'pll_post_metas_to_export', array( $this, 'post_metas_to_export' ) );
 		add_filter( 'pll_term_metas_to_export', array( $this, 'term_metas_to_export' ) );
+		add_filter( 'pll_post_meta_encodings', array( $this, 'add_post_meta_encodings' ), 20 );
+		add_filter( 'pll_term_meta_encodings', array( $this, 'add_term_meta_encodings' ), 20 );
+		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
+		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
 		foreach ( $this->xmls as $context => $xml ) {
 			$keys = $xml->xpath( 'admin-texts/key' );
@@ -173,34 +192,18 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Adds custom fields to the list of metas to copy when creating a new translation.
+	 * Adds post metas to the list of metas to copy when creating a new translation.
 	 *
 	 * @since 1.0
 	 *
-	 * @param string[] $metas The list of custom fields to copy or synchronize.
+	 * @param string[] $metas The list of post metas to copy or synchronize.
 	 * @param bool     $sync  True for sync, false for copy.
-	 * @return string[] The list of custom fields to copy or synchronize.
+	 * @return string[] The list of post metas to copy or synchronize.
+	 *
+	 * @phpstan-param array<non-falsy-string> $metas
 	 */
 	public function copy_post_metas( $metas, $sync ) {
-		foreach ( $this->xmls as $xml ) {
-			$cfs = $xml->xpath( 'custom-fields/custom-field' );
-
-			if ( ! is_array( $cfs ) ) {
-				continue;
-			}
-
-			foreach ( $cfs as $cf ) {
-				$action = $this->get_field_attribute( $cf, 'action' );
-
-				if ( 'copy' === $action || ( ! $sync && in_array( $action, array( 'translate', 'copy-once' ), true ) ) ) {
-					$metas[] = (string) $cf;
-				} else {
-					$metas = array_diff( $metas, array( (string) $cf ) );
-				}
-			}
-		}
-
-		return $metas;
+		return $this->filter_metas_to_copy( (array) $metas, 'custom-fields/custom-field', (bool) $sync );
 	}
 
 	/**
@@ -211,27 +214,11 @@ class PLL_WPML_Config {
 	 * @param string[] $metas The list of term metas to copy or synchronize.
 	 * @param bool     $sync  True for sync, false for copy.
 	 * @return string[] The list of term metas to copy or synchronize.
+	 *
+	 * @phpstan-param array<non-falsy-string> $metas
 	 */
 	public function copy_term_metas( $metas, $sync ) {
-		foreach ( $this->xmls as $xml ) {
-			$cfs = $xml->xpath( 'custom-term-fields/custom-term-field' );
-
-			if ( ! is_array( $cfs ) ) {
-				continue;
-			}
-
-			foreach ( $cfs as $cf ) {
-				$action = $this->get_field_attribute( $cf, 'action' );
-
-				if ( 'copy' === $action || ( ! $sync && in_array( $action, array( 'translate', 'copy-once' ), true ) ) ) {
-					$metas[] = (string) $cf;
-				} else {
-					$metas = array_diff( $metas, array( (string) $cf ) );
-				}
-			}
-		}
-
-		return $metas;
+		return $this->filter_metas_to_copy( (array) $metas, 'custom-term-fields/custom-term-field', (bool) $sync );
 	}
 
 	/**
@@ -255,29 +242,12 @@ class PLL_WPML_Config {
 	 * }
 	 * @return array
 	 *
-	 * @phpstan-param array<string, mixed> $keys
-	 * @phpstan-return array<string, mixed>
+	 * @phpstan-param array<non-falsy-string, mixed> $keys
+	 * @phpstan-return array<non-falsy-string, mixed>
 	 */
 	public function post_metas_to_export( $keys ) {
 		// Add keys that have the `action` attribute set to `translate`.
-		foreach ( $this->xmls as $xml ) {
-			$fields = $xml->xpath( 'custom-fields/custom-field' );
-
-			if ( ! is_array( $fields ) ) {
-				// No custom fields.
-				continue;
-			}
-
-			foreach ( $fields as $field ) {
-				$action = $this->get_field_attribute( $field, 'action' );
-
-				if ( 'translate' !== $action ) {
-					continue;
-				}
-
-				$keys[ (string) $field ] = 1;
-			}
-		}
+		$keys = $this->add_metas_to_export( (array) $keys, 'custom-fields/custom-field' );
 
 		// Deal with sub-field translations.
 		foreach ( $this->xmls as $xml ) {
@@ -325,31 +295,40 @@ class PLL_WPML_Config {
 	 * }
 	 * @return array
 	 *
-	 * @phpstan-param array<string, mixed> $keys
-	 * @phpstan-return array<string, mixed>
+	 * @phpstan-param array<non-falsy-string, mixed> $keys
+	 * @phpstan-return array<non-falsy-string, mixed>
 	 */
 	public function term_metas_to_export( $keys ) {
 		// Add keys that have the `action` attribute set to `translate`.
-		foreach ( $this->xmls as $xml ) {
-			$fields = $xml->xpath( 'custom-term-fields/custom-term-field' );
+		return $this->add_metas_to_export( (array) $keys, 'custom-term-fields/custom-term-field' );
+	}
 
-			if ( ! is_array( $fields ) ) {
-				// No custom fields.
-				continue;
-			}
+	/**
+	 * Specifies the encoding for post metas.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string[] $metas An array containing meta names as array keys, and their encoding as array values.
+	 * @return string[]
+	 *
+	 * @phpstan-param array<non-falsy-string, non-falsy-string> $metas
+	 */
+	public function add_post_meta_encodings( $metas ) {
+		return $this->add_metas_encodings( (array) $metas, 'custom-fields/custom-field' );
+	}
 
-			foreach ( $fields as $field ) {
-				$action = $this->get_field_attribute( $field, 'action' );
-
-				if ( 'translate' !== $action ) {
-					continue;
-				}
-
-				$keys[ (string) $field ] = 1;
-			}
-		}
-
-		return $keys;
+	/**
+	 * Specifies the encoding for term metas.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string[] $metas An array containing meta names as array keys, and their encoding as array values.
+	 * @return string[]
+	 *
+	 * @phpstan-param array<non-falsy-string, non-falsy-string> $metas
+	 */
+	public function add_term_meta_encodings( $metas ) {
+		return $this->add_metas_encodings( (array) $metas, 'custom-term-fields/custom-term-field' );
 	}
 
 	/**
@@ -848,5 +827,136 @@ class PLL_WPML_Config {
 		}
 
 		return $path;
+	}
+
+	/**
+	 * Adds (or removes) meta names to the list of metas to copy or synchronize.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string[] $metas The list of meta names to copy or synchronize.
+	 * @param string   $xpath Xpath to the meta fields in the xml files.
+	 * @param bool     $sync  Either sync is enabled or not.
+	 * @return string[]
+	 *
+	 * @phpstan-param array<non-falsy-string> $metas
+	 * @phpstan-param non-falsy-string $xpath
+	 */
+	private function filter_metas_to_copy( array $metas, string $xpath, bool $sync ): array {
+		$parsed_metas    = $this->parse_xml_metas( $xpath );
+		$metas_to_remove = array();
+
+		foreach ( $parsed_metas as $name => $parsed_meta ) {
+			if ( 'copy' === $parsed_meta['action'] || ( ! $sync && in_array( $parsed_meta['action'], array( 'translate', 'copy-once' ), true ) ) ) {
+				$metas[] = $name;
+			} else {
+				$metas_to_remove[] = $name;
+			}
+		}
+
+		return array_diff( $metas, $metas_to_remove );
+	}
+
+	/**
+	 * Adds meta keys to export.
+	 *
+	 * @since 3.6
+	 *
+	 * @param array  $metas {
+	 *     An array containing meta keys to translate.
+	 *     Ex: array(
+	 *      'meta_to_translate_1' => 1,
+	 *      'meta_to_translate_2' => 1,
+	 *      'meta_to_translate_3' => array( ... ),
+	 *    )
+	 * }
+	 * @param string $xpath  Xpath to the meta fields in the xml files.
+	 * @return array
+	 *
+	 * @phpstan-param array<non-falsy-string, mixed> $metas
+	 * @phpstan-param non-falsy-string $xpath
+	 * @phpstan-return array<non-falsy-string, mixed>
+	 */
+	private function add_metas_to_export( array $metas, string $xpath ) {
+		$fields = $this->parse_xml_metas( $xpath );
+
+		foreach ( $fields as $name => $field ) {
+			if ( 'translate' === $field['action'] ) {
+				$metas[ $name ] = 1;
+			}
+		}
+
+		return $metas;
+	}
+
+	/**
+	 * Adds encoding of metas.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string[] $metas The list of encodings for each metas. Meta names are array keys, encodings are array values.
+	 * @param string   $xpath Xpath to the meta fields in the xml files.
+	 * @return string[]
+	 *
+	 * @phpstan-param array<non-falsy-string, non-falsy-string> $metas
+	 * @phpstan-param non-falsy-string $xpath
+	 */
+	private function add_metas_encodings( array $metas, string $xpath ): array {
+		$parsed_metas = $this->parse_xml_metas( $xpath );
+
+		foreach ( $parsed_metas as $name => $parsed_meta ) {
+			if ( ! empty( $parsed_meta['encoding'] ) ) {
+				$metas[ $name ] = $parsed_meta['encoding'];
+			}
+		}
+
+		return $metas;
+	}
+
+	/**
+	 * Parses all xml files for metas.
+	 * Results are cached for each `$xpath`.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string $xpath Xpath to the meta fields in the xml files.
+	 * @return array
+	 *
+	 * @phpstan-param non-falsy-string $xpath
+	 * @phpstan-return ParsedMetas
+	 */
+	private function parse_xml_metas( string $xpath ): array {
+		if ( isset( $this->parsed_metas[ $xpath ] ) ) {
+			return $this->parsed_metas[ $xpath ];
+		}
+
+		$this->parsed_metas[ $xpath ] = array();
+
+		foreach ( $this->xmls as $xml ) {
+			$custom_fields = $xml->xpath( $xpath );
+
+			if ( ! is_array( $custom_fields ) ) {
+				continue;
+			}
+
+			foreach ( $custom_fields as $custom_field ) {
+				$name = (string) $custom_field;
+
+				if ( empty( $name ) ) {
+					continue;
+				}
+
+				$data = array(
+					'action'   => $this->get_field_attribute( $custom_field, 'action' ),
+					'encoding' => $this->get_field_attribute( $custom_field, 'encoding' ),
+				);
+
+				$data['encoding'] = 'json' === $data['encoding'] ? 'json' : ''; // Only JSON is supported for now.
+
+				$this->parsed_metas[ $xpath ][ $name ] = $data;
+			}
+		}
+
+		return $this->parsed_metas[ $xpath ];
 	}
 }

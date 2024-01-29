@@ -3,13 +3,13 @@
 class Auto_Translate_Test extends PLL_UnitTestCase {
 
 	/**
-	 * @param WP_UnitTest_Factory $factory
+	 * @param PLL_UnitTest_Factory $factory
+	 * @return void
 	 */
-	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-		parent::wpSetUpBeforeClass( $factory );
+	public static function pllSetUpBeforeClass( PLL_UnitTest_Factory $factory ) {
+		parent::pllSetUpBeforeClass( $factory );
 
-		self::create_language( 'en_US' );
-		self::create_language( 'fr_FR' );
+		$factory->language->create_many( 2 );
 	}
 
 	public function set_up() {
@@ -22,111 +22,93 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 			'trtax' => 'trtax',
 		);
 
-		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // translated custom post type with archives
-		register_taxonomy( 'trtax', 'trcpt' ); // translated custom tax
+		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // Translated custom post type with archives.
+		register_taxonomy( 'trtax', 'trcpt' ); // Translated custom tax.
 
-		$links_model = self::$model->get_links_model();
-		$frontend = new PLL_Frontend( $links_model );
-		new PLL_Frontend_Auto_Translate( $frontend );
-		$frontend->curlang = self::$model->get_language( 'fr' );
-		new PLL_Frontend_Filters( $frontend );
-		new PLL_CRUD_Terms( $frontend );
-	}
+		$options = array(
+			'post_types' => array( 'trcpt' => 'trcpt' ),
+			'taxonomies' => array( 'trtax' => 'trtax' ),
+		);
 
-	public function tear_down() {
-		parent::tear_down();
+		$frontend = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
 
-		_unregister_post_type( 'trcpt' );
-		_unregister_taxonomy( 'trtax' );
+		$frontend->curlang = $frontend->model->get_language( 'fr' );
 	}
 
 	public function test_category() {
-		$fr = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'essai' ) );
-		self::$model->term->set_language( $fr, 'fr' );
+		$cats = self::factory()->category->create_translated(
+			array( 'name' => 'test', 'lang' => 'en' ),
+			array( 'name' => 'essai', 'lang' => 'fr' )
+		);
 
-		$en = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'test' ) );
-		self::$model->term->set_language( $en, 'en' );
-		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		$post_fr = self::factory()->post->create( array( 'lang' => 'fr' ) );
+		wp_set_post_terms( $post_fr, array( $cats['fr'] ), 'category' );
 
-		$post_fr = self::factory()->post->create();
-		self::$model->post->set_language( $post_fr, 'fr' );
-		wp_set_post_terms( $post_fr, array( $fr ), 'category' );
+		$post_en = self::factory()->post->create( array( 'lang' => 'en' ) );
+		wp_set_post_terms( $post_en, array( $cats['en'] ), 'category' );
 
-		$post_en = self::factory()->post->create();
-		self::$model->post->set_language( $post_en, 'en' );
-		wp_set_post_terms( $post_en, array( $en ), 'category' );
+		$expected = array( get_post( $post_fr ) );
 
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'cat' => $en ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'category_name' => 'test' ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'category__in' => array( $en ) ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'cat' => $cats['en'] ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'category_name' => 'test' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'category__in' => array( $cats['en'] ) ) ) );
 	}
 
 	public function test_tag() {
-		$fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai' ) );
-		self::$model->term->set_language( $fr, 'fr' );
+		$tags = self::factory()->tag->create_translated(
+			array( 'name' => 'test', 'lang' => 'en' ),
+			array( 'name' => 'essai', 'lang' => 'fr' )
+		);
 
-		$en = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test' ) );
-		self::$model->term->set_language( $en, 'en' );
-		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::factory()->tag->create_translated(
+			array( 'name' => 'test2', 'lang' => 'en' ),
+			array( 'name' => 'essai2', 'lang' => 'fr' )
+		);
 
-		$fr = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'essai2' ) );
-		self::$model->term->set_language( $fr, 'fr' );
+		self::factory()->post->create( array( 'tags_input' => array( 'test', 'test2' ), 'lang' => 'en' ) );
+		$post_fr = self::factory()->post->create( array( 'tags_input' => array( 'essai', 'essai2' ), 'lang' => 'fr' ) );
 
-		$en = self::factory()->term->create( array( 'taxonomy' => 'post_tag', 'name' => 'test2' ) );
-		self::$model->term->set_language( $en, 'en' );
-		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		$expected = array( get_post( $post_fr ) );
 
-		$post_fr = self::factory()->post->create( array( 'tags_input' => array( 'essai', 'essai2' ) ) );
-		self::$model->post->set_language( $post_fr, 'fr' );
-
-		$post_en = self::factory()->post->create( array( 'tags_input' => array( 'test', 'test2' ) ) );
-		self::$model->post->set_language( $post_en, 'en' );
-
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag_id' => $en ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => 'test' ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => 'test,test2' ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => 'test+test2' ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag' => array( 'test', 'test2' ) ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'tag_slug__in' => array( 'test' ) ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'tag_id' => $tags['en'] ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'tag' => 'test' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'tag' => 'test,test2' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'tag' => 'test+test2' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'tag' => array( 'test', 'test2' ) ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'tag_slug__in' => array( 'test' ) ) ) );
 	}
 
 	public function test_custom_tax() {
-		$term_fr = $fr = self::factory()->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai' ) );
-		self::$model->term->set_language( $fr, 'fr' );
+		$terms = self::factory()->term->create_translated(
+			array( 'taxonomy' => 'trtax', 'name' => 'test', 'lang' => 'en' ),
+			array( 'taxonomy' => 'trtax', 'name' => 'essai', 'lang' => 'fr' )
+		);
 
-		$term_en = $en = self::factory()->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test' ) );
-		self::$model->term->set_language( $en, 'en' );
-		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		self::factory()->term->create_translated(
+			array( 'taxonomy' => 'trtax', 'name' => 'test2', 'lang' => 'en' ),
+			array( 'taxonomy' => 'trtax', 'name' => 'essai2', 'lang' => 'fr' )
+		);
 
-		$fr = self::factory()->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai2' ) );
-		self::$model->term->set_language( $fr, 'fr' );
+		$terms3 = self::factory()->term->create_translated(
+			array( 'taxonomy' => 'trtax', 'name' => 'test3', 'lang' => 'en' ),
+			array( 'taxonomy' => 'trtax', 'name' => 'essai3', 'lang' => 'fr' )
+		);
 
-		$en = self::factory()->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test2' ) );
-		self::$model->term->set_language( $en, 'en' );
-		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		$post_fr = self::factory()->post->create( array( 'post_type' => 'trcpt', 'lang' => 'fr' ) );
+		wp_set_post_terms( $post_fr, array( 'essai', 'essai2' ), 'trtax' ); // Don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post.
 
-		$fr = self::factory()->term->create( array( 'taxonomy' => 'trtax', 'name' => 'essai3' ) );
-		self::$model->term->set_language( $fr, 'fr' );
+		$post_en = self::factory()->post->create( array( 'post_type' => 'trcpt', 'lang' => 'en' ) );
+		wp_set_post_terms( $post_en, array( 'test', 'test2' ), 'trtax' ); // Don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post.
 
-		$en = self::factory()->term->create( array( 'taxonomy' => 'trtax', 'name' => 'test3' ) );
-		self::$model->term->set_language( $en, 'en' );
-		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
+		$expected = array( get_post( $post_fr ) );
 
-		$post_fr = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
-		wp_set_post_terms( $post_fr, array( 'essai', 'essai2' ), 'trtax' ); // don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post
-		self::$model->post->set_language( $post_fr, 'fr' );
+		// Legacy way.
+		$this->assertEquals( $expected, get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test,test2' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test+test2' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'post_type' => 'trcpt', 'trtax' => array( 'test', 'test2' ) ) ) );
 
-		$post_en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
-		wp_set_post_terms( $post_en, array( 'test', 'test2' ), 'trtax' ); // don't use 'tax_input' above as we don't pass current_user_can test in wp_insert_post
-		self::$model->post->set_language( $post_en, 'en' );
-
-		// old way
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test' ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test,test2' ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => 'test+test2' ) ) );
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( array( 'post_type' => 'trcpt', 'trtax' => array( 'test', 'test2' ) ) ) );
-
-		// tax query
+		// Tax query.
 		$args = array(
 			'post_type' => 'trcpt',
 			'tax_query' => array(
@@ -138,9 +120,9 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 			),
 		);
 
-		$this->assertEquals( array( get_post( $post_fr ) ), get_posts( $args ) );
+		$this->assertEquals( $expected, get_posts( $args ) );
 
-		// Nested tax query
+		// Nested tax query.
 		$args = array(
 			'post_type' => 'trcpt',
 			'tax_query' => array(
@@ -148,14 +130,14 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 				array(
 					'taxonomy' => 'trtax',
 					'field'    => 'term_id',
-					'terms'    => array( $en ),
+					'terms'    => array( $terms3['en'] ),
 				),
 				array(
 					'relation' => 'AND',
 					array(
 						'taxonomy' => 'trtax',
 						'field'    => 'term_id',
-						'terms'    => array( $term_en ),
+						'terms'    => array( $terms['en'] ),
 					),
 					array(
 						'taxonomy' => 'trtax',
@@ -167,18 +149,18 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		);
 		$query = new WP_Query( $args );
 
-		$this->assertEquals( $fr, $query->tax_query->queries[0]['terms'][0] );
-		$this->assertEquals( $term_fr, $query->tax_query->queries[1][0]['terms'][0] );
+		$this->assertEquals( $terms3['fr'], $query->tax_query->queries[0]['terms'][0] );
+		$this->assertEquals( $terms['fr'], $query->tax_query->queries[1][0]['terms'][0] );
 		$this->assertEquals( 'essai2', $query->tax_query->queries[1][1]['terms'][0] );
 
-		// #223
+		// #223.
 		$args = array(
 			'post_type' => 'trcpt',
 			'lang'      => '',
 			'tax_query' => array(
 				array(
 					'taxonomy' => 'trtax',
-					'terms'    => array( $term_en, $term_fr ),
+					'terms'    => array_values( $terms ),
 					'field'    => 'term_id',
 				),
 			),
@@ -190,49 +172,48 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_post() {
-		$en = self::factory()->post->create( array( 'post_title' => 'test' ) );
-		self::$model->post->set_language( $en, 'en' );
+		$posts = self::factory()->post->create_translated(
+			array( 'post_title' => 'test', 'lang' => 'en' ),
+			array( 'post_title' => 'essai', 'lang' => 'fr' )
+		);
 
-		$fr = self::factory()->post->create( array( 'post_title' => 'essai' ) );
-		self::$model->post->set_language( $fr, 'fr' );
+		$expected = array( get_post( $posts['fr'] ) );
 
-		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
-
-		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'p' => $en ) ) );
-		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test' ) ) );
-		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test', 'post_type' => 'post' ) ) );
-		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test', 'post_type' => 'any' ) ) );
-		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'name' => 'test', 'post_type' => array( 'post', 'page' ) ) ) );
-		$this->assertEquals( array( get_post( $fr ) ), get_posts( array( 'post__in' => array( $en ) ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'p' => $posts['en'] ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'name' => 'test' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'name' => 'test', 'post_type' => 'post' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'name' => 'test', 'post_type' => 'any' ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'name' => 'test', 'post_type' => array( 'post', 'page' ) ) ) );
+		$this->assertEquals( $expected, get_posts( array( 'post__in' => array( $posts['en'] ) ) ) );
 	}
 
 	public function test_page() {
-		$parent_en = $en = self::factory()->post->create( array( 'post_title' => 'test_parent', 'post_type' => 'page' ) );
-		self::$model->post->set_language( $en, 'en' );
+		$parents = self::factory()->post->create_translated(
+			array( 'post_type' => 'page', 'post_title' => 'test_parent', 'lang' => 'en' ),
+			array( 'post_type' => 'page', 'post_title' => 'essai_parent', 'lang' => 'fr' )
+		);
 
-		$parent_fr = $fr = self::factory()->post->create( array( 'post_title' => 'essai_parent', 'post_type' => 'page' ) );
-		self::$model->post->set_language( $fr, 'fr' );
+		$pages = self::factory()->post->create_translated(
+			array( 'post_type' => 'page', 'post_title' => 'test', 'post_parent' => $parents['en'], 'lang' => 'en' ),
+			array( 'post_type' => 'page', 'post_title' => 'essai', 'post_parent' => $parents['fr'], 'lang' => 'fr' )
+		);
 
-		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		$expected = array( get_post( $pages['fr'] ) );
 
-		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'page', 'post_parent' => $parent_en ) );
-		self::$model->post->set_language( $en, 'en' );
+		$query = new WP_Query( array( 'page_id' => $pages['en'] ) );
+		$this->assertEquals( $expected, $query->posts );
 
-		$fr = self::factory()->post->create( array( 'post_title' => 'essai', 'post_type' => 'page', 'post_parent' => $parent_fr ) );
-		self::$model->post->set_language( $fr, 'fr' );
+		$query = new WP_Query( array( 'pagename' => 'test_parent' ) ); // Top page.
+		$this->assertEquals( array( get_post( $parents['fr'] ) ), $query->posts );
 
-		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
+		$query = new WP_Query( array( 'pagename' => 'test_parent/test' ) ); // Child page.
+		$this->assertEquals( $expected, $query->posts );
 
-		$query = new WP_Query( array( 'page_id' => $en ) );
-		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
-		$query = new WP_Query( array( 'pagename' => 'test_parent' ) ); // Top page
-		$this->assertEquals( array( get_post( $parent_fr ) ), $query->posts );
-		$query = new WP_Query( array( 'pagename' => 'test_parent/test' ) ); // Child page
-		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
-		$query = new WP_Query( array( 'post_parent' => $parent_en, 'post_type' => 'page' ) );
-		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
-		$query = new WP_Query( array( 'post_parent__in' => array( $parent_en ), 'post_type' => 'page' ) );
-		$this->assertEquals( array( get_post( $fr ) ), $query->posts );
+		$query = new WP_Query( array( 'post_parent' => $parents['en'], 'post_type' => 'page' ) );
+		$this->assertEquals( $expected, $query->posts );
+
+		$query = new WP_Query( array( 'post_parent__in' => array( $parents['en'] ), 'post_type' => 'page' ) );
+		$this->assertEquals( $expected, $query->posts );
 	}
 
 	public function test_get_terms() {

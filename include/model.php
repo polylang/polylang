@@ -12,7 +12,7 @@ class PLL_Model {
 	/**
 	 * Internal non persistent cache object.
 	 *
-	 * @var PLL_Cache
+	 * @var PLL_Cache<mixed>
 	 */
 	public $cache;
 
@@ -585,8 +585,8 @@ class PLL_Model {
 			$q['post_type'] = array( 'post' ); // We *need* a post type.
 		}
 
-		$cache_key = 'pll_count_posts_' . md5( maybe_serialize( $q ) );
-		$counts = wp_cache_get( $cache_key, 'counts' );
+		$cache_key = $this->cache->get_unique_key( 'pll_count_posts_', $q );
+		$counts    = wp_cache_get( $cache_key, 'counts' );
 
 		if ( ! is_array( $counts ) ) {
 			$counts  = array();

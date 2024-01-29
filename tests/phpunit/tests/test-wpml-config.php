@@ -107,52 +107,64 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_cf() {
-		wp_set_current_user( 1 ); // To pass current_user_can_synchronize() test
+		wp_set_current_user( 1 ); // To pass current_user_can_synchronize() test.
+		$json = '{"to_translate":"Value 1","not_to_translate":"Value other"}';
 
 		$pll_admin = new PLL_Admin( $this->links_model );
 		PLL_WPML_Config::instance()->init();
 
 		$en = $from = self::factory()->post->create();
 		self::$model->post->set_language( $from, 'en' );
-		add_post_meta( $from, 'quantity', 1 ); // copy
-		add_post_meta( $from, 'custom-title', 'title' ); // translate
-		add_post_meta( $from, 'bg-color', '#23282d' ); // copy-once
-		add_post_meta( $from, 'date-added', 2007 ); // ignore
+		add_post_meta( $from, 'quantity', 1 ); // `copy`
+		add_post_meta( $from, 'custom-title', 'title' ); // `translate`
+		add_post_meta( $from, 'bg-color', '#23282d' ); // `copy-once`
+		add_post_meta( $from, 'date-added', 2007 ); // `ignore`
+		add_post_meta( $from, 'a_json_meta', $json ); // `translate` + encoding.
 
 		$fr = $to = self::factory()->post->create();
 		self::$model->post->set_language( $to, 'fr' );
 		self::$model->post->save_translations( $en, compact( 'en', 'fr' ) );
 
-		// copy
+		// Test encodings.
+		$encodings = apply_filters( 'pll_post_meta_encodings', array(), $from, $to );
+		$this->assertIsArray( $encodings );
+		$this->assertSame( array( 'a_json_meta' => 'json' ), $encodings );
+
+		// Copy.
 		$sync = new PLL_Admin_Sync( $pll_admin );
-		$sync->post_metas->copy( $from, $to, 'fr' ); // copy
+		$sync->post_metas->copy( $from, $to, 'fr' ); // Copy.
 
 		$this->assertEquals( 1, get_post_meta( $to, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $to, 'custom-title', true ) );
 		$this->assertEquals( '#23282d', get_post_meta( $to, 'bg-color', true ) );
 		$this->assertEmpty( get_post_meta( $to, 'date-added', true ) );
+		$this->assertSame( $json, get_post_meta( $to, 'a_json_meta', true ) );
 
-		// sync
+		// Sync.
 		update_post_meta( $to, 'quantity', 2 );
 		update_post_meta( $to, 'custom-title', 'titre' );
 		update_post_meta( $to, 'bg-color', '#ffeedd' );
 		update_post_meta( $to, 'date-added', 2008 );
+		update_post_meta( $to, 'a_json_meta', $json ); // `translate` + encoding.
 
 		$this->assertEquals( 2, get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
 		$this->assertEquals( '#23282d', get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
+		$this->assertSame( $json, get_post_meta( $from, 'a_json_meta', true ) );
 
-		// remove custom field and sync
+		// Remove custom field and sync.
 		delete_post_meta( $to, 'quantity' );
 		delete_post_meta( $to, 'custom-title' );
 		delete_post_meta( $to, 'bg-color' );
 		delete_post_meta( $to, 'date-added' );
+		delete_post_meta( $to, 'a_json_meta' );
 
 		$this->assertEmpty( get_post_meta( $from, 'quantity', true ) );
 		$this->assertEquals( 'title', get_post_meta( $from, 'custom-title', true ) );
 		$this->assertEquals( '#23282d', get_post_meta( $from, 'bg-color', true ) );
 		$this->assertEquals( 2007, get_post_meta( $from, 'date-added', true ) );
+		$this->assertSame( $json, get_post_meta( $from, 'a_json_meta', true ) );
 	}
 
 	public function test_custom_term_field() {
@@ -219,6 +231,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				),
 			),
 			'custom-description' => 1,
+			'a_json_meta'        => array(
+				'to_translate' => 1,
+			),
 		);
 		$result   = $wpml_config->post_metas_to_export( array( 'previous-value' => 1 ) );
 
