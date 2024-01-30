@@ -79,7 +79,7 @@ class PLL_Table_String extends WP_List_Table {
 	 * @since 0.6
 	 *
 	 * @param array  $item        Data related to the current string.
-	 * @param string $column_name The curent column name.
+	 * @param string $column_name The current column name.
 	 * @return string
 	 */
 	public function column_default( $item, $column_name ) {
@@ -371,7 +371,7 @@ class PLL_Table_String extends WP_List_Table {
 
 	/**
 	 * Saves the strings translations in DB
-	 * Optionaly clean the DB
+	 * Optionally clean the DB
 	 *
 	 * @since 1.9
 	 *

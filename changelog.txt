@@ -56,7 +56,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Pro: Fix a possible bug in Site editor when language term_id and term_taxonomy_id are different
 * Pro: Fix deactivated language re-activated when it is edited.
 * Pro: Fix language switcher in legacy widget menu not correctly rendered in widget block editor
-* Pro: Fix error 404 for untranslated attached attachement
+* Pro: Fix error 404 for untranslated attached attachment
 * Pro: Fix a deprecated notice in ACF integration
 * Pro: Fix update compatibility with WP Umbrella
 * Refactor core to allow to easily translate contents stored in custom tables
@@ -69,7 +69,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Fix language not displayed if the transient has been saved with an empty array #1247
 * Fix a PHP warning `Attempt to read property "home_url" on bool` #1206
 * Fix a conflict leading to a performance issue when translating the theme Astra options #1196
-* Fix related translations resetted when updating Yoast SEO titles settings #1111
+* Fix related translations reset when updating Yoast SEO titles settings #1111
 * Fix a fatal error in case the registered strings option is corrupted #1264
 * Fix the language extraction from the URL in plain permalinks #1270
 * Fix content cleared when switching the language of a new post in the block editor #1272
@@ -167,7 +167,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 
 * Pro: Fix a fatal error when inserting a term
 * Pro: Fix translation of the block cover when duplicating a post
-* Pro: Fix a CSS issue in bulk tranlate form introduced by WP 6.0
+* Pro: Fix a CSS issue in bulk translate form introduced by WP 6.0
 * Pro: Fix a CSS issue in string import/export metaboxes.
 * Prevent random languages order in WP 6.0 #1041
 * Translate site title in retrieve password email #1042
@@ -175,14 +175,14 @@ This file contains only old changelog. See readme.txt for newer versions.
 
 = 3.2.2 (2022-04-25) =
 
-* Pro: Fix redirect occuring for tags sharing the same slug as their translations
+* Pro: Fix redirect occurring for tags sharing the same slug as their translations
 * Fix quick edit allowing to modify the language of the default category when it should not #1018
 
 = 3.2.1 (2022-04-14) =
 
 * Pro: Fix users with editor role not able to save or publish posts
 * Pro: Fix FSE compatibility not loaded when the plugin Gütenberg is active
-* Pro: Fix a fatal error occuring with Yoast SEO Premium
+* Pro: Fix a fatal error occurring with Yoast SEO Premium
 * Pro: Fix a fatal error with ACF when no language is defined
 
 = 3.2 (2022-04-12) =
@@ -210,7 +210,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Prevent term_exists to be filtered by language in WP 6.0
 * Fix some PHP 8.1 deprecations #949 #985
 * Fix a fatal error in PHP 8.1 #987
-* Fix category feed not redirected when the langage code is wrong #887
+* Fix category feed not redirected when the language code is wrong #887
 * Fix default category not created for secondary languages (introduced in 3.1) #997
 * Fix parent page when the parent post type is not translatable #1001
 * Fix the Yoast SEO breadcrumb when it includes a non-synchronized taxonomy #1005
@@ -228,13 +228,13 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Fix dismissable notice when creating a term in WP 5.9 #936
 * Fix empty search not handled correctly. Props Dominik Schilling #937
 * Fix warning occurring when a 3rd party plugin attempts to register anything else than a string using the WPML API #942
-* Fix Yoast SEO columns not corectly drawn when quick editing a post #943
+* Fix Yoast SEO columns not correctly drawn when quick editing a post #943
 
 = 3.1.2 (2021-10-11) =
 
 * Pro: Fix parent page not filtered by language in the block editor since WP 5.6
 * Pro: Fix XLIFF mime type for PHP 7.0 and PHP 7.1
-* Fix settings page displaying the media modules whne no language are defined
+* Fix settings page displaying the media modules when no language are defined
 * Enforce Yoast SEO to use dynamic permalinks #882
 * Yoast SEO: Fix static front page and blog page breadcrumb
 
@@ -255,7 +255,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Pro: Fix + icon displayed in the block editor sidebar when the user cannot create a translation
 * Add a warning section to the site health for posts and terms without languages #825
 * Require the simplexml extension in the site health if a wpml-config.xml is found #827
-* Remove the information about the WPML compabitility mode in settings #843
+* Remove the information about the WPML compatibility mode in settings #843
 * The browser preferred language detection is now deactivated by default
 * The media are now untranslated by default
 * Highlight the language filter in the admin toolbar when it's active #821
@@ -327,7 +327,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Add a dialog box to ask a confirmation about a language change in classic and block editors
 * Improve browser language detection #591
 * Improve robustness and documentation of code
-* Fix media library after the language has been chnaged in the editor metabox
+* Fix media library after the language has been changed in the editor metabox
 * Fix duplicated title attribute on flag link in posts list
 * Fix legacy block editor language metabox compatibility with WordPress 5.6
 * Fix uploaded theme and plugin files in media library
@@ -405,7 +405,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 
 * Pro: Fix fatal error with WP 4.9
 * Fix pll_the_languages() with 'raw' option returning html flag instead of flag url #558
-* Fix compatibility with Duplicate Posts not correcly loaded #557
+* Fix compatibility with Duplicate Posts not correctly loaded #557
 * Fix custom flag size in admin bar language switcher #559
 * Fix tag clouds mixed in the classic editor #561
 
@@ -494,7 +494,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Use filtered wrappers to create meta when creating media translations #231
 * Allow to translate the Twenty Seventeen header video Youtube url #460
 * Notices are now dismissed per site instead of per user #478
-* Fix terms not visible in the quick edit when only one language is defined and teh admin language filter is active
+* Fix terms not visible in the quick edit when only one language is defined and the admin language filter is active
 * Fix post state not displayed for translations of the privacy policy page #395
 * Fix wildcards not correctly interpreted in wpml-config.xml
 * Fix product categories with special characters duplicated when importing WooCommerce products #474
@@ -587,7 +587,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Pro: Fix synchronized posts sharing their slug when the language is set from the content
 * Pro: Fix PHP warning with ACF Pro 5.8.1
 * Pro: Fix ACF clone fields not translated in repeaters
-* Better management of user capablities when synchronizing taxonomies terms and custom fields
+* Better management of user capabilities when synchronizing taxonomies terms and custom fields
 * Extend string translations search to translated strings #207
 * Update plugin updater to 1.6.18
 * Honor the filter `pll_flag` when performing the flag validation when creating a new language
@@ -1017,7 +1017,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 
 * Pro: Fix shared term slugs broken by a late change in WP 4.7 #73
 * Pro: Fix media taxonomies lost when creating a media translation when taxonomies sync is activated #72
-* Fix fatal error in customizer when Twenty Seventen is activated and another theme is previewed #71
+* Fix fatal error in customizer when Twenty Seventeen is activated and another theme is previewed #71
 * Fix wrong plugin language on admin if user locale is different from site locale in WP 4.7
 
 = 2.0.10 (2016-12-05) =

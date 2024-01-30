@@ -25,7 +25,7 @@ class Accept_Language_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @dataProvider numeric_values_provider
-	 * @param mixed $arg Class consturctor argument.
+	 * @param mixed $arg Class constructor argument.
 	 * @param float $expected Expected quality.
 	 */
 	public function test_it_should_always_use_a_float_as_quality_value( $arg, $expected ) {

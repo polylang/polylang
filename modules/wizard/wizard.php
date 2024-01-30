@@ -61,7 +61,7 @@ class PLL_Wizard {
 		$this->model   = &$polylang->model;
 
 		// Display Wizard page before any other action to ensure displaying it outside the WordPress admin context.
-		// Hooked on admin_init with priority 40 to ensure PLL_Wizard_Pro is corretly initialized.
+		// Hooked on admin_init with priority 40 to ensure PLL_Wizard_Pro is correctly initialized.
 		add_action( 'admin_init', array( $this, 'setup_wizard_page' ), 40 );
 		// Add Wizard submenu.
 		add_filter( 'pll_settings_tabs', array( $this, 'settings_tabs' ), 10, 1 );
@@ -365,7 +365,7 @@ class PLL_Wizard {
 		// Add ajax action on deactivate button in licenses step.
 		add_action( 'wp_ajax_pll_deactivate_license', array( $this, 'deactivate_license' ) );
 
-		// Be careful pll_admin script is enqueued here without depedency except jquery because only code useful for deactivate license button is needed.
+		// Be careful pll_admin script is enqueued here without dependency except jquery because only code useful for deactivate license button is needed.
 		// To be really loaded the script need to be passed to the $steps['licenses']['scripts'] array below with the same handle than in wp_enqueue_script().
 		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION, true );
 		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );
@@ -466,7 +466,7 @@ class PLL_Wizard {
 	 */
 	public function add_step_languages( $steps ) {
 		wp_deregister_script( 'pll_admin' ); // Deregister after the licenses step enqueue to update jquery-ui-selectmenu dependency.
-		// The wp-ajax-response and postbox dependencies is useless in wizard steps espacially postbox which triggers a javascript error otherwise.
+		// The wp-ajax-response and postbox dependencies is useless in wizard steps especially postbox which triggers a javascript error otherwise.
 		// To be really loaded the script need to be passed to the $steps['languages']['scripts'] array below with the same handle than in wp_enqueue_script().
 		wp_enqueue_script( 'pll_admin', plugins_url( '/js/build/admin' . $this->get_suffix() . '.js', POLYLANG_ROOT_FILE ), array( 'jquery', 'jquery-ui-selectmenu' ), POLYLANG_VERSION, true );
 		wp_localize_script( 'pll_admin', 'pll_admin', array( 'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ) ) );

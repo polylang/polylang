@@ -23,7 +23,7 @@ class PLL_Uninstall {
 	public function __construct() {
 		global $wpdb;
 
-		// Don't do anything except if the constant PLL_REMOVE_ALL_DATA is explicitely defined and true.
+		// Don't do anything except if the constant PLL_REMOVE_ALL_DATA is explicitly defined and true.
 		if ( ! defined( 'PLL_REMOVE_ALL_DATA' ) || ! PLL_REMOVE_ALL_DATA ) {
 			return;
 		}

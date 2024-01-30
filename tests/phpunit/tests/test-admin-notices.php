@@ -47,7 +47,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		$this->pll_admin->options['first_activation'] = 1; // Some very old timestanp
+		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();
@@ -69,7 +69,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		$this->pll_admin->options['first_activation'] = 1; // Some very old timestanp
+		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();
@@ -87,7 +87,7 @@ class Admin_Notices_Test extends PLL_UnitTestCase {
 		$GLOBALS['hook_suffix'] = 'plugins.php';
 		set_current_screen();
 
-		$this->pll_admin->options['first_activation'] = 1; // Some very old timestanp
+		$this->pll_admin->options['first_activation'] = 1; // Some very old timestamp
 		$this->pll_admin->admin_notices = new PLL_Admin_Notices( $this->pll_admin );
 
 		ob_start();

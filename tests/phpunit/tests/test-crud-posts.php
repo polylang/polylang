@@ -57,7 +57,7 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 		// Pass the term in previous language on purpose.
 		if ( ! in_array( $taxonomy, array( 'category', 'post_tag' ), true ) ) {
 			wp_set_current_user( 1 ); // Current user should have the proper capability to set custom taxonomy terms.
-			$postarr[ $post_tax_arg ] = array( $taxonomy => array( $terms['en'] ) ); // Special case for custom taxonomies wich expects an array of array.
+			$postarr[ $post_tax_arg ] = array( $taxonomy => array( $terms['en'] ) ); // Special case for custom taxonomies which expects an array of array.
 		} elseif ( 'post_tag' === $taxonomy ) {
 			$postarr[ $post_tax_arg ] = array( get_term( $terms['en'] )->name ); // Special case for tags where `wp_update_post()` removes existing one by names.
 		} else {

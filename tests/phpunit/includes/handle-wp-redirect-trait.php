@@ -2,7 +2,7 @@
 
 /**
  * Trait to run tests containing `wp_redirect()` and `exit`.
- * Also privides some assertions for the redirection.
+ * Also provides some assertions for the redirection.
  */
 trait PLL_Handle_WP_Redirect_Trait {
 	/**
@@ -70,7 +70,7 @@ trait PLL_Handle_WP_Redirect_Trait {
 	 *
 	 * @return void
 	 */
-	protected function assert_redirect_location( $expected_location, $message = 'A redirection occured without the expected location.' ) {
+	protected function assert_redirect_location( $expected_location, $message = 'A redirection occurred without the expected location.' ) {
 		$this->assertSame( $expected_location, $this->redirect_location, $message );
 	}
 
@@ -82,7 +82,7 @@ trait PLL_Handle_WP_Redirect_Trait {
 	 *
 	 * @return void
 	 */
-	protected function assert_redirect_status( $expected_status, $message = 'A redirection occured without the expected status.' ) {
+	protected function assert_redirect_status( $expected_status, $message = 'A redirection occurred without the expected status.' ) {
 		$this->assertSame( $expected_status, $this->redirect_status, $message );
 	}
 }

@@ -27,7 +27,7 @@ if ( ! function_exists( 'icl_get_languages' ) ) {
 	 * Used for building custom language selectors
 	 * available only on frontend
 	 *
-	 * List of paramaters accepted in $args:
+	 * List of parameters accepted in $args:
 	 *
 	 * skip_missing  => whether to skip missing translation or not, 0 or 1, defaults to 0
 	 * orderby       => 'id', 'code', 'name', defaults to 'id'

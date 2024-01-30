@@ -51,7 +51,7 @@
 		"stan": "Runs PHPStan analysis.",
 		"lint": "Runs both PHPCS and PHPStan.",
 		"build": "Builds the project.",
-		"dist": "Make the zip file to distibute the project release."
+		"dist": "Make the zip file to distribute the project release."
 	},
 	"config": {
 		"allow-plugins": {

@@ -406,7 +406,7 @@ class PLL_Settings extends PLL_Admin_Base {
 		 */
 		$languages = apply_filters( 'pll_predefined_languages', $languages );
 
-		// Keep only languages with all necessary informations
+		// Keep only languages with all necessary information
 		foreach ( $languages as $k => $lang ) {
 			if ( ! isset( $lang['code'], $lang['locale'], $lang['name'], $lang['dir'], $lang['flag'] ) ) {
 				unset( $languages[ $k ] );

@@ -4,7 +4,7 @@
  */
 
 /**
- * A class to manage the sychronization of taxonomy terms across posts translations
+ * A class to manage the synchronization of taxonomy terms across posts translations
  *
  * @since 2.3
  */
@@ -47,8 +47,8 @@ class PLL_Sync_Tax {
 	 * @since 3.2 Changed visibility from protected to public.
 	 *
 	 * @param bool   $sync True if it is synchronization, false if it is a copy.
-	 * @param int    $from Id of the post from which we copy informations, optional, defaults to null.
-	 * @param int    $to   Id of the post to which we paste informations, optional, defaults to null.
+	 * @param int    $from Id of the post from which we copy information, optional, defaults to null.
+	 * @param int    $to   Id of the post to which we paste information, optional, defaults to null.
 	 * @param string $lang Language slug, optional, defaults to null.
 	 * @return string[] List of taxonomy names.
 	 */
@@ -66,8 +66,8 @@ class PLL_Sync_Tax {
 		 *
 		 * @param string[] $taxonomies List of taxonomy names.
 		 * @param bool     $sync       True if it is synchronization, false if it is a copy.
-		 * @param int      $from       Id of the post from which we copy informations.
-		 * @param int      $to         Id of the post to which we paste informations.
+		 * @param int      $from       Id of the post from which we copy information.
+		 * @param int      $to         Id of the post to which we paste information.
 		 * @param string   $lang       Language slug.
 		 */
 		return array_unique( apply_filters( 'pll_copy_taxonomies', $taxonomies, $sync, $from, $to, $lang ) );
@@ -200,7 +200,7 @@ class PLL_Sync_Tax {
 	}
 
 	/**
-	 * Copy terms fron one post to a translation, does not sync
+	 * Copy terms from one post to a translation, does not sync
 	 *
 	 * @since 2.3
 	 *

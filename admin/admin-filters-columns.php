@@ -438,7 +438,7 @@ class PLL_Admin_Filters_Columns {
 	}
 
 	/**
-	 * Returns the language flag or teh language slug if there is no flag.
+	 * Returns the language flag or the language slug if there is no flag.
 	 *
 	 * @since 2.8
 	 *

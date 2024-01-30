@@ -49,7 +49,7 @@ jQuery(
 
 		// Inject flag image when jQuery UI selectmenu is created or an item is selected.
 		// jQuery UI 1.12 introduce a wrapper inside de li tag which is necessary to selectmenu widget to work correctly.
-		// Mainly copy from the orginal jQuery UI 1.12 selectmenu widget _renderItem method.
+		// Mainly copy from the original jQuery UI 1.12 selectmenu widget _renderItem method.
 		// Note this code works fine with jQuery UI 1.11.4 too.
 		var selectmenuRenderItem = function( ul, item ) {
 			var li = $( '<li>' );

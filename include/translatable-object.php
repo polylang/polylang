@@ -369,7 +369,7 @@ abstract class PLL_Translatable_Object {
 
 	/**
 	 * Returns object IDs without language given a specific SQL query.
-	 * Can be overriden by child classes in case queried object doesn't use
+	 * Can be overridden by child classes in case queried object doesn't use
 	 * `wp_cache_set_last_changed()` or another cache system.
 	 *
 	 * @since 3.4
@@ -500,7 +500,7 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Returns database-related informations that can be used in some of this class methods.
+	 * Returns database-related information that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
 	 * @see PLL_Translatable_Object::join_clause()

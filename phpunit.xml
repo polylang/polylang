@@ -9,7 +9,7 @@
 	>
 	<testsuites>
 		<testsuite name="install">
-			<!-- These tests must run before others due to contant manipulation -->
+			<!-- These tests must run before others due to constant manipulation -->
 			<file>./tests/phpunit/tests/test-install.php</file>
 		</testsuite>
 		<testsuite name="main">

@@ -181,7 +181,7 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Add Polylang Options to Site Health Informations tab.
+	 * Add Polylang Options to Site Health Information tab.
 	 *
 	 * @since 2.8
 	 *
@@ -397,7 +397,7 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Add Polylang Warnings to Site Health Informations tab.
+	 * Add Polylang Warnings to Site Health Information tab.
 	 *
 	 * @since 3.1
 	 *

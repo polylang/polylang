@@ -4,7 +4,7 @@
  */
 
 /**
- * A generic activation / de-activation class compatble with multisite
+ * A generic activation / de-activation class compatible with multisite
  *
  * @since 1.7
  */
@@ -39,7 +39,7 @@ class PLL_Install_Base {
 	 *
 	 * @since 1.7
 	 *
-	 * @return bool true if the plugin is currently beeing deactivated
+	 * @return bool true if the plugin is currently being deactivated
 	 */
 	public function is_deactivation() {
 		return isset( $_GET['action'], $_GET['plugin'] ) && 'deactivate' === $_GET['action'] && $this->plugin_basename === $_GET['plugin']; // phpcs:ignore WordPress.Security.NonceVerification
@@ -92,7 +92,7 @@ class PLL_Install_Base {
 	 * @return void
 	 */
 	protected function _activate() {
-		// Can be overriden in child class
+		// Can be overridden in child class
 	}
 
 	/**
@@ -115,7 +115,7 @@ class PLL_Install_Base {
 	 * @return void
 	 */
 	protected function _deactivate() {
-		// Can be overriden in child class
+		// Can be overridden in child class
 	}
 
 	/**

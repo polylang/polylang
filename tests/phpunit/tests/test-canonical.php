@@ -6,7 +6,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 	private static $post_en;
 	private static $page_id;
 	private static $custom_post_id;
-	private static $not_rewrited_cpt_id;
+	private static $not_rewritten_cpt_id;
 	private static $term_en;
 	private static $second_term_en;
 	private static $custom_term_en;
@@ -51,13 +51,13 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 		self::$model->post->set_language( self::$custom_post_id, 'en' );
 
-		self::$not_rewrited_cpt_id = $factory->post->create(
+		self::$not_rewritten_cpt_id = $factory->post->create(
 			array(
 				'post_type'  => 'cptnotrewrited',
 				'post_title' => 'custom-post',
 			)
 		);
-		self::$model->post->set_language( self::$not_rewrited_cpt_id, 'en' );
+		self::$model->post->set_language( self::$not_rewritten_cpt_id, 'en' );
 
 
 		self::$term_en = $factory->term->create( array( 'taxonomy' => 'category', 'name' => 'parent' ) );
@@ -325,7 +325,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		$this->assertCanonical( '/pllcanonical/custom-post/feed/', '/en/pllcanonical/custom-post/feed/' );
 	}
 
-	public function test_cpt_not_rewrited_and_permalinks_without_trailing_slash() {
+	public function test_cpt_not_rewritten_and_permalinks_without_trailing_slash() {
 		$this->set_permalink_structure( '/%postname%' );
 		$this->assertCanonical(
 			'/en/?cptnotrewrited=custom-post',
@@ -340,7 +340,7 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 		);
 	}
 
-	public function test_incorrect_language_for_cpt_not_rewrited_and_permalinks_without_trailing_slash() {
+	public function test_incorrect_language_for_cpt_not_rewritten_and_permalinks_without_trailing_slash() {
 		$this->set_permalink_structure( '/%postname%' );
 		$this->assertCanonical( '/fr/?cptnotrewrited=custom-post', '/en/?cptnotrewrited=custom-post' );
 	}

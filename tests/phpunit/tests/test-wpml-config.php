@@ -214,7 +214,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'D', get_term_meta( $from, 'term_meta_D', true ) );
 	}
 
-	public function test_export_custom_fiels() {
+	public function test_export_custom_fields() {
 		$wpml_config = PLL_WPML_Config::instance();
 		$wpml_config->init();
 

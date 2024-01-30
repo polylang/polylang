@@ -6,7 +6,7 @@
 /**
  * Class PLL_Translated_Object_UnitTestCase
  *
- * Testes PLL_Translated_Object methods tha are common to PLL_Translated_Post and PLL_Translated_Term.
+ * Testes PLL_Translated_Object methods that are common to PLL_Translated_Post and PLL_Translated_Term.
  */
 abstract class PLL_Translated_Object_UnitTestCase extends PLL_UnitTestCase {
 	/**

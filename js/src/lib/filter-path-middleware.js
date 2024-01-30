@@ -4,7 +4,7 @@
 
 /**
  * Filters requests for translatable entities.
- * This logic is shared accross all Polylang plugins.
+ * This logic is shared across all Polylang plugins.
  *
  * @since 3.5
  *

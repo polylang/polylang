@@ -71,7 +71,7 @@ jQuery(
 								if ( ( typeof( pll_data.val[ item ] ) != 'undefined' && pll_data.val[ item ][ ids[ i ] ] == 1 ) || ( typeof( pll_data.val[ item ] ) == 'undefined' && ids[ i ] == 'show_names' ) ) { // show_names as default value
 									cb.prop( 'checked', true );
 								}
-								// See reasons above. Checkbox are totaly hardcoded here with safe value
+								// See reasons above. Checkbox are totally hardcoded here with safe value
 								label.prepend( cb ); // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.prepend
 							}
 						}

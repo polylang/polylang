@@ -5,7 +5,7 @@
 const languagesList = jQuery( '.post_lang_choice' );
 
 // Dialog box for alerting the user about a risky changing.
-export const initializeConfimationModal = () => {
+export const initializeConfirmationModal = () => {
 	// We can't use underscore or lodash in this common code because it depends of the context classic or block editor.
 	// Classic editor underscore is loaded, Block editor lodash is loaded.
 	const { __ } = wp.i18n;

@@ -231,7 +231,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *
 	 * @var array[] Array keys are language term names.
 	 *
-	 * @exemple array(
+	 * @example array(
 	 *     'language'       => array(
 	 *         'term_id'          => 7,
 	 *         'term_taxonomy_id' => 8,
@@ -351,13 +351,13 @@ class PLL_Language extends PLL_Language_Deprecated {
 	}
 
 	/**
-	 * Returns the flag informations.
+	 * Returns the flag information.
 	 *
 	 * @since 2.6
 	 *
 	 * @param string $code Flag code.
 	 * @return array {
-	 *   Flag informations.
+	 *   Flag information.
 	 *
 	 *   @type string $url    Flag url.
 	 *   @type string $src    Optional, src attribute value if different of the url, for example if base64 encoded.
@@ -391,7 +391,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 		}
 
 		/**
-		 * Filters flag informations:
+		 * Filters flag information:
 		 *
 		 * @since 2.4
 		 *

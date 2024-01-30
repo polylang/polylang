@@ -4,7 +4,7 @@
  */
 
 /**
- * Main Polylang class for REST API requrests, accessible from @see PLL().
+ * Main Polylang class for REST API requests, accessible from @see PLL().
  *
  * @since 2.6
  */

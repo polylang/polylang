@@ -4,7 +4,7 @@
 
 import {
 	initializeLanguageOldValue,
-	initializeConfimationModal
+	initializeConfirmationModal
 } from './lib/confirmation-modal';
 
 import {
@@ -98,7 +98,7 @@ jQuery(
 				const { addQueryArgs }                = wp.url;
 
 				// Initialize the confirmation dialog box.
-				const confirmationModal            = initializeConfimationModal();
+				const confirmationModal            = initializeConfirmationModal();
 				const { dialogContainer : dialog } = confirmationModal;
 				let { dialogResult }               = confirmationModal;
 				const selectedOption               = event.target; // The selected option in the dropdown list.

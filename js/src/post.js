@@ -135,7 +135,7 @@ jQuery(
 						data,
 						function ( response ) {
 							if ( response ) {
-								// Since WP changeset #52710 parseAjaxReponse() return content to notice the user in a HTML tag with ajax-response id.
+								// Since WP changeset #52710 parseAjaxResponse() return content to notice the user in a HTML tag with ajax-response id.
 								// Not to disturb this behaviour by executing another ajax request in the ajaxSuccess event, we need to target another unexisting id.
 								var res = wpAjax.parseAjaxResponse( response, 'pll-ajax-response' );
 								$.each(

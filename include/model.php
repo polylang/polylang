@@ -809,7 +809,7 @@ class PLL_Model {
 		/**
 		 * Keep track of types where we set the language:
 		 * those are types where we may have more items to process if we have more than 1000 items in total.
-		 * This will prevent unecessary SQL queries in the next recursion: if we have 0 items in this recursion for
+		 * This will prevent unnecessary SQL queries in the next recursion: if we have 0 items in this recursion for
 		 * a type, we'll still have 0 in the next one, no need for a new query.
 		 */
 		$types_with_objects = array();
@@ -916,7 +916,7 @@ class PLL_Model {
 	 * @param string            $name       Language name (label).
 	 * @param PLL_Language|null $language   Optional. A language object. Required to update the existing terms.
 	 * @param string[]          $taxonomies Optional. List of language taxonomies to deal with. An empty value means
-	 *                                      all of them. Defauls to all taxonomies.
+	 *                                      all of them. Defaults to all taxonomies.
 	 * @return void
 	 *
 	 * @phpstan-param non-empty-string $slug
