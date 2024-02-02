@@ -64,7 +64,9 @@ class PLL_Cache {
 	 * @phpstan-return TCacheData
 	 */
 	public function set( $key, $data ) {
-		$this->cache[ $this->blog_id ][ $key ] = $data;
+		if ( ! doing_action( 'switch_blog' ) ) {
+			$this->cache[ $this->blog_id ][ $key ] = $data;
+		}
 		return $data;
 	}
 
