@@ -20,12 +20,12 @@ if ( is_multisite() ) :
 		protected function set_up_blog_with_pll( WP_Site $blog, array $languages, array $options, string $structure ) {
 			$cpt = uniqid( 'cpt_', true );
 			$tax = uniqid( 'tax_', true );
-			$this->translatable_objects[ (int) $blog->blog_id ] = array(
+			$this->translatable_objects[ $blog->blog_id ] = array(
 				'post_types' => array( $cpt => $cpt ),
 				'taxonomies' => array( $tax => $tax ),
 			);
 
-			$options = array_merge( $options, $this->translatable_objects[ (int) $blog->blog_id ] );
+			$options = array_merge( $options, $this->translatable_objects[ $blog->blog_id ] );
 
 			parent::set_up_blog_with_pll( $blog, $languages, $options, $structure );
 		}
@@ -41,29 +41,29 @@ if ( is_multisite() ) :
 
 			// Check current blog translatable objects are set.
 			$this->assertContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_directory->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_directory->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_directory->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_directory->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 
 			// Check other blogs translatable objects aren't set.
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_domains->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_domains->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_domains->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_domains->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_plain_links->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_plain_links->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_plain_links->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_plain_links->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 
@@ -76,29 +76,29 @@ if ( is_multisite() ) :
 
 			// Check current blog translatable objects are set.
 			$this->assertContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_domains->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_domains->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_domains->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_domains->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 
 			// Check other blogs translatable objects aren't set.
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_directory->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_directory->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_directory->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_directory->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_plain_links->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_plain_links->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_plain_links->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_plain_links->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 
@@ -111,29 +111,29 @@ if ( is_multisite() ) :
 
 			// Check current blog translatable objects are set.
 			$this->assertContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_plain_links->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_plain_links->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_plain_links->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_plain_links->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 
 			// Check other blogs translatable objects aren't set.
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_domains->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_domains->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_domains->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_domains->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_directory->blog_id ]['post_types'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_directory->blog_id ]['post_types'] ),
 				$pll_admin->model->post->get_translated_object_types( false )
 			);
 			$this->assertNotContains(
-				reset( $this->translatable_objects[ (int) $this->blog_with_pll_directory->blog_id ]['taxonomies'] ),
+				reset( $this->translatable_objects[ $this->blog_with_pll_directory->blog_id ]['taxonomies'] ),
 				$pll_admin->model->term->get_translated_object_types( false )
 			);
 		}
