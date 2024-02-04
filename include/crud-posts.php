@@ -355,13 +355,13 @@ class PLL_CRUD_Posts {
 	 * @return void
 	 */
 	public function force_tags_translation( $post_id, $post_after, $post_before ) {
-		if ( ! is_object_in_taxonomy( $post_before, 'post_tag' ) ) {
+		if ( ! is_object_in_taxonomy( $post_before->post_type, 'post_tag' ) ) {
 			return;
 		}
 
 		$terms = get_the_terms( $post_before, 'post_tag' );
 
-		if ( empty( $terms ) ) {
+		if ( empty( $terms ) || ! is_array( $terms ) ) {
 			return;
 		}
 

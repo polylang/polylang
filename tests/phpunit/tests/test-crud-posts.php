@@ -215,10 +215,10 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 	 * due to the post being saved 2 times (once with the REST API, once with edit_post().
 	 */
 	public function test_simple_update_of_post_with_tag_mixing_slug_and_name() {
-		$tag1 = self::factory()->tag->create( array( 'name' => 'Unique name', 'slug' => 'common', 'lang' => 'en' ) );
-		$tag2 = self::factory()->tag->create( array( 'name' => 'Common', 'slug' => 'unique-slug', 'lang' => 'en' ) );
+		self::factory()->tag->create( array( 'name' => 'Unique name', 'slug' => 'common', 'lang' => 'en' ) );
+		$tag = self::factory()->tag->create( array( 'name' => 'Common', 'slug' => 'unique-slug', 'lang' => 'en' ) );
 
-		$post_id = self::factory()->post->create( array( 'tax_input' => array( 'post_tag' => array( $tag2 ) ), 'lang' => 'en' ) );
+		$post_id = self::factory()->post->create( array( 'tax_input' => array( 'post_tag' => array( $tag ) ), 'lang' => 'en' ) );
 		wp_update_post( array( 'ID' => $post_id ) );
 
 		$tags = wp_get_post_tags( $post_id );
@@ -234,11 +234,11 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 	 * The sequence typically occurs when assigning the "faulty" tag in the classic editor.
 	 */
 	public function test_existing_post_updated_with_tag_mixing_slug_and_name() {
-		$tag1 = self::factory()->tag->create( array( 'name' => 'Unique name', 'slug' => 'common', 'lang' => 'en' ) );
-		$tag2 = self::factory()->tag->create( array( 'name' => 'Common', 'slug' => 'unique-slug', 'lang' => 'en' ) );
+		self::factory()->tag->create( array( 'name' => 'Unique name', 'slug' => 'common', 'lang' => 'en' ) );
+		$tag = self::factory()->tag->create( array( 'name' => 'Common', 'slug' => 'unique-slug', 'lang' => 'en' ) );
 
 		$post_id = self::factory()->post->create( array( 'lang' => 'en' ) );
-		wp_update_post( array( 'ID' => $post_id, 'tax_input' => array( 'post_tag' => array( $tag2 ) )  ) );
+		wp_update_post( array( 'ID' => $post_id, 'tax_input' => array( 'post_tag' => array( $tag ) ) ) );
 
 		$tags = wp_get_post_tags( $post_id );
 		$this->assertNotWPError( $tags );
