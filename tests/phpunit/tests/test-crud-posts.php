@@ -102,7 +102,8 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @ticket #1766 see {https://github.com/polylang/polylang-pro/issues/1766}.
+	 * @ticket #1766
+	 * @see https://github.com/polylang/polylang-pro/issues/1766.
 	 *
 	 * @testWith ["post_tag", "tax_input"]
 	 *           ["category", "post_category"]
@@ -260,5 +261,44 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 			);
 			$this->assertSameSets( $terms[ $to ], $assigned_post_terms_ids, "The post doesn\'t have the correct {$taxonomy->labels->name}." );
 		}
+	}
+
+	/**
+	 * @ticket #1401
+	 * @see https://github.com/polylang/polylang/issues/1401.
+	 *
+	 * The sequence typically occurs when assigning the "faulty" tag in the block editor
+	 * due to the post being saved 2 times (once with the REST API, once with edit_post().
+	 */
+	public function test_simple_update_of_post_with_tag_mixing_slug_and_name() {
+		self::factory()->tag->create( array( 'name' => 'Unique name', 'slug' => 'common', 'lang' => 'en' ) );
+		$tag = self::factory()->tag->create( array( 'name' => 'Common', 'slug' => 'unique-slug', 'lang' => 'en' ) );
+
+		$post_id = self::factory()->post->create( array( 'tax_input' => array( 'post_tag' => array( $tag ) ), 'lang' => 'en' ) );
+		wp_update_post( array( 'ID' => $post_id ) );
+
+		$tags = wp_get_post_tags( $post_id );
+		$this->assertNotWPError( $tags );
+		$this->assertCount( 1, $tags );
+		$this->assertSame( 'Common', reset( $tags )->name );
+	}
+
+	/**
+	 * @ticket #1401
+	 * @see https://github.com/polylang/polylang/issues/1401.
+	 *
+	 * The sequence typically occurs when assigning the "faulty" tag in the classic editor.
+	 */
+	public function test_existing_post_updated_with_tag_mixing_slug_and_name() {
+		self::factory()->tag->create( array( 'name' => 'Unique name', 'slug' => 'common', 'lang' => 'en' ) );
+		$tag = self::factory()->tag->create( array( 'name' => 'Common', 'slug' => 'unique-slug', 'lang' => 'en' ) );
+
+		$post_id = self::factory()->post->create( array( 'lang' => 'en' ) );
+		wp_update_post( array( 'ID' => $post_id, 'tax_input' => array( 'post_tag' => array( $tag ) ) ) );
+
+		$tags = wp_get_post_tags( $post_id );
+		$this->assertNotWPError( $tags );
+		$this->assertCount( 1, $tags );
+		$this->assertSame( 'Common', reset( $tags )->name );
 	}
 }
