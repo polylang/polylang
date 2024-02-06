@@ -5,7 +5,7 @@ Tags: multilingual, bilingual, translate, translation, language, multilanguage, 
 Requires at least: 5.9
 Tested up to: 6.4
 Requires PHP: 7.0
-Stable tag: 3.5.3
+Stable tag: 3.5.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,14 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.5.4 (2023-02-06) =
+
+* Pro: Fix an accessibility issue int the navigation language switcher block
+* Pro: Fix featured image not exported for posts with blocks
+* Pro: Fix a conflict with the Flatsome builder
+* Fix a notice when using system CRON. Props arielruminski #1397
+* Fix an edge case where a wrong post tag may be assigned to a post #1418
 
 = 3.5.3 (2023-12-11) =
 
