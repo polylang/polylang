@@ -2,6 +2,67 @@
  * @package Polylang
  */
 
+window.pll = window.pll || {};
+
+/**
+ * Calls the passed callable when the DOM is ready.
+ *
+ * @param {callable} fn - Function to call when the DOM is ready.
+ */
+window.pll.dom_ready = ( fn ) => {
+	if ( document.readyState !== 'loading' ) {
+		fn();
+	} else {
+		document.addEventListener( 'DOMContentLoaded', fn );
+	}
+};
+
+/**
+ * Settings: manages AJAX calls attached to `.pll-ajax-button` buttons.
+ */
+window.pll.settings_ajax_button = () => {
+	document.querySelectorAll( '.pll-ajax-button' ).forEach( ( el ) => {
+		el.addEventListener( 'click', ( event ) => {
+			const button    = event.target;
+			const action    = button.getAttribute( 'data-action' );
+			const nonce     = button.getAttribute( 'data-nonce' );
+			const row       = button.closest( 'tr' );
+			const errorElms = row.querySelectorAll( '.pll-error-message-text' );
+
+			if ( ! action || ! nonce || ! row || ! errorElms.length ) {
+				return;
+			}
+
+			const sep = ( ajaxurl.indexOf( '?' ) !== -1 ) ? '&' : '?';
+			let   url = ajaxurl + sep + 'action=' + action + '&_pll_nonce=' + nonce + '&pll_ajax_settings=1';
+
+			row.querySelectorAll( '[data-name]' ).forEach( ( el ) => {
+				url += '&' + el.getAttribute( 'data-name' ) + '=' + el.value;
+			} );
+			button.setAttribute( 'disabled', 'disabled' );
+			row.classList.remove( 'notice-success', 'notice-error', 'notice-alt' );
+
+			fetch( url ).then( response => {
+				button.removeAttribute( 'disabled' );
+				return response.json();
+			} ).then( json => {
+				if ( json.success ) {
+					row.classList.add( 'notice-success', 'notice-alt' );
+				} else {
+					errorElms[0].textContent = json.data;
+					row.classList.add( 'notice-error', 'notice-alt' );
+				}
+			} ).catch( () => {
+				button.removeAttribute( 'disabled' );
+				errorElms[0].textContent = 'Unknown error.';
+				row.classList.add( 'notice-error', 'notice-alt' );
+			} )
+		} );
+	} );
+};
+
+window.pll.dom_ready( window.pll.settings_ajax_button );
+
 jQuery(
 	function( $ ) {
 

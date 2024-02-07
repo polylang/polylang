@@ -145,6 +145,94 @@ td.column-default_lang .icon-default-lang:before,
 	width: 250px;
 }
 
+.pll-settings .pll-inner-notice {
+	margin: 5px 0 15px;
+	border: 1px solid #c3c4c7;
+	border-left-width: 4px;
+	padding: 1px 12px;
+	background: #fff;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.form-table .pll-inner-notice {
+	margin-bottom: 5px;
+}
+
+.pll-settings .notice-error {
+	border-left-color: #d63638;
+}
+
+.pll-settings .pll-inner-notice p {
+	margin: 0.5em 0;
+	padding: 2px;
+}
+
+.pll-settings .form-table tr:not(.notice-success) .pll-success-message,
+.pll-settings .form-table tr:not(.notice-error) .pll-error-message,
+.pll-settings .notice-error .pll-origin-message,
+.pll-settings .notice-success .pll-origin-message {
+	display: none;
+}
+
+[disabled] + .spinner {
+	visibility: visible;
+}
+
+.pll-success-message .pll-icon {
+	color: rgb(18, 91, 145);
+}
+
+.pll-error-message .pll-icon {
+	color: rgb(145, 30, 31);
+}
+
+.pll-icon {
+	font-size: 1.8em;
+	margin-right: 3px;
+	margin-left: 1px;
+	vertical-align: -2px;
+}
+
+#pll-configure-machine_translation td {
+	vertical-align: top;
+}
+
+.pll-data-consumption-wrapper {
+	position: relative;
+	max-width: 500px;
+	height: 2em;
+	line-height: 2em;
+	vertical-align: middle;
+	text-align: left;
+	font-size: 2em;
+	border: 1px solid rgb(64, 70, 72);
+	border-radius: 4px;
+	overflow: hidden;
+	white-space: nowrap;
+	color: rgb(23, 114, 181);
+	text-indent: 1em;
+}
+
+.pll-data-consumption-wrapper div {
+	position: absolute;
+	height: 100%;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	background-color: rgb(23, 114, 181);
+	color: rgb(232, 230, 227);
+}
+
+.pll-settings [type="password"] + .button {
+	margin-left: 20px;
+	margin-right: 0;
+}
+
+.pll-settings [type="password"] + .button + .spinner {
+	float: none;
+}
+
+
 /* settings URL modifications */
 #pll-domains-table td {
 	padding: 2px 2px 2px 1.5em;
