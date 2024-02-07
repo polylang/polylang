@@ -49,17 +49,6 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 	}
 
 	/**
-	 * Tells if the module is active.
-	 *
-	 * @since 3.6
-	 *
-	 * @return bool
-	 */
-	public function is_active() {
-		return false;
-	}
-
-	/**
 	 * Displays an upgrade message.
 	 *
 	 * @since 3.6
