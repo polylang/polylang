@@ -31,7 +31,7 @@ class PLL_Settings_Fields {
 	 * @since 3.6
 	 *
 	 * @param string $input_base_name Base of the name attribute used by the inputs.
-	 * @param array  $options         Fields' options. Make sure all keys are set, and with the appropriate type.
+	 * @param array  $options         Fields' options. Make sure the keys are set with the appropriate type.
 	 *
 	 * @phpstan-param non-falsy-string $input_base_name
 	 */
@@ -41,188 +41,18 @@ class PLL_Settings_Fields {
 	}
 
 	/**
-	 * Returns a HTML string for a `<input type="password"/>` tag.
+	 * Prints a view.
 	 *
 	 * @since 3.6
 	 *
-	 * @param array $field_atts {
-	 *    Some attributes for the tag.
-	 *
-	 *    @type string $option The option name.
-	 *    @type string $id     The `id` attribute (without the `pll-` prefix).
-	 *    @type array  $data   Optional. List of `data-*` attributes (without the `data-` prefix).
-	 * }
-	 * @return string
-	 *
-	 * @phpstan-param array{
-	 *    option: non-falsy-string,
-	 *    id: non-falsy-string,
-	 *    data?: array<non-falsy-string, scalar>
-	 * } $field_atts
+	 * @param string $view Name of the view.
+	 * @param array  $atts Data to print. See views headers.
+	 * @return void
 	 */
-	public function get_password_tag( array $field_atts ): string {
-		return sprintf(
-			'<input id="pll-%s" name="%s[%s]" type="password" value="%s" class="regular-text code" %s/>',
-			esc_attr( $field_atts['id'] ),
-			esc_attr( $this->input_base_name ),
-			esc_attr( $field_atts['option'] ),
-			esc_attr( $this->options[ $field_atts['option'] ] ),
-			$this->build_attributes( $field_atts['data'] ?? array(), 'data-' )
-		);
-	}
-
-	/**
-	 * Returns a HTML string for a `<select/>` tag.
-	 *
-	 * @since 3.6
-	 *
-	 * @param array $field_atts {
-	 *    Some attributes for the tag.
-	 *
-	 *    @type string $option The option name.
-	 *    @type string $id     The `id` attribute (without the `pll-` prefix).
-	 *    @type array  $values A list of values/labels pairs.
-	 *    @type array  $data   Optional. List of `data-*` attributes (without the `data-` prefix).
-	 * }
-	 * @return string
-	 *
-	 * @phpstan-param array{
-	 *    option: non-falsy-string,
-	 *    id: non-falsy-string,
-	 *    values: non-empty-array<scalar, string>,
-	 *    data?: array<non-falsy-string, scalar>
-	 * } $field_atts
-	 */
-	public function get_select_tag( array $field_atts ): string {
-		$content = sprintf(
-			'<select id="pll-%s" name="%s[%s]" %s>',
-			esc_attr( $field_atts['id'] ),
-			esc_attr( $this->input_base_name ),
-			esc_attr( $field_atts['option'] ),
-			$this->build_attributes( $field_atts['data'] ?? array(), 'data-' )
-		);
-
-		foreach ( $field_atts['values'] as $value => $label ) {
-			$content .= sprintf(
-				'<option value="%s" %s>%s</option>',
-				esc_attr( (string) $value ),
-				selected( $this->options[ $field_atts['option'] ], $value, false ),
-				esc_html( $label )
-			);
+	public function print_view( string $view, array $atts = array() ) {
+		if ( is_readable( POLYLANG_DIR . "/settings/view-{$view}.php" ) ) {
+			include POLYLANG_DIR . "/settings/view-{$view}.php";
 		}
-
-		return "{$content}</select>";
-	}
-
-	/**
-	 * Returns a HTML string for a description text.
-	 *
-	 * @since 3.6
-	 *
-	 * @param array $field_atts {
-	 *    Some attributes for the tag.
-	 *
-	 *    @type string $content The content text.
-	 *    @type string $class   Optional. A class attribute.
-	 * }
-	 * @return string
-	 *
-	 * @phpstan-param array{
-	 *    content: string,
-	 *    class?: string
-	 * } $field_atts
-	 */
-	public function get_description_tag( array $field_atts ): string {
-		return sprintf(
-			'<p class="description %s">%s</p>',
-			$field_atts['class'] ?? '',
-			$field_atts['content']
-		);
-	}
-
-	/**
-	 * Returns a HTML string for a `<label/>` tag.
-	 *
-	 * @since 3.6
-	 *
-	 * @param array $field_atts {
-	 *    Some attributes for the tag.
-	 *
-	 *    @type string $label The label text.
-	 *    @type string $for   The `for` attribute (without the `pll-` prefix).
-	 * }
-	 * @return string
-	 *
-	 * @phpstan-param array{
-	 *    for: non-falsy-string,
-	 *    label: string
-	 * } $field_atts
-	 */
-	public function get_label_tag( array $field_atts ): string {
-		return sprintf(
-			'<label for="pll-%s">%s</label>',
-			esc_attr( $field_atts['for'] ),
-			esc_html( $field_atts['label'] )
-		);
-	}
-
-	/**
-	 * Returns a HTML string for a `<button/>` tag.
-	 *
-	 * @since 3.6
-	 *
-	 * @param array $field_atts {
-	 *    Some attributes for the tag.
-	 *
-	 *    @type string $label The label text.
-	 *    @type string $id    Optional. The `id` attribute (without the `pll-` prefix).
-	 *    @type string $class Optional. A class attribute.
-	 *    @type array  $data  Optional. List of `data-*` attributes (without the `data-` prefix).
-	 * }
-	 * @return string
-	 *
-	 * @phpstan-param array{
-	 *    label: string,
-	 *    id?: non-falsy-string,
-	 *    class?: non-falsy-string,
-	 *    data?: array<non-falsy-string, scalar>
-	 * } $field_atts
-	 */
-	public function get_button_tag( array $field_atts ): string {
-		$id = ! empty( $field_atts['id'] ) ? sprintf( 'id="pll-%s"', esc_attr( $field_atts['id'] ) ) : '';
-
-		return sprintf(
-			'<button %s class="button button-secondary %s" type="button" %s>%s</button>',
-			$id,
-			esc_attr( $field_atts['class'] ?? '' ),
-			$this->build_attributes( $field_atts['data'] ?? array(), 'data-' ),
-			esc_html( $field_atts['label'] )
-		);
-	}
-
-	/**
-	 * Returns a HTML string to display a progress bar.
-	 *
-	 * @since 3.6
-	 *
-	 * @param float $count Progress count.
-	 * @param float $limit Progress limit.
-	 * @return string
-	 */
-	public function get_progress_bar( float $count, float $limit ): string {
-		$percent  = round( $count * 100 / $limit, 1 );
-		$percent  = (float) min( $percent, 100 );
-		$decimals = 1;
-
-		if ( floor( $percent ) === $percent ) {
-			$decimals = 0;
-		}
-
-		return sprintf(
-			'<div class="pll-progress-bar-wrapper">%1$s<div style="width: %2$s;">%1$s</div></div>',
-			esc_html( number_format_i18n( $percent, $decimals ) ) . '%',
-			esc_attr( (string) $percent ) . '%'
-		);
 	}
 
 	/**
@@ -249,5 +79,31 @@ class PLL_Settings_Fields {
 				array_keys( $atts )
 			)
 		);
+	}
+
+	/**
+	 * Returns a field's option value.
+	 *
+	 * @since 3.6
+	 *
+	 * @param string $option  Field option name.
+	 * @param mixed  $default Optional. Default value if the option is not set.
+	 * @return mixed
+	 */
+	public function get_option( string $option, $default = '' ) {
+		return $this->options[ $option ] ?? $default;
+	}
+
+	/**
+	 * Returns the base of the name attribute used by the inputs.
+	 *
+	 * @since 3.6
+	 *
+	 * @return string
+	 *
+	 * @phpstan-return non-falsy-string
+	 */
+	public function get_input_base_name(): string {
+		return $this->input_base_name;
 	}
 }
