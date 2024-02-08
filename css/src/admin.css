@@ -197,7 +197,7 @@ td.column-default_lang .icon-default-lang:before,
 	vertical-align: top;
 }
 
-.pll-data-consumption-wrapper {
+.pll-progress-bar-wrapper {
 	position: relative;
 	max-width: 500px;
 	height: 2em;
@@ -213,7 +213,7 @@ td.column-default_lang .icon-default-lang:before,
 	text-indent: 1em;
 }
 
-.pll-data-consumption-wrapper div {
+.pll-progress-bar-wrapper div {
 	position: absolute;
 	height: 100%;
 	top: 0;

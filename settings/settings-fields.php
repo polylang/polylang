@@ -219,7 +219,7 @@ class PLL_Settings_Fields {
 		}
 
 		return sprintf(
-			'<div class="pll-data-consumption-wrapper">%1$s<div style="width: %2$s;">%1$s</div></div>',
+			'<div class="pll-progress-bar-wrapper">%1$s<div style="width: %2$s;">%1$s</div></div>',
 			esc_html( number_format_i18n( $percent, $decimals ) ) . '%',
 			esc_attr( (string) $percent ) . '%'
 		);
