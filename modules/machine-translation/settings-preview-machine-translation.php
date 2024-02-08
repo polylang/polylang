@@ -29,23 +29,11 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 		parent::__construct(
 			$polylang,
 			array(
-				'module'        => 'machine-translation',
-				'title'         => __( 'Machine Translation', 'polylang' ),
-				'description'   => $this->get_description(),
-				'active_option' => 'machine_translation_enabled',
+				'module'      => 'machine-translation',
+				'title'       => __( 'Machine Translation', 'polylang' ),
+				'description' => __( 'Opt in for a machine translation service for post types.', 'polylang' ),
 			)
 		);
-	}
-
-	/**
-	 * Returns the module description.
-	 *
-	 * @since 3.6
-	 *
-	 * @return string
-	 */
-	protected function get_description() {
-		return __( 'Opt in for a machine translation service for post types.', 'polylang' );
 	}
 
 	/**
