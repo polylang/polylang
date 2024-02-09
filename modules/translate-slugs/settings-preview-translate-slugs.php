@@ -28,9 +28,10 @@ class PLL_Settings_Preview_Translate_Slugs extends PLL_Settings_Module {
 		parent::__construct(
 			$polylang,
 			array(
-				'module'      => 'translate-slugs',
-				'title'       => __( 'Translate slugs', 'polylang' ),
-				'description' => $this->get_description(),
+				'module'        => 'translate-slugs',
+				'title'         => __( 'Translate slugs', 'polylang' ),
+				'description'   => $this->get_description(),
+				'active_option' => '',
 			)
 		);
 	}
@@ -44,27 +45,5 @@ class PLL_Settings_Preview_Translate_Slugs extends PLL_Settings_Module {
 	 */
 	protected function get_description() {
 		return __( 'Allows to translate custom post types and taxonomies slugs in URLs.', 'polylang' );
-	}
-
-	/**
-	 * Tells if the module is active.
-	 *
-	 * @since 1.9
-	 *
-	 * @return bool
-	 */
-	public function is_active() {
-		return false;
-	}
-
-	/**
-	 * Displays an upgrade message.
-	 *
-	 * @since 1.9
-	 *
-	 * @return string
-	 */
-	public function get_upgrade_message() {
-		return $this->default_upgrade_message();
 	}
 }

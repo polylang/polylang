@@ -30,6 +30,7 @@ class PLL_Settings_Module {
 
 	/**
 	 * Stores if the module is active.
+	 * Use an empty string for a module that can be active only in Pro.
 	 *
 	 * @var string|false
 	 */
@@ -157,7 +158,7 @@ class PLL_Settings_Module {
 	 * @return bool
 	 */
 	public function is_active() {
-		return empty( $this->active_option ) || ! empty( $this->options[ $this->active_option ] );
+		return false === $this->active_option || ! empty( $this->active_option ) && ! empty( $this->options[ $this->active_option ] );
 	}
 
 	/**
@@ -334,7 +335,7 @@ class PLL_Settings_Module {
 	 * @return string
 	 */
 	public function get_upgrade_message() {
-		return '';
+		return '' === $this->active_option ? $this->default_upgrade_message() : '';
 	}
 
 	/**

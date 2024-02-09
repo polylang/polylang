@@ -29,21 +29,11 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 		parent::__construct(
 			$polylang,
 			array(
-				'module'      => 'machine-translation',
-				'title'       => __( 'Machine Translation', 'polylang' ),
-				'description' => __( 'Opt in for a machine translation service for post types.', 'polylang' ),
+				'module'        => 'machine-translation',
+				'title'         => __( 'Machine Translation', 'polylang' ),
+				'description'   => __( 'Opt in for a machine translation service for post types.', 'polylang' ),
+				'active_option' => '',
 			)
 		);
-	}
-
-	/**
-	 * Displays an upgrade message.
-	 *
-	 * @since 3.6
-	 *
-	 * @return string
-	 */
-	public function get_upgrade_message() {
-		return $this->default_upgrade_message();
 	}
 }
