@@ -33,7 +33,7 @@ window.pll.settings_ajax_button = () => {
 				return;
 			}
 
-			let urlParams = { 'action': action, '_pll_nonce': nonce, 'pll_ajax_settings': 1 };
+			const urlParams = { 'action': action, '_pll_nonce': nonce, 'pll_ajax_settings': 1 };
 			row.querySelectorAll( '[data-name]' ).forEach( ( el ) => {
 				urlParams[ el.getAttribute( 'data-name' ) ] = el.value;
 			} );
