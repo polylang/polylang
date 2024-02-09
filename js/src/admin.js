@@ -33,16 +33,16 @@ window.pll.settings_ajax_button = () => {
 				return;
 			}
 
-			const sep = ( ajaxurl.indexOf( '?' ) !== -1 ) ? '&' : '?';
-			let   url = ajaxurl + sep + 'action=' + action + '&_pll_nonce=' + nonce + '&pll_ajax_settings=1';
-
+			let urlParams = { 'action': action, '_pll_nonce': nonce, 'pll_ajax_settings': 1 };
 			row.querySelectorAll( '[data-name]' ).forEach( ( el ) => {
-				url += '&' + el.getAttribute( 'data-name' ) + '=' + el.value;
+				urlParams[ el.getAttribute( 'data-name' ) ] = el.value;
 			} );
+			const url = wp.url.addQueryArgs( ajaxurl, urlParams );
+
 			button.setAttribute( 'disabled', 'disabled' );
 			row.classList.remove( 'notice-success', 'notice-error', 'notice-alt' );
 
-			fetch( url ).then( response => {
+			fetch( url ).then( ( response ) => {
 				button.removeAttribute( 'disabled' );
 				return response.json();
 			} ).then( json => {
