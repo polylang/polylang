@@ -45,7 +45,7 @@ window.pll.settings_ajax_button = () => {
 			fetch( url ).then( ( response ) => {
 				button.removeAttribute( 'disabled' );
 				return response.json();
-			} ).then( json => {
+			} ).then( ( json ) => {
 				if ( json.success ) {
 					row.classList.add( 'notice-success', 'notice-alt' );
 				} else {
