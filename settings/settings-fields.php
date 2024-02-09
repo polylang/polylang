@@ -15,6 +15,8 @@ class PLL_Settings_Fields {
 	 * Base of the name attribute used by the inputs.
 	 *
 	 * @var string
+	 *
+	 * @phpstan-var non-falsy-string
 	 */
 	private $input_base_name;
 
