@@ -5,7 +5,7 @@
 /**
  * Settings: attaches an event to `.pll-ajax-button` buttons to trigger AJAX requests.
  */
-const pllMachineTranslationAjaxButton = {
+export const pllMachineTranslationAjaxButton = {
 	init: () => {
 		if ( document.readyState !== 'loading' ) {
 			pllMachineTranslationAjaxButton.attachEvent();
@@ -55,5 +55,3 @@ const pllMachineTranslationAjaxButton = {
 		} );
 	}
 };
-
-pllMachineTranslationAjaxButton.init();
