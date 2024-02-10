@@ -80,6 +80,7 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'arab',
 		'facebook' => 'ar_AR',
+		'deepl'    => 'AR',
 	),
 	'arg' => array(
 		'code'     => 'an',
@@ -98,6 +99,7 @@ return array(
 		'dir'      => 'rtl',
 		'flag'     => 'ma',
 		'facebook' => 'ar_AR',
+		'deepl'    => 'AR',
 	),
 	'as' => array(
 		'code'     => 'as',
