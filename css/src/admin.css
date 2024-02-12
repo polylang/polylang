@@ -158,8 +158,20 @@ td.column-default_lang .icon-default-lang:before,
 	margin-bottom: 5px;
 }
 
+.pll-settings .notice-success {
+	border-left-color: #00a32a;
+}
+
+.pll-settings .notice-warning {
+	border-left-color: #dba617;
+}
+
 .pll-settings .notice-error {
 	border-left-color: #d63638;
+}
+
+.pll-settings .notice-info {
+	border-left-color: #72aee6;
 }
 
 .pll-settings .pll-inner-notice p {
