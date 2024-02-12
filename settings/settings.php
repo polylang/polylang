@@ -328,8 +328,8 @@ class PLL_Settings extends PLL_Admin_Base {
 			'pll_admin',
 			'pll_admin',
 			array(
-				'dismiss_notice' => __( 'Dismiss this notice.', 'polylang' ),
-				'unknown_error'  => __( 'Unknown error.', 'polylang' ),
+				'dismiss_notice' => esc_html__( 'Dismiss this notice.', 'polylang' ),
+				'unknown_error'  => esc_html__( 'Unknown error.', 'polylang' ),
 			)
 		);
 
