@@ -29,7 +29,7 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 		parent::__construct(
 			$polylang,
 			array(
-				'module'        => 'machine-translation',
+				'module'        => 'machine_translation',
 				'title'         => __( 'Machine Translation', 'polylang' ),
 				'description'   => __( 'Opt in for a machine translation service for post types.', 'polylang' ),
 				'active_option' => '',
