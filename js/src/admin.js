@@ -2,12 +2,6 @@
  * @package Polylang
  */
 
-import {
-	pllMachineTranslationAjaxButton
-} from './lib/settings';
-
-pllMachineTranslationAjaxButton.init();
-
 jQuery(
 	function( $ ) {
 
