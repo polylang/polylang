@@ -30,7 +30,11 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 			$polylang,
 			array(
 				'module'        => 'machine_translation',
-				'title'         => __( 'Machine Translation', 'polylang' ),
+				'title'         => sprintf(
+					/* translators: %s is a service name. */
+					__( 'Machine Translation by %s', 'polylang' ),
+					'DeepL'
+				),
 				'description'   => __( 'Allows linkage to an external translation solution.', 'polylang' ),
 				'active_option' => '',
 			)
