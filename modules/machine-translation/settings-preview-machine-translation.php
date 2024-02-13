@@ -31,7 +31,7 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 			array(
 				'module'        => 'machine_translation',
 				'title'         => __( 'Machine Translation', 'polylang' ),
-				'description'   => __( 'Opt in for a machine translation service for post types.', 'polylang' ),
+				'description'   => __( 'Allows linkage to an external translation solution.', 'polylang' ),
 				'active_option' => '',
 			)
 		);
