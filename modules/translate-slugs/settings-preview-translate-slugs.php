@@ -22,18 +22,18 @@ class PLL_Settings_Preview_Translate_Slugs extends PLL_Settings_Module {
 	 *
 	 * @since 1.9
 	 *
-	 * @param object $polylang Polylang object.
+	 * @param PLL_Settings $polylang Polylang object.
+	 * @param array        $args     Optional. Addition arguments.
 	 */
-	public function __construct( &$polylang ) {
-		parent::__construct(
-			$polylang,
-			array(
-				'module'        => 'translate-slugs',
-				'title'         => __( 'Translate slugs', 'polylang' ),
-				'description'   => $this->get_description(),
-				'active_option' => '',
-			)
+	public function __construct( &$polylang, array $args = array() ) {
+		$default = array(
+			'module'        => 'translate-slugs',
+			'title'         => __( 'Translate slugs', 'polylang' ),
+			'description'   => $this->get_description(),
+			'active_option' => '',
 		);
+
+		parent::__construct( $polylang, array_merge( $default, $args ) );
 	}
 
 	/**
