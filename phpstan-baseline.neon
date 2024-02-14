@@ -891,11 +891,6 @@ parameters:
 			path: settings/settings.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|null given\\.$#"
-			count: 2
-			path: settings/table-settings.php
-
-		-
 			message: "#^Parameter \\#2 \\$column_name of method PLL_Table_Settings\\:\\:column_default\\(\\) expects string, int\\|string given\\.$#"
 			count: 1
 			path: settings/table-settings.php

@@ -25,6 +25,13 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 	 *
 	 * @param PLL_Settings $polylang Polylang object.
 	 * @param array        $args     Optional. Addition arguments.
+	 *
+	 * @phpstan-param array{
+	 *   module?: non-falsy-string,
+	 *   title?: string,
+	 *   description?: string,
+	 *   active_option?: non-falsy-string
+	 * } $args
 	 */
 	public function __construct( &$polylang, array $args = array() ) {
 		$default = array(
@@ -35,7 +42,7 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 				'DeepL'
 			),
 			'description'   => __( 'Allows linkage to an external translation solution.', 'polylang' ),
-			'active_option' => '',
+			'active_option' => 'preview',
 		);
 
 		parent::__construct( $polylang, array_merge( $default, $args ) );
