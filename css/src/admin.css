@@ -160,7 +160,7 @@ td.column-default_lang .icon-default-lang:before,
 }
 
 /* settings Activation keys */
-#pll-licenses-table td {
+.pll-table-top td {
 	vertical-align: top;
 }
 

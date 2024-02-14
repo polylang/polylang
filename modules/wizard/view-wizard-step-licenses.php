@@ -25,7 +25,7 @@ $is_error = isset( $_GET['activate_error'] ) && 'i18n_license_key_error' === san
 	<?php endif; ?>
 </div>
 <div class="form-field">
-	<table id="pll-licenses-table" class="form-table">
+	<table id="pll-licenses-table" class="form-table pll-table-top">
 		<tbody>
 		<?php
 		foreach ( $licenses as $license ) {
