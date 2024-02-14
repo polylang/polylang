@@ -16,7 +16,7 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 	 *
 	 * @var int
 	 */
-	public $priority = 85;
+	public $priority = 90;
 
 	/**
 	 * Constructor.
