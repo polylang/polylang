@@ -182,7 +182,7 @@ class PLL_Settings_Module {
 	 * @return bool
 	 */
 	public function is_active() {
-		return 'none' === $this->active_option || 'preview' !== $this->active_option && ! empty( $this->options[ $this->active_option ] );
+		return 'none' === $this->active_option || ( 'preview' !== $this->active_option && ! empty( $this->options[ $this->active_option ] ) );
 	}
 
 	/**
