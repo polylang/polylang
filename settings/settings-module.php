@@ -259,15 +259,15 @@ class PLL_Settings_Module {
 
 			ob_start();
 
-			if ( empty( get_settings_errors() ) ) {
+			if ( empty( get_settings_errors( 'polylang' ) ) ) {
 				// Send update message
-				add_settings_error( 'general', 'settings_updated', __( 'Settings saved.', 'polylang' ), 'success' );
-				settings_errors();
+				add_settings_error( 'polylang', 'settings_updated', __( 'Settings saved.', 'polylang' ), 'success' );
+				settings_errors( 'polylang' );
 				$x = new WP_Ajax_Response( array( 'what' => 'success', 'data' => ob_get_clean() ) );
 				$x->send();
 			} else {
 				// Send error messages
-				settings_errors();
+				settings_errors( 'polylang' );
 				$x = new WP_Ajax_Response( array( 'what' => 'error', 'data' => ob_get_clean() ) );
 				$x->send();
 			}

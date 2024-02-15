@@ -262,7 +262,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 				if ( empty( $domain ) ) {
 					$lang = $this->model->get_language( $key );
 					add_settings_error(
-						'general',
+						'polylang',
 						sprintf( 'pll_invalid_domain_%s', $key ),
 						esc_html(
 							sprintf(
@@ -318,7 +318,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 
 			if ( 200 != $response_code ) {
 				add_settings_error(
-					'general',
+					'polylang',
 					sprintf( 'pll_invalid_domain_%s', $lang->slug ),
 					esc_html(
 						sprintf(
