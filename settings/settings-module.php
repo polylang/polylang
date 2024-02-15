@@ -32,7 +32,7 @@ class PLL_Settings_Module {
 	 * Key to use to manage the module activation state.
 	 * Possible values:
 	 * - An option key for a module that can be activated/deactivated.
-	 * - 'none' for a module that is always active.
+	 * - 'none' for a module that doesn't have a activation/deactivation setting.
 	 * - 'preview' for a preview module whose functionalities are available in the Pro version.
 	 *
 	 * @var string
@@ -106,7 +106,7 @@ class PLL_Settings_Module {
 	 *   @type string $active_option Optional. Key to use to manage the module activation state.
 	 *                               Possible values:
 	 *                               - An option key for a module that can be activated/deactivated.
-	 *                               - 'none' for a module that is always active.
+	 *                               - 'none' for a module that doesn't have a activation/deactivation setting.
 	 *                               - 'preview' for a preview module whose functionalities are available in the Pro version.
 	 *                               Default is 'none'.
 	 * }
