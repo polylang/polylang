@@ -22,17 +22,25 @@ class PLL_Settings_Preview_Translate_Slugs extends PLL_Settings_Module {
 	 *
 	 * @since 1.9
 	 *
-	 * @param object $polylang Polylang object.
+	 * @param PLL_Settings $polylang Polylang object.
+	 * @param array        $args     Optional. Addition arguments.
+	 *
+	 * @phpstan-param array{
+	 *   module?: non-falsy-string,
+	 *   title?: string,
+	 *   description?: string,
+	 *   active_option?: non-falsy-string
+	 * } $args
 	 */
-	public function __construct( &$polylang ) {
-		parent::__construct(
-			$polylang,
-			array(
-				'module'      => 'translate-slugs',
-				'title'       => __( 'Translate slugs', 'polylang' ),
-				'description' => $this->get_description(),
-			)
+	public function __construct( &$polylang, array $args = array() ) {
+		$default = array(
+			'module'        => 'translate-slugs',
+			'title'         => __( 'Translate slugs', 'polylang' ),
+			'description'   => $this->get_description(),
+			'active_option' => 'preview',
 		);
+
+		parent::__construct( $polylang, array_merge( $default, $args ) );
 	}
 
 	/**
@@ -44,27 +52,5 @@ class PLL_Settings_Preview_Translate_Slugs extends PLL_Settings_Module {
 	 */
 	protected function get_description() {
 		return __( 'Allows to translate custom post types and taxonomies slugs in URLs.', 'polylang' );
-	}
-
-	/**
-	 * Tells if the module is active.
-	 *
-	 * @since 1.9
-	 *
-	 * @return bool
-	 */
-	public function is_active() {
-		return false;
-	}
-
-	/**
-	 * Displays an upgrade message.
-	 *
-	 * @since 1.9
-	 *
-	 * @return string
-	 */
-	public function get_upgrade_message() {
-		return $this->default_upgrade_message();
 	}
 }

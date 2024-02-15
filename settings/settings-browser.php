@@ -33,7 +33,7 @@ class PLL_Settings_Browser extends PLL_Settings_Module {
 				'module'        => 'browser',
 				'title'         => __( 'Detect browser language', 'polylang' ),
 				'description'   => __( 'When the front page is visited, redirects to itself in the browser preferred language. As this doesn\'t work if it is cached, Polylang will attempt to disable the front page cache for known cache plugins.', 'polylang' ),
-				'active_option' => $this->is_available() ? 'browser' : false,
+				'active_option' => $this->is_available() ? 'browser' : 'none',
 			)
 		);
 

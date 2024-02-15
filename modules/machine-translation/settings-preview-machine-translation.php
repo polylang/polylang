@@ -3,24 +3,25 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
- * A class to advertize the Share slugs module.
+ * Class to advertize the Machine Translation module.
  *
- * @since 1.9
- * @since 3.1 Renamed from PLL_Settings_Share_Slug.
+ * @since 3.6
  */
-class PLL_Settings_Preview_Share_Slug extends PLL_Settings_Module {
+class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 	/**
 	 * Stores the display order priority.
 	 *
 	 * @var int
 	 */
-	public $priority = 70;
+	public $priority = 90;
 
 	/**
 	 * Constructor.
 	 *
-	 * @since 1.9
+	 * @since 3.6
 	 *
 	 * @param PLL_Settings $polylang Polylang object.
 	 * @param array        $args     Optional. Addition arguments.
@@ -34,23 +35,16 @@ class PLL_Settings_Preview_Share_Slug extends PLL_Settings_Module {
 	 */
 	public function __construct( &$polylang, array $args = array() ) {
 		$default = array(
-			'module'        => 'share-slugs',
-			'title'         => __( 'Share slugs', 'polylang' ),
-			'description'   => $this->get_description(),
+			'module'        => 'machine_translation',
+			'title'         => sprintf(
+				/* translators: %s is a service name. */
+				__( 'Machine Translation by %s', 'polylang' ),
+				'DeepL'
+			),
+			'description'   => __( 'Allows linkage to an external translation solution.', 'polylang' ),
 			'active_option' => 'preview',
 		);
 
 		parent::__construct( $polylang, array_merge( $default, $args ) );
-	}
-
-	/**
-	 * Returns the module description.
-	 *
-	 * @since 3.1
-	 *
-	 * @return string
-	 */
-	protected function get_description() {
-		return __( 'Allows to share the same URL slug across languages for posts and terms.', 'polylang' );
 	}
 }
