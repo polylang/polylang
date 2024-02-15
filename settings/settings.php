@@ -181,17 +181,17 @@ class PLL_Settings extends PLL_Admin_Base {
 
 				if ( is_wp_error( $errors ) ) {
 					foreach ( $errors->get_error_codes() as $code ) {
-						add_settings_error( 'general', $code, $errors->get_error_message( $code ) );
+						add_settings_error( 'polylang', $code, $errors->get_error_message( $code ) );
 					}
 				} else {
-					add_settings_error( 'general', 'pll_languages_created', __( 'Language added.', 'polylang' ), 'success' );
+					add_settings_error( 'polylang', 'pll_languages_created', __( 'Language added.', 'polylang' ), 'success' );
 					$locale = sanitize_locale_name( $_POST['locale'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 
 					if ( 'en_US' !== $locale && current_user_can( 'install_languages' ) ) {
 						// Attempts to install the language pack
 						require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 						if ( ! wp_download_language_pack( $locale ) ) {
-							add_settings_error( 'general', 'pll_download_mo', __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' ), 'warning' );
+							add_settings_error( 'polylang', 'pll_download_mo', __( 'The language was created, but the WordPress language file was not downloaded. Please install it manually.', 'polylang' ), 'warning' );
 						}
 
 						// Force checking for themes and plugins translations updates
@@ -206,7 +206,7 @@ class PLL_Settings extends PLL_Admin_Base {
 				check_admin_referer( 'delete-lang' );
 
 				if ( ! empty( $_GET['lang'] ) && $this->model->delete_language( (int) $_GET['lang'] ) ) {
-					add_settings_error( 'general', 'pll_languages_deleted', __( 'Language deleted.', 'polylang' ), 'success' );
+					add_settings_error( 'polylang', 'pll_languages_deleted', __( 'Language deleted.', 'polylang' ), 'success' );
 				}
 
 				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
@@ -218,10 +218,10 @@ class PLL_Settings extends PLL_Admin_Base {
 
 				if ( is_wp_error( $errors ) ) {
 					foreach ( $errors->get_error_codes() as $code ) {
-						add_settings_error( 'general', $code, $errors->get_error_message( $code ) );
+						add_settings_error( 'polylang', $code, $errors->get_error_message( $code ) );
 					}
 				} else {
-					add_settings_error( 'general', 'pll_languages_updated', __( 'Language updated.', 'polylang' ), 'success' );
+					add_settings_error( 'polylang', 'pll_languages_updated', __( 'Language updated.', 'polylang' ), 'success' );
 				}
 
 				self::redirect(); // To refresh the page ( possible thanks to the $_GET['noheader']=true )
@@ -357,7 +357,7 @@ class PLL_Settings extends PLL_Admin_Base {
 	 * @return void
 	 */
 	public static function redirect( $args = array() ) {
-		$errors = get_settings_errors();
+		$errors = get_settings_errors( 'polylang' );
 		if ( ! empty( $errors ) ) {
 			set_transient( 'settings_errors', $errors, 30 );
 			$args['settings-updated'] = 1;
