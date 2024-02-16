@@ -246,13 +246,16 @@ class PLL_Canonical {
 	 * @return string
 	 */
 	protected function redirect_canonical( $url, $language ) {
+		/**
+		 * @var WP_Query
+		 */
 		global $wp_query;
 
 		$this->curlang = $language; // Hack to filter the `page_for_posts` option in the correct language.
 
 		$backup_wp_query = $wp_query;
 
-		if ( ! is_null( $wp_query->tax_query ) ) {
+		if ( isset( $wp_query->tax_query ) ) {
 			unset( $wp_query->tax_query->queried_terms['language'] );
 			unset( $wp_query->query['lang'] );
 		}
