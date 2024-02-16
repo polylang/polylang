@@ -252,7 +252,7 @@ class PLL_Canonical {
 
 		$backup_wp_query = $wp_query;
 
-		if ( isset( $wp_query->tax_query ) ) {
+		if ( ! is_null( $wp_query->tax_query ) ) {
 			unset( $wp_query->tax_query->queried_terms['language'] );
 			unset( $wp_query->query['lang'] );
 		}
