@@ -246,6 +246,9 @@ class PLL_Canonical {
 	 * @return string
 	 */
 	protected function redirect_canonical( $url, $language ) {
+		/**
+		 * @var WP_Query
+		 */
 		global $wp_query;
 
 		$this->curlang = $language; // Hack to filter the `page_for_posts` option in the correct language.
