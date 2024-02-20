@@ -297,6 +297,16 @@ jQuery(
 						$.each(
 							res.responses,
 							function() {
+								/**
+								 * Fires after saving the settings, before applying changes to the DOM.
+								 *
+								 * @since 5.6.0
+								 *
+								 * @param {Object}      response The response from the AJAX call.
+								 * @param {HTMLElement} tr       The HTML element containing the fields.
+								 */
+								wp.hooks.doAction( 'pll_settings_saved', this, tr.get( 0 ) );
+
 								switch ( this.what ) {
 									case 'license-update':
 										$( '#pll-license-' + this.data ).replaceWith( this.supplemental.html );
