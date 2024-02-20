@@ -36,12 +36,8 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 	public function __construct( &$polylang, array $args = array() ) {
 		$default = array(
 			'module'        => 'machine_translation',
-			'title'         => sprintf(
-				/* translators: %s is a service name. */
-				__( 'Machine Translation by %s', 'polylang' ),
-				'DeepL'
-			),
-			'description'   => __( 'Allows linkage to an external translation solution.', 'polylang' ),
+			'title'         => __( 'Machine Translation', 'polylang' ),
+			'description'   => __( 'Allows linkage to DeepL translate.', 'polylang' ),
 			'active_option' => 'preview',
 		);
 
