@@ -3,8 +3,14 @@
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
 
+
 WORKING_DIR="$PWD"
 WP_CORE_DIR=$WORKING_DIR/tmp/wordpress
+
+if [[ ! -f $WP_CORE_DIR ]]; then
+	# Maybe we're in CI.
+	WP_CORE_DIR=$WP_TESTS_DIR/../
+fi
 
 download() {
     if [ `which curl` ]; then
