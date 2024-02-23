@@ -300,7 +300,7 @@ jQuery(
 								/**
 								 * Fires after saving the settings, before applying changes to the DOM.
 								 *
-								 * @since 5.6.0
+								 * @since 3.6.0
 								 *
 								 * @param {Object}      response The response from the AJAX call.
 								 * @param {HTMLElement} tr       The HTML element containing the fields.
