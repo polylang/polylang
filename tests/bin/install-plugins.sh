@@ -100,5 +100,3 @@ if [[ -d "$WORKING_DIR/duplicate-post/" ]]; then
 else
 	echo "ℹ︎ Duplicate Post plugin has not been installed."
 fi
-
-cd $WORKING_DIR && ls
