@@ -595,7 +595,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 
 				$this->options[ $this->current_blog_id ][ $offset ] = array_filter(
 					$value,
-					function( $v, $k ) {
+					function ( $v, $k ) {
 						return is_string( $v ) && ! empty( $v ) && is_string( $k ) && ! empty( $k );
 					},
 					ARRAY_FILTER_USE_BOTH
@@ -615,7 +615,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 				$this->options[ $this->current_blog_id ][ $offset ] = array_values(
 					array_filter(
 						$value,
-						function( $v ) {
+						function ( $v ) {
 							return is_string( $v ) && ! empty( $v );
 						}
 					)
