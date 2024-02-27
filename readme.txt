@@ -27,8 +27,8 @@ Polylang and [Polylang Pro](https://polylang.pro) share the same core providing 
 * Translating posts, pages, media, categories, post tags, custom post types and taxonomies, RSS feeds; RTL scripts are supported.
 * The language is either set by the language code in URL, or you can use a different sub-domain or domain per language.
 * Automatic copy of categories, post tags and other metas when creating a new post or page translation.
-* Translating menus and widgets.
-* Customizable language switcher available as a widget or a navigation menu item.
+* Translating classic menus and classic widgets. Also accessible with [Site Editor Classic Features](https://wordpress.org/plugins/fse-classic/) in block themes.
+* Customizable language switcher available as a classic widget or a classic navigation menu item.
 * Compatibility with Yoast SEO.
 
 ### Polylang Pro
@@ -64,7 +64,7 @@ Neither of them will allow to do automated translation.
 
 * [WPML to Polylang](https://wordpress.org/plugins/wpml-to-polylang/) allows migrating from WPML to Polylang.
 * [DynaMo](https://wordpress.org/plugins/dynamo/) speeds up the translation of WordPress for all non-English sites.
-* [Site Editor Classic Features](https://wordpress.org/plugins/fse-classic/) allows to use legacy widgets (including the Polylang language switcher) and menus in the site editor (FSE).
+* [Site Editor Classic Features](https://wordpress.org/plugins/fse-classic/) allows to use classic widgets (including the Polylang language switcher) and menus in the site editor (FSE).
 
 = Credits =
 
@@ -103,6 +103,18 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+== 3.6 ==
+
+* Add compatibility with WP 6.5
+* Pro: Add DeepL machine translation for posts and terms
+* Pro: Add export and import of XLIFF 2.0/2.1
+* Pro: Allow to export and import JSON encoded post and term metas
+* Pro: Include footer notes block in translation files
+* Pro: Single files are now exported directly instead of inside a zip
+* Pro: Fix a race condition which could lead to display a notice to the wrong user
+* Fix wrong translated post types and taxononies after a `switch_to_blog()` #1415
+* Fix a minor performance issue for the page for posts #1412
 
 = 3.5.4 (2023-02-06) =
 
