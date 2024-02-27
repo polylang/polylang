@@ -12,7 +12,7 @@
  * - Options are always defined: it is not possible to unset them from the list, they are set to their default value instead.
  * - Automatic cast + limited sanitization/validation (invalid values are not set).
  *
- * @since 3.5
+ * @since 3.7
  *
  * @implements ArrayAccess<non-falsy-string, mixed>
  * @implements Iterator<non-falsy-string, mixed>
@@ -170,7 +170,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	/**
 	 * Constructor.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 */
 	public function __construct() {
 		// Keep track of the blog ID.
@@ -190,7 +190,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * - stores the options.
 	 * Hooked to `switch_blog`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @param int $blog_id The blog ID.
 	 * @return void
@@ -218,7 +218,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Stores the options into the database for all blogs.
 	 * Hooked to `shutdown`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return void
 	 */
@@ -254,7 +254,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	/**
 	 * Merge new options into the current ones.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @param array ...$arrays Lists of new options.
 	 * @return self
@@ -276,7 +276,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	/**
 	 * Stores the options into the database.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return bool True if the options were updated, false otherwise.
 	 */
@@ -292,7 +292,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	/**
 	 * Returns all options.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return mixed[]
 	 *
@@ -305,7 +305,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	/**
 	 * Returns reset options.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return array
 	 *
@@ -337,7 +337,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Tells if an option exists.
 	 * Required by interface `ArrayAccess`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @param string $offset The name of the option to check for.
 	 * @return bool
@@ -353,7 +353,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Returns the value of the specified option.
 	 * Required by interface `ArrayAccess`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @param string $offset The name of the option to retrieve.
 	 * @return mixed
@@ -391,7 +391,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * This doesn't allow to set an unknown option.
 	 * Required by interface `ArrayAccess`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @param string $offset The name of the option to assign the value to.
 	 * @param mixed  $value  The value to set.
@@ -414,7 +414,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * This doesn't allow to unset an option, this resets it to its default value instead.
 	 * Required by interface `ArrayAccess`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @param string $offset The name of the option to unset.
 	 * @return void
@@ -435,7 +435,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Returns the number of options.
 	 * Required by interface `Countable`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return int
 	 */
@@ -447,7 +447,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Returns the value of the current option.
 	 * Required by interface `Iterator`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return mixed
 	 *
@@ -462,7 +462,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Returns the key of the current option.
 	 * Required by interface `Iterator`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return string
 	 *
@@ -477,7 +477,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Moves forward to next option.
 	 * Required by interface `Iterator`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return void
 	 */
@@ -490,7 +490,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Rewinds the Iterator to the first option.
 	 * Required by interface `Iterator`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return void
 	 */
@@ -503,7 +503,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Checks if current position is valid.
 	 * Required by interface `Iterator`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return bool
 	 */
@@ -514,7 +514,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	/**
 	 * Returns the data which can be serialized by `json_encode()`.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @return mixed[]
 	 *
@@ -530,7 +530,7 @@ class PLL_Options implements ArrayAccess, Countable, Iterator, JsonSerializable 
 	 * Also sets the property `$modified` if the value changes.
 	 * This doesn't do a full sanitization, only basic type-cast.
 	 *
-	 * @since 3.5
+	 * @since 3.7
 	 *
 	 * @param string $offset The name of the option to sanitize.
 	 * @param mixed  $value  The value to sanitize.
