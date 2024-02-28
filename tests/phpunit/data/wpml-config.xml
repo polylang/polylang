@@ -1,140 +1,138 @@
 <wpml-config>
-	<custom-fields>
-		<custom-field action="copy">quantity</custom-field>
-		<custom-field action="translate">custom-title</custom-field>
-		<custom-field action="translate">custom|nested</custom-field>
-		<custom-field action="copy">weight</custom-field>
-		<custom-field action="copy-once">bg-color</custom-field>
-		<custom-field action="translate">custom-description</custom-field>
-		<custom-field action="ignore">date-added</custom-field>
-		<custom-field action="translate" encoding="json">a_json_meta</custom-field>
-	</custom-fields>
-	<custom-fields-texts>
-		<key name="custom|nested">
-			<key name="sub-1" />
-			<key name="sub-2">
-				<key name="sub|21">
-					<key name="sub-211" />
-					<key name=" " />
-					<key name="" />
-					<key />
+		<custom-fields>
+				<custom-field action="copy">quantity</custom-field>
+				<custom-field action="translate">custom-title</custom-field>
+				<custom-field action="translate">custom|nested</custom-field>
+				<custom-field action="copy">weight</custom-field>
+				<custom-field action="copy-once">bg-color</custom-field>
+				<custom-field action="translate">custom-description</custom-field>
+				<custom-field action="ignore">date-added</custom-field>
+				<custom-field action="translate" encoding="json">a_json_meta</custom-field>
+		</custom-fields>
+		<custom-fields-texts>
+			<key name="custom|nested">
+				<key name="sub-1" />
+				<key name="sub-2">
+					<key name="sub|21">
+						<key name="sub-211" />
+						<key name=" " />
+						<key name="" />
+						<key />
+					</key>
 				</key>
 			</key>
-		</key>
-		<key name="a_json_meta">
-			<key name="to_translate" />
-		</key>
-		<key name="custom-nested-2">
-			<key name="sub-1" />
-		</key>
-	</custom-fields-texts>
-	<custom-term-fields>
-		<custom-term-field action="copy">term_meta_A</custom-term-field>
-		<custom-term-field action="translate">term_meta_B</custom-term-field>
-		<custom-term-field action="ignore">term_meta_C</custom-term-field>
-		<custom-term-field action="copy-once">term_meta_D</custom-term-field>
-	</custom-term-fields>
-	<custom-types>
-		<custom-type translate="1">book</custom-type>
-		<custom-type translate="0">DVD</custom-type>
-	</custom-types>
-	<taxonomies>
-		<taxonomy translate="1">genre</taxonomy>
-		<taxonomy translate="1">type</taxonomy>
-		<taxonomy translate="0">publisher</taxonomy>
-	</taxonomies>
-	<admin-texts>
-		<key name="my_plugins_options">
-			<key name="option_name_1" />
-			<key name="option_name_2" />
-			<key name="options_group_1">
-				<key name="sub_option_name_11" />
-				<key name="sub_option_name_12" />
+			<key name="a_json_meta">
+				<key name="to_translate" />
 			</key>
-			<key name="options_group_2">
-				<key name="*"/>
+			<key name="custom-nested-2">
+				<key name="sub-1" />
 			</key>
-			<key name="options_group_3">
-				<key name="*">
-					<key name="sub_sub_option_name_3x1" />
-					<key name="sub_sub_option_name_3x2" />
+		</custom-fields-texts>
+		<custom-term-fields>
+			<custom-term-field action="copy">term_meta_A</custom-term-field>
+			<custom-term-field action="translate">term_meta_B</custom-term-field>
+			<custom-term-field action="ignore">term_meta_C</custom-term-field>
+			<custom-term-field action="copy-once">term_meta_D</custom-term-field>
+		</custom-term-fields>
+		<custom-types>
+				<custom-type translate="1">book</custom-type>
+				<custom-type translate="0">DVD</custom-type>
+		</custom-types>
+		<taxonomies>
+				<taxonomy translate="1">genre</taxonomy>
+				<taxonomy translate="1">type</taxonomy>
+				<taxonomy translate="0">publisher</taxonomy>
+		</taxonomies>
+		<admin-texts>
+				<key name="my_plugins_options">
+						<key name="option_name_1" />
+						<key name="option_name_2" />
+						<key name="options_group_1">
+								<key name="sub_option_name_11" />
+								<key name="sub_option_name_12" />
+						</key>
+						<key name="options_group_2">
+								<key name="*"/>
+						</key>
+						<key name="options_group_3">
+								<key name="*">
+										<key name="sub_sub_option_name_3x1" />
+										<key name="sub_sub_option_name_3x2" />
+								</key>
+						</key>
+						<key name="options_group_4">
+								<key name="sub_option_name_*" />
+						</key>
 				</key>
-			</key>
-			<key name="options_group_4">
-				<key name="sub_option_name_*" />
-			</key>
-		</key>
-		<key name="empty_option">
-			<key name="*">
-				<key name="label"/>
-			</key>
-		</key>
-		<key name="simple_string_option" />
-		<key name="generi(_option_*" />
-	</admin-texts>
-	<gutenberg-blocks>
-		<gutenberg-block type="my-plugin/my-block" translate="1">
-			<xpath>//figure/figcaption</xpath>
-			<xpath>//figure/img/@alt</xpath>
-			<key name="headingTitle" />
-			<key name="text" />
-		</gutenberg-block>
-		<gutenberg-block type="my-plugin/my-block-2" translate="1">
-			<xpath>//div/p/a</xpath>
-			<key name="iconLabel" />
-		</gutenberg-block>
-		<gutenberg-block type=" " translate="1">
-			<xpath>//div/p/a</xpath>
-			<key name="iconLabel" />
-		</gutenberg-block>
-		<gutenberg-block type="my-plugin/my-block-4">
-			<xpath>//div/p/a</xpath>
-			<key name="iconLabel" />
-		</gutenberg-block>
-		<gutenberg-block type="my-plugin/my-block-5" translate="1">
-			<xpath> </xpath>
-			<key name="iconLabel" />
-		</gutenberg-block>
-		<gutenberg-block type="my-plugin/my-block-6" translate="1">
-			<xpath>//div/p/a</xpath>
-			<key name=" " />
-		</gutenberg-block>
-	</gutenberg-blocks>
-	<language-switcher-settings>
-		<key name="icl_lang_sel_config">
-			<key name="font-current-normal">#444444</key>
-			<key name="font-current-hover">#000000</key>
-			<key name="background-current-normal">#ffffff</key>
-			<key name="background-current-hover">#eeeeee</key>
-			<key name="font-other-normal">#444444</key>
-			<key name="font-other-hover">#000000</key>
-			<key name="background-other-normal">#ffffff</key>
-			<key name="background-other-hover">#eeeeee</key>
-			<key name="border">#cdcdcd</key>
-		</key>
-		<key name="icl_lang_sel_footer_config">
-			<key name="font-current-normal">#444444</key>
-			<key name="font-current-hover">#000000</key>
-			<key name="background-current-normal">#ffffff</key>
-			<key name="background-current-hover">#eeeeee</key>
-			<key name="font-other-normal">#444444</key>
-			<key name="font-other-hover">#000000</key>
-			<key name="background-other-normal">#ffffff</key>
-			<key name="background-other-hover">#eeeeee</key>
-			<key name="border">#cdcdcd</key>
-		</key>
-		<key name="icl_language_switcher_sidebar">0</key>
-		<key name="icl_widget_title_show">0</key>
-		<key name="icl_lang_sel_type">dropdown</key>
-		<key name="icl_lso_link_empty">0</key>
-		<key name="icl_lso_flags">0</key>
-		<key name="icl_lso_native_lang">1</key>
-		<key name="icl_lso_display_lang">1</key>
-		<key name="icl_lang_sel_footer">0</key>
-		<key name="icl_post_availability">0</key>
-		<key name="icl_post_availability_position">below</key>
-		<key name="icl_post_availability_text">This post is also available in: %s</key>
-	</language-switcher-settings>
+				<key name="empty_option">
+					<key name="*">
+						<key name="label"/>
+					</key>
+				</key>
+				<key name="simple_string_option" />
+				<key name="generi(_option_*" />
+		</admin-texts>
+		<gutenberg-blocks>
+			<gutenberg-block type="my-plugin/my-block" translate="1">
+				<xpath>//figure/figcaption</xpath>
+				<xpath>//figure/img/@alt</xpath>
+				<key name="headingTitle" />
+				<key name="text" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-2" translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type=" " translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-4">
+				<xpath>//div/p/a</xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-5" translate="1">
+				<xpath> </xpath>
+				<key name="iconLabel" />
+			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-6" translate="1">
+				<xpath>//div/p/a</xpath>
+				<key name=" " />
+			</gutenberg-block>
+		</gutenberg-blocks>
+		<language-switcher-settings>
+				<key name="icl_lang_sel_config">
+						<key name="font-current-normal">#444444</key>
+						<key name="font-current-hover">#000000</key>
+						<key name="background-current-normal">#ffffff</key>
+						<key name="background-current-hover">#eeeeee</key>
+						<key name="font-other-normal">#444444</key>
+						<key name="font-other-hover">#000000</key>
+						<key name="background-other-normal">#ffffff</key>
+						<key name="background-other-hover">#eeeeee</key>
+						<key name="border">#cdcdcd</key>
+				</key>
+				<key name="icl_lang_sel_footer_config">
+						<key name="font-current-normal">#444444</key>
+						<key name="font-current-hover">#000000</key>
+						<key name="background-current-normal">#ffffff</key>
+						<key name="background-current-hover">#eeeeee</key>
+						<key name="font-other-normal">#444444</key>
+						<key name="font-other-hover">#000000</key>
+						<key name="background-other-normal">#ffffff</key>
+						<key name="background-other-hover">#eeeeee</key>
+						<key name="border">#cdcdcd</key>
+				</key>
+				<key name="icl_language_switcher_sidebar">0</key>
+				<key name="icl_widget_title_show">0</key>
+				<key name="icl_lang_sel_type">dropdown</key>
+				<key name="icl_lso_link_empty">0</key>
+				<key name="icl_lso_flags">0</key>
+				<key name="icl_lso_native_lang">1</key>
+				<key name="icl_lso_display_lang">1</key>
+				<key name="icl_lang_sel_footer">0</key>
+				<key name="icl_post_availability">0</key>
+				<key name="icl_post_availability_position">below</key>
+				<key name="icl_post_availability_text">This post is also available in: %s</key>
+		</language-switcher-settings>
 </wpml-config>
-
-
