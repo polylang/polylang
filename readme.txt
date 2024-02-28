@@ -1,7 +1,7 @@
 === Polylang ===
 Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone, hugod
 Donate link: https://polylang.pro
-Tags: multilingual, bilingual, translate, translation, language, multilanguage, international, localization
+Tags: multilingual, translate, translation, language, localization
 Requires at least: 5.9
 Tested up to: 6.4
 Requires PHP: 7.0
@@ -9,7 +9,7 @@ Stable tag: 3.5.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Go multilingual in a simple and efficient way. Keep writing posts, creating categories and post tags as usual while defining the languages all at once.
+Go multilingual in a simple and efficient way. Keep writing posts and taxonomy terms as usual while defining their languages all at once.
 
 == Description ==
 
