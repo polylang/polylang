@@ -261,10 +261,9 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			foreach ( $options['domains'] as $key => $domain ) {
 				if ( empty( $domain ) ) {
 					$lang = $this->model->get_language( $key );
-					add_settings_error(
-						'polylang',
-						sprintf( 'pll_invalid_domain_%s', $key ),
-						esc_html(
+					pll_add_settings_error(
+						new WP_Error(
+							sprintf( 'pll_invalid_domain_%s', $key ),
 							sprintf(
 								/* translators: %s is a native language name */
 								__( 'Please enter a valid URL for %s.', 'polylang' ),
@@ -317,10 +316,9 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			$response_code = wp_remote_retrieve_response_code( $response );
 
 			if ( 200 != $response_code ) {
-				add_settings_error(
-					'polylang',
-					sprintf( 'pll_invalid_domain_%s', $lang->slug ),
-					esc_html(
+				pll_add_settings_error(
+					new WP_Error(
+						sprintf( 'pll_invalid_domain_%s', $lang->slug ),
 						sprintf(
 							/* translators: %s is an url */
 							__( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' ),
