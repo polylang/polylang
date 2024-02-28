@@ -76,8 +76,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 
 		update_option( 'my_plugins_options', $my_plugins_options );
 		update_option( 'simple_string_option', 'val' );
-		update_option( 'generic_option_1', 'generic_val_1' );
-		update_option( 'generic_option_2', 'generic_val_2' );
+		update_option( 'generi(_option_', 'generic_val_0' );
+		update_option( 'generi(_option_1', 'generic_val_1' );
+		update_option( 'generi(_option_2', 'generic_val_2' );
 	}
 
 	protected function translate_options( $slug ) {
@@ -101,6 +102,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$mo->add_entry( $mo->make_entry( 'val41', "val41_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val42', "val42_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'val43', "val43_$slug" ) );
+		$mo->add_entry( $mo->make_entry( 'generic_val_0', "generic_val_0_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'generic_val_1', "generic_val_1_$slug" ) );
 		$mo->add_entry( $mo->make_entry( 'generic_val_2', "generic_val_2_$slug" ) );
 		$mo->export_to_db( $language );
@@ -320,8 +322,9 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'val42_fr', $options['options_group_4']['sub_option_name_42'] );
 		$this->assertEquals( 'val43', $options['options_group_4']['sub_option_diff_43'] ); // This one must not be translated.
 		$this->assertEquals( 'val_fr', get_option( 'simple_string_option' ) );
-		$this->assertEquals( 'generic_val_1_fr', get_option( 'generic_option_1' ) );
-		$this->assertEquals( 'generic_val_2_fr', get_option( 'generic_option_2' ) );
+		$this->assertEquals( 'generic_val_0_fr', get_option( 'generi(_option_' ) );
+		$this->assertEquals( 'generic_val_1_fr', get_option( 'generi(_option_1' ) );
+		$this->assertEquals( 'generic_val_2_fr', get_option( 'generi(_option_2' ) );
 	}
 
 	public function test_translate_strings_object() {
@@ -372,6 +375,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertContains( 'val42', $strings );
 		$this->assertNotContains( 'val43', $strings ); // This one must not be registered.
 		$this->assertContains( 'val', $strings );
+		$this->assertContains( 'generic_val_0', $strings );
 		$this->assertContains( 'generic_val_1', $strings );
 		$this->assertContains( 'generic_val_2', $strings );
 	}
