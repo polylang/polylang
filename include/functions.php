@@ -225,10 +225,10 @@ function pll_add_settings_error( WP_Error $error ) {
 		$message = wp_kses(
 			$error->get_error_message( $error_code ),
 			array(
-				'a' => array( 'href' ),
-				'br',
-				'code',
-				'em',
+				'a'    => array( 'href' ),
+				'br'   => array(),
+				'code' => array(),
+				'em'   => array(),
 			)
 		);
 
