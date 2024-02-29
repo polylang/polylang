@@ -423,6 +423,24 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 			'my-plugin/my-block-5' => array(
 				'iconLabel',
 			),
+			'my-plugin/my-block-7' => array(
+				'first-level' => array(
+					'second-level' => true,
+					'second-level-2' => true,
+					'second-level-3' => array(
+						'third-level' => true,
+					),
+					'second-level-4' => array(
+						'third-level-2' => array(
+							'fourth-level' => true,
+							'fourth-level-2' => true,
+						),
+					),
+				),
+				'first-level-2' => array(
+					'first-level-2-second-level' => true,
+				)
+			),
 		);
 
 		$parsing_rules                = apply_filters( 'pll_blocks_xpath_rules', $parsing_rules );
