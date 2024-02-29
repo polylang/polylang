@@ -90,16 +90,16 @@ class PLL_Install extends PLL_Install_Base {
 	 * @return array
 	 */
 	public static function get_default_options() {
-		$hide_option = ! defined( 'PLL_HIDE_LANGUAGE_FROM_CONTENT_OPTION' ) || PLL_HIDE_LANGUAGE_FROM_CONTENT_OPTION;
+		$show_option = defined( 'PLL_SHOW_LANGUAGE_FROM_CONTENT_OPTION' ) && PLL_SHOW_LANGUAGE_FROM_CONTENT_OPTION;
 		/**
-		 * Filters whether the "The language is set from content" option should be hidden on new installations.
+		 * Filters whether the "The language is set from content" option should be shown on new installations.
 		 * This is only available during Polylang's first activation.
 		 *
 		 * @since 3.7
 		 *
-		 * @param bool $hide_option True to hide the option on new installations, false otherwise. Default is true.
+		 * @param bool $show_option True to show the option on new installations, false otherwise.
 		 */
-		$hide_option = (bool) apply_filters( 'pll_hide_language_from_content_option', $hide_option );
+		$show_option = (bool) apply_filters( 'pll_show_language_from_content_option', $show_option );
 
 		return array(
 			'browser'                           => 0, // Default language for the front page is not set by browser preference (was the opposite before 3.1).
@@ -115,7 +115,7 @@ class PLL_Install extends PLL_Install_Base {
 			'domains'                           => array(),
 			'version'                           => POLYLANG_VERSION,
 			'first_activation'                  => time(),
-			'hide_language_from_content_option' => $hide_option,
+			'hide_language_from_content_option' => ! $show_option,
 		);
 	}
 
