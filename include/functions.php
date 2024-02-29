@@ -203,7 +203,7 @@ function pll_is_plugin_active( string $plugin_name ) {
 }
 
 /**
- * Prepares and registers errors.
+ * Prepares and registers notices.
  *
  * Wraps `add_settings_error()` to make its use more consistent.
  *
@@ -212,7 +212,7 @@ function pll_is_plugin_active( string $plugin_name ) {
  * @param WP_Error $error Error object.
  * @return void
  */
-function pll_add_settings_error( WP_Error $error ) {
+function pll_add_notice( WP_Error $error ) {
 	if ( ! $error->has_errors() ) {
 		return;
 	}
