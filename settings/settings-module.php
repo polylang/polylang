@@ -286,7 +286,7 @@ class PLL_Settings_Module {
 
 			if ( empty( get_settings_errors( 'polylang' ) ) ) {
 				// Send update message
-				pll_add_settings_error( new WP_Error( 'settings_updated', __( 'Settings saved.', 'polylang' ), 'success' ) );
+				pll_add_notice( new WP_Error( 'settings_updated', __( 'Settings saved.', 'polylang' ), 'success' ) );
 				settings_errors( 'polylang' );
 				$x = new WP_Ajax_Response( array( 'what' => 'success', 'data' => ob_get_clean() ) );
 				$x->send();

@@ -261,7 +261,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			foreach ( $options['domains'] as $key => $domain ) {
 				if ( empty( $domain ) ) {
 					$lang = $this->model->get_language( $key );
-					pll_add_settings_error(
+					pll_add_notice(
 						new WP_Error(
 							sprintf( 'pll_invalid_domain_%s', $key ),
 							sprintf(
@@ -316,7 +316,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 			$response_code = wp_remote_retrieve_response_code( $response );
 
 			if ( 200 != $response_code ) {
-				pll_add_settings_error(
+				pll_add_notice(
 					new WP_Error(
 						sprintf( 'pll_invalid_domain_%s', $lang->slug ),
 						sprintf(
