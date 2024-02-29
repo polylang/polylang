@@ -201,3 +201,37 @@ function pll_is_plugin_active( string $plugin_name ) {
 
 	return in_array( $plugin_name, $plugins );
 }
+
+/**
+ * Prepares and registers notices.
+ *
+ * Wraps `add_settings_error()` to make its use more consistent.
+ *
+ * @since 3.6
+ *
+ * @param WP_Error $error Error object.
+ * @return void
+ */
+function pll_add_notice( WP_Error $error ) {
+	if ( ! $error->has_errors() ) {
+		return;
+	}
+
+	foreach ( $error->get_error_codes() as $error_code ) {
+		// Extract the "error" type.
+		$data = $error->get_error_data( $error_code );
+		$type = empty( $data ) || ! is_string( $data ) ? 'error' : $data;
+
+		$message = wp_kses(
+			implode( '<br>', $error->get_error_messages( $error_code ) ),
+			array(
+				'a'    => array( 'href' ),
+				'br'   => array(),
+				'code' => array(),
+				'em'   => array(),
+			)
+		);
+
+		add_settings_error( 'polylang', $error_code, $message, $type );
+	}
+}
