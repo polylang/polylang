@@ -11,15 +11,9 @@
  * or in a `wp` action (when the language is set from content on frontend).
  *
  * @since 1.2
+ * @since 3.6 Singleton removed, instantiate at your own risk!
  */
 class PLL_OLT_Manager {
-	/**
-	 * Singleton instance
-	 *
-	 * @var PLL_OLT_Manager|null
-	 */
-	protected static $instance;
-
 	/**
 	 * Constructor: setups relevant filters.
 	 *
@@ -41,21 +35,6 @@ class PLL_OLT_Manager {
 		// Loads text domains.
 		add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined.
 		add_action( 'pll_no_language_defined', array( $this, 'load_textdomains' ) );
-	}
-
-	/**
-	 * Access to the single instance of the class.
-	 *
-	 * @since 1.7
-	 *
-	 * @return PLL_OLT_Manager
-	 */
-	public static function instance() {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
 	}
 
 	/**

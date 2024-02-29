@@ -51,7 +51,7 @@ class Polylang {
 		// Override load text domain waiting for the language to be defined
 		// Here for plugins which load text domain as soon as loaded :(
 		if ( ! defined( 'PLL_OLT' ) || PLL_OLT ) {
-			PLL_OLT_Manager::instance();
+			new PLL_OLT_Manager();
 		}
 
 		/*
