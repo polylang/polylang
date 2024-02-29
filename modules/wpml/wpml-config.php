@@ -480,11 +480,21 @@ class PLL_WPML_Config {
 							break;
 
 						case 'key':
-							$rule = $this->get_field_attribute( $child, 'name' );
+							$rule = $this->get_field_attributes( $child );
 							break;
 					}
 
-					if ( '' !== $rule ) {
+					if ( '' === $rule || ( is_array( $rule ) && empty( array_filter( $rule ) ) ) ) {
+						continue;
+					}
+
+					if ( is_array( $rule ) ) {
+						if ( isset( $parsing_rules[ $child_tag ][ $block_name ] ) ) {
+							$parsing_rules[ $child_tag ][ $block_name ] = array_merge( $parsing_rules[ $child_tag ][ $block_name ], $rule );
+						} else {
+							$parsing_rules[ $child_tag ][ $block_name ] = $rule;
+						}
+					} else {
 						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
 					}
 				}
@@ -563,6 +573,40 @@ class PLL_WPML_Config {
 		}
 
 		return trim( (string) $attributes[ $attribute_name ] );
+	}
+
+	/**
+	 * Gets attributes values.
+	 *
+	 * @since 3.6
+	 *
+	 * @param  SimpleXMLElement $field A XML node.
+	 * @param  array            $attrs The attributes.
+	 * @param  bool             $first Tells if this is the first time in the function..
+	 * @return array|string
+	 */
+	private function get_field_attributes( SimpleXMLElement $field, array $attrs = array(), bool $first = true ) {
+		$name = $this->get_field_attribute( $field, 'name' );
+
+		$children = $field->children();
+
+		if ( $first && 0 === count( $children ) ) {
+			// No sub-attributes, don't go further and just return the attribute's value.
+			return $name;
+		}
+
+		if ( count( $children ) ) {
+			foreach ( $children as $child ) {
+				if ( ! isset( $attrs[ $name ] ) || ! is_array( $attrs[ $name ] ) ) {
+					$attrs[ $name ] = array();
+				}
+				$attrs[ $name ] = $this->get_field_attributes( $child, $attrs[ $name ], false );
+			}
+		} else {
+			$attrs[ $name ] = true;
+		}
+
+		return $attrs;
 	}
 
 	/**
