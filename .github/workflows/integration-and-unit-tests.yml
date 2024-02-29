@@ -8,6 +8,7 @@ on:
       - 'phpunit.xml'
       - 'composer.json'
       - '**.yml'
+      - '**.sh'
   pull_request:
     branches: master
     paths:
@@ -15,6 +16,7 @@ on:
       - 'phpunit.xml'
       - 'composer.json'
       - '**.yml'
+      - '**.sh'
   workflow_dispatch:
 
 jobs:
