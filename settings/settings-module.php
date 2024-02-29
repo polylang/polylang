@@ -232,6 +232,10 @@ class PLL_Settings_Module {
 	 * @return string
 	 */
 	public function get_form() {
+		if ( ! $this->is_active() ) {
+			return '';
+		}
+
 		// Read the form only once
 		if ( false === $this->form ) {
 			ob_start();
