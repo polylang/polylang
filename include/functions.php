@@ -203,7 +203,7 @@ function pll_is_plugin_active( string $plugin_name ) {
 }
 
 /**
- * Prepares and registers errors
+ * Prepares and registers errors.
  *
  * Wraps `add_settings_error()` to make its use more consistent.
  *
