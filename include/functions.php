@@ -223,7 +223,7 @@ function pll_add_settings_error( WP_Error $error ) {
 		$type = empty( $data ) || ! is_string( $data ) ? 'error' : $data;
 
 		$message = wp_kses(
-			$error->get_error_message( $error_code ),
+			implode( '<br>', $error->get_error_messages( $error_code ) ),
 			array(
 				'a'    => array( 'href' ),
 				'br'   => array(),
