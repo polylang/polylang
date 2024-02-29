@@ -32,20 +32,21 @@ class PLL_Cookie {
 		$expiration = (int) apply_filters( 'pll_cookie_expiration', YEAR_IN_SECONDS );
 
 		/**
-		 * Filter the Polylang cookie httponly arg.
+		 * Filters the Polylang cookie `httponly` argument.
+		 * /!\ This filter may be fired *before* the theme is loaded.
 		 *
-		 * @since 3.6
+		 * @since 3.7
 		 *
-		 * @param bool $httponly Is the cookie only available on http protocol ?
+		 * @param bool $http_only True to set the `httponly` argument to `true`. False otherwise.
 		 */
-		$httponly = (bool) apply_filters( 'pll_cookie_httponly', false );
+		$http_only = (bool) apply_filters( 'pll_cookie_httponly', false );
 
 		$defaults = array(
 			'expires'  => 0 !== $expiration ? time() + $expiration : 0,
 			'path'     => COOKIEPATH,
-			'domain'   => COOKIE_DOMAIN, // Cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
+			'domain'   => COOKIE_DOMAIN, // Cookie domain must be set to false for localhost (default value for COOKIE_DOMAIN) thanks to Stephen Harris.
 			'secure'   => is_ssl(),
-			'httponly' => $httponly,
+			'httponly' => $http_only,
 			'samesite' => 'Lax',
 		);
 
