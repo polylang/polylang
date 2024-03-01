@@ -34,13 +34,34 @@ class PLL_Cookie {
 		$defaults = array(
 			'expires'  => 0 !== $expiration ? time() + $expiration : 0,
 			'path'     => COOKIEPATH,
-			'domain'   => COOKIE_DOMAIN, // Cookie domain must be set to false for localhost ( default value for COOKIE_DOMAIN ) thanks to Stephen Harris.
+			'domain'   => COOKIE_DOMAIN, // Cookie domain must be set to false for localhost (default value for `COOKIE_DOMAIN`) thanks to Stephen Harris.
 			'secure'   => is_ssl(),
 			'httponly' => false,
 			'samesite' => 'Lax',
 		);
 
-		return wp_parse_args( $args, $defaults );
+		$args = wp_parse_args( $args, $defaults );
+
+		/**
+		 * Filters the Polylang cookie arguments.
+		 * /!\ This filter may be fired *before* the theme is loaded.
+		 *
+		 * @since 3.6
+		 *
+		 * @param array $args {
+		 *   Optional. Array of arguments for setting the cookie.
+		 *
+		 *   @type int    $expires  Cookie duration.
+		 *                          If a cookie duration of 0 is specified, a session cookie will be set.
+		 *                          If a negative cookie duration is specified, the cookie is removed.
+		 *   @type string $path     Cookie path.
+		 *   @type string $domain   Cookie domain. Must be set to false for localhost (default value for `COOKIE_DOMAIN`).
+		 *   @type bool   $secure   Should the cookie be sent only over https?
+		 *   @type bool   $httponly Should the cookie be accessed only over http protocol?.
+		 *   @type string $samesite Either 'Strict', 'Lax' or 'None'.
+		 * }
+		 */
+		return (array) apply_filters( 'pll_cookie_args', $args );
 	}
 
 	/**
