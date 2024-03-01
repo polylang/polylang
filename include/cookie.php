@@ -46,7 +46,7 @@ class PLL_Cookie {
 		 * Filters the Polylang cookie arguments.
 		 * /!\ This filter may be fired *before* the theme is loaded.
 		 *
-		 * @since 3.7
+		 * @since 3.6
 		 *
 		 * @param array $args {
 		 *   Optional. Array of arguments for setting the cookie.
