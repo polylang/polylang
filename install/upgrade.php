@@ -104,7 +104,7 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	public function _upgrade() {
-		foreach ( array( '2.0.8', '2.1', '2.7', '3.4' ) as $version ) {
+		foreach ( array( '2.0.8', '2.1', '2.7', '3.4', '3.7' ) as $version ) {
 			if ( version_compare( $this->options['version'], $version, '<' ) ) {
 				$method_to_call = array( $this, 'upgrade_' . str_replace( '.', '_', $version ) );
 				if ( is_callable( $method_to_call ) ) {
@@ -200,6 +200,20 @@ class PLL_Upgrade {
 		$this->migrate_locale_fallback_to_language_description();
 
 		$this->migrate_strings_translations();
+	}
+
+	/**
+	 * Upgrades if the previous version is < 3.7.
+	 * Hides the "The language is set from content" option if it isn't the one selected.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	protected function upgrade_3_7() {
+		if ( ! empty( $this->options['force_lang'] ) ) {
+			$this->options['hide_language_from_content_option'] = true;
+		}
 	}
 
 	/**
