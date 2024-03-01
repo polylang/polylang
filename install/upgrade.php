@@ -212,7 +212,7 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_3_7() {
 		if ( ! empty( $this->options['force_lang'] ) ) {
-			$this->options['hide_language_from_content_option'] = true;
+			$this->options['hide_language_from_content_option'] = PLL_Install::should_hide_language_from_content_option();
 		}
 	}
 

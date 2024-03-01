@@ -90,17 +90,6 @@ class PLL_Install extends PLL_Install_Base {
 	 * @return array
 	 */
 	public static function get_default_options() {
-		$show_option = defined( 'PLL_SHOW_LANGUAGE_FROM_CONTENT_OPTION' ) && PLL_SHOW_LANGUAGE_FROM_CONTENT_OPTION;
-		/**
-		 * Filters whether the "The language is set from content" option should be shown on new installations.
-		 * This is only available during Polylang's first activation.
-		 *
-		 * @since 3.7
-		 *
-		 * @param bool $show_option True to show the option on new installations, false otherwise.
-		 */
-		$show_option = (bool) apply_filters( 'pll_show_language_from_content_option', $show_option );
-
 		return array(
 			'browser'                           => 0, // Default language for the front page is not set by browser preference (was the opposite before 3.1).
 			'rewrite'                           => 1, // Remove /language/ in permalinks (was the opposite before 0.7.2).
@@ -115,8 +104,28 @@ class PLL_Install extends PLL_Install_Base {
 			'domains'                           => array(),
 			'version'                           => POLYLANG_VERSION,
 			'first_activation'                  => time(),
-			'hide_language_from_content_option' => ! $show_option,
+			'hide_language_from_content_option' => self::should_hide_language_from_content_option(),
 		);
+	}
+
+	/**
+	 * Tells whether the "The language is set from content" option should be shown.
+	 *
+	 * @since 3.7
+	 *
+	 * @return bool
+	 */
+	public static function should_hide_language_from_content_option(): bool {
+		$show_option = defined( 'PLL_SHOW_LANGUAGE_FROM_CONTENT_OPTION' ) && PLL_SHOW_LANGUAGE_FROM_CONTENT_OPTION;
+
+		/**
+		 * Filters whether the "The language is set from content" option should be shown.
+		 *
+		 * @since 3.7
+		 *
+		 * @param bool $show_option True to show the option, false otherwise.
+		 */
+		return ! apply_filters( 'pll_show_language_from_content_option', $show_option );
 	}
 
 	/**
