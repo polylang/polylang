@@ -372,7 +372,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 *     height?: positive-int
 	 * }
 	 */
-	public static function get_flag_informations( $code ) {
+	public static function get_flag_information( $code ) {
 		$flag = array( 'url' => '' );
 
 		// Polylang builtin flags.
@@ -580,7 +580,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @return string HTML code for the flag.
 	 */
 	public static function get_predefined_flag( $flag_code ) {
-		$flag = self::get_flag_informations( $flag_code );
+		$flag = self::get_flag_information( $flag_code );
 
 		return self::get_flag_html( $flag );
 	}

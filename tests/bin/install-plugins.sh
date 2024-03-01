@@ -31,7 +31,7 @@ if [[ ! -f "$WP_CORE_DIR/wp-content/themes/twentyfourteen/style.css" ]]; then
 fi
 
 if [[ -d "$WP_CORE_DIR/wp-content/themes/twentyfourteen/" ]]; then
-	echo "ℹ︎ Twenty Fourteen theme has been installed succesfully."
+	echo "ℹ︎ Twenty Fourteen theme has been installed successfully."
 else
 	echo "ℹ︎ Twenty Fourteen theme has not been installed."
 fi
@@ -44,7 +44,7 @@ if [[ ! -f "$WP_CORE_DIR/wp-content/themes/twentyseventeen/style.css" ]]; then
 fi
 
 if [[ -d "$WP_CORE_DIR/wp-content/themes/twentyseventeen/" ]]; then
-	echo "ℹ︎ Twenty Seventeen theme has been installed succesfully."
+	echo "ℹ︎ Twenty Seventeen theme has been installed successfully."
 else
 	echo "ℹ︎ Twenty Seventeen theme has not been installed."
 fi
@@ -57,7 +57,7 @@ mkdir -p $WORKING_DIR/wordpress-importer
 mv $TMPDIR/downloads/wordpress-importer/* $WORKING_DIR/wordpress-importer/
 
 if [[ -d "$WORKING_DIR/wordpress-importer/" ]]; then
-	echo "ℹ︎ WordPress Importer plugin has been installed succesfully."
+	echo "ℹ︎ WordPress Importer plugin has been installed successfully."
 else
 	echo "ℹ︎ WordPress Importer plugin has not been installed."
 fi
@@ -70,7 +70,7 @@ mkdir -p $WORKING_DIR/jetpack
 mv $TMPDIR/downloads/jetpack/* $WORKING_DIR/jetpack/
 
 if [[ -d "$WORKING_DIR/jetpack/" ]]; then
-	echo "ℹ︎ Jetpack plugin has been installed succesfully."
+	echo "ℹ︎ Jetpack plugin has been installed successfully."
 else
 	echo "ℹ︎ Jetpack plugin has not been installed."
 fi
@@ -83,7 +83,7 @@ mkdir -p $WORKING_DIR/wordpress-seo
 mv $TMPDIR/downloads/wordpress-seo/* $WORKING_DIR/wordpress-seo/
 
 if [[ -d "$WORKING_DIR/wordpress-seo/" ]]; then
-	echo "ℹ︎ Yoast SEO plugin has been installed succesfully."
+	echo "ℹ︎ Yoast SEO plugin has been installed successfully."
 else
 	echo "ℹ︎ Yoast SEO plugin has not been installed."
 fi
@@ -96,7 +96,7 @@ mkdir -p $WORKING_DIR/duplicate-post
 mv $TMPDIR/downloads/duplicate-post/* $WORKING_DIR/duplicate-post/
 
 if [[ -d "$WORKING_DIR/duplicate-post/" ]]; then
-	echo "ℹ︎ Duplicate Post plugin has been installed succesfully."
+	echo "ℹ︎ Duplicate Post plugin has been installed successfully."
 else
 	echo "ℹ︎ Duplicate Post plugin has not been installed."
 fi

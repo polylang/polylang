@@ -1,0 +1,27 @@
+[files]
+extend-exclude = [
+    ".git/",
+    "flags/??.png",
+    "settings/flags.php",
+    "settings/languages.php",
+	"vendor/",
+	"node_modules/",
+]
+ignore-hidden = false
+
+[default]
+extend-ignore-re = [
+    "Jani Alha",
+    "Thanks to captin411",
+    "'bs_BA'",
+    "<!\\[CDATA\\[non-classe\\]\\]>",
+    "olt-manager\\.php",
+]
+
+[default.extend-words]
+
+[default.extend-identifiers]
+"OLT_Manager_Test" = "OLT_Manager_Test"
+"PLL_OLT" = "PLL_OLT"
+"PLL_OLT_Manager" = "PLL_OLT_Manager"
+"get_post_stati" = "get_post_stati"

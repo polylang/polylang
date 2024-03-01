@@ -232,7 +232,7 @@ class PLL_Language_Factory {
 	 */
 	private function get_flag( $flag_code, $name, $slug, $locale ) {
 		$flags = array(
-			'flag' => PLL_Language::get_flag_informations( $flag_code ),
+			'flag' => PLL_Language::get_flag_information( $flag_code ),
 		);
 
 		// Custom flags?
