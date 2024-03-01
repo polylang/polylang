@@ -439,7 +439,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 				),
 				'first-level-2' => array(
 					'first-level-2-second-level' => true,
-				)
+				),
 			),
 		);
 
