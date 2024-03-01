@@ -116,7 +116,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Fix wrong translated post types and taxononies after a `switch_to_blog()` #1415
 * Fix a minor performance issue for the page for posts #1412
 
-= 3.5.4 (2023-02-06) =
+= 3.5.4 (2024-02-06) =
 
 * Pro: Fix an accessibility issue int the navigation language switcher block
 * Pro: Fix featured image not exported for posts with blocks
