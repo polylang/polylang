@@ -576,7 +576,7 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Gets attributes values.
+	 * Gets attributes values recursively.
 	 *
 	 * @since 3.6
 	 *
