@@ -2,7 +2,7 @@
 Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone, hugod
 Donate link: https://polylang.pro
 Tags: multilingual, translate, translation, language, localization
-Requires at least: 5.9
+Requires at least: 6.2
 Tested up to: 6.4
 Requires PHP: 7.0
 Stable tag: 3.5.4
