@@ -582,15 +582,14 @@ class PLL_WPML_Config {
 	 *
 	 * @param  SimpleXMLElement $field A XML node.
 	 * @param  array            $attrs The attributes.
-	 * @param  bool             $first Tells if this is the first time in the function..
 	 * @return array|string An array if there are sub-attributes, otherwise a string.
 	 */
-	private function get_field_attributes( SimpleXMLElement $field, array $attrs = array(), bool $first = true ) {
+	private function get_field_attributes( SimpleXMLElement $field, array $attrs = array() ) {
 		$name = $this->get_field_attribute( $field, 'name' );
 
 		$children = $field->children();
 
-		if ( $first && 0 === count( $children ) ) {
+		if ( 0 === count( $children ) ) {
 			// No sub-attributes, don't go further and just return the attribute's value.
 			return $name;
 		}
@@ -600,7 +599,14 @@ class PLL_WPML_Config {
 				if ( ! isset( $attrs[ $name ] ) || ! is_array( $attrs[ $name ] ) ) {
 					$attrs[ $name ] = array();
 				}
-				$attrs[ $name ] = $this->get_field_attributes( $child, $attrs[ $name ], false );
+
+				$sub = $this->get_field_attributes( $child, $attrs[ $name ] );
+
+				if ( is_string( $sub ) ) {
+					$sub = array( $sub => true );
+				}
+
+				$attrs[ $name ] = array_merge( $attrs[ $name ], $sub );
 			}
 		} else {
 			$attrs[ $name ] = true;
