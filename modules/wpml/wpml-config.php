@@ -594,22 +594,18 @@ class PLL_WPML_Config {
 			return $name;
 		}
 
-		if ( count( $children ) ) {
-			foreach ( $children as $child ) {
-				if ( ! isset( $attrs[ $name ] ) || ! is_array( $attrs[ $name ] ) ) {
-					$attrs[ $name ] = array();
-				}
-
-				$sub = $this->get_field_attributes( $child, $attrs[ $name ] );
-
-				if ( is_string( $sub ) ) {
-					$sub = array( $sub => true );
-				}
-
-				$attrs[ $name ] = array_merge( $attrs[ $name ], $sub );
+		foreach ( $children as $child ) {
+			if ( ! isset( $attrs[ $name ] ) || ! is_array( $attrs[ $name ] ) ) {
+				$attrs[ $name ] = array();
 			}
-		} else {
-			$attrs[ $name ] = true;
+
+			$sub = $this->get_field_attributes( $child, $attrs[ $name ] );
+
+			if ( is_string( $sub ) ) {
+				$sub = array( $sub => true );
+			}
+
+			$attrs[ $name ] = array_merge( $attrs[ $name ], $sub );
 		}
 
 		return $attrs;
