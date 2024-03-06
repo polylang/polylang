@@ -583,7 +583,7 @@ class PLL_WPML_Config {
 	 * @param  SimpleXMLElement $field A XML node.
 	 * @param  array            $attrs The attributes.
 	 * @param  bool             $first Tells if this is the first time in the function..
-	 * @return array|string
+	 * @return array|string An array if there are sub-attributes, otherwise a string.
 	 */
 	private function get_field_attributes( SimpleXMLElement $field, array $attrs = array(), bool $first = true ) {
 		$name = $this->get_field_attribute( $field, 'name' );
