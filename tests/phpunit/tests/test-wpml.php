@@ -514,7 +514,7 @@ class WPML_Test extends PLL_UnitTestCase {
 		$en = self::factory()->term->create( array( 'name' => 'Sample tag' ) );
 		self::$model->term->set_language( $en, 'en' );
 
-		$fr = self::factory()->term->create( array( 'name' => 'Etiquette example' ) );
+		$fr = self::factory()->term->create( array( 'name' => 'Etiquette exemple' ) );
 		self::$model->term->set_language( $fr, 'fr' );
 
 		self::$model->term->save_translations( $en, compact( 'fr' ) );
@@ -538,7 +538,7 @@ class WPML_Test extends PLL_UnitTestCase {
 				'source_language_code' => 'en',
 				'element_type'         => 'tax_post_tag',
 				'original'             => '0',
-				'name'                 => 'Etiquette example',
+				'name'                 => 'Etiquette exemple',
 				'term_id'              => "$fr",
 				'instances'            => '0',
 			),

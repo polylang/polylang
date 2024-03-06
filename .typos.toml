@@ -1,27 +1,31 @@
 [files]
 extend-exclude = [
     ".git/",
+    ".phpunit.result.cache",
     "flags/??.png",
+    "node_modules/",
     "settings/flags.php",
     "settings/languages.php",
-	"vendor/",
-	"node_modules/",
+    "tmp/",
+    "vendor/",
 ]
 ignore-hidden = false
 
 [default]
 extend-ignore-re = [
     "Jani Alha",
-    "Thanks to captin411",
     "'bs_BA'",
     "<!\\[CDATA\\[non-classe\\]\\]>",
     "olt-manager\\.php",
 ]
 
 [default.extend-words]
+# En français dans le texte.
+"exemple" = "exemple"
 
 [default.extend-identifiers]
 "OLT_Manager_Test" = "OLT_Manager_Test"
 "PLL_OLT" = "PLL_OLT"
 "PLL_OLT_Manager" = "PLL_OLT_Manager"
 "get_post_stati" = "get_post_stati"
+"captin411" = "captin411"
