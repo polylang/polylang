@@ -8,6 +8,7 @@ extend-exclude = [
     "settings/languages.php",
     "tmp/",
     "vendor/",
+	".typos.toml",
 ]
 ignore-hidden = false
 
