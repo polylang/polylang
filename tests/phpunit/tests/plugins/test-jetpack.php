@@ -9,7 +9,7 @@ class Jetpack_Test extends PLL_UnitTestCase {
 			self::markTestSkipped( 'This test requires the plugin Jetpack' );
 		}
 
-		$min_wp_version = '6.1';
+		$min_wp_version = '6.3';
 
 		if ( version_compare( $GLOBALS['wp_version'], $min_wp_version, '<' ) ) {
 			self::markTestSkipped( "This test requires WordPress {$min_wp_version} or higher" );

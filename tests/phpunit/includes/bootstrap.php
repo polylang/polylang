@@ -24,8 +24,6 @@ if ( ! defined( 'PLL_TEST_DATA_DIR' ) ) {
 	define( 'PLL_TEST_DATA_DIR', dirname( __DIR__ ) . '/data/' );
 }
 
-require_once __DIR__ . '/polyfills.php';
-
 printf(
 	'Testing Polylang%1$s %2$s with WordPress %3$s...' . PHP_EOL,
 	defined( 'POLYLANG_PRO' ) && POLYLANG_PRO ? ' Pro' : '',
