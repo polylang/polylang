@@ -5,32 +5,31 @@
  * @package Polylang
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly
-}
+defined( 'ABSPATH' ) || exit;
 ?>
 <p><strong><?php esc_html_e( 'Translations', 'polylang' ); ?></strong></p>
 <table>
 	<?php
 	foreach ( $this->model->get_languages_list() as $language ) {
-		if ( $language->term_id == $lang->term_id ) {
+		if ( $language->term_id === $lang->term_id ) {
 			continue;
 		}
 
-		$value = $this->model->post->get_translation( $post_ID, $language );
-		if ( ! $value || $value == $post_ID ) { // $value == $post_ID happens if the post has been (auto)saved before changing the language
-			$value = '';
+		$translation_id = $this->model->post->get_translation( $post_ID, $language );
+		if ( ! $translation_id || $translation_id === $post_ID ) { // $translation_id == $post_ID happens if the post has been (auto)saved before changing the language.
+			$translation_id = 0;
 		}
 
 		if ( ! empty( $from_post_id ) ) {
-			$value = $this->model->post->get( $from_post_id, $language );
+			$translation_id = $this->model->post->get( $from_post_id, $language );
 		}
 
-		$link = $add_link = $this->links->new_post_translation_link( $post_ID, $language );
-
-		if ( $value ) {
-			$selected = get_post( $value );
-			$link = $this->links->edit_post_translation_link( $value );
+		$add_link    = $this->links->new_post_translation_link( $post_ID, $language );
+		$link        = $add_link;
+		$translation = null;
+		if ( $translation_id ) {
+			$translation = get_post( $translation_id );
+			$link = $this->links->edit_post_translation_link( $translation_id );
 		}
 		?>
 		<tr>
@@ -40,8 +39,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 
 			/**
-			 * Fires before the translation column is outputted in the language metabox
-			 * The dynamic portion of the hook name, `$lang`, refers to the language code
+			 * Fires before the translation column is outputted in the language metabox.
+			 * The dynamic portion of the hook name, `$lang`, refers to the language code.
 			 *
 			 * @since 2.1
 			 */
@@ -56,8 +55,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
-					( empty( $value ) ? 0 : esc_attr( $selected->ID ) ),
-					( empty( $value ) ? '' : esc_attr( $selected->post_title ) ),
+					( empty( $translation ) ? 0 : esc_attr( $translation->ID ) ),
+					( empty( $translation ) ? '' : esc_attr( $translation->post_title ) ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					( $language->is_rtl ? 'rtl' : 'ltr' )
 				);
