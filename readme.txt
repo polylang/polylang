@@ -106,6 +106,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == 3.6 ==
 
+* Requires WP 6.2 as minimum version
 * Add compatibility with WP 6.5
 * Pro: Add DeepL machine translation for posts and terms
 * Pro: Add export and import of XLIFF 2.0/2.1
@@ -116,6 +117,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Reworked the language switcher navigation block
 * Pro: Fix language switcher navigation block justification not aligned with core settings in overlay menu. Requires WP 6.5
 * Pro: Fix a race condition which could lead to display a notice to the wrong user
+* Add filter `pll_cookie_args` to filter the Polylang cookie arguments #1406
 * Fix wrong translated post types and taxononies after a `switch_to_blog()` #1415
 * Fix a minor performance issue for the page for posts #1412
 * Fix a JS error after quick edit. Props @mcguffin #1435
