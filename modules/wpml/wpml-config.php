@@ -484,17 +484,18 @@ class PLL_WPML_Config {
 							break;
 					}
 
-					if ( '' === $rule || ( is_array( $rule ) && empty( array_filter( $rule ) ) ) ) {
-						continue;
-					}
-
 					if ( is_array( $rule ) ) {
+						$rule = array_filter( $rule );
+						if ( empty( $rule ) ) {
+							continue;
+						}
+						
 						if ( isset( $parsing_rules[ $child_tag ][ $block_name ] ) ) {
 							$parsing_rules[ $child_tag ][ $block_name ] = array_merge( $parsing_rules[ $child_tag ][ $block_name ], $rule );
 						} else {
 							$parsing_rules[ $child_tag ][ $block_name ] = $rule;
 						}
-					} else {
+					} elseif ( '' !== $rule ) {
 						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
 					}
 				}
