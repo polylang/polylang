@@ -109,12 +109,17 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Add compatibility with WP 6.5
 * Pro: Add DeepL machine translation for posts and terms
 * Pro: Add export and import of XLIFF 2.0/2.1
+* Pro: Improve translator comments in exported PO files
 * Pro: Allow to export and import JSON encoded post and term metas
 * Pro: Include footer notes block in translation files
 * Pro: Single files are now exported directly instead of inside a zip
+* Pro: Reworked the language switcher navigation block
+* Pro: Fix language switcher navigation block justification not aligned with core settings in overlay menu. Requires WP 6.5
 * Pro: Fix a race condition which could lead to display a notice to the wrong user
 * Fix wrong translated post types and taxononies after a `switch_to_blog()` #1415
 * Fix a minor performance issue for the page for posts #1412
+* Fix a JS error after quick edit. Props @mcguffin #1435
+* Fix a possible warning in view-translations-post.php #1439
 
 = 3.5.4 (2024-02-06) =
 
