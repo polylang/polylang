@@ -37,7 +37,7 @@ class PLL_Settings_Preview_Machine_Translation extends PLL_Settings_Module {
 		$default = array(
 			'module'        => 'machine_translation',
 			'title'         => __( 'Machine Translation', 'polylang' ),
-			'description'   => __( 'Allows linkage to DeepL translate.', 'polylang' ),
+			'description'   => __( 'Allows linkage to DeepL Translate.', 'polylang' ),
 			'active_option' => 'preview',
 		);
 
