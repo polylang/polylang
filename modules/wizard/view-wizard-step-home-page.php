@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit; // Don't access directly.
 $languages = $model->get_languages_list();
 $default_language = count( $languages ) > 0 ? $options['default_lang'] : null;
 $home_page_id = get_option( 'page_on_front' );
-$home_page_id = is_scalar( $home_page_id ) ? (int) $home_page_id : 0;
+$home_page_id = is_numeric( $home_page_id ) ? (int) $home_page_id : 0;
 $translations = $model->post->get_translations( $home_page_id );
 $untranslated_languages = array();
 $home_page = $home_page_id > 0 ? get_post( $home_page_id ) : null;
