@@ -5,14 +5,15 @@
  * @package Polylang
  *
  * @since 2.7
+ *
+ * @var PLL_Admin_Model $model
+ * @var array           $options
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly.
-}
+defined( 'ABSPATH' ) || exit; // Don't access directly.
 
-$existing_languages = $this->model->get_languages_list();
-$default_language   = count( $existing_languages ) > 0 ? $this->options['default_lang'] : null;
+$existing_languages = $model->get_languages_list();
+$default_language   = count( $existing_languages ) > 0 ? $options['default_lang'] : null;
 $languages_list = array_diff_key(
 	PLL_Settings::get_predefined_languages(),
 	wp_list_pluck( $existing_languages, 'locale', 'locale' )
