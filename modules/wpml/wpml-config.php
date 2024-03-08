@@ -412,12 +412,13 @@ class PLL_WPML_Config {
 	 * Translation management for blocks attributes.
 	 *
 	 * @since 3.3
+	 * @since 3.6 Format changed from `array<string>` to `array<non-empty-string, array|true>`.
 	 *
-	 * @param string[][] $parsing_rules Rules for blocks attributes to translate.
-	 * @return string[][] Rules completed with ones from wpml-config file.
+	 * @param array $parsing_rules Rules for blocks attributes to translate.
+	 * @return array Rules completed with ones from wpml-config file.
 	 *
-	 * @phpstan-param array<string,array<string>> $parsing_rules
-	 * @phpstan-return array<string,array<string>>
+	 * @phpstan-param array<non-empty-string, array|true> $parsing_rules
+	 * @phpstan-return array<non-empty-string, array|true>
 	 */
 	public function translate_blocks_attributes( $parsing_rules ) {
 		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'key' ) );
@@ -446,6 +447,11 @@ class PLL_WPML_Config {
 	 * @since 3.3
 	 *
 	 * @return string[][][] Rules completed with ones from wpml-config file.
+	 *
+	 * @phpstan-return array{
+	 *     xpath?: array<non-falsy-string, list<non-falsy-string>>,
+	 *     key?: array<non-falsy-string, array<array|true>>
+	 * }
 	 */
 	protected function extract_blocks_parsing_rules() {
 		$parsing_rules = array();
@@ -477,26 +483,25 @@ class PLL_WPML_Config {
 					switch ( $child_tag ) {
 						case 'xpath':
 							$rule = trim( (string) $child );
+
+							if ( '' !== $rule ) {
+								$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
+							}
 							break;
 
 						case 'key':
 							$rule = $this->get_field_attributes( $child );
-							break;
-					}
 
-					if ( is_array( $rule ) ) {
-						$rule = array_filter( $rule );
-						if ( empty( $rule ) ) {
-							continue;
-						}
-						
-						if ( isset( $parsing_rules[ $child_tag ][ $block_name ] ) ) {
-							$parsing_rules[ $child_tag ][ $block_name ] = array_merge( $parsing_rules[ $child_tag ][ $block_name ], $rule );
-						} else {
-							$parsing_rules[ $child_tag ][ $block_name ] = $rule;
-						}
-					} elseif ( '' !== $rule ) {
-						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
+							if ( empty( $rule ) ) {
+								break;
+							}
+
+							if ( isset( $parsing_rules[ $child_tag ][ $block_name ] ) ) {
+								$parsing_rules[ $child_tag ][ $block_name ] = array_merge( $parsing_rules[ $child_tag ][ $block_name ], $rule );
+							} else {
+								$parsing_rules[ $child_tag ][ $block_name ] = $rule;
+							}
+							break;
 					}
 				}
 			}
@@ -583,30 +588,39 @@ class PLL_WPML_Config {
 	 *
 	 * @param  SimpleXMLElement $field A XML node.
 	 * @param  array            $attrs The attributes.
-	 * @return array|string An array if there are sub-attributes, otherwise a string.
+	 * @return array An array of attributes.
+	 *
+	 * @phpstan-return array<non-empty-string, array|true>
 	 */
-	private function get_field_attributes( SimpleXMLElement $field, array $attrs = array() ) {
+	private function get_field_attributes( SimpleXMLElement $field, array $attrs = array() ): array {
 		$name = $this->get_field_attribute( $field, 'name' );
+
+		if ( '' === $name ) {
+			return array();
+		}
 
 		$children = $field->children();
 
-		if ( 0 === count( $children ) ) {
-			// No sub-attributes, don't go further and just return the attribute's value.
-			return $name;
+		if ( 0 === $children->count() ) {
+			return array( $name => true );
+		}
+
+		if ( ! isset( $attrs[ $name ] ) || ! is_array( $attrs[ $name ] ) ) {
+			$attrs[ $name ] = array();
 		}
 
 		foreach ( $children as $child ) {
-			if ( ! isset( $attrs[ $name ] ) || ! is_array( $attrs[ $name ] ) ) {
-				$attrs[ $name ] = array();
-			}
-
 			$sub = $this->get_field_attributes( $child, $attrs[ $name ] );
 
-			if ( is_string( $sub ) ) {
-				$sub = array( $sub => true );
+			if ( empty( $sub ) ) {
+				continue;
 			}
 
 			$attrs[ $name ] = array_merge( $attrs[ $name ], $sub );
+		}
+
+		if ( empty( $attrs[ $name ] ) ) {
+			unset( $attrs[ $name ] );
 		}
 
 		return $attrs;
