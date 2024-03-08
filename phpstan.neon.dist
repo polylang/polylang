@@ -13,7 +13,6 @@ parameters:
 		- settings/
 	excludePaths:
 		- **/load.php
-#		- **/view*.php
 		- include/widget-calendar.php
 		- install/plugin-updater.php
 	checkMissingIterableValueType: false
