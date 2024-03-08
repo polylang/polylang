@@ -45,7 +45,12 @@ class PLL_WPML_Config {
 	/**
 	 * List of rules to extract strings to translate from blocks.
 	 *
-	 * @var string[][][]|null
+	 * @var array
+	 *
+	 * @phpstan-var array{
+	 *     xpath?: array<non-empty-string, list<non-empty-string>>,
+	 *     key?: array<non-empty-string, array<array|true>>
+	 * }|null
 	 */
 	protected $parsing_rules = null;
 
@@ -431,6 +436,11 @@ class PLL_WPML_Config {
 	 *
 	 * @param string $rule_tag Tag name to extract.
 	 * @return string[][] The rules.
+	 *
+	 * @phpstan-param 'xpath'|'key' $rule_tag
+	 * @phpstan-return (
+	 *     $rule_tag is 'xpath' ? array<non-empty-string, list<non-empty-string>> : array<non-empty-string, array<array|true>>
+	 * )
 	 */
 	protected function get_blocks_parsing_rules( $rule_tag ) {
 
@@ -449,8 +459,8 @@ class PLL_WPML_Config {
 	 * @return string[][][] Rules completed with ones from wpml-config file.
 	 *
 	 * @phpstan-return array{
-	 *     xpath?: array<non-falsy-string, list<non-falsy-string>>,
-	 *     key?: array<non-falsy-string, array<array|true>>
+	 *     xpath?: array<non-empty-string, list<non-empty-string>>,
+	 *     key?: array<non-empty-string, array<array|true>>
 	 * }
 	 */
 	protected function extract_blocks_parsing_rules() {
@@ -485,7 +495,7 @@ class PLL_WPML_Config {
 							$rule = trim( (string) $child );
 
 							if ( '' !== $rule ) {
-								$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
+								$parsing_rules['xpath'][ $block_name ][] = $rule;
 							}
 							break;
 
@@ -496,10 +506,10 @@ class PLL_WPML_Config {
 								break;
 							}
 
-							if ( isset( $parsing_rules[ $child_tag ][ $block_name ] ) ) {
-								$parsing_rules[ $child_tag ][ $block_name ] = array_merge( $parsing_rules[ $child_tag ][ $block_name ], $rule );
+							if ( isset( $parsing_rules['key'][ $block_name ] ) ) {
+								$parsing_rules['key'][ $block_name ] = array_merge( $parsing_rules['key'][ $block_name ], $rule );
 							} else {
-								$parsing_rules[ $child_tag ][ $block_name ] = $rule;
+								$parsing_rules['key'][ $block_name ] = $rule;
 							}
 							break;
 					}
@@ -590,6 +600,7 @@ class PLL_WPML_Config {
 	 * @param  array            $attrs The attributes.
 	 * @return array An array of attributes.
 	 *
+	 * @phpstan-param array<non-empty-string, array|true> $attrs
 	 * @phpstan-return array<non-empty-string, array|true>
 	 */
 	private function get_field_attributes( SimpleXMLElement $field, array $attrs = array() ): array {
