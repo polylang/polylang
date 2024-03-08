@@ -3,11 +3,11 @@
  * Displays the languages tab in Polylang settings
  *
  * @package Polylang
+ *
+ * @var PLL_Table_Languages $list_table
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly
-}
+defined( 'ABSPATH' ) || exit; // Don't access directly
 ?>
 <div id="col-container">
 	<div id="col-right">

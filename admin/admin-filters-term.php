@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Manages filters and actions related to terms on admin side
  *
@@ -15,7 +17,7 @@ class PLL_Admin_Filters_Term {
 	public $model;
 
 	/**
-	 * @var PLL_Admin_Links|null
+	 * @var PLL_Admin_Links
 	 */
 	public $links;
 

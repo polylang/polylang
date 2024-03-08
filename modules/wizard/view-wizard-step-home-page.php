@@ -5,54 +5,60 @@
  * @package Polylang
  *
  * @since 2.7
+ *
+ * @var PLL_Admin_Model $model
+ * @var array           $options
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly.
-}
+defined( 'ABSPATH' ) || exit; // Don't access directly.
 
-$languages = $this->model->get_languages_list();
-$default_language = count( $languages ) > 0 ? $this->options['default_lang'] : null;
+$languages = $model->get_languages_list();
+$default_language = count( $languages ) > 0 ? $options['default_lang'] : null;
 $home_page_id = get_option( 'page_on_front' );
-$translations = $this->model->post->get_translations( $home_page_id );
+$home_page_id = is_scalar( $home_page_id ) ? (int) $home_page_id : 0;
+$translations = $model->post->get_translations( $home_page_id );
 $untranslated_languages = array();
 $home_page = $home_page_id > 0 ? get_post( $home_page_id ) : null;
-$home_page_language = $this->model->post->get_language( $home_page_id );
+$home_page_language = $model->post->get_language( $home_page_id );
+
+if ( empty( $home_page ) ) {
+	return;
+}
 
 foreach ( $languages as $language ) {
-	if ( ! $this->model->post->get( $home_page_id, $language ) ) {
+	if ( ! $model->post->get( $home_page_id, $language ) ) {
 		$untranslated_languages[] = $language;
 	}
 }
 ?>
-<input type="hidden" name="home_page" value="<?php echo esc_attr( $home_page->ID ); ?>" />
+<input type="hidden" name="home_page" value="<?php echo esc_attr( (string) $home_page->ID ); ?>" />
 <input type="hidden" name="home_page_title" value="<?php echo esc_attr( $home_page->post_title ); ?>" />
-<?php if ( false !== $home_page_language ) : ?>
+<?php if ( ! empty( $home_page_language ) ) : ?>
 	<input type="hidden" name="home_page_language" value="<?php echo esc_attr( $home_page_language->slug ); ?>" />
+	<h2><?php esc_html_e( 'Homepage', 'polylang' ); ?></h2>
+	<p>
+		<?php
+			printf(
+				/* translators: %s is the post title of the front page */
+				esc_html__( 'You defined this page as your static homepage: %s.', 'polylang' ),
+				'<strong>' . esc_html( $home_page->post_title ) . '</strong>'
+			);
+		?>
+		<br />
+		<?php
+			printf(
+				/* translators: %s is the language of the front page ( flag, native name and locale ) */
+				esc_html__( 'Its language is : %s.', 'polylang' ),
+				$home_page_language->flag . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			)
+		?>
+		<br />
+		<?php esc_html_e( 'For your site to work correctly, this page must be translated in all available languages.', 'polylang' ); ?>
+	</p>
+	<p>
+		<?php esc_html_e( 'After the pages is created, it is up to you to put the translated content in each page linked to each language.', 'polylang' ); ?>
+	</p>
 <?php endif; ?>
-<h2><?php esc_html_e( 'Homepage', 'polylang' ); ?></h2>
-<p>
-	<?php
-		printf(
-			/* translators: %s is the post title of the front page */
-			esc_html__( 'You defined this page as your static homepage: %s.', 'polylang' ),
-			'<strong>' . esc_html( $home_page->post_title ) . '</strong>'
-		);
-		?>
-	<br />
-	<?php
-		printf(
-			/* translators: %s is the language of the front page ( flag, native name and locale ) */
-			esc_html__( 'Its language is : %s.', 'polylang' ),
-			$home_page_language->flag . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		)
-		?>
-	<br />
-	<?php esc_html_e( 'For your site to work correctly, this page must be translated in all available languages.', 'polylang' ); ?>
-</p>
-<p>
-	<?php esc_html_e( 'After the pages is created, it is up to you to put the translated content in each page linked to each language.', 'polylang' ); ?>
-</p>
 <?php if ( $translations ) : ?>
 <table id="translated-languages" class="striped">
 	<thead>
@@ -63,7 +69,10 @@ foreach ( $languages as $language ) {
 	<tbody>
 	<?php
 	foreach ( array_keys( $translations ) as $lang ) {
-		$language = $this->model->get_language( $lang );
+		$language = $model->get_language( $lang );
+		if ( empty( $language ) ) {
+			continue;
+		}
 		?>
 		<tr>
 			<td>
@@ -96,7 +105,7 @@ foreach ( $languages as $language ) {
 			<tr>
 				<th><?php esc_html_e( 'We are going to prepare this page in', 'polylang' ); ?></th>
 			</tr>
-		<?php elseif ( false !== $home_page_language && count( $untranslated_languages ) <= 0 ) : ?>
+		<?php elseif ( ! empty( $home_page_language ) ) : ?>
 			<tr>
 				<th>
 					<span class="dashicons dashicons-info"></span>

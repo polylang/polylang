@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Main class for Polylang wizard.
  *
@@ -26,7 +28,7 @@ class PLL_Wizard {
 	/**
 	 * List of steps.
 	 *
-	 * @var array $steps {
+	 * @var array[] $steps {
 	 *     @type string   $name    I18n string which names the step.
 	 *     @type callable $view    The callback function use to display the step content.
 	 *     @type callable $handler The callback function use to process the step after it is submitted.
@@ -272,6 +274,10 @@ class PLL_Wizard {
 	 */
 	public function display_wizard_page() {
 		set_current_screen( 'pll-wizard' );
+		do_action( 'admin_enqueue_scripts' );
+		$steps          = $this->steps;
+		$current_step   = $this->step;
+		$styles         = $this->styles;
 		include __DIR__ . '/view-wizard-page.php';
 	}
 
@@ -512,6 +518,8 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_languages() {
+		$model   = $this->model;
+		$options = $this->options;
 		include __DIR__ . '/view-wizard-step-languages.php';
 	}
 
@@ -679,6 +687,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_untranslated_contents() {
+		$model = $this->model;
 		include __DIR__ . '/view-wizard-step-untranslated-contents.php';
 	}
 
@@ -742,6 +751,8 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_home_page() {
+		$model   = $this->model;
+		$options = $this->options;
 		include __DIR__ . '/view-wizard-step-home-page.php';
 	}
 

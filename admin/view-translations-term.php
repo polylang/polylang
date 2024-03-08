@@ -3,11 +3,14 @@
  * Displays the translations fields for terms
  *
  * @package Polylang
+ *
+ * @var PLL_Admin_Filters_Term $this
+ * @var PLL_Language           $lang
+ * @var string                 $taxonomy
+ * @var string                 $post_type
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly
-}
+defined( 'ABSPATH' ) || exit; // Don't access directly
 
 if ( isset( $term_id ) ) {
 	// Edit term form ?>
@@ -31,7 +34,7 @@ else {
 
 		// Look for any existing translation in this language
 		// Take care not to propose a self link
-		$translation = 0;
+		$translation = null;
 		if ( isset( $term_id ) && ( $translation_id = $this->model->term->get_translation( $term_id, $language ) ) && $translation_id != $term_id ) {
 			$translation = get_term( $translation_id, $taxonomy );
 		}
@@ -39,11 +42,14 @@ else {
 			$translation = get_term( $translation_id, $taxonomy );
 		}
 
+		$add_link = '';
+		$link     = '';
 		if ( isset( $term_id ) ) { // Do not display the add new link in add term form ( $term_id not set !!! )
-			$link = $add_link = $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
+			$link = $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
+			$add_link = $link;
 		}
 
-		if ( $translation ) {
+		if ( $translation instanceof WP_Term ) {
 			$link = $this->links->edit_term_translation_link( $translation->term_id, $taxonomy, $post_type );
 		}
 		?>
@@ -75,8 +81,8 @@ else {
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
-					( empty( $translation ) ? 0 : esc_attr( $translation->term_id ) ),
-					( empty( $translation ) ? '' : esc_attr( $translation->name ) ),
+					( ! $translation instanceof WP_Term ? 0 : esc_attr( (string) $translation->term_id ) ),
+					( ! $translation instanceof WP_Term ? '' : esc_attr( $translation->name ) ),
 					disabled( empty( $disabled ), false, false ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					( $language->is_rtl ? 'rtl' : 'ltr' )
