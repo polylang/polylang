@@ -202,9 +202,10 @@ class PLL_Canonical {
 		$filtered_terms_by_lang = array_filter(
 			$term_ids,
 			function ( $term_id ) use ( $lang ) {
+				$lang      = $this->model->get_language( $lang );
 				$term_lang = $this->model->term->get_language( (int) $term_id );
 
-				return ! empty( $term_lang ) && $term_lang->slug === $lang;
+				return ! empty( $lang ) && ! empty( $term_lang ) && $term_lang->slug === $lang->slug;
 			}
 		);
 
