@@ -597,13 +597,11 @@ class PLL_WPML_Config {
 	 * @since 3.6
 	 *
 	 * @param  SimpleXMLElement $field A XML node.
-	 * @param  array            $attrs The attributes.
 	 * @return array An array of attributes.
 	 *
-	 * @phpstan-param array<non-empty-string, array|true> $attrs
 	 * @phpstan-return array<non-empty-string, array|true>
 	 */
-	private function get_field_attributes( SimpleXMLElement $field, array $attrs = array() ): array {
+	private function get_field_attributes( SimpleXMLElement $field ): array {
 		$name = $this->get_field_attribute( $field, 'name' );
 
 		if ( '' === $name ) {
@@ -616,25 +614,19 @@ class PLL_WPML_Config {
 			return array( $name => true );
 		}
 
-		if ( ! isset( $attrs[ $name ] ) || ! is_array( $attrs[ $name ] ) ) {
-			$attrs[ $name ] = array();
-		}
+		$sub_attributes = array();
 
 		foreach ( $children as $child ) {
-			$sub = $this->get_field_attributes( $child, $attrs[ $name ] );
+			$sub = $this->get_field_attributes( $child );
 
 			if ( empty( $sub ) ) {
 				continue;
 			}
 
-			$attrs[ $name ] = array_merge( $attrs[ $name ], $sub );
+			$sub_attributes[ $name ] = array_merge( $sub_attributes[ $name ] ?? array(), $sub );
 		}
 
-		if ( empty( $attrs[ $name ] ) ) {
-			unset( $attrs[ $name ] );
-		}
-
-		return $attrs;
+		return $sub_attributes;
 	}
 
 	/**
