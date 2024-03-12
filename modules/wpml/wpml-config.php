@@ -507,7 +507,7 @@ class PLL_WPML_Config {
 							}
 
 							if ( isset( $parsing_rules['key'][ $block_name ] ) ) {
-								$parsing_rules['key'][ $block_name ] = array_merge( $parsing_rules['key'][ $block_name ], $rule );
+								$parsing_rules['key'][ $block_name ] = $this->array_merge_recursive( $parsing_rules['key'][ $block_name ], $rule );
 							} else {
 								$parsing_rules['key'][ $block_name ] = $rule;
 							}
@@ -518,6 +518,28 @@ class PLL_WPML_Config {
 		}
 
 		return $parsing_rules;
+	}
+
+	/**
+	 * Merge two arrays recursively.
+	 * Unlike `array_merge_recursive()`, this method doesn't change the type of the values.
+	 *
+	 * @since 3.6
+	 *
+	 * @param array $array1 Array to merge into.
+	 * @param array $array2 Array to merge.
+	 * @return array
+	 */
+	protected function array_merge_recursive( array $array1, array $array2 ): array {
+		foreach ( $array2 as $key => $value ) {
+			if ( is_array( $value ) && isset( $array1[ $key ] ) && is_array( $array1[ $key ] ) ) {
+				$array1[ $key ] = $this->array_merge_recursive( $array1[ $key ], $value );
+			} else {
+				$array1[ $key ] = $value;
+			}
+		}
+
+		return $array1;
 	}
 
 	/**
