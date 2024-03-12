@@ -99,6 +99,24 @@
 				<xpath>//div/p/a</xpath>
 				<key name=" " />
 			</gutenberg-block>
+			<gutenberg-block type="my-plugin/my-block-7" translate="1">
+				<key name="first-level">
+					<key name="second-level" />
+					<key name="second-level-2" />
+					<key name="second-level-3" >
+						<key name="third-level" />
+					</key>
+					<key name="second-level-4" >
+						<key name="third-level-2" >
+							<key name="fourth-level" />
+							<key name="fourth-level-2" />
+						</key>
+					</key>
+				</key>
+				<key name="first-level-2" >
+					<key name="first-level-2-second-level" />
+				</key>
+			</gutenberg-block>
 		</gutenberg-blocks>
 		<language-switcher-settings>
 				<key name="icl_lang_sel_config">

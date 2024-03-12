@@ -45,7 +45,12 @@ class PLL_WPML_Config {
 	/**
 	 * List of rules to extract strings to translate from blocks.
 	 *
-	 * @var string[][][]|null
+	 * @var array
+	 *
+	 * @phpstan-var array{
+	 *     xpath?: array<non-empty-string, list<non-empty-string>>,
+	 *     key?: array<non-empty-string, array<array|true>>
+	 * }|null
 	 */
 	protected $parsing_rules = null;
 
@@ -412,12 +417,13 @@ class PLL_WPML_Config {
 	 * Translation management for blocks attributes.
 	 *
 	 * @since 3.3
+	 * @since 3.6 Format changed from `array<string>` to `array<non-empty-string, array|true>`.
 	 *
-	 * @param string[][] $parsing_rules Rules for blocks attributes to translate.
-	 * @return string[][] Rules completed with ones from wpml-config file.
+	 * @param array $parsing_rules Rules for blocks attributes to translate.
+	 * @return array Rules completed with ones from wpml-config file.
 	 *
-	 * @phpstan-param array<string,array<string>> $parsing_rules
-	 * @phpstan-return array<string,array<string>>
+	 * @phpstan-param array<non-empty-string, array|true> $parsing_rules
+	 * @phpstan-return array<non-empty-string, array|true>
 	 */
 	public function translate_blocks_attributes( $parsing_rules ) {
 		return array_merge( $parsing_rules, $this->get_blocks_parsing_rules( 'key' ) );
@@ -430,6 +436,11 @@ class PLL_WPML_Config {
 	 *
 	 * @param string $rule_tag Tag name to extract.
 	 * @return string[][] The rules.
+	 *
+	 * @phpstan-param 'xpath'|'key' $rule_tag
+	 * @phpstan-return (
+	 *     $rule_tag is 'xpath' ? array<non-empty-string, list<non-empty-string>> : array<non-empty-string, array<array|true>>
+	 * )
 	 */
 	protected function get_blocks_parsing_rules( $rule_tag ) {
 
@@ -446,6 +457,11 @@ class PLL_WPML_Config {
 	 * @since 3.3
 	 *
 	 * @return string[][][] Rules completed with ones from wpml-config file.
+	 *
+	 * @phpstan-return array{
+	 *     xpath?: array<non-empty-string, list<non-empty-string>>,
+	 *     key?: array<non-empty-string, array<array|true>>
+	 * }
 	 */
 	protected function extract_blocks_parsing_rules() {
 		$parsing_rules = array();
@@ -477,21 +493,53 @@ class PLL_WPML_Config {
 					switch ( $child_tag ) {
 						case 'xpath':
 							$rule = trim( (string) $child );
+
+							if ( '' !== $rule ) {
+								$parsing_rules['xpath'][ $block_name ][] = $rule;
+							}
 							break;
 
 						case 'key':
-							$rule = $this->get_field_attribute( $child, 'name' );
-							break;
-					}
+							$rule = $this->get_field_attributes( $child );
 
-					if ( '' !== $rule ) {
-						$parsing_rules[ $child_tag ][ $block_name ][] = $rule;
+							if ( empty( $rule ) ) {
+								break;
+							}
+
+							if ( isset( $parsing_rules['key'][ $block_name ] ) ) {
+								$parsing_rules['key'][ $block_name ] = $this->array_merge_recursive( $parsing_rules['key'][ $block_name ], $rule );
+							} else {
+								$parsing_rules['key'][ $block_name ] = $rule;
+							}
+							break;
 					}
 				}
 			}
 		}
 
 		return $parsing_rules;
+	}
+
+	/**
+	 * Merge two arrays recursively.
+	 * Unlike `array_merge_recursive()`, this method doesn't change the type of the values.
+	 *
+	 * @since 3.6
+	 *
+	 * @param array $array1 Array to merge into.
+	 * @param array $array2 Array to merge.
+	 * @return array
+	 */
+	protected function array_merge_recursive( array $array1, array $array2 ): array {
+		foreach ( $array2 as $key => $value ) {
+			if ( is_array( $value ) && isset( $array1[ $key ] ) && is_array( $array1[ $key ] ) ) {
+				$array1[ $key ] = $this->array_merge_recursive( $array1[ $key ], $value );
+			} else {
+				$array1[ $key ] = $value;
+			}
+		}
+
+		return $array1;
 	}
 
 	/**
@@ -563,6 +611,44 @@ class PLL_WPML_Config {
 		}
 
 		return trim( (string) $attributes[ $attribute_name ] );
+	}
+
+	/**
+	 * Gets attributes values recursively.
+	 *
+	 * @since 3.6
+	 *
+	 * @param  SimpleXMLElement $field A XML node.
+	 * @return array An array of attributes.
+	 *
+	 * @phpstan-return array<non-empty-string, array|true>
+	 */
+	private function get_field_attributes( SimpleXMLElement $field ): array {
+		$name = $this->get_field_attribute( $field, 'name' );
+
+		if ( '' === $name ) {
+			return array();
+		}
+
+		$children = $field->children();
+
+		if ( 0 === $children->count() ) {
+			return array( $name => true );
+		}
+
+		$sub_attributes = array();
+
+		foreach ( $children as $child ) {
+			$sub = $this->get_field_attributes( $child );
+
+			if ( empty( $sub ) ) {
+				continue;
+			}
+
+			$sub_attributes[ $name ] = array_merge( $sub_attributes[ $name ] ?? array(), $sub );
+		}
+
+		return $sub_attributes;
 	}
 
 	/**

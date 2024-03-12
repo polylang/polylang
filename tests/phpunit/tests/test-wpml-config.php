@@ -396,7 +396,7 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		);
 		$parsing_rules_for_attributes = array(
 			'my-plugin/my-block' => array(
-				'buttonText',
+				'buttonText' => true,
 			),
 		);
 
@@ -414,14 +414,32 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		);
 		$expected_parsing_rules_for_attributes = array(
 			'my-plugin/my-block' => array(
-				'headingTitle',
-				'text',
+				'headingTitle' => true,
+				'text'         => true,
 			),
 			'my-plugin/my-block-2' => array(
-				'iconLabel',
+				'iconLabel' => true,
 			),
 			'my-plugin/my-block-5' => array(
-				'iconLabel',
+				'iconLabel' => true,
+			),
+			'my-plugin/my-block-7' => array(
+				'first-level' => array(
+					'second-level' => true,
+					'second-level-2' => true,
+					'second-level-3' => array(
+						'third-level' => true,
+					),
+					'second-level-4' => array(
+						'third-level-2' => array(
+							'fourth-level' => true,
+							'fourth-level-2' => true,
+						),
+					),
+				),
+				'first-level-2' => array(
+					'first-level-2-second-level' => true,
+				),
 			),
 		);
 
@@ -429,6 +447,6 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$parsing_rules_for_attributes = apply_filters( 'pll_blocks_rules_for_attributes', $parsing_rules_for_attributes );
 
 		$this->assertSameSets( $expected_parsing_rules, $parsing_rules, 'Rules from WPML config should be added and override the existing ones for each block.' );
-		$this->assertSameSets( $expected_parsing_rules_for_attributes, $parsing_rules_for_attributes, 'Rules for blocks attributes from WPML config should be added and override the existing ones for each block.' );
+		$this->assertSameSetsWithIndex( $expected_parsing_rules_for_attributes, $parsing_rules_for_attributes, 'Rules for blocks attributes from WPML config should be added and override the existing ones for each block.' );
 	}
 }
