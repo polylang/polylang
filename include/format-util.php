@@ -24,7 +24,7 @@ class PLL_Format_Util {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array|Traversable|stdClass $list   An list with keys or values to match against `$format`.
+	 * @param array|Traversable|stdClass $list   A list with keys or values to match against `$format`.
 	 * @param string                     $format A format, where `*` means "any characters" (`.*`), unless escaped.
 	 * @param string                     $mode   Optional. Tell if we should filter the keys or values from `$list`.
 	 *                                           Possible values are `'use_keys'` and `'use_values'`. Default is `'use_keys'`.
