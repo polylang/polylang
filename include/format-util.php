@@ -24,31 +24,21 @@ class PLL_Format_Util {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array|Traversable|stdClass $list   A list with keys or values to match against `$format`.
-	 * @param string                     $format A format, where `*` means "any characters" (`.*`), unless escaped.
-	 * @param string                     $mode   Optional. Tell if we should filter the keys or values from `$list`.
-	 *                                           Possible values are `'use_keys'` and `'use_values'`. Default is `'use_keys'`.
+	 * @param array  $list   A list with keys or values to match against `$format`.
+	 * @param string $format A format, where `*` means "any characters" (`.*`), unless escaped.
+	 * @param string $mode   Optional. Tell if we should filter the keys or values from `$list`.
+	 *                       Possible values are `'use_keys'` and `'use_values'`. Default is `'use_keys'`.
 	 * @return array
 	 *
 	 * @template TArrayValue
-	 * @phpstan-param (
-	 *     $mode is 'use_keys' ?
-	 *         array<string, TArrayValue>|Traversable<string, TArrayValue>|stdClass :
-	 *         array<string>|Traversable<string>|stdClass
-	 * ) $list
+	 * @phpstan-param ($mode is 'use_keys' ? array<string, TArrayValue> : array<string>) $list
 	 * @phpstan-param 'use_keys'|'use_values' $mode
 	 * @phpstan-return ($mode is 'use_keys' ? array<string, TArrayValue> : array<string>)
 	 */
-	public function filter_list( $list, string $format, string $mode = 'use_keys' ): array {
+	public function filter_list( array $list, string $format, string $mode = 'use_keys' ): array {
 		$filter = function ( $key ) use ( $format ) {
 			return $this->matches( (string) $key, $format );
 		};
-
-		if ( $list instanceof Traversable ) {
-			$list = iterator_to_array( $list );
-		} elseif ( ! is_array( $list ) ) {
-			$list = (array) $list;
-		}
 
 		if ( 'use_values' === $mode ) {
 			return array_filter( $list, $filter );
