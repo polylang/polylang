@@ -151,7 +151,7 @@ class PLL_WPML_Config {
 					continue;
 				}
 
-				$names = $matcher->filter_list( wp_load_alloptions(), $name );
+				$names = $matcher->filter_list( (array) wp_load_alloptions(), $name );
 
 				foreach ( $names as $_name => $_val ) {
 					$this->register_or_translate_option( $context, $_name, $key );
