@@ -9,7 +9,8 @@ jQuery(
 	function ( $ ) {
 		const handleQuickEditInsertion = ( mutationsList ) => {
 			for ( const mutation of mutationsList ) {
-				const form = mutation.addedNodes[0];
+				const addedNodes = Array.from( mutation.addedNodes ).filter( el => el.nodeType === Node.ELEMENT_NODE )
+				const form = addedNodes[0];
 				if ( 0 < mutation.addedNodes.length && form.classList.contains( 'inline-edit-row' ) ) {
 					// WordPress has inserted the quick edit form.
 					const term_id = Number( form.id.substring( 5 ) );
@@ -21,7 +22,7 @@ jQuery(
 						select.value = lang; // Populates the dropdown with the post language.
 
 						// Disable the language dropdown for default categories.
-						const default_cat = document.querySelector( `#default_cat_${term_id}` ).innerHTML;
+						const default_cat = document.querySelector( `#default_cat_${term_id}` )?.innerHTML;
 						if ( term_id == default_cat ) {
 							select.disabled = true;
 						}
