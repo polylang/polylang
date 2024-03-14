@@ -108,7 +108,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 * Requires WP 6.2 as minimum version
 * Add compatibility with WP 6.5
-* Pro: Add DeepL machine translation for posts and terms
+* Pro: Add DeepL machine translation for posts
 * Pro: Add export and import in XLIFF 2.0/2.1 formats
 * Pro: Improve translator comments in exported PO files
 * Pro: Allow to export JSON encoded post and term metas in XLIFF files
@@ -119,6 +119,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Pro: Fix language switcher navigation block justification not aligned with core settings in overlay menu (requires WP 6.5)
 * Pro: Fix a race condition which could lead to display a notice to the wrong user
 * Pro: Fix a conflict with ACF when rewrite rules are flushed with WP-CLI on a multisite
+* Pro: Fix import of several metas with same sources but different translations
 * Add filter `pll_cookie_args` to filter the Polylang cookie arguments #1406
 * Fix wrong translated post types and taxononies after a `switch_to_blog()` #1415
 * Fix a minor performance issue for the page for posts #1412
