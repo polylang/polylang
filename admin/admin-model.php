@@ -387,7 +387,7 @@ class PLL_Admin_Model extends PLL_Model {
 
 		// Validate flag
 		if ( ! empty( $args['flag'] ) && ! is_readable( POLYLANG_DIR . '/flags/' . $args['flag'] . '.png' ) ) {
-			$flag = PLL_Language::get_flag_informations( $args['flag'] );
+			$flag = PLL_Language::get_flag_information( $args['flag'] );
 
 			if ( ! empty( $flag['url'] ) ) {
 				$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $flag['url'] ) ) : wp_remote_get( esc_url_raw( $flag['url'] ) );
