@@ -6,7 +6,8 @@
 /**
  * A class to match values against a given format.
  *
- * @since 3.7
+ * @since 3.6
+ * @since 3.7 Moved from Polylang Pro to Polylang.
  */
 class PLL_Format_Util {
 	/**
@@ -22,7 +23,8 @@ class PLL_Format_Util {
 	/**
 	 * Filters the given list to return only the values whose the key or value matches the given format.
 	 *
-	 * @since 3.7
+	 * @since 3.6
+	 * @since 3.7 Only accepts arrays as first parameter.
 	 *
 	 * @param array  $list   A list with keys or values to match against `$format`.
 	 * @param string $format A format, where `*` means "any characters" (`.*`), unless escaped.
@@ -50,7 +52,7 @@ class PLL_Format_Util {
 	/**
 	 * Tells if the given string matches the given format.
 	 *
-	 * @since 3.7
+	 * @since 3.6
 	 *
 	 * @param string $key    A string to test.
 	 * @param string $format A format, where `*` means "any characters" (`.*`), unless escaped.
