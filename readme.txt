@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 3.5.4
+Stable tag: 3.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -104,7 +104,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
-== 3.6 ==
+== 3.6 (2024-03-18) ==
 
 * Requires WP 6.2 as minimum version
 * Add compatibility with WP 6.5
