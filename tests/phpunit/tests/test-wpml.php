@@ -53,8 +53,6 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_wpml_active_languages() {
-		self::$model->post->register_taxonomy(); // Needed otherwise posts are not counted
-
 		$en = self::factory()->post->create( array( 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );
 

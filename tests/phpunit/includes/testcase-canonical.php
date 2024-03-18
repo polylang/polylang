@@ -50,7 +50,6 @@ abstract class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		$_SERVER['REQUEST_URI'] = $test_url;
 
 		$model = new PLL_Model( $this->options );
-		$model->post->register_taxonomy(); // needs this for 'lang' query var
 
 		static::register_post_types_and_taxonomies();
 

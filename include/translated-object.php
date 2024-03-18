@@ -36,6 +36,17 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		/*
 		 * Register our taxonomy as soon as possible.
 		 */
+		$this->register_translations_taxonomy();
+	}
+
+	/**
+	 * Registers the translations taxonomy.
+	 *
+	 * @since 3.6
+	 *
+	 * @return void
+	 */
+	protected function register_translations_taxonomy() {
 		register_taxonomy(
 			$this->tax_translations,
 			(array) $this->object_type,

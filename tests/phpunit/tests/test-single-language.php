@@ -54,9 +54,11 @@ class Single_Language_Test extends PLL_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( $this->structure );
 
-		$model->post->register_taxonomy(); // needs this for 'lang' query var
 		$links_model = $model->get_links_model();
 		$links_model->init();
+
+		$wp_rewrite->flush_rules();
+
 		$pll = new PLL_Frontend( $links_model );
 		$pll->init();
 		$pll->model->clean_languages_cache();

@@ -41,12 +41,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		add_action( 'pll_prepare_rewrite_rules', array( $this, 'prepare_rewrite_rules' ) ); // Ensure it's hooked before `self::do_prepare_rewrite_rules()` is called.
 
 		parent::init();
-
-		if ( did_action( 'setup_theme' ) ) {
-			$this->add_permastruct();
-		} else {
-			add_action( 'setup_theme', array( $this, 'add_permastruct' ), 2 );
-		}
 	}
 
 	/**
@@ -147,20 +141,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 	}
 
 	/**
-	 * Optionally removes 'language' in permalinks so that we get http://www.myblog/en/ instead of http://www.myblog/language/en/.
-	 *
-	 * @since 1.2
-	 *
-	 * @return void
-	 */
-	public function add_permastruct() {
-		// Language information always in front of the uri ( 'with_front' => false ).
-		if ( $this->model->has_languages() ) {
-			add_permastruct( 'language', $this->options['rewrite'] ? '%language%' : 'language/%language%', array( 'with_front' => false ) );
-		}
-	}
-
-	/**
 	 * Prepares the rewrite rules filters.
 	 *
 	 * @since 0.8.1
@@ -177,8 +157,6 @@ class PLL_Links_Directory extends PLL_Links_Permalinks {
 		if ( ! $this->model->has_languages() || ! did_action( 'wp_loaded' ) || ! self::$can_filter_rewrite_rules ) {
 			return;
 		}
-
-		add_filter( 'language_rewrite_rules', '__return_empty_array' ); // Suppress the rules created by WordPress for our taxonomy.
 
 		foreach ( $this->get_rewrite_rules_filters_with_callbacks() as $rule => $callback ) {
 			add_filter( $rule, $callback );

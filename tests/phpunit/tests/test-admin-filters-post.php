@@ -9,8 +9,6 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
 		parent::wpSetUpBeforeClass( $factory );
 
-		self::$model->post->register_taxonomy();
-
 		$links_model     = self::$model->get_links_model();
 		$pll_admin = new PLL_Admin( $links_model );
 		$admin_default_term = new PLL_Admin_Default_Term( $pll_admin );

@@ -22,7 +22,6 @@ class Sitemaps_Test extends PLL_UnitTestCase {
 		$wp_rewrite->extra_rules_top = array(); // Brute force since WP does not do it :(
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
-		self::$model->post->register_taxonomy(); // Needs this for 'lang' query var.
 		create_initial_taxonomies();
 		register_post_type( 'cpt', array( 'public' => true ) ); // *Untranslated* custom post type.
 		register_taxonomy( 'tax', 'cpt' ); // *Untranslated* custom tax.

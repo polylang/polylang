@@ -86,8 +86,6 @@ class Ajax_Filters_Post_Test extends PLL_Ajax_UnitTestCase {
 	public function test_page_lang_choice() {
 		$this->pll_admin->filters = new PLL_Admin_Filters( $this->pll_admin ); // we need this for the pages dropdown
 
-		self::$model->post->register_taxonomy(); // needs this for 'lang' query var
-
 		// possible parents
 		$en = self::factory()->post->create( array( 'post_title' => 'test', 'post_type' => 'page' ) );
 		self::$model->post->set_language( $en, 'en' );

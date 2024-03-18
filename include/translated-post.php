@@ -67,6 +67,35 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
+	 * Registers the language taxonomy.
+	 *
+	 * @since 1.2
+	 * @since 3.6 Protected and renamed from `register_taxonomy()`.
+	 *
+	 * @return void
+	 */
+	protected function register_language_taxonomy() {
+		register_taxonomy(
+			$this->tax_language,
+			(array) $this->get_translated_object_types(),
+			array(
+				'labels' => array(
+					'name'          => __( 'Languages', 'polylang' ),
+					'singular_name' => __( 'Language', 'polylang' ),
+					'all_items'     => __( 'All languages', 'polylang' ),
+				),
+				'public'             => false,
+				'show_ui'            => false, // Hide the taxonomy on admin side, needed for WP 4.4.x.
+				'show_in_nav_menus'  => false, // No metabox for nav menus, needed for WP 4.4.x.
+				'publicly_queryable' => true, // Since WP 4.5.
+				'query_var'          => 'lang',
+				'rewrite'            => false, // Rewrite rules are added through filters when needed.
+				'_pll'               => true, // Polylang taxonomy.
+			)
+		);
+	}
+
+	/**
 	 * Adds hooks.
 	 *
 	 * @since 3.4
@@ -74,9 +103,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @return static
 	 */
 	public function init() {
-		// Registers completely the language taxonomy.
-		add_action( 'setup_theme', array( $this, 'register_taxonomy' ), 1 );
-
 		// Setups post types to translate.
 		add_action( 'registered_post_type', array( $this, 'registered_post_type' ) );
 
@@ -168,34 +194,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	public function is_translated_object_type( $object_type ) {
 		$post_types = $this->get_translated_object_types( false );
 		return ( is_array( $object_type ) && array_intersect( $object_type, $post_types ) || in_array( $object_type, $post_types ) || 'any' === $object_type && ! empty( $post_types ) );
-	}
-
-	/**
-	 * Registers the language taxonomy.
-	 *
-	 * @since 1.2
-	 *
-	 * @return void
-	 */
-	public function register_taxonomy() {
-		register_taxonomy(
-			$this->tax_language,
-			$this->model->get_translated_post_types(),
-			array(
-				'labels' => array(
-					'name'          => __( 'Languages', 'polylang' ),
-					'singular_name' => __( 'Language', 'polylang' ),
-					'all_items'     => __( 'All languages', 'polylang' ),
-				),
-				'public'             => false,
-				'show_ui'            => false, // Hide the taxonomy on admin side, needed for WP 4.4.x.
-				'show_in_nav_menus'  => false, // No metabox for nav menus, needed for WP 4.4.x.
-				'publicly_queryable' => true, // Since WP 4.5.
-				'query_var'          => 'lang',
-				'rewrite'            => $this->model->options['force_lang'] < 2, // No rewrite for domains and sub-domains.
-				'_pll'               => true, // Polylang taxonomy.
-			)
-		);
 	}
 
 	/**
