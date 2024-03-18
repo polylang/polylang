@@ -104,7 +104,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
-== 3.6 (2024-03-18) ==
+= 3.6 (2024-03-18) =
 
 * Requires WP 6.2 as minimum version
 * Add compatibility with WP 6.5
