@@ -330,7 +330,7 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 		$en = self::factory()->attachment->create_object( 'image0.jpg' );
 		self::$model->post->set_language( $en, 'en' );
 
-		$post_ID = $this->pll_admin->posts->create_media_translation( $en, 'fr' );
+		$post_ID = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
 
 		$lang = self::$model->get_language( 'fr' );
 

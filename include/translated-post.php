@@ -304,6 +304,78 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
+	 * Creates a media translation
+	 *
+	 * @since 1.8
+	 * @since 3.6 Moved from PLL_CRUD_Posts.
+	 *
+	 * @param int           $post_id Original attachment id.
+	 * @param string|object $lang    New translation language.
+	 * @return int Attachment id of the translated media.
+	 */
+	public function create_media_translation( $post_id, $lang ) {
+		if ( empty( $post_id ) ) {
+			return 0;
+		}
+
+		$post = get_post( $post_id, ARRAY_A );
+
+		if ( empty( $post ) ) {
+			return 0;
+		}
+
+		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug.
+
+		if ( empty( $lang ) ) {
+			return 0;
+		}
+
+		// Create a new attachment ( translate attachment parent if exists ).
+		add_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Avoid a conflict with automatic duplicate at upload.
+		unset( $post['ID'] ); // Will force the creation.
+		if ( ! empty( $post['post_parent'] ) ) {
+			$post['post_parent'] = (int) $this->get_translation( $post['post_parent'], $lang->slug );
+		}
+		$post['tax_input'] = array( 'language' => array( $lang->slug ) ); // Assigns the language.
+		$tr_id = wp_insert_attachment( wp_slash( $post ) );
+		remove_filter( 'pll_enable_duplicate_media', '__return_false', 99 ); // Restore automatic duplicate at upload.
+
+		// Copy metadata.
+		$data = wp_get_attachment_metadata( $post_id, true ); // Unfiltered.
+		if ( is_array( $data ) ) {
+			wp_update_attachment_metadata( $tr_id, wp_slash( $data ) ); // Directly uses update_post_meta, so expects slashed.
+		}
+
+		// Copy attached file.
+		if ( $file = get_attached_file( $post_id, true ) ) { // Unfiltered.
+			update_attached_file( $tr_id, wp_slash( $file ) ); // Directly uses update_post_meta, so expects slashed.
+		}
+
+		// Copy alternative text. Direct use of the meta as there is no filtered wrapper to manipulate it.
+		if ( $text = get_post_meta( $post_id, '_wp_attachment_image_alt', true ) ) {
+			add_post_meta( $tr_id, '_wp_attachment_image_alt', wp_slash( $text ) );
+		}
+
+		$this->set_language( $tr_id, $lang );
+
+		$translations = $this->get_translations( $post_id );
+		$translations[ $lang->slug ] = $tr_id;
+		$this->save_translations( $tr_id, $translations );
+
+		/**
+		 * Fires after a media translation is created
+		 *
+		 * @since 1.6.4
+		 *
+		 * @param int    $post_id Post id of the source media.
+		 * @param int    $tr_id   Post id of the new media translation.
+		 * @param string $slug    Language code of the new translation.
+		 */
+		do_action( 'pll_translate_media', $post_id, $tr_id, $lang->slug );
+		return $tr_id;
+	}
+
+	/**
 	 * Returns a list of posts in a language ($lang) not translated in another language ($untranslated_in).
 	 *
 	 * @since 2.6

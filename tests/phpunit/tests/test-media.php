@@ -40,7 +40,7 @@ class Media_Test extends PLL_UnitTestCase {
 
 		$filename = __DIR__ . '/../data/image.jpg';
 		$en = self::factory()->attachment->create_upload_object( $filename );
-		$fr = $this->pll_admin->posts->create_media_translation( $en, 'fr' );
+		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
 
 		$this->assertEquals( 'fr', self::$model->post->get_language( $fr )->slug );
 		$this->assertEquals( self::$model->post->get_translation( $en, 'fr' ), $fr );
@@ -91,7 +91,7 @@ class Media_Test extends PLL_UnitTestCase {
 		add_post_meta( $en, '_wp_attachment_image_alt', $slash_2 );
 		self::$model->post->set_language( $en, 'en' );
 
-		$fr = $this->pll_admin->posts->create_media_translation( $en, 'fr' );
+		$fr = $this->pll_admin->model->post->create_media_translation( $en, 'fr' );
 		$post = get_post( $fr );
 		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_title );
 		$this->assertEquals( wp_unslash( $slash_2 ), $post->post_content );

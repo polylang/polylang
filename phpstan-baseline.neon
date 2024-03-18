@@ -116,11 +116,6 @@ parameters:
 			path: admin/admin-filters-columns.php
 
 		-
-			message: "#^Cannot call method create_media_translation\\(\\) on PLL_CRUD_Posts\\|null\\.$#"
-			count: 1
-			path: admin/admin-filters-media.php
-
-		-
 			message: "#^Parameter \\#1 \\$location of function wp_safe_redirect expects string, string\\|false given\\.$#"
 			count: 1
 			path: admin/admin-filters-media.php
