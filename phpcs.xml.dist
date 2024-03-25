@@ -67,22 +67,6 @@
 		</properties>
 	</rule>
 
-	<rule ref="WordPress.Security.EscapeOutput">
-		<properties>
-			<property name="customAutoEscapedFunctions" type="array">
-				<element value="sanitize_locale_name"/>
-			</property>
-		</properties>
-	</rule>
-
-	<rule ref="WordPress.Security.ValidatedSanitizedInput">
-		<properties>
-			<property name="customUnslashingSanitizingFunctions" type="array">
-				<element value="sanitize_locale_name"/>
-			</property>
-		</properties>
-	</rule>
-
 	<!--
 	#############################################################################
 	Global exclusions for tests.

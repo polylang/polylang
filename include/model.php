@@ -431,7 +431,7 @@ class PLL_Model {
 	 */
 	public function is_filtered_taxonomy( $tax ) {
 		$taxonomies = $this->get_filtered_taxonomies( false );
-		return ( is_array( $tax ) && array_intersect( $tax, $taxonomies ) || in_array( $tax, $taxonomies ) );
+		return ( ( is_array( $tax ) && array_intersect( $tax, $taxonomies ) ) || in_array( $tax, $taxonomies ) );
 	}
 
 	/**

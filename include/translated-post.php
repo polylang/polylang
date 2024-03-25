@@ -167,7 +167,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 */
 	public function is_translated_object_type( $object_type ) {
 		$post_types = $this->get_translated_object_types( false );
-		return ( is_array( $object_type ) && array_intersect( $object_type, $post_types ) || in_array( $object_type, $post_types ) || 'any' === $object_type && ! empty( $post_types ) );
+		return ( ( is_array( $object_type ) && array_intersect( $object_type, $post_types ) ) || in_array( $object_type, $post_types ) || ( 'any' === $object_type && ! empty( $post_types ) ) );
 	}
 
 	/**
