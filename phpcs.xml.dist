@@ -67,6 +67,14 @@
 		</properties>
 	</rule>
 
+	<rule ref="WordPress.Security.ValidatedSanitizedInput">
+		<properties>
+			<property name="customUnslashingSanitizingFunctions" type="array">
+				<element value="wp_verify_nonce"/>
+			</property>
+		</properties>
+	</rule>
+
 	<!--
 	#############################################################################
 	Global exclusions for tests.
