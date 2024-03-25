@@ -201,7 +201,6 @@ class PLL_Translate_Option {
 					}
 
 					foreach ( $values as $n => $value ) {
-						// The first case could be handled by the next one, but we avoid calls to preg_match here.
 						if ( $matcher->matches( $n, $name ) ) {
 							$this->register_string_recursive( $context, $n, $value, $child );
 						}
