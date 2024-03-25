@@ -200,6 +200,10 @@ class PLL_Translate_Option {
 						continue;
 					}
 
+					if ( ! $matcher->is_format( $name ) ) {
+						continue;
+					}
+
 					foreach ( $values as $n => $value ) {
 						if ( $matcher->matches( $n, $name ) ) {
 							$this->register_string_recursive( $context, $n, $value, $child );
