@@ -70,7 +70,7 @@
 					</key>
 				</key>
 				<key name="simple_string_option" />
-				<key name="generic_option_*" />
+				<key name="generi(_option_*" />
 		</admin-texts>
 		<gutenberg-blocks>
 			<gutenberg-block type="my-plugin/my-block" translate="1">
@@ -154,5 +154,3 @@
 				<key name="icl_post_availability_text">This post is also available in: %s</key>
 		</language-switcher-settings>
 </wpml-config>
-
-
