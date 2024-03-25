@@ -102,6 +102,6 @@ class PLL_Format_Util {
 	 * @phpstan-assert-if-true non-empty-string $format
 	 */
 	public function is_format( string $format ): bool {
-		return (bool) preg_match( '/(?<!\\\)\*/', $format );
+		return (bool) preg_match( '/(?<!\\\)\*/', $format ); // Match `*` characters unless if preceded by `\`.
 	}
 }
