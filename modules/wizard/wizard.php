@@ -104,7 +104,7 @@ class PLL_Wizard {
 	public function redirect_to_wizard() {
 		if ( get_transient( 'pll_activation_redirect' ) ) {
 			$do_redirect = true;
-			if ( ( isset( $_GET['page'] ) && 'mlang_wizard' === sanitize_key( $_GET['page'] ) || isset( $_GET['activate-multi'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( ( isset( $_GET['page'] ) && 'mlang_wizard' === sanitize_key( $_GET['page'] ) ) || isset( $_GET['activate-multi'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				delete_transient( 'pll_activation_redirect' );
 				$do_redirect = false;
 			}
