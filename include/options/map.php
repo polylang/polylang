@@ -53,11 +53,11 @@ class PLL_Map_Option extends PLL_Abstract_Option {
 		return array_filter(
 			$value,
 			function ( $v, $k ) {
-				if ( ! empty( $this->type ) && ( $this->type !== gettype( $v ) || empty( $v ) ) ) {
+				if ( ! empty( $this->type ) && ( gettype( $v ) !== $this->type || empty( $v ) ) ) {
 					return false;
 				}
 
-				return  is_string( $k ) && ! empty( $k );
+				return is_string( $k ) && ! empty( $k );
 			},
 			ARRAY_FILTER_USE_BOTH
 		);
