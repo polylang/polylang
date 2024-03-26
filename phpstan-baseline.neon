@@ -51,11 +51,6 @@ parameters:
 			path: admin/admin-base.php
 
 		-
-			message: "#^Cannot call method edit_post_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
-			count: 2
-			path: admin/admin-classic-editor.php
-
-		-
 			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get_translation\\(\\) expects PLL_Language\\|string, PLL_Language\\|false given\\.$#"
 			count: 1
 			path: admin/admin-classic-editor.php
@@ -137,11 +132,6 @@ parameters:
 
 		-
 			message: "#^Cannot access property \\$term_id on PLL_Language\\|null\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
-			message: "#^Cannot call method edit_term_translation_link\\(\\) on PLL_Admin_Links\\|null\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
 
