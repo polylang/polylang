@@ -160,7 +160,10 @@ class PLL_Options implements ArrayAccess {
 		}
 
 		$this->modified[ $this->current_blog_id ] = false;
-		return update_option( self::OPTION_NAME, $this->options[ $this->current_blog_id ] );
+		return update_option(
+			self::OPTION_NAME,
+			$this->get_all()
+		);
 	}
 
 	/**
