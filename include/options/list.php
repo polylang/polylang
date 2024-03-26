@@ -53,7 +53,7 @@ class PLL_List_Option extends PLL_Abstract_Option {
 		return array_filter(
 			$value,
 			function ( $v ) {
-				if ( ! empty( $this->type ) && $this->type !== gettype( $v ) ) {
+				if ( ! empty( $this->type ) && gettype( $v ) !== $this->type ) {
 					return false;
 				}
 

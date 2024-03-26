@@ -67,28 +67,17 @@ class PLL_Options implements ArrayAccess {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key       Option key.
-	 * @param string $classname Classname of `PLL_Abstract_Option` instance.
-	 * @param mixed  $default   Default option value.
-	 * @return PLL_Abstract_Option The option instance, in case some process is needed afterward.
+	 * @param PLL_Abstract_Option $option Option object to register.
+	 * @return void
 	 */
-	public function register( string $key, string $classname, $default ) {
-		foreach( $this->options as $blog_id => $options ) {
-			if ( ! isset( $options[ $key ] ) ) {
-				// If option doesn't exist in database, use default value.
-				$this->options[ $blog_id ][ $key ] = new $classname(
-					$key,
-					$default,
-					$default
-				);
-				continue;
+	public function register( PLL_Abstract_Option $option ) {
+		foreach ( $this->options as $blog_id => $options ) {
+			if ( isset( $options[ $option->key() ] ) ) {
+				// If option exist in database, use this value.
+				$$option->set( $this->options[ $blog_id ][ $option->key() ] );
 			}
 
-			$this->options[ $blog_id ][ $key ] = new $classname(
-				$key,
-				$this->options[ $blog_id ][ $key ],
-				$default
-			);
+			$this->options[ $blog_id ][ $option->key() ] = $option;
 		}
 	}
 
@@ -156,7 +145,6 @@ class PLL_Options implements ArrayAccess {
 			$this->save();
 			restore_current_blog();
 		}
-
 	}
 
 	/**

@@ -49,6 +49,17 @@ abstract class PLL_Abstract_Option {
 	}
 
 	/**
+	 * Returns option key.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	public function key(): string {
+		return $this->key;
+	}
+
+	/**
 	 * Sets option's value if valid, does nothing otherwise.
 	 *
 	 * @since 3.7
@@ -93,7 +104,7 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value
+	 * @param mixed $value Value to validate.
 	 * @return bool True if the value is valid, false otherwise.
 	 */
 	abstract protected function validate( $value ): bool;
