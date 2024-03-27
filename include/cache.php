@@ -65,7 +65,6 @@ class PLL_Cache {
 	 */
 	public function set( $key, $data ) {
 		$this->cache[ $this->blog_id ][ $key ] = $data;
-		return $data;
 	}
 
 	/**
