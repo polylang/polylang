@@ -17,6 +17,8 @@ class PLL_String_Option extends PLL_Abstract_Option {
 	 *
 	 * @param mixed $value Value to validate.
 	 * @return bool True if the value is valid, false otherwise.
+	 *
+	 * @phpstan-assert-if-true string $value
 	 */
 	protected function validate( $value ): bool {
 		return is_string( $value );
@@ -27,7 +29,7 @@ class PLL_String_Option extends PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $value Does nothing, `self::valifate()` ensure `$value` is a string.
+	 * @param string $value Does nothing, `self::valifate()` ensures that `$value` is a string.
 	 * @return string Sanitized value.
 	 */
 	protected function sanitize( $value ) {

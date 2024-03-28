@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage single option.
+ * Class to manage a single option.
  *
  * @since 3.7
  */
@@ -54,6 +54,8 @@ abstract class PLL_Abstract_Option {
 	 * @since 3.7
 	 *
 	 * @return string
+	 *
+	 * @phpstan-return non-falsy-string
 	 */
 	public function key(): string {
 		return $this->key;

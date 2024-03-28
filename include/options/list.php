@@ -36,6 +36,8 @@ class PLL_List_Option extends PLL_Abstract_Option {
 	 *
 	 * @param mixed $value Value to validate.
 	 * @return bool True if the value is valid, false otherwise.
+	 *
+	 * @phpstan-assert-if-true array $value
 	 */
 	protected function validate( $value ): bool {
 		return is_array( $value );
@@ -50,15 +52,17 @@ class PLL_List_Option extends PLL_Abstract_Option {
 	 * @return array Sanitized value.
 	 */
 	protected function sanitize( $value ) {
-		return array_filter(
-			$value,
-			function ( $v ) {
-				if ( ! empty( $this->type ) && gettype( $v ) !== $this->type ) {
-					return false;
-				}
+		return array_values(
+			array_filter(
+				$value,
+				function ( $v ) {
+					if ( ! empty( $this->type ) && gettype( $v ) !== $this->type ) {
+						return false;
+					}
 
-				return ! empty( $v );
-			}
+					return ! empty( $v );
+				}
+			)
 		);
 	}
 }
