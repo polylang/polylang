@@ -12,6 +12,8 @@
  * - If an option is not registered but exists in database, its raw value will be kept and remain untouched.
  *
  * @since 3.7
+ *
+ * @implements ArrayAccess<non-falsy-string, mixed>
  */
 class PLL_Options implements ArrayAccess {
 	const OPTION_NAME = 'polylang';
@@ -20,7 +22,8 @@ class PLL_Options implements ArrayAccess {
 	 * Polylang's options, by blog ID.
 	 * Raw value if option is not registered yet, `PLL_Abstract_Option` instance otherwise.
 	 *
-	 * @var PLL_Abstract_Option|mixed[][]
+	 * @var PLL_Abstract_Option[][]|mixed[][]
+	 * @phpstan-var array<int, array<non-falsy-string, mixed>>
 	 */
 	private $options = array();
 
@@ -74,7 +77,7 @@ class PLL_Options implements ArrayAccess {
 		foreach ( $this->options as $blog_id => $options ) {
 			if ( isset( $options[ $option->key() ] ) ) {
 				// If option exist in database, use this value.
-				$$option->set( $this->options[ $blog_id ][ $option->key() ] );
+				$option->set( $options[ $option->key() ] );
 			}
 
 			$this->options[ $blog_id ][ $option->key() ] = $option;
@@ -104,7 +107,7 @@ class PLL_Options implements ArrayAccess {
 		}
 
 		$options = get_option( self::OPTION_NAME );
-		if ( empty( $options ) ) {
+		if ( ! is_array( $options ) || empty( $options ) ) {
 			return;
 		}
 
@@ -215,7 +218,11 @@ class PLL_Options implements ArrayAccess {
 			return null;
 		}
 
-		return $this->options[ $this->current_blog_id ][ $offset ]->get();
+		if ( $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option ) {
+			return $this->options[ $this->current_blog_id ][ $offset ]->get();
+		}
+
+		return $this->options[ $this->current_blog_id ][ $offset ];
 	}
 
 	/**
@@ -231,7 +238,7 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
-		if ( ! isset( $this->options[ $this->current_blog_id ][ $offset ] ) ) {
+		if ( ! array_key_exists( $offset, $this->options[ $this->current_blog_id ] ) ) {
 			return;
 		}
 

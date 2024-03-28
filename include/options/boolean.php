@@ -18,6 +18,8 @@ class PLL_Boolean_Option extends PLL_Abstract_Option {
 	 *
 	 * @param mixed $value Value to validate.
 	 * @return bool True if the value is valid, false otherwise.
+	 *
+	 * @phpstan-assert-if-true bool|int|numeric-string $value
 	 */
 	protected function validate( $value ): bool {
 		return is_bool( $value ) || ( is_numeric( $value ) && in_array( $value, array( 0, 1 ) ) );

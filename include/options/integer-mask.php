@@ -54,6 +54,8 @@ class PLL_Integer_Mask_Option extends PLL_Abstract_Option {
 	 *
 	 * @param mixed $value Value to validate.
 	 * @return bool True if the value is valid, false otherwise.
+	 *
+	 * @phpstan-assert-if-true int<0, max>|numeric-string $value
 	 */
 	protected function validate( $value ): bool {
 		return is_numeric( $value ) && $value > $this->min && $value < $this->max;
@@ -64,8 +66,11 @@ class PLL_Integer_Mask_Option extends PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param bool|int|string $value Value to sanitize, expected to be validated before.
-	 * @return int Sanitized value, 0 or 1.
+	 * @param int|string $value Value to sanitize, expected to be validated before.
+	 * @return int Sanitized value.
+	 *
+	 * @phpstan-param int<0, max>|numeric-string $value
+	 * @phpstan-return int<0, max>
 	 */
 	protected function sanitize( $value ) {
 		return (int) $value;
