@@ -209,13 +209,14 @@ class PLL_Options implements ArrayAccess {
 	public function get_all(): array {
 		return array_map(
 			function ( $value ) {
-				if ( $value instanceof PLL_Abstract_Option ) {
-					$value = $value->get();
-				}
-
-				return $value;
+				return $value->get();
 			},
-			$this->options[ $this->current_blog_id ]
+			array_filter(
+				$this->options[ $this->current_blog_id ],
+				function ( $value ) {
+					return $value instanceof PLL_Abstract_Option;
+				}
+			)
 		);
 	}
 
@@ -229,14 +230,12 @@ class PLL_Options implements ArrayAccess {
 	 */
 	public function merge( array $options ) {
 		foreach ( $options as $key => $value ) {
-			if ( isset( $this->options[ $this->current_blog_id ][ $key ] ) && $this->options[ $this->current_blog_id ][ $key ] instanceof PLL_Abstract_Option ) {
+			if ( isset( $this->options[ $this->current_blog_id ][ $key ] )
+				&& $this->options[ $this->current_blog_id ][ $key ] instanceof PLL_Abstract_Option ) {
 				$this->options[ $this->current_blog_id ][ $key ]->set( $value );
-			} else {
-				$this->options[ $this->current_blog_id ][ $key ] = $value;
+				$this->modified[ $this->current_blog_id ] = true;
 			}
 		}
-
-		$this->modified[ $this->current_blog_id ] = true;
 	}
 
 	/**
@@ -288,7 +287,7 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetExists( $offset ): bool {
-		return isset( $this->options[ $this->current_blog_id ][ $offset ] );
+		return isset( $this->options[ $this->current_blog_id ][ $offset ] ) && $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option;
 	}
 
 	/**
@@ -302,15 +301,10 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function &offsetGet( $offset ) {
-		if ( ! isset( $this->options[ $this->current_blog_id ][ $offset ] ) ) {
+		if ( ! isset( $this->options[ $this->current_blog_id ][ $offset ] )
+			|| ! $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option ) {
 			return null;
 		}
-
-		if ( $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option ) {
-			return $this->options[ $this->current_blog_id ][ $offset ]->get();
-		}
-
-		return $this->options[ $this->current_blog_id ][ $offset ];
 	}
 
 	/**
@@ -326,12 +320,12 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
-		if ( ! array_key_exists( $offset, $this->options[ $this->current_blog_id ] ) ) {
+		if ( ! array_key_exists( $offset, $this->options[ $this->current_blog_id ] )
+			|| ! $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option ) {
 			return;
 		}
 
-		if ( $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option
-			&& $this->options[ $this->current_blog_id ][ $offset ]->set( $value ) ) {
+		if ( $this->options[ $this->current_blog_id ][ $offset ]->set( $value ) ) {
 			$this->modified[ $this->current_blog_id ] = true;
 		}
 	}
@@ -349,7 +343,8 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
-		if ( ! isset( $this->options[ $this->current_blog_id ][ $offset ] ) ) {
+		if ( ! isset( $this->options[ $this->current_blog_id ][ $offset ] )
+			|| ! $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option ) {
 			return;
 		}
 
