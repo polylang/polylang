@@ -14,14 +14,14 @@ class PLL_Integer_Mask_Option extends PLL_Abstract_Option {
 	 *
 	 * @var int
 	 */
-	private $min = 0;
+	private $min;
 
 	/**
 	 * Maximal value of the integer mask.
 	 *
 	 * @var int
 	 */
-	private $max = PHP_INT_MAX;
+	private $max;
 
 	/**
 	 * Constructor.
