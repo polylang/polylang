@@ -174,7 +174,7 @@ class PLL_Options implements ArrayAccess {
 	 *
 	 * @since 3.7
 	 *
-	 * @return mixed[]
+	 * @return mixed[] All options values.
 	 */
 	public function get_all(): array {
 		return array_map(
@@ -187,6 +187,26 @@ class PLL_Options implements ArrayAccess {
 			},
 			$this->options[ $this->current_blog_id ]
 		);
+	}
+
+	/**
+	 * Merges a subset of options into the current ones.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array Array of raw options.
+	 * @return void
+	 */
+	public function merge( array $options ) {
+		foreach( $options as $key => $value ) {
+			if ( isset( $this->options[ $this->current_blog_id ][ $key ] ) && $this->options[ $this->current_blog_id ][ $key ] instanceof PLL_Abstract_Option ) {
+				$this->options[ $this->current_blog_id ][ $key ]->set( $value );
+			} else {
+				$this->options[ $this->current_blog_id ][ $key ] = $value;
+			}
+		}
+
+		$this->modified[ $this->current_blog_id ] = true;
 	}
 
 	/**
