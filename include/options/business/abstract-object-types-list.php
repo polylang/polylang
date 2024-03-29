@@ -8,7 +8,7 @@
  *
  * @since 3.7
  */
-abstract class PLL_Object_Types_List_Option extends PLL_List_Option {
+abstract class PLL_Abstract_Object_Types_List_Option extends PLL_List_Option {
 	/**
 	 * List of non-core, public post types.
 	 *
