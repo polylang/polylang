@@ -4,75 +4,60 @@
  */
 
 /**
- * Class to manage single integer mask option, default range from 0 to `PHP_INT_MAX`.
+ * Class to manage single integer mask option.
  *
  * @since 3.7
  */
 class PLL_Integer_Mask_Option extends PLL_Abstract_Option {
 	/**
-	 * Minimal value of the integer mask, default to 0.
+	 * Minimal value of the integer mask.
 	 *
 	 * @var int
 	 */
 	private $min = 0;
 
 	/**
-	 * Maximal value of the integer mask, default to `PHP_INT_MAX`.
+	 * Maximal value of the integer mask.
 	 *
 	 * @var int
 	 */
 	private $max = PHP_INT_MAX;
 
 	/**
-	 * Sets minimal value.
+	 * Constructor.
 	 *
 	 * @since 3.7
 	 *
-	 * @param int $min Minimal value for integer mask.
-	 * @return void
+	 * @param string $key         Option key.
+	 * @param mixed  $value       Option value.
+	 * @param mixed  $default     Option default value.
+	 * @param string $description Option description, used in JSON schema.
+	 * @param int    $min         Minimal value.
+	 * @param int    $max         Maximal value.
+	 *
+	 * @phpstan-param non-falsy-string $key
 	 */
-	public function set_min( int $min ) {
+	public function __construct( string $key, $value, $default, string $description, $min, $max ) {
+		parent::__construct( $key, $value, $default, $description );
 		$this->min = $min;
-	}
-
-	/**
-	 * Sets maximal value.
-	 *
-	 * @since 3.7
-	 *
-	 * @param integer $max Maximal value for integer mask.
-	 * @return void
-	 */
-	public function set_max( int $max ) {
 		$this->max = $max;
 	}
 
 	/**
-	 * Validates option's value according to `self::$min` and `self::$max`.
+	 * Creates JSON schema of the option.
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Value to validate.
-	 * @return bool True if the value is valid, false otherwise.
-	 *
-	 * @phpstan-assert-if-true int<0, max>|numeric-string $value
+	 * @return array The schema.
 	 */
-	protected function validate( $value ): bool {
-		return is_numeric( $value ) && $value > $this->min && $value < $this->max;
-	}
-
-	/**
-	 * Sanitizes the given value into integer.
-	 *
-	 * @since 3.7
-	 *
-	 * @param int|string $value Value to sanitize, expected to be validated before.
-	 * @return int Sanitized value.
-	 *
-	 * @phpstan-param int<0, max>|numeric-string $value
-	 * @phpstan-return int<0, max>
-	 */
-	protected function sanitize( $value ) {
-		return (int) $value;
+	public function create_schema(): array {
+		return array(
+			'$schema'     => 'http://json-schema.org/draft-04/schema#',
+			'title'       => $this->key(),
+			'description' => $this->description,
+			'type'        => 'integer',
+			'minimum'     => $this->min,
+			'maximum'     => $this->max,
+		);
 	}
 }

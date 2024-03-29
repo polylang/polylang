@@ -15,37 +15,60 @@ abstract class PLL_Abstract_Option {
 	 * @var string
 	 * @phpstan-var non-falsy-string
 	 */
-	protected $key;
+	private $key;
 
 	/**
 	 * Option value.
 	 *
 	 * @var mixed
 	 */
-	protected $value;
+	private $value;
 
 	/**
 	 * Option default value.
 	 *
 	 * @var mixed
 	 */
-	protected $default;
+	private $default;
+
+	/**
+	 * Option JSON schema.
+	 *
+	 * @var array
+	 */
+	private $schema;
+
+	/**
+	 * Option description.
+	 *
+	 * @var string
+	 */
+	protected $description;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key     Option key.
-	 * @param mixed  $value   Option value.
-	 * @param mixed  $default Option default value.
+	 * @param string $key         Option key.
+	 * @param mixed  $value       Option value.
+	 * @param mixed  $default     Option default value.
+	 * @param string $description Option description, used in JSON schema.
 	 *
 	 * @phpstan-param non-falsy-string $key
 	 */
-	public function __construct( string $key, $value, $default ) {
-		$this->key     = $key;
-		$this->value   = $value;
-		$this->default = $default;
+	public function __construct( string $key, $value, $default, string $description ) {
+		$this->key         = $key;
+		$this->default     = $default;
+		$this->description = $description;
+
+		$value = rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
+
+		if ( is_wp_error( $value ) ) {
+			$this->value = $value;
+		} else {
+			$this->value = $default;
+		}
 	}
 
 	/**
@@ -70,13 +93,16 @@ abstract class PLL_Abstract_Option {
 	 * @return bool True if new value has been set, false otherwise.
 	 */
 	public function set( $value ): bool {
-		if ( $this->validate( $value ) ) {
-			$this->value = $this->sanitize( $value );
-
-			return true;
+		if ( ! $this->validate( $value ) ) {
+			return false;
 		}
 
-		return false;
+		$value = rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
+		if ( is_wp_error( $value ) ) {
+			return false;
+		}
+
+		return ( $this->value = $value ) && true;
 	}
 
 	/**
@@ -102,22 +128,44 @@ abstract class PLL_Abstract_Option {
 	}
 
 	/**
-	 * Validates option's value.
+	 * Returns JSON schema of the option.
+	 *
+	 * @since 3.7
+	 *
+	 * @return array The schema.
+	 */
+	public function get_schema(): array {
+		if ( is_array( $this->schema ) ) {
+			return $this->schema;
+		}
+
+		$this->schema = $this->create_schema();
+
+		return $this->schema;
+	}
+
+	/**
+	 * Validates option's value, can be overridden for specific cases not handled by `rest_validate_value_from_schema`.
 	 *
 	 * @since 3.7
 	 *
 	 * @param mixed $value Value to validate.
 	 * @return bool True if the value is valid, false otherwise.
 	 */
-	abstract protected function validate( $value ): bool;
+	protected function validate( $value ): bool {
+		if ( is_wp_error( rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() ) ) ) {
+			return false;
+		}
+
+		return true;
+	}
 
 	/**
-	 * Sanitizes the given value.
+	 * Creates JSON schema of the option.
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Value to sanitize, expected to be validated before.
-	 * @return mixed Sanitized value.
+	 * @return array The schema.
 	 */
-	abstract protected function sanitize( $value );
+	abstract public function create_schema(): array;
 }

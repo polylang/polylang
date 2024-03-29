@@ -15,54 +15,42 @@ class PLL_List_Option extends PLL_Abstract_Option {
 	 *
 	 * @var string
 	 */
-	private $type;
+	protected $type;
 
 	/**
-	 * Sets the value type, pass a type returned by `gettype()`, @see {https://www.php.net/manual/fr/function.gettype.php}.
+	 * Constructor.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $type Value type.
-	 * @return void
+	 * @param string $key         Option key.
+	 * @param mixed  $value       Option value.
+	 * @param mixed  $default     Option default value.
+	 * @param string $description Option description, used in JSON schema.
+	 * @param string $type        JSON schema value type, @see {https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/}.
+	 *
+	 * @phpstan-param non-falsy-string $key
 	 */
-	public function set_type( string $type ) {
+	public function __construct( string $key, $value, $default, string $description, $type ) {
+		parent::__construct( $key, $value, $default, $description );
 		$this->type = $type;
 	}
 
 	/**
-	 * Validates option's value,
+	 * Creates JSON schema of the option.
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Value to validate.
-	 * @return bool True if the value is valid, false otherwise.
-	 *
-	 * @phpstan-assert-if-true array $value
+	 * @return array The schema.
 	 */
-	protected function validate( $value ): bool {
-		return is_array( $value );
-	}
-
-	/**
-	 * Sanitizes the given value into list of strings.
-	 *
-	 * @since 3.7
-	 *
-	 * @param array $value Value to sanitize, expected to be validated before.
-	 * @return array Sanitized value.
-	 */
-	protected function sanitize( $value ) {
-		return array_values(
-			array_filter(
-				$value,
-				function ( $v ) {
-					if ( ! empty( $this->type ) && gettype( $v ) !== $this->type ) {
-						return false;
-					}
-
-					return ! empty( $v );
-				}
-			)
+	public function create_schema(): array {
+		return array(
+			'$schema'     => 'http://json-schema.org/draft-04/schema#',
+			'title'       => $this->key(),
+			'description' => $this->description,
+			'type'        => 'array',
+			'items' => array(
+				'type'   => $this->type,
+			),
 		);
 	}
 }

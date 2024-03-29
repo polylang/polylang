@@ -11,29 +11,18 @@
  */
 class PLL_Boolean_Option extends PLL_Abstract_Option {
 	/**
-	 * Validates option's value,
-	 * only boolean or 0 and 1 accepted (int or string).
+	 * Creates JSON schema of the option.
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Value to validate.
-	 * @return bool True if the value is valid, false otherwise.
-	 *
-	 * @phpstan-assert-if-true bool|int|numeric-string $value
+	 * @return array The schema.
 	 */
-	protected function validate( $value ): bool {
-		return is_bool( $value ) || ( is_numeric( $value ) && in_array( $value, array( 0, 1 ) ) );
-	}
-
-	/**
-	 * Sanitizes the given value into boolean.
-	 *
-	 * @since 3.7
-	 *
-	 * @param bool|int|string $value Value to sanitize, expected to be validated before.
-	 * @return int Sanitized value, 0 or 1.
-	 */
-	protected function sanitize( $value ) {
-		return intval( $value );
+	public function create_schema(): array {
+		return array(
+			'$schema'     => 'http://json-schema.org/draft-04/schema#',
+			'title'       => $this->key(),
+			'description' => $this->description,
+			'type'        => 'boolean',
+		);
 	}
 }
