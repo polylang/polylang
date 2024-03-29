@@ -50,6 +50,13 @@ class PLL_Options implements ArrayAccess {
 	private $current_blog_id;
 
 	/**
+	 * Cached options JSON schema by blog ID.
+	 *
+	 * @var array[]|null
+	 */
+	private $schema;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
@@ -213,7 +220,7 @@ class PLL_Options implements ArrayAccess {
 	}
 
 	/**
-	 * Merges a subset of options into the current ones.
+	 * Merges a subset of options into the current blog ones.
 	 *
 	 * @since 3.7
 	 *
@@ -230,6 +237,42 @@ class PLL_Options implements ArrayAccess {
 		}
 
 		$this->modified[ $this->current_blog_id ] = true;
+	}
+
+	/**
+	 * Returns JSON schema for all options of the current blog.
+	 *
+	 * @since 3.7
+	 *
+	 * @return array The schema.
+	 */
+	public function get_schema(): array {
+		if ( isset( $this->schema[ $this->current_blog_id ] ) ) {
+			return $this->schema[ $this->current_blog_id ];
+		}
+
+		$properties = array();
+		foreach ( $this->options[ $this->current_blog_id ] as $option ) {
+			if ( $option instanceof PLL_Abstract_Option ) {
+				$sub_schema = $option->get_schema();
+
+				// Cleanup.
+				unset( $sub_schema['title'] );
+				unset( $sub_schema['$schema'] );
+
+				$properties[ $option->key() ] = $sub_schema;
+			}
+		}
+
+		$this->schema[ $this->current_blog_id ] = array(
+			'$schema'     => 'http://json-schema.org/draft-04/schema#',
+			'title'       => static::OPTION_NAME,
+			'description' => __( 'Polylang options', 'polylang' ),
+			'type'        => 'object',
+			'properties'  => $properties,
+		);
+
+		return $this->schema[ $this->current_blog_id ];
 	}
 
 	/**
