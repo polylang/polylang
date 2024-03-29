@@ -48,6 +48,7 @@ class PLL_List_Option extends PLL_Abstract_Option {
 			'title'       => $this->key(),
 			'description' => $this->description,
 			'type'        => 'array',
+			'context'     => array( 'edit' ),
 			'items' => array(
 				'type'   => $this->type,
 			),

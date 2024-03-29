@@ -24,6 +24,7 @@ class PLL_Sync_Settings_List_Option extends PLL_List_Option {
 			'title'       => $this->key(),
 			'description' => $this->description,
 			'type'        => 'array',
+			'context'     => array( 'edit' ),
 			'items' => array(
 				'type' => $this->type,
 				'enum' => array_keys( $sync_settings ),

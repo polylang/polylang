@@ -56,6 +56,7 @@ class PLL_Integer_Mask_Option extends PLL_Abstract_Option {
 			'title'       => $this->key(),
 			'description' => $this->description,
 			'type'        => 'integer',
+			'context'     => array( 'edit' ),
 			'minimum'     => $this->min,
 			'maximum'     => $this->max,
 		);

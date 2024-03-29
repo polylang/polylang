@@ -22,6 +22,7 @@ class PLL_String_Option extends PLL_Abstract_Option {
 			'title'       => $this->key(),
 			'description' => $this->description,
 			'type'        => 'string',
+			'context'     => array( 'edit' ),
 		);
 	}
 }

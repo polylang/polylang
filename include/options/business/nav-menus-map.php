@@ -20,8 +20,9 @@ class PLL_Nav_Menu_Map_Option extends PLL_Map_Option {
 		$map_schema                      = parent::create_schema();
 		$map_schema['patternProperties'] = array(
 			'^\\w+$' => array( // Any word characters as key, correspond to a theme slug.
-				'type' => 'object',
-				'patternProperties'    => array(
+				'type'              => 'object',
+				'context'           => array( 'edit' ),
+				'patternProperties' => array(
 					'^[a-z_-]+$' => array( // Language slug as key.
 						'type' => 'integer',
 						'minimum' => 0, // A post ID.

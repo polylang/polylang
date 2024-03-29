@@ -29,6 +29,7 @@ abstract class PLL_Abstract_Object_Types_List_Option extends PLL_List_Option {
 			'title'       => $this->key(),
 			'description' => $this->description,
 			'type'        => 'array',
+			'context'     => array( 'edit' ),
 			'items' => array(
 				'type'   => $this->type,
 			),

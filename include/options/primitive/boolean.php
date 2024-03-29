@@ -23,6 +23,7 @@ class PLL_Boolean_Option extends PLL_Abstract_Option {
 			'title'       => $this->key(),
 			'description' => $this->description,
 			'type'        => 'boolean',
+			'context'     => array( 'edit' ),
 		);
 	}
 }

@@ -22,6 +22,7 @@ class PLL_Domains_Map_Option extends PLL_List_Option {
 			'title'       => $this->key(),
 			'description' => $this->description,
 			'type'        => 'object', // Correspond to associative array in PHP, @see{https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
+			'context'     => array( 'edit' ),
 			'patternProperties'    => array(
 				'^[a-z_-]+$' => array( // Language slug as key.
 					'type'   => $this->type,

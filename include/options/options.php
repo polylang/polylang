@@ -265,11 +265,13 @@ class PLL_Options implements ArrayAccess {
 		}
 
 		$this->schema[ $this->current_blog_id ] = array(
-			'$schema'     => 'http://json-schema.org/draft-04/schema#',
-			'title'       => static::OPTION_NAME,
-			'description' => __( 'Polylang options', 'polylang' ),
-			'type'        => 'object',
-			'properties'  => $properties,
+			'$schema'              => 'http://json-schema.org/draft-04/schema#',
+			'title'                => static::OPTION_NAME,
+			'description'          => __( 'Polylang options', 'polylang' ),
+			'type'                 => 'object',
+			'context'              => array( 'edit' ),
+			'properties'           => $properties,
+			'additionalProperties' => false,
 		);
 
 		return $this->schema[ $this->current_blog_id ];
