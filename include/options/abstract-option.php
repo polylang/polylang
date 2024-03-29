@@ -32,9 +32,9 @@ abstract class PLL_Abstract_Option {
 	private $default;
 
 	/**
-	 * Option JSON schema.
+	 * Cached option JSON schema.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	private $schema;
 

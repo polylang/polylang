@@ -70,17 +70,40 @@ class PLL_Options implements ArrayAccess {
 	 *
 	 * @since 3.7
 	 *
-	 * @param PLL_Abstract_Option $option Option object to register.
+	 * @param string $class_name  Option class to register.
+	 * @param string $key         Option key.
+	 * @param mixed  $default     Option default value.
+	 * @param mixed  ...$args     Additional arguments to pass to the constructor, except `$value` and `$key`.
 	 * @return void
+	 *
+	 * @phpstan-param class-name<PLL_Abstract_Option> $class_name
 	 */
-	public function register( PLL_Abstract_Option $option ) {
-		foreach ( $this->options as $blog_id => $options ) {
-			if ( isset( $options[ $option->key() ] ) ) {
+	public function register( string $class_name, string $key, $default, ...$args ) {
+		foreach ( $this->options as &$options ) {
+			if ( isset( $options[ $key ] ) ) {
 				// If option exist in database, use this value.
-				$option->set( $options[ $option->key() ] );
+				if ( $options[ $key ] instanceof PLL_Abstract_Option ) {
+					// Already registered, do nothing.
+					continue;
+				}
+
+				// Option raw value exists in database, use it.
+				$options[ $key ] = new $class_name(
+					$key,
+					$options[ $key ],
+					$default,
+					...$args
+				);
+				continue;
 			}
 
-			$this->options[ $blog_id ][ $option->key() ] = $option;
+			// Option raw value doesn't exist in database, use default instead.
+			$options[ $key ] = new $class_name(
+				$key,
+				$default,
+				$default,
+				...$args
+			);
 		}
 	}
 
