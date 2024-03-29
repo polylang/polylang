@@ -8,7 +8,7 @@
  *
  * @since 3.7
  */
-class PLL_Taxonomies_List_Option extends PLL_List_Option {
+class PLL_Taxonomies_List_Option extends PLL_Abstract_Object_Types_List_Option {
 	/**
 	 * Returns non-core, public taxonomies.
 	 *
