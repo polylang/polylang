@@ -36,7 +36,7 @@ if ( is_multisite() ) :
 						$languages[0]['slug'] => $post->ID,
 						$languages[1]['slug'] => $tr_post->ID,
 					)
-					);
+				);
 			}
 		}
 
