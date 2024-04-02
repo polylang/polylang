@@ -186,6 +186,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		$pll_admin->init();
 		$wp_rewrite->flush_rules();
 
+		$this->create_fixtures_for_blog( $blog, $pll_admin, $languages );
+
 		restore_current_blog();
 	}
 
@@ -211,7 +213,21 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		$plugins = get_option( 'active_plugins', array() );
 		update_option( 'active_plugins', array_diff( $plugins, $this->get_plugin_names() ) ); // Ensure Polylang plugins are deactivated.
 
+		$this->create_fixtures_for_blog( $blog );
+
 		restore_current_blog();
+	}
+
+	/**
+	 * Allows child classes to create fixtures for a given blog.
+	 *
+	 * @param WP_Site        $blog      Current site object.
+	 * @param PLL_Admin|null $pll_admin Polylang admin object, null if deactivated.
+	 * @param array          $languages Array of blog languages data, empty if none.
+	 * @return void
+	 */
+	protected function create_fixtures_for_blog( WP_Site $blog, $pll_admin = null, array $languages = array() ) {
+		// Not current class job.
 	}
 
 	/**
