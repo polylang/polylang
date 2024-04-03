@@ -395,7 +395,7 @@ abstract class PLL_Translatable_Object {
 
 	/**
 	 * Sanitizes an ID as positive integer.
-	 * Kind of similar to `absint()`, but rejects negetive integers instead of making them positive.
+	 * Kind of similar to `absint()`, but rejects negative integers instead of making them positive.
 	 *
 	 * @since 3.2
 	 *
