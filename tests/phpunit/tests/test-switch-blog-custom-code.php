@@ -30,6 +30,7 @@ if ( is_multisite() ) :
 				// Current blog has Polylang activated, let's create multilingual fixtures.
 				$pll_admin->model->post->set_language( $post->ID, $languages[0]['slug'] );
 				$tr_post = $this->factory()->post->create_and_get();
+				$pll_admin->model->post->set_language( $tr_post->ID, $languages[1]['slug'] );
 				$pll_admin->model->post->save_translations(
 					$post->ID,
 					array(
