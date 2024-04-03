@@ -76,8 +76,6 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		$form_no_button      = do_blocks( '<!-- wp:search {"showLabel":false,"buttonPosition":"no-button","buttonUseIcon":true,"align":"left"} /-->' );
 		$form_button_only    = do_blocks( '<!-- wp:search {"showLabel":false,"buttonPosition":"button-only","buttonUseIcon":true,"isSearchFieldHidden":true,"align":"left"} /-->' );
 
-		$form = do_blocks( '<!-- wp:search {"showLabel":false,"buttonPosition":"button-only","buttonUseIcon":true,"isSearchFieldHidden":true} /-->' );
-
 		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form );
 		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form_button_outside );
 		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form_button_inside );
