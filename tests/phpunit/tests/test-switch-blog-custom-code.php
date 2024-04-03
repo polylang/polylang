@@ -64,7 +64,6 @@ if ( is_multisite() ) :
 
 				$post_id = pll_get_post( $this->posts[ $this->{$blog}->blog_id ]->ID );
 
-				$this->assertNotFalse( $post_id );
 				$this->assertSame( $this->posts[ $this->{$blog}->blog_id ]->ID, $post_id );
 
 				restore_current_blog();
@@ -87,7 +86,6 @@ if ( is_multisite() ) :
 
 				$post_id = pll_get_post( $this->posts[ $this->{$blog}->blog_id ]->ID );
 
-				$this->assertNotFalse( $post_id );
 				// No language, no post.
 				$this->assertSame( 0, $post_id );
 
