@@ -24,7 +24,7 @@ if ( is_multisite() ) :
 		protected function create_fixtures_for_blog( WP_Site $blog, $pll_admin = null, array $languages = array() ) {
 			$post = $this->factory()->post->create_and_get();
 
-			$this->posts[ (int) $blog->blog_id ] = $post;
+			$this->posts[ $blog->blog_id ] = $post;
 
 			if ( $pll_admin instanceof PLL_Admin && ! empty( $languages ) ) {
 				// Current blog has Polylang activated, let's create multilingual fixtures.
@@ -49,97 +49,50 @@ if ( is_multisite() ) :
 			$GLOBALS['polylang'] = $pll_frontend;
 
 			/*
-			 * Test blog with Polylang activated and pretty permalink with language as directory.
+			 * Switch between blogs with Polylang activated.
 			 */
-			switch_to_blog( (int) $this->blog_with_pll_directory->blog_id );
+			$blogs = array( 'blog_with_pll_directory', 'blog_with_pll_domains', 'blog_with_pll_plain_links' );
 
-			$home = get_home_url();
+			foreach ( $blogs as $blog ) {
+				switch_to_blog( (int) $this->{$blog}->blog_id );
 
-			$this->assertNotEmpty( $home );
+				$home = get_home_url();
 
-			$this->assertInstanceOf( PLL_Language::class, $pll_frontend->curlang );
+				$this->assertNotEmpty( $home );
 
-			$post_id = pll_get_post( $this->posts[ (int) $this->blog_with_pll_directory->blog_id ]->ID );
+				$this->assertInstanceOf( PLL_Language::class, $pll_frontend->curlang );
 
-			$this->assertNotFalse( $post_id );
-			$this->assertSame( $this->posts[ (int) $this->blog_with_pll_directory->blog_id ]->ID, $post_id );
+				$post_id = pll_get_post( $this->posts[ $this->{$blog}->blog_id ]->ID );
 
-			restore_current_blog();
+				$this->assertNotFalse( $post_id );
+				$this->assertSame( $this->posts[ $this->{$blog}->blog_id ]->ID, $post_id );
+
+				restore_current_blog();
+			}
 
 			/*
-			 * Test blog with Polylang activated and pretty permalink with language as domains.
+			 * Switch between blogs with Polylang deactivated.
 			 */
-			switch_to_blog( (int) $this->blog_with_pll_domains->blog_id );
+			$blogs = array( 'blog_without_pll_pretty_links', 'blog_without_pll_plain_links' );
 
-			$home = get_home_url();
+			foreach ( $blogs as $blog ) {
+				switch_to_blog( (int) $this->{$blog}->blog_id );
 
-			$this->assertNotEmpty( $home );
+				$home = get_home_url();
 
-			$this->assertInstanceOf( PLL_Language::class, $pll_frontend->curlang );
+				$this->assertNotEmpty( $home );
 
-			$post_id = pll_get_post( $this->posts[ (int) $this->blog_with_pll_domains->blog_id ]->ID );
+				// Even though Polylang is deactivated on the current blog, the current language must be kept.
+				$this->assertInstanceOf( PLL_Language::class, $pll_frontend->curlang );
 
-			$this->assertNotFalse( $post_id );
-			$this->assertSame( $this->posts[ (int) $this->blog_with_pll_domains->blog_id ]->ID, $post_id );
+				$post_id = pll_get_post( $this->posts[ $this->{$blog}->blog_id ]->ID );
 
-			restore_current_blog();
+				$this->assertNotFalse( $post_id );
+				// No language, no post.
+				$this->assertSame( 0, $post_id );
 
-			/*
-			 * Test blog with Polylang activated and plain permalink.
-			 */
-			switch_to_blog( (int) $this->blog_with_pll_plain_links->blog_id );
-
-			$home = get_home_url();
-
-			$this->assertNotEmpty( $home );
-
-			$this->assertInstanceOf( PLL_Language::class, $pll_frontend->curlang );
-
-			$post_id = pll_get_post( $this->posts[ (int) $this->blog_with_pll_plain_links->blog_id ]->ID );
-
-			$this->assertNotFalse( $post_id );
-			$this->assertSame( $this->posts[ (int) $this->blog_with_pll_plain_links->blog_id ]->ID, $post_id );
-
-			restore_current_blog();
-
-			/*
-			 * Test blog with Polylang deactivated and pretty permalink.
-			 */
-			switch_to_blog( (int) $this->blog_without_pll_pretty_links->blog_id );
-
-			$home = get_home_url();
-
-			$this->assertNotEmpty( $home );
-
-			// Even though Polylang is deactivated on the current blog, the current language must be kept.
-			$this->assertInstanceOf( PLL_Language::class, $pll_frontend->curlang );
-
-			$post_id = pll_get_post( $this->posts[ (int) $this->blog_without_pll_pretty_links->blog_id ]->ID );
-
-			$this->assertNotFalse( $post_id );
-			// No language, no post.
-			$this->assertSame( 0, $post_id );
-
-			restore_current_blog();
-
-			/*
-			 * Test blog with Polylang deactivated and plain permalink.
-			 */
-
-			switch_to_blog( (int) $this->blog_without_pll_plain_links->blog_id );
-
-			$home = get_home_url();
-
-			$this->assertNotEmpty( $home );
-
-			// Even though Polylang is deactivated on the current blog, the current language must be kept.
-			$this->assertInstanceOf( PLL_Language::class, $pll_frontend->curlang );
-
-			$post_id = pll_get_post( $this->posts[ (int) $this->blog_without_pll_plain_links->blog_id ]->ID );
-
-			$this->assertNotFalse( $post_id );
-			// No language, no post.
-			$this->assertSame( 0, $post_id );
+				restore_current_blog();
+			}
 		}
 	}
 
