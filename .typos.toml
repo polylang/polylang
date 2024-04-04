@@ -19,7 +19,6 @@ extend-ignore-re = [
     "'bs_BA'",
     "<!\\[CDATA\\[non-classe\\]\\]>",
     "olt-manager\\.php",
-	"(?Rm)^.*//\\s*spellchecker:disable-line$", # Disable spell check on a single line with `// spellchecker:disable-line`.
 ]
 
 [default.extend-words]
