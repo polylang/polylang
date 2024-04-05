@@ -1,27 +1,27 @@
 [files]
 extend-exclude = [
-	".git/",
-	".phpunit.result.cache",
-	"flags/??.png",
-	"install/plugin-updater.php",
-	"node_modules/",
-	"settings/flags.php",
-	"settings/languages.php",
-	"tmp/",
-	"vendor/",
-	".typos.toml",
-	"*.xml",
+    ".git/",
+    ".phpunit.result.cache",
+    "flags/??.png",
+    "install/plugin-updater.php",
+    "node_modules/",
+    "settings/flags.php",
+    "settings/languages.php",
+    "tmp/",
+    "vendor/",
+    ".typos.toml",
 ]
 ignore-hidden = false
 
 [default]
 extend-ignore-re = [
-	"'bs_BA'",
-	"Jani Alha",
-	"olt-manager\\.php",
-	# En français dans le texte.
-	"Etiquette exemple",
-	"<!\\[CDATA\\[non-classe\\]\\]>",
+    "'bs_BA'",
+    "Jani Alha",
+    "olt-manager\\.php",
+    # En français dans le texte.
+    "Etiquette exemple",
+    "<!\\[CDATA\\[non-classe\\]\\]>",
+    "\\bicl_lso_",
 ]
 
 [default.extend-identifiers]
