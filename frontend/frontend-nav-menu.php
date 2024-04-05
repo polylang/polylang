@@ -166,9 +166,9 @@ class PLL_Frontend_Nav_Menu extends PLL_Nav_Menu {
 	 */
 	public function get_ancestors( $item ) {
 		$ids = array();
-		$_anc_id = (int) $item->db_id;
-		while ( ( $_anc_id = get_post_meta( $_anc_id, '_menu_item_menu_item_parent', true ) ) && ! in_array( $_anc_id, $ids ) ) {
-			$ids[] = $_anc_id;
+		$ancestor_id = (int) $item->db_id;
+		while ( ( $ancestor_id = get_post_meta( $ancestor_id, '_menu_item_menu_item_parent', true ) ) && ! in_array( $ancestor_id, $ids ) ) {
+			$ids[] = $ancestor_id;
 		}
 		return $ids;
 	}

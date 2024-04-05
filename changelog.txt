@@ -1708,7 +1708,7 @@ This version does include important changes in database. More than ever, make a 
 
 = 1.1.5 (2013-09-15) =
 
-* Add compatibility with Aqua Resizer (often used in porfolio themes)
+* Add compatibility with Aqua Resizer (often used in portfolio themes)
 * Add support of 'icl_get_default_language' function from the WPML API
 * Remove the 3 characters limitation for the language code
 * Change default names for zh_CN, zh_HK, zh_TW

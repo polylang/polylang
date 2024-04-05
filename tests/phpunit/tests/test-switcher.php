@@ -137,7 +137,7 @@ class Switcher_Test extends PLL_UnitTestCase {
 
 		$this->assertEmpty( $xpath->query( '//li/a[@lang="en-US"]/span' )->length );
 
-		// A span is used when shwoing names and flags
+		// A span is used when showing names and flags
 		$args = array( 'show_names' => 1, 'show_flags' => 1, 'echo' => 0 );
 		$switcher = $this->switcher->the_languages( $this->frontend->links, $args );
 		$doc = new DomDocument();
