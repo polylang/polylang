@@ -70,9 +70,17 @@ class Search_Form_Test extends PLL_UnitTestCase {
 		global $wp_rewrite;
 
 		$this->frontend->curlang = self::$model->get_language( 'fr' );
-		$form = do_blocks( '<!-- wp:search /-->' );
+		$form                = do_blocks( '<!-- wp:search /-->' );
+		$form_button_outside = do_blocks( '<!-- wp:search {"showLabel":false,"buttonUseIcon":true,"align":"left"} /-->' );
+		$form_button_inside  = do_blocks( '<!-- wp:search {"showLabel":false,"buttonPosition":"button-inside","buttonUseIcon":true,"align":"left"} /-->' );
+		$form_no_button      = do_blocks( '<!-- wp:search {"showLabel":false,"buttonPosition":"no-button","buttonUseIcon":true,"align":"left"} /-->' );
+		$form_button_only    = do_blocks( '<!-- wp:search {"showLabel":false,"buttonPosition":"button-only","buttonUseIcon":true,"isSearchFieldHidden":true,"align":"left"} /-->' );
 
 		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form );
+		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form_button_outside );
+		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form_button_inside );
+		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form_no_button );
+		$this->assertStringContainsString( 'action="' . home_url( '/fr/' ) . '"', $form_button_only );
 
 		$wp_rewrite->set_permalink_structure( '' );
 		$this->frontend->links_model = self::$model->get_links_model();

@@ -69,7 +69,7 @@ class PLL_Frontend_Filters_Search {
 
 		if ( $this->links_model->using_permalinks ) {
 			// Take care to modify only the url in the <form> tag.
-			preg_match( '#<form.+?>#', $form, $matches );
+			preg_match( '#<form.+?>#s', $form, $matches );
 			$old = reset( $matches );
 			if ( empty( $old ) ) {
 				return $form;
