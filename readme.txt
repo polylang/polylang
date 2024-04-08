@@ -5,7 +5,7 @@ Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 3.6
+Stable tag: 3.6.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,13 @@ Wherever third party code has been used, credit has been given in the code’s c
 4. The Edit Post screen with the Languages metabox
 
 == Changelog ==
+
+= 3.6.1 (2024-04-09) =
+
+* Pro: Fix ACF fields not swown after a post was translated with DeepL
+* Remove rewrite when registering the language taxonomy #1457
+* Fix search block not filtered when displayed as button only #1459
+* Fix current language not kept when using switch_to_blog() in multisite #1458
 
 = 3.6 (2024-03-18) =
 
