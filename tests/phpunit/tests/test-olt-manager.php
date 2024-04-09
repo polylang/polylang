@@ -56,7 +56,10 @@ class OLT_Manager_Test extends PLL_UnitTestCase {
 		$links_model             = $model->get_links_model();
 		$frontend                = new PLL_Frontend( $links_model );
 
-		__( 'Dashboard', 'foo' ); // Calls `_load_textdomain_just_in_time()` *before* the current language is defined!
+		/*
+		 *  Calls `_load_textdomain_just_in_time()` *before* the current language is defined!
+		 */
+		__( 'Dashboard', 'foo' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 
 		$frontend->curlang = $frontend->model->get_language( 'fr' );
 
