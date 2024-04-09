@@ -15,6 +15,13 @@
  */
 class PLL_OLT_Manager {
 	/**
+	 * Singleton instance
+	 *
+	 * @var PLL_OLT_Manager|null
+	 */
+	protected static $instance;
+
+	/**
 	 * Constructor: setups relevant filters.
 	 *
 	 * @since 1.2
