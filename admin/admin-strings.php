@@ -92,27 +92,18 @@ class PLL_Admin_Strings {
 				}
 
 				// Widget title.
-				if ( isset( $widget_settings[ $number ]['title'] ) ) {
-					$title = $widget_settings[ $number ]['title'];
-					if ( ! empty( $title ) ) {
-						self::register_string( self::$default_strings['widget_title'], $title, 'Widget' );
-					}
+				if ( ! empty( $widget_settings[ $number ]['title'] ) ) { 
+					self::register_string( self::$default_strings['widget_title'], $widget_settings[ $number ]['title'], 'Widget' );
 				}
 
 				// Text of the Widget text.
-				if ( isset( $widget_settings[ $number ]['text'] ) ) {
-					$text = $widget_settings[ $number ]['text'];
-					if ( ! empty( $text ) ) {
-						self::register_string( self::$default_strings['widget_text'], $text, 'Widget', true );
-					}
+				if ( ! empty( $widget_settings[ $number ]['text'] ) ) {
+					self::register_string( self::$default_strings['widget_text'], $widget_settings[ $number ]['text'], 'Widget', true );
 				}
 
 				// Content of the widget custom html.
-				if ( isset( $widget_settings[ $number ]['content'] ) ) {
-					$text = $widget_settings[ $number ]['content'];
-					if ( ! empty( $text ) ) {
-						self::register_string( self::$default_strings['widget_text'], $text, 'Widget', true );
-					}
+				if ( ! empty( $widget_settings[ $number ]['content'] ) ) {
+					self::register_string( self::$default_strings['widget_text'], $widget_settings[ $number ]['content'], 'Widget', true );
 				}
 			}
 		}
