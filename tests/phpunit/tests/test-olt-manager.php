@@ -68,6 +68,6 @@ class OLT_Manager_Test extends PLL_UnitTestCase {
 
 		$this->assertNotEmpty( $locale );
 		$this->assertSame( 'fr_FR', $locale );
-		$this->assertSame( 'Tableau de bord', __( 'Dashboard', 'foo' ) );
+		$this->assertSame( 'Tableau de bord', __( 'Dashboard', 'foo' ) ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 	}
 }
