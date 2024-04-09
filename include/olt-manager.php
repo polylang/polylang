@@ -38,6 +38,21 @@ class PLL_OLT_Manager {
 	}
 
 	/**
+	 * Access to the single instance of the class
+	 *
+	 * @since 1.7
+	 *
+	 * @return PLL_OLT_Manager
+	 */
+	public static function instance() {
+		if ( empty( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+	/**
 	 * Loads textdomains.
 	 *
 	 * @since 0.1
