@@ -56,9 +56,7 @@ class OLT_Manager_Test extends PLL_UnitTestCase {
 		$links_model             = $model->get_links_model();
 		$frontend                = new PLL_Frontend( $links_model );
 
-		$is_loaded = load_plugin_textdomain( 'foo' );
-
-		$this->assertFalse( $is_loaded, 'textdomain should be bypassed by PLL_OLT_Manager.' );
+		__( 'Dashboard', 'foo' ); // Calls `_load_textdomain_just_in_time()` *before* the current language is defined!
 
 		$frontend->curlang = $frontend->model->get_language( 'fr' );
 
@@ -68,6 +66,6 @@ class OLT_Manager_Test extends PLL_UnitTestCase {
 
 		$this->assertNotEmpty( $locale );
 		$this->assertSame( 'fr_FR', $locale );
-		$this->assertSame( 'Tableau de bord', __( 'Dashboard', 'foo' ) ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+		$this->assertSame( 'Tableau de bord', __( 'Dashboard', 'foo' ), 'fr_FR locale for foo domain should be loaded correctly.' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 	}
 }
