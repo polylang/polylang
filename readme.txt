@@ -107,7 +107,7 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 = 3.6.1 (2024-04-09) =
 
-* Pro: Fix ACF fields not swown after a post was translated with DeepL
+* Pro: Fix ACF fields not shown after a post was translated with DeepL
 * Remove rewrite when registering the language taxonomy #1457
 * Fix search block not filtered when displayed as button only #1459
 * Fix current language not kept when using switch_to_blog() in multisite #1458
