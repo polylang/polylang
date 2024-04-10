@@ -49,7 +49,8 @@ else {
 			$add_link = $link;
 		}
 
-		if ( $translation instanceof WP_Term ) {
+                 $is_existing_translation = $translation instanceof WP_Term;
+		if ( $is_existing_translation ) {
 			$link = $this->links->edit_term_translation_link( $translation->term_id, $taxonomy, $post_type );
 		}
 		?>
@@ -81,8 +82,8 @@ else {
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
-					( ! $translation instanceof WP_Term ? 0 : esc_attr( (string) $translation->term_id ) ),
-					( ! $translation instanceof WP_Term ? '' : esc_attr( $translation->name ) ),
+					( ! $is_existing_translation ? 0 : esc_attr( (string) $translation->term_id ) ),
+					( ! $is_existing_translation ? '' : esc_attr( $translation->name ) ),
 					disabled( empty( $disabled ), false, false ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					( $language->is_rtl ? 'rtl' : 'ltr' )
