@@ -49,7 +49,7 @@ else {
 			$add_link = $link;
 		}
 
-                 $is_existing_translation = $translation instanceof WP_Term;
+		$is_existing_translation = $translation instanceof WP_Term;
 		if ( $is_existing_translation ) {
 			$link = $this->links->edit_term_translation_link( $translation->term_id, $taxonomy, $post_type );
 		}
