@@ -11,7 +11,6 @@
  * or in a `wp` action (when the language is set from content on frontend).
  *
  * @since 1.2
- * @since 3.6 Singleton removed, instantiate at your own risk!
  */
 class PLL_OLT_Manager {
 	/**
@@ -37,7 +36,7 @@ class PLL_OLT_Manager {
 		}
 
 		// Filters for text domain management.
-		add_filter( 'load_textdomain_mofile', array( $this, 'bypass_load_textdomain_mofile' ) );
+		add_filter( 'load_textdomain_mofile', '__return_empty_string' );
 
 		// Loads text domains.
 		add_action( 'pll_language_defined', array( $this, 'load_textdomains' ), 2 ); // After PLL_Frontend::pll_language_defined.
@@ -67,8 +66,8 @@ class PLL_OLT_Manager {
 	 * @return void
 	 */
 	public function load_textdomains() {
-		// Our load_textdomain_mofile filter has done its job. let's remove it before calling load_textdomain.
-		remove_filter( 'load_textdomain_mofile', array( $this, 'bypass_load_textdomain_mofile' ) );
+		// Our load_textdomain_mofile filter has done its job. let's remove it to enable translation.
+		remove_filter( 'load_textdomain_mofile', '__return_empty_string' );
 
 		$GLOBALS['l10n'] = array();
 		$new_locale      = get_locale();
@@ -82,9 +81,10 @@ class PLL_OLT_Manager {
 			$GLOBALS['wp_locale'] = new WP_Locale();
 		}
 
+		/** This action is documented in wp-includes/class-wp-locale-switcher.php */
 		do_action( 'change_locale', $new_locale );
 
-		do_action_deprecated( 'pll_translate_labels', array(), '3.6', 'change_locale' );
+		do_action_deprecated( 'pll_translate_labels', array(), '3.7', 'change_locale' );
 	}
 
 	/**
