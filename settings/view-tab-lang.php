@@ -7,7 +7,7 @@
  * @var PLL_Table_Languages $list_table
  */
 
-defined( 'ABSPATH' ) || exit; // Don't access directly
+defined( 'ABSPATH' ) || exit;
 ?>
 <div id="col-container">
 	<div id="col-right">

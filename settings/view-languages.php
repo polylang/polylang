@@ -7,7 +7,7 @@
  * @var string $active_tab
  */
 
-defined( 'ABSPATH' ) || exit; // Don't access directly
+defined( 'ABSPATH' ) || exit;
 
 require ABSPATH . 'wp-admin/options-head.php'; // Displays the errors messages as when we were a child of options-general.php
 ?>
