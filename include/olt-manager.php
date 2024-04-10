@@ -88,18 +88,6 @@ class PLL_OLT_Manager {
 	}
 
 	/**
-	 * Prevents WP loading textdomains before we set the locale ourselves.
-	 *
-	 * @since 2.0.4
-	 * @since 3.6 Renamed from `load_textdomain_mofile()`.
-	 *
-	 * @return string
-	 */
-	public function bypass_load_textdomain_mofile() {
-		return '';
-	}
-
-	/**
 	 * Allows Polylang to be the first plugin loaded ;-).
 	 *
 	 * @since 1.2
