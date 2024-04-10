@@ -632,6 +632,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_media() {
+		$options = $this->options;
 		include __DIR__ . '/view-wizard-step-media.php';
 	}
 
