@@ -5,12 +5,14 @@
  * @package Polylang
  *
  * @since 2.7
+ *
+ * @var array $options
  */
 
-defined( 'ABSPATH' ) || exit; // Don't access directly.
+defined( 'ABSPATH' ) || exit;
 
 $default_options = PLL_Install::get_default_options();
-$options = wp_parse_args( (array) get_option( 'polylang' ), $default_options );
+$options = wp_parse_args( $options, $default_options );
 $media_support = $options['media_support'];
 
 $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' : '' ) . '.png';
