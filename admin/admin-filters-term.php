@@ -24,14 +24,14 @@ class PLL_Admin_Filters_Term {
 	/**
 	 * Language selected in the admin language filter.
 	 *
-	 * @var PLL_Language|null
+	 * @var PLL_Language
 	 */
 	public $filter_lang;
 
 	/**
 	 * Preferred language to assign to the new terms.
 	 *
-	 * @var PLL_Language|null
+	 * @var PLL_Language
 	 */
 	public $pref_lang;
 

@@ -111,11 +111,6 @@ parameters:
 			path: admin/admin-filters-term.php
 
 		-
-			message: "#^Cannot access property \\$term_id on PLL_Language\\|null\\.$#"
-			count: 1
-			path: admin/admin-filters-term.php
-
-		-
 			message: "#^Cannot call method is_default_term\\(\\) on PLL_Admin_Default_Term\\|null\\.$#"
 			count: 1
 			path: admin/admin-filters-term.php
