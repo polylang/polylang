@@ -7,7 +7,7 @@
  * @var PLL_Settings_Module[] $modules
  */
 
-defined( 'ABSPATH' ) || exit; // Don't access directly
+defined( 'ABSPATH' ) || exit;
 ?>
 <div class="form-wrap">
 	<?php

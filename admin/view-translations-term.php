@@ -10,7 +10,7 @@
  * @var string                 $post_type
  */
 
-defined( 'ABSPATH' ) || exit; // Don't access directly
+defined( 'ABSPATH' ) || exit;
 
 if ( isset( $term_id ) ) {
 	// Edit term form ?>

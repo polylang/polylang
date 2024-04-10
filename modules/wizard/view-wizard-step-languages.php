@@ -10,7 +10,7 @@
  * @var array           $options
  */
 
-defined( 'ABSPATH' ) || exit; // Don't access directly.
+defined( 'ABSPATH' ) || exit;
 
 $existing_languages = $model->get_languages_list();
 $default_language   = count( $existing_languages ) > 0 ? $options['default_lang'] : null;

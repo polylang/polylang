@@ -19,7 +19,7 @@
  * @var string[] $styles       List of wizard page styles.
  */
 
-defined( 'ABSPATH' ) || exit; // Don't access directly.
+defined( 'ABSPATH' ) || exit;
 
 $admin_body_class = array( 'pll-wizard', 'wp-core-ui' );
 if ( is_rtl() ) {
