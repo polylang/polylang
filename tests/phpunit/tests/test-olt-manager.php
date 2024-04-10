@@ -40,7 +40,7 @@ class OLT_Manager_Test extends PLL_UnitTestCase {
 
 		$wp_textdomain_registry = new WP_Textdomain_Registry();
 
-		update_option( 'WPLANG', '' );
+		update_option( 'WPLANG', 'de_DE' );
 
 		// Copy language file.
 		@mkdir( DIR_TESTDATA );
@@ -59,7 +59,7 @@ class OLT_Manager_Test extends PLL_UnitTestCase {
 		/*
 		 *  Calls `_load_textdomain_just_in_time()` *before* the current language is defined!
 		 */
-		__( 'Dashboard', 'foo' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+		$this->assertSame( 'Dashboard', __( 'Dashboard', 'foo' ) ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 
 		$frontend->curlang = $frontend->model->get_language( 'fr' );
 
