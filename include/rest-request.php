@@ -130,6 +130,7 @@ class PLL_REST_Request extends PLL_Base {
 	 *
 	 * @since 3.7
 	 *
+	 * @param string $locale The current ID.
 	 * @return string
 	 */
 	public function get_locale( $locale ) {
