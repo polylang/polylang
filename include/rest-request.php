@@ -62,6 +62,8 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		$this->model->set_languages_ready();
+
+		add_filter( 'locale', array( $this, 'get_locale' ) );
 	}
 
 	/**
@@ -121,5 +123,20 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Returns the locale based on current language.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	public function get_locale( $locale ) {
+		if ( ! empty( $this->curlang ) ) {
+			return $this->curlang->locale;
+		}
+
+		return $locale;
 	}
 }
