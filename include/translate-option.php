@@ -404,6 +404,7 @@ class PLL_Translate_Option {
 	 * @return string Sanitized value.
 	 */
 	public function sanitize_option( $value, $name ) {
-		return sanitize_option( $name, $value );
+		$value = sanitize_option( $name, $value );
+		return is_scalar( $value ) ? (string) $value : '';
 	}
 }
