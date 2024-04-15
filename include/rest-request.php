@@ -62,7 +62,6 @@ class PLL_REST_Request extends PLL_Base {
 		}
 
 		$this->model->set_languages_ready();
-
 	}
 
 	/**
