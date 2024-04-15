@@ -63,7 +63,6 @@ class PLL_REST_Request extends PLL_Base {
 
 		$this->model->set_languages_ready();
 
-		add_filter( 'locale', array( $this, 'get_locale' ) );
 	}
 
 	/**
@@ -79,6 +78,8 @@ class PLL_REST_Request extends PLL_Base {
 		if ( ! $this->model->has_languages() ) {
 			return;
 		}
+
+		add_filter( 'locale', array( $this, 'get_locale' ) );
 
 		add_filter( 'rest_pre_dispatch', array( $this, 'set_language' ), 10, 3 );
 
