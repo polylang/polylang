@@ -40,9 +40,3 @@ parameters:
 			message: "#^Call to static method encode\\(\\) on an unknown class Requests_IDNAEncoder\\.$#"
 			count: 1
 			path: include/links-domain.php
-
-		# Ignored by waiting WordPress documentation enhancement https://core.trac.wordpress.org/ticket/60563
-		-
-			message: "#^Property WP_Query::\\$tax_query \\(WP_Tax_Query\\) in isset\\(\\) is not nullable\\.$#"
-			count: 1
-			path: frontend/canonical.php
