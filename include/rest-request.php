@@ -134,10 +134,10 @@ class PLL_REST_Request extends PLL_Base {
 	 * @return string
 	 */
 	public function get_locale( $locale ) {
-		if ( ! empty( $this->curlang ) ) {
-			return $this->curlang->locale;
+		if ( empty( $this->curlang ) ) {
+			return $locale;
 		}
 
-		return $locale;
+		return $this->curlang->locale;
 	}
 }
