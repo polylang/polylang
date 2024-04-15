@@ -26,7 +26,7 @@ parameters:
 			path: admin/admin-base.php
 
 		-
-			message: "#^Parameter \\#6 \\$callback of function add_submenu_page expects callable\\(\\)\\: mixed, array\\{\\$this\\(PLL_Admin_Base\\), 'languages_page'\\} given\\.$#"
+			message: "#^Parameter \\#6 \\$callback of function add_submenu_page expects ''\\|\\(callable\\(\\)\\: mixed\\), array\\{\\$this\\(PLL_Admin_Base\\), 'languages_page'\\} given\\.$#"
 			count: 1
 			path: admin/admin-base.php
 
