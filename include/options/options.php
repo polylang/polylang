@@ -279,6 +279,82 @@ class PLL_Options implements ArrayAccess {
 
 	/**
 	 * Tells if an option exists.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key The name of the option to check for.
+	 * @return bool
+	 */
+	public function has( string $key ): bool {
+		return isset( $this->options[ $this->current_blog_id ][ $key ] ) && $this->options[ $this->current_blog_id ][ $key ] instanceof PLL_Abstract_Option;
+	}
+
+	/**
+	 * Returns the value of the specified option.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key The name of the option to retrieve.
+	 * @return mixed
+	 */
+	public function &get( string $key ) {
+		if ( ! $this->has( $key ) ) {
+			return null;
+		}
+
+		/** @phpstan-var PLL_Abstract_Option */
+		$option = $this->options[ $this->current_blog_id ][ $key ];
+		return $option->get();
+	}
+
+	/**
+	 * Assigns a value to the specified option.
+	 * This doesn't allow to set an unknown option.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key   The name of the option to assign the value to.
+	 * @param mixed  $value The value to set.
+	 * @return bool True if new value has been set, false otherwise.
+	 */
+	public function set( string $key, $value ): bool {
+		if ( ! $this->has( $key ) ) {
+			return false;
+		}
+
+		/** @phpstan-var PLL_Abstract_Option */
+		$option = $this->options[ $this->current_blog_id ][ $key ];
+
+		if ( ! $option->set( $value ) ) {
+			return false;
+		}
+
+		$this->modified[ $this->current_blog_id ] = true;
+		return true;
+	}
+
+	/**
+	 * Resets an option to its default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key The name of the option to reset.
+	 * @return void
+	 */
+	public function reset( string $key ) {
+		if ( ! $this->has( $key ) ) {
+			return;
+		}
+
+		/** @phpstan-var PLL_Abstract_Option */
+		$option = $this->options[ $this->current_blog_id ][ $key ];
+		$option->reset();
+
+		$this->modified[ $this->current_blog_id ] = true;
+	}
+
+	/**
+	 * Tells if an option exists.
 	 * Required by interface `ArrayAccess`.
 	 *
 	 * @since 3.7
@@ -288,7 +364,7 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetExists( $offset ): bool {
-		return isset( $this->options[ $this->current_blog_id ][ $offset ] ) && $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option;
+		return $this->has( (string) $offset );
 	}
 
 	/**
@@ -302,10 +378,7 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function &offsetGet( $offset ) {
-		if ( ! isset( $this->options[ $this->current_blog_id ][ $offset ] )
-			|| ! $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option ) {
-			return null;
-		}
+		return $this->get( (string) $offset );
 	}
 
 	/**
@@ -321,19 +394,11 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
-		if ( ! array_key_exists( $offset, $this->options[ $this->current_blog_id ] )
-			|| ! $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option ) {
-			return;
-		}
-
-		if ( $this->options[ $this->current_blog_id ][ $offset ]->set( $value ) ) {
-			$this->modified[ $this->current_blog_id ] = true;
-		}
+		$this->set( (string) $offset, $value );
 	}
 
 	/**
 	 * Resets an option.
-	 * Also sets the property `$modified` if the value changes.
 	 * This doesn't allow to unset an option, this resets it to its default value instead.
 	 * Required by interface `ArrayAccess`.
 	 *
@@ -344,12 +409,6 @@ class PLL_Options implements ArrayAccess {
 	 */
 	#[\ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
-		if ( ! isset( $this->options[ $this->current_blog_id ][ $offset ] )
-			|| ! $this->options[ $this->current_blog_id ][ $offset ] instanceof PLL_Abstract_Option ) {
-			return;
-		}
-
-		$this->modified[ $this->current_blog_id ] = true;
-		$this->options[ $this->current_blog_id ][ $offset ]->reset();
+		$this->reset( (string) $offset );
 	}
 }
