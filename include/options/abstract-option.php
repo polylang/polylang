@@ -64,7 +64,7 @@ abstract class PLL_Abstract_Option {
 
 		$value = rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
 
-		if ( is_wp_error( $value ) ) {
+		if ( ! is_wp_error( $value ) ) {
 			$this->value = $value;
 		} else {
 			$this->value = $default;
