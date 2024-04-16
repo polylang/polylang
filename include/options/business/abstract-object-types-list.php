@@ -10,7 +10,7 @@
  */
 abstract class PLL_Abstract_Object_Types_List_Option extends PLL_List_Option {
 	/**
-	 * List of non-core, public post types.
+	 * List of non-core, public object types.
 	 *
 	 * @var string[]|null
 	 */
