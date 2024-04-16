@@ -26,11 +26,13 @@ class PLL_List_Option extends PLL_Abstract_Option {
 	 * @param mixed  $value       Option value.
 	 * @param mixed  $default     Option default value.
 	 * @param string $description Option description, used in JSON schema.
-	 * @param string $type        JSON schema value type, @see {https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/}.
+	 * @param string $type        JSON schema value type for the list items, @see {https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
+	 *                            Possible values are `'string'`, `'null'`, `'number'` (float), `'integer'`, `'boolean'`, and `'array'`.
 	 *
 	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-param 'string'|'null'|'number'|'integer'|'boolean'|'array' $type
 	 */
-	public function __construct( string $key, $value, $default, string $description, $type ) {
+	public function __construct( string $key, $value, $default, string $description, string $type ) {
 		parent::__construct( $key, $value, $default, $description );
 		$this->type = $type;
 	}
