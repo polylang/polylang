@@ -37,7 +37,7 @@ class PLL_Integer_Range_Option extends PLL_Abstract_Option {
 	 *
 	 * @phpstan-param non-falsy-string $key
 	 */
-	public function __construct( string $key, $value, $default, string $description, $min, $max ) {
+	public function __construct( string $key, $value, $default, string $description, int $min, int $max ) {
 		parent::__construct( $key, $value, $default, $description );
 		$this->min = $min;
 		$this->max = $max;
