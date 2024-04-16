@@ -17,26 +17,6 @@ abstract class PLL_Abstract_Object_Types_List_Option extends PLL_List_Option {
 	private $object_types;
 
 	/**
-	 * Creates JSON schema of the option.
-	 *
-	 * @since 3.7
-	 *
-	 * @return array The schema.
-	 */
-	protected function create_schema(): array {
-		return array(
-			'$schema'     => 'http://json-schema.org/draft-04/schema#',
-			'title'       => $this->key(),
-			'description' => $this->description,
-			'type'        => 'array',
-			'context'     => array( 'edit' ),
-			'items' => array(
-				'type'   => $this->type,
-			),
-		);
-	}
-
-	/**
 	 * Validates option's value.
 	 *
 	 * @since 3.7
