@@ -252,15 +252,16 @@ class PLL_Options implements ArrayAccess {
 
 		$properties = array();
 		foreach ( $this->options[ $this->current_blog_id ] as $option ) {
-			if ( $option instanceof PLL_Abstract_Option ) {
-				$sub_schema = $option->get_schema();
-
-				// Cleanup.
-				unset( $sub_schema['title'] );
-				unset( $sub_schema['$schema'] );
-
-				$properties[ $option->key() ] = $sub_schema;
+			if ( ! $option instanceof PLL_Abstract_Option ) {
+				continue;
 			}
+
+			$sub_schema = $option->get_schema();
+
+			// Cleanup.
+			unset( $sub_schema['title'], $sub_schema['$schema'] );
+
+			$properties[ $option->key() ] = $sub_schema;
 		}
 
 		$this->schema[ $this->current_blog_id ] = array(
