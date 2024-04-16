@@ -4,20 +4,20 @@
  */
 
 /**
- * Class defining single integer mask option.
+ * Class defining single integer range option.
  *
  * @since 3.7
  */
-class PLL_Integer_Mask_Option extends PLL_Abstract_Option {
+class PLL_Integer_Range_Option extends PLL_Abstract_Option {
 	/**
-	 * Minimal value of the integer mask.
+	 * Minimal value of the integer range.
 	 *
 	 * @var int
 	 */
 	private $min;
 
 	/**
-	 * Maximal value of the integer mask.
+	 * Maximal value of the integer range.
 	 *
 	 * @var int
 	 */
