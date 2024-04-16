@@ -83,7 +83,7 @@ class PLL_Options implements ArrayAccess {
 	 * @param mixed  ...$args     Additional arguments to pass to the constructor, except `$value` and `$key`.
 	 * @return void
 	 *
-	 * @phpstan-param class-name<PLL_Abstract_Option> $class_name
+	 * @phpstan-param class-string<PLL_Abstract_Option> $class_name
 	 */
 	public function register( string $class_name, string $key, $default, ...$args ) {
 		foreach ( $this->options as &$options ) {
