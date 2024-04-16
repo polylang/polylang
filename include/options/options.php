@@ -136,12 +136,9 @@ class PLL_Options implements ArrayAccess {
 			return;
 		}
 
-		$options = get_option( self::OPTION_NAME );
-		if ( ! is_array( $options ) || empty( $options ) ) {
-			return;
-		}
+		$options = get_option( self::OPTION_NAME, array() );
 
-		$this->options[ $blog_id ] = $options;
+		$this->options[ $blog_id ] = is_array( $options ) ? $options : array();
 	}
 
 	/**
@@ -207,6 +204,10 @@ class PLL_Options implements ArrayAccess {
 	 * @return mixed[] All options values.
 	 */
 	public function get_all(): array {
+		if ( empty( $this->options[ $this->current_blog_id ] ) ) {
+			return array();
+		}
+
 		return array_map(
 			function ( $value ) {
 				return $value->get();
@@ -254,17 +255,20 @@ class PLL_Options implements ArrayAccess {
 		}
 
 		$properties = array();
-		foreach ( $this->options[ $this->current_blog_id ] as $option ) {
-			if ( ! $option instanceof PLL_Abstract_Option ) {
-				continue;
+
+		if ( ! empty( $this->options[ $this->current_blog_id ] ) ) {
+			foreach ( $this->options[ $this->current_blog_id ] as $option ) {
+				if ( ! $option instanceof PLL_Abstract_Option ) {
+					continue;
+				}
+
+				$sub_schema = $option->get_schema();
+
+				// Cleanup.
+				unset( $sub_schema['title'], $sub_schema['$schema'] );
+
+				$properties[ $option->key() ] = $sub_schema;
 			}
-
-			$sub_schema = $option->get_schema();
-
-			// Cleanup.
-			unset( $sub_schema['title'], $sub_schema['$schema'] );
-
-			$properties[ $option->key() ] = $sub_schema;
 		}
 
 		$this->schema[ $this->current_blog_id ] = array(
