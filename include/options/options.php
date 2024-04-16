@@ -85,7 +85,7 @@ class PLL_Options implements ArrayAccess {
 	 *
 	 * @phpstan-param class-string<PLL_Abstract_Option> $class_name
 	 */
-	public function register( string $class_name, string $key, $default, ...$args ) {
+	public function register( string $class_name, string $key, $default, ...$args ): void {
 		foreach ( $this->options as &$options ) {
 			if ( ! array_key_exists( $key, $options ) ) {
 				// Option raw value doesn't exist in database, use default instead.
@@ -125,7 +125,7 @@ class PLL_Options implements ArrayAccess {
 	 * @param int $blog_id The blog ID.
 	 * @return void
 	 */
-	public function init_options_for_blog( $blog_id ) {
+	public function init_options_for_blog( $blog_id ): void {
 		$this->current_blog_id = (int) $blog_id;
 
 		if ( isset( $this->options[ $blog_id ] ) ) {
@@ -228,7 +228,7 @@ class PLL_Options implements ArrayAccess {
 	 * @param array $options Array of raw options.
 	 * @return void
 	 */
-	public function merge( array $options ) {
+	public function merge( array $options ): void {
 		foreach ( $options as $key => $value ) {
 			if ( isset( $this->options[ $this->current_blog_id ][ $key ] )
 				&& $this->options[ $this->current_blog_id ][ $key ] instanceof PLL_Abstract_Option ) {
@@ -341,7 +341,7 @@ class PLL_Options implements ArrayAccess {
 	 * @param string $key The name of the option to reset.
 	 * @return void
 	 */
-	public function reset( string $key ) {
+	public function reset( string $key ): void {
 		if ( ! $this->has( $key ) ) {
 			return;
 		}
@@ -393,7 +393,7 @@ class PLL_Options implements ArrayAccess {
 	 * @return void
 	 */
 	#[\ReturnTypeWillChange]
-	public function offsetSet( $offset, $value ) {
+	public function offsetSet( $offset, $value ): void {
 		$this->set( (string) $offset, $value );
 	}
 
@@ -408,7 +408,7 @@ class PLL_Options implements ArrayAccess {
 	 * @return void
 	 */
 	#[\ReturnTypeWillChange]
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( $offset ): void {
 		$this->reset( (string) $offset );
 	}
 }
