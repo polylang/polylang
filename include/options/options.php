@@ -87,27 +87,27 @@ class PLL_Options implements ArrayAccess {
 	 */
 	public function register( string $class_name, string $key, $default, ...$args ) {
 		foreach ( $this->options as &$options ) {
-			if ( isset( $options[ $key ] ) ) {
-				// If option exist in database, use this value.
-				if ( $options[ $key ] instanceof PLL_Abstract_Option ) {
-					// Already registered, do nothing.
-					continue;
-				}
-
-				// Option raw value exists in database, use it.
+			if ( ! array_key_exists( $key, $options ) ) {
+				// Option raw value doesn't exist in database, use default instead.
 				$options[ $key ] = new $class_name(
 					$key,
-					$options[ $key ],
+					$default,
 					$default,
 					...$args
 				);
 				continue;
 			}
 
-			// Option raw value doesn't exist in database, use default instead.
+			// If option exists in database, use this value.
+			if ( $options[ $key ] instanceof PLL_Abstract_Option ) {
+				// Already registered, do nothing.
+				continue;
+			}
+
+			// Option raw value exists in database, use it.
 			$options[ $key ] = new $class_name(
 				$key,
-				$default,
+				$options[ $key ],
 				$default,
 				...$args
 			);
