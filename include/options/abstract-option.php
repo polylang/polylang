@@ -154,11 +154,7 @@ abstract class PLL_Abstract_Option {
 	 * @return bool True if the value is valid, false otherwise.
 	 */
 	protected function validate( $value ): bool {
-		if ( is_wp_error( rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() ) ) ) {
-			return false;
-		}
-
-		return true;
+		return ! is_wp_error( rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() ) );
 	}
 
 	/**
