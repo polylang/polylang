@@ -16,7 +16,7 @@ class PLL_Language_Slug_String_Option extends PLL_String_Option {
 	 *
 	 * @return array The schema.
 	 */
-	public function create_schema(): array {
+	protected function create_schema(): array {
 		$string_schema            = parent::create_schema();
 		$string_schema['pattern'] = '^[a-z_-]+$';
 

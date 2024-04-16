@@ -16,7 +16,7 @@ class PLL_Nav_Menu_Map_Option extends PLL_Map_Option {
 	 *
 	 * @return array The schema.
 	 */
-	public function create_schema(): array {
+	protected function create_schema(): array {
 		$map_schema                      = parent::create_schema();
 		$map_schema['patternProperties'] = array(
 			'^\\w+$' => array( // Any word characters as key, correspond to a theme slug.

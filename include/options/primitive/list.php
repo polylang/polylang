@@ -42,7 +42,7 @@ class PLL_List_Option extends PLL_Abstract_Option {
 	 *
 	 * @return array The schema.
 	 */
-	public function create_schema(): array {
+	protected function create_schema(): array {
 		return array(
 			'$schema'     => 'http://json-schema.org/draft-04/schema#',
 			'title'       => $this->key(),

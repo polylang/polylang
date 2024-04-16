@@ -16,7 +16,7 @@ class PLL_Sync_Settings_List_Option extends PLL_List_Option {
 	 *
 	 * @return array The schema.
 	 */
-	public function create_schema(): array {
+	protected function create_schema(): array {
 		$sync_settings = PLL_Settings_Sync::list_metas_to_sync();
 
 		return array(

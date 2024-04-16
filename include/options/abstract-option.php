@@ -164,5 +164,5 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @return array The schema.
 	 */
-	abstract public function create_schema(): array;
+	abstract protected function create_schema(): array;
 }
