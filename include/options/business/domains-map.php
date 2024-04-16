@@ -40,10 +40,16 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 			return false;
 		}
 
-		// Don't redefine vip_safe_wp_remote_get() as it has not the same signature as wp_remote_get()
-		$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $value ) ) : wp_remote_get( esc_url_raw( $value ) );
-		$response_code = wp_remote_retrieve_response_code( $response );
+		/** @var array $value */
+		foreach ( $value as $url ) {
+			// Don't redefine vip_safe_wp_remote_get() as it has not the same signature as wp_remote_get().
+			$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $url ) ) : wp_remote_get( esc_url_raw( $url ) );
 
-		return 200 === $response_code;
+			if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
