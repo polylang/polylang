@@ -102,7 +102,8 @@ abstract class PLL_Abstract_Option {
 			return false;
 		}
 
-		return ( $this->value = $value ) && true;
+		$this->value = $value;
+		return true;
 	}
 
 	/**
