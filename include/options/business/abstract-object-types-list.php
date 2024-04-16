@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage object types list option.
+ * Class defining object types list option.
  *
  * @since 3.7
  */

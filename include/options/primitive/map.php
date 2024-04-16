@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage single associative array option.
+ * Class defining single associative array option.
  *
  * @since 3.7
  */

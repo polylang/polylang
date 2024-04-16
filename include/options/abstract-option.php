@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage a single option.
+ * Class defining a single option.
  *
  * @since 3.7
  */

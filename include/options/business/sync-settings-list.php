@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage synchronization settings list option.
+ * Class defining synchronization settings list option.
  *
  * @since 3.7
  */

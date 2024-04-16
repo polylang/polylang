@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage language slug string option.
+ * Class defining language slug string option.
  *
  * @since 3.7
  */

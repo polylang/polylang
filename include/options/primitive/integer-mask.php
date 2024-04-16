@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage single integer mask option.
+ * Class defining single integer mask option.
  *
  * @since 3.7
  */

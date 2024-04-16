@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage single associative array of domain as value and language slug as key option.
+ * Class defining single associative array of domain as value and language slug as key option.
  *
  * @since 3.7
  */

@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage taxonomies list option.
+ * Class defining taxonomies list option.
  *
  * @since 3.7
  */

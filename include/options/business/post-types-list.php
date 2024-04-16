@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage post types list option.
+ * Class defining post types list option.
  *
  * @since 3.7
  */

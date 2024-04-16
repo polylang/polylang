@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage navigation menus array option.
+ * Class defining navigation menus array option.
  *
  * @since 3.7
  */

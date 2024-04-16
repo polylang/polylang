@@ -4,7 +4,7 @@
  */
 
 /**
- * Class to manage single list option, default value type to mixed.
+ * Class defining single list option, default value type to mixed.
  * For convenience, no empty or falsy values are allowed.
  *
  * @since 3.7
