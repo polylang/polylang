@@ -230,11 +230,14 @@ class PLL_Options implements ArrayAccess {
 	 */
 	public function merge( array $options ): void {
 		foreach ( $options as $key => $value ) {
-			if ( isset( $this->options[ $this->current_blog_id ][ $key ] )
-				&& $this->options[ $this->current_blog_id ][ $key ] instanceof PLL_Abstract_Option ) {
-				$this->options[ $this->current_blog_id ][ $key ]->set( $value );
-				$this->modified[ $this->current_blog_id ] = true;
+			if ( ! $this->has( $key ) ) {
+				continue;
 			}
+
+			/** @phpstan-var PLL_Abstract_Option */
+			$option = $this->options[ $this->current_blog_id ][ $key ];
+			$option->set( $value );
+			$this->modified[ $this->current_blog_id ] = true;
 		}
 	}
 
