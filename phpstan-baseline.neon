@@ -26,11 +26,6 @@ parameters:
 			path: admin/admin-base.php
 
 		-
-			message: "#^Parameter \\#6 \\$callback of function add_submenu_page expects callable\\(\\)\\: mixed, array\\{\\$this\\(PLL_Admin_Base\\), 'languages_page'\\} given\\.$#"
-			count: 1
-			path: admin/admin-base.php
-
-		-
 			message: "#^Property PLL_Admin_Base\\:\\:\\$curlang \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\.$#"
 			count: 2
 			path: admin/admin-base.php
