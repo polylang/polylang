@@ -155,6 +155,16 @@ abstract class PLL_Admin_Base extends PLL_Base {
 	}
 
 	/**
+	 * Dummy method to display the 3 tabs pages: languages, strings translations, settings.
+	 * Must be overwritten in child class.
+	 *
+	 * @since 3.7
+	 *
+	 * @return void
+	 */
+	public function languages_page() {}
+
+	/**
 	 * Setup js scripts & css styles ( only on the relevant pages )
 	 *
 	 * @since 0.6
