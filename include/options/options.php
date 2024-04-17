@@ -83,11 +83,11 @@ class PLL_Options implements ArrayAccess {
 	 * @param string $key         Option key.
 	 * @param mixed  $default     Option default value.
 	 * @param mixed  ...$args     Additional arguments to pass to the constructor, except `$value` and `$key`.
-	 * @return void
+	 * @return self
 	 *
 	 * @phpstan-param class-string<PLL_Abstract_Option> $class_name
 	 */
-	public function register( string $class_name, string $key, $default, ...$args ): void {
+	public function register( string $class_name, string $key, $default, ...$args ): self {
 		foreach ( $this->options as &$options ) {
 			if ( ! array_key_exists( $key, $options ) ) {
 				// Option raw value doesn't exist in database, use default instead.
@@ -114,6 +114,8 @@ class PLL_Options implements ArrayAccess {
 				...$args
 			);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -151,7 +153,7 @@ class PLL_Options implements ArrayAccess {
 	 *
 	 * @return void
 	 */
-	public function save_all() {
+	public function save_all(): void {
 		// Find blog with modified options.
 		$modified = array_filter( $this->modified );
 
@@ -229,9 +231,9 @@ class PLL_Options implements ArrayAccess {
 	 * @since 3.7
 	 *
 	 * @param array $options Array of raw options.
-	 * @return void
+	 * @return self
 	 */
-	public function merge( array $options ): void {
+	public function merge( array $options ): self {
 		foreach ( $options as $key => $value ) {
 			if ( ! $this->has( $key ) ) {
 				continue;
@@ -242,6 +244,8 @@ class PLL_Options implements ArrayAccess {
 			$option->set( $value );
 			$this->modified[ $this->current_blog_id ] = true;
 		}
+
+		return $this;
 	}
 
 	/**
@@ -348,11 +352,11 @@ class PLL_Options implements ArrayAccess {
 	 * @since 3.7
 	 *
 	 * @param string $key The name of the option to reset.
-	 * @return void
+	 * @return mixed The new value.
 	 */
-	public function reset( string $key ): void {
+	public function reset( string $key ) {
 		if ( ! $this->has( $key ) ) {
-			return;
+			return null;
 		}
 
 		/** @phpstan-var PLL_Abstract_Option */
@@ -360,6 +364,8 @@ class PLL_Options implements ArrayAccess {
 		$option->reset();
 
 		$this->modified[ $this->current_blog_id ] = true;
+
+		return $option->get();
 	}
 
 	/**
