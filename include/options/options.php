@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Class that manages Polylang's options:
  * - Automatically stores the options into the database on `shutdown` if they have been modified.

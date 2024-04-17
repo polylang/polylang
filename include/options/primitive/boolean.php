@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Class defining single boolean option.
  * Note that for historic reason, boolean are stored as 0 or 1.
