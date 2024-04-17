@@ -156,7 +156,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 	/**
 	 * Dummy method to display the 3 tabs pages: languages, strings translations, settings.
-	 * Must be overwritten in child class.
+	 * Overwritten in `PLL_Settings`.
 	 *
 	 * @since 3.7
 	 *
