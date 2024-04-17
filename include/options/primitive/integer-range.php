@@ -7,6 +7,8 @@
  * Class defining single integer range option.
  *
  * @since 3.7
+ *
+ * @phpstan-import-type Schema from PLL_Abstract_Option
  */
 class PLL_Integer_Range_Option extends PLL_Abstract_Option {
 	/**
@@ -49,16 +51,16 @@ class PLL_Integer_Range_Option extends PLL_Abstract_Option {
 	 * @since 3.7
 	 *
 	 * @return array The schema.
+	 *
+	 * @phpstan-return Schema
 	 */
 	protected function create_schema(): array {
-		return array(
-			'$schema'     => 'http://json-schema.org/draft-04/schema#',
-			'title'       => $this->key(),
-			'description' => $this->description,
-			'type'        => 'integer',
-			'context'     => array( 'edit' ),
-			'minimum'     => $this->min,
-			'maximum'     => $this->max,
+		return $this->build_schema(
+			array(
+				'type'    => 'integer',
+				'minimum' => $this->min,
+				'maximum' => $this->max,
+			)
 		);
 	}
 }

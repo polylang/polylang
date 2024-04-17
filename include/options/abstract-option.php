@@ -7,6 +7,15 @@
  * Class defining a single option.
  *
  * @since 3.7
+ *
+ * @phpstan-type SchemaType 'string'|'null'|'number'|'integer'|'boolean'|'array'|'object'
+ * @phpstan-type Schema array{
+ *     '$schema': non-falsy-string,
+ *     title: non-falsy-string,
+ *     description: string,
+ *     type: SchemaType,
+ *     context: array<non-falsy-string>
+ * }&array<non-falsy-string, mixed>
  */
 abstract class PLL_Abstract_Option {
 	/**
@@ -43,7 +52,7 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @var string
 	 */
-	protected $description;
+	private $description;
 
 	/**
 	 * Constructor.
@@ -165,4 +174,27 @@ abstract class PLL_Abstract_Option {
 	 * @return array The schema.
 	 */
 	abstract protected function create_schema(): array;
+
+	/**
+	 * Returns a base for a JSON schema of the option.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $schema A list of data to add to the schema. At least the key `type` must be added.
+	 * @return array The schema.
+	 *
+	 * @phpstan-param array{type: SchemaType}&array<non-falsy-string, mixed> $schema
+	 * @phpstan-return Schema
+	 */
+	protected function build_schema( array $schema ): array {
+		return array_merge(
+			array(
+				'$schema'     => 'http://json-schema.org/draft-04/schema#',
+				'title'       => $this->key(),
+				'description' => $this->description,
+				'context'     => array( 'edit' ),
+			),
+			$schema
+		);
+	}
 }

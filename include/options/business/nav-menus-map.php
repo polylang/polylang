@@ -7,6 +7,8 @@
  * Class defining navigation menus array option.
  *
  * @since 3.7
+ *
+ * @phpstan-import-type Schema from PLL_Abstract_Option
  */
 class PLL_Nav_Menu_Map_Option extends PLL_Map_Option {
 	/**
@@ -15,6 +17,8 @@ class PLL_Nav_Menu_Map_Option extends PLL_Map_Option {
 	 * @since 3.7
 	 *
 	 * @return array The schema.
+	 *
+	 * @phpstan-return Schema
 	 */
 	protected function create_schema(): array {
 		$map_schema                      = parent::create_schema();
@@ -24,7 +28,7 @@ class PLL_Nav_Menu_Map_Option extends PLL_Map_Option {
 				'context'           => array( 'edit' ),
 				'patternProperties' => array(
 					'^[a-z_-]+$' => array( // Language slug as key.
-						'type' => 'integer',
+						'type'    => 'integer',
 						'minimum' => 0, // A post ID.
 					),
 				),

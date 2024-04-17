@@ -7,6 +7,8 @@
  * Class defining single associative array of domain as value and language slug as key option.
  *
  * @since 3.7
+ *
+ * @phpstan-import-type Schema from PLL_Abstract_Option
  */
 class PLL_Domains_Map_Option extends PLL_Map_Option {
 	/**
@@ -15,6 +17,8 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 	 * @since 3.7
 	 *
 	 * @return array The schema.
+	 *
+	 * @phpstan-return Schema
 	 */
 	protected function create_schema(): array {
 		$map_schema                      = parent::create_schema();
