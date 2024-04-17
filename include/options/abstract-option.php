@@ -135,7 +135,7 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @return void
 	 */
-	public function reset() {
+	public function reset(): void {
 		$this->value = $this->default;
 	}
 
