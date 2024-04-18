@@ -58,7 +58,7 @@ jobs:
             is-multisite: 1
             allow-failure: false
           - wordpress-version: 'nightly'
-            php-version: '7.0'
+            php-version: '7.2'
             is-multisite: 0
             allow-failure: true
           - wordpress-version: 'nightly'
