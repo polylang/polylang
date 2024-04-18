@@ -28,7 +28,7 @@ abstract class WP_UnitTestCase_Polyfill extends WP_UnitTestCase {
 		$wpdb->db_connect();
 		ini_set( 'display_errors', 1 ); // phpcs:ignore WordPress.PHP.IniSet.display_errors_Disallowed
 
-		$class = get_called_class();
+		$class = static::class;
 
 		if ( method_exists( $class, 'wpSetUpBeforeClass' ) ) {
 			call_user_func( array( $class, 'wpSetUpBeforeClass' ), static::factory() );

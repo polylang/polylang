@@ -446,6 +446,6 @@ class PLL_Admin_Filters_Columns {
 	 * @return string
 	 */
 	protected function get_flag_html( $language ) {
-		return $language->flag ? $language->flag : sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
+		return $language->flag ?: sprintf( '<abbr>%s</abbr>', esc_html( $language->slug ) );
 	}
 }

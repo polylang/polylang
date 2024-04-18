@@ -122,8 +122,8 @@ abstract class PLL_Language_Deprecated {
 		// Protected or private property.
 		$visibility = $ref->isPrivate() ? 'private' : 'protected';
 		$trace      = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-		$file       = isset( $trace[0]['file'] ) ? $trace[0]['file'] : '';
-		$line       = isset( $trace[0]['line'] ) ? $trace[0]['line'] : 0;
+		$file       = $trace[0]['file'] ?? '';
+		$line       = $trace[0]['line'] ?? 0;
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(

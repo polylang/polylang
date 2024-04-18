@@ -236,7 +236,7 @@ class PLL_CRUD_Terms {
 	 * @return void
 	 */
 	public function set_tax_query_lang( $query ) {
-		$this->tax_query_lang = isset( $query->query_vars['lang'] ) ? $query->query_vars['lang'] : '';
+		$this->tax_query_lang = $query->query_vars['lang'] ?? '';
 	}
 
 	/**

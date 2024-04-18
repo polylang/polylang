@@ -22,7 +22,7 @@ class PLL_Db_Tools {
 	 * @return string A comma separated list of values.
 	 */
 	public static function prepare_values_list( $values ) {
-		$values = array_map( array( __CLASS__, 'prepare_value' ), (array) $values );
+		$values = array_map( array( self::class, 'prepare_value' ), (array) $values );
 
 		return implode( ',', $values );
 	}

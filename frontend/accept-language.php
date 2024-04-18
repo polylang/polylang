@@ -107,6 +107,6 @@ class PLL_Accept_Language {
 	 * @return string
 	 */
 	public function get_subtag( $name ) {
-		return isset( $this->subtags[ $name ] ) ? $this->subtags[ $name ] : '';
+		return $this->subtags[ $name ] ?? '';
 	}
 }

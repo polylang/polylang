@@ -309,7 +309,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 
 		$translations = $this->get_translations( $id );
 
-		return isset( $translations[ $lang->slug ] ) ? $translations[ $lang->slug ] : false;
+		return $translations[ $lang->slug ] ?? false;
 	}
 
 	/**

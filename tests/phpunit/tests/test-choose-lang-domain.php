@@ -74,7 +74,7 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 		}
 		$parts = wp_parse_url( $url );
 		if ( isset( $parts['scheme'] ) ) {
-			$req = isset( $parts['path'] ) ? $parts['path'] : '';
+			$req = $parts['path'] ?? '';
 			if ( isset( $parts['query'] ) ) {
 				$req .= '?' . $parts['query'];
 				// parse the url query vars into $_GET

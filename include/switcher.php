@@ -133,7 +133,7 @@ class PLL_Switcher {
 					$args['classes']
 				) :
 				$item_classes;
-			$link_classes = isset( $args['link_classes'] ) ? $args['link_classes'] : array();
+			$link_classes = $args['link_classes'] ?? array();
 			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {

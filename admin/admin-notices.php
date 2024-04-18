@@ -177,17 +177,17 @@ class PLL_Admin_Notices {
 	public function display_notices() {
 		if ( current_user_can( 'manage_options' ) ) {
 			// Core notices
-			if ( defined( 'WOOCOMMERCE_VERSION' ) && ! defined( 'PLLWC_VERSION' ) && $this->can_display_notice( 'pllwc' ) && ! $this->is_dismissed( 'pllwc' ) ) {
+			if ( defined( 'WOOCOMMERCE_VERSION' ) && ! defined( 'PLLWC_VERSION' ) && $this->can_display_notice( 'pllwc' ) && ! static::is_dismissed('pllwc') ) {
 				$this->pllwc_notice();
 			}
 
-			if ( ! defined( 'POLYLANG_PRO' ) && $this->can_display_notice( 'review' ) && ! $this->is_dismissed( 'review' ) && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
+			if ( ! defined( 'POLYLANG_PRO' ) && $this->can_display_notice( 'review' ) && ! static::is_dismissed('review') && ! empty( $this->options['first_activation'] ) && time() > $this->options['first_activation'] + 15 * DAY_IN_SECONDS ) {
 				$this->review_notice();
 			}
 
 			// Custom notices
-			foreach ( $this->get_notices() as $notice => $html ) {
-				if ( $this->can_display_notice( $notice ) && ! $this->is_dismissed( $notice ) ) {
+			foreach ( static::get_notices() as $notice => $html ) {
+				if ( $this->can_display_notice( $notice ) && ! static::is_dismissed($notice) ) {
 					?>
 					<div class="pll-notice notice notice-info">
 						<?php
