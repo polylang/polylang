@@ -35,7 +35,7 @@ abstract class PLL_Abstract_Object_Types_List_Option extends PLL_List_Option {
 			$this->object_types = $this->get_object_types();
 		}
 
-		return ! empty( array_diff( $value, $this->object_types ) );
+		return empty( array_diff( $value, $this->object_types ) );
 	}
 
 	/**
