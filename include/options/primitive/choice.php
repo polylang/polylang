@@ -37,8 +37,8 @@ class PLL_Choice_Option extends PLL_Abstract_Option {
 	 * @phpstan-param non-empty-array<int|string> $choices
 	 */
 	public function __construct( string $key, $value, $default, string $description, array $choices ) {
-		parent::__construct( $key, $value, $default, $description );
 		$this->choices = array_values( $choices );
+		parent::__construct( $key, $value, $default, $description );
 	}
 
 	/**

@@ -39,8 +39,8 @@ class PLL_List_Option extends PLL_Abstract_Option {
 	 * @phpstan-param SchemaType $type
 	 */
 	public function __construct( string $key, $value, $default, string $description, string $type ) {
-		parent::__construct( $key, $value, $default, $description );
 		$this->type = $type;
+		parent::__construct( $key, $value, $default, $description );
 	}
 
 	/**
