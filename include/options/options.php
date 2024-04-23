@@ -355,16 +355,13 @@ class PLL_Options implements ArrayAccess {
 
 		/** @phpstan-var PLL_Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
-		$errors = $option->set( $value );
 
-		if ( $errors->has_errors() ) {
-			// Return blocking and non-blocking errors.
-			return $errors->merge_from( $option->get_errors() );
+		if ( $option->set( $value ) ) {
+			// No blocking errors: the value can be stored.
+			$this->modified[ $this->current_blog_id ] = true;
 		}
 
-		$this->modified[ $this->current_blog_id ] = true;
-
-		// Return non-blocking errors.
+		// Return errors.
 		return $option->get_errors();
 	}
 

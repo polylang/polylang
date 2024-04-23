@@ -35,24 +35,24 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 
 	/**
 	 * Sanitizes option's value.
-	 * Can return a `WP_Error` object in case of blocking sanitization error: the value must be rejected then.
-	 * Can populate the `$errors` property with non-blocking sanitization errors: the value is sanitized and can be stored.
+	 * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
+	 * the value is sanitized and can be stored.
 	 *
 	 * @since 3.7
 	 *
-	 * @param array $value Value to filter.
-	 * @return array|WP_Error
+	 * @param mixed $value Value to sanitize.
+	 * @return mixed The sanitized value. The previous value in case of blocking error.
 	 */
 	protected function sanitize( $value ) {
 		// Sanitize new URLs.
 		$value = parent::sanitize( $value );
 
-		if ( is_wp_error( $value ) ) {
+		/** @var array $value */
+		if ( $this->has_blocking_errors() ) {
 			// Blocking error.
 			return $value;
 		}
 
-		/** @var array $value */
 		$all_values     = array(); // Previous and new values.
 		$missing_langs  = array(); // Lang names corresponding to the empty values.
 		$languages_list = PLL()->model->get_languages_list(); // FIX: PLL().
@@ -81,7 +81,8 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 					/* translators: %s is a native language name. */
 					_n( 'Please enter a valid URL for %s.', 'Please enter valid URLs for %s.', count( $missing_langs ), 'polylang' ),
 					wp_sprintf_l( '%l', $missing_langs )
-				)
+				),
+				'warning'
 			);
 		}
 
@@ -107,7 +108,8 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 					/* translators: %s is an url */
 					__( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' ),
 					$url
-				)
+				),
+				'warning'
 			);
 		}
 
