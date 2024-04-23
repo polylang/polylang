@@ -143,6 +143,17 @@ class PLL_Options implements ArrayAccess {
 		$options = get_option( self::OPTION_NAME, array() );
 
 		$this->options[ $blog_id ] = is_array( $options ) ? $options : array();
+
+		/**
+		 * Fires after the options have been init for the current blog.
+		 * This is the best place to register options.
+		 *
+		 * @since 3.7
+		 *
+		 * @param PLL_Options $options         Instance of the options.
+		 * @param int         $current_blog_id Current blog ID.
+		 */
+		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id );
 	}
 
 	/**
