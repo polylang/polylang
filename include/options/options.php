@@ -205,10 +205,16 @@ class PLL_Options implements ArrayAccess {
 		}
 
 		$this->modified[ $this->current_blog_id ] = false;
-		return update_option(
-			self::OPTION_NAME,
-			$this->get_all()
-		);
+		$options = get_option( self::OPTION_NAME, array() );
+
+		if ( is_array( $options ) ) {
+			// Preserve options that are not from Polylang.
+			$options = array_merge( $options, $this->get_all() );
+		} else {
+			$options = $this->get_all();
+		}
+
+		return update_option( self::OPTION_NAME, $options );
 	}
 
 	/**
@@ -242,21 +248,21 @@ class PLL_Options implements ArrayAccess {
 	 * @since 3.7
 	 *
 	 * @param array $options Array of raw options.
-	 * @return self
+	 * @return WP_Error
 	 */
-	public function merge( array $options ): self {
-		foreach ( $options as $key => $value ) {
-			if ( ! $this->has( $key ) ) {
-				continue;
-			}
+	public function merge( array $options ): WP_Error {
+		$errors = new WP_Error();
 
-			/** @phpstan-var PLL_Abstract_Option */
-			$option = $this->options[ $this->current_blog_id ][ $key ];
-			$option->set( $value );
-			$this->modified[ $this->current_blog_id ] = true;
+		foreach ( $options as $key => $value ) {
+			$option_errors = $this->set( $key, $value );
+
+			if ( $option_errors->has_errors() ) {
+				// Blocking and non-blocking errors.
+				$errors->merge_from( $option_errors );
+			}
 		}
 
-		return $this;
+		return $errors;
 	}
 
 	/**
@@ -339,22 +345,27 @@ class PLL_Options implements ArrayAccess {
 	 *
 	 * @param string $key   The name of the option to assign the value to.
 	 * @param mixed  $value The value to set.
-	 * @return bool True if new value has been set, false otherwise.
+	 * @return WP_Error
 	 */
-	public function set( string $key, $value ): bool {
+	public function set( string $key, $value ): WP_Error {
 		if ( ! $this->has( $key ) ) {
-			return false;
+			/* translators: %s is the name of an option */
+			return new WP_Error( 'pll_unknown_option_key', sprintf( __( "Unknown option key '%s'.", 'polylang' ), $key ) );
 		}
 
 		/** @phpstan-var PLL_Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
+		$errors = $option->set( $value );
 
-		if ( ! $option->set( $value ) ) {
-			return false;
+		if ( $errors->has_errors() ) {
+			// Return blocking and non-blocking errors.
+			return $errors->merge_from( $option->get_errors() );
 		}
 
 		$this->modified[ $this->current_blog_id ] = true;
-		return true;
+
+		// Return non-blocking errors.
+		return $option->get_errors();
 	}
 
 	/**

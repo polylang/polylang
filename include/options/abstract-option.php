@@ -57,6 +57,13 @@ abstract class PLL_Abstract_Option {
 	private $description;
 
 	/**
+	 * Non-blocking sanitization errors.
+	 *
+	 * @var WP_Error
+	 */
+	protected $errors;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
@@ -69,6 +76,7 @@ abstract class PLL_Abstract_Option {
 	 * @phpstan-param non-falsy-string $key
 	 */
 	public function __construct( string $key, $value, $default, string $description ) {
+		$this->errors      = new WP_Error();
 		$this->key         = $key;
 		$this->default     = $default;
 		$this->description = $description;
@@ -101,20 +109,26 @@ abstract class PLL_Abstract_Option {
 	 * @since 3.7
 	 *
 	 * @param mixed $value Value to set.
-	 * @return bool True if new value has been set, false otherwise.
+	 * @return WP_Error
 	 */
-	public function set( $value ): bool {
-		if ( ! $this->validate( $value ) ) {
-			return false;
+	public function set( $value ): WP_Error {
+		$this->errors = new WP_Error(); // Reset non-blocking sanitization errors.
+
+		$is_valid = $this->validate( $value );
+		if ( $is_valid->has_errors() ) {
+			// Blocking validation error.
+			return $is_valid;
 		}
 
-		$value = rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
+		$value = $this->sanitize( $value );
 		if ( is_wp_error( $value ) ) {
-			return false;
+			// Blocking sanitization error. `$this->errors` may still contain non-blocking sanitization errors.
+			return $value;
 		}
 
+		// Sanitized value. `$this->errors` may still contain non-blocking sanitization errors.
 		$this->value = $value;
-		return true;
+		return new WP_Error();
 	}
 
 	/**
@@ -157,15 +171,48 @@ abstract class PLL_Abstract_Option {
 	}
 
 	/**
+	 * Returns non-blocking sanitization errors.
+	 *
+	 * @since 3.7
+	 *
+	 * @return WP_Error
+	 */
+	public function get_errors(): WP_Error {
+		return $this->errors;
+	}
+
+	/**
 	 * Validates option's value, can be overridden for specific cases not handled by `rest_validate_value_from_schema`.
+	 * If the validation fails, the value must be rejected.
 	 *
 	 * @since 3.7
 	 *
 	 * @param mixed $value Value to validate.
-	 * @return bool True if the value is valid, false otherwise.
+	 * @return WP_Error
 	 */
-	protected function validate( $value ): bool {
-		return ! is_wp_error( rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() ) );
+	protected function validate( $value ): WP_Error {
+		$is_valid = rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() );
+
+		if ( is_wp_error( $is_valid ) ) {
+			// Invalid.
+			return $is_valid;
+		}
+
+		return new WP_Error();
+	}
+
+	/**
+	 * Sanitizes option's value, can be overridden for specific cases not handled by `rest_sanitize_value_from_schema()`.
+	 * Can return a `WP_Error` object in case of blocking sanitization error: the value must be rejected then.
+	 * Can populate the `$errors` property with non-blocking sanitization errors: the value is sanitized and can be stored.
+	 *
+	 * @since 3.7
+	 *
+	 * @param mixed $value Value to filter.
+	 * @return mixed
+	 */
+	protected function sanitize( $value ) {
+		return rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
 	}
 
 	/**
