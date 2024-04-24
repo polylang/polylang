@@ -55,7 +55,7 @@ if ( defined( 'POLYLANG_VERSION' ) ) {
 	// Go on loading the plugin
 	define( 'POLYLANG_VERSION', '3.7-dev' );
 	define( 'PLL_MIN_WP_VERSION', '6.2' );
-	define( 'PLL_MIN_PHP_VERSION', '7.0' );
+	define( 'PLL_MIN_PHP_VERSION', '7.2' );
 
 	define( 'POLYLANG_FILE', __FILE__ );
 	define( 'POLYLANG_DIR', __DIR__ );
