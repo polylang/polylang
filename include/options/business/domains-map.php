@@ -50,7 +50,7 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 
 		if ( ! did_action( 'pll_init' ) ) {
 			// Access to global `$polylang` is required.
-			return new WP_Error(
+			$this->errors->add(
 				'pll_domains_option_before_init',
 				sprintf(
 					/* translators: %s is a hook name. */
@@ -58,6 +58,7 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 					$options->wrap_in_code( 'pll_init' )
 				)
 			);
+			return $this->get();
 		}
 
 		// Sanitize new URLs.
@@ -91,7 +92,7 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 		if ( 3 === $options->get( 'force_lang' ) && ! empty( $missing_langs ) ) {
 			// Non-blocking error.
 			$this->errors->add(
-				'pll_invalid_domains',
+				'pll_empty_domains',
 				sprintf(
 					/* translators: %s is a list of native language names. */
 					_n( 'Please enter a valid URL for %s.', 'Please enter valid URLs for %s.', count( $missing_langs ), 'polylang' ),
@@ -118,7 +119,7 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 			if ( ! empty( $failed_urls ) ) {
 				// Non-blocking error.
 				$this->errors->add(
-					sprintf( 'pll_invalid_domains' ),
+					'pll_invalid_domains',
 					sprintf(
 						/* translators: %s is a list of URLs. */
 						_n( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', count( $failed_urls ), 'polylang' ),
