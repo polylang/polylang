@@ -349,8 +349,8 @@ class PLL_Options implements ArrayAccess {
 	 */
 	public function set( string $key, $value ): WP_Error {
 		if ( ! $this->has( $key ) ) {
-			/* translators: %s is the name of an option */
-			return new WP_Error( 'pll_unknown_option_key', sprintf( __( "Unknown option key '%s'.", 'polylang' ), $key ) );
+			/* translators: %s is the name of an option. */
+			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), $this->wrap_in_code( $key ) ) );
 		}
 
 		/** @phpstan-var PLL_Abstract_Option */
@@ -385,6 +385,26 @@ class PLL_Options implements ArrayAccess {
 		$this->modified[ $this->current_blog_id ] = true;
 
 		return $option->get();
+	}
+
+	/**
+	 * Recursively wraps data into `<code>` tags.
+	 *
+	 * @since 3.7
+	 * @internal
+	 *
+	 * @param array|string $data The data.
+	 * @return array|string
+	 *
+	 * @phpstan-param array<scalar>|scalar $data
+	 * @phpstan-return ($data is array ? array<string> : string)
+	 */
+	public function wrap_in_code( $data ) {
+		if ( is_array( $data ) ) {
+			return array_map( array( $this, 'wrap_in_code' ), $data );
+		}
+
+		return "<code>{$data}</code>";
 	}
 
 	/**
