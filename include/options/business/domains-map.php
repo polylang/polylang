@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Class defining single associative array of domain as value and language slug as key option.
+ * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
  *
  * @since 3.7
  *

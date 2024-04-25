@@ -76,6 +76,7 @@ class PLL_Options implements ArrayAccess {
 
 	/**
 	 * Registers an option.
+	 * Options must be registered in the right order: some options depend on other options' value.
 	 *
 	 * @since 3.7
 	 *
@@ -253,14 +254,34 @@ class PLL_Options implements ArrayAccess {
 	public function merge( array $options ): WP_Error {
 		$errors = new WP_Error();
 
-		foreach ( $options as $key => $value ) {
+		foreach ( $this->options[ $this->current_blog_id ] as $key => $value ) {
+			if ( ! isset( $options[ $key ] ) || ! $this->has( $key ) ) {
+				continue;
+			}
+
 			$option_errors = $this->set( $key, $value );
 
 			if ( $option_errors->has_errors() ) {
 				// Blocking and non-blocking errors.
 				$errors->merge_from( $option_errors );
 			}
+
+			unset( $options[ $key ] );
 		}
+
+		if ( empty( $options ) ) {
+			return $errors;
+		}
+
+		// Merge all "unknown option" errors into a single error message.
+		$errors->add(
+			'pll_unknown_option_keys',
+			sprintf(
+				/* translators: %s is a list of option names. */
+				_n( 'Unknown option key %s.', 'Unknown option keys %s.', count( $options ), 'polylang' ),
+				wp_sprintf_l( '%l', $this->wrap_in_code( array_keys( $options ) ) )
+			)
+		);
 
 		return $errors;
 	}
@@ -340,6 +361,7 @@ class PLL_Options implements ArrayAccess {
 	/**
 	 * Assigns a value to the specified option.
 	 * This doesn't allow to set an unknown option.
+	 * When doing multiple `set()`, options must be set in the right order: some options depend on other options' value.
 	 *
 	 * @since 3.7
 	 *
