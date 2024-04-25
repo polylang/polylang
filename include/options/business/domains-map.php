@@ -90,26 +90,26 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 
 		// Ping all URLs to make sure they are valid.
 		if ( $options->get( 'force_lang' ) > 1 ) {
-			$options     = array( $this->key() => $all_values ); // FIX: all options.
-			$links_model = ( new PLL_Model( $options ) )->get_links_model();
+			$failed_urls = array();
 
-			foreach ( $languages_list as $lang ) {
-				$url = add_query_arg( 'deactivate-polylang', 1, $links_model->home_url( $lang ) );
-				// Don't redefine vip_safe_wp_remote_get() as it has not the same signature as wp_remote_get()
-				$response      = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $url ) ) : wp_remote_get( esc_url_raw( $url ) );
-				$response_code = wp_remote_retrieve_response_code( $response );
+			foreach ( array_filter( $all_values ) as $url ) {
+				$url = add_query_arg( 'deactivate-polylang', 1, $url );
+				// Don't redefine vip_safe_wp_remote_get() as it has not the same signature as wp_remote_get().
+				$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( $url ) : wp_remote_get( $url );
 
-				if ( 200 === $response_code ) {
-					continue;
+				if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+					$failed_urls[] = $url;
 				}
+			}
 
+			if ( ! empty( $failed_urls ) ) {
 				// Non-blocking error.
 				$this->errors->add(
-					sprintf( "pll_invalid_domain_{$lang->slug}" ),
+					sprintf( 'pll_invalid_domains' ),
 					sprintf(
-						/* translators: %s is an url */
-						__( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' ),
-						$url
+						/* translators: %s is a list of URLs. */
+						_n( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'Polylang was unable to access the %s URLs. Please check that the URLs are valid.', count( $failed_urls ), 'polylang' ),
+						wp_sprintf_l( '%l', $failed_urls )
 					),
 					'warning'
 				);
