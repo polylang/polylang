@@ -410,7 +410,7 @@ class PLL_Options implements ArrayAccess {
 	}
 
 	/**
-	 * Recursively wraps data into `<code>` tags.
+	 * Wraps data into `<code>` tags.
 	 *
 	 * @since 3.7
 	 * @internal
@@ -419,14 +419,18 @@ class PLL_Options implements ArrayAccess {
 	 * @return array|string
 	 *
 	 * @phpstan-param array<scalar>|scalar $data
-	 * @phpstan-return ($data is array ? array<string> : string)
+	 * @phpstan-return ($data is array ? array<non-empty-string> : non-empty-string)
 	 */
 	public function wrap_in_code( $data ) {
+		$wrapper = function ( $scalar ) {
+			return "<code>{$scalar}</code>";
+		};
+
 		if ( is_array( $data ) ) {
-			return array_map( array( $this, 'wrap_in_code' ), $data );
+			return array_map( $wrapper, $data );
 		}
 
-		return "<code>{$data}</code>";
+		return call_user_func( $wrapper, $data );
 	}
 
 	/**
