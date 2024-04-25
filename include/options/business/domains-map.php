@@ -46,6 +46,20 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 	 * @return mixed The sanitized value. The previous value in case of blocking error.
 	 */
 	protected function sanitize( $value, PLL_Options $options ) {
+		global $polylang;
+
+		if ( ! did_action( 'pll_init' ) ) {
+			// Access to global `$polylang` is required.
+			return new WP_Error(
+				'pll_domains_option_before_init',
+				sprintf(
+					/* translators: %s is a hook name. */
+					__( 'The domains option cannot be set before the hook %s.', 'polylang' ),
+					$options->wrap_in_code( 'pll_init' )
+				)
+			);
+		}
+
 		// Sanitize new URLs.
 		$value = parent::sanitize( $value, $options );
 
@@ -55,12 +69,11 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 			return $value;
 		}
 
-		$all_values     = array(); // Previous and new values.
-		$missing_langs  = array(); // Lang names corresponding to the empty values.
-		$languages_list = PLL()->model->get_languages_list(); // FIX: PLL().
+		$all_values    = array(); // Previous and new values.
+		$missing_langs = array(); // Lang names corresponding to the empty values.
 
 		// Detect empty values, fill missing keys with previous values.
-		foreach ( $languages_list as $lang ) {
+		foreach ( $polylang->model->get_languages_list() as $lang ) {
 			if ( array_key_exists( $lang->slug, $value ) ) {
 				// Use the new value.
 				$all_values[ $lang->slug ] = $value[ $lang->slug ];
