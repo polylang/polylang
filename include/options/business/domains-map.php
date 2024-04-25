@@ -41,12 +41,13 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Value to sanitize.
+	 * @param mixed       $value   Value to sanitize.
+	 * @param PLL_Options $options All options.
 	 * @return mixed The sanitized value. The previous value in case of blocking error.
 	 */
-	protected function sanitize( $value ) {
+	protected function sanitize( $value, PLL_Options $options ) {
 		// Sanitize new URLs.
-		$value = parent::sanitize( $value );
+		$value = parent::sanitize( $value, $options );
 
 		/** @var array $value */
 		if ( $this->has_blocking_errors() ) {
@@ -74,12 +75,12 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 			}
 		}
 
-		if ( ! empty( $missing_langs ) ) { // TODO: && force_lang === 3.
+		if ( 3 === $options->get( 'force_lang' ) && ! empty( $missing_langs ) ) {
 			// Non-blocking error.
 			$this->errors->add(
 				'pll_invalid_domains',
 				sprintf(
-					/* translators: %s is a native language name. */
+					/* translators: %s is a list of native language names. */
 					_n( 'Please enter a valid URL for %s.', 'Please enter valid URLs for %s.', count( $missing_langs ), 'polylang' ),
 					wp_sprintf_l( '%l', $missing_langs )
 				),
@@ -88,30 +89,31 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 		}
 
 		// Ping all URLs to make sure they are valid.
-		// TODO: if force_lang > 1.
-		$options     = array( $this->key() => $all_values ); // FIX: all options.
-		$links_model = ( new PLL_Model( $options ) )->get_links_model();
+		if ( $options->get( 'force_lang' ) > 1 ) {
+			$options     = array( $this->key() => $all_values ); // FIX: all options.
+			$links_model = ( new PLL_Model( $options ) )->get_links_model();
 
-		foreach ( $languages_list as $lang ) {
-			$url = add_query_arg( 'deactivate-polylang', 1, $links_model->home_url( $lang ) );
-			// Don't redefine vip_safe_wp_remote_get() as it has not the same signature as wp_remote_get()
-			$response      = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $url ) ) : wp_remote_get( esc_url_raw( $url ) );
-			$response_code = wp_remote_retrieve_response_code( $response );
+			foreach ( $languages_list as $lang ) {
+				$url = add_query_arg( 'deactivate-polylang', 1, $links_model->home_url( $lang ) );
+				// Don't redefine vip_safe_wp_remote_get() as it has not the same signature as wp_remote_get()
+				$response      = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $url ) ) : wp_remote_get( esc_url_raw( $url ) );
+				$response_code = wp_remote_retrieve_response_code( $response );
 
-			if ( 200 === $response_code ) {
-				continue;
+				if ( 200 === $response_code ) {
+					continue;
+				}
+
+				// Non-blocking error.
+				$this->errors->add(
+					sprintf( "pll_invalid_domain_{$lang->slug}" ),
+					sprintf(
+						/* translators: %s is an url */
+						__( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' ),
+						$url
+					),
+					'warning'
+				);
 			}
-
-			// Non-blocking error.
-			$this->errors->add(
-				sprintf( "pll_invalid_domain_{$lang->slug}" ),
-				sprintf(
-					/* translators: %s is an url */
-					__( 'Polylang was unable to access the %s URL. Please check that the URL is valid.', 'polylang' ),
-					$url
-				),
-				'warning'
-			);
 		}
 
 		return $all_values;

@@ -108,18 +108,19 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Value to set.
+	 * @param mixed       $value   Value to set.
+	 * @param PLL_Options $options All options.
 	 * @return bool True if the value has been assigned. False in case of errors.
 	 */
-	public function set( $value ): bool {
+	public function set( $value, PLL_Options $options ): bool {
 		$this->errors = new WP_Error(); // Reset errors.
 
-		if ( ! $this->validate( $value ) ) {
+		if ( ! $this->validate( $value, $options ) ) {
 			// Blocking validation error.
 			return false;
 		}
 
-		$value = $this->sanitize( $value );
+		$value = $this->sanitize( $value, $options );
 
 		if ( $this->has_blocking_errors() ) {
 			// Blocking sanitization error.
@@ -205,10 +206,11 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Value to validate.
+	 * @param mixed       $value   Value to validate.
+	 * @param PLL_Options $options All options.
 	 * @return bool True on success, false otherwise.
 	 */
-	protected function validate( $value ): bool {
+	protected function validate( $value, PLL_Options $options ): bool { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$is_valid = rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() );
 
 		if ( is_wp_error( $is_valid ) ) {
@@ -227,10 +229,11 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Value to sanitize.
+	 * @param mixed       $value   Value to sanitize.
+	 * @param PLL_Options $options All options.
 	 * @return mixed The sanitized value. The previous value in case of blocking error.
 	 */
-	protected function sanitize( $value ) {
+	protected function sanitize( $value, PLL_Options $options ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$value = rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
 
 		if ( is_wp_error( $value ) ) {

@@ -378,7 +378,7 @@ class PLL_Options implements ArrayAccess {
 		/** @phpstan-var PLL_Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
 
-		if ( $option->set( $value ) ) {
+		if ( $option->set( $value, $this ) ) {
 			// No blocking errors: the value can be stored.
 			$this->modified[ $this->current_blog_id ] = true;
 		}

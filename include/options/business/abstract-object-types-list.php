@@ -24,11 +24,12 @@ abstract class PLL_Abstract_Object_Types_List_Option extends PLL_List_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array $value Value to filter.
+	 * @param array       $value   Value to filter.
+	 * @param PLL_Options $options All options.
 	 * @return array|WP_Error
 	 */
-	protected function sanitize( $value ) {
-		$value = parent::sanitize( $value );
+	protected function sanitize( $value, PLL_Options $options ) {
+		$value = parent::sanitize( $value, $options );
 
 		if ( is_wp_error( $value ) ) {
 			// Blocking sanitization error.
