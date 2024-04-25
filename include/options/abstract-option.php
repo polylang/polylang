@@ -215,7 +215,7 @@ abstract class PLL_Abstract_Option {
 
 		if ( is_wp_error( $is_valid ) ) {
 			// Invalid: blocking error.
-			$this->errors->merge_from( $is_valid );
+			$this->errors->merge_from( $this->make_error_unique( $is_valid ) );
 			return false;
 		}
 
@@ -238,7 +238,7 @@ abstract class PLL_Abstract_Option {
 
 		if ( is_wp_error( $value ) ) {
 			// Blocking error.
-			$this->errors->merge_from( $value );
+			$this->errors->merge_from( $this->make_error_unique( $value ) );
 			return $this->value;
 		}
 
@@ -275,5 +275,32 @@ abstract class PLL_Abstract_Option {
 			),
 			$schema
 		);
+	}
+
+	/**
+	 * Changes error codes so they are unique to the option.
+	 * Copied from `WP_Error::copy_errors()`.
+	 *
+	 * @since 3.7
+	 *
+	 * @param WP_Error $errors An error object.
+	 * @return WP_Error
+	 */
+	protected function make_error_unique( WP_Error $errors ): WP_Error {
+		$return = new WP_Error();
+
+		foreach ( $errors->get_error_codes() as $code ) {
+			$new_code = "pll_{$code}_{$this->key}";
+
+			foreach ( $errors->get_error_messages( $code ) as $error_message ) {
+				$return->add( $new_code, $error_message );
+			}
+
+			foreach ( $errors->get_all_error_data( $code ) as $data ) {
+				$return->add_data( $data, $new_code );
+			}
+		}
+
+		return $return;
 	}
 }
