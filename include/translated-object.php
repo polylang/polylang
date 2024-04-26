@@ -320,7 +320,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
-	 * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+	 * @return int The translation object ID if exists. `0` if the passed object has no language or if not translated.
 	 *
 	 * @phpstan-return int<0, max>
 	 */
