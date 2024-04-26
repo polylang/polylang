@@ -3,6 +3,11 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options;
+
+use WP_Error;
+use WP_Syntex\Polylang\Options\Option\Abstract_Option;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -15,16 +20,16 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @implements ArrayAccess<non-falsy-string, mixed>
+ * @implements \ArrayAccess<non-falsy-string, mixed>
  */
-class PLL_Options implements ArrayAccess {
+class Options implements \ArrayAccess {
 	const OPTION_NAME = 'polylang';
 
 	/**
 	 * Polylang's options, by blog ID.
-	 * Raw value if option is not registered yet, `PLL_Abstract_Option` instance otherwise.
+	 * Raw value if option is not registered yet, `Abstract_Option` instance otherwise.
 	 *
-	 * @var PLL_Abstract_Option[][]|mixed[][]
+	 * @var Abstract_Option[][]|mixed[][]
 	 * @phpstan-var array<int, array<non-falsy-string, mixed>>
 	 */
 	private $options = array();
@@ -86,7 +91,7 @@ class PLL_Options implements ArrayAccess {
 	 * @param mixed  ...$args     Additional arguments to pass to the constructor, except `$value` and `$key`.
 	 * @return self
 	 *
-	 * @phpstan-param class-string<PLL_Abstract_Option> $class_name
+	 * @phpstan-param class-string<Abstract_Option> $class_name
 	 */
 	public function register( string $class_name, string $key, $default, ...$args ): self {
 		foreach ( $this->options as &$options ) {
@@ -102,7 +107,7 @@ class PLL_Options implements ArrayAccess {
 			}
 
 			// If option exists in database, use this value.
-			if ( $options[ $key ] instanceof PLL_Abstract_Option ) {
+			if ( $options[ $key ] instanceof Abstract_Option ) {
 				// Already registered, do nothing.
 				continue;
 			}
@@ -151,8 +156,8 @@ class PLL_Options implements ArrayAccess {
 		 *
 		 * @since 3.7
 		 *
-		 * @param PLL_Options $options         Instance of the options.
-		 * @param int         $current_blog_id Current blog ID.
+		 * @param Options $options         Instance of the options.
+		 * @param int     $current_blog_id Current blog ID.
 		 */
 		do_action( 'pll_init_options_for_blog', $this, $this->current_blog_id );
 	}
@@ -237,7 +242,7 @@ class PLL_Options implements ArrayAccess {
 			array_filter(
 				$this->options[ $this->current_blog_id ],
 				function ( $value ) {
-					return $value instanceof PLL_Abstract_Option;
+					return $value instanceof Abstract_Option;
 				}
 			)
 		);
@@ -302,7 +307,7 @@ class PLL_Options implements ArrayAccess {
 
 		if ( ! empty( $this->options[ $this->current_blog_id ] ) ) {
 			foreach ( $this->options[ $this->current_blog_id ] as $option ) {
-				if ( ! $option instanceof PLL_Abstract_Option ) {
+				if ( ! $option instanceof Abstract_Option ) {
 					continue;
 				}
 
@@ -337,7 +342,7 @@ class PLL_Options implements ArrayAccess {
 	 * @return bool
 	 */
 	public function has( string $key ): bool {
-		return isset( $this->options[ $this->current_blog_id ][ $key ] ) && $this->options[ $this->current_blog_id ][ $key ] instanceof PLL_Abstract_Option;
+		return isset( $this->options[ $this->current_blog_id ][ $key ] ) && $this->options[ $this->current_blog_id ][ $key ] instanceof Abstract_Option;
 	}
 
 	/**
@@ -353,7 +358,7 @@ class PLL_Options implements ArrayAccess {
 			return null;
 		}
 
-		/** @phpstan-var PLL_Abstract_Option */
+		/** @phpstan-var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
 		return $option->get();
 	}
@@ -375,7 +380,7 @@ class PLL_Options implements ArrayAccess {
 			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), $this->wrap_in_code( $key ) ) );
 		}
 
-		/** @phpstan-var PLL_Abstract_Option */
+		/** @phpstan-var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
 
 		if ( $option->set( $value, $this ) ) {
@@ -400,7 +405,7 @@ class PLL_Options implements ArrayAccess {
 			return null;
 		}
 
-		/** @phpstan-var PLL_Abstract_Option */
+		/** @phpstan-var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
 		$option->reset();
 

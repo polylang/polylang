@@ -3,6 +3,10 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option\Primitive;
+
+use WP_Syntex\Polylang\Options\Option\Abstract_Option;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -10,9 +14,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from PLL_Abstract_Option
+ * @phpstan-import-type Schema from Abstract_Option
  */
-class PLL_Integer_Range_Option extends PLL_Abstract_Option {
+class Integer_Range extends Abstract_Option {
 	/**
 	 * Minimal value of the integer range.
 	 *

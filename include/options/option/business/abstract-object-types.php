@@ -3,6 +3,12 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option\Business;
+
+use WP_Error;
+use WP_Syntex\Polylang\Options\Option\Primitive\List_Type;
+use WP_Syntex\Polylang\Options\Options;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -10,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-abstract class PLL_Abstract_Object_Types_List_Option extends PLL_List_Option {
+abstract class Abstract_Object_Types extends List_Type {
 	/**
 	 * List of non-core, public object types.
 	 *
@@ -24,11 +30,11 @@ abstract class PLL_Abstract_Object_Types_List_Option extends PLL_List_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array       $value   Value to filter.
-	 * @param PLL_Options $options All options.
+	 * @param array   $value   Value to filter.
+	 * @param Options $options All options.
 	 * @return array|WP_Error
 	 */
-	protected function sanitize( $value, PLL_Options $options ) {
+	protected function sanitize( $value, Options $options ) {
 		$value = parent::sanitize( $value, $options );
 
 		if ( is_wp_error( $value ) ) {

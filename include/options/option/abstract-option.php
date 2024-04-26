@@ -3,6 +3,11 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option;
+
+use WP_Error;
+use WP_Syntex\Polylang\Options\Options;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -19,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  *     context: array<non-falsy-string>
  * }&array<non-falsy-string, mixed>
  */
-abstract class PLL_Abstract_Option {
+abstract class Abstract_Option {
 	/**
 	 * Option key.
 	 *
@@ -108,11 +113,11 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed       $value   Value to set.
-	 * @param PLL_Options $options All options.
+	 * @param mixed   $value   Value to set.
+	 * @param Options $options All options.
 	 * @return bool True if the value has been assigned. False in case of errors.
 	 */
-	public function set( $value, PLL_Options $options ): bool {
+	public function set( $value, Options $options ): bool {
 		$this->errors = new WP_Error(); // Reset errors.
 
 		if ( ! $this->validate( $value, $options ) ) {
@@ -206,11 +211,11 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed       $value   Value to validate.
-	 * @param PLL_Options $options All options.
+	 * @param mixed   $value   Value to validate.
+	 * @param Options $options All options.
 	 * @return bool True on success, false otherwise.
 	 */
-	protected function validate( $value, PLL_Options $options ): bool { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	protected function validate( $value, Options $options ): bool { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$is_valid = rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() );
 
 		if ( is_wp_error( $is_valid ) ) {
@@ -229,11 +234,11 @@ abstract class PLL_Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed       $value   Value to sanitize.
-	 * @param PLL_Options $options All options.
+	 * @param mixed   $value   Value to sanitize.
+	 * @param Options $options All options.
 	 * @return mixed The sanitized value. The previous value in case of blocking error.
 	 */
-	protected function sanitize( $value, PLL_Options $options ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	protected function sanitize( $value, Options $options ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$value = rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
 
 		if ( is_wp_error( $value ) ) {

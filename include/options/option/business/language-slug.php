@@ -3,6 +3,10 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option\Business;
+
+use WP_Syntex\Polylang\Options\Option\Primitive\String_Type;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -10,9 +14,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from PLL_Abstract_Option
+ * @phpstan-import-type Schema from \WP_Syntex\Polylang\Options\Option\Abstract_Option
  */
-class PLL_Language_Slug_String_Option extends PLL_String_Option {
+class Language_Slug extends String_Type {
 	/**
 	 * Creates JSON schema of the option.
 	 *

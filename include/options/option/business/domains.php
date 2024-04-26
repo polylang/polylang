@@ -3,6 +3,11 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option\Business;
+
+use WP_Syntex\Polylang\Options\Option\Primitive\Map;
+use WP_Syntex\Polylang\Options\Options;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -11,9 +16,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from PLL_Abstract_Option
+ * @phpstan-import-type Schema from \WP_Syntex\Polylang\Options\Option\Abstract_Option
  */
-class PLL_Domains_Map_Option extends PLL_Map_Option {
+class Domains extends Map {
 	/**
 	 * Creates JSON schema of the option.
 	 *
@@ -41,11 +46,11 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed       $value   Value to sanitize.
-	 * @param PLL_Options $options All options.
+	 * @param mixed   $value   Value to sanitize.
+	 * @param Options $options All options.
 	 * @return mixed The sanitized value. The previous value in case of blocking error.
 	 */
-	protected function sanitize( $value, PLL_Options $options ) {
+	protected function sanitize( $value, Options $options ) {
 		global $polylang;
 
 		if ( ! did_action( 'pll_init' ) ) {

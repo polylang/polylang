@@ -3,6 +3,10 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option\Primitive;
+
+use WP_Syntex\Polylang\Options\Option\Abstract_Option;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -11,9 +15,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from PLL_Abstract_Option
+ * @phpstan-import-type Schema from Abstract_Option
  */
-class PLL_Boolean_Option extends PLL_Abstract_Option {
+class Boolean extends Abstract_Option {
 	/**
 	 * Creates JSON schema of the option.
 	 *

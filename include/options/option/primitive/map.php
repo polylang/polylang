@@ -3,6 +3,11 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option\Primitive;
+
+use WP_Syntex\Polylang\Options\Option\Abstract_Option;
+use WP_Syntex\Polylang\Options\Option\Primitive\List_Type;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -10,9 +15,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from PLL_Abstract_Option
+ * @phpstan-import-type Schema from Abstract_Option
  */
-class PLL_Map_Option extends PLL_List_Option {
+class Map extends List_Type {
 	/**
 	 * Creates JSON schema of the option.
 	 *

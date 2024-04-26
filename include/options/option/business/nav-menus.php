@@ -3,6 +3,10 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option\Business;
+
+use WP_Syntex\Polylang\Options\Option\Primitive\Map;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -10,9 +14,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from PLL_Abstract_Option
+ * @phpstan-import-type Schema from \WP_Syntex\Polylang\Options\Option\Abstract_Option
  */
-class PLL_Nav_Menu_Map_Option extends PLL_Map_Option {
+class Nav_Menu extends Map {
 	/**
 	 * Creates JSON schema of the option.
 	 *

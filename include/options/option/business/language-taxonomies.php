@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+namespace WP_Syntex\Polylang\Options\Option\Business;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -10,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-class PLL_Language_Taxonomies_List_Option extends PLL_Abstract_Object_Types_List_Option {
+class Language_Taxonomies extends Abstract_Object_Types {
 	/**
 	 * Returns non-core, public post types.
 	 *
