@@ -450,7 +450,7 @@ function pll_save_term_translations( $arr ) {
  *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
  *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
  *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
- * @return string|int|false|string[]|PLL_Language The requested field or object for the post language, `false` if no language is associated to that post.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, `false` if no language is associated to that post.
  *
  * @phpstan-return (
  *     $field is \OBJECT ? PLL_Language : (
@@ -480,7 +480,7 @@ function pll_get_post_language( $post_id, $field = 'slug' ) {
  *                      Pass `\OBJECT` constant to get the language object. A composite value can be used for language
  *                      term property values, in the form of `{language_taxonomy_name}:{property_name}` (see
  *                      {@see PLL_Language::get_tax_prop()} for the possible values). Ex: `term_language:term_taxonomy_id`.
- * @return string|int|false|string[]|PLL_Language The requested field or object for the post language, `false` if no language is associated to that term.
+ * @return string|int|bool|string[]|PLL_Language The requested field or object for the post language, `false` if no language is associated to that term.
  *
  * @phpstan-return (
  *     $field is \OBJECT ? PLL_Language : (
