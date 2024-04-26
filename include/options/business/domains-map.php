@@ -53,8 +53,9 @@ class PLL_Domains_Map_Option extends PLL_Map_Option {
 			$this->errors->add(
 				'pll_domains_option_before_init',
 				sprintf(
-					/* translators: %s is a hook name. */
-					__( 'The domains option cannot be set before the hook %s.', 'polylang' ),
+					/* translators: %1$s is an option name, %2$s is a hook name. */
+					__( 'The option %1$s cannot be set before the hook %2$s.', 'polylang' ),
+					$options->wrap_in_code( $this->key() ),
 					$options->wrap_in_code( 'pll_init' )
 				)
 			);
