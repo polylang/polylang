@@ -114,12 +114,12 @@ function pll_default_language( $field = 'slug' ) {
  *
  * @param int                 $post_id Post ID.
  * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
- * @return int|false The translation post ID if exists, 0 if not translated. False if the passed object has no language or if the language doesn't exist.
+ * @return int|false The translation post ID if exists, 0 if not translated or if the post has no language. False if the language doesn't exist.
  *
  * @phpstan-return int<0, max>|false
  */
-function pll_get_post( $post_id, $lang = '' ) {
-	$lang = $lang ? $lang : pll_current_language();
+function pll_get_post( $post_id, $lang = null ) {
+	$lang = $lang ? PLL()->model->get_language( $lang ) : pll_current_language();
 
 	if ( empty( $lang ) ) {
 		return false;
@@ -138,12 +138,12 @@ function pll_get_post( $post_id, $lang = '' ) {
  *
  * @param int                 $term_id Term ID.
  * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
- * @return int|false The translation term ID if exists, 0 if not translated. False if the passed object has no language or if the language doesn't exist.
+ * @return int|false The translation term ID if exists, 0 if not translated or if the term has no language. False if the language doesn't exist.
  *
  * @phpstan-return int<0, max>|false
  */
 function pll_get_term( $term_id, $lang = null ) {
-	$lang = $lang ? $lang : pll_current_language();
+	$lang = $lang ? PLL()->model->get_language( $lang ) : pll_current_language();
 
 	if ( empty( $lang ) ) {
 		return false;
