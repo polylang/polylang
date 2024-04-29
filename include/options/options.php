@@ -407,9 +407,10 @@ class Options implements \ArrayAccess {
 
 		/** @phpstan-var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
-		$option->reset();
 
-		$this->modified[ $this->current_blog_id ] = true;
+		if ( $option->reset() ) {
+			$this->modified[ $this->current_blog_id ] = true;
+		}
 
 		return $option->get();
 	}
