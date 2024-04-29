@@ -85,10 +85,10 @@ class Options implements \ArrayAccess {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $class_name  Option class to register.
-	 * @param string $key         Option key.
-	 * @param mixed  $default     Option default value.
-	 * @param mixed  ...$args     Additional arguments to pass to the constructor, except `$value` and `$key`.
+	 * @param string $class_name Option class to register.
+	 * @param string $key        Option key.
+	 * @param mixed  $default    Option default value.
+	 * @param mixed  ...$args    Additional arguments to pass to the constructor, except `$value` and `$key`.
 	 * @return self
 	 *
 	 * @phpstan-param class-string<Abstract_Option> $class_name
