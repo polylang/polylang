@@ -360,7 +360,8 @@ class Options implements \ArrayAccess {
 
 		/** @phpstan-var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
-		return $option->get();
+		$value  = $option->get();
+		return $value;
 	}
 
 	/**
