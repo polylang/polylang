@@ -253,28 +253,28 @@ class Options implements \ArrayAccess {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array $options Array of raw options.
+	 * @param array $values Array of raw options.
 	 * @return WP_Error
 	 */
-	public function merge( array $options ): WP_Error {
+	public function merge( array $values ): WP_Error {
 		$errors = new WP_Error();
 
-		foreach ( $this->options[ $this->current_blog_id ] as $key => $value ) {
-			if ( ! isset( $options[ $key ] ) || ! $this->has( $key ) ) {
+		foreach ( $this->options[ $this->current_blog_id ] as $key => $option ) {
+			if ( ! isset( $values[ $key ] ) || ! $this->has( $key ) ) {
 				continue;
 			}
 
-			$option_errors = $this->set( $key, $value );
+			$option_errors = $this->set( $key, $values[ $key ] );
 
 			if ( $option_errors->has_errors() ) {
 				// Blocking and non-blocking errors.
 				$errors->merge_from( $option_errors );
 			}
 
-			unset( $options[ $key ] );
+			unset( $values[ $key ] );
 		}
 
-		if ( empty( $options ) ) {
+		if ( empty( $values ) ) {
 			return $errors;
 		}
 
@@ -283,8 +283,8 @@ class Options implements \ArrayAccess {
 			'pll_unknown_option_keys',
 			sprintf(
 				/* translators: %s is a list of option names. */
-				_n( 'Unknown option key %s.', 'Unknown option keys %s.', count( $options ), 'polylang' ),
-				wp_sprintf_l( '%l', $this->wrap_in_code( array_keys( $options ) ) )
+				_n( 'Unknown option key %s.', 'Unknown option keys %s.', count( $values ), 'polylang' ),
+				wp_sprintf_l( '%l', $this->wrap_in_code( array_keys( $values ) ) )
 			)
 		);
 
