@@ -146,9 +146,14 @@ class Options implements \ArrayAccess {
 			return;
 		}
 
-		$options = get_option( self::OPTION_NAME, array() );
+		$options = get_option( self::OPTION_NAME );
 
-		$this->options[ $blog_id ] = is_array( $options ) ? $options : array();
+		if ( empty( $options ) || ! is_array( $options ) ) {
+			$this->options[ $blog_id ]  = array();
+			$this->modified[ $blog_id ] = true;
+		} else {
+			$this->options[ $blog_id ] = $options;
+		}
 
 		/**
 		 * Fires after the options have been init for the current blog.
