@@ -24,6 +24,7 @@ class API_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( $posts['en'], pll_get_post( $posts['en'], 'en' ) );
 		$this->assertSame( $posts['fr'], pll_get_post( $posts['en'], 'fr' ) );
+		$this->assertSame( 0, pll_get_post( $posts['en'], 'chti' ) );
 		$this->assertSame( 0, pll_get_post( $posts['en'], 'de' ) );
 		$this->assertSame( $posts['fr'], pll_get_post( $posts['en'] ) );
 	}
@@ -37,6 +38,7 @@ class API_Test extends PLL_UnitTestCase {
 
 		$this->assertSame( $terms['en'], pll_get_term( $terms['en'], 'en' ) );
 		$this->assertSame( $terms['fr'], pll_get_term( $terms['en'], 'fr' ) );
+		$this->assertSame( 0, pll_get_term( $terms['en'], 'chti' ) );
 		$this->assertSame( 0, pll_get_term( $terms['en'], 'de' ) );
 		$this->assertSame( $terms['fr'], pll_get_term( $terms['en'] ) );
 	}
