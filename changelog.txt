@@ -74,6 +74,7 @@ This file contains only old changelog. See readme.txt for newer versions.
 * Fix the language extraction from the URL in plain permalinks #1270
 * Fix content cleared when switching the language of a new post in the block editor #1272
 * Fix: Prevent saving strings translations with an empty source #1273
+* Change `pll_get_post` and `pll_get_term` behavior, they return`0` instead of `false` when the passed ID is not translated.
 
 = 3.3.3 (2023-04-11) =
 
