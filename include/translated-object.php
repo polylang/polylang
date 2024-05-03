@@ -296,20 +296,20 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @param int                 $id   Object ID.
 	 * @param PLL_Language|string $lang Language (slug or object).
-	 * @return int|false Object ID of the translation, `false` if there is none.
+	 * @return int Object ID of the translation, `0` if there is none.
 	 *
-	 * @phpstan-return positive-int|false
+	 * @phpstan-return int<0, max>
 	 */
 	public function get_translation( $id, $lang ) {
 		$lang = $this->model->get_language( $lang );
 
 		if ( empty( $lang ) ) {
-			return false;
+			return 0;
 		}
 
 		$translations = $this->get_translations( $id );
 
-		return isset( $translations[ $lang->slug ] ) ? $translations[ $lang->slug ] : false;
+		return isset( $translations[ $lang->slug ] ) ? $translations[ $lang->slug ] : 0;
 	}
 
 	/**
@@ -343,7 +343,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return 0;
 		}
 
-		return $obj_lang->term_id === $lang->term_id ? $id : (int) $this->get_translation( $id, $lang );
+		return $obj_lang->term_id === $lang->term_id ? $id : $this->get_translation( $id, $lang );
 	}
 
 	/**
