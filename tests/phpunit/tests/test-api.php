@@ -54,6 +54,8 @@ class API_Test extends PLL_UnitTestCase {
 	 *           ["term"]
 	 *
 	 * @covers PLL_Translated_Object::get_translation
+	 *
+	 * @param string $type Type of object.
 	 */
 	public function test_translated_objects_get_translation( $type ) {
 		$objects = $this->factory()->$type->create_translated(
