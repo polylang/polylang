@@ -109,8 +109,8 @@ function pll_default_language( $field = 'slug' ) {
  *
  * @api
  * @since 0.5
- * @since 3.4 Returns 0 instead of false.
- * @since 3.4 $lang accepts PLL_Language or string.
+ * @since 3.4 Returns `0` instead of `false` if not translated or if the post has no language.
+ * @since 3.4 $lang accepts `PLL_Language` or string.
  *
  * @param int                 $post_id Post ID.
  * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
@@ -133,7 +133,7 @@ function pll_get_post( $post_id, $lang = '' ) {
  *
  * @api
  * @since 0.5
- * @since 3.4 Returns 0 instead of false.
+ * @since 3.4 Returns `0` instead of `false` if not translated or if the term has no language.
  * @since 3.4 $lang accepts PLL_Language or string.
  *
  * @param int                 $term_id Term ID.
