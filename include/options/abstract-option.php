@@ -252,31 +252,4 @@ abstract class Abstract_Option {
 	 * @phpstan-return array{type: SchemaType}&array<non-falsy-string, mixed>
 	 */
 	abstract protected function get_specific_schema(): array;
-
-	/**
-	 * Changes error codes so they are unique to the option.
-	 * Copied from `WP_Error::copy_errors()`.
-	 *
-	 * @since 3.7
-	 *
-	 * @param WP_Error $errors An error object.
-	 * @return WP_Error
-	 */
-	protected function make_error_unique( WP_Error $errors ): WP_Error {
-		$return = new WP_Error();
-
-		foreach ( $errors->get_error_codes() as $code ) {
-			$new_code = "pll_{$code}_{$this->key}";
-
-			foreach ( $errors->get_error_messages( $code ) as $error_message ) {
-				$return->add( $new_code, $error_message );
-			}
-
-			foreach ( $errors->get_all_error_data( $code ) as $data ) {
-				$return->add_data( $data, $new_code );
-			}
-		}
-
-		return $return;
-	}
 }
