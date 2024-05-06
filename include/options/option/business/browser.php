@@ -37,11 +37,6 @@ class Browser extends Boolean {
 		$value = parent::sanitize( $value, $options );
 
 		/** @var bool $value */
-		if ( $this->has_blocking_errors() ) {
-			// Blocking error.
-			return $value;
-		}
-
 		return $value;
 	}
 }
