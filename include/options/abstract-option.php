@@ -121,16 +121,19 @@ abstract class Abstract_Option {
 	 */
 	public function set( $value, Options $options ): bool {
 		$this->errors = new WP_Error(); // Reset errors.
+		$is_valid     = $this->validate( $value, $options );
 
-		if ( ! $this->validate( $value, $options ) ) {
+		if ( $is_valid->has_errors() ) {
 			// Blocking validation error.
+			$this->errors->merge_from( $is_valid );
 			return false;
 		}
 
 		$value = $this->sanitize( $value, $options );
 
-		if ( $this->has_blocking_errors() ) {
+		if ( is_wp_error( $value ) ) {
 			// Blocking sanitization error.
+			$this->errors->merge_from( $value );
 			return false;
 		}
 
@@ -204,25 +207,6 @@ abstract class Abstract_Option {
 	}
 
 	/**
-	 * Tells if blocking errors have been raised during validation and sanitization.
-	 *
-	 * @since 3.7
-	 *
-	 * @return bool
-	 */
-	public function has_blocking_errors(): bool {
-		foreach ( $this->errors->get_error_codes() as $code ) {
-			$data = $this->errors->get_error_data( $code );
-
-			if ( empty( $data ) || 'error' === $data ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Validates option's value, can be overridden for specific cases not handled by `rest_validate_value_from_schema`.
 	 * If the validation fails, the value must be rejected.
 	 *
@@ -230,18 +214,17 @@ abstract class Abstract_Option {
 	 *
 	 * @param mixed   $value   Value to validate.
 	 * @param Options $options All options.
-	 * @return bool True on success, false otherwise.
+	 * @return WP_Error
 	 */
-	protected function validate( $value, Options $options ): bool { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	protected function validate( $value, Options $options ): WP_Error { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$is_valid = rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() );
 
 		if ( is_wp_error( $is_valid ) ) {
 			// Invalid: blocking error.
-			$this->errors->merge_from( $this->make_error_unique( $is_valid ) );
-			return false;
+			return $is_valid;
 		}
 
-		return true;
+		return new WP_Error();
 	}
 
 	/**
@@ -253,18 +236,10 @@ abstract class Abstract_Option {
 	 *
 	 * @param mixed   $value   Value to sanitize.
 	 * @param Options $options All options.
-	 * @return mixed The sanitized value. The previous value in case of blocking error.
+	 * @return mixed The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 */
 	protected function sanitize( $value, Options $options ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$value = rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
-
-		if ( is_wp_error( $value ) ) {
-			// Blocking error.
-			$this->errors->merge_from( $this->make_error_unique( $value ) );
-			return $this->value;
-		}
-
-		return $value;
+		return rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
 	}
 
 	/**

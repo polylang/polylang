@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
+use WP_Error;
 use WP_Syntex\Polylang\Options\Primitive\Boolean;
 use WP_Syntex\Polylang\Options\Options;
 
@@ -27,16 +28,15 @@ class Hide_Default extends Boolean {
 	 *
 	 * @param bool    $value   Value to sanitize.
 	 * @param Options $options All options.
-	 * @return bool The sanitized value. The previous value in case of blocking error.
+	 * @return bool|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 */
 	protected function sanitize( $value, Options $options ) {
 		if ( 3 === $options->get( 'force_lang' ) ) {
 			return false;
 		}
 
+		/** @var bool|WP_Error */
 		$value = parent::sanitize( $value, $options );
-
-		/** @var bool $value */
 		return $value;
 	}
 }

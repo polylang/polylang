@@ -5,6 +5,7 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
+use WP_Error;
 use WP_Syntex\Polylang\Options\Primitive\Map;
 use WP_Syntex\Polylang\Options\Options;
 
@@ -50,9 +51,9 @@ class Domains extends Map {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed   $value   Value to sanitize.
+	 * @param array   $value   Value to sanitize.
 	 * @param Options $options All options.
-	 * @return mixed The sanitized value. The previous value in case of blocking error.
+	 * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 */
 	protected function sanitize( $value, Options $options ) {
 		global $polylang;
@@ -68,18 +69,20 @@ class Domains extends Map {
 					$options->wrap_in_code( 'pll_init' )
 				)
 			);
-			return $this->get();
+			/** @var array */
+			$value = $this->get();
+			return $value;
 		}
 
 		// Sanitize new URLs.
 		$value = parent::sanitize( $value, $options );
 
-		/** @var array $value */
-		if ( $this->has_blocking_errors() ) {
+		if ( is_wp_error( $value ) ) {
 			// Blocking error.
 			return $value;
 		}
 
+		/** @var array $value */
 		$all_values    = array(); // Previous and new values.
 		$missing_langs = array(); // Lang names corresponding to the empty values.
 

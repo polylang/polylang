@@ -25,7 +25,7 @@ abstract class Abstract_Object_Types extends List_Type {
 	 *
 	 * @param array   $value   Value to filter.
 	 * @param Options $options All options.
-	 * @return array|WP_Error
+	 * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 */
 	protected function sanitize( $value, Options $options ) {
 		$value = parent::sanitize( $value, $options );
