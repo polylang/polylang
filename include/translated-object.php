@@ -296,31 +296,31 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @param int                 $id   Object ID.
 	 * @param PLL_Language|string $lang Language (slug or object).
-	 * @return int|false Object ID of the translation, `false` if there is none.
+	 * @return int Object ID of the translation, `0` if there is none.
 	 *
-	 * @phpstan-return positive-int|false
+	 * @phpstan-return int<0, max>
 	 */
 	public function get_translation( $id, $lang ) {
 		$lang = $this->model->get_language( $lang );
 
 		if ( empty( $lang ) ) {
-			return false;
+			return 0;
 		}
 
 		$translations = $this->get_translations( $id );
 
-		return isset( $translations[ $lang->slug ] ) ? $translations[ $lang->slug ] : false;
+		return isset( $translations[ $lang->slug ] ) ? $translations[ $lang->slug ] : 0;
 	}
 
 	/**
 	 * Among the object and its translations, returns the ID of the object which is in `$lang`.
 	 *
 	 * @since 0.1
-	 * @since 3.4 Returns 0 instead of false.
+	 * @since 3.4 Returns `0` instead of `false`.
 	 *
 	 * @param int                     $id   Object ID.
 	 * @param PLL_Language|string|int $lang Language (object, slug, or term ID).
-	 * @return int The translation object ID if exists, otherwise the passed ID. `0` if the passed object has no language.
+	 * @return int The translation object ID if exists. `0` if the passed object has no language or if not translated.
 	 *
 	 * @phpstan-return int<0, max>
 	 */
@@ -343,7 +343,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return 0;
 		}
 
-		return $obj_lang->term_id === $lang->term_id ? $id : (int) $this->get_translation( $id, $lang );
+		return $obj_lang->term_id === $lang->term_id ? $id : $this->get_translation( $id, $lang );
 	}
 
 	/**

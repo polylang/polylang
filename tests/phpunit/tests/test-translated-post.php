@@ -86,10 +86,10 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertEquals( self::$model->post->get_translation( $en, 'de' ), $de );
 		$this->assertEquals( self::$model->post->get_translation( $de, 'en' ), $en );
 
-		$this->assertFalse( self::$model->post->get_translation( $en, 'fr' ) ); // fails
-		$this->assertFalse( self::$model->post->get_translation( $fr, 'en' ) );
-		$this->assertFalse( self::$model->post->get_translation( $fr, 'de' ) );
-		$this->assertFalse( self::$model->post->get_translation( $de, 'fr' ) ); // fails
+		$this->assertSame( 0, self::$model->post->get_translation( $en, 'fr' ) ); // fails
+		$this->assertSame( 0, self::$model->post->get_translation( $fr, 'en' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $fr, 'de' ) );
+		$this->assertSame( 0, self::$model->post->get_translation( $de, 'fr' ) ); // fails
 	}
 
 	public function test_current_user_can_synchronize() {
