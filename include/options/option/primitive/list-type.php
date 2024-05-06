@@ -55,7 +55,7 @@ class List_Type extends Abstract_Option {
 	 *
 	 * @phpstan-return array{type: SchemaType, items: array{type: SchemaType}}
 	 */
-	protected function create_schema(): array {
+	protected function get_specific_schema(): array {
 		return array(
 			'type'  => 'array',
 			'items' => array(

@@ -60,7 +60,7 @@ class Integer_Range extends Abstract_Option {
 	 *
 	 * @phpstan-return array{type: SchemaType, minimum: int, maximum: int}
 	 */
-	protected function create_schema(): array {
+	protected function get_specific_schema(): array {
 		return array(
 			'type'    => 'integer',
 			'minimum' => $this->min,

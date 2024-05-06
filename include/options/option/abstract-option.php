@@ -186,7 +186,7 @@ abstract class Abstract_Option {
 				'description' => $this->description,
 				'context'     => array( 'edit' ),
 			),
-			$this->create_schema()
+			$this->get_specific_schema()
 		);
 
 		return $this->schema;
@@ -276,7 +276,7 @@ abstract class Abstract_Option {
 	 *
 	 * @phpstan-return array{type: SchemaType}&array<non-falsy-string, mixed>
 	 */
-	abstract protected function create_schema(): array;
+	abstract protected function get_specific_schema(): array;
 
 	/**
 	 * Changes error codes so they are unique to the option.

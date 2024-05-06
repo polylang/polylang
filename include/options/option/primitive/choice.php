@@ -54,7 +54,7 @@ class Choice extends Abstract_Option {
 	 *
 	 * @phpstan-return array{type: SchemaType, enum: non-empty-array<int|string>}
 	 */
-	protected function create_schema(): array {
+	protected function get_specific_schema(): array {
 		return array(
 			'type' => gettype( reset( $this->choices ) ),
 			'enum' => $this->choices,
