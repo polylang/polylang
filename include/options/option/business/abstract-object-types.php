@@ -18,13 +18,6 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Abstract_Object_Types extends List_Type {
 	/**
-	 * List of non-core, public object types.
-	 *
-	 * @var string[]|null
-	 */
-	private $object_types;
-
-	/**
 	 * Sanitizes option's value.
 	 * Can return a `WP_Error` object in case of blocking sanitization error: the value must be rejected then.
 	 *
@@ -42,12 +35,8 @@ abstract class Abstract_Object_Types extends List_Type {
 			return $value;
 		}
 
-		if ( null === $this->object_types ) {
-			$this->object_types = $this->get_object_types();
-		}
-
 		/** @var array $value */
-		return array_intersect( $value, $this->object_types );
+		return array_intersect( $value, $this->get_object_types() );
 	}
 
 	/**
