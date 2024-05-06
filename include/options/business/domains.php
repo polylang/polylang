@@ -60,14 +60,10 @@ class Domains extends Map {
 
 		if ( ! did_action( 'pll_init' ) ) {
 			// Access to global `$polylang` is required.
-			$this->errors->add(
-				'pll_domains_option_before_init',
-				sprintf(
-					/* translators: %1$s is an option name, %2$s is a hook name. */
-					__( 'The option %1$s cannot be set before the hook %2$s.', 'polylang' ),
-					$options->wrap_in_code( $this->key() ),
-					$options->wrap_in_code( 'pll_init' )
-				)
+			_doing_it_wrong(
+				__METHOD__,
+				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', $this->key() ) ),
+				'3.7'
 			);
 			/** @var array */
 			$value = $this->get();
