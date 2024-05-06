@@ -37,7 +37,7 @@ class Nav_Menu extends Map {
 	 * }
 	 */
 	protected function get_specific_schema(): array {
-		$map_schema                      = parent::create_schema();
+		$map_schema                      = parent::get_specific_schema();
 		$map_schema['patternProperties'] = array(
 			'^\\w+$' => array( // Any word characters as key, correspond to a theme slug.
 				'type'              => 'object',

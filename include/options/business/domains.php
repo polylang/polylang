@@ -33,7 +33,7 @@ class Domains extends Map {
 	 * }
 	 */
 	protected function get_specific_schema(): array {
-		$map_schema                      = parent::create_schema();
+		$map_schema                      = parent::get_specific_schema();
 		$map_schema['patternProperties'] = array(
 			'^[a-z_-]+$' => array( // Language slug as key.
 				'type'   => $this->type,

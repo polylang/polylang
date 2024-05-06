@@ -27,7 +27,7 @@ class Language_Slug extends String_Type {
 	 * @phpstan-return array{type: SchemaType, pattern: non-empty-string}
 	 */
 	protected function get_specific_schema(): array {
-		$string_schema            = parent::create_schema();
+		$string_schema            = parent::get_specific_schema();
 		$string_schema['pattern'] = '^[a-z_-]+$';
 
 		return $string_schema;
