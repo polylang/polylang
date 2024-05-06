@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Options\Option\Business;
+namespace WP_Syntex\Polylang\Options\Business;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -3,9 +3,9 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Options\Option\Business;
+namespace WP_Syntex\Polylang\Options\Business;
 
-use WP_Syntex\Polylang\Options\Option\Primitive\Map;
+use WP_Syntex\Polylang\Options\Primitive\Map;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Option\Abstract_Option
+ * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Abstract_Option
  */
 class Domains extends Map {
 	/**

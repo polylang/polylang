@@ -3,10 +3,10 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Options\Option\Business;
+namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Error;
-use WP_Syntex\Polylang\Options\Option\Primitive\List_Type;
+use WP_Syntex\Polylang\Options\Primitive\List_Type;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;

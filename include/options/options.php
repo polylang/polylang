@@ -6,7 +6,7 @@
 namespace WP_Syntex\Polylang\Options;
 
 use WP_Error;
-use WP_Syntex\Polylang\Options\Option\Abstract_Option;
+use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
 

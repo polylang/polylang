@@ -3,9 +3,9 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Options\Option\Primitive;
+namespace WP_Syntex\Polylang\Options\Primitive;
 
-use WP_Syntex\Polylang\Options\Option\Abstract_Option;
+use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
 

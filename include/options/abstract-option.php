@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Options\Option;
+namespace WP_Syntex\Polylang\Options;
 
 use WP_Error;
 use WP_Syntex\Polylang\Options\Options;

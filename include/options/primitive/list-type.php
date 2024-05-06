@@ -3,21 +3,21 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Options\Option\Primitive;
+namespace WP_Syntex\Polylang\Options\Primitive;
 
-use WP_Syntex\Polylang\Options\Option\Abstract_Option;
-use WP_Syntex\Polylang\Options\Option\Primitive\List_Type;
+use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class defining single associative array option.
+ * Class defining single list option, default value type to mixed.
+ * For convenience, no empty or falsy values are allowed.
  *
  * @since 3.7
  *
  * @phpstan-import-type SchemaType from Abstract_Option
  */
-class Map extends Abstract_Option {
+class List_Type extends Abstract_Option {
 	/**
 	 * Value type.
 	 *
@@ -53,21 +53,14 @@ class Map extends Abstract_Option {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{
-	 *     type: SchemaType,
-	 *     patternProperties: non-empty-array<non-empty-string, array{type: SchemaType}>,
-	 *     additionalProperties: bool
-	 * }
+	 * @phpstan-return array{type: SchemaType, items: array{type: SchemaType}}
 	 */
 	protected function get_specific_schema(): array {
 		return array(
-			'type'                 => 'object', // Correspond to associative array in PHP, @see{https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
-			'patternProperties'    => array(
-				'^\\w+$' => array( // Any word characters as key.
-					'type' => $this->type,
-				),
+			'type'  => 'array',
+			'items' => array(
+				'type' => $this->type,
 			),
-			'additionalProperties' => false,
 		);
 	}
 }
