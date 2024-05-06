@@ -14,17 +14,17 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from \WP_Syntex\Polylang\Options\Option\Abstract_Option
+ * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Option\Abstract_Option
  */
 class Language_Slug extends String_Type {
 	/**
-	 * Creates JSON schema of the option.
+	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7
 	 *
-	 * @return array The schema.
+	 * @return array Partial schema.
 	 *
-	 * @phpstan-return Schema
+	 * @phpstan-return array{type: SchemaType, pattern: non-empty-string}
 	 */
 	protected function create_schema(): array {
 		$string_schema            = parent::create_schema();

@@ -14,17 +14,27 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from \WP_Syntex\Polylang\Options\Option\Abstract_Option
+ * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Option\Abstract_Option
  */
 class Nav_Menu extends Map {
 	/**
-	 * Creates JSON schema of the option.
+	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7
 	 *
-	 * @return array The schema.
+	 * @return array Partial schema.
 	 *
-	 * @phpstan-return Schema
+	 * @phpstan-return array{
+	 *     type: SchemaType,
+	 *     patternProperties: non-empty-array<
+	 *         non-empty-string, array{
+	 *             type: SchemaType,
+	 *             context: array<non-falsy-string>,
+	 *             patternProperties: non-empty-array<non-empty-string, array{type: SchemaType, minimum: int}>
+	 *         }
+	 *     >,
+	 *     additionalProperties: bool
+	 * }
 	 */
 	protected function create_schema(): array {
 		$map_schema                      = parent::create_schema();

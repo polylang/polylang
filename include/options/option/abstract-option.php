@@ -51,6 +51,8 @@ abstract class Abstract_Option {
 	 * Cached option JSON schema.
 	 *
 	 * @var array|null
+	 *
+	 * @phpstan-var Schema|null
 	 */
 	private $schema;
 
@@ -169,13 +171,23 @@ abstract class Abstract_Option {
 	 * @since 3.7
 	 *
 	 * @return array The schema.
+	 *
+	 * @phpstan-return Schema
 	 */
 	public function get_schema(): array {
 		if ( is_array( $this->schema ) ) {
 			return $this->schema;
 		}
 
-		$this->schema = $this->create_schema();
+		$this->schema = array_merge(
+			array(
+				'$schema'     => 'http://json-schema.org/draft-04/schema#',
+				'title'       => $this->key(),
+				'description' => $this->description,
+				'context'     => array( 'edit' ),
+			),
+			$this->create_schema()
+		);
 
 		return $this->schema;
 	}
@@ -256,36 +268,15 @@ abstract class Abstract_Option {
 	}
 
 	/**
-	 * Creates JSON schema of the option.
+	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7
 	 *
-	 * @return array The schema.
+	 * @return array Partial schema.
+	 *
+	 * @phpstan-return array{type: SchemaType}&array<non-falsy-string, mixed>
 	 */
 	abstract protected function create_schema(): array;
-
-	/**
-	 * Returns a base for a JSON schema of the option.
-	 *
-	 * @since 3.7
-	 *
-	 * @param array $schema A list of data to add to the schema. At least the key `type` must be added.
-	 * @return array The schema.
-	 *
-	 * @phpstan-param array{type: SchemaType}&array<non-falsy-string, mixed> $schema
-	 * @phpstan-return Schema
-	 */
-	protected function build_schema( array $schema ): array {
-		return array_merge(
-			array(
-				'$schema'     => 'http://json-schema.org/draft-04/schema#',
-				'title'       => $this->key(),
-				'description' => $this->description,
-				'context'     => array( 'edit' ),
-			),
-			$schema
-		);
-	}
 
 	/**
 	 * Changes error codes so they are unique to the option.

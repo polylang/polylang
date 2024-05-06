@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Schema from Abstract_Option
+ * @phpstan-import-type SchemaType from Abstract_Option
  */
 class Integer_Range extends Abstract_Option {
 	/**
@@ -52,21 +52,19 @@ class Integer_Range extends Abstract_Option {
 	}
 
 	/**
-	 * Creates JSON schema of the option.
+	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7
 	 *
-	 * @return array The schema.
+	 * @return array Partial schema.
 	 *
-	 * @phpstan-return Schema
+	 * @phpstan-return array{type: SchemaType, minimum: int, maximum: int}
 	 */
 	protected function create_schema(): array {
-		return $this->build_schema(
-			array(
-				'type'    => 'integer',
-				'minimum' => $this->min,
-				'maximum' => $this->max,
-			)
+		return array(
+			'type'    => 'integer',
+			'minimum' => $this->min,
+			'maximum' => $this->max,
 		);
 	}
 }

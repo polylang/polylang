@@ -16,7 +16,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  *
  * @phpstan-import-type SchemaType from Abstract_Option
- * @phpstan-import-type Schema from Abstract_Option
  */
 class List_Type extends Abstract_Option {
 	/**
@@ -48,22 +47,20 @@ class List_Type extends Abstract_Option {
 	}
 
 	/**
-	 * Creates JSON schema of the option.
+	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7
 	 *
-	 * @return array The schema.
+	 * @return array Partial schema.
 	 *
-	 * @phpstan-return Schema
+	 * @phpstan-return array{type: SchemaType, items: array{type: SchemaType}}
 	 */
 	protected function create_schema(): array {
-		return $this->build_schema(
-			array(
-				'type'  => 'array',
-				'items' => array(
-					'type' => $this->type,
-				),
-			)
+		return array(
+			'type'  => 'array',
+			'items' => array(
+				'type' => $this->type,
+			),
 		);
 	}
 }

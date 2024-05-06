@@ -15,8 +15,6 @@ defined( 'ABSPATH' ) || exit;
  * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
  *
  * @since 3.7
- *
- * @phpstan-import-type Schema from \WP_Syntex\Polylang\Options\Option\Abstract_Option
  */
 class Hide_Default extends Boolean {
 
@@ -45,21 +43,5 @@ class Hide_Default extends Boolean {
 		}
 
 		return $value;
-	}
-	/**
-	 * Creates JSON schema of the option.
-	 *
-	 * @since 3.7
-	 *
-	 * @return array The schema.
-	 *
-	 * @phpstan-return Schema
-	 */
-	protected function create_schema(): array {
-		return $this->build_schema(
-			array(
-				'type' => 'boolean',
-			)
-		);
 	}
 }
