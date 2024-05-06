@@ -454,7 +454,6 @@ class Options implements \ArrayAccess {
 	 * @param string $offset The name of the option to check for.
 	 * @return bool
 	 */
-	#[\ReturnTypeWillChange]
 	public function offsetExists( $offset ): bool {
 		return $this->has( (string) $offset );
 	}
@@ -484,7 +483,6 @@ class Options implements \ArrayAccess {
 	 * @param mixed  $value  The value to set.
 	 * @return void
 	 */
-	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ): void {
 		$this->set( (string) $offset, $value );
 	}
@@ -499,7 +497,6 @@ class Options implements \ArrayAccess {
 	 * @param string $offset The name of the option to unset.
 	 * @return void
 	 */
-	#[\ReturnTypeWillChange]
 	public function offsetUnset( $offset ): void {
 		$this->reset( (string) $offset );
 	}
