@@ -75,7 +75,7 @@ class Options implements \ArrayAccess {
 		// Handle options.
 		$this->init_options_for_blog( $this->blog_id );
 
-		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), PHP_INT_MIN );
+		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), -1000 ); // Options must be ready early.
 		add_action( 'shutdown', array( $this, 'save_all' ) );
 	}
 
