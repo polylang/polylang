@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  *     description: string,
  *     type: SchemaType,
  *     context: array<non-falsy-string>
- * }&array<non-falsy-string, mixed>
+ * }
  */
 abstract class Abstract_Option {
 	/**
@@ -245,7 +245,7 @@ abstract class Abstract_Option {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: SchemaType}&array<non-falsy-string, mixed>
+	 * @phpstan-return array{type: SchemaType}
 	 */
 	abstract protected function get_specific_schema(): array;
 }
