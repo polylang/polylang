@@ -358,15 +358,14 @@ class Options implements \ArrayAccess {
 	 * @param string $key The name of the option to retrieve.
 	 * @return mixed
 	 */
-	public function &get( string $key ) {
+	public function get( string $key ) {
 		if ( ! $this->has( $key ) ) {
 			return null;
 		}
 
 		/** @phpstan-var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
-		$value  = $option->get();
-		return $value;
+		return $option->get();
 	}
 
 	/**
@@ -469,7 +468,7 @@ class Options implements \ArrayAccess {
 	 * @return mixed
 	 */
 	#[\ReturnTypeWillChange]
-	public function &offsetGet( $offset ) {
+	public function offsetGet( $offset ) {
 		return $this->get( (string) $offset );
 	}
 
