@@ -387,9 +387,10 @@ class Options implements \ArrayAccess {
 		}
 
 		/** @phpstan-var Abstract_Option */
-		$option = $this->options[ $this->current_blog_id ][ $key ];
+		$option    = $this->options[ $this->current_blog_id ][ $key ];
+		$old_value = $option->get();
 
-		if ( $option->set( $value, $this ) ) {
+		if ( $option->set( $value, $this ) && $option->get() !== $old_value ) {
 			// No blocking errors: the value can be stored.
 			$this->modified[ $this->current_blog_id ] = true;
 		}
@@ -414,7 +415,7 @@ class Options implements \ArrayAccess {
 		/** @phpstan-var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
 
-		if ( $option->reset() ) {
+		if ( $option->get() !== $option->reset() ) {
 			$this->modified[ $this->current_blog_id ] = true;
 		}
 

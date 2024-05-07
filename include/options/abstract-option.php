@@ -157,15 +157,11 @@ abstract class Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @return bool True if the value has been modified, false otherwise.
+	 * @return mixed The new value.
 	 */
-	public function reset(): bool {
-		if ( $this->value === $this->default ) {
-			return false;
-		}
-
+	public function reset() {
 		$this->value = $this->default;
-		return true;
+		return $this->value;
 	}
 
 	/**
