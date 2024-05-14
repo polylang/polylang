@@ -363,7 +363,7 @@ class Options implements \ArrayAccess {
 			return null;
 		}
 
-		/** @phpstan-var Abstract_Option */
+		/** @var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
 		return $option->get();
 	}
@@ -385,7 +385,7 @@ class Options implements \ArrayAccess {
 			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), $this->wrap_in_code( $key ) ) );
 		}
 
-		/** @phpstan-var Abstract_Option */
+		/** @var Abstract_Option */
 		$option    = $this->options[ $this->current_blog_id ][ $key ];
 		$old_value = $option->get();
 
@@ -411,7 +411,7 @@ class Options implements \ArrayAccess {
 			return null;
 		}
 
-		/** @phpstan-var Abstract_Option */
+		/** @var Abstract_Option */
 		$option = $this->options[ $this->current_blog_id ][ $key ];
 
 		if ( $option->get() !== $option->reset() ) {

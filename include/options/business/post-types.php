@@ -19,8 +19,11 @@ class Post_Types extends Abstract_Object_Types {
 	 * @since 3.7
 	 *
 	 * @return string[] Object type names list.
+	 *
+	 * @phpstan-return array<non-falsy-string>
 	 */
 	protected function get_object_types(): array {
+		/** @phpstan-var array<non-falsy-string> */
 		return get_post_types( array( 'public' => true, '_builtin' => false ) );
 	}
 }

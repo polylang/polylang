@@ -37,8 +37,8 @@ class Integer_Range extends Abstract_Option {
 	 * @since 3.7
 	 *
 	 * @param string $key         Option key.
-	 * @param mixed  $value       Option value.
-	 * @param mixed  $default     Option default value.
+	 * @param int    $value       Option value.
+	 * @param int    $default     Option default value.
 	 * @param string $description Option description, used in JSON schema.
 	 * @param int    $min         Minimal value.
 	 * @param int    $max         Maximal value.

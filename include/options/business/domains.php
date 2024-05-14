@@ -54,6 +54,8 @@ class Domains extends Map {
 	 * @param array   $value   Value to sanitize.
 	 * @param Options $options All options.
 	 * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
+	 *
+	 * @phpstan-return array<non-falsy-string, string>|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
 		global $polylang;
@@ -65,9 +67,8 @@ class Domains extends Map {
 				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', $this->key() ) ),
 				'3.7'
 			);
-			/** @var array */
-			$value = $this->get();
-			return $value;
+			/** @phpstan-var array<non-falsy-string, string> */
+			return $this->get();
 		}
 
 		// Sanitize new URLs.
@@ -78,7 +79,7 @@ class Domains extends Map {
 			return $value;
 		}
 
-		/** @var array $value */
+		/** @phpstan-var array<non-falsy-string, string> $value */
 		$all_values    = array(); // Previous and new values.
 		$missing_langs = array(); // Lang names corresponding to the empty values.
 
@@ -139,6 +140,7 @@ class Domains extends Map {
 			}
 		}
 
+		/** @phpstan-var array<non-falsy-string, string> */
 		return $all_values;
 	}
 }

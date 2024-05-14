@@ -26,6 +26,8 @@ abstract class Abstract_Object_Types extends List_Type {
 	 * @param array   $value   Value to filter.
 	 * @param Options $options All options.
 	 * @return array|WP_Error The sanitized value. An instance of `WP_Error` in case of blocking error.
+	 *
+	 * @phpstan-return list<non-falsy-string>|WP_Error
 	 */
 	protected function sanitize( $value, Options $options ) {
 		$value = parent::sanitize( $value, $options );
@@ -36,7 +38,7 @@ abstract class Abstract_Object_Types extends List_Type {
 		}
 
 		/** @var array $value */
-		return array_intersect( $value, $this->get_object_types() );
+		return array_values( array_intersect( $value, $this->get_object_types() ) );
 	}
 
 	/**
@@ -45,6 +47,8 @@ abstract class Abstract_Object_Types extends List_Type {
 	 * @since 3.7
 	 *
 	 * @return string[] Object type names list.
+	 *
+	 * @phpstan-return array<non-falsy-string>
 	 */
 	abstract protected function get_object_types(): array;
 }
