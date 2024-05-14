@@ -227,7 +227,7 @@ class Options implements \ArrayAccess {
 	 * @return bool True if the options were updated, false otherwise.
 	 */
 	public function save(): bool {
-		if ( ! $this->modified[ $this->current_blog_id ] ) {
+		if ( empty( $this->modified[ $this->current_blog_id ] ) ) {
 			return false;
 		}
 
