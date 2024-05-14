@@ -422,30 +422,6 @@ class Options implements \ArrayAccess {
 	}
 
 	/**
-	 * Wraps data into `<code>` tags.
-	 *
-	 * @since 3.7
-	 * @internal
-	 *
-	 * @param array|string $data The data.
-	 * @return array|string
-	 *
-	 * @phpstan-param array<scalar>|scalar $data
-	 * @phpstan-return ($data is array ? array<non-empty-string> : non-empty-string)
-	 */
-	public function wrap_in_code( $data ) {
-		$wrapper = function ( $scalar ) {
-			return "<code>{$scalar}</code>";
-		};
-
-		if ( is_array( $data ) ) {
-			return array_map( $wrapper, $data );
-		}
-
-		return call_user_func( $wrapper, $data );
-	}
-
-	/**
 	 * Tells if an option exists.
 	 * Required by interface `ArrayAccess`.
 	 *
@@ -499,5 +475,29 @@ class Options implements \ArrayAccess {
 	 */
 	public function offsetUnset( $offset ): void {
 		$this->reset( (string) $offset );
+	}
+
+	/**
+	 * Wraps data into `<code>` tags.
+	 *
+	 * @since 3.7
+	 * @internal
+	 *
+	 * @param array|string $data The data.
+	 * @return array|string
+	 *
+	 * @phpstan-param array<scalar>|scalar $data
+	 * @phpstan-return ($data is array ? array<non-empty-string> : non-empty-string)
+	 */
+	private function wrap_in_code( $data ) {
+		$wrapper = function ( $scalar ) {
+			return "<code>{$scalar}</code>";
+		};
+
+		if ( is_array( $data ) ) {
+			return array_map( $wrapper, $data );
+		}
+
+		return call_user_func( $wrapper, $data );
 	}
 }
