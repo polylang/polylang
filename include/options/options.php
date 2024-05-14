@@ -75,6 +75,7 @@ class Options implements \ArrayAccess {
 		// Handle options.
 		$this->init_options_for_blog( $this->blog_id );
 
+		add_filter( 'pre_update_option_polylang', array( $this, 'protect_wp_option_storage' ), 1 );
 		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), -1000 ); // Options must be ready early.
 		add_action( 'shutdown', array( $this, 'save_all' ), 1000 ); // Make sure to save options after everything.
 	}
@@ -122,6 +123,21 @@ class Options implements \ArrayAccess {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Prevents storing an instance of `Options` into the database.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array|Options $value The options to store.
+	 * @return array
+	 */
+	public function protect_wp_option_storage( $value ) {
+		if ( $value instanceof self ) {
+			return $value->get_all();
+		}
+		return $value;
 	}
 
 	/**
