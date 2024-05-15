@@ -33,7 +33,7 @@ class Nav_Menu extends Abstract_Option {
 	 *             patternProperties: non-empty-array<non-empty-string, array{type: SchemaType, minimum: int}>
 	 *         }
 	 *     >,
-	 *     additionalProperties: bool
+	 *     additionalProperties: false
 	 * }
 	 */
 	protected function get_specific_schema(): array {

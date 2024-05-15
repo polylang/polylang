@@ -30,7 +30,7 @@ class Domains extends Abstract_Option {
 	 * @phpstan-return array{
 	 *     type: SchemaType,
 	 *     patternProperties: non-empty-array<non-empty-string, array{type: SchemaType, format: 'uri'}>,
-	 *     additionalProperties: bool
+	 *     additionalProperties: false
 	 * }
 	 */
 	protected function get_specific_schema(): array {
