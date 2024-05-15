@@ -86,15 +86,16 @@ class Options implements \ArrayAccess {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $class_name Option class to register.
-	 * @param string $key        Option key.
-	 * @param mixed  $default    Option default value.
-	 * @param mixed  ...$args    Additional arguments to pass to the constructor, except `$value` and `$key`.
+	 * @param string $class_name  Option class to register.
+	 * @param string $key         Option key.
+	 * @param mixed  $default     Option default value.
+	 * @param string $description Option description, used in JSON schema.
+	 * @param mixed  ...$args     Additional arguments to pass to the constructor, except the previous ones and `$value`.
 	 * @return self
 	 *
 	 * @phpstan-param class-string<Abstract_Option> $class_name
 	 */
-	public function register( string $class_name, string $key, $default, ...$args ): self {
+	public function register( string $class_name, string $key, $default, string $description, ...$args ): self {
 		foreach ( $this->options as &$options ) {
 			if ( ! array_key_exists( $key, $options ) ) {
 				// Option raw value doesn't exist in database, use default instead.
@@ -102,6 +103,7 @@ class Options implements \ArrayAccess {
 					$key,
 					$default,
 					$default,
+					$description,
 					...$args
 				);
 				continue;
@@ -118,6 +120,7 @@ class Options implements \ArrayAccess {
 				$key,
 				$options[ $key ],
 				$default,
+				$description,
 				...$args
 			);
 		}
