@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Language_Taxonomies extends Abstract_Object_Types {
 	/**
-	 * Returns non-core, public post types.
+	 * Returns language taxonomies, except the ones for posts and taxonomies.
 	 *
 	 * @since 3.7
 	 *
