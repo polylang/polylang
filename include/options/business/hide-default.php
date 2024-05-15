@@ -36,7 +36,6 @@ class Hide_Default extends Boolean {
 		}
 
 		/** @var bool|WP_Error */
-		$value = parent::sanitize( $value, $options );
-		return $value;
+		return parent::sanitize( $value, $options );
 	}
 }
