@@ -374,9 +374,10 @@ class Options implements \ArrayAccess {
 	 * @param string $key The name of the option to retrieve.
 	 * @return mixed
 	 */
-	public function get( string $key ) {
+	public function &get( string $key ) {
 		if ( ! $this->has( $key ) ) {
-			return null;
+			$v = null;
+			return $v;
 		}
 
 		/** @var Abstract_Option */
@@ -460,7 +461,7 @@ class Options implements \ArrayAccess {
 	 * @return mixed
 	 */
 	#[\ReturnTypeWillChange]
-	public function offsetGet( $offset ) {
+	public function &offsetGet( $offset ) {
 		return $this->get( (string) $offset );
 	}
 
