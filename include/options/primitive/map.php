@@ -6,7 +6,6 @@
 namespace WP_Syntex\Polylang\Options\Primitive;
 
 use WP_Syntex\Polylang\Options\Abstract_Option;
-use WP_Syntex\Polylang\Options\Primitive\List_Type;
 
 defined( 'ABSPATH' ) || exit;
 
