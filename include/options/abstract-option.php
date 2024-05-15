@@ -121,9 +121,9 @@ abstract class Abstract_Option {
 	 */
 	public function set( $value, Options $options ): bool {
 		$this->errors = new WP_Error(); // Reset errors.
-		$is_valid     = $this->validate( $value, $options );
+		$is_valid     = rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() );
 
-		if ( $is_valid->has_errors() ) {
+		if ( is_wp_error( $is_valid ) ) {
 			// Blocking validation error.
 			$this->errors->merge_from( $is_valid );
 			return false;
@@ -200,27 +200,6 @@ abstract class Abstract_Option {
 	 */
 	public function get_errors(): WP_Error {
 		return $this->errors;
-	}
-
-	/**
-	 * Validates option's value, can be overridden for specific cases not handled by `rest_validate_value_from_schema`.
-	 * If the validation fails, the value must be rejected.
-	 *
-	 * @since 3.7
-	 *
-	 * @param mixed   $value   Value to validate.
-	 * @param Options $options All options.
-	 * @return WP_Error
-	 */
-	protected function validate( $value, Options $options ): WP_Error { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$is_valid = rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() );
-
-		if ( is_wp_error( $is_valid ) ) {
-			// Invalid: blocking error.
-			return $is_valid;
-		}
-
-		return new WP_Error();
 	}
 
 	/**
