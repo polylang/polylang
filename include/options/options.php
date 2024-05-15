@@ -308,7 +308,15 @@ class Options implements \ArrayAccess {
 			sprintf(
 				/* translators: %s is a list of option names. */
 				_n( 'Unknown option key %s.', 'Unknown option keys %s.', count( $values ), 'polylang' ),
-				wp_sprintf_l( '%l', $this->wrap_in_code( array_keys( $values ) ) )
+				wp_sprintf_l(
+					'%l',
+					array_map(
+						function ( $value ) {
+							return "'$value'";
+						},
+						array_keys( $values )
+					)
+				)
 			)
 		);
 
@@ -402,7 +410,7 @@ class Options implements \ArrayAccess {
 	public function set( string $key, $value ): WP_Error {
 		if ( ! $this->has( $key ) ) {
 			/* translators: %s is the name of an option. */
-			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), $this->wrap_in_code( $key ) ) );
+			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), "'$key'" ) );
 		}
 
 		/** @var Abstract_Option */
@@ -495,29 +503,5 @@ class Options implements \ArrayAccess {
 	 */
 	public function offsetUnset( $offset ): void {
 		$this->reset( (string) $offset );
-	}
-
-	/**
-	 * Wraps data into `<code>` tags.
-	 *
-	 * @since 3.7
-	 * @internal
-	 *
-	 * @param array|string $data The data.
-	 * @return array|string
-	 *
-	 * @phpstan-param array<scalar>|scalar $data
-	 * @phpstan-return ($data is array ? array<non-empty-string> : non-empty-string)
-	 */
-	private function wrap_in_code( $data ) {
-		$wrapper = function ( $scalar ) {
-			return "<code>{$scalar}</code>";
-		};
-
-		if ( is_array( $data ) ) {
-			return array_map( $wrapper, $data );
-		}
-
-		return call_user_func( $wrapper, $data );
 	}
 }
