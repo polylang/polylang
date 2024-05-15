@@ -10,13 +10,13 @@ use WP_Syntex\Polylang\Options\Abstract_Option;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class defining single integer range option.
+ * Class defining single integer option.
  *
  * @since 3.7
  *
  * @phpstan-import-type SchemaType from Abstract_Option
  */
-class Integer_Range extends Abstract_Option {
+class Integer extends Abstract_Option {
 	/**
 	 * Minimal value of the integer range.
 	 *
@@ -40,12 +40,12 @@ class Integer_Range extends Abstract_Option {
 	 * @param int    $value       Option value.
 	 * @param int    $default     Option default value.
 	 * @param string $description Option description, used in JSON schema.
-	 * @param int    $min         Minimal value.
-	 * @param int    $max         Maximal value.
+	 * @param int    $min         Optional. Minimal value. Default is `0`.
+	 * @param int    $max         Optional. Maximal value. Default is `PHP_INT_MAX`.
 	 *
 	 * @phpstan-param non-falsy-string $key
 	 */
-	public function __construct( string $key, $value, $default, string $description, int $min, int $max ) {
+	public function __construct( string $key, $value, $default, string $description, int $min = 0, int $max = PHP_INT_MAX ) {
 		parent::__construct( $key, $value, $default, $description );
 		$this->min = $min;
 		$this->max = $max;
