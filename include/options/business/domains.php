@@ -6,7 +6,7 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Error;
-use WP_Syntex\Polylang\Options\Primitive\Map;
+use WP_Syntex\Polylang\Options\Abstract_Option;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Abstract_Option
  */
-class Domains extends Map {
+class Domains extends Abstract_Option {
 	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
@@ -34,14 +34,16 @@ class Domains extends Map {
 	 * }
 	 */
 	protected function get_specific_schema(): array {
-		$map_schema                      = parent::get_specific_schema();
-		$map_schema['patternProperties'] = array(
-			'^[a-z_-]+$' => array( // Language slug as key.
-				'type'   => $this->type,
-				'format' => 'uri',
+		return array(
+			'type'                 => 'object', // Correspond to associative array in PHP, @see{https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
+			'patternProperties'    => array(
+				'^[a-z_-]+$' => array( // Language slug as key.
+					'type'   => 'string',
+					'format' => 'uri',
+				),
 			),
+			'additionalProperties' => false,
 		);
-		return $map_schema;
 	}
 
 	/**
