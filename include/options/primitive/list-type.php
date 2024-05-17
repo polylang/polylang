@@ -47,6 +47,22 @@ class List_Type extends Abstract_Option {
 	}
 
 	/**
+	 * Prepares a value before validation.
+	 * Allows to receive a string-keyed array but returns an integer-keyed array.
+	 *
+	 * @since 3.7
+	 *
+	 * @param mixed $value Value to format.
+	 * @return mixed
+	 */
+	protected function prepare( $value ) {
+		if ( is_array( $value ) ) {
+			return array_values( $value );
+		}
+		return $value;
+	}
+
+	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7

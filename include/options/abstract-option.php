@@ -88,7 +88,7 @@ abstract class Abstract_Option {
 		$this->default     = $default;
 		$this->description = $description;
 
-		$value = rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
+		$value = rest_sanitize_value_from_schema( $this->prepare( $value ), $this->get_schema(), $this->key() );
 
 		if ( ! is_wp_error( $value ) ) {
 			$this->value = $value;
@@ -121,6 +121,7 @@ abstract class Abstract_Option {
 	 */
 	public function set( $value, Options $options ): bool {
 		$this->errors = new WP_Error(); // Reset errors.
+		$value        = $this->prepare( $value );
 		$is_valid     = rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() );
 
 		if ( is_wp_error( $is_valid ) ) {
@@ -200,6 +201,18 @@ abstract class Abstract_Option {
 	 */
 	public function get_errors(): WP_Error {
 		return $this->errors;
+	}
+
+	/**
+	 * Prepares a value before validation.
+	 *
+	 * @since 3.7
+	 *
+	 * @param mixed $value Value to format.
+	 * @return mixed
+	 */
+	protected function prepare( $value ) {
+		return $value;
 	}
 
 	/**
