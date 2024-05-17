@@ -42,7 +42,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	/**
 	 * Registers the translations taxonomy.
 	 *
-	 * @since 3.6
+	 * @since 3.7
 	 *
 	 * @return void
 	 */

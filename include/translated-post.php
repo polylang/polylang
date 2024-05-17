@@ -70,7 +70,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * Registers the language taxonomy.
 	 *
 	 * @since 1.2
-	 * @since 3.6 Protected and renamed from `register_taxonomy()`.
+	 * @since 3.7 Protected and renamed from `register_taxonomy()`.
 	 *
 	 * @return void
 	 */

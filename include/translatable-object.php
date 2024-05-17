@@ -91,7 +91,7 @@ abstract class PLL_Translatable_Object {
 	/**
 	 * Registers the language taxonomy.
 	 *
-	 * @since 3.6
+	 * @since 3.7
 	 *
 	 * @return void
 	 */
