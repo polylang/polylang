@@ -62,7 +62,7 @@ class Domains extends Abstract_Option {
 	protected function sanitize( $value, Options $options ) {
 		global $polylang;
 
-		if ( ! did_action( 'pll_init' ) ) {
+		if ( empty( $polylang ) || ! $polylang->model->are_languages_ready() ) {
 			// Access to global `$polylang` is required.
 			_doing_it_wrong(
 				__METHOD__,
