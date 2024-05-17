@@ -84,8 +84,18 @@ abstract class PLL_Translatable_Object {
 
 		/*
 		 * Register our taxonomy as soon as possible.
-		 * This is early registration, not ready for rewrite rules as $wp_rewrite will be setup later.
 		 */
+		$this->register_language_taxonomy();
+	}
+
+	/**
+	 * Registers the language taxonomy.
+	 *
+	 * @since 3.6
+	 *
+	 * @return void
+	 */
+	protected function register_language_taxonomy() {
 		register_taxonomy(
 			$this->tax_language,
 			(array) $this->object_type,
