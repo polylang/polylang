@@ -161,7 +161,7 @@ class Options implements \ArrayAccess {
 			return;
 		}
 
-		if ( ! pll_is_plugin_active( POLYLANG_BASENAME ) ) {
+		if ( ! pll_is_plugin_active( POLYLANG_BASENAME ) && ! doing_action( 'activate_' . POLYLANG_BASENAME ) ) {
 			return;
 		}
 
