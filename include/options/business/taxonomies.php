@@ -23,7 +23,7 @@ class Taxonomies extends Abstract_Object_Types {
 	 * @phpstan-return array<non-falsy-string>
 	 */
 	protected function get_object_types(): array {
-		$public_taxonomies = get_taxonomies( array( 'public' => true, '_builtin' => false ) );
+		$public_taxonomies = get_taxonomies( array( '_builtin' => false ) );
 		/** @phpstan-var array<non-falsy-string> */
 		return array_diff( $public_taxonomies, get_taxonomies( array( '_pll' => true ) ) );
 	}

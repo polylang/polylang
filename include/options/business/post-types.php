@@ -24,6 +24,6 @@ class Post_Types extends Abstract_Object_Types {
 	 */
 	protected function get_object_types(): array {
 		/** @phpstan-var array<non-falsy-string> */
-		return get_post_types( array( 'public' => true, '_builtin' => false ) );
+		return get_post_types( array( '_builtin' => false ) );
 	}
 }
