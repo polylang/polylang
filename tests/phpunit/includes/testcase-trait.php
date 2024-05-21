@@ -1,5 +1,7 @@
 <?php
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * A trait to share code between several test case classes.
  *
@@ -11,9 +13,10 @@
  */
 trait PLL_UnitTestCase_Trait {
 	use PLL_Doing_It_Wrong_Trait;
+	use PLL_Options_Trait;
 
 	/**
-	 * @var array|null
+	 * @var Options|null
 	 */
 	protected $options;
 
@@ -242,9 +245,9 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	protected static function create_model_legacy() {
-		$options                  = PLL_Install::get_default_options();
-		$options['hide_default']  = 0;
-		$options['media_support'] = 1;
-		self::$model              = new PLL_Admin_Model( $options );
+		$options = self::create_reset_options();
+		$options->set( 'hide_default', false );
+		$options->set( 'media_support', true );
+		self::$model = new PLL_Admin_Model( $options );
 	}
 }

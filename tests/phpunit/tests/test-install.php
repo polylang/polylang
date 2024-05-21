@@ -8,11 +8,10 @@ class Install_Test extends PLL_UnitTestCase {
 
 		// Check a few options
 		$options = get_option( 'polylang' );
-		$this->assertEquals( 1, $options['hide_default'] );
-		$this->assertEquals( 1, $options['force_lang'] );
-		$this->assertEquals( 0, $options['uninstall'] );
+		$this->assertSame( true, $options['hide_default'] );
+		$this->assertSame( 1, $options['force_lang'] );
 		$this->assertEmpty( $options['sync'] );
-		$this->assertEquals( POLYLANG_VERSION, $options['version'] );
+		$this->assertSame( POLYLANG_VERSION, $options['version'] );
 	}
 
 	/**

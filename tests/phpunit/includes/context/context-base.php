@@ -1,4 +1,5 @@
 <?php
+use WP_Syntex\Polylang\Options\Options;
 
 /**
  * Base context class for admin, frontend, rest and settings.
@@ -6,6 +7,7 @@
  * @since 3.6
  */
 abstract class PLL_Context_Base {
+	use PLL_Options_Trait;
 
 	/**
 	 * @var PLL_Base
@@ -20,15 +22,15 @@ abstract class PLL_Context_Base {
 	public function __construct( array $settings = array() ) {
 		global $wp_rewrite;
 
-		$options = PLL_Install::get_default_options();
+		$options = self::create_reset_options();
 
 		$language_terms = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id', 'fields' => 'slugs' ) );
 		if ( is_array( $language_terms ) && ! empty( $language_terms ) ) {
-			$options = array_merge( $options, array( 'default_lang' => reset( $language_terms ) ) );
+			$options->set( 'default_lang', reset( $language_terms ) );
 		}
 
 		if ( isset( $settings['options'] ) && is_array( $settings['options'] ) && ! empty( $settings['options'] ) ) {
-			$options = array_merge( $options, $settings['options'] );
+			$options->merge( $settings['options'] );
 		}
 
 		$model = $this->get_model( $options );
@@ -55,10 +57,10 @@ abstract class PLL_Context_Base {
 	 *
 	 * @since 3.6
 	 *
-	 * @param array $options Polylang options.
+	 * @param Options $options Polylang options.
 	 * @return PLL_Model
 	 */
-	protected function get_model( array $options ): PLL_Model {
+	protected function get_model( Options $options ): PLL_Model {
 		return new PLL_Model( $options );
 	}
 

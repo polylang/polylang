@@ -384,11 +384,9 @@ class Admin_Filters_Post_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_posts_with_query_var() {
-		$this->pll_admin->options['taxonomies'] = array(
-			'trtax' => 'trtax',
-		);
-
 		register_taxonomy( 'trtax', 'post' ); // Translated custom tax
+
+		$this->pll_admin->options['taxonomies'] = array( 'trtax' );
 
 		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );

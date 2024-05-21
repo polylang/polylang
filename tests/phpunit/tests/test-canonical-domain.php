@@ -14,23 +14,29 @@ class Canonical_Domain_Test extends PLL_UnitTestCase {
 	protected function init( $domain ) {
 		global $wp_rewrite;
 
-		$domains = array(
-			'en' => 'http://example.org',
-			'fr' => $domain,
+		$options = array_merge(
+			self::$model->options->get_all(),
+			array(
+				'hide_default' => true,
+				'force_lang'   => 3,
+				'domains'      => array(
+					'en' => 'http://example.org',
+					'fr' => $domain,
+				),
+			)
 		);
-
-		self::$model->options['hide_default'] = 1;
-		self::$model->options['force_lang'] = 3;
-		self::$model->options['domains'] = $domains;
+		update_option( 'polylang', $options );
+		$options = self::create_options();
 
 		// Switch to pretty permalinks.
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
-		$this->links_model       = self::$model->get_links_model();
+		$model                   = new PLL_Model( $options );
+		$this->links_model       = $model->get_links_model();
 		$frontend                = new PLL_Frontend( $this->links_model );
 		$frontend->links         = new PLL_Frontend_Links( $frontend );
-		$frontend->curlang       = self::$model->get_language( 'fr' );
+		$frontend->curlang       = $model->get_language( 'fr' );
 		$frontend->filters_links = new PLL_Frontend_Filters_Links( $frontend );
 		$this->canonical         = new PLL_Canonical( $frontend );
 

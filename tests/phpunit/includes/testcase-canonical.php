@@ -13,7 +13,7 @@ abstract class PLL_Canonical_UnitTestCase extends WP_Canonical_UnitTestCase {
 		add_filter( 'wp_using_themes', '__return_true' ); // To pass the test in PLL_Choose_Lang::init() by default.
 		add_filter( 'wp_doing_ajax', '__return_false' );
 
-		$this->options = get_option( 'polylang' );
+		$this->options = self::create_options();
 	}
 
 	/**

@@ -530,11 +530,9 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$wp_rewrite->init();
 		$wp_rewrite->extra_rules_top = array(); // brute force since WP does not do it :(
 
-		self::$model->options['post_types'] = array(
-			'trcpt' => 'trcpt',
-		);
-
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // translated custom post type with archives
+
+		self::$model->options['post_types'] = array( 'trcpt' );
 
 		$en = self::factory()->post->create( array( 'post_type' => 'trcpt' ) );
 		self::$model->post->set_language( $en, 'en' );

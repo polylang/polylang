@@ -141,12 +141,11 @@ class Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_is_translated_post_type() {
-		self::$model->options['post_types'] = array(
-			'trcpt' => 'trcpt',
-		);
-
 		register_post_type( 'trcpt' ); // translated custom post type
 		register_post_type( 'cpt' ); // *untranslated* custom post type
+
+		self::$model->cache->clean( 'post_types' );
+		self::$model->options['post_types'] = array( 'trcpt' );
 
 		$links_model = self::$model->get_links_model();
 		$GLOBALS['polylang'] = new PLL_Admin( $links_model );
@@ -165,12 +164,10 @@ class Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_is_translated_taxonomy() {
-		self::$model->options['taxonomies'] = array(
-			'trtax' => 'trtax',
-		);
-
 		register_taxonomy( 'trtax', 'post' ); // translated custom tax
 		register_taxonomy( 'tax', 'post' ); // *untranslated* custom tax
+
+		self::$model->options['taxonomies'] = array( 'trtax' );
 
 		$links_model = self::$model->get_links_model();
 		$GLOBALS['polylang'] = new PLL_Admin( $links_model );
@@ -235,6 +232,8 @@ class Model_Test extends PLL_UnitTestCase {
 		}
 
 		self::$model->clean_languages_cache();
+		$links_model = self::$model->get_links_model();
+		$GLOBALS['polylang'] = new PLL_Admin( $links_model );
 
 		// Make sure the terms are deleted.
 		foreach ( self::$model->get_languages_list() as $language ) {
