@@ -11,10 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly.
 }
 
-$default_options = PLL_Install::get_default_options();
-$options = wp_parse_args( get_option( 'polylang' ), $default_options );
-$media_support = $options['media_support'];
-
 $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' : '' ) . '.png';
 
 ?>
@@ -35,7 +31,7 @@ $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' :
 					id="pll-wizard-service-media"
 					type="checkbox"
 					name="media_support"
-					value="yes" <?php checked( $media_support ); ?>
+					value="yes" <?php checked( $this->options['media_support'] ); ?>
 				/>
 				<label for="pll-wizard-service-media" />
 			</span>

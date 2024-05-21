@@ -159,19 +159,32 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 	}
 
 	/**
-	 * Sanitizes the settings before saving.
+	 * Prepare the received data before saving.
 	 *
-	 * @since 1.8
+	 * @since 3.7
 	 *
-	 * @param array $options Unsanitized options to save.
+	 * @param array $options Raw values to save.
 	 * @return array
 	 */
-	protected function update( $options ) {
+	protected function prepare_raw_data( array $options ): array {
 		$newoptions = array();
 
 		foreach ( array( 'post_types', 'taxonomies' ) as $key ) {
 			$newoptions[ $key ] = empty( $options[ $key ] ) ? array() : array_keys( $options[ $key ], 1 );
 		}
+
+		// Limit to public post types.
+		$newoptions['post_types'] = array_intersect(
+			$newoptions['post_types'],
+			get_post_types( array( 'public' => true, '_builtin' => false ) )
+		);
+
+		// Limit to public taxonomies.
+		$newoptions['taxonomies'] = array_intersect(
+			$newoptions['taxonomies'],
+			get_taxonomies( array( 'public' => true, '_builtin' => false ) )
+		);
+
 		return $newoptions; // Take care to return only validated options.
 	}
 }

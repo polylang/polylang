@@ -3,6 +3,9 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+use WP_Syntex\Polylang\Options\Registry as Options_Registry;
+
 /**
  * A generic activation / de-activation class compatible with multisite
  *
@@ -130,5 +133,42 @@ class PLL_Install_Base {
 		switch_to_blog( $new_site->id );
 		$this->_activate();
 		restore_current_blog();
+	}
+
+	/**
+	 * Returns the plugin's options.
+	 *
+	 * @since 3.7
+	 *
+	 * @return Options
+	 */
+	protected function get_options(): Options {
+		if ( isset( $GLOBALS['polylang'], $GLOBALS['polylang']->model, $GLOBALS['polylang']->model->options ) ) {
+			return $GLOBALS['polylang']->model->options;
+		}
+
+		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register_options' ), 80 ); // Custom priority.
+		$options = new Options();
+		remove_action( 'shutdown', array( $options, 'save_all' ) );
+		return $options;
+	}
+
+	/**
+	 * Updates the plugin's options.
+	 *
+	 * @since 3.7
+	 *
+	 * @param Options $options The options.
+	 * @return void
+	 */
+	protected function save_options( Options $options ): void {
+		$options->save();
+
+		if ( isset( $GLOBALS['polylang'], $GLOBALS['polylang']->model, $GLOBALS['polylang']->model->options ) ) {
+			return;
+		}
+
+		remove_action( 'switch_blog', array( $options, 'init_options_for_blog' ), PHP_INT_MIN );
+		remove_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register_options' ), 80 ); // Custom priority.
 	}
 }
