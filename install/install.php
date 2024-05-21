@@ -104,6 +104,8 @@ class PLL_Install extends PLL_Install_Base {
 
 		$options->save(); // Force save here to prevent any conflicts with another instance of `Options`.
 
+		$this->save_options( $options );
+
 		// Avoid 1 query on every pages if no wpml strings is registered
 		if ( ! get_option( 'polylang_wpml_strings' ) ) {
 			update_option( 'polylang_wpml_strings', array() );
