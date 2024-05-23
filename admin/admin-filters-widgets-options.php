@@ -21,6 +21,8 @@ class PLL_Admin_Filters_Widgets_Options extends PLL_Filters_Widgets_Options {
 	 * @param null      $return Not used.
 	 * @param array     $instance Widget settings.
 	 * @return void
+	 *
+	 * @phpstan-param WP_Widget<array<string, mixed>> $widget
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
 		$screen = get_current_screen();

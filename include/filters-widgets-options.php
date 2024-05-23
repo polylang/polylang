@@ -42,6 +42,8 @@ class PLL_Filters_Widgets_Options {
 	 * @param null      $return   Return null if new fields are added.
 	 * @param array     $instance An array of the widget's settings.
 	 * @return void
+	 *
+	 * @phpstan-param WP_Widget<array<string, mixed>> $widget
 	 */
 	public function in_widget_form( $widget, $return, $instance ) {
 		$dropdown = new PLL_Walker_Dropdown();
