@@ -11,7 +11,7 @@ use WP_Syntex\Polylang\Options\Primitive;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * ...
+ * Polylang's options registry.
  *
  * @since 3.7
  */
