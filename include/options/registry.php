@@ -125,7 +125,7 @@ class Registry {
 			return;
 		}
 
-		foreach ( self::OPTIONS as $option_name => $option_args ) {
+		foreach ( static::OPTIONS as $option_name => $option_args ) {
 			$args = $option_args['args'] ?? array();
 			$options->register( $option_args['class'], $option_name, $option_args['default'], $option_args['description'], ...$args );
 		}
