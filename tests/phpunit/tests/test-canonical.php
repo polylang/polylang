@@ -140,13 +140,8 @@ class Canonical_Test extends PLL_Canonical_UnitTestCase {
 			array(
 				'default_lang' => 'en',
 				'hide_default' => 0,
-				'post_types'   => array(
-					'pllcanonical'   => 'pllcanonical',
-					'cptnotrewrited' => 'cptnotrewrited',
-				),
-				'taxonomies'   => array(
-					'custom_tax' => 'custom_tax',
-				),
+				'post_types'   => array( 'pllcanonical', 'cptnotrewrited' ),
+				'taxonomies'   => array( 'custom_tax' ),
 			)
 		);
 	}

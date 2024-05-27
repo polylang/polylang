@@ -21,10 +21,7 @@ class Links_Default_Test extends PLL_UnitTestCase {
 		parent::set_up();
 
 		register_post_type( 'cpt', array( 'public' => true ) ); // translated custom post type
-		self::$model->options['post_types'] = array(
-			'cpt' => 'cpt',
-		);
-
+		self::$model->options['post_types']   = array( 'cpt' );
 		self::$model->options['hide_default'] = 1;
 
 		$this->links_model = self::$model->get_links_model();

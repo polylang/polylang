@@ -195,10 +195,7 @@ class Model_Test extends PLL_UnitTestCase {
 	 * Bug fixed in 3.2.6
 	 */
 	public function test_untranslated_media_when_post_type_wrongly_stored_in_option() {
-		self::$model->options['post_types'] = array(
-			'attachment' => 'attachment',
-		);
-
+		self::$model->options['post_types']    = array( 'attachment' );
 		self::$model->options['media_support'] = 0;
 
 		$this->assertFalse( self::$model->is_translated_post_type( 'attachment' ) );

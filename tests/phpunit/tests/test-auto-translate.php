@@ -22,8 +22,8 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 		self::$model->options['taxonomies'] = array( 'trtax' );
 
 		$options = array(
-			'post_types' => array( 'trcpt' => 'trcpt' ),
-			'taxonomies' => array( 'trtax' => 'trtax' ),
+			'post_types' => array( 'trcpt' ),
+			'taxonomies' => array( 'trtax' ),
 		);
 
 		$frontend = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
