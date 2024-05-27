@@ -95,7 +95,7 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @return void
 	 */
-	protected function register_language_taxonomy() {
+	protected function register_language_taxonomy(): void {
 		register_taxonomy(
 			$this->tax_language,
 			(array) $this->object_type,

@@ -46,7 +46,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @return void
 	 */
-	protected function register_translations_taxonomy() {
+	protected function register_translations_taxonomy(): void {
 		register_taxonomy(
 			$this->tax_translations,
 			(array) $this->object_type,

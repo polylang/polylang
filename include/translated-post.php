@@ -74,7 +74,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @return void
 	 */
-	protected function register_language_taxonomy() {
+	protected function register_language_taxonomy(): void {
 		register_taxonomy(
 			$this->tax_language,
 			(array) $this->get_translated_object_types(),
