@@ -37,8 +37,7 @@ class Single_Language_Test extends PLL_UnitTestCase {
 	public function test_front_page() {
 		global $wp_rewrite;
 
-		$options = self::create_reset_options();
-		$options->merge(
+		$options = self::create_reset_options(
 			array(
 				'redirect_lang' => true,
 				'hide_default'  => false,

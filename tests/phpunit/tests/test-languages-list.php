@@ -3,8 +3,11 @@
 class Languages_List_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		self::create_language( 'en_US' );
-		$options = self::create_reset_options();
-		$options->set( 'default_lang', 'en' );
+		$options = self::create_reset_options(
+			array(
+				'default_lang' => 'en',
+			)
+		);
 		$this->pll_model = new PLL_Admin_Model( $options );
 	}
 

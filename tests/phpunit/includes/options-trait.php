@@ -13,10 +13,16 @@ trait PLL_Options_Trait {
 	 *
 	 * @since 3.7
 	 *
+	 * @param array $options Initial options.
 	 * @return Options
 	 */
-	protected static function create_reset_options(): Options {
-		return self::create_options( false );
+	protected static function create_reset_options( array $options = array() ): Options {
+		if ( ! empty( $options ) ) {
+			update_option( Options::OPTION_NAME, $options );
+		} else {
+			delete_option( Options::OPTION_NAME );
+		}
+		return self::create_options();
 	}
 
 	/**
@@ -24,19 +30,11 @@ trait PLL_Options_Trait {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array|false $options Initial options. Use `false` to delete previous options.
+	 * @param array $options Initial options.
 	 * @return Options
 	 */
-	protected static function create_options( $options = array() ): Options {
-		if ( ! is_array( $options ) ) {
-			// Reset.
-			delete_option( Options::OPTION_NAME );
-		} elseif ( ! empty( $options ) ) {
-			// Use the given options.
-			$prev_options = get_option( Options::OPTION_NAME );
-			if ( is_array( $prev_options ) ) {
-				$options = array_merge( $prev_options, $options );
-			}
+	protected static function create_options( array $options = array() ): Options {
+		if ( ! empty( $options ) ) {
 			update_option( Options::OPTION_NAME, $options );
 		}
 

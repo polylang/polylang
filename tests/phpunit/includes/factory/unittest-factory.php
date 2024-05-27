@@ -42,9 +42,12 @@ class PLL_UnitTest_Factory extends WP_UnitTest_Factory {
 	public $tag;
 
 	public function __construct() {
-		$options = self::create_reset_options();
-		$options->set( 'hide_default', false );
-		$options->set( 'media_support', true );
+		$options = self::create_reset_options(
+			array(
+				'hide_default'  => false,
+				'media_support' => true,
+			)
+		);
 		$this->pll_model = new PLL_Admin_Model( $options );
 
 		$this->language = new PLL_UnitTest_Factory_For_Language( $this );

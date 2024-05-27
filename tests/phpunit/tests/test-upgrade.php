@@ -17,9 +17,12 @@ class Upgrade_Test extends PLL_UnitTestCase {
 		update_user_meta( get_current_user_id(), 'pll_filter_content', 'en' );
 		remove_all_actions( 'admin_init' ); // Avoid to send WP headers when calling `do_action( 'admin_init' )`.
 
-		$options = self::create_reset_options();
-		$options->set( 'default_lang', 'en' );
-		$options->set( 'version', '3.3' );
+		$options = self::create_reset_options(
+			array(
+				'default_lang' => 'en',
+				'version'      => '3.3',
+			)
+		);
 		$model       = new PLL_Admin_Model( $options );
 		$links_model = new PLL_Links_Default( $model );
 		$admin       = new PLL_Admin( $links_model );

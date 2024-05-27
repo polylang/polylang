@@ -14,19 +14,19 @@ class Canonical_Domain_Test extends PLL_UnitTestCase {
 	protected function init( $domain ) {
 		global $wp_rewrite;
 
-		$options = array_merge(
-			self::$model->options->get_all(),
-			array(
-				'hide_default' => true,
-				'force_lang'   => 3,
-				'domains'      => array(
-					'en' => 'http://example.org',
-					'fr' => $domain,
-				),
+		$options = self::create_options(
+			array_merge(
+				self::$model->options->get_all(),
+				array(
+					'hide_default' => true,
+					'force_lang'   => 3,
+					'domains'      => array(
+						'en' => 'http://example.org',
+						'fr' => $domain,
+					),
+				)
 			)
 		);
-		update_option( 'polylang', $options );
-		$options = self::create_options();
 
 		// Switch to pretty permalinks.
 		$wp_rewrite->init();

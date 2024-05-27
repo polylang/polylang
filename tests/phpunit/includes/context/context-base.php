@@ -22,18 +22,19 @@ abstract class PLL_Context_Base {
 	public function __construct( array $settings = array() ) {
 		global $wp_rewrite;
 
-		$options = self::create_reset_options();
+		$options = array();
 
 		$language_terms = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id', 'fields' => 'slugs' ) );
 		if ( is_array( $language_terms ) && ! empty( $language_terms ) ) {
-			$options->set( 'default_lang', reset( $language_terms ) );
+			$options['default_lang'] = reset( $language_terms );
 		}
 
 		if ( isset( $settings['options'] ) && is_array( $settings['options'] ) && ! empty( $settings['options'] ) ) {
-			$options->merge( $settings['options'] );
+			$options = array_merge( $options, $settings['options'] );
 		}
 
-		$model = $this->get_model( $options );
+		$options = self::create_reset_options( $options );
+		$model   = $this->get_model( $options );
 
 		// Switch to pretty permalinks.
 		// Useless with plain permalinks, check before running.

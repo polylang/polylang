@@ -245,9 +245,12 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	protected static function create_model_legacy() {
-		$options = self::create_reset_options();
-		$options->set( 'hide_default', false );
-		$options->set( 'media_support', true );
+		$options = self::create_reset_options(
+			array(
+				'hide_default'  => false,
+				'media_support' => true,
+			)
+		);
 		self::$model = new PLL_Admin_Model( $options );
 	}
 }
