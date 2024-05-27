@@ -75,14 +75,16 @@ class PLL_OLT_Manager {
 		load_default_textdomain( $new_locale );
 
 		// Act only if the language has not been set early (before default textdomain loading and $wp_locale creation).
-		if ( did_action( 'after_setup_theme' ) ) {
+		if ( ! empty( $GLOBALS['wp_locale'] ) ) {
 			// Reinitializes wp_locale for weekdays and months.
 			unset( $GLOBALS['wp_locale'] );
 			$GLOBALS['wp_locale'] = new WP_Locale();
 		}
 
-		/** This action is documented in wp-includes/class-wp-locale-switcher.php */
-		do_action( 'change_locale', $new_locale );
+		if ( ! empty( $GLOBALS['wp_locale_switcher'] ) ) {
+			/** This action is documented in wp-includes/class-wp-locale-switcher.php */
+			do_action( 'change_locale', $new_locale );
+		}
 
 		do_action_deprecated( 'pll_translate_labels', array(), '3.7', 'change_locale' );
 	}
