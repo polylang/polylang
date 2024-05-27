@@ -242,7 +242,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	}
 
 	/**
-	 * Prepare the received data before saving.
+	 * Prepares the received data before saving.
 	 *
 	 * @since 3.7
 	 *

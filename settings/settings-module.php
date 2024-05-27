@@ -271,8 +271,8 @@ class PLL_Settings_Module {
 
 		if ( isset( $_POST['module'] ) && $this->module === $_POST['module'] ) {
 			// It's up to the child class to decide which options are saved, whether there are errors or not
-			$post   = array_diff_key( $_POST, array_flip( array( 'action', 'module', 'pll_ajax_backend', 'pll_ajax_settings', '_pll_nonce' ) ) );
-			$errors = $this->options->merge( $this->prepare_raw_data( $post ) );
+			$posted_options   = array_diff_key( $_POST, array_flip( array( 'action', 'module', 'pll_ajax_backend', 'pll_ajax_settings', '_pll_nonce' ) ) );
+			$errors           = $this->options->merge( $this->prepare_raw_data( $posted_options ) );
 
 			// Refresh language cache in case home urls have been modified
 			$this->model->clean_languages_cache();

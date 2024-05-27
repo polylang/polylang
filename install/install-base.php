@@ -143,11 +143,11 @@ class PLL_Install_Base {
 	 * @return Options
 	 */
 	protected function get_options(): Options {
-		if ( isset( $GLOBALS['polylang'], $GLOBALS['polylang']->model, $GLOBALS['polylang']->model->options ) ) {
+		if ( isset( $GLOBALS['polylang']->model->options ) ) {
 			return $GLOBALS['polylang']->model->options;
 		}
 
-		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register_options' ), 80 ); // Custom priority.
+		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register_options' ), 80 ); // Custom priority to avoid conflict with the hook added in `Polylang` class.
 		$options = new Options();
 		remove_action( 'shutdown', array( $options, 'save_all' ) );
 		return $options;
@@ -164,7 +164,7 @@ class PLL_Install_Base {
 	protected function save_options( Options $options ): void {
 		$options->save();
 
-		if ( isset( $GLOBALS['polylang'], $GLOBALS['polylang']->model, $GLOBALS['polylang']->model->options ) ) {
+		if ( isset( $GLOBALS['polylang']->model->options ) ) {
 			return;
 		}
 
