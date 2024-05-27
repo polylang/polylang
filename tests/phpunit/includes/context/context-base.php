@@ -30,7 +30,7 @@ abstract class PLL_Context_Base {
 		}
 
 		if ( isset( $settings['options'] ) && is_array( $settings['options'] ) && ! empty( $settings['options'] ) ) {
-			$options->merge( $settings['options'] );
+			$options = array_merge( $options, $settings['options'] );
 		}
 
 		$options = self::create_options( $options );
