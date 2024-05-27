@@ -106,7 +106,7 @@ class Registry {
 		),
 		'version'             => array(
 			'class'       => Primitive\String_Type::class,
-			'default'     => POLYLANG_VERSION,
+			'default'     => '',
 			'description' => "Polylang's version.",
 		),
 	);

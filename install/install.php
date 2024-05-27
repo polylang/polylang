@@ -89,12 +89,15 @@ class PLL_Install extends PLL_Install_Base {
 	protected function _activate() {
 		$options = $this->get_options();
 
-		if ( version_compare( $options->get( 'version' ), POLYLANG_VERSION, '<' ) ) {
+		if ( ! empty( $options['version'] ) ) {
 			// Check if we will be able to upgrade.
-			( new PLL_Upgrade( $options ) )->can_activate();
+			if ( version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
+				( new PLL_Upgrade( $options ) )->can_activate();
+			}
+		} else {
+			$options['version'] = POLYLANG_VERSION;
+			$this->save_options( $options );
 		}
-
-		$this->save_options( $options );
 
 		// Avoid 1 query on every pages if no wpml strings is registered
 		if ( ! get_option( 'polylang_wpml_strings' ) ) {
