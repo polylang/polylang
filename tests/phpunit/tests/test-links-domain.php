@@ -17,7 +17,7 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 			'de' => 'http://example.de',
 		);
 
-		$options = self::create_options(
+		$options = self::update_options(
 			array(
 				'hide_default' => true,
 				'force_lang'   => 3,
