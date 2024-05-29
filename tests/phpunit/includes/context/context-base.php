@@ -33,7 +33,7 @@ abstract class PLL_Context_Base {
 			$options = array_merge( $options, $settings['options'] );
 		}
 
-		$options = self::create_reset_options( $options );
+		$options = self::create_options( $options );
 		$model   = $this->get_model( $options );
 
 		// Switch to pretty permalinks.

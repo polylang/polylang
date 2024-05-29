@@ -269,9 +269,9 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 */
 	protected function get_pll_admin_env( $options = null, bool $init = true ): PLL_Admin {
 		if ( empty( $options ) ) {
-			$options = self::create_options();
+			$options = self::update_options();
 		} elseif ( is_array( $options ) ) {
-			$options = self::create_reset_options( $options );
+			$options = self::create_options( $options );
 		}
 
 		$model       = new PLL_Admin_Model( $options );
@@ -295,9 +295,9 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 */
 	protected function get_pll_frontend_env( $options = null, bool $init = true ): PLL_Frontend {
 		if ( empty( $options ) ) {
-			$options = self::create_options();
+			$options = self::update_options();
 		} elseif ( is_array( $options ) ) {
-			$options = self::create_reset_options( $options );
+			$options = self::create_options( $options );
 		}
 
 		$model       = new PLL_Model( $options );

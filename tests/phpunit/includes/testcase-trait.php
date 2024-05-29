@@ -245,7 +245,7 @@ trait PLL_UnitTestCase_Trait {
 	 * @return void
 	 */
 	protected static function create_model_legacy() {
-		$options = self::create_reset_options(
+		$options = self::create_options(
 			array(
 				'hide_default'  => false,
 				'media_support' => true,

@@ -16,13 +16,13 @@ trait PLL_Options_Trait {
 	 * @param array $options Initial options.
 	 * @return Options
 	 */
-	protected static function create_reset_options( array $options = array() ): Options {
+	protected static function create_options( array $options = array() ): Options {
 		if ( ! empty( $options ) ) {
 			update_option( Options::OPTION_NAME, $options );
 		} else {
 			delete_option( Options::OPTION_NAME );
 		}
-		return self::create_options();
+		return self::update_options();
 	}
 
 	/**
@@ -33,7 +33,7 @@ trait PLL_Options_Trait {
 	 * @param array $options Initial options.
 	 * @return Options
 	 */
-	protected static function create_options( array $options = array() ): Options {
+	protected static function update_options( array $options = array() ): Options {
 		if ( ! empty( $options ) ) {
 			update_option( Options::OPTION_NAME, $options );
 		}

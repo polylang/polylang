@@ -226,7 +226,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	 * @covers PLL_Translated_Object::save_translations()
 	 */
 	public function test_dont_save_translations_with_incorrect_language() {
-		$options = self::create_reset_options(
+		$options = self::create_options(
 			array(
 				'default_lang' => 'en',
 			)
@@ -242,7 +242,7 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 	 * @covers PLL_Translated_Post::get_db_infos()
 	 */
 	public function test_get_db_infos() {
-		$options = self::create_reset_options(
+		$options = self::create_options(
 			array(
 				'default_lang' => 'en',
 			)

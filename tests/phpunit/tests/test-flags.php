@@ -25,7 +25,7 @@ class Flags_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$options = self::create_reset_options(
+		$options = self::create_options(
 			array(
 				'default_lang' => 'en',
 			)

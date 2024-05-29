@@ -42,7 +42,7 @@ class PLL_UnitTest_Factory extends WP_UnitTest_Factory {
 	public $tag;
 
 	public function __construct() {
-		$options = self::create_reset_options(
+		$options = self::create_options(
 			array(
 				'hide_default'  => false,
 				'media_support' => true,

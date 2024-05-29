@@ -14,7 +14,7 @@ class Canonical_Domain_Test extends PLL_UnitTestCase {
 	protected function init( $domain ) {
 		global $wp_rewrite;
 
-		$options = self::create_options(
+		$options = self::update_options(
 			array_merge(
 				self::$model->options->get_all(),
 				array(

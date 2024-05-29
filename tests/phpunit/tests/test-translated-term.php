@@ -105,7 +105,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	}
 
 	public function test_dont_save_translations_with_incorrect_language() {
-		$options = self::create_reset_options(
+		$options = self::create_options(
 			array(
 				'default_lang' => 'en',
 			)
@@ -121,7 +121,7 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 	 * @covers PLL_Translated_Term::get_db_infos()
 	 */
 	public function test_get_db_infos() {
-		$options = self::create_reset_options(
+		$options = self::create_options(
 			array(
 				'default_lang' => 'en',
 			)
