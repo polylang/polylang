@@ -46,9 +46,9 @@ class Integer extends Abstract_Option {
 	 * @phpstan-param non-falsy-string $key
 	 */
 	public function __construct( string $key, $value, $default, string $description, int $min = 0, int $max = PHP_INT_MAX ) {
-		parent::__construct( $key, $value, $default, $description );
 		$this->min = $min;
 		$this->max = $max;
+		parent::__construct( $key, $value, $default, $description );
 	}
 
 	/**
