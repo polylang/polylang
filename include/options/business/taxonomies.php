@@ -14,7 +14,21 @@ defined( 'ABSPATH' ) || exit;
  */
 class Taxonomies extends Abstract_Object_Types {
 	/**
-	 * Returns non-core, public taxonomies.
+	 * Constructor.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key   Option key.
+	 * @param mixed  $value Optional. Option value.
+	 *
+	 * @phpstan-param non-falsy-string $key
+	 */
+	public function __construct( string $key, $value = null ) {
+		parent::__construct( $key, $value, array(), 'string' );
+	}
+
+	/**
+	 * Returns non-core taxonomies.
 	 *
 	 * @since 3.7
 	 *
@@ -26,5 +40,16 @@ class Taxonomies extends Abstract_Object_Types {
 		$public_taxonomies = get_taxonomies( array( '_builtin' => false ) );
 		/** @phpstan-var array<non-falsy-string> */
 		return array_diff( $public_taxonomies, get_taxonomies( array( '_pll' => true ) ) );
+	}
+
+	/**
+	 * Returns the description used in the JSON schema.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	protected function get_description(): string {
+		return __( 'List of taxonomies to translate.', 'polylang' );
 	}
 }

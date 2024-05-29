@@ -16,10 +16,22 @@ defined( 'ABSPATH' ) || exit;
  * /!\ Sanitization depends on `force_lang`: this option must be set AFTER `force_lang`.
  *
  * @since 3.7
- *
- * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Abstract_Option
  */
 class Domains extends Abstract_Option {
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key   Option key.
+	 * @param mixed  $value Optional. Option value.
+	 *
+	 * @phpstan-param non-falsy-string $key
+	 */
+	public function __construct( string $key, $value = null ) {
+		parent::__construct( $key, $value, array() );
+	}
+
 	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
@@ -28,8 +40,8 @@ class Domains extends Abstract_Option {
 	 * @return array Partial schema.
 	 *
 	 * @phpstan-return array{
-	 *     type: SchemaType,
-	 *     patternProperties: non-empty-array<non-empty-string, array{type: SchemaType, format: 'uri'}>,
+	 *     type: 'object',
+	 *     patternProperties: non-empty-array<non-empty-string, array{type: 'string', format: 'uri'}>,
 	 *     additionalProperties: false
 	 * }
 	 */
@@ -144,5 +156,16 @@ class Domains extends Abstract_Option {
 
 		/** @phpstan-var array<non-falsy-string, string> */
 		return $all_values;
+	}
+
+	/**
+	 * Returns the description used in the JSON schema.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	protected function get_description(): string {
+		return __( 'Domains used when the language is set from different domains.', 'polylang' );
 	}
 }

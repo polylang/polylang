@@ -5,14 +5,17 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
+use WP_Error;
+use WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class defining post types list option.
+ * Class defining the "Translate media" boolean option.
  *
  * @since 3.7
  */
-class Post_Types extends Abstract_Object_Types {
+class Media_Support extends Abstract_Boolean {
 	/**
 	 * Constructor.
 	 *
@@ -24,21 +27,7 @@ class Post_Types extends Abstract_Object_Types {
 	 * @phpstan-param non-falsy-string $key
 	 */
 	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, array(), 'string' );
-	}
-
-	/**
-	 * Returns non-core post types.
-	 *
-	 * @since 3.7
-	 *
-	 * @return string[] Object type names list.
-	 *
-	 * @phpstan-return array<non-falsy-string>
-	 */
-	protected function get_object_types(): array {
-		/** @phpstan-var array<non-falsy-string> */
-		return get_post_types( array( '_builtin' => false ) );
+		parent::__construct( $key, $value, false );
 	}
 
 	/**
@@ -49,6 +38,6 @@ class Post_Types extends Abstract_Object_Types {
 	 * @return string
 	 */
 	protected function get_description(): string {
-		return __( 'List of post types to translate.', 'polylang' );
+		return __( 'Translate media: true to translate, false to not translate.', 'polylang' );
 	}
 }

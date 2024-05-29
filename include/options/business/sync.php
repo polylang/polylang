@@ -5,7 +5,7 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
-use WP_Syntex\Polylang\Options\Primitive\List_Type;
+use WP_Syntex\Polylang\Options\Primitive\Abstract_List;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,7 +16,21 @@ defined( 'ABSPATH' ) || exit;
  *
  * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Abstract_Option
  */
-class Sync extends List_Type {
+class Sync extends Abstract_List {
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key   Option key.
+	 * @param mixed  $value Optional. Option value.
+	 *
+	 * @phpstan-param non-falsy-string $key
+	 */
+	public function __construct( string $key, $value = null ) {
+		parent::__construct( $key, $value, array(), 'string' );
+	}
+
 	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
@@ -24,7 +38,7 @@ class Sync extends List_Type {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: SchemaType, items: array{type: SchemaType, enum: non-empty-array<non-falsy-string>}}
+	 * @phpstan-return array{type: 'array', items: array{type: SchemaType, enum: non-empty-array<non-falsy-string>}}
 	 */
 	protected function get_specific_schema(): array {
 		/** @phpstan-var non-empty-array<non-falsy-string> */
@@ -36,5 +50,16 @@ class Sync extends List_Type {
 				'enum' => $enum,
 			),
 		);
+	}
+
+	/**
+	 * Returns the description used in the JSON schema.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	protected function get_description(): string {
+		return __( 'List of data to synchronize.', 'polylang' );
 	}
 }

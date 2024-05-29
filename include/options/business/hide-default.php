@@ -6,7 +6,7 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Error;
-use WP_Syntex\Polylang\Options\Primitive\Boolean;
+use WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -17,7 +17,20 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-class Hide_Default extends Boolean {
+class Hide_Default extends Abstract_Boolean {
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key   Option key.
+	 * @param mixed  $value Optional. Option value.
+	 *
+	 * @phpstan-param non-falsy-string $key
+	 */
+	public function __construct( string $key, $value = null ) {
+		parent::__construct( $key, $value, true );
+	}
 
 	/**
 	 * Sanitizes option's value.
@@ -37,5 +50,16 @@ class Hide_Default extends Boolean {
 
 		/** @var bool|WP_Error */
 		return parent::sanitize( $value, $options );
+	}
+
+	/**
+	 * Returns the description used in the JSON schema.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	protected function get_description(): string {
+		return __( 'Remove language code in URL for default language: true to hide, false to display.', 'polylang' );
 	}
 }

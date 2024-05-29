@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @phpstan-import-type SchemaType from Abstract_Option
  */
-class List_Type extends Abstract_Option {
+abstract class Abstract_List extends Abstract_Option {
 	/**
 	 * Value type.
 	 *
@@ -30,20 +30,19 @@ class List_Type extends Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key         Option key.
-	 * @param mixed  $value       Option value.
-	 * @param mixed  $default     Option default value.
-	 * @param string $description Option description, used in JSON schema.
-	 * @param string $type        JSON schema value type for the list items, @see {https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
-	 *                            Possible values are `'string'`, `'null'`, `'number'` (float), `'integer'`, `'boolean'`,
-	 *                            `'array'` (array with integer keys), and `'object'` (array with string keys).
+	 * @param string $key     Option key.
+	 * @param mixed  $value   Option value.
+	 * @param mixed  $default Option default value.
+	 * @param string $type    JSON schema value type for the list items, @see {https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
+	 *                        Possible values are `'string'`, `'null'`, `'number'` (float), `'integer'`, `'boolean'`,
+	 *                        `'array'` (array with integer keys), and `'object'` (array with string keys).
 	 *
 	 * @phpstan-param non-falsy-string $key
 	 * @phpstan-param SchemaType $type
 	 */
-	public function __construct( string $key, $value, $default, string $description, string $type ) {
+	public function __construct( string $key, $value, $default, string $type ) {
 		$this->type = $type;
-		parent::__construct( $key, $value, $default, $description );
+		parent::__construct( $key, $value, $default );
 	}
 
 	/**
@@ -69,7 +68,7 @@ class List_Type extends Abstract_Option {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: SchemaType, items: array{type: SchemaType}}
+	 * @phpstan-return array{type: 'array', items: array{type: SchemaType}}
 	 */
 	protected function get_specific_schema(): array {
 		return array(

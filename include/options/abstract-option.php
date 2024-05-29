@@ -19,7 +19,6 @@ defined( 'ABSPATH' ) || exit;
  * @phpstan-type Schema array{
  *     '$schema': non-falsy-string,
  *     title: non-falsy-string,
- *     description: string,
  *     type: SchemaType,
  *     context: array<non-falsy-string>
  * }
@@ -57,13 +56,6 @@ abstract class Abstract_Option {
 	private $schema;
 
 	/**
-	 * Option description.
-	 *
-	 * @var string
-	 */
-	private $description;
-
-	/**
 	 * Validation and sanitization errors.
 	 *
 	 * @var WP_Error
@@ -75,20 +67,23 @@ abstract class Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key         Option key.
-	 * @param mixed  $value       Option value.
-	 * @param mixed  $default     Option default value.
-	 * @param string $description Option description, used in JSON schema.
+	 * @param string $key     Option key.
+	 * @param mixed  $value   Option value.
+	 * @param mixed  $default Option default value.
 	 *
 	 * @phpstan-param non-falsy-string $key
 	 */
-	public function __construct( string $key, $value, $default, string $description ) {
-		$this->errors      = new WP_Error();
-		$this->key         = $key;
-		$this->default     = $default;
-		$this->description = $description;
+	public function __construct( string $key, $value, $default ) {
+		$this->errors  = new WP_Error();
+		$this->key     = $key;
+		$this->default = $default;
 
-		$value = rest_sanitize_value_from_schema( $this->prepare( $value ), $this->get_schema(), $this->key() );
+		if ( ! isset( $value ) ) {
+			$this->value = $default;
+			return;
+		}
+
+		$value = rest_sanitize_value_from_schema( $this->prepare( $value ), $this->get_specific_schema(), $this->key() );
 
 		if ( ! is_wp_error( $value ) ) {
 			$this->value = $value;
@@ -122,7 +117,7 @@ abstract class Abstract_Option {
 	public function set( $value, Options $options ): bool {
 		$this->errors = new WP_Error(); // Reset errors.
 		$value        = $this->prepare( $value );
-		$is_valid     = rest_validate_value_from_schema( $value, $this->get_schema(), $this->key() );
+		$is_valid     = rest_validate_value_from_schema( $value, $this->get_specific_schema(), $this->key() );
 
 		if ( is_wp_error( $is_valid ) ) {
 			// Blocking validation error.
@@ -183,7 +178,7 @@ abstract class Abstract_Option {
 			array(
 				'$schema'     => 'http://json-schema.org/draft-04/schema#',
 				'title'       => $this->key(),
-				'description' => $this->description,
+				'description' => $this->get_description(),
 				'context'     => array( 'edit' ),
 			),
 			$this->get_specific_schema()
@@ -227,7 +222,7 @@ abstract class Abstract_Option {
 	 * @return mixed The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 */
 	protected function sanitize( $value, Options $options ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return rest_sanitize_value_from_schema( $value, $this->get_schema(), $this->key() );
+		return rest_sanitize_value_from_schema( $value, $this->get_specific_schema(), $this->key() );
 	}
 
 	/**
@@ -240,4 +235,13 @@ abstract class Abstract_Option {
 	 * @phpstan-return array{type: SchemaType}
 	 */
 	abstract protected function get_specific_schema(): array;
+
+	/**
+	 * Returns the description used in the JSON schema.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	abstract protected function get_description(): string;
 }

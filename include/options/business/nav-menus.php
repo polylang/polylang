@@ -13,10 +13,22 @@ defined( 'ABSPATH' ) || exit;
  * Class defining navigation menus array option.
  *
  * @since 3.7
- *
- * @phpstan-import-type SchemaType from \WP_Syntex\Polylang\Options\Abstract_Option
  */
-class Nav_Menu extends Abstract_Option {
+class Nav_Menus extends Abstract_Option {
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $key   Option key.
+	 * @param mixed  $value Optional. Option value.
+	 *
+	 * @phpstan-param non-falsy-string $key
+	 */
+	public function __construct( string $key, $value = null ) {
+		parent::__construct( $key, $value, array() );
+	}
+
 	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
@@ -25,14 +37,20 @@ class Nav_Menu extends Abstract_Option {
 	 * @return array Partial schema.
 	 *
 	 * @phpstan-return array{
-	 *     type: SchemaType,
-	 *     patternProperties: non-empty-array<
-	 *         non-empty-string, array{
-	 *             type: SchemaType,
-	 *             context: array<non-falsy-string>,
-	 *             patternProperties: non-empty-array<non-empty-string, array{type: SchemaType, minimum: int}>
+	 *     type: 'object',
+	 *     patternProperties: array{
+	 *         '^\w+$': array{
+	 *             type: 'object',
+	 *             context: list<'edit'>,
+	 *             patternProperties: array{
+	 *                 '^[a-z_-]+$': array{
+	 *                     type: 'integer',
+	 *                     minimum: 0
+	 *                 }
+	 *             },
+	 *             additionalProperties: false
 	 *         }
-	 *     >,
+	 *     },
 	 *     additionalProperties: false
 	 * }
 	 */
@@ -54,5 +72,16 @@ class Nav_Menu extends Abstract_Option {
 			),
 			'additionalProperties' => false,
 		);
+	}
+
+	/**
+	 * Returns the description used in the JSON schema.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	protected function get_description(): string {
+		return __( 'Translated navigation menus for each theme.', 'polylang' );
 	}
 }

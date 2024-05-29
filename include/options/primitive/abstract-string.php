@@ -10,14 +10,11 @@ use WP_Syntex\Polylang\Options\Abstract_Option;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class defining single boolean option.
- * Note that for historic reason, boolean are stored as 0 or 1.
+ * Class defining single string option.
  *
  * @since 3.7
- *
- * @phpstan-import-type SchemaType from Abstract_Option
  */
-class Boolean extends Abstract_Option {
+abstract class Abstract_String extends Abstract_Option {
 	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
@@ -25,11 +22,11 @@ class Boolean extends Abstract_Option {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: SchemaType}
+	 * @phpstan-return array{type: 'string'}
 	 */
 	protected function get_specific_schema(): array {
 		return array(
-			'type' => 'boolean',
+			'type' => 'string',
 		);
 	}
 }

@@ -5,14 +5,16 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
+use WP_Syntex\Polylang\Options\Abstract_Option;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class defining post types list option.
+ * Class defining the "Determine how the current language is defined" option.
  *
  * @since 3.7
  */
-class Post_Types extends Abstract_Object_Types {
+class Force_Lang extends Abstract_Option {
 	/**
 	 * Constructor.
 	 *
@@ -24,21 +26,23 @@ class Post_Types extends Abstract_Object_Types {
 	 * @phpstan-param non-falsy-string $key
 	 */
 	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, array(), 'string' );
+		parent::__construct( $key, $value, 1 );
 	}
 
 	/**
-	 * Returns non-core post types.
+	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7
 	 *
-	 * @return string[] Object type names list.
+	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array<non-falsy-string>
+	 * @phpstan-return array{type: 'integer', enum: list<0|1|2|3>}
 	 */
-	protected function get_object_types(): array {
-		/** @phpstan-var array<non-falsy-string> */
-		return get_post_types( array( '_builtin' => false ) );
+	protected function get_specific_schema(): array {
+		return array(
+			'type' => 'integer',
+			'enum' => array( 0, 1, 2, 3 ),
+		);
 	}
 
 	/**
@@ -49,6 +53,6 @@ class Post_Types extends Abstract_Object_Types {
 	 * @return string
 	 */
 	protected function get_description(): string {
-		return __( 'List of post types to translate.', 'polylang' );
+		return __( 'Determine how the current language is defined.', 'polylang' );
 	}
 }
