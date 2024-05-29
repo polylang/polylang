@@ -173,18 +173,6 @@ class PLL_Settings_CPT extends PLL_Settings_Module {
 			$newoptions[ $key ] = empty( $options[ $key ] ) ? array() : array_keys( $options[ $key ], 1 );
 		}
 
-		// Limit to public post types.
-		$newoptions['post_types'] = array_intersect(
-			$newoptions['post_types'],
-			get_post_types( array( 'public' => true, '_builtin' => false ) )
-		);
-
-		// Limit to public taxonomies.
-		$newoptions['taxonomies'] = array_intersect(
-			$newoptions['taxonomies'],
-			get_taxonomies( array( 'public' => true, '_builtin' => false ) )
-		);
-
 		return $newoptions; // Take care to return only validated options.
 	}
 }
