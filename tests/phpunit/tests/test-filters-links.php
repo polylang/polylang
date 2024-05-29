@@ -28,9 +28,13 @@ class Filters_Links_Test extends PLL_UnitTestCase {
 		register_post_type( 'cpt', array( 'public' => true, 'has_archive' => true ) ); // *untranslated* custom post type with archives
 		register_taxonomy( 'tax', 'cpt' ); // *untranslated* custom tax
 
-		self::$model->options['hide_default'] = true;
-		self::$model->options['post_types']   = array( 'trcpt' );
-		self::$model->options['taxonomies']   = array( 'trtax' );
+		self::$model->options->merge(
+			array(
+				'hide_default' => true,
+				'post_types'   => array( 'trcpt' ),
+				'taxonomies'   => array( 'trtax' ),
+			)
+		);
 
 		$links_model = self::$model->get_links_model();
 		$links_model->init();
