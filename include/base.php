@@ -162,7 +162,7 @@ abstract class PLL_Base {
 	 * @return bool
 	 */
 	protected function is_active_on_current_site(): bool {
-		return pll_is_plugin_active( POLYLANG_BASENAME ) && ! empty( $this->options['version'] );
+		return ! empty( $this->options['version'] );
 	}
 
 	/**
