@@ -39,7 +39,8 @@ class PLL_Domain_Mapping {
 	public function dm_redirect_to_mapped_domain() {
 		// Don't go further if we stopped loading the plugin early (for example when deactivate-polylang=1).
 		if ( ! function_exists( 'PLL' ) ) {
-			return;
+			// Rely on MU Domain Mapping.
+			redirect_to_mapped_domain();
 		}
 
 		// The language is set from the subdomain or domain name
