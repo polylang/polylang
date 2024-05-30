@@ -47,12 +47,7 @@ class Registry {
 	 * @param Options $options Instance of the options.
 	 * @return void
 	 */
-	public static function register_options( $options ): void {
-		if ( ! $options instanceof Options ) {
-			// Somebody is messing up our hooks.
-			return;
-		}
-
+	public static function register_options( Options $options ): void {
 		foreach ( static::OPTIONS as $option => $class ) {
 			$options->register( $class, $option );
 		}
