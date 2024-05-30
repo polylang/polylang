@@ -60,6 +60,6 @@ class Hide_Default extends Abstract_Boolean {
 	 * @return string
 	 */
 	protected function get_description(): string {
-		return __( 'Remove language code in URL for default language: true to hide, false to display.', 'polylang' );
+		return __( 'Remove the language code in URL for the default language: true to hide, false to display.', 'polylang' );
 	}
 }
