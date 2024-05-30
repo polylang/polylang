@@ -97,7 +97,7 @@ class Options implements \ArrayAccess {
 
 			if ( ! array_key_exists( $key, $options ) ) {
 				// Option raw value doesn't exist in database, use default instead.
-				$options[ $key ] = new $class_name( $key );
+				$options[ $key ] = new $class_name();
 				continue;
 			}
 
@@ -108,7 +108,7 @@ class Options implements \ArrayAccess {
 			}
 
 			// Option raw value exists in database, use it.
-			$options[ $key ] = new $class_name( $key, $options[ $key ] );
+			$options[ $key ] = new $class_name( $options[ $key ] );
 		}
 
 		return $this;
