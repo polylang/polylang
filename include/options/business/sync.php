@@ -18,17 +18,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class Sync extends Abstract_List {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'sync'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, array(), 'string' );
+	public static function key(): string {
+		return 'sync';
 	}
 
 	/**
@@ -46,7 +45,7 @@ class Sync extends Abstract_List {
 		return array(
 			'type'  => 'array',
 			'items' => array(
-				'type' => $this->type,
+				'type' => $this->get_type(),
 				'enum' => $enum,
 			),
 		);

@@ -19,18 +19,18 @@ defined( 'ABSPATH' ) || exit;
  */
 class Browser extends Abstract_Boolean {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'browser'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, false );
+	public static function key(): string {
+		return 'browser';
 	}
+
 	/**
 	 * Sanitizes option's value.
 	 * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,

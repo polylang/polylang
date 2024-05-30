@@ -14,17 +14,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class Taxonomies extends Abstract_Object_Types {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'taxonomies'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, array(), 'string' );
+	public static function key(): string {
+		return 'taxonomies';
 	}
 
 	/**

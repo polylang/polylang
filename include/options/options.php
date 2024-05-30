@@ -87,13 +87,14 @@ class Options implements \ArrayAccess {
 	 * @since 3.7
 	 *
 	 * @param string $class_name  Option class to register.
-	 * @param string $key         Option key.
 	 * @return self
 	 *
 	 * @phpstan-param class-string<Abstract_Option> $class_name
 	 */
-	public function register( string $class_name, string $key ): self {
+	public function register( string $class_name ): self {
 		foreach ( $this->options as &$options ) {
+			$key = $class_name::key();
+
 			if ( ! array_key_exists( $key, $options ) ) {
 				// Option raw value doesn't exist in database, use default instead.
 				$options[ $key ] = new $class_name( $key );

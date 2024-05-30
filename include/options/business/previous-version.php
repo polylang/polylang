@@ -16,17 +16,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class Previous_Version extends Abstract_String {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'previous_version'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, '' );
+	public static function key(): string {
+		return 'previous_version';
 	}
 
 	/**

@@ -16,17 +16,27 @@ defined( 'ABSPATH' ) || exit;
  */
 class Nav_Menus extends Abstract_Option {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'nav_menus'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, array() );
+	public static function key(): string {
+		return 'nav_menus';
+	}
+
+	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return array
+	 */
+	protected function get_default() {
+		return array();
 	}
 
 	/**

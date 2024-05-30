@@ -19,33 +19,6 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Abstract_List extends Abstract_Option {
 	/**
-	 * Value type.
-	 *
-	 * @var SchemaType
-	 */
-	protected $type;
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 3.7
-	 *
-	 * @param string $key     Option key.
-	 * @param mixed  $value   Option value.
-	 * @param mixed  $default Option default value.
-	 * @param string $type    JSON schema value type for the list items, @see {https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
-	 *                        Possible values are `'string'`, `'null'`, `'number'` (float), `'integer'`, `'boolean'`,
-	 *                        `'array'` (array with integer keys), and `'object'` (array with string keys).
-	 *
-	 * @phpstan-param non-falsy-string $key
-	 * @phpstan-param SchemaType $type
-	 */
-	public function __construct( string $key, $value, $default, string $type ) {
-		$this->type = $type;
-		parent::__construct( $key, $value, $default );
-	}
-
-	/**
 	 * Prepares a value before validation.
 	 * Allows to receive a string-keyed array but returns an integer-keyed array.
 	 *
@@ -62,6 +35,33 @@ abstract class Abstract_List extends Abstract_Option {
 	}
 
 	/**
+	 * Returns the JSON schema value type for the list items.
+	 * Possible values are `'string'`, `'null'`, `'number'` (float), `'integer'`, `'boolean'`,
+	 * `'array'` (array with integer keys), and `'object'` (array with string keys).
+	 *
+	 * @since 3.7
+	 * @see https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types
+	 *
+	 * @return string
+	 *
+	 * @phpstan-return SchemaType
+	 */
+	protected function get_type(): string {
+		return 'string';
+	}
+
+	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return array
+	 */
+	protected function get_default() {
+		return array();
+	}
+
+	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7
@@ -74,7 +74,7 @@ abstract class Abstract_List extends Abstract_Option {
 		return array(
 			'type'  => 'array',
 			'items' => array(
-				'type' => $this->type,
+				'type' => $this->get_type(),
 			),
 		);
 	}

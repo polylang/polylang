@@ -17,6 +17,17 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Abstract_Boolean extends Abstract_Option {
 	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return bool
+	 */
+	protected function get_default() {
+		return false;
+	}
+
+	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7

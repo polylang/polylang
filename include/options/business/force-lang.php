@@ -16,17 +16,27 @@ defined( 'ABSPATH' ) || exit;
  */
 class Force_Lang extends Abstract_Option {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'force_lang'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, 1 );
+	public static function key(): string {
+		return 'force_lang';
+	}
+
+	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return int
+	 */
+	protected function get_default() {
+		return 1;
 	}
 
 	/**

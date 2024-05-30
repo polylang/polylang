@@ -15,28 +15,28 @@ defined( 'ABSPATH' ) || exit;
 class Registry {
 	const OPTIONS = array(
 		// URL modifications.
-		'force_lang'          => Business\Force_Lang::class,
-		'domains'             => Business\Domains::class,
-		'hide_default'        => Business\Hide_Default::class,
-		'rewrite'             => Business\Rewrite::class,
-		'redirect_lang'       => Business\Redirect_Lang::class,
+		Business\Force_Lang::class,
+		Business\Domains::class,
+		Business\Hide_Default::class,
+		Business\Rewrite::class,
+		Business\Redirect_Lang::class,
 		// Detect browser language.
-		'browser'             => Business\Browser::class,
+		Business\Browser::class,
 		// Media.
-		'media_support'       => Business\Media_Support::class,
+		Business\Media_Support::class,
 		// Custom post types and taxonomies.
-		'post_types'          => Business\Post_Types::class,
-		'taxonomies'          => Business\Taxonomies::class,
+		Business\Post_Types::class,
+		Business\Taxonomies::class,
 		// Synchronization.
-		'sync'                => Business\Sync::class,
+		Business\Sync::class,
 		// Internal.
-		'default_lang'        => Business\Language_Slug::class,
-		'nav_menus'           => Business\Nav_Menus::class,
-		'language_taxonomies' => Business\Language_Taxonomies::class,
+		Business\Language_Slug::class,
+		Business\Nav_Menus::class,
+		Business\Language_Taxonomies::class,
 		// Read only.
-		'first_activation'    => Business\First_Activation::class,
-		'previous_version'    => Business\Previous_Version::class,
-		'version'             => Business\Version::class,
+		Business\First_Activation::class,
+		Business\Previous_Version::class,
+		Business\Version::class,
 	);
 
 	/**
@@ -48,8 +48,6 @@ class Registry {
 	 * @return void
 	 */
 	public static function register_options( Options $options ): void {
-		foreach ( static::OPTIONS as $option => $class ) {
-			$options->register( $class, $option );
-		}
+		array_map( static::OPTIONS, array( $options, 'register' ) );
 	}
 }

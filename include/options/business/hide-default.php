@@ -19,17 +19,27 @@ defined( 'ABSPATH' ) || exit;
  */
 class Hide_Default extends Abstract_Boolean {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'hide_default'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, true );
+	public static function key(): string {
+		return 'hide_default';
+	}
+
+	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return bool
+	 */
+	protected function get_default() {
+		return true;
 	}
 
 	/**

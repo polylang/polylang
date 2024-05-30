@@ -16,6 +16,17 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Abstract_String extends Abstract_Option {
 	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	protected function get_default() {
+		return '';
+	}
+
+	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
 	 * @since 3.7

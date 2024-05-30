@@ -18,17 +18,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class Redirect_Lang extends Abstract_Boolean {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'redirect_lang'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, false );
+	public static function key(): string {
+		return 'redirect_lang';
 	}
 
 	/**

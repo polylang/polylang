@@ -16,17 +16,29 @@ defined( 'ABSPATH' ) || exit;
  */
 class First_Activation extends Abstract_Option {
 	/**
-	 * Constructor.
+	 * Returns option key.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $key   Option key.
-	 * @param mixed  $value Optional. Option value.
+	 * @return string
 	 *
-	 * @phpstan-param non-falsy-string $key
+	 * @phpstan-return 'first_activation'
 	 */
-	public function __construct( string $key, $value = null ) {
-		parent::__construct( $key, $value, time() );
+	public static function key(): string {
+		return 'first_activation';
+	}
+
+	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return int
+	 *
+	 * @phpstan-return int<0, max>
+	 */
+	protected function get_default() {
+		return time();
 	}
 
 	/**
@@ -36,7 +48,7 @@ class First_Activation extends Abstract_Option {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: 'integer', minimum: 0, maximum: int}
+	 * @phpstan-return array{type: 'integer', minimum: 0, maximum: int<0, max>}
 	 */
 	protected function get_specific_schema(): array {
 		return array(
