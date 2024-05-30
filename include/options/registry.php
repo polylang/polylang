@@ -48,6 +48,6 @@ class Registry {
 	 * @return void
 	 */
 	public static function register_options( Options $options ): void {
-		array_map( static::OPTIONS, array( $options, 'register' ) );
+		array_map( array( $options, 'register' ), static::OPTIONS );
 	}
 }
