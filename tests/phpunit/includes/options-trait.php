@@ -22,21 +22,6 @@ trait PLL_Options_Trait {
 		} else {
 			delete_option( Options::OPTION_NAME );
 		}
-		return self::update_options();
-	}
-
-	/**
-	 * Returns a new instance of the options.
-	 *
-	 * @since 3.7
-	 *
-	 * @param array $options Initial options.
-	 * @return Options
-	 */
-	protected static function update_options( array $options = array() ): Options {
-		if ( ! empty( $options ) ) {
-			update_option( Options::OPTION_NAME, $options );
-		}
 
 		Functions\when( 'pll_is_plugin_active' )->alias(
 			function ( $value ) {

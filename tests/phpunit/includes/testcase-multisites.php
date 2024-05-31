@@ -268,10 +268,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * @return PLL_Admin Polylang main class instance.
 	 */
 	protected function get_pll_admin_env( $options = null, bool $init = true ): PLL_Admin {
-		if ( empty( $options ) ) {
-			$options = self::update_options();
-		} elseif ( is_array( $options ) ) {
-			$options = self::create_options( $options );
+		if ( is_null( $options ) || is_array( $options ) ) {
+			$options = self::create_options( (array) $options );
 		}
 
 		$model       = new PLL_Admin_Model( $options );
@@ -294,10 +292,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	 * @return PLL_Frontend Polylang main class instance.
 	 */
 	protected function get_pll_frontend_env( $options = null, bool $init = true ): PLL_Frontend {
-		if ( empty( $options ) ) {
-			$options = self::update_options();
-		} elseif ( is_array( $options ) ) {
-			$options = self::create_options( $options );
+		if ( is_null( $options ) || is_array( $options ) ) {
+			$options = self::create_options( (array) $options );
 		}
 
 		$model       = new PLL_Model( $options );
