@@ -111,7 +111,7 @@ class PLL_Wizard {
 
 			if ( $do_redirect ) {
 				wp_safe_redirect(
-					esc_url_raw(
+					sanitize_url(
 						add_query_arg(
 							array(
 								'page' => 'mlang_wizard',
@@ -206,12 +206,12 @@ class PLL_Wizard {
 		$has_languages = $this->model->has_languages();
 
 		if ( ! $has_languages && ! in_array( $this->step, array( 'licenses', 'languages' ) ) ) {
-			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'languages' ) ) );
+			wp_safe_redirect( sanitize_url( $this->get_step_link( 'languages' ) ) );
 			exit;
 		}
 
 		if ( $has_languages && $this->model->get_objects_with_no_lang( 1 ) && ! in_array( $this->step, array( 'licenses', 'languages', 'media', 'untranslated-contents' ) ) ) {
-			wp_safe_redirect( esc_url_raw( $this->get_step_link( 'untranslated-contents' ) ) );
+			wp_safe_redirect( sanitize_url( $this->get_step_link( 'untranslated-contents' ) ) );
 			exit;
 		}
 
@@ -421,7 +421,7 @@ class PLL_Wizard {
 			}
 		}
 
-		wp_safe_redirect( esc_url_raw( $redirect ) );
+		wp_safe_redirect( sanitize_url( $redirect ) );
 		exit;
 	}
 
@@ -533,7 +533,7 @@ class PLL_Wizard {
 		if ( empty( $languages ) && ! $this->model->has_languages() ) {
 			// Stay on this step with an error.
 			wp_safe_redirect(
-				esc_url_raw(
+				sanitize_url(
 					add_query_arg(
 						array(
 							'step'           => $this->step,
@@ -570,7 +570,7 @@ class PLL_Wizard {
 					// Stay on this step with an error.
 					$error_keys = array_keys( $language_added->errors );
 					wp_safe_redirect(
-						esc_url_raw(
+						sanitize_url(
 							add_query_arg(
 								array(
 									'step'           => $this->step,
@@ -587,7 +587,7 @@ class PLL_Wizard {
 				}
 			}
 		}
-		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
+		wp_safe_redirect( sanitize_url( $this->get_next_step_link() ) );
 		exit;
 	}
 
@@ -641,7 +641,7 @@ class PLL_Wizard {
 
 		update_option( 'polylang', $this->options );
 
-		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
+		wp_safe_redirect( sanitize_url( $this->get_next_step_link() ) );
 		exit;
 	}
 
@@ -704,7 +704,7 @@ class PLL_Wizard {
 			$this->model->set_language_in_mass( $language );
 		}
 
-		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
+		wp_safe_redirect( sanitize_url( $this->get_next_step_link() ) );
 		exit;
 	}
 
@@ -773,7 +773,7 @@ class PLL_Wizard {
 
 		$this->model->clean_languages_cache();
 
-		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
+		wp_safe_redirect( sanitize_url( $this->get_next_step_link() ) );
 		exit;
 	}
 
@@ -849,7 +849,7 @@ class PLL_Wizard {
 	public function save_step_last() {
 		check_admin_referer( 'pll-wizard', '_pll_nonce' );
 
-		wp_safe_redirect( esc_url_raw( $this->get_next_step_link() ) );
+		wp_safe_redirect( sanitize_url( $this->get_next_step_link() ) );
 		exit;
 	}
 }

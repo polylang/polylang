@@ -273,7 +273,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 					);
 				}
 				else {
-					$newoptions['domains'][ $key ] = esc_url_raw( trim( $domain ) );
+					$newoptions['domains'][ $key ] = sanitize_url( trim( $domain ) );
 				}
 			}
 		}
@@ -312,7 +312,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 		foreach ( $this->model->get_languages_list() as $lang ) {
 			$url = add_query_arg( 'deactivate-polylang', 1, $links_model->home_url( $lang ) );
 			// Don't redefine vip_safe_wp_remote_get() as it has not the same signature as wp_remote_get()
-			$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $url ) ) : wp_remote_get( esc_url_raw( $url ) );
+			$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( sanitize_url( $url ) ) : wp_remote_get( sanitize_url( $url ) );
 			$response_code = wp_remote_retrieve_response_code( $response );
 
 			if ( 200 != $response_code ) {
