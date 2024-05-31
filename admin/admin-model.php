@@ -390,7 +390,7 @@ class PLL_Admin_Model extends PLL_Model {
 			$flag = PLL_Language::get_flag_information( $args['flag'] );
 
 			if ( ! empty( $flag['url'] ) ) {
-				$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( esc_url_raw( $flag['url'] ) ) : wp_remote_get( esc_url_raw( $flag['url'] ) );
+				$response = function_exists( 'vip_safe_wp_remote_get' ) ? vip_safe_wp_remote_get( sanitize_url( $flag['url'] ) ) : wp_remote_get( sanitize_url( $flag['url'] ) );
 			}
 
 			if ( empty( $response ) || is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {

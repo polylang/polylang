@@ -54,7 +54,7 @@ $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' :
 					<span class="dashicons dashicons-visibility"></span><?php esc_html_e( 'Help', 'polylang' ); ?>
 				</label>
 				<span id="screenshot">
-					<img src="<?php echo esc_url_raw( esc_url( plugins_url( $help_screenshot, POLYLANG_FILE ) ) ); ?>" />
+					<img src="<?php echo esc_url( plugins_url( $help_screenshot, POLYLANG_FILE ) ); ?>" />
 				</span>
 			</p>
 		</div>
