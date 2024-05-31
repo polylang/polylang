@@ -222,7 +222,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'too small'  => array(
 				'value'           => -2,
 				'sanitized_value' => -2,
-				'expected_valid'  => new WP_Error( 'rest_out_of_bounds', '%s must be between 0 (inclusive) and 9223372036854775807 (inclusive)' ),
+				'expected_valid'  => new WP_Error( 'rest_out_of_bounds', '%s must be between 0 (inclusive) and ' . PHP_INT_MAX . ' (inclusive)' ),
 			),
 		);
 	}
