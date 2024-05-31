@@ -407,7 +407,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 		 */
 		$flag = apply_filters( 'pll_flag', $flag, $code );
 
-		$flag['url'] = esc_url_raw( $flag['url'] );
+		$flag['url'] = sanitize_url( $flag['url'] );
 
 		if ( empty( $flag['src'] ) ) {
 			$flag['src'] = esc_url( set_url_scheme( $flag['url'], 'relative' ) );

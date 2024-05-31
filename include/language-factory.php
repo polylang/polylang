@@ -273,7 +273,7 @@ class PLL_Language_Factory {
 				$flags['custom_flag']['src'] = esc_url( set_url_scheme( $flags['custom_flag']['url'], 'relative' ) );
 			}
 
-			$flags['custom_flag']['url'] = esc_url_raw( $flags['custom_flag']['url'] );
+			$flags['custom_flag']['url'] = sanitize_url( $flags['custom_flag']['url'] );
 		} else {
 			unset( $flags['custom_flag'] );
 		}
