@@ -3,6 +3,9 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+use WP_Syntex\Polylang\Options\Registry as Options_Registry;
+
 /**
  * Polylang activation / de-activation class
  *
@@ -87,7 +90,8 @@ class PLL_Install extends PLL_Install_Base {
 	 * @return void
 	 */
 	protected function _activate() {
-		$options = $this->get_options();
+		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register_options' ) );
+		$options = new Options();
 
 		if ( ! empty( $options['version'] ) ) {
 			// Check if we will be able to upgrade.
@@ -96,8 +100,9 @@ class PLL_Install extends PLL_Install_Base {
 			}
 		} else {
 			$options['version'] = POLYLANG_VERSION;
-			$this->save_options( $options );
 		}
+
+		$options->save(); // Force save here to prevent any conflicts with another instance of `Options`.
 
 		// Avoid 1 query on every pages if no wpml strings is registered
 		if ( ! get_option( 'polylang_wpml_strings' ) ) {
