@@ -6,7 +6,7 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Error;
-use WP_Syntex\Polylang\Options\Primitive\Boolean;
+use WP_Syntex\Polylang\Options\Primitive\Abstract_Boolean;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -17,7 +17,20 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-class Browser extends Boolean {
+class Browser extends Abstract_Boolean {
+	/**
+	 * Returns option key.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 *
+	 * @phpstan-return 'browser'
+	 */
+	public static function key(): string {
+		return 'browser';
+	}
+
 	/**
 	 * Sanitizes option's value.
 	 * Can populate the `$errors` property with blocking and non-blocking errors: in case of non-blocking errors,
@@ -38,5 +51,16 @@ class Browser extends Boolean {
 		/** @var bool|WP_Error */
 		$value = parent::sanitize( $value, $options );
 		return $value;
+	}
+
+	/**
+	 * Returns the description used in the JSON schema.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	protected function get_description(): string {
+		return __( 'Detect preferred browser language on front page: true to detect, false to not detect.', 'polylang' );
 	}
 }

@@ -15,7 +15,13 @@ class Media_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$options                        = array_merge( PLL_Install::get_default_options(), array( 'media_support' => 1, 'default_lang' => 'en' ) );
+		$options = self::create_options(
+			array(
+				'default_lang'  => 'en',
+				'media_support' => true,
+			)
+		);
+
 		$model                          = new PLL_Admin_Model( $options );
 		$links_model                    = new PLL_Links_Default( $model );
 		$this->pll_admin                = new PLL_Admin( $links_model );

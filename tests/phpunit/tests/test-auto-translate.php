@@ -15,19 +15,15 @@ class Auto_Translate_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		self::$model->options['post_types'] = array(
-			'trcpt' => 'trcpt',
-		);
-		self::$model->options['taxonomies'] = array(
-			'trtax' => 'trtax',
-		);
-
 		register_post_type( 'trcpt', array( 'public' => true, 'has_archive' => true ) ); // Translated custom post type with archives.
 		register_taxonomy( 'trtax', 'trcpt' ); // Translated custom tax.
 
+		self::$model->options['post_types'] = array( 'trcpt' );
+		self::$model->options['taxonomies'] = array( 'trtax' );
+
 		$options = array(
-			'post_types' => array( 'trcpt' => 'trcpt' ),
-			'taxonomies' => array( 'trtax' => 'trtax' ),
+			'post_types' => array( 'trcpt' ),
+			'taxonomies' => array( 'trtax' ),
 		);
 
 		$frontend = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();

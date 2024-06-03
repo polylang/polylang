@@ -5,16 +5,16 @@
 
 namespace WP_Syntex\Polylang\Options\Business;
 
-use WP_Syntex\Polylang\Options\Primitive\Abstract_String;
+use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class defining language slug string option.
+ * Class defining the "Determine how the current language is defined" option.
  *
  * @since 3.7
  */
-class Language_Slug extends Abstract_String {
+class Force_Lang extends Abstract_Option {
 	/**
 	 * Returns option key.
 	 *
@@ -22,10 +22,21 @@ class Language_Slug extends Abstract_String {
 	 *
 	 * @return string
 	 *
-	 * @phpstan-return 'default_lang'
+	 * @phpstan-return 'force_lang'
 	 */
 	public static function key(): string {
-		return 'default_lang';
+		return 'force_lang';
+	}
+
+	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return int
+	 */
+	protected function get_default() {
+		return 1;
 	}
 
 	/**
@@ -35,13 +46,13 @@ class Language_Slug extends Abstract_String {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: 'string', pattern: '^[a-z_-]+$'}
+	 * @phpstan-return array{type: 'integer', enum: list<0|1|2|3>}
 	 */
 	protected function get_data_structure(): array {
-		$string_schema            = parent::get_data_structure();
-		$string_schema['pattern'] = '^[a-z_-]+$';
-
-		return $string_schema;
+		return array(
+			'type' => 'integer',
+			'enum' => array( 0, 1, 2, 3 ),
+		);
 	}
 
 	/**
@@ -52,6 +63,6 @@ class Language_Slug extends Abstract_String {
 	 * @return string
 	 */
 	protected function get_description(): string {
-		return __( 'Slug of the default language.', 'polylang' );
+		return __( 'Determine how the current language is defined.', 'polylang' );
 	}
 }

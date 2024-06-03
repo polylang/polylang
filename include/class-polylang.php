@@ -3,6 +3,9 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+use WP_Syntex\Polylang\Options\Registry as Options_Registry;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly
 }
@@ -165,19 +168,22 @@ class Polylang {
 	 */
 	public function init() {
 		self::define_constants();
-		$options = get_option( 'polylang' );
+
+		// Plugin options.
+		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ) );
+		$options = new Options();
 
 		// Plugin upgrade
-		if ( $options && version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
-			$upgrade = new PLL_Upgrade( $options );
-			if ( ! $upgrade->upgrade() ) { // If the version is too old
-				return;
+		if ( ! empty( $options['version'] ) ) {
+			if ( version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
+				$upgrade = new PLL_Upgrade( $options );
+				if ( ! $upgrade->upgrade() ) { // If the version is too old
+					return;
+				}
 			}
-		}
-
-		// In some edge cases, it's possible that no options were found in the database. Load default options as we need some.
-		if ( ! $options ) {
-			$options = PLL_Install::get_default_options();
+		} else {
+			// In some edge cases, it's possible that no options were found in the database.
+			$options['version'] = POLYLANG_VERSION;
 		}
 
 		/**
