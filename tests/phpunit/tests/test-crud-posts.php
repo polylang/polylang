@@ -22,7 +22,7 @@ class CRUD_Posts_Test extends PLL_UnitTestCase {
 
 		register_taxonomy( 'custom_tax', 'post' );
 
-		$options = array( 'taxonomies' => array( 'custom_tax' => 'custom_tax' ) );
+		$options = array( 'taxonomies' => array( 'custom_tax' ) );
 		$this->pll_admin = ( new PLL_Context_Admin( array( 'options' => $options ) ) )->get();
 	}
 

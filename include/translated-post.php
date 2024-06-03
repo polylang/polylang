@@ -148,7 +148,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		if ( false === $post_types ) {
 			$post_types = array( 'post' => 'post', 'page' => 'page', 'wp_block' => 'wp_block' );
 
-			if ( ! empty( $this->model->options['post_types'] ) && is_array( $this->model->options['post_types'] ) ) {
+			if ( ! empty( $this->model->options['post_types'] ) ) {
 				$post_types = array_merge( $post_types, array_combine( $this->model->options['post_types'], $this->model->options['post_types'] ) );
 			}
 

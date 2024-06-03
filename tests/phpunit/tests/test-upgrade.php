@@ -17,10 +17,12 @@ class Upgrade_Test extends PLL_UnitTestCase {
 		update_user_meta( get_current_user_id(), 'pll_filter_content', 'en' );
 		remove_all_actions( 'admin_init' ); // Avoid to send WP headers when calling `do_action( 'admin_init' )`.
 
-		$options                 = PLL_Install::get_default_options();
-		$options['version']      = '3.3';
-		$options['default_lang'] = 'en';
-		update_option( 'polylang', $options );
+		$options = self::create_options(
+			array(
+				'default_lang' => 'en',
+				'version'      => '3.3',
+			)
+		);
 		$model       = new PLL_Admin_Model( $options );
 		$links_model = new PLL_Links_Default( $model );
 		$admin       = new PLL_Admin( $links_model );
@@ -71,6 +73,6 @@ class Upgrade_Test extends PLL_UnitTestCase {
 		}
 
 		$this->assertSameSets( $expected_transient, get_transient( 'pll_languages_list' ), 'Old pll_languages_list transient should have been deleted during upgrade.' );
-		$this->assertSame( POLYLANG_VERSION, get_option( 'polylang' )['version'], 'Polylang version should have been updated.' );
+		$this->assertSame( POLYLANG_VERSION, $admin->options['version'], 'Polylang version should have been updated.' );
 	}
 }

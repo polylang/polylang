@@ -181,7 +181,6 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			}
 		}
 
-		update_option( 'polylang', $this->options );
 		return $locations;
 	}
 
@@ -263,18 +262,14 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return void
 	 */
 	public function delete_nav_menu( $term_id ) {
-		if ( isset( $this->options['nav_menus'] ) ) {
-			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
-				foreach ( $locations as $loc => $languages ) {
-					foreach ( $languages as $lang => $menu_id ) {
-						if ( $menu_id === $term_id ) {
-							unset( $this->options['nav_menus'][ $theme ][ $loc ][ $lang ] );
-						}
+		foreach ( $this->options['nav_menus'] as $theme => $locations ) {
+			foreach ( $locations as $loc => $languages ) {
+				foreach ( $languages as $lang => $menu_id ) {
+					if ( $menu_id === $term_id ) {
+						unset( $this->options['nav_menus'][ $theme ][ $loc ][ $lang ] );
 					}
 				}
 			}
-
-			update_option( 'polylang', $this->options );
 		}
 	}
 }

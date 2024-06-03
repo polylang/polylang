@@ -1,9 +1,13 @@
 <?php
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Test case offering a standardized way to test blogs in multisite.
  */
 abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
+	use PLL_Options_Trait;
+
 	/**
 	 * Blog in plain permalinks without Polylang.
 	 *
@@ -259,15 +263,13 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	/**
 	 * Returns an instance of the main Polylang object along required instantiated classes for the tests.
 	 *
-	 * @param array $options Plugin options.
-	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Admin`'s init or not. Default is `true`.
+	 * @param array|Options|null $options Plugin options.
+	 * @param bool               $init    Trigger `PLL_Links_Model`'s and `PLL_Admin`'s init or not. Default is `true`.
 	 * @return PLL_Admin Polylang main class instance.
 	 */
-	protected function get_pll_admin_env( array $options = array(), bool $init = true ): PLL_Admin {
-		if ( empty( $options ) ) {
-			$options = (array) get_option( 'polylang', array() );
-		} else {
-			$options = array_merge( PLL_Install::get_default_options(), $options );
+	protected function get_pll_admin_env( $options = null, bool $init = true ): PLL_Admin {
+		if ( is_null( $options ) || is_array( $options ) ) {
+			$options = self::create_options( (array) $options );
 		}
 
 		$model       = new PLL_Admin_Model( $options );
@@ -285,15 +287,13 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	/**
 	 * Returns an instance of the main Polylang object along required instantiated classes for the tests.
 	 *
-	 * @param array $options Plugin options.
-	 * @param bool  $init    Trigger `PLL_Links_Model`'s and `PLL_Frontend`'s init or not. Default is `true`.
+	 * @param array|Options|null $options Plugin options.
+	 * @param bool               $init    Trigger `PLL_Links_Model`'s and `PLL_Frontend`'s init or not. Default is `true`.
 	 * @return PLL_Frontend Polylang main class instance.
 	 */
-	protected function get_pll_frontend_env( array $options = array(), bool $init = true ): PLL_Frontend {
-		if ( empty( $options ) ) {
-			$options = (array) get_option( 'polylang', array() );
-		} else {
-			$options = array_merge( PLL_Install::get_default_options(), $options );
+	protected function get_pll_frontend_env( $options = null, bool $init = true ): PLL_Frontend {
+		if ( is_null( $options ) || is_array( $options ) ) {
+			$options = self::create_options( (array) $options );
 		}
 
 		$model       = new PLL_Model( $options );

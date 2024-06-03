@@ -886,7 +886,7 @@ class PLL_Model {
 		}
 
 		// We have at least one 3rd party language taxonomy.
-		$known_taxonomies = ! empty( $this->options['language_taxonomies'] ) && is_array( $this->options['language_taxonomies'] ) ? $this->options['language_taxonomies'] : array();
+		$known_taxonomies = $this->options['language_taxonomies'];
 		$new_taxonomies   = array_diff( $registered_taxonomies, $known_taxonomies );
 
 		if ( empty( $new_taxonomies ) ) {
@@ -904,7 +904,6 @@ class PLL_Model {
 
 		// Keep the previous values, so this is triggered only once per taxonomy.
 		$this->options['language_taxonomies'] = array_merge( $known_taxonomies, $new_taxonomies );
-		update_option( 'polylang', $this->options );
 	}
 
 	/**
