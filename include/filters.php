@@ -361,7 +361,14 @@ class PLL_Filters {
 	 * @return int
 	 */
 	public function translate_page_for_privacy_policy( $id ) {
-		return empty( $this->curlang ) ? $id : $this->model->post->get( $id, $this->curlang );
+		static $once = false; // Avoid infinite loop.
+
+		if ( ! $once && ! empty( $this->curlang ) ) {
+			$once = true;
+			return $this->model->post->get( $id, $this->curlang );
+		}
+
+		return $id;
 	}
 
 	/**
@@ -376,7 +383,10 @@ class PLL_Filters {
 	 * @return array
 	 */
 	public function fix_privacy_policy_page_editing( $caps, $cap, $user_id, $args ) {
-		if ( in_array( $cap, array( 'edit_page', 'edit_post', 'delete_page', 'delete_post' ) ) ) {
+		static $once = true; // Avoid infinite loop.
+
+		if ( ! $once && in_array( $cap, array( 'edit_page', 'edit_post', 'delete_page', 'delete_post' ) ) ) {
+			$once = true;
 			$privacy_page = get_option( 'wp_page_for_privacy_policy' );
 			if ( $privacy_page && array_intersect( $args, $this->model->post->get_translations( $privacy_page ) ) ) {
 				$caps = array_merge( $caps, map_meta_cap( 'manage_privacy_options', $user_id ) );
