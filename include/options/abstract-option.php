@@ -62,7 +62,7 @@ abstract class Abstract_Option {
 			return;
 		}
 
-		$value = rest_sanitize_value_from_schema( $this->prepare( $value ), $this->get_specific_schema(), static::key() );
+		$value = rest_sanitize_value_from_schema( $this->prepare( $value ), $this->get_data_structure(), static::key() );
 
 		if ( ! is_wp_error( $value ) ) {
 			$this->value = $value;
@@ -94,7 +94,7 @@ abstract class Abstract_Option {
 	public function set( $value, Options $options ): bool {
 		$this->errors = new WP_Error(); // Reset errors.
 		$value        = $this->prepare( $value );
-		$is_valid     = rest_validate_value_from_schema( $value, $this->get_specific_schema(), static::key() );
+		$is_valid     = rest_validate_value_from_schema( $value, $this->get_data_structure(), static::key() );
 
 		if ( is_wp_error( $is_valid ) ) {
 			// Blocking validation error.
@@ -158,7 +158,7 @@ abstract class Abstract_Option {
 				'description' => $this->get_description(),
 				'context'     => array( 'edit' ),
 			),
-			$this->get_specific_schema()
+			$this->get_data_structure()
 		);
 
 		return $this->schema;
@@ -199,7 +199,7 @@ abstract class Abstract_Option {
 	 * @return mixed The sanitized value. An instance of `WP_Error` in case of blocking error.
 	 */
 	protected function sanitize( $value, Options $options ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return rest_sanitize_value_from_schema( $value, $this->get_specific_schema(), static::key() );
+		return rest_sanitize_value_from_schema( $value, $this->get_data_structure(), static::key() );
 	}
 
 	/**
@@ -220,7 +220,7 @@ abstract class Abstract_Option {
 	 *
 	 * @phpstan-return array{type: SchemaType}
 	 */
-	abstract protected function get_specific_schema(): array;
+	abstract protected function get_data_structure(): array;
 
 	/**
 	 * Returns the description used in the JSON schema.

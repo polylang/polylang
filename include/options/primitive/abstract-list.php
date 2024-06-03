@@ -69,7 +69,7 @@ abstract class Abstract_List extends Abstract_Option {
 	 *
 	 * @phpstan-return array{type: 'array', items: array{type: SchemaType}}
 	 */
-	protected function get_specific_schema(): array {
+	protected function get_data_structure(): array {
 		return array(
 			'type'  => 'array',
 			'items' => array(

@@ -50,7 +50,7 @@ class First_Activation extends Abstract_Option {
 	 *
 	 * @phpstan-return array{type: 'integer', minimum: 0, maximum: int<0, max>}
 	 */
-	protected function get_specific_schema(): array {
+	protected function get_data_structure(): array {
 		return array(
 			'type'    => 'integer',
 			'minimum' => 0,

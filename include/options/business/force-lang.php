@@ -48,7 +48,7 @@ class Force_Lang extends Abstract_Option {
 	 *
 	 * @phpstan-return array{type: 'integer', enum: list<0|1|2|3>}
 	 */
-	protected function get_specific_schema(): array {
+	protected function get_data_structure(): array {
 		return array(
 			'type' => 'integer',
 			'enum' => array( 0, 1, 2, 3 ),

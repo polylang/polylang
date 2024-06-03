@@ -37,8 +37,8 @@ class Language_Slug extends Abstract_String {
 	 *
 	 * @phpstan-return array{type: 'string', pattern: '^[a-z_-]+$'}
 	 */
-	protected function get_specific_schema(): array {
-		$string_schema            = parent::get_specific_schema();
+	protected function get_data_structure(): array {
+		$string_schema            = parent::get_data_structure();
 		$string_schema['pattern'] = '^[a-z_-]+$';
 
 		return $string_schema;

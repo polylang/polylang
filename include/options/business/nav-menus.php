@@ -64,7 +64,7 @@ class Nav_Menus extends Abstract_Option {
 	 *     additionalProperties: false
 	 * }
 	 */
-	protected function get_specific_schema(): array {
+	protected function get_data_structure(): array {
 		return array(
 			'type'                 => 'object', // Correspond to associative array in PHP, @see{https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
 			'patternProperties'    => array(

@@ -36,7 +36,7 @@ abstract class Abstract_Boolean extends Abstract_Option {
 	 *
 	 * @phpstan-return array{type: 'boolean'}
 	 */
-	protected function get_specific_schema(): array {
+	protected function get_data_structure(): array {
 		return array(
 			'type' => 'boolean',
 		);
