@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 /**
  * Main class for Polylang wizard.
  *
@@ -86,9 +88,9 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public static function start_wizard( $network_wide ) {
-		$options = get_option( 'polylang' );
+		$options = (array) get_option( Options::OPTION_NAME, array() );
 
-		if ( wp_doing_ajax() || $network_wide || ! empty( $options ) ) {
+		if ( wp_doing_ajax() || $network_wide || ! empty( $options['version'] ) ) {
 			return;
 		}
 		set_transient( 'pll_activation_redirect', 1, 30 );

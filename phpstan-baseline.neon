@@ -436,21 +436,6 @@ parameters:
 			path: frontend/frontend.php
 
 		-
-			message: "#^Property PLL_Base\\:\\:\\$options \\(array\\) does not accept mixed\\.$#"
-			count: 1
-			path: include/base.php
-
-		-
-			message: "#^Cannot access offset 'version' on mixed\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
-			message: "#^Parameter \\#1 \\$version1 of function version_compare expects string, mixed given\\.$#"
-			count: 1
-			path: include/class-polylang.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$options\\.$#"
 			count: 1
 			path: include/crud-posts.php
@@ -644,16 +629,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, bool\\|string given\\.$#"
 			count: 1
 			path: include/widget-languages.php
-
-		-
-			message: "#^Cannot access offset 'version' on mixed\\.$#"
-			count: 1
-			path: install/install.php
-
-		-
-			message: "#^Parameter \\#1 \\$version1 of function version_compare expects string, mixed given\\.$#"
-			count: 1
-			path: install/install.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$_last_checked\\.$#"
@@ -854,11 +829,6 @@ parameters:
 			message: "#^Method PLL_Settings_Module\\:\\:get_form\\(\\) should return string but returns string\\|false\\.$#"
 			count: 1
 			path: settings/settings-module.php
-
-		-
-			message: "#^Cannot access property \\$name on PLL_Language\\|false\\.$#"
-			count: 1
-			path: settings/settings-url.php
 
 		-
 			message: "#^Parameter \\#1 \\$post of function _get_page_link expects int\\|WP_Post, int\\|null given\\.$#"

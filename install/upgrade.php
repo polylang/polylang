@@ -115,7 +115,6 @@ class PLL_Upgrade {
 
 		$this->options['previous_version'] = $this->options['version']; // Remember the previous version of Polylang since v1.7.7
 		$this->options['version'] = POLYLANG_VERSION;
-		update_option( 'polylang', $this->options );
 	}
 
 	/**

@@ -6,7 +6,7 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Error;
-use WP_Syntex\Polylang\Options\Primitive\List_Type;
+use WP_Syntex\Polylang\Options\Primitive\Abstract_List;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-abstract class Abstract_Object_Types extends List_Type {
+abstract class Abstract_Object_Types extends Abstract_List {
 	/**
 	 * Sanitizes option's value.
 	 * Can return a `WP_Error` object in case of blocking sanitization error: the value must be rejected then.
@@ -42,7 +42,7 @@ abstract class Abstract_Object_Types extends List_Type {
 	}
 
 	/**
-	 * Returns non-core, public object types.
+	 * Returns non-core object types.
 	 *
 	 * @since 3.7
 	 *

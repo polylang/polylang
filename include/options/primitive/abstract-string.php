@@ -13,10 +13,19 @@ defined( 'ABSPATH' ) || exit;
  * Class defining single string option.
  *
  * @since 3.7
- *
- * @phpstan-import-type SchemaType from Abstract_Option
  */
-class String_Type extends Abstract_Option {
+abstract class Abstract_String extends Abstract_Option {
+	/**
+	 * Returns the default value.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	protected function get_default() {
+		return '';
+	}
+
 	/**
 	 * Returns the JSON schema part specific to this option.
 	 *
@@ -24,9 +33,9 @@ class String_Type extends Abstract_Option {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: SchemaType}
+	 * @phpstan-return array{type: 'string'}
 	 */
-	protected function get_specific_schema(): array {
+	protected function get_data_structure(): array {
 		return array(
 			'type' => 'string',
 		);
