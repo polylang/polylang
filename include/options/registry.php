@@ -47,7 +47,7 @@ class Registry {
 	 * @param Options $options Instance of the options.
 	 * @return void
 	 */
-	public static function register_options( Options $options ): void {
+	public static function register( Options $options ): void {
 		array_map( array( $options, 'register' ), static::OPTIONS );
 	}
 }

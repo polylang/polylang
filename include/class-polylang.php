@@ -170,7 +170,7 @@ class Polylang {
 		self::define_constants();
 
 		// Plugin options.
-		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register_options' ) );
+		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ) );
 		$options = new Options();
 
 		// Plugin upgrade

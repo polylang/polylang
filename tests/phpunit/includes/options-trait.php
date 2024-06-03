@@ -28,7 +28,7 @@ trait PLL_Options_Trait {
 				return POLYLANG_BASENAME === $value;
 			}
 		);
-		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register_options' ) );
+		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ) );
 		return new Options();
 	}
 }

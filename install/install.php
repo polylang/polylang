@@ -90,7 +90,7 @@ class PLL_Install extends PLL_Install_Base {
 	 * @return void
 	 */
 	protected function _activate() {
-		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register_options' ) );
+		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ) );
 		$options = new Options();
 
 		if ( ! empty( $options['version'] ) ) {
