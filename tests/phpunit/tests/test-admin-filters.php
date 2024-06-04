@@ -132,22 +132,21 @@ class Admin_Filters_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_wp_page_for_privacy_policy_option_read_should_not_trigger_infinite_loop() {
-		new PLL_Context_Frontend();
-		// Needs a post to fully test current_user_can() function.
+		$this->pll_env = ( new PLL_Context_Frontend() )->get();
+
 		$post_id = self::factory()->post->create();
+
 		add_filter(
 			'get_terms',
-			function( $terms, $taxonomy, $query_vars, $query ) use( $post_id ) {
+			function ( $terms ) use ( $post_id ) {
+				// Use a real post id to fully check current_user_can() function.
 				current_user_can( 'edit_post', $post_id );
 				return $terms;
 			}
-			,
-			10,
-			4
 		);
 
 		$wp_page_for_privacy_policy_option = get_option( 'wp_page_for_privacy_policy' );
 
-		$this->assertTrue( true );
+		$this->assertSame( 0, $wp_page_for_privacy_policy_option );
 	}
 }
