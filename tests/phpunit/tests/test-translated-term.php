@@ -70,10 +70,10 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 		$this->assertEquals( self::$model->term->get_translation( $en, 'de' ), $de );
 		$this->assertEquals( self::$model->term->get_translation( $de, 'en' ), $en );
 
-		$this->assertFalse( self::$model->term->get_translation( $en, 'fr' ) );
-		$this->assertFalse( self::$model->term->get_translation( $fr, 'en' ) );
-		$this->assertFalse( self::$model->term->get_translation( $fr, 'de' ) );
-		$this->assertFalse( self::$model->term->get_translation( $de, 'fr' ) );
+		$this->assertSame( 0, self::$model->term->get_translation( $en, 'fr' ) );
+		$this->assertSame( 0, self::$model->term->get_translation( $fr, 'en' ) );
+		$this->assertSame( 0, self::$model->term->get_translation( $fr, 'de' ) );
+		$this->assertSame( 0, self::$model->term->get_translation( $de, 'fr' ) );
 	}
 
 	public function test_translation_group_after_term_translation_deletion() {
@@ -90,8 +90,8 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 
 		self::$model->term->save_translations( $en, compact( 'en' ) );
 
-		$this->assertFalse( self::$model->term->get_translation( $en, 'fr' ), $fr );
-		$this->assertFalse( self::$model->term->get_translation( $fr, 'en' ), $en );
+		$this->assertSame( 0, self::$model->term->get_translation( $en, 'fr' ), $fr );
+		$this->assertSame( 0, self::$model->term->get_translation( $fr, 'en' ), $en );
 
 		$translations_fr = self::$model->term->get_translations( $fr );
 		$translation_group_fr = wp_get_object_terms( $translations_fr, 'term_translations' );

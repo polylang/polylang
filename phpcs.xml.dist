@@ -8,7 +8,7 @@
 
 	<file>.</file>
 
-	<config name="testVersion" value="7.0-"/><!-- PHPCompatibilityWP -->
+	<config name="testVersion" value="7.2-"/><!-- PHPCompatibilityWP -->
 	<config name="minimum_supported_wp_version" value="6.2"/>
 
 	<rule ref="PHPCompatibilityWP"/>

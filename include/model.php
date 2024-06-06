@@ -923,7 +923,7 @@ class PLL_Model {
 	 * @phpstan-param non-empty-string $name
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
-	protected function update_secondary_language_terms( $slug, $name, PLL_Language $language = null, array $taxonomies = array() ) {
+	protected function update_secondary_language_terms( $slug, $name, ?PLL_Language $language = null, array $taxonomies = array() ) {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
 
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {

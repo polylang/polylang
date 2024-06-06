@@ -109,20 +109,20 @@ function pll_default_language( $field = 'slug' ) {
  *
  * @api
  * @since 0.5
- * @since 3.4 Returns 0 instead of false.
- * @since 3.4 $lang accepts PLL_Language or string.
+ * @since 3.4 Returns `0` instead of `false` if not translated or if the post has no language.
+ * @since 3.4 $lang accepts `PLL_Language` or string.
  *
  * @param int                 $post_id Post ID.
  * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
- * @return int|false The translation post ID if exists, otherwise the passed ID. False if the passed object has no language or if the language doesn't exist.
+ * @return int The translation post ID if exists. 0 if not translated, the post has no language or if the language doesn't exist.
  *
- * @phpstan-return int<0, max>|false
+ * @phpstan-return int<0, max>
  */
 function pll_get_post( $post_id, $lang = '' ) {
 	$lang = $lang ?: pll_current_language();
 
 	if ( empty( $lang ) ) {
-		return false;
+		return 0;
 	}
 
 	return PLL()->model->post->get( $post_id, $lang );
@@ -133,20 +133,20 @@ function pll_get_post( $post_id, $lang = '' ) {
  *
  * @api
  * @since 0.5
- * @since 3.4 Returns 0 instead of false.
+ * @since 3.4 Returns `0` instead of `false` if not translated or if the term has no language.
  * @since 3.4 $lang accepts PLL_Language or string.
  *
  * @param int                 $term_id Term ID.
  * @param PLL_Language|string $lang    Optional language (object or slug), defaults to the current language.
- * @return int|false The translation term ID if exists, otherwise the passed ID. False if the passed object has no language or if the language doesn't exist.
+ * @return int The translation term ID if exists. 0 if not translated, the term has no language or if the language doesn't exist.
  *
- * @phpstan-return int<0, max>|false
+ * @phpstan-return int<0, max>
  */
-function pll_get_term( $term_id, $lang = null ) {
+function pll_get_term( $term_id, $lang = '' ) {
 	$lang = $lang ?: pll_current_language();
 
 	if ( empty( $lang ) ) {
-		return false;
+		return 0;
 	}
 
 	return PLL()->model->term->get( $term_id, $lang );

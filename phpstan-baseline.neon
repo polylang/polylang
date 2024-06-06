@@ -456,11 +456,6 @@ parameters:
 			path: include/crud-posts.php
 
 		-
-			message: "#^Method PLL_CRUD_Posts\\:\\:wp_insert_post_parent\\(\\) should return int but returns int\\|false\\.$#"
-			count: 1
-			path: include/crud-posts.php
-
-		-
 			message: "#^Cannot access property \\$slug on PLL_Language\\|false\\.$#"
 			count: 1
 			path: include/crud-terms.php

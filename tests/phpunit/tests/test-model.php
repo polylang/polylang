@@ -15,8 +15,6 @@ class Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_languages_list() {
-		self::$model->post->register_taxonomy(); // needed otherwise posts are not counted
-
 		$this->assertSame( array( 'en', 'fr' ), self::$model->get_languages_list( array( 'fields' => 'slug' ) ) );
 		$this->assertSame( array( 'English', 'Français' ), self::$model->get_languages_list( array( 'fields' => 'name' ) ) );
 		$this->assertSame( array(), self::$model->get_languages_list( array( 'hide_empty' => true ) ) );
