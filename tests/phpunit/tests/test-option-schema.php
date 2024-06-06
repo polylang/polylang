@@ -469,7 +469,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 
 		$this->assertSame( $sanitized_value, $option->get() );
 
-		$valid = rest_validate_value_from_schema( $value, $option->get_schema(), $option->key() );
+		$valid = rest_validate_value_from_schema( $value, $option->get_schema(), $option::key() );
 
 		if ( is_wp_error( $expected_valid ) ) {
 			$this->assertInstanceOf( WP_Error::class, $valid );
