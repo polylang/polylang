@@ -297,14 +297,6 @@ class PLL_CRUD_Terms {
 			return $slug;
 		}
 
-		if ( ! $slug ) {
-			$slug = sanitize_title( $this->pre_term_name );
-		}
-
-		if ( ! term_exists( $slug, $taxonomy ) ) {
-			return $slug;
-		}
-
 		/**
 		 * Filters the subsequently inserted term language.
 		 *
@@ -332,6 +324,18 @@ class PLL_CRUD_Terms {
 			 * @param string       $slug     Term slug
 			 */
 			$parent = apply_filters( 'pll_inserted_term_parent', 0, $taxonomy, $slug );
+		}
+
+		if ( ! $slug ) {
+			if ( $this->model->term_exists( $this->pre_term_name, $taxonomy, $parent, $lang ) ) {
+				return $slug;
+			} else {
+				$slug = sanitize_title( $this->pre_term_name );
+			}
+		}
+
+		if ( ! term_exists( $slug, $taxonomy ) ) {
+			return $slug;
 		}
 
 		$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
