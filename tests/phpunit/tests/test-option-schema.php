@@ -5,7 +5,7 @@ use WP_Syntex\Polylang\Options\Business;
 /**
  * Test the schema of all classes extending {@see WP_Syntex\Polylang\Options\Abstract_Option}.
  */
-class Option_Schema_Test extends WP_UnitTestCase {
+class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider boolean_provider
 	 *
