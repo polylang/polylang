@@ -13,13 +13,13 @@ if ( isset( $term_id ) ) {
 	// Edit term form ?>
 	<th scope="row"><?php esc_html_e( 'Translations', 'polylang' ); ?></th>
 	<td>
-<?php
+	<?php
 }
 else {
 	// Add term form
 	?>
 	<p><?php esc_html_e( 'Translations', 'polylang' ); ?></p>
-<?php
+	<?php
 }
 ?>
 <table class="widefat term-translations"  id="<?php echo isset( $term_id ) ? 'edit' : 'add'; ?>-term-translations">
@@ -63,7 +63,7 @@ else {
 				?>
 				<td class = "hidden"><?php echo $add_link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
 				<td class = "pll-edit-column"><?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput ?></td>
-<?php
+				<?php
 			}
 			?>
 			<td class = "pll-translation-column">
@@ -84,7 +84,7 @@ else {
 				?>
 			</td>
 		</tr>
-<?php
+		<?php
 	} // End foreach
 	?>
 </table>
@@ -94,5 +94,5 @@ if ( isset( $term_id ) ) {
 	// Edit term form
 	?>
 	</td>
-<?php
+	<?php
 }

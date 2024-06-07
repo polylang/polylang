@@ -63,7 +63,7 @@ defined( 'ABSPATH' ) || exit;
 				?>
 			</td>
 		</tr>
-<?php
+		<?php
 	}
 	?>
 </table>
