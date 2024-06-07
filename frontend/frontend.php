@@ -64,6 +64,11 @@ class PLL_Frontend extends PLL_Base {
 	public $filters_widgets;
 
 	/**
+	 * @var PLL_Canonical
+	 */
+	protected $canonical;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
