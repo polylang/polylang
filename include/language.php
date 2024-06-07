@@ -373,7 +373,10 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * }
 	 */
 	public static function get_flag_information( $code ) {
-		$default_flag = array( 'url' => '' );
+		$default_flag = array(
+			'url' => '',
+			'src' => '',
+		);
 
 		// Polylang builtin flags.
 		if ( ! empty( $code ) && is_readable( POLYLANG_DIR . ( $file = '/flags/' . $code . '.png' ) ) ) {
