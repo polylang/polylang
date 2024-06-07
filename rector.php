@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Php54\Rector\Array_\LongArrayToShortArrayRector;
+use Rector\Php71\Rector\List_\ListToArrayDestructRector;
 
 return RectorConfig::configure()
 	->withPaths(
@@ -29,5 +30,6 @@ return RectorConfig::configure()
 	->withSkip(
 		[
 			LongArrayToShortArrayRector::class,
+			ListToArrayDestructRector::class,
 		]
 	);
