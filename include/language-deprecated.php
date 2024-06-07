@@ -17,7 +17,7 @@ abstract class PLL_Language_Deprecated {
 	 *
 	 * @var string[][]
 	 */
-	const DEPRECATED_TERM_PROPERTIES = array(
+	public const DEPRECATED_TERM_PROPERTIES = array(
 		'term_taxonomy_id'    => array( 'language', 'term_taxonomy_id' ),
 		'count'               => array( 'language', 'count' ),
 		'tl_term_id'          => array( 'term_language', 'term_id' ),
@@ -32,7 +32,7 @@ abstract class PLL_Language_Deprecated {
 	 *
 	 * @var string[]
 	 */
-	const DEPRECATED_URL_PROPERTIES = array(
+	public const DEPRECATED_URL_PROPERTIES = array(
 		'home_url'   => 'get_home_url',
 		'search_url' => 'get_search_url',
 	);
@@ -122,8 +122,8 @@ abstract class PLL_Language_Deprecated {
 		// Protected or private property.
 		$visibility = $ref->isPrivate() ? 'private' : 'protected';
 		$trace      = debug_backtrace(); // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection, WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-		$file       = isset( $trace[0]['file'] ) ? $trace[0]['file'] : '';
-		$line       = isset( $trace[0]['line'] ) ? $trace[0]['line'] : 0;
+		$file       = $trace[0]['file'] ?? '';
+		$line       = $trace[0]['line'] ?? 0;
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			esc_html(
 				sprintf(

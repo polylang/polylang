@@ -57,13 +57,13 @@ class PLL_Walker extends Walker {
 	 */
 	protected function maybe_fix_walk_args( &$max_depth, &$args ) {
 		if ( ! is_array( $max_depth ) ) {
-			$args = isset( $args[0] ) ? $args[0] : array();
+			$args = $args[0] ?? array();
 			return;
 		}
 
 		// Backward compatibility with Polylang < 2.6.7
 		_doing_it_wrong(
-			__CLASS__ . '::walk()',
+			self::class . '::walk()',
 			'The method expects an integer as second parameter.',
 			'2.6.7'
 		);

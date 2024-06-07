@@ -119,7 +119,7 @@ function pll_default_language( $field = 'slug' ) {
  * @phpstan-return int<0, max>
  */
 function pll_get_post( $post_id, $lang = '' ) {
-	$lang = $lang ? $lang : pll_current_language();
+	$lang = $lang ?: pll_current_language();
 
 	if ( empty( $lang ) ) {
 		return 0;
@@ -143,7 +143,7 @@ function pll_get_post( $post_id, $lang = '' ) {
  * @phpstan-return int<0, max>
  */
 function pll_get_term( $term_id, $lang = '' ) {
-	$lang = $lang ? $lang : pll_current_language();
+	$lang = $lang ?: pll_current_language();
 
 	if ( empty( $lang ) ) {
 		return 0;

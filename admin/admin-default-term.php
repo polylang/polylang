@@ -137,7 +137,7 @@ class PLL_Admin_Default_Term {
 		$cat = wp_insert_term( $cat_name, $taxonomy, array( 'slug' => $cat_slug ) );
 
 		// check that the term was not previously created ( in case the language was deleted and recreated )
-		$cat = isset( $cat->error_data['term_exists'] ) ? $cat->error_data['term_exists'] : $cat['term_id'];
+		$cat = $cat->error_data['term_exists'] ?? $cat['term_id'];
 
 		// set language
 		$this->model->term->set_language( (int) $cat, $lang );
