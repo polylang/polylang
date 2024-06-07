@@ -14,9 +14,14 @@ trait PLL_Options_Trait {
 	 * @since 3.7
 	 *
 	 * @param array $options Initial options.
-	 * @return Options
+	 * @return Options|array An instance of `Options` for PLL 3.7+, an array otherwise.
 	 */
-	protected static function create_options( array $options = array() ): Options {
+	protected static function create_options( array $options = array() ) {
+		if ( ! class_exists( Options::class ) ) {
+			// Backward compatibility with Polylang < 3.7. Required for PLLWC.
+			return array_merge( PLL_Install::get_default_options(), $options );
+		}
+
 		if ( ! empty( $options ) ) {
 			update_option( Options::OPTION_NAME, $options );
 		} else {
