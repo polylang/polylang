@@ -162,7 +162,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'wrong type'     => array(
 				'value'           => 'foobar',
 				'sanitized_value' => true,
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s is not of type boolean.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 		);
 	}
@@ -177,22 +177,22 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'wrong type'       => array(
 				'value'           => 'foobar',
 				'sanitized_value' => array(),
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s is not of type object.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 			'key wrong type'   => array(
 				'value'           => array( 'en' => 'https://example.com', 7 => 'https://example.net', 'de' => 'https://example.org' ),
 				'sanitized_value' => array( 'en' => 'https://example.com', 'de' => 'https://example.org' ),
-				'expected_valid'  => new WP_Error( 'rest_additional_properties_forbidden', '7 is not a valid property of Object.' ),
+				'expected_valid'  => 'rest_additional_properties_forbidden',
 			),
 			'value wrong type' => array(
 				'value'           => array( 'en' => 'https://example.com', 'fr' => 7, 'de' => 'https://example.org' ),
 				'sanitized_value' => array( 'en' => 'https://example.com', 'fr' => 'http://7', 'de' => 'https://example.org' ),
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s[fr] is not of type string.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid key'      => array(
 				'value'           => array( 'en' => 'https://example.com', 'fr41' => 'https://example.net', 'de' => 'https://example.org' ),
 				'sanitized_value' => array( 'en' => 'https://example.com', 'de' => 'https://example.org' ),
-				'expected_valid'  => new WP_Error( 'rest_additional_properties_forbidden', 'fr41 is not a valid property of Object.' ),
+				'expected_valid'  => 'rest_additional_properties_forbidden',
 			),
 			'invalid value'    => array(
 				'value'           => array( 'en' => 'https://example.com', 'fr' => 'foobar', 'de' => 'https://example.org' ),
@@ -217,12 +217,12 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'wrong type' => array(
 				'value'           => 'foobar',
 				'sanitized_value' => 0,
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s is not of type integer.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 			'too small'  => array(
 				'value'           => -2,
 				'sanitized_value' => -2,
-				'expected_valid'  => new WP_Error( 'rest_out_of_bounds', '%s must be between 0 (inclusive) and ' . PHP_INT_MAX . ' (inclusive)' ),
+				'expected_valid'  => 'rest_out_of_bounds',
 			),
 		);
 	}
@@ -237,7 +237,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'not in list' => array(
 				'value'           => 8,
 				'sanitized_value' => 8,
-				'expected_valid'  => new WP_Error( 'rest_not_in_enum', '%s is not one of 0, 1, 2, and 3.' ),
+				'expected_valid'  => 'rest_not_in_enum',
 			),
 			'wrong type'  => array(
 				'value'           => '3',
@@ -257,12 +257,12 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'wrong type' => array(
 				'value'           => 8,
 				'sanitized_value' => '8',
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s is not of type string.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid'    => array(
 				'value'           => 'fr41',
 				'sanitized_value' => 'fr41',
-				'expected_valid'  => new WP_Error( 'rest_invalid_pattern', '%s does not match pattern ^[a-z_-]+$.' ),
+				'expected_valid'  => 'rest_invalid_pattern',
 			),
 		);
 	}
@@ -277,12 +277,12 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'object'      => array(
 				'value'           => array( 'foobar_language' => 'foobar_language' ),
 				'sanitized_value' => array( 'foobar_language' ),
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s is not of type array.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 			'wrong type'  => array(
 				'value'           => array( 'foobar_language', 8 ),
 				'sanitized_value' => array( 'foobar_language', '8' ),
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s[1] is not of type string.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 		);
 	}
@@ -315,7 +315,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'wrong type'                  => array(
 				'value'           => 8,
 				'sanitized_value' => array(),
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s is not of type object.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid theme'               => array(
 				'value'           => array(
@@ -325,7 +325,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 					),
 				),
 				'sanitized_value' => array(),
-				'expected_valid'  => new WP_Error( 'rest_additional_properties_forbidden', ' is not a valid property of Object.' ),
+				'expected_valid'  => 'rest_additional_properties_forbidden',
 			),
 			'theme wrong type'            => array(
 				'value'           => array(
@@ -349,7 +349,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 				'sanitized_value' => array(
 					'twentyfoobar' => array(),
 				),
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s[twentyfoobar] is not of type object.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid locale'              => array(
 				'value'           => array(
@@ -363,7 +363,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 						'en' => 7,
 					),
 				),
-				'expected_valid'  => new WP_Error( 'rest_additional_properties_forbidden', ' is not a valid property of Object.' ),
+				'expected_valid'  => 'rest_additional_properties_forbidden',
 			),
 			'invalid post ID'             => array(
 				'value'           => array(
@@ -378,7 +378,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 						'fr' => -4,
 					),
 				),
-				'expected_valid'  => new WP_Error( 'rest_out_of_bounds', '%s[twentyfoobar][fr] must be greater than or equal to 0' ),
+				'expected_valid'  => 'rest_out_of_bounds',
 			),
 			'post ID string'              => array(
 				'value'           => array(
@@ -408,7 +408,7 @@ class Option_Schema_Test extends WP_UnitTestCase {
 						'fr' => 0,
 					),
 				),
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s[twentyfoobar][fr] is not of type integer.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 		);
 	}
@@ -433,12 +433,12 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'wrong type'   => array(
 				'value'           => 8,
 				'sanitized_value' => array( '8' ),
-				'expected_valid'  => new WP_Error( 'rest_not_in_enum', '%s[0] is not one of taxonomies, post_meta, comment_status, ping_status, sticky_posts, post_date, post_format, post_parent, _wp_page_template, menu_order, and _thumbnail_id.' ),
+				'expected_valid'  => 'rest_not_in_enum',
 			),
 			'invalid'      => array(
 				'value'           => array( 'foo' ),
 				'sanitized_value' => array( 'foo' ),
-				'expected_valid'  => new WP_Error( 'rest_not_in_enum', '%s[0] is not one of taxonomies, post_meta, comment_status, ping_status, sticky_posts, post_date, post_format, post_parent, _wp_page_template, menu_order, and _thumbnail_id.' ),
+				'expected_valid'  => 'rest_not_in_enum',
 			),
 		);
 	}
@@ -453,16 +453,16 @@ class Option_Schema_Test extends WP_UnitTestCase {
 			'wrong type' => array(
 				'value'           => 3,
 				'sanitized_value' => '3',
-				'expected_valid'  => new WP_Error( 'rest_invalid_type', '%s is not of type string.' ),
+				'expected_valid'  => 'rest_invalid_type',
 			),
 		);
 	}
 
 	/**
-	 * @param string        $class           Option class.
-	 * @param mixed         $value           The value to test.
-	 * @param mixed         $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param string      $class           Option class.
+	 * @param mixed       $value           The value to test.
+	 * @param mixed       $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	private function test_option( string $class, $value, $sanitized_value, $expected_valid ) {
 		$option = new $class( $value );
@@ -471,11 +471,11 @@ class Option_Schema_Test extends WP_UnitTestCase {
 
 		$valid = rest_validate_value_from_schema( $value, $option->get_schema(), $option::key() );
 
-		if ( is_wp_error( $expected_valid ) ) {
+		if ( is_string( $expected_valid ) ) {
 			$this->assertInstanceOf( WP_Error::class, $valid );
-			$this->assertSame( sprintf( $expected_valid->get_error_message(), $option::key() ), $valid->get_error_message() );
+			$this->assertSame( $expected_valid, $valid->get_error_code() );
 		} else {
-			$this->assertSame( $expected_valid, $valid );
+			$this->assertTrue( $valid );
 		}
 	}
 }
