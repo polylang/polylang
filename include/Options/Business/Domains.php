@@ -88,7 +88,7 @@ class Domains extends Abstract_Option {
 			// Access to global `$polylang` is required.
 			_doing_it_wrong(
 				__METHOD__,
-				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', $this->key() ) ),
+				esc_html( sprintf( 'The option \'%s\' cannot be set before the hook \'pll_init\'.', static::key() ) ),
 				'3.7'
 			);
 			/** @phpstan-var array<non-falsy-string, string> */

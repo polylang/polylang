@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  * @implements \ArrayAccess<non-falsy-string, mixed>
  */
 class Options implements \ArrayAccess {
-	const OPTION_NAME = 'polylang';
+	public const OPTION_NAME = 'polylang';
 
 	/**
 	 * Polylang's options, by blog ID.
