@@ -48,12 +48,12 @@ class Links_Domain_Test extends PLL_Domain_UnitTestCase {
 		$url = 'http://example.org.fr';
 
 		$this->assertEquals( 'http://example.org.fr', $this->links_model->add_language_to_link( $url, self::$model->get_language( 'fr' ) ) );
-		$this->assertEquals( 'http://example.org', $this->links_model->remove_language_from_link( $url, self::$model->get_language( 'fr' ) ) );
+		$this->assertEquals( 'http://example.org', $this->links_model->remove_language_from_link( $url ) );
 
 		$url = 'http://example.org.fr/test/';
 
 		$this->assertEquals( 'http://example.org.fr/test/', $this->links_model->add_language_to_link( $url, self::$model->get_language( 'fr' ) ) );
-		$this->assertEquals( 'http://example.org/test/', $this->links_model->remove_language_from_link( $url, self::$model->get_language( 'fr' ) ) );
+		$this->assertEquals( 'http://example.org/test/', $this->links_model->remove_language_from_link( $url ) );
 	}
 
 	public function test_permalink_and_shortlink() {

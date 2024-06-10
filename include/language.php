@@ -314,7 +314,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @phpstan-return int<0, max>
 	 */
 	public function get_tax_prop( $taxonomy_name, $prop_name ) {
-		return isset( $this->term_props[ $taxonomy_name ][ $prop_name ] ) ? $this->term_props[ $taxonomy_name ][ $prop_name ] : 0;
+		return $this->term_props[ $taxonomy_name ][ $prop_name ] ?? 0;
 	}
 
 	/**
@@ -665,11 +665,6 @@ class PLL_Language extends PLL_Language_Deprecated {
 			return $this->get_tax_prop( $matches['tax'], $matches['field'] );
 		}
 
-		// Any other public property.
-		if ( isset( $this->$property ) ) {
-			return $this->$property;
-		}
-
-		return false;
+		return $this->$property ?? false;
 	}
 }

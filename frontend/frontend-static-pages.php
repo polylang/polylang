@@ -266,11 +266,7 @@ class PLL_Frontend_Static_Pages extends PLL_Static_Pages {
 			return $query->queried_object_id;
 		}
 
-		if ( isset( $query->query_vars['page_id'] ) ) {
-			return $query->query_vars['page_id'];
-		}
-
-		return 0; // No page queried.
+		return $query->query_vars['page_id'] ?? 0; // No page queried.
 	}
 
 	/**

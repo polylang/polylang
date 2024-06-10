@@ -508,9 +508,9 @@ class PLL_Plugin_Updater {
 		$api_params = array(
 			'edd_action'  => 'get_version',
 			'license'     => ! empty( $this->api_data['license'] ) ? $this->api_data['license'] : '',
-			'item_name'   => isset( $this->api_data['item_name'] ) ? $this->api_data['item_name'] : false,
-			'item_id'     => isset( $this->api_data['item_id'] ) ? $this->api_data['item_id'] : false,
-			'version'     => isset( $this->api_data['version'] ) ? $this->api_data['version'] : false,
+			'item_name'   => $this->api_data['item_name'] ?? false,
+			'item_id'     => $this->api_data['item_id'] ?? false,
+			'version'     => $this->api_data['version'] ?? false,
 			'slug'        => $this->slug,
 			'author'      => $this->api_data['author'],
 			'url'         => home_url(),

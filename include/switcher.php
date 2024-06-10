@@ -9,7 +9,7 @@
  * @since 1.2
  */
 class PLL_Switcher {
-	const DEFAULTS = array(
+	public const DEFAULTS = array(
 		'dropdown'               => 0, // Display as list and not as dropdown.
 		'echo'                   => 1, // Echoes the list.
 		'hide_if_empty'          => 1, // Hides languages with no posts (or pages).
@@ -133,7 +133,7 @@ class PLL_Switcher {
 					$args['classes']
 				) :
 				$item_classes;
-			$link_classes = isset( $args['link_classes'] ) ? $args['link_classes'] : array();
+			$link_classes = $args['link_classes'] ?? array();
 			$current_lang = $this->get_current_language( $args ) === $slug;
 
 			if ( $current_lang ) {

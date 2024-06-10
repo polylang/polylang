@@ -215,7 +215,7 @@ class PLL_Sync {
 						if ( $tr_term instanceof WP_Term && ! ( $term->parent && empty( $tr_parent ) ) ) {
 							$wpdb->update(
 								$wpdb->term_taxonomy,
-								array( 'parent' => $tr_parent ? $tr_parent : 0 ),
+								array( 'parent' => $tr_parent ?: 0 ),
 								array( 'term_taxonomy_id' => $tr_term->term_taxonomy_id )
 							);
 

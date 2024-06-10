@@ -264,6 +264,6 @@ class PLL_Canonical {
 
 		$wp_query = $backup_wp_query;
 
-		return $redirect_url ? $redirect_url : $url;
+		return $redirect_url ?: $url;
 	}
 }
