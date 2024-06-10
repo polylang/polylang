@@ -66,7 +66,7 @@ class PLL_Frontend extends PLL_Base {
 	/**
 	 * @var PLL_Canonical
 	 */
-	protected $canonical;
+	public $canonical;
 
 	/**
 	 * Constructor.
