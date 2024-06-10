@@ -9,9 +9,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider boolean_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param bool          $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param bool        $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_boolean( $value, bool $sanitized_value, $expected_valid ) {
 		$classes = array(
@@ -29,9 +29,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider domains_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param array         $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param array       $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_domains( $value, array $sanitized_value, $expected_valid ) {
 		$this->test_option( Business\Domains::class, $value, $sanitized_value, $expected_valid );
@@ -40,9 +40,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider first_activation_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param int           $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param int         $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_first_activation( $value, int $sanitized_value, $expected_valid ) {
 		$this->test_option( Business\First_Activation::class, $value, $sanitized_value, $expected_valid );
@@ -51,9 +51,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider force_lang_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param int           $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param int         $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_force_lang( $value, int $sanitized_value, $expected_valid ) {
 		$this->test_option( Business\Force_Lang::class, $value, $sanitized_value, $expected_valid );
@@ -62,9 +62,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider language_slug_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param string        $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param string      $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_language_slug( $value, string $sanitized_value, $expected_valid ) {
 		$this->test_option( Business\Language_Slug::class, $value, $sanitized_value, $expected_valid );
@@ -73,9 +73,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider object_types_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param array         $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param array       $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_object_types( $value, array $sanitized_value, $expected_valid ) {
 		$classes = array(
@@ -91,9 +91,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider nav_menus_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param array         $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param array       $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_nav_menus( $value, array $sanitized_value, $expected_valid ) {
 		$this->test_option( Business\Nav_Menus::class, $value, $sanitized_value, $expected_valid );
@@ -102,9 +102,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider sync_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param array         $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param array       $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_sync( $value, array $sanitized_value, $expected_valid ) {
 		$this->test_option( Business\Sync::class, $value, $sanitized_value, $expected_valid );
@@ -113,9 +113,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @dataProvider version_provider
 	 *
-	 * @param mixed         $value           The value to test.
-	 * @param mixed         $sanitized_value Sanitized value.
-	 * @param true|WP_Error $expected_valid  Validation result.
+	 * @param mixed       $value           The value to test.
+	 * @param mixed       $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
 	 */
 	public function test_version( $value, $sanitized_value, $expected_valid ) {
 		$classes = array(
@@ -460,8 +460,8 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 
 	/**
 	 * @param string      $class           Option class.
-	 * @param mixed       $value           The value to test.
-	 * @param mixed       $sanitized_value Sanitized value.
+	 * @param mixed     $value           The value to test.
+	 * @param mixed     $sanitized_value Sanitized value.
 	 * @param true|string $expected_valid  Validation result.
 	 */
 	private function test_option( string $class, $value, $sanitized_value, $expected_valid ) {
