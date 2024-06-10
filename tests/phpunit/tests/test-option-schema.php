@@ -460,8 +460,8 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 
 	/**
 	 * @param string      $class           Option class.
-	 * @param mixed     $value           The value to test.
-	 * @param mixed     $sanitized_value Sanitized value.
+	 * @param mixed       $value           The value to test.
+	 * @param mixed       $sanitized_value Sanitized value.
 	 * @param true|string $expected_valid  Validation result.
 	 */
 	private function test_option( string $class, $value, $sanitized_value, $expected_valid ) {

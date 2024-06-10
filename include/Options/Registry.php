@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  */
 class Registry {
-	const OPTIONS = array(
+	protected const OPTIONS = array(
 		// URL modifications.
 		Business\Force_Lang::class,
 		Business\Domains::class,
