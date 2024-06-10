@@ -42,7 +42,8 @@
 		"rector-dry": "vendor/bin/rector process --dry-run",
 		"lint": [
 			"@cs",
-			"@stan"
+			"@stan",
+			"@rector-dry"
 		],
 		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
