@@ -37,7 +37,7 @@ class PLL_Admin_Strings {
 	 */
 	public static function init() {
 		// default strings translations sanitization
-		add_filter( 'pll_sanitize_string_translation', array( __CLASS__, 'sanitize_string_translation' ), 10, 2 );
+		add_filter( 'pll_sanitize_string_translation', array( self::class, 'sanitize_string_translation' ), 10, 2 );
 	}
 
 	/**

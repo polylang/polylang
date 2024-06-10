@@ -27,6 +27,7 @@
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure"/>
 		<exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames" />
 		<exclude name="Universal.Operators.StrictComparisons" />
+		<exclude name="Universal.Operators.DisallowShortTernary.Found" />
 		<exclude name="WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound"/>
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned"/>
 		<exclude name="WordPress.CodeAnalysis.AssignmentInTernaryCondition.FoundInTernaryCondition"/>
@@ -167,6 +168,7 @@
 	<exclude-pattern>vendor/*</exclude-pattern>
 	<exclude-pattern>tmp/*</exclude-pattern>
 	<exclude-pattern>webpack.config.js</exclude-pattern>
+	<exclude-pattern>rector.php</exclude-pattern>
 
 	<!-- Specific to Polylang -->
 	<exclude-pattern>install/plugin-updater.php</exclude-pattern>

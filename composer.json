@@ -14,7 +14,8 @@
 		"automattic/vipwpcs": "*",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"behat/behat": "^3.7|^3.8",
-		"yoast/wp-test-utils": "^1.0.0"
+		"yoast/wp-test-utils": "^1.0.0",
+		"rector/rector": "^1.1"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
@@ -38,10 +39,13 @@
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
 		"stan": "vendor/bin/phpstan analyze --memory-limit=1500M",
+		"rector-dry": "vendor/bin/rector process --dry-run",
 		"lint": [
 			"@cs",
-			"@stan"
+			"@stan",
+			"@rector-dry"
 		],
+		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
 		"dist": "bin/distribute.sh"
 	},
@@ -49,7 +53,9 @@
 		"test":"Runs PHPUnit tests.",
 		"cs":"Runs PHPCS linter.",
 		"stan": "Runs PHPStan analysis.",
+		"rector-dry": "Runs a preview of Rector.",
 		"lint": "Runs both PHPCS and PHPStan.",
+		"rector": "Runs Rector.",
 		"build": "Builds the project.",
 		"dist": "Make the zip file to distribute the project release."
 	},

@@ -699,8 +699,8 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 	public function test_page_deletion_without_translations() {
 		// Delete translations.
 		self::$model->post->delete_translation( self::$home_en );
-		self::$model->post->delete_translation( self::$home_de, true );
-		self::$model->post->delete_translation( self::$posts_en, true );
+		self::$model->post->delete_translation( self::$home_de );
+		self::$model->post->delete_translation( self::$posts_en );
 
 		$this->init_test( 'admin' );
 
