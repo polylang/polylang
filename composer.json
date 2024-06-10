@@ -39,10 +39,12 @@
 		"test":"vendor/bin/phpunit",
 		"cs":"vendor/bin/phpcs",
 		"stan": "vendor/bin/phpstan analyze --memory-limit=1500M",
+		"rector-dry": "vendor/bin/rector process --dry-run",
 		"lint": [
 			"@cs",
 			"@stan"
 		],
+		"rector": "vendor/bin/rector process",
 		"build": "bin/build.sh",
 		"dist": "bin/distribute.sh"
 	},
@@ -50,7 +52,9 @@
 		"test":"Runs PHPUnit tests.",
 		"cs":"Runs PHPCS linter.",
 		"stan": "Runs PHPStan analysis.",
+		"rector-dry": "Runs a preview of Rector.",
 		"lint": "Runs both PHPCS and PHPStan.",
+		"rector": "Runs Rector.",
 		"build": "Builds the project.",
 		"dist": "Make the zip file to distribute the project release."
 	},
