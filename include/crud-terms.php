@@ -295,7 +295,7 @@ class PLL_CRUD_Terms {
 	public function set_pre_term_slug( $slug, $taxonomy ) {
 		$term_slug = new PLL_Term_Slug( $this->model );
 
-		$term_data = $term_slug->set_pre_term_slug( $this->pre_term_name, $slug, $taxonomy );
+		$term_data = $term_slug->get_term_data( $this->pre_term_name, $slug, $taxonomy );
 		if ( ! isset( $term_data['term_id'] ) ) {
 			// The slug must be returned un-suffixed.
 			return $term_data['slug'];

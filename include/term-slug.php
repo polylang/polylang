@@ -34,7 +34,7 @@ class PLL_Term_Slug {
 	 * @param string $taxonomy Term taxonomy.
 	 * @return array Term data with slug, and optionally the term ID and language.
 	 */
-	public function set_pre_term_slug( $name, $slug, $taxonomy ) {
+	public function get_term_data( $name, $slug, $taxonomy ) {
 		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
 			return array( 'slug' => $slug );
 		}
