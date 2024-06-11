@@ -118,7 +118,7 @@ class PLL_WPML_Compat {
 		 */
 		if ( is_array( $context ) ) {
 			$name    = isset( $context['context'] ) ? $name . $context['context'] : $name;
-			$context = isset( $context['domain'] ) ?? '';
+			$context = isset( $context['domain'] ) ? $context['domain'] : '';
 		}
 
 		// If a string has already been registered with the same name and context, let's replace it.
