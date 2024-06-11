@@ -385,6 +385,26 @@ class WPML_Test extends PLL_UnitTestCase {
 		$this->assertEquals( 'wpml_string_test_fr', icl_t( 'wpml_string_context', 'wpml_string_name' ) );
 	}
 
+	public function test_icl_register_string_with_array_in_context() {
+		add_action( 'pll_get_strings', array( PLL_WPML_Compat::instance(), 'get_strings' ) ); // Add filter as it is removed at the end of first test (singleton!).
+
+		icl_register_string(
+			array(
+				'domain' => 'Types-TAX',
+				'context' => 'taxonomy singular name',
+			),
+			'',
+			'My taxononomy'
+		 );
+
+		$str = wp_list_filter( PLL_Admin_Strings::get_strings(), array( 'icl' => true ) );
+		$str = reset( $str );
+
+		$this->assertEquals( 'Types-TAX', $str['context'] );
+		$this->assertEquals( 'taxonomy singular name', $str['name'] );
+		$this->assertEquals( 'My taxononomy', $str['string'] );
+	}
+
 	/**
 	 * Bug fixed in version 2.2
 	 */

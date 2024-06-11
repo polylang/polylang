@@ -117,7 +117,7 @@ class PLL_WPML_Compat {
 		 * This possibility is used by Types.
 		 */
 		if ( is_array( $context ) ) {
-			$name    = isset( $context['context'] ) ? $name . $context['context'] : $name ;
+			$name    = isset( $context['context'] ) ? $name . $context['context'] : $name;
 			$context = isset( $context['domain'] ) ?? '';
 		}
 
