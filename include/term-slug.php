@@ -14,6 +14,31 @@ class PLL_Term_Slug {
 	private $model;
 
 	/**
+	 * @var PLL_Language
+	 */
+	private $lang;
+
+	/**
+	 * @var int
+	 */
+	private $parent;
+
+	/**
+	 * @var string
+	 */
+	private $taxonomy;
+
+	/**
+	 * @var string
+	 */
+	private $slug;
+
+	/**
+	 * @var string
+	 */
+	private $name;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 3.7
@@ -25,18 +50,15 @@ class PLL_Term_Slug {
 	}
 
 	/**
-	 * Gets term information to maybe append language slug to the term slug if needed after.
+	 * Tells if the suffix can be added or not.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $name     Term name.
-	 * @param string $slug     Term slug.
-	 * @param string $taxonomy Term taxonomy.
-	 * @return array Term data with slug, and optionally the term ID and language.
+	 * @return bool True if the suffix can be added, false otherwise.
 	 */
-	public function get_term_data( $name, $slug, $taxonomy ) {
-		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
-			return array( 'slug' => $slug );
+	public function can_add_suffix() {
+		if ( ! $this->model->is_translated_taxonomy( $this->taxonomy ) ) {
+			return false;
 		}
 
 		/**
@@ -46,15 +68,16 @@ class PLL_Term_Slug {
 		 *
 		 * @param PLL_Language|null $lang     Found language object, null otherwise.
 		 * @param string            $taxonomy Term taxonomy.
-		 * @param string             $slug     Term slug
+		 * @param string            $slug     Term slug
 		 */
-		$lang = apply_filters( 'pll_inserted_term_language', null, $taxonomy, $slug );
+		$lang = apply_filters( 'pll_inserted_term_language', null, $this->taxonomy, $this->slug );
 		if ( ! $lang instanceof PLL_Language ) {
-			return array( 'slug' => $slug );
+			return false;
 		}
+		$this->lang = $lang;
 
-		$parent = 0;
-		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
+		$this->parent = 0;
+		if ( is_taxonomy_hierarchical( $this->taxonomy ) ) {
 			/**
 			 * Filters the subsequently inserted term parent.
 			 *
@@ -64,32 +87,26 @@ class PLL_Term_Slug {
 			 * @param string       $taxonomy Term taxonomy.
 			 * @param string       $slug     Term slug
 			 */
-			$parent = apply_filters( 'pll_inserted_term_parent', 0, $taxonomy, $slug );
+			$this->parent = apply_filters( 'pll_inserted_term_parent', 0, $this->taxonomy, $this->slug );
 
-			$slug .= $this->maybe_get_parent_suffix( $parent, $taxonomy, $slug );
+			$this->slug .= $this->maybe_get_parent_suffix();
 		}
 
-		if ( ! $slug ) {
-			if ( $this->model->term_exists( $name, $taxonomy, $parent, $lang ) ) {
+		if ( ! $this->slug ) {
+			if ( $this->model->term_exists( $this->name, $this->taxonomy, $this->parent, $this->lang ) ) {
 				// Returns the current empty slug if the term exists with the same name and an empty slug.
 				// Same as WP does when providing a term with a name that already exists and no slug.
-				return array( 'slug' => $slug );
+				return false;
 			} else {
-				$slug = sanitize_title( $name );
+				$this->slug = sanitize_title( $this->name );
 			}
 		}
 
-		if ( ! term_exists( $slug, $taxonomy ) ) {
-			return array( 'slug' => $slug );
+		if ( ! term_exists( $this->slug, $this->taxonomy ) ) {
+			return false;
 		}
 
-		$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
-
-		return array(
-			'slug'    => $slug,
-			'term_id' => $term_id,
-			'lang'    => $lang,
-		);
+		return true;
 	}
 
 	/**
@@ -99,16 +116,13 @@ class PLL_Term_Slug {
 	 * @since 3.3
 	 * @since 3.7 Moved from `PLL_Share_Term_Slug`to `PLL_Term_Slug`.
 	 *
-	 * @param int    $parent   Parent term ID.
-	 * @param string $taxonomy Parent taxonomy.
-	 * @param string $slug     Child term slug.
 	 * @return string Parents slugs if they are the same as the child slug, empty string otherwise.
 	 */
-	private function maybe_get_parent_suffix( $parent, $taxonomy, $slug ) {
+	private function maybe_get_parent_suffix() {
 		$parent_suffix = '';
-		$the_parent    = get_term( $parent, $taxonomy );
+		$the_parent    = get_term( $this->parent, $this->taxonomy );
 
-		if ( ! $the_parent instanceof WP_Term || $the_parent->slug !== $slug ) {
+		if ( ! $the_parent instanceof WP_Term || $the_parent->slug !== $this->slug ) {
 			return $parent_suffix;
 		}
 
@@ -116,17 +130,88 @@ class PLL_Term_Slug {
 		 * Mostly copied from {@see wp_unique_term_slug()}.
 		 */
 		while ( ! empty( $the_parent ) ) {
-			$parent_term = get_term( $the_parent, $taxonomy );
+			$parent_term = get_term( $the_parent, $this->taxonomy );
 			if ( ! $parent_term instanceof WP_Term ) {
 				break;
 			}
 			$parent_suffix .= '-' . $parent_term->slug;
-			if ( ! term_exists( $slug . $parent_suffix ) ) {
+			if ( ! term_exists( $this->slug . $parent_suffix ) ) {
 				break;
 			}
 			$the_parent = $parent_term->parent;
 		}
 
 		return $parent_suffix;
+	}
+
+	/**
+	 * Gets the existed term ID.
+	 *
+	 * @since 3.7
+	 *
+	 * @return int
+	 */
+	public function get_term_id() {
+		return $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
+	}
+
+	/**
+	 *
+	 * Sets the taxonomy.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $taxonomy The term taxonomy.
+	 * @return void
+	 */
+	public function set_taxonomy( $taxonomy ) {
+		$this->taxonomy = $taxonomy;
+	}
+
+	/**
+	 * Gets the term slug.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string
+	 */
+	public function get_slug() {
+		return $this->slug;
+	}
+
+	/**
+	 * Gets the suffixed slug.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $separator The separator for the slug suffix.
+	 * @return string
+	 */
+	public function get_suffixed_slug( string $separator ): string {
+		return $this->slug . $separator . $this->lang->slug;
+	}
+
+	/**
+	 * Sets the term slug.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $slug The term slug.
+	 * @return void
+	 */
+	public function set_slug( $slug ) {
+		$this->slug = $slug;
+	}
+
+	/**
+	 * Sets the term name.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $name The term name.
+	 * @return void
+	 */
+	public function set_name( $name ) {
+		$this->name = $name;
 	}
 }

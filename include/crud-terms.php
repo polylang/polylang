@@ -294,18 +294,20 @@ class PLL_CRUD_Terms {
 	 */
 	public function set_pre_term_slug( $slug, $taxonomy ) {
 		$term_slug = new PLL_Term_Slug( $this->model );
+		$term_slug->set_slug( $slug );
+		$term_slug->set_taxonomy( $taxonomy );
+		$term_slug->set_name( $this->pre_term_name );
 
-		$term_data = $term_slug->get_term_data( $this->pre_term_name, $slug, $taxonomy );
-		if ( ! isset( $term_data['term_id'] ) ) {
-			// The slug must be returned un-suffixed.
-			return $term_data['slug'];
+		$can_suffix = $term_slug->can_add_suffix();
+		if ( ! $can_suffix ) {
+			return $term_slug->get_slug();
 		}
 
 		// If no term exist in the given language with that slug, it can be created.
-		if ( ! $term_data['term_id'] ) {
-			$term_data['slug'] .= '-' . $term_data['lang']->slug;
+		if ( ! $term_slug->get_term_id() ) {
+			return $term_slug->get_suffixed_slug( '-' );
 		}
 
-		return $term_data['slug'];
+		return $term_slug->get_slug();
 	}
 }
