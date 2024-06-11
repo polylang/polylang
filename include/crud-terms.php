@@ -293,58 +293,19 @@ class PLL_CRUD_Terms {
 	 * @return string Slug with a language suffix if found.
 	 */
 	public function set_pre_term_slug( $slug, $taxonomy ) {
-		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
-			return $slug;
+		$term_slug = new PLL_Term_Slug( $this->model );
+
+		$term_data = $term_slug->set_pre_term_slug( $this->pre_term_name, $slug, $taxonomy );
+		if ( ! isset( $term_data['term_id'] ) ) {
+			// The slug must be returned un-suffixed.
+			return $term_data['slug'];
 		}
-
-		/**
-		 * Filters the subsequently inserted term language.
-		 *
-		 * @since 3.3
-		 *
-		 * @param PLL_Language|null $lang     Found language object, null otherwise.
-		 * @param string            $taxonomy Term taonomy.
-		 * @param string            $slug     Term slug
-		 */
-		$lang = apply_filters( 'pll_inserted_term_language', null, $taxonomy, $slug );
-
-		if ( ! $lang instanceof PLL_Language ) {
-			return $slug;
-		}
-
-		$parent = 0;
-		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
-			/**
-			 * Filters the subsequently inserted term parent.
-			 *
-			 * @since 3.3
-			 *
-			 * @param int          $parent   Parent term ID, 0 if none.
-			 * @param string       $taxonomy Term taxonomy.
-			 * @param string       $slug     Term slug
-			 */
-			$parent = apply_filters( 'pll_inserted_term_parent', 0, $taxonomy, $slug );
-		}
-
-		if ( ! $slug ) {
-			if ( $this->model->term_exists( $this->pre_term_name, $taxonomy, $parent, $lang ) ) {
-				return $slug;
-			} else {
-				$slug = sanitize_title( $this->pre_term_name );
-			}
-		}
-
-		if ( ! term_exists( $slug, $taxonomy ) ) {
-			return $slug;
-		}
-
-		$term_id = (int) $this->model->term_exists_by_slug( $slug, $lang, $taxonomy, $parent );
 
 		// If no term exist in the given language with that slug, it can be created.
-		if ( ! $term_id ) {
-			$slug .= '-' . $lang->slug;
+		if ( ! $term_data['term_id'] ) {
+			$term_data['slug'] .= '-' . $term_data['lang']->slug;
 		}
 
-		return $slug;
+		return $term_data['slug'];
 	}
 }
