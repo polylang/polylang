@@ -25,7 +25,7 @@ class PLL_Term_Slug {
 	}
 
 	/**
-	 * Appends language slug to the term slug if needed.
+	 * Gets term information to maybe append language slug to the term slug if needed after.
 	 *
 	 * @since 3.7
 	 *
