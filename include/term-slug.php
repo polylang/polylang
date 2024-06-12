@@ -43,10 +43,16 @@ class PLL_Term_Slug {
 	 *
 	 * @since 3.7
 	 *
-	 * @param PLL_Model $model  Instance of the current PLL_Model.
+	 * @param PLL_Model $model    Instance of the current PLL_Model.
+	 * @param string    $slug     The term slug.
+	 * @param string    $taxonomy The term taxonomy.
+	 * @param string    $name     The term name.*
 	 */
-	public function __construct( PLL_Model $model ) {
+	public function __construct( PLL_Model $model, $slug, $taxonomy, $name ) {
 		$this->model = $model;
+		$this->slug = $slug;
+		$this->taxonomy = $taxonomy;
+		$this->name = $name;
 	}
 
 	/**
@@ -156,19 +162,6 @@ class PLL_Term_Slug {
 	}
 
 	/**
-	 *
-	 * Sets the taxonomy.
-	 *
-	 * @since 3.7
-	 *
-	 * @param string $taxonomy The term taxonomy.
-	 * @return void
-	 */
-	public function set_taxonomy( $taxonomy ) {
-		$this->taxonomy = $taxonomy;
-	}
-
-	/**
 	 * Gets the term slug.
 	 *
 	 * @since 3.7
@@ -189,29 +182,5 @@ class PLL_Term_Slug {
 	 */
 	public function get_suffixed_slug( string $separator ): string {
 		return $this->slug . $separator . $this->lang->slug;
-	}
-
-	/**
-	 * Sets the term slug.
-	 *
-	 * @since 3.7
-	 *
-	 * @param string $slug The term slug.
-	 * @return void
-	 */
-	public function set_slug( $slug ) {
-		$this->slug = $slug;
-	}
-
-	/**
-	 * Sets the term name.
-	 *
-	 * @since 3.7
-	 *
-	 * @param string $name The term name.
-	 * @return void
-	 */
-	public function set_name( $name ) {
-		$this->name = $name;
 	}
 }

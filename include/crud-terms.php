@@ -293,10 +293,7 @@ class PLL_CRUD_Terms {
 	 * @return string Slug with a language suffix if found.
 	 */
 	public function set_pre_term_slug( $slug, $taxonomy ) {
-		$term_slug = new PLL_Term_Slug( $this->model );
-		$term_slug->set_slug( $slug );
-		$term_slug->set_taxonomy( $taxonomy );
-		$term_slug->set_name( $this->pre_term_name );
+		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name );
 
 		if ( ! $term_slug->can_add_suffix() ) {
 			return $term_slug->get_slug();
