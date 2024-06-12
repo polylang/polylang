@@ -101,9 +101,9 @@ class PLL_WPML_Compat {
 	 *
 	 * @since 1.0.2
 	 *
-	 * @param string|array $context The group in which the string is registered.
-	 * @param string       $name    A unique name for the string.
-	 * @param string       $string  The string to register.
+	 * @param string|string[] $context The group in which the string is registered.
+	 * @param string          $name    A unique name for the string.
+	 * @param string          $string  The string to register.
 	 * @return void
 	 */
 	public function register_string( $context, $name, $string ) {
