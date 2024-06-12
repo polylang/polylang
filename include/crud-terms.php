@@ -298,8 +298,7 @@ class PLL_CRUD_Terms {
 		$term_slug->set_taxonomy( $taxonomy );
 		$term_slug->set_name( $this->pre_term_name );
 
-		$can_suffix = $term_slug->can_add_suffix();
-		if ( ! $can_suffix ) {
+		if ( ! $term_slug->can_add_suffix() ) {
 			return $term_slug->get_slug();
 		}
 
