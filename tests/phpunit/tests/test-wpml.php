@@ -402,9 +402,9 @@ class WPML_Test extends PLL_UnitTestCase {
 		$str = wp_list_filter( PLL_Admin_Strings::get_strings(), array( 'icl' => true ) );
 		$str = reset( $str );
 
-		$this->assertEquals( 'Types-TAX', $str['context'] );
-		$this->assertEquals( 'taxonomy singular name', $str['name'] );
-		$this->assertEquals( 'My taxononomy', $str['string'] );
+		$this->assertSame( 'Types-TAX', $str['context'] );
+		$this->assertSame( 'taxonomy singular name', $str['name'] );
+		$this->assertSame( 'My taxononomy', $str['string'] );
 	}
 
 	/**
