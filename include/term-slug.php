@@ -151,7 +151,7 @@ class PLL_Term_Slug {
 	 *
 	 * @return int
 	 */
-	public function get_term_id() {
+	public function get_term_id(): int {
 		return $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
 	}
 
@@ -175,7 +175,7 @@ class PLL_Term_Slug {
 	 *
 	 * @return string
 	 */
-	public function get_slug() {
+	public function get_slug(): string {
 		return $this->slug;
 	}
 
