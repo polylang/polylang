@@ -30,7 +30,7 @@ class Registry {
 		// Synchronization.
 		Business\Sync::class,
 		// Internal.
-		Business\Language_Slug::class,
+		Business\Default_Lang::class,
 		Business\Nav_Menus::class,
 		Business\Language_Taxonomies::class,
 		// Read only.

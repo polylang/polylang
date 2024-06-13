@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  */
-class Language_Slug extends Abstract_String {
+class Default_Lang extends Abstract_String {
 	/**
 	 * Returns option key.
 	 *
