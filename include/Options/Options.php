@@ -186,8 +186,8 @@ class Options implements \ArrayAccess {
 	 * @return void
 	 */
 	public function lock_options_for_blog( $blog ): void {
-		$this->modified[ $blog->blog_id ] = false;
-		unset( $this->options[ $blog->blog_id ] );
+		$this->modified[ $blog->id ] = false;
+		unset( $this->options[ $blog->id ] );
 	}
 
 	/**
