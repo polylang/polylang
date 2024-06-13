@@ -151,36 +151,23 @@ class PLL_Term_Slug {
 	}
 
 	/**
-	 * Gets the existed term ID.
+	 * Gets the term slug, suffixed or not.
 	 *
 	 * @since 3.7
 	 *
-	 * @return int
-	 */
-	public function get_term_id(): int {
-		return (int) $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
-	}
-
-	/**
-	 * Gets the term slug.
-	 *
-	 * @since 3.7
-	 *
+	 * @param string $separator The separator for the slug suffix, or empty.
 	 * @return string
 	 */
-	public function get_slug(): string {
+	public function get( string $separator = '' ): string {
+		if ( empty( $separator ) ) {
+			return $this->slug;
+		}
+
+		// If no term exist in the given language with that slug, it can be created.
+		if ( ! (int) $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent ) ) {
+			return $this->slug . $separator . $this->lang->slug;
+		}
+
 		return $this->slug;
-	}
-
-	/**
-	 * Gets the suffixed slug.
-	 *
-	 * @since 3.7
-	 *
-	 * @param string $separator The separator for the slug suffix.
-	 * @return string
-	 */
-	public function get_suffixed_slug( string $separator ): string {
-		return $this->slug . $separator . $this->lang->slug;
 	}
 }

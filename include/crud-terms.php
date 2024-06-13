@@ -296,14 +296,9 @@ class PLL_CRUD_Terms {
 		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name );
 
 		if ( ! $term_slug->can_add_suffix() ) {
-			return $term_slug->get_slug();
+			return $term_slug->get();
 		}
 
-		// If no term exist in the given language with that slug, it can be created.
-		if ( ! $term_slug->get_term_id() ) {
-			return $term_slug->get_suffixed_slug( '-' );
-		}
-
-		return $term_slug->get_slug();
+		return $term_slug->get( '-' );
 	}
 }
