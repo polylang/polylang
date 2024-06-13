@@ -1,6 +1,6 @@
 <?php
 
-use Brain\Monkey\Functions;
+use Brain\Monkey;
 use WP_Syntex\Polylang\Options\Options;
 use WP_Syntex\Polylang\Options\Registry as Options_Registry;
 
@@ -107,7 +107,8 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 	protected $blog_with_pll_options;
 
 	public function set_up() {
-		Functions\when( 'pll_is_plugin_active' )->alias(
+		Monkey\setUp();
+		Monkey\Functions\when( 'pll_is_plugin_active' )->alias(
 			function ( $value ) {
 				if ( POLYLANG_BASENAME !== $value ) {
 					return false;
@@ -180,6 +181,7 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 
 		wp_update_network_site_counts();
 
+		Monkey\tearDown();
 		parent::tear_down();
 	}
 
@@ -400,8 +402,6 @@ abstract class PLL_Multisites_TestCase extends WP_UnitTestCase {
 		}
 
 		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ) );
-		$options = new Options();
-		remove_action( 'shutdown', array( $options, 'save_all' ), 1000 );
-		return $options;
+		return new Options();
 	}
 }

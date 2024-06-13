@@ -34,8 +34,6 @@ trait PLL_Options_Trait {
 			}
 		);
 		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ) );
-		$options = new Options();
-		remove_action( 'shutdown', array( $options, 'save_all' ), 1000 );
-		return $options;
+		return new Options();
 	}
 }
