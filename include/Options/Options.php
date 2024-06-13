@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Options;
 
 use WP_Error;
+use WP_Site;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
@@ -36,6 +37,9 @@ class Options implements \ArrayAccess {
 
 	/**
 	 * Tells if the options have been modified, by blog ID.
+	 * - Not set: not modified.
+	 * - True: modified.
+	 * - False: locked, must not be updated.
 	 *
 	 * @var bool[]
 	 * @phpstan-var array<int, bool>
@@ -77,6 +81,7 @@ class Options implements \ArrayAccess {
 
 		add_filter( 'pre_update_option_polylang', array( $this, 'protect_wp_option_storage' ), 1 );
 		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), -1000 ); // Options must be ready early.
+		add_action( 'wp_delete_site', array( $this, 'lock_options_for_blog' ) );
 		add_action( 'shutdown', array( $this, 'save_all' ), 1000 ); // Make sure to save options after everything.
 	}
 
@@ -143,7 +148,7 @@ class Options implements \ArrayAccess {
 	public function init_options_for_blog( $blog_id ): void {
 		$this->current_blog_id = (int) $blog_id;
 
-		if ( isset( $this->options[ $blog_id ] ) ) {
+		if ( isset( $this->options[ $blog_id ] ) || $this->is_locked( $blog_id ) ) {
 			return;
 		}
 
@@ -173,6 +178,19 @@ class Options implements \ArrayAccess {
 	}
 
 	/**
+	 * Locks options for the given blog. This happens after a blog is deleted.
+	 *
+	 * @since 3.7
+	 *
+	 * @param WP_Site $blog The blog.
+	 * @return void
+	 */
+	public function lock_options_for_blog( $blog ): void {
+		$this->modified[ $blog->id ] = false;
+		unset( $this->options[ $blog->id ] );
+	}
+
+	/**
 	 * Stores the options into the database for all blogs.
 	 * Hooked to `shutdown`.
 	 *
@@ -185,6 +203,7 @@ class Options implements \ArrayAccess {
 		$modified = array_filter( $this->modified );
 
 		if ( empty( $modified ) ) {
+			// Not modified, or locked.
 			return;
 		}
 
@@ -217,10 +236,12 @@ class Options implements \ArrayAccess {
 	 */
 	public function save(): bool {
 		if ( empty( $this->modified[ $this->current_blog_id ] ) ) {
+			// Not modified, or locked.
 			return false;
 		}
 
-		$this->modified[ $this->current_blog_id ] = false;
+		unset( $this->modified[ $this->current_blog_id ] );
+
 		$options = get_option( self::OPTION_NAME, array() );
 
 		if ( is_array( $options ) ) {
@@ -242,6 +263,7 @@ class Options implements \ArrayAccess {
 	 */
 	public function get_all(): array {
 		if ( empty( $this->options[ $this->current_blog_id ] ) ) {
+			// No options, or locked.
 			return array();
 		}
 
@@ -268,6 +290,11 @@ class Options implements \ArrayAccess {
 	 */
 	public function merge( array $values ): WP_Error {
 		$errors = new WP_Error();
+
+		if ( $this->is_locked( $this->current_blog_id ) ) {
+			$errors->add( 'pll_blog_deleted', __( 'This site has been deleted.', 'polylang' ) );
+			return $errors;
+		}
 
 		foreach ( $this->options[ $this->current_blog_id ] as $key => $option ) {
 			if ( ! isset( $values[ $key ] ) || ! $this->has( $key ) ) {
@@ -352,7 +379,7 @@ class Options implements \ArrayAccess {
 	}
 
 	/**
-	 * Tells if an option exists.
+	 * Tells if an option exists and isn't locked.
 	 *
 	 * @since 3.7
 	 *
@@ -394,6 +421,10 @@ class Options implements \ArrayAccess {
 	 * @return WP_Error
 	 */
 	public function set( string $key, $value ): WP_Error {
+		if ( $this->is_locked( $this->current_blog_id ) ) {
+			return new WP_Error( 'pll_blog_deleted', __( 'This site has been deleted.', 'polylang' ) );
+		}
+
 		if ( ! $this->has( $key ) ) {
 			/* translators: %s is the name of an option. */
 			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), "'$key'" ) );
@@ -489,5 +520,17 @@ class Options implements \ArrayAccess {
 	 */
 	public function offsetUnset( $offset ): void {
 		$this->reset( (string) $offset );
+	}
+
+	/**
+	 * Tells if the given blog is locked. This happens after a blog is deleted.
+	 *
+	 * @since 3.7
+	 *
+	 * @param int $blog_id The blog ID.
+	 * @return bool
+	 */
+	private function is_locked( int $blog_id ): bool {
+		return isset( $this->modified[ $blog_id ] ) && false === $this->modified[ $blog_id ];
 	}
 }
