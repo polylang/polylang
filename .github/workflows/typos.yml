@@ -4,7 +4,7 @@ on:
   push:
     branches: master
   pull_request:
-    branches: master
+    branches: options-as-objects-main
   workflow_dispatch:
 
 jobs:
