@@ -200,7 +200,7 @@ class Options implements \ArrayAccess {
 	 */
 	public function save_all(): void {
 		// Find blog with modified options.
-		$modified = array_filter( $this->modified );
+		$modified = $this->get_modified();
 
 		if ( empty( $modified ) ) {
 			// Not modified, or locked.
@@ -241,6 +241,11 @@ class Options implements \ArrayAccess {
 		}
 
 		unset( $this->modified[ $this->current_blog_id ] );
+
+		if ( is_multisite() && ! get_site( $this->current_blog_id ) ) { // Cached by `$this->get_modified()` if called from `$this->save_all()`.
+			// Deleted. Should not happen if called from `$this->save_all()`.
+			return false;
+		}
 
 		$options = get_option( self::OPTION_NAME, array() );
 
@@ -532,5 +537,52 @@ class Options implements \ArrayAccess {
 	 */
 	private function is_locked( int $blog_id ): bool {
 		return isset( $this->modified[ $blog_id ] ) && false === $this->modified[ $blog_id ];
+	}
+
+	/**
+	 * Returns the list of modified sites.
+	 * On multisite, sites are cached.
+	 * /!\ At this point, some sites may not appear as locked while they have been deleted: this can happen if they are
+	 * not deleted with `wp_delete_site()`. Those sites are locked here.
+	 *
+	 * @since 3.7
+	 *
+	 * @return bool[]
+	 * @phpstan-return array<int, true>
+	 */
+	private function get_modified(): array {
+		$modified = array_filter( $this->modified );
+
+		if ( empty( $modified ) ) {
+			// Not modified, or locked.
+			return $modified;
+		}
+
+		// Cleanup deleted sites and cache existing ones.
+		if ( ! is_multisite() || count( $modified ) === 1 ) {
+			// Multisite with only 1 site: no need to cache or verify existence.
+			return $modified;
+		}
+
+		// Fetch all the data instead of only the IDs, so it is cached.
+		$sites = get_sites(
+			array(
+				'site__in' => array_keys( $modified ),
+				'number'   => count( $modified ),
+			)
+		);
+
+		$modified = array();
+		// Keep only existing blogs.
+		foreach ( $sites as $site ) {
+			$modified[ $site->id ] = true;
+		}
+		// Make sure that `$this->modified` is up-to-date about the "locked" status.
+		foreach ( $this->modified as $blog_id => $_yup ) {
+			if ( ! isset( $modified[ $blog_id ] ) ) {
+				$this->modified[ $blog_id ] = false;
+			}
+		}
+		return $modified;
 	}
 }
