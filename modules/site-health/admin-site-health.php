@@ -175,6 +175,14 @@ class PLL_Admin_Site_Health {
 					$value = '0: ' . esc_html__( 'Synchronization disabled', 'polylang' );
 				}
 				break;
+
+			case 'hide_language_from_content_option':
+				if ( empty( $value ) ) {
+					$value = '0: ' . esc_html__( 'The option "The language is set from content" is shown', 'polylang' );
+				} else {
+					$value = '1: ' . esc_html__( 'The option "The language is set from content" is hidden', 'polylang' );
+				}
+				break;
 		}
 
 		return $value;
