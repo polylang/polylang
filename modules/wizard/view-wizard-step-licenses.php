@@ -8,7 +8,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly.
+	exit;
 }
 
 $licenses = apply_filters( 'pll_settings_licenses', array() );
