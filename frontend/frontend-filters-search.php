@@ -88,15 +88,21 @@ class PLL_Frontend_Filters_Search {
 	}
 
 	/**
-	 * Adds the language information in admin bar search form
+	 * Adds the language information in the admin bar search form.
 	 *
 	 * @since 1.2
 	 *
 	 * @return void
 	 */
 	public function add_admin_bar_menus() {
-		remove_action( 'admin_bar_menu', 'wp_admin_bar_search_menu', 4 );
-		add_action( 'admin_bar_menu', array( $this, 'admin_bar_search_menu' ), 4 );
+		// Backward compatibility with WP < 6.6. The priority was 4 before this version, 9999 since then.
+		$priority = has_action( 'admin_bar_menu', 'wp_admin_bar_search_menu' );
+		if ( ! is_int( $priority ) ) {
+			return;
+		}
+
+		remove_action( 'admin_bar_menu', 'wp_admin_bar_search_menu', $priority );
+		add_action( 'admin_bar_menu', array( $this, 'admin_bar_search_menu' ), $priority );
 	}
 
 	/**
