@@ -39,6 +39,11 @@ class PLL_Term_Slug {
 	private $name;
 
 	/**
+	 * @var int|null
+	 */
+	private $term_id;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 3.7
@@ -155,19 +160,34 @@ class PLL_Term_Slug {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $separator The separator for the slug suffix, or empty.
+	 * @param string $separator   The separator for the slug suffix, or empty.
+	 * @param bool   $suffix_slug Should force suffix slug, or not, default false.
 	 * @return string
 	 */
-	public function get( string $separator = '' ): string {
+	public function get( string $separator = '', bool $suffix_slug = false ): string {
 		if ( empty( $separator ) ) {
 			return $this->slug;
 		}
 
 		// If no term exist in the given language with that slug, it can be created.
-		if ( ! (int) $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent ) ) {
+		if ( ! $this->get_term_id() || $suffix_slug ) {
 			return $this->slug . $separator . $this->lang->slug;
 		}
 
 		return $this->slug;
+	}
+
+	/**
+	 * Gets the existed term ID.
+	 *
+	 * @since 3.7
+	 *
+	 * @return int
+	 */
+	public function get_term_id(): int {
+		if ( ! isset( $this->term_id ) ) {
+			$this->term_id = (int) $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
+		}
+		return $this->term_id;
 	}
 }
