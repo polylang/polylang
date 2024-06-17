@@ -27,10 +27,12 @@ class WPML_Test extends PLL_UnitTestCase {
 	public function tear_down() {
 		parent::tear_down();
 
-		// Cleaning the previous registered strings translations that were added
+		// Cleaning the previous registered strings from the DB.
 		foreach ( PLL_WPML_Compat::instance()->get_strings( array() ) as $string ) {
 			PLL_WPML_Compat::instance()->unregister_string( $string['context'], $string['name'] );
 		}
+
+		add_filter( 'pll_get_strings', '__return_empty_array' ); // Remove all registered strings.
 
 		unset( $GLOBALS['polylang'] );
 	}
@@ -352,7 +354,7 @@ class WPML_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_strings_translations() {
-		add_action( 'pll_get_strings', array( PLL_WPML_Compat::instance(), 'get_strings' ) ); // Add filter as it is removed at the end of first test (singleton!)
+		add_filter( 'pll_get_strings', array( PLL_WPML_Compat::instance(), 'get_strings' ) ); // Add filter as it is removed at the end of first test (singleton!).
 
 		// Register
 		do_action( 'wpml_register_single_string', 'wpml_string_context', 'wpml_string_name', 'wpml_string_test' );
@@ -383,6 +385,26 @@ class WPML_Test extends PLL_UnitTestCase {
 
 		// Legacy
 		$this->assertEquals( 'wpml_string_test_fr', icl_t( 'wpml_string_context', 'wpml_string_name' ) );
+	}
+
+	public function test_icl_register_string_with_array_in_context() {
+		add_filter( 'pll_get_strings', array( PLL_WPML_Compat::instance(), 'get_strings' ) ); // Add filter as it is removed at the end of first test (singleton!).
+
+		icl_register_string(
+			array(
+				'domain' => 'Types-TAX',
+				'context' => 'taxonomy singular name',
+			),
+			'',
+			'My taxononomy'
+		);
+
+		$str = wp_list_filter( PLL_Admin_Strings::get_strings(), array( 'icl' => true ) );
+		$str = reset( $str );
+
+		$this->assertSame( 'Types-TAX', $str['context'] );
+		$this->assertSame( 'taxonomy singular name', $str['name'] );
+		$this->assertSame( 'My taxononomy', $str['string'] );
 	}
 
 	/**
