@@ -53,7 +53,7 @@ class PLL_Term_Slug {
 	 * @param string    $taxonomy The term taxonomy.
 	 * @param string    $name     The term name.*
 	 */
-	public function __construct( PLL_Model $model, $slug, $taxonomy, $name ) {
+	public function __construct( PLL_Model $model, string $slug, string $taxonomy, string $name ) {
 		$this->model    = $model;
 		$this->slug     = $slug;
 		$this->taxonomy = $taxonomy;
