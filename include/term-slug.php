@@ -167,7 +167,7 @@ class PLL_Term_Slug {
 	}
 
 	/**
-	 * Returns the existed term ID.
+	 * Returns the existing term ID.
 	 *
 	 * @since 3.7
 	 *
