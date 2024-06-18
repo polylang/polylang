@@ -303,6 +303,13 @@ class PLL_CRUD_Terms {
 			return $term_slug->get();
 		}
 
-		return $term_slug->get( '-' );
+		$term_id = $term_slug->get_term_id();
+
+		// If no term exist in the given language with that slug, it can be created.
+		if ( ! $term_id ) {
+			return $term_slug->get( '-' );
+		}
+
+		return $term_slug->get();
 	}
 }
