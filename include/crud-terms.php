@@ -280,6 +280,10 @@ class PLL_CRUD_Terms {
 	 * @return string unmodified term name
 	 */
 	public function set_pre_term_name( $name ) {
+		if ( ! is_string( $name ) ) {
+			$name = '';
+		}
+
 		return $this->pre_term_name = $name;
 	}
 
@@ -293,11 +297,7 @@ class PLL_CRUD_Terms {
 	 * @return string Slug with a language suffix if found.
 	 */
 	public function set_pre_term_slug( $slug, $taxonomy ) {
-		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) ) {
-			return $slug;
-		}
-
-		if ( ! is_string( $slug ) || ! is_string( $taxonomy ) || ! is_string( $this->pre_term_name ) ) {
+		if ( ! $this->model->is_translated_taxonomy( $taxonomy ) || ! is_string( $slug ) ) {
 			return $slug;
 		}
 
