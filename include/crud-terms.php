@@ -305,7 +305,7 @@ class PLL_CRUD_Terms {
 		$term_slug  = new PLL_Term_Slug( $term_exist, $slug, $taxonomy, $this->pre_term_name );
 
 		if ( ! $term_slug->can_add_suffix() ) {
-			return $term_slug->get();
+			return $slug;
 		}
 
 		$term_id = $term_slug->get_term_id();
@@ -315,6 +315,6 @@ class PLL_CRUD_Terms {
 			return $term_slug->get( '-' );
 		}
 
-		return $term_slug->get();
+		return $slug;
 	}
 }
