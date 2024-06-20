@@ -311,7 +311,7 @@ class PLL_CRUD_Terms {
 
 		// If no term exist in the given language with that slug, it can be created.
 		if ( ! $term_id ) {
-			return $term_slug->get( '-' );
+			return $term_slug->get_suffixed_slug( '-' );
 		}
 
 		return $slug;

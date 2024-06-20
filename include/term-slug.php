@@ -151,11 +151,11 @@ class PLL_Term_Slug {
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $separator The separator for the slug suffix, or empty.
-	 * @return string
+	 * @param string $separator The separator for the slug suffix.
+	 * @return string The suffixed slug, or not if the lang isn't defined.
 	 */
-	public function get( string $separator = '' ): string {
-		if ( empty( $separator ) ) {
+	public function get_suffixed_slug( string $separator ): string {
+		if ( ! $this->lang instanceof PLL_Language ) {
 			return $this->slug;
 		}
 
