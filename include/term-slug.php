@@ -9,9 +9,9 @@
 class PLL_Term_Slug {
 
 	/**
-	 * @var PLL_Model
+	 * @var PLL_Term_Exist
 	 */
-	private $model;
+	private $term_exist;
 
 	/**
 	 * @var PLL_Language
@@ -43,16 +43,16 @@ class PLL_Term_Slug {
 	 *
 	 * @since 3.7
 	 *
-	 * @param PLL_Model $model    Instance of the current PLL_Model.
-	 * @param string    $slug     The term slug.
-	 * @param string    $taxonomy The term taxonomy.
-	 * @param string    $name     The term name.*
+	 * @param PLL_Term_Exist $term_exist Instance of PLL_Term_Exist.
+	 * @param string         $slug       The term slug.
+	 * @param string         $taxonomy   The term taxonomy.
+	 * @param string         $name       The term name.
 	 */
-	public function __construct( PLL_Model $model, string $slug, string $taxonomy, string $name ) {
-		$this->model    = $model;
-		$this->slug     = $slug;
-		$this->taxonomy = $taxonomy;
-		$this->name     = $name;
+	public function __construct( PLL_Term_Exist $term_exist, string $slug, string $taxonomy, string $name ) {
+		$this->term_exist = $term_exist;
+		$this->slug       = $slug;
+		$this->taxonomy   = $taxonomy;
+		$this->name       = $name;
 	}
 
 	/**
@@ -63,10 +63,6 @@ class PLL_Term_Slug {
 	 * @return bool True if the suffix can be added, false otherwise.
 	 */
 	public function can_add_suffix() {
-		if ( ! $this->model->is_translated_taxonomy( $this->taxonomy ) ) {
-			return false;
-		}
-
 		/**
 		 * Filters the subsequently inserted term language.
 		 *
@@ -99,7 +95,7 @@ class PLL_Term_Slug {
 		}
 
 		if ( ! $this->slug ) {
-			if ( $this->model->term_exists( $this->name, $this->taxonomy, $this->parent, $this->lang ) ) {
+			if ( $this->term_exist->term_exists( $this->name, $this->taxonomy, $this->parent, $this->lang ) ) {
 				// Returns the current empty slug if the term exists with the same name and an empty slug.
 				// Same as WP does when providing a term with a name that already exists and no slug.
 				return false;
@@ -174,6 +170,6 @@ class PLL_Term_Slug {
 	 * @return int
 	 */
 	public function get_term_id(): int {
-		return (int) $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
+		return (int) $this->term_exist->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
 	}
 }
