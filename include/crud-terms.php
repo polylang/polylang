@@ -301,8 +301,7 @@ class PLL_CRUD_Terms {
 			return $slug;
 		}
 
-		$term_exist = new PLL_Term_Exist( $this->model->term );
-		$term_slug  = new PLL_Term_Slug( $term_exist, $slug, $taxonomy, $this->pre_term_name );
+		$term_slug = new PLL_Term_Slug( $this->model->term, $slug, $taxonomy, $this->pre_term_name );
 
 		if ( ! $term_slug->can_add_suffix() ) {
 			return $slug;
