@@ -280,11 +280,9 @@ class PLL_CRUD_Terms {
 	 * @return string unmodified term name
 	 */
 	public function set_pre_term_name( $name ) {
-		if ( ! is_string( $name ) ) {
-			$name = '';
-		}
+		$this->pre_term_name = is_string( $name ) ? $name : '';
 
-		return $this->pre_term_name = $name;
+		return $name;
 	}
 
 	/**
