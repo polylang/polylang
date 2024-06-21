@@ -294,12 +294,11 @@ class Options implements \ArrayAccess {
 	 * @return WP_Error
 	 */
 	public function merge( array $values ): WP_Error {
-		$errors = new WP_Error();
-
 		if ( $this->is_locked( $this->current_blog_id ) ) {
-			$errors->add( 'pll_blog_deleted', __( 'This site has been deleted.', 'polylang' ) );
-			return $errors;
+			return new WP_Error( 'pll_blog_deleted', __( 'This site has been deleted.', 'polylang' ) );
 		}
+
+		$errors = new WP_Error();
 
 		foreach ( $this->options[ $this->current_blog_id ] as $key => $option ) {
 			if ( ! isset( $values[ $key ] ) || ! $this->has( $key ) ) {
