@@ -37,12 +37,9 @@ class Options implements \ArrayAccess {
 
 	/**
 	 * Tells if the options have been modified, by blog ID.
-	 * - Not set: not modified.
-	 * - True: modified.
-	 * - False: locked, must not be updated.
 	 *
 	 * @var bool[]
-	 * @phpstan-var array<int, bool>
+	 * @phpstan-var array<int, true>
 	 */
 	private $modified = array();
 
@@ -81,7 +78,6 @@ class Options implements \ArrayAccess {
 
 		add_filter( 'pre_update_option_polylang', array( $this, 'protect_wp_option_storage' ), 1 );
 		add_action( 'switch_blog', array( $this, 'init_options_for_blog' ), -1000 ); // Options must be ready early.
-		add_action( 'wp_delete_site', array( $this, 'lock_options_for_blog' ) );
 		add_action( 'shutdown', array( $this, 'save_all' ), 1000 ); // Make sure to save options after everything.
 	}
 
@@ -148,7 +144,7 @@ class Options implements \ArrayAccess {
 	public function init_options_for_blog( $blog_id ): void {
 		$this->current_blog_id = (int) $blog_id;
 
-		if ( isset( $this->options[ $blog_id ] ) || $this->is_locked( $blog_id ) ) {
+		if ( isset( $this->options[ $blog_id ] ) ) {
 			return;
 		}
 
@@ -178,19 +174,6 @@ class Options implements \ArrayAccess {
 	}
 
 	/**
-	 * Locks options for the given blog. This happens after a blog is deleted.
-	 *
-	 * @since 3.7
-	 *
-	 * @param WP_Site $blog The blog.
-	 * @return void
-	 */
-	public function lock_options_for_blog( $blog ): void {
-		$this->modified[ $blog->id ] = false;
-		unset( $this->options[ $blog->id ] );
-	}
-
-	/**
 	 * Stores the options into the database for all blogs.
 	 * Hooked to `shutdown`.
 	 *
@@ -203,7 +186,7 @@ class Options implements \ArrayAccess {
 		$modified = $this->get_modified();
 
 		if ( empty( $modified ) ) {
-			// Not modified, or locked.
+			// Not modified.
 			return;
 		}
 
@@ -236,7 +219,6 @@ class Options implements \ArrayAccess {
 	 */
 	public function save(): bool {
 		if ( empty( $this->modified[ $this->current_blog_id ] ) ) {
-			// Not modified, or locked.
 			return false;
 		}
 
@@ -268,7 +250,7 @@ class Options implements \ArrayAccess {
 	 */
 	public function get_all(): array {
 		if ( empty( $this->options[ $this->current_blog_id ] ) ) {
-			// No options, or locked.
+			// No options.
 			return array();
 		}
 
@@ -294,10 +276,6 @@ class Options implements \ArrayAccess {
 	 * @return WP_Error
 	 */
 	public function merge( array $values ): WP_Error {
-		if ( $this->is_locked( $this->current_blog_id ) ) {
-			return new WP_Error( 'pll_blog_deleted', __( 'This site has been deleted.', 'polylang' ) );
-		}
-
 		$errors = new WP_Error();
 
 		foreach ( $this->options[ $this->current_blog_id ] as $key => $option ) {
@@ -383,7 +361,7 @@ class Options implements \ArrayAccess {
 	}
 
 	/**
-	 * Tells if an option exists and isn't locked.
+	 * Tells if an option exists.
 	 *
 	 * @since 3.7
 	 *
@@ -425,10 +403,6 @@ class Options implements \ArrayAccess {
 	 * @return WP_Error
 	 */
 	public function set( string $key, $value ): WP_Error {
-		if ( $this->is_locked( $this->current_blog_id ) ) {
-			return new WP_Error( 'pll_blog_deleted', __( 'This site has been deleted.', 'polylang' ) );
-		}
-
 		if ( ! $this->has( $key ) ) {
 			/* translators: %s is the name of an option. */
 			return new WP_Error( 'pll_unknown_option_key', sprintf( __( 'Unknown option key %s.', 'polylang' ), "'$key'" ) );
@@ -527,22 +501,9 @@ class Options implements \ArrayAccess {
 	}
 
 	/**
-	 * Tells if the given blog is locked. This happens after a blog is deleted.
-	 *
-	 * @since 3.7
-	 *
-	 * @param int $blog_id The blog ID.
-	 * @return bool
-	 */
-	private function is_locked( int $blog_id ): bool {
-		return isset( $this->modified[ $blog_id ] ) && false === $this->modified[ $blog_id ];
-	}
-
-	/**
 	 * Returns the list of modified sites.
 	 * On multisite, sites are cached.
-	 * /!\ At this point, some sites may not appear as locked while they have been deleted: this can happen if they are
-	 * not deleted with `wp_delete_site()`. Those sites are locked here.
+	 * /!\ At this point, some sites may have been deleted. They are removed from `$this->modified` here.
 	 *
 	 * @since 3.7
 	 *
@@ -550,38 +511,30 @@ class Options implements \ArrayAccess {
 	 * @phpstan-return array<int, true>
 	 */
 	private function get_modified(): array {
-		$modified = array_filter( $this->modified );
-
-		if ( empty( $modified ) ) {
-			// Not modified, or locked.
-			return $modified;
+		if ( empty( $this->modified ) ) {
+			// Not modified.
+			return $this->modified;
 		}
 
 		// Cleanup deleted sites and cache existing ones.
-		if ( ! is_multisite() || count( $modified ) === 1 ) {
-			// Multisite with only 1 site: no need to cache or verify existence.
-			return $modified;
+		if ( ! is_multisite() || count( $this->modified ) === 1 ) {
+			// Not multisite, or multisite with only 1 site: no need to cache or verify existence.
+			return $this->modified;
 		}
 
 		// Fetch all the data instead of only the IDs, so it is cached.
 		$sites = get_sites(
 			array(
-				'site__in' => array_keys( $modified ),
-				'number'   => count( $modified ),
+				'site__in' => array_keys( $this->modified ),
+				'number'   => count( $this->modified ),
 			)
 		);
 
-		$modified = array();
 		// Keep only existing blogs.
 		foreach ( $sites as $site ) {
-			$modified[ $site->id ] = true;
+			$this->modified[ $site->id ] = true;
 		}
-		// Make sure that `$this->modified` is up-to-date about the "locked" status.
-		foreach ( $this->modified as $blog_id => $_yup ) {
-			if ( ! isset( $modified[ $blog_id ] ) ) {
-				$this->modified[ $blog_id ] = false;
-			}
-		}
-		return $modified;
+
+		return $this->modified;
 	}
 }
