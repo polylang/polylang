@@ -60,14 +60,14 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	}
 
 	/**
-	 * @dataProvider language_slug_provider
+	 * @dataProvider default_lang_provider
 	 *
 	 * @param mixed       $value           The value to test.
 	 * @param string      $sanitized_value Sanitized value.
 	 * @param true|string $expected_valid  Validation result.
 	 */
-	public function test_language_slug( $value, string $sanitized_value, $expected_valid ) {
-		$this->test_option( Business\Language_Slug::class, $value, $sanitized_value, $expected_valid );
+	public function test_default_lang( $value, string $sanitized_value, $expected_valid ) {
+		$this->test_option( Business\Default_Lang::class, $value, $sanitized_value, $expected_valid );
 	}
 
 	/**
@@ -247,7 +247,7 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 		);
 	}
 
-	public function language_slug_provider() {
+	public function default_lang_provider() {
 		return array(
 			'valid'      => array(
 				'value'           => 'fr',
