@@ -44,7 +44,7 @@ class PLL_Term_Slug {
 	private $parent;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 3.7
 	 *
