@@ -299,7 +299,7 @@ class PLL_CRUD_Terms {
 			return $slug;
 		}
 
-		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name);
+		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name );
 
 		return $term_slug->get_suffixed_slug( '-' );
 	}
