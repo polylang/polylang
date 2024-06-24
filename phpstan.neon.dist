@@ -16,6 +16,7 @@ parameters:
 		- **/view*.php
 		- include/widget-calendar.php
 		- install/plugin-updater.php
+	treatPhpDocTypesAsCertain: false
 	ignoreErrors:
 		- identifier: missingType.iterableValue
 		- '#^Parameter \#1 \$message of function wp_die expects string|WP_Error, int given\.$#'
