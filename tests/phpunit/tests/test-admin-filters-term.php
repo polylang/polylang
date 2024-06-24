@@ -755,4 +755,15 @@ class Admin_Filters_Term_Test extends PLL_UnitTestCase {
 
 		unset( $_REQUEST, $_POST );
 	}
+
+	/**
+	 * @ticket #694 {@see https://github.com/polylang/polylang-wc/issues/694}
+	 */
+	public function test_create_term_with_empty_slug_and_already_existing_name() {
+		self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Cats', 'slug' => 'cat' ) );
+
+		// Second category in English with the same name and empty slug.
+		$error = self::factory()->term->create( array( 'taxonomy' => 'category', 'name' => 'Cats' ) );
+		$this->assertWPError( $error, 'A term with the same name should not be created.' );
+	}
 }
