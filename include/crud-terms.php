@@ -51,11 +51,6 @@ class PLL_CRUD_Terms {
 	private $pre_term_name = '';
 
 	/**
-	 * @var int
-	 */
-	private $pre_term_id = 0;
-
-	/**
 	 * Reference to the Polylang options array.
 	 *
 	 * @var array
@@ -304,7 +299,7 @@ class PLL_CRUD_Terms {
 			return $slug;
 		}
 
-		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name, $this->pre_term_id );
+		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name);
 
 		return $term_slug->get_suffixed_slug( '-' );
 	}

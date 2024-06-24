@@ -54,7 +54,7 @@ class PLL_Term_Slug {
 	 * @param string    $name     The term name.
 	 * @param int       $term_id  The term ID, if exists.
 	 */
-	public function __construct( PLL_Model $model, string $slug, string $taxonomy, string $name, int $term_id ) {
+	public function __construct( PLL_Model $model, string $slug, string $taxonomy, string $name, int $term_id = 0 ) {
 		$this->model    = $model;
 		$this->slug     = $slug;
 		$this->taxonomy = $taxonomy;
