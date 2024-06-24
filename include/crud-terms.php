@@ -304,7 +304,7 @@ class PLL_CRUD_Terms {
 			return $slug;
 		}
 
-		$term_slug = new PLL_Term_Slug( $this->model->term, $slug, $taxonomy, $this->pre_term_name, $this->pre_term_id );
+		$term_slug = new PLL_Term_Slug( $this->model, $slug, $taxonomy, $this->pre_term_name, $this->pre_term_id );
 
 		return $term_slug->get_suffixed_slug( '-' );
 	}
