@@ -517,8 +517,8 @@ class Options implements \ArrayAccess {
 		}
 
 		// Cleanup deleted sites and cache existing ones.
-		if ( ! is_multisite() || count( $this->modified ) === 1 ) {
-			// Not multisite, or multisite with only 1 site: no need to cache or verify existence.
+		if ( ! is_multisite() ) {
+			// Not multisite: no need to cache or verify existence.
 			return $this->modified;
 		}
 
