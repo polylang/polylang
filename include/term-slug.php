@@ -31,7 +31,7 @@ class PLL_Term_Slug {
 	/**
 	 * @var int
 	 */
-	private $pre_term_id;
+	private $term_id;
 
 	/**
 	 * @var PLL_Language
@@ -48,18 +48,18 @@ class PLL_Term_Slug {
 	 *
 	 * @since 3.7
 	 *
-	 * @param PLL_Model $model       Instance of PLL_Model.
-	 * @param string    $slug        The term slug.
-	 * @param string    $taxonomy    The term taxonomy.
-	 * @param string    $name        The term name.
-	 * @param int       $pre_term_id The term ID, if exists.
+	 * @param PLL_Model $model    Instance of PLL_Model.
+	 * @param string    $slug     The term slug.
+	 * @param string    $taxonomy The term taxonomy.
+	 * @param string    $name     The term name.
+	 * @param int       $term_id  The term ID, if exists.
 	 */
-	public function __construct( PLL_Model $model, string $slug, string $taxonomy, string $name, int $pre_term_id ) {
-		$this->model       = $model;
-		$this->slug        = $slug;
-		$this->taxonomy    = $taxonomy;
-		$this->name        = $name;
-		$this->pre_term_id = $pre_term_id;
+	public function __construct( PLL_Model $model, string $slug, string $taxonomy, string $name, int $term_id ) {
+		$this->model    = $model;
+		$this->slug     = $slug;
+		$this->taxonomy = $taxonomy;
+		$this->name     = $name;
+		$this->term_id  = $term_id;
 	}
 
 	/**
@@ -168,7 +168,7 @@ class PLL_Term_Slug {
 
 		$term_id = (int) $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
 
-		if ( ! $term_id || $this->pre_term_id === $term_id ) {
+		if ( ! $term_id || $this->term_id === $term_id ) {
 			return $this->slug . $separator . $this->lang->slug;
 		}
 
