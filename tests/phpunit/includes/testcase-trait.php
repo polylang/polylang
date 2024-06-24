@@ -249,6 +249,7 @@ trait PLL_UnitTestCase_Trait {
 			array(
 				'hide_default'  => false,
 				'media_support' => true,
+				'version'       => POLYLANG_VERSION,
 			)
 		);
 		self::$model = new PLL_Admin_Model( $options );

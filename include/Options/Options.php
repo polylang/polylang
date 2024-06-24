@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Options;
 
 use WP_Error;
+use WP_Site;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 
 defined( 'ABSPATH' ) || exit;
@@ -38,7 +39,7 @@ class Options implements \ArrayAccess {
 	 * Tells if the options have been modified, by blog ID.
 	 *
 	 * @var bool[]
-	 * @phpstan-var array<int, bool>
+	 * @phpstan-var array<int, true>
 	 */
 	private $modified = array();
 
@@ -182,9 +183,10 @@ class Options implements \ArrayAccess {
 	 */
 	public function save_all(): void {
 		// Find blog with modified options.
-		$modified = array_filter( $this->modified );
+		$modified = $this->get_modified();
 
 		if ( empty( $modified ) ) {
+			// Not modified.
 			return;
 		}
 
@@ -220,7 +222,13 @@ class Options implements \ArrayAccess {
 			return false;
 		}
 
-		$this->modified[ $this->current_blog_id ] = false;
+		unset( $this->modified[ $this->current_blog_id ] );
+
+		if ( is_multisite() && ! get_site( $this->current_blog_id ) ) { // Cached by `$this->get_modified()` if called from `$this->save_all()`.
+			// Deleted. Should not happen if called from `$this->save_all()`.
+			return false;
+		}
+
 		$options = get_option( self::OPTION_NAME, array() );
 
 		if ( is_array( $options ) ) {
@@ -242,6 +250,7 @@ class Options implements \ArrayAccess {
 	 */
 	public function get_all(): array {
 		if ( empty( $this->options[ $this->current_blog_id ] ) ) {
+			// No options.
 			return array();
 		}
 
@@ -489,5 +498,44 @@ class Options implements \ArrayAccess {
 	 */
 	public function offsetUnset( $offset ): void {
 		$this->reset( (string) $offset );
+	}
+
+	/**
+	 * Returns the list of modified sites.
+	 * On multisite, sites are cached.
+	 * /!\ At this point, some sites may have been deleted. They are removed from `$this->modified` here.
+	 *
+	 * @since 3.7
+	 *
+	 * @return bool[]
+	 * @phpstan-return array<int, true>
+	 */
+	private function get_modified(): array {
+		if ( empty( $this->modified ) ) {
+			// Not modified.
+			return $this->modified;
+		}
+
+		// Cleanup deleted sites and cache existing ones.
+		if ( ! is_multisite() ) {
+			// Not multisite: no need to cache or verify existence.
+			return $this->modified;
+		}
+
+		// Fetch all the data instead of only the IDs, so it is cached.
+		$sites = get_sites(
+			array(
+				'site__in' => array_keys( $this->modified ),
+				'number'   => count( $this->modified ),
+			)
+		);
+
+		// Keep only existing blogs.
+		$this->modified = array();
+		foreach ( $sites as $site ) {
+			$this->modified[ $site->id ] = true;
+		}
+
+		return $this->modified;
 	}
 }
