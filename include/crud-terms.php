@@ -51,6 +51,11 @@ class PLL_CRUD_Terms {
 	private $pre_term_name = '';
 
 	/**
+	 * @var int
+	 */
+	private $pre_term_id = 0;
+
+	/**
 	 * Reference to the Polylang options array.
 	 *
 	 * @var array
@@ -299,19 +304,8 @@ class PLL_CRUD_Terms {
 			return $slug;
 		}
 
-		$term_slug = new PLL_Term_Slug( $this->model->term, $slug, $taxonomy, $this->pre_term_name );
+		$term_slug = new PLL_Term_Slug( $this->model->term, $slug, $taxonomy, $this->pre_term_name, $this->pre_term_id );
 
-		if ( ! $term_slug->can_add_suffix() ) {
-			return $slug;
-		}
-
-		$term_id = $term_slug->get_term_id();
-
-		// If no term exist in the given language with that slug, it can be created.
-		if ( ! $term_id ) {
-			return $term_slug->get_suffixed_slug( '-' );
-		}
-
-		return $slug;
+		return $term_slug->get_suffixed_slug( '-' );
 	}
 }

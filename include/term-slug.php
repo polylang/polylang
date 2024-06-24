@@ -39,6 +39,11 @@ class PLL_Term_Slug {
 	private $name;
 
 	/**
+	 * @var int
+	 */
+	private $pre_term_id;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 3.7
@@ -47,12 +52,14 @@ class PLL_Term_Slug {
 	 * @param string              $slug            The term slug.
 	 * @param string              $taxonomy        The term taxonomy.
 	 * @param string              $name            The term name.
+	 * @param int                 $pre_term_id     The term ID, if exist.
 	 */
-	public function __construct( PLL_Translated_Term $translated_term, string $slug, string $taxonomy, string $name ) {
+	public function __construct( PLL_Translated_Term $translated_term, string $slug, string $taxonomy, string $name, int $pre_term_id ) {
 		$this->translated_term = $translated_term;
 		$this->slug            = $slug;
 		$this->taxonomy        = $taxonomy;
 		$this->name            = $name;
+		$this->pre_term_id     = $pre_term_id;
 	}
 
 	/**
@@ -62,7 +69,7 @@ class PLL_Term_Slug {
 	 *
 	 * @return bool True if the suffix can be added, false otherwise.
 	 */
-	public function can_add_suffix() {
+	private function can_add_suffix() {
 		/**
 		 * Filters the subsequently inserted term language.
 		 *
@@ -155,11 +162,17 @@ class PLL_Term_Slug {
 	 * @return string The suffixed slug, or not if the lang isn't defined.
 	 */
 	public function get_suffixed_slug( string $separator ): string {
-		if ( ! $this->lang instanceof PLL_Language ) {
+		if ( ! $this->can_add_suffix() ) {
 			return $this->slug;
 		}
 
-		return $this->slug . $separator . $this->lang->slug;
+		$term_id = (int) $this->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
+
+		if ( ! $term_id || $this->pre_term_id === $term_id ) {
+			return $this->slug . $separator . $this->lang->slug;
+		}
+
+		return $this->slug;
 	}
 
 	/**
