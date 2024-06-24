@@ -10,7 +10,7 @@ on:
       - '**.yml'
       - '**.sh'
   pull_request:
-    branches: options-as-objects-main
+    branches: master
     paths:
       - '**.php'
       - 'phpunit.xml'
