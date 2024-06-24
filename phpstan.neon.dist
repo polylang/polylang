@@ -41,3 +41,9 @@ parameters:
 			message: "#^Call to static method encode\\(\\) on an unknown class Requests_IDNAEncoder\\.$#"
 			count: 1
 			path: include/links-domain.php
+
+		# Ignored temporarily to prevent changing the type of the options everywhere in the plugin.
+		-
+			message: "#^Cannot call method merge\\(\\) on array\\.$#"
+			count: 1
+			path: settings/settings-module.php

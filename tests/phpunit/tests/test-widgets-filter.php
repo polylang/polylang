@@ -216,7 +216,11 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 
 	public function test_widgets_language_filter_is_not_displayed_for_page_builders() {
 		set_current_screen( 'post' );
-		$options = array_merge( PLL_Install::get_default_options(), array( 'default_lang' => 'en' ) );
+		$options = self::create_options(
+			array(
+				'default_lang' => 'en',
+			)
+		);
 		$model = new PLL_Admin_Model( $options );
 		$links_model = new PLL_Links_Default( $model );
 		$polylang = new PLL_Admin( $links_model );

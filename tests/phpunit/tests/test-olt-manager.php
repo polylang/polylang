@@ -49,12 +49,15 @@ class OLT_Manager_Test extends PLL_UnitTestCase {
 		copy( PLL_TEST_DATA_DIR . 'fr_FR.mo', WP_LANG_DIR . '/plugins/foo-fr_FR.mo' );
 
 		new PLL_OLT_Manager();
-		$options                 = PLL_Install::get_default_options();
-		$options['force_lang']   = 0;
-		$options['default_lang'] = 'en';
-		$model                   = new PLL_Model( $options );
-		$links_model             = $model->get_links_model();
-		$frontend                = new PLL_Frontend( $links_model );
+		$options     = self::create_options(
+			array(
+				'default_lang' => 'en',
+				'force_lang'   => 0,
+			)
+		);
+		$model       = new PLL_Model( $options );
+		$links_model = $model->get_links_model();
+		$frontend    = new PLL_Frontend( $links_model );
 
 		/*
 		 *  Calls `_load_textdomain_just_in_time()` *before* the current language is defined!

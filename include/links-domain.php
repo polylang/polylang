@@ -97,7 +97,7 @@ class PLL_Links_Domain extends PLL_Links_Abstract_Domain {
 	 */
 	public function get_hosts() {
 		$hosts = array();
-		foreach ( $this->options['domains'] as $lang => $domain ) {
+		foreach ( (array) $this->options['domains'] as $lang => $domain ) {
 			$host = wp_parse_url( $domain, PHP_URL_HOST );
 
 			if ( ! is_string( $host ) ) {

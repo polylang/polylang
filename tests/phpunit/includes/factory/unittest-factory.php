@@ -1,6 +1,8 @@
 <?php
 
 class PLL_UnitTest_Factory extends WP_UnitTest_Factory {
+	use PLL_Options_Trait;
+
 	/**
 	 * @var PLL_UnitTest_Factory_For_Language
 	 */
@@ -40,10 +42,13 @@ class PLL_UnitTest_Factory extends WP_UnitTest_Factory {
 	public $tag;
 
 	public function __construct() {
-		$options                  = PLL_Install::get_default_options();
-		$options['hide_default']  = 0;
-		$options['media_support'] = 1;
-		$this->pll_model          = new PLL_Admin_Model( $options );
+		$options = self::create_options(
+			array(
+				'hide_default'  => false,
+				'media_support' => true,
+			)
+		);
+		$this->pll_model = new PLL_Admin_Model( $options );
 
 		$this->language = new PLL_UnitTest_Factory_For_Language( $this );
 
