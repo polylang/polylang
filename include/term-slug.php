@@ -168,6 +168,7 @@ class PLL_Term_Slug {
 
 		$term_id = (int) $this->model->term_exists_by_slug( $this->slug, $this->lang, $this->taxonomy, $this->parent );
 
+		// If no term exists in the given language with that slug, it can be created, or if we are editing the existing term.
 		if ( ! $term_id || $this->term_id === $term_id ) {
 			return $this->slug . $separator . $this->lang->slug;
 		}
