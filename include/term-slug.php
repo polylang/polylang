@@ -4,6 +4,8 @@
  */
 
 /**
+ * Class for handling term slugs.
+ *
  * @since 3.7
  */
 class PLL_Term_Slug {
