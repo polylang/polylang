@@ -531,6 +531,7 @@ class Options implements \ArrayAccess {
 		);
 
 		// Keep only existing blogs.
+		$this->modifed = array();
 		foreach ( $sites as $site ) {
 			$this->modified[ $site->id ] = true;
 		}
