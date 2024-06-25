@@ -96,7 +96,7 @@ class PLL_Admin_Filters_Media extends PLL_Admin_Filters_Post_Base {
 				exit;
 			}
 
-			$tr_id = $this->posts->create_media_translation( $post_id, sanitize_key( $_GET['new_lang'] ) );
+			$tr_id = $this->model->post->create_media_translation( $post_id, sanitize_key( $_GET['new_lang'] ) );
 			wp_safe_redirect( admin_url( sprintf( 'post.php?post=%d&action=edit', $tr_id ) ) ); // WP 3.5+
 			exit;
 		}
