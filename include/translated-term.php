@@ -351,9 +351,8 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @param PLL_Language $language The term language.
 	 * @param array|string $args     Array or query string of arguments for inserting a term.
 	 * @return array|WP_Error An array of the new term, WP_Error otherwise.
-	 *
 	 */
-	public function insert(string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
+	public function insert( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
 		$set_language_for_term_slug = function () use ( $language ) {
 			return $language;
 		};
@@ -393,7 +392,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @param array        $args     Array of arguments for updating a term.
 	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
 	 */
-	public function update(int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
+	public function update( int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
 		$set_language_for_term_slug = function () use ( $language ) {
 			return $language;
 		};
