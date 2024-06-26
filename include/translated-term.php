@@ -362,7 +362,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	public function insert_term( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
 		$this->term_language = $language;
 
-		add_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20, 2 ); // After Polylang's filter.
+		add_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20 ); // After Polylang's filter.
 		$tr_term = wp_insert_term( $term, $taxonomy, $args );
 		remove_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20 );
 
@@ -383,7 +383,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	public function update_term( int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
 		$this->term_language = $language;
 
-		add_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20, 2 ); // After Polylang's filter.
+		add_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20 ); // After Polylang's filter.
 		$tr_term = wp_update_term( $term_id, $taxonomy, $args );
 		remove_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20 );
 
