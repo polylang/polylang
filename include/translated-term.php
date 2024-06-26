@@ -393,15 +393,4 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 
 		return $tr_term;
 	}
-
-	/**
-	 * Filters the currently inserted term language to suffix the term slug or not.
-	 *
-	 * @since 3.7
-	 *
-	 * @return PLL_Language Overridden language object.
-	 */
-	public function set_language_for_term_slug() {
-		return $this->term_language;
-	}
 }
