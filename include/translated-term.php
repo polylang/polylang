@@ -367,8 +367,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return $term;
 		}
 
-		$term_id = (int) $term['term_id'];
-		$this->model->term->set_language( $term_id, $language );
+		$this->model->term->set_language( (int) $term['term_id'], $language );
 
 		return $term;
 	}
