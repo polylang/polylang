@@ -65,6 +65,13 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	protected $tax_translations = 'term_translations';
 
 	/**
+	 * Term language.
+	 *
+	 * @var PLL_Language
+	 */
+	protected $term_language;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.8
@@ -339,5 +346,58 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			'type_column'   => 'taxonomy',
 			'default_alias' => 't',
 		);
+	}
+
+	/**
+	 * Wrapper of `wp_insert_term` with the language.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string       $term     The term name to add.
+	 * @param string       $taxonomy The taxonomy to which to add the term.
+	 * @param PLL_Language $language The term language.
+	 * @param array|string $args     Array or query string of arguments for inserting a term.
+	 * @return array|WP_Error An array of the new term, WP_Error otherwise.
+	 */
+	public function insert_term( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
+		$this->term_language = $language;
+
+		add_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20, 2 ); // After Polylang's filter.
+		$tr_term = wp_insert_term( $term, $taxonomy, $args );
+		remove_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20 );
+
+		return $tr_term;
+	}
+
+	/**
+	 * Wrapper of `wp_update_term` with the language.
+	 *
+	 * @since 3.7
+	 *
+	 * @param int          $term_id  The ID of the term.
+	 * @param string       $taxonomy The taxonomy of the term.
+	 * @param PLL_Language $language The term language.
+	 * @param array        $args     The taxonomy of the term.
+	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
+	 */
+	public function update_term( int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
+		$this->term_language = $language;
+
+		add_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20, 2 ); // After Polylang's filter.
+		$tr_term = wp_update_term( $term_id, $taxonomy, $args );
+		remove_filter( 'pll_inserted_term_language', array( $this, 'set_language_for_term_slug' ), 20 );
+
+		return $tr_term;
+	}
+
+	/**
+	 * Filters the currently inserted term language to suffix the term slug or not.
+	 *
+	 * @since 3.7
+	 *
+	 * @return PLL_Language Overridden language object.
+	 */
+	public function set_language_for_term_slug() {
+		return $this->term_language;
 	}
 }

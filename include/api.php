@@ -561,6 +561,37 @@ function pll_count_posts( $lang, $args = array() ) {
 }
 
 /**
+ * Wrapper of `wp_insert_term` with the language.
+ *
+ * @since 3.7
+ *
+ * @param string       $term     The term name to add.
+ * @param string       $taxonomy The taxonomy to which to add the term.
+ * @param PLL_Language $language The term language.
+ * @param array|string $args     Array or query string of arguments for inserting a term.
+ * @return array|WP_Error An array of the new term, WP_Error otherwise.
+ */
+function pll_insert_term( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
+	return PLL()->model->term->insert_term( $term, $taxonomy, $language, $args );
+}
+
+/**
+ * Wrapper of `wp_update_term` with the language.
+ *
+ * @since 3.7
+ *
+ * @param int          $term_id  The ID of the term.
+ * @param string       $taxonomy The taxonomy of the term.
+ * @param PLL_Language $language The term language.
+ * @param array        $args     The taxonomy of the term.
+ * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
+ */
+function pll_update_term( int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
+	return PLL()->model->term->update_term( $term_id, $taxonomy, $language, $args );
+}
+
+
+/**
  * Allows to access the Polylang instance.
  * However, it is always preferable to use API functions
  * as internal methods may be changed without prior notice.
