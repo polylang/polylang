@@ -576,7 +576,7 @@ function pll_insert_term( string $term, string $taxonomy, PLL_Language $language
 }
 
 /**
- * Wrapper of `wp_update_term` with the language.
+ * Wraps `wp_update_term` with language feature.
  *
  * @since 3.7
  *
