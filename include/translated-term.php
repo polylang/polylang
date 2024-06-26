@@ -403,7 +403,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		}
 
 		$get_inserted_term_parent = function () use ( $term ) {
-			return $term->term_parent;
+			return $term->parent;
 		};
 
 		// Set term parent and language for suffixed slugs.
