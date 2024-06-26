@@ -395,8 +395,24 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return $language;
 		};
 
+		$term = get_term( $term_id );
+		if ( ! $term instanceof WP_Term ) {
+			return new WP_Error( 'invalid_term', __( 'Empty Term.', 'polylang' ) );
+		}
+
+		$term_parent              = $term->parent;
+		$get_inserted_term_parent = function () use ( $term_parent ) {
+			return $term_parent;
+		};
+
+		// Set term parent and language for suffixed slugs.
 		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug, 20 ); // After Polylang's filter.
+		add_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
+
 		$tr_term = wp_update_term( $term_id, $taxonomy, $args );
+
+		// Clean up!
+		remove_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
 		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug, 20 );
 
 		return $tr_term;
