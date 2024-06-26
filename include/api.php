@@ -579,7 +579,7 @@ function pll_count_posts( $lang, $args = array() ) {
  * } $args
  */
 function pll_insert_term( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
-	return PLL()->model->term->insert_term( $term, $taxonomy, $language, $args );
+	return PLL()->model->term->insert( $term, $taxonomy, $language, $args );
 }
 
 /**
@@ -594,7 +594,7 @@ function pll_insert_term( string $term, string $taxonomy, PLL_Language $language
  * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
  */
 function pll_update_term( int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
-	return PLL()->model->term->update_term( $term_id, $taxonomy, $language, $args );
+	return PLL()->model->term->update( $term_id, $taxonomy, $language, $args );
 }
 
 
