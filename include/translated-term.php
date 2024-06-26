@@ -338,4 +338,82 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			'default_alias' => 't',
 		);
 	}
+
+	/**
+	 * Wraps `wp_insert_term` with language feature.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string       $term     The term name to add.
+	 * @param string       $taxonomy The taxonomy to which to add the term.
+	 * @param PLL_Language $language The term language.
+	 * @param array|string $args     Array or query string of arguments for inserting a term.
+	 * @return array|WP_Error An array of the new term, WP_Error otherwise.
+	 */
+	public function insert( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
+		$set_language_for_term_slug = function () use ( $language ) {
+			return $language;
+		};
+
+		$get_inserted_term_parent = function () use ( $args ) {
+			return $args['parent'] ?? 0;
+		};
+
+		// Set term parent and language for suffixed slugs.
+		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
+		add_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
+
+		$term = wp_insert_term( $term, $taxonomy, $args );
+
+		// Clean up!
+		remove_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
+		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
+
+		if ( is_wp_error( $term ) ) {
+			// Something went wrong!
+			return $term;
+		}
+
+		$this->model->term->set_language( (int) $term['term_id'], $language );
+
+		return $term;
+	}
+
+	/**
+	 * Wraps `wp_update_term` with language feature.
+	 *
+	 * @since 3.7
+	 *
+	 * @param int          $term_id  The ID of the term.
+	 * @param string       $taxonomy The taxonomy of the term.
+	 * @param PLL_Language $language The term language.
+	 * @param array        $args     Array of arguments for updating a term.
+	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
+	 */
+	public function update( int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
+		$set_language_for_term_slug = function () use ( $language ) {
+			return $language;
+		};
+
+		$term = get_term( $term_id );
+		if ( ! $term instanceof WP_Term ) {
+			return new WP_Error( 'invalid_term', __( 'Empty Term.', 'polylang' ) );
+		}
+
+		$get_inserted_term_parent = function () use ( $term ) {
+			return $term->parent;
+		};
+
+		// Set term parent and language for suffixed slugs.
+		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
+		add_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
+
+		$tr_term = wp_update_term( $term_id, $taxonomy, $args );
+
+		// Clean up!
+		remove_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
+		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
+
+		return $tr_term;
+	}
 }
