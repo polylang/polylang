@@ -583,7 +583,7 @@ function pll_insert_term( string $term, string $taxonomy, PLL_Language $language
  * @param int          $term_id  The ID of the term.
  * @param string       $taxonomy The taxonomy of the term.
  * @param PLL_Language $language The term language.
- * @param array        $args     The taxonomy of the term.
+ * @param array        $args     Array of arguments for updating a term.
  * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
  */
 function pll_update_term( int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
