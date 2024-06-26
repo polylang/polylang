@@ -340,7 +340,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
-	 * Wrapper of `wp_insert_term` with the language.
+	 * Wraps `wp_insert_term` with language feature.
 	 *
 	 * @since 3.7
 	 *
@@ -372,7 +372,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
-	 * Wrapper of `wp_update_term` with the language.
+	 * Wraps `wp_update_term` with language feature.
 	 *
 	 * @since 3.7
 	 *
