@@ -561,7 +561,7 @@ function pll_count_posts( $lang, $args = array() ) {
 }
 
 /**
- * Wrapper of `wp_insert_term` with the language.
+ * Wraps `wp_insert_term` with language feature.
  *
  * @since 3.7
  *
