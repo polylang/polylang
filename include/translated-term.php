@@ -363,14 +363,14 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		};
 
 		// Set term parent and language for suffixed slugs.
-		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug, 20 ); // After Polylang's filter.
+		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
 		add_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
 
 		$term = wp_insert_term( $term, $taxonomy, $args );
 
 		// Clean up!
 		remove_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
-		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug, 20 );
+		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
 
 		if ( is_wp_error( $term ) ) {
 			// Something went wrong!
@@ -408,14 +408,14 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		};
 
 		// Set term parent and language for suffixed slugs.
-		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug, 20 ); // After Polylang's filter.
+		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
 		add_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
 
 		$tr_term = wp_update_term( $term_id, $taxonomy, $args );
 
 		// Clean up!
 		remove_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
-		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug, 20 );
+		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
 
 		return $tr_term;
 	}
