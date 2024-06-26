@@ -570,6 +570,13 @@ function pll_count_posts( $lang, $args = array() ) {
  * @param PLL_Language $language The term language.
  * @param array|string $args     Array or query string of arguments for inserting a term.
  * @return array|WP_Error An array of the new term, WP_Error otherwise.
+ *
+ * @phpstan-param array{
+ *   alias_of?: string,
+ *   description?: string,
+ *   parent?: int,
+ *   slug?: string,
+ * } $args
  */
 function pll_insert_term( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
 	return PLL()->model->term->insert_term( $term, $taxonomy, $language, $args );
