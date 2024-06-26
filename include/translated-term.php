@@ -365,10 +365,18 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		};
 
 		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug, 20 ); // After Polylang's filter.
-		$tr_term = wp_insert_term( $term, $taxonomy, $args );
+		$term = wp_insert_term( $term, $taxonomy, $args );
 		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug, 20 );
 
-		return $tr_term;
+		if ( is_wp_error( $term ) ) {
+			// Something went wrong!
+			return $term;
+		}
+
+		$term_id = (int) $term['term_id'];
+		$this->model->term->set_language( $term_id, $language );
+
+		return $term;
 	}
 
 	/**
