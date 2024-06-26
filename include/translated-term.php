@@ -358,9 +358,8 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return $language;
 		};
 
-		$term_parent              = $args['parent'] ?? 0;
-		$get_inserted_term_parent = function () use ( $term_parent ) {
-			return $term_parent;
+		$get_inserted_term_parent = function () use ( $args ) {
+			return $args['parent'] ?? 0;
 		};
 
 		// Set term parent and language for suffixed slugs.
@@ -404,9 +403,8 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return new WP_Error( 'invalid_term', __( 'Empty Term.', 'polylang' ) );
 		}
 
-		$term_parent              = $term->parent;
-		$get_inserted_term_parent = function () use ( $term_parent ) {
-			return $term_parent;
+		$get_inserted_term_parent = function () use ( $term ) {
+			return $term->term_parent;
 		};
 
 		// Set term parent and language for suffixed slugs.
