@@ -352,12 +352,6 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @param array|string $args     Array or query string of arguments for inserting a term.
 	 * @return array|WP_Error An array of the new term, WP_Error otherwise.
 	 *
-	 * @phpstan-param array{
-	 *   alias_of?: string,
-	 *   description?: string,
-	 *   parent?: int,
-	 *   slug?: string,
-	 * } $args
 	 */
 	public function insert_term( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
 		$set_language_for_term_slug = function () use ( $language ) {
