@@ -191,7 +191,7 @@ class PLL_Admin_Site_Health {
 	public function info_options( $debug_info ) {
 		$fields = array();
 
-		foreach ( $this->model->options as $key => $value ) {
+		foreach ( $this->model->options->get_all() as $key => $value ) {
 			if ( in_array( $key, $this->exclude_options_keys() ) ) {
 				continue;
 			}
