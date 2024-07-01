@@ -111,7 +111,6 @@ class Translated_Term_Test extends PLL_Translated_Object_UnitTestCase {
 			)
 		);
 		$model = new PLL_Model( $options );
-		$model->term = new PLL_Translated_Term( $model );
 
 		$this->dont_save_translations_with_incorrect_language( $model->term );
 	}

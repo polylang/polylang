@@ -105,10 +105,7 @@ class Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_post_types() {
-		// deactivate the cache
-		self::$model->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		self::$model->cache->method( 'get' )->willReturn( false );
-
+		self::$model->clean_languages_cache();
 		self::$model->options['media_support'] = 0;
 
 		$this->assertTrue( self::$model->is_translated_post_type( 'post' ) );
@@ -116,7 +113,9 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertFalse( self::$model->is_translated_post_type( 'nav_menu_item' ) );
 		$this->assertFalse( self::$model->is_translated_post_type( 'attachment' ) );
 
+		self::$model->clean_languages_cache();
 		self::$model->options['media_support'] = 1;
+
 		$this->assertTrue( self::$model->is_translated_post_type( 'attachment' ) );
 
 		self::$model->cache = new PLL_Cache();
@@ -205,7 +204,7 @@ class Model_Test extends PLL_UnitTestCase {
 		// Translatable custom table.
 		require_once PLL_TEST_DATA_DIR . 'translatable-foo.php';
 
-		$foo = new PLLTest_Translatable_Foo( self::$model );
+		$foo = new PLLTest_Translatable_Foo( self::$model->language_model, self::$model->languages_list_model, self::$model->options, self::$model->cache );
 		$tax = $foo->get_tax_language();
 		self::$model->translatable_objects->register( $foo );
 
