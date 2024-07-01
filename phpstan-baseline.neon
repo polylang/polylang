@@ -171,11 +171,6 @@ parameters:
 			path: admin/admin-links.php
 
 		-
-			message: "#^@param array\\<array\\<string\\>\\|int\\> \\$tr does not accept actual type of parameter\\: mixed\\.$#"
-			count: 1
-			path: admin/admin-model.php
-
-		-
 			message: "#^Cannot access an offset on mixed\\.$#"
 			count: 1
 			path: admin/admin-notices.php
@@ -528,7 +523,7 @@ parameters:
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$term_id\\.$#"
 			count: 1
-			path: include/model.php
+			path: include/Models/Language_Model.php
 
 		-
 			message: "#^Method PLL_Model\\:\\:get_links_model\\(\\) should return PLL_Links_Model but returns object\\.$#"

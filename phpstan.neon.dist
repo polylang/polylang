@@ -47,3 +47,7 @@ parameters:
 			message: "#^Cannot call method merge\\(\\) on array\\.$#"
 			count: 1
 			path: settings/settings-module.php
+
+		# Ignored temporarily to prevent changing the type of the options everywhere in the plugin.
+		-
+			message: "#^Property .+\\:\\:\\$options \\(array\\) does not accept WP_Syntex\\\\Polylang\\\\Options\\\\Options\\.$#"
