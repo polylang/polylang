@@ -98,15 +98,16 @@ class PLL_Model {
 	 * @param Options $options Polylang options.
 	 */
 	public function __construct( Options &$options ) {
-		$this->options              = &$options;
-		$this->cache                = new PLL_Cache();
-		$this->translatable_objects = new PLL_Translatable_Objects();
-		$this->post                 = $this->translatable_objects->register( new PLL_Translated_Post( $this ) );  // Translated post sub model.
-		$this->term                 = $this->translatable_objects->register( new PLL_Translated_Term( $this ) );  // Translated term sub model.
-
-		$this->languages_list_model      = new Models\Languages_List_Model( $this->options, $this->translatable_objects, $this->cache );
-		$this->language_model            = new Models\Language_Model( $this->options, $this->translatable_objects, $this->languages_list_model, $this->cache );
+		$this->options                   = &$options;
+		$this->cache                     = new PLL_Cache();
+		$this->translatable_objects      = new PLL_Translatable_Objects();
 		$this->filtered_taxonomies_model = new Models\Filtered_Taxonomies_Model();
+
+		$this->languages_list_model = new Models\Languages_List_Model( $this->options, $this->translatable_objects, $this->cache );
+		$this->language_model       = new Models\Language_Model( $this->options, $this->translatable_objects, $this->languages_list_model, $this->cache );
+
+		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this->language_model, $this->languages_list_model, $this->options, $this->cache ) );  // Translated post sub model.
+		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this->language_model, $this->languages_list_model, $this->options, $this->cache ) );  // Translated term sub model.
 
 		// We need to clean languages cache when editing a language and when modifying the permalink structure.
 		add_action( 'edited_term_taxonomy', array( $this, 'clean_languages_cache' ), 10, 2 );
