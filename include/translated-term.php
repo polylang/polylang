@@ -349,15 +349,28 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @param string       $term     The term name to add.
 	 * @param string       $taxonomy The taxonomy to which to add the term.
 	 * @param PLL_Language $language The term language.
-	 * @param array|string $args     Array or query string of arguments for inserting a term.
-	 * @return array|WP_Error An array of the new term, WP_Error otherwise.
+	 * @param array        $args {
+	 *     Optional. Array of arguments for inserting a term.
+	 *
+	 *     @type string   $alias_of     Slug of the term to make this term an alias of.
+	 *                                  Default empty string. Accepts a term slug.
+	 *     @type string   $description  The term description. Default empty string.
+	 *     @type int      $parent       The id of the parent term. Default 0.
+	 *     @type string   $slug         The term slug to use. Default empty string.
+	 *     @type string[] $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+	 * }
+	 * @return array|WP_Error {
+	 *     An array of the new term data, `WP_Error` otherwise.
+	 *
+	 *     @type int        $term_id          The new term ID.
+	 *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+	 * }
 	 */
 	public function insert( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
 		$set_language_for_term_slug = function () use ( $language ) {
 			return $language;
 		};
-
-		$get_inserted_term_parent = function () use ( $args ) {
+		$get_inserted_term_parent   = function () use ( $args ) {
 			return $args['parent'] ?? 0;
 		};
 
@@ -378,6 +391,18 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 
 		$this->model->term->set_language( (int) $term['term_id'], $language );
 
+		if ( ! empty( $args['translations'] ) ) {
+			$this->model->term->save_translations(
+				(int) $term['term_id'],
+				array_merge(
+					$args['translations'],
+					array(
+						$language->slug => (int) $term['term_id'],
+					)
+				)
+			);
+		}
+
 		return $term;
 	}
 
@@ -386,36 +411,49 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @since 3.7
 	 *
-	 * @param int          $term_id  The ID of the term.
-	 * @param string       $taxonomy The taxonomy of the term.
-	 * @param PLL_Language $language The term language.
-	 * @param array        $args     Array of arguments for updating a term.
-	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
+	 * @param int   $term_id The ID of the term.
+	 * @param array $args {
+	 *     Optional. Array of arguments for updating a term.
+	 *
+	 *     @type string       $alias_of    Slug of the term to make this term an alias of.
+	 *                                     Default empty string. Accepts a term slug.
+	 *     @type string       $description The term description. Default empty string.
+	 *     @type int          $parent      The id of the parent term. Default 0.
+	 *     @type string       $slug        The term slug to use. Default empty string.
+	 *     @type PLL_Language $lang        The term language object.
+	 * }
+	 * @return array|WP_Error An array containing the `term_id` and `term_taxonomy_id`,
+	 *                        WP_Error otherwise.                  WP_Error otherwise.
 	 */
-	public function update( int $term_id, string $taxonomy, PLL_Language $language, array $args = array() ) {
-		$set_language_for_term_slug = function () use ( $language ) {
-			return $language;
-		};
-
+	public function update( int $term_id, array $args = array() ) {
 		$term = get_term( $term_id );
 		if ( ! $term instanceof WP_Term ) {
 			return new WP_Error( 'invalid_term', __( 'Empty Term.', 'polylang' ) );
 		}
 
-		$get_inserted_term_parent = function () use ( $term ) {
-			return $term->parent;
+		$language = ! empty( $args['lang'] ) ? $this->model->get_language( $args['lang'] ) : null;
+		if ( false === $language ) {
+			return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+		}
+
+		$set_language_for_term_slug = function () use ( $language ) {
+			return $language;
+		};
+		$parent                    = $args['parent'] ?? $term->parent;
+		$get_inserted_term_parent  = function () use ( $parent ) {
+			return $parent;
 		};
 
 		// Set term parent and language for suffixed slugs.
 		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
 		add_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
 
-		$tr_term = wp_update_term( $term_id, $taxonomy, $args );
+		$term = wp_update_term( $term->term_id, $term->taxonomy, $args );
 
 		// Clean up!
 		remove_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
 		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
 
-		return $tr_term;
+		return $term;
 	}
 }
