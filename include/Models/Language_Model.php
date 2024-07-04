@@ -112,14 +112,16 @@ class Language_Model {
 	 * @since 3.7 Moved from `PLL_Admin_Model::add_language()` to `WP_Syntex\Polylang\Models\Language_Model::add()`.
 	 *
 	 * @param array $args {
+	 *   Arguments used to create the language.
+	 *
 	 *   @type string $name           Language name (used only for display).
 	 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
 	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
 	 *                                not be loaded...
 	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
 	 *   @type int    $term_group     Language order when displayed.
-	 *   @type string $no_default_cat Optional, if set, no default category will be created for this language.
-	 *   @type string $flag           Optional, country code, {@see settings/flags.php}.
+	 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
+	 *   @type string $no_default_cat Optional. If set, no default category will be created for this language.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
 	 */
@@ -159,11 +161,22 @@ class Language_Model {
 		flush_rewrite_rules(); // Refresh rewrite rules.
 
 		/**
-		 * Fires when a language is added.
+		 * Fires after a language is added.
 		 *
 		 * @since 1.9
 		 *
-		 * @param array $args Arguments used to create the language. @see WP_Syntex\Polylang\Models\Language_Model::add().
+		 * @param array $args {
+		 *   Arguments used to create the language.
+		 *
+		 *   @type string $name           Language name (used only for display).
+		 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
+		 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
+		 *                                not be loaded...
+		 *   @type int    $rtl            1 if rtl language, 0 otherwise.
+		 *   @type int    $term_group     Language order when displayed.
+		 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
+		 *   @type string $no_default_cat Optional. If set, no default category will be created for this language.
+		 * }
 		 */
 		do_action( 'pll_add_language', $args );
 
