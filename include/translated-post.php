@@ -4,7 +4,6 @@
  */
 
 use WP_Syntex\Polylang\Models\Language_Model;
-use WP_Syntex\Polylang\Models\Languages_List_Model;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -62,15 +61,14 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @since 1.8
 	 * @since 3.7 Changed method's signature.
 	 *
-	 * @param Language_Model       $language_model Model for the languages.
-	 * @param Languages_List_Model $languages_list_model Languages list's model.
-	 * @param Options              $options              Polylang's options.
-	 * @param PLL_Cache            $cache                Internal non persistent cache object.
+	 * @param Language_Model $language_model Model for the languages.
+	 * @param Options        $options              Polylang's options.
+	 * @param PLL_Cache      $cache                Internal non persistent cache object.
 	 *
 	 * @phpstan-param PLL_Cache<mixed> $cache
 	 */
-	public function __construct( Language_Model $language_model, Languages_List_Model $languages_list_model, Options $options, PLL_Cache $cache ) {
-		parent::__construct( $language_model, $languages_list_model, $options, $cache );
+	public function __construct( Language_Model $language_model, Options $options, PLL_Cache $cache ) {
+		parent::__construct( $language_model, $options, $cache );
 
 		// Keep hooks in constructor for backward compatibility.
 		$this->init();

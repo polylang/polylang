@@ -4,7 +4,6 @@
  */
 
 use WP_Syntex\Polylang\Models\Language_Model;
-use WP_Syntex\Polylang\Models\Languages_List_Model;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -27,13 +26,6 @@ abstract class PLL_Translatable_Object {
 	 * @var Language_Model
 	 */
 	protected $language_model;
-
-	/**
-	 * Model for the languages list.
-	 *
-	 * @var Languages_List_Model
-	 */
-	protected $languages_list_model;
 
 	/**
 	 * Polylang's options.
@@ -103,19 +95,17 @@ abstract class PLL_Translatable_Object {
 	 * @since 3.4
 	 * @since 3.7 Changed method's signature.
 	 *
-	 * @param Language_Model       $language_model Model for the languages.
-	 * @param Languages_List_Model $languages_list_model Languages list's model.
-	 * @param Options              $options              Polylang's options.
-	 * @param PLL_Cache            $cache                Internal non persistent cache object.
+	 * @param Language_Model $language_model Model for the languages.
+	 * @param Options        $options              Polylang's options.
+	 * @param PLL_Cache      $cache                Internal non persistent cache object.
 	 *
 	 * @phpstan-param PLL_Cache<mixed> $cache
 	 */
-	public function __construct( Language_Model $language_model, Languages_List_Model $languages_list_model, Options $options, PLL_Cache $cache ) {
-		$this->language_model       = $language_model;
-		$this->languages_list_model = $languages_list_model;
-		$this->options              = $options;
-		$this->cache                = $cache;
-		$this->tax_to_cache[]       = $this->tax_language;
+	public function __construct( Language_Model $language_model, Options $options, PLL_Cache $cache ) {
+		$this->language_model = $language_model;
+		$this->options        = $options;
+		$this->cache          = $cache;
+		$this->tax_to_cache[] = $this->tax_language;
 
 		/*
 		 * Register our taxonomy as soon as possible.
@@ -396,7 +386,7 @@ abstract class PLL_Translatable_Object {
 	public function get_objects_with_no_lang( $limit, array $args = array() ) {
 		$language_ids = array();
 
-		foreach ( $this->languages_list_model->get_languages_list() as $language ) {
+		foreach ( $this->language_model->get_languages_list() as $language ) {
 			$language_ids[] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 
