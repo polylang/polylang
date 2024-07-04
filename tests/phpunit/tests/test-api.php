@@ -11,7 +11,14 @@ class API_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		$this->pll_env       = ( new PLL_Context_Frontend() )->get();
+		register_taxonomy( 'custom_tax', 'post' );
+
+		$options             = array(
+			'default_lang' => 'en',
+			'post_types'   => array( 'trcpt' ),
+			'taxonomies'   => array( 'trtax', 'trtax_with_no_namespace' ),
+		);
+		$this->pll_env       = ( new PLL_Context_Frontend( $options ) )->get();
 		$GLOBALS['polylang'] = $this->pll_env;
 	}
 
@@ -66,5 +73,56 @@ class API_Test extends PLL_UnitTestCase {
 		$this->assertSame( $objects['fr'], PLL()->model->$type->get_translation( $objects['en'], 'fr' ) );
 		$this->assertSame( 0, PLL()->model->$type->get_translation( $objects['en'], 'de' ) );
 		$this->assertSame( 0, PLL()->model->$type->get_translation( $objects['en'], 'chti' ) );
+	}
+
+	/**
+	 * @testWith ["category", false, true]
+	 *           ["category", true, true]
+	 *           ["post_tag", false, true]
+	 *           ["custom_tax", false, true]
+	 *           ["category", false, false]
+	 *           ["category", true, false]
+	 *           ["post_tag", false, false]
+	 *           ["custom_tax", false, false]
+	 *
+	 * @param string $taxonomy
+	 * @return void
+	 */
+	public function test_pll_insert_term_happy_path( $taxonomy, $with_parent, $with_translations ) {
+		$languages    = array( 'en', 'fr', 'de' );
+		$translations = array();
+		foreach( $languages as $i => $language ) {
+			$args            = array();
+			$is_default_lang = $i === 0;
+
+			if ( $with_parent ) {
+				$parent = self::factory()->term->create_and_get(
+					array(
+						'name'     => $is_default_lang ? 'Foo' : "Foo {$language}",
+						'taxonomy' => $taxonomy,
+					)
+				);
+				$args['parent'] = $parent->term_id;
+			}
+
+			if ( $with_translations && ! empty( $translations ) ) {
+				$args['translations'] = $translations;
+			}
+
+			$result = pll_insert_term( 'Foo', $taxonomy, $language );
+
+			$this->assertIsArray( $result, "The term in {$this->pll_env->model->get_language( $language )->name} could not be created." );
+			$this->assertArrayHasKey( 'term_id', $result );
+			$this->assertArrayHasKey( 'term_taxonomy_id', $result );
+
+			$translations[ $language ] = $result['term_id'];
+			$term                      = get_term( $result['term_id'], $taxonomy );
+
+			$prefix = $with_parent ? "{$parent->slug}-" : ''; // @fixme Polylang doesn't reuse parent slug and add a suffix with language slug instead...
+			$suffix = ( $with_translations && ! $is_default_lang ) || $with_parent ? "-{$language}" : ''; // @fixme With the new API, the term slug is suffixed with language slug even if not in the same translation group...
+			$expected_slug = "{$prefix}foo{$suffix}";
+
+			$this->assertSame( $expected_slug, $term->slug );
+		}
 	}
 }
