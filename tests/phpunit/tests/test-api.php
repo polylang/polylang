@@ -15,10 +15,9 @@ class API_Test extends PLL_UnitTestCase {
 
 		$options             = array(
 			'default_lang' => 'en',
-			'post_types'   => array( 'trcpt' ),
-			'taxonomies'   => array( 'trtax', 'trtax_with_no_namespace' ),
+			'taxonomies'   => array( 'custom_tax' ),
 		);
-		$this->pll_env       = ( new PLL_Context_Frontend( $options ) )->get();
+		$this->pll_env       = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
 		$GLOBALS['polylang'] = $this->pll_env;
 	}
 
@@ -76,8 +75,8 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith ["category", false, true]
-	 *           ["category", true, true]
+	 * @testWith ["category", true, true]
+	 *           ["category", false, true]
 	 *           ["post_tag", false, true]
 	 *           ["custom_tax", false, true]
 	 *           ["category", false, false]
@@ -100,6 +99,7 @@ class API_Test extends PLL_UnitTestCase {
 					array(
 						'name'     => $is_default_lang ? 'Foo' : "Foo {$language}",
 						'taxonomy' => $taxonomy,
+						'lang'     => $language,
 					)
 				);
 				$args['parent'] = $parent->term_id;
@@ -109,7 +109,7 @@ class API_Test extends PLL_UnitTestCase {
 				$args['translations'] = $translations;
 			}
 
-			$result = pll_insert_term( 'Foo', $taxonomy, $language );
+			$result = pll_insert_term( 'Foo', $taxonomy, $language, $args );
 
 			$this->assertIsArray( $result, "The term in {$this->pll_env->model->get_language( $language )->name} could not be created." );
 			$this->assertArrayHasKey( 'term_id', $result );
@@ -119,7 +119,7 @@ class API_Test extends PLL_UnitTestCase {
 			$term                      = get_term( $result['term_id'], $taxonomy );
 
 			$prefix = $with_parent ? "{$parent->slug}-" : ''; // @fixme Polylang doesn't reuse parent slug and add a suffix with language slug instead...
-			$suffix = ( $with_translations && ! $is_default_lang ) || $with_parent ? "-{$language}" : ''; // @fixme With the new API, the term slug is suffixed with language slug even if not in the same translation group...
+			$suffix = ! $is_default_lang ? "-{$language}" : '';
 			$expected_slug = "{$prefix}foo{$suffix}";
 
 			$this->assertSame( $expected_slug, $term->slug );
