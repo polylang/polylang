@@ -118,7 +118,7 @@ class Model_Test extends PLL_UnitTestCase {
 
 		$this->assertTrue( self::$model->is_translated_post_type( 'attachment' ) );
 
-		self::$model->cache = new PLL_Cache();
+		self::$model->clean_languages_cache();
 	}
 
 	public function test_translated_taxonomies() {
