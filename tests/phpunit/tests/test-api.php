@@ -11,11 +11,11 @@ class API_Test extends PLL_UnitTestCase {
 	public function set_up() {
 		parent::set_up();
 
-		register_taxonomy( 'custom_tax', 'post' );
+		register_taxonomy( 'tr_custom_tax', 'post' );
 
 		$options             = array(
 			'default_lang' => 'en',
-			'taxonomies'   => array( 'custom_tax' ),
+			'taxonomies'   => array( 'tr_custom_tax' ),
 		);
 		$this->pll_env       = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
 		$GLOBALS['polylang'] = $this->pll_env;
@@ -75,14 +75,16 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
+	 * @covers ::pll_insert_term
+	 *
 	 * @testWith ["category", true, true]
 	 *           ["category", false, true]
 	 *           ["post_tag", false, true]
-	 *           ["custom_tax", false, true]
+	 *           ["tr_custom_tax", false, true]
 	 *           ["category", false, false]
 	 *           ["category", true, false]
 	 *           ["post_tag", false, false]
-	 *           ["custom_tax", false, false]
+	 *           ["tr_custom_tax", false, false]
 	 *
 	 * @param string $taxonomy
 	 * @return void
@@ -124,5 +126,33 @@ class API_Test extends PLL_UnitTestCase {
 
 			$this->assertSame( $expected_slug, $term->slug );
 		}
+	}
+
+	/**
+	 * @covers ::pll_insert_term
+	 *
+	 * @testWith ["category", "en", "term_exists"]
+	 *           ["post_tag", "en", "term_exists"]
+	 *           ["tr_custom_tax", "en", "term_exists"]
+	 *           ["category", "chti", "invalid_language"]
+	 *           ["post_tag", "chti", "invalid_language"]
+	 *           ["tr_custom_tax", "chti", "invalid_language"]
+	 *
+	 * @param string $taxonomy
+	 * @return void
+	 */
+	public function test_pll_insert_term_error_path( $taxonomy, $language, $error_code ) {
+		self::factory()->term->create_and_get(
+			array(
+				'name'     => 'Foo',
+				'taxonomy' => $taxonomy,
+				'lang'     => 'en',
+			)
+		);
+
+		$result = pll_insert_term( 'Foo', $taxonomy, $language );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( $error_code, $result->get_error_code() );
 	}
 }
