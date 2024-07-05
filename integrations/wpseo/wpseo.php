@@ -80,12 +80,30 @@ class PLL_WPSEO {
 			'rssafter',
 		);
 
+		/**
+		 * Filter the WPSEO Title options.
+		 *
+		 * @since 3.7
+		 *
+		 * @param array $keys list of option names.
+		 */
+		$keys = apply_filters( 'wpseo_titles_translate_keys', $keys );
+
 		new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
 
 		$keys = array(
 			'og_frontpage_title',
 			'og_frontpage_desc',
 		);
+
+		/**
+		 * Filter the WPSEO Social options.
+		 *
+		 * @since 3.7
+		 *
+		 * @param array $keys list of option names.
+		 */
+		$keys = apply_filters( 'wpseo_social_translate_keys', $keys );
 
 		new PLL_Translate_Option( 'wpseo_social', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
 	}
