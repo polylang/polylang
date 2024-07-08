@@ -69,14 +69,14 @@ class PLL_Model {
 	/**
 	 * Model for the languages.
 	 *
-	 * @var Models\Language_Model
+	 * @var Models\Language
 	 */
 	public $language_model;
 
 	/**
 	 * Model for taxonomies filtered by Polylang.
 	 *
-	 * @var Models\Filtered_Taxonomies_Model
+	 * @var Models\Filtered_Taxonomies
 	 */
 	public $filtered_taxonomies_model;
 
@@ -94,8 +94,8 @@ class PLL_Model {
 		$this->options                   = &$options;
 		$this->cache                     = new PLL_Cache();
 		$this->translatable_objects      = new PLL_Translatable_Objects();
-		$this->filtered_taxonomies_model = new Models\Filtered_Taxonomies_Model();
-		$this->language_model            = new Models\Language_Model( $this->options, $this->translatable_objects, $this->cache );
+		$this->filtered_taxonomies_model = new Models\Filtered_Taxonomies();
+		$this->language_model            = new Models\Language( $this->options, $this->translatable_objects, $this->cache );
 
 		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this->language_model, $this->options, $this->cache ) );  // Translated post sub model.
 		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this->language_model, $this->options, $this->cache ) );  // Translated term sub model.
