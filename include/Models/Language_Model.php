@@ -123,16 +123,26 @@ class Language_Model {
 	 * @param array $args {
 	 *   Arguments used to create the language.
 	 *
-	 *   @type string $name           Language name (used only for display).
-	 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
-	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
-	 *                                not be loaded...
-	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
-	 *   @type int    $term_group     Language order when displayed.
-	 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
-	 *   @type string $no_default_cat Optional. If set, no default category will be created for this language.
+	 *   @type string   $name           Language name (used only for display).
+	 *   @type string   $slug           Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string   $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
+	 *                                  not be loaded...
+	 *   @type bool|int $rtl            True if rtl language, false otherwise.
+	 *   @type int      $term_group     Language order when displayed.
+	 *   @type string   $flag           Optional. Country code, {@see settings/flags.php}.
+	 *   @type bool     $no_default_cat Optional. If set, no default category will be created for this language.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
+	 *
+	 * @phpstan-param array{
+	 *     name: string,
+	 *     slug: string,
+	 *     locale: string,
+	 *     rtl: bool|0|1,
+	 *     term_group: int|numeric-string,
+	 *     flag?: string,
+	 *     no_default_cat?: bool
+	 * } $args
 	 */
 	public function add( array $args ) {
 		$errors = $this->validate_lang( $args );
@@ -140,6 +150,17 @@ class Language_Model {
 			return $errors;
 		}
 
+		/**
+		 * @phpstan-var array{
+		 *     name: non-empty-string,
+		 *     slug:  non-empty-string,
+		 *     locale:  non-empty-string,
+		 *     rtl: bool|0|1,
+		 *     term_group: int|numeric-string,
+		 *     flag?:  non-empty-string,
+		 *     no_default_cat?: bool
+		 * } $args
+		 */
 		// First the language taxonomy.
 		$r = wp_insert_term(
 			$args['name'],
@@ -177,14 +198,14 @@ class Language_Model {
 		 * @param array $args {
 		 *   Arguments used to create the language.
 		 *
-		 *   @type string $name           Language name (used only for display).
-		 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
-		 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
-		 *                                not be loaded...
-		 *   @type int    $rtl            1 if rtl language, 0 otherwise.
-		 *   @type int    $term_group     Language order when displayed.
-		 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
-		 *   @type string $no_default_cat Optional. If set, no default category will be created for this language.
+		 *   @type string   $name           Language name (used only for display).
+		 *   @type string   $slug           Language code (ideally 2-letters ISO 639-1 language code).
+		 *   @type string   $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
+		 *                                  not be loaded...
+		 *   @type bool|int $rtl            True if rtl language, false otherwise.
+		 *   @type int      $term_group     Language order when displayed.
+		 *   @type string   $flag           Optional. Country code, {@see settings/flags.php}.
+		 *   @type bool     $no_default_cat Optional. If set, no default category will be created for this language.
 		 * }
 		 */
 		do_action( 'pll_add_language', $args );
@@ -199,16 +220,28 @@ class Language_Model {
 	 * @since 3.7 Moved from `PLL_Admin_Model::update_language()` to `WP_Syntex\Polylang\Models\Language_Model::update()`.
 	 *
 	 * @param array $args {
-	 *   @type int    $lang_id        Id of the language to modify.
-	 *   @type string $name           Language name (used only for display).
-	 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
-	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
-	 *                                not be loaded...
-	 *   @type int    $rtl            1 if rtl language, 0 otherwise.
-	 *   @type int    $term_group     Language order when displayed.
-	 *   @type string $flag           Optional, country code, {@see settings/flags.php}.
+	 *   Arguments used to modify the language.
+	 *
+	 *   @type int      $lang_id    ID of the language to modify.
+	 *   @type string   $name       Language name (used only for display).
+	 *   @type string   $slug       Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string   $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+	 *                              not be loaded...
+	 *   @type bool|int $rtl        True if rtl language, false otherwise.
+	 *   @type int      $term_group Language order when displayed.
+	 *   @type string   $flag       Optional, country code, {@see settings/flags.php}.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
+	 *
+	 * @phpstan-param array{
+	 *     lang_id: int|numeric-string,
+	 *     name: string,
+	 *     slug: string,
+	 *     locale: string,
+	 *     rtl: bool|0|1,
+	 *     term_group: int|numeric-string,
+	 *     flag?: string
+	 * } $args
 	 */
 	public function update( array $args ) {
 		$lang = $this->get( (int) $args['lang_id'] );
@@ -222,6 +255,17 @@ class Language_Model {
 			return $errors;
 		}
 
+		/**
+		 * @phpstan-var array{
+		 *     lang_id: int|numeric-string,
+		 *     name: non-empty-string,
+		 *     slug:  non-empty-string,
+		 *     locale:  non-empty-string,
+		 *     rtl: bool|0|1,
+		 *     term_group: int|numeric-string,
+		 *     flag?:  non-empty-string
+		 * } $args
+		 */
 		// Update links to this language in posts and terms in case the slug has been modified.
 		$slug     = $args['slug'];
 		$old_slug = $lang->slug;
@@ -291,13 +335,13 @@ class Language_Model {
 		 * @param array $args {
 		 *   Arguments used to modify the language. @see PLL_Admin_Model::update_language().
 		 *
-		 *   @type string $name           Language name (used only for display).
-		 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
-		 *   @type string $locale         WordPress locale.
-		 *   @type int    $rtl            1 if rtl language, 0 otherwise.
-		 *   @type int    $term_group     Language order when displayed.
-		 *   @type string $no_default_cat Optional, if set, no default category has been created for this language.
-		 *   @type string $flag           Optional, country code, @see flags.php.
+		 *   @type string   $name           Language name (used only for display).
+		 *   @type string   $slug           Language code (ideally 2-letters ISO 639-1 language code).
+		 *   @type string   $locale         WordPress locale.
+		 *   @type bool|int $rtl            True if rtl language, false otherwise.
+		 *   @type int      $term_group     Language order when displayed.
+		 *   @type string   $no_default_cat Optional, if set, no default category has been created for this language.
+		 *   @type string   $flag           Optional, country code, @see flags.php.
 		 * }
 		 * @param PLL_Language $lang Previous value of the language being edited.
 		 */
@@ -587,6 +631,8 @@ class Language_Model {
 	 * @param string $old_slug The old language slug.
 	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
 	 * @return void
+	 *
+	 * @phpstan-param non-empty-string $old_slug
 	 */
 	public function update_translations( string $old_slug, string $new_slug = '' ): void {
 		global $wpdb;
@@ -740,17 +786,29 @@ class Language_Model {
 	 * @since 3.7 Moved from `PLL_Admin_Model::build_language_metas()` to `WP_Syntex\Polylang\Models\Language_Model::build_metas()`.
 	 *
 	 * @param array $args {
-	 *   @type string $name       Language name (used only for display).
-	 *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
-	 *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will not be
-	 *                            loaded...
-	 *   @type int    $rtl        1 if rtl language, 0 otherwise.
-	 *   @type int    $term_group Language order when displayed.
-	 *   @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is being
-	 *                            created.
-	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
+	 *   Arguments used to build the language metas.
+	 *
+	 *   @type string   $name       Language name (used only for display).
+	 *   @type string   $slug       Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string   $locale     WordPress locale. If something wrong is used for the locale, the .mo files will not
+	 *                              be loaded...
+	 *   @type bool|int $rtl        True if rtl language, false otherwise.
+	 *   @type int      $term_group Language order when displayed.
+	 *   @type int      $lang_id    Optional, ID of the language to modify. An empty value means the language is being
+	 *                              created.
+	 *   @type string   $flag       Optional, country code, {@see settings/flags.php}.
 	 * }
 	 * @return string The serialized description array updated.
+	 *
+	 * @phpstan-param array{
+	 *     name: non-empty-string,
+	 *     slug: non-empty-string,
+	 *     locale: non-empty-string,
+	 *     rtl: bool|0|1,
+	 *     term_group: int|numeric-string,
+	 *     lang_id?: int|numeric-string,
+	 *     flag?: non-empty-string
+	 * } $args
 	 */
 	private function build_metas( array $args ): string {
 		if ( ! empty( $args['lang_id'] ) ) {
@@ -781,15 +839,15 @@ class Language_Model {
 		 * @param mixed[] $args     {
 		 *     Arguments used to create the language.
 		 *
-		 *     @type string $name       Language name (used only for display).
-		 *     @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
-		 *     @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
-		 *                              not be loaded...
-		 *     @type int    $rtl        1 if rtl language, 0 otherwise.
-		 *     @type int    $term_group Language order when displayed.
-		 *     @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is
-		 *                              being created.
-		 *     @type string $flag       Optional, country code, {@see settings/flags.php}.
+		 *     @type string   $name       Language name (used only for display).
+		 *     @type string   $slug       Language code (ideally 2-letters ISO 639-1 language code).
+		 *     @type string   $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+		 *                                not be loaded...
+		 *     @type bool|int $rtl        True if rtl language, false otherwise.
+		 *     @type int      $term_group Language order when displayed.
+		 *     @type int      $lang_id    Optional, ID of the language to modify. An empty value means the language is
+		 *                                being created.
+		 *     @type string   $flag       Optional, country code, {@see settings/flags.php}.
 		 * }
 		 * @param mixed[] $new_data New data.
 		 * @param mixed[] $old_data {
@@ -818,6 +876,13 @@ class Language_Model {
 	 * @param array             $args Parameters of {@see WP_Syntex\Polylang\Models\Language_Model::add() or @see WP_Syntex\Polylang\Models\Language_Model::update()}.
 	 * @param PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
 	 * @return WP_Error
+	 *
+	 * @phpstan-param array{
+	 *     locale: string,
+	 *     slug: string,
+	 *     name: string,
+	 *     flag?: string
+	 * } $args
 	 */
 	private function validate_lang( array $args, ?PLL_Language $lang = null ): WP_Error {
 		$errors = new WP_Error();
@@ -878,7 +943,7 @@ class Language_Model {
 	 * @phpstan-param non-empty-string $name
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
-	private function update_secondary_language_terms( $slug, $name, ?PLL_Language $language = null, array $taxonomies = array() ): void {
+	private function update_secondary_language_terms( string $slug, string $name, ?PLL_Language $language = null, array $taxonomies = array() ): void {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
 
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
