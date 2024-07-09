@@ -61,7 +61,7 @@ class Languages extends WP_REST_Controller {
 	public function register_routes(): void {
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base,
+			"/{$this->rest_base}",
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -80,7 +80,7 @@ class Languages extends WP_REST_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<id>[\d]+)',
+			"/{$this->rest_base}/(?P<code>[a-z_-]+)",
 			array(
 				'args'   => array(
 					'id' => array(
