@@ -20,6 +20,17 @@ defined( 'ABSPATH' ) || exit;
  * Allows to access languages via the REST API.
  *
  * @since 3.7
+ *
+ * @phpstan-template T of array{
+ *     id: int<1, max>,
+ *     locale: non-empty-string,
+ *     code?: non-empty-string,
+ *     name?: non-empty-string,
+ *     direction?: 'ltr'|'rtl',
+ *     order?: int,
+ *     flag?: string,
+ *     set_default_cat?: bool
+ * }
  */
 class Languages extends WP_REST_Controller {
 	/**
@@ -109,6 +120,8 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_items( $request ) {
 		$languages = array();
@@ -127,6 +140,8 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function create_item( $request ) {
 		if ( ! empty( $request['id'] ) ) {
@@ -199,6 +214,8 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_item( $request ) {
 		$language = $this->get_language( $request['id'] );
@@ -219,6 +236,8 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
 		$language = $this->get_language( $request['id'] );
@@ -273,6 +292,8 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item( $request ) {
 		$language = $this->get_language( $request['id'] );
@@ -307,6 +328,8 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to create languages, WP_Error object otherwise.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function create_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -326,6 +349,8 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to update the language, WP_Error object otherwise.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -345,6 +370,8 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to delete the language, WP_Error object otherwise.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -365,6 +392,8 @@ class Languages extends WP_REST_Controller {
 	 * @param PLL_Language    $item    Language object.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function prepare_item_for_response( $item, $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$data     = $item->to_array();
@@ -631,6 +660,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Request object.
 	 * @return object|WP_Error The prepared language, or WP_Error object on failure.
 	 *
+	 * @phpstan-param WP_REST_Request<T> $request
 	 * @phpstan-return stdClass
 	 */
 	protected function prepare_item_for_database( $request ) {
