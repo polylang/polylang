@@ -10,6 +10,6 @@ defined( 'ABSPATH' ) || exit;
 add_action(
 	'pll_init',
 	function ( $polylang ) {
-		$polylang->rest_api = new API( $polylang->model );
+		$polylang->rest = new API( $polylang->model );
 	}
 );
