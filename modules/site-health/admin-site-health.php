@@ -426,18 +426,21 @@ class PLL_Admin_Site_Health {
 		$translation_updates_nb = 0;
 		if ( is_countable( wp_get_translation_updates() ) ) {
 			$translation_updates = $this->get_translations_update_list( wp_get_translation_updates() );
-			$translation_updates_nb = sizeof( wp_get_translation_updates() );
+			$translation_updates_nb = count( wp_get_translation_updates() );
 		}
 
 		if ( $translation_updates_nb > 0 ) {
 			$fields['translations_update'] = array(
-				'label' => __( 'Translation updates' ),
+				'label' => __( 'Translation updates', 'polylang' ),
 				/* translators: the placeholder is the number of available translation update. */
-				'value' => sprintf( _n( '%d translation update is available', '%d translations update are available', $translation_updates_nb ), $translation_updates_nb ),
+				'value' => sprintf( _n( '%d translation update is available', '%d translations update are available', $translation_updates_nb, 'polylang' ), $translation_updates_nb ),
 				'debug' => $translation_updates_nb,
 			);
+		}
+
+		if ( ! empty( $translation_updates ) ) {
 			$fields['translations_update_list'] = array(
-				'label' => __( 'Translation updates list' ),
+				'label' => __( 'Translation updates list', 'polylang' ),
 				/* translators: the placeholder is the number of available translation update. */
 				'value' => $translation_updates,
 				'debug' => $translation_updates,
@@ -468,28 +471,36 @@ class PLL_Admin_Site_Health {
 		return $debug_info;
 	}
 
-	public function get_translations_update_list( $updates ){
+	/**
+	 * Get all available translations updates.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $updates The available updates.
+	 *
+	 * @return array The available translation updates formatted for Site Health Report.
+	 */
+	public function get_translations_update_list( $updates ) {
 		$update_list = array();
 		foreach ( $updates as $update ) {
-			$update_list[ $update->type][$update->slug][] = $update->language;
+			$update_list[ $update->type ][ $update->slug ][] = $update->language;
 		}
-
-		foreach ( $update_list as $type => $data  ) {
+		$translation_list = array();
+		foreach ( $update_list as $type => $data ) {
 			if ( 'core' === $type ) {
-				$list['core'] = $data['default'];
 
-				if ( ! empty( $list['core'] ) ) {
+				if ( ! empty( $data['default'] ) ) {
 					foreach ( $data['default'] as $core_translations ) {
 						$translation_list['core'][] = $core_translations;
 					}
 					$translation_list['core'] = implode( ', ', $translation_list['core'] );
-					//unset( $update_list['core']['default'] );
 				}
 			}
+			$t = array();
 			foreach ( $data as $name => $translations ) {
-				$t[] = $name . ': ' . implode( ', ', $translations);
+				$t[] = $name . ': ' . implode( ', ', $translations );
 			}
-			$translation_list[$type] = implode( ' | ', $t );
+			$translation_list[ $type ] = implode( ' | ', $t );
 		}
 
 		return $translation_list;
