@@ -422,6 +422,28 @@ class PLL_Admin_Site_Health {
 			$fields['term-no-lang']['value'] = $this->format_array( $terms_no_lang );
 		}
 
+		// translations update available
+		$translation_updates_nb = 0;
+		if ( is_countable( wp_get_translation_updates() ) ) {
+		//	$translation_updates = $this->get_translations_update_list( wp_get_translation_updates() );
+			$translation_updates_nb = sizeof( wp_get_translation_updates() );
+		}
+
+		if ( $translation_updates_nb > 0 ) {
+			$fields['translations_update'] = array(
+				'label' => __( 'Translation updates' ),
+				/* translators: the placeholder is the number of available translation update. */
+				'value' => sprintf( _n( '%d translation update is available', '%d translations update are available', $translation_updates_nb ), $translation_updates_nb ),
+				'debug' => $translation_updates_nb,
+			);
+		//	$fields['translations_update_list'] = array(
+		//		'label' => __( 'Translation updates list' ),
+				/* translators: the placeholder is the number of available translation update. */
+		//		'value' => $translation_updates,
+		//		'debug' => $translation_updates,
+		//	);
+		}
+
 		// Add WPML files.
 		$wpml_files = PLL_WPML_Config::instance()->get_files();
 		if ( ! empty( $wpml_files ) ) {
@@ -444,6 +466,33 @@ class PLL_Admin_Site_Health {
 		}
 
 		return $debug_info;
+	}
+
+	public function get_translations_update_list( $updates ){
+		$update_list = array();
+		foreach ( $updates as $update ) {
+			$update_list[ $update->type][$update->slug][] = $update->language;
+		}
+
+		foreach ( $update_list as $type => $data  ) {
+			if ( 'core' === $type ) {
+				$list['core'] = $data['default'];
+
+				if ( ! empty( $list['core'] ) ) {
+					foreach ( $data['default'] as $core_translations ) {
+						$translation_list['core'][] = $core_translations;
+					}
+					$translation_list['core'] = implode( ', ', $translation_list['core'] );
+					//unset( $update_list['core']['default'] );
+				}
+			}
+			foreach ( $data as $name => $translations ) {
+				$t[] = $name . ': ' . implode( ', ', $translations);
+			}
+			$translation_list[$type] = implode( ' | ', $t );
+		}
+
+		return $translation_list;
 	}
 
 	/**
