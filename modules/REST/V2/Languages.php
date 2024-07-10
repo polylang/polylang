@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-template T of array{
+ * @phpstan-type Fields array{
  *     code?: non-empty-string,
  *     locale?: non-empty-string,
  *     name?: non-empty-string,
@@ -119,6 +119,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_items( $request ) {
@@ -139,6 +140,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function create_item( $request ) {
@@ -213,6 +215,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_item( $request ) {
@@ -235,6 +238,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
@@ -292,6 +296,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item( $request ) {
@@ -328,6 +333,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to create languages, WP_Error object otherwise.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function create_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
@@ -349,6 +355,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to update the language, WP_Error object otherwise.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
@@ -370,6 +377,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has access to delete the language, WP_Error object otherwise.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
@@ -392,6 +400,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function prepare_item_for_response( $item, $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
@@ -665,6 +674,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Request object.
 	 * @return object|WP_Error The prepared language, or WP_Error object on failure.
 	 *
+	 * @phpstan-template T of Fields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 * @phpstan-return stdClass
 	 */

@@ -13,6 +13,9 @@ defined( 'ABSPATH' ) || exit;
  * Setup the REST API endpoints and filters.
  *
  * @since 3.7
+ *
+ * @phpstan-import-type Fields from V2\Languages as RestFields
+ * @phpstan-template T of RestFields
  */
 class API {
 	/**
