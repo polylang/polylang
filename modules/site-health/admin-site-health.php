@@ -425,7 +425,7 @@ class PLL_Admin_Site_Health {
 		// translations update available
 		$translation_updates_nb = 0;
 		if ( is_countable( wp_get_translation_updates() ) ) {
-		//	$translation_updates = $this->get_translations_update_list( wp_get_translation_updates() );
+			$translation_updates = $this->get_translations_update_list( wp_get_translation_updates() );
 			$translation_updates_nb = sizeof( wp_get_translation_updates() );
 		}
 
@@ -436,12 +436,12 @@ class PLL_Admin_Site_Health {
 				'value' => sprintf( _n( '%d translation update is available', '%d translations update are available', $translation_updates_nb ), $translation_updates_nb ),
 				'debug' => $translation_updates_nb,
 			);
-		//	$fields['translations_update_list'] = array(
-		//		'label' => __( 'Translation updates list' ),
+			$fields['translations_update_list'] = array(
+				'label' => __( 'Translation updates list' ),
 				/* translators: the placeholder is the number of available translation update. */
-		//		'value' => $translation_updates,
-		//		'debug' => $translation_updates,
-		//	);
+				'value' => $translation_updates,
+				'debug' => $translation_updates,
+			);
 		}
 
 		// Add WPML files.
