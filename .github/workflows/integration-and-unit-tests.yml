@@ -10,9 +10,7 @@ on:
       - '**.yml'
       - '**.sh'
   pull_request:
-    branches:
-      - master
-      - rest-languages
+    branches: [master, rest-languages]
     paths:
       - '**.php'
       - 'phpunit.xml'

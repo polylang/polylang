@@ -4,9 +4,7 @@ on:
   push:
     branches: master
   pull_request:
-    branches:
-      - master
-      - rest-languages
+    branches: [master, rest-languages]
   workflow_dispatch:
 
 jobs:
