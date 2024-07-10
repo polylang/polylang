@@ -726,7 +726,7 @@ class Languages extends WP_REST_Controller {
 
 		if ( ! $language instanceof PLL_Language ) {
 			return new WP_Error(
-				'rest_invalid_id',
+				'rest_invalid_code',
 				__( 'Invalid language code.', 'polylang' ),
 				array( 'status' => 404 )
 			);
