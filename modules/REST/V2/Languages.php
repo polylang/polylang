@@ -22,9 +22,8 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  *
  * @phpstan-template T of array{
- *     id: int<1, max>,
- *     locale: non-empty-string,
  *     code?: non-empty-string,
+ *     locale?: non-empty-string,
  *     name?: non-empty-string,
  *     direction?: 'ltr'|'rtl',
  *     order?: int,
@@ -83,10 +82,9 @@ class Languages extends WP_REST_Controller {
 			"/{$this->rest_base}/(?P<code>[a-z_-]+)",
 			array(
 				'args'   => array(
-					'id' => array(
-						/* translators: %s is the name of the identifier. */
-						'description' => sprintf( __( 'Unique identifier for the language (%s).', 'polylang' ), '`term_id`' ),
-						'type'        => 'integer',
+					'code' => array(
+						'description' => __( 'Unique code for the language.', 'polylang' ),
+						'type'        => 'string',
 					),
 				),
 				array(
@@ -218,7 +216,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_item( $request ) {
-		$language = $this->get_language( $request['id'] );
+		$language = $this->get_language( $request['code'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -240,7 +238,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
-		$language = $this->get_language( $request['id'] );
+		$language = $this->get_language( $request['code'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -249,12 +247,12 @@ class Languages extends WP_REST_Controller {
 		$prepared = (array) $this->prepare_item_for_database( $request );
 
 		if ( ! empty( $prepared ) ) {
-			if ( ! isset( $prepared['locale'], $prepared['name'], $prepared['slug'], $prepared['rtl'], $prepared['term_group'] ) ) {
+			if ( ! isset( $prepared['lang_id'], $prepared['locale'], $prepared['name'], $prepared['rtl'], $prepared['term_group'] ) ) {
 				$prepared = array_merge(
 					array(
+						'lang_id'    => $language->term_id,
 						'locale'     => $language->locale,
 						'name'       => $language->name,
-						'slug'       => $language->slug,
 						'rtl'        => $language->is_rtl,
 						'term_group' => $language->term_group,
 					),
@@ -276,10 +274,11 @@ class Languages extends WP_REST_Controller {
 			if ( is_wp_error( $update ) ) {
 				return $update;
 			}
+
+			/** @var PLL_Language */
+			$language = $this->model->language_model->get( $language->term_id );
 		}
 
-		/** @var PLL_Language */
-		$language = $this->model->language_model->get( $request['id'] );
 		$response = $this->prepare_item_for_response( $language, $request );
 
 		return rest_ensure_response( $response );
@@ -296,7 +295,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item( $request ) {
-		$language = $this->get_language( $request['id'] );
+		$language = $this->get_language( $request['code'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -698,28 +697,22 @@ class Languages extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the language, if the ID is valid.
+	 * Get the language, if the code is valid.
 	 *
 	 * @since 3.7
 	 *
-	 * @param int $id Supplied ID (`term_id`).
-	 * @return PLL_Language|WP_Error Language object if ID is valid, WP_Error otherwise.
+	 * @param string $code Supplied language code.
+	 * @return PLL_Language|WP_Error Language object if the code is valid, WP_Error otherwise.
 	 */
-	private function get_language( int $id ) {
-		$error = new WP_Error(
-			'rest_invalid_id',
-			__( 'Invalid language ID.', 'polylang' ),
-			array( 'status' => 404 )
-		);
-
-		if ( $id <= 0 ) {
-			return $error;
-		}
-
-		$language = $this->model->language_model->get( $id );
+	private function get_language( string $code ) {
+		$language = $this->model->language_model->get( $code );
 
 		if ( ! $language instanceof PLL_Language ) {
-			return $error;
+			return new WP_Error(
+				'rest_invalid_id',
+				__( 'Invalid language code.', 'polylang' ),
+				array( 'status' => 404 )
+			);
 		}
 
 		return $language;
