@@ -495,12 +495,13 @@ class PLL_Admin_Site_Health {
 					}
 					$translation_list['core'] = implode( ', ', $translation_list['core'] );
 				}
+			} else {
+				$t = array();
+				foreach ( $data as $name => $translations ) {
+					$t[] = $name . ': ' . implode( ', ', $translations );
+				}
+				$translation_list[ $type ] = implode( ' | ', $t );
 			}
-			$t = array();
-			foreach ( $data as $name => $translations ) {
-				$t[] = $name . ': ' . implode( ', ', $translations );
-			}
-			$translation_list[ $type ] = implode( ' | ', $t );
 		}
 
 		return $translation_list;
