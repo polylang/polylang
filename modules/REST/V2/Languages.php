@@ -476,6 +476,12 @@ class Languages extends WP_REST_Controller {
 					'pattern'     => '[a-z_-]+',
 					'context'     => array( 'view', 'edit' ),
 				),
+				'new_code'        => array(
+					'description' => __( 'Language code - preferably 2-letters ISO 639-1 (for example: en). Only used to modify the language code.', 'polylang' ),
+					'type'        => 'string',
+					'pattern'     => '[a-z_-]+',
+					'context'     => array( 'edit' ),
+				),
 				'locale'          => array(
 					'description' => __( 'WordPress Locale for the language (for example: en_US).', 'polylang' ),
 					'type'        => 'string',
@@ -669,6 +675,7 @@ class Languages extends WP_REST_Controller {
 			'id'              => 'lang_id',
 			'name'            => 'name',
 			'code'            => 'slug',
+			'new_code'        => 'slug',
 			'locale'          => 'locale',
 			'direction'       => 'rtl',
 			'order'           => 'term_group',
