@@ -125,7 +125,7 @@ class Languages extends WP_REST_Controller {
 	public function get_items( $request ) {
 		$languages = array();
 
-		foreach ( $this->model->language_model->get_languages_list() as $language ) {
+		foreach ( $this->model->languages_model->get_languages_list() as $language ) {
 			$languages[] = $this->prepare_item_for_response( $language, $request );
 		}
 
@@ -194,14 +194,14 @@ class Languages extends WP_REST_Controller {
 		 *     term_group: 0|1
 		 * } $prepared
 		 */
-		$result = $this->model->language_model->add( $prepared );
+		$result = $this->model->languages_model->add( $prepared );
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
 		/** @var PLL_Language */
-		$language = $this->model->language_model->get( $prepared['slug'] );
+		$language = $this->model->languages_model->get( $prepared['slug'] );
 		$response = $this->prepare_item_for_response( $language, $request );
 
 		return rest_ensure_response( $response );
@@ -273,14 +273,14 @@ class Languages extends WP_REST_Controller {
 			 *     term_group: int
 			 * } $prepared
 			 */
-			$update = $this->model->language_model->update( $prepared );
+			$update = $this->model->languages_model->update( $prepared );
 
 			if ( is_wp_error( $update ) ) {
 				return $update;
 			}
 
 			/** @var PLL_Language */
-			$language = $this->model->language_model->get( $language->term_id );
+			$language = $this->model->languages_model->get( $language->term_id );
 		}
 
 		$response = $this->prepare_item_for_response( $language, $request );
@@ -306,7 +306,7 @@ class Languages extends WP_REST_Controller {
 			return $language;
 		}
 
-		$this->model->language_model->delete( $language->term_id );
+		$this->model->languages_model->delete( $language->term_id );
 
 		$previous = $this->prepare_item_for_response( $language, $request );
 
@@ -722,7 +722,7 @@ class Languages extends WP_REST_Controller {
 	 * @return PLL_Language|WP_Error Language object if the code is valid, WP_Error otherwise.
 	 */
 	private function get_language( string $code ) {
-		$language = $this->model->language_model->get( $code );
+		$language = $this->model->languages_model->get( $code );
 
 		if ( ! $language instanceof PLL_Language ) {
 			return new WP_Error(
