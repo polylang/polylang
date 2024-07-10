@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Models\Language as Language_Model;
+use WP_Syntex\Polylang\Models\Languages as Languages_Model;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -23,9 +23,9 @@ abstract class PLL_Translatable_Object {
 	/**
 	 * Model for the languages.
 	 *
-	 * @var Language_Model
+	 * @var Languages_Model
 	 */
-	protected $language_model;
+	protected $languages_model;
 
 	/**
 	 * Polylang's options.
@@ -95,17 +95,17 @@ abstract class PLL_Translatable_Object {
 	 * @since 3.4
 	 * @since 3.7 Changed method's signature.
 	 *
-	 * @param Language_Model $language_model Model for the languages.
-	 * @param Options        $options              Polylang's options.
-	 * @param PLL_Cache      $cache                Internal non persistent cache object.
+	 * @param Languages_Model $languages_model Model for the languages.
+	 * @param Options         $options         Polylang's options.
+	 * @param PLL_Cache       $cache           Internal non persistent cache object.
 	 *
 	 * @phpstan-param PLL_Cache<mixed> $cache
 	 */
-	public function __construct( Language_Model $language_model, Options $options, PLL_Cache $cache ) {
-		$this->language_model = $language_model;
-		$this->options        = $options;
-		$this->cache          = $cache;
-		$this->tax_to_cache[] = $this->tax_language;
+	public function __construct( Languages_Model $languages_model, Options $options, PLL_Cache $cache ) {
+		$this->languages_model = $languages_model;
+		$this->options         = $options;
+		$this->cache           = $cache;
+		$this->tax_to_cache[]  = $this->tax_language;
 
 		/*
 		 * Register our taxonomy as soon as possible.
@@ -191,7 +191,7 @@ abstract class PLL_Translatable_Object {
 		$old_lang = $this->get_language( $id );
 		$old_lang = $old_lang ? $old_lang->get_tax_prop( $this->tax_language, 'term_id' ) : 0;
 
-		$lang = $this->language_model->get( $lang );
+		$lang = $this->languages_model->get( $lang );
 		$lang = $lang ? $lang->get_tax_prop( $this->tax_language, 'term_id' ) : 0;
 
 		if ( $old_lang === $lang ) {
@@ -229,7 +229,7 @@ abstract class PLL_Translatable_Object {
 			return false;
 		}
 
-		return $this->language_model->get( $lang->term_id );
+		return $this->languages_model->get( $lang->term_id );
 	}
 
 	/**
@@ -357,7 +357,7 @@ abstract class PLL_Translatable_Object {
 		$languages_tt_ids = array();
 
 		foreach ( $languages as $language ) {
-			$language = $this->language_model->get( $language );
+			$language = $this->languages_model->get( $language );
 
 			if ( ! empty( $language ) ) {
 				$languages_tt_ids[] = absint( $language->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ) );
@@ -386,7 +386,7 @@ abstract class PLL_Translatable_Object {
 	public function get_objects_with_no_lang( $limit, array $args = array() ) {
 		$language_ids = array();
 
-		foreach ( $this->language_model->get_languages_list() as $language ) {
+		foreach ( $this->languages_model->get_languages_list() as $language ) {
 			$language_ids[] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 

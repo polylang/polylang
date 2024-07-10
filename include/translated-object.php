@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Models\Language as Language_Model;
+use WP_Syntex\Polylang\Models\Languages as Languages_Model;
 use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -30,14 +30,14 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @since 1.8
 	 * @since 3.7 Changed method's signature.
 	 *
-	 * @param Language_Model $language_model Model for the languages.
-	 * @param Options        $options              Polylang's options.
-	 * @param PLL_Cache      $cache                Internal non persistent cache object.
+	 * @param Languages_Model $languages_model Model for the languages.
+	 * @param Options         $options         Polylang's options.
+	 * @param PLL_Cache       $cache           Internal non persistent cache object.
 	 *
 	 * @phpstan-param PLL_Cache<mixed> $cache
 	 */
-	public function __construct( Language_Model $language_model, Options $options, PLL_Cache $cache ) {
-		parent::__construct( $language_model, $options, $cache );
+	public function __construct( Languages_Model $languages_model, Options $options, PLL_Cache $cache ) {
+		parent::__construct( $languages_model, $options, $cache );
 
 		$this->tax_to_cache[] = $this->tax_translations;
 
@@ -320,7 +320,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @phpstan-return int<0, max>
 	 */
 	public function get_translation( $id, $lang ) {
-		$lang = $this->language_model->get( $lang );
+		$lang = $this->languages_model->get( $lang );
 
 		if ( empty( $lang ) ) {
 			return 0;
@@ -350,7 +350,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return 0;
 		}
 
-		$lang = $this->language_model->get( $lang );
+		$lang = $this->languages_model->get( $lang );
 
 		if ( empty( $lang ) ) {
 			return 0;
@@ -463,7 +463,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		 */
 		$translations = array_intersect_key(
 			$translations,
-			array_flip( $this->language_model->get_languages_list( array( 'fields' => 'slug' ) ) )
+			array_flip( $this->languages_model->get_languages_list( array( 'fields' => 'slug' ) ) )
 		);
 
 		// Make sure values are clean before working with them.

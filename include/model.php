@@ -69,9 +69,9 @@ class PLL_Model {
 	/**
 	 * Model for the languages.
 	 *
-	 * @var Models\Language
+	 * @var Models\Languages
 	 */
-	public $language_model;
+	public $languages_model;
 
 	/**
 	 * Model for taxonomies filtered by Polylang.
@@ -95,10 +95,10 @@ class PLL_Model {
 		$this->cache                     = new PLL_Cache();
 		$this->translatable_objects      = new PLL_Translatable_Objects();
 		$this->filtered_taxonomies_model = new Models\Filtered_Taxonomies();
-		$this->language_model            = new Models\Language( $this->options, $this->translatable_objects, $this->cache );
+		$this->languages_model           = new Models\Languages( $this->options, $this->translatable_objects, $this->cache );
 
-		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this->language_model, $this->options, $this->cache ) );  // Translated post sub model.
-		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this->language_model, $this->options, $this->cache ) );  // Translated term sub model.
+		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this->languages_model, $this->options, $this->cache ) );  // Translated post sub model.
+		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this->languages_model, $this->options, $this->cache ) );  // Translated term sub model.
 
 		// We need to clean languages cache when editing a language and when modifying the permalink structure.
 		add_action( 'edited_term_taxonomy', array( $this, 'clean_languages_cache' ), 10, 2 );
@@ -123,19 +123,19 @@ class PLL_Model {
 	 */
 	public function __call( string $name, array $arguments ) {
 		$methods = array(
-			'has_languages'                      => array( $this->language_model, 'has_languages' ),
-			'get_languages_list'                 => array( $this->language_model, 'get_languages_list' ),
-			'are_languages_ready'                => array( $this->language_model, 'are_languages_ready' ),
-			'set_languages_ready'                => array( $this->language_model, 'set_languages_ready' ),
-			'filter_language_terms_orderby'      => array( $this->language_model, 'filter_language_terms_orderby' ),
-			'get_language'                       => array( $this->language_model, 'get' ),
-			'add_language'                       => array( $this->language_model, 'add' ),
-			'delete_language'                    => array( $this->language_model, 'delete' ),
-			'update_language'                    => array( $this->language_model, 'update' ),
-			'get_default_language'               => array( $this->language_model, 'get_default_language' ),
-			'update_default_lang'                => array( $this->language_model, 'update_default_language' ),
-			'update_translations'                => array( $this->language_model, 'update_translations' ),
-			'maybe_create_language_terms'        => array( $this->language_model, 'maybe_create_language_terms' ),
+			'has_languages'                      => array( $this->languages_model, 'has_languages' ),
+			'get_languages_list'                 => array( $this->languages_model, 'get_languages_list' ),
+			'are_languages_ready'                => array( $this->languages_model, 'are_languages_ready' ),
+			'set_languages_ready'                => array( $this->languages_model, 'set_languages_ready' ),
+			'filter_language_terms_orderby'      => array( $this->languages_model, 'filter_language_terms_orderby' ),
+			'get_language'                       => array( $this->languages_model, 'get' ),
+			'add_language'                       => array( $this->languages_model, 'add' ),
+			'delete_language'                    => array( $this->languages_model, 'delete' ),
+			'update_language'                    => array( $this->languages_model, 'update' ),
+			'get_default_language'               => array( $this->languages_model, 'get_default_language' ),
+			'update_default_lang'                => array( $this->languages_model, 'update_default_language' ),
+			'update_translations'                => array( $this->languages_model, 'update_translations' ),
+			'maybe_create_language_terms'        => array( $this->languages_model, 'maybe_create_language_terms' ),
 			'get_filtered_taxonomies'            => array( $this->filtered_taxonomies_model, 'get_filtered_taxonomies' ),
 			'is_filtered_taxonomy'               => array( $this->filtered_taxonomies_model, 'is_filtered_taxonomy' ),
 			'get_filtered_taxonomies_query_vars' => array( $this->filtered_taxonomies_model, 'get_query_vars' ),
@@ -170,7 +170,7 @@ class PLL_Model {
 	 */
 	public function clean_languages_cache( $term = 0, $taxonomy = null ): void {
 		if ( empty( $taxonomy ) || 'language' === $taxonomy ) {
-			$this->language_model->clean_cache();
+			$this->languages_model->clean_cache();
 		}
 	}
 
@@ -290,7 +290,7 @@ class PLL_Model {
 	public function term_exists( string $term_name, string $taxonomy, int $parent, $language ): int {
 		global $wpdb;
 
-		$language = $this->language_model->get( $language );
+		$language = $this->languages_model->get( $language );
 		if ( empty( $language ) ) {
 			return 0;
 		}
@@ -328,7 +328,7 @@ class PLL_Model {
 	public function term_exists_by_slug( string $slug, $language, string $taxonomy = '', int $parent = 0 ): int {
 		global $wpdb;
 
-		$language = $this->language_model->get( $language );
+		$language = $this->languages_model->get( $language );
 		if ( empty( $language ) ) {
 			return 0;
 		}
@@ -413,7 +413,7 @@ class PLL_Model {
 			$join    = $this->post->join_clause();
 			$where   = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
 			$where  .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
-			$where  .= $this->post->where_clause( $this->language_model->get_languages_list() );
+			$where  .= $this->post->where_clause( $this->languages_model->get_languages_list() );
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
 
 			if ( ! empty( $q['m'] ) ) {
