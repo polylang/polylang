@@ -202,9 +202,7 @@ class Languages extends WP_REST_Controller {
 
 		/** @var PLL_Language */
 		$language = $this->model->languages_model->get( $prepared['slug'] );
-		$response = $this->prepare_item_for_response( $language, $request );
-
-		return rest_ensure_response( $response );
+		return $this->prepare_item_for_response( $language, $request );
 	}
 
 	/**
@@ -225,9 +223,7 @@ class Languages extends WP_REST_Controller {
 			return $language;
 		}
 
-		$response = $this->prepare_item_for_response( $language, $request );
-
-		return rest_ensure_response( $response );
+		return $this->prepare_item_for_response( $language, $request );
 	}
 
 	/**
@@ -283,9 +279,7 @@ class Languages extends WP_REST_Controller {
 			$language = $this->model->languages_model->get( $language->term_id );
 		}
 
-		$response = $this->prepare_item_for_response( $language, $request );
-
-		return rest_ensure_response( $response );
+		return $this->prepare_item_for_response( $language, $request );
 	}
 
 	/**
