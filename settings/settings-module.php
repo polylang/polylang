@@ -252,8 +252,8 @@ class PLL_Settings_Module {
 	 * @param array $options Raw values to save.
 	 * @return array
 	 */
-	protected function prepare_raw_data( array $options ): array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return array(); // It's responsibility of the child class to decide what is saved.
+	protected function prepare_raw_data( array $options ): array {
+		return $options;
 	}
 
 	/**
