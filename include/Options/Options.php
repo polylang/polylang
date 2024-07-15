@@ -5,6 +5,9 @@
 
 namespace WP_Syntex\Polylang\Options;
 
+use ArrayAccess;
+use ArrayIterator;
+use IteratorAggregate;
 use WP_Error;
 use WP_Site;
 use WP_Syntex\Polylang\Options\Abstract_Option;
@@ -21,9 +24,10 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @implements \ArrayAccess<non-falsy-string, mixed>
+ * @implements ArrayAccess<non-falsy-string, mixed>
+ * @implements IteratorAggregate<non-empty-string, mixed>
  */
-class Options implements \ArrayAccess {
+class Options implements ArrayAccess, IteratorAggregate {
 	public const OPTION_NAME = 'polylang';
 
 	/**
@@ -498,6 +502,20 @@ class Options implements \ArrayAccess {
 	 */
 	public function offsetUnset( $offset ): void {
 		$this->reset( (string) $offset );
+	}
+
+	/**
+	 * Returns all current site's option values.
+	 * Required by interface `IteratorAggregate`.
+	 *
+	 * @since 3.7
+	 *
+	 * @return ArrayIterator
+	 *
+	 * @phpstan-return ArrayIterator<non-empty-string, mixed>
+	 */
+	public function getIterator(): ArrayIterator {
+		return new ArrayIterator( $this->get_all() );
 	}
 
 	/**
