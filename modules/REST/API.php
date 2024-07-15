@@ -10,7 +10,7 @@ use PLL_Model;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Setup the REST API endpoints and filters.
+ * Sets all Polylang REST controllers up.
  *
  * @since 3.7
  *

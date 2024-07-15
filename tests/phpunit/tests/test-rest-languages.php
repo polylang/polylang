@@ -30,7 +30,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->pll_env->default_term = new PLL_Admin_Default_Term( $this->pll_env );
 		$this->pll_env->default_term->add_hooks();
 
-		do_action( 'rest_api_init' );
+		do_action( 'rest_api_init', $this->server );
 	}
 
 	public function test_get_languages_list() {

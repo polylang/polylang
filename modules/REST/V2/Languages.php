@@ -17,7 +17,7 @@ use WP_REST_Server;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Allows to access languages via the REST API.
+ * Languages REST controller.
  *
  * @since 3.7
  *
@@ -112,7 +112,7 @@ class Languages extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves a collection of languages.
+	 * Retrieves all languages.
 	 *
 	 * @since 3.7
 	 *
@@ -624,7 +624,7 @@ class Languages extends WP_REST_Controller {
 
 		foreach ( $taxonomies as $taxonomy ) {
 			if ( 'language' === $taxonomy ) {
-				$description = __( 'Properties for posts, pages, etc in this language.', 'polylang' );
+				$description = __( 'Properties for post types translated by Polylang in this language.', 'polylang' );
 			} elseif ( 'term_language' === $taxonomy ) {
 				$description = __( 'Properties for taxonomy terms in this language.', 'polylang' );
 			} else {
@@ -714,7 +714,7 @@ class Languages extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the language, if the code is valid.
+	 * Returns the language, if the code is valid.
 	 *
 	 * @since 3.7
 	 *
