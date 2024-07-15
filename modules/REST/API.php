@@ -14,8 +14,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.7
  *
- * @phpstan-import-type Fields from V2\Languages as RestFields
- * @phpstan-template T of RestFields
+ * @phpstan-import-type EditableFields from V2\Languages
+ * @phpstan-template T of EditableFields
  */
 class API {
 	/**
