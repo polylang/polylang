@@ -197,7 +197,7 @@ class Languages extends WP_REST_Controller {
 		$result = $this->model->languages_model->add( $prepared );
 
 		if ( is_wp_error( $result ) ) {
-			return $result;
+			return $this->restify_wp_error( $result );
 		}
 
 		/** @var PLL_Language */
@@ -272,7 +272,7 @@ class Languages extends WP_REST_Controller {
 			$update = $this->model->languages_model->update( $prepared );
 
 			if ( is_wp_error( $update ) ) {
-				return $update;
+				return $this->restify_wp_error( $update );
 			}
 
 			/** @var PLL_Language */
@@ -303,11 +303,6 @@ class Languages extends WP_REST_Controller {
 		$this->model->languages_model->delete( $language->term_id );
 
 		$previous = $this->prepare_item_for_response( $language, $request );
-
-		if ( is_wp_error( $previous ) ) {
-			return $previous;
-		}
-
 		$response = new WP_REST_Response();
 		$response->set_data(
 			array(
@@ -392,7 +387,7 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @param PLL_Language    $item    Language object.
 	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response Response object.
 	 *
 	 * @phpstan-template T of EditableFields
 	 * @phpstan-param WP_REST_Request<T> $request
@@ -727,5 +722,22 @@ class Languages extends WP_REST_Controller {
 		}
 
 		return $language;
+	}
+
+	/**
+	 * Harmonizes the given error by prefixing the error code and adding a status code.
+	 *
+	 * @since 3.7
+	 *
+	 * @param WP_Error $error       A `WP_Error` object.
+	 * @param int      $status_code Optional. A status code. Default is 400.
+	 * @return WP_Error
+	 */
+	private function restify_wp_error( WP_Error $error, int $status_code = 400 ): WP_Error {
+		return new WP_Error(
+			(string) preg_replace( '@^pll_@', 'rest_', (string) $error->get_error_code() ),
+			$error->get_error_message(),
+			array( 'status' => $status_code )
+		);
 	}
 }
