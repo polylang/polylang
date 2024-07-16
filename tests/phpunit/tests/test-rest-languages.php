@@ -164,7 +164,13 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'fr', $data['code'] );
 	}
 
-	public function test_update_language() {
+	/**
+	 * @testWith ["PATCH"]
+	 *           ["PUT"]
+	 *
+	 * @param string $method
+	 */
+	public function test_update_language( string $method ) {
 		wp_set_current_user( self::$administrator );
 		self::create_language( 'fr_FR' );
 
@@ -176,7 +182,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 			'flag'      => 'be',
 			'order'     => 22,
 		);
-		$request = new WP_REST_Request( 'PATCH', '/pll/v2/languages/fr' );
+		$request = new WP_REST_Request( $method, '/pll/v2/languages/fr' );
 
 		foreach ( $values as $name => $value ) {
 			$request->set_param( $name, $value );
