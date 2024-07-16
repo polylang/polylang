@@ -4,6 +4,7 @@ use WP_Syntex\Polylang\REST\API;
 
 class REST_Languages_Test extends PLL_UnitTestCase {
 	protected static $administrator;
+	protected static $author;
 	protected $server;
 
 	/**
@@ -13,6 +14,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		parent::pllSetUpBeforeClass( $factory );
 
 		self::$administrator = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		self::$author        = self::factory()->user->create( array( 'role' => 'author' ) );
 	}
 
 	public function set_up() {
@@ -219,15 +221,28 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->assertFalse( $this->pll_env->model->get_language( 'fr_FR' ) );
 	}
 
-	public function test_permissions() {
-		wp_set_current_user( 0 );
+	/**
+	 * @testWith ["0", 401]
+	 *           ["author", 403]
+	 *
+	 * @param string $user
+	 * @param int    $status
+	 * @return void
+	 */
+	public function test_permissions( string $user, int $status ) {
+		if ( '0' === $user ) {
+			wp_set_current_user( 0 );
+		} else {
+			wp_set_current_user( self::$author );
+		}
+
 		self::create_language( 'fr_FR' );
 
 		// Delete language.
 		$request  = new WP_REST_Request( 'DELETE', '/pll/v2/languages/fr' );
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 401, $response->get_status() );
+		$this->assertEquals( $status, $response->get_status() );
 		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->get_language( 'fr_FR' ) );
 
 		// Update language.
@@ -235,7 +250,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request->set_param( 'name', 'François' );
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 401, $response->get_status() );
+		$this->assertEquals( $status, $response->get_status() );
 		$this->assertNotSame( 'François', $this->pll_env->model->get_language( 'fr_FR' )->name );
 
 		// Create language.
@@ -243,7 +258,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request->set_param( 'locale', 'es_ES' ); // Required.
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 401, $response->get_status() );
+		$this->assertEquals( $status, $response->get_status() );
 		$this->assertFalse( $this->pll_env->model->get_language( 'es_ES' ) );
 	}
 }
