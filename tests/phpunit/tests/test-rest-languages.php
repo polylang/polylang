@@ -28,7 +28,8 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->server  = $wp_rest_server = new Spy_REST_Server();
 		$this->pll_env = new PLL_REST_Request( $links_model );
 
-		$this->pll_env->rest         = new API( $this->pll_env->model );
+		$this->pll_env->rest = new API( $this->pll_env->model );
+		add_action( 'rest_api_init', array( $this->pll_env->rest, 'rest_api_init' ) );
 		$this->pll_env->default_term = new PLL_Admin_Default_Term( $this->pll_env );
 		$this->pll_env->default_term->add_hooks();
 
