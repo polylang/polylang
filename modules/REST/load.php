@@ -11,5 +11,6 @@ add_action(
 	'pll_init',
 	function ( $polylang ) {
 		$polylang->rest = new API( $polylang->model );
+		add_action( 'rest_api_init', array( $polylang->rest, 'rest_api_init' ) );
 	}
 );

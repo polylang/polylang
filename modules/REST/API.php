@@ -36,7 +36,6 @@ class API {
 	 */
 	public function __construct( PLL_Model $model ) {
 		$this->model = $model;
-		add_action( 'rest_api_init', array( $this, 'init' ) );
 	}
 
 	/**
@@ -46,7 +45,7 @@ class API {
 	 *
 	 * @return void
 	 */
-	public function init(): void {
+	public function rest_api_init(): void {
 		$this->languages = new V2\Languages( $this->model );
 		$this->languages->register_routes();
 	}
