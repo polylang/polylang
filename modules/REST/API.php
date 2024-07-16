@@ -13,9 +13,6 @@ defined( 'ABSPATH' ) || exit;
  * Sets all Polylang REST controllers up.
  *
  * @since 3.7
- *
- * @phpstan-import-type EditableFields from V2\Languages
- * @phpstan-template T of EditableFields
  */
 class API {
 	/**
