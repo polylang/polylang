@@ -394,9 +394,9 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-template T of EditableFields
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	public function prepare_item_for_response( $item, $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function prepare_item_for_response( $item, $request ) {
 		$data     = $item->to_array();
-		$schema   = $this->get_item_schema();
+		$fields   = $this->get_fields_for_response( $request );
 		$response = array();
 		$props    = array(
 			'term_id'         => 'id',
@@ -423,7 +423,7 @@ class Languages extends WP_REST_Controller {
 		);
 
 		foreach ( $props as $language_prop => $rest_item_prop ) {
-			if ( ! isset( $data[ $language_prop ] ) || empty( $schema['properties'][ $rest_item_prop ] ) ) {
+			if ( ! isset( $data[ $language_prop ] ) || ! rest_is_field_included( $rest_item_prop, $fields ) ) {
 				continue;
 			}
 
