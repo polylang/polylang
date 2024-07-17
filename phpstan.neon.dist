@@ -51,3 +51,9 @@ parameters:
 		# Ignored temporarily to prevent changing the type of the options everywhere in the plugin.
 		-
 			message: "#^Property .+\\:\\:\\$options \\(array\\) does not accept WP_Syntex\\\\Polylang\\\\Options\\\\Options\\.$#"
+
+		# Ignored because PHPStan is confused about the objects and method names (classes with same method names).
+		-
+			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\): mixed, array\\{.+\\} given\\.$#"
+			count: 1
+			path: include/model.php

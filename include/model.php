@@ -135,48 +135,34 @@ class PLL_Model {
 	 * @return mixed
 	 */
 	public function __call( string $name, array $arguments ) {
-		// Languages.
 		$methods = array(
-			'has_languages'                 => 'has_languages',
-			'get_languages_list'            => 'get_languages_list',
-			'are_languages_ready'           => 'are_languages_ready',
-			'set_languages_ready'           => 'set_languages_ready',
-			'filter_language_terms_orderby' => 'filter_language_terms_orderby',
-			'get_language'                  => 'get',
-			'add_language'                  => 'add',
-			'delete_language'               => 'delete',
-			'update_language'               => 'update',
-			'get_default_language'          => 'get_default_language',
-			'update_default_lang'           => 'update_default_language',
-			'update_translations'           => 'update_translations',
-			'maybe_create_language_terms'   => 'maybe_create_language_terms',
+			// Languages.
+			'has_languages'                 => array( $this->languages, 'has_languages' ),
+			'get_languages_list'            => array( $this->languages, 'get_languages_list' ),
+			'are_languages_ready'           => array( $this->languages, 'are_languages_ready' ),
+			'set_languages_ready'           => array( $this->languages, 'set_languages_ready' ),
+			'filter_language_terms_orderby' => array( $this->languages, 'filter_language_terms_orderby' ),
+			'get_language'                  => array( $this->languages, 'get' ),
+			'add_language'                  => array( $this->languages, 'add' ),
+			'delete_language'               => array( $this->languages, 'delete' ),
+			'update_language'               => array( $this->languages, 'update' ),
+			'get_default_language'          => array( $this->languages, 'get_default_language' ),
+			'update_default_lang'           => array( $this->languages, 'update_default_language' ),
+			'update_translations'           => array( $this->languages, 'update_translations' ),
+			'maybe_create_language_terms'   => array( $this->languages, 'maybe_create_language_terms' ),
+			// Post types.
+			'get_translated_post_types' => array( $this->post_types, 'get_translated' ),
+			'is_translated_post_type'   => array( $this->post_types, 'is_translated' ),
+			// Taxonomies.
+			'get_translated_taxonomies'          => array( $this->taxonomies, 'get_translated' ),
+			'is_translated_taxonomy'             => array( $this->taxonomies, 'is_translated' ),
+			'get_filtered_taxonomies'            => array( $this->taxonomies, 'get_filtered' ),
+			'is_filtered_taxonomy'               => array( $this->taxonomies, 'is_filtered' ),
+			'get_filtered_taxonomies_query_vars' => array( $this->taxonomies, 'get_filtered_query_vars' ),
 		);
 
 		if ( isset( $methods[ $name ] ) ) {
-			return call_user_func_array( array( $this->languages, $methods[ $name ] ), $arguments );
-		}
-
-		// Post types.
-		$methods = array(
-			'get_translated_post_types' => 'get_translated',
-			'is_translated_post_type'   => 'is_translated',
-		);
-
-		if ( isset( $methods[ $name ] ) ) {
-			return call_user_func_array( array( $this->post_types, $methods[ $name ] ), $arguments );
-		}
-
-		// Taxonomies.
-		$methods = array(
-			'get_translated_taxonomies'          => 'get_translated',
-			'is_translated_taxonomy'             => 'is_translated',
-			'get_filtered_taxonomies'            => 'get_filtered',
-			'is_filtered_taxonomy'               => 'is_filtered',
-			'get_filtered_taxonomies_query_vars' => 'get_filtered_query_vars',
-		);
-
-		if ( isset( $methods[ $name ] ) ) {
-			return call_user_func_array( array( $this->taxonomies, $methods[ $name ] ), $arguments );
+			return call_user_func_array( $methods[ $name ], $arguments );
 		}
 
 		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
