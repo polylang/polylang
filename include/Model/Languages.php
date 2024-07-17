@@ -811,7 +811,7 @@ class Languages {
 	 *     flag?: non-empty-string
 	 * } $args
 	 */
-	private function build_metas( array $args ): string {
+	protected function build_metas( array $args ): string {
 		if ( ! empty( $args['lang_id'] ) ) {
 			$language_term = get_term( (int) $args['lang_id'] );
 
@@ -885,7 +885,7 @@ class Languages {
 	 *     flag?: string
 	 * } $args
 	 */
-	private function validate_lang( array $args, ?PLL_Language $lang = null ): WP_Error {
+	protected function validate_lang( array $args, ?PLL_Language $lang = null ): WP_Error {
 		$errors = new WP_Error();
 
 		// Validate locale with the same pattern as WP 4.3. See #28303.
@@ -944,7 +944,7 @@ class Languages {
 	 * @phpstan-param non-empty-string $name
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
-	private function update_secondary_language_terms( string $slug, string $name, ?PLL_Language $language = null, array $taxonomies = array() ): void {
+	protected function update_secondary_language_terms( string $slug, string $name, ?PLL_Language $language = null, array $taxonomies = array() ): void {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
 
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
@@ -984,7 +984,7 @@ class Languages {
 	 *
 	 * @phpstan-return list<PLL_Language>
 	 */
-	private function get_languages_from_taxonomies(): array {
+	protected function get_languages_from_taxonomies(): array {
 		$terms_by_slug = array();
 
 		foreach ( $this->get_language_terms() as $term ) {
@@ -1057,7 +1057,7 @@ class Languages {
 	 *
 	 * @return WP_Term[]
 	 */
-	private function get_language_terms(): array {
+	protected function get_language_terms(): array {
 		$callback = \Closure::fromCallable( array( $this, 'filter_language_terms_orderby' ) );
 		add_filter( 'get_terms_orderby', $callback, 10, 3 );
 		$terms = get_terms(
@@ -1088,7 +1088,7 @@ class Languages {
 	 * @param  string[] $taxonomies An array of taxonomy names.
 	 * @return string
 	 */
-	private function filter_language_terms_orderby( $orderby, $args, $taxonomies ) {
+	protected function filter_language_terms_orderby( $orderby, $args, $taxonomies ) {
 		$allowed_taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'language' ) );
 
 		if ( ! is_array( $taxonomies ) || ! empty( array_diff( $taxonomies, $allowed_taxonomies ) ) ) {
