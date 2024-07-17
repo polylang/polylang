@@ -436,6 +436,7 @@ class Languages extends WP_REST_Controller {
 			}
 		}
 
+		/** @var WP_REST_Response */
 		return rest_ensure_response( $response );
 	}
 
