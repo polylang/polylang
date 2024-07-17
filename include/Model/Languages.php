@@ -1028,7 +1028,7 @@ class Languages {
 			return $languages;
 		}
 
-		/**
+		/*
 		 * Don't store directly objects as it badly break with some hosts ( GoDaddy ) due to race conditions when using object cache.
 		 * Thanks to captin411 for catching this!
 		 *
