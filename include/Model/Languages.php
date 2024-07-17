@@ -123,14 +123,14 @@ class Languages {
 	 * @param array $args {
 	 *   Arguments used to create the language.
 	 *
-	 *   @type string   $name           Language name (used only for display).
-	 *   @type string   $slug           Language code (ideally 2-letters ISO 639-1 language code).
-	 *   @type string   $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
-	 *                                  not be loaded...
-	 *   @type bool|int $rtl            True if rtl language, false otherwise.
-	 *   @type int      $term_group     Language order when displayed.
-	 *   @type string   $flag           Optional. Country code, {@see settings/flags.php}.
-	 *   @type bool     $no_default_cat Optional. If set, no default category will be created for this language.
+	 *   @type string $name           Language name (used only for display).
+	 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
+	 *                                not be loaded...
+	 *   @type bool   $rtl            True if rtl language, false otherwise.
+	 *   @type int    $term_group     Language order when displayed.
+	 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
+	 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
 	 *
@@ -138,7 +138,7 @@ class Languages {
 	 *     name: string,
 	 *     slug: string,
 	 *     locale: string,
-	 *     rtl: bool|0|1,
+	 *     rtl: bool,
 	 *     term_group: int|numeric-string,
 	 *     flag?: string,
 	 *     no_default_cat?: bool
@@ -155,7 +155,7 @@ class Languages {
 		 *     name: non-empty-string,
 		 *     slug:  non-empty-string,
 		 *     locale:  non-empty-string,
-		 *     rtl: bool|0|1,
+		 *     rtl: bool,
 		 *     term_group: int|numeric-string,
 		 *     flag?:  non-empty-string,
 		 *     no_default_cat?: bool
@@ -198,14 +198,14 @@ class Languages {
 		 * @param array $args {
 		 *   Arguments used to create the language.
 		 *
-		 *   @type string   $name           Language name (used only for display).
-		 *   @type string   $slug           Language code (ideally 2-letters ISO 639-1 language code).
-		 *   @type string   $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
-		 *                                  not be loaded...
-		 *   @type bool|int $rtl            True if rtl language, false otherwise.
-		 *   @type int      $term_group     Language order when displayed.
-		 *   @type string   $flag           Optional. Country code, {@see settings/flags.php}.
-		 *   @type bool     $no_default_cat Optional. If set, no default category will be created for this language.
+		 *   @type string $name           Language name (used only for display).
+		 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
+		 *   @type string $locale         WordPress locale. If something wrong is used for the locale, the .mo files will
+		 *                                not be loaded...
+		 *   @type bool   $rtl            True if rtl language, false otherwise.
+		 *   @type int    $term_group     Language order when displayed.
+		 *   @type string $flag           Optional. Country code, {@see settings/flags.php}.
+		 *   @type bool   $no_default_cat Optional. If set, no default category will be created for this language.
 		 * }
 		 */
 		do_action( 'pll_add_language', $args );
@@ -222,14 +222,14 @@ class Languages {
 	 * @param array $args {
 	 *   Arguments used to modify the language.
 	 *
-	 *   @type int      $lang_id    ID of the language to modify.
-	 *   @type string   $name       Language name (used only for display).
-	 *   @type string   $slug       Language code (ideally 2-letters ISO 639-1 language code).
-	 *   @type string   $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
-	 *                              not be loaded...
-	 *   @type bool|int $rtl        True if rtl language, false otherwise.
-	 *   @type int      $term_group Language order when displayed.
-	 *   @type string   $flag       Optional, country code, {@see settings/flags.php}.
+	 *   @type int    $lang_id    ID of the language to modify.
+	 *   @type string $name       Language name (used only for display).
+	 *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+	 *                            not be loaded...
+	 *   @type bool   $rtl        True if rtl language, false otherwise.
+	 *   @type int    $term_group Language order when displayed.
+	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
 	 * }
 	 * @return true|WP_Error True success, a `WP_Error` otherwise.
 	 *
@@ -238,7 +238,7 @@ class Languages {
 	 *     name: string,
 	 *     slug: string,
 	 *     locale: string,
-	 *     rtl: bool|0|1,
+	 *     rtl: bool,
 	 *     term_group: int|numeric-string,
 	 *     flag?: string
 	 * } $args
@@ -261,7 +261,7 @@ class Languages {
 		 *     name: non-empty-string,
 		 *     slug:  non-empty-string,
 		 *     locale:  non-empty-string,
-		 *     rtl: bool|0|1,
+		 *     rtl: bool,
 		 *     term_group: int|numeric-string,
 		 *     flag?:  non-empty-string
 		 * } $args
@@ -335,13 +335,13 @@ class Languages {
 		 * @param array $args {
 		 *   Arguments used to modify the language. @see PLL_Admin_Model::update_language().
 		 *
-		 *   @type string   $name           Language name (used only for display).
-		 *   @type string   $slug           Language code (ideally 2-letters ISO 639-1 language code).
-		 *   @type string   $locale         WordPress locale.
-		 *   @type bool|int $rtl            True if rtl language, false otherwise.
-		 *   @type int      $term_group     Language order when displayed.
-		 *   @type string   $no_default_cat Optional, if set, no default category has been created for this language.
-		 *   @type string   $flag           Optional, country code, @see flags.php.
+		 *   @type string $name           Language name (used only for display).
+		 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
+		 *   @type string $locale         WordPress locale.
+		 *   @type bool   $rtl            True if rtl language, false otherwise.
+		 *   @type int    $term_group     Language order when displayed.
+		 *   @type string $no_default_cat Optional, if set, no default category has been created for this language.
+		 *   @type string $flag           Optional, country code, @see flags.php.
 		 * }
 		 * @param PLL_Language $lang Previous value of the language being edited.
 		 */
@@ -789,15 +789,15 @@ class Languages {
 	 * @param array $args {
 	 *   Arguments used to build the language metas.
 	 *
-	 *   @type string   $name       Language name (used only for display).
-	 *   @type string   $slug       Language code (ideally 2-letters ISO 639-1 language code).
-	 *   @type string   $locale     WordPress locale. If something wrong is used for the locale, the .mo files will not
-	 *                              be loaded...
-	 *   @type bool|int $rtl        True if rtl language, false otherwise.
-	 *   @type int      $term_group Language order when displayed.
-	 *   @type int      $lang_id    Optional, ID of the language to modify. An empty value means the language is being
-	 *                              created.
-	 *   @type string   $flag       Optional, country code, {@see settings/flags.php}.
+	 *   @type string $name       Language name (used only for display).
+	 *   @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+	 *   @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will not
+	 *                            be loaded...
+	 *   @type bool   $rtl        True if rtl language, false otherwise.
+	 *   @type int    $term_group Language order when displayed.
+	 *   @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is being
+	 *                            created.
+	 *   @type string $flag       Optional, country code, {@see settings/flags.php}.
 	 * }
 	 * @return string The serialized description array updated.
 	 *
@@ -805,7 +805,7 @@ class Languages {
 	 *     name: non-empty-string,
 	 *     slug: non-empty-string,
 	 *     locale: non-empty-string,
-	 *     rtl: bool|0|1,
+	 *     rtl: bool,
 	 *     term_group: int|numeric-string,
 	 *     lang_id?: int|numeric-string,
 	 *     flag?: non-empty-string
@@ -826,7 +826,7 @@ class Languages {
 
 		$new_data = array(
 			'locale'    => $args['locale'],
-			'rtl'       => ! empty( $args['rtl'] ) ? 1 : 0,
+			'rtl'       => ! empty( $args['rtl'] ),
 			'flag_code' => empty( $args['flag'] ) ? '' : $args['flag'],
 		);
 
@@ -840,22 +840,22 @@ class Languages {
 		 * @param mixed[] $args     {
 		 *     Arguments used to create the language.
 		 *
-		 *     @type string   $name       Language name (used only for display).
-		 *     @type string   $slug       Language code (ideally 2-letters ISO 639-1 language code).
-		 *     @type string   $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
-		 *                                not be loaded...
-		 *     @type bool|int $rtl        True if rtl language, false otherwise.
-		 *     @type int      $term_group Language order when displayed.
-		 *     @type int      $lang_id    Optional, ID of the language to modify. An empty value means the language is
-		 *                                being created.
-		 *     @type string   $flag       Optional, country code, {@see settings/flags.php}.
+		 *     @type string $name       Language name (used only for display).
+		 *     @type string $slug       Language code (ideally 2-letters ISO 639-1 language code).
+		 *     @type string $locale     WordPress locale. If something wrong is used for the locale, the .mo files will
+		 *                              not be loaded...
+		 *     @type bool   $rtl        True if rtl language, false otherwise.
+		 *     @type int    $term_group Language order when displayed.
+		 *     @type int    $lang_id    Optional, ID of the language to modify. An empty value means the language is
+		 *                              being created.
+		 *     @type string $flag       Optional, country code, {@see settings/flags.php}.
 		 * }
 		 * @param mixed[] $new_data New data.
 		 * @param mixed[] $old_data {
 		 *     Original data. Contains at least the following:
 		 *
 		 *     @type string $locale    WordPress locale.
-		 *     @type int    $rtl       1 if rtl language, 0 otherwise.
+		 *     @type bool   $rtl       True if rtl language, false otherwise.
 		 *     @type string $flag_code Country code.
 		 * }
 		 */
