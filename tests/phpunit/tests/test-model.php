@@ -204,7 +204,7 @@ class Model_Test extends PLL_UnitTestCase {
 		// Translatable custom table.
 		require_once PLL_TEST_DATA_DIR . 'translatable-foo.php';
 
-		$foo = new PLLTest_Translatable_Foo( self::$model->languages_model, self::$model->options, self::$model->cache );
+		$foo = new PLLTest_Translatable_Foo( self::$model->languages, self::$model->options, self::$model->cache );
 		$tax = $foo->get_tax_language();
 		self::$model->translatable_objects->register( $foo );
 
