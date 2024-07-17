@@ -16,6 +16,11 @@ class PLL_REST_Request extends PLL_Base {
 	public $curlang;
 
 	/**
+	 * @var PLL_Default_Term|null
+	 */
+	public $default_term;
+
+	/**
 	 * @var PLL_Filters|null
 	 */
 	public $filters;
@@ -73,6 +78,9 @@ class PLL_REST_Request extends PLL_Base {
 	 */
 	public function init() {
 		parent::init();
+
+		$this->default_term = new PLL_Default_Term( $this );
+		$this->default_term->add_hooks();
 
 		if ( ! $this->model->has_languages() ) {
 			return;

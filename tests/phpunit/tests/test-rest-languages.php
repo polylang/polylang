@@ -30,7 +30,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 				$polylang->rest = new API( $polylang->model );
 				add_action( 'rest_api_init', array( $polylang->rest, 'rest_api_init' ) );
 
-				$polylang->default_term = new PLL_Admin_Default_Term( $polylang );
+				$polylang->default_term = new PLL_Default_Term( $polylang );
 				$polylang->default_term->add_hooks();
 			}
 		);

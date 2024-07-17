@@ -49,6 +49,11 @@ class PLL_Frontend extends PLL_Base {
 	public $links;
 
 	/**
+	 * @var PLL_Default_Term|null
+	 */
+	public $default_term;
+
+	/**
 	 * @var PLL_Frontend_Nav_Menu|null
 	 */
 	public $nav_menu;
@@ -115,6 +120,9 @@ class PLL_Frontend extends PLL_Base {
 		parent::init();
 
 		$this->links = new PLL_Frontend_Links( $this );
+
+		$this->default_term = new PLL_Default_Term( $this );
+		$this->default_term->add_hooks();
 
 		// Setup the language chooser
 		$c = array( 'Content', 'Url', 'Url', 'Domain' );
