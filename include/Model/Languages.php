@@ -627,6 +627,7 @@ class Languages {
 	 *
 	 * @since 0.5
 	 * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Model\Languages::update_translations()`.
+	 *            Visibility changed from public to protected.
 	 *
 	 * @param string $old_slug The old language slug.
 	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
@@ -634,7 +635,7 @@ class Languages {
 	 *
 	 * @phpstan-param non-empty-string $old_slug
 	 */
-	public function update_translations( string $old_slug, string $new_slug = '' ): void {
+	protected function update_translations( string $old_slug, string $new_slug = '' ): void {
 		global $wpdb;
 
 		$term_ids = array();

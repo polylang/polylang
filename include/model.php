@@ -22,7 +22,6 @@ use WP_Syntex\Polylang\Options\Options;
  * @method true|WP_Error      update_language(array $args)
  * @method PLL_Language|false get_default_language()
  * @method void               update_default_lang(string $slug)
- * @method void               update_translations(string $old_slug, string $new_slug = '')
  * @method void               maybe_create_language_terms()
  * @method string[]           get_translated_post_types(bool $filter = true)
  * @method bool               is_translated_post_type(string|string[] $post_type)
@@ -148,7 +147,6 @@ class PLL_Model {
 			'update_language'               => array( $this->languages, 'update' ),
 			'get_default_language'          => array( $this->languages, 'get_default_language' ),
 			'update_default_lang'           => array( $this->languages, 'update_default_language' ),
-			'update_translations'           => array( $this->languages, 'update_translations' ),
 			'maybe_create_language_terms'   => array( $this->languages, 'maybe_create_language_terms' ),
 			// Post types.
 			'get_translated_post_types' => array( $this->post_types, 'get_translated' ),
