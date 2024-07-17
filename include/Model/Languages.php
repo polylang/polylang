@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Models;
+namespace WP_Syntex\Polylang\Model;
 
 use PLL_Cache;
 use PLL_Language;
@@ -53,7 +53,7 @@ class Languages {
 	private $is_creating_list = false;
 
 	/**
-	 * Tells if {@see WP_Syntex\Polylang\Models\Languages::get_languages_list()} can be used.
+	 * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_languages_list()} can be used.
 	 *
 	 * @var bool
 	 */
@@ -81,7 +81,7 @@ class Languages {
 	 *
 	 * @since 0.1
 	 * @since 3.4 Allow to get a language by `term_taxonomy_id`.
-	 * @since 3.7 Moved from `PLL_Model::get_language()` to `WP_Syntex\Polylang\Models\Languages::get()`.
+	 * @since 3.7 Moved from `PLL_Model::get_language()` to `WP_Syntex\Polylang\Model\Languages::get()`.
 	 *
 	 * @param mixed $value `term_id`, `term_taxonomy_id`, `slug`, `locale`, or `w3c` of the queried language.
 	 *                     `term_id` and `term_taxonomy_id` can be fetched for any language taxonomy.
@@ -118,7 +118,7 @@ class Languages {
 	 * Adds a new language and creates a default category for this language.
 	 *
 	 * @since 1.2
-	 * @since 3.7 Moved from `PLL_Admin_Model::add_language()` to `WP_Syntex\Polylang\Models\Languages::add()`.
+	 * @since 3.7 Moved from `PLL_Admin_Model::add_language()` to `WP_Syntex\Polylang\Model\Languages::add()`.
 	 *
 	 * @param array $args {
 	 *   Arguments used to create the language.
@@ -217,7 +217,7 @@ class Languages {
 	 * Updates language properties.
 	 *
 	 * @since 1.2
-	 * @since 3.7 Moved from `PLL_Admin_Model::update_language()` to `WP_Syntex\Polylang\Models\Languages::update()`.
+	 * @since 3.7 Moved from `PLL_Admin_Model::update_language()` to `WP_Syntex\Polylang\Model\Languages::update()`.
 	 *
 	 * @param array $args {
 	 *   Arguments used to modify the language.
@@ -354,7 +354,7 @@ class Languages {
 	 * Deletes a language.
 	 *
 	 * @since 1.2
-	 * @since 3.7 Moved from `PLL_Admin_Model::delete_language()` to `WP_Syntex\Polylang\Models\Languages::delete()`.
+	 * @since 3.7 Moved from `PLL_Admin_Model::delete_language()` to `WP_Syntex\Polylang\Model\Languages::delete()`.
 	 *
 	 * @param int $lang_id Language term_id.
 	 * @return bool
@@ -437,7 +437,7 @@ class Languages {
 	 * Checks if there are languages or not.
 	 *
 	 * @since 3.3
-	 * @since 3.7 Moved from `PLL_Model::has_languages()` to `WP_Syntex\Polylang\Models\Languages::has_languages()`.
+	 * @since 3.7 Moved from `PLL_Model::has_languages()` to `WP_Syntex\Polylang\Model\Languages::has_languages()`.
 	 *
 	 * @return bool True if there are, false otherwise.
 	 */
@@ -459,7 +459,7 @@ class Languages {
 	 * - Caches the list (with flags) in a `PLL_Cache` object.
 	 *
 	 * @since 0.1
-	 * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Models\Languages::get_languages_list()`.
+	 * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Model\Languages::get_languages_list()`.
 	 *
 	 * @param array $args {
 	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
@@ -545,10 +545,10 @@ class Languages {
 	}
 
 	/**
-	 * Tells if {@see WP_Syntex\Polylang\Models\Languages::get_languages_list()} can be used.
+	 * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_languages_list()} can be used.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::are_languages_ready()` to `WP_Syntex\Polylang\Models\Languages::are_languages_ready()`.
+	 * @since 3.7 Moved from `PLL_Model::are_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::are_languages_ready()`.
 	 *
 	 * @return bool
 	 */
@@ -557,10 +557,10 @@ class Languages {
 	}
 
 	/**
-	 * Sets the internal property `$languages_ready` to `true`, telling that {@see WP_Syntex\Polylang\Models\Languages::get_languages_list()} can be used.
+	 * Sets the internal property `$languages_ready` to `true`, telling that {@see WP_Syntex\Polylang\Model\Languages::get_languages_list()} can be used.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::set_languages_ready()` to `WP_Syntex\Polylang\Models\Languages::set_languages_ready()`.
+	 * @since 3.7 Moved from `PLL_Model::set_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::set_languages_ready()`.
 	 *
 	 * @return void
 	 */
@@ -572,7 +572,7 @@ class Languages {
 	 * Returns the default language.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::get_default_language()` to `WP_Syntex\Polylang\Models\Languages::get_default_language()`.
+	 * @since 3.7 Moved from `PLL_Model::get_default_language()` to `WP_Syntex\Polylang\Model\Languages::get_default_language()`.
 	 *
 	 * @return PLL_Language|false Default language object, `false` if no language found.
 	 */
@@ -589,7 +589,7 @@ class Languages {
 	 * taking care to update the default category & the nav menu locations.
 	 *
 	 * @since 1.8
-	 * @since 3.7 Moved from `PLL_Admin_Model::update_default_lang()` to `WP_Syntex\Polylang\Models\Languages::update_default_language()`.
+	 * @since 3.7 Moved from `PLL_Admin_Model::update_default_lang()` to `WP_Syntex\Polylang\Model\Languages::update_default_language()`.
 	 *
 	 * @param string $slug New language slug.
 	 * @return void
@@ -626,7 +626,7 @@ class Languages {
 	 * Updates the translations when a language slug has been modified in settings or deletes them when a language is removed.
 	 *
 	 * @since 0.5
-	 * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Models\Languages::update_translations()`.
+	 * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Model\Languages::update_translations()`.
 	 *
 	 * @param string $old_slug The old language slug.
 	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
@@ -728,7 +728,7 @@ class Languages {
 	 * Maybe adds the missing language terms for 3rd party language taxonomies.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::maybe_create_language_terms()` to `WP_Syntex\Polylang\Models\Languages::maybe_create_language_terms()`.
+	 * @since 3.7 Moved from `PLL_Model::maybe_create_language_terms()` to `WP_Syntex\Polylang\Model\Languages::maybe_create_language_terms()`.
 	 *
 	 * @return void
 	 */
@@ -783,7 +783,7 @@ class Languages {
 	 * Builds the language metas into an array and serializes it, to be stored in the term description.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Admin_Model::build_language_metas()` to `WP_Syntex\Polylang\Models\Languages::build_metas()`.
+	 * @since 3.7 Moved from `PLL_Admin_Model::build_language_metas()` to `WP_Syntex\Polylang\Model\Languages::build_metas()`.
 	 *
 	 * @param array $args {
 	 *   Arguments used to build the language metas.
@@ -871,9 +871,9 @@ class Languages {
 	 * Validates data entered when creating or updating a language.
 	 *
 	 * @since 0.4
-	 * @since 3.7 Moved from `PLL_Admin_Model::validate_lang()` to `WP_Syntex\Polylang\Models\Languages::validate_lang()`.
+	 * @since 3.7 Moved from `PLL_Admin_Model::validate_lang()` to `WP_Syntex\Polylang\Model\Languages::validate_lang()`.
 	 *
-	 * @param array             $args Parameters of {@see WP_Syntex\Polylang\Models\Languages::add() or @see WP_Syntex\Polylang\Models\Languages::update()}.
+	 * @param array             $args Parameters of {@see WP_Syntex\Polylang\Model\Languages::add() or @see WP_Syntex\Polylang\Model\Languages::update()}.
 	 * @param PLL_Language|null $lang Optional the language currently updated, the language is created if not set.
 	 * @return WP_Error
 	 *
@@ -930,7 +930,7 @@ class Languages {
 	 * Updates or adds new terms for a secondary language taxonomy (aka not 'language').
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::update_secondary_language_terms()` to `WP_Syntex\Polylang\Models\Languages::update_secondary_language_terms()`.
+	 * @since 3.7 Moved from `PLL_Model::update_secondary_language_terms()` to `WP_Syntex\Polylang\Model\Languages::update_secondary_language_terms()`.
 	 *
 	 * @param string            $slug       Language term slug (with or without the `pll_` prefix).
 	 * @param string            $name       Language name (label).
@@ -977,7 +977,7 @@ class Languages {
 	 * Stores the list in a db transient and in a `PLL_Cache` object.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::get_languages_from_taxonomies()` to `WP_Syntex\Polylang\Models\Languages::get_languages_from_taxonomies()`.
+	 * @since 3.7 Moved from `PLL_Model::get_languages_from_taxonomies()` to `WP_Syntex\Polylang\Model\Languages::get_languages_from_taxonomies()`.
 	 *
 	 * @return PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
 	 *
@@ -1049,10 +1049,10 @@ class Languages {
 	/**
 	 * Returns the list of existing language terms.
 	 * - Returns all terms, that are or not assigned to posts.
-	 * - Terms are ordered by `term_group` and `term_id` (see `WP_Syntex\Polylang\Models\Languages::filter_language_terms_orderby()`).
+	 * - Terms are ordered by `term_group` and `term_id` (see `WP_Syntex\Polylang\Model\Languages::filter_language_terms_orderby()`).
 	 *
 	 * @since 3.2.3
-	 * @since 3.7 Moved from `PLL_Model::get_language_terms()` to `WP_Syntex\Polylang\Models\Languages::get_language_terms()`.
+	 * @since 3.7 Moved from `PLL_Model::get_language_terms()` to `WP_Syntex\Polylang\Model\Languages::get_language_terms()`.
 	 *
 	 * @return WP_Term[]
 	 */
@@ -1079,7 +1079,7 @@ class Languages {
 	 * Having the "language' taxonomy first is important for {@see PLL_Admin_Model:delete_language()}.
 	 *
 	 * @since 3.2.3
-	 * @since 3.7 Moved from `PLL_Model::filter_language_terms_orderby()` to `WP_Syntex\Polylang\Models\Languages::filter_language_terms_orderby()`.
+	 * @since 3.7 Moved from `PLL_Model::filter_language_terms_orderby()` to `WP_Syntex\Polylang\Model\Languages::filter_language_terms_orderby()`.
 	 *            Visibility changed from `public` to `private`.
 	 *
 	 * @param  string   $orderby    `ORDERBY` clause of the terms query.

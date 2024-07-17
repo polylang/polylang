@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\Models;
+namespace WP_Syntex\Polylang\Model;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,7 +17,7 @@ class Filtered_Taxonomies {
 	 * Return taxonomies that need to be filtered (post_format like).
 	 *
 	 * @since 1.7
-	 * @since 3.7 Moved from `PLL_Model::get_filtered_taxonomies()` to `WP_Syntex\Polylang\Models\Filtered_Taxonomies::get_filtered_taxonomies()`.
+	 * @since 3.7 Moved from `PLL_Model::get_filtered_taxonomies()` to `WP_Syntex\Polylang\Model\Filtered_Taxonomies::get_filtered_taxonomies()`.
 	 *
 	 * @param bool $filter True if we should return only valid registered taxonomies.
 	 * @return string[] Array of registered taxonomy names.
@@ -51,7 +51,7 @@ class Filtered_Taxonomies {
 	 * Returns true if Polylang filters this taxonomy per language.
 	 *
 	 * @since 1.7
-	 * @since 3.7 Moved from `PLL_Model::is_filtered_taxonomy()` to `WP_Syntex\Polylang\Models\Filtered_Taxonomies::is_filtered_taxonomy()`.
+	 * @since 3.7 Moved from `PLL_Model::is_filtered_taxonomy()` to `WP_Syntex\Polylang\Model\Filtered_Taxonomies::is_filtered_taxonomy()`.
 	 *
 	 * @param string|string[] $tax Taxonomy name or array of taxonomy names.
 	 * @return bool
@@ -65,7 +65,7 @@ class Filtered_Taxonomies {
 	 * Returns the query vars of all filtered taxonomies.
 	 *
 	 * @since 1.7
-	 * @since 3.7 Moved from `PLL_Model::get_filtered_taxonomies_query_vars()` to `WP_Syntex\Polylang\Models\Filtered_Taxonomies::get_query_vars()`.
+	 * @since 3.7 Moved from `PLL_Model::get_filtered_taxonomies_query_vars()` to `WP_Syntex\Polylang\Model\Filtered_Taxonomies::get_query_vars()`.
 	 *
 	 * @return string[]
 	 */

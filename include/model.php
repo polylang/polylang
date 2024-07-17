@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Models;
+use WP_Syntex\Polylang\Model;
 use WP_Syntex\Polylang\Options\Options;
 
 /**
@@ -69,14 +69,14 @@ class PLL_Model {
 	/**
 	 * Model for the languages.
 	 *
-	 * @var Models\Languages
+	 * @var Model\Languages
 	 */
 	public $languages;
 
 	/**
 	 * Model for taxonomies filtered by Polylang.
 	 *
-	 * @var Models\Filtered_Taxonomies
+	 * @var Model\Filtered_Taxonomies
 	 */
 	public $filtered_taxonomies;
 
@@ -94,8 +94,8 @@ class PLL_Model {
 		$this->options              = &$options;
 		$this->cache                = new PLL_Cache();
 		$this->translatable_objects = new PLL_Translatable_Objects();
-		$this->filtered_taxonomies  = new Models\Filtered_Taxonomies();
-		$this->languages            = new Models\Languages( $this->options, $this->translatable_objects, $this->cache );
+		$this->filtered_taxonomies  = new Model\Filtered_Taxonomies();
+		$this->languages            = new Model\Languages( $this->options, $this->translatable_objects, $this->cache );
 
 		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this->languages, $this->options, $this->cache ) );  // Translated post sub model.
 		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this->languages, $this->options, $this->cache ) );  // Translated term sub model.

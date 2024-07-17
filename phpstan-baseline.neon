@@ -523,7 +523,7 @@ parameters:
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$term_id\\.$#"
 			count: 1
-			path: include/Models/Languages.php
+			path: include/Model/Languages.php
 
 		-
 			message: "#^Method PLL_Model\\:\\:get_links_model\\(\\) should return PLL_Links_Model but returns object\\.$#"
