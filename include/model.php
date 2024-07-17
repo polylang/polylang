@@ -137,7 +137,7 @@ class PLL_Model {
 		$methods = array(
 			// Languages.
 			'has_languages'                 => array( $this->languages, 'has_languages' ),
-			'get_languages_list'            => array( $this->languages, 'get_languages_list' ),
+			'get_languages_list'            => array( $this->languages, 'get_list' ),
 			'are_languages_ready'           => array( $this->languages, 'are_languages_ready' ),
 			'set_languages_ready'           => array( $this->languages, 'set_languages_ready' ),
 			'filter_language_terms_orderby' => array( $this->languages, 'filter_language_terms_orderby' ),
@@ -367,7 +367,7 @@ class PLL_Model {
 			$join    = $this->post->join_clause();
 			$where   = sprintf( " WHERE post_status = '%s'", esc_sql( $q['post_status'] ) );
 			$where  .= sprintf( " AND {$wpdb->posts}.post_type IN ( '%s' )", implode( "', '", esc_sql( $q['post_type'] ) ) );
-			$where  .= $this->post->where_clause( $this->languages->get_languages_list() );
+			$where  .= $this->post->where_clause( $this->languages->get_list() );
 			$groupby = ' GROUP BY pll_tr.term_taxonomy_id';
 
 			if ( ! empty( $q['m'] ) ) {

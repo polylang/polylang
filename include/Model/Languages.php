@@ -53,7 +53,7 @@ class Languages {
 	private $is_creating_list = false;
 
 	/**
-	 * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_languages_list()} can be used.
+	 * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_list()} can be used.
 	 *
 	 * @var bool
 	 */
@@ -100,7 +100,7 @@ class Languages {
 			return $return;
 		}
 
-		foreach ( $this->get_languages_list() as $lang ) {
+		foreach ( $this->get_list() as $lang ) {
 			foreach ( $lang->get_tax_props() as $props ) {
 				$this->cache->set( 'language:' . $props['term_id'], $lang );
 				$this->cache->set( 'language:tt:' . $props['term_taxonomy_id'], $lang );
@@ -186,7 +186,7 @@ class Languages {
 
 		// Refresh languages.
 		$this->clean_cache();
-		$this->get_languages_list();
+		$this->get_list();
 
 		flush_rewrite_rules(); // Refresh rewrite rules.
 
@@ -321,7 +321,7 @@ class Languages {
 
 		// Refresh languages.
 		$this->clean_cache();
-		$this->get_languages_list();
+		$this->get_list();
 
 		// Refresh rewrite rules.
 		flush_rewrite_rules();
@@ -369,7 +369,7 @@ class Languages {
 		// Oops! We are deleting the default language...
 		// Need to do this before loosing the information for default category translations.
 		if ( $lang->is_default ) {
-			$slugs = $this->get_languages_list( array( 'fields' => 'slug' ) );
+			$slugs = $this->get_list( array( 'fields' => 'slug' ) );
 			$slugs = array_diff( $slugs, array( $lang->slug ) );
 
 			if ( ! empty( $slugs ) ) {
@@ -427,7 +427,7 @@ class Languages {
 
 		// Refresh languages.
 		$this->clean_cache();
-		$this->get_languages_list();
+		$this->get_list();
 
 		flush_rewrite_rules(); // refresh rewrite rules
 		return true;
@@ -459,7 +459,7 @@ class Languages {
 	 * - Caches the list (with flags) in a `PLL_Cache` object.
 	 *
 	 * @since 0.1
-	 * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Model\Languages::get_languages_list()`.
+	 * @since 3.7 Moved from `PLL_Model::get_languages_list()` to `WP_Syntex\Polylang\Model\Languages::get_list()`.
 	 *
 	 * @param array $args {
 	 *   @type bool   $hide_empty   Hides languages with no posts if set to `true` (defaults to `false`).
@@ -468,7 +468,7 @@ class Languages {
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
-	public function get_languages_list( array $args = array() ): array {
+	public function get_list( array $args = array() ): array {
 		if ( ! $this->are_languages_ready() ) {
 			_doing_it_wrong(
 				__METHOD__ . '()',
@@ -545,7 +545,7 @@ class Languages {
 	}
 
 	/**
-	 * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_languages_list()} can be used.
+	 * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_list()} can be used.
 	 *
 	 * @since 3.4
 	 * @since 3.7 Moved from `PLL_Model::are_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::are_languages_ready()`.
@@ -557,7 +557,7 @@ class Languages {
 	}
 
 	/**
-	 * Sets the internal property `$languages_ready` to `true`, telling that {@see WP_Syntex\Polylang\Model\Languages::get_languages_list()} can be used.
+	 * Sets the internal property `$languages_ready` to `true`, telling that {@see WP_Syntex\Polylang\Model\Languages::get_list()} can be used.
 	 *
 	 * @since 3.4
 	 * @since 3.7 Moved from `PLL_Model::set_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::set_languages_ready()`.
@@ -758,7 +758,7 @@ class Languages {
 		}
 
 		// We have at least one unknown 3rd party language taxonomy.
-		foreach ( $this->get_languages_list() as $language ) {
+		foreach ( $this->get_list() as $language ) {
 			$this->update_secondary_language_terms( $language->slug, $language->name, $language, $new_taxonomies );
 		}
 
@@ -899,7 +899,7 @@ class Languages {
 		}
 
 		// Validate slug is unique.
-		foreach ( $this->get_languages_list() as $language ) {
+		foreach ( $this->get_list() as $language ) {
 			if ( $language->slug === $args['slug'] && ( null === $lang || $lang->term_id !== $language->term_id ) ) {
 				$errors->add( 'pll_non_unique_slug', __( 'The language code must be unique', 'polylang' ) );
 			}

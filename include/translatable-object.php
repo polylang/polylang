@@ -386,7 +386,7 @@ abstract class PLL_Translatable_Object {
 	public function get_objects_with_no_lang( $limit, array $args = array() ) {
 		$language_ids = array();
 
-		foreach ( $this->languages_model->get_languages_list() as $language ) {
+		foreach ( $this->languages_model->get_list() as $language ) {
 			$language_ids[] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 

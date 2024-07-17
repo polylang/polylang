@@ -463,7 +463,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		 */
 		$translations = array_intersect_key(
 			$translations,
-			array_flip( $this->languages_model->get_languages_list( array( 'fields' => 'slug' ) ) )
+			array_flip( $this->languages_model->get_list( array( 'fields' => 'slug' ) ) )
 		);
 
 		// Make sure values are clean before working with them.
