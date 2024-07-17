@@ -24,6 +24,10 @@ use WP_Syntex\Polylang\Options\Options;
  * @method void               update_default_lang(string $slug)
  * @method void               update_translations(string $old_slug, string $new_slug = '')
  * @method void               maybe_create_language_terms()
+ * @method string[]           get_translated_post_types(bool $filter = true)
+ * @method bool               is_translated_post_type(string|string[] $post_type)
+ * @method string[]           get_translated_taxonomies(bool $filter = true)
+ * @method bool               is_translated_taxonomy(string|string[] $tax)
  * @method string[]           get_filtered_taxonomies(bool $filter = true)
  * @method bool               is_filtered_taxonomy(string|string[] $tax)
  * @method string[]           get_filtered_taxonomies_query_vars()
@@ -74,11 +78,18 @@ class PLL_Model {
 	public $languages;
 
 	/**
-	 * Model for taxonomies filtered by Polylang.
+	 * Model for taxonomies translated by Polylang.
 	 *
-	 * @var Model\Filtered_Taxonomies
+	 * @var Model\Post_Types
 	 */
-	public $filtered_taxonomies;
+	public $post_types;
+
+	/**
+	 * Model for taxonomies filtered/translated by Polylang.
+	 *
+	 * @var Model\Taxonomies
+	 */
+	public $taxonomies;
 
 	/**
 	 * Constructor.
@@ -94,11 +105,13 @@ class PLL_Model {
 		$this->options              = &$options;
 		$this->cache                = new PLL_Cache();
 		$this->translatable_objects = new PLL_Translatable_Objects();
-		$this->filtered_taxonomies  = new Model\Filtered_Taxonomies();
 		$this->languages            = new Model\Languages( $this->options, $this->translatable_objects, $this->cache );
 
 		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this->languages, $this->options, $this->cache ) );  // Translated post sub model.
 		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this->languages, $this->options, $this->cache ) );  // Translated term sub model.
+
+		$this->post_types = new Model\Post_Types( $this->post );
+		$this->taxonomies = new Model\Taxonomies( $this->term );
 
 		// We need to clean languages cache when editing a language and when modifying the permalink structure.
 		add_action( 'edited_term_taxonomy', array( $this, 'clean_languages_cache' ), 10, 2 );
@@ -122,27 +135,48 @@ class PLL_Model {
 	 * @return mixed
 	 */
 	public function __call( string $name, array $arguments ) {
+		// Languages.
 		$methods = array(
-			'has_languages'                      => array( $this->languages, 'has_languages' ),
-			'get_languages_list'                 => array( $this->languages, 'get_languages_list' ),
-			'are_languages_ready'                => array( $this->languages, 'are_languages_ready' ),
-			'set_languages_ready'                => array( $this->languages, 'set_languages_ready' ),
-			'filter_language_terms_orderby'      => array( $this->languages, 'filter_language_terms_orderby' ),
-			'get_language'                       => array( $this->languages, 'get' ),
-			'add_language'                       => array( $this->languages, 'add' ),
-			'delete_language'                    => array( $this->languages, 'delete' ),
-			'update_language'                    => array( $this->languages, 'update' ),
-			'get_default_language'               => array( $this->languages, 'get_default_language' ),
-			'update_default_lang'                => array( $this->languages, 'update_default_language' ),
-			'update_translations'                => array( $this->languages, 'update_translations' ),
-			'maybe_create_language_terms'        => array( $this->languages, 'maybe_create_language_terms' ),
-			'get_filtered_taxonomies'            => array( $this->filtered_taxonomies, 'get_filtered_taxonomies' ),
-			'is_filtered_taxonomy'               => array( $this->filtered_taxonomies, 'is_filtered_taxonomy' ),
-			'get_filtered_taxonomies_query_vars' => array( $this->filtered_taxonomies, 'get_query_vars' ),
+			'has_languages'                 => 'has_languages',
+			'get_languages_list'            => 'get_languages_list',
+			'are_languages_ready'           => 'are_languages_ready',
+			'set_languages_ready'           => 'set_languages_ready',
+			'filter_language_terms_orderby' => 'filter_language_terms_orderby',
+			'get_language'                  => 'get',
+			'add_language'                  => 'add',
+			'delete_language'               => 'delete',
+			'update_language'               => 'update',
+			'get_default_language'          => 'get_default_language',
+			'update_default_lang'           => 'update_default_language',
+			'update_translations'           => 'update_translations',
+			'maybe_create_language_terms'   => 'maybe_create_language_terms',
 		);
 
 		if ( isset( $methods[ $name ] ) ) {
-			return call_user_func_array( $methods[ $name ], $arguments );
+			return call_user_func_array( array( $this->languages, $methods[ $name ] ), $arguments );
+		}
+
+		// Post types.
+		$methods = array(
+			'get_translated_post_types' => 'get_translated',
+			'is_translated_post_type'   => 'is_translated',
+		);
+
+		if ( isset( $methods[ $name ] ) ) {
+			return call_user_func_array( array( $this->post_types, $methods[ $name ] ), $arguments );
+		}
+
+		// Taxonomies.
+		$methods = array(
+			'get_translated_taxonomies'          => 'get_translated',
+			'is_translated_taxonomy'             => 'is_translated',
+			'get_filtered_taxonomies'            => 'get_filtered',
+			'is_filtered_taxonomy'               => 'is_filtered',
+			'get_filtered_taxonomies_query_vars' => 'get_filtered_query_vars',
+		);
+
+		if ( isset( $methods[ $name ] ) ) {
+			return call_user_func_array( array( $this->taxonomies, $methods[ $name ] ), $arguments );
 		}
 
 		$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
@@ -206,70 +240,6 @@ class PLL_Model {
 			$clauses['where'] .= $this->term->where_clause( $lang );
 		}
 		return $clauses;
-	}
-
-	/**
-	 * Returns post types that need to be translated.
-	 * The post types list is cached for better better performance.
-	 * The method waits for 'after_setup_theme' to apply the cache
-	 * to allow themes adding the filter in functions.php.
-	 *
-	 * @since 1.2
-	 *
-	 * @param bool $filter True if we should return only valid registered post types.
-	 * @return string[] Post type names for which Polylang manages languages and translations.
-	 */
-	public function get_translated_post_types( bool $filter = true ): array {
-		return $this->translatable_objects->get( 'post' )->get_translated_object_types( $filter );
-	}
-
-	/**
-	 * Returns true if Polylang manages languages and translations for this post type.
-	 *
-	 * @since 1.2
-	 *
-	 * @param string|string[] $post_type Post type name or array of post type names.
-	 * @return bool
-	 */
-	public function is_translated_post_type( $post_type ): bool {
-		if ( empty( array_filter( (array) $post_type ) ) ) {
-			return false;
-		}
-
-		/** @var non-empty-array<non-empty-string>|non-empty-string $post_type */
-		return $this->translatable_objects->get( 'post' )->is_translated_object_type( $post_type );
-	}
-
-	/**
-	 * Returns taxonomies that need to be translated.
-	 * The taxonomies list is cached for better better performance.
-	 * The method waits for 'after_setup_theme' to apply the cache
-	 * to allow themes adding the filter in functions.php.
-	 *
-	 * @since 1.2
-	 *
-	 * @param bool $filter True if we should return only valid registered taxonomies.
-	 * @return string[] Array of registered taxonomy names for which Polylang manages languages and translations.
-	 */
-	public function get_translated_taxonomies( bool $filter = true ): array {
-		return $this->translatable_objects->get( 'term' )->get_translated_object_types( $filter );
-	}
-
-	/**
-	 * Returns true if Polylang manages languages and translations for this taxonomy.
-	 *
-	 * @since 1.2
-	 *
-	 * @param string|string[] $tax Taxonomy name or array of taxonomy names.
-	 * @return bool
-	 */
-	public function is_translated_taxonomy( $tax ): bool {
-		if ( empty( array_filter( (array) $tax ) ) ) {
-			return false;
-		}
-
-		/** @var non-empty-array<non-empty-string>|non-empty-string $tax */
-		return $this->translatable_objects->get( 'term' )->is_translated_object_type( $tax );
 	}
 
 	/**
@@ -451,7 +421,7 @@ class PLL_Model {
 			}
 
 			// Filtered taxonomies ( post_format ).
-			foreach ( $this->filtered_taxonomies->get_query_vars() as $tax_qv ) {
+			foreach ( $this->taxonomies->get_filtered_query_vars() as $tax_qv ) {
 
 				if ( ! empty( $q[ $tax_qv ] ) ) {
 					$join .= " INNER JOIN {$wpdb->term_relationships} AS tr ON tr.object_id = {$wpdb->posts}.ID";
