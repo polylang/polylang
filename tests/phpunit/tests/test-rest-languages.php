@@ -3,9 +3,13 @@
 use WP_Syntex\Polylang\REST\API;
 
 class REST_Languages_Test extends PLL_UnitTestCase {
+	/**
+	 * @var Spy_REST_Server
+	 */
+	private $server;
+
 	protected static $administrator;
 	protected static $author;
-	protected $server;
 
 	/**
 	 * @param PLL_UnitTest_Factory $factory
@@ -18,22 +22,21 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	public function set_up() {
-		global $wp_rest_server;
-
 		parent::set_up();
 
-		$links_model = self::$model->get_links_model();
-		$links_model->init();
+		add_action(
+			'pll_init',
+			function ( $polylang ) {
+				$polylang->rest = new API( $polylang->model );
+				add_action( 'rest_api_init', array( $polylang->rest, 'rest_api_init' ) );
 
-		$this->server  = $wp_rest_server = new Spy_REST_Server();
-		$this->pll_env = new PLL_REST_Request( $links_model );
+				$polylang->default_term = new PLL_Admin_Default_Term( $polylang );
+				$polylang->default_term->add_hooks();
+			}
+		);
 
-		$this->pll_env->rest = new API( $this->pll_env->model );
-		add_action( 'rest_api_init', array( $this->pll_env->rest, 'rest_api_init' ) );
-		$this->pll_env->default_term = new PLL_Admin_Default_Term( $this->pll_env );
-		$this->pll_env->default_term->add_hooks();
-
-		do_action( 'rest_api_init', $this->server );
+		$this->pll_env = ( new PLL_Context_Rest() )->get();
+		$this->server  = $GLOBALS['wp_rest_server'];
 	}
 
 	public function test_get_languages_list() {
