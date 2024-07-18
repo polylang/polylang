@@ -563,7 +563,7 @@ class PLL_Model {
 	 */
 	public function set_language_in_mass( $lang = null, array $types = array() ): void {
 		if ( ! $lang instanceof PLL_Language ) {
-			$lang = $this->get_default_language();
+			$lang = $this->languages->get_default_language();
 
 			if ( empty( $lang ) ) {
 				return;
