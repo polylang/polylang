@@ -15,7 +15,6 @@ use WP_Syntex\Polylang\Options\Options;
  * @method array              get_languages_list(array $args = array())
  * @method bool               are_languages_ready()
  * @method void               set_languages_ready()
- * @method string             filter_language_terms_orderby(string $orderby, array $args, string[] $taxonomies)
  * @method PLL_Language|false get_language(mixed $value)
  * @method true|WP_Error      add_language(array $args)
  * @method bool               delete_language(int $lang_id)
@@ -136,18 +135,17 @@ class PLL_Model {
 	public function __call( string $name, array $arguments ) {
 		$methods = array(
 			// Languages.
-			'has_languages'                 => array( $this->languages, 'has_languages' ),
-			'get_languages_list'            => array( $this->languages, 'get_list' ),
-			'are_languages_ready'           => array( $this->languages, 'are_languages_ready' ),
-			'set_languages_ready'           => array( $this->languages, 'set_languages_ready' ),
-			'filter_language_terms_orderby' => array( $this->languages, 'filter_language_terms_orderby' ),
-			'get_language'                  => array( $this->languages, 'get' ),
-			'add_language'                  => array( $this->languages, 'add' ),
-			'delete_language'               => array( $this->languages, 'delete' ),
-			'update_language'               => array( $this->languages, 'update' ),
-			'get_default_language'          => array( $this->languages, 'get_default_language' ),
-			'update_default_lang'           => array( $this->languages, 'update_default_language' ),
-			'maybe_create_language_terms'   => array( $this->languages, 'maybe_create_language_terms' ),
+			'has_languages'               => array( $this->languages, 'has_languages' ),
+			'get_languages_list'          => array( $this->languages, 'get_list' ),
+			'are_languages_ready'         => array( $this->languages, 'are_languages_ready' ),
+			'set_languages_ready'         => array( $this->languages, 'set_languages_ready' ),
+			'get_language'                => array( $this->languages, 'get' ),
+			'add_language'                => array( $this->languages, 'add' ),
+			'delete_language'             => array( $this->languages, 'delete' ),
+			'update_language'             => array( $this->languages, 'update' ),
+			'get_default_language'        => array( $this->languages, 'get_default_language' ),
+			'update_default_lang'         => array( $this->languages, 'update_default_language' ),
+			'maybe_create_language_terms' => array( $this->languages, 'maybe_create_language_terms' ),
 			// Post types.
 			'get_translated_post_types' => array( $this->post_types, 'get_translated' ),
 			'is_translated_post_type'   => array( $this->post_types, 'is_translated' ),

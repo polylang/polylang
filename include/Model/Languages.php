@@ -1087,7 +1087,7 @@ class Languages {
 	 *
 	 * @since 3.2.3
 	 * @since 3.7 Moved from `PLL_Model::filter_language_terms_orderby()` to `WP_Syntex\Polylang\Model\Languages::filter_language_terms_orderby()`.
-	 *            Visibility changed from `public` to `private`.
+	 *            Visibility changed from `public` to `protected`.
 	 *
 	 * @param  string   $orderby    `ORDERBY` clause of the terms query.
 	 * @param  array    $args       An array of term query arguments.
