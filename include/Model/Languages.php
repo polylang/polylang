@@ -88,10 +88,16 @@ class Languages {
 	 *                     /!\ For the `term_taxonomy_id`, prefix the ID by `tt:` (ex: `"tt:{$tt_id}"`),
 	 *                     this is to prevent confusion between `term_id` and `term_taxonomy_id`.
 	 * @return PLL_Language|false Language object, false if no language found.
+	 *
+	 * @phpstan-param PLL_Language|WP_Term|int|string $value
 	 */
 	public function get( $value ) {
-		if ( is_object( $value ) ) {
-			return $value instanceof PLL_Language ? $value : $this->get( $value->term_id ); // Will force cast to PLL_Language.
+		if ( $value instanceof PLL_Language ) {
+			return $value;
+		}
+
+		if ( $value instanceof WP_Term ) {
+			return $this->get( $value->term_id );
 		}
 
 		$return = $this->cache->get( 'language:' . $value );
