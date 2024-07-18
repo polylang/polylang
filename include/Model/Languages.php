@@ -629,109 +629,6 @@ class Languages {
 	}
 
 	/**
-	 * Updates the translations when a language slug has been modified in settings or deletes them when a language is removed.
-	 *
-	 * @since 0.5
-	 * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Model\Languages::update_translations()`.
-	 *            Visibility changed from public to protected.
-	 *
-	 * @param string $old_slug The old language slug.
-	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
-	 * @return void
-	 *
-	 * @phpstan-param non-empty-string $old_slug
-	 */
-	protected function update_translations( string $old_slug, string $new_slug = '' ): void {
-		global $wpdb;
-
-		$term_ids = array();
-		$dr       = array();
-		$dt       = array();
-		$ut       = array();
-
-		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'translations' ) );
-		$terms      = get_terms( array( 'taxonomy' => $taxonomies ) );
-
-		if ( is_array( $terms ) ) {
-			foreach ( $terms as $term ) {
-				$term_ids[ $term->taxonomy ][] = $term->term_id;
-				$tr = maybe_unserialize( $term->description );
-				$tr = is_array( $tr ) ? $tr : array();
-
-				/**
-				 * Filters the unserialized translation group description before it is
-				 * updated when a language is deleted or a language slug is changed.
-				 *
-				 * @since 3.2
-				 *
-				 * @param (int|string[])[] $tr {
-				 *     List of translations with lang codes as array keys and IDs as array values.
-				 *     Also in this array:
-				 *
-				 *     @type string[] $sync List of synchronized translations with lang codes as array keys and array values.
-				 * }
-				 * @param string           $old_slug The old language slug.
-				 * @param string           $new_slug The new language slug.
-				 * @param WP_Term          $term     The term containing the post or term translation group.
-				 */
-				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug, $term );
-
-				if ( ! empty( $tr[ $old_slug ] ) ) {
-					if ( $new_slug ) {
-						$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
-					} else {
-						$dr['id'][] = (int) $tr[ $old_slug ];
-						$dr['tt'][] = (int) $term->term_taxonomy_id;
-					}
-					unset( $tr[ $old_slug ] );
-
-					if ( empty( $tr ) || 1 == count( $tr ) ) {
-						$dt['t'][] = (int) $term->term_id;
-						$dt['tt'][] = (int) $term->term_taxonomy_id;
-					} else {
-						$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $tr ) );
-						$ut['in'][] = (int) $term->term_id;
-					}
-				}
-			}
-		}
-
-		// Delete relationships
-		if ( ! empty( $dr ) ) {
-			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query(
-				"DELETE FROM $wpdb->term_relationships
-				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' )
-				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )'
-			);
-			// PHPCS:enable
-		}
-
-		// Delete terms
-		if ( ! empty( $dt ) ) {
-			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $dt['t'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $dt['tt'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-		}
-
-		// Update terms
-		if ( ! empty( $ut ) ) {
-			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query(
-				"UPDATE $wpdb->term_taxonomy
-				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END )
-				WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )'
-			);
-			// PHPCS:enable
-		}
-
-		if ( ! empty( $term_ids ) ) {
-			foreach ( $term_ids as $taxonomy => $ids ) {
-				clean_term_cache( $ids, $taxonomy );
-			}
-		}
-	}
-
-	/**
 	 * Maybe adds the missing language terms for 3rd party language taxonomies.
 	 *
 	 * @since 3.4
@@ -931,6 +828,109 @@ class Languages {
 		}
 
 		return $errors;
+	}
+
+	/**
+	 * Updates the translations when a language slug has been modified in settings or deletes them when a language is removed.
+	 *
+	 * @since 0.5
+	 * @since 3.7 Moved from `PLL_Admin_Model::update_translations()` to `WP_Syntex\Polylang\Model\Languages::update_translations()`.
+	 *            Visibility changed from public to protected.
+	 *
+	 * @param string $old_slug The old language slug.
+	 * @param string $new_slug Optional, the new language slug, if not set it means that the language has been deleted.
+	 * @return void
+	 *
+	 * @phpstan-param non-empty-string $old_slug
+	 */
+	protected function update_translations( string $old_slug, string $new_slug = '' ): void {
+		global $wpdb;
+
+		$term_ids = array();
+		$dr       = array();
+		$dt       = array();
+		$ut       = array();
+
+		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'translations' ) );
+		$terms      = get_terms( array( 'taxonomy' => $taxonomies ) );
+
+		if ( is_array( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$term_ids[ $term->taxonomy ][] = $term->term_id;
+				$tr = maybe_unserialize( $term->description );
+				$tr = is_array( $tr ) ? $tr : array();
+
+				/**
+				 * Filters the unserialized translation group description before it is
+				 * updated when a language is deleted or a language slug is changed.
+				 *
+				 * @since 3.2
+				 *
+				 * @param (int|string[])[] $tr {
+				 *     List of translations with lang codes as array keys and IDs as array values.
+				 *     Also in this array:
+				 *
+				 *     @type string[] $sync List of synchronized translations with lang codes as array keys and array values.
+				 * }
+				 * @param string           $old_slug The old language slug.
+				 * @param string           $new_slug The new language slug.
+				 * @param WP_Term          $term     The term containing the post or term translation group.
+				 */
+				$tr = apply_filters( 'update_translation_group', $tr, $old_slug, $new_slug, $term );
+
+				if ( ! empty( $tr[ $old_slug ] ) ) {
+					if ( $new_slug ) {
+						$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
+					} else {
+						$dr['id'][] = (int) $tr[ $old_slug ];
+						$dr['tt'][] = (int) $term->term_taxonomy_id;
+					}
+					unset( $tr[ $old_slug ] );
+
+					if ( empty( $tr ) || 1 == count( $tr ) ) {
+						$dt['t'][] = (int) $term->term_id;
+						$dt['tt'][] = (int) $term->term_taxonomy_id;
+					} else {
+						$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $tr ) );
+						$ut['in'][] = (int) $term->term_id;
+					}
+				}
+			}
+		}
+
+		// Delete relationships
+		if ( ! empty( $dr ) ) {
+			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query(
+				"DELETE FROM $wpdb->term_relationships
+				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' )
+				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )'
+			);
+			// PHPCS:enable
+		}
+
+		// Delete terms
+		if ( ! empty( $dt ) ) {
+			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $dt['t'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $dt['tt'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+		}
+
+		// Update terms
+		if ( ! empty( $ut ) ) {
+			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query(
+				"UPDATE $wpdb->term_taxonomy
+				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END )
+				WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )'
+			);
+			// PHPCS:enable
+		}
+
+		if ( ! empty( $term_ids ) ) {
+			foreach ( $term_ids as $taxonomy => $ids ) {
+				clean_term_cache( $ids, $taxonomy );
+			}
+		}
 	}
 
 	/**
