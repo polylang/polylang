@@ -239,7 +239,7 @@ class PLL_Model {
 	 *
 	 * @phpstan-return int<0, max>
 	 */
-	public function term_exists( string $term_name, string $taxonomy, int $parent, $language ): int {
+	public function term_exists( $term_name, $taxonomy, $parent, $language ): int {
 		global $wpdb;
 
 		$language = $this->languages->get( $language );
@@ -277,7 +277,7 @@ class PLL_Model {
 	 * @param int                 $parent   Optional parent term id.
 	 * @return int The `term_id` of the found term. 0 otherwise.
 	 */
-	public function term_exists_by_slug( string $slug, $language, string $taxonomy = '', int $parent = 0 ): int {
+	public function term_exists_by_slug( $slug, $language, $taxonomy = '', $parent = 0 ): int {
 		global $wpdb;
 
 		$language = $this->languages->get( $language );
@@ -337,7 +337,7 @@ class PLL_Model {
 	 * } $q
 	 * @phpstan-return int<0, max>
 	 */
-	public function count_posts( PLL_Language $lang, array $q = array() ): int {
+	public function count_posts( $lang, $q = array() ): int {
 		global $wpdb;
 
 		$q = array_merge( array( 'post_type' => 'post', 'post_status' => 'publish' ), $q );
@@ -469,7 +469,7 @@ class PLL_Model {
 	 *
 	 * @phpstan-param -1|positive-int $limit
 	 */
-	public function get_objects_with_no_lang( int $limit = -1, array $types = array() ) {
+	public function get_objects_with_no_lang( $limit = -1, $types = array() ) {
 		/**
 		 * Filters the max number of IDs to return when searching objects with no language.
 		 * This filter can be used to decrease the memory usage in case the number of objects
@@ -529,7 +529,7 @@ class PLL_Model {
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-return list<positive-int>
 	 */
-	public function get_posts_with_no_lang( $post_types, int $limit ): array {
+	public function get_posts_with_no_lang( $post_types, $limit ): array {
 		return $this->translatable_objects->get( 'post' )->get_objects_with_no_lang( $limit, (array) $post_types );
 	}
 
@@ -545,7 +545,7 @@ class PLL_Model {
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-return list<positive-int>
 	 */
-	public function get_terms_with_no_lang( $taxonomies, int $limit ): array {
+	public function get_terms_with_no_lang( $taxonomies, $limit ): array {
 		return $this->translatable_objects->get( 'term' )->get_objects_with_no_lang( $limit, (array) $taxonomies );
 	}
 
@@ -561,7 +561,7 @@ class PLL_Model {
 	 *                                 to an empty array (all types).
 	 * @return void
 	 */
-	public function set_language_in_mass( ?PLL_Language $lang = null, array $types = array() ): void {
+	public function set_language_in_mass( $lang = null, $types = array() ): void {
 		if ( ! $lang instanceof PLL_Language ) {
 			$lang = $this->get_default_language();
 

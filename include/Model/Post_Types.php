@@ -45,7 +45,7 @@ class Post_Types {
 	 * @param bool $filter True if we should return only valid registered post types.
 	 * @return string[] Post type names for which Polylang manages languages and translations.
 	 */
-	public function get_translated( bool $filter = true ): array {
+	public function get_translated( $filter = true ): array {
 		return $this->translated_object->get_translated_object_types( $filter );
 	}
 

@@ -45,7 +45,7 @@ class Taxonomies {
 	 * @param bool $filter True if we should return only valid registered taxonomies.
 	 * @return string[] Array of registered taxonomy names for which Polylang manages languages and translations.
 	 */
-	public function get_translated( bool $filter = true ): array {
+	public function get_translated( $filter = true ): array {
 		return $this->translated_object->get_translated_object_types( $filter );
 	}
 
@@ -76,7 +76,7 @@ class Taxonomies {
 	 * @param bool $filter True if we should return only valid registered taxonomies.
 	 * @return string[] Array of registered taxonomy names.
 	 */
-	public function get_filtered( bool $filter = true ): array {
+	public function get_filtered( $filter = true ): array {
 		if ( did_action( 'after_setup_theme' ) ) {
 			static $taxonomies = null;
 		}

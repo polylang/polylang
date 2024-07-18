@@ -150,7 +150,7 @@ class Languages {
 	 *     no_default_cat?: bool
 	 * } $args
 	 */
-	public function add( array $args ) {
+	public function add( $args ) {
 		$errors = $this->validate_lang( $args );
 		if ( $errors->has_errors() ) {
 			return $errors;
@@ -249,7 +249,7 @@ class Languages {
 	 *     flag?: string
 	 * } $args
 	 */
-	public function update( array $args ) {
+	public function update( $args ) {
 		$lang = $this->get( (int) $args['lang_id'] );
 
 		if ( empty( $lang ) ) {
@@ -365,7 +365,7 @@ class Languages {
 	 * @param int $lang_id Language term_id.
 	 * @return bool
 	 */
-	public function delete( int $lang_id ): bool {
+	public function delete( $lang_id ): bool {
 		$lang = $this->get( (int) $lang_id );
 
 		if ( empty( $lang ) ) {
@@ -474,7 +474,7 @@ class Languages {
 	 * }
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
-	public function get_list( array $args = array() ): array {
+	public function get_list( $args = array() ): array {
 		if ( ! $this->are_languages_ready() ) {
 			_doing_it_wrong(
 				__METHOD__ . '()',
@@ -600,7 +600,7 @@ class Languages {
 	 * @param string $slug New language slug.
 	 * @return void
 	 */
-	public function update_default_language( string $slug ): void {
+	public function update_default_language( $slug ): void {
 		// The nav menus stored in theme locations should be in the default language.
 		$theme = get_stylesheet();
 		if ( ! empty( $this->options['nav_menus'][ $theme ] ) ) {
@@ -714,7 +714,7 @@ class Languages {
 	 *     flag?: non-empty-string
 	 * } $args
 	 */
-	protected function build_metas( array $args ): string {
+	protected function build_metas( $args ): string {
 		if ( ! empty( $args['lang_id'] ) ) {
 			$language_term = get_term( (int) $args['lang_id'] );
 
@@ -788,7 +788,7 @@ class Languages {
 	 *     flag?: string
 	 * } $args
 	 */
-	protected function validate_lang( array $args, ?PLL_Language $lang = null ): WP_Error {
+	protected function validate_lang( $args, ?PLL_Language $lang = null ): WP_Error {
 		$errors = new WP_Error();
 
 		// Validate locale with the same pattern as WP 4.3. See #28303.
@@ -843,7 +843,7 @@ class Languages {
 	 *
 	 * @phpstan-param non-empty-string $old_slug
 	 */
-	protected function update_translations( string $old_slug, string $new_slug = '' ): void {
+	protected function update_translations( $old_slug, $new_slug = '' ): void {
 		global $wpdb;
 
 		$term_ids = array();
@@ -950,7 +950,7 @@ class Languages {
 	 * @phpstan-param non-empty-string $name
 	 * @phpstan-param array<non-empty-string> $taxonomies
 	 */
-	protected function update_secondary_language_terms( string $slug, string $name, ?PLL_Language $language = null, array $taxonomies = array() ): void {
+	protected function update_secondary_language_terms( $slug, $name, ?PLL_Language $language = null, array $taxonomies = array() ): void {
 		$slug = 0 === strpos( $slug, 'pll_' ) ? $slug : "pll_$slug";
 
 		foreach ( $this->translatable_objects->get_secondary_translatable_objects() as $object ) {
