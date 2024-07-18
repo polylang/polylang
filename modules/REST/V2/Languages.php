@@ -127,7 +127,7 @@ class Languages extends WP_REST_Controller {
 	public function get_items( $request ) {
 		$languages = array();
 
-		foreach ( $this->model->languages_model->get_languages_list() as $language ) {
+		foreach ( $this->model->languages->get_list() as $language ) {
 			$languages[] = $this->prepare_item_for_response( $language, $request );
 		}
 
@@ -173,7 +173,7 @@ class Languages extends WP_REST_Controller {
 			$defaults = array(
 				'name'       => $language['name'],
 				'slug'       => $language['code'],
-				'rtl'        => (int) ( 'rtl' === $language['dir'] ),
+				'rtl'        => 'rtl' === $language['dir'],
 				'flag'       => $language['flag'],
 				'term_group' => 0,
 			);
@@ -191,19 +191,19 @@ class Languages extends WP_REST_Controller {
 		 *     locale: non-empty-string,
 		 *     name: string,
 		 *     slug: string,
-		 *     rtl: 0|1,
+		 *     rtl: bool,
 		 *     flag: string,
 		 *     term_group: 0|1
 		 * } $prepared
 		 */
-		$result = $this->model->languages_model->add( $prepared );
+		$result = $this->model->languages->add( $prepared );
 
 		if ( is_wp_error( $result ) ) {
 			return $this->restify_wp_error( $result );
 		}
 
 		/** @var PLL_Language */
-		$language = $this->model->languages_model->get( $prepared['slug'] );
+		$language = $this->model->languages->get( $prepared['slug'] );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
@@ -255,7 +255,7 @@ class Languages extends WP_REST_Controller {
 						'lang_id'    => $language->term_id,
 						'locale'     => $language->locale,
 						'name'       => $language->name,
-						'rtl'        => $language->is_rtl,
+						'rtl'        => (bool) $language->is_rtl,
 						'term_group' => $language->term_group,
 					),
 					$prepared
@@ -267,18 +267,18 @@ class Languages extends WP_REST_Controller {
 			 *     locale: string,
 			 *     name: string,
 			 *     slug: string,
-			 *     rtl: 0|1,
+			 *     rtl: bool,
 			 *     term_group: int
 			 * } $prepared
 			 */
-			$update = $this->model->languages_model->update( $prepared );
+			$update = $this->model->languages->update( $prepared );
 
 			if ( is_wp_error( $update ) ) {
 				return $this->restify_wp_error( $update );
 			}
 
 			/** @var PLL_Language */
-			$language = $this->model->languages_model->get( $language->term_id );
+			$language = $this->model->languages->get( $language->term_id );
 		}
 
 		return $this->prepare_item_for_response( $language, $request );
@@ -302,7 +302,7 @@ class Languages extends WP_REST_Controller {
 			return $language;
 		}
 
-		$this->model->languages_model->delete( $language->term_id );
+		$this->model->languages->delete( $language->term_id );
 
 		$previous = $this->prepare_item_for_response( $language, $request );
 		$response = new WP_REST_Response();
@@ -692,7 +692,7 @@ class Languages extends WP_REST_Controller {
 
 			switch ( $rest_item_prop ) {
 				case 'direction':
-					$prepared->$prepared_prop = (int) ( 'rtl' === $request[ $rest_item_prop ] );
+					$prepared->$prepared_prop = 'rtl' === $request[ $rest_item_prop ];
 					break;
 				case 'set_default_cat':
 					$prepared->$prepared_prop = ! $request[ $rest_item_prop ];
@@ -714,7 +714,7 @@ class Languages extends WP_REST_Controller {
 	 * @return PLL_Language|WP_Error Language object if the code is valid, WP_Error otherwise.
 	 */
 	private function get_language( string $code ) {
-		$language = $this->model->languages_model->get( $code );
+		$language = $this->model->languages->get( $code );
 
 		if ( ! $language instanceof PLL_Language ) {
 			return new WP_Error(
