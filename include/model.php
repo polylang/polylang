@@ -105,8 +105,8 @@ class PLL_Model {
 		$this->translatable_objects = new PLL_Translatable_Objects();
 		$this->languages            = new Model\Languages( $this->options, $this->translatable_objects, $this->cache );
 
-		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this->languages, $this->options, $this->cache ) );  // Translated post sub model.
-		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this->languages, $this->options, $this->cache ) );  // Translated term sub model.
+		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this ) ); // Translated post sub model.
+		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this ) ); // Translated term sub model.
 
 		$this->post_types = new Model\Post_Types( $this->post );
 		$this->taxonomies = new Model\Taxonomies( $this->term );

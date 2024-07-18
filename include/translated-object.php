@@ -28,16 +28,11 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * Constructor.
 	 *
 	 * @since 1.8
-	 * @since 3.7 Changed method's signature.
 	 *
-	 * @param Languages_Model $languages_model Model for the languages.
-	 * @param Options         $options         Polylang's options.
-	 * @param PLL_Cache       $cache           Internal non persistent cache object.
-	 *
-	 * @phpstan-param PLL_Cache<mixed> $cache
+	 * @param PLL_Model $model Instance of `PLL_Model`, passed by reference.
 	 */
-	public function __construct( Languages_Model $languages_model, Options $options, PLL_Cache $cache ) {
-		parent::__construct( $languages_model, $options, $cache );
+	public function __construct( PLL_Model &$model ) {
+		parent::__construct( $model );
 
 		$this->tax_to_cache[] = $this->tax_translations;
 
