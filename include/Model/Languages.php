@@ -714,7 +714,7 @@ class Languages {
 	 *     flag?: non-empty-string
 	 * } $args
 	 */
-	protected function build_metas( $args ): string {
+	protected function build_metas( array $args ): string {
 		if ( ! empty( $args['lang_id'] ) ) {
 			$language_term = get_term( (int) $args['lang_id'] );
 

@@ -469,7 +469,7 @@ class PLL_Model {
 	 *
 	 * @phpstan-param -1|positive-int $limit
 	 */
-	public function get_objects_with_no_lang( $limit = -1, $types = array() ) {
+	public function get_objects_with_no_lang( $limit = -1, array $types = array() ) {
 		/**
 		 * Filters the max number of IDs to return when searching objects with no language.
 		 * This filter can be used to decrease the memory usage in case the number of objects
@@ -561,7 +561,7 @@ class PLL_Model {
 	 *                                 to an empty array (all types).
 	 * @return void
 	 */
-	public function set_language_in_mass( $lang = null, $types = array() ): void {
+	public function set_language_in_mass( $lang = null, array $types = array() ): void {
 		if ( ! $lang instanceof PLL_Language ) {
 			$lang = $this->get_default_language();
 
