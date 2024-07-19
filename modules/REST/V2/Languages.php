@@ -527,8 +527,7 @@ class Languages extends WP_REST_Controller {
 					'context'     => array( 'view', 'edit' ),
 				),
 				'flag'            => array(
-					/* translators: %s is a path to file. */
-					'description' => sprintf( __( 'Flag code (for example: en). See %s.', 'polylang' ), '`settings/flags.php`' ),
+					'description' => __( 'Flag code corresponding to ISO 3166-1 (for example: en).', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
