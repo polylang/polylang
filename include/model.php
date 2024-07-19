@@ -103,7 +103,7 @@ class PLL_Model {
 		$this->options              = &$options;
 		$this->cache                = new PLL_Cache();
 		$this->translatable_objects = new PLL_Translatable_Objects();
-		$this->languages            = new Model\Languages( $this->options, $this->translatable_objects, $this->cache );
+		$this->languages            = new Model\Languages( $this->options, $this->translatable_objects );
 
 		$this->post = $this->translatable_objects->register( new PLL_Translated_Post( $this ) ); // Translated post sub model.
 		$this->term = $this->translatable_objects->register( new PLL_Translated_Term( $this ) ); // Translated term sub model.
@@ -113,9 +113,9 @@ class PLL_Model {
 
 		// We need to clean languages cache when editing a language and when modifying the permalink structure.
 		add_action( 'edited_term_taxonomy', array( $this, 'clean_languages_cache' ), 10, 2 );
-		add_action( 'update_option_permalink_structure', array( $this, 'clean_languages_cache' ) );
-		add_action( 'update_option_siteurl', array( $this, 'clean_languages_cache' ) );
-		add_action( 'update_option_home', array( $this, 'clean_languages_cache' ) );
+		add_action( 'update_option_permalink_structure', array( $this->languages, 'clean_cache' ) );
+		add_action( 'update_option_siteurl', array( $this->languages, 'clean_cache' ) );
+		add_action( 'update_option_home', array( $this->languages, 'clean_cache' ) );
 
 		add_filter( 'get_terms_args', array( $this, 'get_terms_args' ) );
 
@@ -186,6 +186,7 @@ class PLL_Model {
 	 */
 	public function clean_languages_cache( $term = 0, $taxonomy = null ): void {
 		if ( empty( $taxonomy ) || 'language' === $taxonomy ) {
+			$this->cache->clean();
 			$this->languages->clean_cache();
 		}
 	}

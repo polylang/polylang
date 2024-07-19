@@ -66,14 +66,11 @@ class Languages {
 	 *
 	 * @param Options                  $options              Polylang's options.
 	 * @param PLL_Translatable_Objects $translatable_objects Translatable objects registry.
-	 * @param PLL_Cache                $cache                Internal non persistent cache object.
-	 *
-	 * @phpstan-param PLL_Cache<mixed> $cache
 	 */
-	public function __construct( Options $options, PLL_Translatable_Objects $translatable_objects, PLL_Cache $cache ) {
+	public function __construct( Options $options, PLL_Translatable_Objects $translatable_objects ) {
 		$this->options              = $options;
 		$this->translatable_objects = $translatable_objects;
-		$this->cache                = $cache;
+		$this->cache                = new PLL_Cache();
 	}
 
 	/**
