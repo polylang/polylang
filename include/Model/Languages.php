@@ -96,6 +96,7 @@ class Languages {
 			return $value;
 		}
 
+		// Cast WP_Term to PLL_Language.
 		if ( $value instanceof WP_Term ) {
 			return $this->get( $value->term_id );
 		}
