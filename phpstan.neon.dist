@@ -57,3 +57,9 @@ parameters:
 			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\): mixed, array\\{.+\\} given\\.$#"
 			count: 1
 			path: include/model.php
+
+		# Ignored because PHPStan seems confused about WP_REST_Request's template.
+		-
+			message: "#^Parameter \\#1 \\$code of method .+Languages\\:\\:get_language\\(\\) expects non-empty-string, non-empty-string\\|null given\\.$#"
+			count: 3
+			path: modules/REST/V2/Languages.php
