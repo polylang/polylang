@@ -53,7 +53,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request = new WP_REST_Request( 'GET', '/pll/v2/languages' );
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
@@ -78,7 +78,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request->set_param( 'locale', 'es_ES' ); // Required.
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
 		// Check for default values from `languages.php`.
 		$data      = $response->get_data();
@@ -138,7 +138,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		}
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
 		// Check the values match.
 		$data = $response->get_data();
@@ -162,7 +162,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request = new WP_REST_Request( 'GET', '/pll/v2/languages/fr' );
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
@@ -195,7 +195,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		}
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
@@ -213,7 +213,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request  = new WP_REST_Request( 'DELETE', '/pll/v2/languages/fr' );
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame( 200, $response->get_status() );
 
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
@@ -246,7 +246,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request  = new WP_REST_Request( 'DELETE', '/pll/v2/languages/fr' );
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( $status, $response->get_status() );
+		$this->assertSame( $status, $response->get_status() );
 		$this->assertInstanceOf( PLL_Language::class, $this->pll_env->model->get_language( 'fr_FR' ) );
 
 		// Update language.
@@ -254,7 +254,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request->set_param( 'name', 'François' );
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( $status, $response->get_status() );
+		$this->assertSame( $status, $response->get_status() );
 		$this->assertNotSame( 'François', $this->pll_env->model->get_language( 'fr_FR' )->name );
 
 		// Create language.
@@ -262,7 +262,77 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$request->set_param( 'locale', 'es_ES' ); // Required.
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( $status, $response->get_status() );
+		$this->assertSame( $status, $response->get_status() );
 		$this->assertFalse( $this->pll_env->model->get_language( 'es_ES' ) );
+	}
+
+	/**
+	 * @testWith ["PUT"]
+	 *           ["PATCH"]
+	 *           ["DELETE"]
+	 *
+	 * @param string $method
+	 * @return void
+	 */
+	public function test_missing_params( string $method ) {
+		wp_set_current_user( self::$administrator );
+		self::create_language( 'fr_FR' );
+
+		$request  = new WP_REST_Request( $method, '/pll/v2/languages' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertSame( 404, $response->get_status() );
+
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertArrayHasKey( 'code', $data );
+		$this->assertSame( 'rest_no_route', $data['code'] );
+	}
+
+	/**
+	 * @testWith ["PUT"]
+	 *           ["DELETE"]
+	 *
+	 * @param string $method
+	 * @return void
+	 */
+	public function test_invalid_param( string $method ) {
+		wp_set_current_user( self::$administrator );
+		self::create_language( 'fr_FR' );
+
+		$request  = new WP_REST_Request( $method, '/pll/v2/languages/es' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertSame( 404, $response->get_status() );
+
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertArrayHasKey( 'code', $data );
+		$this->assertSame( 'rest_invalid_code', $data['code'] );
+	}
+
+	/**
+	 * @testWith ["", 400, "rest_invalid_param"]
+	 *           ["fr_FR", 404, "rest_invalid_code"]
+	 *
+	 * @param string $locale
+	 * @param int    $status
+	 * @param string $code
+	 * @return void
+	 */
+	public function test_invalid_param_create( string $locale, int $status, string $code ) {
+		wp_set_current_user( self::$administrator );
+		self::create_language( 'fr_FR' );
+
+		$request = new WP_REST_Request( 'POST', '/pll/v2/languages/es' );
+		$request->set_param( 'locale', $locale );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertSame( $status, $response->get_status() );
+
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertArrayHasKey( 'code', $data );
+		$this->assertSame( $code, $data['code'] );
 	}
 }
