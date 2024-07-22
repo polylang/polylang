@@ -337,7 +337,7 @@ class Languages {
 		 * @since 3.2 Added $lang parameter.
 		 *
 		 * @param array $args {
-		 *   Arguments used to modify the language. @see PLL_Admin_Model::update_language().
+		 *   Arguments used to modify the language. @see WP_Syntex\Polylang\Model\Languages::update().
 		 *
 		 *   @type string $name           Language name (used only for display).
 		 *   @type string $slug           Language code (ideally 2-letters ISO 639-1 language code).
@@ -377,7 +377,7 @@ class Languages {
 			$slugs = array_diff( $slugs, array( $lang->slug ) );
 
 			if ( ! empty( $slugs ) ) {
-				$this->update_default_language( reset( $slugs ) ); // Arbitrary choice...
+				$this->update_default( reset( $slugs ) ); // Arbitrary choice...
 			} else {
 				unset( $this->options['default_lang'] );
 			}
@@ -423,7 +423,7 @@ class Languages {
 		 * Reverses the language taxonomies order is required to make sure 'language' is deleted in last.
 		 *
 		 * The initial order with the 'language' taxonomy at the beginning of 'PLL_Language::term_props' property
-		 * is done by {@see PLL_Model::filter_language_terms_orderby()}
+		 * is done by {@see PLL_Model::filter_terms_orderby()}
 		 */
 		foreach ( array_reverse( $lang->get_tax_props( 'term_id' ) ) as $taxonomy_name => $term_id ) {
 			wp_delete_term( $term_id, $taxonomy_name );
@@ -441,11 +441,11 @@ class Languages {
 	 * Checks if there are languages or not.
 	 *
 	 * @since 3.3
-	 * @since 3.7 Moved from `PLL_Model::has_languages()` to `WP_Syntex\Polylang\Model\Languages::has_languages()`.
+	 * @since 3.7 Moved from `PLL_Model::has_languages()` to `WP_Syntex\Polylang\Model\Languages::has()`.
 	 *
 	 * @return bool True if there are, false otherwise.
 	 */
-	public function has_languages(): bool {
+	public function has(): bool {
 		if ( ! empty( $this->cache->get( self::CACHE_KEY ) ) ) {
 			return true;
 		}
@@ -454,7 +454,7 @@ class Languages {
 			return true;
 		}
 
-		return ! empty( $this->get_language_terms() );
+		return ! empty( $this->get_terms() );
 	}
 
 	/**
@@ -473,7 +473,7 @@ class Languages {
 	 * @return array List of PLL_Language objects or PLL_Language object properties.
 	 */
 	public function get_list( $args = array() ): array {
-		if ( ! $this->are_languages_ready() ) {
+		if ( ! $this->are_ready() ) {
 			_doing_it_wrong(
 				__METHOD__ . '()',
 				"It must not be called before the hook 'pll_pre_init'.",
@@ -493,13 +493,13 @@ class Languages {
 
 			if ( ! pll_get_constant( 'PLL_CACHE_LANGUAGES', true ) ) {
 				// Create the languages from taxonomies.
-				$languages = $this->get_languages_from_taxonomies();
+				$languages = $this->get_from_taxonomies();
 			} else {
 				$languages = get_transient( self::TRANSIENT_NAME );
 
 				if ( empty( $languages ) || ! is_array( $languages ) || empty( reset( $languages )['term_props'] ) ) { // Test `term_props` in case we got a transient older than 3.4.
 					// Create the languages from taxonomies.
-					$languages = $this->get_languages_from_taxonomies();
+					$languages = $this->get_from_taxonomies();
 				} else {
 					// Create the languages directly from arrays stored in the transient.
 					$languages = array_map(
@@ -527,7 +527,7 @@ class Languages {
 			 */
 			$languages = apply_filters_deprecated( 'pll_after_languages_cache', array( $languages ), '3.4' );
 
-			if ( $this->are_languages_ready() ) {
+			if ( $this->are_ready() ) {
 				$this->cache->set( self::CACHE_KEY, $languages );
 			}
 
@@ -552,11 +552,11 @@ class Languages {
 	 * Tells if {@see WP_Syntex\Polylang\Model\Languages::get_list()} can be used.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::are_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::are_languages_ready()`.
+	 * @since 3.7 Moved from `PLL_Model::are_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::are_ready()`.
 	 *
 	 * @return bool
 	 */
-	public function are_languages_ready(): bool {
+	public function are_ready(): bool {
 		return $this->languages_ready;
 	}
 
@@ -564,11 +564,11 @@ class Languages {
 	 * Sets the internal property `$languages_ready` to `true`, telling that {@see WP_Syntex\Polylang\Model\Languages::get_list()} can be used.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::set_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::set_languages_ready()`.
+	 * @since 3.7 Moved from `PLL_Model::set_languages_ready()` to `WP_Syntex\Polylang\Model\Languages::set_ready()`.
 	 *
 	 * @return void
 	 */
-	public function set_languages_ready(): void {
+	public function set_ready(): void {
 		$this->languages_ready = true;
 	}
 
@@ -576,11 +576,11 @@ class Languages {
 	 * Returns the default language.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::get_default_language()` to `WP_Syntex\Polylang\Model\Languages::get_default_language()`.
+	 * @since 3.7 Moved from `PLL_Model::get_default_language()` to `WP_Syntex\Polylang\Model\Languages::get_default()`.
 	 *
 	 * @return PLL_Language|false Default language object, `false` if no language found.
 	 */
-	public function get_default_language() {
+	public function get_default() {
 		if ( empty( $this->options['default_lang'] ) ) {
 			return false;
 		}
@@ -593,12 +593,12 @@ class Languages {
 	 * taking care to update the default category & the nav menu locations.
 	 *
 	 * @since 1.8
-	 * @since 3.7 Moved from `PLL_Admin_Model::update_default_lang()` to `WP_Syntex\Polylang\Model\Languages::update_default_language()`.
+	 * @since 3.7 Moved from `PLL_Admin_Model::update_default_lang()` to `WP_Syntex\Polylang\Model\Languages::update_default()`.
 	 *
 	 * @param string $slug New language slug.
 	 * @return void
 	 */
-	public function update_default_language( $slug ): void {
+	public function update_default( $slug ): void {
 		// The nav menus stored in theme locations should be in the default language.
 		$theme = get_stylesheet();
 		if ( ! empty( $this->options['nav_menus'][ $theme ] ) ) {
@@ -630,11 +630,11 @@ class Languages {
 	 * Maybe adds the missing language terms for 3rd party language taxonomies.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::maybe_create_language_terms()` to `WP_Syntex\Polylang\Model\Languages::maybe_create_language_terms()`.
+	 * @since 3.7 Moved from `PLL_Model::maybe_create_language_terms()` to `WP_Syntex\Polylang\Model\Languages::maybe_create_terms()`.
 	 *
 	 * @return void
 	 */
-	public function maybe_create_language_terms(): void {
+	public function maybe_create_terms(): void {
 		$registered_taxonomies = array_diff(
 			$this->translatable_objects->get_taxonomy_names( array( 'language' ) ),
 			// Exclude the post and term language taxonomies from the list.
@@ -982,16 +982,16 @@ class Languages {
 	 * Stores the list in a db transient and in a `PLL_Cache` object.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Moved from `PLL_Model::get_languages_from_taxonomies()` to `WP_Syntex\Polylang\Model\Languages::get_languages_from_taxonomies()`.
+	 * @since 3.7 Moved from `PLL_Model::get_languages_from_taxonomies()` to `WP_Syntex\Polylang\Model\Languages::get_from_taxonomies()`.
 	 *
 	 * @return PLL_Language[] An array of `PLL_Language` objects, array keys are the type.
 	 *
 	 * @phpstan-return list<PLL_Language>
 	 */
-	protected function get_languages_from_taxonomies(): array {
+	protected function get_from_taxonomies(): array {
 		$terms_by_slug = array();
 
-		foreach ( $this->get_language_terms() as $term ) {
+		foreach ( $this->get_terms() as $term ) {
 			// Except for language taxonomy term slugs, remove 'pll_' prefix from the other language taxonomy term slugs.
 			$key = 'language' === $term->taxonomy ? $term->slug : substr( $term->slug, 4 );
 			$terms_by_slug[ $key ][ $term->taxonomy ] = $term;
@@ -1026,7 +1026,7 @@ class Languages {
 		 */
 		$languages = apply_filters_deprecated( 'pll_languages_list', array( $languages, $this ), '3.4', 'pll_additional_language_data' );
 
-		if ( ! $this->are_languages_ready() ) {
+		if ( ! $this->are_ready() ) {
 			// Do not cache an incomplete list.
 			/** @var list<PLL_Language> $languages */
 			return $languages;
@@ -1054,15 +1054,15 @@ class Languages {
 	/**
 	 * Returns the list of existing language terms.
 	 * - Returns all terms, that are or not assigned to posts.
-	 * - Terms are ordered by `term_group` and `term_id` (see `WP_Syntex\Polylang\Model\Languages::filter_language_terms_orderby()`).
+	 * - Terms are ordered by `term_group` and `term_id` (see `WP_Syntex\Polylang\Model\Languages::filter_terms_orderby()`).
 	 *
 	 * @since 3.2.3
-	 * @since 3.7 Moved from `PLL_Model::get_language_terms()` to `WP_Syntex\Polylang\Model\Languages::get_language_terms()`.
+	 * @since 3.7 Moved from `PLL_Model::get_language_terms()` to `WP_Syntex\Polylang\Model\Languages::get_terms()`.
 	 *
 	 * @return WP_Term[]
 	 */
-	protected function get_language_terms(): array {
-		$callback = \Closure::fromCallable( array( $this, 'filter_language_terms_orderby' ) );
+	protected function get_terms(): array {
+		$callback = \Closure::fromCallable( array( $this, 'filter_terms_orderby' ) );
 		add_filter( 'get_terms_orderby', $callback, 10, 3 );
 		$terms = get_terms(
 			array(
@@ -1084,7 +1084,7 @@ class Languages {
 	 * Having the "language' taxonomy first is important for {@see PLL_Admin_Model:delete_language()}.
 	 *
 	 * @since 3.2.3
-	 * @since 3.7 Moved from `PLL_Model::filter_language_terms_orderby()` to `WP_Syntex\Polylang\Model\Languages::filter_language_terms_orderby()`.
+	 * @since 3.7 Moved from `PLL_Model::filter_language_terms_orderby()` to `WP_Syntex\Polylang\Model\Languages::filter_terms_orderby()`.
 	 *            Visibility changed from `public` to `protected`.
 	 *
 	 * @param  string   $orderby    `ORDERBY` clause of the terms query.
@@ -1092,7 +1092,7 @@ class Languages {
 	 * @param  string[] $taxonomies An array of taxonomy names.
 	 * @return string
 	 */
-	protected function filter_language_terms_orderby( $orderby, $args, $taxonomies ) {
+	protected function filter_terms_orderby( $orderby, $args, $taxonomies ) {
 		$allowed_taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'language' ) );
 
 		if ( ! is_array( $taxonomies ) || ! empty( array_diff( $taxonomies, $allowed_taxonomies ) ) ) {

@@ -135,17 +135,17 @@ class PLL_Model {
 	public function __call( string $name, array $arguments ) {
 		$methods = array(
 			// Languages.
-			'has_languages'               => array( $this->languages, 'has_languages' ),
+			'has_languages'               => array( $this->languages, 'has' ),
 			'get_languages_list'          => array( $this->languages, 'get_list' ),
-			'are_languages_ready'         => array( $this->languages, 'are_languages_ready' ),
-			'set_languages_ready'         => array( $this->languages, 'set_languages_ready' ),
+			'are_languages_ready'         => array( $this->languages, 'are_ready' ),
+			'set_languages_ready'         => array( $this->languages, 'set_ready' ),
 			'get_language'                => array( $this->languages, 'get' ),
 			'add_language'                => array( $this->languages, 'add' ),
 			'delete_language'             => array( $this->languages, 'delete' ),
 			'update_language'             => array( $this->languages, 'update' ),
-			'get_default_language'        => array( $this->languages, 'get_default_language' ),
-			'update_default_lang'         => array( $this->languages, 'update_default_language' ),
-			'maybe_create_language_terms' => array( $this->languages, 'maybe_create_language_terms' ),
+			'get_default_language'        => array( $this->languages, 'get_default' ),
+			'update_default_lang'         => array( $this->languages, 'update_default' ),
+			'maybe_create_language_terms' => array( $this->languages, 'maybe_create_terms' ),
 			// Post types.
 			'get_translated_post_types' => array( $this->post_types, 'get_translated' ),
 			'is_translated_post_type'   => array( $this->post_types, 'is_translated' ),
@@ -564,7 +564,7 @@ class PLL_Model {
 	 */
 	public function set_language_in_mass( $lang = null, array $types = array() ): void {
 		if ( ! $lang instanceof PLL_Language ) {
-			$lang = $this->languages->get_default_language();
+			$lang = $this->languages->get_default();
 
 			if ( empty( $lang ) ) {
 				return;
