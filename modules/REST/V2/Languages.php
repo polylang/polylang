@@ -6,13 +6,14 @@
 namespace WP_Syntex\Polylang\REST\V2;
 
 use PLL_Language;
-use PLL_Model;
+use PLL_Translatable_Objects;
 use stdClass;
 use WP_Error;
 use WP_REST_Controller;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
+use WP_Syntex\Polylang\Model\Languages as Languages_Model;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,21 +24,28 @@ defined( 'ABSPATH' ) || exit;
  */
 class Languages extends WP_REST_Controller {
 	/**
-	 * @var PLL_Model
+	 * @var Languages_Model
 	 */
-	public $model;
+	private $languages;
+
+	/**
+	 * @var PLL_Translatable_Objects
+	 */
+	private $translatable_objects;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 3.7
 	 *
-	 * @param PLL_Model $model Polylang's model.
+	 * @param Languages_Model          $languages            Languages' model.
+	 * @param PLL_Translatable_Objects $translatable_objects Translatable objects registry.
 	 */
-	public function __construct( PLL_Model $model ) {
-		$this->namespace = 'pll/v2';
-		$this->rest_base = 'languages';
-		$this->model     = $model;
+	public function __construct( Languages_Model $languages, PLL_Translatable_Objects $translatable_objects ) {
+		$this->namespace            = 'pll/v2';
+		$this->rest_base            = 'languages';
+		$this->languages            = $languages;
+		$this->translatable_objects = $translatable_objects;
 	}
 
 	/**
@@ -117,7 +125,7 @@ class Languages extends WP_REST_Controller {
 	public function get_items( $request ) {
 		$languages = array();
 
-		foreach ( $this->model->languages->get_list() as $language ) {
+		foreach ( $this->languages->get_list() as $language ) {
 			$languages[] = $this->prepare_item_for_response( $language, $request );
 		}
 
@@ -195,14 +203,14 @@ class Languages extends WP_REST_Controller {
 		 *     no_default_cat?: bool
 		 * } $prepared
 		 */
-		$result = $this->model->languages->add( $prepared );
+		$result = $this->languages->add( $prepared );
 
 		if ( is_wp_error( $result ) ) {
 			return $this->restify_wp_error( $result );
 		}
 
 		/** @var PLL_Language */
-		$language = $this->model->languages->get( $prepared['slug'] );
+		$language = $this->languages->get( $prepared['slug'] );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
@@ -282,14 +290,14 @@ class Languages extends WP_REST_Controller {
 			 *     flag?: non-empty-string
 			 * } $prepared
 			 */
-			$update = $this->model->languages->update( $prepared );
+			$update = $this->languages->update( $prepared );
 
 			if ( is_wp_error( $update ) ) {
 				return $this->restify_wp_error( $update );
 			}
 
 			/** @var PLL_Language */
-			$language = $this->model->languages->get( $language->term_id );
+			$language = $this->languages->get( $language->term_id );
 		}
 
 		return $this->prepare_item_for_response( $language, $request );
@@ -315,7 +323,7 @@ class Languages extends WP_REST_Controller {
 			return $language;
 		}
 
-		$this->model->languages->delete( $language->term_id );
+		$this->languages->delete( $language->term_id );
 
 		$previous = $this->prepare_item_for_response( $language, $request );
 		$response = new WP_REST_Response();
@@ -624,7 +632,7 @@ class Languages extends WP_REST_Controller {
 			),
 		);
 
-		$taxonomies = $this->model->translatable_objects->get_taxonomy_names( array( 'language' ) );
+		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'language' ) );
 
 		foreach ( $taxonomies as $taxonomy ) {
 			if ( 'language' === $taxonomy ) {
@@ -735,7 +743,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param non-empty-string $code
 	 */
 	private function get_language( string $code ) {
-		$language = $this->model->languages->get( $code );
+		$language = $this->languages->get( $code );
 
 		if ( ! $language instanceof PLL_Language ) {
 			return new WP_Error(

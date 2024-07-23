@@ -46,7 +46,7 @@ class API {
 	 * @return void
 	 */
 	public function init(): void {
-		$this->languages = new V2\Languages( $this->model );
+		$this->languages = new V2\Languages( $this->model->languages, $this->model->translatable_objects );
 		$this->languages->register_routes();
 	}
 }
