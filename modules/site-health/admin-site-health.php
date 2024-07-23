@@ -434,7 +434,7 @@ class PLL_Admin_Site_Health {
 				'value' => sprintf(
 					/* translators: %s is a formatted number. */
 					_n( '%s translation update is available.', '%s translation updates are available.', $translation_updates_nb, 'polylang' ),
-					wp_sprintf_l( '%l', $translation_updates_nb )
+					number_format_i18n( $translation_updates_nb )
 				),
 				'debug' => $translation_updates_nb,
 			);
@@ -491,10 +491,6 @@ class PLL_Admin_Site_Health {
 		$translation_list = array();
 
 		foreach ( $update_list as $type => $locales_by_element ) {
-			if ( empty( $locales_by_element ) ) {
-				continue;
-			}
-
 			if ( 'core' === $type ) {
 				if ( ! empty( $locales_by_element['default'] ) ) {
 					$translation_list['core'] = array_intersect( $pll_locales, $locales_by_element['default'] );
