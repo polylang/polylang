@@ -39,7 +39,7 @@ class API {
 	}
 
 	/**
-	 * Init filters and new endpoints.
+	 * Adds hooks and registers endpoints.
 	 *
 	 * @since 3.7
 	 *
