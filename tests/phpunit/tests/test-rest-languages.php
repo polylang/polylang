@@ -47,7 +47,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		);
 
 		foreach ( $locales as $locale ) {
-			self::create_language( $locale );
+			self::factory()->language->create( array( 'locale' => $locale ) );
 		}
 
 		$request = new WP_REST_Request( 'GET', '/pll/v2/languages' );
@@ -156,8 +156,8 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_language() {
-		self::create_language( 'fr_FR' );
-		self::create_language( 'en_US' );
+		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
+		self::factory()->language->create( array( 'locale' => 'en_US' ) );
 
 		$request = new WP_REST_Request( 'GET', '/pll/v2/languages/fr' );
 		$response = $this->server->dispatch( $request );
@@ -178,7 +178,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 	 */
 	public function test_update_language( string $method ) {
 		wp_set_current_user( self::$administrator );
-		self::create_language( 'fr_FR' );
+		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
 
 		$values = array(
 			'locale'    => 'fr_BE',
@@ -208,7 +208,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 
 	public function test_delete_language() {
 		wp_set_current_user( self::$administrator );
-		self::create_language( 'fr_FR' );
+		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
 
 		$request  = new WP_REST_Request( 'DELETE', '/pll/v2/languages/fr' );
 		$response = $this->server->dispatch( $request );
@@ -240,7 +240,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 			wp_set_current_user( self::$author );
 		}
 
-		self::create_language( 'fr_FR' );
+		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
 
 		// Delete language.
 		$request  = new WP_REST_Request( 'DELETE', '/pll/v2/languages/fr' );
@@ -276,7 +276,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 	 */
 	public function test_missing_params( string $method ) {
 		wp_set_current_user( self::$administrator );
-		self::create_language( 'fr_FR' );
+		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
 
 		$request  = new WP_REST_Request( $method, '/pll/v2/languages' );
 		$response = $this->server->dispatch( $request );
@@ -298,7 +298,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 	 */
 	public function test_invalid_param( string $method ) {
 		wp_set_current_user( self::$administrator );
-		self::create_language( 'fr_FR' );
+		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
 
 		$request  = new WP_REST_Request( $method, '/pll/v2/languages/es' );
 		$response = $this->server->dispatch( $request );
@@ -322,7 +322,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 	 */
 	public function test_invalid_param_create( string $locale, int $status, string $code ) {
 		wp_set_current_user( self::$administrator );
-		self::create_language( 'fr_FR' );
+		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
 
 		$request = new WP_REST_Request( 'POST', '/pll/v2/languages/es' );
 		$request->set_param( 'locale', $locale );
