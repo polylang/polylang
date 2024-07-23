@@ -422,29 +422,30 @@ class PLL_Admin_Site_Health {
 			$fields['term-no-lang']['value'] = $this->format_array( $terms_no_lang );
 		}
 
-		// translations update available
-		$translation_updates_nb = 0;
-		if ( is_countable( wp_get_translation_updates() ) ) {
-			$translation_updates = $this->get_translations_update_list( wp_get_translation_updates() );
-			$translation_updates_nb = count( wp_get_translation_updates() );
-		}
+		// Translation updates available.
+		$translation_updates = wp_get_translation_updates();
 
-		if ( $translation_updates_nb > 0 ) {
+		if ( $translation_updates ) {
+			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
+			$translation_updates_nb   = count( $translation_updates );
+
 			$fields['translations_update'] = array(
 				'label' => __( 'Translation updates', 'polylang' ),
-				/* translators: the placeholder is the number of available translation update. */
-				'value' => sprintf( _n( '%d translation update is available', '%d translations update are available', $translation_updates_nb, 'polylang' ), $translation_updates_nb ),
+				'value' => sprintf(
+					/* translators: %s is a formatted number. */
+					_n( '%s translation update is available.', '%s translation updates are available.', $translation_updates_nb, 'polylang' ),
+					wp_sprintf_l( '%l', $translation_updates_nb )
+				),
 				'debug' => $translation_updates_nb,
 			);
-		}
 
-		if ( ! empty( $translation_updates ) ) {
-			$fields['translations_update_list'] = array(
-				'label' => __( 'Translation updates list', 'polylang' ),
-				/* translators: the placeholder is the number of available translation update. */
-				'value' => $translation_updates,
-				'debug' => $translation_updates,
-			);
+			if ( ! empty( $translation_updates_list ) ) {
+				$fields['translations_update_list'] = array(
+					'label' => __( 'Translation updates list', 'polylang' ),
+					'value' => $translation_updates_list,
+					'debug' => $translation_updates_list,
+				);
+			}
 		}
 
 		// Add WPML files.
@@ -472,39 +473,46 @@ class PLL_Admin_Site_Health {
 	}
 
 	/**
-	 * Get all available translations updates.
+	 * Returns all available translation updates.
 	 *
-	 * @since TBD
+	 * @since 3.7
 	 *
 	 * @param array $updates The available updates.
-	 *
-	 * @return array The available translation updates formatted for Site Health Report.
+	 * @return array The available translation updates formatted for the Site Health Report.
 	 */
-	public function get_translations_update_list( $updates ) {
+	public function get_translations_update_list( array $updates ): array {
+		$pll_locales = $this->model->get_languages_list( array( 'fields' => 'locale' ) );
 		$update_list = array();
+
 		foreach ( $updates as $update ) {
 			$update_list[ $update->type ][ $update->slug ][] = $update->language;
 		}
-		$translation_list = array();
-		foreach ( $update_list as $type => $data ) {
-			if ( 'core' === $type ) {
 
-				if ( ! empty( $data['default'] ) ) {
-					foreach ( $data['default'] as $core_translations ) {
-						$translation_list['core'][] = $core_translations;
-					}
+		$translation_list = array();
+
+		foreach ( $update_list as $type => $locales_by_element ) {
+			if ( empty( $locales_by_element ) ) {
+				continue;
+			}
+
+			if ( 'core' === $type ) {
+				if ( ! empty( $locales_by_element['default'] ) ) {
+					$translation_list['core'] = array_intersect( $pll_locales, $locales_by_element['default'] );
 					$translation_list['core'] = implode( ', ', $translation_list['core'] );
 				}
-			} else {
-				$t = array();
-				foreach ( $data as $name => $translations ) {
-					$t[] = $name . ': ' . implode( ', ', $translations );
-				}
-				$translation_list[ $type ] = implode( ' | ', $t );
+				continue;
 			}
+
+			$type_translations = array();
+
+			foreach ( $locales_by_element as $name => $locales ) {
+				$locales             = array_intersect( $pll_locales, $locales );
+				$type_translations[] = sprintf( '%s: %s', $name, implode( ', ', $locales ) );
+			}
+			$translation_list[ $type ] = implode( ' | ', $type_translations );
 		}
 
-		return $translation_list;
+		return array_filter( $translation_list );
 	}
 
 	/**
