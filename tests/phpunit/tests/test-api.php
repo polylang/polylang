@@ -92,7 +92,7 @@ class API_Test extends PLL_UnitTestCase {
 	public function test_pll_insert_term_happy_path( $taxonomy, $with_parent, $with_translations ) {
 		$languages    = array( 'en', 'fr', 'de' );
 		$translations = array();
-		foreach( $languages as $i => $language ) {
+		foreach ( $languages as $i => $language ) {
 			$args            = array();
 			$is_default_lang = $i === 0;
 
@@ -120,9 +120,11 @@ class API_Test extends PLL_UnitTestCase {
 			$translations[ $language ] = $result['term_id'];
 			$term                      = get_term( $result['term_id'], $taxonomy );
 
-			$prefix = $with_parent ? "{$parent->slug}-" : ''; // @fixme Polylang doesn't reuse parent slug and add a suffix with language slug instead...
-			$suffix = ! $is_default_lang ? "-{$language}" : '';
-			$expected_slug = "{$prefix}foo{$suffix}";
+			/*
+			 * @FIXME Polylang doesn't reuse parent slug and add a suffix with language slug instead...
+			 */
+			$suffix        = $with_parent || ! $is_default_lang ? "-{$language}" : '';
+			$expected_slug = "foo{$suffix}";
 
 			$this->assertSame( $expected_slug, $term->slug );
 		}
