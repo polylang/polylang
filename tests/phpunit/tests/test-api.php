@@ -86,7 +86,9 @@ class API_Test extends PLL_UnitTestCase {
 	 *           ["post_tag", false, false]
 	 *           ["tr_custom_tax", false, false]
 	 *
-	 * @param string $taxonomy
+	 * @param string $taxonomy          Taxonomy name.
+	 * @param bool   $with_parent       Whether or not the term has a parent.
+	 * @param bool   $with_translations Whether or not the term has translations.
 	 * @return void
 	 */
 	public function test_pll_insert_term_happy_path( $taxonomy, $with_parent, $with_translations ) {
@@ -94,7 +96,7 @@ class API_Test extends PLL_UnitTestCase {
 		$translations = array();
 		foreach ( $languages as $i => $language ) {
 			$args            = array();
-			$is_default_lang = $i === 0;
+			$is_default_lang = 0 === $i;
 
 			if ( $with_parent ) {
 				$parent = self::factory()->term->create_and_get(
@@ -140,7 +142,9 @@ class API_Test extends PLL_UnitTestCase {
 	 *           ["post_tag", "chti", "invalid_language"]
 	 *           ["tr_custom_tax", "chti", "invalid_language"]
 	 *
-	 * @param string $taxonomy
+	 * @param string $taxonomy   Taxonomy name.
+	 * @param string $language   Language slug.
+	 * @param string $error_code Error code.
 	 * @return void
 	 */
 	public function test_pll_insert_term_error_path( $taxonomy, $language, $error_code ) {
