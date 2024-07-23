@@ -45,7 +45,7 @@ class API {
 	 *
 	 * @return void
 	 */
-	public function rest_api_init(): void {
+	public function init(): void {
 		$this->languages = new V2\Languages( $this->model );
 		$this->languages->register_routes();
 	}
