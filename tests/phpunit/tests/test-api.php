@@ -21,6 +21,12 @@ class API_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = $this->pll_env;
 	}
 
+	public function tear_down() {
+		unregister_taxonomy( 'tr_custom_tax' );
+
+		parent::tear_down();
+	}
+
 	/**
 	 * @covers ::pll_get_post
 	 */
