@@ -32,6 +32,11 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 	}
 
+	public function tear_down() {
+		self::delete_all_languages();
+		parent::tear_down();
+	}
+
 	protected function get_edit_term_form( $tag_ID, $taxonomy ) {
 		// Prepare all needed info before loading the entire form
 		$GLOBALS['post_type'] = 'post';
