@@ -793,7 +793,7 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 				'post_type'    => 'page',
 				'post_content' => 'Home without translation',
 				'lang'         => 'en',
-			),
+			)
 		);
 
 		// Set the Polylang Admin language filter to English.
@@ -806,13 +806,12 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		update_option( 'page_on_front', $en );
 
 		// Checks the `page_on_front` property of the English language is correctly updated.
-		$this->assertSame( $en, $this->pll_env->model->get_language('en')->page_on_front, 'Expected `page_on_front` property of the English language to be ' . $en );
+		$this->assertSame( $en, $this->pll_env->model->get_language( 'en' )->page_on_front, 'Expected `page_on_front` property of the English language to be ' . $en );
 
 		// Simulate another process after updating `page_on_front` option: refresh the edit option page for example.
 		$this->pll_env->filter_lang = $this->pll_env->model->get_language( 'en' );
 		$this->pll_env->set_current_language();
 
 		$this->assertSame( $en, get_option( 'page_on_front' ), 'Expected the page on front to be ' . $en );
-
 	}
 }
