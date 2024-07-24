@@ -78,6 +78,8 @@ class PLL_WPSEO {
 			'company_name',
 			'rssbefore',
 			'rssafter',
+			'social-title-*',
+			'social-description-*',
 		);
 
 		new PLL_Translate_Option( 'wpseo_titles', array_fill_keys( $keys, 1 ), array( 'context' => 'wordpress-seo' ) );
