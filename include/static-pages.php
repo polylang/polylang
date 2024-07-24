@@ -182,6 +182,7 @@ class PLL_Static_Pages {
 			/*
 			 * Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
 			 * Don't translate while deleting a post or it will mess up `_reset_front_page_settings_for_post()`.
+			 * Don't translate while updating the option itself.
 			 */
 			return $page_id;
 		}
