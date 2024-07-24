@@ -190,55 +190,6 @@ class PLL_Static_Pages {
 	}
 
 	/**
-	 * Translates the page on front option.
-	 *
-	 * @since 1.8
-	 * @since 3.3 Was previously defined in PLL_Frontend_Static_Pages.
-	 *
-	 * @param  int $page_id ID of the page on front.
-	 * @return int
-	 */
-	public function translate_page_on_front( $page_id ) {
-		if ( empty( $this->curlang->page_on_front ) ) {
-			return $page_id;
-		}
-
-		if ( doing_action( 'update_option_page_on_front' ) || doing_action( 'switch_blog' ) || doing_action( 'before_delete_post' ) || doing_action( 'wp_trash_post' ) ) {
-			/*
-			 * Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
-			 * Don't translate while deleting a post or it will mess up `_reset_front_page_settings_for_post()`.
-			 */
-			return $page_id;
-		}
-
-		return $this->curlang->page_on_front;
-	}
-
-	/**
-	 * Translates the page for posts option.
-	 *
-	 * @since 1.8
-	 *
-	 * @param  int $page_id ID of the page for posts.
-	 * @return int
-	 */
-	public function translate_page_for_posts( $page_id ) {
-		if ( empty( $this->curlang->page_for_posts ) ) {
-			return $page_id;
-		}
-
-		if ( doing_action( 'update_option_page_for_posts' ) || doing_action( 'switch_blog' ) || doing_action( 'before_delete_post' ) || doing_action( 'wp_trash_post' ) ) {
-			/*
-			 * Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
-			 * Don't translate while deleting a post or it will mess up `_reset_front_page_settings_for_post()`.
-			 */
-			return $page_id;
-		}
-
-		return $this->curlang->page_for_posts;
-	}
-
-	/**
 	 * Modifies the page link in case the front page is not in the default language.
 	 *
 	 * @since 0.7.2
