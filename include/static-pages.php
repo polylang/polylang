@@ -173,9 +173,8 @@ class PLL_Static_Pages {
 	 * @return int
 	 */
 	public function translate_page_id( $page_id, $option ) {
-		$prop = str_replace( 'option_', '', $option );
 
-		if ( empty( $this->curlang->{$prop} ) ) {
+		if ( empty( $this->curlang->{$option} ) ) {
 			return $page_id;
 		}
 
@@ -188,7 +187,7 @@ class PLL_Static_Pages {
 			return $page_id;
 		}
 
-		return $this->curlang->{$prop};
+		return $this->curlang->{$option};
 	}
 
 	/**
