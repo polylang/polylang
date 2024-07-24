@@ -159,8 +159,8 @@ class PLL_Static_Pages {
 	 */
 	public function pll_language_defined() {
 		// Translates page for posts and page on front.
-		add_filter( 'option_page_on_front', array( $this, 'translate_page_id' ) );
-		add_filter( 'option_page_for_posts', array( $this, 'translate_page_id' ) );
+		add_filter( 'option_page_on_front', array( $this, 'translate_page_id' ), 10, 2 );
+		add_filter( 'option_page_for_posts', array( $this, 'translate_page_id' ), 10, 2 );
 	}
 
 	/**
@@ -168,11 +168,12 @@ class PLL_Static_Pages {
 	 *
 	 * @since 3.6 Replaces `translate_page_on_front()` and `translate_page_on_front()` methods.
 	 *
-	 * @param  int $page_id ID of the page on front or page for posts.
+	 * @param  int    $page_id ID of the page on front or page for posts.
+	 * @param  string $option Option name: `page_on_front` or `page_for_posts`.
 	 * @return int
 	 */
-	public function translate_page_id( $page_id ) {
-		$prop = str_replace( 'option_', '', current_filter() );
+	public function translate_page_id( $page_id, $option ) {
+		$prop = str_replace( 'option_', '', $option );
 
 		if ( empty( $this->curlang->{$prop} ) ) {
 			return $page_id;
