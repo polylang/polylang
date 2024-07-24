@@ -367,22 +367,12 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * }
 	 */
 	public function insert( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
-		$set_language_for_term_slug = function () use ( $language ) {
-			return $language;
-		};
-		$get_inserted_term_parent   = function () use ( $args ) {
-			return $args['parent'] ?? 0;
-		};
+		$language_callback = $this->get_slug_management_language_callback( $language );
+		$parent_callback   = $this->get_slug_management_parent_callback( $args['parent'] ?? 0 );
 
-		// Set term parent and language for suffixed slugs.
-		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
-		add_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
-
+		$this->toggle_slug_management( $language_callback, $parent_callback );
 		$term = wp_insert_term( $term, $taxonomy, $args );
-
-		// Clean up!
-		remove_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
-		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
+		$this->toggle_slug_management( $language_callback, $parent_callback );
 
 		if ( is_wp_error( $term ) ) {
 			// Something went wrong!
@@ -446,23 +436,12 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			$new_language = $old_language;
 		}
 
-		$set_language_for_term_slug = function () use ( $new_language ) {
-			return $new_language;
-		};
-		$parent                    = $args['parent'] ?? $term->parent;
-		$get_inserted_term_parent  = function () use ( $parent ) {
-			return $parent;
-		};
+		$language_callback = $this->get_slug_management_language_callback( $new_language );
+		$parent_callback   = $this->get_slug_management_parent_callback( $args['parent'] ?? $term->parent );
 
-		// Set term parent and language for suffixed slugs.
-		add_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
-		add_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
-
+		$this->toggle_slug_management( $language_callback, $parent_callback );
 		$term = wp_update_term( $term->term_id, $term->taxonomy, $args );
-
-		// Clean up!
-		remove_filter( 'pll_inserted_term_parent', $get_inserted_term_parent );
-		remove_filter( 'pll_inserted_term_language', $set_language_for_term_slug );
+		$this->toggle_slug_management( $language_callback, $parent_callback );
 
 		if ( $old_language->slug !== $new_language->slug ) {
 			$this->set_language( $term_id, $new_language );
@@ -481,5 +460,61 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		}
 
 		return $term;
+	}
+
+	/**
+	 * Toggles Polylang term slug management.
+	 * Must be used before and after any term slug modification or insertion.
+	 *
+	 * @since 3.7
+	 *
+	 * @param callable $language_callback The language callback for term slug modification.
+	 * @param callable $parent_callback   The parent callback for term slug modification.
+	 * @return void
+	 */
+	private function toggle_slug_management( $language_callback, $parent_callback ): void {
+		static $enabled = false;
+
+		if ( $enabled ) {
+			// Clean up!
+			remove_filter( 'pll_inserted_term_language', $language_callback );
+			remove_filter( 'pll_inserted_term_parent', $parent_callback );
+			$enabled = false;
+		} else {
+			// Set term parent and language for suffixed slugs.
+			add_filter( 'pll_inserted_term_language', $language_callback );
+			add_filter( 'pll_inserted_term_parent', $parent_callback );
+			$enabled = true;
+		}
+	}
+
+	/**
+	 * Returns language callback for term slug modification.
+	 * Used along the hook `pll_inserted_term_language`.
+	 *
+	 * @since 3.7
+	 *
+	 * @param PLL_Language $language The language to use.
+	 * @return Closure The callback for the hook.
+	 */
+	private function get_slug_management_language_callback( PLL_Language $language ): Closure {
+		return function () use ( $language ) {
+			return $language;
+		};
+	}
+
+	/**
+	 * Returns parent callback for term slug modification.
+	 * Used along the hook `pll_inserted_term_parent`.
+	 *
+	 * @since 3.7
+	 *
+	 * @param int $parent The parent term id to use.
+	 * @return Closure The callback for the hook.
+	 */
+	private function get_slug_management_parent_callback( int $parent ): Closure {
+		return function () use ( $parent ) {
+			return $parent;
+		};
 	}
 }
