@@ -242,6 +242,20 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 
 		self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
 
+		// Get languages.
+		$request  = new WP_REST_Request( 'GET', '/pll/v2/languages' );
+		$request->set_param( 'context', 'edit' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertSame( $status, $response->get_status() );
+
+		// Get language.
+		$request  = new WP_REST_Request( 'GET', '/pll/v2/languages/fr' );
+		$request->set_param( 'context', 'edit' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertSame( $status, $response->get_status() );
+
 		// Delete language.
 		$request  = new WP_REST_Request( 'DELETE', '/pll/v2/languages/fr' );
 		$response = $this->server->dispatch( $request );

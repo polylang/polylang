@@ -63,7 +63,7 @@ class Languages extends WP_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'allow_batch'         => array( 'v1' => true ),
 				),
 				array(
@@ -91,7 +91,7 @@ class Languages extends WP_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_item' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
 						'context' => $this->get_context_param( array( 'default' => 'view' ) ),
 					),
@@ -340,6 +340,28 @@ class Languages extends WP_REST_Controller {
 	}
 
 	/**
+	 * Checks if a given request has access to get the languages.
+	 *
+	 * @since 3.7
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 *
+	 * @phpstan-template T of array
+	 * @phpstan-param WP_REST_Request<T> $request
+	 */
+	public function get_items_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		if ( 'edit' === $request['context'] && ! $this->check_update_permission() ) {
+			return new WP_Error(
+				'rest_forbidden_context',
+				__( 'Sorry, you are not allowed to edit languages.', 'polylang' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+		return true;
+	}
+
+	/**
 	 * Checks if a given request has access to create a language.
 	 *
 	 * @since 3.7
@@ -351,7 +373,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function create_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! $this->check_update_permission() ) {
 			return new WP_Error(
 				'rest_cannot_create',
 				__( 'Sorry, you are not allowed to create a language.', 'polylang' ),
@@ -359,6 +381,21 @@ class Languages extends WP_REST_Controller {
 			);
 		}
 		return true;
+	}
+
+	/**
+	 * Checks if a given request has access to get a specific language.
+	 *
+	 * @since 3.7
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has read access for the language, WP_Error object otherwise.
+	 *
+	 * @phpstan-template T of array
+	 * @phpstan-param WP_REST_Request<T> $request
+	 */
+	public function get_item_permissions_check( $request ) {
+		return $this->get_items_permissions_check( $request );
 	}
 
 	/**
@@ -373,7 +410,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! $this->check_update_permission() ) {
 			return new WP_Error(
 				'rest_cannot_update',
 				__( 'Sorry, you are not allowed to edit this language.', 'polylang' ),
@@ -395,7 +432,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! $this->check_update_permission() ) {
 			return new WP_Error(
 				'rest_cannot_delete',
 				__( 'Sorry, you are not allowed to delete this language.', 'polylang' ),
@@ -715,6 +752,17 @@ class Languages extends WP_REST_Controller {
 		}
 
 		return $prepared;
+	}
+
+	/**
+	 * Tells if languages can be edited.
+	 *
+	 * @since 3.7
+	 *
+	 * @return bool
+	 */
+	protected function check_update_permission(): bool {
+		return current_user_can( 'manage_options' );
 	}
 
 	/**
