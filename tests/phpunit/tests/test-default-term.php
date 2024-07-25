@@ -33,6 +33,7 @@ class Default_Term_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
+		// Forces language deletion since they're created in `set_up()` and not `wpSetUpBeforeClass()` as usual.
 		self::delete_all_languages();
 		parent::tear_down();
 	}
