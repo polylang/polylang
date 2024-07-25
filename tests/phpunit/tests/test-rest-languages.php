@@ -104,10 +104,10 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->assertSame( $language->term_id, $data['id'] );
 		$this->assertArrayHasKey( 'order', $data );
 		$this->assertSame( $language->term_group, $data['order'] );
-		$this->assertArrayHasKey( 'flag_tag', $data );
-		$this->assertSame( $language->flag, $data['flag_tag'] );
-		$this->assertArrayHasKey( 'custom_flag_tag', $data );
-		$this->assertSame( $language->custom_flag, $data['custom_flag_tag'] );
+		$this->assertArrayHasKey( 'flag_html', $data );
+		$this->assertSame( $language->flag, $data['flag_html'] );
+		$this->assertArrayHasKey( 'custom_flag_html', $data );
+		$this->assertSame( $language->custom_flag, $data['custom_flag_html'] );
 		$this->assertArrayHasKey( 'is_active', $data );
 		$this->assertSame( $language->active, $data['is_active'] );
 
