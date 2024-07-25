@@ -23,6 +23,12 @@ class Hreflang_Test extends PLL_UnitTestCase {
 		$this->frontend = ( new PLL_Context_Frontend( array( 'options' => $options ) ) )->get();
 	}
 
+	public function tear_down() {
+		$this->reset__SERVER();
+
+		parent::tear_down();
+	}
+
 	public function test_hreflang() {
 		$posts = self::factory()->post->create_translated(
 			array( 'lang' => 'us' ),

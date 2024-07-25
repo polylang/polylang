@@ -32,6 +32,12 @@ class Switcher_Test extends PLL_UnitTestCase {
 		$this->switcher = new PLL_Switcher();
 	}
 
+	public function tear_down() {
+		$this->reset__SERVER();
+
+		parent::tear_down();
+	}
+
 	public function test_the_languages_raw() {
 		$en = self::factory()->post->create();
 		self::$model->post->set_language( $en, 'en' );

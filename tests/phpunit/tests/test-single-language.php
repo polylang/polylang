@@ -30,6 +30,12 @@ class Single_Language_Test extends PLL_UnitTestCase {
 		self::$model->post->set_language( $this->posts_en, 'en' );
 	}
 
+	public function tear_down() {
+		$this->reset__SERVER();
+
+		parent::tear_down();
+	}
+
 	/**
 	 * @ticket #1697
 	 * @see https://github.com/polylang/polylang-pro/issues/1697.

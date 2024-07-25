@@ -35,6 +35,12 @@ class Jetpack_Test extends PLL_UnitTestCase {
 		$GLOBALS['polylang'] = &$this->frontend; // we still use the global $polylang
 	}
 
+	public function tear_down() {
+		$this->reset__SERVER();
+
+		parent::tear_down();
+	}
+
 	protected function load_jetpack() {
 		global $wp_actions;
 

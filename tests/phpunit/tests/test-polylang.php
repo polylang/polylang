@@ -9,6 +9,12 @@ class Polylang_Test extends PLL_UnitTestCase {
 		remove_action( 'parse_request', 'rest_api_loaded' );
 	}
 
+	public function tear_down() {
+		$this->reset__SERVER();
+
+		parent::tear_down();
+	}
+
 	public function test_rest_request_plain_permalinks() {
 		// A real rest_route parameter is detected as a REST request.
 		$this->go_to(
