@@ -535,7 +535,7 @@ class Languages extends WP_REST_Controller {
 					'context'     => array( 'view', 'edit' ),
 				),
 				'flag'             => array(
-					'description' => __( 'Flag code corresponding to ISO 3166-1 (for example: en).', 'polylang' ),
+					'description' => __( 'Flag code corresponding to ISO 3166-1 (for example: us for the United States flag).', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
