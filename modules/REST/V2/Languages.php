@@ -444,7 +444,7 @@ class Languages extends WP_REST_Controller {
 		);
 
 		foreach ( $props as $language_prop => $rest_item_prop ) {
-			if ( ! isset( $data[ $language_prop ] ) || ! rest_is_field_included( $rest_item_prop, $fields ) ) {
+			if ( ! rest_is_field_included( $rest_item_prop, $fields ) ) {
 				continue;
 			}
 
