@@ -634,26 +634,9 @@ class Languages extends WP_REST_Controller {
 			),
 		);
 
-		$taxonomies = $this->translatable_objects->get_taxonomy_names( array( 'language' ) );
-
-		foreach ( $taxonomies as $taxonomy ) {
-			if ( 'language' === $taxonomy ) {
-				$description = __( 'Properties for post types translated by Polylang in this language.', 'polylang' );
-			} elseif ( 'term_language' === $taxonomy ) {
-				$description = __( 'Properties for taxonomy terms in this language.', 'polylang' );
-			} else {
-				/**
-				 * Filters the description to use for language term properties.
-				 *
-				 * @since 3.7
-				 *
-				 * @param string $description The description.
-				 */
-				$description = apply_filters( "pll_{$taxonomy}_properties_description", '' );
-			}
-
-			$this->schema['properties']['term_props']['properties'][ $taxonomy ] = array(
-				'description' => $description,
+		foreach ( $this->translatable_objects as $translatable_object ) {
+			$this->schema['properties']['term_props']['properties'][ $translatable_object->get_tax_language() ] = array(
+				'description' => $translatable_object->get_rest_description(),
 				'type'        => 'object',
 				'properties'  => array(
 					'term_id'          => array(

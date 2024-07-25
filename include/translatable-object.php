@@ -530,6 +530,19 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
+	 * Returns the description to use for the "language properties" in the REST API.
+	 *
+	 * @since 3.7
+	 * @see WP_Syntex\Polylang\REST\V2\Languages::get_item_schema()
+	 *
+	 * @return string
+	 */
+	public function get_rest_description(): string {
+		/* translators: %s is the name of a database table. */
+		return sprintf( __( 'Language taxonomy properties for table %s.', 'polylang' ), $this->get_db_infos()['table'] );
+	}
+
+	/**
 	 * Returns database-related information that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
