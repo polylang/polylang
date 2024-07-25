@@ -370,9 +370,9 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$language_callback = $this->get_slug_management_language_callback( $language );
 		$parent_callback   = $this->get_slug_management_parent_callback( $args['parent'] ?? 0 );
 
-		$this->toggle_slug_management( $language_callback, $parent_callback );
+		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
 		$term = wp_insert_term( $term, $taxonomy, $args );
-		$this->toggle_slug_management( $language_callback, $parent_callback );
+		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
 
 		if ( is_wp_error( $term ) ) {
 			// Something went wrong!
@@ -439,9 +439,9 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$language_callback = $this->get_slug_management_language_callback( $new_language );
 		$parent_callback   = $this->get_slug_management_parent_callback( $args['parent'] ?? $term->parent );
 
-		$this->toggle_slug_management( $language_callback, $parent_callback );
+		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
 		$term = wp_update_term( $term->term_id, $term->taxonomy, $args );
-		$this->toggle_slug_management( $language_callback, $parent_callback );
+		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
 
 		if ( $old_language->slug !== $new_language->slug ) {
 			$this->set_language( $term_id, $new_language );
@@ -463,7 +463,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
-	 * Toggles Polylang term slug management.
+	 * Toggles Polylang term slug filters management.
 	 * Must be used before and after any term slug modification or insertion.
 	 *
 	 * @since 3.7
@@ -472,7 +472,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @param callable $parent_callback   The parent callback for term slug modification.
 	 * @return void
 	 */
-	private function toggle_slug_management( $language_callback, $parent_callback ): void {
+	private function toggle_inserted_term_filters( $language_callback, $parent_callback ): void {
 		static $enabled = false;
 
 		if ( $enabled ) {
