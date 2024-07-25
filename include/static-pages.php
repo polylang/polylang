@@ -178,7 +178,7 @@ class PLL_Static_Pages {
 			return $page_id;
 		}
 
-		if ( doing_action( 'update_option_page_on_front' ) || doing_action( 'switch_blog' ) || doing_action( 'before_delete_post' ) || doing_action( 'wp_trash_post' ) ) {
+		if ( doing_action( "update_option_{$option}" ) || doing_action( 'switch_blog' ) || doing_action( 'before_delete_post' ) || doing_action( 'wp_trash_post' ) ) {
 			/*
 			 * Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
 			 * Don't translate while deleting a post or it will mess up `_reset_front_page_settings_for_post()`.
