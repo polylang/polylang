@@ -232,7 +232,6 @@ class Translated_Post_Test extends PLL_Translated_Object_UnitTestCase {
 			)
 		);
 		$model = new PLL_Model( $options );
-		$model->post = new PLL_Translated_Post( $model );
 
 		$this->dont_save_translations_with_incorrect_language( $model->post );
 	}

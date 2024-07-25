@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -59,7 +61,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
-	public function __construct( PLL_Model &$model ) {
+	public function __construct( PLL_Model $model ) {
 		parent::__construct( $model );
 
 		// Keep hooks in constructor for backward compatibility.
@@ -143,16 +145,16 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @phpstan-return array<non-empty-string, non-empty-string>
 	 */
 	public function get_translated_object_types( $filter = true ) {
-		$post_types = $this->model->cache->get( 'post_types' );
+		$post_types = $this->cache->get( 'post_types' );
 
 		if ( false === $post_types ) {
 			$post_types = array( 'post' => 'post', 'page' => 'page', 'wp_block' => 'wp_block' );
 
-			if ( ! empty( $this->model->options['post_types'] ) ) {
-				$post_types = array_merge( $post_types, array_combine( $this->model->options['post_types'], $this->model->options['post_types'] ) );
+			if ( ! empty( $this->options['post_types'] ) ) {
+				$post_types = array_merge( $post_types, array_combine( $this->options['post_types'], $this->options['post_types'] ) );
 			}
 
-			if ( empty( $this->model->options['media_support'] ) ) {
+			if ( empty( $this->options['media_support'] ) ) {
 				// In case the post type attachment is stored in the option.
 				unset( $post_types['attachment'] );
 			} else {
@@ -173,7 +175,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			$post_types = (array) apply_filters( 'pll_get_post_types', $post_types, false );
 
 			if ( did_action( 'after_setup_theme' ) && ! doing_action( 'switch_blog' ) ) {
-				$this->model->cache->set( 'post_types', $post_types );
+				$this->cache->set( 'post_types', $post_types );
 			}
 		}
 
@@ -207,7 +209,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @phpstan-param non-empty-string $post_type
 	 */
 	public function registered_post_type( $post_type ) {
-		if ( $this->model->is_translated_post_type( $post_type ) ) {
+		if ( $this->is_translated_object_type( $post_type ) ) {
 			register_taxonomy_for_object_type( $this->tax_language, $post_type );
 			register_taxonomy_for_object_type( $this->tax_translations, $post_type );
 		}
@@ -224,7 +226,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @return void
 	 */
 	public function pre_get_posts( $query ) {
-		if ( ! empty( $query->query['post_type'] ) && $this->model->is_translated_post_type( $query->query['post_type'] ) ) {
+		if ( ! empty( $query->query['post_type'] ) && $this->is_translated_object_type( $query->query['post_type'] ) ) {
 			$query->query_vars['update_post_term_cache'] = true;
 		}
 	}

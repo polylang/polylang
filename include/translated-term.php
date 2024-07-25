@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -69,7 +71,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
-	public function __construct( PLL_Model &$model ) {
+	public function __construct( PLL_Model $model ) {
 		parent::__construct( $model );
 
 		// Keep hooks in constructor for backward compatibility.
@@ -192,13 +194,13 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @phpstan-return array<non-empty-string, non-empty-string>
 	 */
 	public function get_translated_object_types( $filter = true ) {
-		$taxonomies = $this->model->cache->get( 'taxonomies' );
+		$taxonomies = $this->cache->get( 'taxonomies' );
 
 		if ( false === $taxonomies ) {
 			$taxonomies = array( 'category' => 'category', 'post_tag' => 'post_tag' );
 
-			if ( ! empty( $this->model->options['taxonomies'] ) ) {
-				$taxonomies = array_merge( $taxonomies, array_combine( $this->model->options['taxonomies'], $this->model->options['taxonomies'] ) );
+			if ( ! empty( $this->options['taxonomies'] ) ) {
+				$taxonomies = array_merge( $taxonomies, array_combine( $this->options['taxonomies'], $this->options['taxonomies'] ) );
 			}
 
 			/**
@@ -215,7 +217,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			$taxonomies = (array) apply_filters( 'pll_get_taxonomies', $taxonomies, false );
 
 			if ( did_action( 'after_setup_theme' ) && ! doing_action( 'switch_blog' ) ) {
-				$this->model->cache->set( 'taxonomies', $taxonomies );
+				$this->cache->set( 'taxonomies', $taxonomies );
 			}
 		}
 
@@ -239,7 +241,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	public function _prime_terms_cache( $terms, $taxonomies ) {
 		$ids = array();
 
-		if ( is_array( $terms ) && $this->model->is_translated_taxonomy( $taxonomies ) ) {
+		if ( is_array( $terms ) && $this->is_translated_object_type( $taxonomies ) ) {
 			foreach ( $terms as $term ) {
 				$ids[] = is_object( $term ) ? $term->term_id : (int) $term;
 			}
