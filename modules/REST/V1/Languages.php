@@ -3,7 +3,7 @@
  * @package Polylang
  */
 
-namespace WP_Syntex\Polylang\REST\V2;
+namespace WP_Syntex\Polylang\REST\V1;
 
 use PLL_Language;
 use PLL_Translatable_Objects;
@@ -42,7 +42,7 @@ class Languages extends WP_REST_Controller {
 	 * @param PLL_Translatable_Objects $translatable_objects Translatable objects registry.
 	 */
 	public function __construct( Languages_Model $languages, PLL_Translatable_Objects $translatable_objects ) {
-		$this->namespace            = 'pll/v2';
+		$this->namespace            = 'pll/v1';
 		$this->rest_base            = 'languages';
 		$this->languages            = $languages;
 		$this->translatable_objects = $translatable_objects;
@@ -79,12 +79,12 @@ class Languages extends WP_REST_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			"/{$this->rest_base}/(?P<code>[a-z_-]+)",
+			"/{$this->rest_base}/(?P<id>[\d]+)",
 			array(
 				'args'   => array(
-					'code' => array(
-						'description' => __( 'Unique code for the language.', 'polylang' ),
-						'type'        => 'string',
+					'id' => array(
+						'description' => __( 'Unique identifier for the language.', 'polylang' ),
+						'type'        => 'integer',
 					),
 				),
 				array(
@@ -223,12 +223,12 @@ class Languages extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
 	 * @phpstan-template T of array{
-	 *     code: non-empty-string
+	 *     id: int
 	 * }
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_item( $request ) {
-		$language = $this->get_language( $request['code'] );
+		$language = $this->get_language( $request['id'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -246,8 +246,8 @@ class Languages extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
 	 * @phpstan-template T of array{
-	 *     code: non-empty-string,
-	 *     new_code?: non-empty-string,
+	 *     id: int,
+	 *     code?: non-empty-string,
 	 *     locale?: non-empty-string,
 	 *     name?: non-empty-string,
 	 *     direction?: 'ltr'|'rtl',
@@ -257,7 +257,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
-		$language = $this->get_language( $request['code'] );
+		$language = $this->get_language( $request['id'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -266,11 +266,10 @@ class Languages extends WP_REST_Controller {
 		$prepared = (array) $this->prepare_item_for_database( $request );
 
 		if ( ! empty( $prepared ) ) {
-			$prepared['lang_id'] = $language->term_id;
-
-			if ( ! isset( $prepared['locale'], $prepared['name'], $prepared['rtl'], $prepared['term_group'] ) ) {
+			if ( ! isset( $prepared['slug'], $prepared['locale'], $prepared['name'], $prepared['rtl'], $prepared['term_group'] ) ) {
 				$prepared = array_merge(
 					array(
+						'slug'       => $language->slug,
 						'locale'     => $language->locale,
 						'name'       => $language->name,
 						'rtl'        => (bool) $language->is_rtl,
@@ -281,8 +280,8 @@ class Languages extends WP_REST_Controller {
 			}
 			/**
 			 * @phpstan-var array{
-			 *     slug: non-empty-string,
 			 *     lang_id: int,
+			 *     slug: non-empty-string,
 			 *     locale: non-empty-string,
 			 *     name: non-empty-string,
 			 *     rtl: bool,
@@ -312,12 +311,12 @@ class Languages extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
 	 * @phpstan-template T of array{
-	 *     code: non-empty-string
+	 *     id: int
 	 * }
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item( $request ) {
-		$language = $this->get_language( $request['code'] );
+		$language = $this->get_language( $request['id'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -535,12 +534,6 @@ class Languages extends WP_REST_Controller {
 					'pattern'     => '[a-z_-]+',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'new_code'         => array(
-					'description' => __( 'Language code - preferably 2-letters ISO 639-1 (for example: en). Only used to modify the language code.', 'polylang' ),
-					'type'        => 'string',
-					'pattern'     => '[a-z_-]+',
-					'context'     => array( 'edit' ),
-				),
 				'locale'           => array(
 					'description' => __( 'WordPress Locale for the language (for example: en_US).', 'polylang' ),
 					'type'        => 'string',
@@ -722,10 +715,10 @@ class Languages extends WP_REST_Controller {
 		$prepared = new stdClass(); // WP_REST_Controller imposes to return an object.
 		$schema   = $this->get_item_schema();
 		$props    = array(
-			'name'            => 'name',
+			'id'              => 'lang_id',
 			'code'            => 'slug',
-			'new_code'        => 'slug',
 			'locale'          => 'locale',
+			'name'            => 'name',
 			'direction'       => 'rtl',
 			'order'           => 'term_group',
 			'flag'            => 'flag',
@@ -764,24 +757,28 @@ class Languages extends WP_REST_Controller {
 	}
 
 	/**
-	 * Returns the language, if the code is valid.
+	 * Returns the language, if the ID is valid.
 	 *
 	 * @since 3.7
 	 *
-	 * @param string $code Supplied language code.
-	 * @return PLL_Language|WP_Error Language object if the code is valid, WP_Error otherwise.
-	 *
-	 * @phpstan-param non-empty-string $code
+	 * @param int $id Supplied ID.
+	 * @return PLL_Language|WP_Error Language object if the ID is valid, WP_Error otherwise.
 	 */
-	private function get_language( string $code ) {
-		$language = $this->languages->get( $code );
+	private function get_language( int $id ) {
+		$error = new WP_Error(
+			'rest_invalid_id',
+			__( 'Invalid language ID', 'polylang' ),
+			array( 'status' => 404 )
+		);
+
+		if ( $id <= 0 ) {
+			return $error;
+		}
+
+		$language = $this->languages->get( $id );
 
 		if ( ! $language instanceof PLL_Language ) {
-			return new WP_Error(
-				'rest_invalid_code',
-				__( 'Invalid language code.', 'polylang' ),
-				array( 'status' => 404 )
-			);
+			return $error;
 		}
 
 		return $language;

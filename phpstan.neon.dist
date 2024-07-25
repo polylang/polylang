@@ -60,6 +60,6 @@ parameters:
 
 		# Ignored because PHPStan seems confused about WP_REST_Request's template.
 		-
-			message: "#^Parameter \\#1 \\$code of method .+Languages\\:\\:get_language\\(\\) expects non-empty-string, non-empty-string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method .+Languages\\:\\:get_language\\(\\) expects int, int\\|null given\\.$#"
 			count: 3
-			path: modules/REST/V2/Languages.php
+			path: modules/REST/V1/Languages.php

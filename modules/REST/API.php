@@ -23,7 +23,7 @@ class API {
 	/**
 	 * REST languages.
 	 *
-	 * @var V2\Languages|null
+	 * @var V1\Languages|null
 	 */
 	private $languages;
 
@@ -46,7 +46,7 @@ class API {
 	 * @return void
 	 */
 	public function init(): void {
-		$this->languages = new V2\Languages( $this->model->languages, $this->model->translatable_objects );
+		$this->languages = new V1\Languages( $this->model->languages, $this->model->translatable_objects );
 		$this->languages->register_routes();
 	}
 }
