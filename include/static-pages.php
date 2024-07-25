@@ -159,57 +159,35 @@ class PLL_Static_Pages {
 	 */
 	public function pll_language_defined() {
 		// Translates page for posts and page on front.
-		add_filter( 'option_page_on_front', array( $this, 'translate_page_on_front' ) );
-		add_filter( 'option_page_for_posts', array( $this, 'translate_page_for_posts' ) );
+		add_filter( 'option_page_on_front', array( $this, 'translate_page_id' ), 10, 2 );
+		add_filter( 'option_page_for_posts', array( $this, 'translate_page_id' ), 10, 2 );
 	}
 
 	/**
-	 * Translates the page on front option.
+	 * Translates the page on front or page for posts option.
 	 *
-	 * @since 1.8
-	 * @since 3.3 Was previously defined in PLL_Frontend_Static_Pages.
+	 * @since 3.6 Replaces `translate_page_on_front()` and `translate_page_on_front()` methods.
 	 *
-	 * @param  int $page_id ID of the page on front.
+	 * @param  int    $page_id ID of the page on front or page for posts.
+	 * @param  string $option Option name: `page_on_front` or `page_for_posts`.
 	 * @return int
 	 */
-	public function translate_page_on_front( $page_id ) {
-		if ( empty( $this->curlang->page_on_front ) ) {
+	public function translate_page_id( $page_id, $option ) {
+
+		if ( empty( $this->curlang->{$option} ) ) {
 			return $page_id;
 		}
 
-		if ( doing_action( 'switch_blog' ) || doing_action( 'before_delete_post' ) || doing_action( 'wp_trash_post' ) ) {
+		if ( doing_action( "update_option_{$option}" ) || doing_action( 'switch_blog' ) || doing_action( 'before_delete_post' ) || doing_action( 'wp_trash_post' ) ) {
 			/*
 			 * Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
 			 * Don't translate while deleting a post or it will mess up `_reset_front_page_settings_for_post()`.
+			 * Don't translate while updating the option itself.
 			 */
 			return $page_id;
 		}
 
-		return $this->curlang->page_on_front;
-	}
-
-	/**
-	 * Translates the page for posts option.
-	 *
-	 * @since 1.8
-	 *
-	 * @param  int $page_id ID of the page for posts.
-	 * @return int
-	 */
-	public function translate_page_for_posts( $page_id ) {
-		if ( empty( $this->curlang->page_for_posts ) ) {
-			return $page_id;
-		}
-
-		if ( doing_action( 'switch_blog' ) || doing_action( 'before_delete_post' ) || doing_action( 'wp_trash_post' ) ) {
-			/*
-			 * Don't attempt to translate in a 'switch_blog' action as there is a risk to call this function while initializing the languages cache.
-			 * Don't translate while deleting a post or it will mess up `_reset_front_page_settings_for_post()`.
-			 */
-			return $page_id;
-		}
-
-		return $this->curlang->page_for_posts;
+		return $this->curlang->{$option};
 	}
 
 	/**
