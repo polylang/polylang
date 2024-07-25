@@ -430,9 +430,9 @@ class Languages extends WP_REST_Controller {
 			'term_group'      => 'order',
 			'flag_code'       => 'flag',
 			'flag_url'        => 'flag_url',
-			'flag'            => 'flag_tag',
+			'flag'            => 'flag_html',
 			'custom_flag_url' => 'custom_flag_url',
-			'custom_flag'     => 'custom_flag_tag',
+			'custom_flag'     => 'custom_flag_html',
 			'is_default'      => 'is_default',
 			'active'          => 'is_active',
 			'home_url'        => 'home_url',
@@ -478,7 +478,7 @@ class Languages extends WP_REST_Controller {
 			'title'      => 'language',
 			'type'       => 'object',
 			'properties' => array(
-				'id'              => array(
+				'id'               => array(
 					/* translators: %s is the name of the identifier. */
 					'description' => sprintf( __( 'Unique identifier for the language (%s).', 'polylang' ), '`term_id`' ),
 					'type'        => 'integer',
@@ -486,126 +486,126 @@ class Languages extends WP_REST_Controller {
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'name'            => array(
+				'name'             => array(
 					'description' => __( 'The name is how it is displayed on your site (for example: English).', 'polylang' ),
 					'type'        => 'string',
 					'minLength'   => 1,
 					'context'     => array( 'view', 'edit' ),
 				),
-				'code'            => array(
+				'code'             => array(
 					'description' => __( 'Language code - preferably 2-letters ISO 639-1 (for example: en).', 'polylang' ),
 					'type'        => 'string',
 					'pattern'     => '[a-z_-]+',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'new_code'        => array(
+				'new_code'         => array(
 					'description' => __( 'Language code - preferably 2-letters ISO 639-1 (for example: en). Only used to modify the language code.', 'polylang' ),
 					'type'        => 'string',
 					'pattern'     => '[a-z_-]+',
 					'context'     => array( 'edit' ),
 				),
-				'locale'          => array(
+				'locale'           => array(
 					'description' => __( 'WordPress Locale for the language (for example: en_US).', 'polylang' ),
 					'type'        => 'string',
 					'pattern'     => '[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?',
 					'context'     => array( 'view', 'edit' ),
 					'required'    => true,
 				),
-				'w3c'             => array(
+				'w3c'              => array(
 					'description' => __( 'W3C Locale for the language (for example: en-US).', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'facebook'        => array(
+				'facebook'         => array(
 					'description' => __( 'Facebook Locale for the language (for example: en_US).', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'direction'       => array(
+				'direction'        => array(
 					'description' => __( 'Text direction.', 'polylang' ),
 					'type'        => 'string',
 					'enum'        => array( 'ltr', 'rtl' ),
 					'context'     => array( 'view', 'edit' ),
 				),
-				'order'           => array(
+				'order'            => array(
 					'description' => __( 'Position of the language in the language switcher.', 'polylang' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'flag'            => array(
+				'flag'             => array(
 					'description' => __( 'Flag code corresponding to ISO 3166-1 (for example: en).', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'flag_url'        => array(
+				'flag_url'         => array(
 					'description' => __( 'Flag URL.', 'polylang' ),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'flag_tag'        => array(
+				'flag_html'        => array(
 					'description' => __( 'HTML tag for the flag.', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'custom_flag_url' => array(
+				'custom_flag_url'  => array(
 					'description' => __( 'Custom flag URL.', 'polylang' ),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'custom_flag_tag' => array(
+				'custom_flag_html' => array(
 					'description' => __( 'HTML tag for the custom flag.', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'is_default'      => array(
+				'is_default'       => array(
 					'description' => __( 'Tells whether the language is the default one.', 'polylang' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'is_active'       => array(
+				'is_active'        => array(
 					'description' => __( 'Tells whether the language is active.', 'polylang' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'home_url'        => array(
+				'home_url'         => array(
 					'description' => __( 'Home URL in this language.', 'polylang' ),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'search_url'      => array(
+				'search_url'       => array(
 					'description' => __( 'Search URL in this language.', 'polylang' ),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'page_on_front'   => array(
+				'page_on_front'    => array(
 					'description' => __( 'Identifier of the page on front in this language.', 'polylang' ),
 					'type'        => 'integer',
 					'minimum'     => 0,
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'page_for_posts'  => array(
+				'page_for_posts'   => array(
 					'description' => __( 'Identifier of the page for posts in this language.', 'polylang' ),
 					'type'        => 'integer',
 					'minimum'     => 0,
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'fallbacks'       => array(
+				'fallbacks'        => array(
 					'description' => __( 'List of language locale fallbacks.', 'polylang' ),
 					'type'        => 'array',
 					'uniqueItems' => true,
@@ -616,14 +616,14 @@ class Languages extends WP_REST_Controller {
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'term_props'      => array(
+				'term_props'       => array(
 					'description' => __( 'Language properties.', 'polylang' ),
 					'type'        => 'object',
 					'properties'  => array(),
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'set_default_cat' => array(
+				'set_default_cat'  => array(
 					'description' => __( 'Tells whether the default category must be created when creating a new language.', 'polylang' ),
 					'type'        => 'boolean',
 					'context'     => array( 'edit' ),
