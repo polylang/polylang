@@ -208,7 +208,7 @@ class Languages extends WP_REST_Controller {
 		$result = $this->languages->add( $prepared );
 
 		if ( is_wp_error( $result ) ) {
-			return $this->restify_wp_error( $result );
+			return $this->add_status_to_error( $result );
 		}
 
 		/** @var PLL_Language */
@@ -295,7 +295,7 @@ class Languages extends WP_REST_Controller {
 			$update = $this->languages->update( $prepared );
 
 			if ( is_wp_error( $update ) ) {
-				return $this->restify_wp_error( $update );
+				return $this->add_status_to_error( $update );
 			}
 
 			/** @var PLL_Language */
@@ -742,7 +742,7 @@ class Languages extends WP_REST_Controller {
 	}
 
 	/**
-	 * Harmonizes the given error by prefixing the error code and adding a status code.
+	 * Adds a status code to the given error and returns the error.
 	 *
 	 * @since 3.7
 	 *
@@ -750,11 +750,8 @@ class Languages extends WP_REST_Controller {
 	 * @param int      $status_code Optional. A status code. Default is 400.
 	 * @return WP_Error
 	 */
-	private function restify_wp_error( WP_Error $error, int $status_code = 400 ): WP_Error {
-		return new WP_Error(
-			(string) preg_replace( '@^pll_@', 'rest_', (string) $error->get_error_code() ),
-			$error->get_error_message(),
-			array( 'status' => $status_code )
-		);
+	private function add_status_to_error( WP_Error $error, int $status_code = 400 ): WP_Error {
+		$error->add_data( array( 'status' => $status_code ) );
+		return $error;
 	}
 }
