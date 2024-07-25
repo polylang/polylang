@@ -10,9 +10,7 @@ on:
       - '**.yml'
       - '**.sh'
   pull_request:
-    branches:
-      - master
-      - split-models
+    branches: master
     paths:
       - '**.php'
       - 'phpunit.xml'

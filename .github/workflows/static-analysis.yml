@@ -4,9 +4,7 @@ on:
   push:
     branches: master
   pull_request:
-    branches:
-      - master
-      - split-models
+    branches: master
   workflow_dispatch:
 
 jobs:
