@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+use WP_Syntex\Polylang\Options\Options;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -28,7 +30,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 *
 	 * @param PLL_Model $model Instance of `PLL_Model`.
 	 */
-	public function __construct( PLL_Model &$model ) {
+	public function __construct( PLL_Model $model ) {
 		parent::__construct( $model );
 
 		$this->tax_to_cache[] = $this->tax_translations;
@@ -312,7 +314,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 	 * @phpstan-return int<0, max>
 	 */
 	public function get_translation( $id, $lang ) {
-		$lang = $this->model->get_language( $lang );
+		$lang = $this->languages->get( $lang );
 
 		if ( empty( $lang ) ) {
 			return 0;
@@ -342,7 +344,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 			return 0;
 		}
 
-		$lang = $this->model->get_language( $lang );
+		$lang = $this->languages->get( $lang );
 
 		if ( empty( $lang ) ) {
 			return 0;
@@ -455,7 +457,7 @@ abstract class PLL_Translated_Object extends PLL_Translatable_Object {
 		 */
 		$translations = array_intersect_key(
 			$translations,
-			array_flip( $this->model->get_languages_list( array( 'fields' => 'slug' ) ) )
+			array_flip( $this->languages->get_list( array( 'fields' => 'slug' ) ) )
 		);
 
 		// Make sure values are clean before working with them.

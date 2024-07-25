@@ -105,10 +105,7 @@ class Model_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_translated_post_types() {
-		// deactivate the cache
-		self::$model->cache = $this->getMockBuilder( 'PLL_Cache' )->getMock();
-		self::$model->cache->method( 'get' )->willReturn( false );
-
+		self::$model->clean_languages_cache();
 		self::$model->options['media_support'] = 0;
 
 		$this->assertTrue( self::$model->is_translated_post_type( 'post' ) );
@@ -116,10 +113,12 @@ class Model_Test extends PLL_UnitTestCase {
 		$this->assertFalse( self::$model->is_translated_post_type( 'nav_menu_item' ) );
 		$this->assertFalse( self::$model->is_translated_post_type( 'attachment' ) );
 
+		self::$model->clean_languages_cache();
 		self::$model->options['media_support'] = 1;
+
 		$this->assertTrue( self::$model->is_translated_post_type( 'attachment' ) );
 
-		self::$model->cache = new PLL_Cache();
+		self::$model->clean_languages_cache();
 	}
 
 	public function test_translated_taxonomies() {
@@ -165,6 +164,7 @@ class Model_Test extends PLL_UnitTestCase {
 		register_taxonomy( 'trtax', 'post' ); // translated custom tax
 		register_taxonomy( 'tax', 'post' ); // *untranslated* custom tax
 
+		self::$model->cache->clean( 'taxonomies' );
 		self::$model->options['taxonomies'] = array( 'trtax' );
 
 		$links_model = self::$model->get_links_model();
@@ -193,6 +193,7 @@ class Model_Test extends PLL_UnitTestCase {
 	 * Bug fixed in 3.2.6
 	 */
 	public function test_untranslated_media_when_post_type_wrongly_stored_in_option() {
+		self::$model->cache->clean( 'post_types' );
 		self::$model->options['post_types']    = array( 'attachment' );
 		self::$model->options['media_support'] = 0;
 

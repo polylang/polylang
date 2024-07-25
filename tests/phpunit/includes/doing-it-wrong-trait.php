@@ -5,10 +5,12 @@
  */
 trait PLL_Doing_It_Wrong_Trait {
 	/**
-	 * Don't trigger an error if `PLL_Model::get_languages_list()` is called too early.
+	 * Don't trigger an error if `WP_Syntex\Polylang\Model\Languages::get_list()` is called too early.
 	 * WP's test suite already does this in `WP_UnitTestCase_Base::set_up()`, but it happens too late because
-	 * we create our languages in `wpSetUpBeforeClass()` with `PLL_UnitTestCase::create_language()`, which calls
-	 * `PLL_Admin_Model::add_language()` => `PLL_Admin_Model::validate_lang()` => `PLL_Model::get_languages_list()`.
+	 * we create our languages in `wpSetUpBeforeClass()` with `PLL_UnitTestCase::create_language()`, which calls:
+	 * - `WP_Syntex\Polylang\Model\Languages::add()` =>
+	 * - `WP_Syntex\Polylang\Model\Languages::validate_lang()` =>
+	 * - `WP_Syntex\Polylang\Model\Languages::get_list()`.
 	 * Should be called in `wpSetUpBeforeClass()`.
 	 *
 	 * @since 3.4
@@ -21,7 +23,7 @@ trait PLL_Doing_It_Wrong_Trait {
 	}
 
 	/**
-	 * Don't trigger an error if `PLL_Model::get_languages_list()` is called too early.
+	 * Don't trigger an error if `WP_Syntex\Polylang\Model\Languages::get_list()` is called too early.
 	 * Note: the parameters `$message` and `$version` are available since WP 6.1.
 	 *
 	 * @since 3.4
@@ -34,7 +36,7 @@ trait PLL_Doing_It_Wrong_Trait {
 	 * @return void
 	 */
 	public function doing_it_wrong_run( $function, $message = '', $version = '' ) {
-		if ( 'PLL_Model::get_languages_list()' === $function ) {
+		if ( 'WP_Syntex\Polylang\Model\Languages::get_list()' === $function ) {
 			return;
 		}
 
