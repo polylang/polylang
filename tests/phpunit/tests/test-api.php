@@ -27,9 +27,6 @@ class API_Test extends PLL_UnitTestCase {
 		parent::tear_down();
 	}
 
-	/**
-	 * @covers ::pll_get_post
-	 */
 	public function test_pll_get_post() {
 		$posts = $this->factory()->post->create_translated(
 			array( 'lang' => 'en' ),
@@ -44,9 +41,6 @@ class API_Test extends PLL_UnitTestCase {
 		$this->assertSame( $posts['fr'], pll_get_post( $posts['en'] ) );
 	}
 
-	/**
-	 * @covers ::pll_get_term
-	 */
 	public function test_pll_get_term() {
 		$terms = $this->factory()->term->create_translated(
 			array( 'lang' => 'en' ),
@@ -65,8 +59,6 @@ class API_Test extends PLL_UnitTestCase {
 	 * @testWith ["post"]
 	 *           ["term"]
 	 *
-	 * @covers PLL_Translated_Object::get_translation
-	 *
 	 * @param string $type Type of object.
 	 */
 	public function test_translated_objects_get_translation( $type ) {
@@ -81,8 +73,6 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @covers ::pll_insert_term
-	 *
 	 * @testWith ["category", true, true]
 	 *           ["category", false, true]
 	 *           ["post_tag", false, true]
@@ -136,8 +126,6 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @covers ::pll_insert_term
-	 *
 	 * @testWith ["category", "en", "term_exists"]
 	 *           ["post_tag", "en", "term_exists"]
 	 *           ["tr_custom_tax", "en", "term_exists"]
@@ -166,8 +154,6 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @covers ::pll_update_term
-	 *
 	 * @testWith ["category", true, true, true]
 	 *           ["category", false, true, false]
 	 *           ["category", true, true, true]
@@ -273,8 +259,6 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @covers ::pll_update_term
-	 *
 	 * @testWith ["category", "en", "duplicate_term_slug"]
 	 *           ["post_tag", "en", "duplicate_term_slug"]
 	 *           ["tr_custom_tax", "en", "duplicate_term_slug"]
