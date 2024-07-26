@@ -3,9 +3,9 @@ Contributors: Chouby, manooweb, raaaahman, marianne38, sebastienserre, greglone,
 Donate link: https://polylang.pro
 Tags: multilingual, translate, translation, language, localization
 Requires at least: 6.2
-Tested up to: 6.5
+Tested up to: 6.6
 Requires PHP: 7.0
-Stable tag: 3.6.3
+Stable tag: 3.6.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -105,6 +105,14 @@ Wherever third party code has been used, credit has been given in the code’s c
 
 == Changelog ==
 
+= 3.6.4 (2024-07-29) =
+
+* Pro: Fix infinite loop with WP 6.6 when the locale fallbacks include the main locale of a language
+* Pro: Prevent saving the main locale among the locale fallbacks of a language
+* Pro: Hide the characters consumption graph when the DeepL cost control is deactivated
+* Add Yoast SEO social title and social description to the strings translations
+* Fix incorrect page on front and page for posts translations when the option is saved with admin language filter active
+
 = 3.6.3 (2024-06-18) =
 
 * Pro: Fix locale fallback for translations loaded just in time (requires WP 6.6)
@@ -148,54 +156,5 @@ Wherever third party code has been used, credit has been given in the code’s c
 * Fix a minor performance issue for the page for posts #1412
 * Fix a JS errors after quick edit. Props @mcguffin #1435, #1444
 * Fix a possible warning in view-translations-post.php #1439
-
-= 3.5.4 (2024-02-06) =
-
-* Pro: Fix an accessibility issue int the navigation language switcher block
-* Pro: Fix featured image not exported for posts with blocks
-* Pro: Fix a conflict with the Flatsome builder
-* Fix a notice when using system CRON. Props arielruminski #1397
-* Fix an edge case where a wrong post tag may be assigned to a post #1418
-
-= 3.5.3 (2023-12-11) =
-
-* Pro: Fix fatal error with The Events Calendar when rewrite param of event category is set to false
-* Remove flag alt text in the language switcher when both the flag and language name are displayed #1393
-* Fix incorrect string translations when 2 languages are sharing the same locale in a multisite #1378
-* Fix posts lists not filtered by the current language when editing a post in the block editor #1386
-* Fix error when a tax query is filled with unexpected data #1396
-
-= 3.5.2 (2023-10-25) =
-
-* Pro: Fix terms not filtered by the current language in the block editor custom taxonomy component panel
-* Fix incorrect rewrite rules leading to error 404 for the main site on mutisite #1375
-
-= 3.5.1 (2023-10-17) =
-
-* Pro: Fix terms not filtered by the current language in the block editor custom taxonomy component panel
-* Pro: Fix fatal error when using plain permalinks on multisite
-* Pro: Fix rewrite rules incorrectly refreshed when saving strings translations
-* Fix incorrect rewrite rules leading to error 404 on mutisite #1366
-* Fix fatal error when using symlinked MU plugins that are not in open_basedir #1368
-
-= 3.5 (2023-10-09) =
-
-* Requires WordPress 5.9 as minimum version
-* Pro: Manage navigation blocks translations in the site editor (requires WP 6.3)
-* Pro: Manage pages translations in the site editor (requires WP 6.3)
-* Pro: Manage patterns translations in the site editor (requires WP 6.3)
-* Pro: Remove compatibility with the navigation screen removed from Gütenberg 15.1
-* Pro: Add filter 'pll_export_post_fields' to control post fields exported to XLIFF files
-* Pro: Do not set default translation option to "translate" for ACF fields created before Polylang Pro is activated
-* Pro: Fix Polylang not set as recently active when automatically deactivated by Polylang Pro
-* Don't output javascript type for themes supporting html5 #1332
-* Hook WP_Query automatic translation to 'parse_query' instead of 'pre_get_posts' #1339
-* Improve preload paths management for the block editor #1341
-* Fix rewrite rules in WP 6.4 #1345
-* Fix: always assign the default language to new posts and terms if no language is specified #1351
-* Fix 'polylang' option not correctly created when a new site is created on a multisite #1319
-* Fix front page display switched to "Your latest posts" when deleting a static home page translation #1311
-* Fix wrong language assigned to terms #1336
-* Fix error when updating a translated option while the blog is switched on a multisite #1342
 
 See [changelog.txt](https://plugins.svn.wordpress.org/polylang/trunk/changelog.txt) for older changelog
