@@ -367,12 +367,10 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * }
 	 */
 	public function insert( string $term, string $taxonomy, PLL_Language $language, $args = array() ) {
-		$language_callback = $this->get_slug_management_language_callback( $language );
-		$parent_callback   = $this->get_slug_management_parent_callback( $args['parent'] ?? 0 );
-
-		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
+		$parent = $args['parent'] ?? 0;
+		$this->toggle_inserted_term_filters( $language, $parent );
 		$term = wp_insert_term( $term, $taxonomy, $args );
-		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
+		$this->toggle_inserted_term_filters( $language, $parent );
 
 		if ( is_wp_error( $term ) ) {
 			// Something went wrong!
@@ -433,12 +431,10 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			$this->set_language( $term_id, $language );
 		}
 
-		$language_callback = $this->get_slug_management_language_callback( $language );
-		$parent_callback   = $this->get_slug_management_parent_callback( $args['parent'] ?? $term->parent );
-
-		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
+		$parent = $args['parent'] ?? $term->parent;
+		$this->toggle_inserted_term_filters( $language, $parent );
 		$term = wp_update_term( $term->term_id, $term->taxonomy, $args );
-		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
+		$this->toggle_inserted_term_filters( $language, $parent );
 
 		if ( ! empty( $args['translations'] ) ) {
 			$this->model->term->save_translations(
@@ -461,22 +457,22 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *
 	 * @since 3.7
 	 *
-	 * @param callable $language_callback The language callback for term slug modification.
-	 * @param callable $parent_callback   The parent callback for term slug modification.
+	 * @param PLL_Language $language The language to use.
+	 * @param int          $parent The parent term id to use.
 	 * @return void
 	 */
-	private function toggle_inserted_term_filters( $language_callback, $parent_callback ): void {
+	private function toggle_inserted_term_filters( $language, $parent ): void {
 		static $enabled = false;
 
 		if ( $enabled ) {
 			// Clean up!
-			remove_filter( 'pll_inserted_term_language', $language_callback );
-			remove_filter( 'pll_inserted_term_parent', $parent_callback );
+			remove_filter( 'pll_inserted_term_language', $this->get_slug_management_language_callback( $language ) );
+			remove_filter( 'pll_inserted_term_parent', $this->get_slug_management_parent_callback( $parent ) );
 			$enabled = false;
 		} else {
 			// Set term parent and language for suffixed slugs.
-			add_filter( 'pll_inserted_term_language', $language_callback );
-			add_filter( 'pll_inserted_term_parent', $parent_callback );
+			add_filter( 'pll_inserted_term_language', $this->get_slug_management_language_callback( $language ) );
+			add_filter( 'pll_inserted_term_parent', $this->get_slug_management_parent_callback( $parent ) );
 			$enabled = true;
 		}
 	}
@@ -491,9 +487,19 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @return Closure The callback for the hook.
 	 */
 	private function get_slug_management_language_callback( PLL_Language $language ): Closure {
-		return function () use ( $language ) {
+		static $callback    = null;
+		static $cached_lang = null;
+
+		if ( $callback instanceof Closure && $cached_lang instanceof PLL_Language && $language->slug === $cached_lang->slug ) {
+			return $callback;
+		}
+
+		$callback    = function () use ( $language ) {
 			return $language;
 		};
+		$cached_lang = $language;
+
+		return $callback;
 	}
 
 	/**
@@ -506,8 +512,18 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @return Closure The callback for the hook.
 	 */
 	private function get_slug_management_parent_callback( int $parent ): Closure {
-		return function () use ( $parent ) {
+		static $callback      = null;
+		static $cached_parent = null;
+
+		if ( $callback instanceof Closure && is_int( $cached_parent ) && $parent === $cached_parent ) {
+			return $callback;
+		}
+
+		$callback    = function () use ( $parent ) {
 			return $parent;
 		};
+		$cached_parent = $parent;
+
+		return $callback;
 	}
 }
