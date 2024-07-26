@@ -377,10 +377,10 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return $term;
 		}
 
-		$this->model->term->set_language( (int) $term['term_id'], $language );
+		$this->set_language( (int) $term['term_id'], $language );
 
 		if ( ! empty( $args['translations'] ) ) {
-			$this->model->term->save_translations(
+			$this->save_translations(
 				(int) $term['term_id'],
 				array_merge(
 					$args['translations'],
@@ -437,7 +437,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$this->toggle_inserted_term_filters( $language, $parent );
 
 		if ( ! empty( $args['translations'] ) ) {
-			$this->model->term->save_translations(
+			$this->save_translations(
 				$term_id,
 				array_merge(
 					$args['translations'],
