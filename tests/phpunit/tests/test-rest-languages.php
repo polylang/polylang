@@ -86,30 +86,30 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$language  = $languages['es_ES'];
 
 		$this->assertIsArray( $data );
-		$this->assertArrayHasKey( 'code', $data );
-		$this->assertSame( $language['code'], $data['code'] );
+		$this->assertArrayHasKey( 'slug', $data );
+		$this->assertSame( $language['code'], $data['slug'] );
 		$this->assertArrayHasKey( 'name', $data );
 		$this->assertSame( $language['name'], $data['name'] );
-		$this->assertArrayHasKey( 'direction', $data );
-		$this->assertSame( $language['dir'], $data['direction'] );
-		$this->assertArrayHasKey( 'flag', $data );
-		$this->assertSame( $language['flag'], $data['flag'] );
+		$this->assertArrayHasKey( 'is_rtl', $data );
+		$this->assertSame( (bool) $language['dir'], $data['is_rtl'] );
+		$this->assertArrayHasKey( 'flag_code', $data );
+		$this->assertSame( $language['flag'], $data['flag_code'] );
 		$this->assertArrayHasKey( 'facebook', $data );
 		$this->assertSame( $language['facebook'], $data['facebook'] );
 
 		// Check for fields with a custom name.
 		$language = $this->pll_env->model->get_language( 'es_ES' );
 
-		$this->assertArrayHasKey( 'id', $data );
-		$this->assertSame( $language->term_id, $data['id'] );
-		$this->assertArrayHasKey( 'order', $data );
-		$this->assertSame( $language->term_group, $data['order'] );
-		$this->assertArrayHasKey( 'flag_html', $data );
-		$this->assertSame( $language->flag, $data['flag_html'] );
-		$this->assertArrayHasKey( 'custom_flag_html', $data );
-		$this->assertSame( $language->custom_flag, $data['custom_flag_html'] );
-		$this->assertArrayHasKey( 'is_active', $data );
-		$this->assertSame( $language->active, $data['is_active'] );
+		$this->assertArrayHasKey( 'term_id', $data );
+		$this->assertSame( $language->term_id, $data['term_id'] );
+		$this->assertArrayHasKey( 'term_group', $data );
+		$this->assertSame( $language->term_group, $data['term_group'] );
+		$this->assertArrayHasKey( 'flag', $data );
+		$this->assertSame( $language->flag, $data['flag'] );
+		$this->assertArrayHasKey( 'custom_flag', $data );
+		$this->assertSame( $language->custom_flag, $data['custom_flag'] );
+		$this->assertArrayHasKey( 'active', $data );
+		$this->assertSame( $language->active, $data['active'] );
 
 		// Single check to make sure other fields are not missing.
 		$this->assertArrayHasKey( 'term_props', $data );
@@ -118,20 +118,20 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		// Check the default category.
 		$def_cat_lang = $this->pll_env->model->term->get_language( $def_cat_id );
 		$this->assertInstanceOf( PLL_Language::class, $def_cat_lang );
-		$this->assertSame( $data['code'], $def_cat_lang->slug );
+		$this->assertSame( $data['slug'], $def_cat_lang->slug );
 
 		// 2- Create a language with custom values.
 		$values = array(
-			'name'      => 'François',
-			'code'      => 'fra',
-			'direction' => 'rtl',
-			'flag'      => 'be',
-			'order'     => 22,
+			'name'       => 'François',
+			'slug'       => 'fra',
+			'is_rtl'     => true,
+			'flag_code'  => 'be',
+			'term_group' => 22,
 		);
 		$request = new WP_REST_Request( 'POST', '/pll/v1/languages' );
 		$request->set_param( 'locale', 'fr_FR' ); // Required.
 		$request->set_param( 'w3c', 'foo' ); // Should not be set.
-		$request->set_param( 'set_default_cat', false ); // Do not create the default category for this language.
+		$request->set_param( 'no_default_cat', true ); // Do not create the default category for this language.
 
 		foreach ( $values as $name => $value ) {
 			$request->set_param( $name, $value );
@@ -151,7 +151,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->assertNotSame( 'foo', $data['w3c'] );
 
 		// Check the default category is not created.
-		$def_cat_id_fr = $this->pll_env->model->term->get( $def_cat_id, $data['code'] );
+		$def_cat_id_fr = $this->pll_env->model->term->get( $def_cat_id, $data['slug'] );
 		$this->assertSame( 0, $def_cat_id_fr );
 	}
 
@@ -166,8 +166,8 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
-		$this->assertArrayHasKey( 'code', $data );
-		$this->assertSame( 'fr', $data['code'] );
+		$this->assertArrayHasKey( 'slug', $data );
+		$this->assertSame( 'fr', $data['slug'] );
 	}
 
 	/**
@@ -181,12 +181,12 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$fr_id = self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
 
 		$values = array(
-			'locale'    => 'fr_BE',
-			'name'      => 'François',
-			'code'      => 'fra',
-			'direction' => 'rtl',
-			'flag'      => 'be',
-			'order'     => 22,
+			'locale'     => 'fr_BE',
+			'name'       => 'François',
+			'slug'       => 'fra',
+			'is_rtl'     => true,
+			'flag_code'  => 'be',
+			'term_group' => 22,
 		);
 		$request = new WP_REST_Request( $method, "/pll/v1/languages/{$fr_id}" );
 

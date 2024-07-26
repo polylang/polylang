@@ -79,10 +79,10 @@ class Languages extends WP_REST_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			"/{$this->rest_base}/(?P<id>[\d]+)",
+			"/{$this->rest_base}/(?P<term_id>[\d]+)",
 			array(
 				'args'   => array(
-					'id' => array(
+					'term_id' => array(
 						'description' => __( 'Unique identifier for the language.', 'polylang' ),
 						'type'        => 'integer',
 					),
@@ -142,17 +142,17 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @phpstan-template T of array{
 	 *     locale: non-empty-string,
-	 *     code?: non-empty-string,
+	 *     slug?: non-empty-string,
 	 *     name?: non-empty-string,
-	 *     direction?: 'ltr'|'rtl',
-	 *     order?: int,
-	 *     flag?: non-empty-string,
-	 *     set_default_cat?: bool
+	 *     is_rtl?: bool,
+	 *     term_group?: int,
+	 *     flag_code?: non-empty-string,
+	 *     no_default_cat?: bool
 	 * }
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function create_item( $request ) {
-		if ( ! empty( $request['id'] ) ) {
+		if ( ! empty( $request['term_id'] ) ) {
 			return new WP_Error(
 				'rest_exists',
 				__( 'Cannot create existing language.', 'polylang' ),
@@ -161,10 +161,10 @@ class Languages extends WP_REST_Controller {
 		}
 
 		/**
-		 * $request: name, code, locale, direction, order,      flag
-		 * $args:    name, slug, locale, rtl,       term_group, flag? (from add_language())
+		 * $request: locale, slug, name, is_rtl, term_group, flag_code
+		 * $args:    locale, slug, name, rtl,    term_group, flag? (from add_language())
 		 */
-		if ( ! isset( $request['name'], $request['code'], $request['direction'], $request['flag'] ) ) {
+		if ( ! isset( $request['slug'], $request['name'], $request['is_rtl'], $request['flag_code'] ) ) {
 			$languages = include POLYLANG_DIR . '/settings/languages.php';
 
 			if ( empty( $languages[ $request['locale'] ] ) ) {
@@ -177,8 +177,8 @@ class Languages extends WP_REST_Controller {
 
 			$language = $languages[ $request['locale'] ];
 			$defaults = array(
-				'name'       => $language['name'],
 				'slug'       => $language['code'],
+				'name'       => $language['name'],
 				'rtl'        => 'rtl' === $language['dir'],
 				'flag'       => $language['flag'],
 				'term_group' => 0,
@@ -223,12 +223,12 @@ class Languages extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
 	 * @phpstan-template T of array{
-	 *     id: int
+	 *     term_id: int
 	 * }
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_item( $request ) {
-		$language = $this->get_language( $request['id'] );
+		$language = $this->get_language( $request['term_id'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -246,18 +246,18 @@ class Languages extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
 	 * @phpstan-template T of array{
-	 *     id: int,
-	 *     code?: non-empty-string,
+	 *     term_id: int,
+	 *     slug?: non-empty-string,
 	 *     locale?: non-empty-string,
 	 *     name?: non-empty-string,
-	 *     direction?: 'ltr'|'rtl',
-	 *     order?: int,
-	 *     flag?: non-empty-string
+	 *     is_rtl?: bool,
+	 *     term_group?: int,
+	 *     flag_code?: non-empty-string
 	 * }
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
-		$language = $this->get_language( $request['id'] );
+		$language = $this->get_language( $request['term_id'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -311,12 +311,12 @@ class Languages extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
 	 * @phpstan-template T of array{
-	 *     id: int
+	 *     term_id: int
 	 * }
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item( $request ) {
-		$language = $this->get_language( $request['id'] );
+		$language = $this->get_language( $request['term_id'] );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -455,41 +455,13 @@ class Languages extends WP_REST_Controller {
 		$data     = $item->to_array();
 		$fields   = $this->get_fields_for_response( $request );
 		$response = array();
-		$props    = array(
-			'term_id'         => 'id',
-			'name'            => 'name',
-			'slug'            => 'code',
-			'locale'          => 'locale',
-			'w3c'             => 'w3c',
-			'facebook'        => 'facebook',
-			'is_rtl'          => 'direction',
-			'term_group'      => 'order',
-			'flag_code'       => 'flag',
-			'flag_url'        => 'flag_url',
-			'flag'            => 'flag_html',
-			'custom_flag_url' => 'custom_flag_url',
-			'custom_flag'     => 'custom_flag_html',
-			'is_default'      => 'is_default',
-			'active'          => 'is_active',
-			'home_url'        => 'home_url',
-			'search_url'      => 'search_url',
-			'page_on_front'   => 'page_on_front',
-			'page_for_posts'  => 'page_for_posts',
-			'fallbacks'       => 'fallbacks',
-			'term_props'      => 'term_props',
-		);
 
-		foreach ( $props as $language_prop => $rest_item_prop ) {
-			if ( ! rest_is_field_included( $rest_item_prop, $fields ) ) {
-				continue;
-			}
+		$data['is_rtl'] = (bool) $data['is_rtl'];
+		$data['host']   = (string) $data['host'];
 
-			switch ( $rest_item_prop ) {
-				case 'direction':
-					$response[ $rest_item_prop ] = $data[ $language_prop ] ? 'rtl' : 'ltr';
-					break;
-				default:
-					$response[ $rest_item_prop ] = $data[ $language_prop ];
+		foreach ( $data as $language_prop => $prop_value ) {
+			if ( rest_is_field_included( $language_prop, $fields ) ) {
+				$response[ $language_prop ] = $prop_value;
 			}
 		}
 
@@ -514,128 +486,133 @@ class Languages extends WP_REST_Controller {
 			'title'      => 'language',
 			'type'       => 'object',
 			'properties' => array(
-				'id'               => array(
-					/* translators: %s is the name of the identifier. */
-					'description' => sprintf( __( 'Unique identifier for the language (%s).', 'polylang' ), '`term_id`' ),
+				'term_id'         => array(
+					'description' => __( 'Unique identifier for the language.', 'polylang' ),
 					'type'        => 'integer',
 					'minimum'     => 1,
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'name'             => array(
+				'name'            => array(
 					'description' => __( 'The name is how it is displayed on your site (for example: English).', 'polylang' ),
 					'type'        => 'string',
 					'minLength'   => 1,
 					'context'     => array( 'view', 'edit' ),
 				),
-				'code'             => array(
+				'slug'            => array(
 					'description' => __( 'Language code - preferably 2-letters ISO 639-1 (for example: en).', 'polylang' ),
 					'type'        => 'string',
 					'pattern'     => '[a-z_-]+',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'locale'           => array(
+				'locale'          => array(
 					'description' => __( 'WordPress Locale for the language (for example: en_US).', 'polylang' ),
 					'type'        => 'string',
 					'pattern'     => '[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?',
 					'context'     => array( 'view', 'edit' ),
 					'required'    => true,
 				),
-				'w3c'              => array(
+				'w3c'             => array(
 					'description' => __( 'W3C Locale for the language (for example: en-US).', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'facebook'         => array(
+				'facebook'        => array(
 					'description' => __( 'Facebook Locale for the language (for example: en_US).', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'direction'        => array(
-					'description' => __( 'Text direction.', 'polylang' ),
-					'type'        => 'string',
-					'enum'        => array( 'ltr', 'rtl' ),
+				'is_rtl'          => array(
+					'description' => __( 'Text direction. True for right-to-left.', 'polylang' ),
+					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'order'            => array(
+				'term_group'      => array(
 					'description' => __( 'Position of the language in the language switcher.', 'polylang' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'flag'             => array(
+				'flag_code'       => array(
 					'description' => __( 'Flag code corresponding to ISO 3166-1 (for example: us for the United States flag).', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'flag_url'         => array(
+				'flag_url'        => array(
 					'description' => __( 'Flag URL.', 'polylang' ),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'flag_html'        => array(
+				'flag'            => array(
 					'description' => __( 'HTML tag for the flag.', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'custom_flag_url'  => array(
+				'custom_flag_url' => array(
 					'description' => __( 'Custom flag URL.', 'polylang' ),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'custom_flag_html' => array(
+				'custom_flag'     => array(
 					'description' => __( 'HTML tag for the custom flag.', 'polylang' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'is_default'       => array(
+				'is_default'      => array(
 					'description' => __( 'Tells whether the language is the default one.', 'polylang' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'is_active'        => array(
+				'active'          => array(
 					'description' => __( 'Tells whether the language is active.', 'polylang' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'home_url'         => array(
+				'home_url'        => array(
 					'description' => __( 'Home URL in this language.', 'polylang' ),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'search_url'       => array(
+				'search_url'      => array(
 					'description' => __( 'Search URL in this language.', 'polylang' ),
 					'type'        => 'string',
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'page_on_front'    => array(
+				'host'            => array(
+					'description' => __( 'Host for this language.', 'polylang' ),
+					'type'        => 'string',
+					'format'      => 'uri',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'page_on_front'   => array(
 					'description' => __( 'Identifier of the page on front in this language.', 'polylang' ),
 					'type'        => 'integer',
 					'minimum'     => 0,
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'page_for_posts'   => array(
+				'page_for_posts'  => array(
 					'description' => __( 'Identifier of the page for posts in this language.', 'polylang' ),
 					'type'        => 'integer',
 					'minimum'     => 0,
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'fallbacks'        => array(
+				'fallbacks'       => array(
 					'description' => __( 'List of language locale fallbacks.', 'polylang' ),
 					'type'        => 'array',
 					'uniqueItems' => true,
@@ -646,18 +623,18 @@ class Languages extends WP_REST_Controller {
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'term_props'       => array(
+				'term_props'      => array(
 					'description' => __( 'Language properties.', 'polylang' ),
 					'type'        => 'object',
 					'properties'  => array(),
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'set_default_cat'  => array(
+				'no_default_cat'  => array(
 					'description' => __( 'Tells whether the default category must be created when creating a new language.', 'polylang' ),
 					'type'        => 'boolean',
 					'context'     => array( 'edit' ),
-					'default'     => true,
+					'default'     => false,
 				),
 			),
 		);
@@ -700,45 +677,36 @@ class Languages extends WP_REST_Controller {
 	 * @return object|WP_Error The prepared language, or WP_Error object on failure.
 	 *
 	 * @phpstan-template T of array{
-	 *     code?: non-empty-string,
-	 *     locale?: non-empty-string,
+	 *     term_id?: int,
 	 *     name?: non-empty-string,
-	 *     direction?: 'ltr'|'rtl',
-	 *     order?: int,
-	 *     flag?: non-empty-string,
-	 *     set_default_cat?: bool
+	 *     slug?: non-empty-string,
+	 *     locale?: non-empty-string,
+	 *     flag_code?: non-empty-string,
+	 *     is_rtl?: bool,
+	 *     term_group?: int,
+	 *     no_default_cat?: bool
 	 * }
 	 * @phpstan-param WP_REST_Request<T> $request
 	 * @phpstan-return stdClass
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$prepared = new stdClass(); // WP_REST_Controller imposes to return an object.
-		$schema   = $this->get_item_schema();
+		$fields   = $this->get_fields_for_response( $request );
 		$props    = array(
-			'id'              => 'lang_id',
-			'code'            => 'slug',
-			'locale'          => 'locale',
-			'name'            => 'name',
-			'direction'       => 'rtl',
-			'order'           => 'term_group',
-			'flag'            => 'flag',
-			'set_default_cat' => 'no_default_cat',
+			// From => To.
+			'term_id'        => 'lang_id',
+			'name'           => 'name',
+			'slug'           => 'slug',
+			'locale'         => 'locale',
+			'flag_code'      => 'flag',
+			'is_rtl'         => 'rtl',
+			'term_group'     => 'term_group',
+			'no_default_cat' => 'no_default_cat',
 		);
 
 		foreach ( $props as $rest_item_prop => $prepared_prop ) {
-			if ( ! isset( $request[ $rest_item_prop ] ) || empty( $schema['properties'][ $rest_item_prop ] ) ) {
-				continue;
-			}
-
-			switch ( $rest_item_prop ) {
-				case 'direction':
-					$prepared->$prepared_prop = 'rtl' === $request[ $rest_item_prop ];
-					break;
-				case 'set_default_cat':
-					$prepared->$prepared_prop = ! $request[ $rest_item_prop ];
-					break;
-				default:
-					$prepared->$prepared_prop = $request[ $rest_item_prop ];
+			if ( isset( $request[ $rest_item_prop ] ) && rest_is_field_included( $rest_item_prop, $fields ) ) {
+				$prepared->$prepared_prop = $request[ $rest_item_prop ];
 			}
 		}
 
