@@ -422,19 +422,23 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 			return new WP_Error( 'invalid_term', __( 'Empty Term.', 'polylang' ) );
 		}
 
-		$new_language = ! empty( $args['lang'] ) ? $this->model->get_language( $args['lang'] ) : $this->get_language( $term_id );
-		if ( false === $new_language ) {
-			return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+		/** @var PLL_Language $language */
+		$language = $this->get_language( $term_id );
+		if ( ! empty( $args['lang'] ) ) {
+			$language = $this->model->get_language( $args['lang'] );
+			if ( ! $language instanceof PLL_Language ) {
+				return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+			}
+
+			$this->set_language( $term_id, $language );
 		}
 
-		$language_callback = $this->get_slug_management_language_callback( $new_language );
+		$language_callback = $this->get_slug_management_language_callback( $language );
 		$parent_callback   = $this->get_slug_management_parent_callback( $args['parent'] ?? $term->parent );
 
 		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
 		$term = wp_update_term( $term->term_id, $term->taxonomy, $args );
 		$this->toggle_inserted_term_filters( $language_callback, $parent_callback );
-
-		$this->set_language( $term_id, $new_language );
 
 		if ( ! empty( $args['translations'] ) ) {
 			$this->model->term->save_translations(
@@ -442,7 +446,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 				array_merge(
 					$args['translations'],
 					array(
-						$new_language->slug => $term_id,
+						$language->slug => $term_id,
 					)
 				)
 			);

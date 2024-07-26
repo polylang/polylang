@@ -620,16 +620,6 @@ function pll_insert_term( string $term, string $taxonomy, $language, array $args
  * }
  */
 function pll_update_term( int $term_id, array $args = array() ) {
-	$language = isset( $args['lang'] ) ? PLL()->model->get_language( $args['lang'] ) : null;
-
-	if ( false === $language ) {
-		return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
-	}
-
-	if ( $language instanceof PLL_Language ) {
-		$args['lang'] = $language;
-	}
-
 	return PLL()->model->term->update( $term_id, $args );
 }
 
