@@ -145,6 +145,7 @@ trait PLL_UnitTestCase_Trait {
 		}
 
 		$_REQUEST = array(); // WP Cleans up only $_POST and $_GET.
+		$this->reset__SERVER();
 
 		parent::tear_down();
 	}
