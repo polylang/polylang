@@ -423,7 +423,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		/** @var PLL_Language $language */
 		$language = $this->get_language( $term_id );
 		if ( ! empty( $args['lang'] ) ) {
-			$language = $this->model->get_language( $args['lang'] );
+			$language = $this->languages->get( $args['lang'] );
 			if ( ! $language instanceof PLL_Language ) {
 				return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
 			}
