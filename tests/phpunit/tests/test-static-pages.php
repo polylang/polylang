@@ -83,12 +83,6 @@ class Static_Pages_Test extends PLL_UnitTestCase {
 		$this->links_model->init();
 	}
 
-	public function tear_down() {
-		$this->reset__SERVER();
-
-		parent::tear_down();
-	}
-
 	private function init_test( $env = 'frontend' ) {
 		$pll_admin = new PLL_Admin( $this->links_model );
 		$pll_admin->links = new PLL_Admin_Links( $pll_admin );

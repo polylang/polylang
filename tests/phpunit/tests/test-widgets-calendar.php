@@ -25,12 +25,6 @@ class Widget_Calendar_Test extends PLL_UnitTestCase {
 		$this->links_model = self::$model->get_links_model();
 	}
 
-	public function tear_down() {
-		$this->reset__SERVER();
-
-		parent::tear_down();
-	}
-
 	public function test_get_calendar() {
 		$en = self::factory()->post->create( array( 'post_date' => '2007-09-04 00:00:00' ) );
 		self::$model->post->set_language( $en, 'en' );

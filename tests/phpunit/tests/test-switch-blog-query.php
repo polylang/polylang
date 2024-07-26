@@ -3,12 +3,6 @@
 if ( is_multisite() ) :
 
 	class Switch_Blog_Query_Test extends PLL_Multisites_TestCase {
-		public function tear_down() {
-			$this->reset__SERVER();
-
-			parent::tear_down();
-		}
-
 		/**
 		 * @testWith ["http://example.org", "en"]
 		 *           ["http://example.org", "fr"]

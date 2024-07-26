@@ -25,6 +25,8 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 
 		remove_all_actions( 'wp_default_styles' ); // So `PLL_Choose_Lang::set_language()` doesn't calls `wp_styles()`, same behavior as production environment.
 
+		$this->server = $_SERVER; // save this
+
 		$this->hosts = array(
 			'en' => 'http://example.org',
 			'fr' => 'http://example.fr',
@@ -51,9 +53,9 @@ class Choose_Lang_Domain_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
-		$this->reset__SERVER();
-
 		parent::tear_down();
+
+		$_SERVER = $this->server;
 	}
 
 	/**

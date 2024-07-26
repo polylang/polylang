@@ -21,11 +21,11 @@ class Admin_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
-		remove_action( 'customize_register', array( $this, 'whatever' ) );
-		switch_theme( self::$stylesheet );
-		$this->reset__SERVER();
-
 		parent::tear_down();
+
+		remove_action( 'customize_register', array( $this, 'whatever' ) );
+
+		switch_theme( self::$stylesheet );
 	}
 
 	public function test_admin_bar_menu() {

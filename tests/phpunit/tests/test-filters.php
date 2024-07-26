@@ -25,12 +25,6 @@ class Filters_Test extends PLL_UnitTestCase {
 		new PLL_Frontend_Filters_Links( $this->frontend );
 	}
 
-	public function tear_down() {
-		$this->reset__SERVER();
-
-		parent::tear_down();
-	}
-
 	public function test_get_pages() {
 		foreach ( self::factory()->post->create_many( 3, array( 'post_type' => 'page' ) ) as $page ) {
 			self::$model->post->set_language( $page, 'en' );

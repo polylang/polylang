@@ -51,13 +51,12 @@ class Query_Test extends PLL_UnitTestCase {
 	}
 
 	public function tear_down() {
+		parent::tear_down();
+
 		_unregister_post_type( 'cpt' );
 		_unregister_taxonomy( 'tax' );
 		_unregister_post_type( 'trcpt' );
 		_unregister_taxonomy( 'trtax' );
-		$this->reset__SERVER();
-
-		parent::tear_down();
 	}
 
 	/**

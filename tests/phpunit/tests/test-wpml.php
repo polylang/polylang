@@ -35,8 +35,6 @@ class WPML_Test extends PLL_UnitTestCase {
 		add_filter( 'pll_get_strings', '__return_empty_array' ); // Remove all registered strings.
 
 		unset( $GLOBALS['polylang'] );
-
-		$this->reset__SERVER();
 	}
 
 	/**

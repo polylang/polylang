@@ -40,12 +40,6 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 		$this->frontend = new PLL_Frontend( $links_model );
 	}
 
-	public function tear_down() {
-		$this->reset__SERVER();
-
-		parent::tear_down();
-	}
-
 	/**
 	 * Overrides WP_UnitTestCase::go_to().
 	 *
