@@ -166,7 +166,7 @@ class PLL_Static_Pages {
 	/**
 	 * Translates the page on front or page for posts option.
 	 *
-	 * @since 3.6 Replaces `translate_page_on_front()` and `translate_page_on_front()` methods.
+	 * @since 3.6 Replaces `translate_page_on_front()` and `translate_page_for_posts()` methods.
 	 *
 	 * @param  int    $page_id ID of the page on front or page for posts.
 	 * @param  string $option Option name: `page_on_front` or `page_for_posts`.
