@@ -561,6 +561,71 @@ function pll_count_posts( $lang, $args = array() ) {
 }
 
 /**
+ * Wraps `wp_insert_term` with language feature.
+ *
+ * @since 3.7
+ *
+ * @param string              $term     The term name to add.
+ * @param string              $taxonomy The taxonomy to which to add the term.
+ * @param PLL_Language|string $language The term language object or slug.
+ * @param array               $args {
+ *            Optional. Array of arguments for inserting a term.
+ *
+ *     @type string   $alias_of     Slug of the term to make this term an alias of.
+ *                                  Default empty string. Accepts a term slug.
+ *     @type string   $description  The term description. Default empty string.
+ *     @type int      $parent       The id of the parent term. Default 0.
+ *     @type string   $slug         The term slug to use. Default empty string.
+ *     @type string[] $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+ * }
+ * @return array|WP_Error {
+ *     An array of the new term data, `WP_Error` otherwise.
+ *
+ *     @type int        $term_id          The new term ID.
+ *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+ * }
+ */
+function pll_insert_term( string $term, string $taxonomy, $language, array $args = array() ) {
+	$language = PLL()->model->get_language( $language );
+
+	if ( ! $language instanceof PLL_Language ) {
+		return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+	}
+
+	return PLL()->model->term->insert( $term, $taxonomy, $language, $args );
+}
+
+/**
+ * Wraps `wp_update_term` with language feature.
+ *
+ * @since 3.7
+ *
+ * @param int   $term_id The ID of the term.
+ * @param array $args {
+ *     Optional. Array of arguments for updating a term.
+ *
+ *     @type string              $alias_of     Slug of the term to make this term an alias of.
+ *                                             Default empty string. Accepts a term slug.
+ *     @type string              $description  The term description. Default empty string.
+ *     @type int                 $parent       The id of the parent term. Default 0.
+ *     @type string              $slug         The term slug to use. Default empty string.
+ *     @type string              $name         The term name.
+ *     @type PLL_Language|string $lang         The term language object or slug.
+ *     @type string[]            $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
+ * }
+ * @return array|WP_Error {
+ *     An array containing the `term_id` and `term_taxonomy_id`, `WP_Error` otherwise.
+ *
+ *     @type int        $term_id          The new term ID.
+ *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+ * }
+ */
+function pll_update_term( int $term_id, array $args = array() ) {
+	return PLL()->model->term->update( $term_id, $args );
+}
+
+
+/**
  * Allows to access the Polylang instance.
  * However, it is always preferable to use API functions
  * as internal methods may be changed without prior notice.
