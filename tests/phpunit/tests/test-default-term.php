@@ -32,6 +32,12 @@ class Default_Term_Test extends PLL_UnitTestCase {
 		self::create_language( 'es_ES' );
 	}
 
+	public function tear_down() {
+		// Forces language deletion since they're created in `set_up()` and not `wpSetUpBeforeClass()` as usual.
+		self::delete_all_languages();
+		parent::tear_down();
+	}
+
 	protected function get_edit_term_form( $tag_ID, $taxonomy ) {
 		// Prepare all needed info before loading the entire form
 		$GLOBALS['post_type'] = 'post';
