@@ -609,11 +609,12 @@ function pll_insert_term( string $term, string $taxonomy, $language, array $args
  *     @type string              $description  The term description. Default empty string.
  *     @type int                 $parent       The id of the parent term. Default 0.
  *     @type string              $slug         The term slug to use. Default empty string.
+ *     @type string              $name         The term name.
  *     @type PLL_Language|string $lang         The term language object or slug.
  *     @type string[]            $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
  * }
  * @return array|WP_Error {
- *     An array of the new term data, `WP_Error` otherwise.
+ *     An array containing the `term_id` and `term_taxonomy_id`, `WP_Error` otherwise.
  *
  *     @type int        $term_id          The new term ID.
  *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.

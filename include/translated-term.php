@@ -461,69 +461,25 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @param int          $parent The parent term id to use.
 	 * @return void
 	 */
-	private function toggle_inserted_term_filters( $language, $parent ): void {
-		static $enabled = false;
-
-		if ( $enabled ) {
+	private function toggle_inserted_term_filters( PLL_Language $language, int $parent ): void {
+		static $callbacks = array();
+		if ( isset( $callbacks[ $language->slug ], $callbacks[ (string) $parent ] ) ) {
 			// Clean up!
-			remove_filter( 'pll_inserted_term_language', $this->get_slug_management_language_callback( $language ) );
-			remove_filter( 'pll_inserted_term_parent', $this->get_slug_management_parent_callback( $parent ) );
-			$enabled = false;
-		} else {
-			// Set term parent and language for suffixed slugs.
-			add_filter( 'pll_inserted_term_language', $this->get_slug_management_language_callback( $language ) );
-			add_filter( 'pll_inserted_term_parent', $this->get_slug_management_parent_callback( $parent ) );
-			$enabled = true;
-		}
-	}
-
-	/**
-	 * Returns language callback for term slug modification.
-	 * Used along the hook `pll_inserted_term_language`.
-	 *
-	 * @since 3.7
-	 *
-	 * @param PLL_Language $language The language to use.
-	 * @return Closure The callback for the hook.
-	 */
-	private function get_slug_management_language_callback( PLL_Language $language ): Closure {
-		static $callback    = null;
-		static $cached_lang = null;
-
-		if ( $callback instanceof Closure && $cached_lang instanceof PLL_Language && $language->slug === $cached_lang->slug ) {
-			return $callback;
+			remove_filter( 'pll_inserted_term_language', $callbacks[ $language->slug ] );
+			remove_filter( 'pll_inserted_term_parent', $callbacks[ (string) $parent ] );
+			unset( $callbacks[ $language->slug ], $callbacks[ (string) $parent ] );
+			return;
 		}
 
-		$callback    = function () use ( $language ) {
+		$callbacks[ $language->slug ] = function () use ( $language ) {
 			return $language;
 		};
-		$cached_lang = $language;
-
-		return $callback;
-	}
-
-	/**
-	 * Returns parent callback for term slug modification.
-	 * Used along the hook `pll_inserted_term_parent`.
-	 *
-	 * @since 3.7
-	 *
-	 * @param int $parent The parent term id to use.
-	 * @return Closure The callback for the hook.
-	 */
-	private function get_slug_management_parent_callback( int $parent ): Closure {
-		static $callback      = null;
-		static $cached_parent = null;
-
-		if ( $callback instanceof Closure && is_int( $cached_parent ) && $parent === $cached_parent ) {
-			return $callback;
-		}
-
-		$callback    = function () use ( $parent ) {
+		$callbacks[ (string) $parent ] = function () use ( $parent ) {
 			return $parent;
 		};
-		$cached_parent = $parent;
 
-		return $callback;
+		// Set term parent and language for suffixed slugs.
+		add_filter( 'pll_inserted_term_language', $callbacks[ $language->slug ] );
+		add_filter( 'pll_inserted_term_parent', $callbacks[ (string) $parent ] );
 	}
 }
