@@ -214,6 +214,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->post->save_translations( $en, compact( 'fr' ) );
 
 		// source page
+		$GLOBALS['pagenow'] = 'post-new.php';
+
 		$from = self::factory()->post->create( array( 'post_type' => 'page', 'menu_order' => 12, 'post_parent' => $en ) );
 		self::$model->post->set_language( $from, 'en' );
 		add_post_meta( $from, '_wp_page_template', 'full-width.php' );
@@ -230,7 +232,6 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$to = self::factory()->post->create( array( 'post_type' => 'page' ) );
 
-		$GLOBALS['pagenow'] = 'post-new.php';
 		$GLOBALS['post'] = get_post( $to );
 
 		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // fires the copy
@@ -551,9 +552,10 @@ class Sync_Test extends PLL_UnitTestCase {
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
+		$GLOBALS['pagenow'] = 'post-new.php';
+
 		$to = self::factory()->post->create();
 
-		$GLOBALS['pagenow'] = 'post-new.php';
 		$GLOBALS['post'] = get_post( $to );
 
 		do_action( 'add_meta_boxes', 'post', $GLOBALS['post'] ); // fires the copy

@@ -139,12 +139,13 @@ trait PLL_UnitTestCase_Trait {
 	public function tear_down() {
 		self::$model->clean_languages_cache(); // We must do it before database ROLLBACK otherwise it is impossible to delete the transient.
 
-		$globals = array( 'current_screen', 'hook_suffix', 'wp_settings_errors', 'post_type', 'wp_scripts', 'wp_styles' );
+		$globals = array( 'current_screen', 'hook_suffix', 'wp_settings_errors', 'post_type', 'taxonomy', 'wp_scripts', 'wp_styles', 'pagenow', 'taxnow' );
 		foreach ( $globals as $global ) {
 			$GLOBALS[ $global ] = null;
 		}
 
 		$_REQUEST = array(); // WP Cleans up only $_POST and $_GET.
+		$this->reset__SERVER();
 
 		parent::tear_down();
 	}
