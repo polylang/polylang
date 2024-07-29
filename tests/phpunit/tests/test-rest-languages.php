@@ -171,7 +171,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->assertSame( 'fra', $data['slug'] );
 
 		// By `slug`.
-		$request = new WP_REST_Request( 'GET', "/pll/v1/languages/fra" );
+		$request = new WP_REST_Request( 'GET', '/pll/v1/languages/fra' );
 		$response = $this->server->dispatch( $request );
 
 		$this->assertSame( 200, $response->get_status() );
