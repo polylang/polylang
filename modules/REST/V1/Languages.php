@@ -109,6 +109,28 @@ class Languages extends WP_REST_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			"/{$this->rest_base}/(?P<slug>[a-z_-]+)",
+			array(
+				'args'   => array(
+					'slug'    => array(
+						'description' => __( 'Language code - preferably 2-letters ISO 639-1 (for example: en).', 'polylang' ),
+						'type'        => 'string',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_item' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'args'                => array(
+						'context' => $this->get_context_param( array( 'default' => 'view' ) ),
+					),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -224,11 +246,13 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @phpstan-template T of array{
 	 *     term_id: int
+	 * }|array{
+	 *     slug: non-empty-string
 	 * }
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_item( $request ) {
-		$language = $this->get_language( $request['term_id'] );
+		$language = $this->get_language( $request );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -257,7 +281,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
-		$language = $this->get_language( $request['term_id'] );
+		$language = $this->get_language( $request );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -316,7 +340,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item( $request ) {
-		$language = $this->get_language( $request['term_id'] );
+		$language = $this->get_language( $request );
 
 		if ( is_wp_error( $language ) ) {
 			return $language;
@@ -729,21 +753,38 @@ class Languages extends WP_REST_Controller {
 	 *
 	 * @since 3.7
 	 *
-	 * @param int $id Supplied ID.
-	 * @return PLL_Language|WP_Error Language object if the ID is valid, WP_Error otherwise.
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return PLL_Language|WP_Error Language object if the ID or slug is valid, WP_Error otherwise.
+	 *
+	 * @phpstan-template T of array{
+	 *     term_id: int
+	 * }|array{
+	 *     slug: non-empty-string
+	 * }
+	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	private function get_language( int $id ) {
-		$error = new WP_Error(
-			'rest_invalid_id',
-			__( 'Invalid language ID', 'polylang' ),
-			array( 'status' => 404 )
-		);
+	private function get_language( WP_REST_Request $request ) {
+		if ( ! empty( $request['term_id'] ) ) {
+			$error = new WP_Error(
+				'rest_invalid_id',
+				__( 'Invalid language ID', 'polylang' ),
+				array( 'status' => 404 )
+			);
 
-		if ( $id <= 0 ) {
-			return $error;
+			if ( $request['term_id'] <= 0 ) {
+				return $error;
+			}
+
+			$language = $this->languages->get( (int) $request['term_id'] );
+		} else {
+			$error = new WP_Error(
+				'rest_invalid_slug',
+				__( 'Invalid language slug', 'polylang' ),
+				array( 'status' => 404 )
+			);
+
+			$language = $this->languages->get( (string) $request['slug'] );
 		}
-
-		$language = $this->languages->get( $id );
 
 		if ( ! $language instanceof PLL_Language ) {
 			return $error;

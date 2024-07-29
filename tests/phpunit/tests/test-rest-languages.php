@@ -156,9 +156,10 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_get_language() {
-		$fr_id = self::factory()->language->create( array( 'locale' => 'fr_FR' ) );
+		$fr_id = self::factory()->language->create( array( 'locale' => 'fr_FR', 'slug' => 'fra' ) );
 		self::factory()->language->create( array( 'locale' => 'en_US' ) );
 
+		// By `term_id`.
 		$request = new WP_REST_Request( 'GET', "/pll/v1/languages/{$fr_id}" );
 		$response = $this->server->dispatch( $request );
 
@@ -167,7 +168,13 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
 		$this->assertArrayHasKey( 'slug', $data );
-		$this->assertSame( 'fr', $data['slug'] );
+		$this->assertSame( 'fra', $data['slug'] );
+
+		// By `slug`.
+		$request = new WP_REST_Request( 'GET', "/pll/v1/languages/fra" );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertSame( 200, $response->get_status() );
 	}
 
 	/**
