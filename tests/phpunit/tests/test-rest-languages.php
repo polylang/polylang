@@ -91,7 +91,7 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->assertArrayHasKey( 'name', $data );
 		$this->assertSame( $language['name'], $data['name'] );
 		$this->assertArrayHasKey( 'is_rtl', $data );
-		$this->assertSame( (bool) $language['dir'], $data['is_rtl'] );
+		$this->assertSame( 'rtl' === $language['dir'], $data['is_rtl'] );
 		$this->assertArrayHasKey( 'flag_code', $data );
 		$this->assertSame( $language['flag'], $data['flag_code'] );
 		$this->assertArrayHasKey( 'facebook', $data );
