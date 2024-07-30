@@ -382,7 +382,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @return string
 	 */
 	public function get_rest_description(): string {
-		return __( 'Properties for post types translated by Polylang in this language.', 'polylang' );
+		return __( 'Language taxonomy properties for post types.', 'polylang' );
 	}
 
 	/**

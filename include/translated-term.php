@@ -324,7 +324,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @return string
 	 */
 	public function get_rest_description(): string {
-		return __( 'Properties for taxonomy terms in this language.', 'polylang' );
+		return __( 'Language taxonomy properties for terms.', 'polylang' );
 	}
 
 	/**
