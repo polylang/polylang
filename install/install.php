@@ -83,49 +83,23 @@ class PLL_Install extends PLL_Install_Base {
 	}
 
 	/**
-	 * Get default Polylang options.
-	 *
-	 * @since 1.8
-	 *
-	 * @return array
-	 */
-	public static function get_default_options() {
-		return array(
-			'browser'                           => 0, // Default language for the front page is not set by browser preference (was the opposite before 3.1).
-			'rewrite'                           => 1, // Remove /language/ in permalinks (was the opposite before 0.7.2).
-			'hide_default'                      => 1, // Remove URL language information for default language (was the opposite before 2.1.5).
-			'force_lang'                        => 1, // Add URL language information (was 0 before 1.7).
-			'redirect_lang'                     => 0, // Do not redirect the language page to the homepage.
-			'media_support'                     => 0, // Do not support languages and translation for media by default (was the opposite before 3.1).
-			'uninstall'                         => 0, // Do not remove data when uninstalling Polylang.
-			'sync'                              => array(), // Synchronisation is disabled by default (was the opposite before 1.2).
-			'post_types'                        => array(),
-			'taxonomies'                        => array(),
-			'domains'                           => array(),
-			'version'                           => POLYLANG_VERSION,
-			'first_activation'                  => time(),
-			'hide_language_from_content_option' => self::should_hide_language_from_content_option(),
-		);
-	}
-
-	/**
-	 * Tells whether the "The language is set from content" option should be shown.
+	 * Tells whether the "The language is set from content" option should be hidden.
 	 *
 	 * @since 3.7
 	 *
 	 * @return bool
 	 */
 	public static function should_hide_language_from_content_option(): bool {
-		$show_option = defined( 'PLL_SHOW_LANGUAGE_FROM_CONTENT_OPTION' ) && PLL_SHOW_LANGUAGE_FROM_CONTENT_OPTION;
+		$display_option = defined( 'PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION' ) && PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION;
 
 		/**
-		 * Filters whether the "The language is set from content" option should be shown.
+		 * Filters whether the "The language is set from content" option should be displayed.
 		 *
 		 * @since 3.7
 		 *
-		 * @param bool $show_option True to show the option, false otherwise.
+		 * @param bool $display_option True to display the option, false otherwise.
 		 */
-		return ! apply_filters( 'pll_show_language_from_content_option', $show_option );
+		return ! apply_filters( 'pll_display_language_from_content_option', $display_option );
 	}
 
 	/**

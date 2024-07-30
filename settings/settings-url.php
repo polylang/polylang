@@ -51,7 +51,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @return void
 	 */
 	protected function force_lang() {
-		if ( ! empty( $this->options['hide_language_from_content_option'] ) ) {
+		if ( $this->options['hide_language_from_content_option'] && 0 !== $this->options['force_lang'] ) {
 			// Hide the "Language is set from content" option.
 			?>
 			<p class="description"><?php esc_html_e( 'Some themes or plugins may not be fully compatible with the language defined by domains.', 'polylang' ); ?></p>
