@@ -90,7 +90,7 @@ class PLL_Install extends PLL_Install_Base {
 	 * @return bool
 	 */
 	public static function should_hide_language_from_content_option(): bool {
-		$display_option = pll_get_constant( 'PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION', false );
+		$display_option = (bool) pll_get_constant( 'PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION', false );
 
 		/**
 		 * Filters whether the "The language is set from content" option should be displayed.
