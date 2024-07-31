@@ -76,6 +76,15 @@ class Languages extends WP_REST_Controller {
 			)
 		);
 
+		$readable = array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_item' ),
+			'permission_callback' => array( $this, 'get_item_permissions_check' ),
+			'args'                => array(
+				'context' => $this->get_context_param( array( 'default' => 'view' ) ),
+			),
+		);
+
 		register_rest_route(
 			$this->namespace,
 			"/{$this->rest_base}/(?P<term_id>[\d]+)",
@@ -86,14 +95,7 @@ class Languages extends WP_REST_Controller {
 						'type'        => 'integer',
 					),
 				),
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_item' ),
-					'permission_callback' => array( $this, 'get_item_permissions_check' ),
-					'args'                => array(
-						'context' => $this->get_context_param( array( 'default' => 'view' ) ),
-					),
-				),
+				$readable,
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_item' ),
@@ -120,14 +122,7 @@ class Languages extends WP_REST_Controller {
 						'type'        => 'string',
 					),
 				),
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_item' ),
-					'permission_callback' => array( $this, 'get_item_permissions_check' ),
-					'args'                => array(
-						'context' => $this->get_context_param( array( 'default' => 'view' ) ),
-					),
-				),
+				$readable,
 				'schema'      => array( $this, 'get_public_item_schema' ),
 				'allow_batch' => array( 'v1' => true ),
 			)
