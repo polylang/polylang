@@ -21,6 +21,63 @@ defined( 'ABSPATH' ) || exit;
  * Languages REST controller.
  *
  * @since 3.7
+ *
+ * @phpstan-type LanguagePropsAll array{
+ *     term_id?: int,
+ *     slug?: non-empty-string,
+ *     locale?: non-empty-string,
+ *     name?: non-empty-string,
+ *     is_rtl?: bool,
+ *     term_group?: int,
+ *     flag_code?: non-empty-string,
+ *     no_default_cat?: bool
+ * }
+ * @phpstan-type LanguagePropsUpdate array{
+ *     term_id: int,
+ *     slug?: non-empty-string,
+ *     locale?: non-empty-string,
+ *     name?: non-empty-string,
+ *     is_rtl?: bool,
+ *     term_group?: int,
+ *     flag_code?: non-empty-string
+ * }
+ * @phpstan-type LanguagePropsCreate array{
+ *     locale: non-empty-string,
+ *     slug?: non-empty-string,
+ *     name?: non-empty-string,
+ *     is_rtl?: bool,
+ *     term_group?: int,
+ *     flag_code?: non-empty-string,
+ *     no_default_cat?: bool
+ * }
+ * @phpstan-type MandatoryPropsUpdate array{
+ *     lang_id: int,
+ *     locale: non-empty-string,
+ *     slug: non-empty-string,
+ *     name: non-empty-string,
+ *     rtl: bool,
+ *     term_group: int,
+ *     flag?: non-empty-string
+ * }
+ * @phpstan-type MandatoryPropsCreate array{
+ *    locale: non-empty-string,
+ *    slug: non-empty-string,
+ *    name: non-empty-string,
+ *    rtl: bool,
+ *    term_group: int,
+ *    flag: non-empty-string,
+ *    no_default_cat?: bool
+ * }
+ * @phpstan-type PreparedPropsAll object{
+ *     lang_id?: int,
+ *     name?: non-empty-string,
+ *     slug?: non-empty-string,
+ *     locale?: non-empty-string,
+ *     flag?: non-empty-string,
+ *     rtl?: bool,
+ *     term_group?: int,
+ *     no_default_cat?: bool
+ * }
  */
 class Languages extends WP_REST_Controller {
 	/**
@@ -158,15 +215,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
-	 * @phpstan-template T of array{
-	 *     locale: non-empty-string,
-	 *     slug?: non-empty-string,
-	 *     name?: non-empty-string,
-	 *     is_rtl?: bool,
-	 *     term_group?: int,
-	 *     flag_code?: non-empty-string,
-	 *     no_default_cat?: bool
-	 * }
+	 * @phpstan-template T of LanguagePropsCreate
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function create_item( $request ) {
@@ -178,49 +227,13 @@ class Languages extends WP_REST_Controller {
 			);
 		}
 
-		/**
-		 * $request: locale, slug, name, is_rtl, term_group, flag_code
-		 * $args:    locale, slug, name, rtl,    term_group, flag? (from add_language())
-		 */
-		if ( ! isset( $request['slug'], $request['name'], $request['is_rtl'], $request['flag_code'] ) ) {
-			$languages = include POLYLANG_DIR . '/settings/languages.php';
+		// At this point, `$request['locale']` is provided (but maybe not valid).
+		$prepared = $this->map_data_for_database( $request );
 
-			if ( empty( $languages[ $request['locale'] ] ) ) {
-				return new WP_Error(
-					'rest_invalid_locale',
-					__( 'The locale is invalid.', 'polylang' ),
-					array( 'status' => 400 )
-				);
-			}
-
-			$language = $languages[ $request['locale'] ];
-			$defaults = array(
-				'slug'       => $language['code'],
-				'name'       => $language['name'],
-				'rtl'        => 'rtl' === $language['dir'],
-				'flag'       => $language['flag'],
-				'term_group' => 0,
-			);
-		} else {
-			$defaults = array(
-				'term_group' => 0,
-			);
+		if ( is_wp_error( $prepared ) ) {
+			return $prepared;
 		}
 
-		$prepared = (array) $this->prepare_item_for_database( $request );
-		$prepared = array_merge( $defaults, $prepared );
-
-		/**
-		 * @phpstan-var array{
-		 *     locale: non-empty-string,
-		 *     slug: non-empty-string,
-		 *     name: non-empty-string,
-		 *     rtl: bool,
-		 *     term_group: int,
-		 *     flag: non-empty-string,
-		 *     no_default_cat?: bool
-		 * } $prepared
-		 */
 		$result = $this->languages->add( $prepared );
 
 		if ( is_wp_error( $result ) ) {
@@ -265,15 +278,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
-	 * @phpstan-template T of array{
-	 *     term_id: int,
-	 *     slug?: non-empty-string,
-	 *     locale?: non-empty-string,
-	 *     name?: non-empty-string,
-	 *     is_rtl?: bool,
-	 *     term_group?: int,
-	 *     flag_code?: non-empty-string
-	 * }
+	 * @phpstan-template T of LanguagePropsUpdate
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
@@ -283,42 +288,22 @@ class Languages extends WP_REST_Controller {
 			return $language;
 		}
 
-		$prepared = (array) $this->prepare_item_for_database( $request );
+		// At this point, `$request['term_id']` is provided and valid.
+		$prepared = $this->map_data_for_database( $request, $language );
 
-		if ( ! empty( $prepared ) ) {
-			if ( ! isset( $prepared['slug'], $prepared['locale'], $prepared['name'], $prepared['rtl'], $prepared['term_group'] ) ) {
-				$prepared = array_merge(
-					array(
-						'slug'       => $language->slug,
-						'locale'     => $language->locale,
-						'name'       => $language->name,
-						'rtl'        => (bool) $language->is_rtl,
-						'term_group' => $language->term_group,
-					),
-					$prepared
-				);
-			}
-			/**
-			 * @phpstan-var array{
-			 *     lang_id: int,
-			 *     slug: non-empty-string,
-			 *     locale: non-empty-string,
-			 *     name: non-empty-string,
-			 *     rtl: bool,
-			 *     term_group: int,
-			 *     flag?: non-empty-string
-			 * } $prepared
-			 */
-			$update = $this->languages->update( $prepared );
-
-			if ( is_wp_error( $update ) ) {
-				return $this->add_status_to_error( $update );
-			}
-
-			/** @var PLL_Language */
-			$language = $this->languages->get( $language->term_id );
+		if ( is_wp_error( $prepared ) ) {
+			// Should not happen, but if it does, it's our fault.
+			return $prepared;
 		}
 
+		$update = $this->languages->update( $prepared );
+
+		if ( is_wp_error( $update ) ) {
+			return $this->add_status_to_error( $update );
+		}
+
+		/** @var PLL_Language */
+		$language = $this->languages->get( $language->term_id );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
@@ -689,6 +674,89 @@ class Languages extends WP_REST_Controller {
 	}
 
 	/**
+	 * Prepares the lanague data for database and fills in empty values.
+	 *
+	 * @since 3.7
+	 *
+	 * @param WP_REST_Request   $request  Full details about the request.
+	 * @param PLL_Language|null $language When updating a language, the said language. Null on language creation.
+	 * @return array|WP_Error
+	 *
+	 * @phpstan-template T of LanguagePropsAll
+	 * @phpstan-param WP_REST_Request<T> $request
+	 * @phpstan-return (
+	 *     $language is PLL_Language ? MandatoryPropsUpdate : MandatoryPropsCreate
+	 * )|WP_Error
+	 */
+	protected function map_data_for_database( WP_REST_Request $request, ?PLL_Language $language = null ) {
+		$prepared = (array) $this->prepare_item_for_database( $request );
+
+		if ( ! empty( $language ) ) {
+			// Update language.
+			if ( empty( $prepared['lang_id'] ) ) {
+				// Should not happen.
+				return new WP_Error(
+					'rest_invalid_id',
+					__( 'Invalid language ID', 'polylang' ),
+					array( 'status' => 400 )
+				);
+			}
+
+			if ( isset( $prepared['slug'], $prepared['locale'], $prepared['name'], $prepared['rtl'], $prepared['term_group'] ) ) {
+				return $prepared;
+			}
+
+			/** @phpstan-var MandatoryPropsUpdate */
+			return array_merge(
+				array(
+					'slug'       => $language->slug,
+					'locale'     => $language->locale,
+					'name'       => $language->name,
+					'rtl'        => (bool) $language->is_rtl,
+					'term_group' => $language->term_group,
+				),
+				$prepared
+			);
+		}
+
+		// Create language.
+		$error = new WP_Error(
+			'rest_invalid_locale',
+			__( 'The locale is invalid.', 'polylang' ),
+			array( 'status' => 400 )
+		);
+
+		if ( empty( $prepared['locale'] ) ) {
+			// Should not happen.
+			return $error;
+		}
+
+		if ( isset( $prepared['slug'], $prepared['name'], $prepared['rtl'], $prepared['flag'] ) ) {
+			$prepared['term_group'] ?? 0;
+			/** @phpstan-var MandatoryPropsCreate */
+			return $prepared;
+		}
+
+		$languages = include POLYLANG_DIR . '/settings/languages.php';
+
+		if ( empty( $languages[ $prepared['locale'] ] ) ) {
+			return $error;
+		}
+
+		/** @phpstan-var MandatoryPropsCreate */
+		return array_merge(
+			array(
+				'slug'       => $languages[ $prepared['locale'] ]['code'],
+				'name'       => $languages[ $prepared['locale'] ]['name'],
+				'rtl'        => 'rtl' === $languages[ $prepared['locale'] ]['dir'],
+				'flag'       => $languages[ $prepared['locale'] ]['flag'],
+				'term_group' => 0,
+			),
+			$prepared
+		);
+	}
+
+	/**
 	 * Prepares one language for create or update operation.
 	 *
 	 * @since 3.7
@@ -696,18 +764,9 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Request object.
 	 * @return object|WP_Error The prepared language, or WP_Error object on failure.
 	 *
-	 * @phpstan-template T of array{
-	 *     term_id?: int,
-	 *     name?: non-empty-string,
-	 *     slug?: non-empty-string,
-	 *     locale?: non-empty-string,
-	 *     flag_code?: non-empty-string,
-	 *     is_rtl?: bool,
-	 *     term_group?: int,
-	 *     no_default_cat?: bool
-	 * }
+	 * @phpstan-template T of LanguagePropsAll
 	 * @phpstan-param WP_REST_Request<T> $request
-	 * @phpstan-return stdClass
+	 * @phpstan-return PreparedPropsAll
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$prepared = new stdClass(); // WP_REST_Controller imposes to return an object.
@@ -730,6 +789,7 @@ class Languages extends WP_REST_Controller {
 			}
 		}
 
+		/** @phpstan-var PreparedPropsAll */
 		return $prepared;
 	}
 
