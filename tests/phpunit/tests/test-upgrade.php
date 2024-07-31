@@ -1,6 +1,8 @@
 <?php
 
 class Upgrade_Test extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
+
 	protected $options_backup;
 
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
@@ -74,5 +76,30 @@ class Upgrade_Test extends PLL_UnitTestCase {
 
 		$this->assertSameSets( $expected_transient, get_transient( 'pll_languages_list' ), 'Old pll_languages_list transient should have been deleted during upgrade.' );
 		$this->assertSame( POLYLANG_VERSION, $admin->options['version'], 'Polylang version should have been updated.' );
+	}
+
+	/**
+	 * @testWith [false]
+	 *           [true]
+	 *
+	 * @param bool $constant_value
+	 * @return void
+	 */
+	public function test_hide_language_defined_from_content_option_on_upgrade_to_3_7( bool $constant_value ) {
+		remove_all_actions( 'admin_init' ); // Avoid to send WP headers when calling `do_action( 'admin_init' )`.
+
+		$options = self::create_options(
+			array(
+				'force_lang' => 1,
+				'version'    => '3.6',
+			)
+		);
+
+		$this->mock_constants( array( 'PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION' => $constant_value ) );
+
+		( new PLL_Upgrade( $options ) )->upgrade();
+		do_action( 'admin_init' );
+
+		$this->assertSame( ! $constant_value, $options['hide_language_from_content_option'] );
 	}
 }

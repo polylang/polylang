@@ -1,9 +1,12 @@
 <?php
 
 class Install_Test extends PLL_UnitTestCase {
+	use PLL_Mocks_Trait;
 
 	public function test_activate() {
 		delete_option( 'polylang' );
+		$this->mock_constants( array( 'PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION' => false ) );
+
 		do_action( 'activate_' . POLYLANG_BASENAME );
 
 		// Check a few options
@@ -13,6 +16,19 @@ class Install_Test extends PLL_UnitTestCase {
 		$this->assertSame( 1, $options['force_lang'] );
 		$this->assertEmpty( $options['sync'] );
 		$this->assertSame( POLYLANG_VERSION, $options['version'] );
+		$this->assertTrue( $options['hide_language_from_content_option'] );
+	}
+
+	public function test_activate_display_language_defined_from_content_option() {
+		delete_option( 'polylang' );
+		$this->mock_constants( array( 'PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION' => true ) );
+
+		do_action( 'activate_' . POLYLANG_BASENAME );
+
+		// Check a few options
+		$options = get_option( 'polylang' );
+		$this->assertIsArray( $options );
+		$this->assertFalse( $options['hide_language_from_content_option'] );
 	}
 
 	/**
