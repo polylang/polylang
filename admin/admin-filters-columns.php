@@ -335,7 +335,7 @@ class PLL_Admin_Filters_Columns {
 			$out .= $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
 		}
 
-		if ( $column == $this->get_first_language_column() ) {
+		if ( $this->get_first_language_column() === $column ) {
 			$out .= sprintf( '<div class="hidden" id="lang_%d">%s</div>', intval( $term_id ), esc_html( $lang->slug ) );
 
 			/**
@@ -344,7 +344,7 @@ class PLL_Admin_Filters_Columns {
 			 * @since 3.7
 			 *
 			 * @param string $output  First language column output.
-			 * @param int    $term_id Term ID
+			 * @param int    $term_id Term ID.
 			 * @param string $lang    Language code.
 			 */
 			$out = apply_filters( 'pll_first_language_term_column', $out, $term_id, $lang->slug );
