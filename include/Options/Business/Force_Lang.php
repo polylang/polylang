@@ -6,15 +6,38 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Syntex\Polylang\Options\Abstract_Option;
+use WP_Syntex\Polylang\Options\Options;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Class defining the "Determine how the current language is defined" option.
+ * /!\ Constructor depends on `hide_language_from_content_option`: this option must be set AFTER `hide_language_from_content_option`.
  *
  * @since 3.7
  */
 class Force_Lang extends Abstract_Option {
+	/**
+	 * @var array
+	 */
+	private $enum = array( 0, 1, 2, 3 );
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.7
+	 *
+	 * @param mixed   $value   Option value. Use `null` to set the default value.
+	 * @param Options $options All options.
+	 */
+	public function __construct( $value, Options $options ) {
+		if ( $options->get( 'hide_language_from_content_option' ) ) {
+			$this->enum = array( 1, 2, 3 );
+		}
+
+		parent::__construct( $value );
+	}
+
 	/**
 	 * Returns option key.
 	 *
@@ -51,7 +74,7 @@ class Force_Lang extends Abstract_Option {
 	protected function get_data_structure(): array {
 		return array(
 			'type' => 'integer',
-			'enum' => array( 0, 1, 2, 3 ),
+			'enum' => $this->enum,
 		);
 	}
 

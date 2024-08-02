@@ -52,9 +52,9 @@ abstract class Abstract_Option {
 	 *
 	 * @since 3.7
 	 *
-	 * @param mixed $value Optional. Option value.
+	 * @param mixed $value Option value. Use `null` to set the default value.
 	 */
-	public function __construct( $value = null ) {
+	public function __construct( $value ) {
 		$this->errors = new WP_Error();
 
 		if ( ! isset( $value ) ) {

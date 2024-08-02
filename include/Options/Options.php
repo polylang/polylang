@@ -102,7 +102,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 
 			if ( ! array_key_exists( $key, $options ) ) {
 				// Option raw value doesn't exist in database, use default instead.
-				$options[ $key ] = new $class_name();
+				$options[ $key ] = new $class_name( null, $this );
 				continue;
 			}
 
@@ -113,7 +113,7 @@ class Options implements ArrayAccess, IteratorAggregate {
 			}
 
 			// Option raw value exists in database, use it.
-			$options[ $key ] = new $class_name( $options[ $key ] );
+			$options[ $key ] = new $class_name( $options[ $key ], $this );
 		}
 
 		return $this;

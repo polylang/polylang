@@ -1,11 +1,30 @@
 <?php
 
+use Brain\Monkey\Functions;
 use WP_Syntex\Polylang\Options\Business;
+use WP_Syntex\Polylang\Options\Options;
 
 /**
  * Test the schema of all classes extending {@see WP_Syntex\Polylang\Options\Abstract_Option}.
  */
 class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
+	use PLL_Mocks_Trait;
+
+	/**
+	 * @var Options
+	 */
+	private $options;
+
+	public function set_up() {
+		parent::set_up();
+		Functions\when( 'pll_is_plugin_active' )->alias(
+			function ( $value ) {
+				return POLYLANG_BASENAME === $value;
+			}
+		);
+		$this->options = new Options();
+	}
+
 	/**
 	 * @dataProvider boolean_provider
 	 *
@@ -54,8 +73,12 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	 * @param mixed       $value           The value to test.
 	 * @param int         $sanitized_value Sanitized value.
 	 * @param true|string $expected_valid  Validation result.
+	 * @param bool        $hide_0          Tells if the choice `0` must be hidden.
 	 */
-	public function test_force_lang( $value, int $sanitized_value, $expected_valid ) {
+	public function test_force_lang( $value, int $sanitized_value, $expected_valid, $hide_0 = false ) {
+		$this->options->register( Business\Hide_Language_From_Content_Option::class );
+		$this->options->set( 'hide_language_from_content_option', $hide_0 );
+
 		$this->test_option( Business\Force_Lang::class, $value, $sanitized_value, $expected_valid );
 	}
 
@@ -125,6 +148,23 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 		foreach ( $classes as $class ) {
 			$this->test_option( $class, $value, $sanitized_value, $expected_valid );
 		}
+	}
+
+	/**
+	 * @dataProvider hide_language_from_content_option_provider
+	 *
+	 * @param mixed       $value           The value to test.
+	 * @param bool        $sanitized_value Sanitized value.
+	 * @param true|string $expected_valid  Validation result.
+	 * @param bool        $constant        The value of the constant `PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION`.
+	 */
+	public function test_hide_language_from_content_option( $value, bool $sanitized_value, $expected_valid, $constant = false ) {
+		$this->mock_constants(
+			array(
+				'PLL_DISPLAY_LANGUAGE_FROM_CONTENT_OPTION' => $constant,
+			)
+		);
+		$this->test_option( Business\Hide_Language_From_Content_Option::class, $value, $sanitized_value, $expected_valid );
 	}
 
 	public function boolean_provider() {
@@ -229,10 +269,17 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 
 	public function force_lang_provider() {
 		return array(
+			'0 hidden'    => array(
+				'value'           => 0,
+				'sanitized_value' => 0,
+				'expected_valid'  => 'rest_not_in_enum',
+				'hide_0'          => true, // Hide.
+			),
 			'in list'     => array(
-				'value'           => 2,
-				'sanitized_value' => 2,
+				'value'           => 0,
+				'sanitized_value' => 0,
 				'expected_valid'  => true,
+				'hide_0'          => false, // Display.
 			),
 			'not in list' => array(
 				'value'           => 8,
@@ -458,6 +505,33 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 		);
 	}
 
+	public function hide_language_from_content_option_provider() {
+		return array(
+			'new install hide'   => array(
+				'value'           => null,
+				'sanitized_value' => true, // This is what is important in this case: hide.
+				'expected_valid'  => 'rest_invalid_type', // We don't care here.
+				'constant'        => false, // Don't display.
+			),
+			'new install display' => array(
+				'value'           => null,
+				'sanitized_value' => false, // This is what is important in this case: display.
+				'expected_valid'  => 'rest_invalid_type', // We don't care here.
+				'constant'        => true, // Display.
+			),
+			'hidden'             => array(
+				'value'           => true,
+				'sanitized_value' => true,
+				'expected_valid'  => true,
+			),
+			'displayed'          => array(
+				'value'           => false,
+				'sanitized_value' => false,
+				'expected_valid'  => false,
+			),
+		);
+	}
+
 	/**
 	 * @param string      $class           Option class.
 	 * @param mixed       $value           The value to test.
@@ -465,7 +539,7 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	 * @param true|string $expected_valid  Validation result.
 	 */
 	private function test_option( string $class, $value, $sanitized_value, $expected_valid ) {
-		$option = new $class( $value );
+		$option = new $class( $value, $this->options );
 
 		$this->assertSame( $sanitized_value, $option->get() );
 

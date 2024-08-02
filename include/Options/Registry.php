@@ -14,6 +14,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Registry {
 	protected const OPTIONS = array(
+		// Read only.
+		Business\Hide_Language_From_Content_Option::class,
 		// URL modifications.
 		Business\Force_Lang::class,
 		Business\Domains::class,
@@ -35,7 +37,6 @@ class Registry {
 		Business\Language_Taxonomies::class,
 		// Read only.
 		Business\First_Activation::class,
-		Business\Hide_Language_From_Content_Option::class,
 		Business\Previous_Version::class,
 		Business\Version::class,
 	);
