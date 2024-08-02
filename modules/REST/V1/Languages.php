@@ -21,61 +21,6 @@ defined( 'ABSPATH' ) || exit;
  * Languages REST controller.
  *
  * @since 3.7
- *
- * @phpstan-type LanguagePropsCreate array{
- *     locale: non-empty-string,
- *     slug?: non-empty-string,
- *     name?: non-empty-string,
- *     is_rtl?: bool,
- *     term_group?: int,
- *     flag_code?: non-empty-string,
- *     no_default_cat?: bool
- * }
- * @phpstan-type MandatoryPropsCreate array{
- *    locale: non-empty-string,
- *    slug: non-empty-string,
- *    name: non-empty-string,
- *    rtl: bool,
- *    term_group: int,
- *    flag: non-empty-string,
- *    no_default_cat?: bool
- * }
- * @phpstan-type MandatoryPropsCreateObject object{
- *    locale: non-empty-string,
- *    slug: non-empty-string,
- *    name: non-empty-string,
- *    rtl: bool,
- *    term_group: int,
- *    flag: non-empty-string,
- *    no_default_cat?: bool
- * }
- * @phpstan-type LanguagePropsUpdate array{
- *     term_id: int,
- *     slug?: non-empty-string,
- *     locale?: non-empty-string,
- *     name?: non-empty-string,
- *     is_rtl?: bool,
- *     term_group?: int,
- *     flag_code?: non-empty-string
- * }
- * @phpstan-type MandatoryPropsUpdate array{
- *     lang_id: int,
- *     locale: non-empty-string,
- *     slug: non-empty-string,
- *     name: non-empty-string,
- *     rtl: bool,
- *     term_group: int,
- *     flag?: non-empty-string
- * }
- * @phpstan-type MandatoryPropsUpdateObject object{
- *     lang_id: int,
- *     locale: non-empty-string,
- *     slug: non-empty-string,
- *     name: non-empty-string,
- *     rtl: bool,
- *     term_group: int,
- *     flag?: non-empty-string
- * }
  */
 class Languages extends WP_REST_Controller {
 	/**
@@ -213,7 +158,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
-	 * @phpstan-template T of LanguagePropsCreate
+	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function create_item( $request ) {
@@ -232,7 +177,26 @@ class Languages extends WP_REST_Controller {
 			return $prepared;
 		}
 
-		/** @phpstan-var MandatoryPropsCreate $args */
+		/**
+		 * @phpstan-var object{
+		 *    locale: non-empty-string,
+		 *    slug: non-empty-string,
+		 *    name: non-empty-string,
+		 *    rtl: bool,
+		 *    term_group: int,
+		 *    flag: non-empty-string,
+		 *    no_default_cat: bool
+		 * } $prepared
+		 * @phpstan-var array{
+		 *    locale: non-empty-string,
+		 *    slug: non-empty-string,
+		 *    name: non-empty-string,
+		 *    rtl: bool,
+		 *    term_group: int,
+		 *    flag: non-empty-string,
+		 *    no_default_cat: bool
+		 * } $args
+		 */
 		$args   = (array) $prepared;
 		$result = $this->languages->add( $args );
 
@@ -241,7 +205,7 @@ class Languages extends WP_REST_Controller {
 		}
 
 		/** @var PLL_Language */
-		$language = $this->languages->get( $prepared->slug );
+		$language = $this->languages->get( $prepared->locale );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
@@ -253,11 +217,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
-	 * @phpstan-template T of array{
-	 *     term_id: int
-	 * }|array{
-	 *     slug: non-empty-string
-	 * }
+	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_item( $request ) {
@@ -278,11 +238,10 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
-	 * @phpstan-template T of LanguagePropsUpdate
+	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function update_item( $request ) {
-		/** @phpstan-var MandatoryPropsUpdateObject|WP_Error $prepared */
 		$prepared = $this->prepare_item_for_database( $request );
 
 		if ( is_wp_error( $prepared ) ) {
@@ -290,7 +249,26 @@ class Languages extends WP_REST_Controller {
 			return $prepared;
 		}
 
-		/** @phpstan-var MandatoryPropsUpdate $args */
+		/**
+		 * @phpstan-var object{
+		 *     lang_id: int,
+		 *     locale: non-empty-string,
+		 *     slug: non-empty-string,
+		 *     name: non-empty-string,
+		 *     rtl: bool,
+		 *     term_group: int,
+		 *     flag?: non-empty-string
+		 * } $prepared
+		 * @phpstan-var array{
+		 *     lang_id: int,
+		 *     locale: non-empty-string,
+		 *     slug: non-empty-string,
+		 *     name: non-empty-string,
+		 *     rtl: bool,
+		 *     term_group: int,
+		 *     flag?: non-empty-string
+		 * } $args
+		 */
 		$args   = (array) $prepared;
 		$update = $this->languages->update( $args );
 
@@ -311,9 +289,7 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 *
-	 * @phpstan-template T of array{
-	 *     term_id: int
-	 * }
+	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function delete_item( $request ) {
@@ -348,7 +324,7 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
-	public function get_items_permissions_check( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function get_items_permissions_check( $request ) {
 		if ( 'edit' === $request['context'] && ! $this->check_update_permission() ) {
 			return new WP_Error(
 				'rest_forbidden_context',
@@ -677,11 +653,8 @@ class Languages extends WP_REST_Controller {
 	 * @param WP_REST_Request $request Request object.
 	 * @return object|WP_Error The prepared language, or WP_Error object on failure.
 	 *
-	 * @phpstan-template T of LanguagePropsCreate|LanguagePropsUpdate
+	 * @phpstan-template T of array
 	 * @phpstan-param WP_REST_Request<T> $request
-	 * @phpstan-return (
-	 *     T is LanguagePropsCreate ? MandatoryPropsCreateObject : MandatoryPropsUpdateObject
-	 * )|WP_Error
 	 */
 	protected function prepare_item_for_database( $request ) {
 		if ( isset( $request['term_id'] ) ) {
