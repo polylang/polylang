@@ -20,7 +20,7 @@ class Force_Lang extends Abstract_Option {
 	/**
 	 * @var array
 	 */
-	private $enum = array( 0, 1, 2, 3 );
+	private $enum = array( 1, 2, 3 );
 
 	/**
 	 * Constructor.
@@ -31,8 +31,8 @@ class Force_Lang extends Abstract_Option {
 	 * @param Options $options All options.
 	 */
 	public function __construct( $value, Options $options ) {
-		if ( $options->get( 'hide_language_from_content_option' ) ) {
-			$this->enum = array( 1, 2, 3 );
+		if ( ! $options->get( 'hide_language_from_content_option' ) ) {
+			$this->enum = array( 0, 1, 2, 3 );
 		}
 
 		parent::__construct( $value );
