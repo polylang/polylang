@@ -40,6 +40,14 @@ trait PLL_Doing_It_Wrong_Trait {
 			return;
 		}
 
+		/*
+		 * Backward compatibility with Polylang < 3.7, useful to use the latest test library
+		 * when testing Polylang for WooCommerce with older versions of Polylang.
+		 */
+		if ( 'PLL_Model::get_languages_list()' === $function ) {
+			return;
+		}
+
 		parent::doing_it_wrong_run( $function, $message, $version );
 	}
 }
