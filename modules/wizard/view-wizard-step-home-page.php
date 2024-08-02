@@ -6,8 +6,8 @@
  *
  * @since 2.7
  *
- * @var PLL_Admin_Model $model
- * @var array           $options
+ * @var PLL_Admin_Model $model   A reference to `PLL_Model` instance.
+ * @var array           $options List of Polylang options.
  */
 
 defined( 'ABSPATH' ) || exit;

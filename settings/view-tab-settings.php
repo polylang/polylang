@@ -4,7 +4,7 @@
  *
  * @package Polylang
  *
- * @var PLL_Settings_Module[] $modules
+ * @var PLL_Settings_Module[] $modules List of Polylang modules.
  */
 
 defined( 'ABSPATH' ) || exit;

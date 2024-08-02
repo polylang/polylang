@@ -4,10 +4,10 @@
  *
  * @package Polylang
  *
- * @var PLL_Admin_Filters_Term $this
- * @var PLL_Language           $lang
- * @var string                 $taxonomy
- * @var string                 $post_type
+ * @var PLL_Admin_Filters_Term $this      PLL_Admin_Filters_Term object.
+ * @var PLL_Language           $lang      The post language. Default language if no language assigned yet.
+ * @var string                 $taxonomy  Taxonomy name.
+ * @var string                 $post_type Post type.
  */
 
 defined( 'ABSPATH' ) || exit;

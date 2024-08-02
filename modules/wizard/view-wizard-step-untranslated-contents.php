@@ -6,7 +6,7 @@
  *
  * @since 2.7
  *
- * @var PLL_Admin_Model $model
+ * @var PLL_Admin_Model $model A reference to `PLL_Model` instance.
  */
 
 defined( 'ABSPATH' ) || exit; // Don't access directly.

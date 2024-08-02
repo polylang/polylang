@@ -4,7 +4,7 @@
  *
  * @package Polylang
  *
- * @var string $active_tab
+ * @var string $active_tab Active Polylang settings page.
  */
 
 defined( 'ABSPATH' ) || exit;

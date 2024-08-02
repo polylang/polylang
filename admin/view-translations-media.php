@@ -5,9 +5,9 @@
  *
  * @package Polylang
  *
- * @var PLL_Admin_Classic_Editor $this
- * @var PLL_Language             $lang
- * @var int                      $post_ID
+ * @var PLL_Admin_Classic_Editor $this    PLL_Admin_Classic_Editor object.
+ * @var PLL_Language             $lang    The media language. Default language if no language assigned yet.
+ * @var int                      $post_ID The media Id.
  */
 
 defined( 'ABSPATH' ) || exit;
