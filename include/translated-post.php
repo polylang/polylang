@@ -374,6 +374,18 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	}
 
 	/**
+	 * Returns the description to use for the "language properties" in the REST API.
+	 *
+	 * @since 3.7
+	 * @see WP_Syntex\Polylang\REST\V2\Languages::get_item_schema()
+	 *
+	 * @return string
+	 */
+	public function get_rest_description(): string {
+		return __( 'Language taxonomy properties for post types.', 'polylang' );
+	}
+
+	/**
 	 * Returns database-related information that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
