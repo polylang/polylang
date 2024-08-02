@@ -178,15 +178,6 @@ class Languages extends WP_REST_Controller {
 		}
 
 		/**
-		 * @phpstan-var object{
-		 *    locale: non-empty-string,
-		 *    slug: non-empty-string,
-		 *    name: non-empty-string,
-		 *    rtl: bool,
-		 *    term_group: int,
-		 *    flag: non-empty-string,
-		 *    no_default_cat: bool
-		 * } $prepared
 		 * @phpstan-var array{
 		 *    locale: non-empty-string,
 		 *    slug: non-empty-string,
@@ -205,7 +196,7 @@ class Languages extends WP_REST_Controller {
 		}
 
 		/** @var PLL_Language */
-		$language = $this->languages->get( $prepared->locale );
+		$language = $this->languages->get( $args['locale'] );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
@@ -250,15 +241,6 @@ class Languages extends WP_REST_Controller {
 		}
 
 		/**
-		 * @phpstan-var object{
-		 *     lang_id: int,
-		 *     locale: non-empty-string,
-		 *     slug: non-empty-string,
-		 *     name: non-empty-string,
-		 *     rtl: bool,
-		 *     term_group: int,
-		 *     flag?: non-empty-string
-		 * } $prepared
 		 * @phpstan-var array{
 		 *     lang_id: int,
 		 *     locale: non-empty-string,
@@ -277,7 +259,7 @@ class Languages extends WP_REST_Controller {
 		}
 
 		/** @var PLL_Language */
-		$language = $this->languages->get( $prepared->lang_id );
+		$language = $this->languages->get( $args['lang_id'] );
 		return $this->prepare_item_for_response( $language, $request );
 	}
 
