@@ -6,7 +6,7 @@
  *
  * @since 2.7
  *
- * @var array $options
+ * @var Options $options Polylang's options.
  */
 
 defined( 'ABSPATH' ) || exit;
