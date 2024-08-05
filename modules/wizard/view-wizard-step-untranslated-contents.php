@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit; // Don't access directly.
 
-$languages_list = $model->get_languages_list();
+$languages_list = $model->languages->get_list();
 ?>
 <h2><?php esc_html_e( 'Content without language', 'polylang' ); ?></h2>
 <p>

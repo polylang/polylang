@@ -59,7 +59,7 @@ defined( 'ABSPATH' ) || exit;
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
-					( empty( $translation ) ? 0 : esc_attr( (string) $translation->ID ) ),
+					( empty( $translation ) ? '0' : esc_attr( (string) $translation->ID ) ),
 					( empty( $translation ) ? '' : esc_attr( $translation->post_title ) ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					( $language->is_rtl ? 'rtl' : 'ltr' )

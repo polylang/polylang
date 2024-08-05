@@ -13,7 +13,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $languages = $model->get_languages_list();
-$default_language = count( $languages ) > 0 ? $options['default_lang'] : null;
+$default_language = $model->languages->get_default();
 $home_page_id = get_option( 'page_on_front' );
 $home_page_id = is_numeric( $home_page_id ) ? (int) $home_page_id : 0;
 $translations = $model->post->get_translations( $home_page_id );

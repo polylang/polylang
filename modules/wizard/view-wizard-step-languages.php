@@ -13,7 +13,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $existing_languages = $model->get_languages_list();
-$default_language   = count( $existing_languages ) > 0 ? $options['default_lang'] : null;
+$default_language = $model->languages->get_default();
 $languages_list = array_diff_key(
 	PLL_Settings::get_predefined_languages(),
 	wp_list_pluck( $existing_languages, 'locale', 'locale' )
