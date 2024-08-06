@@ -97,7 +97,7 @@ foreach ( $languages as $language ) {
 </table>
 <?php endif; ?>
 <table id="untranslated-languages" class="striped">
-	<?php if ( ! is_null( $default_language ) ) : ?>
+	<?php if ( ! empty( $default_language ) ) : ?>
 		<caption><span class="icon-default-lang"></span> <?php esc_html_e( 'Default language', 'polylang' ); ?></caption>
 	<?php endif; ?>
 	<thead>

@@ -68,7 +68,7 @@ $languages_list = array_diff_key(
 	</tbody>
 </table>
 <table id="defined-languages" class="striped<?php echo empty( $existing_languages ) ? ' hide' : ''; ?>">
-	<?php if ( ! is_null( $default_language ) ) : ?>
+	<?php if ( ! empty( $default_language ) ) : ?>
 		<caption><span class="icon-default-lang"></span> <?php esc_html_e( 'Default language', 'polylang' ); ?></caption>
 	<?php endif; ?>
 	<thead>
