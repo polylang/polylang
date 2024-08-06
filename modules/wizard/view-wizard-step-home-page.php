@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$languages = $model->get_languages_list();
+$languages = $model->languages->get_list();
 $default_language = $model->languages->get_default();
 $home_page_id = get_option( 'page_on_front' );
 $home_page_id = is_numeric( $home_page_id ) ? (int) $home_page_id : 0;
@@ -69,7 +69,7 @@ foreach ( $languages as $language ) {
 	<tbody>
 	<?php
 	foreach ( array_keys( $translations ) as $lang ) {
-		$language = $model->get_language( $lang );
+		$language = $model->languages->get( $lang );
 		if ( empty( $language ) ) {
 			continue;
 		}

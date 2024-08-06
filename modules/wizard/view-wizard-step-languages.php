@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$existing_languages = $model->get_languages_list();
+$existing_languages = $model->languages->get_list();
 $default_language = $model->languages->get_default();
 $languages_list = array_diff_key(
 	PLL_Settings::get_predefined_languages(),
