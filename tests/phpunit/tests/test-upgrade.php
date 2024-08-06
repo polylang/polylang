@@ -9,6 +9,12 @@ class Upgrade_Test extends PLL_UnitTestCase {
 		self::create_language( 'en_US' );
 	}
 
+	public function tear_down() {
+		delete_option( 'pll_set_language_from_content_available' );
+
+		parent::tear_down();
+	}
+
 	/**
 	 * @ticket #1664 see {https://github.com/polylang/polylang-pro/issues/1664}.
 	 */
@@ -74,5 +80,33 @@ class Upgrade_Test extends PLL_UnitTestCase {
 
 		$this->assertSameSets( $expected_transient, get_transient( 'pll_languages_list' ), 'Old pll_languages_list transient should have been deleted during upgrade.' );
 		$this->assertSame( POLYLANG_VERSION, $admin->options['version'], 'Polylang version should have been updated.' );
+	}
+
+	public function test_should_hide_language_defined_from_content_option_on_upgrade_to_3_7() {
+		$options = self::create_options(
+			array(
+				'force_lang' => 1,
+				'version'    => '3.6',
+			)
+		);
+
+		( new PLL_Upgrade( $options ) )->_upgrade();
+
+		$this->assertFalse( get_option( 'pll_set_language_from_content_available' ) );
+		$this->assertSame( 1, $options->get( 'force_lang' ) );
+	}
+
+	public function test_should_not_hide_language_defined_from_content_option_on_upgrade_to_3_7() {
+		$options = self::create_options(
+			array(
+				'force_lang' => 0,
+				'version'    => '3.6',
+			)
+		);
+
+		( new PLL_Upgrade( $options ) )->_upgrade();
+
+		$this->assertTrue( get_option( 'pll_set_language_from_content_available' ) );
+		$this->assertSame( 0, $options->get( 'force_lang' ) );
 	}
 }
