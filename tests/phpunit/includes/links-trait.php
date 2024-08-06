@@ -35,7 +35,7 @@ trait PLL_Test_Links_Trait {
 					$url = str_replace( $orig_siteurl, $siteurl, $url );
 				}
 
-				return str_replace( POLYLANG_DIR . '/', '/polylang/', $url );
+				return $url;
 			},
 			-1
 		);
