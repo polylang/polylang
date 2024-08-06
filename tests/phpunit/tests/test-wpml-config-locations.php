@@ -108,8 +108,8 @@ class WPML_Config_Locations_Test extends PLL_UnitTestCase {
 
 		if ( stripos( PHP_OS, 'WIN' ) === 0 ) {
 			/*
-			 * Uses rmdir() to remove symbolic link on Windows. See https://www.php.net/manual/fr/function.unlink.php
-			 * Because symbolic link could not be created before if we don't have permissions, it needs to protect rmdir() call to prevent any error.
+			 * Use rmdir() to remove symbolic link on Windows. See https://www.php.net/manual/en/function.unlink.php
+			 * In case the symbolic link could not be created if we don't have permissions, we need to remove errors.
 			 * And thus to be sure WPMU_PLUGIN_DIR will be removed at the end of this test.
 			 */
 			@rmdir( WPMU_PLUGIN_DIR . '/best-plugin' );
