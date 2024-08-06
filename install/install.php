@@ -102,6 +102,12 @@ class PLL_Install extends PLL_Install_Base {
 			$options['version'] = POLYLANG_VERSION;
 		}
 
+		$set_language_from_content_available = false;
+		if ( 0 === $options['force_lang'] && is_null( get_option( 'pll_set_language_from_content_available', null ) ) ) {
+			$set_language_from_content_available = true;
+		}
+		update_option( 'pll_set_language_from_content_available', $set_language_from_content_available, true );
+
 		$options->save(); // Force save here to prevent any conflicts with another instance of `Options`.
 
 		// Avoid 1 query on every pages if no wpml strings is registered
