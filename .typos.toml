@@ -1,13 +1,13 @@
 [files]
 extend-exclude = [
-    ".git/",
-    ".phpunit.result.cache",
-    "flags/??.png",
-    "node_modules/",
-    "settings/flags.php",
-    "settings/languages.php",
-    "tmp/",
-    "vendor/",
+	".git/",
+	".phpunit.result.cache",
+	"flags/??.png",
+	"node_modules/",
+	"settings/flags.php",
+	"settings/languages.php",
+	"tmp/",
+	"vendor/",
 	".typos.toml",
 	"*.xml",
 ]
@@ -15,15 +15,13 @@ ignore-hidden = false
 
 [default]
 extend-ignore-re = [
-    "Jani Alha",
-    "'bs_BA'",
-    "<!\\[CDATA\\[non-classe\\]\\]>",
-    "olt-manager\\.php",
+	"Jani Alha",
+	# En français dans le texte.
+	"Etiquette exemple",
+	"'bs_BA'",
+	"<!\\[CDATA\\[non-classe\\]\\]>",
+	"olt-manager\\.php",
 ]
-
-[default.extend-words]
-# En français dans le texte.
-"exemple" = "exemple"
 
 [default.extend-identifiers]
 "OLT_Manager_Test" = "OLT_Manager_Test"
