@@ -7,7 +7,6 @@
  * @since 2.7
  *
  * @var PLL_Model $model   `PLL_Model` instance.
- * @var array     $options List of Polylang options.
  */
 
 defined( 'ABSPATH' ) || exit;

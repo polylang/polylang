@@ -520,8 +520,7 @@ class PLL_Wizard {
 	 * @return void
 	 */
 	public function display_step_languages() {
-		$model   = $this->model;
-		$options = $this->options;
+		$model = $this->model;
 		include __DIR__ . '/view-wizard-step-languages.php';
 	}
 
