@@ -41,6 +41,7 @@ else {
 		if ( ! empty( $from_term_id ) && ( $translation_id = $this->model->term->get( $from_term_id, $language ) ) && ! $this->model->term->get_translation( $translation_id, $lang ) ) {
 			$translation = get_term( $translation_id, $taxonomy );
 		}
+		$translation_exists = $translation instanceof WP_Term;
 
 		$add_link = '';
 		$link     = '';
@@ -49,8 +50,7 @@ else {
 			$add_link = $link;
 		}
 
-		$is_existing_translation = $translation instanceof WP_Term;
-		if ( $is_existing_translation ) {
+		if ( $translation_exists ) {
 			$link = $this->links->edit_term_translation_link( $translation->term_id, $taxonomy, $post_type );
 		}
 		?>
