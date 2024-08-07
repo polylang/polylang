@@ -77,7 +77,7 @@ else {
 				<?php
 				printf(
 					'<label class="screen-reader-text" for="tr_lang_%1$s">%2$s</label>
-					<input type="hidden" class="htr_lang" name="term_tr_lang[%1$s]" id="htr_lang_%1$s" value="%3$s" />
+					<input type="hidden" class="htr_lang" name="term_tr_lang[%1$s]" id="htr_lang_%1$s" value="%3$d" />
 					<span lang="%6$s" dir="%7$s"><input type="text" class="tr_lang" id="tr_lang_%1$s" value="%4$s"%5$s /></span>',
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
