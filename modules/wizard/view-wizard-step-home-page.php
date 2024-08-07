@@ -35,30 +35,32 @@ foreach ( $languages as $language ) {
 <input type="hidden" name="home_page_title" value="<?php echo esc_attr( $home_page->post_title ); ?>" />
 <?php if ( ! empty( $home_page_language ) ) : ?>
 	<input type="hidden" name="home_page_language" value="<?php echo esc_attr( $home_page_language->slug ); ?>" />
-	<h2><?php esc_html_e( 'Homepage', 'polylang' ); ?></h2>
-	<p>
-		<?php
-			printf(
-				/* translators: %s is the post title of the front page */
-				esc_html__( 'You defined this page as your static homepage: %s.', 'polylang' ),
-				'<strong>' . esc_html( $home_page->post_title ) . '</strong>'
-			);
-		?>
-		<br />
-		<?php
-			printf(
-				/* translators: %s is the language of the front page ( flag, native name and locale ) */
-				esc_html__( 'Its language is : %s.', 'polylang' ),
-				$home_page_language->flag . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			)
-		?>
-		<br />
-		<?php esc_html_e( 'For your site to work correctly, this page must be translated in all available languages.', 'polylang' ); ?>
-	</p>
-	<p>
-		<?php esc_html_e( 'After the pages is created, it is up to you to put the translated content in each page linked to each language.', 'polylang' ); ?>
-	</p>
 <?php endif; ?>
+<h2><?php esc_html_e( 'Homepage', 'polylang' ); ?></h2>
+<p>
+	<?php
+		printf(
+			/* translators: %s is the post title of the front page */
+			esc_html__( 'You defined this page as your static homepage: %s.', 'polylang' ),
+			'<strong>' . esc_html( $home_page->post_title ) . '</strong>'
+		);
+		?>
+	<br />
+	<?php
+	if ( ! empty( $home_page_language ) ) {
+		printf(
+			/* translators: %s is the language of the front page ( flag, native name and locale ) */
+			esc_html__( 'Its language is : %s.', 'polylang' ),
+			$home_page_language->flag . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		);
+	}
+	?>
+	<br />
+	<?php esc_html_e( 'For your site to work correctly, this page must be translated in all available languages.', 'polylang' ); ?>
+</p>
+<p>
+	<?php esc_html_e( 'After the pages is created, it is up to you to put the translated content in each page linked to each language.', 'polylang' ); ?>
+</p>
 <?php if ( $translations ) : ?>
 <table id="translated-languages" class="striped">
 	<thead>
