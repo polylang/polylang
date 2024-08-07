@@ -57,7 +57,7 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	 * @param string      $show_0          Tells if the choice `0` (i.e. "Language set from content") is available, accepts `'yes'` or `'not'`.
 	 */
 	public function test_force_lang( $value, int $sanitized_value, $expected_valid, $show_0 = 'no' ) {
-		update_option( 'pll_set_language_from_content_available', $show_0 );
+		update_option( 'pll_language_from_content_available', $show_0 );
 		$this->test_option( Business\Force_Lang::class, $value, $sanitized_value, $expected_valid );
 	}
 

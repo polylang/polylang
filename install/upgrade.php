@@ -212,7 +212,7 @@ class PLL_Upgrade {
 	 */
 	protected function upgrade_3_7() {
 		update_option(
-			'pll_set_language_from_content_available',
+			'pll_language_from_content_available',
 			0 === $this->options['force_lang'] ? 'yes' : 'no'
 		);
 	}

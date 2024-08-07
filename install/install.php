@@ -102,9 +102,9 @@ class PLL_Install extends PLL_Install_Base {
 			$options['version'] = POLYLANG_VERSION;
 		}
 
-		if ( false === get_option( 'pll_set_language_from_content_available' ) ) {
+		if ( false === get_option( 'pll_language_from_content_available' ) ) {
 			update_option(
-				'pll_set_language_from_content_available',
+				'pll_language_from_content_available',
 				0 === $options['force_lang'] ? 'yes' : 'no'
 			);
 		}

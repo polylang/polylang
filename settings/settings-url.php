@@ -51,7 +51,7 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @return void
 	 */
 	protected function force_lang() {
-		if ( 'yes' === get_option( 'pll_set_language_from_content_available' ) ) {
+		if ( 'yes' === get_option( 'pll_language_from_content_available' ) ) {
 			?>
 			<p class="description"><?php esc_html_e( 'Some themes or plugins may not be fully compatible with the language defined by the content or by domains.', 'polylang' ); ?></p>
 			<label>

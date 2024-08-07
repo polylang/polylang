@@ -51,7 +51,7 @@ class Force_Lang extends Abstract_Option {
 	protected function get_data_structure(): array {
 		return array(
 			'type' => 'integer',
-			'enum' => 'yes' === get_option( 'pll_set_language_from_content_available' ) ? array( 0, 1, 2, 3 ) : array( 1, 2, 3 ),
+			'enum' => 'yes' === get_option( 'pll_language_from_content_available' ) ? array( 0, 1, 2, 3 ) : array( 1, 2, 3 ),
 		);
 	}
 
