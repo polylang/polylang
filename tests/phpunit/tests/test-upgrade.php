@@ -92,7 +92,7 @@ class Upgrade_Test extends PLL_UnitTestCase {
 
 		( new PLL_Upgrade( $options ) )->_upgrade();
 
-		$this->assertFalse( get_option( 'pll_set_language_from_content_available' ) );
+		$this->assertSame( 'no', get_option( 'pll_set_language_from_content_available' ) );
 		$this->assertSame( 1, $options->get( 'force_lang' ) );
 	}
 
@@ -106,7 +106,7 @@ class Upgrade_Test extends PLL_UnitTestCase {
 
 		( new PLL_Upgrade( $options ) )->_upgrade();
 
-		$this->assertTrue( get_option( 'pll_set_language_from_content_available' ) );
+		$this->assertSame( 'yes', get_option( 'pll_set_language_from_content_available' ) );
 		$this->assertSame( 0, $options->get( 'force_lang' ) );
 	}
 }

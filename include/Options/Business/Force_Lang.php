@@ -16,26 +16,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class Force_Lang extends Abstract_Option {
 	/**
-	 * @var array
-	 */
-	private $enum = array( 1, 2, 3 );
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 3.7
-	 *
-	 * @param mixed $value Option value. Use `null` to set the default value.
-	 */
-	public function __construct( $value = null ) {
-		if ( true === get_option( 'pll_set_language_from_content_available', false ) ) {
-			$this->enum = array( 0, 1, 2, 3 );
-		}
-
-		parent::__construct( $value );
-	}
-
-	/**
 	 * Returns option key.
 	 *
 	 * @since 3.7
@@ -66,12 +46,12 @@ class Force_Lang extends Abstract_Option {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: 'integer', enum: list<0|1|2|3>}
+	 * @phpstan-return array{type: 'integer', enum: list<0|1|2|3>|list<1|2|3>}
 	 */
 	protected function get_data_structure(): array {
 		return array(
 			'type' => 'integer',
-			'enum' => $this->enum,
+			'enum' => 'yes' === get_option( 'pll_set_language_from_content_available' ) ? array( 0, 1, 2, 3 ) : array( 1, 2, 3 ),
 		);
 	}
 

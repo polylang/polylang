@@ -113,7 +113,6 @@ class Links_Default_Test extends PLL_UnitTestCase {
 	}
 
 	public function test_language_from_post_content() {
-		update_option( 'pll_set_language_from_content_available', true );
 		$options = self::create_options(
 			array(
 				'hide_default' => 1,

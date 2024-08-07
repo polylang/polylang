@@ -211,11 +211,10 @@ class PLL_Upgrade {
 	 * @return void
 	 */
 	protected function upgrade_3_7() {
-		$set_language_from_content_available = false;
-		if ( 0 === $this->options['force_lang'] ) {
-			$set_language_from_content_available = true;
-		}
-		update_option( 'pll_set_language_from_content_available', $set_language_from_content_available, true );
+		update_option(
+			'pll_set_language_from_content_available',
+			0 === $this->options['force_lang'] ? 'yes' : 'no'
+		);
 	}
 
 	/**

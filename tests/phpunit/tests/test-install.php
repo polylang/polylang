@@ -23,7 +23,7 @@ class Install_Test extends PLL_UnitTestCase {
 
 		$options = new Options();
 
-		$this->assertFalse( get_option( 'pll_set_language_from_content_available' ) );
+		$this->assertSame( 'no', get_option( 'pll_set_language_from_content_available' ) );
 		$this->assertInstanceOf( WP_Error::class, $options->set( 'force_lang', 0 ) );
 	}
 

@@ -54,9 +54,9 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	 * @param mixed       $value           The value to test.
 	 * @param int         $sanitized_value Sanitized value.
 	 * @param true|string $expected_valid  Validation result.
-	 * @param bool        $show_0          Tells if the choice `0` (i.e. "Language set from content") is available.
+	 * @param string      $show_0          Tells if the choice `0` (i.e. "Language set from content") is available, accepts `'yes'` or `'not'`.
 	 */
-	public function test_force_lang( $value, int $sanitized_value, $expected_valid, $show_0 = false ) {
+	public function test_force_lang( $value, int $sanitized_value, $expected_valid, $show_0 = 'no' ) {
 		update_option( 'pll_set_language_from_content_available', $show_0 );
 		$this->test_option( Business\Force_Lang::class, $value, $sanitized_value, $expected_valid );
 	}
@@ -235,13 +235,13 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 				'value'           => 0,
 				'sanitized_value' => 0,
 				'expected_valid'  => true,
-				'show_0'          => true,
+				'show_0'          => 'yes',
 			),
 			'0 hidden'     => array(
 				'value'           => 0,
 				'sanitized_value' => 0,
 				'expected_valid'  => 'rest_not_in_enum',
-				'show_0'          => false,
+				'show_0'          => 'no',
 			),
 			'in list'     => array(
 				'value'           => 2,
