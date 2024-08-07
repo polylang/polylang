@@ -43,12 +43,8 @@ else {
 		}
 		$translation_exists = $translation instanceof WP_Term;
 
-		$add_link = '';
-		$link     = '';
-		if ( isset( $term_id ) ) { // Do not display the add new link in add term form ( $term_id not set !!! )
-			$link = $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language );
-			$add_link = $link;
-		}
+		$add_link = isset( $term_id ) ? $this->links->new_term_translation_link( $term_id, $taxonomy, $post_type, $language ) : ''; // Do not display the add new link in add term form ($term_id not set).
+		$link = $add_link;
 
 		if ( $translation_exists ) {
 			$link = $this->links->edit_term_translation_link( $translation->term_id, $taxonomy, $post_type );
