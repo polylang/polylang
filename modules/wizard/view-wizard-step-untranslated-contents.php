@@ -9,7 +9,7 @@
  * @var PLL_Admin_Model $model `PLL_Admin_Model` instance.
  */
 
-defined( 'ABSPATH' ) || exit; // Don't access directly.
+defined( 'ABSPATH' ) || exit;
 
 $languages_list = $model->languages->get_list();
 ?>
