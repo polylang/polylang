@@ -30,7 +30,7 @@ class PLL_Wizard {
 	/**
 	 * List of steps.
 	 *
-	 * @var array[] $steps {
+	 * @var array $steps {
 	 *     @type string   $name    I18n string which names the step.
 	 *     @type callable $view    The callback function use to display the step content.
 	 *     @type callable $handler The callback function use to process the step after it is submitted.

@@ -57,7 +57,7 @@ if ( is_rtl() ) {
 		<ol class="pll-wizard-steps">
 			<?php
 			foreach ( $steps as $step_key => $step ) {
-				$is_completed = array_search( $step, array_keys( $steps ), true ) > array_search( $step_key, array_keys( $steps ), true );
+				$is_completed = array_search( $current_step, array_keys( $steps ), true ) > array_search( $step_key, array_keys( $steps ), true );
 
 				if ( $step_key === $current_step ) {
 					?>

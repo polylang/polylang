@@ -4,7 +4,7 @@
  *
  * @package Polylang
  *
- * @var PLL_Table_String $string_table `WP_List_Table` used specifically to display the list of translations.
+ * @var PLL_Table_Languages $list_table An object representing the languages list table.
  */
 
 defined( 'ABSPATH' ) || exit;

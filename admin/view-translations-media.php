@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 					printf(
 						'<input type="hidden" name="media_tr_lang[%s]" value="%d" />',
 						esc_attr( $language->slug ),
-						esc_attr( (string) $translation_id )
+						(int) $translation_id
 					);
 					echo $this->links->edit_post_translation_link( $translation_id ); // phpcs:ignore WordPress.Security.EscapeOutput
 				} else {

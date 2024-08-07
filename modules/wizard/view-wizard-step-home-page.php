@@ -69,10 +69,8 @@ foreach ( $languages as $language ) {
 	<tbody>
 	<?php
 	foreach ( array_keys( $translations ) as $lang ) {
+		/** @var PLL_language */
 		$language = $model->languages->get( $lang );
-		if ( empty( $language ) ) {
-			continue;
-		}
 		?>
 		<tr>
 			<td>

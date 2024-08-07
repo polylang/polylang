@@ -82,8 +82,8 @@ else {
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
-					( ! $is_existing_translation ? '0' : esc_attr( (string) $translation->term_id ) ),
-					( ! $is_existing_translation ? '' : esc_attr( $translation->name ) ),
+					$translation_exists ? (int) $translation->term_id : 0,
+					$translation_exists ? esc_attr( $translation->name ) : '',
 					disabled( empty( $disabled ), false, false ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					( $language->is_rtl ? 'rtl' : 'ltr' )
