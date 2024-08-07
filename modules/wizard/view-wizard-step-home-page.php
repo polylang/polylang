@@ -6,8 +6,8 @@
  *
  * @since 2.7
  *
- * @var PLL_Admin_Model $model   `PLL_Admin_Model` instance.
- * @var array           $options List of Polylang options.
+ * @var PLL_Model $model   `PLL_Model` instance.
+ * @var array     $options List of Polylang options.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -105,7 +105,7 @@ foreach ( $languages as $language ) {
 			<tr>
 				<th><?php esc_html_e( 'We are going to prepare this page in', 'polylang' ); ?></th>
 			</tr>
-		<?php elseif ( ! empty( $home_page_language ) ) : ?>
+		<?php elseif ( false !== $home_page_language ) : ?>
 			<tr>
 				<th>
 					<span class="dashicons dashicons-info"></span>

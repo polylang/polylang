@@ -6,7 +6,7 @@
  *
  * @since 2.7
  *
- * @var PLL_Admin_Model $model `PLL_Admin_Model` instance.
+ * @var PLL_Model $model `PLL_Model` instance.
  */
 
 defined( 'ABSPATH' ) || exit;
