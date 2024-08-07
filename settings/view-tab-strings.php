@@ -4,7 +4,7 @@
  *
  * @package Polylang
  *
- * @var PLL_Table_Languages $list_table An object representing the languages list table.
+ * @var PLL_Table_String $string_table An object representing the translations list table.
  */
 
 defined( 'ABSPATH' ) || exit;
