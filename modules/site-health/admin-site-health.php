@@ -422,6 +422,32 @@ class PLL_Admin_Site_Health {
 			$fields['term-no-lang']['value'] = $this->format_array( $terms_no_lang );
 		}
 
+		// Translation updates available.
+		$translation_updates = wp_get_translation_updates();
+
+		if ( $translation_updates ) {
+			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
+			$translation_updates_nb   = count( $translation_updates );
+
+			$fields['translations_update'] = array(
+				'label' => __( 'Translation updates', 'polylang' ),
+				'value' => sprintf(
+					/* translators: %s is a formatted number. */
+					_n( '%s translation update is available.', '%s translation updates are available.', $translation_updates_nb, 'polylang' ),
+					number_format_i18n( $translation_updates_nb )
+				),
+				'debug' => $translation_updates_nb,
+			);
+
+			if ( ! empty( $translation_updates_list ) ) {
+				$fields['translations_update_list'] = array(
+					'label' => __( 'Translation updates list', 'polylang' ),
+					'value' => $translation_updates_list,
+					'debug' => $translation_updates_list,
+				);
+			}
+		}
+
 		// Add WPML files.
 		$wpml_files = PLL_WPML_Config::instance()->get_files();
 		if ( ! empty( $wpml_files ) ) {
@@ -444,6 +470,45 @@ class PLL_Admin_Site_Health {
 		}
 
 		return $debug_info;
+	}
+
+	/**
+	 * Returns all available translation updates.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $updates The available updates.
+	 * @return array The available translation updates formatted for the Site Health Report.
+	 */
+	public function get_translations_update_list( array $updates ): array {
+		$pll_locales = $this->model->get_languages_list( array( 'fields' => 'locale' ) );
+		$update_list = array();
+
+		foreach ( $updates as $update ) {
+			$update_list[ $update->type ][ $update->slug ][] = $update->language;
+		}
+
+		$translation_list = array();
+
+		foreach ( $update_list as $type => $locales_by_element ) {
+			if ( 'core' === $type ) {
+				if ( ! empty( $locales_by_element['default'] ) ) {
+					$translation_list['core'] = array_intersect( $pll_locales, $locales_by_element['default'] );
+					$translation_list['core'] = implode( ', ', $translation_list['core'] );
+				}
+				continue;
+			}
+
+			$type_translations = array();
+
+			foreach ( $locales_by_element as $name => $locales ) {
+				$locales             = array_intersect( $pll_locales, $locales );
+				$type_translations[] = sprintf( '%s: %s', $name, implode( ', ', $locales ) );
+			}
+			$translation_list[ $type ] = implode( ' | ', $type_translations );
+		}
+
+		return array_filter( $translation_list );
 	}
 
 	/**
