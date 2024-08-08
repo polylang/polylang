@@ -696,7 +696,7 @@ parameters:
 			path: modules/wizard/wizard.php
 
 		-
-			message: "#^Property PLL_Wizard\\:\\:\\$step \\(string\\|null\\) does not accept int\\|string\\|false\\.$#"
+			message: "#^Property PLL_Wizard\\:\\:\\$current_step \\(string\\|null\\) does not accept int\\|string\\|false\\.$#"
 			count: 1
 			path: modules/wizard/wizard.php
 
