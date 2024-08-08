@@ -30,12 +30,16 @@ class PLL_Wizard {
 	/**
 	 * List of steps.
 	 *
-	 * @var array $steps {
-	 *     @type string   $name    I18n string which names the step.
-	 *     @type callable $view    The callback function use to display the step content.
-	 *     @type callable $handler The callback function use to process the step after it is submitted.
-	 *     @type array    $scripts List of scripts handle needed by the step.
-	 *     @type array    $styles  The list of styles handle needed by the step.
+	 * @var array[] $steps {
+	 *     @type array {
+	 *         List of step properties.
+	 *
+	 *         @type string   $name    I18n string which names the step.
+	 *         @type callable $view    The callback function use to display the step content.
+	 *         @type callable $handler The callback function use to process the step after it is submitted.
+	 *         @type array    $scripts List of scripts handle needed by the step.
+	 *         @type array    $styles  The list of styles handle needed by the step.
+	 *     }
 	 * }
 	 */
 	protected $steps = array();
