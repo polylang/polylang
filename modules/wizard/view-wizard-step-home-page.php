@@ -6,30 +6,16 @@
  *
  * @since 2.7
  *
- * @var PLL_Model $model   `PLL_Model` instance.
- * @var array     $options List of Polylang options.
+ * @var PLL_Model      $model                  `PLL_Model` instance.
+ * @var WP_Post        $home_page              Home page defined in WordPress options.
+ * @var PLL_Language   $home_page_language     Home page language if already assigned.
+ * @var PLL_Language   $default_language       Polylang default language option.
+ * @var int[]          $translations           Ids of home page translations.
+ * @var PLL_Language[] $untranslated_languages List of languages in which the home page isn't translated.
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$languages = $model->languages->get_list();
-$default_language = $model->languages->get_default();
-$home_page_id = get_option( 'page_on_front' );
-$home_page_id = is_numeric( $home_page_id ) ? (int) $home_page_id : 0;
-$translations = $model->post->get_translations( $home_page_id );
-$untranslated_languages = array();
-$home_page = $home_page_id > 0 ? get_post( $home_page_id ) : null;
-$home_page_language = $model->post->get_language( $home_page_id );
-
-if ( empty( $home_page ) ) {
-	return;
-}
-
-foreach ( $languages as $language ) {
-	if ( ! $model->post->get( $home_page_id, $language ) ) {
-		$untranslated_languages[] = $language;
-	}
-}
 ?>
 <input type="hidden" name="home_page" value="<?php echo esc_attr( (string) $home_page->ID ); ?>" />
 <input type="hidden" name="home_page_title" value="<?php echo esc_attr( $home_page->post_title ); ?>" />

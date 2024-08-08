@@ -754,7 +754,24 @@ class PLL_Wizard {
 	 */
 	public function display_step_home_page() {
 		$model   = $this->model;
-		$options = $this->options;
+		$languages = $model->languages->get_list();
+		$default_language = $model->languages->get_default();
+		$home_page_id = get_option( 'page_on_front' );
+		$home_page_id = is_numeric( $home_page_id ) ? (int) $home_page_id : 0;
+		$translations = $model->post->get_translations( $home_page_id );
+		$home_page = $home_page_id > 0 ? get_post( $home_page_id ) : null;
+		$home_page_language = $model->post->get_language( $home_page_id );
+		$untranslated_languages = array();
+
+		if ( empty( $home_page ) ) {
+			return;
+		}
+
+		foreach ( $languages as $language ) {
+			if ( ! $model->post->get( $home_page_id, $language ) ) {
+				$untranslated_languages[] = $language;
+			}
+		}
 		include __DIR__ . '/view-wizard-step-home-page.php';
 	}
 
