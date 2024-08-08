@@ -127,6 +127,7 @@ class PLL_Uninstall {
 		delete_option( 'polylang_wpml_strings' ); // Strings registered with icl_register_string
 		delete_option( 'polylang_licenses' );
 		delete_option( 'pll_dismissed_notices' );
+		delete_option( 'pll_language_from_content_available' );
 
 		// Delete transients
 		delete_transient( 'pll_languages_list' );

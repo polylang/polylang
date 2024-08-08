@@ -51,18 +51,26 @@ class PLL_Settings_Url extends PLL_Settings_Module {
 	 * @return void
 	 */
 	protected function force_lang() {
-		?>
-		<p class="description"><?php esc_html_e( 'Some themes or plugins may not be fully compatible with the language defined by the content or by domains.', 'polylang' ); ?></p>
-		<label>
-			<?php
-			printf(
-				'<input name="force_lang" type="radio" value="0" %s /> %s',
-				checked( $this->options['force_lang'], 0, false ),
-				esc_html__( 'The language is set from content', 'polylang' )
-			);
+		if ( 'yes' === get_option( 'pll_language_from_content_available' ) ) {
 			?>
-		</label>
-		<p class="description"><?php esc_html_e( 'Posts, pages, categories and tags URLs will not be modified.', 'polylang' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Some themes or plugins may not be fully compatible with the language defined by the content or by domains.', 'polylang' ); ?></p>
+			<label>
+				<?php
+				printf(
+					'<input name="force_lang" type="radio" value="0" %s /> %s',
+					checked( $this->options['force_lang'], 0, false ),
+					esc_html__( 'The language is set from content', 'polylang' )
+				);
+				?>
+			</label>
+			<p class="description"><?php esc_html_e( 'Posts, pages, categories and tags URLs will not be modified.', 'polylang' ); ?></p>
+			<?php
+		} else {
+			?>
+			<p class="description"><?php esc_html_e( 'Some themes or plugins may not be fully compatible with the language defined by domains.', 'polylang' ); ?></p>
+			<?php
+		}
+		?>
 		<label>
 			<?php
 			printf(
