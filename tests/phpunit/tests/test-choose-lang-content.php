@@ -20,9 +20,14 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 
 		global $wp_rewrite;
 
-		self::$model->options['hide_default'] = 1;
-		self::$model->options['force_lang'] = 0;
-		self::$model->options['browser'] = 0;
+		$options = self::create_options(
+			array(
+				'hide_default' => 1,
+				'force_lang'   => 0,
+				'browser'      => 0,
+				'default_lang' => 'en',
+			)
+		);
 
 		// switch to pretty permalinks
 		$wp_rewrite->init();
@@ -31,7 +36,8 @@ class Choose_Lang_Content_Test extends PLL_UnitTestCase {
 
 		create_initial_taxonomies();
 
-		$links_model = self::$model->get_links_model();
+		$model = new PLL_Model( $options );
+		$links_model = $model->get_links_model();
 		$links_model->init();
 
 		// flush rules
