@@ -54,7 +54,7 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 	 * @param mixed       $value           The value to test.
 	 * @param int         $sanitized_value Sanitized value.
 	 * @param true|string $expected_valid  Validation result.
-	 * @param string      $show_0          Tells if the choice `0` (i.e. "Language set from content") is available, accepts `'yes'` or `'not'`.
+	 * @param string      $show_0          Tells if the choice `0` (i.e. "Language set from content") is available, accepts `'yes'` or `'no'`.
 	 */
 	public function test_force_lang( $value, int $sanitized_value, $expected_valid, $show_0 = 'no' ) {
 		update_option( 'pll_language_from_content_available', $show_0 );

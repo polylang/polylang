@@ -102,14 +102,14 @@ class PLL_Install extends PLL_Install_Base {
 			$options['version'] = POLYLANG_VERSION;
 		}
 
+		$options->save(); // Force save here to prevent any conflicts with another instance of `Options`.
+
 		if ( false === get_option( 'pll_language_from_content_available' ) ) {
 			update_option(
 				'pll_language_from_content_available',
 				0 === $options['force_lang'] ? 'yes' : 'no'
 			);
 		}
-
-		$options->save(); // Force save here to prevent any conflicts with another instance of `Options`.
 
 		// Avoid 1 query on every pages if no wpml strings is registered
 		if ( ! get_option( 'polylang_wpml_strings' ) ) {
