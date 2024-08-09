@@ -9,7 +9,6 @@
  * @var PLL_Model      $model                  `PLL_Model` instance.
  * @var WP_Post        $home_page              Home page defined in WordPress options.
  * @var PLL_Language   $home_page_language     Home page language if already assigned.
- * @var PLL_Language   $default_language       Polylang default language option.
  * @var int[]          $translations           Ids of home page translations.
  * @var PLL_Language[] $untranslated_languages List of languages in which the home page isn't translated.
  */
@@ -19,9 +18,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <input type="hidden" name="home_page" value="<?php echo esc_attr( (string) $home_page->ID ); ?>" />
 <input type="hidden" name="home_page_title" value="<?php echo esc_attr( $home_page->post_title ); ?>" />
-<?php if ( ! empty( $home_page_language ) ) : ?>
-	<input type="hidden" name="home_page_language" value="<?php echo esc_attr( $home_page_language->slug ); ?>" />
-<?php endif; ?>
+<input type="hidden" name="home_page_language" value="<?php echo esc_attr( $home_page_language->slug ); ?>" />
 <h2><?php esc_html_e( 'Homepage', 'polylang' ); ?></h2>
 <p>
 	<?php
@@ -33,14 +30,12 @@ defined( 'ABSPATH' ) || exit;
 		?>
 	<br />
 	<?php
-	if ( ! empty( $home_page_language ) ) {
 		printf(
 			/* translators: %s is the language of the front page ( flag, native name and locale ) */
 			esc_html__( 'Its language is : %s.', 'polylang' ),
 			$home_page_language->flag . ' <strong>' . esc_html( $home_page_language->name ) . ' ' . esc_html( $home_page_language->locale ) . '</strong>' //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
-	}
-	?>
+		?>
 	<br />
 	<?php esc_html_e( 'For your site to work correctly, this page must be translated in all available languages.', 'polylang' ); ?>
 </p>
@@ -85,15 +80,13 @@ defined( 'ABSPATH' ) || exit;
 </table>
 <?php endif; ?>
 <table id="untranslated-languages" class="striped">
-	<?php if ( ! empty( $default_language ) ) : ?>
-		<caption><span class="icon-default-lang"></span> <?php esc_html_e( 'Default language', 'polylang' ); ?></caption>
-	<?php endif; ?>
+	<caption><span class="icon-default-lang"></span> <?php esc_html_e( 'Default language', 'polylang' ); ?></caption>
 	<thead>
 		<?php if ( count( $untranslated_languages ) >= 1 ) : ?>
 			<tr>
 				<th><?php esc_html_e( 'We are going to prepare this page in', 'polylang' ); ?></th>
 			</tr>
-		<?php elseif ( false !== $home_page_language ) : ?>
+		<?php else : ?>
 			<tr>
 				<th>
 					<span class="dashicons dashicons-info"></span>
