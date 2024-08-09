@@ -5,9 +5,8 @@
  * @package Polylang
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly
-}
+defined( 'ABSPATH' ) || exit;
+
 ?>
 <p>
 	<?php

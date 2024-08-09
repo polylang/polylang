@@ -3,6 +3,10 @@
  * Displays the translations fields for posts
  *
  * @package Polylang
+ *
+ * @var PLL_Admin_Classic_Editor $this    PLL_Admin_Classic_Editor object.
+ * @var PLL_Language             $lang    The post language. Default language if no language assigned yet.
+ * @var int                      $post_ID The post id.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -55,7 +59,7 @@ defined( 'ABSPATH' ) || exit;
 					esc_attr( $language->slug ),
 					/* translators: accessibility text */
 					esc_html__( 'Translation', 'polylang' ),
-					( empty( $translation ) ? 0 : esc_attr( $translation->ID ) ),
+					( empty( $translation ) ? '0' : esc_attr( (string) $translation->ID ) ),
 					( empty( $translation ) ? '' : esc_attr( $translation->post_title ) ),
 					esc_attr( $language->get_locale( 'display' ) ),
 					( $language->is_rtl ? 'rtl' : 'ltr' )

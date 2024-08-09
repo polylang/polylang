@@ -3,6 +3,8 @@
  * @package Polylang
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Manages filters and actions related to the classic editor
  *
@@ -15,7 +17,7 @@ class PLL_Admin_Classic_Editor {
 	public $model;
 
 	/**
-	 * @var PLL_Admin_Links|null
+	 * @var PLL_Admin_Links
 	 */
 	public $links;
 

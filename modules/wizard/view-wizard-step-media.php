@@ -5,11 +5,13 @@
  * @package Polylang
  *
  * @since 2.7
+ *
+ * @var Options $options Polylang's options.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly.
-}
+use WP_Syntex\Polylang\Options\Options;
+
+defined( 'ABSPATH' ) || exit;
 
 $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' : '' ) . '.png';
 
@@ -31,7 +33,7 @@ $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' :
 					id="pll-wizard-service-media"
 					type="checkbox"
 					name="media_support"
-					value="yes" <?php checked( $this->options['media_support'] ); ?>
+					value="yes" <?php checked( $options['media_support'] ); ?>
 				/>
 				<label for="pll-wizard-service-media" />
 			</span>
