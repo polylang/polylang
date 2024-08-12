@@ -624,6 +624,52 @@ function pll_update_term( int $term_id, array $args = array() ) {
 	return PLL()->model->term->update( $term_id, $args );
 }
 
+/**
+ * Wraps `wp_insert_post` with language feature.
+ *
+ * @since 3.7
+ *
+ * @param array               $postarr {
+ *     Optional. An array of elements that make up a post to update or insert.
+ *     All `wp_insert_post` parameters plus the following.
+ *
+ *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
+ * }
+ * @param PLL_Language|string $language         The post language object or slug.
+ * @param bool                $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
+ * @param bool                $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
+ * @return int|WP_Error The post ID on success. The value 0 or `WP_Error` on failure.
+ */
+function pll_insert_post( array $postarr, $language, bool $wp_error = false, bool $fire_after_hooks = true ) {
+	$language = PLL()->model->get_language( $language );
+
+	if ( ! $language instanceof PLL_Language ) {
+		return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+	}
+
+	return PLL()->model->post->insert( $postarr, $language, $wp_error, $fire_after_hooks );
+}
+
+/**
+ * Wraps `wp_update_post` with language feature.
+ *
+ * @since 3.7
+ *
+ * @param array $postarr {
+ *     Optional. An array of elements that make up a post to update or insert.
+ *     All `wp_insert_post` parameters plus the following.
+ *
+ *     @type PLL_Language $lang         The post language object.
+ *     @type string[]     $translations The translation group to assign to the post with language slug as keys and post ID as values.
+ * }
+ * @param bool  $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
+ * @param bool  $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
+ * @return int|WP_Error The post ID on success. The value 0 or `WP_Error` on failure.
+ */
+function pll_update_post( array $postarr, bool $wp_error = false, bool $fire_after_hooks = true ) {
+	return PLL()->model->post->update( $postarr, $wp_error, $fire_after_hooks );
+}
+
 
 /**
  * Allows to access the Polylang instance.

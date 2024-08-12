@@ -295,4 +295,237 @@ class API_Test extends PLL_UnitTestCase {
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( $error_code, $result->get_error_code() );
 	}
+
+	/**
+	 * @testWith ["page", true, false]
+	 *           ["page", false, false]
+	 *           ["post", false, false]
+	 *           ["page", true, true]
+	 *           ["page", false, true]
+	 *           ["post", false, true]
+	 *
+	 * @param string $post_type         The post type.
+	 * @param bool   $with_parent       Whether or not the post has a parent.
+	 * @param bool   $with_translations Whether or not the post has translations.
+	 * @return void
+	 */
+	public function test_pll_insert_post_happy_path( $post_type, $with_parent, $with_translations ) {
+		$languages    = array( 'en', 'fr', 'de' );
+		$translations = array();
+		foreach ( $languages as $i => $language ) {
+			$args            = array();
+			$is_default_lang = 0 === $i;
+
+			if ( $with_parent ) {
+				$parent = self::factory()->post->create_and_get(
+					array(
+						'post_title'  => 'Post title',
+						'post_status' => 'publish',
+						'lang'        => $language,
+					)
+				);
+				$args['post_parent'] = $parent->ID;
+			}
+
+			if ( $with_translations && ! empty( $translations ) ) {
+				$args['translations'] = $translations;
+			}
+
+			$args['post_title']  = 'Post title';
+			$args['post_type']   = $post_type;
+			$args['post_status'] = 'publish'; // To auto generate post name.
+
+			$result = pll_insert_post( $args, $language );
+
+			$this->assertIsInt( $result, "The post in {$this->pll_env->model->get_language( $language )->name} could not be created." );
+
+			$translations[ $language ] = $result;
+			$post                      = get_post( $result );
+
+			$increment_slug = $i + 1;
+			$suffix         = ! $is_default_lang ? "-{$increment_slug}" : '';
+			if ( $with_parent ) {
+				$this->assertSame( "post-title{$suffix}", $parent->post_name ); // Check post parent name.
+				$suffix = '';
+			}
+			$expected_slug = "post-title{$suffix}";
+
+			$this->assertSame( $expected_slug, $post->post_name );
+		}
+	}
+
+	/**
+	 * @testWith ["post", "chti", "invalid_language"]
+	 *           ["page", "chti", "invalid_language"]
+	 *
+	 * @param string $post_type  Post type.
+	 * @param string $language   Language slug.
+	 * @param string $error_code Error code.
+	 * @return void
+	 */
+	public function test_pll_insert_post_error_path( $post_type, $language, $error_code ) {
+		self::factory()->post->create_and_get(
+			array(
+				'post_title'  => 'Post title',
+				'post_status' => 'publish',
+				'lang'        => 'en',
+				'post_type'   => $post_type,
+			)
+		);
+
+		$postarr = array(
+			'post_title'  => 'Post title',
+			'post_type'   => $post_type,
+			'post_status' => 'publish',
+		);
+
+		$result = pll_insert_post( $postarr, $language );
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( $error_code, $result->get_error_code() );
+	}
+
+	/**
+	 * @testWith ["post", false, false, false]
+	 *           ["post", false, true, false]
+	 *           ["post", false, true, true]
+	 *           ["page", false, false, false]
+	 *           ["page", false, true, false]
+	 *           ["page", false, true, true]
+	 *           ["page", true, true, true]
+	 *           ["page", true, false, true]
+	 *           ["page", true, false, false]
+	 *
+	 * @param string $post_type         The post type.
+	 * @param bool   $with_parent       Whether or not the post has a parent.
+	 * @param bool   $with_language     Whether or not the post language should be updated.
+	 * @param bool   $with_translations Whether or not the post has translations.
+	 * @return void
+	 */
+	public function test_pll_update_post_happy_path( $post_type, $with_parent, $with_language, $with_translations ) {
+		$tr_post_ids = self::factory()->post->create_translated(
+			array(
+				'post_title'  => 'Post title',
+				'post_status' => 'publish',
+				'post_type'   => $post_type,
+				'lang'        => 'en',
+			),
+			array(
+				'post_title'  => 'Titre de post',
+				'post_status' => 'publish',
+				'post_type'   => $post_type,
+				'lang'        => 'fr',
+			)
+		);
+
+		$lonely_post = self::factory()->post->create_and_get( // Used to update translations.
+			array(
+				'post_title'  => 'Post titel',
+				'post_status' => 'publish',
+				'post_type'   => $post_type,
+				'lang'        => 'de',
+			)
+		);
+
+		$spanish = self::factory()->language->create_and_get(
+			array(
+				'slug'   => 'es',
+				'locale' => 'es_ES',
+			)
+		);
+
+		$en = get_post( $tr_post_ids['en'] );
+		$fr = get_post( $tr_post_ids['fr'] );
+
+		$args = array();
+
+		if ( $with_parent ) {
+			$parent = self::factory()->post->create_and_get(
+				array(
+					'post_title'  => 'Titre de post',
+					'post_status' => 'publish',
+					'post_type'   => $post_type,
+					'lang'        => 'fr',
+				)
+			);
+			$args['post_parent'] = $parent->ID;
+		}
+
+		if ( $with_translations ) {
+			$args['translations'] = array(
+				'de'                                   => $lonely_post->ID,
+				$with_language ? $spanish->slug : 'fr' => $fr->ID,
+			);
+		}
+
+		if ( $with_language ) {
+			$args['lang'] = $spanish->slug;
+		}
+
+		$args['post_name'] = $with_translations ? $lonely_post->post_name : $en->post_name;
+
+		$args['ID'] = $fr->ID;
+		$result = pll_update_post( $args );
+
+		$this->assertIsInt( $result, 'The post in French should have been updated.' );
+
+		$updated_post = get_post( $result );
+		$expected_slug = "{$args['post_name']}-2";
+
+		if ( $with_parent && ! $with_language ) {
+			$this->assertSame( 'titre-de-post-2', $parent->post_name ); // Check post parent name.
+			$expected_slug = $args['post_name'];
+		}
+
+		$this->assertSame( $expected_slug, $updated_post->post_name );
+
+		$expected_language = $with_language ? $spanish->slug : 'fr';
+
+		$this->assertSame( $expected_language, $this->pll_env->model->post->get_language( $updated_post->ID )->slug, 'The post language is not the right one.' );
+
+		$expected_translations = $with_translations
+			? $args['translations']
+			: array(
+				'en'                                   => $en->ID,
+				$with_language ? $spanish->slug : 'fr' => $fr->ID,
+			);
+
+		$this->assertSameSetsWithIndex( $expected_translations, $this->pll_env->model->post->get_translations( $updated_post->ID ), "The post doesn't have the right translations." );
+	}
+
+	/**
+	 * @testWith ["post", "chti", "invalid_language"]
+	 *           ["page", "chti", "invalid_language"]
+	 *
+	 * @param string $post_type  Post type.
+	 * @param string $language   Language slug.
+	 * @param string $error_code Error code.
+	 * @return void
+	 */
+	public function test_pll_update_post_error_path( $post_type, $language, $error_code ) {
+		$post_ids = self::factory()->post->create_translated(
+			array(
+				'post_title'  => 'Post title',
+				'post_type'   => $post_type,
+				'post_status' => 'publish',
+				'lang'        => 'en',
+			),
+			array(
+				'post_title'  => 'Titre de post',
+				'post_type'   => $post_type,
+				'post_status' => 'publish',
+				'lang'        => 'fr',
+			)
+		);
+
+		$args = array(
+			'ID'        => $post_ids['fr'],
+			'post_name' => 'post-title',
+			'lang'      => $language,
+		);
+
+		$result = pll_update_post( $args );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( $error_code, $result->get_error_code() );
+	}
 }

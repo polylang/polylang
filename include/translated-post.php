@@ -410,4 +410,95 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			'default_alias' => $GLOBALS['wpdb']->posts,
 		);
 	}
+
+	/**
+	 * Wraps `wp_insert_post` with language feature.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array        $postarr {
+	 *     Optional. An array of elements that make up a post to update or insert.
+	 *     All `wp_insert_post` parameters plus the following.
+	 *
+	 *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
+	 * }
+	 * @param PLL_Language $language         The post language.
+	 * @param bool         $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
+	 * @param bool         $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
+	 * @return int|WP_Error The post ID on success. The value 0 or `WP_Error` on failure.
+	 */
+	public function insert( array $postarr, PLL_Language $language, bool $wp_error = false, bool $fire_after_hooks = true ) {
+		$post = wp_insert_post( $postarr, $wp_error, $fire_after_hooks );
+
+		if ( empty( $post ) || is_wp_error( $post ) ) {
+			// Something went wrong!
+			return $post;
+		}
+
+		$this->set_language( $post, $language );
+
+		if ( ! empty( $postarr['translations'] ) ) {
+			$this->save_translations(
+				$post,
+				array_merge(
+					$postarr['translations'],
+					array(
+						$language->slug => $post,
+					)
+				)
+			);
+		}
+
+		return $post;
+	}
+
+	/**
+	 * Wraps `wp_update_post` with language feature.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $postarr {
+	 *     Optional. An array of elements that make up a post to update or insert.
+	 *     All `wp_insert_post` parameters plus the following.
+	 *
+	 *     @type PLL_Language $lang         The post language object.
+	 *     @type string[]     $translations The translation group to assign to the post with language slug as keys and post ID as values.
+	 * }
+	 * @param bool  $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
+	 * @param bool  $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
+	 * @return int|WP_Error The post ID on success. The value 0 or `WP_Error` on failure.
+	 */
+	public function update( array $postarr, bool $wp_error = false, bool $fire_after_hooks = true ) {
+		$post = get_post( $postarr['ID'] );
+		if ( ! $post instanceof WP_Post ) {
+			return new WP_Error( 'invalid_post', __( 'Empty Post.', 'polylang' ) );
+		}
+
+		/** @var PLL_Language $language */
+		$language = $this->get_language( $postarr['ID'] );
+		if ( ! empty( $postarr['lang'] ) ) {
+			$language = $this->languages->get( $postarr['lang'] );
+			if ( ! $language instanceof PLL_Language ) {
+				return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+			}
+
+			$this->set_language( $postarr['ID'], $language );
+		}
+
+		$post = wp_update_post( $postarr, $wp_error, $fire_after_hooks );
+
+		if ( ! empty( $postarr['translations'] ) ) {
+			$this->save_translations(
+				$postarr['ID'],
+				array_merge(
+					$postarr['translations'],
+					array(
+						$language->slug => $postarr['ID'],
+					)
+				)
+			);
+		}
+
+		return $post;
+	}
 }
