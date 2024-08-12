@@ -404,13 +404,13 @@ class API_Test extends PLL_UnitTestCase {
 	public function test_pll_update_post_happy_path( $post_type, $with_parent, $with_language, $with_translations ) {
 		$tr_post_ids = self::factory()->post->create_translated(
 			array(
-				'post_title'  => 'Post title',
+				'post_title'  => 'Title EN',
 				'post_status' => 'publish',
 				'post_type'   => $post_type,
 				'lang'        => 'en',
 			),
 			array(
-				'post_title'  => 'Titre de post',
+				'post_title'  => 'Title FR',
 				'post_status' => 'publish',
 				'post_type'   => $post_type,
 				'lang'        => 'fr',
@@ -419,7 +419,7 @@ class API_Test extends PLL_UnitTestCase {
 
 		$lonely_post = self::factory()->post->create_and_get( // Used to update translations.
 			array(
-				'post_title'  => 'Post titel',
+				'post_title'  => 'Title DE',
 				'post_status' => 'publish',
 				'post_type'   => $post_type,
 				'lang'        => 'de',
@@ -441,7 +441,7 @@ class API_Test extends PLL_UnitTestCase {
 		if ( $with_parent ) {
 			$parent = self::factory()->post->create_and_get(
 				array(
-					'post_title'  => 'Titre de post',
+					'post_title'  => 'Title FR',
 					'post_status' => 'publish',
 					'post_type'   => $post_type,
 					'lang'        => 'fr',
@@ -472,7 +472,7 @@ class API_Test extends PLL_UnitTestCase {
 		$expected_slug = "{$args['post_name']}-2";
 
 		if ( $with_parent && ! $with_language ) {
-			$this->assertSame( 'titre-de-post-2', $parent->post_name ); // Check post parent name.
+			$this->assertSame( 'title-fr-2', $parent->post_name ); // Check post parent name.
 			$expected_slug = $args['post_name'];
 		}
 
