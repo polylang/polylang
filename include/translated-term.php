@@ -392,15 +392,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$this->set_language( (int) $term['term_id'], $language );
 
 		if ( ! empty( $args['translations'] ) ) {
-			$this->save_translations(
-				(int) $term['term_id'],
-				array_merge(
-					$args['translations'],
-					array(
-						$language->slug => (int) $term['term_id'],
-					)
-				)
-			);
+			$this->save_translations( (int) $term['term_id'], $args['translations'] );
 		}
 
 		return $term;
@@ -424,7 +416,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *     @type string[]     $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
 	 * }
 	 * @return array|WP_Error An array containing the `term_id` and `term_taxonomy_id`,
-	 *                        WP_Error otherwise.                  WP_Error otherwise.
+	 *                        WP_Error otherwise.
 	 */
 	public function update( int $term_id, array $args = array() ) {
 		$term = get_term( $term_id );
@@ -448,16 +440,13 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$term = wp_update_term( $term->term_id, $term->taxonomy, $args );
 		$this->toggle_inserted_term_filters( $language, $parent );
 
+		if ( is_wp_error( $term ) ) {
+			// Something went wrong!
+			return $term;
+		}
+
 		if ( ! empty( $args['translations'] ) ) {
-			$this->save_translations(
-				$term_id,
-				array_merge(
-					$args['translations'],
-					array(
-						$language->slug => $term_id,
-					)
-				)
-			);
+			$this->save_translations( $term_id, $args['translations'] );
 		}
 
 		return $term;
@@ -470,7 +459,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @since 3.7
 	 *
 	 * @param PLL_Language $language The language to use.
-	 * @param int          $parent The parent term id to use.
+	 * @param int          $parent   The parent term id to use.
 	 * @return void
 	 */
 	private function toggle_inserted_term_filters( PLL_Language $language, int $parent ): void {
