@@ -561,6 +561,30 @@ function pll_count_posts( $lang, $args = array() ) {
 }
 
 /**
+ * Wraps `wp_insert_post` with language feature.
+ *
+ * @since 3.7
+ *
+ * @param array               $postarr {
+ *     An array of elements that make up a post to insert.
+ *     @See https://developer.wordpress.org/reference/functions/wp_insert_post/ wp_insert_post() for accepted arguments.
+ *
+ *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
+ * }
+ * @param PLL_Language|string $language The post language object or slug.
+ * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
+ */
+function pll_insert_post( array $postarr, $language ) {
+	$language = PLL()->model->get_language( $language );
+
+	if ( ! $language instanceof PLL_Language ) {
+		return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+	}
+
+	return PLL()->model->post->insert( $postarr, $language );
+}
+
+/**
  * Wraps `wp_insert_term` with language feature.
  *
  * @since 3.7
@@ -569,7 +593,7 @@ function pll_count_posts( $lang, $args = array() ) {
  * @param string              $taxonomy The taxonomy to which to add the term.
  * @param PLL_Language|string $language The term language object or slug.
  * @param array               $args {
- *            Optional. Array of arguments for inserting a term.
+ *     Optional. Array of arguments for inserting a term.
  *
  *     @type string   $alias_of     Slug of the term to make this term an alias of.
  *                                  Default empty string. Accepts a term slug.
@@ -593,6 +617,24 @@ function pll_insert_term( string $term, string $taxonomy, $language, array $args
 	}
 
 	return PLL()->model->term->insert( $term, $taxonomy, $language, $args );
+}
+
+/**
+ * Wraps `wp_update_post` with language feature.
+ *
+ * @since 3.7
+ *
+ * @param array $postarr {
+ *     Optional. An array of elements that make up a post to update.
+ *     @See https://developer.wordpress.org/reference/functions/wp_insert_post/ wp_insert_post() for accepted arguments.
+ *
+ *     @type PLL_Language|string $lang         The post language object or slug.
+ *     @type string[]            $translations The translation group to assign to the post with language slug as keys and post ID as values.
+ * }
+ * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
+ */
+function pll_update_post( array $postarr ) {
+	return PLL()->model->post->update( $postarr );
 }
 
 /**
@@ -623,7 +665,6 @@ function pll_insert_term( string $term, string $taxonomy, $language, array $args
 function pll_update_term( int $term_id, array $args = array() ) {
 	return PLL()->model->term->update( $term_id, $args );
 }
-
 
 /**
  * Allows to access the Polylang instance.

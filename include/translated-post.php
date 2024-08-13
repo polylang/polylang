@@ -410,4 +410,76 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			'default_alias' => $GLOBALS['wpdb']->posts,
 		);
 	}
+
+	/**
+	 * Wraps `wp_insert_post` with language feature.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array        $postarr {
+	 *     Optional. An array of elements that make up a post to insert.
+	 *     @See wp_insert_post() for accepted arguments.
+	 *
+	 *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
+	 * }
+	 * @param PLL_Language $language The post language object.
+	 * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
+	 */
+	public function insert( array $postarr, PLL_Language $language ) {
+		$post_id = wp_insert_post( $postarr, true );
+		if ( is_wp_error( $post_id ) ) {
+			// Something went wrong!
+			return $post_id;
+		}
+
+		$this->set_language( $post_id, $language );
+
+		if ( ! empty( $postarr['translations'] ) ) {
+			$this->save_translations( $post_id, $postarr['translations'] );
+		}
+
+		return $post_id;
+	}
+
+	/**
+	 * Wraps `wp_update_post` with language feature.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $postarr {
+	 *     Optional. An array of elements that make up a post to update.
+	 *     @See wp_insert_post() for accepted arguments.
+	 *
+	 *     @type PLL_Language|string $lang         The post language object or slug.
+	 *     @type string[]            $translations The translation group to assign to the post with language slug as keys and post ID as values.
+	 * }
+	 * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
+	 */
+	public function update( array $postarr ) {
+		if ( ! empty( $postarr['lang'] ) ) {
+			$post = get_post( $postarr['ID'] );
+			if ( ! $post instanceof WP_Post ) {
+				return new WP_Error( 'invalid_post', __( 'Invalid post ID.', 'polylang' ) );
+			}
+
+			$language = $this->languages->get( $postarr['lang'] );
+			if ( ! $language instanceof PLL_Language ) {
+				return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
+			}
+
+			$this->set_language( $postarr['ID'], $language );
+		}
+
+		$post_id = wp_update_post( $postarr, true );
+		if ( is_wp_error( $post_id ) ) {
+			// Something went wrong!
+			return $post_id;
+		}
+
+		if ( ! empty( $postarr['translations'] ) ) {
+			$this->save_translations( $postarr['ID'], $postarr['translations'] );
+		}
+
+		return $post_id;
+	}
 }
