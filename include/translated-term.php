@@ -440,6 +440,11 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$term = wp_update_term( $term->term_id, $term->taxonomy, $args );
 		$this->toggle_inserted_term_filters( $language, $parent );
 
+		if ( is_wp_error( $term ) ) {
+			// Something went wrong!
+			return $term;
+		}
+
 		if ( ! empty( $args['translations'] ) ) {
 			$this->save_translations( $term_id, $args['translations'] );
 		}
