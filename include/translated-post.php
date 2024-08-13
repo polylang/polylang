@@ -423,14 +423,11 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
 	 * }
 	 * @param PLL_Language $language         The post language.
-	 * @param bool         $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
-	 * @param bool         $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
-	 * @return int|WP_Error The post ID on success. The value 0 or `WP_Error` on failure.
+	 * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
 	 */
-	public function insert( array $postarr, PLL_Language $language, bool $wp_error = false, bool $fire_after_hooks = true ) {
-		$post_id = wp_insert_post( $postarr, $wp_error, $fire_after_hooks );
-
-		if ( empty( $post_id ) || is_wp_error( $post_id ) ) {
+	public function insert( array $postarr, PLL_Language $language ) {
+		$post_id = wp_insert_post( $postarr, true );
+		if ( is_wp_error( $post_id ) ) {
 			// Something went wrong!
 			return $post_id;
 		}
@@ -456,11 +453,9 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 *     @type PLL_Language $lang         The post language object.
 	 *     @type string[]     $translations The translation group to assign to the post with language slug as keys and post ID as values.
 	 * }
-	 * @param bool  $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
-	 * @param bool  $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
-	 * @return int|WP_Error The post ID on success. The value 0 or `WP_Error` on failure.
+	 * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
 	 */
-	public function update( array $postarr, bool $wp_error = false, bool $fire_after_hooks = true ) {
+	public function update( array $postarr ) {
 		$post = get_post( $postarr['ID'] );
 		if ( ! $post instanceof WP_Post ) {
 			return new WP_Error( 'invalid_post', __( 'Empty Post.', 'polylang' ) );
@@ -475,12 +470,16 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			$this->set_language( $postarr['ID'], $language );
 		}
 
-		$post = wp_update_post( $postarr, $wp_error, $fire_after_hooks );
+		$post_id = wp_update_post( $postarr, true );
+		if ( is_wp_error( $post_id ) ) {
+			// Something went wrong!
+			return $post_id;
+		}
 
 		if ( ! empty( $postarr['translations'] ) ) {
 			$this->save_translations( $postarr['ID'], $postarr['translations'] );
 		}
 
-		return $post;
+		return $post_id;
 	}
 }
