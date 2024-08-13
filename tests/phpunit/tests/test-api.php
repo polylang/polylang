@@ -306,7 +306,7 @@ class API_Test extends PLL_UnitTestCase {
 	 * @param bool $with_translations Whether or not the post has translations.
 	 * @return void
 	 */
-	public function test_pll_insert_post_happy_path( $with_parent, $with_translations ) {
+	public function test_pll_insert_post $with_parent, $with_translations ) {
 		$languages    = array( 'en', 'fr', 'de' );
 		$translations = array();
 		foreach ( $languages as $i => $language ) {
@@ -357,7 +357,7 @@ class API_Test extends PLL_UnitTestCase {
 	 * @param string $error_code Error code.
 	 * @return void
 	 */
-	public function test_pll_insert_post_error_path( $language, $error_code ) {
+	public function test_pll_insert_post_errors( $language, $error_code ) {
 		self::factory()->post->create_and_get(
 			array(
 				'post_title'  => 'Post title',
@@ -391,7 +391,7 @@ class API_Test extends PLL_UnitTestCase {
 	 * @param bool $with_translations Whether or not the post has translations.
 	 * @return void
 	 */
-	public function test_pll_update_post_happy_path( $with_parent, $with_language, $with_translations ) {
+	public function test_pll_update_post( $with_parent, $with_language, $with_translations ) {
 		$tr_post_ids = self::factory()->post->create_translated(
 			array(
 				'post_title'  => 'Title EN',
@@ -488,7 +488,7 @@ class API_Test extends PLL_UnitTestCase {
 	 * @param string $error_code Error code.
 	 * @return void
 	 */
-	public function test_pll_update_post_error_path( $language, $error_code ) {
+	public function test_pll_update_post_errors( $language, $error_code ) {
 		$post_ids = self::factory()->post->create_translated(
 			array(
 				'post_title'  => 'Post title',
