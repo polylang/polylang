@@ -428,28 +428,28 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @return int|WP_Error The post ID on success. The value 0 or `WP_Error` on failure.
 	 */
 	public function insert( array $postarr, PLL_Language $language, bool $wp_error = false, bool $fire_after_hooks = true ) {
-		$post = wp_insert_post( $postarr, $wp_error, $fire_after_hooks );
+		$post_id = wp_insert_post( $postarr, $wp_error, $fire_after_hooks );
 
-		if ( empty( $post ) || is_wp_error( $post ) ) {
+		if ( empty( $post_id ) || is_wp_error( $post_id ) ) {
 			// Something went wrong!
-			return $post;
+			return $post_id;
 		}
 
-		$this->set_language( $post, $language );
+		$this->set_language( $post_id, $language );
 
 		if ( ! empty( $postarr['translations'] ) ) {
 			$this->save_translations(
-				$post,
+				$post_id,
 				array_merge(
 					$postarr['translations'],
 					array(
-						$language->slug => $post,
+						$language->slug => $post_id,
 					)
 				)
 			);
 		}
 
-		return $post;
+		return $post_id;
 	}
 
 	/**
