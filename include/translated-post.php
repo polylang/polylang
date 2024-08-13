@@ -480,15 +480,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		$post = wp_update_post( $postarr, $wp_error, $fire_after_hooks );
 
 		if ( ! empty( $postarr['translations'] ) ) {
-			$this->save_translations(
-				$postarr['ID'],
-				array_merge(
-					$postarr['translations'],
-					array(
-						$language->slug => $postarr['ID'],
-					)
-				)
-			);
+			$this->save_translations( $postarr['ID'], $postarr['translations'] );
 		}
 
 		return $post;

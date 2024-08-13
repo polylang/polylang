@@ -392,15 +392,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$this->set_language( (int) $term['term_id'], $language );
 
 		if ( ! empty( $args['translations'] ) ) {
-			$this->save_translations(
-				(int) $term['term_id'],
-				array_merge(
-					$args['translations'],
-					array(
-						$language->slug => (int) $term['term_id'],
-					)
-				)
-			);
+			$this->save_translations( (int) $term['term_id'], $args['translations'] );
 		}
 
 		return $term;
