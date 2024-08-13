@@ -60,8 +60,6 @@ class REST_Languages_Test extends PLL_UnitTestCase {
 		$this->assertCount( 3, $data );
 
 		foreach ( $data as $response_data ) {
-			$this->assertInstanceOf( WP_REST_Response::class, $response_data );
-			$response_data = $response_data->get_data();
 			$this->assertIsArray( $response_data );
 			$this->assertArrayHasKey( 'locale', $response_data );
 			$this->assertContains( $response_data['locale'], $locales );

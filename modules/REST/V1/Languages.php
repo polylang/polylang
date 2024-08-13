@@ -141,13 +141,14 @@ class Languages extends WP_REST_Controller {
 	 * @phpstan-param WP_REST_Request<T> $request
 	 */
 	public function get_items( $request ) {
-		$languages = array();
+		$response = array();
 
 		foreach ( $this->languages->get_list() as $language ) {
-			$languages[] = $this->prepare_item_for_response( $language, $request );
+			$language   = $this->prepare_item_for_response( $language, $request );
+			$response[] = $this->prepare_response_for_collection( $language );
 		}
 
-		return rest_ensure_response( $languages );
+		return rest_ensure_response( $response );
 	}
 
 	/**
