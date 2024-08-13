@@ -657,8 +657,8 @@ function pll_insert_post( array $postarr, $language ) {
  *     Optional. An array of elements that make up a post to update or insert.
  *     All `wp_update_post` parameters plus the following.
  *
- *     @type PLL_Language $lang         The post language object.
- *     @type string[]     $translations The translation group to assign to the post with language slug as keys and post ID as values.
+ *     @type PLL_Language|string $lang         The post language object.
+ *     @type string[]            $translations The translation group to assign to the post with language slug as keys and post ID as values.
  * }
  * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
  */
