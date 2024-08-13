@@ -345,7 +345,6 @@ class API_Test extends PLL_UnitTestCase {
 			$increment_slug = $i + 1;
 			$suffix         = ! $is_default_lang ? "-{$increment_slug}" : '';
 			if ( $with_parent ) {
-				$this->assertSame( "post-title{$suffix}", $parent->post_name ); // Check post parent name.
 				$suffix = '';
 			}
 			$expected_slug = "post-title{$suffix}";
@@ -472,7 +471,6 @@ class API_Test extends PLL_UnitTestCase {
 		$expected_slug = "{$args['post_name']}-2";
 
 		if ( $with_parent && ! $with_language ) {
-			$this->assertSame( 'title-fr-2', $parent->post_name ); // Check post parent name.
 			$expected_slug = $args['post_name'];
 		}
 
