@@ -297,19 +297,16 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith ["page", true, false]
-	 *           ["page", false, false]
-	 *           ["post", false, false]
-	 *           ["page", true, true]
-	 *           ["page", false, true]
-	 *           ["post", false, true]
+	 * @testWith [true, false]
+	 *           [false, false]
+	 *           [true, true]
+	 *           [false, true]
 	 *
-	 * @param string $post_type         The post type.
-	 * @param bool   $with_parent       Whether or not the post has a parent.
-	 * @param bool   $with_translations Whether or not the post has translations.
+	 * @param bool $with_parent       Whether or not the post has a parent.
+	 * @param bool $with_translations Whether or not the post has translations.
 	 * @return void
 	 */
-	public function test_pll_insert_post_happy_path( $post_type, $with_parent, $with_translations ) {
+	public function test_pll_insert_post_happy_path( $with_parent, $with_translations ) {
 		$languages    = array( 'en', 'fr', 'de' );
 		$translations = array();
 		foreach ( $languages as $i => $language ) {
@@ -332,7 +329,7 @@ class API_Test extends PLL_UnitTestCase {
 			}
 
 			$args['post_title']  = 'Post title';
-			$args['post_type']   = $post_type;
+			$args['post_type']   = 'page';
 			$args['post_status'] = 'publish'; // To auto generate post name.
 
 			$result = pll_insert_post( $args, $language );
@@ -354,27 +351,25 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith ["post", "chti", "invalid_language"]
-	 *           ["page", "chti", "invalid_language"]
+	 * @testWith ["chti", "invalid_language"]
 	 *
-	 * @param string $post_type  Post type.
 	 * @param string $language   Language slug.
 	 * @param string $error_code Error code.
 	 * @return void
 	 */
-	public function test_pll_insert_post_error_path( $post_type, $language, $error_code ) {
+	public function test_pll_insert_post_error_path( $language, $error_code ) {
 		self::factory()->post->create_and_get(
 			array(
 				'post_title'  => 'Post title',
 				'post_status' => 'publish',
 				'lang'        => 'en',
-				'post_type'   => $post_type,
+				'post_type'   => 'page',
 			)
 		);
 
 		$postarr = array(
 			'post_title'  => 'Post title',
-			'post_type'   => $post_type,
+			'post_type'   => 'page',
 			'post_status' => 'publish',
 		);
 
@@ -384,34 +379,30 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith ["post", false, false, false]
-	 *           ["post", false, true, false]
-	 *           ["post", false, true, true]
-	 *           ["page", false, false, false]
-	 *           ["page", false, true, false]
-	 *           ["page", false, true, true]
-	 *           ["page", true, true, true]
-	 *           ["page", true, false, true]
-	 *           ["page", true, false, false]
+	 * @testWith [false, false, false]
+	 *           [false, true, false]
+	 *           [false, true, true]
+	 *           [true, true, true]
+	 *           [true, false, true]
+	 *           [true, false, false]
 	 *
-	 * @param string $post_type         The post type.
-	 * @param bool   $with_parent       Whether or not the post has a parent.
-	 * @param bool   $with_language     Whether or not the post language should be updated.
-	 * @param bool   $with_translations Whether or not the post has translations.
+	 * @param bool $with_parent       Whether or not the post has a parent.
+	 * @param bool $with_language     Whether or not the post language should be updated.
+	 * @param bool $with_translations Whether or not the post has translations.
 	 * @return void
 	 */
-	public function test_pll_update_post_happy_path( $post_type, $with_parent, $with_language, $with_translations ) {
+	public function test_pll_update_post_happy_path( $with_parent, $with_language, $with_translations ) {
 		$tr_post_ids = self::factory()->post->create_translated(
 			array(
 				'post_title'  => 'Title EN',
 				'post_status' => 'publish',
-				'post_type'   => $post_type,
+				'post_type'   => 'page',
 				'lang'        => 'en',
 			),
 			array(
 				'post_title'  => 'Title FR',
 				'post_status' => 'publish',
-				'post_type'   => $post_type,
+				'post_type'   => 'page',
 				'lang'        => 'fr',
 			)
 		);
@@ -420,7 +411,7 @@ class API_Test extends PLL_UnitTestCase {
 			array(
 				'post_title'  => 'Title DE',
 				'post_status' => 'publish',
-				'post_type'   => $post_type,
+				'post_type'   => 'page',
 				'lang'        => 'de',
 			)
 		);
@@ -442,7 +433,7 @@ class API_Test extends PLL_UnitTestCase {
 				array(
 					'post_title'  => 'Title FR',
 					'post_status' => 'publish',
-					'post_type'   => $post_type,
+					'post_type'   => 'page',
 					'lang'        => 'fr',
 				)
 			);
@@ -491,25 +482,23 @@ class API_Test extends PLL_UnitTestCase {
 	}
 
 	/**
-	 * @testWith ["post", "chti", "invalid_language"]
-	 *           ["page", "chti", "invalid_language"]
+	 * @testWith ["chti", "invalid_language"]
 	 *
-	 * @param string $post_type  Post type.
 	 * @param string $language   Language slug.
 	 * @param string $error_code Error code.
 	 * @return void
 	 */
-	public function test_pll_update_post_error_path( $post_type, $language, $error_code ) {
+	public function test_pll_update_post_error_path( $language, $error_code ) {
 		$post_ids = self::factory()->post->create_translated(
 			array(
 				'post_title'  => 'Post title',
-				'post_type'   => $post_type,
+				'post_type'   => 'page',
 				'post_status' => 'publish',
 				'lang'        => 'en',
 			),
 			array(
 				'post_title'  => 'Titre de post',
-				'post_type'   => $post_type,
+				'post_type'   => 'page',
 				'post_status' => 'publish',
 				'lang'        => 'fr',
 			)
