@@ -456,12 +456,12 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @return int|WP_Error The post ID on success. The value `WP_Error` on failure.
 	 */
 	public function update( array $postarr ) {
-		$post = get_post( $postarr['ID'] );
-		if ( ! $post instanceof WP_Post ) {
-			return new WP_Error( 'invalid_post', __( 'Empty Post.', 'polylang' ) );
-		}
-
 		if ( ! empty( $postarr['lang'] ) ) {
+			$post = get_post( $postarr['ID'] );
+			if ( ! $post instanceof WP_Post ) {
+				return new WP_Error( 'invalid_post', __( 'Invalid post ID.', 'polylang' ) );
+			}
+
 			$language = $this->languages->get( $postarr['lang'] );
 			if ( ! $language instanceof PLL_Language ) {
 				return new WP_Error( 'invalid_language', __( 'Please provide a valid language.', 'polylang' ) );
