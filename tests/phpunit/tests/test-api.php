@@ -306,7 +306,7 @@ class API_Test extends PLL_UnitTestCase {
 	 * @param bool $with_translations Whether or not the post has translations.
 	 * @return void
 	 */
-	public function test_pll_insert_post $with_parent, $with_translations ) {
+	public function test_pll_insert_post( $with_parent, $with_translations ) {
 		$languages    = array( 'en', 'fr', 'de' );
 		$translations = array();
 		foreach ( $languages as $i => $language ) {
