@@ -438,15 +438,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 		$this->set_language( $post_id, $language );
 
 		if ( ! empty( $postarr['translations'] ) ) {
-			$this->save_translations(
-				$post_id,
-				array_merge(
-					$postarr['translations'],
-					array(
-						$language->slug => $post_id,
-					)
-				)
-			);
+			$this->save_translations( $post_id, $postarr['translations'] );
 		}
 
 		return $post_id;

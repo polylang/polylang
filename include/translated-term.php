@@ -449,15 +449,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 		$this->toggle_inserted_term_filters( $language, $parent );
 
 		if ( ! empty( $args['translations'] ) ) {
-			$this->save_translations(
-				$term_id,
-				array_merge(
-					$args['translations'],
-					array(
-						$language->slug => $term_id,
-					)
-				)
-			);
+			$this->save_translations( $term_id, $args['translations'] );
 		}
 
 		return $term;
