@@ -416,7 +416,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 *     @type string[]     $translations The translation group to assign to the term with language slug as keys and `term_id` as values.
 	 * }
 	 * @return array|WP_Error An array containing the `term_id` and `term_taxonomy_id`,
-	 *                        WP_Error otherwise.                  WP_Error otherwise.
+	 *                        WP_Error otherwise.
 	 */
 	public function update( int $term_id, array $args = array() ) {
 		$term = get_term( $term_id );
@@ -459,7 +459,7 @@ class PLL_Translated_Term extends PLL_Translated_Object implements PLL_Translata
 	 * @since 3.7
 	 *
 	 * @param PLL_Language $language The language to use.
-	 * @param int          $parent The parent term id to use.
+	 * @param int          $parent   The parent term id to use.
 	 * @return void
 	 */
 	private function toggle_inserted_term_filters( PLL_Language $language, int $parent ): void {

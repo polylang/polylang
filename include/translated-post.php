@@ -417,7 +417,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @since 3.7
 	 *
 	 * @param array        $postarr {
-	 *     Optional. An array of elements that make up a post to update or insert.
+	 *     Optional. An array of elements that make up a post to insert.
 	 *     @See wp_insert_post() for accepted arguments.
 	 *
 	 *     @type string[] $translations The translation group to assign to the post with language slug as keys and post ID as values.
@@ -447,7 +447,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @since 3.7
 	 *
 	 * @param array $postarr {
-	 *     Optional. An array of elements that make up a post to update or insert.
+	 *     Optional. An array of elements that make up a post to update.
 	 *     @See wp_insert_post() for accepted arguments.
 	 *
 	 *     @type PLL_Language|string $lang         The post language object or slug.
