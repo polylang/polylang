@@ -466,8 +466,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			return new WP_Error( 'invalid_post', __( 'Empty Post.', 'polylang' ) );
 		}
 
-		/** @var PLL_Language $language */
-		$language = $this->get_language( $postarr['ID'] );
 		if ( ! empty( $postarr['lang'] ) ) {
 			$language = $this->languages->get( $postarr['lang'] );
 			if ( ! $language instanceof PLL_Language ) {
