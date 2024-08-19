@@ -141,7 +141,7 @@ class Widgets_Filter_Test extends PLL_UnitTestCase {
 		);
 		update_post_meta( $en, '_wp_attachment_image_alt', 'Alt text EN' );
 
-		$fr = $pll_admin->posts->create_media_translation( $en, 'fr' );
+		$fr = $pll_admin->model->post->create_media_translation( $en, 'fr' );
 		wp_update_post(
 			array(
 				'ID'           => $fr,
