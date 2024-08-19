@@ -307,7 +307,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * Creates a media translation
 	 *
 	 * @since 1.8
-	 * @since 3.6 Moved from PLL_CRUD_Posts.
+	 * @since 3.7 Moved from PLL_CRUD_Posts.
 	 *
 	 * @param int           $post_id Original attachment id.
 	 * @param string|object $lang    New translation language.
