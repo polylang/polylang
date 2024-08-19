@@ -309,8 +309,8 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 	 * @since 1.8
 	 * @since 3.7 Moved from PLL_CRUD_Posts.
 	 *
-	 * @param int           $post_id Original attachment id.
-	 * @param string|object $lang    New translation language.
+	 * @param int                 $post_id Original attachment id.
+	 * @param string|PLL_Language $lang    New translation language.
 	 * @return int Attachment id of the translated media.
 	 */
 	public function create_media_translation( $post_id, $lang ) {
@@ -324,7 +324,7 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			return 0;
 		}
 
-		$lang = $this->model->get_language( $lang ); // Make sure we get a valid language slug.
+		$lang = $this->languages->get( $lang ); // Make sure we get a valid language slug.
 
 		if ( empty( $lang ) ) {
 			return 0;
