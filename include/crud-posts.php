@@ -279,8 +279,8 @@ class PLL_CRUD_Posts {
 	 * @since 1.8
 	 * @since 3.7 Deprecated in favor of PLL_Translated_Post::create_media_translation().
 	 *
-	 * @param int           $post_id Original attachment id.
-	 * @param string|object $lang    New translation language.
+	 * @param int                 $post_id Original attachment id.
+	 * @param string|PLL_Language $lang    New translation language.
 	 * @return int Attachment id of the translated media.
 	 */
 	public function create_media_translation( $post_id, $lang ) {
