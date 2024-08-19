@@ -50,7 +50,7 @@ class Nav_Menus extends Abstract_Option {
 		return array(
 			'type'                 => 'object', // Correspond to associative array in PHP, @see{https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
 			'patternProperties'    => array(
-				'[^\/:<>\*\?"\|]+' => array( // Excludes invalid directory name caharacters @see https://developer.wordpress.org/reference/classes/wp_rest_themes_controller/register_routes/
+				'[^\/:<>\*\?"\|]+' => array( // Excludes invalid directory name characters @see https://developer.wordpress.org/reference/classes/wp_rest_themes_controller/register_routes/
 					'type'                 => 'object',
 					'patternProperties'    => array(
 						'[\w-]+' => array( // Accepted characters for menu locations @see https://developer.wordpress.org/reference/classes/wp_rest_menu_locations_controller/register_routes/
