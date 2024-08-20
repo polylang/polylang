@@ -306,22 +306,30 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'valid'                       => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 					'twentybarbaz' => array(
-						'fr' => 12,
-						'de' => 27,
+						'primary' => array(
+							'fr' => 12,
+							'de' => 27,
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 					'twentybarbaz' => array(
-						'fr' => 12,
-						'de' => 27,
+						'primary' => array(
+							'fr' => 12,
+							'de' => 27,
+						),
 					),
 				),
 				'expected_valid'  => true,
@@ -334,8 +342,10 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'invalid theme'               => array(
 				'value'           => array(
 					'' => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 				),
 				'sanitized_value' => array(),
@@ -344,14 +354,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'theme wrong type'            => array(
 				'value'           => array(
 					8 => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 				),
 				'sanitized_value' => array(
 					8 => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 				),
 				'expected_valid'  => true, // Passes because php casts `8` as a string automatically, thanks to type Juggling.
@@ -368,13 +382,17 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'invalid locale'              => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						''   => 4,
+						'primary' => array(
+							'en' => 7,
+							''   => 4,
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 7,
+						'primary' => array(
+							'en' => 7,
+						),
 					),
 				),
 				'expected_valid'  => 'rest_additional_properties_forbidden',
@@ -382,14 +400,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'invalid post ID'             => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 0,
-						'fr' => -4,
+						'primary' => array(
+							'en' => 0,
+							'fr' => -4,
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 0,
-						'fr' => -4,
+						'primary' => array(
+							'en' => 0,
+							'fr' => -4,
+						),
 					),
 				),
 				'expected_valid'  => 'rest_out_of_bounds',
@@ -397,14 +419,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'post ID string'              => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => '4',
+						'primary' => array(
+							'en' => 7,
+							'fr' => '4',
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => 4,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 4,
+						),
 					),
 				),
 				'expected_valid'  => true,
@@ -412,14 +438,18 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 			'post ID wrong type'          => array(
 				'value'           => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => array(),
+						'primary' => array(
+							'en' => 7,
+							'fr' => array(),
+						),
 					),
 				),
 				'sanitized_value' => array(
 					'twentyfoobar' => array(
-						'en' => 7,
-						'fr' => 0,
+						'primary' => array(
+							'en' => 7,
+							'fr' => 0,
+						),
 					),
 				),
 				'expected_valid'  => 'rest_invalid_type',

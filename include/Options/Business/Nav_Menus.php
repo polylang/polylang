@@ -45,36 +45,23 @@ class Nav_Menus extends Abstract_Option {
 	 * @since 3.7
 	 *
 	 * @return array Partial schema.
-	 *
-	 * @phpstan-return array{
-	 *     type: 'object',
-	 *     patternProperties: array{
-	 *         '^\w+$': array{
-	 *             type: 'object',
-	 *             context: list<'edit'>,
-	 *             patternProperties: array{
-	 *                 '^[a-z_-]+$': array{
-	 *                     type: 'integer',
-	 *                     minimum: 0
-	 *                 }
-	 *             },
-	 *             additionalProperties: false
-	 *         }
-	 *     },
-	 *     additionalProperties: false
-	 * }
 	 */
 	protected function get_data_structure(): array {
 		return array(
 			'type'                 => 'object', // Correspond to associative array in PHP, @see{https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
 			'patternProperties'    => array(
-				'^\\w+$' => array( // Any word characters as key, correspond to a theme slug.
-					'type'              => 'object',
-					'context'           => array( 'edit' ),
-					'patternProperties' => array(
-						'^[a-z_-]+$' => array( // Language slug as key.
-							'type'    => 'integer',
-							'minimum' => 0, // A post ID.
+				'[^\/:<>\*\?"\|]+' => array( // Excludes invalid directory name characters @see https://developer.wordpress.org/reference/classes/wp_rest_themes_controller/register_routes/
+					'type'                 => 'object',
+					'patternProperties'    => array(
+						'[\w-]+' => array( // Accepted characters for menu locations @see https://developer.wordpress.org/reference/classes/wp_rest_menu_locations_controller/register_routes/
+							'type'              => 'object',
+							'patternProperties' => array(
+								'[a-z_-]+' => array( // Language slug as key.
+									'type'    => 'integer',
+									'minimum' => 0, // A post ID.
+								),
+							),
+							'additionalProperties' => false,
 						),
 					),
 					'additionalProperties' => false,
