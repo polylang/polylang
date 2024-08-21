@@ -126,7 +126,7 @@ function pll_use_block_editor_plugin() {
 	 *
 	 * @param bool $use_plugin True when loading the block editor plugin.
 	 */
-	return class_exists( 'PLL_Block_Editor_Plugin' ) && apply_filters( 'pll_use_block_editor_plugin', ! defined( 'PLL_USE_BLOCK_EDITOR_PLUGIN' ) || PLL_USE_BLOCK_EDITOR_PLUGIN );
+	return class_exists( 'Abstract_Screen' ) && apply_filters( 'pll_use_block_editor_plugin', ! defined( 'PLL_USE_BLOCK_EDITOR_PLUGIN' ) || PLL_USE_BLOCK_EDITOR_PLUGIN );
 }
 
 /**
