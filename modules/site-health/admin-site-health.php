@@ -44,6 +44,7 @@ class PLL_Admin_Site_Health {
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info' ), 15 );
+		add_filter( 'debug_information', array( $this, 'info_translations' ), 15 );
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
@@ -422,32 +423,6 @@ class PLL_Admin_Site_Health {
 			$fields['term-no-lang']['value'] = $this->format_array( $terms_no_lang );
 		}
 
-		// Translation updates available.
-		$translation_updates = wp_get_translation_updates();
-
-		if ( $translation_updates ) {
-			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
-			$translation_updates_nb   = count( $translation_updates );
-
-			$fields['translations_update'] = array(
-				'label' => __( 'Translation updates', 'polylang' ),
-				'value' => sprintf(
-					/* translators: %s is a formatted number. */
-					_n( '%s translation update is available.', '%s translation updates are available.', $translation_updates_nb, 'polylang' ),
-					number_format_i18n( $translation_updates_nb )
-				),
-				'debug' => $translation_updates_nb,
-			);
-
-			if ( ! empty( $translation_updates_list ) ) {
-				$fields['translations_update_list'] = array(
-					'label' => __( 'Translation updates list', 'polylang' ),
-					'value' => $translation_updates_list,
-					'debug' => $translation_updates_list,
-				);
-			}
-		}
-
 		// Add WPML files.
 		$wpml_files = PLL_WPML_Config::instance()->get_files();
 		if ( ! empty( $wpml_files ) ) {
@@ -472,6 +447,37 @@ class PLL_Admin_Site_Health {
 		return $debug_info;
 	}
 
+	public function info_translations( $debug_info ){
+		// Translation updates available.
+		$translation_updates = wp_get_translation_updates();
+
+		if ( $translation_updates ) {
+			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
+			if ( ! empty( $translation_updates_list ) ) {
+				foreach ( $translation_updates_list as $type => $values ) {
+					$fields['translation_' . $type]['label'] = '=== ' . ucfirst( $type ) . ' ===';
+					foreach ( $values as $name => $value ) {
+						$locales = implode( ', ', $value );
+						$fields['translation_' . $name]['label'] = $name;
+						$fields['translation_' . $name]['value'] = sprintf(
+							__( 'A translation is missing or updatable for %s .', 'polylang' ),
+							$locales );
+					}
+				}
+			}
+		}
+
+		// Create the section.
+	//	if ( ! empty( $fields ) ) {
+			$debug_info['pll_translation'] = array(
+				/* translators: placeholder is the plugin name */
+				'label'  => sprintf( __( 'Translations information', 'polylang' ), POLYLANG ),
+				'fields' => $fields,
+			);
+	//	}
+
+		return $debug_info;
+	}
 	/**
 	 * Returns all available translation updates.
 	 *
@@ -481,34 +487,25 @@ class PLL_Admin_Site_Health {
 	 * @return array The available translation updates formatted for the Site Health Report.
 	 */
 	public function get_translations_update_list( array $updates ): array {
-		$pll_locales = $this->model->get_languages_list( array( 'fields' => 'locale' ) );
+		$pll_locales = $this->model->get_languages_list( );
+		$locales = array();
+		foreach ( $pll_locales as $locale ) {
+			$locales[$locale->locale] = $locale->locale;
+			if ( ! empty( $locales->fallbacks ) ) {
+				foreach ( $locales->fallbacks as $fallback ) {
+					$locales[$fallback] = $fallback;
+				}
+			}
+		}
 		$update_list = array();
 
 		foreach ( $updates as $update ) {
-			$update_list[ $update->type ][ $update->slug ][] = $update->language;
+			if ( in_array( $update->language, $locales  ) ) {
+				$update_list[ $update->type ][ $update->slug ][] = $update->language;
+			}
 		}
 
-		$translation_list = array();
-
-		foreach ( $update_list as $type => $locales_by_element ) {
-			if ( 'core' === $type ) {
-				if ( ! empty( $locales_by_element['default'] ) ) {
-					$translation_list['core'] = array_intersect( $pll_locales, $locales_by_element['default'] );
-					$translation_list['core'] = implode( ', ', $translation_list['core'] );
-				}
-				continue;
-			}
-
-			$type_translations = array();
-
-			foreach ( $locales_by_element as $name => $locales ) {
-				$locales             = array_intersect( $pll_locales, $locales );
-				$type_translations[] = sprintf( '%s: %s', $name, implode( ', ', $locales ) );
-			}
-			$translation_list[ $type ] = implode( ' | ', $type_translations );
-		}
-
-		return array_filter( $translation_list );
+		return array_filter( $update_list );
 	}
 
 	/**
