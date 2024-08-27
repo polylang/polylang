@@ -447,10 +447,18 @@ class PLL_Admin_Site_Health {
 		return $debug_info;
 	}
 
-	public function info_translations( $debug_info ){
+	/**
+	 * Display the list of available translation for Core, plugins and theme.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $debug_info The debug information to be added to the core information page.
+	 * @return array
+	 */
+	public function info_translations( $debug_info ) {
 		// Translation updates available.
 		$translation_updates = wp_get_translation_updates();
-
+		$fields = array();
 		if ( $translation_updates ) {
 			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
 			if ( ! empty( $translation_updates_list ) ) {
@@ -460,29 +468,31 @@ class PLL_Admin_Site_Health {
 					} elseif ( 'plugin' === $type ) {
 						$type = __( 'Plugins', 'polylang' );
 					} else {
-					$type = __( 'Themes', 'polylang' );
+						$type = __( 'Themes', 'polylang' );
 					}
 
-					$fields['translation_' . $type]['label'] = '=== ' . $type . ' ===';
+					$fields[ 'translation_' . $type ]['label'] = '=== ' . $type . ' ===';
 					foreach ( $values as $name => $value ) {
 						$locales = implode( ', ', $value );
-						$fields['translation_' . $name]['label'] = $name;
-						$fields['translation_' . $name]['value'] = sprintf(
+						$fields[ 'translation_' . $name ]['label'] = $name;
+						$fields[ 'translation_' . $name ]['value'] = sprintf(
+							/* translators: the placeholder is a WordPress locale */
 							__( 'A translation is missing or updatable for %s .', 'polylang' ),
-							$locales );
+							$locales
+						);
 					}
 				}
 			}
 		}
 
 		// Create the section.
-	//	if ( ! empty( $fields ) ) {
+		if ( ! empty( $fields ) ) {
 			$debug_info['pll_translation'] = array(
 				/* translators: placeholder is the plugin name */
 				'label'  => sprintf( __( 'Translations information', 'polylang' ), POLYLANG ),
 				'fields' => $fields,
 			);
-	//	}
+		}
 
 		return $debug_info;
 	}
@@ -495,20 +505,20 @@ class PLL_Admin_Site_Health {
 	 * @return array The available translation updates formatted for the Site Health Report.
 	 */
 	public function get_translations_update_list( array $updates ): array {
-		$pll_locales = $this->model->get_languages_list( );
+		$pll_locales = $this->model->get_languages_list();
 		$locales = array();
 		foreach ( $pll_locales as $locale ) {
-			$locales[$locale->locale] = $locale->locale;
+			$locales[ $locale->locale ] = $locale->locale;
 			if ( ! empty( $locales->fallbacks ) ) {
 				foreach ( $locales->fallbacks as $fallback ) {
-					$locales[$fallback] = $fallback;
+					$locales[ $fallback ] = $fallback;
 				}
 			}
 		}
 		$update_list = array();
 
 		foreach ( $updates as $update ) {
-			if ( in_array( $update->language, $locales  ) ) {
+			if ( in_array( $update->language, $locales ) ) {
 				$update_list[ $update->type ][ $update->slug ][] = $update->language;
 			}
 		}
