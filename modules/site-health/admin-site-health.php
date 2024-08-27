@@ -463,20 +463,24 @@ class PLL_Admin_Site_Health {
 			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
 			if ( ! empty( $translation_updates_list ) ) {
 				foreach ( $translation_updates_list as $type => $values ) {
-					if ( 'core' === $type ) {
-						$type = __( 'WordPress', 'polylang' );
-					} elseif ( 'plugin' === $type ) {
-						$type = __( 'Plugins', 'polylang' );
-					} else {
-						$type = __( 'Themes', 'polylang' );
-					}
+					$type_label = __( 'WordPress', 'polylang' );
 
-					$fields[ 'translation_' . $type ]['label'] = '=== ' . $type . ' ===';
+					if ( 'plugin' === $type ) {
+						$type = 'plugins';
+						$type_label = __( 'Plugins', 'polylang' );
+					}
+					if ( 'theme' === $type ) {
+						$type = 'themes';
+						$type_label = __( 'Themes', 'polylang' );
+
+					}
+					$fields[ 'translation_' . $type ]['label'] = '=== ' . $type_label . ' ===';
+					$fields[ 'translation_' . $type ]['value'] = '='; // needed to avoid a "undefined" when copy to clipboard. Empty string is skipped.
 					foreach ( $values as $name => $value ) {
 						$fields[ 'translation_' . $name ]['label'] = $name;
-						$is_locales_installed = $this->is_wp_language_installed( $value );
-						if ( $is_locales_installed ) {
-							$locales = implode( ', ', $is_locales_installed );
+						$is_locales_installed = $this->is_wp_language_installed( $value, $type, $name );
+						if ( ! $is_locales_installed ) {
+							$locales = implode( ', ', $value );
 							$fields[ 'translation_' . $name ]['value'] = sprintf(
 							/* translators: the placeholder is a WordPress locale */
 								__( 'A translation is missing for %s .', 'polylang' ),
@@ -516,19 +520,15 @@ class PLL_Admin_Site_Health {
 	 * @param array $locales array of WordPress locales
 	 * @return array|true
 	 */
-	public function is_wp_language_installed( $locales ) {
-		$available_language = get_available_languages();
-		$missing_translation = array();
+	public function is_wp_language_installed( $locales, $type, $name ) {
+		$installed_languages = wp_get_installed_translations( $type );
 		foreach ( $locales as $locale ) {
-			if ( ! in_array( $locale, $available_language, true ) ) {
-				$missing_translation[ $locale ] = $locale;
+			if ( !empty( $installed_languages[ $name ] ) && $installed_languages[ $name ][ $locale] ) {
+				return true;
 			}
 		}
-		if ( empty( $missing_translation ) ) {
-			return true;
-		}
 
-		return $missing_translation;
+		return false;
 	}
 
 
