@@ -455,7 +455,15 @@ class PLL_Admin_Site_Health {
 			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
 			if ( ! empty( $translation_updates_list ) ) {
 				foreach ( $translation_updates_list as $type => $values ) {
-					$fields['translation_' . $type]['label'] = '=== ' . ucfirst( $type ) . ' ===';
+					if ( 'core' === $type ) {
+						$type = __( 'WordPress', 'polylang' );
+					} elseif ( 'plugin' === $type ) {
+						$type = __( 'Plugins', 'polylang' );
+					} else {
+					$type = __( 'Themes', 'polylang' );
+					}
+
+					$fields['translation_' . $type]['label'] = '=== ' . $type . ' ===';
 					foreach ( $values as $name => $value ) {
 						$locales = implode( ', ', $value );
 						$fields['translation_' . $name]['label'] = $name;
