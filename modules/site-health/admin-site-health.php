@@ -473,13 +473,24 @@ class PLL_Admin_Site_Health {
 
 					$fields[ 'translation_' . $type ]['label'] = '=== ' . $type . ' ===';
 					foreach ( $values as $name => $value ) {
-						$locales = implode( ', ', $value );
 						$fields[ 'translation_' . $name ]['label'] = $name;
-						$fields[ 'translation_' . $name ]['value'] = sprintf(
+						$is_locales_installed = $this->is_wp_language_installed( $value );
+						if ( $is_locales_installed ) {
+							$locales = implode( ', ', $is_locales_installed );
+							$fields[ 'translation_' . $name ]['value'] = sprintf(
 							/* translators: the placeholder is a WordPress locale */
-							__( 'A translation is missing or updatable for %s .', 'polylang' ),
-							$locales
-						);
+								__( 'A translation is missing for %s .', 'polylang' ),
+								$locales
+							);
+						} else {
+							$locales = implode( ', ', $value );
+
+							$fields[ 'translation_' . $name ]['value'] = sprintf(
+							/* translators: the placeholder is a WordPress locale */
+								__( 'A translation is updatable for %s .', 'polylang' ),
+								$locales
+							);
+						}
 					}
 				}
 			}
@@ -496,6 +507,31 @@ class PLL_Admin_Site_Health {
 
 		return $debug_info;
 	}
+
+	/**
+	 * Is the language pack already installed ?
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $locales array of WordPress locales
+	 * @return array|true
+	 */
+	public function is_wp_language_installed( $locales ) {
+		$available_language = get_available_languages();
+		$missing_translation = array();
+		foreach ( $locales as $locale ) {
+			if ( ! in_array( $locale, $available_language, true ) ) {
+				$missing_translation[ $locale ] = $locale;
+			}
+		}
+		if ( empty( $missing_translation ) ) {
+			return true;
+		}
+
+		return $missing_translation;
+	}
+
+
 	/**
 	 * Returns all available translation updates.
 	 *
