@@ -517,13 +517,15 @@ class PLL_Admin_Site_Health {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array $locales array of WordPress locales
+	 * @param array  $locales array of WordPress locales.
+	 * @param string $type type of update (may be core, plugin or theme).
+	 * @param string $name name of the element (plugin/theme) currently updated. In case of Core update, it's "default"
 	 * @return array|true
 	 */
 	public function is_wp_language_installed( $locales, $type, $name ) {
 		$installed_languages = wp_get_installed_translations( $type );
 		foreach ( $locales as $locale ) {
-			if ( !empty( $installed_languages[ $name ] ) && $installed_languages[ $name ][ $locale] ) {
+			if ( ! empty( $installed_languages[ $name ] ) && $installed_languages[ $name ][ $locale ] ) {
 				return true;
 			}
 		}
