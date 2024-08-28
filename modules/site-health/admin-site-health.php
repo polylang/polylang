@@ -44,7 +44,7 @@ class PLL_Admin_Site_Health {
 		add_filter( 'debug_information', array( $this, 'info_options' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info' ), 15 );
-		add_filter( 'debug_information', array( $this, 'info_translations' ), 15 );
+		add_filter( 'debug_information', array( $this, 'info_translations' ), 0 );
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
@@ -512,6 +512,9 @@ class PLL_Admin_Site_Health {
 		return $debug_info;
 	}
 
+	public function detect_non_wporg_translations(){
+
+	}
 	/**
 	 * Is the language pack already installed ?
 	 *
@@ -558,6 +561,19 @@ class PLL_Admin_Site_Health {
 		foreach ( $updates as $update ) {
 			if ( in_array( $update->language, $locales ) ) {
 				$update_list[ $update->type ][ $update->slug ][] = $update->language;
+			}
+		}
+
+		$activated_plugins = get_option( 'active_plugins' );
+		if ( ! empty( $activated_plugins ) ) {
+			foreach ( $activated_plugins as $activated_plugin ) {
+				if ( ! function_exists( 'get_plugin_data' ) ) {
+					require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+				}
+				$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $activated_plugin );
+				if ( $plugin_data){
+
+				}
 			}
 		}
 
