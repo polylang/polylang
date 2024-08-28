@@ -475,7 +475,7 @@ class PLL_Admin_Site_Health {
 
 					}
 					$fields[ 'translation_' . $type ]['label'] = '=== ' . $type_label . ' ===';
-					$fields[ 'translation_' . $type ]['value'] = '='; // needed to avoid a "undefined" when copy to clipboard. Empty string is skipped.
+					$fields[ 'translation_' . $type ]['value'] = ' '; // needed to avoid a "undefined" when copy to clipboard. Empty string is skipped.
 					foreach ( $values as $name => $value ) {
 						$fields[ 'translation_' . $name ]['label'] = $name;
 						$is_locales_installed = $this->is_wp_language_installed( $value, $type, $name );
