@@ -459,7 +459,7 @@ class PLL_Admin_Site_Health {
 		// Translation updates available.
 		$translation_updates = wp_get_translation_updates();
 		$fields = array();
-		if ( $translation_updates ) {
+
 			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
 			if ( ! empty( $translation_updates_list ) ) {
 				foreach ( $translation_updates_list as $type => $values ) {
@@ -498,7 +498,6 @@ class PLL_Admin_Site_Health {
 					}
 				}
 			}
-		}
 
 		// Create the section.
 		if ( ! empty( $fields ) ) {
@@ -521,16 +520,28 @@ class PLL_Admin_Site_Health {
 	 * @since 3.7
 	 *
 	 * @param array  $locales array of WordPress locales.
-	 * @param string $type type of update (may be core, plugin or theme).
+	 * @param string $type type of update (may be core, plugin or theme and sometimes core, plugins or themes ).
 	 * @param string $name name of the element (plugin/theme) currently updated. In case of Core update, it's "default"
 	 * @return boolean
 	 */
-	public function is_wp_language_installed( $locales, $type, $name ) {
-		$installed_languages = wp_get_installed_translations( $type );
+	public function is_wp_language_installed( $locales, $type, $name, $already_installed = array()) {
+		// fucking inconsistency !
+		if ( 'plugin' === $type ) {
+			$type = 'plugins';
+		}
+		if ( 'theme' === $type ) {
+			$type = 'themes';
+		}
+
+		$installed_translations = wp_get_installed_translations( $type );
 		foreach ( $locales as $locale ) {
-			if ( ! empty( $installed_languages[ $name ] ) && $installed_languages[ $name ][ $locale ] ) {
-				return true;
+			if ( ! empty( $installed_translations[ $name ] ) && $installed_translations[ $name ][ $locale ] ) {
+				$already_installed[ $type ][ $name ][ $locale ] = $locale;
 			}
+		}
+
+		if ( ! empty( $already_installed ) ) {
+			return $already_installed;
 		}
 
 		return false;
@@ -547,7 +558,7 @@ class PLL_Admin_Site_Health {
 	 */
 	public function get_translations_update_list( array $updates ): array {
 		$pll_locales = $this->model->get_languages_list();
-		$locales = array();
+		$locales     = array();
 		foreach ( $pll_locales as $locale ) {
 			$locales[ $locale->locale ] = $locale->locale;
 			if ( ! empty( $locale->fallbacks ) ) {
@@ -560,23 +571,28 @@ class PLL_Admin_Site_Health {
 
 		foreach ( $updates as $update ) {
 			if ( in_array( $update->language, $locales ) ) {
-				$update_list[ $update->type ][ $update->slug ][] = $update->language;
+				$update_list[ $update->type ][ $update->slug ][ $update->language ] = $update->language;
 			}
 		}
 
 		$activated_plugins = get_option( 'active_plugins' );
 		if ( ! empty( $activated_plugins ) ) {
 			foreach ( $activated_plugins as $activated_plugin ) {
-				if ( ! function_exists( 'get_plugin_data' ) ) {
-					require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-				}
-				$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $activated_plugin );
-				if ( $plugin_data){
+				$plugin_data       = get_plugin_data( WP_PLUGIN_DIR . '/' . $activated_plugin );
+				$already_installed = $this->is_wp_language_installed( $locales, 'plugin', strtolower( $plugin_data['Name']) , $already_installed );
+				foreach ( $pll_locales as $locale ) {
 
+					if ( ! $update_list['plugin'][ strtolower( $plugin_data['Name'] ) ][ $locale->get_locale() ] ) { // Polylang/Polylang Pro case maybe others.
+						$po_path     = dirname( $activated_plugin ) . $plugin_data['DomainPath'] . '/' . $plugin_data['TextDomain'] . '-' . $locale->get_locale() . '.po';
+						$file_exists = file_exists( WP_PLUGIN_DIR . '/' . $po_path );
+						if ( ! file_exists( $file_exists ) ) {
+							$update_list['plugin'][ strtolower( $plugin_data['Name'] ) ][ $locale->get_locale() ] = $locale->get_locale();
+						}
+					}
 				}
 			}
 		}
-
+		//$update_list = array_diff( $already_installed, $update_list );
 		return array_filter( $update_list );
 	}
 
