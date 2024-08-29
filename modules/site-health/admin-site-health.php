@@ -569,7 +569,7 @@ class PLL_Admin_Site_Health {
 			}
 		}
 
-		// Premiums
+		// Premium plugins
 		$activated_plugins = get_option( 'active_plugins' );
 		if ( ! empty( $activated_plugins ) ) {
 			foreach ( $activated_plugins as $activated_plugin ) {
@@ -587,6 +587,33 @@ class PLL_Admin_Site_Health {
 					}
 				}
 			}
+		}
+
+		// Premium themes
+		$theme_data = wp_get_theme( get_stylesheet() );
+		$name = strtolower( $theme_data->get( 'Name' ) );
+		$textdomain = $theme_data->get( 'TextDomain' );
+		$domain_path = $theme_data->get( 'DomainPath' );
+		$child = is_child_theme();
+
+		foreach ( $pll_locales as $locale ) {
+		//	$path['activated'] = get_stylesheet_directory() . $domain_path . '/' . $locale->get_locale() . '.po';
+			$theme[ $locale->get_locale() ]['path'][ $name ] = get_stylesheet_directory() . $domain_path . '/' . $locale->get_locale() . '.po';
+			$theme[ $locale->get_locale() ]['name'][ $name ] = $name;
+			if ( $child ){
+				$parent_domain_path = $theme_data->parent()->get('DomainPath');
+				$theme[ $locale->get_locale() ]['path'][ $theme_data->parent()->get('Name') ] = get_template_directory() .$parent_domain_path . '/' . $locale->get_locale() . '.po';
+				$theme[ $locale->get_locale() ]['name'][ $theme_data->parent()->get('Name') ] = $theme_data->parent()->get('Name');
+			}
+/*			foreach ( $path as $translation_path ) {
+				$file_exists = file_exists( $translation_path );
+				if ( ! $file_exists ) {
+					$update_list['theme'][ $name ][ $locale->get_locale() ] = $locale->get_locale();
+				}
+			}*/
+		}
+		if ( ! empty( $theme ) ){
+
 		}
 
 		return array_filter( $update_list );
