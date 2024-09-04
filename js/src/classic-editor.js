@@ -199,8 +199,7 @@ jQuery(
 								$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
 
 								pll.media.resetAllAttachmentsCollections();
-							}
-						).done( function () {
+
 								// Creates an event once the language has been successfully changed.
 								const onPostLangChoice = new Event( 'onPostLangChoice' );
 								document.dispatchEvent( onPostLangChoice );
