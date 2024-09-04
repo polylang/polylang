@@ -202,8 +202,8 @@ jQuery(
 							}
 						).done( function () {
 								// Creates an event once the language has been successfully changed.
-								const on_lang_change_event = new Event( 'onLangChange' );
-								document.dispatchEvent( on_lang_change_event );
+								const onPostLangChoice = new Event( 'onPostLangChoice' );
+								document.dispatchEvent( onPostLangChoice );
 							}
 						)
 					},
