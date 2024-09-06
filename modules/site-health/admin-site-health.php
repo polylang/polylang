@@ -29,6 +29,8 @@ class PLL_Admin_Site_Health {
 	 */
 	protected $static_pages;
 
+	public $mofiles;
+
 	/**
 	 * PLL_Admin_Site_Health constructor.
 	 *
@@ -45,12 +47,19 @@ class PLL_Admin_Site_Health {
 		add_filter( 'debug_information', array( $this, 'info_languages' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info' ), 15 );
 		add_filter( 'debug_information', array( $this, 'info_translations' ), 0 );
+		add_filter( 'load_textdomain_mofile', array( $this, 'preload_textdomain' ), 10, 2 );
 
 		// Tests Tab.
 		add_filter( 'site_status_tests', array( $this, 'status_tests' ) );
 		add_filter( 'site_status_test_php_modules', array( $this, 'site_status_test_php_modules' ) ); // Require simplexml in Site health.
 	}
 
+	public function preload_textdomain( $mofile, $domain ) {
+
+			$this->mofiles[] = $mofile;
+
+		return $mofile;
+	}
 	/**
 	 * Returns a list of keys to exclude from the site health information.
 	 *
@@ -460,7 +469,7 @@ class PLL_Admin_Site_Health {
 		$translation_updates = wp_get_translation_updates();
 		$fields = array();
 
-			$translation_updates_list = $this->get_translations_update_list( $translation_updates );
+		$translation_updates_list = $this->get_translations_update_list( $translation_updates );
 		if ( ! empty( $translation_updates_list ) ) {
 			foreach ( $translation_updates_list as $type => $values ) {
 				$type_label = __( 'WordPress', 'polylang' );
@@ -479,19 +488,16 @@ class PLL_Admin_Site_Health {
 				foreach ( $values as $name => $value ) {
 					$fields[ 'translation_' . $name ]['label'] = $name;
 					$is_locales_installed = $this->is_wp_language_installed( $value, $type, $name );
+					$locales = implode( ', ', $value );
+					$fields[ 'translation_' . $name ]['value'] = sprintf(
+					/* translators: the placeholder is a WordPress locale */
+						__( 'A translation is updatable for %s .', 'polylang' ),
+						$locales
+					);
 					if ( ! $is_locales_installed ) {
-						$locales = implode( ', ', $value );
 						$fields[ 'translation_' . $name ]['value'] = sprintf(
 						/* translators: the placeholder is a WordPress locale */
 							__( 'A translation is missing for %s .', 'polylang' ),
-							$locales
-						);
-					} else {
-						$locales = implode( ', ', $value );
-
-						$fields[ 'translation_' . $name ]['value'] = sprintf(
-						/* translators: the placeholder is a WordPress locale */
-							__( 'A translation is updatable for %s .', 'polylang' ),
 							$locales
 						);
 					}
@@ -579,8 +585,8 @@ class PLL_Admin_Site_Health {
 				foreach ( $pll_locales as $locale ) {
 
 					if ( ! $update_list['plugin'][ strtolower( $plugin_data['Name'] ) ][ $locale->get_locale() ] ) { // Polylang/Polylang Pro case maybe others.
-						$po_path     = trailingslashit( WP_PLUGIN_DIR ) . dirname( $activated_plugin ) . trailingslashit( $plugin_data['DomainPath'] ) . $plugin_data['TextDomain'] . '-' . $locale->get_locale() . '.po';
-						$file_exists = file_exists( $po_path );
+						$mo_path     = trailingslashit( WP_PLUGIN_DIR ) . dirname( $activated_plugin ) . trailingslashit( $plugin_data['DomainPath'] ) . $plugin_data['TextDomain'] . '-' . $locale->get_locale() . '.mo';
+						$file_exists = file_exists( $mo_path );
 						if ( ! $file_exists ) {
 							$update_list['plugin'][ strtolower( $plugin_data['Name'] ) ][ $locale->get_locale() ] = $locale->get_locale();
 						}
@@ -598,21 +604,22 @@ class PLL_Admin_Site_Health {
 
 		foreach ( $pll_locales as $locale ) {
 		//	$path['activated'] = get_stylesheet_directory() . $domain_path . '/' . $locale->get_locale() . '.po';
-			$theme[ $locale->get_locale() ]['path'][ $name ] = get_stylesheet_directory() . $domain_path . '/' . $locale->get_locale() . '.po';
-			$theme[ $locale->get_locale() ]['name'][ $name ] = $name;
+			$themes[ $locale->get_locale() ]['path'][ $name ] = get_stylesheet_directory() . $domain_path . '/' . $locale->get_locale() . '.po';
+			$themes[ $locale->get_locale() ]['name'][ $name ] = $name;
 			if ( $child ){
 				$parent_domain_path = $theme_data->parent()->get('DomainPath');
-				$theme[ $locale->get_locale() ]['path'][ $theme_data->parent()->get('Name') ] = get_template_directory() .$parent_domain_path . '/' . $locale->get_locale() . '.po';
-				$theme[ $locale->get_locale() ]['name'][ $theme_data->parent()->get('Name') ] = $theme_data->parent()->get('Name');
+				$themes[ $locale->get_locale() ]['path'][ $theme_data->parent()->get('Name') ] = get_template_directory() .$parent_domain_path . '/' . $locale->get_locale() . '.mo';
+				$themes[ $locale->get_locale() ]['name'][ $theme_data->parent()->get('Name') ] = $theme_data->parent()->get('Name');
 			}
-/*			foreach ( $path as $translation_path ) {
-				$file_exists = file_exists( $translation_path );
-				if ( ! $file_exists ) {
-					$update_list['theme'][ $name ][ $locale->get_locale() ] = $locale->get_locale();
+
+			if ( ! empty( $themes ) ) {
+				foreach ( $themes as $theme_locale => $themepath ) {
+					$file_exists = file_exists( $path );
+					if ( ! $file_exists ) {
+						$update_list['theme'][ $name ][ $locale->get_locale() ] = $locale->get_locale();
+					}
 				}
-			}*/
-		}
-		if ( ! empty( $theme ) ){
+			}
 
 		}
 
