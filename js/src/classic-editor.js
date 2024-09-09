@@ -183,23 +183,6 @@ jQuery(
 									}
 								);
 
-								// Update the old language with the new one to be able to compare it in the next changing.
-								initializeLanguageOldValue();
-								// modifies the language in the tag cloud
-								$( '.tagcloud-link' ).each(
-									function () {
-										var id = $( this ).attr( 'id' );
-										tagBox.get( id );
-									}
-								);
-
-								// Modifies the text direction
-								$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
-								$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', lang ).attr( 'dir', dir );
-								$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
-
-								pll.media.resetAllAttachmentsCollections();
-
 								// Creates an event once the language has been successfully changed.
 								const onPostLangChoice = new Event( 'onPostLangChoice' );
 								document.dispatchEvent( onPostLangChoice );
@@ -217,6 +200,29 @@ jQuery(
 
 					return ! title && ! content && ! excerpt;
 				}
+			}
+		);
+
+		// Listen to `onPostLangChoice` to perform actions after the language has been changed.
+		document.addEventListener(
+			'onPostLangChoice',
+			() => {
+				// Update the old language with the new one to be able to compare it in the next changing.
+				initializeLanguageOldValue();
+				// modifies the language in the tag cloud
+				$( '.tagcloud-link' ).each(
+					function () {
+						var id = $( this ).attr( 'id' );
+						tagBox.get( id );
+					}
+				);
+
+				// Modifies the text direction
+				$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
+				$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', lang ).attr( 'dir', dir );
+				$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
+
+				pll.media.resetAllAttachmentsCollections();
 			}
 		);
 
