@@ -117,4 +117,27 @@ class Preload_Paths_Test extends PLL_Preload_Paths_TestCase {
 		$this->assertCount( 1, $preload_paths );
 		$this->assertSame( '/wp/v2/search?test=something', reset( $preload_paths ) );
 	}
+
+	/**
+	 * @ticket #2211 {@see https://github.com/polylang/polylang-pro/issues/2211}
+	 */
+	public function test_navigation_fallback_rest_route_is_filterable() {
+		add_filter(
+			'pll_get_post_types',
+			function ( $post_types ) {
+				return array_merge(
+					$post_types,
+					array( 'wp_navigation' => 'wp_navigation' )
+				);
+			}
+		);
+		$this->pll_admin->model->cache->clean( 'post_types' );
+		$this->pll_admin->block_editor->filter_rest_routes = new PLL_Filter_REST_Routes( $this->pll_admin->model );
+		$preload_paths                                     = $this->pll_admin->block_editor->filter_rest_routes->add_query_parameters( array( '/wp-block-editor/v1/navigation-fallback' ), array( 'test' => 'something' ) );
+
+		// If the parameter is added to the route, this means that the route is one of the filterable routes.
+		$this->assertNotEmpty( $preload_paths );
+		$this->assertCount( 1, $preload_paths );
+		$this->assertSame( '/wp-block-editor/v1/navigation-fallback?test=something', reset( $preload_paths ) );
+	}
 }
