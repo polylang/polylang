@@ -42,6 +42,10 @@ class PLL_Filter_REST_Routes {
 
 		// Adds search REST endpoint.
 		$this->filtered_routes['search'] = 'wp/v2/search';
+
+		if ( $this->model->post_types->is_translated( 'wp_navigation' ) ) {
+			$this->filtered_routes['navigation-fallback'] = 'wp-block-editor/v1/navigation-fallback';
+		}
 	}
 
 	/**
