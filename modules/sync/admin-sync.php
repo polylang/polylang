@@ -26,28 +26,40 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Translate post parent if exists when using "Add new" ( translation )
+	 * Translates the post parent if it exists when using "Add new" (translation).
 	 *
 	 * @since 0.6
 	 *
-	 * @param int   $post_parent Post parent ID
-	 * @param int   $post_id     Post ID, unused
-	 * @param array $postarr     Array of parsed post data
+	 * @param int   $post_parent Post parent ID.
+	 * @param int   $post_id     Post ID, unused.
+	 * @param array $postarr     Array of parsed post data.
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $postarr ) {
-		if ( isset( $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
-			check_admin_referer( 'new-post-translation' );
-			// Make sure not to impact media translations created at the same time
-			if ( $_GET['post_type'] === $postarr['post_type'] && ( $id = wp_get_post_parent_id( (int) $_GET['from_post'] ) ) && $parent = $this->model->post->get_translation( $id, sanitize_key( $_GET['new_lang'] ) ) ) {
-				$post_parent = $parent;
-			}
+		$context_data = $this->check_context( $postarr );
+
+		if ( empty( $context_data ) ) {
+			return $post_parent;
 		}
-		return $post_parent;
+
+		// Make sure not to impact media translations created at the same time.
+		$parent_id = wp_get_post_parent_id( $context_data['from_post_id'] );
+
+		if ( empty( $parent_id ) ) {
+			return $post_parent;
+		}
+
+		$tr_parent = $this->model->post->get_translation( $parent_id, $context_data['new_lang'] );
+
+		if ( empty( $tr_parent ) ) {
+			return $post_parent;
+		}
+
+		return $tr_parent;
 	}
 
 	/**
-	 * Copy menu order, comment, ping status and optionally the date when creating a new translation
+	 * Copies menu order, comment, ping status and optionally the date when creating a new translation.
 	 *
 	 * @since 2.5
 	 *
@@ -55,30 +67,33 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return array
 	 */
 	public function wp_insert_post_data( $data ) {
-		if ( isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $data['post_type'] ) ) {
-			check_admin_referer( 'new-post-translation' );
+		$context_data = $this->check_context( $data );
 
-			$from_post_id = (int) $_GET['from_post'];
-			$from_post    = get_post( $from_post_id );
+		if ( empty( $context_data ) ) {
+			return $data;
+		}
 
-			if ( $from_post instanceof WP_Post ) {
-				foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
-					$data[ $property ] = $from_post->$property;
-				}
+		$from_post = get_post( $context_data['from_post_id'] );
 
-				// Copy the date only if the synchronization is activated
-				if ( in_array( 'post_date', $this->options['sync'] ) ) {
-					$data['post_date']     = $from_post->post_date;
-					$data['post_date_gmt'] = $from_post->post_date_gmt;
-				}
-			}
+		if ( ! $from_post instanceof WP_Post ) {
+			return $data;
+		}
+
+		foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
+			$data[ $property ] = $from_post->$property;
+		}
+
+		// Copy the date only if the synchronization is activated.
+		if ( in_array( 'post_date', $this->options['sync'], true ) ) {
+			$data['post_date']     = $from_post->post_date;
+			$data['post_date_gmt'] = $from_post->post_date_gmt;
 		}
 
 		return $data;
 	}
 
 	/**
-	 * Copy post metas, and taxonomies when using "Add new" ( translation )
+	 * Copies post metas and taxonomies when using "Add new" (translation).
 	 *
 	 * @since 2.5
 	 * @since 3.1 Use of use_block_editor_for_post filter instead of rest_api_init which is triggered too early in WP 5.8.
@@ -90,25 +105,25 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $post;
 		static $done = array();
 
-		if ( ! empty( $post ) && isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] && $this->model->is_translated_post_type( $post->post_type ) ) {
-			check_admin_referer( 'new-post-translation' );
+		$context_data = $this->check_context( (array) $post );
 
-			// Capability check already done in post-new.php
-			$from_post_id = (int) $_GET['from_post'];
-			$lang         = $this->model->get_language( sanitize_key( $_GET['new_lang'] ) );
+		if ( empty( $context_data ) || ! empty( $done[ $context_data['from_post_id'] ] ) ) {
+			return $is_block_editor;
+		}
 
-			if ( ! $from_post_id || ! $lang || ! empty( $done[ $from_post_id ] ) ) {
-				return $is_block_editor;
-			}
+		$lang = $this->model->get_language( $context_data['new_lang'] );
 
-			$done[ $from_post_id ] = true; // Avoid a second duplication in the block editor. Using an array only to allow multiple phpunit tests.
+		if ( empty( $lang ) ) {
+			return $is_block_editor;
+		}
 
-			$this->taxonomies->copy( $from_post_id, $post->ID, $lang->slug );
-			$this->post_metas->copy( $from_post_id, $post->ID, $lang->slug );
+		$done[ $context_data['from_post_id'] ] = true; // Avoid a second duplication in the block editor. Using an array only to allow multiple phpunit tests.
 
-			if ( is_sticky( $from_post_id ) ) {
-				stick_post( $post->ID );
-			}
+		$this->taxonomies->copy( $context_data['from_post_id'], $post->ID, $lang->slug );
+		$this->post_metas->copy( $context_data['from_post_id'], $post->ID, $lang->slug );
+
+		if ( is_sticky( $context_data['from_post_id'] ) ) {
+			stick_post( $post->ID );
 		}
 
 		return $is_block_editor;
@@ -127,14 +142,30 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		$postarr = parent::get_fields_to_sync( $post );
 
-		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
-		if ( in_array( 'post_date', $this->options['sync'] ) && isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'] ) && 'post-new.php' === $GLOBALS['pagenow'] ) {
-			check_admin_referer( 'new-post-translation' );
+		if ( isset( $GLOBALS['post_type'] ) ) {
+			$post_type = $GLOBALS['post_type'];
+		} elseif ( isset( $_REQUEST['post_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			// 2nd case for quick edit.
+			$post_type = sanitize_key( $_REQUEST['post_type'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
 
+		// Make sure not to impact media translations when creating them at the same time as post
+		if ( in_array( 'post_parent', $this->options['sync'], true ) && ( ! isset( $post_type ) || $post_type !== $post->post_type ) ) {
+			unset( $postarr['post_parent'] );
+		}
+
+		$context_data = $this->check_context( (array) $post, false );
+
+		if ( empty( $context_data ) ) {
+			return $postarr;
+		}
+
+		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
+		if ( in_array( 'post_date', $this->options['sync'], true ) ) {
 			unset( $postarr['post_date'] );
 			unset( $postarr['post_date_gmt'] );
 
-			$original = get_post( (int) $_GET['from_post'] );
+			$original = get_post( $context_data['from_post_id'] );
 
 			if ( $original instanceof WP_Post ) {
 				$wpdb->update(
@@ -146,17 +177,6 @@ class PLL_Admin_Sync extends PLL_Sync {
 					array( 'ID' => $post->ID )
 				);
 			}
-		}
-
-		if ( isset( $GLOBALS['post_type'] ) ) {
-			$post_type = $GLOBALS['post_type'];
-		} elseif ( isset( $_REQUEST['post_type'] ) ) {
-			$post_type = sanitize_key( $_REQUEST['post_type'] ); // 2nd case for quick edit
-		}
-
-		// Make sure not to impact media translations when creating them at the same time as post
-		if ( in_array( 'post_parent', $this->options['sync'] ) && ( ! isset( $post_type ) || $post_type !== $post->post_type ) ) {
-			unset( $postarr['post_parent'] );
 		}
 
 		return $postarr;
@@ -228,6 +248,37 @@ class PLL_Admin_Sync extends PLL_Sync {
 				absint( $debug[0]['line'] )
 			),
 			E_USER_ERROR
+		);
+	}
+
+	/**
+	 * Checks the context, and returns the value of `from_post_id` and `new_lang`.
+	 *
+	 * @since 3.7
+	 *
+	 * @param array $post_data       A post array.
+	 * @param bool  $check_post_type Optional. Whether to check the post type in `$_GET`. Default is `true`.
+	 * @return array
+	 *
+	 * @phpstan-return array{}|array{from_post_id: int, new_lang: string}|never
+	 */
+	private function check_context( array $post_data, bool $check_post_type = true ): array {
+		if ( ! isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'], $post_data['post_type'] ) ) {
+			return array();
+		}
+
+		if ( $check_post_type && ( empty( $_GET['post_type'] ) || $_GET['post_type'] !== $post_data['post_type'] ) ) {
+			return array();
+		}
+
+		if ( 'post-new.php' !== $GLOBALS['pagenow'] || ! $this->model->is_translated_post_type( $post_data['post_type'] ) ) {
+			return array();
+		}
+
+		check_admin_referer( 'new-post-translation' );
+		return array(
+			'from_post_id' => (int) $_GET['from_post'],
+			'new_lang'     => sanitize_key( $_GET['new_lang'] ),
 		);
 	}
 }
