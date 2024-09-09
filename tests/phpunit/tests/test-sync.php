@@ -183,6 +183,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
 
 		$_REQUEST = $_GET = array(
+			'post_type' => 'post',
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
