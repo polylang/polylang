@@ -122,12 +122,13 @@ class PLL_Switcher {
 		$out   = array();
 
 		foreach ( $this->links->model->get_languages_list( array( 'hide_empty' => $args['hide_if_empty'] ) ) as $language ) {
-			$id = (int) $language->term_id;
-			$order = (int) $language->term_group;
-			$slug = $language->slug;
-			$locale = $language->get_locale( 'display' );
+			$id           = (int) $language->term_id;
+			$order        = (int) $language->term_group;
+			$slug         = $language->slug;
+			$locale       = $language->get_locale( 'display' );
+			$w3c          = $language->get_locale( 'display' );
 			$item_classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
-			$classes = isset( $args['classes'] ) && is_array( $args['classes'] ) ?
+			$classes      = isset( $args['classes'] ) && is_array( $args['classes'] ) ?
 				array_merge(
 					$item_classes,
 					$args['classes']
@@ -183,7 +184,7 @@ class PLL_Switcher {
 				$first = false;
 			}
 
-			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes', 'link_classes' );
+			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'w3c', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes', 'link_classes' );
 		}
 
 		return $out;
