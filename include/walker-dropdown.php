@@ -36,7 +36,7 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 		$output .= sprintf(
 			"\t" . '<option value="%1$s"%2$s%3$s>%4$s</option>' . "\n",
 			'url' === $value_type ? esc_url( $element->$value_type ) : esc_attr( $element->$value_type ),
-			! empty( $element->locale ) ? sprintf( ' lang="%s"', esc_attr( $element->locale ) ) : '',
+			! empty( $element->w3c ) ? sprintf( ' lang="%s"', esc_attr( $element->w3c ) ) : '',
 			selected( isset( $args['selected'] ) && $args['selected'] === $element->$value_type, true, false ),
 			esc_html( $element->name )
 		);
