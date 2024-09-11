@@ -273,6 +273,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return array();
 		}
 
+		// Capability check already done in post-new.php.
 		if ( ! wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'new-post-translation' ) ) {
 			return array();
 		}
