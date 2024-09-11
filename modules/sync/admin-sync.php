@@ -256,7 +256,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 *
 	 * @phpstan-return array{}|array{from_post_id: int<0,max>, new_lang: string}
 	 */
-	private function get_data_from_request( array $post_data ): array {
+	public static function get_data_from_request( array $post_data ): array {
 		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'], $post_data['post_type'] ) ) {
 			return array();
 		}
@@ -269,7 +269,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return array();
 		}
 
-		if ( $post_data['post_type'] !== $_GET['post_type'] || ! $this->model->is_translated_post_type( $post_data['post_type'] ) ) {
+		if ( $post_data['post_type'] !== $_GET['post_type'] || ! pll_is_translated_post_type( $post_data['post_type'] ) ) {
 			return array();
 		}
 
