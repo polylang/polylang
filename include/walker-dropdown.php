@@ -39,7 +39,7 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 			! empty( $element->w3c ) ? sprintf( ' lang="%s"', esc_attr( $element->w3c ) ) : '',
 			selected( isset( $args['selected'] ) && $args['selected'] === $element->$value_type, true, false ),
 			esc_html( $element->name ),
-			esc_html( wp_json_encode( $element ) )
+			esc_html( (string) wp_json_encode( $element ) )
 		);
 	}
 
