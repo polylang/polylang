@@ -154,7 +154,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			unset( $postarr['post_parent'] );
 		}
 
-		$context_data = $this->check_context( (array) $post, false );
+		$context_data = $this->check_context( (array) $post );
 
 		if ( empty( $context_data ) ) {
 			return $postarr;
@@ -256,28 +256,34 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array $post_data       A post array.
-	 * @param bool  $check_post_type Optional. Whether to check the post type in `$_GET`. Default is `true`.
+	 * @param array $post_data A post array.
 	 * @return array
 	 *
-	 * @phpstan-return array{}|array{from_post_id: int, new_lang: string}|never
+	 * @phpstan-return array{}|array{from_post_id: int<0,max>, new_lang: string}
 	 */
-	private function check_context( array $post_data, bool $check_post_type = true ): array {
-		if ( ! isset( $GLOBALS['pagenow'], $_GET['from_post'], $_GET['new_lang'], $post_data['post_type'] ) ) {
+	private function check_context( array $post_data ): array {
+		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'], $post_data['post_type'] ) ) {
 			return array();
 		}
 
-		if ( $check_post_type && ( empty( $_GET['post_type'] ) || $_GET['post_type'] !== $post_data['post_type'] ) ) {
+		if ( 'post-new.php' !== $GLOBALS['pagenow'] ) {
 			return array();
 		}
 
-		if ( 'post-new.php' !== $GLOBALS['pagenow'] || ! $this->model->is_translated_post_type( $post_data['post_type'] ) ) {
+		if ( ! is_string( $_GET['_wpnonce'] ) || ! is_numeric( $_GET['from_post'] ) || ! is_string( $_GET['new_lang'] ) ) {
 			return array();
 		}
 
-		check_admin_referer( 'new-post-translation' );
+		if ( $post_data['post_type'] !== $_GET['post_type'] || ! $this->model->is_translated_post_type( $post_data['post_type'] ) ) {
+			return array();
+		}
+
+		if ( ! wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'new-post-translation' ) ) {
+			return array();
+		}
+
 		return array(
-			'from_post_id' => (int) $_GET['from_post'],
+			'from_post_id' => $_GET['from_post'] >= 1 ? abs( (int) $_GET['from_post'] ) : 0,
 			'new_lang'     => sanitize_key( $_GET['new_lang'] ),
 		);
 	}
