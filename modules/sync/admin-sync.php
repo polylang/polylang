@@ -36,7 +36,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $postarr ) {
-		$context_data = $this->check_context( $postarr );
+		$context_data = $this->get_data_from_request( $postarr );
 
 		if ( empty( $context_data ) ) {
 			return $post_parent;
@@ -67,7 +67,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return array
 	 */
 	public function wp_insert_post_data( $data ) {
-		$context_data = $this->check_context( $data );
+		$context_data = $this->get_data_from_request( $data );
 
 		if ( empty( $context_data ) ) {
 			return $data;
@@ -105,7 +105,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $post;
 		static $done = array();
 
-		$context_data = $this->check_context( (array) $post );
+		$context_data = $this->get_data_from_request( (array) $post );
 
 		if ( empty( $context_data ) || ! empty( $done[ $context_data['from_post_id'] ] ) ) {
 			return $is_block_editor;
@@ -141,7 +141,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $wpdb;
 
 		$postarr      = parent::get_fields_to_sync( $post );
-		$context_data = $this->check_context( (array) $post );
+		$context_data = $this->get_data_from_request( (array) $post );
 
 		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
 		if ( ! empty( $context_data ) && in_array( 'post_date', $this->options['sync'], true ) ) {
@@ -247,7 +247,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Checks the context, and returns the value of `from_post_id` and `new_lang`.
+	 * Returns some data (`from_post_id` and `new_lang`) from the current request.
 	 *
 	 * @since 3.7
 	 *
@@ -256,7 +256,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 *
 	 * @phpstan-return array{}|array{from_post_id: int<0,max>, new_lang: string}
 	 */
-	private function check_context( array $post_data ): array {
+	private function get_data_from_request( array $post_data ): array {
 		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'], $post_data['post_type'] ) ) {
 			return array();
 		}
