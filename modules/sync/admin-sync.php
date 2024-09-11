@@ -140,28 +140,11 @@ class PLL_Admin_Sync extends PLL_Sync {
 	protected function get_fields_to_sync( $post ) {
 		global $wpdb;
 
-		$postarr = parent::get_fields_to_sync( $post );
-
-		if ( isset( $GLOBALS['post_type'] ) ) {
-			$post_type = $GLOBALS['post_type'];
-		} elseif ( isset( $_REQUEST['post_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			// 2nd case for quick edit.
-			$post_type = sanitize_key( $_REQUEST['post_type'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		}
-
-		// Make sure not to impact media translations when creating them at the same time as post
-		if ( in_array( 'post_parent', $this->options['sync'], true ) && ( ! isset( $post_type ) || $post_type !== $post->post_type ) ) {
-			unset( $postarr['post_parent'] );
-		}
-
+		$postarr      = parent::get_fields_to_sync( $post );
 		$context_data = $this->check_context( (array) $post );
 
-		if ( empty( $context_data ) ) {
-			return $postarr;
-		}
-
 		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
-		if ( in_array( 'post_date', $this->options['sync'], true ) ) {
+		if ( ! empty( $context_data ) && in_array( 'post_date', $this->options['sync'], true ) ) {
 			unset( $postarr['post_date'] );
 			unset( $postarr['post_date_gmt'] );
 
@@ -177,6 +160,18 @@ class PLL_Admin_Sync extends PLL_Sync {
 					array( 'ID' => $post->ID )
 				);
 			}
+		}
+
+		if ( isset( $GLOBALS['post_type'] ) ) {
+			$post_type = $GLOBALS['post_type'];
+		} elseif ( isset( $_REQUEST['post_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			// 2nd case for quick edit.
+			$post_type = sanitize_key( $_REQUEST['post_type'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
+
+		// Make sure not to impact media translations when creating them at the same time as post
+		if ( in_array( 'post_parent', $this->options['sync'], true ) && ( ! isset( $post_type ) || $post_type !== $post->post_type ) ) {
+			unset( $postarr['post_parent'] );
 		}
 
 		return $postarr;
