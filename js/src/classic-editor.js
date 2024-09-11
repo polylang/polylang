@@ -124,9 +124,6 @@ jQuery(
 				// phpcs:disable PEAR.Functions.FunctionCallSignature.EmptyLine
 				dialogResult.then(
 					() => {
-						var lang  = selectedOption.options[selectedOption.options.selectedIndex].lang; // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
-						var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' ); // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
-
 						var data = {  // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
 							action:     'post_lang_choice',
 							lang:       selectedOption.value,
@@ -188,11 +185,7 @@ jQuery(
 									"onPostLangChoice",
 									{
 										detail: {
-											lang: {
-												slug: selectedOption.value,
-												locale: lang
-											},
-											dir: dir,
+											lang: JSON.parse( selectedOption.options[selectedOption.options.selectedIndex].getAttribute( 'data-pll-lang' ) )
 										},
 									}
 								);
@@ -228,10 +221,12 @@ jQuery(
 					}
 				);
 
+				let dir = e.detail.lang.is_rtl ? 'rtl' : 'ltr'
+
 				// Modifies the text direction
-				$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + e.detail.dir );
-				$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', e.detail.lang.locale ).attr( 'dir', e.detail.dir );
-				$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', e.detail.dir );
+				$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
+				$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', e.detail.lang.locale ).attr( 'dir', dir );
+				$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
 
 				pll.media.resetAllAttachmentsCollections();
 			}
