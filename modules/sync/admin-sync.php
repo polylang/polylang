@@ -265,10 +265,6 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return array();
 		}
 
-		if ( ! is_string( $_GET['_wpnonce'] ) || ! is_numeric( $_GET['from_post'] ) || ! is_string( $_GET['new_lang'] ) ) {
-			return array();
-		}
-
 		if ( $post_data['post_type'] !== $_GET['post_type'] || ! pll_is_translated_post_type( $post_data['post_type'] ) ) {
 			return array();
 		}
