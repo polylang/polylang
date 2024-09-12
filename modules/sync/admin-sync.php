@@ -36,7 +36,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $postarr ) {
-		$context_data = $this->get_data_from_request( $postarr );
+		$context_data = $this->get_data_from_request( $postarr['post_type'] ?? '' );
 
 		if ( empty( $context_data ) ) {
 			return $post_parent;
@@ -67,7 +67,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return array
 	 */
 	public function wp_insert_post_data( $data ) {
-		$context_data = $this->get_data_from_request( $data );
+		$context_data = $this->get_data_from_request( $data['post_type'] ?? '' );
 
 		if ( empty( $context_data ) ) {
 			return $data;
@@ -99,7 +99,11 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $post;
 		static $done = array();
 
-		$context_data = $this->get_data_from_request( (array) $post );
+		if ( empty( $post ) ) {
+			return $is_block_editor;
+		}
+
+		$context_data = $this->get_data_from_request( $post->post_type );
 
 		if ( empty( $context_data ) || ! empty( $done[ $context_data['from_post']->ID ] ) ) {
 			return $is_block_editor;
@@ -135,7 +139,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $wpdb;
 
 		$postarr      = parent::get_fields_to_sync( $post );
-		$context_data = $this->get_data_from_request( (array) $post );
+		$context_data = $this->get_data_from_request( $post->post_type );
 
 		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
 		if ( ! empty( $context_data ) && in_array( 'post_date', $this->options['sync'], true ) ) {
@@ -241,7 +245,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 *
 	 * @since 3.7
 	 *
-	 * @param array $post_data A post array.
+	 * @param string $post_type A post type.
 	 * @return array {
 	 *     @type WP_Post      $from_post The source post.
 	 *     @type PLL_Language $new_lang  The target language.
@@ -249,8 +253,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 *
 	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
 	 */
-	public static function get_data_from_request( array $post_data ): array {
-		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'], $post_data['post_type'] ) ) {
+	public static function get_data_from_request( string $post_type ): array {
+		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
 			return array();
 		}
 
@@ -258,7 +262,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return array();
 		}
 
-		if ( $post_data['post_type'] !== $_GET['post_type'] || ! pll_is_translated_post_type( $post_data['post_type'] ) ) {
+		if ( empty( $post_type ) || $post_type !== $_GET['post_type'] || ! pll_is_translated_post_type( $post_type ) ) {
 			return array();
 		}
 
