@@ -43,7 +43,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		}
 
 		// Make sure not to impact media translations created at the same time.
-		$parent_id = wp_get_post_parent_id( $context_data['from_post_id'] );
+		$parent_id = wp_get_post_parent_id( $context_data['from_post'] );
 
 		if ( empty( $parent_id ) ) {
 			return $post_parent;
@@ -73,20 +73,14 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return $data;
 		}
 
-		$from_post = get_post( $context_data['from_post_id'] );
-
-		if ( ! $from_post instanceof WP_Post ) {
-			return $data;
-		}
-
 		foreach ( array( 'menu_order', 'comment_status', 'ping_status' ) as $property ) {
-			$data[ $property ] = $from_post->$property;
+			$data[ $property ] = $context_data['from_post']->$property;
 		}
 
 		// Copy the date only if the synchronization is activated.
 		if ( in_array( 'post_date', $this->options['sync'], true ) ) {
-			$data['post_date']     = $from_post->post_date;
-			$data['post_date_gmt'] = $from_post->post_date_gmt;
+			$data['post_date']     = $context_data['from_post']->post_date;
+			$data['post_date_gmt'] = $context_data['from_post']->post_date_gmt;
 		}
 
 		return $data;
@@ -107,7 +101,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		$context_data = $this->get_data_from_request( (array) $post );
 
-		if ( empty( $context_data ) || ! empty( $done[ $context_data['from_post_id'] ] ) ) {
+		if ( empty( $context_data ) || ! empty( $done[ $context_data['from_post']->ID ] ) ) {
 			return $is_block_editor;
 		}
 
@@ -117,12 +111,12 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return $is_block_editor;
 		}
 
-		$done[ $context_data['from_post_id'] ] = true; // Avoid a second duplication in the block editor. Using an array only to allow multiple phpunit tests.
+		$done[ $context_data['from_post']->ID ] = true; // Avoid a second duplication in the block editor. Using an array only to allow multiple phpunit tests.
 
-		$this->taxonomies->copy( $context_data['from_post_id'], $post->ID, $lang->slug );
-		$this->post_metas->copy( $context_data['from_post_id'], $post->ID, $lang->slug );
+		$this->taxonomies->copy( $context_data['from_post']->ID, $post->ID, $lang->slug );
+		$this->post_metas->copy( $context_data['from_post']->ID, $post->ID, $lang->slug );
 
-		if ( is_sticky( $context_data['from_post_id'] ) ) {
+		if ( is_sticky( $context_data['from_post']->ID ) ) {
 			stick_post( $post->ID );
 		}
 
@@ -148,18 +142,14 @@ class PLL_Admin_Sync extends PLL_Sync {
 			unset( $postarr['post_date'] );
 			unset( $postarr['post_date_gmt'] );
 
-			$original = get_post( $context_data['from_post_id'] );
-
-			if ( $original instanceof WP_Post ) {
-				$wpdb->update(
-					$wpdb->posts,
-					array(
-						'post_date'     => $original->post_date,
-						'post_date_gmt' => $original->post_date_gmt,
-					),
-					array( 'ID' => $post->ID )
-				);
-			}
+			$wpdb->update(
+				$wpdb->posts,
+				array(
+					'post_date'     => $context_data['from_post']->post_date,
+					'post_date_gmt' => $context_data['from_post']->post_date_gmt,
+				),
+				array( 'ID' => $post->ID )
+			);
 		}
 
 		if ( isset( $GLOBALS['post_type'] ) ) {
@@ -247,14 +237,17 @@ class PLL_Admin_Sync extends PLL_Sync {
 	}
 
 	/**
-	 * Returns some data (`from_post_id` and `new_lang`) from the current request.
+	 * Returns some data (`from_post` and `new_lang`) from the current request.
 	 *
 	 * @since 3.7
 	 *
 	 * @param array $post_data A post array.
-	 * @return array
+	 * @return array {
+	 *     @type WP_Post      $from_post The source post.
+	 *     @type PLL_Language $new_lang  The target language.
+	 * }
 	 *
-	 * @phpstan-return array{}|array{from_post_id: int<0,max>, new_lang: string}|never
+	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
 	 */
 	public static function get_data_from_request( array $post_data ): array {
 		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'], $post_data['post_type'] ) ) {
@@ -271,9 +264,24 @@ class PLL_Admin_Sync extends PLL_Sync {
 
 		// Capability check already done in post-new.php.
 		check_admin_referer( 'new-post-translation' );
+
+		$post_id   = (int) $_GET['from_post'];
+		$lang_slug = sanitize_key( $_GET['new_lang'] );
+
+		if ( $post_id <= 0 || empty( $lang_slug ) ) {
+			return array();
+		}
+
+		$post = get_post( $post_id );
+		$lang = PLL()->model->get_language( $lang_slug );
+
+		if ( empty( $post ) || empty( $lang ) ) {
+			return array();
+		}
+
 		return array(
-			'from_post_id' => $_GET['from_post'] >= 1 ? abs( (int) $_GET['from_post'] ) : 0,
-			'new_lang'     => sanitize_key( $_GET['new_lang'] ),
+			'from_post' => $post,
+			'new_lang'  => $lang,
 		);
 	}
 }
