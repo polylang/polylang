@@ -48,7 +48,7 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 			! empty( $element->locale ) ? sprintf( ' lang="%s"', esc_attr( $element->locale ) ) : '',
 			selected( isset( $args['selected'] ) && $args['selected'] === $element->$value_type, true, false ),
 			esc_html( $element->name ),
-			esc_html( wp_json_encode( $data_lang ) )
+			esc_html( (string) wp_json_encode( $data_lang ) )
 		);
 	}
 
