@@ -571,12 +571,7 @@ class PLL_Language extends PLL_Language_Deprecated {
 	 * @return stdClass Converted `PLL_Language` object.
 	 */
 	public function to_std_class() {
-		$object = (object) $this->to_array();
-
-		// Sets the w3c locale as the main locale.
-		$object->locale = $this->get_locale( 'display' );
-
-		return $object;
+		return (object) $this->to_array();
 	}
 
 	/**
