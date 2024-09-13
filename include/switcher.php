@@ -127,6 +127,7 @@ class PLL_Switcher {
 			$slug         = $language->slug;
 			$locale       = $language->get_locale( 'display' );
 			$w3c          = $language->get_locale( 'display' );
+			$is_rtl       = $language->is_rtl;
 			$item_classes = array( 'lang-item', 'lang-item-' . $id, 'lang-item-' . esc_attr( $slug ) );
 			$classes      = isset( $args['classes'] ) && is_array( $args['classes'] ) ?
 				array_merge(
@@ -184,7 +185,7 @@ class PLL_Switcher {
 				$first = false;
 			}
 
-			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'w3c', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes', 'link_classes' );
+			$out[ $slug ] = compact( 'id', 'order', 'slug', 'locale', 'is_rtl', 'w3c', 'name', 'url', 'flag', 'current_lang', 'no_translation', 'classes', 'link_classes' );
 		}
 
 		return $out;
