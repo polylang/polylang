@@ -121,10 +121,11 @@ jQuery(
 					dialogResult = Promise.resolve();
 				}
 
-				// phpcs:disable PEAR.Functions.FunctionCallSignature.EmptyLine
 				dialogResult.then(
 					() => {
-						var data = {  // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
+						var lang  = selectedOption.options[selectedOption.options.selectedIndex].lang;
+						var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' );
+						var data  = {
 							action:     'post_lang_choice',
 							lang:       selectedOption.value,
 							post_type:  $( '#post_type' ).val(),
@@ -195,7 +196,6 @@ jQuery(
 					},
 					() => {} // Do nothing when promise is rejected by clicking the Cancel dialog button.
 				);
-				// phpcs:enable PEAR.Functions.FunctionCallSignature.EmptyLine
 
 				function isEmptyPost() {
 					const title = $( 'input#title' ).val();
