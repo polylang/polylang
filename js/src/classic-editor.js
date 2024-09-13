@@ -185,7 +185,7 @@ jQuery(
 									"onPostLangChoice",
 									{
 										detail: {
-											lang: JSON.parse( selectedOption.options[selectedOption.options.selectedIndex].getAttribute( 'data-pll-lang' ) )
+											lang: JSON.parse( selectedOption.options[selectedOption.options.selectedIndex].getAttribute( 'data-lang' ) )
 										},
 									}
 								);
@@ -213,7 +213,8 @@ jQuery(
 			( e ) => {
 				// Update the old language with the new one to be able to compare it in the next changing.
 				initializeLanguageOldValue();
-				// modifies the language in the tag cloud
+
+				// Modifies the language in the tag cloud.
 				$( '.tagcloud-link' ).each(
 					function () {
 						var id = $( this ).attr( 'id' );
@@ -221,13 +222,13 @@ jQuery(
 					}
 				);
 
+				// Modifies the text direction.
 				let dir = e.detail.lang.is_rtl ? 'rtl' : 'ltr'
-
-				// Modifies the text direction
 				$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
 				$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', e.detail.lang.locale ).attr( 'dir', dir );
 				$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
 
+				// Refresh media libraries.
 				pll.media.resetAllAttachmentsCollections();
 			}
 		);
