@@ -39,7 +39,7 @@ class PLL_Walker_Dropdown extends PLL_Walker {
 			'id'   => $element->id,
 			'name' => $element->name,
 			'slug' => $element->slug,
-			'dir'  => $element->is_rtl,
+			'dir'  => $element->is_rtl ?? '',
 		);
 
 		$output .= sprintf(
