@@ -191,8 +191,9 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$to = self::factory()->post->create();
 
-		$GLOBALS['pagenow'] = 'post-new.php';
-		$GLOBALS['post'] = get_post( $to );
+		$GLOBALS['polylang'] = $this->pll_admin;
+		$GLOBALS['pagenow']  = 'post-new.php';
+		$GLOBALS['post']     = get_post( $to );
 
 		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // fires the copy
 
@@ -233,7 +234,8 @@ class Sync_Test extends PLL_UnitTestCase {
 
 		$to = self::factory()->post->create( array( 'post_type' => 'page' ) );
 
-		$GLOBALS['post'] = get_post( $to );
+		$GLOBALS['polylang'] = $this->pll_admin;
+		$GLOBALS['post']     = get_post( $to );
 
 		apply_filters( 'use_block_editor_for_post', false, $GLOBALS['post'] ); // fires the copy
 
@@ -488,7 +490,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
 		self::$model->options['sync'] = array( 'post_date' ); // Sync publish date
 
-		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['polylang'] = $this->pll_admin;
+		$GLOBALS['pagenow']  = 'post-new.php';
+
 		$_REQUEST = $_GET = array(
 			'post_type' => 'post',
 			'from_post' => $from,
@@ -555,7 +559,8 @@ class Sync_Test extends PLL_UnitTestCase {
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
 		);
 
-		$GLOBALS['pagenow'] = 'post-new.php';
+		$GLOBALS['polylang'] = $this->pll_admin;
+		$GLOBALS['pagenow']  = 'post-new.php';
 
 		$to = self::factory()->post->create();
 
