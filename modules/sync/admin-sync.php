@@ -9,6 +9,10 @@
  * @since 1.2
  */
 class PLL_Admin_Sync extends PLL_Sync {
+	/**
+	 * @var PLL_Admin_Links
+	 */
+	private $links;
 
 	/**
 	 * Constructor
@@ -19,6 +23,8 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 */
 	public function __construct( &$polylang ) {
 		parent::__construct( $polylang );
+
+		$this->links = &$polylang->links;
 
 		add_filter( 'wp_insert_post_parent', array( $this, 'wp_insert_post_parent' ), 10, 3 );
 		add_filter( 'wp_insert_post_data', array( $this, 'wp_insert_post_data' ) );
@@ -36,7 +42,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $postarr ) {
-		$context_data = static::get_data_from_request( $postarr['post_type'] ?? '' );
+		$context_data = $this->links->get_data_from_new_post_translation_request( $postarr['post_type'] ?? '' );
 
 		if ( empty( $context_data ) ) {
 			return $post_parent;
@@ -67,7 +73,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return array
 	 */
 	public function wp_insert_post_data( $data ) {
-		$context_data = static::get_data_from_request( $data['post_type'] ?? '' );
+		$context_data = $this->links->get_data_from_new_post_translation_request( $data['post_type'] ?? '' );
 
 		if ( empty( $context_data ) ) {
 			return $data;
@@ -103,7 +109,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return $is_block_editor;
 		}
 
-		$context_data = static::get_data_from_request( $post->post_type );
+		$context_data = $this->links->get_data_from_new_post_translation_request( $post->post_type );
 
 		if ( empty( $context_data ) || ! empty( $done[ $context_data['from_post']->ID ] ) ) {
 			return $is_block_editor;
@@ -139,7 +145,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $wpdb;
 
 		$postarr      = parent::get_fields_to_sync( $post );
-		$context_data = static::get_data_from_request( $post->post_type );
+		$context_data = $this->links->get_data_from_new_post_translation_request( $post->post_type );
 
 		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
 		if ( ! empty( $context_data ) && in_array( 'post_date', $this->options['sync'], true ) ) {
@@ -237,55 +243,6 @@ class PLL_Admin_Sync extends PLL_Sync {
 				absint( $debug[0]['line'] )
 			),
 			E_USER_ERROR
-		);
-	}
-
-	/**
-	 * Returns some data (`from_post` and `new_lang`) from the current request.
-	 *
-	 * @since 3.7
-	 *
-	 * @param string $post_type A post type.
-	 * @return array {
-	 *     @type WP_Post      $from_post The source post.
-	 *     @type PLL_Language $new_lang  The target language.
-	 * }
-	 *
-	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
-	 */
-	public static function get_data_from_request( string $post_type ): array {
-		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
-			return array();
-		}
-
-		if ( 'post-new.php' !== $GLOBALS['pagenow'] ) {
-			return array();
-		}
-
-		if ( empty( $post_type ) || $post_type !== $_GET['post_type'] || ! pll_is_translated_post_type( $post_type ) ) {
-			return array();
-		}
-
-		// Capability check already done in post-new.php.
-		check_admin_referer( 'new-post-translation' );
-
-		$post_id   = (int) $_GET['from_post'];
-		$lang_slug = sanitize_key( $_GET['new_lang'] );
-
-		if ( $post_id <= 0 || empty( $lang_slug ) ) {
-			return array();
-		}
-
-		$post = get_post( $post_id );
-		$lang = PLL()->model->get_language( $lang_slug );
-
-		if ( empty( $post ) || empty( $lang ) ) {
-			return array();
-		}
-
-		return array(
-			'from_post' => $post,
-			'new_lang'  => $lang,
 		);
 	}
 }

@@ -223,4 +223,53 @@ class PLL_Admin_Links extends PLL_Links {
 		$language = $this->model->term->get_language( $term_id );
 		return $this->edit_translation_link( $link, $language );
 	}
+
+	/**
+	 * Returns some data (`from_post` and `new_lang`) from the current request.
+	 *
+	 * @since 3.7
+	 *
+	 * @param string $post_type A post type.
+	 * @return array {
+	 *     @type WP_Post      $from_post The source post.
+	 *     @type PLL_Language $new_lang  The target language.
+	 * }
+	 *
+	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
+	 */
+	public function get_data_from_new_post_translation_request( string $post_type ): array {
+		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
+			return array();
+		}
+
+		if ( 'post-new.php' !== $GLOBALS['pagenow'] ) {
+			return array();
+		}
+
+		if ( empty( $post_type ) || $post_type !== $_GET['post_type'] || ! $this->model->is_translated_post_type( $post_type ) ) {
+			return array();
+		}
+
+		// Capability check already done in post-new.php.
+		check_admin_referer( 'new-post-translation' );
+
+		$post_id   = (int) $_GET['from_post'];
+		$lang_slug = sanitize_key( $_GET['new_lang'] );
+
+		if ( $post_id <= 0 || empty( $lang_slug ) ) {
+			return array();
+		}
+
+		$post = get_post( $post_id );
+		$lang = $this->model->get_language( $lang_slug );
+
+		if ( empty( $post ) || empty( $lang ) ) {
+			return array();
+		}
+
+		return array(
+			'from_post' => $post,
+			'new_lang'  => $lang,
+		);
+	}
 }
