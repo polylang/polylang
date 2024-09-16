@@ -124,9 +124,6 @@ jQuery(
 				// phpcs:disable PEAR.Functions.FunctionCallSignature.EmptyLine
 				dialogResult.then(
 					() => {
-						var lang  = selectedOption.options[selectedOption.options.selectedIndex].lang; // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
-						var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' ); // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
-
 						var data = {  // phpcs:ignore PEAR.Functions.FunctionCallSignature.Indent
 							action:     'post_lang_choice',
 							lang:       selectedOption.value,
@@ -183,22 +180,16 @@ jQuery(
 									}
 								);
 
-								// Update the old language with the new one to be able to compare it in the next changing.
-								initializeLanguageOldValue();
-								// modifies the language in the tag cloud
-								$( '.tagcloud-link' ).each(
-									function () {
-										var id = $( this ).attr( 'id' );
-										tagBox.get( id );
+								// Creates an event once the language has been successfully changed.
+								const onPostLangChoice = new CustomEvent(
+									"onPostLangChoice",
+									{
+										detail: {
+											lang: JSON.parse( selectedOption.options[selectedOption.options.selectedIndex].getAttribute( 'data-lang' ) )
+										},
 									}
 								);
-
-								// Modifies the text direction
-								$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
-								$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', lang ).attr( 'dir', dir );
-								$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
-
-								pll.media.resetAllAttachmentsCollections();
+								document.dispatchEvent( onPostLangChoice );
 							}
 						)
 					},
@@ -213,6 +204,32 @@ jQuery(
 
 					return ! title && ! content && ! excerpt;
 				}
+			}
+		);
+
+		// Listen to `onPostLangChoice` to perform actions after the language has been changed.
+		document.addEventListener(
+			'onPostLangChoice',
+			( e ) => {
+				// Update the old language with the new one to be able to compare it in the next changing.
+				initializeLanguageOldValue();
+
+				// Modifies the language in the tag cloud.
+				$( '.tagcloud-link' ).each(
+					function () {
+						var id = $( this ).attr( 'id' );
+						tagBox.get( id );
+					}
+				);
+
+				// Modifies the text direction.
+				let dir = e.detail.lang.is_rtl ? 'rtl' : 'ltr'
+				$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
+				$( '#content_ifr' ).contents().find( 'html' ).attr( 'lang', e.detail.lang.locale ).attr( 'dir', dir );
+				$( '#content_ifr' ).contents().find( 'body' ).attr( 'dir', dir );
+
+				// Refresh media libraries.
+				pll.media.resetAllAttachmentsCollections();
 			}
 		);
 
