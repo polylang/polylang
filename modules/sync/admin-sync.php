@@ -36,7 +36,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return int
 	 */
 	public function wp_insert_post_parent( $post_parent, $post_id, $postarr ) {
-		$context_data = $this->get_data_from_request( $postarr['post_type'] ?? '' );
+		$context_data = static::get_data_from_request( $postarr['post_type'] ?? '' );
 
 		if ( empty( $context_data ) ) {
 			return $post_parent;
@@ -67,7 +67,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 	 * @return array
 	 */
 	public function wp_insert_post_data( $data ) {
-		$context_data = $this->get_data_from_request( $data['post_type'] ?? '' );
+		$context_data = static::get_data_from_request( $data['post_type'] ?? '' );
 
 		if ( empty( $context_data ) ) {
 			return $data;
@@ -103,7 +103,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 			return $is_block_editor;
 		}
 
-		$context_data = $this->get_data_from_request( $post->post_type );
+		$context_data = static::get_data_from_request( $post->post_type );
 
 		if ( empty( $context_data ) || ! empty( $done[ $context_data['from_post']->ID ] ) ) {
 			return $is_block_editor;
@@ -139,7 +139,7 @@ class PLL_Admin_Sync extends PLL_Sync {
 		global $wpdb;
 
 		$postarr      = parent::get_fields_to_sync( $post );
-		$context_data = $this->get_data_from_request( $post->post_type );
+		$context_data = static::get_data_from_request( $post->post_type );
 
 		// For new drafts, save the date now otherwise it is overridden by WP. Thanks to JoryHogeveen. See #32.
 		if ( ! empty( $context_data ) && in_array( 'post_date', $this->options['sync'], true ) ) {
