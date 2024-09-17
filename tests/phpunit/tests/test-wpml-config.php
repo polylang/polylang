@@ -133,7 +133,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		$this->assertSame( array( 'a_json_meta' => 'json' ), $encodings );
 
 		// Copy.
-		$sync = new PLL_Admin_Sync( $pll_admin );
+		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
+		$sync             = new PLL_Admin_Sync( $pll_admin );
 		$sync->post_metas->copy( $from, $to, 'fr' ); // Copy.
 
 		$this->assertEquals( 1, get_post_meta( $to, 'quantity', true ) );
@@ -185,7 +186,8 @@ class WPML_Config_Test extends PLL_UnitTestCase {
 		self::$model->term->save_translations( $en, compact( 'en', 'fr' ) );
 
 		// Copy
-		$sync = new PLL_Admin_Sync( $pll_admin );
+		$pll_admin->links = new PLL_Admin_Links( $pll_admin );
+		$sync             = new PLL_Admin_Sync( $pll_admin );
 		$sync->term_metas->copy( $from, $to, 'fr' ); // copy
 
 		$this->assertEquals( 'A', get_term_meta( $to, 'term_meta_A', true ) );
