@@ -123,8 +123,6 @@ jQuery(
 
 				dialogResult.then(
 					() => {
-						var lang  = selectedOption.options[selectedOption.options.selectedIndex].lang;
-						var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' );
 						var data  = {
 							action:     'post_lang_choice',
 							lang:       selectedOption.value,
