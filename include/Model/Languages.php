@@ -901,13 +901,11 @@ class Languages {
 
 		// Delete relationships
 		if ( ! empty( $dr ) ) {
-			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query(
 				"DELETE FROM $wpdb->term_relationships
-				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' )
-				AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )'
+				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' ) ' . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				'AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			);
-			// PHPCS:enable
 		}
 
 		// Delete terms
@@ -918,13 +916,11 @@ class Languages {
 
 		// Update terms
 		if ( ! empty( $ut ) ) {
-			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query(
 				"UPDATE $wpdb->term_taxonomy
-				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END )
-				WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )'
+				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END ) ' . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				'WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			);
-			// PHPCS:enable
 		}
 
 		if ( ! empty( $term_ids ) ) {
