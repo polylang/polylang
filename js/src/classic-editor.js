@@ -123,7 +123,7 @@ jQuery(
 
 				dialogResult.then(
 					() => {
-						var data  = {
+						var data = {
 							action:     'post_lang_choice',
 							lang:       selectedOption.value,
 							post_type:  $( '#post_type' ).val(),
