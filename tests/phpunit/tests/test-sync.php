@@ -28,7 +28,8 @@ class Sync_Test extends PLL_UnitTestCase {
 		wp_set_current_user( self::$editor ); // set a user to pass current_user_can tests
 
 		$links_model = self::$model->get_links_model();
-		$this->pll_admin = new PLL_Admin( $links_model );
+		$this->pll_admin        = new PLL_Admin( $links_model );
+		$this->pll_admin->links = new PLL_Admin_Links( $this->pll_admin );
 	}
 
 	public function test_copy_taxonomies() {
@@ -183,6 +184,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
 
 		$_REQUEST = $_GET = array(
+			'post_type' => 'post',
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
@@ -488,7 +490,9 @@ class Sync_Test extends PLL_UnitTestCase {
 		self::$model->options['sync'] = array( 'post_date' ); // Sync publish date
 
 		$GLOBALS['pagenow'] = 'post-new.php';
+
 		$_REQUEST = $_GET = array(
+			'post_type' => 'post',
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
@@ -547,6 +551,7 @@ class Sync_Test extends PLL_UnitTestCase {
 		$this->pll_admin->sync = new PLL_Admin_Sync( $this->pll_admin );
 
 		$_REQUEST = $_GET = array(
+			'post_type' => 'post',
 			'from_post' => $from,
 			'new_lang'  => 'fr',
 			'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
