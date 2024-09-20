@@ -226,11 +226,6 @@ parameters:
 			path: frontend/choose-lang-domain.php
 
 		-
-			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, float\\|int\\<0, max\\> given\\.$#"
-			count: 1
-			path: frontend/frontend-auto-translate.php
-
-		-
 			message: "#^Parameter \\#1 \\$term_id of method PLL_Frontend_Auto_Translate\\:\\:get_term\\(\\) expects int, int\\|string given\\.$#"
 			count: 1
 			path: frontend/frontend-auto-translate.php
