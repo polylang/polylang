@@ -798,7 +798,7 @@ class Languages {
 		}
 
 		// Validate slug characters.
-		if ( ! preg_match( '#^[a-z_-]+$#', $args['slug'] ) ) {
+		if ( ! preg_match( '#^[a-z0-9_-]+$#', $args['slug'] ) ) {
 			$errors->add( 'pll_invalid_slug', __( 'The language code contains invalid characters', 'polylang' ) );
 		}
 
