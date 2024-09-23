@@ -6,6 +6,8 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Syntex\Polylang\Options\Abstract_Option;
+use WP_Syntex\Polylang\Model\Languages;
+
 
 defined( 'ABSPATH' ) || exit;
 
@@ -56,7 +58,7 @@ class Nav_Menus extends Abstract_Option {
 						'[\w-]+' => array( // Accepted characters for menu locations @see https://developer.wordpress.org/reference/classes/wp_rest_menu_locations_controller/register_routes/
 							'type'              => 'object',
 							'patternProperties' => array(
-								'[a-z_-]+' => array( // Language slug as key.
+								Languages::SLUG_PATTERN => array( // Language slug as key.
 									'type'    => 'integer',
 									'minimum' => 0, // A post ID.
 								),
