@@ -192,7 +192,7 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid key'      => array(
-				'value'           => array( 'en' => 'https://example.com', 'fr41' => 'https://example.net', 'de' => 'https://example.org' ),
+				'value'           => array( 'en' => 'https://example.com', 'fr_FR' => 'https://example.net', 'de' => 'https://example.org' ),
 				'sanitized_value' => array( 'en' => 'https://example.com', 'de' => 'https://example.org' ),
 				'expected_valid'  => 'rest_additional_properties_forbidden',
 			),
@@ -274,8 +274,8 @@ class Option_Schema_Test extends PHPUnit_Adapter_TestCase {
 				'expected_valid'  => 'rest_invalid_type',
 			),
 			'invalid'    => array(
-				'value'           => 'fr41',
-				'sanitized_value' => 'fr41',
+				'value'           => 'fr_FR',
+				'sanitized_value' => 'fr_FR',
 				'expected_valid'  => 'rest_invalid_pattern',
 			),
 		);
