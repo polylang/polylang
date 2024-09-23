@@ -8,6 +8,7 @@ namespace WP_Syntex\Polylang\Options\Business;
 use WP_Error;
 use WP_Syntex\Polylang\Options\Abstract_Option;
 use WP_Syntex\Polylang\Options\Options;
+use WP_Syntex\Polylang\Model\Languages;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -59,7 +60,7 @@ class Domains extends Abstract_Option {
 		return array(
 			'type'                 => 'object', // Correspond to associative array in PHP, @see{https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/#primitive-types}.
 			'patternProperties'    => array(
-				'^[a-z_-]+$' => array( // Language slug as key.
+				Languages::SLUG_PATTERN => array( // Language slug as key.
 					'type'   => 'string',
 					'format' => 'uri',
 				),
