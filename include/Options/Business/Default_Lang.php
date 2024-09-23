@@ -6,6 +6,7 @@
 namespace WP_Syntex\Polylang\Options\Business;
 
 use WP_Syntex\Polylang\Options\Primitive\Abstract_String;
+use WP_Syntex\Polylang\Model\Languages;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -35,11 +36,11 @@ class Default_Lang extends Abstract_String {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: 'string', pattern: '^[a-z_-]+$'}
+	 * @phpstan-return array{type: 'string', pattern: Languages::SLUG_PATTERN}
 	 */
 	protected function get_data_structure(): array {
 		$string_schema            = parent::get_data_structure();
-		$string_schema['pattern'] = '^[a-z_-]+$';
+		$string_schema['pattern'] = Languages::SLUG_PATTERN;
 
 		return $string_schema;
 	}
