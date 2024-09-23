@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Languages {
 	public const LOCALE_PATTERN = '^[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?$';
-	public const SLUG_PATTERN   = '^[a-z0-9_-]+$';
+	public const SLUG_PATTERN   = '^[a-z]+[a-z0-9_-]*$';
 
 	public const TRANSIENT_NAME = 'pll_languages_list';
 	private const CACHE_KEY     = 'languages';
