@@ -21,8 +21,11 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.7
  */
 class Languages {
-	public const LOCALE_PATTERN = '^[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?$';
-	public const SLUG_PATTERN   = '^[a-z][a-z0-9_-]*$';
+	public const INNER_LOCALE_PATTERN = '[a-z]{2,3}(?:_[A-Z]{2})?(?:_[a-z0-9]+)?';
+	public const INNER_SLUG_PATTERN   = '[a-z][a-z0-9_-]*';
+
+	public const LOCALE_PATTERN = '^' . self::INNER_LOCALE_PATTERN . '$';
+	public const SLUG_PATTERN   = '^' . self::INNER_SLUG_PATTERN . '$';
 
 	public const TRANSIENT_NAME = 'pll_languages_list';
 	private const CACHE_KEY     = 'languages';
