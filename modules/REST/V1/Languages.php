@@ -113,7 +113,7 @@ class Languages extends WP_REST_Controller {
 		);
 		register_rest_route(
 			$this->namespace,
-			sprintf( '/%1$s/(?P<slug>%2$s)', $this->rest_base, trim( Languages_Model::SLUG_PATTERN, '^$' ) ),
+			sprintf( '/%1$s/(?P<slug>%2$s)', $this->rest_base, Languages_Model::INNER_SLUG_PATTERN ),
 			array(
 				'args'   => array(
 					'slug'    => array(
