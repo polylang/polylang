@@ -111,4 +111,29 @@ class PLL_Settings_Sync extends PLL_Settings_Module {
 			'_thumbnail_id'     => __( 'Featured image', 'polylang' ),
 		);
 	}
+
+	/**
+	 * Returns the list of elements that can be synced at the post level.
+	 *
+	 * @since 3.7
+	 *
+	 * @return string[]
+	 *
+	 * @phpstan-return non-empty-list<non-falsy-string>
+	 */
+	public static function get_synchronizable_elements() {
+		return array(
+			'taxonomies',
+			'post_meta',
+			'comment_status',
+			'ping_status',
+			'sticky_posts',
+			'post_date',
+			'post_format',
+			'post_parent',
+			'_wp_page_template',
+			'menu_order',
+			'_thumbnail_id',
+		);
+	}
 }
