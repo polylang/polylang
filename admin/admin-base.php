@@ -104,7 +104,7 @@ abstract class PLL_Admin_Base extends PLL_Base {
 
 		// Filter admin language for users
 		// We must not call user info before WordPress defines user roles in wp-settings.php
-		add_action( 'setup_theme', array( $this, 'init_user' ) );
+		add_action( 'after_setup_theme', array( $this, 'init_user' ) );
 		add_filter( 'request', array( $this, 'request' ) );
 
 		// Adds the languages in admin bar
