@@ -884,7 +884,7 @@ class Languages {
 
 				if ( ! empty( $tr[ $old_slug ] ) ) {
 					if ( $new_slug ) {
-						$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete
+						$tr[ $new_slug ] = $tr[ $old_slug ]; // Suppress this for delete.
 					} else {
 						$dr['id'][] = (int) $tr[ $old_slug ];
 						$dr['tt'][] = (int) $term->term_taxonomy_id;
@@ -892,37 +892,63 @@ class Languages {
 					unset( $tr[ $old_slug ] );
 
 					if ( empty( $tr ) || 1 == count( $tr ) ) {
-						$dt['t'][] = (int) $term->term_id;
+						$dt['t'][]  = (int) $term->term_id;
 						$dt['tt'][] = (int) $term->term_taxonomy_id;
 					} else {
-						$ut['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $term->term_id, maybe_serialize( $tr ) );
-						$ut['in'][] = (int) $term->term_id;
+						$ut['case'][] = array( $term->term_id, maybe_serialize( $tr ) );
+						$ut['in'][]   = (int) $term->term_id;
 					}
 				}
 			}
 		}
 
-		// Delete relationships
+		// Delete relationships.
 		if ( ! empty( $dr ) ) {
 			$wpdb->query(
-				"DELETE FROM $wpdb->term_relationships
-				WHERE object_id IN ( " . implode( ',', $dr['id'] ) . ' ) ' . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-				'AND term_taxonomy_id IN ( ' . implode( ',', $dr['tt'] ) . ' )' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->prepare(
+					sprintf(
+						"DELETE FROM {$wpdb->term_relationships} WHERE object_id IN (%s) AND term_taxonomy_id IN (%s)",
+						implode( ',', array_fill( 0, count( $dr['id'] ), '%d' ) ),
+						implode( ',', array_fill( 0, count( $dr['tt'] ), '%d' ) )
+					),
+					array_merge( $dr['id'], $dr['tt'] )
+				)
 			);
 		}
 
-		// Delete terms
+		// Delete terms.
 		if ( ! empty( $dt ) ) {
-			$wpdb->query( "DELETE FROM $wpdb->terms WHERE term_id IN ( " . implode( ',', $dt['t'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->query( "DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ( " . implode( ',', $dt['tt'] ) . ' )' ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query(
+				$wpdb->prepare(
+					sprintf(
+						"DELETE FROM {$wpdb->terms} WHERE term_id IN (%s)",
+						implode( ',', array_fill( 0, count( $dt['t'] ), '%d' ) )
+					),
+					$dt['t']
+				)
+			);
+			$wpdb->query(
+				$wpdb->prepare(
+					sprintf(
+						"DELETE FROM {$wpdb->term_taxonomy} WHERE term_taxonomy_id IN (%s)",
+						implode( ',', array_fill( 0, count( $dt['tt'] ), '%d' ) )
+					),
+					$dt['tt']
+				)
+			);
 		}
 
-		// Update terms
+		// Update terms.
 		if ( ! empty( $ut ) ) {
 			$wpdb->query(
-				"UPDATE $wpdb->term_taxonomy
-				SET description = ( CASE term_id " . implode( ' ', $ut['case'] ) . ' END ) ' . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-				'WHERE term_id IN ( ' . implode( ',', $ut['in'] ) . ' )' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->prepare(
+					sprintf(
+						"UPDATE {$wpdb->term_taxonomy} SET description = ( CASE term_id %s END ) WHERE term_id IN (%s)",
+						implode( ' ', array_fill( 0, count( $ut['case'] ), 'WHEN %d THEN %s' ) ),
+						implode( ',', array_fill( 0, count( $ut['in'] ), '%d' ) )
+					),
+					array_merge( array_merge( ...$ut['case'] ), $ut['in'] )
+				)
 			);
 		}
 
