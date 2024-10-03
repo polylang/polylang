@@ -68,7 +68,7 @@ class PLL_WPML_Compat {
 	/**
 	 * Defines two WPML constants once the language has been defined
 	 * The compatibility with WPML is not perfect on admin side as the constants are defined
-	 * in 'setup_theme' by Polylang ( based on user info ) and 'plugins_loaded' by WPML ( based on cookie )
+	 * in 'setup_theme' by Polylang (based on user info) and 'plugins_loaded' by WPML (based on cookie).
 	 *
 	 * @since 0.9.5
 	 *
