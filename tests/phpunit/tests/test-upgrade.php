@@ -72,7 +72,7 @@ class Upgrade_Test extends PLL_UnitTestCase {
 		$admin->init();
 
 		try {
-			do_action( 'after_setup_theme' ); // See the issue, `PLL_Admin_Base::init_user()` being hooked to `after_setup_theme`.
+			do_action( 'setup_theme' ); // See the issue, `PLL_Admin_Base::init_user()` being hooked to `setup_theme`.
 			do_action( 'admin_init' ); // `PLL_Upgrade::upgrade()` is hooked to this action.
 		} catch ( \Throwable $th ) {
 			$this->assertTrue( false, "Polylang admin failed with error: {$th}" );
