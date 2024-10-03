@@ -37,14 +37,16 @@ class Sync extends Abstract_List {
 	 *
 	 * @return array Partial schema.
 	 *
-	 * @phpstan-return array{type: 'array', items: array{type: SchemaType, enum: non-empty-list<non-falsy-string>}}
+	 * @phpstan-return array{type: 'array', items: array{type: SchemaType, enum: non-empty-array<non-falsy-string>}}
 	 */
 	protected function get_data_structure(): array {
+		/** @phpstan-var non-empty-array<non-falsy-string> */
+		$enum = array_keys( \PLL_Settings_Sync::list_metas_to_sync() );
 		return array(
 			'type'  => 'array',
 			'items' => array(
 				'type' => $this->get_type(),
-				'enum' => \PLL_Settings_Sync::get_synchronizable_elements(),
+				'enum' => $enum,
 			),
 		);
 	}
