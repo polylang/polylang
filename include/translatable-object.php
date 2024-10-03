@@ -256,8 +256,6 @@ abstract class PLL_Translatable_Object {
 	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
 	 */
 	public function get_object_term( $id, $taxonomy ) {
-		global $wp_version;
-
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {
