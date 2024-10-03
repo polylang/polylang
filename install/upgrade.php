@@ -114,14 +114,11 @@ class PLL_Upgrade {
 		}
 
 		/**
-		 * Fires once Polylang has been upgraded.
+		 * Fires after Polylang has been upgraded and before the new version is saved in options.
 		 *
 		 * @since 3.7
-		 *
-		 * @param $from_version Base version.
-		 * @param $to_version   New version.
 		 */
-		do_action( 'pll_upgrade', $this->options['version'], POLYLANG_VERSION );
+		do_action( 'pll_upgrade' );
 
 		$this->options['previous_version'] = $this->options['version']; // Remember the previous version of Polylang since v1.7.7
 		$this->options['version'] = POLYLANG_VERSION;
