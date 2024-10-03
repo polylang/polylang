@@ -182,11 +182,6 @@ class PLL_Translated_Post extends PLL_Translated_Object implements PLL_Translata
 			$this->tax_language,
 			$this->model->get_translated_post_types(),
 			array(
-				'labels' => array(
-					'name'          => __( 'Languages', 'polylang' ),
-					'singular_name' => __( 'Language', 'polylang' ),
-					'all_items'     => __( 'All languages', 'polylang' ),
-				),
 				'public'             => false,
 				'show_ui'            => false, // Hide the taxonomy on admin side, needed for WP 4.4.x.
 				'show_in_nav_menus'  => false, // No metabox for nav menus, needed for WP 4.4.x.

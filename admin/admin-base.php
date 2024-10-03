@@ -458,9 +458,6 @@ abstract class PLL_Admin_Base extends PLL_Base {
 		$this->pref_lang = apply_filters( 'pll_admin_preferred_language', $this->pref_lang );
 
 		$this->set_current_language();
-
-		// Plugin i18n, only needed for backend.
-		load_plugin_textdomain( 'polylang' );
 	}
 
 	/**
