@@ -284,17 +284,11 @@ abstract class PLL_Translatable_Object {
 			}
 		}
 
-		// Stores it the way WP expects it. Set an empty cache if no term was found in the taxonomy.
-		$store_only_term_ids = version_compare( $wp_version, '6.0', '>=' );
-
 		foreach ( $this->tax_to_cache as $tax ) {
 			if ( empty( $terms[ $tax ] ) ) {
 				$to_cache = array();
-			} elseif ( $store_only_term_ids ) {
-				$to_cache = array( $terms[ $tax ]->term_id );
 			} else {
-				// Backward compatibility with WP < 6.0.
-				$to_cache = array( $terms[ $tax ] );
+				$to_cache = array( $terms[ $tax ]->term_id );
 			}
 
 			wp_cache_add( $id, $to_cache, "{$tax}_relationships" );
