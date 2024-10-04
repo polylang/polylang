@@ -474,16 +474,24 @@ abstract class PLL_Translatable_Object {
 	 * @phpstan-param array<empty> $args
 	 */
 	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		global $wpdb;
+
 		$db = $this->get_db_infos();
 
-		return sprintf(
-			"SELECT {$db['table']}.{$db['id_column']} FROM {$db['table']}
-			WHERE {$db['table']}.{$db['id_column']} NOT IN (
-				SELECT object_id FROM {$GLOBALS['wpdb']->term_relationships} WHERE term_taxonomy_id IN (%s)
+		return $wpdb->prepare(
+			sprintf(
+				"SELECT %%i FROM %%i
+				WHERE %%i NOT IN (
+					SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
+				)
+				LIMIT %%d",
+				implode( ',', array_fill( 0, count( $language_ids ), '%d' ) )
+			),
+			array_merge(
+				array( $db['id_column'], $db['table'], $db['id_column'] ),
+				$language_ids,
+				array( $limit >= 1 ? $limit : 4294967295 )
 			)
-			%s",
-			PLL_Db_Tools::prepare_values_list( $language_ids ),
-			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
 		);
 	}
 
