@@ -40,11 +40,9 @@ class PLL_WPML_Compat {
 		require_once __DIR__ . '/wpml-legacy-api.php';
 		$this->api = new PLL_WPML_API();
 
-		self::$strings = get_option( 'polylang_wpml_strings', array() );
+		$strings = get_option( 'polylang_wpml_strings' );
 
-		if ( ! is_array( self::$strings ) ) {
-			self::$strings = array(); // In case the serialized option is corrupted.
-		}
+		self::$strings = is_array( $strings ) ? $strings : array();
 
 		add_action( 'pll_language_defined', array( $this, 'define_constants' ) );
 		add_action( 'pll_no_language_defined', array( $this, 'define_constants' ) );
@@ -184,10 +182,10 @@ class PLL_WPML_Compat {
 	 *
 	 * @param string $context The group in which the string is registered.
 	 * @param string $name    A unique name for the string.
-	 * @return bool|string The registered string, false if none was found.
+	 * @return string The registered string, empty if none was found.
 	 */
 	public function get_string_by_context_and_name( $context, $name ) {
 		$key = md5( "$context | $name" );
-		return isset( self::$strings[ $key ] ) ? self::$strings[ $key ]['string'] : false;
+		return isset( self::$strings[ $key ] ) ? self::$strings[ $key ]['string'] : '';
 	}
 }
