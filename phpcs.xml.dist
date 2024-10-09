@@ -5,6 +5,8 @@
 	<arg name="extensions" value="php,js" />
 	<arg name="colors"/>
 	<arg value="ps"/>
+	<arg name="parallel" value="20"/>
+	<arg name="cache"/>
 
 	<file>.</file>
 
