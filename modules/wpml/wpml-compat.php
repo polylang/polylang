@@ -48,7 +48,8 @@ class PLL_WPML_Compat {
 		}
 
 		add_action( 'pll_language_defined', array( $this, 'define_constants' ) );
-		add_action( 'pll_no_language_defined', array( $this, 'define_constants' ) );	}
+		add_action( 'pll_no_language_defined', array( $this, 'define_constants' ) );
+	}
 
 	/**
 	 * Access to the single instance of the class
