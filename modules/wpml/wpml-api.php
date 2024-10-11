@@ -166,6 +166,11 @@ class PLL_WPML_API {
 	 */
 	public function wpml_add_language_form_field() {
 		$lang = pll_current_language();
+
+		if ( empty( $lang ) ) {
+			return;
+		}
+
 		$field = sprintf( '<input type="hidden" name="lang" value="%s" />', esc_attr( $lang ) );
 		$field = apply_filters( 'wpml_language_form_input_field', $field, $lang );
 		echo $field; // phpcs:ignore WordPress.Security.EscapeOutput

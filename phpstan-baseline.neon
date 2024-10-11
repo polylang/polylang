@@ -696,69 +696,9 @@ parameters:
 			path: modules/wpml/wpml-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, string\\|false given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-api.php
-
-		-
 			message: "#^Static property PLL_WPML_API\\:\\:\\$original_language \\(PLL_Language\\|null\\) does not accept PLL_Language\\|false\\|null\\.$#"
 			count: 1
 			path: modules/wpml/wpml-api.php
-
-		-
-			message: "#^Parameter \\#1 \\$singular of method Translations\\:\\:translate\\(\\) expects string, string\\|true given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-compat.php
-
-		-
-			message: "#^Static property PLL_WPML_Compat\\:\\:\\$strings \\(array\\) does not accept mixed\\.$#"
-			count: 1
-			path: modules/wpml/wpml-compat.php
-
-		-
-			message: "#^Cannot call method get_home_url\\(\\) on PLL_Admin_Links\\|PLL_Frontend_Links\\|null\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Function icl_get_current_language\\(\\) should return string but returns string\\|false\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Function icl_get_default_language\\(\\) should return string but returns string\\|false\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Function wpml_get_default_language\\(\\) should return string but returns string\\|false\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Parameter \\#1 \\$.+ of function method_exists expects object\\|string, PLL_Admin_Links\\|PLL_Frontend_Links\\|null given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method PLL_Translatable_Object\\:\\:get_language\\(\\) expects int, int\\|false given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function pll__ expects string, bool\\|string given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function pll_translate_string expects string, bool\\|string given\\.$#"
-			count: 1
-			path: modules/wpml/wpml-legacy-api.php
-
-		-
-			message: "#^Parameter \\#2 \\$lang of method PLL_Translated_Object\\:\\:get_translation\\(\\) expects PLL_Language\\|string, string\\|false given\\.$#"
-			count: 2
-			path: modules/wpml/wpml-legacy-api.php
 
 		-
 			message: "#^Parameter \\#1 \\$args of method WP_Ajax_Response\\:\\:add\\(\\) expects array\\{what\\?\\: string, action\\?\\: string\\|false, id\\?\\: int\\|WP_Error, old_id\\?\\: int\\|false, position\\?\\: string, data\\?\\: string\\|WP_Error, supplemental\\?\\: array\\}, array\\{what\\: 'success', data\\: string\\|false\\} given\\.$#"
