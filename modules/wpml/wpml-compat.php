@@ -31,23 +31,24 @@ class PLL_WPML_Compat {
 	public $api;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @since 1.0.2
 	 */
 	protected function __construct() {
-		// Load the WPML API
+		// Load the WPML API.
 		require_once __DIR__ . '/wpml-legacy-api.php';
 		$this->api = new PLL_WPML_API();
 
 		$strings = get_option( 'polylang_wpml_strings' );
 
-		self::$strings = is_array( $strings ) ? $strings : array();
+		if ( is_array( $strings ) ) {
+			self::$strings = $strings;
+			add_filter( 'pll_get_strings', array( $this, 'get_strings' ) );
+		}
 
 		add_action( 'pll_language_defined', array( $this, 'define_constants' ) );
-		add_action( 'pll_no_language_defined', array( $this, 'define_constants' ) );
-		add_filter( 'pll_get_strings', array( $this, 'get_strings' ) );
-	}
+		add_action( 'pll_no_language_defined', array( $this, 'define_constants' ) );	}
 
 	/**
 	 * Access to the single instance of the class
