@@ -238,6 +238,10 @@ class PLL_Admin_Links extends PLL_Links {
 	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
 	 */
 	public function get_data_from_new_post_translation_request( string $post_type ): array {
+		if ( 'attachment' === $post_type ) {
+			return $this->get_data_from_new_media_translation_request();
+		}
+
 		if ( ! isset( $GLOBALS['pagenow'], $_GET['_wpnonce'], $_GET['from_post'], $_GET['new_lang'], $_GET['post_type'] ) ) {
 			return array();
 		}
@@ -252,10 +256,49 @@ class PLL_Admin_Links extends PLL_Links {
 
 		// Capability check already done in post-new.php.
 		check_admin_referer( 'new-post-translation' );
+		return $this->get_objects_from_new_post_translation_request( (int) $_GET['from_post'], sanitize_key( $_GET['new_lang'] ) );
+	}
 
-		$post_id   = (int) $_GET['from_post'];
-		$lang_slug = sanitize_key( $_GET['new_lang'] );
+	/**
+	 * Returns some data (`from_post` and `new_lang`) from the current request.
+	 *
+	 * @since 3.7
+	 *
+	 * @return array {
+	 *     @type WP_Post      $from_post The source media.
+	 *     @type PLL_Language $new_lang  The target language.
+	 * }
+	 *
+	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
+	 */
+	public function get_data_from_new_media_translation_request(): array {
+		if ( ! $this->options['media_support'] ) {
+			return array();
+		}
 
+		if ( ! isset( $_GET['action'], $_GET['_wpnonce'], $_GET['from_media'], $_GET['new_lang'] ) || 'translate_media' !== $_GET['action'] ) {
+			return array();
+		}
+
+		check_admin_referer( 'translate_media' );
+		return $this->get_objects_from_new_post_translation_request( (int) $_GET['from_media'], sanitize_key( $_GET['new_lang'] ) );
+	}
+
+	/**
+	 * Returns the objects given the post ID and language slug provided in the new post translation request.
+	 *
+	 * @since 3.7
+	 *
+	 * @param int    $post_id   The original Post ID provided.
+	 * @param string $lang_slug The new translation language provided
+	 * @return array {
+	 *     @type WP_Post      $from_post The source post.
+	 *     @type PLL_Language $new_lang  The target language.
+	 * }
+	 *
+	 * @phpstan-return array{}|array{from_post: WP_Post, new_lang: PLL_Language}|never
+	 */
+	private function get_objects_from_new_post_translation_request( int $post_id, string $lang_slug ): array {
 		if ( $post_id <= 0 || empty( $lang_slug ) ) {
 			return array();
 		}
