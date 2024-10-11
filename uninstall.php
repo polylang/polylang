@@ -9,7 +9,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) { // If uninstall not called from Word
 
 /**
  * Manages Polylang uninstallation.
- * The goal is to remove ALL Polylang related data in db.
+ * The goal is to remove **all** Polylang related data in db.
  *
  * @since 0.5
  */
@@ -41,7 +41,7 @@ class PLL_Uninstall {
 	}
 
 	/**
-	 * Removes ALL plugin data.
+	 * Removes **all** plugin data.
 	 *
 	 * @since 0.5
 	 */
@@ -142,9 +142,33 @@ class PLL_Uninstall {
 
 		if ( ! empty( $term_ids ) ) {
 			$term_ids = array_unique( $term_ids );
-			$wpdb->query( $wpdb->prepare( sprintf( "DELETE FROM {$wpdb->terms} WHERE term_id IN (%s)", implode( ',', array_fill( 0, count( $term_ids ), '%d' ) ) ), $term_ids ) );
-			$wpdb->query( $wpdb->prepare( sprintf( "DELETE FROM {$wpdb->term_taxonomy} WHERE term_id IN (%s)", implode( ',', array_fill( 0, count( $term_ids ), '%d' ) ) ), $term_ids ) );
-			$wpdb->query( $wpdb->prepare( sprintf( "DELETE FROM {$wpdb->termmeta} WHERE term_id IN (%s) AND meta_key='_pll_strings_translations'", implode( ',', array_fill( 0, count( $term_ids ), '%d' ) ) ), $term_ids ) );
+		$wpdb->query(
+			$wpdb->prepare(
+			sprintf(
+				"DELETE FROM {$wpdb->terms} WHERE term_id IN (%s)",
+				implode( ',', array_fill( 0, count( $term_ids ), '%d' ) )
+			),
+			$term_ids
+			)
+		    );
+    		    $wpdb->query(
+			$wpdb->prepare(
+				sprintf(
+					"DELETE FROM {$wpdb->term_taxonomy} WHERE term_id IN (%s)",
+					implode( ',', array_fill( 0, count( $term_ids ), '%d' ) )
+				),
+				$term_ids
+			)
+		 );
+		$wpdb->query(
+			$wpdb->prepare(
+				sprintf(
+					"DELETE FROM {$wpdb->termmeta} WHERE term_id IN (%s) AND meta_key='_pll_strings_translations'",
+					implode( ',', array_fill( 0, count( $term_ids ), '%d' ) )
+				),
+				$term_ids
+			)
+		);
 		}
 
 		if ( ! empty( $tt_ids ) ) {
