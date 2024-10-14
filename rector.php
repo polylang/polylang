@@ -31,5 +31,6 @@ return RectorConfig::configure()
 		[
 			LongArrayToShortArrayRector::class,
 			ListToArrayDestructRector::class,
+			__DIR__ . '/install/plugin-updater.php',
 		]
 	);
