@@ -3,6 +3,7 @@ extend-exclude = [
     ".git/",
     ".phpunit.result.cache",
     "flags/??.png",
+	"install/plugin-updater.php",
     "node_modules/",
     "settings/flags.php",
     "settings/languages.php",
