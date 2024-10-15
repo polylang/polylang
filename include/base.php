@@ -44,6 +44,13 @@ abstract class PLL_Base {
 	public $terms;
 
 	/**
+	 * Cache for the translations objects.
+	 *
+	 * @var PLL_Cache<PLL_MO>
+	 */
+	private $cache;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.2
@@ -52,8 +59,9 @@ abstract class PLL_Base {
 	 */
 	public function __construct( &$links_model ) {
 		$this->links_model = &$links_model;
-		$this->model = &$links_model->model;
-		$this->options = &$this->model->options;
+		$this->model       = &$links_model->model;
+		$this->options     = &$this->model->options;
+		$this->cache       = new PLL_Cache();
 
 		$GLOBALS['l10n_unloaded']['pll_string'] = true; // Short-circuit _load_textdomain_just_in_time() for 'pll_string' domain in WP 4.6+
 
@@ -121,14 +129,19 @@ abstract class PLL_Base {
 		}
 
 		$language = $this->model->get_language( $locale );
+		if ( empty( $language ) ) {
+			unset( $GLOBALS['l10n']['pll_string'] );
+			return;
+		}
 
-		if ( ! empty( $language ) ) {
+		$mo = $this->cache->get( $language->slug );
+		if ( ! $mo instanceof PLL_MO ) {
 			$mo = new PLL_MO();
 			$mo->import_from_db( $language );
-			$GLOBALS['l10n']['pll_string'] = &$mo;
-		} else {
-			unset( $GLOBALS['l10n']['pll_string'] );
+			$this->cache->set( $language->slug, $mo );
 		}
+
+		$GLOBALS['l10n']['pll_string'] = &$mo;
 	}
 
 	/**
